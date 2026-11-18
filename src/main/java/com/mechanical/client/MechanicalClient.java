@@ -81,7 +81,13 @@ public class MechanicalClient {
         });
         event.registerEntityRenderer(Wildlife.GIANT_DEER.get(), c -> {
             GiantDeerModel model = new GiantDeerModel(c.bakeLayer(GiantDeerModel.LAYER));
-            return new WildAnimalRenderer<>(c, model, model, 0.5F, 1.2F) {
+            return new WildAnimalRenderer<>(c, model, model, 0.5F, 2.4F) {
+                @Override
+                protected void scale(com.mechanical.client.wildlife.WildAnimalRenderState state, com.mojang.blaze3d.vertex.PoseStack poseStack) {
+                    super.scale(state, poseStack);
+                    poseStack.scale(2.0F, 2.0F, 2.0F); // a giant: twice the model
+                }
+
                 {
                     addLayer(new com.mechanical.client.wildlife.AngryEyesLayer(this,
                             net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/giant_deer_eyes.png")));

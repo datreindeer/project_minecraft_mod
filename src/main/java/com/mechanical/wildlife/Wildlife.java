@@ -55,7 +55,7 @@ public final class Wildlife {
             "badger", Badger::new, MobCategory.CREATURE, b -> b.sized(0.7F, 0.6F).clientTrackingRange(10));
     // rare mini-boss
     public static final DeferredHolder<EntityType<?>, EntityType<GiantDeer>> GIANT_DEER = ENTITY_TYPES.registerEntityType(
-            "giant_deer", GiantDeer::new, MobCategory.CREATURE, b -> b.sized(1.6F, 2.4F).clientTrackingRange(12));
+            "giant_deer", GiantDeer::new, MobCategory.CREATURE, b -> b.sized(2.2F, 4.6F).eyeHeight(4.0F).clientTrackingRange(16));
 
     // what they give when butchered (see Butchery)
     public static final DeferredItem<Item> VENISON_SCRAPS = food("venison_scraps", 1, 0.1F);
