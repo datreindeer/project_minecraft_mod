@@ -77,7 +77,7 @@ mer Plant Fibre från gräs.
 Crude-verktygen lagas med rock chunks.
 
 ### Flint Spear (Tool Station)
-Huvud: **Flint**, bindning: **Cordage**, skaft: **Tool Rod**. Fungerar som vanilla Stone Spear (samma värden, flintmaterial).
+Huvud: **Flint**, bindning: **Cordage**, skaft: **Tool Rod**. Fungerar som vanilla Stone Spear: 2 skada vid stöt (vänsterklick), håll in högerklick och spring för ansats (skadan beror på farten). Hållbarhet 100.
 Låses upp i Tool Station när man har Flint. Ersätter Stone Spear (vanilla-receptet borttaget).
 
 ### Crude Bow och Crude Fishing Rod (Tool Station)

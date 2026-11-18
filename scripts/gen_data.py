@@ -469,9 +469,9 @@ for name, (item, recipes) in UNLOCKS.items():
 print("unlocks ok")
 
 # ---- flint spear, armor, beds, bow ----
-for n in ("flint_spear", "flint_spear_in_hand"):
-    w(A / f"models/item/{n}.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": f"mechanical:item/{n}"}})
-# like the vanilla spear: flat icon in GUIs, in-hand model otherwise
+# gui/ground: flat item; in hand: vanilla's spear display transforms (held like a spear, braced when charging)
+w(A / "models/item/flint_spear.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/flint_spear"}})
+w(A / "models/item/flint_spear_in_hand.json", {"parent": "minecraft:item/spear_in_hand", "textures": {"layer0": "mechanical:item/flint_spear_in_hand"}})
 w(A / "items/flint_spear.json", {"model": {"type": "minecraft:select", "property": "minecraft:display_context",
     "cases": [{"when": ["gui", "ground", "fixed", "on_shelf"], "model": {"type": "minecraft:model", "model": "mechanical:item/flint_spear"}}],
     "fallback": {"type": "minecraft:model", "model": "mechanical:item/flint_spear_in_hand"}}, "swap_animation_scale": 1.95})

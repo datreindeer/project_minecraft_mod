@@ -103,7 +103,9 @@ public class Mechanical {
     public static final DeferredItem<Item> FLINT_SHOVEL = ITEMS.registerSimpleItem("flint_shovel", p -> p.shovel(FLINT, 1.5F, -3.0F));
     public static final DeferredItem<Item> FLINT_HOE = ITEMS.registerSimpleItem("flint_hoe", p -> p.hoe(FLINT, 0.0F, -3.0F));
     // Same handling as the vanilla stone spear, flint material; assembled in the Tool Station.
-    public static final DeferredItem<Item> FLINT_SPEAR = ITEMS.registerSimpleItem("flint_spear", p -> p.spear(FLINT, 0.75F, 0.82F, 0.7F, 4.5F, 13.0F, 9.0F, 5.1F, 13.75F, 4.6F));
+    /** The spear is a bound, hafted tool (cordage + tool rod): sturdier and harder-hitting than the plain flint tools, like vanilla's stone spear. */
+    public static final ToolMaterial FLINT_SPEAR_MATERIAL = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 100, 2.5F, 1.0F, 5, FLINT_TOOL_MATERIALS);
+    public static final DeferredItem<Item> FLINT_SPEAR = ITEMS.registerSimpleItem("flint_spear", p -> p.spear(FLINT_SPEAR_MATERIAL, 0.75F, 0.82F, 0.7F, 4.5F, 13.0F, 9.0F, 5.1F, 13.75F, 4.6F));
     public static final DeferredItem<KnifeItem> FLINT_KNIFE = ITEMS.registerItem("flint_knife", p -> new KnifeItem(p, 1.0F, 1.0F, KnifeItem.FLINT), p -> p.sword(FLINT, 1.5F, -2.0F));
     /** Iron age; no way to get it yet (no recipe). Needed for tough animals like the bear. */
     public static final DeferredItem<KnifeItem> IRON_KNIFE = ITEMS.registerItem("iron_knife", p -> new KnifeItem(p, 2.0F, 1.5F, KnifeItem.IRON),
