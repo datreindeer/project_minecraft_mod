@@ -4,7 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,7 +19,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
- * Animals bleed: blood sprays when hit, and below half health they drip, leave a trail of blood on the ground and
+ * Animals and monsters (not skeletons, slimes and the like) bleed: blood sprays when hit, and below half health they drip, leave a trail of blood on the ground and
  * slowly lose health (never below one heart, so the last blow is still yours).
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -24,6 +29,14 @@ public final class Blood {
     private static final float BLEED_FLOOR = 2.0F;       // one heart: bleeding stops here
     private static final int BLEED_INTERVAL = 100, TRAIL_INTERVAL = 15;
 
+    /** Mobs without blood: skeletons, slimes, blazes, creepers ... (entity type tag {@code mechanical:bloodless}). */
+    public static final TagKey<EntityType<?>> BLOODLESS = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "bloodless"));
+
+    /** Animals and monsters bleed, unless they have no blood. */
+    public static boolean bleeds(LivingEntity entity) {
+        return (entity instanceof Animal || entity instanceof Enemy) && !entity.getType().builtInRegistryHolder().is(BLOODLESS);
+    }
+
     public static boolean isBleeding(LivingEntity entity) {
         return entity.isAlive() && (entity.getHealth() < entity.getMaxHealth() * BLEED_BELOW || ArrowWounds.count(entity) > 0);
     }
@@ -31,14 +44,14 @@ public final class Blood {
     @SubscribeEvent
     static void onHurt(LivingDamageEvent.Post event) {
         LivingEntity entity = event.getEntity();
-        if (!(entity instanceof Animal) || !(entity.level() instanceof ServerLevel level)) return;
+        if (!bleeds(entity) || !(entity.level() instanceof ServerLevel level)) return;
         int amount = Math.min(20, 3 + Math.round(event.getOriginalDamage() * 3));
         spray(level, entity.getX(), entity.getY() + entity.getBbHeight() * 0.6, entity.getZ(), amount);
     }
 
     @SubscribeEvent
     static void onTick(EntityTickEvent.Post event) {
-        if (!(event.getEntity() instanceof Animal animal) || !(animal.level() instanceof ServerLevel level) || !isBleeding(animal)) return;
+        if (!(event.getEntity() instanceof LivingEntity animal) || !bleeds(animal) || !(animal.level() instanceof ServerLevel level) || !isBleeding(animal)) return;
         if (animal.tickCount % 5 == 0) {
             drip(level, animal.getX() + (level.getRandom().nextDouble() - 0.5) * 0.4, animal.getY() + animal.getBbHeight() * 0.4,
                     animal.getZ() + (level.getRandom().nextDouble() - 0.5) * 0.4);

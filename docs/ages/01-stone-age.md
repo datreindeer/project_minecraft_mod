@@ -314,7 +314,9 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 | Övriga stora (häst, lama, kamel, isbjörn …) | Raw Hide 40 % | 2–3 Game Meat Scraps |
 
 ### Blod
-- Djur blöder när de träffas (blodpartiklar, fler vid hårda slag).
+- Djur **och monster** blöder när de träffas (blodpartiklar, fler vid hårda slag). Monster blöder likadant som djur
+  (droppar, spår, blödning under 50 %). Undantag utan blod (taggen `mechanical:bloodless`): alla skelett, Slime, Magma
+  Cube, Blaze, Breeze, Creeper, Vex, Ghast, Shulker, Wither, golems, Creaking, Endermite och Silverfish.
 - **Under 50 % hälsa blöder de:** droppar blod, lämnar **bloddroppar på marken** när de rör sig (går att spåra) och
   tar en halv hjärta var 5:e sekund. Blödningen slutar på 1 hjärta, den dödar aldrig.
 - Styckning sprutar blod och lämnar blodfläckar runt kroppen (en pöl runt Bone Pile).

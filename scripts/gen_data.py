@@ -1170,3 +1170,8 @@ for path in _sjar.namelist():
     w(D / f"minecraft/loot_table/{rel}", table)
     _filtered += 1
 print(f"structure loot ok ({_filtered} tables)")
+
+# ---- mobs without blood (Blood.java): bones, slime, fire, wind, ghosts, shells, golems ----
+w(D / "mechanical/tags/entity_type/bloodless.json", {"values": ["#minecraft:skeletons", "minecraft:slime", "minecraft:magma_cube",
+    "minecraft:blaze", "minecraft:breeze", "minecraft:creeper", "minecraft:vex", "minecraft:ghast", "minecraft:shulker",
+    "minecraft:wither", "minecraft:iron_golem", "minecraft:snow_golem", "minecraft:creaking", "minecraft:endermite", "minecraft:silverfish"]})
