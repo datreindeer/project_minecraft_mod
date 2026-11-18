@@ -79,7 +79,7 @@ for v in ROCKS:
             {"type": "minecraft:count", "count": 6},
             {"type": "minecraft:offset", "x": tri(6), "y": tri(2), "z": tri(6)},
             {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
-                {"type": "minecraft:matching_block_tag", "tag": "minecraft:air"},
+                {"type": "minecraft:replaceable"},  # air, grass, ferns ...
                 {"type": "minecraft:matching_blocks", "offset": [0, -1, 0],
                  "blocks": ["minecraft:grass_block", "minecraft:stone"] + ([] if v in ("stone", "flint") else [f"minecraft:{v}"])},
                 {"type": "minecraft:would_survive", "state": f"mechanical:loose_{v}"}]}},
@@ -271,11 +271,11 @@ def forage_feature(name, state, biomes, rarity, count, spread):
     w(D / f"mechanical/worldgen/feature/{name}.json", {"type": "minecraft:simple_block", "to_place": state})
     w(D / f"mechanical/worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{name}", "placement": [
         {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
-        {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"},
+        {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
         {"type": "minecraft:count", "count": count},
         {"type": "minecraft:offset", "x": tri(spread), "y": tri(2), "z": tri(spread)},
         {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
-            {"type": "minecraft:matching_block_tag", "tag": "minecraft:air"},
+            {"type": "minecraft:replaceable"},  # air, grass, ferns ...
             {"type": "minecraft:matching_block_tag", "tag": "minecraft:dirt", "offset": [0, -1, 0]}]}}]})
     w(D / f"mechanical/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
         "features": f"mechanical:{name}", "step": "vegetal_decoration"})
