@@ -1,5 +1,6 @@
 package com.mechanical.wildlife;
 
+import net.minecraft.core.particles.ParticleTypes;
 import java.util.EnumSet;
 
 import com.mechanical.AnimalFear;
@@ -84,10 +85,19 @@ public class GiantDeer extends WildAnimal {
         targetSelector.addGoal(2, new AttackNearbyPlayerGoal(this));
     }
 
+    private boolean wasAggressive;
+
     @Override
     public void aiStep() {
         super.aiStep();
-        if (level().isClientSide()) return;
+        if (level().isClientSide()) {
+            magicMotes();
+            return;
+        }
+        // a deep horn call across the forest when it turns on you
+        if (isAggressive() && !wasAggressive) playSound(SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(6).value(), 5.0F, 0.6F);
+        wasAggressive = isAggressive();
+        flowerTrail();
         if (!isBroken()) return;
         // beaten: drops the fight and runs from whoever is near, for as long as it stays this weak
         if (getTarget() != null) {
@@ -208,5 +218,45 @@ public class GiantDeer extends WildAnimal {
     @Override
     public float getVoicePitch() {
         return super.getVoicePitch() * 0.5F;
+    }
+
+    /** Drifting spores and glints around its antlers; a swirl of them while it charges. */
+    private void magicMotes() {
+        var r = getRandom();
+        int n = isAggressive() ? 3 : (r.nextInt(3) == 0 ? 1 : 0);
+        for (int i = 0; i < n; i++) {
+            double a = r.nextDouble() * Math.PI * 2, d = 0.8 + r.nextDouble() * 2.2;
+            double x = getX() + Math.cos(a) * d, y = getY() + getBbHeight() * (0.75 + r.nextDouble() * 0.35), z = getZ() + Math.sin(a) * d;
+            level().addParticle(r.nextInt(5) == 0 ? ParticleTypes.END_ROD : ParticleTypes.SPORE_BLOSSOM_AIR, x, y, z,
+                    0, r.nextDouble() * 0.02, 0);
+        }
+        if (r.nextInt(12) == 0) level().addParticle(ParticleTypes.HAPPY_VILLAGER, getX() + (r.nextDouble() - 0.5) * 2.5,
+                getY() + 0.2, getZ() + (r.nextDouble() - 0.5) * 2.5, 0, 0, 0);
+    }
+
+    private static final net.minecraft.world.level.block.Block[] TRAIL_FLOWERS = {
+            net.minecraft.world.level.block.Blocks.OXEYE_DAISY, net.minecraft.world.level.block.Blocks.AZURE_BLUET,
+            net.minecraft.world.level.block.Blocks.CORNFLOWER, net.minecraft.world.level.block.Blocks.LILY_OF_THE_VALLEY,
+            net.minecraft.world.level.block.Blocks.FERN};
+
+    /** Flowers spring up now and then where it walks. */
+    private void flowerTrail() {
+        if (!onGround() || getDeltaMovement().horizontalDistanceSqr() < 1.0E-3 || getRandom().nextInt(25) != 0) return;
+        net.minecraft.core.BlockPos at = blockPosition().offset(getRandom().nextInt(3) - 1, 0, getRandom().nextInt(3) - 1);
+        var flower = TRAIL_FLOWERS[getRandom().nextInt(TRAIL_FLOWERS.length)].defaultBlockState();
+        if (level().getBlockState(at).isAir() && level().getBlockState(at.below()).is(net.minecraft.world.level.block.Blocks.GRASS_BLOCK)
+                && flower.canSurvive(level(), at)) {
+            level().setBlock(at, flower, net.minecraft.world.level.block.Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
+    public void die(net.minecraft.world.damagesource.DamageSource source) {
+        super.die(source);
+        if (level() instanceof net.minecraft.server.level.ServerLevel server) {
+            server.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, getX(), getY() + getBbHeight() * 0.6, getZ(), 80, 1.2, 1.4, 1.2, 0.35);
+            server.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, getX(), getY() + getBbHeight() * 0.5, getZ(), 60, 2.0, 1.5, 2.0, 0.02);
+            playSound(SoundEvents.AMETHYST_BLOCK_RESONATE, 2.0F, 0.5F);
+        }
     }
 }

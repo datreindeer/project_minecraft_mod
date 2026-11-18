@@ -91,6 +91,9 @@ public class MechanicalClient {
                 {
                     addLayer(new com.mechanical.client.wildlife.AngryEyesLayer(this,
                             net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/giant_deer_eyes.png")));
+                    addLayer(new com.mechanical.client.wildlife.AngryEyesLayer(this,
+                            net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/giant_deer_runes.png"),
+                            state -> !com.mechanical.client.CarcassRenderer.isCarcass(state)));
                 }
             };
         });

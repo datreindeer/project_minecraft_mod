@@ -390,6 +390,10 @@ smyger) och får då **röda lysande ögon**. **Blöder inte och flyr inte förr
 minst Tusk Dagger för att styckas: 6–9 Game Meat Scraps, 1–2 Raw Hide, 2–3 Sinew och **alltid en Giant Antler**
 (offras vid Offering Altar i Ancient Oak).
 
+**Magisk:** runor i hornen och tagg-spetsarna lyser svagt grönt-guld (syns i mörker), den sprider ett svagt ljus omkring
+sig, sporer och glimtar driver runt hornen (en virvel när den laddar), blommor och ormbunkar spirar ibland där den går,
+och den blåser ett djupt hornrop när den går till anfall. När den dör: ett grönt-gyllene utbrott och en klingande ton.
+
 ### Iron Knife
 Järnåldern, **går inte att få tag på än** (finns i creative). Snabbare (2×) och mer utbyte (1,5×) vid styckning än Flint
 Knife. Kan stycka Brown Bear. Fungerar i alla knivrecept.
