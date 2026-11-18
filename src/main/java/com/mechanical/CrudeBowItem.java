@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 /** Stone age bow from the Tool Station: works like a bow, but its arrows hit softer (and it wears out fast). */
 public class CrudeBowItem extends BowItem {
-    private static final double DAMAGE_FACTOR = 0.7;
+    public static final double DAMAGE_FACTOR = 0.7;
 
     public CrudeBowItem(Properties properties) {
         super(properties);

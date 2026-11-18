@@ -20,6 +20,14 @@ public class SpecialArrowItem extends ArrowItem {
         this.fire = fire;
     }
 
+    public double damage() {
+        return damage;
+    }
+
+    public boolean fire() {
+        return fire;
+    }
+
     @Override
     public AbstractArrow createArrow(Level level, ItemStack stack, LivingEntity owner, ItemStack weapon) {
         AbstractArrow arrow = super.createArrow(level, stack, owner, weapon);

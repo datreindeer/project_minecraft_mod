@@ -15,18 +15,28 @@ import net.minecraft.world.phys.EntityHitResult;
 /**
  * Knives: survive crafting (losing 1 durability), cut plant fibre, and butcher carcasses while right-click is held.
  * Better metals butcher faster ({@code speed}), get more out of each animal ({@code yieldMultiplier}) and can cut
- * tougher animals ({@code tier}: flint 1, iron 3; see {@link Butchery#requiredKnifeTier}).
+ * tougher animals ({@code tier}: flint 1, tusk 2, iron 3; see {@link Butchery#requiredKnifeTier}). {@code hideMultiplier}
+ * scales the first pass (hide, pelt, wool, feathers): the tusk dagger is a skinning knife and gets more of it.
  */
 public class KnifeItem extends Item {
-    public static final int FLINT = 1, IRON = 3;
-    private final float speed, yieldMultiplier;
+    public static final int FLINT = 1, TUSK = 2, IRON = 3;
+    private final float speed, yieldMultiplier, hideMultiplier;
     private final int tier;
 
     public KnifeItem(Properties properties, float speed, float yieldMultiplier, int tier) {
+        this(properties, speed, yieldMultiplier, tier, yieldMultiplier);
+    }
+
+    public KnifeItem(Properties properties, float speed, float yieldMultiplier, int tier, float hideMultiplier) {
         super(properties);
         this.speed = speed;
         this.yieldMultiplier = yieldMultiplier;
         this.tier = tier;
+        this.hideMultiplier = hideMultiplier;
+    }
+
+    public float hideMultiplier() {
+        return hideMultiplier;
     }
 
     public int tier() {

@@ -123,12 +123,19 @@ public final class Butchery {
 
     /** Knife tier needed to butcher this animal at all (thick hides like the bear's need iron). */
     public static int requiredKnifeTier(EntityType<?> animal) {
-        return animal == Wildlife.BROWN_BEAR.get() ? KnifeItem.IRON : KnifeItem.FLINT;
+        return animal == Wildlife.BROWN_BEAR.get() ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 
     /** First pass: wool / hide / feathers. {@code yieldMultiplier} comes from the knife (flint = 1). */
-    static void dropOuter(ServerLevel level, Entity at, EntityType<?> type, float yieldMultiplier) {
-        dropExtras(level, at, yieldFor(type).outer(), yieldMultiplier);
+    /** First pass; a skinning knife ({@code hideMultiplier} > 1) also gets proportionally more of each piece. */
+    static void dropOuter(ServerLevel level, Entity at, EntityType<?> type, float hideMultiplier) {
+        RandomSource random = level.getRandom();
+        for (Extra e : yieldFor(type).outer()) {
+            if (random.nextFloat() >= e.chance() * hideMultiplier) continue;
+            float count = (e.min() + random.nextInt(e.max() - e.min() + 1)) * Math.max(1, hideMultiplier);
+            int whole = (int) count;
+            drop(level, at, e.item().get(), whole + (random.nextFloat() < count - whole ? 1 : 0));
+        }
     }
 
     /** Second pass: the meat and what is inside; {@code trophy} = the animal carried antlers (stag), which come off too. */

@@ -90,7 +90,9 @@ Vanilla Bow och Fishing Rod går inte att crafta (de riktiga kommer i senare ål
 
 ### Tusk Dagger (Tool Station)
 Huvud: **Tusk**, bindning: **Cordage**, skaft: **Leather** (handtag). Låses upp när man har en Tusk. En kniv (fungerar i alla
-knivrecept och för styckning): 1,3× snabbare och 1,1× mer utbyte än Flint Knife, 140 i hållbarhet, 3 skada, attackfart 2,2.
+knivrecept och för styckning): 1,3× snabbare och 1,1× mer kött än Flint Knife, 140 i hållbarhet, 3 skada, attackfart 2,2.
+**Jägarkniv:** kan stycka **Brown Bear** (Flint Knife kan inte) och ger **1,6× mer i första omgången** (hudar, päls, ull,
+fjädrar): högre chans och fler, t.ex. Bear Pelt 1–2 i stället för 1.
 
 ### Bone Hook Fishing Rod (Tool Station)
 **Bone Fish Hook** = Fish Bones + kniv (crafting). Spöet: huvud **Bone Fish Hook**, bindning **Twine**, skaft **Tool Rod**.
@@ -128,6 +130,11 @@ Högerklicka på en släckt Campfire eller Clay Kiln. Lyckas ungefär var tredje
 **Tändmaterial:** högerklicka först med **Leaf Litter** eller **Bark** på den släckta elden (1 åt gången, gröna partiklar).
 Då lyckas Fire Drill i 75 % av försöken. Tändmaterialet går åt när elden tar sig. Varje
 försök kostar 1 i hållbarhet. En Clay Kiln går bara att tända om den har bränsle (eller rest av påbörjat bränsle).
+
+### Verktygstips med stats
+Alla verktyg visar sina värden direkt under namnet: hållbarhet (alltid, färgad efter hur sliten), bryt-/hugg-/grävfart,
+vad en hacka kan bryta, yxans hugg per steg, chans att lyckas och Firewood-bonus, knivens styckningsfart, köttutbyte,
+hud-/pälsutbyte och om den klarar björn, bågens pilskada, pilars skada, fiskespöns napptid och rustningens isolering mot kyla.
 
 ## Block
 
@@ -309,12 +316,12 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
   Ger upp efter 24 block. Snabb i början av jakten, sedan långsammare.
 - Reser sig på bakbenen och slår med ramarna. Flyr aldrig och får aldrig panik.
 - Skadar man en unge anfaller alla vuxna björnar inom 20 block. Väcker man en sovande björn anfaller den direkt.
-- **Kräver Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
+- **Kräver Tusk Dagger eller Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
   Omgång 1: **Bear Pelt** + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
 
 ### Iron Knife
 Järnåldern, **går inte att få tag på än** (finns i creative). Snabbare (2×) och mer utbyte (1,5×) vid styckning än Flint
-Knife, och behövs för tuffa djur (Brown Bear). Fungerar i alla knivrecept.
+Knife. Kan stycka Brown Bear. Fungerar i alla knivrecept.
 
 ### Vilda djur (slätt, berg, kyla)
 Samma system som skogsdjuren (kroppar, styckning, blod, rädsla, ungar, sömn). Egna modeller och texturer.
@@ -508,6 +515,7 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 - Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
 - Fletching Table: `FletchingRecipes.java`, `FletchingMenu.java`, `client/FletchingScreen.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug: `BearRugBlock.java`.
 - Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
+- Verktygstips: `client/StatTooltips.java`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.

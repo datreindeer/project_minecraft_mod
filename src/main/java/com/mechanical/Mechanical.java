@@ -179,9 +179,9 @@ public class Mechanical {
             ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
     public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
     // --- Hunting gear ---
-    /** Tusk Dagger (Tool Station: tusk + cordage + leather grip): a knife that lasts longer and cuts a little faster than flint. */
+    /** Tusk Dagger (Tool Station: tusk + cordage + leather grip): a hunter's skinning knife; cuts bears and gets more hide/pelt. */
     public static final ToolMaterial TUSK = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 140, 3.0F, 0.5F, 5, FLINT_TOOL_MATERIALS);
-    public static final DeferredItem<KnifeItem> TUSK_DAGGER = ITEMS.registerItem("tusk_dagger", p -> new KnifeItem(p, 1.3F, 1.1F, KnifeItem.FLINT),
+    public static final DeferredItem<KnifeItem> TUSK_DAGGER = ITEMS.registerItem("tusk_dagger", p -> new KnifeItem(p, 1.3F, 1.1F, KnifeItem.TUSK, 1.6F),
             p -> p.sword(TUSK, 1.5F, -1.8F));
     public static final DeferredItem<Item> BONE_FISH_HOOK = ITEMS.registerSimpleItem("bone_fish_hook");
     public static final DeferredItem<BoneHookRodItem> BONE_HOOK_FISHING_ROD = ITEMS.registerItem("bone_hook_fishing_rod", BoneHookRodItem::new,

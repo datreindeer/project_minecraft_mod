@@ -40,17 +40,17 @@ public final class TreeChopping {
     private static final Map<Level, Map<BlockPos, Integer>> PROGRESS = new WeakHashMap<>();
 
     /** Chops per stage: flint axe 4, stone 3, iron 2. */
-    static int chopsNeeded(ItemStack axe) {
+    public static int chopsNeeded(ItemStack axe) {
         return Math.max(2, (int) Math.ceil(10 / axeSpeed(axe)));
     }
 
     /** Chance a finished piece comes out whole: flint axe 60 %, stone 75 %, iron 95 %. */
-    static float successChance(ItemStack axe) {
+    public static float successChance(ItemStack axe) {
         return Math.min(0.95F, 0.35F + 0.1F * axeSpeed(axe));
     }
 
     /** Extra firewood per successful split: flint / crude stone 0, stone and copper +1, iron +2, diamond +3. */
-    static int firewoodBonus(ItemStack axe) {
+    public static int firewoodBonus(ItemStack axe) {
         return Math.max(0, (int) ((axeSpeed(axe) - 2) / 2));
     }
 

@@ -146,7 +146,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         player.getUseItem().hurtAndBreak(1, player, player.getUsedItemHand());
         if (stage() == 0 && !Butchery.yieldFor(animal).outer().isEmpty()) {
             // first pass: wool sheared / hide skinned / feathers plucked; keep holding to go on with the meat
-            Butchery.dropOuter(level, this, animal, knife.yieldMultiplier());
+            Butchery.dropOuter(level, this, animal, knife.hideMultiplier());
             Blood.splatter(level, blockPosition(), 1, 5);
             entityData.set(STAGE, 1);
             return;

@@ -17,7 +17,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 /** Fishing rod with a bone hook: bites come about as much sooner as with Lure I (5 s), on top of any enchantment. */
 public class BoneHookRodItem extends FishingRodItem {
-    private static final int LURE_TICKS = 100;
+    public static final int LURE_TICKS = 100;
 
     public BoneHookRodItem(Properties properties) {
         super(properties);

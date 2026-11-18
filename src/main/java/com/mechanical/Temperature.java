@@ -31,7 +31,7 @@ public final class Temperature {
     private static final float NIGHT = 5, RAIN = 2, WATER = 5;
     private static final double FIRE_RANGE = 6;
     private static final float FIRE_WARMTH = 10;
-    private static final float LEATHER_PER_PIECE = 0.15F, FUR_PER_PIECE = 0.25F;
+    public static final float LEATHER_PER_PIECE = 0.15F, FUR_PER_PIECE = 0.25F;
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = Mechanical.ATTACHMENTS;
     public static final Supplier<AttachmentType<Float>> BODY = ATTACHMENTS.register("body_temperature", () -> AttachmentType
