@@ -963,5 +963,188 @@
   "linden_leaf_litter": {
     "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
     "category": "blocks"
+  },
+  "structure:abandoned_campsite": {
+    "text": "Övergivet läger: släckt lägereld, Drying Rack, Bone Pile och en Decorated Pot med flint, cordage och mat.",
+    "icon": "minecraft:campfire"
+  },
+  "structure:hunters_lean_to": {
+    "text": "Jägarens vindskydd av stockar och hudar, med Bear Rug; krukan har hudar, pilar och sällan en Crude Bow.",
+    "icon": "mechanical:bear_rug"
+  },
+  "structure:bear_den": {
+    "text": "Grotta i en sluttning (eller en stenhög) med ben och en Brown Bear. Farlig men bra byte.",
+    "icon": "mechanical:bear_claw"
+  },
+  "structure:standing_stones": {
+    "text": "Stencirkel med lutande och brutna stenar och en altarsten. Landmärke, lite flinta och ben.",
+    "icon": "minecraft:mossy_cobblestone"
+  },
+  "structure:burial_mound": {
+    "text": "Gravhög med stensatt gång in till en mörk kammare: skalle, ben, bone tools, horn och antler.",
+    "icon": "minecraft:skeleton_skull"
+  },
+  "structure:fishing_camp": {
+    "text": "Fiskeläger vid vatten med torkställningar och brygga: krokar, fisk och sällan en Crude Fishing Rod.",
+    "icon": "mechanical:bone_fish_hook"
+  },
+  "structure:flint_quarry": {
+    "text": "Grus- och stengrop full av Loose Flint, med halvfärdiga stenhuvuden och sällan en Flint Knife.",
+    "icon": "mechanical:loose_flint"
+  },
+  "structure:mammoth_bone_hut": {
+    "text": "Kupol av benblock i snön: Tusk, ben, sinew och sällan Bear Pelt.",
+    "icon": "mechanical:tusk"
+  },
+  "structure:hermits_hut": {
+    "text": "Liten hydda i djup skog med en eremit (leatherworker) som byter stenålderssaker.",
+    "icon": "minecraft:cauldron"
+  },
+  "entity:aurochs": {
+    "text": "Uroxe: stor vild boskap på slätter. Tjurar slåss tillbaka."
+  },
+  "entity:brown_bear": {
+    "text": "Mycket aggressiv björn nära bärbuskar. Kräver Tusk Dagger för att styckas."
+  },
+  "entity:hare": {
+    "text": "Snabb och skygg. Lite kött och hud."
+  },
+  "entity:moose": {
+    "text": "Älg: stor och stark, tjurar slåss tillbaka. Antler-trofé."
+  },
+  "entity:mouflon": {
+    "text": "Vildfår i bergen. Ull, kött och horn."
+  },
+  "entity:pheasant": {
+    "text": "Fasan som flyger upp när den skräms. Fjädrar och kött."
+  },
+  "entity:red_deer": {
+    "text": "Kronhjort i flockar. Hjortar slåss tillbaka. Antler-trofé."
+  },
+  "entity:reindeer": {
+    "text": "Ren i snöiga biomer, i flock. Antler-trofé."
+  },
+  "entity:roe_deer": {
+    "text": "Rådjur, skyggt och vanligt i skog."
+  },
+  "entity:wild_boar": {
+    "text": "Vildsvin i grupp, anfaller när det skadas. Lard och Tusk."
+  },
+  "entity:wild_horse": {
+    "text": "Vildhäst på slätten, i flock."
+  },
+  "hazel_shrub": {
+    "text": "Två block hög hasselbuske i lövskog; högerklicka för 1–2 [[hazelnuts]] (växer tillbaka), ger 1–3 Sticks när den bryts.",
+    "category": "foraging"
+  },
+  "juniper": {
+    "text": "Låg tät enbuske i taiga och på blåsiga berg; plocka [[juniper_berries]] (växer tillbaka), ger Sticks.",
+    "category": "foraging"
+  },
+  "bramble": {
+    "text": "Taggigt snår som saktar ner och sticks (inte om man smyger); ger Plant Fibre och ibland en Stick.",
+    "category": "foraging"
+  },
+  "undergrowth": {
+    "text": "Lågt ris och ormbunkar på skogsmarken; ibland en Plant Fibre.",
+    "category": "foraging"
+  },
+  "sapling_thicket": {
+    "text": "Två block högt sly av unga stammar; ger 2–3 Sticks.",
+    "category": "foraging"
+  },
+  "hazelnuts": {
+    "text": "Från [[hazel_shrub]]. 2 mat, rostas på Campfire till [[roasted_hazelnuts]].",
+    "category": "foraging"
+  },
+  "roasted_hazelnuts": {
+    "text": "Rostade hasselnötter, 4 mat.",
+    "category": "foraging"
+  },
+  "juniper_berries": {
+    "text": "Enbär från [[juniper]]. 1 mat, kanske krydda senare.",
+    "category": "foraging"
+  },
+  "ancient_oak_log": {
+    "text": "Stam från den uråldriga eken; okrossbar, mossig bark med svagt glödande runa.",
+    "category": "blocks"
+  },
+  "ancient_oak_wood": {
+    "text": "Uråldrig ek med bark runtom (grenar, rötter, rotben); okrossbar.",
+    "category": "blocks"
+  },
+  "ancient_oak_branch": {
+    "text": "Tjock gren (8 px) i den uråldriga eken; okrossbar, bara från världsgenerering.",
+    "category": "blocks"
+  },
+  "ancient_oak_twig": {
+    "text": "Tunn kvist (4 px) längst ut i kronan och på rötterna; okrossbar.",
+    "category": "blocks"
+  },
+  "ancient_oak_leaves": {
+    "text": "Löv på den uråldriga eken som aldrig vissnar; okrossbara.",
+    "category": "blocks"
+  },
+  "offering_altar": {
+    "text": "Stenaltare i den ihåliga eken. Visar ett föremål; en Giant Antler startar ritualen som ger ett mytiskt föremål.",
+    "category": "blocks"
+  },
+  "thunderstone": {
+    "text": "Åskvigg, mytisk stenyxa från [[offering_altar]]: 3000 hållbarhet, bästa huggningen, blixt mot monster (1 på 8), blixtimmunitet.",
+    "category": "tools"
+  },
+  "mistletoe_charm": {
+    "text": "Mytisk, från [[offering_altar]]: långsam läkning och giftimmunitet i snabbraden eller andra handen.",
+    "category": "tools"
+  },
+  "ancient_amber": {
+    "text": "Mytisk bärnsten med insekt, från [[offering_altar]]: lyser i handen, vilda djur märker dig inte när du smyger.",
+    "category": "tools"
+  },
+  "heart_of_the_oak": {
+    "text": "Mytisk, från [[offering_altar]]: växer saplings direkt (30 s nedkylning) och ger dubbel ved vid huggning.",
+    "category": "tools"
+  },
+  "antler_crown": {
+    "text": "Mytisk hjälm från [[offering_altar]]: mörkerseende, djur märker dig först på 3 blocks håll.",
+    "category": "tools"
+  },
+  "structure:ancient_oak": {
+    "text": "Jätteek med ihålig stam (okrossbar). Inne står Offering Altar: offra en Giant Antler för ett mytiskt föremål.",
+    "icon": "mechanical:offering_altar",
+    "name": "Ancient Oak"
+  },
+  "entity:tribesperson": {
+    "text": "Stenåldersmänniska med roll (Hunter, Gatherer, Fisher, Woodcutter, Elder). Lever i läger eller jaktlag, despawnar aldrig. Elder byteshandlar. Slår du en blir gruppen arg en dag; dödar du en är de fiender för alltid."
+  },
+  "structure:tribe_camp": {
+    "name": "Tribe Camp",
+    "text": "Läger med brinnande Campfire, 2–3 hudtält, Drying Rack och 3–5 stenåldersmänniskor (Elder, Gatherers, Woodcutters, Fishers).",
+    "icon": "minecraft:campfire"
+  },
+  "structure:hunting_band": {
+    "name": "Hunting Band",
+    "text": "2–3 Hunters som strövar i skogen tillsammans och jagar vilt. Inga block.",
+    "icon": "mechanical:flint_spear"
+  },
+  "squirrel_pelt": {
+    "text": "Litet ekorrskinn från Squirrel. 4 skinn + Twine → Raw Hide.",
+    "category": "wildlife"
+  },
+  "giant_antler": {
+    "text": "Jättehorn från Giant Deer (episk). Offras vid [[offering_altar]] i Ancient Oak för ett mytiskt föremål.",
+    "category": "wildlife"
+  },
+  "entity:squirrel": {
+    "text": "Skygg ekorre som klättrar upp i träd när den blir skrämd. Ger Squirrel Pelt."
+  },
+  "entity:hedgehog": {
+    "text": "Nattaktiv igelkott som rullar ihop sig i stället för att fly och sticker den som slår med bar hand."
+  },
+  "entity:badger": {
+    "text": "Grävling i sluttande skog. Flyr, men biter hårt om den skadas eller trängs."
+  },
+  "entity:giant_deer": {
+    "text": "Sällsynt miniboss med skovelhorn, 120 hp. Anfaller, blöder och flyr först vid 25 % hp. Ger alltid en Giant Antler."
   }
 }

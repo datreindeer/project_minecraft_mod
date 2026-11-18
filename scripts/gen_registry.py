@@ -625,6 +625,7 @@ CATS = [
     ("tools", "Verktyg"), ("materials", "Material"), ("food", "Mat"), ("blocks", "Block"),
     ("wildlife", "Från djur"), ("foraging", "Plocka"), ("changed", "Ändrat i vanilla"),
     ("removed", "Borttaget från vanilla"), ("vanilla", "Vanilla i recept"),
+    ("creatures", "Varelser"), ("structures", "Strukturer"),
 ]
 TOOL_TAGS = ("axes", "pickaxes", "shovels", "hoes", "swords", "spears")
 
@@ -642,6 +643,80 @@ def guess_category(item_id, is_block, tool_ids):
     if re.search(r"hide|pelt|sinew|antler|lard|tusk|horn|bear_|wool_thread|^whole_|fish_bones|feather|claw|_fat$", p):
         return "wildlife"
     return "materials"
+
+
+# ---------------------------------------------------------------- creatures and structures (worldgen)
+
+def biome_text(b):
+    """Biome filter of a biome modifier as readable text."""
+    if isinstance(b, dict):
+        vals = b.get("values") or b.get("biomes") or []
+        return ", ".join(biome_text(v) for v in (vals if isinstance(vals, list) else [vals]))
+    if isinstance(b, list):
+        return ", ".join(biome_text(v) for v in b)
+    b = str(b)
+    if b.startswith("#"):
+        return "alla " + b.split(":")[-1].removeprefix("is_").replace("_", " ")
+    return b.split(":")[-1].replace("_", " ")
+
+
+def biome_modifiers():
+    folder = os.path.join(RES, "data", MOD, "neoforge", "biome_modifier")
+    out = []
+    for f in sorted(glob.glob(os.path.join(folder, "*.json"))):
+        try:
+            with open(f, encoding="utf-8") as fh:
+                out.append(json.load(fh))
+        except Exception as e:
+            warn(f"kan inte läsa {os.path.basename(f)}: {e}")
+    return out
+
+
+def worldgen_entries(notes):
+    """Mod creatures (entities with a spawn egg) and structures (custom Java features), with where they appear."""
+    mods = biome_modifiers()
+    out = []
+    for key, name in MOD_LANG.items():
+        m = re.match(r"entity\.mechanical\.([a-z0-9_]+)$", key)
+        if not m or f"item.mechanical.{m.group(1)}_spawn_egg" not in MOD_LANG:
+            continue  # carcasses, falling trees ... have no egg
+        eid = m.group(1)
+        where = []
+        for bm in mods:
+            if bm.get("type") != "neoforge:add_spawns":
+                continue
+            spawners = bm.get("spawners", [])
+            for sp in spawners if isinstance(spawners, list) else [spawners]:
+                if sp.get("type") == f"{MOD}:{eid}":
+                    where.append(f"{biome_text(bm.get('biomes'))} (vikt {sp.get('weight', '?')})")
+        e = {"id": f"entity:{eid}", "name": name, "cats": ["creatures"], "kind": "entity",
+             "info": "; ".join(where) if where else "Spawnar inte av sig själv (strukturer, ritualer eller spawn egg)."}
+        e["img"] = picture(f"{MOD}:{eid}_spawn_egg")
+        out.append(e)
+    feature_dir = os.path.join(RES, "data", MOD, "worldgen", "feature")
+    for f in sorted(glob.glob(os.path.join(feature_dir, "*.json"))):
+        name = os.path.basename(f)[:-5]
+        try:
+            with open(f, encoding="utf-8") as fh:
+                ftype = json.load(fh).get("type", "")
+        except Exception:
+            continue
+        if not ftype.startswith(MOD + ":"):
+            continue  # plain block/tree features (bushes, trees) are not structures
+        placed = read_json(f"data/{MOD}/worldgen/placed_feature/{name}.json") or {}
+        rarity = next((pm.get("chance") for pm in placed.get("placement", []) if pm.get("type") == "minecraft:rarity_filter"), None)
+        biomes = [biome_text(bm.get("biomes")) for bm in mods
+                  if bm.get("type") == "neoforge:add_features" and f"{MOD}:{name}" in json.dumps(bm.get("features"))]
+        info = ", ".join(biomes) or "okänd plats"
+        if rarity:
+            info += f"; ungefär 1 på {rarity} chunks"
+        n = notes.get(f"structure:{name}", {})
+        e = {"id": f"structure:{name}", "name": n.get("name") or name.replace("_", " ").title(), "cats": ["structures"],
+             "kind": "structure", "info": info}
+        if n.get("icon"):
+            e["img"] = picture(n["icon"])
+        out.append(e)
+    return out
 
 
 # ---------------------------------------------------------------- main
@@ -732,6 +807,8 @@ def main():
     for rid in ids:
         add(rid, [guess_category(rid, "block" in ids[rid], tool_ids)])
     for rid, n in notes.items():
+        if rid.startswith(("entity:", "structure:")):
+            continue  # worldgen entries, added below
         if n.get("vanilla") or not rid.startswith(MOD + ":"):
             add(rid, ["changed"])
     for rid in OVERRIDDEN:
@@ -762,6 +839,13 @@ def main():
 
     for e in entries.values():
         e["img"] = picture(e["id"])
+    for e in worldgen_entries(notes):
+        n = notes.get(e["id"], {})
+        if n.get("text"):
+            e["note"] = n["text"]
+        if n.get("name"):
+            e["name"] = n["name"]
+        entries[e["id"]] = e
     for rec in RECIPES:  # pictures for tag members shown in slots are only needed for the first option
         for ing in ing_ids(rec):
             picture(ing["opts"][0])
@@ -920,6 +1004,8 @@ function show(id){
   const mk=makes[id]||[],us=[...new Set(uses[id]||[])];
   let h=`<div class="dh">${pic(id)}<div><h2>${esc(i.name)}</h2><div class="id">${esc(id)}</div><div class="tags">${i.cats.map(c=>`<span class="tag">${esc(catName[c]||c)}</span>`).join("")}</div></div><button id="close" aria-label="Stäng">×</button></div>`;
   if(i.note)h+=`<h3>Beskrivning</h3><div class="note">${noteHtml(i.note)}</div>`;
+  if(i.info)h+=`<h3>${i.kind==="entity"?"Var den spawnar":"Var den finns"}</h3><p class="muted">${esc(i.info)}</p>`;
+  if(i.kind){det.innerHTML=h;det.scrollTop=0;main.classList.add("open");document.getElementById("close").onclick=()=>{history.pushState("",document.title,location.pathname+location.search);show(null)};drawGrid();return}
   if(i.removedRecipes)h+=`<h3>Borttaget från vanilla</h3><p class="muted">Vanilla-receptet är borttaget (${i.removedRecipes.map(esc).join(", ")}).</p>`;
   if(i.fuel)h+=`<h3>Bränsle</h3><p class="muted">Brinner i ${fmtT(i.fuel)} i en <a href="#mechanical:kiln">Clay Kiln</a>.</p>`;
   if(id==="mechanical:kiln"&&D.fuels.length)h+=`<h3>Bränsle i Clay Kiln</h3><table>${D.fuels.map(f=>`<tr><td><a href="#${f.ing.opts[0]}">${pic(f.ing.opts[0])}${esc((f.ing.refs||[f.ing.opts[0]]).map(r=>r[0]==="#"?r:nm(r)).join(", "))}</a></td><td>${f.time?fmtT(f.time):""}</td></tr>`).join("")}</table>`;

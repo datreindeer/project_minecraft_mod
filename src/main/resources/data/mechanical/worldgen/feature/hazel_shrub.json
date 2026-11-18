@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "mechanical:hazel_shrub",
+    "properties": {
+      "half": "lower",
+      "nuts": "true"
+    }
+  }
+}

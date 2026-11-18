@@ -61,6 +61,16 @@ public abstract class WildAnimal extends Animal {
         return 1.0;
     }
 
+    /** Fraction of max health below which it bleeds (Blood). */
+    public float bleedThreshold() {
+        return 0.5F;
+    }
+
+    /** True: no blood spray on hits (and no arrow-wound bleeding) until it is below {@link #bleedThreshold()}. */
+    public boolean bloodOnlyWhenBleeding() {
+        return false;
+    }
+
     /** Antlers / tusks shown, for models that have them. */
     public boolean showsHorns() {
         return false;
@@ -68,7 +78,8 @@ public abstract class WildAnimal extends Animal {
 
     /** Head lowered for a charge (boar, stag), for models. */
     public boolean isCharging() {
-        return getTarget() != null;
+        // the target only exists server-side; MeleeAttackGoal's synced aggressive flag tells the client
+        return getTarget() != null || isAggressive();
     }
 
     public boolean isDozing() {

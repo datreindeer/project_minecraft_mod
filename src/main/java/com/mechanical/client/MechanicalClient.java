@@ -66,6 +66,28 @@ public class MechanicalClient {
                 new MooseModel(c.bakeLayer(MooseModel.LAYER)), new MooseCalfModel(c.bakeLayer(MooseCalfModel.LAYER)), 1.0F, 1.1F));
         event.registerEntityRenderer(Wildlife.REINDEER.get(), c -> new WildAnimalRenderer<>(c,
                 new ReindeerModel(c.bakeLayer(ReindeerModel.LAYER)), new ReindeerCalfModel(c.bakeLayer(ReindeerCalfModel.LAYER)), 1.0F, 0.75F));
+        // small forest animals: the young are the adult model scaled down
+        event.registerEntityRenderer(Wildlife.SQUIRREL.get(), c -> {
+            SquirrelModel model = new SquirrelModel(c.bakeLayer(SquirrelModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.2F);
+        });
+        event.registerEntityRenderer(Wildlife.HEDGEHOG.get(), c -> {
+            HedgehogModel model = new HedgehogModel(c.bakeLayer(HedgehogModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.25F);
+        });
+        event.registerEntityRenderer(Wildlife.BADGER.get(), c -> {
+            BadgerModel model = new BadgerModel(c.bakeLayer(BadgerModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.55F, 0.45F);
+        });
+        event.registerEntityRenderer(Wildlife.GIANT_DEER.get(), c -> {
+            GiantDeerModel model = new GiantDeerModel(c.bakeLayer(GiantDeerModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.5F, 1.2F) {
+                {
+                    addLayer(new com.mechanical.client.wildlife.AngryEyesLayer(this,
+                            net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/giant_deer_eyes.png")));
+                }
+            };
+        });
     }
 
     @SubscribeEvent
@@ -90,11 +112,17 @@ public class MechanicalClient {
         event.registerLayerDefinition(MooseCalfModel.LAYER, MooseCalfModel::createBodyLayer);
         event.registerLayerDefinition(ReindeerModel.LAYER, ReindeerModel::createBodyLayer);
         event.registerLayerDefinition(ReindeerCalfModel.LAYER, ReindeerCalfModel::createBodyLayer);
+        event.registerLayerDefinition(SquirrelModel.LAYER, SquirrelModel::createBodyLayer);
+        event.registerLayerDefinition(HedgehogModel.LAYER, HedgehogModel::createBodyLayer);
+        event.registerLayerDefinition(BadgerModel.LAYER, BadgerModel::createBodyLayer);
+        event.registerLayerDefinition(GiantDeerModel.LAYER, GiantDeerModel::createBodyLayer);
     }
 
     /** Passes the bear's rearing amount to its model. */
     @SubscribeEvent
     static void renderStateModifiers(net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent event) {
         BrownBearModel.registerRenderState(event);
+        SquirrelModel.registerRenderState(event);
+        HedgehogModel.registerRenderState(event);
     }
 }

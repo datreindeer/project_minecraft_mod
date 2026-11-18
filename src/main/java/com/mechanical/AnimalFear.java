@@ -37,6 +37,7 @@ public final class AnimalFear {
 
     static boolean isWild(LivingEntity entity) {
         if (entity instanceof com.mechanical.wildlife.BrownBear) return false; // bears never flee or panic
+        if (entity instanceof com.mechanical.wildlife.GiantDeer deer && !deer.isBroken()) return false; // until down to a quarter
         if (!(entity instanceof Animal animal)) return false;
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;
         if (animal instanceof AbstractHorse horse && horse.isTamed()) return false;
@@ -94,12 +95,12 @@ public final class AnimalFear {
             if (nearest == null || nearest.isCreative() || nearest.isSpectator()) return null;
             double dist = mob.distanceTo(nearest);
             double skittish = mob instanceof com.mechanical.wildlife.WildAnimal wild ? wild.fearMultiplier() : 1.0;
-            if (dist > noticeRange(nearest) * skittish) return null;
+            if (dist > AncientOak.noticeRange(nearest, noticeRange(nearest) * skittish)) return null;
             return dist <= NOTICE_SNEAK || mob.hasLineOfSight(nearest) ? nearest : null;
         }
 
         private Vec3 findThreat() {
-            if (!isWild(mob)) return null;
+            if (!isWild(mob) || AncientOak.isCalm(mob)) return null; // calmed by the Offering Altar ritual
             if (mob.getTarget() != null) {
                 // a hurt, bleeding animal gives up the fight and runs for its life
                 if (!Blood.isBleeding(mob)) return null;

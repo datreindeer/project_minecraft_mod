@@ -124,7 +124,7 @@ public class BrownBear extends WildAnimal {
 
     @Override
     public boolean isCharging() {
-        return getTarget() != null && !isBaby();
+        return (getTarget() != null || isAggressive()) && !isBaby();
     }
 
     @Override

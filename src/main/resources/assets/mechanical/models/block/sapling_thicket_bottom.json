@@ -1,0 +1,6 @@
+{
+  "parent": "mechanical:block/shrub",
+  "textures": {
+    "cross": "mechanical:block/sapling_thicket_bottom"
+  }
+}

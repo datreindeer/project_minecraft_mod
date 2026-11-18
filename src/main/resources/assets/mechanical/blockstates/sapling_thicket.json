@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "mechanical:block/sapling_thicket_bottom"
+    },
+    "half=upper": {
+      "model": "mechanical:block/sapling_thicket_top"
+    }
+  }
+}

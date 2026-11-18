@@ -95,7 +95,7 @@ w(D / "mechanical/neoforge/biome_modifier/add_loose_rocks.json", {
 # ---- tags ----
 w(D / "mechanical/tags/item/flint_tool_materials.json", {"values": ["minecraft:flint"]})
 w(D / "mechanical/tags/item/rock_chunks.json", {"values": [f"mechanical:{v}_chunk" for v in ["stone", "granite", "diorite", "andesite"]]})
-for tag, item in [("pickaxes", ["flint_pickaxe", "crude_stone_pickaxe"]), ("axes", ["flint_axe", "crude_stone_axe"]), ("shovels", "flint_shovel"), ("hoes", "flint_hoe"), ("swords", ["flint_knife", "iron_knife"])]:
+for tag, item in [("pickaxes", ["flint_pickaxe", "crude_stone_pickaxe"]), ("axes", ["flint_axe", "crude_stone_axe", "thunderstone"]), ("shovels", "flint_shovel"), ("hoes", "flint_hoe"), ("swords", ["flint_knife", "iron_knife"])]:
     w(D / f"minecraft/tags/item/{tag}.json", {"values": [f"mechanical:{i}" for i in (item if isinstance(item, list) else [item])]})
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 
@@ -262,7 +262,8 @@ BUSHES = {"raspberry": "raspberries", "blueberry": "blueberries", "lingonberry":
 MUSHROOMS = ["chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball"]
 w(D / "mechanical/tags/item/basket_storable.json", {"values": ["minecraft:apple", "minecraft:golden_apple", "minecraft:sweet_berries",
     "minecraft:glow_berries", "minecraft:melon_slice", "minecraft:chorus_fruit", "minecraft:leather", "minecraft:rabbit_hide",
-    "mechanical:raw_hide", "mechanical:scraped_hide", "minecraft:brown_mushroom", "minecraft:red_mushroom", "mechanical:roasted_mushrooms"]
+    "mechanical:raw_hide", "mechanical:scraped_hide", "minecraft:brown_mushroom", "minecraft:red_mushroom", "mechanical:roasted_mushrooms",
+    "mechanical:hazelnuts", "mechanical:roasted_hazelnuts", "mechanical:juniper_berries"]
     + [f"mechanical:{b}" for b in BUSHES.values()] + [f"mechanical:{m}" for m in MUSHROOMS]})
 
 # ---- foraging: wild berry bushes (rare, regrow after picking) and mushrooms (spread slowly in shade) ----
@@ -495,7 +496,7 @@ w(D / "minecraft/tags/item/enchantable/durability.json", {"values": ["mechanical
 w(D / "minecraft/tags/item/arrows.json", {"values": ["mechanical:bone_arrow", "mechanical:barbed_arrow", "mechanical:fire_arrow"]})
 w(D / "mechanical/tags/item/knives.json", {"values": ["mechanical:flint_knife", "mechanical:iron_knife", "mechanical:tusk_dagger"]})
 for tag, piece in [("head_armor", "fur_hood"), ("chest_armor", "fur_coat"), ("leg_armor", "fur_leggings"), ("foot_armor", "fur_boots")]:
-    w(D / f"minecraft/tags/item/{tag}.json", {"values": [f"mechanical:{piece}"]})
+    w(D / f"minecraft/tags/item/{tag}.json", {"values": [f"mechanical:{piece}"] + (["mechanical:antler_crown"] if tag == "head_armor" else [])})
 w(D / "mechanical/tags/item/repairs_fur_armor.json", {"values": ["mechanical:bear_pelt"]})
 # fur armour: the leather piece lined with bear pelt
 w(A / "equipment/fur.json", {"layers": {"humanoid": [{"texture": "mechanical:fur"}], "humanoid_leggings": [{"texture": "mechanical:fur"}]}})

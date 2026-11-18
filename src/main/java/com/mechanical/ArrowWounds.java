@@ -70,7 +70,8 @@ public final class ArrowWounds {
             Player near = level.getNearestPlayer(animal, 48);
             AnimalFear.panic(animal, near != null ? near.position() : animal.position());
         }
-        if (animal.tickCount % 10 == 0) {
+        boolean hidesBlood = animal instanceof com.mechanical.wildlife.WildAnimal wild && wild.bloodOnlyWhenBleeding() && !Blood.isBleeding(animal);
+        if (animal.tickCount % 10 == 0 && !hidesBlood) {
             int drops = (int) Math.min(14, 1 + bleeding / 80) * stuck.size();
             Blood.spray(level, animal.getX(), animal.getY() + animal.getBbHeight() * 0.6, animal.getZ(), Math.min(drops, 24));
         }

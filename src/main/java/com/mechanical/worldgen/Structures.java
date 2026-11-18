@@ -24,6 +24,7 @@ public final class Structures {
         FEATURE_TYPES.register("flint_quarry", () -> FlintQuarry.CODEC);
         FEATURE_TYPES.register("mammoth_bone_hut", () -> MammothBoneHut.CODEC);
         FEATURE_TYPES.register("hermits_hut", () -> HermitsHut.CODEC);
+        FEATURE_TYPES.register("ancient_oak", () -> AncientOakFeature.CODEC);
     }
 
     public static void init() {}

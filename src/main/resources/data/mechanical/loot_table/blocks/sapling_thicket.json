@@ -1,0 +1,78 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:any_of",
+        "terms": [
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:sapling_thicket",
+                "state": {
+                  "half": "lower"
+                }
+              },
+              {
+                "type": "minecraft:location_check",
+                "offsetY": 1,
+                "predicate": {
+                  "block": {
+                    "blocks": "mechanical:sapling_thicket",
+                    "state": {
+                      "half": "upper"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "minecraft:all_of",
+            "terms": [
+              {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:sapling_thicket",
+                "state": {
+                  "half": "upper"
+                }
+              },
+              {
+                "type": "minecraft:location_check",
+                "offsetY": -1,
+                "predicate": {
+                  "block": {
+                    "blocks": "mechanical:sapling_thicket",
+                    "state": {
+                      "half": "lower"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "random_sequence": "mechanical:blocks/sapling_thicket"
+}

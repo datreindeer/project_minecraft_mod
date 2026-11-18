@@ -43,7 +43,7 @@ public final class DynamicLights {
     }
 
     private static int emission(ItemStack stack) {
-        return stack.getItem() instanceof BlockItem block ? block.getBlock().defaultBlockState().getLightEmission() : 0;
+        return stack.getItem() instanceof BlockItem block ? block.getBlock().defaultBlockState().getLightEmission() : com.mechanical.AncientOak.lightOf(stack);
     }
 
     private static int emission(Entity entity) {

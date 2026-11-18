@@ -46,6 +46,17 @@ public final class Wildlife {
     public static final DeferredHolder<EntityType<?>, EntityType<Reindeer>> REINDEER = ENTITY_TYPES.registerEntityType(
             "reindeer", Reindeer::new, MobCategory.CREATURE, b -> b.sized(0.95F, 1.5F).clientTrackingRange(10));
 
+    // small forest animals
+    public static final DeferredHolder<EntityType<?>, EntityType<Squirrel>> SQUIRREL = ENTITY_TYPES.registerEntityType(
+            "squirrel", Squirrel::new, MobCategory.CREATURE, b -> b.sized(0.4F, 0.45F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Hedgehog>> HEDGEHOG = ENTITY_TYPES.registerEntityType(
+            "hedgehog", Hedgehog::new, MobCategory.CREATURE, b -> b.sized(0.45F, 0.4F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Badger>> BADGER = ENTITY_TYPES.registerEntityType(
+            "badger", Badger::new, MobCategory.CREATURE, b -> b.sized(0.7F, 0.6F).clientTrackingRange(10));
+    // rare mini-boss
+    public static final DeferredHolder<EntityType<?>, EntityType<GiantDeer>> GIANT_DEER = ENTITY_TYPES.registerEntityType(
+            "giant_deer", GiantDeer::new, MobCategory.CREATURE, b -> b.sized(1.6F, 2.4F).clientTrackingRange(12));
+
     // what they give when butchered (see Butchery)
     public static final DeferredItem<Item> VENISON_SCRAPS = food("venison_scraps", 1, 0.1F);
     public static final DeferredItem<Item> COOKED_VENISON_SCRAPS = food("cooked_venison_scraps", 3, 0.8F);
@@ -57,6 +68,10 @@ public final class Wildlife {
     public static final DeferredItem<Item> BEAR_PELT = ITEMS.registerSimpleItem("bear_pelt");
     public static final DeferredItem<Item> BEAR_FAT = ITEMS.registerSimpleItem("bear_fat");
     public static final DeferredItem<Item> BEAR_CLAW = ITEMS.registerSimpleItem("bear_claw");
+    public static final DeferredItem<Item> SQUIRREL_PELT = ITEMS.registerSimpleItem("squirrel_pelt");
+    /** Always comes off a butchered giant deer; an altar offering. */
+    public static final DeferredItem<Item> GIANT_ANTLER = ITEMS.registerSimpleItem("giant_antler",
+            p -> p.rarity(net.minecraft.world.item.Rarity.EPIC).stacksTo(16));
 
     public static final DeferredItem<SpawnEggItem> ROE_DEER_SPAWN_EGG = egg("roe_deer_spawn_egg", ROE_DEER);
     public static final DeferredItem<SpawnEggItem> RED_DEER_SPAWN_EGG = egg("red_deer_spawn_egg", RED_DEER);
@@ -69,6 +84,10 @@ public final class Wildlife {
     public static final DeferredItem<SpawnEggItem> BROWN_BEAR_SPAWN_EGG = egg("brown_bear_spawn_egg", BROWN_BEAR);
     public static final DeferredItem<SpawnEggItem> MOOSE_SPAWN_EGG = egg("moose_spawn_egg", MOOSE);
     public static final DeferredItem<SpawnEggItem> REINDEER_SPAWN_EGG = egg("reindeer_spawn_egg", REINDEER);
+    public static final DeferredItem<SpawnEggItem> SQUIRREL_SPAWN_EGG = egg("squirrel_spawn_egg", SQUIRREL);
+    public static final DeferredItem<SpawnEggItem> HEDGEHOG_SPAWN_EGG = egg("hedgehog_spawn_egg", HEDGEHOG);
+    public static final DeferredItem<SpawnEggItem> BADGER_SPAWN_EGG = egg("badger_spawn_egg", BADGER);
+    public static final DeferredItem<SpawnEggItem> GIANT_DEER_SPAWN_EGG = egg("giant_deer_spawn_egg", GIANT_DEER);
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
         return ITEMS.registerSimpleItem(name, p -> p.food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build()));
@@ -94,18 +113,26 @@ public final class Wildlife {
         event.put(MOOSE.get(), Moose.createAttributes().build());
         event.put(BROWN_BEAR.get(), BrownBear.createAttributes().build());
         event.put(REINDEER.get(), Reindeer.createAttributes().build());
+        event.put(SQUIRREL.get(), Squirrel.createAttributes().build());
+        event.put(HEDGEHOG.get(), Hedgehog.createAttributes().build());
+        event.put(BADGER.get(), Badger.createAttributes().build());
+        event.put(GIANT_DEER.get(), GiantDeer.createAttributes().build());
     }
 
     @SubscribeEvent
     static void spawnRules(RegisterSpawnPlacementsEvent event) {
         for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get(),
-                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get()}) {
+                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get(), SQUIRREL.get(), HEDGEHOG.get(), GIANT_DEER.get()}) {
             register(event, type);
         }
         // bears only turn up near wild berry bushes
         event.register(BROWN_BEAR.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (type, level, reason, pos, random) -> Animal.checkAnimalSpawnRules(type, level, reason, pos, random)
                         && com.mechanical.Foraging.nearBerryBush(level, pos, 16),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // badgers dig their setts into slopes
+        event.register(BADGER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (type, level, reason, pos, random) -> Animal.checkAnimalSpawnRules(type, level, reason, pos, random) && Badger.onSlope(level, pos),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule
         event.register(MOUFLON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,

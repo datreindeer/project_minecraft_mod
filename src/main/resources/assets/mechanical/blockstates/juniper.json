@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "berries=false": {
+      "model": "mechanical:block/juniper"
+    },
+    "berries=true": {
+      "model": "mechanical:block/juniper_berries"
+    }
+  }
+}

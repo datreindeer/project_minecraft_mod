@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mechanical:block/offering_altar"
+    },
+    "active=true": {
+      "model": "mechanical:block/offering_altar"
+    }
+  }
+}

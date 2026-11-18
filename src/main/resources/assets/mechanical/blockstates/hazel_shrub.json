@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "half=lower,nuts=false": {
+      "model": "mechanical:block/hazel_shrub_bottom"
+    },
+    "half=lower,nuts=true": {
+      "model": "mechanical:block/hazel_shrub_bottom_nuts"
+    },
+    "half=upper,nuts=false": {
+      "model": "mechanical:block/hazel_shrub_top"
+    },
+    "half=upper,nuts=true": {
+      "model": "mechanical:block/hazel_shrub_top_nuts"
+    }
+  }
+}

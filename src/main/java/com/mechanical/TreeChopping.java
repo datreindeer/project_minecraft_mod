@@ -69,7 +69,7 @@ public final class TreeChopping {
 
         if (state.getBlock() instanceof FallenLogBlock && axe) {
             take(event, InteractionResult.CONSUME);
-            if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos, state, stack)) finishFallenLog(server, pos, state, stack);
+            if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos, state, stack)) finishFallenLog(server, pos, state, stack, player);
         } else if (state.getBlock() instanceof StumpBlock) {
             int log = state.getValue(StumpBlock.LOG);
             String wood = roughLogWood(stack);
@@ -82,7 +82,7 @@ public final class TreeChopping {
                 }
             } else if (log > 0 && axe) {
                 take(event, InteractionResult.CONSUME);
-                if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos.above(), state, stack)) splitOnStump(server, pos, state, stack);
+                if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos.above(), state, stack)) splitOnStump(server, pos, state, stack, player);
             } else if (log > 0 && stack.isEmpty()) { // take the log back off
                 take(event, InteractionResult.SUCCESS);
                 if (!level.isClientSide()) {
@@ -130,7 +130,8 @@ public final class TreeChopping {
         return true;
     }
 
-    private static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe) {
+    private static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {
+        int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
         int stage = state.getValue(FallenLogBlock.STAGE);
         RandomSource random = level.getRandom();
         String wood = ((FallenLogBlock) state.getBlock()).wood();
@@ -138,7 +139,7 @@ public final class TreeChopping {
         else if (stage < FallenLogBlock.LAST_STAGE) {
             // hewn thinner: chips of sticks, and sometimes a usable piece of rough log
             Block.popResource(level, pos, new ItemStack(Items.STICK, 1 + random.nextInt(2)));
-            if (random.nextFloat() < successChance(axe) * 0.5F) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get()));
+            if (random.nextFloat() < successChance(axe) * 0.5F) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
         }
         if (stage < FallenLogBlock.LAST_STAGE) {
             level.setBlock(pos, state.setValue(FallenLogBlock.STAGE, stage + 1), Block.UPDATE_ALL);
@@ -146,20 +147,21 @@ public final class TreeChopping {
         }
         level.removeBlock(pos, false);
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
-        if (random.nextFloat() < successChance(axe)) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get()));
+        if (random.nextFloat() < successChance(axe)) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
         else Block.popResource(level, pos, new ItemStack(Items.STICK, 2 + random.nextInt(2)));
     }
 
-    private static void splitOnStump(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe) {
+    private static void splitOnStump(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {
+        int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
         RandomSource random = level.getRandom();
         String wood = Mechanical.WOODS.get(state.getValue(StumpBlock.LOG) - 1);
         level.setBlock(pos, state.setValue(StumpBlock.LOG, 0), Block.UPDATE_ALL);
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         var firewood = Mechanical.FIREWOOD.get(wood).get();
         if (random.nextFloat() < successChance(axe)) {
-            Block.popResource(level, pos.above(), new ItemStack(firewood, 2 + random.nextInt(2) + firewoodBonus(axe)));
+            Block.popResource(level, pos.above(), new ItemStack(firewood, (2 + random.nextInt(2) + firewoodBonus(axe)) * wood2));
         } else {
-            Block.popResource(level, pos.above(), new ItemStack(firewood, 1));
+            Block.popResource(level, pos.above(), new ItemStack(firewood, wood2));
             Block.popResource(level, pos.above(), new ItemStack(Items.STICK, 1 + random.nextInt(2)));
         }
     }

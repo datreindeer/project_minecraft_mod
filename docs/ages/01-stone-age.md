@@ -264,6 +264,19 @@ med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta
   - Birch Forest och Taiga behåller sina vanliga träd. Vanilla-träden är kvar överallt.
 - **Twigs:** små kvistar på marken i skog och taiga. Slå sönder → 1 Stick. Inget block att placera.
 
+### Skogens undervegetation
+Skogarna har fått buskar och sly, i grupper. Inget har kollision (man kan gå igenom), inget kan planteras än.
+
+| Block | Var | Ger |
+|---|---|---|
+| **Hazel Shrub** (hassel, 2 block) | Lövskog, björkskog, blomsterskog | Högerklicka när nötterna syns: 1–2 Hazelnuts (växer tillbaka på ca 23 min i ljus). Bryts: 1–3 Sticks, ibland en nöt |
+| **Juniper** (en) | Taiga, snötaiga, gammal taiga, blåsiga berg | Högerklicka: 1–3 Juniper Berries (tillbaka på ca 14 min). Bryts: 1–2 Sticks |
+| **Bramble** (snår) | Lövskog, mörk skog, ibland slätt | Saktar ner och sticks (1 skada ibland, inte om man smyger). Plant Fibre, ibland en Stick |
+| **Undergrowth** (ris, ormbunkar) | Tätt i alla lövskogar | Halv chans till Plant Fibre |
+| **Sapling Thicket** (sly, 2 block) | Lövskog, björkskog | 2–3 Sticks |
+
+Mat: **Hazelnuts** (2), **Roasted Hazelnuts** (4, rostas på Campfire), **Juniper Berries** (1). Nötter och bär får plats i Bark Basket.
+
 ### Bearbeta stockar (håll in högerklick med yxa)
 Ett tungt hugg var 0,45:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
 (Flint Axe / Crude Stone Axe 3, Stone Axe 2, Iron Axe 2) och sliter yxan 1.
@@ -361,6 +374,22 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
 - **Kräver Tusk Dagger eller Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
   Omgång 1: **Bear Pelt** + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
 
+### Småvilt i skogen
+| Djur | Var | Beteende | Styckning |
+|---|---|---|---|
+| **Squirrel** | Skog, björkskog, dark forest, taiga (1–2) | Mycket skygg. Skrämd springer den till närmaste träd, **klättrar upp** i kronan, sitter där en stund och klättrar ner med huvudet först | 1 Game Meat Scraps, **Squirrel Pelt** 70 % |
+| **Hedgehog** | Skog, blomsterskog; ibland slätt och meadow | Nattaktiv. Flyr aldrig utan **rullar ihop sig** när någon kommer nära (sover hoprullad på dagen). Slår du den med bar hand sticker du dig (1 skada) | 0–1 scraps |
+| **Badger** | Skog, dark forest, taiga, i sluttningar (1–2) | Håller sig undan, men **biter hårt** (3) om den skadas eller du kommer alldeles inpå utan att smyga | 1–2 scraps, Raw Hide 35 %, Lard 40 % |
+
+**4 Squirrel Pelt + Twine → Raw Hide** (shapeless), som sedan skrapas och torkas som vanligt.
+
+### Giant Deer (miniboss)
+Megaloceros, jättehjorten: sällsynt (vikt 1), alltid ensam, i skog, taiga, slätt och meadow. Mycket större än Red Deer
+med enorma skovelhorn. **120 hp**, slag 10 med kraftig knockback, bossmätare. Anfaller spelare inom 14 block (6 om du
+smyger) och får då **röda lysande ögon**. **Blöder inte och flyr inte förrän den har 25 % hp kvar** — då börjar den blöda och flyr i panik. Kräver
+minst Tusk Dagger för att styckas: 6–9 Game Meat Scraps, 1–2 Raw Hide, 2–3 Sinew och **alltid en Giant Antler**
+(offras vid Offering Altar i Ancient Oak).
+
 ### Iron Knife
 Järnåldern, **går inte att få tag på än** (finns i creative). Snabbare (2×) och mer utbyte (1,5×) vid styckning än Flint
 Knife. Kan stycka Brown Bear. Fungerar i alla knivrecept.
@@ -438,6 +467,50 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
+
+### Ancient Oak (uråldrig ek) och Offering Altar
+En mycket sällsynt jätteek (ca 1 på 400 chunks i Forest och Dark Forest). Stammen är ca 7 block bred vid marken med
+utsvängda rotben och tjocka rötter som löper över marken. Kronan är bred och tung: 5–6 krökta huvudgrenar delar sig i
+allt tunnare grenar (stock → gren → kvist) med lövklungor i ändarna; trädet blir ca 26–30 block högt. **Hela trädet är
+förtrollat**: det går inte att bryta, flytta med kolv eller spränga, och löven vissnar aldrig. Längst ner är stammen
+**ihålig** (ett rum på ca 5×5 med öppning mellan två rotben, skorsten uppåt, svamp, spindelväv, ibland en fladdermus).
+
+Mitt i rummet står **Offering Altar**. Lägg vilket föremål som helst på altaret (högerklick), ta tillbaka med tom hand.
+Läggs en **Giant Antler** dit startar en ritual (7 s): hornet stiger och snurrar allt fortare, ljuspartiklar och löv
+virvlar in, marken pulserar och klockspel ljuder, sedan löses hornet upp i ett utbrott och **ett av fem mytiska föremål**
+(slumpvis) ligger på altaret. Under ritualen och 45 s efteråt kommer hjortar och andra fridsamma djur till trädets
+öppning och är inte rädda för dig. Altaret kan användas igen.
+
+| Mytiskt föremål | Effekt |
+|---|---|
+| **Thunderstone** (åskvigg) | Yxa: 3000 hållbarhet, modets bästa huggning (2 hugg, 95 %, +4 ved). Slag mot monster kallar ner blixten 1 gång på 8. Bäraren är immun mot blixtnedslag |
+| **Mistletoe Charm** | I snabbraden eller andra handen: 1 hälsa var 4:e sekund och immunitet mot gift |
+| **Ancient Amber** | Lyser (ljus 10) i handen; smyger du med den märker vilda djur dig aldrig |
+| **Heart of the Oak** | Högerklicka en sapling så växer den direkt (30 s nedkylning). I inventariet: dubbel ved vid huggning |
+| **Antler Crown** | Hjälm: mörkerseende utan flimmer, djur märker dig först på 3 blocks håll |
+
+De mytiska föremålens namn är **feta och tonar från skogsgrönt till guld**, och tonen skimrar i tooltipen.
+
+### Stenåldersmänniskor (Tribesperson)
+Folk som lever i läger eller strövar i jaktlag. De **despawnar aldrig**, men nya kommer heller aldrig: dör de är de borta.
+Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor, 4 varianter per roll).
+
+- **Roller:** Hunter (Crude Bow eller Flint Spear), Gatherer (Flint Knife och Bark Basket), Fisher (Crude Fishing Rod),
+  Woodcutter (Flint Axe), Elder (stav). Var och en har ett eget namn, t.ex. "Aruk the Hunter".
+- **Läger** (ca 1 på 150 chunks i skog, taiga, slätt, meadow och vid floder; plan mark, aldrig nära byar): brinnande
+  Campfire, 2–3 hudtält, Drying Rack och en sittstock. 3–5 personer: en Elder plus Gatherers, Woodcutters och Fishers
+  (bara nära vatten).
+- **Jaktlag** (ca 1 på 200 chunks i skog och taiga): 2–3 Hunters som följer en ledare.
+- **Vardag:** Hunters jagar vilda djur (inte björnar, tama djur eller bydjur) och styckar kroppen (en Bone Pile blir kvar).
+  Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters hugger på
+  stammar, stubbar och Fallen Logs utan att förstöra något och bär veden till elden. Elder håller elden vid liv.
+- **Natt:** alla samlas runt lägerelden men går aldrig in i den. Jaktlaget håller ihop där det är.
+- **Försvar:** de slår tillbaka, hjälper varandra och anfaller monster i närheten (inte creepers).
+- **Humör:** de hälsar ibland i chatten. **Slår du en blir hela gruppen arg i ungefär en speldag. Dödar du en är gruppen
+  fientlig för alltid.** **Bryter du lägrets Campfire blir de också arga** (en speldag). Verktyget faller med 10 % chans när en spelare dödar dem.
+- **Byteshandel (Elder):** 6 av 12 byten, t.ex. 6 Raw Hide → Bone Needle, 10 Flint → Flint Knife, 12 Raspberries → 4
+  Cooked Game Meat Scraps, 6 Cordage → 8 Bone Arrows, 12 Bark → 4 Twine, 3 Scraped Hide → 2 Leather, 4 Sinew + 2 Cordage →
+  Crude Bow, 3 Tusk + 2 Cordage → Tusk Dagger, 2 Antler → 3 Bone Fish Hooks. Fylls på varje morgon. Ingen handel när de är arga.
 
 ### Strukturernas loot (vanilla)
 Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,

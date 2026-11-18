@@ -79,6 +79,14 @@ public final class Butchery {
                     List.of(new Extra(Wildlife.SINEW, 0.6F, 1, 3)))),
             Map.entry(Wildlife.REINDEER.get(), new Yield(Wildlife.VENISON_SCRAPS, 2, 3, List.of(hide(0.45F)),
                     List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 2)))),
+            // small forest animals: little meat; the squirrel's pelt comes off first
+            Map.entry(Wildlife.SQUIRREL.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 1, List.of(new Extra(Wildlife.SQUIRREL_PELT, 0.7F, 1, 1)), List.of())),
+            Map.entry(Wildlife.HEDGEHOG.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 0, 1, List.of(), List.of())),
+            Map.entry(Wildlife.BADGER.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 2, List.of(hide(0.35F)),
+                    List.of(new Extra(Wildlife.LARD, 0.4F, 1, 1)))),
+            // giant deer: a mountain of meat, and always the giant antler (exactly one: chance 1 is never scaled into a count)
+            Map.entry(Wildlife.GIANT_DEER.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 6, 9, List.of(hide(1.0F), hide(0.6F)),
+                    List.of(new Extra(Wildlife.GIANT_ANTLER, 1.0F, 1, 1), new Extra(Wildlife.SINEW, 0.8F, 2, 3)))),
             Map.entry(EntityTypes.RABBIT, new Yield(Mechanical.RABBIT_SCRAPS, 1, 1,
                     List.of(new Extra(() -> Items.RABBIT_HIDE, 0.3F, 1, 1)), List.of(new Extra(() -> Items.RABBIT_FOOT, 0.05F, 1, 1)))));
     }
@@ -123,7 +131,7 @@ public final class Butchery {
 
     /** Knife tier needed to butcher this animal at all (thick hides like the bear's need iron). */
     public static int requiredKnifeTier(EntityType<?> animal) {
-        return animal == Wildlife.BROWN_BEAR.get() ? KnifeItem.TUSK : KnifeItem.FLINT;
+        return animal == Wildlife.BROWN_BEAR.get() || animal == Wildlife.GIANT_DEER.get() ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 
     /** First pass: wool / hide / feathers. {@code yieldMultiplier} comes from the knife (flint = 1). */

@@ -38,13 +38,18 @@ public final class Blood {
     }
 
     public static boolean isBleeding(LivingEntity entity) {
-        return entity.isAlive() && (entity.getHealth() < entity.getMaxHealth() * BLEED_BELOW || ArrowWounds.count(entity) > 0);
+        if (entity instanceof com.mechanical.wildlife.WildAnimal wild && wild.bloodOnlyWhenBleeding()) {
+            return entity.isAlive() && entity.getHealth() < entity.getMaxHealth() * wild.bleedThreshold();
+        }
+        float below = entity instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
+        return entity.isAlive() && (entity.getHealth() < entity.getMaxHealth() * below || ArrowWounds.count(entity) > 0);
     }
 
     @SubscribeEvent
     static void onHurt(LivingDamageEvent.Post event) {
         LivingEntity entity = event.getEntity();
         if (!bleeds(entity) || !(entity.level() instanceof ServerLevel level)) return;
+        if (entity instanceof com.mechanical.wildlife.WildAnimal wild && wild.bloodOnlyWhenBleeding() && !isBleeding(entity)) return;
         int amount = Math.min(20, 3 + Math.round(event.getOriginalDamage() * 3));
         spray(level, entity.getX(), entity.getY() + entity.getBbHeight() * 0.6, entity.getZ(), amount);
     }
