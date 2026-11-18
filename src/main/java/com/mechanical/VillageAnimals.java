@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -33,12 +32,12 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 /**
  * Farm animals no longer spawn in the wild (biome modifier); they live in villages. The first time a player comes near
- * a village its bell gets a pen nearby (7x7 fence ring with a gate) with a few animals; after that the village slowly
- * restocks the pen whenever few farm animals are left around it. The pen's position is remembered on the bell.
+ * a village its bell gets a pen nearby (7x7 fence ring with a gate) with a few animals, once: they never despawn, but
+ * no more come, so breed them or lose them. The pen's position is remembered on the bell.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class VillageAnimals {
-    private static final int CHECK_TICKS = 600, VILLAGE_RANGE = 48, STOCK_RANGE = 32, STOCK_TARGET = 5, PEN_RADIUS = 3;
+    private static final int CHECK_TICKS = 600, VILLAGE_RANGE = 48, STOCK_COUNT = 4, PEN_RADIUS = 3;
     /** Not visited yet. */
     private static final long NONE = 0L;
     /** Visited, but no room for a pen: animals are put near the bell instead. */
@@ -65,29 +64,17 @@ public final class VillageAnimals {
         }
     }
 
+    /** First visit only: a pen with a few animals (or animals by the bell if there is no room). Nothing more comes after. */
     private static void tend(ServerLevel level, BlockPos bell) {
         BlockEntity holder = level.getBlockEntity(bell);
-        if (holder == null) return;
-        long pen = holder.getData(PEN);
+        if (holder == null || holder.getData(PEN) != NONE) return;
         RandomSource random = level.getRandom();
-        if (pen == NONE) {
-            BlockPos center = findPenSpot(level, bell, random);
-            if (center != null) buildPen(level, center, random);
-            pen = center != null ? center.asLong() : NO_PEN;
-            holder.setData(PEN, pen);
-            holder.setChanged();
-            if (center != null) {
-                for (int i = 0; i < 3; i++) spawnAnimal(level, center, random);
-                return;
-            }
-        }
-        BlockPos home = pen == NO_PEN ? bell : BlockPos.of(pen);
-        int animals = level.getEntitiesOfClass(Animal.class, new AABB(home).inflate(STOCK_RANGE), VillageAnimals::isFarmAnimal).size();
-        if (animals < STOCK_TARGET) spawnAnimal(level, home, random);
-    }
-
-    private static boolean isFarmAnimal(Animal animal) {
-        return STOCK.stream().anyMatch(t -> t.get() == animal.getType()) || animal.getType() == EntityTypes.HORSE;
+        BlockPos center = findPenSpot(level, bell, random);
+        if (center != null) buildPen(level, center, random);
+        holder.setData(PEN, center != null ? center.asLong() : NO_PEN);
+        holder.setChanged();
+        BlockPos home = center != null ? center : bell;
+        for (int i = 0; i < STOCK_COUNT; i++) spawnAnimal(level, home, random);
     }
 
     /** A flat, dry, empty 7x7 patch of ground 8-20 blocks from the bell, off the paths. */
@@ -151,6 +138,7 @@ public final class VillageAnimals {
                 home.offset(random.nextInt(spread * 2 + 1) - spread, 0, random.nextInt(spread * 2 + 1) - spread));
         animal.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, random.nextFloat() * 360, 0);
         animal.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+        animal.setPersistenceRequired();
         level.addFreshEntity(animal);
     }
 

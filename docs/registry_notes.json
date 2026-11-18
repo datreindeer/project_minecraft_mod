@@ -238,16 +238,16 @@
     "text": "Fletching Table: [[tallow]] + Arrow + [[twine]] → 1 st. Sätter målet i brand."
   },
   "fur_hood": {
-    "text": "Skydd 1. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+    "text": "Sys i [[armor_station]] av Bear Pelt + Sinew med [[bone_needle]]. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
   },
   "fur_coat": {
-    "text": "Skydd 3. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+    "text": "Sys i [[armor_station]] av Bear Pelt + Sinew med [[bone_needle]]. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
   },
   "fur_leggings": {
-    "text": "Skydd 2. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+    "text": "Sys i [[armor_station]] av Bear Pelt + Sinew med [[bone_needle]]. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
   },
   "fur_boots": {
-    "text": "Skydd 1. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+    "text": "Sys i [[armor_station]] av Bear Pelt + Sinew med [[bone_needle]]. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
   },
   "tool_station": {
     "text": "Bygger verktyg av huvud + bindning + skaft. **Högerklicka för att öppna.**\nTill vänster listas upplåsta verktyg (ett verktyg låses upp första gången man har dess material, sparas per spelare även efter döden). Verktyg där man har alla delar är upplysta; klick flyttar delarna till platserna. Scrolla med mushjulet."
@@ -552,7 +552,7 @@
     "vanilla": true
   },
   "minecraft:cow_spawn_egg": {
-    "text": "Cow, Sheep, Pig, Chicken, Horse, Donkey och Llama spawnar inte i naturen. Byar får en hage (7×7) med 3 djur första gången en spelare kommer nära, och fylls på var 30:e sekund. Vilda djur lämnar en **Carcass** som styckas med kniv i stället för loot.",
+    "text": "Cow, Sheep, Pig, Chicken, Horse, Donkey och Llama spawnar inte i naturen. Hagen får 4 djur en gång; de despawnar aldrig men det kommer inga fler. Vilda djur lämnar en **Carcass** som styckas med kniv i stället för loot.",
     "vanilla": true,
     "name": "Farm-djur"
   },
@@ -575,5 +575,13 @@
   "eggshell": {
     "text": "Fås när man skalar en [[boiled_egg]]. Fungerar som Bone Meal: **högerklicka på växter**.",
     "category": "materials"
+  },
+  "armor_station": {
+    "text": "Crafting: Leather, [[bone_needle]], Leather / Planks, Crafting Table, Planks. Högerklicka för att öppna. Som Tool Station: listan till vänster visar rustningarna du låst upp (Leather → läderrustning, [[bear_pelt]] → pälsrustning), klicka för att lägga i delarna. Bone Needle ligger kvar och tappar 1 per del.",
+    "category": "blocks"
+  },
+  "bone_needle": {
+    "text": "Fish Bones, Bone eller [[horn]] + kniv (crafting). 32 i hållbarhet. Verktyg i [[armor_station]]: tappar 1 per sydd rustningsdel.",
+    "category": "tools"
   }
 }

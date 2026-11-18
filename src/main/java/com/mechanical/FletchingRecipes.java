@@ -1,41 +1,25 @@
 package com.mechanical;
 
+import static com.mechanical.StationRecipe.Part.of;
+
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 import com.mechanical.wildlife.Wildlife;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 /**
- * Fletching table recipes: tip + shaft + fletching (or, for bows: string + bow + grip) -> result.
+ * Fletching table recipes: tip + shaft + fletching (or, for bows: string + bow + grip) -> result. All unlocked from the start.
  * shortcut: hardcoded like the Tool Station recipes; move to datapack recipes if modpacks need to edit them.
  */
 public final class FletchingRecipes {
-    public record Recipe(Supplier<Item> result, int count, Supplier<Item> first, Supplier<Item> second, Supplier<Item> third) {
-        public boolean matches(ItemStack a, ItemStack b, ItemStack c) {
-            return a.is(first.get()) && b.is(second.get()) && c.is(third.get());
-        }
-
-        public ItemStack assemble() {
-            return new ItemStack(result.get(), count);
-        }
-    }
-
-    public static final List<Recipe> ALL = List.of(
-            new Recipe(() -> Items.ARROW, 4, () -> Items.FLINT, () -> Items.STICK, () -> Items.FEATHER),
-            new Recipe(() -> Mechanical.BONE_ARROW.get(), 4, () -> Mechanical.FISH_BONES.get(), () -> Items.STICK, () -> Items.FEATHER),
-            new Recipe(() -> Mechanical.BONE_ARROW.get(), 4, () -> Items.BONE, () -> Items.STICK, () -> Items.FEATHER),
-            new Recipe(() -> Mechanical.BARBED_ARROW.get(), 4, () -> Wildlife.BEAR_CLAW.get(), () -> Items.STICK, () -> Items.FEATHER),
-            new Recipe(() -> Mechanical.FIRE_ARROW.get(), 1, () -> Mechanical.TALLOW.get(), () -> Items.ARROW, () -> Mechanical.TWINE.get()),
-            new Recipe(() -> Mechanical.SINEW_BOW.get(), 1, () -> Wildlife.SINEW.get(), () -> Mechanical.CRUDE_BOW.get(), () -> Mechanical.CORDAGE.get()));
-
-    public static Optional<Recipe> find(ItemStack a, ItemStack b, ItemStack c) {
-        return ALL.stream().filter(r -> r.matches(a, b, c)).findFirst();
-    }
+    public static final List<StationRecipe> ALL = List.of(
+            StationRecipe.of(() -> Items.ARROW, 4, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> Mechanical.BONE_ARROW.get(), 4, of(() -> Mechanical.FISH_BONES.get(), 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> Mechanical.BONE_ARROW.get(), 4, of(() -> Items.BONE, 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> Mechanical.BARBED_ARROW.get(), 4, of(() -> Wildlife.BEAR_CLAW.get(), 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> Mechanical.FIRE_ARROW.get(), 1, of(() -> Mechanical.TALLOW.get(), 1), of(() -> Items.ARROW, 1), of(() -> Mechanical.TWINE.get(), 1), null),
+            StationRecipe.of(() -> Mechanical.SINEW_BOW.get(), 1, of(() -> Wildlife.SINEW.get(), 1), of(() -> Mechanical.CRUDE_BOW.get(), 1), of(() -> Mechanical.CORDAGE.get(), 1), null));
 
     private FletchingRecipes() {}
 }

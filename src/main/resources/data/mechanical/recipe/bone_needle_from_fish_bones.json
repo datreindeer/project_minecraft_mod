@@ -2,12 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    "minecraft:leather_leggings",
-    "mechanical:bear_pelt",
-    "mechanical:bear_pelt"
+    "mechanical:fish_bones",
+    "#mechanical:knives"
   ],
   "result": {
-    "id": "mechanical:fur_leggings",
+    "id": "mechanical:bone_needle",
     "count": 1
   }
 }

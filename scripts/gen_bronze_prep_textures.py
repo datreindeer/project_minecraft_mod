@@ -465,7 +465,7 @@ def build():
         ITEM / "barbed_arrow.png": barbed_arrow(),
         EQUIP / "humanoid/fur.png": fur_layer("entity/equipment/humanoid/leather", 71, bear_head=True),
         EQUIP / "humanoid_leggings/fur.png": fur_layer("entity/equipment/humanoid_leggings/leather", 81),
-        GUI / "fletching_table.png": fletching_gui(),
+        # fletching GUI: now made by gen_station_textures.py (tool-station layout, textures/gui/container/)
         ITEM / "boiled_egg.png": boiled_egg(),
         ITEM / "peeled_egg.png": from_grid(PEELED_EGG, PEELED_PAL),
         ITEM / "eggshell.png": from_grid(EGGSHELL, EGGSHELL_PAL),

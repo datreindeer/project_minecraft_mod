@@ -19,7 +19,9 @@
   ],
   "rewards": {
     "recipes": [
-      "mechanical:bone_meal_from_fish_bones"
+      "mechanical:bone_meal_from_fish_bones",
+      "mechanical:bone_needle_from_fish_bones",
+      "mechanical:bone_fish_hook"
     ]
   }
 }

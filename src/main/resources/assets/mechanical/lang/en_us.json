@@ -10,10 +10,10 @@
   "item.mechanical.flint_knife": "Flint Knife",
   "item.mechanical.plant_fibre": "Plant Fibre",
   "item.mechanical.twine": "Twine",
-  "item.mechanical.stone_chunk": "Stone Chunk",
-  "item.mechanical.granite_chunk": "Granite Chunk",
-  "item.mechanical.diorite_chunk": "Diorite Chunk",
-  "item.mechanical.andesite_chunk": "Andesite Chunk",
+  "item.mechanical.stone_chunk": "Rock",
+  "item.mechanical.granite_chunk": "Granite Rock",
+  "item.mechanical.diorite_chunk": "Diorite Rock",
+  "item.mechanical.andesite_chunk": "Andesite Rock",
   "item.mechanical.stone_pickaxe_head": "Stone Pickaxe Head",
   "item.mechanical.stone_axe_head": "Stone Axe Head",
   "block.mechanical.loose_stone": "Loose Stone",
@@ -189,5 +189,8 @@
   "block.mechanical.bear_rug": "Bear Rug",
   "item.mechanical.boiled_egg": "Boiled Egg",
   "item.mechanical.peeled_egg": "Peeled Egg",
-  "item.mechanical.eggshell": "Eggshell"
+  "item.mechanical.eggshell": "Eggshell",
+  "block.mechanical.armor_station": "Armor Station",
+  "container.mechanical.armor_station": "Armor Station",
+  "item.mechanical.bone_needle": "Bone Needle"
 }

@@ -575,13 +575,48 @@ def parse_java_recipes(path, station, consts, known):
                         warn(f"{os.path.basename(path)}: okänt resultat i new {rec_name}({args[res_idx][:60]})")
                     continue
                 rec = {"station": station, "result": result, "src": os.path.basename(path),
-                       "kind": "slots" if station in ("Tool Station", "Fletching Table") else "cook", "ings": ings}
+                       "kind": "slots" if station in ("Tool Station", "Fletching Table", "Armor Station") else "cook", "ings": ings}
                 if ticks:
                     rec["time"] = ticks / 20
                 recipes.append(rec)
             except Exception as e:
                 warn(f"{os.path.basename(path)}: kunde inte tolka new {rec_name}(...): {e}")
     return recipes, fuels
+
+
+def parse_station_recipes(path, station, consts, known):
+    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Armor Station)."""
+    try:
+        src = strip_comments(open(path, encoding="utf-8").read())
+    except Exception as e:
+        warn(f"kan inte läsa {path}: {e}")
+        return []
+    out = []
+    for m in re.finditer(r"\bStationRecipe\.of\s*\(", src):
+        body = balanced(src, m.end() - 1)
+        if body is None:
+            continue
+        args = split_top(body)
+        if len(args) < 5:
+            continue
+        try:
+            res = java_refs(args[0], consts, known)
+            if not res:
+                warn(f"{os.path.basename(path)}: okänt resultat {args[0][:60]}")
+                continue
+            count = int(re.search(r"\d+", args[1]).group())
+            ings = []
+            for part in args[2:5]:
+                is_tool = re.match(r"\s*tool\s*\(", part) is not None
+                n = re.search(r",\s*(\d+)\s*\)\s*$", part)
+                ing = ing_from_refs(java_refs(part, consts, known), "Verktyg" if is_tool else "", int(n.group(1)) if n else 1)
+                if ing:
+                    ings.append(ing)
+            out.append({"station": station, "result": {"id": res[0], "count": count}, "src": os.path.basename(path),
+                        "kind": "slots", "ings": ings})
+        except Exception as e:
+            warn(f"{os.path.basename(path)}: kunde inte tolka StationRecipe.of(...): {e}")
+    return out
 
 
 # ---------------------------------------------------------------- categories
@@ -648,8 +683,7 @@ def main():
     consts = java_constants()
     fuels = []
     for path, station in [(os.path.join(JAVA, "ToolStationRecipes.java"), "Tool Station"),
-                          (os.path.join(JAVA, "KilnBlockEntity.java"), "Clay Kiln")] + \
-            [(p, "Fletching Table") for p in sorted(glob.glob(os.path.join(JAVA, "**", "*Fletch*.java"), recursive=True))]:
+                          (os.path.join(JAVA, "KilnBlockEntity.java"), "Clay Kiln")]:
         if not os.path.isfile(path):
             warn(f"saknas: {os.path.relpath(path, ROOT)}")
             continue
@@ -658,6 +692,14 @@ def main():
             warn(f"inga recept hittades i {os.path.basename(path)}")
         RECIPES.extend(recs)
         fuels.extend(fl)
+
+    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("ArmorStationRecipes.java", "Armor Station")):
+        path = os.path.join(JAVA, fname)
+        if os.path.isfile(path):
+            recs = parse_station_recipes(path, station, consts, known)
+            if not recs:
+                warn(f"inga recept hittades i {fname}")
+            RECIPES.extend(recs)
 
     tool_ids = set()
     for t in TOOL_TAGS:

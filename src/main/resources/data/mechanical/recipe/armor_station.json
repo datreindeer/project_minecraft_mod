@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LNL",
+    "PCP"
+  ],
+  "key": {
+    "L": "minecraft:leather",
+    "N": "mechanical:bone_needle",
+    "P": "#minecraft:planks",
+    "C": "minecraft:crafting_table"
+  },
+  "result": {
+    "id": "mechanical:armor_station"
+  }
+}

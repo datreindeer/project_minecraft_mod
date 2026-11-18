@@ -5,10 +5,10 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 
 ## Progression i korthet
 
-1. Slå på gräs → **Plant Fibre** → **Twine**. Leta **Flint** (lös flinta på marken, grus) och **rock chunks** (lösa stenar).
+1. Slå på gräs → **Plant Fibre** → **Twine**. Leta **Flint** (lös flinta på marken, grus) och **rocks** (lösa stenar).
 2. Slå på löv → **Sticks**.
 3. **Flint Knife** och **Flint Axe** (+ övriga flintverktyg).
-4. Med yxan: hugg träd → **Firewood**. Med kniven: knacka **Stone Pickaxe Head** / **Stone Axe Head** av rock chunks.
+4. Med yxan: hugg träd → **Firewood**. Med kniven: knacka **Stone Pickaxe Head** / **Stone Axe Head** av rocks.
 5. **Tool Station** → **Crude Stone Pickaxe** och **Crude Stone Axe**.
 6. **Cordage** + **Tool Rod** + dubbla huvuden → **Stone Pickaxe** och **Stone Axe**.
 7. **Campfire** av Firewood, tänd med **Fire Drill**. Sätt en **Clay Kiln** på den → **Brick**, **Charcoal**, **Crucible**.
@@ -26,13 +26,14 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Cordage | 3 Twine (shapeless) | Bindning för Stone Pickaxe / Stone Axe |
 | Stick | Vanilla, plus löv släpper Stick oftare (+8 %, totalt ~10 %) | Skaft, flintverktyg, Campfire, Fire Drill |
 | Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station |
-| Stone / Granite / Diorite / Andesite Chunk | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
+| Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
 | Firewood (10 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Unfired Crucible |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
 | Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather |
-| Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor |
+| Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor-recept | Sys i **Armor Station** med Bone Needle + Wool Thread |
+| Leather Armor |
 | Wool Thread | Styckning av får (30 % chans med Flint Knife, 1–2 st) | 9 (3×3) → 1 White Wool |
 | Feather | Styckning av höns och papegojor, omgång 1 (80 %, 1–2 st) | Arrows |
 | Bone, Bone Meal | Bone Pile (låg chans) | |
@@ -58,7 +59,7 @@ mer Plant Fibre från gräs.
 
 ### Stenhuvuden (crafting table, med Flint Knife)
 
-| Item | Recept (R = rock chunk, K = Flint Knife) |
+| Item | Recept (R = rock, K = Flint Knife) |
 |---|---|
 | Stone Pickaxe Head (enkelsidigt) | `[R][R][R]` / `[ ][K][ ]` |
 | Double Stone Pickaxe Head | `[Stone Pickaxe Head][K][Stone Pickaxe Head]` |
@@ -74,7 +75,7 @@ mer Plant Fibre från gräs.
 | Crude Stone Axe | Stone Axe Head | Twine | Stick | Yxa, 80 i hållbarhet, 5,5 skada |
 | Stone Axe (ändrad) | Double Stone Axe Head | Cordage | Tool Rod | **250** i hållbarhet (vanilla 131), **6,5** skada (vanilla 9) |
 
-Crude-verktygen lagas med rock chunks.
+Crude-verktygen lagas med rocks.
 
 ### Flint Spear (Tool Station)
 Huvud: **Flint**, bindning: **Cordage**, skaft: **Tool Rod**. Fungerar som vanilla Stone Spear: 2 skada vid stöt (vänsterklick), håll in högerklick och spring för ansats (skadan beror på farten). Hållbarhet 100.
@@ -99,7 +100,9 @@ fjädrar): högre chans och fler, t.ex. Bear Pelt 1–2 i stället för 1.
 Napp kommer 5 s snabbare (som Lure I, utöver förtrollningar). Hållbarhet 48.
 
 ### Fletching Table (ändrad)
-Högerklicka för att öppna (smyg + högerklick för att placera block mot den). Tre platser + resultat:
+Högerklicka för att öppna (smyg + högerklick för att placera block mot den). Ser ut som Tool Station: **listan till vänster
+visar allt man kan göra** (alla recept upplåsta från början), tänd när man har delarna, håll musen över för att se delarna,
+klicka för att lägga i dem. Tre platser + resultat:
 
 | Plats 1 | Plats 2 | Plats 3 | Ger |
 |---|---|---|---|
@@ -109,8 +112,20 @@ Högerklicka för att öppna (smyg + högerklick för att placera block mot den)
 | Tallow | Arrow | Twine | 1 **Fire Arrow** (sätter målet i brand) |
 | Sinew | Crude Bow | Cordage | **Sinew Bow** (full pilskada, 200 i hållbarhet) |
 
+### Armor Station
+Recept: `[Leather][Bone Needle][Leather]` / `[Planks][Crafting Table][Planks]`. Fungerar som Tool Station (lista till
+vänster, tre platser, resultat). **Bone Needle** = Fish Bones, Bone eller Horn + kniv (crafting), 32 i hållbarhet; den
+ligger kvar i stationen och tappar 1 per rustningsdel.
+
+| Rustning | Material | Verktyg | Tråd | Låses upp av |
+|---|---|---|---|---|
+| Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 Wool Thread | Leather |
+| Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
+
+Vanilla-recepten för läderrustning är borttagna.
+
 ### Fur-rustning och Bear Rug
-- **Fur Hood / Coat / Leggings / Boots:** läderdelen + Bear Pelt (1 / 2 / 2 / 1). Skydd 1/3/2/1, lagas med Bear Pelt.
+- **Fur Hood / Coat / Leggings / Boots:** sys i Armor Station (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.
   **Isolerar 25 % per del mot kyla** (läder 15 %).
 - **Bear Rug:** Bear Pelt + Bear Claw. Platt dekoration (som en matta) med huvudet bort från den som placerar den.
 
@@ -149,7 +164,7 @@ Ligger på marken i 5 varianter (Stone, Granite, Diorite, Andesite, Flint) och 3
 Recept: `[Flint][Twine][Flint]` / `[Planks][Crafting Table][Planks]`.
 
 GUI: lista till vänster med upplåsta verktyg, i mitten tre platser (huvud, bindning, skaft) och en resultatruta.
-- Ett verktyg låses upp första gången man har dess material i inventoryt (stenverktyg: valfri rock chunk). Upplåsningen
+- Ett verktyg låses upp första gången man har dess material i inventoryt (stenverktyg: valfri rock). Upplåsningen
   sparas per spelare och finns kvar efter döden.
 - Verktyg där man har alla delar är upplysta. Tooltip visar varje del i grönt/rött.
 - Klick på ett upplyst verktyg flyttar delarna från inventoryt till platserna.
@@ -377,9 +392,9 @@ Nytt item: **Horn** (material för senare recept).
 ### Byar och tamdjur
 - **Cow, Sheep, Pig, Chicken, Horse, Donkey och Llama spawnar inte i naturen.** Goat, Rabbit och Mooshroom finns kvar.
 - Första gången en spelare kommer inom 48 block från en bys klocka byggs en **hage** (7×7 Oak Fence med grind) på plan
-  mark 8–20 block från klockan, med 3 djur. Finns ingen plats används klockan som "hem".
-- Var 30:e sekund fyller byn på med ett djur (Cow, Sheep, Pig eller Chicken) i hagen om det finns färre än 5 farm-djur
-  inom 32 block. Byarnas egna djur (vanilla-hagar, hästar) finns kvar.
+  mark 8–20 block från klockan, med **4 djur** (Cow, Sheep, Pig eller Chicken). Finns ingen plats hamnar de vid klockan.
+- **Det kommer inga fler.** Djuren despawnar aldrig, men vill man ha mer får man föda upp dem själv. Byarnas egna djur
+  (vanilla-hagar, hästar) finns kvar.
 
 ### Bär och svamp (plocka)
 Sällsynta, i små grupper. Kan **inte planteras** än (bären och svamparna är inte frön). Allt får plats i Bark Basket.
@@ -482,7 +497,7 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Djur-loot | Ersatt av **Carcass** + styckning (ingen Leather/kött/ull direkt) |
 | Furnace | **Borttagen** (ersätts av Clay Kiln, uppgraderas senare) |
 | Smoker, Blast Furnace | **Borttagna** (senare åldrar) |
-| Stone, Granite, Diorite, Andesite | Släpper **2–4 rock chunks** i stället för cobblestone (Silk Touch ger blocket). 4 rock chunks → 1 Cobblestone |
+| Stone, Granite, Diorite, Andesite | Släpper **2–4 rocks** i stället för cobblestone (Silk Touch ger blocket). 4 rocks → 1 Cobblestone |
 | Arrow-recept | Flyttat till **Fletching Table** |
 | Candle-recept | Honeycomb + String → **Tallow + Twine** |
 | Fletching Table | Har ett GUI för pilar och pilbågsuppgraderingar |
@@ -513,7 +528,7 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 ## Teknik (för utveckling)
 
 - Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
-- Fletching Table: `FletchingRecipes.java`, `FletchingMenu.java`, `client/FletchingScreen.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug: `BearRugBlock.java`.
+- Stationer med receptlista (Fletching Table, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug: `BearRugBlock.java`.
 - Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
 - Verktygstips: `client/StatTooltips.java`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).

@@ -484,8 +484,7 @@ for tag, piece in [("head_armor", "fur_hood"), ("chest_armor", "fur_coat"), ("le
 w(D / "mechanical/tags/item/repairs_fur_armor.json", {"values": ["mechanical:bear_pelt"]})
 # fur armour: the leather piece lined with bear pelt
 w(A / "equipment/fur.json", {"layers": {"humanoid": [{"texture": "mechanical:fur"}], "humanoid_leggings": [{"texture": "mechanical:fur"}]}})
-for piece, base, pelts in [("fur_hood", "leather_helmet", 1), ("fur_coat", "leather_chestplate", 2), ("fur_leggings", "leather_leggings", 2), ("fur_boots", "leather_boots", 1)]:
-    shapeless(piece, [f"minecraft:{base}"] + ["mechanical:bear_pelt"] * pelts, f"mechanical:{piece}", category="equipment")
+# (fur and leather armour are sewn at the Armor Station: ArmorStationRecipes.java)
 # bear rug: flat, facing
 w(A / "models/block/bear_rug.json", {"textures": {"particle": "mechanical:block/bear_rug", "top": "mechanical:block/bear_rug"}, "elements": [{
     "from": [0, 0, 0], "to": [16, 1, 16], "faces": {
@@ -509,10 +508,34 @@ w(D / "mechanical/recipe/candle_from_tallow.json", {"type": "minecraft:crafting_
 # boiled eggs: any egg on a campfire; peeled in the grid (the shell comes back via StoneAgeEvents)
 w(D / "mechanical/recipe/boiled_egg.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 300,
     "experience": 0.1, "ingredient": "#minecraft:eggs", "result": {"id": "mechanical:boiled_egg"}})
-shapeless("peeled_egg", ["mechanical:boiled_egg"], "mechanical:peeled_egg", category="food")
+shapeless("peeled_egg", ["mechanical:boiled_egg"], "mechanical:peeled_egg")
 for item, name in [("boiled_egg", "Boiled Egg"), ("peeled_egg", "Peeled Egg"), ("eggshell", "Eggshell")]:
     flat_item(item)
     lang[f"item.mechanical.{item}"] = name
+# ---- armor station + bone needle ----
+w(A / "blockstates/armor_station.json", {"variants": {"": {"model": "mechanical:block/armor_station"}}})
+w(A / "models/block/armor_station.json", {"parent": "minecraft:block/cube", "textures": {
+    "particle": "mechanical:block/armor_station_front", "up": "mechanical:block/armor_station_top", "down": "minecraft:block/oak_planks",
+    "north": "mechanical:block/armor_station_front", "south": "mechanical:block/armor_station_front",
+    "east": "mechanical:block/armor_station_side", "west": "mechanical:block/armor_station_side"}})
+w(A / "items/armor_station.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/armor_station"}})
+w(D / "mechanical/loot_table/blocks/armor_station.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
+    "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": "mechanical:armor_station"}]}],
+    "random_sequence": "mechanical:blocks/armor_station"})
+lang["block.mechanical.armor_station"] = "Armor Station"
+lang["container.mechanical.armor_station"] = "Armor Station"
+w(D / "mechanical/recipe/armor_station.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["LNL", "PCP"],
+    "key": {"L": "minecraft:leather", "N": "mechanical:bone_needle", "P": "#minecraft:planks", "C": "minecraft:crafting_table"},
+    "result": {"id": "mechanical:armor_station"}})
+flat_item("bone_needle")
+lang["item.mechanical.bone_needle"] = "Bone Needle"
+for src in ("fish_bones", "bone", "horn"):
+    ns = "minecraft" if src == "bone" else "mechanical"
+    shapeless(f"bone_needle_from_{src}", [f"{ns}:{src}", "#mechanical:knives"], "mechanical:bone_needle", category="equipment")
+# leather armour: sewn at the armor station, not crafted
+for name in ("leather_helmet", "leather_chestplate", "leather_leggings", "leather_boots"):
+    w(D / f"minecraft/recipe/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
+    w(D / f"minecraft/advancement/recipes/combat/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
 # rock chunks back into cobblestone
 shaped("cobblestone_from_chunks", ["RR", "RR"], {"R": "#mechanical:rock_chunks"}, "minecraft:cobblestone")
 # Removed: arrows (fletching table now), honeycomb candles (tallow now), smoker and blast furnace (later ages)
@@ -533,9 +556,12 @@ UNLOCKS = {
     "plant_fibre": ("mechanical:plant_fibre", ["twine"]),
     "twine": ("mechanical:twine", ["cordage", "fire_drill"]),
     "whole_fish": ("#mechanical:whole_fish", ["gut_cod", "gut_salmon", "gut_tropical_fish", "gut_pufferfish"]),
-    "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones"]),
+    "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones", "bone_needle_from_fish_bones", "bone_fish_hook"]),
     "bark": ("mechanical:bark", ["plant_fibre_from_bark", "bark_basket"]),
-    "bear_pelt": ("mechanical:bear_pelt", ["fur_hood", "fur_coat", "fur_leggings", "fur_boots", "bear_rug"]),
+    "bear_pelt": ("mechanical:bear_pelt", ["bear_rug"]),
+    "leather": ("minecraft:leather", ["armor_station"]),
+    "bone": ("minecraft:bone", ["bone_needle_from_bone"]),
+    "horn": ("mechanical:horn", ["bone_needle_from_horn"]),
     "tallow": ("mechanical:tallow", ["candle_from_tallow"]),
     "boiled_egg": ("mechanical:boiled_egg", ["peeled_egg"]),
     "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks"]),
@@ -762,3 +788,8 @@ lang["item.mechanical.iron_knife"] = "Iron Knife"
 lang["message.mechanical.knife_too_weak"] = "This hide is too tough for your knife"
 w(lang_path, lang)
 print("wildlife data ok")
+
+# ---- names: the rock chunks are just rocks ----
+lang.update({"item.mechanical.stone_chunk": "Rock", "item.mechanical.granite_chunk": "Granite Rock",
+             "item.mechanical.diorite_chunk": "Diorite Rock", "item.mechanical.andesite_chunk": "Andesite Rock"})
+w(lang_path, lang)
