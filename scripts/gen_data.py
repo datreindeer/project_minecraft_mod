@@ -249,9 +249,78 @@ shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "m
 w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
+BUSHES = {"raspberry": "raspberries", "blueberry": "blueberries", "lingonberry": "lingonberries",
+          "wild_strawberry": "wild_strawberries", "elderberry": "elderberries", "cloudberry": "cloudberries"}
+MUSHROOMS = ["chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball"]
 w(D / "mechanical/tags/item/basket_storable.json", {"values": ["minecraft:apple", "minecraft:golden_apple", "minecraft:sweet_berries",
     "minecraft:glow_berries", "minecraft:melon_slice", "minecraft:chorus_fruit", "minecraft:leather", "minecraft:rabbit_hide",
-    "mechanical:raw_hide", "mechanical:scraped_hide"]})
+    "mechanical:raw_hide", "mechanical:scraped_hide", "minecraft:brown_mushroom", "minecraft:red_mushroom", "mechanical:roasted_mushrooms"]
+    + [f"mechanical:{b}" for b in BUSHES.values()] + [f"mechanical:{m}" for m in MUSHROOMS]})
+
+# ---- foraging: wild berry bushes (rare, regrow after picking) and mushrooms (spread slowly in shade) ----
+tri = lambda m: {"type": "minecraft:trapezoid", "min": -m, "max": m, "plateau": 0}
+def forage_feature(name, state, biomes, rarity, count, spread):
+    w(D / f"mechanical/worldgen/feature/{name}.json", {"type": "minecraft:simple_block", "to_place": state})
+    w(D / f"mechanical/worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{name}", "placement": [
+        {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
+        {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"},
+        {"type": "minecraft:count", "count": count},
+        {"type": "minecraft:offset", "x": tri(spread), "y": tri(2), "z": tri(spread)},
+        {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
+            {"type": "minecraft:matching_block_tag", "tag": "minecraft:air"},
+            {"type": "minecraft:matching_block_tag", "tag": "minecraft:dirt", "offset": [0, -1, 0]}]}}]})
+    w(D / f"mechanical/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
+        "features": f"mechanical:{name}", "step": "vegetal_decoration"})
+BUSH_BIOMES = {
+    "raspberry": ["minecraft:forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:flower_forest"],
+    "blueberry": ["minecraft:forest", "minecraft:dark_forest", "minecraft:taiga", "minecraft:old_growth_pine_taiga"],
+    "lingonberry": ["minecraft:taiga", "minecraft:snowy_taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga"],
+    "wild_strawberry": ["minecraft:plains", "minecraft:meadow", "minecraft:flower_forest", "minecraft:sunflower_plains"],
+    "elderberry": ["minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:river"],
+    "cloudberry": ["minecraft:swamp", "minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove"],
+}
+for bush, berries in BUSHES.items():
+    block = f"{bush}_bush"
+    for stage in range(4):
+        w(A / f"models/block/{block}_stage{stage}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{block}_stage{stage}"}})
+    w(A / f"blockstates/{block}.json", {"variants": {f"age={a}": {"model": f"mechanical:block/{block}_stage{a}"} for a in range(4)}})
+    w(D / f"mechanical/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [
+        {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:stick",
+            "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]},
+        {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:plant_fibre",
+            "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]}],
+        "random_sequence": f"mechanical:blocks/{block}"})
+    lang[f"block.mechanical.{block}"] = title(block)
+    w(A / f"models/item/{berries}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{berries}"}})
+    w(A / f"items/{berries}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{berries}"}})
+    lang[f"item.mechanical.{berries}"] = title(berries)
+    forage_feature(block, {"id": f"mechanical:{block}", "properties": {"age": "3"}},
+                   BUSH_BIOMES[bush], 40, 3, 3)
+w(D / "mechanical/tags/block/wild_berry_bushes.json", {"values": [f"mechanical:{b}_bush" for b in BUSHES]})
+MUSHROOM_BIOMES = {
+    "chanterelle": ["minecraft:forest", "minecraft:birch_forest", "minecraft:taiga", "minecraft:old_growth_birch_forest", "minecraft:old_growth_pine_taiga"],
+    "porcini": ["minecraft:forest", "minecraft:dark_forest", "minecraft:taiga", "minecraft:old_growth_spruce_taiga"],
+    "morel": ["minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest"],
+    "oyster_mushroom": ["minecraft:dark_forest", "minecraft:swamp", "minecraft:old_growth_spruce_taiga"],
+    "fly_agaric": ["minecraft:birch_forest", "minecraft:taiga", "minecraft:snowy_taiga", "minecraft:dark_forest", "minecraft:old_growth_birch_forest"],
+    "puffball": ["minecraft:plains", "minecraft:meadow", "minecraft:sunflower_plains"],
+}
+for m in MUSHROOMS:
+    w(A / f"models/block/{m}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{m}"}})
+    w(A / f"blockstates/{m}.json", {"variants": {"": {"model": f"mechanical:block/{m}"}}})
+    w(D / f"mechanical/loot_table/blocks/{m}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": f"mechanical:{m}"}]}], "random_sequence": f"mechanical:blocks/{m}"})
+    w(A / f"models/item/{m}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{m}"}})
+    w(A / f"items/{m}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{m}"}})
+    lang[f"block.mechanical.{m}"] = title(m)
+    lang[f"item.mechanical.{m}"] = title(m)
+    forage_feature(m, {"id": f"mechanical:{m}"}, MUSHROOM_BIOMES[m], 24, 4, 3)
+w(D / "mechanical/tags/item/edible_mushrooms.json", {"values": [f"mechanical:{m}" for m in MUSHROOMS if m != "fly_agaric"] + ["minecraft:brown_mushroom"]})
+w(A / "models/item/roasted_mushrooms.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/roasted_mushrooms"}})
+w(A / "items/roasted_mushrooms.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/roasted_mushrooms"}})
+lang["item.mechanical.roasted_mushrooms"] = "Roasted Mushrooms"
+w(D / "mechanical/recipe/roasted_mushrooms.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 400,
+    "experience": 0.1, "ingredient": "#mechanical:edible_mushrooms", "result": {"id": "mechanical:roasted_mushrooms"}})
 print("stumps ok")
 
 # ---- fire drill, campfire, kiln, crucible ----

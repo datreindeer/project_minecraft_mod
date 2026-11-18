@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:meadow",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:puffball",
+  "step": "vegetal_decoration"
+}

@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:meadow",
+    "minecraft:flower_forest",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:wild_strawberry_bush",
+  "step": "vegetal_decoration"
+}

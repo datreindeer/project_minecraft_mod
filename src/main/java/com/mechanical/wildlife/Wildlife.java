@@ -99,9 +99,14 @@ public final class Wildlife {
     @SubscribeEvent
     static void spawnRules(RegisterSpawnPlacementsEvent event) {
         for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get(),
-                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get(), BROWN_BEAR.get()}) {
+                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get()}) {
             register(event, type);
         }
+        // bears only turn up near wild berry bushes
+        event.register(BROWN_BEAR.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (type, level, reason, pos, random) -> Animal.checkAnimalSpawnRules(type, level, reason, pos, random)
+                        && com.mechanical.Foraging.nearBerryBush(level, pos, 16),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule
         event.register(MOUFLON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);

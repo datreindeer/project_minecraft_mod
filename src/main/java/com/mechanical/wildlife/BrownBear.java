@@ -65,6 +65,7 @@ public class BrownBear extends WildAnimal {
         super.registerGoals();
         goalSelector.removeAllGoals(g -> g instanceof FollowHerdGoal); // solitary; cubs keep up with FollowParentGoal
         goalSelector.addGoal(1, new BearAttackGoal());
+        goalSelector.addGoal(5, new ForageBerriesGoal(this));
         targetSelector.addGoal(1, new HurtByTargetGoal(this) {
             @Override
             public boolean canUse() {

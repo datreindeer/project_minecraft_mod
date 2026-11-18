@@ -121,6 +121,11 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         return true;
     }
 
+    /** Put out (a zombie horde smothering it). The fuel left stays for the next lighting. */
+    public void extinguish() {
+        setLit(false);
+    }
+
     private void setLit(boolean lit) {
         setState(lit, lit && getBlockState().getValue(KilnBlock.ACTIVE));
     }

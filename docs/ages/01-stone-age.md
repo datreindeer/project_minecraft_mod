@@ -71,8 +71,8 @@ mer Plant Fibre från gräs.
 |---|---|---|---|---|
 | Crude Stone Pickaxe | Stone Pickaxe Head | Twine | Stick | Bryter som sten, långsammare, 80 i hållbarhet |
 | Stone Pickaxe (vanilla) | Double Stone Pickaxe Head | Cordage | Tool Rod | Vanilla: 131 i hållbarhet |
-| Crude Stone Axe | Stone Axe Head | Twine | Stick | Yxa, 80 i hållbarhet, 5 skada |
-| Stone Axe (vanilla) | Double Stone Axe Head | Cordage | Tool Rod | Vanilla |
+| Crude Stone Axe | Stone Axe Head | Twine | Stick | Yxa, 80 i hållbarhet, 5,5 skada |
+| Stone Axe (ändrad) | Double Stone Axe Head | Cordage | Tool Rod | **250** i hållbarhet (vanilla 131), **6,5** skada (vanilla 9) |
 
 Crude-verktygen lagas med rock chunks.
 
@@ -269,7 +269,8 @@ Nya items: **Venison Scraps** (1 hunger, tillagad 3), **Sinew**, **Antler**, **L
 recept), spawn eggs för alla fem.
 
 ### Brown Bear
-Skog och alla taigor, sällsynt. Ensam, eller en hona med 1–2 ungar. 60 liv, 8 skada, svår att knuffa.
+Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 block). Ensam, eller en hona med 1–2 ungar.
+Äter gärna mogna bär: går till en mogen buske i närheten och äter upp bären (busken börjar om). 60 liv, 8 skada, svår att knuffa.
 - **Mycket aggressiv:** anfaller spelare inom 12 block (5 om man smyger) som den ser, och slår tillbaka när den skadas.
   Ger upp efter 24 block. Snabb i början av jakten, sedan långsammare.
 - Reser sig på bakbenen och slår med ramarna. Flyr aldrig och får aldrig panik.
@@ -310,8 +311,10 @@ Nytt item: **Horn** (material för senare recept).
   ljuskälla är det nästan svart. Oväder räknas som delvis natt. Blockljus (facklor, eld) påverkas inte.
 - **Brinnande eld skyddar:** monster håller sig ~20 block från en brinnande Campfire eller tänd Clay Kiln, siktar inte på
   spelare inom 6 block från elden (skeletons når inte dit) och spawnar inte inom 28 block. Glöd och släckt eld skyddar inte.
-- **Zombiehorder:** ungefär var tredje natt kommer 5–8 zombies samtidigt 32–48 block från en spelare. De håller ihop,
-  söker sig mot närmaste spelare och undviker också eld.
+- **Zombiehorder:** ungefär var tredje natt kommer 5–8 zombies samtidigt 32–48 block från en spelare. De håller ihop och
+  går **först på ljuset**: de söker upp närmaste brinnande Campfire eller Clay Kiln (inom 48 block) och släcker den helt
+  (ingen glöd kvar), och slår sönder facklor och lanterns inom 10 block. Först när det inte finns ljus kvar i närheten går
+  de mot spelarna. Elden skrämmer inte bort dem.
 - **Facklor** skyddar inte och värmer inte. Monster utan mål kan dras till en fackla i närheten (inom 8 block) och slå sönder den.
   Lanterns rörs inte.
 - **Dynamiskt ljus** (klient): en fackla, lantern eller annat lysande block i handen, eller på marken, lyser upp runt
@@ -336,6 +339,36 @@ Nytt item: **Horn** (material för senare recept).
   mark 8–20 block från klockan, med 3 djur. Finns ingen plats används klockan som "hem".
 - Var 30:e sekund fyller byn på med ett djur (Cow, Sheep, Pig eller Chicken) i hagen om det finns färre än 5 farm-djur
   inom 32 block. Byarnas egna djur (vanilla-hagar, hästar) finns kvar.
+
+### Bär och svamp (plocka)
+Sällsynta, i små grupper. Kan **inte planteras** än (bären och svamparna är inte frön). Allt får plats i Bark Basket.
+
+**Bärbuskar:** växer bar → blommor → omogna → mogna (~6 min per steg i ljus). **Högerklicka en mogen buske → 1–3 bär**,
+sedan börjar den om från blommor (~12 min tills den är mogen igen). Inga taggar. Hugger man sönder busken: 1–2 Sticks +
+1–2 Plant Fibre, och den är borta.
+
+| Buske | Biomer | Bär (1 hunger) |
+|---|---|---|
+| Raspberry Bush | Forest, Birch Forest, Old Growth Birch, Flower Forest | Raspberries |
+| Blueberry Bush | Forest, Dark Forest, Taiga, Old Growth Pine Taiga | Blueberries |
+| Lingonberry Bush | Taiga, Snowy Taiga, Old Growth Pine/Spruce Taiga | Lingonberries |
+| Wild Strawberry Bush | Plains, Sunflower Plains, Meadow, Flower Forest | Wild Strawberries |
+| Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries |
+| Cloudberry Bush | Swamp, Snowy Plains, Snowy Taiga, Grove | Cloudberries |
+
+**Svampar:** högerklicka (eller bryt) för att plocka. Sprider sig långsamt till en plats i närheten i skugga (ljus ≤ 12),
+om det finns färre än 4 av samma sort runt omkring.
+
+| Svamp | Biomer | Rå |
+|---|---|---|
+| Chanterelle (kantarell) | Forest, Birch Forest, Taiga, Old Growth Birch/Pine | 1 hunger |
+| Porcini (Karl Johan) | Forest, Dark Forest, Taiga, Old Growth Spruce | 1 hunger |
+| Morel (murkla) | Forest, Flower Forest, Birch Forest | 1 hunger |
+| Oyster Mushroom (ostronskivling) | Dark Forest, Swamp, Old Growth Spruce | 1 hunger |
+| Fly Agaric (flugsvamp) | Birch Forest, Taiga, Snowy Taiga, Dark Forest | **Giftig:** Poison 10 s + Nausea 15 s |
+| Puffball (röksvamp) | Plains, Meadow, Sunflower Plains | 1 hunger |
+
+**Roasted Mushrooms:** valfri ätlig svamp (även vanilla Brown Mushroom) på Campfire (20 s) → 4 hunger.
 
 ### Grödor
 - Gräs och ormbunkar släpper **inga frön**. Frön får man från byar (kistor och bönder).
@@ -433,6 +466,7 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 
 ## Teknik (för utveckling)
 
+- Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.

@@ -9,6 +9,21 @@
     "minecraft:leather",
     "minecraft:rabbit_hide",
     "mechanical:raw_hide",
-    "mechanical:scraped_hide"
+    "mechanical:scraped_hide",
+    "minecraft:brown_mushroom",
+    "minecraft:red_mushroom",
+    "mechanical:roasted_mushrooms",
+    "mechanical:raspberries",
+    "mechanical:blueberries",
+    "mechanical:lingonberries",
+    "mechanical:wild_strawberries",
+    "mechanical:elderberries",
+    "mechanical:cloudberries",
+    "mechanical:chanterelle",
+    "mechanical:porcini",
+    "mechanical:morel",
+    "mechanical:oyster_mushroom",
+    "mechanical:fly_agaric",
+    "mechanical:puffball"
   ]
 }

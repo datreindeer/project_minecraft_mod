@@ -40,7 +40,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 /**
  * What makes the night dangerous, and fire the only real safety:
  * - monsters keep away from burning fires (campfires, lit kilns), won't target players close to one and don't spawn near one;
- * - zombie hordes roam some nights (they avoid fire too);
+ * - zombie hordes roam some nights: they go for the lights first (put out fires, smash torches and lanterns), then the players;
  * - torches give no protection, instead they draw monsters in, which smash them;
  * - more monsters at night, some of which stalk the player (circling at a distance) before they attack;
  * - monsters take no knockback, they keep pushing on; and they work their way around obstacles instead of standing still.
@@ -95,7 +95,9 @@ public final class NightDangers {
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide() || !(event.getEntity() instanceof Monster monster)) return;
-        monster.goalSelector.addGoal(0, new AvoidFireGoal(monster));
+        boolean horde = monster.entityTags().contains(HORDE_TAG);
+        if (horde) monster.goalSelector.addGoal(1, new PutOutLightsGoal(monster));
+        else monster.goalSelector.addGoal(0, new AvoidFireGoal(monster));
         if (monster instanceof PathfinderMob) {
             monster.getNavigation().setMaxVisitedNodesMultiplier(4.0F); // finds longer ways round
             monster.goalSelector.addGoal(1, new UnstuckGoal(monster));
@@ -106,10 +108,10 @@ public final class NightDangers {
         }
         if (monster.entityTags().contains(LURKER_TAG)) monster.goalSelector.addGoal(3, new LurkGoal(monster));
         monster.goalSelector.addGoal(4, new SmashTorchGoal(monster));
-        if (monster.entityTags().contains(HORDE_TAG)) monster.goalSelector.addGoal(5, new FollowHordeGoal(monster));
+        if (horde) monster.goalSelector.addGoal(5, new FollowHordeGoal(monster));
     }
 
-    /** Monsters don't pick (or keep) a player standing by a fire. Stalkers hold off until their time is up. */
+    /** Monsters don't pick (or keep) a player standing by a fire (a horde puts the fire out first). Stalkers hold off until their time is up. */
     @SubscribeEvent
     static void onTarget(LivingChangeTargetEvent event) {
         if (!(event.getEntity() instanceof Monster monster) || !(event.getNewAboutToBeSetTarget() instanceof Player player)) return;
@@ -335,6 +337,89 @@ public final class NightDangers {
         level.addFreshEntity(monster);
     }
 
+    /**
+     * Horde: makes for the nearest light (burning campfire or kiln within 48 blocks, torch or lantern within 10) and puts it
+     * out; only when there is none left nearby does the horde turn on the players.
+     */
+    static class PutOutLightsGoal extends Goal {
+        private static final double FIRE_SEARCH = 48;
+        private static final int LAMP_SEARCH = 10;
+        private final Monster mob;
+        private BlockPos light;
+
+        PutOutLightsGoal(Monster mob) {
+            this.mob = mob;
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (mob.tickCount % 20 != 0) return false;
+            light = findLight();
+            if (light == null) return false;
+            mob.setTarget(null); // lights first
+            return mob.getNavigation().moveTo(light.getX() + 0.5, light.getY(), light.getZ() + 0.5, 1.1);
+        }
+
+        private BlockPos findLight() {
+            Level level = mob.level();
+            BlockPos fire = nearestFire(level, mob.position(), FIRE_SEARCH);
+            if (fire != null && isLight(level.getBlockState(fire))) return fire;
+            BlockPos origin = mob.blockPosition();
+            for (BlockPos p : BlockPos.betweenClosed(origin.offset(-LAMP_SEARCH, -4, -LAMP_SEARCH), origin.offset(LAMP_SEARCH, 4, LAMP_SEARCH))) {
+                if (isLamp(level.getBlockState(p))) return p.immutable();
+            }
+            return null;
+        }
+
+        private static boolean isLamp(net.minecraft.world.level.block.state.BlockState state) {
+            return state.is(Blocks.TORCH) || state.is(Blocks.WALL_TORCH) || state.is(Blocks.LANTERN) || state.is(Blocks.SOUL_LANTERN)
+                    || state.is(Blocks.SOUL_TORCH) || state.is(Blocks.SOUL_WALL_TORCH);
+        }
+
+        private static boolean isLight(net.minecraft.world.level.block.state.BlockState state) {
+            if (state.getBlock() instanceof net.minecraft.world.level.block.CampfireBlock) return state.getValue(net.minecraft.world.level.block.CampfireBlock.LIT);
+            if (state.getBlock() instanceof KilnBlock) return state.getValue(KilnBlock.LIT);
+            return isLamp(state);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return light != null && isLight(mob.level().getBlockState(light)) && !mob.getNavigation().isDone();
+        }
+
+        @Override
+        public void tick() {
+            if (light == null) return;
+            mob.getLookControl().setLookAt(Vec3.atCenterOf(light));
+            if (mob.distanceToSqr(Vec3.atCenterOf(light)) < 2.5 * 2.5) {
+                putOut(mob, light);
+                light = null;
+            }
+        }
+
+        @Override
+        public void stop() {
+            if (light != null && mob.distanceToSqr(Vec3.atCenterOf(light)) < 2.5 * 2.5) putOut(mob, light);
+        }
+
+        private static void putOut(Monster mob, BlockPos pos) {
+            Level level = mob.level();
+            var state = level.getBlockState(pos);
+            if (state.getBlock() instanceof net.minecraft.world.level.block.CampfireBlock) {
+                level.setBlock(pos, state.setValue(net.minecraft.world.level.block.CampfireBlock.LIT, false)
+                        .setValue(Campfires.EMBERS, false), net.minecraft.world.level.block.Block.UPDATE_ALL);
+                level.playSound(null, pos, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+            } else if (state.getBlock() instanceof KilnBlock) {
+                if (level.getBlockEntity(KilnBlock.lowerPos(state, pos)) instanceof KilnBlockEntity kiln) kiln.extinguish();
+                level.playSound(null, pos, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+            } else if (isLamp(state)) {
+                level.destroyBlock(pos, false, mob);
+            }
+            FIRES.getOrDefault(level, Map.of()).remove(pos);
+        }
+    }
+
     // ---- zombie hordes ----
 
     /** Night index of the last horde roll per level, so each night is rolled once. */
@@ -407,7 +492,6 @@ public final class NightDangers {
                 if (player == null || player.isCreative() || player.isSpectator()) return false;
                 goal = player.position();
             }
-            if (nearFire(mob.level(), goal, AVOID_RADIUS)) return false;
             return mob.getNavigation().moveTo(goal.x, goal.y, goal.z, 0.9);
         }
 

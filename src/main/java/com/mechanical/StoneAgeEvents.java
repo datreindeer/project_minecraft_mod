@@ -45,6 +45,25 @@ public class StoneAgeEvents {
                 components.set(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY.with(CampfireBlock.LIT, false)));
     }
 
+    /**
+     * Stone Axe (Tool Station, double head + cordage + tool rod): a clear step up in durability from the Crude Stone Axe
+     * (80), but no great weapon: 6.5 damage (vanilla 9, crude 5.5), 250 durability (vanilla 131).
+     */
+    @SubscribeEvent
+    static void stoneAxe(ModifyDefaultComponentsEvent event) {
+        event.modify(Items.STONE_AXE, (components, context, item) -> {
+            components.set(DataComponents.MAX_DAMAGE, 250);
+            components.set(DataComponents.ATTRIBUTE_MODIFIERS, net.minecraft.world.item.component.ItemAttributeModifiers.builder()
+                    .add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                            net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_ID, 5.5, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE),
+                            net.minecraft.world.entity.EquipmentSlotGroup.MAINHAND)
+                    .add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED, new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                            net.minecraft.world.item.Item.BASE_ATTACK_SPEED_ID, -3.2, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE),
+                            net.minecraft.world.entity.EquipmentSlotGroup.MAINHAND)
+                    .build());
+        });
+    }
+
     @SubscribeEvent
     static void onBlockDrops(BlockDropsEvent event) {
         BlockState state = event.getState();
