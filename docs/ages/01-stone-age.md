@@ -443,6 +443,10 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
   Inget järn, guld eller diamanter.
 - **Fälten är döende:** 75 % av grödorna är borta, resten är unga (ger bara frön, eller en morot/potatis). Jorden är torr.
 - **Iron Golem** släpper inget järn (bara 0–2 Poppy).
+- **Block från senare åldrar är låsta:** Furnace, Smoker, Blast Furnace, Anvil, Smithing Table, Stonecutter, Grindstone
+  och Brewing Stand går inte att använda ("You don't know how to use this yet"). Bryts de blir det bara Rocks eller
+  Sticks (Anvil inget). Cauldron, Bell och Lantern går att använda men släpper inget när de bryts (inget järn/guld).
+  Listan är taggen `mechanical:too_advanced`, så senare åldrar kan låsa upp dem.
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
   senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
   Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk

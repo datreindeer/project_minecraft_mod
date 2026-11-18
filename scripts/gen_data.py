@@ -1088,3 +1088,24 @@ for tag in ("washed_away_by_fluids", "replaceable_by_trees", "replaceable_by_mus
     w(D / f"minecraft/tags/block/{tag}.json", {"values": [f"mechanical:{l}_leaf_litter" for l in LITTER_LEAVES]})
 w(lang_path, lang)
 print("leaf litter ok")
+
+# ---- later-age blocks found in villages: locked (TooAdvanced.java) and they break into primitive scraps ----
+def _scraps(item, lo, hi):
+    return [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": item,
+        "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]}]}] if hi else []
+TOO_ADVANCED = {  # block: (scrap item, min, max); max 0 = nothing
+    "furnace": ("mechanical:stone_chunk", 3, 6), "smoker": ("mechanical:stone_chunk", 3, 6), "blast_furnace": ("mechanical:stone_chunk", 4, 8),
+    "stonecutter": ("mechanical:stone_chunk", 2, 4), "brewing_stand": ("mechanical:stone_chunk", 1, 3),
+    "anvil": ("", 0, 0), "chipped_anvil": ("", 0, 0), "damaged_anvil": ("", 0, 0),
+    "smithing_table": ("minecraft:stick", 2, 4), "grindstone": ("mechanical:stone_chunk", 2, 4),
+    "cauldron": ("", 0, 0), "water_cauldron": ("", 0, 0), "lava_cauldron": ("", 0, 0), "powder_snow_cauldron": ("", 0, 0),
+    "bell": ("", 0, 0), "lantern": ("", 0, 0), "soul_lantern": ("", 0, 0),
+}
+for block, (item, lo, hi) in TOO_ADVANCED.items():
+    w(D / f"minecraft/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": _scraps(item, lo, hi),
+        "random_sequence": f"minecraft:blocks/{block}"})
+# using them is locked; cauldrons, bells and lanterns stay usable (water, ringing, light), only their loot changes
+w(D / "mechanical/tags/block/too_advanced.json", {"values": [f"minecraft:{b}" for b in
+    ("furnace", "smoker", "blast_furnace", "stonecutter", "brewing_stand", "anvil", "chipped_anvil", "damaged_anvil", "smithing_table", "grindstone")]})
+lang["message.mechanical.too_advanced"] = "You don't know how to use this yet"
+w(lang_path, lang)

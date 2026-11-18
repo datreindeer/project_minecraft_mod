@@ -291,5 +291,6 @@
   "block.mechanical.aspen_leaf_litter": "Aspen Leaf Litter",
   "block.mechanical.alder_leaf_litter": "Alder Leaf Litter",
   "block.mechanical.beech_leaf_litter": "Beech Leaf Litter",
-  "block.mechanical.linden_leaf_litter": "Linden Leaf Litter"
+  "block.mechanical.linden_leaf_litter": "Linden Leaf Litter",
+  "message.mechanical.too_advanced": "You don't know how to use this yet"
 }
