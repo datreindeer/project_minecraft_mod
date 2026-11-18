@@ -146,5 +146,6 @@
   "item.mechanical.bear_fat": "Bear Fat",
   "item.mechanical.bear_claw": "Bear Claw",
   "item.mechanical.brown_bear_spawn_egg": "Brown Bear Spawn Egg",
-  "entity.mechanical.brown_bear": "Brown Bear"
+  "entity.mechanical.brown_bear": "Brown Bear",
+  "item.mechanical.bark_basket": "Bark Basket"
 }

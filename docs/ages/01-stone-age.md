@@ -204,7 +204,13 @@ Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje 
 Chans att lyckas: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %.
 Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
 
-Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (tändmaterial, senare garvning).
+Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (tändmaterial, bast, korg; senare garvning).
+
+**Bark används till:**
+- **Bast:** Bark + kniv (crafting, kniven slits 1) → **2 Plant Fibre**.
+- **Bark Basket:** `[ ][Cordage][ ]` / `[Bark][ ][Bark]` / `[Bark][Bark][Bark]`. Högerklicka för att öppna (3×3). Rymmer bara
+  frukt, bär och hudar: Apple, Golden Apple, Sweet Berries, Glow Berries, Melon Slice, Chorus Fruit, Leather, Rabbit Hide,
+  Raw Hide, Scraped Hide. Innehållet sparas i korgen (stackar inte, 1 per plats i inventoryt).
 **Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost när odlingen kommer.
 
 ### Mat och styckning
@@ -377,6 +383,7 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Stone Pickaxe Head | Double Stone Pickaxe Head |
 | Whole fish (valfri) | Rensning av alla fyra |
 | Fish Bones | Bone Meal |
+| Bark | Plant Fibre (bast), Bark Basket |
 | Raw Hide | Scraped Hide, Drying Rack |
 | Wool Thread | White Wool (från tråd) |
 | Stone Axe Head | Double Stone Axe Head |

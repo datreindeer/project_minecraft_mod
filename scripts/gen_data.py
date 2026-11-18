@@ -242,6 +242,16 @@ for wood in WOODS:
 w(A / "models/item/bark.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark"}})
 w(A / "items/bark.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark"}})
 lang["item.mechanical.bark"] = "Bark"
+# bast: the inner bark gives fibre
+shapeless("plant_fibre_from_bark", ["mechanical:bark", "#mechanical:knives"], "mechanical:plant_fibre", count=2)
+# bark basket: a small 3x3 store for fruit, berries and hides
+shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "mechanical:bark"}, "mechanical:bark_basket")
+w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
+w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
+lang["item.mechanical.bark_basket"] = "Bark Basket"
+w(D / "mechanical/tags/item/basket_storable.json", {"values": ["minecraft:apple", "minecraft:golden_apple", "minecraft:sweet_berries",
+    "minecraft:glow_berries", "minecraft:melon_slice", "minecraft:chorus_fruit", "minecraft:leather", "minecraft:rabbit_hide",
+    "mechanical:raw_hide", "mechanical:scraped_hide"]})
 print("stumps ok")
 
 # ---- fire drill, campfire, kiln, crucible ----
@@ -373,6 +383,7 @@ UNLOCKS = {
     "twine": ("mechanical:twine", ["cordage", "fire_drill"]),
     "whole_fish": ("#mechanical:whole_fish", ["gut_cod", "gut_salmon", "gut_tropical_fish", "gut_pufferfish"]),
     "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones"]),
+    "bark": ("mechanical:bark", ["plant_fibre_from_bark", "bark_basket"]),
     "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"] + [f"{x}_log_from_firewood" for x in WOODS]),
     "rock_chunks": ("#mechanical:rock_chunks", ["stone_pickaxe_head", "stone_axe_head", "kiln"]),
     "clay_ball": ("minecraft:clay_ball", ["kiln", "unfired_crucible"]),

@@ -176,6 +176,9 @@ public class Mechanical {
     public static final Map<String, DeferredItem<Item>> ROUGH_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
     public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
+    public static final DeferredItem<BarkBasketItem> BARK_BASKET = ITEMS.registerItem("bark_basket", BarkBasketItem::new, p -> p.stacksTo(1));
+    public static final Supplier<MenuType<BarkBasketMenu>> BARK_BASKET_MENU = MENUS.register("bark_basket",
+            () -> new MenuType<>(BarkBasketMenu::new, FeatureFlags.VANILLA_SET));
 
     // Firewood: what logs drop (2 each), one per wood type so 4 of them (2x2) craft back into that log.
     public static final Map<String, DeferredItem<Item>> FIREWOOD = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.registerSimpleItem(w + "_firewood")));

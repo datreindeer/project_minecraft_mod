@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:bark",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:plant_fibre",
+    "count": 2
+  }
+}

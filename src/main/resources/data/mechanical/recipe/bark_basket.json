@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " C ",
+    "B B",
+    "BBB"
+  ],
+  "key": {
+    "C": "mechanical:cordage",
+    "B": "mechanical:bark"
+  },
+  "result": {
+    "id": "mechanical:bark_basket"
+  }
+}
