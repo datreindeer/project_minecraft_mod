@@ -2,12 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "FTF",
+    "ATK",
     "PCP"
   ],
   "key": {
-    "F": "minecraft:flint",
+    "A": "mechanical:flint_axe",
     "T": "mechanical:twine",
+    "K": "mechanical:flint_pickaxe",
     "P": "#minecraft:planks",
     "C": "minecraft:crafting_table"
   },

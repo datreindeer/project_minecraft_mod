@@ -69,6 +69,11 @@ public class StoneAgeEvents {
         BlockState state = event.getState();
         if (state.is(BlockTags.LOGS)) {
             logsToFirewood(event, state);
+        } else if ((state.is(BlockTags.PLANKS) || state.is(Blocks.CRAFTING_TABLE)) && !event.getTool().is(ItemTags.AXES)) {
+            // without an axe, worked wood (village houses ...) just splinters: no shortcut past the flint axe
+            event.getDrops().clear();
+            maybeDrop(event, Items.STICK, 1.0F);
+            maybeDrop(event, Items.STICK, 0.5F);
         } else if (state.is(BlockTags.LEAVES)) {
             maybeDrop(event, Items.STICK, LEAF_STICK_CHANCE);
         } else if (state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS) || state.is(Blocks.FERN) || state.is(Blocks.LARGE_FERN)) {

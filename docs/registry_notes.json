@@ -181,10 +181,10 @@
     "text": "Blir kvar där man högg när ett Poplar-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[poplar_rough_log]] på stubben och hugg den till Firewood."
   },
   "flint_pickaxe": {
-    "text": "Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint."
+    "text": "Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint. Används också som hammarsten för att knacka stenhuvuden (ligger kvar, tappar 1 hållbarhet) och behövs till [[tool_station]]."
   },
   "flint_axe": {
-    "text": "Första yxan, 2×2-recept som går i inventoryt: Logs kan inte brytas utan yxa. Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint. 4 skada.\nHugg en log i ett naturligt träd → hela trädet fälls (smyg för att hugga en enda log). Håll in högerklick på Fallen Logs och Rough Logs för att bearbeta dem."
+    "text": "Första yxan, 2×2-recept som går i inventoryt: Logs kan inte brytas utan yxa. Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint. 4 skada.\nHugg en log i ett naturligt träd → hela trädet fälls (smyg för att hugga en enda log). Håll in högerklick på Fallen Logs och Rough Logs för att bearbeta dem. Behövs till [[tool_station]]. Planks och Crafting Table kräver yxa, annars blir de Sticks."
   },
   "flint_shovel": {
     "text": "Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint."

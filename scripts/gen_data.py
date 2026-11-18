@@ -120,16 +120,16 @@ shaped("flint_shovel", ["F", "T", "S"], FTS, "mechanical:flint_shovel")
 shaped("flint_hoe", ["FF", "TS", " S"], FTS, "mechanical:flint_hoe")
 shaped("flint_knife", ["F ", "TS"], FTS, "mechanical:flint_knife")
 
-# Knapping: rock chunks shaped with a flint knife (the knife survives, losing durability).
-RK = {"R": "#mechanical:rock_chunks", "K": "#mechanical:knives"}
+# Knapping: rocks struck into shape with a Flint Pickaxe used as a hammerstone (it survives, losing durability).
+RK = {"R": "#mechanical:rock_chunks", "K": "mechanical:flint_pickaxe"}
 shaped("stone_pickaxe_head", ["RRR", " K "], RK, "mechanical:stone_pickaxe_head")
 shaped("stone_axe_head", ["RR", "RK"], RK, "mechanical:stone_axe_head")
 
 # Stone tools are assembled in the Tool Station (ToolStationRecipes.java), not the crafting table.
 # Two single-sided pick heads knapped together make the double head for the full stone pickaxe.
-shaped("double_stone_axe_head", ["HKH"], {"H": "mechanical:stone_axe_head", "K": "#mechanical:knives"}, "mechanical:double_stone_axe_head")
-shaped("double_stone_pickaxe_head", ["HKH"], {"H": "mechanical:stone_pickaxe_head", "K": "#mechanical:knives"}, "mechanical:double_stone_pickaxe_head")
-shaped("tool_station", ["FTF", "PCP"], {"F": "minecraft:flint", "T": "mechanical:twine", "P": "#minecraft:planks", "C": "minecraft:crafting_table"}, "mechanical:tool_station")
+shaped("double_stone_axe_head", ["HKH"], {"H": "mechanical:stone_axe_head", "K": "mechanical:flint_pickaxe"}, "mechanical:double_stone_axe_head")
+shaped("double_stone_pickaxe_head", ["HKH"], {"H": "mechanical:stone_pickaxe_head", "K": "mechanical:flint_pickaxe"}, "mechanical:double_stone_pickaxe_head")
+shaped("tool_station", ["ATK", "PCP"], {"A": "mechanical:flint_axe", "T": "mechanical:twine", "K": "mechanical:flint_pickaxe", "P": "#minecraft:planks", "C": "minecraft:crafting_table"}, "mechanical:tool_station")
 
 # Our own tree species (Trees.java): full wood sets in the mechanical namespace; also in WOODS (stumps, fallen logs, firewood).
 NEW_WOODS = ["aspen", "alder", "beech", "linden"]

@@ -6,7 +6,7 @@
   ],
   "key": {
     "H": "mechanical:stone_pickaxe_head",
-    "K": "#mechanical:knives"
+    "K": "mechanical:flint_pickaxe"
   },
   "result": {
     "id": "mechanical:double_stone_pickaxe_head"

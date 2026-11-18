@@ -7,7 +7,7 @@
   ],
   "key": {
     "R": "#mechanical:rock_chunks",
-    "K": "#mechanical:knives"
+    "K": "mechanical:flint_pickaxe"
   },
   "result": {
     "id": "mechanical:stone_pickaxe_head"

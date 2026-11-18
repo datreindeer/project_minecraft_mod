@@ -7,9 +7,10 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 
 1. Slå på gräs → **Plant Fibre** → **Twine**. Leta **Flint** (lös flinta på marken, grus) och **rocks** (lösa stenar).
 2. Slå på löv → **Sticks**.
-3. **Flint Knife** och **Flint Axe** (+ övriga flintverktyg).
-4. Med yxan: hugg träd → **Firewood**. Med kniven: knacka **Stone Pickaxe Head** / **Stone Axe Head** av rocks.
-5. **Tool Station** → **Crude Stone Pickaxe** och **Crude Stone Axe**.
+3. **Flint Knife**, **Flint Axe** och **Flint Pickaxe** (+ Flint Shovel/Hoe). Inget av de tre går att hoppa över.
+4. Med yxan: hugg träd → **Firewood** → planks och crafting table. Med **Flint Pickaxe** som hammarsten: knacka
+   **Stone Pickaxe Head** / **Stone Axe Head** av rocks.
+5. **Tool Station** (byggs av Flint Axe + Flint Pickaxe) → **Crude Stone Pickaxe** och **Crude Stone Axe**.
 6. **Cordage** + **Tool Rod** + dubbla huvuden → **Stone Pickaxe** och **Stone Axe**.
 7. **Campfire** av Firewood, tänd med **Fire Drill**. Sätt en **Clay Kiln** på den → **Brick**, **Charcoal**, **Crucible**.
 8. Mat: döda djur → **Carcass** → stycka med Flint Knife → **meat scraps** (laga på Campfire), **Raw Hide** → **Scraped Hide** →
@@ -57,9 +58,10 @@ Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48. Laga
 **Flint Knife** är ett verktyg i recept: det ligger kvar i rutan efter craftingen och tappar 1 i hållbarhet. Den ger också
 mer Plant Fibre från gräs.
 
-### Stenhuvuden (crafting table, med Flint Knife)
+### Stenhuvuden (crafting table, med Flint Pickaxe som hammarsten)
+Flint Pickaxe ligger kvar i rutnätet och tappar 1 i hållbarhet per knackning.
 
-| Item | Recept (R = rock, K = Flint Knife) |
+| Item | Recept (R = rock, K = Flint Pickaxe) |
 |---|---|
 | Stone Pickaxe Head (enkelsidigt) | `[R][R][R]` / `[ ][K][ ]` |
 | Double Stone Pickaxe Head | `[Stone Pickaxe Head][K][Stone Pickaxe Head]` |
@@ -161,7 +163,7 @@ Ligger på marken i 5 varianter (Stone, Granite, Diorite, Andesite, Flint) och 3
 - Har inget item, finns bara i världen.
 
 ### Tool Station
-Recept: `[Flint][Twine][Flint]` / `[Planks][Crafting Table][Planks]`.
+Recept: `[Flint Axe][Twine][Flint Pickaxe]` / `[Planks][Crafting Table][Planks]` (flintverktygen går åt).
 
 GUI: lista till vänster med upplåsta verktyg, i mitten tre platser (huvud, bindning, skaft) och en resultatruta.
 - Ett verktyg låses upp första gången man har dess material i inventoryt (stenverktyg: valfri rock). Upplåsningen
@@ -247,6 +249,8 @@ med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta
     tiden till vanlig brun Leaf Litter. Bryter man den får man vanlig Leaf Litter (tändmaterial).
   - Bara löven som hör till just det trädet tas med (grannträd lämnas).
   - En Stump blir kvar.
+- **Planks och Crafting Table kräver också yxa:** bryts de utan yxa splittras de till 1–2 Sticks (ingen genväg via
+  byarnas hus).
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
 
 ### Skogen (ändrad)

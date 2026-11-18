@@ -98,7 +98,7 @@ public class Mechanical {
     public static final TagKey<Item> FLINT_TOOL_MATERIALS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "flint_tool_materials"));
     public static final ToolMaterial FLINT = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 48, 2.5F, 0.0F, 5, FLINT_TOOL_MATERIALS);
 
-    public static final DeferredItem<Item> FLINT_PICKAXE = ITEMS.registerSimpleItem("flint_pickaxe", p -> p.pickaxe(FLINT, 1.0F, -2.8F));
+    public static final DeferredItem<FlintPickaxeItem> FLINT_PICKAXE = ITEMS.registerItem("flint_pickaxe", FlintPickaxeItem::new, p -> p.pickaxe(FLINT, 1.0F, -2.8F));
     public static final DeferredItem<Item> FLINT_AXE = ITEMS.registerSimpleItem("flint_axe", p -> p.axe(FLINT, 3.0F, -3.2F));
     public static final DeferredItem<Item> FLINT_SHOVEL = ITEMS.registerSimpleItem("flint_shovel", p -> p.shovel(FLINT, 1.5F, -3.0F));
     public static final DeferredItem<Item> FLINT_HOE = ITEMS.registerSimpleItem("flint_hoe", p -> p.hoe(FLINT, 0.0F, -3.0F));
