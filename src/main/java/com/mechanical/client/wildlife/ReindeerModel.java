@@ -129,7 +129,7 @@ public class ReindeerModel extends EntityModel<WildAnimalRenderState> {
      */
     private static void addAntler(PartDefinition antlers, String p, float side, boolean shovel) {
         CubeListBuilder lowBeam = CubeListBuilder.create().texOffs(78, 17).addBox(-0.5F, -7.0F, -0.5F, 1.0F, 7.0F, 1.0F);
-        PartDefinition beam = antlers.addOrReplaceChild(p + "antler", lowBeam, PartPose.offsetAndRotation(1.5F * side, -3.0F, 0.5F, -0.9F, 0.0F, 0.35F * side));
+        PartDefinition beam = antlers.addOrReplaceChild(p + "antler", lowBeam, PartPose.offsetAndRotation(1.5F * side, -3.0F, 0.5F, -0.9F, 0.0F, 0.5F * side));
         if (shovel) {
             beam.addOrReplaceChild(p + "shovel", CubeListBuilder.create().texOffs(96, 21).addBox(-0.5F, -2.0F, -5.0F, 1.0F, 3.0F, 5.0F),
                 PartPose.offsetAndRotation(0.0F, -1.2F, 0.0F, 0.7F, -0.25F * side, -0.35F * side));
@@ -138,7 +138,7 @@ public class ReindeerModel extends EntityModel<WildAnimalRenderState> {
         }
         beam.addOrReplaceChild(p + "bez_tine", longTine(), PartPose.offsetAndRotation(0.0F, -4.5F, 0.0F, 1.4F, -0.15F * side, 0.0F));
         CubeListBuilder highBeam = CubeListBuilder.create().texOffs(82, 17).addBox(-0.5F, -7.0F, -0.5F, 1.0F, 7.0F, 1.0F);
-        PartDefinition upper = beam.addOrReplaceChild(p + "upper_beam", highBeam, PartPose.offsetAndRotation(0.0F, -6.5F, 0.0F, 0.9F, 0.0F, 0.1F * side));
+        PartDefinition upper = beam.addOrReplaceChild(p + "upper_beam", highBeam, PartPose.offsetAndRotation(0.0F, -6.5F, 0.0F, 0.9F, 0.0F, 0.25F * side));
         upper.addOrReplaceChild(p + "back_tine", tine(), PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, -1.3F, 0.0F, 0.2F * side));
         PartDefinition crown = upper.addOrReplaceChild(p + "crown", CubeListBuilder.create().texOffs(86, 17).addBox(-0.5F, -4.0F, -2.0F, 1.0F, 4.0F, 3.0F),
             PartPose.offsetAndRotation(0.0F, -6.5F, 0.0F, 0.6F, 0.0F, -0.15F * side));

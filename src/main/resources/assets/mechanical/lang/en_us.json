@@ -109,5 +109,16 @@
   "item.mechanical.whole_pufferfish": "Whole Pufferfish",
   "item.mechanical.fish_bones": "Fish Bones",
   "item.mechanical.iron_knife": "Iron Knife",
-  "message.mechanical.knife_too_weak": "This hide is too tough for your knife"
+  "message.mechanical.knife_too_weak": "This hide is too tough for your knife",
+  "item.mechanical.horn": "Horn",
+  "item.mechanical.aurochs_spawn_egg": "Aurochs Spawn Egg",
+  "item.mechanical.wild_horse_spawn_egg": "Wild Horse Spawn Egg",
+  "item.mechanical.mouflon_spawn_egg": "Mouflon Spawn Egg",
+  "item.mechanical.moose_spawn_egg": "Moose Spawn Egg",
+  "item.mechanical.reindeer_spawn_egg": "Reindeer Spawn Egg",
+  "entity.mechanical.aurochs": "Aurochs",
+  "entity.mechanical.wild_horse": "Wild Horse",
+  "entity.mechanical.mouflon": "Mouflon",
+  "entity.mechanical.moose": "Moose",
+  "entity.mechanical.reindeer": "Reindeer"
 }

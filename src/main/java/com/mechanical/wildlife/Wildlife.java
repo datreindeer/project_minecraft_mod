@@ -18,7 +18,7 @@ import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-/** Forest wildlife: entity types, items they give, spawn eggs, attributes and spawn rules. Spawns are in data (biome modifier). */
+/** Wildlife (forest, open country, cold): entity types, items they give, spawn eggs, attributes and spawn rules. Spawns are in data (biome modifier). */
 @EventBusSubscriber(modid = "mechanical")
 public final class Wildlife {
     public static final DeferredHolder<EntityType<?>, EntityType<RoeDeer>> ROE_DEER = ENTITY_TYPES.registerEntityType(
@@ -31,6 +31,18 @@ public final class Wildlife {
             "hare", Hare::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Pheasant>> PHEASANT = ENTITY_TYPES.registerEntityType(
             "pheasant", Pheasant::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.7F).clientTrackingRange(8));
+    // open country
+    public static final DeferredHolder<EntityType<?>, EntityType<Aurochs>> AUROCHS = ENTITY_TYPES.registerEntityType(
+            "aurochs", Aurochs::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.6F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<WildHorse>> WILD_HORSE = ENTITY_TYPES.registerEntityType(
+            "wild_horse", WildHorse::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.6F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Mouflon>> MOUFLON = ENTITY_TYPES.registerEntityType(
+            "mouflon", Mouflon::new, MobCategory.CREATURE, b -> b.sized(0.9F, 1.3F).clientTrackingRange(10));
+    // cold
+    public static final DeferredHolder<EntityType<?>, EntityType<Moose>> MOOSE = ENTITY_TYPES.registerEntityType(
+            "moose", Moose::new, MobCategory.CREATURE, b -> b.sized(1.5F, 2.2F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Reindeer>> REINDEER = ENTITY_TYPES.registerEntityType(
+            "reindeer", Reindeer::new, MobCategory.CREATURE, b -> b.sized(0.95F, 1.5F).clientTrackingRange(10));
 
     // what they give when butchered (see Butchery)
     public static final DeferredItem<Item> VENISON_SCRAPS = food("venison_scraps", 1, 0.1F);
@@ -39,12 +51,18 @@ public final class Wildlife {
     public static final DeferredItem<Item> ANTLER = ITEMS.registerSimpleItem("antler");
     public static final DeferredItem<Item> LARD = ITEMS.registerSimpleItem("lard");
     public static final DeferredItem<Item> TUSK = ITEMS.registerSimpleItem("tusk");
+    public static final DeferredItem<Item> HORN = ITEMS.registerSimpleItem("horn");
 
     public static final DeferredItem<SpawnEggItem> ROE_DEER_SPAWN_EGG = egg("roe_deer_spawn_egg", ROE_DEER);
     public static final DeferredItem<SpawnEggItem> RED_DEER_SPAWN_EGG = egg("red_deer_spawn_egg", RED_DEER);
     public static final DeferredItem<SpawnEggItem> WILD_BOAR_SPAWN_EGG = egg("wild_boar_spawn_egg", WILD_BOAR);
     public static final DeferredItem<SpawnEggItem> HARE_SPAWN_EGG = egg("hare_spawn_egg", HARE);
     public static final DeferredItem<SpawnEggItem> PHEASANT_SPAWN_EGG = egg("pheasant_spawn_egg", PHEASANT);
+    public static final DeferredItem<SpawnEggItem> AUROCHS_SPAWN_EGG = egg("aurochs_spawn_egg", AUROCHS);
+    public static final DeferredItem<SpawnEggItem> WILD_HORSE_SPAWN_EGG = egg("wild_horse_spawn_egg", WILD_HORSE);
+    public static final DeferredItem<SpawnEggItem> MOUFLON_SPAWN_EGG = egg("mouflon_spawn_egg", MOUFLON);
+    public static final DeferredItem<SpawnEggItem> MOOSE_SPAWN_EGG = egg("moose_spawn_egg", MOOSE);
+    public static final DeferredItem<SpawnEggItem> REINDEER_SPAWN_EGG = egg("reindeer_spawn_egg", REINDEER);
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
         return ITEMS.registerSimpleItem(name, p -> p.food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build()));
@@ -64,13 +82,22 @@ public final class Wildlife {
         event.put(WILD_BOAR.get(), WildBoar.createAttributes().build());
         event.put(HARE.get(), Hare.createAttributes().build());
         event.put(PHEASANT.get(), Pheasant.createAttributes().build());
+        event.put(AUROCHS.get(), Aurochs.createAttributes().build());
+        event.put(WILD_HORSE.get(), WildHorse.createAttributes().build());
+        event.put(MOUFLON.get(), Mouflon.createAttributes().build());
+        event.put(MOOSE.get(), Moose.createAttributes().build());
+        event.put(REINDEER.get(), Reindeer.createAttributes().build());
     }
 
     @SubscribeEvent
     static void spawnRules(RegisterSpawnPlacementsEvent event) {
-        for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get()}) {
+        for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get(),
+                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get()}) {
             register(event, type);
         }
+        // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule
+        event.register(MOUFLON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     @SuppressWarnings("unchecked")

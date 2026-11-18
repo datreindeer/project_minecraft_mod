@@ -49,6 +49,16 @@ public class MechanicalClient {
         });
         event.registerEntityRenderer(Wildlife.PHEASANT.get(), c -> new WildAnimalRenderer<>(c,
                 new PheasantModel(c.bakeLayer(PheasantModel.LAYER)), new PheasantChickModel(c.bakeLayer(PheasantChickModel.LAYER)), 1.0F, 0.3F));
+        event.registerEntityRenderer(Wildlife.AUROCHS.get(), c -> new WildAnimalRenderer<>(c,
+                new AurochsModel(c.bakeLayer(AurochsModel.LAYER)), new AurochsCalfModel(c.bakeLayer(AurochsCalfModel.LAYER)), 1.15F, 1.0F));
+        event.registerEntityRenderer(Wildlife.WILD_HORSE.get(), c -> new WildAnimalRenderer<>(c,
+                new WildHorseModel(c.bakeLayer(WildHorseModel.LAYER)), new WildHorseFoalModel(c.bakeLayer(WildHorseFoalModel.LAYER)), 1.0F, 0.8F));
+        event.registerEntityRenderer(Wildlife.MOUFLON.get(), c -> new WildAnimalRenderer<>(c,
+                new MouflonModel(c.bakeLayer(MouflonModel.LAYER)), new MouflonLambModel(c.bakeLayer(MouflonLambModel.LAYER)), 1.0F, 0.5F));
+        event.registerEntityRenderer(Wildlife.MOOSE.get(), c -> new WildAnimalRenderer<>(c,
+                new MooseModel(c.bakeLayer(MooseModel.LAYER)), new MooseCalfModel(c.bakeLayer(MooseCalfModel.LAYER)), 1.0F, 1.1F));
+        event.registerEntityRenderer(Wildlife.REINDEER.get(), c -> new WildAnimalRenderer<>(c,
+                new ReindeerModel(c.bakeLayer(ReindeerModel.LAYER)), new ReindeerCalfModel(c.bakeLayer(ReindeerCalfModel.LAYER)), 1.0F, 0.75F));
     }
 
     @SubscribeEvent
@@ -61,5 +71,15 @@ public class MechanicalClient {
         event.registerLayerDefinition(FawnModel.LAYER, FawnModel::createBodyLayer);
         event.registerLayerDefinition(PigletModel.LAYER, PigletModel::createBodyLayer);
         event.registerLayerDefinition(PheasantChickModel.LAYER, PheasantChickModel::createBodyLayer);
+        event.registerLayerDefinition(AurochsModel.LAYER, AurochsModel::createBodyLayer);
+        event.registerLayerDefinition(AurochsCalfModel.LAYER, AurochsCalfModel::createBodyLayer);
+        event.registerLayerDefinition(WildHorseModel.LAYER, WildHorseModel::createBodyLayer);
+        event.registerLayerDefinition(WildHorseFoalModel.LAYER, WildHorseFoalModel::createBodyLayer);
+        event.registerLayerDefinition(MouflonModel.LAYER, MouflonModel::createBodyLayer);
+        event.registerLayerDefinition(MouflonLambModel.LAYER, MouflonLambModel::createBodyLayer);
+        event.registerLayerDefinition(MooseModel.LAYER, MooseModel::createBodyLayer);
+        event.registerLayerDefinition(MooseCalfModel.LAYER, MooseCalfModel::createBodyLayer);
+        event.registerLayerDefinition(ReindeerModel.LAYER, ReindeerModel::createBodyLayer);
+        event.registerLayerDefinition(ReindeerCalfModel.LAYER, ReindeerCalfModel::createBodyLayer);
     }
 }

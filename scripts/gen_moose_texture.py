@@ -184,11 +184,11 @@ def nose_mat(p, face, x, y, z, i, j):
 
 
 def dewlap_mat(p, face, x, y, z, i, j):
-    # the bell: a hairy flap ending in a ragged tassel
-    if y > 4.0 and face in ("left", "right", "front", "back"):
-        edge = abs(z) > 0.8 if face in ("left", "right") else False
-        if edge or h(i, 0, 91) < (y - 4.0) * 0.35:
-            return (0, 0, 0, 0)
+    # the bell: a hairy flap tapering to a tassel (the side faces carry the outline; front/back edges match it)
+    if face in ("left", "right") and abs(z) > 1.5 - max(0.0, y - 3.0) * 0.45:
+        return (0, 0, 0, 0)
+    if face in ("front", "back") and y > 3.5:
+        return (0, 0, 0, 0)
     c = lerp(p["COAT_DARK"], p["RIDGE"], y / 6)
     return fur(shaggy(c, i, j, 92, 0.8), i, j, 93, 0.1)
 
@@ -324,8 +324,6 @@ def calf_head(p, face, x, y, z, i, j):
     if face in ("left", "right"):
         if abs(y + 0.5) < 0.6 and abs(z + 2.5) < 0.6:
             return p["EYE"]
-        if abs(y + 0.5) < 0.6 and abs(z + 1.5) < 0.6:
-            return p["GLINT"] if face == "right" else p["EYE"]
     c = lerp(p["FACE"], p["COAT_DARK"], 0.3) if face == "top" else p["FACE"]
     return fur(c, i, j, 155, 0.05)
 

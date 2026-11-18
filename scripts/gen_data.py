@@ -518,6 +518,26 @@ SPAWNS = {"roe_deer": (10, 3, 5), "red_deer": (6, 2, 4), "wild_boar": (6, 2, 4),
 w(D / "mechanical/neoforge/biome_modifier/add_forest_wildlife.json", {"type": "neoforge:add_spawns", "biomes": "#minecraft:is_forest",
     "spawners": [{"type": f"mechanical:{x}", "weight": wt, "count": {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}}
                  for x, (wt, lo, hi) in SPAWNS.items()]})
+# ---- open-country and cold wildlife ----
+MORE_WILD = ["aurochs", "wild_horse", "mouflon", "moose", "reindeer"]
+for item in ["horn"] + [f"{x}_spawn_egg" for x in MORE_WILD]:
+    w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
+    w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
+    lang[f"item.mechanical.{item}"] = title(item)
+for x in MORE_WILD:
+    lang[f"entity.mechanical.{x}"] = title(x)
+MORE_SPAWNS = {  # (weight, min, max), biomes
+    "aurochs": ((8, 3, 6), ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:savanna"]),
+    "wild_horse": ((6, 3, 6), ["minecraft:plains", "minecraft:savanna"]),
+    "mouflon": ((8, 2, 5), ["minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_savanna",
+                            "minecraft:savanna_plateau", "minecraft:meadow", "minecraft:stony_peaks"]),
+    "moose": ((5, 1, 3), ["minecraft:taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:swamp"]),
+    "reindeer": ((8, 4, 8), ["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove", "minecraft:snowy_slopes", "minecraft:ice_spikes"]),
+}
+for x, ((wt, lo, hi), biomes) in MORE_SPAWNS.items():
+    w(D / f"mechanical/neoforge/biome_modifier/add_{x}.json", {"type": "neoforge:add_spawns", "biomes": biomes,
+        "spawners": [{"type": f"mechanical:{x}", "weight": wt, "count": {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}}]})
+
 # Farm animals no longer spawn in the wild; they live in villages (VillageAnimals.java). Goats, rabbits, mooshrooms stay.
 w(D / "mechanical/neoforge/biome_modifier/remove_farm_animals.json", {"type": "neoforge:remove_spawns", "biomes": "#minecraft:is_overworld",
     "entity_types": [f"minecraft:{x}" for x in ["cow", "sheep", "pig", "chicken", "horse", "donkey", "llama"]]})

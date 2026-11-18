@@ -67,7 +67,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         carcass.animal = dead.getType();
         carcass.bodyYaw = dead.yBodyRot;
         carcass.looks = looksOf(dead);
-        carcass.trophy = dead instanceof com.mechanical.wildlife.WildAnimal wild && wild.showsHorns() && dead instanceof com.mechanical.wildlife.RedDeer;
+        carcass.trophy = dead instanceof com.mechanical.wildlife.WildAnimal wild && wild.showsHorns()
+                && (dead instanceof com.mechanical.wildlife.RedDeer || dead instanceof com.mechanical.wildlife.Moose || dead instanceof com.mechanical.wildlife.Reindeer);
         carcass.setPos(dead.position());
         carcass.refreshDimensions();
         return carcass;

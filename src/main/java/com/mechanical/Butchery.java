@@ -63,6 +63,18 @@ public final class Butchery {
             Map.entry(Wildlife.HARE.get(), new Yield(Mechanical.RABBIT_SCRAPS, 1, 1, List.of(new Extra(() -> Items.RABBIT_HIDE, 0.35F, 1, 1)),
                     List.of(new Extra(() -> Items.RABBIT_FOOT, 0.08F, 1, 1)))),
             Map.entry(Wildlife.PHEASANT.get(), new Yield(Mechanical.CHICKEN_SCRAPS, 1, 1, List.of(new Extra(() -> Items.FEATHER, 1.0F, 2, 3)), List.of())),
+            Map.entry(Wildlife.AUROCHS.get(), new Yield(Mechanical.BEEF_SCRAPS, 3, 5, List.of(hide(0.6F)),
+                    List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 2), new Extra(Wildlife.HORN, 0.5F, 1, 2)))),
+            Map.entry(Wildlife.WILD_HORSE.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 2, 4, List.of(hide(0.5F)),
+                    List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 2)))),
+            // mouflon: like the sheep, the wool comes off first, then the hide with the meat
+            Map.entry(Wildlife.MOUFLON.get(), new Yield(Mechanical.MUTTON_SCRAPS, 1, 3,
+                    List.of(new Extra(Mechanical.WOOL_THREAD, 0.4F, 1, 2)),
+                    List.of(hide(0.3F), new Extra(Wildlife.SINEW, 0.3F, 1, 1), new Extra(Wildlife.HORN, 0.3F, 1, 2)))),
+            Map.entry(Wildlife.MOOSE.get(), new Yield(Wildlife.VENISON_SCRAPS, 3, 6, List.of(hide(0.7F)),
+                    List.of(new Extra(Wildlife.SINEW, 0.6F, 1, 3)))),
+            Map.entry(Wildlife.REINDEER.get(), new Yield(Wildlife.VENISON_SCRAPS, 2, 3, List.of(hide(0.45F)),
+                    List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 2)))),
             Map.entry(EntityTypes.RABBIT, new Yield(Mechanical.RABBIT_SCRAPS, 1, 1,
                     List.of(new Extra(() -> Items.RABBIT_HIDE, 0.3F, 1, 1)), List.of(new Extra(() -> Items.RABBIT_FOOT, 0.05F, 1, 1)))));
     }
