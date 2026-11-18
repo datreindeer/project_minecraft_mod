@@ -445,6 +445,88 @@ w(D / "minecraft/recipe/campfire.json", {"type": "minecraft:crafting_shaped", "c
 w(lang_path, lang)
 print("firewood ok")
 
+# ---- hunting gear, fur, tallow, fletching table ----
+def flat_item(item, parent="minecraft:item/generated"):
+    w(A / f"models/item/{item}.json", {"parent": parent, "textures": {"layer0": f"mechanical:item/{item}"}})
+    w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
+for item, name in [("tusk_dagger", "Tusk Dagger")]:
+    flat_item(item, "minecraft:item/handheld")
+    lang[f"item.mechanical.{item}"] = name
+for item, name in [("bone_fish_hook", "Bone Fish Hook"), ("tallow", "Tallow"), ("bone_arrow", "Bone Arrow"),
+                   ("barbed_arrow", "Barbed Arrow"), ("fire_arrow", "Fire Arrow"), ("fur_hood", "Fur Hood"), ("fur_coat", "Fur Coat"),
+                   ("fur_leggings", "Fur Leggings"), ("fur_boots", "Fur Boots")]:
+    flat_item(item)
+    lang[f"item.mechanical.{item}"] = name
+# bone hook rod: like the crude rod
+for suffix in ["", "_cast"]:
+    w(A / f"models/item/bone_hook_fishing_rod{suffix}.json", {"parent": "minecraft:item/handheld_rod", "textures": {"layer0": f"mechanical:item/bone_hook_fishing_rod{suffix}"}})
+w(A / "items/bone_hook_fishing_rod.json", {"model": {"type": "minecraft:condition", "property": "minecraft:fishing_rod/cast",
+    "on_false": {"type": "minecraft:model", "model": "mechanical:item/bone_hook_fishing_rod"},
+    "on_true": {"type": "minecraft:model", "model": "mechanical:item/bone_hook_fishing_rod_cast"}}})
+lang["item.mechanical.bone_hook_fishing_rod"] = "Bone Hook Fishing Rod"
+# sinew bow: vanilla bow models with our textures
+for suffix in ["", "_pulling_0", "_pulling_1", "_pulling_2"]:
+    w(A / f"models/item/sinew_bow{suffix}.json", {"parent": "minecraft:item/bow", "textures": {"layer0": f"mechanical:item/sinew_bow{suffix}"}})
+sbow = lambda x: {"type": "minecraft:model", "model": f"mechanical:item/sinew_bow{x}"}
+w(A / "items/sinew_bow.json", {"model": {"type": "minecraft:condition", "property": "minecraft:using_item", "on_false": sbow(""),
+    "on_true": {"type": "minecraft:range_dispatch", "property": "minecraft:use_duration", "scale": 0.05, "fallback": sbow("_pulling_0"),
+                "entries": [{"threshold": 0.65, "model": sbow("_pulling_1")}, {"threshold": 0.9, "model": sbow("_pulling_2")}]}}})
+lang["item.mechanical.sinew_bow"] = "Sinew Bow"
+lang["container.mechanical.fletching_table"] = "Fletching Table"
+w(D / "minecraft/tags/item/enchantable/bow.json", {"values": ["mechanical:crude_bow", "mechanical:sinew_bow"]})
+w(D / "minecraft/tags/item/enchantable/fishing.json", {"values": ["mechanical:crude_fishing_rod", "mechanical:bone_hook_fishing_rod"]})
+w(D / "minecraft/tags/item/enchantable/durability.json", {"values": ["mechanical:crude_bow", "mechanical:crude_fishing_rod", "mechanical:sinew_bow",
+    "mechanical:bone_hook_fishing_rod", "mechanical:fur_hood", "mechanical:fur_coat", "mechanical:fur_leggings", "mechanical:fur_boots"]})
+w(D / "minecraft/tags/item/arrows.json", {"values": ["mechanical:bone_arrow", "mechanical:barbed_arrow", "mechanical:fire_arrow"]})
+w(D / "mechanical/tags/item/knives.json", {"values": ["mechanical:flint_knife", "mechanical:iron_knife", "mechanical:tusk_dagger"]})
+for tag, piece in [("head_armor", "fur_hood"), ("chest_armor", "fur_coat"), ("leg_armor", "fur_leggings"), ("foot_armor", "fur_boots")]:
+    w(D / f"minecraft/tags/item/{tag}.json", {"values": [f"mechanical:{piece}"]})
+w(D / "mechanical/tags/item/repairs_fur_armor.json", {"values": ["mechanical:bear_pelt"]})
+# fur armour: the leather piece lined with bear pelt
+w(A / "equipment/fur.json", {"layers": {"humanoid": [{"texture": "mechanical:fur"}], "humanoid_leggings": [{"texture": "mechanical:fur"}]}})
+for piece, base, pelts in [("fur_hood", "leather_helmet", 1), ("fur_coat", "leather_chestplate", 2), ("fur_leggings", "leather_leggings", 2), ("fur_boots", "leather_boots", 1)]:
+    shapeless(piece, [f"minecraft:{base}"] + ["mechanical:bear_pelt"] * pelts, f"mechanical:{piece}", category="equipment")
+# bear rug: flat, facing
+w(A / "models/block/bear_rug.json", {"textures": {"particle": "mechanical:block/bear_rug", "top": "mechanical:block/bear_rug"}, "elements": [{
+    "from": [0, 0, 0], "to": [16, 1, 16], "faces": {
+        "up": {"texture": "#top", "uv": [0, 0, 16, 16]}, "down": {"texture": "#top", "uv": [0, 0, 16, 16], "cullface": "down"},
+        "north": {"texture": "#top", "uv": [0, 0, 16, 1]}, "south": {"texture": "#top", "uv": [0, 15, 16, 16]},
+        "east": {"texture": "#top", "uv": [15, 0, 16, 16]}, "west": {"texture": "#top", "uv": [0, 0, 1, 16]}}}]})
+w(A / "blockstates/bear_rug.json", {"variants": {f"facing={f}": {"model": "mechanical:block/bear_rug", **({"y": y} if y else {})}
+    for f, y in {"north": 0, "east": 90, "south": 180, "west": 270}.items()}})
+flat_item("bear_rug")
+w(D / "mechanical/loot_table/blocks/bear_rug.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+    {"type": "minecraft:item", "name": "mechanical:bear_rug"}]}], "random_sequence": "mechanical:blocks/bear_rug"})
+lang["block.mechanical.bear_rug"] = "Bear Rug"
+shapeless("bear_rug", ["mechanical:bear_pelt", "mechanical:bear_claw"], "mechanical:bear_rug", category="building")
+# bone fish hook; tallow rendered from fat over a campfire; candles from tallow
+shapeless("bone_fish_hook", ["mechanical:fish_bones", "#mechanical:knives"], "mechanical:bone_fish_hook", category="equipment")
+for fat, n in (("lard", 1), ("bear_fat", 2)):
+    w(D / f"mechanical/recipe/tallow_from_{fat}.json", {"type": "minecraft:campfire_cooking", "category": "misc", "cookingtime": 400,
+        "experience": 0.1, "ingredient": f"mechanical:{fat}", "result": {"id": "mechanical:tallow", "count": n}})
+w(D / "mechanical/recipe/candle_from_tallow.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["T", "S", "S"],
+    "key": {"T": "mechanical:twine", "S": "mechanical:tallow"}, "result": {"id": "minecraft:candle", "count": 2}})
+# boiled eggs: any egg on a campfire; peeled in the grid (the shell comes back via StoneAgeEvents)
+w(D / "mechanical/recipe/boiled_egg.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 300,
+    "experience": 0.1, "ingredient": "#minecraft:eggs", "result": {"id": "mechanical:boiled_egg"}})
+shapeless("peeled_egg", ["mechanical:boiled_egg"], "mechanical:peeled_egg", category="food")
+for item, name in [("boiled_egg", "Boiled Egg"), ("peeled_egg", "Peeled Egg"), ("eggshell", "Eggshell")]:
+    flat_item(item)
+    lang[f"item.mechanical.{item}"] = name
+# rock chunks back into cobblestone
+shaped("cobblestone_from_chunks", ["RR", "RR"], {"R": "#mechanical:rock_chunks"}, "minecraft:cobblestone")
+# Removed: arrows (fletching table now), honeycomb candles (tallow now), smoker and blast furnace (later ages)
+for cat, name in (("combat", "arrow"), ("decorations", "candle"), ("decorations", "smoker"), ("decorations", "blast_furnace")):
+    w(D / f"minecraft/recipe/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
+    w(D / f"minecraft/advancement/recipes/{cat}/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
+# stone breaks into rock chunks (silk touch keeps the block)
+for rock in ("stone", "granite", "diorite", "andesite"):
+    w(D / f"minecraft/loot_table/blocks/{rock}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:alternatives", "children": [
+        {"type": "minecraft:item", "condition": "minecraft:tool/can_silk_touch", "name": f"minecraft:{rock}"},
+        {"type": "minecraft:item", "name": f"mechanical:{rock}_chunk", "condition": {"type": "minecraft:survives_explosion"},
+         "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}}]}]}]}],
+        "random_sequence": f"minecraft:blocks/{rock}"})
+
 # ---- recipe book unlocks: picking up an item reveals the recipes it leads to ----
 UNLOCKS = {
     "flint": ("minecraft:flint", ["flint_pickaxe", "flint_axe", "flint_shovel", "flint_hoe", "flint_knife", "tool_station"]),
@@ -453,6 +535,10 @@ UNLOCKS = {
     "whole_fish": ("#mechanical:whole_fish", ["gut_cod", "gut_salmon", "gut_tropical_fish", "gut_pufferfish"]),
     "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones"]),
     "bark": ("mechanical:bark", ["plant_fibre_from_bark", "bark_basket"]),
+    "bear_pelt": ("mechanical:bear_pelt", ["fur_hood", "fur_coat", "fur_leggings", "fur_boots", "bear_rug"]),
+    "tallow": ("mechanical:tallow", ["candle_from_tallow"]),
+    "boiled_egg": ("mechanical:boiled_egg", ["peeled_egg"]),
+    "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks"]),
     "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"] + [f"{x}_log_from_firewood" for x in WOODS]),
     "rock_chunks": ("#mechanical:rock_chunks", ["stone_pickaxe_head", "stone_axe_head", "kiln"]),
     "clay_ball": ("minecraft:clay_ball", ["kiln", "unfired_crucible"]),

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_leggings",
+    "mechanical:bear_pelt",
+    "mechanical:bear_pelt"
+  ],
+  "result": {
+    "id": "mechanical:fur_leggings",
+    "count": 1
+  }
+}

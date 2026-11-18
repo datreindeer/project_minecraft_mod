@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_helmet",
+    "mechanical:bear_pelt"
+  ],
+  "result": {
+    "id": "mechanical:fur_hood",
+    "count": 1
+  }
+}

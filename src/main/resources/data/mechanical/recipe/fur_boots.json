@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_boots",
+    "mechanical:bear_pelt"
+  ],
+  "result": {
+    "id": "mechanical:fur_boots",
+    "count": 1
+  }
+}

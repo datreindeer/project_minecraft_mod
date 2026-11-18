@@ -1,4 +1,5 @@
-# Downloads the latest Mechanical release from GitHub into your mods folder and removes the old jar.
+# Downloads the latest Mechanical release from GitHub into your mods folder and removes the old jar,
+# and puts the item register (registry.html) next to this script.
 # Run it with update-mechanical.cmd (double-click). The first time it asks for the mods folder and remembers it.
 
 $ErrorActionPreference = 'Stop'
@@ -31,6 +32,12 @@ if (Test-Path $Target) {
     Get-ChildItem -Path $ModsDir -Filter 'mechanical-*.jar' | Remove-Item -Force
     Move-Item -Path $Temp -Destination $Target
     Write-Host "Installed $($Asset.name) in $ModsDir"
+}
+# the item register (registry.html) goes next to this script
+$Register = $Release.assets | Where-Object { $_.name -eq 'registry.html' } | Select-Object -First 1
+if ($Register) {
+    Invoke-WebRequest -Uri $Register.browser_download_url -OutFile (Join-Path $PSScriptRoot 'registry.html') -Headers @{ 'User-Agent' = 'mechanical-updater' }
+    Write-Host "Updated registry.html (open it in a browser to look up items)"
 }
 Write-Host "(To change the mods folder, delete $ConfigFile)"
 Read-Host "Press Enter to close"

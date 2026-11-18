@@ -31,7 +31,7 @@ public final class Temperature {
     private static final float NIGHT = 5, RAIN = 2, WATER = 5;
     private static final double FIRE_RANGE = 6;
     private static final float FIRE_WARMTH = 10;
-    private static final float LEATHER_PER_PIECE = 0.15F;
+    private static final float LEATHER_PER_PIECE = 0.15F, FUR_PER_PIECE = 0.25F;
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = Mechanical.ATTACHMENTS;
     public static final Supplier<AttachmentType<Float>> BODY = ATTACHMENTS.register("body_temperature", () -> AttachmentType
@@ -86,6 +86,8 @@ public final class Temperature {
                 var item = player.getItemBySlot(slot);
                 if (item.is(Items.LEATHER_HELMET) || item.is(Items.LEATHER_CHESTPLATE) || item.is(Items.LEATHER_LEGGINGS) || item.is(Items.LEATHER_BOOTS)) {
                     insulation += LEATHER_PER_PIECE;
+                } else if (item.is(Mechanical.FUR_HOOD.get()) || item.is(Mechanical.FUR_COAT.get()) || item.is(Mechanical.FUR_LEGGINGS.get()) || item.is(Mechanical.FUR_BOOTS.get())) {
+                    insulation += FUR_PER_PIECE;
                 }
             }
             t = COMFORT - (COMFORT - t) * (1 - insulation);

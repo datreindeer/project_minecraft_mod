@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "T",
+    "S",
+    "S"
+  ],
+  "key": {
+    "T": "mechanical:twine",
+    "S": "mechanical:tallow"
+  },
+  "result": {
+    "id": "minecraft:candle",
+    "count": 2
+  }
+}

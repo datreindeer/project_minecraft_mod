@@ -374,7 +374,8 @@ public final class NightDangers {
 
         private static boolean isLamp(net.minecraft.world.level.block.state.BlockState state) {
             return state.is(Blocks.TORCH) || state.is(Blocks.WALL_TORCH) || state.is(Blocks.LANTERN) || state.is(Blocks.SOUL_LANTERN)
-                    || state.is(Blocks.SOUL_TORCH) || state.is(Blocks.SOUL_WALL_TORCH);
+                    || state.is(Blocks.SOUL_TORCH) || state.is(Blocks.SOUL_WALL_TORCH)
+                    || (state.getBlock() instanceof net.minecraft.world.level.block.AbstractCandleBlock && state.getValue(net.minecraft.world.level.block.AbstractCandleBlock.LIT));
         }
 
         private static boolean isLight(net.minecraft.world.level.block.state.BlockState state) {
@@ -413,6 +414,8 @@ public final class NightDangers {
             } else if (state.getBlock() instanceof KilnBlock) {
                 if (level.getBlockEntity(KilnBlock.lowerPos(state, pos)) instanceof KilnBlockEntity kiln) kiln.extinguish();
                 level.playSound(null, pos, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+            } else if (state.getBlock() instanceof net.minecraft.world.level.block.AbstractCandleBlock) {
+                net.minecraft.world.level.block.AbstractCandleBlock.extinguish(null, state, level, pos); // snuffed, not smashed
             } else if (isLamp(state)) {
                 level.destroyBlock(pos, false, mob);
             }

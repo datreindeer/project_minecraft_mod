@@ -88,6 +88,40 @@ Vanilla Bow och Fishing Rod går inte att crafta (de riktiga kommer i senare ål
 | Crude Bow | Cordage (sträng) | Twine (grepp) | Tool Rod | Cordage | Som en båge, men pilarna gör 70 % skada. Hållbarhet 96 (vanilla 384) |
 | Crude Fishing Rod | Flint (krok) | Twine (lina) | Tool Rod | Twine | Som ett fiskespö. Hållbarhet 24 (vanilla 64) |
 
+### Tusk Dagger (Tool Station)
+Huvud: **Tusk**, bindning: **Cordage**, skaft: **Leather** (handtag). Låses upp när man har en Tusk. En kniv (fungerar i alla
+knivrecept och för styckning): 1,3× snabbare och 1,1× mer utbyte än Flint Knife, 140 i hållbarhet, 3 skada, attackfart 2,2.
+
+### Bone Hook Fishing Rod (Tool Station)
+**Bone Fish Hook** = Fish Bones + kniv (crafting). Spöet: huvud **Bone Fish Hook**, bindning **Twine**, skaft **Tool Rod**.
+Napp kommer 5 s snabbare (som Lure I, utöver förtrollningar). Hållbarhet 48.
+
+### Fletching Table (ändrad)
+Högerklicka för att öppna (smyg + högerklick för att placera block mot den). Tre platser + resultat:
+
+| Plats 1 | Plats 2 | Plats 3 | Ger |
+|---|---|---|---|
+| Flint | Stick | Feather | 4 Arrow (vanilla-receptet borttaget) |
+| Fish Bones eller Bone | Stick | Feather | 4 **Bone Arrow** (1,5 skada, vanlig pil 2) |
+| Bear Claw | Stick | Feather | 4 **Barbed Arrow** (3 skada) |
+| Tallow | Arrow | Twine | 1 **Fire Arrow** (sätter målet i brand) |
+| Sinew | Crude Bow | Cordage | **Sinew Bow** (full pilskada, 200 i hållbarhet) |
+
+### Fur-rustning och Bear Rug
+- **Fur Hood / Coat / Leggings / Boots:** läderdelen + Bear Pelt (1 / 2 / 2 / 1). Skydd 1/3/2/1, lagas med Bear Pelt.
+  **Isolerar 25 % per del mot kyla** (läder 15 %).
+- **Bear Rug:** Bear Pelt + Bear Claw. Platt dekoration (som en matta) med huvudet bort från den som placerar den.
+
+### Ägg
+- **Boiled Egg:** valfritt ägg (vanligt, blått, brunt) på en Campfire (15 s). Stackar 16. Går inte att äta med skalet på.
+- **Skala:** Boiled Egg i craftingrutan → **Peeled Egg** (3 hunger) + **Eggshell**.
+- **Eggshell** fungerar som Bone Meal (högerklicka på växter).
+
+### Tallow och ljus
+- **Tallow:** Lard (1) eller Bear Fat (2) på en Campfire (20 s).
+- **Candle:** `[Twine]` / `[Tallow]` / `[Tallow]` → 2 Candle (vanilla-receptet med Honeycomb borttaget). Tänds med
+  **Fire Drill** (60 %). Monster slår inte sönder ljus, men en zombiehord blåser ut dem.
+
 ### Fire Drill
 Recept: `[Twine][Stick]` / `[Stick][ ]`. Hållbarhet 16.
 Högerklicka på en släckt Campfire eller Clay Kiln. Lyckas ungefär var tredje gång (33 %, fräsljud), annars lite rök.
@@ -324,7 +358,7 @@ Nytt item: **Horn** (material för senare recept).
 - Kroppstemperatur 0–20 (12 = lagom), visas som 10 termometrar ovanför matmätaren (varm / kall / iskall).
 - Rör sig sakta mot en måltemperatur: biomen (snöbiomer är kalla även på dagen, öken varm), natten (−5 ute, −2,5
   under tak), regn (−2), i vatten (−5), höjd över y 100. **Brinnande eld inom 6 block värmer** (upp till +10).
-- **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning).
+- **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla).
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
 ### Fisk
@@ -440,6 +474,11 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Knockback på monster | **Borttaget** |
 | Djur-loot | Ersatt av **Carcass** + styckning (ingen Leather/kött/ull direkt) |
 | Furnace | **Borttagen** (ersätts av Clay Kiln, uppgraderas senare) |
+| Smoker, Blast Furnace | **Borttagna** (senare åldrar) |
+| Stone, Granite, Diorite, Andesite | Släpper **2–4 rock chunks** i stället för cobblestone (Silk Touch ger blocket). 4 rock chunks → 1 Cobblestone |
+| Arrow-recept | Flyttat till **Fletching Table** |
+| Candle-recept | Honeycomb + String → **Tallow + Twine** |
+| Fletching Table | Har ett GUI för pilar och pilbågsuppgraderingar |
 | Planks | 1 Log → **2** Planks (vanilla 4). Sågen kommer senare |
 | Campfire-recept | Logs + Coal → **Firewood + Sticks** |
 | Campfire placering | Placeras **släckt** |
@@ -467,6 +506,8 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 ## Teknik (för utveckling)
 
 - Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
+- Fletching Table: `FletchingRecipes.java`, `FletchingMenu.java`, `client/FletchingScreen.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug: `BearRugBlock.java`.
+- Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.

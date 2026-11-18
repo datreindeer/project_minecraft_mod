@@ -172,5 +172,22 @@
   "item.mechanical.fly_agaric": "Fly Agaric",
   "block.mechanical.puffball": "Puffball",
   "item.mechanical.puffball": "Puffball",
-  "item.mechanical.roasted_mushrooms": "Roasted Mushrooms"
+  "item.mechanical.roasted_mushrooms": "Roasted Mushrooms",
+  "item.mechanical.tusk_dagger": "Tusk Dagger",
+  "item.mechanical.bone_fish_hook": "Bone Fish Hook",
+  "item.mechanical.tallow": "Tallow",
+  "item.mechanical.bone_arrow": "Bone Arrow",
+  "item.mechanical.barbed_arrow": "Barbed Arrow",
+  "item.mechanical.fire_arrow": "Fire Arrow",
+  "item.mechanical.fur_hood": "Fur Hood",
+  "item.mechanical.fur_coat": "Fur Coat",
+  "item.mechanical.fur_leggings": "Fur Leggings",
+  "item.mechanical.fur_boots": "Fur Boots",
+  "item.mechanical.bone_hook_fishing_rod": "Bone Hook Fishing Rod",
+  "item.mechanical.sinew_bow": "Sinew Bow",
+  "container.mechanical.fletching_table": "Fletching Table",
+  "block.mechanical.bear_rug": "Bear Rug",
+  "item.mechanical.boiled_egg": "Boiled Egg",
+  "item.mechanical.peeled_egg": "Peeled Egg",
+  "item.mechanical.eggshell": "Eggshell"
 }

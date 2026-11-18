@@ -47,7 +47,11 @@ public final class ToolStationRecipes {
             new Recipe(Mechanical.FLINT_SPEAR, () -> Items.FLINT, Mechanical.CORDAGE, Mechanical.TOOL_ROD, FLINT),
             // ranged: "head" = bowstring / hook, "binding" = grip wrap / line
             new Recipe(() -> Mechanical.CRUDE_BOW.get(), Mechanical.CORDAGE, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.CORDAGE.get())),
-            new Recipe(() -> Mechanical.CRUDE_FISHING_ROD.get(), () -> Items.FLINT, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.TWINE.get())));
+            new Recipe(() -> Mechanical.CRUDE_FISHING_ROD.get(), () -> Items.FLINT, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.TWINE.get())),
+            new Recipe(() -> Mechanical.TUSK_DAGGER.get(), () -> com.mechanical.wildlife.Wildlife.TUSK.get(), Mechanical.CORDAGE, () -> Items.LEATHER,
+                    s -> s.is(com.mechanical.wildlife.Wildlife.TUSK.get())),
+            new Recipe(() -> Mechanical.BONE_HOOK_FISHING_ROD.get(), () -> Mechanical.BONE_FISH_HOOK.get(), Mechanical.TWINE, Mechanical.TOOL_ROD,
+                    s -> s.is(Mechanical.BONE_FISH_HOOK.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

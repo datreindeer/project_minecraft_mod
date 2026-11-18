@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bear_rug"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/bear_rug"
+}

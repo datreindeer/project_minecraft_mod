@@ -1,0 +1,29 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bear_pelt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:fur_hood",
+      "mechanical:fur_coat",
+      "mechanical:fur_leggings",
+      "mechanical:fur_boots",
+      "mechanical:bear_rug"
+    ]
+  }
+}

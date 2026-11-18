@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:fur"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mechanical:fur"
+      }
+    ]
+  }
+}

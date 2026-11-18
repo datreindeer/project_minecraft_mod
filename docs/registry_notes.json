@@ -1,0 +1,579 @@
+{
+  "_comment": "Anteckningar till docs/registry.html (scripts/gen_registry.py). Nyckel = id (utan namespace = mechanical). text: svenska, [[id]] blir en länk, **fet**. Valfritt: category (tools/materials/food/blocks/wildlife/foraging), vanilla: true, name.",
+  "plant_fibre": {
+    "text": "Slå sönder Short Grass, Tall Grass, Fern eller Large Fern: 20 % chans, **60 % med en kniv** (kniven slits 1 per gräs). Också 2 st från [[bark]] + kniv (bast), och 1–2 st när man hugger sönder en bärbuske.\nAnvänds till [[twine]]."
+  },
+  "twine": {
+    "text": "3 [[plant_fibre]] (formlöst). Bindning i flintverktyg och i Tool Station (Crude-verktyg), och till [[fire_drill]], [[tool_station]], [[cordage]] och [[drying_rack]]."
+  },
+  "cordage": {
+    "text": "3 [[twine]] (formlöst). Bindning för Stone Pickaxe, Stone Axe, [[flint_spear]] och [[tusk_dagger]], och strängen i [[crude_bow]]."
+  },
+  "tool_rod": {
+    "text": "Lägg en kniv ovanför valfri Log i crafting (kniven slits 1). Skaft för de bättre verktygen i Tool Station."
+  },
+  "stone_chunk": {
+    "text": "Plocka lösa stenar ([[loose_stone]]) på marken: liten 1 st, mellan 2 st, stor (kräver pickaxe) 3–4 st. Vanilla Stone släpper också 2–4 rock chunks i stället för sig själv.\nAlla fyra sorterna räknas som rock chunks och kan blandas: stenhuvuden, [[kiln]], och 4 → 1 Cobblestone. Lagar Crude-verktyg."
+  },
+  "granite_chunk": {
+    "text": "Plocka lösa stenar ([[loose_granite]]) på marken: liten 1 st, mellan 2 st, stor (kräver pickaxe) 3–4 st. Vanilla Granite släpper också 2–4 rock chunks i stället för sig själv.\nAlla fyra sorterna räknas som rock chunks och kan blandas: stenhuvuden, [[kiln]], och 4 → 1 Cobblestone. Lagar Crude-verktyg."
+  },
+  "diorite_chunk": {
+    "text": "Plocka lösa stenar ([[loose_diorite]]) på marken: liten 1 st, mellan 2 st, stor (kräver pickaxe) 3–4 st. Vanilla Diorite släpper också 2–4 rock chunks i stället för sig själv.\nAlla fyra sorterna räknas som rock chunks och kan blandas: stenhuvuden, [[kiln]], och 4 → 1 Cobblestone. Lagar Crude-verktyg."
+  },
+  "andesite_chunk": {
+    "text": "Plocka lösa stenar ([[loose_andesite]]) på marken: liten 1 st, mellan 2 st, stor (kräver pickaxe) 3–4 st. Vanilla Andesite släpper också 2–4 rock chunks i stället för sig själv.\nAlla fyra sorterna räknas som rock chunks och kan blandas: stenhuvuden, [[kiln]], och 4 → 1 Cobblestone. Lagar Crude-verktyg."
+  },
+  "bark": {
+    "text": "Håll in högerklick med yxa på en [[oak_fallen_log]] (valfritt träslag): första steget tar av barken och ger 1–2 Bark.\n**Tändmaterial:** högerklicka med Bark på en släckt Campfire eller Clay Kiln, då lyckas [[fire_drill]] i 75 % av försöken. Används också till bast ([[plant_fibre]]) och [[bark_basket]]."
+  },
+  "stone_pickaxe_head": {
+    "text": "3 rock chunks + kniv (kniven ligger kvar och slits 1). Enkelsidigt huvud till [[crude_stone_pickaxe]]. Två huvuden + kniv ger [[double_stone_pickaxe_head]]."
+  },
+  "double_stone_pickaxe_head": {
+    "text": "Två [[stone_pickaxe_head]] med en kniv mellan. Huvud till vanilla Stone Pickaxe i Tool Station."
+  },
+  "stone_axe_head": {
+    "text": "3 rock chunks + kniv (kniven slits 1). Huvud till [[crude_stone_axe]]. Två huvuden + kniv ger [[double_stone_axe_head]]."
+  },
+  "double_stone_axe_head": {
+    "text": "Två [[stone_axe_head]] med en kniv mellan. Huvud till Stone Axe i Tool Station."
+  },
+  "unfired_crucible": {
+    "text": "7 Clay Ball i en kopp-form. Bränns till [[crucible]] i en Clay Kiln (40 s)."
+  },
+  "crucible": {
+    "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (40 s). Behövs i bronsåldern för att smälta koppar och tenn. Ingen användning än."
+  },
+  "tin_ore": {
+    "text": "Tennmalm. Kräver minst stenpickaxe. Hör till bronsåldern."
+  },
+  "tin_ingot": {
+    "text": "Tenn. Kan inte smältas fram nu (Furnace är borttagen), hör till bronsåldern."
+  },
+  "tin_block": {
+    "text": "9 [[tin_ingot]]. Hör till bronsåldern."
+  },
+  "tallow": {
+    "text": "Laga [[lard]] (1) eller [[bear_fat]] (2) på en Campfire (20 s).\nAnvänds till Candle (Twine + 2 Tallow → 2 Candle) och [[fire_arrow]] i Fletching Table."
+  },
+  "bone_fish_hook": {
+    "text": "[[fish_bones]] + kniv (crafting, kniven slits 1). Huvud till [[bone_hook_fishing_rod]] i Tool Station."
+  },
+  "oak_firewood": {
+    "text": "Alla Oak-logs (även stripped och wood-block) släpper **2 Oak Firewood** i stället för sig själva. Fällda träd ger Firewood via [[oak_fallen_log]] → [[oak_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Oak Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "oak_rough_log": {
+    "text": "Sista steget när man bearbetar en [[oak_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[oak_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[oak_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "oak_fallen_log": {
+    "text": "Stammen av ett fällt Oak-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[oak_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "oak_stump": {
+    "text": "Blir kvar där man högg när ett Oak-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[oak_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "spruce_firewood": {
+    "text": "Alla Spruce-logs (även stripped och wood-block) släpper **2 Spruce Firewood** i stället för sig själva. Fällda träd ger Firewood via [[spruce_fallen_log]] → [[spruce_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Spruce Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "spruce_rough_log": {
+    "text": "Sista steget när man bearbetar en [[spruce_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[spruce_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[spruce_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "spruce_fallen_log": {
+    "text": "Stammen av ett fällt Spruce-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[spruce_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "spruce_stump": {
+    "text": "Blir kvar där man högg när ett Spruce-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[spruce_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "birch_firewood": {
+    "text": "Alla Birch-logs (även stripped och wood-block) släpper **2 Birch Firewood** i stället för sig själva. Fällda träd ger Firewood via [[birch_fallen_log]] → [[birch_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Birch Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "birch_rough_log": {
+    "text": "Sista steget när man bearbetar en [[birch_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[birch_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[birch_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "birch_fallen_log": {
+    "text": "Stammen av ett fällt Birch-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[birch_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "birch_stump": {
+    "text": "Blir kvar där man högg när ett Birch-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[birch_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "jungle_firewood": {
+    "text": "Alla Jungle-logs (även stripped och wood-block) släpper **2 Jungle Firewood** i stället för sig själva. Fällda träd ger Firewood via [[jungle_fallen_log]] → [[jungle_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Jungle Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "jungle_rough_log": {
+    "text": "Sista steget när man bearbetar en [[jungle_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[jungle_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[jungle_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "jungle_fallen_log": {
+    "text": "Stammen av ett fällt Jungle-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[jungle_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "jungle_stump": {
+    "text": "Blir kvar där man högg när ett Jungle-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[jungle_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "acacia_firewood": {
+    "text": "Alla Acacia-logs (även stripped och wood-block) släpper **2 Acacia Firewood** i stället för sig själva. Fällda träd ger Firewood via [[acacia_fallen_log]] → [[acacia_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Acacia Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "acacia_rough_log": {
+    "text": "Sista steget när man bearbetar en [[acacia_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[acacia_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[acacia_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "acacia_fallen_log": {
+    "text": "Stammen av ett fällt Acacia-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[acacia_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "acacia_stump": {
+    "text": "Blir kvar där man högg när ett Acacia-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[acacia_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "dark_oak_firewood": {
+    "text": "Alla Dark Oak-logs (även stripped och wood-block) släpper **2 Dark Oak Firewood** i stället för sig själva. Fällda träd ger Firewood via [[dark_oak_fallen_log]] → [[dark_oak_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Dark Oak Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "dark_oak_rough_log": {
+    "text": "Sista steget när man bearbetar en [[dark_oak_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[dark_oak_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[dark_oak_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "dark_oak_fallen_log": {
+    "text": "Stammen av ett fällt Dark Oak-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[dark_oak_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "dark_oak_stump": {
+    "text": "Blir kvar där man högg när ett Dark Oak-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[dark_oak_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "mangrove_firewood": {
+    "text": "Alla Mangrove-logs (även stripped och wood-block) släpper **2 Mangrove Firewood** i stället för sig själva. Fällda träd ger Firewood via [[mangrove_fallen_log]] → [[mangrove_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Mangrove Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "mangrove_rough_log": {
+    "text": "Sista steget när man bearbetar en [[mangrove_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[mangrove_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[mangrove_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "mangrove_fallen_log": {
+    "text": "Stammen av ett fällt Mangrove-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[mangrove_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "mangrove_stump": {
+    "text": "Blir kvar där man högg när ett Mangrove-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[mangrove_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "cherry_firewood": {
+    "text": "Alla Cherry-logs (även stripped och wood-block) släpper **2 Cherry Firewood** i stället för sig själva. Fällda träd ger Firewood via [[cherry_fallen_log]] → [[cherry_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Cherry Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "cherry_rough_log": {
+    "text": "Sista steget när man bearbetar en [[cherry_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[cherry_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[cherry_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "cherry_fallen_log": {
+    "text": "Stammen av ett fällt Cherry-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[cherry_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "cherry_stump": {
+    "text": "Blir kvar där man högg när ett Cherry-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[cherry_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "pale_oak_firewood": {
+    "text": "Alla Pale Oak-logs (även stripped och wood-block) släpper **2 Pale Oak Firewood** i stället för sig själva. Fällda träd ger Firewood via [[pale_oak_fallen_log]] → [[pale_oak_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Pale Oak Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "pale_oak_rough_log": {
+    "text": "Sista steget när man bearbetar en [[pale_oak_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[pale_oak_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[pale_oak_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "pale_oak_fallen_log": {
+    "text": "Stammen av ett fällt Pale Oak-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[pale_oak_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "pale_oak_stump": {
+    "text": "Blir kvar där man högg när ett Pale Oak-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[pale_oak_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "poplar_firewood": {
+    "text": "Alla Poplar-logs (även stripped och wood-block) släpper **2 Poplar Firewood** i stället för sig själva. Fällda träd ger Firewood via [[poplar_fallen_log]] → [[poplar_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Poplar Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "poplar_rough_log": {
+    "text": "Sista steget när man bearbetar en [[poplar_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[poplar_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[poplar_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "poplar_fallen_log": {
+    "text": "Stammen av ett fällt Poplar-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[poplar_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "poplar_stump": {
+    "text": "Blir kvar där man högg när ett Poplar-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[poplar_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "flint_pickaxe": {
+    "text": "Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint."
+  },
+  "flint_axe": {
+    "text": "Första yxan, 2×2-recept som går i inventoryt: Logs kan inte brytas utan yxa. Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint. 4 skada.\nHugg en log i ett naturligt träd → hela trädet fälls (smyg för att hugga en enda log). Håll in högerklick på Fallen Logs och Rough Logs för att bearbeta dem."
+  },
+  "flint_shovel": {
+    "text": "Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint."
+  },
+  "flint_hoe": {
+    "text": "Bryter som trä (sten → cobblestone, men inte järnmalm). Hållbarhet 48, lagas med Flint. Låses upp i receptboken när man får Flint."
+  },
+  "flint_knife": {
+    "text": "Kniv: ligger kvar i rutan i recept och slits 1 (stenhuvuden, Tool Rod, Scraped Hide, rensa fisk, bast, Bone Fish Hook). 2,5 skada, hållbarhet 48.\nGer 60 % chans på [[plant_fibre]] från gräs. **Håll in högerklick på en Carcass** för att stycka djuret i två omgångar (hud/fjädrar/ull, sedan kött). ~2 s per omgång, kniven slits 1 per omgång. För svag för Brown Bear."
+  },
+  "iron_knife": {
+    "text": "Järnåldern, **går inte att få tag på än** (finns i creative). 2× snabbare och 1,5× mer utbyte vid styckning än Flint Knife. Behövs för att stycka Brown Bear. Fungerar i alla knivrecept."
+  },
+  "tusk_dagger": {
+    "text": "Tool Station: huvud [[tusk]], bindning [[cordage]], skaft Leather. Låses upp när man har en Tusk.\nEn kniv (fungerar i alla knivrecept och för styckning): 1,3× snabbare och 1,1× mer utbyte än Flint Knife, 140 i hållbarhet, 5 skada, snabb."
+  },
+  "crude_stone_pickaxe": {
+    "text": "Tool Station: [[stone_pickaxe_head]] + [[twine]] + Stick. Bryter som sten men långsammare, 80 i hållbarhet. Lagas med rock chunks. Låses upp när man har en rock chunk."
+  },
+  "crude_stone_axe": {
+    "text": "Tool Station: [[stone_axe_head]] + [[twine]] + Stick. Yxa, 80 i hållbarhet, 5,5 skada. Lagas med rock chunks."
+  },
+  "flint_spear": {
+    "text": "Tool Station: huvud Flint, bindning [[cordage]], skaft [[tool_rod]]. Ersätter Stone Spear.\nFungerar som vanilla Stone Spear: 2 skada vid stöt (vänsterklick), **håll in högerklick och spring** för ansats (skadan beror på farten). Hållbarhet 100."
+  },
+  "crude_bow": {
+    "text": "Tool Station: [[cordage]] (sträng) + [[twine]] (grepp) + [[tool_rod]]. Låses upp av Cordage. Som en båge, men pilarna gör 70 % skada. Hållbarhet 96.\nKan uppgraderas till [[sinew_bow]] i Fletching Table."
+  },
+  "sinew_bow": {
+    "text": "Fletching Table: [[sinew]] + [[crude_bow]] + [[cordage]]. Full pilskada, 200 i hållbarhet."
+  },
+  "crude_fishing_rod": {
+    "text": "Tool Station: Flint (krok) + [[twine]] (lina) + [[tool_rod]]. Låses upp av Twine. Som ett fiskespö, hållbarhet 24. Fångsten blir Whole fish som måste rensas."
+  },
+  "bone_hook_fishing_rod": {
+    "text": "Tool Station: [[bone_fish_hook]] + [[twine]] + [[tool_rod]]. Napp kommer 5 s snabbare (som Lure I, utöver förtrollningar). Hållbarhet 48."
+  },
+  "fire_drill": {
+    "text": "Högerklicka på en släckt Campfire eller Clay Kiln. Lyckas ungefär var tredje gång (33 %), med tändmaterial ([[bark]] eller Leaf Litter, högerklicka först) 75 %. Tänder även Candle (60 %). Varje försök kostar 1 i hållbarhet (16). En Clay Kiln måste ha bränsle för att tändas."
+  },
+  "bark_basket": {
+    "text": "**Högerklicka för att öppna** (3×3). Rymmer bara frukt, bär, svamp och hudar (Apple, Sweet Berries, Glow Berries, Melon Slice, vilda bär, svampar, Leather, Rabbit Hide, Raw Hide, Scraped Hide …). Innehållet sparas i korgen. Stackar inte."
+  },
+  "bone_arrow": {
+    "text": "Fletching Table: [[fish_bones]] eller Bone + Stick + Feather → 4 st. 1,5 skada (vanlig pil 2)."
+  },
+  "barbed_arrow": {
+    "text": "Fletching Table: [[bear_claw]] + Stick + Feather → 4 st. 3 skada."
+  },
+  "fire_arrow": {
+    "text": "Fletching Table: [[tallow]] + Arrow + [[twine]] → 1 st. Sätter målet i brand."
+  },
+  "fur_hood": {
+    "text": "Skydd 1. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+  },
+  "fur_coat": {
+    "text": "Skydd 3. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+  },
+  "fur_leggings": {
+    "text": "Skydd 2. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+  },
+  "fur_boots": {
+    "text": "Skydd 1. Läderdelen + [[bear_pelt]] i crafting. Lagas med Bear Pelt. **Isolerar 25 % per del mot kyla** (läder 15 %; full Fur-rustning = ingen kyla)."
+  },
+  "tool_station": {
+    "text": "Bygger verktyg av huvud + bindning + skaft. **Högerklicka för att öppna.**\nTill vänster listas upplåsta verktyg (ett verktyg låses upp första gången man har dess material, sparas per spelare även efter döden). Verktyg där man har alla delar är upplysta; klick flyttar delarna till platserna. Scrolla med mushjulet."
+  },
+  "kiln": {
+    "text": "**Placeras bara ovanpå en Campfire**, som blir ugnens eldstad (2 block hög). Var Campfire tänd bakar ugnen på lägereldens ved (3 min). Annars: lägg bränsle och tänd med [[fire_drill]].\nGUI som en Furnace. Bränsle går bara åt medan något bakas; tänd utan att baka pyr den i 60 s och slocknar. Kyla och regn gör att bränslet tar slut fortare. Lyser (ljus 13) och skyddar mot monster när den brinner.\nBryts någon halva får man tillbaka Clay Kiln + 1–3 Stick + innehållet."
+  },
+  "drying_rack": {
+    "text": "**Högerklicka med [[scraped_hide]]** för att spänna upp den. Efter några minuter (~3 min i snitt) är den torr: högerklicka för att ta Leather. Bryts den släpper den sig själv + huden."
+  },
+  "bone_pile": {
+    "text": "Blir kvar där ett djur styckats färdigt och försvinner aldrig. Man går igenom den. Bryts den: Bone 15 %, Bone Meal 1–2 (25 %). Har inget item."
+  },
+  "blood": {
+    "text": "Bloddroppar på marken från blödande djur (under 50 % hälsa) och styckning. Går att spåra, bleknar efter några minuter. Har inget item."
+  },
+  "bear_rug": {
+    "text": "[[bear_pelt]] + [[bear_claw]]. Platt dekoration (som en matta) med huvudet bort från den som placerar den."
+  },
+  "loose_stone": {
+    "text": "Lös sten på marken (3 storlekar), bara på Grass Block och Stone. Liten/mellan: ett slag → 1/2 [[stone_chunk]]. Stor: kräver pickaxe → 3–4 st. Har inget item."
+  },
+  "loose_granite": {
+    "text": "Lös sten på marken (3 storlekar), bara på Grass Block och Stone eller Granite. Liten/mellan: ett slag → 1/2 [[granite_chunk]]. Stor: kräver pickaxe → 3–4 st. Har inget item."
+  },
+  "loose_diorite": {
+    "text": "Lös sten på marken (3 storlekar), bara på Grass Block och Stone eller Diorite. Liten/mellan: ett slag → 1/2 [[diorite_chunk]]. Stor: kräver pickaxe → 3–4 st. Har inget item."
+  },
+  "loose_andesite": {
+    "text": "Lös sten på marken (3 storlekar), bara på Grass Block och Stone eller Andesite. Liten/mellan: ett slag → 1/2 [[andesite_chunk]]. Stor: kräver pickaxe → 3–4 st. Har inget item."
+  },
+  "loose_flint": {
+    "text": "Lös flinta på marken (3 storlekar). Ger Flint i stället för chunks. Har inget item."
+  },
+  "beef_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: Cow, Mooshroom, Aurochs. 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_beef_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_beef_scraps": {
+    "text": "[[beef_scraps]] lagad på en Campfire (20 s). 3 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "porkchop_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: Pig, Wild Boar. 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_porkchop_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_porkchop_scraps": {
+    "text": "[[porkchop_scraps]] lagad på en Campfire (20 s). 3 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "mutton_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: Sheep, Mouflon. 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_mutton_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_mutton_scraps": {
+    "text": "[[mutton_scraps]] lagad på en Campfire (20 s). 2 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "chicken_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: Chicken, Pheasant. 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_chicken_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_chicken_scraps": {
+    "text": "[[chicken_scraps]] lagad på en Campfire (20 s). 2 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "rabbit_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: Rabbit, Hare. 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_rabbit_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_rabbit_scraps": {
+    "text": "[[rabbit_scraps]] lagad på en Campfire (20 s). 2 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "game_meat_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: övriga djur (häst, lama, björn, papegoja …). 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_game_meat_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_game_meat_scraps": {
+    "text": "[[game_meat_scraps]] lagad på en Campfire (20 s). 3 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "venison_scraps": {
+    "text": "Andra omgången när man styckar en Carcass med kniv: Roe Deer, Red Deer, Moose, Reindeer. 1 hunger.\nLaga på en Campfire (20 s) → [[cooked_venison_scraps]]. Ta av den i tid, annars blir den [[burnt_food]]."
+  },
+  "cooked_venison_scraps": {
+    "text": "[[venison_scraps]] lagad på en Campfire (20 s). 3 hunger (vanilla Cooked Beef = 8). Ligger kvar på elden när den är klar: högerklicka med tom hand för att ta av den innan den bränns."
+  },
+  "burnt_food": {
+    "text": "Mat som legat kvar på en Campfire 30–60 s efter att den blev klar."
+  },
+  "roasted_mushrooms": {
+    "text": "Valfri ätlig svamp (även vanilla Brown Mushroom) på en Campfire (20 s). 4 hunger."
+  },
+  "raw_hide": {
+    "text": "Första omgången vid styckning (Cow 30 %, Pig 25 %, stora djur 40–70 %; Sheep och Mouflon i andra omgången). Djur släpper inte Leather längre.\nRaw Hide + kniv → [[scraped_hide]]."
+  },
+  "scraped_hide": {
+    "text": "[[raw_hide]] + kniv (formlöst, kniven slits 1). **Högerklicka på en [[drying_rack]]** för att torka den till Leather (~3 min)."
+  },
+  "wool_thread": {
+    "text": "Styckning av Sheep (30 %, 1–2 st) och Mouflon (40 %). 9 st (3×3) → 1 White Wool."
+  },
+  "sinew": {
+    "text": "Styckning av hjortdjur, Aurochs, Wild Horse, Mouflon och Brown Bear (40–60 %). Används till [[sinew_bow]]."
+  },
+  "antler": {
+    "text": "Styckning av Red Deer-hjortar (1–2 st), Moose- och Reindeer-tjurar. Material för senare recept."
+  },
+  "lard": {
+    "text": "Styckning av Wild Boar (50 %, 1–2 st). Laga på Campfire → 1 [[tallow]]."
+  },
+  "tusk": {
+    "text": "Styckning av Wild Boar (40 %, 1–2 st). Huvud till [[tusk_dagger]]."
+  },
+  "horn": {
+    "text": "Styckning av Aurochs (50 %) och Mouflon (30 %). Material för senare recept."
+  },
+  "bear_pelt": {
+    "text": "Första omgången när man styckar en Brown Bear (**kräver Iron Knife**). Används till Fur-rustning och [[bear_rug]]."
+  },
+  "bear_fat": {
+    "text": "Brown Bear, andra omgången (80 %, 1–3 st, kräver Iron Knife). Laga på Campfire → 2 [[tallow]]."
+  },
+  "bear_claw": {
+    "text": "Brown Bear, andra omgången (60 %, 1–3 st, kräver Iron Knife). Används till [[barbed_arrow]] och [[bear_rug]]."
+  },
+  "whole_cod": {
+    "text": "Döda fiskar och fiskespö ger Whole fish i stället för rå fisk. Går inte att äta eller laga.\n**Rensa:** Whole Cod + kniv (crafting, kniven slits 1) → vanilla rå fisk + [[fish_bones]]."
+  },
+  "whole_salmon": {
+    "text": "Döda fiskar och fiskespö ger Whole fish i stället för rå fisk. Går inte att äta eller laga.\n**Rensa:** Whole Salmon + kniv (crafting, kniven slits 1) → vanilla rå fisk + [[fish_bones]]."
+  },
+  "whole_tropical_fish": {
+    "text": "Döda fiskar och fiskespö ger Whole fish i stället för rå fisk. Går inte att äta eller laga.\n**Rensa:** Whole Tropical Fish + kniv (crafting, kniven slits 1) → vanilla rå fisk + [[fish_bones]]."
+  },
+  "whole_pufferfish": {
+    "text": "Döda fiskar och fiskespö ger Whole fish i stället för rå fisk. Går inte att äta eller laga.\n**Rensa:** Whole Pufferfish + kniv (crafting, kniven slits 1) → vanilla rå fisk + [[fish_bones]]."
+  },
+  "fish_bones": {
+    "text": "Fås när man rensar Whole fish med kniv. → 1 Bone Meal, [[bone_fish_hook]], eller [[bone_arrow]] i Fletching Table."
+  },
+  "raspberry_bush": {
+    "text": "Vild buske i Forest, Birch Forest, Old Growth Birch, Flower Forest. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[raspberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "raspberries": {
+    "text": "Plockas från en mogen [[raspberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
+  "blueberry_bush": {
+    "text": "Vild buske i Forest, Dark Forest, Taiga, Old Growth Pine Taiga. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[blueberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "blueberries": {
+    "text": "Plockas från en mogen [[blueberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
+  "lingonberry_bush": {
+    "text": "Vild buske i Taiga, Snowy Taiga, Old Growth Pine/Spruce Taiga. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[lingonberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "lingonberries": {
+    "text": "Plockas från en mogen [[lingonberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
+  "wild_strawberry_bush": {
+    "text": "Vild buske i Plains, Sunflower Plains, Meadow, Flower Forest. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[wild_strawberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "wild_strawberries": {
+    "text": "Plockas från en mogen [[wild_strawberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
+  "elderberry_bush": {
+    "text": "Vild buske i Forest, Birch Forest, Flower Forest, River. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[elderberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "elderberries": {
+    "text": "Plockas från en mogen [[elderberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
+  "cloudberry_bush": {
+    "text": "Vild buske i Swamp, Snowy Plains, Snowy Taiga, Grove. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[cloudberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "cloudberries": {
+    "text": "Plockas från en mogen [[cloudberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
+  "chanterelle": {
+    "text": "Växer i Forest, Birch Forest, Taiga, Old Growth Birch/Pine. **Högerklicka (eller bryt) för att plocka.** Sprider sig långsamt i skugga (ljus ≤ 12) om det finns färre än 4 av samma sort runt omkring. Rå: 1 hunger. Ätlig: kan rostas till [[roasted_mushrooms]]. Kan inte planteras än."
+  },
+  "porcini": {
+    "text": "Växer i Forest, Dark Forest, Taiga, Old Growth Spruce. **Högerklicka (eller bryt) för att plocka.** Sprider sig långsamt i skugga (ljus ≤ 12) om det finns färre än 4 av samma sort runt omkring. Rå: 1 hunger. Ätlig: kan rostas till [[roasted_mushrooms]]. Kan inte planteras än."
+  },
+  "morel": {
+    "text": "Växer i Forest, Flower Forest, Birch Forest. **Högerklicka (eller bryt) för att plocka.** Sprider sig långsamt i skugga (ljus ≤ 12) om det finns färre än 4 av samma sort runt omkring. Rå: 1 hunger. Ätlig: kan rostas till [[roasted_mushrooms]]. Kan inte planteras än."
+  },
+  "oyster_mushroom": {
+    "text": "Växer i Dark Forest, Swamp, Old Growth Spruce. **Högerklicka (eller bryt) för att plocka.** Sprider sig långsamt i skugga (ljus ≤ 12) om det finns färre än 4 av samma sort runt omkring. Rå: 1 hunger. Ätlig: kan rostas till [[roasted_mushrooms]]. Kan inte planteras än."
+  },
+  "fly_agaric": {
+    "text": "Växer i Birch Forest, Taiga, Snowy Taiga, Dark Forest. **Högerklicka (eller bryt) för att plocka.** Sprider sig långsamt i skugga (ljus ≤ 12) om det finns färre än 4 av samma sort runt omkring. Rå: **Giftig:** Poison 10 s + Nausea 15 s. Kan inte planteras än."
+  },
+  "puffball": {
+    "text": "Växer i Plains, Meadow, Sunflower Plains. **Högerklicka (eller bryt) för att plocka.** Sprider sig långsamt i skugga (ljus ≤ 12) om det finns färre än 4 av samma sort runt omkring. Rå: 1 hunger. Ätlig: kan rostas till [[roasted_mushrooms]]. Kan inte planteras än."
+  },
+  "minecraft:campfire": {
+    "text": "Nytt recept: Sticks + 3 Firewood (valfritt träslag, kan blandas). **Placeras släckt**, tänds med [[fire_drill]].\nBrinner 3–5 min, sedan **glöd** i 2 min, sedan helt slocknad. Kyla och regn gör att den brinner ut fortare. Högerklick med Firewood: på glöd → brinner igen; på brinnande eld → +1 min (max 10 min).\n**Matlagning:** maten ligger kvar när den är klar och blir [[burnt_food]] efter 30–60 s till. Högerklicka med tom hand för att ta av maten.\nGår sönder till 1–3 Stick (inte Charcoal). Brinnande eld värmer (inom 6 block) och håller monster borta. Bas för [[kiln]].",
+    "vanilla": true
+  },
+  "minecraft:oak_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[oak_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[oak_fallen_log]], löven blir Leaf Litter, och en [[oak_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:spruce_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[spruce_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[spruce_fallen_log]], löven blir Leaf Litter, och en [[spruce_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:birch_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[birch_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[birch_fallen_log]], löven blir Leaf Litter, och en [[birch_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:jungle_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[jungle_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[jungle_fallen_log]], löven blir Leaf Litter, och en [[jungle_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:acacia_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[acacia_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[acacia_fallen_log]], löven blir Leaf Litter, och en [[acacia_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:dark_oak_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[dark_oak_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[dark_oak_fallen_log]], löven blir Leaf Litter, och en [[dark_oak_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:mangrove_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[mangrove_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[mangrove_fallen_log]], löven blir Leaf Litter, och en [[mangrove_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:cherry_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[cherry_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[cherry_fallen_log]], löven blir Leaf Litter, och en [[cherry_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:pale_oak_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[pale_oak_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[pale_oak_fallen_log]], löven blir Leaf Litter, och en [[pale_oak_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:poplar_log": {
+    "text": "**Kräver yxa.** Släpper **2 [[poplar_firewood]]** i stället för sig själv. Hugger man en log i ett naturligt träd fälls hela trädet: stammen blir [[poplar_fallen_log]], löven blir Leaf Litter, och en [[poplar_stump]] blir kvar (smyg för att bara hugga en log). 4 Firewood → 1 Log.",
+    "vanilla": true
+  },
+  "minecraft:oak_leaves": {
+    "text": "Alla löv: chansen för Stick är höjd (~10 %). Löv från fällda träd blir **Leaf Litter** på marken (tändmaterial).",
+    "vanilla": true,
+    "name": "Leaves"
+  },
+  "minecraft:leaf_litter": {
+    "text": "Blir på marken där löven från ett fällt träd landar. **Tändmaterial:** högerklicka på en släckt Campfire eller Clay Kiln, då lyckas Fire Drill i 75 % av försöken.",
+    "vanilla": true
+  },
+  "minecraft:short_grass": {
+    "text": "Gräs och ormbunkar släpper inga frön längre (frön från byar). Ger [[plant_fibre]] (20 %, 60 % med kniv).",
+    "vanilla": true,
+    "name": "Short Grass, Tall Grass, Fern"
+  },
+  "minecraft:stone": {
+    "text": "Stone, Granite, Diorite och Andesite släpper **2–4 rock chunks** i stället för cobblestone (Silk Touch ger blocket). 4 rock chunks → 1 Cobblestone.",
+    "vanilla": true
+  },
+  "minecraft:cobblestone": {
+    "text": "4 rock chunks → 1 Cobblestone (sten släpper chunks i stället för cobblestone).",
+    "vanilla": true
+  },
+  "minecraft:stone_pickaxe": {
+    "text": "Vanilla-receptet borttaget. Görs i Tool Station: [[double_stone_pickaxe_head]] + [[cordage]] + [[tool_rod]]. 131 i hållbarhet.",
+    "vanilla": true
+  },
+  "minecraft:stone_axe": {
+    "text": "Vanilla-receptet borttaget. Görs i Tool Station: [[double_stone_axe_head]] + [[cordage]] + [[tool_rod]]. **250** i hållbarhet (vanilla 131), **6,5** skada (vanilla 9).",
+    "vanilla": true
+  },
+  "minecraft:fletching_table": {
+    "text": "**Högerklicka för att öppna** (smyg + högerklick för att placera block mot den). Tre platser + resultat: pilar ([[minecraft:arrow]], [[bone_arrow]], [[barbed_arrow]], [[fire_arrow]]) och [[sinew_bow]].",
+    "vanilla": true
+  },
+  "minecraft:arrow": {
+    "text": "Vanilla-receptet borttaget. Görs i Fletching Table: Flint + Stick + Feather → 4 Arrow.",
+    "vanilla": true
+  },
+  "minecraft:candle": {
+    "text": "Nytt recept: Twine + 2 [[tallow]] → 2 Candle (Honeycomb-receptet borttaget). Tänds med [[fire_drill]] (60 %). Monster slår inte sönder ljus, men en zombiehord blåser ut dem.",
+    "vanilla": true
+  },
+  "minecraft:leather": {
+    "text": "Djur släpper inte Leather längre. Torka [[scraped_hide]] på en [[drying_rack]]. Leather Armor isolerar 15 % per del mot kyla.",
+    "vanilla": true
+  },
+  "minecraft:feather": {
+    "text": "Styckning av Chicken och Parrot (80 %, 1–2 st) och Pheasant (2–3 st). Används i Fletching Table.",
+    "vanilla": true
+  },
+  "minecraft:torch": {
+    "text": "Facklor skyddar inte mot monster och värmer inte. Monster kan dras till dem och slå sönder dem; zombiehorder slår sönder facklor inom 10 block. Ger dynamiskt ljus i handen.",
+    "vanilla": true
+  },
+  "minecraft:cod": {
+    "text": "Döda fiskar och fiske ger [[whole_cod]] i stället, som måste rensas med kniv. Gäller även Salmon, Tropical Fish och Pufferfish.",
+    "vanilla": true,
+    "name": "Rå fisk"
+  },
+  "minecraft:bone": {
+    "text": "Från [[bone_pile]] (15 %). Används till [[bone_arrow]].",
+    "vanilla": true
+  },
+  "minecraft:white_wool": {
+    "text": "Kan göras av 9 [[wool_thread]] (3×3).",
+    "vanilla": true
+  },
+  "minecraft:charcoal": {
+    "text": "Bränns i Clay Kiln av 1 Log eller 2 Firewood (30 s). Bästa bränslet (4 min). Campfire släpper inte längre Charcoal.",
+    "vanilla": true
+  },
+  "minecraft:brick": {
+    "text": "Bränns i Clay Kiln av 1 Clay Ball (20 s).",
+    "vanilla": true
+  },
+  "minecraft:cow_spawn_egg": {
+    "text": "Cow, Sheep, Pig, Chicken, Horse, Donkey och Llama spawnar inte i naturen. Byar får en hage (7×7) med 3 djur första gången en spelare kommer nära, och fylls på var 30:e sekund. Vilda djur lämnar en **Carcass** som styckas med kniv i stället för loot.",
+    "vanilla": true,
+    "name": "Farm-djur"
+  },
+  "minecraft:furnace": {
+    "text": "Borttagen (ersätts av [[kiln]], uppgraderas senare). Smoker och Blast Furnace är också borttagna.",
+    "vanilla": true
+  },
+  "minecraft:oak_planks": {
+    "text": "1 Log → **2** Planks (vanilla 4). Gäller alla träslag. Sågen kommer senare.",
+    "vanilla": true,
+    "name": "Planks"
+  },
+  "boiled_egg": {
+    "text": "Valfritt ägg (vanligt, blått, brunt) på en Campfire (15 s). Stackar 16. Går inte att äta med skalet på.\n**Skala:** Boiled Egg i craftingrutan → [[peeled_egg]] + [[eggshell]]."
+  },
+  "peeled_egg": {
+    "text": "Skala en [[boiled_egg]] i craftingrutan (ger också [[eggshell]]). 3 hunger.",
+    "category": "food"
+  },
+  "eggshell": {
+    "text": "Fås när man skalar en [[boiled_egg]]. Fungerar som Bone Meal: **högerklicka på växter**.",
+    "category": "materials"
+  }
+}

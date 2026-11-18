@@ -42,4 +42,6 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: Mechanical ${{ steps.version.outputs.version }}
-          files: build/libs/mechanical-${{ steps.version.outputs.version }}.jar
+          files: |
+            build/libs/mechanical-${{ steps.version.outputs.version }}.jar
+            docs/registry.html

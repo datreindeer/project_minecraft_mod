@@ -100,13 +100,30 @@ public class StoneAgeEvents {
         event.getDrops().add(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(item)));
     }
 
-    /** Gutting a whole fish (whole fish + flint knife) also gives Fish Bones. */
+    /** The fletching table opens its GUI (arrows and bow upgrades, see FletchingRecipes). */
+    @SubscribeEvent
+    static void openFletchingTable(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {
+        if (event.getEntity().isSecondaryUseActive() || !event.getLevel().getBlockState(event.getPos()).is(Blocks.FLETCHING_TABLE)) return;
+        event.setCanceled(true);
+        event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+        if (!event.getLevel().isClientSide()) {
+            var access = net.minecraft.world.inventory.ContainerLevelAccess.create(event.getLevel(), event.getPos());
+            event.getEntity().openMenu(new net.minecraft.world.SimpleMenuProvider((id, inventory, p) -> new FletchingMenu(id, inventory, access),
+                    net.minecraft.network.chat.Component.translatable("container.mechanical.fletching_table")));
+        }
+    }
+
+    /** Gutting a whole fish (whole fish + knife) also gives Fish Bones; peeling a boiled egg gives an Eggshell. */
     @SubscribeEvent
     static void onCrafted(PlayerEvent.ItemCraftedEvent event) {
         if (event.getEntity().level().isClientSide()) return;
         for (int i = 0; i < event.getInventory().getContainerSize(); i++) {
             if (event.getInventory().getItem(i).is(Mechanical.WHOLE_FISH)) {
                 event.getEntity().getInventory().placeItemBackInInventory(new ItemStack(Mechanical.FISH_BONES.get()), net.minecraft.util.Prediction.SERVER_ONLY);
+                return;
+            }
+            if (event.getInventory().getItem(i).is(Mechanical.BOILED_EGG.get())) { // peeling also gives the shell
+                event.getEntity().getInventory().placeItemBackInInventory(new ItemStack(Mechanical.EGGSHELL.get()), net.minecraft.util.Prediction.SERVER_ONLY);
                 return;
             }
         }

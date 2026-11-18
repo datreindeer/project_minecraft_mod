@@ -1,4 +1,4 @@
-"""Generate 9x9 temperature HUD sprites (vanilla HUD style) + optional preview.
+"""Generate 9x9 temperature HUD sprites (sun = warm, snowflake = cold, frosted snowflake = freezing) (vanilla HUD style) + optional preview.
 
 Like vanilla hearts/food: background.png holds the dark outline; *_full/*_half are drawn
 on top of it and only fill the interior. Half = left half incl. centre column (as heart/half).
@@ -12,17 +12,17 @@ from PIL import Image
 OUT = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources", "assets",
                    "mechanical", "textures", "gui", "sprites", "hud", "temperature")
 
-# Thermometer: X = outline, i = interior. Tube on top, bulb at bottom.
+# Round slot: X = outline, i = interior. Sun and snowflakes fill the interior; uncovered interior stays dark.
 SHAPE = [
-    "...XXX...",
-    "...XiX...",
-    "...XiX...",
-    "..XXiXX..",
+    "..XXXXX..",
     ".XiiiiiX.",
+    "XiiiiiiiX",
+    "XiiiiiiiX",
+    "XiiiiiiiX",
+    "XiiiiiiiX",
+    "XiiiiiiiX",
     ".XiiiiiX.",
-    ".XiiiiiX.",
-    "..XiiiX..",
-    "...XXX...",
+    "..XXXXX..",
 ]
 assert len(SHAPE) == 9 and all(len(r) == 9 for r in SHAPE)
 
@@ -31,40 +31,49 @@ def hexc(h):
     return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), 255)
 
 
-# Per-pixel role map for the interior: l=light edge, m=main, d=dark edge, g=glint, s=bulb main
-ROLES = [
+# Sun: W hot centre, o disc, O shaded disc edge, y rays.
+SUN = [
     ".........",
-    "....l....",
-    "....m....",
-    "....m....",
-    "..llgsd..",
-    "..lgggd..",
-    "..ssgsd..",
-    "...ddd...",
+    "....y....",
+    ".y.ooo.y.",
+    "..oWWoo..",
+    ".yoWooOy.",
+    "..ooooO..",
+    ".y.oOO.y.",
+    "....y....",
+    ".........",
+]
+# Snowflake: W centre, C arms, c fork tips and diagonal sparks.
+FLAKE = [
+    ".........",
+    "....C....",
+    "..c.C.c..",
+    "...cCc...",
+    ".CCCWCCC.",
+    "...cCc...",
+    "..c.C.c..",
+    "....C....",
     ".........",
 ]
 
-PALETTES = {
-    # roles: l light, m tube, s bulb, d shade, g snowflake glint (warm: same as bulb)
-    "cold":     dict(l="8fd3ff", m="4aa8f0", s="2f86e0", d="1d55b0", g="d8f2ff"),
-    "freezing": dict(l="f0faff", m="d8f0ff", s="94c4ec", d="5a8cc0", g="ffffff"),
-    "warm":     dict(l="ffd27a", m="ff9a2e", s="e8481c", d="a81c10", g="e8481c"),
+ICONS = {
+    "warm": (SUN, dict(W="fff6b0", o="ffcc33", O="ef8f1c", y="ffaa22")),
+    "cold": (FLAKE, dict(W="e4f6ff", C="6cc0f4", c="a8dcff")),
+    # freezing: white flake on an ice-blue frosted disc ("." = every uncovered interior pixel)
+    "freezing": (FLAKE, {"W": "ffffff", "C": "ffffff", "c": "dff6ff", ".": "2f6a9a"}),
 }
-
-assert all(len(r) == 9 for r in ROLES)
+for grid, _ in ICONS.values():
+    assert len(grid) == 9 and all(len(r) == 9 for r in grid)
 
 
 def icon(name, half=False):
+    grid, pal = ICONS[name]
     im = Image.new("RGBA", (9, 9), (0, 0, 0, 0))
-    pal = {k: hexc(v) for k, v in PALETTES[name].items()}
     for y in range(9):
         for x in range(9):
-            r = ROLES[y][x]
-            if r != "." and not (half and x > 4):
-                im.putpixel((x, y), pal[r])
-    if name == "freezing":  # extra frost flake above-left of the tube, outside the slot
-        for p in [(1, 0), (0, 1), (1, 1), (2, 1), (1, 2)]:
-            im.putpixel(p, hexc("ffffff"))
+            r = grid[y][x]
+            if r in pal and SHAPE[y][x] == "i" and not (half and x > 4):
+                im.putpixel((x, y), hexc(pal[r]))
     return im
 
 
@@ -82,12 +91,12 @@ def background():
 def main():
     os.makedirs(OUT, exist_ok=True)
     sprites = {"background": background()}
-    for n in PALETTES:
+    for n in ICONS:
         sprites[f"{n}_full"] = icon(n)
         sprites[f"{n}_half"] = icon(n, half=True)
     for n, im in sprites.items():
-        # interior pixels must stay inside the background shape (frost sparkles excepted)
-        if n != "background" and not n.startswith("freezing"):
+        # interior pixels must stay inside the background shape
+        if n != "background":
             assert all(im.getpixel((x, y))[3] == 0 or SHAPE[y][x] == "i"
                        for y in range(9) for x in range(9)), n
         im.save(os.path.join(OUT, n + ".png"))

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RR",
+    "RR"
+  ],
+  "key": {
+    "R": "#mechanical:rock_chunks"
+  },
+  "result": {
+    "id": "minecraft:cobblestone"
+  }
+}

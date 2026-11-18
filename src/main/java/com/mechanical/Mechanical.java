@@ -178,6 +178,43 @@ public class Mechanical {
     public static final Map<String, DeferredItem<Item>> ROUGH_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
     public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
+    // --- Hunting gear ---
+    /** Tusk Dagger (Tool Station: tusk + cordage + leather grip): a knife that lasts longer and cuts a little faster than flint. */
+    public static final ToolMaterial TUSK = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 140, 3.0F, 0.5F, 5, FLINT_TOOL_MATERIALS);
+    public static final DeferredItem<KnifeItem> TUSK_DAGGER = ITEMS.registerItem("tusk_dagger", p -> new KnifeItem(p, 1.3F, 1.1F, KnifeItem.FLINT),
+            p -> p.sword(TUSK, 1.5F, -1.8F));
+    public static final DeferredItem<Item> BONE_FISH_HOOK = ITEMS.registerSimpleItem("bone_fish_hook");
+    public static final DeferredItem<BoneHookRodItem> BONE_HOOK_FISHING_ROD = ITEMS.registerItem("bone_hook_fishing_rod", BoneHookRodItem::new,
+            p -> p.durability(48).enchantable(1));
+    public static final DeferredItem<Item> TALLOW = ITEMS.registerSimpleItem("tallow");
+    /** Eggs boiled on a campfire; peeled in the crafting grid (-> Peeled Egg + Eggshell, which works like bone meal). */
+    public static final DeferredItem<Item> BOILED_EGG = ITEMS.registerSimpleItem("boiled_egg", p -> p.stacksTo(16));
+    public static final DeferredItem<Item> PEELED_EGG = food("peeled_egg", 3, 0.6F);
+    public static final DeferredItem<net.minecraft.world.item.BoneMealItem> EGGSHELL = ITEMS.registerItem("eggshell", net.minecraft.world.item.BoneMealItem::new);
+    public static final DeferredItem<SpecialArrowItem> BONE_ARROW = ITEMS.registerItem("bone_arrow", p -> new SpecialArrowItem(p, 1.5, false));
+    public static final DeferredItem<SpecialArrowItem> BARBED_ARROW = ITEMS.registerItem("barbed_arrow", p -> new SpecialArrowItem(p, 3.0, false));
+    public static final DeferredItem<SpecialArrowItem> FIRE_ARROW = ITEMS.registerItem("fire_arrow", p -> new SpecialArrowItem(p, 2.0, true));
+    public static final DeferredItem<net.minecraft.world.item.BowItem> SINEW_BOW = ITEMS.registerItem("sinew_bow", net.minecraft.world.item.BowItem::new,
+            p -> p.durability(200).enchantable(1));
+    public static final Supplier<MenuType<FletchingMenu>> FLETCHING_MENU = MENUS.register("fletching_table",
+            () -> new MenuType<>(FletchingMenu::new, FeatureFlags.VANILLA_SET));
+
+    // --- Fur (from bear pelts): warmer than leather ---
+    public static final net.minecraft.world.item.equipment.ArmorMaterial FUR = new net.minecraft.world.item.equipment.ArmorMaterial(7,
+            java.util.Map.of(net.minecraft.world.item.equipment.ArmorType.HELMET, 1, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE, 3,
+                    net.minecraft.world.item.equipment.ArmorType.LEGGINGS, 2, net.minecraft.world.item.equipment.ArmorType.BOOTS, 1,
+                    net.minecraft.world.item.equipment.ArmorType.BODY, 3),
+            12, net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "repairs_fur_armor")),
+            net.minecraft.resources.ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, "fur")));
+    public static final DeferredItem<Item> FUR_HOOD = ITEMS.registerSimpleItem("fur_hood", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.HELMET));
+    public static final DeferredItem<Item> FUR_COAT = ITEMS.registerSimpleItem("fur_coat", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> FUR_LEGGINGS = ITEMS.registerSimpleItem("fur_leggings", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> FUR_BOOTS = ITEMS.registerSimpleItem("fur_boots", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.BOOTS));
+    public static final DeferredBlock<BearRugBlock> BEAR_RUG = BLOCKS.registerBlock("bear_rug", BearRugBlock::new, p -> p
+            .mapColor(MapColor.COLOR_BROWN).strength(0.2F).sound(SoundType.WOOL).noOcclusion());
+    public static final DeferredItem<BlockItem> BEAR_RUG_ITEM = ITEMS.registerSimpleBlockItem("bear_rug", BEAR_RUG);
+
     public static final DeferredItem<BarkBasketItem> BARK_BASKET = ITEMS.registerItem("bark_basket", BarkBasketItem::new, p -> p.stacksTo(1));
     public static final Supplier<MenuType<BarkBasketMenu>> BARK_BASKET_MENU = MENUS.register("bark_basket",
             () -> new MenuType<>(BarkBasketMenu::new, FeatureFlags.VANILLA_SET));

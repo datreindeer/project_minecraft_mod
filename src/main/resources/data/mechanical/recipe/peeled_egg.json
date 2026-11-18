@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "mechanical:boiled_egg"
+  ],
+  "result": {
+    "id": "mechanical:peeled_egg",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:fish_bones",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:bone_fish_hook",
+    "count": 1
+  }
+}
