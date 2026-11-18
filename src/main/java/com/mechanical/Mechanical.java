@@ -275,6 +275,9 @@ public class Mechanical {
     public static final DeferredBlock<BloodBlock> BLOOD = BLOCKS.registerBlock("blood", BloodBlock::new, p -> p
             .mapColor(MapColor.COLOR_RED).noCollision().instabreak().replaceable().randomTicks().noOcclusion()
             .sound(SoundType.SLIME_BLOCK).pushReaction(PushReaction.POPPED).noLootTable());
+    public static final DeferredBlock<TwigsBlock> TWIGS = BLOCKS.registerBlock("twigs", TwigsBlock::new, p -> p
+            .mapColor(MapColor.WOOD).noCollision().instabreak().replaceable().noOcclusion()
+            .sound(SoundType.GRASS).pushReaction(PushReaction.POPPED));
 
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.registerEntityType(
             "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
@@ -288,7 +291,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
-        Temperature.init(); VillageAnimals.init(); Tinder.init(); Foraging.init();
+        Temperature.init(); VillageAnimals.init(); Tinder.init(); Foraging.init(); com.mechanical.worldgen.Structures.init();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
@@ -297,5 +300,6 @@ public class Mechanical {
         BLOCK_ENTITIES.register(modEventBus);
         ENTITY_TYPES.register(modEventBus);
         ATTACHMENTS.register(modEventBus);
+        com.mechanical.worldgen.Structures.FEATURE_TYPES.register(modEventBus);
     }
 }

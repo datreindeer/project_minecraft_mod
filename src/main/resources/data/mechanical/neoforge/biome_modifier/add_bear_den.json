@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#minecraft:is_taiga",
+      [
+        "minecraft:forest",
+        "minecraft:dark_forest",
+        "minecraft:windswept_forest"
+      ]
+    ]
+  },
+  "features": "mechanical:bear_den",
+  "step": "surface_structures"
+}

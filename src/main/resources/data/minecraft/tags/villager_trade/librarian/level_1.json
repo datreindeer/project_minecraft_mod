@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:librarian/1/stone_0",
+    "mechanical:librarian/1/stone_1"
+  ]
+}

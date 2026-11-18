@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:cleric/1/stone_0",
+    "mechanical:cleric/1/stone_1"
+  ]
+}

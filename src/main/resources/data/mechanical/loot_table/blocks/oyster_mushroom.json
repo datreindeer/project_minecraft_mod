@@ -5,8 +5,27 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "mechanical:oyster_mushroom"
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:oyster_mushroom",
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "items": "#mechanical:knives"
+                }
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:oyster_mushroom",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            }
+          ]
         }
       ]
     }

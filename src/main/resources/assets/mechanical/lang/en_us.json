@@ -192,5 +192,6 @@
   "item.mechanical.eggshell": "Eggshell",
   "block.mechanical.armor_station": "Armor Station",
   "container.mechanical.armor_station": "Armor Station",
-  "item.mechanical.bone_needle": "Bone Needle"
+  "item.mechanical.bone_needle": "Bone Needle",
+  "block.mechanical.twigs": "Twigs"
 }

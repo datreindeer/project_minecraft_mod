@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:cartographer/1/stone_0",
+    "mechanical:cartographer/1/stone_1"
+  ]
+}

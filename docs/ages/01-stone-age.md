@@ -247,6 +247,12 @@ med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta
   - En Stump blir kvar.
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
 
+### Skogen (ändrad)
+- **Oak är stora träd**: grenade ekar med 9–15 block hög stam, kronan börjar högt upp så man ser under den. Gäller alla
+  ekar (skog, slätt, saplings).
+- **Birch är högre och smalare**: 9–12 block stam (tall birch upp till ~18), kronan högst upp.
+- **Twigs:** små kvistar på marken i skog och taiga. Slå sönder → 1 Stick. Inget block att placera.
+
 ### Bearbeta stockar (håll in högerklick med yxa)
 Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
 (Flint Axe / Crude Stone Axe 4, Stone Axe 3, Iron Axe 2) och sliter yxan 1.
@@ -396,8 +402,37 @@ Nytt item: **Horn** (material för senare recept).
 - **Det kommer inga fler.** Djuren despawnar aldrig, men vill man ha mer får man föda upp dem själv. Byarnas egna djur
   (vanilla-hagar, hästar) finns kvar.
 
+### Strukturer i världen
+Små, sällsynta platser som gör världen levande. Byggs bara i **nya chunks**. Behållarna är **Decorated Pots** med
+stenålders-loot (inget järn). Krossa krukan för att få innehållet.
+
+| Struktur | Var | Ungefär 1 på N chunks | Innehåll |
+|---|---|---|---|
+| Abandoned Campsite | Skog, slätt, meadow | 80 | Släckt lägereld, Drying Rack, Bone Pile; flint, cordage, mat |
+| Hunter's Lean-to | Taiga, skog | 120 | Vindskydd, Bear Rug; hudar, pilar, sällan Crude Bow |
+| Bear Den | Taiga, skog, dark forest | 120 | Grotta i sluttning (eller stenhög) med ben och en **Brown Bear** |
+| Standing Stones | Slätt, savann, meadow | 100 | Stencirkel med altarsten, lite flinta och ben |
+| Burial Mound | Slätt, meadow, taiga | 180 | Gravhög med gång in, skalle och ben; bone tools, horn, antler |
+| Fishing Camp | Floder, stränder | 40 (kräver vatten) | Torkställningar, brygga; krokar, fisk, sällan Crude Fishing Rod |
+| Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
+| Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
+| Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
+
+### Byarna är fattiga (stenåldern)
+- **Kistor:** bara primitiva saker: sticks, flint, plant fibre, cordage, bark, twine, bone, seeds, plus lite efter hus
+  (smed: flint-verktyg och tool rods, garveri: hudar, slaktare: kött och lard, fiskare: fisk och krokar, hus: bär och mat).
+  Inget järn, guld eller diamanter.
+- **Fälten är döende:** 75 % av grödorna är borta, resten är unga (ger bara frön, eller en morot/potatis). Jorden är torr.
+- **Iron Golem** släpper inget järn (bara 0–2 Poppy).
+- **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
+  senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
+  Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk
+  Dagger. Wandering Trader säljer inget av metall (inga hinkar eller järnhackor).
+
 ### Bär och svamp (plocka)
-Sällsynta, i små grupper. Kan **inte planteras** än (bären och svamparna är inte frön). Allt får plats i Bark Basket.
+Växer i **fläckar**: en bärbuske kommer sällan ensam (upp till ~7 buskar ihop), svamp växer i **svampfält** (upp
+till ~14 ihop). Kan **inte planteras** än. Allt får plats i Bark Basket. **Svamp (även vanilla) släpper alltid med kniv, bara
+hälften av gångerna utan.**
 
 **Bärbuskar:** växer bar → blommor → omogna → mogna (~6 min per steg i ljus). **Högerklicka en mogen buske → 1–3 bär**,
 sedan börjar den om från blommor (~12 min tills den är mogen igen). Inga taggar. Hugger man sönder busken: 1–2 Sticks +
@@ -492,7 +527,8 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Alla Beds (alla färger, omfärgning, Straw Bed) | **Borttagna** (kommer senare, kräver Shears) |
 | Bow, Fishing Rod | Recepten **borttagna** → **Crude Bow / Crude Fishing Rod** i Tool Station |
 | Fisk-loot (döda fiskar, fiske) | Rå fisk → **Whole fish** som måste rensas |
-| Farm-djur i naturen | **Borttagna** → spawnar i byar (hage + påfyllning) |
+| Farm-djur i naturen | **Borttagna** → spawnar en gång i byar (hage, 4 djur) |
+| Byarnas kistor, fält, handel, Iron Golem-järn | **Primitiv loot, döende fält, stenåldershandel, inget järn** |
 | Knockback på monster | **Borttaget** |
 | Djur-loot | Ersatt av **Carcass** + styckning (ingen Leather/kött/ull direkt) |
 | Furnace | **Borttagen** (ersätts av Clay Kiln, uppgraderas senare) |

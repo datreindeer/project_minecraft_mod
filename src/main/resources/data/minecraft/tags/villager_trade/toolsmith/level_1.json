@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:toolsmith/1/stone_0",
+    "mechanical:toolsmith/1/stone_1"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#minecraft:is_taiga",
+      [
+        "minecraft:forest",
+        "minecraft:birch_forest"
+      ]
+    ]
+  },
+  "features": "mechanical:hunters_lean_to",
+  "step": "surface_structures"
+}

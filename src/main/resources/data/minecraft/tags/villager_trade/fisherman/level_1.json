@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:fisherman/1/stone_0",
+    "mechanical:fisherman/1/stone_1"
+  ]
+}

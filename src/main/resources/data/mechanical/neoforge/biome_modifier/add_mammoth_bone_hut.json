@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:snowy_plains",
+    "minecraft:snowy_taiga",
+    "minecraft:grove"
+  ],
+  "features": "mechanical:mammoth_bone_hut",
+  "step": "surface_structures"
+}

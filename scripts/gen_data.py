@@ -295,8 +295,16 @@ for bush, berries in BUSHES.items():
     w(A / f"items/{berries}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{berries}"}})
     lang[f"item.mechanical.{berries}"] = title(berries)
     forage_feature(block, {"id": f"mechanical:{block}", "properties": {"age": "3"}},
-                   BUSH_BIOMES[bush], 40, 3, 3)
+                   BUSH_BIOMES[bush], 16, 7, 4)  # a patch of a few bushes
 w(D / "mechanical/tags/block/wild_berry_bushes.json", {"values": [f"mechanical:{b}_bush" for b in BUSHES]})
+def mushroom_loot(item, seq):
+    """Cut cleanly with a knife: always. Plucked by hand: half the time it falls apart."""
+    return {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:alternatives", "children": [
+        {"type": "minecraft:item", "name": item, "condition": {"type": "minecraft:match_tool", "predicate": {"items": "#mechanical:knives"}}},
+        {"type": "minecraft:item", "name": item, "condition": {"type": "minecraft:random_chance", "chance": 0.5}}]}]}],
+        "random_sequence": seq}
+for vm in ("brown_mushroom", "red_mushroom"):
+    w(D / f"minecraft/loot_table/blocks/{vm}.json", mushroom_loot(f"minecraft:{vm}", f"minecraft:blocks/{vm}"))
 MUSHROOM_BIOMES = {
     "chanterelle": ["minecraft:forest", "minecraft:birch_forest", "minecraft:taiga", "minecraft:old_growth_birch_forest", "minecraft:old_growth_pine_taiga"],
     "porcini": ["minecraft:forest", "minecraft:dark_forest", "minecraft:taiga", "minecraft:old_growth_spruce_taiga"],
@@ -308,13 +316,12 @@ MUSHROOM_BIOMES = {
 for m in MUSHROOMS:
     w(A / f"models/block/{m}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{m}"}})
     w(A / f"blockstates/{m}.json", {"variants": {"": {"model": f"mechanical:block/{m}"}}})
-    w(D / f"mechanical/loot_table/blocks/{m}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-        {"type": "minecraft:item", "name": f"mechanical:{m}"}]}], "random_sequence": f"mechanical:blocks/{m}"})
+    w(D / f"mechanical/loot_table/blocks/{m}.json", mushroom_loot(f"mechanical:{m}", f"mechanical:blocks/{m}"))
     w(A / f"models/item/{m}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{m}"}})
     w(A / f"items/{m}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{m}"}})
     lang[f"block.mechanical.{m}"] = title(m)
     lang[f"item.mechanical.{m}"] = title(m)
-    forage_feature(m, {"id": f"mechanical:{m}"}, MUSHROOM_BIOMES[m], 24, 4, 3)
+    forage_feature(m, {"id": f"mechanical:{m}"}, MUSHROOM_BIOMES[m], 18, 14, 6)  # a mushroom field
 w(D / "mechanical/tags/item/edible_mushrooms.json", {"values": [f"mechanical:{m}" for m in MUSHROOMS if m != "fly_agaric"] + ["minecraft:brown_mushroom"]})
 w(A / "models/item/roasted_mushrooms.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/roasted_mushrooms"}})
 w(A / "items/roasted_mushrooms.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/roasted_mushrooms"}})
@@ -793,3 +800,154 @@ print("wildlife data ok")
 lang.update({"item.mechanical.stone_chunk": "Rock", "item.mechanical.granite_chunk": "Granite Rock",
              "item.mechanical.diorite_chunk": "Diorite Rock", "item.mechanical.andesite_chunk": "Andesite Rock"})
 w(lang_path, lang)
+
+
+# ---- villages: stone age nerf (trades, chests, dying fields, no golem iron) ----
+import zipfile as _zf, json as _json
+_jar = _zf.ZipFile(JAR)
+def _vanilla(path):
+    return _json.loads(_jar.read(path).decode())
+
+# Trades: each profession's level 1-2 get stone age trades; levels 3-5 are empty until later ages unlock them.
+# (wants, wants_count, gives, gives_count, max_uses, xp)
+M = "mechanical:"
+E = "minecraft:emerald"
+TRADES = {
+    "armorer":       [[("minecraft:leather", 10, E, 1, 16, 2), (E, 3, "minecraft:leather_helmet", 1, 8, 1)],
+                      [(M + "sinew", 6, E, 1, 16, 10), (E, 5, "minecraft:leather_chestplate", 1, 6, 5)]],
+    "butcher":       [[(M + "game_meat_scraps", 10, E, 1, 16, 2), (E, 1, M + "cooked_venison_scraps", 4, 16, 1)],
+                      [(M + "lard", 6, E, 1, 16, 10), (E, 1, M + "cooked_beef_scraps", 4, 16, 5)]],
+    "cartographer":  [[("minecraft:paper", 24, E, 1, 16, 2), (E, 3, "minecraft:map", 1, 8, 1)],
+                      [(M + "bark", 16, E, 1, 16, 10), (E, 1, M + "cordage", 6, 12, 5)]],
+    "cleric":        [[("minecraft:rotten_flesh", 24, E, 1, 16, 2), (E, 1, "minecraft:candle", 3, 12, 1)],
+                      [(M + "eggshell", 8, E, 1, 16, 10), (E, 1, "minecraft:bone_meal", 6, 12, 5)]],
+    "farmer":        [[(M + "raspberries", 16, E, 1, 16, 2), (E, 1, "minecraft:wheat_seeds", 8, 12, 1)],
+                      [(M + "blueberries", 16, E, 1, 16, 10), (E, 2, "minecraft:carrot", 3, 8, 5)]],
+    "fisherman":     [[(M + "whole_cod", 6, E, 1, 16, 2), (E, 1, M + "bone_fish_hook", 1, 12, 1)],
+                      [(M + "whole_salmon", 5, E, 1, 16, 10), (E, 3, M + "crude_fishing_rod", 1, 6, 5)]],
+    "fletcher":      [[("minecraft:stick", 32, E, 1, 16, 2), (E, 1, "minecraft:arrow", 8, 12, 1)],
+                      [("minecraft:flint", 24, E, 1, 16, 10), (E, 3, M + "crude_bow", 1, 6, 5)]],
+    "leatherworker": [[(M + "raw_hide", 6, E, 1, 16, 2), (E, 1, "minecraft:leather", 2, 12, 1)],
+                      [("minecraft:rabbit_hide", 6, E, 1, 16, 10), (E, 3, M + "bark_basket", 1, 6, 5)]],
+    "librarian":     [[("minecraft:paper", 24, E, 1, 16, 2), (E, 2, "minecraft:book", 1, 12, 1)],
+                      [("minecraft:ink_sac", 6, E, 1, 16, 10), (E, 1, "minecraft:candle", 3, 12, 5)]],
+    "mason":         [[("minecraft:clay_ball", 10, E, 1, 16, 2), (E, 1, M + "stone_chunk", 12, 16, 1)],
+                      [(M + "granite_chunk", 20, E, 1, 16, 10), (E, 1, "minecraft:packed_mud", 8, 12, 5)]],
+    "shepherd":      [[("minecraft:white_wool", 18, E, 1, 16, 2), (E, 1, M + "wool_thread", 6, 12, 1)],
+                      [(M + "plant_fibre", 24, E, 1, 16, 10), (E, 3, "minecraft:white_bed", 1, 6, 5)]],
+    "toolsmith":     [[("minecraft:flint", 16, E, 1, 16, 2), (E, 1, M + "flint_axe", 1, 12, 1)],
+                      [(M + "stone_chunk", 24, E, 1, 16, 10), (E, 3, M + "crude_stone_axe", 1, 6, 5)]],
+    "weaponsmith":   [[(M + "cordage", 12, E, 1, 16, 2), (E, 2, M + "flint_spear", 1, 12, 1)],
+                      [(M + "tusk", 4, E, 1, 16, 10), (E, 4, M + "tusk_dagger", 1, 6, 5)]],
+}
+def _stack(i, n):
+    return {"id": i, "count": n} if n > 1 else {"id": i}
+for prof, levels in TRADES.items():
+    for lvl in range(1, 6):
+        ids = []
+        for i, (wi, wn, gi, gn, uses, xp) in enumerate(levels[lvl - 1] if lvl <= len(levels) else []):
+            name = f"{prof}/{lvl}/stone_{i}"
+            w(D / f"mechanical/villager_trade/{name}.json", {"wants": _stack(wi, wn), "gives": _stack(gi, gn),
+                "max_uses": uses, "xp": xp, "reputation_discount": 0.05})
+            ids.append(f"mechanical:{name}")
+        w(D / f"minecraft/tags/villager_trade/{prof}/level_{lvl}.json", {"replace": True, "values": ids})
+
+# wandering trader: drop anything made of metal (iron pickaxe, buckets, golden dandelion)
+for tag in ("common", "uncommon", "buying"):
+    vals = _vanilla(f"data/minecraft/tags/villager_trade/wandering_trader/{tag}.json")["values"]
+    w(D / f"minecraft/tags/villager_trade/wandering_trader/{tag}.json", {"replace": True,
+        "values": [v for v in vals if not any(x in v for x in ("iron", "diamond", "bucket", "gold"))]})
+
+# Chests: primitive loot only
+def _e(item, lo, hi, weight):
+    return {"type": "minecraft:item", "name": item, "weight": weight,
+            "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]}
+BASE = [_e("minecraft:stick", 2, 6, 10), _e("minecraft:flint", 1, 4, 8), _e(M + "plant_fibre", 2, 6, 8),
+        _e(M + "cordage", 1, 3, 5), _e(M + "bark", 1, 3, 5), _e("minecraft:wheat_seeds", 1, 4, 6),
+        _e(M + "twine", 1, 3, 4), _e("minecraft:bone", 1, 3, 4)]
+EXTRA = {
+    "weaponsmith": [_e(M + "flint_spear", 1, 1, 2), _e("minecraft:arrow", 2, 6, 4), _e(M + "flint_knife", 1, 1, 2)],
+    "toolsmith": [_e(M + "flint_axe", 1, 1, 2), _e(M + "stone_axe_head", 1, 1, 3), _e(M + "tool_rod", 1, 2, 4)],
+    "armorer": [_e("minecraft:leather", 1, 3, 4), _e(M + "wool_thread", 1, 3, 4)],
+    "tannery": [_e("minecraft:leather", 1, 3, 5), _e(M + "raw_hide", 1, 2, 5), _e(M + "scraped_hide", 1, 1, 3)],
+    "butcher": [_e(M + "cooked_beef_scraps", 1, 3, 5), _e(M + "lard", 1, 2, 3), _e(M + "sinew", 1, 2, 3)],
+    "fisher": [_e(M + "whole_cod", 1, 2, 5), _e(M + "fish_bones", 1, 3, 4), _e(M + "bone_fish_hook", 1, 1, 2)],
+    "fletcher": [_e("minecraft:feather", 2, 6, 6), _e("minecraft:arrow", 2, 6, 4)],
+    "shepherd": [_e("minecraft:white_wool", 1, 3, 5), _e(M + "wool_thread", 1, 4, 5)],
+    "mason": [_e("minecraft:clay_ball", 2, 6, 6), _e(M + "stone_chunk", 2, 6, 6)],
+    "cartographer": [_e("minecraft:paper", 1, 4, 5)],
+    "temple": [_e("minecraft:candle", 1, 2, 4), _e(M + "tallow", 1, 2, 4), _e("minecraft:bone_meal", 1, 3, 3)],
+}
+HOUSE = [_e(M + "raspberries", 1, 4, 4), _e(M + "blueberries", 1, 4, 4), _e(M + "cooked_mutton_scraps", 1, 3, 4),
+         _e("minecraft:carrot", 1, 2, 2), _e("minecraft:potato", 1, 2, 2)]
+for path in [n for n in _jar.namelist() if n.startswith("data/minecraft/loot_table/chests/village/") and n.endswith(".json")]:
+    name = path.rsplit("/", 1)[1][:-5]
+    kind = name.removeprefix("village_")
+    pool = BASE + EXTRA.get(kind, HOUSE)
+    w(D / f"minecraft/loot_table/chests/village/{name}.json", {"type": "minecraft:chest", "pools": [
+        {"rolls": {"type": "minecraft:uniform", "min": 3, "max": 6}, "entries": pool}],
+        "random_sequence": f"minecraft:chests/village/{name}"})
+
+# Fields: most crops died, a few young ones left (young crops only give seeds / one carrot or potato)
+def _rule(block, prob, out):
+    return {"input_predicate": {"predicate_type": "minecraft:random_block_match", "block": block, "probability": prob},
+            "location_predicate": {"predicate_type": "minecraft:always_true"}, "output_state": out}
+DEAD = {"id": "minecraft:air"}
+for farm in ("plains", "desert", "savanna", "snowy", "taiga"):
+    rules = []
+    for crop in ("wheat", "carrots", "potatoes", "beetroots", "melon_stem", "pumpkin_stem"):
+        rules.append(_rule(f"minecraft:{crop}", 0.75, DEAD))
+    rules += [_rule("minecraft:wheat", 0.2, {"id": "minecraft:carrots", "properties": {"age": "1"}}),
+              _rule("minecraft:wheat", 0.15, {"id": "minecraft:potatoes", "properties": {"age": "1"}}),
+              _rule("minecraft:wheat", 1.0, {"id": "minecraft:wheat", "properties": {"age": "2"}})]
+    for crop in ("carrots", "potatoes", "beetroots"):
+        rules.append(_rule(f"minecraft:{crop}", 1.0, {"id": f"minecraft:{crop}", "properties": {"age": "1"}}))
+    for stem in ("melon_stem", "pumpkin_stem"):
+        rules.append(_rule(f"minecraft:{stem}", 1.0, {"id": f"minecraft:{stem}", "properties": {"age": "1"}}))
+    rules.append(_rule("minecraft:farmland", 0.6, {"id": "minecraft:farmland", "properties": {"moisture": "0"}}))
+    w(D / f"minecraft/worldgen/processor_list/farm_{farm}.json", {"processors": [{"processor_type": "minecraft:rule", "rules": rules}]})
+
+# Iron golem: no iron
+w(D / "minecraft/loot_table/entities/iron_golem.json", {"type": "minecraft:entity", "pools": [
+    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:poppy",
+        "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 0, "max": 2}}]}]}],
+    "random_sequence": "minecraft:entities/iron_golem"})
+
+
+# ---- twigs: small sticks on the forest floor, break for a stick ----
+for v in range(3):
+    w(A / f"models/block/twigs_{v}.json", {"textures": {"particle": f"mechanical:block/twigs_{v}", "twigs": f"mechanical:block/twigs_{v}"},
+        "elements": [{"from": [0, 0.1, 0], "to": [16, 0.1, 16], "shade": False,
+                      "faces": {"up": {"uv": [0, 0, 16, 16], "texture": "#twigs"}, "down": {"uv": [0, 16, 16, 0], "texture": "#twigs"}}}]})
+w(A / "blockstates/twigs.json", {"variants": {"": [{"model": f"mechanical:block/twigs_{v}", "y": y} for v in range(3) for y in (0, 90, 180, 270)]}})
+w(D / "mechanical/loot_table/blocks/twigs.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+    {"type": "minecraft:item", "name": "minecraft:stick"}]}], "random_sequence": "mechanical:blocks/twigs"})
+lang["block.mechanical.twigs"] = "Twigs"
+w(lang_path, lang)
+forage_feature("twigs", {"id": "mechanical:twigs"}, {"type": "neoforge:or", "values": ["#minecraft:is_forest", "#minecraft:is_taiga"]}, 1, 3, 7)
+
+# ---- bigger trees: oaks are big branching trees, birches are tall and slim ----
+_tjar = zipfile.ZipFile(JAR)
+for path in _tjar.namelist():
+    if not path.startswith("data/minecraft/worldgen/feature/") or not path.endswith(".json"):
+        continue
+    name = path.rsplit("/", 1)[1][:-5]
+    if name.startswith(("fallen_", "swamp_", "dark_oak", "pale_oak", "trees_")):
+        continue
+    tree = json.loads(_tjar.read(path).decode())
+    if tree.get("type") != "minecraft:tree":
+        continue
+    log = tree["trunk_provider"].get("id")
+    if log == "minecraft:oak_log":
+        tree["trunk_placer"] = {"type": "minecraft:fancy_trunk_placer", "base_height": 9, "height_rand_a": 7, "height_rand_b": 0}
+        tree["foliage_placer"] = {"type": "minecraft:fancy_foliage_placer", "height": 4, "offset": 4, "radius": 2}
+        tree["minimum_size"] = {"type": "minecraft:two_layers_feature_size", "limit": 0, "min_clipped_height": 6, "upper_size": 0}
+    elif log == "minecraft:birch_log":
+        tp = tree["trunk_placer"]
+        tree["trunk_placer"] = {"type": "minecraft:straight_trunk_placer", "base_height": 9, "height_rand_a": 3,
+                                "height_rand_b": tp.get("height_rand_b", 0)}
+        tree["foliage_placer"] = {"type": "minecraft:blob_foliage_placer", "height": 4, "offset": 0, "radius": 2}
+    else:
+        continue
+    w(D / f"minecraft/worldgen/feature/{name}.json", tree)
+print("forest ok")

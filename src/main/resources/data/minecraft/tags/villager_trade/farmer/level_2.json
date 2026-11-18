@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:farmer/2/stone_0",
+    "mechanical:farmer/2/stone_1"
+  ]
+}

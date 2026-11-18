@@ -1,0 +1,54 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/twigs_0",
+        "y": 0
+      },
+      {
+        "model": "mechanical:block/twigs_0",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/twigs_0",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/twigs_0",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/twigs_1",
+        "y": 0
+      },
+      {
+        "model": "mechanical:block/twigs_1",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/twigs_1",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/twigs_1",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/twigs_2",
+        "y": 0
+      },
+      {
+        "model": "mechanical:block/twigs_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/twigs_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/twigs_2",
+        "y": 270
+      }
+    ]
+  }
+}

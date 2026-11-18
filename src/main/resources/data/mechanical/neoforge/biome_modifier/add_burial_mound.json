@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:taiga",
+    "minecraft:snowy_taiga"
+  ],
+  "features": "mechanical:burial_mound",
+  "step": "surface_structures"
+}

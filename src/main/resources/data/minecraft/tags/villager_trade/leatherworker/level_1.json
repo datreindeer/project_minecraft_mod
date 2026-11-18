@@ -1,0 +1,7 @@
+{
+  "replace": true,
+  "values": [
+    "mechanical:leatherworker/1/stone_0",
+    "mechanical:leatherworker/1/stone_1"
+  ]
+}
