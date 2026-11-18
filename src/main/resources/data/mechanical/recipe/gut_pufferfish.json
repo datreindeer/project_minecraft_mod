@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:whole_pufferfish",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:pufferfish",
+    "count": 1
+  }
+}

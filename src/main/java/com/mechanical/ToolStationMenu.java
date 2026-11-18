@@ -1,0 +1,135 @@
+package com.mechanical;
+
+import java.util.List;
+
+import net.minecraft.util.Prediction;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+/** Slots 0-2: head, binding, rod. Slot 3: result. Then the player inventory. */
+public class ToolStationMenu extends AbstractContainerMenu {
+    public static final int HEAD = 0, BINDING = 1, ROD = 2, RESULT = 3;
+    private static final int INV_START = 4, INV_END = 40;
+
+    private final ContainerLevelAccess access;
+    private final Player player;
+    private final Container inputs = new SimpleContainer(3) {
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            ToolStationMenu.this.slotsChanged(this);
+        }
+    };
+    private final ResultContainer result = new ResultContainer();
+
+    public ToolStationMenu(int containerId, Inventory inventory) {
+        this(containerId, inventory, ContainerLevelAccess.NULL);
+    }
+
+    public ToolStationMenu(int containerId, Inventory inventory, ContainerLevelAccess access) {
+        super(Mechanical.TOOL_STATION_MENU.get(), containerId);
+        this.access = access;
+        this.player = inventory.player;
+        addSlot(new Slot(inputs, HEAD, 80, 17));
+        addSlot(new Slot(inputs, BINDING, 80, 35));
+        addSlot(new Slot(inputs, ROD, 80, 53));
+        addSlot(new Slot(result, 0, 134, 35) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
+
+            @Override
+            public void onTake(Player player, ItemStack carried) {
+                carried.onCraftedBy(player, carried.getCount());
+                for (int i = 0; i < 3; i++) inputs.removeItem(i, 1);
+                super.onTake(player, carried);
+            }
+        });
+        addStandardInventorySlots(inventory, 8, 84);
+    }
+
+    @Override
+    public void slotsChanged(Container container) {
+        ItemStack head = inputs.getItem(HEAD), binding = inputs.getItem(BINDING), rod = inputs.getItem(ROD);
+        ItemStack out = ToolStationRecipes.ALL.stream()
+                .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r))
+                .findFirst()
+                .map(r -> new ItemStack(r.result().get()))
+                .orElse(ItemStack.EMPTY);
+        result.setItem(0, out);
+        broadcastChanges();
+    }
+
+    /** Clicking a tool in the list: put back whatever is in the inputs, then pull the recipe's parts from the inventory. */
+    @Override
+    public boolean clickMenuButton(Player player, int index) {
+        if (index < 0 || index >= ToolStationRecipes.ALL.size()) return false;
+        ToolStationRecipes.Recipe recipe = ToolStationRecipes.ALL.get(index);
+        if (!ToolStationRecipes.isUnlocked(player, recipe)) return false;
+        for (int i = 0; i < 3; i++) {
+            ItemStack old = inputs.removeItemNoUpdate(i);
+            if (!old.isEmpty()) player.getInventory().placeItemBackInInventory(old, Prediction.SERVER_ONLY);
+        }
+        if (!ToolStationRecipes.hasParts(player, recipe)) {
+            slotsChanged(inputs);
+            return true;
+        }
+        List<Item> parts = recipe.parts();
+        for (int i = 0; i < 3; i++) inputs.setItem(i, takeOne(player.getInventory(), parts.get(i)));
+        return true;
+    }
+
+    private static ItemStack takeOne(Inventory inventory, Item item) {
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack stack = inventory.getItem(i);
+            if (stack.is(item)) return inventory.removeItem(i, 1);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        Slot slot = slots.get(index);
+        if (!slot.hasItem()) return ItemStack.EMPTY;
+        ItemStack stack = slot.getItem();
+        ItemStack copy = stack.copy();
+        if (index == RESULT) {
+            if (!moveItemStackTo(stack, INV_START, INV_END, true)) return ItemStack.EMPTY;
+            slot.onQuickCraft(stack, copy);
+        } else if (index < INV_START) {
+            if (!moveItemStackTo(stack, INV_START, INV_END, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, HEAD, RESULT, false)) {
+            return ItemStack.EMPTY;
+        }
+        if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
+        else slot.setChanged();
+        if (stack.getCount() == copy.getCount()) return ItemStack.EMPTY;
+        slot.onTake(player, stack);
+        return copy;
+    }
+
+    @Override
+    public boolean canTakeItemForPickAll(ItemStack carried, Slot target) {
+        return target.container != result && super.canTakeItemForPickAll(carried, target);
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return stillValid(access, player, Mechanical.TOOL_STATION.get());
+    }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        access.execute((level, pos) -> clearContainer(player, inputs));
+    }
+}

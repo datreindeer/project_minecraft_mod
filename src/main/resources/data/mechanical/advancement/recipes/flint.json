@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:flint"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:flint_pickaxe",
+      "mechanical:flint_axe",
+      "mechanical:flint_shovel",
+      "mechanical:flint_hoe",
+      "mechanical:flint_knife",
+      "mechanical:tool_station"
+    ]
+  }
+}

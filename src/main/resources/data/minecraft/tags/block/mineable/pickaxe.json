@@ -1,0 +1,12 @@
+{
+  "values": [
+    "mechanical:tin_ore",
+    "mechanical:tin_block",
+    "mechanical:kiln",
+    "mechanical:loose_stone",
+    "mechanical:loose_granite",
+    "mechanical:loose_diorite",
+    "mechanical:loose_andesite",
+    "mechanical:loose_flint"
+  ]
+}

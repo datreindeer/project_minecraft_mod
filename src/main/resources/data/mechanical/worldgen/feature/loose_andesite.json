@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": {
+          "id": "mechanical:loose_andesite",
+          "properties": {
+            "size": "1"
+          }
+        },
+        "weight": 6
+      },
+      {
+        "data": {
+          "id": "mechanical:loose_andesite",
+          "properties": {
+            "size": "2"
+          }
+        },
+        "weight": 3
+      },
+      {
+        "data": {
+          "id": "mechanical:loose_andesite",
+          "properties": {
+            "size": "3"
+          }
+        },
+        "weight": 1
+      }
+    ]
+  }
+}

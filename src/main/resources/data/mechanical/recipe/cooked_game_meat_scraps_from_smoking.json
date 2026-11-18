@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.1,
+  "ingredient": "mechanical:game_meat_scraps",
+  "result": {
+    "id": "mechanical:cooked_game_meat_scraps"
+  }
+}

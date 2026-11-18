@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:whole_tropical_fish",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:tropical_fish",
+    "count": 1
+  }
+}

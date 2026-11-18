@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:whole_cod",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:cod",
+    "count": 1
+  }
+}

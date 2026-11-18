@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/stump",
+  "textures": {
+    "side": "minecraft:block/mangrove_log",
+    "top": "minecraft:block/mangrove_log_top"
+  }
+}

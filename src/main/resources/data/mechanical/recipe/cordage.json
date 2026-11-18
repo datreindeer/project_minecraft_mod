@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:twine",
+    "mechanical:twine",
+    "mechanical:twine"
+  ],
+  "result": {
+    "id": "mechanical:cordage",
+    "count": 1
+  }
+}

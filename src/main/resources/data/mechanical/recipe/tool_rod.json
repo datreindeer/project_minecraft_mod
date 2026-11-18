@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "K",
+    "L"
+  ],
+  "key": {
+    "K": "#mechanical:knives",
+    "L": "#minecraft:logs"
+  },
+  "result": {
+    "id": "mechanical:tool_rod"
+  }
+}

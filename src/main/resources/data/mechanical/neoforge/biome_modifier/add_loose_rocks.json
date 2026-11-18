@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "mechanical:loose_stone",
+    "mechanical:loose_granite",
+    "mechanical:loose_diorite",
+    "mechanical:loose_andesite",
+    "mechanical:loose_flint"
+  ],
+  "step": "vegetal_decoration"
+}

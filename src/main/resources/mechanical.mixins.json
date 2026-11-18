@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mechanical.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ChickenModelMixin",
+    "DarkNightsMixin",
+    "EntityLightMixin",
+    "LightCoordsMixin",
+    "LivingEntityRendererMixin",
+    "QuadrupedModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "CampfireBlockEntityMixin",
+    "CampfireBlockMixin"
+  ]
+}

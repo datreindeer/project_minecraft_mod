@@ -1,0 +1,17 @@
+package com.mechanical;
+
+import net.minecraft.world.entity.player.Player;
+
+/** Added to the vanilla CampfireBlockEntity by a mixin: fuel and taking food off. */
+public interface CampfireAccess {
+    /** Adds burn time to a lit campfire. */
+    void mechanical$addFuel(int ticks);
+
+    /** Embers caught again: burning for a fresh while. */
+    void mechanical$relight();
+
+    /** Gives the player one item off the fire (cooked or burnt first). False if there is nothing. */
+    boolean mechanical$takeItem(Player player);
+
+    boolean mechanical$hasItems();
+}

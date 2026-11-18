@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:fishing",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:whole_cod",
+          "weight": 60
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:whole_salmon",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:whole_tropical_fish",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:whole_pufferfish",
+          "weight": 13
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "minecraft:gameplay/fishing/fish"
+}

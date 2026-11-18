@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/bone_pile",
+        "y": 0
+      },
+      {
+        "model": "mechanical:block/bone_pile",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/bone_pile",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/bone_pile",
+        "y": 270
+      }
+    ]
+  }
+}

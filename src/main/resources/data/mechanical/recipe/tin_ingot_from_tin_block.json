@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "tin_ingot",
+  "ingredients": [
+    "mechanical:tin_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "mechanical:tin_ingot"
+  }
+}

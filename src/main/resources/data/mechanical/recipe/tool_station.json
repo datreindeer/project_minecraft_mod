@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "FTF",
+    "PCP"
+  ],
+  "key": {
+    "F": "minecraft:flint",
+    "T": "mechanical:twine",
+    "P": "#minecraft:planks",
+    "C": "minecraft:crafting_table"
+  },
+  "result": {
+    "id": "mechanical:tool_station"
+  }
+}

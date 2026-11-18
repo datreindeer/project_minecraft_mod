@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:drying_rack"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:scraped_hide",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "2"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/drying_rack"
+}

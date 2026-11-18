@@ -1,0 +1,16 @@
+{
+  "values": [
+    "mechanical:tool_station",
+    "mechanical:drying_rack",
+    "mechanical:oak_stump",
+    "mechanical:spruce_stump",
+    "mechanical:birch_stump",
+    "mechanical:jungle_stump",
+    "mechanical:acacia_stump",
+    "mechanical:dark_oak_stump",
+    "mechanical:mangrove_stump",
+    "mechanical:cherry_stump",
+    "mechanical:pale_oak_stump",
+    "mechanical:poplar_stump"
+  ]
+}

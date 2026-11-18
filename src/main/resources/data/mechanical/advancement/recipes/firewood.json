@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:firewood"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:tool_rod",
+      "minecraft:campfire",
+      "mechanical:oak_log_from_firewood",
+      "mechanical:spruce_log_from_firewood",
+      "mechanical:birch_log_from_firewood",
+      "mechanical:jungle_log_from_firewood",
+      "mechanical:acacia_log_from_firewood",
+      "mechanical:dark_oak_log_from_firewood",
+      "mechanical:mangrove_log_from_firewood",
+      "mechanical:cherry_log_from_firewood",
+      "mechanical:pale_oak_log_from_firewood",
+      "mechanical:poplar_log_from_firewood"
+    ]
+  }
+}
