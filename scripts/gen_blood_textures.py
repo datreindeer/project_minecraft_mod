@@ -19,6 +19,17 @@ for v in range(3):
 
 # Pools (amount 2-4): one wet puddle that grows with the amount, ragged edge, darker where it is deepest.
 import math
+# deepest (centre) to thinnest (rim): the rim is lighter and lets the ground show through a little
+RAMP = [(52, 3, 5, 255), (68, 5, 6, 255), (86, 8, 8, 255), (104, 11, 10, 255), (122, 15, 13, 255),
+        (140, 20, 17, 255), (156, 27, 22, 235), (168, 36, 30, 200)]
+
+
+def pool_colour(t, dx, dy, rnd):
+    """t = 0 at the centre, 1 at the edge. Dithered so the shades blend; the side facing the light (top left) is a bit lighter."""
+    t = t * 0.85 + 0.15 * max(0.0, min(1.0, t + (-dx - dy) * 0.04)) + rnd.uniform(-0.09, 0.09)
+    return RAMP[max(0, min(len(RAMP) - 1, int(max(0.0, t) ** 1.3 * len(RAMP))))]
+
+
 for level, radius in ((2, 3.5), (3, 5.2), (4, 7.4)):
     rnd = random.Random(2000 + level)
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
@@ -31,11 +42,11 @@ for level, radius in ((2, 3.5), (3, 5.2), (4, 7.4)):
             edge = radius * (1 + 0.18 * sum(a * math.cos(ang * (i + 2) + ph) for i, (ph, a) in enumerate(lobes)) / len(lobes))
             d = math.hypot(dx, dy) + rnd.uniform(-0.35, 0.35)
             if d <= edge:
-                img.putpixel((x, y), DARK if d < edge * 0.55 else MID)
+                img.putpixel((x, y), pool_colour(d / edge, dx, dy, rnd))
     for _ in range(int(radius * 1.5)):  # splashes and drops around the rim
         ang, d = rnd.uniform(0, math.tau), radius + rnd.uniform(0.5, 2.5)
         x, y = int(cx + math.cos(ang) * d), int(cy + math.sin(ang) * d)
-        if 0 <= x < 16 and 0 <= y < 16: img.putpixel((x, y), MID)
+        if 0 <= x < 16 and 0 <= y < 16 and img.getpixel((x, y))[3] == 0: img.putpixel((x, y), RAMP[-2][:3] + (190,))
     for _ in range(level):  # glossy highlights on the surface
         x, y = int(cx + rnd.uniform(-radius, radius) * 0.4), int(cy + rnd.uniform(-radius, radius) * 0.4)
         img.putpixel((x, y), WET)
