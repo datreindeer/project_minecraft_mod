@@ -288,10 +288,10 @@ BOXES = {
     "ridge": (112, 36, -1, -8.5, 3.5, 2, 9, 1, ridge_mat),
     "head": (104, 0, -3, -3, -5, 6, 6, 6, head_mat),
     "snout": (104, 12, -2.5, -2.5, -11, 5, 5, 6, snout_mat),
-    "nose": (100, 23, -3, -1.5, -14, 6, 5, 3, nose_mat),
+    "nose": (100, 23, -3, -2.5, -14, 6, 6, 3, nose_mat),
     "dewlap": (118, 23, -0.5, 0, -1.5, 1, 6, 3, dewlap_mat),
-    "ear": (100, 31, -1, -5, -0.5, 2, 5, 1, ear_mat),
-    "tail": (106, 31, -1, 0, 0, 2, 4, 1, tail_mat),
+    "ear": (100, 32, -1, -5, -0.5, 2, 5, 1, ear_mat),
+    "tail": (106, 32, -1, 0, 0, 2, 4, 1, tail_mat),
     "front_upper": (26, 33, -1.5, -1, -2, 3, 9, 4, leg_upper_mat(False)),
     "front_lower": (56, 33, -1, 0, -1, 2, 8, 2, leg_lower_mat(8)),
     "hind_upper": (40, 33, -1.5, -1, -2.5, 3, 9, 5, leg_upper_mat(True)),
@@ -299,8 +299,8 @@ BOXES = {
     "beam": (64, 36, -1, -4, -1, 2, 4, 2, beam_mat),
     "palm": (72, 36, -0.5, -8, -3, 1, 8, 7, palm_mat(8, 7, -3)),
     "brow_palm": (88, 36, -0.5, -4, -5, 1, 4, 5, palm_mat(4, 5, -5)),
-    "tine": (100, 37, -0.5, -3, -0.5, 1, 3, 1, tine_mat(3)),
-    "long_tine": (104, 37, -0.5, -4, -0.5, 1, 4, 1, tine_mat(4)),
+    "tine": (100, 38, -0.5, -2, -0.5, 1, 2, 1, tine_mat(2)),
+    "long_tine": (104, 38, -0.5, -3, -0.5, 1, 3, 1, tine_mat(3)),
 }
 ANTLER_BOXES = ("beam", "palm", "brow_palm", "tine", "long_tine")
 

@@ -39,3 +39,4 @@ run/
 repo/
 !**/src/**/repo/
 update-mechanical.txt
+__pycache__/

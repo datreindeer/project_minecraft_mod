@@ -92,7 +92,7 @@ public class MooseModel extends EntityModel<WildAnimalRenderState> {
         );
         body.addOrReplaceChild(
             "tail",
-            CubeListBuilder.create().texOffs(106, 31).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 4.0F, 1.0F),
+            CubeListBuilder.create().texOffs(106, 32).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 4.0F, 1.0F),
             PartPose.offsetAndRotation(0.0F, -4.0F, 11.0F, TAIL_X, 0.0F, 0.0F)
         );
 
@@ -111,7 +111,7 @@ public class MooseModel extends EntityModel<WildAnimalRenderState> {
             CubeListBuilder.create()
                 .texOffs(104, 0).addBox(-3.0F, -3.0F, -5.0F, 6.0F, 6.0F, 6.0F)
                 .texOffs(104, 12).addBox(-2.5F, -2.5F, -11.0F, 5.0F, 5.0F, 6.0F)
-                .texOffs(100, 23).addBox(-3.0F, -1.5F, -14.0F, 6.0F, 5.0F, 3.0F),
+                .texOffs(100, 23).addBox(-3.0F, -2.5F, -14.0F, 6.0F, 6.0F, 3.0F),
             PartPose.offsetAndRotation(0.0F, -7.5F, 0.0F, HEAD_X, 0.0F, 0.0F)
         );
         // The bell: a hairy flap under the throat, pitched back so it hangs straight down.
@@ -122,12 +122,12 @@ public class MooseModel extends EntityModel<WildAnimalRenderState> {
         );
         head.addOrReplaceChild(
             "left_ear",
-            CubeListBuilder.create().texOffs(100, 31).addBox(-1.0F, -5.0F, -0.5F, 2.0F, 5.0F, 1.0F),
+            CubeListBuilder.create().texOffs(100, 32).addBox(-1.0F, -5.0F, -0.5F, 2.0F, 5.0F, 1.0F),
             PartPose.offsetAndRotation(2.5F, -2.5F, 0.5F, -0.2F, 0.0F, EAR_Z)
         );
         head.addOrReplaceChild(
             "right_ear",
-            CubeListBuilder.create().texOffs(100, 31).addBox(-1.0F, -5.0F, -0.5F, 2.0F, 5.0F, 1.0F),
+            CubeListBuilder.create().texOffs(100, 32).addBox(-1.0F, -5.0F, -0.5F, 2.0F, 5.0F, 1.0F),
             PartPose.offsetAndRotation(-2.5F, -2.5F, 0.5F, -0.2F, 0.0F, -EAR_Z)
         );
 
@@ -153,15 +153,15 @@ public class MooseModel extends EntityModel<WildAnimalRenderState> {
             PartPose.offsetAndRotation(2.0F * side, -2.5F, -1.0F, -0.6F, 0.0F, 1.25F * side));
         PartDefinition palm = beam.addOrReplaceChild(p + "palm",
             CubeListBuilder.create().texOffs(72, 36).addBox(-0.5F, -8.0F, -3.0F, 1.0F, 8.0F, 7.0F),
-            PartPose.offsetAndRotation(0.0F, -3.5F, 0.0F, 0.0F, 0.0F, -0.4F * side));
+            PartPose.offsetAndRotation(0.0F, -3.5F, 0.0F, 0.0F, 0.0F, -0.1F * side));
         // points fanned along the far rim, then two on the rear rim
-        float[][] rim = {{-2.5F, 0.35F, 4.0F}, {-0.5F, 0.1F, 3.0F}, {1.5F, -0.15F, 4.0F}, {3.5F, -0.4F, 3.0F}};
+        float[][] rim = {{-2.5F, 0.35F, 3.0F}, {-0.5F, 0.1F, 2.0F}, {1.5F, -0.15F, 3.0F}, {3.5F, -0.4F, 2.0F}};
         for (int i = 0; i < rim.length; i++) {
-            palm.addOrReplaceChild(p + "point_" + i, rim[i][2] > 3.0F ? longTine() : tine(),
-                PartPose.offsetAndRotation(0.0F, -7.5F, rim[i][0], rim[i][1], 0.0F, -0.2F * side));
+            palm.addOrReplaceChild(p + "point_" + i, rim[i][2] > 2.0F ? longTine() : tine(),
+                PartPose.offsetAndRotation(0.0F, -7.5F, rim[i][0], rim[i][1], 0.0F, -0.7F * side));
         }
-        palm.addOrReplaceChild(p + "rear_point_0", tine(), PartPose.offsetAndRotation(0.0F, -3.0F, 3.5F, -1.2F, 0.0F, -0.3F * side));
-        palm.addOrReplaceChild(p + "rear_point_1", tine(), PartPose.offsetAndRotation(0.0F, -5.5F, 3.5F, -0.9F, 0.0F, -0.3F * side));
+        palm.addOrReplaceChild(p + "rear_point_0", tine(), PartPose.offsetAndRotation(0.0F, -3.0F, 3.5F, -1.0F, 0.0F, -0.8F * side));
+        palm.addOrReplaceChild(p + "rear_point_1", longTine(), PartPose.offsetAndRotation(0.0F, -5.5F, 3.5F, -0.8F, 0.0F, -0.8F * side));
         PartDefinition brow = beam.addOrReplaceChild(p + "brow_palm",
             CubeListBuilder.create().texOffs(88, 36).addBox(-0.5F, -4.0F, -5.0F, 1.0F, 4.0F, 5.0F),
             PartPose.offsetAndRotation(0.0F, -1.5F, -0.5F, 0.5F, 0.0F, -0.3F * side));
@@ -170,11 +170,11 @@ public class MooseModel extends EntityModel<WildAnimalRenderState> {
     }
 
     private static CubeListBuilder tine() {
-        return CubeListBuilder.create().texOffs(100, 37).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F);
+        return CubeListBuilder.create().texOffs(100, 38).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 2.0F, 1.0F);
     }
 
     private static CubeListBuilder longTine() {
-        return CubeListBuilder.create().texOffs(104, 37).addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F);
+        return CubeListBuilder.create().texOffs(104, 38).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F);
     }
 
     /** Upper leg (forearm / thigh) with the long cannon bone and hoof as a child, so the knee/hock can flex. */
