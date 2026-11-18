@@ -437,6 +437,14 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
 
+### Strukturernas loot (vanilla)
+Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,
+Stronghold, Outpost, Mansion, Igloo, Ancient City, Trial Chambers, Nether- och End-strukturer), arkeologi, krukor,
+spawners, Hero of the Village-gåvor och fiskeskatter har **allt från senare åldrar bortfiltrerat**: metaller (järn, guld,
+koppar …), ädelstenar, lapis, redstone, förtrollat, smithing templates, kompass/karta, hinkar, räls, crossbow m.m.
+Det som är kvar (mat, kol, facklor, ben, frön, skivor, name tags …) ligger kvar, och kistor får också 2–4 primitiva saker
+(sticks, flint, plant fibre, cordage, ben, twine, rocks, frön).
+
 ### Byarna är fattiga (stenåldern)
 - **Kistor:** bara primitiva saker: sticks, flint, plant fibre, cordage, bark, twine, bone, seeds, plus lite efter hus
   (smed: flint-verktyg och tool rods, garveri: hudar, slaktare: kött och lard, fiskare: fisk och krokar, hus: bär och mat).

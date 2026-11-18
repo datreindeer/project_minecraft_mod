@@ -1109,3 +1109,51 @@ w(D / "mechanical/tags/block/too_advanced.json", {"values": [f"minecraft:{b}" fo
     ("furnace", "smoker", "blast_furnace", "stonecutter", "brewing_stand", "anvil", "chipped_anvil", "damaged_anvil", "smithing_table", "grindstone")]})
 lang["message.mechanical.too_advanced"] = "You don't know how to use this yet"
 w(lang_path, lang)
+
+# ---- structure loot everywhere else (mineshafts, portals, shipwrecks, temples, dungeons ...): no metal, gems or enchanting ----
+# Vanilla tables are copied with every entry from a later age filtered out; chests also get a pool of primitive scraps.
+LATER_AGE = ("iron", "gold", "diamond", "emerald", "netherite", "copper", "lapis", "redstone", "chainmail", "bucket", "compass",
+             "clock", "shears", "rail", "anvil", "tnt", "experience_bottle", "smithing_template", "nugget", "crossbow",
+             "flint_and_steel", "spyglass", "brush", "enchanted", "minecraft:bow", "lantern", "chain", "piston", "hopper",
+             "map", "quartz", "glistering")
+def _later_age(entry):
+    text = json.dumps(entry)
+    return entry.get("type") == "minecraft:item" and (any(k in entry.get("name", "") for k in LATER_AGE) or "enchant" in text)
+def _filter_entries(entries):
+    out = []
+    for e in entries:
+        if "children" in e:
+            e = dict(e, children=_filter_entries(e["children"]))
+            if not e["children"]:
+                continue
+        elif e.get("type") == "minecraft:tag" and any(k in e.get("name", "") for k in LATER_AGE):
+            continue
+        elif _later_age(e):
+            continue
+        out.append(e)
+    return out
+SCRAPS = [_e("minecraft:stick", 1, 4, 10), _e("minecraft:flint", 1, 3, 8), _e(M + "plant_fibre", 1, 4, 8), _e(M + "cordage", 1, 2, 5),
+          _e("minecraft:bone", 1, 3, 6), _e(M + "twine", 1, 2, 4), _e(M + "stone_chunk", 1, 4, 6), _e("minecraft:wheat_seeds", 1, 3, 4)]
+_sjar = zipfile.ZipFile(JAR)
+_filtered = 0
+for path in _sjar.namelist():
+    rel = path.removeprefix("data/minecraft/loot_table/")
+    if rel == path or not path.endswith(".json") or rel.startswith("chests/village/"):
+        continue
+    if not rel.startswith(("chests/", "archaeology/", "barrels/", "dispensers/", "pots/", "spawners/", "trade_rebalance/",
+                           "gameplay/hero_of_the_village/", "gameplay/fishing/treasure")):
+        continue
+    table = json.loads(_sjar.read(path).decode())
+    pools = []
+    for pool in table.get("pools", []):
+        entries = _filter_entries(pool.get("entries", []))
+        if entries:
+            pools.append(dict(pool, entries=entries))
+    if rel.startswith(("chests/", "trade_rebalance/", "barrels/")):
+        pools.append({"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": SCRAPS})
+    elif not pools:
+        pools.append({"rolls": 1, "entries": SCRAPS})
+    table["pools"] = pools
+    w(D / f"minecraft/loot_table/{rel}", table)
+    _filtered += 1
+print(f"structure loot ok ({_filtered} tables)")
