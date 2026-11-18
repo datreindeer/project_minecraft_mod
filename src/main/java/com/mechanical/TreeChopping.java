@@ -49,6 +49,11 @@ public final class TreeChopping {
         return Math.min(0.95F, 0.35F + 0.1F * axeSpeed(axe));
     }
 
+    /** Extra firewood per successful split: flint / crude stone 0, stone and copper +1, iron +2, diamond +3. */
+    static int firewoodBonus(ItemStack axe) {
+        return Math.max(0, (int) ((axeSpeed(axe) - 2) / 2));
+    }
+
     private static float axeSpeed(ItemStack axe) {
         return Math.max(1, axe.getDestroySpeed(Blocks.OAK_LOG.defaultBlockState()));
     }
@@ -147,7 +152,7 @@ public final class TreeChopping {
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         var firewood = Mechanical.FIREWOOD.get(wood).get();
         if (random.nextFloat() < successChance(axe)) {
-            Block.popResource(level, pos.above(), new ItemStack(firewood, 2 + random.nextInt(2)));
+            Block.popResource(level, pos.above(), new ItemStack(firewood, 2 + random.nextInt(2) + firewoodBonus(axe)));
         } else {
             Block.popResource(level, pos.above(), new ItemStack(firewood, 1));
             Block.popResource(level, pos.above(), new ItemStack(Items.STICK, 1 + random.nextInt(2)));

@@ -198,7 +198,8 @@ Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje 
 1. **Fallen Log:** barken av (ger **1–2 Bark**) → hugget smalare → ännu smalare → klar. Sista steget ger en **Rough Log**
    om det lyckas, annars bara 2–3 Sticks.
 2. **Högerklicka en Rough Log på en Stump:** den står upp på stubben (tom hand tar tillbaka den).
-3. **Hugg loggen på stubben:** lyckas → **2–3 Firewood** av det träslaget, misslyckas → 1 Firewood + 1–2 Sticks.
+3. **Hugg loggen på stubben:** lyckas → **2–3 Firewood** av det träslaget (+1 med Stone/Copper Axe, +2 med Iron Axe,
+   +3 med Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks.
 
 Chans att lyckas: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %.
 Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
