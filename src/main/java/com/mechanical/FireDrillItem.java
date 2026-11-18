@@ -14,10 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Lights an unlit campfire or clay kiln (if it has fuel), but only sometimes. Every attempt wears it down. */
+/** Lights an unlit campfire or clay kiln (if it has fuel), but only sometimes (more often with tinder, see Tinder). Every attempt wears it down. */
 public class FireDrillItem extends Item {
-    private static final float SUCCESS_CHANCE = 0.33F;
-
     public FireDrillItem(Properties properties) {
         super(properties);
     }
@@ -35,7 +33,9 @@ public class FireDrillItem extends Item {
                 if (context.getPlayer() != null) context.getPlayer().sendOverlayMessage(Component.translatable("message.mechanical.kiln.needs_fuel"));
                 return InteractionResult.FAIL;
             }
-            if (server.getRandom().nextFloat() < SUCCESS_CHANCE) {
+            var tinder = Tinder.holder(server, pos, state);
+            if (server.getRandom().nextFloat() < (Tinder.has(tinder) ? Tinder.CHANCE_WITH : Tinder.CHANCE_WITHOUT)) {
+                if (tinder != null) Tinder.set(tinder, false);
                 if (kilnEntity != null) kilnEntity.tryLight();
                 else server.setBlock(pos, state.setValue(CampfireBlock.LIT, true), 11);
                 server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);

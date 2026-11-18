@@ -90,7 +90,9 @@ Vanilla Bow och Fishing Rod går inte att crafta (de riktiga kommer i senare ål
 
 ### Fire Drill
 Recept: `[Twine][Stick]` / `[Stick][ ]`. Hållbarhet 16.
-Högerklicka på en släckt Campfire eller Clay Kiln. Lyckas ungefär var tredje gång (fräsljud), annars lite rök. Varje
+Högerklicka på en släckt Campfire eller Clay Kiln. Lyckas ungefär var tredje gång (33 %, fräsljud), annars lite rök.
+**Tändmaterial:** högerklicka först med **Leaf Litter** eller **Bark** på den släckta elden (1 åt gången, gröna partiklar).
+Då lyckas Fire Drill i 75 % av försöken. Tändmaterialet går åt när elden tar sig. Varje
 försök kostar 1 i hållbarhet. En Clay Kiln går bara att tända om den har bränsle (eller rest av påbörjat bränsle).
 
 ## Block
@@ -201,7 +203,8 @@ Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje 
 Chans att lyckas: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %.
 Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
 
-Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (material för senare: tändmaterial, garvning).
+Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (tändmaterial, senare garvning).
+**Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost när odlingen kommer.
 
 ### Mat och styckning
 - **Alla vilda, vuxna passiva djur** (kor, grisar, får, höns, kaniner, getter, hästar, lamor, rävar, vargar, isbjörnar …)
@@ -418,10 +421,11 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
   hides, Wool Thread, Flint Spear, Tool Station, Drying Rack).
 - Carcass ritas med djurets standardutseende (vita får, standardkor osv.).
 - Kistor och byinvånare kan fortfarande ge järn/järnverktyg.
-- Farming (kommer senare).
+- Farming (kommer senare). Leaf Litter ska bli kompost/gödsel.
 
 ## Teknik (för utveckling)
 
+- Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.

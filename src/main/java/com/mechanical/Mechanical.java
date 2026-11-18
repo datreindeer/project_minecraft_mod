@@ -239,7 +239,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
-        Temperature.init(); VillageAnimals.init();
+        Temperature.init(); VillageAnimals.init(); Tinder.init();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
