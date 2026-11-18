@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +25,7 @@ public final class Blood {
     private static final int BLEED_INTERVAL = 100, TRAIL_INTERVAL = 15;
 
     public static boolean isBleeding(LivingEntity entity) {
-        return entity.isAlive() && entity.getHealth() < entity.getMaxHealth() * BLEED_BELOW;
+        return entity.isAlive() && (entity.getHealth() < entity.getMaxHealth() * BLEED_BELOW || ArrowWounds.count(entity) > 0);
     }
 
     @SubscribeEvent
@@ -43,7 +44,8 @@ public final class Blood {
                     animal.getZ() + (level.getRandom().nextDouble() - 0.5) * 0.4);
         }
         if (animal.tickCount % TRAIL_INTERVAL == 0 && animal.getDeltaMovement().horizontalDistanceSqr() > 1.0E-4) leaveTrail(level, animal);
-        if (animal.tickCount % BLEED_INTERVAL == 0 && animal.getHealth() > BLEED_FLOOR) {
+        // arrow wounds bleed to death on their own (ArrowWounds); other wounds stop at one heart
+        if (animal.tickCount % BLEED_INTERVAL == 0 && animal.getHealth() > BLEED_FLOOR && ArrowWounds.count(animal) == 0) {
             animal.hurtServer(level, level.damageSources().generic(), Math.min(BLEED_DAMAGE, animal.getHealth() - BLEED_FLOOR));
         }
     }
@@ -78,10 +80,27 @@ public final class Blood {
     }
 
     private static boolean place(ServerLevel level, BlockPos pos) {
+        return place(level, pos, 2);
+    }
+
+    /** Blood on blood makes a bigger pool; a full pool runs over to a neighbour (at most {@code overflow} blocks on). */
+    private static boolean place(ServerLevel level, BlockPos pos, int overflow) {
         BlockState blood = Mechanical.BLOOD.get().defaultBlockState();
         BlockState here = level.getBlockState(pos);
+        if (here.is(blood.getBlock())) {
+            int amount = here.getValue(BloodBlock.AMOUNT);
+            if (amount < BloodBlock.MAX_AMOUNT) {
+                level.setBlock(pos, here.setValue(BloodBlock.AMOUNT, amount + 1), Block.UPDATE_ALL);
+                return true;
+            }
+            if (overflow <= 0) return false;
+            // runs over the edge: onto a neighbour at the same height, or down a step
+            Direction dir = Direction.Plane.HORIZONTAL.getRandomDirection(level.getRandom());
+            BlockPos next = pos.relative(dir);
+            return place(level, next, overflow - 1) || place(level, next.below(), overflow - 1);
+        }
         // stains the ground under grass, leaf litter, snow layers and the like; never in water
-        if (!here.canBeReplaced() || !here.getFluidState().isEmpty() || here.is(blood.getBlock()) || !blood.canSurvive(level, pos)) return false;
+        if (!here.canBeReplaced() || !here.getFluidState().isEmpty() || !blood.canSurvive(level, pos)) return false;
         level.setBlock(pos, blood, Block.UPDATE_ALL);
         return true;
     }

@@ -114,11 +114,14 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
         Block.dropResources(leaves, level, ground, null, feller, tool);
         BlockState there = level.getBlockState(ground);
         var amount = net.minecraft.world.level.block.state.properties.BlockStateProperties.SEGMENT_AMOUNT;
-        if (there.is(net.minecraft.world.level.block.Blocks.LEAF_LITTER)) {
+        // any litter already there (fresh or dried) just gets thicker
+        if (there.getBlock() instanceof net.minecraft.world.level.block.LeafLitterBlock) {
             if (there.getValue(amount) < 4) level.setBlock(ground, there.setValue(amount, there.getValue(amount) + 1), Block.UPDATE_ALL);
             return;
         }
-        BlockState litter = net.minecraft.world.level.block.Blocks.LEAF_LITTER.defaultBlockState()
+        String name = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(leaves.getBlock()).getPath().replace("_leaves", "");
+        var fresh = Mechanical.LEAF_LITTERS.get(name);
+        BlockState litter = (fresh != null ? fresh.get() : net.minecraft.world.level.block.Blocks.LEAF_LITTER).defaultBlockState()
                 .setValue(net.minecraft.world.level.block.LeafLitterBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(level.getRandom()));
         if (there.canBeReplaced() && litter.canSurvive(level, ground)) level.setBlock(ground, litter, Block.UPDATE_ALL);
     }

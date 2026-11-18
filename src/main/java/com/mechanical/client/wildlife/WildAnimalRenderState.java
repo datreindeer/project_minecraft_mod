@@ -20,4 +20,8 @@ public class WildAnimalRenderState extends LivingEntityRenderState {
     public float flap;
     /** Asleep, lying down: legs folded under the body, body on the ground, head resting low. */
     public boolean dozing;
+    /** Arrows stuck in the body (ArrowWounds; synced through vanilla's arrow count). */
+    public int arrowCount;
+    /** Entity id: seeds where the stuck arrows sit, so they stay put. */
+    public int entityId;
 }

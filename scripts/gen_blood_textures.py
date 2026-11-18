@@ -16,4 +16,30 @@ for v in range(3):
     for _ in range(rnd.randint(3, 6)):  # tiny splatter
         img.putpixel((rnd.randint(0, 15), rnd.randint(0, 15)), MID)
     img.save(f"{OUT}/blood_{v}.png")
+
+# Pools (amount 2-4): one wet puddle that grows with the amount, ragged edge, darker where it is deepest.
+import math
+for level, radius in ((2, 3.5), (3, 5.2), (4, 7.4)):
+    rnd = random.Random(2000 + level)
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    cx, cy = 7.5 + rnd.uniform(-0.6, 0.6), 7.5 + rnd.uniform(-0.6, 0.6)
+    lobes = [(rnd.uniform(0, math.tau), rnd.uniform(0.6, 1.4)) for _ in range(5)]  # lumpy outline
+    for x in range(16):
+        for y in range(16):
+            dx, dy = x - cx, y - cy
+            ang = math.atan2(dy, dx)
+            edge = radius * (1 + 0.18 * sum(a * math.cos(ang * (i + 2) + ph) for i, (ph, a) in enumerate(lobes)) / len(lobes))
+            d = math.hypot(dx, dy) + rnd.uniform(-0.35, 0.35)
+            if d <= edge:
+                img.putpixel((x, y), DARK if d < edge * 0.55 else MID)
+    for _ in range(int(radius * 1.5)):  # splashes and drops around the rim
+        ang, d = rnd.uniform(0, math.tau), radius + rnd.uniform(0.5, 2.5)
+        x, y = int(cx + math.cos(ang) * d), int(cy + math.sin(ang) * d)
+        if 0 <= x < 16 and 0 <= y < 16: img.putpixel((x, y), MID)
+    for _ in range(level):  # glossy highlights on the surface
+        x, y = int(cx + rnd.uniform(-radius, radius) * 0.4), int(cy + rnd.uniform(-radius, radius) * 0.4)
+        img.putpixel((x, y), WET)
+        if x + 1 < 16: img.putpixel((x + 1, y), WET)
+    assert img.getbbox() is not None
+    img.save(f"{OUT}/blood_pool_{level}.png")
 print("ok")

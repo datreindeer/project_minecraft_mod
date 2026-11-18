@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:beech_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beech_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:beech_planks",
+      "mechanical:beech_wood",
+      "mechanical:stripped_beech_wood",
+      "mechanical:beech_slab",
+      "mechanical:beech_stairs",
+      "mechanical:beech_fence",
+      "mechanical:beech_fence_gate",
+      "mechanical:beech_door",
+      "mechanical:beech_trapdoor",
+      "mechanical:beech_button",
+      "mechanical:beech_pressure_plate"
+    ]
+  }
+}

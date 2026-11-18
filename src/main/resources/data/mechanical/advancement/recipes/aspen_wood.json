@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:aspen_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:aspen_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:aspen_planks",
+      "mechanical:aspen_wood",
+      "mechanical:stripped_aspen_wood",
+      "mechanical:aspen_slab",
+      "mechanical:aspen_stairs",
+      "mechanical:aspen_fence",
+      "mechanical:aspen_fence_gate",
+      "mechanical:aspen_door",
+      "mechanical:aspen_trapdoor",
+      "mechanical:aspen_button",
+      "mechanical:aspen_pressure_plate"
+    ]
+  }
+}

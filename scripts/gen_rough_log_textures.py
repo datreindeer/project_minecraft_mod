@@ -1,10 +1,12 @@
 # Rough log textures (a whole chopped log section, lying diagonally) and bark strips,
 # colours taken from each wood's vanilla log textures.
 # usage: python gen_rough_log_textures.py <vanilla block texture dir> <out item texture dir> <preview png>
-import math, random, sys
+import math, os, random, sys
 from PIL import Image
 src, out, prev = sys.argv[1:4]
-WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar"]
+WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder", "beech", "linden"]
+# mod woods have no vanilla texture: read the log textures painted by gen_wood_textures.py
+def tex(name): p = f"{src}/{name}.png"; return p if os.path.exists(p) else os.path.join(os.path.dirname(os.path.abspath(out)), "block", f"{name}.png")
 
 def palette(img):
     px = sorted({img.getpixel((x, y))[:3] for x in range(img.width) for y in range(img.height)}, key=lambda c: sum(c))
@@ -97,15 +99,15 @@ def bark_strips():
             if ch != ".": img.putpixel((x, y), cols[ch] + (255,))
     return img
 
-sheet = Image.new("RGBA", (16 * 4 * 6, 16 * 4 * 2), (200, 200, 200, 255))
+sheet = Image.new("RGBA", (16 * 4 * 6, 16 * 4 * 3), (200, 200, 200, 255))
 for i, wood in enumerate(WOODS):
-    bark = palette(Image.open(f"{src}/{wood}_log.png").convert("RGBA"))
-    end = palette(Image.open(f"{src}/{wood}_log_top.png").convert("RGBA").crop((4, 4, 12, 12)).resize((16, 16)))
+    bark = palette(Image.open(tex(f"{wood}_log")).convert("RGBA"))
+    end = palette(Image.open(tex(f"{wood}_log_top")).convert("RGBA").crop((4, 4, 12, 12)).resize((16, 16)))
     img = rough_log(wood, bark, end)
     img.save(f"{out}/{wood}_rough_log.png")
     big = img.resize((64, 64), Image.NEAREST); sheet.paste(big, ((i % 6) * 64, (i // 6) * 64), big)
 img = bark_strips()
 img.save(f"{out}/bark.png")
-big = img.resize((64, 64), Image.NEAREST); sheet.paste(big, (4 * 64, 64), big)
+big = img.resize((64, 64), Image.NEAREST); sheet.paste(big, (2 * 64, 2 * 64), big)
 sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).save(prev)
 print("ok")

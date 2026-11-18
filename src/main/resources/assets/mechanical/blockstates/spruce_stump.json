@@ -99,6 +99,38 @@
       "apply": {
         "model": "mechanical:block/poplar_upright_log"
       }
+    },
+    {
+      "when": {
+        "log": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/aspen_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/alder_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/beech_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/linden_upright_log"
+      }
     }
   ]
 }

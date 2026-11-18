@@ -9,6 +9,10 @@
     "mechanical:mangrove_firewood",
     "mechanical:cherry_firewood",
     "mechanical:pale_oak_firewood",
-    "mechanical:poplar_firewood"
+    "mechanical:poplar_firewood",
+    "mechanical:aspen_firewood",
+    "mechanical:alder_firewood",
+    "mechanical:beech_firewood",
+    "mechanical:linden_firewood"
   ]
 }

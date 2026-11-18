@@ -1,9 +1,11 @@
 # Firewood textures: 1-3 split logs, colours taken from each wood's vanilla log textures.
 # usage: python gen_firewood.py <vanilla block texture dir> <out item texture dir> <preview png>
-import sys
+import os, sys
 from PIL import Image
 src, out, prev = sys.argv[1:4]
-WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar"]
+WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder", "beech", "linden"]
+# mod woods have no vanilla texture: read the log textures painted by gen_wood_textures.py
+def tex(name): p = f"{src}/{name}.png"; return p if os.path.exists(p) else os.path.join(os.path.dirname(os.path.abspath(out)), "block", f"{name}.png")
 
 def palette(img):
     px = sorted({img.getpixel((x, y))[:3] for x in range(16) for y in range(16)}, key=lambda c: sum(c))
@@ -30,8 +32,8 @@ def piece(canvas, x0, y0, bark, end):
 LAYOUT = {1: [(2, 6)], 2: [(1, 8), (4, 3)], 3: [(0, 9), (4, 5), (2, 1)]}
 sheet = Image.new("RGBA", (16 * 3 * 4, 16 * len(WOODS) * 4), (200, 200, 200, 255))
 for row, wood in enumerate(WOODS):
-    bark = palette(Image.open(f"{src}/{wood}_log.png").convert("RGBA"))
-    end = palette(Image.open(f"{src}/{wood}_log_top.png").convert("RGBA").crop((4, 4, 12, 12)).resize((16, 16)))
+    bark = palette(Image.open(tex(f"{wood}_log")).convert("RGBA"))
+    end = palette(Image.open(tex(f"{wood}_log_top")).convert("RGBA").crop((4, 4, 12, 12)).resize((16, 16)))
     for n, spots in LAYOUT.items():
         img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
         for x, y in spots: piece(img, x, y, bark, end)

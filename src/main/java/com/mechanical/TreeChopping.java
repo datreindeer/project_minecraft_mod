@@ -34,14 +34,14 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class TreeChopping {
-    private static final int CHOP_TICKS = 12;
+    private static final int CHOP_TICKS = 9;
     private static final Map<Player, Long> LAST_CHOP = new WeakHashMap<>();
     /** Chops done on a block towards its next stage. Lost if the server restarts, which only costs a few chops. */
     private static final Map<Level, Map<BlockPos, Integer>> PROGRESS = new WeakHashMap<>();
 
-    /** Chops per stage: flint axe 4, stone 3, iron 2. */
+    /** Chops per stage: flint axe 3, stone 2, iron 2. */
     public static int chopsNeeded(ItemStack axe) {
-        return Math.max(2, (int) Math.ceil(10 / axeSpeed(axe)));
+        return Math.max(2, (int) Math.ceil(7 / axeSpeed(axe)));
     }
 
     /** Chance a finished piece comes out whole: flint axe 60 %, stone 75 %, iron 95 %. */
@@ -133,14 +133,19 @@ public final class TreeChopping {
     private static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe) {
         int stage = state.getValue(FallenLogBlock.STAGE);
         RandomSource random = level.getRandom();
+        String wood = ((FallenLogBlock) state.getBlock()).wood();
         if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARK.get(), 1 + random.nextInt(2)));
+        else if (stage < FallenLogBlock.LAST_STAGE) {
+            // hewn thinner: chips of sticks, and sometimes a usable piece of rough log
+            Block.popResource(level, pos, new ItemStack(Items.STICK, 1 + random.nextInt(2)));
+            if (random.nextFloat() < successChance(axe) * 0.5F) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get()));
+        }
         if (stage < FallenLogBlock.LAST_STAGE) {
             level.setBlock(pos, state.setValue(FallenLogBlock.STAGE, stage + 1), Block.UPDATE_ALL);
             return;
         }
         level.removeBlock(pos, false);
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
-        String wood = ((FallenLogBlock) state.getBlock()).wood();
         if (random.nextFloat() < successChance(axe)) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get()));
         else Block.popResource(level, pos, new ItemStack(Items.STICK, 2 + random.nextInt(2)));
     }

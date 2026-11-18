@@ -27,7 +27,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Stick | Vanilla, plus löv släpper Stick oftare (+8 %, totalt ~10 %) | Skaft, flintverktyg, Campfire, Fire Drill |
 | Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station |
 | Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
-| Firewood (10 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
+| Firewood (14 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Unfired Crucible |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
@@ -222,7 +222,7 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
 - Bryts den släpper den sig själv + hud/Leather som satt på.
 
 ### Stumps
-När ett träd fälls blir en stubbe kvar där man högg (10 träslag, samma som Firewood). Ger 1–2 Sticks, bryts snabbast
+När ett träd fälls blir en stubbe kvar där man högg (14 träslag, samma som Firewood). Ger 1–2 Sticks, bryts snabbast
 med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta stockar).
 
 ## Övriga items
@@ -242,7 +242,9 @@ med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta
   - Yxan slits 1 per log. Räcker den inte går den sönder, men trädet faller ändå.
   - Trädet faller som en animation bort från spelaren och **blir liggande där det landar** (gravitation, staplas):
     stammen blir **Fallen Logs** som ligger längs fallriktningen. Löven släpper saplings, sticks och äpplen som innan och
-    blir **Leaf Litter** på marken där de landar (flera löv på samma ställe ger tjockare lager).
+    blir **Leaf Litter** på marken där de landar (flera löv på samma ställe ger tjockare lager). Varje lövsort har sin
+    egen **färska leaf litter** i lövens färg (18 sorter, även poppelns gula/orange/röda och azalea); den **torkar** med
+    tiden till vanlig brun Leaf Litter. Bryter man den får man vanlig Leaf Litter (tändmaterial).
   - Bara löven som hör till just det trädet tas med (grannträd lämnas).
   - En Stump blir kvar.
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
@@ -251,14 +253,24 @@ med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta
 - **Oak är stora träd**: grenade ekar med 9–15 block hög stam, kronan börjar högt upp så man ser under den. Gäller alla
   ekar (skog, slätt, saplings).
 - **Birch är högre och smalare**: 9–12 block stam (tall birch upp till ~18), kronan högst upp.
+- **Fyra nya träslag** med full träuppsättning (Log, Wood, Stripped Log/Wood, Planks, Slab, Stairs, Fence, Fence Gate,
+  Door, Trapdoor, Button, Pressure Plate, Leaves, Sapling, Potted Sapling; inga skyltar eller båtar än). De fälls som
+  andra träd och har egna Stump, Fallen Log, Rough Log och Firewood. 1 Log → 2 Planks som alla träslag. Löven ger
+  Sapling och Sticks men inga äpplen.
+  - **Aspen:** hög, smal och rak stam (9–13 block), liten krona. Forest, Flower Forest, glest i Meadow och Taiga.
+  - **Alder:** medelstort rakt träd (6–9 block). River-stränder och Swamp, ibland i Forest och Flower Forest.
+  - **Beech:** stort träd, rak hög stam (8–12 block), bred och tät krona. Forest och Flower Forest.
+  - **Linden:** stort grenat träd med bred krona. Forest och Flower Forest, sällsynt på Plains.
+  - Birch Forest och Taiga behåller sina vanliga träd. Vanilla-träden är kvar överallt.
 - **Twigs:** små kvistar på marken i skog och taiga. Slå sönder → 1 Stick. Inget block att placera.
 
 ### Bearbeta stockar (håll in högerklick med yxa)
-Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
-(Flint Axe / Crude Stone Axe 4, Stone Axe 3, Iron Axe 2) och sliter yxan 1.
+Ett tungt hugg var 0,45:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
+(Flint Axe / Crude Stone Axe 3, Stone Axe 2, Iron Axe 2) och sliter yxan 1.
 
-1. **Fallen Log:** barken av (ger **1–2 Bark**) → hugget smalare → ännu smalare → klar. Sista steget ger en **Rough Log**
-   om det lyckas, annars bara 2–3 Sticks.
+1. **Fallen Log:** barken av (ger **1–2 Bark**) → hugget smalare → ännu smalare → klar. Varje gång den blir smalare
+   faller **1–2 Sticks** av och ibland en **Rough Log** (halva lyckochansen). Sista steget ger en **Rough Log** om det
+   lyckas, annars bara 2–3 Sticks. En stock kan alltså ge upp till 3 Rough Logs.
 2. **Högerklicka en Rough Log på en Stump:** den står upp på stubben (tom hand tar tillbaka den).
 3. **Hugg loggen på stubben:** lyckas → **2–3 Firewood** av det träslaget (+1 med Stone/Copper Axe, +2 med Iron Axe,
    +3 med Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks.
@@ -266,7 +278,7 @@ Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje 
 Chans att lyckas: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %.
 Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
 
-Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (tändmaterial, bast, korg; senare garvning).
+Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bast, korg; senare garvning).
 
 **Bark används till:**
 - **Bast:** Bark + kniv (crafting, kniven slits 1) → **2 Plant Fibre**.
@@ -306,6 +318,13 @@ Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (tändmaterial, bas
 - **Under 50 % hälsa blöder de:** droppar blod, lämnar **bloddroppar på marken** när de rör sig (går att spåra) och
   tar en halv hjärta var 5:e sekund. Blödningen slutar på 1 hjärta, den dödar aldrig.
 - Styckning sprutar blod och lämnar blodfläckar runt kroppen (en pöl runt Bone Pile).
+- **Pilar fastnar** i djur och syns i kroppen (på våra vilda djurs modeller). Varje pil får djuret att **blöda tills
+  det dör**: det springer i panik, sprutar mer och mer blod och tappar liv allt snabbare (1 hp per pil, var 3:e sekund
+  i början och sedan varje sekund; Barbed Arrow blöder dubbelt). Följ blodspåret.
+- När djuret dör **faller pilarna ut** bredvid kroppen så du kan plocka upp dem. Dåliga pilar kan ha gått sönder och
+  blir då en Feather: Arrow 30 %, Bone Arrow 50 %, Fire Arrow 70 %, Barbed Arrow 15 %.
+- **Blod på blod blir en större pöl** (4 storlekar). En full pöl **rinner över** till ett grannblock (eller ner ett steg).
+  Pölar torkar in steg för steg.
 - Blod på marken (blocket **Blood**) ersätter gräs, Leaf Litter och liknande, bleknar bort efter några minuter, går att gå igenom och har inget item. Blodet syns som droppar som faller (egen partikel).
 
 ### Vilda djur (skog)
@@ -467,7 +486,9 @@ om det finns färre än 4 av samma sort runt omkring.
 ### Rädsla och jakt
 - Vilda djur håller sig undan spelare. De märker dig på **16 block om du springer, 10 om du går, 4 om du smyger**
   (längre än 4 block bara med fri sikt). Smyg för att komma nära, en Crude Bow rekommenderas.
-- **Skadade djur får panik** i 10 s och springer fort bort från spelaren.
+- **Skadade djur får panik** i 10 s och springer fort bort från spelaren. De byter väg om spelaren springer runt
+  dem eller om vägen leder tillbaka mot spelaren, och springer rakt bort om de inte hittar någon väg.
+- **Blödande djur slutar slåss**: även Wild Boar, Aurochs, Moose och hjortar flyr när de blöder (björnen slåss alltid).
 - **Panik smittar:** djur som ser ett djur i panik eller ett blödande djur får också panik.
 - Tama djur och djur i koppel flyr inte. Mat i handen lugnar inte.
 - Gäller djur med vanilla-"goals" (Cow, Pig, Sheep, Chicken, Rabbit, Horse, Llama, Fox, Wolf, Polar Bear, Panda, Parrot …).

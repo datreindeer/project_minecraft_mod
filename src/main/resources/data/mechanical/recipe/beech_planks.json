@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "planks",
+  "ingredients": [
+    "#mechanical:beech_logs"
+  ],
+  "result": {
+    "id": "mechanical:beech_planks",
+    "count": 2
+  }
+}

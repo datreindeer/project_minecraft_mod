@@ -168,7 +168,8 @@ public class Mechanical {
             "falling_tree", FallingTreeEntity::new, MobCategory.MISC, b -> b.sized(0.98F, 0.98F).clientTrackingRange(10).noSave());
 
     // Stumps left by felled trees, one per wood type (looked up by the log's name: oak_log -> oak_stump).
-    public static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar");
+    public static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
+            "aspen", "alder", "beech", "linden");
     public static final Map<String, DeferredBlock<StumpBlock>> STUMPS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             BLOCKS.registerBlock(w + "_stump", StumpBlock::new, p -> p.mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion())));
 
@@ -178,6 +179,12 @@ public class Mechanical {
     public static final Map<String, DeferredItem<Item>> ROUGH_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
     public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
+    /** Leaves (block name minus "_leaves") that get their own fresh, leaf-coloured litter when their tree is felled. */
+    public static final List<String> LITTER_LEAVES = List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry",
+            "pale_oak", "yellow_poplar", "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden");
+    public static final Map<String, DeferredBlock<FreshLeafLitterBlock>> LEAF_LITTERS = LITTER_LEAVES.stream().collect(Collectors.toMap(l -> l, l ->
+            BLOCKS.registerBlock(l + "_leaf_litter", FreshLeafLitterBlock::new, p -> p.mapColor(MapColor.PLANT).replaceable().noCollision()
+                    .randomTicks().sound(SoundType.LEAF_LITTER).pushReaction(PushReaction.POPPED))));
     // --- Hunting gear ---
     /** Tusk Dagger (Tool Station: tusk + cordage + leather grip): a hunter's skinning knife; cuts bears and gets more hide/pelt. */
     public static final ToolMaterial TUSK = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 140, 3.0F, 0.5F, 5, FLINT_TOOL_MATERIALS);
@@ -291,7 +298,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
-        Temperature.init(); VillageAnimals.init(); Tinder.init(); Foraging.init(); com.mechanical.worldgen.Structures.init();
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); com.mechanical.worldgen.Structures.init();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);

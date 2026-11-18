@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "axis=z,stage=0": {
+      "model": "mechanical:block/beech_fallen_log_0"
+    },
+    "axis=x,stage=0": {
+      "model": "mechanical:block/beech_fallen_log_0",
+      "y": 90
+    },
+    "axis=z,stage=1": {
+      "model": "mechanical:block/beech_fallen_log_1"
+    },
+    "axis=x,stage=1": {
+      "model": "mechanical:block/beech_fallen_log_1",
+      "y": 90
+    },
+    "axis=z,stage=2": {
+      "model": "mechanical:block/beech_fallen_log_2"
+    },
+    "axis=x,stage=2": {
+      "model": "mechanical:block/beech_fallen_log_2",
+      "y": 90
+    },
+    "axis=z,stage=3": {
+      "model": "mechanical:block/beech_fallen_log_3"
+    },
+    "axis=x,stage=3": {
+      "model": "mechanical:block/beech_fallen_log_3",
+      "y": 90
+    }
+  }
+}

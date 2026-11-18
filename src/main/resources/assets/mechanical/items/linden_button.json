@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mechanical:block/linden_button_inventory"
+  }
+}

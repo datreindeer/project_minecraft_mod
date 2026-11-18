@@ -587,5 +587,381 @@
   "twigs": {
     "text": "Små kvistar på marken i skog och taiga. Slå sönder → 1 Stick.",
     "category": "blocks"
+  },
+  "aspen_log": {
+    "text": "Nytt träslag. Hög, smal och rak stam (9–13 block) med en liten krona högst upp. Växer i Forest och Flower Forest, och glest i Meadow och Taiga.\nFälls som andra träd (hela trädet faller, [[aspen_stump]] och [[aspen_fallen_log]]). En Log som bryts ger 2 [[aspen_firewood]]. Yxa (högerklick) gör Stripped Aspen Log.",
+    "category": "blocks"
+  },
+  "aspen_planks": {
+    "text": "1 Aspen Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "aspen_leaves": {
+    "text": "Löv på Aspen-träd. Ger ibland [[aspen_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "aspen_sapling": {
+    "text": "Faller från [[aspen_leaves]]. Planteras på jord och växer till ett Aspen-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "aspen_firewood": {
+    "text": "Alla Aspen-logs (även stripped och wood-block) släpper **2 Aspen Firewood** i stället för sig själva. Fällda träd ger Firewood via [[aspen_fallen_log]] → [[aspen_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Aspen Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "aspen_rough_log": {
+    "text": "Sista steget när man bearbetar en [[aspen_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[aspen_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[aspen_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "aspen_fallen_log": {
+    "text": "Stammen av ett fällt Aspen-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[aspen_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "aspen_stump": {
+    "text": "Blir kvar där man högg när ett Aspen-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[aspen_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "alder_log": {
+    "text": "Nytt träslag. Medelstort, rakt träd (6–9 block). Växer vid vatten: på River-stränder och i Swamp, och ibland i Forest och Flower Forest.\nFälls som andra träd (hela trädet faller, [[alder_stump]] och [[alder_fallen_log]]). En Log som bryts ger 2 [[alder_firewood]]. Yxa (högerklick) gör Stripped Alder Log.",
+    "category": "blocks"
+  },
+  "alder_planks": {
+    "text": "1 Alder Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "alder_leaves": {
+    "text": "Löv på Alder-träd. Ger ibland [[alder_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "alder_sapling": {
+    "text": "Faller från [[alder_leaves]]. Planteras på jord och växer till ett Alder-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "alder_firewood": {
+    "text": "Alla Alder-logs (även stripped och wood-block) släpper **2 Alder Firewood** i stället för sig själva. Fällda träd ger Firewood via [[alder_fallen_log]] → [[alder_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Alder Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "alder_rough_log": {
+    "text": "Sista steget när man bearbetar en [[alder_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[alder_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[alder_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "alder_fallen_log": {
+    "text": "Stammen av ett fällt Alder-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[alder_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "alder_stump": {
+    "text": "Blir kvar där man högg när ett Alder-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[alder_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "beech_log": {
+    "text": "Nytt träslag. Stort träd med rak, hög stam (8–12 block) och en bred, tät krona. Växer i Forest och Flower Forest.\nFälls som andra träd (hela trädet faller, [[beech_stump]] och [[beech_fallen_log]]). En Log som bryts ger 2 [[beech_firewood]]. Yxa (högerklick) gör Stripped Beech Log.",
+    "category": "blocks"
+  },
+  "beech_planks": {
+    "text": "1 Beech Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "beech_leaves": {
+    "text": "Löv på Beech-träd. Ger ibland [[beech_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "beech_sapling": {
+    "text": "Faller från [[beech_leaves]]. Planteras på jord och växer till ett Beech-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "beech_firewood": {
+    "text": "Alla Beech-logs (även stripped och wood-block) släpper **2 Beech Firewood** i stället för sig själva. Fällda träd ger Firewood via [[beech_fallen_log]] → [[beech_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Beech Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "beech_rough_log": {
+    "text": "Sista steget när man bearbetar en [[beech_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[beech_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[beech_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "beech_fallen_log": {
+    "text": "Stammen av ett fällt Beech-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[beech_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "beech_stump": {
+    "text": "Blir kvar där man högg när ett Beech-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[beech_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "linden_log": {
+    "text": "Nytt träslag. Stort grenat träd med bred krona. Växer i Forest och Flower Forest, och sällsynt på Plains.\nFälls som andra träd (hela trädet faller, [[linden_stump]] och [[linden_fallen_log]]). En Log som bryts ger 2 [[linden_firewood]]. Yxa (högerklick) gör Stripped Linden Log.",
+    "category": "blocks"
+  },
+  "linden_planks": {
+    "text": "1 Linden Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "linden_leaves": {
+    "text": "Löv på Linden-träd. Ger ibland [[linden_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "linden_sapling": {
+    "text": "Faller från [[linden_leaves]]. Planteras på jord och växer till ett Linden-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "linden_firewood": {
+    "text": "Alla Linden-logs (även stripped och wood-block) släpper **2 Linden Firewood** i stället för sig själva. Fällda träd ger Firewood via [[linden_fallen_log]] → [[linden_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Linden Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "linden_rough_log": {
+    "text": "Sista steget när man bearbetar en [[linden_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[linden_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[linden_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "linden_fallen_log": {
+    "text": "Stammen av ett fällt Linden-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[linden_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "linden_stump": {
+    "text": "Blir kvar där man högg när ett Linden-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[linden_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "aspen_wood": {
+    "text": "Aspen: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_aspen_log": {
+    "text": "Aspen: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_aspen_wood": {
+    "text": "Aspen: Yxa på wood.",
+    "category": "blocks"
+  },
+  "aspen_slab": {
+    "text": "Aspen: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "aspen_stairs": {
+    "text": "Aspen: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "aspen_fence": {
+    "text": "Aspen: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "aspen_fence_gate": {
+    "text": "Aspen: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "aspen_door": {
+    "text": "Aspen: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "aspen_trapdoor": {
+    "text": "Aspen: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "aspen_button": {
+    "text": "Aspen: Av planks.",
+    "category": "blocks"
+  },
+  "aspen_pressure_plate": {
+    "text": "Aspen: Av planks.",
+    "category": "blocks"
+  },
+  "potted_aspen_sapling": {
+    "text": "Aspen: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "alder_wood": {
+    "text": "Alder: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_alder_log": {
+    "text": "Alder: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_alder_wood": {
+    "text": "Alder: Yxa på wood.",
+    "category": "blocks"
+  },
+  "alder_slab": {
+    "text": "Alder: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "alder_stairs": {
+    "text": "Alder: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "alder_fence": {
+    "text": "Alder: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "alder_fence_gate": {
+    "text": "Alder: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "alder_door": {
+    "text": "Alder: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "alder_trapdoor": {
+    "text": "Alder: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "alder_button": {
+    "text": "Alder: Av planks.",
+    "category": "blocks"
+  },
+  "alder_pressure_plate": {
+    "text": "Alder: Av planks.",
+    "category": "blocks"
+  },
+  "potted_alder_sapling": {
+    "text": "Alder: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "beech_wood": {
+    "text": "Beech: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_beech_log": {
+    "text": "Beech: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_beech_wood": {
+    "text": "Beech: Yxa på wood.",
+    "category": "blocks"
+  },
+  "beech_slab": {
+    "text": "Beech: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "beech_stairs": {
+    "text": "Beech: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "beech_fence": {
+    "text": "Beech: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "beech_fence_gate": {
+    "text": "Beech: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "beech_door": {
+    "text": "Beech: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "beech_trapdoor": {
+    "text": "Beech: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "beech_button": {
+    "text": "Beech: Av planks.",
+    "category": "blocks"
+  },
+  "beech_pressure_plate": {
+    "text": "Beech: Av planks.",
+    "category": "blocks"
+  },
+  "potted_beech_sapling": {
+    "text": "Beech: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "linden_wood": {
+    "text": "Linden: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_linden_log": {
+    "text": "Linden: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_linden_wood": {
+    "text": "Linden: Yxa på wood.",
+    "category": "blocks"
+  },
+  "linden_slab": {
+    "text": "Linden: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "linden_stairs": {
+    "text": "Linden: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "linden_fence": {
+    "text": "Linden: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "linden_fence_gate": {
+    "text": "Linden: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "linden_door": {
+    "text": "Linden: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "linden_trapdoor": {
+    "text": "Linden: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "linden_button": {
+    "text": "Linden: Av planks.",
+    "category": "blocks"
+  },
+  "linden_pressure_plate": {
+    "text": "Linden: Av planks.",
+    "category": "blocks"
+  },
+  "potted_linden_sapling": {
+    "text": "Linden: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "oak_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "spruce_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "birch_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "jungle_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "acacia_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "dark_oak_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "mangrove_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "cherry_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "pale_oak_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "yellow_poplar_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "orange_poplar_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "red_poplar_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "azalea_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "flowering_azalea_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "aspen_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "alder_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "beech_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "linden_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
   }
 }

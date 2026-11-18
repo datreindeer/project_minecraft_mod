@@ -10,17 +10,30 @@ import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/** Drops of blood on the ground, left by a bleeding animal. Fades away after a few minutes (random ticks). */
+/**
+ * Blood on the ground, left by a bleeding animal. More blood on the same spot makes a bigger pool ({@link #AMOUNT} 1-4);
+ * a full pool runs over to the blocks around it (see {@link Blood}). Dries up step by step (random ticks).
+ */
 public class BloodBlock extends Block {
+    public static final int MAX_AMOUNT = 4;
+    public static final IntegerProperty AMOUNT = IntegerProperty.create("amount", 1, MAX_AMOUNT);
     private static final VoxelShape SHAPE = box(0, 0, 0, 16, 0.25, 16);
     private static final float FADE_CHANCE = 0.25F;
 
     public BloodBlock(Properties properties) {
         super(properties);
+        registerDefaultState(stateDefinition.any().setValue(AMOUNT, 1));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(AMOUNT);
     }
 
     @Override
@@ -48,6 +61,9 @@ public class BloodBlock extends Block {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (random.nextFloat() < FADE_CHANCE) level.removeBlock(pos, false);
+        if (random.nextFloat() >= FADE_CHANCE) return;
+        int amount = state.getValue(AMOUNT);
+        if (amount > 1) level.setBlock(pos, state.setValue(AMOUNT, amount - 1), UPDATE_ALL);
+        else level.removeBlock(pos, false);
     }
 }

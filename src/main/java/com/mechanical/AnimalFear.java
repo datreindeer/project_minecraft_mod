@@ -64,7 +64,14 @@ public final class AnimalFear {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide()) return;
         var attacker = event.getSource().getEntity();
-        panic(entity, attacker != null ? attacker.position() : entity.position());
+        if (attacker != null) {
+            panic(entity, attacker.position());
+            return;
+        }
+        // bleeding, falling ...: keep running from what scared it, or else from the nearest player
+        Panic old = PANIC.get(entity);
+        Player near = entity.level().getNearestPlayer(entity, PANIC_RANGE);
+        panic(entity, old != null ? old.from() : near != null ? near.position() : entity.position());
     }
 
     private static double noticeRange(Player player) {
@@ -92,7 +99,12 @@ public final class AnimalFear {
         }
 
         private Vec3 findThreat() {
-            if (!isWild(mob) || mob.getTarget() != null) return null;
+            if (!isWild(mob)) return null;
+            if (mob.getTarget() != null) {
+                // a hurt, bleeding animal gives up the fight and runs for its life
+                if (!Blood.isBleeding(mob)) return null;
+                mob.setTarget(null);
+            }
             panicking = isPanicking(mob);
             if (panicking) {
                 Player near = mob.level().getNearestPlayer(mob, PANIC_RANGE);
@@ -111,8 +123,25 @@ public final class AnimalFear {
         }
 
         private boolean flee() {
-            Vec3 target = DefaultRandomPos.getPosAway(mob, panicking ? 20 : 12, 7, threat);
-            return target != null && mob.getNavigation().moveTo(target.x, target.y, target.z, panicking ? PANIC_SPEED : FLEE_SPEED);
+            int range = panicking ? 20 : 12;
+            Vec3 target = DefaultRandomPos.getPosAway(mob, range, 7, threat);
+            if (target == null) target = DefaultRandomPos.getPosAway(mob, range / 2, 4, threat);
+            if (target == null) {
+                // cornered or odd terrain: just head straight away from the threat
+                Vec3 away = mob.position().subtract(threat).multiply(1, 0, 1);
+                if (away.lengthSqr() < 1.0E-4) return false;
+                target = mob.position().add(away.normalize().scale(range / 2.0));
+            }
+            return mob.getNavigation().moveTo(target.x, target.y, target.z, panicking ? PANIC_SPEED : FLEE_SPEED);
+        }
+
+        /** The path leads towards the threat, not away (the player moved round, or the path bends back). */
+        private boolean headingTowards(Vec3 t) {
+            var goal = mob.getNavigation().getTargetPos();
+            if (goal == null) return false;
+            Vec3 toGoal = Vec3.atBottomCenterOf(goal).subtract(mob.position()).multiply(1, 0, 1);
+            Vec3 toThreat = t.subtract(mob.position()).multiply(1, 0, 1);
+            return toGoal.dot(toThreat) > 0 || Vec3.atBottomCenterOf(goal).distanceToSqr(t) < mob.position().distanceToSqr(t);
         }
 
         @Override
@@ -125,7 +154,7 @@ public final class AnimalFear {
             if (mob.tickCount % 10 != 0) return;
             // keep running while the threat is close, and spread the panic to animals that can see us
             Vec3 t = findThreat();
-            if (t != null && mob.getNavigation().isDone()) {
+            if (t != null && (mob.getNavigation().isDone() || headingTowards(t))) {
                 threat = t;
                 flee();
             }

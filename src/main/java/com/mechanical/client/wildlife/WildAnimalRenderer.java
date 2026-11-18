@@ -26,6 +26,7 @@ public class WildAnimalRenderer<T extends WildAnimal> extends MobRenderer<T, Wil
         this.adult = adult;
         this.baby = baby;
         this.babyScale = babyScale;
+        addLayer(new StuckArrowLayer(this, context));
     }
 
     @Override
@@ -41,6 +42,8 @@ public class WildAnimalRenderer<T extends WildAnimal> extends MobRenderer<T, Wil
         state.showsHorns = entity.showsHorns();
         state.charging = entity.isCharging();
         state.dozing = entity.isDozing();
+        state.arrowCount = entity.getArrowCount();
+        state.entityId = entity.getId();
         if (entity instanceof Pheasant pheasant) {
             state.flying = !pheasant.onGround();
             state.flap = pheasant.flapPhase(partialTicks);

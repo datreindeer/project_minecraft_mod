@@ -129,13 +129,18 @@ shaped("double_stone_axe_head", ["HKH"], {"H": "mechanical:stone_axe_head", "K":
 shaped("double_stone_pickaxe_head", ["HKH"], {"H": "mechanical:stone_pickaxe_head", "K": "#mechanical:knives"}, "mechanical:double_stone_pickaxe_head")
 shaped("tool_station", ["FTF", "PCP"], {"F": "minecraft:flint", "T": "mechanical:twine", "P": "#minecraft:planks", "C": "minecraft:crafting_table"}, "mechanical:tool_station")
 
+# Our own tree species (Trees.java): full wood sets in the mechanical namespace; also in WOODS (stumps, fallen logs, firewood).
+NEW_WOODS = ["aspen", "alder", "beech", "linden"]
+wns = lambda wood: "mechanical" if wood in NEW_WOODS else "minecraft"  # namespace of a wood's vanilla-style blocks and textures
+
 # Planks: 2 per log until there is a saw.
 for wood, logs in [("oak", "oak_logs"), ("spruce", "spruce_logs"), ("birch", "birch_logs"), ("jungle", "jungle_logs"),
                    ("acacia", "acacia_logs"), ("dark_oak", "dark_oak_logs"), ("mangrove", "mangrove_logs"),
                    ("cherry", "cherry_logs"), ("pale_oak", "pale_oak_logs"), ("poplar", "poplar_logs"),
-                   ("crimson", "crimson_stems"), ("warped", "warped_stems")]:
-    w(D / f"minecraft/recipe/{wood}_planks.json", {"type": "minecraft:crafting_shapeless", "category": "building", "group": "planks",
-                                                   "ingredients": [f"#minecraft:{logs}"], "result": {"id": f"minecraft:{wood}_planks", "count": 2}})
+                   ("crimson", "crimson_stems"), ("warped", "warped_stems")] + [(x, f"{x}_logs") for x in NEW_WOODS]:
+    n = "mechanical" if wood in NEW_WOODS else "minecraft"
+    w(D / f"{n}/recipe/{wood}_planks.json", {"type": "minecraft:crafting_shapeless", "category": "building", "group": "planks",
+                                             "ingredients": [f"#{n}:{logs}"], "result": {"id": f"{n}:{wood}_planks", "count": 2}})
 
 # Disabled vanilla recipes: these come back in later ages.
 DISABLED = ["furnace"] + [f"{m}_{t}" for m in ["wooden", "copper", "iron", "diamond"]
@@ -184,14 +189,14 @@ w(lang_path, lang)
 print("tool station ok")
 
 # ---- stumps left by felled trees ----
-WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar"]
+WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar"] + NEW_WOODS
 side = lambda uv: {"texture": "#side", "uv": uv}
 w(A / "models/block/stump.json", {"textures": {"particle": "#side"}, "elements": [{"from": [2, 0, 2], "to": [14, 7, 14], "faces": {
     "up": {"texture": "#top", "uv": [2, 2, 14, 14]}, "down": {"texture": "#top", "uv": [2, 2, 14, 14], "cullface": "down"},
     "north": side([2, 9, 14, 16]), "south": side([2, 9, 14, 16]), "east": side([2, 9, 14, 16]), "west": side([2, 9, 14, 16])}}]})
 for wood in WOODS:
     w(A / f"models/block/{wood}_stump.json", {"parent": "mechanical:block/stump",
-        "textures": {"side": f"minecraft:block/{wood}_log", "top": f"minecraft:block/{wood}_log_top"}})
+        "textures": {"side": f"{wns(wood)}:block/{wood}_log", "top": f"{wns(wood)}:block/{wood}_log_top"}})
     w(A / f"blockstates/{wood}_stump.json", {"variants": {"": [{"model": f"mechanical:block/{wood}_stump", "y": y} for y in (0, 90, 180, 270)]}})
     w(D / f"mechanical/loot_table/blocks/{wood}_stump.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{
         "type": "minecraft:item", "name": "minecraft:stick",
@@ -206,7 +211,7 @@ w(A / "models/block/upright_log.json", {"textures": {"particle": "#side"}, "elem
     "north": side([3, 2, 13, 16]), "south": side([3, 2, 13, 16]), "east": side([3, 2, 13, 16]), "west": side([3, 2, 13, 16])}}]})
 for wood in WOODS:
     w(A / f"models/block/{wood}_upright_log.json", {"parent": "mechanical:block/upright_log",
-        "textures": {"side": f"minecraft:block/{wood}_log", "top": f"minecraft:block/{wood}_log_top"}})
+        "textures": {"side": f"{wns(wood)}:block/{wood}_log", "top": f"{wns(wood)}:block/{wood}_log_top"}})
 for wood in WOODS:
     w(A / f"blockstates/{wood}_stump.json", {"multipart": [{"apply": [{"model": f"mechanical:block/{wood}_stump", "y": y} for y in (0, 90, 180, 270)]}]
         + [{"when": {"log": str(i + 1)}, "apply": {"model": f"mechanical:block/{lw}_upright_log"}} for i, lw in enumerate(WOODS)]})
@@ -225,8 +230,9 @@ FALLEN_STAGES = [(0, 16, 16, False), (0, 16, 16, True), (2, 14, 12, True), (4, 1
 for wood in WOODS:
     variants = {}
     for stage, (x0, x1, h, stripped) in enumerate(FALLEN_STAGES):
-        tex = f"minecraft:block/stripped_{wood}_log" if stripped else f"minecraft:block/{wood}_log"
-        fallen_model(f"{wood}_fallen_log_{stage}", tex, f"minecraft:block/stripped_{wood}_log_top" if stripped else f"minecraft:block/{wood}_log_top", x0, x1, h)
+        n = wns(wood)
+        tex = f"{n}:block/stripped_{wood}_log" if stripped else f"{n}:block/{wood}_log"
+        fallen_model(f"{wood}_fallen_log_{stage}", tex, f"{n}:block/stripped_{wood}_log_top" if stripped else f"{n}:block/{wood}_log_top", x0, x1, h)
         variants[f"axis=z,stage={stage}"] = {"model": f"mechanical:block/{wood}_fallen_log_{stage}"}
         variants[f"axis=x,stage={stage}"] = {"model": f"mechanical:block/{wood}_fallen_log_{stage}", "y": 90}
     w(A / f"blockstates/{wood}_fallen_log.json", {"variants": variants})
@@ -444,7 +450,7 @@ for wood in WOODS:
     # 1 shows one piece, 2-15 two, 16+ three
     w(A / f"items/{fw}.json", {"model": {"type": "minecraft:range_dispatch", "property": "minecraft:count", "normalize": False,
         "entries": [{"threshold": 2, "model": model(2)}, {"threshold": 16, "model": model(3)}], "fallback": model(1)}})
-    shaped(f"{wood}_log_from_firewood", ["FF", "FF"], {"F": f"mechanical:{fw}"}, f"minecraft:{wood}_log")
+    shaped(f"{wood}_log_from_firewood", ["FF", "FF"], {"F": f"mechanical:{fw}"}, f"{wns(wood)}:{wood}_log")
     lang[f"item.mechanical.{fw}"] = f"{title(wood)} Firewood"
 w(D / "mechanical/tags/item/firewood.json", {"values": [f"mechanical:{x}_firewood" for x in WOODS]})
 w(D / "minecraft/recipe/campfire.json", {"type": "minecraft:crafting_shaped", "category": "misc",
@@ -726,7 +732,13 @@ for v in range(3):
     w(A / f"models/block/blood_{v}.json", {"textures": {"particle": f"mechanical:block/blood_{v}", "blood": f"mechanical:block/blood_{v}"},
         "elements": [{"from": [0, 0.1, 0], "to": [16, 0.1, 16], "shade": False,
                       "faces": {"up": {"uv": [0, 0, 16, 16], "texture": "#blood"}, "down": {"uv": [0, 16, 16, 0], "texture": "#blood"}}}]})
-w(A / "blockstates/blood.json", {"variants": {"": [{"model": f"mechanical:block/blood_{v}", "y": y} for v in range(3) for y in (0, 90, 180, 270)]}})
+for lvl in (2, 3, 4):  # bigger pools when blood lands on blood
+    w(A / f"models/block/blood_pool_{lvl}.json", {"textures": {"particle": f"mechanical:block/blood_pool_{lvl}", "blood": f"mechanical:block/blood_pool_{lvl}"},
+        "elements": [{"from": [0, 0.1, 0], "to": [16, 0.1, 16], "shade": False,
+                      "faces": {"up": {"uv": [0, 0, 16, 16], "texture": "#blood"}, "down": {"uv": [0, 16, 16, 0], "texture": "#blood"}}}]})
+w(A / "blockstates/blood.json", {"variants": {
+    "amount=1": [{"model": f"mechanical:block/blood_{v}", "y": y} for v in range(3) for y in (0, 90, 180, 270)],
+    **{f"amount={lvl}": [{"model": f"mechanical:block/blood_pool_{lvl}", "y": y} for y in (0, 90, 180, 270)] for lvl in (2, 3, 4)}}})
 lang["block.mechanical.blood"] = "Blood"
 w(lang_path, lang)
 print("blood ok")
@@ -951,3 +963,128 @@ for path in _tjar.namelist():
         continue
     w(D / f"minecraft/worldgen/feature/{name}.json", tree)
 print("forest ok")
+
+# ---- our tree species: aspen, alder, beech, linden (Trees.java) ----
+# Blockstates, models, item models, loot and recipes are vanilla birch's with our names (birch leaves drop no apples, like we want).
+import re
+def from_birch(path, wood):
+    text = re.sub(r"minecraft:((?:block/|item/|blocks/)?(?:stripped_|potted_)?)birch_",
+                  lambda m: f"mechanical:{m.group(1)}{wood}_", _tjar.read(path).decode())
+    return json.loads(text)
+TREE_PARTS = ["log", "wood", "planks", "slab", "stairs", "fence", "fence_gate", "door", "trapdoor", "button", "pressure_plate", "leaves", "sapling"]
+def tree_blocks(wood):
+    return [f"{wood}_{p}" for p in TREE_PARTS] + [f"stripped_{wood}_log", f"stripped_{wood}_wood", f"potted_{wood}_sapling"]
+BIRCH_FILE = re.compile(r"(?:stripped_|potted_)?birch_(?!.*(?:sign|boat|shelf))[a-z_]*\.json")
+for path in _tjar.namelist():
+    folder, _, name = path.rpartition("/")
+    if folder not in ("assets/minecraft/blockstates", "assets/minecraft/models/block", "assets/minecraft/models/item", "assets/minecraft/items",
+                      "data/minecraft/loot_table/blocks", "data/minecraft/recipe") or not BIRCH_FILE.fullmatch(name):
+        continue
+    if name == "birch_planks.json" and folder == "data/minecraft/recipe":
+        continue  # planks: 2 per log, made above
+    for wood in NEW_WOODS:
+        obj = from_birch(path, wood)
+        if name == "birch_leaves.json" and folder == "assets/minecraft/items":
+            obj["model"].pop("tints", None)  # our leaf textures are pre-coloured
+        if folder.startswith("assets"):
+            out = A / folder.split("/", 2)[2] / name.replace("birch", wood)
+        else:
+            out = D / "mechanical" / folder.split("/", 2)[2] / name.replace("birch", wood)
+        w(out, obj)
+
+# stripping with an axe: our rules go in front of vanilla's
+axe = json.loads(_tjar.read("data/minecraft/block_transformer/axe.json").decode())
+strip = lambda src, dst: {"if_true": {"type": "minecraft:matching_blocks", "blocks": f"mechanical:{src}"},
+                          "then": {"type": "minecraft:copy_properties", "source": {"id": f"mechanical:{dst}", "properties": {"axis": "y"}}}}
+axe[0]["block_state_provider"]["rules"][:0] = [strip(f"{x}_{k}", f"stripped_{x}_{k}") for x in NEW_WOODS for k in ("log", "wood")]
+w(D / "minecraft/block_transformer/axe.json", axe)
+
+# tags
+for x in NEW_WOODS:
+    logs = [f"mechanical:{x}_log", f"mechanical:{x}_wood", f"mechanical:stripped_{x}_log", f"mechanical:stripped_{x}_wood"]
+    for kind in ("block", "item"):
+        w(D / f"mechanical/tags/{kind}/{x}_logs.json", {"values": logs})
+TAGS = {"logs_that_burn": "#mechanical:{x}_logs", "planks": "planks", "wooden_slabs": "slab", "wooden_stairs": "stairs",
+        "wooden_fences": "fence", "fence_gates": "fence_gate", "wooden_doors": "door", "wooden_trapdoors": "trapdoor",
+        "wooden_buttons": "button", "wooden_pressure_plates": "pressure_plate", "leaves": "leaves", "saplings": "sapling"}
+for tag, part in TAGS.items():
+    vals = [part.format(x=x) if part.startswith("#") else f"mechanical:{x}_{part}" for x in NEW_WOODS]
+    for kind in ("block", "item"):
+        w(D / f"minecraft/tags/{kind}/{tag}.json", {"values": vals})
+w(D / "minecraft/tags/block/overworld_natural_logs.json", {"values": [f"mechanical:{x}_log" for x in NEW_WOODS]})
+w(D / "minecraft/tags/block/flower_pots.json", {"values": [f"mechanical:potted_{x}_sapling" for x in NEW_WOODS]})
+w(D / "minecraft/tags/block/mineable/hoe.json", {"values": [f"mechanical:{x}_leaves" for x in NEW_WOODS]})
+axe_tag = json.loads((D / "minecraft/tags/block/mineable/axe.json").read_text())
+axe_tag["values"] += [f"mechanical:{b}" for x in NEW_WOODS for b in tree_blocks(x) if not b.endswith(("leaves", "sapling"))]
+w(D / "minecraft/tags/block/mineable/axe.json", axe_tag)
+
+# recipe book: having the logs or planks reveals that wood's recipes
+for x in NEW_WOODS:
+    recipes = [f"{x}_planks", f"{x}_wood", f"stripped_{x}_wood"] + [f"{x}_{p}" for p in TREE_PARTS[3:11]]
+    w(D / f"mechanical/advancement/recipes/{x}_wood.json", {"parent": "minecraft:recipes/root",
+        "criteria": {"has_logs": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": f"#mechanical:{x}_logs"}]}},
+                     "has_planks": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": f"mechanical:{x}_planks"}]}}},
+        "requirements": [["has_logs", "has_planks"]], "rewards": {"recipes": [f"mechanical:{r}" for r in recipes]}})
+
+for x in NEW_WOODS:
+    for b in tree_blocks(x):
+        lang[f"block.mechanical.{b}"] = title(b)
+w(lang_path, lang)
+
+# worldgen: one tree feature per species (saplings grow the same one), placed in forests and a few other biomes
+def tree_feature(x, trunk, foliage, size=None):
+    w(D / f"mechanical/worldgen/feature/{x}.json", {"type": "minecraft:tree", "below_trunk_provider": "minecraft:soil_beneath_tree",
+        "decorators": [], "foliage_placer": foliage, "ignore_vines": True,
+        "foliage_provider": {"id": f"mechanical:{x}_leaves", "properties": {"distance": "7", "persistent": "false", "waterlogged": "false"}},
+        "minimum_size": size or {"type": "minecraft:two_layers_feature_size"}, "trunk_placer": trunk,
+        "trunk_provider": {"id": f"mechanical:{x}_log", "properties": {"axis": "y"}}})
+straight = lambda base, a, b=0: {"type": "minecraft:straight_trunk_placer", "base_height": base, "height_rand_a": a, "height_rand_b": b}
+blob = lambda r, h: {"type": "minecraft:blob_foliage_placer", "height": h, "offset": 0, "radius": r}
+tree_feature("aspen", straight(9, 2, 2), blob(2, 3))     # tall slim trunk 9-13, small birch-like crown on top
+tree_feature("alder", straight(6, 3), blob(2, 3))        # medium straight tree 6-9
+tree_feature("beech", straight(8, 4), blob(3, 3))        # tall straight trunk 8-12, wide dense crown (radius 3 stays within leaf distance 6)
+tree_feature("linden", {"type": "minecraft:fancy_trunk_placer", "base_height": 8, "height_rand_a": 6, "height_rand_b": 0},
+             {"type": "minecraft:fancy_foliage_placer", "height": 4, "offset": 4, "radius": 3},  # broader crown than the (fancy) oaks
+             {"type": "minecraft:two_layers_feature_size", "limit": 0, "min_clipped_height": 6, "upper_size": 0})
+weighted = lambda *counts: {"type": "minecraft:count", "count": {"type": "minecraft:weighted_list",
+                            "distribution": [{"data": n, "weight": wt} for n, wt in counts]}}
+rarity = lambda chance: {"type": "minecraft:rarity_filter", "chance": chance}
+# placed feature -> (tree, frequency per chunk, biomes)
+FOREST = ["minecraft:forest", "minecraft:flower_forest"]
+TREE_PLACEMENTS = {
+    "aspen_forest": ("aspen", weighted((0, 1), (1, 1)), FOREST),
+    "aspen_sparse": ("aspen", rarity(5), ["minecraft:meadow", "minecraft:taiga"]),
+    "alder_forest": ("alder", rarity(3), FOREST),
+    "alder_waterside": ("alder", weighted((0, 1), (1, 2), (2, 1)), ["minecraft:river", "minecraft:swamp"]),
+    "beech_forest": ("beech", weighted((0, 1), (1, 2), (2, 1)), FOREST),
+    "linden_forest": ("linden", weighted((0, 1), (1, 1)), FOREST),
+    "linden_plains": ("linden", rarity(12), ["minecraft:plains", "minecraft:sunflower_plains"]),
+}
+for name, (x, freq, biomes) in TREE_PLACEMENTS.items():
+    w(D / f"mechanical/worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{x}", "placement": [
+        freq, {"type": "minecraft:in_square"}, {"type": "minecraft:surface_water_depth_filter", "max_water_depth": 0},
+        {"type": "minecraft:heightmap", "heightmap": "OCEAN_FLOOR"}, {"type": "minecraft:biome"},
+        {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:would_survive", "state": f"mechanical:{x}_sapling"}}]})
+    w(D / f"mechanical/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
+        "features": f"mechanical:{name}", "step": "vegetal_decoration"})
+print("trees ok")
+
+# ---- fresh leaf litter: one per leaf type, leaf-coloured, dries into vanilla leaf litter (textures: gen_leaf_litter_textures.py) ----
+LITTER_LEAVES = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "yellow_poplar",
+                 "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden"]
+_ljar = zipfile.ZipFile(JAR)
+_lstate = _ljar.read("assets/minecraft/blockstates/leaf_litter.json").decode()
+_lloot = _ljar.read("data/minecraft/loot_table/blocks/leaf_litter.json").decode()
+for leaf in LITTER_LEAVES:
+    name = f"{leaf}_leaf_litter"
+    for n in range(1, 5):
+        w(A / f"models/block/{name}_{n}.json", {"parent": f"minecraft:block/template_leaf_litter_{n}", "textures": {"texture": f"mechanical:block/{name}"}})
+    w(A / f"blockstates/{name}.json", json.loads(_lstate.replace("minecraft:block/leaf_litter_", f"mechanical:block/{name}_")))
+    # drops vanilla Leaf Litter (one per layer), so it is tinder like any other
+    w(D / f"mechanical/loot_table/blocks/{name}.json", json.loads(_lloot.replace('"blocks": "minecraft:leaf_litter"', f'"blocks": "mechanical:{name}"')
+        .replace('"minecraft:blocks/leaf_litter"', f'"mechanical:blocks/{name}"')))
+    lang[f"block.mechanical.{name}"] = title(name)
+for tag in ("washed_away_by_fluids", "replaceable_by_trees", "replaceable_by_mushrooms", "replaceable", "inside_step_sound_blocks"):
+    w(D / f"minecraft/tags/block/{tag}.json", {"values": [f"mechanical:{l}_leaf_litter" for l in LITTER_LEAVES]})
+w(lang_path, lang)
+print("leaf litter ok")

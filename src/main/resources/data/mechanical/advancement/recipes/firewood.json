@@ -30,7 +30,11 @@
       "mechanical:mangrove_log_from_firewood",
       "mechanical:cherry_log_from_firewood",
       "mechanical:pale_oak_log_from_firewood",
-      "mechanical:poplar_log_from_firewood"
+      "mechanical:poplar_log_from_firewood",
+      "mechanical:aspen_log_from_firewood",
+      "mechanical:alder_log_from_firewood",
+      "mechanical:beech_log_from_firewood",
+      "mechanical:linden_log_from_firewood"
     ]
   }
 }

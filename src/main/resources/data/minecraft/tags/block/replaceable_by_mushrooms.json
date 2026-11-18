@@ -1,0 +1,22 @@
+{
+  "values": [
+    "mechanical:oak_leaf_litter",
+    "mechanical:spruce_leaf_litter",
+    "mechanical:birch_leaf_litter",
+    "mechanical:jungle_leaf_litter",
+    "mechanical:acacia_leaf_litter",
+    "mechanical:dark_oak_leaf_litter",
+    "mechanical:mangrove_leaf_litter",
+    "mechanical:cherry_leaf_litter",
+    "mechanical:pale_oak_leaf_litter",
+    "mechanical:yellow_poplar_leaf_litter",
+    "mechanical:orange_poplar_leaf_litter",
+    "mechanical:red_poplar_leaf_litter",
+    "mechanical:azalea_leaf_litter",
+    "mechanical:flowering_azalea_leaf_litter",
+    "mechanical:aspen_leaf_litter",
+    "mechanical:alder_leaf_litter",
+    "mechanical:beech_leaf_litter",
+    "mechanical:linden_leaf_litter"
+  ]
+}
