@@ -121,12 +121,13 @@ def patch(name, state, biomes, rarity, n, spread):
     w(D / f"worldgen/feature/{feature}.json", {"type": "minecraft:simple_block", "to_place": state})
     w(D / f"worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{feature}", "placement": [
         {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
-        {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
         {"type": "minecraft:count", "count": n},
-        {"type": "minecraft:offset", "x": tri(spread), "y": tri(2), "z": tri(spread)},
+        {"type": "minecraft:offset", "x": tri(spread), "y": 0, "z": tri(spread)},
+        # each spot finds the ground itself (a random height above/below hit the ground only a third of the time)
+        {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
         {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
             {"type": "minecraft:replaceable"},
-            {"type": "minecraft:matching_block_tag", "tag": "minecraft:dirt", "offset": [0, -1, 0]}]}}]})
+            {"type": "minecraft:matching_block_tag", "tag": "minecraft:substrate_overworld", "offset": [0, -1, 0]}]}}]})
     w(D / f"neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
         "features": f"mechanical:{name}", "step": "vegetal_decoration"})
 

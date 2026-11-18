@@ -94,7 +94,7 @@ public final class VillageAnimals {
                 BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, center.offset(dx, 0, dz));
                 if (top.getY() != center.getY()) return false;
                 BlockState ground = level.getBlockState(top.below());
-                if (!(ground.is(BlockTags.DIRT) || ground.is(BlockTags.SAND)) || ground.is(Blocks.DIRT_PATH)) return false;
+                if (!(ground.is(BlockTags.SUBSTRATE_OVERWORLD) || ground.is(BlockTags.SAND)) || ground.is(Blocks.DIRT_PATH)) return false;
                 if (!level.getBlockState(top).isAir() && !level.getBlockState(top).canBeReplaced()) return false;
                 if (!level.getFluidState(top).isEmpty()) return false;
             }

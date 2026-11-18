@@ -9,13 +9,6 @@
       "type": "minecraft:in_square"
     },
     {
-      "type": "minecraft:heightmap",
-      "heightmap": "MOTION_BLOCKING_NO_LEAVES"
-    },
-    {
-      "type": "minecraft:biome"
-    },
-    {
       "type": "minecraft:count",
       "count": 12
     },
@@ -27,18 +20,20 @@
         "max": 3,
         "plateau": 0
       },
-      "y": {
-        "type": "minecraft:trapezoid",
-        "min": -2,
-        "max": 2,
-        "plateau": 0
-      },
+      "y": 0,
       "z": {
         "type": "minecraft:trapezoid",
         "min": -3,
         "max": 3,
         "plateau": 0
       }
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING_NO_LEAVES"
+    },
+    {
+      "type": "minecraft:biome"
     },
     {
       "type": "minecraft:block_predicate_filter",
@@ -50,7 +45,7 @@
           },
           {
             "type": "minecraft:matching_block_tag",
-            "tag": "minecraft:dirt",
+            "tag": "minecraft:substrate_overworld",
             "offset": [
               0,
               -1,

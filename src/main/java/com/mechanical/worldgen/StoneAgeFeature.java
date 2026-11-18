@@ -37,7 +37,7 @@ abstract class StoneAgeFeature implements Feature {
     }
 
     static boolean natural(BlockState s) {
-        return s.is(BlockTags.DIRT) || s.is(BlockTags.SAND) || s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.GRAVEL);
+        return s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(BlockTags.SAND) || s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.GRAVEL);
     }
 
     /** Every column within r of c has dry, natural ground within tol blocks of c's height. */

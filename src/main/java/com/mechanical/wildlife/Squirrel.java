@@ -229,6 +229,7 @@ public class Squirrel extends WildAnimal {
 
         @Override
         public void tick() {
+            if (phase == null || trunk == null) return; // finished this tick; the selector stops the goal next
             if (!mob.level().getBlockState(trunk).is(BlockTags.LOGS)) { // tree felled under it
                 phase = null;
                 return;

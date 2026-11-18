@@ -36,7 +36,7 @@ class ChopWoodGoal extends Goal {
         BlockState s = level.getBlockState(p);
         if (s.getBlock() instanceof StumpBlock || s.getBlock() instanceof FallenLogBlock) return true;
         // the foot of a trunk, standing on the ground
-        return s.is(BlockTags.LOGS) && level.getBlockState(p.below()).is(BlockTags.DIRT);
+        return s.is(BlockTags.LOGS) && level.getBlockState(p.below()).is(BlockTags.SUBSTRATE_OVERWORLD);
     }
 
     @Override

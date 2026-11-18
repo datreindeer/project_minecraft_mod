@@ -272,12 +272,13 @@ def forage_feature(name, state, biomes, rarity, count, spread):
     w(D / f"mechanical/worldgen/feature/{name}.json", {"type": "minecraft:simple_block", "to_place": state})
     w(D / f"mechanical/worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{name}", "placement": [
         {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
-        {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
         {"type": "minecraft:count", "count": count},
-        {"type": "minecraft:offset", "x": tri(spread), "y": tri(2), "z": tri(spread)},
+        {"type": "minecraft:offset", "x": tri(spread), "y": 0, "z": tri(spread)},
+        # each spot finds the ground itself (a random height above/below hit the ground only a third of the time)
+        {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
         {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
             {"type": "minecraft:replaceable"},  # air, grass, ferns ...
-            {"type": "minecraft:matching_block_tag", "tag": "minecraft:dirt", "offset": [0, -1, 0]}]}}]})
+            {"type": "minecraft:matching_block_tag", "tag": "minecraft:substrate_overworld", "offset": [0, -1, 0]}]}}]})
     w(D / f"mechanical/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
         "features": f"mechanical:{name}", "step": "vegetal_decoration"})
 BUSH_BIOMES = {
@@ -304,7 +305,7 @@ for bush, berries in BUSHES.items():
     w(A / f"items/{berries}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{berries}"}})
     lang[f"item.mechanical.{berries}"] = title(berries)
     forage_feature(block, {"id": f"mechanical:{block}", "properties": {"age": "3"}},
-                   BUSH_BIOMES[bush], 16, 7, 4)  # a patch of a few bushes
+                   BUSH_BIOMES[bush], 8, 7, 4)  # a patch of a few bushes
 w(D / "mechanical/tags/block/wild_berry_bushes.json", {"values": [f"mechanical:{b}_bush" for b in BUSHES]})
 def mushroom_loot(item, seq):
     """Cut cleanly with a knife: always. Plucked by hand: half the time it falls apart."""
@@ -330,7 +331,7 @@ for m in MUSHROOMS:
     w(A / f"items/{m}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{m}"}})
     lang[f"block.mechanical.{m}"] = title(m)
     lang[f"item.mechanical.{m}"] = title(m)
-    forage_feature(m, {"id": f"mechanical:{m}"}, MUSHROOM_BIOMES[m], 18, 14, 6)  # a mushroom field
+    forage_feature(m, {"id": f"mechanical:{m}"}, MUSHROOM_BIOMES[m], 10, 14, 6)  # a mushroom field
 w(D / "mechanical/tags/item/edible_mushrooms.json", {"values": [f"mechanical:{m}" for m in MUSHROOMS if m != "fly_agaric"] + ["minecraft:brown_mushroom"]})
 w(A / "models/item/roasted_mushrooms.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/roasted_mushrooms"}})
 w(A / "items/roasted_mushrooms.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/roasted_mushrooms"}})
