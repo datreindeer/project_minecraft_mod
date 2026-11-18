@@ -71,6 +71,10 @@ public final class Butchery {
             Map.entry(Wildlife.MOUFLON.get(), new Yield(Mechanical.MUTTON_SCRAPS, 1, 3,
                     List.of(new Extra(Mechanical.WOOL_THREAD, 0.4F, 1, 2)),
                     List.of(hide(0.3F), new Extra(Wildlife.SINEW, 0.3F, 1, 1), new Extra(Wildlife.HORN, 0.3F, 1, 2)))),
+            Map.entry(Wildlife.BROWN_BEAR.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 4, 6,
+                    List.of(new Extra(Wildlife.BEAR_PELT, 1.0F, 1, 1), hide(0.4F)),
+                    List.of(new Extra(Wildlife.BEAR_FAT, 0.8F, 1, 3), new Extra(Wildlife.BEAR_CLAW, 0.6F, 1, 3),
+                            new Extra(Wildlife.SINEW, 0.6F, 1, 2)))),
             Map.entry(Wildlife.MOOSE.get(), new Yield(Wildlife.VENISON_SCRAPS, 3, 6, List.of(hide(0.7F)),
                     List.of(new Extra(Wildlife.SINEW, 0.6F, 1, 3)))),
             Map.entry(Wildlife.REINDEER.get(), new Yield(Wildlife.VENISON_SCRAPS, 2, 3, List.of(hide(0.45F)),
@@ -119,7 +123,7 @@ public final class Butchery {
 
     /** Knife tier needed to butcher this animal at all (thick hides like the bear's need iron). */
     public static int requiredKnifeTier(EntityType<?> animal) {
-        return "mechanical:brown_bear".equals(BuiltInRegistries.ENTITY_TYPE.getKey(animal).toString()) ? KnifeItem.IRON : KnifeItem.FLINT;
+        return animal == Wildlife.BROWN_BEAR.get() ? KnifeItem.IRON : KnifeItem.FLINT;
     }
 
     /** First pass: wool / hide / feathers. {@code yieldMultiplier} comes from the knife (flint = 1). */

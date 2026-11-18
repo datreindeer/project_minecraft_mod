@@ -120,8 +120,13 @@ public abstract class WildAnimal extends Animal {
         if (near != null && !near.isSpectator() && !near.isCreative()
                 && (!near.isShiftKeyDown() || distanceTo(near) < WAKE_RANGE_SNEAKING)) {
             entityData.set(DOZING, false);
-            com.mechanical.AnimalFear.panic(this, near.position());
+            onWoken(near);
         }
+    }
+
+    /** Woken by a player: bolts. Predators override this (the brown bear attacks). */
+    protected void onWoken(Player near) {
+        com.mechanical.AnimalFear.panic(this, near.position());
     }
 
     // ---- wild: no breeding ----

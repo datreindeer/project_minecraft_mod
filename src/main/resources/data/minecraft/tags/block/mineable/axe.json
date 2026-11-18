@@ -11,6 +11,16 @@
     "mechanical:mangrove_stump",
     "mechanical:cherry_stump",
     "mechanical:pale_oak_stump",
-    "mechanical:poplar_stump"
+    "mechanical:poplar_stump",
+    "mechanical:oak_fallen_log",
+    "mechanical:spruce_fallen_log",
+    "mechanical:birch_fallen_log",
+    "mechanical:jungle_fallen_log",
+    "mechanical:acacia_fallen_log",
+    "mechanical:dark_oak_fallen_log",
+    "mechanical:mangrove_fallen_log",
+    "mechanical:cherry_fallen_log",
+    "mechanical:pale_oak_fallen_log",
+    "mechanical:poplar_fallen_log"
   ]
 }

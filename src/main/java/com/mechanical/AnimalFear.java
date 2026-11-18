@@ -36,6 +36,7 @@ public final class AnimalFear {
     private static final Map<LivingEntity, Panic> PANIC = new WeakHashMap<>();
 
     static boolean isWild(LivingEntity entity) {
+        if (entity instanceof com.mechanical.wildlife.BrownBear) return false; // bears never flee or panic
         if (!(entity instanceof Animal animal)) return false;
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;
         if (animal instanceof AbstractHorse horse && horse.isTamed()) return false;

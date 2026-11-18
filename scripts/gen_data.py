@@ -200,6 +200,48 @@ for wood in WOODS:
     lang[f"block.mechanical.{wood}_stump"] = f"{title(wood)} Stump"
 w(D / "minecraft/tags/block/mineable/axe.json", {"values": ["mechanical:tool_station"] + [f"mechanical:{x}_stump" for x in WOODS]})
 w(lang_path, lang)
+# ---- stump as chopping block: a rough log stood on it (log = 1 + index in WOODS) ----
+w(A / "models/block/upright_log.json", {"textures": {"particle": "#side"}, "elements": [{"from": [3, 7, 3], "to": [13, 21, 13], "faces": {
+    "up": {"texture": "#top", "uv": [3, 3, 13, 13]}, "down": {"texture": "#top", "uv": [3, 3, 13, 13]},
+    "north": side([3, 2, 13, 16]), "south": side([3, 2, 13, 16]), "east": side([3, 2, 13, 16]), "west": side([3, 2, 13, 16])}}]})
+for wood in WOODS:
+    w(A / f"models/block/{wood}_upright_log.json", {"parent": "mechanical:block/upright_log",
+        "textures": {"side": f"minecraft:block/{wood}_log", "top": f"minecraft:block/{wood}_log_top"}})
+for wood in WOODS:
+    w(A / f"blockstates/{wood}_stump.json", {"multipart": [{"apply": [{"model": f"mechanical:block/{wood}_stump", "y": y} for y in (0, 90, 180, 270)]}]
+        + [{"when": {"log": str(i + 1)}, "apply": {"model": f"mechanical:block/{lw}_upright_log"}} for i, lw in enumerate(WOODS)]})
+
+# ---- fallen logs (felled trees lie where they land): stage 0 bark, 1 debarked, 2-3 hewn thinner; built along z ----
+def fallen_model(name, side_tex, end_tex, x0, x1, h):
+    # z runs along the log; grain of the side texture must run along z, so east/west faces are rotated
+    s = lambda: {"texture": "#side", "uv": [x0, 16 - h, x1, 16]}
+    w(A / f"models/block/{name}.json", {"textures": {"particle": side_tex, "side": side_tex, "end": end_tex}, "elements": [{
+        "from": [x0, 0, 0], "to": [x1, h, 16], "faces": {
+            "north": {"texture": "#end", "uv": [x0, 16 - h, x1, 16], "cullface": "north"},
+            "south": {"texture": "#end", "uv": [x0, 16 - h, x1, 16], "cullface": "south"},
+            "up": {"texture": "#side", "uv": [x0, 0, x1, 16]}, "down": {"texture": "#side", "uv": [x0, 0, x1, 16], "cullface": "down"},
+            "east": {"texture": "#side", "uv": [0, x0, 16, x1], "rotation": 90}, "west": {"texture": "#side", "uv": [0, x0, 16, x1], "rotation": 90}}}]})
+FALLEN_STAGES = [(0, 16, 16, False), (0, 16, 16, True), (2, 14, 12, True), (4, 12, 8, True)]
+for wood in WOODS:
+    variants = {}
+    for stage, (x0, x1, h, stripped) in enumerate(FALLEN_STAGES):
+        tex = f"minecraft:block/stripped_{wood}_log" if stripped else f"minecraft:block/{wood}_log"
+        fallen_model(f"{wood}_fallen_log_{stage}", tex, f"minecraft:block/stripped_{wood}_log_top" if stripped else f"minecraft:block/{wood}_log_top", x0, x1, h)
+        variants[f"axis=z,stage={stage}"] = {"model": f"mechanical:block/{wood}_fallen_log_{stage}"}
+        variants[f"axis=x,stage={stage}"] = {"model": f"mechanical:block/{wood}_fallen_log_{stage}", "y": 90}
+    w(A / f"blockstates/{wood}_fallen_log.json", {"variants": variants})
+    w(D / f"mechanical/loot_table/blocks/{wood}_fallen_log.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{
+        "type": "minecraft:item", "name": "minecraft:stick",
+        "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]}],
+        "random_sequence": f"mechanical:blocks/{wood}_fallen_log"})
+    lang[f"block.mechanical.{wood}_fallen_log"] = f"Fallen {title(wood)} Log"
+    item = f"{wood}_rough_log"
+    w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
+    w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
+    lang[f"item.mechanical.{item}"] = f"Rough {title(wood)} Log"
+w(A / "models/item/bark.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark"}})
+w(A / "items/bark.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark"}})
+lang["item.mechanical.bark"] = "Bark"
 print("stumps ok")
 
 # ---- fire drill, campfire, kiln, crucible ----
@@ -451,7 +493,8 @@ w(D / "mechanical/loot_table/blocks/drying_rack.json", {"type": "minecraft:block
     {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:drying_rack"}]},
     {"rolls": 1, "entries": [hide_drop(1, "mechanical:scraped_hide"), hide_drop(2, "minecraft:leather")]}],
     "random_sequence": "mechanical:blocks/drying_rack"})
-w(D / "minecraft/tags/block/mineable/axe.json", {"values": ["mechanical:tool_station", "mechanical:drying_rack"] + [f"mechanical:{x}_stump" for x in WOODS]})
+w(D / "minecraft/tags/block/mineable/axe.json", {"values": ["mechanical:tool_station", "mechanical:drying_rack"] + [f"mechanical:{x}_stump" for x in WOODS]
+    + [f"mechanical:{x}_fallen_log" for x in WOODS]})
 for n, it in (("raw_hide", ("mechanical:raw_hide", ["scraped_hide", "drying_rack"])), ("wool_thread", ("mechanical:wool_thread", ["white_wool_from_thread"]))):
     item, recipes = it
     w(D / f"mechanical/advancement/recipes/{n}.json", {"parent": "minecraft:recipes/root",
@@ -519,8 +562,8 @@ w(D / "mechanical/neoforge/biome_modifier/add_forest_wildlife.json", {"type": "n
     "spawners": [{"type": f"mechanical:{x}", "weight": wt, "count": {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}}
                  for x, (wt, lo, hi) in SPAWNS.items()]})
 # ---- open-country and cold wildlife ----
-MORE_WILD = ["aurochs", "wild_horse", "mouflon", "moose", "reindeer"]
-for item in ["horn"] + [f"{x}_spawn_egg" for x in MORE_WILD]:
+MORE_WILD = ["aurochs", "wild_horse", "mouflon", "moose", "reindeer", "brown_bear"]
+for item in ["horn", "bear_pelt", "bear_fat", "bear_claw"] + [f"{x}_spawn_egg" for x in MORE_WILD]:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
     lang[f"item.mechanical.{item}"] = title(item)
@@ -534,6 +577,10 @@ MORE_SPAWNS = {  # (weight, min, max), biomes
     "moose": ((5, 1, 3), ["minecraft:taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:swamp"]),
     "reindeer": ((8, 4, 8), ["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove", "minecraft:snowy_slopes", "minecraft:ice_spikes"]),
 }
+# bears: forests and all taigas, rare, alone or a mother with cubs
+w(D / "mechanical/neoforge/biome_modifier/add_brown_bears.json", {"type": "neoforge:add_spawns",
+    "biomes": {"type": "neoforge:or", "values": ["#minecraft:is_forest", "#minecraft:is_taiga"]},
+    "spawners": [{"type": "mechanical:brown_bear", "weight": 2, "count": {"type": "minecraft:uniform", "min_inclusive": 1, "max_inclusive": 3}}]})
 for x, ((wt, lo, hi), biomes) in MORE_SPAWNS.items():
     w(D / f"mechanical/neoforge/biome_modifier/add_{x}.json", {"type": "neoforge:add_spawns", "biomes": biomes,
         "spawners": [{"type": f"mechanical:{x}", "weight": wt, "count": {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}}]})

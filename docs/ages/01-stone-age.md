@@ -165,7 +165,7 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
 
 ### Stumps
 När ett träd fälls blir en stubbe kvar där man högg (10 träslag, samma som Firewood). Ger 1–2 Sticks, bryts snabbast
-med yxa. Har inget item.
+med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta stockar).
 
 ## Övriga items
 
@@ -182,11 +182,26 @@ med yxa. Har inget item.
 - Hugger man en log i ett **naturligt träd** (logs med naturliga löv) med yxa fälls hela trädet ovanför huggstället:
   - Hugg-tiden delas med antalet logs (stort träd = lång tid).
   - Yxan slits 1 per log. Räcker den inte går den sönder, men trädet faller ändå.
-  - Trädet faller som en animation bort från spelaren. Varje block släpper sina drops där det landar (logs → Firewood,
-    löv → saplings, sticks, äpplen).
+  - Trädet faller som en animation bort från spelaren och **blir liggande där det landar** (gravitation, staplas):
+    stammen blir **Fallen Logs** som ligger längs fallriktningen. Löven släpper saplings, sticks och äpplen som innan och
+    blir **Leaf Litter** på marken där de landar (flera löv på samma ställe ger tjockare lager).
   - Bara löven som hör till just det trädet tas med (grannträd lämnas).
   - En Stump blir kvar.
-- **Smyg** för att hugga en enda log. Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
+- **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
+
+### Bearbeta stockar (håll in högerklick med yxa)
+Ett tungt hugg var 0,6:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
+(Flint Axe / Crude Stone Axe 4, Stone Axe 3, Iron Axe 2) och sliter yxan 1.
+
+1. **Fallen Log:** barken av (ger **1–2 Bark**) → hugget smalare → ännu smalare → klar. Sista steget ger en **Rough Log**
+   om det lyckas, annars bara 2–3 Sticks.
+2. **Högerklicka en Rough Log på en Stump:** den står upp på stubben (tom hand tar tillbaka den).
+3. **Hugg loggen på stubben:** lyckas → **2–3 Firewood** av det träslaget, misslyckas → 1 Firewood + 1–2 Sticks.
+
+Chans att lyckas: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %.
+Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
+
+Nya items: **Rough Log** (10 träslag, stackar 16), **Bark** (material för senare: tändmaterial, garvning).
 
 ### Mat och styckning
 - **Alla vilda, vuxna passiva djur** (kor, grisar, får, höns, kaniner, getter, hästar, lamor, rävar, vargar, isbjörnar …)
@@ -242,6 +257,19 @@ vildsvin 40 %, hare 15 %, fasan 25 %.
 
 Nya items: **Venison Scraps** (1 hunger, tillagad 3), **Sinew**, **Antler**, **Lard**, **Tusk** (material för senare
 recept), spawn eggs för alla fem.
+
+### Brown Bear
+Skog och alla taigor, sällsynt. Ensam, eller en hona med 1–2 ungar. 60 liv, 8 skada, svår att knuffa.
+- **Mycket aggressiv:** anfaller spelare inom 12 block (5 om man smyger) som den ser, och slår tillbaka när den skadas.
+  Ger upp efter 24 block. Snabb i början av jakten, sedan långsammare.
+- Reser sig på bakbenen och slår med ramarna. Flyr aldrig och får aldrig panik.
+- Skadar man en unge anfaller alla vuxna björnar inom 20 block. Väcker man en sovande björn anfaller den direkt.
+- **Kräver Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
+  Omgång 1: **Bear Pelt** + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
+
+### Iron Knife
+Järnåldern, **går inte att få tag på än** (finns i creative). Snabbare (2×) och mer utbyte (1,5×) vid styckning än Flint
+Knife, och behövs för tuffa djur (Brown Bear). Fungerar i alla knivrecept.
 
 ### Vilda djur (slätt, berg, kyla)
 Samma system som skogsdjuren (kroppar, styckning, blod, rädsla, ungar, sömn). Egna modeller och texturer.
@@ -372,7 +400,8 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Campfire-recept | Logs + Coal → **Firewood + Sticks** |
 | Campfire placering | Placeras **släckt** |
 | Campfire drop | Charcoal → **1–3 Stick** |
-| Log drops | Log → **2 Firewood** |
+| Log drops | Log → **2 Firewood** (en enskild log). Fällda träd → **Fallen Logs** som måste huggas |
+| Löv från fällda träd | Blir **Leaf Litter** på marken |
 | Wheat Seeds från gräs | **Borttaget** (byar) |
 | Facklor | Skyddar inte mot monster, kan slås sönder |
 | Logs | Kräver yxa |
@@ -394,6 +423,7 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 ## Teknik (för utveckling)
 
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
+- Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.
 - Styckning: `Butchery.java` (utbytestabell), `CarcassEntity.java`, `KnifeItem.java`, `BonePileBlock.java`. Hängande ben och flådda texturer: mixins i `mixin/` (benen bara för fyrbenta djur och höns). Texturskript: `scripts/gen_skinned_textures.py`, `scripts/gen_bone_pile_textures.py`. Drying Rack: `DryingRackBlock.java`.

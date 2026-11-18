@@ -170,6 +170,13 @@ public class Mechanical {
     public static final Map<String, DeferredBlock<StumpBlock>> STUMPS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             BLOCKS.registerBlock(w + "_stump", StumpBlock::new, p -> p.mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion())));
 
+    // Felled trees land as fallen logs, chopped (bark off, hewn thinner) into rough logs, which are split on a stump.
+    public static final Map<String, DeferredBlock<FallenLogBlock>> FALLEN_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
+            BLOCKS.registerBlock(w + "_fallen_log", p -> new FallenLogBlock(w, p), p -> p.mapColor(MapColor.WOOD).strength(6.0F).sound(SoundType.WOOD).noOcclusion())));
+    public static final Map<String, DeferredItem<Item>> ROUGH_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
+            ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
+    public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
+
     // Firewood: what logs drop (2 each), one per wood type so 4 of them (2x2) craft back into that log.
     public static final Map<String, DeferredItem<Item>> FIREWOOD = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.registerSimpleItem(w + "_firewood")));
     public static final TagKey<Item> FIREWOOD_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "firewood"));

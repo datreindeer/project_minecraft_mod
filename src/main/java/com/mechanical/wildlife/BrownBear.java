@@ -75,6 +75,7 @@ public class BrownBear extends WildAnimal {
     }
 
     /** Woken from its sleep: goes for whoever woke it (called by WildAnimal once it has the onWoken hook). */
+    @Override
     protected void onWoken(Player near) {
         if (!isBaby()) setTarget(near);
     }

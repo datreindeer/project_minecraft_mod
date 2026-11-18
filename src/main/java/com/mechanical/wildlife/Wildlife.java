@@ -38,6 +38,8 @@ public final class Wildlife {
             "wild_horse", WildHorse::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.6F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<Mouflon>> MOUFLON = ENTITY_TYPES.registerEntityType(
             "mouflon", Mouflon::new, MobCategory.CREATURE, b -> b.sized(0.9F, 1.3F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<BrownBear>> BROWN_BEAR = ENTITY_TYPES.registerEntityType(
+            "brown_bear", BrownBear::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.4F).clientTrackingRange(10));
     // cold
     public static final DeferredHolder<EntityType<?>, EntityType<Moose>> MOOSE = ENTITY_TYPES.registerEntityType(
             "moose", Moose::new, MobCategory.CREATURE, b -> b.sized(1.5F, 2.2F).clientTrackingRange(10));
@@ -52,6 +54,9 @@ public final class Wildlife {
     public static final DeferredItem<Item> LARD = ITEMS.registerSimpleItem("lard");
     public static final DeferredItem<Item> TUSK = ITEMS.registerSimpleItem("tusk");
     public static final DeferredItem<Item> HORN = ITEMS.registerSimpleItem("horn");
+    public static final DeferredItem<Item> BEAR_PELT = ITEMS.registerSimpleItem("bear_pelt");
+    public static final DeferredItem<Item> BEAR_FAT = ITEMS.registerSimpleItem("bear_fat");
+    public static final DeferredItem<Item> BEAR_CLAW = ITEMS.registerSimpleItem("bear_claw");
 
     public static final DeferredItem<SpawnEggItem> ROE_DEER_SPAWN_EGG = egg("roe_deer_spawn_egg", ROE_DEER);
     public static final DeferredItem<SpawnEggItem> RED_DEER_SPAWN_EGG = egg("red_deer_spawn_egg", RED_DEER);
@@ -61,6 +66,7 @@ public final class Wildlife {
     public static final DeferredItem<SpawnEggItem> AUROCHS_SPAWN_EGG = egg("aurochs_spawn_egg", AUROCHS);
     public static final DeferredItem<SpawnEggItem> WILD_HORSE_SPAWN_EGG = egg("wild_horse_spawn_egg", WILD_HORSE);
     public static final DeferredItem<SpawnEggItem> MOUFLON_SPAWN_EGG = egg("mouflon_spawn_egg", MOUFLON);
+    public static final DeferredItem<SpawnEggItem> BROWN_BEAR_SPAWN_EGG = egg("brown_bear_spawn_egg", BROWN_BEAR);
     public static final DeferredItem<SpawnEggItem> MOOSE_SPAWN_EGG = egg("moose_spawn_egg", MOOSE);
     public static final DeferredItem<SpawnEggItem> REINDEER_SPAWN_EGG = egg("reindeer_spawn_egg", REINDEER);
 
@@ -86,13 +92,14 @@ public final class Wildlife {
         event.put(WILD_HORSE.get(), WildHorse.createAttributes().build());
         event.put(MOUFLON.get(), Mouflon.createAttributes().build());
         event.put(MOOSE.get(), Moose.createAttributes().build());
+        event.put(BROWN_BEAR.get(), BrownBear.createAttributes().build());
         event.put(REINDEER.get(), Reindeer.createAttributes().build());
     }
 
     @SubscribeEvent
     static void spawnRules(RegisterSpawnPlacementsEvent event) {
         for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get(),
-                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get()}) {
+                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get(), BROWN_BEAR.get()}) {
             register(event, type);
         }
         // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule

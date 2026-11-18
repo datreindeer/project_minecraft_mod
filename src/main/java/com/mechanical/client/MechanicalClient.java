@@ -55,6 +55,8 @@ public class MechanicalClient {
                 new WildHorseModel(c.bakeLayer(WildHorseModel.LAYER)), new WildHorseFoalModel(c.bakeLayer(WildHorseFoalModel.LAYER)), 1.0F, 0.8F));
         event.registerEntityRenderer(Wildlife.MOUFLON.get(), c -> new WildAnimalRenderer<>(c,
                 new MouflonModel(c.bakeLayer(MouflonModel.LAYER)), new MouflonLambModel(c.bakeLayer(MouflonLambModel.LAYER)), 1.0F, 0.5F));
+        event.registerEntityRenderer(Wildlife.BROWN_BEAR.get(), c -> new WildAnimalRenderer<>(c,
+                new BrownBearModel(c.bakeLayer(BrownBearModel.LAYER)), new BearCubModel(c.bakeLayer(BearCubModel.LAYER)), 1.0F, 1.0F));
         event.registerEntityRenderer(Wildlife.MOOSE.get(), c -> new WildAnimalRenderer<>(c,
                 new MooseModel(c.bakeLayer(MooseModel.LAYER)), new MooseCalfModel(c.bakeLayer(MooseCalfModel.LAYER)), 1.0F, 1.1F));
         event.registerEntityRenderer(Wildlife.REINDEER.get(), c -> new WildAnimalRenderer<>(c,
@@ -78,8 +80,16 @@ public class MechanicalClient {
         event.registerLayerDefinition(MouflonModel.LAYER, MouflonModel::createBodyLayer);
         event.registerLayerDefinition(MouflonLambModel.LAYER, MouflonLambModel::createBodyLayer);
         event.registerLayerDefinition(MooseModel.LAYER, MooseModel::createBodyLayer);
+        event.registerLayerDefinition(BrownBearModel.LAYER, BrownBearModel::createBodyLayer);
+        event.registerLayerDefinition(BearCubModel.LAYER, BearCubModel::createBodyLayer);
         event.registerLayerDefinition(MooseCalfModel.LAYER, MooseCalfModel::createBodyLayer);
         event.registerLayerDefinition(ReindeerModel.LAYER, ReindeerModel::createBodyLayer);
         event.registerLayerDefinition(ReindeerCalfModel.LAYER, ReindeerCalfModel::createBodyLayer);
+    }
+
+    /** Passes the bear's rearing amount to its model. */
+    @SubscribeEvent
+    static void renderStateModifiers(net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent event) {
+        BrownBearModel.registerRenderState(event);
     }
 }
