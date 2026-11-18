@@ -97,19 +97,6 @@
           },
           "name": "minecraft:arrow",
           "weight": 4
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 3,
-              "min": 1
-            }
-          },
-          "name": "minecraft:tripwire_hook",
-          "weight": 3
         }
       ],
       "rolls": {

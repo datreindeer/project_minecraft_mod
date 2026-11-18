@@ -1,12 +1,12 @@
 {
   "wants": {
-    "id": "minecraft:emerald",
-    "count": 3
+    "id": "minecraft:emerald"
   },
   "gives": {
-    "id": "minecraft:white_bed"
+    "id": "minecraft:white_carpet",
+    "count": 4
   },
-  "max_uses": 6,
+  "max_uses": 12,
   "xp": 5,
   "reputation_discount": 0.05
 }

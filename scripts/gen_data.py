@@ -5,7 +5,9 @@ from pathlib import Path
 R = Path(sys.argv[1])
 A, D = R / "assets/mechanical", R / "data"
 
+WRITTEN = set()  # files this run wrote, so later passes can build on them instead of the vanilla original
 def w(path, obj):
+    WRITTEN.add(Path(path).resolve())
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, indent=2) + "\n")
 
@@ -846,7 +848,7 @@ TRADES = {
     "mason":         [[("minecraft:clay_ball", 10, E, 1, 16, 2), (E, 1, M + "stone_chunk", 12, 16, 1)],
                       [(M + "granite_chunk", 20, E, 1, 16, 10), (E, 1, "minecraft:packed_mud", 8, 12, 5)]],
     "shepherd":      [[("minecraft:white_wool", 18, E, 1, 16, 2), (E, 1, M + "wool_thread", 6, 12, 1)],
-                      [(M + "plant_fibre", 24, E, 1, 16, 10), (E, 3, "minecraft:white_bed", 1, 6, 5)]],
+                      [(M + "plant_fibre", 24, E, 1, 16, 10), (E, 1, "minecraft:white_carpet", 4, 12, 5)]],
     "toolsmith":     [[("minecraft:flint", 16, E, 1, 16, 2), (E, 1, M + "flint_axe", 1, 12, 1)],
                       [(M + "stone_chunk", 24, E, 1, 16, 10), (E, 3, M + "crude_stone_axe", 1, 6, 5)]],
     "weaponsmith":   [[(M + "cordage", 12, E, 1, 16, 2), (E, 2, M + "flint_spear", 1, 12, 1)],
@@ -1106,7 +1108,15 @@ for block, (item, lo, hi) in TOO_ADVANCED.items():
         "random_sequence": f"minecraft:blocks/{block}"})
 # using them is locked; cauldrons, bells and lanterns stay usable (water, ringing, light), only their loot changes
 w(D / "mechanical/tags/block/too_advanced.json", {"values": [f"minecraft:{b}" for b in
-    ("furnace", "smoker", "blast_furnace", "stonecutter", "brewing_stand", "anvil", "chipped_anvil", "damaged_anvil", "smithing_table", "grindstone")]})
+    ("furnace", "smoker", "blast_furnace", "stonecutter", "brewing_stand", "anvil", "chipped_anvil", "damaged_anvil", "smithing_table", "grindstone")]
+    + ["#minecraft:beds"]})
+# village beds can't be slept in (beds aren't craftable in the stone age); broken, they give back their wool
+for c in COLORS:
+    w(D / f"minecraft/loot_table/blocks/{c}_bed.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": f"minecraft:{c}_wool", "condition": {"type": "minecraft:match_block",
+            "blocks": f"minecraft:{c}_bed", "state": {"part": "head"}},
+         "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}]}],
+        "random_sequence": f"minecraft:blocks/{c}_bed"})
 lang["message.mechanical.too_advanced"] = "You don't know how to use this yet"
 w(lang_path, lang)
 
@@ -1115,10 +1125,11 @@ w(lang_path, lang)
 LATER_AGE = ("iron", "gold", "diamond", "emerald", "netherite", "copper", "lapis", "redstone", "chainmail", "bucket", "compass",
              "clock", "shears", "rail", "anvil", "tnt", "experience_bottle", "smithing_template", "nugget", "crossbow",
              "flint_and_steel", "spyglass", "brush", "enchanted", "minecraft:bow", "lantern", "chain", "piston", "hopper",
-             "map", "quartz", "glistering")
+             "map", "quartz", "glistering", "fishing_rod", "trident", "tripwire_hook")
 def _later_age(entry):
     text = json.dumps(entry)
-    return entry.get("type") == "minecraft:item" and (any(k in entry.get("name", "") for k in LATER_AGE) or "enchant" in text)
+    return entry.get("type") == "minecraft:item" and (any(k in entry.get("name", "") for k in LATER_AGE)
+        or any(f in text for f in ("enchant_randomly", "enchant_with_levels", "set_enchantments", "enchanted_book")))
 def _filter_entries(entries):
     out = []
     for e in entries:
@@ -1141,9 +1152,11 @@ for path in _sjar.namelist():
     if rel == path or not path.endswith(".json") or rel.startswith("chests/village/"):
         continue
     if not rel.startswith(("chests/", "archaeology/", "barrels/", "dispensers/", "pots/", "spawners/", "trade_rebalance/",
-                           "gameplay/hero_of_the_village/", "gameplay/fishing/treasure")):
+                           "gameplay/hero_of_the_village/", "gameplay/fishing/", "entities/", "equipment/")):
         continue
-    table = json.loads(_sjar.read(path).decode())
+    out = (D / f"minecraft/loot_table/{rel}").resolve()
+    # build on our own override when this run already made one (fish, golem ...), else on vanilla's
+    table = json.loads(out.read_text()) if out in WRITTEN else json.loads(_sjar.read(path).decode())
     pools = []
     for pool in table.get("pools", []):
         entries = _filter_entries(pool.get("entries", []))

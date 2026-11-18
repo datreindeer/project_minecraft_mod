@@ -12,10 +12,6 @@
           "type": "minecraft:item",
           "name": "minecraft:music_disc_precipice",
           "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:trident"
         }
       ],
       "rolls": 1

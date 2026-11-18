@@ -440,10 +440,16 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 ### Strukturernas loot (vanilla)
 Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,
 Stronghold, Outpost, Mansion, Igloo, Ancient City, Trial Chambers, Nether- och End-strukturer), arkeologi, krukor,
-spawners, Hero of the Village-gåvor och fiskeskatter har **allt från senare åldrar bortfiltrerat**: metaller (järn, guld,
+spawners, Hero of the Village-gåvor, fiske (även skräpet: inga spön, bågar eller tripwire hooks) och **mobbars loot**
+(t.ex. zombiens järntacka, drownedens koppar, häxans redstone) har **allt från senare åldrar bortfiltrerat**: metaller (järn, guld,
 koppar …), ädelstenar, lapis, redstone, förtrollat, smithing templates, kompass/karta, hinkar, räls, crossbow m.m.
 Det som är kvar (mat, kol, facklor, ben, frön, skivor, name tags …) ligger kvar, och kistor får också 2–4 primitiva saker
 (sticks, flint, plant fibre, cordage, ben, twine, rocks, frön).
+
+### Monstrens utrustning
+Monster spawnar **utan rustning av järn, guld, chainmail eller diamant**. Vapen de behöver för att slåss (skelettens
+bågar, järnsvärd, crossbows, tridents) har de kvar i handen, men de **släpps aldrig**. Saker ett monster själv plockat
+upp släpper det som vanligt.
 
 ### Byarna är fattiga (stenåldern)
 - **Kistor:** bara primitiva saker: sticks, flint, plant fibre, cordage, bark, twine, bone, seeds, plus lite efter hus
@@ -455,6 +461,7 @@ Det som är kvar (mat, kol, facklor, ben, frön, skivor, name tags …) ligger k
   och Brewing Stand går inte att använda ("You don't know how to use this yet"). Bryts de blir det bara Rocks eller
   Sticks (Anvil inget). Cauldron, Bell och Lantern går att använda men släpper inget när de bryts (inget järn/guld).
   Listan är taggen `mechanical:too_advanced`, så senare åldrar kan låsa upp dem.
+- **Sängarna går inte att sova i** (sängar kan inte tillverkas i stenåldern). Bryts de ger de 1–3 ull av sin färg.
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
   senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
   Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk
