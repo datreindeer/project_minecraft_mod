@@ -48,8 +48,8 @@ public final class Bronze {
     /** Mines like stone plus #mechanical:needs_bronze_tool (iron, coal, lapis ore); not gold, diamond, redstone, emerald. */
     public static final TagKey<Block> INCORRECT_FOR_BRONZE_TOOL = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "incorrect_for_bronze_tool"));
     public static final TagKey<Item> BRONZE_TOOL_MATERIALS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "bronze_tool_materials"));
-    /** Iron speed and damage, durability between copper (190) and iron (250). */
-    public static final ToolMaterial BRONZE = new ToolMaterial(INCORRECT_FOR_BRONZE_TOOL, 230, 6.0F, 2.0F, 12, BRONZE_TOOL_MATERIALS);
+    /** Iron speed and damage, durability 460 (copper 190, iron 250): bronze tools last. */
+    public static final ToolMaterial BRONZE = new ToolMaterial(INCORRECT_FOR_BRONZE_TOOL, 460, 6.0F, 2.0F, 12, BRONZE_TOOL_MATERIALS);
     /** Iron's armour values, about 70 % of its durability (multiplier 10 vs 15). Only helmet and greaves exist. */
     public static final ArmorMaterial BRONZE_ARMOR = new ArmorMaterial(10,
             Map.of(ArmorType.HELMET, 2, ArmorType.CHESTPLATE, 6, ArmorType.LEGGINGS, 5, ArmorType.BOOTS, 2, ArmorType.BODY, 5),
@@ -99,14 +99,14 @@ public final class Bronze {
     public static final DeferredItem<Item> BRONZE_HOE = ITEMS.registerSimpleItem("bronze_hoe", p -> p.hoe(BRONZE, -2.0F, -1.0F));
     /** Butchers 1.75x as fast, 1.35x the yield, and is tough enough for the Brown Bear. */
     public static final DeferredItem<KnifeItem> BRONZE_KNIFE = ITEMS.registerItem("bronze_knife", p -> new KnifeItem(p, 1.75F, 1.35F, KnifeItem.BRONZE),
-            p -> p.sword(BRONZE, 1.5F, -2.0F).durability(350));
+            p -> p.sword(BRONZE, 1.5F, -2.0F).durability(700));
     /** Log + saw in the crafting grid = 4 planks; the saw stays and loses 1 (same remainder rule as the Flint Pickaxe). */
-    public static final DeferredItem<FlintPickaxeItem> BRONZE_SAW = ITEMS.registerItem("bronze_saw", FlintPickaxeItem::new, p -> p.durability(240));
+    public static final DeferredItem<FlintPickaxeItem> BRONZE_SAW = ITEMS.registerItem("bronze_saw", FlintPickaxeItem::new, p -> p.durability(480));
 
     /** Vanilla spear handling (charge and jab) with iron spear's timings on bronze: the Flint Spear (stone's) made better. */
     public static final DeferredItem<Item> BRONZE_SPEAR = ITEMS.registerSimpleItem("bronze_spear",
             p -> p.spear(BRONZE, 0.95F, 0.95F, 0.6F, 2.5F, 11.0F, 6.75F, 5.1F, 11.25F, 4.6F));
-    /** A vanilla sword, half a point below iron's (5.5 damage), 230 durability. */
+    /** A vanilla sword, half a point below iron's (5.5 damage), 460 durability. */
     public static final DeferredItem<Item> BRONZE_SWORD = ITEMS.registerSimpleItem("bronze_sword", p -> p.sword(BRONZE, 2.5F, -2.4F));
 
     public static final DeferredItem<Item> BRONZE_HELMET = ITEMS.registerSimpleItem("bronze_helmet", p -> p.humanoidArmor(BRONZE_ARMOR, ArmorType.HELMET));

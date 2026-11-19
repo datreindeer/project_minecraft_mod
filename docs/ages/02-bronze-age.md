@@ -417,7 +417,7 @@ Data: `scripts/gen_bronze.py` (direkt efter gen_copper; formarna skrivs av gen_c
 
 Allt som gjuts av Poor Bronze får märket `mechanical:poor_bronze` (tooltip "Poor Bronze: 70% durability"). Det följer
 med: gjutning → slipning på Whetstone → Tool Station / Armor Station. Färdiga verktyg och rustningsdelar får **70 %**
-hållbarhet (t.ex. Bronze Pickaxe 161 i stället för 230). Delar av olika kvalitet staplas inte ihop, och stationerna
+hållbarhet (t.ex. Bronze Pickaxe 322 i stället för 460). Delar av olika kvalitet staplas inte ihop, och stationerna
 blandar dem inte när de hämtar delar.
 
 ### Formar (nya)
@@ -444,25 +444,25 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
 | Bronze Spear | Bronze Spear Head | Cordage | Tool Rod |
 | Bronze Sword | Bronze Sword Blade (med parerstång) | Cordage | Leather (grepp) |
 
-- **Bronsmaterial:** 230 hållbarhet (koppar 190, järn 250), hastighet 6 och +2 skada som järn, förtrollbarhet 12.
+- **Bronsmaterial:** 460 hållbarhet (koppar 190, järn 250), hastighet 6 och +2 skada som järn, förtrollbarhet 12.
   Attackvärden som vanillas järnverktyg. Lagas med Bronze Ingot.
 - **Brytnivå:** `mechanical:incorrect_for_bronze_tool` = `#minecraft:needs_iron_tool` + `#minecraft:needs_diamond_tool`.
   Bronze Pickaxe bryter alltså **Iron, Coal och Lapis Ore** (`needs_bronze_tool`) och Tin Ore, men inte guld, diamant,
   redstone eller smaragd (de väntar på järnet). Fungerar som hammarsten på Stone Anvil.
-- **Bronze Knife:** 350 hållbarhet, styckar **1,75×** så snabbt och ger **1,35×** så mycket som Flint Knife, **klarar
+- **Bronze Knife:** 700 hållbarhet, styckar **1,75×** så snabbt och ger **1,35×** så mycket som Flint Knife, **klarar
   Brown Bear** och Giant Deer (knivnivå 2 som Tusk Dagger). Räknas som kniv och svärd.
 - **Bronze Spear:** vanillas spjut (laddad stöt när man håller in Använd, vanligt hugg annars; kastas inte). Flint Spear
   har stone spears värden på ett flintmaterial (100 hållbarhet, +1 skada); Bronze Spear har **iron spears** tider och
-  trösklar på bronsmaterialet: 230 hållbarhet, +2 skada, snabbare stöt (0,95 s), mer skada vid laddning (×0,95 mot
+  trösklar på bronsmaterialet: 460 hållbarhet, +2 skada, snabbare stöt (0,95 s), mer skada vid laddning (×0,95 mot
   ×0,82) och kortare väntan. Eget långt modell i handen (järnspjutets form i brons, rött band), platt ikon i GUI:t.
   Står i `minecraft:spears`.
-- **Bronze Sword:** vanligt vanilla-svärd på bronsmaterialet: **5,5 skada** (Iron Sword 6), attackfart 1,6, **230**
+- **Bronze Sword:** vanligt vanilla-svärd på bronsmaterialet: **5,5 skada** (Iron Sword 6), attackfart 1,6, **460**
   hållbarhet. Står i `minecraft:swords` (svärdsförtrollningar).
 - Poor Bronze följer med till spjut och svärd som till de andra verktygen (70 % hållbarhet: 161).
 
 ### Bronze Saw och planks
 
-- 240 hållbarhet. I crafting table: **Log + Bronze Saw → 4 Planks** (alla träslag, recepten `sawn_<trä>_planks`);
+- 480 hållbarhet. I crafting table: **Log + Bronze Saw → 4 Planks** (alla träslag, recepten `sawn_<trä>_planks`);
   sågen blir kvar och slits 1. Utan såg ger en log fortfarande 2 planks.
 - **Fallen Log:** håll in högerklick med sågen: 8 sågtag kapar hela stocken till 3 Rough Logs (utan slump), plus barken.
 
