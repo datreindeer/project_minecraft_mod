@@ -119,8 +119,8 @@ public class DryingRackBlock extends Block {
             return;
         }
         int hide = state.getValue(HIDE);
-        if (hide >= 6) { // food: sun and no rain, faster in the wind; otherwise it just waits
-            if (inDaylight(level, pos) && !level.isRainingAt(pos.above())
+        if (hide >= 6) { // food: sun and no rain, faster in the wind; otherwise it just waits. Odd states are done.
+            if (hide % 2 == 0 && inDaylight(level, pos) && !level.isRainingAt(pos.above())
                     && random.nextFloat() < (Wind.exposed(level, pos) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED))
                 level.setBlock(pos, state.setValue(HIDE, hide + 1), Block.UPDATE_ALL);
             return;

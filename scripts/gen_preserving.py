@@ -40,12 +40,12 @@ def tag(name, values):
 
 # ---- what spoils, and how fast ----
 MEATS = ["beef", "porkchop", "mutton", "chicken", "rabbit"]
-RAW_MEAT = [f"mechanical:{m}_scraps" for m in MEATS + ["game_meat"]] + [f"minecraft:{m}" for m in MEATS]
+RAW_MEAT = [f"mechanical:{m}_scraps" for m in MEATS + ["game_meat", "venison"]] + [f"minecraft:{m}" for m in MEATS]
 RAW_FISH = ["minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish", "minecraft:pufferfish"] + \
     [f"mechanical:whole_{f}" for f in ("cod", "salmon", "tropical_fish", "pufferfish")]
-COOKED = [f"mechanical:cooked_{m}_scraps" for m in MEATS + ["game_meat"]] + [f"minecraft:cooked_{m}" for m in MEATS + ["cod", "salmon"]]
+COOKED = [f"mechanical:cooked_{m}_scraps" for m in MEATS + ["game_meat", "venison"]] + [f"minecraft:cooked_{m}" for m in MEATS + ["cod", "salmon"]]
 BERRIES = [f"mechanical:{b}" for b in ("raspberries", "blueberries", "lingonberries", "wild_strawberries", "elderberries", "cloudberries",
-                                       "blackberries")] + ["minecraft:sweet_berries"]
+                                       "blackberries", "juniper_berries")] + ["minecraft:sweet_berries"]
 MUSHROOMS = [f"mechanical:{m}" for m in ("chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball")]
 PRESERVED_FLESH = ["mechanical:smoked_meat", "mechanical:smoked_fish", "mechanical:jerky", "mechanical:dried_fish"]
 

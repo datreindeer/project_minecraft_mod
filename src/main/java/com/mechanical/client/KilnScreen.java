@@ -63,18 +63,15 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
         int arrow = (int) Math.ceil(menu.progress() * 24);
         if (arrow > 0) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARROW, 24, 16, 0, 0, leftPos + 79, topPos + 34, arrow, 16);
 
-        // mercury, one colour for the current heat (dark red -> white-yellow): a column with a pixel of dark glass each side,
-        // and the inside of the round bulb in kiln.png (same circle as gen_copper_textures.py) plus its neck
+        // mercury: each row coloured by the temperature it stands for, up to the current temperature; the bulb glows with it
         int t = menu.temperature();
-        int bulb = heatColour(Math.max(t, 0));
-        graphics.fill(leftPos + TUBE_X + 1, topPos + rowFor(t), leftPos + TUBE_X + TUBE_W - 1, topPos + TUBE_BOTTOM, bulb);
-        for (int y = TUBE_BOTTOM; y < TUBE_BOTTOM + 10; y++) {
-            for (int x = TUBE_X - 3; x < TUBE_X + TUBE_W + 3; x++) {
-                double dx = x - 24.5, dy = y - 66.5;
-                boolean neck = x > TUBE_X && x < TUBE_X + TUBE_W - 1 && y <= TUBE_BOTTOM + 1;
-                if (neck || dx * dx + dy * dy < 3.6 * 3.6) graphics.fill(leftPos + x, topPos + y, leftPos + x + 1, topPos + y + 1, bulb);
-            }
+        for (int y = rowFor(t); y < TUBE_BOTTOM; y++) {
+            int deg = (TUBE_BOTTOM - y) * KilnBlockEntity.CEILING / (TUBE_BOTTOM - TUBE_TOP);
+            graphics.fill(leftPos + TUBE_X, topPos + y, leftPos + TUBE_X + TUBE_W, topPos + y + 1, heatColour(deg));
         }
+        int bulb = heatColour(Math.max(t, 0));
+        graphics.fill(leftPos + TUBE_X, topPos + TUBE_BOTTOM, leftPos + TUBE_X + TUBE_W, topPos + TUBE_BOTTOM + 6, bulb);
+        graphics.fill(leftPos + TUBE_X - 1, topPos + TUBE_BOTTOM + 1, leftPos + TUBE_X + TUBE_W + 1, topPos + TUBE_BOTTOM + 5, bulb);
         int need = menu.needed();
         if (need > 0) { // notch left of the tube at the heat the bake needs: white, green once reached
             int y = topPos + rowFor(need);
