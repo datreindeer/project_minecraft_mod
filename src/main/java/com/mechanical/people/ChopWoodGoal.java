@@ -19,7 +19,8 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Woodcutters walk to a tree trunk, stump or fallen log near camp and chop at it for a while (swings, wood sounds and
- * chips; the world is left as it is), then carry the wood home to feed the fire ({@link Tribesperson#carryingWood}).
+ * chips). A standing tree is felled for real (it falls and lies as fallen logs), a fallen log is hewn up and taken; then
+ * they carry the wood home to feed the fire ({@link Tribesperson#carryingWood}).
  */
 class ChopWoodGoal extends Goal {
     private static final int RANGE = 14, SWINGS = 14;
@@ -84,6 +85,17 @@ class ChopWoodGoal extends Goal {
         level.playSound(null, target, sound.getHitSound(), SoundSource.NEUTRAL, 1.0F, sound.getPitch() * 0.8F);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, s), c.x, c.y, c.z, 8, 0.3, 0.3, 0.3, 0.05);
         if (++swings >= SWINGS) {
+            if (s.is(BlockTags.LOGS)) {
+                // a real tree: it comes down like when a player fells it, falling away from the woodcutter
+                var tree = com.mechanical.TreeFelling.find(level, target);
+                if (tree != null) {
+                    net.minecraft.core.Direction away = net.minecraft.core.Direction.getApproximateNearest(c.x - mob.getX(), 0, c.z - mob.getZ());
+                    com.mechanical.TreeFelling.fell(level, target, tree, away, mob, mob.getMainHandItem());
+                    level.playSound(null, target, net.minecraft.sounds.SoundEvents.WOOD_BREAK, SoundSource.NEUTRAL, 1.2F, 0.6F);
+                }
+            } else if (s.getBlock() instanceof FallenLogBlock) {
+                level.removeBlock(target, false); // hewn up and carried off
+            }
             mob.carryingWood = true;
             mob.wantsHome = true;
         }

@@ -113,18 +113,22 @@ public final class TreeFelling {
         // We take over the whole break (cancel vanilla) so the cut log falls with the tree instead of dropping at the stump.
         event.setCanceled(true);
         event.setNotifyClient(false); // otherwise Neo re-sends the old log to the client, hiding the stump
-        List<BlockPos> falling = new ArrayList<>(tree.logs());
-        falling.addAll(tree.leaves());
         ItemStack axe = player.getMainHandItem();
-        level.addFreshEntity(FallingTreeEntity.create(level, cut, player.getDirection(), falling, player, axe));
-        for (BlockPos pos : falling) level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-
-        String log = BuiltInRegistries.BLOCK.getKey(event.getState().getBlock()).getPath();
-        var stump = Mechanical.STUMPS.get(log.replace("_log", ""));
-        if (stump != null) level.setBlock(cut, stump.get().defaultBlockState(), Block.UPDATE_ALL);
-
+        fell(level, cut, tree, player.getDirection(), player, axe);
         // one durability per log; breaks the axe if it runs out, the tree still falls
         axe.hurtAndBreak(tree.logs().size(), player, EquipmentSlot.MAINHAND);
+    }
+
+    /** Fells {@code tree} cut at {@code cut}: it falls towards {@code direction} as a FallingTreeEntity, a stump is left. Also used by woodcutter NPCs. */
+    public static void fell(ServerLevel level, BlockPos cut, Tree tree, net.minecraft.core.Direction direction, net.minecraft.world.entity.Entity feller, ItemStack tool) {
+        BlockState cutState = level.getBlockState(cut);
+        List<BlockPos> falling = new ArrayList<>(tree.logs());
+        falling.addAll(tree.leaves());
+        level.addFreshEntity(FallingTreeEntity.create(level, cut, direction, falling, feller, tool));
+        for (BlockPos pos : falling) level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        String log = BuiltInRegistries.BLOCK.getKey(cutState.getBlock()).getPath();
+        var stump = Mechanical.STUMPS.get(log.replace("_log", ""));
+        if (stump != null) level.setBlock(cut, stump.get().defaultBlockState(), Block.UPDATE_ALL);
     }
 
     private TreeFelling() {}

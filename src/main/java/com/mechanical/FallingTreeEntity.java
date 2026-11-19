@@ -35,7 +35,7 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
     private final List<BlockState> states = new ArrayList<>();
     private Direction direction = Direction.NORTH;
     // server only: who felled it, with what (for loot conditions like fortune)
-    private Player feller;
+    private net.minecraft.world.entity.Entity feller;
     private ItemStack tool = ItemStack.EMPTY;
 
     public FallingTreeEntity(EntityType<? extends FallingTreeEntity> type, Level level) {
@@ -43,7 +43,7 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
         noPhysics = true;
     }
 
-    public static FallingTreeEntity create(Level level, BlockPos base, Direction direction, List<BlockPos> blocks, Player feller, ItemStack tool) {
+    public static FallingTreeEntity create(Level level, BlockPos base, Direction direction, List<BlockPos> blocks, net.minecraft.world.entity.Entity feller, ItemStack tool) {
         FallingTreeEntity tree = new FallingTreeEntity(Mechanical.FALLING_TREE.get(), level);
         tree.setPos(base.getX() + 0.5, base.getY(), base.getZ() + 0.5);
         tree.direction = direction;

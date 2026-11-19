@@ -521,8 +521,8 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   (bara nära vatten).
 - **Jaktlag** (ca 1 på 200 chunks i skog och taiga): 2–3 Hunters som följer en ledare.
 - **Vardag:** Hunters jagar vilda djur (inte björnar, tama djur eller bydjur) och styckar kroppen (en Bone Pile blir kvar).
-  Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters hugger på
-  stammar, stubbar och Fallen Logs utan att förstöra något och bär veden till elden. Elder håller elden vid liv.
+  Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters **fäller riktiga
+  träd** nära lägret (trädet faller och blir Fallen Logs som vanligt), hugger upp Fallen Logs och bär veden till elden. Elder håller elden vid liv.
 - **Natt:** alla samlas runt lägerelden men går aldrig in i den. Jaktlaget håller ihop där det är.
 - **Försvar:** de slår tillbaka, hjälper varandra och anfaller monster i närheten (inte creepers).
 - **Humör:** de hälsar ibland i chatten. **Slår du en blir hela gruppen arg i ungefär en speldag. Dödar du en är gruppen
