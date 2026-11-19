@@ -78,6 +78,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     /** Had antlers (a stag): they come off in the second pass. Server only. */
     private boolean trophy;
     private float work;
+    /** Where the hauled body last left blood (CarcassHauling#bleed). Server only, not saved. */
+    Vec3 lastStain;
     /** The dead animal's saved data (coat colour, variant ...), so the body looks like the animal did. */
     private CompoundTag looks = new CompoundTag();
     /** Client only: a never-added copy of the animal used to render the body. */

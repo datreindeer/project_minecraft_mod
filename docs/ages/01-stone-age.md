@@ -563,9 +563,17 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
 - **Släpa:** stora djur (bredd 1,1 eller mer: uroxe, häst, björn, älg, grottlejon, jättehjort) kan inte bäras. Samma grepp
   gör att du **släpar** kroppen efter dig, huvudet först, en kroppslängd bakom (den tar sig upp för steg). **50 % långsammare**,
   ingen sprint. Högerklicka på den igen för att släppa.
-- **Händerna är upptagna:** inga items kan användas (äta, kasta …). Ett slag, att bryta ett block eller en **träff på 4 skada
-  eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör eller loggar du ut, eller kommer mer
-  än 12 block ifrån den, ligger den kvar.
+- **Båda händerna är upptagna:** inget i någon hand kan användas (äta, dricka, kasta, båge, Shield …), inga block kan
+  placeras och inga items användas på djur (klippa, koppla, mata). Bara Travois (lasta) och kroppen själv (släppa) svarar
+  på högerklick. Föremålen i händerna syns inte medan du bär (i första person syns inte heller händerna). Ett slag, att bryta
+  ett block eller en **träff på 4 skada eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör
+  eller loggar du ut, eller kommer mer än 12 block ifrån den, ligger den kvar.
+- **Armarna håller kroppen**, och alla spelare ser det: bär du på axlarna är båda armarna uppe och håller kroppen, släpar
+  du sträcker båda armarna sig bakåt mot den.
+- **Blodspår:** en färsk kropp blöder på vägen, glest men lätt att följa. En släpad kropp lämnar en blodfläck på marken
+  ungefär **var 2:a block**, en buren droppar då och då och lämnar en fläck ungefär **var 6:e block**. Står du still blir
+  det inga fläckar. Har kroppen åldrats på en Hanging Rack, börjat bli dålig eller förskämts blöder den inte längre.
+  Spåret, liksom den blodiga kroppen, kan locka rovdjur på natten.
 - Burna, släpade, lastade och upphängda kroppar försvinner inte, men köttet förskäms: **ett dygn (20 min) efter att djuret
   dog** om kroppen bärs eller ligger på Travois/vagn, **tre dygn (1 h)** medan den hänger på en Hanging Rack (svalt och
   luftigt). Då ger styckningen Rotten Flesh i stället för kött (hud och resten som vanligt). Tas den ner från ställningen
@@ -1529,7 +1537,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Rovdjur: `wildlife/Predator.java` (eldrädsla, sömn på dagen, svält), `GreyWolf.java`, `CaveLion.java`, `Predators.java` (nattankomster, ylljud, `/nightpredators`), `client/wildlife/PredatorModel.java` (animationer), `scripts/gen_predators.py`, `scripts/gen_predator_textures.py`. Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.
 - Styckning: `Butchery.java` (utbytestabell), `CarcassEntity.java`, `KnifeItem.java`, `BonePileBlock.java`. Hängande ben och flådda texturer: mixins i `mixin/` (benen bara för fyrbenta djur och höns). Texturskript: `scripts/gen_skinned_textures.py`, `scripts/gen_bone_pile_textures.py`. Drying Rack: `DryingRackBlock.java`.
-- Bära, släpa, Travois, Hanging Rack: `CarcassHauling.java` (registrering, händelser, fart), `TravoisEntity.java`, `HangingRackBlock.java`, `client/TravoisModel.java`, `client/TravoisRenderer.java`, poser i `client/CarcassRenderer.java`, ingen sprint: `mixin/PlayerMixin.java`, rovdjurens lukt: `Predator.CarcassScentGoal`. Data: `scripts/gen_carcass_hauling.py`, texturer: `scripts/gen_carcass_hauling_textures.py`.
+- Bära, släpa, Travois, Hanging Rack: `CarcassHauling.java` (registrering, händelser, fart), `TravoisEntity.java`, `HangingRackBlock.java`, `client/TravoisModel.java`, `client/TravoisRenderer.java`, poser i `client/CarcassRenderer.java`, armarna och dolda föremål: `client/HaulingClient.java` + `mixin/HumanoidModelMixin.java`, blodspår: `CarcassHauling#bleed`, ingen sprint: `mixin/PlayerMixin.java`, rovdjurens lukt: `Predator.CarcassScentGoal`. Data: `scripts/gen_carcass_hauling.py`, texturer: `scripts/gen_carcass_hauling_textures.py`.
 - Tool Station-recept: `ToolStationRecipes.java`. Clay Kiln-recept och bränsle: `KilnBlockEntity.java`. Båda är
   skrivna i Java (inte datapack).
 - Övriga recept, loot tables, modeller och taggar genereras av `scripts/gen_data.py` (kör `python scripts/gen_data.py src/main/resources`). Texturskript: `scripts/gen_firewood.py`, `scripts/gen_textures.py`.

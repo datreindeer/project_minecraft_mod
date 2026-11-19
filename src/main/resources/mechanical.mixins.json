@@ -13,6 +13,7 @@
     "LightCoordsMixin",
     "AdvancementTabMixin",
     "AdvancementsScreenMixin",
+    "HumanoidModelMixin",
     "LivingEntityRendererMixin",
     "QuadrupedModelMixin"
   ],
