@@ -76,7 +76,7 @@ public final class ToolStationRecipes {
 
     /** True if the player's inventory holds every part of the recipe. */
     public static boolean hasParts(Player player, Recipe recipe) {
-        return recipe.parts().stream().allMatch(part -> player.getInventory().contains(new ItemStack(part)));
+        return recipe.parts().stream().allMatch(part -> player.getInventory().countItem(part) > 0); // by item: Poor Bronze parts count too
     }
 
     @SubscribeEvent

@@ -101,7 +101,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         lines.add(new ItemStack(recipe.result().get()).getHoverName());
         List<Item> parts = recipe.parts();
         for (int i = 0; i < parts.size(); i++) {
-            boolean has = minecraft.player.getInventory().contains(new ItemStack(parts.get(i)));
+            boolean has = minecraft.player.getInventory().countItem(parts.get(i)) > 0;
             lines.add(Component.translatable("gui.mechanical.tool_station." + PART_NAMES[i])
                     .append(": ")
                     .append(new ItemStack(parts.get(i)).getHoverName())
