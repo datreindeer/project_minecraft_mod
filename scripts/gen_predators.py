@@ -41,7 +41,7 @@ merge(A / "sounds.json", {"entity.grey_wolf.howl": {"subtitle": "subtitles.mecha
     {"name": "minecraft:mob/wolf/grumpy/whine", "pitch": 0.6, "attenuation_distance": HOWL}]}})
 
 # where they live (night spawner + world generation)
-WOLF_BIOMES = ["#minecraft:is_taiga", "minecraft:forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest",
+WOLF_BIOMES = ["#minecraft:is_taiga", "minecraft:forest", "mechanical:deciduous_forest", "mechanical:hazel_meadow", "minecraft:birch_forest", "minecraft:old_growth_birch_forest",
                "minecraft:dark_forest", "minecraft:plains", "minecraft:snowy_plains", "minecraft:grove", "minecraft:snowy_slopes"]
 LION_BIOMES = ["minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:sunflower_plains",
                "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:stony_peaks", "minecraft:meadow"]
