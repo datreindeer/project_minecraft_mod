@@ -11,6 +11,9 @@
     "minecraft:porkchop",
     "minecraft:mutton",
     "minecraft:chicken",
-    "minecraft:rabbit"
+    "minecraft:rabbit",
+    "mechanical:raw_haunch",
+    "mechanical:raw_ribs",
+    "mechanical:raw_loin"
   ]
 }

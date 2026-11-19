@@ -552,6 +552,66 @@ Båtar med plankor (vanilla Boat, Chest Boat, Bamboo Raft) kommer tillbaka i **b
 utbredda, ögonen slocknade). Efter omgång 1 ser den flådd ut (grått odött kött, trasiga vingmembran). Den släpper ingen
 vanilla-loot direkt (Phantom Membrane kommer i omgång 2). Phantoms som brinner upp i solen försvinner utan kropp.
 
+### Bära hem bytet (Carcass, Travois, Hanging Rack)
+En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer av djuret bär man hem det.
+
+- **Bära på axlarna:** smyg + högerklicka på kroppen med **tom hand**. Små djur (hare, kanin, fåglar, ekorre, igelkott;
+  hitbox-bredd under 0,6) och mellanstora (rådjur, kronhjort, ren, får, gris, vildsvin, mufflon, varg, grävling, ko …)
+  läggs över axlarna och syns där (i tredje person; i första person döljs den). Mellanstora gör dig **25 % långsammare**
+  och du **kan inte springa**; små väger ingenting.
+- **Släpa:** stora djur (bredd 1,1 eller mer: uroxe, häst, björn, älg, grottlejon, jättehjort) kan inte bäras. Samma grepp
+  gör att du **släpar** kroppen efter dig, huvudet först, en kroppslängd bakom (den tar sig upp för steg). **50 % långsammare**,
+  ingen sprint. Högerklicka på den igen för att släppa.
+- **Händerna är upptagna:** inga items kan användas (äta, kasta …). Ett slag, att bryta ett block eller en **träff på 4 skada
+  eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör eller loggar du ut, eller kommer mer
+  än 12 block ifrån den, ligger den kvar.
+- Burna, släpade, lastade och upphängda kroppar försvinner inte, men **köttet förskäms ett dygn (20 min) efter att djuret
+  dog**: då ger styckningen Rotten Flesh i stället för kött (hud och resten som vanligt). Läggs kroppen på marken igen
+  börjar 5-minutersklockan gå.
+
+**Travois** (släpsläde): recept `[Tool Rod][ ][Tool Rod]` / `[Cordage][Scraped Hide][Cordage]` / `[Tool Rod][ ][Tool Rod]`
+(låses upp med en Scraped Hide). Två långa stänger som korsas framtill och är surrade där, tre tvärslåar och en spänd hud.
+- Högerklicka på marken för att ställa ner den. **Högerklicka med tom hand** för att spänna dig för den (och igen för att
+  släppa). Den följer 2,4 block bakom dig, med bakändarna släpande på marken, och klättrar upp för steg.
+- **Last:** en stor eller två mellanstora/små kroppar. Högerklicka på släden med kroppen du bär eller släpar för att lasta
+  (jättehjorten är för stor). **Smyg + högerklicka** med tom hand lastar av den sista. Lasten ligger på huden och syns.
+- Fart: −10 % tom, −10 % till per lastenhet (en stor = 2), alltså −30 % med en uroxe mot −50 % om du släpar den. Lastad
+  går det inte att springa. Slå på släden för att plocka upp den (lasten hamnar på marken).
+
+**Hanging Rack** (slaktställning): recept `[Tool Rod][Cordage][Tool Rod]` / `[Tool Rod][ ][Tool Rod]` /
+`[Tool Rod][ ][Tool Rod]` (låses upp med en Raw Hide). Två stolpar två block höga, en tvärbjälke och en gambrel (krokpinne)
+som hänger i ett snöre. Blocket ovanför måste vara fritt.
+- **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
+  framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
+  den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Styckning på ställningen (med kniv som vanligt) ger rejält mer:**
+  - Omgång 1: hela huden/pälsen/ullen/fjädrarna kommer av, **ingen slump** (alla delar i tabellen faller, med knivens
+    multiplikator på antalet).
+  - Omgång 2: **dubbelt så mycket kött** som scraps-utbytet (samma slag × knivens multiplikator × 2), styckat i stora bitar:
+    **Raw Haunch** (lår, 3 enheter), **Raw Ribs** (revben, 2) och **Raw Loin** (filé, 2), högst 4 Haunch, 2 Ribs och 2 Loin
+    per kropp; det som blir över faller som vanliga scraps. Har kroppen hängt **3 minuter** har den mognat: **×1,25** kött.
+    Sinew, Lard, Bear Fat och Bone faller **alltid, en extra**; djur utan ben i tabellen ger 1–3 Bone (fler för stora).
+    Ingen Bone Pile blir kvar (benen kom med).
+  - Exempel med Flint Knife: kronhjort (2–4 scraps på marken) → 4–8 enheter, t.ex. 1 Haunch + 1 Ribs + 1 Loin och 1 scrap;
+    uroxe (3–5) → 6–10 enheter.
+- 1 enhet = 1 scrap = 1 Smoked Meat. Bitarna förskäms (rå: 2 dagar, tillagade: 3 dagar) och blir Rotten Flesh.
+
+| Bit | Hunger | Mättnad | Tillagas | Smoking Rack |
+|---|---|---|---|---|
+| Raw Haunch | 3 | 0,2 | Campfire 30 s → **Cooked Haunch** (9 / 0,8) | 3 Smoked Meat |
+| Raw Ribs | 2 | 0,2 | Campfire 25 s → **Cooked Ribs** (6 / 0,8) | 2 Smoked Meat |
+| Raw Loin | 2 | 0,2 | Campfire 25 s → **Cooked Loin** (6 / 1,0) | 2 Smoked Meat |
+
+En hel bit hängs på Smoking Rack som en remsa och röks till en Smoked Meat per enhet. (Drying Rack tar dem också men ger
+bara 1 Jerky per bit, så det lönar sig inte.)
+
+**Rovdjuren känner lukten** (se *Rovdjur på natten*): blodiga kroppar drar till sig Grey Wolves och Cave Lions inom 40 block
+när de jagar (natt, blodmåne eller svält). Bär, släpar eller drar du en kropp på en travois blir **du** bytet (även nära
+lägret, men elden skrämmer dem som vanligt). En kropp som ligger obevakad eller hänger på en ställning går de fram till och
+**äter upp på 10 sekunder** (Bone Pile blir kvar på marken), om det inte brinner en eld inom 8 block från kroppen (utom
+under blodmåne eller vid svält). **En lägereld bredvid slaktställningen skyddar den.** Rovdjuren äter inte sin egen sort.
+Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en flock eller ett lejon kommer på natten.
+
 ### Blod
 - Djur **och monster** blöder när de träffas (blodpartiklar, fler vid hårda slag). Monster blöder likadant som djur
   (droppar, spår, blödning under 50 %). Undantag utan blod (taggen `mechanical:bloodless`): alla skelett, Slime, Magma
@@ -696,6 +756,9 @@ sömn), kroppar, flådda texturer, styckning och blod.
 - Jagar också Roe Deer, Red Deer, Reindeer, Wild Horse, Aurochs (kor), Mouflon, Wild Boar och stenåldersmänniskor.
   **Släpar bort bytet:** en färsk, orörd Carcass inom 4 block bärs i käftarna upp till ~20 block bort från spelare.
 - Rädd för eld och facklor som vargen (morrar och backar undan till ~7 block), utom under blodmåne eller vid svält.
+
+**Båda dras till blodiga kroppar** inom 40 block (se *Bära hem bytet*): den som bär eller drar en kropp blir jagad, och
+obevakade eller upphängda kroppar äts upp om ingen eld brinner inom 8 block.
 
 **Var och hur ofta:** några flockar och lejon finns redan när världen skapas (de sover på dagen). Dessutom har varje
 spelare i varglandet (biomtaggen `mechanical:has_grey_wolves`) **var 30:e sekund på natten 6 % chans** att en flock på
@@ -1396,6 +1459,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Flera texturer är tillfälliga (Fire Drill, Crucible, stenhuvuden, Firewood, Crude-verktyg, Clay Kiln-sot, meat scraps,
   hides, Wool Thread, Flint Spear, Tool Station, Drying Rack).
 - Carcass ritas med djurets standardutseende (vita får, standardkor osv.).
+- Upphängd eller buren Carcass ritas med stela ben (benen pekar ut från kroppen i stället för att hänga ner längs den), och hängande kroppar längre än ~1,6 block (älg) når ner i marken.
 - Kistor och byinvånare kan fortfarande ge järn/järnverktyg.
 - Odlingens bronsåldersdel (Quern, bröd, Compost Heap, Manure, Scarecrow) saknar recept tills bronsåldern fas 3 (`docs/farming.md`).
 
@@ -1416,6 +1480,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Rovdjur: `wildlife/Predator.java` (eldrädsla, sömn på dagen, svält), `GreyWolf.java`, `CaveLion.java`, `Predators.java` (nattankomster, ylljud, `/nightpredators`), `client/wildlife/PredatorModel.java` (animationer), `scripts/gen_predators.py`, `scripts/gen_predator_textures.py`. Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.
 - Styckning: `Butchery.java` (utbytestabell), `CarcassEntity.java`, `KnifeItem.java`, `BonePileBlock.java`. Hängande ben och flådda texturer: mixins i `mixin/` (benen bara för fyrbenta djur och höns). Texturskript: `scripts/gen_skinned_textures.py`, `scripts/gen_bone_pile_textures.py`. Drying Rack: `DryingRackBlock.java`.
+- Bära, släpa, Travois, Hanging Rack: `CarcassHauling.java` (registrering, händelser, fart), `TravoisEntity.java`, `HangingRackBlock.java`, `client/TravoisModel.java`, `client/TravoisRenderer.java`, poser i `client/CarcassRenderer.java`, ingen sprint: `mixin/PlayerMixin.java`, rovdjurens lukt: `Predator.CarcassScentGoal`. Data: `scripts/gen_carcass_hauling.py`, texturer: `scripts/gen_carcass_hauling_textures.py`.
 - Tool Station-recept: `ToolStationRecipes.java`. Clay Kiln-recept och bränsle: `KilnBlockEntity.java`. Båda är
   skrivna i Java (inte datapack).
 - Övriga recept, loot tables, modeller och taggar genereras av `scripts/gen_data.py` (kör `python scripts/gen_data.py src/main/resources`). Texturskript: `scripts/gen_firewood.py`, `scripts/gen_textures.py`.

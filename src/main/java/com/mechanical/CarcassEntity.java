@@ -36,7 +36,13 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 /**
  * A dead animal lying on the ground. Hold right-click on it with a knife to butcher it ({@link KnifeItem}); the yield
- * comes from {@link Butchery}. Disappears after five minutes. Spawned where the body lies once the death animation has finished.
+ * comes from {@link Butchery}. Disappears after five minutes lying on the ground. Spawned where the body lies once the
+ * death animation has finished.
+ * <p>
+ * Hauling ({@link CarcassHauling}): sneak + right-click with an empty hand carries a small or medium body on the
+ * shoulders, or drags a large one behind you ({@link #hauler()}). It can go on a {@link TravoisEntity} (as a passenger)
+ * or hang on a {@link HangingRackBlock} ({@link #hungAt()}), where butchering yields twice the meat in big cuts. While
+ * hauled, on a travois or hung it does not vanish, but it spoils a day after the kill ({@link #spoiled()}).
  */
 public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     public static final int HIDDEN_TICKS = 0, LIFETIME = 6000;
@@ -45,11 +51,20 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** 0: whole (wool/hide/feathers still on), 1: skinned/sheared/plucked, only the meat left. Synced for the renderer. */
     private static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.INT);
+    /** Entity id of the player carrying or dragging it, -1 if none. Synced for the renderer and the sprint check. */
+    private static final EntityDataAccessor<Integer> HAULER = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.INT);
+    /** The Hanging Rack it hangs on. Synced for the renderer and the hitbox. */
+    private static final EntityDataAccessor<java.util.Optional<BlockPos>> HUNG_AT = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+    /** Ticks after the kill when a carcass that is hauled, on a travois or hung has spoiled (one day). */
+    public static final int SPOILS = 24000;
+    /** Hung this long (3 minutes) it has aged: a little more meat on the rack. */
+    public static final int AGED = 3600;
     /** Each of the two passes takes this share of the work for the body size. */
     private static final float WORK_PER_PASS = 0.6F;
 
     private EntityType<?> animal = EntityTypes.PIG;
-    private float bodyYaw;
+    /** Ticks since the kill, ticks lying free on the ground, ticks hung. Server only. */
+    private int age, groundTicks, hungTicks;
     /** Had antlers (a stag): they come off in the second pass. Server only. */
     private boolean trophy;
     private float work;
@@ -65,7 +80,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     public static CarcassEntity of(Level level, LivingEntity dead) {
         CarcassEntity carcass = new CarcassEntity(Mechanical.CARCASS.get(), level);
         carcass.animal = dead.getType();
-        carcass.bodyYaw = dead.yBodyRot;
+        carcass.setYRot(dead.yBodyRot);
         carcass.looks = looksOf(dead);
         carcass.trophy = dead instanceof com.mechanical.wildlife.WildAnimal wild && wild.showsHorns()
                 && (dead instanceof com.mechanical.wildlife.RedDeer || dead instanceof com.mechanical.wildlife.Moose || dead instanceof com.mechanical.wildlife.Reindeer);
@@ -95,8 +110,70 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return entityData.get(STAGE);
     }
 
-    public float bodyYaw() {
-        return bodyYaw;
+    /** Body width class: small (< 0.6, hare, birds, squirrel), large (>= 1.1, aurochs, horse, bear, moose, lion), huge (>= 2, giant deer). */
+    public boolean isSmall() {
+        return animal.getWidth() < 0.6F;
+    }
+
+    public boolean isLarge() {
+        return animal.getWidth() >= 1.1F;
+    }
+
+    public boolean isHuge() {
+        return animal.getWidth() >= 2.0F;
+    }
+
+    /** Room it takes on a travois (which holds 2). */
+    public int loadUnits() {
+        return isLarge() ? 2 : 1;
+    }
+
+    public int haulerId() {
+        return entityData.get(HAULER);
+    }
+
+    /** The player carrying or dragging it, or null. */
+    public Player hauler() {
+        int id = haulerId();
+        return id >= 0 && level().getEntity(id) instanceof Player p ? p : null;
+    }
+
+    void setHauler(Player player) {
+        entityData.set(HAULER, player == null ? -1 : player.getId());
+    }
+
+    public BlockPos hungAt() {
+        return entityData.get(HUNG_AT).orElse(null);
+    }
+
+    /** Hangs it from the rack at {@code pos}, belly to the rack's front. */
+    void hang(BlockPos pos, net.minecraft.core.Direction front) {
+        setHauler(null);
+        stopRiding();
+        entityData.set(HUNG_AT, java.util.Optional.of(pos));
+        hungTicks = 0;
+        setYRot(front.getOpposite().toYRot());
+        refreshDimensions();
+        setPos(hangPosition(pos));
+    }
+
+    void unhang() {
+        entityData.set(HUNG_AT, java.util.Optional.empty());
+        refreshDimensions();
+    }
+
+    /** Hind feet at the rack's gambrel hook ({@link HangingRackBlock#HOOK} above its base), body hanging below. */
+    private Vec3 hangPosition(BlockPos pos) {
+        return new Vec3(pos.getX() + 0.5, pos.getY() + HangingRackBlock.HOOK - getDimensions(Pose.STANDING).height(), pos.getZ() + 0.5);
+    }
+
+    /** A day after the kill: the meat has turned. Only bodies kept off the ground last that long. */
+    public boolean spoiled() {
+        return age > SPOILS;
+    }
+
+    public boolean aged() {
+        return hungTicks >= AGED;
     }
 
     /** Flat fliers (the phantom) rest on their belly instead of lying on the side. */
@@ -107,6 +184,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     /** Lying on its side: a square as long as the animal was tall or wide, as high as it was wide. The renderer centres the body on it. */
     @Override
     public EntityDimensions getDimensions(Pose pose) {
+        // hanging head down: as tall as the body is long
+        if (entityData.get(HUNG_AT).isPresent()) return EntityDimensions.scalable(Math.max(0.25F, animal.getWidth() * 0.8F), Math.max(animal.getWidth(), animal.getHeight()));
         if (liesFlat()) return EntityDimensions.scalable(animal.getWidth(), animal.getHeight());
         return EntityDimensions.scalable(Math.max(animal.getWidth(), animal.getHeight()), Math.max(0.25F, animal.getWidth()));
     }
@@ -119,16 +198,57 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     public void tick() {
         super.tick();
         if (level().isClientSide()) return; // the client may not simulate movement; it gets the position from the server
+        age++;
+        BlockPos rack = hungAt();
+        if (rack != null) {
+            if (!level().getBlockState(rack).is(CarcassHauling.HANGING_RACK.get())) unhang(); // the rack is gone: it drops
+            else {
+                setPos(hangPosition(rack));
+                hungTicks++;
+                if (tickCount % 30 == 0 && !spoiled() && random.nextInt(3) == 0)
+                    Blood.drip((ServerLevel) level(), getX() + random.nextGaussian() * 0.1, getY() + 0.1, getZ() + random.nextGaussian() * 0.1);
+                return;
+            }
+        }
+        if (haulerId() >= 0) {
+            Player hauler = hauler();
+            if (hauler != null && hauler.isAlive() && hauler.distanceTo(this) < 12) {
+                CarcassHauling.follow(this, hauler);
+                return;
+            }
+            setHauler(null); // dead, gone or left behind: it drops where it is
+        }
+        if (isPassenger()) return; // on a travois, which places it
         // fall and settle like a dropped item
         if (!onGround()) setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
         move(MoverType.SELF, getDeltaMovement());
         setDeltaMovement(getDeltaMovement().multiply(0.5, 0.98, 0.5));
-        if (tickCount > LIFETIME) discard();
+        if (++groundTicks > LIFETIME) discard();
+    }
+
+    /** Dragged, it slides up steps and over roots. */
+    @Override
+    public float maxUpStep() {
+        return haulerId() >= 0 ? 1.0F : 0.0F;
+    }
+
+    /** Moves it by {@code delta} as far as blocks allow (dragging). */
+    void drag(Vec3 delta) {
+        move(MoverType.SELF, delta);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (HUNG_AT.equals(key)) refreshDimensions();
     }
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
-        if (tickCount < HIDDEN_TICKS || !(player.getItemInHand(hand).getItem() instanceof KnifeItem knife)) return InteractionResult.PASS;
+        if (tickCount < HIDDEN_TICKS) return InteractionResult.PASS;
+        if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && (player.isShiftKeyDown() || haulerId() == player.getId()))
+            return CarcassHauling.pickUpOrLetGo(player, this);
+        if (!(player.getItemInHand(hand).getItem() instanceof KnifeItem knife)) return InteractionResult.PASS;
         if (knife.tier() < Butchery.requiredKnifeTier(animal)) {
             if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.knife_too_weak"));
             return InteractionResult.FAIL;
@@ -152,14 +272,20 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         player.getUseItem().hurtAndBreak(1, player, player.getUsedItemHand());
         if (stage() == 0 && !Butchery.yieldFor(animal).outer().isEmpty()) {
             // first pass: wool sheared / hide skinned / feathers plucked; keep holding to go on with the meat
-            Butchery.dropOuter(level, this, animal, knife.hideMultiplier());
+            Butchery.dropOuter(level, this, animal, knife.hideMultiplier(), hungAt() != null);
             Blood.splatter(level, blockPosition(), 1, 5);
             entityData.set(STAGE, 1);
             return;
         }
-        Butchery.dropInner(level, this, animal, knife.yieldMultiplier(), trophy);
+        boolean hung = hungAt() != null;
+        if (spoiled()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.carcass.spoiled"));
+        Butchery.dropInner(level, this, animal, knife.yieldMultiplier(), trophy, hung, aged(), spoiled());
         Blood.splatter(level, blockPosition(), 2, 10); // a pool around the remains
         player.stopUsingItem();
+        if (hung) {
+            discard(); // the bones came off with the cuts; nothing is left on the hook
+            return;
+        }
         // the bones stay behind
         BlockPos pos = blockPosition();
         BlockState pile = Mechanical.BONE_PILE.get().defaultBlockState();
@@ -169,7 +295,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public boolean isPickable() {
-        return tickCount >= HIDDEN_TICKS;
+        // carried on someone's shoulders it would sit in front of his eyes and catch every click
+        return tickCount >= HIDDEN_TICKS && (haulerId() < 0 || isLarge());
     }
 
     @Override
@@ -180,12 +307,18 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(STAGE, 0);
+        builder.define(HAULER, -1);
+        builder.define(HUNG_AT, java.util.Optional.empty());
     }
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         input.getString("animal").map(Identifier::parse).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).ifPresent(t -> animal = t);
-        bodyYaw = input.getFloatOr("body_yaw", 0);
+        input.read("body_yaw", com.mojang.serialization.Codec.FLOAT).ifPresent(this::setYRot); // saves from before the yaw was the entity's own rotation
+        age = input.getIntOr("age", 0);
+        groundTicks = input.getIntOr("ground_ticks", 0);
+        hungTicks = input.getIntOr("hung_ticks", 0);
+        input.read("hung_at", BlockPos.CODEC).ifPresent(p -> entityData.set(HUNG_AT, java.util.Optional.of(p)));
         work = input.getFloatOr("work", 0);
         entityData.set(STAGE, input.getIntOr("stage", 0));
         trophy = input.getBooleanOr("trophy", false);
@@ -196,7 +329,11 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         output.putString("animal", BuiltInRegistries.ENTITY_TYPE.getKey(animal).toString());
-        output.putFloat("body_yaw", bodyYaw);
+        output.putInt("age", age);
+        output.putInt("ground_ticks", groundTicks);
+        output.putInt("hung_ticks", hungTicks);
+        BlockPos rack = hungAt();
+        if (rack != null) output.store("hung_at", BlockPos.CODEC, rack);
         output.putFloat("work", work);
         output.putInt("stage", stage());
         output.putBoolean("trophy", trophy);
@@ -206,14 +343,12 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buf) {
         buf.writeIdentifier(BuiltInRegistries.ENTITY_TYPE.getKey(animal));
-        buf.writeFloat(bodyYaw);
         buf.writeNbt(looks);
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buf) {
         animal = BuiltInRegistries.ENTITY_TYPE.getValue(buf.readIdentifier());
-        bodyYaw = buf.readFloat();
         CompoundTag tag = buf.readNbt();
         looks = tag != null ? tag : new CompoundTag();
         refreshDimensions();

@@ -327,7 +327,7 @@ public class CaveLion extends Predator {
         public boolean canUse() {
             if (getTarget() != null || isDozing() || random.nextInt(10) != 0) return false;
             carcass = level().getEntitiesOfClass(CarcassEntity.class, getBoundingBox().inflate(4),
-                    c -> c.stage() == 0 && c.tickCount < 1200 && c.animal() != Wildlife.CAVE_LION.get()).stream().findFirst().orElse(null);
+                    c -> c.stage() == 0 && c.tickCount < 1200 && c.animal() != Wildlife.CAVE_LION.get() && c.hungAt() == null && c.haulerId() < 0 && !c.isPassenger()).stream().findFirst().orElse(null);
             if (carcass == null) return false;
             Player near = level().getNearestPlayer(CaveLion.this, 32);
             Vec3 to = near != null ? DefaultRandomPos.getPosAway(CaveLion.this, 20, 6, near.position()) : LandRandomPos.getPos(CaveLion.this, 20, 6);

@@ -45,6 +45,9 @@ public final class Predators {
     private static final float WOLF_CHANCE = 0.06F, LION_CHANCE = 0.025F, BLOOD_MOON_FACTOR = 2.0F;
     private static final float HUNTING_SHARE = 0.5F;
     private static final double NO_SPAWN_FIRE = 28, CROWDED = 96;
+    /** A carcass within this many blocks of a player doubles the arrival chance. */
+    private static final double CARCASS_RANGE = 16;
+    private static final float CARCASS_FACTOR = 2.0F;
 
     @SubscribeEvent
     static void register(RegisterEvent event) {
@@ -60,9 +63,11 @@ public final class Predators {
         for (ServerPlayer player : level.players()) {
             if (player.isSpectator() || player.isCreative()) continue;
             var biome = level.getBiome(player.blockPosition());
-            if (biome.is(WOLF_BIOMES) && random.nextFloat() < WOLF_CHANCE * factor) {
+            // the smell of a carcass nearby (carried, on a travois, hung at camp) draws them: twice as likely
+            float f = factor * (level.getEntitiesOfClass(com.mechanical.CarcassEntity.class, player.getBoundingBox().inflate(CARCASS_RANGE)).isEmpty() ? 1 : CARCASS_FACTOR);
+            if (biome.is(WOLF_BIOMES) && random.nextFloat() < WOLF_CHANCE * f) {
                 spawnGroup(level, player.position(), player, Wildlife.GREY_WOLF.get(), 3 + random.nextInt(4));
-            } else if (biome.is(LION_BIOMES) && random.nextFloat() < LION_CHANCE * factor) {
+            } else if (biome.is(LION_BIOMES) && random.nextFloat() < LION_CHANCE * f) {
                 spawnGroup(level, player.position(), player, Wildlife.CAVE_LION.get(), random.nextInt(3) == 0 ? 2 : 1);
             }
         }
