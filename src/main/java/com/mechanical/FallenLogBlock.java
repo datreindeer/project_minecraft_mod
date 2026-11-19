@@ -16,11 +16,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A log lying on the ground where a felled tree landed. Chopped with an axe (hold right-click, see {@link TreeChopping}):
  * stage 0 has its bark, 1 is debarked, 2 and 3 are hewn thinner, and the last chop turns it into a Rough Log item.
+ * A Bronze Saw cuts it across instead ({@link SawItem}): {@code sawn} is the strokes done so far, shown as a kerf deepening
+ * from the top down; kept on the block, so a half-sawn log stays half-sawn.
  */
 public class FallenLogBlock extends Block {
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final IntegerProperty STAGE = IntegerProperty.create("stage", 0, 3);
     public static final int LAST_STAGE = 3;
+    /** Bronze Saw strokes to cut through the log; the last one cuts it, so {@code sawn} only shows the ones before. */
+    public static final int SAW_STROKES = 8;
+    public static final IntegerProperty SAWN = IntegerProperty.create("sawn", 0, SAW_STROKES - 1);
     private static final VoxelShape[] SHAPES_Z = {box(0, 0, 0, 16, 16, 16), box(0, 0, 0, 16, 16, 16), box(2, 0, 0, 14, 12, 16), box(4, 0, 0, 12, 8, 16)};
     private static final VoxelShape[] SHAPES_X = {box(0, 0, 0, 16, 16, 16), box(0, 0, 0, 16, 16, 16), box(0, 0, 2, 16, 12, 14), box(0, 0, 4, 16, 8, 12)};
 
@@ -29,7 +34,7 @@ public class FallenLogBlock extends Block {
     public FallenLogBlock(String wood, Properties properties) {
         super(properties);
         this.wood = wood;
-        registerDefaultState(defaultBlockState().setValue(AXIS, Direction.Axis.Z).setValue(STAGE, 0));
+        registerDefaultState(defaultBlockState().setValue(AXIS, Direction.Axis.Z).setValue(STAGE, 0).setValue(SAWN, 0));
     }
 
     public String wood() {
@@ -38,7 +43,7 @@ public class FallenLogBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(AXIS, STAGE);
+        builder.add(AXIS, STAGE, SAWN);
     }
 
     @Override

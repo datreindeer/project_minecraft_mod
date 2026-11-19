@@ -229,24 +229,49 @@ for wood in WOODS:
         + [{"when": {"log": str(i + 1)}, "apply": {"model": f"mechanical:block/{lw}_upright_log"}} for i, lw in enumerate(WOODS)]})
 
 # ---- fallen logs (felled trees lie where they land): stage 0 bark, 1 debarked, 2-3 hewn thinner; built along z ----
-def fallen_model(name, side_tex, end_tex, x0, x1, h):
-    # z runs along the log; grain of the side texture must run along z, so east/west faces are rotated
-    s = lambda: {"texture": "#side", "uv": [x0, 16 - h, x1, 16]}
-    w(A / f"models/block/{name}.json", {"textures": {"particle": side_tex, "side": side_tex, "end": end_tex}, "elements": [{
-        "from": [x0, 0, 0], "to": [x1, h, 16], "faces": {
-            "north": {"texture": "#end", "uv": [x0, 16 - h, x1, 16], "cullface": "north"},
-            "south": {"texture": "#end", "uv": [x0, 16 - h, x1, 16], "cullface": "south"},
-            "up": {"texture": "#side", "uv": [x0, 0, x1, 16]}, "down": {"texture": "#side", "uv": [x0, 0, x1, 16], "cullface": "down"},
-            "east": {"texture": "#side", "uv": [0, x0, 16, x1], "rotation": 90}, "west": {"texture": "#side", "uv": [0, x0, 16, x1], "rotation": 90}}}]})
+# sawn 1..SAW_STROKES-1: a Bronze Saw's kerf across the middle (z 7.5-8.5), cut from the top down, with sawdust at its lips
+SAW_STROKES = 8  # FallenLogBlock.SAW_STROKES
+KERF0, KERF1 = 7.5, 8.5
+def fallen_model(name, side_tex, end_tex, x0, x1, h, sawn=0):
+    # z runs along the log; grain of the side texture must run along z, so east/west faces are rotated.
+    # UVs of a part spanning z za..zb, y ya..yb are the matching slice of the whole log's (rotation 90 maps u to y, v to z)
+    wd = x1 - x0
+    num = lambda v: int(v) if v == int(v) else round(v, 4)
+    ew = lambda za, zb, ya, yb, west: {"texture": "#side", "uv": [num(v) for v in (16 * (h - yb) / h, x0 + (16 - zb if west else za) * wd / 16,
+                                                                                                 16 * (h - ya) / h, x0 + (16 - za if west else zb) * wd / 16)], "rotation": 90}
+    end = lambda cull: {"texture": "#end", "uv": [x0, 16 - h, x1, 16], "cullface": cull}
+    def part(za, zb, ya, yb, faces):
+        f = {d: faces[d] for d in ("north", "south") if d in faces}
+        if "up" in faces: f["up"] = {"texture": faces["up"], "uv": [x0, num(za), x1, num(zb)]}
+        if ya == 0: f["down"] = {"texture": "#side", "uv": [x0, num(16 - zb), x1, num(16 - za)], "cullface": "down"}
+        f |= {"east": ew(za, zb, ya, yb, False), "west": ew(za, zb, ya, yb, True)}
+        return {"from": [x0, ya, za], "to": [x1, yb, zb], "faces": f}
+    textures = {"particle": side_tex, "side": side_tex, "end": end_tex}
+    if sawn == 0:
+        elements = [part(0, 16, 0, h, {"up": "#side", "north": end("north"), "south": end("south")})]
+    else:
+        floor = num(h - h * sawn / SAW_STROKES)  # bottom of the kerf
+        kerf = lambda: {"texture": "#kerf", "uv": [x0, 16 - h, x1, 16]}  # cut walls: dark, freshly sawn end grain
+        elements = [part(0, KERF0, 0, h, {"up": "#side", "north": end("north"), "south": kerf()}),
+                    part(KERF1, 16, 0, h, {"up": "#side", "north": kerf(), "south": end("south")}),
+                    part(KERF0, KERF1, 0, floor, {"up": "#kerf"})]  # uncut wood below the kerf
+        # sawdust spilled on the top at both lips of the cut; the texture's dense rows (v 14-16) sit against the kerf
+        dust = lambda za, zb, uv: {"from": [x0, h, za], "to": [x1, h + 0.05, zb], "faces": {"up": {"texture": "#sawdust", "uv": uv}}}
+        elements += [dust(KERF0 - 2.5, KERF0, [x0, 13.5, x1, 16]), dust(KERF1, KERF1 + 2.5, [x0, 16, x1, 13.5])]
+        textures |= {"kerf": "mechanical:block/saw_kerf", "sawdust": "mechanical:block/sawdust"}
+    w(A / f"models/block/{name}.json", {"textures": textures, "elements": elements})
 FALLEN_STAGES = [(0, 16, 16, False), (0, 16, 16, True), (2, 14, 12, True), (4, 12, 8, True)]
 for wood in WOODS:
     variants = {}
     for stage, (x0, x1, h, stripped) in enumerate(FALLEN_STAGES):
         n = wns(wood)
         tex = f"{n}:block/stripped_{wood}_log" if stripped else f"{n}:block/{wood}_log"
-        fallen_model(f"{wood}_fallen_log_{stage}", tex, f"{n}:block/stripped_{wood}_log_top" if stripped else f"{n}:block/{wood}_log_top", x0, x1, h)
-        variants[f"axis=z,stage={stage}"] = {"model": f"mechanical:block/{wood}_fallen_log_{stage}"}
-        variants[f"axis=x,stage={stage}"] = {"model": f"mechanical:block/{wood}_fallen_log_{stage}", "y": 90}
+        end_tex = f"{n}:block/stripped_{wood}_log_top" if stripped else f"{n}:block/{wood}_log_top"
+        for sawn in range(SAW_STROKES):
+            model = f"{wood}_fallen_log_{stage}" + (f"_sawn{sawn}" if sawn else "")
+            fallen_model(model, tex, end_tex, x0, x1, h, sawn)
+            variants[f"axis=z,sawn={sawn},stage={stage}"] = {"model": f"mechanical:block/{model}"}
+            variants[f"axis=x,sawn={sawn},stage={stage}"] = {"model": f"mechanical:block/{model}", "y": 90}
     w(A / f"blockstates/{wood}_fallen_log.json", {"variants": variants})
     w(D / f"mechanical/loot_table/blocks/{wood}_fallen_log.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{
         "type": "minecraft:item", "name": "minecraft:stick",
