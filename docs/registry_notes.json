@@ -1294,5 +1294,137 @@
   "stone_anvil": {
     "text": "Platt sten för att krossa malm. Crafting: `[R][K][R]` / `[C][C][C]` (R = rock chunk, K = [[flint_pickaxe]] som blir kvar och slits, C = Cobblestone).\nHögerklicka med malm för att lägga en på stenen, tom hand tar tillbaka. Slå 4 gånger med Flint Pickaxe, Crude Stone Pickaxe eller Stone Pickaxe (vänster- eller högerklick; hammaren slits 1 per slag): Raw Copper → 2 [[crushed_copper_ore]], [[malachite]] → 1, [[cassiterite]] → 1 [[crushed_tin_ore]].",
     "category": "blocks"
+  },
+  "barley_grain": {
+    "text": "Utsäde och mat i ett. Fås genom att tröska [[barley_sheaf]] (byar ger ingen än; korn kommer från handel/kistor senare).\nSås på farmland → [[barley_crop]]. 2 Grain + Clay Water Bucket + Bowl → [[raw_porridge]]. Mals i [[quern]] → [[flour]].",
+    "category": "materials"
+  },
+  "barley_sheaf": {
+    "text": "Mogen [[barley_crop]] ger 1 kärve (med [[flint_sickle]]: +50 % chans på en till och 1 [[straw]]).\nTröskas med [[flail]] på sten → 1–3 [[barley_grain]] + 1 [[straw]]; i craftingrutan → 1 Grain.",
+    "category": "materials"
+  },
+  "einkorn_grain": {
+    "text": "Utsäde och mat i ett. Fås från [[wild_einkorn]] (kniv/skära 100 %, för hand 50 %) eller genom att tröska [[einkorn_sheaf]].\nSås på farmland → [[einkorn_crop]]. 2 Grain + Clay Water Bucket + Bowl → [[raw_porridge]]. Mals i [[quern]] → [[flour]].",
+    "category": "materials"
+  },
+  "einkorn_sheaf": {
+    "text": "Mogen [[einkorn_crop]] ger 1 kärve (med [[flint_sickle]]: +50 % chans på en till och 1 [[straw]]).\nTröskas med [[flail]] på sten → 1–3 [[einkorn_grain]] + 1 [[straw]]; i craftingrutan → 1 Grain.",
+    "category": "materials"
+  },
+  "emmer_grain": {
+    "text": "Utsäde och mat i ett. Fås från [[wild_emmer]] (kniv/skära 100 %, för hand 50 %) eller genom att tröska [[emmer_sheaf]].\nSås på farmland → [[emmer_crop]]. 2 Grain + Clay Water Bucket + Bowl → [[raw_porridge]]. Mals i [[quern]] → [[flour]].",
+    "category": "materials"
+  },
+  "emmer_sheaf": {
+    "text": "Mogen [[emmer_crop]] ger 1 kärve (med [[flint_sickle]]: +50 % chans på en till och 1 [[straw]]).\nTröskas med [[flail]] på sten → 1–3 [[emmer_grain]] + 1 [[straw]]; i craftingrutan → 1 Grain.",
+    "category": "materials"
+  },
+  "barley_crop": {
+    "text": "Gröda på farmland, sås med [[barley_grain]]. Temperatur 5–16 (bäst 8–12), frost under 0 – tålig, odlas i taiga. Mogen: 1 [[barley_sheaf]]. Omogen: ingenting.",
+    "category": "blocks"
+  },
+  "einkorn_crop": {
+    "text": "Gröda på farmland, sås med [[einkorn_grain]]. Temperatur 7–17 (bäst 10–14), frost under 2. Mogen: 1 [[einkorn_sheaf]]. Omogen: 0–1 Grain (fortfarande vild typ).",
+    "category": "blocks"
+  },
+  "emmer_crop": {
+    "text": "Gröda på farmland, sås med [[emmer_grain]]. Temperatur 7–17 (bäst 10–14), frost under 2. Mogen: 1 [[emmer_sheaf]]. Omogen: 0–1 Grain (fortfarande vild typ).",
+    "category": "blocks"
+  },
+  "pea_crop": {
+    "text": "Ärtor på farmland, sås med [[peas]]. Temperatur 6–16 (bäst 9–13), frost under 2. Mogen: 1–3 [[peas]], och skörden **höjer** bördigheten 1 i stället för att sänka den. Omogen: ingenting.",
+    "category": "blocks"
+  },
+  "peas": {
+    "text": "Mat (1 hunger) och utsäde för [[pea_crop]]. Från [[wild_pea]] (1–2) eller odlade ärtor (1–3).",
+    "category": "food"
+  },
+  "wild_einkorn": {
+    "text": "Vilt enkorn i små sällsynta bestånd på slätt, sunflower plains, meadow och savann. Kniv eller [[flint_sickle]]: 1 [[einkorn_grain]], för hand 50 %.",
+    "category": "foraging"
+  },
+  "wild_emmer": {
+    "text": "Vilt emmer på slätten, sparsamt i skog och blomsterskog. Kniv eller [[flint_sickle]]: 1 [[emmer_grain]], för hand 50 %.",
+    "category": "foraging"
+  },
+  "wild_pea": {
+    "text": "Vild ärt (klängväxt) i skog, blomsterskog, björkskog och meadow. Ger 1–2 [[peas]].",
+    "category": "foraging"
+  },
+  "withered_crop": {
+    "text": "Det som blir kvar när frost, torka eller rotröta dödar en ung planta. Bryts: 50 % [[straw]], annars [[plant_fibre]].",
+    "category": "blocks"
+  },
+  "straw": {
+    "text": "Från tröskning ([[flail]]) och skörd med [[flint_sickle]]. Komposteras i [[compost_heap]]; till [[scarecrow]] (bronsåldern).",
+    "category": "materials"
+  },
+  "raw_porridge": {
+    "text": "2 Grain (valfri sort) + [[clay_water_bucket]] + Bowl (formlöst; hinken blir kvar tom och slits 1). Kokas på Campfire (20 s) → [[porridge]].",
+    "category": "food"
+  },
+  "porridge": {
+    "text": "Gröt: 5 hunger, 0,6 mättnad. Bowl kommer tillbaka. Sädens mat i stenåldern.",
+    "category": "food"
+  },
+  "flint_sickle": {
+    "text": "Tool Station: Flint + Twine + Stick (låses upp av Flint). Skär grödor och gräs snabbt; mogen säd ger +50 % chans på en extra kärve och 1 [[straw]], vild säd ger alltid Grain. Slits 1 per mogen gröda. Hållbarhet 48.",
+    "category": "tools"
+  },
+  "flail": {
+    "text": "Recept: `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]`. Håll kärvar i andra handen och högerklicka på en hård yta (sten, kullersten, stenkross, [[stone_anvil]] …): var tredje slag i snitt blir en kärve 1–3 Grain + 1 [[straw]]. Slits 1 per kärve, hållbarhet 64.",
+    "category": "tools"
+  },
+  "flour": {
+    "text": "Mals av Grain i [[quern]] (1 Grain → 1 Flour). 2 Flour + [[clay_water_bucket]] → [[dough]]. Ersätter vete i Cookie och Cake. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative. (Flour själv kräver bara Quern.)",
+    "category": "materials"
+  },
+  "dough": {
+    "text": "2 [[flour]] + [[clay_water_bucket]] (formlöst). Bakas på [[baking_stone]] (30 s) eller i Clay Kiln (20 s) → Bread.",
+    "category": "food"
+  },
+  "compost": {
+    "text": "Från [[compost_heap]] (2 st per full hög). Högerklicka på farmland (eller grödan på den): bördighet +1. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "category": "materials"
+  },
+  "manure": {
+    "text": "Högerklicka på farmland: bördighet +2. Har ingen källa än: ska släppas av tamdjur i byar/fållor i bronsåldern. Finns i creative.",
+    "category": "materials"
+  },
+  "quern": {
+    "text": "Handkvarn. Högerklicka med Grain: överstenen vrids ett kvarts varv; ett helt varv (4 klick) mal 1 Grain → 1 [[flour]]. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "category": "blocks"
+  },
+  "baking_stone": {
+    "text": "Platt sten bredvid (eller ovanpå) en brinnande Campfire. Högerklicka med [[dough]]: efter 30 s eld är det Bread, efter 45 s till bränt (Burnt Food). Tom hand tar av. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "category": "blocks"
+  },
+  "compost_heap": {
+    "text": "Flätad fålla för växtrester. Högerklicka med Leaf Litter, [[straw]], Plant Fibre, löv, saplings, ruttet kött, bark, fiskben, rötter …: 7 st fyller den, sedan ruttnar den i 2 min (ånga) och ger 2 [[compost]]. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "category": "blocks"
+  },
+  "scarecrow": {
+    "text": "Två block hög fågelskrämma (stolpe, hudtunika med halm, pumpahuvud). Inom 12 block landar inga kråkor på åkern och de äter inget. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "category": "blocks"
+  },
+  "minecraft:wheat": {
+    "text": "Heter nu **Wheat Sheaf** (kärve). Mogen vete ger 1 (med [[flint_sickle]] +50 % och 1 [[straw]]), omoget ingenting. Tröskas med [[flail]] → 1–3 Wheat Grain + Straw. 9 → Hay Bale som vanligt. Inget brödrecept (bröd kommer via [[flour]] och [[dough]]).",
+    "vanilla": true,
+    "category": "materials"
+  },
+  "minecraft:wheat_seeds": {
+    "text": "Heter nu **Wheat Grain**: vetets utsäde och mat. Fås genom tröskning av Wheat Sheaf, i byarnas kistor och från bonden. Sås som vanligt. 2 Grain + Clay Water Bucket + Bowl → [[raw_porridge]].",
+    "vanilla": true,
+    "category": "materials"
+  },
+  "minecraft:bread": {
+    "text": "3 Wheat-receptet är **borttaget**. Bröd bakas av [[dough]] på [[baking_stone]] eller i Clay Kiln (bronsåldern).",
+    "vanilla": true,
+    "category": "food"
+  },
+  "minecraft:farmland": {
+    "text": "Har nu **bördighet 0–3** (ny åker 2, från Podzol 3). Skörd sänker 1 (ärtor höjer 1), träda höjer ~1 per dag, [[compost]] +1, [[manure]] +2. Bördighet 0: halv fart och halv skörd; 1: 75 % fart; 3: snabbare och chans på extra. Torkar snabbare när det är varmt (över 15). Smyg + högerklicka med tom hand: visar bördighet, fukt och grödans temperatur. Vattnas med [[clay_water_bucket]] (3×3).",
+    "vanilla": true,
+    "category": "blocks"
   }
 }

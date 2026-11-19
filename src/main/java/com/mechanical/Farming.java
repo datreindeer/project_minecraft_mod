@@ -161,7 +161,7 @@ public final class Farming {
             m.put(Blocks.POTATOES, new Climate(6, 9, 13, 16, 2, true));
             m.put(Blocks.BEETROOTS, new Climate(5, 8, 13, 16, 1, true));
             m.put(PEA_CROP.get(), new Climate(6, 9, 13, 16, 2, false));
-            Climate warm = new Climate(12, 15, 20, 22, 6, false);
+            Climate warm = new Climate(12, 15, 20, 25, 6, false); // max 25 (spec 22): savanna and desert are 22, the only biomes this warm
             m.put(Blocks.MELON_STEM, warm);
             m.put(Blocks.PUMPKIN_STEM, warm);
             climates = m;
@@ -170,7 +170,7 @@ public final class Farming {
     }
 
     /** Per random tick that reaches the growth check (sky light >= 9 by vanilla), when the conditions hold. */
-    public static final float FROST_KILL = 0.1F, DROUGHT_KILL = 0.05F, ROOT_ROT = 0.02F;
+    public static final float FROST_KILL = 0.1F, DROUGHT_KILL = 0.05F, ROOT_ROT = 0.01F;
     /** Extra growth on the best soil: chance of a second stage after a growth step (~1.3x speed). */
     public static final float RICH_SOIL_BONUS = 0.3F;
     public static final int DAYLIGHT = 9;
