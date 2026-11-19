@@ -12,14 +12,14 @@ import net.minecraft.util.Mth;
  * nose-down sniffing (graze), head low and snarling when hunting, crouched stalking, the pounce, head thrown back to
  * howl/roar, curled up asleep, and limp as a carcass.
  */
-abstract class PredatorModel extends EntityModel<WildAnimalRenderState> {
+public abstract class PredatorModel extends EntityModel<WildAnimalRenderState> {
     protected final ModelPart body, head, jaw, rightEar, leftEar, tail;
     protected final ModelPart rightFrontLeg, leftFrontLeg, rightHindLeg, leftHindLeg;
     private final ModelPart[] legs;
     /** Gait cadence, how far the body sinks crouching / lying (px), and the tail's resting angle. */
     private final float gait, crouchDrop, lieDrop, tailRest;
 
-    PredatorModel(ModelPart root, float gait, float crouchDrop, float lieDrop, float tailRest) {
+    protected PredatorModel(ModelPart root, float gait, float crouchDrop, float lieDrop, float tailRest) {
         super(root);
         this.body = root.getChild("body");
         this.head = body.getChild("head");

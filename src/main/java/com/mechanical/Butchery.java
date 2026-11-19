@@ -184,8 +184,17 @@ public final class Butchery {
         }
     }
 
+    private record KnifeTier(Supplier<? extends EntityType<?>> type, int tier) {}
+    private static final List<KnifeTier> KNIFE_TIERS = new ArrayList<>();
+
+    /** From a feature class: this animal's hide is too thick for less than knife {@code tier} (e.g. {@link KnifeItem#TUSK}). */
+    public static void requireKnife(Supplier<? extends EntityType<?>> type, int tier) {
+        KNIFE_TIERS.add(new KnifeTier(type, tier));
+    }
+
     /** Knife tier needed to butcher this animal at all (thick hides like the bear's need iron). */
     public static int requiredKnifeTier(EntityType<?> animal) {
+        for (var e : KNIFE_TIERS) if (e.type().get() == animal) return e.tier();
         return animal == Wildlife.BROWN_BEAR.get() || animal == Wildlife.GIANT_DEER.get() ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 
