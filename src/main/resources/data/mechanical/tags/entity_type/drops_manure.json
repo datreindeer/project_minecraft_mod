@@ -9,6 +9,7 @@
     "minecraft:donkey",
     "minecraft:mule",
     "mechanical:aurochs",
-    "mechanical:wild_horse"
+    "mechanical:wild_horse",
+    "mechanical:tame_horse"
   ]
 }

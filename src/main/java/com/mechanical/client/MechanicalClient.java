@@ -43,6 +43,8 @@ public class MechanicalClient {
         event.registerEntityRenderer(Mechanical.FALLING_TREE.get(), FallingTreeRenderer::new);
         event.registerEntityRenderer(Mechanical.CARCASS.get(), CarcassRenderer::new);
         event.registerEntityRenderer(com.mechanical.CarcassHauling.TRAVOIS.get(), TravoisRenderer::new);
+        event.registerEntityRenderer(com.mechanical.Carting.CART.get(), CartRenderer::new);
+        event.registerEntityRenderer(Wildlife.TAME_HORSE.get(), com.mechanical.client.wildlife.TameHorseRenderer::new);
         event.registerEntityRenderer(com.mechanical.Watercraft.LOG_RAFT.get(), WatercraftRenderer::raft);
         event.registerEntityRenderer(com.mechanical.Watercraft.DUGOUT_CANOE.get(), WatercraftRenderer::canoe);
         // adult model, baby model (built at baby size), extra baby scale, shadow
@@ -126,6 +128,9 @@ public class MechanicalClient {
     static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(WatercraftModel.RAFT, WatercraftModel::createRaft);
         event.registerLayerDefinition(TravoisModel.LAYER, TravoisModel::create);
+        event.registerLayerDefinition(CartModel.LAYER, CartModel::create);
+        event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.BLANKET,
+                () -> WildHorseModel.createBodyLayer(new net.minecraft.client.model.geom.builders.CubeDeformation(0.4F)));
         event.registerLayerDefinition(WatercraftModel.CANOE, WatercraftModel::createCanoe);
         event.registerLayerDefinition(WatercraftModel.CANOE_WATER_PATCH, WatercraftModel::createCanoeWaterPatch);
         event.registerLayerDefinition(RoeDeerModel.LAYER, RoeDeerModel::createBodyLayer);

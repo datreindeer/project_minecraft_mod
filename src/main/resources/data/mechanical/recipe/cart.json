@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "R R",
+    "PPP",
+    "WPW"
+  ],
+  "key": {
+    "R": "mechanical:tool_rod",
+    "P": "#minecraft:planks",
+    "W": "mechanical:wooden_wheel"
+  },
+  "result": {
+    "id": "mechanical:cart"
+  }
+}

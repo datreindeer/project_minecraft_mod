@@ -44,6 +44,9 @@ public final class Wildlife {
             "aurochs", Aurochs::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.6F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<WildHorse>> WILD_HORSE = ENTITY_TYPES.registerEntityType(
             "wild_horse", WildHorse::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.6F).clientTrackingRange(10));
+    /** A tamed wild horse (WildHorse taming); seat over the wild horse model's lower back. */
+    public static final DeferredHolder<EntityType<?>, EntityType<TameHorse>> TAME_HORSE = ENTITY_TYPES.registerEntityType(
+            "tame_horse", TameHorse::new, MobCategory.CREATURE, b -> b.sized(1.3F, 1.6F).eyeHeight(1.45F).passengerAttachments(1.3F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<Mouflon>> MOUFLON = ENTITY_TYPES.registerEntityType(
             "mouflon", Mouflon::new, MobCategory.CREATURE, b -> b.sized(0.9F, 1.3F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<BrownBear>> BROWN_BEAR = ENTITY_TYPES.registerEntityType(
@@ -151,6 +154,7 @@ public final class Wildlife {
         event.put(PHEASANT.get(), Pheasant.createAttributes().build());
         event.put(AUROCHS.get(), Aurochs.createAttributes().build());
         event.put(WILD_HORSE.get(), WildHorse.createAttributes().build());
+        event.put(TAME_HORSE.get(), TameHorse.createAttributes().build());
         event.put(MOUFLON.get(), Mouflon.createAttributes().build());
         event.put(MOOSE.get(), Moose.createAttributes().build());
         event.put(BROWN_BEAR.get(), BrownBear.createAttributes().build());
