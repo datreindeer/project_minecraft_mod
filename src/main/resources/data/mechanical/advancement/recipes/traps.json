@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_twine": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:twine"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_twine"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:snare",
+      "mechanical:fish_trap"
+    ]
+  }
+}

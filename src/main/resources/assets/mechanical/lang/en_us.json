@@ -532,5 +532,7 @@
   "item.mechanical.scraped_phantom_hide": "Scraped Phantom Hide",
   "item.mechanical.phantom_leather": "Phantom Leather",
   "item.mechanical.glider_frame": "Glider Frame",
-  "item.mechanical.glider_cloak": "Glider Cloak"
+  "item.mechanical.glider_cloak": "Glider Cloak",
+  "block.mechanical.snare": "Snare",
+  "block.mechanical.fish_trap": "Fish Trap"
 }

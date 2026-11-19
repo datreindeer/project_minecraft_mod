@@ -1,0 +1,24 @@
+{
+  "values": [
+    "minecraft:sweet_berries",
+    "minecraft:glow_berries",
+    "minecraft:wheat_seeds",
+    "minecraft:beetroot_seeds",
+    "minecraft:melon_seeds",
+    "minecraft:pumpkin_seeds",
+    "minecraft:carrot",
+    "minecraft:apple",
+    "mechanical:juniper_berries",
+    "mechanical:raspberries",
+    "mechanical:blueberries",
+    "mechanical:lingonberries",
+    "mechanical:wild_strawberries",
+    "mechanical:elderberries",
+    "mechanical:cloudberries",
+    "mechanical:blackberries",
+    "mechanical:barley_grain",
+    "mechanical:einkorn_grain",
+    "mechanical:emmer_grain",
+    "mechanical:peas"
+  ]
+}

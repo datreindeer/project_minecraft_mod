@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SC",
+    "S "
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "C": "mechanical:cordage"
+  },
+  "result": {
+    "id": "mechanical:snare"
+  }
+}
