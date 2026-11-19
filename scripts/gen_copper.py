@@ -15,7 +15,7 @@ def w(path, obj):
 
 
 def patch_tag(path, values):
-    tag = json.loads(path.read_text()) if path.exists() else {"values": []}
+    tag = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"values": []}
     for v in values:
         if v not in tag["values"]:
             tag["values"].append(v)
@@ -119,7 +119,7 @@ for b in ("bellows", "whetstone"):
 # ---- tags ----
 # copper tools mine like stone: iron, coal and lapis still need bronze
 patch_tag(D / "minecraft/tags/block/incorrect_for_copper_tool.json", ["#mechanical:needs_bronze_tool"])
-tag = json.loads((D / "minecraft/tags/block/incorrect_for_copper_tool.json").read_text())
+tag = json.loads((D / "minecraft/tags/block/incorrect_for_copper_tool.json").read_text(encoding="utf-8"))
 tag["replace"] = False
 w(D / "minecraft/tags/block/incorrect_for_copper_tool.json", tag)
 patch_tag(D / "minecraft/tags/block/mineable/pickaxe.json", [M + "whetstone"])
@@ -156,7 +156,7 @@ for s, pattern in MOLD_PATTERNS.items():
 
 # ---- lang ----
 lang_path = A / "lang/en_us.json"
-lang = json.loads(lang_path.read_text())
+lang = json.loads(lang_path.read_text(encoding="utf-8"))
 title = lambda s: s.replace("_", " ").title()
 lang.update({f"item.mechanical.unfired_clay_{s}_mold": f"Unfired Clay {title(s)} Mold" for s in MOLDS})
 lang.update({f"block.mechanical.clay_{s}_mold": f"Clay {title(s)} Mold" for s in MOLDS})

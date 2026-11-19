@@ -304,7 +304,7 @@ lang.update({
     "message.mechanical.crop.cold": "too cold", "message.mechanical.crop.hot": "too hot", "message.mechanical.crop.ripe": "ripe",
 })
 lang_path = A / "lang/en_us.json"
-full = json.loads(lang_path.read_text())
+full = json.loads(lang_path.read_text(encoding="utf-8"))
 full.update(lang)
 w(lang_path, full)
 print("farming ok")

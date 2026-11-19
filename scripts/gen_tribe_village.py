@@ -119,7 +119,7 @@ for wood, pal in WOODS.items():
     names[f"block.mechanical.{name}"] = f"Sharpened {wood.capitalize()} Log"
 
 axe = D.parent / "minecraft/tags/block/mineable/axe.json"
-tag = json.loads(axe.read_text())
+tag = json.loads(axe.read_text(encoding="utf-8"))
 for wood in WOODS:
     if f"mechanical:sharpened_{wood}_log" not in tag["values"]:
         tag["values"].append(f"mechanical:sharpened_{wood}_log")

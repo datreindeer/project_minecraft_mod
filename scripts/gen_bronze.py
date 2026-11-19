@@ -17,7 +17,7 @@ def w(path, obj):
 
 
 def patch_tag(path, values):
-    tag = json.loads(path.read_text()) if path.exists() else {"values": []}
+    tag = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"values": []}
     for v in values:
         if v not in tag["values"]:
             tag["values"].append(v)
@@ -67,7 +67,7 @@ patch_tag(D / "mechanical/tags/item/hammerstones.json", [M + "bronze_pickaxe"])
 # ---- sawn planks: a log and the Bronze Saw (it stays, losing 1) give 4 planks; without a saw a log still gives 2 ----
 made = 0
 for f in sorted(D.glob("*/recipe/*_planks.json")):
-    r = json.loads(f.read_text())
+    r = json.loads(f.read_text(encoding="utf-8"))
     if r.get("group") != "planks" or len(r.get("ingredients", [])) != 1:
         continue
     wood = f.stem[: -len("_planks")]
@@ -109,7 +109,7 @@ TRADES = {  # profession: {level: [(wants, wants_count, gives, gives_count, max_
                     4: [(M + "crushed_copper_ore", 12, E, 1, 16, 30), (E, 8, M + "bronze_spear", 1, 3, 15), (E, 9, M + "bronze_sword", 1, 3, 15)]},
 }
 stack = lambda i, n: {"id": i, "count": n} if n > 1 else {"id": i}
-lang_now = json.loads((A / "lang/en_us.json").read_text())
+lang_now = json.loads((A / "lang/en_us.json").read_text(encoding="utf-8"))
 for prof, levels in TRADES.items():
     for lvl, trades in levels.items():
         ids = []
@@ -125,7 +125,7 @@ for prof, levels in TRADES.items():
 
 # ---- lang ----
 lang_path = A / "lang/en_us.json"
-lang = json.loads(lang_path.read_text())
+lang = json.loads(lang_path.read_text(encoding="utf-8"))
 lang.update({f"item.mechanical.rough_cast_bronze_{p}": f"Rough Cast Bronze {title(p)}" for p in PIECES})
 lang.update({f"item.mechanical.bronze_{p}": f"Bronze {title(p)}" for p in PIECES})
 lang.update({f"item.mechanical.bronze_{t}": f"Bronze {title(t)}" for t in TOOLS})

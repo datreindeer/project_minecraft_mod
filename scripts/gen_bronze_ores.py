@@ -99,7 +99,7 @@ w(D / "mechanical/loot_table/blocks/stone_anvil.json", {"type": "minecraft:block
 w(D / "mechanical/tags/item/hammerstones.json", {"values": ["mechanical:flint_pickaxe", "mechanical:crude_stone_pickaxe", "minecraft:stone_pickaxe"]})
 # the pickaxe tag is written by gen_data.py (which lists these too); patch the file so both stay in step
 pick = D / "minecraft/tags/block/mineable/pickaxe.json"
-tag = json.loads(pick.read_text())
+tag = json.loads(pick.read_text(encoding="utf-8"))
 for b in ["mechanical:stone_anvil"] + [f"mechanical:loose_{v}" for v in FINDS]:
     if b not in tag["values"]:
         tag["values"].append(b)
@@ -115,7 +115,7 @@ w(D / "mechanical/recipe/stone_anvil.json", {"type": "minecraft:crafting_shaped"
 
 # ---- lang ----
 lang_path = A / "lang/en_us.json"
-lang = json.loads(lang_path.read_text())
+lang = json.loads(lang_path.read_text(encoding="utf-8"))
 lang.update({
     "item.mechanical.malachite": "Malachite", "item.mechanical.native_copper": "Native Copper", "item.mechanical.cassiterite": "Cassiterite",
     "item.mechanical.crushed_copper_ore": "Crushed Copper Ore", "item.mechanical.crushed_tin_ore": "Crushed Tin Ore",

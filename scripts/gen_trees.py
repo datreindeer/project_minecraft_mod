@@ -98,7 +98,7 @@ for name, (x, freq, biomes, *extra) in TREE_PLACEMENTS.items():
 NOT_SHEARED = {"type": "minecraft:inverted", "term": {"type": "minecraft:any_of", "terms": ["minecraft:tool/can_shear", "minecraft:tool/can_silk_touch"]}}
 for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "mechanical:hazelnuts", 0.06)):
     path = D / f"mechanical/loot_table/blocks/{tree}_leaves.json"
-    loot = json.loads(path.read_text())
+    loot = json.loads(path.read_text(encoding="utf-8"))
     loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != nut]  # rerunnable
     loot["pools"].append({"rolls": 1, "condition": {"type": "minecraft:all_of", "terms": [NOT_SHEARED, {"type": "minecraft:survives_explosion"},
         {"type": "minecraft:random_chance", "chance": chance}]}, "entries": [{"type": "minecraft:item", "name": nut}]})

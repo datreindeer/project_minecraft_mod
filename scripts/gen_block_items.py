@@ -28,11 +28,11 @@ def first_model(node):
 def read_model(ref):
     ns, path = ref.split(":", 1) if ":" in ref else ("minecraft", ref)
     f = A.parent / ns / "models" / f"{path}.json"
-    return json.loads(f.read_text()) if f.exists() else None
+    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else None
 
 
 def item_model(block):
-    bs = json.loads((A / "blockstates" / f"{block}.json").read_text())
+    bs = json.loads((A / "blockstates" / f"{block}.json").read_text(encoding="utf-8"))
     ref = first_model(bs.get("variants") or bs.get("multipart"))
     if not ref:
         return None

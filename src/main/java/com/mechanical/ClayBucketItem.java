@@ -90,12 +90,13 @@ public class ClayBucketItem extends BucketItem {
             BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
             if (hit.getType() == HitResult.Type.BLOCK && !level.getFluidState(hit.getBlockPos()).is(FluidTags.WATER)) return InteractionResult.FAIL;
         }
+        ItemStack before = stack.copy(); // vanilla consumes the held bucket when it fills, so keep its wear from before
         InteractionResult result = super.use(level, player, hand);
         if (!(result instanceof InteractionResult.Success success) || success.heldItemTransformedTo() == null) return result;
         ItemStack vanilla = success.heldItemTransformedTo();
-        if (vanilla.is(Items.WATER_BUCKET)) return success.heldItemTransformedTo(stack.transmuteCopy(Mechanical.CLAY_WATER_BUCKET.get(), 1));
+        if (vanilla.is(Items.WATER_BUCKET)) return success.heldItemTransformedTo(before.transmuteCopy(Mechanical.CLAY_WATER_BUCKET.get(), 1));
         if (vanilla.is(Items.BUCKET)) {
-            ItemStack empty = emptied(stack);
+            ItemStack empty = emptied(before);
             if (empty.isEmpty()) player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
             return success.heldItemTransformedTo(empty);
         }

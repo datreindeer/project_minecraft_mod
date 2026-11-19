@@ -125,7 +125,7 @@ w(D / "mechanical/advancement/recipes/smoking_rack.json", {"parent": "minecraft:
     "requirements": [["has_meat", "has_fish"]], "rewards": {"recipes": ["mechanical:smoking_rack"]}})
 
 # ---- Drying Rack (DryingRackBlock: facing, part single/lower/upper, hide = left spot, hide2 = right spot, 0-13) ----
-rack0 = json.loads((A / "models/block/drying_rack_0.json").read_text())
+rack0 = json.loads((A / "models/block/drying_rack_0.json").read_text(encoding="utf-8"))
 plane = {"from": [3, 4, 8], "to": [13, 13, 8], "faces": {"north": {"uv": [3, 3, 13, 12], "texture": "#food"},
                                                        "south": {"uv": [13, 3, 3, 12], "texture": "#food"}}}
 FOOD_STAGES = {6: "meat", 7: "jerky", 8: "fish", 9: "dried_fish", 10: "berries", 11: "dried_berries", 12: "mushrooms", 13: "dried_mushrooms"}

@@ -162,7 +162,7 @@ for name in DISABLED:
 
 # ---- lang ----
 lang_path = A / "lang/en_us.json"
-lang = {k: v for k, v in json.loads(lang_path.read_text()).items() if "example" not in k and "configuration" not in k}
+lang = {k: v for k, v in json.loads(lang_path.read_text(encoding="utf-8")).items() if "example" not in k and "configuration" not in k}
 title = lambda s: s.replace("_", " ").title()
 for item in TOOLS + FLAT:
     lang[f"item.mechanical.{item}"] = title(item)
@@ -1066,7 +1066,7 @@ for tag, part in TAGS.items():
 w(D / "minecraft/tags/block/overworld_natural_logs.json", {"values": [f"mechanical:{x}_log" for x in NEW_WOODS]})
 w(D / "minecraft/tags/block/flower_pots.json", {"values": [f"mechanical:potted_{x}_sapling" for x in NEW_WOODS]})
 w(D / "minecraft/tags/block/mineable/hoe.json", {"values": [f"mechanical:{x}_leaves" for x in NEW_WOODS]})
-axe_tag = json.loads((D / "minecraft/tags/block/mineable/axe.json").read_text())
+axe_tag = json.loads((D / "minecraft/tags/block/mineable/axe.json").read_text(encoding="utf-8"))
 axe_tag["values"] += [f"mechanical:{b}" for x in NEW_WOODS for b in tree_blocks(x) if not b.endswith(("leaves", "sapling"))]
 w(D / "minecraft/tags/block/mineable/axe.json", axe_tag)
 
@@ -1233,7 +1233,7 @@ for path in _sjar.namelist():
         continue
     out = (D / f"minecraft/loot_table/{rel}").resolve()
     # build on our own override when this run already made one (fish, golem ...), else on vanilla's
-    table = json.loads(out.read_text()) if out in WRITTEN else json.loads(_sjar.read(path).decode())
+    table = json.loads(out.read_text(encoding="utf-8")) if out in WRITTEN else json.loads(_sjar.read(path).decode())
     pools = []
     for pool in table.get("pools", []):
         entries = _filter_entries(pool.get("entries", []))
