@@ -170,7 +170,8 @@ Hide bara i 60 % av fallen, och huden måste torka i solen utan att ruttna. Tota
   Fungerar inte i vatten, på stegar, när man rider eller flyger.
 
 ### Ägg
-- **Boiled Egg:** valfritt ägg (vanligt, blått, brunt) på en Campfire (15 s). Stackar 16. Går inte att äta med skalet på.
+- **Boiled Egg:** valfritt ägg (vanligt, blått, brunt, Pheasant Egg, Ptarmigan Egg, Pigeon Egg) på en Campfire (15 s); ett
+  **Goose Egg** ger 2. Stackar 16. Går inte att äta med skalet på. Vildfåglarnas ägg hittas i deras bon (se Fåglar: bon och ägg).
 - **Skala:** Boiled Egg i craftingrutan → **Peeled Egg** (3 hunger) + **Eggshell**.
 - **Eggshell** fungerar som Bone Meal (högerklicka på växter).
 
@@ -572,7 +573,7 @@ Båtar med plankor (vanilla Boat, Chest Boat, Bamboo Raft) kommer tillbaka i **b
   zombie/skeleton horses beter sig som vanligt. XP släpps som vanligt.
 - **Håll inne högerklick** på kroppen med en kniv → armrörelse, partiklar och ljud. Styckningen sker i **två omgångar**
   (håll kvar för att gå direkt vidare). Varje omgång kostar kniven 1 i hållbarhet. Tittar man bort sparas arbetet.
-  1. **Det yttre:** får klipps (Wool Thread), höns och papegojor plockas (Feathers), kaniner flås (Rabbit Hide), övriga
+  1. **Det yttre:** får klipps (Wool Thread), fåglar plockas (Feathers), kaniner flås (Rabbit Hide), övriga
      flås (Raw Hide). Kroppen ser sedan klippt (får) eller flådd ut (egna flådda köttexturer för alla djur, `textures/entity/skinned/`).
   2. **Det inre:** köttet (och Raw Hide för får, Rabbit's Foot för kaniner). Kvar blir en **Bone Pile**.
 - Flint Knife: ~2 s per omgång (längre för stora djur). Bättre knivar (senare metaller) är snabbare och ger mer.
@@ -584,7 +585,11 @@ Båtar med plankor (vanilla Boat, Chest Boat, Bamboo Raft) kommer tillbaka i **b
 | Cow, Mooshroom | Raw Hide 30 % | 1–3 Beef Scraps |
 | Pig | Raw Hide 25 % | 1–3 Pork Scraps |
 | Sheep | Wool Thread 1–2 (30 %) | 1–2 Mutton Scraps, Raw Hide 25 % |
-| Chicken | Feather 1–2 (80 %) | 1 Chicken Scraps |
+| Chicken | Feather 1–2 (80 %) | 1 Raw Chicken (vanilla) |
+| Greylag Goose | Feather 3–5 | 2 Raw Goose |
+| Pheasant | Feather 2–3 | 1 Raw Pheasant |
+| Willow Ptarmigan | Feather 2–3 | 1 Raw Ptarmigan |
+| Rock Dove | Feather 1–2 | 1 Raw Pigeon |
 | Parrot | Feather 1–2 (80 %) | 1 Game Meat Scraps |
 | Rabbit | Rabbit Hide 30 % | 1 Rabbit Scraps, Rabbit's Foot 5 % |
 | Övriga små djur | Raw Hide 10 % | 1 Game Meat Scraps |
@@ -721,7 +726,7 @@ texturer och fungerar med kroppar, styckning, blod och rädsla.
 | Wild Boar | 26 | Grupp 2–4, mindre skygg. Skadad → anfaller (4 skada) med gruppen. I grupp kan den anfalla en spelare som kommer nära (20 % chans) | Raw Hide 35 % | 2–3 Pork Scraps, Lard 50 % (1–2), Tusk 40 % (1–2) |
 | Hare | 8 | Ensam, snabb, skuttar och kastar sig i sidled när den flyr | Rabbit Hide 35 % | 1 Rabbit Scraps, Rabbit's Foot 8 % |
 | Desert Hare | 8 | Som haren men blek sandfärgad; öken och badlands (1–2) | Rabbit Hide 35 % | 1 Rabbit Scraps, Rabbit's Foot 8 % |
-| Pheasant | 7 | Trycker i gräset, flyger upp när man kommer inom 5 block (smyg för att komma nära) | 2–3 Feathers | 1 Chicken Scraps |
+| Pheasant | 7 | Trycker i gräset, flyger upp när man kommer inom 5 block (smyg för att komma nära) | 2–3 Feathers | 1 Raw Pheasant |
 
 **Ungar:** spawnar i flocken (den första i en flock är alltid vuxen) och växer upp efter ~20 minuter. De följer de
 vuxna, flyr med flocken, anfaller aldrig och lämnar ingen kropp. Skadar man en kulting anfaller de vuxna vildsvinen.
@@ -756,15 +761,63 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
 Lever i flockar som går och pickar på marken, sover på natten och då och då lyfter tillsammans (ledaren flyger upp, de
 andra följer efter ett och ett), flyger runt en stund och landar igen. Kommer en spelare nära (smyg för att komma
 närmare) eller blir någon i flocken skadad lyfter **hela flocken** på en gång och flyger bort från dig. **En pil dödar
-alltid.** Lämnar ingen kadaver: fjädrarna (och lite kött) faller direkt — ett sätt att få fjädrar till pilar.
+alltid.** Hooded Crow och Seagull lämnar ingen kadaver: fjädrarna (och lite kött) faller direkt — ett sätt att få
+fjädrar till pilar. **Greylag Goose, Rock Dove och Willow Ptarmigan** är matfåglar och lämnar en **Carcass** som plockas
+och styckas (se Fåglar: kadaver, plockning och kött).
 
-| Fågel | Var | Beteende | Drops |
+| Fågel | Var | Beteende | Ger |
 |---|---|---|---|
-| **Hooded Crow** (gråkråka) | Slätt, skog, björkskog, dark forest, savann (3–6) | Lös, föränderlig flock; landar på marken eller i trädtopparna | 1–2 Feather, 0–1 Game Meat Scraps |
-| **Greylag Goose** (grågås) | Floder, träsk, frusna floder (4–7) | Flyger högt i **V-formation**, landar helst på vatten och simmar omkring | 2–4 Feather, 1–2 Chicken Scraps |
-| **Rock Dove** (klippduva) | Meadow, windswept hills, stony peaks, klippstränder (4–7) | Snabb flock, landar på marken | 1–2 Feather, 0–1 Chicken Scraps |
-| **Willow Ptarmigan** (dalripa) | Snöiga slätter/taiga, grove, taiga (3–5) | Trycker (låter dig komma nära), flyger lågt och kort. **Vit** där det snöar, annars brun med vita vingar | 1–3 Feather, 1 Chicken Scraps |
-| **Seagull** (fiskmås) | Stränder, klippstränder (2–4); ibland floder och hav | Seglar i cirklar över vattnet och skriker, **dyker mot ytan där det finns fisk**, vilar på stranden eller flyter på vattnet | 1–3 Feather |
+| **Hooded Crow** (gråkråka) | Slätt, skog, björkskog, dark forest, savann (3–6) | Lös, föränderlig flock; landar på marken eller i trädtopparna | 1–2 Feather, 0–1 Game Meat Scraps (direkt) |
+| **Greylag Goose** (grågås) | Floder, träsk, frusna floder (4–7) | Flyger högt i **V-formation**, landar helst på vatten och simmar omkring; landar vid sitt bo ibland | Carcass: 3–5 Feather, 2 Raw Goose; bo vid vattnet, Goose Egg |
+| **Rock Dove** (klippduva) | Meadow, windswept hills, stony peaks, klippstränder (4–7) | Snabb flock, landar på marken | Carcass: 1–2 Feather, 1 Raw Pigeon; bo på kala klippor, Pigeon Egg |
+| **Willow Ptarmigan** (dalripa) | Snöiga slätter/taiga, grove, taiga (3–5) | Trycker (låter dig komma nära), flyger lågt och kort. **Vit** där det snöar, annars brun med vita vingar | Carcass: 2–3 Feather, 1 Raw Ptarmigan; markbo, Ptarmigan Egg |
+| **Seagull** (fiskmås) | Stränder, klippstränder (2–4); ibland floder och hav | Seglar i cirklar över vattnet och skriker, **dyker mot ytan där det finns fisk**, vilar på stranden eller flyter på vattnet | 1–3 Feather (direkt) |
+
+### Fåglar: kadaver, plockning och kött
+Matfåglarna **Greylag Goose, Pheasant, Willow Ptarmigan, Rock Dove och Chicken** lämnar en Carcass (Hooded Crow och
+Seagull gör det inte).
+
+- **Bära:** smyg + högerklicka med tom hand. En fågel är lätt: ingen fart förlorad och sprinten fungerar, även en gås. Den
+  bärs **i fötterna över högra axeln** och hänger ner längs ryggen (högra armen uppe); på en Hanging Rack hänger den i
+  fötterna med halsen rakt ner och vingarna utfallna.
+- **Plocka:** första knivomgången plockar fjädrarna (antal per art, se tabellen nedan). Kroppen ser sedan plockad ut:
+  egen bar fågelhud med gåshud för varje art (gås gulvit, duva och ripa mörkrosa, fasan och höna ljusa; näbb, ögon, kam
+  och ben kvar, stjärten blir pennstumpar).
+- **Hel fågel:** högerklicka på en **plockad** fågel med **tom hand** för att ta den som item: **Plucked Goose / Pheasant /
+  Ptarmigan / Pigeon / Chicken** (stackar 16, förskäms på 1 dag). Plucked + kniv i craftingrutan → fågelns råa kött; hel
+  på Campfire (30 s) → det lagade köttet. Så bär man hem många fåglar på en gång. (Bronsålderns kittel ska koka dem hela.)
+- **Stycka:** andra knivomgången ger fågelns eget kött (ingen Bone Pile). På en Hanging Rack: samma kött, **+1** om fågeln
+  hunnit hänga sig (3 min), inga stora styckdetaljer.
+
+| Fågel | Fjädrar | Rått kött (hunger) | Lagat (hunger / mättnad) |
+|---|---|---|---|
+| Greylag Goose | 3–5 | 2 Raw Goose (3) | Cooked Goose (7 / 0,8) |
+| Pheasant | 2–3 | 1 Raw Pheasant (2) | Cooked Pheasant (6 / 0,7) |
+| Willow Ptarmigan | 2–3 | 1 Raw Ptarmigan (2) | Cooked Ptarmigan (5 / 0,7) |
+| Rock Dove | 1–2 | 1 Raw Pigeon (1) | Cooked Pigeon (4 / 0,6) |
+| Chicken | 1–2 (80 %) | 1 Raw Chicken (2, vanilla) | Cooked Chicken (6 / 0,6, vanilla) |
+
+- Rått fågelkött ger 30 % chans på Hunger (som vanilla Raw Chicken), lagas på Campfire (20 s, eller i smoker), går att
+  **röka** (Smoked Meat) och **torka** (Jerky). Förskäms som annat kött: rått 1 dag, lagat 3 dagar; blir Rotten Flesh.
+- Chicken Scraps kommer inte längre från fåglar (finns kvar för gamla världar).
+
+### Fåglar: bon och ägg
+- **Bird Nest:** ett bo av kvistar fodrat med halm och dun. Genereras där fåglarna bor, redan med sin fågel och 0–2 ägg:
+  **Greylag Goose** på stranden vid floder och träsk (vatten inom 2 block), **Pheasant** på gräs i skogen, **Willow
+  Ptarmigan** på snö, gräs och podzol i snöiga biomer och taiga, **Rock Dove** på kala klippor (sten) i bergen. Kan byggas:
+  3 Stick + 2 Straw eller Plant Fibre (`S S` / `WSW`).
+- Allt sker på blockets random tick (ungefär en gång per minut), ingen skanning varje tick. Ett tomt bo **tas över** av
+  första häckande fågel (gås, fasan, ripa, duva, höna) inom 12 block. Fåglar av boets art inom 24 block **håller sig kring
+  det**: flockfåglarna flyger runt boet och landar vid det ungefär varannan gång (flocken fungerar som förut), fasaner och
+  höns som gått mer än 10 block bort går tillbaka.
+- **Ägg:** med en fågel av arten i närheten läggs ett ägg ungefär var 7:e minut, upp till **3** (syns i boet, olika stora och
+  färgade per art): **Goose Egg** (stort gräddvitt), **Pheasant Egg** (olivbrunt), **Ptarmigan Egg** (fläckigt),
+  **Pigeon Egg** (litet vitt); höns lägger vanliga Egg. Högerklicka med tom hand för att ta ett. Äggen kläcks inte, kan inte
+  kastas och äts inte råa: kokas till Boiled Egg (gåsägg ger 2). De förskäms inte.
+- **Överge:** varje gång boet **töms helt** blir fåglarna oroligare ("The birds are getting uneasy about this nest" efter
+  två gånger); de lugnar sig ett steg ungefär i timmen. Töms det **3 gånger** innan dess överger de det. Lämnar man ett
+  ägg händer inget. Ett övergivet bo kan tas över igen efter ungefär en dag.
+- Bryts boet släpper det sig själv och äggen.
 
 ### Giant Deer (miniboss)
 Megaloceros, jättehjorten: sällsynt (vikt 1), alltid ensam, i skog, taiga, slätt och meadow. **Dubbelt så stor som
@@ -1081,9 +1134,9 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 
 | Mat | Håller |
 |---|---|
-| Rått kött (alla scraps, vanilla rått kött), rå fisk (filéer och Whole fish) | **1 dag** (20 min) |
+| Rått kött (alla scraps, vanilla rått kött, rått fågelkött, Plucked-fåglar), rå fisk (filéer och Whole fish) | **1 dag** (20 min) |
 | Bär (vilda, Sweet Berries, Glow Berries), vild svamp, Raw Porridge, Porridge, Peeled Egg | **2 dagar** |
-| Tillagat kött och fisk (scraps och vanilla), Roasted Mushrooms, Boiled Egg | **3 dagar** |
+| Tillagat kött och fisk (scraps, fågelkött och vanilla), Roasted Mushrooms, Boiled Egg | **3 dagar** |
 | **Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Dried Mushrooms** | **30 dagar** |
 
 - Allt annat (bröd, äpplen, morötter, vanilla-soppor …) förskäms inte.
@@ -1546,10 +1599,10 @@ behövs först, så trädet läses som progressionen:
 
 - **Stone Age**: lösa stenar och flinta → fiber, Twine, flintverktyg → Tool Station → stenverktyg; eld (Fire Drill,
   Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Crucible; flotte, paddel och kanot; pigment och grottmålning; upptrampad stig (Beaten Path).
-- **Wilderness & Hunting**: kniv → styckning → hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
+- **Wilderness & Hunting**: kniv → styckning → plocka en gås, bygga ett fågelbo; hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
   Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak,
   stambyar och de odöda (Brute, spjutskelett).
-- **Food & Farming**: bär och svamp → lagad, rökt och torkad mat, förskämning; vild säd → skära, sådd, skörd, tröskning,
+- **Food & Farming**: bär och svamp → lagad mat och fågelkött, rökt och torkad mat, förskämning, ägg ur ett fågelbo; vild säd → skära, sådd, skörd, tröskning,
   Straw Bed, gröt, Manure, Compost, Scarecrow, mjöl, deg och bröd.
 - **Bronze Age**: första kopparfyndet → Raw Copper, vaskning, Stone Anvil, koncentrat, Tuyere, Bellows, formar, smält
   koppar, gjutning, Whetstone, kopparverktyg → tenn → brons → bronsverktyg, vapen, rustning, såg, drejskiva, krukor, vagn

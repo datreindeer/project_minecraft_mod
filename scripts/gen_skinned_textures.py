@@ -15,7 +15,8 @@ SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(
     r"C:\Users\Yngve\AppData\Local\Temp\claude\43d83a9a335e657f\9ee37f73-4613-4afd-a1ce-400b3a021c61\scratchpad\src\assets\minecraft\textures\entity")
 OUT = Path(__file__).resolve().parent.parent / "src/main/resources/assets/mechanical/textures/entity/skinned"
 
-FOLDERS = ["cow", "pig", "sheep", "chicken", "rabbit", "goat", "horse", "llama", "camel", "fox",
+# chicken: plucked skin instead of flesh, in gen_birds2_textures.py
+FOLDERS = ["cow", "pig", "sheep", "rabbit", "goat", "horse", "llama", "camel", "fox",
            "wolf", "cat", "parrot", "bear", "panda", "turtle", "frog", "armadillo", "sniffer",
            "axolotl", "bee", "strider"]
 # Overlays / non-body layers and undead variants.

@@ -1,0 +1,171 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/bird_nest"
+      }
+    },
+    {
+      "when": {
+        "bird": "goose",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_goose_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "goose",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_goose_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "goose",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_goose_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "pheasant",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_pheasant_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "pheasant",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_pheasant_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "pheasant",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_pheasant_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "ptarmigan",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_ptarmigan_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "ptarmigan",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_ptarmigan_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "ptarmigan",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_ptarmigan_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "rock_dove",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_rock_dove_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "rock_dove",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_rock_dove_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "rock_dove",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_rock_dove_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "chicken",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_chicken_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "chicken",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_chicken_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "chicken",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_chicken_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "none",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_chicken_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "none",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_chicken_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "none",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_chicken_3"
+      }
+    }
+  ]
+}

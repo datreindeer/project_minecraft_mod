@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.1,
+  "ingredient": "mechanical:raw_ptarmigan",
+  "result": {
+    "id": "mechanical:cooked_ptarmigan"
+  }
+}

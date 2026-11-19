@@ -1,5 +1,7 @@
 package com.mechanical.client.wildlife;
 
+import com.mechanical.client.CarcassRenderer;
+
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -57,6 +59,23 @@ public class BirdModel extends EntityModel<WildAnimalRenderState> {
         BirdRenderState bird = (BirdRenderState) state;
         leftLeg.visible = rightLeg.visible = true;
         float t = state.ageInTicks;
+
+        if (CarcassRenderer.isHung(state)) {
+            // hung by the feet (model -z is world down): legs up to the hook, the neck hanging straight down, wings fallen open
+            CarcassRenderer.hangLegs(new ModelPart[0], new ModelPart[] {leftLeg, rightLeg});
+            neck.xRot = 1.45F;
+            leftWing.xRot = rightWing.xRot = 3.0F;
+            leftWing.zRot = 0.6F;
+            rightWing.zRot = -0.6F;
+            return;
+        }
+        if (CarcassRenderer.isCarcass(state)) {
+            // lying on its side: legs and wings sag to the ground, the neck limp
+            for (ModelPart limb : new ModelPart[] {leftLeg, rightLeg, leftWing, rightWing}) limb.zRot = CarcassRenderer.LIMB_SAG;
+            neck.xRot = 0.6F;
+            head.yRot = state.yRot * Mth.DEG_TO_RAD * 0.8F;
+            return;
+        }
 
         if (state.flying) {
             flying(bird);

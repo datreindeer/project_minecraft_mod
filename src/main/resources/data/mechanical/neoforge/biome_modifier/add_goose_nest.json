@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:river",
+    "minecraft:swamp",
+    "minecraft:frozen_river"
+  ],
+  "features": "mechanical:goose_nest",
+  "step": "vegetal_decoration"
+}

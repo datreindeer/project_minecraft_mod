@@ -19,6 +19,10 @@
     "mechanical:cooked_haunch",
     "mechanical:cooked_ribs",
     "mechanical:cooked_loin",
-    "minecraft:bread"
+    "minecraft:bread",
+    "mechanical:cooked_goose",
+    "mechanical:cooked_pheasant",
+    "mechanical:cooked_ptarmigan",
+    "mechanical:cooked_pigeon"
   ]
 }

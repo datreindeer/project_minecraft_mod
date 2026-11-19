@@ -36,6 +36,9 @@ public final class Butchery {
 
     private static final String CARCASS_TAG = "mechanical.carcass";
     private static final Extra FEATHERS = new Extra(() -> Items.FEATHER, 0.8F, 1, 2);
+    private static Extra feathers(int min, int max) {
+        return new Extra(() -> Items.FEATHER, 1.0F, min, max);
+    }
     private static Extra hide(float chance) {
         return new Extra(Mechanical.RAW_HIDE, chance, 1, 1);
     }
@@ -51,8 +54,11 @@ public final class Butchery {
             // sheep: shear the wool first, then the hide comes off with the meat
             Map.entry(EntityTypes.SHEEP, new Yield(Mechanical.MUTTON_SCRAPS, 1, 2,
                     List.of(new Extra(Mechanical.WOOL_THREAD, 0.3F, 1, 2)), List.of(hide(0.25F)))),
-            // birds: pluck the feathers first
-            Map.entry(EntityTypes.CHICKEN, new Yield(Mechanical.CHICKEN_SCRAPS, 1, 1, List.of(FEATHERS), List.of())),
+            // birds: pluck the feathers first, then each gives its own meat (Birds; the plucked bird can also be taken whole)
+            Map.entry(EntityTypes.CHICKEN, new Yield(() -> Items.CHICKEN, 1, 1, List.of(FEATHERS), List.of())),
+            Map.entry(Wildlife.GOOSE.get(), new Yield(Birds.RAW_GOOSE, 2, 2, List.of(feathers(3, 5)), List.of())),
+            Map.entry(Wildlife.ROCK_DOVE.get(), new Yield(Birds.RAW_PIGEON, 1, 1, List.of(feathers(1, 2)), List.of())),
+            Map.entry(Wildlife.PTARMIGAN.get(), new Yield(Birds.RAW_PTARMIGAN, 1, 1, List.of(feathers(2, 3)), List.of())),
             Map.entry(EntityTypes.PARROT, new Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 1, List.of(FEATHERS), List.of())),
             Map.entry(Wildlife.ROE_DEER.get(), new Yield(Wildlife.VENISON_SCRAPS, 1, 2, List.of(hide(0.3F)),
                     List.of(new Extra(Wildlife.SINEW, 0.4F, 1, 1)))),
@@ -64,7 +70,7 @@ public final class Butchery {
                     List.of(new Extra(() -> Items.RABBIT_FOOT, 0.08F, 1, 1)))),
             Map.entry(Wildlife.DESERT_HARE.get(), new Yield(Mechanical.RABBIT_SCRAPS, 1, 1, List.of(new Extra(() -> Items.RABBIT_HIDE, 0.35F, 1, 1)),
                     List.of(new Extra(() -> Items.RABBIT_FOOT, 0.08F, 1, 1)))),
-            Map.entry(Wildlife.PHEASANT.get(), new Yield(Mechanical.CHICKEN_SCRAPS, 1, 1, List.of(new Extra(() -> Items.FEATHER, 1.0F, 2, 3)), List.of())),
+            Map.entry(Wildlife.PHEASANT.get(), new Yield(Birds.RAW_PHEASANT, 1, 1, List.of(feathers(2, 3)), List.of())),
             Map.entry(Wildlife.AUROCHS.get(), new Yield(Mechanical.BEEF_SCRAPS, 3, 5, List.of(hide(0.6F)),
                     List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 2), new Extra(Wildlife.HORN, 0.5F, 1, 2)))),
             Map.entry(Wildlife.WILD_HORSE.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 2, 4, List.of(hide(0.5F)),
@@ -119,7 +125,8 @@ public final class Butchery {
         // phantoms only when a player killed them (like the vanilla membrane); those burnt by the sun just vanish
         if (entity.getType() == EntityTypes.PHANTOM) return entity.getLastHurtByPlayer() != null;
         if (!(entity instanceof Animal animal) || animal.isBaby()) return false;
-        if (animal instanceof com.mechanical.wildlife.FlockBird) return false; // small birds just drop their feathers
+        // crows and gulls just drop their feathers (loot tables); the edible flock birds leave a carcass
+        if (animal instanceof com.mechanical.wildlife.FlockBird && !Birds.isBird(animal.getType())) return false;
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;
         if (animal instanceof AbstractHorse horse && horse.isTamed()) return false;
         return entity.getType() != EntityTypes.SKELETON_HORSE && entity.getType() != EntityTypes.ZOMBIE_HORSE;
@@ -173,6 +180,11 @@ public final class Butchery {
         Yield y = yieldFor(type);
         int scraps = Math.round((y.minMeat() + random.nextInt(y.maxMeat() - y.minMeat() + 1)) * yieldMultiplier);
         Item meat = y.meat().get();
+        if (Birds.isBird(type)) {
+            // a bird has no big cuts and no bones worth taking: hung game just gains a piece once it has aged
+            drop(level, at, spoiled ? Items.ROTTEN_FLESH : meat, scraps + (hung && aged ? 1 : 0));
+            return;
+        }
         if (spoiled || meat == Items.ROTTEN_FLESH) drop(level, at, Items.ROTTEN_FLESH, hung ? scraps * 2 : scraps);
         else if (!hung) drop(level, at, meat, scraps);
         else {

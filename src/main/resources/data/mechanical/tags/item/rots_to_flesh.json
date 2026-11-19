@@ -43,6 +43,19 @@
     "mechanical:raw_loin",
     "mechanical:cooked_haunch",
     "mechanical:cooked_ribs",
-    "mechanical:cooked_loin"
+    "mechanical:cooked_loin",
+    "mechanical:raw_goose",
+    "mechanical:raw_pheasant",
+    "mechanical:raw_ptarmigan",
+    "mechanical:raw_pigeon",
+    "mechanical:plucked_goose",
+    "mechanical:plucked_pheasant",
+    "mechanical:plucked_ptarmigan",
+    "mechanical:plucked_pigeon",
+    "mechanical:plucked_chicken",
+    "mechanical:cooked_goose",
+    "mechanical:cooked_pheasant",
+    "mechanical:cooked_ptarmigan",
+    "mechanical:cooked_pigeon"
   ]
 }

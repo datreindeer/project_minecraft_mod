@@ -30,6 +30,8 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
 public final class HaulingClient {
     /** true: dragging a large body, false: carrying one on the shoulders; absent: not hauling. */
     private static final ContextKey<Boolean> DRAGGING = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "hauling"));
+    /** Present: holding a bird by its feet over the right shoulder (CarcassRenderer's SLUNG pose). */
+    private static final ContextKey<Boolean> SLUNG = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "slung"));
 
     @SubscribeEvent
     static void renderStateModifiers(RegisterRenderStateModifiersEvent event) {
@@ -38,7 +40,8 @@ public final class HaulingClient {
             public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
                 CarcassEntity c = avatar instanceof Player player ? CarcassHauling.hauled(player) : null;
                 if (c == null) return;
-                state.setRenderData(DRAGGING, c.isLarge());
+                if (com.mechanical.Birds.isBird(c.animal()) && !c.isLarge()) state.setRenderData(SLUNG, true);
+                else state.setRenderData(DRAGGING, c.isLarge());
                 state.rightHandItemState.clear();
                 state.leftHandItemState.clear();
                 state.rightArmPose = state.leftArmPose = HumanoidModel.ArmPose.EMPTY;
@@ -55,6 +58,13 @@ public final class HaulingClient {
 
     /** End of HumanoidModel#setupAnim (players and their armour): arms up holding the body, or back gripping the dragged one. */
     public static void poseArms(HumanoidModel<?> model, HumanoidRenderState state) {
+        if (state.getRenderData(SLUNG) != null && state.swimAmount <= 0) {
+            // the right hand up by the shoulder, gripping the feet of the bird hanging down the back
+            model.rightArm.xRot = -2.9F;
+            model.rightArm.yRot = 0;
+            model.rightArm.zRot = 0.1F;
+            return;
+        }
         Boolean dragging = state.getRenderData(DRAGGING);
         if (dragging == null || state.swimAmount > 0) return;
         if (dragging) {

@@ -137,7 +137,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         return !skinnedTexture(texture).equals(texture);
     }
 
-    public enum Pose { LYING, CARRIED, HUNG }
+    /** SLUNG: an edible bird carried by its feet over the shoulder, hanging down the back (drawn like HUNG). */
+    public enum Pose { LYING, CARRIED, HUNG, SLUNG }
 
     public static class State extends EntityRenderState {
         EntityRenderState animal;
@@ -201,7 +202,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             living.setYRot(180.0F);
         }
         Entity hauler = carcass.isLarge() ? null : carcass.hauler();
-        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? Pose.CARRIED : Pose.LYING;
+        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (com.mechanical.Birds.isBird(carcass.animal()) ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
         boolean skinned = carcass.stage() > 0;
         if (dummy instanceof Sheep sheep) sheep.setSheared(skinned);
         state.renderer = (EntityRenderer<Entity, EntityRenderState>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dummy);
@@ -209,7 +210,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // skinned/plucked: raw red flesh look (the vanilla hurt tint); a sheared sheep already looks bare
         // carried the legs hang stiff from the body; hung they hang from the hook (HUNG) instead of sagging sideways
         if (state.pose == Pose.LYING) state.animal.setRenderData(CARCASS, true);
-        if (state.pose == Pose.HUNG) state.animal.setRenderData(HUNG, true);
+        if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) state.animal.setRenderData(HUNG, true);
         if (state.animal instanceof LivingEntityRenderState living) {
             // models use yRot as head yaw; lying on the side that points the head at the ground
             living.yRot = state.pose == Pose.LYING ? HEAD_SAG : 0.0F;
@@ -228,9 +229,10 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         state.bodyYaw = carcass.getViewYRot(partialTicks);
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
-        state.hangLength = carcass.getBbHeight();
+        // slung: as long as it would hang on the rack (its own hitbox is the lying one)
+        state.hangLength = state.pose == Pose.SLUNG ? Math.max(state.width, state.height) : carcass.getBbHeight();
         state.tilt = carcass.getVehicle() instanceof TravoisEntity bed ? bed.pitch(partialTicks) : 0.0F;
-        if (state.pose == Pose.CARRIED) {
+        if (state.pose == Pose.CARRIED || state.pose == Pose.SLUNG) {
             Vec3 at = hauler.getPosition(partialTicks).subtract(carcass.getPosition(partialTicks));
             state.dx = at.x;
             state.dy = at.y;
@@ -244,7 +246,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.animal == null) return;
         poseStack.pushPose();
-        if (state.pose == Pose.CARRIED) poseStack.translate(state.dx, state.dy + state.shoulder, state.dz);
+        if (state.pose == Pose.CARRIED || state.pose == Pose.SLUNG) poseStack.translate(state.dx, state.dy + state.shoulder, state.dz);
         poseStack.rotate(Axis.YP.rotationDegrees(180.0F - state.bodyYaw));
         // in this frame the animal's head points to -z, its feet to -y (the copy is rendered facing yaw 180)
         if (state.pose == Pose.CARRIED) {
@@ -257,11 +259,16 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             poseStack.popPose();
             return;
         }
-        if (state.pose == Pose.HUNG) {
+        if (state.pose == Pose.SLUNG) {
+            // the feet in the raised right hand above the shoulder (where the hook would be), the body down the back
+            // (+x is the hauler's right, +z behind him here; HaulingClient raises the arm)
+            poseStack.translate(0.3F, 0.55F - state.hangLength, 0.3F);
+        }
+        if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) {
             // head down from the hook: the rump (z = +rear) goes up to the top of the hitbox, the body centred under it.
             // The hind legs point up past the rump (hangLegs), so drop the body until the hook is at about the hocks,
             // less when a tall animal leaves little room under the hitbox (a moose's head already nears the ground)
-            float drop = Math.min(state.height * 0.15F, (com.mechanical.HangingRackBlock.HOOK - state.hangLength) * 0.3F);
+            float drop = state.pose == Pose.SLUNG ? 0.0F : Math.min(state.height * 0.15F, (com.mechanical.HangingRackBlock.HOOK - state.hangLength) * 0.3F);
             float rear = state.width * 0.6F + Math.max(0.0F, drop);
             poseStack.translate(0.0F, state.hangLength - rear, state.height * 0.55F);
             poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
