@@ -1433,35 +1433,35 @@
     "category": "tools"
   },
   "flour": {
-    "text": "Mals av Grain i [[quern]] (1 Grain → 1 Flour). 2 Flour + [[clay_water_bucket]] → [[dough]]. Ersätter vete i Cookie och Cake. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative. (Flour själv kräver bara Quern.)",
+    "text": "Mals av Grain i [[quern]] (1 Grain → 1 Flour, 4 klick). 2 Flour + [[clay_water_bucket]] → [[dough]]. Ersätter vete i Cookie och Cake. Håller 30 dagar.",
     "category": "materials"
   },
   "dough": {
-    "text": "2 [[flour]] + [[clay_water_bucket]] (formlöst). Bakas på [[baking_stone]] (30 s) eller i Clay Kiln (20 s) → Bread.",
+    "text": "2 [[flour]] + [[clay_water_bucket]] (formlöst). Bakas på [[baking_stone]] (30 s) eller i Clay Kiln (20 s vid 200°) → Bread. Håller 1 dag, sedan Spoiled Food.",
     "category": "food"
   },
   "compost": {
-    "text": "Från [[compost_heap]] (2 st per full hög). Högerklicka på farmland (eller grödan på den): bördighet +1. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "text": "Från [[compost_heap]] (2 st per full hög). Högerklicka på farmland (eller grödan på den): bördighet +1.",
     "category": "materials"
   },
   "manure": {
-    "text": "Högerklicka på farmland: bördighet +2. Har ingen källa än: ska släppas av tamdjur i byar/fållor i bronsåldern. Finns i creative.",
+    "text": "Vuxna kor, mooshrooms, får, grisar, getter, hästar, åsnor, mulor, uroxar och vildhästar släpper i snitt 1 Manure var 10:e minut. Högerklicka på farmland: bördighet +2. I [[compost_heap]] fyller den 2 steg.",
     "category": "materials"
   },
   "quern": {
-    "text": "Handkvarn. Högerklicka med Grain: överstenen vrids ett kvarts varv; ett helt varv (4 klick) mal 1 Grain → 1 [[flour]]. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "text": "Handkvarn. Recept: `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` (C = Copper eller Bronze Ingot, metallaxeln). Högerklicka med Grain: överstenen vrids ett kvarts varv; ett helt varv (4 klick) mal 1 Grain → 1 [[flour]].",
     "category": "blocks"
   },
   "baking_stone": {
-    "text": "Platt sten bredvid (eller ovanpå) en brinnande Campfire. Högerklicka med [[dough]]: efter 30 s eld är det Bread, efter 45 s till bränt (Burnt Food). Tom hand tar av. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "text": "Recept: `[R][C][R]` (R = rock chunk, C = Copper eller Bronze Ingot). Platt sten bredvid (eller ovanpå) en brinnande Campfire. Högerklicka med [[dough]]: efter 30 s eld är det Bread, efter 45 s till bränt (Burnt Food). Tom hand tar av.",
     "category": "blocks"
   },
   "compost_heap": {
-    "text": "Flätad fålla för växtrester. Högerklicka med Leaf Litter, [[straw]], Plant Fibre, löv, saplings, ruttet kött, bark, fiskben, rötter …: 7 st fyller den, sedan ruttnar den i 2 min (ånga) och ger 2 [[compost]]. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "text": "Recept: `[Stick][ ][Stick]` / `[Stick][Leaf Litter][Stick]` / `[Stick][C][Stick]` (C = Copper eller Bronze Ingot). Flätad fålla för växtrester. Högerklicka med Leaf Litter, [[straw]], Plant Fibre, löv, saplings, Spoiled Food, ruttet kött, bark, fiskben, rötter …: 7 steg fyller den ([[manure]] räknas som 2), sedan ruttnar den i 2 min (ånga) och ger 2 [[compost]].",
     "category": "blocks"
   },
   "scarecrow": {
-    "text": "Två block hög fågelskrämma (stolpe, hudtunika med halm, pumpahuvud). Inom 12 block landar inga kråkor på åkern och de äter inget. **Bronsåldern:** inget recept än, kommer i bronsåldern fas 3 (kräver en koppar-/bronsdel). Finns i creative.",
+    "text": "Recept: `[C][Carved Pumpkin][ ]` / `[Straw][Raw Hide][Straw]` / `[ ][Stick][ ]` (C = Copper eller Bronze Ingot, en bjällra på armen). Två block hög fågelskrämma (stolpe, hudtunika med halm, pumpahuvud). Inom 12 block landar inga kråkor på åkern och de äter inget.",
     "category": "blocks"
   },
   "minecraft:wheat": {
@@ -1475,7 +1475,7 @@
     "category": "materials"
   },
   "minecraft:bread": {
-    "text": "3 Wheat-receptet är **borttaget**. Bröd bakas av [[dough]] på [[baking_stone]] eller i Clay Kiln (bronsåldern).",
+    "text": "3 Wheat-receptet är **borttaget**. Bröd bakas av [[dough]] på [[baking_stone]] eller i Clay Kiln (bronsåldern). Håller 3 dagar.",
     "vanilla": true,
     "category": "food"
   },

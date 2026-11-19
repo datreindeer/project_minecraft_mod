@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RCR"
+  ],
+  "key": {
+    "R": "#mechanical:rock_chunks",
+    "C": [
+      "minecraft:copper_ingot",
+      "mechanical:bronze_ingot"
+    ]
+  },
+  "result": {
+    "id": "mechanical:baking_stone"
+  }
+}

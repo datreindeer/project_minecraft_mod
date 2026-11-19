@@ -1,7 +1,8 @@
 # Odling
 
-> Status: **byggd 2026-11-19** (spec beslutad samma dag). Stenålderns del är spelbar; bronsålderns del (Quern, bröd,
-> kompost, gödsel, fågelskrämma) finns fullt fungerande i creative men saknar survival-recept tills bronsåldern fas 3.
+> Status: **byggd 2026-11-19** (spec beslutad samma dag). Stenålderns del är spelbar. Bronsålderns del (Quern, bröd,
+> kompost, gödsel, fågelskrämma) är **byggd i bronsåldern fas 3**: recepten kräver en Copper eller Bronze Ingot, och
+> boskap släpper Manure (se "Bronsåldern fas 3 (byggd)").
 > Spelarens beskrivning av stenålderns del finns i `docs/ages/01-stone-age.md` (Odling). Senare åldrar ger bättre
 > verktyg (bronsskära, plog).
 
@@ -17,9 +18,8 @@
     Flail och tröskning, Porridge som sädens mat, alla växtregler (temperatur, frost, dagsljus, fukt, torka, rotröta,
     vattning med Clay Water Bucket), bördighet som sjunker vid skörd och återhämtar sig i träda och med ärtor, och kråkor
     som äter unga grödor.
-  - **Bronsåldern (byggt, men inget survival-recept än):** Quern → Flour → Dough → Bread (Baking Stone / Clay Kiln),
-    Compost Heap + Compost, Manure, Scarecrow. Recepten kräver en koppar-/bronsdel och läggs till i bronsåldern fas 3
-    (förslag längst ned).
+  - **Bronsåldern (fas 3, byggd):** Quern → Flour → Dough → Bread (Baking Stone / Clay Kiln),
+    Compost Heap + Compost, Manure, Scarecrow. Recepten kräver en Copper eller Bronze Ingot.
   - Vanillas brödrecept (3 Wheat) är borttaget. Bröd går alltså inte att få i survival förrän bronsåldern.
 
 ## Vete i det nya systemet (vanilla-mappning)
@@ -120,7 +120,7 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
   - **Compost** (bronsåldern): Compost Heap fylls med 7 komposterbara saker (taggen `mechanical:compostable`: Leaf Litter,
     Straw, Plant Fibre, löv, saplings, gräs, ormbunke, ruttet kött, Burnt Food, Bark, Fish Bones, melonskivor, rötter,
     äpplen), ruttnar 2 min, ger 2 Compost. Högerklick på farmland: +1.
-  - **Manure** (bronsåldern): +2. Har ingen källa än (se nedan).
+  - **Manure** (bronsåldern): +2. Släpps av boskap (se "Bronsåldern fas 3").
   - **Växelbruk:** Peas höjer.
 
 ## Kråkor och fågelskrämma (byggt)
@@ -140,25 +140,39 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 | Flint Sickle | Tool Station: Flint + Twine + Stick (låses upp av Flint) | Extra kärve + Straw, skär gräs/grödor/vild säd snabbt. Hållbarhet 48 |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska. Hållbarhet 64 |
 | Raw Porridge | 2 Grain + Clay Water Bucket + Bowl | Kokas till Porridge |
-| Quern | bronsåldern | Mal Grain → Flour |
-| Baking Stone | bronsåldern | Baka Dough → Bread |
-| Compost Heap | bronsåldern | Kompostera |
-| Scarecrow | bronsåldern | Håller kråkor borta |
+| Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` | Mal Grain → Flour |
+| Baking Stone | `[R][C][R]` | Baka Dough → Bread |
+| Compost Heap | `[Stick][ ][Stick]` / `[Stick][Leaf Litter][Stick]` / `[Stick][C][Stick]` | Kompostera |
+| Scarecrow | `[C][Carved Pumpkin][ ]` / `[Straw][Raw Hide][Straw]` / `[ ][Stick][ ]` | Håller kråkor borta |
 | Straw | tröskning, skära | Kompost, fågelskrämma |
 
-## Recept som läggs till i bronsåldern fas 3
+## Bronsåldern fas 3 (byggd)
 
-Förslag (C = Copper Ingot eller Bronze Ingot, R = rock chunk):
+C = **Copper Ingot eller Bronze Ingot** (även Poor Bronze), R = rock chunk (`#mechanical:rock_chunks`). Alla fyra är
+vanliga shaped-recept (kategori misc) och visas i receptboken först när man bär en Copper eller Bronze Ingot (advancement
+`farming_bronze_age`), inte redan när man bär kullersten eller pinnar.
 
-| Sak | Förslag |
-|---|---|
-| Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone][Cobblestone][Cobblestone]` (metallaxel genom stenarna) |
-| Baking Stone | `[R][C][R]` (rock chunks kring en kopparplåt) |
-| Compost Heap | `[Stick][ ][Stick]` / `[Stick][Leaf Litter][Stick]` / `[Stick][C][Stick]` (kopparspik håller ihop flätverket) |
-| Scarecrow | `[C][Carved Pumpkin][ ]` / `[Straw][Raw Hide][Straw]` / `[ ][Stick][ ]` |
-| Dough | finns redan (2 Flour + Clay Water Bucket); blir nåbart när Quern får recept |
-| Manure | ingen crafting: tamdjur (ko, får, gris, häst) i fållor släpper ibland Manure (förslag ~1 per djur var 10:e minut) |
-| Compost | ingen crafting: från Compost Heap |
+| Sak | Recept | Varför metallen |
+|---|---|---|
+| Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone][Cobblestone][Cobblestone]` | metallaxel genom stenarna |
+| Baking Stone | `[R][C][R]` | kopparplåt mellan stenarna |
+| Compost Heap | `[Stick][ ][Stick]` / `[Stick][Leaf Litter][Stick]` / `[Stick][C][Stick]` | kopparspik håller ihop flätverket |
+| Scarecrow | `[C][Carved Pumpkin][ ]` / `[Straw][Raw Hide][Straw]` / `[ ][Stick][ ]` | en kopparbjällra på armen |
+| Dough | 2 Flour + Clay Water Bucket (fanns redan, nu nåbart) | |
+| Compost | ingen crafting: från Compost Heap | |
+| Manure | ingen crafting: från boskap | |
+
+- **Manure:** vuxna djur i entity-taggen `mechanical:drops_manure` (Cow, Mooshroom, Sheep, Pig, Goat, Horse, Donkey,
+  Mule, Aurochs, Wild Horse) släpper då och då en Manure med ett blött ljud: var 200:e tick (förskjutet per djur) 1/60
+  chans, alltså i snitt **1 per djur var 10:e minut**. Ungar släpper inget. Gäller överallt, inte bara i fållor (beslut:
+  enklast, och sakerna despawnar efter 5 min som annat på marken); vilda uroxar och hästar ger alltså också gödsel.
+- **Manure i Compost Heap:** Manure finns i `mechanical:compostable` och fyller högen **2 steg** (allt annat 1), så den
+  snabbar på komposten. Spoiled Food (från förskämd mat) finns också i taggen (gen_preserving). Manure direkt på åkern ger
+  +2, så att kompostera den lönar sig bara när man har mer gödsel än åker.
+- **Hållbarhet:** Flour 30 dagar (torr), Dough 1 dag, Bread 3 dagar (som tillagat kött). Ruttnar till Spoiled Food.
+- **Bröd:** Quern mal 1 Grain → 1 Flour (4 klick, överstenen vrids ett kvarts varv per klick, kvarnljud och korn som
+  yr). 2 Flour + Clay Water Bucket → Dough. Baking Stone vid brinnande Campfire: 30 s → Bread, 45 s till → Burnt Food.
+  Clay Kiln: Dough → Bread på 20 s vid 200°.
 
 ## Teknik
 
@@ -166,12 +180,15 @@ Förslag (C = Copper Ingot eller Bronze Ingot, R = rock chunk):
   `Fertility.java` + `mixin/FarmlandBlockMixin.java` (bördighet, träda, torka), `FarmCropBlock`, `WildPlantBlock`,
   `FlailItem`, `FertilizerItem`, `QuernBlock`, `BakingStoneBlock`, `CompostHeapBlock`, `ScarecrowBlock`.
   Vattning och hinkens rest i recept: `ClayBucketItem`. Dough i ugnen: `KilnBlockEntity.RECIPES`. Kråkor: `wildlife/FlockBird`.
-- Data: `scripts/gen_farming.py` (efter gen_bronze_ores, före gen_block_items); texturer: `scripts/gen_farming_textures.py`.
+- Data: `scripts/gen_farming.py` (efter gen_age_recipes, före gen_wind); bronsålderns recept, Manure-taggen och
+  hållbarheten: `scripts/gen_farming3.py` (efter gen_wolf_pelt, före gen_block_items, eftersom den lägger till i
+  gen_preservings perishes-taggar); texturer: `scripts/gen_farming_textures.py`. Manure från djur: `Farming.dropManure`.
 
 ## Att bestämma senare
 
 - Säsonger (vår/höst) finns inte; temperaturen räcker tills vidare.
 - Bronsålderns bronsskära och plog (snabbare åker, större skörd).
-- Källa för Barley (handel, byar) och för Manure (djurhållning).
+- Källa för Barley (handel, byar).
+- Manure bara från djur i fållor eller tamdjur (nu släpper alla vuxna i taggen, även vilda).
 - Halmtak och halmbädd av Straw. Scarecrow som bär en Leather Helmet (bara utseende).
 - Spelarbyggda Hay Bales ger ruttet hö när de bryts (byarnas regel gäller alla hay bales).

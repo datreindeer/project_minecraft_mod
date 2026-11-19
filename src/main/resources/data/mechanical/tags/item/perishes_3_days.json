@@ -15,6 +15,7 @@
     "minecraft:cooked_cod",
     "minecraft:cooked_salmon",
     "mechanical:roasted_mushrooms",
-    "mechanical:boiled_egg"
+    "mechanical:boiled_egg",
+    "minecraft:bread"
   ]
 }

@@ -146,7 +146,7 @@ for i, n in {"flint_sickle": "Flint Sickle", "flail": "Flail"}.items():
 # vanilla wheat in the new system: the Wheat item is the sheaf, Wheat Seeds are the grain
 lang.update({"item.minecraft.wheat": "Wheat Sheaf", "item.minecraft.wheat_seeds": "Wheat Grain"})
 
-# ---------------------------------------------------------------- Bronze Age blocks (no recipe yet)
+# ---------------------------------------------------------------- Bronze Age blocks (recipes: gen_farming3.py)
 def faces(tex, **over):
     return {d: {"texture": over.get(d, tex)} for d in ("north", "south", "east", "west", "up", "down")}
 
@@ -242,7 +242,7 @@ shapeless("raw_porridge", ["#mechanical:grains", "#mechanical:grains", ["mechani
           "mechanical:raw_porridge")
 w(D / "mechanical/recipe/porridge.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 400, "experience": 0.1,
     "ingredient": "mechanical:raw_porridge", "result": {"id": "mechanical:porridge"}})
-# Bronze Age chain is complete except the quern recipe: Dough is mixed here, baked on the Baking Stone or in the Clay Kiln (Java)
+# Bronze Age: Dough is mixed here, baked on the Baking Stone or in the Clay Kiln (Java); block recipes in gen_farming3.py
 shapeless("dough", ["mechanical:flour", "mechanical:flour", ["mechanical:clay_water_bucket", "minecraft:water_bucket"]], "mechanical:dough")
 # bread only from dough: the 3-wheat recipe is gone; cookies and cake take flour instead of wheat
 never("minecraft/recipe/bread")
