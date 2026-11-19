@@ -27,7 +27,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
  * An inhabited Stone Age camp: a burning campfire in a cleared spot, two or three hide tents facing it, a drying rack,
- * a log to sit on, and three to five people (an elder plus gatherers, woodcutters and, by water, fishers) who all call
+ * a log to sit on, the tribe's banner on a pole, and three to five people (an elder plus gatherers, woodcutters and, by water, fishers) who all call
  * this campfire home and share one group.
  */
 final class TribeCamp extends StoneAgeFeature {
@@ -66,13 +66,24 @@ final class TribeCamp extends StoneAgeFeature {
         Direction.Axis axis = Math.abs(seat.getX() - c.getX()) >= Math.abs(seat.getZ() - c.getZ()) ? Direction.Axis.Z : Direction.Axis.X;
         set(level, seat, (taiga ? Blocks.SPRUCE_LOG : Blocks.OAK_LOG).defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis));
 
+        // the tribe's flag on a short pole beside the seat
+        UUID group = new UUID(random.nextLong(), random.nextLong());
+        BlockPos pole = c.offset((int) Math.round(-Math.cos(between + 0.9) * 3), 0, (int) Math.round(-Math.sin(between + 0.9) * 3));
+        if (level.getBlockState(pole).isAir()) {
+            for (int h = 0; h < 2; h++) set(level, pole.above(h), (taiga ? Blocks.STRIPPED_SPRUCE_LOG : Blocks.STRIPPED_OAK_LOG).defaultBlockState());
+            com.mechanical.people.Tribe tribe = com.mechanical.people.Tribe.of(group);
+            set(level, pole.above(2), Blocks.BANNER.pick(tribe.baseColour()).defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.BannerBlock.ROTATION, random.nextInt(16)));
+            if (level.getBlockEntity(pole.above(2)) instanceof net.minecraft.world.level.block.entity.BannerBlockEntity banner)
+                banner.applyComponentsFromItemStack(tribe.banner(level.registryAccess()));
+        }
+
         // the people: an elder and a mix of the camp trades (fishers only by water)
         List<TribeRole> pool = new ArrayList<>(List.of(TribeRole.GATHERER, TribeRole.GATHERER, TribeRole.WOODCUTTER));
         if (waterNearby(level, c)) pool.addAll(List.of(TribeRole.FISHER, TribeRole.FISHER, TribeRole.FISHER));
         List<TribeRole> roles = new ArrayList<>(List.of(TribeRole.ELDER));
         int count = 3 + random.nextInt(3);
         while (roles.size() < count) roles.add(pool.get(random.nextInt(pool.size())));
-        UUID group = new UUID(random.nextLong(), random.nextLong());
         for (int i = 0; i < roles.size(); i++) {
             double a = base + Math.PI / tents + i * Math.PI * 2 / roles.size() + 0.4;
             BlockPos p = c.offset((int) Math.round(Math.cos(a) * 3), 0, (int) Math.round(Math.sin(a) * 3));

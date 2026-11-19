@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/sharpened_oak_log"
+      },
+      {
+        "model": "mechanical:block/sharpened_oak_log",
+        "y": 90
+      }
+    ]
+  }
+}

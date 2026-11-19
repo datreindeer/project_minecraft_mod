@@ -556,18 +556,46 @@ Folk som lever i läger eller strövar i jaktlag. De **despawnar aldrig**, men n
 Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor, 4 varianter per roll).
 
 - **Roller:** Hunter (Crude Bow eller Flint Spear), Gatherer (Flint Knife och Bark Basket), Fisher (Crude Fishing Rod),
-  Woodcutter (Flint Axe), Elder (stav). Var och en har ett eget namn, t.ex. "Aruk the Hunter".
+  Woodcutter (Flint Axe), Elder (stav). Var och en har ett eget namn och sin stam, t.ex. "Aruk the Hunter of the Raven Tribe".
 - **Läger** (ca 1 på 150 chunks i skog, taiga, slätt, meadow och vid floder; plan mark, aldrig nära byar): brinnande
   Campfire, 2–3 hudtält, Drying Rack och en sittstock. 3–5 personer: en Elder plus Gatherers, Woodcutters och Fishers
   (bara nära vatten).
 - **Jaktlag** (ca 1 på 200 chunks i skog och taiga): 2–3 Hunters som följer en ledare.
+- **Tribe Village** (sällsynt, högst en per 36x36 chunks, i slätt, meadow, skog, björkskog, taiga, snöig taiga/slätt och savann;
+  `/locate structure mechanical:tribe_village`): en rund **palissad** (ca 43 block bred) av stockar med **Sharpened Logs**
+  (spetsade stockar) överst och en port med två höga stolpar med stammens banderoll. Inne: ett Longhouse för Elder (stockväggar,
+  tak av halm eller hudar), runda hyddor och hudtält runt en stor lägereld med stenar och sittstockar, en flaggstång med
+  banderollen, Drying Racks, förråd (Decorated Pots och tunna med mat, hudar och flint), vedtrave och huggkubbe,
+  Fletching Table och Bone Pile för jägarna, kompost för samlarna. Marken jämnas ut. 10–12 personer av alla roller, alla
+  med lägerelden som hem; stammens humör bestämmer rollerna, träslaget, hudfärgerna och taken. Ingen metall.
+- **Stammar ("lag"):** varje läger, jaktlag och by är en egen stam med namn (ett totemdjur, t.ex. Raven Tribe), egen
+  **banderoll** (färg och mönster) på en stång i lägret/byn, och Elder respektive jaktlagets ledare bär banderollen på huvudet.
+  - **Rykte per spelare** (-100 till 100, sparas på spelaren): slå en medlem -8, döda en → fientlig för alltid, bryt
+    lägerelden -15, öppna/bryt deras kistor, tunnor eller krukor medan någon ser dig -10 ("Thief!"). Byteshandel +2 per byte,
+    **gåvor** (högerklicka med mat; till en Elder smygande) +2. Ryktet visas i action bar när det ändras.
+  - **Alla i stammen minns**, även de du aldrig träffat: vid -40 eller lägre (Hostile) anfaller de direkt. Vid 30+ (Friendly)
+    hälsar de som en vän och **Elder säljer billigare** (upp till halva priset), under 0 dyrare.
+  - **Humör:** *Peaceful* (samlare och fiskare, börjar vänliga), *Wary* (många jägare, handlar bara vid rykte 10+),
+    *Raiders* (nästan bara jägare och vedhuggare, börjar ovänliga, handlar först vid 30, **försvarar sitt land**: kommer du
+    nära utan Friendly-rykte varnar de och anfaller om du stannar; dödskallar vid porten), *Traders* (börjar vänliga, 9
+    byten i stället för 6, större rabatt, två Elders och extra förråd).
+- **Sharpened Oak/Spruce Log:** stock + flint (formlöst, building). Spetsig topp till palissader; faller man på den gör
+  fallet dubbel skada.
 - **Vardag:** Hunters jagar vilda djur (inte björnar, tama djur eller bydjur) och styckar kroppen (en Bone Pile blir kvar).
   Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters **fäller riktiga
   träd** nära lägret (trädet faller och blir Fallen Logs som vanligt), hugger upp Fallen Logs och bär veden till elden. Elder håller elden vid liv.
 - **Natt:** alla samlas runt lägerelden men går aldrig in i den. Jaktlaget håller ihop där det är.
-- **Försvar:** de slår tillbaka, hjälper varandra och anfaller monster i närheten (inte creepers). Monster jagar dem också, som zombier jagar bybor (inte creepers, endermen eller piglins).
+- **Ny lägereld:** försvinner lägrets eld samlas gruppen efter ca 2 minuter, väljer en plan, torr plats nära den gamla
+  (helst samma), går dit tillsammans och gör en ny Campfire med en ring av Loose Stones; den blir deras nya hem. Ett
+  jaktlag som strövat en hel dag (och inte är mitt i en jakt) slår sig ner på samma sätt.
+- **Försvar:** bara **beväpnade** (Hunters, och den som håller yxa, svärd, spjut, båge e.d.) anfaller monster och hjälper
+  andra i gruppen. Obeväpnade (fiskare med spö, samlare, Elder) **flyr** från monster mot elden eller en beväpnad, och slår
+  bara tillbaka om de är instängda. Alla backar från en fräsande creeper; jägare med båge skjuter creepers på håll.
+  Monster jagar dem också, som zombier jagar bybor (även creepers; inte endermen eller piglins).
+- **Sår:** de blöder som djur (blod när de träffas, droppar under halv hälsa) och **pilar fastnar** i dem. Pilsår blöder
+  dem ner till ett hjärta men aldrig ihjäl; utan strid läker de sakta och drar ut en pil i taget.
 - **Humör:** de hälsar ibland i chatten. **Slår du en blir hela gruppen arg i ungefär en speldag. Dödar du en är gruppen
-  fientlig för alltid.** **Bryter du lägrets Campfire blir de också arga** (en speldag). Verktyget faller med 10 % chans när en spelare dödar dem.
+  fientlig för alltid** (och hela stammen, se Stammar). **Bryter du lägrets Campfire blir de också arga** (en speldag). Verktyget faller med 10 % chans när en spelare dödar dem.
 - **Byteshandel (Elder):** 6 av 12 byten, t.ex. 6 Raw Hide → Bone Needle, 10 Flint → Flint Knife, 12 Raspberries → 4
   Cooked Game Meat Scraps, 6 Cordage → 8 Bone Arrows, 12 Bark → 4 Twine, 3 Scraped Hide → 2 Leather, 4 Sinew + 2 Cordage →
   Crude Bow, 3 Tusk + 2 Cordage → Tusk Dagger, 2 Antler → 3 Bone Fish Hooks. Fylls på varje morgon. Ingen handel när de är arga.

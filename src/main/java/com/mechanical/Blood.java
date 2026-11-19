@@ -32,9 +32,9 @@ public final class Blood {
     /** Mobs without blood: skeletons, slimes, blazes, creepers ... (entity type tag {@code mechanical:bloodless}). */
     public static final TagKey<EntityType<?>> BLOODLESS = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "bloodless"));
 
-    /** Animals and monsters bleed, unless they have no blood. */
+    /** Animals, monsters and tribespeople bleed, unless they have no blood. */
     public static boolean bleeds(LivingEntity entity) {
-        return (entity instanceof Animal || entity instanceof Enemy) && !entity.getType().builtInRegistryHolder().is(BLOODLESS);
+        return (entity instanceof Animal || entity instanceof Enemy || entity instanceof com.mechanical.people.Tribesperson) && !entity.getType().builtInRegistryHolder().is(BLOODLESS);
     }
 
     public static boolean isBleeding(LivingEntity entity) {

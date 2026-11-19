@@ -25,6 +25,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -116,7 +117,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     Vec3 killPos;
     long killTime;
     boolean wantsHome, carryingWood;
-    private long nextFireTend;
+    private long nextFireTend, corneredAt = -1000, nextGift;
+    /** Where the group is going to set up a new camp (SetUpCampGoal); since when it has had no fire. */
+    BlockPos newCamp;
+    long homelessSince = -1;
 
     public Tribesperson(EntityType<? extends Tribesperson> type, Level level) {
         super(type, level);
@@ -126,6 +130,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         setPathfindingMalus(PathType.LAVA, -1.0F);
         setDropChance(EquipmentSlot.MAINHAND, 0.1F);
         setDropChance(EquipmentSlot.OFFHAND, 0.0F);
+        setDropChance(EquipmentSlot.HEAD, 0.0F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -163,12 +168,46 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return group;
     }
 
+    private Tribe tribe;
+
+    /** The tribe this person belongs to (follows from the group), or null for a person without a group. */
+    public Tribe tribe() {
+        if (group == null) return null;
+        if (tribe == null || !tribe.id.equals(group)) tribe = Tribe.of(group);
+        return tribe;
+    }
+
     public boolean isLeader() {
         return leader;
     }
 
     void setLeader(boolean leader) {
         this.leader = leader;
+    }
+
+    /** Hunters, and anyone holding a weapon (axe, sword, spear, bow ...), fight monsters; the rest keep away from them. */
+    public boolean isArmed() {
+        if (role() == TribeRole.HUNTER) return true;
+        ItemStack held = getMainHandItem();
+        return held.is(ItemTags.AXES) || held.is(ItemTags.SWORDS) || held.is(ItemTags.SPEARS) || held.is(Mechanical.TUSK_DAGGER.get())
+                || held.getItem() instanceof net.minecraft.world.item.ProjectileWeaponItem || held.getItem() instanceof net.minecraft.world.item.TridentItem;
+    }
+
+    /** No way to run from a threat: an unarmed person hits back for a few seconds. */
+    void cornered(LivingEntity threat) {
+        corneredAt = level().getGameTime();
+        if (getTarget() == null) setTarget(threat);
+    }
+
+    boolean isCornered() {
+        return level().getGameTime() - corneredAt < 60;
+    }
+
+    /** The group made a new fire here: it is home now. */
+    void settleAt(BlockPos fire) {
+        home = fire.immutable();
+        newCamp = null;
+        homelessSince = -1;
     }
 
     public boolean inGroup(Tribesperson other) {
@@ -186,7 +225,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         String[] names = isWoman() ? WOMEN : MEN;
         tribeName = names[r.nextInt(names.length)];
         setCustomName(Component.translatable("entity.mechanical.tribesperson.named", tribeName,
-                Component.translatable("entity.mechanical.tribesperson.role." + role.id())));
+                Component.translatable("entity.mechanical.tribesperson.role." + role.id()), tribe().name()));
         setCustomNameVisible(false);
         ItemStack tool = switch (role) {
             case HUNTER -> new ItemStack(r.nextBoolean() ? Mechanical.CRUDE_BOW.get() : Mechanical.FLINT_SPEAR.get());
@@ -197,6 +236,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         };
         setItemSlot(EquipmentSlot.MAINHAND, tool);
         setItemSlot(EquipmentSlot.OFFHAND, role == TribeRole.GATHERER ? new ItemStack(Mechanical.BARK_BASKET.get()) : ItemStack.EMPTY);
+        // the tribe's flag: worn by the band leader and the elder, like a raid captain's banner
+        setItemSlot(EquipmentSlot.HEAD, leader || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY);
         offers = null;
     }
 
@@ -231,6 +272,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(1, new FleeThreatGoal(this));
         goalSelector.addGoal(2, new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F));
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.15, true) {
             @Override
@@ -239,6 +281,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             }
         });
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
+        goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
         goalSelector.addGoal(5, new GatherGoal(this));
         goalSelector.addGoal(5, new FishGoal(this));
@@ -254,10 +297,17 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(9, new RandomLookAroundGoal(this));
 
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, Tribesperson.class));
+        targetSelector.addGoal(1, new HurtByTargetGoal(this, Tribesperson.class) {
+            @Override
+            public boolean canUse() {
+                // unarmed folk hit back at monsters only when cornered (players they always answer)
+                LivingEntity by = getLastHurtByMob();
+                return super.canUse() && (isArmed() || by == null || !FleeThreatGoal.isThreat(Tribesperson.this, by) || isCornered());
+            }
+        });
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, (t, l) -> isAngryAt((Player) t)));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
-                (t, l) -> !(t instanceof Creeper) && t.distanceToSqr(this) < 12 * 12));
+                (t, l) -> isArmed() && (!(t instanceof Creeper) || isHolding(s -> s.getItem() instanceof BowItem)) && t.distanceToSqr(this) < 12 * 12));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
                 (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && isPrey(t)));
     }
@@ -272,7 +322,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     // ---- anger ----
 
     public boolean isAngryAt(Player player) {
-        return !player.isCreative() && !player.isSpectator() && anger.getOrDefault(player.getUUID(), 0L) > level().getGameTime();
+        if (player.isCreative() || player.isSpectator()) return false;
+        return anger.getOrDefault(player.getUUID(), 0L) > level().getGameTime() || tribe() != null && tribe().hostileTo(player);
     }
 
     public boolean isAngry() {
@@ -284,9 +335,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return level().getEntitiesOfClass(Tribesperson.class, getBoundingBox().inflate(range), this::inGroup);
     }
 
-    /** The whole group (those around) turns on the player until {@code until} (game time; FOREVER for a killer). */
-    private void angerGroup(Player player, long until) {
+    /**
+     * The whole group (those around) turns on the player until {@code until} (game time; FOREVER for a killer), and the
+     * player's standing with the tribe changes by {@code reputation} (so members elsewhere remember too).
+     */
+    private void angerGroup(Player player, long until, int reputation) {
         boolean wasAngry = isAngryAt(player);
+        // a killing makes the whole tribe hostile for good: gifts and trade are refused from then on
+        if (until == FOREVER && tribe() != null) reputation = Math.min(reputation, Tribe.HOSTILE - 20 - tribe().reputation(player));
+        if (!player.isCreative() && tribe() != null) tribe().addReputation(player, reputation);
         for (Tribesperson t : groupNearby(GROUP_RANGE)) {
             t.anger.merge(player.getUUID(), until, Math::max);
             if (t != this && t.isAlive() && !player.isCreative() && t.distanceToSqr(player) < 32 * 32) t.setTarget(player);
@@ -297,7 +354,13 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     /** Someone took the camp's fire away: the group is as angry as if one of them was hit. */
     public void fireTakenBy(Player player) {
-        angerGroup(player, level().getGameTime() + ANGER_TICKS);
+        angerGroup(player, level().getGameTime() + ANGER_TICKS, Tribe.FIRE);
+    }
+
+    /** Seen raiding the tribe's storage. */
+    public void caughtStealing(Player player) {
+        say(player, Component.translatable("chat.mechanical.tribesperson.thief"));
+        angerGroup(player, level().getGameTime() + ANGER_TICKS, Tribe.THEFT);
     }
 
     @Override
@@ -305,17 +368,17 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (source.getEntity() instanceof Tribesperson) return false; // no friendly fire (stray arrows)
         if (source.is(DamageTypes.CAMPFIRE)) return false;
         boolean hurt = super.hurtServer(level, source, damage);
-        if (hurt && source.getEntity() instanceof Player player) angerGroup(player, level.getGameTime() + ANGER_TICKS);
+        if (hurt && source.getEntity() instanceof Player player) angerGroup(player, level.getGameTime() + ANGER_TICKS, Tribe.HIT);
         if (hurt && source.getEntity() instanceof LivingEntity attacker && !(attacker instanceof Player)) {
             // the group around comes to help
-            for (Tribesperson t : groupNearby(16)) if (t.getTarget() == null) t.setTarget(attacker);
+            for (Tribesperson t : groupNearby(16)) if (t.getTarget() == null && t.isArmed()) t.setTarget(attacker);
         }
         return hurt;
     }
 
     @Override
     public void die(DamageSource source) {
-        if (source.getEntity() instanceof Player player && level() instanceof ServerLevel) angerGroup(player, FOREVER);
+        if (source.getEntity() instanceof Player player && level() instanceof ServerLevel) angerGroup(player, FOREVER, Tribe.KILL);
         if (tradingPlayer != null) tradingPlayer.closeContainer();
         super.die(source);
     }
@@ -332,6 +395,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         else clearHome();
 
         if (getTarget() instanceof Player p && !isAngryAt(p) && getLastHurtByMob() != p) setTarget(null);
+        if (getTarget() != null && !isArmed() && !isCornered() && FleeThreatGoal.isThreat(this, getTarget())) setTarget(null);
         if (getTarget() instanceof Animal a) prey = a;
         if (prey != null && !prey.isAlive()) {
             killPos = prey.position();
@@ -340,9 +404,22 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         }
         if (tickCount % 100 == 0) shareAnger();
         if (tickCount % 20 == 0) greetNearby(level, now);
+        if (tickCount % 20 == 0 && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
+        if (tickCount % 100 == 0) SetUpCampGoal.check(this, level, now);
+        if (getTarget() == null) tendWounds(level);
         if (role() == TribeRole.ELDER) restock(level);
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
+    }
+
+    /** Out of a fight, people heal slowly and now and then pull out a stuck arrow. */
+    private void tendWounds(ServerLevel level) {
+        if (tickCount % 60 == 0 && getHealth() < getMaxHealth()) heal(1.0F);
+        List<ItemStack> stuck = getData(com.mechanical.ArrowWounds.STUCK);
+        if (stuck.isEmpty() || tickCount % 600 != 0) return;
+        spawnAtLocation(level, stuck.get(0));
+        setData(com.mechanical.ArrowWounds.STUCK, List.copyOf(stuck.subList(1, stuck.size())));
+        setArrowCount(stuck.size() - 1);
     }
 
     private boolean working;
@@ -374,6 +451,25 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         for (Tribesperson t : groupNearby(32)) t.anger.forEach((k, v) -> { if (v > now) anger.merge(k, v, Math::max); });
     }
 
+    /** Last time any territorial tribe warned each player off. */
+    private static final Map<Player, Long> WARNED = new WeakHashMap<>();
+
+    /** Territorial tribes warn strangers (standing below friendly) off their land, and attack if they stay. */
+    private void guardLand(ServerLevel level, long now) {
+        double range = home != null ? 20 : 10;
+        BlockPos centre = home != null ? home : blockPosition();
+        Player player = level.getNearestPlayer(centre.getX() + 0.5, centre.getY(), centre.getZ() + 0.5, range, false);
+        if (player == null || player.isCreative() || player.isSpectator() || isAngryAt(player) || !hasLineOfSight(player)
+                || tribe().reputation(player) >= Tribe.FRIENDLY) return;
+        long warned = WARNED.getOrDefault(player, -10000L);
+        if (now - warned > 1200) {
+            WARNED.put(player, now);
+            say(player, Component.translatable("chat.mechanical.tribesperson.warn"));
+        } else if (now - warned > 100) {
+            angerGroup(player, now + ANGER_TICKS / 4, 0);
+        }
+    }
+
     private void greetNearby(ServerLevel level, long now) {
         if (isAngry() || getTarget() != null) return;
         Player player = level.getNearestPlayer(this, GREET_RANGE);
@@ -384,7 +480,9 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         greeted.put(player.getUUID(), now);
         LAST_GREETED.put(player, now);
         getLookControl().setLookAt(player);
-        String key = level.isDarkOutside() && home != null ? "chat.mechanical.tribesperson.greet.night"
+        int standing = tribe() != null ? tribe().reputation(player) : 0;
+        String key = standing >= Tribe.FRIENDLY && getRandom().nextBoolean() ? "chat.mechanical.tribesperson.greet.friend"
+                : level.isDarkOutside() && home != null ? "chat.mechanical.tribesperson.greet.night"
                 : "chat.mechanical.tribesperson.greet." + role().id() + "." + getRandom().nextInt(TribeRole.GREETINGS);
         say(player, Component.translatable(key));
     }
@@ -427,11 +525,27 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             say(player, Component.translatable("chat.mechanical.tribesperson.no_trade"));
             return InteractionResult.CONSUME;
         }
+        // food is a gift (to an elder: while sneaking, else it is trade); gifts raise the standing with the tribe
+        ItemStack held = player.getItemInHand(hand);
+        if (held.has(net.minecraft.core.component.DataComponents.FOOD) && (role() != TribeRole.ELDER || player.isShiftKeyDown()) && tribe() != null) {
+            if (level().getGameTime() < nextGift) return InteractionResult.CONSUME;
+            nextGift = level().getGameTime() + 20;
+            held.consume(1, player);
+            tribe().addReputation(player, Tribe.GIFT);
+            say(player, Component.translatable("chat.mechanical.tribesperson.gift"));
+            return InteractionResult.SUCCESS_SERVER;
+        }
+        if (role() == TribeRole.ELDER && tribe() != null && !tribe().trades(player)) {
+            say(player, Component.translatable("chat.mechanical.tribesperson.no_trade_stranger"));
+            return InteractionResult.CONSUME;
+        }
         if (role() != TribeRole.ELDER || tradingPlayer != null || getTarget() != null) {
             if (hand == InteractionHand.MAIN_HAND) say(player, Component.translatable("chat.mechanical.tribesperson.greet." + role().id() + "." + getRandom().nextInt(TribeRole.GREETINGS)));
             return InteractionResult.CONSUME;
         }
         getNavigation().stop();
+        // prices follow the player's standing with the tribe
+        for (MerchantOffer offer : getOffers()) offer.setSpecialPriceDiff(tribe() != null ? tribe().priceDiff(player, offer.getBaseCostA().getCount()) : 0);
         setTradingPlayer(player);
         openTradingScreen(player, getDisplayName(), 1);
         return InteractionResult.SUCCESS_SERVER;
@@ -462,7 +576,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             offers = new MerchantOffers();
             List<MerchantOffer> all = new java.util.ArrayList<>(allOffers());
             java.util.Collections.shuffle(all, new java.util.Random(getUUID().getLeastSignificantBits()));
-            offers.addAll(all.subList(0, 6));
+            offers.addAll(all.subList(0, tribe() != null && tribe().temperament == Tribe.Temperament.TRADERS ? 9 : 6));
         }
         return offers;
     }
@@ -491,6 +605,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     @Override
     public void notifyTrade(MerchantOffer offer) {
         offer.increaseUses();
+        if (tradingPlayer != null && tribe() != null) tribe().addReputation(tradingPlayer, Tribe.TRADE);
     }
 
     @Override

@@ -50,7 +50,7 @@ egg(["#b0a596", "#8f8578", "#726a60", "#5a3822", "#4a3020", "#2e1e14"], (), (), 
 lang = json.loads(LANG.read_text(encoding="utf-8"))
 lang.update({
     "entity.mechanical.tribesperson": "Tribesperson",
-    "entity.mechanical.tribesperson.named": "%s the %s",
+    "entity.mechanical.tribesperson.named": "%s the %s of the %s",
     "entity.mechanical.tribesperson.role.hunter": "Hunter",
     "entity.mechanical.tribesperson.role.gatherer": "Gatherer",
     "entity.mechanical.tribesperson.role.fisher": "Fisher",

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:oak_log",
+    "minecraft:flint"
+  ],
+  "result": {
+    "id": "mechanical:sharpened_oak_log"
+  }
+}
