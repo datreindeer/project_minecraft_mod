@@ -18,11 +18,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:saddle",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:set_count",
             "count": {

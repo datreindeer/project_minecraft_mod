@@ -61,6 +61,22 @@ public final class AnimalFear {
         }
     }
 
+    /** A missed arrow thudding into the ground or a tree startles wild animals near where it lands (and flocks fly off). */
+    @SubscribeEvent
+    static void onArrowMiss(net.neoforged.neoforge.event.entity.ProjectileImpactEvent event) {
+        if (!(event.getProjectile() instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow) || arrow.level().isClientSide()
+                || event.getRayTraceResult().getType() != net.minecraft.world.phys.HitResult.Type.BLOCK) return;
+        Vec3 hit = event.getRayTraceResult().getLocation();
+        var owner = arrow.getOwner();
+        // they run from the shooter when he's close enough to be noticed, otherwise just away from the thud
+        Vec3 from = owner != null && owner.position().distanceTo(hit) < 32 ? owner.position() : hit;
+        for (Animal animal : arrow.level().getEntitiesOfClass(Animal.class, new net.minecraft.world.phys.AABB(hit, hit).inflate(12))) {
+            if (animal.getTarget() != null) continue; // a charging animal isn't put off by a miss
+            if (animal instanceof com.mechanical.wildlife.FlockBird bird) bird.scare(from);
+            else panic(animal, from);
+        }
+    }
+
     @SubscribeEvent
     static void onHurt(LivingDamageEvent.Post event) {
         LivingEntity entity = event.getEntity();

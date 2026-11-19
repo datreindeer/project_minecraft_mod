@@ -31,11 +31,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:stone_axe",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:rotten_flesh",
           "weight": 10
         },

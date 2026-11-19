@@ -31,16 +31,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:fire_charge",
-          "weight": 40
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:light_weighted_pressure_plate",
-          "weight": 5
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:bell"
         }
       ],

@@ -18,11 +18,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:stone_spear",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:set_count",
             "count": {

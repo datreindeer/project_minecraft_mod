@@ -171,14 +171,6 @@
             "count": 1
           },
           "name": "minecraft:bundle"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:wooden_axe"
         }
       ],
       "rolls": 1

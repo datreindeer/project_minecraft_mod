@@ -751,6 +751,9 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
   dem eller om vägen leder tillbaka mot spelaren, och springer rakt bort om de inte hittar någon väg.
 - **Blödande djur slutar slåss**: även Wild Boar, Aurochs, Moose och hjortar flyr när de blöder (björnen slåss alltid).
 - **Panik smittar:** djur som ser ett djur i panik eller ett blödande djur får också panik.
+- **Bomskott skrämmer:** en pil som missar och slår ner i marken eller ett träd ger vilda djur inom 12 block panik
+  (bort från skytten om han är inom 32 block, annars bort från nedslaget) och får fågelflockar att lyfta. Djur som
+  redan anfaller något bryr sig inte. En träffad eller skjuten fågel får hela flocken att lyfta.
 - Tama djur och djur i koppel flyr inte. Mat i handen lugnar inte.
 - Gäller djur med vanilla-"goals" (Cow, Pig, Sheep, Chicken, Rabbit, Horse, Llama, Fox, Wolf, Polar Bear, Panda, Parrot …).
   Goat, Camel, Frog, Axolotl, Armadillo och Sniffer (vanilla "brain"-AI) påverkas inte än.
@@ -860,6 +863,14 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
 | Cartography Table | Paper + Planks (kartor och kompass kommer senare) | Järnåldern |
 | Fermented Spider Eye | Används bara till bryggning | Järnåldern |
 | Copper Ingot från Block of Copper (även vaxad) | Kopparblock i Trial Chambers bryts med stenhacka → 9 tackor var | Bronsåldern |
+| Bundle (alla färger) | Leather + String; Leather Satchel är stenålderns väska | Järnåldern |
+| Paper, Book, Writable Book, Bookshelf, Chiseled Bookshelf, Lectern | Skrift kommer med papyrus | Bronsåldern |
+| Concrete Powder (alla färger) | Betong hör till en senare ålder | Järnåldern |
+| Lever | En redstone-del | Järnåldern |
+
+Ändrat: **Lead** görs av 5 Cordage (i stället för String). **Redstone-tråd** i tempel, Trial Chambers och herrgårdar ger
+ingenting. Loot-filtret tar också bort **Saddle**, **Fire Charge**, vanillas sten- och träverktyg (de görs i Tool Station)
+och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 
 ## Öppna frågor / att göra
 

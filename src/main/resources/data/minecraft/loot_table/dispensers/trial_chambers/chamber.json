@@ -44,19 +44,6 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 8,
-              "min": 4
-            }
-          },
-          "name": "minecraft:fire_charge",
-          "weight": 6
-        },
-        {
-          "type": "minecraft:item",
           "modifier": [
             {
               "type": "minecraft:set_potion",

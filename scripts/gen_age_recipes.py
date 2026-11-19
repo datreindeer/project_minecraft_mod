@@ -29,7 +29,20 @@ RECIPES = [
     ("fermented_spider_eye", "brewing", "only used for brewing", "Iron"),
     ("copper_ingot", "misc", "copper blocks in trial chambers (stone pickaxe) -> 9 ingots each, skips smelting", "Bronze"),
     ("copper_ingot_from_waxed_copper_block", "misc", "as above, waxed copper blocks", "Bronze"),
+    # decided with the user (borderline cases)
+    ("bundle", "tools", "leather + string; the Leather Satchel is the stone-age bag", "Iron"),
+    ("paper", "misc", "writing comes with papyrus", "Bronze"),
+    ("book", "misc", "needs paper", "Bronze"),
+    ("writable_book", "misc", "needs paper", "Bronze"),
+    ("bookshelf", "building_blocks", "needs books", "Bronze"),
+    ("chiseled_bookshelf", "building_blocks", "needs books", "Bronze"),
+    ("lectern", "redstone", "needs books", "Bronze"),
+    ("lever", "redstone", "a redstone part", "Iron"),
 ]
+COLORS = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue",
+          "brown", "green", "red", "black"]
+RECIPES += [(f"{c}_bundle", "tools", "dyed bundle", "Iron") for c in COLORS]
+RECIPES += [(f"{c}_concrete_powder", "building_blocks", "concrete belongs to a later age", "Iron") for c in COLORS]
 
 for name, cat, _why, _age in RECIPES:
     (D / f"recipe/{name}.json").write_text(json.dumps(NEVER, indent=2) + "\n")
@@ -37,6 +50,14 @@ for name, cat, _why, _age in RECIPES:
         p = D / f"advancement/recipes/{cat}/{name}.json"
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(NEVER, indent=2) + "\n")
+
+# Lead: twisted from Cordage instead of string
+(D / "recipe/lead.json").write_text(json.dumps({"type": "minecraft:crafting_shaped", "category": "equipment",
+    "key": {"C": "mechanical:cordage"}, "pattern": ["CC ", "CC ", "  C"], "result": {"count": 2, "id": "minecraft:lead"}}, indent=2) + "\n")
+# Redstone wire found in temples, trial chambers and mansions gives nothing (redstone comes much later)
+(D / "loot_table/blocks/redstone_wire.json").parent.mkdir(parents=True, exist_ok=True)
+(D / "loot_table/blocks/redstone_wire.json").write_text(json.dumps({"type": "minecraft:block", "pools": [],
+    "random_sequence": "minecraft:blocks/redstone_wire"}, indent=2) + "\n")
 
 assert len({r[0] for r in RECIPES}) == len(RECIPES), "duplicate recipe name"
 print(f"{len(RECIPES)} later-age recipes disabled")

@@ -152,18 +152,6 @@
               "min": 1
             }
           },
-          "name": "minecraft:fire_charge"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 3,
-              "min": 1
-            }
-          },
           "name": "minecraft:wind_charge"
         }
       ],

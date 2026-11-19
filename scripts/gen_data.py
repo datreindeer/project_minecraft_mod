@@ -1171,7 +1171,11 @@ w(lang_path, lang)
 LATER_AGE = ("iron", "gold", "diamond", "emerald", "netherite", "copper", "lapis", "redstone", "chainmail", "bucket", "compass",
              "clock", "shears", "rail", "anvil", "tnt", "experience_bottle", "smithing_template", "nugget", "crossbow",
              "flint_and_steel", "spyglass", "brush", "enchanted", "minecraft:bow", "lantern", "chain", "piston", "hopper",
-             "map", "quartz", "glistering", "fishing_rod", "trident", "tripwire_hook")
+             "map", "quartz", "glistering", "fishing_rod", "trident", "tripwire_hook",
+             # decided with the user: no saddle or fire charge in loot, no vanilla stone/wooden tools (Tool Station only),
+             # and the weighted pressure plates (gold / iron) slip past the metal keywords
+             "saddle", "fire_charge", "minecraft:stone_pickaxe", "minecraft:stone_axe", "minecraft:stone_shovel",
+             "minecraft:stone_hoe", "minecraft:stone_sword", "minecraft:stone_spear", "minecraft:wooden_", "weighted_pressure_plate")
 def _later_age(entry):
     text = json.dumps(entry)
     return entry.get("type") == "minecraft:item" and (any(k in entry.get("name", "") for k in LATER_AGE)

@@ -5,34 +5,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:stone_axe"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:wooden_axe",
-          "weight": 3
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:stone_pickaxe"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:wooden_pickaxe",
-          "weight": 3
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:set_count",
             "count": {
