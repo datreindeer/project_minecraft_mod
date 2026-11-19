@@ -23,6 +23,7 @@ import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.zombie.Zombie;
@@ -110,6 +111,12 @@ public final class NightDangers {
         if (monster.entityTags().contains(LURKER_TAG)) monster.goalSelector.addGoal(3, new LurkGoal(monster));
         monster.goalSelector.addGoal(4, new SmashTorchGoal(monster));
         if (horde) monster.goalSelector.addGoal(5, new FollowHordeGoal(monster));
+        // blood moon: torches within reach get smashed even mid-chase, and melee walkers break down wooden doors
+        monster.goalSelector.addGoal(2, new BloodMoonTorchesGoal(monster));
+        if (monster.getNavigation() instanceof GroundPathNavigation && !(monster instanceof Creeper)
+                && !(monster instanceof net.minecraft.world.entity.monster.skeleton.AbstractSkeleton) && !(monster instanceof net.minecraft.world.entity.monster.Enderman)) {
+            monster.goalSelector.addGoal(1, new BloodMoonDoorGoal(monster));
+        }
     }
 
     /** Monsters don't pick (or keep) a player standing by a fire (a horde puts the fire out first). Stalkers hold off until their time is up. */
@@ -178,7 +185,9 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            if (mob.getTarget() != null || mob.tickCount % 100 != 0 || mob.getRandom().nextFloat() > CHANCE) return false;
+            // a blood moon makes them go for every torch around, often
+            boolean bloodMoon = BloodMoon.isActive(mob.level());
+            if (mob.getTarget() != null || mob.tickCount % (bloodMoon ? 20 : 100) != 0 || (!bloodMoon && mob.getRandom().nextFloat() > CHANCE)) return false;
             torch = findTorch();
             return torch != null && mob.getNavigation().moveTo(torch.getX() + 0.5, torch.getY(), torch.getZ() + 0.5, 1.0);
         }
@@ -209,6 +218,62 @@ public final class NightDangers {
         @Override
         public void stop() {
             if (torch != null && mob.distanceToSqr(Vec3.atCenterOf(torch)) < 2.5 * 2.5) tick();
+        }
+    }
+
+    /** Blood moon: smashes any torch within arm's reach every half second, also while chasing (no flags, so it never blocks the chase). */
+    static class BloodMoonTorchesGoal extends Goal {
+        private final Monster mob;
+
+        BloodMoonTorchesGoal(Monster mob) {
+            this.mob = mob;
+        }
+
+        @Override
+        public boolean canUse() {
+            return mob.tickCount % 10 == 0 && BloodMoon.isActive(mob.level());
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return false;
+        }
+
+        @Override
+        public void start() {
+            BlockPos origin = mob.blockPosition();
+            for (BlockPos p : BlockPos.betweenClosed(origin.offset(-2, -1, -2), origin.offset(2, 2, 2))) {
+                var state = mob.level().getBlockState(p);
+                if (!(state.is(Blocks.TORCH) || state.is(Blocks.WALL_TORCH)) || mob.distanceToSqr(Vec3.atCenterOf(p)) > 2.5 * 2.5) continue;
+                mob.swing(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT);
+                mob.level().destroyBlock(p, false, mob);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Blood moon: walks paths through wooden doors and breaks them down (vanilla's door breaking, which normally only
+     * zombies on Hard do). Door paths are switched on only during the blood moon, so on other nights monsters don't
+     * plan routes through doors they can't open.
+     */
+    static class BloodMoonDoorGoal extends net.minecraft.world.entity.ai.goal.BreakDoorGoal {
+        BloodMoonDoorGoal(Monster mob) {
+            super(mob, d -> true);
+        }
+
+        @Override
+        public boolean canUse() {
+            boolean active = BloodMoon.isActive(mob.level());
+            // zombies that break doors on Hard anyway keep their own door paths
+            boolean ownDoors = mob instanceof Zombie zombie && zombie.canBreakDoors();
+            if (!ownDoors && mob.getNavigation() instanceof GroundPathNavigation nav && nav.getNodeEvaluator().canOpenDoors() != active) nav.setCanOpenDoors(active);
+            return active && super.canUse();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return BloodMoon.isActive(mob.level()) && super.canContinueToUse();
         }
     }
 

@@ -471,6 +471,9 @@ Nytt item: **Horn** (material för senare recept).
   blodröd vid skymningen och står kvar till gryningen. Himlen, dimman och månskenet blir röda, stjärnorna bleknar och natten
   blir lite ljusare i rött. Vid skymningen kommer ett meddelande ("The moon rises red...") och ett mörkt hornljud. Under
   blodmånen spawnar dubbelt så många extra monster (upp till 20 inom 48 block i stället för 12) och zombiehorderna kommer.
+  Monstren är rasande: de **slår sönder facklor** inom räckhåll även medan de jagar dig (och söker upp facklor i
+  närheten oftare), och alla närstridsmonster som går på marken (inte creepers, skelett eller endermen) **slår in
+  trädörrar**, som zombier gör på Hard.
   Testa med `/bloodmoon` (op), som gör kvällens natt till blodmåne.
 - **Zombiehorder:** bara under blodmåne, i två vågor (en tidigt på natten och en efter midnatt), med 8–12 zombies per våg
   32–48 block från en spelare. De håller ihop och
