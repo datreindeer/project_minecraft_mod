@@ -1000,6 +1000,42 @@
     "text": "Liten hydda i djup skog med en eremit (leatherworker) som byter stenålderssaker.",
     "icon": "minecraft:cauldron"
   },
+  "structure:glacial_erratic": {
+    "text": "Stort flyttblock av främmande sten (granite, diorite, deepslate, tuff...) halvt nedsjunket på öppen mark.",
+    "icon": "minecraft:granite"
+  },
+  "structure:mossy_boulder": {
+    "text": "Mossig sten i skogen, med moss och ormbunkar runt om.",
+    "icon": "minecraft:mossy_cobblestone"
+  },
+  "structure:sandstone_boulder": {
+    "text": "Sandstensblock i öknen och badlands.",
+    "icon": "minecraft:sandstone"
+  },
+  "structure:cairn": {
+    "text": "Uppstaplad stenhög eller stentorn. Ibland en kruka gömd inne i högen.",
+    "icon": "minecraft:cobblestone_wall"
+  },
+  "structure:balanced_rock": {
+    "text": "Bred sten balanserad på en smal stam.",
+    "icon": "minecraft:smooth_sandstone"
+  },
+  "structure:rune_stone": {
+    "text": "Platt stående sten med inristade tecken.",
+    "icon": "minecraft:chiseled_stone_bricks"
+  },
+  "structure:stone_head": {
+    "text": "Jättelikt stenansikte nedsjunket till hakan.",
+    "icon": "minecraft:cobbled_deepslate"
+  },
+  "structure:animal_carving": {
+    "text": "Hjort, björn eller vildsvin huggen i sten.",
+    "icon": "minecraft:andesite"
+  },
+  "structure:shrine_statue": {
+    "text": "Stenfigur på ett litet torg med trappsteg, ljus, blommor och en kruka med offergåvor.",
+    "icon": "minecraft:candle"
+  },
   "entity:aurochs": {
     "text": "Uroxe: stor vild boskap på slätter. Tjurar slåss tillbaka."
   },
