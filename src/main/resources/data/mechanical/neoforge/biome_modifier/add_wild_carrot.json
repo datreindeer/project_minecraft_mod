@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:flower_forest",
+    "mechanical:hazel_meadow"
+  ],
+  "features": "mechanical:wild_carrot",
+  "step": "vegetal_decoration"
+}

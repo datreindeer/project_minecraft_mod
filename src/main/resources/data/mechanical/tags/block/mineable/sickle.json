@@ -9,6 +9,8 @@
     "mechanical:wild_emmer",
     "mechanical:wild_pea",
     "mechanical:withered_crop",
-    "minecraft:hay_block"
+    "minecraft:hay_block",
+    "mechanical:wild_carrot_plant",
+    "mechanical:sea_beet"
   ]
 }

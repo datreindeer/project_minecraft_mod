@@ -107,7 +107,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "id": "minecraft:potatoes",
+            "id": "minecraft:beetroots",
             "properties": {
               "age": "1"
             }
@@ -171,7 +171,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "id": "minecraft:potatoes",
+            "id": "minecraft:carrots",
             "properties": {
               "age": "7"
             }
@@ -203,7 +203,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "id": "minecraft:potatoes",
+            "id": "minecraft:carrots",
             "properties": {
               "age": "1"
             }

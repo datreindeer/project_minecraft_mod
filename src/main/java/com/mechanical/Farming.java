@@ -96,7 +96,7 @@ public final class Farming {
     public static final DeferredItem<BlockItem> PEAS = ITEMS.registerItem("peas", p -> new BlockItem(PEA_CROP.get(), p),
             p -> p.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.3F).build()));
 
-    private static Block.Properties cropProperties(Block.Properties p) {
+    static Block.Properties cropProperties(Block.Properties p) {
         return p.mapColor(MapColor.PLANT).noCollision().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.POPPED);
     }
 
@@ -162,7 +162,9 @@ public final class Farming {
             m.put(CROPS.get("einkorn").get(), WHEAT);
             m.put(CROPS.get("emmer").get(), WHEAT);
             m.put(CROPS.get("barley").get(), new Climate(5, 8, 12, 16, 0, false));
-            m.put(Blocks.CARROTS, new Climate(4, 7, 12, 15, -1, true));
+            Climate carrot = new Climate(4, 7, 12, 15, -1, true);
+            m.put(Blocks.CARROTS, carrot);
+            m.put(Roots.WILD_CARROT_CROP.get(), carrot); // the wild form, same needs
             m.put(Blocks.POTATOES, new Climate(6, 9, 13, 16, 2, true));
             m.put(Blocks.BEETROOTS, new Climate(5, 8, 13, 16, 1, true));
             m.put(PEA_CROP.get(), new Climate(6, 9, 13, 16, 2, false));

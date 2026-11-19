@@ -1,0 +1,51 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:wild_carrot",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "min": 1,
+                    "max": 2
+                  }
+                }
+              ],
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "items": [
+                    "mechanical:flint_knife",
+                    "mechanical:tusk_dagger",
+                    "mechanical:iron_knife",
+                    "mechanical:copper_knife",
+                    "mechanical:bronze_knife",
+                    "mechanical:flint_sickle"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:wild_carrot",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/wild_carrot_plant"
+}

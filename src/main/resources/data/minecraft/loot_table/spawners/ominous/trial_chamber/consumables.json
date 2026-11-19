@@ -18,19 +18,6 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 4,
-              "min": 2
-            }
-          },
-          "name": "minecraft:baked_potato",
-          "weight": 3
-        },
-        {
-          "type": "minecraft:item",
           "modifier": [
             {
               "type": "minecraft:set_count",

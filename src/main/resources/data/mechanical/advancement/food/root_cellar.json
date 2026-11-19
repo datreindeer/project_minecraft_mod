@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/spoiled",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:root_cellar"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:root_cellar"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.root_cellar.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.root_cellar.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -43,7 +43,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * Food spoils; smoking and drying preserve it.
  * <p>
- * A perishable food (item tags {@code mechanical:perishes_1_day/2_days/3_days/30_days}) carries {@link #SPOILS_AT}, the
+ * A perishable food (item tags {@code mechanical:perishes_1_day/2_days/3_days/10_days/20_days/30_days}) carries {@link #SPOILS_AT}, the
  * game time it spoils at, so nothing ticks per item. It is stamped the first time it is seen in a player's inventory
  * or an open container, and checked there once a second: when the time is up the stack turns into Rotten Flesh
  * ({@code mechanical:rots_to_flesh}: meat and fish) or Spoiled Food (everything else). Items lying unseen in a chest
@@ -70,7 +70,8 @@ public final class Preserving {
     public static final float BASKET_RATE = 1 / 3F;
 
     public static final TagKey<Item> PERISHES_1_DAY = tag("perishes_1_day"), PERISHES_2_DAYS = tag("perishes_2_days"),
-            PERISHES_3_DAYS = tag("perishes_3_days"), PERISHES_30_DAYS = tag("perishes_30_days"), ROTS_TO_FLESH = tag("rots_to_flesh"),
+            PERISHES_3_DAYS = tag("perishes_3_days"), PERISHES_10_DAYS = tag("perishes_10_days"),
+            PERISHES_20_DAYS = tag("perishes_20_days"), PERISHES_30_DAYS = tag("perishes_30_days"), ROTS_TO_FLESH = tag("rots_to_flesh"),
             SMOKABLE_MEAT = tag("smokable_meat"), SMOKABLE_FISH = tag("smokable_fish"), DRYABLE_BERRIES = tag("dryable_berries"),
             DRYABLE_MUSHROOMS = tag("dryable_mushrooms");
 
@@ -106,6 +107,8 @@ public final class Preserving {
         if (stack.is(PERISHES_1_DAY)) return DAY;
         if (stack.is(PERISHES_2_DAYS)) return 2 * DAY;
         if (stack.is(PERISHES_3_DAYS)) return 3 * DAY;
+        if (stack.is(PERISHES_10_DAYS)) return 10 * DAY;
+        if (stack.is(PERISHES_20_DAYS)) return 20 * DAY;
         if (stack.is(PERISHES_30_DAYS)) return 30 * DAY;
         return 0;
     }
