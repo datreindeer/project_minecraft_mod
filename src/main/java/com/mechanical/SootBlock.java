@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -65,6 +67,28 @@ public class SootBlock extends MultifaceBlock {
                 }
             }
         }
+    }
+
+    /**
+     * The hearth wears in: one spot within 2 blocks of the fire changes a step. Plants there burn away; grass, podzol,
+     * mycelium and moss become dirt, dirt becomes coarse dirt, and then (or on stone, gravel, sand ...) the ground gets
+     * a layer of soot and ash that darkens.
+     */
+    public static void scorch(ServerLevel level, BlockPos fire, RandomSource random) {
+        int dx = random.nextInt(5) - 2, dz = random.nextInt(5) - 2;
+        if (dx == 0 && dz == 0) return;
+        BlockPos at = fire.offset(dx, 0, dz);
+        BlockState here = level.getBlockState(at);
+        if (here.is(BlockTags.REPLACEABLE_BY_TREES) || here.is(BlockTags.FLOWERS) || here.is(BlockTags.SAPLINGS)) {
+            level.destroyBlock(at, false); // burnt up
+            return;
+        }
+        if (!here.isAir() && !here.is(Mechanical.SOOT.get())) return;
+        BlockPos ground = at.below();
+        BlockState g = level.getBlockState(ground);
+        if (g.is(Blocks.GRASS_BLOCK) || g.is(Blocks.PODZOL) || g.is(Blocks.MYCELIUM) || g.is(Blocks.MOSS_BLOCK)) level.setBlock(ground, Blocks.DIRT.defaultBlockState(), UPDATE_ALL);
+        else if (g.is(Blocks.DIRT)) level.setBlock(ground, Blocks.COARSE_DIRT.defaultBlockState(), UPDATE_ALL);
+        else add(level, at, Direction.DOWN);
     }
 
     private static boolean blocks(ServerLevel level, BlockPos pos) {

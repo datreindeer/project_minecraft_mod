@@ -576,6 +576,11 @@ Samma eldar som ger rök (tänd Campfire, Soul Campfire, brinnande Clay Kiln) so
 - **Skrapa bort:** bryts för hand (lite segt), **4× snabbare med en kniv**. Ger item **Soot**: stadium 1 50 % chans på
   1, stadium 2 1 st, stadium 3 2 st; med kniv (Flint Knife, Iron Knife) **+1**.
 - **Item: Soot**, ett svart pigment: 1 Soot → 1 Black Dye (formlöst).
+- **Härden nöts in:** efter **1 minut** brinnande eld (samma räkning som sotet) ändras marken runt elden, 1 chans på 20
+  varje sekund, en plats i taget inom 2 block: gräs, blommor och plantor brinner bort; Grass Block, Podzol, Mycelium och
+  Moss Block blir Dirt, Dirt blir Coarse Dirt, och sedan (eller direkt på sten, grus, sand osv.) läggs ett sot- och
+  asklager på marken som blir mörkare i 3 stadier. En eld som hålls vid liv i ungefär en timme har bränt en mörk ring
+  runt sig. Gäller Campfire, Soul Campfire och Clay Kiln.
 
 ### Fisk
 - Döda fiskar och fångst släpper **Whole Cod / Whole Salmon / Whole Tropical Fish / Whole Pufferfish** (gäller både

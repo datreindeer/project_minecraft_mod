@@ -67,6 +67,9 @@ public final class Smoke {
     /** Soot (SootBlock): none for the first SOOT_AFTER seconds a fire burns, then one deposit with this chance each second, up to 2x in a smoky room. */
     private static final int SOOT_AFTER = 120;
     private static final float SOOT_CHANCE = 1 / 15F;
+    /** The ground around a fire (SootBlock.scorch): after SCORCH_AFTER seconds of burning, one step with this chance each second. */
+    private static final int SCORCH_AFTER = 60;
+    private static final float SCORCH_CHANCE = 1 / 20F;
     public static final ResourceKey<DamageType> DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "smoke"));
     public static final SoundEvent COUGH_SOUND = SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(Mechanical.MODID, "smoke.cough"));
 
@@ -189,6 +192,7 @@ public final class Smoke {
             src.lit = start != null;
             src.burnSeconds = src.lit ? src.burnSeconds + 1 : 0;
             if (src.burnSeconds > SOOT_AFTER && random.nextFloat() < SOOT_CHANCE * (1 + src.smoke)) SootBlock.deposit(level, start, random);
+            if (src.burnSeconds > SCORCH_AFTER && random.nextFloat() < SCORCH_CHANCE) SootBlock.scorch(level, pos, random);
             if (!src.lit) src.enclosed = false;
             else if (scan) src.enclosed = flood(level, start, src); // a vented room keeps its old extent while it clears
             if (src.lit && src.enclosed) src.smoke = Math.min(1, src.smoke + (src.leaks == 0 ? 1 : 0.5F) / (30 + src.room.size() / 5F));
