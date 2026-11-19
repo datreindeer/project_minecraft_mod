@@ -223,9 +223,8 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
   Står den på en tänd Campfire när man bygger den bränns den på lägereldens ved.
 - Var Campfire tänd fortsätter ugnen brinna på lägereldens egen ved (3 min bakning).
 - Annars: lägg bränsle och tänd med Fire Drill.
-- Bränsle går **bara åt medan något bakas**. Står den tänd utan att baka pyr den i 60 s och slocknar sedan. Påbörjat
-  bränsle sparas till nästa tändning.
-- Slocknar om bränslet tar slut mitt i en bakning.
+- En tänd ugn **bränner bränsle hela tiden**, även när inget bakas, så man kan värma upp den i förväg och den håller
+  smält metall varm i output-slotten. Den slocknar först när bränslet tar slut. Påbörjat bränsle sparas till nästa tändning.
 - Syns: flammor ur eldöppningen (mer när den bakar), rök ur skorstenen, lyser (ljus 13).
 - Bryter man någon halva försvinner ugnen och man får tillbaka Clay Kiln + 1–3 Stick (eldstaden går sönder) + innehåll.
 - GUI som en Furnace: input, bränsle, resultat, plus en **termometer** till vänster.

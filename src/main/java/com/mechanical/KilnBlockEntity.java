@@ -43,8 +43,6 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     public static final int INPUT = 0, FUEL = 1, OUTPUT = 2;
     /** The firewood of the campfire the kiln was built on: three firewood's worth. */
     public static final int CAMPFIRE_BURN_TICKS = 3600;
-    /** An idle lit kiln smoulders this long, then goes out. */
-    public static final int IDLE_TICKS = 1200;
     /** A new kiln's clay must burn this long (2 min, at {@link #FIRING_TEMP}° or more) before it can bake; it fires in 3 visible steps. */
     public static final int FIRE_TICKS = 2400;
     public static final int FIRING_TEMP = 500, CEILING = 1300, CRACKED_MAX = 600, HOT = 900, PUMP = 40;
@@ -97,7 +95,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 4800, 800, 1300));          // 4 min
 
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
-    private int progress, total, burn, burnTotal, idle, fireTicks;
+    private int progress, total, burn, burnTotal, fireTicks;
     /** Degrees; NaN until the first tick sets it to the air temperature. */
     private float temp = Float.NaN, ambient = 20;
     private int maxTemp = 650, bellowsTemp = 900, strain, repair, needTemp;
@@ -200,7 +198,6 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     /** Fire drill: lights the kiln, finishing any partly burnt fuel first. Returns false if there's nothing to burn. */
     public boolean tryLight() {
         if (isLit()) return true;
-        idle = 0;
         if (burn > 0) {
             setLit(true);
             return true;
@@ -223,7 +220,6 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
      */
     public boolean pump(ServerLevel level) {
         if (!isLit()) return false;
-        idle = 0;
         float t = temperature();
         if (t + PUMP / 2.0F >= CEILING) {
             strain = Math.min(STRAIN_MAX, strain + STRAIN_PER_PUMP);
@@ -326,14 +322,10 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         boolean working = canBake || firing; // firing the clay burns fuel like baking does; a kiln still too cold keeps heating
         kiln.needTemp = canBake ? bake.temp : 0;
 
-        // Fuel is only used while working; an idle lit kiln smoulders for a while, then goes out.
-        if (kiln.isLit() && !working && ++kiln.idle >= IDLE_TICKS) {
-            kiln.idle = 0;
-            kiln.setLit(false);
-        }
+        // A lit kiln burns its fuel whether or not anything bakes (so it can be heated up first, and keeps molten metal
+        // hot in the output); it goes out only when the fuel runs out.
         if (kiln.isLit()) NightDangers.markLit(level, pos);
-        if (kiln.isLit() && working) {
-            kiln.idle = 0;
+        if (kiln.isLit()) {
             // hotter fuel put in catches at once: it joins the fire (what's left of the old fuel keeps burning with it)
             Fuel next = fuelFor(kiln.items.get(FUEL)).orElse(null);
             if (kiln.burn > 0 && next != null && next.maxTemp() > kiln.maxTemp) {
