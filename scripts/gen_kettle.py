@@ -11,7 +11,7 @@
   surface and floating chunks are drawn by client/KettleRenderer (inner square +-4 px, surface y -3.5..1.5).
 - multipart blockstate over pit (0 campfire, 1-4 pit part + 1) and kettle; items: flat pictures
 - Clay Kettle Mold (bronze only, 8 units): slab with the kettle's cavity, molten / solid bronze looks, blockstate, loot
-  (keeps uses), item; Unfired Clay Kettle Mold recipe (5 Clay blocks); fired in the kiln (KilnBlockEntity)
+  (keeps uses), item; Unfired Clay Kettle Mold shaped at the Mold Bench (28 Clay Balls); fired in the kiln (KilnBlockEntity)
 - items: Bronze Kettle, Rough Cast Bronze Kettle (ground on the Whetstone), Stew, Broth, Hide Glue
 - recipes: Tripod (3 Tool Rods + Cordage), Bellows with Hide Glue in place of the Twine; tags: stew and broth perish in a
   day, the tripod is mineable with an axe; lang
@@ -205,8 +205,7 @@ def shaped(name, pattern, key, result, category="misc"):
 
 
 shaped("tripod", [" C ", " R ", "R R"], {"C": M + "cordage", "R": M + "tool_rod"}, M + "tripod")
-# a big mold: 5 blocks of clay (20 balls) round the pot's hollow
-shaped("unfired_clay_kettle_mold", ["C C", "C C", "CCC"], {"C": "minecraft:clay"}, M + "unfired_clay_kettle_mold")
+# the Unfired Clay Kettle Mold is shaped at the Mold Bench from 28 Clay Balls (MoldBench.ALL)
 # Hide Glue seals the bag as well as Twine lashes it
 shaped("bellows_with_hide_glue", ["PHP", "PHP", "GUG"], {"P": "#minecraft:planks", "H": M + "scraped_hide", "G": M + "hide_glue",
        "U": M + "clay_tuyere"}, M + "bellows", "equipment")

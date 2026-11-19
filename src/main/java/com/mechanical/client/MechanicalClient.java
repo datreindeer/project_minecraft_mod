@@ -26,6 +26,8 @@ public class MechanicalClient {
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/fletching_table.png")));
         event.<com.mechanical.ArmorStationMenu, RecipeStationScreen<com.mechanical.ArmorStationMenu>>register(Mechanical.ARMOR_STATION_MENU.get(), (menu, inventory, title) ->
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/armor_station.png")));
+        event.<com.mechanical.MoldBench.Menu, RecipeStationScreen<com.mechanical.MoldBench.Menu>>register(com.mechanical.MoldBench.MENU.get(), (menu, inventory, title) ->
+                new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/mold_bench.png")));
     }
 
     /** Worn Grass and Trodden Path: the grass parts (tintindex 0) take the biome's grass colour, like a Grass Block. */

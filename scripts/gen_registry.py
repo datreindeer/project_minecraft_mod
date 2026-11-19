@@ -603,7 +603,7 @@ def parse_java_recipes(path, station, consts, known):
 
 
 def parse_station_recipes(path, station, consts, known):
-    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Armor Station)."""
+    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Armor Station, Mold Bench)."""
     try:
         src = strip_comments(open(path, encoding="utf-8").read())
     except Exception as e:
@@ -615,7 +615,7 @@ def parse_station_recipes(path, station, consts, known):
         if body is None:
             continue
         args = split_top(body)
-        if len(args) < 5:
+        if len(args) < 4:  # result, count, 1-3 parts, unlockedBy
             continue
         try:
             res = java_refs(args[0], consts, known)
@@ -624,7 +624,7 @@ def parse_station_recipes(path, station, consts, known):
                 continue
             count = int(re.search(r"\d+", args[1]).group())
             ings = []
-            for part in args[2:5]:
+            for part in args[2:-1]:
                 is_tool = re.match(r"\s*tool\s*\(", part) is not None
                 n = re.search(r",\s*(\d+)\s*\)\s*$", part)
                 ing = ing_from_refs(java_refs(part, consts, known), label_of("Verktyg", "Tool") if is_tool else "", int(n.group(1)) if n else 1)
@@ -869,7 +869,8 @@ def main():
         RECIPES.extend(recs)
         fuels.extend(fl)
 
-    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("ArmorStationRecipes.java", "Armor Station")):
+    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("ArmorStationRecipes.java", "Armor Station"),
+                          ("MoldBench.java", "Mold Bench")):
         path = os.path.join(JAVA, fname)
         if os.path.isfile(path):
             recs = parse_station_recipes(path, station, consts, known)
