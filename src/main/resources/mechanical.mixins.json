@@ -11,6 +11,8 @@
     "EntityLightMixin",
     "EyesLayerMixin",
     "LightCoordsMixin",
+    "AdvancementTabMixin",
+    "AdvancementsScreenMixin",
     "LivingEntityRendererMixin",
     "QuadrupedModelMixin"
   ],
