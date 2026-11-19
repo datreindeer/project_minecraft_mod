@@ -383,8 +383,14 @@ KILN_TEX = {"particle": "minecraft:block/clay", "clay": "minecraft:block/clay", 
 # firing stages 0 (raw clay) .. 3 (fired), textures from gen_kiln_firing_textures.py; stage 0 keeps the plain model names
 KILN_CLAY = ["minecraft:block/clay", "mechanical:block/kiln_clay_1", "mechanical:block/kiln_clay_2", "mechanical:block/kiln_clay_fired"]
 kiln_suffix = lambda st: f"_{st}" if st else ""
-for st, lit in [(st, lit) for st in range(4) for lit in (False, True)]:
-    KTEX = {**KILN_TEX, "particle": KILN_CLAY[st], "clay": KILN_CLAY[st]}
+# overheating cracks 1-2 (strained) and 3 (cracked) replace the clay texture (gen_copper_textures.py); "c1".."c3" in model names
+KILN_CLAY_BY = {kiln_suffix(st): t for st, t in enumerate(KILN_CLAY)} | {f"_c{c}": f"mechanical:block/kiln_clay_cracks_{c}" for c in (1, 2, 3)}
+def kiln_clay_key(firing, cracks):
+    return f"_c{cracks}" if cracks else kiln_suffix(firing)
+# lower half: unlit, lit, and lit + hot (>= 900 degrees: a glowing ember plane in the fire opening, full light)
+for key, (lit, hot) in [(k, lh) for k in KILN_CLAY_BY for lh in ((False, False), (True, False), (True, True))]:
+    clay_tex = KILN_CLAY_BY[key]
+    KTEX = {**KILN_TEX, "particle": clay_tex, "clay": clay_tex}
     tex = "#lit_log" if lit else "#log"
     elements = [
         # foundation stones, open at the front
@@ -404,11 +410,17 @@ for st, lit in [(st, lit) for st in range(4) for lit in (False, True)]:
     ]
     if lit:
         elements += [flame([3, 1, 8], [13, 13, 8], ("north", "south")), flame([8, 1, 3], [8, 13, 13], ("east", "west"))]
-    w(A / f"models/block/kiln_lower{'_lit' if lit else ''}{kiln_suffix(st)}.json", {"parent": "minecraft:block/block", "textures": {
-        **KTEX, "log": "minecraft:block/campfire_log", "lit_log": "minecraft:block/campfire_log_lit", "fire": "minecraft:block/campfire_fire"},
+    if hot:
+        elements += [{"from": [5, 3, 3.1], "to": [11, 7, 3.1], "light_emission": 15, "shade": False,
+                      "faces": {"north": {"uv": [5, 9, 11, 13], "texture": "#glow"}}},
+                     {"from": [3.5, 0.2, 3.5], "to": [12.5, 0.2, 12.5], "light_emission": 15, "shade": False,
+                      "faces": {"up": {"uv": [3.5, 3.5, 12.5, 12.5], "texture": "#glow"}}}]
+    w(A / f"models/block/kiln_lower{'_lit' if lit else ''}{'_hot' if hot else ''}{key}.json", {"parent": "minecraft:block/block", "textures": {
+        **KTEX, "log": "minecraft:block/campfire_log", "lit_log": "minecraft:block/campfire_log_lit", "fire": "minecraft:block/campfire_fire",
+        **({"glow": "mechanical:block/kiln_glow"} if hot else {})},
         "elements": elements})
-for st in range(4):
-  w(A / f"models/block/kiln_upper{kiln_suffix(st)}.json", {"parent": "minecraft:block/block", "textures": {**KILN_TEX, "particle": KILN_CLAY[st], "clay": KILN_CLAY[st]},
+for key, clay_tex in KILN_CLAY_BY.items():
+  w(A / f"models/block/kiln_upper{key}.json", {"parent": "minecraft:block/block", "textures": {**KILN_TEX, "particle": clay_tex, "clay": clay_tex},
     "elements": [
         kbox([1.5, 0, 12.5], [14.5, 6, 14.5]), kbox([1.5, 0, 3.5], [3.5, 6, 12.5]), kbox([12.5, 0, 3.5], [14.5, 6, 12.5]),
         kbox([1.5, 0, 1.5], [6, 6, 3.5]), kbox([10, 0, 1.5], [14.5, 6, 3.5]),   # front around the loading opening
@@ -424,8 +436,12 @@ for f, y in rot.items():
         for lit in ("false", "true"):
             for active in ("false", "true"):
                 for st in range(4):
-                    model = f"mechanical:block/kiln_upper{kiln_suffix(st)}" if half == "upper" else f"mechanical:block/kiln_lower{'_lit' if lit == 'true' else ''}{kiln_suffix(st)}"
-                    variants[f"active={active},facing={f},firing={st},half={half},lit={lit}"] = {"model": model, **({"y": y} if y else {})}
+                    for cracks in range(4):
+                        for hot in ("false", "true"):
+                            key = kiln_clay_key(st, cracks)
+                            lower = f"_lit{'_hot' if hot == 'true' else ''}" if lit == "true" else ""
+                            model = f"mechanical:block/kiln_upper{key}" if half == "upper" else f"mechanical:block/kiln_lower{lower}{key}"
+                            variants[f"active={active},cracks={cracks},facing={f},firing={st},half={half},hot={hot},lit={lit}"] = {"model": model, **({"y": y} if y else {})}
 w(A / "blockstates/kiln.json", {"variants": variants})
 # the item shows how far its clay is fired (kept in its block_state component when a fired kiln is broken)
 w(A / "items/kiln.json", {"model": {"type": "minecraft:select", "property": "minecraft:block_state", "block_state_property": "firing",
@@ -441,7 +457,7 @@ w(D / "mechanical/loot_table/blocks/kiln.json", {"type": "minecraft:block", "poo
         # an unfired kiln drops a plain kiln (stacks with crafted ones); a (part-)fired one keeps its firing
         {"type": "minecraft:item", "name": "mechanical:kiln", "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "upper", "firing": "0"}}},
         {"type": "minecraft:item", "name": "mechanical:kiln", "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "upper", "firing": {"min": "1"}}},
-         "modifier": [{"type": "minecraft:copy_state", "block": "mechanical:kiln", "properties": ["firing"]}]},
+         "modifier": [{"type": "minecraft:copy_state", "block": "mechanical:kiln", "properties": ["firing", "cracks"]}]},
         {**STICKS, "condition": half_drop("lower", "")["condition"]}]}],
     "random_sequence": "mechanical:blocks/kiln"})
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block", "mechanical:kiln", "mechanical:stone_anvil", "mechanical:loose_malachite", "mechanical:loose_native_copper", "mechanical:loose_cassiterite"] + [f"mechanical:loose_{v}" for v in ROCKS]})

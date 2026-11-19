@@ -54,18 +54,23 @@ public class KilnBlock extends Block implements EntityBlock {
     /** How far the clay is fired: 0 raw (a new kiln, can't bake yet) .. 3 fired. Default 3 so kilns from older worlds stay fired. */
     public static final IntegerProperty FIRING = IntegerProperty.create("firing", 0, 3);
     public static final int FIRED = 3;
+    /** Overheating strain shown as cracks: 1-2 strained, 3 cracked (stays under 600° until patched with Clay Balls). */
+    public static final IntegerProperty CRACKS = IntegerProperty.create("cracks", 0, 3);
+    public static final int CRACKED = 3;
+    /** Lit and at least {@link KilnBlockEntity#HOT}°: the fire opening glows and the flames are brighter. */
+    public static final BooleanProperty HOT = BooleanProperty.create("hot");
 
     private static final VoxelShape LOWER_SHAPE = column(15, 0, 16);
     private static final VoxelShape UPPER_SHAPE = Shapes.or(column(13, 0, 6), column(11, 6, 8), column(9, 8, 10), column(6, 10, 12), column(3, 12, 16));
 
     public KilnBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(LIT, false).setValue(ACTIVE, false).setValue(FIRING, FIRED));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(LIT, false).setValue(ACTIVE, false).setValue(FIRING, FIRED).setValue(CRACKS, 0).setValue(HOT, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HALF, LIT, ACTIVE, FIRING);
+        builder.add(FACING, HALF, LIT, ACTIVE, FIRING, CRACKS, HOT);
     }
 
     public static BlockPos lowerPos(BlockState state, BlockPos pos) {
@@ -108,6 +113,7 @@ public class KilnBlock extends Block implements EntityBlock {
         if (direction == (lower ? Direction.UP : Direction.DOWN)) {
             boolean partner = neighbourState.is(this) && neighbourState.getValue(HALF) != state.getValue(HALF);
             return partner ? state.setValue(LIT, neighbourState.getValue(LIT)).setValue(ACTIVE, neighbourState.getValue(ACTIVE)).setValue(FIRING, neighbourState.getValue(FIRING))
+                    .setValue(CRACKS, neighbourState.getValue(CRACKS)).setValue(HOT, neighbourState.getValue(HOT))
                     : Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
@@ -138,14 +144,27 @@ public class KilnBlock extends Block implements EntityBlock {
     // Holding a fire drill: skip opening the GUI so the drill's own use (lighting) runs.
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        return stack.getItem() instanceof FireDrillItem ? InteractionResult.PASS : super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+        if (stack.getItem() instanceof FireDrillItem) return InteractionResult.PASS;
+        // a cracked kiln is patched with Clay Balls, one per click
+        if (stack.is(net.minecraft.world.item.Items.CLAY_BALL) && state.getValue(CRACKS) >= CRACKED) {
+            if (!level.isClientSide() && level.getBlockEntity(lowerPos(state, pos)) instanceof KilnBlockEntity kiln) {
+                stack.consume(1, player);
+                int n = kiln.patch();
+                level.playSound(null, pos, SoundEvents.MUD_PLACE, SoundSource.BLOCKS, 0.8F, 1.0F);
+                player.sendOverlayMessage(Component.translatable(n >= KilnBlockEntity.REPAIR_CLAY ? "message.mechanical.kiln.patched"
+                        : "message.mechanical.kiln.patching", n, KilnBlockEntity.REPAIR_CLAY));
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(lowerPos(state, pos)) instanceof KilnBlockEntity kiln) {
             player.openMenu(kiln);
-            if (state.getValue(FIRING) < FIRED) player.sendOverlayMessage(Component.translatable("message.mechanical.kiln.unfired"));
+            if (state.getValue(CRACKS) >= CRACKED) player.sendOverlayMessage(Component.translatable("message.mechanical.kiln.cracked"));
+            else if (state.getValue(FIRING) < FIRED) player.sendOverlayMessage(Component.translatable("message.mechanical.kiln.unfired"));
         }
         return InteractionResult.SUCCESS;
     }
@@ -153,7 +172,7 @@ public class KilnBlock extends Block implements EntityBlock {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (!state.getValue(LIT)) return;
-        boolean active = state.getValue(ACTIVE);
+        boolean active = state.getValue(ACTIVE), hot = state.getValue(HOT);
         if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
             if (random.nextInt(active ? 2 : 4) == 0) {
                 level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 0.0, 0.07, 0.0);
@@ -163,13 +182,16 @@ public class KilnBlock extends Block implements EntityBlock {
         // Flames licking out of the fire opening at the front (the model's front is its north side, turned to FACING).
         Direction front = state.getValue(FACING);
         double x = pos.getX() + 0.5 + front.getStepX() * 0.5, z = pos.getZ() + 0.5 + front.getStepZ() * 0.5;
-        int flames = active ? 3 : random.nextInt(3) == 0 ? 1 : 0;
+        int flames = hot ? 5 : active ? 3 : random.nextInt(3) == 0 ? 1 : 0;
         for (int i = 0; i < flames; i++) {
             double side = (random.nextDouble() - 0.5) * 0.35; // across the opening
             double px = x + (front.getAxis() == Direction.Axis.Z ? side : 0), pz = z + (front.getAxis() == Direction.Axis.X ? side : 0);
             double out = 0.01 + random.nextDouble() * 0.02;
             level.addParticle(active ? ParticleTypes.FLAME : ParticleTypes.SMALL_FLAME, px, pos.getY() + 0.1 + random.nextDouble() * 0.3, pz,
                     front.getStepX() * out, 0.02, front.getStepZ() * out);
+        }
+        if (hot && random.nextInt(4) == 0) {
+            level.addParticle(ParticleTypes.LAVA, x, pos.getY() + 0.3, z, 0, 0, 0); // sparks spitting out of the white-hot opening
         }
         if (active && random.nextInt(8) == 0) {
             level.playLocalSound(x, pos.getY() + 0.3, z, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 0.8F + random.nextFloat() * 0.4F, false);

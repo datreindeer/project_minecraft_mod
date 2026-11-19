@@ -52,7 +52,13 @@ public final class ToolStationRecipes {
                     s -> s.is(com.mechanical.wildlife.Wildlife.TUSK.get())),
             new Recipe(() -> Mechanical.BONE_HOOK_FISHING_ROD.get(), () -> Mechanical.BONE_FISH_HOOK.get(), Mechanical.TWINE, Mechanical.TOOL_ROD,
                     s -> s.is(Mechanical.BONE_FISH_HOOK.get())),
-            new Recipe(() -> Farming.FLINT_SICKLE.get(), () -> Items.FLINT, Mechanical.TWINE, () -> Items.STICK, FLINT));
+            new Recipe(() -> Farming.FLINT_SICKLE.get(), () -> Items.FLINT, Mechanical.TWINE, () -> Items.STICK, FLINT),
+            // copper: cast heads, ground on the Whetstone; unlocked by holding the ground head
+            new Recipe(() -> Items.COPPER_PICKAXE, Casting.COPPER_PICKAXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_PICKAXE_HEAD.get())),
+            new Recipe(() -> Items.COPPER_AXE, Casting.COPPER_AXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_AXE_HEAD.get())),
+            new Recipe(() -> Items.COPPER_SHOVEL, Casting.COPPER_SHOVEL_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_SHOVEL_HEAD.get())),
+            new Recipe(() -> Items.COPPER_HOE, Casting.COPPER_HOE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_HOE_HEAD.get())),
+            new Recipe(() -> Casting.COPPER_KNIFE.get(), Casting.COPPER_KNIFE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Casting.COPPER_KNIFE_BLADE.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());
