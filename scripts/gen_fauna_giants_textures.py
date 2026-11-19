@@ -747,7 +747,6 @@ def items():
     out["mammoth_fat"] = from_grid(FAT_GRID, FAT_PAL)
     out["mammoth_wool"] = mammoth_wool()
     out["qiviut"] = fluff((150, 130, 108), (188, 170, 146), (96, 80, 66), 320, blob(QIVIUT_SHAPE))
-    out["ivory_knife"] = from_grid(KNIFE_GRID, KNIFE_PAL)
     out["rhino_horn_club"] = from_grid(CLUB_GRID, CLUB_PAL)
     for kind, salt in (("mammoth", 400), ("rhino", 410), ("bison", 420), ("musk_ox", 430)):
         cured = spread_hide(kind)

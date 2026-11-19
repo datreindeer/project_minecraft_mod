@@ -101,10 +101,9 @@ ITEMS = {
 for item, name in ITEMS.items():
     flat_item(item)
     lang[f"item.mechanical.{item}"] = name
-for item, name in {"ivory_knife": "Ivory Knife", "rhino_horn_club": "Rhino Horn Club"}.items():
+for item, name in {"rhino_horn_club": "Rhino Horn Club"}.items():
     flat_item(item, "minecraft:item/handheld")
     lang[f"item.mechanical.{item}"] = name
-tag_add("knives", M + "ivory_knife")
 w(D / "mechanical/tags/item/ivory_tool_materials.json", {"values": [M + "mammoth_ivory"]})
 w(D / "mechanical/tags/item/rhino_horn_tool_materials.json", {"values": [M + "rhino_horn"]})
 
@@ -190,7 +189,7 @@ w(D / "mechanical/loot_table/blocks/ivory_figurine.json", {"type": "minecraft:bl
 # ---- recipes for the parts ----
 recipe("tallow_from_mammoth_fat", {"type": "minecraft:campfire_cooking", "category": "misc", "cookingtime": 400, "experience": 0.1,
                                    "ingredient": M + "mammoth_fat", "result": {"id": M + "tallow", "count": 3}})
-shaped("ivory_knife", ["I", "C", "L"], {"I": M + "mammoth_ivory", "C": M + "cordage", "L": "minecraft:leather"}, M + "ivory_knife",
+shaped("ivory_knife_from_mammoth_ivory", ["I", "C", "L"], {"I": M + "mammoth_ivory", "C": M + "cordage", "L": "minecraft:leather"}, M + "ivory_knife",
        category="equipment")
 shaped("rhino_horn_club", ["H", "C", "R"], {"H": M + "rhino_horn", "C": M + "cordage", "R": M + "tool_rod"}, M + "rhino_horn_club",
        category="equipment")

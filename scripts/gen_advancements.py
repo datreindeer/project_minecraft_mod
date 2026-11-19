@@ -329,7 +329,7 @@ TABS = {
          "Bring down a Woolly Mammoth and butcher it for its Ivory. The herd's matriarch warns once, then charges",
          has("mammoth_ivory")),
         ("ivory_knife", "mammoth_ivory", "ivory_knife", T, "Ivory Edge",
-         "Craft an Ivory Knife (Mammoth Ivory, Cordage, Leather): a skinning knife that can cut bears", has("ivory_knife")),
+         "Craft an Ivory Knife from Mammoth Ivory (with Cordage and Leather) or Walrus Ivory: a skinning knife that can cut bears", has("ivory_knife")),
         ("ivory_figurine", "mammoth_ivory", "ivory_figurine", T, "Ivory Carver",
          "Carve Mammoth Ivory into an Ivory Figurine with a knife", has("ivory_figurine")),
         ("mammoth_tallow", "mammoth_ivory", "mammoth_fat", T, "Fat of the Land",

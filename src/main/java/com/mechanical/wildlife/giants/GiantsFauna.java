@@ -102,9 +102,7 @@ public final class GiantsFauna {
     public static final TagKey<Item> RHINO_HORN_TOOL_MATERIALS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Mechanical.MODID, "rhino_horn_tool_materials"));
     public static final ToolMaterial IVORY = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 200, 3.0F, 0.5F, 10, IVORY_TOOL_MATERIALS);
     public static final ToolMaterial HORN_CLUB = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 240, 2.0F, 1.0F, 5, RHINO_HORN_TOOL_MATERIALS);
-    /** A skinning knife as good as the Tusk Dagger (cuts bears), a little faster and with a bigger yield. */
-    public static final DeferredItem<KnifeItem> IVORY_KNIFE = ITEMS.registerItem("ivory_knife", p -> new KnifeItem(p, 1.4F, 1.2F, KnifeItem.TUSK, 1.6F),
-            p -> p.sword(IVORY, 1.5F, -1.8F));
+    // the Ivory Knife is CoastFauna.IVORY_KNIFE (walrus ivory); mammoth ivory is a second recipe for it
     /** A heavy club with the rhino's horn lashed on as a spike: slow, hard-hitting. */
     public static final DeferredItem<Item> RHINO_HORN_CLUB = ITEMS.registerSimpleItem("rhino_horn_club", p -> p.sword(HORN_CLUB, 4.5F, -3.1F));
     public static final DeferredBlock<IvoryFigurineBlock> IVORY_FIGURINE = BLOCKS.registerBlock("ivory_figurine", IvoryFigurineBlock::new, p -> p
