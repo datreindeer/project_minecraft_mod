@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " S",
+    "TS",
+    "S "
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "T": "mechanical:twine"
+  },
+  "result": {
+    "id": "mechanical:flail"
+  }
+}

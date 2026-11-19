@@ -1,0 +1,21 @@
+{
+  "values": [
+    "minecraft:leaf_litter",
+    "mechanical:straw",
+    "mechanical:plant_fibre",
+    "minecraft:rotten_flesh",
+    "mechanical:burnt_food",
+    "#minecraft:leaves",
+    "#minecraft:saplings",
+    "minecraft:short_grass",
+    "minecraft:fern",
+    "minecraft:melon_slice",
+    "minecraft:beetroot",
+    "minecraft:carrot",
+    "minecraft:potato",
+    "minecraft:poisonous_potato",
+    "minecraft:apple",
+    "mechanical:bark",
+    "mechanical:fish_bones"
+  ]
+}

@@ -937,7 +937,7 @@ for path in [n for n in _jar.namelist() if n.startswith("data/minecraft/loot_tab
         {"rolls": {"type": "minecraft:uniform", "min": 3, "max": 6}, "entries": pool}],
         "random_sequence": f"minecraft:chests/village/{name}"})
 
-# Fields: most crops died, a few young ones left (young crops only give seeds / one carrot or potato)
+# Fields: most crops died, a few young ones left (unripe crops give nothing, see gen_farming.py), now and then a ripe one
 def _rule(block, prob, out):
     return {"input_predicate": {"predicate_type": "minecraft:random_block_match", "block": block, "probability": prob},
             "location_predicate": {"predicate_type": "minecraft:always_true"}, "output_state": out}
@@ -948,7 +948,10 @@ for farm in ("plains", "desert", "savanna", "snowy", "taiga"):
         rules.append(_rule(f"minecraft:{crop}", 0.75, DEAD))
     rules += [_rule("minecraft:wheat", 0.2, {"id": "minecraft:carrots", "properties": {"age": "1"}}),
               _rule("minecraft:wheat", 0.15, {"id": "minecraft:potatoes", "properties": {"age": "1"}}),
+              _rule("minecraft:wheat", 0.15, {"id": "minecraft:wheat", "properties": {"age": "7"}}),  # a few ripe sheaves (gen_farming)
               _rule("minecraft:wheat", 1.0, {"id": "minecraft:wheat", "properties": {"age": "2"}})]
+    for crop in ("carrots", "potatoes"):  # unripe crops give nothing now: leave a few ripe ones
+        rules.append(_rule(f"minecraft:{crop}", 0.25, {"id": f"minecraft:{crop}", "properties": {"age": "7"}}))
     for crop in ("carrots", "potatoes", "beetroots"):
         rules.append(_rule(f"minecraft:{crop}", 1.0, {"id": f"minecraft:{crop}", "properties": {"age": "1"}}))
     for stem in ("melon_stem", "pumpkin_stem"):

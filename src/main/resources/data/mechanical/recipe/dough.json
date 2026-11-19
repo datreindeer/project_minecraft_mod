@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flour",
+    "mechanical:flour",
+    [
+      "mechanical:clay_water_bucket",
+      "minecraft:water_bucket"
+    ]
+  ],
+  "result": {
+    "id": "mechanical:dough",
+    "count": 1
+  }
+}

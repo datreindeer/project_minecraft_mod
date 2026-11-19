@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:baking_stone"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/baking_stone"
+}

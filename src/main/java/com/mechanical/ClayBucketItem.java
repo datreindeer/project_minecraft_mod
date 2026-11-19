@@ -14,6 +14,15 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemInstance;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FarmlandBlock;
 
 /**
  * Fired clay bucket: holds only water, and wears a little each time it is poured out; it cracks when worn through.
@@ -22,6 +31,45 @@ import net.minecraft.world.phys.HitResult;
 public class ClayBucketItem extends BucketItem {
     public ClayBucketItem(Fluid content, Properties properties) {
         super(content, properties);
+    }
+
+    /** Pour it on farmland (or a crop on it): that farmland and the 8 around it get fully wet (moisture 7). */
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        if (!(level.getBlockState(pos).getBlock() instanceof FarmlandBlock)) pos = pos.below();
+        if (content != Fluids.WATER || !(level.getBlockState(pos).getBlock() instanceof FarmlandBlock) || context.getPlayer() == null) return InteractionResult.PASS;
+        if (level instanceof ServerLevel server) {
+            for (BlockPos p : BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, 0, 1))) {
+                var soil = server.getBlockState(p);
+                if (soil.getBlock() instanceof FarmlandBlock) server.setBlock(p, soil.setValue(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
+            }
+            server.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+            server.sendParticles(ParticleTypes.SPLASH, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 30, 1.0, 0.1, 1.0, 0.1);
+            Player player = context.getPlayer();
+            if (!player.hasInfiniteMaterials()) {
+                ItemStack empty = emptied(context.getItemInHand());
+                if (empty.isEmpty()) player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
+                player.setItemInHand(context.getHand(), empty);
+            }
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** The empty clay bucket left after pouring, one pour more worn; empty when it cracks. */
+    private static ItemStack emptied(ItemStack full) {
+        ItemStack empty = full.transmuteCopy(Mechanical.CLAY_BUCKET.get(), 1);
+        empty.setDamageValue(full.getDamageValue() + 1);
+        return empty.getDamageValue() >= empty.getMaxDamage() ? ItemStack.EMPTY : empty;
+    }
+
+    /** Used as water in a recipe (dough, porridge): the empty bucket stays in the grid. */
+    @Override
+    public ItemStackTemplate getCraftingRemainder(ItemInstance instance) {
+        if (content != Fluids.WATER || !(instance instanceof ItemStack stack)) return null;
+        ItemStack empty = emptied(stack);
+        return empty.isEmpty() ? null : ItemStackTemplate.fromNonEmptyStack(empty);
     }
 
     @Override
@@ -37,12 +85,8 @@ public class ClayBucketItem extends BucketItem {
         ItemStack vanilla = success.heldItemTransformedTo();
         if (vanilla.is(Items.WATER_BUCKET)) return success.heldItemTransformedTo(stack.transmuteCopy(Mechanical.CLAY_WATER_BUCKET.get(), 1));
         if (vanilla.is(Items.BUCKET)) {
-            ItemStack empty = stack.transmuteCopy(Mechanical.CLAY_BUCKET.get(), 1);
-            empty.setDamageValue(stack.getDamageValue() + 1);
-            if (empty.getDamageValue() >= empty.getMaxDamage()) {
-                player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
-                return success.heldItemTransformedTo(ItemStack.EMPTY);
-            }
+            ItemStack empty = emptied(stack);
+            if (empty.isEmpty()) player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
             return success.heldItemTransformedTo(empty);
         }
         return result; // creative: the held stack itself

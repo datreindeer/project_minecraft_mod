@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "mechanical:barley_crop",
+    "mechanical:einkorn_crop",
+    "mechanical:emmer_crop",
+    "mechanical:pea_crop"
+  ]
+}

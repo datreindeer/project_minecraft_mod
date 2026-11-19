@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "BEB",
+    "CCC"
+  ],
+  "key": {
+    "A": "minecraft:milk_bucket",
+    "B": "minecraft:sugar",
+    "C": "mechanical:flour",
+    "E": "#minecraft:eggs"
+  },
+  "result": {
+    "id": "minecraft:cake"
+  }
+}

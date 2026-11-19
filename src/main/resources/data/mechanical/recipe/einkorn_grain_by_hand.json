@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:einkorn_sheaf"
+  ],
+  "result": {
+    "id": "mechanical:einkorn_grain",
+    "count": 1
+  }
+}

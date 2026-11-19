@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:barley_sheaf"
+  ],
+  "result": {
+    "id": "mechanical:barley_grain",
+    "count": 1
+  }
+}

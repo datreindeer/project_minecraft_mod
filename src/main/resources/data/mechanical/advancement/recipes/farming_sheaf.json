@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:sheaves"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:wheat_seeds_by_hand",
+      "mechanical:barley_grain_by_hand",
+      "mechanical:einkorn_grain_by_hand",
+      "mechanical:emmer_grain_by_hand"
+    ]
+  }
+}
