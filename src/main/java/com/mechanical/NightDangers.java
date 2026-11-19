@@ -41,7 +41,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 /**
  * What makes the night dangerous, and fire the only real safety:
- * - monsters keep away from burning fires (campfires, lit kilns), won't target players close to one and don't spawn near one;
+ * - monsters keep away from burning fires (campfires, lit kilns), won't target players close to one and don't spawn near one
+ *   (except on a blood moon: then the fire is no safety at all);
  * - zombie hordes roam on blood moon nights (two waves): they go for the lights first (put out fires, smash torches and lanterns), then the players;
  * - torches give no protection, instead they draw monsters in, which smash them;
  * - more monsters at night, some of which stalk the player (circling at a distance) before they attack;
@@ -123,7 +124,7 @@ public final class NightDangers {
     @SubscribeEvent
     static void onTarget(LivingChangeTargetEvent event) {
         if (!(event.getEntity() instanceof Monster monster) || !(event.getNewAboutToBeSetTarget() instanceof Player player)) return;
-        if (nearFire(player.level(), player.position(), SAFE_RADIUS)) {
+        if (!BloodMoon.isActive(player.level()) && nearFire(player.level(), player.position(), SAFE_RADIUS)) {
             event.setCanceled(true);
         } else if (monster.entityTags().contains(LURKER_TAG) && monster.getLastHurtByMob() != player && monster.distanceTo(player) > 5) {
             event.setCanceled(true);
@@ -139,7 +140,7 @@ public final class NightDangers {
     /** No monsters spawn close to a burning fire. */
     @SubscribeEvent
     static void onSpawn(FinalizeSpawnEvent event) {
-        if (event.getEntity() instanceof Monster && event.getSpawnType() == EntitySpawnReason.NATURAL
+        if (event.getEntity() instanceof Monster && event.getSpawnType() == EntitySpawnReason.NATURAL && !BloodMoon.isActive(event.getEntity().level())
                 && nearFire(event.getEntity().level(), new Vec3(event.getX(), event.getY(), event.getZ()), NO_SPAWN_RADIUS)) {
             event.setSpawnCancelled(true);
         }
@@ -157,7 +158,7 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            if (mob.tickCount % 10 != 0) return false;
+            if (mob.tickCount % 10 != 0 || BloodMoon.isActive(mob.level())) return false; // a blood moon makes them fearless
             fire = nearestFire(mob.level(), mob.position(), AVOID_RADIUS);
             if (fire == null) return false;
             if (mob.getTarget() != null && nearFire(mob.level(), mob.getTarget().position(), SAFE_RADIUS)) mob.setTarget(null);
@@ -392,7 +393,7 @@ public final class NightDangers {
         // surface only, near the player's height, dark, dry, away from fire
         if (Math.abs(pos.getY() - player.getY()) > 16 || level.getBrightness(LightLayer.BLOCK, pos) > 0
                 || !level.getFluidState(pos).isEmpty() || !level.getFluidState(pos.below()).isEmpty()
-                || nearFire(level, Vec3.atCenterOf(pos), NO_SPAWN_RADIUS)) return;
+                || nearFire(level, Vec3.atCenterOf(pos), BloodMoon.isActive(level) ? 10 : NO_SPAWN_RADIUS)) return;
         int roll = random.nextInt(100);
         EntityType<? extends Monster> type = roll < 50 ? EntityTypes.ZOMBIE : roll < 72 ? EntityTypes.SKELETON : roll < 88 ? EntityTypes.SPIDER : EntityTypes.CREEPER;
         Monster monster = type.create(level, EntitySpawnReason.NATURAL);
@@ -529,7 +530,6 @@ public final class NightDangers {
         double dist = 32 + random.nextInt(16);
         BlockPos center = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 BlockPos.containing(near.getX() + Math.cos(angle) * dist, near.getY(), near.getZ() + Math.sin(angle) * dist));
-        if (nearFire(level, Vec3.atCenterOf(center), NO_SPAWN_RADIUS)) return;
         int count = HORDE_MIN + random.nextInt(HORDE_MAX - HORDE_MIN + 1);
         for (int i = 0; i < count; i++) {
             BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, center.offset(random.nextInt(7) - 3, 0, random.nextInt(7) - 3));

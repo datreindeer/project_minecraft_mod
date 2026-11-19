@@ -477,7 +477,8 @@ Nytt item: **Horn** (material för senare recept).
   blodmånen spawnar dubbelt så många extra monster (upp till 20 inom 48 block i stället för 12) och zombiehorderna kommer.
   Monstren är rasande: de **slår sönder facklor** inom räckhåll även medan de jagar dig (och söker upp facklor i
   närheten oftare), och alla närstridsmonster som går på marken (inte creepers, skelett eller endermen) **slår in
-  trädörrar**, som zombier gör på Hard.
+  trädörrar**, som zombier gör på Hard. **Elden skyddar inte under blodmånen:** monstren håller sig inte undan från
+  campfires och kilns, anfaller spelare som står vid elden och kan spawna ända in till 10 block från den (annars 28).
   Testa med `/bloodmoon` (op), som gör kvällens natt till blodmåne.
 - **Blåsiga nätter:** ungefär var femte natt (bestämt av världens seed, oberoende av blodmånen) blåser det från
   skymning till gryning. Ett meddelande vid skymningen, vindbyar hörs och aska driver förbi. **Lägereldar och facklor
