@@ -5,7 +5,9 @@
     "minecraft:birch_forest",
     "minecraft:flower_forest",
     "minecraft:old_growth_birch_forest",
-    "minecraft:dappled_forest"
+    "minecraft:dappled_forest",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:hazel_shrub",
   "step": "vegetal_decoration"

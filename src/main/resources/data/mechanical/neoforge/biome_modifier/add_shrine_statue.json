@@ -9,7 +9,9 @@
     "minecraft:flower_forest",
     "minecraft:birch_forest",
     "minecraft:taiga",
-    "minecraft:snowy_taiga"
+    "minecraft:snowy_taiga",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:shrine_statue",
   "step": "surface_structures"

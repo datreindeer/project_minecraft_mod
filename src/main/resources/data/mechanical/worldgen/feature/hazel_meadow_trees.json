@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:random_selector",
+  "default": "minecraft:oak_checked",
+  "features": [
+    {
+      "chance": 0.45,
+      "feature": "mechanical:ash_checked"
+    },
+    {
+      "chance": 0.15,
+      "feature": "mechanical:linden_checked"
+    }
+  ]
+}

@@ -22,6 +22,8 @@
     "CampfireBlockMixin",
     "FarmlandBlockMixin",
     "FireBlockInvoker",
+    "MultiNoiseBiomeSourceParameterListsMixin",
+    "OverworldBiomeBuilderMixin",
     "TorchBlockMixin"
   ]
 }

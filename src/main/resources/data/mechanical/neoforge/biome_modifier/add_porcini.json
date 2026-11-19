@@ -4,7 +4,9 @@
     "minecraft:forest",
     "minecraft:dark_forest",
     "minecraft:taiga",
-    "minecraft:old_growth_spruce_taiga"
+    "minecraft:old_growth_spruce_taiga",
+    "mechanical:deciduous_forest",
+    "mechanical:pine_heath"
   ],
   "features": "mechanical:porcini",
   "step": "vegetal_decoration"

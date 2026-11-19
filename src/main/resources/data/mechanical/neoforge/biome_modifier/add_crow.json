@@ -8,7 +8,9 @@
     "minecraft:flower_forest",
     "minecraft:dark_forest",
     "minecraft:savanna",
-    "minecraft:windswept_forest"
+    "minecraft:windswept_forest",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow"
   ],
   "spawners": [
     {

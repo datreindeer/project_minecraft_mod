@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:forest",
     "minecraft:birch_forest",
-    "minecraft:old_growth_birch_forest"
+    "minecraft:old_growth_birch_forest",
+    "mechanical:deciduous_forest"
   ],
   "features": "mechanical:sapling_thicket",
   "step": "vegetal_decoration"

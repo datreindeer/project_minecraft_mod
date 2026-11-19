@@ -724,5 +724,10 @@
   "item.mechanical.cave_lion_spawn_egg": "Cave Lion Spawn Egg",
   "entity.mechanical.grey_wolf": "Grey Wolf",
   "entity.mechanical.cave_lion": "Cave Lion",
-  "subtitles.mechanical.entity.grey_wolf.howl": "Wolves howl"
+  "subtitles.mechanical.entity.grey_wolf.howl": "Wolves howl",
+  "biome.mechanical.deciduous_forest": "Deciduous Forest",
+  "biome.mechanical.hazel_meadow": "Hazel Meadow",
+  "biome.mechanical.willow_fen": "Willow Fen",
+  "biome.mechanical.pine_heath": "Pine Heath",
+  "block.mechanical.heather": "Heather"
 }

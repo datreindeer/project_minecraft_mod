@@ -5,7 +5,9 @@
     "minecraft:sunflower_plains",
     "minecraft:savanna",
     "minecraft:savanna_plateau",
-    "minecraft:meadow"
+    "minecraft:meadow",
+    "mechanical:hazel_meadow",
+    "mechanical:pine_heath"
   ],
   "features": "mechanical:standing_stones",
   "step": "surface_structures"

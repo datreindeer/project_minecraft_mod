@@ -368,6 +368,43 @@ Skogarna har fått buskar och sly, i grupper. Inget har kollision (man kan gå i
 
 Mat: **Hazelnuts** (2), **Roasted Hazelnuts** (4, rostas på Campfire), **Juniper Berries** (1). Nötter och bär får plats i Bark Basket.
 
+### Biomer
+Fyra nya biomer i overworld. De tar en del av vanilla-biomernas klimat (vanilla-biomerna finns kvar, bara mindre),
+terrängen är densamma som förut. Bara **nya chunks** får dem; gamla chunks behåller sina biomer, så gränsen mot gammal
+värld kan bli tvär.
+
+| Biom | Tar plats från | Hur vanlig |
+|---|---|---|
+| **Deciduous Forest** (lövskog) | Den fuktigare halvan av tempererad Forest | Vanlig, ungefär lika vanlig som Forest |
+| **Hazel Meadow** (hasselbacke) | Den fuktigaste delen av sval och tempererad Plains, mot skogen | Vanlig, ligger mellan slätt och skog |
+| **Pine Heath** (tallhed) | All sval och torr Plains (inte Dappled Forest) | Ganska vanlig i svalt klimat |
+| **Willow Fen** (pilkärr) | Sval Swamp och den fuktigaste delen av tempererad Swamp | Ovanlig, ungefär lika sällsynt som Swamp (bara platt låglänt mark) |
+
+- **Deciduous Forest:** tät lövskog av **Beech** (ca 40 %), Oak (20 %), **Linden** (15 %), **Ash** (15 %), Hazel och
+  ibland en omkullfallen bok med svamp på. Tjockt lager löv (Leaf Litter, en del ännu bok-, lind- och ekfärgat), mycket
+  Brown/Red Mushroom, Porcini, Chanterelle, Morel och Oyster Mushroom, Hazel Shrub, Bramble, Undergrowth, Sapling
+  Thicket, Raspberry och Elderberry. Djur: rådjur, kronhjort, vildsvin, hare, fasan (som all skog), Badger, Squirrel,
+  Hedgehog, Crow, Brown Bear, Giant Deer, vargar. Mörkare grönt gräs och löv. Räknas som skog (`#minecraft:is_forest`),
+  så Tribe Camps, Hunting Bands, Bear Dens, Hermit's Hut, Ancient Oak och Tribe Villages kan dyka upp.
+- **Hazel Meadow:** öppen äng med **klungor av Hazel** (2–4 hasselträd tätt ihop), enstaka Ash, Oak och Linden, mycket
+  blommor (Oxeye Daisy, Cornflower, Poppy, Dandelion, Azure Bluet, Allium, Lily of the Valley) och Wildflowers. Hazel
+  Shrub, Wild Strawberry, Raspberry, Elderberry, Bramble, vilt Einkorn och Emmer, Wild Pea, Puffball. Djur: rådjur,
+  hare, fasan, kanin, Aurochs, Wild Horse, Hedgehog, Crow, Giant Deer. Ljust gräs. Plains-byar (vanilla) och Tribe
+  Villages, Standing Stones, Burial Mound, Stone Head m.fl.
+- **Willow Fen:** blött låglänt kärr med grunda gölar, tätt med **Willow** (ca 55 %) och **Alder**, som också står i
+  grunt vatten. **Mud** på gölarnas botten och upp på stränderna, Lily Pads, Sugar Cane, Fern, Blue Orchid, Cloudberry,
+  Elderberry och Oyster Mushroom. Grumligt grönbrunt vatten, disig luft (dimma närmare än vanligt) och kort sikt under
+  vatten. Swamp-musik. Djur: grodor, vildsvin, Goose, Moose; slimes och Witch Huts som i Swamp.
+- **Pine Heath:** torr, sval hed med glest stående **Pine** och ibland en omkullfallen tall. Fläckar av **Podzol**,
+  **Coarse Dirt** och **Sand** i gräset, mycket **Heather** (ljung), Sweet Berries, Lingonberry, Blueberry, Juniper,
+  Chanterelle, Porcini och Fly Agaric. Gulgrönt torrt gräs. Old Growth Taiga-musik. Djur: hare, kronhjort, kanin, räv,
+  varg, Badger, Squirrel, Giant Deer, Brown Bear. Räknas som taiga (`#minecraft:is_taiga`).
+- **Heather** (ljung): lågt rosalila ris på Pine Heath. Ingen kollision, går att gå igenom och ersätts när man bygger.
+  Bryts: hälften av gångerna en Plant Fibre; med Shears blocket självt. Kan komposteras.
+- Teknik: `mixin/OverworldBiomeBuilderMixin` delar vanillas klimatrutor (fuktighet eller temperatur) och ger ena
+  halvan till vår biom; data i `scripts/gen_biomes.py`. Biomerna är också med i `c:`-taggar (is_swamp, is_plains,
+  is_tree/deciduous m.fl.).
+
 ### Bearbeta stockar (håll in högerklick med yxa)
 Ett tungt hugg var 0,45:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
 (Flint Axe / Crude Stone Axe 3, Stone Axe 2, Iron Axe 2) och sliter yxan 1.

@@ -7,7 +7,8 @@
     "minecraft:savanna",
     "minecraft:windswept_hills",
     "minecraft:stony_shore",
-    "minecraft:snowy_plains"
+    "minecraft:snowy_plains",
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:stone_head",
   "step": "surface_structures"

@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:plains",
     "minecraft:meadow",
-    "minecraft:sunflower_plains"
+    "minecraft:sunflower_plains",
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:puffball",
   "step": "vegetal_decoration"

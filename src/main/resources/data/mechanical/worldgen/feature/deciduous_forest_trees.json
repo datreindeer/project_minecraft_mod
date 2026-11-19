@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:random_selector",
+  "default": "minecraft:oak_checked",
+  "features": [
+    {
+      "chance": 0.02,
+      "feature": "mechanical:fallen_beech_tree"
+    },
+    {
+      "chance": 0.41,
+      "feature": "mechanical:beech_checked"
+    },
+    {
+      "chance": 0.26,
+      "feature": "mechanical:linden_checked"
+    },
+    {
+      "chance": 0.35,
+      "feature": "mechanical:ash_checked"
+    },
+    {
+      "chance": 0.29,
+      "feature": "mechanical:hazel_checked"
+    },
+    {
+      "chance": 0.25,
+      "feature": "minecraft:fancy_oak_checked"
+    }
+  ]
+}
