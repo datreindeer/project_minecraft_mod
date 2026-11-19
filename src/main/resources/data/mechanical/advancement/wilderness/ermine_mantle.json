@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/ermine_fur",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:ermine_mantle"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:ermine_mantle"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.ermine_mantle.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.ermine_mantle.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

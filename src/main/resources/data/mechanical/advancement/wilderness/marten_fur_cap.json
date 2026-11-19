@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/marten_fur",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:marten_fur_cap"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:marten_fur_cap"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.marten_fur_cap.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.marten_fur_cap.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -23,6 +23,11 @@
     "mechanical:cooked_goose",
     "mechanical:cooked_pheasant",
     "mechanical:cooked_ptarmigan",
-    "mechanical:cooked_pigeon"
+    "mechanical:cooked_pigeon",
+    "mechanical:cooked_wolverine",
+    "mechanical:cooked_lynx",
+    "mechanical:cooked_ermine",
+    "mechanical:cooked_lemming",
+    "mechanical:cooked_marten"
   ]
 }
