@@ -1,0 +1,34 @@
+{
+  "parent": "mechanical:wilderness/seal",
+  "criteria": {
+    "placed_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:oil_lamp"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placed_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:oil_lamp"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.oil_lamp.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.oil_lamp.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

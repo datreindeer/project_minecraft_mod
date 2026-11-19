@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:hollow_bird_bone",
+    "minecraft:flint"
+  ],
+  "result": {
+    "id": "mechanical:bone_needle",
+    "count": 2
+  }
+}

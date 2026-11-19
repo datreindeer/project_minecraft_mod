@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 700,
+  "experience": 0.15,
+  "ingredient": "mechanical:plucked_bustard",
+  "result": {
+    "id": "mechanical:cooked_bustard",
+    "count": 3
+  }
+}

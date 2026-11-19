@@ -1,0 +1,41 @@
+{
+  "textures": {
+    "particle": "mechanical:block/drying_rack",
+    "front": "mechanical:block/drying_rack_seal_dry",
+    "back": "mechanical:block/drying_rack_seal_dry_back"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        2,
+        7
+      ],
+      "to": [
+        13,
+        13,
+        7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            3,
+            13,
+            14
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "uv": [
+            13,
+            3,
+            3,
+            14
+          ],
+          "texture": "#back"
+        }
+      }
+    }
+  ]
+}

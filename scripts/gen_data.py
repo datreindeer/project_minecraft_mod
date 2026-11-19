@@ -490,7 +490,7 @@ w(D / "mechanical/loot_table/blocks/kiln.json", {"type": "minecraft:block", "poo
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block", "mechanical:kiln", "mechanical:stone_anvil", "mechanical:loose_malachite", "mechanical:loose_native_copper", "mechanical:loose_cassiterite"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 
 shaped("fire_drill", ["TS", "S "], {"T": "mechanical:twine", "S": "minecraft:stick"}, "mechanical:fire_drill")
-shaped("unfired_crucible", ["C C", "C C", "CCC"], {"C": "minecraft:clay_ball"}, "mechanical:unfired_crucible")
+# the Unfired Crucible is shaped at the Mold Bench from 7 Clay Balls (MoldBench.ALL, scripts/gen_moldbench.py)
 shaped("unfired_clay_bucket", ["C C", " C "], {"C": "minecraft:clay_ball"}, "mechanical:unfired_clay_bucket")
 shaped("kiln", ["CRC", "C C", "RRR"], {"C": "minecraft:clay_ball", "R": "#mechanical:rock_chunks"}, "mechanical:kiln")
 # Campfire without coal (it is placed unlit and lit with the fire drill).
@@ -662,7 +662,7 @@ UNLOCKS = {
     "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks", "granite_from_chunks", "diorite_from_chunks", "andesite_from_chunks"]),
     "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"] + [f"{x}_log_from_firewood" for x in WOODS]),
     "rock_chunks": ("#mechanical:rock_chunks", ["stone_pickaxe_head", "stone_axe_head", "kiln"]),
-    "clay_ball": ("minecraft:clay_ball", ["kiln", "unfired_crucible", "unfired_clay_bucket"]),
+    "clay_ball": ("minecraft:clay_ball", ["kiln", "mold_bench", "unfired_clay_bucket"]),
     "stone_pickaxe_head": ("mechanical:stone_pickaxe_head", ["double_stone_pickaxe_head"]),
     "stone_axe_head": ("mechanical:stone_axe_head", ["double_stone_axe_head"]),
 }

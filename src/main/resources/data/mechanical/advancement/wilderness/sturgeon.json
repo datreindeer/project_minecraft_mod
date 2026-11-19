@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/pike",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:whole_sturgeon"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:isinglass"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:whole_sturgeon"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.sturgeon.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.sturgeon.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

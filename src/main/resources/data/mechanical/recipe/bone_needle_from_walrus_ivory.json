@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:walrus_ivory",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:bone_needle",
+    "count": 2
+  }
+}

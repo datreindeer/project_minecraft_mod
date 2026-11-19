@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:walrus_hide",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:cordage",
+    "count": 6
+  }
+}

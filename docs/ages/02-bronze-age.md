@@ -25,7 +25,7 @@ Sinew, Tool Station och Armor Station.
 4. **Värme.** Clay Kiln räcker inte för metall. Uppgradera den med **Bellows** (läder + trä) och kör på Charcoal. Kilnen
    får en **temperatur** som stiger med bälgen och sjunker utan den. Koppar smälter först vid hög värme.
 5. **Smälta och gjuta.** Lägg malm i en **Crucible** i den heta kilnen → smält metall i deglen. Häll i **Clay Molds**
-   (bränns i kilnen): ingot, yxhuvud, hackhuvud, kniv, spjutspets, sågblad, svärd.
+   (formas av Clay Balls i **Mold Bench**, bränns i kilnen): ingot, yxhuvud, hackhuvud, kniv, spjutspets, sågblad, svärd.
 6. **Legera brons.** Ungefär 9 delar koppar och 1 del tenn i samma degel → **Bronze**. Fel blandning ger svagare metall.
 7. **Montera.** Gjutna huvuden (kanske slipade på en **Whetstone**, se öppna frågor) sätts ihop i Tool Station med
    skaft och binding, som stenverktygen.
@@ -43,7 +43,8 @@ Sinew, Tool Station och Armor Station.
 | Pan | Verktyg | Vaska grus och sand i vatten |
 | Stone Anvil | Block | Krossa malm, kallhamra |
 | Bellows | Block | Höjer kilnens temperatur |
-| Clay Molds (7 sorter) | Items | Gjutformar, brända i kilnen. Kan gå sönder efter några gjutningar |
+| Mold Bench | Block | Station där alla lerformar och Unfired Crucible formas av Clay Balls (från stenåldern) |
+| Clay Molds (7 sorter) | Items | Gjutformar, formade i Mold Bench och brända i kilnen. Kan gå sönder efter några gjutningar |
 | Crude Copper / Crude Tin Ingot, Copper Ingot, Bronze Ingot | Items | Användarens texturer finns (workshop/) |
 | Copper Bloom, Bronze Dust, Bronze Plate | Items | Mellanprodukter (texturer finns) |
 | Copper- och Bronze-verktyg | Verktyg | Yxa, hacka, spade, hacka (hoe), kniv, spjut, svärd, såg |
@@ -332,19 +333,46 @@ flytande.
   Concentrate och en udda enhet som 1 Crushed Ore (så tömning och tvättning inte kan fördubbla malmen; brons i den som Bronze Ingots), stelnad metall slås ut som tackor (Copper Ingot / Bronze Ingot, 2 enheter per tacka, en
   udda enhet blir skrot). Smält metall går inte: "Let it cool before you knock it out". Kvar blir en tom Crucible.
 
+### Mold Bench
+
+Alla lerformar (och Unfired Crucible) formas i **Mold Bench**, en låg träbänk med en lerkladdad skiva, en lerplatta,
+flintkniv och spatel. Förr var de crafting-recept av Clay Balls, men mönstren krockade hela tiden med varandra.
+
+- **Recept:** `[Flint][Clay][Flint]` / `[Planks][Planks][Planks]` (Clay = lerblocket). Låses upp i receptboken när man
+  bär Clay Ball. Bryts med yxa.
+- **Användning:** högerklicka. Till vänster en lista med alla formar (ikoner, hovra för kostnaden), en ruta för Clay
+  Balls och en resultatruta. Klicka en form: leran hämtas från inventoryt (shift-klick: så många omgångar som får plats
+  i en stack). Ta formen ur resultatrutan. Flera formar kostar lika mycket lera; den som valdes i listan gäller.
+  Lägger man lera i rutan utan att välja blir det den dyraste form leran räcker till.
+- Alla recept är upplåsta från början. Inget verktyg slits.
+
+| Unfired ... | Clay Balls |
+|---|---|
+| Crucible | 7 |
+| Clay Ingot Mold | 5 |
+| Clay Pickaxe Head Mold / Axe Head Mold | 7 / 7 |
+| Clay Shovel Head Mold / Hoe Head Mold | 5 / 6 |
+| Clay Knife Blade Mold | 4 |
+| Clay Saw Blade Mold / Plate Mold | 5 / 8 |
+| Clay Spear Head Mold / Sword Blade Mold | 4 / 6 |
+| Clay Kettle Mold | 28 (= 7 Clay-block; bänken tar bara Clay Balls) |
+
+Kod: `MoldBench` (registrering, recepten, menyn), `MoldBenchBlock`, `RecipeStationMenu` (1 inputruta). Data:
+`scripts/gen_moldbench.py`, texturer: `scripts/gen_moldbench_textures.py`.
+
 ### Clay Molds
 
-Sex formar. Unfired-formarna formas av Clay Ball i crafting table och bränns i kilnen (600°, 20 s) till en form som
-ställs på marken (behöver fast mark under).
+Sex formar. Unfired-formarna formas av Clay Balls i **Mold Bench** (se nedan, inte i crafting table) och bränns i
+kilnen (600°, 20 s) till en form som ställs på marken (behöver fast mark under).
 
-| Form | Recept (C = Clay Ball) | Enheter per gjutning | Ger |
+| Form | Mold Bench (Clay Balls) | Enheter per gjutning | Ger |
 |---|---|---|---|
-| Clay Ingot Mold | `[C][ ][C]` / `[C][C][C]` | 2 | Copper Ingot (vanilla) |
-| Clay Pickaxe Head Mold | `[C][C][C]` / `[C][ ][C]` / `[C][ ][C]` | 6 | Rough Cast Copper Pickaxe Head |
-| Clay Axe Head Mold | `[C][C][C]` / `[C][ ][C]` / `[C][C][ ]` | 6 | Rough Cast Copper Axe Head |
-| Clay Shovel Head Mold | `[C][ ][C]` / `[C][ ][C]` / `[ ][C][ ]` | 2 | Rough Cast Copper Shovel Head |
-| Clay Hoe Head Mold | `[C][C][ ]` / `[C][ ][ ]` / `[C][C][C]` | 4 | Rough Cast Copper Hoe Head |
-| Clay Knife Blade Mold | `[C][ ][C]` / `[ ][C][ ]` / `[ ][C][ ]` | 2 | Rough Cast Copper Knife Blade |
+| Clay Ingot Mold | 5 | 2 | Copper Ingot (vanilla) |
+| Clay Pickaxe Head Mold | 7 | 6 | Rough Cast Copper Pickaxe Head |
+| Clay Axe Head Mold | 7 | 6 | Rough Cast Copper Axe Head |
+| Clay Shovel Head Mold | 5 | 2 | Rough Cast Copper Shovel Head |
+| Clay Hoe Head Mold | 6 | 4 | Rough Cast Copper Hoe Head |
+| Clay Knife Blade Mold | 4 | 2 | Rough Cast Copper Knife Blade |
 
 - **Hälla:** högerklicka på en tom form med Crucible of Molten Copper. Räcker inte metallen: "This mold takes 6 units
   of metal; the crucible holds 4". Formen fylls med glödande metall (syns i formen, animerad, lyser 9), lavaljud.
@@ -424,12 +452,12 @@ blandar dem inte när de hämtar delar.
 
 ### Formar (nya)
 
-| Form | Recept (C = Clay Ball) | Enheter | Ger |
+| Form | Mold Bench (Clay Balls) | Enheter | Ger |
 |---|---|---|---|
-| Clay Saw Blade Mold | `[C][C][C]` / `[C][ ][C]` | 4 | Rough Cast Bronze Saw Blade |
-| Clay Plate Mold | `[C][C][C]` / `[C][ ][C]` / `[C][C][C]` | 4 | Rough Cast Bronze Plate |
-| Clay Spear Head Mold | `[ ][C][ ]` / `[C][ ][C]` / `[ ][C][ ]` | 4 | Rough Cast Bronze Spear Head |
-| Clay Sword Blade Mold | `[C][ ][C]` / `[C][ ][C]` / `[C][ ][C]` | 6 | Rough Cast Bronze Sword Blade |
+| Clay Saw Blade Mold | 5 | 4 | Rough Cast Bronze Saw Blade |
+| Clay Plate Mold | 8 | 4 | Rough Cast Bronze Plate |
+| Clay Spear Head Mold | 4 | 4 | Rough Cast Bronze Spear Head |
+| Clay Sword Blade Mold | 6 | 6 | Rough Cast Bronze Sword Blade |
 
 Bara brons kan gjutas i dem. De andra formarna gjuter brons som koppar: Bronze Ingot, Rough Cast Bronze Pickaxe/Axe/
 Shovel/Hoe Head och Knife Blade. Allt Rough Cast slipas på Whetstone (4 drag) till Bronze ... Head / Blade / Plate.
@@ -789,7 +817,7 @@ talg, kokar lim och garvar hudar. Kod: `Kettle` (registrering, värden, recept i
 | Item | Recept | Not |
 |---|---|---|
 | **Tripod** | `[ ][Cordage][ ]` / `[ ][Tool Rod][ ]` / `[Tool Rod][ ][Tool Rod]` | Tre stänger surrade i toppen |
-| **Unfired Clay Kettle Mold** | 5 **Clay** (block) `[C][ ][C]` / `[C][C][C]` | Bränns i kilnen (600°) till **Clay Kettle Mold** |
+| **Unfired Clay Kettle Mold** | **Mold Bench:** 28 Clay Balls (lika mycket lera som de 7 Clay-block den kostade förr) | Bränns i kilnen (600°) till **Clay Kettle Mold** |
 | **Rough Cast Bronze Kettle** | Gjuts i Clay Kettle Mold: **8 enheter brons** | Bara brons (koppar passar inte) |
 | **Bronze Kettle** | Rough Cast Bronze Kettle slipas på Whetstone (4 drag) | Som alla gjutna delar |
 
