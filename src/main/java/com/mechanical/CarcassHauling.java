@@ -39,9 +39,12 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * Getting a kill back to camp, and butchering it properly there.
  * <ul>
  * <li>Sneak + right-click a carcass with an empty hand: a small or medium body goes on your shoulders (medium ones slow
- * you and stop you sprinting), a large one is dragged along behind you (slower still). Your hands are full: items can't be
- * used, an attack or a hard hit (4+ damage) drops it, and right-clicking a block puts it down there. Right-click a
- * dragged body again to let go.</li>
+ * you and stop you sprinting), a large one is dragged along behind you (slower still). Both hands are full: no item can be
+ * used or placed, nor used on an animal (only the Travois and the body itself react), an attack or a hard hit (4+ damage)
+ * drops it, and right-clicking a block puts it down there. Right-click a dragged body again to let go. Players show it:
+ * both arms up holding the body on the shoulders, or reaching back to the dragged one (client/HaulingClient).</li>
+ * <li>A fresh body bleeds on the way ({@link #bleed}): a dragged one leaves a smear about every {@link #DRAG_TRAIL} blocks,
+ * one on the shoulders drips and leaves a stain now and then. Aged, turning or spoiled ones no longer bleed.</li>
  * <li>{@link TravoisEntity}: a drag sledge that follows you when harnessed and holds one large or two medium bodies.</li>
  * <li>{@link HangingRackBlock}: right-click it with a hauled body to hang it; butchered there it gives twice the meat as
  * Haunches, Ribs and Loins (see {@link Butchery#dropInner}), the whole hide, and more fat, sinew and bone.</li>
@@ -56,6 +59,8 @@ public final class CarcassHauling {
     static final double SLOW_CARRY = 0.25, SLOW_DRAG = 0.5, SLOW_TRAVOIS = 0.1, SLOW_TRAVOIS_LOAD = 0.1;
     /** A hit this hard makes you drop what you haul. */
     static final float DROP_DAMAGE = 4.0F;
+    /** Blocks travelled between blood stains: dragged (always), carried (half the time, so one every ~6 blocks). */
+    static final double DRAG_TRAIL = 2.0, CARRY_TRAIL = 3.0;
 
     public static final DeferredBlock<HangingRackBlock> HANGING_RACK = BLOCKS.registerBlock("hanging_rack", HangingRackBlock::new, p -> p
             .mapColor(MapColor.WOOD).strength(1.5F).sound(SoundType.WOOD).noOcclusion().ignitedByLava());
@@ -123,6 +128,7 @@ public final class CarcassHauling {
             // the renderer draws it across the shoulders from the player's own position; this only keeps it tracked and near
             c.setPos(p.getX(), p.getY() + 1.0, p.getZ());
             c.setDeltaMovement(Vec3.ZERO);
+            bleed(c, p.position(), false);
             return;
         }
         Vec3 off = c.position().subtract(p.position()).multiply(1, 0, 1);
@@ -133,6 +139,20 @@ public final class CarcassHauling {
         c.setDeltaMovement(0, c.onGround() ? 0 : fall, 0);
         // head first towards the one pulling it
         if (d > 0.3) c.setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z)));
+        bleed(c, c.position(), true);
+    }
+
+    /** A fresh body leaves a sparse trail where it goes ({@code at}: the ground under it); counted by distance, so none while standing still. */
+    private static void bleed(CarcassEntity c, Vec3 at, boolean dragged) {
+        if (c.aged() || c.isTurning() || c.spoiled() || c.animal().builtInRegistryHolder().is(Blood.BLOODLESS) || !(c.level() instanceof ServerLevel level)) return;
+        var r = c.getRandom();
+        if (!dragged && c.tickCount % 20 == 0 && r.nextInt(2) == 0)
+            Blood.drip(level, c.getX() + r.nextGaussian() * 0.2, c.getY() + 0.3, c.getZ() + r.nextGaussian() * 0.2);
+        if (c.lastStain == null) c.lastStain = at;
+        double step = dragged ? DRAG_TRAIL : CARRY_TRAIL;
+        if (at.distanceToSqr(c.lastStain) < step * step) return;
+        c.lastStain = at;
+        if (dragged || r.nextInt(2) == 0) Blood.splatter(level, net.minecraft.core.BlockPos.containing(at), 0, 1);
     }
 
     /** Puts it down at {@code at} (a carried one; null: in front of the player). A dragged one stays where it is. */
@@ -162,12 +182,26 @@ public final class CarcassHauling {
         else letGo(c, player, Vec3.atBottomCenterOf(event.getPos().relative(event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace())));
     }
 
-    /** No eating, drinking or throwing with a deer on your back. */
+    /** No eating, drinking, shields, bows or throwing with a deer on your back (both sides, so the client doesn't predict it). */
     @SubscribeEvent
     static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         if (hauled(event.getEntity()) == null) return;
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.FAIL);
+    }
+
+    /** Nor shearing, leashing or feeding: only the Travois (loads it) and the hauled body (lets go) take a hauler's click. */
+    @SubscribeEvent
+    static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
+        if (event.getTarget() instanceof TravoisEntity || event.getTarget() instanceof CarcassEntity || hauled(event.getEntity()) == null) return;
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.FAIL);
+    }
+
+    /** Whatever other way an item gets used (a knife on another body ...): not with full hands. */
+    @SubscribeEvent
+    static void onUseItem(net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent.Start event) {
+        if (event.getEntity() instanceof Player player && hauled(player) != null) event.setCanceled(true);
     }
 
     @SubscribeEvent
