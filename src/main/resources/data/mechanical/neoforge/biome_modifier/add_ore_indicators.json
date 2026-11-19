@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "mechanical:ore_indicators",
+  "step": "vegetal_decoration"
+}

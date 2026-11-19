@@ -430,7 +430,7 @@ w(D / "mechanical/loot_table/blocks/kiln.json", {"type": "minecraft:block", "poo
          "modifier": [{"type": "minecraft:copy_state", "block": "mechanical:kiln", "properties": ["firing"]}]},
         {**STICKS, "condition": half_drop("lower", "")["condition"]}]}],
     "random_sequence": "mechanical:blocks/kiln"})
-w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block", "mechanical:kiln"] + [f"mechanical:loose_{v}" for v in ROCKS]})
+w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block", "mechanical:kiln", "mechanical:stone_anvil", "mechanical:loose_malachite", "mechanical:loose_native_copper", "mechanical:loose_cassiterite"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 
 shaped("fire_drill", ["TS", "S "], {"T": "mechanical:twine", "S": "minecraft:stick"}, "mechanical:fire_drill")
 shaped("unfired_crucible", ["C C", "C C", "CCC"], {"C": "minecraft:clay_ball"}, "mechanical:unfired_crucible")

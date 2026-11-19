@@ -365,5 +365,18 @@
   "item.mechanical.unfired_clay_bucket": "Unfired Clay Bucket",
   "item.mechanical.clay_bucket": "Clay Bucket",
   "item.mechanical.clay_water_bucket": "Clay Water Bucket",
-  "message.mechanical.kiln.unfired": "The clay is still raw: keep a fire burning in the kiln until it is fired"
+  "message.mechanical.kiln.unfired": "The clay is still raw: keep a fire burning in the kiln until it is fired",
+  "item.mechanical.malachite": "Malachite",
+  "item.mechanical.native_copper": "Native Copper",
+  "item.mechanical.cassiterite": "Cassiterite",
+  "item.mechanical.crushed_copper_ore": "Crushed Copper Ore",
+  "item.mechanical.crushed_tin_ore": "Crushed Tin Ore",
+  "item.mechanical.pan": "Pan",
+  "item.mechanical.pan_with_gravel": "Pan with Gravel",
+  "item.mechanical.pan_with_sand": "Pan with Sand",
+  "block.mechanical.loose_malachite": "Loose Malachite",
+  "block.mechanical.loose_native_copper": "Loose Native Copper",
+  "block.mechanical.loose_cassiterite": "Loose Cassiterite",
+  "block.mechanical.stone_anvil": "Stone Anvil",
+  "message.mechanical.pan.need_water": "Pan in water: stand in it or aim at it"
 }

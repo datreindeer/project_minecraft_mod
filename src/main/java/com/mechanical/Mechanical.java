@@ -322,7 +322,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus);
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

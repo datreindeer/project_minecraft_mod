@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "P P",
+    "TPT"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "T": "mechanical:twine"
+  },
+  "result": {
+    "id": "mechanical:pan"
+  }
+}

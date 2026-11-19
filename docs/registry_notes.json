@@ -55,7 +55,7 @@
     "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (40 s). Behövs i bronsåldern för att smälta koppar och tenn. Ingen användning än."
   },
   "tin_ore": {
-    "text": "Tennmalm. Kräver minst stenpickaxe. Hör till bronsåldern."
+    "text": "Tennmalm (bronsåldern). Kräver minst stenpickaxe. Ger 1–2 [[cassiterite]] (Fortune hjälper), sig själv med Silk Touch. Över ådror nära ytan ligger [[loose_cassiterite]] på marken."
   },
   "tin_ingot": {
     "text": "Tenn. Kan inte smältas fram nu (Furnace är borttagen), hör till bronsåldern."
@@ -1171,5 +1171,53 @@
   "glow_moss": {
     "text": "Tunn mossmatta med lysande prickar (ljus 5), i fläckar under Ancient Oak. Går att plocka.",
     "category": "foraging"
+  },
+  "malachite": {
+    "text": "Grön kopparmalm. Plockas från [[loose_malachite]] på marken ovanför kopparådror.\nKrossas på [[stone_anvil]] → 1 [[crushed_copper_ore]].",
+    "category": "materials"
+  },
+  "native_copper": {
+    "text": "Ren koppar. Ibland bland ytfynden över kopparådror ([[loose_native_copper]], ~15 %) och sällan vid vaskning med [[pan]].\nKrossas inte; ska smältas direkt (bronsålderns fas 3, inte byggd än).",
+    "category": "materials"
+  },
+  "cassiterite": {
+    "text": "Tennsten. Från [[tin_ore]] (1–2), [[loose_cassiterite]] på marken över tennådror, och vaskning med [[pan]] (vanligare vid floder, stränder och stenig strand).\nKrossas på [[stone_anvil]] → 1 [[crushed_tin_ore]].",
+    "category": "materials"
+  },
+  "crushed_copper_ore": {
+    "text": "Från [[stone_anvil]]: Raw Copper → 2, [[malachite]] → 1. **Ingen användning än** (smälts i bronsålderns fas 3).",
+    "category": "materials"
+  },
+  "crushed_tin_ore": {
+    "text": "Från [[stone_anvil]]: [[cassiterite]] → 1. **Ingen användning än** (smälts i bronsålderns fas 3).",
+    "category": "materials"
+  },
+  "pan": {
+    "text": "Vaskpanna, 64 användningar. Crafting: Planks + [[twine]] (`[P][ ][P]` / `[T][P][T]`).\nHögerklicka på Gravel eller Sand (även Red Sand): blocket tas upp och pannan blir [[pan_with_gravel]] / [[pan_with_sand]].",
+    "category": "tools"
+  },
+  "pan_with_gravel": {
+    "text": "Håll inne Använd medan du står i vatten eller siktar på vatten (3 s). Ofta inget; annars Flint, [[stone_chunk]], [[cassiterite]] eller sällan [[native_copper]]. Vid floder, stränder och stenig strand en extra chans till Cassiterite. Pannan blir tom igen och slits 1.",
+    "category": "tools"
+  },
+  "pan_with_sand": {
+    "text": "Som [[pan_with_gravel]] men sand: mindre flinta och sten, lite mer [[cassiterite]], oftare inget.",
+    "category": "tools"
+  },
+  "loose_malachite": {
+    "text": "Ytfynd ovanför kopparmalm (inom ~64 block under ytan, i samma chunk). Plockas för hand → [[malachite]].",
+    "category": "blocks"
+  },
+  "loose_native_copper": {
+    "text": "Ovanligare ytfynd över kopparmalm (~15 % av fynden). Plockas för hand → [[native_copper]].",
+    "category": "blocks"
+  },
+  "loose_cassiterite": {
+    "text": "Ytfynd ovanför [[tin_ore]] (inom ~64 block under ytan, i samma chunk). Plockas för hand → [[cassiterite]].",
+    "category": "blocks"
+  },
+  "stone_anvil": {
+    "text": "Platt sten för att krossa malm. Crafting: `[R][K][R]` / `[C][C][C]` (R = rock chunk, K = [[flint_pickaxe]] som blir kvar och slits, C = Cobblestone).\nHögerklicka med malm för att lägga en på stenen, tom hand tar tillbaka. Slå 4 gånger med Flint Pickaxe, Crude Stone Pickaxe eller Stone Pickaxe (vänster- eller högerklick; hammaren slits 1 per slag): Raw Copper → 2 [[crushed_copper_ore]], [[malachite]] → 1, [[cassiterite]] → 1 [[crushed_tin_ore]].",
+    "category": "blocks"
   }
 }
