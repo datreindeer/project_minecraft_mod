@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -82,6 +83,8 @@ public class DryingRackBlock extends Block {
     /** Per random tick in dry sunlight: a wolf pelt ~6 minutes; a bear pelt ticks in two blocks, so half each. */
     private static final float WOLF_DRY_CHANCE = 1.0F / 5.0F, BEAR_DRY_CHANCE = 1.0F / 10.0F;
     private static final float FOOD_DRY_CHANCE = 1.0F / 6.0F, FOOD_DRY_SHELTERED = 1.0F / 12.0F;
+    /** Sky light at the rack that still counts as outdoors (shade under leaves, not inside a roofed house). */
+    private static final int OUTDOORS_SKYLIGHT = 10;
     /** Berries and mushrooms go up (and come down dried) by the handful. */
     public static final int HANDFUL = 4;
     private static final VoxelShape SHAPE_NS = box(0, 0, 6, 16, 16, 10), SHAPE_EW = box(6, 0, 0, 10, 16, 16);
@@ -280,8 +283,10 @@ public class DryingRackBlock extends Block {
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         BlockPos top = state.getValue(PART) == Part.LOWER ? pos.above() : pos; // the upper half would block the lower one's sky
-        boolean sun = inDaylight(level, top), dryWeather = sun && !level.isRainingAt(top.above());
-        float foodChance = Wind.exposed(level, top) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED;
+        boolean sun = inDaylight(level, top);
+        // outdoors in the day is enough, shade too (under a tree skylight drops below 15); rain only reaches open racks
+        boolean dryWeather = level.isBrightOutside() && level.getBrightness(LightLayer.SKY, top) >= OUTDOORS_SKYLIGHT && !level.isRainingAt(top.above());
+        float foodChance = sun && Wind.exposed(level, top) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED;
         BlockState next = state;
         boolean phantom = false;
         for (IntegerProperty p : spots(state)) {

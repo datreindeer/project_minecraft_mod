@@ -281,8 +281,9 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
 - Bryts den släpper den sig själv + hud/Leather som satt på.
 - **Mat torkar också på den** (se "Förskämd mat, rökning och torkning"): en remsa rått kött (vilket rått kött som helst,
   scraps eller vanilla) → **Jerky**, en rå fiskfilé (Raw Cod/Salmon) → **Dried Fish**, eller en näve med **4 bär** (alla
-  vilda bär + Sweet Berries) → **4 Dried Berries**. Torkar bara i **solen utan regn**: ~7 min i snitt ute i vinden (fri himmel,
-  inte inbyggd på tre sidor), ~14 min i lä. Natt och regn **pausar** bara, inget ruttnar på ställningen. Högerklicka med tom
+  vilda bär + Sweet Berries) → **4 Dried Berries**. Torkar **utomhus på dagen utan regn**, även i skugga (t.ex. under ett träd,
+  skylight minst 10): ~7 min i snitt i full sol ute i vinden (fri himmel, inte inbyggd på tre sidor), ~14 min i skugga
+  eller lä. Inne i ett hus med tak torkar inget. Natt och regn **pausar** bara, inget ruttnar på ställningen. Högerklicka med tom
   hand när den är klar. Bryts ställningen släpps färdig torkad mat, men mat som håller på att torka går förlorad.
 - **Svamp torkar också:** en näve med **4 svampar** (Chanterelle, Porcini, Morel, Oyster Mushroom, Puffball, gärna
   blandat) → **4 Dried Mushrooms**, på samma sätt som bär. Fly Agaric och vanilla-svamp går inte (Fly Agaric är giftig,
@@ -312,7 +313,7 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
   - **Raw Wolf Pelt tar en halva** (båda platserna i ett block): blocket man pekar på om det är tomt, annars det andra.
     Två vargpälsar ryms alltså på en hög ställning, eller en vargpäls och två andra saker.
   - Är det fullt: "There is no room for the pelt on this rack".
-  - Torkar bara i **solen utan regn** (solen kollas ovanför övre halvan): **~6 min** i snitt (en vanlig hud ~3 min). Natt
+  - Torkar **utomhus på dagen utan regn**, även i skugga under träd (kollas ovanför övre halvan): **~6 min** i snitt (en vanlig hud ~3 min). Natt
     och regn **pausar** bara, pälsen ruttnar inte. Pälssidan vänds framåt, köttsidan (rå och röd med fett, torkad
     gulbrun) syns bakifrån.
   - Tom hand tar ner den färdiga pälsen (en Bear Pelt för hela björnen). Bryts ställningen släpps pälsen **en gång**
