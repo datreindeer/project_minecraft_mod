@@ -78,6 +78,8 @@ merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items(
     "message.mechanical.cart.too_big": "Too big for the cart",
     "message.mechanical.cart.hitched": "The horse is in the shafts. Right-click the cart again to unhitch",
     "message.mechanical.cart.unhitched": "Unhitched",
+    "message.mechanical.cart.stuck": "The cart is stuck. It came loose from the shafts",
+    "message.mechanical.cart.torn_loose": "The cart came loose from the shafts",
     "message.mechanical.horse.shies": "The horse shies away. Crouch and hold out feed",
     "message.mechanical.horse.chewing": "The horse is still chewing",
     "message.mechanical.horse.trust": "The horse eats from your hand (trust %s/%s)",

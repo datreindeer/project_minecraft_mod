@@ -572,7 +572,17 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
 **Travois** (släpsläde): recept `[Tool Rod][ ][Tool Rod]` / `[Cordage][Scraped Hide][Cordage]` / `[Tool Rod][ ][Tool Rod]`
 (låses upp med en Scraped Hide). Två långa stänger som korsas framtill och är surrade där, tre tvärslåar och en spänd hud.
 - Högerklicka på marken för att ställa ner den. **Högerklicka med tom hand** för att spänna dig för den (och igen för att
-  släppa). Den följer 2,4 block bakom dig, med bakändarna släpande på marken, och klättrar upp för steg.
+  släppa). Den följer 2,4 block bakom dig, med bakändarna släpande på marken, och klättrar upp för steg (1 block).
+- **Följer marken:** släden har tyngdkraft (faller 0,08 block/tick², högst 1,5 block/tick), glider längs marken och tar
+  sig upp för ettblockssteg. Stängerna lutar från bakändarna på marken upp mot **höften** på den som drar (halva
+  kroppshöjden). Rörelsen räknas ut både på servern och i klienten (som för föremål på marken) och klienten jämkar in
+  serverns läge över 3 tick, så släden glider jämnt efter dig i stället för att hacka eller sväva.
+- **Fastnar den** (en vägg, ett träd, en för smal öppning) håller den emot som ett rep: du kommer inte längre än
+  **1 block** utöver dragavståndet (3,4 block för travoisen) från den. Fortsätter du dra **bort** från den i **3 sekunder**
+  släpper du taget ("The travois is stuck. You let go of the poles"). Hamnar du ändå mer än **5 block** bort (teleport,
+  fall, knuff) glider stängerna ur händerna ("The poles slipped out of your hands"). Gå tillbaka och lirka runt hindret.
+- **Släppt** ligger den på marken: bakändarna och de korsade framändarna vilar på marken, framänden en aning upphöjd
+  (~4°), och den lutar efter marken framför (upp på ett block, ner i en grop). Lasten ligger på huden och lutar med den.
 - **Last:** en stor eller två mellanstora/små kroppar. Högerklicka på släden med kroppen du bär eller släpar för att lasta
   (jättehjorten är för stor). **Smyg + högerklicka** med tom hand lastar av den sista. Lasten ligger på huden och syns.
 - Fart: −10 % tom, −10 % till per lastenhet (en stor = 2), alltså −30 % med en uroxe mot −50 % om du släpar den. Lastad
@@ -585,6 +595,10 @@ som hänger i ett snöre. Blocket ovanför måste vara fritt.
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Mognad syns:** när kroppen har hängt **3 minuter** (×1,25 kött, se nedan) har den torkat: pälsen/huden blir mörkare,
+  brunare och mattare, och en flådd kropp får mörkt, torkat kött med en skorpa i kanterna, intorkade blodstänk, fläckar av
+  glans och gulnat fett (egna texturer under `textures/entity/skinned_aged/`, `scripts/gen_aged_textures.py`). Blodet slutar
+  droppa och en och annan fluga surrar runt den. Utseendet följer med om man tar ner den, tills den hängs upp igen.
 - **Styckning på ställningen (med kniv som vanligt) ger rejält mer:**
   - Omgång 1: hela huden/pälsen/ullen/fjädrarna kommer av, **ingen slump** (alla delar i tabellen faller, med knivens
     multiplikator på antalet).

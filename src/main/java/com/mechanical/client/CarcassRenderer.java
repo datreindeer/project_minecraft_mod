@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.mechanical.CarcassEntity;
 import com.mechanical.Mechanical;
+import com.mechanical.TravoisEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -32,7 +33,9 @@ import net.minecraft.world.phys.Vec3;
  * Draws the carcass as the animal itself lying on its side: a never-added copy of the animal is rendered with its own
  * vanilla renderer inside a rotated pose. Carried ({@link CarcassEntity#hauler()}, not large) it lies across the
  * hauler's shoulders, drawn from the hauler's own position so it never lags; hung on a Hanging Rack it hangs head down by
- * the hind legs from the top of its hitbox. Dragged or on a travois it lies as on the ground.
+ * the hind legs from the top of its hitbox. Dragged or on a travois it lies as on the ground, on a travois or cart tilted
+ * with the bed. Hung long enough to have aged ({@link CarcassEntity#isAged()}) it looks dried: the hide darker and duller
+ * ({@link #AGED_TINT}), the bare flesh of a skinned one from textures/entity/skinned_aged/ (scripts/gen_aged_textures.py).
  * shortcut: the copy has default looks (white sheep, default cow variant); sync the dead animal's data if that matters.
  */
 public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRenderer.State> {
@@ -48,6 +51,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     /** Skinned/plucked carcass: rendered with the flesh texture (see LivingEntityRendererMixin). */
     private static final ContextKey<Boolean> SKINNED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "skinned"));
     private static final Map<Identifier, Identifier> SKINNED_TEXTURES = new HashMap<>();
+    /** Aged on the rack: a dried look (see LivingEntityRendererMixin). */
+    private static final ContextKey<Boolean> AGED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "aged"));
+    private static final Map<Identifier, Identifier> AGED_TEXTURES = new HashMap<>();
+    /** Model tint of an aged carcass that has no dried texture: hide and coat gone darker, browner and duller. */
+    public static final int AGED_TINT = 0xFFA08C78;
 
     public static boolean isCarcass(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(CARCASS));
@@ -55,6 +63,32 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
 
     public static boolean isSkinned(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(SKINNED));
+    }
+
+    public static boolean isAged(EntityRenderState state) {
+        return Boolean.TRUE.equals(state.getRenderData(AGED));
+    }
+
+    /** mechanical:textures/entity/skinned/cow/x.png -> mechanical:textures/entity/skinned_aged/cow/x.png, if that texture exists. */
+    public static Identifier agedTexture(Identifier skinned) {
+        return AGED_TEXTURES.computeIfAbsent(skinned, t -> {
+            Identifier aged = Identifier.fromNamespaceAndPath(Mechanical.MODID, t.getPath().replace("textures/entity/skinned/", "textures/entity/skinned_aged/"));
+            return t.getNamespace().equals(Mechanical.MODID) && Minecraft.getInstance().getResourceManager().getResource(aged).isPresent() ? aged : t;
+        });
+    }
+
+    /** The texture a carcass's model draws with in place of the animal's own {@code texture}. */
+    public static Identifier carcassTexture(LivingEntityRenderState state, Identifier texture) {
+        if (!isSkinned(state)) return texture;
+        Identifier skinned = skinnedTexture(texture);
+        return isAged(state) ? agedTexture(skinned) : skinned;
+    }
+
+    /** Extra model tint: aged without a dried texture of its own (the hide is still on, or no flesh texture for it). */
+    public static int carcassTint(LivingEntityRenderState state, Identifier texture) {
+        if (!isAged(state)) return -1;
+        Identifier drawn = carcassTexture(state, texture);
+        return drawn.getPath().startsWith("textures/entity/skinned_aged/") ? -1 : AGED_TINT;
     }
 
     /** minecraft:textures/entity/cow/x.png -> mechanical:textures/entity/skinned/cow/x.png, if that texture exists. */
@@ -77,6 +111,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         EntityRenderState animal;
         EntityRenderer<Entity, EntityRenderState> renderer;
         float bodyYaw, width, height, hangLength;
+        /** On a travois or cart: its bed's tilt (degrees, front up). */
+        float tilt;
         boolean flat;
         Pose pose = Pose.LYING;
         /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
@@ -150,6 +186,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
                 if (hasSkinnedTexture(state.renderer, living)) living.setRenderData(SKINNED, true);
                 else living.hasRedOverlay = true;
             }
+            if (carcass.isAged()) living.setRenderData(AGED, true);
         }
         // a dead phantom: wings spread limp on the ground instead of flapping
         if (state.animal instanceof PhantomRenderState phantom) phantom.flapTime = LIMP_FLAP;
@@ -158,6 +195,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
         state.hangLength = carcass.getBbHeight();
+        state.tilt = carcass.getVehicle() instanceof TravoisEntity bed ? bed.pitch(partialTicks) : 0.0F;
         if (state.pose == Pose.CARRIED) {
             Vec3 at = hauler.getPosition(partialTicks).subtract(carcass.getPosition(partialTicks));
             state.dx = at.x;
@@ -194,6 +232,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             poseStack.popPose();
             return;
         }
+        // lying on a travois or cart: along its tilted bed (the body faces the way it does)
+        poseStack.rotate(Axis.XP.rotationDegrees(state.tilt));
         if (state.flat) {
             state.renderer.submit(state.animal, poseStack, collector, camera);
             poseStack.popPose();
