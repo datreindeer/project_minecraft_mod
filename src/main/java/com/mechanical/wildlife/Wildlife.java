@@ -100,6 +100,9 @@ public final class Wildlife {
     public static final DeferredItem<Item> BEAR_CLAW = ITEMS.registerSimpleItem("bear_claw");
     public static final DeferredItem<Item> SQUIRREL_PELT = ITEMS.registerSimpleItem("squirrel_pelt");
     public static final DeferredItem<Item> WOLF_PELT = ITEMS.registerSimpleItem("wolf_pelt");
+    /** Fresh off the carcass; cured into Bear Pelt / Wolf Pelt on a tall Drying Rack (DryingRackBlock). */
+    public static final DeferredItem<Item> RAW_BEAR_PELT = ITEMS.registerSimpleItem("raw_bear_pelt");
+    public static final DeferredItem<Item> RAW_WOLF_PELT = ITEMS.registerSimpleItem("raw_wolf_pelt");
     /** Always comes off a butchered giant deer; an altar offering. */
     public static final DeferredItem<Item> GIANT_ANTLER = ITEMS.registerSimpleItem("giant_antler",
             p -> p.rarity(net.minecraft.world.item.Rarity.EPIC).stacksTo(16));
