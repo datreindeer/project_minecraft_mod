@@ -34,6 +34,8 @@ public class RecipeStationMenu extends AbstractContainerMenu {
     private final Supplier<? extends Block> block;
     private final List<StationRecipe> recipes;
     private final Player player;
+    /** The recipe last picked in the list: it wins when the inputs fit several recipes (boots and satchel share parts). */
+    private int selected = -1;
     private final ResultContainer result = new ResultContainer();
     private final SimpleContainer inputs = new SimpleContainer(3) {
         @Override
@@ -73,8 +75,11 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         return recipes;
     }
 
+    /** The picked recipe if the inputs fit it, else the fitting recipe that uses the most (5 leather makes a helmet, not boots). */
     private Optional<StationRecipe> current() {
-        return recipes.stream().filter(r -> r.isUnlocked(player) && r.matches(inputs.getItem(0), inputs.getItem(1), inputs.getItem(2))).findFirst();
+        java.util.function.Predicate<StationRecipe> fits = r -> r.isUnlocked(player) && r.matches(inputs.getItem(0), inputs.getItem(1), inputs.getItem(2));
+        if (selected >= 0 && selected < recipes.size() && fits.test(recipes.get(selected))) return Optional.of(recipes.get(selected));
+        return recipes.stream().filter(fits).max(java.util.Comparator.comparingInt(r -> r.parts().stream().mapToInt(StationRecipe.Part::count).sum()));
     }
 
     private void consume(StationRecipe recipe) {
@@ -107,6 +112,7 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         if (index < 0 || index >= recipes.size()) return false;
         StationRecipe recipe = recipes.get(index);
         if (!recipe.isUnlocked(player)) return false;
+        selected = index;
         for (int i = 0; i < 3; i++) {
             ItemStack old = inputs.removeItemNoUpdate(i);
             if (!old.isEmpty()) player.getInventory().placeItemBackInInventory(old, Prediction.SERVER_ONLY);

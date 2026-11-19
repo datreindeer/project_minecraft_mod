@@ -125,6 +125,7 @@ Recept: `[Leather][Bone Needle][Leather]` / `[Planks][Crafting Table][Planks]`. 
 vänster, tre platser, resultat). **Bone Needle** = Fish Bones, Bone eller Horn + kniv (crafting), 32 i hållbarhet; den
 ligger kvar i stationen och tappar 1 per rustningsdel.
 **String** (från spindlar) fungerar överallt där receptet vill ha Wool Thread (samma antal, en sort per ruta).
+Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma delar) gäller receptet man senast klickade på i listan; annars det som använder mest (5 Leather blir en hjälm, inte stövlar).
 
 | Rustning | Material | Verktyg | Tråd | Låses upp av |
 |---|---|---|---|---|
