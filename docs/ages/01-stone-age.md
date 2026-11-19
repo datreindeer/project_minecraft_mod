@@ -197,7 +197,8 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
 
 - **Placeras bara ovanpå en Campfire.** Campfire blir ugnens nedre halva (eldstad) och ugnen blir 2 block hög.
 - **Måste brännas först:** en ny ugn är av rå lera (grå) och bakar ingenting. En eld måste brinna i den i **2 min**
-  (lägereldens ved eller bränsle i ugnen; bränsle går åt under tiden, och den slocknar inte av att stå tom). Leran
+  medan ugnen är **minst 500°** (lägereldens ved eller bränsle i ugnen; bränsle går åt under tiden, och den slocknar
+  inte av att stå tom). På lägereldens ved tar det ~1,5 min att nå 500°, så en ny ugn är bränd efter ungefär 3,5 min. Leran
   mörknar i 3 steg nerifrån och upp till bränd rödbrun lera; pilen i GUI:t visar hur långt det kommit. Slocknar elden
   behålls det som redan bränts. En bränd ugn förblir bränd även om man bryter och sätter ut den igen (item:et visar det).
   Står den på en tänd Campfire när man bygger den bränns den på lägereldens ved.
@@ -208,28 +209,34 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
 - Slocknar om bränslet tar slut mitt i en bakning.
 - Syns: flammor ur eldöppningen (mer när den bakar), rök ur skorstenen, lyser (ljus 13).
 - Bryter man någon halva försvinner ugnen och man får tillbaka Clay Kiln + 1–3 Stick (eldstaden går sönder) + innehåll.
-- GUI som en Furnace: input, bränsle, resultat.
+- GUI som en Furnace: input, bränsle, resultat, plus en **termometer** till vänster.
+- **Temperatur** (bronsålderns fas 2, se [02-bronze-age.md](02-bronze-age.md)): ugnen har en temperatur i grader som
+  stiger ~5°/s mot bränslets max när den brinner och sjunker ~3°/s när den är släckt. Varje recept kräver en viss
+  temperatur och väntar (utan att börja om) tills ugnen är varm nog. Trä räcker för allt i stenåldern; Crucible (800°)
+  kräver Charcoal eller en Bellows.
 
 **Recept i Clay Kiln**
 
-| In | Ut | Tid |
-|---|---|---|
-| 1 Clay Ball | Brick | 20 s |
-| 1 Log (alla som brinner) | Charcoal | 30 s |
-| 2 Firewood | Charcoal | 30 s |
-| 1 Unfired Crucible | Crucible | 40 s |
-| 1 Unfired Clay Bucket | Clay Bucket | 30 s |
-| 1 Dough (bronsåldern) | Bread | 20 s |
+| In | Ut | Tid | Kräver |
+|---|---|---|---|
+| 1 Clay Ball | Brick | 20 s | 600° |
+| 1 Log (alla som brinner) | Charcoal | 30 s | 400° |
+| 2 Firewood | Charcoal | 30 s | 400° |
+| 1 Unfired Crucible | Crucible | 40 s | 800° |
+| 1 Unfired Clay Bucket | Clay Bucket | 30 s | 600° |
+| 1 Dough (bronsåldern) | Bread | 20 s | 200° |
+
+Bronsålderns recept (Clay Tuyere, Clay Molds, smältning i Crucible) står i 02-bronze-age.md.
 
 **Bränsle**
 
-| Bränsle | Brinntid |
-|---|---|
-| Stick, Sapling | 10 s |
-| Planks | 30 s |
-| Firewood | 1 min |
-| Log | 2 min |
-| Charcoal, Coal | 4 min |
+| Bränsle | Brinntid | Max temperatur | Max med Bellows |
+|---|---|---|---|
+| Stick, Sapling | 10 s | 500° | 700° |
+| Planks | 30 s | 500° | 700° |
+| Firewood (och lägerelden ugnen byggdes på) | 1 min | 650° | 900° |
+| Log | 2 min | 650° | 900° |
+| Charcoal, Coal | 4 min | 800° | 1300° |
 
 ### Drying Rack
 Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
@@ -250,7 +257,7 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 | Item | Hur | Används till |
 |---|---|---|
 | Unfired Crucible | `[Clay Ball][ ][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Clay Ball][Clay Ball][Clay Ball]` | Bränns till Crucible i Clay Kiln |
-| Crucible | Clay Kiln | Bronsåldern (smälta koppar + tenn). Ingen användning än |
+| Crucible | Clay Kiln (800°) | Bronsåldern: fylls med malm och smälts i Clay Kiln (se 02-bronze-age.md). Staplas inte (1 per stack) |
 | Unfired Clay Bucket | `[Clay Ball][ ][Clay Ball]` / `[ ][Clay Ball][ ]` | Bränns till Clay Bucket i Clay Kiln |
 | Clay Bucket / Clay Water Bucket | Clay Kiln | Som en hink men **bara vatten**. Tål 16 hällningar, sedan spricker den. Fyller inte kittlar |
 | Log (från Firewood) | `[Firewood][Firewood]` / `[Firewood][Firewood]` av samma träslag → 1 Log | Planks, Tool Rod, bränsle |

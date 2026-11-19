@@ -17,7 +17,7 @@ public class KilnMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public KilnMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(3), new SimpleContainerData(4));
+        this(containerId, inventory, new SimpleContainer(3), new SimpleContainerData(8));
     }
 
     public KilnMenu(int containerId, Inventory inventory, Container kiln, ContainerData data) {
@@ -27,7 +27,7 @@ public class KilnMenu extends AbstractContainerMenu {
         addSlot(new Slot(kiln, KilnBlockEntity.INPUT, 56, 17) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return KilnBlockEntity.recipeFor(stack).isPresent();
+                return KilnBlockEntity.canBake(stack);
             }
         });
         addSlot(new Slot(kiln, KilnBlockEntity.FUEL, 56, 53) {
@@ -62,6 +62,25 @@ public class KilnMenu extends AbstractContainerMenu {
         return data.get(3) > 0;
     }
 
+    /** Kiln temperature in degrees. */
+    public int temperature() {
+        return data.get(4);
+    }
+
+    /** Overheating strain, 0..1. */
+    public float strain() {
+        return data.get(5) / (float) KilnBlockEntity.STRAIN_MAX;
+    }
+
+    public boolean cracked() {
+        return data.get(6) != 0;
+    }
+
+    /** Degrees the current bake (or the first firing) needs; 0 when nothing is baking. */
+    public int needed() {
+        return data.get(7);
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = slots.get(index);
@@ -72,7 +91,7 @@ public class KilnMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, INV_START, INV_END, true)) return ItemStack.EMPTY;
         } else {
             // recipe input first (logs are both), then fuel
-            boolean moved = (KilnBlockEntity.recipeFor(stack).isPresent() && moveItemStackTo(stack, KilnBlockEntity.INPUT, KilnBlockEntity.INPUT + 1, false))
+            boolean moved = (KilnBlockEntity.canBake(stack) && moveItemStackTo(stack, KilnBlockEntity.INPUT, KilnBlockEntity.INPUT + 1, false))
                     || (KilnBlockEntity.burnTicks(stack) > 0 && moveItemStackTo(stack, KilnBlockEntity.FUEL, KilnBlockEntity.FUEL + 1, false));
             if (!moved) return ItemStack.EMPTY;
         }

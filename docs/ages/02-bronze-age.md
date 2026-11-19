@@ -1,6 +1,7 @@
 # Bronsåldern
 
-> Status: **fas 1 (malm) är byggd**, se "Fas 1: malm (byggd)" sist. Fas 2–4 är plan. Beslut står under Beslut.
+> Status: **fas 1 (malm), fas 2 (värme) och fas 3 för koppar (gjutning + kopparverktyg) är byggda**, se avsnitten sist.
+> Brons (tenn i degeln, legering), bronsverktyg, Saw och rustning är plan. Beslut står under Beslut.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
 legera brons och smida verktyg och rustning. Åldern slutar när spelaren kan bygga det som behövs för järn
@@ -76,9 +77,9 @@ Sinew, Tool Station och Armor Station.
 ## Faser
 
 1. **Malm** (fas 1, **byggd**): ytfynd, vaskning, krossning. Se nedan.
-2. **Värme:** kilnens temperatur, Bellows, mätare i GUI.
-3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots, legering, tvättat koncentrat ger mer metall.
-4. **Verktyg och rustning:** koppar- och bronsverktyg, Whetstone, Saw, Bronze Helmet + Greaves, byhandel nivå 3.
+2. **Värme** (**byggd**): kilnens temperatur, Bellows, mätare i GUI.
+3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots (**byggt för koppar**); legering och tvättat koncentrat återstår.
+4. **Verktyg och rustning:** kopparverktyg och Whetstone (**byggda**); bronsverktyg, Saw, Bronze Helmet + Greaves, byhandel nivå 3.
 
 ## Fas 1: malm (byggd)
 
@@ -115,9 +116,9 @@ försvinner. Storlek 2 ger 2 st (storlek 3 finns bara i creative och ger 3).
 | Item | Varifrån | Används till |
 |---|---|---|
 | Malachite | Loose Malachite | Stone Anvil → 1 Crushed Copper Ore |
-| Native Copper | Loose Native Copper, sällan vaskning | Krossas inte. Smälts direkt i fas 3 (ingen användning än) |
+| Native Copper | Loose Native Copper, sällan vaskning | Krossas inte. Läggs direkt i en Crucible (2 enheter), se fas 3 |
 | Cassiterite | Tin Ore, Loose Cassiterite, vaskning | Stone Anvil → 1 Crushed Tin Ore |
-| Crushed Copper Ore | Stone Anvil | **Ingen användning än** (fas 3: smälts, eller tvättas först) |
+| Crushed Copper Ore | Stone Anvil | Läggs i en Crucible (1 enhet) och smälts, se fas 3 |
 | Crushed Tin Ore | Stone Anvil | **Ingen användning än** (fas 3) |
 | Pan / Pan with Gravel / Pan with Sand | Crafting | Vaskning |
 
@@ -165,45 +166,175 @@ Recept (crafting table, R = rock chunk, K = Flint Pickaxe som blir kvar och slit
   - Cassiterite → 1 **Crushed Tin Ore**
 - Bryts städet ramlar malmen som ligger på det ut.
 
-## Fas 2: värme (spec)
+## Fas 2: värme (byggd)
 
-**Temperatur i Clay Kiln.** Kilnen får en temperatur i grader (sparas, syns i GUI). Kall kiln = omgivningen (~20°,
-kallare i snöbiomer via Temperature-systemet).
-- **Tänd:** temperaturen stiger mot bränslets **naturliga max** med ~5°/s (20° → 800° på ~2,5 min).
-- **Släckt:** sjunker mot omgivningen med ~3°/s. Regn och kyla kyler snabbare.
-- **Bälgpump:** varje pump ger **+40°**, upp till bränslets **max med bälg**. Över det naturliga maxet sjunker den
-  ~2°/s, så man behöver pumpa ungefär 3 gånger i minuten för att hålla värmen.
+Kod: `KilnBlockEntity` (temperatur, påfrestning, lagning), `KilnBlock` (CRACKS, HOT), `BellowsBlock`,
+`client/KilnScreen` (termometer), `Casting` (registrering). Data: `scripts/gen_copper.py` och kilnens modeller i
+`gen_data.py`; texturer: `scripts/gen_copper_textures.py`. Generatorordning: gen_data.py src/main/resources → gen_tribe_village →
+gen_trails → gen_bronze_ores → gen_age_recipes → gen_farming → gen_wind → **gen_copper** → gen_block_items → gen_registry.
 
-| Bränsle | Naturligt max | Max med bälg |
+### Temperatur i Clay Kiln
+
+Kilnen har en temperatur i grader (sparas i blocket, syns i GUI:t). Kall kiln = luften, omräknad från
+Temperature-systemet (×1,5 av kroppsskalan: slätt ~18°, snöbiom några grader, natt och regn kallare).
+
+- **Tänd:** stiger **5°/s** mot det brinnande bränslets **naturliga max** (20° → 800° på ~2,5 min).
+- **Släckt:** sjunker **3°/s** mot luften. Regn på skorstenen ×2, luft under 5° ×1,5.
+- **Över naturligt max** (efter bälgpumpning): sjunker **2°/s** tillbaka mot det.
+- Taket är **1300°**. En sprucken kiln blir inte varmare än **600°**.
+- Maxet följer bränslet som brinner just nu (byts när nästa bränsle tas). Lägerelden kilnen byggdes på räknas som Firewood.
+
+| Bränsle | Naturligt max | Max med Bellows |
 |---|---|---|
 | Stick, Sapling, Planks | 500° | 700° |
-| Firewood, Log | 650° | 900° |
+| Firewood, Log (och lägerelden) | 650° | 900° |
 | Charcoal, Coal | 800° | 1300° |
 
-Slutsats: brons (950°) och koppar (1085°) kräver **Charcoal och bälg**. Trä räcker för lera.
+Brons (950°) och koppar (1085°) kräver alltså **Charcoal och Bellows**. Trä räcker för lera.
 
-**Temperaturkrav på kilnens recept** (beslutat: gäller alla recept, även stenålderns). Receptet bakar bara när kilnen
-är tillräckligt varm (pausar annars):
-- Charcoal (av Log/Firewood): 400°
-- Brick, Clay Bucket: 600°
-- Crucible: 800° (kräver Charcoal-bränsle eller bälg, ett första mål)
-- Första bränningen av en ny kiln: räknas bara medan den är minst 500°.
-- Fas 3: smältning i Crucible när temperaturen når metallens smältpunkt.
+### Temperaturkrav på kilnens recept
 
-**Bellows.** Ett block som ställs bredvid kilnens eldstad (nedre halvan) med munstycket mot den. Högerklick = en pump
-(kort cooldown ~0,5 s): blåsbälgen trycks ihop (animerad modell), luftljud, gnistor och flammor ur kilnens öppning.
-Fungerar bara när den pekar på en tänd kiln.
-- **Clay Tuyere** (lerrör/munstycke): formas av lera och bränns i kilnen (600°).
-- **Bellows:** `[Planks][Scraped Hide][Planks]` / `[Planks][Scraped Hide][Planks]` / `[Twine][Clay Tuyere][Twine]`.
+Gäller alla recept. Kilnen bränner bränsle och värms så länge det finns något att baka, men framstegen står still
+(nollställs inte) tills temperaturen räcker. GUI:t visar ett vitt streck vid termometern på den temperatur som behövs
+(grönt när den nåtts).
 
-**Mätare.** Kilnens GUI får en lodrät termometer med markeringar vid 600° (lera), 950° (brons) och 1085° (koppar),
-färg från mörkröd till vitgul, och exakt temperatur när man håller musen över den. Kilnen syns hetare: mer och ljusare
-eld ur öppningen, glödande öppning över ~900°.
+| In | Ut | Tid | Kräver |
+|---|---|---|---|
+| 1 Clay Ball | Brick | 20 s | 600° |
+| 1 Log / 2 Firewood | Charcoal | 30 s | 400° |
+| Unfired Crucible | Crucible | 40 s | 800° |
+| Unfired Clay Bucket | Clay Bucket | 30 s | 600° |
+| Dough | Bread | 20 s | 200° |
+| Unfired Clay Tuyere | Clay Tuyere | 20 s | 600° |
+| Unfired Clay ... Mold (6 sorter) | Clay ... Mold | 20 s | 600° |
+| Crucible med malm | Crucible of Molten Copper | 15 s | 1085° (metallens smältpunkt) |
+| Crucible of Solid Copper | Crucible of Molten Copper | 10 s | 1085° |
 
-**Överhettning (beslutat: kilnen kan spricka).** Taket är 1300°. Pumpar man när kilnen redan är vid taket byggs en
-**påfrestning** upp (syns som en varningsstapel i GUI:t och knastrande ljud, sprickor i texturen i 2 steg); den sjunker
-långsamt igen när man slutar. Når påfrestningen max **spricker kilnen**: elden slocknar, innehållet i input-slotten
-förstörs om det var smält metall (fas 3), och kilnen är **Cracked**. En sprucken kiln blir inte varmare än 600° tills
-den lagas: högerklicka med 4 Clay Ball (en i taget), sedan måste lagningen brännas in (som första bränningen, kortare).
+**Första bränningen** av en ny kiln räknas bara medan den är minst **500°** (2 min). På lägereldens ved tar det ~1,5 min
+att komma dit.
 
-**Beslutat:** Bellows är ett eget block bredvid eldstaden; Clay Tuyere krävs.
+### Bellows
+
+Recept (crafting table): `[Planks][Scraped Hide][Planks]` / `[Planks][Scraped Hide][Planks]` / `[Twine][Clay Tuyere][Twine]`.
+
+- Ställs **bredvid kilnens eldstad** (nedre halvan) med munstycket mot den. Munstycket pekar bort från spelaren när
+  man ställer ut den: stå bakom bälgens plats och titta mot kilnen.
+- **Högerklick = en pump** (+40°, upp till bränslets max med bälg). Bälgen trycks ihop i 0,5 s (eget modellsteg, det
+  är också cooldownen). Luftljud och en pust ur munstycket; mot en tänd kiln flammor, gnistor och rök ur kilnen och ett
+  fräs från elden.
+- Pekar den inte på en kiln: "The bellows must blow into a Clay Kiln's firebox". Släckt kiln: "The kiln is not lit".
+- Modell: två plankbrädor med ett veckat lädersäck emellan, handtag på övre brädan, läderrem i gångjärnet och ett
+  lerrör (Clay Tuyere) fram. Bryts med yxa, ger sig själv.
+- Över naturligt max sjunker temperaturen 2°/s, så **ungefär 3 pumpningar i minuten** håller koppar flytande när man
+  väl nått 1085° (från Charcoals 800° krävs ~8 pumpningar för att komma upp).
+
+### Clay Tuyere
+
+Unfired Clay Tuyere: `[ ][ ][Clay Ball]` / `[ ][Clay Ball][ ]` / `[Clay Ball][ ][ ]` (diagonalt). Bränns i kilnen (600°)
+till **Clay Tuyere**, som bara används i Bellows.
+
+### Termometer i GUI:t
+
+Lodrät glastermometer till vänster i kilnens GUI (0–1300°) med markeringar vid **600°** (röd, lera), **950°** (orange,
+brons) och **1085°** (gul, koppar). Fyllningen går från mörkröd via röd och orange till vitgul, och kulan glöder i
+samma färg som temperaturen. Håller man musen över den: exakt temperatur, vad receptet kräver, påfrestning eller att
+kilnen är sprucken.
+
+### Hetare kiln
+
+Över **900°** (tänd): eldöppningen och golvet glöder (ett animerat glödlager som lyser själv), ljus 15 i stället för 13,
+fler flammor och gnistor (lavapartiklar) ur öppningen.
+
+### Överhettning och sprucken kiln
+
+- Pumpar man när kilnen redan är vid taket (minst 1280°) byggs **påfrestning** upp: **+12 per pump**, knastrande och
+  ett dovt ljud från leran. Den sjunker **1 per sekund** när man slutar. Syns som en röd stapel bredvid termometern.
+- Leran får **sprickor i 2 steg** (påfrestning 34 % och 67 %).
+- Vid **100** spricker kilnen: elden slocknar (påbörjat bränsle finns kvar), ljud av krossad lera, rök och lerbitar.
+  Ligger en **Crucible of Molten Copper** i resultatrutan förstörs metallen (degeln blir en tom Crucible). Kilnen är nu
+  **Cracked** (egen sprucken textur) och blir inte varmare än 600°.
+- **Laga:** högerklicka med **Clay Ball**, en i taget, 4 st ("Patched 1/4" ...). Sedan måste lagningen brännas in som
+  första bränningen men kortare: kilnen går tillbaka till sista bränningssteget (40 s vid minst 500°).
+- Bryts en sprucken kiln behåller item:et sprickorna (block_state, som bränningen).
+
+## Fas 3: gjutning (koppar, byggd)
+
+Kod: `Casting` (registrering, malm → enheter, slipning), `Metal`, `CrucibleContents` (datakomponent), `CrucibleItem`,
+`ClayMoldBlock`, `WhetstoneBlock`.
+
+### Crucible med malm
+
+Crucible (från stenåldern) kan nu fyllas med malm. Den staplas inte längre (en per stack, eftersom den bär sitt innehåll).
+
+- **Fylla:** klicka malm på degeln i inventoryt (vänsterklick: så mycket som får plats, högerklick: en), eller håll
+  malmen i andra handen och använd degeln.
+- Rymmer **8 enheter**. **Crushed Copper Ore = 1 enhet, Native Copper = 2** (nästan ren metall). Malachite och Raw
+  Copper måste krossas först (Stone Anvil).
+- Tooltip: "Copper ore: 6/8 units" och "Melts in a Clay Kiln at 1085°". Malm går inte att ta ut igen.
+- Innehållet sparas som enheter per metall (`mechanical:crucible_contents`), så brons kan lägga till tenn och en
+  legeringsregel (9:1) utan att ändra lagringen.
+
+### Smälta
+
+Lägg degeln i kilnens **input-ruta**. När kilnen är **minst 1085°** smälter den på 15 s till en **Crucible of Molten
+Copper** i resultatrutan (samma antal enheter). Ligger den kvar i resultatrutan medan kilnen är minst 1085° hålls den
+flytande.
+
+### Crucible of Molten Copper
+
+- Stelnar efter **60 s** utanför kilnen (en orange stapel visar värmen som är kvar) och blir en **Crucible of Solid
+  Copper**, som måste smältas om i kilnen (10 s vid 1085°). Kollas när degeln ligger i spelarens inventory och när man
+  häller (har den legat i en kista för länge är den stel när man tar fram den).
+- Hälls i en Clay Mold (nedan). Blir degeln tom får man tillbaka en tom Crucible.
+
+### Clay Molds
+
+Sex formar. Unfired-formarna formas av Clay Ball i crafting table och bränns i kilnen (600°, 20 s) till en form som
+ställs på marken (behöver fast mark under).
+
+| Form | Recept (C = Clay Ball) | Enheter per gjutning | Ger |
+|---|---|---|---|
+| Clay Ingot Mold | `[C][ ][C]` / `[C][C][C]` | 2 | Copper Ingot (vanilla) |
+| Clay Pickaxe Head Mold | `[C][C][C]` / `[C][ ][C]` / `[C][ ][C]` | 6 | Rough Cast Copper Pickaxe Head |
+| Clay Axe Head Mold | `[C][C][C]` / `[C][ ][C]` / `[C][C][ ]` | 6 | Rough Cast Copper Axe Head |
+| Clay Shovel Head Mold | `[C][ ][C]` / `[C][ ][C]` / `[ ][C][ ]` | 2 | Rough Cast Copper Shovel Head |
+| Clay Hoe Head Mold | `[C][C][ ]` / `[C][ ][ ]` / `[C][C][C]` | 4 | Rough Cast Copper Hoe Head |
+| Clay Knife Blade Mold | `[C][ ][C]` / `[ ][C][ ]` / `[ ][C][ ]` | 2 | Rough Cast Copper Knife Blade |
+
+- **Hälla:** högerklicka på en tom form med Crucible of Molten Copper. Räcker inte metallen: "This mold takes 6 units
+  of metal; the crucible holds 4". Formen fylls med glödande metall (syns i formen, animerad, lyser 9), lavaljud.
+- Metallen **stelnar på 5 s** (fräs och rök). Kliver man på flytande metall bränner det.
+- **Ta ut:** tom hand på den stelnade formen → gjutningen hamnar i inventoryt.
+- Formen tål **5 gjutningar**, sedan spricker den (ljud och lerbitar, "The mold cracked"). Bryts den behåller item:et
+  hur många gjutningar den gjort.
+- Formens ovansida visar själva håligheten (gjutningens egen siluett i bränd lera), och flytande eller stelnad
+  koppar syns i den.
+- En full degel (8 enheter) räcker till en hacka eller yxa + 1 ingot, eller 4 ingots. 6 enheter = 3 Raw Copper.
+
+### Whetstone
+
+Recept: `[ ][Sandstone][ ]` / `[Stick][Planks][Stick]`. Ett sandstensblock på en låg träbänk. Bryts med pickaxe.
+
+Högerklicka med ett **Rough Cast ...** **4 gånger** (kort cooldown mellan dragen): gnistor, slipljud, metallflisor.
+Det fjärde draget ger det slipade huvudet (Copper Pickaxe Head osv.). Framstegen sitter i stenen, så ett huvud i taget.
+
+## Kopparverktyg (byggda)
+
+Ett mjukt mellansteg mellan sten och brons. Monteras i **Tool Station**; receptet låses upp när man bär på det slipade
+huvudet. Hacka, yxa, spade och hacka (hoe) är vanillas kopparverktyg (vanillas egna recept är fortfarande avstängda).
+
+| Verktyg | Huvud | Binding | Skaft |
+|---|---|---|---|
+| Copper Pickaxe | Copper Pickaxe Head | Cordage | Tool Rod |
+| Copper Axe | Copper Axe Head | Cordage | Tool Rod |
+| Copper Shovel | Copper Shovel Head | Cordage | Tool Rod |
+| Copper Hoe | Copper Hoe Head | Cordage | Tool Rod |
+| Copper Knife | Copper Knife Blade | Twine | Stick |
+
+- **Siffror** (vanillas kopparmaterial): 190 hållbarhet, hastighet 5, +1 skada (Stone Pickaxe: 131 / 4 / +1).
+- **Brytnivå som sten:** `minecraft:incorrect_for_copper_tool` innehåller `#mechanical:needs_bronze_tool`, så
+  kopparhackan bryter inte Iron, Coal eller Lapis Ore.
+- Copper Pickaxe fungerar som hammarsten på Stone Anvil.
+- **Copper Knife:** 200 hållbarhet, styckar 1,5× så snabbt och ger 1,2× så mycket som Flint Knife. Klarar **inte**
+  Brown Bear (Tusk Dagger är fortfarande jaktkniven tills brons). Räknas som kniv (`mechanical:knives`) och svärd.
+- Ingen kopparrustning. Copper Ingot har ingen egen användning i modden än.

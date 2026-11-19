@@ -11,6 +11,7 @@
     "mechanical:loose_granite",
     "mechanical:loose_diorite",
     "mechanical:loose_andesite",
-    "mechanical:loose_flint"
+    "mechanical:loose_flint",
+    "mechanical:whetstone"
   ]
 }

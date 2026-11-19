@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:clay_shovel_head_mold",
+          "modifier": [
+            {
+              "type": "minecraft:copy_state",
+              "block": "mechanical:clay_shovel_head_mold",
+              "properties": [
+                "uses"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/clay_shovel_head_mold"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " S ",
+    "TPT"
+  ],
+  "key": {
+    "S": "minecraft:sandstone",
+    "T": "minecraft:stick",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:whetstone"
+  }
+}

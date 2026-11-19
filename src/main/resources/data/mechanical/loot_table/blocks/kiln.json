@@ -37,7 +37,8 @@
               "type": "minecraft:copy_state",
               "block": "mechanical:kiln",
               "properties": [
-                "firing"
+                "firing",
+                "cracks"
               ]
             }
           ]

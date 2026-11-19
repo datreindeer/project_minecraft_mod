@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "fill=empty,uses=0": {
+      "model": "mechanical:block/clay_pickaxe_head_mold"
+    },
+    "fill=empty,uses=1": {
+      "model": "mechanical:block/clay_pickaxe_head_mold"
+    },
+    "fill=empty,uses=2": {
+      "model": "mechanical:block/clay_pickaxe_head_mold"
+    },
+    "fill=empty,uses=3": {
+      "model": "mechanical:block/clay_pickaxe_head_mold"
+    },
+    "fill=empty,uses=4": {
+      "model": "mechanical:block/clay_pickaxe_head_mold"
+    },
+    "fill=molten,uses=0": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_molten_copper"
+    },
+    "fill=molten,uses=1": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_molten_copper"
+    },
+    "fill=molten,uses=2": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_molten_copper"
+    },
+    "fill=molten,uses=3": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_molten_copper"
+    },
+    "fill=molten,uses=4": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_molten_copper"
+    },
+    "fill=solid,uses=0": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_solid_copper"
+    },
+    "fill=solid,uses=1": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_solid_copper"
+    },
+    "fill=solid,uses=2": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_solid_copper"
+    },
+    "fill=solid,uses=3": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_solid_copper"
+    },
+    "fill=solid,uses=4": {
+      "model": "mechanical:block/clay_pickaxe_head_mold_solid_copper"
+    }
+  }
+}

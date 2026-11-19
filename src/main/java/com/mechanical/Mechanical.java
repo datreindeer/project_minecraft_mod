@@ -150,7 +150,8 @@ public class Mechanical {
     // --- Fire and clay: fire drill lights campfires, the kiln on top of a campfire bakes clay and makes charcoal ---
     public static final DeferredItem<FireDrillItem> FIRE_DRILL = ITEMS.registerItem("fire_drill", FireDrillItem::new, p -> p.durability(16));
     public static final DeferredItem<Item> UNFIRED_CRUCIBLE = ITEMS.registerSimpleItem("unfired_crucible");
-    public static final DeferredItem<Item> CRUCIBLE = ITEMS.registerSimpleItem("crucible");
+    /** Holds ore for melting (CrucibleItem); one per stack since it carries its contents. */
+    public static final DeferredItem<CrucibleItem> CRUCIBLE = ITEMS.registerItem("crucible", p -> new CrucibleItem(p, CrucibleItem.Kind.ORE), p -> p.stacksTo(1));
     public static final DeferredItem<Item> UNFIRED_CLAY_BUCKET = ITEMS.registerSimpleItem("unfired_clay_bucket");
     /** Fired clay buckets: water only, 16 pours before the clay cracks (ClayBucketItem). */
     public static final DeferredItem<ClayBucketItem> CLAY_BUCKET = ITEMS.registerItem("clay_bucket",
@@ -162,7 +163,7 @@ public class Mechanical {
             .strength(2.0F)
             .sound(SoundType.MUD_BRICKS)
             .noOcclusion()
-            .lightLevel(state -> state.getValue(KilnBlock.LIT) ? 13 : 0));
+            .lightLevel(state -> state.getValue(KilnBlock.HOT) ? 15 : state.getValue(KilnBlock.LIT) ? 13 : 0));
     public static final DeferredItem<BlockItem> KILN_ITEM = ITEMS.registerSimpleBlockItem("kiln", KILN);
     public static final Supplier<BlockEntityType<KilnBlockEntity>> KILN_ENTITY = BLOCK_ENTITIES.register("kiln",
             () -> new BlockEntityType<>(KilnBlockEntity::new, KILN.get()));
@@ -336,7 +337,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init();
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
@@ -344,6 +345,7 @@ public class Mechanical {
         MENUS.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
+        Casting.COMPONENTS.register(modEventBus);
         ENTITY_TYPES.register(modEventBus);
         ATTACHMENTS.register(modEventBus);
         com.mechanical.worldgen.Structures.FEATURE_TYPES.register(modEventBus);
