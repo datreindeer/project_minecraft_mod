@@ -378,6 +378,15 @@
   "bear_pelt": {
     "text": "Första omgången när man styckar en Brown Bear (**kräver Tusk Dagger eller Iron Knife**). Används till Fur-rustning och [[bear_rug]]."
   },
+  "wolf_pelt": {
+    "text": "Första omgången när man styckar en [[entity:grey_wolf]] (alltid 1). Material för pälsrustning eller fäll senare."
+  },
+  "grey_wolf_spawn_egg": {
+    "text": "Creative: spawnar en [[entity:grey_wolf]]."
+  },
+  "cave_lion_spawn_egg": {
+    "text": "Creative: spawnar ett [[entity:cave_lion]]."
+  },
   "bear_fat": {
     "text": "Brown Bear, andra omgången (80 %, 1–3 st, kräver Tusk Dagger eller Iron Knife). Laga på Campfire → 2 [[tallow]]."
   },
@@ -1069,6 +1078,12 @@
   },
   "entity:aurochs": {
     "text": "Uroxe: stor vild boskap på slätter. Tjurar slåss tillbaka."
+  },
+  "entity:grey_wolf": {
+    "text": "Gråvarg i flock (3–6) i taiga, skog, slätt och snöland. Sover på dagen, **jagar på natten**: ylar, spårar lukten, omringar och biter. Rädd för eld och facklor (utom under blodmåne). 14 liv, 4 skada. Ger [[wolf_pelt]], kött, Sinew och Bone."
+  },
+  "entity:cave_lion": {
+    "text": "Grottlejon (1–2) på savann, slätt och i blåsiga berg. Smyger hukad i mörkret och **kastar sig över dig bakifrån** (8 skada). Släpar bort byten. Rädd för eld. 30 liv. Ger Raw Hide, kött, Sinew och Bone."
   },
   "entity:brown_bear": {
     "text": "Mycket aggressiv björn nära bärbuskar. Kräver Tusk Dagger för att styckas."

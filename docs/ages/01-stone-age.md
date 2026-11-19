@@ -567,7 +567,61 @@ Samma system som skogsdjuren (kroppar, styckning, blod, rädsla, ungar, sömn). 
 
 Nytt item: **Horn** (material för senare recept).
 
+### Rovdjur på natten (Grey Wolf, Cave Lion)
+Natten ute utan eld är farlig på riktigt. Rovdjuren **sover på dagen** och håller sig då undan från spelare som andra vilda
+djur, men **jagar på natten** (och dygnet runt under blodmåne eller när de svälter, 2 dagar utan byte). Samma system som
+övriga vilda djur: egna modeller och animationer (trav/galopp, nosen i marken, smygande, språng, ylande/vrål, hoprullad
+sömn), kroppar, flådda texturer, styckning och blod.
+
+| Djur | Biomer (grupp) | Liv / skada | Omgång 1 | Omgång 2 |
+|---|---|---|---|---|
+| **Grey Wolf** (gråvarg) | Alla taigor, skog, björkskog, dark forest, plains, snowy plains, grove, snowy slopes (flock 3–6) | 14 liv, 4 skada, snabb (fart 0,32, rusar med 1,55×) | **Wolf Pelt** | 1–2 Game Meat Scraps, Sinew 50 %, 1–2 Bone 60 % |
+| **Cave Lion** (grottlejon) | Savanna, savanna plateau, windswept savanna, sunflower plains, windswept hills, windswept gravelly hills, stony peaks, meadow (1–2) | 30 liv, språng 8 skada, slag 5, svår att knuffa | Raw Hide 70 % + Raw Hide 40 % | 3–5 Game Meat Scraps, Sinew 60 % (1–2), 1–3 Bone 70 % |
+
+**Grey Wolf:**
+- **Ylar** (hörs ~100 block bort, en tidig varning): ledaren ylar när flocken får upp ett spår och ibland av sig själv på
+  natten (~varannan minut). De andra svarar en efter en i olika tonhöjd. En flock som kommer på natten ylar några sekunder
+  efter att den dykt upp. (26.3 har inget vargylande längre, så ylet är vanilla-vargens gnäll nedstämt.)
+- **Spårar lukten** utan att behöva se dig: 32 block, **48 om du är skadad** (under halva hälsan), 14 om du smyger. Annars
+  tar de byten inom 24 block: Roe Deer, Red Deer (hindar), Reindeer, Hare, Mouflon, Sheep och **stenåldersmänniskor**.
+- **Följer på avstånd och omringar:** på över 20 block travar de efter dig (hukande när de kommer närmare). Sedan tar varje
+  varg en egen plats på en ring 5,5 block runt dig: **bakom dig och på sidorna**. De rusar in och biter när läget är rätt:
+  vargen står bakom dig, eller två andra står på plats, eller efter ett tag ändå (~12 s). **Mycket snabbare** (efter 1 s) om
+  du är skadad, ensam i mörkret (blockljus under 5 och ingen annan spelare eller människa inom 10 block) eller har slagit
+  dem. Efter ett bett faller vargen tillbaka till ringen (1,5–4 s) och nästa rusar in.
+- **Drar sig undan** när en varg har under 35 % hälsa, eller när flocken har halverats (då flyr de i 30 s och kan försöka
+  igen senare). På morgonen ger de upp jakten, om du inte slogs med dem.
+- **Rädd för eld:** håller sig 12 block från en brinnande Campfire eller tänd Clay Kiln och går inte på någon som står inom
+  8 block från elden: de **smyger runt elden ~16 block bort**, i mörkret vid kanten av eldskenet. **Håller du en fackla**
+  (Torch, Soul Torch, Copper Torch, Lantern; taggen `mechanical:scares_predators`) står de kvar runt dig på 6,5 blocks
+  avstånd utan att bita, och hoppar undan om du kommer närmare än 4,5 block. **Under blodmåne, eller om de svälter, hjälper elden inte.**
+- Vanilla-vargen (den tämjbara) spawnar inte längre där gråvargen lever. Den finns kvar i savannplatåer, badlands och
+  djungelkanter.
+
+**Cave Lion:**
+- **Bakhållsjägare:** ser spelare inom 24 block (10 om du smyger). Smyger fram **hukad** (långsamt och tyst, inga fotsteg),
+  **fryser** när du tittar åt dess håll och arbetar sig runt bakom dig. Från 2,5–7 block, när du inte tittar: ett **språng**
+  som gör 8 skada. Sedan slåss den med slag (5) och kan hoppa igen (var 5:e sekund).
+- Ser du den på nära håll (inom 12 block) i 3 s, eller slår den, slutar den smyga: ett **djupt vrål** (hörs långt) och
+  anfall i det öppna. Flyr under 25 % hälsa.
+- Jagar också Roe Deer, Red Deer, Reindeer, Wild Horse, Aurochs (kor), Mouflon, Wild Boar och stenåldersmänniskor.
+  **Släpar bort bytet:** en färsk, orörd Carcass inom 4 block bärs i käftarna upp till ~20 block bort från spelare.
+- Rädd för eld och facklor som vargen (morrar och backar undan till ~7 block), utom under blodmåne eller vid svält.
+
+**Var och hur ofta:** några flockar och lejon finns redan när världen skapas (de sover på dagen). Dessutom har varje
+spelare i varglandet (biomtaggen `mechanical:has_grey_wolves`) **var 30:e sekund på natten 6 % chans** att en flock på
+3–6 kommer 48–64 block bort, om det inte redan finns gråvargar inom 96 block. Hälften av flockarna jagar och har din lukt
+från början, resten strövar (och kan få upp spåret senare). En natt i taigan ger alltså oftast ett ylande och ibland en
+flock som anfaller (~70 % chans för minst en flock under en hel natt). I lejonlandet (`mechanical:has_cave_lions`) är det
+2,5 % för ett lejon (1/3 chans att det är ett par). Dubbelt så ofta under blodmåne. Aldrig inom 28 block från en brinnande
+eld, och bara på mörk, torr mark. Djur som kommer på natten försvinner när ingen spelare är i närheten (de från
+världsskapandet stannar). Testa med `/nightpredators wolf` eller `/nightpredators lion` (op): en ankomst runt dig direkt.
+
+Nytt item: **Wolf Pelt** (material för pälsrustning eller fäll senare). Spawn eggs för båda.
+
 ### Natten
+- **Vargar och grottlejon** jagar på natten (se *Rovdjur på natten*): ylande på långt håll och flockar som omringar dig.
+  Eld och facklor håller dem borta.
 - **Sovande djur:** vilda djur lägger sig och sover på natten. Kommer man inom 7 block (2,5 om man smyger) vaknar de och
   flyr i panik. De vaknar också när de skadas och när det blir morgon.
 - **Fler monster:** var 5:e sekund är det 45 % chans att ett extra monster spawnar 24–40 block från spelaren (på ytan,
@@ -1260,6 +1314,8 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Flotte och kanot: `Watercraft.java` (register, fartbroms, knivritsning), `DugoutBlankBlock.java`, `client/WatercraftModel.java`, `client/WatercraftRenderer.java`; data `scripts/gen_watercraft.py`, texturer `scripts/gen_watercraft_textures.py`.
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörkerrädsla: `Sanity.java` (värde, tappa/återhämta, effekter, `/sanity`), `client/SanityClient.java` (ljud, gestalter, inbillat monster, vinjett, öga, gråa färger via `BloodMoonSkyMixin`); data `scripts/gen_sanity.py`, texturer `scripts/gen_sanity_textures.py`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
+
+- Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Rovdjur: `wildlife/Predator.java` (eldrädsla, sömn på dagen, svält), `GreyWolf.java`, `CaveLion.java`, `Predators.java` (nattankomster, ylljud, `/nightpredators`), `client/wildlife/PredatorModel.java` (animationer), `scripts/gen_predators.py`, `scripts/gen_predator_textures.py`. Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.
 - Styckning: `Butchery.java` (utbytestabell), `CarcassEntity.java`, `KnifeItem.java`, `BonePileBlock.java`. Hängande ben och flådda texturer: mixins i `mixin/` (benen bara för fyrbenta djur och höns). Texturskript: `scripts/gen_skinned_textures.py`, `scripts/gen_bone_pile_textures.py`. Drying Rack: `DryingRackBlock.java`.
 - Tool Station-recept: `ToolStationRecipes.java`. Clay Kiln-recept och bränsle: `KilnBlockEntity.java`. Båda är

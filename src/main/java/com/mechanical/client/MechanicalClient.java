@@ -87,6 +87,14 @@ public class MechanicalClient {
             BadgerModel model = new BadgerModel(c.bakeLayer(BadgerModel.LAYER));
             return new WildAnimalRenderer<>(c, model, model, 0.55F, 0.45F);
         });
+        event.registerEntityRenderer(Wildlife.GREY_WOLF.get(), c -> {
+            GreyWolfModel model = new GreyWolfModel(c.bakeLayer(GreyWolfModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.5F);
+        });
+        event.registerEntityRenderer(Wildlife.CAVE_LION.get(), c -> {
+            CaveLionModel model = new CaveLionModel(c.bakeLayer(CaveLionModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.9F);
+        });
         // flocking birds: layer, how far the neck reaches forward in flight, wing-beat amplitude, shadow
         event.registerEntityRenderer(Wildlife.CROW.get(), c -> new BirdRenderer(c, BirdModel.CROW, 0.5F, 0.85F, 0.25F));
         event.registerEntityRenderer(Wildlife.GOOSE.get(), c -> new BirdRenderer(c, BirdModel.GOOSE, 1.45F, 0.6F, 0.4F));
@@ -142,6 +150,8 @@ public class MechanicalClient {
         event.registerLayerDefinition(HedgehogModel.LAYER, HedgehogModel::createBodyLayer);
         event.registerLayerDefinition(BadgerModel.LAYER, BadgerModel::createBodyLayer);
         event.registerLayerDefinition(GiantDeerModel.LAYER, GiantDeerModel::createBodyLayer);
+        event.registerLayerDefinition(GreyWolfModel.LAYER, GreyWolfModel::createBodyLayer);
+        event.registerLayerDefinition(CaveLionModel.LAYER, CaveLionModel::createBodyLayer);
         event.registerLayerDefinition(BirdModel.CROW, BirdModel::createCrowLayer);
         event.registerLayerDefinition(BirdModel.GOOSE, BirdModel::createGooseLayer);
         event.registerLayerDefinition(BirdModel.ROCK_DOVE, BirdModel::createRockDoveLayer);

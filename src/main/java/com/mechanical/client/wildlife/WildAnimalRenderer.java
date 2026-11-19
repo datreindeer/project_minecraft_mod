@@ -44,6 +44,11 @@ public class WildAnimalRenderer<T extends WildAnimal> extends MobRenderer<T, Wil
         state.dozing = entity.isDozing();
         state.arrowCount = entity.getArrowCount();
         state.entityId = entity.getId();
+        if (entity instanceof com.mechanical.wildlife.Predator predator) {
+            state.crouching = predator.isCrouching();
+            state.leaping = predator.isLeaping();
+            state.calling = predator.callAmount();
+        }
         if (entity instanceof Pheasant pheasant) {
             state.flying = !pheasant.onGround();
             state.flap = pheasant.flapPhase(partialTicks);

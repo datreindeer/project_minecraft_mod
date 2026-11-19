@@ -718,5 +718,11 @@
   "block.mechanical.yew_leaf_litter": "Yew Leaf Litter",
   "item.mechanical.beechnuts": "Beechnuts",
   "item.mechanical.roasted_beechnuts": "Roasted Beechnuts",
-  "item.mechanical.pine_resin": "Pine Resin"
+  "item.mechanical.pine_resin": "Pine Resin",
+  "item.mechanical.wolf_pelt": "Wolf Pelt",
+  "item.mechanical.grey_wolf_spawn_egg": "Grey Wolf Spawn Egg",
+  "item.mechanical.cave_lion_spawn_egg": "Cave Lion Spawn Egg",
+  "entity.mechanical.grey_wolf": "Grey Wolf",
+  "entity.mechanical.cave_lion": "Cave Lion",
+  "subtitles.mechanical.entity.grey_wolf.howl": "Wolves howl"
 }
