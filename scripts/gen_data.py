@@ -604,8 +604,10 @@ for src in ("fish_bones", "bone", "horn"):
 for name in ("leather_helmet", "leather_chestplate", "leather_leggings", "leather_boots"):
     w(D / f"minecraft/recipe/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
     w(D / f"minecraft/advancement/recipes/combat/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
-# rock chunks back into cobblestone
-shaped("cobblestone_from_chunks", ["RR", "RR"], {"R": "#mechanical:rock_chunks"}, "minecraft:cobblestone")
+# rock chunks back into blocks: plain rocks into cobblestone, the others into their own stone
+shaped("cobblestone_from_chunks", ["RR", "RR"], {"R": "mechanical:stone_chunk"}, "minecraft:cobblestone")
+for rock in ("granite", "diorite", "andesite"):
+    shaped(f"{rock}_from_chunks", ["RR", "RR"], {"R": f"mechanical:{rock}_chunk"}, f"minecraft:{rock}")
 # Removed: arrows (fletching table now), honeycomb candles (tallow now), smoker and blast furnace (later ages)
 for cat, name in (("combat", "arrow"), ("decorations", "candle"), ("decorations", "smoker"), ("decorations", "blast_furnace")):
     w(D / f"minecraft/recipe/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
@@ -632,7 +634,7 @@ UNLOCKS = {
     "horn": ("mechanical:horn", ["bone_needle_from_horn"]),
     "tallow": ("mechanical:tallow", ["candle_from_tallow"]),
     "boiled_egg": ("mechanical:boiled_egg", ["peeled_egg"]),
-    "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks"]),
+    "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks", "granite_from_chunks", "diorite_from_chunks", "andesite_from_chunks"]),
     "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"] + [f"{x}_log_from_firewood" for x in WOODS]),
     "rock_chunks": ("#mechanical:rock_chunks", ["stone_pickaxe_head", "stone_axe_head", "kiln"]),
     "clay_ball": ("minecraft:clay_ball", ["kiln", "unfired_crucible", "unfired_clay_bucket"]),

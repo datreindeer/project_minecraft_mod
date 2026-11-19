@@ -1454,7 +1454,7 @@ tabellen**, så att man lär sig hur den görs.
 | Djur-loot | Ersatt av **Carcass** + styckning (ingen Leather/kött/ull direkt) |
 | Furnace | **Borttagen** (ersätts av Clay Kiln, uppgraderas senare) |
 | Smoker, Blast Furnace | **Borttagna** (senare åldrar) |
-| Stone, Granite, Diorite, Andesite | Släpper **2–4 rocks** i stället för cobblestone (Silk Touch ger blocket). 4 rocks → 1 Cobblestone |
+| Stone, Granite, Diorite, Andesite | Släpper **2–4 rocks** i stället för cobblestone (Silk Touch ger blocket). 4 Rock → 1 Cobblestone, 4 Granite/Diorite/Andesite Rock → 1 Granite/Diorite/Andesite |
 | Arrow-recept | Flyttat till **Fletching Table** |
 | Candle-recept | Honeycomb + String → **Tallow + Twine** |
 | Fletching Table | Har ett GUI för pilar och pilbågsuppgraderingar |

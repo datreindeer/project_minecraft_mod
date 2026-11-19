@@ -6,7 +6,7 @@
     "RR"
   ],
   "key": {
-    "R": "#mechanical:rock_chunks"
+    "R": "mechanical:stone_chunk"
   },
   "result": {
     "id": "minecraft:cobblestone"
