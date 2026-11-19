@@ -157,6 +157,12 @@ public class MechanicalClient {
         event.registerLayerDefinition(BirdModel.ROCK_DOVE, BirdModel::createRockDoveLayer);
         event.registerLayerDefinition(BirdModel.PTARMIGAN, BirdModel::createPtarmiganLayer);
         event.registerLayerDefinition(BirdModel.SEAGULL, BirdModel::createSeagullLayer);
+        event.registerLayerDefinition(WolfHoodModel.LAYER, WolfHoodModel::createLayer);
+    }
+
+    @SubscribeEvent
+    static void registerClientExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+        event.registerItem(WolfHoodModel.EXTENSIONS, Mechanical.WOLF_HOOD.get());
     }
 
     /** Passes the bear's rearing amount to its model. */

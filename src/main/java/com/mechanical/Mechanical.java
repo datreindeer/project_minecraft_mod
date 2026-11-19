@@ -232,6 +232,22 @@ public class Mechanical {
     public static final DeferredItem<Item> FUR_COAT = ITEMS.registerSimpleItem("fur_coat", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
     public static final DeferredItem<Item> FUR_LEGGINGS = ITEMS.registerSimpleItem("fur_leggings", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
     public static final DeferredItem<Item> FUR_BOOTS = ITEMS.registerSimpleItem("fur_boots", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.BOOTS));
+    // --- Wolf fur (from wolf pelts): a little lighter and less warm than bear fur. The Wolf Hood has its own look
+    // (equipment asset wolf_hood, a 3D model with the wolf's head: client/WolfHoodModel) and makes Grey Wolves take you for one of the pack ---
+    private static net.minecraft.world.item.equipment.ArmorMaterial wolfFur(String asset) {
+        return new net.minecraft.world.item.equipment.ArmorMaterial(6,
+                java.util.Map.of(net.minecraft.world.item.equipment.ArmorType.HELMET, 1, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE, 2,
+                        net.minecraft.world.item.equipment.ArmorType.LEGGINGS, 2, net.minecraft.world.item.equipment.ArmorType.BOOTS, 1,
+                        net.minecraft.world.item.equipment.ArmorType.BODY, 2),
+                12, net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F,
+                TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "repairs_wolf_fur_armor")),
+                net.minecraft.resources.ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, asset)));
+    }
+    public static final net.minecraft.world.item.equipment.ArmorMaterial WOLF_FUR = wolfFur("wolf_fur");
+    public static final DeferredItem<Item> WOLF_HOOD = ITEMS.registerSimpleItem("wolf_hood", p -> p.humanoidArmor(wolfFur("wolf_hood"), net.minecraft.world.item.equipment.ArmorType.HELMET));
+    public static final DeferredItem<Item> WOLF_FUR_COAT = ITEMS.registerSimpleItem("wolf_fur_coat", p -> p.humanoidArmor(WOLF_FUR, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> WOLF_FUR_LEGGINGS = ITEMS.registerSimpleItem("wolf_fur_leggings", p -> p.humanoidArmor(WOLF_FUR, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> WOLF_FUR_BOOTS = ITEMS.registerSimpleItem("wolf_fur_boots", p -> p.humanoidArmor(WOLF_FUR, net.minecraft.world.item.equipment.ArmorType.BOOTS));
     // --- Phantom hide (Butchery, DryingRackBlock): dries only in daylight; sewn into the Glider Cloak (Glider) ---
     public static final DeferredItem<Item> RAW_PHANTOM_HIDE = ITEMS.registerSimpleItem("raw_phantom_hide");
     public static final DeferredItem<Item> SCRAPED_PHANTOM_HIDE = ITEMS.registerSimpleItem("scraped_phantom_hide");
@@ -251,6 +267,13 @@ public class Mechanical {
     public static final DeferredBlock<BearRugBlock> BEAR_RUG = BLOCKS.registerBlock("bear_rug", BearRugBlock::new, p -> p
             .mapColor(MapColor.COLOR_BROWN).strength(0.2F).sound(SoundType.WOOL).noOcclusion());
     public static final DeferredItem<BlockItem> BEAR_RUG_ITEM = ITEMS.registerSimpleBlockItem("bear_rug", BEAR_RUG);
+    public static final DeferredBlock<BearRugBlock> WOLF_RUG = BLOCKS.registerBlock("wolf_rug", BearRugBlock::new, p -> p
+            .mapColor(MapColor.COLOR_GRAY).strength(0.2F).sound(SoundType.WOOL).noOcclusion());
+    public static final DeferredItem<BlockItem> WOLF_RUG_ITEM = ITEMS.registerSimpleBlockItem("wolf_rug", WOLF_RUG);
+    /** A Straw Bed with a Wolf Pelt spread over it (StrawBedRest): rests better. Made in place, so it has no item. */
+    public static final DeferredBlock<net.minecraft.world.level.block.StrawBedBlock> FURRED_STRAW_BED = BLOCKS.registerBlock("furred_straw_bed",
+            net.minecraft.world.level.block.StrawBedBlock::new, p -> p.mapColor(MapColor.COLOR_GRAY).sound(SoundType.STRAW_BED).strength(0.2F)
+                    .noOcclusion().ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
 
     public static final DeferredItem<BarkBasketItem> BARK_BASKET = ITEMS.registerItem("bark_basket", BarkBasketItem::new, p -> p.stacksTo(1));
     public static final Supplier<MenuType<BarkBasketMenu>> BARK_BASKET_MENU = MENUS.register("bark_basket",
@@ -327,7 +350,7 @@ public class Mechanical {
             "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
 
     /** Blocks that are never items (decals, pots holding plants). Everything else gets a block item, for creative. */
-    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop");
+    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "furred_straw_bed", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop");
 
     /**
      * Every mod block without an item of its own gets a plain block item, so all of them (bushes, mushrooms, twigs,

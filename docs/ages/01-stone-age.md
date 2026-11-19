@@ -132,6 +132,8 @@ Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma 
 | Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 Wool Thread | Leather |
 | **Leather Satchel** | 4 Leather | Bone Needle | 2 Wool Thread | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
+| **Wolf Hood** | 2 Wolf Pelt | Bone Needle | 1 Sinew | Wolf Pelt |
+| Wolf Fur Coat / Leggings / Boots | 4 / 3 / 2 Wolf Pelt | Bone Needle | 3 / 2 / 1 Sinew | Wolf Pelt |
 | **Glider Cloak** | 6 Phantom Leather | Bone Needle | 1 Glider Frame | Phantom Leather |
 
 Vanilla-recepten för läderrustning är borttagna.
@@ -144,6 +146,17 @@ helst, utom andra förråd (Leather Satchel, Bark Basket, shulker boxes, bundles
 - **Fur Hood / Coat / Leggings / Boots:** sys i Armor Station (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.
   **Isolerar 25 % per del mot kyla** (läder 15 %).
 - **Bear Rug:** Bear Pelt + Bear Claw. Platt dekoration (som en matta) med huvudet bort från den som placerar den.
+
+### Wolf Pelt: Wolf Hood, Wolf Fur och Wolf Rug
+- **Wolf Hood:** jägarhuva gjord av en vargs huvud: överkäken med huggtänderna över pannan, öronen på toppen, ansiktet
+  öppet och pälsen över axlarna och nedför ryggen till svansen (egen 3D-modell). Sys i Armor Station av 2 Wolf Pelt +
+  1 Sinew. Skydd 1, **isolerar 20 %**. **Vargarna tar dig för en i flocken:** en Grey Wolf känner bara vittringen av dig
+  på halva avståndet och anfaller inte alls om du inte är **illa skadad (under 30 % liv)** eller **slår en varg först**
+  (då anfaller flocken som vanligt). Under **blodmåne** eller när vargarna **svälter** hjälper huvan inte.
+- **Wolf Fur Coat / Leggings / Boots:** sys i Armor Station av 4 / 3 / 2 Wolf Pelt + 3 / 2 / 1 Sinew. Skydd 2/2/1
+  (med huvan 6 mot björnpälsens 7), lite lägre hållbarhet än Fur. **Isolerar 20 % per del** (björnpäls 25 %, läder 15 %).
+  Lagas med Wolf Pelt.
+- **Wolf Rug:** 2 Wolf Pelt + Bone (formlöst). Platt dekoration som Bear Rug, med vargens huvud bort från den som placerar den.
 
 ### Glider Cloak
 En sen stenåldersbedrift: Phantoms finns bara när en spelare inte har sovit på 3+ nätter, varje Phantom ger Raw Phantom
@@ -657,7 +670,7 @@ flock som anfaller (~70 % chans för minst en flock under en hel natt). I lejonl
 eld, och bara på mörk, torr mark. Djur som kommer på natten försvinner när ingen spelare är i närheten (de från
 världsskapandet stannar). Testa med `/nightpredators wolf` eller `/nightpredators lion` (op): en ankomst runt dig direkt.
 
-Nytt item: **Wolf Pelt** (material för pälsrustning eller fäll senare). Spawn eggs för båda.
+Nytt item: **Wolf Pelt**: Wolf Hood, Wolf Fur-rustning, Wolf Rug och fäll på Straw Bed (se "Wolf Pelt: Wolf Hood, Wolf Fur och Wolf Rug" och "Straw Bed (vila)"). Spawn eggs för båda.
 
 ### Natten
 - **Vargar och grottlejon** jagar på natten (se *Rovdjur på natten*): ylande på långt håll och flockar som omringar dig.
@@ -719,7 +732,7 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
   0,05/s i skymningsljus.
 - **Kommer tillbaka (per sekund):** vid brinnande eld (Campfire eller tänd Clay Kiln inom 6 block) +0,5, alltid, även
   under blodmåne; i dagsljus +0,3; på upplysta ställen +0,05; sällskap +0,1 extra. Under blodmånen halveras allt
-  utom elden. **Vila i Straw Bed** ger +20 (bara +8 om man är under 15, "man vänder och vrider sig") och hjälper bara
+  utom elden. **Vila i Straw Bed** ger +20 (+35 i en Furred Straw Bed; bara +8 om man är under 15, "man vänder och vrider sig") och hjälper bara
   om det gått minst 2 minuter sedan förra vilan. **Varm mat** (cooked/roasted, stuvningar, soppor, bakad potatis)
   ger +3.
 - **Under 70:** "You feel watched..." Viskningar bakom dig (grottljud och själar, lågt tonade), fotsteg som följer
@@ -741,7 +754,7 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
 - Kroppstemperatur 0–20 (12 = lagom), visas som 10 termometrar ovanför matmätaren (varm / kall / iskall).
 - Rör sig sakta mot en måltemperatur: biomen (snöbiomer är kalla även på dagen, öken varm), natten (−5 ute, −2,5
   under tak), regn (−2), i vatten (−5), höjd över y 100. **Brinnande eld inom 6 block värmer** (upp till +10).
-- **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla).
+- **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla). **Wolf Fur** och Wolf Hood 20 % per del. En vila i en Furred Straw Bed ger +30 % i 5 minuter (högst 100 % totalt).
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
 ### Rök inomhus
@@ -1122,6 +1135,10 @@ respawnpunkt där och tiden sedan du vilade nollställs, så **phantoms** inte k
 Natten fortsätter som vanligt. Vilan ger också tillbaka sanity (se Mörkerrädsla).
 - Recept (crafting table): `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]` → 1 Straw Bed. Straw får man när man skördar säd med Sickle.
 - Bryts den ger den 2–4 Plant Fibre, inte sängen (samma för de gamla i Abandoned Camps).
+- **Furred Straw Bed (fäll):** högerklicka på en Straw Bed med en **Wolf Pelt** i handen så breds pälsen ut över sängen
+  (pälsen går åt; vargens huvud ligger på kudden och svansen hänger över fotänden). Vilan där ger **+35 sanity** i stället för
+  +20, **läker 2 hjärtan** och håller dig **varm i 5 minuter** (+30 % isolering mot kyla). Respawn och phantoms som en vanlig
+  Straw Bed. Bryts den ger den 2–4 Plant Fibre + Wolf Pelt tillbaka. Har inget item (görs bara på plats).
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
   senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
   Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk
@@ -1344,7 +1361,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 ## Teknik (för utveckling)
 
 - Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
-- Stationer med receptlista (Fletching Table, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug: `BearRugBlock.java`.
+- Stationer med receptlista (Fletching Table, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug och Wolf Rug: `BearRugBlock.java`. Wolf Pelt-saker: `client/WolfHoodModel.java` (huvans modell), `StrawBedRest.java` (fäll), data `scripts/gen_wolf_pelt.py` (körs efter gen_biomes.py, före gen_block_items.py), texturer `scripts/gen_wolf_pelt_textures.py`.
 - Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
 - Verktygstips: `client/StatTooltips.java`.
 - Odling: se Teknik i `docs/farming.md`.

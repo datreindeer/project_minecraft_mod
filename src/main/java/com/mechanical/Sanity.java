@@ -48,7 +48,7 @@ public final class Sanity {
     static final float DARK_DRAIN = 0.10F, UNDERGROUND = 1.5F, NIGHT = 1.25F, COMPANY = 0.5F, BLOOD_MOON = 2;
     static final float FIRE = 0.5F, DAYLIGHT = 0.3F, LIT = 0.05F, COMPANY_BONUS = 0.1F, BLOOD_DIM_DRAIN = 0.05F;
     static final double FIRE_RANGE = 6, COMPANY_RANGE = 12, HELD_LIGHT_RANGE = 8;
-    static final float REST = 20, REST_MAD = 8, HOT_MEAL = 3;
+    static final float REST = 20, REST_FURRED = 35, REST_MAD = 8, HOT_MEAL = 3;
     static final int REST_COOLDOWN = 2400; // ticks since the last rest before a Straw Bed helps again
     static final int NAUSEA_CHANCE = 30; // 1 in this many seconds at 0 sanity starts a bout
 
@@ -158,12 +158,16 @@ public final class Sanity {
         }
     }
 
-    /** Straw Bed rest (called before the rest timer is reset): a good rest restores sanity, a mad mind rests badly. */
-    static void rest(ServerPlayer player) {
-        if (player.getStats().getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)) < REST_COOLDOWN) return;
+    /**
+     * Straw Bed rest (called before the rest timer is reset): a good rest restores sanity (more under a pelt), a mad mind
+     * rests badly. False while the last rest is too recent to help.
+     */
+    static boolean rest(ServerPlayer player, boolean furred) {
+        if (player.getStats().getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)) < REST_COOLDOWN) return false;
         float sanity = of(player);
-        set(player, sanity + (sanity < MAD ? REST_MAD : REST));
+        set(player, sanity + (sanity < MAD ? REST_MAD : furred ? REST_FURRED : REST));
         if (sanity < MAD) player.sendSystemMessage(Component.translatable("message.mechanical.sanity.restless").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+        return true;
     }
 
     /** A hot meal (cooked food, stews and soups) calms the mind a little. */

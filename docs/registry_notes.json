@@ -379,7 +379,26 @@
     "text": "Första omgången när man styckar en Brown Bear (**kräver Tusk Dagger eller Iron Knife**). Används till Fur-rustning och [[bear_rug]]."
   },
   "wolf_pelt": {
-    "text": "Första omgången när man styckar en [[entity:grey_wolf]] (alltid 1). Material för pälsrustning eller fäll senare."
+    "text": "Första omgången när man styckar en [[entity:grey_wolf]] (alltid 1). Används till [[wolf_hood]], Wolf Fur-rustning ([[wolf_fur_coat]], [[wolf_fur_leggings]], [[wolf_fur_boots]]), [[wolf_rug]] och fäll på en Straw Bed ([[furred_straw_bed]])."
+  },
+  "wolf_hood": {
+    "text": "Sys i [[armor_station]] av 2 [[wolf_pelt]] + 1 Sinew med [[bone_needle]]. Skydd 1, lagas med Wolf Pelt. **Isolerar 20 % per del mot kyla** (björnpäls 25 %, läder 15 %).\nJägarhuva av en vargs huvud (överkäke med huggtänder över pannan, öron, pälsen över axlarna). **Grey Wolves tar dig för en i flocken:** halva vittringsavståndet, och de anfaller bara om du är under 30 % liv eller slår en varg först. Hjälper inte under blodmåne eller när vargarna svälter."
+  },
+  "wolf_fur_coat": {
+    "text": "Sys i [[armor_station]] av 4 [[wolf_pelt]] + 3 Sinew med [[bone_needle]]. Skydd 2, lagas med Wolf Pelt. **Isolerar 20 % per del mot kyla** (björnpäls 25 %, läder 15 %)."
+  },
+  "wolf_fur_leggings": {
+    "text": "Sys i [[armor_station]] av 3 [[wolf_pelt]] + 2 Sinew med [[bone_needle]]. Skydd 2, lagas med Wolf Pelt. **Isolerar 20 % per del mot kyla** (björnpäls 25 %, läder 15 %)."
+  },
+  "wolf_fur_boots": {
+    "text": "Sys i [[armor_station]] av 2 [[wolf_pelt]] + 1 Sinew med [[bone_needle]]. Skydd 1, lagas med Wolf Pelt. **Isolerar 20 % per del mot kyla** (björnpäls 25 %, läder 15 %)."
+  },
+  "wolf_rug": {
+    "text": "2 [[wolf_pelt]] + Bone (formlöst). Platt dekoration (som en matta) med vargens huvud bort från den som placerar den."
+  },
+  "furred_straw_bed": {
+    "text": "Högerklicka på en Straw Bed med en [[wolf_pelt]] i handen: pälsen breds ut över sängen. Vilan ger **+35 sanity** (vanlig Straw Bed +20), läker 2 hjärtan och ger +30 % isolering mot kyla i 5 minuter. Respawn och phantoms som en Straw Bed. Bryts den: 2–4 [[plant_fibre]] + Wolf Pelt. Har inget item.",
+    "category": "blocks"
   },
   "grey_wolf_spawn_egg": {
     "text": "Creative: spawnar en [[entity:grey_wolf]]."
@@ -617,7 +636,7 @@
     "category": "materials"
   },
   "armor_station": {
-    "text": "Crafting: Leather, [[bone_needle]], Leather / Planks, Crafting Table, Planks. Högerklicka för att öppna. Som Tool Station: listan till vänster visar rustningarna du låst upp (Leather → läderrustning, [[bear_pelt]] → pälsrustning), klicka för att lägga i delarna. Bone Needle ligger kvar och tappar 1 per del.",
+    "text": "Crafting: Leather, [[bone_needle]], Leather / Planks, Crafting Table, Planks. Högerklicka för att öppna. Som Tool Station: listan till vänster visar rustningarna du låst upp (Leather → läderrustning, [[bear_pelt]] → pälsrustning, [[wolf_pelt]] → Wolf Hood och Wolf Fur), klicka för att lägga i delarna. Bone Needle ligger kvar och tappar 1 per del.",
     "category": "blocks"
   },
   "bone_needle": {
