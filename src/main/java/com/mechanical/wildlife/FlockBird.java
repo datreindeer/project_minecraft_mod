@@ -128,7 +128,17 @@ public class FlockBird extends WildAnimal {
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         if (source.getDirectEntity() instanceof AbstractArrow) damage = Math.max(damage, getHealth() + 1.0F);
-        return super.hurtServer(level, source, damage);
+        boolean hurt = super.hurtServer(level, source, damage);
+        if (hurt) alarmFlock(source);
+        return hurt;
+    }
+
+    /** A bird hit or shot down: the rest of the flock bursts up, away from whoever did it (or from the fallen bird). */
+    private void alarmFlock(DamageSource source) {
+        Vec3 from = source.getEntity() != null ? source.getEntity().position() : position();
+        refreshFlock();
+        if (isAlive()) takeOff(true, from);
+        for (FlockBird b : flock) b.takeOff(true, from);
     }
 
     @Override

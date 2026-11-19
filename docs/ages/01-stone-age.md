@@ -171,6 +171,8 @@ Ligger på marken i 5 varianter (Stone, Granite, Diorite, Andesite, Flint) och 3
 Recept: `[Flint Axe][Twine][Flint Pickaxe]` / `[Planks][Crafting Table][Planks]` (flintverktygen går åt).
 
 GUI: lista till vänster med upplåsta verktyg, i mitten tre platser (huvud, bindning, skaft) och en resultatruta.
+- Klick på ett recept hämtar en sats delar ur inventoryt; **shift-klick hämtar så många satser du har** (upp till en
+  stack per plats). Gäller även Fletching Table och Armor Station (verktyg som Bone Needle läggs alltid bara en).
 - Ett verktyg låses upp första gången man har dess material i inventoryt (stenverktyg: valfri rock). Upplåsningen
   sparas per spelare och finns kvar efter döden.
 - Verktyg där man har alla delar är upplysta. Tooltip visar varje del i grönt/rött.

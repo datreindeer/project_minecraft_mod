@@ -111,7 +111,8 @@ public class RecipeStationScreen<M extends RecipeStationMenu> extends AbstractCo
         List<Integer> visible = visible();
         int pos = buttonAt(event.x(), event.y(), visible.size());
         if (pos >= 0 && menu.recipes().get(visible.get(pos)).hasParts(minecraft.player)) {
-            minecraft.gameMode.handleInventoryButtonClick(menu.containerId, visible.get(pos));
+            // shift-click: fill as many sets as the inventory has
+            minecraft.gameMode.handleInventoryButtonClick(menu.containerId, visible.get(pos) + (event.hasShiftDown() ? com.mechanical.RecipeStationMenu.FILL_ALL : 0));
             return true;
         }
         if (maxStartRow() > 0 && event.x() >= leftPos + SCROLL_X && event.x() < leftPos + SCROLL_X + 12

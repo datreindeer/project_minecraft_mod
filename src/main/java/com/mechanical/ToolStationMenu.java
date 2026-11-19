@@ -69,9 +69,11 @@ public class ToolStationMenu extends AbstractContainerMenu {
         broadcastChanges();
     }
 
-    /** Clicking a tool in the list: put back whatever is in the inputs, then pull the recipe's parts from the inventory. */
+    /** Clicking a tool in the list: put back whatever is in the inputs, then pull the recipe's parts (shift: as many sets as there are). */
     @Override
     public boolean clickMenuButton(Player player, int index) {
+        boolean all = index >= RecipeStationMenu.FILL_ALL;
+        if (all) index -= RecipeStationMenu.FILL_ALL;
         if (index < 0 || index >= ToolStationRecipes.ALL.size()) return false;
         ToolStationRecipes.Recipe recipe = ToolStationRecipes.ALL.get(index);
         if (!ToolStationRecipes.isUnlocked(player, recipe)) return false;
@@ -84,16 +86,26 @@ public class ToolStationMenu extends AbstractContainerMenu {
             return true;
         }
         List<Item> parts = recipe.parts();
-        for (int i = 0; i < 3; i++) inputs.setItem(i, takeOne(player.getInventory(), parts.get(i)));
+        int sets = 1;
+        if (all) {
+            sets = Integer.MAX_VALUE;
+            for (Item part : parts) sets = Math.min(sets, Math.min(player.getInventory().countItem(part), part.getDefaultMaxStackSize()));
+            sets = Math.max(1, sets);
+        }
+        for (int i = 0; i < 3; i++) inputs.setItem(i, take(player.getInventory(), parts.get(i), sets));
         return true;
     }
 
-    private static ItemStack takeOne(Inventory inventory, Item item) {
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
+    private static ItemStack take(Inventory inventory, Item item, int count) {
+        ItemStack out = ItemStack.EMPTY;
+        for (int i = 0; i < inventory.getContainerSize() && out.getCount() < count; i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack.is(item)) return inventory.removeItem(i, 1);
+            if (!stack.is(item)) continue;
+            ItemStack taken = inventory.removeItem(i, count - out.getCount());
+            if (out.isEmpty()) out = taken;
+            else out.grow(taken.getCount());
         }
-        return ItemStack.EMPTY;
+        return out;
     }
 
     @Override

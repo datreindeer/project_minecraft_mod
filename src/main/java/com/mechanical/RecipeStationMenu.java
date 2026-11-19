@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.Block;
  */
 public class RecipeStationMenu extends AbstractContainerMenu {
     public static final int RESULT = 3;
+    /** Button ids from this up mean "shift-clicked": fill as many sets of the recipe's parts as the inventory has. */
+    public static final int FILL_ALL = 1000;
     private static final int INV_START = 4, INV_END = 40;
 
     private final ContainerLevelAccess access;
@@ -94,9 +96,14 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         broadcastChanges();
     }
 
-    /** Clicking a recipe in the list: put back whatever is in the inputs, then pull the recipe's parts from the inventory. */
+    /**
+     * Clicking a recipe in the list: put back whatever is in the inputs, then pull the recipe's parts from the inventory;
+     * shift-click (index + FILL_ALL) pulls as many sets as there are, up to a stack per slot. A tool part is always one.
+     */
     @Override
     public boolean clickMenuButton(Player player, int index) {
+        boolean all = index >= FILL_ALL;
+        if (all) index -= FILL_ALL;
         if (index < 0 || index >= recipes.size()) return false;
         StationRecipe recipe = recipes.get(index);
         if (!recipe.isUnlocked(player)) return false;
@@ -105,13 +112,25 @@ public class RecipeStationMenu extends AbstractContainerMenu {
             if (!old.isEmpty()) player.getInventory().placeItemBackInInventory(old, Prediction.SERVER_ONLY);
         }
         if (recipe.hasParts(player)) {
+            int sets = all ? sets(player.getInventory(), recipe) : 1;
             for (int i = 0; i < 3; i++) {
                 StationRecipe.Part part = recipe.parts().get(i);
-                inputs.setItem(i, take(player.getInventory(), part.item().get(), part.count()));
+                inputs.setItem(i, take(player.getInventory(), part.item().get(), part.tool() ? 1 : part.count() * sets));
             }
         }
         slotsChanged(inputs);
         return true;
+    }
+
+    /** How many sets of the parts the inventory holds, limited so each input slot stays within one stack. */
+    private static int sets(Inventory inventory, StationRecipe recipe) {
+        int sets = Integer.MAX_VALUE;
+        for (StationRecipe.Part part : recipe.parts()) {
+            if (part.tool()) continue;
+            Item item = part.item().get();
+            sets = Math.min(sets, Math.min(inventory.countItem(item), item.getDefaultMaxStackSize()) / part.count());
+        }
+        return Math.max(1, sets == Integer.MAX_VALUE ? 1 : sets);
     }
 
     private static ItemStack take(Inventory inventory, Item item, int count) {
