@@ -1428,5 +1428,6 @@
     "text": "Har nu **bördighet 0–3** (ny åker 2, från Podzol 3). Skörd sänker 1 (ärtor höjer 1), träda höjer ~1 per dag, [[compost]] +1, [[manure]] +2. Bördighet 0: halv fart och halv skörd; 1: 75 % fart; 3: snabbare och chans på extra. Torkar snabbare när det är varmt (över 15). Smyg + högerklicka med tom hand: visar bördighet, fukt och grödans temperatur. Vattnas med [[clay_water_bucket]] (3×3).",
     "vanilla": true,
     "category": "blocks"
-  }
+  },
+  "soot": {"text": "Tunt svart sotlager (block) som växer på tak och väggar nära en brinnande eld (tänd Campfire, Soul Campfire, Clay Kiln), efter 2 min, snabbare i rökiga rum; 3 stadier från ljus fläck till tjockt sot. Regn tvättar inte bort det. Blocket går inte att få som item: skrapa bort det (4× snabbare med kniv) så får man item Soot (stadium 1: 50 % på 1, 2: 1 st, 3: 2 st; +1 med kniv).\nSoot är ett svart pigment: 1 Soot → 1 Black Dye.", "category": "materials"}
 }

@@ -1,6 +1,6 @@
 """Smoke indoors (Smoke.java): the smoke damage type (armour doesn't help), the cough sound (vanilla drowning gasps and a
 low panda sneeze) with its subtitle, and the death messages. Generator order: ... gen_farming.py, gen_wind.py,
-gen_smoke.py, gen_block_items.py, gen_registry.py. Run: python scripts/gen_smoke.py"""
+gen_smoke.py, gen_soot.py, gen_block_items.py, gen_registry.py. Run: python scripts/gen_smoke.py"""
 import json
 from pathlib import Path
 
