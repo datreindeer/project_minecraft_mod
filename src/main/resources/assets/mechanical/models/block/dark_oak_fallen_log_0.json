@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "minecraft:block/dark_oak_log",
     "side": "minecraft:block/dark_oak_log",

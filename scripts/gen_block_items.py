@@ -63,6 +63,37 @@ def main():
         (A / "items" / f"{block}.json").write_text(json.dumps(definition, indent=2) + "\n")
         made.append(block)
     print(f"block items ok ({len(made)} new): " + ", ".join(made))
+    fix_display()
+
+
+def models_in(node):
+    if isinstance(node, dict):
+        if node.get("type") == "minecraft:model":
+            yield node["model"]
+        for v in node.values():
+            yield from models_in(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from models_in(v)
+
+
+def fix_display():
+    """A block model shown as an item needs display transforms, or it sits side-on and flat in the inventory: give the
+    ones without a parent vanilla block/block's (the 3/4 view in the GUI, held like a block)."""
+    fixed = []
+    for f in sorted((A / "items").glob("*.json")):
+        for m in set(models_in(json.loads(f.read_text(encoding="utf-8")))):
+            if not m.startswith("mechanical:block/"):
+                continue
+            path = A / "models" / (m.split(":", 1)[1] + ".json")
+            if not path.exists():
+                continue
+            model = json.loads(path.read_text(encoding="utf-8"))
+            if "parent" in model or "display" in model:
+                continue
+            path.write_text(json.dumps({"parent": "minecraft:block/block", **model}, indent=2) + "\n")
+            fixed.append(path.stem)
+    print(f"display transforms added: {len(fixed)}")
 
 
 if __name__ == "__main__":

@@ -4,7 +4,6 @@
   knife (workshop library, tools/steel_knife.png) recoloured onto the vanilla copper tool palette, and the Copper
   Knife is that blade on the knife's own handle.
 - Rough Cast heads: the same shapes, dull and mottled like a fresh casting, with bits of casting flash on the edges.
-- Crucibles: the mod's crucible with a glowing molten top (4-frame animation) or a set copper top.
 - Clay Tuyere (raw / fired), unfired mold items and the mold block tops: the cavity is each casting's own silhouette.
 - Mold metal overlays (molten: animated glow, solid: copper), kiln overheating cracks (3 stages), the kiln's ember
   glow (animated), bellows leather, and the thermometer drawn into the kiln GUI.
@@ -107,28 +106,7 @@ def rough(img, seed):
 for i, (t, img) in enumerate(heads.items()):
     save(rough(img, 40 + i), ITEM / (f"rough_cast_copper_{t}_head.png" if t != "knife" else "rough_cast_copper_knife_blade.png"))
 
-# ---- crucibles: the opening (rows 5-6 inside the rim) holds molten or set metal ----
-crucible = Image.open(ITEM / "crucible.png").convert("RGBA")
-frames = []
-for f in range(4):
-    rng = random.Random(100 + f)
-    img = crucible.copy()
-    for x in range(4, 12):
-        img.putpixel((x, 5), ramp(MOLTEN, 0.7 + rng.uniform(-0.15, 0.3)) + (255,))
-        img.putpixel((x, 6), ramp(MOLTEN, 0.45 + rng.uniform(-0.15, 0.2)) + (255,))
-    for x in range(4, 12):  # heat-reddened rim below the melt
-        r, g, b, a = img.getpixel((x, 7))
-        img.putpixel((x, 7), (min(255, r + 30), g, b, a))
-    frames.append(img)
-anim = Image.new("RGBA", (16, 64))
-for i, f in enumerate(frames):
-    anim.paste(f, (0, i * 16))
-save(anim, ITEM / "molten_crucible.png", frames=6)
-solid = crucible.copy()
-for x in range(4, 12):
-    solid.putpixel((x, 5), COPPER[3 if x % 3 else 4] + (255,))
-    solid.putpixel((x, 6), COPPER[2] + (255,))
-save(solid, ITEM / "solid_crucible.png")
+# ---- crucibles: drawn by gen_crucible_textures.py (empty, unfired, molten, solid) ----
 
 # ---- clay palettes ----
 RAW = [(96, 100, 116), (126, 132, 148), (156, 162, 178), (176, 182, 196)]          # vanilla clay ball greys
