@@ -63,7 +63,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
         ItemStack out = ToolStationRecipes.ALL.stream()
                 .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r))
                 .findFirst()
-                .map(r -> new ItemStack(r.result().get()))
+                .map(r -> Bronze.inheritPoor(new ItemStack(r.result().get()), inputs))
                 .orElse(ItemStack.EMPTY);
         result.setItem(0, out);
         broadcastChanges();
@@ -100,7 +100,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
         ItemStack out = ItemStack.EMPTY;
         for (int i = 0; i < inventory.getContainerSize() && out.getCount() < count; i++) {
             ItemStack stack = inventory.getItem(i);
-            if (!stack.is(item)) continue;
+            if (!stack.is(item) || !out.isEmpty() && !ItemStack.isSameItemSameComponents(out, stack)) continue; // don't merge Poor Bronze into good
             ItemStack taken = inventory.removeItem(i, count - out.getCount());
             if (out.isEmpty()) out = taken;
             else out.grow(taken.getCount());

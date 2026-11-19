@@ -22,7 +22,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 /**
- * The fired Crucible and what it becomes. ORE: click Crushed Copper Ore / Native Copper onto it in the inventory (or
+ * The fired Crucible and what it becomes. ORE: click Crushed Copper / Tin Ore, Native Copper or a Bronze Ingot onto it in the inventory (or
  * hold the ore in the other hand and use the crucible) until it holds {@link CrucibleContents#CAPACITY} units; in a
  * Clay Kiln at the metal's melting point it turns MOLTEN. MOLTEN: pour it into a Clay Mold within
  * {@link #COOL_SECONDS} s (the bar shows the heat left), else it sets SOLID and must be melted again.
@@ -52,6 +52,7 @@ public class CrucibleItem extends Item {
         Casting.OreUnits per = Casting.oreUnits(ore);
         if (per == null) return 0;
         CrucibleContents c = contents(crucible);
+        if (!c.canAdd(per.metal())) return 0;
         int n = Math.min(Math.min(max, ore.getCount()), (CrucibleContents.CAPACITY - c.total()) / per.units());
         if (n <= 0) return 0;
         crucible.set(Casting.CRUCIBLE_CONTENTS.get(), c.add(per.metal(), n * per.units()));
@@ -149,6 +150,14 @@ public class CrucibleItem extends Item {
                     metal, e.getValue(), CrucibleContents.CAPACITY).withStyle(ChatFormatting.GRAY));
         }
         Metal metal = c.alloy();
+        if (kind == Kind.ORE && c.units(Metal.TIN) > 0 && c.units(Metal.COPPER) > 0) {
+            String pct = String.format(java.util.Locale.ROOT, "%.1f", c.tinPercent());
+            if (metal == Metal.COPPER) builder.accept(Component.translatable("tooltip.mechanical.crucible.slag", pct).withStyle(ChatFormatting.RED));
+            else builder.accept(Component.translatable("tooltip.mechanical.crucible.mix", pct, Component.translatable("metal.mechanical." + metal.getSerializedName()))
+                    .withStyle(metal == Metal.BRONZE ? ChatFormatting.GREEN : ChatFormatting.YELLOW));
+        } else if (kind == Kind.ORE && metal == null && c.units(Metal.TIN) > 0) {
+            builder.accept(Component.translatable("tooltip.mechanical.crucible.tin_only").withStyle(ChatFormatting.DARK_GRAY));
+        }
         if (kind == Kind.ORE && metal != null)
             builder.accept(Component.translatable("tooltip.mechanical.crucible.melts", metal.melt).withStyle(ChatFormatting.DARK_GRAY));
         if (kind == Kind.MOLTEN) builder.accept(Component.translatable("tooltip.mechanical.crucible.pour").withStyle(ChatFormatting.GOLD));

@@ -97,14 +97,16 @@ w(D / "mechanical/tags/item/flint_tool_materials.json", {"values": ["minecraft:f
 w(D / "mechanical/tags/item/rock_chunks.json", {"values": [f"mechanical:{v}_chunk" for v in ["stone", "granite", "diorite", "andesite"]]})
 for tag, item in [("pickaxes", ["flint_pickaxe", "crude_stone_pickaxe"]), ("axes", ["flint_axe", "crude_stone_axe", "thunderstone"]), ("shovels", "flint_shovel"), ("hoes", "flint_hoe"), ("swords", ["flint_knife", "iron_knife"])]:
     w(D / f"minecraft/tags/item/{tag}.json", {"values": [f"mechanical:{i}" for i in (item if isinstance(item, list) else [item])]})
-# Mining tiers: stone tools only get copper, tin and stone. Iron, coal and lapis need a bronze pickaxe (bronze age phase 4;
+# Mining tiers: stone tools only get copper and stone (tin needs copper, below). Iron, coal and lapis need a bronze pickaxe (bronze age phase 4;
 # its tool material will use an incorrect-for tag without this one). Vanilla tiers don't know bronze, so the tag is
 # added to what wooden and stone tools can't harvest.
 NEEDS_BRONZE = ["minecraft:iron_ore", "minecraft:deepslate_iron_ore", "minecraft:raw_iron_block", "minecraft:coal_ore", "minecraft:deepslate_coal_ore",
                 "minecraft:lapis_ore", "minecraft:deepslate_lapis_ore", "minecraft:lapis_block"]
 w(D / "mechanical/tags/block/needs_bronze_tool.json", {"values": NEEDS_BRONZE})
+# Tin Ore needs a Copper Pickaxe (or better), so the copper step can't be skipped; copper tools only get needs_bronze_tool
+w(D / "mechanical/tags/block/needs_copper_tool.json", {"values": ["mechanical:tin_ore"]})
 for tier in ("wooden", "stone"):
-    w(D / f"minecraft/tags/block/incorrect_for_{tier}_tool.json", {"replace": False, "values": ["#mechanical:needs_bronze_tool"]})
+    w(D / f"minecraft/tags/block/incorrect_for_{tier}_tool.json", {"replace": False, "values": ["#mechanical:needs_bronze_tool", "#mechanical:needs_copper_tool"]})
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 
 # ---- recipes ----

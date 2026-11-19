@@ -21,7 +21,7 @@
         {
           "type": "minecraft:item",
           "name": "mechanical:cassiterite",
-          "weight": 10
+          "weight": 3
         },
         {
           "type": "minecraft:item",
@@ -52,7 +52,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 3
+          "weight": 11
         }
       ]
     }

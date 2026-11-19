@@ -22,6 +22,7 @@ public final class ArmorStationRecipes {
     private static final Predicate<ItemStack> PELT = s -> s.is(Wildlife.BEAR_PELT.get());
     private static final Predicate<ItemStack> WOLF_PELT = s -> s.is(Wildlife.WOLF_PELT.get());
     private static final Predicate<ItemStack> PHANTOM_LEATHER = s -> s.is(Mechanical.PHANTOM_LEATHER.get());
+    private static final Predicate<ItemStack> BRONZE_PLATE = s -> s.is(Bronze.BRONZE_PLATE.get());
 
     public static final List<StationRecipe> ALL = List.of(
             StationRecipe.of(() -> Items.LEATHER_HELMET, 1, of(() -> Items.LEATHER, 5), tool(Mechanical.BONE_NEEDLE), of(Mechanical.WOOL_THREAD, 2, () -> Items.STRING), LEATHER),
@@ -40,7 +41,10 @@ public final class ArmorStationRecipes {
             StationRecipe.of(Mechanical.WOLF_FUR_BOOTS::get, 1, of(Wildlife.WOLF_PELT, 2), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), WOLF_PELT),
             // the membrane is sewn onto a lashed frame of rods and bones (crafted): a late stone age piece
             StationRecipe.of(Mechanical.GLIDER_CLOAK::get, 1, of(Mechanical.PHANTOM_LEATHER, 6), tool(Mechanical.BONE_NEEDLE), of(Mechanical.GLIDER_FRAME, 1),
-                    PHANTOM_LEATHER));
+                    PHANTOM_LEATHER),
+            // ground bronze plates sewn onto a leather lining; unlocked by carrying a Bronze Plate
+            StationRecipe.of(Bronze.BRONZE_HELMET::get, 1, of(Bronze.BRONZE_PLATE, 2), tool(Mechanical.BONE_NEEDLE), of(() -> Items.LEATHER, 2), BRONZE_PLATE),
+            StationRecipe.of(Bronze.BRONZE_GREAVES::get, 1, of(Bronze.BRONZE_PLATE, 3), tool(Mechanical.BONE_NEEDLE), of(() -> Items.LEATHER, 3), BRONZE_PLATE));
 
     private ArmorStationRecipes() {}
 }

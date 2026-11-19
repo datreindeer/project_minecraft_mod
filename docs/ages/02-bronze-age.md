@@ -1,7 +1,8 @@
 # Bronsåldern
 
-> Status: **fas 1 (malm), fas 2 (värme) och fas 3 för koppar (gjutning + kopparverktyg) är byggda**, se avsnitten sist.
-> Brons (tenn i degeln, legering), bronsverktyg, Saw och rustning är plan. Beslut står under Beslut.
+> Status: **fas 1 (malm), fas 2 (värme), fas 3 för koppar och fas 3b brons (legering, bronsverktyg, Bronze Saw, Bronze
+> Helmet + Greaves, byhandel nivå 3) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
+> Beslut står under Beslut.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
 legera brons och smida verktyg och rustning. Åldern slutar när spelaren kan bygga det som behövs för järn
@@ -78,8 +79,9 @@ Sinew, Tool Station och Armor Station.
 
 1. **Malm** (fas 1, **byggd**): ytfynd, vaskning, krossning. Se nedan.
 2. **Värme** (**byggd**): kilnens temperatur, Bellows, mätare i GUI.
-3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots (**byggt för koppar**); legering och tvättat koncentrat återstår.
-4. **Verktyg och rustning:** kopparverktyg och Whetstone (**byggda**); bronsverktyg, Saw, Bronze Helmet + Greaves, byhandel nivå 3.
+3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots, legering till brons (**byggt**); tvättat koncentrat återstår.
+4. **Verktyg och rustning:** kopparverktyg, Whetstone, bronsverktyg, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3
+   (**byggda**, se Fas 3b).
 
 ## Fas 1: malm (byggd)
 
@@ -109,7 +111,9 @@ försvinner. Storlek 2 ger 2 st (storlek 3 finns bara i creative och ger 3).
 
 - **Copper Ore:** vanilla, ger Raw Copper. Kräver minst stentier: Crude Stone Pickaxe eller Stone Pickaxe
   (flintverktyg är trätier och räcker inte).
-- **Tin Ore:** ger **1–2 Cassiterite** (Fortune hjälper, Silk Touch ger blocket). Kräver stentier.
+- **Tin Ore:** ger **1–2 Cassiterite** (Fortune hjälper, Silk Touch ger blocket). **Kräver Copper Pickaxe** eller bättre
+  (taggen `mechanical:needs_copper_tool`, som ligger i `incorrect_for_wooden_tool` och `incorrect_for_stone_tool`), så
+  kopparsteget går inte att hoppa över. Sten- och flinthackor bryter den utan drop.
 
 ### Items
 
@@ -119,7 +123,7 @@ försvinner. Storlek 2 ger 2 st (storlek 3 finns bara i creative och ger 3).
 | Native Copper | Loose Native Copper, sällan vaskning | Krossas inte. Läggs direkt i en Crucible (2 enheter), se fas 3 |
 | Cassiterite | Tin Ore, Loose Cassiterite, vaskning | Stone Anvil → 1 Crushed Tin Ore |
 | Crushed Copper Ore | Stone Anvil | Läggs i en Crucible (1 enhet) och smälts, se fas 3 |
-| Crushed Tin Ore | Stone Anvil | **Ingen användning än** (fas 3) |
+| Crushed Tin Ore | Stone Anvil | Läggs i en Crucible med koppar (1 enhet), se Fas 3b |
 | Pan / Pan with Gravel / Pan with Sand | Crafting | Vaskning |
 
 ### Pan (vaskning)
@@ -139,11 +143,12 @@ Recept (crafting table, P = valfria Planks, T = Twine):
 
 | | Inget | Flint | Stone Chunk | Cassiterite | Native Copper |
 |---|---|---|---|---|---|
-| Gravel | 45 % | 25 % | 18 % | 9 % | 2 % |
-| Sand | 69 % | 7,5 % | 10 % | 12,5 % | 1 % |
+| Gravel | 48 % | 26,5 % | 19,3 % | 3,6 % | 2,4 % |
+| Sand | 75,3 % | 8,2 % | 11 % | 4,1 % | 1,4 % |
 
   Vid **River, Frozen River, Beach, Snowy Beach och Stony Shore** (biom där spelaren står) en extra pool:
-  25 % chans till ytterligare en Cassiterite.
+  8,3 % chans till ytterligare en Cassiterite. Cassiterite sänktes till ungefär en tredjedel (förr 9 % / 12,5 % / 25 %)
+  när Tin Ore började kräva Copper Pickaxe: vaskning ger en smak av tenn men räcker inte till verktyg.
 - Varje vaskning slits pannan 1 (inte i creative). Sedan är den tom igen.
 
 ### Stone Anvil (krossning)
@@ -172,7 +177,8 @@ Recept (crafting table, R = rock chunk, K = Flint Pickaxe som blir kvar och slit
 Kod: `KilnBlockEntity` (temperatur, påfrestning, lagning), `KilnBlock` (CRACKS, HOT), `BellowsBlock`,
 `client/KilnScreen` (termometer), `Casting` (registrering). Data: `scripts/gen_copper.py` och kilnens modeller i
 `gen_data.py`; texturer: `scripts/gen_copper_textures.py`. Generatorordning: gen_data.py src/main/resources → gen_tribe_village →
-gen_trails → gen_bronze_ores → gen_age_recipes → gen_farming → gen_wind → **gen_copper** → gen_block_items → gen_registry.
+gen_trails → gen_bronze_ores → gen_age_recipes → gen_farming → gen_wind → **gen_copper** → **gen_bronze** → gen_smoke → ... →
+gen_block_items → gen_unlocks → gen_registry.
 
 ### Temperatur i Clay Kiln
 
@@ -212,8 +218,9 @@ Gäller alla recept. Kilnen bränner bränsle och värms så länge det finns n�
 | Dough | Bread | 20 s | 200° |
 | Unfired Clay Tuyere | Clay Tuyere | 20 s | 600° |
 | Unfired Clay ... Mold (6 sorter) | Clay ... Mold | 20 s | 600° |
-| Crucible med malm | Crucible of Molten Copper | 15 s | 1085° (metallens smältpunkt) |
-| Crucible of Solid Copper | Crucible of Molten Copper | 10 s | 1085° |
+| Crucible med malm | Crucible of Molten Copper / Bronze | 15 s | metallens smältpunkt: koppar 1085°, brons 950° |
+| Crucible of Solid Copper / Bronze | Crucible of Molten ... | 10 s | 1085° / 950° |
+| Unfired Clay Saw Blade / Plate Mold | Clay Saw Blade / Plate Mold | 20 s | 600° |
 
 **Första bränningen** av en ny kiln räknas bara medan den är minst **500°** (2 min). På lägereldens ved tar det ~1,5 min
 att komma dit.
@@ -273,9 +280,10 @@ Crucible (från stenåldern) kan nu fyllas med malm. Den staplas inte längre (e
 
 - **Fylla:** klicka malm på degeln i inventoryt (vänsterklick: så mycket som får plats, högerklick: en), eller håll
   malmen i andra handen och använd degeln.
-- Rymmer **8 enheter**. **Crushed Copper Ore = 1 enhet, Native Copper = 2** (nästan ren metall). Malachite och Raw
+- Rymmer **10 enheter** (var 8 före brons; 10 så att 9 koppar + 1 tenn får plats). **Crushed Copper Ore = 1 enhet,
+  Native Copper = 2** (nästan ren metall), Crushed Tin Ore = 1 och Bronze Ingot = 2 (se Fas 3b). Malachite och Raw
   Copper måste krossas först (Stone Anvil).
-- Tooltip: "Copper ore: 6/8 units" och "Melts in a Clay Kiln at 1085°". Malm går inte att ta ut igen.
+- Tooltip: "Copper ore: 6/10 units" och "Melts in a Clay Kiln at 1085°". Malm går inte att ta ut igen.
 - Innehållet sparas som enheter per metall (`mechanical:crucible_contents`), så brons kan lägga till tenn och en
   legeringsregel (9:1) utan att ändra lagringen.
 
@@ -316,7 +324,9 @@ ställs på marken (behöver fast mark under).
   hur många gjutningar den gjort.
 - Formens ovansida visar själva håligheten (gjutningens egen siluett i bränd lera), och flytande eller stelnad
   koppar syns i den.
-- En full degel (8 enheter) räcker till en hacka eller yxa + 1 ingot, eller 4 ingots. 6 enheter = 3 Raw Copper.
+- En full degel (10 enheter) räcker till en hacka eller yxa + 2 ingots, eller 5 ingots. 6 enheter = 3 Raw Copper.
+- Formen har block-state `metal` (copper, bronze, poor_bronze) som avgör färgen i håligheten och vad som kommer ut.
+  Två formar till för brons (Saw Blade, Plate), se Fas 3b. Fel metall: "Copper can't be cast in this mold".
 
 ### Whetstone
 
@@ -347,3 +357,97 @@ huvudet. Hacka, yxa, spade och hacka (hoe) är vanillas kopparverktyg (vanillas 
 - Ingen kopparrustning. Copper Ingot har ingen egen användning i modden än.
 - **Vanilla-recept med Copper Ingot:** Copper Block, Cut Copper m.m., Copper Bars, Chain, Door, Trapdoor, Brush och Copper
   Nugget fungerar. **Avstängda** (kommer senare): Spyglass, Lightning Rod och Copper Chest (`gen_age_recipes.py`).
+
+## Fas 3b: brons (byggd)
+
+Kod: `Bronze` (registrering, Poor Bronze-märket, tooltip), `Metal` (COPPER, TIN, BRONZE, POOR_BRONZE), `CrucibleContents`
+(legeringsregeln + självtest som körs vid laddning), `CrucibleItem`, `ClayMoldBlock` (METAL-property), `Casting.oreUnits`.
+Data: `scripts/gen_bronze.py` (direkt efter gen_copper; formarna skrivs av gen_copper.py med de andra), texturer:
+`scripts/gen_bronze_textures.py`. Brons är gyllenbrun (egen palett), koppar laxrosa.
+
+### Legering i degeln
+
+- **Crushed Tin Ore** (1 enhet) läggs i samma Crucible som kopparmalm (Cassiterite krossas först, som Malachite).
+- Andelen tenn = tenn / (koppar + tenn):
+
+| Tenn | Blir | Smälter vid | Exempel (10 enheter) |
+|---|---|---|---|
+| 9–11,5 % | **Bronze** | 950° | 9:1 (10 %), 8:1 (11,1 %) |
+| 8–9 % eller 11,5–15 % | **Poor Bronze** | 950° | 7:1 (12,5 %), 6:1 (14,3 %) |
+| under 8 % eller över 15 % | **Copper**, tennet går förlorat som slagg | 1085° | 5:1 (16,7 %) → 5 koppar |
+| bara tenn | inget (smälter inte) | – | |
+
+- Tooltip på degeln: "Copper ore: 9/10 units", "Tin ore: 1/10 units", sedan **"10.0% tin: Bronze"** (grön), gul för
+  Poor Bronze, röd för slagg ("no bronze ... Melts as copper; the tin is lost as slag") och "Melts in a Clay Kiln at 950°".
+- Smält brons: "Crucible of Molten Bronze" / "... Poor Bronze" (alla enheterna blir brons). Stelnad: "Crucible of Solid
+  Bronze", smälts om vid 950°.
+- Brons blandas inte med malm: en degel med brons tar bara emot Bronze Ingot av samma kvalitet, och en degel med malm tar
+  inte emot Bronze Ingot. En stelnad kopparsdegel kan fortfarande fyllas på med koppar- eller tennmalm.
+- **Bronze Ingot** (gjuten i Clay Ingot Mold, 2 enheter) kan läggas tillbaka i en Crucible (2 enheter); Poor förblir Poor.
+
+### Kvalitet: Poor Bronze
+
+Allt som gjuts av Poor Bronze får märket `mechanical:poor_bronze` (tooltip "Poor Bronze: 70% durability"). Det följer
+med: gjutning → slipning på Whetstone → Tool Station / Armor Station. Färdiga verktyg och rustningsdelar får **70 %**
+hållbarhet (t.ex. Bronze Pickaxe 161 i stället för 230). Delar av olika kvalitet staplas inte ihop, och stationerna
+blandar dem inte när de hämtar delar.
+
+### Formar (nya)
+
+| Form | Recept (C = Clay Ball) | Enheter | Ger |
+|---|---|---|---|
+| Clay Saw Blade Mold | `[C][C][C]` / `[C][ ][C]` | 4 | Rough Cast Bronze Saw Blade |
+| Clay Plate Mold | `[C][C][C]` / `[C][ ][C]` / `[C][C][C]` | 4 | Rough Cast Bronze Plate |
+
+Bara brons kan gjutas i dem. De andra formarna gjuter brons som koppar: Bronze Ingot, Rough Cast Bronze Pickaxe/Axe/
+Shovel/Hoe Head och Knife Blade. Allt Rough Cast slipas på Whetstone (4 drag) till Bronze ... Head / Blade / Plate.
+
+### Bronsverktyg
+
+Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
+
+| Verktyg | Huvud | Binding | Skaft |
+|---|---|---|---|
+| Bronze Pickaxe / Axe / Shovel / Hoe | Bronze ... Head | Cordage | Tool Rod |
+| Bronze Knife | Bronze Knife Blade | Twine | Stick |
+| Bronze Saw | Bronze Saw Blade | Twine | Stick |
+
+- **Bronsmaterial:** 230 hållbarhet (koppar 190, järn 250), hastighet 6 och +2 skada som järn, förtrollbarhet 12.
+  Attackvärden som vanillas järnverktyg. Lagas med Bronze Ingot.
+- **Brytnivå:** `mechanical:incorrect_for_bronze_tool` = `#minecraft:needs_iron_tool` + `#minecraft:needs_diamond_tool`.
+  Bronze Pickaxe bryter alltså **Iron, Coal och Lapis Ore** (`needs_bronze_tool`) och Tin Ore, men inte guld, diamant,
+  redstone eller smaragd (de väntar på järnet). Fungerar som hammarsten på Stone Anvil.
+- **Bronze Knife:** 350 hållbarhet, styckar **1,75×** så snabbt och ger **1,35×** så mycket som Flint Knife, **klarar
+  Brown Bear** och Giant Deer (knivnivå 2 som Tusk Dagger). Räknas som kniv och svärd.
+- Spjut och svärd i brons är inte gjorda (valfria).
+
+### Bronze Saw och planks
+
+- 240 hållbarhet. I crafting table: **Log + Bronze Saw → 4 Planks** (alla träslag, recepten `sawn_<trä>_planks`);
+  sågen blir kvar och slits 1. Utan såg ger en log fortfarande 2 planks.
+
+### Bronze Helmet och Bronze Greaves
+
+Rustningsplåt gjuts (Clay Plate Mold), slipas och sys på ett läderfoder i **Armor Station** (låses upp av Bronze Plate):
+
+| Del | Recept | Rustning | Hållbarhet |
+|---|---|---|---|
+| Bronze Helmet | 2 Bronze Plate + Bone Needle (slits 1) + 2 Leather | 2 | 110 |
+| Bronze Greaves (leggings-platsen) | 3 Bronze Plate + Bone Needle + 3 Leather | 5 | 150 |
+
+- Järnets rustningsvärden, toughness 0, ~70 % av järnets hållbarhet (multiplikator 10 mot 15). Ingen bröstplåt eller
+  boots. Egna texturer på kroppen: hjälmen är en bronsfärgad järnhjälm, benskydden täcker bara smalbenen med en läderrem
+  under knät.
+
+### Byar: handelsnivå 3
+
+| Yrke | Köper | Säljer |
+|---|---|---|
+| Armorer | 3 Bronze Ingot → 1 Emerald | 9 Emerald → Bronze Helmet |
+| Toolsmith | 6 Crushed Tin Ore → 1 Emerald | 7 Emerald → Bronze Pickaxe, 5 Emerald → Bronze Saw |
+| Weaponsmith | 3 Bronze Ingot → 1 Emerald | 5 Emerald → Bronze Knife |
+
+### Kvar
+
+- Tvättat koncentrat (mer metall per smältning), spjut och svärd i brons, bronslykta, Bloomery mot järnet.
+- Crucible of Solid Bronze har samma (kopparfärgade) ikon som Solid Copper; namnet visar metallen.

@@ -38,9 +38,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class ClayMoldBlock extends Block {
     public enum Shape implements StringRepresentable {
-        INGOT(2), PICKAXE_HEAD(6), AXE_HEAD(6), SHOVEL_HEAD(2), HOE_HEAD(4), KNIFE_BLADE(2);
+        INGOT(2), PICKAXE_HEAD(6), AXE_HEAD(6), SHOVEL_HEAD(2), HOE_HEAD(4), KNIFE_BLADE(2), SAW_BLADE(4), PLATE(4);
 
-        /** Metal units one cast takes (a Crucible holds 8; one Crushed Copper Ore is 1). */
+        /** Metal units one cast takes (a Crucible holds 10; one Crushed Copper Ore is 1). */
         public final int units;
 
         Shape(int units) {
@@ -63,9 +63,8 @@ public class ClayMoldBlock extends Block {
     }
 
     public static final EnumProperty<Fill> FILL = EnumProperty.create("fill", Fill.class);
-    // shortcut: copper is the only metal, and a block-state enum needs two values; bronze adds a METAL property (and
-    // "metal=" to the blockstate keys in gen_copper.py) and uses it where COPPER is hardcoded below.
-    private static final Metal METAL = Metal.COPPER;
+    /** The metal poured in: its colour shows in the cavity, and it decides what comes out. */
+    public static final EnumProperty<Metal> METAL = EnumProperty.create("metal", Metal.class, Metal.COPPER, Metal.BRONZE, Metal.POOR_BRONZE);
     public static final int MAX_USES = 5;
     public static final IntegerProperty USES = IntegerProperty.create("uses", 0, MAX_USES - 1);
     public static final int SET_TICKS = 100;
@@ -76,12 +75,12 @@ public class ClayMoldBlock extends Block {
     public ClayMoldBlock(Properties properties, Shape shape) {
         super(properties);
         this.shape = shape;
-        registerDefaultState(stateDefinition.any().setValue(FILL, Fill.EMPTY).setValue(USES, 0));
+        registerDefaultState(stateDefinition.any().setValue(FILL, Fill.EMPTY).setValue(USES, 0).setValue(METAL, Metal.COPPER));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FILL, USES);
+        builder.add(FILL, USES, METAL);
     }
 
     @Override
@@ -112,14 +111,19 @@ public class ClayMoldBlock extends Block {
         }
         CrucibleContents contents = CrucibleItem.contents(stack);
         Metal metal = contents.alloy();
-        if (metal != METAL || contents.total() < shape.units) {
+        if (metal == null || !metal.casts(shape)) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.mold.wrong_metal",
+                    Component.translatable("metal.mechanical." + (metal == null ? "tin" : metal.getSerializedName()))));
+            return InteractionResult.SUCCESS;
+        }
+        if (contents.total() < shape.units) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.mold.not_enough", shape.units, contents.total()));
             return InteractionResult.SUCCESS;
         }
         CrucibleContents left = contents.add(metal, -shape.units);
         if (left.isEmpty()) player.setItemInHand(hand, new ItemStack(Mechanical.CRUCIBLE.get()));
         else stack.set(Casting.CRUCIBLE_CONTENTS.get(), left);
-        server.setBlock(pos, state.setValue(FILL, Fill.MOLTEN), Block.UPDATE_ALL);
+        server.setBlock(pos, state.setValue(FILL, Fill.MOLTEN).setValue(METAL, metal), Block.UPDATE_ALL);
         server.scheduleTick(pos, this, SET_TICKS);
         server.playSound(null, pos, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 0.8F, 1.2F);
         server.sendParticles(ParticleTypes.LAVA, pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5, 4, 0.2, 0.05, 0.2, 0.0);
@@ -135,7 +139,7 @@ public class ClayMoldBlock extends Block {
             player.sendOverlayMessage(Component.translatable("message.mechanical.mold.molten"));
             return InteractionResult.SUCCESS;
         }
-        player.getInventory().placeItemBackInInventory(new ItemStack(METAL.cast(shape)), net.minecraft.util.Prediction.SERVER_ONLY);
+        player.getInventory().placeItemBackInInventory(state.getValue(METAL).cast(shape), net.minecraft.util.Prediction.SERVER_ONLY);
         int uses = state.getValue(USES) + 1;
         if (uses >= MAX_USES) {
             server.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + 0.5, pos.getY() + 0.15, pos.getZ() + 0.5, 20, 0.3, 0.05, 0.3, 0.0);

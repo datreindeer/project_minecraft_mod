@@ -64,10 +64,10 @@
     "category": "blocks"
   },
   "crucible": {
-    "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (800°, 40 s). Klicka **Crushed Copper Ore (1 enhet) eller Native Copper (2)** på den i inventoryt, upp till 8 enheter, och smält den i kilnen vid 1085° till en [[molten_crucible]]. Staplas inte."
+    "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (800°, 40 s). Klicka **Crushed Copper Ore (1 enhet), Native Copper (2), Crushed Tin Ore (1) eller Bronze Ingot (2)** på den i inventoryt, upp till **10** enheter. Ren koppar smälter vid 1085°, koppar med 8–15 % tenn blir brons vid 950° (tooltipen visar blandningen). Staplas inte."
   },
   "tin_ore": {
-    "text": "Tennmalm (bronsåldern). Kräver minst stenpickaxe. Ger 1–2 [[cassiterite]] (Fortune hjälper), sig själv med Silk Touch. Över ådror nära ytan ligger [[loose_cassiterite]] på marken."
+    "text": "Tennmalm (bronsåldern). **Kräver Copper Pickaxe** (eller bättre; taggen `mechanical:needs_copper_tool`). Ger 1–2 [[cassiterite]] (Fortune hjälper), sig själv med Silk Touch. Över ådror nära ytan ligger [[loose_cassiterite]] på marken."
   },
   "tin_ingot": {
     "text": "Tenn. Kan inte smältas fram nu (Furnace är borttagen), hör till bronsåldern."
@@ -620,7 +620,7 @@
     "vanilla": true
   },
   "minecraft:oak_planks": {
-    "text": "1 Log → **2** Planks (vanilla 4). Gäller alla träslag. Sågen kommer senare.",
+    "text": "1 Log → **2** Planks (vanilla 4). Med [[bronze_saw]]: Log + Saw → **4** (sågen blir kvar). Gäller alla träslag.",
     "vanilla": true,
     "name": "Planks"
   },
@@ -1313,7 +1313,7 @@
     "category": "materials"
   },
   "cassiterite": {
-    "text": "Tennsten. Från [[tin_ore]] (1–2), [[loose_cassiterite]] på marken över tennådror, och vaskning med [[pan]] (vanligare vid floder, stränder och stenig strand).\nKrossas på [[stone_anvil]] → 1 [[crushed_tin_ore]].",
+    "text": "Tennsten. Från [[tin_ore]] (1–2, kräver Copper Pickaxe), [[loose_cassiterite]] på marken över tennådror, och sällan vaskning med [[pan]] (~4 %).\nKrossas på [[stone_anvil]] → 1 [[crushed_tin_ore]].",
     "category": "materials"
   },
   "crushed_copper_ore": {
@@ -1321,7 +1321,7 @@
     "category": "materials"
   },
   "crushed_tin_ore": {
-    "text": "Från [[stone_anvil]]: [[cassiterite]] → 1. **Ingen användning än** (smälts i bronsålderns fas 3).",
+    "text": "Från [[stone_anvil]]: [[cassiterite]] → 1. Läggs i en [[crucible]] med koppar (1 enhet): 8–15 % tenn smälter till brons vid 950° (9–11,5 % = bra Bronze, annars Poor Bronze).",
     "category": "materials"
   },
   "pan": {
@@ -1658,11 +1658,11 @@
     "category": "blocks"
   },
   "molten_crucible": {
-    "text": "Crucible of Molten Copper: en [[crucible]] med malm som smälts i en [[kiln]] vid **1085°** (15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är minst 1085°.",
+    "text": "Crucible of Molten Copper / Bronze / Poor Bronze: en [[crucible]] med malm smält i en [[kiln]] (koppar 1085°, brons 950°, 15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är tillräckligt varm.",
     "category": "materials"
   },
   "solid_crucible": {
-    "text": "Crucible of Solid Copper: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] vid 1085° (10 s).",
+    "text": "Crucible of Solid Copper / Bronze: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] (10 s). Koppar kan fyllas på med mer malm; brons bara med Bronze Ingot av samma kvalitet.",
     "category": "materials"
   },
   "copper_knife": {
@@ -1683,6 +1683,119 @@
   },
   "glider_cloak": {
     "text": "Sys i [[armor_station]]: 6 [[phantom_leather]] + [[glider_frame]] med [[bone_needle]]. Bröstplats, skydd 1, 96 hållbarhet, lagas med Phantom Leather.\n**Håll inne hopp när du faller** (mer än 2 block): fallet bromsas (~2,4 m/s) och du glider framåt i blickriktningen (högst ~6 m/s, aldrig uppåt). Ingen fallskada efter en glidning, 1 hållbarhet per sekund. Smyg eller släpp hopp för att släppa."
+  },
+  "snare": {
+    "text": "2 Stick + [[cordage]] (crafting). Sätts på marken; ett litet vilt djur som går in i den dör där (80 %) och blir en Carcass. Högerklicka med bär/frön för att beta den (lockar inom 8 block), högerklicka en utlöst snara för att gillra om. Går sönder vid 15 % av fångsterna (en Stick blir kvar). Spelare snubblar (Slowness), smyg för att kliva över.",
+    "category": "tools"
+  },
+  "fish_trap": {
+    "text": "6 Stick + 2 [[twine]] (crafting). Läggs i vatten (minst 12 vattenblock runt omkring); fångar upp till 3 hela fiskar, snabbast i floder och rinnande vatten. Högerklicka för att tömma. Art efter biom: lax i floder, torsk annars, tropisk fisk i varma hav.",
+    "category": "tools"
+  },
+  "log_raft": {
+    "text": "Crafting: 6 stockar ([[oak_rough_log]] eller annan Rough Log, eller valfri Log) surrade med 3 [[cordage]] (`LCL / LCL / LCL`). Låses upp av Cordage.\nStenålderns första farkost: **1 plats**, långsam (~3,4 block/s, knappt hälften av en vanilla-båt), gungar på vattnet. Ersätter vanilla-båtarna (avstängda till bronsåldern)."
+  },
+  "dugout_canoe": {
+    "text": "Görs i världen av en [[dugout_blank]] (ingen crafting): yxa, eld, yxa, eld, yxa och sist kniv.\n**2 platser**. Med en [[paddle]] i handen ~6,3 block/s (87 % av en vanilla-båt), utan paddel bara ~3,4 block/s som flotten. Paddlarna syns bara när man håller en Paddle."
+  },
+  "paddle": {
+    "text": "Valfri Rough Log + kniv (formlöst, kniven slits 1). Låses upp av en Rough Log.\nHåll den (i valfri hand) när du sitter i en [[dugout_canoe]]: kanoten går nästan dubbelt så fort."
+  },
+  "dugout_blank": {
+    "category": "blocks",
+    "text": "**Högerklicka med en kniv** på en Fallen Log (med eller utan bark, inte hugget smalare) eller en Log som ligger ned: kanotens kontur ritsas in (kniven slits 1).\nSen: **1** hugg ur med yxa (håll högerklick, dubbelt så många hugg som ett Fallen Log-steg) → **2** tänd med Torch, Fire Drill (75 %) eller Flint and Steel, brinner 30 s (regn släcker) → **3** skrapa ur kolet med yxa → **4** bränn igen → **5** hugg ur med yxa → **6** jämna till med kniv (4 drag) → [[dugout_canoe]]. Bryts den blir det 1–3 Sticks."
+  },
+  "smoking_rack": {
+    "category": "blocks",
+    "text": "3 Stick + [[cordage]] + 3 Stick (`SCS`/`S S`/`S S`). Häng upp till 4 remsor rått kött eller rå fisk (inte blandat). Ovanför (1–2 block) eller bredvid en brinnande/glödande Campfire, eller i ett rökigt rum: efter **4 minuter i rök** blir de [[smoked_meat]] / [[smoked_fish]]. Utan rök förskäms de som vanligt (1 dag). Tom hand tar ner allt."
+  },
+  "smoked_meat": {
+    "category": "food",
+    "text": "Rått kött (scraps eller vanilla) rökt 4 min på [[smoking_rack]]. 3 hunger, 0,8 mättnad. **Håller 30 dagar** (rått kött 1 dag)."
+  },
+  "smoked_fish": {
+    "category": "food",
+    "text": "Raw Cod/Salmon rökt 4 min på [[smoking_rack]]. 3 hunger, 0,7 mättnad. **Håller 30 dagar**."
+  },
+  "jerky": {
+    "category": "food",
+    "text": "Rått kött torkat i solen på [[drying_rack]] (~7–14 min solsken). 2 hunger, 0,8 mättnad. **Håller 30 dagar**."
+  },
+  "dried_fish": {
+    "category": "food",
+    "text": "Raw Cod/Salmon torkad i solen på [[drying_rack]]. 2 hunger, 0,7 mättnad. **Håller 30 dagar**."
+  },
+  "dried_berries": {
+    "category": "food",
+    "text": "4 bär (vilda eller Sweet Berries) torkade i solen på [[drying_rack]] → 4 st. 1 hunger, 0,5 mättnad. **Håller 30 dagar** (färska bär 2 dagar)."
+  },
+  "spoiled_food": {
+    "category": "food",
+    "text": "Det som blir kvar av förskämd mat som inte är kött eller fisk (bär, svamp, gröt, ägg). Duger bara till [[compost_heap]]. Kött och fisk ruttnar till Rotten Flesh i stället.\nHållbarhet: rått kött/fisk 1 dag, bär/svamp/gröt 2 dagar, tillagat 3 dagar, rökt/torkat 30 dagar. Tooltipen visar Fresh / Stale / Rotting."
+  },
+  "loose_red_ochre": {
+    "text": "Lös klump röd ockra på marken i Badlands och Savanna (alla varianter). Plockas för hand: liten 1, mellan 2 [[red_ochre]].",
+    "category": "blocks"
+  },
+  "loose_yellow_ochre": {
+    "text": "Lös klump gul ockra på marken i Savanna, Desert och vid floder (River). Plockas för hand: liten 1, mellan 2 [[yellow_ochre]].",
+    "category": "blocks"
+  },
+  "loose_chalk": {
+    "text": "Lös kritbit på marken vid Stony Shore, Beach, Meadow, Windswept Hills / Gravelly Hills och Stony Peaks. Plockas för hand: liten 1, mellan 2 [[chalk]].",
+    "category": "blocks"
+  },
+  "red_ochre": {
+    "text": "Från [[loose_red_ochre]]. Mals till [[red_pigment]]: med Flint Pickaxe i crafting 1 st (hackan slits 1), på [[stone_anvil]] med hammarsten 2 st.",
+    "category": "materials"
+  },
+  "yellow_ochre": {
+    "text": "Från [[loose_yellow_ochre]]. Mals till [[yellow_pigment]]: med Flint Pickaxe i crafting 1 st, på [[stone_anvil]] 2 st.",
+    "category": "materials"
+  },
+  "chalk": {
+    "text": "Från [[loose_chalk]]. Mals till [[white_pigment]]: med Flint Pickaxe i crafting 1 st, på [[stone_anvil]] 2 st (ett Calcite-block ger 4 på städet).",
+    "category": "materials"
+  },
+  "black_pigment": {
+    "text": "Charcoal mald: Flint Pickaxe i crafting 1 st, [[stone_anvil]] 2 st. Svart färg ([[black_paint]], även [[soot]] duger) och 1 → 1 Black Dye.",
+    "category": "materials"
+  },
+  "red_pigment": {
+    "text": "Mald [[red_ochre]]. 2 st + bindemedel + Bowl → [[red_paint]]. 1 → 1 Red Dye.",
+    "category": "materials"
+  },
+  "yellow_pigment": {
+    "text": "Mald [[yellow_ochre]]. 2 st + bindemedel + Bowl → [[yellow_paint]]. 1 → 1 Yellow Dye.",
+    "category": "materials"
+  },
+  "white_pigment": {
+    "text": "Mald [[chalk]] eller Calcite (bara på [[stone_anvil]]). 2 st + bindemedel + Bowl → [[white_paint]]. 1 → 1 White Dye.",
+    "category": "materials"
+  },
+  "black_paint": {
+    "text": "2 [[black_pigment]] eller [[soot]] + Tallow eller vatten (Clay Water Bucket / Water Bucket, hinken kommer tillbaka) + Bowl (formlöst). 16 användningar, sedan blir skålen kvar. Måla med [[paintbrush]] i andra handen; utan pensel blir det ett handavtryck.",
+    "category": "tools"
+  },
+  "red_paint": {
+    "text": "2 [[red_pigment]] + Tallow eller vatten + Bowl. 16 användningar. Se [[black_paint]] och [[cave_painting]].",
+    "category": "tools"
+  },
+  "yellow_paint": {
+    "text": "2 [[yellow_pigment]] + Tallow eller vatten + Bowl. 16 användningar. Se [[black_paint]] och [[cave_painting]].",
+    "category": "tools"
+  },
+  "white_paint": {
+    "text": "2 [[white_pigment]] + Tallow eller vatten + Bowl. 16 användningar. Se [[black_paint]] och [[cave_painting]].",
+    "category": "tools"
+  },
+  "paintbrush": {
+    "text": "Stick + 2 [[plant_fibre]] (formlöst). 64 användningar. Med färg i andra handen: högerklicka på en blocksida för att måla vald motiv. Smyg + högerklick byter motiv (11 st, varav 2 tvåblocksscener). Se [[cave_painting]].",
+    "category": "tools"
+  },
+  "cave_painting": {
+    "text": "Grottmålning: ett tunt färglager på en hel blocksida (vägg, tak eller golv), målat med [[paintbrush]] och färg. 4 färger × 15 motiv: Aurochs, Horse, Stag, Cave Bear, Mammoth, Ibex, Hunter, Sun, Spiral, Dots, Hand Print (färgen utan pensel) och två scener två block breda (The Hunt, Running Herd, bara på väggar). Måla över en målning för att byta den. Ger inget när den bryts; skrapas bort 4× snabbare med kniv. Under öppen himmel tvättar regn bort den med tiden.",
+    "category": "blocks"
   },
   "willow_log": {
     "text": "Nytt träslag (pil). Grenad stam där varje gren bär ett platt lövparaply med hängande lövridåer. Växer vid vatten: River och Swamp, och i Forest, Flower Forest, Birch Forest, Plains och Meadow bara intill sjöar och bäckar. Grå fårad bark, ljusa planks.\nFälls som andra träd (hela trädet faller, [[willow_stump]] och [[willow_fallen_log]]). En Log som bryts ger 2 [[willow_firewood]]. Yxa (högerklick) gör Stripped Willow Log.",
@@ -2094,5 +2207,113 @@
   },
   "pine_resin": {
     "text": "Tallkåda. **Högerklicka en [[pine_log]] med kniv**: barken skärs upp, 1 Pine Resin, och loggen blir Stripped Pine Log (en gång per log, kniven slits 1). 1 Pine Resin över 1 Stick → 2 Torches (kådfackla). Används mer senare (t.ex. lim)."
+  },
+  "bronze_ingot": {
+    "text": "Gjuts i [[clay_ingot_mold]] (2 enheter brons). Kan läggas tillbaka i en [[crucible]] (2 enheter, Poor Bronze förblir Poor). Säljs till smeder i byar (nivå 3).",
+    "category": "materials"
+  },
+  "rough_cast_bronze_pickaxe_head": {
+    "text": "Gjuts i [[clay_pickaxe_head_mold]] (6 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_pickaxe_head]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_pickaxe_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_pickaxe_head]]. Monteras i Tool Station till [[bronze_pickaxe]].",
+    "category": "materials"
+  },
+  "rough_cast_bronze_axe_head": {
+    "text": "Gjuts i [[clay_axe_head_mold]] (6 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_axe_head]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_axe_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_axe_head]]. Monteras i Tool Station till [[bronze_axe]].",
+    "category": "materials"
+  },
+  "rough_cast_bronze_shovel_head": {
+    "text": "Gjuts i [[clay_shovel_head_mold]] (2 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_shovel_head]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_shovel_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_shovel_head]]. Monteras i Tool Station till [[bronze_shovel]].",
+    "category": "materials"
+  },
+  "rough_cast_bronze_hoe_head": {
+    "text": "Gjuts i [[clay_hoe_head_mold]] (4 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_hoe_head]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_hoe_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_hoe_head]]. Monteras i Tool Station till [[bronze_hoe]].",
+    "category": "materials"
+  },
+  "rough_cast_bronze_knife_blade": {
+    "text": "Gjuts i [[clay_knife_blade_mold]] (2 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_knife_blade]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_knife_blade": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_knife_blade]]. Monteras i Tool Station till [[bronze_knife]].",
+    "category": "materials"
+  },
+  "rough_cast_bronze_saw_blade": {
+    "text": "Gjuts i [[clay_saw_blade_mold]] (4 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_saw_blade]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_saw_blade": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_saw_blade]]. Monteras i Tool Station till [[bronze_saw]].",
+    "category": "materials"
+  },
+  "rough_cast_bronze_plate": {
+    "text": "Gjuts i [[clay_plate_mold]] (4 enheter brons). Slipas på en [[whetstone]] (4 drag) till [[bronze_plate]]. Gjutet av Poor Bronze bär det märket vidare (verktyg/rustning får 70 % hållbarhet).",
+    "category": "materials"
+  },
+  "bronze_plate": {
+    "text": "Slipad rustningsplåt av [[rough_cast_bronze_plate]]. Sys i [[armor_station]] till [[bronze_helmet]] (2) och [[bronze_greaves]] (3).",
+    "category": "materials"
+  },
+  "bronze_pickaxe": {
+    "text": "Tool Station: [[bronze_pickaxe_head]] + [[cordage]] + [[tool_rod]]. Bronsmaterial: **230** hållbarhet, hastighet 6, +2 skada (som järn utom hållbarheten, järn 250). **Bryter Iron, Coal och Lapis Ore** (och Tin Ore), men inte guld, diamant, redstone eller smaragd. Fungerar som hammarsten på [[stone_anvil]].",
+    "category": "tools"
+  },
+  "bronze_axe": {
+    "text": "Tool Station: [[bronze_axe_head]] + [[cordage]] + [[tool_rod]]. Bronsmaterial: **230** hållbarhet, hastighet 6, +2 skada (som järn utom hållbarheten, järn 250).",
+    "category": "tools"
+  },
+  "bronze_shovel": {
+    "text": "Tool Station: [[bronze_shovel_head]] + [[cordage]] + [[tool_rod]]. Bronsmaterial: **230** hållbarhet, hastighet 6, +2 skada (som järn utom hållbarheten, järn 250).",
+    "category": "tools"
+  },
+  "bronze_hoe": {
+    "text": "Tool Station: [[bronze_hoe_head]] + [[cordage]] + [[tool_rod]]. Bronsmaterial: **230** hållbarhet, hastighet 6, +2 skada (som järn utom hållbarheten, järn 250).",
+    "category": "tools"
+  },
+  "bronze_knife": {
+    "text": "Tool Station: [[bronze_knife_blade]] + [[twine]] + Stick. **350** hållbarhet, styckar **1,75×** så snabbt och ger **1,35×** så mycket som [[flint_knife]]. **Klarar Brown Bear** (och Giant Deer). Räknas som kniv och svärd.",
+    "category": "tools"
+  },
+  "bronze_saw": {
+    "text": "Tool Station: [[bronze_saw_blade]] + [[twine]] + Stick. 240 hållbarhet. I crafting: **Log + Saw → 4 Planks** (utan såg 2); sågen blir kvar och slits 1.",
+    "category": "tools"
+  },
+  "bronze_helmet": {
+    "text": "[[armor_station]]: 2 [[bronze_plate]] + [[bone_needle]] + 2 Leather. Rustning **2**, 110 hållbarhet. Iron-värden men ~70 % av järnets hållbarhet. Ingen bröstplåt eller boots i bronsåldern.",
+    "category": "tools"
+  },
+  "bronze_greaves": {
+    "text": "Benskydd (leggings-plats). [[armor_station]]: 3 [[bronze_plate]] + [[bone_needle]] + 3 Leather. Rustning **5**, 150 hållbarhet. Syns bara på smalbenen. Iron-värden men ~70 % av järnets hållbarhet. Ingen bröstplåt eller boots i bronsåldern.",
+    "category": "tools"
+  },
+  "clay_saw_blade_mold": {
+    "text": "Bränd lerform (bara brons, 4 enheter) som ger [[rough_cast_bronze_saw_blade]]. Bränns av [[unfired_clay_saw_blade_mold]] i en [[kiln]] (600°). Tål 5 gjutningar.",
+    "category": "blocks"
+  },
+  "clay_plate_mold": {
+    "text": "Bränd lerform (bara brons, 4 enheter) som ger [[rough_cast_bronze_plate]]. Bränns av [[unfired_clay_plate_mold]] i en [[kiln]] (600°). Tål 5 gjutningar.",
+    "category": "blocks"
+  },
+  "unfired_clay_saw_blade_mold": {
+    "text": "Crafting: Clay Ball `[C][C][C]` / `[C][ ][C]`. Bränns i [[kiln]] till [[clay_saw_blade_mold]].",
+    "category": "materials"
+  },
+  "unfired_clay_plate_mold": {
+    "text": "Crafting: Clay Ball `[C][C][C]` / `[C][ ][C]` / `[C][C][C]`. Bränns i [[kiln]] till [[clay_plate_mold]].",
+    "category": "materials"
   }
 }

@@ -1,49 +1,139 @@
 {
   "variants": {
-    "fill=empty,uses=0": {
+    "fill=empty,metal=copper,uses=0": {
       "model": "mechanical:block/clay_hoe_head_mold"
     },
-    "fill=empty,uses=1": {
+    "fill=empty,metal=copper,uses=1": {
       "model": "mechanical:block/clay_hoe_head_mold"
     },
-    "fill=empty,uses=2": {
+    "fill=empty,metal=copper,uses=2": {
       "model": "mechanical:block/clay_hoe_head_mold"
     },
-    "fill=empty,uses=3": {
+    "fill=empty,metal=copper,uses=3": {
       "model": "mechanical:block/clay_hoe_head_mold"
     },
-    "fill=empty,uses=4": {
+    "fill=empty,metal=copper,uses=4": {
       "model": "mechanical:block/clay_hoe_head_mold"
     },
-    "fill=molten,uses=0": {
+    "fill=empty,metal=bronze,uses=0": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=bronze,uses=1": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=bronze,uses=2": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=bronze,uses=3": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=bronze,uses=4": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=0": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=1": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=2": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=3": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=4": {
+      "model": "mechanical:block/clay_hoe_head_mold"
+    },
+    "fill=molten,metal=copper,uses=0": {
       "model": "mechanical:block/clay_hoe_head_mold_molten_copper"
     },
-    "fill=molten,uses=1": {
+    "fill=molten,metal=copper,uses=1": {
       "model": "mechanical:block/clay_hoe_head_mold_molten_copper"
     },
-    "fill=molten,uses=2": {
+    "fill=molten,metal=copper,uses=2": {
       "model": "mechanical:block/clay_hoe_head_mold_molten_copper"
     },
-    "fill=molten,uses=3": {
+    "fill=molten,metal=copper,uses=3": {
       "model": "mechanical:block/clay_hoe_head_mold_molten_copper"
     },
-    "fill=molten,uses=4": {
+    "fill=molten,metal=copper,uses=4": {
       "model": "mechanical:block/clay_hoe_head_mold_molten_copper"
     },
-    "fill=solid,uses=0": {
+    "fill=molten,metal=bronze,uses=0": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=1": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=2": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=3": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=4": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=0": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=1": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=2": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=3": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=4": {
+      "model": "mechanical:block/clay_hoe_head_mold_molten_bronze"
+    },
+    "fill=solid,metal=copper,uses=0": {
       "model": "mechanical:block/clay_hoe_head_mold_solid_copper"
     },
-    "fill=solid,uses=1": {
+    "fill=solid,metal=copper,uses=1": {
       "model": "mechanical:block/clay_hoe_head_mold_solid_copper"
     },
-    "fill=solid,uses=2": {
+    "fill=solid,metal=copper,uses=2": {
       "model": "mechanical:block/clay_hoe_head_mold_solid_copper"
     },
-    "fill=solid,uses=3": {
+    "fill=solid,metal=copper,uses=3": {
       "model": "mechanical:block/clay_hoe_head_mold_solid_copper"
     },
-    "fill=solid,uses=4": {
+    "fill=solid,metal=copper,uses=4": {
       "model": "mechanical:block/clay_hoe_head_mold_solid_copper"
+    },
+    "fill=solid,metal=bronze,uses=0": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=1": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=2": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=3": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=4": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=0": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=1": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=2": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=3": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=4": {
+      "model": "mechanical:block/clay_hoe_head_mold_solid_bronze"
     }
   }
 }

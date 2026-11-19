@@ -97,7 +97,7 @@ public class RecipeStationMenu extends AbstractContainerMenu {
 
     @Override
     public void slotsChanged(Container container) {
-        result.setItem(0, current().map(StationRecipe::assemble).orElse(ItemStack.EMPTY));
+        result.setItem(0, current().map(r -> Bronze.inheritPoor(r.assemble(), inputs)).orElse(ItemStack.EMPTY));
         broadcastChanges();
     }
 
@@ -143,7 +143,7 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         ItemStack out = ItemStack.EMPTY;
         for (int i = 0; i < inventory.getContainerSize() && out.getCount() < count; i++) {
             ItemStack stack = inventory.getItem(i);
-            if (!stack.is(item)) continue;
+            if (!stack.is(item) || !out.isEmpty() && !ItemStack.isSameItemSameComponents(out, stack)) continue; // don't merge Poor Bronze into good
             ItemStack taken = inventory.removeItem(i, count - out.getCount());
             if (out.isEmpty()) out = taken;
             else out.grow(taken.getCount());

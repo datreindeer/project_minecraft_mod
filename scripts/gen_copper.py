@@ -23,11 +23,14 @@ def patch_tag(path, values):
 
 
 SHAPES = ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
+# every mold lives here; these two only take bronze (their textures: gen_bronze_textures.py, items: gen_bronze.py)
+MOLDS = SHAPES + ["saw_blade", "plate"]
+METALS = ["copper", "bronze", "poor_bronze"]  # ClayMoldBlock.METAL; poor bronze looks like bronze
 HEADS = ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
 
 # ---- flat items ----
 FLAT = (["unfired_clay_tuyere", "clay_tuyere", "molten_crucible", "solid_crucible"]
-        + [f"rough_cast_copper_{h}" for h in HEADS] + [f"copper_{h}" for h in HEADS] + [f"unfired_clay_{s}_mold" for s in SHAPES])
+        + [f"rough_cast_copper_{h}" for h in HEADS] + [f"copper_{h}" for h in HEADS] + [f"unfired_clay_{s}_mold" for s in MOLDS])
 for item in FLAT:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
@@ -84,20 +87,23 @@ w(A / "blockstates/whetstone.json", {"variants": {f"facing={f},grind={g}": {"mod
 w(A / "items/whetstone.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/whetstone"}})
 
 # ---- Clay Molds: a fired clay slab with the casting's cavity in its top; molten / set metal shows in the cavity ----
-for s in SHAPES:
+for s in MOLDS:
     base = {"particle": "mechanical:block/kiln_clay_fired", "side": "mechanical:block/kiln_clay_fired", "top": f"mechanical:block/clay_{s}_mold_top"}
     slab = {"from": [1, 0, 1], "to": [15, 3, 15], "faces": {
         "up": {"texture": "#top", "uv": [1, 1, 15, 15]}, "down": {"texture": "#side", "cullface": "down"},
         **{d: {"texture": "#side", "uv": [1, 13, 15, 16]} for d in ("north", "south", "east", "west")}}}
     w(A / f"models/block/clay_{s}_mold.json", {"parent": "minecraft:block/block", "textures": base, "elements": [slab]})
-    for fill in ("molten", "solid"):
-        metal = {"from": [1, 3.01, 1], "to": [15, 3.01, 15], "shade": fill == "solid", **({"light_emission": 12} if fill == "molten" else {}),
-                 "faces": {"up": {"texture": "#metal", "uv": [1, 1, 15, 15]}}}
-        w(A / f"models/block/clay_{s}_mold_{fill}_copper.json", {"parent": "minecraft:block/block",
-            "textures": {**base, "metal": f"mechanical:block/clay_{s}_mold_copper_{fill}"}, "elements": [slab, metal]})
+    looks = ["copper", "bronze"] if s in SHAPES else ["bronze"]  # copper never lands in the saw blade / plate mold
+    for look in looks:
+        for fill in ("molten", "solid"):
+            metal = {"from": [1, 3.01, 1], "to": [15, 3.01, 15], "shade": fill == "solid", **({"light_emission": 12} if fill == "molten" else {}),
+                     "faces": {"up": {"texture": "#metal", "uv": [1, 1, 15, 15]}}}
+            w(A / f"models/block/clay_{s}_mold_{fill}_{look}.json", {"parent": "minecraft:block/block",
+                "textures": {**base, "metal": f"mechanical:block/clay_{s}_mold_{look}_{fill}"}, "elements": [slab, metal]})
+    look = lambda m: "copper" if m == "copper" and "copper" in looks else "bronze"
     w(A / f"blockstates/clay_{s}_mold.json", {"variants": {
-        f"fill={fill},uses={u}": {"model": f"mechanical:block/clay_{s}_mold" + ("" if fill == "empty" else f"_{fill}_copper")}
-        for fill in ("empty", "molten", "solid") for u in range(5)}})
+        f"fill={fill},metal={m},uses={u}": {"model": f"mechanical:block/clay_{s}_mold" + ("" if fill == "empty" else f"_{fill}_{look(m)}")}
+        for fill in ("empty", "molten", "solid") for m in METALS for u in range(5)}})
     w(A / f"items/clay_{s}_mold.json", {"model": {"type": "minecraft:model", "model": f"mechanical:block/clay_{s}_mold"}})
     # picked up, a mold keeps how many casts it has made (cracks at 5)
     w(D / f"mechanical/loot_table/blocks/clay_{s}_mold.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
@@ -140,6 +146,8 @@ MOLD_PATTERNS = {  # clay balls around the cavity; each one unique (and unlike t
     "shovel_head": ["C C", "C C", " C "],
     "hoe_head": ["CC ", "C  ", "CCC"],
     "knife_blade": ["C C", " C ", " C "],
+    "saw_blade": ["CCC", "C C"],
+    "plate": ["CCC", "C C", "CCC"],
 }
 for s, pattern in MOLD_PATTERNS.items():
     shaped(f"unfired_clay_{s}_mold", pattern, C, M + f"unfired_clay_{s}_mold")
@@ -148,8 +156,8 @@ for s, pattern in MOLD_PATTERNS.items():
 lang_path = A / "lang/en_us.json"
 lang = json.loads(lang_path.read_text())
 title = lambda s: s.replace("_", " ").title()
-lang.update({f"item.mechanical.unfired_clay_{s}_mold": f"Unfired Clay {title(s)} Mold" for s in SHAPES})
-lang.update({f"block.mechanical.clay_{s}_mold": f"Clay {title(s)} Mold" for s in SHAPES})
+lang.update({f"item.mechanical.unfired_clay_{s}_mold": f"Unfired Clay {title(s)} Mold" for s in MOLDS})
+lang.update({f"block.mechanical.clay_{s}_mold": f"Clay {title(s)} Mold" for s in MOLDS})
 lang.update({f"item.mechanical.rough_cast_copper_{h}": f"Rough Cast Copper {title(h)}" for h in HEADS})
 lang.update({f"item.mechanical.copper_{h}": f"Copper {title(h)}" for h in HEADS})
 lang.update({
@@ -158,7 +166,7 @@ lang.update({
     "item.mechanical.molten_crucible": "Crucible of Molten Metal", "item.mechanical.solid_crucible": "Crucible of Solid Metal",
     "item.mechanical.molten_crucible.of": "Crucible of Molten %s", "item.mechanical.solid_crucible.of": "Crucible of Solid %s",
     "metal.mechanical.copper": "Copper",
-    "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper Ore or Native Copper onto it in your inventory",
+    "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper Ore, Native Copper or Crushed Tin Ore onto it in your inventory",
     "tooltip.mechanical.crucible.ore": "%s ore: %s/%s units",
     "tooltip.mechanical.crucible.metal": "%s: %s units",
     "tooltip.mechanical.crucible.melts": "Melts in a Clay Kiln at %s°",
