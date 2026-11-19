@@ -264,6 +264,34 @@ def stone(seed, pal):
     return img
 
 
+def flour_pile():
+    """A heap of stone-ground flour: a soft cone lit from the upper left, off-white with bran specks, dust at the foot."""
+    rng = random.Random(77)
+    pal = ["8d8270", "b3a993", "d2c9b4", "e6dfcd", "f4efe2"]
+    img = new()
+    for y in range(4, 15):
+        half = 1.0 + (y - 4) * 0.62                       # widens towards the base
+        for x in range(16):
+            dx = x + 0.5 - 7.5
+            if abs(dx) > half:
+                continue
+            t = 0.62 - dx / max(half, 1) * 0.28 - (y - 4) * 0.02
+            if y >= 13:
+                t -= 0.18 * (y - 12)                      # shadowed foot of the heap
+            t += rng.uniform(-0.06, 0.06)
+            i = min(4, max(0, int(t * 5)))
+            put(img, x, y, pal[i])
+            if rng.random() < 0.06 and y < 13:
+                put(img, x, y, "9c8a68")                  # bran specks
+    for y in range(4, 15):                                # dark rim so it reads against the slot
+        row = [x for x in range(16) if img.getpixel((x, y))[3]]
+        if row:
+            put(img, row[0], y, pal[0]); put(img, row[-1], y, pal[0])
+    for x in (2, 13, 14, 1):                              # a little spilled dust
+        put(img, x, 15, pal[2])
+    return img
+
+
 QUERN = ("a8a49c", "8e8a82", "7c7870", "66625c", "4a4742")
 SOOT = ("6a6460", "524e4a", "45413e", "35322f", "242220")
 
@@ -778,7 +806,7 @@ def build():
     out["block/scarecrow_straw"] = straw_block()
     out["item/peas"] = grid(PEAS, PEAS_PAL)
     out["item/straw"] = grid(STRAW_ITEM, STRAW_PAL)
-    out["item/flour"] = grid(FLOUR, FLOUR_PAL)
+    out["item/flour"] = flour_pile()
     out["item/dough"] = grid(DOUGH, DOUGH_PAL)
     out["item/raw_porridge"] = grid(RAW_PORRIDGE, RAW_PAL)
     out["item/porridge"] = grid(PORRIDGE, PORRIDGE_PAL)
