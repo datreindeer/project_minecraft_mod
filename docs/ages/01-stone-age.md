@@ -603,6 +603,7 @@ sedan börjar den om från blommor (~12 min tills den är mogen igen). Inga tagg
 | Wild Strawberry Bush | Plains, Sunflower Plains, Meadow, Flower Forest | Wild Strawberries |
 | Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries |
 | Cloudberry Bush | Swamp, Snowy Plains, Snowy Taiga, Grove | Cloudberries |
+| Blackberry Bush | Snowy Taiga, Snowy Plains, Grove, Taiga, Old Growth Spruce Taiga, Windswept Forest | Blackberries |
 
 **Svampar:** högerklicka (eller bryt) för att plocka. Sprider sig långsamt till en plats i närheten i skugga (ljus ≤ 12),
 om det finns färre än 4 av samma sort runt omkring.

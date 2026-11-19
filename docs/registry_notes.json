@@ -420,6 +420,8 @@
   "cloudberry_bush": {
     "text": "Vild buske i Swamp, Snowy Plains, Snowy Taiga, Grove. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[cloudberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
   },
+  "blackberry_bush": {"text": "Vild björnbärsbuske i kalla biomer: Snowy Taiga, Snowy Plains, Grove, Taiga, Old Growth Spruce Taiga, Windswept Forest. Sällsynt, i små grupper. Växer bar → vita blommor → hårda röda bär → glansigt svarta (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[blackberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."},
+  "blackberries": {"text": "Plockas från en mogen [[blackberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."},
   "cloudberries": {
     "text": "Plockas från en mogen [[cloudberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
   },

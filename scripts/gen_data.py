@@ -258,7 +258,7 @@ w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "te
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
 BUSHES = {"raspberry": "raspberries", "blueberry": "blueberries", "lingonberry": "lingonberries",
-          "wild_strawberry": "wild_strawberries", "elderberry": "elderberries", "cloudberry": "cloudberries"}
+          "wild_strawberry": "wild_strawberries", "elderberry": "elderberries", "cloudberry": "cloudberries", "blackberry": "blackberries"}
 MUSHROOMS = ["chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball"]
 w(D / "mechanical/tags/item/basket_storable.json", {"values": ["minecraft:apple", "minecraft:golden_apple", "minecraft:sweet_berries",
     "minecraft:glow_berries", "minecraft:melon_slice", "minecraft:chorus_fruit", "minecraft:leather", "minecraft:rabbit_hide",
@@ -288,6 +288,8 @@ BUSH_BIOMES = {
     "wild_strawberry": ["minecraft:plains", "minecraft:meadow", "minecraft:flower_forest", "minecraft:sunflower_plains"],
     "elderberry": ["minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:river"],
     "cloudberry": ["minecraft:swamp", "minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove"],
+    "blackberry": ["minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:grove", "minecraft:taiga",
+                   "minecraft:old_growth_spruce_taiga", "minecraft:windswept_forest"],
 }
 for bush, berries in BUSHES.items():
     block = f"{bush}_bush"

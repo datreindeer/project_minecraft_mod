@@ -365,5 +365,7 @@
   "item.mechanical.unfired_clay_bucket": "Unfired Clay Bucket",
   "item.mechanical.clay_bucket": "Clay Bucket",
   "item.mechanical.clay_water_bucket": "Clay Water Bucket",
-  "message.mechanical.kiln.unfired": "The clay is still raw: keep a fire burning in the kiln until it is fired"
+  "message.mechanical.kiln.unfired": "The clay is still raw: keep a fire burning in the kiln until it is fired",
+  "block.mechanical.blackberry_bush": "Blackberry Bush",
+  "item.mechanical.blackberries": "Blackberries"
 }

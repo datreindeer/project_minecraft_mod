@@ -40,6 +40,7 @@ public final class Foraging {
         BUSHES.put("wild_strawberry", "wild_strawberries");
         BUSHES.put("elderberry", "elderberries");
         BUSHES.put("cloudberry", "cloudberries");
+        BUSHES.put("blackberry", "blackberries");
     }
     public static final List<String> MUSHROOMS = List.of("chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball");
 

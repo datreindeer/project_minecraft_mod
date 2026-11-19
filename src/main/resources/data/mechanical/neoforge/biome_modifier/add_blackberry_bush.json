@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:snowy_taiga",
+    "minecraft:snowy_plains",
+    "minecraft:grove",
+    "minecraft:taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:windswept_forest"
+  ],
+  "features": "mechanical:blackberry_bush",
+  "step": "vegetal_decoration"
+}

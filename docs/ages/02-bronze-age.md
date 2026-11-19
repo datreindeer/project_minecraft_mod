@@ -24,7 +24,8 @@ Sinew, Tool Station och Armor Station.
 6. **Legera brons.** Ungefär 9 delar koppar och 1 del tenn i samma degel → **Bronze**. Fel blandning ger svagare metall.
 7. **Montera.** Gjutna huvuden (kanske slipade på en **Whetstone**, se öppna frågor) sätts ihop i Tool Station med
    skaft och binding, som stenverktygen.
-8. **Rustning.** Gjut **Bronze Plates** i en plåtform och sätt ihop rustning i Armor Station.
+8. **Rustning (bara delvis).** Gjut **Bronze Helmet** och **Bronze Greaves** (benskydd), slipa dem och sätt ihop i
+   Armor Station. Ingen bröstplåt: bålen skyddas fortfarande av fur/läder. Full plåtrustning kommer med järnet.
 9. **Mot järnet.** Fire Clay → eldfast tegel → **Bloomery**, som behöver bälgar och ger en järnlupp. Järnmalm kräver
    en bronshacka.
 
@@ -41,7 +42,7 @@ Sinew, Tool Station och Armor Station.
 | Crude Copper / Crude Tin Ingot, Copper Ingot, Bronze Ingot | Items | Användarens texturer finns (workshop/) |
 | Copper Bloom, Bronze Dust, Bronze Plate | Items | Mellanprodukter (texturer finns) |
 | Copper- och Bronze-verktyg | Verktyg | Yxa, hacka, spade, hacka (hoe), kniv, spjut, svärd, såg |
-| Bronze Armor | Rustning | Armor Station |
+| Bronze Helmet, Bronze Greaves | Rustning | Gjuts, slipas, Armor Station. Ingen bröstplåt eller boots |
 | Basic Smithing Hammer, Basic Binding | Verktyg/item | Texturer finns |
 | Whetstone | Block/verktyg | Slipa gjutna huvuden |
 | Saw | Verktyg | Planks från logs (den öppna punkten från stenåldern) |
@@ -60,11 +61,44 @@ Sinew, Tool Station och Armor Station.
   i bronsåldern, det sparas till järnet.
 - **Värme:** temperatur + bälg. Kilnen får en temperaturmätare, bälgen höjer den, utan bälg sjunker den. Koppar kräver
   hög värme som måste hållas uppe.
-- **Koppar-tier före brons:** ja. Kopparverktyg är ett mjukt mellansteg innan man har tenn.
+- **Koppar-tier före brons:** ja. Kopparverktyg är ett mjukt mellansteg innan man har tenn. Ingen kopparrustning.
+- **Rustning:** bara Bronze Helmet och Bronze Greaves (benskydd). Ingen bröstplåt; full rustning i järnåldern.
 - **Inte nu:** modulära verktyg (huvud/skaft/binding som egna delar med stats), jordbruk, tämja hästar.
 
-## Öppna frågor
+- **Temperatur:** realistiska grader. Lera bränns vid 600°, brons smälter vid ~950°, koppar vid 1085°. Varje bälgpump
+  höjer en bit; utan pump sjunker temperaturen långsamt (pumpa några gånger per minut under smältning).
+- **Clay Mold:** håller ungefär 5 gjutningar, sedan spricker den.
+- **Efter gjutning:** huvuden kommer ut som **Rough Cast ...** och slipas på en **Whetstone** (några högerklick) innan de
+  kan monteras i Tool Station.
 
-- Exakta temperaturer (t.ex. lera 600°, koppar 1085°, brons ~950°) och hur snabbt bälgen höjer.
-- Hur många gjutningar en Clay Mold klarar.
-- Om Whetstone/kallhamring behövs efter gjutning, eller om gjutna huvuden är färdiga direkt.
+## Faser
+
+1. **Malm** (fas 1): ytfynd, vaskning, krossning. Se spec nedan.
+2. **Värme:** kilnens temperatur, Bellows, mätare i GUI.
+3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots, legering, tvättat koncentrat ger mer metall.
+4. **Verktyg och rustning:** koppar- och bronsverktyg, Whetstone, Saw, Bronze Helmet + Greaves, byhandel nivå 3.
+
+## Fas 1: malm (spec)
+
+**Ytfynd (worldgen).** En feature i vegetationssteget provar några kolumner per chunk och letar nedåt (inom chunken) efter
+Copper Ore / Deepslate Copper Ore upp till ~64 block under ytan. Hittas malm läggs 1–3 ytfynd på marken nära kolumnen:
+**Malachite** (grön sten, vanligast) och ibland **Native Copper** (~15 %). Samma sak över Tin Ore med mörka
+**Cassiterite**-stenar. Ytfynden är lösa block som plockas för hand (som Loose Rocks) och ger sitt item.
+
+**Malm och drops.**
+- Copper Ore: vanilla (Raw Copper), kräver minst Stone Pickaxe.
+- Tin Ore: ger 1–2 **Cassiterite** i stället för blocket.
+- Native Copper: ren koppar, smälts direkt i fas 3 (krossas inte).
+
+**Pan (vaskning).** Pan (Tool Station eller crafting av trä/bark, 64 användningar). Högerklick på grus eller sand →
+blocket tas och pannan blir fylld (Pan with Gravel / Sand). Använd sedan i vatten (stå i eller sikta på vatten), ~3 s
+"använd"-animation → resultat från loot table: Flint, små stenar, **Cassiterite** (vanligare vid floder, stränder och
+stenig strand), sällan **Native Copper**, ofta inget.
+
+**Stone Anvil (krossning).** Ett platt stenblock. Lägg malm på det (högerklick, syns ovanpå), slå med hammarsten
+(Flint Pickaxe eller Stone Pickaxe) några gånger → krossad malm hoppar av; hammaren slits.
+- Raw Copper → 2 **Crushed Copper Ore**
+- Malachite → 1 Crushed Copper Ore
+- Cassiterite → 1 **Crushed Tin Ore**
+
+Krossad malm används i fas 3 (smälts, eller tvättas i Pan först för mer metall).
