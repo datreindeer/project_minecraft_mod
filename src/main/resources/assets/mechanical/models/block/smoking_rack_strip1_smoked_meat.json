@@ -1,0 +1,67 @@
+{
+  "textures": {
+    "particle": "mechanical:block/smoking_rack",
+    "strip": "mechanical:block/smoking_rack_smoked_meat"
+  },
+  "elements": [
+    {
+      "from": [
+        3.5,
+        5,
+        7.5
+      ],
+      "to": [
+        5.5,
+        14,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            2,
+            9
+          ],
+          "texture": "#strip"
+        },
+        "south": {
+          "uv": [
+            2,
+            0,
+            0,
+            9
+          ],
+          "texture": "#strip"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            9
+          ],
+          "texture": "#strip"
+        },
+        "west": {
+          "uv": [
+            1,
+            0,
+            2,
+            9
+          ],
+          "texture": "#strip"
+        },
+        "down": {
+          "uv": [
+            0,
+            8,
+            2,
+            9
+          ],
+          "texture": "#strip"
+        }
+      }
+    }
+  ]
+}

@@ -84,6 +84,7 @@
     "mechanical:stripped_linden_wood",
     "mechanical:sharpened_oak_log",
     "mechanical:sharpened_spruce_log",
-    "mechanical:bellows"
+    "mechanical:bellows",
+    "mechanical:smoking_rack"
   ]
 }

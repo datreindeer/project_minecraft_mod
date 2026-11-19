@@ -1,0 +1,23 @@
+{
+  "values": [
+    "mechanical:beef_scraps",
+    "mechanical:porkchop_scraps",
+    "mechanical:mutton_scraps",
+    "mechanical:chicken_scraps",
+    "mechanical:rabbit_scraps",
+    "mechanical:game_meat_scraps",
+    "minecraft:beef",
+    "minecraft:porkchop",
+    "minecraft:mutton",
+    "minecraft:chicken",
+    "minecraft:rabbit",
+    "minecraft:cod",
+    "minecraft:salmon",
+    "minecraft:tropical_fish",
+    "minecraft:pufferfish",
+    "mechanical:whole_cod",
+    "mechanical:whole_salmon",
+    "mechanical:whole_tropical_fish",
+    "mechanical:whole_pufferfish"
+  ]
+}

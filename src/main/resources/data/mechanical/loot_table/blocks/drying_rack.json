@@ -67,6 +67,45 @@
               "hide": "5"
             }
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:jerky",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "7"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_fish",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "9"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_berries",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "11"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 4
+            }
+          ]
         }
       ]
     }

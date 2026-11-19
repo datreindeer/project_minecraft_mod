@@ -1,0 +1,22 @@
+{
+  "values": [
+    "mechanical:raspberries",
+    "mechanical:blueberries",
+    "mechanical:lingonberries",
+    "mechanical:wild_strawberries",
+    "mechanical:elderberries",
+    "mechanical:cloudberries",
+    "mechanical:blackberries",
+    "minecraft:sweet_berries",
+    "minecraft:glow_berries",
+    "mechanical:chanterelle",
+    "mechanical:porcini",
+    "mechanical:morel",
+    "mechanical:oyster_mushroom",
+    "mechanical:fly_agaric",
+    "mechanical:puffball",
+    "mechanical:porridge",
+    "mechanical:raw_porridge",
+    "mechanical:peeled_egg"
+  ]
+}

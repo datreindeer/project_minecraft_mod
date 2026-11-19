@@ -1,0 +1,899 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_frame"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_frame",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_frame",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_frame",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "raw_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "smoked_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "rotten",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_rotten"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "rotten",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_rotten"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "rotten",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_rotten"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "content": "rotten",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_rotten"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "raw_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "smoked_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "rotten",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_rotten",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "rotten",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_rotten",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "rotten",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_rotten",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "content": "rotten",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_rotten",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "raw_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "smoked_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "rotten",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_rotten",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "rotten",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_rotten",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "rotten",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_rotten",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "content": "rotten",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_rotten",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_raw_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_raw_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_raw_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "raw_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_raw_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_meat",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_meat",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_meat",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_meat",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_fish",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_smoked_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_fish",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_smoked_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_fish",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_smoked_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "smoked_fish",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_smoked_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "rotten",
+        "strips": "1|2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip1_rotten",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "rotten",
+        "strips": "2|3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip2_rotten",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "rotten",
+        "strips": "3|4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip3_rotten",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "content": "rotten",
+        "strips": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/smoking_rack_strip4_rotten",
+        "y": 270
+      }
+    }
+  ]
+}

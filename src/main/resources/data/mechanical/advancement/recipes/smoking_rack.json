@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_meat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:smokable_meat"
+          }
+        ]
+      }
+    },
+    "has_fish": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:smokable_fish"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_meat",
+      "has_fish"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:smoking_rack"
+    ]
+  }
+}

@@ -532,5 +532,15 @@
   "item.mechanical.scraped_phantom_hide": "Scraped Phantom Hide",
   "item.mechanical.phantom_leather": "Phantom Leather",
   "item.mechanical.glider_frame": "Glider Frame",
-  "item.mechanical.glider_cloak": "Glider Cloak"
+  "item.mechanical.glider_cloak": "Glider Cloak",
+  "item.mechanical.smoked_meat": "Smoked Meat",
+  "item.mechanical.smoked_fish": "Smoked Fish",
+  "item.mechanical.jerky": "Jerky",
+  "item.mechanical.dried_fish": "Dried Fish",
+  "item.mechanical.dried_berries": "Dried Berries",
+  "item.mechanical.spoiled_food": "Spoiled Food",
+  "block.mechanical.smoking_rack": "Smoking Rack",
+  "tooltip.mechanical.fresh": "Fresh",
+  "tooltip.mechanical.stale": "Stale",
+  "tooltip.mechanical.rotting": "Rotting"
 }

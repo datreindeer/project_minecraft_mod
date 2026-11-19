@@ -1,0 +1,19 @@
+{
+  "values": [
+    "mechanical:cooked_beef_scraps",
+    "mechanical:cooked_porkchop_scraps",
+    "mechanical:cooked_mutton_scraps",
+    "mechanical:cooked_chicken_scraps",
+    "mechanical:cooked_rabbit_scraps",
+    "mechanical:cooked_game_meat_scraps",
+    "minecraft:cooked_beef",
+    "minecraft:cooked_porkchop",
+    "minecraft:cooked_mutton",
+    "minecraft:cooked_chicken",
+    "minecraft:cooked_rabbit",
+    "minecraft:cooked_cod",
+    "minecraft:cooked_salmon",
+    "mechanical:roasted_mushrooms",
+    "mechanical:boiled_egg"
+  ]
+}
