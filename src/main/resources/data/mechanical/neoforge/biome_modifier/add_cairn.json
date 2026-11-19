@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_forest",
+    "minecraft:stony_shore",
+    "minecraft:meadow",
+    "minecraft:grove",
+    "minecraft:taiga",
+    "minecraft:snowy_taiga",
+    "minecraft:snowy_plains",
+    "minecraft:plains"
+  ],
+  "features": "mechanical:cairn",
+  "step": "surface_structures"
+}

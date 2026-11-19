@@ -24,6 +24,16 @@ public final class Structures {
         FEATURE_TYPES.register("flint_quarry", () -> FlintQuarry.CODEC);
         FEATURE_TYPES.register("mammoth_bone_hut", () -> MammothBoneHut.CODEC);
         FEATURE_TYPES.register("hermits_hut", () -> HermitsHut.CODEC);
+        // small decorations (scripts/gen_decorations.py)
+        FEATURE_TYPES.register("glacial_erratic", Boulder.ERRATIC::codec);
+        FEATURE_TYPES.register("mossy_boulder", Boulder.MOSSY::codec);
+        FEATURE_TYPES.register("sandstone_boulder", Boulder.SANDSTONE::codec);
+        FEATURE_TYPES.register("cairn", () -> Cairn.CODEC);
+        FEATURE_TYPES.register("balanced_rock", () -> BalancedRock.CODEC);
+        FEATURE_TYPES.register("rune_stone", () -> RuneStone.CODEC);
+        FEATURE_TYPES.register("stone_head", () -> StoneHead.CODEC);
+        FEATURE_TYPES.register("animal_carving", () -> AnimalCarving.CODEC);
+        FEATURE_TYPES.register("shrine_statue", () -> ShrineStatue.CODEC);
     }
 
     public static void init() {}

@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:snowy_plains",
+    "minecraft:savanna",
+    "minecraft:forest",
+    "minecraft:flower_forest",
+    "minecraft:birch_forest",
+    "minecraft:taiga",
+    "minecraft:snowy_taiga"
+  ],
+  "features": "mechanical:animal_carving",
+  "step": "surface_structures"
+}

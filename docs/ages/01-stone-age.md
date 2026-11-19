@@ -497,6 +497,22 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
 
+### Småsaker i landskapet (dekorationer)
+Små, vanliga saker som gör världen roligare att vandra i, byggs också bara i nya chunks (`scripts/gen_decorations.py`).
+Varje sak slumpar storlek, riktning och stensort, så ingen ser likadan ut. Runt de flesta ligger Loose rocks av samma sten.
+
+| Dekoration | Var | Ungefär 1 på N chunks | Utseende / innehåll |
+|---|---|---|---|
+| Glacial Erratic | Slätt, meadow, snowy plains, savann, windswept hills, stony shore | 24 | Stort rundat flyttblock (granite, diorite, andesite, stone, deepslate, tuff eller calcite), halvt nedsjunket, ibland 2–3 tillsammans |
+| Mossy Boulder | Skog, taiga | 24 | Mossig sten (mossy cobblestone) med Moss Block, mossmatta och ormbunkar runt om |
+| Sandstone Boulder | Öken, badlands | 24 | Sandstensblock (röd sandsten på röd sand) |
+| Cairn | Windswept hills, stony shore, meadow, grove, taiga, slätt | 70 | Uppstaplad stenhög med en mur-sten på toppen; var tredje är ett smalt stentorn med en Loose Stone balanserad överst. Ibland en **Decorated Pot** gömd inne i högen (ben, flinta, antler, bone arrows, sällan stenyxhuvud) |
+| Balanced Rock | Öken, badlands, savann, windswept hills | 70 | Bred sten balanserad på en smal stam |
+| Rune Stone | Slätt, meadow, skog, taiga | 140 | Platt stående sten med inristade tecken (chiseled stone bricks eller chiseled tuff), blommor och trampad mark framför |
+| Stone Head | Slätt, meadow, savann, windswept hills, stony shore | 200 | Jättelikt stenansikte nedsjunket till hakan, med panna, mörka ögon, lång näsa och mun. Var fjärde är dubbelt så stort |
+| Animal Carving | Slätt, meadow, savann, skog, taiga | 160 | En hjort, björn eller vildsvin huggen i sten på en låg sockel |
+| Shrine Statue | Slätt, meadow, savann, skog, taiga | 200 | Gammal stenfigur på en sockel mitt på ett litet torg av kullersten, grus och trampad jord, med slitna trappsteg, ljus, blommor och en **Decorated Pot** med offergåvor (bär, nötter, tallow, horn, antler, sällan Bear Claw). Ibland har huvudet ramlat av |
+
 ### Ancient Oak (uråldrig ek) och Offering Altar
 En väldig, förtrollad ek: en egen **struktur** (hitta den med `/locate structure mechanical:ancient_oak`), mycket
 sällsynt (en chans per 24×24 chunks, bara i Forest och Dark Forest). Sju väldiga rotben gör stammen ca **22 block bred
