@@ -185,6 +185,7 @@ public class TravoisEntity extends Entity {
             stuckTicks = d > lead(p) + 0.3 ? stuckTicks + 1 : 0;
             if (!(p instanceof Player) && p.isLocalInstanceAuthoritative()) tether(p, this); // a horse; players: CarcassHauling.onPlayerTick
             if (!level().isClientSide()) {
+                TrampledPaths.step(this); // runners and wheels wear paths too
                 strainTicks = isStuck() && d > lead(p) + SLACK - 0.2 && pullsAway(p) ? strainTicks + 1 : 0;
                 if (strainTicks >= STRAIN_TICKS) letGo(p, "stuck");
             }
