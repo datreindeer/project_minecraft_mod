@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=north,fish=0,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_0"
+    },
+    "facing=north,fish=0,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_0"
+    },
+    "facing=north,fish=1,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_1"
+    },
+    "facing=north,fish=1,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_1"
+    },
+    "facing=north,fish=2,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_2"
+    },
+    "facing=north,fish=2,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_2"
+    },
+    "facing=north,fish=3,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_3"
+    },
+    "facing=north,fish=3,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_3"
+    },
+    "facing=east,fish=0,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_0",
+      "y": 90
+    },
+    "facing=east,fish=0,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_0",
+      "y": 90
+    },
+    "facing=east,fish=1,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_1",
+      "y": 90
+    },
+    "facing=east,fish=1,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_1",
+      "y": 90
+    },
+    "facing=east,fish=2,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_2",
+      "y": 90
+    },
+    "facing=east,fish=2,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_2",
+      "y": 90
+    },
+    "facing=east,fish=3,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_3",
+      "y": 90
+    },
+    "facing=east,fish=3,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_3",
+      "y": 90
+    },
+    "facing=south,fish=0,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_0",
+      "y": 180
+    },
+    "facing=south,fish=0,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_0",
+      "y": 180
+    },
+    "facing=south,fish=1,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_1",
+      "y": 180
+    },
+    "facing=south,fish=1,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_1",
+      "y": 180
+    },
+    "facing=south,fish=2,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_2",
+      "y": 180
+    },
+    "facing=south,fish=2,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_2",
+      "y": 180
+    },
+    "facing=south,fish=3,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_3",
+      "y": 180
+    },
+    "facing=south,fish=3,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_3",
+      "y": 180
+    },
+    "facing=west,fish=0,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_0",
+      "y": 270
+    },
+    "facing=west,fish=0,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_0",
+      "y": 270
+    },
+    "facing=west,fish=1,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_1",
+      "y": 270
+    },
+    "facing=west,fish=1,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_1",
+      "y": 270
+    },
+    "facing=west,fish=2,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_2",
+      "y": 270
+    },
+    "facing=west,fish=2,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_2",
+      "y": 270
+    },
+    "facing=west,fish=3,waterlogged=false": {
+      "model": "mechanical:block/fish_trap_3",
+      "y": 270
+    },
+    "facing=west,fish=3,waterlogged=true": {
+      "model": "mechanical:block/fish_trap_3",
+      "y": 270
+    }
+  }
+}

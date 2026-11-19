@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "STS",
+    "S S",
+    "STS"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "T": "mechanical:twine"
+  },
+  "result": {
+    "id": "mechanical:fish_trap"
+  }
+}

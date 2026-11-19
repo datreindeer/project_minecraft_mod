@@ -1,0 +1,425 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/fish_trap_rim",
+    "weave": "mechanical:block/fish_trap_weave",
+    "rim": "mechanical:block/fish_trap_rim",
+    "twine": "mechanical:block/snare_twine",
+    "salmon": "mechanical:block/fish_trap_salmon",
+    "cod": "mechanical:block/fish_trap_cod"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        10,
+        14
+      ],
+      "faces": {
+        "south": {
+          "texture": "#weave"
+        },
+        "east": {
+          "texture": "#weave"
+        },
+        "west": {
+          "texture": "#weave"
+        },
+        "up": {
+          "texture": "#weave"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        2,
+        3
+      ],
+      "to": [
+        3,
+        8,
+        14
+      ],
+      "faces": {
+        "east": {
+          "texture": "#weave"
+        },
+        "west": {
+          "texture": "#weave"
+        },
+        "up": {
+          "texture": "#weave"
+        },
+        "down": {
+          "texture": "#weave"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        2,
+        3
+      ],
+      "to": [
+        14,
+        8,
+        14
+      ],
+      "faces": {
+        "east": {
+          "texture": "#weave"
+        },
+        "west": {
+          "texture": "#weave"
+        },
+        "up": {
+          "texture": "#weave"
+        },
+        "down": {
+          "texture": "#weave"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        10,
+        3
+      ],
+      "to": [
+        11,
+        11,
+        14
+      ],
+      "faces": {
+        "east": {
+          "texture": "#weave"
+        },
+        "west": {
+          "texture": "#weave"
+        },
+        "up": {
+          "texture": "#weave"
+        },
+        "down": {
+          "texture": "#weave"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        0,
+        1
+      ],
+      "to": [
+        14,
+        1.5,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rim"
+        },
+        "south": {
+          "texture": "#rim"
+        },
+        "east": {
+          "texture": "#rim"
+        },
+        "west": {
+          "texture": "#rim"
+        },
+        "up": {
+          "texture": "#rim"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        9,
+        1
+      ],
+      "to": [
+        14,
+        11,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rim"
+        },
+        "south": {
+          "texture": "#rim"
+        },
+        "east": {
+          "texture": "#rim"
+        },
+        "west": {
+          "texture": "#rim"
+        },
+        "up": {
+          "texture": "#rim"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        1.5,
+        1
+      ],
+      "to": [
+        4,
+        9,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rim"
+        },
+        "south": {
+          "texture": "#rim"
+        },
+        "east": {
+          "texture": "#rim"
+        },
+        "west": {
+          "texture": "#rim"
+        },
+        "up": {
+          "texture": "#rim"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        12,
+        1.5,
+        1
+      ],
+      "to": [
+        14,
+        9,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rim"
+        },
+        "south": {
+          "texture": "#rim"
+        },
+        "east": {
+          "texture": "#rim"
+        },
+        "west": {
+          "texture": "#rim"
+        },
+        "up": {
+          "texture": "#rim"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        3,
+        3
+      ],
+      "to": [
+        11,
+        8,
+        7
+      ],
+      "faces": {
+        "east": {
+          "texture": "#weave"
+        },
+        "west": {
+          "texture": "#weave"
+        },
+        "up": {
+          "texture": "#weave"
+        },
+        "down": {
+          "texture": "#weave"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        2,
+        14
+      ],
+      "to": [
+        11,
+        8,
+        15.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rim"
+        },
+        "south": {
+          "texture": "#rim"
+        },
+        "east": {
+          "texture": "#rim"
+        },
+        "west": {
+          "texture": "#rim"
+        },
+        "up": {
+          "texture": "#rim"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        3.5,
+        15.5
+      ],
+      "to": [
+        9.5,
+        6.5,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rim"
+        },
+        "south": {
+          "texture": "#rim"
+        },
+        "east": {
+          "texture": "#rim"
+        },
+        "west": {
+          "texture": "#rim"
+        },
+        "up": {
+          "texture": "#rim"
+        },
+        "down": {
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        4.75,
+        4.5,
+        14.25
+      ],
+      "to": [
+        11.25,
+        5.5,
+        15.25
+      ],
+      "faces": {
+        "north": {
+          "texture": "#twine"
+        },
+        "south": {
+          "texture": "#twine"
+        },
+        "east": {
+          "texture": "#twine"
+        },
+        "west": {
+          "texture": "#twine"
+        },
+        "up": {
+          "texture": "#twine"
+        },
+        "down": {
+          "texture": "#twine"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        0.6,
+        7
+      ],
+      "to": [
+        12,
+        0.6,
+        13.5
+      ],
+      "faces": {
+        "up": {
+          "texture": "#salmon",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        3.5,
+        4,
+        6
+      ],
+      "to": [
+        3.5,
+        9,
+        13.5
+      ],
+      "faces": {
+        "east": {
+          "texture": "#cod",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#cod",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

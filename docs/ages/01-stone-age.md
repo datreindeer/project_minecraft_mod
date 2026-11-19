@@ -583,6 +583,40 @@ Samma eldar som ger rök (tänd Campfire, Soul Campfire, brinnande Clay Kiln) so
 - **Rensa:** Whole fish + Flint Knife (crafting, kniven slits 1) → vanilla rå fisk (filén) + **Fish Bones**.
 - Fish Bones → 1 Bone Meal.
 
+### Fällor och snaror
+Mat utan att jaga själv. Båda recepten låses upp när man får Twine. Koden: `Traps.java`, `SnareBlock.java`,
+`FishTrapBlock.java`; data `scripts/gen_traps.py`, texturer `scripts/gen_trap_textures.py`.
+
+**Snare** (crafting table): `[Stick][Cordage]` / `[Stick][ ]` → 1 Snare. Ett lågt block på marken: två pinnar med en
+tvärslå och en snara av snöre som hänger tvärs över stigen (vänd mot den som sätter ut den).
+- **Fångst:** ett litet vilt djur (vuxet, vilt, lämnar kropp, hitbox högst 0,75 block: Hare, Desert Hare, Rabbit,
+  Squirrel, Pheasant, Badger, Hedgehog, Chicken, Fox …) som går in i en gillrad snara fastnar med **80 %** chans: det
+  dör där och blir en vanlig **Carcass** som styckas som vanligt. Annars slinker det ur, får panik och snaran är utlöst tom.
+  Flockfåglar fastnar inte. Kroppen ligger kvar i 5 min som vanligt.
+- **Snaran går sönder** vid **15 %** av fångsterna: blocket försvinner och en Stick blir kvar.
+- **Lockar djur:** var 10:e sekund kan en gillrad snara få ett litet djur i närheten att gå fram till den
+  (ett slumpvis djur i området, det ger upp efter 30 s). Rädsla går före: ser djuret en spelare springer det i stället.
+  - **Betad** (högerklicka med bär, frön, säd, Peas, Carrot eller Apple; taggen `mechanical:snare_bait`): inom **8 block**, **50 %** chans per 10 s.
+  - **Obetad:** inom 6 block, **4 %** per 10 s; **×2** på en stig (Dirt Path, Coarse Dirt) eller nära bärbuskar (3 block),
+    **×2,5** från skymning till strax efter gryning (dagtid 12000–1000).
+  - Djur som vandrar förbi kan också gå rakt in i snaran av sig själva.
+- **Utlöst** snara (nedfallen tvärslå, snaran åtdragen på marken) fångar inget. **Högerklicka** för att gillra den igen (betet är borta).
+- **Spelare** som går över en gillrad snara löser ut den och snubblar (**Slowness II i 2 s**), ingen skada. Smyger man kliver man över.
+  Stora djur (rådjur, vildsvin …) trampar sönder den, alltså löser ut den tom.
+- Testat på dev-server: 4 betade snaror i en inhägnad med 6 småvilt: 3 fångster på 2 minuter (Squirrel, Pheasant, Badger), en snara gick sönder.
+
+**Fish Trap** (crafting table): `[Stick][Twine][Stick]` / `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 1 Fish Trap.
+En flätad korg av pinnar med en tratt i mynningen, som läggs i vatten (stilla eller rinnande; den blir vattenfylld).
+- Vid varje random tick (~68 s i snitt) kan den fånga en fisk, upp till **3**. Fiskarna syns genom flätverket.
+  **Högerklicka** för att tömma (Whole fish som rensas med kniv). Bryter man fällan faller fisken ut.
+- Kräver **minst 12 vattenblock** inom 3 block åt sidorna och 2 nedåt: i en liten damm fångar den inget. På land fångar den inget.
+- Chans per random tick: **20 %** i sjö/damm, **×2 i flod** (River-biom), **×1,25** i hav/strand, **×1,5** om rinnande vatten
+  ligger bredvid; högst 60 %. Ungefär en fisk per 5,7 min i en sjö, 2,8 min i en flod.
+- Art efter biom (bestäms när man tömmer): flod 70 % Whole Salmon / 30 % Whole Cod; varmt och ljummet hav 50 % Whole
+  Tropical Fish, 10 % Whole Pufferfish, 40 % Whole Cod; annars 70 % Whole Cod / 30 % Whole Salmon.
+- Testat: två fällor i en flod fylldes till 3 med random_tick_speed 30; en fälla i en vattenpöl på 2 block fick inget.
+
+
 ### Byar och tamdjur
 - **Cow, Sheep, Pig, Chicken, Horse, Donkey och Llama spawnar inte i naturen.** Goat, Rabbit och Mooshroom finns kvar.
 - Första gången en spelare kommer inom 48 block från en bys klocka byggs en **hage** (7×7 Oak Fence med grind) på plan

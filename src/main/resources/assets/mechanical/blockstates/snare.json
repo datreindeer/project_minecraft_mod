@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "baited=false,facing=north,sprung=false": {
+      "model": "mechanical:block/snare_set"
+    },
+    "baited=true,facing=north,sprung=false": {
+      "model": "mechanical:block/snare_set_baited"
+    },
+    "baited=false,facing=north,sprung=true": {
+      "model": "mechanical:block/snare_sprung"
+    },
+    "baited=true,facing=north,sprung=true": {
+      "model": "mechanical:block/snare_sprung"
+    },
+    "baited=false,facing=east,sprung=false": {
+      "model": "mechanical:block/snare_set",
+      "y": 90
+    },
+    "baited=true,facing=east,sprung=false": {
+      "model": "mechanical:block/snare_set_baited",
+      "y": 90
+    },
+    "baited=false,facing=east,sprung=true": {
+      "model": "mechanical:block/snare_sprung",
+      "y": 90
+    },
+    "baited=true,facing=east,sprung=true": {
+      "model": "mechanical:block/snare_sprung",
+      "y": 90
+    },
+    "baited=false,facing=south,sprung=false": {
+      "model": "mechanical:block/snare_set",
+      "y": 180
+    },
+    "baited=true,facing=south,sprung=false": {
+      "model": "mechanical:block/snare_set_baited",
+      "y": 180
+    },
+    "baited=false,facing=south,sprung=true": {
+      "model": "mechanical:block/snare_sprung",
+      "y": 180
+    },
+    "baited=true,facing=south,sprung=true": {
+      "model": "mechanical:block/snare_sprung",
+      "y": 180
+    },
+    "baited=false,facing=west,sprung=false": {
+      "model": "mechanical:block/snare_set",
+      "y": 270
+    },
+    "baited=true,facing=west,sprung=false": {
+      "model": "mechanical:block/snare_set_baited",
+      "y": 270
+    },
+    "baited=false,facing=west,sprung=true": {
+      "model": "mechanical:block/snare_sprung",
+      "y": 270
+    },
+    "baited=true,facing=west,sprung=true": {
+      "model": "mechanical:block/snare_sprung",
+      "y": 270
+    }
+  }
+}
