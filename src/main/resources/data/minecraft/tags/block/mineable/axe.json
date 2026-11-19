@@ -164,7 +164,7 @@
     "mechanical:fish_trap",
     "mechanical:dugout_blank",
     "mechanical:smoking_rack",
-    "mechanical:potters_wheel",
-    "mechanical:hanging_rack"
+    "mechanical:hanging_rack",
+    "mechanical:potters_wheel"
   ]
 }
