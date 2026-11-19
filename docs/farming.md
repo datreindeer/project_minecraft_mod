@@ -6,6 +6,11 @@
 
 ## Beslut
 
+- **Åldrar (delad):** stenåldern har vild säd och Wild Pea, sådd med Flint Hoe, Flint Sickle, Flail/tröskning,
+  Porridge och alla växtregler (temperatur, frost, ljus, vatten, bördighet med träda och Wild Pea, kråkor).
+  **Bronsåldern** ger Quern → Flour → Dough → Bread, Compost Heap/Compost, Manure och Scarecrow (byggs nu men får
+  recept först i bronsåldern fas 3, med en koppar-/bronsdel), senare bronsskära och plog. Vanillas 3 Wheat → Bread är
+  borttaget: bröd kräver mjöl.
 - **Säd = utsäde.** Mogen säd ger en **kärve**; tröskning ger **Grain** och **Straw**. Samma Grain sås, mals eller äts:
   varje skörd är ett val mellan att äta och att odla. Inga separata "seeds" som rinner över.
 - **System i första versionen:** temperatur och frost, vatten och torka, bördighet och kompost, kråkor och fågelskrämma.
