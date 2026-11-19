@@ -86,6 +86,13 @@ def tamed(entity):
         "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": mid(entity)}}}}}
 
 
+def stood_on(block, state=None):
+    """The player standing on the block (checked about once a second)."""
+    pred = {"blocks": mid(block), **({"state": state} if state else {})}
+    return {"stood_on": {"trigger": "minecraft:location", "conditions": {"player": {
+        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:stepping_on": {"block": pred}}}}}}
+
+
 SCRAPS = [f"{a}_scraps" for a in ("beef", "porkchop", "mutton", "chicken", "rabbit", "game_meat", "venison")]
 COOKED = [f"cooked_{s}" for s in SCRAPS] + ["cooked_haunch", "cooked_ribs", "cooked_loin"]
 BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "elderberries", "cloudberries",
@@ -171,6 +178,9 @@ TABS = {
         ("cave_painting", "paint", "paintbrush", G, "Cave Painter",
          "Paint in the off hand, right-click a wall with a Paintbrush (Stick + 2 Plant Fibre). Sneak to pick a motif",
          used_on("paintbrush")),
+        ("beaten_path", "root", "trodden_path", T, "Beaten Path",
+         "Walk the same way over grass a few dozen times until it wears into a Trodden Path. Paths are faster to walk on",
+         stood_on("trodden_path", {"persistent": "false"})),
     ]),
     "wilderness": ("minecraft:gui/advancements/backgrounds/adventure", [
         ("root", None, "flint_knife", T, "Wilderness & Hunting",

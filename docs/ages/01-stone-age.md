@@ -1010,7 +1010,7 @@ tvärslå och en snara av snöre som hänger tvärs över stigen (vänd mot den 
 - **Lockar djur:** var 10:e sekund kan en gillrad snara få ett litet djur i närheten att gå fram till den
   (ett slumpvis djur i området, det ger upp efter 30 s). Rädsla går före: ser djuret en spelare springer det i stället.
   - **Betad** (högerklicka med bär, frön, säd, Peas, Carrot eller Apple; taggen `mechanical:snare_bait`): inom **8 block**, **50 %** chans per 10 s.
-  - **Obetad:** inom 6 block, **4 %** per 10 s; **×2** på en stig (Dirt Path, Coarse Dirt) eller nära bärbuskar (3 block),
+  - **Obetad:** inom 6 block, **4 %** per 10 s; **×2** på en stig (Dirt Path, Worn Grass, Trodden Path, Coarse Dirt) eller nära bärbuskar (3 block),
     **×2,5** från skymning till strax efter gryning (dagtid 12000–1000).
   - Djur som vandrar förbi kan också gå rakt in i snaran av sig själva.
 - **Utlöst** snara (nedfallen tvärslå, snaran åtdragen på marken) fångar inget. **Högerklicka** för att gillra den igen (betet är borta).
@@ -1108,7 +1108,8 @@ Varje sak slumpar storlek, riktning och stensort, så ingen ser likadan ut. Runt
 Upptrampade **stigar** går mellan närliggande större platser: byar, Tribe Villages och Ancient Oak.
 Varje plats får stig till sina närmaste grannar inom ca **640 block**, men aldrig förbi en tredje plats som ligger
 närmare båda (så det blir ett glest nät, inte ett spindelnät), och aldrig över hav. Stigen slingrar sig, följer
-terrängen och är 1–3 block bred med trasiga, gräsiga kanter: Dirt Path, Coarse Dirt, Gravel och Packed Mud. Den går
+terrängen och är 1–3 block bred med trasiga, gräsiga kanter: **Trodden Path** i mitten med fläckar av Coarse Dirt, Gravel
+och Packed Mud, och **Worn Grass** längs kanterna (se *Upptrampade stigar* nedan; stigarnas block växer aldrig igen). Den går
 runt trädstammar och lämnar hus, åkrar, sand och berg i fred, och slutar några block från platsens mitt.
 - **Vatten:** över djupt vatten (3+ block) en **spång** av plankslabs, med stockstolpar ner till botten och ett
   staketräcke var fjärde block (ek eller gran). I grunt vatten (1–2 block) **trampstenar** av kullersten och mossig
@@ -1117,6 +1118,40 @@ runt trädstammar och lämnar hus, åkrar, sand och berg i fred, och slutar någ
 
 Vilka strukturer som får stigar styrs av taggen `mechanical:trail_connected` (bara strukturer med random_spread-placering).
 Byggs bara i nya chunks.
+
+### Upptrampade stigar (Worn Grass, Trodden Path)
+Gräs som man går på om och om igen trampas ner till en stig, och en stig som ingen använder växer igen. Koden:
+`TrampledPaths.java` (slitage, block), `TrampledPathBlock.java` (anslutningar, återväxt). Data: `scripts/gen_paths.py`,
+texturer: `scripts/gen_paths_textures.py`.
+
+- **Stadier:** Grass Block → **Worn Grass** (fläckigt gräs med bara jordfläckar) → **Trodden Path** (mest bar,
+  hårdtrampad jord med småsten). Dirt och Coarse Dirt blir Trodden Path direkt. Båda är hela block (16 px, samma nivå
+  som gräset, inte nedsänkta som vanilla Dirt Path).
+- **Vad som räknas:** ett steg upp på ett *nytt* block på marken. Att stå still räknas inte, och inte heller att
+  **smyga** (så man kan smyga över gräsmattan utan att slita på den). Spelare till fots, hästen man rider, och en
+  Travois eller Wheeled Cart i sele (medarna och hjulen sliter också).
+- **Takt:** varje steg på Grass Block ger **5 %** chans till Worn Grass, varje steg på Worn Grass (eller Dirt/Coarse Dirt)
+  **10 %** chans till Trodden Path. En stig man går **ett par dussin gånger** (i snitt ~30) blir Trodden Path; en enda
+  promenad lämnar bara någon enstaka sliten fläck. Blir det Trodden Path trampas Short Grass, Fern och liknande ovanpå bort.
+- **Fart:** **Worn Grass +10 %**, **Trodden Path +20 %** gångfart, för spelare, djur och hästar. Vanillas
+  `speedFactor` på blocket (1,075 och 1,14): faktorn multipliceras in i farten varje tick före markfriktionen
+  (0,6 × 0,91), så den förstärker sig själv till (1 − 0,546) / (1 − 0,546 × f), därför inte 1,1 och 1,2. Gäller även
+  sprint och när man hoppar från stigen.
+- **Återväxt:** ett trampat block är "nyss använt" och växer inte. Det släpper efter i snitt **ett dygn** (1/18 per
+  random tick). Sedan går det **ett stadium tillbaka** med **4 %** per random tick (~1,4 dygn) om det har ljus (9+)
+  ovanför: Trodden Path → Worn Grass → Grass Block. En övergiven stig är gräs igen efter **ungefär 4 dygn**. Täcks
+  blocket av ett tätt block eller vatten blir det Dirt, som gräs.
+- **Övergång till gräset:** varje block vet om grannen åt norr, öster, söder och väster är stigmark (taggen
+  `mechanical:path_connects`: Worn Grass, Trodden Path, Dirt, Coarse Dirt, Rooted Dirt, Dirt Path, Farmland, Gravel,
+  Packed Mud, Mud). Ovansidan har en textur per kombination (16 per stadium): jorden löper ut till kanten mot
+  stiggrannar (lika bred vid kanten, så två block möts sömlöst) och fransar upp sig i gräset åt andra hållen, så en
+  slingrande stig ser sammanhängande ut. Gräset under jorden är vanillas Grass Block-ovansida i biomets gräsfärg, så det
+  smälter ihop med gräset runt omkring. Varje kombination finns i 4 vridningar som väljs slumpvis. Sidorna ser ut som en
+  Grass Block; med snö ovanpå blir blocket som snötäckt gräs.
+- **Som gräs annars:** bryts med spade, ger Dirt (Silk Touch: blocket självt). **Hacka** gör Farmland, **spade** gör
+  vanilla Dirt Path. Blommor, plantor, sockerrör m.m. kan växa på dem (taggen `minecraft:dirt`), och djur spawnar på dem.
+- **Världens stigar** (*Stigar mellan platser* ovan) är byggda av samma block men växer aldrig igen.
+- Snaror: Worn Grass och Trodden Path räknas som stig (×2 lockchans).
 
 ### Ancient Oak (uråldrig ek) och Offering Altar
 En väldig, förtrollad ek: en egen **struktur** (hitta den med `/locate structure mechanical:ancient_oak`), mycket
@@ -1423,7 +1458,7 @@ framåt. Varje framsteg har föremålet som ikon och en beskrivning som säger h
 behövs först, så trädet läses som progressionen:
 
 - **Stone Age**: lösa stenar och flinta → fiber, Twine, flintverktyg → Tool Station → stenverktyg; eld (Fire Drill,
-  Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Crucible; flotte, paddel och kanot; pigment och grottmålning.
+  Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Crucible; flotte, paddel och kanot; pigment och grottmålning; upptrampad stig (Beaten Path).
 - **Wilderness & Hunting**: kniv → styckning → hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
   Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak och
   stambyar.

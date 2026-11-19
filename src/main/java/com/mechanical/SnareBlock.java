@@ -133,7 +133,7 @@ public class SnareBlock extends Block {
     /** On a trail (path or coarse dirt) or within 3 blocks of berry bushes, where small animals go anyway. */
     static boolean goodSpot(LevelReader level, BlockPos pos) {
         BlockState below = level.getBlockState(pos.below());
-        return below.is(Blocks.DIRT_PATH) || below.is(Blocks.COARSE_DIRT) || Foraging.nearBerryBush(level, pos, 3)
+        return below.is(Blocks.DIRT_PATH) || below.getBlock() instanceof TrampledPathBlock || below.is(Blocks.COARSE_DIRT) || Foraging.nearBerryBush(level, pos, 3)
                 || BlockPos.betweenClosedStream(pos.offset(-2, -1, -2), pos.offset(2, 1, 2)).anyMatch(p -> level.getBlockState(p).is(Blocks.SWEET_BERRY_BUSH));
     }
 

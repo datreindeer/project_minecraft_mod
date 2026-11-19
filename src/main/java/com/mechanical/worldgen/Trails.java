@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mechanical.Mechanical;
+import com.mechanical.TrampledPathBlock;
+import com.mechanical.TrampledPaths;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -41,9 +43,10 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
+import net.neoforged.neoforge.registries.DeferredBlock;
 
 /**
- * Worn footpaths between nearby structures tagged {@code mechanical:trail_connected}, with plank footbridges over deep
+ * Trodden Path footpaths (worn at the edges) between nearby structures tagged {@code mechanical:trail_connected}, with plank footbridges over deep
  * water, stepping stones through shallow water and small stone cairns along the way.
  *
  * <p>Runs once per overworld chunk and only touches that chunk. Endpoints come from the seed alone: for random_spread
@@ -199,10 +202,16 @@ final class Trails extends StoneAgeFeature {
             }
         }
         if (hit) {
+            List<BlockPos> soil = new ArrayList<>();
             for (int k = 0; k < 256; k++) {
                 if (best[k] == Float.MAX_VALUE) continue;
                 double t = at[k], s = t * r.len, w = r.width(t), d = Math.sqrt(best[k]);
-                if (d <= w && s > END_R && r.len - s > END_R) column(level, x0 + k / 16, z0 + k % 16, d, w, s, r);
+                if (d <= w && s > END_R && r.len - s > END_R) column(level, x0 + k / 16, z0 + k % 16, d, w, s, r, soil);
+            }
+            // worldgen runs no updateShape: join up the paths here, and their neighbours in chunks drawn earlier
+            for (BlockPos p : soil) {
+                connect(level, p);
+                for (Direction d : Direction.Plane.HORIZONTAL) connect(level, p.relative(d));
             }
         }
         for (double s = CAIRN_EVERY / 2.0; s < r.len - CAIRN_EVERY / 2.0; s += CAIRN_EVERY) {
@@ -214,7 +223,7 @@ final class Trails extends StoneAgeFeature {
     }
 
     /** One trail column: worn soil on land, stepping stones in shallow water, a plank deck on posts over deep water. */
-    private static void column(WorldGenLevel level, int x, int z, double d, double w, double s, Route r) {
+    private static void column(WorldGenLevel level, int x, int z, double d, double w, double s, Route r, List<BlockPos> soilPlaced) {
         BlockPos g = top(level, x, z);
         BlockState gs = level.getBlockState(g);
         if (gs.is(BlockTags.LOGS)) return; // the trail just squeezes past trees
@@ -224,16 +233,29 @@ final class Trails extends StoneAgeFeature {
         }
         if (!gs.is(BlockTags.SUBSTRATE_OVERWORLD) || gs.is(Blocks.MUDDY_MANGROVE_ROOTS)) return; // houses, fields, sand and rock stay
         double h = hash(x, z, 1);
-        if (d > 0.8 && d > w - 0.6 && h < 0.45) return; // ragged, grassy edges (the middle track is never broken)
+        boolean edge = d > 0.8 && d > w - 0.6;
+        if (edge && h < 0.45) return; // ragged, grassy edges (the middle track is never broken)
         for (int y = 1; y <= 2; y++) {
             BlockState above = level.getBlockState(g.above(y));
             if (!above.isAir() && above.canBeReplaced() && above.getFluidState().isEmpty()) set(level, g.above(y), AIR);
         }
         double m = hash(x, z, 2);
-        BlockState soil = m < 0.55 ? Blocks.DIRT_PATH.defaultBlockState() : m < 0.8 ? Blocks.COARSE_DIRT.defaultBlockState()
-                : m < 0.9 ? Blocks.GRAVEL.defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
-        if (soil.is(Blocks.DIRT_PATH) && !level.getBlockState(g.above()).isAir()) soil = Blocks.COARSE_DIRT.defaultBlockState();
+        // Worn Grass along the edges, Trodden Path down the middle with patches of coarse dirt, gravel and packed mud
+        BlockState soil = edge ? path(TrampledPaths.WORN_GRASS) : m < 0.6 ? path(TrampledPaths.TRODDEN_PATH)
+                : m < 0.8 ? Blocks.COARSE_DIRT.defaultBlockState() : m < 0.9 ? Blocks.GRAVEL.defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
         set(level, g, soil);
+        soilPlaced.add(g);
+    }
+
+    private static BlockState path(DeferredBlock<TrampledPathBlock> block) {
+        return block.get().defaultBlockState().setValue(TrampledPathBlock.PERSISTENT, true); // worldgen trails never grow back
+    }
+
+    private static void connect(WorldGenLevel level, BlockPos p) {
+        BlockState s = level.getBlockState(p);
+        if (!(s.getBlock() instanceof TrampledPathBlock)) return;
+        BlockState c = TrampledPathBlock.connect(s, level, p);
+        if (c != s) set(level, p, c);
     }
 
     private static void water(WorldGenLevel level, BlockPos top, double d, double w, double s, Route r) {
