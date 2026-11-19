@@ -123,6 +123,52 @@
               "count": 4
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_bear_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "14",
+              "part": "lower"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bear_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "15",
+              "part": "lower"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_wolf_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "16"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:wolf_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "17"
+            }
+          }
         }
       ]
     },

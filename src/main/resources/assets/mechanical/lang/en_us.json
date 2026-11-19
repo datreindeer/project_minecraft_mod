@@ -773,5 +773,9 @@
   "tooltip.mechanical.crucible.mix": "%s%% tin: %s",
   "tooltip.mechanical.crucible.slag": "%s%% tin: no bronze (8-15%% makes bronze, about 10%% the best). Melts as copper; the tin is lost as slag",
   "tooltip.mechanical.crucible.tin_only": "Tin alone casts nothing: add copper (about 9 copper to 1 tin)",
-  "message.mechanical.mold.wrong_metal": "%s can't be cast in this mold"
+  "message.mechanical.mold.wrong_metal": "%s can't be cast in this mold",
+  "item.mechanical.raw_bear_pelt": "Raw Bear Pelt",
+  "item.mechanical.raw_wolf_pelt": "Raw Wolf Pelt",
+  "message.mechanical.drying_rack.pelt_needs_tall": "This pelt needs a bigger rack",
+  "message.mechanical.drying_rack.pelt_no_room": "There is no room for the pelt on this rack"
 }

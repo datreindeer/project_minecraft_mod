@@ -5,10 +5,12 @@
   dryable_berries, dryable_mushrooms); Spoiled Food is added to #mechanical:compostable
 - items: Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Dried Mushrooms, Spoiled Food (models, lang)
 - Smoking Rack: frame + hanging strip models, a multipart blockstate (facing, content, strips), loot, recipe + unlock
+- Raw Bear Pelt / Raw Wolf Pelt items (models, lang): Butchery gives them, the tall Drying Rack cures them
 - Drying Rack: food stages (hide 6-13) as models (the frame from gen_data.py's drying_rack_0 plus a food plane); the
   2-tall rack (part=lower/upper, DryingRackBlock): frame halves and a left (hide) / right (hide2) spot plane per content;
-  the whole multipart blockstate and the loot table (rack + what is on each spot)
-Textures: scripts/gen_preserving_textures.py.
+  the whole multipart blockstate and the loot table (rack + what is on each spot); big pelts (hide 14-17, tall rack
+  only): a bear plane over both blocks (lower/upper half models), a wolf plane over one block, fur side north, flesh side south
+Textures: scripts/gen_preserving_textures.py, scripts/gen_pelt_rack_textures.py (big pelts, raw pelt items).
 Generator order: ... gen_soot.py, gen_phantom.py, gen_preserving.py, gen_block_items.py, gen_registry.py.
 Run: python scripts/gen_preserving.py"""
 import json
@@ -72,6 +74,12 @@ for item in ITEMS:
 merge(A / "lang/en_us.json", {**{f"item.mechanical.{k}": v for k, v in ITEMS.items()}, "block.mechanical.smoking_rack": "Smoking Rack",
                               "tooltip.mechanical.fresh": "Fresh", "tooltip.mechanical.stale": "Stale", "tooltip.mechanical.rotting": "Rotting",
                               "message.mechanical.too_far_gone": "This is too far gone to keep"})
+for item, name in {"raw_bear_pelt": "Raw Bear Pelt", "raw_wolf_pelt": "Raw Wolf Pelt"}.items():
+    w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
+    w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
+    merge(A / "lang/en_us.json", {f"item.mechanical.{item}": name})
+merge(A / "lang/en_us.json", {"message.mechanical.drying_rack.pelt_needs_tall": "This pelt needs a bigger rack",
+                              "message.mechanical.drying_rack.pelt_no_room": "There is no room for the pelt on this rack"})
 
 # ---- Smoking Rack (built facing north: the bar runs east-west, strips hang from it) ----
 FACES = ["down", "up", "north", "south", "east", "west"]
@@ -140,9 +148,30 @@ for side, x0 in (("left", 3), ("right", 8)):
         w(A / f"models/block/drying_rack_{side}_{tex}.json", {"textures": {"particle": "mechanical:block/drying_rack",
             "spot": f"mechanical:block/drying_rack_narrow_{tex}"}, "elements": [{"from": [x0, 4, 8], "to": [x0 + 5, 13, 8], "faces": {
                 "north": {"uv": [0, 3, 5, 12], "texture": "#spot"}, "south": {"uv": [5, 3, 0, 12], "texture": "#spot"}}}]})
+# big pelts (tall rack only, in hide; hide2 stays empty): a plane in front of the bars at z 7, x 3-13, painted in model
+# space (texture row = 15 - y); fur side north, the flesh side (_back) south with mirrored uv
+PELTS = {14: "raw", 15: "dry"}
+
+
+def pelt_plane(tex, y0, y1):
+    return {"textures": {"particle": "mechanical:block/drying_rack", "front": f"mechanical:block/{tex}", "back": f"mechanical:block/{tex}_back"},
+            "elements": [{"from": [3, y0, 7], "to": [13, y1, 7], "faces": {
+                "north": {"uv": [3, 16 - y1, 13, 16 - y0], "texture": "#front"}, "south": {"uv": [13, 16 - y1, 3, 16 - y0], "texture": "#back"}}}]}
+
+
+for stage in ("raw", "dry"):
+    w(A / f"models/block/drying_rack_bear_{stage}_lower.json", pelt_plane(f"drying_rack_bear_{stage}_lower", 4, 16))
+    w(A / f"models/block/drying_rack_bear_{stage}_upper.json", pelt_plane(f"drying_rack_bear_{stage}_upper", 0, 13))
+    w(A / f"models/block/drying_rack_wolf_{stage}.json", pelt_plane(f"drying_rack_wolf_{stage}", 2, 13))
 rot = lambda y: {"y": y} if y else {}
 parts = [{"when": {"facing": f, "part": "single", "hide": str(h)}, "apply": {"model": f"mechanical:block/drying_rack_{h}", **rot(y)}}
          for f, y in ROT for h in range(14)]
+parts += [{"when": {"facing": f, "part": "single", "hide": "14|15|16|17"}, "apply": {"model": "mechanical:block/drying_rack_0", **rot(y)}}
+          for f, y in ROT]  # never hung there; just not invisible if set by command
+parts += [{"when": {"facing": f, "part": half, "hide": str(h)}, "apply": {"model": f"mechanical:block/drying_rack_bear_{st}_{half}", **rot(y)}}
+          for f, y in ROT for half in ("lower", "upper") for h, st in PELTS.items()]
+parts += [{"when": {"facing": f, "part": "lower|upper", "hide": str(h + 2)}, "apply": {"model": f"mechanical:block/drying_rack_wolf_{st}", **rot(y)}}
+          for f, y in ROT for h, st in PELTS.items()]
 parts += [{"when": {"facing": f, "part": half}, "apply": {"model": f"mechanical:block/drying_rack_tall_{half}", **rot(y)}}
           for f, y in ROT for half in ("lower", "upper")]
 parts += [{"when": {"facing": f, "part": "lower|upper", prop: str(h)}, "apply": {"model": f"mechanical:block/drying_rack_{side}_{tex}", **rot(y)}}
@@ -155,9 +184,9 @@ SPOT_DROPS = {1: ("mechanical:scraped_hide", 1), 2: ("minecraft:leather", 1), 3:
               9: ("mechanical:dried_fish", 1), 11: ("mechanical:dried_berries", 4), 13: ("mechanical:dried_mushrooms", 4)}
 
 
-def spot_drop(prop, h, item, count):
+def spot_drop(prop, h, item, count, **state):
     entry = {"type": "minecraft:item", "name": item,
-             "condition": {"type": "minecraft:match_block", "blocks": "mechanical:drying_rack", "state": {prop: str(h)}}}
+             "condition": {"type": "minecraft:match_block", "blocks": "mechanical:drying_rack", "state": {prop: str(h), **state}}}
     if count > 1:
         entry["modifier"] = [{"type": "minecraft:set_count", "count": count}]
     return entry
@@ -165,6 +194,10 @@ def spot_drop(prop, h, item, count):
 
 w(D / "mechanical/loot_table/blocks/drying_rack.json", {"type": "minecraft:block", "pools": [
     {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:drying_rack"}]}]
-    + [{"rolls": 1, "entries": [spot_drop(prop, h, item, n) for h, (item, n) in SPOT_DROPS.items()]} for prop in ("hide", "hide2")],
+    + [{"rolls": 1, "entries": [spot_drop(prop, h, item, n) for h, (item, n) in SPOT_DROPS.items()]
+        + ([] if prop == "hide2" else  # big pelts: the bear's lower block alone drops it (it spans both), a wolf's block its own
+           [spot_drop("hide", 14, "mechanical:raw_bear_pelt", 1, part="lower"), spot_drop("hide", 15, "mechanical:bear_pelt", 1, part="lower"),
+            spot_drop("hide", 16, "mechanical:raw_wolf_pelt", 1), spot_drop("hide", 17, "mechanical:wolf_pelt", 1)])}
+       for prop in ("hide", "hide2")],
     "random_sequence": "mechanical:blocks/drying_rack"})
 print("preserving ok")

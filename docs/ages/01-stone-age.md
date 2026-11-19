@@ -101,7 +101,7 @@ Vanilla Bow och Fishing Rod går inte att crafta (de riktiga kommer i senare ål
 Huvud: **Tusk**, bindning: **Cordage**, skaft: **Leather** (handtag). Låses upp när man har en Tusk. En kniv (fungerar i alla
 knivrecept och för styckning): 1,3× snabbare och 1,1× mer kött än Flint Knife, 140 i hållbarhet, 3 skada, attackfart 2,2.
 **Jägarkniv:** kan stycka **Brown Bear** (Flint Knife kan inte) och ger **1,6× mer i första omgången** (hudar, päls, ull,
-fjädrar): högre chans och fler, t.ex. Bear Pelt 1–2 i stället för 1.
+fjädrar): högre chans och fler, t.ex. Raw Bear Pelt 1–2 i stället för 1.
 
 ### Bone Hook Fishing Rod (Tool Station)
 **Bone Fish Hook** = Fish Bones + kniv (crafting). Spöet: huvud **Bone Fish Hook**, bindning **Twine**, skaft **Tool Rod**.
@@ -304,6 +304,19 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
   - En låg ställning har kvar **1 plats** och fungerar som förut. Gamla ställningar (från före den höga) behåller det som
     hänger på dem: tillståndet heter fortfarande `hide`, och de nya egenskaperna `part`/`hide2` får sina standardvärden
     (`single`/0) när världen laddas.
+- **Stora pälsar (bara på hög ställning):** styckning ger **Raw Bear Pelt** (Brown Bear) och **Raw Wolf Pelt** (Grey Wolf),
+  som måste torkas på en **hög** Drying Rack innan de blir **Bear Pelt** / **Wolf Pelt** (som används i alla recept som
+  förut). På en låg ställning: "This pelt needs a bigger rack".
+  - **Raw Bear Pelt tar hela ställningen** (alla 4 platser, båda blocken måste vara tomma). Björnen spänns ut över hela
+    ramen med huvudet upp mot toppslån, frambenen surrade med Twine upp mot slån och bakbenen ner mot bottenslån.
+  - **Raw Wolf Pelt tar en halva** (båda platserna i ett block): blocket man pekar på om det är tomt, annars det andra.
+    Två vargpälsar ryms alltså på en hög ställning, eller en vargpäls och två andra saker.
+  - Är det fullt: "There is no room for the pelt on this rack".
+  - Torkar bara i **solen utan regn** (solen kollas ovanför övre halvan): **~6 min** i snitt (en vanlig hud ~3 min). Natt
+    och regn **pausar** bara, pälsen ruttnar inte. Pälssidan vänds framåt, köttsidan (rå och röd med fett, torkad
+    gulbrun) syns bakifrån.
+  - Tom hand tar ner den färdiga pälsen (en Bear Pelt för hela björnen). Bryts ställningen släpps pälsen **en gång**
+    (rå eller färdig), inte en gång per plats eller block.
 
 ### Smoking Rack
 Recept: `[Stick][Cordage][Stick]` / `[Stick][ ][Stick]` / `[Stick][ ][Stick]` (låses upp när man får rått kött eller rå fisk).
@@ -587,7 +600,7 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
 - Skadar man en unge anfaller alla vuxna björnar inom 20 block. Väcker man en sovande björn anfaller den direkt.
 - En björn djupt inne i ett ide (eller annan grotta) går ibland ut i dagsljuset.
 - **Kräver Tusk Dagger eller Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
-  Omgång 1: **Bear Pelt** + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
+  Omgång 1: **Raw Bear Pelt** (torkas till Bear Pelt på en hög Drying Rack, se Drying Rack) + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
 
 ### Småvilt i skogen
 | Djur | Var | Beteende | Styckning |
@@ -651,7 +664,7 @@ sömn), kroppar, flådda texturer, styckning och blod.
 
 | Djur | Biomer (grupp) | Liv / skada | Omgång 1 | Omgång 2 |
 |---|---|---|---|---|
-| **Grey Wolf** (gråvarg) | Alla taigor, skog, björkskog, dark forest, plains, snowy plains, grove, snowy slopes (flock 3–6) | 14 liv, 4 skada, snabb (fart 0,32, rusar med 1,55×) | **Wolf Pelt** | 1–2 Game Meat Scraps, Sinew 50 %, 1–2 Bone 60 % |
+| **Grey Wolf** (gråvarg) | Alla taigor, skog, björkskog, dark forest, plains, snowy plains, grove, snowy slopes (flock 3–6) | 14 liv, 4 skada, snabb (fart 0,32, rusar med 1,55×) | **Raw Wolf Pelt** (torkas till Wolf Pelt på en hög Drying Rack) | 1–2 Game Meat Scraps, Sinew 50 %, 1–2 Bone 60 % |
 | **Cave Lion** (grottlejon) | Savanna, savanna plateau, windswept savanna, sunflower plains, windswept hills, windswept gravelly hills, stony peaks, meadow (1–2) | 30 liv, språng 8 skada, slag 5, svår att knuffa | Raw Hide 70 % + Raw Hide 40 % | 3–5 Game Meat Scraps, Sinew 60 % (1–2), 1–3 Bone 70 % |
 
 **Grey Wolf:**

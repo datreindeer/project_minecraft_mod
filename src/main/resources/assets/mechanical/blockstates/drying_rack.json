@@ -605,6 +605,307 @@
     {
       "when": {
         "facing": "north",
+        "part": "single",
+        "hide": "14|15|16|17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "14|15|16|17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "14|15|16|17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "14|15|16|17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "upper",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "upper",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "upper",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "upper",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_lower",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_lower",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "upper",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "upper",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_lower",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_lower",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "upper",
+        "hide": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_raw_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "upper",
+        "hide": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_bear_dry_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_raw"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_raw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_raw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_raw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_wolf_dry",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
         "part": "lower"
       },
       "apply": {
