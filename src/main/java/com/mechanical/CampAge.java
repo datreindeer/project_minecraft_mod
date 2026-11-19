@@ -29,7 +29,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 /**
  * Camp age ("hearth time"): how long fires have burned at a camp. A camp is the area within {@link #RADIUS} blocks of
  * where its first fire burned; any burning campfire or lit kiln inside it adds to the same count (time, not fires: two
- * fires burn no faster), so a new fire next to the old one carries on and a fire far away starts a new camp. Only fires
+ * fires burn no faster, except that a burning Fire Pit counts {@link FirePit#CAMP_AGE} times), so a new fire next to the old one carries on and a fire far away starts a new camp. Only fires
  * that are no tribe's home count (fires only burn in loaded chunks, i.e. near players). Old camps draw raids (people.Raids).
  * Sneak and right-click a campfire or kiln with an empty hand to see it; /camp for ops.
  */
@@ -114,7 +114,7 @@ public final class CampAge extends SavedData {
     @SubscribeEvent
     static void onLevelTick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel level) || level.getGameTime() % STEP != 0) return;
-        Set<Camp> burning = new HashSet<>();
+        Set<Camp> burning = new HashSet<>(), pits = new HashSet<>();
         CampAge data = null;
         for (BlockPos fire : NightDangers.litFires(level)) {
             // a tribe's own fire is no player camp
@@ -123,8 +123,9 @@ public final class CampAge extends SavedData {
             Camp camp = data.find(fire);
             if (camp == null) camp = data.burn(fire, 0);
             burning.add(camp);
+            if (NightDangers.reach(level, fire) > 1) pits.add(camp);
         }
-        for (Camp camp : burning) camp.ticks += STEP;
+        for (Camp camp : burning) camp.ticks += pits.contains(camp) ? (long) STEP * FirePit.CAMP_AGE : STEP; // a Fire Pit ages the camp faster
         if (data != null && !burning.isEmpty()) data.setDirty();
     }
 
@@ -133,7 +134,7 @@ public final class CampAge extends SavedData {
     static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
         if (!event.getEntity().isSecondaryUseActive() || event.getHand() != InteractionHand.MAIN_HAND || !event.getItemStack().isEmpty()) return;
         var state = event.getLevel().getBlockState(event.getPos());
-        if (!state.is(Blocks.CAMPFIRE) && !(state.getBlock() instanceof KilnBlock)) return;
+        if (!state.is(Blocks.CAMPFIRE) && !(state.getBlock() instanceof KilnBlock) && !FirePit.isPit(state)) return;
         if (event.getLevel() instanceof ServerLevel level && event.getEntity() instanceof ServerPlayer player) {
             player.sendOverlayMessage(report(level, event.getPos()));
         }

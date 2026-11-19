@@ -22,7 +22,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 /**
- * Tinder: right-click an unlit campfire or clay kiln with Leaf Litter or Bark to lay tinder in it. The next Fire Drill
+ * Tinder: right-click an unlit campfire, Fire Pit or clay kiln with Leaf Litter or Bark to lay tinder in it. The next Fire Drill
  * attempt then catches much more easily; the tinder is used up when the fire catches.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -44,6 +44,7 @@ public final class Tinder {
     /** The block entity that holds the tinder for an unlit campfire or kiln at {@code pos}, or null. */
     public static BlockEntity holder(Level level, BlockPos pos, BlockState state) {
         if (CampfireBlock.canLight(state)) return level.getBlockEntity(pos);
+        if (FirePit.canLight(state)) return FirePit.entity(level, pos, state);
         if (state.getBlock() instanceof KilnBlock && !state.getValue(KilnBlock.LIT)) return level.getBlockEntity(KilnBlock.lowerPos(state, pos));
         if (state.getBlock() instanceof FurnaceTapBlock && !state.getValue(FurnaceTapBlock.LIT)) return level.getBlockEntity(pos);
         return null;

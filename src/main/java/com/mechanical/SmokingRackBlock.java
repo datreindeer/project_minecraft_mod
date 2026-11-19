@@ -104,7 +104,7 @@ public class SmokingRackBlock extends Block implements EntityBlock {
     }
 
     private static boolean smoulders(BlockState state) {
-        return CampfireBlock.isLitCampfire(state) || Campfires.isEmbers(state);
+        return CampfireBlock.isLitCampfire(state) || Campfires.isEmbers(state) || FirePit.smoulders(state);
     }
 
     @Override

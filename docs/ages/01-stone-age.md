@@ -225,6 +225,49 @@ Recept: `[ ][Stick][ ]` / `[Stick][ ][Stick]` / `[Firewood][Firewood][Firewood]`
 - **Matlagning:** maten ligger kvar på elden när den är klar. Efter 30–60 s till blir den **Burnt Food**.
   Högerklicka med tom hand för att ta av maten (klar eller bränd först).
 
+### Fire Pit (stor lägereld, 2×2)
+En större eld än Campfire: fler matplatser, mer värme och ljus, men mycket mer rök, dubbelt så mycket ved, och den drar
+till sig större räder.
+- **Recept:** `[Rock][Rock][Rock]` / `[Rock][Firewood][Rock]` / `[Rock][Rock][Rock]`: 8 valfria rock chunks (Stone, Granite,
+  Diorite, Andesite Chunk) runt en Firewood. Låses upp i receptboken när man bär rock chunks eller Firewood.
+- **Placering:** som en säng. Den tar blocket man klickar på plus de tre framför och till höger om det (sett i
+  blickriktningen). Alla fyra måste vara lediga och stå på **plan, fast mark** (översidan hel), annars "A Fire Pit needs a
+  flat 2×2 of solid ground in front of you". Placeras **släckt** (förkolnade stockar i askbädden).
+  Varför ett färdigt föremål och inte bygga på plats runt en Campfire: man ser direkt hur stor den blir, det kan inte bli
+  halvbyggt, och stenarna kommer tillbaka när man river den.
+- **Modell:** en ring av 18 stenar (varierad storlek, sotade på insidan) med 6 mindre stenar ovanpå, rund askbädd, två
+  spett på klykor utanför ringen, staplade stockar i "timmerkoja"-mönster (fler lager ju mer ved som ligger på), stora
+  animerade lågor (högre med mycket ved). Glöd: glödande stockar och kol i askan, inga lågor.
+- **Tänds** med Fire Drill på vilken del som helst (Leaf Litter eller Bark som tändmaterial fungerar som på Campfire).
+- **Ved:** högerklick med Firewood lägger veden på högen (högst **16 st**, "Firewood stacked on the fire: 5/16" med tom hand
+  när inga matbitar ligger på). Går att lägga på även när den är släckt. På glöd: tänder elden igen direkt (som Campfire).
+  Elden brinner **dubbelt så fort** som en Campfire: tänd brinner den 1,5–2,5 min (3–5 min Campfire-tid), sedan tar den nästa
+  vedträ från högen (30 s var), sist blir den glöd i **3 min**, sedan kall. Full hög räcker ca 8 min till. Kyla och regn gör att
+  den brinner fortare, som för Campfire. Vedhögen syns på modellen (0, 1–6, 7–12, 13–16 vedträn).
+- **Mat: 8 platser** (4 på varje spett), samma recept som Campfire. Maten ligger kvar när den är klar och blir Burnt Food
+  efter 30–60 s till. Tom hand tar av en bit (klar eller bränd först). Maten syns på spetten och ryker.
+- **Ljus 15 på alla fyra blocken** (glöd 3). **Monster och rovdjur håller sig 1,5× så långt bort** som från en Campfire
+  (monster: 30 block i stället för 20, ingen spawn inom 27, skyddat inom 9; vakande ring 31–37 block; rovdjur 18 i stället
+  för 12). Mörkerrädslan (sanity) räknar elden på 1,5× avstånd.
+- **Värme:** +15° nära elden (Campfire +10°), avtar ut till 9 block (Campfire 6).
+- **Rök:** inomhus fylls rummet **3× så fort**, och **sot** sätter sig 3× så fort. Marken runt elden bränns 2× så fort och över
+  en större yta. Utomhus en hög, tät **rökpelare** (signalrök) som syns på långt håll, högre med mer ved. Smoking Rack över
+  eller bredvid den röks som över en Campfire. Baking Stone bredvid fungerar.
+- **Regn och vind:** under öppen himmel slocknar den till glöd i regn efter i snitt **ca 19 min** (Campfire ca 6), i blåst
+  ca 9 min (Campfire ca 3). Hordernas zombier släcker den helt, en spade också.
+- **Lägerålder och räder:** en brinnande Fire Pit gör att lägret åldras **dubbelt så fort**. Brinner en Fire Pit i lägret
+  när räden slås vid skymningen: **1,5× chans** och **+2 rädare** (högst 9 i stället för 7, band 5–6). Smyg + högerklick med
+  tom hand visar lägrets ålder som på Campfire.
+- **Brinner man:** står man i elden tar man skada som i en Campfire.
+- **Rivs:** vilken del som helst river alla fyra. Fire Pit kommer tillbaka som föremål, mat och ved på högen ramlar ut.
+- Advancement **Bonfire** (Stenåldern, efter Let There Be Fire): tänd en Fire Pit med Fire Drill.
+- Kod: `FirePit.java` (register, alla tal), `FirePitBlock.java` (2×2, placering, högerklick), `FirePitBlockEntity.java` (eld,
+  ved, mat, partiklar), `client/FirePitRenderer.java` (maten på spetten). Kopplingar: `NightDangers` (eldregistret har en
+  räckvidd per eld), `Temperature`, `Smoke`, `Wind.firePitTick`, `CampAge`, `people/Raids`, `FireDrillItem`, `Tinder`,
+  `SmokingRackBlock`, `BakingStoneBlock`, `wildlife/Predator`, `client/NightAmbience`. Data `scripts/gen_firepit.py`
+  (efter gen_cart, före gen_block_items), texturer `scripts/gen_firepit_textures.py`. Krok för senare: ett bronsgaller eller
+  bronsspett kan läggas som egen del i blockstatens multipart och läsas i `FirePitBlockEntity`.
+
 ### Clay Kiln
 Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk][Chunk][Chunk]`.
 
@@ -897,8 +940,8 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
 ### Rök inomhus
-En eld i ett stängt rum fyller det med rök. **Källor:** tänd Campfire och Soul Campfire, och Clay Kiln när den brinner
-(inte facklor eller ljus).
+En eld i ett stängt rum fyller det med rök. **Källor:** tänd Campfire och Soul Campfire, Fire Pit (röken byggs upp **3× så fort**, räknas från
+hörnet med blockentiteten), och Clay Kiln när den brinner (inte facklor eller ljus).
 - **Rummet:** luften fylls ut från blocket ovanför elden (Clay Kiln: ovanför skorstenen), högst 500 block. Det räknas som
   stängt om fyllningen inte når ut. Väggar är alla "solida" block: sten, plank, glas, glasrutor, staket, **stängda** dörrar
   och fallluckor. Öppna dörrar/fallluckor och öppna grindar släpper ut röken. Rummet räknas om var 5:e sekund.
@@ -920,7 +963,8 @@ En eld i ett stängt rum fyller det med rök. **Källor:** tänd Campfire och So
   Eldar hittas inom 3 chunks från spelare (och runt positionen i `/smoke`).
 
 ### Sot
-Samma eldar som ger rök (tänd Campfire, Soul Campfire, brinnande Clay Kiln) sotar ner ytorna runt sig, både ute och inne.
+Samma eldar som ger rök (tänd Campfire, Soul Campfire, Fire Pit, brinnande Clay Kiln) sotar ner ytorna runt sig, både ute och inne.
+Fire Pit sotar 3× så fort och bränner marken 2× så fort runt alla fyra blocken.
 - **Block: Soot.** Ett tunt svart lager på blockytor (som Glow Lichen): ingen kollision, går att ersätta, kan sitta på
   flera sidor av samma luftblock. Tre stadier: **1** ljus fläck, **2** sotigt, **3** tjockt svart sot (gäller alla sidor
   i blocket). Regn tvättar inte bort det, det sitter kvar tills man skrapar bort det. Har inget eget item.
@@ -1247,8 +1291,8 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
 ### Lägerålder och räder
 Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och till slut kommer fientliga stammar på natten.
 - **Lägerålder ("hearth time"):** ett läger är området inom **24 block** från platsen där dess första eld brann. All tid som
-  en **brinnande Campfire eller tänd Kiln** står inom området räknas till samma läger (tiden räknas, inte antalet eldar: två
-  eldar går inte dubbelt så fort). En ny eld bredvid den gamla fortsätter alltså räkningen, och en eld långt bort startar ett
+  en **brinnande Campfire, Fire Pit eller tänd Kiln** står inom området räknas till samma läger (tiden räknas, inte antalet eldar: två
+  eldar går inte dubbelt så fort, men en brinnande **Fire Pit räknas dubbelt**). En ny eld bredvid den gamla fortsätter alltså räkningen, och en eld långt bort startar ett
   nytt läger. Bara medan elden brinner (inte glöd) och bara i laddade chunks (där du är). En stams egen lägereld räknas inte.
   Sparas i världen.
 - **Se den:** **smyg och högerklicka en Campfire eller Kiln med tom hand**: "This camp has burned for 3 days 4 h" i action bar.
@@ -1263,7 +1307,8 @@ Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och t
     läger och en fientlig Raiders-stam ger 22 %, 15 dagar 70 %. Bara band: 1,5 % → 7,5 %.
   - **Varning:** "You hear drums in the dark, from the north..." och **krigstrummor** från det hållet i 1–3 minuter. Sedan en
     stridslur och "War cries! Raiders of the Raven Tribe come out of the dark from the north, with torches!".
-  - **Rädarna:** 3–7 (fler mot fientliga stammar och äldre läger, +1 per 10 dagar; band 3–4), 40 block bort. En ledare (Hunter
+  - **Rädarna:** 3–7 (fler mot fientliga stammar och äldre läger, +1 per 10 dagar; band 3–4), 40 block bort. Brinner en
+    **Fire Pit** i lägret: +2 (högst 9) och 1,5× chans. En ledare (Hunter
     med stammens banderoll på huvudet), resten Hunters och Woodcutters. **Facklor** i andra handen (lyser), Flint Spear (var
     fjärde Crude Bow) eller Flint Axe, 24 hälsa. Hunters och ledaren anfaller spelare och lägrets tama djur och bondgårdsdjur
     (inte vilt). Woodcutters (tjuvar och mordbrännare) slåss bara om du kommer inom 6 block eller slår dem.
@@ -1608,7 +1653,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Odling: se Teknik i `docs/farming.md`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Förskämning, rökning, torkning: `Preserving.java` (komponenten `mechanical:spoils_at`, kontroller, taggar), `SmokingRackBlock.java`, `SmokingRackBlockEntity.java`, `DryingRackBlock.java` (hide 6–11), `client/PreservingClient.java` (tooltip, stapel). Data `scripts/gen_preserving.py`, texturer `scripts/gen_preserving_textures.py`.
-- Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
+- Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Fire Pit: `FirePit.java`, `FirePitBlock.java`, `FirePitBlockEntity.java`, `client/FirePitRenderer.java`; data `scripts/gen_firepit.py`, texturer `scripts/gen_firepit_textures.py`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Flotte och kanot: `Watercraft.java` (register, fartbroms, knivritsning), `DugoutBlankBlock.java`, `client/WatercraftModel.java`, `client/WatercraftRenderer.java`; data `scripts/gen_watercraft.py`, texturer `scripts/gen_watercraft_textures.py`.
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörkerrädsla: `Sanity.java` (värde, tappa/återhämta, effekter, `/sanity`), `client/SanityClient.java` (ljud, gestalter, inbillat monster, vinjett, öga, gråa färger via `BloodMoonSkyMixin`); data `scripts/gen_sanity.py`, texturer `scripts/gen_sanity_textures.py`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.

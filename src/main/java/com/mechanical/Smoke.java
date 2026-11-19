@@ -48,7 +48,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 /**
- * Smoke indoors: a lit campfire (or a burning Clay Kiln) in a closed room slowly fills it with smoke. The room is the
+ * Smoke indoors: a lit campfire (or a Fire Pit, three times as fast, or a burning Clay Kiln) in a closed room slowly fills it with smoke. The room is the
  * air flood-filled from just above the fire; it is vented if the column above the fire reaches open sky (a smoke hole
  * or chimney) or the fill gets out (open sky over more than {@link #LEAKS} column, e.g. through a doorway or
  * window, or bigger than {@link #MAX_ROOM}; a single gap in the roof away from the fire only leaks, halving the
@@ -97,6 +97,7 @@ public final class Smoke {
     /** A burning fire that smokes: lit campfire / soul campfire, or the lower half of a lit Clay Kiln. Returns where the smoke comes out, or null. */
     private static BlockPos smokeStart(BlockState state, BlockPos pos) {
         if (CampfireBlock.isLitCampfire(state)) return pos.above();
+        if (FirePit.isLit(state) && state.getValue(FirePitBlock.PART) == 0) return pos.above();
         if (state.is(Mechanical.KILN.get()) && state.getValue(KilnBlock.LIT) && state.getValue(KilnBlock.HALF) == DoubleBlockHalf.LOWER) return pos.above(2);
         return null;
     }
@@ -188,14 +189,18 @@ public final class Smoke {
                 it.remove();
                 continue;
             }
-            BlockPos start = smokeStart(level.getBlockState(pos), pos);
+            BlockState fire = level.getBlockState(pos);
+            BlockPos start = smokeStart(fire, pos);
+            boolean pit = FirePit.isPit(fire); // the Fire Pit smokes and soots FirePit.SMOKE times as much, scorches a wider hearth
             src.lit = start != null;
             src.burnSeconds = src.lit ? src.burnSeconds + 1 : 0;
-            if (src.burnSeconds > SOOT_AFTER && random.nextFloat() < SOOT_CHANCE * (1 + src.smoke)) SootBlock.deposit(level, start, random);
-            if (src.burnSeconds > SCORCH_AFTER && random.nextFloat() < SCORCH_CHANCE) SootBlock.scorch(level, pos, random);
+            if (src.burnSeconds > SOOT_AFTER && random.nextFloat() < SOOT_CHANCE * (1 + src.smoke) * (pit ? FirePit.SMOKE : 1)) SootBlock.deposit(level, start, random);
+            if (src.burnSeconds > SCORCH_AFTER && random.nextFloat() < SCORCH_CHANCE * (pit ? FirePit.SCORCH : 1)) {
+                SootBlock.scorch(level, pit ? pos.offset(random.nextInt(2), 0, random.nextInt(2)) : pos, random);
+            }
             if (!src.lit) src.enclosed = false;
             else if (scan) src.enclosed = flood(level, start, src); // a vented room keeps its old extent while it clears
-            if (src.lit && src.enclosed) src.smoke = Math.min(1, src.smoke + (src.leaks == 0 ? 1 : 0.5F) / (30 + src.room.size() / 5F));
+            if (src.lit && src.enclosed) src.smoke = Math.min(1, src.smoke + (src.leaks == 0 ? 1 : 0.5F) * (pit ? FirePit.SMOKE : 1) / (30 + src.room.size() / 5F));
             else src.smoke -= 1 / CLEAR_SECONDS;
             if (src.smoke <= 0) {
                 src.smoke = 0;

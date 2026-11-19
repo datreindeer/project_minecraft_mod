@@ -179,7 +179,8 @@ public abstract class Predator extends WildAnimal {
         if (tickCount % 20 == 0) {
             Vec3 c = Vec3.atCenterOf(fire), off = position().subtract(c);
             double a = Math.atan2(off.z, off.x) + (getId() % 2 == 0 ? 0.4 : -0.4);
-            getNavigation().moveTo(c.x + Math.cos(a) * (FIRE_AVOID + 4), getY(), c.z + Math.sin(a) * (FIRE_AVOID + 4), speed);
+            double r = (FIRE_AVOID + 4) * NightDangers.reach(level(), fire); // a Fire Pit's reach is bigger
+            getNavigation().moveTo(c.x + Math.cos(a) * r, getY(), c.z + Math.sin(a) * r, speed);
         }
         return true;
     }
@@ -329,7 +330,7 @@ public abstract class Predator extends WildAnimal {
             if (mob.getRandom().nextInt(5) != 0 || mob.fearless()) return false;
             BlockPos fire = NightDangers.nearestFire(mob.level(), mob.position(), FIRE_AVOID);
             if (fire == null) return false;
-            Vec3 away = DefaultRandomPos.getPosAway(mob, (int) FIRE_AVOID + 6, 7, Vec3.atCenterOf(fire));
+            Vec3 away = DefaultRandomPos.getPosAway(mob, (int) (FIRE_AVOID * NightDangers.reach(mob.level(), fire)) + 6, 7, Vec3.atCenterOf(fire));
             return away != null && mob.getNavigation().moveTo(away.x, away.y, away.z, 1.3);
         }
 

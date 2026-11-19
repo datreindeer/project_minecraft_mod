@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Lights an unlit campfire, clay kiln or Smelting Furnace tap (if it has fuel), but only sometimes (more often with tinder, see Tinder). Every attempt wears it down. */
+/** Lights an unlit campfire, Fire Pit, clay kiln or Smelting Furnace tap (if it has fuel), but only sometimes (more often with tinder, see Tinder). Every attempt wears it down. */
 public class FireDrillItem extends Item {
     public FireDrillItem(Properties properties) {
         super(properties);
@@ -40,7 +40,8 @@ public class FireDrillItem extends Item {
         }
         boolean kiln = state.getBlock() instanceof KilnBlock && !state.getValue(KilnBlock.LIT);
         boolean furnace = state.getBlock() instanceof FurnaceTapBlock && !state.getValue(FurnaceTapBlock.LIT);
-        if (!kiln && !furnace && !CampfireBlock.canLight(state)) return InteractionResult.PASS;
+        boolean pit = FirePit.canLight(state);
+        if (!kiln && !furnace && !pit && !CampfireBlock.canLight(state)) return InteractionResult.PASS;
         if (level instanceof ServerLevel server) {
             KilnBlockEntity kilnEntity = kiln && server.getBlockEntity(KilnBlock.lowerPos(state, pos)) instanceof KilnBlockEntity k ? k : null;
             if (kiln && (kilnEntity == null || !kilnEntity.canLight())) {
@@ -58,6 +59,7 @@ public class FireDrillItem extends Item {
                 if (tinder != null) Tinder.set(tinder, false);
                 if (kilnEntity != null) kilnEntity.tryLight();
                 else if (tap != null) tap.tryLight();
+                else if (pit) { FirePitBlockEntity e = FirePit.entity(server, pos, state); if (e != null) e.light(); }
                 else server.setBlock(pos, state.setValue(CampfireBlock.LIT, true).trySetValue(Campfires.EMBERS, false), 11);
                 server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);
             } else {

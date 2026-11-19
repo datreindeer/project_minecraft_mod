@@ -44,6 +44,8 @@ public final class Wind {
     private static final float TORCH_BLOW = 0.45F, CAMPFIRE_BLOW = 0.35F;
     /** Rain on an exposed fire (any time of day): a torch lasts ~4-5 min, a campfire ~6 min; a thunderstorm doubles it. */
     private static final float TORCH_RAIN = 0.25F, CAMPFIRE_RAIN = 0.18F;
+    /** The Fire Pit (one roll per pit): wind ~9 min, rain ~19 min. */
+    private static final float FIRE_PIT_BLOW = 0.12F, FIRE_PIT_RAIN = 0.06F;
     private static final Map<Level, Boolean> ACTIVE = new WeakHashMap<>();
     /** Night forced windy by /windynight (testing). */
     private static final Map<Level, Long> FORCED = new WeakHashMap<>();
@@ -95,6 +97,12 @@ public final class Wind {
     public static void campfireTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (random.nextFloat() >= douse(level, pos, CAMPFIRE_BLOW, CAMPFIRE_RAIN) || !exposed(level, pos)) return;
         if (level.getBlockEntity(pos) instanceof CampfireBlockEntity fire) ((CampfireAccess) fire).mechanical$blowOut();
+    }
+
+    /** Random tick of a lit Fire Pit's corner (FirePitBlock): a big fire holds out about three times as long as a campfire. */
+    public static void firePitTick(ServerLevel level, BlockPos pos, RandomSource random) {
+        if (random.nextFloat() >= douse(level, pos, FIRE_PIT_BLOW, FIRE_PIT_RAIN) || !exposed(level, pos)) return;
+        if (level.getBlockEntity(pos) instanceof FirePitBlockEntity pit) pit.blowOut();
     }
 
     /** Random tick of a torch (TorchBlockMixin): torch and wall torch become their unlit versions. */

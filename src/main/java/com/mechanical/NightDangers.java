@@ -41,7 +41,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 /**
  * What makes the night dangerous, and fire the only real safety:
- * - monsters keep away from burning fires (campfires, lit kilns), won't target players close to one and don't spawn near one
+ * - monsters keep away from burning fires (campfires, Fire Pits half as far again, lit kilns), won't target players close to one and don't spawn near one
  *   (except on a blood moon: then the fire is no safety at all);
  * - zombie hordes roam on blood moon nights (two waves): they go for the lights first (put out fires, smash torches and lanterns), then the players;
  * - torches give no protection, instead they draw monsters in, which smash them;
@@ -68,33 +68,48 @@ public final class NightDangers {
 
     // ---- registry of burning fires: fires report themselves every tick while lit ----
 
-    private static final Map<Level, Map<BlockPos, Long>> FIRES = new WeakHashMap<>();
+    /** When a fire last reported itself, and its reach (how far its light keeps things off, as a multiple of a campfire's). */
+    private record Fire(long time, double reach) {}
+
+    private static final Map<Level, Map<BlockPos, Fire>> FIRES = new WeakHashMap<>();
 
     /** Called every tick by a burning campfire or lit kiln. */
     public static void markLit(Level level, BlockPos pos) {
-        FIRES.computeIfAbsent(level, l -> new HashMap<>()).put(pos.immutable(), level.getGameTime());
+        markLit(level, pos, 1);
     }
 
-    /** The nearest burning fire within {@code radius}, or null. */
+    /** As {@link #markLit(Level, BlockPos)}, for a bigger fire (the Fire Pit) whose every radius is {@code reach} times as large. */
+    public static void markLit(Level level, BlockPos pos, double reach) {
+        FIRES.computeIfAbsent(level, l -> new HashMap<>()).put(pos.immutable(), new Fire(level.getGameTime(), reach));
+    }
+
+    /** The nearest burning fire within {@code radius} (times that fire's reach), or null. */
     public static BlockPos nearestFire(Level level, Vec3 at, double radius) {
-        Map<BlockPos, Long> fires = FIRES.get(level);
+        Map<BlockPos, Fire> fires = FIRES.get(level);
         if (fires == null) return null;
         long now = level.getGameTime();
         BlockPos best = null;
         double bestDist = radius * radius;
-        for (Iterator<Map.Entry<BlockPos, Long>> it = fires.entrySet().iterator(); it.hasNext();) {
-            Map.Entry<BlockPos, Long> e = it.next();
-            if (now - e.getValue() > FIRE_STALE_TICKS) { it.remove(); continue; } // went out or was removed
-            double d = Vec3.atCenterOf(e.getKey()).distanceToSqr(at);
+        for (Iterator<Map.Entry<BlockPos, Fire>> it = fires.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<BlockPos, Fire> e = it.next();
+            if (now - e.getValue().time() > FIRE_STALE_TICKS) { it.remove(); continue; } // went out or was removed
+            double reach = e.getValue().reach();
+            double d = Vec3.atCenterOf(e.getKey()).distanceToSqr(at) / (reach * reach); // compared in the fire's own scale
             if (d < bestDist) { bestDist = d; best = e.getKey(); }
         }
         return best;
     }
 
+    /** How far a fire's radii reach, as a multiple of a campfire's (1 if unknown). */
+    public static double reach(Level level, BlockPos fire) {
+        Fire f = FIRES.getOrDefault(level, Map.of()).get(fire);
+        return f == null ? 1 : f.reach();
+    }
+
     /** All fires that burned within the last couple of seconds. */
     public static List<BlockPos> litFires(Level level) {
         long now = level.getGameTime();
-        return FIRES.getOrDefault(level, Map.of()).entrySet().stream().filter(e -> now - e.getValue() <= FIRE_STALE_TICKS).map(Map.Entry::getKey).toList();
+        return FIRES.getOrDefault(level, Map.of()).entrySet().stream().filter(e -> now - e.getValue().time() <= FIRE_STALE_TICKS).map(Map.Entry::getKey).toList();
     }
 
     public static boolean nearFire(Level level, Vec3 at, double radius) {
@@ -176,7 +191,7 @@ public final class NightDangers {
             fire = nearestFire(mob.level(), mob.position(), AVOID_RADIUS);
             if (fire == null) return false;
             if (mob.getTarget() != null && nearFire(mob.level(), mob.getTarget().position(), SAFE_RADIUS)) mob.setTarget(null);
-            Vec3 away = DefaultRandomPos.getPosAway(mob, (int) AVOID_RADIUS + 4, 7, Vec3.atCenterOf(fire));
+            Vec3 away = DefaultRandomPos.getPosAway(mob, (int) (AVOID_RADIUS * reach(mob.level(), fire)) + 4, 7, Vec3.atCenterOf(fire));
             return away != null && mob.getNavigation().moveTo(away.x, away.y, away.z, 1.2);
         }
 
@@ -205,12 +220,13 @@ public final class NightDangers {
             if (mob.getTarget() != null || (mob.tickCount + mob.getId()) % 40 != 0 || BloodMoon.isActive(mob.level())) return false;
             fire = nearestFire(mob.level(), mob.position(), WATCH_SEARCH);
             if (fire == null) return false;
-            watched = mob.level().getNearestPlayer(fire.getX() + 0.5, fire.getY(), fire.getZ() + 0.5, AVOID_RADIUS, p -> !((Player) p).isCreative() && !p.isSpectator());
+            double reach = reach(mob.level(), fire);
+            watched = mob.level().getNearestPlayer(fire.getX() + 0.5, fire.getY(), fire.getZ() + 0.5, AVOID_RADIUS * reach, p -> !((Player) p).isCreative() && !p.isSpectator());
             if (watched == null) return false;
             // a spot on the ring, a little round from where it stands
             Vec3 c = Vec3.atCenterOf(fire);
             double angle = Math.atan2(mob.getZ() - c.z, mob.getX() - c.x) + (mob.getRandom().nextDouble() - 0.5) * 1.2;
-            double r = WATCH_MIN + mob.getRandom().nextDouble() * (WATCH_MAX - WATCH_MIN);
+            double r = (WATCH_MIN + mob.getRandom().nextDouble() * (WATCH_MAX - WATCH_MIN)) * reach;
             return mob.getNavigation().moveTo(c.x + Math.cos(angle) * r, c.y, c.z + Math.sin(angle) * r, 0.6);
         }
 
@@ -510,6 +526,7 @@ public final class NightDangers {
 
         private static boolean isLight(net.minecraft.world.level.block.state.BlockState state) {
             if (state.getBlock() instanceof net.minecraft.world.level.block.CampfireBlock) return state.getValue(net.minecraft.world.level.block.CampfireBlock.LIT);
+            if (FirePit.isPit(state)) return FirePit.isLit(state);
             if (state.getBlock() instanceof KilnBlock) return state.getValue(KilnBlock.LIT);
             return isLamp(state);
         }
@@ -541,6 +558,8 @@ public final class NightDangers {
                 level.setBlock(pos, state.setValue(net.minecraft.world.level.block.CampfireBlock.LIT, false)
                         .setValue(Campfires.EMBERS, false), net.minecraft.world.level.block.Block.UPDATE_ALL);
                 level.playSound(null, pos, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+            } else if (FirePit.entity(level, pos, state) instanceof FirePitBlockEntity pit) {
+                pit.douse();
             } else if (state.getBlock() instanceof KilnBlock) {
                 if (level.getBlockEntity(KilnBlock.lowerPos(state, pos)) instanceof KilnBlockEntity kiln) kiln.extinguish();
                 level.playSound(null, pos, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
