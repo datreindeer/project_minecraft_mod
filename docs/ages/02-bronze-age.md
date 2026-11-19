@@ -86,6 +86,8 @@ Sinew, Tool Station och Armor Station.
 3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots, legering till brons (**byggt**); tvättat koncentrat återstår.
 4. **Verktyg och rustning:** kopparverktyg, Whetstone, bronsverktyg, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3
    (**byggda**, se Fas 3b).
+5. **Smelting Furnace** (sen bronsålder, **byggd**, se Fas 3c): 3×3×3 schaktugn av Furnace Bricks med Furnace Tap,
+   Clay Channels till formarna, 40 enheter, +25 % metall per malm.
 
 ## Fas 1: malm (byggd)
 
@@ -531,6 +533,154 @@ måste fyllas på.
 
 - Tvättat koncentrat (mer metall per smältning), spjut och svärd i brons, bronslykta, Bloomery mot järnet.
 - Crucible of Solid Bronze har samma (kopparfärgade) ikon som Solid Copper; namnet visar metallen.
+
+## Fas 3c: Smelting Furnace (byggd)
+
+Sen bronsålder: en fast schaktugn (lite som Tinkers' Construct, förenklad) som tar över när degeln blir för liten.
+Degeln (Crucible + Clay Kiln) finns kvar som den tidiga vägen. Ugnen rymmer fyra deglar, blandar brons direkt, ger
+**25 % mer metall per malm** och häller i flera formar efter varandra längs lerrännor.
+
+Kod: `Smelting` (registrering, advancements från koden), `FurnaceMelt` (innehåll, utbyte, legering, självtest),
+`FurnaceTapBlock` + `FurnaceTapBlockEntity` (styrblocket: struktur, intag, värme, smältning, tappning), `FurnaceMenu` +
+`client/FurnaceScreen` (status-GUI), `ClayChannelBlock` + `ClayChannelBlockEntity` (rännor), `client/MoltenRenderer`
+(glödande metall i rännor och schakt). Ändrat: `BellowsBlock` (pumpar mot ugnsväggar), `FireDrillItem` och `Tinder`
+(tänder tappen), `KilnBlockEntity` (två nya kilnrecept, värmesteget utbrutet till `heatStep` så ugnen delar det),
+`client/KilnScreen` (termometern utbruten till `thermometer`), `CrucibleContents.alloy(int, int)` (publik).
+Data: `scripts/gen_smelter.py`, texturer: `scripts/gen_smelter_textures.py`. Generatorordning: ... gen_pottery →
+gen_cart → **gen_smelter** → gen_block_items → gen_unlocks → gen_advancements → gen_registry.
+
+### Recept
+
+| Vad | Hur |
+|---|---|
+| Unfired Furnace Brick ×4 | Clay Ball (C) + Sand (S): `[C][S]` / `[S][C]` (eldfast lera: lera magrad med sand) |
+| Furnace Brick | Unfired Furnace Brick i Clay Kiln, **10 s vid 600°** |
+| Furnace Bricks | 4 Furnace Brick (2×2) |
+| Unfired Clay Channel ×4 | Clay Ball: `[C][ ][C]` / `[C][ ][C]` |
+| Clay Channel | Unfired Clay Channel i Clay Kiln, **20 s vid 600°** |
+| Furnace Tap | Furnace Bricks + Clay Channel + Clay Ball + Stick (formlöst) |
+
+En hel ugn är 23 Furnace Bricks = 92 tegel = 46 Clay Ball + 46 Sand. Teglet bränns på halva vanliga tegeltiden så att
+det inte tar en evighet i kilnen (vid 1300° går det 4× fortare). Bricks och tappen bryts med hacka (vilken som helst).
+
+### Bygga
+
+- **3×3×3** av **Furnace Bricks** runt ett **öppet schakt 1×1** genom alla tre lagren (mitten av varje lager är luft).
+- **Furnace Tap** sitter mitt i **nedersta lagrets framvägg** (i stället för ett tegel), med pipen utåt. Den vänds mot
+  spelaren när man sätter den, så sätt den utifrån.
+- Strukturen kontrolleras varje sekund och när något bredvid tappen ändras. Är den inte hel gör ugnen ingenting
+  (elden slocknar, bränslet ligger kvar) och högerklick på tappen säger vad som saknas: "Not a furnace yet: 5 Furnace
+  Bricks missing (one at x y z)" eller "The shaft must be open from top to bottom: clear x y z".
+- Ugnen glöder: tappens kikhål (och tapphålet när pluggen är ute) lyser när den brinner, rök och lågor ur schaktets
+  mynning, och smältan syns som en glödande yta i schaktet som stiger när ugnen fylls (malm som inte smält ännu
+  ligger som ett mörkare lager ovanpå).
+
+### Fylla
+
+Allt kommer in **ovanifrån**: kasta eller släpp föremål ner i schaktet (item-entities som hamnar i schaktet tas in).
+
+- **Malm** i alla former degeln tar: Crushed Copper / Tin Ore (1 enhet), Copper / Tin Concentrate (2), Native Copper (2).
+- **Tackor att smälta om:** Copper Ingot och Bronze Ingot (2 enheter; Poor Bronze förblir Poor).
+- **Bränsle:** bara **Charcoal** (och Coal), upp till **16** st.
+- Det som inte får plats, inte smälter eller inte går att blanda kastas tillbaka upp ur schaktet (med ett fräs).
+  Blandningsregeln är degelns: koppar och tenn blandas, smält brons tar bara mer av samma brons.
+
+**Kapacitet: 40 enheter** metall (malm som inte smält räknas med), dvs. **fyra deglar**. Det räcker till en hel
+uppsättning bronsverktyg (hacka 6 + yxa 6 + spade 2 + hacka/hoe 4 + kniv 2 + svärd 6 = 26 enheter) med tackor över,
+och ugnen är ett stort bygge som ska kännas som ett steg upp från degeln.
+
+### Värme
+
+Samma modell och konstanter som Clay Kiln (`KilnBlockEntity.heatStep`):
+
+- **Tänds** med **Fire Drill** på tappen (som kilnen, Tinder hjälper); kräver en hel ugn och Charcoal i den.
+- Tänd stiger den **5°/s** mot Charcoals naturliga **800°**; släckt sjunker den 3°/s (×2 i regn på schaktet).
+- **Bellows** som pekar på vilken ugnsvägg som helst (tappen räknas) pumpar **+40°** per klick upp till **1300°**.
+  Över 800° sjunker den 2°/s tillbaka. Flera bälgar på olika väggar går fortare.
+- Brons kräver **950°**, koppar **1085°**, tenn ensamt 232°. Alltså Charcoal och bälg, som i kilnen.
+- Bränslet brinner så länge ugnen är tänd (4 min per Charcoal, kallt väder och regn drar mer); slut på bränsle = släckt.
+- **Ingen överhettning:** eldfast tegel tål taket (1300°), ingen påfrestning eller sprickor som kilnen.
+
+### Smälta
+
+Malmen smälter en **kvarts enhet** i taget: **6 tick per kvarts enhet** vid smältpunkten (24 tick per enhet, lite
+fortare än degelns 30), och **hetare går fortare** som i kilnen: +1 takt per 200° över, upp till 4×. Smältpunkten är
+den för det som allt i ugnen blir (koppar + rätt mängd tenn: 950°, annars 1085°).
+
+Ugnen smälter alltid den metall som ligger mest efter i smältan jämfört med blandningen, så smältan håller
+blandningens förhållande medan den smälter. Brons blandas av koppar + tenn med **degelns regler** (9–11,5 % tenn =
+Bronze, 8–15 % = Poor Bronze, annars koppar och tennet blir slagg).
+
+### Utbyte (+25 %)
+
+- Ugnen räknar i **kvarts enheter**. **Malm ger 5 kvarts per enhet** (1,25 enheter, degeln 1), **tackor 4** (exakt
+  sin metall).
+- Exempel: 27 Crushed Copper Ore + 3 Crushed Tin Ore = 30 enheter malm → **37,5 enheter brons → 18 Bronze Ingots**
+  (degeln: 15). Det som blir över (här 1,5 enheter) ligger kvar i ugnen tills mer malm fyller på.
+- **Varför det inte går att fuska:** metall skapas bara när ett föremål går in (malm ×5, tacka ×4) och lämnar ugnen
+  bara när en form fylls (formens enheter ×4) eller som slagg. En tacka kostar 8 kvarts att gjuta och ger 8 tillbaka,
+  så smält → tappa → smält om ger aldrig mer. Bonusen sitter på malmen, och inget i modden gör metall till malm igen
+  (degelns tömning ger malm tillbaka exakt som den lades i, tackor som tackor). Metallen dras från ugnen först när
+  formen fylls, och bara om formen fortfarande är tom och rännorna hela, så inget dubbleras eller försvinner om något
+  ändras under hällningen. Smältan hålls i tusendelar av en kvarts så att en hällning tar koppar och tenn i exakt
+  rätt andel (med hela kvartar avrundades det åt samma håll varje gång och brons blev Poor efter några tackor).
+- Bryts tappen förloras smältan och den osmälta malmen (bränslet ramlar ut), så det finns inget att plocka ut.
+
+### Tappa
+
+- **Smyg + högerklick med tom hand** på tappen drar ur / sätter i lerpluggen (syns: pluggen sitter i hålet med en
+  pinne, eller ligger på marken bredvid pipen).
+- Med öppen tapp rinner metallen när: ugnen är hel, smältan är minst sin smältpunkt varm, och blandningen har satt
+  sig (smälter ugnen fortfarande till en annan metall än smältan just nu väntar den, så man inte tappar en halvsmält
+  blandning som slagg).
+- Tappen letar upp **närmaste tomma Clay Mold som tar metallen och som det finns nog metall till**: direkt framför
+  pipen, eller längs sammanhängande **Clay Channels** därifrån (sökningen går ut ränna för ränna, högst 64 rännor, och
+  tar formen närmast tappen först). Metallen rinner en stund (0,5 s + 0,25 s per enhet formen tar + 0,1 s per ränna),
+  sedan fylls formen och nästa letas upp. Med stängd tapp, för kall smälta eller ingen form som kan ta emot står
+  allt still och inget går förlorat.
+- Formen fylls med **samma regler som från degeln**: rätt metall för formen (koppar bara i de sex kopparformerna),
+  formens enheter (tacka 2, hackhuvud 6 ...), stelnar på 5 s, tom hand tar ut gjutningen (Poor Bronze-märkt om
+  smältan var Poor), formen spricker efter 5 gjutningar.
+- Under hällningen lyser pipen (glödande metall rinner ner för den och droppar över kanten) och tappen ger mer ljus.
+
+### Rännor (Clay Channel)
+
+- Bränd lerränna (golv 2 px, väggar upp till 5 px, 6 px bred ränna). Kopplar ihop sig själv med rännor, Clay Molds och
+  en tapps pip bredvid sig: rak, hörn, T och kors (modellen är rännans mitt plus en arm eller en ändvägg per sida).
+- Metallen syns som en glödande, rinnande remsa i metallens färg (koppar orange, brons guldgul, Poor Bronze mattare,
+  rinner åt flödets håll) i rännorna på vägen till formen den fyller just nu.
+- Rännorna håller ingen metall själva; allt som inte har någonstans att ta vägen stannar i ugnen.
+- Bara i samma höjd (ingen lutning). Formar ställs vid rännornas ändar eller bredvid dem, eller direkt framför tappen.
+
+### Kontroller
+
+| Gör | Hur |
+|---|---|
+| Status | Högerklick på tappen (tom hand eller med något annat än Fire Drill). Hel ugn: GUI; annars vad som saknas |
+| Öppna / stänga tappen | Smyg + högerklick med tom hand |
+| Tända | Fire Drill på tappen |
+| Fylla på | Kasta malm, tackor och Charcoal ner i schaktet |
+| Värma | Bellows mot en ugnsvägg, högerklick = en pump |
+
+**GUI:** kilnens termometer (vitt streck vid smältpunkten som behövs, grönt när den nåtts; tooltip med temperatur och
+smälttakt, markeringar vid 232°/950°/1085°), en tank med smältan i metallens färg och osmält malm mörkare ovanpå
+(streck var 10:e enhet, tooltip "12.25 / 40 units"), lågan för bränslet ("Charcoal 5/16") och rader: smält metall per
+sort i enheter, malm som smälter, blandningen ("Mix: 10.0% tin = Bronze") och vad tappen gör (öppen/stängd, för kall,
+blandningen sätter sig, fel tennandel ger slagg).
+
+### Advancements (Bronze Age-fliken, efter Bronze!)
+
+- **Firebrick:** ha Furnace Brick eller Furnace Bricks.
+- **Smelting Furnace** (goal): ugnen blir hel (ges från koden till spelare inom 12 block).
+- **Tapped** (challenge): en öppen tapp fyller en Clay Mold via minst en Clay Channel (spelare inom 16 block).
+
+### Beslut
+
+- **Casting Basin: nej.** Modden har inga metallblock värda att gjuta (inget bronsblock; vanillas kopparblock är 9
+  tackor i crafting och tillför inget).
+- Tappen styr (status-GUI, plugg), allt matas genom schaktet; inga platser i GUI:t.
+- Bara Charcoal/Coal som bränsle: ugnen ska kräva kol och bälg, och ved räcker ändå inte till brons.
+- **Inte gjort (valfritt):** lutande rännor (nedåt ett block), att smältan rinner ut när ugnen bryts, överhettning.
 
 ## Odling: fas 3 (byggd)
 

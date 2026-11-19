@@ -26,8 +26,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Leather bellows with a Clay Tuyere, placed beside a Clay Kiln's firebox with the nozzle (FACING) into it. Each use is
- * one pump ({@link KilnBlockEntity#pump}): the bellows squeeze shut for {@link #PUMP_TICKS} (also the cooldown).
+ * Leather bellows with a Clay Tuyere, placed beside a Clay Kiln's firebox (or against a Smelting Furnace's wall) with the
+ * nozzle (FACING) into it. Each use is one pump ({@link KilnBlockEntity#pump}, {@link FurnaceTapBlockEntity#pump}): the bellows squeeze shut for {@link #PUMP_TICKS} (also the cooldown).
  */
 public class BellowsBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
@@ -68,7 +68,16 @@ public class BellowsBlock extends Block {
         server.sendParticles(ParticleTypes.POOF, nx, pos.getY() + 0.25, nz, 2, 0.02, 0.02, 0.02, 0.02);
         BlockPos target = pos.relative(facing);
         if (!(level.getBlockEntity(target) instanceof KilnBlockEntity kiln)) {
-            player.sendOverlayMessage(Component.translatable("message.mechanical.bellows.no_kiln"));
+            FurnaceTapBlockEntity furnace = FurnaceTapBlockEntity.find(server, target);
+            if (furnace == null) player.sendOverlayMessage(Component.translatable("message.mechanical.bellows.no_kiln"));
+            else if (furnace.problem() != null) player.sendOverlayMessage(furnace.problem());
+            else if (!furnace.pump()) player.sendOverlayMessage(Component.translatable("message.mechanical.furnace.unlit"));
+            else { // the fire roars up the shaft
+                BlockPos top = furnace.shaft().above(3);
+                server.sendParticles(ParticleTypes.FLAME, top.getX() + 0.5, top.getY() + 0.1, top.getZ() + 0.5, 8, 0.15, 0.1, 0.15, 0.04);
+                server.sendParticles(ParticleTypes.LAVA, top.getX() + 0.5, top.getY() + 0.1, top.getZ() + 0.5, 2, 0.1, 0.1, 0.1, 0.0);
+                server.playSound(null, target, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.25F, 0.6F + server.getRandom().nextFloat() * 0.2F);
+            }
             return InteractionResult.SUCCESS;
         }
         if (!kiln.pump(server)) {

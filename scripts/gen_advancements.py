@@ -10,7 +10,7 @@
 
 EVERY NEW FEATURE ADDS ITS ROWS TO TABS (item -> where it sits in the tree and a description that says how to get it).
 
-Generator order: ... gen_cart.py, gen_block_items.py, gen_unlocks.py, gen_advancements.py, gen_registry.py.
+Generator order: ... gen_cart.py, gen_smelter.py, gen_block_items.py, gen_unlocks.py, gen_advancements.py, gen_registry.py.
 Run: python scripts/gen_advancements.py
 """
 import glob
@@ -73,6 +73,11 @@ def used_on(tool, block=None, state=None):
         terms.insert(0, {"type": "minecraft:location_check", "predicate": {"block": pred}})
     return {"used": {"trigger": "minecraft:item_used_on_block",
                      "conditions": {"location": {"type": "minecraft:all_of", "terms": terms}}}}
+
+
+def by_code():
+    """Granted from Java (PlayerAdvancements.award with criterion "done"), e.g. when a Smelting Furnace is complete."""
+    return {"done": {"trigger": "minecraft:impossible"}}
 
 
 def visit(structure):
@@ -407,6 +412,15 @@ TABS = {
         ("bronze_armor", "bronze", "bronze_helmet", G, "Bronze Plate",
          "Cast plates, sharpen them and sew a Bronze Helmet or Greaves at the Armor Station",
          has("bronze_helmet", "bronze_greaves")),
+        ("furnace_bricks", "bronze", "furnace_bricks", T, "Firebrick",
+         "Shape Clay Balls and Sand into Unfired Furnace Bricks, fire them in the kiln (600°) and put 4 together",
+         has("furnace_brick", "furnace_bricks")),
+        ("smelting_furnace", "furnace_bricks", "furnace_tap", G, "Smelting Furnace",
+         "Build 3x3x3 Furnace Bricks around an open shaft, a Furnace Tap mid-bottom front. Drop ore and Charcoal in, light it",
+         by_code()),
+        ("tap_metal", "smelting_furnace", "clay_channel", C, "Tapped",
+         "Sneak-use the tap to open it: molten metal runs along Clay Channels into a Clay Mold. A quarter more metal per ore",
+         by_code()),
         ("bronze_saw", "bronze", "bronze_saw", T, "Saw",
          "Cast a saw blade and assemble a Bronze Saw. Log + Saw makes 4 Planks", has("bronze_saw")),
         ("potters_wheel", "bronze_saw", "potters_wheel", T, "Potter's Wheel",

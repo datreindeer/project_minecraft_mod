@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:furnace_bricks",
+    "mechanical:clay_channel",
+    "minecraft:clay_ball",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mechanical:furnace_tap"
+  }
+}

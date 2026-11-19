@@ -178,7 +178,7 @@ lang.update({
     "message.mechanical.mold.molten": "The metal is still molten",
     "message.mechanical.mold.cracked": "The mold cracked",
     "message.mechanical.mold.set_in_crucible": "Too late: the metal has set in the crucible",
-    "message.mechanical.bellows.no_kiln": "The bellows must blow into a Clay Kiln's firebox",
+    "message.mechanical.bellows.no_kiln": "The bellows must blow into a Clay Kiln's firebox or a Smelting Furnace's wall",
     "message.mechanical.bellows.unlit": "The kiln is not lit",
     "message.mechanical.kiln.cracked": "The kiln is cracked: press 4 Clay Balls into it, then fire it again",
     "message.mechanical.kiln.patching": "Patched %s/%s",

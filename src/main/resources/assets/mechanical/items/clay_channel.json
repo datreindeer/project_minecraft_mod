@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mechanical:block/clay_channel_inventory"
+  }
+}

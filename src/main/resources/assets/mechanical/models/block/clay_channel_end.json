@@ -1,0 +1,78 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/clay_channel",
+    "clay": "mechanical:block/clay_channel",
+    "inside": "mechanical:block/clay_channel_inside"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        2,
+        3
+      ],
+      "to": [
+        11,
+        5,
+        5
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            5,
+            3,
+            11,
+            5
+          ],
+          "texture": "#clay"
+        },
+        "up": {
+          "uv": [
+            5,
+            3,
+            11,
+            5
+          ],
+          "texture": "#clay"
+        },
+        "north": {
+          "uv": [
+            5,
+            11,
+            11,
+            14
+          ],
+          "texture": "#clay"
+        },
+        "south": {
+          "uv": [
+            5,
+            11,
+            11,
+            14
+          ],
+          "texture": "#inside"
+        },
+        "east": {
+          "uv": [
+            3,
+            11,
+            5,
+            14
+          ],
+          "texture": "#clay"
+        },
+        "west": {
+          "uv": [
+            3,
+            11,
+            5,
+            14
+          ],
+          "texture": "#clay"
+        }
+      }
+    }
+  ]
+}

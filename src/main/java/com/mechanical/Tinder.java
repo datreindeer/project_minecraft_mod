@@ -45,6 +45,7 @@ public final class Tinder {
     public static BlockEntity holder(Level level, BlockPos pos, BlockState state) {
         if (CampfireBlock.canLight(state)) return level.getBlockEntity(pos);
         if (state.getBlock() instanceof KilnBlock && !state.getValue(KilnBlock.LIT)) return level.getBlockEntity(KilnBlock.lowerPos(state, pos));
+        if (state.getBlock() instanceof FurnaceTapBlock && !state.getValue(FurnaceTapBlock.LIT)) return level.getBlockEntity(pos);
         return null;
     }
 

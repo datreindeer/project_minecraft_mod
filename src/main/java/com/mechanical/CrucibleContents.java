@@ -75,7 +75,7 @@ public record CrucibleContents(Map<String, Integer> units) {
         return alloy(cu, sn);
     }
 
-    static Metal alloy(int copper, int tin) {
+    public static Metal alloy(int copper, int tin) {
         int total = copper + tin;
         if (tin * 1000 >= 90 * total && tin * 1000 <= 115 * total) return Metal.BRONZE;
         if (tin * 100 >= 8 * total && tin * 100 <= 15 * total) return Metal.POOR_BRONZE;
