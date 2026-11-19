@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RKR",
+    "CCC"
+  ],
+  "key": {
+    "R": "#mechanical:rock_chunks",
+    "K": "mechanical:flint_pickaxe",
+    "C": "minecraft:cobblestone"
+  },
+  "result": {
+    "id": "mechanical:stone_anvil"
+  }
+}
