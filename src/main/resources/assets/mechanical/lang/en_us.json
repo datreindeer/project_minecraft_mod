@@ -736,5 +736,7 @@
   "item.mechanical.wolf_fur_boots": "Wolf Fur Boots",
   "block.mechanical.wolf_rug": "Wolf Rug",
   "block.mechanical.furred_straw_bed": "Furred Straw Bed",
-  "message.mechanical.furred_straw_bed_rest": "You rest warm under the wolf pelt. The night goes on."
+  "message.mechanical.furred_straw_bed_rest": "You rest warm under the wolf pelt. The night goes on.",
+  "item.mechanical.dried_mushrooms": "Dried Mushrooms",
+  "message.mechanical.too_far_gone": "This is too far gone to keep"
 }

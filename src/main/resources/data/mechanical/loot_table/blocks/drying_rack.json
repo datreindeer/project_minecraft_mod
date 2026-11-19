@@ -106,6 +106,139 @@
               "count": 4
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_mushrooms",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "13"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:scraped_hide",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "2"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:scraped_phantom_hide",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "3"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:phantom_leather",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "4"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:rotten_flesh",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "5"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:jerky",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "7"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_fish",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "9"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_berries",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "11"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_mushrooms",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "13"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 4
+            }
+          ]
         }
       ]
     }

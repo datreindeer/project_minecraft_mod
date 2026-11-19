@@ -743,16 +743,8 @@ for stage, tex in ((0, None), (1, "drying_rack_hide_wet"), (2, "drying_rack_hide
     if tex: textures["hide"] = f"mechanical:block/{tex}"
     w(A / f"models/block/drying_rack_{stage}.json", {"parent": "minecraft:block/block", "textures": textures,
         "elements": frame + ([hide_plane] if tex else [])})
-w(A / "blockstates/drying_rack.json", {"variants": {f"facing={f},hide={h}": {"model": f"mechanical:block/drying_rack_{h}", **({"y": y} if y else {})}
-                                                    for f, y in [("north", 0), ("east", 90), ("south", 180), ("west", 270)] for h in range(6)}})
 w(A / "items/drying_rack.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/drying_rack_0"}})
-hide_drop = lambda h, item: {"type": "minecraft:item", "name": item,
-    "condition": {"type": "minecraft:match_block", "blocks": "mechanical:drying_rack", "state": {"hide": str(h)}}}
-w(D / "mechanical/loot_table/blocks/drying_rack.json", {"type": "minecraft:block", "pools": [
-    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:drying_rack"}]},
-    {"rolls": 1, "entries": [hide_drop(1, "mechanical:scraped_hide"), hide_drop(2, "minecraft:leather"), hide_drop(3, "mechanical:scraped_phantom_hide"),
-                             hide_drop(4, "mechanical:phantom_leather"), hide_drop(5, "minecraft:rotten_flesh")]}],
-    "random_sequence": "mechanical:blocks/drying_rack"})
+# blockstate (single and 2-tall racks) and loot (both spots per block): gen_preserving.py
 w(D / "minecraft/tags/block/mineable/axe.json", {"values": ["mechanical:tool_station", "mechanical:drying_rack"] + [f"mechanical:{x}_stump" for x in WOODS]
     + [f"mechanical:{x}_fallen_log" for x in WOODS]})
 for n, it in (("raw_hide", ("mechanical:raw_hide", ["scraped_hide", "drying_rack"])), ("wool_thread", ("mechanical:wool_thread", ["white_wool_from_thread"]))):
