@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +31,19 @@ public final class ToolStationRecipes {
             return List.of(head.get(), binding.get(), rod.get());
         }
 
+        /** The parts this inventory would use: Hide Glue stands in for Cordage when there is no Cordage. */
+        public List<Item> parts(Inventory inventory) {
+            if (!gluable() || inventory.countItem(Mechanical.CORDAGE.get()) > 0 || inventory.countItem(Kettle.HIDE_GLUE.get()) == 0) return parts();
+            return List.of(head.get(), Kettle.HIDE_GLUE.get(), rod.get());
+        }
+
+        /** Hafting with Hide Glue (Kettle) instead of a Cordage lashing. */
+        public boolean gluable() {
+            return binding.get() == Mechanical.CORDAGE.get();
+        }
+
         public boolean matches(ItemStack head, ItemStack binding, ItemStack rod) {
-            return head.is(this.head.get()) && binding.is(this.binding.get()) && rod.is(this.rod.get());
+            return head.is(this.head.get()) && (binding.is(this.binding.get()) || gluable() && binding.is(Kettle.HIDE_GLUE.get())) && rod.is(this.rod.get());
         }
     }
 
@@ -76,7 +88,7 @@ public final class ToolStationRecipes {
 
     /** True if the player's inventory holds every part of the recipe. */
     public static boolean hasParts(Player player, Recipe recipe) {
-        return recipe.parts().stream().allMatch(part -> player.getInventory().countItem(part) > 0); // by item: Poor Bronze parts count too
+        return recipe.parts(player.getInventory()).stream().allMatch(part -> player.getInventory().countItem(part) > 0); // by item: Poor Bronze parts count too
     }
 
     @SubscribeEvent

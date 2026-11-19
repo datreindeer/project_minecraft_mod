@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/kettle",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hide_glue"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hide_glue"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.hide_glue.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.hide_glue.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

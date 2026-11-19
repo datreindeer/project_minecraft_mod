@@ -1,0 +1,398 @@
+{
+  "textures": {
+    "particle": "mechanical:block/tripod_pole",
+    "pole": "mechanical:block/tripod_pole",
+    "pole_end": "mechanical:block/tripod_pole_end",
+    "lashing": "mechanical:block/tripod_lashing"
+  },
+  "elements": [
+    {
+      "from": [
+        15.1,
+        -16,
+        15.1
+      ],
+      "to": [
+        16.9,
+        24,
+        16.9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            6,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            6,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            6,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            6,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "up": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole_end"
+        },
+        "down": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole_end"
+        }
+      },
+      "rotation": {
+        "origin": [
+          16,
+          16,
+          16
+        ],
+        "x": 28,
+        "y": 0,
+        "rescale": true
+      }
+    },
+    {
+      "from": [
+        15.1,
+        -16,
+        15.1
+      ],
+      "to": [
+        16.9,
+        24,
+        16.9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "south": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "east": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "west": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "up": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole_end"
+        },
+        "down": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole_end"
+        }
+      },
+      "rotation": {
+        "origin": [
+          16,
+          16,
+          16
+        ],
+        "x": 28,
+        "y": 120,
+        "rescale": true
+      }
+    },
+    {
+      "from": [
+        15.1,
+        -16,
+        15.1
+      ],
+      "to": [
+        16.9,
+        24,
+        16.9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10,
+            0,
+            12,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "south": {
+          "uv": [
+            10,
+            0,
+            12,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "east": {
+          "uv": [
+            10,
+            0,
+            12,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "west": {
+          "uv": [
+            10,
+            0,
+            12,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "up": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole_end"
+        },
+        "down": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole_end"
+        }
+      },
+      "rotation": {
+        "origin": [
+          16,
+          16,
+          16
+        ],
+        "x": 28,
+        "y": 240,
+        "rescale": true
+      }
+    },
+    {
+      "from": [
+        14.4,
+        14.5,
+        14.4
+      ],
+      "to": [
+        17.6,
+        17.5,
+        17.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            6.5,
+            3.2,
+            9.5
+          ],
+          "texture": "#lashing"
+        },
+        "south": {
+          "uv": [
+            0,
+            6.5,
+            3.2,
+            9.5
+          ],
+          "texture": "#lashing"
+        },
+        "east": {
+          "uv": [
+            0,
+            6.5,
+            3.2,
+            9.5
+          ],
+          "texture": "#lashing"
+        },
+        "west": {
+          "uv": [
+            0,
+            6.5,
+            3.2,
+            9.5
+          ],
+          "texture": "#lashing"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            3.2,
+            3.2
+          ],
+          "texture": "#lashing"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            3.2,
+            3.2
+          ],
+          "texture": "#lashing"
+        }
+      },
+      "rotation": {
+        "origin": [
+          16,
+          16,
+          16
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    },
+    {
+      "from": [
+        14.6,
+        15.6,
+        14.6
+      ],
+      "to": [
+        17.4,
+        16.4,
+        17.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            7.6,
+            2.8,
+            8.4
+          ],
+          "texture": "#lashing"
+        },
+        "south": {
+          "uv": [
+            0,
+            7.6,
+            2.8,
+            8.4
+          ],
+          "texture": "#lashing"
+        },
+        "east": {
+          "uv": [
+            0,
+            7.6,
+            2.8,
+            8.4
+          ],
+          "texture": "#lashing"
+        },
+        "west": {
+          "uv": [
+            0,
+            7.6,
+            2.8,
+            8.4
+          ],
+          "texture": "#lashing"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            2.8,
+            2.8
+          ],
+          "texture": "#lashing"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            2.8,
+            2.8
+          ],
+          "texture": "#lashing"
+        }
+      },
+      "rotation": {
+        "origin": [
+          16,
+          16,
+          16
+        ],
+        "axis": "y",
+        "angle": -22.5
+      }
+    }
+  ]
+}

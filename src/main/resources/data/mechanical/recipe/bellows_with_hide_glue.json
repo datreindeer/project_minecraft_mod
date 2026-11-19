@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PHP",
+    "PHP",
+    "GUG"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "H": "mechanical:scraped_hide",
+    "G": "mechanical:hide_glue",
+    "U": "mechanical:clay_tuyere"
+  },
+  "result": {
+    "id": "mechanical:bellows"
+  }
+}

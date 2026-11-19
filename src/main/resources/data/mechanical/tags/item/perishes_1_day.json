@@ -29,6 +29,8 @@
     "mechanical:plucked_pheasant",
     "mechanical:plucked_ptarmigan",
     "mechanical:plucked_pigeon",
-    "mechanical:plucked_chicken"
+    "mechanical:plucked_chicken",
+    "mechanical:stew",
+    "mechanical:broth"
   ]
 }

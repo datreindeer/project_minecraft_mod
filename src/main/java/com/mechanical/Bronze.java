@@ -71,6 +71,10 @@ public final class Bronze {
     public static final DeferredBlock<ClayMoldBlock> CLAY_SWORD_BLADE_MOLD = Casting.mold("clay_sword_blade_mold", ClayMoldBlock.Shape.SWORD_BLADE);
     public static final DeferredItem<BlockItem> CLAY_SPEAR_HEAD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_spear_head_mold", CLAY_SPEAR_HEAD_MOLD);
     public static final DeferredItem<BlockItem> CLAY_SWORD_BLADE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_sword_blade_mold", CLAY_SWORD_BLADE_MOLD);
+    /** The kettle takes 8 units (a pickaxe or sword head takes 6): most of a full crucible, see {@link Kettle}. */
+    public static final DeferredItem<Item> UNFIRED_CLAY_KETTLE_MOLD = ITEMS.registerSimpleItem("unfired_clay_kettle_mold");
+    public static final DeferredBlock<ClayMoldBlock> CLAY_KETTLE_MOLD = Casting.mold("clay_kettle_mold", ClayMoldBlock.Shape.KETTLE);
+    public static final DeferredItem<BlockItem> CLAY_KETTLE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_kettle_mold", CLAY_KETTLE_MOLD);
 
     // --- castings, rough and ground ---
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_pickaxe_head");
@@ -82,6 +86,7 @@ public final class Bronze {
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PLATE = ITEMS.registerSimpleItem("rough_cast_bronze_plate");
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SPEAR_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_spear_head");
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SWORD_BLADE = ITEMS.registerSimpleItem("rough_cast_bronze_sword_blade");
+    public static final DeferredItem<Item> ROUGH_CAST_BRONZE_KETTLE = ITEMS.registerSimpleItem("rough_cast_bronze_kettle", p -> p.stacksTo(1));
     public static final DeferredItem<Item> BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("bronze_pickaxe_head");
     public static final DeferredItem<Item> BRONZE_AXE_HEAD = ITEMS.registerSimpleItem("bronze_axe_head");
     public static final DeferredItem<Item> BRONZE_SHOVEL_HEAD = ITEMS.registerSimpleItem("bronze_shovel_head");
@@ -91,6 +96,8 @@ public final class Bronze {
     public static final DeferredItem<Item> BRONZE_PLATE = ITEMS.registerSimpleItem("bronze_plate");
     public static final DeferredItem<Item> BRONZE_SPEAR_HEAD = ITEMS.registerSimpleItem("bronze_spear_head");
     public static final DeferredItem<Item> BRONZE_SWORD_BLADE = ITEMS.registerSimpleItem("bronze_sword_blade");
+    /** Hung in a Tripod over a fire (Kettle). A Poor Bronze kettle holds less ({@link Kettle#POOR_CAPACITY}). */
+    public static final DeferredItem<Item> BRONZE_KETTLE = ITEMS.registerSimpleItem("bronze_kettle", p -> p.stacksTo(1));
 
     // --- tools (attack values as vanilla iron) ---
     public static final DeferredItem<Item> BRONZE_PICKAXE = ITEMS.registerSimpleItem("bronze_pickaxe", p -> p.pickaxe(BRONZE, 1.0F, -2.8F));
@@ -118,7 +125,7 @@ public final class Bronze {
             ROUGH_CAST_BRONZE_SHOVEL_HEAD, BRONZE_SHOVEL_HEAD, ROUGH_CAST_BRONZE_HOE_HEAD, BRONZE_HOE_HEAD,
             ROUGH_CAST_BRONZE_KNIFE_BLADE, BRONZE_KNIFE_BLADE, ROUGH_CAST_BRONZE_SAW_BLADE, BRONZE_SAW_BLADE,
             ROUGH_CAST_BRONZE_PLATE, BRONZE_PLATE, ROUGH_CAST_BRONZE_SPEAR_HEAD, BRONZE_SPEAR_HEAD,
-            ROUGH_CAST_BRONZE_SWORD_BLADE, BRONZE_SWORD_BLADE);
+            ROUGH_CAST_BRONZE_SWORD_BLADE, BRONZE_SWORD_BLADE, ROUGH_CAST_BRONZE_KETTLE, BRONZE_KETTLE); // Map.of's limit: 10
 
     /** The ground piece for a rough bronze casting (Poor Bronze stays poor), or empty. */
     static ItemStack ground(ItemStack rough) {
@@ -157,8 +164,10 @@ public final class Bronze {
     static final class Tooltip {
         @SubscribeEvent
         static void onTooltip(ItemTooltipEvent event) {
-            if (isPoor(event.getItemStack()) && !event.getToolTip().isEmpty())
-                event.getToolTip().add(1, Component.translatable("tooltip.mechanical.poor_bronze").withStyle(ChatFormatting.YELLOW));
+            ItemStack stack = event.getItemStack();
+            if (isPoor(stack) && !event.getToolTip().isEmpty()) event.getToolTip().add(1, Component.translatable(
+                    stack.is(BRONZE_KETTLE.get()) || stack.is(ROUGH_CAST_BRONZE_KETTLE.get()) ? "tooltip.mechanical.poor_bronze_kettle" : "tooltip.mechanical.poor_bronze",
+                    Kettle.POOR_CAPACITY, Kettle.CAPACITY).withStyle(ChatFormatting.YELLOW));
         }
 
         private Tooltip() {}

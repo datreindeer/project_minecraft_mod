@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:food/cooked",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:stew"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.hearty_stew.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.hearty_stew.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

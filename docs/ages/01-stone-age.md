@@ -34,7 +34,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Unfired Crucible |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
-| Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather |
+| Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather (bronsåldern: garvas med Bark i en **Bronze Kettle**, 3 Leather av 2 hudar) |
 | Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor-recept | Sys i **Armor Station** med Bone Needle + Wool Thread |
 | Leather Armor |
 | Raw Phantom Hide | Styckning av Phantom, omgång 1 (60 %) | Scraped Phantom Hide |
@@ -176,7 +176,8 @@ Hide bara i 60 % av fallen, och huden måste torka i solen utan att ruttna. Tota
 - **Eggshell** fungerar som Bone Meal (högerklicka på växter).
 
 ### Tallow och ljus
-- **Tallow:** Lard (1) eller Bear Fat (2) på en Campfire (20 s).
+- **Tallow:** Lard (1) eller Bear Fat (2) på en Campfire (20 s). I bronsåldern ger en **Bronze Kettle** mer: Lard 2,
+  Bear Fat 3, och 2 Bone ger 1 (se 02-bronze-age.md, Bronze Kettle).
 - **Candle:** `[Twine]` / `[Tallow]` / `[Tallow]` → 2 Candle (vanilla-receptet med Honeycomb borttaget). Tänds med
   **Fire Drill** (60 %). Monster slår inte sönder ljus, men en zombiehord blåser ut dem.
 
@@ -785,7 +786,8 @@ Seagull gör det inte).
   och ben kvar, stjärten blir pennstumpar).
 - **Hel fågel:** högerklicka på en **plockad** fågel med **tom hand** för att ta den som item: **Plucked Goose / Pheasant /
   Ptarmigan / Pigeon / Chicken** (stackar 16, förskäms på 1 dag). Plucked + kniv i craftingrutan → fågelns råa kött; hel
-  på Campfire (30 s) → det lagade köttet. Så bär man hem många fåglar på en gång. (Bronsålderns kittel ska koka dem hela.)
+  på Campfire (30 s) → det lagade köttet. Så bär man hem många fåglar på en gång. I bronsåldern kokas de hela i en **Bronze Kettle**: 2 Broth per fågel
+  och fågeln kommer upp kokt (se 02-bronze-age.md).
 - **Stycka:** andra knivomgången ger fågelns eget kött (ingen Bone Pile). På en Hanging Rack: samma kött, **+1** om fågeln
   hunnit hänga sig (3 min), inga stora styckdetaljer.
 

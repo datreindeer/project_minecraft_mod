@@ -91,6 +91,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_PLATE_MOLD.get()), 1, () -> Bronze.CLAY_PLATE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SPEAR_HEAD_MOLD.get()), 1, () -> Bronze.CLAY_SPEAR_HEAD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SWORD_BLADE_MOLD.get()), 1, () -> Bronze.CLAY_SWORD_BLADE_MOLD_ITEM.get(), 400, 600),
+            new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_KETTLE_MOLD.get()), 1, () -> Bronze.CLAY_KETTLE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Pottery.UNFIRED_STORAGE_JAR.get()), 1, () -> Pottery.STORAGE_JAR_ITEM.get(), 600, 600),
             new Recipe(s -> s.is(Pottery.UNFIRED_WATER_JUG.get()), 1, () -> Pottery.WATER_JUG_ITEM.get(), 600, 600),
             new Recipe(s -> s.is(Smelting.UNFIRED_FURNACE_BRICK.get()), 1, () -> Smelting.FURNACE_BRICK.get(), 200, 600),

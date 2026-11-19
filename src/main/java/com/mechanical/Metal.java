@@ -40,17 +40,18 @@ public enum Metal implements StringRepresentable {
     }
 
     private static Map<ClayMoldBlock.Shape, Supplier<Item>> bronzeCasts() {
-        return Map.of(
-                ClayMoldBlock.Shape.INGOT, () -> Bronze.BRONZE_INGOT.get(),
-                ClayMoldBlock.Shape.PICKAXE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_PICKAXE_HEAD.get(),
-                ClayMoldBlock.Shape.AXE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_AXE_HEAD.get(),
-                ClayMoldBlock.Shape.SHOVEL_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_SHOVEL_HEAD.get(),
-                ClayMoldBlock.Shape.HOE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_HOE_HEAD.get(),
-                ClayMoldBlock.Shape.KNIFE_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_KNIFE_BLADE.get(),
-                ClayMoldBlock.Shape.SAW_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_SAW_BLADE.get(),
-                ClayMoldBlock.Shape.PLATE, () -> Bronze.ROUGH_CAST_BRONZE_PLATE.get(),
-                ClayMoldBlock.Shape.SPEAR_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_SPEAR_HEAD.get(),
-                ClayMoldBlock.Shape.SWORD_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_SWORD_BLADE.get()); // Map.of's limit: 10
+        return Map.ofEntries(
+                Map.entry(ClayMoldBlock.Shape.INGOT, () -> Bronze.BRONZE_INGOT.get()),
+                Map.entry(ClayMoldBlock.Shape.PICKAXE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_PICKAXE_HEAD.get()),
+                Map.entry(ClayMoldBlock.Shape.AXE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_AXE_HEAD.get()),
+                Map.entry(ClayMoldBlock.Shape.SHOVEL_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_SHOVEL_HEAD.get()),
+                Map.entry(ClayMoldBlock.Shape.HOE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_HOE_HEAD.get()),
+                Map.entry(ClayMoldBlock.Shape.KNIFE_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_KNIFE_BLADE.get()),
+                Map.entry(ClayMoldBlock.Shape.SAW_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_SAW_BLADE.get()),
+                Map.entry(ClayMoldBlock.Shape.PLATE, () -> Bronze.ROUGH_CAST_BRONZE_PLATE.get()),
+                Map.entry(ClayMoldBlock.Shape.SPEAR_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_SPEAR_HEAD.get()),
+                Map.entry(ClayMoldBlock.Shape.SWORD_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_SWORD_BLADE.get()),
+                Map.entry(ClayMoldBlock.Shape.KETTLE, () -> Bronze.ROUGH_CAST_BRONZE_KETTLE.get()));
     }
 
     public boolean casts(ClayMoldBlock.Shape shape) {
