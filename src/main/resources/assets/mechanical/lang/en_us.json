@@ -594,5 +594,21 @@
   "message.mechanical.paintbrush.no_paint": "Hold a bowl of paint in your other hand",
   "message.mechanical.paintbrush.no_room": "Paint needs a solid face with space in front",
   "message.mechanical.paintbrush.no_room_scene": "A scene needs two solid wall faces side by side",
-  "tooltip.mechanical.paintbrush.motif": "Motif: %s (sneak-use to change)"
+  "tooltip.mechanical.paintbrush.motif": "Motif: %s (sneak-use to change)",
+  "subtitles.mechanical.raid.drums": "War drums",
+  "message.mechanical.camp.duration": "%s days %s h",
+  "message.mechanical.camp.none": "No camp here yet: keep a fire burning",
+  "message.mechanical.camp.age": "This camp has burned for %s",
+  "message.mechanical.camp.age_noticed": "This camp has burned for %s. Its smoke is seen far and wide...",
+  "message.mechanical.raid.drums": "You hear drums in the dark, from the %s...",
+  "message.mechanical.raid.coming": "War cries! Raiders of the %s come out of the dark from the %s, with torches!",
+  "message.mechanical.raid.band": "Wandering Band",
+  "message.mechanical.raid.stolen": "%s is carrying off your food!",
+  "message.mechanical.raid.defended": "The raiders flee! They will think twice before coming back.",
+  "message.mechanical.raid.dir.north": "north",
+  "message.mechanical.raid.dir.south": "south",
+  "message.mechanical.raid.dir.east": "east",
+  "message.mechanical.raid.dir.west": "west",
+  "message.mechanical.raid.dir.up": "up",
+  "message.mechanical.raid.dir.down": "down"
 }
