@@ -1321,11 +1321,11 @@
     "category": "materials"
   },
   "crushed_tin_ore": {
-    "text": "Från [[stone_anvil]]: [[cassiterite]] → 1. Läggs i en [[crucible]] med koppar (1 enhet): 8–15 % tenn smälter till brons vid 950° (9–11,5 % = bra Bronze, annars Poor Bronze).",
+    "text": "Från [[stone_anvil]]: [[cassiterite]] → 1. Läggs i en [[crucible]] med koppar (1 enhet): 8–15 % tenn smälter till brons vid 950° (9–11,5 % = bra Bronze, annars Poor Bronze). Kan tvättas i [[pan]] till [[tin_concentrate]] (2 enheter).",
     "category": "materials"
   },
   "pan": {
-    "text": "Vaskpanna, 64 användningar. Crafting: Planks + [[twine]] (`[P][ ][P]` / `[T][P][T]`).\nHögerklicka på Gravel eller Sand (även Red Sand): blocket tas upp och pannan blir [[pan_with_gravel]] / [[pan_with_sand]].",
+    "text": "Vaskpanna, 64 användningar. Crafting: Planks + [[twine]] (`[P][ ][P]` / `[T][P][T]`).\nHögerklicka på Gravel eller Sand (även Red Sand): blocket tas upp och pannan blir [[pan_with_gravel]] / [[pan_with_sand]].\nTom panna med [[crushed_copper_ore]] / [[crushed_tin_ore]] i andra handen: håll Använd i vatten (3 s) → 1 [[copper_concentrate]] / [[tin_concentrate]], slits 1.",
     "category": "tools"
   },
   "pan_with_gravel": {
@@ -1658,11 +1658,11 @@
     "category": "blocks"
   },
   "molten_crucible": {
-    "text": "Crucible of Molten Copper / Bronze / Poor Bronze: en [[crucible]] med malm smält i en [[kiln]] (koppar 1085°, brons 950°, 15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är tillräckligt varm.",
+    "text": "Crucible of Molten Copper / Bronze / Poor Bronze: en [[crucible]] med malm smält i en [[kiln]] (koppar 1085°, brons 950°, 15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är tillräckligt varm. Smält brons glöder gulare än koppar i ikonen.",
     "category": "materials"
   },
   "solid_crucible": {
-    "text": "Crucible of Solid Copper / Bronze: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] (10 s). Koppar kan fyllas på med mer malm; brons bara med Bronze Ingot av samma kvalitet.",
+    "text": "Crucible of Solid Copper / Bronze: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] (10 s). Koppar kan fyllas på med mer malm; brons bara med Bronze Ingot av samma kvalitet. Ikonen visar metallen: kopparfärgad eller bronsfärgad.",
     "category": "materials"
   },
   "copper_knife": {
@@ -2315,5 +2315,53 @@
   "unfired_clay_plate_mold": {
     "text": "Crafting: Clay Ball `[C][C][C]` / `[C][ ][C]` / `[C][C][C]`. Bränns i [[kiln]] till [[clay_plate_mold]].",
     "category": "materials"
+  },
+  "copper_concentrate": {
+    "text": "Tvättad [[crushed_copper_ore]]: tom [[pan]] med krossad malm i andra handen, håll Använd i vatten 3 s (pannan slits 1). Räknas som **2 enheter** koppar i en [[crucible]] (krossad malm 1), så tvättning dubblar utbytet.",
+    "category": "materials"
+  },
+  "tin_concentrate": {
+    "text": "Tvättad [[crushed_tin_ore]] (svart tennsand): tom [[pan]] med krossad malm i andra handen, håll Använd i vatten 3 s. **2 enheter** tenn i en [[crucible]]. Obs: 4 Copper Concentrate + 1 Tin Concentrate = 20 % tenn, för mycket; blanda med krossad tenn (4 + 1 krossad = 11 % = Bronze).",
+    "category": "materials"
+  },
+  "unfired_clay_spear_head_mold": {
+    "text": "Crafting: Clay Ball `[ ][C][ ]` / `[C][ ][C]` / `[ ][C][ ]`. Bränns i [[kiln]] till [[clay_spear_head_mold]].",
+    "category": "materials"
+  },
+  "unfired_clay_sword_blade_mold": {
+    "text": "Crafting: Clay Ball `[C][ ][C]` ×3 rader. Bränns i [[kiln]] till [[clay_sword_blade_mold]].",
+    "category": "materials"
+  },
+  "clay_spear_head_mold": {
+    "text": "Bränd lerform (bara brons, 4 enheter) som ger [[rough_cast_bronze_spear_head]]. Bränns av [[unfired_clay_spear_head_mold]] i en [[kiln]] (600°). Tål 5 gjutningar.",
+    "category": "blocks"
+  },
+  "clay_sword_blade_mold": {
+    "text": "Bränd lerform (bara brons, 6 enheter) som ger [[rough_cast_bronze_sword_blade]]. Bränns av [[unfired_clay_sword_blade_mold]] i en [[kiln]] (600°). Tål 5 gjutningar.",
+    "category": "blocks"
+  },
+  "rough_cast_bronze_spear_head": {
+    "text": "Gjuts i [[clay_spear_head_mold]] (4 enheter brons). Slipas på en [[whetstone]] till [[bronze_spear_head]]. Poor Bronze följer med.",
+    "category": "materials"
+  },
+  "rough_cast_bronze_sword_blade": {
+    "text": "Gjuts i [[clay_sword_blade_mold]] (6 enheter brons). Slipas på en [[whetstone]] till [[bronze_sword_blade]]. Poor Bronze följer med.",
+    "category": "materials"
+  },
+  "bronze_spear_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_spear_head]]. Monteras i Tool Station till [[bronze_spear]].",
+    "category": "materials"
+  },
+  "bronze_sword_blade": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_bronze_sword_blade]] (med parerstång). Monteras i Tool Station till [[bronze_sword]].",
+    "category": "materials"
+  },
+  "bronze_spear": {
+    "text": "Tool Station: [[bronze_spear_head]] + [[cordage]] + [[tool_rod]]. Vanilla-spjut (laddning och stöt) med iron spear-värden på brons: **230** hållbarhet, +2 skada, snabbare och hårdare än [[flint_spear]] (som har stone spear-värden). Poor Bronze: 70 % hållbarhet.",
+    "category": "tools"
+  },
+  "bronze_sword": {
+    "text": "Tool Station: [[bronze_sword_blade]] + [[cordage]] + Leather (grepp). Vanligt svärd: **5,5** skada (iron sword 6), 1,6 attackfart, **230** hållbarhet. Poor Bronze: 70 % hållbarhet.",
+    "category": "tools"
   }
 }

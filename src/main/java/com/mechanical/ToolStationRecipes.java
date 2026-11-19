@@ -65,7 +65,10 @@ public final class ToolStationRecipes {
             new Recipe(Bronze.BRONZE_SHOVEL, Bronze.BRONZE_SHOVEL_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_SHOVEL_HEAD.get())),
             new Recipe(Bronze.BRONZE_HOE, Bronze.BRONZE_HOE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_HOE_HEAD.get())),
             new Recipe(() -> Bronze.BRONZE_KNIFE.get(), Bronze.BRONZE_KNIFE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Bronze.BRONZE_KNIFE_BLADE.get())),
-            new Recipe(() -> Bronze.BRONZE_SAW.get(), Bronze.BRONZE_SAW_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Bronze.BRONZE_SAW_BLADE.get())));
+            new Recipe(() -> Bronze.BRONZE_SAW.get(), Bronze.BRONZE_SAW_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Bronze.BRONZE_SAW_BLADE.get())),
+            new Recipe(Bronze.BRONZE_SPEAR, Bronze.BRONZE_SPEAR_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_SPEAR_HEAD.get())),
+            // the sword's "rod" is the leather-wrapped grip (as the Tusk Dagger's)
+            new Recipe(Bronze.BRONZE_SWORD, Bronze.BRONZE_SWORD_BLADE, Mechanical.CORDAGE, () -> Items.LEATHER, s -> s.is(Bronze.BRONZE_SWORD_BLADE.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

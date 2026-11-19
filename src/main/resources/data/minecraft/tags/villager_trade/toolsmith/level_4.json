@@ -1,4 +1,8 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:toolsmith/4/bronze_0",
+    "mechanical:toolsmith/4/bronze_1",
+    "mechanical:toolsmith/4/bronze_2"
+  ]
 }

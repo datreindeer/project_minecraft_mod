@@ -1,7 +1,7 @@
 """Crucible item textures, drawn as a round, thick-walled clay pot seen from a little above (like the buckets): an oval
 rim with the hollow inside, a bulging body lit from the upper left, grog specks and a dark outline.
 Variants: unfired (raw grey clay), crucible (fired, empty), molten_crucible (glowing copper, 6-frame animation) and
-solid_crucible (set copper). Run: python scripts/gen_crucible_textures.py
+solid_crucible (set copper), plus molten_crucible_bronze / solid_crucible_bronze (shown when it holds bronze). Run: python scripts/gen_crucible_textures.py
 """
 import json
 import random
@@ -105,33 +105,44 @@ empty = fired.copy()
 fill_hollow(empty, hollow, empty_inside)
 save(empty, ITEM / "crucible.png")
 
-# molten copper: bright, a hot white-yellow core drifting across, bubbles popping; a warm glow on the rim's inner edge
+# molten metal: bright, a hot white-yellow core drifting across, bubbles popping; a warm glow on the rim's inner edge
 MOLTEN = [(150, 40, 8), (214, 82, 14), (246, 140, 30), (255, 196, 70), (255, 238, 160)]
-anim = Image.new("RGBA", (16, 16 * 6), (0, 0, 0, 0))
-for f in range(6):
-    frame = fired.copy()
-    rnd = random.Random(100 + f)
-    hot_x = CX - 1.8 + f * 0.7
-    bubbles = {(rnd.choice(sorted(hollow))) for _ in range(2)}
+# molten bronze runs a touch yellower and paler (gen_bronze_textures.py's MOLTEN); its rim glow is more golden
+MOLTEN_BRONZE = [(130, 34, 4), (210, 84, 10), (250, 152, 30), (255, 214, 90), (255, 248, 204)]
 
-    def molten(x, y, hot_x=hot_x, bubbles=bubbles):
-        t = 0.95 - abs(x + 0.5 - hot_x) / 6.5 - abs(y + 0.5 - IN_Y) * 0.12
-        if (x, y) in bubbles:
-            t += 0.25
-        return ramp(MOLTEN, t)
-    fill_hollow(frame, hollow, molten)
-    for (x, y) in hollow:  # glow on the rim just around the metal
-        for dx, dy in ((0, -1), (-1, 0), (1, 0)):
-            p = (x + dx, y + dy)
-            if p not in hollow and 0 <= p[0] < 16 and 0 <= p[1] < 16 and frame.getpixel(p)[3]:
-                r, g, b, a = frame.getpixel(p)
-                frame.putpixel(p, (min(255, r + 40), min(255, g + 18), b, a))
-    anim.paste(frame, (0, f * 16))
-save(anim, ITEM / "molten_crucible.png", frames=6)
 
-# set copper: dull metal with a sheen across it
-solid = fired.copy()
-fill_hollow(solid, hollow, lambda x, y: ramp([(92, 46, 30), (150, 80, 52), (196, 116, 76), (224, 160, 112)],
-                                             0.45 + (0.35 if (x + y) in (9, 10) else 0) - (x + 0.5 - CX) / 12))
-save(solid, ITEM / "solid_crucible.png")
+def molten_anim(pal, glow):
+    anim = Image.new("RGBA", (16, 16 * 6), (0, 0, 0, 0))
+    for f in range(6):
+        frame = fired.copy()
+        rnd = random.Random(100 + f)
+        hot_x = CX - 1.8 + f * 0.7
+        bubbles = {(rnd.choice(sorted(hollow))) for _ in range(2)}
+
+        def molten(x, y, hot_x=hot_x, bubbles=bubbles):
+            t = 0.95 - abs(x + 0.5 - hot_x) / 6.5 - abs(y + 0.5 - IN_Y) * 0.12
+            if (x, y) in bubbles:
+                t += 0.25
+            return ramp(pal, t)
+        fill_hollow(frame, hollow, molten)
+        for (x, y) in hollow:  # glow on the rim just around the metal
+            for dx, dy in ((0, -1), (-1, 0), (1, 0)):
+                p = (x + dx, y + dy)
+                if p not in hollow and 0 <= p[0] < 16 and 0 <= p[1] < 16 and frame.getpixel(p)[3]:
+                    r, g, b, a = frame.getpixel(p)
+                    frame.putpixel(p, (min(255, r + glow[0]), min(255, g + glow[1]), min(255, b + glow[2]), a))
+        anim.paste(frame, (0, f * 16))
+    return anim
+
+
+save(molten_anim(MOLTEN, (40, 18, 0)), ITEM / "molten_crucible.png", frames=6)
+save(molten_anim(MOLTEN_BRONZE, (44, 32, 8)), ITEM / "molten_crucible_bronze.png", frames=6)
+
+# set metal: dull metal with a sheen across it. Copper salmon-brown; bronze golden brown (gen_bronze_textures.py's BRONZE)
+SET = {"": [(92, 46, 30), (150, 80, 52), (196, 116, 76), (224, 160, 112)],
+       "_bronze": [(92, 60, 22), (140, 98, 38), (184, 138, 60), (218, 178, 96)]}
+for suffix, pal in SET.items():
+    solid = fired.copy()
+    fill_hollow(solid, hollow, lambda x, y, pal=pal: ramp(pal, 0.45 + (0.35 if (x + y) in (9, 10) else 0) - (x + 0.5 - CX) / 12))
+    save(solid, ITEM / f"solid_crucible{suffix}.png")
 print("crucible textures ok")

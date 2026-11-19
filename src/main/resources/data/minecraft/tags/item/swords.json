@@ -3,6 +3,7 @@
     "mechanical:flint_knife",
     "mechanical:iron_knife",
     "mechanical:copper_knife",
-    "mechanical:bronze_knife"
+    "mechanical:bronze_knife",
+    "mechanical:bronze_sword"
   ]
 }

@@ -1,6 +1,14 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/molten_crucible"
+    "type": "minecraft:condition",
+    "property": "mechanical:bronze_crucible",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "mechanical:item/molten_crucible_bronze"
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "mechanical:item/molten_crucible"
+    }
   }
 }

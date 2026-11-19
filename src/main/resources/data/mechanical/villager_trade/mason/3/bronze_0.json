@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "mechanical:andesite_chunk",
+    "count": 20
+  },
+  "gives": {
+    "id": "minecraft:emerald"
+  },
+  "max_uses": 16,
+  "xp": 20,
+  "reputation_discount": 0.05
+}

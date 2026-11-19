@@ -4,9 +4,13 @@ Bronze is golden brown, kept apart from copper's salmon pink: one palette for ev
 - Bronze Ingot and Bronze Plate: the user's library shapes (bronze_ingot.png, bronze_plate.png) recoloured to bronze.
 - Heads: vanilla iron tool shapes (not copper's, so the tiers look different) without the stick; the knife blade is the
   user's steel knife (tools/steel_knife.png) like the copper one. Tools: the iron tools with the head recoloured.
+- Spear Head / Bronze Spear and Sword Blade / Bronze Sword: vanilla iron spear (icon and in-hand) and iron sword with
+  every grey (iron) pixel in bronze; the sword's grip is rewrapped in leather. The blade piece keeps the cross-guard.
+- Copper / Tin Concentrate: the library's dust piles washed clean (no grey grit), a little darker and wet-looking, with
+  bright metal glints; tin concentrate is the black "tin sand" cassiterite washes down to.
 - Saw Blade / Bronze Saw: drawn here, a toothed blade along the diagonal, the saw on a wooden D-handle.
 - Rough Cast pieces: the same shapes, dull and mottled with casting flash (as copper's).
-- Clay Saw Blade / Plate Mold tops and unfired items; molten and solid bronze overlays for every mold shape (the cavity
+- Clay Saw Blade / Plate / Spear Head / Sword Blade Mold tops and unfired items; molten and solid bronze overlays for every mold shape (the cavity
   masks are the same as gen_copper_textures.py uses, so the metal fills the cavity drawn there).
 - Bronze Helmet / Bronze Greaves items (iron's shapes, bronze) and worn layers: the helmet from iron's, the greaves are
   only the shins of iron's leggings with a leather strap at the knee.
@@ -145,9 +149,45 @@ def saw(with_handle):
     return img
 
 
+def is_iron(c):
+    return c[3] and max(c[:3]) - min(c[:3]) <= 6
+
+
+def bronzed(src, grip=False):
+    """Every grey pixel in bronze (luminance kept); grip=True rewraps the brown hilt in leather."""
+    metal = [p for p in px(src) if is_iron(src.getpixel(p))]
+    out = recolor(src, BRONZE, lo=24, hi=285, mask=metal)  # hi past white: iron's white edge becomes gold, not cream
+    if grip:
+        wood = [p for p in px(src) if p not in metal]
+        out = recolor(out, LEATHER + [(140, 96, 60)], mask=wood)
+    return out, metal
+
+
+tools["sword"], sword_metal = bronzed(vanilla("item/iron_sword"), grip=True)
+
+
+def connected(pts, start):
+    """The pixels of pts joined to start (the blade without the separate pommel)."""
+    pts, seen, todo = set(pts), {start}, [start]
+    while todo:
+        x, y = todo.pop()
+        for q in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if q in pts and q not in seen:
+                seen.add(q)
+                todo.append(q)
+    return sorted(seen)
+
+
+spear_icon, spear_metal = bronzed(vanilla("item/iron_spear"))
+save(spear_icon, ITEM / "bronze_spear.png")
+save(bronzed(vanilla("item/iron_spear_in_hand"))[0], ITEM / "bronze_spear_in_hand.png")
+
 tools["saw"] = saw(True)
 pieces["saw_blade"] = saw(False)
 pieces["plate"] = recolor(Image.open(LIB / "bronze_plate.png").convert("RGBA"), BRONZE)
+# (added after the older pieces so their rough-cast seeds stay the same)
+pieces["sword_blade"] = only(tools["sword"], connected(sword_metal, (14, 0)))
+pieces["spear_head"] = only(spear_icon, spear_metal)
 ingot = recolor(Image.open(LIB / "bronze_ingot.png").convert("RGBA"), BRONZE)
 save(ingot, ITEM / "bronze_ingot.png")
 
@@ -192,8 +232,8 @@ copper_knife_blade = only(knife_src, blade_px)
 masks = {"ingot": vanilla("item/copper_ingot"), "pickaxe_head": without_stick(vanilla("item/copper_pickaxe")),
          "axe_head": without_stick(vanilla("item/copper_axe")), "shovel_head": without_stick(vanilla("item/copper_shovel")),
          "hoe_head": without_stick(vanilla("item/copper_hoe")), "knife_blade": copper_knife_blade,
-         "saw_blade": pieces["saw_blade"], "plate": pieces["plate"]}
-NEW = ("saw_blade", "plate")
+         "saw_blade": pieces["saw_blade"], "plate": pieces["plate"], "spear_head": pieces["spear_head"], "sword_blade": pieces["sword_blade"]}
+NEW = ("saw_blade", "plate", "spear_head", "sword_blade")
 
 
 def cavity(m, x, y):
@@ -241,4 +281,31 @@ for i, (shape, m) in enumerate(masks.items()):
         for x, y in px(m):
             molten.putpixel((x, y + f * 16), ramp(MOLTEN, 0.55 + rng.uniform(-0.15, 0.35)) + (255,))
     save(molten, BLOCK / f"clay_{shape}_mold_bronze_molten.png", frames=8)
+
+# ---- washed concentrate ----
+WORKSHOP = LIB / "workshop"
+CU_WASHED = [(58, 22, 10), (104, 44, 22), (150, 70, 38), (196, 104, 62), (232, 150, 100)]
+SN_WASHED = [(14, 12, 12), (28, 24, 24), (44, 40, 40), (64, 60, 62), (92, 88, 92)]
+
+
+def concentrate(src, pal, glint, seed):
+    """A dust pile recoloured onto pal (cleaner than crushed ore: no grit), damp-dark at the foot, glinting on top."""
+    rng = random.Random(seed)
+    pts = px(src)
+    ls = [lum(src.getpixel(p)) for p in pts]
+    lo, hi = min(ls), max(ls)
+    top, foot = min(y for _, y in pts), max(y for _, y in pts)
+    out = Image.new("RGBA", (16, 16))
+    for (x, y), l in zip(pts, ls):
+        t = (l - lo) / max(1, hi - lo) - 0.18 * (y - top) / max(1, foot - top) + rng.uniform(-0.06, 0.06)
+        out.putpixel((x, y), ramp(pal, t) + (src.getpixel((x, y))[3],))
+    inner = [p for p in pts if all((p[0] + dx, p[1] + dy) in set(pts) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
+    for p in rng.sample(sorted(inner), 6):  # metal glints, more of them on the upper half
+        if p[1] < (top + foot) / 2 or rng.random() < 0.4:
+            out.putpixel(p, glint + (255,))
+    return out
+
+
+save(concentrate(Image.open(WORKSHOP / "copper/copper_dust.png").convert("RGBA"), CU_WASHED, (255, 206, 160), 5), ITEM / "copper_concentrate.png")
+save(concentrate(Image.open(WORKSHOP / "tin/tin_dust2.png").convert("RGBA"), SN_WASHED, (214, 214, 224), 6), ITEM / "tin_concentrate.png")
 print("bronze textures ok")

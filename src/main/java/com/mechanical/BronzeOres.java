@@ -32,6 +32,9 @@ public final class BronzeOres {
     public static final DeferredItem<Item> CASSITERITE = ITEMS.registerSimpleItem("cassiterite");
     public static final DeferredItem<Item> CRUSHED_COPPER_ORE = ITEMS.registerSimpleItem("crushed_copper_ore");
     public static final DeferredItem<Item> CRUSHED_TIN_ORE = ITEMS.registerSimpleItem("crushed_tin_ore");
+    /** Crushed ore washed in the Pan (the gangue rinsed off): 2 crucible units instead of 1. */
+    public static final DeferredItem<Item> COPPER_CONCENTRATE = ITEMS.registerSimpleItem("copper_concentrate");
+    public static final DeferredItem<Item> TIN_CONCENTRATE = ITEMS.registerSimpleItem("tin_concentrate");
 
     public static final DeferredItem<PanItem> PAN = ITEMS.registerItem("pan", p -> new PanItem(p, null), p -> p.durability(PanItem.USES));
     public static final DeferredItem<PanItem> PAN_WITH_GRAVEL = ITEMS.registerItem("pan_with_gravel", p -> new PanItem(p, "gravel"), p -> p.durability(PanItem.USES));
@@ -66,6 +69,13 @@ public final class BronzeOres {
         if (ore.is(MALACHITE.get())) return new ItemStack(CRUSHED_COPPER_ORE.get());
         if (ore.is(CASSITERITE.get())) return new ItemStack(CRUSHED_TIN_ORE.get());
         return Pigments.ground(ore); // ochre, chalk, calcite, charcoal
+    }
+
+    /** What one crushed ore washes into in the Pan, or null if it can't be washed. */
+    public static Item washed(ItemStack ore) {
+        if (ore.is(CRUSHED_COPPER_ORE.get())) return COPPER_CONCENTRATE.get();
+        if (ore.is(CRUSHED_TIN_ORE.get())) return TIN_CONCENTRATE.get();
+        return null;
     }
 
     public static void init() {}
