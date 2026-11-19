@@ -238,6 +238,10 @@ public class Mechanical {
     public static final DeferredItem<BarkBasketItem> BARK_BASKET = ITEMS.registerItem("bark_basket", BarkBasketItem::new, p -> p.stacksTo(1));
     public static final Supplier<MenuType<BarkBasketMenu>> BARK_BASKET_MENU = MENUS.register("bark_basket",
             () -> new MenuType<>(BarkBasketMenu::new, FeatureFlags.VANILLA_SET));
+    /** Leather Satchel: 9 slots for anything but other containers; sewn in the Armor Station. */
+    public static final DeferredItem<LeatherSatchelItem> LEATHER_SATCHEL = ITEMS.registerItem("leather_satchel", LeatherSatchelItem::new, p -> p.stacksTo(1));
+    public static final Supplier<MenuType<BarkBasketMenu>> LEATHER_SATCHEL_MENU = MENUS.register("leather_satchel",
+            () -> new MenuType<>(BarkBasketMenu::satchel, FeatureFlags.VANILLA_SET));
 
     // Firewood: what logs drop (2 each), one per wood type so 4 of them (2x2) craft back into that log.
     public static final Map<String, DeferredItem<Item>> FIREWOOD = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.registerSimpleItem(w + "_firewood")));

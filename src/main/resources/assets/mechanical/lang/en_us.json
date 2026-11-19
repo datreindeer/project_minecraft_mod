@@ -414,5 +414,6 @@
   "entity.mechanical.seagull": "Seagull",
   "item.mechanical.seagull_spawn_egg": "Seagull Spawn Egg",
   "entity.mechanical.desert_hare": "Desert Hare",
-  "item.mechanical.desert_hare_spawn_egg": "Desert Hare Spawn Egg"
+  "item.mechanical.desert_hare_spawn_egg": "Desert Hare Spawn Egg",
+  "item.mechanical.leather_satchel": "Leather Satchel"
 }

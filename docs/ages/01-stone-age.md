@@ -122,9 +122,14 @@ ligger kvar i stationen och tappar 1 per rustningsdel.
 | Rustning | Material | Verktyg | Tråd | Låses upp av |
 |---|---|---|---|---|
 | Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 Wool Thread | Leather |
+| **Leather Satchel** | 4 Leather | Bone Needle | 2 Wool Thread | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
 
 Vanilla-recepten för läderrustning är borttagna.
+
+### Leather Satchel
+Sys i Armor Station (se ovan). Högerklicka för att öppna ett förråd med **9 platser (3x3)** för vad som
+helst, utom andra förråd (Leather Satchel, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. Staplas inte.
 
 ### Fur-rustning och Bear Rug
 - **Fur Hood / Coat / Leggings / Boots:** sys i Armor Station (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.

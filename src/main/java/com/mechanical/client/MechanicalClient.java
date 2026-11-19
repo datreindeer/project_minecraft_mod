@@ -20,6 +20,7 @@ public class MechanicalClient {
         event.register(Mechanical.TOOL_STATION_MENU.get(), ToolStationScreen::new);
         event.register(Mechanical.KILN_MENU.get(), KilnScreen::new);
         event.register(Mechanical.BARK_BASKET_MENU.get(), BarkBasketScreen::new);
+        event.register(Mechanical.LEATHER_SATCHEL_MENU.get(), BarkBasketScreen::new);
         event.<com.mechanical.FletchingMenu, RecipeStationScreen<com.mechanical.FletchingMenu>>register(Mechanical.FLETCHING_MENU.get(), (menu, inventory, title) ->
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/fletching_table.png")));
         event.<com.mechanical.ArmorStationMenu, RecipeStationScreen<com.mechanical.ArmorStationMenu>>register(Mechanical.ARMOR_STATION_MENU.get(), (menu, inventory, title) ->

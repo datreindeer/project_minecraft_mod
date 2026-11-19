@@ -265,6 +265,10 @@ shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "m
 w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
+# leather satchel: 3x3 for anything but other containers, sewn in the Armor Station (ArmorStationRecipes)
+w(A / "models/item/leather_satchel.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/leather_satchel"}})
+w(A / "items/leather_satchel.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/leather_satchel"}})
+lang["item.mechanical.leather_satchel"] = "Leather Satchel"
 BUSHES = {"raspberry": "raspberries", "blueberry": "blueberries", "lingonberry": "lingonberries",
           "wild_strawberry": "wild_strawberries", "elderberry": "elderberries", "cloudberry": "cloudberries", "blackberry": "blackberries"}
 MUSHROOMS = ["chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball"]

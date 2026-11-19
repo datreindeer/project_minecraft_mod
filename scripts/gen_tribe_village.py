@@ -32,7 +32,7 @@ w(D / "tags/worldgen/biome/has_structure/tribe_village.json", {"values": [
     "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:forest", "minecraft:birch_forest",
     "minecraft:taiga", "minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:savanna"]})
 # the paths agent connects these with trails
-w(D / "tags/worldgen/structure/trail_connected.json", {"replace": False, "values": ["mechanical:tribe_village"]})
+# the trail tag (mechanical:trail_connected) is written by gen_trails.py, which lists the tribe village
 
 # ---------------------------------------------------------------- loot: the village food store
 

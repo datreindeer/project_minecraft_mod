@@ -24,6 +24,7 @@ public final class ArmorStationRecipes {
             StationRecipe.of(() -> Items.LEATHER_CHESTPLATE, 1, of(() -> Items.LEATHER, 8), tool(Mechanical.BONE_NEEDLE), of(Mechanical.WOOL_THREAD, 4), LEATHER),
             StationRecipe.of(() -> Items.LEATHER_LEGGINGS, 1, of(() -> Items.LEATHER, 7), tool(Mechanical.BONE_NEEDLE), of(Mechanical.WOOL_THREAD, 3), LEATHER),
             StationRecipe.of(() -> Items.LEATHER_BOOTS, 1, of(() -> Items.LEATHER, 4), tool(Mechanical.BONE_NEEDLE), of(Mechanical.WOOL_THREAD, 2), LEATHER),
+            StationRecipe.of(Mechanical.LEATHER_SATCHEL::get, 1, of(() -> Items.LEATHER, 4), tool(Mechanical.BONE_NEEDLE), of(Mechanical.WOOL_THREAD, 2), LEATHER),
             StationRecipe.of(Mechanical.FUR_HOOD::get, 1, of(Wildlife.BEAR_PELT, 1), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), PELT),
             StationRecipe.of(Mechanical.FUR_COAT::get, 1, of(Wildlife.BEAR_PELT, 3), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 3), PELT),
             StationRecipe.of(Mechanical.FUR_LEGGINGS::get, 1, of(Wildlife.BEAR_PELT, 2), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 2), PELT),
