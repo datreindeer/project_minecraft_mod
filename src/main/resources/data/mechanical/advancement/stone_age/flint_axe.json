@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/twine",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flint_axe"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:flint_axe"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.flint_axe.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.flint_axe.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/bark",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bark_basket"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bark_basket"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.bark_basket.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.bark_basket.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

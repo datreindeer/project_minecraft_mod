@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/tuyere",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bellows"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bellows"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.bellows.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.bellows.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

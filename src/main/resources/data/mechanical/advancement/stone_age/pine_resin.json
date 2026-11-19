@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/flint_knife",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pine_resin"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pine_resin"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.pine_resin.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.pine_resin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

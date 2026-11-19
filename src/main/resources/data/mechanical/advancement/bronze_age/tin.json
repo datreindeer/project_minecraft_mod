@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/copper_pickaxe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crushed_tin_ore"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cassiterite"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.tin.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.tin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clay_tuyere"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:clay_tuyere"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.tuyere.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.tuyere.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

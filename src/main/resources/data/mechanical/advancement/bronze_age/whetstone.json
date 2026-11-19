@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/rough_cast",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:whetstone"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:whetstone"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.whetstone.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.whetstone.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

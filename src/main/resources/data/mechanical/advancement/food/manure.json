@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/sow",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:manure"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:manure"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.manure.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.manure.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:bronze_age/pan",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pan_with_gravel"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pan_with_sand"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pan_with_gravel"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.panning.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.panning.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

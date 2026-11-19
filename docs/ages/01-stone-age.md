@@ -1401,6 +1401,26 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 
 Verktygen i Tool Station låses upp separat (se Tool Station).
 
+### Advancements (framsteg)
+Vanillas flikar (Minecraft, Nether, The End, Adventure, Husbandry) är dolda. I stället finns fyra egna flikar som visar vägen
+framåt. Varje framsteg har föremålet som ikon och en beskrivning som säger hur man gör det, och föräldern är steget som
+behövs först, så trädet läses som progressionen:
+
+- **Stone Age**: lösa stenar och flinta → fiber, Twine, flintverktyg → Tool Station → stenverktyg; eld (Fire Drill,
+  Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Crucible; flotte, paddel och kanot; pigment och grottmålning.
+- **Wilderness & Hunting**: kniv → styckning → hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
+  Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak och
+  stambyar.
+- **Food & Farming**: bär och svamp → lagad, rökt och torkad mat, förskämning; vild säd → skära, sådd, skörd, tröskning,
+  Straw Bed, gröt, Manure, Compost, Scarecrow, mjöl, deg och bröd.
+- **Bronze Age**: första kopparfyndet → Raw Copper, vaskning, Stone Anvil, koncentrat, Tuyere, Bellows, formar, smält
+  koppar, gjutning, Whetstone, kopparverktyg → tenn → brons → bronsverktyg, vapen, rustning, såg, drejskiva, krukor, vagn
+  och häst, och Raw Iron mot järnåldern.
+
+Genereras av `scripts/gen_advancements.py` (tabellen `TABS`; körs efter gen_unlocks.py, före gen_registry.py). Vanillas
+framsteg skrivs över med `neoforge:never` (bara `recipes/**` behålls). **Varje ny sak i moddet ska få sina rader i
+tabellen**, så att man lär sig hur den görs.
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |
@@ -1489,6 +1509,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 
 - Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
 - Stationer med receptlista (Fletching Table, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug och Wolf Rug: `BearRugBlock.java`. Wolf Pelt-saker: `client/WolfHoodModel.java` (huvans modell), `StrawBedRest.java` (fäll), data `scripts/gen_wolf_pelt.py` (körs efter gen_biomes.py, före gen_block_items.py), texturer `scripts/gen_wolf_pelt_textures.py`.
+- Advancements: `scripts/gen_advancements.py` (alla flikar och texter; vanillas flikar döljs). Ordning: ... gen_block_items → gen_unlocks → gen_advancements → gen_registry. Tämjd häst ger `minecraft:tame_animal` (`WildHorse.tame`).
 - Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
 - Verktygstips: `client/StatTooltips.java`.
 - Odling: se Teknik i `docs/farming.md`.

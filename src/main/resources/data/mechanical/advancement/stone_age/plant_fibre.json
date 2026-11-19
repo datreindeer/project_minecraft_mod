@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:plant_fibre"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:plant_fibre"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.plant_fibre.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.plant_fibre.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

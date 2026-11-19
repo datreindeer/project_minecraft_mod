@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bronze_pickaxe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:raw_iron"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:raw_iron"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.raw_iron.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.raw_iron.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

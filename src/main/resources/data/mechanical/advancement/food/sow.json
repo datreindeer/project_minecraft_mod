@@ -1,0 +1,74 @@
+{
+  "parent": "mechanical:food/wild_grain",
+  "criteria": {
+    "placed_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:barley_crop"
+        }
+      }
+    },
+    "placed_1": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:einkorn_crop"
+        }
+      }
+    },
+    "placed_2": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:emmer_crop"
+        }
+      }
+    },
+    "placed_3": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:pea_crop"
+        }
+      }
+    },
+    "placed_4": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "minecraft:wheat"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placed_0",
+      "placed_1",
+      "placed_2",
+      "placed_3",
+      "placed_4"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:wooden_hoe"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.sow.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.sow.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

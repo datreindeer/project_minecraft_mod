@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:spoiled_food"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:spoiled_food"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.spoiled.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.spoiled.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

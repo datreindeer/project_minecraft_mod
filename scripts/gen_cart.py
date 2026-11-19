@@ -8,7 +8,7 @@
   tame horse added to mechanical:drops_manure (written by gen_farming3.py, so this runs after it)
 - lang for the entities and the cart / taming messages
 Textures: scripts/gen_cart_textures.py.
-Generator order: ... gen_wolf_pelt.py, gen_farming3.py, gen_pottery.py, gen_cart.py, gen_block_items.py, gen_unlocks.py, gen_registry.py.
+Generator order: ... gen_wolf_pelt.py, gen_farming3.py, gen_pottery.py, gen_cart.py, gen_block_items.py, gen_unlocks.py, gen_advancements.py, gen_registry.py.
 Run: python scripts/gen_cart.py"""
 import json
 from pathlib import Path

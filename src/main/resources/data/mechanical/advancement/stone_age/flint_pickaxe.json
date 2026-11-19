@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/twine",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flint_pickaxe"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:flint_pickaxe"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.flint_pickaxe.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.flint_pickaxe.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

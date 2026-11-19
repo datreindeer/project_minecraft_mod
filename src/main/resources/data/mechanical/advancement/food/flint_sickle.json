@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/wild_grain",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flint_sickle"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:flint_sickle"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.flint_sickle.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.flint_sickle.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

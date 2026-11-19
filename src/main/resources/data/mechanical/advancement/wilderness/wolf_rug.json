@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/wolf_pelt",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wolf_rug"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:wolf_rug"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.wolf_rug.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.wolf_rug.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

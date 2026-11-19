@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/cordage",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:log_raft"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:log_raft"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.log_raft.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.log_raft.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

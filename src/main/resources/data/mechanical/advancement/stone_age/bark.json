@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/flint_axe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bark"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bark"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.bark.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.bark.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
