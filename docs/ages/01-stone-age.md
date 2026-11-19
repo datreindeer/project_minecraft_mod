@@ -427,6 +427,8 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 - **Bark Basket:** `[ ][Cordage][ ]` / `[Bark][ ][Bark]` / `[Bark][Bark][Bark]`. Högerklicka för att öppna (3×3). Rymmer bara
   frukt, bär och hudar: Apple, Golden Apple, Sweet Berries, Glow Berries, Melon Slice, Chorus Fruit, Leather, Rabbit Hide,
   Raw Hide, Scraped Hide, Raw Phantom Hide, Scraped Phantom Hide. Innehållet sparas i korgen (stackar inte, 1 per plats i inventoryt).
+  **Mat håller längre i korgen:** medan korgen är stängd åldras bär, svamp och annan mat i den bara en tredjedel så fort
+  (barken är sval och luftig). Öppen korg = vanlig takt. Gäller inte Leather Satchel.
 **Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost i Compost Heap (bronsåldern).
 
 ### Flotte och kanot (i stället för båtar)
@@ -879,7 +881,7 @@ En flätad korg av pinnar med en tratt i mynningen, som läggs i vatten (stilla 
 Färsk mat **förskäms** med tiden. Tiden räknas i speltid (ticks, inte `/time set`) från när maten först hamnar i ett
 inventory. I tooltipen står **Fresh** (mer än halva tiden kvar), **Stale** (20–50 %) eller **Rotting** (under 20 %), och en
 stapel under ikonen (som hållbarhet) går från grönt till rött. När tiden är slut blir maten **Rotten Flesh** (kött och fisk)
-eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap.
+eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. I en stängd **Bark Basket** åldras maten bara en tredjedel så fort.
 
 | Mat | Håller |
 |---|---|

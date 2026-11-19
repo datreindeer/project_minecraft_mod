@@ -54,16 +54,21 @@ public class BarkBasketMenu extends AbstractContainerMenu {
 
     /** Server side, for any held 3x3 item inventory. */
     public static BarkBasketMenu open(MenuType<BarkBasketMenu> type, Predicate<ItemStack> allowed, int containerId, Inventory inventory, int slot, ItemStack stack) {
+        // food in a Bark Basket keeps longer: what's saved into it is stamped, and the stamp is settled when it's opened again
+        boolean cool = stack.is(Mechanical.BARK_BASKET.get());
+        long now = inventory.player.level().getGameTime();
         SimpleContainer contents = new SimpleContainer(SIZE) {
             @Override
             public void setChanged() {
                 super.setChanged();
-                stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(getItems()));
+                long t = inventory.player.level().getGameTime();
+                stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(
+                        cool ? getItems().stream().map(s -> Preserving.intoBasket(s, t)).toList() : getItems()));
             }
         };
         NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(items);
-        for (int i = 0; i < SIZE; i++) contents.setItem(i, items.get(i));
+        for (int i = 0; i < SIZE; i++) contents.setItem(i, cool ? Preserving.outOfBasket(items.get(i), now) : items.get(i));
         return new BarkBasketMenu(type, allowed, containerId, inventory, contents, slot, stack);
     }
 

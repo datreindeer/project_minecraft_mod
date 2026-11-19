@@ -63,6 +63,11 @@ public final class Preserving {
     /** Game time when this food spoils. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILS_AT = COMPONENTS.registerComponentType(
             "spoils_at", b -> b.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+    /** Game time this food was shut in a closed Bark Basket (see {@link #intoBasket}). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> BASKET_SINCE = COMPONENTS.registerComponentType(
+            "basket_since", b -> b.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+    /** In a closed Bark Basket (cool, dry, airy bark) food ages at this share of the normal rate. */
+    public static final float BASKET_RATE = 1 / 3F;
 
     public static final TagKey<Item> PERISHES_1_DAY = tag("perishes_1_day"), PERISHES_2_DAYS = tag("perishes_2_days"),
             PERISHES_3_DAYS = tag("perishes_3_days"), PERISHES_30_DAYS = tag("perishes_30_days"), ROTS_TO_FLESH = tag("rots_to_flesh"),
@@ -115,6 +120,26 @@ public final class Preserving {
         if (life == 0) return -1;
         Long at = stack.get(SPOILS_AT.get());
         return at == null ? 1 : Math.clamp((at - now) / (float) life, 0, 1);
+    }
+
+    /** A copy of a stack as it goes into a closed basket: stamped (if perishable) with the time it went in. */
+    public static ItemStack intoBasket(ItemStack stack, long now) {
+        if (stack.isEmpty() || shelfLife(stack) == 0) return stack;
+        ItemStack out = stack.copy();
+        if (!out.has(SPOILS_AT.get())) out.set(SPOILS_AT.get(), spoilTime(shelfLife(out), now));
+        out.set(BASKET_SINCE.get(), now);
+        return out;
+    }
+
+    /** A stack coming out of a closed basket: its spoil time moves later by the share of the basket time that didn't count. */
+    public static ItemStack outOfBasket(ItemStack stack, long now) {
+        Long since = stack.get(BASKET_SINCE.get());
+        if (since == null) return stack;
+        ItemStack out = stack.copy();
+        out.remove(BASKET_SINCE.get());
+        Long at = out.get(SPOILS_AT.get());
+        if (at != null && now > since) out.set(SPOILS_AT.get(), at + (long) ((now - since) * (1 - BASKET_RATE)));
+        return out;
     }
 
     /** What a stack spoils into (same count). */
