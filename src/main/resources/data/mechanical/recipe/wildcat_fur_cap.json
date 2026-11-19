@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:wildcat_pelt",
+    "mechanical:wildcat_pelt",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:wildcat_fur_cap"
+  }
+}

@@ -18,6 +18,10 @@
     "mechanical:raw_goose",
     "mechanical:raw_pheasant",
     "mechanical:raw_ptarmigan",
-    "mechanical:raw_pigeon"
+    "mechanical:raw_pigeon",
+    "mechanical:raw_wildcat",
+    "mechanical:raw_mole",
+    "mechanical:raw_vole",
+    "mechanical:raw_snake"
   ]
 }

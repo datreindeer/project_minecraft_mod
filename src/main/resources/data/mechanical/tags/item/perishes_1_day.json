@@ -32,6 +32,10 @@
     "mechanical:plucked_chicken",
     "mechanical:stew",
     "mechanical:broth",
-    "mechanical:sea_beet_leaves"
+    "mechanical:sea_beet_leaves",
+    "mechanical:raw_wildcat",
+    "mechanical:raw_mole",
+    "mechanical:raw_vole",
+    "mechanical:raw_snake"
   ]
 }
