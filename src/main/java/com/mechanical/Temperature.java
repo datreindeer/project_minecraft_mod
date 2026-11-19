@@ -102,7 +102,8 @@ public final class Temperature {
         BlockPos fire = NightDangers.nearestFire(level, player.position(), FIRE_RANGE);
         if (fire != null) {
             double d = Math.sqrt(Vec3.atCenterOf(fire).distanceToSqr(player.position()));
-            t += FIRE_WARMTH * (float) (1 - d / FIRE_RANGE);
+            double reach = NightDangers.reach(level, fire); // a Fire Pit warms half as much again, half as far again
+            t += FIRE_WARMTH * (float) (reach * Math.max(0, 1 - d / (FIRE_RANGE * reach)));
         }
         if (t < COMFORT) {
             float insulation = 0;

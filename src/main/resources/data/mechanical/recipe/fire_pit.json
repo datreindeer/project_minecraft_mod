@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RRR",
+    "RFR",
+    "RRR"
+  ],
+  "key": {
+    "R": "#mechanical:rock_chunks",
+    "F": "#mechanical:firewood"
+  },
+  "result": {
+    "id": "mechanical:fire_pit"
+  }
+}

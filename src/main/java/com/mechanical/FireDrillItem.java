@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Lights an unlit campfire or clay kiln (if it has fuel), but only sometimes (more often with tinder, see Tinder). Every attempt wears it down. */
+/** Lights an unlit campfire, Fire Pit or clay kiln (if it has fuel), but only sometimes (more often with tinder, see Tinder). Every attempt wears it down. */
 public class FireDrillItem extends Item {
     public FireDrillItem(Properties properties) {
         super(properties);
@@ -39,7 +39,8 @@ public class FireDrillItem extends Item {
             return InteractionResult.SUCCESS;
         }
         boolean kiln = state.getBlock() instanceof KilnBlock && !state.getValue(KilnBlock.LIT);
-        if (!kiln && !CampfireBlock.canLight(state)) return InteractionResult.PASS;
+        boolean pit = FirePit.canLight(state);
+        if (!kiln && !pit && !CampfireBlock.canLight(state)) return InteractionResult.PASS;
         if (level instanceof ServerLevel server) {
             KilnBlockEntity kilnEntity = kiln && server.getBlockEntity(KilnBlock.lowerPos(state, pos)) instanceof KilnBlockEntity k ? k : null;
             if (kiln && (kilnEntity == null || !kilnEntity.canLight())) {
@@ -50,6 +51,7 @@ public class FireDrillItem extends Item {
             if (server.getRandom().nextFloat() < (Tinder.has(tinder) ? Tinder.CHANCE_WITH : Tinder.CHANCE_WITHOUT)) {
                 if (tinder != null) Tinder.set(tinder, false);
                 if (kilnEntity != null) kilnEntity.tryLight();
+                else if (pit) { FirePitBlockEntity e = FirePit.entity(server, pos, state); if (e != null) e.light(); }
                 else server.setBlock(pos, state.setValue(CampfireBlock.LIT, true).trySetValue(Campfires.EMBERS, false), 11);
                 server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);
             } else {

@@ -78,7 +78,7 @@ public final class NightAmbience {
     private static boolean nearCampfire(Minecraft mc, BlockPos at) {
         for (BlockPos p : BlockPos.betweenClosed(at.offset(-8, -3, -8), at.offset(8, 3, 8))) {
             var state = mc.level.getBlockState(p);
-            if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT)) return true;
+            if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT) || com.mechanical.FirePit.isLit(state)) return true;
         }
         return false;
     }

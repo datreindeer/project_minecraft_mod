@@ -63,7 +63,7 @@ public class BakingStoneBlock extends Block {
         for (Direction d : Direction.values()) {
             if (d == Direction.UP) continue;
             BlockState s = level.getBlockState(pos.relative(d));
-            if (s.getBlock() instanceof CampfireBlock && s.getValue(CampfireBlock.LIT)) return true;
+            if (s.getBlock() instanceof CampfireBlock && s.getValue(CampfireBlock.LIT) || FirePit.isLit(s)) return true;
         }
         return false;
     }

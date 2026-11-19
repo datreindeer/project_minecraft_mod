@@ -142,6 +142,9 @@ TABS = {
         ("light_fire", "campfire", "fire_drill", G, "Let There Be Fire",
          "Right-click an unlit Campfire with the Fire Drill. Leaf Litter or Bark as tinder first helps it catch",
          used_on("fire_drill", "minecraft:campfire", {"lit": "true"})),
+        ("fire_pit", "light_fire", "fire_pit", G, "Bonfire",
+         "Ring a Firewood with 8 rock chunks into a Fire Pit, set it on a flat 2x2 of ground and light it with the Fire Drill. "
+         "Big light, big smoke, bigger raids", used_on("fire_drill", "fire_pit", {"lit": "true"})),
         ("kiln", "light_fire", "kiln", G, "Clay Kiln",
          "Craft a Clay Kiln (Clay Balls, rock chunks) and place it on a Campfire. Burn it 2 min at 500° before use",
          placed("kiln")),

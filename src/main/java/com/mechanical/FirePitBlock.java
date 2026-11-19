@@ -1,0 +1,216 @@
+package com.mechanical;
+
+import java.util.function.UnaryOperator;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.crafting.RecipePropertySet;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+/**
+ * The four blocks of a Fire Pit (see {@link FirePit}). PART 0 is the north-west corner and holds the block entity and the
+ * whole 2x2 model; 1 is east of it, 2 south, 3 south-east (x offset = part & 1, z offset = part >> 1). LIT, EMBERS and FUEL
+ * (firewood stacked on it: 0 none .. 3 a full stack) are kept the same on all four, so light and smoke checks work on any
+ * of them. Placed from the item onto a flat 2x2 of solid ground in front of the player; the four live and die together.
+ */
+public class FirePitBlock extends Block implements EntityBlock {
+    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 3);
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+    public static final BooleanProperty EMBERS = Campfires.EMBERS;
+    public static final IntegerProperty FUEL = IntegerProperty.create("fuel", 0, 3);
+    private static final VoxelShape SHAPE = column(16, 0, 5);
+
+    public FirePitBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(stateDefinition.any().setValue(PART, 0).setValue(LIT, false).setValue(EMBERS, false).setValue(FUEL, 0));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(PART, LIT, EMBERS, FUEL);
+    }
+
+    public static BlockPos controller(BlockState state, BlockPos pos) {
+        int part = state.getValue(PART);
+        return pos.offset(-(part & 1), 0, -(part >> 1));
+    }
+
+    private static BlockPos partPos(BlockPos controller, int part) {
+        return controller.offset(part & 1, 0, part >> 1);
+    }
+
+    /** Changes all four blocks of the pit at {@code controller} the same way (LIT, EMBERS, FUEL). */
+    public static void setAll(Level level, BlockPos controller, UnaryOperator<BlockState> change) {
+        for (int part = 0; part < 4; part++) {
+            BlockPos p = partPos(controller, part);
+            BlockState s = level.getBlockState(p);
+            if (s.getBlock() instanceof FirePitBlock) {
+                BlockState n = change.apply(s);
+                if (n != s) level.setBlock(p, n, UPDATE_ALL);
+            }
+        }
+    }
+
+    // ---- placement: the clicked block and the three in front of / to the right of it ----
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction front = context.getHorizontalDirection(), right = front.getClockWise();
+        BlockPos[] four = {pos, pos.relative(front), pos.relative(right), pos.relative(front).relative(right)};
+        int minX = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+        for (BlockPos p : four) {
+            boolean free = p.equals(pos) || level.getBlockState(p).canBeReplaced(context);
+            if (!free || !level.getWorldBorder().isWithinBounds(p) || !level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) {
+                if (context.getPlayer() != null && level.isClientSide()) context.getPlayer().sendOverlayMessage(Component.translatable("message.mechanical.fire_pit.no_room"));
+                return null;
+            }
+            minX = Math.min(minX, p.getX());
+            minZ = Math.min(minZ, p.getZ());
+        }
+        return defaultBlockState().setValue(PART, (pos.getX() - minX) + 2 * (pos.getZ() - minZ));
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity by, ItemStack stack) {
+        BlockPos controller = controller(state, pos);
+        for (int part = 0; part < 4; part++) {
+            BlockPos p = partPos(controller, part);
+            if (!p.equals(pos)) level.setBlock(p, state.setValue(PART, part), UPDATE_ALL);
+        }
+    }
+
+    // ---- the four live and die together ----
+
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
+            Direction direction, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        int part = state.getValue(PART);
+        Direction xPartner = (part & 1) == 0 ? Direction.EAST : Direction.WEST, zPartner = (part >> 1) == 0 ? Direction.SOUTH : Direction.NORTH;
+        int expected = direction == xPartner ? part ^ 1 : direction == zPartner ? part ^ 2 : -1;
+        if (expected >= 0 && !(neighbourState.getBlock() instanceof FirePitBlock && neighbourState.getValue(PART) == expected)) return Blocks.AIR.defaultBlockState();
+        return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
+    }
+
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        // breaking a side part: the corner with the block entity gives the item (and drops the food and firewood) itself,
+        // removed without shape updates so this part is still there for vanilla to break; the rest then fall apart
+        BlockPos controller = controller(state, pos);
+        if (!level.isClientSide() && !controller.equals(pos)) {
+            BlockState c = level.getBlockState(controller);
+            if (c.is(this)) {
+                if (!player.preventsBlockDrops()) dropResources(c, level, controller, level.getBlockEntity(controller), player, player.getMainHandItem());
+                level.setBlock(controller, Blocks.AIR.defaultBlockState(), UPDATE_CLIENTS);
+            }
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    // ---- use ----
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        FirePitBlockEntity pit = FirePit.entity(level, pos, state);
+        if (pit == null || stack.getItem() instanceof FireDrillItem) return InteractionResult.PASS; // the drill lights it (FireDrillItem)
+        if (stack.is(Mechanical.FIREWOOD_TAG)) {
+            if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+            return pit.feed(server, player, stack) ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
+        }
+        if (level.recipeAccess().propertySet(RecipePropertySet.CAMPFIRE_INPUT).test(stack)) {
+            if (level instanceof ServerLevel server && pit.placeFood(server, player, stack)) return InteractionResult.SUCCESS_SERVER;
+            return InteractionResult.CONSUME;
+        }
+        if (stack.canPerformAction(net.neoforged.neoforge.common.ItemAbilities.SHOVEL_DOUSE) && state.getValue(LIT)) {
+            if (!level.isClientSide()) {
+                level.levelEvent(null, 1009, pit.getBlockPos(), 0);
+                pit.douse();
+                stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    /** Empty hand: takes food off the spits (done or burnt first), else tells how much firewood is stacked on it. */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        FirePitBlockEntity pit = FirePit.entity(level, pos, state);
+        if (pit == null || !player.getMainHandItem().isEmpty()) return InteractionResult.PASS;
+        if (!level.isClientSide()) {
+            if (!pit.takeItem(player)) player.sendOverlayMessage(Component.translatable("message.mechanical.fire_pit.fuel", pit.stock(), FirePit.STOCK_MAX));
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effects, boolean isPrecise) {
+        if (state.getValue(LIT) && entity instanceof LivingEntity) entity.hurt(level.damageSources().campfire(), 1.0F);
+        super.entityInside(state, level, pos, entity, effects, isPrecise);
+    }
+
+    /** Wind and rain (Wind.firePitTick), on the corner only so the pit isn't rolled four times. */
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return state.getValue(LIT) && state.getValue(PART) == 0;
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        Wind.firePitTick(level, pos, random);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
+        return false;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.getValue(PART) == 0 ? new FirePitBlockEntity(pos, state) : null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (type != FirePit.FIRE_PIT_ENTITY.get()) return null;
+        return level.isClientSide()
+                ? (BlockEntityTicker<T>) (BlockEntityTicker<FirePitBlockEntity>) FirePitBlockEntity::clientTick
+                : (BlockEntityTicker<T>) (BlockEntityTicker<FirePitBlockEntity>) (l, p, s, pit) -> pit.serverTick((ServerLevel) l, p, s);
+    }
+}

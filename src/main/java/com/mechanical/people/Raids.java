@@ -68,6 +68,11 @@ public final class Raids {
 
     record Choice(UUID tribe, int rep, boolean band) {}
 
+    /** A Fire Pit burns in the camp: raids come more often and bigger (FirePit.RAID_CHANCE, FirePit.RAID_EXTRA). */
+    static boolean firePitAt(ServerLevel level, BlockPos camp) {
+        return com.mechanical.NightDangers.litFires(level).stream().anyMatch(f -> f.closerThan(camp, CampAge.RADIUS) && com.mechanical.NightDangers.reach(level, f) > 1);
+    }
+
     /** The worst-disposed tribe that would raid (not friendly; neutral only if wary or raiders), else a wandering band. */
     static Choice chooseTribe(ServerLevel level, BlockPos camp, List<ServerPlayer> players) {
         Set<UUID> ids = new HashSet<>();
@@ -122,7 +127,8 @@ public final class Raids {
             List<ServerPlayer> players = playersAt(level, camp.centre);
             if (players.isEmpty()) continue;
             Choice c = chooseTribe(level, camp.centre, players);
-            if (random.nextFloat() < chance(camp.ticks, c.rep, Tribe.of(c.tribe).temperament == Tribe.Temperament.RAIDERS, c.band)) {
+            float pit = firePitAt(level, camp.centre) ? com.mechanical.FirePit.RAID_CHANCE : 1; // its smoke column is seen from afar
+            if (random.nextFloat() < pit * chance(camp.ticks, c.rep, Tribe.of(c.tribe).temperament == Tribe.Temperament.RAIDERS, c.band)) {
                 start(level, camp, c, level.getGameTime() + 1200 + random.nextInt(2400));
                 return;
             }
@@ -135,6 +141,7 @@ public final class Raids {
         long days = camp.ticks / CampAge.DAY;
         int size = c.band ? MIN + random.nextInt(2)
                 : Math.min(MAX, MIN + random.nextInt(3) + (c.rep <= Tribe.HOSTILE ? 1 : 0) + (int) (days / 10));
+        if (firePitAt(level, camp.centre)) size += com.mechanical.FirePit.RAID_EXTRA; // a big fire draws a bigger war party
         Pending p = new Pending(camp.centre, c.tribe, c.band, c.rep, random.nextDouble() * Math.PI * 2, spawnAt, size);
         PENDING.put(level, p);
         CampAge.get(level).markRaided(camp, level.getOverworldClockTime() / 24000);
