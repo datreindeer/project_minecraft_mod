@@ -438,7 +438,13 @@ Nytt item: **Horn** (material för senare recept).
   ljuskälla är det nästan svart. Oväder räknas som delvis natt. Blockljus (facklor, eld) påverkas inte.
 - **Brinnande eld skyddar:** monster håller sig ~20 block från en brinnande Campfire eller tänd Clay Kiln, siktar inte på
   spelare inom 6 block från elden (skeletons når inte dit) och spawnar inte inom 28 block. Glöd och släckt eld skyddar inte.
-- **Zombiehorder:** ungefär var tredje natt kommer 5–8 zombies samtidigt 32–48 block från en spelare. De håller ihop och
+- **Blodmåne:** ungefär var sjunde natt (bestämt av världens seed, så en omstart ändrar inget) stiger månen full och
+  blodröd vid skymningen och står kvar till gryningen. Himlen, dimman och månskenet blir röda, stjärnorna bleknar och natten
+  blir lite ljusare i rött. Vid skymningen kommer ett meddelande ("The moon rises red...") och ett mörkt hornljud. Under
+  blodmånen spawnar dubbelt så många extra monster (upp till 20 inom 48 block i stället för 12) och zombiehorderna kommer.
+  Testa med `/bloodmoon` (op), som gör kvällens natt till blodmåne.
+- **Zombiehorder:** bara under blodmåne, i två vågor (en tidigt på natten och en efter midnatt), med 8–12 zombies per våg
+  32–48 block från en spelare. De håller ihop och
   går **först på ljuset**: de söker upp närmaste brinnande Campfire eller Clay Kiln (inom 48 block) och släcker den helt
   (ingen glöd kvar), och slår sönder facklor och lanterns inom 10 block. Först när det inte finns ljus kvar i närheten går
   de mot spelarna. Elden skrämmer inte bort dem.
@@ -715,7 +721,7 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
-- Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
+- Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.
 - Styckning: `Butchery.java` (utbytestabell), `CarcassEntity.java`, `KnifeItem.java`, `BonePileBlock.java`. Hängande ben och flådda texturer: mixins i `mixin/` (benen bara för fyrbenta djur och höns). Texturskript: `scripts/gen_skinned_textures.py`, `scripts/gen_bone_pile_textures.py`. Drying Rack: `DryingRackBlock.java`.
 - Tool Station-recept: `ToolStationRecipes.java`. Clay Kiln-recept och bränsle: `KilnBlockEntity.java`. Båda är

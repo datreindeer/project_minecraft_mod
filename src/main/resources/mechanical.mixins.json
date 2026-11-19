@@ -4,6 +4,8 @@
   "package": "com.mechanical.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "BloodMoonMoonMixin",
+    "BloodMoonSkyMixin",
     "ChickenModelMixin",
     "DarkNightsMixin",
     "EntityLightMixin",

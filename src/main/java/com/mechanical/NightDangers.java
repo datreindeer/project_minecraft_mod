@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 /**
  * What makes the night dangerous, and fire the only real safety:
  * - monsters keep away from burning fires (campfires, lit kilns), won't target players close to one and don't spawn near one;
- * - zombie hordes roam some nights: they go for the lights first (put out fires, smash torches and lanterns), then the players;
+ * - zombie hordes roam on blood moon nights (two waves): they go for the lights first (put out fires, smash torches and lanterns), then the players;
  * - torches give no protection, instead they draw monsters in, which smash them;
  * - more monsters at night, some of which stalk the player (circling at a distance) before they attack;
  * - monsters take no knockback, they keep pushing on; and they work their way around obstacles instead of standing still.
@@ -50,12 +51,12 @@ public final class NightDangers {
     /** Monsters stay this far from a burning fire; skeleton range is 15, so a player within SAFE of the fire is out of reach. */
     private static final double AVOID_RADIUS = 20, SAFE_RADIUS = 6, NO_SPAWN_RADIUS = 28;
     private static final int FIRE_STALE_TICKS = 40;
-    private static final float HORDE_CHANCE = 1.0F / 3.0F;
-    private static final int HORDE_MIN = 5, HORDE_MAX = 8;
+    /** Hordes only come on blood moon nights (BloodMoon), in two waves. */
+    private static final int HORDE_MIN = 8, HORDE_MAX = 12;
     private static final String HORDE_TAG = "mechanical.horde";
     /** Extra night spawns: chance per player every 5 s, while fewer than NEARBY_CAP monsters are within 48 blocks. */
-    private static final float EXTRA_SPAWN_CHANCE = 0.45F;
-    private static final int NEARBY_CAP = 12;
+    private static final float EXTRA_SPAWN_CHANCE = 0.45F, BLOOD_MOON_SPAWN_CHANCE = 0.9F;
+    private static final int NEARBY_CAP = 12, BLOOD_MOON_CAP = 20;
     /** Some zombies and creepers stalk: they circle the player for a while (30-70 s) before attacking. */
     private static final float LURK_CHANCE = 0.4F;
     private static final String LURKER_TAG = "mechanical.lurker", ROLLED_TAG = "mechanical.rolled";
@@ -318,7 +319,7 @@ public final class NightDangers {
 
     private static void spawnExtra(ServerLevel level, ServerPlayer player) {
         RandomSource random = level.getRandom();
-        if (level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(48)).size() >= NEARBY_CAP) return;
+        if (level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(48)).size() >= (BloodMoon.isActive(level) ? BLOOD_MOON_CAP : NEARBY_CAP)) return;
         double angle = random.nextDouble() * Math.PI * 2;
         double dist = 24 + random.nextInt(16);
         BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
@@ -427,7 +428,7 @@ public final class NightDangers {
 
     /** Night index of the last horde roll per level, so each night is rolled once. */
     private static final Map<Level, Long> ROLLED_NIGHT = new WeakHashMap<>();
-    private static final Map<Level, Long> HORDE_AT = new WeakHashMap<>();
+    private static final Map<Level, ArrayDeque<Long>> HORDE_AT = new WeakHashMap<>();
 
     @SubscribeEvent
     static void onLevelTick(LevelTickEvent.Post event) {
@@ -438,17 +439,20 @@ public final class NightDangers {
         if (dayTime < 13000 || dayTime > 22500) return; // night only
         RandomSource random = level.getRandom();
         for (ServerPlayer player : level.players()) {
-            if (!player.isSpectator() && !player.isCreative() && random.nextFloat() < EXTRA_SPAWN_CHANCE) spawnExtra(level, player);
+            float chance = BloodMoon.isActive(level) ? BLOOD_MOON_SPAWN_CHANCE : EXTRA_SPAWN_CHANCE;
+            if (!player.isSpectator() && !player.isCreative() && random.nextFloat() < chance) spawnExtra(level, player);
         }
-        if (!Long.valueOf(night).equals(ROLLED_NIGHT.get(level))) {
+        // re-decided when /bloodmoon turns tonight into a blood moon after it was rolled
+        if (!Long.valueOf(night).equals(ROLLED_NIGHT.get(level)) || (!HORDE_AT.containsKey(level) && BloodMoon.isBloodNight(level, night))) {
             ROLLED_NIGHT.put(level, night);
-            // decide once per night: maybe a horde, at a random moment of the night
-            if (random.nextFloat() < HORDE_CHANCE) HORDE_AT.put(level, night * 24000 + 13500 + random.nextInt(7000));
-            else HORDE_AT.remove(level);
-        }
-        Long at = HORDE_AT.get(level);
-        if (at != null && time >= at) {
+            // decide once per night: on a blood moon two horde waves, one early and one after midnight
             HORDE_AT.remove(level);
+            if (BloodMoon.isBloodNight(level, night)) HORDE_AT.put(level, new ArrayDeque<>(List.of(
+                    night * 24000 + 13500 + random.nextInt(3000), night * 24000 + 18000 + random.nextInt(3000))));
+        }
+        ArrayDeque<Long> waves = HORDE_AT.get(level);
+        if (waves != null && !waves.isEmpty() && time >= waves.peek()) {
+            waves.poll();
             List<ServerPlayer> players = new ArrayList<>(level.players().stream().filter(p -> !p.isSpectator() && !p.isCreative()).toList());
             if (!players.isEmpty()) spawnHorde(level, players.get(random.nextInt(players.size())));
         }

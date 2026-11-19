@@ -360,5 +360,6 @@
   "block.mechanical.ancient_oak_rune_log": "Ancient Oak Rune Bark",
   "block.mechanical.glowcap": "Glowcap",
   "block.mechanical.spirit_bloom": "Spirit Bloom",
-  "block.mechanical.glow_moss": "Glow Moss"
+  "block.mechanical.glow_moss": "Glow Moss",
+  "message.mechanical.blood_moon": "The moon rises red... the dead are walking tonight."
 }

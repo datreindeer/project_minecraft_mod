@@ -25,9 +25,11 @@ public abstract class DarkNightsMixin {
         if (!state.needsUpdate || level == null || !level.dimensionType().hasSkyLight()) return;
         float night = Mth.clamp((DAY_SKY - state.skyFactor) / (DAY_SKY - NIGHT_SKY), 0.0F, 1.0F);
         if (night <= 0) return;
+        // a blood moon lights the night a little (tinted red by BloodMoonClient's sky light colour)
+        float cut = CUT * night * (1 - 0.45F * com.mechanical.client.BloodMoonClient.strength());
         state.brightness = Mth.lerp(night, state.brightness, 0.0F);
-        state.skyFactor *= 1 - CUT * night;
+        state.skyFactor *= 1 - cut;
         // shared constant: replace it, never mutate
-        state.ambientColor = new Vector3f(state.ambientColor).mul(1 - CUT * night);
+        state.ambientColor = new Vector3f(state.ambientColor).mul(1 - cut);
     }
 }
