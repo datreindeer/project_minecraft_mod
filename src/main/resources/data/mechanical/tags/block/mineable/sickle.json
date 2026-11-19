@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#minecraft:crops",
+    "minecraft:short_grass",
+    "minecraft:tall_grass",
+    "minecraft:fern",
+    "minecraft:large_fern",
+    "mechanical:wild_einkorn",
+    "mechanical:wild_emmer",
+    "mechanical:wild_pea",
+    "mechanical:withered_crop",
+    "minecraft:hay_block"
+  ]
+}

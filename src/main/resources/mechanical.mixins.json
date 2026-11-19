@@ -19,6 +19,7 @@
   "mixins": [
     "CampfireBlockEntityMixin",
     "CampfireBlockMixin",
+    "FarmlandBlockMixin",
     "FireBlockInvoker"
   ]
 }

@@ -1,0 +1,80 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:barley_crop",
+        "state": {
+          "age": "7"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:barley_sheaf"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:barley_crop",
+            "state": {
+              "age": "7"
+            }
+          },
+          {
+            "type": "minecraft:match_tool",
+            "predicate": {
+              "items": "#mechanical:sickles"
+            }
+          },
+          {
+            "type": "minecraft:random_chance",
+            "chance": 0.5
+          }
+        ]
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:barley_sheaf"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:barley_crop",
+            "state": {
+              "age": "7"
+            }
+          },
+          {
+            "type": "minecraft:match_tool",
+            "predicate": {
+              "items": "#mechanical:sickles"
+            }
+          }
+        ]
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:straw"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/barley_crop"
+}

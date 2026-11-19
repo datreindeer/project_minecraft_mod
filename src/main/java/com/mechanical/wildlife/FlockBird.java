@@ -281,6 +281,7 @@ public class FlockBird extends WildAnimal {
         }
         if (restTimer > 0) restTimer--;
         if (level.isDarkOutside()) return; // roosts for the night
+        if (kind == CROW && (tickCount + getId()) % 40 == 0 && random.nextBoolean()) com.mechanical.Farming.crowPeck(level, blockPosition());
         if (leader == this) {
             if (restTimer <= 0) takeOff(false, null);
         } else if (leader.isFlying() && !leader.scared && distanceTo(leader) < 32 && random.nextInt(8) == 0) {
@@ -318,7 +319,11 @@ public class FlockBird extends WildAnimal {
             else if (!following && flightTimer <= 0 && leader != this && leader.isAlive()) landingSpot = findLandingSpot(leader.position(), 4);
             else if (!following && flightTimer <= 0) {
                 Vec3 ahead = position().add(getDeltaMovement().multiply(20, 0, 20));
-                landingSpot = findLandingSpot(ahead, 10);
+                if (kind == CROW) { // crows come down on an unguarded field of young crops (Farming)
+                    BlockPos crop = com.mechanical.Farming.cropForCrows(level, position());
+                    if (crop != null) landingSpot = Vec3.atBottomCenterOf(crop);
+                }
+                if (landingSpot == null) landingSpot = findLandingSpot(ahead, 10);
                 if (landingSpot == null) landingSpot = findLandingSpot(position(), 8);
                 if (landingSpot == null) flightTimer = 60; // nowhere to come down yet: fly on a little
             }

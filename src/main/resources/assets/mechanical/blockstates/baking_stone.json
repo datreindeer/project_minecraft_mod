@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "contents=empty": {
+      "model": "mechanical:block/baking_stone"
+    },
+    "contents=dough": {
+      "model": "mechanical:block/baking_stone_dough"
+    },
+    "contents=bread": {
+      "model": "mechanical:block/baking_stone_bread"
+    },
+    "contents=burnt": {
+      "model": "mechanical:block/baking_stone_burnt"
+    }
+  }
+}

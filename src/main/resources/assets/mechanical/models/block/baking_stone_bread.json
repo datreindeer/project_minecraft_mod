@@ -1,0 +1,101 @@
+{
+  "textures": {
+    "particle": "mechanical:block/baking_stone_side",
+    "side": "mechanical:block/baking_stone_side",
+    "top": "mechanical:block/baking_stone_top",
+    "loaf": "mechanical:block/baking_stone_bread"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        2,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#top"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        2,
+        5
+      ],
+      "to": [
+        12,
+        4,
+        11
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            4,
+            5,
+            12,
+            11
+          ],
+          "texture": "#loaf"
+        },
+        "north": {
+          "uv": [
+            4,
+            7,
+            12,
+            9
+          ],
+          "texture": "#loaf"
+        },
+        "south": {
+          "uv": [
+            4,
+            7,
+            12,
+            9
+          ],
+          "texture": "#loaf"
+        },
+        "east": {
+          "uv": [
+            5,
+            7,
+            11,
+            9
+          ],
+          "texture": "#loaf"
+        },
+        "west": {
+          "uv": [
+            5,
+            7,
+            11,
+            9
+          ],
+          "texture": "#loaf"
+        }
+      }
+    }
+  ]
+}

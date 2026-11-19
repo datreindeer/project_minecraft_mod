@@ -1,0 +1,109 @@
+{
+  "textures": {
+    "particle": "mechanical:block/scarecrow_cloth",
+    "post": "mechanical:block/scarecrow_post",
+    "cloth": "mechanical:block/scarecrow_cloth",
+    "straw": "mechanical:block/scarecrow_straw",
+    "face": "minecraft:block/carved_pumpkin",
+    "pumpkin": "minecraft:block/pumpkin_side",
+    "ptop": "minecraft:block/pumpkin_top"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        0,
+        7
+      ],
+      "to": [
+        9,
+        16,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#post"
+        },
+        "south": {
+          "texture": "#post"
+        },
+        "east": {
+          "texture": "#post"
+        },
+        "west": {
+          "texture": "#post"
+        },
+        "up": {
+          "texture": "#post"
+        },
+        "down": {
+          "texture": "#post"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        10,
+        5
+      ],
+      "to": [
+        12,
+        16,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#cloth"
+        },
+        "south": {
+          "texture": "#cloth"
+        },
+        "east": {
+          "texture": "#cloth"
+        },
+        "west": {
+          "texture": "#cloth"
+        },
+        "up": {
+          "texture": "#cloth"
+        },
+        "down": {
+          "texture": "#cloth"
+        }
+      }
+    },
+    {
+      "from": [
+        4.5,
+        8,
+        5.5
+      ],
+      "to": [
+        11.5,
+        10,
+        10.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#straw"
+        },
+        "south": {
+          "texture": "#straw"
+        },
+        "east": {
+          "texture": "#straw"
+        },
+        "west": {
+          "texture": "#straw"
+        },
+        "up": {
+          "texture": "#straw"
+        },
+        "down": {
+          "texture": "#straw"
+        }
+      }
+    }
+  ]
+}

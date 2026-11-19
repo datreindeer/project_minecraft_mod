@@ -48,7 +48,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(ItemTags.LOGS_THAT_BURN), 1, () -> Items.CHARCOAL, 600),
             new Recipe(s -> s.is(Mechanical.FIREWOOD_TAG), 2, () -> Items.CHARCOAL, 600),
             new Recipe(s -> s.is(Mechanical.UNFIRED_CRUCIBLE.get()), 1, Mechanical.CRUCIBLE, 800),
-            new Recipe(s -> s.is(Mechanical.UNFIRED_CLAY_BUCKET.get()), 1, () -> Mechanical.CLAY_BUCKET.get(), 600));
+            new Recipe(s -> s.is(Mechanical.UNFIRED_CLAY_BUCKET.get()), 1, () -> Mechanical.CLAY_BUCKET.get(), 600),
+            new Recipe(s -> s.is(Farming.DOUGH.get()), 1, () -> Items.BREAD, 400));
 
     // Our own fuel list (vanilla's fuel component needs a loot context); controls what burns in the stone age.
     public static final List<Fuel> FUELS = List.of(

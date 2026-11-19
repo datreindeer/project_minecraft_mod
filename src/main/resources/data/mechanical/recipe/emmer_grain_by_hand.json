@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:emmer_sheaf"
+  ],
+  "result": {
+    "id": "mechanical:emmer_grain",
+    "count": 1
+  }
+}

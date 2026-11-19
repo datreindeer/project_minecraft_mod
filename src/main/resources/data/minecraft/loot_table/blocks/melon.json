@@ -1,0 +1,58 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:melon",
+              "condition": "minecraft:tool/can_silk_touch"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:melon_slice",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "min": 3,
+                    "max": 7
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:inverted",
+        "term": "minecraft:tool/can_silk_touch"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:melon_seeds",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 0,
+                "max": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "minecraft:blocks/melon"
+}

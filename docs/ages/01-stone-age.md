@@ -219,6 +219,7 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
 | 2 Firewood | Charcoal | 30 s |
 | 1 Unfired Crucible | Crucible | 40 s |
 | 1 Unfired Clay Bucket | Clay Bucket | 30 s |
+| 1 Dough (bronsåldern) | Bread | 20 s |
 
 **Bränsle**
 
@@ -322,7 +323,7 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 - **Bark Basket:** `[ ][Cordage][ ]` / `[Bark][ ][Bark]` / `[Bark][Bark][Bark]`. Högerklicka för att öppna (3×3). Rymmer bara
   frukt, bär och hudar: Apple, Golden Apple, Sweet Berries, Glow Berries, Melon Slice, Chorus Fruit, Leather, Rabbit Hide,
   Raw Hide, Scraped Hide. Innehållet sparas i korgen (stackar inte, 1 per plats i inventoryt).
-**Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost när odlingen kommer.
+**Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost i Compost Heap (bronsåldern).
 
 ### Mat och styckning
 - **Alla vilda, vuxna passiva djur** (kor, grisar, får, höns, kaniner, getter, hästar, lamor, rävar, vargar, isbjörnar …)
@@ -663,7 +664,7 @@ upp släpper det som vanligt.
 - **Kistor:** bara primitiva saker: sticks, flint, plant fibre, cordage, bark, twine, bone, seeds, plus lite efter hus
   (smed: flint-verktyg och tool rods, garveri: hudar, slaktare: kött och lard, fiskare: fisk och krokar, hus: bär och mat).
   Inget järn, guld eller diamanter.
-- **Fälten är döende:** 75 % av grödorna är borta, resten är unga (ger bara frön, eller en morot/potatis). Jorden är torr.
+- **Fälten är döende:** 75 % av grödorna är borta, resten är mest unga (ger ingenting); 15 % av vetet och 25 % av morötterna/potatisen som är kvar är mogna. Jorden är torr.
 - **Iron Golem** släpper inget järn (bara 0–2 Poppy).
 - **Block från senare åldrar är låsta:** Furnace, Smoker, Blast Furnace, Anvil, Smithing Table, Stonecutter, Grindstone
   och Brewing Stand går inte att använda ("You don't know how to use this yet"). Bryts de blir det bara Rocks eller
@@ -708,8 +709,40 @@ om det finns färre än 4 av samma sort runt omkring.
 
 **Roasted Mushrooms:** valfri ätlig svamp (även vanilla Brown Mushroom) på Campfire (20 s) → 4 hunger.
 
-### Grödor
-- Gräs och ormbunkar släpper **inga frön**. Frön får man från byar (kistor och bönder).
+### Odling
+Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farming.md`.
+
+- **Säd = utsäde.** Gräs och ormbunkar släpper inga frön. Första utsädet hittar man vilt: **Wild Einkorn** (slätt,
+  sunflower plains, meadow, savann) och **Wild Emmer** (slätt, sparsamt i skog) i små sällsynta bestånd: med kniv eller
+  Flint Sickle 1 Grain, för hand 50 %. **Wild Pea** (skog, blomsterskog, björkskog, meadow) ger 1–2 **Peas** (mat och
+  utsäde). Byarnas kistor och bonden har **Wheat Grain** (vanillas Wheat Seeds heter så nu).
+- **Så:** Flint Hoe gör farmland (Podzol blir extra bördig), Grain/Peas sås på den. Grödor: Wheat, **Einkorn**, **Emmer**,
+  **Barley** (bara creative än), **Peas**, Carrot, Potato, Beetroot, Melon, Pumpkin.
+- **Skörd:** omogna grödor ger **ingenting** (odlat Einkorn/Emmer 0–1 Grain). Mogen säd ger **1 Sheaf** (vanillas Wheat
+  heter nu **Wheat Sheaf**); med **Flint Sickle** +50 % chans på en till och 1 **Straw**. Carrot/Potato 1–2, Beetroot
+  1 + 0–1 frö, Peas 1–3. Melonen ger 0–1 frö, en pumpa → 1 frö.
+- **Tröska:** **Flail** i handen, kärvar i andra handen, högerklicka på sten/kullersten/Stone Anvil: var tredje slag i
+  snitt → 1–3 Grain + 1 Straw. Utan flail: kärven i craftingrutan → 1 Grain.
+- **Mat:** 2 Grain + Clay Water Bucket + Bowl → **Raw Porridge**, kokas på Campfire (20 s) → **Porridge** (5 hunger).
+  **Bröd finns inte i stenåldern:** 3-Wheat-receptet är borttaget, bröd bakas av Flour/Dough i bronsåldern.
+- **Växtvillkor:** varje gröda har ett temperaturspann (t.ex. vete 7–17, korn 5–16, morot 4–15, melon 12–25; slätt
+  ~12, taiga 8, snö 2–6, savann/öken 22). Växer bara **på dagen** under öppen himmel (facklor räcker inte) och på fuktig
+  farmland. **Frost** på natten dödar unga plantor under bar himmel (vete under 2, korn under 0, morot under −1) → de blir
+  **Withered Crop** (Straw eller Plant Fibre). **Torka** (fukt 0) stoppar tillväxten och vissnar unga plantor; i värme
+  torkar jorden fortare. **Rotröta:** rotfrukter på dyblöt jord i träsk eller regn kan ruttna.
+- **Vattna:** högerklicka farmland med **Clay Water Bucket** → den och de 8 runt om blir blöta (hinken töms).
+- **Bördighet 0–3:** ny åker 2. Varje skörd tar 1 (ärtor ger 1 tillbaka). 0 = halv fart och halv skörd, 3 = snabbare
+  och ibland extra. Lämnas jorden i **träda** (tom) återhämtar den sig ~1 per dag.
+- **Kråkor:** Hooded Crow-flockar landar på åkrar med unga grödor och äter dem steg för steg. Skrämma bort dem eller
+  vakta; Scarecrow kommer i bronsåldern.
+- **Smyg + högerklicka med tom hand** på farmland/en gröda: bördighet, fukt, temperatur och varför den inte växer.
+
+| Item | Recept | Användning |
+|---|---|---|
+| Flint Sickle | Tool Station: Flint + Twine + Stick | Skörd: extra kärve + Straw, vild säd alltid. 48 i hållbarhet |
+| Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska kärvar. 64 i hållbarhet |
+| Straw | Tröskning, skära | Kompost (bronsåldern) |
+| Raw Porridge → Porridge | 2 Grain + Clay Water Bucket + Bowl, sedan Campfire | Mat |
 
 ### Rädsla och jakt
 - Vilda djur håller sig undan spelare. De märker dig på **16 block om du springer, 10 om du går, 4 om du smyger**
@@ -760,6 +793,9 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Raw Hide | Scraped Hide, Drying Rack |
 | Wool Thread | White Wool (från tråd) |
 | Stone Axe Head | Double Stone Axe Head |
+| Twine | Flail |
+| Sheaf (valfri) | Tröska för hand (Sheaf → Grain) |
+| Grain (valfri) | Raw Porridge |
 
 Verktygen i Tool Station låses upp separat (se Tool Station).
 
@@ -792,8 +828,14 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Campfire drop | Charcoal → **1–3 Stick** |
 | Log drops | Log → **2 Firewood** (en enskild log). Fällda träd → **Fallen Logs** som måste huggas |
 | Löv från fällda träd | Blir **Leaf Litter** på marken |
-| Wheat Seeds från gräs | **Borttaget** (byar) |
-| Hay Bale | Ger inte sig själv (= 9 Wheat) när den bryts: gammalt, ruttet hö → 1–3 Plant Fibre, 25 % chans på 1 Wheat |
+| Wheat Seeds från gräs | **Borttaget** (vild säd, byar) |
+| Hay Bale | Ger inte sig själv (= 9 Wheat) när den bryts: gammalt, ruttet hö → 1–3 Plant Fibre, 25 % chans på 1 Wheat Sheaf |
+| Wheat / Wheat Seeds | Heter **Wheat Sheaf** / **Wheat Grain**. Mogen vete ger 1 kärve, omogen ingenting |
+| Bread-recept (3 Wheat) | **Borttaget** → Flour/Dough (bronsåldern) |
+| Cookie, Cake | Flour i stället för Wheat |
+| Grödors drops | Omogna ger ingenting; Carrot/Potato 1–2; stjälkar inget; melon 0–1 frö |
+| Melon Seeds-recept | **Borttaget**; Pumpkin Seeds 1 per pumpa (vanilla 4) |
+| Grödors tillväxt | Temperatur, dagsljus, fukt, bördighet, frost; kråkor äter unga grödor |
 | Facklor | Skyddar inte mot monster, kan slås sönder |
 | Logs | Kräver yxa |
 | Iron Ore, Coal Ore, Lapis Ore (+ deepslate, Block of Raw Iron, Lapis Block) | Ger inget med trä-/stenhacka. Kräver Bronze Pickaxe (bronsåldern). Stenhackan bryter bara sten, Copper Ore och Tin Ore |
@@ -828,7 +870,7 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
   hides, Wool Thread, Flint Spear, Tool Station, Drying Rack).
 - Carcass ritas med djurets standardutseende (vita får, standardkor osv.).
 - Kistor och byinvånare kan fortfarande ge järn/järnverktyg.
-- Farming (kommer senare). Leaf Litter ska bli kompost/gödsel.
+- Odlingens bronsåldersdel (Quern, bröd, Compost Heap, Manure, Scarecrow) saknar recept tills bronsåldern fas 3 (`docs/farming.md`).
 
 ## Teknik (för utveckling)
 
@@ -836,6 +878,7 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
 - Stationer med receptlista (Fletching Table, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug: `BearRugBlock.java`.
 - Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
 - Verktygstips: `client/StatTooltips.java`.
+- Odling: se Teknik i `docs/farming.md`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.

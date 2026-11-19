@@ -51,7 +51,8 @@ public final class ToolStationRecipes {
             new Recipe(() -> Mechanical.TUSK_DAGGER.get(), () -> com.mechanical.wildlife.Wildlife.TUSK.get(), Mechanical.CORDAGE, () -> Items.LEATHER,
                     s -> s.is(com.mechanical.wildlife.Wildlife.TUSK.get())),
             new Recipe(() -> Mechanical.BONE_HOOK_FISHING_ROD.get(), () -> Mechanical.BONE_FISH_HOOK.get(), Mechanical.TWINE, Mechanical.TOOL_ROD,
-                    s -> s.is(Mechanical.BONE_FISH_HOOK.get())));
+                    s -> s.is(Mechanical.BONE_FISH_HOOK.get())),
+            new Recipe(() -> Farming.FLINT_SICKLE.get(), () -> Items.FLINT, Mechanical.TWINE, () -> Items.STICK, FLINT));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());
