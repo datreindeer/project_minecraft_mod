@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PSP",
+    "P P",
+    "PPP"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "S": "mechanical:straw"
+  },
+  "result": {
+    "id": "mechanical:root_cellar"
+  }
+}

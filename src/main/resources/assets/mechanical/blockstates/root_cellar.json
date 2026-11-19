@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=false": {
+      "model": "mechanical:block/root_cellar"
+    },
+    "open=true": {
+      "model": "mechanical:block/root_cellar_open"
+    }
+  }
+}

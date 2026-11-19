@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wild_carrot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:wild_carrot"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.wild_carrot.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.wild_carrot.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

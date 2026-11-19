@@ -1137,9 +1137,13 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Rått kött (alla scraps, vanilla rått kött, rått fågelkött, Plucked-fåglar), rå fisk (filéer och Whole fish) | **1 dag** (20 min) |
 | Bär (vilda, Sweet Berries, Glow Berries), vild svamp, Raw Porridge, Porridge, Peeled Egg | **2 dagar** |
 | Tillagat kött och fisk (scraps, fågelkött och vanilla), Roasted Mushrooms, Boiled Egg | **3 dagar** |
+| Sea Beet Leaves | **1 dag** |
+| Carrot, Beetroot, Wild Carrot | **10 dagar** |
+| Potato | **20 dagar** |
 | **Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Dried Mushrooms** | **30 dagar** |
 
-- Allt annat (bröd, äpplen, morötter, vanilla-soppor …) förskäms inte.
+- Allt annat (äpplen, vanilla-soppor …) förskäms inte.
+- **Root Cellar** nedgrävd: rotfrukter och blad håller 4× längre, annan mat 2× (se Odling).
 - Maten kontrolleras en gång i sekunden i spelarens inventory och i den behållare man har öppen. Mat som ligger i en kista
   förskäms **när kistan öppnas** nästa gång (tiden har gått ändå). Mat på marken räknas inte förrän den plockas upp.
 - Mat som stämplas inom samma 1/16 av sin hållbarhet staplas ihop (rått kött: inom 75 s); annars blir det två högar.
@@ -1340,6 +1344,8 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
 - **Byteshandel (Elder):** 6 av 12 byten, t.ex. 6 Raw Hide → Bone Needle, 10 Flint → Flint Knife, 12 Raspberries → 4
   Cooked Game Meat Scraps, 6 Cordage → 8 Bone Arrows, 12 Bark → 4 Twine, 3 Scraped Hide → 2 Leather, 4 Sinew + 2 Cordage →
   Crude Bow, 3 Tusk + 2 Cordage → Tusk Dagger, 2 Antler → 3 Bone Fish Hooks. Fylls på varje morgon. Ingen handel när de är arga.
+  **Sällsynt:** 1 Elder av 8 (i en Traders-stam 1 av 3) har också **4 Leather + 1 Antler → 3 Potato**, en gång om dagen.
+  Det är spelets enda källa till potatis (se `docs/farming.md`, Rotfrukter).
 
 ### Lägerålder och räder
 Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och till slut kommer fientliga stammar på natten.
@@ -1434,7 +1440,7 @@ Flint Spear).
 - **Kistor:** bara primitiva saker: sticks, flint, plant fibre, cordage, bark, twine, bone, seeds, plus lite efter hus
   (smed: flint-verktyg och tool rods, garveri: hudar, slaktare: kött och lard, fiskare: fisk och krokar, hus: bär och mat).
   Inget järn, guld eller diamanter.
-- **Fälten är döende:** 75 % av grödorna är borta, resten är mest unga (ger ingenting); 15 % av vetet och 25 % av morötterna/potatisen som är kvar är mogna. Jorden är torr.
+- **Fälten är döende:** 75 % av grödorna är borta, resten är mest unga (ger ingenting); 15 % av vetet och 25 % av morötterna som är kvar är mogna. Ingen potatis (blir morötter). Jorden är torr.
 - **Iron Golem** släpper inget järn (bara 0–2 Poppy).
 - **Block från senare åldrar är låsta:** Furnace, Smoker, Blast Furnace, Anvil, Smithing Table, Stonecutter, Grindstone
   och Brewing Stand går inte att använda ("You don't know how to use this yet"). Bryts de blir det bara Rocks eller
@@ -1501,6 +1507,13 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
   sunflower plains, meadow, savann) och **Wild Emmer** (slätt, sparsamt i skog) i små sällsynta bestånd: med kniv eller
   Flint Sickle 1 Grain, för hand 50 %. **Wild Pea** (skog, blomsterskog, björkskog, meadow) ger 1–2 **Peas** (mat och
   utsäde). Byarnas kistor och bonden har **Wheat Grain** (vanillas Wheat Seeds heter så nu).
+- **Rotfrukter:** **Wild Carrot Plant** (vita flockblommor på slätt, meadow, blomsterskog) ger **Wild Carrot** (tunn
+  blek rot, dålig mat) med kniv/skära 1–2, för hand 50 %. Sås på farmland som **Wild Carrots**; mogen ger den 1–2 Wild
+  Carrot och 25 % chans på en riktig **Carrot**. **Sea Beet** på stränder och klippstränder ger **Sea Beet Leaves** (blad,
+  håller 1 dag) och ibland **Beetroot Seeds**. **Potatis** växer inte vilt: bara en del stam-Elders byter till sig
+  3 Potato för 4 Leather + 1 Antler.
+- **Root Cellar** (`[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks]×3`): binge med lock, 9 platser. Grävd
+  ner i marken (lite dagsljus på alla sidor) håller rotfrukter och blad 4× längre, annan mat 2×.
 - **Så:** Flint Hoe gör farmland (Podzol blir extra bördig), Grain/Peas sås på den. Grödor: Wheat, **Einkorn**, **Emmer**,
   **Barley** (bara creative än), **Peas**, Carrot, Potato, Beetroot, Melon, Pumpkin.
 - **Skörd:** omogna grödor ger **ingenting** (odlat Einkorn/Emmer 0–1 Grain). Mogen säd ger **1 Sheaf** (vanillas Wheat
@@ -1528,6 +1541,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska kärvar. 64 i hållbarhet |
 | Straw | Tröskning, skära | Kompost (bronsåldern) |
 | Raw Porridge → Porridge | 2 Grain + Clay Water Bucket + Bowl, sedan Campfire | Mat |
+| Root Cellar | `[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks][Planks][Planks]` | Nedgrävd: rotfrukter 4× längre |
 
 ### Rädsla och jakt
 - Vilda djur håller sig undan spelare. De märker dig på **16 block om du springer, 10 om du går, 4 om du smyger**

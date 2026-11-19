@@ -15,19 +15,6 @@
           },
           "name": "minecraft:bamboo_planks",
           "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 10,
-              "min": 6
-            }
-          },
-          "name": "minecraft:baked_potato",
-          "weight": 10
         }
       ],
       "rolls": {

@@ -32,7 +32,7 @@
 | Cookie, Cake | Flour i stället för Wheat | `minecraft:recipe/cookie.json`, `cake.json` |
 | Melon Seeds-recept (skiva → frö) | **Borttaget** | Melonen släpper 0–1 frö när den bryts |
 | Pumpkin Seeds-recept | 1 frö (vanilla 4) | |
-| Byarnas fält | Fortfarande döende (75 % borta), men 15 % av vetet som är kvar är moget, och 25 % av morötterna/potatisen | `gen_data.py` (farm-processorerna) |
+| Byarnas fält | Fortfarande döende (75 % borta), men 15 % av vetet som är kvar är moget, och 25 % av morötterna. Potatis blir morötter (även i zombiebyar) | `gen_data.py` (farm-processorerna), `gen_roots.py` (zombie-processorerna) |
 | Hay Bale i byar | Oförändrat: ruttet hö → Plant Fibre, 25 % en Wheat Sheaf | |
 
 ## Skörd och utsäde (byggt)
@@ -44,7 +44,8 @@
   sten, kullersten, mossig kullersten, smooth stone, stenkross, cobbled deepslate, granit/diorit/andesit och polerade,
   packed mud, mud bricks, Stone Anvil). Varje slag (cooldown 0,4 s) har 1/3 chans att bli klart: 1–3 Grain
   (1: 25 %, 2: 50 %, 3: 25 %) + 1 Straw, flailen slits 1. Utan flail: kärven i craftingrutan → 1 Grain.
-- **Rotfrukter:** mogen Carrot/Potato ger 1–2 (vanilla 2–5); Beetroot: 1 Beetroot + 0–1 Beetroot Seeds.
+- **Rotfrukter:** mogen Carrot/Potato ger 1–2 (vanilla 2–5); Beetroot: 1 Beetroot + 0–1 Beetroot Seeds. Mogna Wild Carrots:
+  1–2 Wild Carrot och 25 % chans på en riktig Carrot (se "Rotfrukter").
 - **Peas:** mogna ärtor ger 1–3.
 - **Melon/Pumpkin:** stjälkarna ger ingenting; melonen 3–7 skivor + 0–1 frö (Silk Touch: melonen). Pumpa → 1 frö.
 - **Porridge:** 2 Grain (valfri sort, taggen `mechanical:grains`) + Clay Water Bucket + Bowl → Raw Porridge (hinken blir
@@ -63,9 +64,14 @@ Små sällsynta bestånd (placerade som bärbuskarna: chans per chunk, antal fö
 | Wild Emmer | Plains, Sunflower Plains | 1/12, 6 försök | 1 Emmer Grain med kniv/skära, 50 % för hand |
 | Wild Emmer | Forest, Flower Forest | 1/24, 4 försök | som ovan |
 | Wild Pea | Forest, Flower Forest, Birch Forest, Meadow | 1/12, 5 försök | 1–2 Peas |
+| Wild Carrot Plant | Plains, Sunflower Plains, Meadow, Flower Forest, Hazel Meadow | 1/12, 5 försök | 1–2 Wild Carrot med kniv/skära, 1 i 50 % för hand |
+| Sea Beet | Beach, Stony Shore (på sand, grus, sten eller jord) | 1/2, 10 försök, spridning ±4 | 1–3 Sea Beet Leaves; Beetroot Seeds ~45 % med kniv/skära, 15 % för hand |
 
 Uppmätt i en ny värld (193×193 block): slätt 42 Wild Einkorn + 21 Wild Emmer, savann 45 Wild Einkorn, meadow 16 Wild
 Einkorn + 13 Wild Pea, flower forest 14 Wild Emmer, forest 4 Wild Pea, öken 0.
+
+Uppmätt (seed 4242, 9×9 chunks runt biomen): beach 19 Sea Beet, stony shore 40; meadow 9 Wild Carrot Plant, slätt 15,
+flower forest 25.
 
 Barley har ingen vild källa än (bara creative); kommer med handel/byar senare.
 
@@ -79,7 +85,7 @@ faktor multipliceras på: **temperaturfaktor × fukt × bördighet × dagsljus**
 |---|---|---|---|---|
 | Wheat / Einkorn / Emmer | 7–17 | 10–14 | 2 | |
 | Barley | 5–16 | 8–12 | 0 | tålig, växer (långsamt) i snöbiomer |
-| Carrot | 4–15 | 7–12 | −1 | tål kyla, rotfrukt |
+| Carrot / Wild Carrots | 4–15 | 7–12 | −1 | tål kyla, rotfrukt |
 | Potato | 6–16 | 9–13 | 2 | rotfrukt |
 | Beetroot | 5–16 | 8–13 | 1 | rotfrukt |
 | Peas | 6–16 | 9–13 | 2 | skörden höjer bördigheten |
@@ -174,12 +180,41 @@ vanliga shaped-recept (kategori misc) och visas i receptboken först när man b�
   yr). 2 Flour + Clay Water Bucket → Dough. Baking Stone vid brinnande Campfire: 30 s → Bread, 45 s till → Burnt Food.
   Clay Kiln: Dough → Bread på 20 s vid 200°.
 
+## Rotfrukter (byggt)
+
+Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de inte bara kommer från döende byfält.
+
+- **Wild Carrot Plant** (Daucus carota, vit flockblomma): se tabellen ovan. Ger **Wild Carrot**: tunn, blek rot, mat
+  (1 hunger, 0,3 mättnad). Sås på farmland som grödan **Wild Carrots** (samma växtvillkor som Carrot). Mogen: 1–2 Wild Carrot
+  + **25 % chans på en Carrot** ("tämjning": det vilda utsädet finns alltid kvar, och de riktiga morötterna kommer en och
+  en, sedan odlas de som vanligt). Valt i stället för att Wild Carrot blir vanilla-morötter direkt: det följer
+  Einkorn/Emmer (odlad vild typ ger vild skörd) och gör en riktig morot till ett litet framsteg.
+- **Sea Beet** (strandbeta): se tabellen ovan. **Sea Beet Leaves** är blad att äta (1 hunger, 0,2 mättnad, håller 1 dag).
+  **Beetroot Seeds** gör att rödbetor kan odlas utan byar.
+- **Potatis** kommer från Amerika och växer inte vilt här. Borttagen ur byarnas kistor, byarnas fält (blir morötter),
+  zombiebyarnas fält, all strukturloot (shipwreck, pillager outpost, trial chambers, ancient city), zombiernas/huskernas
+  sällsynta drops (`gen_data.py`, `NOT_NATIVE`). Bondens handel hade redan ingen potatis. **Enda källan:** en stam-Elder
+  kan ha ett extra byte, **4 Leather + 1 Antler → 3 Potato** (1 gång per dag): 1 Elder av 8, i en Traders-stam 1 av 3
+  (`Tribesperson.POTATO_ODDS`, slumpat per Elder; uppmätt 47–55 av 400). Elders som redan sparat sina byten får det inte.
+- **Root Cellar** (stenåldern): `[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks]×3`. En plankbinge med halm
+  och lock, 9 platser, öppnas som Storage Jar (locket står upp när den är öppen; hoppers och komparator fungerar).
+  **Nedgrävd** (himmelsljuset på alla sex sidor av blocket är högst 7: täckt grop, källare i en backe) åldras
+  rotfrukter och blad (taggen `mechanical:cellar_produce`: Carrot, Potato, Beetroot, Wild Carrot, Sea Beet Leaves) med
+  **1/4** av normal takt, annan mat med 1/2. Ovan jord är den bara en låda ("Too much daylight" när man öppnar den).
+  Valt framför en lerkruka: Storage Jar finns redan i bronsåldern (1/4 för allt), källaren gör rotfrukterna lagringsbara
+  redan i stenåldern men kräver att man gräver. Takten avgörs när locket lyfts (genväg, se koden).
+- **Hållbarhet** (nytt, de förskämdes inte förut): Carrot, Beetroot, Wild Carrot **10 dagar**, Potato **20 dagar**, Sea
+  Beet Leaves **1 dag** (taggarna `perishes_10_days` / `perishes_20_days`).
+
 ## Teknik
 
 - `Farming.java` (registrering, växtregler i `CropGrowEvent`, skörd i `BlockDropsEvent`, kråkor, fältinfo),
   `Fertility.java` + `mixin/FarmlandBlockMixin.java` (bördighet, träda, torka), `FarmCropBlock`, `WildPlantBlock`,
   `FlailItem`, `FertilizerItem`, `QuernBlock`, `BakingStoneBlock`, `CompostHeapBlock`, `ScarecrowBlock`.
   Vattning och hinkens rest i recept: `ClayBucketItem`. Dough i ugnen: `KilnBlockEntity.RECIPES`. Kråkor: `wildlife/FlockBird`.
+- Rotfrukter: `Roots.java`, `RootCellarBlock`, `RootCellarBlockEntity` (bygger på `StorageJarBlockEntity`), potatisbytet i
+  `Tribesperson.getOffers`; data `scripts/gen_roots.py` (efter gen_birds2, före gen_block_items), texturer
+  `scripts/gen_roots_textures.py`.
 - Data: `scripts/gen_farming.py` (efter gen_age_recipes, före gen_wind); bronsålderns recept, Manure-taggen och
   hållbarheten: `scripts/gen_farming3.py` (efter gen_wolf_pelt, före gen_block_items, eftersom den lägger till i
   gen_preservings perishes-taggar); texturer: `scripts/gen_farming_textures.py`. Manure från djur: `Farming.dropManure`.

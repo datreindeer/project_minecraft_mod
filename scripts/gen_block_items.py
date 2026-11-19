@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 A = Path(__file__).resolve().parent.parent / "src/main/resources/assets/mechanical"
-NO_ITEM = {"blood", "furred_straw_bed", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop"}
+NO_ITEM = {"blood", "furred_straw_bed", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop", "wild_carrot_crop"}
 FLAT_PARENTS = ("block/cross", "block/tinted_cross", "block/flower_pot_cross", "mechanical:block/shrub")
 
 

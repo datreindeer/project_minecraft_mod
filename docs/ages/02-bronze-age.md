@@ -753,6 +753,8 @@ Rund kruka med bred buk, smal hals och lock med knopp, bränd terrakotta med en 
 - Hoppers fungerar; det som tas ut eller läggs i medan den är förseglad räknas av/stämplas på vägen, så inget får en
   gammal stämpel med sig. Komparator läser fyllnaden.
 - Bryts krukan räknas maten av och allt faller ut (inget sparas på item:et).
+- Jämför stenålderns **Root Cellar** (`docs/farming.md`, Rotfrukter): samma lock-mekanik, men bara nedgrävd, och
+  bara rotfrukter och blad får 1/4 (annan mat 1/2). Krukan fungerar var som helst och för all mat.
 
 ### Water Jug
 

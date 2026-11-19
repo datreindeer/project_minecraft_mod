@@ -595,6 +595,9 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return InteractionResult.SUCCESS_SERVER;
     }
 
+    /** One elder in this many offers seed potatoes (in a trading tribe one in {@link #POTATO_ODDS_TRADERS}). */
+    public static final int POTATO_ODDS = 8, POTATO_ODDS_TRADERS = 3;
+
     /** All barter offers an elder may have; each elder gets a random handful. */
     private static List<MerchantOffer> allOffers() {
         return List.of(
@@ -619,8 +622,13 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (offers == null) {
             offers = new MerchantOffers();
             List<MerchantOffer> all = new java.util.ArrayList<>(allOffers());
-            java.util.Collections.shuffle(all, new java.util.Random(getUUID().getLeastSignificantBits()));
-            offers.addAll(all.subList(0, tribe() != null && tribe().temperament == Tribe.Temperament.TRADERS ? 9 : 6));
+            java.util.Random random = new java.util.Random(getUUID().getLeastSignificantBits());
+            java.util.Collections.shuffle(all, random);
+            boolean traders = tribe() != null && tribe().temperament == Tribe.Temperament.TRADERS;
+            offers.addAll(all.subList(0, traders ? 9 : 6));
+            // potatoes come from far away (the only source, docs/farming.md): a few elders part with a handful of seed potatoes
+            if (random.nextInt(traders ? POTATO_ODDS_TRADERS : POTATO_ODDS) == 0) offers.add(new MerchantOffer(new ItemCost(Items.LEATHER, 4),
+                    Optional.of(new ItemCost(com.mechanical.wildlife.Wildlife.ANTLER.get(), 1)), new ItemStack(Items.POTATO, 3), 1, 0, 0));
         }
         return offers;
     }

@@ -165,6 +165,7 @@
     "mechanical:dugout_blank",
     "mechanical:smoking_rack",
     "mechanical:hanging_rack",
-    "mechanical:potters_wheel"
+    "mechanical:potters_wheel",
+    "mechanical:root_cellar"
   ]
 }

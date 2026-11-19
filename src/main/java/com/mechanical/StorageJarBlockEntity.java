@@ -36,7 +36,7 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
         @Override
         protected void onOpen(Level level, BlockPos pos, BlockState state) {
             long now = level.getGameTime();
-            items.replaceAll(s -> Preserving.outOfBasket(s, now, Pottery.JAR_RATE));
+            items.replaceAll(s -> Preserving.outOfBasket(s, now, rate(s)));
             lid(level, pos, state, true);
         }
 
@@ -57,12 +57,26 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
     };
 
     public StorageJarBlockEntity(BlockPos pos, BlockState state) {
-        super(Pottery.STORAGE_JAR_ENTITY.get(), pos, state);
+        this(Pottery.STORAGE_JAR_ENTITY.get(), pos, state);
+    }
+
+    /** For stores built the same way (the Root Cellar). */
+    protected StorageJarBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    /** Share of the normal rate this stack ages at while sealed. */
+    protected float rate(ItemStack stack) {
+        return Pottery.JAR_RATE;
+    }
+
+    protected void lidSound(Level level, BlockPos pos, boolean open) {
+        level.playSound(null, pos, open ? SoundEvents.DECORATED_POT_INSERT : SoundEvents.DECORATED_POT_HIT, SoundSource.BLOCKS, 0.6F,
+                open ? 1.3F : 0.9F + level.getRandom().nextFloat() * 0.1F);
     }
 
     private void lid(Level level, BlockPos pos, BlockState state, boolean open) {
-        level.playSound(null, pos, open ? SoundEvents.DECORATED_POT_INSERT : SoundEvents.DECORATED_POT_HIT, SoundSource.BLOCKS, 0.6F,
-                open ? 1.3F : 0.9F + level.getRandom().nextFloat() * 0.1F);
+        lidSound(level, pos, open);
         level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.OPEN, open));
     }
 
@@ -73,13 +87,13 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
     @Override
     public ItemStack removeItem(int slot, int count) {
         ItemStack out = super.removeItem(slot, count);
-        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), Pottery.JAR_RATE) : out;
+        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), rate(out)) : out;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int slot) {
         ItemStack out = super.removeItemNoUpdate(slot);
-        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), Pottery.JAR_RATE) : out;
+        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), rate(out)) : out;
     }
 
     @Override
@@ -90,7 +104,7 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
     /** Broken: the food comes out settled, as if the lid had been lifted. */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        if (sealed()) items.replaceAll(s -> Preserving.outOfBasket(s, level.getGameTime(), Pottery.JAR_RATE));
+        if (sealed()) items.replaceAll(s -> Preserving.outOfBasket(s, level.getGameTime(), rate(s)));
         super.preRemoveSideEffects(pos, state);
     }
 

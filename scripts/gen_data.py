@@ -967,7 +967,7 @@ EXTRA = {
     "temple": [_e("minecraft:candle", 1, 2, 4), _e(M + "tallow", 1, 2, 4), _e("minecraft:bone_meal", 1, 3, 3)],
 }
 HOUSE = [_e(M + "raspberries", 1, 4, 4), _e(M + "blueberries", 1, 4, 4), _e(M + "cooked_mutton_scraps", 1, 3, 4),
-         _e("minecraft:carrot", 1, 2, 2), _e("minecraft:potato", 1, 2, 2)]
+         _e("minecraft:carrot", 1, 2, 3)]  # no potatoes: they come only from rare tribe trades (gen_roots.py)
 for path in [n for n in _jar.namelist() if n.startswith("data/minecraft/loot_table/chests/village/") and n.endswith(".json")]:
     name = path.rsplit("/", 1)[1][:-5]
     kind = name.removeprefix("village_")
@@ -986,13 +986,13 @@ for farm in ("plains", "desert", "savanna", "snowy", "taiga"):
     for crop in ("wheat", "carrots", "potatoes", "beetroots", "melon_stem", "pumpkin_stem"):
         rules.append(_rule(f"minecraft:{crop}", 0.75, DEAD))
     rules += [_rule("minecraft:wheat", 0.2, {"id": "minecraft:carrots", "properties": {"age": "1"}}),
-              _rule("minecraft:wheat", 0.15, {"id": "minecraft:potatoes", "properties": {"age": "1"}}),
+              _rule("minecraft:wheat", 0.15, {"id": "minecraft:beetroots", "properties": {"age": "1"}}),
               _rule("minecraft:wheat", 0.15, {"id": "minecraft:wheat", "properties": {"age": "7"}}),  # a few ripe sheaves (gen_farming)
               _rule("minecraft:wheat", 1.0, {"id": "minecraft:wheat", "properties": {"age": "2"}})]
-    for crop in ("carrots", "potatoes"):  # unripe crops give nothing now: leave a few ripe ones
-        rules.append(_rule(f"minecraft:{crop}", 0.25, {"id": f"minecraft:{crop}", "properties": {"age": "7"}}))
+    for crop in ("carrots", "potatoes"):  # unripe crops give nothing now: leave a few ripe ones (potatoes become carrots)
+        rules.append(_rule(f"minecraft:{crop}", 0.25, {"id": "minecraft:carrots", "properties": {"age": "7"}}))
     for crop in ("carrots", "potatoes", "beetroots"):
-        rules.append(_rule(f"minecraft:{crop}", 1.0, {"id": f"minecraft:{crop}", "properties": {"age": "1"}}))
+        rules.append(_rule(f"minecraft:{crop}", 1.0, {"id": f"minecraft:{'carrots' if crop == 'potatoes' else crop}", "properties": {"age": "1"}}))
     for stem in ("melon_stem", "pumpkin_stem"):
         rules.append(_rule(f"minecraft:{stem}", 1.0, {"id": f"minecraft:{stem}", "properties": {"age": "1"}}))
     rules.append(_rule("minecraft:farmland", 0.6, {"id": "minecraft:farmland", "properties": {"moisture": "0"}}))
@@ -1230,9 +1230,10 @@ LATER_AGE = ("iron", "gold", "diamond", "emerald", "netherite", "copper", "lapis
              # and the weighted pressure plates (gold / iron) slip past the metal keywords
              "saddle", "fire_charge", "minecraft:stone_pickaxe", "minecraft:stone_axe", "minecraft:stone_shovel",
              "minecraft:stone_hoe", "minecraft:stone_sword", "minecraft:stone_spear", "minecraft:wooden_", "weighted_pressure_plate")
+NOT_NATIVE = ("potato",)  # American: only from rare tribe trades (gen_roots.py, docs/farming.md); baked/poisonous too
 def _later_age(entry):
     text = json.dumps(entry)
-    return entry.get("type") == "minecraft:item" and (any(k in entry.get("name", "") for k in LATER_AGE)
+    return entry.get("type") == "minecraft:item" and (any(k in entry.get("name", "") for k in LATER_AGE + NOT_NATIVE)
         or any(f in text for f in ("enchant_randomly", "enchant_with_levels", "set_enchantments", "enchanted_book")))
 def _filter_entries(entries):
     out = []

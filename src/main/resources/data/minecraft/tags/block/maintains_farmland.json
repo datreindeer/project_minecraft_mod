@@ -5,6 +5,7 @@
     "mechanical:einkorn_crop",
     "mechanical:emmer_crop",
     "mechanical:pea_crop",
-    "mechanical:withered_crop"
+    "mechanical:withered_crop",
+    "mechanical:wild_carrot_crop"
   ]
 }
