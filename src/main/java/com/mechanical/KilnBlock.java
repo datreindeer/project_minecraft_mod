@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -50,18 +51,21 @@ public class KilnBlock extends Block implements EntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     /** Lit and baking (fuel burning): more fire and smoke. */
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    /** How far the clay is fired: 0 raw (a new kiln, can't bake yet) .. 3 fired. Default 3 so kilns from older worlds stay fired. */
+    public static final IntegerProperty FIRING = IntegerProperty.create("firing", 0, 3);
+    public static final int FIRED = 3;
 
     private static final VoxelShape LOWER_SHAPE = column(15, 0, 16);
     private static final VoxelShape UPPER_SHAPE = Shapes.or(column(13, 0, 6), column(11, 6, 8), column(9, 8, 10), column(6, 10, 12), column(3, 12, 16));
 
     public KilnBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(LIT, false).setValue(ACTIVE, false));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(LIT, false).setValue(ACTIVE, false).setValue(FIRING, FIRED));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HALF, LIT, ACTIVE);
+        builder.add(FACING, HALF, LIT, ACTIVE, FIRING);
     }
 
     public static BlockPos lowerPos(BlockState state, BlockPos pos) {
@@ -83,7 +87,8 @@ public class KilnBlock extends Block implements EntityBlock {
         return defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
                 .setValue(HALF, DoubleBlockHalf.UPPER)
-                .setValue(LIT, campfire.getValue(CampfireBlock.LIT));
+                .setValue(LIT, campfire.getValue(CampfireBlock.LIT))
+                .setValue(FIRING, 0); // raw clay; a broken fired kiln's item puts its firing back (block_state component)
     }
 
     @Override
@@ -102,7 +107,8 @@ public class KilnBlock extends Block implements EntityBlock {
         boolean lower = state.getValue(HALF) == DoubleBlockHalf.LOWER;
         if (direction == (lower ? Direction.UP : Direction.DOWN)) {
             boolean partner = neighbourState.is(this) && neighbourState.getValue(HALF) != state.getValue(HALF);
-            return partner ? state.setValue(LIT, neighbourState.getValue(LIT)).setValue(ACTIVE, neighbourState.getValue(ACTIVE)) : Blocks.AIR.defaultBlockState();
+            return partner ? state.setValue(LIT, neighbourState.getValue(LIT)).setValue(ACTIVE, neighbourState.getValue(ACTIVE)).setValue(FIRING, neighbourState.getValue(FIRING))
+                    : Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
     }
@@ -137,7 +143,10 @@ public class KilnBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide() && level.getBlockEntity(lowerPos(state, pos)) instanceof KilnBlockEntity kiln) player.openMenu(kiln);
+        if (!level.isClientSide() && level.getBlockEntity(lowerPos(state, pos)) instanceof KilnBlockEntity kiln) {
+            player.openMenu(kiln);
+            if (state.getValue(FIRING) < FIRED) player.sendOverlayMessage(Component.translatable("message.mechanical.kiln.unfired"));
+        }
         return InteractionResult.SUCCESS;
     }
 

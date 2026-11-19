@@ -35,6 +35,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     public static final int CAMPFIRE_BURN_TICKS = 3600;
     /** An idle lit kiln smoulders this long, then goes out. */
     public static final int IDLE_TICKS = 1200;
+    /** A new kiln's clay must burn this long (2 min) before it can bake; it fires in 3 visible steps. */
+    public static final int FIRE_TICKS = 2400;
 
     /** {@code count} input items are used up per result. */
     public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks) {}
@@ -45,7 +47,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Items.CLAY_BALL), 1, () -> Items.BRICK, 400),
             new Recipe(s -> s.is(ItemTags.LOGS_THAT_BURN), 1, () -> Items.CHARCOAL, 600),
             new Recipe(s -> s.is(Mechanical.FIREWOOD_TAG), 2, () -> Items.CHARCOAL, 600),
-            new Recipe(s -> s.is(Mechanical.UNFIRED_CRUCIBLE.get()), 1, Mechanical.CRUCIBLE, 800));
+            new Recipe(s -> s.is(Mechanical.UNFIRED_CRUCIBLE.get()), 1, Mechanical.CRUCIBLE, 800),
+            new Recipe(s -> s.is(Mechanical.UNFIRED_CLAY_BUCKET.get()), 1, () -> Mechanical.CLAY_BUCKET.get(), 600));
 
     // Our own fuel list (vanilla's fuel component needs a loot context); controls what burns in the stone age.
     public static final List<Fuel> FUELS = List.of(
@@ -56,15 +59,16 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 4800));           // 4 min
 
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
-    private int progress, total, burn, burnTotal, idle;
+    private int progress, total, burn, burnTotal, idle, fireTicks;
 
     /** Synced to the menu: 0 progress, 1 total, 2 burn left, 3 burn total. */
     final ContainerData data = new ContainerData() {
         @Override
         public int get(int id) {
             return switch (id) {
-                case 0 -> progress;
-                case 1 -> total;
+                // while the clay is still firing the arrow shows the firing instead
+                case 0 -> isFired() ? progress : fireTicks;
+                case 1 -> isFired() ? total : FIRE_TICKS;
                 case 2 -> burn;
                 default -> isLit() ? burnTotal : 0; // the screen shows the flame only while lit
             };
@@ -89,6 +93,10 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
 
     public static int burnTicks(ItemStack stack) {
         return FUELS.stream().filter(f -> f.item().test(stack)).mapToInt(Fuel::ticks).findFirst().orElse(0);
+    }
+
+    public boolean isFired() {
+        return getBlockState().getValue(KilnBlock.FIRING) >= KilnBlock.FIRED;
     }
 
     public boolean isLit() {
@@ -141,15 +149,17 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     public static void serverTick(ServerLevel level, BlockPos pos, BlockState state, KilnBlockEntity kiln) {
         ItemStack input = kiln.items.get(INPUT);
         Recipe recipe = recipeFor(input).orElse(null);
-        boolean canBake = recipe != null && input.getCount() >= recipe.count() && kiln.canOutput(recipe);
+        boolean firing = !kiln.isFired();
+        boolean canBake = !firing && recipe != null && input.getCount() >= recipe.count() && kiln.canOutput(recipe);
+        boolean working = canBake || firing; // firing the clay burns fuel like baking does
 
-        // Fuel is only used while baking; an idle lit kiln smoulders for a while, then goes out.
-        if (kiln.isLit() && !canBake && ++kiln.idle >= IDLE_TICKS) {
+        // Fuel is only used while working; an idle lit kiln smoulders for a while, then goes out.
+        if (kiln.isLit() && !working && ++kiln.idle >= IDLE_TICKS) {
             kiln.idle = 0;
             kiln.setLit(false);
         }
         if (kiln.isLit()) NightDangers.markLit(level, pos);
-        if (kiln.isLit() && canBake) {
+        if (kiln.isLit() && working) {
             kiln.idle = 0;
             if (kiln.burn <= 0) {
                 int ticks = burnTicks(kiln.items.get(FUEL));
@@ -164,7 +174,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             if (kiln.burn > 0) kiln.burn = Math.max(0, kiln.burn - Temperature.fireDrain(level, pos, level.getRandom()));
             kiln.setChanged();
         }
-        kiln.setState(kiln.isLit(), kiln.isLit() && canBake);
+        if (firing && kiln.isLit()) kiln.fire(state);
+        kiln.setState(kiln.isLit(), kiln.isLit() && working);
 
         if (!canBake) {
             kiln.progress = 0;
@@ -181,6 +192,15 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             else out.grow(1);
         }
         kiln.setChanged();
+    }
+
+    /** One tick of firing the raw clay; the block's FIRING step follows (the upper half copies it). */
+    private void fire(BlockState state) {
+        int stage = state.getValue(KilnBlock.FIRING);
+        fireTicks = Math.max(fireTicks, stage * FIRE_TICKS / KilnBlock.FIRED) + 1; // a part-fired kiln re-placed from its item
+        int now = Math.min(KilnBlock.FIRED, fireTicks * KilnBlock.FIRED / FIRE_TICKS);
+        if (now > stage && level != null) level.setBlock(worldPosition, getBlockState().setValue(KilnBlock.FIRING, now), Block.UPDATE_ALL);
+        setChanged();
     }
 
     private boolean canOutput(Recipe recipe) {
@@ -205,6 +225,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         progress = input.getIntOr("progress", 0);
         burn = input.getIntOr("burn", 0);
         burnTotal = input.getIntOr("burn_total", 0);
+        fireTicks = input.getIntOr("fire_ticks", 0);
     }
 
     @Override
@@ -214,6 +235,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         output.putInt("progress", progress);
         output.putInt("burn", burn);
         output.putInt("burn_total", burnTotal);
+        output.putInt("fire_ticks", fireTicks);
     }
 
     @Override

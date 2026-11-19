@@ -42,6 +42,15 @@
   "unfired_crucible": {
     "text": "7 Clay Ball i en kopp-form. Bränns till [[crucible]] i en Clay Kiln (40 s)."
   },
+  "unfired_clay_bucket": {
+    "text": "3 Clay Ball i en hink-form (`[Clay][ ][Clay]` / `[ ][Clay][ ]`). Bränns till [[clay_bucket]] i en [[kiln]] (30 s)."
+  },
+  "clay_bucket": {
+    "text": "Bränd lerhink. **Håller bara vatten** (lava och annat går inte). Tål 16 hällningar, sedan spricker den."
+  },
+  "clay_water_bucket": {
+    "text": "[[clay_bucket]] fylld med vatten. Häll ut som en vanlig vattenhink; varje hällning sliter på hinken."
+  },
   "crucible": {
     "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (40 s). Behövs i bronsåldern för att smälta koppar och tenn. Ingen användning än."
   },
@@ -253,7 +262,7 @@
     "text": "Bygger verktyg av huvud + bindning + skaft. **Högerklicka för att öppna.**\nTill vänster listas upplåsta verktyg (ett verktyg låses upp första gången man har dess material, sparas per spelare även efter döden). Verktyg där man har alla delar är upplysta; klick flyttar delarna till platserna. Scrolla med mushjulet."
   },
   "kiln": {
-    "text": "**Placeras bara ovanpå en Campfire**, som blir ugnens eldstad (2 block hög). Var Campfire tänd bakar ugnen på lägereldens ved (3 min). Annars: lägg bränsle och tänd med [[fire_drill]].\nGUI som en Furnace. Bränsle går bara åt medan något bakas; tänd utan att baka pyr den i 60 s och slocknar. Kyla och regn gör att bränslet tar slut fortare. Lyser (ljus 13) och skyddar mot monster när den brinner.\nBryts någon halva får man tillbaka Clay Kiln + 1–3 Stick + innehållet."
+    "text": "**Placeras bara ovanpå en Campfire**, som blir ugnens eldstad (2 block hög). Var Campfire tänd bakar ugnen på lägereldens ved (3 min). Annars: lägg bränsle och tänd med [[fire_drill]].\nGUI som en Furnace. Bränsle går bara åt medan något bakas; tänd utan att baka pyr den i 60 s och slocknar. Kyla och regn gör att bränslet tar slut fortare. Lyser (ljus 13) och skyddar mot monster när den brinner.\nBryts någon halva får man tillbaka Clay Kiln + 1–3 Stick + innehållet.\n**Ny ugn måste brännas först:** leran är rå och ugnen bakar inget förrän en eld har brunnit i den i 2 min (bränsle går åt). Leran mörknar i 3 steg till bränd rödbrun lera. En bränd ugn förblir bränd även om man bryter och flyttar den."
   },
   "drying_rack": {
     "text": "**Högerklicka med [[scraped_hide]]** för att spänna upp den. Efter några minuter (~3 min i snitt) är den torr: högerklicka för att ta Leather. Bryts den släpper den sig själv + huden."

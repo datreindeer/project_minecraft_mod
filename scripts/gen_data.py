@@ -341,7 +341,7 @@ w(D / "mechanical/recipe/roasted_mushrooms.json", {"type": "minecraft:campfire_c
 print("stumps ok")
 
 # ---- fire drill, campfire, kiln, crucible ----
-for item in ["fire_drill", "unfired_crucible", "crucible"]:
+for item in ["fire_drill", "unfired_crucible", "crucible", "unfired_clay_bucket", "clay_bucket", "clay_water_bucket"]:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
 # Beehive-shaped clay kiln built facing north: walls with an arched front opening around the campfire below,
@@ -366,7 +366,11 @@ def flame(f, t, faces):
 # clay walls with an arched, sooty fire opening, campfire logs inside and flames when lit.
 # UPPER = baking chamber with a sooty loading opening, a stepped dome and a chimney blackened at the top.
 KILN_TEX = {"particle": "minecraft:block/clay", "clay": "minecraft:block/clay", "stone": "minecraft:block/cobblestone", "soot": "mechanical:block/kiln_soot"}
-for lit in (False, True):
+# firing stages 0 (raw clay) .. 3 (fired), textures from gen_kiln_firing_textures.py; stage 0 keeps the plain model names
+KILN_CLAY = ["minecraft:block/clay", "mechanical:block/kiln_clay_1", "mechanical:block/kiln_clay_2", "mechanical:block/kiln_clay_fired"]
+kiln_suffix = lambda st: f"_{st}" if st else ""
+for st, lit in [(st, lit) for st in range(4) for lit in (False, True)]:
+    KTEX = {**KILN_TEX, "particle": KILN_CLAY[st], "clay": KILN_CLAY[st]}
     tex = "#lit_log" if lit else "#log"
     elements = [
         # foundation stones, open at the front
@@ -386,10 +390,11 @@ for lit in (False, True):
     ]
     if lit:
         elements += [flame([3, 1, 8], [13, 13, 8], ("north", "south")), flame([8, 1, 3], [8, 13, 13], ("east", "west"))]
-    w(A / f"models/block/kiln_lower{'_lit' if lit else ''}.json", {"parent": "minecraft:block/block", "textures": {
-        **KILN_TEX, "log": "minecraft:block/campfire_log", "lit_log": "minecraft:block/campfire_log_lit", "fire": "minecraft:block/campfire_fire"},
+    w(A / f"models/block/kiln_lower{'_lit' if lit else ''}{kiln_suffix(st)}.json", {"parent": "minecraft:block/block", "textures": {
+        **KTEX, "log": "minecraft:block/campfire_log", "lit_log": "minecraft:block/campfire_log_lit", "fire": "minecraft:block/campfire_fire"},
         "elements": elements})
-w(A / "models/block/kiln_upper.json", {"parent": "minecraft:block/block", "textures": KILN_TEX,
+for st in range(4):
+  w(A / f"models/block/kiln_upper{kiln_suffix(st)}.json", {"parent": "minecraft:block/block", "textures": {**KILN_TEX, "particle": KILN_CLAY[st], "clay": KILN_CLAY[st]},
     "elements": [
         kbox([1.5, 0, 12.5], [14.5, 6, 14.5]), kbox([1.5, 0, 3.5], [3.5, 6, 12.5]), kbox([12.5, 0, 3.5], [14.5, 6, 12.5]),
         kbox([1.5, 0, 1.5], [6, 6, 3.5]), kbox([10, 0, 1.5], [14.5, 6, 3.5]),   # front around the loading opening
@@ -404,22 +409,32 @@ for f, y in rot.items():
     for half in ("lower", "upper"):
         for lit in ("false", "true"):
             for active in ("false", "true"):
-                model = "mechanical:block/kiln_upper" if half == "upper" else f"mechanical:block/kiln_lower{'_lit' if lit == 'true' else ''}"
-                variants[f"active={active},facing={f},half={half},lit={lit}"] = {"model": model, **({"y": y} if y else {})}
+                for st in range(4):
+                    model = f"mechanical:block/kiln_upper{kiln_suffix(st)}" if half == "upper" else f"mechanical:block/kiln_lower{'_lit' if lit == 'true' else ''}{kiln_suffix(st)}"
+                    variants[f"active={active},facing={f},firing={st},half={half},lit={lit}"] = {"model": model, **({"y": y} if y else {})}
 w(A / "blockstates/kiln.json", {"variants": variants})
-w(A / "items/kiln.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/kiln_upper"}})
+# the item shows how far its clay is fired (kept in its block_state component when a fired kiln is broken)
+w(A / "items/kiln.json", {"model": {"type": "minecraft:select", "property": "minecraft:block_state", "block_state_property": "firing",
+    "cases": [{"when": str(st), "model": {"type": "minecraft:model", "model": f"mechanical:block/kiln_upper{kiln_suffix(st)}"}} for st in range(1, 4)],
+    "fallback": {"type": "minecraft:model", "model": "mechanical:block/kiln_upper"}}})
 STICKS = {"type": "minecraft:item", "name": "minecraft:stick",
-    "functions": [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}
+    "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}
 half_drop = lambda half, item: {"type": "minecraft:item", "name": item,
     "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": half}}}
 w(D / "mechanical/loot_table/blocks/kiln.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
     "condition": {"type": "minecraft:survives_explosion"},
-    "entries": [half_drop("upper", "mechanical:kiln"), {**STICKS, "condition": half_drop("lower", "")["condition"]}]}],
+    "entries": [
+        # an unfired kiln drops a plain kiln (stacks with crafted ones); a (part-)fired one keeps its firing
+        {"type": "minecraft:item", "name": "mechanical:kiln", "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "upper", "firing": "0"}}},
+        {"type": "minecraft:item", "name": "mechanical:kiln", "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "upper", "firing": {"min": "1"}}},
+         "modifier": [{"type": "minecraft:copy_state", "block": "mechanical:kiln", "properties": ["firing"]}]},
+        {**STICKS, "condition": half_drop("lower", "")["condition"]}]}],
     "random_sequence": "mechanical:blocks/kiln"})
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block", "mechanical:kiln"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 
 shaped("fire_drill", ["TS", "S "], {"T": "mechanical:twine", "S": "minecraft:stick"}, "mechanical:fire_drill")
 shaped("unfired_crucible", ["C C", "C C", "CCC"], {"C": "minecraft:clay_ball"}, "mechanical:unfired_crucible")
+shaped("unfired_clay_bucket", ["C C", " C "], {"C": "minecraft:clay_ball"}, "mechanical:unfired_clay_bucket")
 shaped("kiln", ["CRC", "C C", "RRR"], {"C": "minecraft:clay_ball", "R": "#mechanical:rock_chunks"}, "mechanical:kiln")
 # Campfire without coal (it is placed unlit and lit with the fire drill).
 w(D / "minecraft/recipe/campfire.json", {"type": "minecraft:crafting_shaped", "category": "misc",
@@ -428,6 +443,10 @@ w(D / "minecraft/recipe/campfire.json", {"type": "minecraft:crafting_shaped", "c
 lang.update({
     "item.mechanical.fire_drill": "Fire Drill",
     "item.mechanical.unfired_crucible": "Unfired Crucible",
+    "item.mechanical.unfired_clay_bucket": "Unfired Clay Bucket",
+    "item.mechanical.clay_bucket": "Clay Bucket",
+    "item.mechanical.clay_water_bucket": "Clay Water Bucket",
+    "message.mechanical.kiln.unfired": "The clay is still raw: keep a fire burning in the kiln until it is fired",
     "item.mechanical.crucible": "Crucible",
     "block.mechanical.kiln": "Clay Kiln",
     "container.mechanical.kiln": "Clay Kiln",
@@ -584,7 +603,7 @@ UNLOCKS = {
     "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks"]),
     "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"] + [f"{x}_log_from_firewood" for x in WOODS]),
     "rock_chunks": ("#mechanical:rock_chunks", ["stone_pickaxe_head", "stone_axe_head", "kiln"]),
-    "clay_ball": ("minecraft:clay_ball", ["kiln", "unfired_crucible"]),
+    "clay_ball": ("minecraft:clay_ball", ["kiln", "unfired_crucible", "unfired_clay_bucket"]),
     "stone_pickaxe_head": ("mechanical:stone_pickaxe_head", ["double_stone_pickaxe_head"]),
     "stone_axe_head": ("mechanical:stone_axe_head", ["double_stone_axe_head"]),
 }

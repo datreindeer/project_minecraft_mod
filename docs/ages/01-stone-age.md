@@ -189,6 +189,11 @@ Recept: `[ ][Stick][ ]` / `[Stick][ ][Stick]` / `[Firewood][Firewood][Firewood]`
 Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk][Chunk][Chunk]`.
 
 - **Placeras bara ovanpå en Campfire.** Campfire blir ugnens nedre halva (eldstad) och ugnen blir 2 block hög.
+- **Måste brännas först:** en ny ugn är av rå lera (grå) och bakar ingenting. En eld måste brinna i den i **2 min**
+  (lägereldens ved eller bränsle i ugnen; bränsle går åt under tiden, och den slocknar inte av att stå tom). Leran
+  mörknar i 3 steg nerifrån och upp till bränd rödbrun lera; pilen i GUI:t visar hur långt det kommit. Slocknar elden
+  behålls det som redan bränts. En bränd ugn förblir bränd även om man bryter och sätter ut den igen (item:et visar det).
+  Står den på en tänd Campfire när man bygger den bränns den på lägereldens ved.
 - Var Campfire tänd fortsätter ugnen brinna på lägereldens egen ved (3 min bakning).
 - Annars: lägg bränsle och tänd med Fire Drill.
 - Bränsle går **bara åt medan något bakas**. Står den tänd utan att baka pyr den i 60 s och slocknar sedan. Påbörjat
@@ -206,6 +211,7 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
 | 1 Log (alla som brinner) | Charcoal | 30 s |
 | 2 Firewood | Charcoal | 30 s |
 | 1 Unfired Crucible | Crucible | 40 s |
+| 1 Unfired Clay Bucket | Clay Bucket | 30 s |
 
 **Bränsle**
 
@@ -237,6 +243,8 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 |---|---|---|
 | Unfired Crucible | `[Clay Ball][ ][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Clay Ball][Clay Ball][Clay Ball]` | Bränns till Crucible i Clay Kiln |
 | Crucible | Clay Kiln | Bronsåldern (smälta koppar + tenn). Ingen användning än |
+| Unfired Clay Bucket | `[Clay Ball][ ][Clay Ball]` / `[ ][Clay Ball][ ]` | Bränns till Clay Bucket i Clay Kiln |
+| Clay Bucket / Clay Water Bucket | Clay Kiln | Som en hink men **bara vatten**. Tål 16 hällningar, sedan spricker den. Fyller inte kittlar |
 | Log (från Firewood) | `[Firewood][Firewood]` / `[Firewood][Firewood]` av samma träslag → 1 Log | Planks, Tool Rod, bränsle |
 
 ## Mekaniker

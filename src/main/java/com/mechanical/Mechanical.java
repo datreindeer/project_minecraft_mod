@@ -151,6 +151,12 @@ public class Mechanical {
     public static final DeferredItem<FireDrillItem> FIRE_DRILL = ITEMS.registerItem("fire_drill", FireDrillItem::new, p -> p.durability(16));
     public static final DeferredItem<Item> UNFIRED_CRUCIBLE = ITEMS.registerSimpleItem("unfired_crucible");
     public static final DeferredItem<Item> CRUCIBLE = ITEMS.registerSimpleItem("crucible");
+    public static final DeferredItem<Item> UNFIRED_CLAY_BUCKET = ITEMS.registerSimpleItem("unfired_clay_bucket");
+    /** Fired clay buckets: water only, 16 pours before the clay cracks (ClayBucketItem). */
+    public static final DeferredItem<ClayBucketItem> CLAY_BUCKET = ITEMS.registerItem("clay_bucket",
+            p -> new ClayBucketItem(net.minecraft.world.level.material.Fluids.EMPTY, p), p -> p.durability(16));
+    public static final DeferredItem<ClayBucketItem> CLAY_WATER_BUCKET = ITEMS.registerItem("clay_water_bucket",
+            p -> new ClayBucketItem(net.minecraft.world.level.material.Fluids.WATER, p), p -> p.durability(16));
     public static final DeferredBlock<KilnBlock> KILN = BLOCKS.registerBlock("kiln", KilnBlock::new, p -> p
             .mapColor(MapColor.CLAY)
             .strength(2.0F)

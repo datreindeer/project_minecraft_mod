@@ -14,16 +14,40 @@
             "type": "minecraft:match_block",
             "blocks": "mechanical:kiln",
             "state": {
-              "half": "upper"
+              "half": "upper",
+              "firing": "0"
             }
           }
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:stick",
-          "functions": [
+          "name": "mechanical:kiln",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:kiln",
+            "state": {
+              "half": "upper",
+              "firing": {
+                "min": "1"
+              }
+            }
+          },
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:copy_state",
+              "block": "mechanical:kiln",
+              "properties": [
+                "firing"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,

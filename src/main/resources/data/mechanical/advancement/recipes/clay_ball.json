@@ -20,7 +20,8 @@
   "rewards": {
     "recipes": [
       "mechanical:kiln",
-      "mechanical:unfired_crucible"
+      "mechanical:unfired_crucible",
+      "mechanical:unfired_clay_bucket"
     ]
   }
 }
