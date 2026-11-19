@@ -47,6 +47,12 @@ COLORS = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", 
           "brown", "green", "red", "black"]
 RECIPES += [(f"{c}_bundle", "tools", "dyed bundle", "Iron") for c in COLORS]
 RECIPES += [(f"{c}_concrete_powder", "building_blocks", "concrete belongs to a later age", "Iron") for c in COLORS]
+# planked boats need sawn planks and nails/pegs; the stone age has the Log Raft and Dugout Canoe (Watercraft.java)
+BOAT_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar"]
+RECIPES += [(f"{wd}_boat", "transportation", "planked boat", "Bronze") for wd in BOAT_WOODS]
+RECIPES += [(f"{wd}_chest_boat", "transportation", "planked boat with a chest", "Bronze") for wd in BOAT_WOODS]
+RECIPES += [("bamboo_raft", "transportation", "bamboo planks raft; the Log Raft replaces it", "Bronze"),
+            ("bamboo_chest_raft", "transportation", "bamboo raft with a chest", "Bronze")]
 
 for name, cat, _why, _age in RECIPES:
     (D / f"recipe/{name}.json").write_text(json.dumps(NEVER, indent=2) + "\n")

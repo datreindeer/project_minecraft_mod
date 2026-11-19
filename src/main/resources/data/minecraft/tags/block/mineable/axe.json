@@ -86,6 +86,7 @@
     "mechanical:sharpened_spruce_log",
     "mechanical:bellows",
     "mechanical:snare",
-    "mechanical:fish_trap"
+    "mechanical:fish_trap",
+    "mechanical:dugout_blank"
   ]
 }

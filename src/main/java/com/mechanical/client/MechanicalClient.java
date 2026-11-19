@@ -42,6 +42,8 @@ public class MechanicalClient {
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Mechanical.FALLING_TREE.get(), FallingTreeRenderer::new);
         event.registerEntityRenderer(Mechanical.CARCASS.get(), CarcassRenderer::new);
+        event.registerEntityRenderer(com.mechanical.Watercraft.LOG_RAFT.get(), WatercraftRenderer::raft);
+        event.registerEntityRenderer(com.mechanical.Watercraft.DUGOUT_CANOE.get(), WatercraftRenderer::canoe);
         // adult model, baby model (built at baby size), extra baby scale, shadow
         event.registerEntityRenderer(Wildlife.ROE_DEER.get(), c -> new WildAnimalRenderer<>(c,
                 new RoeDeerModel(c.bakeLayer(RoeDeerModel.LAYER)), new FawnModel(c.bakeLayer(FawnModel.LAYER)), 1.0F, 0.5F));
@@ -113,6 +115,9 @@ public class MechanicalClient {
 
     @SubscribeEvent
     static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(WatercraftModel.RAFT, WatercraftModel::createRaft);
+        event.registerLayerDefinition(WatercraftModel.CANOE, WatercraftModel::createCanoe);
+        event.registerLayerDefinition(WatercraftModel.CANOE_WATER_PATCH, WatercraftModel::createCanoeWaterPatch);
         event.registerLayerDefinition(RoeDeerModel.LAYER, RoeDeerModel::createBodyLayer);
         event.registerLayerDefinition(RedDeerModel.LAYER, RedDeerModel::createBodyLayer);
         event.registerLayerDefinition(WildBoarModel.LAYER, WildBoarModel::createBodyLayer);

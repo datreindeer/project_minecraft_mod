@@ -538,5 +538,15 @@
   "message.mechanical.sanity.uneasy": "You feel watched...",
   "message.mechanical.sanity.afraid": "The dark presses in. Find a fire.",
   "message.mechanical.sanity.mad": "Your mind is slipping. Was that real?",
-  "message.mechanical.sanity.restless": "You toss and turn. The shadows won't let you rest."
+  "message.mechanical.sanity.restless": "You toss and turn. The shadows won't let you rest.",
+  "item.mechanical.log_raft": "Log Raft",
+  "item.mechanical.dugout_canoe": "Dugout Canoe",
+  "item.mechanical.paddle": "Paddle",
+  "block.mechanical.dugout_blank": "Dugout Blank",
+  "entity.mechanical.log_raft": "Log Raft",
+  "entity.mechanical.dugout_canoe": "Dugout Canoe",
+  "message.mechanical.dugout.burning": "Let the fire burn out first",
+  "message.mechanical.dugout.needs_fire": "Burn the hewn wood first (torch or fire drill)",
+  "message.mechanical.dugout.needs_axe": "Hew it out with an axe first",
+  "message.mechanical.dugout.needs_knife": "Smooth the hollow with a knife"
 }

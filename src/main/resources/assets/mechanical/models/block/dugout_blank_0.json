@@ -1,0 +1,44 @@
+{
+  "textures": {
+    "particle": "mechanical:block/dugout_blank_side",
+    "side": "mechanical:block/dugout_blank_side",
+    "top": "mechanical:block/dugout_blank_scored",
+    "end": "mechanical:block/dugout_blank_end",
+    "inside": "mechanical:block/dugout_blank_hollow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#end"
+        },
+        "south": {
+          "texture": "#end"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        }
+      }
+    }
+  ]
+}

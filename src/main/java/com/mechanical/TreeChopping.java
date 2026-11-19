@@ -105,6 +105,11 @@ public final class TreeChopping {
 
     /** One chop (if the cooldown allows). Returns true when this chop completes the stage. {@code at} is where the chopping shows. */
     private static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, ItemStack axe) {
+        return chop(level, player, hand, at, state, axe, chopsNeeded(axe));
+    }
+
+    /** As above with a given number of chops for the stage (the Dugout Blank's stages are longer; see {@link DugoutBlankBlock}). */
+    static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, ItemStack axe, int needed) {
         long now = level.getGameTime();
         Long last = LAST_CHOP.get(player);
         if (last != null && now - last < CHOP_TICKS) return false;
@@ -119,7 +124,6 @@ public final class TreeChopping {
 
         Map<BlockPos, Integer> progress = PROGRESS.computeIfAbsent(level, l -> new HashMap<>());
         int done = progress.merge(at.immutable(), 1, Integer::sum);
-        int needed = chopsNeeded(axe);
         if (done < needed) {
             level.destroyBlockProgress(player.getId(), at, Math.min(9, done * 10 / needed));
             return false;
