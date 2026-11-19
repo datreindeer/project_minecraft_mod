@@ -63,20 +63,7 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
         int arrow = (int) Math.ceil(menu.progress() * 24);
         if (arrow > 0) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARROW, 24, 16, 0, 0, leftPos + 79, topPos + 34, arrow, 16);
 
-        // mercury: each row coloured by the temperature it stands for, up to the current temperature; the bulb glows with it
-        int t = menu.temperature();
-        for (int y = rowFor(t); y < TUBE_BOTTOM; y++) {
-            int deg = (TUBE_BOTTOM - y) * KilnBlockEntity.CEILING / (TUBE_BOTTOM - TUBE_TOP);
-            graphics.fill(leftPos + TUBE_X, topPos + y, leftPos + TUBE_X + TUBE_W, topPos + y + 1, heatColour(deg));
-        }
-        int bulb = heatColour(Math.max(t, 0));
-        graphics.fill(leftPos + TUBE_X, topPos + TUBE_BOTTOM, leftPos + TUBE_X + TUBE_W, topPos + TUBE_BOTTOM + 6, bulb);
-        graphics.fill(leftPos + TUBE_X - 1, topPos + TUBE_BOTTOM + 1, leftPos + TUBE_X + TUBE_W + 1, topPos + TUBE_BOTTOM + 5, bulb);
-        int need = menu.needed();
-        if (need > 0) { // notch left of the tube at the heat the bake needs: white, green once reached
-            int y = topPos + rowFor(need);
-            graphics.fill(leftPos + TUBE_X - 4, y, leftPos + TUBE_X - 1, y + 1, t >= need ? 0xFF80FF80 : 0xFFFFFFFF);
-        }
+        thermometer(graphics, leftPos, topPos, menu.temperature(), menu.needed());
         float strain = menu.cracked() ? 1 : menu.strain();
         if (strain > 0) {
             int x = leftPos + STRAIN_X, y0 = topPos + TUBE_TOP - 1, y1 = topPos + TUBE_BOTTOM + 1;
@@ -84,6 +71,24 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
             graphics.fill(x, y0 + 1, x + STRAIN_W, y1 - 1, 0xFF1E1E1E);
             int h = Math.round(strain * (y1 - y0 - 2));
             graphics.fill(x, y1 - 1 - h, x + STRAIN_W, y1 - 1, menu.cracked() ? 0xFF6E1010 : 0xFFE03020);
+        }
+    }
+
+    /**
+     * Mercury: each row coloured by the temperature it stands for, up to {@code t}; the bulb glows with it, and a notch
+     * left of the tube marks {@code need} (white, green once reached; none for 0). Also the Smelting Furnace's.
+     */
+    public static void thermometer(GuiGraphicsExtractor graphics, int leftPos, int topPos, int t, int need) {
+        for (int y = rowFor(t); y < TUBE_BOTTOM; y++) {
+            int deg = (TUBE_BOTTOM - y) * KilnBlockEntity.CEILING / (TUBE_BOTTOM - TUBE_TOP);
+            graphics.fill(leftPos + TUBE_X, topPos + y, leftPos + TUBE_X + TUBE_W, topPos + y + 1, heatColour(deg));
+        }
+        int bulb = heatColour(Math.max(t, 0));
+        graphics.fill(leftPos + TUBE_X, topPos + TUBE_BOTTOM, leftPos + TUBE_X + TUBE_W, topPos + TUBE_BOTTOM + 6, bulb);
+        graphics.fill(leftPos + TUBE_X - 1, topPos + TUBE_BOTTOM + 1, leftPos + TUBE_X + TUBE_W + 1, topPos + TUBE_BOTTOM + 5, bulb);
+        if (need > 0) {
+            int y = topPos + rowFor(need);
+            graphics.fill(leftPos + TUBE_X - 4, y, leftPos + TUBE_X - 1, y + 1, t >= need ? 0xFF80FF80 : 0xFFFFFFFF);
         }
     }
 

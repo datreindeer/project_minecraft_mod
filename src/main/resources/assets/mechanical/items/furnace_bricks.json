@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mechanical:block/furnace_bricks"
+  }
+}

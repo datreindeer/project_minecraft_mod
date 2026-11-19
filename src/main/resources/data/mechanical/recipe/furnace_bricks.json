@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "BB",
+    "BB"
+  ],
+  "key": {
+    "B": "mechanical:furnace_brick"
+  },
+  "result": {
+    "id": "mechanical:furnace_bricks"
+  }
+}

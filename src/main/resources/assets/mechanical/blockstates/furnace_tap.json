@@ -1,0 +1,195 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "open": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_in"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "open": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_out"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_lit"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "pouring": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_pouring"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "open": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_in",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "open": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_out",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_lit",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "pouring": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_pouring",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "open": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_in",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "open": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_out",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_lit",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "pouring": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_pouring",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "open": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_in",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "open": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_plug_out",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_lit",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "pouring": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_tap_pouring",
+        "y": 270
+      }
+    }
+  ]
+}

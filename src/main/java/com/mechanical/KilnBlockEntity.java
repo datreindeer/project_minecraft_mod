@@ -92,7 +92,9 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SPEAR_HEAD_MOLD.get()), 1, () -> Bronze.CLAY_SPEAR_HEAD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SWORD_BLADE_MOLD.get()), 1, () -> Bronze.CLAY_SWORD_BLADE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Pottery.UNFIRED_STORAGE_JAR.get()), 1, () -> Pottery.STORAGE_JAR_ITEM.get(), 600, 600),
-            new Recipe(s -> s.is(Pottery.UNFIRED_WATER_JUG.get()), 1, () -> Pottery.WATER_JUG_ITEM.get(), 600, 600));
+            new Recipe(s -> s.is(Pottery.UNFIRED_WATER_JUG.get()), 1, () -> Pottery.WATER_JUG_ITEM.get(), 600, 600),
+            new Recipe(s -> s.is(Smelting.UNFIRED_FURNACE_BRICK.get()), 1, () -> Smelting.FURNACE_BRICK.get(), 200, 600),
+            new Recipe(s -> s.is(Smelting.UNFIRED_CLAY_CHANNEL.get()), 1, () -> Smelting.CLAY_CHANNEL_ITEM.get(), 400, 600));
 
     // Our own fuel list (vanilla's fuel component needs a loot context); controls what burns in the stone age.
     public static final List<Fuel> FUELS = List.of(
@@ -302,21 +304,27 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
 
     /** One tick of heating or cooling. */
     private void heat(Level level) {
-        float t = temperature();
+        temp = Math.min(heatStep(temperature(), isLit(), maxTemp, ambient, level.isRainingAt(worldPosition.above(2))), isCracked() ? CRACKED_MAX : CEILING);
+    }
+
+    /**
+     * One tick of heat, also for the Smelting Furnace: lit, toward the fuel's natural max ({@link #RISE_PER_SEC} up,
+     * {@link #OVER_FALL_PER_SEC} down from above it); out, {@link #COOL_PER_SEC} toward the air (x2 in rain, x1.5 when cold).
+     */
+    static float heatStep(float t, boolean lit, int maxTemp, float ambient, boolean rain) {
         float sec = 1 / 20.0F;
-        if (isLit()) {
+        if (lit) {
             float natural = Math.max(ambient, maxTemp);
-            if (t < natural) t = Math.min(natural, t + RISE_PER_SEC * sec);
-            else if (t > natural) t = Math.max(natural, t - OVER_FALL_PER_SEC * sec);
-        } else if (t > ambient) {
-            float rate = COOL_PER_SEC;
-            if (level.isRainingAt(worldPosition.above(2))) rate *= 2;
-            if (ambient < 5) rate *= 1.5F;
-            t = Math.max(ambient, t - rate * sec);
-        } else {
-            t = Math.min(ambient, t + sec);
+            if (t < natural) return Math.min(natural, t + RISE_PER_SEC * sec);
+            return t > natural ? Math.max(natural, t - OVER_FALL_PER_SEC * sec) : t;
         }
-        temp = Math.min(t, isCracked() ? CRACKED_MAX : CEILING);
+        if (t > ambient) {
+            float rate = COOL_PER_SEC;
+            if (rain) rate *= 2;
+            if (ambient < 5) rate *= 1.5F;
+            return Math.max(ambient, t - rate * sec);
+        }
+        return Math.min(ambient, t + sec);
     }
 
     public static void serverTick(ServerLevel level, BlockPos pos, BlockState state, KilnBlockEntity kiln) {

@@ -1,0 +1,66 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/furnace_bricks",
+    "bricks": "mechanical:block/furnace_bricks",
+    "front": "mechanical:block/furnace_tap_front",
+    "clay": "mechanical:block/clay_channel",
+    "inside": "mechanical:block/clay_channel_inside",
+    "plug": "mechanical:block/furnace_tap_plug",
+    "stick": "minecraft:block/stripped_oak_log",
+    "glow": "mechanical:block/furnace_tap_glow",
+    "molten": "mechanical:block/furnace_tap_molten"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        12,
+        -0.01
+      ],
+      "to": [
+        9,
+        14,
+        -0.01
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            7,
+            2,
+            9,
+            4
+          ],
+          "texture": "#glow"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        4,
+        -0.01
+      ],
+      "to": [
+        10,
+        7,
+        -0.01
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            9,
+            10,
+            12
+          ],
+          "texture": "#glow"
+        }
+      }
+    }
+  ]
+}

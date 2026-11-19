@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:bronze_age/smelting_furnace",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:clay_channel"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.tap_metal.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.tap_metal.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/furnace_bricks",
+    "bricks": "mechanical:block/furnace_bricks",
+    "front": "mechanical:block/furnace_tap_front",
+    "clay": "mechanical:block/clay_channel",
+    "inside": "mechanical:block/clay_channel_inside",
+    "plug": "mechanical:block/furnace_tap_plug",
+    "stick": "minecraft:block/stripped_oak_log",
+    "glow": "mechanical:block/furnace_tap_glow",
+    "molten": "mechanical:block/furnace_tap_molten"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        4,
+        -1
+      ],
+      "to": [
+        10,
+        7,
+        0.01
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6,
+            0,
+            10,
+            1.01
+          ],
+          "texture": "#plug"
+        },
+        "up": {
+          "uv": [
+            6,
+            0,
+            10,
+            1.01
+          ],
+          "texture": "#plug"
+        },
+        "north": {
+          "uv": [
+            6,
+            9,
+            10,
+            12
+          ],
+          "texture": "#plug"
+        },
+        "south": {
+          "uv": [
+            6,
+            9,
+            10,
+            12
+          ],
+          "texture": "#plug"
+        },
+        "east": {
+          "uv": [
+            0,
+            9,
+            1.01,
+            12
+          ],
+          "texture": "#plug"
+        },
+        "west": {
+          "uv": [
+            0,
+            9,
+            1.01,
+            12
+          ],
+          "texture": "#plug"
+        }
+      }
+    },
+    {
+      "from": [
+        7.5,
+        5,
+        -3
+      ],
+      "to": [
+        8.5,
+        6,
+        -1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            7.5,
+            13,
+            8.5,
+            15
+          ],
+          "texture": "#stick"
+        },
+        "up": {
+          "uv": [
+            7.5,
+            13,
+            8.5,
+            15
+          ],
+          "texture": "#stick"
+        },
+        "north": {
+          "uv": [
+            7.5,
+            10,
+            8.5,
+            11
+          ],
+          "texture": "#stick"
+        },
+        "south": {
+          "uv": [
+            7.5,
+            10,
+            8.5,
+            11
+          ],
+          "texture": "#stick"
+        },
+        "east": {
+          "uv": [
+            13,
+            10,
+            15,
+            11
+          ],
+          "texture": "#stick"
+        },
+        "west": {
+          "uv": [
+            13,
+            10,
+            15,
+            11
+          ],
+          "texture": "#stick"
+        }
+      }
+    }
+  ]
+}

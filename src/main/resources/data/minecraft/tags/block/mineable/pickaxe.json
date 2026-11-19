@@ -15,6 +15,9 @@
     "mechanical:whetstone",
     "mechanical:loose_red_ochre",
     "mechanical:loose_yellow_ochre",
-    "mechanical:loose_chalk"
+    "mechanical:loose_chalk",
+    "mechanical:furnace_bricks",
+    "mechanical:furnace_tap",
+    "mechanical:clay_channel"
   ]
 }
