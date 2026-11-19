@@ -327,7 +327,7 @@ public class Mechanical {
             "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
 
     /** Blocks that are never items (decals, pots holding plants). Everything else gets a block item, for creative. */
-    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop");
+    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop");
 
     /**
      * Every mod block without an item of its own gets a plain block item, so all of them (bushes, mushrooms, twigs,
@@ -353,7 +353,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init();
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Pigments.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

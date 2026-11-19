@@ -12,6 +12,9 @@
     "mechanical:loose_diorite",
     "mechanical:loose_andesite",
     "mechanical:loose_flint",
-    "mechanical:whetstone"
+    "mechanical:whetstone",
+    "mechanical:loose_red_ochre",
+    "mechanical:loose_yellow_ochre",
+    "mechanical:loose_chalk"
   ]
 }

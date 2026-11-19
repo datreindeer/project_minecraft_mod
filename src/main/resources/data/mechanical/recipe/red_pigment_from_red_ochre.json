@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "red_pigment",
+  "ingredients": [
+    "mechanical:red_ochre",
+    "mechanical:flint_pickaxe"
+  ],
+  "result": {
+    "id": "mechanical:red_pigment",
+    "count": 1
+  }
+}

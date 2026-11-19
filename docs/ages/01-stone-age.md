@@ -577,6 +577,53 @@ Samma eldar som ger rök (tänd Campfire, Soul Campfire, brinnande Clay Kiln) so
   1, stadium 2 1 st, stadium 3 2 st; med kniv (Flint Knife, Iron Knife) **+1**.
 - **Item: Soot**, ett svart pigment: 1 Soot → 1 Black Dye (formlöst).
 
+### Pigment och grottmålningar
+Jordfärger, krita och sot mals till pigment, blandas till färg i en skål och målas på berget med en pensel.
+Kod: `Pigments` (registrering, malning på städet), `CavePaintingBlock`, `PaintItem`, `PaintbrushItem`.
+Data och alla texturer: `scripts/gen_pigments.py`.
+- **Ytfynd (worldgen):** lösa klumpar som Loose Rocks (`RockBlock`, storlek 1–2, plockas för hand med ett slag:
+  liten 1, mellan 2). Ligger i små samlingar på naturlig mark, sand, grus, sten, lera och terrakotta, aldrig i vatten.
+
+| Block | Biom | Ger |
+|---|---|---|
+| Loose Red Ochre | Badlands, Eroded/Wooded Badlands, Savanna, Savanna Plateau, Windswept Savanna | Red Ochre |
+| Loose Yellow Ochre | Savanna (alla tre), Desert, River (flodbankar) | Yellow Ochre |
+| Loose Chalk | Stony Shore, Beach, Meadow, Windswept Hills, Windswept Gravelly Hills, Stony Peaks | Chalk |
+
+  **Testat (5×5 chunks per biom):** Badlands 19–21 Red Ochre, Savanna 36 Red + 11 Yellow, Savanna Plateau 37 Red +
+  38 Yellow, Desert 19 Yellow, Meadow 22 Chalk, Windswept Hills 23 Chalk, Stony Shore 13 Chalk, Beach 2 Chalk,
+  Plains 0. Ungefär ett fynd per chunk i rätt biom.
+- **Mala till pigment:** för hand med **Flint Pickaxe** i crafting (hackan ligger kvar och slits 1) → **1** pigment;
+  på **Stone Anvil** (lägg på, 4 slag med hammarsten) → **2**.
+
+| Råvara | Pigment | För hand | Stone Anvil |
+|---|---|---|---|
+| Red Ochre | Red Pigment | 1 | 2 |
+| Yellow Ochre | Yellow Pigment | 1 | 2 |
+| Chalk | White Pigment | 1 | 2 |
+| Calcite (block) | White Pigment | – | 4 |
+| Charcoal | Black Pigment | 1 | 2 |
+
+  **Soot** fungerar direkt som svart pigment (behöver inte malas).
+- **Färg (formlöst):** 2 pigment (svart: Black Pigment eller Soot) + bindemedel (**Tallow**, Clay Water Bucket eller
+  Water Bucket; hinken blir kvar) + **Bowl** → **Black / Red / Yellow / White Paint**. **16 användningar**, sedan
+  blir skålen kvar.
+- **Paintbrush:** Stick + 2 Plant Fibre (formlöst), 64 användningar. Håll penseln i ena handen och färgen i den
+  andra, högerklicka på en hel blocksida (vägg, tak eller golv) → en **Cave Painting** i färgens kulör. Varje block
+  tar 1 färg och 1 av penselns slitage. **Smyg + högerklick** byter motiv (visas över hotbaren och i tooltip).
+  Motiv: Aurochs, Horse (den runda "kinesiska hästen" från Lascaux), Stag, Cave Bear, Mammoth, Ibex, Hunter, Sun,
+  Spiral, Dots, och två **scener två block breda**: **The Hunt** (två jägare med spjut mot en uroxe med spjut i
+  ryggen) och **Running Herd** (fem hästar i galopp). Scener behöver två väggytor bredvid varandra (inte tak/golv)
+  och tar 2 färg.
+- **Handavtryck:** högerklicka med färgen utan pensel i andra handen → **Hand Print**.
+- **Block: Cave Painting.** Tunt halvgenomskinligt lager (berget syns igenom), ingen kollision, går att ersätta.
+  4 färger × 15 motivdelar × 6 riktningar. Måla på en befintlig målning för att byta motiv/färg. Försvinner om
+  blocket bakom tas bort. Bryts lätt och ger inget, **4× snabbare med kniv**. **Regn:** under öppen himmel tvättas
+  den bort (1 på 6 per random tick när det regnar, ungefär 7 minuters regn); i grottor och under tak sitter den kvar.
+  Inget eget item (inte i creative heller), placeras med `/setblock ~ ~ ~ mechanical:cave_painting[facing=south,motif=aurochs,colour=red]`.
+- **Pigment → färgämne:** Black / Red / Yellow / White Pigment → 1 Black / Red / Yellow / White Dye (formlöst).
+- Recepten låses upp när man får Red Ochre, Yellow Ochre, Chalk, Soot eller något pigment.
+
 ### Fisk
 - Döda fiskar och fångst släpper **Whole Cod / Whole Salmon / Whole Tropical Fish / Whole Pufferfish** (gäller både
   döda fiskar och fiskespö). De går inte att äta eller laga.
@@ -889,6 +936,7 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Twine | Flail |
 | Sheaf (valfri) | Tröska för hand (Sheaf → Grain) |
 | Grain (valfri) | Raw Porridge |
+| Red/Yellow Ochre, Chalk, Soot eller pigment | Malning, Paint (4), Paintbrush, Pigment → Dye |
 
 Verktygen i Tool Station låses upp separat (se Tool Station).
 

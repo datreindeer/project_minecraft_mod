@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "black_pigment",
+  "ingredients": [
+    "minecraft:charcoal",
+    "mechanical:flint_pickaxe"
+  ],
+  "result": {
+    "id": "mechanical:black_pigment",
+    "count": 1
+  }
+}

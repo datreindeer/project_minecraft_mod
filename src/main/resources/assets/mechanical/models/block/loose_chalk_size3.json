@@ -1,0 +1,6 @@
+{
+  "parent": "mechanical:block/rock_size3",
+  "textures": {
+    "all": "mechanical:block/chalk_rock"
+  }
+}

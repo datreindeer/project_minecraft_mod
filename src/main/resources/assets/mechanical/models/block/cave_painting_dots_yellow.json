@@ -1,0 +1,32 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/cave_painting_dots_yellow",
+    "paint": "mechanical:block/cave_painting_dots_yellow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0.1
+      ],
+      "to": [
+        16,
+        16,
+        0.1
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#paint"
+        }
+      }
+    }
+  ]
+}
