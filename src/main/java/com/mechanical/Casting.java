@@ -104,6 +104,8 @@ public final class Casting {
     public static OreUnits oreUnits(ItemStack stack) {
         if (stack.is(BronzeOres.CRUSHED_COPPER_ORE.get())) return new OreUnits(Metal.COPPER, 1);
         if (stack.is(BronzeOres.CRUSHED_TIN_ORE.get())) return new OreUnits(Metal.TIN, 1);
+        if (stack.is(BronzeOres.COPPER_CONCENTRATE.get())) return new OreUnits(Metal.COPPER, CrucibleContents.CONCENTRATE); // washed: no gangue
+        if (stack.is(BronzeOres.TIN_CONCENTRATE.get())) return new OreUnits(Metal.TIN, CrucibleContents.CONCENTRATE);
         if (stack.is(Bronze.BRONZE_INGOT.get())) return new OreUnits(Bronze.isPoor(stack) ? Metal.POOR_BRONZE : Metal.BRONZE, 2);
         if (stack.is(BronzeOres.NATIVE_COPPER.get())) return new OreUnits(Metal.COPPER, 2); // nearly pure metal
         return null;

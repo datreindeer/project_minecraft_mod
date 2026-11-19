@@ -1,4 +1,7 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:fisherman/4/bronze_0",
+    "mechanical:fisherman/4/bronze_1"
+  ]
 }

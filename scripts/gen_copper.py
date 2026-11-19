@@ -23,8 +23,8 @@ def patch_tag(path, values):
 
 
 SHAPES = ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
-# every mold lives here; these two only take bronze (their textures: gen_bronze_textures.py, items: gen_bronze.py)
-MOLDS = SHAPES + ["saw_blade", "plate"]
+# every mold lives here; these only take bronze (their textures: gen_bronze_textures.py, items: gen_bronze.py)
+MOLDS = SHAPES + ["saw_blade", "plate", "spear_head", "sword_blade"]
 METALS = ["copper", "bronze", "poor_bronze"]  # ClayMoldBlock.METAL; poor bronze looks like bronze
 HEADS = ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
 
@@ -93,7 +93,7 @@ for s in MOLDS:
         "up": {"texture": "#top", "uv": [1, 1, 15, 15]}, "down": {"texture": "#side", "cullface": "down"},
         **{d: {"texture": "#side", "uv": [1, 13, 15, 16]} for d in ("north", "south", "east", "west")}}}
     w(A / f"models/block/clay_{s}_mold.json", {"parent": "minecraft:block/block", "textures": base, "elements": [slab]})
-    looks = ["copper", "bronze"] if s in SHAPES else ["bronze"]  # copper never lands in the saw blade / plate mold
+    looks = ["copper", "bronze"] if s in SHAPES else ["bronze"]  # copper never lands in the bronze-only molds
     for look in looks:
         for fill in ("molten", "solid"):
             metal = {"from": [1, 3.01, 1], "to": [15, 3.01, 15], "shade": fill == "solid", **({"light_emission": 12} if fill == "molten" else {}),
@@ -148,6 +148,8 @@ MOLD_PATTERNS = {  # clay balls around the cavity; each one unique (and unlike t
     "knife_blade": ["C C", " C ", " C "],
     "saw_blade": ["CCC", "C C"],
     "plate": ["CCC", "C C", "CCC"],
+    "spear_head": [" C ", "C C", " C "],
+    "sword_blade": ["C C", "C C", "C C"],
 }
 for s, pattern in MOLD_PATTERNS.items():
     shaped(f"unfired_clay_{s}_mold", pattern, C, M + f"unfired_clay_{s}_mold")

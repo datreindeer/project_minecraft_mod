@@ -126,6 +126,7 @@ försvinner. Storlek 2 ger 2 st (storlek 3 finns bara i creative och ger 3).
 | Cassiterite | Tin Ore, Loose Cassiterite, vaskning | Stone Anvil → 1 Crushed Tin Ore |
 | Crushed Copper Ore | Stone Anvil | Läggs i en Crucible (1 enhet) och smälts, se fas 3 |
 | Crushed Tin Ore | Stone Anvil | Läggs i en Crucible med koppar (1 enhet), se Fas 3b |
+| Copper Concentrate / Tin Concentrate | Crushed ... Ore tvättad i Pan | Crucible, **2 enheter** (se *Tvätta malm* nedan) |
 | Pan / Pan with Gravel / Pan with Sand | Crafting | Vaskning |
 
 ### Pan (vaskning)
@@ -152,6 +153,20 @@ Recept (crafting table, P = valfria Planks, T = Twine):
   8,3 % chans till ytterligare en Cassiterite. Cassiterite sänktes till ungefär en tredjedel (förr 9 % / 12,5 % / 25 %)
   när Tin Ore började kräva Copper Pickaxe: vaskning ger en smak av tenn men räcker inte till verktyg.
 - Varje vaskning slits pannan 1 (inte i creative). Sedan är den tom igen.
+
+### Tvätta malm (koncentrat)
+
+- Håll en **tom Pan** i ena handen och **Crushed Copper Ore** eller **Crushed Tin Ore** i den andra, och håll inne Använd
+  i vatten (samma krav och 3 s borst-animation som vaskning). Då sköljs gråberget bort: en krossad malm blir en
+  **Copper Concentrate** / **Tin Concentrate** och pannan slits 1. Siktar man på grus under vattnet tvättar pannan
+  ändå (den öser inte upp gruset så länge malm ligger i andra handen).
+- Koncentrat räknas som **2 enheter** i degeln (krossad malm 1). Tvättning dubblar alltså utbytet men kostar 3 s och en
+  användning per malm (en panna = 64 koncentrat). Fem Copper Concentrate fyller en degel.
+- Tänk på blandningen: 4 Copper Concentrate + 1 Tin Concentrate är 20 % tenn (slagg). Bra brons: 4 Copper Concentrate +
+  1 Crushed Tin Ore (8:1 = 11,1 %), eller 9 krossad koppar + 1 krossad tenn som förut.
+- Kod: `PanItem` (tvättning), `BronzeOres.washed`, `Casting.oreUnits`; självtestet i `CrucibleContents` kollar
+  koncentratets enheter. Texturer: `gen_bronze_textures.py` (bibliotekets dammhögar rentvättade, med metallglimt; tenn
+  är svart tennsand).
 
 ### Stone Anvil (krossning)
 
@@ -283,7 +298,8 @@ Crucible (från stenåldern) kan nu fyllas med malm. Den staplas inte längre (e
 - **Fylla:** klicka malm på degeln i inventoryt (vänsterklick: så mycket som får plats, högerklick: en), eller håll
   malmen i andra handen och använd degeln.
 - Rymmer **10 enheter** (var 8 före brons; 10 så att 9 koppar + 1 tenn får plats). **Crushed Copper Ore = 1 enhet,
-  Native Copper = 2** (nästan ren metall), Crushed Tin Ore = 1 och Bronze Ingot = 2 (se Fas 3b). Malachite och Raw
+  Native Copper = 2** (nästan ren metall), Crushed Tin Ore = 1, Copper/Tin Concentrate = 2 (tvättad i Pan, se Fas 1)
+  och Bronze Ingot = 2 (se Fas 3b). Malachite och Raw
   Copper måste krossas först (Stone Anvil).
 - Tooltip: "Copper ore: 6/10 units" och "Melts in a Clay Kiln at 1085°". Malm går inte att ta ut igen.
 - Innehållet sparas som enheter per metall (`mechanical:crucible_contents`), så brons kan lägga till tenn och en
@@ -328,7 +344,7 @@ ställs på marken (behöver fast mark under).
   koppar syns i den.
 - En full degel (10 enheter) räcker till en hacka eller yxa + 2 ingots, eller 5 ingots. 6 enheter = 3 Raw Copper.
 - Formen har block-state `metal` (copper, bronze, poor_bronze) som avgör färgen i håligheten och vad som kommer ut.
-  Två formar till för brons (Saw Blade, Plate), se Fas 3b. Fel metall: "Copper can't be cast in this mold".
+  Fyra formar till för brons (Saw Blade, Plate, Spear Head, Sword Blade), se Fas 3b. Fel metall: "Copper can't be cast in this mold".
 
 ### Whetstone
 
@@ -400,6 +416,8 @@ blandar dem inte när de hämtar delar.
 |---|---|---|---|
 | Clay Saw Blade Mold | `[C][C][C]` / `[C][ ][C]` | 4 | Rough Cast Bronze Saw Blade |
 | Clay Plate Mold | `[C][C][C]` / `[C][ ][C]` / `[C][C][C]` | 4 | Rough Cast Bronze Plate |
+| Clay Spear Head Mold | `[ ][C][ ]` / `[C][ ][C]` / `[ ][C][ ]` | 4 | Rough Cast Bronze Spear Head |
+| Clay Sword Blade Mold | `[C][ ][C]` / `[C][ ][C]` / `[C][ ][C]` | 6 | Rough Cast Bronze Sword Blade |
 
 Bara brons kan gjutas i dem. De andra formarna gjuter brons som koppar: Bronze Ingot, Rough Cast Bronze Pickaxe/Axe/
 Shovel/Hoe Head och Knife Blade. Allt Rough Cast slipas på Whetstone (4 drag) till Bronze ... Head / Blade / Plate.
@@ -413,6 +431,8 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
 | Bronze Pickaxe / Axe / Shovel / Hoe | Bronze ... Head | Cordage | Tool Rod |
 | Bronze Knife | Bronze Knife Blade | Twine | Stick |
 | Bronze Saw | Bronze Saw Blade | Twine | Stick |
+| Bronze Spear | Bronze Spear Head | Cordage | Tool Rod |
+| Bronze Sword | Bronze Sword Blade (med parerstång) | Cordage | Leather (grepp) |
 
 - **Bronsmaterial:** 230 hållbarhet (koppar 190, järn 250), hastighet 6 och +2 skada som järn, förtrollbarhet 12.
   Attackvärden som vanillas järnverktyg. Lagas med Bronze Ingot.
@@ -421,7 +441,14 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
   redstone eller smaragd (de väntar på järnet). Fungerar som hammarsten på Stone Anvil.
 - **Bronze Knife:** 350 hållbarhet, styckar **1,75×** så snabbt och ger **1,35×** så mycket som Flint Knife, **klarar
   Brown Bear** och Giant Deer (knivnivå 2 som Tusk Dagger). Räknas som kniv och svärd.
-- Spjut och svärd i brons är inte gjorda (valfria).
+- **Bronze Spear:** vanillas spjut (laddad stöt när man håller in Använd, vanligt hugg annars; kastas inte). Flint Spear
+  har stone spears värden på ett flintmaterial (100 hållbarhet, +1 skada); Bronze Spear har **iron spears** tider och
+  trösklar på bronsmaterialet: 230 hållbarhet, +2 skada, snabbare stöt (0,95 s), mer skada vid laddning (×0,95 mot
+  ×0,82) och kortare väntan. Eget långt modell i handen (järnspjutets form i brons, rött band), platt ikon i GUI:t.
+  Står i `minecraft:spears`.
+- **Bronze Sword:** vanligt vanilla-svärd på bronsmaterialet: **5,5 skada** (Iron Sword 6), attackfart 1,6, **230**
+  hållbarhet. Står i `minecraft:swords` (svärdsförtrollningar).
+- Poor Bronze följer med till spjut och svärd som till de andra verktygen (70 % hållbarhet: 161).
 
 ### Bronze Saw och planks
 
@@ -442,13 +469,53 @@ Rustningsplåt gjuts (Clay Plate Mold), slipas och sys på ett läderfoder i **A
   boots. Egna texturer på kroppen: hjälmen är en bronsfärgad järnhjälm, benskydden täcker bara smalbenen med en läderrem
   under knät.
 
-### Byar: handelsnivå 3
+### Degelns ikon
 
-| Yrke | Köper | Säljer |
-|---|---|---|
-| Armorer | 3 Bronze Ingot → 1 Emerald | 9 Emerald → Bronze Helmet |
-| Toolsmith | 6 Crushed Tin Ore → 1 Emerald | 7 Emerald → Bronze Pickaxe, 5 Emerald → Bronze Saw |
-| Weaponsmith | 3 Bronze Ingot → 1 Emerald | 5 Emerald → Bronze Knife |
+Crucible of Molten / Solid Metal visar metallen den håller: bronsfärgad (gyllenbrun) för Bronze och Poor Bronze,
+kopparfärgad annars. Smält brons glöder gulare och ljusare än koppar, med en mer gyllene glöd på kanten. Item-modellerna
+använder villkoret `mechanical:bronze_crucible` (`client/BronzeCrucibleProperty`, registrerat med NeoForges
+`RegisterConditionalItemModelPropertyEvent`) som läser degelns innehåll; texturerna `molten_crucible_bronze` och
+`solid_crucible_bronze` ritas av `gen_crucible_textures.py`.
+
+### Byar: handelsnivå 3 och 4
+
+Nivå 1–2 är stenålderns (`gen_data.py`), nivå 3–4 bronsålderns (`gen_bronze.py`), nivå 5 är tom tills järnet. Inget av
+järn, guld eller diamant. Formatet: köper = vad byborna tar emot, säljer = vad de ger. Max = hur många gånger innan den
+måste fyllas på.
+
+| Yrke | Nivå | Köper (→ 1 Emerald) | Säljer |
+|---|---|---|---|
+| Armorer | 3 | 3 Bronze Ingot | 9 Emerald → Bronze Helmet (max 3) |
+| | 4 | 6 Copper Ingot | 12 Emerald → Bronze Greaves (max 3) |
+| Butcher | 3 | 8 Tallow | 1 Emerald → 3 Smoked Meat |
+| | 4 | 3 Bear Fat | 2 Emerald → 4 Jerky |
+| Cartographer | 3 | 8 Black Pigment | 2 Emerald → Item Frame |
+| | 4 | 8 Yellow Pigment | 3 Emerald → Painting |
+| Cleric | 3 | 6 White Pigment | 1 Emerald → 4 Red Pigment |
+| | 4 | 6 Honeycomb | 1 Emerald → 4 Dried Mushrooms |
+| Farmer | 3 | 20 Barley Grain | 1 Emerald → 4 Flour |
+| | 4 | 20 Emmer Grain | 2 Emerald → 6 Dried Berries |
+| Fisherman | 3 | 4 Whole Tropical Fish | 2 Emerald → 4 Smoked Fish |
+| | 4 | 3 Whole Pufferfish | 2 Emerald → 4 Dried Fish |
+| Fletcher | 3 | 24 Feather | 2 Emerald → 8 Bone Arrow |
+| | 4 | 8 Sinew | 6 Emerald → Sinew Bow |
+| Leatherworker | 3 | 4 Scraped Hide | 6 Emerald → Leather Satchel |
+| | 4 | 2 Wolf Pelt | 5 Emerald → Leather Leggings |
+| Librarian | 3 | 4 Book | 6 Emerald → Bookshelf |
+| | 4 | 2 Book and Quill | 8 Emerald → Name Tag |
+| Mason | 3 | 20 Andesite Rock | 1 Emerald → 4 Bricks |
+| | 4 | 12 Terracotta | 2 Emerald → Clay Bucket |
+| Shepherd | 3 | 12 Red Dye | 3 Emerald → White Bed |
+| | 4 | 12 Yellow Dye | 1 Emerald → 3 Red Wool |
+| Toolsmith | 3 | 6 Crushed Tin Ore | 7 Emerald → Bronze Pickaxe, 5 Emerald → Bronze Saw (max 3) |
+| | 4 | 8 Copper Concentrate | 3 Emerald → 2 Tin Concentrate (max 8), 6 Emerald → Bronze Axe (max 3) |
+| Weaponsmith | 3 | 3 Bronze Ingot | 5 Emerald → Bronze Knife (max 3) |
+| | 4 | 12 Crushed Copper Ore | 8 Emerald → Bronze Spear, 9 Emerald → Bronze Sword (max 3) |
+
+- Priser: ett bronsverktyg 5–12 Emerald, en Bronze Ingot ~1/3 Emerald, mat och råvaror 1–3. Köpen ger 20 xp (nivå 3)
+  och 30 xp (nivå 4), säljen 10 / 15; max 12–16 för köp, 3 för bronsverktyg och rustning.
+- Toolsmiths Tin Concentrate är en väg till tenn för den som saknar tennådror (dyrt: 3 Emerald för 4 enheter).
+- Lerkärl (pottery) läggs till här när det finns.
 
 ### Kvar
 
@@ -474,3 +541,5 @@ Recepten syns i receptboken när man bär en sådan tacka. Data: `scripts/gen_fa
   Manure var 10:e minut. På farmland: bördighet +2 (Compost +1).
 - **Hållbarhet:** Flour 30 dagar, Dough 1 dag, Bread 3 dagar.
 - Kvar: bronsskära och plog, källa för Barley.
+
+- Bronslykta, Bloomery mot järnet, lerkärl i handeln.

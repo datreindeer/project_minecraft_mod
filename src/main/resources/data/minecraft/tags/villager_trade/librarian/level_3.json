@@ -1,4 +1,7 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:librarian/3/bronze_0",
+    "mechanical:librarian/3/bronze_1"
+  ]
 }

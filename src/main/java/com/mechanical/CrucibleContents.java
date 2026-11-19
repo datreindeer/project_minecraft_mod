@@ -17,6 +17,8 @@ import net.minecraft.network.codec.StreamCodec;
 public record CrucibleContents(Map<String, Integer> units) {
     /** 10 units, so 9 copper : 1 tin (10 % tin) fits. */
     public static final int CAPACITY = 10;
+    /** Units in one washed Copper / Tin Concentrate (crushed ore is 1). */
+    public static final int CONCENTRATE = 2;
     public static final CrucibleContents EMPTY = new CrucibleContents(Map.of());
     public static final Codec<CrucibleContents> CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT).xmap(CrucibleContents::new, CrucibleContents::units);
     public static final StreamCodec<ByteBuf, CrucibleContents> STREAM_CODEC = ByteBufCodecs.<ByteBuf, String, Integer, Map<String, Integer>>map(HashMap::new,
@@ -99,6 +101,10 @@ public record CrucibleContents(Map<String, Integer> units) {
         CrucibleContents good = EMPTY.add(Metal.COPPER, 9).add(Metal.TIN, 1);
         check(good.melted().equals(EMPTY.add(Metal.BRONZE, 10)) && good.alloy().melt == 950, "9:1 melts into 10 bronze at 950");
         check(EMPTY.add(Metal.TIN, 2).alloy() == null && EMPTY.add(Metal.COPPER, 3).alloy() == Metal.COPPER, "tin alone / copper alone");
+        CrucibleContents washed = EMPTY.add(Metal.COPPER, 4 * CONCENTRATE).add(Metal.TIN, 1);
+        check(washed.alloy() == Metal.BRONZE && washed.melted().total() == 9, "4 copper concentrate + 1 crushed tin = 9 bronze");
+        check(EMPTY.add(Metal.COPPER, 4 * CONCENTRATE).add(Metal.TIN, CONCENTRATE).alloy() == Metal.COPPER, "4 + 1 concentrate is 20 % tin: slag");
+        check(CAPACITY % CONCENTRATE == 0, "a crucible fills up exactly with concentrate");
         check(!EMPTY.add(Metal.BRONZE, 2).canAdd(Metal.COPPER) && !good.canAdd(Metal.BRONZE) && good.canAdd(Metal.TIN), "bronze doesn't mix with ore");
     }
 

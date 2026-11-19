@@ -48,7 +48,9 @@ public enum Metal implements StringRepresentable {
                 ClayMoldBlock.Shape.HOE_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_HOE_HEAD.get(),
                 ClayMoldBlock.Shape.KNIFE_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_KNIFE_BLADE.get(),
                 ClayMoldBlock.Shape.SAW_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_SAW_BLADE.get(),
-                ClayMoldBlock.Shape.PLATE, () -> Bronze.ROUGH_CAST_BRONZE_PLATE.get());
+                ClayMoldBlock.Shape.PLATE, () -> Bronze.ROUGH_CAST_BRONZE_PLATE.get(),
+                ClayMoldBlock.Shape.SPEAR_HEAD, () -> Bronze.ROUGH_CAST_BRONZE_SPEAR_HEAD.get(),
+                ClayMoldBlock.Shape.SWORD_BLADE, () -> Bronze.ROUGH_CAST_BRONZE_SWORD_BLADE.get()); // Map.of's limit: 10
     }
 
     public boolean casts(ClayMoldBlock.Shape shape) {

@@ -508,7 +508,7 @@
   "item.mechanical.molten_crucible.of": "Crucible of Molten %s",
   "item.mechanical.solid_crucible.of": "Crucible of Solid %s",
   "metal.mechanical.copper": "Copper",
-  "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper Ore, Native Copper or Crushed Tin Ore onto it in your inventory",
+  "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper / Tin Ore, Concentrate or Native Copper onto it in your inventory",
   "tooltip.mechanical.crucible.ore": "%s ore: %s/%s units",
   "tooltip.mechanical.crucible.metal": "%s: %s units",
   "tooltip.mechanical.crucible.melts": "Melts in a Clay Kiln at %s°",
@@ -777,5 +777,17 @@
   "item.mechanical.raw_bear_pelt": "Raw Bear Pelt",
   "item.mechanical.raw_wolf_pelt": "Raw Wolf Pelt",
   "message.mechanical.drying_rack.pelt_needs_tall": "This pelt needs a bigger rack",
-  "message.mechanical.drying_rack.pelt_no_room": "There is no room for the pelt on this rack"
+  "message.mechanical.drying_rack.pelt_no_room": "There is no room for the pelt on this rack",
+  "item.mechanical.unfired_clay_spear_head_mold": "Unfired Clay Spear Head Mold",
+  "item.mechanical.unfired_clay_sword_blade_mold": "Unfired Clay Sword Blade Mold",
+  "block.mechanical.clay_spear_head_mold": "Clay Spear Head Mold",
+  "block.mechanical.clay_sword_blade_mold": "Clay Sword Blade Mold",
+  "item.mechanical.rough_cast_bronze_spear_head": "Rough Cast Bronze Spear Head",
+  "item.mechanical.rough_cast_bronze_sword_blade": "Rough Cast Bronze Sword Blade",
+  "item.mechanical.bronze_spear_head": "Bronze Spear Head",
+  "item.mechanical.bronze_sword_blade": "Bronze Sword Blade",
+  "item.mechanical.bronze_sword": "Bronze Sword",
+  "item.mechanical.bronze_spear": "Bronze Spear",
+  "item.mechanical.copper_concentrate": "Copper Concentrate",
+  "item.mechanical.tin_concentrate": "Tin Concentrate"
 }

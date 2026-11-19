@@ -869,7 +869,7 @@ _jar = _zf.ZipFile(JAR)
 def _vanilla(path):
     return _json.loads(_jar.read(path).decode())
 
-# Trades: each profession's level 1-2 get stone age trades; levels 3-5 are empty until later ages unlock them.
+# Trades: each profession's level 1-2 get stone age trades; levels 3-5 are empty here (gen_bronze.py fills 3-4).
 # (wants, wants_count, gives, gives_count, max_uses, xp)
 M = "mechanical:"
 E = "minecraft:emerald"

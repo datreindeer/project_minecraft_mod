@@ -35,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
  * Pan for washing gravel and sand. Empty: right-click gravel or sand to scoop the block up. Filled (gravel / sand):
  * hold use while standing in or aiming at water for 3 s, then the loot table gameplay/panning/&lt;fill&gt; decides what is
  * left in the pan (often nothing). Each wash costs one use; the wear carries across the three items (transmuteCopy).
+ * Empty pan with Crushed Copper / Tin Ore in the other hand: the same 3 s wash turns one into Copper / Tin Concentrate.
  */
 public class PanItem extends Item {
     public static final int USES = 64;
@@ -50,6 +51,8 @@ public class PanItem extends Item {
     public InteractionResult useOn(UseOnContext context) {
         if (fill != null) return InteractionResult.PASS; // falls through to use(): washing
         Level level = context.getLevel();
+        Player who = context.getPlayer();
+        if (who != null && BronzeOres.washed(otherHand(who, context.getHand())) != null && nearWater(level, who)) return InteractionResult.PASS; // wash ore
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
         Item filled = state.is(Blocks.GRAVEL) ? BronzeOres.PAN_WITH_GRAVEL.get()
@@ -66,13 +69,17 @@ public class PanItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if (fill == null) return InteractionResult.PASS;
+        if (fill == null && BronzeOres.washed(otherHand(player, hand)) == null) return InteractionResult.PASS;
         if (!nearWater(level, player)) {
             if (level.isClientSide()) player.sendOverlayMessage(Component.translatable("message.mechanical.pan.need_water"));
             return InteractionResult.FAIL;
         }
         player.startUsingItem(hand);
         return InteractionResult.CONSUME;
+    }
+
+    private static ItemStack otherHand(LivingEntity entity, InteractionHand hand) {
+        return entity.getItemInHand(hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
     }
 
     private static boolean nearWater(Level level, Player player) {
@@ -88,12 +95,13 @@ public class PanItem extends Item {
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity user) {
-        return fill == null ? 0 : WASH_TICKS;
+        return WASH_TICKS; // an empty pan only starts using when it has ore to wash (see use)
     }
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int ticksRemaining) {
-        if (!(entity instanceof Player player) || !nearWater(level, player)) {
+        if (!(entity instanceof Player player) || !nearWater(level, player)
+                || fill == null && BronzeOres.washed(otherHand(player, player.getUsedItemHand())) == null) {
             entity.releaseUsingItem();
             return;
         }
@@ -103,7 +111,7 @@ public class PanItem extends Item {
                 level.addParticle(ParticleTypes.SPLASH, at.x + (level.getRandom().nextDouble() - 0.5) * 0.4, at.y,
                         at.z + (level.getRandom().nextDouble() - 0.5) * 0.4, 0, 0.1, 0);
         if (ticksRemaining % 10 == 0)
-            level.playSound(player, at.x, at.y, at.z, fill.equals("gravel") ? SoundEvents.BRUSH_GRAVEL : SoundEvents.BRUSH_SAND, SoundSource.PLAYERS, 0.6F, 0.8F);
+            level.playSound(player, at.x, at.y, at.z, !"sand".equals(fill) ? SoundEvents.BRUSH_GRAVEL : SoundEvents.BRUSH_SAND, SoundSource.PLAYERS, 0.6F, 0.8F);
         if (ticksRemaining % 20 == 5)
             level.playSound(player, at.x, at.y, at.z, SoundEvents.PLAYER_SPLASH, SoundSource.PLAYERS, 0.15F, 1.4F);
     }
@@ -116,7 +124,8 @@ public class PanItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (fill == null || !(entity instanceof Player player) || !(level instanceof ServerLevel server)) return stack;
+        if (!(entity instanceof Player player) || !(level instanceof ServerLevel server)) return stack;
+        if (fill == null) return washOre(stack, server, player);
         LootTable table = server.getServer().reloadableRegistries().getLootTable(
                 ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "gameplay/panning/" + fill)));
         LootParams params = new LootParams.Builder(server)
@@ -132,9 +141,26 @@ public class PanItem extends Item {
         if (!loot.isEmpty()) server.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.3F, 1.5F);
         for (ItemStack found : loot) player.getInventory().placeItemBackInInventory(found, net.minecraft.util.Prediction.SERVER_ONLY);
 
-        ItemStack empty = stack.transmuteCopy(BronzeOres.PAN.get(), 1);
+        return worn(stack.transmuteCopy(BronzeOres.PAN.get(), 1), server, player);
+    }
+
+    /** Empty pan: one crushed ore from the other hand rinses into concentrate. */
+    private static ItemStack washOre(ItemStack pan, ServerLevel server, Player player) {
+        ItemStack ore = otherHand(player, player.getUsedItemHand());
+        Item concentrate = BronzeOres.washed(ore);
+        if (concentrate == null) return pan;
+        Vec3 at = swirl(player);
+        server.sendParticles(ParticleTypes.SPLASH, at.x, at.y, at.z, 15, 0.3, 0.1, 0.3, 0.1);
+        server.playSound(null, at.x, at.y, at.z, SoundEvents.BUCKET_EMPTY, SoundSource.PLAYERS, 0.7F, 1.2F);
+        ore.consume(1, player);
+        player.getInventory().placeItemBackInInventory(new ItemStack(concentrate), net.minecraft.util.Prediction.SERVER_ONLY);
+        return worn(pan.copy(), server, player);
+    }
+
+    /** One use of wear (none in creative); a worn-out pan breaks. */
+    private static ItemStack worn(ItemStack empty, ServerLevel server, Player player) {
         if (player.hasInfiniteMaterials()) return empty;
-        empty.setDamageValue(stack.getDamageValue() + 1);
+        empty.setDamageValue(empty.getDamageValue() + 1);
         if (empty.getDamageValue() >= empty.getMaxDamage()) {
             server.playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK.value(), SoundSource.PLAYERS, 0.8F, 1.0F);
             return ItemStack.EMPTY;

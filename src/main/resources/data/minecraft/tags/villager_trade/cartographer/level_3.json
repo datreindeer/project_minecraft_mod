@@ -1,4 +1,7 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:cartographer/3/bronze_0",
+    "mechanical:cartographer/3/bronze_1"
+  ]
 }

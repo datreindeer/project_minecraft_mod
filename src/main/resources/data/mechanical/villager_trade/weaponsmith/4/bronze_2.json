@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 9
+  },
+  "gives": {
+    "id": "mechanical:bronze_sword"
+  },
+  "max_uses": 3,
+  "xp": 15,
+  "reputation_discount": 0.05
+}

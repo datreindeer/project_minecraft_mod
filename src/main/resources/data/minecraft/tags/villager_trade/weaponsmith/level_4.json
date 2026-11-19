@@ -1,4 +1,8 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:weaponsmith/4/bronze_0",
+    "mechanical:weaponsmith/4/bronze_1",
+    "mechanical:weaponsmith/4/bronze_2"
+  ]
 }

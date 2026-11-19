@@ -65,6 +65,12 @@ public final class Bronze {
     public static final DeferredBlock<ClayMoldBlock> CLAY_PLATE_MOLD = Casting.mold("clay_plate_mold", ClayMoldBlock.Shape.PLATE);
     public static final DeferredItem<BlockItem> CLAY_SAW_BLADE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_saw_blade_mold", CLAY_SAW_BLADE_MOLD);
     public static final DeferredItem<BlockItem> CLAY_PLATE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_plate_mold", CLAY_PLATE_MOLD);
+    public static final DeferredItem<Item> UNFIRED_CLAY_SPEAR_HEAD_MOLD = ITEMS.registerSimpleItem("unfired_clay_spear_head_mold");
+    public static final DeferredItem<Item> UNFIRED_CLAY_SWORD_BLADE_MOLD = ITEMS.registerSimpleItem("unfired_clay_sword_blade_mold");
+    public static final DeferredBlock<ClayMoldBlock> CLAY_SPEAR_HEAD_MOLD = Casting.mold("clay_spear_head_mold", ClayMoldBlock.Shape.SPEAR_HEAD);
+    public static final DeferredBlock<ClayMoldBlock> CLAY_SWORD_BLADE_MOLD = Casting.mold("clay_sword_blade_mold", ClayMoldBlock.Shape.SWORD_BLADE);
+    public static final DeferredItem<BlockItem> CLAY_SPEAR_HEAD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_spear_head_mold", CLAY_SPEAR_HEAD_MOLD);
+    public static final DeferredItem<BlockItem> CLAY_SWORD_BLADE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_sword_blade_mold", CLAY_SWORD_BLADE_MOLD);
 
     // --- castings, rough and ground ---
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_pickaxe_head");
@@ -74,6 +80,8 @@ public final class Bronze {
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_KNIFE_BLADE = ITEMS.registerSimpleItem("rough_cast_bronze_knife_blade");
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SAW_BLADE = ITEMS.registerSimpleItem("rough_cast_bronze_saw_blade");
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PLATE = ITEMS.registerSimpleItem("rough_cast_bronze_plate");
+    public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SPEAR_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_spear_head");
+    public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SWORD_BLADE = ITEMS.registerSimpleItem("rough_cast_bronze_sword_blade");
     public static final DeferredItem<Item> BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("bronze_pickaxe_head");
     public static final DeferredItem<Item> BRONZE_AXE_HEAD = ITEMS.registerSimpleItem("bronze_axe_head");
     public static final DeferredItem<Item> BRONZE_SHOVEL_HEAD = ITEMS.registerSimpleItem("bronze_shovel_head");
@@ -81,6 +89,8 @@ public final class Bronze {
     public static final DeferredItem<Item> BRONZE_KNIFE_BLADE = ITEMS.registerSimpleItem("bronze_knife_blade");
     public static final DeferredItem<Item> BRONZE_SAW_BLADE = ITEMS.registerSimpleItem("bronze_saw_blade");
     public static final DeferredItem<Item> BRONZE_PLATE = ITEMS.registerSimpleItem("bronze_plate");
+    public static final DeferredItem<Item> BRONZE_SPEAR_HEAD = ITEMS.registerSimpleItem("bronze_spear_head");
+    public static final DeferredItem<Item> BRONZE_SWORD_BLADE = ITEMS.registerSimpleItem("bronze_sword_blade");
 
     // --- tools (attack values as vanilla iron) ---
     public static final DeferredItem<Item> BRONZE_PICKAXE = ITEMS.registerSimpleItem("bronze_pickaxe", p -> p.pickaxe(BRONZE, 1.0F, -2.8F));
@@ -93,6 +103,12 @@ public final class Bronze {
     /** Log + saw in the crafting grid = 4 planks; the saw stays and loses 1 (same remainder rule as the Flint Pickaxe). */
     public static final DeferredItem<FlintPickaxeItem> BRONZE_SAW = ITEMS.registerItem("bronze_saw", FlintPickaxeItem::new, p -> p.durability(240));
 
+    /** Vanilla spear handling (charge and jab) with iron spear's timings on bronze: the Flint Spear (stone's) made better. */
+    public static final DeferredItem<Item> BRONZE_SPEAR = ITEMS.registerSimpleItem("bronze_spear",
+            p -> p.spear(BRONZE, 0.95F, 0.95F, 0.6F, 2.5F, 11.0F, 6.75F, 5.1F, 11.25F, 4.6F));
+    /** A vanilla sword, half a point below iron's (5.5 damage), 230 durability. */
+    public static final DeferredItem<Item> BRONZE_SWORD = ITEMS.registerSimpleItem("bronze_sword", p -> p.sword(BRONZE, 2.5F, -2.4F));
+
     public static final DeferredItem<Item> BRONZE_HELMET = ITEMS.registerSimpleItem("bronze_helmet", p -> p.humanoidArmor(BRONZE_ARMOR, ArmorType.HELMET));
     public static final DeferredItem<Item> BRONZE_GREAVES = ITEMS.registerSimpleItem("bronze_greaves", p -> p.humanoidArmor(BRONZE_ARMOR, ArmorType.LEGGINGS));
 
@@ -101,7 +117,8 @@ public final class Bronze {
             ROUGH_CAST_BRONZE_PICKAXE_HEAD, BRONZE_PICKAXE_HEAD, ROUGH_CAST_BRONZE_AXE_HEAD, BRONZE_AXE_HEAD,
             ROUGH_CAST_BRONZE_SHOVEL_HEAD, BRONZE_SHOVEL_HEAD, ROUGH_CAST_BRONZE_HOE_HEAD, BRONZE_HOE_HEAD,
             ROUGH_CAST_BRONZE_KNIFE_BLADE, BRONZE_KNIFE_BLADE, ROUGH_CAST_BRONZE_SAW_BLADE, BRONZE_SAW_BLADE,
-            ROUGH_CAST_BRONZE_PLATE, BRONZE_PLATE);
+            ROUGH_CAST_BRONZE_PLATE, BRONZE_PLATE, ROUGH_CAST_BRONZE_SPEAR_HEAD, BRONZE_SPEAR_HEAD,
+            ROUGH_CAST_BRONZE_SWORD_BLADE, BRONZE_SWORD_BLADE);
 
     /** The ground piece for a rough bronze casting (Poor Bronze stays poor), or empty. */
     static ItemStack ground(ItemStack rough) {

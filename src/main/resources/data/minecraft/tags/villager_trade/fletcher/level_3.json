@@ -1,4 +1,7 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:fletcher/3/bronze_0",
+    "mechanical:fletcher/3/bronze_1"
+  ]
 }

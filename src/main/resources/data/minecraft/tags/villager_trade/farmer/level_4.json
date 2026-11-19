@@ -1,4 +1,7 @@
 {
   "replace": true,
-  "values": []
+  "values": [
+    "mechanical:farmer/4/bronze_0",
+    "mechanical:farmer/4/bronze_1"
+  ]
 }
