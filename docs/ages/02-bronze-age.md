@@ -466,7 +466,12 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
 
 - 480 hållbarhet. I crafting table: **Log + Bronze Saw → 4 Planks** (alla träslag, recepten `sawn_<trä>_planks`);
   sågen blir kvar och slits 1. Utan såg ger en log fortfarande 2 planks.
-- **Fallen Log:** håll in högerklick med sågen: 8 sågtag kapar hela stocken till 3 Rough Logs (utan slump), plus barken.
+- **Fallen Log:** håll in högerklick på stocken med sågen och fortsätt titta på den: man drar sågen fram och tillbaka
+  (ett sågtag var halv sekund, 8 sågtag ≈ 4 s) och sista taget kapar hela stocken till 3 Rough Logs (utan slump, färre om
+  yxan redan har huggit den tunnare), plus barken om den sitter kvar. Sågen slits 1 per kapad stock. Tittar man bort eller
+  släpper avbryts sågningen, men snittet står kvar i stocken (blockstate `sawn` 0–7) och man fortsätter där man slutade.
+  Snittet syns som ett mörkt sågspår tvärs över stockens mitt som blir djupare uppifrån och ner, med sågspån vid kanterna.
+  Alla ser armarna dra sågen fram och tillbaka (egen ArmPose) och hör raspet; sågspån (blockpartiklar) yr vid varje tag.
 
 ### Bronze Helmet och Bronze Greaves
 

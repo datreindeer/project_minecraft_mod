@@ -1,0 +1,254 @@
+{
+  "textures": {
+    "particle": "mechanical:block/yew_log",
+    "side": "mechanical:block/yew_log",
+    "end": "mechanical:block/yew_log_top",
+    "kerf": "mechanical:block/saw_kerf",
+    "sawdust": "mechanical:block/sawdust"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        7.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#end",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#kerf",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            7.5
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            8.5,
+            16,
+            16
+          ],
+          "cullface": "down"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            7.5
+          ],
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            8.5,
+            16,
+            16
+          ],
+          "rotation": 90
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        8.5
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#kerf",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#end",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "south"
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            8.5,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            7.5
+          ],
+          "cullface": "down"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            8.5,
+            16,
+            16
+          ],
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            7.5
+          ],
+          "rotation": 90
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        7.5
+      ],
+      "to": [
+        16,
+        6,
+        8.5
+      ],
+      "faces": {
+        "up": {
+          "texture": "#kerf",
+          "uv": [
+            0,
+            7.5,
+            16,
+            8.5
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            7.5,
+            16,
+            8.5
+          ],
+          "cullface": "down"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            10,
+            7.5,
+            16,
+            8.5
+          ],
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            10,
+            7.5,
+            16,
+            8.5
+          ],
+          "rotation": 90
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        16,
+        5.0
+      ],
+      "to": [
+        16,
+        16.05,
+        7.5
+      ],
+      "faces": {
+        "up": {
+          "texture": "#sawdust",
+          "uv": [
+            0,
+            13.5,
+            16,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        16,
+        8.5
+      ],
+      "to": [
+        16,
+        16.05,
+        11.0
+      ],
+      "faces": {
+        "up": {
+          "texture": "#sawdust",
+          "uv": [
+            0,
+            16,
+            16,
+            13.5
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -101,7 +101,7 @@ public final class Bronze {
     public static final DeferredItem<KnifeItem> BRONZE_KNIFE = ITEMS.registerItem("bronze_knife", p -> new KnifeItem(p, 1.75F, 1.35F, KnifeItem.BRONZE),
             p -> p.sword(BRONZE, 1.5F, -2.0F).durability(700));
     /** Log + saw in the crafting grid = 4 planks; the saw stays and loses 1 (same remainder rule as the Flint Pickaxe). */
-    public static final DeferredItem<FlintPickaxeItem> BRONZE_SAW = ITEMS.registerItem("bronze_saw", FlintPickaxeItem::new, p -> p.durability(480));
+    public static final DeferredItem<SawItem> BRONZE_SAW = ITEMS.registerItem("bronze_saw", SawItem::new, p -> p.durability(480));
 
     /** Vanilla spear handling (charge and jab) with iron spear's timings on bronze: the Flint Spear (stone's) made better. */
     public static final DeferredItem<Item> BRONZE_SPEAR = ITEMS.registerSimpleItem("bronze_spear",
