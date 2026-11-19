@@ -594,8 +594,10 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
 - I bronsåldern kommer **Wheeled Cart** (se 02-bronze-age.md, *Vagn och häst*): dubbelt så mycket last, ett förråd, och en tam häst kan dra den.
 
 **Hanging Rack** (slaktställning): recept `[Tool Rod][Cordage][Tool Rod]` / `[Tool Rod][ ][Tool Rod]` /
-`[Tool Rod][ ][Tool Rod]` (låses upp med en Raw Hide). Två stolpar två block höga, en tvärbjälke och en gambrel (krokpinne)
-som hänger i ett snöre. Blocket ovanför måste vara fritt.
+`[Tool Rod][ ][Tool Rod]` (låses upp med en Raw Hide). Två stolpar **tre block** höga, en tvärbjälke och en gambrel (krokpinne)
+som hänger i ett snöre, så att kroppen hänger fritt över marken. Byggd av tre block (nedre, mitten, övre) som var och en
+har sin egen träffyta (bara stolparna och bjälken, man kan slå mellan stolparna). De två blocken ovanför måste vara fria.
+Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppen faller ner.
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.

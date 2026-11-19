@@ -1,0 +1,235 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/hanging_rack_pole",
+    "pole": "mechanical:block/hanging_rack_pole",
+    "end": "mechanical:block/hanging_rack_log_end",
+    "lashing": "mechanical:block/hanging_rack_lashing"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        7
+      ],
+      "to": [
+        3,
+        13,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#pole"
+        },
+        "south": {
+          "texture": "#pole"
+        },
+        "east": {
+          "texture": "#pole"
+        },
+        "west": {
+          "texture": "#pole"
+        },
+        "up": {
+          "texture": "#end"
+        },
+        "down": {
+          "texture": "#end"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        0,
+        7
+      ],
+      "to": [
+        15,
+        13,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#pole"
+        },
+        "south": {
+          "texture": "#pole"
+        },
+        "east": {
+          "texture": "#pole"
+        },
+        "west": {
+          "texture": "#pole"
+        },
+        "up": {
+          "texture": "#end"
+        },
+        "down": {
+          "texture": "#end"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        12,
+        6.5
+      ],
+      "to": [
+        16,
+        15,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#pole"
+        },
+        "south": {
+          "texture": "#pole"
+        },
+        "up": {
+          "texture": "#pole"
+        },
+        "down": {
+          "texture": "#pole"
+        },
+        "east": {
+          "texture": "#end"
+        },
+        "west": {
+          "texture": "#end"
+        }
+      }
+    },
+    {
+      "from": [
+        0.5,
+        10.5,
+        6
+      ],
+      "to": [
+        3.5,
+        15.5,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#lashing"
+        },
+        "south": {
+          "texture": "#lashing"
+        },
+        "east": {
+          "texture": "#lashing"
+        },
+        "west": {
+          "texture": "#lashing"
+        },
+        "up": {
+          "texture": "#lashing"
+        },
+        "down": {
+          "texture": "#lashing"
+        }
+      }
+    },
+    {
+      "from": [
+        12.5,
+        10.5,
+        6
+      ],
+      "to": [
+        15.5,
+        15.5,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#lashing"
+        },
+        "south": {
+          "texture": "#lashing"
+        },
+        "east": {
+          "texture": "#lashing"
+        },
+        "west": {
+          "texture": "#lashing"
+        },
+        "up": {
+          "texture": "#lashing"
+        },
+        "down": {
+          "texture": "#lashing"
+        }
+      }
+    },
+    {
+      "from": [
+        7.5,
+        9.5,
+        7.5
+      ],
+      "to": [
+        8.5,
+        12,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#lashing"
+        },
+        "south": {
+          "texture": "#lashing"
+        },
+        "east": {
+          "texture": "#lashing"
+        },
+        "west": {
+          "texture": "#lashing"
+        },
+        "up": {
+          "texture": "#lashing"
+        },
+        "down": {
+          "texture": "#lashing"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        8.5,
+        7.25
+      ],
+      "to": [
+        12,
+        9.75,
+        8.75
+      ],
+      "faces": {
+        "north": {
+          "texture": "#pole"
+        },
+        "south": {
+          "texture": "#pole"
+        },
+        "east": {
+          "texture": "#pole"
+        },
+        "west": {
+          "texture": "#pole"
+        },
+        "up": {
+          "texture": "#pole"
+        },
+        "down": {
+          "texture": "#pole"
+        }
+      }
+    }
+  ]
+}
