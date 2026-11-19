@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "I ",
+    "TS"
+  ],
+  "key": {
+    "I": "mechanical:walrus_ivory",
+    "T": "mechanical:twine",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:ivory_knife"
+  }
+}

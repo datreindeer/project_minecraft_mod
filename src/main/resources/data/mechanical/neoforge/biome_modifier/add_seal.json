@@ -1,0 +1,20 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:snowy_beach",
+    "minecraft:stony_shore",
+    "minecraft:frozen_ocean",
+    "minecraft:deep_frozen_ocean"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:seal",
+      "weight": 10,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 5
+      }
+    }
+  ]
+}
