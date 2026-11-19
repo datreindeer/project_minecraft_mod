@@ -1,0 +1,1384 @@
+{
+  "variants": {
+    "colour=black,facing=south,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_black"
+    },
+    "colour=red,facing=south,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_red"
+    },
+    "colour=yellow,facing=south,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_yellow"
+    },
+    "colour=white,facing=south,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_white"
+    },
+    "colour=black,facing=south,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_black"
+    },
+    "colour=red,facing=south,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_red"
+    },
+    "colour=yellow,facing=south,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_yellow"
+    },
+    "colour=white,facing=south,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_white"
+    },
+    "colour=black,facing=south,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_black"
+    },
+    "colour=red,facing=south,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_red"
+    },
+    "colour=yellow,facing=south,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_yellow"
+    },
+    "colour=white,facing=south,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_white"
+    },
+    "colour=black,facing=south,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_black"
+    },
+    "colour=red,facing=south,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_red"
+    },
+    "colour=yellow,facing=south,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_yellow"
+    },
+    "colour=white,facing=south,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_white"
+    },
+    "colour=black,facing=south,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_black"
+    },
+    "colour=red,facing=south,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_red"
+    },
+    "colour=yellow,facing=south,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_yellow"
+    },
+    "colour=white,facing=south,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_white"
+    },
+    "colour=black,facing=south,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_black"
+    },
+    "colour=red,facing=south,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_red"
+    },
+    "colour=yellow,facing=south,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_yellow"
+    },
+    "colour=white,facing=south,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_white"
+    },
+    "colour=black,facing=south,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_black"
+    },
+    "colour=red,facing=south,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_red"
+    },
+    "colour=yellow,facing=south,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_yellow"
+    },
+    "colour=white,facing=south,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_white"
+    },
+    "colour=black,facing=south,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_black"
+    },
+    "colour=red,facing=south,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_red"
+    },
+    "colour=yellow,facing=south,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_yellow"
+    },
+    "colour=white,facing=south,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_white"
+    },
+    "colour=black,facing=south,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_black"
+    },
+    "colour=red,facing=south,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_red"
+    },
+    "colour=yellow,facing=south,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_yellow"
+    },
+    "colour=white,facing=south,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_white"
+    },
+    "colour=black,facing=south,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_black"
+    },
+    "colour=red,facing=south,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_red"
+    },
+    "colour=yellow,facing=south,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_yellow"
+    },
+    "colour=white,facing=south,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_white"
+    },
+    "colour=black,facing=south,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_black"
+    },
+    "colour=red,facing=south,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_red"
+    },
+    "colour=yellow,facing=south,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_yellow"
+    },
+    "colour=white,facing=south,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_white"
+    },
+    "colour=black,facing=south,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_black"
+    },
+    "colour=red,facing=south,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_red"
+    },
+    "colour=yellow,facing=south,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_yellow"
+    },
+    "colour=white,facing=south,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_white"
+    },
+    "colour=black,facing=south,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_black"
+    },
+    "colour=red,facing=south,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_red"
+    },
+    "colour=yellow,facing=south,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_yellow"
+    },
+    "colour=white,facing=south,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_white"
+    },
+    "colour=black,facing=south,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_black"
+    },
+    "colour=red,facing=south,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_red"
+    },
+    "colour=yellow,facing=south,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_yellow"
+    },
+    "colour=white,facing=south,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_white"
+    },
+    "colour=black,facing=south,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_black"
+    },
+    "colour=red,facing=south,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_red"
+    },
+    "colour=yellow,facing=south,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_yellow"
+    },
+    "colour=white,facing=south,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_white"
+    },
+    "colour=black,facing=west,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_white",
+      "y": 90
+    },
+    "colour=black,facing=west,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_black",
+      "y": 90
+    },
+    "colour=red,facing=west,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_red",
+      "y": 90
+    },
+    "colour=yellow,facing=west,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_yellow",
+      "y": 90
+    },
+    "colour=white,facing=west,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_white",
+      "y": 90
+    },
+    "colour=black,facing=north,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_white",
+      "y": 180
+    },
+    "colour=black,facing=north,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_black",
+      "y": 180
+    },
+    "colour=red,facing=north,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_red",
+      "y": 180
+    },
+    "colour=yellow,facing=north,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_yellow",
+      "y": 180
+    },
+    "colour=white,facing=north,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_white",
+      "y": 180
+    },
+    "colour=black,facing=east,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_white",
+      "y": 270
+    },
+    "colour=black,facing=east,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_black",
+      "y": 270
+    },
+    "colour=red,facing=east,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_red",
+      "y": 270
+    },
+    "colour=yellow,facing=east,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_yellow",
+      "y": 270
+    },
+    "colour=white,facing=east,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_white",
+      "y": 270
+    },
+    "colour=black,facing=down,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_white",
+      "x": 270
+    },
+    "colour=black,facing=down,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_black",
+      "x": 270
+    },
+    "colour=red,facing=down,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_red",
+      "x": 270
+    },
+    "colour=yellow,facing=down,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_yellow",
+      "x": 270
+    },
+    "colour=white,facing=down,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_white",
+      "x": 270
+    },
+    "colour=black,facing=up,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=aurochs": {
+      "model": "mechanical:block/cave_painting_aurochs_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=horse": {
+      "model": "mechanical:block/cave_painting_horse_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=deer": {
+      "model": "mechanical:block/cave_painting_deer_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=bear": {
+      "model": "mechanical:block/cave_painting_bear_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=mammoth": {
+      "model": "mechanical:block/cave_painting_mammoth_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=ibex": {
+      "model": "mechanical:block/cave_painting_ibex_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=hunter": {
+      "model": "mechanical:block/cave_painting_hunter_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=sun": {
+      "model": "mechanical:block/cave_painting_sun_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=spiral": {
+      "model": "mechanical:block/cave_painting_spiral_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=dots": {
+      "model": "mechanical:block/cave_painting_dots_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=hand": {
+      "model": "mechanical:block/cave_painting_hand_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=hunt_left": {
+      "model": "mechanical:block/cave_painting_hunt_left_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=hunt_right": {
+      "model": "mechanical:block/cave_painting_hunt_right_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=herd_left": {
+      "model": "mechanical:block/cave_painting_herd_left_white",
+      "x": 90
+    },
+    "colour=black,facing=up,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_black",
+      "x": 90
+    },
+    "colour=red,facing=up,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_red",
+      "x": 90
+    },
+    "colour=yellow,facing=up,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_yellow",
+      "x": 90
+    },
+    "colour=white,facing=up,motif=herd_right": {
+      "model": "mechanical:block/cave_painting_herd_right_white",
+      "x": 90
+    }
+  }
+}

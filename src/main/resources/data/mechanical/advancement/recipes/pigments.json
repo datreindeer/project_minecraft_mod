@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mechanical:red_ochre",
+              "mechanical:yellow_ochre",
+              "mechanical:chalk",
+              "mechanical:soot",
+              "mechanical:red_pigment",
+              "mechanical:yellow_pigment",
+              "mechanical:white_pigment",
+              "mechanical:black_pigment"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:red_pigment_from_red_ochre",
+      "mechanical:yellow_pigment_from_yellow_ochre",
+      "mechanical:white_pigment_from_chalk",
+      "mechanical:black_pigment_from_charcoal",
+      "mechanical:black_paint",
+      "mechanical:red_paint",
+      "mechanical:yellow_paint",
+      "mechanical:white_paint",
+      "mechanical:paintbrush",
+      "mechanical:black_dye_from_black_pigment",
+      "mechanical:red_dye_from_red_pigment",
+      "mechanical:yellow_dye_from_yellow_pigment",
+      "mechanical:white_dye_from_white_pigment"
+    ]
+  }
+}

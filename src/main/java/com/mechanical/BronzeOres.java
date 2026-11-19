@@ -65,7 +65,7 @@ public final class BronzeOres {
         if (ore.is(Items.RAW_COPPER)) return new ItemStack(CRUSHED_COPPER_ORE.get(), 2);
         if (ore.is(MALACHITE.get())) return new ItemStack(CRUSHED_COPPER_ORE.get());
         if (ore.is(CASSITERITE.get())) return new ItemStack(CRUSHED_TIN_ORE.get());
-        return ItemStack.EMPTY;
+        return Pigments.ground(ore); // ochre, chalk, calcite, charcoal
     }
 
     public static void init() {}

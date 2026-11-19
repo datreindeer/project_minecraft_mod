@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:stony_shore",
+    "minecraft:beach",
+    "minecraft:meadow",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:stony_peaks"
+  ],
+  "features": "mechanical:loose_chalk",
+  "step": "vegetal_decoration"
+}

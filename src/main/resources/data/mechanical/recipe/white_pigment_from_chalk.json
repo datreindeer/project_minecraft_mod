@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "white_pigment",
+  "ingredients": [
+    "mechanical:chalk",
+    "mechanical:flint_pickaxe"
+  ],
+  "result": {
+    "id": "mechanical:white_pigment",
+    "count": 1
+  }
+}

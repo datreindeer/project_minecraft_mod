@@ -164,6 +164,7 @@ Recept (crafting table, R = rock chunk, K = Flint Pickaxe som blir kvar och slit
   - Raw Copper → 2 **Crushed Copper Ore**
   - Malachite → 1 Crushed Copper Ore
   - Cassiterite → 1 **Crushed Tin Ore**
+  - Red/Yellow Ochre, Chalk, Charcoal → 2 pigment, Calcite → 4 White Pigment (se *Pigment och grottmålningar* i stenåldern)
 - Bryts städet ramlar malmen som ligger på det ut.
 
 ## Fas 2: värme (byggd)

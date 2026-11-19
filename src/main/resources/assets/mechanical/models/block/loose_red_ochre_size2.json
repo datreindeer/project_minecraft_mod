@@ -1,0 +1,6 @@
+{
+  "parent": "mechanical:block/rock_size2",
+  "textures": {
+    "all": "mechanical:block/red_ochre_rock"
+  }
+}

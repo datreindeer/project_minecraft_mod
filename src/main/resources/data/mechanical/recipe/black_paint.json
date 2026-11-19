@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "paint",
+  "ingredients": [
+    [
+      "mechanical:black_pigment",
+      "mechanical:soot"
+    ],
+    [
+      "mechanical:black_pigment",
+      "mechanical:soot"
+    ],
+    [
+      "mechanical:tallow",
+      "mechanical:clay_water_bucket",
+      "minecraft:water_bucket"
+    ],
+    "minecraft:bowl"
+  ],
+  "result": {
+    "id": "mechanical:black_paint",
+    "count": 1
+  }
+}
