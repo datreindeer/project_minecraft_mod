@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -31,7 +32,10 @@ public final class Temperature {
     private static final float NIGHT = 5, RAIN = 2, WATER = 5;
     private static final double FIRE_RANGE = 6;
     private static final float FIRE_WARMTH = 10;
-    public static final float LEATHER_PER_PIECE = 0.15F, FUR_PER_PIECE = 0.25F;
+    public static final float LEATHER_PER_PIECE = 0.15F, FUR_PER_PIECE = 0.25F, WOLF_FUR_PER_PIECE = 0.2F;
+    /** A rest in a Furred Straw Bed (StrawBedRest) keeps you this much warmer for FURRED_BED_TICKS. */
+    public static final float FURRED_BED_WARMTH = 0.3F;
+    public static final int FURRED_BED_TICKS = 6000;
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = Mechanical.ATTACHMENTS;
     public static final Supplier<AttachmentType<Float>> BODY = ATTACHMENTS.register("body_temperature", () -> AttachmentType
@@ -40,7 +44,27 @@ public final class Temperature {
             .sync(ByteBufCodecs.FLOAT)
             .build());
 
+    /** Game time until which a Furred Straw Bed's warmth lasts (not saved: a relog ends it early). */
+    private static final Supplier<AttachmentType<Long>> WARM_BEDROLL = ATTACHMENTS.register("warm_bedroll", () -> AttachmentType.builder(() -> 0L).build());
+
     public static void init() {}
+
+    /** Share of the cold an armour piece keeps out. */
+    public static float insulation(ItemStack item) {
+        if (item.is(Items.LEATHER_HELMET) || item.is(Items.LEATHER_CHESTPLATE) || item.is(Items.LEATHER_LEGGINGS) || item.is(Items.LEATHER_BOOTS)) return LEATHER_PER_PIECE;
+        if (item.is(Mechanical.FUR_HOOD.get()) || item.is(Mechanical.FUR_COAT.get()) || item.is(Mechanical.FUR_LEGGINGS.get()) || item.is(Mechanical.FUR_BOOTS.get())) return FUR_PER_PIECE;
+        if (item.is(Mechanical.WOLF_HOOD.get()) || item.is(Mechanical.WOLF_FUR_COAT.get()) || item.is(Mechanical.WOLF_FUR_LEGGINGS.get()) || item.is(Mechanical.WOLF_FUR_BOOTS.get())) return WOLF_FUR_PER_PIECE;
+        return 0;
+    }
+
+    static long warmBedrollUntil(Player player) {
+        return player.getData(WARM_BEDROLL);
+    }
+
+    /** Called after a rest in a Furred Straw Bed. */
+    static void warmFromBedroll(Player player) {
+        player.setData(WARM_BEDROLL, player.level().getGameTime() + FURRED_BED_TICKS);
+    }
 
     public static float of(Player player) {
         return player.getData(BODY);
@@ -83,13 +107,10 @@ public final class Temperature {
         if (t < COMFORT) {
             float insulation = 0;
             for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
-                var item = player.getItemBySlot(slot);
-                if (item.is(Items.LEATHER_HELMET) || item.is(Items.LEATHER_CHESTPLATE) || item.is(Items.LEATHER_LEGGINGS) || item.is(Items.LEATHER_BOOTS)) {
-                    insulation += LEATHER_PER_PIECE;
-                } else if (item.is(Mechanical.FUR_HOOD.get()) || item.is(Mechanical.FUR_COAT.get()) || item.is(Mechanical.FUR_LEGGINGS.get()) || item.is(Mechanical.FUR_BOOTS.get())) {
-                    insulation += FUR_PER_PIECE;
-                }
+                insulation += insulation(player.getItemBySlot(slot));
             }
+            if (warmBedrollUntil(player) > level.getGameTime()) insulation += FURRED_BED_WARMTH;
+            insulation = Math.min(insulation, 1);
             t = COMFORT - (COMFORT - t) * (1 - insulation);
         }
         return Math.clamp(t, 0, MAX);

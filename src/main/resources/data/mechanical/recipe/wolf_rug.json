@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:wolf_pelt",
+    "mechanical:wolf_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:wolf_rug",
+    "count": 1
+  }
+}

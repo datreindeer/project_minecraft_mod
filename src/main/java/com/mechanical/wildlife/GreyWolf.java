@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -35,7 +36,8 @@ import net.minecraft.world.phys.Vec3;
  * it hunts: the pack howls (heard ~100 blocks off), tracks a player's scent without needing to see him, follows at a
  * distance, spreads out round him (behind and to the sides) and darts in to bite, one after another, falling back to the
  * ring between bites. A wounded or lone player in the dark is attacked sooner. Breaks off when badly hurt or when the pack
- * is down to half. Afraid of fire (see {@link Predator}). Also hunts deer, sheep, hares and tribespeople.
+ * is down to half. Afraid of fire (see {@link Predator}). Also hunts deer, sheep, hares and tribespeople. Leaves a
+ * Wolf Hood wearer alone unless he is badly hurt or strikes first ({@link #packKin}).
  */
 public class GreyWolf extends Predator {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/grey_wolf.png");
@@ -48,6 +50,9 @@ public class GreyWolf extends Predator {
     private static final int RETREAT_TICKS = 600, HOWL_TICKS = 50;
     /** Flank angles (degrees from straight behind the quarry) handed out by pack rank. */
     private static final float[] FLANKS = {0, 55, -55, 110, -110, 180};
+
+    /** A Wolf Hood wearer is only hunted below this share of health (or after hitting a wolf: HurtByTargetGoal). */
+    private static final float KIN_PREY_HEALTH = 0.3F;
 
     private int maxPackSeen = 1, howlDelay = -1;
 
@@ -154,6 +159,14 @@ public class GreyWolf extends Predator {
         return 200;
     }
 
+    /**
+     * Wears a Wolf Hood: the pack smells one of its own and leaves him be (scent range halved, only hunted when badly hurt
+     * or when he attacks), except on a blood moon or when starving.
+     */
+    boolean packKin(Player p) {
+        return p.getItemBySlot(EquipmentSlot.HEAD).is(com.mechanical.Mechanical.WOLF_HOOD.get()) && !fearless();
+    }
+
     /** Lone (no other player or tribesperson within 10) and standing in the dark. */
     private static boolean aloneInTheDark(LivingEntity t) {
         Level level = t.level();
@@ -192,7 +205,10 @@ public class GreyWolf extends Predator {
             double bestD = Double.MAX_VALUE;
             for (Player p : level().players()) {
                 if (!canHunt(p)) continue;
+                boolean kin = packKin(p);
+                if (kin && p.getHealth() >= p.getMaxHealth() * KIN_PREY_HEALTH) continue;
                 double range = p.isShiftKeyDown() ? SCENT_SNEAKING : p.getHealth() < p.getMaxHealth() / 2 ? SCENT_WOUNDED : SCENT;
+                if (kin) range /= 2;
                 double d = distanceTo(p);
                 if (d < range && d < bestD) { best = p; bestD = d; }
             }

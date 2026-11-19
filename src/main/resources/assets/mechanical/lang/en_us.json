@@ -729,5 +729,12 @@
   "biome.mechanical.hazel_meadow": "Hazel Meadow",
   "biome.mechanical.willow_fen": "Willow Fen",
   "biome.mechanical.pine_heath": "Pine Heath",
-  "block.mechanical.heather": "Heather"
+  "block.mechanical.heather": "Heather",
+  "item.mechanical.wolf_hood": "Wolf Hood",
+  "item.mechanical.wolf_fur_coat": "Wolf Fur Coat",
+  "item.mechanical.wolf_fur_leggings": "Wolf Fur Leggings",
+  "item.mechanical.wolf_fur_boots": "Wolf Fur Boots",
+  "block.mechanical.wolf_rug": "Wolf Rug",
+  "block.mechanical.furred_straw_bed": "Furred Straw Bed",
+  "message.mechanical.furred_straw_bed_rest": "You rest warm under the wolf pelt. The night goes on."
 }

@@ -87,11 +87,9 @@ public final class StatTooltips {
             lines.add(stat("Bites", value("normal")));
         }
 
-        float insulation = stack.is(Items.LEATHER_HELMET) || stack.is(Items.LEATHER_CHESTPLATE) || stack.is(Items.LEATHER_LEGGINGS)
-                || stack.is(Items.LEATHER_BOOTS) ? Temperature.LEATHER_PER_PIECE
-                : stack.is(Mechanical.FUR_HOOD.get()) || stack.is(Mechanical.FUR_COAT.get()) || stack.is(Mechanical.FUR_LEGGINGS.get())
-                || stack.is(Mechanical.FUR_BOOTS.get()) ? Temperature.FUR_PER_PIECE : 0;
+        float insulation = Temperature.insulation(stack);
         if (insulation > 0) lines.add(stat("Cold insulation", Component.literal("+" + Math.round(insulation * 100) + "%").withStyle(ChatFormatting.AQUA)));
+        if (stack.is(Mechanical.WOLF_HOOD.get())) lines.add(Component.literal(" Grey Wolves take you for one of the pack").withStyle(ChatFormatting.GRAY));
 
         if (lines.isEmpty()) return;
         List<Component> tooltip = event.getToolTip();

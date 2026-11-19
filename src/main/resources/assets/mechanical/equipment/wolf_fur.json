@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:wolf_fur"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mechanical:wolf_fur"
+      }
+    ]
+  }
+}
