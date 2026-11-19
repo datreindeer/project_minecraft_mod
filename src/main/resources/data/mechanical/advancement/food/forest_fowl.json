@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:food/cooked_bird",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_capercaillie"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_bustard"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cooked_capercaillie"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.forest_fowl.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.forest_fowl.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

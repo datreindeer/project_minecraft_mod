@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:vulture_wing_bone",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:bone_flute"
+  }
+}

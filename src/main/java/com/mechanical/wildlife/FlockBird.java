@@ -216,6 +216,11 @@ public class FlockBird extends WildAnimal {
         else groundTick(level);
     }
 
+    /** When it comes down and stays down to roost: at night; night birds (the owl) roost by day instead. */
+    protected boolean restTime(Level level) {
+        return level.isDarkOutside();
+    }
+
     private void refreshFlock() {
         flock = level().getEntitiesOfClass(FlockBird.class, getBoundingBox().inflate(FLOCK_RANGE),
                 b -> b != this && b.isAlive() && b.getType() == getType());
@@ -289,7 +294,7 @@ public class FlockBird extends WildAnimal {
             return;
         }
         if (restTimer > 0) restTimer--;
-        if (level.isDarkOutside()) return; // roosts for the night
+        if (restTime(level)) return; // roosts for the night
         if (kind == CROW && (tickCount + getId()) % 40 == 0 && random.nextBoolean()) com.mechanical.Farming.crowPeck(level, blockPosition());
         if (leader == this) {
             if (restTimer <= 0) takeOff(false, null);
@@ -321,7 +326,7 @@ public class FlockBird extends WildAnimal {
             Vec3 threat = threat();
             if (threat != null) scare(threat);
         }
-        if (level.isDarkOutside() && !scared) flightTimer = Math.min(flightTimer, 40); // home to roost
+        if (restTime(level) && !scared) flightTimer = Math.min(flightTimer, 40); // home to roost
         boolean following = leader != this && leader.isFlying();
         if (landingSpot == null) {
             if (following && leader.landingSpot != null) landingSpot = findLandingSpot(leader.landingSpot, 4);

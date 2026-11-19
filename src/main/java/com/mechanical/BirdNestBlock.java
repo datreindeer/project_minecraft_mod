@@ -58,7 +58,10 @@ public class BirdNestBlock extends Block {
     public enum Bird implements StringRepresentable {
         NONE(null, null), GOOSE(Wildlife.GOOSE::get, Birds.GOOSE_EGG), PHEASANT(Wildlife.PHEASANT::get, Birds.PHEASANT_EGG),
         PTARMIGAN(Wildlife.PTARMIGAN::get, Birds.PTARMIGAN_EGG), ROCK_DOVE(Wildlife.ROCK_DOVE::get, Birds.PIGEON_EGG),
-        CHICKEN(() -> EntityTypes.CHICKEN, () -> Items.EGG);
+        CHICKEN(() -> EntityTypes.CHICKEN, () -> Items.EGG),
+        // fauna: forestbirds
+        CAPERCAILLIE(com.mechanical.wildlife.forestbirds.ForestBirdsFauna.CAPERCAILLIE::get, com.mechanical.wildlife.forestbirds.ForestBirdsFauna.CAPERCAILLIE_EGG),
+        BUSTARD(com.mechanical.wildlife.forestbirds.ForestBirdsFauna.BUSTARD::get, com.mechanical.wildlife.forestbirds.ForestBirdsFauna.BUSTARD_EGG);
 
         private final Supplier<EntityType<?>> type;
         private final Supplier<? extends Item> egg;

@@ -56,6 +56,12 @@
     "mechanical:cooked_goose",
     "mechanical:cooked_pheasant",
     "mechanical:cooked_ptarmigan",
-    "mechanical:cooked_pigeon"
+    "mechanical:cooked_pigeon",
+    "mechanical:raw_capercaillie",
+    "mechanical:raw_bustard",
+    "mechanical:plucked_capercaillie",
+    "mechanical:plucked_bustard",
+    "mechanical:cooked_capercaillie",
+    "mechanical:cooked_bustard"
   ]
 }

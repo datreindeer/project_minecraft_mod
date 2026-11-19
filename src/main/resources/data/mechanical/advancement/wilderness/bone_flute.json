@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bone_flute"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bone_flute"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.bone_flute.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.bone_flute.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

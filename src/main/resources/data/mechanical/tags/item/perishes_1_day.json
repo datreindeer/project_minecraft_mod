@@ -32,6 +32,10 @@
     "mechanical:plucked_chicken",
     "mechanical:stew",
     "mechanical:broth",
-    "mechanical:sea_beet_leaves"
+    "mechanical:sea_beet_leaves",
+    "mechanical:raw_capercaillie",
+    "mechanical:raw_bustard",
+    "mechanical:plucked_capercaillie",
+    "mechanical:plucked_bustard"
   ]
 }

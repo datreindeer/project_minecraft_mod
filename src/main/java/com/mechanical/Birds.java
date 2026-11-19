@@ -3,6 +3,9 @@ package com.mechanical;
 import static com.mechanical.Mechanical.BLOCKS;
 import static com.mechanical.Mechanical.ITEMS;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -54,10 +57,24 @@ public final class Birds {
     /** Bird -> the whole plucked bird you can pick up from its plucked carcass. */
     private static Map<EntityType<?>, Supplier<Item>> plucked;
 
+    private static final List<Map.Entry<Supplier<? extends EntityType<?>>, Supplier<Item>>> REGISTERED = new ArrayList<>();
+
     private static Map<EntityType<?>, Supplier<Item>> plucked() {
-        if (plucked == null) plucked = Map.of(Wildlife.GOOSE.get(), PLUCKED_GOOSE, Wildlife.PHEASANT.get(), PLUCKED_PHEASANT,
-                Wildlife.PTARMIGAN.get(), PLUCKED_PTARMIGAN, Wildlife.ROCK_DOVE.get(), PLUCKED_PIGEON, EntityTypes.CHICKEN, PLUCKED_CHICKEN);
+        if (plucked == null) {
+            Map<EntityType<?>, Supplier<Item>> all = new HashMap<>(Map.of(Wildlife.GOOSE.get(), PLUCKED_GOOSE, Wildlife.PHEASANT.get(), PLUCKED_PHEASANT,
+                    Wildlife.PTARMIGAN.get(), PLUCKED_PTARMIGAN, Wildlife.ROCK_DOVE.get(), PLUCKED_PIGEON, EntityTypes.CHICKEN, PLUCKED_CHICKEN));
+            for (var e : REGISTERED) all.put(e.getKey().get(), e.getValue());
+            plucked = all;
+        }
         return plucked;
+    }
+
+    /**
+     * Adds an edible bird from its own feature class (call during mod construction): it leaves a carcass that is plucked,
+     * hung by the feet and can be taken whole as {@code plucked}.
+     */
+    public static void registerEdible(Supplier<? extends EntityType<?>> type, Supplier<Item> plucked) {
+        REGISTERED.add(Map.entry(type, plucked));
     }
 
     /** One of the edible birds that leave a carcass (light to carry, hung by the feet, can be taken whole once plucked). */
