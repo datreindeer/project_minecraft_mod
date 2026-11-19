@@ -2,6 +2,12 @@
   "values": [
     "mechanical:crude_bow",
     "mechanical:crude_fishing_rod",
+    "mechanical:sinew_bow",
+    "mechanical:bone_hook_fishing_rod",
+    "mechanical:fur_hood",
+    "mechanical:fur_coat",
+    "mechanical:fur_leggings",
+    "mechanical:fur_boots",
     "mechanical:glider_cloak"
   ]
 }
