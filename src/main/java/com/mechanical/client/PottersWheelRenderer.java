@@ -37,8 +37,8 @@ public class PottersWheelRenderer implements BlockEntityRenderer<PottersWheelBlo
     private static final float HEAD_TOP = 12 / 16.0F;
     /** Degrees per tick while turning (about 1.3 turns a second). */
     private static final float SPEED = 24.0F;
-    private static final ItemStack HEAD = model("wheel_head"), LUMP = model("wheel_clay_lump"), CENTRED = model("wheel_clay_centred"),
-            RAISED = model("wheel_clay_raised"), OPENED = model("wheel_clay_opened");
+    // made on first use: an ItemStack can't be built while the class loads during resource reload (data components aren't bound yet)
+    private static ItemStack HEAD, LUMP, CENTRED, RAISED, OPENED;
 
     public static class State extends BlockEntityRenderState {
         final ItemStackRenderState head = new ItemStackRenderState(), clay = new ItemStackRenderState();
@@ -71,6 +71,13 @@ public class PottersWheelRenderer implements BlockEntityRenderer<PottersWheelBlo
         if (wheel.spinning(now)) wheel.lastAngle = ((now % 360) + partialTicks) * SPEED % 360;
         state.angle = wheel.lastAngle;
         int seed = (int) wheel.getBlockPos().asLong();
+        if (HEAD == null) {
+            HEAD = model("wheel_head");
+            LUMP = model("wheel_clay_lump");
+            CENTRED = model("wheel_clay_centred");
+            RAISED = model("wheel_clay_raised");
+            OPENED = model("wheel_clay_opened");
+        }
         items.updateForTopItem(state.head, HEAD, ItemDisplayContext.NONE, wheel.getLevel(), null, seed);
         float t = wheel.steps() / (float) PottersWheelBlockEntity.THROW_STEPS;
         state.finished = wheel.done();
