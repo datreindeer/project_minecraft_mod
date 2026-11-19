@@ -185,6 +185,7 @@ lang.update({
     "message.mechanical.kiln.patched": "Patched: keep a fire burning to fire the new clay in",
     "gui.mechanical.kiln.temperature": "Temperature: %s°",
     "gui.mechanical.kiln.needs": "Needs %s°",
+    "gui.mechanical.kiln.speed": "Baking speed: %sx (hotter is faster)",
     "gui.mechanical.kiln.strain": "Overheating strain: %s%%",
     "gui.mechanical.kiln.cracked": "Cracked: no hotter than 600° until patched with %s Clay Balls",
 })

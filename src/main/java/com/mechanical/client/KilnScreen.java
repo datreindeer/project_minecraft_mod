@@ -99,6 +99,8 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
             lines.add(Component.translatable("gui.mechanical.kiln.temperature", menu.temperature()));
             if (menu.needed() > 0) lines.add(Component.translatable("gui.mechanical.kiln.needs", menu.needed())
                     .withStyle(menu.temperature() >= menu.needed() ? ChatFormatting.GREEN : ChatFormatting.GRAY));
+            if (menu.needed() > 0 && menu.temperature() >= menu.needed()) lines.add(Component.translatable("gui.mechanical.kiln.speed",
+                    String.format(java.util.Locale.ROOT, "%.1f", KilnBlockEntity.speed(menu.temperature(), menu.needed()))).withStyle(ChatFormatting.GOLD));
             if (menu.cracked()) lines.add(Component.translatable("gui.mechanical.kiln.cracked", KilnBlockEntity.REPAIR_CLAY).withStyle(ChatFormatting.RED));
             else if (menu.strain() > 0) lines.add(Component.translatable("gui.mechanical.kiln.strain", Math.round(menu.strain() * 100)).withStyle(ChatFormatting.RED));
             List<FormattedCharSequence> seq = lines.stream().map(Component::getVisualOrderText).toList();

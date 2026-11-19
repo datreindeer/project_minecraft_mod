@@ -228,6 +228,10 @@ Gäller alla recept. Kilnen bränner bränsle och värms så länge det finns n�
 (nollställs inte) tills temperaturen räcker. GUI:t visar ett vitt streck vid termometern på den temperatur som behövs
 (grönt när den nåtts).
 
+**Hetare går fortare:** tiden i tabellen gäller vid precis den temperatur som krävs. Varje 200° över det ger en hel takt
+till, upp till 4× (t.ex. ett recept som kräver 500° går 2× vid 700°, 3× vid 900°). Tooltipen på termometern visar
+takten ("Baking speed: 2.0x"). Gäller även smältning i Crucible, inte bränningen av en ny kiln.
+
 | In | Ut | Tid | Kräver |
 |---|---|---|---|
 | 1 Clay Ball | Brick | 20 s | 600° |

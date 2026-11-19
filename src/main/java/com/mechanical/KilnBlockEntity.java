@@ -35,7 +35,7 @@ import net.minecraft.world.level.storage.ValueOutput;
  * <p>Heat (Bronze Age phase 2): the kiln has a temperature in degrees. Lit, it climbs {@link #RISE_PER_SEC}°/s toward
  * the burning fuel's natural max; out, it falls {@link #COOL_PER_SEC}°/s (faster in rain and cold). Each pump of a
  * {@link BellowsBlock} adds {@link #PUMP}° up to the fuel's bellows max; above the natural max it sinks
- * {@link #OVER_FALL_PER_SEC}°/s. Every recipe needs a temperature, and a new kiln's clay only fires at
+ * {@link #OVER_FALL_PER_SEC}°/s. Every recipe needs a temperature (hotter bakes faster, see {@link #speed}), and a new kiln's clay only fires at
  * {@link #FIRING_TEMP}° or more. Pumping at the {@link #CEILING} strains the clay; full strain cracks the kiln
  * (CRACKS 3), which then stays under {@link #CRACKED_MAX}° until patched with {@link #REPAIR_CLAY} Clay Balls and fired in again.
  */
@@ -51,6 +51,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     public static final int STRAIN_PER_PUMP = 12, STRAIN_MAX = 100, REPAIR_CLAY = 4;
     /** Melting a crucible of ore, or re-melting one that set. */
     public static final int MELT_TICKS = 300, REMELT_TICKS = 200;
+    /** Baking speeds up with heat: one extra speed per this many degrees over what the recipe needs, up to {@link #MAX_SPEED}. */
+    public static final float DEGREES_PER_SPEED = 200, MAX_SPEED = 4;
 
     /** {@code count} input items are used up per result; bakes only at {@code temp}° or hotter. */
     public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp) {}
@@ -102,6 +104,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
 
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
     private int progress, total, burn, burnTotal, fireTicks;
+    /** Fraction of a progress tick carried over when baking faster than 1x. */
+    private float partial;
     /** Degrees; NaN until the first tick sets it to the air temperature. */
     private float temp = Float.NaN, ambient = 20;
     private int maxTemp = 650, bellowsTemp = 900, strain, repair, needTemp;
@@ -362,8 +366,13 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         }
         kiln.total = bake.ticks;
         if (!kiln.isLit() || kiln.temp < bake.temp) return; // too cold: progress waits
-        if (++kiln.progress >= kiln.total) {
+        kiln.partial += speed(kiln.temp, bake.temp);
+        int steps = (int) kiln.partial;
+        kiln.partial -= steps;
+        kiln.progress += steps;
+        if (kiln.progress >= kiln.total) {
             kiln.progress = 0;
+            kiln.partial = 0;
             input.shrink(bake.count);
             ItemStack out = kiln.items.get(OUTPUT);
             ItemStack result = bake.result;
@@ -371,6 +380,11 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             if (out.isEmpty()) kiln.items.set(OUTPUT, result);
             else out.grow(1);
         }
+    }
+
+    /** How many times faster than its base time a bake goes at {@code temp}° when it needs {@code need}°. */
+    public static float speed(float temp, int need) {
+        return Math.clamp(1 + (temp - need) / DEGREES_PER_SPEED, 1, MAX_SPEED);
     }
 
     /** Molten metal in the output slot stays molten while the kiln is at its melting point. */
