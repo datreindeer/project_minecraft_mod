@@ -90,8 +90,8 @@ public class GiantDeerModel extends EntityModel<WildAnimalRenderState> {
 
         addLeg(root, "left_front_leg", 3.2F, -8.5F, false, false);
         addLeg(root, "right_front_leg", -3.2F, -8.5F, false, true);
-        addLeg(root, "left_hind_leg", 3.0F, 8.5F, true, false);
-        addLeg(root, "right_hind_leg", -3.0F, 8.5F, true, true);
+        addLeg(root, "left_hind_leg", 2.9F, 8.4F, true, false); // 0.1 inside the barrel sides so the faces do not z-fight
+        addLeg(root, "right_hind_leg", -2.9F, 8.4F, true, true);
         return LayerDefinition.create(mesh, 128, 128);
     }
 

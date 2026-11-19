@@ -98,6 +98,8 @@ public class GiantDeer extends WildAnimal {
         if (isAggressive() && !wasAggressive) playSound(SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(6).value(), 5.0F, 0.6F);
         wasAggressive = isAggressive();
         flowerTrail();
+        if (isAggressive() && !isBroken() && horizontalCollision && tickCount % 4 == 0 && level() instanceof ServerLevel server
+                && net.neoforged.neoforge.event.EventHooks.canEntityGrief(server, this)) ramTree(server);
         if (!isBroken()) return;
         // beaten: drops the fight and runs from whoever is near, for as long as it stays this weak
         if (getTarget() != null) {
@@ -106,6 +108,24 @@ public class GiantDeer extends WildAnimal {
         } else if (tickCount % 20 == 0 && !AnimalFear.isPanicking(this)) {
             Player near = level().getNearestPlayer(this, 24);
             if (near != null && !near.isCreative() && !near.isSpectator()) AnimalFear.panic(this, near.position());
+        }
+    }
+
+    /** Charging into a tree trunk: the whole tree comes down, falling the way the deer is running. */
+    private void ramTree(ServerLevel level) {
+        net.minecraft.world.phys.AABB ahead = getBoundingBox().move(getDeltaMovement().x, 0, getDeltaMovement().z).inflate(0.5, 0, 0.5).setMaxY(getY() + 3);
+        for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(ahead)) {
+            var state = level.getBlockState(pos);
+            // the Ancient Oak's enchanted wood is wither immune and must never fall
+            if (!state.is(net.minecraft.tags.BlockTags.LOGS) || state.is(net.minecraft.tags.BlockTags.WITHER_IMMUNE)) continue;
+            net.minecraft.core.BlockPos cut = pos.immutable();
+            while (level.getBlockState(cut.below()).is(net.minecraft.tags.BlockTags.LOGS)) cut = cut.below(); // fell from the base
+            var tree = com.mechanical.TreeFelling.find(level, cut);
+            if (tree == null) continue; // a log wall or a cabin, not a natural tree
+            com.mechanical.TreeFelling.fell(level, cut, tree, getDirection(), this, net.minecraft.world.item.ItemStack.EMPTY);
+            playSound(SoundEvents.GOAT_RAM_IMPACT, 2.0F, 0.5F);
+            level.playSound(null, cut, SoundEvents.WOOD_BREAK, net.minecraft.sounds.SoundSource.HOSTILE, 2.0F, 0.5F);
+            return;
         }
     }
 

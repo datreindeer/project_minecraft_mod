@@ -398,6 +398,9 @@ smyger) och får då **röda lysande ögon**. **Blöder inte och flyr inte förr
 minst Tusk Dagger för att styckas: 6–9 Game Meat Scraps, 1–2 Raw Hide, 2–3 Sinew och **alltid en Giant Antler**
 (offras vid Offering Altar i Ancient Oak).
 
+**Fäller träd:** när den är arg och springer rakt in i en trädstam fälls hela trädet (som när en spelare fäller det),
+åt det håll den springer. Bara riktiga träd med löv, inte timmerväggar, och aldrig Ancient Oak. Följer `mobGriefing`.
+
 **Magisk:** runor i hornen och tagg-spetsarna lyser svagt grönt-guld (syns i mörker), den sprider ett svagt ljus omkring
 sig, sporer och glimtar driver runt hornen (en virvel när den laddar), blommor och ormbunkar spirar ibland där den går,
 och den blåser ett djupt hornrop när den går till anfall. När den dör: ett grönt-gyllene utbrott och en klingande ton.
@@ -532,7 +535,7 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters **fäller riktiga
   träd** nära lägret (trädet faller och blir Fallen Logs som vanligt), hugger upp Fallen Logs och bär veden till elden. Elder håller elden vid liv.
 - **Natt:** alla samlas runt lägerelden men går aldrig in i den. Jaktlaget håller ihop där det är.
-- **Försvar:** de slår tillbaka, hjälper varandra och anfaller monster i närheten (inte creepers).
+- **Försvar:** de slår tillbaka, hjälper varandra och anfaller monster i närheten (inte creepers). Monster jagar dem också, som zombier jagar bybor (inte creepers, endermen eller piglins).
 - **Humör:** de hälsar ibland i chatten. **Slår du en blir hela gruppen arg i ungefär en speldag. Dödar du en är gruppen
   fientlig för alltid.** **Bryter du lägrets Campfire blir de också arga** (en speldag). Verktyget faller med 10 % chans när en spelare dödar dem.
 - **Byteshandel (Elder):** 6 av 12 byten, t.ex. 6 Raw Hide → Bone Needle, 10 Flint → Flint Knife, 12 Raspberries → 4

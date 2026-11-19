@@ -1145,7 +1145,7 @@
     "text": "Grävling i sluttande skog. Flyr, men biter hårt om den skadas eller trängs."
   },
   "entity:giant_deer": {
-    "text": "Sällsynt miniboss med skovelhorn, 120 hp. Anfaller, blöder och flyr först vid 25 % hp. Ger alltid en Giant Antler."
+    "text": "Sällsynt miniboss med skovelhorn, 120 hp. Anfaller, blöder och flyr först vid 25 % hp. Ger alltid en Giant Antler. Fäller träd den springer in i när den är arg."
   },
   "ancient_oak_rune_log": {
     "text": "Runbark med lysande runa (ljus 6) i spiraler uppför Ancient Oak; ljusprickar driver från den. Okrossbar.",
