@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SCS",
+    "S S",
+    "S S"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "C": "mechanical:cordage"
+  },
+  "result": {
+    "id": "mechanical:smoking_rack"
+  }
+}

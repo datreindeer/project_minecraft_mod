@@ -15,6 +15,8 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 7. **Campfire** av Firewood, tänd med **Fire Drill**. Sätt en **Clay Kiln** på den → **Brick**, **Charcoal**, **Crucible**.
 8. Mat: döda djur → **Carcass** → stycka med Flint Knife → **meat scraps** (laga på Campfire), **Raw Hide** → **Scraped Hide** →
    **Drying Rack** → **Leather** → Leather Armor.
+9. Maten förskäms (rått kött på 1 dag). **Smoking Rack** över en Campfire → Smoked Meat/Fish, eller torka på Drying Rack →
+   Jerky, Dried Fish, Dried Berries: håller 30 dagar.
 
 ---
 
@@ -264,6 +266,21 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
   räknas, och efter 8 sådana (~9 min, ungefär en hel natt; räknas ihop, nollställs inte av sol) **ruttnar** den. En
   ruttnad hud ger **Rotten Flesh** när man högerklickar. Häng den alltså ute på morgonen och ta in läder före natten.
 - Bryts den släpper den sig själv + hud/Leather som satt på.
+- **Mat torkar också på den** (se "Förskämd mat, rökning och torkning"): en remsa rått kött (vilket rått kött som helst,
+  scraps eller vanilla) → **Jerky**, en rå fiskfilé (Raw Cod/Salmon) → **Dried Fish**, eller en näve med **4 bär** (alla
+  vilda bär + Sweet Berries) → **4 Dried Berries**. Torkar bara i **solen utan regn**: ~7 min i snitt ute i vinden (fri himmel,
+  inte inbyggd på tre sidor), ~14 min i lä. Natt och regn **pausar** bara, inget ruttnar på ställningen. Högerklicka med tom
+  hand när den är klar. Bryts ställningen släpps färdig torkad mat, men mat som håller på att torka går förlorad.
+
+### Smoking Rack
+Recept: `[Stick][Cordage][Stick]` / `[Stick][ ][Stick]` / `[Stick][ ][Stick]` (låses upp när man får rått kött eller rå fisk).
+- En hög träram med en tvärslå. Högerklicka med **rått kött eller rå fisk** (samma sorter som på Drying Rack) för att hänga
+  upp en remsa; upp till **4 remsor**, kött och fisk blandas inte. Remsorna syns på ramen (rå, rökt eller ruttna).
+- **Rök:** ställ den **ovanför** (1–2 block upp) eller **bredvid** en brinnande eller glödande Campfire, eller i ett rökigt rum
+  (rökhalt ≥ 0,3, se "Rök inomhus"). Efter **4 minuter i rök** blir alla remsor **Smoked Meat** / **Smoked Fish**. Hänger man
+  upp en ny remsa börjar röktiden om. En lägereld brinner 3–5 min och glöder 2 min till, så en eld räcker oftast; lägg på Firewood för säkerhets skull.
+- **Utan rök händer ingenting**, och remsorna förskäms på sin vanliga tid (1 dag). Den första remsan som ruttnar tar alla med sig → Rotten Flesh.
+- Tom hand tar ner allt (råa remsor behåller sin färskhet). Bryts den släpps ramen och det som hängde på.
 
 ### Stumps
 När ett träd fälls blir en stubbe kvar där man högg (14 träslag, samma som Firewood). Ger 1–2 Sticks, bryts snabbast
@@ -694,6 +711,38 @@ En flätad korg av pinnar med en tratt i mynningen, som läggs i vatten (stilla 
   Tropical Fish, 10 % Whole Pufferfish, 40 % Whole Cod; annars 70 % Whole Cod / 30 % Whole Salmon.
 - Testat: två fällor i en flod fylldes till 3 med random_tick_speed 30; en fälla i en vattenpöl på 2 block fick inget.
 
+### Förskämd mat, rökning och torkning
+Färsk mat **förskäms** med tiden. Tiden räknas i speltid (ticks, inte `/time set`) från när maten först hamnar i ett
+inventory. I tooltipen står **Fresh** (mer än halva tiden kvar), **Stale** (20–50 %) eller **Rotting** (under 20 %), och en
+stapel under ikonen (som hållbarhet) går från grönt till rött. När tiden är slut blir maten **Rotten Flesh** (kött och fisk)
+eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap.
+
+| Mat | Håller |
+|---|---|
+| Rått kött (alla scraps, vanilla rått kött), rå fisk (filéer och Whole fish) | **1 dag** (20 min) |
+| Bär (vilda, Sweet Berries, Glow Berries), vild svamp, Raw Porridge, Porridge, Peeled Egg | **2 dagar** |
+| Tillagat kött och fisk (scraps och vanilla), Roasted Mushrooms, Boiled Egg | **3 dagar** |
+| **Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries** | **30 dagar** |
+
+- Allt annat (bröd, äpplen, morötter, vanilla-soppor …) förskäms inte.
+- Maten kontrolleras en gång i sekunden i spelarens inventory och i den behållare man har öppen. Mat som ligger i en kista
+  förskäms **när kistan öppnas** nästa gång (tiden har gått ändå). Mat på marken räknas inte förrän den plockas upp.
+- Mat som stämplas inom samma 1/16 av sin hållbarhet staplas ihop (rått kött: inom 75 s); annars blir det två högar.
+- **Äta Rotting-mat:** 50 % chans på Hunger i 30 s. Stale går bra att äta.
+- Porridge-skålen försvinner om gröten förskäms.
+- Kyla bromsar inte förskämningen (än).
+
+**Konserverad mat** (görs på Smoking Rack och Drying Rack, se Block):
+
+| Mat | Från | Hunger | Mättnad |
+|---|---|---|---|
+| Smoked Meat | rått kött, 4 min rök | 3 | 0,8 |
+| Smoked Fish | Raw Cod/Salmon, 4 min rök | 3 | 0,7 |
+| Jerky | rått kött, torkat i solen (~7–14 min) | 2 | 0,8 |
+| Dried Fish | Raw Cod/Salmon, torkad i solen | 2 | 0,7 |
+| Dried Berries | 4 bär → 4, torkade i solen | 1 | 0,5 |
+
+Rökning går fortare och ger lite mer mat; torkning kräver ingen eld men bara fungerar i solsken.
 
 ### Byar och tamdjur
 - **Cow, Sheep, Pig, Chicken, Horse, Donkey och Llama spawnar inte i naturen.** Goat, Rabbit och Mooshroom finns kvar.
@@ -996,6 +1045,7 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Fish Bones | Bone Meal |
 | Bark | Plant Fibre (bast), Bark Basket |
 | Raw Hide | Scraped Hide, Drying Rack |
+| Rått kött eller Raw Cod/Salmon | Smoking Rack |
 | Wool Thread | White Wool (från tråd) |
 | Stone Axe Head | Double Stone Axe Head |
 | Twine | Flail |
@@ -1097,6 +1147,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Verktygstips: `client/StatTooltips.java`.
 - Odling: se Teknik i `docs/farming.md`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
+- Förskämning, rökning, torkning: `Preserving.java` (komponenten `mechanical:spoils_at`, kontroller, taggar), `SmokingRackBlock.java`, `SmokingRackBlockEntity.java`, `DryingRackBlock.java` (hide 6–11), `client/PreservingClient.java` (tooltip, stapel). Data `scripts/gen_preserving.py`, texturer `scripts/gen_preserving_textures.py`.
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Flotte och kanot: `Watercraft.java` (register, fartbroms, knivritsning), `DugoutBlankBlock.java`, `client/WatercraftModel.java`, `client/WatercraftRenderer.java`; data `scripts/gen_watercraft.py`, texturer `scripts/gen_watercraft_textures.py`.
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.

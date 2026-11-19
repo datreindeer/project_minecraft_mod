@@ -30,14 +30,21 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * HIDE: 0 empty, 1 drying, 2 dry, 3 phantom hide drying, 4 phantom leather, 5 rotted phantom hide.
  * A phantom hide only dries in daylight (bright sky above the rack); each random tick in the dark (night, rain, indoors)
  * counts in DARK, and on the {@link #ROT_TICKS}th it rots (undead flesh needs the sun).
+ * Food dries on it too (Preserving): 6 meat strip drying, 7 jerky, 8 fish drying, 9 dried fish, 10 berries drying
+ * (a handful of {@link #BERRIES}), 11 dried berries. Food dries only in sunlight without rain, slower than smoking, and
+ * faster out in the wind ({@link Wind#exposed}); night and rain just pause it.
  */
 public class DryingRackBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 5);
+    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 11);
     /** Dark random ticks (~68 s each on average) before a phantom hide rots: 8, about one full night. */
     public static final int ROT_TICKS = 8;
     public static final IntegerProperty DARK = IntegerProperty.create("dark", 0, ROT_TICKS - 1);
     private static final float DRY_CHANCE = 1.0F / 3.0F; // per random tick, about 3 minutes on average
+    /** Food per random tick in the sun: ~7 minutes out in the wind, ~14 minutes sheltered. */
+    private static final float FOOD_DRY_CHANCE = 1.0F / 6.0F, FOOD_DRY_SHELTERED = 1.0F / 12.0F;
+    /** Berries go up (and come down dried) by the handful. */
+    public static final int BERRIES = 4;
     private static final VoxelShape SHAPE_NS = box(0, 0, 6, 16, 16, 10), SHAPE_EW = box(6, 0, 0, 10, 16, 16);
 
     public DryingRackBlock(Properties properties) {
@@ -62,11 +69,13 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        boolean phantom = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get());
-        if (state.getValue(HIDE) != 0 || !(phantom || stack.is(Mechanical.SCRAPED_HIDE.get()))) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        boolean berries = stack.is(Preserving.DRYABLE_BERRIES);
+        int hang = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get()) ? 3 : stack.is(Mechanical.SCRAPED_HIDE.get()) ? 1 : stack.is(Preserving.SMOKABLE_MEAT) ? 6
+                : stack.is(Preserving.SMOKABLE_FISH) ? 8 : berries && stack.getCount() >= BERRIES ? 10 : 0;
+        if (state.getValue(HIDE) != 0 || hang == 0) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (!level.isClientSide()) {
-            stack.consume(1, player);
-            level.setBlock(pos, state.setValue(HIDE, phantom ? 3 : 1).setValue(DARK, 0), Block.UPDATE_ALL);
+            stack.consume(berries ? BERRIES : 1, player);
+            level.setBlock(pos, state.setValue(HIDE, hang).setValue(DARK, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
         }
         return InteractionResult.SUCCESS;
@@ -74,10 +83,17 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        int hide = state.getValue(HIDE);
-        if (hide != 2 && hide < 4) return InteractionResult.PASS;
+        ItemStack taken = switch (state.getValue(HIDE)) {
+            case 2 -> new ItemStack(Items.LEATHER);
+            case 4 -> new ItemStack(Mechanical.PHANTOM_LEATHER.get());
+            case 5 -> new ItemStack(Items.ROTTEN_FLESH);
+            case 7 -> new ItemStack(Preserving.JERKY.get());
+            case 9 -> new ItemStack(Preserving.DRIED_FISH.get());
+            case 11 -> new ItemStack(Preserving.DRIED_BERRIES.get(), BERRIES);
+            default -> ItemStack.EMPTY;
+        };
+        if (taken.isEmpty()) return InteractionResult.PASS;
         if (!level.isClientSide()) {
-            ItemStack taken = new ItemStack(hide == 2 ? Items.LEATHER : hide == 4 ? Mechanical.PHANTOM_LEATHER.get() : Items.ROTTEN_FLESH);
             player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
             level.setBlock(pos, state.setValue(HIDE, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -87,7 +103,8 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        return state.getValue(HIDE) == 1 || state.getValue(HIDE) == 3;
+        int hide = state.getValue(HIDE);
+        return hide == 1 || hide == 3 || hide == 6 || hide == 8 || hide == 10;
     }
 
     /** Sunlight reaches the rack: daytime and open sky. */
@@ -99,6 +116,13 @@ public class DryingRackBlock extends Block {
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(HIDE) == 1) {
             if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(HIDE, 2), Block.UPDATE_ALL);
+            return;
+        }
+        int hide = state.getValue(HIDE);
+        if (hide >= 6) { // food: sun and no rain, faster in the wind; otherwise it just waits
+            if (inDaylight(level, pos) && !level.isRainingAt(pos.above())
+                    && random.nextFloat() < (Wind.exposed(level, pos) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED))
+                level.setBlock(pos, state.setValue(HIDE, hide + 1), Block.UPDATE_ALL);
             return;
         }
         // phantom hide: dries as fast as a normal one, but only in daylight; the dark adds up until it rots
