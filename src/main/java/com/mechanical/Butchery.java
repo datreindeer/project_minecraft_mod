@@ -62,6 +62,8 @@ public final class Butchery {
                     List.of(new Extra(Wildlife.LARD, 0.5F, 1, 2), new Extra(Wildlife.TUSK, 0.4F, 1, 2)))),
             Map.entry(Wildlife.HARE.get(), new Yield(Mechanical.RABBIT_SCRAPS, 1, 1, List.of(new Extra(() -> Items.RABBIT_HIDE, 0.35F, 1, 1)),
                     List.of(new Extra(() -> Items.RABBIT_FOOT, 0.08F, 1, 1)))),
+            Map.entry(Wildlife.DESERT_HARE.get(), new Yield(Mechanical.RABBIT_SCRAPS, 1, 1, List.of(new Extra(() -> Items.RABBIT_HIDE, 0.35F, 1, 1)),
+                    List.of(new Extra(() -> Items.RABBIT_FOOT, 0.08F, 1, 1)))),
             Map.entry(Wildlife.PHEASANT.get(), new Yield(Mechanical.CHICKEN_SCRAPS, 1, 1, List.of(new Extra(() -> Items.FEATHER, 1.0F, 2, 3)), List.of())),
             Map.entry(Wildlife.AUROCHS.get(), new Yield(Mechanical.BEEF_SCRAPS, 3, 5, List.of(hide(0.6F)),
                     List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 2), new Extra(Wildlife.HORN, 0.5F, 1, 2)))),
@@ -107,6 +109,7 @@ public final class Butchery {
     /** Wild, grown passive animals become carcasses; pets, babies and undead horses keep vanilla behaviour. */
     static boolean leavesCarcass(LivingEntity entity) {
         if (!(entity instanceof Animal animal) || animal.isBaby()) return false;
+        if (animal instanceof com.mechanical.wildlife.FlockBird) return false; // small birds just drop their feathers
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;
         if (animal instanceof AbstractHorse horse && horse.isTamed()) return false;
         return entity.getType() != EntityTypes.SKELETON_HORSE && entity.getType() != EntityTypes.ZOMBIE_HORSE;

@@ -86,6 +86,11 @@ public abstract class WildAnimal extends Animal {
         return entityData.get(DOZING);
     }
 
+    /** Wakes it up (birds taking off with their flock). */
+    protected void wake() {
+        entityData.set(DOZING, false);
+    }
+
     /** 0..1: how far the head is lowered for grazing. */
     public float grazeAmount(float partialTick) {
         int t = entityData.get(GRAZE);

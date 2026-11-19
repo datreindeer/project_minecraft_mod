@@ -1,0 +1,22 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:meadow",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:stony_peaks",
+    "minecraft:stony_shore",
+    "minecraft:savanna_plateau"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:rock_dove",
+      "weight": 8,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 4,
+        "max_inclusive": 7
+      }
+    }
+  ]
+}

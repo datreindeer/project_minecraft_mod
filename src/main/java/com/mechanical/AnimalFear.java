@@ -55,7 +55,8 @@ public final class AnimalFear {
 
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide() && event.getEntity() instanceof Animal animal) {
+        // flocking birds fly off instead (FlockBird.scare); they still read the panic state
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof Animal animal && !(animal instanceof com.mechanical.wildlife.FlockBird)) {
             animal.goalSelector.addGoal(0, new FleeGoal(animal));
         }
     }

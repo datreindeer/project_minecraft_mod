@@ -369,6 +369,7 @@ texturer och fungerar med kroppar, styckning, blod och rädsla.
 | Red Deer (stag, 35 %) | 30 | Horn. Skadad → stångar (5 skada) | Raw Hide 45 % | Som hind + **1–2 Antler** |
 | Wild Boar | 26 | Grupp 2–4, mindre skygg. Skadad → anfaller (4 skada) med gruppen. I grupp kan den anfalla en spelare som kommer nära (20 % chans) | Raw Hide 35 % | 2–3 Pork Scraps, Lard 50 % (1–2), Tusk 40 % (1–2) |
 | Hare | 8 | Ensam, snabb, skuttar och kastar sig i sidled när den flyr | Rabbit Hide 35 % | 1 Rabbit Scraps, Rabbit's Foot 8 % |
+| Desert Hare | 8 | Som haren men blek sandfärgad; öken och badlands (1–2) | Rabbit Hide 35 % | 1 Rabbit Scraps, Rabbit's Foot 8 % |
 | Pheasant | 7 | Trycker i gräset, flyger upp när man kommer inom 5 block (smyg för att komma nära) | 2–3 Feathers | 1 Chicken Scraps |
 
 **Ungar:** spawnar i flocken (den första i en flock är alltid vuxen) och växer upp efter ~20 minuter. De följer de
@@ -398,6 +399,20 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
 | **Badger** | Skog, dark forest, taiga, i sluttningar (1–2) | Håller sig undan, men **biter hårt** (3) om den skadas eller du kommer alldeles inpå utan att smyga | 1–2 scraps, Raw Hide 35 %, Lard 40 % |
 
 **4 Squirrel Pelt + Twine → Raw Hide** (shapeless), som sedan skrapas och torkas som vanligt.
+
+### Fåglar i flock
+Lever i flockar som går och pickar på marken, sover på natten och då och då lyfter tillsammans (ledaren flyger upp, de
+andra följer efter ett och ett), flyger runt en stund och landar igen. Kommer en spelare nära (smyg för att komma
+närmare) eller blir någon i flocken skadad lyfter **hela flocken** på en gång och flyger bort från dig. **En pil dödar
+alltid.** Lämnar ingen kadaver: fjädrarna (och lite kött) faller direkt — ett sätt att få fjädrar till pilar.
+
+| Fågel | Var | Beteende | Drops |
+|---|---|---|---|
+| **Hooded Crow** (gråkråka) | Slätt, skog, björkskog, dark forest, savann (3–6) | Lös, föränderlig flock; landar på marken eller i trädtopparna | 1–2 Feather, 0–1 Game Meat Scraps |
+| **Greylag Goose** (grågås) | Floder, träsk, frusna floder (4–7) | Flyger högt i **V-formation**, landar helst på vatten och simmar omkring | 2–4 Feather, 1–2 Chicken Scraps |
+| **Rock Dove** (klippduva) | Meadow, windswept hills, stony peaks, klippstränder (4–7) | Snabb flock, landar på marken | 1–2 Feather, 0–1 Chicken Scraps |
+| **Willow Ptarmigan** (dalripa) | Snöiga slätter/taiga, grove, taiga (3–5) | Trycker (låter dig komma nära), flyger lågt och kort. **Vit** där det snöar, annars brun med vita vingar | 1–3 Feather, 1 Chicken Scraps |
+| **Seagull** (fiskmås) | Stränder, klippstränder (2–4); ibland floder och hav | Seglar i cirklar över vattnet och skriker, **dyker mot ytan där det finns fisk**, vilar på stranden eller flyter på vattnet | 1–3 Feather |
 
 ### Giant Deer (miniboss)
 Megaloceros, jättehjorten: sällsynt (vikt 1), alltid ensam, i skog, taiga, slätt och meadow. **Dubbelt så stor som

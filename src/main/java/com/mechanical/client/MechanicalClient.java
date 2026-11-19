@@ -52,6 +52,10 @@ public class MechanicalClient {
             HareModel model = new HareModel(c.bakeLayer(HareModel.LAYER));
             return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.3F);
         });
+        event.registerEntityRenderer(Wildlife.DESERT_HARE.get(), c -> {
+            HareModel model = new HareModel(c.bakeLayer(HareModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.3F);
+        });
         event.registerEntityRenderer(Wildlife.PHEASANT.get(), c -> new WildAnimalRenderer<>(c,
                 new PheasantModel(c.bakeLayer(PheasantModel.LAYER)), new PheasantChickModel(c.bakeLayer(PheasantChickModel.LAYER)), 1.0F, 0.3F));
         event.registerEntityRenderer(Wildlife.AUROCHS.get(), c -> new WildAnimalRenderer<>(c,
@@ -79,6 +83,12 @@ public class MechanicalClient {
             BadgerModel model = new BadgerModel(c.bakeLayer(BadgerModel.LAYER));
             return new WildAnimalRenderer<>(c, model, model, 0.55F, 0.45F);
         });
+        // flocking birds: layer, how far the neck reaches forward in flight, wing-beat amplitude, shadow
+        event.registerEntityRenderer(Wildlife.CROW.get(), c -> new BirdRenderer(c, BirdModel.CROW, 0.5F, 0.85F, 0.25F));
+        event.registerEntityRenderer(Wildlife.GOOSE.get(), c -> new BirdRenderer(c, BirdModel.GOOSE, 1.45F, 0.6F, 0.4F));
+        event.registerEntityRenderer(Wildlife.ROCK_DOVE.get(), c -> new BirdRenderer(c, BirdModel.ROCK_DOVE, 0.4F, 0.95F, 0.2F));
+        event.registerEntityRenderer(Wildlife.PTARMIGAN.get(), c -> new BirdRenderer(c, BirdModel.PTARMIGAN, 0.3F, 1.0F, 0.25F));
+        event.registerEntityRenderer(Wildlife.SEAGULL.get(), c -> new BirdRenderer(c, BirdModel.SEAGULL, 0.4F, 0.55F, 0.3F));
         event.registerEntityRenderer(Wildlife.GIANT_DEER.get(), c -> {
             GiantDeerModel model = new GiantDeerModel(c.bakeLayer(GiantDeerModel.LAYER));
             return new WildAnimalRenderer<>(c, model, model, 0.5F, 2.4F) {
@@ -125,6 +135,11 @@ public class MechanicalClient {
         event.registerLayerDefinition(HedgehogModel.LAYER, HedgehogModel::createBodyLayer);
         event.registerLayerDefinition(BadgerModel.LAYER, BadgerModel::createBodyLayer);
         event.registerLayerDefinition(GiantDeerModel.LAYER, GiantDeerModel::createBodyLayer);
+        event.registerLayerDefinition(BirdModel.CROW, BirdModel::createCrowLayer);
+        event.registerLayerDefinition(BirdModel.GOOSE, BirdModel::createGooseLayer);
+        event.registerLayerDefinition(BirdModel.ROCK_DOVE, BirdModel::createRockDoveLayer);
+        event.registerLayerDefinition(BirdModel.PTARMIGAN, BirdModel::createPtarmiganLayer);
+        event.registerLayerDefinition(BirdModel.SEAGULL, BirdModel::createSeagullLayer);
     }
 
     /** Passes the bear's rearing amount to its model. */

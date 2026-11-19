@@ -3,6 +3,11 @@ package com.mechanical.wildlife;
 import static com.mechanical.Mechanical.ENTITY_TYPES;
 import static com.mechanical.Mechanical.ITEMS;
 
+import java.util.function.Predicate;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -10,6 +15,9 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -57,6 +65,22 @@ public final class Wildlife {
     public static final DeferredHolder<EntityType<?>, EntityType<GiantDeer>> GIANT_DEER = ENTITY_TYPES.registerEntityType(
             "giant_deer", GiantDeer::new, MobCategory.CREATURE, b -> b.sized(2.2F, 4.6F).eyeHeight(4.0F).clientTrackingRange(16));
 
+    // flocking birds (FlockBird): no carcass, they drop feathers (loot tables)
+    public static final DeferredHolder<EntityType<?>, EntityType<FlockBird>> CROW = ENTITY_TYPES.registerEntityType(
+            "crow", (t, l) -> new FlockBird(t, l, FlockBird.CROW), MobCategory.CREATURE, b -> b.sized(0.45F, 0.5F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<FlockBird>> GOOSE = ENTITY_TYPES.registerEntityType(
+            "goose", (t, l) -> new FlockBird(t, l, FlockBird.GOOSE), MobCategory.CREATURE, b -> b.sized(0.7F, 0.9F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<FlockBird>> ROCK_DOVE = ENTITY_TYPES.registerEntityType(
+            "rock_dove", (t, l) -> new FlockBird(t, l, FlockBird.ROCK_DOVE), MobCategory.CREATURE, b -> b.sized(0.4F, 0.4F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Ptarmigan>> PTARMIGAN = ENTITY_TYPES.registerEntityType(
+            "ptarmigan", Ptarmigan::new, MobCategory.CREATURE, b -> b.sized(0.45F, 0.45F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Seagull>> SEAGULL = ENTITY_TYPES.registerEntityType(
+            "seagull", Seagull::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.55F).clientTrackingRange(10));
+
+    // desert / badlands
+    public static final DeferredHolder<EntityType<?>, EntityType<DesertHare>> DESERT_HARE = ENTITY_TYPES.registerEntityType(
+            "desert_hare", DesertHare::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.5F).clientTrackingRange(8));
+
     // what they give when butchered (see Butchery)
     public static final DeferredItem<Item> VENISON_SCRAPS = food("venison_scraps", 1, 0.1F);
     public static final DeferredItem<Item> COOKED_VENISON_SCRAPS = food("cooked_venison_scraps", 3, 0.8F);
@@ -88,6 +112,12 @@ public final class Wildlife {
     public static final DeferredItem<SpawnEggItem> HEDGEHOG_SPAWN_EGG = egg("hedgehog_spawn_egg", HEDGEHOG);
     public static final DeferredItem<SpawnEggItem> BADGER_SPAWN_EGG = egg("badger_spawn_egg", BADGER);
     public static final DeferredItem<SpawnEggItem> GIANT_DEER_SPAWN_EGG = egg("giant_deer_spawn_egg", GIANT_DEER);
+    public static final DeferredItem<SpawnEggItem> CROW_SPAWN_EGG = egg("crow_spawn_egg", CROW);
+    public static final DeferredItem<SpawnEggItem> GOOSE_SPAWN_EGG = egg("goose_spawn_egg", GOOSE);
+    public static final DeferredItem<SpawnEggItem> ROCK_DOVE_SPAWN_EGG = egg("rock_dove_spawn_egg", ROCK_DOVE);
+    public static final DeferredItem<SpawnEggItem> PTARMIGAN_SPAWN_EGG = egg("ptarmigan_spawn_egg", PTARMIGAN);
+    public static final DeferredItem<SpawnEggItem> SEAGULL_SPAWN_EGG = egg("seagull_spawn_egg", SEAGULL);
+    public static final DeferredItem<SpawnEggItem> DESERT_HARE_SPAWN_EGG = egg("desert_hare_spawn_egg", DESERT_HARE);
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
         return ITEMS.registerSimpleItem(name, p -> p.food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build()));
@@ -117,12 +147,19 @@ public final class Wildlife {
         event.put(HEDGEHOG.get(), Hedgehog.createAttributes().build());
         event.put(BADGER.get(), Badger.createAttributes().build());
         event.put(GIANT_DEER.get(), GiantDeer.createAttributes().build());
+        event.put(CROW.get(), FlockBird.createAttributes(4.0).build());
+        event.put(GOOSE.get(), FlockBird.createAttributes(8.0).build());
+        event.put(ROCK_DOVE.get(), FlockBird.createAttributes(3.0).build());
+        event.put(PTARMIGAN.get(), FlockBird.createAttributes(4.0).build());
+        event.put(SEAGULL.get(), FlockBird.createAttributes(5.0).build());
+        event.put(DESERT_HARE.get(), Hare.createAttributes().build());
     }
 
     @SubscribeEvent
     static void spawnRules(RegisterSpawnPlacementsEvent event) {
         for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get(),
-                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get(), SQUIRREL.get(), HEDGEHOG.get(), GIANT_DEER.get()}) {
+                AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get(), SQUIRREL.get(), HEDGEHOG.get(), GIANT_DEER.get(),
+                CROW.get(), PTARMIGAN.get()}) {
             register(event, type);
         }
         // bears only turn up near wild berry bushes
@@ -139,6 +176,28 @@ public final class Wildlife {
         // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule
         event.register(MOUFLON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ROCK_DOVE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // desert hares: on sand (the rabbit's ground)
+        event.register(DESERT_HARE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (type, level, reason, pos, random) -> level.getBlockState(pos.below()).is(BlockTags.RABBITS_SPAWNABLE_ON)
+                        && level.getRawBrightness(pos, 0) > 8,
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // water birds: on the water surface or the shore (sand, gravel, stone for gulls; grass for geese)
+        event.register(GOOSE.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING,
+                (type, level, reason, pos, random) -> waterBirdSpawn(level, pos, s -> s.is(BlockTags.ANIMALS_SPAWNABLE_ON)),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(SEAGULL.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING,
+                (type, level, reason, pos, random) -> waterBirdSpawn(level, pos,
+                        s -> s.is(BlockTags.SAND) || s.is(Blocks.GRAVEL) || s.is(BlockTags.BASE_STONE_OVERWORLD)),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+    }
+
+    /** Open sky, daylight, air here, and water or the right shore underneath. Reads only this column (safe at chunk generation). */
+    private static boolean waterBirdSpawn(LevelAccessor level, BlockPos pos, Predicate<BlockState> shore) {
+        BlockState below = level.getBlockState(pos.below());
+        return level.getBlockState(pos).isAir() && level.canSeeSky(pos) && level.getRawBrightness(pos, 0) > 8
+                && (below.getFluidState().is(FluidTags.WATER) || shore.test(below));
     }
 
     @SuppressWarnings("unchecked")

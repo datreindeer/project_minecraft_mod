@@ -104,3 +104,46 @@ stenig strand), sällan **Native Copper**, ofta inget.
 - Cassiterite → 1 **Crushed Tin Ore**
 
 Krossad malm används i fas 3 (smälts, eller tvättas i Pan först för mer metall).
+
+## Fas 2: värme (spec)
+
+**Temperatur i Clay Kiln.** Kilnen får en temperatur i grader (sparas, syns i GUI). Kall kiln = omgivningen (~20°,
+kallare i snöbiomer via Temperature-systemet).
+- **Tänd:** temperaturen stiger mot bränslets **naturliga max** med ~5°/s (20° → 800° på ~2,5 min).
+- **Släckt:** sjunker mot omgivningen med ~3°/s. Regn och kyla kyler snabbare.
+- **Bälgpump:** varje pump ger **+40°**, upp till bränslets **max med bälg**. Över det naturliga maxet sjunker den
+  ~2°/s, så man behöver pumpa ungefär 3 gånger i minuten för att hålla värmen.
+
+| Bränsle | Naturligt max | Max med bälg |
+|---|---|---|
+| Stick, Sapling, Planks | 500° | 700° |
+| Firewood, Log | 650° | 900° |
+| Charcoal, Coal | 800° | 1300° |
+
+Slutsats: brons (950°) och koppar (1085°) kräver **Charcoal och bälg**. Trä räcker för lera.
+
+**Temperaturkrav på kilnens recept** (beslutat: gäller alla recept, även stenålderns). Receptet bakar bara när kilnen
+är tillräckligt varm (pausar annars):
+- Charcoal (av Log/Firewood): 400°
+- Brick, Clay Bucket: 600°
+- Crucible: 800° (kräver Charcoal-bränsle eller bälg, ett första mål)
+- Första bränningen av en ny kiln: räknas bara medan den är minst 500°.
+- Fas 3: smältning i Crucible när temperaturen når metallens smältpunkt.
+
+**Bellows.** Ett block som ställs bredvid kilnens eldstad (nedre halvan) med munstycket mot den. Högerklick = en pump
+(kort cooldown ~0,5 s): blåsbälgen trycks ihop (animerad modell), luftljud, gnistor och flammor ur kilnens öppning.
+Fungerar bara när den pekar på en tänd kiln.
+- **Clay Tuyere** (lerrör/munstycke): formas av lera och bränns i kilnen (600°).
+- **Bellows:** `[Planks][Scraped Hide][Planks]` / `[Planks][Scraped Hide][Planks]` / `[Twine][Clay Tuyere][Twine]`.
+
+**Mätare.** Kilnens GUI får en lodrät termometer med markeringar vid 600° (lera), 950° (brons) och 1085° (koppar),
+färg från mörkröd till vitgul, och exakt temperatur när man håller musen över den. Kilnen syns hetare: mer och ljusare
+eld ur öppningen, glödande öppning över ~900°.
+
+**Överhettning (beslutat: kilnen kan spricka).** Taket är 1300°. Pumpar man när kilnen redan är vid taket byggs en
+**påfrestning** upp (syns som en varningsstapel i GUI:t och knastrande ljud, sprickor i texturen i 2 steg); den sjunker
+långsamt igen när man slutar. Når påfrestningen max **spricker kilnen**: elden slocknar, innehållet i input-slotten
+förstörs om det var smält metall (fas 3), och kilnen är **Cracked**. En sprucken kiln blir inte varmare än 600° tills
+den lagas: högerklicka med 4 Clay Ball (en i taget), sedan måste lagningen brännas in (som första bränningen, kortare).
+
+**Beslutat:** Bellows är ett eget block bredvid eldstaden; Clay Tuyere krävs.

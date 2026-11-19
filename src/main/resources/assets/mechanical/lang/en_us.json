@@ -402,5 +402,17 @@
   "chat.mechanical.tribesperson.warn": "This is our land. Turn back, stranger, or bleed.",
   "chat.mechanical.tribesperson.thief": "Thief! Those are our stores!",
   "chat.mechanical.tribesperson.gift": "A gift? You are kind. We will remember.",
-  "chat.mechanical.tribesperson.no_trade_stranger": "We do not trade with strangers. Earn our trust first."
+  "chat.mechanical.tribesperson.no_trade_stranger": "We do not trade with strangers. Earn our trust first.",
+  "entity.mechanical.crow": "Hooded Crow",
+  "item.mechanical.crow_spawn_egg": "Hooded Crow Spawn Egg",
+  "entity.mechanical.goose": "Greylag Goose",
+  "item.mechanical.goose_spawn_egg": "Greylag Goose Spawn Egg",
+  "entity.mechanical.rock_dove": "Rock Dove",
+  "item.mechanical.rock_dove_spawn_egg": "Rock Dove Spawn Egg",
+  "entity.mechanical.ptarmigan": "Willow Ptarmigan",
+  "item.mechanical.ptarmigan_spawn_egg": "Willow Ptarmigan Spawn Egg",
+  "entity.mechanical.seagull": "Seagull",
+  "item.mechanical.seagull_spawn_egg": "Seagull Spawn Egg",
+  "entity.mechanical.desert_hare": "Desert Hare",
+  "item.mechanical.desert_hare_spawn_egg": "Desert Hare Spawn Egg"
 }

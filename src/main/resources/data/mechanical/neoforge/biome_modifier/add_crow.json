@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:flower_forest",
+    "minecraft:dark_forest",
+    "minecraft:savanna",
+    "minecraft:windswept_forest"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:crow",
+      "weight": 6,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 3,
+        "max_inclusive": 6
+      }
+    }
+  ]
+}
