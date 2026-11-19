@@ -34,7 +34,7 @@ public abstract class LivingEntityRendererMixin {
             target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;I)V"))
     @SuppressWarnings({"unchecked", "rawtypes"})
     private int mechanical$agedTint(Model<?> model, Object state, PoseStack poseStack, RenderType renderType, int light, int overlay, int tint, UvMapping uv, int outline) {
-        if (!(state instanceof LivingEntityRenderState living) || !CarcassRenderer.isAged(living)) return tint;
+        if (!(state instanceof LivingEntityRenderState living) || !CarcassRenderer.isAged(living) && !CarcassRenderer.isTurning(living)) return tint;
         Identifier texture = ((LivingEntityRenderer) (Object) this).getTextureLocation(living);
         return ARGB.multiply(tint, CarcassRenderer.carcassTint(living, texture));
     }

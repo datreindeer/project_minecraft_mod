@@ -56,6 +56,9 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     private static final Map<Identifier, Identifier> AGED_TEXTURES = new HashMap<>();
     /** Model tint of an aged carcass that has no dried texture: hide and coat gone darker, browner and duller. */
     public static final int AGED_TINT = 0xFFA08C78;
+    private static final ContextKey<Boolean> TURNING = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "turning"));
+    /** Model tint of a body close to spoiling: a sickly green-grey cast. */
+    public static final int TURNING_TINT = 0xFF9AA67A;
 
     public static boolean isCarcass(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(CARCASS));
@@ -67,6 +70,10 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
 
     public static boolean isAged(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(AGED));
+    }
+
+    public static boolean isTurning(EntityRenderState state) {
+        return Boolean.TRUE.equals(state.getRenderData(TURNING));
     }
 
     /** mechanical:textures/entity/skinned/cow/x.png -> mechanical:textures/entity/skinned_aged/cow/x.png, if that texture exists. */
@@ -86,9 +93,10 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
 
     /** Extra model tint: aged without a dried texture of its own (the hide is still on, or no flesh texture for it). */
     public static int carcassTint(LivingEntityRenderState state, Identifier texture) {
-        if (!isAged(state)) return -1;
-        Identifier drawn = carcassTexture(state, texture);
-        return drawn.getPath().startsWith("textures/entity/skinned_aged/") ? -1 : AGED_TINT;
+        int tint = -1;
+        if (isAged(state) && !carcassTexture(state, texture).getPath().startsWith("textures/entity/skinned_aged/")) tint = AGED_TINT;
+        if (isTurning(state)) tint = net.minecraft.util.ARGB.multiply(tint, TURNING_TINT);
+        return tint;
     }
 
     /** minecraft:textures/entity/cow/x.png -> mechanical:textures/entity/skinned/cow/x.png, if that texture exists. */
@@ -187,6 +195,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
                 else living.hasRedOverlay = true;
             }
             if (carcass.isAged()) living.setRenderData(AGED, true);
+            if (carcass.isTurning()) living.setRenderData(TURNING, true);
         }
         // a dead phantom: wings spread limp on the ground instead of flapping
         if (state.animal instanceof PhantomRenderState phantom) phantom.flapTime = LIMP_FLAP;

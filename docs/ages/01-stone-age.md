@@ -565,8 +565,11 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
 - **Händerna är upptagna:** inga items kan användas (äta, kasta …). Ett slag, att bryta ett block eller en **träff på 4 skada
   eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör eller loggar du ut, eller kommer mer
   än 12 block ifrån den, ligger den kvar.
-- Burna, släpade, lastade och upphängda kroppar försvinner inte, men **köttet förskäms ett dygn (20 min) efter att djuret
-  dog**: då ger styckningen Rotten Flesh i stället för kött (hud och resten som vanligt). Läggs kroppen på marken igen
+- Burna, släpade, lastade och upphängda kroppar försvinner inte, men köttet förskäms: **ett dygn (20 min) efter att djuret
+  dog** om kroppen bärs eller ligger på Travois/vagn, **tre dygn (1 h)** medan den hänger på en Hanging Rack (svalt och
+  luftigt). Då ger styckningen Rotten Flesh i stället för kött (hud och resten som vanligt). Tas den ner från ställningen
+  gäller ett dygn igen. Vid **75 % av tiden** börjar kroppen bli dålig: den får en grönaktig ton och flugor surrar runt den.
+  **Högerklicka en hängande kropp med tom hand** för att se hur länge den hängt och hur länge den håller. Läggs kroppen på marken igen
   börjar 5-minutersklockan gå.
 
 **Travois** (släpsläde): recept `[Tool Rod][ ][Tool Rod]` / `[Cordage][Scraped Hide][Cordage]` / `[Tool Rod][ ][Tool Rod]`

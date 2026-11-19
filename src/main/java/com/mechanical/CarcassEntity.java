@@ -58,10 +58,15 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<java.util.Optional<BlockPos>> HUNG_AT = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     /** Ticks after the kill when a carcass that is hauled, on a travois or hung has spoiled (one day). */
     public static final int SPOILS = 24000;
+    /** On a Hanging Rack (cool, airy, off the ground) a body keeps three days from the kill. */
+    public static final int HUNG_SPOILS = 3 * 24000;
+    /** From this share of its time it starts to turn: greenish and flies (a warning before it spoils). */
+    private static final float TURNING = 0.75F;
     /** Hung this long (3 minutes) it has aged: a little more meat on the rack. */
     public static final int AGED = 3600;
     /** Has hung {@link #AGED} ticks: synced so it looks dried (CarcassRenderer), stops dripping and draws a fly or two. */
     private static final EntityDataAccessor<Boolean> AGED_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> TURNING_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
     /** Colour of the flies around an aged carcass. */
     private static final int FLY = 0x1A1712;
     /** Each of the two passes takes this share of the work for the body size. */
@@ -173,9 +178,19 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return new Vec3(pos.getX() + 0.5, pos.getY() + HangingRackBlock.HOOK - getDimensions(Pose.STANDING).height(), pos.getZ() + 0.5);
     }
 
-    /** A day after the kill: the meat has turned. Only bodies kept off the ground last that long. */
+    /** Ticks from the kill until the meat turns: a day, or three while it hangs on a rack. */
+    public int spoilLimit() {
+        return hungAt() != null ? HUNG_SPOILS : SPOILS;
+    }
+
+    /** The meat has turned. Only bodies kept off the ground last long enough for that. */
     public boolean spoiled() {
-        return age > SPOILS;
+        return age > spoilLimit();
+    }
+
+    /** Both sides: close to spoiling (greenish, flies). */
+    public boolean isTurning() {
+        return entityData.get(TURNING_LOOK);
     }
 
     public boolean aged() {
@@ -210,13 +225,15 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         super.tick();
         if (level().isClientSide()) {
             // a fly or two buzzing round an aged body on the rack
-            if (isAged() && hungAt() != null && random.nextInt(8) == 0)
+            if ((isAged() && hungAt() != null && random.nextInt(8) == 0) || (isTurning() && random.nextInt(3) == 0))
                 level().addParticle(new DustParticleOptions(FLY, 0.45F), getX() + random.nextGaussian() * getBbWidth() * 0.6,
                         getY() + random.nextDouble() * getBbHeight(), getZ() + random.nextGaussian() * getBbWidth() * 0.6,
                         random.nextGaussian() * 0.02, random.nextGaussian() * 0.01, random.nextGaussian() * 0.02);
             return; // the client may not simulate movement; it gets the position from the server
         }
         age++;
+        boolean turning = age >= spoilLimit() * TURNING;
+        if (turning != isTurning()) entityData.set(TURNING_LOOK, turning);
         BlockPos rack = hungAt();
         if (rack != null) {
             if (!level().getBlockState(rack).is(CarcassHauling.HANGING_RACK.get())) unhang(); // the rack is gone: it drops
@@ -266,6 +283,13 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         if (tickCount < HIDDEN_TICKS) return InteractionResult.PASS;
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && (player.isShiftKeyDown() || haulerId() == player.getId()))
             return CarcassHauling.pickUpOrLetGo(player, this);
+        if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && hungAt() != null) {
+            // a look at the body on the rack: how long it has hung and how long it keeps
+            if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(
+                    spoiled() ? "message.mechanical.carcass.hung_spoiled" : aged() ? "message.mechanical.carcass.hung_aged" : "message.mechanical.carcass.hung",
+                    hungTicks / 1200, Math.max(0, spoilLimit() - age) / 1200));
+            return InteractionResult.SUCCESS;
+        }
         if (!(player.getItemInHand(hand).getItem() instanceof KnifeItem knife)) return InteractionResult.PASS;
         if (knife.tier() < Butchery.requiredKnifeTier(animal)) {
             if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.knife_too_weak"));
@@ -328,6 +352,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(HAULER, -1);
         builder.define(HUNG_AT, java.util.Optional.empty());
         builder.define(AGED_LOOK, false);
+        builder.define(TURNING_LOOK, false);
     }
 
     @Override
