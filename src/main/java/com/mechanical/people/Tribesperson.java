@@ -25,6 +25,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -116,7 +117,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     Vec3 killPos;
     long killTime;
     boolean wantsHome, carryingWood;
-    private long nextFireTend;
+    private long nextFireTend, corneredAt = -1000;
+    /** Where the group is going to set up a new camp (SetUpCampGoal); since when it has had no fire. */
+    BlockPos newCamp;
+    long homelessSince = -1;
 
     public Tribesperson(EntityType<? extends Tribesperson> type, Level level) {
         super(type, level);
@@ -169,6 +173,31 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     void setLeader(boolean leader) {
         this.leader = leader;
+    }
+
+    /** Hunters, and anyone holding a weapon (axe, sword, spear, bow ...), fight monsters; the rest keep away from them. */
+    public boolean isArmed() {
+        if (role() == TribeRole.HUNTER) return true;
+        ItemStack held = getMainHandItem();
+        return held.is(ItemTags.AXES) || held.is(ItemTags.SWORDS) || held.is(ItemTags.SPEARS) || held.is(Mechanical.TUSK_DAGGER.get())
+                || held.getItem() instanceof net.minecraft.world.item.ProjectileWeaponItem || held.getItem() instanceof net.minecraft.world.item.TridentItem;
+    }
+
+    /** No way to run from a threat: an unarmed person hits back for a few seconds. */
+    void cornered(LivingEntity threat) {
+        corneredAt = level().getGameTime();
+        if (getTarget() == null) setTarget(threat);
+    }
+
+    boolean isCornered() {
+        return level().getGameTime() - corneredAt < 60;
+    }
+
+    /** The group made a new fire here: it is home now. */
+    void settleAt(BlockPos fire) {
+        home = fire.immutable();
+        newCamp = null;
+        homelessSince = -1;
     }
 
     public boolean inGroup(Tribesperson other) {
@@ -231,6 +260,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(1, new FleeThreatGoal(this));
         goalSelector.addGoal(2, new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F));
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.15, true) {
             @Override
@@ -239,6 +269,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             }
         });
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
+        goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
         goalSelector.addGoal(5, new GatherGoal(this));
         goalSelector.addGoal(5, new FishGoal(this));
@@ -254,10 +285,17 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(9, new RandomLookAroundGoal(this));
 
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, Tribesperson.class));
+        targetSelector.addGoal(1, new HurtByTargetGoal(this, Tribesperson.class) {
+            @Override
+            public boolean canUse() {
+                // unarmed folk hit back at monsters only when cornered (players they always answer)
+                LivingEntity by = getLastHurtByMob();
+                return super.canUse() && (isArmed() || by == null || !FleeThreatGoal.isThreat(Tribesperson.this, by) || isCornered());
+            }
+        });
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, (t, l) -> isAngryAt((Player) t)));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
-                (t, l) -> !(t instanceof Creeper) && t.distanceToSqr(this) < 12 * 12));
+                (t, l) -> isArmed() && (!(t instanceof Creeper) || isHolding(s -> s.getItem() instanceof BowItem)) && t.distanceToSqr(this) < 12 * 12));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
                 (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && isPrey(t)));
     }
@@ -308,7 +346,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (hurt && source.getEntity() instanceof Player player) angerGroup(player, level.getGameTime() + ANGER_TICKS);
         if (hurt && source.getEntity() instanceof LivingEntity attacker && !(attacker instanceof Player)) {
             // the group around comes to help
-            for (Tribesperson t : groupNearby(16)) if (t.getTarget() == null) t.setTarget(attacker);
+            for (Tribesperson t : groupNearby(16)) if (t.getTarget() == null && t.isArmed()) t.setTarget(attacker);
         }
         return hurt;
     }
@@ -332,6 +370,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         else clearHome();
 
         if (getTarget() instanceof Player p && !isAngryAt(p) && getLastHurtByMob() != p) setTarget(null);
+        if (getTarget() != null && !isArmed() && !isCornered() && FleeThreatGoal.isThreat(this, getTarget())) setTarget(null);
         if (getTarget() instanceof Animal a) prey = a;
         if (prey != null && !prey.isAlive()) {
             killPos = prey.position();
@@ -341,8 +380,20 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (tickCount % 100 == 0) shareAnger();
         if (tickCount % 20 == 0) greetNearby(level, now);
         if (home != null) tendFire(level, now);
+        if (tickCount % 100 == 0) SetUpCampGoal.check(this, level, now);
+        if (getTarget() == null) tendWounds(level);
         if (role() == TribeRole.ELDER) restock(level);
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
+    }
+
+    /** Out of a fight, people heal slowly and now and then pull out a stuck arrow. */
+    private void tendWounds(ServerLevel level) {
+        if (tickCount % 60 == 0 && getHealth() < getMaxHealth()) heal(1.0F);
+        List<ItemStack> stuck = getData(com.mechanical.ArrowWounds.STUCK);
+        if (stuck.isEmpty() || tickCount % 600 != 0) return;
+        spawnAtLocation(level, stuck.get(0));
+        setData(com.mechanical.ArrowWounds.STUCK, List.copyOf(stuck.subList(1, stuck.size())));
+        setArrowCount(stuck.size() - 1);
     }
 
     private boolean working;

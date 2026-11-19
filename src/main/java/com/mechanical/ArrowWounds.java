@@ -43,6 +43,11 @@ public final class ArrowWounds {
 
     public static void init() {}
 
+    /** Arrows stick in animals and in tribespeople. */
+    private static boolean stick(LivingEntity entity) {
+        return entity instanceof Animal || entity instanceof com.mechanical.people.Tribesperson;
+    }
+
     public static int count(LivingEntity entity) {
         return entity.getData(STUCK).size();
     }
@@ -50,7 +55,7 @@ public final class ArrowWounds {
     @SubscribeEvent
     static void onHurt(LivingDamageEvent.Post event) {
         LivingEntity entity = event.getEntity();
-        if (!(entity instanceof Animal) || entity.level().isClientSide()
+        if (!stick(entity) || entity.level().isClientSide()
                 || !(event.getSource().getDirectEntity() instanceof AbstractArrow arrow) || arrow.pickup != AbstractArrow.Pickup.ALLOWED) return;
         List<ItemStack> stuck = new ArrayList<>(entity.getData(STUCK));
         stuck.add(arrow.getPickupItemStackOrigin().copyWithCount(1));
@@ -60,7 +65,7 @@ public final class ArrowWounds {
 
     @SubscribeEvent
     static void onTick(EntityTickEvent.Post event) {
-        if (!(event.getEntity() instanceof Animal animal) || !(animal.level() instanceof ServerLevel level) || !animal.isAlive()) return;
+        if (!(event.getEntity() instanceof LivingEntity animal) || !stick(animal) || !(animal.level() instanceof ServerLevel level) || !animal.isAlive()) return;
         List<ItemStack> stuck = animal.getData(STUCK);
         if (stuck.isEmpty()) return;
         // vanilla lets stuck arrows fall out over time; ours stay until death
@@ -79,7 +84,9 @@ public final class ArrowWounds {
         if (animal.tickCount % interval == 0) {
             float damage = 0;
             for (ItemStack arrow : stuck) damage += arrow.is(Mechanical.BARBED_ARROW.get()) ? BLEED_PER_ARROW * 2 : BLEED_PER_ARROW;
-            animal.hurtServer(level, level.damageSources().generic(), damage);
+            // people bind their wounds: arrows bleed them down to one heart, never to death
+            if (animal instanceof com.mechanical.people.Tribesperson) damage = Math.min(damage, animal.getHealth() - 2.0F);
+            if (damage > 0) animal.hurtServer(level, level.damageSources().generic(), damage);
         }
     }
 
