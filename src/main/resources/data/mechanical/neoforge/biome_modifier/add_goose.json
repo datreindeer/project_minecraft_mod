@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:river",
+    "minecraft:swamp",
+    "minecraft:frozen_river"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:goose",
+      "weight": 10,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 4,
+        "max_inclusive": 7
+      }
+    }
+  ]
+}

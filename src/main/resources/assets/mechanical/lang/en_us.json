@@ -361,5 +361,17 @@
   "block.mechanical.glowcap": "Glowcap",
   "block.mechanical.spirit_bloom": "Spirit Bloom",
   "block.mechanical.glow_moss": "Glow Moss",
-  "message.mechanical.blood_moon": "The moon rises red... the dead are walking tonight."
+  "message.mechanical.blood_moon": "The moon rises red... the dead are walking tonight.",
+  "entity.mechanical.crow": "Hooded Crow",
+  "item.mechanical.crow_spawn_egg": "Hooded Crow Spawn Egg",
+  "entity.mechanical.goose": "Greylag Goose",
+  "item.mechanical.goose_spawn_egg": "Greylag Goose Spawn Egg",
+  "entity.mechanical.rock_dove": "Rock Dove",
+  "item.mechanical.rock_dove_spawn_egg": "Rock Dove Spawn Egg",
+  "entity.mechanical.ptarmigan": "Willow Ptarmigan",
+  "item.mechanical.ptarmigan_spawn_egg": "Willow Ptarmigan Spawn Egg",
+  "entity.mechanical.seagull": "Seagull",
+  "item.mechanical.seagull_spawn_egg": "Seagull Spawn Egg",
+  "entity.mechanical.desert_hare": "Desert Hare",
+  "item.mechanical.desert_hare_spawn_egg": "Desert Hare Spawn Egg"
 }

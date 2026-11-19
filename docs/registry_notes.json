@@ -1162,5 +1162,23 @@
   "glow_moss": {
     "text": "Tunn mossmatta med lysande prickar (ljus 5), i fläckar under Ancient Oak. Går att plocka.",
     "category": "foraging"
+  },
+  "entity:crow": {
+    "text": "Gråkråka som lever i flock på slätter och i skog. Lyfter med hela flocken när du kommer nära; en pil dödar. Fjädrar och lite kött."
+  },
+  "entity:goose": {
+    "text": "Grågås vid floder och träsk. Flyger i V-formation och landar på vattnet. En pil dödar; ger fjädrar och Chicken Scraps."
+  },
+  "entity:rock_dove": {
+    "text": "Klippduva i bergen och på meadows. Snabb flock som lyfter tillsammans. En pil dödar; fjädrar."
+  },
+  "entity:ptarmigan": {
+    "text": "Dalripa i snö och taiga, vit där det snöar. Trycker länge och flyger lågt och kort. En pil dödar; fjädrar och kött."
+  },
+  "entity:seagull": {
+    "text": "Fiskmås som cirklar över vattnet, skriker och dyker där det finns fisk. Vilar på stranden. En pil dödar; fjädrar."
+  },
+  "entity:desert_hare": {
+    "text": "Sandfärgad hare i öken och badlands. Skygg och snabb; styckas som en vanlig hare."
   }
 }
