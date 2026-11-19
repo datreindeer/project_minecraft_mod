@@ -134,6 +134,14 @@ public class WildBoarModel extends EntityModel<WildAnimalRenderState> {
         super.setupAnim(state);
         this.tusks.visible = state.showsHorns;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            head.xRot = 0.25F; // in line with the body, snout down
+            leftEar.xRot = rightEar.xRot = 1.0F;
+            tail.xRot = -1.8F; // flops down over the back (the rump is tilted)
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : new ModelPart[] {rightFrontLeg, leftFrontLeg, rightHindLeg, leftHindLeg}) leg.zRot = CarcassRenderer.LIMB_SAG;
             // the carcass renderer puts a head yaw in yRot that points the head at the ground

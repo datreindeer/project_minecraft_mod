@@ -47,6 +47,15 @@ abstract class PredatorModel extends EntityModel<WildAnimalRenderState> {
         super.setupAnim(state);
         float age = state.ageInTicks;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            head.xRot = 0.25F; // in line with the body, muzzle down
+            jaw.xRot = 0.35F;
+            leftEar.xRot = rightEar.xRot = 1.1F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : legs) leg.zRot = CarcassRenderer.LIMB_SAG;
             head.yRot = state.yRot * Mth.DEG_TO_RAD;

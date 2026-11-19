@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -41,6 +42,8 @@ import net.minecraft.world.phys.Vec3;
 public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRenderer.State> {
     /** Marks the animal's render state as a carcass so the model mixins let the limbs sag. */
     private static final ContextKey<Boolean> CARCASS = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "carcass"));
+    /** Marks the animal's render state as hung head down on a Hanging Rack, so the models let the limbs hang (see {@link #hangLegs}). */
+    private static final ContextKey<Boolean> HUNG = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "hung"));
     /** Limb roll (model z rotation, radians) towards the ground for an animal lying on its side. */
     public static final float LIMB_SAG = -0.7F;
     /** Head yaw (degrees) that turns the head down to the ground. */
@@ -62,6 +65,27 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
 
     public static boolean isCarcass(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(CARCASS));
+    }
+
+    public static boolean isHung(EntityRenderState state) {
+        return Boolean.TRUE.equals(state.getRenderData(HUNG));
+    }
+
+    /**
+     * Hung head down (the model's -z is world down, +z up): hind legs pitched back along the body, up to the gambrel and a
+     * little spread; front legs pitched forward past the head, dangling to the ground. A leg box hangs along +y, and a
+     * positive xRot swings it to +z (LyingPose folds the forearms forward with a negative one).
+     */
+    public static void hangLegs(ModelPart[] front, ModelPart[] hind) {
+        for (ModelPart leg : hind) hangLeg(leg, 1.5F, 0.12F);
+        for (ModelPart leg : front) hangLeg(leg, -1.45F, -0.08F);
+    }
+
+    /** yRot after the pitch swings the leg sideways: positive spread moves a +z leg to +x, so sign it by the leg's side. */
+    private static void hangLeg(ModelPart leg, float pitch, float spread) {
+        leg.xRot = pitch;
+        leg.yRot = Math.signum(leg.x) * spread;
+        leg.zRot = 0.0F;
     }
 
     public static boolean isSkinned(EntityRenderState state) {
@@ -183,8 +207,9 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         state.renderer = (EntityRenderer<Entity, EntityRenderState>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dummy);
         state.animal = state.renderer.createRenderState(dummy, partialTicks);
         // skinned/plucked: raw red flesh look (the vanilla hurt tint); a sheared sheep already looks bare
-        // hung or carried the legs hang stiff from the body instead of sagging sideways to the ground
+        // carried the legs hang stiff from the body; hung they hang from the hook (HUNG) instead of sagging sideways
         if (state.pose == Pose.LYING) state.animal.setRenderData(CARCASS, true);
+        if (state.pose == Pose.HUNG) state.animal.setRenderData(HUNG, true);
         if (state.animal instanceof LivingEntityRenderState living) {
             // models use yRot as head yaw; lying on the side that points the head at the ground
             living.yRot = state.pose == Pose.LYING ? HEAD_SAG : 0.0F;
@@ -233,8 +258,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             return;
         }
         if (state.pose == Pose.HUNG) {
-            // head down from the hook: the rump (z = +rear) goes up to the top of the hitbox, the body centred under it
-            float rear = state.width * 0.6F;
+            // head down from the hook: the rump (z = +rear) goes up to the top of the hitbox, the body centred under it.
+            // The hind legs point up past the rump (hangLegs), so drop the body until the hook is at about the hocks,
+            // less when a tall animal leaves little room under the hitbox (a moose's head already nears the ground)
+            float drop = Math.min(state.height * 0.15F, (com.mechanical.HangingRackBlock.HOOK - state.hangLength) * 0.3F);
+            float rear = state.width * 0.6F + Math.max(0.0F, drop);
             poseStack.translate(0.0F, state.hangLength - rear, state.height * 0.55F);
             poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
             state.renderer.submit(state.animal, poseStack, collector, camera);

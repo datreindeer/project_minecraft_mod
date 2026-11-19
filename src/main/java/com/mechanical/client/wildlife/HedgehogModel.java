@@ -85,6 +85,11 @@ public class HedgehogModel extends EntityModel<WildAnimalRenderState> {
         float t = state.ageInTicks;
         for (ModelPart leg : legs) leg.visible = true; // resetPose doesn't restore visibility
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {legs[0], legs[1]}, new ModelPart[] {legs[2], legs[3]});
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : legs) leg.zRot = CarcassRenderer.LIMB_SAG;
             head.yRot = state.yRot * Mth.DEG_TO_RAD;

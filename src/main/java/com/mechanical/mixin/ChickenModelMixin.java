@@ -13,7 +13,7 @@ import net.minecraft.client.model.animal.chicken.ChickenModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.ChickenRenderState;
 
-/** Chicken carcasses: legs and wings sag towards the ground. */
+/** Chicken carcasses: legs and wings sag towards the ground, or hang from a Hanging Rack. */
 @Mixin(ChickenModel.class)
 public abstract class ChickenModelMixin {
     @Shadow @Final private ModelPart rightLeg;
@@ -23,6 +23,8 @@ public abstract class ChickenModelMixin {
 
     @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/ChickenRenderState;)V", at = @At("TAIL"))
     private void mechanical$sagLimbs(ChickenRenderState state, CallbackInfo ci) {
+        // hung by the feet: the wings fall open towards the ground (the head: AdultChickenModelMixin)
+        if (CarcassRenderer.isHung(state)) CarcassRenderer.hangLegs(new ModelPart[] {rightWing, leftWing}, new ModelPart[] {rightLeg, leftLeg});
         if (!CarcassRenderer.isCarcass(state)) return;
         for (ModelPart limb : new ModelPart[] {rightLeg, leftLeg, rightWing, leftWing}) limb.zRot = CarcassRenderer.LIMB_SAG;
     }

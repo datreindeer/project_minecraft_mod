@@ -86,6 +86,14 @@ public class BearCubModel extends EntityModel<WildAnimalRenderState> {
     public void setupAnim(WildAnimalRenderState state) {
         super.setupAnim(state);
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            head.xRot = 0.25F; // in line with the body, muzzle down
+            leftEar.xRot = rightEar.xRot = 1.0F;
+            tail.xRot = 2.6F; // the stub sticks back (+z): folds down over the rump
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : legs) leg.zRot = CarcassRenderer.LIMB_SAG;
             this.head.yRot = state.yRot * Mth.DEG_TO_RAD;

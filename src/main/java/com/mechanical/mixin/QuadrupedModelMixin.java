@@ -13,7 +13,7 @@ import net.minecraft.client.model.QuadrupedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
-/** Carcasses of four-legged animals (cow, pig, sheep, goat ...): legs sag towards the ground. */
+/** Carcasses of four-legged animals (cow, pig, sheep, goat ...): legs sag towards the ground, or hang from a Hanging Rack. */
 @Mixin(QuadrupedModel.class)
 public abstract class QuadrupedModelMixin {
     @Shadow @Final protected ModelPart rightHindLeg;
@@ -23,6 +23,8 @@ public abstract class QuadrupedModelMixin {
 
     @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;)V", at = @At("TAIL"))
     private void mechanical$sagLegs(LivingEntityRenderState state, CallbackInfo ci) {
+        // hung by the hind legs: the head already hangs in line with the body
+        if (CarcassRenderer.isHung(state)) CarcassRenderer.hangLegs(new ModelPart[] {rightFrontLeg, leftFrontLeg}, new ModelPart[] {rightHindLeg, leftHindLeg});
         if (!CarcassRenderer.isCarcass(state)) return;
         for (ModelPart leg : new ModelPart[] {rightHindLeg, leftHindLeg, rightFrontLeg, leftFrontLeg}) leg.zRot = CarcassRenderer.LIMB_SAG;
     }

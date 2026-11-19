@@ -100,6 +100,16 @@ public class MouflonLambModel extends EntityModel<WildAnimalRenderState> {
         float pitch = state.xRot * Mth.DEG_TO_RAD;
         float age = state.ageInTicks;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            neck.xRot = 1.5F; // neck straight down in line with the body (it rises from the chest when standing)
+            head.xRot = -1.25F; // head hanging limp below it, nose a little towards the belly
+            leftEar.yRot = 1.0F; // sideways ears swung down
+            rightEar.yRot = -1.0F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             this.leftFrontLeg.zRot = this.rightFrontLeg.zRot = this.leftHindLeg.zRot = this.rightHindLeg.zRot = CarcassRenderer.LIMB_SAG;
             this.neck.zRot = -CarcassRenderer.LIMB_SAG * 0.8F;

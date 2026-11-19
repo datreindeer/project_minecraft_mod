@@ -103,6 +103,15 @@ public class MooseCalfModel extends EntityModel<WildAnimalRenderState> {
         float pitch = state.xRot * Mth.DEG_TO_RAD;
         float age = state.ageInTicks;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            neck.xRot = 1.5F; // neck straight down in line with the body (it rises from the chest when standing)
+            head.xRot = -1.25F; // head hanging limp below it, nose a little towards the belly
+            leftEar.xRot = rightEar.xRot = 1.2F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : this.legs) {
                 leg.zRot = CarcassRenderer.LIMB_SAG;

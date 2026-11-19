@@ -601,6 +601,8 @@ Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppe
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Benen hänger naturligt:** bakbenen pekar rakt upp mot gambreln (lite isär), frambenen/vingarna dinglar ned mot
+  marken, och hals och huvud hänger slappt i linje med kroppen med öron och svans nedhängande.
 - **Mognad syns:** när kroppen har hängt **3 minuter** (×1,25 kött, se nedan) har den torkat: pälsen/huden blir mörkare,
   brunare och mattare, och en flådd kropp får mörkt, torkat kött med en skorpa i kanterna, intorkade blodstänk, fläckar av
   glans och gulnat fett (egna texturer under `textures/entity/skinned_aged/`, `scripts/gen_aged_textures.py`). Blodet slutar
