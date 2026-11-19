@@ -24,7 +24,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A wattle pen for plant waste. Each compostable item (#mechanical:compostable: Leaf Litter, Straw, Plant Fibre, leaves,
  * rotten flesh ...) fills it one step; full ({@link #FULL}) it rots for {@link #ROT_TICKS} and is then ready (LEVEL 8):
- * right-click takes {@link #YIELD} Compost and it starts over.
+ * right-click takes {@link #YIELD} Compost and it starts over. Manure fills two steps.
  */
 public class CompostHeapBlock extends Block {
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 8);
@@ -52,10 +52,11 @@ public class CompostHeapBlock extends Block {
         int fill = state.getValue(LEVEL);
         if (!stack.is(Farming.COMPOSTABLE) || fill >= FULL) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level instanceof ServerLevel server) {
+            int next = Math.min(FULL, fill + (stack.is(Farming.MANURE.get()) ? 2 : 1));
             stack.consume(1, player);
-            server.setBlock(pos, state.setValue(LEVEL, fill + 1), Block.UPDATE_ALL);
+            server.setBlock(pos, state.setValue(LEVEL, next), Block.UPDATE_ALL);
             server.playSound(null, pos, SoundEvents.COMPOSTER_FILL, SoundSource.BLOCKS, 1.0F, 0.9F);
-            if (fill + 1 == FULL) server.scheduleTick(pos, this, ROT_TICKS);
+            if (next == FULL) server.scheduleTick(pos, this, ROT_TICKS);
         }
         return InteractionResult.SUCCESS;
     }

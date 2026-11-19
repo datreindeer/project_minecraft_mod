@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CP ",
+    "WHW",
+    " S "
+  ],
+  "key": {
+    "C": [
+      "minecraft:copper_ingot",
+      "mechanical:bronze_ingot"
+    ],
+    "P": "minecraft:carved_pumpkin",
+    "W": "mechanical:straw",
+    "H": "mechanical:raw_hide",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:scarecrow"
+  }
+}

@@ -22,8 +22,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -49,6 +51,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.block.CropGrowEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -68,6 +71,8 @@ public final class Farming {
     public static final TagKey<Item> COMPOSTABLE = itemTag("compostable");
     public static final TagKey<Item> SICKLES = itemTag("sickles");
     public static final TagKey<Block> THRESHING_FLOORS = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "threshing_floors"));
+    /** Livestock, aurochs and horses: adults drop Manure now and then. */
+    public static final TagKey<EntityType<?>> DROPS_MANURE = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MODID, "drops_manure"));
     public static final TagKey<Block> SICKLE_MINEABLE = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "mineable/sickle"));
 
     private static TagKey<Item> itemTag(String name) {
@@ -115,7 +120,7 @@ public final class Farming {
     public static final DeferredItem<Item> FLINT_SICKLE = ITEMS.registerSimpleItem("flint_sickle", p -> p.tool(Mechanical.FLINT, SICKLE_MINEABLE, 1.0F, -2.2F, 0.0F));
     public static final DeferredItem<FlailItem> FLAIL = ITEMS.registerItem("flail", FlailItem::new, p -> p.durability(64));
 
-    // ---- Bronze Age (complete, but no survival recipe until bronze phase 3) ----
+    // ---- Bronze Age (recipes: bronze phase 3, scripts/gen_farming3.py) ----
     public static final DeferredItem<Item> FLOUR = ITEMS.registerSimpleItem("flour");
     public static final DeferredItem<Item> DOUGH = ITEMS.registerSimpleItem("dough");
     public static final DeferredItem<FertilizerItem> COMPOST = ITEMS.registerItem("compost", p -> new FertilizerItem(1, p));
@@ -228,6 +233,20 @@ public final class Farming {
                 && level.getRandom().nextFloat() < RICH_SOIL_BONUS) {
             level.setBlock(pos, crop.getStateForAge(crop.getAge(event.getState()) + 1), Block.UPDATE_CLIENTS);
         }
+    }
+
+    // ---------------------------------------------------------------- manure
+
+    /** Ticks between manure rolls (spread by entity id) and the chance per roll: one Manure per ~10 minutes per adult. */
+    public static final int MANURE_CHECK = 200, MANURE_CHANCE = 60;
+
+    @SubscribeEvent
+    static void dropManure(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Animal animal) || (animal.tickCount + animal.getId()) % MANURE_CHECK != 0
+                || !(animal.level() instanceof ServerLevel level) || animal.isBaby() || !animal.isAlive() || !animal.typeHolder().is(DROPS_MANURE)
+                || level.getRandom().nextInt(MANURE_CHANCE) != 0) return;
+        animal.spawnAtLocation(level, new ItemStack(MANURE.get()));
+        level.playSound(null, animal.getX(), animal.getY(), animal.getZ(), SoundEvents.MUD_PLACE, SoundSource.NEUTRAL, 0.6F, 0.7F);
     }
 
     // ---------------------------------------------------------------- harvest

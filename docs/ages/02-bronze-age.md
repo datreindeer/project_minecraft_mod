@@ -1,7 +1,8 @@
 # Bronsåldern
 
 > Status: **fas 1 (malm), fas 2 (värme), fas 3 för koppar och fas 3b brons (legering, bronsverktyg, Bronze Saw, Bronze
-> Helmet + Greaves, byhandel nivå 3) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
+> Helmet + Greaves, byhandel nivå 3) och odlingens fas 3 (Quern, bröd, kompost, Manure, Scarecrow) är byggda**, se
+> avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
 > Beslut står under Beslut.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
@@ -67,7 +68,8 @@ Sinew, Tool Station och Armor Station.
 - **Rustning:** bara Bronze Helmet och Bronze Greaves (benskydd). Ingen bröstplåt; full rustning i järnåldern.
 - **Bränsle:** Charcoal (från kilnen) är bronsålderns bränsle. Coal Ore kräver Bronze Pickaxe; stenkol hör till
   järnålderns smide/koks. Iron, Coal och Lapis Ore ligger i taggen `mechanical:needs_bronze_tool`.
-- **Inte nu:** modulära verktyg (huvud/skaft/binding som egna delar med stats), jordbruk, tämja hästar.
+- **Inte nu:** modulära verktyg (huvud/skaft/binding som egna delar med stats), tämja hästar. (Jordbruket kom till
+  slut med: se Odling nedan.)
 
 - **Temperatur:** realistiska grader. Lera bränns vid 600°, brons smälter vid ~950°, koppar vid 1085°. Varje bälgpump
   höjer en bit; utan pump sjunker temperaturen långsamt (pumpa några gånger per minut under smältning).
@@ -452,3 +454,23 @@ Rustningsplåt gjuts (Clay Plate Mold), slipas och sys på ett läderfoder i **A
 
 - Tvättat koncentrat (mer metall per smältning), spjut och svärd i brons, bronslykta, Bloomery mot järnet.
 - Crucible of Solid Bronze har samma (kopparfärgade) ikon som Solid Copper; namnet visar metallen.
+
+## Odling: fas 3 (byggd)
+
+Stenåldern har redan säd, tröskning, Porridge, bördighet och kråkor (`docs/farming.md`). Bronsåldern lägger till bröd,
+gödsel och fågelskrämma. Allt kräver en **Copper Ingot eller Bronze Ingot** (C), så det kommer efter första gjutningen.
+Recepten syns i receptboken när man bär en sådan tacka. Data: `scripts/gen_farming3.py`.
+
+| Sak | Recept | Användning |
+|---|---|---|
+| Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` | Högerklicka med Grain: 4 kvarts varv → 1 Flour |
+| Baking Stone | `[R][C][R]` (R = rock chunk) | Vid brinnande Campfire: Dough → Bread på 30 s (bränns efter 45 s till) |
+| Compost Heap | `[Stick][ ][Stick]` / `[Stick][Leaf Litter][Stick]` / `[Stick][C][Stick]` | 7 växtrester / Spoiled Food (Manure räknas dubbelt) → 2 min → 2 Compost |
+| Scarecrow | `[C][Carved Pumpkin][ ]` / `[Straw][Raw Hide][Straw]` / `[ ][Stick][ ]` | Inga kråkor landar eller äter inom 12 block |
+
+- **Bröd:** Grain → Quern → Flour; 2 Flour + Clay Water Bucket → Dough; Dough på Baking Stone eller i Clay Kiln
+  (20 s vid 200°) → Bread. Vanillas 3-Wheat-recept finns inte.
+- **Manure:** vuxna Cow, Mooshroom, Sheep, Pig, Goat, Horse, Donkey, Mule, Aurochs och Wild Horse släpper i snitt en
+  Manure var 10:e minut. På farmland: bördighet +2 (Compost +1).
+- **Hållbarhet:** Flour 30 dagar, Dough 1 dag, Bread 3 dagar.
+- Kvar: bronsskära och plog, källa för Barley.
