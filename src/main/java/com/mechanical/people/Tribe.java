@@ -2,7 +2,6 @@ package com.mechanical.people;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -86,7 +85,7 @@ public final class Tribe {
 
     private Tribe(UUID id) {
         this.id = id;
-        Random r = new Random(id.getMostSignificantBits() * 31 + id.getLeastSignificantBits());
+        java.util.SplittableRandom r = new java.util.SplittableRandom(id.getMostSignificantBits() ^ Long.rotateLeft(id.getLeastSignificantBits(), 32));
         int t = r.nextInt(10);
         temperament = t < 3 ? Temperament.PEACEFUL : t < 6 ? Temperament.WARY : t < 8 ? Temperament.TRADERS : Temperament.RAIDERS;
         totem = TOTEMS[r.nextInt(TOTEMS.length)];
