@@ -169,6 +169,60 @@
     },
     {
       "when": {
+        "bird": "capercaillie",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_capercaillie_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "capercaillie",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_capercaillie_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "capercaillie",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_capercaillie_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "bustard",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_bustard_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "bustard",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_bustard_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "bustard",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_bustard_3"
+      }
+    },
+    {
+      "when": {
         "bird": "mallard",
         "eggs": "1"
       },

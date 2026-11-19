@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:capercaillie_tail_feather"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:capercaillie_tail_feather"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.lek_hunter.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.lek_hunter.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -63,7 +63,10 @@ public class BirdNestBlock extends Block {
         MALLARD(com.mechanical.wildlife.waterfowl.WaterfowlFauna.MALLARD::get, com.mechanical.wildlife.waterfowl.WaterfowlFauna.MALLARD_EGG),
         MUTE_SWAN(com.mechanical.wildlife.waterfowl.WaterfowlFauna.MUTE_SWAN::get, com.mechanical.wildlife.waterfowl.WaterfowlFauna.SWAN_EGG),
         GREY_HERON(com.mechanical.wildlife.waterfowl.WaterfowlFauna.GREY_HERON::get, com.mechanical.wildlife.waterfowl.WaterfowlFauna.HERON_EGG),
-        COMMON_CRANE(com.mechanical.wildlife.waterfowl.WaterfowlFauna.COMMON_CRANE::get, com.mechanical.wildlife.waterfowl.WaterfowlFauna.CRANE_EGG);
+        COMMON_CRANE(com.mechanical.wildlife.waterfowl.WaterfowlFauna.COMMON_CRANE::get, com.mechanical.wildlife.waterfowl.WaterfowlFauna.CRANE_EGG),
+        // fauna: forestbirds
+        CAPERCAILLIE(com.mechanical.wildlife.forestbirds.ForestBirdsFauna.CAPERCAILLIE::get, com.mechanical.wildlife.forestbirds.ForestBirdsFauna.CAPERCAILLIE_EGG),
+        BUSTARD(com.mechanical.wildlife.forestbirds.ForestBirdsFauna.BUSTARD::get, com.mechanical.wildlife.forestbirds.ForestBirdsFauna.BUSTARD_EGG);
 
         private final Supplier<EntityType<?>> type;
         private final Supplier<? extends Item> egg;

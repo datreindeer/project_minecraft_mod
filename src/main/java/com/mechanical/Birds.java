@@ -74,6 +74,11 @@ public final class Birds {
         REGISTERED.add(Map.entry(bird, pluckedItem));
     }
 
+    /** Same as {@link #registerPlucked}: an edible bird that leaves a carcass, is plucked, hung by the feet and taken whole. */
+    public static void registerEdible(Supplier<? extends EntityType<?>> type, Supplier<Item> plucked) {
+        registerPlucked(type, plucked);
+    }
+
     /** One of the Plucked birds (the kettle boils these into broth). */
     public static boolean isPlucked(net.minecraft.world.item.ItemStack stack) {
         for (Supplier<Item> s : plucked().values()) if (stack.is(s.get())) return true;

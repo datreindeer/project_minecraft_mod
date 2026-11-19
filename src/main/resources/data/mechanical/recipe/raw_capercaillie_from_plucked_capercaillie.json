@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_capercaillie",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_capercaillie",
+    "count": 2
+  }
+}

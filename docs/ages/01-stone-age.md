@@ -1639,6 +1639,7 @@ tabellen**, så att man lär sig hur den görs.
 De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och recept):
 
 <!-- fauna-links -->
+- [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
 - [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane
 
 ## Borttaget och ersatt (vanilla)

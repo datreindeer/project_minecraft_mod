@@ -308,6 +308,102 @@
         },
         {
           "type": "minecraft:item",
+          "name": "mechanical:capercaillie_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "capercaillie",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:capercaillie_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "capercaillie",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:capercaillie_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "capercaillie",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bustard_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "bustard",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bustard_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "bustard",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bustard_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "bustard",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
           "name": "mechanical:mallard_egg",
           "condition": {
             "type": "minecraft:match_block",
