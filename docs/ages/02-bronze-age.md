@@ -338,3 +338,5 @@ huvudet. Hacka, yxa, spade och hacka (hoe) är vanillas kopparverktyg (vanillas 
 - **Copper Knife:** 200 hållbarhet, styckar 1,5× så snabbt och ger 1,2× så mycket som Flint Knife. Klarar **inte**
   Brown Bear (Tusk Dagger är fortfarande jaktkniven tills brons). Räknas som kniv (`mechanical:knives`) och svärd.
 - Ingen kopparrustning. Copper Ingot har ingen egen användning i modden än.
+- **Vanilla-recept med Copper Ingot:** Copper Block, Cut Copper m.m., Copper Bars, Chain, Door, Trapdoor, Brush och Copper
+  Nugget fungerar. **Avstängda** (kommer senare): Spyglass, Lightning Rod och Copper Chest (`gen_age_recipes.py`).

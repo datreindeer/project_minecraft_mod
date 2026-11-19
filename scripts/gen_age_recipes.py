@@ -38,6 +38,10 @@ RECIPES = [
     ("chiseled_bookshelf", "building_blocks", "needs books", "Bronze"),
     ("lectern", "redstone", "needs books", "Bronze"),
     ("lever", "redstone", "a redstone part", "Iron"),
+    # copper ingots can be cast from the bronze age on; these copper things still wait (decided with the user)
+    ("spyglass", "tools", "lenses (amethyst) come later", "Iron"),
+    ("lightning_rod", "redstone", "electricity comes much later", "Electric"),
+    ("copper_chest", "decorations", "a metal chest doesn't fit the bronze age", "Iron"),
 ]
 COLORS = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue",
           "brown", "green", "red", "black"]
