@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SHS",
+    "HSH",
+    "SHS"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "H": "mechanical:saiga_horn"
+  },
+  "result": {
+    "id": "mechanical:horn_window",
+    "count": 4
+  }
+}

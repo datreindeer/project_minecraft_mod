@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_hyena_pelt",
+    "#mechanical:knives",
+    "#mechanical:tanning_fats"
+  ],
+  "result": {
+    "id": "mechanical:hyena_pelt",
+    "count": 1
+  }
+}

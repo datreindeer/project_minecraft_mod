@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:ibex_pelt",
+    "mechanical:ibex_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:ibex_rug",
+    "count": 1
+  }
+}

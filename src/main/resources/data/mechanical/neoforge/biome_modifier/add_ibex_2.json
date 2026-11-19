@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:jagged_peaks",
+    "minecraft:snowy_slopes"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:ibex",
+      "weight": 6,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    }
+  ]
+}

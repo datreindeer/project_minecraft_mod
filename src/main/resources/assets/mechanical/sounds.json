@@ -63,5 +63,50 @@
         "attenuation_distance": 96
       }
     ]
+  },
+  "entity.marmot.whistle": {
+    "subtitle": "subtitles.mechanical.entity.marmot.whistle",
+    "sounds": [
+      {
+        "name": "minecraft:mob/fox/screech1",
+        "pitch": 1.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/fox/screech2",
+        "pitch": 1.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/fox/screech3",
+        "pitch": 1.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/fox/screech4",
+        "pitch": 1.9,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "entity.cave_hyena.laugh": {
+    "subtitle": "subtitles.mechanical.entity.cave_hyena.laugh",
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/celebrate",
+        "pitch": 1.35,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:entity/witch/celebrate",
+        "pitch": 1.5,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/fox/screech2",
+        "pitch": 0.75,
+        "attenuation_distance": 48
+      }
+    ]
   }
 }

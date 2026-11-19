@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:saiga_pelt",
+    "mechanical:saiga_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:saiga_rug",
+    "count": 1
+  }
+}

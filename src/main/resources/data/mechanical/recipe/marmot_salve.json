@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:marmot_fat",
+    "mechanical:marmot_fat",
+    "mechanical:juniper_berries"
+  ],
+  "result": {
+    "id": "mechanical:marmot_salve",
+    "count": 2
+  }
+}

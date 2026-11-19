@@ -194,21 +194,21 @@ public final class MountainFauna {
 
     /** Loads this class so its registrations happen, and registers the butchery yields; call from the mod constructor. */
     public static void init() {
-        Butchery.register(IBEX::get, new Yield(IBEX_MEAT, 2, 3, List.of(x(RAW_IBEX_PELT, 0.6F, 1, 1)),
-                List.of(x(IBEX_HORN, 0.5F, 1, 2), x(Wildlife.SINEW, 0.5F, 1, 2))));
-        Butchery.register(CHAMOIS::get, new Yield(CHAMOIS_MEAT, 1, 2, List.of(x(RAW_CHAMOIS_HIDE, 0.6F, 1, 1)),
-                List.of(x(CHAMOIS_HORN, 0.7F, 1, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
-        Butchery.register(MARMOT::get, new Yield(MARMOT_MEAT, 1, 1, List.of(x(MARMOT_PELT, 0.7F, 1, 1)),
-                List.of(x(MARMOT_FAT, 0.8F, 1, 2))));
+        Butchery.register(() -> MountainFauna.IBEX.get(), new Yield(MountainFauna.IBEX_MEAT, 2, 3, List.of(x(MountainFauna.RAW_IBEX_PELT, 0.6F, 1, 1)),
+                List.of(x(MountainFauna.IBEX_HORN, 0.5F, 1, 2), x(Wildlife.SINEW, 0.5F, 1, 2))));
+        Butchery.register(() -> MountainFauna.CHAMOIS.get(), new Yield(MountainFauna.CHAMOIS_MEAT, 1, 2, List.of(x(MountainFauna.RAW_CHAMOIS_HIDE, 0.6F, 1, 1)),
+                List.of(x(MountainFauna.CHAMOIS_HORN, 0.7F, 1, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
+        Butchery.register(() -> MountainFauna.MARMOT.get(), new Yield(MountainFauna.MARMOT_MEAT, 1, 1, List.of(x(MountainFauna.MARMOT_PELT, 0.7F, 1, 1)),
+                List.of(x(MountainFauna.MARMOT_FAT, 0.8F, 1, 2))));
         // horns only on bucks (35 %): the chance stands in for the sex (shortcut: per type, not per animal)
-        Butchery.register(SAIGA::get, new Yield(SAIGA_MEAT, 1, 3, List.of(x(RAW_SAIGA_PELT, 0.55F, 1, 1)),
-                List.of(x(SAIGA_HORN, 0.35F, 2, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
-        Butchery.register(CAVE_BEAR::get, new Yield(CAVE_BEAR_MEAT, 5, 8, List.of(x(RAW_CAVE_BEAR_PELT, 1.0F, 1, 1), x(Mechanical.RAW_HIDE, 0.4F, 1, 1)),
-                List.of(x(() -> CAVE_BEAR_SKULL_ITEM.get(), 1.0F, 1, 1), x(Wildlife.BEAR_FAT, 0.9F, 2, 3), x(Wildlife.BEAR_CLAW, 0.6F, 1, 3),
+        Butchery.register(() -> MountainFauna.SAIGA.get(), new Yield(MountainFauna.SAIGA_MEAT, 1, 3, List.of(x(MountainFauna.RAW_SAIGA_PELT, 0.55F, 1, 1)),
+                List.of(x(MountainFauna.SAIGA_HORN, 0.35F, 2, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
+        Butchery.register(() -> MountainFauna.CAVE_BEAR.get(), new Yield(MountainFauna.CAVE_BEAR_MEAT, 5, 8, List.of(x(MountainFauna.RAW_CAVE_BEAR_PELT, 1.0F, 1, 1), x(Mechanical.RAW_HIDE, 0.4F, 1, 1)),
+                List.of(x(() -> MountainFauna.CAVE_BEAR_SKULL.get().asItem(), 1.0F, 1, 1), x(Wildlife.BEAR_FAT, 0.9F, 2, 3), x(Wildlife.BEAR_CLAW, 0.6F, 1, 3),
                         x(Wildlife.SINEW, 0.7F, 1, 2))));
-        Butchery.register(CAVE_HYENA::get, new Yield(HYENA_MEAT, 1, 2, List.of(x(RAW_HYENA_PELT, 0.8F, 1, 1)),
-                List.of(x(HYENA_FANG, 0.6F, 1, 2), x(() -> Items.BONE, 0.6F, 1, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
-        Butchery.toughHide(CAVE_BEAR::get);
+        Butchery.register(() -> MountainFauna.CAVE_HYENA.get(), new Yield(MountainFauna.HYENA_MEAT, 1, 2, List.of(x(MountainFauna.RAW_HYENA_PELT, 0.8F, 1, 1)),
+                List.of(x(MountainFauna.HYENA_FANG, 0.6F, 1, 2), x(() -> Items.BONE, 0.6F, 1, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
+        Butchery.toughHide(() -> MountainFauna.CAVE_BEAR.get());
     }
 
     @SubscribeEvent

@@ -563,6 +563,42 @@ TABS["food"][1].extend([
 ])
 
 
+# fauna: mountain
+TABS["wilderness"][1].extend([
+    ("ibex", "butcher", "ibex_horn", T, "Lord of the Peaks",
+     "Get close to an Ibex on the peaks (it flees uphill, up the rock face) and butcher it for its Horns and pelt",
+     has("ibex_horn", "raw_ibex_pelt")),
+    ("horn_bow", "sinew_bow", "horn_bow", G, "Composite Bow",
+     "Fletching Table: 2 Sinew + Sinew Bow + 2 Ibex Horns makes the Horn Bow: its arrows fly faster and hit harder", has("horn_bow")),
+    ("fat_tanning", "scraped_hide", "chamois_leather", T, "Fat Tanning",
+     "Work a raw Ibex, Saiga or Hyena pelt or a Raw Chamois Hide with a knife and fat (Tallow, Lard, Bear or Marmot Fat) in the grid",
+     has("ibex_pelt", "saiga_pelt", "hyena_pelt", "chamois_leather")),
+    ("chamois_boots", "fat_tanning", "chamois_boots", T, "Sure-Footed",
+     "Sew 3 Chamois Leather and Sinew into Chamois Boots at the Armor Station: long falls hurt less", has("chamois_boots")),
+    ("marmot", "snare", "marmot_pelt", T, "Sentinel",
+     "Catch a Marmot before its whistle sends the colony - and every animal around - running", has("marmot_pelt", "marmot_fat")),
+    ("saiga", "arrows", "saiga_horn", T, "Steppe Runner",
+     "Bring down a Saiga, the most skittish game of the steppe (take a bow), and take its amber horns", has("saiga_horn", "raw_saiga_pelt")),
+    ("horn_window", "saiga", "horn_window", T, "Amber Light",
+     "Set Saiga Horns in a lattice of sticks: Horn Windows let the light in", has("horn_window")),
+    ("cave_bear", "bear", "cave_bear_skull", C, "Cave Bear",
+     "Wake a Cave Bear in its den under the mountains, survive, and butcher it with a Tusk Dagger or better: its skull is your trophy",
+     has("cave_bear_skull", "raw_cave_bear_pelt")),
+    ("cave_bear_pelt", "cave_bear", "cave_bear_pelt", T, "Ice Age Fur",
+     "Dry the Raw Cave Bear Pelt on a tall Drying Rack outdoors by day (it takes the whole rack)", has("cave_bear_pelt")),
+    ("cave_hyena", "raw_wolf_pelt", "hyena_fang", T, "Laughing Thieves",
+     "Kill a Cave Hyena - they steal carcasses and harass you at night in packs - for its fangs and spotted pelt",
+     has("hyena_fang", "raw_hyena_pelt")),
+])
+TABS["food"][1].extend([
+    ("mountain_meat", "cooked", "cooked_ibex_meat", T, "Mountain Fare",
+     "Cook Ibex, Chamois, Marmot, Saiga, Cave Bear or Hyena meat on a Campfire",
+     has(*[f"cooked_{m}_meat" for m in ("ibex", "chamois", "marmot", "saiga", "cave_bear", "hyena")])),
+    ("marmot_salve", "root", "marmot_salve", T, "Marmot Grease",
+     "Mix 2 Marmot Fat with Juniper Berries into Marmot Salve: rub it on to heal", has("marmot_salve")),
+])
+
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
