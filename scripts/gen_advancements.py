@@ -481,6 +481,127 @@ TABS = {
 }
 
 
+# ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
+# code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
+# animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
+
+class AllOf(dict):
+    """Criteria that must ALL be met (plain dicts mean any one)."""
+
+
+JAVA = ROOT / "src/main/java"
+VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("utf-8")) \
+    if "assets/minecraft/lang/en_us.json" in JAR_NAMES else {}
+HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
+HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game"
+    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit"],
+    "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
+    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
+                 "minecraft:sheep"],
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom"],
+}
+GROUP_INFO = {  # id -> (icon, title, description)
+    "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),
+    "deer": ("venison_scraps", "Deer and Elk", "Butcher the deer of the woods and the tundra"),
+    "big_game": ("beef_scraps", "Big Game", "Butcher aurochs, wild horses, boars and wild sheep"),
+    "predators": ("bear_claw", "Predators", "Butcher the hunters that hunt you"),
+    "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
+    "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
+}
+CHALLENGE = {"giant_deer", "cave_lion", "brown_bear"}
+
+
+def _args(src, start):
+    """The text between the parenthesis at src[start] and its match."""
+    depth = 0
+    for i in range(start, len(src)):
+        if src[i] == "(":
+            depth += 1
+        elif src[i] == ")":
+            depth -= 1
+            if depth == 0:
+                return src[start + 1:i]
+    return ""
+
+
+def _item(ref):
+    """'Wildlife.SINEW' / 'Items.BONE' -> item id if it exists, else None."""
+    owner, field = ref.split(".")
+    i = ("minecraft:" if owner == "Items" else M) + field.lower()
+    try:
+        return check_item(i)
+    except AssertionError:
+        return None
+
+
+def hunting_yields():
+    """[(entity id, [item ids])] from every Yield in the Java sources."""
+    import re
+    out = {}
+    for f in sorted(JAVA.rglob("*.java")):
+        src = f.read_text(encoding="utf-8")
+        for m in re.finditer(r"(?:Map\.entry|Butchery\.register)\(", src):
+            body = _args(src, m.end() - 1)
+            if "Yield(" not in body:
+                continue
+            head, _, rest = body.partition("Yield(")
+            ent = re.search(r"(?:EntityTypes\.([A-Z_]+)|(\w+)\.([A-Z_]+)\.get\(\))", head)
+            if not ent:
+                continue
+            eid = "minecraft:" + ent.group(1).lower() if ent.group(1) else ent.group(3).lower()
+            items = []
+            for h, i in HELPERS.items():
+                if h in rest:
+                    items.append(mid(i))
+            for ref in re.findall(r"\b([A-Z][A-Za-z]+\.[A-Z][A-Z0-9_]+)\b", rest):
+                i = _item(ref)
+                if i and i not in items:
+                    items.append(i)
+            if items:
+                out[eid] = items  # Butchery.register (later files) overrides the table, like in the game
+    return out
+
+
+def name_of(i, kind):
+    ns, path = mid(i).split(":")
+    key = f"{kind}.{ns}.{path}"
+    old = json.loads(LANG.read_text(encoding="utf-8"))
+    return old.get(key) or VANILLA_LANG.get(key) or path.replace("_", " ").title()
+
+
+def hunting_rows():
+    rows = [("root", None, "flint_spear", T, "Hunting",
+             "Every animal gives its own meat, hide and parts: butcher one of each kind and collect them all",
+             has(*[s for s in SCRAPS if s != "chicken_scraps"]))]
+    yields = hunting_yields()
+    group_of = {e: g for g, es in HUNT_GROUPS.items() for e in es}
+    animals = {}
+    for eid, items in sorted(yields.items()):
+        g = group_of.get(eid) or ("birds" if mid("minecraft:feather") in items else "more_game")
+        animals.setdefault(g, []).append((eid, items))
+    for g in GROUP_INFO:
+        if g not in animals:
+            continue
+        icon, title, desc = GROUP_INFO[g]
+        rows.append((g, "root", icon, T, title, desc, has(*sorted({i for _, its in animals[g] for i in its[:1]}))))
+        for eid, items in animals[g]:
+            ns, path = mid(eid).split(":")
+            egg = f"{ns}:{path}_spawn_egg"
+            try:
+                icon = check_item(egg)
+            except AssertionError:
+                icon = items[0]
+            animal = name_of(eid, "entity")
+            names = ", ".join(name_of(i, "item") for i in items)
+            crit = AllOf({f"has_{n}": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": i}]}}
+                          for n, i in enumerate(items)})
+            rows.append((path, g, icon, C if path in CHALLENGE else T, animal, f"Butcher a {animal}: {names}", crit))
+    return rows
+
+
+TABS["hunting"] = ("minecraft:gui/advancements/backgrounds/husbandry", hunting_rows())
+
+
 def build():
     out_root = D / "mechanical/advancement"
     lang = {}
@@ -505,7 +626,8 @@ def build():
             if parent is None:
                 display["background"] = background
             adv = {"parent": f"mechanical:{tab}/{parent}"} if parent else {}
-            adv |= {"criteria": crit, "requirements": [list(crit)], "display": display}
+            adv |= {"criteria": dict(crit), "requirements": [[c] for c in crit] if isinstance(crit, AllOf) else [list(crit)],
+                    "display": display}
             (out / f"{aid}.json").write_text(json.dumps(adv, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         count[tab] = len(rows)
 
