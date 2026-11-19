@@ -23,6 +23,9 @@
     "mechanical:cooked_goose",
     "mechanical:cooked_pheasant",
     "mechanical:cooked_ptarmigan",
-    "mechanical:cooked_pigeon"
+    "mechanical:cooked_pigeon",
+    "mechanical:cooked_beaver",
+    "mechanical:roasted_beaver_tail",
+    "mechanical:cooked_otter"
   ]
 }

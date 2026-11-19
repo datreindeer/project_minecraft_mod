@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "STS",
+    " S "
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "T": "mechanical:twine"
+  },
+  "result": {
+    "id": "mechanical:pelt_hoop"
+  }
+}

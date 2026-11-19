@@ -54,6 +54,7 @@ public final class Temperature {
         if (item.is(Items.LEATHER_HELMET) || item.is(Items.LEATHER_CHESTPLATE) || item.is(Items.LEATHER_LEGGINGS) || item.is(Items.LEATHER_BOOTS)) return LEATHER_PER_PIECE;
         if (item.is(Mechanical.FUR_HOOD.get()) || item.is(Mechanical.FUR_COAT.get()) || item.is(Mechanical.FUR_LEGGINGS.get()) || item.is(Mechanical.FUR_BOOTS.get())) return FUR_PER_PIECE;
         if (item.is(Mechanical.WOLF_HOOD.get()) || item.is(Mechanical.WOLF_FUR_COAT.get()) || item.is(Mechanical.WOLF_FUR_LEGGINGS.get()) || item.is(Mechanical.WOLF_FUR_BOOTS.get())) return WOLF_FUR_PER_PIECE;
+        if (item.is(com.mechanical.wildlife.river.RiverFauna.WATERPROOF_FUR)) return com.mechanical.wildlife.river.RiverFauna.FUR_INSULATION;
         return 0;
     }
 
@@ -97,7 +98,10 @@ public final class Temperature {
         Level level = player.level();
         BlockPos pos = player.blockPosition();
         float t = ambient(level, pos);
-        if (player.isInWater()) t -= WATER;
+        // waterproof fur (beaver, otter) keeps the wet's chill off
+        float dry = com.mechanical.wildlife.river.RiverFauna.waterproofing(player);
+        if (player.isInWater()) t -= WATER * (1 - dry);
+        if (level.isRainingAt(pos.above())) t += RAIN * dry;
 
         BlockPos fire = NightDangers.nearestFire(level, player.position(), FIRE_RANGE);
         if (fire != null) {

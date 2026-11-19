@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:beaver_pelt",
+    "mechanical:beaver_pelt",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:beaver_fur_hat"
+  }
+}

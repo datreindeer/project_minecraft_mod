@@ -167,6 +167,8 @@
     "mechanical:hanging_rack",
     "mechanical:potters_wheel",
     "mechanical:tripod",
-    "mechanical:root_cellar"
+    "mechanical:root_cellar",
+    "mechanical:beaver_dam",
+    "mechanical:pelt_hoop"
   ]
 }

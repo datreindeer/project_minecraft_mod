@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/cooked",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:roasted_beaver_tail"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:roasted_beaver_tail"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.beaver_tail.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.beaver_tail.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
