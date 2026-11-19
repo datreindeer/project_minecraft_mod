@@ -88,6 +88,15 @@ public class PheasantChickModel extends EntityModel<WildAnimalRenderState> {
         this.head.yRot = state.yRot * Mth.DEG_TO_RAD;
         this.head.xRot += state.xRot * Mth.DEG_TO_RAD * 0.6F;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[0], new ModelPart[] {leftLeg, rightLeg});
+            head.xRot = 1.0F; // flops down
+            leftWing.xRot = rightWing.xRot = 3.0F; // wings fall open, hanging from the shoulders towards the ground
+            leftWing.zRot = 0.6F;
+            rightWing.zRot = -0.6F;
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart limb : new ModelPart[] {this.rightLeg, this.leftLeg, this.rightWing, this.leftWing}) {
                 limb.zRot = CarcassRenderer.LIMB_SAG;

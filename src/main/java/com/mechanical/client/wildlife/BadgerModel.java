@@ -86,6 +86,13 @@ public class BadgerModel extends EntityModel<WildAnimalRenderState> {
         super.setupAnim(state);
         float t = state.ageInTicks;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            head.xRot = 0.25F; // in line with the body, snout down
+            tail.xRot = 2.6F; // sticks back (+z): folds down over the rump
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : legs) leg.zRot = CarcassRenderer.LIMB_SAG;
             head.yRot = state.yRot * Mth.DEG_TO_RAD;

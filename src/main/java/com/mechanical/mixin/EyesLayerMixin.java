@@ -18,6 +18,6 @@ public abstract class EyesLayerMixin {
     @Inject(method = "submit", at = @At("HEAD"), cancellable = true)
     private void mechanical$noGlowWhenDead(PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, EntityRenderState state,
             float yRot, float xRot, CallbackInfo ci) {
-        if (CarcassRenderer.isCarcass(state)) ci.cancel();
+        if (CarcassRenderer.isCarcass(state) || CarcassRenderer.isHung(state)) ci.cancel();
     }
 }

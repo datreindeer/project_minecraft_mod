@@ -100,6 +100,16 @@ public class AurochsCalfModel extends EntityModel<WildAnimalRenderState> {
         float pitch = state.xRot * Mth.DEG_TO_RAD;
         float age = state.ageInTicks;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            neck.xRot = 0.1F; // the neck runs forward out of the chest: straight down
+            head.xRot = 0.2F;
+            leftEar.yRot = 1.0F; // sideways ears swung down
+            rightEar.yRot = -1.0F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             this.leftFrontLeg.zRot = this.rightFrontLeg.zRot = this.leftHindLeg.zRot = this.rightHindLeg.zRot = CarcassRenderer.LIMB_SAG;
             this.neck.yRot = -0.4F;

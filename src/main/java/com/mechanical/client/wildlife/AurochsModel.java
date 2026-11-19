@@ -168,6 +168,16 @@ public class AurochsModel extends EntityModel<WildAnimalRenderState> {
         this.hump.visible = state.showsHorns;
         this.cowHorns.visible = !state.showsHorns;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            neck.xRot = 0.1F; // the neck runs forward out of the chest: straight down
+            head.xRot = 0.2F;
+            leftEar.yRot = 1.0F; // sideways ears swung down
+            rightEar.yRot = -1.0F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : this.legs) leg.zRot = CarcassRenderer.LIMB_SAG;
             // the neck runs along -z, so a negative yaw drops it towards the ground (+x); the renderer's head yaw does the rest

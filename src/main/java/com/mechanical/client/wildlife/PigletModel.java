@@ -94,6 +94,14 @@ public class PigletModel extends EntityModel<WildAnimalRenderState> {
     public void setupAnim(WildAnimalRenderState state) {
         super.setupAnim(state);
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            head.xRot = 0.25F; // in line with the body, snout down
+            leftEar.xRot = rightEar.xRot = 1.0F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : new ModelPart[] {rightFrontLeg, leftFrontLeg, rightHindLeg, leftHindLeg}) leg.zRot = CarcassRenderer.LIMB_SAG;
             // the carcass renderer puts a head yaw in yRot that points the head at the ground

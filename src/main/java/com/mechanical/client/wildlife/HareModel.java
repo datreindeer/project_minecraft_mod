@@ -110,6 +110,12 @@ public class HareModel extends EntityModel<WildAnimalRenderState> {
         this.head.yRot = state.yRot * Mth.DEG_TO_RAD;
         this.head.xRot = state.xRot * Mth.DEG_TO_RAD;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHaunch, rightHaunch});
+            leftEar.xRot = rightEar.xRot = 1.4F; // long ears dangle below the head
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart limb : new ModelPart[] {this.rightFrontLeg, this.leftFrontLeg, this.rightHaunch, this.leftHaunch}) {
                 limb.zRot = CarcassRenderer.LIMB_SAG;

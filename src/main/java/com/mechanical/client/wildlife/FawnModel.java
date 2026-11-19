@@ -109,6 +109,15 @@ public class FawnModel extends EntityModel<WildAnimalRenderState> {
         float yaw = state.yRot * Mth.DEG_TO_RAD;
         float pitch = state.xRot * Mth.DEG_TO_RAD;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            neck.xRot = 1.5F; // neck straight down in line with the body (it rises from the chest when standing)
+            head.xRot = -1.25F; // head hanging limp below it, nose a little towards the belly
+            leftEar.xRot = rightEar.xRot = 1.2F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             // lying on its side: legs, neck and ears fall towards the ground (+x in model space)
             this.rightHindLeg.zRot = CarcassRenderer.LIMB_SAG;

@@ -5,7 +5,9 @@ import net.minecraft.resources.Identifier;
 
 /**
  * What wildlife models get, on top of the vanilla living state (walkAnimationPos/Speed, ageInTicks, head yRot/xRot ...).
- * Models should also call {@code CarcassRenderer.isCarcass(state)} and let the limbs sag when it is true.
+ * Models should also call {@code CarcassRenderer.isCarcass(state)} and let the limbs sag when it is true, and
+ * {@code CarcassRenderer.isHung(state)} (head down on a Hanging Rack, model -z is world down): {@code CarcassRenderer.hangLegs}
+ * for the legs, neck and head hanging straight down in line with the body, ears and tail drooping.
  */
 public class WildAnimalRenderState extends LivingEntityRenderState {
     public Identifier texture;

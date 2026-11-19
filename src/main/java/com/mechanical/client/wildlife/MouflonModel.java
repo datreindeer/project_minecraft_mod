@@ -139,6 +139,16 @@ public class MouflonModel extends EntityModel<WildAnimalRenderState> {
         this.ramHorns.visible = state.showsHorns;
         this.eweHorns.visible = !state.showsHorns;
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
+            neck.xRot = 1.5F; // neck straight down in line with the body (it rises from the chest when standing)
+            head.xRot = -1.25F; // head hanging limp below it, nose a little towards the belly
+            leftEar.yRot = 1.0F; // sideways ears swung down
+            rightEar.yRot = -1.0F;
+            tail.xRot = -1.9F; // flops down over the back
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart leg : this.legs) leg.zRot = CarcassRenderer.LIMB_SAG;
             this.neck.xRot = 1.0F;

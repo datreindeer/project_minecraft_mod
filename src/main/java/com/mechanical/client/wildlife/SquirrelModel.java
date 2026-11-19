@@ -109,6 +109,15 @@ public class SquirrelModel extends EntityModel<WildAnimalRenderState> {
         float t = state.ageInTicks;
         ModelPart[] limbs = {rightFrontLeg, leftFrontLeg, rightHaunch, leftHaunch};
 
+        if (CarcassRenderer.isHung(state)) {
+            CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHaunch, rightHaunch});
+            leftEar.xRot = rightEar.xRot = 1.4F;
+            tail.xRot = 2.8F; // the bushy tail falls down along the back, past the head
+            tailMid.xRot = 0.15F;
+            tailTip.xRot = 0.15F;
+            return;
+        }
+
         if (CarcassRenderer.isCarcass(state)) {
             for (ModelPart limb : limbs) limb.zRot = CarcassRenderer.LIMB_SAG;
             head.yRot = state.yRot * Mth.DEG_TO_RAD;
