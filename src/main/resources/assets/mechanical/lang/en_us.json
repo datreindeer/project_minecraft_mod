@@ -470,5 +470,8 @@
   "message.mechanical.crop.ripe": "ripe",
   "block.mechanical.unlit_torch": "Unlit Torch",
   "block.mechanical.unlit_wall_torch": "Unlit Torch",
-  "message.mechanical.wind": "The wind is rising... fires in the open won't last tonight."
+  "message.mechanical.wind": "The wind is rising... fires in the open won't last tonight.",
+  "death.attack.mechanical.smoke": "%1$s choked on smoke",
+  "death.attack.mechanical.smoke.player": "%1$s choked on smoke while fighting %2$s",
+  "subtitles.mechanical.smoke.cough": "Coughing"
 }

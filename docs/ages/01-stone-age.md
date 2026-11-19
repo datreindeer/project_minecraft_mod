@@ -501,6 +501,29 @@ Nytt item: **Horn** (material för senare recept).
 - **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla).
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
+### Rök inomhus
+En eld i ett stängt rum fyller det med rök. **Källor:** tänd Campfire och Soul Campfire, och Clay Kiln när den brinner
+(inte facklor eller ljus).
+- **Rummet:** luften fylls ut från blocket ovanför elden (Clay Kiln: ovanför skorstenen), högst 500 block. Det räknas som
+  stängt om fyllningen inte når ut. Väggar är alla "solida" block: sten, plank, glas, glasrutor, staket, **stängda** dörrar
+  och fallluckor. Öppna dörrar/fallluckor och öppna grindar släpper ut röken. Rummet räknas om var 5:e sekund.
+- **Så ventilerar man:**
+  - **Rökhål/skorsten rakt ovanför elden:** en pelare av luft (eller andra icke-solida block) från elden upp till bar
+    himmel. Då blir det ingen rök alls, hur stängt rummet än är. En öppen fallucka i taket fungerar som stängbart rökhål.
+  - **En öppning i väggen** (dörröppning, öppen dörr, fönsterhål) släpper ut röken.
+  - **Ett ensamt hål i taket som inte är över elden** läcker bara: röken byggs upp hälften så fort. Två eller fler hål
+    ventilerar.
+  - Ett rum större än 500 block (stor grotta) blir inte rökigt.
+- **Förlopp** (litet rum, ~100 block luft): röken når fullt på **~50 s** (30 s + 1 s per 5 block luft; ett större rum
+  tar längre tid). Grå dimma och rök i luften på klienten som tätnar med röken (sikten ner till ~4 block vid full rök).
+  Från **halv rök:** hosta och Slowness. Från **90 %:** **½ hjärta varannan sekund** (rustning hjälper inte,
+  dödsmeddelande "choked on smoke"). Djur, monster och Tribespeople i rummet tar också skadan.
+- **Trä tar eld:** efter **3 minuter på full rök** kan brandbara block i rummet (plank, stockar, ull, trädetaljer …)
+  fatta eld: varje sekund 1 på 20 att eld uppstår i luften bredvid något brandbart. I testet tog det ~3,5 min på full rök.
+- **Röken skingras** långsamt när elden slocknar eller rummet öppnas: från full rök till ingenting på 1,5 minut.
+- Testa med `/smoke <pos>` (op): röknivån vid positionen och alla eldar som följs (stängt, rumsstorlek, läckor).
+  Eldar hittas inom 3 chunks från spelare (och runt positionen i `/smoke`).
+
 ### Fisk
 - Döda fiskar och fångst släpper **Whole Cod / Whole Salmon / Whole Tropical Fish / Whole Pufferfish** (gäller både
   döda fiskar och fiskespö). De går inte att äta eller laga.
