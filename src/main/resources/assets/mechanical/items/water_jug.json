@@ -1,0 +1,35 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:block_state",
+    "block_state_property": "water",
+    "cases": [
+      {
+        "when": [
+          "1",
+          "2",
+          "3"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "mechanical:block/water_jug_low"
+        }
+      },
+      {
+        "when": [
+          "4",
+          "5",
+          "6"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "mechanical:block/water_jug_full"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mechanical:block/water_jug"
+    }
+  }
+}

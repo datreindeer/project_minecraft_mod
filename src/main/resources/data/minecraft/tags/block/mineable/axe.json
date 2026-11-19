@@ -163,6 +163,7 @@
     "mechanical:snare",
     "mechanical:fish_trap",
     "mechanical:dugout_blank",
-    "mechanical:smoking_rack"
+    "mechanical:smoking_rack",
+    "mechanical:potters_wheel"
   ]
 }

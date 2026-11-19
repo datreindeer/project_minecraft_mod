@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PSP",
+    " B ",
+    "CCC"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "S": "mechanical:bronze_saw",
+    "B": "mechanical:bronze_ingot",
+    "C": "minecraft:cobblestone"
+  },
+  "result": {
+    "id": "mechanical:potters_wheel"
+  }
+}

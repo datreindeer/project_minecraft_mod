@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/water_jug",
+  "textures": {
+    "particle": "mechanical:block/unfired_water_jug_side",
+    "side": "mechanical:block/unfired_water_jug_side",
+    "top": "mechanical:block/unfired_water_jug_top",
+    "mouth": "mechanical:block/unfired_water_jug_mouth"
+  }
+}

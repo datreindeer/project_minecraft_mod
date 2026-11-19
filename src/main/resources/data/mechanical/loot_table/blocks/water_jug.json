@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:water_jug",
+          "modifier": [
+            {
+              "type": "minecraft:copy_state",
+              "block": "mechanical:water_jug",
+              "properties": [
+                "water"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/water_jug"
+}

@@ -1,0 +1,123 @@
+{
+  "variants": {
+    "water=0": [
+      {
+        "model": "mechanical:block/water_jug"
+      },
+      {
+        "model": "mechanical:block/water_jug",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug",
+        "y": 270
+      }
+    ],
+    "water=1": [
+      {
+        "model": "mechanical:block/water_jug_low"
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 270
+      }
+    ],
+    "water=2": [
+      {
+        "model": "mechanical:block/water_jug_low"
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 270
+      }
+    ],
+    "water=3": [
+      {
+        "model": "mechanical:block/water_jug_low"
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug_low",
+        "y": 270
+      }
+    ],
+    "water=4": [
+      {
+        "model": "mechanical:block/water_jug_full"
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 270
+      }
+    ],
+    "water=5": [
+      {
+        "model": "mechanical:block/water_jug_full"
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 270
+      }
+    ],
+    "water=6": [
+      {
+        "model": "mechanical:block/water_jug_full"
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/water_jug_full",
+        "y": 270
+      }
+    ]
+  }
+}
