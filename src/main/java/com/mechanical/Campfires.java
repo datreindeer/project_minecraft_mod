@@ -30,7 +30,8 @@ public final class Campfires {
     public static final int MIN_BURN_FOOD = 600, MAX_BURN_FOOD = 1200; // 30-60 s after it is done, food burns
 
     public static boolean isEmbers(BlockState state) {
-        return state.hasProperty(EMBERS) && state.getValue(EMBERS);
+        // a burning fire is never embers, even if something lit it without clearing the flag (fire drill, tribespeople)
+        return state.hasProperty(EMBERS) && state.getValue(EMBERS) && !state.getValue(CampfireBlock.LIT);
     }
 
     /** Lit -> embers (fire goes out, logs keep glowing). */

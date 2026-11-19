@@ -506,7 +506,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (lit) {
             fire.mechanical$addFuel(carryingWood ? Campfires.FIREWOOD_TICKS * 2 : Campfires.FIREWOOD_TICKS);
         } else {
-            BlockState relit = state.setValue(CampfireBlock.LIT, true);
+            BlockState relit = state.setValue(CampfireBlock.LIT, true).trySetValue(com.mechanical.Campfires.EMBERS, false);
             if (relit.hasProperty(Campfires.EMBERS)) relit = relit.setValue(Campfires.EMBERS, false);
             level.setBlock(home, relit, Block.UPDATE_ALL);
             fire.mechanical$relight();

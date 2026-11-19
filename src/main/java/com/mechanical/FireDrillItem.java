@@ -50,7 +50,7 @@ public class FireDrillItem extends Item {
             if (server.getRandom().nextFloat() < (Tinder.has(tinder) ? Tinder.CHANCE_WITH : Tinder.CHANCE_WITHOUT)) {
                 if (tinder != null) Tinder.set(tinder, false);
                 if (kilnEntity != null) kilnEntity.tryLight();
-                else server.setBlock(pos, state.setValue(CampfireBlock.LIT, true), 11);
+                else server.setBlock(pos, state.setValue(CampfireBlock.LIT, true).trySetValue(Campfires.EMBERS, false), 11);
                 server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);
             } else {
                 server.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.3, pos.getZ() + 0.5, 5, 0.2, 0.1, 0.2, 0.01);
