@@ -265,12 +265,13 @@ for x in range(21, 29):
 for x in range(22, 28):
     for y in range(18, 62):
         gui.putpixel((x, y), INNER)
-for x in range(20, 30):  # bulb
-    for y in range(62, 69):
-        dx, dy = x - 24.5, y - 65.5
-        d = (dx * dx) / 25 + (dy * dy) / 12.25
-        if d <= 1.0:
-            gui.putpixel((x, y), INNER if d < 0.62 else DARK if x < 25 else LIGHT)
+for x in range(19, 31):  # round bulb (centre 24.5, 66.5), open to the tube above it; KilnScreen.inBulb() matches
+    for y in range(61, 72):
+        d = ((x - 24.5) ** 2 + (y - 66.5) ** 2) ** 0.5
+        if 22 <= x <= 27 and y <= 63:
+            gui.putpixel((x, y), INNER)
+        elif d <= 4.6:
+            gui.putpixel((x, y), INNER if d < 3.6 else DARK if x + y < 91 else LIGHT)
 for deg, col in ((600, (176, 32, 12, 255)), (950, (240, 122, 16, 255)), (1085, (255, 210, 80, 255))):
     y = 62 - round(deg / 1300 * 44)
     for x in (29, 30, 31):
