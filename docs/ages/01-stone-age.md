@@ -353,6 +353,47 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
   Raw Hide, Scraped Hide, Raw Phantom Hide, Scraped Phantom Hide. Innehållet sparas i korgen (stackar inte, 1 per plats i inventoryt).
 **Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost i Compost Heap (bronsåldern).
 
+### Flotte och kanot (i stället för båtar)
+Vanilla-båtarna går inte att crafta i stenåldern (se "Recept från senare åldrar"). I stället finns två farkoster. Båda är
+vanilla-båtar i grunden (flyter, går att leda med Lead, knuffar in djur, släpper sitt item när de slås sönder), men
+toppfarten hålls nere.
+
+| | Log Raft | Dugout Canoe | Vanilla Boat (jämförelse) |
+|---|---|---|---|
+| Platser | 1 | 2 | 2 |
+| Toppfart på vatten | ~3,4 block/s (47 %) | ~6,3 block/s (87 %) med **Paddle** i handen, ~3,4 block/s utan | ~7,2 block/s |
+| Hur | Crafting table | Hålas ur i världen | — |
+
+Fart utan styrning (drift, strömmar) är som en vanilla-båt; bromsen gäller bara när någon sitter i och styr. Flotten
+gungar på vattnet och har inga väggar; kanoten håller vattnet ute ur skrovet.
+
+**Log Raft:** `[Log][Cordage][Log]` × 3 rader (6 stockar + 3 Cordage). Stockarna kan vara **Rough Log** av valfritt träslag
+eller valfri Log som brinner (`#mechanical:raft_logs`). Låses upp av Cordage. Modell: fem barkklädda stockar sida vid sida,
+två skalade tvärslanor surrade med rep, enkla paddlar.
+
+**Paddle:** valfri Rough Log + kniv (formlöst, kniven slits 1). Låses upp av en Rough Log. Håll den i valfri hand när du
+sitter i kanoten; då syns paddlarna och kanoten går nästan dubbelt så fort.
+
+**Dugout Canoe** (urholkad stock), görs i världen:
+1. **Högerklicka med en kniv** på en **Fallen Log** (med eller utan bark, inte hugget smalare) eller en **Log som ligger
+   ned** (placerad på sidan, alla stockar som brinner: `#mechanical:dugout_logs`). Kanotens kontur ritsas in i ovansidan och
+   blocket blir en **Dugout Blank** (kniven slits 1).
+2. **Hugg ur** med yxa (håll högerklick, som Fallen Logs men dubbelt så många hugg: Flint Axe 6 hugg ≈ 2,7 s, Stone Axe 4).
+   Spånen flyger (1–2 Sticks), yxan slits 1.
+3. **Bränn:** tänd i urholkningen med **Torch** (tänder alltid, förbrukas inte), **Fire Drill** (75 %, spånen är bra
+   tändmaterial; slits 1 per försök) eller **Flint and Steel** (slits 1). Det brinner i **30 s** (lågor, rök, ljus 11).
+   Regnar det när elden slocknar blir det inget kol, och man får tända igen.
+4. **Skrapa ur kolet** med yxa (som steg 2).
+5. **Bränn igen** (som steg 3).
+6. **Hugg ur** sista gången med yxa → urholkningen är djup, väggarna tunna.
+7. **Jämna till med kniv** (håll högerklick, 4 drag, kniven slits 1) → blocket försvinner och ger en **Dugout Canoe**.
+
+Fel verktyg i fel steg ger ett meddelande om vad som behövs. Medan den brinner går den inte att bearbeta. Bryts blanken
+blir det 1–3 Sticks. Blanken har ett eget utseende (huggen ek) oavsett träslag; kanoten likaså. Kanotens modell: lång
+smal urholkad stock med rundad botten, solida avsmalnande ändar och mörkbränd, skrapad insida.
+
+Båtar med plankor (vanilla Boat, Chest Boat, Bamboo Raft) kommer tillbaka i **bronsåldern**.
+
 ### Mat och styckning
 - **Alla vilda, vuxna passiva djur** (kor, grisar, får, höns, kaniner, getter, hästar, lamor, rävar, vargar, isbjörnar …)
   släpper **ingen loot** när de dör. När dödsanimationen är klar ligger djuret kvar som en **Carcass** där kroppen
@@ -889,6 +930,8 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Twine | Flail |
 | Sheaf (valfri) | Tröska för hand (Sheaf → Grain) |
 | Grain (valfri) | Raw Porridge |
+| Cordage | Log Raft |
+| Rough Log (valfri) | Paddle |
 
 Verktygen i Tool Station låses upp separat (se Tool Station).
 
@@ -933,6 +976,7 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Logs | Kräver yxa |
 | Iron Ore, Coal Ore, Lapis Ore (+ deepslate, Block of Raw Iron, Lapis Block) | Ger inget med trä-/stenhacka. Kräver Bronze Pickaxe (bronsåldern). Stenhackan bryter bara sten, Copper Ore och Tin Ore |
 | Leaves | Stick-chans höjd |
+| Boats, Chest Boats, Bamboo Raft | Recepten **avstängda** → **Log Raft** och **Dugout Canoe** (se "Flotte och kanot") |
 
 Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är borttagna.
 
@@ -957,6 +1001,7 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
 | Paper, Book, Writable Book, Bookshelf, Chiseled Bookshelf, Lectern | Skrift kommer med papyrus | Bronsåldern |
 | Concrete Powder (alla färger) | Betong hör till en senare ålder | Järnåldern |
 | Lever | En redstone-del | Järnåldern |
+| Alla Boat och Chest Boat (10 träslag), Bamboo Raft, Bamboo Chest Raft | Planks; ersatta av Log Raft och Dugout Canoe | Bronsåldern |
 
 Ändrat: **Lead** görs av 5 Cordage (i stället för String). **Redstone-tråd** i tempel, Trial Chambers och herrgårdar ger
 ingenting. Loot-filtret tar också bort **Saddle**, **Fire Charge**, vanillas sten- och träverktyg (de görs i Tool Station)
@@ -982,6 +1027,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Odling: se Teknik i `docs/farming.md`.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
+- Flotte och kanot: `Watercraft.java` (register, fartbroms, knivritsning), `DugoutBlankBlock.java`, `client/WatercraftModel.java`, `client/WatercraftRenderer.java`; data `scripts/gen_watercraft.py`, texturer `scripts/gen_watercraft_textures.py`.
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
 - Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.

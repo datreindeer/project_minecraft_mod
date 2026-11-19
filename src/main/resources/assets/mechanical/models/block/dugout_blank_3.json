@@ -1,0 +1,148 @@
+{
+  "textures": {
+    "particle": "mechanical:block/dugout_blank_side",
+    "side": "mechanical:block/dugout_blank_side",
+    "top": "mechanical:block/dugout_blank_top",
+    "end": "mechanical:block/dugout_blank_end",
+    "inside": "mechanical:block/dugout_blank_hollow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        9,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#inside"
+        },
+        "north": {
+          "texture": "#end"
+        },
+        "south": {
+          "texture": "#end"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        9,
+        0
+      ],
+      "to": [
+        3,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#end"
+        },
+        "south": {
+          "texture": "#end"
+        },
+        "east": {
+          "texture": "#inside"
+        },
+        "west": {
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        9,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#end"
+        },
+        "south": {
+          "texture": "#end"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#inside"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        9,
+        0
+      ],
+      "to": [
+        13,
+        16,
+        2
+      ],
+      "faces": {
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#end"
+        },
+        "south": {
+          "texture": "#inside"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        9,
+        14
+      ],
+      "to": [
+        13,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#top"
+        },
+        "north": {
+          "texture": "#inside"
+        },
+        "south": {
+          "texture": "#end"
+        }
+      }
+    }
+  ]
+}

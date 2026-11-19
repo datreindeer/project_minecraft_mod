@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#mechanical:rough_logs",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:paddle",
+    "count": 1
+  }
+}

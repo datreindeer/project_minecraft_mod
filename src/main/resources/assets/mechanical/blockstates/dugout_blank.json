@@ -1,0 +1,88 @@
+{
+  "variants": {
+    "axis=x,burning=false,stage=0": {
+      "model": "mechanical:block/dugout_blank_0",
+      "y": 90
+    },
+    "axis=x,burning=false,stage=1": {
+      "model": "mechanical:block/dugout_blank_1",
+      "y": 90
+    },
+    "axis=x,burning=false,stage=2": {
+      "model": "mechanical:block/dugout_blank_2",
+      "y": 90
+    },
+    "axis=x,burning=false,stage=3": {
+      "model": "mechanical:block/dugout_blank_3",
+      "y": 90
+    },
+    "axis=x,burning=false,stage=4": {
+      "model": "mechanical:block/dugout_blank_4",
+      "y": 90
+    },
+    "axis=x,burning=false,stage=5": {
+      "model": "mechanical:block/dugout_blank_5",
+      "y": 90
+    },
+    "axis=x,burning=true,stage=0": {
+      "model": "mechanical:block/dugout_blank_0",
+      "y": 90
+    },
+    "axis=x,burning=true,stage=1": {
+      "model": "mechanical:block/dugout_blank_1",
+      "y": 90
+    },
+    "axis=x,burning=true,stage=2": {
+      "model": "mechanical:block/dugout_blank_2",
+      "y": 90
+    },
+    "axis=x,burning=true,stage=3": {
+      "model": "mechanical:block/dugout_blank_3",
+      "y": 90
+    },
+    "axis=x,burning=true,stage=4": {
+      "model": "mechanical:block/dugout_blank_4",
+      "y": 90
+    },
+    "axis=x,burning=true,stage=5": {
+      "model": "mechanical:block/dugout_blank_5",
+      "y": 90
+    },
+    "axis=z,burning=false,stage=0": {
+      "model": "mechanical:block/dugout_blank_0"
+    },
+    "axis=z,burning=false,stage=1": {
+      "model": "mechanical:block/dugout_blank_1"
+    },
+    "axis=z,burning=false,stage=2": {
+      "model": "mechanical:block/dugout_blank_2"
+    },
+    "axis=z,burning=false,stage=3": {
+      "model": "mechanical:block/dugout_blank_3"
+    },
+    "axis=z,burning=false,stage=4": {
+      "model": "mechanical:block/dugout_blank_4"
+    },
+    "axis=z,burning=false,stage=5": {
+      "model": "mechanical:block/dugout_blank_5"
+    },
+    "axis=z,burning=true,stage=0": {
+      "model": "mechanical:block/dugout_blank_0"
+    },
+    "axis=z,burning=true,stage=1": {
+      "model": "mechanical:block/dugout_blank_1"
+    },
+    "axis=z,burning=true,stage=2": {
+      "model": "mechanical:block/dugout_blank_2"
+    },
+    "axis=z,burning=true,stage=3": {
+      "model": "mechanical:block/dugout_blank_3"
+    },
+    "axis=z,burning=true,stage=4": {
+      "model": "mechanical:block/dugout_blank_4"
+    },
+    "axis=z,burning=true,stage=5": {
+      "model": "mechanical:block/dugout_blank_5"
+    }
+  }
+}

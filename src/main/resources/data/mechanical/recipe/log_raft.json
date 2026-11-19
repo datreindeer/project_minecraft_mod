@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LCL",
+    "LCL",
+    "LCL"
+  ],
+  "key": {
+    "L": "#mechanical:raft_logs",
+    "C": "mechanical:cordage"
+  },
+  "result": {
+    "id": "mechanical:log_raft"
+  }
+}

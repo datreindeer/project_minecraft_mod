@@ -532,5 +532,15 @@
   "item.mechanical.scraped_phantom_hide": "Scraped Phantom Hide",
   "item.mechanical.phantom_leather": "Phantom Leather",
   "item.mechanical.glider_frame": "Glider Frame",
-  "item.mechanical.glider_cloak": "Glider Cloak"
+  "item.mechanical.glider_cloak": "Glider Cloak",
+  "item.mechanical.log_raft": "Log Raft",
+  "item.mechanical.dugout_canoe": "Dugout Canoe",
+  "item.mechanical.paddle": "Paddle",
+  "block.mechanical.dugout_blank": "Dugout Blank",
+  "entity.mechanical.log_raft": "Log Raft",
+  "entity.mechanical.dugout_canoe": "Dugout Canoe",
+  "message.mechanical.dugout.burning": "Let the fire burn out first",
+  "message.mechanical.dugout.needs_fire": "Burn the hewn wood first (torch or fire drill)",
+  "message.mechanical.dugout.needs_axe": "Hew it out with an axe first",
+  "message.mechanical.dugout.needs_knife": "Smooth the hollow with a knife"
 }
