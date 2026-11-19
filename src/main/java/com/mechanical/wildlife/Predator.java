@@ -73,6 +73,7 @@ public abstract class Predator extends WildAnimal {
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(1, new AvoidFireGoal(this));
+        goalSelector.addGoal(3, new CarcassScentGoal(this));
     }
 
     @Override
@@ -211,6 +212,106 @@ public abstract class Predator extends WildAnimal {
         if (e == null || !e.isAlive() || e == this) return false;
         if (e instanceof Player p) return !p.isCreative() && !p.isSpectator();
         return isPrey(e);
+    }
+
+    /**
+     * The smell of blood: at hunting time a carcass within {@link #RANGE} blocks draws it. One being carried, dragged or
+     * pulled on a travois makes the one hauling it its quarry (the hunting goals take over, fire fear included). One lying
+     * unattended or hung on a rack it goes to and eats (10 s), leaving the bones - unless a burning fire is within
+     * FIRE_SAFE of the carcass (blood moon and hunger excepted).
+     */
+    static class CarcassScentGoal extends Goal {
+        static final double RANGE = 40;
+        private static final int FEED_TICKS = 200;
+        private final Predator mob;
+        private com.mechanical.CarcassEntity carcass;
+        private int feeding;
+
+        CarcassScentGoal(Predator mob) {
+            this.mob = mob;
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        /** The player carrying, dragging or pulling it on a travois, or null. */
+        static LivingEntity keeper(com.mechanical.CarcassEntity c) {
+            Player p = c.hauler();
+            if (p != null) return p;
+            return c.getVehicle() instanceof com.mechanical.TravoisEntity t ? t.harness() : null;
+        }
+
+        private boolean guarded(com.mechanical.CarcassEntity c) {
+            return !mob.fearless() && NightDangers.nearFire(mob.level(), c.position(), FIRE_SAFE);
+        }
+
+        @Override
+        public boolean canUse() {
+            if (mob.getRandom().nextInt(20) != 0 || !mob.huntingTime() || mob.retreating() || mob.isDozing() || mob.getTarget() != null) return false;
+            carcass = null;
+            double best = Double.MAX_VALUE;
+            for (com.mechanical.CarcassEntity c : mob.level().getEntitiesOfClass(com.mechanical.CarcassEntity.class, mob.getBoundingBox().inflate(RANGE))) {
+                if (c.animal() == mob.getType()) continue; // not its own kind
+                LivingEntity keeper = keeper(c);
+                if (keeper != null) {
+                    if (mob.canHunt(keeper)) {
+                        mob.setTarget(keeper);
+                        return false;
+                    }
+                    continue;
+                }
+                double d = mob.distanceToSqr(c);
+                if (d < best && !guarded(c)) {
+                    best = d;
+                    carcass = c;
+                }
+            }
+            return carcass != null && mob.getNavigation().moveTo(carcass, 1.0);
+        }
+
+        @Override
+        public void start() {
+            feeding = 0;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return carcass.isAlive() && keeper(carcass) == null && mob.getTarget() == null && !mob.retreating() && mob.huntingTime() && !guarded(carcass);
+        }
+
+        @Override
+        public void stop() {
+            mob.getNavigation().stop();
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+
+        @Override
+        public void tick() {
+            Vec3 c = carcass.getBoundingBox().getCenter();
+            mob.getLookControl().setLookAt(c);
+            double reach = 1.2 + (mob.getBbWidth() + carcass.getBbWidth()) / 2;
+            if (mob.distanceToSqr(c.x, carcass.getY(), c.z) > reach * reach) {
+                if (mob.tickCount % 20 == 0) mob.getNavigation().moveTo(carcass, 1.0);
+                return;
+            }
+            mob.getNavigation().stop();
+            ServerLevel level = (ServerLevel) mob.level();
+            if (++feeding % 10 == 0) {
+                com.mechanical.Blood.spray(level, c.x, c.y, c.z, 3);
+                mob.playSound(net.minecraft.sounds.SoundEvents.GENERIC_EAT.value(), 0.8F, 0.6F);
+            }
+            if (feeding < FEED_TICKS) return;
+            // eaten down to the bones
+            com.mechanical.Blood.splatter(level, carcass.blockPosition(), 1, 4);
+            BlockPos pos = carcass.blockPosition();
+            var pile = Mechanical.BONE_PILE.get().defaultBlockState();
+            if (carcass.hungAt() == null && level.getBlockState(pos).canBeReplaced() && pile.canSurvive(level, pos))
+                level.setBlock(pos, pile, net.minecraft.world.level.block.Block.UPDATE_ALL);
+            carcass.discard();
+            mob.hunger = 0;
+        }
     }
 
     /** Walks out of a burning fire's reach (except on a blood moon or when starving) and drops a target sheltering by it. */

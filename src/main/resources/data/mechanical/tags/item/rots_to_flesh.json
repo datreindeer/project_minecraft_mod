@@ -37,6 +37,12 @@
     "mechanical:smoked_meat",
     "mechanical:smoked_fish",
     "mechanical:jerky",
-    "mechanical:dried_fish"
+    "mechanical:dried_fish",
+    "mechanical:raw_haunch",
+    "mechanical:raw_ribs",
+    "mechanical:raw_loin",
+    "mechanical:cooked_haunch",
+    "mechanical:cooked_ribs",
+    "mechanical:cooked_loin"
   ]
 }

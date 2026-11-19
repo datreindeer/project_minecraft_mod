@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "RCR",
+    "R R",
+    "R R"
+  ],
+  "key": {
+    "R": "mechanical:tool_rod",
+    "C": "mechanical:cordage"
+  },
+  "result": {
+    "id": "mechanical:hanging_rack"
+  }
+}

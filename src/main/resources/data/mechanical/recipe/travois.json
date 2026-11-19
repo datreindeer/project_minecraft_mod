@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "R R",
+    "CHC",
+    "R R"
+  ],
+  "key": {
+    "R": "mechanical:tool_rod",
+    "C": "mechanical:cordage",
+    "H": "mechanical:scraped_hide"
+  },
+  "result": {
+    "id": "mechanical:travois"
+  }
+}

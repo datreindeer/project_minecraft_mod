@@ -25,10 +25,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Draws the carcass as the animal itself lying on its side: a never-added copy of the animal is rendered with its own
- * vanilla renderer inside a rotated pose.
+ * vanilla renderer inside a rotated pose. Carried ({@link CarcassEntity#hauler()}, not large) it lies across the
+ * hauler's shoulders, drawn from the hauler's own position so it never lags; hung on a Hanging Rack it hangs head down by
+ * the hind legs from the top of its hitbox. Dragged or on a travois it lies as on the ground.
  * shortcut: the copy has default looks (white sheep, default cow variant); sync the dead animal's data if that matters.
  */
 public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRenderer.State> {
@@ -67,11 +71,30 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         return !skinnedTexture(texture).equals(texture);
     }
 
+    public enum Pose { LYING, CARRIED, HUNG }
+
     public static class State extends EntityRenderState {
         EntityRenderState animal;
         EntityRenderer<Entity, EntityRenderState> renderer;
-        float bodyYaw, width, height;
+        float bodyYaw, width, height, hangLength;
         boolean flat;
+        Pose pose = Pose.LYING;
+        /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
+        double dx, dy, dz;
+        float shoulder;
+    }
+
+    /** Carried by the camera's player in first person: it would fill the screen. */
+    private static boolean carriedByViewer(CarcassEntity carcass) {
+        Minecraft mc = Minecraft.getInstance();
+        return !carcass.isLarge() && carcass.haulerId() >= 0 && mc.getCameraEntity() != null && carcass.haulerId() == mc.getCameraEntity().getId()
+                && mc.options.getCameraType().isFirstPerson();
+    }
+
+    @Override
+    public boolean shouldRender(CarcassEntity carcass, net.minecraft.client.renderer.culling.Frustum frustum, double camX, double camY, double camZ, float partialTicks) {
+        if (carriedByViewer(carcass)) return false;
+        return carcass.haulerId() >= 0 || super.shouldRender(carcass, frustum, camX, camY, camZ, partialTicks);
     }
 
     public CarcassRenderer(EntityRendererProvider.Context context) {
@@ -109,14 +132,18 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             living.yBodyRot = living.yBodyRotO = living.yHeadRot = living.yHeadRotO = 180.0F;
             living.setYRot(180.0F);
         }
+        Entity hauler = carcass.isLarge() ? null : carcass.hauler();
+        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? Pose.CARRIED : Pose.LYING;
         boolean skinned = carcass.stage() > 0;
         if (dummy instanceof Sheep sheep) sheep.setSheared(skinned);
         state.renderer = (EntityRenderer<Entity, EntityRenderState>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dummy);
         state.animal = state.renderer.createRenderState(dummy, partialTicks);
         // skinned/plucked: raw red flesh look (the vanilla hurt tint); a sheared sheep already looks bare
-        state.animal.setRenderData(CARCASS, true);
+        // hung or carried the legs hang stiff from the body instead of sagging sideways to the ground
+        if (state.pose == Pose.LYING) state.animal.setRenderData(CARCASS, true);
         if (state.animal instanceof LivingEntityRenderState living) {
-            living.yRot = HEAD_SAG; // models use yRot as head yaw; lying on the side that points the head at the ground
+            // models use yRot as head yaw; lying on the side that points the head at the ground
+            living.yRot = state.pose == Pose.LYING ? HEAD_SAG : 0.0F;
             living.xRot = 0.0F;
             if (skinned && !(dummy instanceof Sheep)) {
                 // flesh texture if we have one for this animal, otherwise the red hurt tint
@@ -127,16 +154,46 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // a dead phantom: wings spread limp on the ground instead of flapping
         if (state.animal instanceof PhantomRenderState phantom) phantom.flapTime = LIMP_FLAP;
         state.flat = carcass.liesFlat();
-        state.bodyYaw = carcass.bodyYaw();
+        state.bodyYaw = carcass.getViewYRot(partialTicks);
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
+        state.hangLength = carcass.getBbHeight();
+        if (state.pose == Pose.CARRIED) {
+            Vec3 at = hauler.getPosition(partialTicks).subtract(carcass.getPosition(partialTicks));
+            state.dx = at.x;
+            state.dy = at.y;
+            state.dz = at.z;
+            state.shoulder = hauler.isCrouching() ? 1.15F : 1.45F;
+            if (hauler instanceof LivingEntity living) state.bodyYaw = Mth.rotLerp(partialTicks, living.yBodyRotO, living.yBodyRot);
+        }
     }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.animal == null) return;
         poseStack.pushPose();
+        if (state.pose == Pose.CARRIED) poseStack.translate(state.dx, state.dy + state.shoulder, state.dz);
         poseStack.rotate(Axis.YP.rotationDegrees(180.0F - state.bodyYaw));
+        // in this frame the animal's head points to -z, its feet to -y (the copy is rendered facing yaw 180)
+        if (state.pose == Pose.CARRIED) {
+            // across the shoulders: body along x, back to the neck, legs hanging forward over the chest
+            poseStack.translate(0.0F, 0.0F, 0.1F + state.width * 0.25F);
+            poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(90.0F));
+            poseStack.translate(0.0F, -state.height * 0.6F, 0.0F);
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
+        }
+        if (state.pose == Pose.HUNG) {
+            // head down from the hook: the rump (z = +rear) goes up to the top of the hitbox, the body centred under it
+            float rear = state.width * 0.6F;
+            poseStack.translate(0.0F, state.hangLength - rear, state.height * 0.55F);
+            poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
+        }
         if (state.flat) {
             state.renderer.submit(state.animal, poseStack, collector, camera);
             poseStack.popPose();

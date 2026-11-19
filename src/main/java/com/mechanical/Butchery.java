@@ -147,25 +147,80 @@ public final class Butchery {
         return animal == Wildlife.BROWN_BEAR.get() || animal == Wildlife.GIANT_DEER.get() ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 
-    /** First pass: wool / hide / feathers. {@code yieldMultiplier} comes from the knife (flint = 1). */
-    /** First pass; a skinning knife ({@code hideMultiplier} > 1) also gets proportionally more of each piece. */
-    static void dropOuter(ServerLevel level, Entity at, EntityType<?> type, float hideMultiplier) {
+    /**
+     * First pass: wool / hide / feathers; a skinning knife ({@code hideMultiplier} > 1) also gets proportionally more of
+     * each piece. On a Hanging Rack ({@code hung}) the skin comes off whole: every piece drops, no chance roll.
+     */
+    static void dropOuter(ServerLevel level, Entity at, EntityType<?> type, float hideMultiplier, boolean hung) {
         RandomSource random = level.getRandom();
         for (Extra e : yieldFor(type).outer()) {
-            if (random.nextFloat() >= e.chance() * hideMultiplier) continue;
+            if (!hung && random.nextFloat() >= e.chance() * hideMultiplier) continue;
             float count = (e.min() + random.nextInt(e.max() - e.min() + 1)) * Math.max(1, hideMultiplier);
             int whole = (int) count;
             drop(level, at, e.item().get(), whole + (random.nextFloat() < count - whole ? 1 : 0));
         }
     }
 
-    /** Second pass: the meat and what is inside; {@code trophy} = the animal carried antlers (stag), which come off too. */
-    static void dropInner(ServerLevel level, Entity at, EntityType<?> type, float yieldMultiplier, boolean trophy) {
+    /**
+     * Second pass: the meat and what is inside; {@code trophy} = the animal carried antlers (stag), which come off too.
+     * On a Hanging Rack ({@code hung}) the meat is twice the scraps (x1.25 more if {@code aged}), cut into Haunches, Ribs and
+     * Loins ({@link #cuts}), and fat, sinew and bone always come out, one more of each. A {@code spoiled} body gives
+     * Rotten Flesh for its meat.
+     */
+    static void dropInner(ServerLevel level, Entity at, EntityType<?> type, float yieldMultiplier, boolean trophy, boolean hung, boolean aged, boolean spoiled) {
         if (trophy) drop(level, at, Wildlife.ANTLER.get(), 1 + level.getRandom().nextInt(2));
         RandomSource random = level.getRandom();
         Yield y = yieldFor(type);
-        drop(level, at, y.meat().get(), Math.round((y.minMeat() + random.nextInt(y.maxMeat() - y.minMeat() + 1)) * yieldMultiplier));
-        dropExtras(level, at, y.inner(), yieldMultiplier);
+        int scraps = Math.round((y.minMeat() + random.nextInt(y.maxMeat() - y.minMeat() + 1)) * yieldMultiplier);
+        Item meat = y.meat().get();
+        if (spoiled || meat == Items.ROTTEN_FLESH) drop(level, at, Items.ROTTEN_FLESH, hung ? scraps * 2 : scraps);
+        else if (!hung) drop(level, at, meat, scraps);
+        else {
+            int[] cuts = cuts(Math.round(scraps * 2 * (aged ? 1.25F : 1.0F)));
+            drop(level, at, CarcassHauling.RAW_HAUNCH.get(), cuts[0]);
+            drop(level, at, CarcassHauling.RAW_RIBS.get(), cuts[1]);
+            drop(level, at, CarcassHauling.RAW_LOIN.get(), cuts[2]);
+            drop(level, at, meat, cuts[3]);
+        }
+        if (!hung) {
+            dropExtras(level, at, y.inner(), yieldMultiplier);
+            return;
+        }
+        for (Extra e : y.inner()) {
+            Item item = e.item().get();
+            boolean body = item == Wildlife.SINEW.get() || item == Wildlife.LARD.get() || item == Wildlife.BEAR_FAT.get() || item == Items.BONE;
+            if (body) drop(level, at, item, e.min() + 1 + random.nextInt(e.max() - e.min() + 1));
+            else if (random.nextFloat() < e.chance() * yieldMultiplier) drop(level, at, item, e.min() + random.nextInt(e.max() - e.min() + 1));
+        }
+        // the skeleton comes apart on the rack: bones for every body (big ones give more)
+        if (y.inner().stream().noneMatch(e -> e.item().get() == Items.BONE)) drop(level, at, Items.BONE, 1 + Math.round(type.getWidth()) + random.nextInt(2));
+    }
+
+    /** Cost in meat units (1 unit = 1 scrap = 1 Smoked Meat) of a Haunch, Ribs and Loin, and how many of each one body has. */
+    static final int[] CUT_UNITS = {3, 2, 2}, CUT_MAX = {4, 2, 2};
+
+    /** Meat {@code units} as {haunches, ribs, loins, leftover scraps}: taken in turn, each while it fits and the body has one left. */
+    static int[] cuts(int units) {
+        int[] out = new int[4];
+        for (boolean took = true; took; ) {
+            took = false;
+            for (int i = 0; i < 3; i++) {
+                if (units >= CUT_UNITS[i] && out[i] < CUT_MAX[i]) {
+                    out[i]++;
+                    units -= CUT_UNITS[i];
+                    took = true;
+                }
+            }
+        }
+        out[3] = units;
+        return out;
+    }
+
+    static {
+        // self-check: units are never lost; small bodies give ribs/loin, big ones the full set plus scraps
+        assert java.util.Arrays.equals(cuts(2), new int[] {0, 1, 0, 0});
+        assert java.util.Arrays.equals(cuts(7), new int[] {1, 1, 1, 0});
+        assert java.util.Arrays.equals(cuts(25), new int[] {4, 2, 2, 5});
     }
 
     private static void dropExtras(ServerLevel level, Entity at, List<Extra> extras, float yieldMultiplier) {

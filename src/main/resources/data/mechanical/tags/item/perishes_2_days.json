@@ -18,6 +18,9 @@
     "mechanical:puffball",
     "mechanical:porridge",
     "mechanical:raw_porridge",
-    "mechanical:peeled_egg"
+    "mechanical:peeled_egg",
+    "mechanical:raw_haunch",
+    "mechanical:raw_ribs",
+    "mechanical:raw_loin"
   ]
 }

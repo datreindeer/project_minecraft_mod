@@ -2074,5 +2074,13 @@
   },
   "pine_resin": {
     "text": "Tallkåda. **Högerklicka en [[pine_log]] med kniv**: barken skärs upp, 1 Pine Resin, och loggen blir Stripped Pine Log (en gång per log, kniven slits 1). 1 Pine Resin över 1 Stick → 2 Torches (kådfackla). Används mer senare (t.ex. lim)."
-  }
+  },
+  "travois": {"text": "4 [[tool_rod]] + 2 [[cordage]] + [[scraped_hide]] (`R R`/`CHC`/`R R`). Släpsläde: ställ den på marken, högerklicka med tom hand för att spänna dig för den; den följer 2,4 block bakom. Rymmer en stor eller två mellanstora kroppar (högerklicka med kroppen du bär eller släpar). Smyg + tom hand lastar av. Saktar ner dig 10 % + 10 % per lastenhet. Slå på den för att plocka upp den.", "category": "tools"},
+  "hanging_rack": {"text": "5 [[tool_rod]] + [[cordage]] (`RCR`/`R R`/`R R`), två block hög. Högerklicka med en buren eller släpad kropp för att hänga upp den. Styckad där ger den hela huden och **dubbelt så mycket kött** som [[raw_haunch]], [[raw_ribs]] och [[raw_loin]], plus mer fett, sena och ben; har den hängt 3 min ×1,25 kött. En eld inom 8 block håller rovdjuren borta från den.", "category": "blocks"},
+  "raw_haunch": {"text": "Styckas från en kropp som hänger på [[hanging_rack]] (dubbelt så mycket kött som på marken, i stora bitar). 3 köttenheter. Hunger 3. Campfire → [[cooked_haunch]]; på Smoking Rack blir den 3 [[smoked_meat]]. Förskäms på 2 dagar.", "category": "food"},
+  "raw_ribs": {"text": "Styckas från en kropp som hänger på [[hanging_rack]] (dubbelt så mycket kött som på marken, i stora bitar). 2 köttenheter. Hunger 2. Campfire → [[cooked_ribs]]; på Smoking Rack 2 [[smoked_meat]]. Förskäms på 2 dagar.", "category": "food"},
+  "raw_loin": {"text": "Styckas från en kropp som hänger på [[hanging_rack]] (dubbelt så mycket kött som på marken, i stora bitar). 2 köttenheter. Hunger 2. Campfire → [[cooked_loin]]; på Smoking Rack 2 [[smoked_meat]]. Förskäms på 2 dagar.", "category": "food"},
+  "cooked_haunch": {"text": "[[raw_haunch]] på Campfire (30 s). Hunger 9, mättnad 0,8. Förskäms på 3 dagar.", "category": "food"},
+  "cooked_ribs": {"text": "[[raw_ribs]] på Campfire (25 s). Hunger 6, mättnad 0,8. Förskäms på 3 dagar.", "category": "food"},
+  "cooked_loin": {"text": "[[raw_loin]] på Campfire (25 s). Hunger 6, mättnad 1,0. Förskäms på 3 dagar.", "category": "food"}
 }

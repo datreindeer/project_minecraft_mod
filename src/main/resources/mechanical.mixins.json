@@ -24,6 +24,7 @@
     "FireBlockInvoker",
     "MultiNoiseBiomeSourceParameterListsMixin",
     "OverworldBiomeBuilderMixin",
+    "PlayerMixin",
     "TorchBlockMixin"
   ]
 }
