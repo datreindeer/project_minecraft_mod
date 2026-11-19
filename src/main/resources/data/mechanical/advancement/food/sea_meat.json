@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:food/cooked",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_seal_meat"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_walrus_meat"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cooked_seal_meat"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.sea_meat.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.sea_meat.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

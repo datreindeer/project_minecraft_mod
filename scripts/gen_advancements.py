@@ -173,8 +173,11 @@ TABS = {
         ("clay_bucket", "kiln", "clay_bucket", T, "Clay Bucket",
          "Shape 3 Clay Balls into an Unfired Clay Bucket and fire it in the kiln. It only carries water",
          has("clay_bucket", "clay_water_bucket")),
-        ("crucible", "charcoal", "crucible", G, "Crucible",
-         "Fire an Unfired Crucible (7 Clay Balls) in the kiln at 800°: needs Charcoal or Bellows. The key to bronze",
+        ("mold_bench", "kiln", "mold_bench", T, "Mold Bench",
+         "Craft a Mold Bench from Flint, a Clay block and Planks. Crucibles and clay molds are shaped there from Clay Balls",
+         has("mold_bench")),
+        ("crucible", "mold_bench", "crucible", G, "Crucible",
+         "Shape an Unfired Crucible (7 Clay Balls) at the Mold Bench, fire it in the kiln at 800°: needs Charcoal or Bellows. The key to bronze",
          has("crucible")),
         ("log_raft", "cordage", "log_raft", T, "Raft", "Lash 6 logs together with 3 Cordage into a Log Raft",
          has("log_raft")),
@@ -328,13 +331,59 @@ TABS = {
         ("mammoth_ivory", "butcher", "mammoth_ivory", C, "Mammoth Hunter",
          "Bring down a Woolly Mammoth and butcher it for its Ivory. The herd's matriarch warns once, then charges",
          has("mammoth_ivory")),
-        ("ivory_knife", "mammoth_ivory", "ivory_knife", T, "Ivory Edge",
+        ("ivory_edge", "mammoth_ivory", "ivory_knife", T, "Ivory Edge",
          "Craft an Ivory Knife from Mammoth Ivory (with Cordage and Leather) or Walrus Ivory: a skinning knife that can cut bears", has("ivory_knife")),
         ("ivory_figurine", "mammoth_ivory", "ivory_figurine", T, "Ivory Carver",
          "Carve Mammoth Ivory into an Ivory Figurine with a knife", has("ivory_figurine")),
         ("mammoth_tallow", "mammoth_ivory", "mammoth_fat", T, "Fat of the Land",
          "Render Mammoth Fat into Tallow on a Campfire (3 per piece)", has("mammoth_fat")),
         # end fauna: giants
+        # fauna: forestbirds
+        ("lek_hunter", "butcher", "capercaillie_tail_feather", T, "Lek Hunter",
+         "Stalk a singing Capercaillie cock at dawn (step in while he grinds, he hears nothing then) and pluck him for his Tail Feathers",
+         has("capercaillie_tail_feather")),
+        ("great_bustard", "butcher", "plucked_bustard", T, "Wariest of All",
+         "Bag a Great Bustard on the open plains: it runs from you long before you are close. Pluck it for a big bird's worth of meat",
+         has("plucked_bustard", "raw_bustard")),
+        ("owl_feather", "root", "owl_feather", T, "Silent Wings",
+         "Bring down an Eagle-Owl as it hunts the forest at night, for its soft Owl Feathers",
+         has("owl_feather")),
+        ("silent_arrow", "owl_feather", "silent_arrow", G, "Whisper",
+         "Fletch Silent Arrows with Owl Feathers at the Fletching Table: a miss lands without a sound and startles nothing",
+         has("silent_arrow")),
+        ("eagle_feather", "root", "eagle_feather", T, "King of the Mountains",
+         "Bring down a Golden Eagle (it may steal your small game!) for Eagle Feathers and Talons",
+         has("eagle_feather", "eagle_talon")),
+        ("eagle_arrow", "eagle_feather", "eagle_fletched_arrow", T, "Flies True",
+         "Fletch Eagle-Fletched Arrows: the hardest-hitting flint arrows",
+         has("eagle_fletched_arrow")),
+        ("raven_talisman", "root", "raven_talisman", G, "Ravens' Watch",
+         "Bind three Raven Feathers to a Bone with Twine. Carried, the dark wears on your mind more slowly",
+         has("raven_talisman")),
+        # fauna: coast
+        ("seal", "butcher", "raw_sealskin", T, "Seal Hunter",
+         "Sneak up on a Seal on a cold shore before it slips into the water, and butcher it for Raw Sealskin and Blubber",
+         has("raw_sealskin", "blubber")),
+        ("sealskin", "seal", "sealskin", T, "Sealskin", "Dry the Raw Sealskin on a tall Drying Rack outdoors by day", has("sealskin")),
+        ("sealskin_parka", "sealskin", "sealskin_parka", G, "Dry and Warm",
+         "Sew Sealskin and Sinew into a Sealskin Parka or Boots at the Armor Station: warm, and they keep out the chill of the water",
+         has("sealskin_parka", "sealskin_boots")),
+        ("oil_lamp", "seal", "oil_lamp", T, "Lamp Oil",
+         "Craft an Oil Lamp (rock chunks, Plant Fibre), fill it with Blubber and light it with the Fire Drill", placed("oil_lamp")),
+        ("walrus", "tusk_dagger", "walrus_ivory", C, "Tusks and Blubber",
+         "Kill a Walrus on the frozen sea (it fights back) and butcher it with a Tusk Dagger or better for Ivory, Blubber and hide",
+         has("walrus_ivory", "raw_walrus_hide")),
+        ("ivory_knife", "walrus", "ivory_knife", T, "Ivory Blade", "Craft Walrus Ivory, Twine and a Stick into an Ivory Knife",
+         has("ivory_knife")),
+        ("walrus_hide", "walrus", "walrus_hide", T, "Walrus Hide",
+         "Dry the Raw Walrus Hide on a tall Drying Rack (it takes the whole rack). A knife cuts it into 6 Cordage", has("walrus_hide")),
+        ("walrus_cuirass", "walrus_hide", "walrus_hide_cuirass", G, "Hide Armour",
+         "Sew 2 Walrus Hide and Sinew into a Walrus Hide Cuirass at the Armor Station", has("walrus_hide_cuirass")),
+        ("pike", "fishing", "whole_pike", T, "Water Wolf",
+         "Catch a Pike in a river, fen or swamp: on the hook, or sneak up and spear it", has("whole_pike")),
+        ("sturgeon", "pike", "whole_sturgeon", C, "King of the River",
+         "Spear one of the rare giant Sturgeons in a river and butcher it, or hook a young one, for its roe and Isinglass",
+         has("whole_sturgeon", "isinglass")),
     ]),
     "food": ("minecraft:gui/advancements/backgrounds/husbandry", [
         ("root", None, "blueberries", T, "Food & Farming",
@@ -412,6 +461,18 @@ TABS = {
         ("bison_tongue_roast", "giant_meat", "cooked_bison_tongue", T, "Delicacy",
          "Roast a Bison Tongue on a Campfire: the most filling cut of all", has("cooked_bison_tongue")),
         # end fauna: giants
+        # fauna: forestbirds
+        ("forest_fowl", "cooked_bird", "cooked_capercaillie", T, "Feast of the Forest",
+         "Cook Raw Capercaillie or Raw Bustard on a Campfire, or roast a whole Plucked one",
+         has("cooked_capercaillie", "cooked_bustard")),
+        ("ground_nest", "nest_egg", "bustard_egg", T, "Ground Nest",
+         "Take an egg from a Capercaillie nest on the pine-forest floor or a Great Bustard nest out in the grass",
+         has("capercaillie_egg", "bustard_egg")),
+        # fauna: coast
+        ("sea_meat", "cooked", "cooked_seal_meat", T, "Sea Meat", "Cook Seal or Walrus meat on a Campfire",
+         has("cooked_seal_meat", "cooked_walrus_meat")),
+        ("caviar", "root", "sturgeon_roe", T, "Caviar", "Take the roe from a Sturgeon: little food, but very filling",
+         has("sturgeon_roe")),
     ]),
     "bronze_age": ("minecraft:block/cut_copper", [
         ("root", None, "malachite", T, "Bronze Age",
@@ -436,7 +497,7 @@ TABS = {
         ("bellows", "tuyere", "bellows", G, "Bellows",
          "Craft Bellows, set it facing the kiln's firebox and pump it: +40° per click", has("bellows")),
         ("molds", "root", "clay_ingot_mold", T, "Mold Maker",
-         "Shape Clay Balls into a mold and fire it in the kiln (600°)",
+         "Shape a mold from Clay Balls at the Mold Bench and fire it in the kiln (600°)",
          has("clay_ingot_mold", "clay_pickaxe_head_mold", "clay_axe_head_mold", "clay_shovel_head_mold",
              "clay_hoe_head_mold", "clay_knife_blade_mold")),
         ("molten", "bellows", "molten_crucible", G, "Molten Copper",
@@ -485,7 +546,7 @@ TABS = {
          "Sneak-use the tap to open it: molten metal runs along Clay Channels into a Clay Mold. A quarter more metal per ore",
          by_code()),
         ("kettle", "bronze", "bronze_kettle", G, "Kettle",
-         "Fire a Clay Kettle Mold (5 Clay), pour 8 units of bronze into it and grind the casting on the Whetstone",
+         "Shape a Clay Kettle Mold (28 Clay Balls) at the Mold Bench and fire it, pour 8 units of bronze into it and grind the casting on the Whetstone",
          has("bronze_kettle")),
         ("hide_glue", "kettle", "hide_glue", T, "Sticky Business",
          "Boil Raw Hide, Rabbit Hide or Fish Bones in the kettle. Hide Glue hafts tools in place of Cordage", has("hide_glue")),
@@ -513,6 +574,148 @@ TABS = {
     ]),
 }
 
+# fauna: waterfowl
+TABS["wilderness"][1].extend([
+    ("pluck_swan", "pluck_goose", "plucked_swan", T, "Swan Song",
+     "Bring down a Mute Swan and pluck it: Down, a Swan Quill and a big Plucked Swan. Keep clear of its nest", has("plucked_swan")),
+    ("down_tinder", "pluck_goose", "down", T, "Light as Down",
+     "Pluck Down from a Mallard or Mute Swan. Laid in an unlit campfire, Fire Pit or kiln it is the best tinder", has("down")),
+    ("heron_bill", "butcher", "heron_bill", T, "Patient Fisher",
+     "Butcher a Grey Heron for its Heron Bill: a knife carves it into 2 Bone Fish Hooks", has("heron_bill")),
+    ("plume_headdress", "heron_bill", "plume_headdress", T, "Among the Reeds",
+     "Make a Plume Headdress from Heron Plumes, Down and Leather: herons and cranes let you come close", has("plume_headdress")),
+    ("bone_flute", "butcher", "bone_flute", G, "First Music",
+     "Carve a Hollow Bird Bone (swan, crane) or a Vulture Wing Bone into a Bone Flute. Playing it lifts the spirits around you", has("bone_flute")),
+])
+TABS["food"][1].extend([
+    ("cooked_waterfowl", "cooked_bird", "cooked_swan", T, "Swan Feast",
+     "Cook Raw Mallard, Swan, Heron or Crane on a Campfire, or roast the whole Plucked bird",
+     has("cooked_mallard", "cooked_swan", "cooked_heron", "cooked_crane")),
+    ("swan_egg", "nest_egg", "swan_egg", T, "Swan's Egg", "Take an egg from a Mute Swan's nest without getting chased off",
+     has("swan_egg")),
+])
+
+
+# ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
+# code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
+# animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
+
+class AllOf(dict):
+    """Criteria that must ALL be met (plain dicts mean any one)."""
+
+
+JAVA = ROOT / "src/main/java"
+VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("utf-8")) \
+    if "assets/minecraft/lang/en_us.json" in JAR_NAMES else {}
+HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
+HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game"
+    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit"],
+    "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
+    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
+                 "minecraft:sheep"],
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom"],
+}
+GROUP_INFO = {  # id -> (icon, title, description)
+    "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),
+    "deer": ("venison_scraps", "Deer and Elk", "Butcher the deer of the woods and the tundra"),
+    "big_game": ("beef_scraps", "Big Game", "Butcher aurochs, wild horses, boars and wild sheep"),
+    "predators": ("bear_claw", "Predators", "Butcher the hunters that hunt you"),
+    "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
+    "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
+}
+CHALLENGE = {"giant_deer", "cave_lion", "brown_bear"}
+
+
+def _args(src, start):
+    """The text between the parenthesis at src[start] and its match."""
+    depth = 0
+    for i in range(start, len(src)):
+        if src[i] == "(":
+            depth += 1
+        elif src[i] == ")":
+            depth -= 1
+            if depth == 0:
+                return src[start + 1:i]
+    return ""
+
+
+def _item(ref):
+    """'Wildlife.SINEW' / 'Items.BONE' -> item id if it exists, else None."""
+    owner, field = ref.split(".")
+    i = ("minecraft:" if owner == "Items" else M) + field.lower()
+    try:
+        return check_item(i)
+    except AssertionError:
+        return None
+
+
+def hunting_yields():
+    """[(entity id, [item ids])] from every Yield in the Java sources."""
+    import re
+    out = {}
+    for f in sorted(JAVA.rglob("*.java")):
+        src = f.read_text(encoding="utf-8")
+        for m in re.finditer(r"(?:Map\.entry|Butchery\.register)\(", src):
+            body = _args(src, m.end() - 1)
+            if "Yield(" not in body:
+                continue
+            head, _, rest = body.partition("Yield(")
+            ent = re.search(r"(?:EntityTypes\.([A-Z_]+)|(\w+)\.([A-Z_]+)\.get\(\))", head)
+            if not ent:
+                continue
+            eid = "minecraft:" + ent.group(1).lower() if ent.group(1) else ent.group(3).lower()
+            items = []
+            for h, i in HELPERS.items():
+                if h in rest:
+                    items.append(mid(i))
+            for ref in re.findall(r"\b([A-Z][A-Za-z]+\.[A-Z][A-Z0-9_]+)\b", rest):
+                i = _item(ref)
+                if i and i not in items:
+                    items.append(i)
+            if items:
+                out[eid] = items  # Butchery.register (later files) overrides the table, like in the game
+    return out
+
+
+def name_of(i, kind):
+    ns, path = mid(i).split(":")
+    key = f"{kind}.{ns}.{path}"
+    old = json.loads(LANG.read_text(encoding="utf-8"))
+    return old.get(key) or VANILLA_LANG.get(key) or path.replace("_", " ").title()
+
+
+def hunting_rows():
+    rows = [("root", None, "flint_spear", T, "Hunting",
+             "Every animal gives its own meat, hide and parts: butcher one of each kind and collect them all",
+             has(*[s for s in SCRAPS if s != "chicken_scraps"]))]
+    yields = hunting_yields()
+    group_of = {e: g for g, es in HUNT_GROUPS.items() for e in es}
+    animals = {}
+    for eid, items in sorted(yields.items()):
+        g = group_of.get(eid) or ("birds" if mid("minecraft:feather") in items else "more_game")
+        animals.setdefault(g, []).append((eid, items))
+    for g in GROUP_INFO:
+        if g not in animals:
+            continue
+        icon, title, desc = GROUP_INFO[g]
+        rows.append((g, "root", icon, T, title, desc, has(*sorted({i for _, its in animals[g] for i in its[:1]}))))
+        for eid, items in animals[g]:
+            ns, path = mid(eid).split(":")
+            egg = f"{ns}:{path}_spawn_egg"
+            try:
+                icon = check_item(egg)
+            except AssertionError:
+                icon = items[0]
+            animal = name_of(eid, "entity")
+            names = ", ".join(name_of(i, "item") for i in items)
+            crit = AllOf({f"has_{n}": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": i}]}}
+                          for n, i in enumerate(items)})
+            rows.append((path, g, icon, C if path in CHALLENGE else T, animal, f"Butcher a {animal}: {names}", crit))
+    return rows
+
+
+TABS["hunting"] = ("minecraft:gui/advancements/backgrounds/husbandry", hunting_rows())
+
 
 def build():
     out_root = D / "mechanical/advancement"
@@ -538,7 +741,8 @@ def build():
             if parent is None:
                 display["background"] = background
             adv = {"parent": f"mechanical:{tab}/{parent}"} if parent else {}
-            adv |= {"criteria": crit, "requirements": [list(crit)], "display": display}
+            adv |= {"criteria": dict(crit), "requirements": [[c] for c in crit] if isinstance(crit, AllOf) else [list(crit)],
+                    "display": display}
             (out / f"{aid}.json").write_text(json.dumps(adv, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         count[tab] = len(rows)
 

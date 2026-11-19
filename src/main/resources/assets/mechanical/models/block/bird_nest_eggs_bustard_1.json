@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "particle": "mechanical:block/bird_egg_bustard",
+    "egg": "mechanical:block/bird_egg_bustard"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        1,
+        5.5
+      ],
+      "to": [
+        8.5,
+        4,
+        9.5
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          7.0,
+          1,
+          7.5
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    }
+  ]
+}

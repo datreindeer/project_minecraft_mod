@@ -1,0 +1,61 @@
+{
+  "parent": "mechanical:hunting/predators",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:rotten_flesh"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_phantom_hide"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:phantom_membrane"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:phantom_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.phantom.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.phantom.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

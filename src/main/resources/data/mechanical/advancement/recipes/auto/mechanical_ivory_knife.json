@@ -6,17 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:mammoth_ivory"
-          }
-        ]
-      }
-    },
-    "has_1": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:leather"
+            "items": "mechanical:walrus_ivory"
           }
         ]
       }
@@ -31,7 +21,6 @@
   "requirements": [
     [
       "has_0",
-      "has_1",
       "has_the_recipe"
     ]
   ],

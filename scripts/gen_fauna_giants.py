@@ -104,7 +104,7 @@ for item, name in ITEMS.items():
 for item, name in {"rhino_horn_club": "Rhino Horn Club"}.items():
     flat_item(item, "minecraft:item/handheld")
     lang[f"item.mechanical.{item}"] = name
-w(D / "mechanical/tags/item/ivory_tool_materials.json", {"values": [M + "mammoth_ivory"]})
+tag_add("ivory_tool_materials", M + "mammoth_ivory")
 w(D / "mechanical/tags/item/rhino_horn_tool_materials.json", {"values": [M + "rhino_horn"]})
 
 # ---- pegged raw hides: the raw hide item places the block; it cures in the sun (PeggedHideBlock) ----

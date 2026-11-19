@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:stone_age/charcoal",
+  "parent": "mechanical:stone_age/mold_bench",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",

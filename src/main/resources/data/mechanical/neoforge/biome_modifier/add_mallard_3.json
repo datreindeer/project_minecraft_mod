@@ -1,0 +1,22 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:meadow",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:mallard",
+      "weight": 2,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    }
+  ]
+}

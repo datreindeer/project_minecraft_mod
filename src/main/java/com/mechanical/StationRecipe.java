@@ -17,8 +17,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * A recipe for a {@link RecipeStationMenu} (fletching table, armor station): three parts, each a number of an item, or a
- * tool that only loses durability (the bone needle). {@code unlockedBy}: the recipe unlocks the first time the player
+ * A recipe for a {@link RecipeStationMenu} (fletching table, armor station, mold bench): up to three parts, each a number
+ * of an item, or a tool that only loses durability (the bone needle). {@code unlockedBy}: the recipe unlocks the first time the player
  * carries a matching item (null = always unlocked).
  */
 public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, Predicate<ItemStack> unlockedBy) {
@@ -55,6 +55,11 @@ public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, 
         return new StationRecipe(result, count, List.of(a, b, c), unlockedBy);
     }
 
+    /** A one-part recipe (the Mold Bench: clay balls only). */
+    public static StationRecipe of(Supplier<Item> result, int count, Part a, Predicate<ItemStack> unlockedBy) {
+        return new StationRecipe(result, count, List.of(a), unlockedBy);
+    }
+
     public String id() {
         return BuiltInRegistries.ITEM.getKey(result.get()).toString();
     }
@@ -63,8 +68,12 @@ public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, 
         return new ItemStack(result.get(), count);
     }
 
-    public boolean matches(ItemStack a, ItemStack b, ItemStack c) {
-        return parts.get(0).matches(a) && parts.get(1).matches(b) && parts.get(2).matches(c);
+    /** Each input fits its part; inputs past the recipe's parts must be empty. */
+    public boolean matches(ItemStack... inputs) {
+        for (int i = 0; i < inputs.length; i++) {
+            if (i < parts.size() ? !parts.get(i).matches(inputs[i]) : !inputs[i].isEmpty()) return false;
+        }
+        return true;
     }
 
     public boolean isUnlocked(Player player) {
