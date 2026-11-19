@@ -18,12 +18,17 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Eurasian brown bear: solitary, or a mother with cubs. Attacks players that come close, rears up on its hind legs
@@ -66,6 +71,7 @@ public class BrownBear extends WildAnimal {
         goalSelector.removeAllGoals(g -> g instanceof FollowHerdGoal); // solitary; cubs keep up with FollowParentGoal
         goalSelector.addGoal(1, new BearAttackGoal());
         goalSelector.addGoal(5, new ForageBerriesGoal(this));
+        goalSelector.addGoal(6, new LeaveDenGoal(this));
         targetSelector.addGoal(1, new HurtByTargetGoal(this) {
             @Override
             public boolean canUse() {
@@ -247,6 +253,38 @@ public class BrownBear extends WildAnimal {
         public void start() {
             bear.setTarget(targetMob);
             super.start();
+        }
+    }
+
+    /**
+     * In daylight a bear deep in a den now and then walks out into the open. Random strolls in a cave mostly pick spots on
+     * the hill above it, which it can't reach, so on its own it would hardly ever leave.
+     */
+    static class LeaveDenGoal extends Goal {
+        private final BrownBear bear;
+
+        LeaveDenGoal(BrownBear bear) {
+            this.bear = bear;
+            setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            Level level = bear.level();
+            if (bear.getTarget() != null || bear.isDozing() || !level.isBrightOutside() || bear.getRandom().nextInt(200) != 0
+                    || level.getBrightness(LightLayer.SKY, bear.blockPosition()) > 10) return false;
+            for (int i = 0; i < 5; i++) {
+                Vec3 p = LandRandomPos.getPos(bear, 16, 7);
+                if (p == null || level.getBrightness(LightLayer.SKY, BlockPos.containing(p)) < 12) continue; // a forest floor is about 12
+                Path path = bear.getNavigation().createPath(BlockPos.containing(p), 2);
+                if (path != null && path.canReach()) return bear.getNavigation().moveTo(path, 0.8);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return bear.getTarget() == null && !bear.getNavigation().isDone();
         }
     }
 }

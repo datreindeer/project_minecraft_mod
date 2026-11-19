@@ -394,6 +394,7 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
   Ger upp efter 24 block. Snabb i början av jakten, sedan långsammare.
 - Reser sig på bakbenen och slår med ramarna. Flyr aldrig och får aldrig panik.
 - Skadar man en unge anfaller alla vuxna björnar inom 20 block. Väcker man en sovande björn anfaller den direkt.
+- En björn djupt inne i ett ide (eller annan grotta) går ibland ut i dagsljuset.
 - **Kräver Tusk Dagger eller Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
   Omgång 1: **Bear Pelt** + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
 
@@ -510,7 +511,7 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 |---|---|---|---|
 | Abandoned Campsite | Skog, slätt, meadow | 80 | Släckt lägereld, Drying Rack, Bone Pile; flint, cordage, mat |
 | Hunter's Lean-to | Taiga, skog | 120 | Vindskydd, Bear Rug; hudar, pilar, sällan Crude Bow |
-| Bear Den | Taiga, skog, dark forest | 120 | Grotta i sluttning (eller stenhög) med ben och en **Brown Bear** |
+| Bear Den | Taiga, skog, dark forest | 120 | Grotta i en sluttning med mossiga stenblock vid öppningen, eller en grop under rotkakan på ett omfallet träd. Bädd av mossa och löv, hängande rötter, ben och en kruka; utanför en trampad stig, ett träd med klösmärken och rester av ett mål. Öppningen är minst 3 block bred, och en **Brown Bear** bor där och går ut på dagen |
 | Standing Stones | Slätt, savann, meadow | 100 | Stencirkel med altarsten, lite flinta och ben |
 | Burial Mound | Slätt, meadow, taiga | 180 | Gravhög med gång in, skalle och ben; bone tools, horn, antler |
 | Fishing Camp | Floder, stränder | 40 (kräver vatten) | Torkställningar, brygga; krokar, fisk, sällan Crude Fishing Rod |
