@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:glider_cloak"
+      }
+    ],
+    "wings": [
+      {
+        "texture": "mechanical:glider_cloak"
+      }
+    ]
+  }
+}

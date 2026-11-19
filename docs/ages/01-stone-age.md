@@ -35,6 +35,10 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather |
 | Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor-recept | Sys i **Armor Station** med Bone Needle + Wool Thread |
 | Leather Armor |
+| Raw Phantom Hide | Styckning av Phantom, omgång 1 (60 %) | Scraped Phantom Hide |
+| Scraped Phantom Hide | Raw Phantom Hide + kniv (shapeless, kniven slits 1) | Läggs på Drying Rack **i dagsljus** → Phantom Leather |
+| Phantom Leather | Torkad Scraped Phantom Hide på Drying Rack | Glider Cloak, lagar Glider Cloak |
+| Glider Frame | Crafting: `[Tool Rod][Sinew][Tool Rod]` / `[Bone][Cordage][Bone]` / `[Tool Rod][ ][Tool Rod]` | Glider Cloak |
 | Wool Thread | Styckning av får (30 % chans med Flint Knife, 1–2 st) | 9 (3×3) → 1 White Wool |
 | Feather | Styckning av höns och papegojor, omgång 1 (80 %, 1–2 st) | Arrows |
 | Bone, Bone Meal | Bone Pile (låg chans) | |
@@ -124,6 +128,7 @@ ligger kvar i stationen och tappar 1 per rustningsdel.
 | Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 Wool Thread | Leather |
 | **Leather Satchel** | 4 Leather | Bone Needle | 2 Wool Thread | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
+| **Glider Cloak** | 6 Phantom Leather | Bone Needle | 1 Glider Frame | Phantom Leather |
 
 Vanilla-recepten för läderrustning är borttagna.
 
@@ -135,6 +140,17 @@ helst, utom andra förråd (Leather Satchel, Bark Basket, shulker boxes, bundles
 - **Fur Hood / Coat / Leggings / Boots:** sys i Armor Station (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.
   **Isolerar 25 % per del mot kyla** (läder 15 %).
 - **Bear Rug:** Bear Pelt + Bear Claw. Platt dekoration (som en matta) med huvudet bort från den som placerar den.
+
+### Glider Cloak
+En sen stenåldersbedrift: Phantoms finns bara när en spelare inte har sovit på 3+ nätter, varje Phantom ger Raw Phantom
+Hide bara i 60 % av fallen, och huden måste torka i solen utan att ruttna. Totalt: 6 Phantom Leather (~10 Phantoms) +
+**Glider Frame** (4 Tool Rod, 2 Bone, Sinew, Cordage) sys med Bone Needle i Armor Station.
+- Bröstplats, **skydd 1**, 96 i hållbarhet, lagas med Phantom Leather. Ser ut som en mantel av hinna (krage med benspänne,
+  axelslag) med hopvikta fladdermusvingar på ryggen (elytra-modellen med egen textur).
+- **Glidflygning:** faller du (mer än 2 block) och **håller inne hopp** fångar manteln luften. Fallet bromsas till
+  ~2,4 m/s och du driver framåt i blickriktningen, högst ~6 m/s (elytra ~30). Det går aldrig uppåt. Släpp hopp eller
+  smyg för att släppa. Ingen fallskada när du landar från en glidning. Kostar 1 hållbarhet per sekund i luften.
+  Fungerar inte i vatten, på stegar, när man rider eller flyger.
 
 ### Ägg
 - **Boiled Egg:** valfritt ägg (vanligt, blått, brunt) på en Campfire (15 s). Stackar 16. Går inte att äta med skalet på.
@@ -242,6 +258,10 @@ Bronsålderns recept (Clay Tuyere, Clay Molds, smältning i Crucible) står i 02
 Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
 - Högerklicka med **Scraped Hide** för att spänna upp den. Efter några minuter (slumpmässigt, ~3 min i snitt) är den torr.
 - Högerklicka på en torr hud → **Leather**.
+- **Scraped Phantom Hide** torkar bara i **dagsljus** (dag, inte regn, och fri himmel ovanför ställningen): lika fort
+  som en vanlig hud (~3 min solljus i snitt) → **Phantom Leather**. Varje slumpad tick i mörker (natt, regn, inomhus)
+  räknas, och efter 8 sådana (~9 min, ungefär en hel natt; räknas ihop, nollställs inte av sol) **ruttnar** den. En
+  ruttnad hud ger **Rotten Flesh** när man högerklickar. Häng den alltså ute på morgonen och ta in läder före natten.
 - Bryts den släpper den sig själv + hud/Leather som satt på.
 
 ### Stumps
@@ -329,7 +349,7 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 - **Bast:** Bark + kniv (crafting, kniven slits 1) → **2 Plant Fibre**.
 - **Bark Basket:** `[ ][Cordage][ ]` / `[Bark][ ][Bark]` / `[Bark][Bark][Bark]`. Högerklicka för att öppna (3×3). Rymmer bara
   frukt, bär och hudar: Apple, Golden Apple, Sweet Berries, Glow Berries, Melon Slice, Chorus Fruit, Leather, Rabbit Hide,
-  Raw Hide, Scraped Hide. Innehållet sparas i korgen (stackar inte, 1 per plats i inventoryt).
+  Raw Hide, Scraped Hide, Raw Phantom Hide, Scraped Phantom Hide. Innehållet sparas i korgen (stackar inte, 1 per plats i inventoryt).
 **Leaf Litter** (från fällda träds löv) används som tändmaterial och blir kompost i Compost Heap (bronsåldern).
 
 ### Mat och styckning
@@ -357,6 +377,11 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 | Övriga små djur | Raw Hide 10 % | 1 Game Meat Scraps |
 | Övriga mellanstora | Raw Hide 25 % | 1–2 Game Meat Scraps |
 | Övriga stora (häst, lama, kamel, isbjörn …) | Raw Hide 40 % | 2–3 Game Meat Scraps |
+| **Phantom** (odöd, inget kött) | Raw Phantom Hide 60 % | 1–2 Rotten Flesh, Phantom Membrane 50 % |
+
+**Phantom:** dödar en spelare en Phantom faller kroppen till marken och blir en Carcass (platt på magen, vingarna
+utbredda, ögonen slocknade). Efter omgång 1 ser den flådd ut (grått odött kött, trasiga vingmembran). Den släpper ingen
+vanilla-loot direkt (Phantom Membrane kommer i omgång 2). Phantoms som brinner upp i solen försvinner utan kropp.
 
 ### Blod
 - Djur **och monster** blöder när de träffas (blodpartiklar, fler vid hårda slag). Monster blöder likadant som djur

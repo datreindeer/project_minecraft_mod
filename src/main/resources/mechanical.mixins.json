@@ -9,6 +9,7 @@
     "ChickenModelMixin",
     "DarkNightsMixin",
     "EntityLightMixin",
+    "EyesLayerMixin",
     "LightCoordsMixin",
     "LivingEntityRendererMixin",
     "QuadrupedModelMixin"

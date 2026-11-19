@@ -232,6 +232,22 @@ public class Mechanical {
     public static final DeferredItem<Item> FUR_COAT = ITEMS.registerSimpleItem("fur_coat", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
     public static final DeferredItem<Item> FUR_LEGGINGS = ITEMS.registerSimpleItem("fur_leggings", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
     public static final DeferredItem<Item> FUR_BOOTS = ITEMS.registerSimpleItem("fur_boots", p -> p.humanoidArmor(FUR, net.minecraft.world.item.equipment.ArmorType.BOOTS));
+    // --- Phantom hide (Butchery, DryingRackBlock): dries only in daylight; sewn into the Glider Cloak (Glider) ---
+    public static final DeferredItem<Item> RAW_PHANTOM_HIDE = ITEMS.registerSimpleItem("raw_phantom_hide");
+    public static final DeferredItem<Item> SCRAPED_PHANTOM_HIDE = ITEMS.registerSimpleItem("scraped_phantom_hide");
+    public static final DeferredItem<Item> PHANTOM_LEATHER = ITEMS.registerSimpleItem("phantom_leather");
+    /** Tool Rods, bones, sinew and cordage lashed into the struts the cloak's membrane is sewn onto. */
+    public static final DeferredItem<Item> GLIDER_FRAME = ITEMS.registerSimpleItem("glider_frame");
+    public static final net.minecraft.world.item.equipment.ArmorMaterial PHANTOM_LEATHER_MATERIAL = new net.minecraft.world.item.equipment.ArmorMaterial(6,
+            java.util.Map.of(net.minecraft.world.item.equipment.ArmorType.HELMET, 1, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE, 1,
+                    net.minecraft.world.item.equipment.ArmorType.LEGGINGS, 1, net.minecraft.world.item.equipment.ArmorType.BOOTS, 1,
+                    net.minecraft.world.item.equipment.ArmorType.BODY, 1),
+            10, net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_ELYTRA, 0.0F, 0.0F,
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "repairs_glider_cloak")),
+            net.minecraft.resources.ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, "glider_cloak")));
+    /** Chest slot, armour 1, 96 durability (one per second of gliding). */
+    public static final DeferredItem<Item> GLIDER_CLOAK = ITEMS.registerSimpleItem("glider_cloak",
+            p -> p.humanoidArmor(PHANTOM_LEATHER_MATERIAL, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
     public static final DeferredBlock<BearRugBlock> BEAR_RUG = BLOCKS.registerBlock("bear_rug", BearRugBlock::new, p -> p
             .mapColor(MapColor.COLOR_BROWN).strength(0.2F).sound(SoundType.WOOL).noOcclusion());
     public static final DeferredItem<BlockItem> BEAR_RUG_ITEM = ITEMS.registerSimpleBlockItem("bear_rug", BEAR_RUG);

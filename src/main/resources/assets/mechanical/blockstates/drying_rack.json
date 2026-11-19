@@ -9,6 +9,15 @@
     "facing=north,hide=2": {
       "model": "mechanical:block/drying_rack_2"
     },
+    "facing=north,hide=3": {
+      "model": "mechanical:block/drying_rack_3"
+    },
+    "facing=north,hide=4": {
+      "model": "mechanical:block/drying_rack_4"
+    },
+    "facing=north,hide=5": {
+      "model": "mechanical:block/drying_rack_5"
+    },
     "facing=east,hide=0": {
       "model": "mechanical:block/drying_rack_0",
       "y": 90
@@ -19,6 +28,18 @@
     },
     "facing=east,hide=2": {
       "model": "mechanical:block/drying_rack_2",
+      "y": 90
+    },
+    "facing=east,hide=3": {
+      "model": "mechanical:block/drying_rack_3",
+      "y": 90
+    },
+    "facing=east,hide=4": {
+      "model": "mechanical:block/drying_rack_4",
+      "y": 90
+    },
+    "facing=east,hide=5": {
+      "model": "mechanical:block/drying_rack_5",
       "y": 90
     },
     "facing=south,hide=0": {
@@ -33,6 +54,18 @@
       "model": "mechanical:block/drying_rack_2",
       "y": 180
     },
+    "facing=south,hide=3": {
+      "model": "mechanical:block/drying_rack_3",
+      "y": 180
+    },
+    "facing=south,hide=4": {
+      "model": "mechanical:block/drying_rack_4",
+      "y": 180
+    },
+    "facing=south,hide=5": {
+      "model": "mechanical:block/drying_rack_5",
+      "y": 180
+    },
     "facing=west,hide=0": {
       "model": "mechanical:block/drying_rack_0",
       "y": 270
@@ -43,6 +76,18 @@
     },
     "facing=west,hide=2": {
       "model": "mechanical:block/drying_rack_2",
+      "y": 270
+    },
+    "facing=west,hide=3": {
+      "model": "mechanical:block/drying_rack_3",
+      "y": 270
+    },
+    "facing=west,hide=4": {
+      "model": "mechanical:block/drying_rack_4",
+      "y": 270
+    },
+    "facing=west,hide=5": {
+      "model": "mechanical:block/drying_rack_5",
       "y": 270
     }
   }

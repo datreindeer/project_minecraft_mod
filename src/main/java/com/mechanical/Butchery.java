@@ -89,6 +89,9 @@ public final class Butchery {
             // giant deer: a mountain of meat, and always the giant antler (exactly one: chance 1 is never scaled into a count)
             Map.entry(Wildlife.GIANT_DEER.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 6, 9, List.of(hide(1.0F), hide(0.6F)),
                     List.of(new Extra(Wildlife.GIANT_ANTLER, 1.0F, 1, 1), new Extra(Wildlife.SINEW, 0.8F, 2, 3)))),
+            // phantom: undead, so no meat; the membrane hide comes off first, then rotten flesh and maybe a membrane
+            Map.entry(EntityTypes.PHANTOM, new Yield(() -> Items.ROTTEN_FLESH, 1, 2, List.of(new Extra(Mechanical.RAW_PHANTOM_HIDE, 0.6F, 1, 1)),
+                    List.of(new Extra(() -> Items.PHANTOM_MEMBRANE, 0.5F, 1, 1)))),
             Map.entry(EntityTypes.RABBIT, new Yield(Mechanical.RABBIT_SCRAPS, 1, 1,
                     List.of(new Extra(() -> Items.RABBIT_HIDE, 0.3F, 1, 1)), List.of(new Extra(() -> Items.RABBIT_FOOT, 0.05F, 1, 1)))));
     }
@@ -106,8 +109,10 @@ public final class Butchery {
         return yields.getOrDefault(type, bySize(type));
     }
 
-    /** Wild, grown passive animals become carcasses; pets, babies and undead horses keep vanilla behaviour. */
+    /** Wild, grown passive animals (and phantoms) become carcasses; pets, babies and undead horses keep vanilla behaviour. */
     static boolean leavesCarcass(LivingEntity entity) {
+        // phantoms only when a player killed them (like the vanilla membrane); those burnt by the sun just vanish
+        if (entity.getType() == EntityTypes.PHANTOM) return entity.getLastHurtByPlayer() != null;
         if (!(entity instanceof Animal animal) || animal.isBaby()) return false;
         if (animal instanceof com.mechanical.wildlife.FlockBird) return false; // small birds just drop their feathers
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;

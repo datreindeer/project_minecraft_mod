@@ -10,6 +10,8 @@
     "minecraft:rabbit_hide",
     "mechanical:raw_hide",
     "mechanical:scraped_hide",
+    "mechanical:raw_phantom_hide",
+    "mechanical:scraped_phantom_hide",
     "minecraft:brown_mushroom",
     "minecraft:red_mushroom",
     "mechanical:roasted_mushrooms",
