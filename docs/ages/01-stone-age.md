@@ -881,7 +881,7 @@ En flätad korg av pinnar med en tratt i mynningen, som läggs i vatten (stilla 
 Färsk mat **förskäms** med tiden. Tiden räknas i speltid (ticks, inte `/time set`) från när maten först hamnar i ett
 inventory. I tooltipen står **Fresh** (mer än halva tiden kvar), **Stale** (20–50 %) eller **Rotting** (under 20 %), och en
 stapel under ikonen (som hållbarhet) går från grönt till rött. När tiden är slut blir maten **Rotten Flesh** (kött och fisk)
-eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. I en stängd **Bark Basket** åldras maten bara en tredjedel så fort.
+eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. I en stängd **Bark Basket** åldras maten bara en tredjedel så fort. **Samma mat stackar igen:** högar av samma mat som bara skiljer sig i ålder slås ihop automatiskt (i inventoryt och i öppna kistor, en gång i sekunden), och den sammanslagna högen får den **äldsta** tiden.
 
 | Mat | Håller |
 |---|---|

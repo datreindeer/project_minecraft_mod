@@ -177,8 +177,44 @@ public final class Preserving {
     public static void checkPlayer(Player player) {
         long now = player.level().getGameTime();
         checkSlots(player.inventoryMenu.slots, now);
+        mergeAged(player.inventoryMenu.slots, player);
         AbstractContainerMenu open = player.containerMenu;
-        if (open != player.inventoryMenu) checkSlots(open.slots, now);
+        if (open != player.inventoryMenu) {
+            checkSlots(open.slots, now);
+            mergeAged(open.slots, player);
+        }
+    }
+
+    /** Same food, only the spoil time differs? */
+    static boolean sameButAge(ItemStack a, ItemStack b) {
+        if (!a.is(b.getItem()) || !a.has(SPOILS_AT.get()) || !b.has(SPOILS_AT.get())) return false;
+        ItemStack x = a.copyWithCount(1), y = b.copyWithCount(1);
+        x.remove(SPOILS_AT.get());
+        y.remove(SPOILS_AT.get());
+        return ItemStack.isSameItemSameComponents(x, y);
+    }
+
+    /**
+     * Food of the same kind caught or picked at different times stacks again: stacks in the same container that differ only
+     * in spoil time are combined, and the combined stack takes the earliest time (the oldest food decides).
+     */
+    private static void mergeAged(List<Slot> slots, Player player) {
+        for (int i = 0; i < slots.size(); i++) {
+            Slot into = slots.get(i);
+            ItemStack a = into.getItem();
+            if (into instanceof ResultSlot || a.isEmpty() || !a.has(SPOILS_AT.get()) || a.getCount() >= a.getMaxStackSize()) continue;
+            for (int j = i + 1; j < slots.size() && a.getCount() < a.getMaxStackSize(); j++) {
+                Slot from = slots.get(j);
+                ItemStack b = from.getItem();
+                if (from.container != into.container || from instanceof ResultSlot || !sameButAge(a, b) || !from.mayPickup(player)) continue;
+                int n = Math.min(b.getCount(), a.getMaxStackSize() - a.getCount());
+                a.set(SPOILS_AT.get(), Math.min(a.get(SPOILS_AT.get()), b.get(SPOILS_AT.get())));
+                a.grow(n);
+                b.shrink(n);
+                into.setChanged();
+                from.setChanged();
+            }
+        }
     }
 
     @SubscribeEvent
