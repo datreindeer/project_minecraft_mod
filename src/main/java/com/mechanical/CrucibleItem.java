@@ -76,15 +76,20 @@ public class CrucibleItem extends Item {
     }
 
     /**
-     * Emptying (sneak + use in the air): ore comes back out as crushed ore (a unit each; bronze in it as Bronze Ingots),
+     * Emptying (sneak + use in the air): ore comes back with the same units (pairs as concentrate, an odd one as crushed ore;
+     * bronze in it as Bronze Ingots),
      * set metal is knocked out as ingots (two units each, an odd unit is lost as scrap). Molten metal must cool first.
      */
     static List<ItemStack> emptied(CrucibleContents contents, Kind kind) {
         List<ItemStack> out = new ArrayList<>();
         contents.units().forEach((metal, n) -> {
-            if (kind == Kind.ORE && metal.equals("copper")) out.add(new ItemStack(BronzeOres.CRUSHED_COPPER_ORE.get(), n));
-            else if (kind == Kind.ORE && metal.equals("tin")) out.add(new ItemStack(BronzeOres.CRUSHED_TIN_ORE.get(), n));
-            else if (n / 2 > 0) {
+            if (kind == Kind.ORE && (metal.equals("copper") || metal.equals("tin"))) {
+                // units are conserved exactly (concentrate is 2 units, crushed ore 1): giving every unit back as crushed ore
+                // would let washing double the ore on each round trip
+                boolean copper = metal.equals("copper");
+                if (n / 2 > 0) out.add(new ItemStack(copper ? BronzeOres.COPPER_CONCENTRATE.get() : BronzeOres.TIN_CONCENTRATE.get(), n / 2));
+                if (n % 2 > 0) out.add(new ItemStack(copper ? BronzeOres.CRUSHED_COPPER_ORE.get() : BronzeOres.CRUSHED_TIN_ORE.get()));
+            } else if (n / 2 > 0) {
                 ItemStack ingot = new ItemStack(metal.equals("copper") ? Items.COPPER_INGOT : Bronze.BRONZE_INGOT.get(), n / 2);
                 if (metal.equals("poor_bronze")) Bronze.markPoor(ingot);
                 out.add(ingot);
