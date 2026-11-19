@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "mechanical:block/pine_log",
     "side": "mechanical:block/pine_log",

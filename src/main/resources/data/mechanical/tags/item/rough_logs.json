@@ -2,17 +2,22 @@
   "values": [
     "mechanical:acacia_rough_log",
     "mechanical:alder_rough_log",
+    "mechanical:ash_rough_log",
     "mechanical:aspen_rough_log",
     "mechanical:beech_rough_log",
     "mechanical:birch_rough_log",
     "mechanical:cherry_rough_log",
     "mechanical:dark_oak_rough_log",
+    "mechanical:hazel_rough_log",
     "mechanical:jungle_rough_log",
     "mechanical:linden_rough_log",
     "mechanical:mangrove_rough_log",
     "mechanical:oak_rough_log",
     "mechanical:pale_oak_rough_log",
+    "mechanical:pine_rough_log",
     "mechanical:poplar_rough_log",
-    "mechanical:spruce_rough_log"
+    "mechanical:spruce_rough_log",
+    "mechanical:willow_rough_log",
+    "mechanical:yew_rough_log"
   ]
 }
