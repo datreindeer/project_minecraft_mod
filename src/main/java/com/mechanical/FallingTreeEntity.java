@@ -103,7 +103,7 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
                 .replace("stripped_", "").replace("_log", "").replace("_wood", "");
         var fallen = Mechanical.FALLEN_LOGS.get(wood);
         BlockState there = level.getBlockState(ground);
-        if (fallen != null && (there.canBeReplaced() || there.is(net.minecraft.tags.BlockTags.LEAVES))) {
+        if (fallen != null && (crush(level, ground, there) || there.is(net.minecraft.tags.BlockTags.LEAVES))) {
             level.setBlock(ground, fallen.get().defaultBlockState().setValue(FallenLogBlock.AXIS, direction.getAxis()), Block.UPDATE_ALL);
         } else {
             Block.dropResources(log, level, ground, null, feller, tool); // nowhere to lie: firewood
@@ -123,7 +123,18 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
         var fresh = Mechanical.LEAF_LITTERS.get(name);
         BlockState litter = (fresh != null ? fresh.get() : net.minecraft.world.level.block.Blocks.LEAF_LITTER).defaultBlockState()
                 .setValue(net.minecraft.world.level.block.LeafLitterBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(level.getRandom()));
-        if (there.canBeReplaced() && litter.canSurvive(level, ground)) level.setBlock(ground, litter, Block.UPDATE_ALL);
+        if (litter.canSurvive(level, ground) && crush(level, ground, there)) level.setBlock(ground, litter, Block.UPDATE_ALL);
+    }
+
+    /**
+     * Can the falling tree land here? Grass and other replaceable blocks just go; flowers, saplings, bushes and mushrooms
+     * (any VegetationBlock) are crushed and drop what they normally drop.
+     */
+    private static boolean crush(ServerLevel level, BlockPos pos, BlockState there) {
+        if (there.canBeReplaced()) return true;
+        if (!(there.getBlock() instanceof net.minecraft.world.level.block.VegetationBlock)) return false;
+        level.destroyBlock(pos, true);
+        return true;
     }
 
     @Override

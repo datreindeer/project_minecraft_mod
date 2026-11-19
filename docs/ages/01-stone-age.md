@@ -260,7 +260,8 @@ Ancient Oak-block ...), även de som inte går att få i survival.
   - Hugg-tiden delas med antalet logs (stort träd = lång tid).
   - Yxan slits 1 per log. Räcker den inte går den sönder, men trädet faller ändå.
   - Trädet faller som en animation bort från spelaren och **blir liggande där det landar** (gravitation, staplas):
-    stammen blir **Fallen Logs** som ligger längs fallriktningen. Löven släpper saplings, sticks och äpplen som innan och
+    stammen blir **Fallen Logs** som ligger längs fallriktningen. Gräs, blommor, plantor, buskar och svamp där trädet
+    landar krossas (och släpper sina vanliga drops). Löven släpper saplings, sticks och äpplen som innan och
     blir **Leaf Litter** på marken där de landar (flera löv på samma ställe ger tjockare lager). Varje lövsort har sin
     egen **färska leaf litter** i lövens färg (18 sorter, även poppelns gula/orange/röda och azalea); den **torkar** med
     tiden till vanlig brun Leaf Litter. Bryter man den får man vanlig Leaf Litter (tändmaterial).
