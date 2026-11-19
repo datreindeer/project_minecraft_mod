@@ -128,7 +128,7 @@ public abstract class WildAnimal extends Animal {
     }
 
     private void wakeIfDisturbed() {
-        if (hurtTime > 0 || !level().isDarkOutside() || isInWater()) {
+        if (hurtTime > 0 || !sleepTime() || isInWater()) {
             entityData.set(DOZING, false);
             return;
         }
@@ -138,6 +138,11 @@ public abstract class WildAnimal extends Animal {
             entityData.set(DOZING, false);
             onWoken(near);
         }
+    }
+
+    /** When it sleeps: at night; predators (Predator) sleep by day instead. */
+    protected boolean sleepTime() {
+        return level().isDarkOutside();
     }
 
     /** Woken by a player: bolts. Predators override this (the brown bear attacks). */
@@ -203,7 +208,7 @@ public abstract class WildAnimal extends Animal {
 
         @Override
         public boolean canUse() {
-            return mob.level().isDarkOutside() && mob.onGround() && !mob.isInWater() && mob.getTarget() == null
+            return mob.sleepTime() && mob.onGround() && !mob.isInWater() && mob.getTarget() == null
                     && !com.mechanical.AnimalFear.isPanicking(mob) && mob.getRandom().nextInt(100) == 0
                     && mob.level().getNearestPlayer(mob, WAKE_RANGE * 2) == null;
         }

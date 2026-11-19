@@ -77,6 +77,11 @@ public final class Butchery {
                     List.of(new Extra(Wildlife.BEAR_PELT, 1.0F, 1, 1), hide(0.4F)),
                     List.of(new Extra(Wildlife.BEAR_FAT, 0.8F, 1, 3), new Extra(Wildlife.BEAR_CLAW, 0.6F, 1, 3),
                             new Extra(Wildlife.SINEW, 0.6F, 1, 2)))),
+            // night predators: the wolf's pelt comes off first; bones come out with the meat
+            Map.entry(Wildlife.GREY_WOLF.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 2, List.of(new Extra(Wildlife.WOLF_PELT, 1.0F, 1, 1)),
+                    List.of(new Extra(Wildlife.SINEW, 0.5F, 1, 1), new Extra(() -> Items.BONE, 0.6F, 1, 2)))),
+            Map.entry(Wildlife.CAVE_LION.get(), new Yield(Mechanical.GAME_MEAT_SCRAPS, 3, 5, List.of(hide(0.7F), hide(0.4F)),
+                    List.of(new Extra(Wildlife.SINEW, 0.6F, 1, 2), new Extra(() -> Items.BONE, 0.7F, 1, 3)))),
             Map.entry(Wildlife.MOOSE.get(), new Yield(Wildlife.VENISON_SCRAPS, 3, 6, List.of(hide(0.7F)),
                     List.of(new Extra(Wildlife.SINEW, 0.6F, 1, 3)))),
             Map.entry(Wildlife.REINDEER.get(), new Yield(Wildlife.VENISON_SCRAPS, 2, 3, List.of(hide(0.45F)),

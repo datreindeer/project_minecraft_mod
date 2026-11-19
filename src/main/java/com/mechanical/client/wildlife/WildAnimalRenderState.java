@@ -24,4 +24,7 @@ public class WildAnimalRenderState extends LivingEntityRenderState {
     public int arrowCount;
     /** Entity id: seeds where the stuck arrows sit, so they stay put. */
     public int entityId;
+    /** Predators: crouched stalking, 0..1 head thrown back howling/roaring, in the air pouncing. */
+    public boolean crouching, leaping;
+    public float calling;
 }

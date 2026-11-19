@@ -532,5 +532,11 @@
   "item.mechanical.scraped_phantom_hide": "Scraped Phantom Hide",
   "item.mechanical.phantom_leather": "Phantom Leather",
   "item.mechanical.glider_frame": "Glider Frame",
-  "item.mechanical.glider_cloak": "Glider Cloak"
+  "item.mechanical.glider_cloak": "Glider Cloak",
+  "item.mechanical.wolf_pelt": "Wolf Pelt",
+  "item.mechanical.grey_wolf_spawn_egg": "Grey Wolf Spawn Egg",
+  "item.mechanical.cave_lion_spawn_egg": "Cave Lion Spawn Egg",
+  "entity.mechanical.grey_wolf": "Grey Wolf",
+  "entity.mechanical.cave_lion": "Cave Lion",
+  "subtitles.mechanical.entity.grey_wolf.howl": "Wolves howl"
 }

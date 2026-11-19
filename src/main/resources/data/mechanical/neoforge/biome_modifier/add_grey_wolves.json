@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#mechanical:has_grey_wolves",
+  "spawners": [
+    {
+      "type": "mechanical:grey_wolf",
+      "weight": 2,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 3,
+        "max_inclusive": 6
+      }
+    }
+  ]
+}

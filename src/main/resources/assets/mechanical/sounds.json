@@ -15,5 +15,30 @@
         "pitch": 0.6
       }
     ]
+  },
+  "entity.grey_wolf.howl": {
+    "subtitle": "subtitles.mechanical.entity.grey_wolf.howl",
+    "sounds": [
+      {
+        "name": "minecraft:mob/wolf/big/whine",
+        "pitch": 0.6,
+        "attenuation_distance": 96
+      },
+      {
+        "name": "minecraft:mob/wolf/sad/whine",
+        "pitch": 0.62,
+        "attenuation_distance": 96
+      },
+      {
+        "name": "minecraft:mob/wolf/classic/whine",
+        "pitch": 0.58,
+        "attenuation_distance": 96
+      },
+      {
+        "name": "minecraft:mob/wolf/grumpy/whine",
+        "pitch": 0.6,
+        "attenuation_distance": 96
+      }
+    ]
   }
 }

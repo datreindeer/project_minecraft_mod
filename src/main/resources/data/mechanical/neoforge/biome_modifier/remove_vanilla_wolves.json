@@ -1,0 +1,5 @@
+{
+  "type": "neoforge:remove_spawns",
+  "biomes": "#mechanical:has_grey_wolves",
+  "entity_types": "minecraft:wolf"
+}

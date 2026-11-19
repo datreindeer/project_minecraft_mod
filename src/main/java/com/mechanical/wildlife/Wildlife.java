@@ -81,6 +81,12 @@ public final class Wildlife {
     public static final DeferredHolder<EntityType<?>, EntityType<DesertHare>> DESERT_HARE = ENTITY_TYPES.registerEntityType(
             "desert_hare", DesertHare::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.5F).clientTrackingRange(8));
 
+    // night predators (Predator; spawning also in Predators)
+    public static final DeferredHolder<EntityType<?>, EntityType<GreyWolf>> GREY_WOLF = ENTITY_TYPES.registerEntityType(
+            "grey_wolf", GreyWolf::new, MobCategory.CREATURE, b -> b.sized(0.6F, 0.85F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<CaveLion>> CAVE_LION = ENTITY_TYPES.registerEntityType(
+            "cave_lion", CaveLion::new, MobCategory.CREATURE, b -> b.sized(1.1F, 1.3F).clientTrackingRange(10));
+
     // what they give when butchered (see Butchery)
     public static final DeferredItem<Item> VENISON_SCRAPS = food("venison_scraps", 1, 0.1F);
     public static final DeferredItem<Item> COOKED_VENISON_SCRAPS = food("cooked_venison_scraps", 3, 0.8F);
@@ -93,6 +99,7 @@ public final class Wildlife {
     public static final DeferredItem<Item> BEAR_FAT = ITEMS.registerSimpleItem("bear_fat");
     public static final DeferredItem<Item> BEAR_CLAW = ITEMS.registerSimpleItem("bear_claw");
     public static final DeferredItem<Item> SQUIRREL_PELT = ITEMS.registerSimpleItem("squirrel_pelt");
+    public static final DeferredItem<Item> WOLF_PELT = ITEMS.registerSimpleItem("wolf_pelt");
     /** Always comes off a butchered giant deer; an altar offering. */
     public static final DeferredItem<Item> GIANT_ANTLER = ITEMS.registerSimpleItem("giant_antler",
             p -> p.rarity(net.minecraft.world.item.Rarity.EPIC).stacksTo(16));
@@ -118,6 +125,8 @@ public final class Wildlife {
     public static final DeferredItem<SpawnEggItem> PTARMIGAN_SPAWN_EGG = egg("ptarmigan_spawn_egg", PTARMIGAN);
     public static final DeferredItem<SpawnEggItem> SEAGULL_SPAWN_EGG = egg("seagull_spawn_egg", SEAGULL);
     public static final DeferredItem<SpawnEggItem> DESERT_HARE_SPAWN_EGG = egg("desert_hare_spawn_egg", DESERT_HARE);
+    public static final DeferredItem<SpawnEggItem> GREY_WOLF_SPAWN_EGG = egg("grey_wolf_spawn_egg", GREY_WOLF);
+    public static final DeferredItem<SpawnEggItem> CAVE_LION_SPAWN_EGG = egg("cave_lion_spawn_egg", CAVE_LION);
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
         return ITEMS.registerSimpleItem(name, p -> p.food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build()));
@@ -153,13 +162,15 @@ public final class Wildlife {
         event.put(PTARMIGAN.get(), FlockBird.createAttributes(4.0).build());
         event.put(SEAGULL.get(), FlockBird.createAttributes(5.0).build());
         event.put(DESERT_HARE.get(), Hare.createAttributes().build());
+        event.put(GREY_WOLF.get(), GreyWolf.createAttributes().build());
+        event.put(CAVE_LION.get(), CaveLion.createAttributes().build());
     }
 
     @SubscribeEvent
     static void spawnRules(RegisterSpawnPlacementsEvent event) {
         for (var type : new EntityType<?>[] {ROE_DEER.get(), RED_DEER.get(), WILD_BOAR.get(), HARE.get(), PHEASANT.get(),
                 AUROCHS.get(), WILD_HORSE.get(), MOOSE.get(), REINDEER.get(), SQUIRREL.get(), HEDGEHOG.get(), GIANT_DEER.get(),
-                CROW.get(), PTARMIGAN.get()}) {
+                CROW.get(), PTARMIGAN.get(), GREY_WOLF.get()}) {
             register(event, type);
         }
         // bears only turn up near wild berry bushes
@@ -175,6 +186,8 @@ public final class Wildlife {
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule
         event.register(MOUFLON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(CAVE_LION.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ROCK_DOVE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 net.minecraft.world.entity.animal.goat.Goat::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
