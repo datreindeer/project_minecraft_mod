@@ -532,5 +532,9 @@
   "item.mechanical.scraped_phantom_hide": "Scraped Phantom Hide",
   "item.mechanical.phantom_leather": "Phantom Leather",
   "item.mechanical.glider_frame": "Glider Frame",
-  "item.mechanical.glider_cloak": "Glider Cloak"
+  "item.mechanical.glider_cloak": "Glider Cloak",
+  "message.mechanical.sanity.uneasy": "You feel watched...",
+  "message.mechanical.sanity.afraid": "The dark presses in. Find a fire.",
+  "message.mechanical.sanity.mad": "Your mind is slipping. Was that real?",
+  "message.mechanical.sanity.restless": "You toss and turn. The shadows won't let you rest."
 }

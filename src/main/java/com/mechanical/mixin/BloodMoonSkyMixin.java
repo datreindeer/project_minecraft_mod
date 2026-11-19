@@ -18,5 +18,6 @@ public abstract class BloodMoonSkyMixin {
     private void mechanical$bloodMoon(EnvironmentAttributeSystem.Builder builder, CallbackInfoReturnable<EnvironmentAttributeSystem.Builder> cir) {
         BloodMoonClient.addLayers(builder);
         SmokeClient.addLayers(builder);
+        com.mechanical.client.SanityClient.addLayers(builder);
     }
 }

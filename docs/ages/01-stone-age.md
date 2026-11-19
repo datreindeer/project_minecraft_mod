@@ -528,6 +528,38 @@ Nytt item: **Horn** (material för senare recept).
 - **Dynamiskt ljus** (klient): en fackla, lantern eller annat lysande block i handen, eller på marken, lyser upp runt
   omkring för alla spelare. Ljuset sprids som vanligt blockljus: väggar stoppar det, men det går runt hörn.
 
+### Mörkerrädsla (sanity)
+Står man länge i totalt mörker börjar man bli tokig. **Inget väsen anfaller dig**, det är bara galenskapen själv: den
+lurar dig med ljud och syner och döljer på så sätt de riktiga farorna (monster och rovdjur). Varje spelare har ett dolt
+värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vid död). Bara i världar med himmel
+(overworld); Nether och End påverkar det inte. Creative och spectator påverkas inte.
+- **Mörker:** ljuset vid ögonen är högst 3 och det är inte dagsljus. Ljuset är blockljus, eller ljus som någon inom 8
+  block håller i handen (fackla, lantern o.s.v., samma regel som dynamiskt ljus, minus 1 per blocks avstånd). Håller
+  man själv en fackla räknas det alltså som ljust. 4–7 är skymning (ingen ändring), 8+ är upplyst.
+- **Tappar (per sekund i mörker):** 0,10 i grunden, ×1,25 ute på natten, ×1,5 under jord (ingen himmel och under
+  havsnivån), ×0,5 med sällskap (annan spelare eller vänlig tribesperson inom 12 block), ×2 under blodmåne. Ensam ute
+  i mörkret på natten: 0,125/s, alltså 100 → 0 på ~13 minuter (100 → 70 på 4 min). Under blodmånen tappar man också
+  0,05/s i skymningsljus.
+- **Kommer tillbaka (per sekund):** vid brinnande eld (Campfire eller tänd Clay Kiln inom 6 block) +0,5, alltid, även
+  under blodmåne; i dagsljus +0,3; på upplysta ställen +0,05; sällskap +0,1 extra. Under blodmånen halveras allt
+  utom elden. **Vila i Straw Bed** ger +20 (bara +8 om man är under 15, "man vänder och vrider sig") och hjälper bara
+  om det gått minst 2 minuter sedan förra vilan. **Varm mat** (cooked/roasted, stuvningar, soppor, bakad potatis)
+  ger +3.
+- **Under 70:** "You feel watched..." Viskningar bakom dig (grottljud och själar, lågt tonade), fotsteg som följer
+  efter och stannar, en kvist som knäcks bakom dig; var 45–65:e sekund vid 70, oftare ju lägre. Svag vinjett och
+  färgerna börjar blekna (himmel, dimma och ljus dras mot grått, upp till 60 % vid 0). Ett öga visas till höger om
+  hotbaren, värre för varje steg.
+- **Under 40:** "The dark presses in." Mörka gestalter i ögonvrån (i kanten av synfältet) som försvinner när man
+  tittar på dem, hjärtslag (snabbare och starkare ju lägre), en långsam gungning i bilden och falska monsterljud: ett
+  zombiestön, en creeper som fräser precis bakom dig, skelett, spindlar. Undertexterna visar som vanligt, så de går
+  inte att skilja från riktiga.
+- **Under 15:** "Your mind is slipping." Kraftig vinjett, falska stötar (skadetilt och skadeljud utan skada) och ett
+  **inbillat monster** (zombie, skeleton eller creeper) som står 9–14 block bort och stirrar. Det löses upp i rök när
+  man slår det, går närmare än 4 block, efter en minut eller när sanity stiger över 20; en inbillad creeper fräser när
+  man är inom 7 block och försvinner sedan. **Riktiga effekter:** Mining Fatigue I och Weakness I så länge man är under 15.
+- **Vid 0:** dessutom anfall av illamående (Nausea i 8 s, i snitt var 30:e sekund). Ingen direkt skada.
+- Testa med `/sanity` (visar värdet), `/sanity <0–100>` eller `/sanity <värde> <spelare>` (op).
+
 ### Kyla
 - Kroppstemperatur 0–20 (12 = lagom), visas som 10 termometrar ovanför matmätaren (varm / kall / iskall).
 - Rör sig sakta mot en måltemperatur: biomen (snöbiomer är kalla även på dagen, öken varm), natten (−5 ute, −2,5
@@ -758,7 +790,7 @@ upp släpper det som vanligt.
 ### Straw Bed (vila)
 Stenålderns säng. Man kan inte sova bort natten, men man kan **vila**: högerklicka på en Straw Bed så sätts din
 respawnpunkt där och tiden sedan du vilade nollställs, så **phantoms** inte kommer (de kommer annars efter 3 nätter utan vila).
-Natten fortsätter som vanligt.
+Natten fortsätter som vanligt. Vilan ger också tillbaka sanity (se Mörkerrädsla).
 - Recept (crafting table): `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]` → 1 Straw Bed. Straw får man när man skördar säd med Sickle.
 - Bryts den ger den 2–4 Plant Fibre, inte sängen (samma för de gamla i Abandoned Camps).
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
@@ -983,7 +1015,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 - Tändmaterial: `Tinder.java` (används av `FireDrillItem.java`).
 - Campfire: `Campfires.java` + mixins `CampfireBlockMixin`, `CampfireBlockEntityMixin`. Vilda djur: paketet `wildlife/` (entities), `client/wildlife/` (modeller).
 - Trädfällning: `TreeFelling.java`, `FallingTreeEntity.java` (landning), `TreeChopping.java` (hugga), `FallenLogBlock.java`, `StumpBlock.java`.
-- Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
+- Natten: `NightDangers.java` (eldregister, monster, horder, facklor, extra spawns, smygare, pathfinding, knockback), `client/NightAmbience.java` (ljud). Byar: `VillageAnimals.java`. Fisk: rensningsrecept i `gen_data.py`, Fish Bones i `StoneAgeEvents.java`. Kyla: `Temperature.java`, `client/TemperatureHud.java`. Vind: `Wind.java`, `UnlitTorchBlock.java`, `client/WindClient.java`, mixin `TorchBlockMixin`. Blodmåne: `BloodMoon.java`, `client/BloodMoonClient.java`, mixins `BloodMoonSkyMixin`, `BloodMoonMoonMixin`. Mörkerrädsla: `Sanity.java` (värde, tappa/återhämta, effekter, `/sanity`), `client/SanityClient.java` (ljud, gestalter, inbillat monster, vinjett, öga, gråa färger via `BloodMoonSkyMixin`); data `scripts/gen_sanity.py`, texturer `scripts/gen_sanity_textures.py`. Mörker och dynamiskt ljus: mixins `DarkNightsMixin`, `LightCoordsMixin`, `EntityLightMixin`, `client/DynamicLights.java`.
 - Blod: `Blood.java`, `BloodBlock.java`, `client/BloodDropParticle.java`. Rädsla: `AnimalFear.java`.
 - Styckning: `Butchery.java` (utbytestabell), `CarcassEntity.java`, `KnifeItem.java`, `BonePileBlock.java`. Hängande ben och flådda texturer: mixins i `mixin/` (benen bara för fyrbenta djur och höns). Texturskript: `scripts/gen_skinned_textures.py`, `scripts/gen_bone_pile_textures.py`. Drying Rack: `DryingRackBlock.java`.
 - Tool Station-recept: `ToolStationRecipes.java`. Clay Kiln-recept och bränsle: `KilnBlockEntity.java`. Båda är

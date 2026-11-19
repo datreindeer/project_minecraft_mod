@@ -30,6 +30,7 @@ public class MechanicalClient {
     @SubscribeEvent
     static void registerHud(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.FOOD_LEVEL, TemperatureHud.ID, new TemperatureHud());
+        event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, SanityClient.ID, SanityClient::render);
     }
 
     @SubscribeEvent
