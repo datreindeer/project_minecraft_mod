@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -116,14 +118,47 @@ public final class Butchery {
     }
 
     public static Yield yieldFor(EntityType<?> type) {
-        if (yields == null) yields = createYields();
+        if (yields == null) {
+            Map<EntityType<?>, Yield> all = new HashMap<>(createYields());
+            for (var e : REGISTERED) all.put(e.type().get(), e.yield());
+            yields = all;
+        }
         return yields.getOrDefault(type, bySize(type));
+    }
+
+    private record Registered(Supplier<? extends EntityType<?>> type, Yield yield) {}
+    private static final List<Registered> REGISTERED = new ArrayList<>();
+    private static final List<Supplier<? extends EntityType<?>>> ALWAYS_CARCASS = new ArrayList<>(), NEVER_CARCASS = new ArrayList<>();
+
+    /**
+     * Adds an animal's yield from its own feature class (call during mod construction, e.g. from an init()), so new animal
+     * groups don't have to edit the table above. Registered yields override the table.
+     */
+    public static void register(Supplier<? extends EntityType<?>> type, Yield yield) {
+        REGISTERED.add(new Registered(type, yield));
+    }
+
+    /** A creature that isn't an {@link Animal} (a fish-like water mob, a snake ...) that should still leave a carcass. */
+    public static void alwaysCarcass(Supplier<? extends EntityType<?>> type) {
+        ALWAYS_CARCASS.add(type);
+    }
+
+    /** An animal that should not leave a carcass (insect swarms, tiny critters that just drop items). */
+    public static void neverCarcass(Supplier<? extends EntityType<?>> type) {
+        NEVER_CARCASS.add(type);
+    }
+
+    private static boolean listed(List<Supplier<? extends EntityType<?>>> list, EntityType<?> type) {
+        for (var s : list) if (s.get() == type) return true;
+        return false;
     }
 
     /** Wild, grown passive animals (and phantoms) become carcasses; pets, babies and undead horses keep vanilla behaviour. */
     static boolean leavesCarcass(LivingEntity entity) {
         // phantoms only when a player killed them (like the vanilla membrane); those burnt by the sun just vanish
         if (entity.getType() == EntityTypes.PHANTOM) return entity.getLastHurtByPlayer() != null;
+        if (listed(NEVER_CARCASS, entity.getType())) return false;
+        if (listed(ALWAYS_CARCASS, entity.getType())) return !entity.isBaby();
         if (!(entity instanceof Animal animal) || animal.isBaby()) return false;
         // crows and gulls just drop their feathers (loot tables); the edible flock birds leave a carcass
         if (animal instanceof com.mechanical.wildlife.FlockBird && !Birds.isBird(animal.getType())) return false;
