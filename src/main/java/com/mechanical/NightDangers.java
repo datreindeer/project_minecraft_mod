@@ -51,7 +51,9 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class NightDangers {
     /** Monsters stay this far from a burning fire; skeleton range is 15, so a player within SAFE of the fire is out of reach. */
-    private static final double AVOID_RADIUS = 20, SAFE_RADIUS = 6, NO_SPAWN_RADIUS = 28;
+    private static final double AVOID_RADIUS = 20, SAFE_RADIUS = 6, NO_SPAWN_RADIUS = 18;
+    /** Monsters near a fire gather on a ring just outside its reach and watch the people by it. */
+    private static final double WATCH_MIN = 21, WATCH_MAX = 25, WATCH_SEARCH = 40;
     private static final int FIRE_STALE_TICKS = 40;
     /** Hordes only come on blood moon nights (BloodMoon), in two waves. */
     private static final int HORDE_MIN = 8, HORDE_MAX = 12;
@@ -109,7 +111,10 @@ public final class NightDangers {
         if (event.getLevel().isClientSide() || !(event.getEntity() instanceof Monster monster)) return;
         boolean horde = monster.entityTags().contains(HORDE_TAG);
         if (horde) monster.goalSelector.addGoal(1, new PutOutLightsGoal(monster));
-        else monster.goalSelector.addGoal(0, new AvoidFireGoal(monster));
+        else {
+            monster.goalSelector.addGoal(0, new AvoidFireGoal(monster));
+            monster.goalSelector.addGoal(6, new WatchFireGoal(monster));
+        }
         if (monster instanceof PathfinderMob) {
             monster.getNavigation().setMaxVisitedNodesMultiplier(4.0F); // finds longer ways round
             monster.goalSelector.addGoal(1, new UnstuckGoal(monster));
@@ -178,6 +183,51 @@ public final class NightDangers {
         @Override
         public boolean canContinueToUse() {
             return !mob.getNavigation().isDone();
+        }
+    }
+
+    /**
+     * At the edge of the light: with nothing to chase, a monster near a fire creeps along a ring just outside its reach,
+     * stops to stare at the people by it, and now and then makes itself heard. The fire keeps them off, not out of sight.
+     */
+    static class WatchFireGoal extends Goal {
+        private final Monster mob;
+        private BlockPos fire;
+        private Player watched;
+
+        WatchFireGoal(Monster mob) {
+            this.mob = mob;
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (mob.getTarget() != null || (mob.tickCount + mob.getId()) % 40 != 0 || BloodMoon.isActive(mob.level())) return false;
+            fire = nearestFire(mob.level(), mob.position(), WATCH_SEARCH);
+            if (fire == null) return false;
+            watched = mob.level().getNearestPlayer(fire.getX() + 0.5, fire.getY(), fire.getZ() + 0.5, AVOID_RADIUS, p -> !((Player) p).isCreative() && !p.isSpectator());
+            if (watched == null) return false;
+            // a spot on the ring, a little round from where it stands
+            Vec3 c = Vec3.atCenterOf(fire);
+            double angle = Math.atan2(mob.getZ() - c.z, mob.getX() - c.x) + (mob.getRandom().nextDouble() - 0.5) * 1.2;
+            double r = WATCH_MIN + mob.getRandom().nextDouble() * (WATCH_MAX - WATCH_MIN);
+            return mob.getNavigation().moveTo(c.x + Math.cos(angle) * r, c.y, c.z + Math.sin(angle) * r, 0.6);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return mob.getTarget() == null && watched != null && watched.isAlive() && !mob.getNavigation().isDone();
+        }
+
+        @Override
+        public void tick() {
+            if (watched != null) mob.getLookControl().setLookAt(watched, 30, 30);
+            if (mob.getRandom().nextInt(160) == 0) mob.playAmbientSound();
+        }
+
+        @Override
+        public void stop() {
+            if (watched != null) mob.getLookControl().setLookAt(watched, 30, 30);
         }
     }
 

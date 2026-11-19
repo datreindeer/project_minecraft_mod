@@ -712,7 +712,9 @@ Nytt item: **Wolf Pelt**: Wolf Hood, Wolf Fur-rustning, Wolf Rug och fäll på S
 - **Mörkare natt:** på natten ignoreras ljusstyrkeinställningen och himmels- och grundljuset sänks till ~10 %. Utan
   ljuskälla är det nästan svart. Oväder räknas som delvis natt. Blockljus (facklor, eld) påverkas inte.
 - **Brinnande eld skyddar:** monster håller sig ~20 block från en brinnande Campfire eller tänd Clay Kiln, siktar inte på
-  spelare inom 6 block från elden (skeletons når inte dit) och spawnar inte inom 28 block. Glöd och släckt eld skyddar inte.
+  spelare inom 6 block från elden (skeletons når inte dit) och spawnar inte inom 18 block. Glöd och släckt eld skyddar inte.
+  **I kanten av ljuset:** monster utan mål nära en eld (inom 40 block) samlas på en ring 21–25 block ut, smyger runt den,
+  stannar och stirrar på den som sitter vid elden och låter då och då. Elden håller dem borta, men inte ur sikte.
 - **Blodmåne:** ungefär var sjunde natt (bestämt av världens seed, så en omstart ändrar inget) stiger månen full och
   blodröd vid skymningen och står kvar till gryningen. Himlen, dimman och månskenet blir röda, stjärnorna bleknar och natten
   blir lite ljusare i rött. Vid skymningen kommer ett meddelande ("The moon rises red...") och ett mörkt hornljud. Under
