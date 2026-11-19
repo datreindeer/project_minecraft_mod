@@ -23,6 +23,10 @@
     "mechanical:cooked_goose",
     "mechanical:cooked_pheasant",
     "mechanical:cooked_ptarmigan",
-    "mechanical:cooked_pigeon"
+    "mechanical:cooked_pigeon",
+    "mechanical:cooked_seal_meat",
+    "mechanical:cooked_walrus_meat",
+    "mechanical:cooked_pike",
+    "mechanical:cooked_sturgeon"
   ]
 }
