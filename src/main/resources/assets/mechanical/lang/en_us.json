@@ -773,5 +773,14 @@
   "tooltip.mechanical.crucible.mix": "%s%% tin: %s",
   "tooltip.mechanical.crucible.slag": "%s%% tin: no bronze (8-15%% makes bronze, about 10%% the best). Melts as copper; the tin is lost as slag",
   "tooltip.mechanical.crucible.tin_only": "Tin alone casts nothing: add copper (about 9 copper to 1 tin)",
-  "message.mechanical.mold.wrong_metal": "%s can't be cast in this mold"
+  "message.mechanical.mold.wrong_metal": "%s can't be cast in this mold",
+  "block.mechanical.potters_wheel": "Potter's Wheel",
+  "block.mechanical.storage_jar": "Storage Jar",
+  "block.mechanical.water_jug": "Water Jug",
+  "item.mechanical.unfired_storage_jar": "Unfired Storage Jar",
+  "item.mechanical.unfired_water_jug": "Unfired Water Jug",
+  "tooltip.mechanical.water_jug": "Water: %s/%s",
+  "message.mechanical.wheel.shape": "Throwing a %s (%s Clay Balls)",
+  "message.mechanical.wheel.needs_clay": "A %s takes %s Clay Balls (%s on the wheel); sneak with an empty hand to pick another shape",
+  "message.mechanical.wheel.enough_clay": "There is enough clay on the wheel: hold right-click with an empty hand to throw it"
 }

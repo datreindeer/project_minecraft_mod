@@ -37,16 +37,10 @@ public class ClayBucketItem extends BucketItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        if (!(level.getBlockState(pos).getBlock() instanceof FarmlandBlock)) pos = pos.below();
-        if (content != Fluids.WATER || !(level.getBlockState(pos).getBlock() instanceof FarmlandBlock) || context.getPlayer() == null) return InteractionResult.PASS;
+        BlockPos pos = farmland(level, context.getClickedPos());
+        if (content != Fluids.WATER || pos == null || context.getPlayer() == null) return InteractionResult.PASS;
         if (level instanceof ServerLevel server) {
-            for (BlockPos p : BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, 0, 1))) {
-                var soil = server.getBlockState(p);
-                if (soil.getBlock() instanceof FarmlandBlock) server.setBlock(p, soil.setValue(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
-            }
-            server.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-            server.sendParticles(ParticleTypes.SPLASH, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 30, 1.0, 0.1, 1.0, 0.1);
+            water(server, pos);
             Player player = context.getPlayer();
             if (!player.hasInfiniteMaterials()) {
                 ItemStack empty = emptied(context.getItemInHand());
@@ -57,8 +51,24 @@ public class ClayBucketItem extends BucketItem {
         return InteractionResult.SUCCESS;
     }
 
+    /** The farmland clicked, or under the crop clicked; null if neither. */
+    static BlockPos farmland(Level level, BlockPos clicked) {
+        if (level.getBlockState(clicked).getBlock() instanceof FarmlandBlock) return clicked;
+        return level.getBlockState(clicked.below()).getBlock() instanceof FarmlandBlock ? clicked.below() : null;
+    }
+
+    /** Pours water on farmland: it and the 8 around it get fully wet (moisture 7). */
+    static void water(ServerLevel server, BlockPos pos) {
+        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, 0, 1))) {
+            var soil = server.getBlockState(p);
+            if (soil.getBlock() instanceof FarmlandBlock) server.setBlock(p, soil.setValue(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
+        }
+        server.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+        server.sendParticles(ParticleTypes.SPLASH, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 30, 1.0, 0.1, 1.0, 0.1);
+    }
+
     /** The empty clay bucket left after pouring, one pour more worn; empty when it cracks. */
-    private static ItemStack emptied(ItemStack full) {
+    static ItemStack emptied(ItemStack full) {
         ItemStack empty = full.transmuteCopy(Mechanical.CLAY_BUCKET.get(), 1);
         empty.setDamageValue(full.getDamageValue() + 1);
         return empty.getDamageValue() >= empty.getMaxDamage() ? ItemStack.EMPTY : empty;

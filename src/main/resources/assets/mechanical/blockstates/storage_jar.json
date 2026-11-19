@@ -1,0 +1,38 @@
+{
+  "variants": {
+    "open=false": [
+      {
+        "model": "mechanical:block/storage_jar"
+      },
+      {
+        "model": "mechanical:block/storage_jar",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/storage_jar",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/storage_jar",
+        "y": 270
+      }
+    ],
+    "open=true": [
+      {
+        "model": "mechanical:block/storage_jar_open"
+      },
+      {
+        "model": "mechanical:block/storage_jar_open",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/storage_jar_open",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/storage_jar_open",
+        "y": 270
+      }
+    ]
+  }
+}

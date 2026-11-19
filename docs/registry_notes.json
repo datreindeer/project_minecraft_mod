@@ -2315,5 +2315,10 @@
   "unfired_clay_plate_mold": {
     "text": "Crafting: Clay Ball `[C][C][C]` / `[C][ ][C]` / `[C][C][C]`. Bränns i [[kiln]] till [[clay_plate_mold]].",
     "category": "materials"
-  }
+  },
+  "potters_wheel": {"category": "blocks", "text": "Recept: Planks + **Bronze Saw** (blir kvar, slits 1) + Planks / Bronze Ingot / 3 Cobblestone. Smyg + tom hand väljer form (Storage Jar 4 lera, Water Jug 3 lera), högerklicka Clay Ball på skivan, håll in högerklick med tom hand ~5 s (24 steg) → [[unfired_storage_jar]] / [[unfired_water_jug]]."},
+  "unfired_storage_jar": {"category": "materials", "text": "Drejas på [[potters_wheel]] av 4 Clay Ball. Bränns i [[kiln]] (30 s, 600°) till [[storage_jar]]."},
+  "unfired_water_jug": {"category": "materials", "text": "Drejas på [[potters_wheel]] av 3 Clay Ball. Bränns i [[kiln]] (30 s, 600°) till [[water_jug]]."},
+  "storage_jar": {"category": "blocks", "text": "Bränd lerkruka med lock, 9 platser. **Förseglad (stängd) åldras mat med 1/4 av normal takt** (Bark Basket 1/3). Hoppers och komparator fungerar."},
+  "water_jug": {"category": "blocks", "text": "Bränd lerkanna, **6 hällningar** vatten (följer med när den plockas upp). Fylls i vatten eller av regn; vattnar farmland 3×3 som Clay Water Bucket; utställd fyller/tömmer den Clay Bucket, Bucket och Glass Bottle."}
 }

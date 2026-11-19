@@ -1,0 +1,10 @@
+{
+  "parent": "mechanical:block/storage_jar",
+  "textures": {
+    "particle": "mechanical:block/unfired_storage_jar_side",
+    "side": "mechanical:block/unfired_storage_jar_side",
+    "top": "mechanical:block/unfired_storage_jar_top",
+    "lid": "mechanical:block/unfired_storage_jar_lid",
+    "mouth": "mechanical:block/unfired_storage_jar_mouth"
+  }
+}

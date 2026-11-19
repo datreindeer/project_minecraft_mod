@@ -1,7 +1,7 @@
 # Bronsåldern
 
 > Status: **fas 1 (malm), fas 2 (värme), fas 3 för koppar och fas 3b brons (legering, bronsverktyg, Bronze Saw, Bronze
-> Helmet + Greaves, byhandel nivå 3) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
+> Helmet + Greaves, byhandel nivå 3) och keramik (Potter's Wheel, Storage Jar, Water Jug) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
 > Beslut står under Beslut.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
@@ -221,6 +221,7 @@ Gäller alla recept. Kilnen bränner bränsle och värms så länge det finns n�
 | Crucible med malm | Crucible of Molten Copper / Bronze | 15 s | metallens smältpunkt: koppar 1085°, brons 950° |
 | Crucible of Solid Copper / Bronze | Crucible of Molten ... | 10 s | 1085° / 950° |
 | Unfired Clay Saw Blade / Plate Mold | Clay Saw Blade / Plate Mold | 20 s | 600° |
+| Unfired Storage Jar / Unfired Water Jug | Storage Jar / Water Jug | 30 s | 600° |
 
 **Första bränningen** av en ny kiln räknas bara medan den är minst **500°** (2 min). På lägereldens ved tar det ~1,5 min
 att komma dit.
@@ -452,3 +453,69 @@ Rustningsplåt gjuts (Clay Plate Mold), slipas och sys på ett läderfoder i **A
 
 - Tvättat koncentrat (mer metall per smältning), spjut och svärd i brons, bronslykta, Bloomery mot järnet.
 - Crucible of Solid Bronze har samma (kopparfärgade) ikon som Solid Copper; namnet visar metallen.
+
+## Keramik (byggd)
+
+Drejskiva och lerkärl: förvaring där maten håller längre, och en kruka för vatten. Kod: `Pottery` (registrering,
+`JAR_RATE`), `PottersWheelBlock` + `PottersWheelBlockEntity`, `client/PottersWheelRenderer`, `StorageJarBlock` +
+`StorageJarBlockEntity`, `WaterJugBlock` + `WaterJugItem`; bränningen i `KilnBlockEntity.RECIPES`. Data:
+`scripts/gen_pottery.py` (efter gen_wolf_pelt.py, före gen_block_items.py), texturer: `scripts/gen_pottery_textures.py`.
+
+### Potter's Wheel
+
+Recept (crafting table, P = valfria Planks, S = Bronze Saw som blir kvar och slits 1, B = Bronze Ingot, C = Cobblestone):
+
+```
+[P][S][P]
+[ ][B][ ]
+[C][C][C]
+```
+
+Sågen skär ut drejskivan, bronstappen är lagret och kullerstenen svänghjulet. Bryts med yxa, ger sig själv.
+
+- Modell: ett runt svänghjul av slät sten nere, en axel av skalad ek och ett runt plankhuvud överst. Huvudet och leran
+  ritas av en block entity renderer och snurrar (~1,3 varv/s) medan man drejar.
+- **Form:** smyg + högerklick med tom hand (innan man börjat dreja) väljer form: **Storage Jar (4 Clay Balls)** eller
+  **Water Jug (3 Clay Balls)**. Lera som blir över när man byter till en mindre form går tillbaka till spelaren.
+- **Lera:** högerklicka med Clay Ball, en i taget, tills formen har sin lera. Leran ligger som en skev klump på huvudet.
+- **Dreja:** håll in högerklick med tom hand. Varje upprepning (var 4:e tick) är ett steg; **24 steg** (~5 s) ger en
+  färdig råform. Leran går klump → centrerad kupol → uppdragen cylinder → öppnad med mynning → färdig form, med
+  lerstänk och ljud. Släpper man fortsätter man där man var.
+- **Ta av:** tom hand på den färdiga formen → **Unfired Storage Jar** / **Unfired Water Jug** (grå rå lera).
+- Bryts skivan: färdig form faller ut som den är, annars Clay Balls tillbaka.
+
+Råformerna bränns i Clay Kiln: **30 s vid 600°**.
+
+### Storage Jar
+
+Rund kruka med bred buk, smal hals och lock med knopp, bränd terrakotta med en målad sicksackbård. Ställs ut som block
+(staplas 16 i inventoryt).
+
+- Högerklick lyfter locket (syns i modellen: mynningen öppen) och öppnar **9 platser** (3×3). Allt får plats.
+- **Förseglad håller maten 4 gånger så länge:** när ingen har den öppen åldras mat i den med **1/4** av normal takt
+  (Bark Basket 1/3). Samma stämpel som korgen: när locket läggs på får maten tiden (`basket_since`), när det lyfts
+  flyttas `spoils_at` fram med 3/4 av tiden den stod förseglad.
+- Hoppers fungerar; det som tas ut eller läggs i medan den är förseglad räknas av/stämplas på vägen, så inget får en
+  gammal stämpel med sig. Komparator läser fyllnaden.
+- Bryts krukan räknas maten av och allt faller ut (inget sparas på item:et).
+
+### Water Jug
+
+Rund kanna med hals, pip och handtag. **Rymmer 6 hällningar** vatten (block-state `water` 0–6, följer med item:et när
+den plockas upp; tooltip "Water: 3/6"). Mynningen visar tom/lite/mycket vatten, både på blocket och i handen. Staplas inte.
+
+- **I handen:** sikta på vatten och högerklicka → full (6). Högerklicka farmland (eller en gröda på den) → den och de 8
+  runt om blir blöta, som Clay Water Bucket (1 hällning). Annars ställs den ut.
+- **Utställd:** Clay Bucket, Bucket eller Glass Bottle tar 1 hällning (Clay Water Bucket, Water Bucket, Water Bottle);
+  Clay Water Bucket eller Water Bucket häller i 1. Så används kannan som förråd för recept som vill ha Clay Water Bucket.
+- **Regn:** under öppen himmel fylls den av regnet, ungefär en hällning per minut (50 % per random tick).
+- Kannan slits inte (Clay Bucket spricker efter 16).
+
+### Beslut
+
+- Vanillas **Decorated Pot** (4 Brick, receptet är kvar) får vara som den är: dekoration och behållare i strukturerna.
+  Krukorna här är egna, funktionella kärl.
+- Formen väljs med smyg-klick (inte efter antal lerbollar), så man ser vad man drejar innan leran läggs på.
+- **Inte gjort (valfritt):** Clay Bowl/fat, Amphora (större förvaring), att kärl går sönder vid fall/explosion, att
+  dricka ur kannan (modden har ingen törst), att hälla kannan i en kittel (Clay Bucket fyller inte heller kittlar).
+

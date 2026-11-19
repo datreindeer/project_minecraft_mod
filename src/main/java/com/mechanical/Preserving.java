@@ -63,7 +63,7 @@ public final class Preserving {
     /** Game time when this food spoils. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILS_AT = COMPONENTS.registerComponentType(
             "spoils_at", b -> b.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
-    /** Game time this food was shut in a closed Bark Basket (see {@link #intoBasket}). */
+    /** Game time this food was shut in a closed Bark Basket or sealed Storage Jar (see {@link #intoBasket}). */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> BASKET_SINCE = COMPONENTS.registerComponentType(
             "basket_since", b -> b.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
     /** In a closed Bark Basket (cool, dry, airy bark) food ages at this share of the normal rate. */
@@ -135,12 +135,17 @@ public final class Preserving {
 
     /** A stack coming out of a closed basket: its spoil time moves later by the share of the basket time that didn't count. */
     public static ItemStack outOfBasket(ItemStack stack, long now) {
+        return outOfBasket(stack, now, BASKET_RATE);
+    }
+
+    /** As {@link #outOfBasket(ItemStack, long)} for a store where food ages at {@code rate} (a sealed Storage Jar: {@link Pottery#JAR_RATE}). */
+    public static ItemStack outOfBasket(ItemStack stack, long now, float rate) {
         Long since = stack.get(BASKET_SINCE.get());
         if (since == null) return stack;
         ItemStack out = stack.copy();
         out.remove(BASKET_SINCE.get());
         Long at = out.get(SPOILS_AT.get());
-        if (at != null && now > since) out.set(SPOILS_AT.get(), at + (long) ((now - since) * (1 - BASKET_RATE)));
+        if (at != null && now > since) out.set(SPOILS_AT.get(), at + (long) ((now - since) * (1 - rate)));
         return out;
     }
 
