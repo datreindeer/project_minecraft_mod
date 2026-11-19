@@ -17,6 +17,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.GrowingPlantHeadBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.MultifaceBlock;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -58,7 +61,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
  * <li>a hollow room (about 9 wide, 5 high) with a wide opening between two buttresses, a chimney above, the Offering Altar
  * <li>roots snaking 15-20 blocks out over and into the ground
  * <li>6-7 arching limbs (5 wide at the trunk) that split into branches and twigs, leaf clusters at the twig ends; ~50 high
- * <li>glow berry vines, spore blossoms, glow lichen, glowcaps, firefly bushes, moss and azalea round the foot, rune bark
+ * <li>glow berry vines, spore blossoms, glow lichen, rune bark; a lush, softly lit clearing under the crown (see clearing())
  * </ul>
  */
 public final class AncientOakStructure extends Structure {
@@ -571,24 +574,168 @@ public final class AncientOakStructure extends Structure {
                     if (hash(p, 22) < 0.12) decor.put(p.above(4), Blocks.COBWEB.defaultBlockState());
                 }
             decor.put(new BlockPos(x0, g + 9, z0), Blocks.COBWEB.defaultBlockState());
-            // the ring round the foot: moss, podzol and rooted dirt, with moss carpet, azaleas, firefly bushes and glowcaps
-            for (int dx = -17; dx <= 17; dx++)
-                for (int dz = -17; dz <= 17; dz++) {
-                    double d = Math.hypot(dx, dz);
+            // hanging glow berries under the low limbs too, and glow lichen on the roots
+            for (Map.Entry<BlockPos, Integer> e : wood.entrySet()) {
+                BlockPos p = e.getKey();
+                if (e.getValue() != LOG || trunk.contains(p)) continue;
+                int y = p.getY() - g;
+                if (y >= 8 && y <= 24 && !isTree(p.below()) && !leaves.contains(p.below()) && hash(p, 41) < 0.05) {
+                    int len = 2 + (int) (hash(p, 42) * 4);
+                    for (int k = 1; k <= len && !isTree(p.below(k + 1)); k++) {
+                        BlockState v = (k == len ? Blocks.CAVE_VINES : Blocks.CAVE_VINES_PLANT).defaultBlockState()
+                                .setValue(BlockStateProperties.BERRIES, hash(p.below(k), 43) < 0.6);
+                        if (k == len) v = v.setValue(GrowingPlantHeadBlock.AGE, 25);
+                        decor.put(p.below(k), v);
+                    }
+                }
+                if (y <= 3) {
+                    for (Direction d : Direction.Plane.HORIZONTAL) {
+                        BlockPos n = p.relative(d);
+                        if (!isTree(n) && !decor.containsKey(n) && hash(n, 44 + d.ordinal()) < 0.07)
+                            decor.put(n, Blocks.GLOW_LICHEN.defaultBlockState().setValue(MultifaceBlock.getFaceProperty(d.getOpposite()), true));
+                    }
+                }
+            }
+            clearing(decor);
+        }
+
+        private static Optional<BlockState> modBlock(String name) {
+            return BuiltInRegistries.BLOCK.getOptional(Identifier.fromNamespaceAndPath(Mechanical.MODID, name)).map(b -> b.defaultBlockState());
+        }
+
+        /**
+         * The clearing under the crown: out to a ragged rim 22-29 blocks from the trunk, moss, podzol and rooted dirt near
+         * the foot, lush grass further out, thick with ferns, grass, flowers, the mod's undergrowth, mushrooms and berry
+         * bushes, glow moss patches, a fairy ring of glowcaps, and Spirit Blooms placed wherever the ground would otherwise
+         * stay dark (so every spot gets some block light and nothing hostile spawns there).
+         */
+        private void clearing(Map<BlockPos, BlockState> decor) {
+            double cp1 = rnd.nextDouble() * 6.3, cp2 = rnd.nextDouble() * 6.3;
+            List<BlockState> mushrooms = new ArrayList<>(), bushes = new ArrayList<>();
+            for (String m : List.of("chanterelle", "porcini", "morel", "oyster_mushroom", "puffball")) modBlock(m).ifPresent(mushrooms::add);
+            for (String b : List.of("raspberry_bush", "blueberry_bush", "wild_strawberry_bush", "elderberry_bush")) modBlock(b).ifPresent(bushes::add);
+            Optional<BlockState> undergrowth = modBlock("undergrowth"), hazel = modBlock("hazel_shrub"), thicket = modBlock("sapling_thicket");
+            BlockState glowcap = AncientOak.GLOWCAP.get().defaultBlockState(), bloom = AncientOak.SPIRIT_BLOOM.get().defaultBlockState();
+            BlockState glowMoss = AncientOak.GLOW_MOSS.get().defaultBlockState();
+
+            // fairy ring: a circle of glowcaps 7 across, somewhere in the clearing but not on the way in
+            double fa = door + Math.PI * (0.35 + rnd.nextDouble() * 1.3);
+            double fd = 15 + rnd.nextDouble() * 5;
+            double fx = x0 + 0.5 + Math.cos(fa) * fd, fz = z0 + 0.5 + Math.sin(fa) * fd;
+            // glow moss patches
+            List<double[]> patches = new ArrayList<>();
+            for (int i = 0; i < 9; i++) {
+                double a = rnd.nextDouble() * Math.PI * 2, d = 8 + rnd.nextDouble() * 18;
+                patches.add(new double[] {x0 + 0.5 + Math.cos(a) * d, z0 + 0.5 + Math.sin(a) * d, 1.6 + rnd.nextDouble() * 1.8});
+            }
+
+            List<BlockPos> spots = new ArrayList<>(); // free ground spots in the clearing, for the light check
+            for (int dx = -29; dx <= 29; dx++)
+                for (int dz = -29; dz <= 29; dz++) {
+                    double d = Math.hypot(dx, dz), th = Math.atan2(dz, dx);
                     int x = x0 + dx, z = z0 + dz;
                     BlockPos top = new BlockPos(x, ground(x, z), z);
-                    if (d > 13 + hash(top, 30) * 4) continue;
+                    double rim = Math.min(29, 25.5 + 2.2 * Math.sin(3 * th + cp1) + 1.4 * Math.sin(5 * th + cp2) + hash(top, 30) * 1.5);
+                    double t = d / rim;
+                    if (t > 1 || t > 0.88 && hash(top, 36) < (t - 0.88) / 0.12) continue; // the rim thins out
                     double h = hash(top, 31);
-                    BlockState soil = h < 0.4 ? Blocks.MOSS_BLOCK.defaultBlockState() : h < 0.8 ? Blocks.PODZOL.defaultBlockState()
-                            : h < 0.9 ? Blocks.ROOTED_DIRT.defaultBlockState() : null;
-                    if (soil != null && !isTree(top.below())) put(GROUND, top.below(), soil);
-                    if (isTree(top) || decor.containsKey(top) || layers.get(AIR).containsKey(top) && d < 5) continue;
-                    double k = hash(top, 32);
-                    BlockState plant = k < 0.14 ? Blocks.MOSS_CARPET.defaultBlockState() : k < 0.17 ? Blocks.FLOWERING_AZALEA.defaultBlockState()
-                            : k < 0.19 ? Blocks.AZALEA.defaultBlockState() : k < 0.215 ? Blocks.FIREFLY_BUSH.defaultBlockState()
-                            : k < 0.25 && d < 11 ? AncientOak.GLOWCAP.get().defaultBlockState() : null;
-                    if (plant != null) decor.put(top, plant);
+                    BlockState soil = d < 13 ? (h < 0.4 ? Blocks.MOSS_BLOCK : h < 0.8 ? Blocks.PODZOL : h < 0.9 ? Blocks.ROOTED_DIRT : Blocks.GRASS_BLOCK).defaultBlockState()
+                            : (h < 0.18 ? Blocks.MOSS_BLOCK : h < 0.26 ? Blocks.ROOTED_DIRT : Blocks.GRASS_BLOCK).defaultBlockState();
+                    if (!isTree(top.below())) put(GROUND, top.below(), soil);
+                    if (isTree(top) || decor.containsKey(top) || layers.get(AIR).containsKey(top) || layers.get(SOLID).containsKey(top)) continue;
+                    spots.add(top);
+                    double ring = Math.hypot(x + 0.5 - fx, z + 0.5 - fz);
+                    if (Math.abs(ring - 3.2) < 0.55) {
+                        decor.put(top, glowcap);
+                        continue;
+                    }
+                    if (ring < 2.7) {
+                        if (hash(top, 37) < 0.5) decor.put(top, Blocks.SHORT_GRASS.defaultBlockState());
+                        continue;
+                    }
+                    boolean inPatch = false;
+                    for (double[] pa : patches) inPatch |= Math.hypot(x + 0.5 - pa[0], z + 0.5 - pa[1]) < pa[2] * (0.8 + hash(top, 38) * 0.4);
+                    if (inPatch) {
+                        decor.put(top, glowMoss);
+                        continue;
+                    }
+                    if (hash(top, 32) > 0.85 - 0.35 * t) continue; // denser near the trunk... and bare spots
+                    double k = hash(top, 33) * 100;
+                    BlockState plant;
+                    boolean tall = false;
+                    if (k < 22) plant = Blocks.SHORT_GRASS.defaultBlockState();
+                    else if (k < 33) plant = Blocks.FERN.defaultBlockState();
+                    else if (k < 38) { plant = Blocks.LARGE_FERN.defaultBlockState(); tall = true; }
+                    else if (k < 42) { plant = Blocks.TALL_GRASS.defaultBlockState(); tall = true; }
+                    else if (k < 49) plant = d < 16 ? Blocks.MOSS_CARPET.defaultBlockState() : Blocks.SHORT_GRASS.defaultBlockState();
+                    else if (k < 52) plant = Blocks.LILY_OF_THE_VALLEY.defaultBlockState();
+                    else if (k < 54) plant = Blocks.CORNFLOWER.defaultBlockState();
+                    else if (k < 56) plant = Blocks.ALLIUM.defaultBlockState();
+                    else if (k < 58) plant = Blocks.BLUE_ORCHID.defaultBlockState();
+                    else if (k < 60) plant = Blocks.AZURE_BLUET.defaultBlockState();
+                    else if (k < 62) plant = Blocks.OXEYE_DAISY.defaultBlockState();
+                    else if (k < 65) plant = Blocks.WILDFLOWERS.defaultBlockState();
+                    else if (k < 67) plant = Blocks.PINK_PETALS.defaultBlockState();
+                    else if (k < 72) plant = undergrowth.orElse(Blocks.FERN.defaultBlockState());
+                    else if (k < 74) plant = hazel.orElse(Blocks.AZALEA.defaultBlockState());
+                    else if (k < 75.5) {
+                        plant = thicket.orElse(Blocks.LARGE_FERN.defaultBlockState());
+                        tall = plant.hasProperty(DoublePlantBlock.HALF);
+                    }
+                    else if (k < 77.5 && !mushrooms.isEmpty()) plant = mushrooms.get((int) (hash(top, 34) * mushrooms.size()));
+                    else if (k < 79.5 && !bushes.isEmpty()) plant = bushes.get((int) (hash(top, 35) * bushes.size()));
+                    else if (k < 82) plant = glowcap;
+                    else if (k < 84) plant = Blocks.FIREFLY_BUSH.defaultBlockState();
+                    else if (k < 85.5) plant = Blocks.FLOWERING_AZALEA.defaultBlockState();
+                    else plant = Blocks.SHORT_GRASS.defaultBlockState();
+                    if (tall) {
+                        if (isTree(top.above()) || decor.containsKey(top.above())) continue;
+                        decor.put(top, plant.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER));
+                        decor.put(top.above(), plant.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER));
+                    } else decor.put(top, plant);
                 }
+
+            // light: every free spot must be within reach of a light source; where none reaches, a Spirit Bloom grows
+            List<BlockPos> lights = new ArrayList<>();
+            List<Integer> levels = new ArrayList<>();
+            for (Map.Entry<BlockPos, BlockState> e : decor.entrySet()) {
+                int l = e.getValue().getLightEmission();
+                if (l >= 5 && e.getKey().getY() <= g + 30) {
+                    lights.add(e.getKey());
+                    levels.add(l);
+                }
+            }
+            int blooms = 0, dark = 0;
+            spots.sort((a, b) -> Double.compare(hash(a, 39), hash(b, 39)));
+            for (int pass = 0; pass < 2; pass++) {
+                for (BlockPos s : spots) {
+                    if (lit(s, lights, levels)) continue;
+                    if (pass == 1) {
+                        dark++;
+                        continue;
+                    }
+                    BlockState here = decor.get(s);
+                    if (here != null && here.hasProperty(DoublePlantBlock.HALF)) decor.remove(s.above());
+                    decor.put(s, bloom);
+                    lights.add(s);
+                    levels.add(bloom.getLightEmission());
+                    blooms++;
+                }
+            }
+            // a few extra blooms for the look
+            for (BlockPos s : spots) {
+                if (hash(s, 40) < 0.012 && !decor.containsKey(s)) {
+                    decor.put(s, bloom);
+                    blooms++;
+                }
+            }
+            Mechanical.LOGGER.debug("Ancient Oak at {} {}: {} clearing spots, {} spirit blooms, {} spots without light in reach", x0, z0, spots.size(), blooms, dark);
+        }
+
+        /** A light source reaches s with at least level 2 (block light drops by 1 per block; 2 spare for leaves, roots and slopes). */
+        private static boolean lit(BlockPos s, List<BlockPos> lights, List<Integer> levels) {
+            for (int i = 0; i < lights.size(); i++) if (lights.get(i).distManhattan(s) <= levels.get(i) - 3) return true;
+            return false;
         }
     }
 }

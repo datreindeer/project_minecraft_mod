@@ -1152,7 +1152,15 @@
     "category": "blocks"
   },
   "glowcap": {
-    "text": "Liten lysande svamp (ljus 8) vid Ancient Oaks rötter och i håligheten. Går att plocka.",
+    "text": "Liten lysande svamp (ljus 8) vid Ancient Oaks rötter, i håligheten och i en älvring i gläntan. Går att plocka.",
+    "category": "foraging"
+  },
+  "spirit_bloom": {
+    "text": "Blek cyanvit lysande blomma (ljus 10) i Ancient Oaks glänta. Går att plocka och plantera på jord, gräs och mossa.",
+    "category": "foraging"
+  },
+  "glow_moss": {
+    "text": "Tunn mossmatta med lysande prickar (ljus 5), i fläckar under Ancient Oak. Går att plocka.",
     "category": "foraging"
   }
 }

@@ -494,6 +494,14 @@ ring av mossa, podzol, azaleor, firefly bushes och **Glowcap** (liten lysande sv
 stammen ett rum på ca 9×9 och 5 högt med bred öppning mellan rotbenen och en skorsten 20 block upp, med lavar, svamp,
 spindelväv och ibland en fladdermus. Barken är sömlös med djupa fåror i tre slumpade varianter.
 
+**Gläntan under eken:** ut till en ojämn kant 22–29 block från stammen ligger en frodig glänta: mossa, podzol och rotjord
+närmast stammen, gräs med mosslappar längre ut, ormbunkar, högt gräs, Lily of the Valley, Cornflower, Allium, Blue Orchid,
+Azure Bluet, Oxeye Daisy, wildflowers och pink petals, moddets buskage, bärbuskar och svamp, och en **älvring** av Glowcap
+(ca 7 block bred). Gläntan **lyser svagt om natten**: **Spirit Bloom** (blek cyanvit blomma, ljus 10, kan planteras på
+jord, gräs och mossa) växer där det annars vore mörkt, **Glow Moss** (tunn lysande mossmatta, ljus 5) i fläckar,
+Glowcaps, firefly bushes, glow lichen på rötterna och glow berries under de låga grenarna. Inga fientliga monster
+spawnar i gläntan. Vägen in till håligheten hålls fri.
+
 Mitt i rummet står **Offering Altar**. Lägg vilket föremål som helst på altaret (högerklick), ta tillbaka med tom hand.
 Läggs en **Giant Antler** dit startar en ritual (7 s): hornet stiger och snurrar allt fortare, ljuspartiklar och löv
 virvlar in, marken pulserar och klockspel ljuder, sedan löses hornet upp i ett utbrott och **ett av fem mytiska föremål**

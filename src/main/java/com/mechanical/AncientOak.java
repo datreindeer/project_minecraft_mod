@@ -104,11 +104,22 @@ public final class AncientOak {
     /** Bark carved with softly glowing runes, spiralling up the trunk; green and gold motes drift off it. */
     public static final DeferredBlock<RuneLog> RUNE_LOG = BLOCKS.registerBlock("ancient_oak_rune_log", RuneLog::new,
             p -> enchanted(p, MapColor.WOOD, SoundType.WOOD).lightLevel(s -> 6));
-    /** Small glowing mushrooms round the oak's roots and in its hollow; can be picked. */
-    public static final DeferredBlock<Glowcap> GLOWCAP = BLOCKS.registerBlock("glowcap", Glowcap::new,
+    // Glowing plants of the oak's clearing; breakable, drop themselves (block items come from Mechanical.registerMissingBlockItems).
+    /** Small glowing mushrooms round the roots, in the hollow and in a fairy ring. */
+    public static final DeferredBlock<GlowPlant> GLOWCAP = BLOCKS.registerBlock("glowcap",
+            p -> new GlowPlant(p, Block.box(3, 0, 3, 13, 7, 13), false, ParticleTypes.GLOW, 12),
             p -> p.mapColor(MapColor.COLOR_LIGHT_GREEN).noCollision().instabreak().sound(SoundType.FUNGUS).lightLevel(s -> 8)
                     .pushReaction(PushReaction.POPPED).noOcclusion());
-    public static final DeferredItem<net.minecraft.world.item.BlockItem> GLOWCAP_ITEM = ITEMS.registerSimpleBlockItem("glowcap", GLOWCAP);
+    /** Spirit Bloom: a pale, softly shining flower that keeps the clearing lit at night; grows on dirt, grass and moss. */
+    public static final DeferredBlock<GlowPlant> SPIRIT_BLOOM = BLOCKS.registerBlock("spirit_bloom",
+            p -> new GlowPlant(p, Block.box(4, 0, 4, 12, 13, 12), true, new net.minecraft.core.particles.DustParticleOptions(0xCFF6FF, 0.5F), 9),
+            p -> p.mapColor(MapColor.COLOR_LIGHT_BLUE).noCollision().instabreak().sound(SoundType.GRASS).lightLevel(s -> 10)
+                    .pushReaction(PushReaction.POPPED).noOcclusion());
+    /** Glow Moss: a thin carpet of luminous moss in patches under the crown. */
+    public static final DeferredBlock<GlowPlant> GLOW_MOSS = BLOCKS.registerBlock("glow_moss",
+            p -> new GlowPlant(p, Block.box(0, 0, 0, 16, 1, 16), false, ParticleTypes.GLOW, 70),
+            p -> p.mapColor(MapColor.COLOR_GREEN).strength(0.1F).sound(SoundType.MOSS_CARPET).lightLevel(s -> 5)
+                    .pushReaction(PushReaction.POPPED).noOcclusion());
     public static final DeferredBlock<Altar> ALTAR = BLOCKS.registerBlock("offering_altar", Altar::new,
             p -> enchanted(p, MapColor.STONE, SoundType.STONE).noOcclusion().lightLevel(s -> s.getValue(Altar.ACTIVE) ? 14 : 5));
     public static final Supplier<BlockEntityType<OfferingAltarBlockEntity>> ALTAR_ENTITY = Mechanical.BLOCK_ENTITIES.register("offering_altar",
@@ -298,22 +309,30 @@ public final class AncientOak {
         }
     }
 
-    /** A cluster of small glowing mushrooms: needs firm ground, pops off otherwise, sheds a faint glow now and then. */
-    public static class Glowcap extends Block {
-        private static final VoxelShape SHAPE = box(3, 0, 3, 13, 7, 13);
+    /** A small glowing plant: needs firm ground (or soil), pops off otherwise, and sheds a faint particle now and then. */
+    public static class GlowPlant extends Block {
+        private final VoxelShape shape;
+        private final boolean needsSoil;
+        private final net.minecraft.core.particles.ParticleOptions particle;
+        private final int chance;
 
-        public Glowcap(Properties p) {
+        public GlowPlant(Properties p, VoxelShape shape, boolean needsSoil, net.minecraft.core.particles.ParticleOptions particle, int chance) {
             super(p);
+            this.shape = shape;
+            this.needsSoil = needsSoil;
+            this.particle = particle;
+            this.chance = chance;
         }
 
         @Override
         protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-            return SHAPE;
+            return shape;
         }
 
         @Override
         protected boolean canSurvive(BlockState state, net.minecraft.world.level.LevelReader level, BlockPos pos) {
-            return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
+            BlockState below = level.getBlockState(pos.below());
+            return needsSoil ? below.is(BlockTags.DIRT) : below.isFaceSturdy(level, pos.below(), Direction.UP);
         }
 
         @Override
@@ -325,8 +344,9 @@ public final class AncientOak {
 
         @Override
         public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-            if (random.nextInt(12) == 0)
-                level.addParticle(ParticleTypes.GLOW, pos.getX() + 0.3 + random.nextDouble() * 0.4, pos.getY() + 0.4, pos.getZ() + 0.3 + random.nextDouble() * 0.4, 0, 0.02, 0);
+            if (random.nextInt(chance) == 0)
+                level.addParticle(particle, pos.getX() + 0.25 + random.nextDouble() * 0.5, pos.getY() + shape.max(Direction.Axis.Y) * 0.8,
+                        pos.getZ() + 0.25 + random.nextDouble() * 0.5, 0, 0.015, 0);
         }
     }
 

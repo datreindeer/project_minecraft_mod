@@ -398,6 +398,48 @@ def crown_layer():
     return img
 
 
+def spirit_bloom():
+    """Spirit Bloom (cross model): a slender stem with two leaves and a nodding, star-like flower of pale cyan-white
+    petals round a bright heart, plus a closed bud."""
+    rows = [
+        "................",
+        "....p.p.........",
+        "...pPpPp........",
+        "..pPwHwPp.......",
+        "...PwHwP........",
+        "..pPpwpPp.......",
+        "....pSp.....b...",
+        ".....s.....bBb..",
+        ".....s......b...",
+        "..ll.s......s...",
+        ".lLlls.....s....",
+        "..l.ls....s.....",
+        ".....s...s.lL...",
+        ".....sl.s.lLl...",
+        ".....sLls.......",
+        "......ss........",
+    ]
+    return grid(rows, {"p": hexc("8fd9e8"), "P": hexc("c6f3fb"), "w": hexc("f4fdff"), "H": hexc("fffbe0"), "S": hexc("6fb7a0"),
+                       "s": hexc("4f8a5a"), "l": hexc("3f7a45"), "L": hexc("67a865"), "b": hexc("9fdfe6"), "B": hexc("e4fbff")})
+
+
+def glow_moss():
+    """Glow Moss (carpet top): dense dark moss in soft clumps, sprinkled with luminous cyan-green specks. Tiles seamlessly."""
+    img = Image.new("RGBA", (16, 16))
+    base = [hexc(c) for c in ("2d4a22", "38592a", "456b31", "527a38")]
+    for x in range(16):
+        for y in range(16):
+            clump = (math.sin(2 * math.pi * x / 8 + 0.7) + math.sin(2 * math.pi * y / 8 + 1.9) + math.sin(2 * math.pi * (x + y) / 16)) / 3
+            v = int((clump + 1) * 1.6 + (h(x, y, 50) - 0.5) * 0.9)
+            img.putpixel((x, y), base[max(0, min(3, v))] + (255,))
+    for x, y in [(2, 3), (7, 1), (12, 4), (5, 8), (10, 10), (14, 13), (1, 12), (8, 14), (13, 7)]:
+        img.putpixel((x, y), hexc("b8ffd8") + (255,))
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            q = ((x + dx) % 16, (y + dy) % 16)
+            img.putpixel(q, mix(img.getpixel(q)[:3], hexc("6fdc9a"), 0.5) + (255,))
+    return img
+
+
 def textures():
     out = {}
     out["block/ancient_oak_log"] = bark_side(0)
@@ -405,6 +447,8 @@ def textures():
     out["block/ancient_oak_log_3"] = bark_side(2)
     out["block/ancient_oak_rune_log"] = rune_bark()
     out["block/glowcap"] = glowcap()
+    out["block/spirit_bloom"] = spirit_bloom()
+    out["block/glow_moss"] = glow_moss()
     out["block/ancient_oak_log_top"] = log_top()
     out["block/ancient_oak_leaves"] = leaves()
     out["block/offering_altar_side"] = altar_side()
@@ -454,6 +498,14 @@ def data():
     w(A / "blockstates/glowcap.json", {"variants": {"": {"model": "mechanical:block/glowcap"}}})
     w(A / "models/item/glowcap.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:block/glowcap"}})
     w(A / "items/glowcap.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/glowcap"}})
+    w(A / "models/block/spirit_bloom.json", {"parent": "minecraft:block/cross", "textures": {"cross": "mechanical:block/spirit_bloom"}})
+    w(A / "blockstates/spirit_bloom.json", {"variants": {"": {"model": "mechanical:block/spirit_bloom"}}})
+    w(A / "models/block/glow_moss.json", {"parent": "minecraft:block/carpet", "textures": {"wool": "mechanical:block/glow_moss"}})
+    w(A / "blockstates/glow_moss.json", {"variants": {"": {"model": "mechanical:block/glow_moss"}}})
+    for b in ("spirit_bloom", "glow_moss"):
+        w(D / f"mechanical/loot_table/blocks/{b}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+            {"type": "minecraft:item", "name": f"mechanical:{b}"}], "condition": {"type": "minecraft:survives_explosion"}}],
+            "random_sequence": f"mechanical:blocks/{b}"})
     w(D / "mechanical/loot_table/blocks/glowcap.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
         {"type": "minecraft:item", "name": "mechanical:glowcap"}], "condition": {"type": "minecraft:survives_explosion"}}],
         "random_sequence": "mechanical:blocks/glowcap"})
@@ -526,6 +578,8 @@ def data():
         "block.mechanical.offering_altar": "Offering Altar",
         "block.mechanical.ancient_oak_rune_log": "Ancient Oak Rune Bark",
         "block.mechanical.glowcap": "Glowcap",
+        "block.mechanical.spirit_bloom": "Spirit Bloom",
+        "block.mechanical.glow_moss": "Glow Moss",
         "message.mechanical.offering_altar.waiting": "The altar waits for a worthy offering.",
         "message.mechanical.offering_altar.busy": "The old forest is listening...",
         "item.mechanical.thunderstone": "Thunderstone",

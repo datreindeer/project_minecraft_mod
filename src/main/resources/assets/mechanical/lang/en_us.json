@@ -358,5 +358,7 @@
   "item.mechanical.squirrel_pelt": "Squirrel Pelt",
   "item.mechanical.giant_antler": "Giant Antler",
   "block.mechanical.ancient_oak_rune_log": "Ancient Oak Rune Bark",
-  "block.mechanical.glowcap": "Glowcap"
+  "block.mechanical.glowcap": "Glowcap",
+  "block.mechanical.spirit_bloom": "Spirit Bloom",
+  "block.mechanical.glow_moss": "Glow Moss"
 }
