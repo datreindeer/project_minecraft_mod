@@ -305,6 +305,198 @@
               "count": 3
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:mallard_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "mallard",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:mallard_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "mallard",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:mallard_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "mallard",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:swan_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "mute_swan",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:swan_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "mute_swan",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:swan_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "mute_swan",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:heron_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "grey_heron",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:heron_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "grey_heron",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:heron_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "grey_heron",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:crane_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "common_crane",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:crane_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "common_crane",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:crane_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "common_crane",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
         }
       ]
     }

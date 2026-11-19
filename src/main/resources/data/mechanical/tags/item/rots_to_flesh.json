@@ -56,6 +56,18 @@
     "mechanical:cooked_goose",
     "mechanical:cooked_pheasant",
     "mechanical:cooked_ptarmigan",
-    "mechanical:cooked_pigeon"
+    "mechanical:cooked_pigeon",
+    "mechanical:raw_mallard",
+    "mechanical:raw_swan",
+    "mechanical:raw_heron",
+    "mechanical:raw_crane",
+    "mechanical:plucked_mallard",
+    "mechanical:plucked_swan",
+    "mechanical:plucked_heron",
+    "mechanical:plucked_crane",
+    "mechanical:cooked_mallard",
+    "mechanical:cooked_swan",
+    "mechanical:cooked_heron",
+    "mechanical:cooked_crane"
   ]
 }

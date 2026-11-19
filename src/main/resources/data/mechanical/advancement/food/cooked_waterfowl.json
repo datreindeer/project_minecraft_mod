@@ -1,0 +1,68 @@
+{
+  "parent": "mechanical:food/cooked_bird",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_mallard"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_swan"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_heron"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_crane"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cooked_swan"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.cooked_waterfowl.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.cooked_waterfowl.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

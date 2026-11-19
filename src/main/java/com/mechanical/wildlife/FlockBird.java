@@ -299,7 +299,7 @@ public class FlockBird extends WildAnimal {
     }
 
     /** Floats with the body half under and paddles about slowly. */
-    private void swim() {
+    protected void swim() {
         double depth = getFluidHeight(FluidTags.WATER);
         Vec3 v = getDeltaMovement();
         if (random.nextInt(80) == 0) paddleYaw = random.nextFloat() * 360.0F;

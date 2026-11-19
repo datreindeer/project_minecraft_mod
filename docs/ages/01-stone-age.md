@@ -1634,6 +1634,13 @@ Genereras av `scripts/gen_advancements.py` (tabellen `TABS`; körs efter gen_unl
 framsteg skrivs över med `neoforge:never` (bara `recipes/**` behålls). **Varje ny sak i moddet ska få sina rader i
 tabellen**, så att man lär sig hur den görs.
 
+## Fler vilda djur
+
+De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och recept):
+
+<!-- fauna-links -->
+- [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

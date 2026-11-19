@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_crane",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_crane",
+    "count": 2
+  }
+}

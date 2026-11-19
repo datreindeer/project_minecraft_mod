@@ -166,6 +166,114 @@
       "apply": {
         "model": "mechanical:block/bird_nest_eggs_chicken_3"
       }
+    },
+    {
+      "when": {
+        "bird": "mallard",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_mallard_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "mallard",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_mallard_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "mallard",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_mallard_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "mute_swan",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_mute_swan_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "mute_swan",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_mute_swan_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "mute_swan",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_mute_swan_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "grey_heron",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_grey_heron_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "grey_heron",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_grey_heron_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "grey_heron",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_grey_heron_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "common_crane",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_common_crane_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "common_crane",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_common_crane_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "common_crane",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_common_crane_3"
+      }
     }
   ]
 }
