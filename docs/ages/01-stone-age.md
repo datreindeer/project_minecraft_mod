@@ -750,7 +750,7 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Wheat Seeds från gräs | **Borttaget** (byar) |
 | Facklor | Skyddar inte mot monster, kan slås sönder |
 | Logs | Kräver yxa |
-| Iron Ore, Lapis Ore (+ deepslate, Block of Raw Iron, Lapis Block) | Ger inget med trä-/stenhacka. Kräver Bronze Pickaxe (bronsåldern). Stenhackan bryter bara sten, Copper Ore och Tin Ore |
+| Iron Ore, Coal Ore, Lapis Ore (+ deepslate, Block of Raw Iron, Lapis Block) | Ger inget med trä-/stenhacka. Kräver Bronze Pickaxe (bronsåldern). Stenhackan bryter bara sten, Copper Ore och Tin Ore |
 | Leaves | Stick-chans höjd |
 
 Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är borttagna.
