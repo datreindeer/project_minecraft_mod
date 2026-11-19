@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:musk_ox_hide",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:raw_musk_ox_hide",
+                "state": {
+                  "cured": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:raw_musk_ox_hide"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/raw_musk_ox_hide"
+}

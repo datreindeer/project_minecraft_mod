@@ -18,6 +18,11 @@
     "mechanical:raw_goose",
     "mechanical:raw_pheasant",
     "mechanical:raw_ptarmigan",
-    "mechanical:raw_pigeon"
+    "mechanical:raw_pigeon",
+    "mechanical:raw_mammoth",
+    "mechanical:raw_rhino",
+    "mechanical:raw_bison",
+    "mechanical:raw_musk_ox",
+    "mechanical:bison_tongue"
   ]
 }

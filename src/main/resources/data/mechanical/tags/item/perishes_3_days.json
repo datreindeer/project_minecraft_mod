@@ -23,6 +23,11 @@
     "mechanical:cooked_goose",
     "mechanical:cooked_pheasant",
     "mechanical:cooked_ptarmigan",
-    "mechanical:cooked_pigeon"
+    "mechanical:cooked_pigeon",
+    "mechanical:cooked_mammoth",
+    "mechanical:cooked_rhino",
+    "mechanical:cooked_bison",
+    "mechanical:cooked_musk_ox",
+    "mechanical:cooked_bison_tongue"
   ]
 }

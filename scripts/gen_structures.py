@@ -59,7 +59,8 @@ LOOT = {
     "flint_quarry": [("minecraft:flint", 14, 3, 7), ("mechanical:stone_axe_head", 4, 1, 1), ("mechanical:stone_pickaxe_head", 3, 1, 1),
                      ("mechanical:flint_knife", 1, 1, 1), ("mechanical:stone_chunk", 8, 2, 5)],
     "mammoth_bone_hut": [("mechanical:tusk", 10, 1, 3), ("minecraft:bone", 10, 3, 8), ("mechanical:bear_pelt", 1, 1, 1),
-                         ("mechanical:sinew", 6, 1, 3), ("mechanical:lard", 6, 1, 3), ("mechanical:raw_hide", 4, 1, 2)],
+                         ("mechanical:sinew", 6, 1, 3), ("mechanical:lard", 6, 1, 3), ("mechanical:raw_hide", 4, 1, 2),
+                         ("mechanical:mammoth_ivory", 3, 1, 1), ("mechanical:mammoth_wool", 6, 1, 3)],  # fauna: giants
     "hermits_hut": [("minecraft:leather", 6, 1, 3), ("mechanical:cordage", 6, 1, 3),
                     ("mechanical:cooked_venison_scraps", 6, 2, 4), ("mechanical:bone_needle", 3, 1, 1),
                     ("mechanical:blueberries", 6, 2, 6), ("mechanical:twine", 5, 1, 3)],

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "cured=false,facing=north": {
+      "model": "mechanical:block/raw_rhino_hide"
+    },
+    "cured=false,facing=east": {
+      "model": "mechanical:block/raw_rhino_hide",
+      "y": 90
+    },
+    "cured=false,facing=south": {
+      "model": "mechanical:block/raw_rhino_hide",
+      "y": 180
+    },
+    "cured=false,facing=west": {
+      "model": "mechanical:block/raw_rhino_hide",
+      "y": 270
+    },
+    "cured=true,facing=north": {
+      "model": "mechanical:block/raw_rhino_hide_cured"
+    },
+    "cured=true,facing=east": {
+      "model": "mechanical:block/raw_rhino_hide_cured",
+      "y": 90
+    },
+    "cured=true,facing=south": {
+      "model": "mechanical:block/raw_rhino_hide_cured",
+      "y": 180
+    },
+    "cured=true,facing=west": {
+      "model": "mechanical:block/raw_rhino_hide_cured",
+      "y": 270
+    }
+  }
+}

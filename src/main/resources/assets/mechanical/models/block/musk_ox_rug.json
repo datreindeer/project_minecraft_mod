@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bear_rug",
+  "textures": {
+    "particle": "mechanical:block/musk_ox_rug",
+    "top": "mechanical:block/musk_ox_rug"
+  }
+}

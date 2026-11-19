@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bison_tongue"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bison_tongue"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.bison_tongue.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.bison_tongue.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

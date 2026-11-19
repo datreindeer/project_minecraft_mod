@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rhino_horn"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rhino_horn"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.rhino_horn.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.rhino_horn.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

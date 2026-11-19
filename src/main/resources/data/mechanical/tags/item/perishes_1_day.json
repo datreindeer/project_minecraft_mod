@@ -32,6 +32,11 @@
     "mechanical:plucked_chicken",
     "mechanical:stew",
     "mechanical:broth",
-    "mechanical:sea_beet_leaves"
+    "mechanical:sea_beet_leaves",
+    "mechanical:raw_mammoth",
+    "mechanical:raw_rhino",
+    "mechanical:raw_bison",
+    "mechanical:raw_musk_ox",
+    "mechanical:bison_tongue"
   ]
 }
