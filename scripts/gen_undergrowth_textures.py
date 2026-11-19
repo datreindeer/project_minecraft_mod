@@ -1,5 +1,5 @@
 # Forest undergrowth textures: hazel shrub (2 halves, with/without nuts), juniper (with/without berries), bramble,
-# undergrowth, sapling thicket (2 halves), and the hazelnut / roasted hazelnut / juniper berry items.
+# undergrowth, heather, sapling thicket (2 halves), and the hazelnut / roasted hazelnut / juniper berry items.
 # Hand-drawn letter grids like gen_berry_textures.py; colours baked in (no biome tint).
 # usage: python scripts/gen_undergrowth_textures.py [preview_dir]
 import random
@@ -186,6 +186,27 @@ BERRIES_ITEM = [
     "...kkk..........",
     "................",
 ]
+HEATHER = {"p": ("d39ad6", "c88fcf"), "P": ("a865b4", "9d5eaa"), "q": "6f3d7d", "g": ("587a3f", "4f7139"), "d": "34502c",
+           "D": "243b22", "s": "7a6050", "S": "4b3a30"}
+# heather (Pine Heath): knee-high wiry shrub, dark scale-leaved twigs ending in spikes of small pink-purple bells
+HEATHER_GRID = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "..p.......p.....",
+    "..Pp...p..Pp..p.",
+    ".pqP..pP.pqP.pP.",
+    ".Pgp..Pq.Pgp.Pq.",
+    "pqdPp.gP.qdPpgd.",
+    "Pgd.Pgdp.gdgPdg.",
+    "gd.sgDsPgd.sgd.p",
+    ".dgsdgsgdDgsdDgP",
+    "Dgds.gsdgsgs.gdg",
+    ".dSsdDSsdsSsdDs.",
+    "..S.SS.SS.SS.S..",
+]
 
 
 def hexc(s):
@@ -224,6 +245,7 @@ def build():
         "block/juniper_berries.png": paint(JUNIPER_GRID, JUNIPER, "j", JUNIPER_BERRY_SPOTS, BERRY),
         "block/bramble.png": paint(BRAMBLE_GRID, BRAMBLE, "b"),
         "block/undergrowth.png": paint(UNDER_GRID, UNDER, "u"),
+        "block/heather.png": paint(HEATHER_GRID, HEATHER, "he"),
         "block/sapling_thicket_top.png": paint(THICKET_TOP, THICKET, "tt"),
         "block/sapling_thicket_bottom.png": paint(THICKET_BOTTOM, THICKET, "tb"),
         "item/hazelnuts.png": paint(NUTS_ITEM, NUT, "n"),
@@ -238,7 +260,7 @@ def preview(images, dst):
     cols = [["block/hazel_shrub_top.png", "block/hazel_shrub_bottom.png"],
             ["block/hazel_shrub_top_nuts.png", "block/hazel_shrub_bottom_nuts.png"],
             ["block/sapling_thicket_top.png", "block/sapling_thicket_bottom.png"],
-            ["block/juniper.png", "block/juniper_berries.png"], ["block/bramble.png", "block/undergrowth.png"],
+            ["block/juniper.png", "block/juniper_berries.png"], ["block/bramble.png", "block/undergrowth.png"], ["block/heather.png"],
             ["item/hazelnuts.png", "item/roasted_hazelnuts.png"], ["item/juniper_berries.png"]]
     sheet = Image.new("RGBA", (len(cols) * (16 * s + gap) + gap, 2 * 16 * s + 2 * gap + 16 * s), (198, 206, 214, 255))
     for c, col in enumerate(cols):

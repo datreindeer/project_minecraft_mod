@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:forest",
     "minecraft:flower_forest",
-    "minecraft:birch_forest"
+    "minecraft:birch_forest",
+    "mechanical:deciduous_forest"
   ],
   "spawners": [
     {

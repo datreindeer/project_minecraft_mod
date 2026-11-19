@@ -4,7 +4,8 @@
     "minecraft:swamp",
     "minecraft:snowy_plains",
     "minecraft:snowy_taiga",
-    "minecraft:grove"
+    "minecraft:grove",
+    "mechanical:willow_fen"
   ],
   "features": "mechanical:cloudberry_bush",
   "step": "vegetal_decoration"

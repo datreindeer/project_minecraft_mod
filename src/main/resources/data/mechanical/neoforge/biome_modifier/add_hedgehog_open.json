@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:plains",
     "minecraft:sunflower_plains",
-    "minecraft:meadow"
+    "minecraft:meadow",
+    "mechanical:hazel_meadow"
   ],
   "spawners": [
     {

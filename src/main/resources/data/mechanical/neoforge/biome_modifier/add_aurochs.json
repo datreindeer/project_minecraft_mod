@@ -4,7 +4,8 @@
     "minecraft:plains",
     "minecraft:sunflower_plains",
     "minecraft:meadow",
-    "minecraft:savanna"
+    "minecraft:savanna",
+    "mechanical:hazel_meadow"
   ],
   "spawners": [
     {

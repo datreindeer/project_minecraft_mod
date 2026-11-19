@@ -8,6 +8,9 @@
     "minecraft:taiga",
     "minecraft:snowy_taiga",
     "minecraft:snowy_plains",
-    "minecraft:savanna"
+    "minecraft:savanna",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow",
+    "mechanical:pine_heath"
   ]
 }

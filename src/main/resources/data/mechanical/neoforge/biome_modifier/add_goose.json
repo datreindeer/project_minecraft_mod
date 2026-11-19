@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:river",
     "minecraft:swamp",
-    "minecraft:frozen_river"
+    "minecraft:frozen_river",
+    "mechanical:willow_fen"
   ],
   "spawners": [
     {

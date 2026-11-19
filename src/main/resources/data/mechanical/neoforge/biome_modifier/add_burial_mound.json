@@ -5,7 +5,9 @@
     "minecraft:sunflower_plains",
     "minecraft:meadow",
     "minecraft:taiga",
-    "minecraft:snowy_taiga"
+    "minecraft:snowy_taiga",
+    "mechanical:hazel_meadow",
+    "mechanical:pine_heath"
   ],
   "features": "mechanical:burial_mound",
   "step": "surface_structures"

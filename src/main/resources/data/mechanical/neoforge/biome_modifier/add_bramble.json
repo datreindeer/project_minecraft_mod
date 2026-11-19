@@ -4,7 +4,8 @@
     "minecraft:forest",
     "minecraft:dark_forest",
     "minecraft:flower_forest",
-    "minecraft:dappled_forest"
+    "minecraft:dappled_forest",
+    "mechanical:deciduous_forest"
   ],
   "features": "mechanical:bramble",
   "step": "vegetal_decoration"

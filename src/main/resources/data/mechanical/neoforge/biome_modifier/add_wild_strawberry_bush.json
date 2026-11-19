@@ -4,7 +4,8 @@
     "minecraft:plains",
     "minecraft:meadow",
     "minecraft:flower_forest",
-    "minecraft:sunflower_plains"
+    "minecraft:sunflower_plains",
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:wild_strawberry_bush",
   "step": "vegetal_decoration"

@@ -3,7 +3,9 @@
   "biomes": [
     "minecraft:dark_forest",
     "minecraft:swamp",
-    "minecraft:old_growth_spruce_taiga"
+    "minecraft:old_growth_spruce_taiga",
+    "mechanical:deciduous_forest",
+    "mechanical:willow_fen"
   ],
   "features": "mechanical:oyster_mushroom",
   "step": "vegetal_decoration"

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:random_selector",
+  "default": "mechanical:alder_checked",
+  "features": [
+    {
+      "chance": 0.55,
+      "feature": "mechanical:willow_checked"
+    }
+  ]
+}

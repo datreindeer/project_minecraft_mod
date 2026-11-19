@@ -5,7 +5,8 @@
     "minecraft:taiga",
     "minecraft:snowy_taiga",
     "minecraft:dark_forest",
-    "minecraft:old_growth_birch_forest"
+    "minecraft:old_growth_birch_forest",
+    "mechanical:pine_heath"
   ],
   "features": "mechanical:fly_agaric",
   "step": "vegetal_decoration"

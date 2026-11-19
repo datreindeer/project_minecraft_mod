@@ -67,6 +67,9 @@ public final class ForestUndergrowth {
             p -> new ShrubBlock(VegetationBlock.column(14, 0, 7), p), p -> plant(p, SoundType.GRASS, 0F).replaceable());
     public static final DeferredBlock<DoublePlantBlock> SAPLING_THICKET = BLOCKS.registerBlock("sapling_thicket",
             DoublePlantBlock::new, p -> plant(p, SoundType.AZALEA, 0.4F));
+    /** Low flowering heather of the Pine Heath (scripts/gen_biomes.py). */
+    public static final DeferredBlock<ShrubBlock> HEATHER = BLOCKS.registerBlock("heather",
+            p -> new ShrubBlock(VegetationBlock.column(14, 0, 9), p), p -> plant(p, SoundType.GRASS, 0F).replaceable());
 
     public static void init() {}
 

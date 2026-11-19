@@ -9,7 +9,9 @@
     "minecraft:savanna_plateau",
     "minecraft:windswept_hills",
     "minecraft:windswept_gravelly_hills",
-    "minecraft:stony_shore"
+    "minecraft:stony_shore",
+    "mechanical:hazel_meadow",
+    "mechanical:pine_heath"
   ],
   "features": "mechanical:glacial_erratic",
   "step": "surface_structures"

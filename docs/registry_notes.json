@@ -1116,6 +1116,10 @@
     "text": "Lågt ris och ormbunkar på skogsmarken; ibland en Plant Fibre.",
     "category": "foraging"
   },
+  "heather": {
+    "text": "Ljung: lågt rosalila ris på Pine Heath (tallhed). Går att gå igenom. Ger ibland en Plant Fibre, med Shears blocket självt. Kan komposteras.",
+    "category": "foraging"
+  },
   "sapling_thicket": {
     "text": "Två block högt sly av unga stammar; ger 2–3 Sticks.",
     "category": "foraging"
