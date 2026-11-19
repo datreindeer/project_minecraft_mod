@@ -452,7 +452,7 @@ TABS = {
          "Sneak-use the tap to open it: molten metal runs along Clay Channels into a Clay Mold. A quarter more metal per ore",
          by_code()),
         ("kettle", "bronze", "bronze_kettle", G, "Kettle",
-         "Fire a Clay Kettle Mold (5 Clay), pour 8 units of bronze into it and grind the casting on the Whetstone",
+         "Fire a Clay Kettle Mold (7 Clay blocks), pour 8 units of bronze into it and grind the casting on the Whetstone",
          has("bronze_kettle")),
         ("hide_glue", "kettle", "hide_glue", T, "Sticky Business",
          "Boil Raw Hide, Rabbit Hide or Fish Bones in the kettle. Hide Glue hafts tools in place of Cordage", has("hide_glue")),

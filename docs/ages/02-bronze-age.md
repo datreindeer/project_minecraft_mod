@@ -789,7 +789,7 @@ talg, kokar lim och garvar hudar. Kod: `Kettle` (registrering, värden, recept i
 | Item | Recept | Not |
 |---|---|---|
 | **Tripod** | `[ ][Cordage][ ]` / `[ ][Tool Rod][ ]` / `[Tool Rod][ ][Tool Rod]` | Tre stänger surrade i toppen |
-| **Unfired Clay Kettle Mold** | 5 **Clay** (block) `[C][ ][C]` / `[C][C][C]` | Bränns i kilnen (600°) till **Clay Kettle Mold** |
+| **Unfired Clay Kettle Mold** | 7 **Clay** (block) `[C][ ][C]` / `[C][ ][C]` / `[C][C][C]` (egen form, så den inte förväxlas med Ingot Mold) | Bränns i kilnen (600°) till **Clay Kettle Mold** |
 | **Rough Cast Bronze Kettle** | Gjuts i Clay Kettle Mold: **8 enheter brons** | Bara brons (koppar passar inte) |
 | **Bronze Kettle** | Rough Cast Bronze Kettle slipas på Whetstone (4 drag) | Som alla gjutna delar |
 

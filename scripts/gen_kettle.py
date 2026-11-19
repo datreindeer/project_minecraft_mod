@@ -206,7 +206,7 @@ def shaped(name, pattern, key, result, category="misc"):
 
 shaped("tripod", [" C ", " R ", "R R"], {"C": M + "cordage", "R": M + "tool_rod"}, M + "tripod")
 # a big mold: 5 blocks of clay (20 balls) round the pot's hollow
-shaped("unfired_clay_kettle_mold", ["C C", "CCC"], {"C": "minecraft:clay"}, M + "unfired_clay_kettle_mold")
+shaped("unfired_clay_kettle_mold", ["C C", "C C", "CCC"], {"C": "minecraft:clay"}, M + "unfired_clay_kettle_mold")
 # Hide Glue seals the bag as well as Twine lashes it
 shaped("bellows_with_hide_glue", ["PHP", "PHP", "GUG"], {"P": "#minecraft:planks", "H": M + "scraped_hide", "G": M + "hide_glue",
        "U": M + "clay_tuyere"}, M + "bellows", "equipment")
