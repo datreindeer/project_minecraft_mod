@@ -1,0 +1,196 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/soot_1"
+      },
+      "when": {
+        "north": "true",
+        "stage": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_1",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "stage": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_1",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "true",
+        "stage": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_1",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "true",
+        "stage": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_1",
+        "uvlock": true,
+        "x": 270
+      },
+      "when": {
+        "up": "true",
+        "stage": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_1",
+        "uvlock": true,
+        "x": 90
+      },
+      "when": {
+        "down": "true",
+        "stage": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_2"
+      },
+      "when": {
+        "north": "true",
+        "stage": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_2",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "stage": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_2",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "true",
+        "stage": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_2",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "true",
+        "stage": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_2",
+        "uvlock": true,
+        "x": 270
+      },
+      "when": {
+        "up": "true",
+        "stage": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_2",
+        "uvlock": true,
+        "x": 90
+      },
+      "when": {
+        "down": "true",
+        "stage": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_3"
+      },
+      "when": {
+        "north": "true",
+        "stage": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_3",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "stage": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_3",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "true",
+        "stage": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_3",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "true",
+        "stage": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_3",
+        "uvlock": true,
+        "x": 270
+      },
+      "when": {
+        "up": "true",
+        "stage": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "mechanical:block/soot_3",
+        "uvlock": true,
+        "x": 90
+      },
+      "when": {
+        "down": "true",
+        "stage": "3"
+      }
+    }
+  ]
+}

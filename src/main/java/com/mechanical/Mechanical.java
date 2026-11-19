@@ -295,6 +295,11 @@ public class Mechanical {
     public static final DeferredBlock<TwigsBlock> TWIGS = BLOCKS.registerBlock("twigs", TwigsBlock::new, p -> p
             .mapColor(MapColor.WOOD).noCollision().instabreak().replaceable().noOcclusion()
             .sound(SoundType.GRASS).pushReaction(PushReaction.POPPED));
+    // Soot on faces near a burning fire (Smoke, SootBlock); scraped off it gives the Soot item (a black pigment), never the block.
+    public static final DeferredBlock<SootBlock> SOOT = BLOCKS.registerBlock("soot", SootBlock::new, p -> p
+            .mapColor(MapColor.COLOR_BLACK).replaceable().noCollision().noOcclusion().strength(0.5F)
+            .sound(SoundType.SAND).pushReaction(PushReaction.POPPED));
+    public static final DeferredItem<Item> SOOT_ITEM = ITEMS.registerSimpleItem("soot");
     // Torches blown out by the wind on windy nights (Wind); relit with a torch, fire drill or flint and steel.
     public static final DeferredBlock<UnlitTorchBlock> UNLIT_TORCH = BLOCKS.registerBlock("unlit_torch", UnlitTorchBlock::new, p -> p
             .noCollision().instabreak().sound(SoundType.WOOD).pushReaction(PushReaction.POPPED));

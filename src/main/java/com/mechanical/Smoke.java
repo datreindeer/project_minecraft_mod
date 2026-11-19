@@ -54,7 +54,8 @@ import net.neoforged.neoforge.registries.RegisterEvent;
  * window, or bigger than {@link #MAX_ROOM}; a single gap in the roof away from the fire only leaks, halving the
  * build-up). Smoke builds up over about a minute: fog (client.SmokeClient), then coughing and Slowness, then choking
  * damage; after minutes at full smoke wood in the room catches fire. It clears slowly once vented or put out.
- * Fires are found by scanning block entities near players, so the kiln needs no hook.
+ * Fires are found by scanning block entities near players, so the kiln needs no hook. Burning fires also leave soot
+ * on the ceiling and walls around them ({@link SootBlock}), faster in smoke.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Smoke {
@@ -63,6 +64,9 @@ public final class Smoke {
     private static final float CLEAR_SECONDS = 90, COUGH = 0.5F, CHOKE = 0.9F;
     /** Seconds at full smoke before wood may catch, then a 1 in IGNITE_CHANCE chance each second. */
     private static final int IGNITE_AFTER = 180, IGNITE_CHANCE = 20;
+    /** Soot (SootBlock): none for the first SOOT_AFTER seconds a fire burns, then one deposit with this chance each second, up to 2x in a smoky room. */
+    private static final int SOOT_AFTER = 120;
+    private static final float SOOT_CHANCE = 1 / 15F;
     public static final ResourceKey<DamageType> DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "smoke"));
     public static final SoundEvent COUGH_SOUND = SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(Mechanical.MODID, "smoke.cough"));
 
@@ -70,7 +74,7 @@ public final class Smoke {
         LongOpenHashSet room = new LongOpenHashSet();
         AABB box;
         boolean lit, enclosed;
-        int leaks, fullSeconds;
+        int leaks, fullSeconds, burnSeconds;
         float smoke;
     }
 
@@ -183,6 +187,8 @@ public final class Smoke {
             }
             BlockPos start = smokeStart(level.getBlockState(pos), pos);
             src.lit = start != null;
+            src.burnSeconds = src.lit ? src.burnSeconds + 1 : 0;
+            if (src.burnSeconds > SOOT_AFTER && random.nextFloat() < SOOT_CHANCE * (1 + src.smoke)) SootBlock.deposit(level, start, random);
             if (!src.lit) src.enclosed = false;
             else if (scan) src.enclosed = flood(level, start, src); // a vented room keeps its old extent while it clears
             if (src.lit && src.enclosed) src.smoke = Math.min(1, src.smoke + (src.leaks == 0 ? 1 : 0.5F) / (30 + src.room.size() / 5F));

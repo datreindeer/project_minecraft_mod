@@ -524,6 +524,25 @@ En eld i ett stängt rum fyller det med rök. **Källor:** tänd Campfire och So
 - Testa med `/smoke <pos>` (op): röknivån vid positionen och alla eldar som följs (stängt, rumsstorlek, läckor).
   Eldar hittas inom 3 chunks från spelare (och runt positionen i `/smoke`).
 
+### Sot
+Samma eldar som ger rök (tänd Campfire, Soul Campfire, brinnande Clay Kiln) sotar ner ytorna runt sig, både ute och inne.
+- **Block: Soot.** Ett tunt svart lager på blockytor (som Glow Lichen): ingen kollision, går att ersätta, kan sitta på
+  flera sidor av samma luftblock. Tre stadier: **1** ljus fläck, **2** sotigt, **3** tjockt svart sot (gäller alla sidor
+  i blocket). Regn tvättar inte bort det, det sitter kvar tills man skrapar bort det. Har inget eget item.
+- **Var:** 2 av 3 gånger i taket ovanför elden (upp till 6 block upp, utspritt ±2 block, mest rakt ovanför), annars
+  på en vägg upp till 3 block åt sidan (från eldens höjd till 2 block ovanför röken). Utan tak blir det inget sot i
+  taket. Bara på hela blocksidor (inte på staket, facklor o.d.).
+- **Takt:** inget sot de första **2 minuterna** en eld brinner (räknas om när elden slocknar). Därefter 1 chans på 15
+  varje sekund att sot läggs eller att ett befintligt sotlager blir ett stadium mörkare; i ett rökigt rum upp till
+  **dubbelt så ofta** (× 1 + rummets röknivå, se Rök inomhus). En eld som får gå ut av sig själv (3–5 min) hinner
+  bara ge några fläckar; det krävs en eld som hålls vid liv med Firewood.
+- **Testat (20 min brinnande eld, tak 4 block över elden):** stängt 7×7-rum (full rök): 50 sotblock, 24 i taket och
+  26 på väggarna, 16 av dem stadium 3. Öppet skjul (bara tak och en vägg): 21 sotblock, 19 i taket, 10 stadium 3.
+  Första fläckarna kom strax efter 2 minuter.
+- **Skrapa bort:** bryts för hand (lite segt), **4× snabbare med en kniv**. Ger item **Soot**: stadium 1 50 % chans på
+  1, stadium 2 1 st, stadium 3 2 st; med kniv (Flint Knife, Iron Knife) **+1**.
+- **Item: Soot**, ett svart pigment: 1 Soot → 1 Black Dye (formlöst).
+
 ### Fisk
 - Döda fiskar och fångst släpper **Whole Cod / Whole Salmon / Whole Tropical Fish / Whole Pufferfish** (gäller både
   döda fiskar och fiskespö). De går inte att äta eller laga.
