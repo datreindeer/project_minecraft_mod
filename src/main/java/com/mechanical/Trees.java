@@ -8,7 +8,18 @@ import java.util.stream.Collectors;
 
 import com.mechanical.mixin.FireBlockInvoker;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -44,9 +55,11 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 /**
- * Aspen, alder, beech and linden: vanilla-like wood sets (no signs or boats yet). Sounds and door/button behaviour are oak's.
+ * Aspen, alder, beech, linden, willow, ash, hazel, pine and yew: vanilla-like wood sets (no signs or boats yet). Sounds and door/button behaviour are oak's.
  * Models, loot, tags, recipes, stripping (block_transformer/axe) and the tree features are data (scripts/gen_data.py).
  * They are also in {@link Mechanical#WOODS}, so felling, stumps, fallen logs, rough logs and firewood work for them.
+ * Willow and hazel use their own tree shapes ({@link TreeShapes}); beech leaves drop Beechnuts (loot, scripts/gen_trees.py)
+ * and a knife on a pine log cuts it open for Pine Resin (once per log: the log is left stripped).
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Trees {
@@ -61,7 +74,18 @@ public final class Trees {
             "aspen", wood("aspen", MapColor.SAND, MapColor.COLOR_LIGHT_GRAY),
             "alder", wood("alder", MapColor.TERRACOTTA_ORANGE, MapColor.COLOR_BROWN),
             "beech", wood("beech", MapColor.WOOD, MapColor.STONE),
-            "linden", wood("linden", MapColor.TERRACOTTA_WHITE, MapColor.PODZOL));
+            "linden", wood("linden", MapColor.TERRACOTTA_WHITE, MapColor.PODZOL),
+            "willow", wood("willow", MapColor.SAND, MapColor.COLOR_GRAY),
+            "ash", wood("ash", MapColor.TERRACOTTA_WHITE, MapColor.COLOR_LIGHT_GRAY),
+            "hazel", wood("hazel", MapColor.TERRACOTTA_PINK, MapColor.COLOR_BROWN),
+            "pine", wood("pine", MapColor.WOOD, MapColor.TERRACOTTA_ORANGE),
+            "yew", wood("yew", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_BROWN));
+
+    public static final DeferredItem<Item> BEECHNUTS = Mechanical.ITEMS.registerSimpleItem("beechnuts",
+            p -> p.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build()));
+    public static final DeferredItem<Item> ROASTED_BEECHNUTS = Mechanical.ITEMS.registerSimpleItem("roasted_beechnuts",
+            p -> p.food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.5F).build()));
+    public static final DeferredItem<Item> PINE_RESIN = Mechanical.ITEMS.registerSimpleItem("pine_resin");
 
     private static Wood wood(String w, MapColor planksColor, MapColor barkColor) {
         var B = Mechanical.BLOCKS;
@@ -128,6 +152,25 @@ public final class Trees {
                 fire.mechanical$setFlammable(w.leaves().get(), 30, 60);
             }
         });
+    }
+
+    /** A knife on a pine log cuts the bark open: 1 Pine Resin, and the log is left stripped (so once per log). */
+    @SubscribeEvent
+    static void tapResin(PlayerInteractEvent.RightClickBlock event) {
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        BlockState state = level.getBlockState(pos);
+        Wood pine = WOODS.get("pine");
+        if (!(event.getItemStack().getItem() instanceof KnifeItem) || !state.is(pine.log().get())) return;
+        if (!level.isClientSide()) {
+            level.setBlock(pos, pine.strippedLog().get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)),
+                    Block.UPDATE_ALL);
+            Block.popResourceFromFace(level, pos, event.getFace() == null ? Direction.UP : event.getFace(), new ItemStack(PINE_RESIN.get()));
+            event.getItemStack().hurtAndBreak(1, event.getEntity(), event.getHand());
+            level.playSound(null, pos, SoundEvents.AXE_STRIP.value(), SoundSource.BLOCKS, 1.0F, 1.3F);
+        }
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        event.setCanceled(true);
     }
 
     private Trees() {}

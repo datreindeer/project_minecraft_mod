@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/yew_planks",
+    "side": "mechanical:block/yew_planks",
+    "top": "mechanical:block/yew_planks"
+  }
+}

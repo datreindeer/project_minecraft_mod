@@ -13,6 +13,11 @@
     "mechanical:aspen_firewood",
     "mechanical:alder_firewood",
     "mechanical:beech_firewood",
-    "mechanical:linden_firewood"
+    "mechanical:linden_firewood",
+    "mechanical:willow_firewood",
+    "mechanical:ash_firewood",
+    "mechanical:hazel_firewood",
+    "mechanical:pine_firewood",
+    "mechanical:yew_firewood"
   ]
 }

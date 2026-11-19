@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:tree",
+  "below_trunk_provider": "minecraft:soil_beneath_tree",
+  "decorators": [],
+  "foliage_placer": {
+    "type": "minecraft:acacia_foliage_placer",
+    "radius": 2,
+    "offset": 0
+  },
+  "ignore_vines": true,
+  "foliage_provider": {
+    "id": "mechanical:pine_leaves",
+    "properties": {
+      "distance": "7",
+      "persistent": "false",
+      "waterlogged": "false"
+    }
+  },
+  "minimum_size": {
+    "type": "minecraft:two_layers_feature_size",
+    "upper_size": 2
+  },
+  "trunk_placer": {
+    "type": "minecraft:forking_trunk_placer",
+    "base_height": 10,
+    "height_rand_a": 3,
+    "height_rand_b": 2
+  },
+  "trunk_provider": {
+    "id": "mechanical:pine_log",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

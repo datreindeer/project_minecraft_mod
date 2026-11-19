@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:ash_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:ash_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:ash_planks",
+      "mechanical:ash_wood",
+      "mechanical:stripped_ash_wood",
+      "mechanical:ash_slab",
+      "mechanical:ash_stairs",
+      "mechanical:ash_fence",
+      "mechanical:ash_fence_gate",
+      "mechanical:ash_door",
+      "mechanical:ash_trapdoor",
+      "mechanical:ash_button",
+      "mechanical:ash_pressure_plate"
+    ]
+  }
+}

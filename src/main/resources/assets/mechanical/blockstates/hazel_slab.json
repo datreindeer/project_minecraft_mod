@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/hazel_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/hazel_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/hazel_slab_top"
+    }
+  }
+}

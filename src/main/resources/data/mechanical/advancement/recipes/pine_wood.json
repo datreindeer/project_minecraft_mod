@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:pine_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pine_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:pine_planks",
+      "mechanical:pine_wood",
+      "mechanical:stripped_pine_wood",
+      "mechanical:pine_slab",
+      "mechanical:pine_stairs",
+      "mechanical:pine_fence",
+      "mechanical:pine_fence_gate",
+      "mechanical:pine_door",
+      "mechanical:pine_trapdoor",
+      "mechanical:pine_button",
+      "mechanical:pine_pressure_plate"
+    ]
+  }
+}

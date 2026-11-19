@@ -3,6 +3,11 @@
     "mechanical:aspen_trapdoor",
     "mechanical:alder_trapdoor",
     "mechanical:beech_trapdoor",
-    "mechanical:linden_trapdoor"
+    "mechanical:linden_trapdoor",
+    "mechanical:willow_trapdoor",
+    "mechanical:ash_trapdoor",
+    "mechanical:hazel_trapdoor",
+    "mechanical:pine_trapdoor",
+    "mechanical:yew_trapdoor"
   ]
 }

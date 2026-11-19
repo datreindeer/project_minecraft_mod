@@ -3,6 +3,11 @@
     "mechanical:aspen_fence_gate",
     "mechanical:alder_fence_gate",
     "mechanical:beech_fence_gate",
-    "mechanical:linden_fence_gate"
+    "mechanical:linden_fence_gate",
+    "mechanical:willow_fence_gate",
+    "mechanical:ash_fence_gate",
+    "mechanical:hazel_fence_gate",
+    "mechanical:pine_fence_gate",
+    "mechanical:yew_fence_gate"
   ]
 }

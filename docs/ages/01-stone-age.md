@@ -28,7 +28,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Stick | Vanilla, plus löv släpper Stick oftare (+8 %, totalt ~10 %) | Skaft, flintverktyg, Campfire, Fire Drill |
 | Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station |
 | Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
-| Firewood (14 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
+| Firewood (19 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Unfired Crucible |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
@@ -306,7 +306,7 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 - **Oak är stora träd**: grenade ekar med 9–15 block hög stam, kronan börjar högt upp så man ser under den. Gäller alla
   ekar (skog, slätt, saplings).
 - **Birch är högre och smalare**: 9–12 block stam (tall birch upp till ~18), kronan högst upp.
-- **Fyra nya träslag** med full träuppsättning (Log, Wood, Stripped Log/Wood, Planks, Slab, Stairs, Fence, Fence Gate,
+- **Nio nya träslag** med full träuppsättning (Log, Wood, Stripped Log/Wood, Planks, Slab, Stairs, Fence, Fence Gate,
   Door, Trapdoor, Button, Pressure Plate, Leaves, Sapling, Potted Sapling; inga skyltar eller båtar än). De fälls som
   andra träd och har egna Stump, Fallen Log, Rough Log och Firewood. 1 Log → 2 Planks som alla träslag. Löven ger
   Sapling och Sticks men inga äpplen.
@@ -314,6 +314,28 @@ Ancient Oak-block ...), även de som inte går att få i survival.
   - **Alder:** medelstort rakt träd (6–9 block). River-stränder och Swamp, ibland i Forest och Flower Forest.
   - **Beech:** stort träd, rak hög stam (8–12 block), bred och tät krona. Forest och Flower Forest.
   - **Linden:** stort grenat träd med bred krona. Forest och Flower Forest, sällsynt på Plains.
+  - **Willow** (pil): kort grenad stam, varje gren bär ett platt lövparaply med hängande lövridåer (upp till 4 block).
+    Grå fårad bark, ljusa planks, smala ljusgröna löv. Växer vid vatten: River och Swamp, och i Forest, Flower Forest,
+    Birch Forest, Plains och Meadow bara intill vatten (sjöar, bäckar).
+  - **Ash** (ask): hög rak stam (10–15 block), hög och gles oval krona. Ljusgrå bark med fint rutnät, nästan vita
+    planks. Forest och Flower Forest, sällsynt på Plains och Meadow.
+  - **Beech:** löven ger ibland (6 %) **Beechnuts** (bokollon), inte med Shears/Silk Touch.
+  - **Hazel** (hassel, trädet): 3–5 tunna stammar från samma rot, 4–6 block högt och buskigt. Blank kopparbrun bark,
+    rosaljusa planks, runda löv med hängen. Löven ger ibland (6 %) **Hazelnuts**. Forest, Flower Forest, Birch Forest,
+    ibland på Plains. (Den låga Hazel Shrub finns kvar.)
+  - **Pine** (tall): hög kal stam (11–15 block) som ibland grenar sig i toppen, platta kronor högst upp. Orange flagnande
+    bark, gulaktiga planks, blågröna barr. Taiga, Snowy Taiga, Old Growth Pine Taiga, Windswept Forest och Windswept Hills.
+    **Högerklicka en Pine Log med kniv:** barken skärs upp → 1 **Pine Resin**, och loggen blir Stripped Pine Log (en
+    gång per log, kniven slits 1).
+  - **Yew** (idegran): kort tjock stam (2×2) med sidogrenar, låg, bred och tät, mörka barr med röda frön. Rödbrun
+    flagnande bark, rödorange planks. Sällsynt i Old Growth Spruce/Pine Taiga och Windswept Forest, mycket sällsynt i
+    Taiga och Dark Forest.
+  - Nya saker: **Beechnuts** (1 mat, rostas på Campfire till **Roasted Beechnuts**, 3 mat), **Pine Resin**
+    (kåda: 1 Pine Resin över 1 Stick → 2 Torches, en kådfackla innan man har kol; används mer senare, t.ex. som lim).
+    Nötter och kåda får plats i Bark Basket.
+  - Framtida idé: **Yew Bow**, en bättre båge av idegran i Tool Station. Idegranens löv kan bli giftiga för djur.
+  - För biomer: varje träd har `mechanical:<träd>` (trädet, som saplings växer) och `mechanical:<träd>_checked`
+    (bara sapling-kontrollen) att använda i egna biomer.
   - Birch Forest och Taiga behåller sina vanliga träd. Vanilla-träden är kvar överallt.
 - **Twigs:** små kvistar på marken i skog och taiga. Slå sönder → 1 Stick. Inget block att placera.
 

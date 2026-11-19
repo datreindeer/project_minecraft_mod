@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:yew_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:yew_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:yew_planks",
+      "mechanical:yew_wood",
+      "mechanical:stripped_yew_wood",
+      "mechanical:yew_slab",
+      "mechanical:yew_stairs",
+      "mechanical:yew_fence",
+      "mechanical:yew_fence_gate",
+      "mechanical:yew_door",
+      "mechanical:yew_trapdoor",
+      "mechanical:yew_button",
+      "mechanical:yew_pressure_plate"
+    ]
+  }
+}

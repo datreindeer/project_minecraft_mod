@@ -3,6 +3,11 @@
     "mechanical:aspen_log",
     "mechanical:alder_log",
     "mechanical:beech_log",
-    "mechanical:linden_log"
+    "mechanical:linden_log",
+    "mechanical:willow_log",
+    "mechanical:ash_log",
+    "mechanical:hazel_log",
+    "mechanical:pine_log",
+    "mechanical:yew_log"
   ]
 }

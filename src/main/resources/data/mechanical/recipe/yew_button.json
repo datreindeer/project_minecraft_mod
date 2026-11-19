@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_button",
+  "ingredients": [
+    "mechanical:yew_planks"
+  ],
+  "result": {
+    "id": "mechanical:yew_button"
+  }
+}

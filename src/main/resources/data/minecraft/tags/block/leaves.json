@@ -3,6 +3,11 @@
     "mechanical:aspen_leaves",
     "mechanical:alder_leaves",
     "mechanical:beech_leaves",
-    "mechanical:linden_leaves"
+    "mechanical:linden_leaves",
+    "mechanical:willow_leaves",
+    "mechanical:ash_leaves",
+    "mechanical:hazel_leaves",
+    "mechanical:pine_leaves",
+    "mechanical:yew_leaves"
   ]
 }

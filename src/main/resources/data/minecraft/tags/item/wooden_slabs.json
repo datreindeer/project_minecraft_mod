@@ -3,6 +3,11 @@
     "mechanical:aspen_slab",
     "mechanical:alder_slab",
     "mechanical:beech_slab",
-    "mechanical:linden_slab"
+    "mechanical:linden_slab",
+    "mechanical:willow_slab",
+    "mechanical:ash_slab",
+    "mechanical:hazel_slab",
+    "mechanical:pine_slab",
+    "mechanical:yew_slab"
   ]
 }

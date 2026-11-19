@@ -51,9 +51,18 @@
   "clay_water_bucket": {
     "text": "[[clay_bucket]] fylld med vatten. Häll ut som en vanlig vattenhink; varje hällning sliter på hinken."
   },
-  "leather_satchel": {"text": "Sys i Armor Station: 4 Leather + [[bone_needle]] + 2 [[wool_thread]]. Högerklicka för ett förråd med 9 platser (3x3) för vad som helst, utom andra förråd (väskor, [[bark_basket]], shulker boxes, bundles). Innehållet följer med väskan.", "category": "tools"},
-  "unlit_torch": {"text": "En fackla som vinden blåste ut en blåsig natt. Lyser inte. Tänds igen med en fackla, [[fire_drill]] eller Flint and Steel; bryts den får man tillbaka facklan.", "category": "blocks"},
-  "unlit_wall_torch": {"text": "Väggversionen av [[unlit_torch]]: en väggfackla som vinden blåste ut.", "category": "blocks"},
+  "leather_satchel": {
+    "text": "Sys i Armor Station: 4 Leather + [[bone_needle]] + 2 [[wool_thread]]. Högerklicka för ett förråd med 9 platser (3x3) för vad som helst, utom andra förråd (väskor, [[bark_basket]], shulker boxes, bundles). Innehållet följer med väskan.",
+    "category": "tools"
+  },
+  "unlit_torch": {
+    "text": "En fackla som vinden blåste ut en blåsig natt. Lyser inte. Tänds igen med en fackla, [[fire_drill]] eller Flint and Steel; bryts den får man tillbaka facklan.",
+    "category": "blocks"
+  },
+  "unlit_wall_torch": {
+    "text": "Väggversionen av [[unlit_torch]]: en väggfackla som vinden blåste ut.",
+    "category": "blocks"
+  },
   "crucible": {
     "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (800°, 40 s). Klicka **Crushed Copper Ore (1 enhet) eller Native Copper (2)** på den i inventoryt, upp till 8 enheter, och smält den i kilnen vid 1085° till en [[molten_crucible]]. Staplas inte."
   },
@@ -423,8 +432,12 @@
   "cloudberry_bush": {
     "text": "Vild buske i Swamp, Snowy Plains, Snowy Taiga, Grove. Sällsynt, i små grupper. Växer bar → blommor → omogen → mogen (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[cloudberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
   },
-  "blackberry_bush": {"text": "Vild björnbärsbuske i kalla biomer: Snowy Taiga, Snowy Plains, Grove, Taiga, Old Growth Spruce Taiga, Windswept Forest. Sällsynt, i små grupper. Växer bar → vita blommor → hårda röda bär → glansigt svarta (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[blackberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."},
-  "blackberries": {"text": "Plockas från en mogen [[blackberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."},
+  "blackberry_bush": {
+    "text": "Vild björnbärsbuske i kalla biomer: Snowy Taiga, Snowy Plains, Grove, Taiga, Old Growth Spruce Taiga, Windswept Forest. Sällsynt, i små grupper. Växer bar → vita blommor → hårda röda bär → glansigt svarta (~6 min per steg i ljus).\n**Högerklicka en mogen buske → 1–3 [[blackberries]]**, sedan börjar den om från blommor. Hugger man sönder den: 1–2 Sticks + 1–2 Plant Fibre, och den är borta. Brown Bear äter gärna mogna bär."
+  },
+  "blackberries": {
+    "text": "Plockas från en mogen [[blackberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
+  },
   "cloudberries": {
     "text": "Plockas från en mogen [[cloudberry_bush]] (högerklicka). 1 hunger. Kan inte planteras än. Får plats i [[bark_basket]]."
   },
@@ -671,7 +684,7 @@
     "category": "blocks"
   },
   "beech_leaves": {
-    "text": "Löv på Beech-träd. Ger ibland [[beech_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "text": "Löv på Beech-träd. Ger ibland [[beech_sapling]] och Sticks, och ibland (6 %) [[beechnuts]]. Shears eller Silk Touch ger själva lövblocket.",
     "category": "blocks"
   },
   "beech_sapling": {
@@ -1433,39 +1446,550 @@
     "vanilla": true,
     "category": "blocks"
   },
-  "soot": {"text": "Tunt svart sotlager (block) som växer på tak och väggar nära en brinnande eld (tänd Campfire, Soul Campfire, Clay Kiln), efter 2 min, snabbare i rökiga rum; 3 stadier från ljus fläck till tjockt sot. Regn tvättar inte bort det. Blocket går inte att få som item: skrapa bort det (4× snabbare med kniv) så får man item Soot (stadium 1: 50 % på 1, 2: 1 st, 3: 2 st; +1 med kniv).\nSoot är ett svart pigment: 1 Soot → 1 Black Dye.", "category": "materials"},
-  "clay_ingot_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[minecraft:copper_ingot]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_ingot_mold]] i en [[kiln]] (600°).", "category": "blocks"},
-  "unfired_clay_ingot_mold": {"text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[C][C][C]`. Bränns till [[clay_ingot_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "clay_pickaxe_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (6 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_pickaxe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_pickaxe_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
-  "unfired_clay_pickaxe_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][C][C]` / `[C][ ][C]` / `[C][ ][C]`. Bränns till [[clay_pickaxe_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "clay_axe_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (6 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_axe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_axe_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
-  "unfired_clay_axe_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][C][C]` / `[C][ ][C]` / `[C][C][ ]`. Bränns till [[clay_axe_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "clay_shovel_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_shovel_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_shovel_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
-  "unfired_clay_shovel_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[C][ ][C]` / `[ ][C][ ]`. Bränns till [[clay_shovel_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "clay_hoe_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (4 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_hoe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_hoe_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
-  "unfired_clay_hoe_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][C][ ]` / `[C][ ][ ]` / `[C][C][C]`. Bränns till [[clay_hoe_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "clay_knife_blade_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_knife_blade]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_knife_blade_mold]] i en [[kiln]] (600°).", "category": "blocks"},
-  "unfired_clay_knife_blade_mold": {"text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[ ][C][ ]` / `[ ][C][ ]`. Bränns till [[clay_knife_blade_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "rough_cast_copper_pickaxe_head": {"text": "Gjuts i [[clay_pickaxe_head_mold]] (6 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_pickaxe_head]].", "category": "materials"},
-  "copper_pickaxe_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_pickaxe_head]]. Monteras i Tool Station till [[minecraft:copper_pickaxe]].", "category": "materials"},
-  "rough_cast_copper_axe_head": {"text": "Gjuts i [[clay_axe_head_mold]] (6 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_axe_head]].", "category": "materials"},
-  "copper_axe_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_axe_head]]. Monteras i Tool Station till [[minecraft:copper_axe]].", "category": "materials"},
-  "rough_cast_copper_shovel_head": {"text": "Gjuts i [[clay_shovel_head_mold]] (2 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_shovel_head]].", "category": "materials"},
-  "copper_shovel_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_shovel_head]]. Monteras i Tool Station till [[minecraft:copper_shovel]].", "category": "materials"},
-  "rough_cast_copper_hoe_head": {"text": "Gjuts i [[clay_hoe_head_mold]] (4 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_hoe_head]].", "category": "materials"},
-  "copper_hoe_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_hoe_head]]. Monteras i Tool Station till [[minecraft:copper_hoe]].", "category": "materials"},
-  "rough_cast_copper_knife_blade": {"text": "Gjuts i [[clay_knife_blade_mold]] (2 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_knife_blade]].", "category": "materials"},
-  "copper_knife_blade": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_knife_blade]]. Monteras i Tool Station till [[copper_knife]].", "category": "materials"},
-  "bellows": {"text": "Ställs bredvid en [[kiln]]s eldstad med munstycket mot den. **Högerklick = en pump: +40°** upp till bränslets max med bälg (Charcoal 1300°, Firewood/Log 900°, trä 700°). 0,5 s mellan pumpningarna. Pumpar man vid taket (1300°) byggs påfrestning upp och kilnen kan spricka. Recept: `[Planks][Scraped Hide][Planks]` / `[Planks][Scraped Hide][Planks]` / `[Twine][Clay Tuyere][Twine]`.", "category": "blocks"},
-  "unfired_clay_tuyere": {"text": "3 Clay Ball diagonalt. Bränns till [[clay_tuyere]] i en [[kiln]] (600°).", "category": "materials"},
-  "clay_tuyere": {"text": "Lerrör till [[bellows]]. Bränns av [[unfired_clay_tuyere]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
-  "whetstone": {"text": "Sandsten på en träbänk. Högerklicka med ett Rough Cast-huvud **4 gånger** (gnistor) för att slipa det till ett huvud som Tool Station tar. Recept: `[ ][Sandstone][ ]` / `[Stick][Planks][Stick]`.", "category": "blocks"},
-  "molten_crucible": {"text": "Crucible of Molten Copper: en [[crucible]] med malm som smälts i en [[kiln]] vid **1085°** (15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är minst 1085°.", "category": "materials"},
-  "solid_crucible": {"text": "Crucible of Solid Copper: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] vid 1085° (10 s).", "category": "materials"},
-  "copper_knife": {"text": "Tool Station: [[copper_knife_blade]] + Twine + Stick. 200 hållbarhet, styckar **1,5×** så snabbt och ger **1,2×** så mycket som [[flint_knife]]. Klarar inte björn (det gör [[tusk_dagger]]).", "category": "tools"},
-  "raw_phantom_hide": {"text": "Styckning av en Phantom (bara om en spelare dödade den), omgång 1: 60 %.\nRaw Phantom Hide + kniv → [[scraped_phantom_hide]]."},
-  "scraped_phantom_hide": {"text": "[[raw_phantom_hide]] + kniv (formlöst, kniven slits 1). Häng på en [[drying_rack]]: torkar **bara i dagsljus** (dag + fri himmel, ~3 min sol i snitt) till [[phantom_leather]]. Efter ~8 slumpade ticks i mörker (natt, regn, inomhus; ungefär en hel natt) **ruttnar** den till Rotten Flesh."},
-  "phantom_leather": {"text": "Torkad [[scraped_phantom_hide]] från [[drying_rack]] i dagsljus. 6 st + [[glider_frame]] sys till [[glider_cloak]] i [[armor_station]]. Lagar Glider Cloak."},
-  "glider_frame": {"text": "Crafting: 4 [[tool_rod]], 2 Bone, [[sinew]] och [[cordage]] (`RSR / BCB / R R`). Stagen till [[glider_cloak]]. Låses upp av [[phantom_leather]]."},
-  "glider_cloak": {"text": "Sys i [[armor_station]]: 6 [[phantom_leather]] + [[glider_frame]] med [[bone_needle]]. Bröstplats, skydd 1, 96 hållbarhet, lagas med Phantom Leather.\n**Håll inne hopp när du faller** (mer än 2 block): fallet bromsas (~2,4 m/s) och du glider framåt i blickriktningen (högst ~6 m/s, aldrig uppåt). Ingen fallskada efter en glidning, 1 hållbarhet per sekund. Smyg eller släpp hopp för att släppa."}
+  "soot": {
+    "text": "Tunt svart sotlager (block) som växer på tak och väggar nära en brinnande eld (tänd Campfire, Soul Campfire, Clay Kiln), efter 2 min, snabbare i rökiga rum; 3 stadier från ljus fläck till tjockt sot. Regn tvättar inte bort det. Blocket går inte att få som item: skrapa bort det (4× snabbare med kniv) så får man item Soot (stadium 1: 50 % på 1, 2: 1 st, 3: 2 st; +1 med kniv).\nSoot är ett svart pigment: 1 Soot → 1 Black Dye.",
+    "category": "materials"
+  },
+  "clay_ingot_mold": {
+    "text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[minecraft:copper_ingot]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_ingot_mold]] i en [[kiln]] (600°).",
+    "category": "blocks"
+  },
+  "unfired_clay_ingot_mold": {
+    "text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[C][C][C]`. Bränns till [[clay_ingot_mold]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "clay_pickaxe_head_mold": {
+    "text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (6 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_pickaxe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_pickaxe_head_mold]] i en [[kiln]] (600°).",
+    "category": "blocks"
+  },
+  "unfired_clay_pickaxe_head_mold": {
+    "text": "Clay Ball (C) i crafting table: `[C][C][C]` / `[C][ ][C]` / `[C][ ][C]`. Bränns till [[clay_pickaxe_head_mold]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "clay_axe_head_mold": {
+    "text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (6 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_axe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_axe_head_mold]] i en [[kiln]] (600°).",
+    "category": "blocks"
+  },
+  "unfired_clay_axe_head_mold": {
+    "text": "Clay Ball (C) i crafting table: `[C][C][C]` / `[C][ ][C]` / `[C][C][ ]`. Bränns till [[clay_axe_head_mold]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "clay_shovel_head_mold": {
+    "text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_shovel_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_shovel_head_mold]] i en [[kiln]] (600°).",
+    "category": "blocks"
+  },
+  "unfired_clay_shovel_head_mold": {
+    "text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[C][ ][C]` / `[ ][C][ ]`. Bränns till [[clay_shovel_head_mold]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "clay_hoe_head_mold": {
+    "text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (4 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_hoe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_hoe_head_mold]] i en [[kiln]] (600°).",
+    "category": "blocks"
+  },
+  "unfired_clay_hoe_head_mold": {
+    "text": "Clay Ball (C) i crafting table: `[C][C][ ]` / `[C][ ][ ]` / `[C][C][C]`. Bränns till [[clay_hoe_head_mold]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "clay_knife_blade_mold": {
+    "text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_knife_blade]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_knife_blade_mold]] i en [[kiln]] (600°).",
+    "category": "blocks"
+  },
+  "unfired_clay_knife_blade_mold": {
+    "text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[ ][C][ ]` / `[ ][C][ ]`. Bränns till [[clay_knife_blade_mold]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "rough_cast_copper_pickaxe_head": {
+    "text": "Gjuts i [[clay_pickaxe_head_mold]] (6 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_pickaxe_head]].",
+    "category": "materials"
+  },
+  "copper_pickaxe_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_copper_pickaxe_head]]. Monteras i Tool Station till [[minecraft:copper_pickaxe]].",
+    "category": "materials"
+  },
+  "rough_cast_copper_axe_head": {
+    "text": "Gjuts i [[clay_axe_head_mold]] (6 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_axe_head]].",
+    "category": "materials"
+  },
+  "copper_axe_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_copper_axe_head]]. Monteras i Tool Station till [[minecraft:copper_axe]].",
+    "category": "materials"
+  },
+  "rough_cast_copper_shovel_head": {
+    "text": "Gjuts i [[clay_shovel_head_mold]] (2 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_shovel_head]].",
+    "category": "materials"
+  },
+  "copper_shovel_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_copper_shovel_head]]. Monteras i Tool Station till [[minecraft:copper_shovel]].",
+    "category": "materials"
+  },
+  "rough_cast_copper_hoe_head": {
+    "text": "Gjuts i [[clay_hoe_head_mold]] (4 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_hoe_head]].",
+    "category": "materials"
+  },
+  "copper_hoe_head": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_copper_hoe_head]]. Monteras i Tool Station till [[minecraft:copper_hoe]].",
+    "category": "materials"
+  },
+  "rough_cast_copper_knife_blade": {
+    "text": "Gjuts i [[clay_knife_blade_mold]] (2 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_knife_blade]].",
+    "category": "materials"
+  },
+  "copper_knife_blade": {
+    "text": "Slipad på en [[whetstone]] av [[rough_cast_copper_knife_blade]]. Monteras i Tool Station till [[copper_knife]].",
+    "category": "materials"
+  },
+  "bellows": {
+    "text": "Ställs bredvid en [[kiln]]s eldstad med munstycket mot den. **Högerklick = en pump: +40°** upp till bränslets max med bälg (Charcoal 1300°, Firewood/Log 900°, trä 700°). 0,5 s mellan pumpningarna. Pumpar man vid taket (1300°) byggs påfrestning upp och kilnen kan spricka. Recept: `[Planks][Scraped Hide][Planks]` / `[Planks][Scraped Hide][Planks]` / `[Twine][Clay Tuyere][Twine]`.",
+    "category": "blocks"
+  },
+  "unfired_clay_tuyere": {
+    "text": "3 Clay Ball diagonalt. Bränns till [[clay_tuyere]] i en [[kiln]] (600°).",
+    "category": "materials"
+  },
+  "clay_tuyere": {
+    "text": "Lerrör till [[bellows]]. Bränns av [[unfired_clay_tuyere]] i en [[kiln]] (600°, 20 s).",
+    "category": "materials"
+  },
+  "whetstone": {
+    "text": "Sandsten på en träbänk. Högerklicka med ett Rough Cast-huvud **4 gånger** (gnistor) för att slipa det till ett huvud som Tool Station tar. Recept: `[ ][Sandstone][ ]` / `[Stick][Planks][Stick]`.",
+    "category": "blocks"
+  },
+  "molten_crucible": {
+    "text": "Crucible of Molten Copper: en [[crucible]] med malm som smälts i en [[kiln]] vid **1085°** (15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är minst 1085°.",
+    "category": "materials"
+  },
+  "solid_crucible": {
+    "text": "Crucible of Solid Copper: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] vid 1085° (10 s).",
+    "category": "materials"
+  },
+  "copper_knife": {
+    "text": "Tool Station: [[copper_knife_blade]] + Twine + Stick. 200 hållbarhet, styckar **1,5×** så snabbt och ger **1,2×** så mycket som [[flint_knife]]. Klarar inte björn (det gör [[tusk_dagger]]).",
+    "category": "tools"
+  },
+  "raw_phantom_hide": {
+    "text": "Styckning av en Phantom (bara om en spelare dödade den), omgång 1: 60 %.\nRaw Phantom Hide + kniv → [[scraped_phantom_hide]]."
+  },
+  "scraped_phantom_hide": {
+    "text": "[[raw_phantom_hide]] + kniv (formlöst, kniven slits 1). Häng på en [[drying_rack]]: torkar **bara i dagsljus** (dag + fri himmel, ~3 min sol i snitt) till [[phantom_leather]]. Efter ~8 slumpade ticks i mörker (natt, regn, inomhus; ungefär en hel natt) **ruttnar** den till Rotten Flesh."
+  },
+  "phantom_leather": {
+    "text": "Torkad [[scraped_phantom_hide]] från [[drying_rack]] i dagsljus. 6 st + [[glider_frame]] sys till [[glider_cloak]] i [[armor_station]]. Lagar Glider Cloak."
+  },
+  "glider_frame": {
+    "text": "Crafting: 4 [[tool_rod]], 2 Bone, [[sinew]] och [[cordage]] (`RSR / BCB / R R`). Stagen till [[glider_cloak]]. Låses upp av [[phantom_leather]]."
+  },
+  "glider_cloak": {
+    "text": "Sys i [[armor_station]]: 6 [[phantom_leather]] + [[glider_frame]] med [[bone_needle]]. Bröstplats, skydd 1, 96 hållbarhet, lagas med Phantom Leather.\n**Håll inne hopp när du faller** (mer än 2 block): fallet bromsas (~2,4 m/s) och du glider framåt i blickriktningen (högst ~6 m/s, aldrig uppåt). Ingen fallskada efter en glidning, 1 hållbarhet per sekund. Smyg eller släpp hopp för att släppa."
+  },
+  "willow_log": {
+    "text": "Nytt träslag (pil). Grenad stam där varje gren bär ett platt lövparaply med hängande lövridåer. Växer vid vatten: River och Swamp, och i Forest, Flower Forest, Birch Forest, Plains och Meadow bara intill sjöar och bäckar. Grå fårad bark, ljusa planks.\nFälls som andra träd (hela trädet faller, [[willow_stump]] och [[willow_fallen_log]]). En Log som bryts ger 2 [[willow_firewood]]. Yxa (högerklick) gör Stripped Willow Log.",
+    "category": "blocks"
+  },
+  "willow_planks": {
+    "text": "1 Willow Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "willow_leaves": {
+    "text": "Löv på Willow-träd. Ger ibland [[willow_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "willow_sapling": {
+    "text": "Faller från [[willow_leaves]]. Planteras på jord och växer till ett Willow-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "willow_firewood": {
+    "text": "Alla Willow-logs (även stripped och wood-block) släpper **2 Willow Firewood** i stället för sig själva. Fällda träd ger Firewood via [[willow_fallen_log]] → [[willow_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Willow Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "willow_rough_log": {
+    "text": "Sista steget när man bearbetar en [[willow_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[willow_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[willow_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "willow_fallen_log": {
+    "text": "Stammen av ett fällt Willow-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[willow_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "willow_stump": {
+    "text": "Blir kvar där man högg när ett Willow-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[willow_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "willow_wood": {
+    "text": "Willow: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_willow_log": {
+    "text": "Willow: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_willow_wood": {
+    "text": "Willow: Yxa på wood.",
+    "category": "blocks"
+  },
+  "willow_slab": {
+    "text": "Willow: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "willow_stairs": {
+    "text": "Willow: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "willow_fence": {
+    "text": "Willow: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "willow_fence_gate": {
+    "text": "Willow: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "willow_door": {
+    "text": "Willow: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "willow_trapdoor": {
+    "text": "Willow: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "willow_button": {
+    "text": "Willow: Av planks.",
+    "category": "blocks"
+  },
+  "willow_pressure_plate": {
+    "text": "Willow: Av planks.",
+    "category": "blocks"
+  },
+  "potted_willow_sapling": {
+    "text": "Willow: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "willow_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "ash_log": {
+    "text": "Nytt träslag (ask). Hög rak stam (10–15 block) med hög, gles oval krona. Forest och Flower Forest, sällsynt på Plains och Meadow. Ljusgrå bark med fint rutnät, nästan vita planks.\nFälls som andra träd (hela trädet faller, [[ash_stump]] och [[ash_fallen_log]]). En Log som bryts ger 2 [[ash_firewood]]. Yxa (högerklick) gör Stripped Ash Log.",
+    "category": "blocks"
+  },
+  "ash_planks": {
+    "text": "1 Ash Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "ash_leaves": {
+    "text": "Löv på Ash-träd. Ger ibland [[ash_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "ash_sapling": {
+    "text": "Faller från [[ash_leaves]]. Planteras på jord och växer till ett Ash-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "ash_firewood": {
+    "text": "Alla Ash-logs (även stripped och wood-block) släpper **2 Ash Firewood** i stället för sig själva. Fällda träd ger Firewood via [[ash_fallen_log]] → [[ash_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Ash Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "ash_rough_log": {
+    "text": "Sista steget när man bearbetar en [[ash_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[ash_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[ash_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "ash_fallen_log": {
+    "text": "Stammen av ett fällt Ash-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[ash_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "ash_stump": {
+    "text": "Blir kvar där man högg när ett Ash-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[ash_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "ash_wood": {
+    "text": "Ash: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_ash_log": {
+    "text": "Ash: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_ash_wood": {
+    "text": "Ash: Yxa på wood.",
+    "category": "blocks"
+  },
+  "ash_slab": {
+    "text": "Ash: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "ash_stairs": {
+    "text": "Ash: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "ash_fence": {
+    "text": "Ash: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "ash_fence_gate": {
+    "text": "Ash: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "ash_door": {
+    "text": "Ash: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "ash_trapdoor": {
+    "text": "Ash: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "ash_button": {
+    "text": "Ash: Av planks.",
+    "category": "blocks"
+  },
+  "ash_pressure_plate": {
+    "text": "Ash: Av planks.",
+    "category": "blocks"
+  },
+  "potted_ash_sapling": {
+    "text": "Ash: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "ash_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "hazel_log": {
+    "text": "Nytt träslag (hassel). 3–5 tunna stammar från samma rot, 4–6 block högt och buskigt. Forest, Flower Forest, Birch Forest, ibland på Plains. Löven ger ibland [[hazelnuts]].\nFälls som andra träd (hela trädet faller, [[hazel_stump]] och [[hazel_fallen_log]]). En Log som bryts ger 2 [[hazel_firewood]]. Yxa (högerklick) gör Stripped Hazel Log.",
+    "category": "blocks"
+  },
+  "hazel_planks": {
+    "text": "1 Hazel Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "hazel_leaves": {
+    "text": "Löv på Hazel-träd. Ger ibland [[hazel_sapling]] och Sticks, och ibland (6 %) [[hazelnuts]]. Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "hazel_sapling": {
+    "text": "Faller från [[hazel_leaves]]. Planteras på jord och växer till ett Hazel-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "hazel_firewood": {
+    "text": "Alla Hazel-logs (även stripped och wood-block) släpper **2 Hazel Firewood** i stället för sig själva. Fällda träd ger Firewood via [[hazel_fallen_log]] → [[hazel_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Hazel Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "hazel_rough_log": {
+    "text": "Sista steget när man bearbetar en [[hazel_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[hazel_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[hazel_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "hazel_fallen_log": {
+    "text": "Stammen av ett fällt Hazel-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[hazel_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "hazel_stump": {
+    "text": "Blir kvar där man högg när ett Hazel-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[hazel_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "hazel_wood": {
+    "text": "Hazel: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_hazel_log": {
+    "text": "Hazel: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_hazel_wood": {
+    "text": "Hazel: Yxa på wood.",
+    "category": "blocks"
+  },
+  "hazel_slab": {
+    "text": "Hazel: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "hazel_stairs": {
+    "text": "Hazel: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "hazel_fence": {
+    "text": "Hazel: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "hazel_fence_gate": {
+    "text": "Hazel: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "hazel_door": {
+    "text": "Hazel: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "hazel_trapdoor": {
+    "text": "Hazel: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "hazel_button": {
+    "text": "Hazel: Av planks.",
+    "category": "blocks"
+  },
+  "hazel_pressure_plate": {
+    "text": "Hazel: Av planks.",
+    "category": "blocks"
+  },
+  "potted_hazel_sapling": {
+    "text": "Hazel: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "hazel_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "pine_log": {
+    "text": "Nytt träslag (tall). Hög kal stam (11–15 block) med platta kronor i toppen, orange flagnande bark. Taiga, Snowy Taiga, Old Growth Pine Taiga, Windswept Forest och Windswept Hills. **Högerklicka med kniv** på en Pine Log: 1 [[pine_resin]], loggen blir stripped (en gång per log).\nFälls som andra träd (hela trädet faller, [[pine_stump]] och [[pine_fallen_log]]). En Log som bryts ger 2 [[pine_firewood]]. Yxa (högerklick) gör Stripped Pine Log.",
+    "category": "blocks"
+  },
+  "pine_planks": {
+    "text": "1 Pine Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "pine_leaves": {
+    "text": "Löv på Pine-träd. Ger ibland [[pine_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "pine_sapling": {
+    "text": "Faller från [[pine_leaves]]. Planteras på jord och växer till ett Pine-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "pine_firewood": {
+    "text": "Alla Pine-logs (även stripped och wood-block) släpper **2 Pine Firewood** i stället för sig själva. Fällda träd ger Firewood via [[pine_fallen_log]] → [[pine_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Pine Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "pine_rough_log": {
+    "text": "Sista steget när man bearbetar en [[pine_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[pine_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[pine_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "pine_fallen_log": {
+    "text": "Stammen av ett fällt Pine-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[pine_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "pine_stump": {
+    "text": "Blir kvar där man högg när ett Pine-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[pine_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "pine_wood": {
+    "text": "Pine: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_pine_log": {
+    "text": "Pine: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_pine_wood": {
+    "text": "Pine: Yxa på wood.",
+    "category": "blocks"
+  },
+  "pine_slab": {
+    "text": "Pine: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "pine_stairs": {
+    "text": "Pine: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "pine_fence": {
+    "text": "Pine: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "pine_fence_gate": {
+    "text": "Pine: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "pine_door": {
+    "text": "Pine: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "pine_trapdoor": {
+    "text": "Pine: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "pine_button": {
+    "text": "Pine: Av planks.",
+    "category": "blocks"
+  },
+  "pine_pressure_plate": {
+    "text": "Pine: Av planks.",
+    "category": "blocks"
+  },
+  "potted_pine_sapling": {
+    "text": "Pine: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "pine_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "yew_log": {
+    "text": "Nytt träslag (idegran). Kort tjock 2×2-stam, låg, bred och tät med mörka barr och röda frön. Rödbrun flagnande bark, rödorange planks. Sällsynt i Old Growth Spruce/Pine Taiga och Windswept Forest, mycket sällsynt i Taiga och Dark Forest.\nFälls som andra träd (hela trädet faller, [[yew_stump]] och [[yew_fallen_log]]). En Log som bryts ger 2 [[yew_firewood]]. Yxa (högerklick) gör Stripped Yew Log.",
+    "category": "blocks"
+  },
+  "yew_planks": {
+    "text": "1 Yew Log (eller Wood/Stripped) → 2 Planks (som alla träslag i stenåldern). Ger Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button och Pressure Plate med vanliga vanilla-recept.",
+    "category": "blocks"
+  },
+  "yew_leaves": {
+    "text": "Löv på Yew-träd. Ger ibland [[yew_sapling]] och Sticks, som andra löv (inga äpplen). Shears eller Silk Touch ger själva lövblocket.",
+    "category": "blocks"
+  },
+  "yew_sapling": {
+    "text": "Faller från [[yew_leaves]]. Planteras på jord och växer till ett Yew-träd. Kan sättas i en Flower Pot.",
+    "category": "blocks"
+  },
+  "yew_firewood": {
+    "text": "Alla Yew-logs (även stripped och wood-block) släpper **2 Yew Firewood** i stället för sig själva. Fällda träd ger Firewood via [[yew_fallen_log]] → [[yew_rough_log]] → hugg på en stubbe (2–3 st).\nBygger [[minecraft:campfire]], bränsle i Clay Kiln (1 min), 2 st → Charcoal i Clay Kiln, och 4 av samma sort → 1 Yew Log. Högerklicka på glöd för att tända elden igen, eller på en brinnande eld för +1 minut (max 10 min).\nBilden visar 1, 2 eller 3 vedträn beroende på antal."
+  },
+  "yew_rough_log": {
+    "text": "Sista steget när man bearbetar en [[yew_fallen_log]] med yxa (om det lyckas, annars 2–3 Sticks). Stackar 16.\n**Högerklicka på en [[yew_stump]]** för att ställa den på stubben (tom hand tar tillbaka den). **Håll in högerklick med yxa** på den: lyckas → 2–3 [[yew_firewood]] (+1 med Stone Axe, +2 Iron Axe, +3 Diamond Axe), misslyckas → 1 Firewood + 1–2 Sticks. Chans: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %."
+  },
+  "yew_fallen_log": {
+    "text": "Stammen av ett fällt Yew-träd blir liggande som Fallen Logs där den landar. Har inget item.\n**Håll in högerklick med yxa** (ett tungt hugg var 0,6 s, 4 hugg per steg med Flint Axe, 3 med Stone Axe, 2 med Iron Axe; yxan slits 1 per steg): barken av (1–2 [[bark]]) → smalare → ännu smalare → [[yew_rough_log]] (eller bara 2–3 Sticks om det misslyckas). Bryts den vanligt blir det bara 1–2 Sticks."
+  },
+  "yew_stump": {
+    "text": "Blir kvar där man högg när ett Yew-träd fälls. Har inget item. Ger 1–2 Sticks, bryts snabbast med yxa.\nFungerar som **huggkubbe**: högerklicka en [[yew_rough_log]] på stubben och hugg den till Firewood."
+  },
+  "yew_wood": {
+    "text": "Yew: 6 sidor bark, av 4 logs.",
+    "category": "blocks"
+  },
+  "stripped_yew_log": {
+    "text": "Yew: Yxa på log.",
+    "category": "blocks"
+  },
+  "stripped_yew_wood": {
+    "text": "Yew: Yxa på wood.",
+    "category": "blocks"
+  },
+  "yew_slab": {
+    "text": "Yew: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "yew_stairs": {
+    "text": "Yew: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "yew_fence": {
+    "text": "Yew: Av planks och sticks.",
+    "category": "blocks"
+  },
+  "yew_fence_gate": {
+    "text": "Yew: Av sticks och planks.",
+    "category": "blocks"
+  },
+  "yew_door": {
+    "text": "Yew: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "yew_trapdoor": {
+    "text": "Yew: Av planks, som vanilla.",
+    "category": "blocks"
+  },
+  "yew_button": {
+    "text": "Yew: Av planks.",
+    "category": "blocks"
+  },
+  "yew_pressure_plate": {
+    "text": "Yew: Av planks.",
+    "category": "blocks"
+  },
+  "potted_yew_sapling": {
+    "text": "Yew: Sapling i Flower Pot.",
+    "category": "blocks"
+  },
+  "yew_leaf_litter": {
+    "text": "Färsk leaf litter i lövens färg, faller när trädet fälls. Torkar till vanlig Leaf Litter; bryts till vanlig Leaf Litter (tändmaterial).",
+    "category": "blocks"
+  },
+  "beechnuts": {
+    "text": "Bokollon. Faller ibland från [[beech_leaves]]. 1 mat, rostas på Campfire till [[roasted_beechnuts]]. Får plats i Bark Basket.",
+    "category": "foraging"
+  },
+  "roasted_beechnuts": {
+    "text": "[[beechnuts]] rostade på Campfire. 3 mat.",
+    "category": "foraging"
+  },
+  "pine_resin": {
+    "text": "Tallkåda. **Högerklicka en [[pine_log]] med kniv**: barken skärs upp, 1 Pine Resin, och loggen blir Stripped Pine Log (en gång per log, kniven slits 1). 1 Pine Resin över 1 Stick → 2 Torches (kådfackla). Används mer senare (t.ex. lim)."
+  }
 }

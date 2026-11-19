@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:hazel_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hazel_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:hazel_planks",
+      "mechanical:hazel_wood",
+      "mechanical:stripped_hazel_wood",
+      "mechanical:hazel_slab",
+      "mechanical:hazel_stairs",
+      "mechanical:hazel_fence",
+      "mechanical:hazel_fence_gate",
+      "mechanical:hazel_door",
+      "mechanical:hazel_trapdoor",
+      "mechanical:hazel_button",
+      "mechanical:hazel_pressure_plate"
+    ]
+  }
+}

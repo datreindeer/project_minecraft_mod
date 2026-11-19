@@ -3,6 +3,11 @@
     "mechanical:potted_aspen_sapling",
     "mechanical:potted_alder_sapling",
     "mechanical:potted_beech_sapling",
-    "mechanical:potted_linden_sapling"
+    "mechanical:potted_linden_sapling",
+    "mechanical:potted_willow_sapling",
+    "mechanical:potted_ash_sapling",
+    "mechanical:potted_hazel_sapling",
+    "mechanical:potted_pine_sapling",
+    "mechanical:potted_yew_sapling"
   ]
 }

@@ -131,6 +131,46 @@
       "apply": {
         "model": "mechanical:block/linden_upright_log"
       }
+    },
+    {
+      "when": {
+        "log": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/willow_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/ash_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/hazel_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "18"
+      },
+      "apply": {
+        "model": "mechanical:block/pine_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "19"
+      },
+      "apply": {
+        "model": "mechanical:block/yew_upright_log"
+      }
     }
   ]
 }
