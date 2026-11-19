@@ -356,5 +356,7 @@
   "entity.mechanical.giant_deer": "Giant Deer",
   "item.mechanical.giant_deer_spawn_egg": "Giant Deer Spawn Egg",
   "item.mechanical.squirrel_pelt": "Squirrel Pelt",
-  "item.mechanical.giant_antler": "Giant Antler"
+  "item.mechanical.giant_antler": "Giant Antler",
+  "block.mechanical.ancient_oak_rune_log": "Ancient Oak Rune Bark",
+  "block.mechanical.glowcap": "Glowcap"
 }

@@ -289,6 +289,24 @@ public class Mechanical {
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.registerEntityType(
             "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
 
+    /** Blocks that are never items (decals, pots holding plants). Everything else gets a block item, for creative. */
+    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood");
+
+    /**
+     * Every mod block without an item of its own gets a plain block item, so all of them (bushes, mushrooms, twigs,
+     * fresh leaf litter, the ancient oak ...) can be picked from the creative tab. In survival they still drop what their
+     * loot tables say, so this adds no new way to get them.
+     */
+    private static void registerMissingBlockItems() {
+        java.util.Set<String> items = new java.util.HashSet<>();
+        ITEMS.getEntries().forEach(i -> items.add(i.getId().getPath()));
+        for (var block : java.util.List.copyOf(BLOCKS.getEntries())) {
+            String id = block.getId().getPath();
+            if (items.contains(id) || NO_ITEM.contains(id) || id.startsWith("potted_")) continue;
+            ITEMS.registerItem(id, p -> new net.minecraft.world.item.BlockItem(block.get(), p), p -> p.useBlockDescriptionPrefix());
+        }
+    }
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MECHANICAL_TAB = CREATIVE_MODE_TABS.register("mechanical_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.mechanical"))
             .withTabsBefore(CreativeModeTabs.COMBAT)
@@ -299,6 +317,7 @@ public class Mechanical {
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
         Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus);
+        registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);

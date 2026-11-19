@@ -128,11 +128,13 @@ public final class Wildlife {
         // bears only turn up near wild berry bushes
         event.register(BROWN_BEAR.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (type, level, reason, pos, random) -> Animal.checkAnimalSpawnRules(type, level, reason, pos, random)
+                        && reason != net.minecraft.world.entity.EntitySpawnReason.CHUNK_GENERATION // scanning 16 blocks reads outside the generating chunk
                         && com.mechanical.Foraging.nearBerryBush(level, pos, 16),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // badgers dig their setts into slopes
         event.register(BADGER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (type, level, reason, pos, random) -> Animal.checkAnimalSpawnRules(type, level, reason, pos, random) && Badger.onSlope(level, pos),
+                (type, level, reason, pos, random) -> Animal.checkAnimalSpawnRules(type, level, reason, pos, random)
+                        && (reason == net.minecraft.world.entity.EntitySpawnReason.CHUNK_GENERATION || Badger.onSlope(level, pos)),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // mouflon also lives on stone and gravel (windswept hills, peaks): the goat rule
         event.register(MOUFLON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,

@@ -101,6 +101,14 @@ public final class AncientOak {
     public static final DeferredBlock<Leaves> LEAVES = BLOCKS.registerBlock("ancient_oak_leaves", Leaves::new,
             p -> enchanted(p, MapColor.PLANT, SoundType.GRASS).noOcclusion().isSuffocating((s, g, pos) -> false)
                     .isViewBlocking((s, g, pos, box) -> false).isRedstoneConductor((s, g, pos) -> false));
+    /** Bark carved with softly glowing runes, spiralling up the trunk; green and gold motes drift off it. */
+    public static final DeferredBlock<RuneLog> RUNE_LOG = BLOCKS.registerBlock("ancient_oak_rune_log", RuneLog::new,
+            p -> enchanted(p, MapColor.WOOD, SoundType.WOOD).lightLevel(s -> 6));
+    /** Small glowing mushrooms round the oak's roots and in its hollow; can be picked. */
+    public static final DeferredBlock<Glowcap> GLOWCAP = BLOCKS.registerBlock("glowcap", Glowcap::new,
+            p -> p.mapColor(MapColor.COLOR_LIGHT_GREEN).noCollision().instabreak().sound(SoundType.FUNGUS).lightLevel(s -> 8)
+                    .pushReaction(PushReaction.POPPED).noOcclusion());
+    public static final DeferredItem<net.minecraft.world.item.BlockItem> GLOWCAP_ITEM = ITEMS.registerSimpleBlockItem("glowcap", GLOWCAP);
     public static final DeferredBlock<Altar> ALTAR = BLOCKS.registerBlock("offering_altar", Altar::new,
             p -> enchanted(p, MapColor.STONE, SoundType.STONE).noOcclusion().lightLevel(s -> s.getValue(Altar.ACTIVE) ? 14 : 5));
     public static final Supplier<BlockEntityType<OfferingAltarBlockEntity>> ALTAR_ENTITY = Mechanical.BLOCK_ENTITIES.register("offering_altar",
@@ -265,11 +273,60 @@ public final class AncientOak {
 
         @Override
         public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-            if (random.nextInt(40) == 0) {
+            if (random.nextInt(80) == 0) {
                 Direction d = Direction.getRandom(random);
                 level.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + d.getStepX() * 0.6, pos.getY() + random.nextDouble(),
                         pos.getZ() + 0.5 + d.getStepZ() * 0.6, (random.nextDouble() - 0.5) * 0.5, 0.3, (random.nextDouble() - 0.5) * 0.5);
             }
+        }
+    }
+
+    public static class RuneLog extends Log {
+        public RuneLog(Properties p) {
+            super(p);
+        }
+
+        @Override
+        public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+            if (random.nextInt(5) != 0) return;
+            Direction d = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+            if (!level.isEmptyBlock(pos.relative(d))) return;
+            int color = random.nextBoolean() ? 0x9BE36A : 0xE9C95A;
+            level.addParticle(new net.minecraft.core.particles.DustParticleOptions(color, 0.6F + random.nextFloat() * 0.4F),
+                    pos.getX() + 0.5 + d.getStepX() * 0.7, pos.getY() + random.nextDouble(), pos.getZ() + 0.5 + d.getStepZ() * 0.7,
+                    d.getStepX() * 0.02, 0.03, d.getStepZ() * 0.02);
+        }
+    }
+
+    /** A cluster of small glowing mushrooms: needs firm ground, pops off otherwise, sheds a faint glow now and then. */
+    public static class Glowcap extends Block {
+        private static final VoxelShape SHAPE = box(3, 0, 3, 13, 7, 13);
+
+        public Glowcap(Properties p) {
+            super(p);
+        }
+
+        @Override
+        protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+            return SHAPE;
+        }
+
+        @Override
+        protected boolean canSurvive(BlockState state, net.minecraft.world.level.LevelReader level, BlockPos pos) {
+            return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
+        }
+
+        @Override
+        protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess ticks,
+                BlockPos pos, Direction dir, BlockPos neighborPos, BlockState neighbor, RandomSource random) {
+            return dir == Direction.DOWN && !canSurvive(state, level, pos) ? net.minecraft.world.level.block.Blocks.AIR.defaultBlockState()
+                    : super.updateShape(state, level, ticks, pos, dir, neighborPos, neighbor, random);
+        }
+
+        @Override
+        public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+            if (random.nextInt(12) == 0)
+                level.addParticle(ParticleTypes.GLOW, pos.getX() + 0.3 + random.nextDouble() * 0.4, pos.getY() + 0.4, pos.getZ() + 0.3 + random.nextDouble() * 0.4, 0, 0.02, 0);
         }
     }
 

@@ -1,16 +1,55 @@
 {
   "variants": {
-    "axis=y": {
-      "model": "mechanical:block/ancient_oak_wood"
-    },
-    "axis=z": {
-      "model": "mechanical:block/ancient_oak_wood",
-      "x": 90
-    },
-    "axis=x": {
-      "model": "mechanical:block/ancient_oak_wood",
-      "x": 90,
-      "y": 90
-    }
+    "axis=y": [
+      {
+        "model": "mechanical:block/ancient_oak_wood",
+        "weight": 3
+      },
+      {
+        "model": "mechanical:block/ancient_oak_wood_2",
+        "weight": 2
+      },
+      {
+        "model": "mechanical:block/ancient_oak_wood_3",
+        "weight": 2
+      }
+    ],
+    "axis=z": [
+      {
+        "model": "mechanical:block/ancient_oak_wood",
+        "x": 90,
+        "weight": 3
+      },
+      {
+        "model": "mechanical:block/ancient_oak_wood_2",
+        "x": 90,
+        "weight": 2
+      },
+      {
+        "model": "mechanical:block/ancient_oak_wood_3",
+        "x": 90,
+        "weight": 2
+      }
+    ],
+    "axis=x": [
+      {
+        "model": "mechanical:block/ancient_oak_wood",
+        "x": 90,
+        "y": 90,
+        "weight": 3
+      },
+      {
+        "model": "mechanical:block/ancient_oak_wood_2",
+        "x": 90,
+        "y": 90,
+        "weight": 2
+      },
+      {
+        "model": "mechanical:block/ancient_oak_wood_3",
+        "x": 90,
+        "y": 90,
+        "weight": 2
+      }
+    ]
   }
 }

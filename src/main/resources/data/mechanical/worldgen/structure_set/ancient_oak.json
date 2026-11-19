@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "mechanical:ancient_oak",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 717450131,
+    "spacing": 24,
+    "separation": 12
+  }
+}

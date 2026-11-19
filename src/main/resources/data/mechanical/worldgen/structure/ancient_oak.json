@@ -1,0 +1,6 @@
+{
+  "type": "mechanical:ancient_oak",
+  "biomes": "#mechanical:has_structure/ancient_oak",
+  "spawn_overrides": {},
+  "step": "top_layer_modification"
+}

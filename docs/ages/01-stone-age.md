@@ -227,6 +227,10 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
 När ett träd fälls blir en stubbe kvar där man högg (14 träslag, samma som Firewood). Ger 1–2 Sticks, bryts snabbast
 med yxa. Har inget item. Fungerar som **huggkubbe** för Rough Logs (se Bearbeta stockar).
 
+### Creative
+Alla moddens block finns som items i creative-fliken (buskar, svamp, Twigs, Leaf Litter, stubbar, Fallen Logs,
+Ancient Oak-block ...), även de som inte går att få i survival.
+
 ## Övriga items
 
 | Item | Hur | Används till |
@@ -477,11 +481,18 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
 
 ### Ancient Oak (uråldrig ek) och Offering Altar
-En mycket sällsynt jätteek (ca 1 på 400 chunks i Forest och Dark Forest). Stammen är ca 7 block bred vid marken med
-utsvängda rotben och tjocka rötter som löper över marken. Kronan är bred och tung: 5–6 krökta huvudgrenar delar sig i
-allt tunnare grenar (stock → gren → kvist) med lövklungor i ändarna; trädet blir ca 26–30 block högt. **Hela trädet är
-förtrollat**: det går inte att bryta, flytta med kolv eller spränga, och löven vissnar aldrig. Längst ner är stammen
-**ihålig** (ett rum på ca 5×5 med öppning mellan två rotben, skorsten uppåt, svamp, spindelväv, ibland en fladdermus).
+En väldig, förtrollad ek: en egen **struktur** (hitta den med `/locate structure mechanical:ancient_oak`), mycket
+sällsynt (en chans per 24×24 chunks, bara i Forest och Dark Forest). Sju väldiga rotben gör stammen ca **22 block bred
+vid marken**; den smalnar till ca 9 block vid förgreningen 25–29 block upp. Trädet är ca **48 block högt** och kronan ca
+**53 block bred**: 6–7 tjocka huvudgrenar böjer sig utåt och hänger ner i ändarna, delar sig i allt tunnare grenar och
+kvistar med lövklungor bara i ändarna, så grenverket syns. Rötterna slingrar sig 15–20 block ut och dyker ner i jorden.
+**Hela trädet är förtrollat**: det går inte att bryta, flytta med kolv eller spränga, och löven vissnar aldrig.
+
+Magiskt: **runbark** (Ancient Oak Rune Log, ljus 6) går i spiraler uppför stammen och gröna/gyllene ljusprickar driver
+från den; glow berries hänger från kronan, spore blossoms växer under grenarna och glow lichen på stammen. Runt foten en
+ring av mossa, podzol, azaleor, firefly bushes och **Glowcap** (liten lysande svamp, ljus 8, går att plocka). Inne i
+stammen ett rum på ca 9×9 och 5 högt med bred öppning mellan rotbenen och en skorsten 20 block upp, med lavar, svamp,
+spindelväv och ibland en fladdermus. Barken är sömlös med djupa fåror i tre slumpade varianter.
 
 Mitt i rummet står **Offering Altar**. Lägg vilket föremål som helst på altaret (högerklick), ta tillbaka med tom hand.
 Läggs en **Giant Antler** dit startar en ritual (7 s): hornet stiger och snurrar allt fortare, ljuspartiklar och löv

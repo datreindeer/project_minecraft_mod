@@ -716,6 +716,21 @@ def worldgen_entries(notes):
         if n.get("icon"):
             e["img"] = picture(n["icon"])
         out.append(e)
+    # real structures (worldgen/structure + structure_set), e.g. the Ancient Oak
+    for f in sorted(glob.glob(os.path.join(RES, "data", MOD, "worldgen", "structure", "*.json"))):
+        name = os.path.basename(f)[:-5]
+        st = read_json(f"data/{MOD}/worldgen/structure/{name}.json") or {}
+        sset = read_json(f"data/{MOD}/worldgen/structure_set/{name}.json") or {}
+        info = biome_text(st.get("biomes", "?"))
+        spacing = (sset.get("placement") or {}).get("spacing")
+        if spacing:
+            info += f"; en chans per {spacing}×{spacing} chunks"
+        n = notes.get(f"structure:{name}", {})
+        e = {"id": f"structure:{name}", "name": n.get("name") or name.replace("_", " ").title(), "cats": ["structures"],
+             "kind": "structure", "info": info}
+        if n.get("icon"):
+            e["img"] = picture(n["icon"])
+        out.append(e)
     return out
 
 

@@ -56,33 +56,105 @@ MOSS = [hexc(c) for c in ("3f5a22", "557530", "6d8f3a")]
 RUNE = hexc("9ff0c8")
 
 
-def bark_side():
-    """Deep-furrowed old oak bark: vertical ridges that wander, mossy at the bottom-left, a faint rune carved in."""
+FURROW, FURROW_EDGE = hexc("231c16"), hexc("332a22")
+PLATE = [hexc(c) for c in ("40362d", "4b4036", "554a3f", "60544a", "6b5f53")]
+MOSS_TINT = hexc("4f6a2e")
+
+
+def furrows(y):
+    """x of the three furrow lines at row y. Periodic in y (period 16) and shared by every variant, so the ridges run on
+    unbroken across the tops, bottoms and sides of all the trunk's blocks."""
+    t = 2 * math.pi * y / 16
+    return [(k * 16 / 3 + 0.5 + 0.85 * math.sin(t + k * 2.1) + 0.35 * math.sin(2 * t + k * 1.3)) % 16 for k in range(3)]
+
+
+def circ(a, b):
+    d = abs(a - b) % 16
+    return min(d, 16 - d)
+
+
+def bark_side(variant=0):
+    """Old oak bark that tiles seamlessly: deep wandering vertical furrows between broad plates (lit from the left), a
+    faint continuous moss streak in one furrow, and per-variant details (cracks, a knot, lichen) kept off the edges."""
     img = Image.new("RGBA", (16, 16))
-    for x in range(16):
-        for y in range(16):
-            # ridges: columns of plates broken by horizontal cracks; furrows dark
-            col = (x + int(h(x // 3, y // 4, 3) * 3)) % 4
-            ridge = [3, 2, 1, 0][col]  # 0 = furrow
-            v = ridge + (1 if h(x, y, 1) > 0.7 else 0) - (1 if h(x, y // 2, 2) > 0.85 else 0)
-            if (y + x // 4 * 3) % 6 == 0 and ridge > 0 and h(x, y, 4) > 0.4:
-                v -= 2  # cracks across the plates
-            c = BARK[max(0, min(4, v))]
+    for y in range(16):
+        fs = furrows(y)
+        for x in range(16):
+            cx = x + 0.5
+            d = min(circ(cx, f) for f in fs)
+            k = min(range(3), key=lambda i: circ(cx, fs[i]))
+            if d < 0.75:
+                c = FURROW
+            elif d < 1.35:
+                c = FURROW_EDGE
+            else:
+                # which side of the nearest furrow: the plate's left edge catches the light
+                right_of = ((cx - fs[k]) % 16) < 8
+                v = 3 if right_of and d < 2.2 else 1 if not right_of and d < 2.2 else 2
+                grain = h(x, y // 3, 40) - 0.5  # faint vertical grain, small so no blotches
+                c = shade(PLATE[v], 1 + grain * 0.06)
+            if k == 1 and d < 1.35:  # the mossy furrow
+                c = mix(c, MOSS_TINT, 0.25 + 0.15 * math.sin(2 * math.pi * y / 16))
             img.putpixel((x, y), c + (255,))
-    # moss creeping up the furrows
-    for x in range(16):
-        for y in range(16):
-            m = (x * 0.6 + (15 - y) * 0.9) + h(x, y, 9) * 5
-            if m < 6.5:
-                c = MOSS[0 if m < 3 else 1 if h(x, y, 8) > 0.4 else 2]
-                img.putpixel((x, y), c + (255,))
-    # a carved rune that faintly glows: a little branching mark
-    for x, y in [(11, 3), (11, 4), (11, 5), (11, 6), (11, 7), (10, 4), (12, 5), (9, 3), (13, 6), (11, 8)]:
-        base = img.getpixel((x, y))[:3]
-        img.putpixel((x, y), mix(base, RUNE, 0.32) + (255,))
-    for x, y in [(11, 5), (11, 6)]:
-        img.putpixel((x, y), mix(BARK[1], RUNE, 0.5) + (255,))
+
+    def px(x, y, c):
+        img.putpixel((x % 16, y), c + (255,))
+
+    # variant details, away from the tile edges (rows 3..12) so neighbours of any variant still line up
+    if variant == 1:
+        for x0, y0 in [(3, 5), (10, 9)]:  # short horizontal cracks across a plate
+            for i in range(3):
+                px(x0 + i, y0, FURROW_EDGE)
+            px(x0 + 1, y0 + 1, PLATE[0])
+    elif variant == 2:
+        for dx, dy in [(0, 0), (1, 0), (0, 1), (1, 1), (-1, 0), (2, 1)]:  # an old knot with a dark eye
+            px(8 + dx, 7 + dy, FURROW_EDGE)
+        px(8, 7, FURROW)
+        px(9, 8, FURROW)
+        for x, y in [(4, 4), (5, 4), (4, 5), (12, 11), (13, 11)]:  # grey-green lichen dots
+            img.putpixel((x, y), mix(img.getpixel((x, y))[:3], hexc("7f8f62"), 0.55) + (255,))
     return img
+
+
+def rune_bark():
+    """Bark variant 0 with a glyph carved deep into a plate, glowing green-gold from inside (the block gives light 6)."""
+    img = bark_side(0)
+    core, glow, halo = hexc("c9ffd6"), hexc("6fe0a0"), hexc("3f8a5f")
+    glyph = [(8, 2), (8, 3), (8, 4), (8, 5), (8, 6), (8, 7), (8, 8), (8, 9), (8, 10), (8, 11), (8, 12), (8, 13),
+             (7, 4), (6, 3), (9, 6), (10, 5), (7, 9), (6, 10), (9, 11), (10, 12), (10, 13)]
+    gs = set(glyph)
+    for x, y in glyph:
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                q = (x + dx, y + dy)
+                if q not in gs and 0 <= q[1] < 16:
+                    img.putpixel((q[0] % 16, q[1]), mix(img.getpixel((q[0] % 16, q[1]))[:3], halo, 0.45) + (255,))
+    for x, y in glyph:
+        img.putpixel((x, y), (core if y in (4, 5, 8, 9, 12) else glow) + (255,))
+    return img
+
+
+def glowcap():
+    """A little cluster of glowing mushrooms (cross model): pale stems, softly lit green-gold caps."""
+    rows = [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "....ccc.........",
+        "...cGggc........",
+        "...gggGg..ccc...",
+        "....ss...cgGgc..",
+        "....ss...ggggg..",
+        "....ss....ss.cc.",
+        "..cc.ss...ss.gg.",
+        "..gg.ss...ss.s..",
+        "...s.ss...ss.s..",
+        "...s.ss...ss.s..",
+    ]
+    return grid(rows, {"c": hexc("d8f5a0"), "G": hexc("f6ffd0"), "g": hexc("9ccf5a"), "s": hexc("e6dcc4")})
 
 
 def log_top():
@@ -328,7 +400,11 @@ def crown_layer():
 
 def textures():
     out = {}
-    out["block/ancient_oak_log"] = bark_side()
+    out["block/ancient_oak_log"] = bark_side(0)
+    out["block/ancient_oak_log_2"] = bark_side(1)
+    out["block/ancient_oak_log_3"] = bark_side(2)
+    out["block/ancient_oak_rune_log"] = rune_bark()
+    out["block/glowcap"] = glowcap()
     out["block/ancient_oak_log_top"] = log_top()
     out["block/ancient_oak_leaves"] = leaves()
     out["block/offering_altar_side"] = altar_side()
@@ -349,21 +425,38 @@ def cube(f, t, tex, faces=("down", "up", "north", "south", "east", "west"), uv=N
 
 
 def data():
-    # logs: axis variants; wood = bark on every face
-    w(A / "models/block/ancient_oak_log.json", {"parent": "minecraft:block/cube_column",
-        "textures": {"end": "mechanical:block/ancient_oak_log_top", "side": "mechanical:block/ancient_oak_log"}})
-    w(A / "models/block/ancient_oak_log_horizontal.json", {"parent": "minecraft:block/cube_column_horizontal",
-        "textures": {"end": "mechanical:block/ancient_oak_log_top", "side": "mechanical:block/ancient_oak_log"}})
-    w(A / "models/block/ancient_oak_wood.json", {"parent": "minecraft:block/cube_column",
-        "textures": {"end": "mechanical:block/ancient_oak_log", "side": "mechanical:block/ancient_oak_log"}})
-    w(A / "blockstates/ancient_oak_log.json", {"variants": {
-        "axis=y": {"model": "mechanical:block/ancient_oak_log"},
-        "axis=z": {"model": "mechanical:block/ancient_oak_log_horizontal", "x": 90},
-        "axis=x": {"model": "mechanical:block/ancient_oak_log_horizontal", "x": 90, "y": 90}}})
-    w(A / "blockstates/ancient_oak_wood.json", {"variants": {
-        "axis=y": {"model": "mechanical:block/ancient_oak_wood"},
-        "axis=z": {"model": "mechanical:block/ancient_oak_wood", "x": 90},
-        "axis=x": {"model": "mechanical:block/ancient_oak_wood", "x": 90, "y": 90}}})
+    # logs: axis variants, each picking one of three seamless bark textures at random; wood = bark on every face
+    bark = {"": "ancient_oak_log", "_2": "ancient_oak_log_2", "_3": "ancient_oak_log_3"}
+    for suffix, tex in bark.items():
+        side = f"mechanical:block/{tex}"
+        w(A / f"models/block/ancient_oak_log{suffix}.json", {"parent": "minecraft:block/cube_column",
+            "textures": {"end": "mechanical:block/ancient_oak_log_top", "side": side}})
+        w(A / f"models/block/ancient_oak_log{suffix}_horizontal.json", {"parent": "minecraft:block/cube_column_horizontal",
+            "textures": {"end": "mechanical:block/ancient_oak_log_top", "side": side}})
+        w(A / f"models/block/ancient_oak_wood{suffix}.json", {"parent": "minecraft:block/cube_column", "textures": {"end": side, "side": side}})
+
+    def axes(model, horizontal):
+        return {"axis=y": [{"model": f"mechanical:block/{model}{s}", "weight": wt} for s, wt in (("", 3), ("_2", 2), ("_3", 2))],
+                "axis=z": [{"model": f"mechanical:block/{model}{s}{horizontal}", "x": 90, "weight": wt} for s, wt in (("", 3), ("_2", 2), ("_3", 2))],
+                "axis=x": [{"model": f"mechanical:block/{model}{s}{horizontal}", "x": 90, "y": 90, "weight": wt} for s, wt in (("", 3), ("_2", 2), ("_3", 2))]}
+    w(A / "blockstates/ancient_oak_log.json", {"variants": axes("ancient_oak_log", "_horizontal")})
+    w(A / "blockstates/ancient_oak_wood.json", {"variants": axes("ancient_oak_wood", "")})
+    w(A / "models/block/ancient_oak_rune_log.json", {"parent": "minecraft:block/cube_column",
+        "textures": {"end": "mechanical:block/ancient_oak_log_top", "side": "mechanical:block/ancient_oak_rune_log"}})
+    w(A / "models/block/ancient_oak_rune_log_horizontal.json", {"parent": "minecraft:block/cube_column_horizontal",
+        "textures": {"end": "mechanical:block/ancient_oak_log_top", "side": "mechanical:block/ancient_oak_rune_log"}})
+    w(A / "blockstates/ancient_oak_rune_log.json", {"variants": {
+        "axis=y": {"model": "mechanical:block/ancient_oak_rune_log"},
+        "axis=z": {"model": "mechanical:block/ancient_oak_rune_log_horizontal", "x": 90},
+        "axis=x": {"model": "mechanical:block/ancient_oak_rune_log_horizontal", "x": 90, "y": 90}}})
+    # glowcap: cross model, item uses the block texture, drops itself
+    w(A / "models/block/glowcap.json", {"parent": "minecraft:block/cross", "textures": {"cross": "mechanical:block/glowcap"}})
+    w(A / "blockstates/glowcap.json", {"variants": {"": {"model": "mechanical:block/glowcap"}}})
+    w(A / "models/item/glowcap.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:block/glowcap"}})
+    w(A / "items/glowcap.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/glowcap"}})
+    w(D / "mechanical/loot_table/blocks/glowcap.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": "mechanical:glowcap"}], "condition": {"type": "minecraft:survives_explosion"}}],
+        "random_sequence": "mechanical:blocks/glowcap"})
     w(A / "models/block/ancient_oak_leaves.json", {"parent": "minecraft:block/cube_all",
         "textures": {"all": "mechanical:block/ancient_oak_leaves"}})
     w(A / "blockstates/ancient_oak_leaves.json", {"variants": {"": {"model": "mechanical:block/ancient_oak_leaves"}}})
@@ -408,19 +501,19 @@ def data():
     # tags: the tree's own tag (never logs/leaves, so felling and leaf decay leave it alone); immune to withers, dragons
     # and other features; altar offerings (the Giant Antler comes from another part of the mod, so it is optional)
     tree = [f"mechanical:{b}" for b in ("ancient_oak_log", "ancient_oak_wood", "ancient_oak_branch", "ancient_oak_twig",
-                                         "ancient_oak_leaves", "offering_altar")]
+                                         "ancient_oak_leaves", "offering_altar", "ancient_oak_rune_log")]
     w(D / "mechanical/tags/block/ancient_oak.json", {"values": tree})
     for tag in ("wither_immune", "dragon_immune", "features_cannot_replace"):
         w(D / f"minecraft/tags/block/{tag}.json", {"replace": False, "values": ["#mechanical:ancient_oak"]})
     w(D / "mechanical/tags/item/altar_offerings.json", {"values": [{"id": "mechanical:giant_antler", "required": False}]})
 
-    # worldgen: about 1 in 400 chunks of forest / dark forest, after the vanilla trees (the feature clears its footprint)
-    w(D / "mechanical/worldgen/feature/ancient_oak.json", {"type": "mechanical:ancient_oak"})
-    w(D / "mechanical/worldgen/placed_feature/ancient_oak.json", {"feature": "mechanical:ancient_oak", "placement": [
-        {"type": "minecraft:rarity_filter", "chance": 400}, {"type": "minecraft:in_square"},
-        {"type": "minecraft:heightmap", "heightmap": "OCEAN_FLOOR"}, {"type": "minecraft:biome"}]})
-    w(D / "mechanical/neoforge/biome_modifier/add_ancient_oak.json", {"type": "neoforge:add_features",
-        "biomes": ["minecraft:forest", "minecraft:dark_forest"], "features": "mechanical:ancient_oak", "step": "vegetal_decoration"})
+    # worldgen: a structure (AncientOakStructure), one chance per 24x24-chunk cell, forest and dark forest only;
+    # placed after the vegetation (it clears the biome's trees under itself)
+    w(D / "mechanical/tags/worldgen/biome/has_structure/ancient_oak.json", {"values": ["minecraft:forest", "minecraft:dark_forest"]})
+    w(D / "mechanical/worldgen/structure/ancient_oak.json", {"type": "mechanical:ancient_oak",
+        "biomes": "#mechanical:has_structure/ancient_oak", "spawn_overrides": {}, "step": "top_layer_modification"})
+    w(D / "mechanical/worldgen/structure_set/ancient_oak.json", {"structures": [{"structure": "mechanical:ancient_oak", "weight": 1}],
+        "placement": {"type": "minecraft:random_spread", "salt": 717450131, "spacing": 24, "separation": 12}})
 
     lang_path = A / "lang/en_us.json"
     lang = json.loads(lang_path.read_text(encoding="utf-8"))
@@ -431,6 +524,8 @@ def data():
         "block.mechanical.ancient_oak_twig": "Ancient Oak Twig",
         "block.mechanical.ancient_oak_leaves": "Ancient Oak Leaves",
         "block.mechanical.offering_altar": "Offering Altar",
+        "block.mechanical.ancient_oak_rune_log": "Ancient Oak Rune Bark",
+        "block.mechanical.glowcap": "Glowcap",
         "message.mechanical.offering_altar.waiting": "The altar waits for a worthy offering.",
         "message.mechanical.offering_altar.busy": "The old forest is listening...",
         "item.mechanical.thunderstone": "Thunderstone",
@@ -452,7 +547,7 @@ def sheet(path, texs):
     scale, pad = 8, 8
     items = list(texs.items())
     cell = 64 * scale // 2
-    img = Image.new("RGBA", (pad + (cell + pad) * 4, pad + (cell + pad) * ((len(items) + 3) // 4 + 1)), (120, 140, 120, 255))
+    img = Image.new("RGBA", (pad + (cell + pad) * 4, pad + (cell + pad) * ((len(items) + 3) // 4 + 2)), (120, 140, 120, 255))
     for i, (name, t) in enumerate(items):
         x, y = pad + (i % 4) * (cell + pad), pad + (i // 4) * (cell + pad)
         if t.size == (16, 16):
@@ -464,6 +559,13 @@ def sheet(path, texs):
         else:
             big = t.resize((cell, cell // 2), Image.NEAREST)
         img.alpha_composite(big, (x, y))
+    trunk = Image.new("RGBA", (64, 64))
+    names = ["block/ancient_oak_log", "block/ancient_oak_log_2", "block/ancient_oak_log_3"]
+    for a in range(4):
+        for b in range(4):
+            name = "block/ancient_oak_rune_log" if (a, b) == (2, 1) else names[int(h(a, b, 77) * 3)]
+            trunk.paste(texs[name], (a * 16, b * 16))
+    img.alpha_composite(trunk.resize((cell * 2, cell * 2), Image.NEAREST), (pad, pad + ((len(items) + 3) // 4) * (cell + pad)))
     img.save(path)
 
 
