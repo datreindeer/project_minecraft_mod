@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,17 +22,32 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * carries a matching item (null = always unlocked).
  */
 public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, Predicate<ItemStack> unlockedBy) {
-    public record Part(Supplier<Item> item, int count, boolean tool) {
+    /** {@code alt}: an item that may stand in for {@code item} (e.g. String for Wool Thread), or null. One kind per slot. */
+    public record Part(Supplier<Item> item, int count, boolean tool, @Nullable Supplier<Item> alt) {
         public static Part of(Supplier<Item> item, int count) {
-            return new Part(item, count, false);
+            return new Part(item, count, false, null);
+        }
+
+        public static Part of(Supplier<Item> item, int count, Supplier<Item> alt) {
+            return new Part(item, count, false, alt);
         }
 
         public static Part tool(Supplier<Item> item) {
-            return new Part(item, 1, true);
+            return new Part(item, 1, true, null);
         }
 
         public boolean matches(ItemStack stack) {
-            return stack.is(item.get()) && stack.getCount() >= count;
+            return (stack.is(item.get()) || alt != null && stack.is(alt.get())) && stack.getCount() >= count;
+        }
+
+        /** The item to use from this inventory: the main one if there is enough of it, else the stand-in if that suffices. */
+        public Item pick(Inventory inventory) {
+            if (alt == null || inventory.countItem(item.get()) >= count || inventory.countItem(alt.get()) < count) return item.get();
+            return alt.get();
+        }
+
+        public boolean has(Inventory inventory) {
+            return inventory.countItem(pick(inventory)) >= count;
         }
     }
 
@@ -55,7 +73,7 @@ public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, 
 
     /** The player carries every part (enough of each). */
     public boolean hasParts(Player player) {
-        return parts.stream().allMatch(p -> player.getInventory().countItem(p.item().get()) >= p.count());
+        return parts.stream().allMatch(p -> p.has(player.getInventory()));
     }
 
     /** All station recipes that unlock by material (the Tool Station has its own list in ToolStationRecipes). */

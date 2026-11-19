@@ -122,6 +122,7 @@ klicka för att lägga i dem. Tre platser + resultat:
 Recept: `[Leather][Bone Needle][Leather]` / `[Planks][Crafting Table][Planks]`. Fungerar som Tool Station (lista till
 vänster, tre platser, resultat). **Bone Needle** = Fish Bones, Bone eller Horn + kniv (crafting), 32 i hållbarhet; den
 ligger kvar i stationen och tappar 1 per rustningsdel.
+**String** (från spindlar) fungerar överallt där receptet vill ha Wool Thread (samma antal, en sort per ruta).
 
 | Rustning | Material | Verktyg | Tråd | Låses upp av |
 |---|---|---|---|---|

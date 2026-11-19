@@ -115,7 +115,7 @@ public class RecipeStationMenu extends AbstractContainerMenu {
             int sets = all ? sets(player.getInventory(), recipe) : 1;
             for (int i = 0; i < 3; i++) {
                 StationRecipe.Part part = recipe.parts().get(i);
-                inputs.setItem(i, take(player.getInventory(), part.item().get(), part.tool() ? 1 : part.count() * sets));
+                inputs.setItem(i, take(player.getInventory(), part.pick(player.getInventory()), part.tool() ? 1 : part.count() * sets));
             }
         }
         slotsChanged(inputs);
@@ -127,7 +127,7 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         int sets = Integer.MAX_VALUE;
         for (StationRecipe.Part part : recipe.parts()) {
             if (part.tool()) continue;
-            Item item = part.item().get();
+            Item item = part.pick(inventory);
             sets = Math.min(sets, Math.min(inventory.countItem(item), item.getDefaultMaxStackSize()) / part.count());
         }
         return Math.max(1, sets == Integer.MAX_VALUE ? 1 : sets);

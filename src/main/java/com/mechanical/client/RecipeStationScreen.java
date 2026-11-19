@@ -98,8 +98,10 @@ public class RecipeStationScreen<M extends RecipeStationMenu> extends AbstractCo
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(recipe.count() > 1 ? recipe.count() + "× " : "").append(recipe.assemble().getHoverName()));
         for (StationRecipe.Part part : recipe.parts()) {
-            boolean has = minecraft.player.getInventory().countItem(part.item().get()) >= part.count();
-            lines.add(Component.literal(part.tool() ? "" : part.count() + "× ").append(new ItemStack(part.item().get()).getHoverName())
+            boolean has = part.has(minecraft.player.getInventory());
+            Component name = new ItemStack(part.item().get()).getHoverName();
+            if (part.alt() != null) name = name.copy().append(" / ").append(new ItemStack(part.alt().get()).getHoverName());
+            lines.add(Component.literal(part.tool() ? "" : part.count() + "× ").append(name)
                     .append(part.tool() ? Component.literal(" (tool, loses durability)") : Component.empty())
                     .withStyle(has ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
