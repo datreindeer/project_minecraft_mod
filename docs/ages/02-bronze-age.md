@@ -70,8 +70,8 @@ Sinew, Tool Station och Armor Station.
 - **Rustning:** bara Bronze Helmet och Bronze Greaves (benskydd). Ingen bröstplåt; full rustning i järnåldern.
 - **Bränsle:** Charcoal (från kilnen) är bronsålderns bränsle. Coal Ore kräver Bronze Pickaxe; stenkol hör till
   järnålderns smide/koks. Iron, Coal och Lapis Ore ligger i taggen `mechanical:needs_bronze_tool`.
-- **Inte nu:** modulära verktyg (huvud/skaft/binding som egna delar med stats), tämja hästar. (Jordbruket kom till
-  slut med: se Odling nedan.)
+- **Inte nu:** modulära verktyg (huvud/skaft/binding som egna delar med stats). (Jordbruket kom till slut med: se
+  Odling nedan. Att tämja hästar kom också: se Vagn och häst.)
 
 - **Temperatur:** realistiska grader. Lera bränns vid 600°, brons smälter vid ~950°, koppar vid 1085°. Varje bälgpump
   höjer en bit; utan pump sjunker temperaturen långsamt (pumpa några gånger per minut under smältning).
@@ -612,3 +612,80 @@ den plockas upp; tooltip "Water: 3/6"). Mynningen visar tom/lite/mycket vatten, 
 - **Inte gjort (valfritt):** Clay Bowl/fat, Amphora (större förvaring), att kärl går sönder vid fall/explosion, att
   dricka ur kannan (modden har ingen törst), att hälla kannan i en kittel (Clay Bucket fyller inte heller kittlar).
 
+## Vagn och häst (byggd)
+
+Bronsålderns transport: travoisen får hjul, och vildhästen kan tämjas och dra vagnen. Kod: `Carting` (registrering,
+taggar, Rope Halter), `CartEntity` (bygger på `TravoisEntity`), `wildlife/WildHorse` (förtroende och tämjning),
+`wildlife/TameHorse` (den tama hästen), `AnimalFear` (hästen skyggar inte för den som matar), klient: `client/CartModel`,
+`client/CartRenderer`, `client/wildlife/TameHorseRenderer`. Data: `scripts/gen_cart.py` (efter gen_pottery.py, före
+gen_block_items.py), texturer: `scripts/gen_cart_textures.py`.
+
+### Recept
+
+| Sak | Recept | Låses upp av |
+|---|---|---|
+| **Wooden Wheel** | `[Planks][Tool Rod][Planks]` / `[Tool Rod][Bronze Ingot][Tool Rod]` / `[Planks][Bronze Saw][Planks]`, sågen blir kvar och slits 1 | Bronze Saw |
+| **Wheeled Cart** | `[Tool Rod][ ][Tool Rod]` / `[Planks][Planks][Planks]` / `[Wooden Wheel][Planks][Wooden Wheel]` | Wooden Wheel |
+| **Rope Halter** | `[Cordage][ ][Cordage]` / `[ ][Cordage][ ]` | Bronze Ingot |
+| **Hide Saddle Blanket** | `[Leather][Leather][Leather]` / `[Cordage][ ][Cordage]` | Rope Halter |
+
+### Wheeled Cart
+
+Plankbädd med sidobräden, gavlar och hörnstörar på en axel med två ekrade hjul (navet en gjuten bronshatt, tolv
+fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. Ställs ut och plockas upp som travoisen
+(högerklicka på marken, slå på den: last och varor faller ut).
+
+- **Dra själv:** högerklicka med tom hand (igen för att släppa). Den följer **2,6 block** bakom, mellan skaklarnas spetsar.
+  Fart **−5 % tom, −4 % per lastenhet** (travois −10 % + −10 %), alltså −21 % fullastad. Spring går med upp till 2
+  lastenheter (en stor eller två mellanstora); mer än så går inte.
+- **Häst:** högerklicka på vagnen när du **rider** en tam häst, eller när du **leder** en tam häst i koppel (inom 10
+  block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Högerklicka igen för att
+  spänna från. Föl kan inte dra.
+- **Last:** **4 lastenheter**, två stora eller fyra mellanstora/små kroppar (jättehjorten är för stor). Lasta som på
+  travoisen (högerklicka med kroppen du bär eller släpar). Kropparna ligger i två halvor, fram och bak: en stor tar en
+  halva, mellanstora ligger två i bredd. **Ta av en kropp:** smyg + högerklicka på kroppen (som på travoisen).
+- **Förråd:** **smyg + högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
+  vagnen.
+- Rovdjur: den som drar en lastad vagn (spelare eller häst) blir bytet, som med travoisen.
+
+### Tämja vildhästar
+
+Wild Horse är mycket skygg. Tämjningen sker med tålamod, inte genom att rida in den.
+
+1. **Smyg fram med foder i handen** (tagg `mechanical:horse_feed`: Barley/Einkorn/Emmer Grain och Sheaf, Wheat, Hay
+   Bale, Apple, Carrot). Hästen flyr inte från någon som smyger med foder framme (de andra i flocken gör det).
+2. **Mata ur handen:** högerklicka med fodret. Varje matning är **1 förtroende**, högst en gång per **10 sekunder**
+   ("still chewing" annars). Hjärtan visas och förtroendet står i meddelandet (t.ex. 2/6). Står du upp när du försöker
+   innan den litar på dig skenar den.
+3. **Vid 3 förtroende** flyr den inte längre när du går nära (men om du springer), och tar inget mer foder förrän den
+   har grimma: sätt på en **Rope Halter** (högerklicka). Grimman blir ett koppel och hästen följer med. Med mindre än 3
+   vägrar den och skenar.
+4. **Mata vidare i grimman** till **6 förtroende**: då blir den tam (vanilla-hjärtan) och ägs av dig. Den behåller
+   grimman/kopplet, namn och hälsa. (Tas kopplet av blir det en vanlig Lead.)
+- Slår du hästen tappar den allt förtroende. Föl kan inte tämjas (de följer sin mor).
+- Förtroendet sparas på hästen (`Trust`, `FeedCooldown`).
+
+### Den tama hästen
+
+`mechanical:tame_horse` är en vanilla-häst i grunden (ridning, hopp, inventory, hästrustning, avel) men behåller
+vildhästens utseende (vildhästmodellen och -texturen; föl med fölmodellen). Den äter gräs med huvudet nere och stegrar
+sig på bakbenen.
+
+- **Hälsa 20–26, fart 0,2–0,3, hopp 0,5–0,75** (en vanilla-häst: 15–30, 0,11–0,34, 0,4–1,0).
+- **Barbacka:** högerklicka för att rida, den styrs **utan sadel** men går i **80 %** av sin fart och hoppar **70 %**
+  så högt.
+- **Hide Saddle Blanket:** läggs i sadelplatsen (smyg + högerklicka på hästen, eller högerklicka med filten): full fart
+  och fulla hopp. Syns som en sydd hudfilt med en gjord av rep över ryggen. Tas av i hästens inventory. Bara den tama hästen
+  kan bära den.
+- **Avel:** mata två tama, vuxna hästar med **Sheaf eller Hay Bale** (tagg `mechanical:horse_breeding_feed`; vanillas
+  guldmat fungerar också). Fölet blir en **tam** häst, ägd av den som matade. Med en vanilla-häst eller åsna gäller
+  vanillas regler (fölet blir en vanilla-häst eller mula). Annat foder läker 2 hälsa och får föl att växa.
+- Släpper Manure som andra hästar. Flyr inte (tam).
+
+### Beslut
+
+- Den tama hästen är en egen entitet (vanilla `Horse` som underklass) med vildhästens modell, i stället för att byta till
+  en vanilla-häst med annan färg.
+- Ingen sadel i bronsåldern: barbacka fungerar, filten gör den bättre. Vanillas Saddle (järn) fungerar också men syns inte
+  på modellen.
+- **Inte gjort:** hästrustning syns inte på vildhästmodellen; vagnen visar inte varorna i förrådet; ingen tvåhästvagn.

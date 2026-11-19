@@ -52,7 +52,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 @EventBusSubscriber(modid = MODID)
 public final class CarcassHauling {
     private static final Identifier SLOW = Identifier.fromNamespaceAndPath(MODID, "hauling");
-    /** Speed lost: a medium body on the shoulders, a large one dragged, a harnessed travois (plus per load unit). */
+    /** Speed lost: a medium body on the shoulders, a large one dragged, a harnessed travois (plus per load unit; the Cart: CartEntity). */
     static final double SLOW_CARRY = 0.25, SLOW_DRAG = 0.5, SLOW_TRAVOIS = 0.1, SLOW_TRAVOIS_LOAD = 0.1;
     /** A hit this hard makes you drop what you haul. */
     static final float DROP_DAMAGE = 4.0F;
@@ -63,7 +63,7 @@ public final class CarcassHauling {
 
     public static final DeferredHolder<EntityType<?>, EntityType<TravoisEntity>> TRAVOIS = ENTITY_TYPES.registerEntityType("travois",
             TravoisEntity::new, MobCategory.MISC, b -> b.noLootTable().sized(1.4F, 0.5F).clientTrackingRange(10));
-    public static final DeferredItem<TravoisEntity.Placer> TRAVOIS_ITEM = ITEMS.registerItem("travois", TravoisEntity.Placer::new, p -> p.stacksTo(1));
+    public static final DeferredItem<TravoisEntity.Placer> TRAVOIS_ITEM = ITEMS.registerItem("travois", p -> new TravoisEntity.Placer(p, TRAVOIS), p -> p.stacksTo(1));
 
     // big cuts from a hung carcass; 1 meat unit = 1 scrap = 1 Smoked Meat (Haunch 3 units, Ribs and Loin 2)
     public static final DeferredItem<Item> RAW_HAUNCH = food("raw_haunch", 3, 0.2F);
@@ -97,7 +97,7 @@ public final class CarcassHauling {
         CarcassEntity c = hauled(player);
         if (c != null && !c.isSmall()) return true;
         TravoisEntity t = TravoisEntity.harnessedTo(player);
-        return t != null && t.load() > 0;
+        return t != null && t.blocksSprint();
     }
 
     /** Sneak + right-click with an empty hand: shoulder it or start dragging it; right-click what you drag to let go. */
@@ -200,7 +200,7 @@ public final class CarcassHauling {
         CarcassEntity c = hauled(player);
         if (c != null) slow += c.isLarge() ? SLOW_DRAG : c.isSmall() ? 0 : SLOW_CARRY;
         TravoisEntity t = TravoisEntity.harnessedTo(player);
-        if (t != null) slow += SLOW_TRAVOIS + SLOW_TRAVOIS_LOAD * t.load();
+        if (t != null) slow += t.slowdown();
         AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (speed == null) return;
         if (slow == 0) speed.removeModifier(SLOW);

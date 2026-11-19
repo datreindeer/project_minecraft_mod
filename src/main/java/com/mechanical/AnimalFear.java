@@ -111,6 +111,7 @@ public final class AnimalFear {
         private Player noticedPlayer() {
             Player nearest = mob.level().getNearestPlayer(mob, NOTICE_SPRINT * 1.5);
             if (nearest == null || nearest.isCreative() || nearest.isSpectator()) return null;
+            if (mob instanceof com.mechanical.wildlife.WildHorse horse && horse.calmAround(nearest)) return null; // being tamed
             double dist = mob.distanceTo(nearest);
             double skittish = mob instanceof com.mechanical.wildlife.WildAnimal wild ? wild.fearMultiplier() : 1.0;
             if (dist > AncientOak.noticeRange(nearest, noticeRange(nearest) * skittish)) return null;

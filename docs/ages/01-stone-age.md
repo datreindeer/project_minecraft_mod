@@ -577,6 +577,7 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   (jättehjorten är för stor). **Smyg + högerklicka** med tom hand lastar av den sista. Lasten ligger på huden och syns.
 - Fart: −10 % tom, −10 % till per lastenhet (en stor = 2), alltså −30 % med en uroxe mot −50 % om du släpar den. Lastad
   går det inte att springa. Slå på släden för att plocka upp den (lasten hamnar på marken).
+- I bronsåldern kommer **Wheeled Cart** (se 02-bronze-age.md, *Vagn och häst*): dubbelt så mycket last, ett förråd, och en tam häst kan dra den.
 
 **Hanging Rack** (slaktställning): recept `[Tool Rod][Cordage][Tool Rod]` / `[Tool Rod][ ][Tool Rod]` /
 `[Tool Rod][ ][Tool Rod]` (låses upp med en Raw Hide). Två stolpar två block höga, en tvärbjälke och en gambrel (krokpinne)

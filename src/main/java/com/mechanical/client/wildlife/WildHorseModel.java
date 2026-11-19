@@ -6,6 +6,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
@@ -61,52 +62,57 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
+        return createBodyLayer(CubeDeformation.NONE);
+    }
+
+    /** Inflated: the Hide Saddle Blanket layer of the tamed horse (TameHorseRenderer), drawn over the same pose. */
+    public static LayerDefinition createBodyLayer(CubeDeformation g) {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
         PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, -5.0F, -10.0F, 9.0F, 10.0F, 20.0F),
+                CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, -5.0F, -10.0F, 9.0F, 10.0F, 20.0F, g),
                 PartPose.offset(0.0F, 10.0F, 0.0F));
         // Tail: short-haired dock, then the long dark hair hanging from it.
         body.addOrReplaceChild("tail",
                 CubeListBuilder.create()
-                        .texOffs(114, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F)
-                        .texOffs(108, 6).addBox(-1.5F, 3.0F, -1.5F, 3.0F, 9.0F, 3.0F),
+                        .texOffs(114, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, g)
+                        .texOffs(108, 6).addBox(-1.5F, 3.0F, -1.5F, 3.0F, 9.0F, 3.0F, g),
                 PartPose.offsetAndRotation(0.0F, -4.0F, 9.5F, TAIL_X, 0.0F, 0.0F));
 
         // Neck built upwards (-y) and leaned forward; the erect mane stands on its crest (+z face) up to the poll.
         PartDefinition neck = body.addOrReplaceChild("neck",
                 CubeListBuilder.create()
-                        .texOffs(58, 0).addBox(-2.0F, -9.0F, -3.0F, 4.0F, 10.0F, 6.0F)
-                        .texOffs(78, 0).addBox(-1.0F, -10.0F, 2.5F, 2.0F, 10.0F, 2.0F),
+                        .texOffs(58, 0).addBox(-2.0F, -9.0F, -3.0F, 4.0F, 10.0F, 6.0F, g)
+                        .texOffs(78, 0).addBox(-1.0F, -10.0F, 2.5F, 2.0F, 10.0F, 2.0F, g),
                 PartPose.offsetAndRotation(0.0F, -2.5F, -8.5F, NECK_X, 0.0F, 0.0F));
         PartDefinition head = neck.addOrReplaceChild("head",
                 CubeListBuilder.create()
-                        .texOffs(86, 0).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 6.0F)
-                        .texOffs(86, 11).addBox(-2.0F, -1.5F, -11.0F, 4.0F, 4.0F, 6.0F),
+                        .texOffs(86, 0).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 6.0F, g)
+                        .texOffs(86, 11).addBox(-2.0F, -1.5F, -11.0F, 4.0F, 4.0F, 6.0F, g),
                 PartPose.offsetAndRotation(0.0F, -8.5F, 0.0F, HEAD_X, 0.0F, 0.0F));
         // Ears point up against the head's downward tilt.
         head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(108, 0).mirror().addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
+                CubeListBuilder.create().texOffs(108, 0).mirror().addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F, g),
                 PartPose.offsetAndRotation(1.6F, -2.0F, 0.0F, -0.85F, 0.0F, 0.15F));
         head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(108, 0).addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
+                CubeListBuilder.create().texOffs(108, 0).addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F, g),
                 PartPose.offsetAndRotation(-1.6F, -2.0F, 0.0F, -0.85F, 0.0F, -0.15F));
 
-        addLeg(root, "left_front_leg", 2.7F, -7.5F, false);
-        addLeg(root, "right_front_leg", -2.7F, -7.5F, false);
-        addLeg(root, "left_hind_leg", 2.7F, 7.5F, true);
-        addLeg(root, "right_hind_leg", -2.7F, 7.5F, true);
+        addLeg(root, "left_front_leg", 2.7F, -7.5F, false, g);
+        addLeg(root, "right_front_leg", -2.7F, -7.5F, false, g);
+        addLeg(root, "left_hind_leg", 2.7F, 7.5F, true, g);
+        addLeg(root, "right_hind_leg", -2.7F, 7.5F, true, g);
         return LayerDefinition.create(mesh, 128, 64);
     }
 
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
+    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind, CubeDeformation g) {
         boolean left = x > 0;
         CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(12, 30).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 6.0F, 4.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 30).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 6.0F, 3.0F);
+                ? CubeListBuilder.create().mirror(left).texOffs(12, 30).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 6.0F, 4.0F, g)
+                : CubeListBuilder.create().mirror(left).texOffs(0, 30).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 6.0F, 3.0F, g);
         PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 14.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(26, 30).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F),
+        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(26, 30).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F, g),
                 PartPose.offset(0.0F, 5.0F, hind ? 0.5F : 0.0F));
     }
 

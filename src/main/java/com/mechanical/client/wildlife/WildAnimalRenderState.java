@@ -27,4 +27,7 @@ public class WildAnimalRenderState extends LivingEntityRenderState {
     /** Predators: crouched stalking, 0..1 head thrown back howling/roaring, in the air pouncing. */
     public boolean crouching, leaping;
     public float calling;
+    /** Tamed horse: 0..1 reared up on the hind legs, and the Hide Saddle Blanket on. */
+    public float stand;
+    public boolean saddled;
 }

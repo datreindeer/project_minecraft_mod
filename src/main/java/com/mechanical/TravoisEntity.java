@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -14,7 +15,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -47,9 +50,43 @@ public class TravoisEntity extends Entity {
         return entityData.get(HARNESS);
     }
 
-    public Player harness() {
+    /** Who pulls it: a player, or a tamed horse for the {@link CartEntity}. */
+    public LivingEntity harness() {
         int id = harnessId();
-        return id >= 0 && level().getEntity(id) instanceof Player p ? p : null;
+        return id >= 0 && level().getEntity(id) instanceof LivingEntity e ? e : null;
+    }
+
+    protected void setHarness(Entity puller) {
+        entityData.set(HARNESS, puller == null ? -1 : puller.getId());
+    }
+
+    /** Load units it holds. */
+    public int capacity() {
+        return CAPACITY;
+    }
+
+    /** How far behind {@code puller} it follows. */
+    protected double lead(LivingEntity puller) {
+        return LEAD;
+    }
+
+    /** Speed the player in the harness loses (CarcassHauling). */
+    public double slowdown() {
+        return CarcassHauling.SLOW_TRAVOIS + CarcassHauling.SLOW_TRAVOIS_LOAD * load();
+    }
+
+    /** The player in the harness can't sprint (PlayerMixin via CarcassHauling.blocksSprint). */
+    public boolean blocksSprint() {
+        return load() > 0;
+    }
+
+    /** Lang key part for its messages ("travois", "cart"). */
+    protected String messageKey() {
+        return "travois";
+    }
+
+    protected Item item() {
+        return CarcassHauling.TRAVOIS_ITEM.get();
     }
 
     /** The travois {@code player} pulls, or null. */
@@ -80,7 +117,7 @@ public class TravoisEntity extends Entity {
     public void tick() {
         super.tick();
         if (level().isClientSide()) return;
-        Player p = harness();
+        LivingEntity p = harness();
         if (harnessId() >= 0 && (p == null || !p.isAlive() || p.distanceTo(this) > 10)) {
             entityData.set(HARNESS, -1); // dead, gone or stuck far behind
             p = null;
@@ -90,7 +127,8 @@ public class TravoisEntity extends Entity {
         if (p != null) {
             Vec3 off = position().subtract(p.position()).multiply(1, 0, 1);
             double d = off.length();
-            if (d > LEAD) pull = off.scale((LEAD - d) / d);
+            double lead = lead(p);
+            if (d > lead) pull = off.scale((lead - d) / d);
             if (d > 0.3) setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z))); // the poles point at the one pulling
         }
         move(MoverType.SELF, new Vec3(pull.x, fall, pull.z));
@@ -106,23 +144,29 @@ public class TravoisEntity extends Entity {
             return InteractionResult.SUCCESS;
         }
         if (!player.getMainHandItem().isEmpty()) return InteractionResult.PASS;
-        if (player.isShiftKeyDown()) {
-            if (getPassengers().isEmpty()) return InteractionResult.PASS;
-            if (!level().isClientSide()) unloadLast();
-            return InteractionResult.SUCCESS;
-        }
-        if (!level().isClientSide()) {
-            boolean off = harnessId() == player.getId();
-            entityData.set(HARNESS, off ? -1 : player.getId());
-            player.sendOverlayMessage(Component.translatable(off ? "message.mechanical.travois.unharnessed" : "message.mechanical.travois.harnessed"));
-            playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);
-        }
+        if (player.isShiftKeyDown()) return sneakUse(player);
+        if (!level().isClientSide()) toggleHarness(player);
         return InteractionResult.SUCCESS;
     }
 
+    /** Sneak + right-click with an empty hand: unloads the last body. */
+    protected InteractionResult sneakUse(Player player) {
+        if (getPassengers().isEmpty()) return InteractionResult.PASS;
+        if (!level().isClientSide()) unloadLast();
+        return InteractionResult.SUCCESS;
+    }
+
+    /** Server: right-click with an empty hand puts {@code player} in the harness, or takes them out. */
+    protected void toggleHarness(Player player) {
+        boolean off = harnessId() == player.getId();
+        setHarness(off ? null : player);
+        player.sendOverlayMessage(Component.translatable(off ? "message.mechanical.travois.unharnessed" : "message.mechanical.travois.harnessed"));
+        playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);
+    }
+
     private void loadOn(CarcassEntity carcass, Player player) {
-        if (carcass.isHuge()) player.sendOverlayMessage(Component.translatable("message.mechanical.travois.too_big"));
-        else if (load() + carcass.loadUnits() > CAPACITY) player.sendOverlayMessage(Component.translatable("message.mechanical.travois.full"));
+        if (carcass.isHuge()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".too_big"));
+        else if (load() + carcass.loadUnits() > capacity()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".full"));
         else {
             carcass.setHauler(null);
             carcass.startRiding(this, true, true);
@@ -155,7 +199,7 @@ public class TravoisEntity extends Entity {
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
-        return passenger instanceof CarcassEntity c && load() + c.loadUnits() <= CAPACITY;
+        return passenger instanceof CarcassEntity c && load() + c.loadUnits() <= capacity();
     }
 
     @Override
@@ -167,10 +211,15 @@ public class TravoisEntity extends Entity {
     public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         if (!(source.getEntity() instanceof Player player)) return false;
         ejectPassengers();
-        if (!player.isCreative()) spawnAtLocation(level, new ItemStack(CarcassHauling.TRAVOIS_ITEM.get()));
+        dropContents(level);
+        if (!player.isCreative()) spawnAtLocation(level, new ItemStack(item()));
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.WOOD_BREAK, SoundSource.NEUTRAL, 1.0F, 0.8F);
         discard();
         return true;
+    }
+
+    /** Server, when it is broken up: spills what it holds besides the bodies. */
+    protected void dropContents(ServerLevel level) {
     }
 
     @Override
@@ -181,17 +230,21 @@ public class TravoisEntity extends Entity {
     protected void addAdditionalSaveData(ValueOutput output) {
     }
 
-    /** The Travois item: right-click the ground to set it down, poles towards you. */
+    /** The Travois (or Cart) item: right-click the ground to set it down, poles towards you. */
     public static class Placer extends Item {
-        public Placer(Properties properties) {
+        private final Supplier<? extends EntityType<? extends TravoisEntity>> type;
+
+        public Placer(Properties properties, Supplier<? extends EntityType<? extends TravoisEntity>> type) {
             super(properties);
+            this.type = type;
         }
 
         @Override
         public InteractionResult useOn(UseOnContext context) {
             Level level = context.getLevel();
             BlockPos at = context.getClickedPos().relative(context.getClickedFace());
-            TravoisEntity travois = new TravoisEntity(CarcassHauling.TRAVOIS.get(), level);
+            TravoisEntity travois = type.get().create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+            if (travois == null) return InteractionResult.FAIL;
             travois.setPos(Vec3.atBottomCenterOf(at));
             travois.setYRot(context.getRotation() + 180.0F);
             if (!level.noCollision(travois)) return InteractionResult.FAIL;

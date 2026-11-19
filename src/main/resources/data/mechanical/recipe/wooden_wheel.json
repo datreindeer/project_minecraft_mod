@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PRP",
+    "RBR",
+    "PSP"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "R": "mechanical:tool_rod",
+    "B": "mechanical:bronze_ingot",
+    "S": "mechanical:bronze_saw"
+  },
+  "result": {
+    "id": "mechanical:wooden_wheel"
+  }
+}

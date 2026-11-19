@@ -643,5 +643,9 @@
   "raw_loin": {"text": "Styckas från en kropp som hänger på [[hanging_rack]] (dubbelt så mycket kött som på marken, i stora bitar). 2 köttenheter. Hunger 2. Campfire → [[cooked_loin]]; på Smoking Rack 2 [[smoked_meat]]. Förskäms på 2 dagar.", "category": "food"},
   "cooked_haunch": {"text": "[[raw_haunch]] på Campfire (30 s). Hunger 9, mättnad 0,8. Förskäms på 3 dagar.", "category": "food"},
   "cooked_ribs": {"text": "[[raw_ribs]] på Campfire (25 s). Hunger 6, mättnad 0,8. Förskäms på 3 dagar.", "category": "food"},
-  "cooked_loin": {"text": "[[raw_loin]] på Campfire (25 s). Hunger 6, mättnad 1,0. Förskäms på 3 dagar.", "category": "food"}
+  "cooked_loin": {"text": "[[raw_loin]] på Campfire (25 s). Hunger 6, mättnad 1,0. Förskäms på 3 dagar.", "category": "food"},
+  "wooden_wheel": {"text": "4 Planks + 3 [[tool_rod]] + [[bronze_ingot]] (nav och axelsprint) + [[bronze_saw]] som blir kvar och slits 1 (`PRP`/`RBR`/`PSP`). Ekrat trähjul, två behövs till [[cart]].", "category": "materials"},
+  "cart": {"text": "2 [[wooden_wheel]] + 4 Planks + 2 [[tool_rod]] som skaklar (`R R`/`PPP`/`WPW`). Bronsålderns [[travois]]: dra den själv (högerklicka med tom hand, −5 % fart + −4 % per lastenhet) eller spänn för en tam häst (högerklicka när du rider eller leder den). Rymmer **två stora eller fyra mellanstora kroppar** och har ett förråd med **18 platser** (smyg + högerklicka). Smyg + högerklicka på en kropp för att ta av den. Slå på vagnen för att plocka upp den.", "category": "tools"},
+  "rope_halter": {"text": "3 [[cordage]] (`C C`/` C `). Grimma för en Wild Horse som litar på dig (3 förtroende av 6, byggs upp genom att smyga fram och mata den med grain, sheaf, wheat, hay, apple eller carrot). Hästen leds i grimman; matas den till 6 blir den tam och kan ridas barbacka.", "category": "tools"},
+  "hide_saddle_blanket": {"text": "3 Leather + 2 [[cordage]] (`LLL`/`C C`). Läggs i den tama hästens sadelplats: full fart och fulla hopp (barbacka 80 % fart och 70 % hopp).", "category": "tools"}
 }
