@@ -97,6 +97,14 @@ w(D / "mechanical/tags/item/flint_tool_materials.json", {"values": ["minecraft:f
 w(D / "mechanical/tags/item/rock_chunks.json", {"values": [f"mechanical:{v}_chunk" for v in ["stone", "granite", "diorite", "andesite"]]})
 for tag, item in [("pickaxes", ["flint_pickaxe", "crude_stone_pickaxe"]), ("axes", ["flint_axe", "crude_stone_axe", "thunderstone"]), ("shovels", "flint_shovel"), ("hoes", "flint_hoe"), ("swords", ["flint_knife", "iron_knife"])]:
     w(D / f"minecraft/tags/item/{tag}.json", {"values": [f"mechanical:{i}" for i in (item if isinstance(item, list) else [item])]})
+# Mining tiers: stone tools only get copper, tin and stone. Iron and lapis need a bronze pickaxe (bronze age phase 4;
+# its tool material will use an incorrect-for tag without this one). Vanilla tiers don't know bronze, so the tag is
+# added to what wooden and stone tools can't harvest.
+NEEDS_BRONZE = ["minecraft:iron_ore", "minecraft:deepslate_iron_ore", "minecraft:raw_iron_block",
+                "minecraft:lapis_ore", "minecraft:deepslate_lapis_ore", "minecraft:lapis_block"]
+w(D / "mechanical/tags/block/needs_bronze_tool.json", {"values": NEEDS_BRONZE})
+for tier in ("wooden", "stone"):
+    w(D / f"minecraft/tags/block/incorrect_for_{tier}_tool.json", {"replace": False, "values": ["#mechanical:needs_bronze_tool"]})
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 
 # ---- recipes ----
