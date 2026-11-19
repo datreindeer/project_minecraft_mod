@@ -425,6 +425,7 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
 
 - 240 hållbarhet. I crafting table: **Log + Bronze Saw → 4 Planks** (alla träslag, recepten `sawn_<trä>_planks`);
   sågen blir kvar och slits 1. Utan såg ger en log fortfarande 2 planks.
+- **Fallen Log:** håll in högerklick med sågen: 8 sågtag kapar hela stocken till 3 Rough Logs (utan slump), plus barken.
 
 ### Bronze Helmet och Bronze Greaves
 

@@ -29,6 +29,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 /**
  * Working felled wood by hand, holding right-click with an axe: one heavy chop every {@link #CHOP_TICKS}.
  * - Fallen log: bark comes off (Bark), it is hewn thinner twice, then it becomes a Rough Log (or only sticks if it fails).
+ *   A Bronze Saw instead cuts the whole log in one go into 3 Rough Logs (fewer if an axe already hewed it) plus its bark.
  * - Rough Log stood on a stump (right-click the stump with it): split into 2-3 Firewood (or 1 Firewood + sticks if it fails).
  * A better axe needs fewer chops per stage and fails less often.
  */
@@ -38,6 +39,9 @@ public final class TreeChopping {
     private static final Map<Player, Long> LAST_CHOP = new WeakHashMap<>();
     /** Chops done on a block towards its next stage. Lost if the server restarts, which only costs a few chops. */
     private static final Map<Level, Map<BlockPos, Integer>> PROGRESS = new WeakHashMap<>();
+
+    /** Bronze Saw on a fallen log: strokes to cut it all up, and the Rough Logs a whole (unhewn) log gives. */
+    private static final int SAW_STROKES = 8, SAWN_LOGS = 3;
 
     /** Chops per stage: flint axe 3, stone 2, iron 2. */
     public static int chopsNeeded(ItemStack axe) {
@@ -67,7 +71,10 @@ public final class TreeChopping {
         ItemStack stack = event.getItemStack();
         boolean axe = stack.is(ItemTags.AXES);
 
-        if (state.getBlock() instanceof FallenLogBlock && axe) {
+        if (state.getBlock() instanceof FallenLogBlock && stack.is(Bronze.BRONZE_SAW.get())) {
+            take(event, InteractionResult.CONSUME);
+            if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos, state, stack, SAW_STROKES)) sawFallenLog(server, pos, state, player);
+        } else if (state.getBlock() instanceof FallenLogBlock && axe) {
             take(event, InteractionResult.CONSUME);
             if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos, state, stack)) finishFallenLog(server, pos, state, stack, player);
         } else if (state.getBlock() instanceof StumpBlock) {
@@ -153,6 +160,18 @@ public final class TreeChopping {
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
         if (random.nextFloat() < successChance(axe)) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
         else Block.popResource(level, pos, new ItemStack(Items.STICK, 2 + random.nextInt(2)));
+    }
+
+    /** A saw cuts the whole fallen log at once, with no failures: its bark, and a Rough Log for every piece not yet hewn away. */
+    private static void sawFallenLog(ServerLevel level, BlockPos pos, BlockState state, Player player) {
+        int stage = state.getValue(FallenLogBlock.STAGE);
+        RandomSource random = level.getRandom();
+        String wood = ((FallenLogBlock) state.getBlock()).wood();
+        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARK.get(), 1 + random.nextInt(2)));
+        int logs = Math.max(1, SAWN_LOGS - Math.max(0, stage - 1));
+        level.removeBlock(pos, false);
+        level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);
+        Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), logs * AncientOak.woodMultiplier(player)));
     }
 
     private static void splitOnStump(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {

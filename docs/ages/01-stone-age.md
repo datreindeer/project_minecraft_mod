@@ -452,6 +452,9 @@ Ett tungt hugg var 0,45:e sekund (långsam svingning, sprickor i blocket). Varje
 
 Chans att lyckas: Flint Axe 60 %, Crude Stone Axe 65 %, Stone Axe 75 %, Iron Axe 95 %.
 Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
+**Bronze Saw** (bronsåldern) på en Fallen Log: håll in högerklick, 8 sågtag (~3,5 s, sågen slits 1) så kapas hela stocken på en gång
+till **3 Rough Logs**, alltid, utan slump, plus barken (1–2 Bark) om den satt kvar. Har yxan redan huggit den smalare blir det
+färre (2 respektive 1).
 
 Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bast, korg; senare garvning).
 
