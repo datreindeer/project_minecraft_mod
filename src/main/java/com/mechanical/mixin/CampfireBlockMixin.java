@@ -39,6 +39,17 @@ public abstract class CampfireBlockMixin extends BaseEntityBlock {
         return Campfires.isEmbers(state) ? 1 : state.getLightEmission();
     }
 
+    /** Random ticks drive the wind on windy nights (Wind.campfireTick). */
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return state.getValue(CampfireBlock.LIT);
+    }
+
+    @Override
+    protected void randomTick(BlockState state, net.minecraft.server.level.ServerLevel level, BlockPos pos, RandomSource random) {
+        com.mechanical.Wind.campfireTick(state, level, pos, random);
+    }
+
     @Inject(method = "animateTick", at = @At("HEAD"))
     private void mechanical$emberSparks(BlockState state, Level level, BlockPos pos, RandomSource random, CallbackInfo ci) {
         if (!Campfires.isEmbers(state)) return;

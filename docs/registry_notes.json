@@ -52,6 +52,8 @@
     "text": "[[clay_bucket]] fylld med vatten. Häll ut som en vanlig vattenhink; varje hällning sliter på hinken."
   },
   "leather_satchel": {"text": "Sys i Armor Station: 4 Leather + [[bone_needle]] + 2 [[wool_thread]]. Högerklicka för ett förråd med 9 platser (3x3) för vad som helst, utom andra förråd (väskor, [[bark_basket]], shulker boxes, bundles). Innehållet följer med väskan.", "category": "tools"},
+  "unlit_torch": {"text": "En fackla som vinden blåste ut en blåsig natt. Lyser inte. Tänds igen med en fackla, [[fire_drill]] eller Flint and Steel; bryts den får man tillbaka facklan.", "category": "blocks"},
+  "unlit_wall_torch": {"text": "Väggversionen av [[unlit_torch]]: en väggfackla som vinden blåste ut.", "category": "blocks"},
   "crucible": {
     "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (40 s). Behövs i bronsåldern för att smälta koppar och tenn. Ingen användning än."
   },

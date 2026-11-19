@@ -9,6 +9,8 @@ public interface CampfireAccess {
 
     /** Embers caught again: burning for a fresh while. */
     void mechanical$relight();
+    /** Blown out by the wind: sinks to embers (which can be fed with firewood again). */
+    void mechanical$blowOut();
 
     /** Gives the player one item off the fire (cooked or burnt first). False if there is nothing. */
     boolean mechanical$takeItem(Player player);

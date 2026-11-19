@@ -461,11 +461,14 @@
   "block.mechanical.scarecrow": "Scarecrow",
   "message.mechanical.flail.need_sheaf": "Hold sheaves in your other hand to thresh them",
   "message.mechanical.field_info": "Fertility %s/3, moisture %s/7",
-  "message.mechanical.crop_info": "%s: %s\u00b0 (grows %s-%s) | %s | %s",
+  "message.mechanical.crop_info": "%s: %s° (grows %s-%s) | %s | %s",
   "message.mechanical.crop.growing": "growing",
   "message.mechanical.crop.dry": "too dry",
   "message.mechanical.crop.dark": "needs daylight",
   "message.mechanical.crop.cold": "too cold",
   "message.mechanical.crop.hot": "too hot",
-  "message.mechanical.crop.ripe": "ripe"
+  "message.mechanical.crop.ripe": "ripe",
+  "block.mechanical.unlit_torch": "Unlit Torch",
+  "block.mechanical.unlit_wall_torch": "Unlit Torch",
+  "message.mechanical.wind": "The wind is rising... fires in the open won't last tonight."
 }

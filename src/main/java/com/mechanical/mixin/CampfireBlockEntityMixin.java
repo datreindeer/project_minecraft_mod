@@ -106,6 +106,15 @@ public abstract class CampfireBlockEntityMixin implements CampfireAccess {
     }
 
     @Override
+    public void mechanical$blowOut() {
+        CampfireBlockEntity self = (CampfireBlockEntity) (Object) this;
+        mechanical$burnLeft = -1;
+        mechanical$embersLeft = Campfires.EMBER_TICKS;
+        if (self.getLevel() != null) Campfires.toEmbers(self.getLevel(), self.getBlockPos(), self.getBlockState());
+        self.setChanged();
+    }
+
+    @Override
     public boolean mechanical$hasItems() {
         return items.stream().anyMatch(s -> !s.isEmpty());
     }

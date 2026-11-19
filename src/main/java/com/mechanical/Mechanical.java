@@ -295,12 +295,17 @@ public class Mechanical {
     public static final DeferredBlock<TwigsBlock> TWIGS = BLOCKS.registerBlock("twigs", TwigsBlock::new, p -> p
             .mapColor(MapColor.WOOD).noCollision().instabreak().replaceable().noOcclusion()
             .sound(SoundType.GRASS).pushReaction(PushReaction.POPPED));
+    // Torches blown out by the wind on windy nights (Wind); relit with a torch, fire drill or flint and steel.
+    public static final DeferredBlock<UnlitTorchBlock> UNLIT_TORCH = BLOCKS.registerBlock("unlit_torch", UnlitTorchBlock::new, p -> p
+            .noCollision().instabreak().sound(SoundType.WOOD).pushReaction(PushReaction.POPPED));
+    public static final DeferredBlock<UnlitTorchBlock.Wall> UNLIT_WALL_TORCH = BLOCKS.registerBlock("unlit_wall_torch", UnlitTorchBlock.Wall::new, p -> p
+            .noCollision().instabreak().sound(SoundType.WOOD).pushReaction(PushReaction.POPPED));
 
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.registerEntityType(
             "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
 
     /** Blocks that are never items (decals, pots holding plants). Everything else gets a block item, for creative. */
-    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop");
+    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop");
 
     /**
      * Every mod block without an item of its own gets a plain block item, so all of them (bushes, mushrooms, twigs,
