@@ -286,6 +286,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(5, new GatherGoal(this));
         goalSelector.addGoal(5, new FishGoal(this));
         goalSelector.addGoal(5, new ChopWoodGoal(this));
+        goalSelector.addGoal(6, new PlantGoal(this));
         goalSelector.addGoal(6, new FollowBandLeaderGoal(this));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.55) {
             @Override

@@ -595,6 +595,10 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
 
 - **Roller:** Hunter (Crude Bow eller Flint Spear), Gatherer (Flint Knife och Bark Basket), Fisher (Crude Fishing Rod),
   Woodcutter (Flint Axe), Elder (stav). Var och en har ett eget namn och sin stam, t.ex. "Aruk the Hunter of the Raven Tribe".
+- **De sköter sin omgivning:** en Woodcutter planterar en planta bredvid stubben efter varje träd han fäller, och när det
+  finns färre än 4 träd inom 14 block från elden planterar han plantor runt lägret (sorten från närmaste träd, annars en
+  som passar biomet). En Gatherer planterar unga vilda bärbuskar som passar klimatet när det finns färre än 3. Aldrig
+  närmare elden än 5 block och med minst 4 blocks mellanrum, så ett läger på kal mark växer långsamt upp med skog och bär.
 - **Läger** (ca 1 på 150 chunks i skog, taiga, slätt, meadow och vid floder; plan mark, aldrig nära byar): brinnande
   Campfire, 2–3 hudtält, Drying Rack och en sittstock. 3–5 personer: en Elder plus Gatherers, Woodcutters och Fishers
   (bara nära vatten).

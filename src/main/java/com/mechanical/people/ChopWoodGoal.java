@@ -91,6 +91,7 @@ class ChopWoodGoal extends Goal {
                 if (tree != null) {
                     net.minecraft.core.Direction away = net.minecraft.core.Direction.getApproximateNearest(c.x - mob.getX(), 0, c.z - mob.getZ());
                     com.mechanical.TreeFelling.fell(level, target, tree, away, mob, mob.getMainHandItem());
+                    PlantGoal.replant(level, target, s); // a new tree for the one taken
                     level.playSound(null, target, net.minecraft.sounds.SoundEvents.WOOD_BREAK, SoundSource.NEUTRAL, 1.2F, 0.6F);
                 }
             } else if (s.getBlock() instanceof FallenLogBlock) {
