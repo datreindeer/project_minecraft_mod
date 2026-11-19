@@ -89,6 +89,12 @@ public final class NightDangers {
         return best;
     }
 
+    /** All fires that burned within the last couple of seconds. */
+    public static List<BlockPos> litFires(Level level) {
+        long now = level.getGameTime();
+        return FIRES.getOrDefault(level, Map.of()).entrySet().stream().filter(e -> now - e.getValue() <= FIRE_STALE_TICKS).map(Map.Entry::getKey).toList();
+    }
+
     public static boolean nearFire(Level level, Vec3 at, double radius) {
         return nearestFire(level, at, radius) != null;
     }

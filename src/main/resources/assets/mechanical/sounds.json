@@ -15,5 +15,28 @@
         "pitch": 0.6
       }
     ]
+  },
+  "raid.drums": {
+    "subtitle": "subtitles.mechanical.raid.drums",
+    "sounds": [
+      {
+        "name": "block.note_block.basedrum",
+        "type": "event",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      {
+        "name": "block.note_block.basedrum",
+        "type": "event",
+        "pitch": 0.6,
+        "volume": 1.0
+      },
+      {
+        "name": "block.note_block.basedrum",
+        "type": "event",
+        "pitch": 0.55,
+        "volume": 0.8
+      }
+    ]
   }
 }

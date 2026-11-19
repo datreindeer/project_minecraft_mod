@@ -118,6 +118,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     long killTime;
     boolean wantsHome, carryingWood;
     private long nextFireTend, corneredAt = -1000, nextGift;
+    /** Set for a raider (people.Raids): what the raid is, saved with the entity. */
+    RaidGoal.State raid;
     /** Where the group is going to set up a new camp (SetUpCampGoal); since when it has had no fire. */
     BlockPos newCamp;
     long homelessSince = -1;
@@ -175,6 +177,33 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (group == null) return null;
         if (tribe == null || !tribe.id.equals(group)) tribe = Tribe.of(group);
         return tribe;
+    }
+
+    public boolean isRaider() {
+        return raid != null;
+    }
+
+    /** Turns this person into a raider: spear (or now and then a bow) or axe, a torch, more health, longer sight. */
+    void makeRaider(RaidGoal.State state) {
+        raid = state;
+        if (role() == TribeRole.HUNTER) setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(getRandom().nextInt(4) == 0 ? Mechanical.CRUDE_BOW.get() : Mechanical.FLINT_SPEAR.get()));
+        setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.TORCH));
+        // their weapons, torches and the leader's banner are the spoils of a beaten raid
+        setDropChance(EquipmentSlot.MAINHAND, 0.5F);
+        setDropChance(EquipmentSlot.OFFHAND, 0.5F);
+        if (isLeader()) setDropChance(EquipmentSlot.HEAD, 1.0F);
+        getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(48.0);
+        getAttribute(Attributes.MAX_HEALTH).setBaseValue(24.0);
+        setHealth(24.0F);
+        raiderNavigation();
+    }
+
+    /** Raiders plan paths through wooden doors (and break them down) and look further for a way round. */
+    private void raiderNavigation() {
+        if (getNavigation() instanceof net.minecraft.world.entity.ai.navigation.GroundPathNavigation nav) {
+            nav.setCanOpenDoors(true);
+            nav.setMaxVisitedNodesMultiplier(4.0F);
+        }
     }
 
     public boolean isLeader() {
@@ -273,6 +302,12 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new FleeThreatGoal(this));
+        goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.BreakDoorGoal(this, d -> true) {
+            @Override
+            public boolean canUse() {
+                return raid != null && super.canUse();
+            }
+        });
         goalSelector.addGoal(2, new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F));
         goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.15, true) {
             @Override
@@ -280,6 +315,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
                 return !isHolding(s -> s.getItem() instanceof BowItem) && super.canUse();
             }
         });
+        goalSelector.addGoal(3, new RaidGoal(this));
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
         goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
@@ -306,7 +342,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
                 return super.canUse() && (isArmed() || by == null || !FleeThreatGoal.isThreat(Tribesperson.this, by) || isCornered());
             }
         });
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, (t, l) -> isAngryAt((Player) t)));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, (t, l) -> isAngryAt((Player) t) && (raid == null || RaidGoal.fights(this, t))));
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Animal.class, 10, true, false, (t, l) -> raid != null && RaidGoal.campAnimal(this, t)));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
                 (t, l) -> isArmed() && (!(t instanceof Creeper) || isHolding(s -> s.getItem() instanceof BowItem)) && t.distanceToSqr(this) < 12 * 12));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
@@ -324,7 +361,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     public boolean isAngryAt(Player player) {
         if (player.isCreative() || player.isSpectator()) return false;
-        return anger.getOrDefault(player.getUUID(), 0L) > level().getGameTime() || tribe() != null && tribe().hostileTo(player);
+        return raid != null || anger.getOrDefault(player.getUUID(), 0L) > level().getGameTime() || tribe() != null && tribe().hostileTo(player);
     }
 
     public boolean isAngry() {
@@ -369,7 +406,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (source.getEntity() instanceof Tribesperson) return false; // no friendly fire (stray arrows)
         if (source.is(DamageTypes.CAMPFIRE)) return false;
         boolean hurt = super.hurtServer(level, source, damage);
-        if (hurt && source.getEntity() instanceof Player player) angerGroup(player, level.getGameTime() + ANGER_TICKS, Tribe.HIT);
+        // fighting off raiders is no crime against their tribe
+        if (hurt && source.getEntity() instanceof Player player && raid == null) angerGroup(player, level.getGameTime() + ANGER_TICKS, Tribe.HIT);
         if (hurt && source.getEntity() instanceof LivingEntity attacker && !(attacker instanceof Player)) {
             // the group around comes to help
             for (Tribesperson t : groupNearby(16)) if (t.getTarget() == null && t.isArmed()) t.setTarget(attacker);
@@ -379,7 +417,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     @Override
     public void die(DamageSource source) {
-        if (source.getEntity() instanceof Player player && level() instanceof ServerLevel) angerGroup(player, FOREVER, Tribe.KILL);
+        if (source.getEntity() instanceof Player player && level() instanceof ServerLevel && raid == null) angerGroup(player, FOREVER, Tribe.KILL);
+        if (raid != null && level() instanceof ServerLevel level) {
+            raid.loot.forEach(s -> spawnAtLocation(level, s)); // the stolen food back
+            raid.loot.clear();
+        }
         if (tradingPlayer != null) tradingPlayer.closeContainer();
         super.die(source);
     }
@@ -405,9 +447,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         }
         if (tickCount % 100 == 0) shareAnger();
         if (tickCount % 20 == 0) greetNearby(level, now);
-        if (tickCount % 20 == 0 && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
+        if (tickCount % 20 == 0 && raid != null) RaidGoal.update(this, level);
+        if (tickCount % 20 == 0 && raid == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
-        if (tickCount % 100 == 0) SetUpCampGoal.check(this, level, now);
+        if (tickCount % 100 == 0 && raid == null) SetUpCampGoal.check(this, level, now);
         if (getTarget() == null) tendWounds(level);
         if (role() == TribeRole.ELDER) restock(level);
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
@@ -693,6 +736,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         output.store("anger", ANGER_CODEC, anger);
         output.putLong("restock_day", restockDay);
         if (offers != null) output.store("offers", MerchantOffers.CODEC, offers);
+        if (raid != null) raid.save(output);
     }
 
     @Override
@@ -708,5 +752,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         input.read("anger", ANGER_CODEC).ifPresent(anger::putAll);
         restockDay = input.getLongOr("restock_day", -1);
         offers = input.read("offers", MerchantOffers.CODEC).orElse(null);
+        raid = RaidGoal.State.load(input);
+        if (raid != null) raiderNavigation();
     }
 }

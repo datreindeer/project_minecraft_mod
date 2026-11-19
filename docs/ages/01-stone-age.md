@@ -727,6 +727,40 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   Cooked Game Meat Scraps, 6 Cordage → 8 Bone Arrows, 12 Bark → 4 Twine, 3 Scraped Hide → 2 Leather, 4 Sinew + 2 Cordage →
   Crude Bow, 3 Tusk + 2 Cordage → Tusk Dagger, 2 Antler → 3 Bone Fish Hooks. Fylls på varje morgon. Ingen handel när de är arga.
 
+### Lägerålder och räder
+Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och till slut kommer fientliga stammar på natten.
+- **Lägerålder ("hearth time"):** ett läger är området inom **24 block** från platsen där dess första eld brann. All tid som
+  en **brinnande Campfire eller tänd Kiln** står inom området räknas till samma läger (tiden räknas, inte antalet eldar: två
+  eldar går inte dubbelt så fort). En ny eld bredvid den gamla fortsätter alltså räkningen, och en eld långt bort startar ett
+  nytt läger. Bara medan elden brinner (inte glöd) och bara i laddade chunks (där du är). En stams egen lägereld räknas inte.
+  Sparas i världen.
+- **Se den:** **smyg och högerklicka en Campfire eller Kiln med tom hand**: "This camp has burned for 3 days 4 h" i action bar.
+  Från 5 dagar står det också "Its smoke is seen far and wide..." (då kan räder komma). Op: `/camp` visar lägret där du står.
+- **Räder:** när ett läger har brunnit i **5 speldagar** (120 000 ticks) kan det plundras. Vid skymningen (dagtid 12500–13500)
+  slås det en gång per natt för varje sådant läger med en spelare inom 48 block. Högst en räd per natt, **aldrig en blodmånenatt**.
+  - **Vilken stam:** den sämst inställda stam som spelarna vid lägret har rykte hos eller som bor inom 160 block. Friendly
+    (30+) kommer aldrig, neutrala bara om de är *Wary* eller *Raiders*, och *Peaceful*/*Traders* bara om ryktet är under 0.
+    Finns ingen sådan stam kan ett **vandrande band** (Wandering Band, en egen Raiders-stam) komma, men sällan.
+  - **Chans per natt:** bas 5 % + 2 % per dag över 5 dagar (högst 25 %). Hostile (-40 eller lägre) ×3, ovänlig (under 0)
+    ×1,5, neutral ×0,75; *Raiders*-stammar dessutom ×1,5; högst 70 %. Vandrande band: bas ×0,3. Exempel: ett 5 dagar gammalt
+    läger och en fientlig Raiders-stam ger 22 %, 15 dagar 70 %. Bara band: 1,5 % → 7,5 %.
+  - **Varning:** "You hear drums in the dark, from the north..." och **krigstrummor** från det hållet i 1–3 minuter. Sedan en
+    stridslur och "War cries! Raiders of the Raven Tribe come out of the dark from the north, with torches!".
+  - **Rädarna:** 3–7 (fler mot fientliga stammar och äldre läger, +1 per 10 dagar; band 3–4), 40 block bort. En ledare (Hunter
+    med stammens banderoll på huvudet), resten Hunters och Woodcutters. **Facklor** i andra handen (lyser), Flint Spear (var
+    fjärde Crude Bow) eller Flint Axe, 24 hälsa. Hunters och ledaren anfaller spelare och lägrets tama djur och bondgårdsdjur
+    (inte vilt). Woodcutters (tjuvar och mordbrännare) slåss bara om du kommer inom 6 block eller slår dem.
+  - **Vad de gör:** går till lägret och **stjäl mat** ur kistor, tunnor m.m. inom 16 block (upp till 2 stackar var; "Aruk is
+    carrying off your food!") och springer sedan hem med den. Dödar du tjuven får du tillbaka maten. De **tänder eld** på trä
+    och annat brännbart (inte löv) inom 12 block: 1 eld var, ledaren 2, och bara med gamerule `mob_griefing` på. De **slår
+    sönder trädörrar** (långsamt) men kan inte öppna grindar (fence gates).
+  - **Reträtt:** vid gryningen, när hälften av dem har fallit eller efter ca 12 minuter. Långt från lägret och utom synhåll är
+    de borta (med det de stal).
+  - **Försvar:** eld, vapen och palissad. Den som pressar sig mot en palissad med **Sharpened Logs** (inom 3 block upp) tar
+    skada och blir långsam. Faller hälften kommer "The raiders flee!" och **+5 rykte** hos stammen (de respekterar dig). Att slå
+    eller döda rädare sänker inte ryktet. Fallna rädare tappar vapen och facklor (50 %) och ledaren sin banderoll (alltid).
+  - Op: `/raid` startar en räd mot lägret där du står (trummor, sedan rädare efter 5 s).
+
 ### Strukturernas loot (vanilla)
 Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,
 Stronghold, Outpost, Mansion, Igloo, Ancient City, Trial Chambers, Nether- och End-strukturer), arkeologi, krukor,
