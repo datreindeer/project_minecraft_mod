@@ -726,6 +726,15 @@ upp släpper det som vanligt.
   Sticks (Anvil inget). Cauldron, Bell och Lantern går att använda men släpper inget när de bryts (inget järn/guld).
   Listan är taggen `mechanical:too_advanced`, så senare åldrar kan låsa upp dem.
 - **Sängarna går inte att sova i** (sängar kan inte tillverkas i stenåldern). Bryts de ger de bara 1–2 Sticks (ramen); tyget är mal-ätet och ger ingen ull.
+- **Abandoned Camp** (vanilla): tältens **White Wool** ger 1–3 Wool Thread när den bryts (gammalt tyg rivs upp). Det gäller all
+  White Wool, även egen. Campens **Straw Beds** ger 2–4 Plant Fibre (inte sängen).
+
+### Straw Bed (vila)
+Stenålderns säng. Man kan inte sova bort natten, men man kan **vila**: högerklicka på en Straw Bed så sätts din
+respawnpunkt där och tiden sedan du vilade nollställs, så **phantoms** inte kommer (de kommer annars efter 3 nätter utan vila).
+Natten fortsätter som vanligt.
+- Recept (crafting table): `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]` → 1 Straw Bed. Straw får man när man skördar säd med Sickle.
+- Bryts den ger den 2–4 Plant Fibre, inte sängen (samma för de gamla i Abandoned Camps).
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
   senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
   Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk
@@ -867,7 +876,7 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Copper-, Iron-, Diamond-verktyg (inkl. spears) | **Borttagna** (kommer tillbaka i senare åldrar) |
 | Stone Spear | **Borttagen** → **Flint Spear** i Tool Station |
 | Iron-, Golden-, Diamond-, Copper-armor, Turtle Helmet | **Borttagna** (Armor Station kommer senare). Leather Armor finns kvar |
-| Alla Beds (alla färger, omfärgning, Straw Bed) | **Borttagna** (kommer senare, kräver Shears) |
+| Alla Beds (alla färger, omfärgning) | **Borttagna** (kommer senare, kräver Shears). Straw Bed finns, se "Straw Bed (vila)" |
 | Bow, Fishing Rod | Recepten **borttagna** → **Crude Bow / Crude Fishing Rod** i Tool Station |
 | Fisk-loot (döda fiskar, fiske) | Rå fisk → **Whole fish** som måste rensas |
 | Farm-djur i naturen | **Borttagna** → spawnar en gång i byar (hage, 4 djur) |

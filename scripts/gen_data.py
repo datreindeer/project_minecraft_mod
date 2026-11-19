@@ -660,7 +660,7 @@ lang["item.mechanical.flint_spear"] = "Flint Spear"
 COLORS = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"]
 LATER = {"combat": [f"{m}_{p}" for m in ["iron", "golden", "diamond", "copper"] for p in ["helmet", "chestplate", "leggings", "boots"]]
                    + ["turtle_helmet", "stone_spear"],
-         "decorations": [f"{c}_bed" for c in COLORS] + [f"dye_{c}_bed" for c in COLORS] + ["straw_bed"]}
+         "decorations": [f"{c}_bed" for c in COLORS] + [f"dye_{c}_bed" for c in COLORS]}
 for cat, names in LATER.items():
     for name in names:
         w(D / f"minecraft/recipe/{name}.json", {"neoforge:conditions": [{"type": "neoforge:never"}]})
@@ -1180,6 +1180,21 @@ for c in COLORS:
          "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]}],
         "random_sequence": f"minecraft:blocks/{c}_bed"})
 lang["message.mechanical.too_advanced"] = "You don't know how to use this yet"
+# Straw Bed (StrawBedRest): no sleeping the night away, but resting in it sets the respawn point and keeps phantoms off.
+# The ones in abandoned camps are old: broken they're just loose fibre. A new one is straw over planks.
+w(D / "minecraft/recipe/straw_bed.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["SSS", "PPP"],
+    "key": {"S": "mechanical:straw", "P": "#minecraft:planks"}, "result": {"id": "minecraft:straw_bed"}})
+w(D / "minecraft/loot_table/blocks/straw_bed.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+    {"type": "minecraft:item", "name": "mechanical:plant_fibre", "condition": {"type": "minecraft:match_block",
+        "blocks": "minecraft:straw_bed", "state": {"part": "head"}},
+     "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}}]}]}],
+    "random_sequence": "minecraft:blocks/straw_bed"})
+# White Wool (abandoned camp tents, outposts): old cloth unravels to a little thread, no shortcut past Wool Thread
+w(D / "minecraft/loot_table/blocks/white_wool.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+    {"type": "minecraft:item", "name": "mechanical:wool_thread",
+     "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}]}],
+    "random_sequence": "minecraft:blocks/white_wool"})
+lang["message.mechanical.straw_bed_rest"] = "You rest a while in the straw. The night goes on."
 w(lang_path, lang)
 
 # ---- structure loot everywhere else (mineshafts, portals, shipwrecks, temples, dungeons ...): no metal, gems or enchanting ----

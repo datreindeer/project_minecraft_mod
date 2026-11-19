@@ -1,7 +1,15 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:never"
-    }
-  ]
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "PPP"
+  ],
+  "key": {
+    "S": "mechanical:straw",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "minecraft:straw_bed"
+  }
 }

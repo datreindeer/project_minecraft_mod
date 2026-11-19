@@ -554,7 +554,11 @@
     "vanilla": true
   },
   "minecraft:white_wool": {
-    "text": "Kan göras av 9 [[wool_thread]] (3×3).",
+    "text": "Kan göras av 9 [[wool_thread]] (3×3). Bryts den ger den 1–3 [[wool_thread]], inte ullen (tälten i Abandoned Camps är gammalt tyg).",
+    "vanilla": true
+  },
+  "minecraft:straw_bed": {
+    "text": "Stenålderns säng: högerklicka för att **vila** (sätter respawnpunkten och nollar tiden sedan vila, så phantoms håller sig borta). Man sover inte bort natten. Recept: `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]`. Bryts den ger den 2–4 [[plant_fibre]].",
     "vanilla": true
   },
   "minecraft:charcoal": {

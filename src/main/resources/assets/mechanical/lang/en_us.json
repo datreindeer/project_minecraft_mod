@@ -461,7 +461,7 @@
   "block.mechanical.scarecrow": "Scarecrow",
   "message.mechanical.flail.need_sheaf": "Hold sheaves in your other hand to thresh them",
   "message.mechanical.field_info": "Fertility %s/3, moisture %s/7",
-  "message.mechanical.crop_info": "%s: %s\u00c2\u00b0 (grows %s-%s) | %s | %s",
+  "message.mechanical.crop_info": "%s: %sÂ° (grows %s-%s) | %s | %s",
   "message.mechanical.crop.growing": "growing",
   "message.mechanical.crop.dry": "too dry",
   "message.mechanical.crop.dark": "needs daylight",
@@ -511,7 +511,7 @@
   "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper Ore or Native Copper onto it in your inventory",
   "tooltip.mechanical.crucible.ore": "%s ore: %s/%s units",
   "tooltip.mechanical.crucible.metal": "%s: %s units",
-  "tooltip.mechanical.crucible.melts": "Melts in a Clay Kiln at %s\u00b0",
+  "tooltip.mechanical.crucible.melts": "Melts in a Clay Kiln at %s°",
   "tooltip.mechanical.crucible.pour": "Pour into a Clay Mold before it sets",
   "tooltip.mechanical.crucible.remelt": "Melt it again in a Clay Kiln",
   "message.mechanical.mold.not_enough": "This mold takes %s units of metal; the crucible holds %s",
@@ -523,8 +523,9 @@
   "message.mechanical.kiln.cracked": "The kiln is cracked: press 4 Clay Balls into it, then fire it again",
   "message.mechanical.kiln.patching": "Patched %s/%s",
   "message.mechanical.kiln.patched": "Patched: keep a fire burning to fire the new clay in",
-  "gui.mechanical.kiln.temperature": "Temperature: %s\u00b0",
-  "gui.mechanical.kiln.needs": "Needs %s\u00b0",
+  "gui.mechanical.kiln.temperature": "Temperature: %s°",
+  "gui.mechanical.kiln.needs": "Needs %s°",
   "gui.mechanical.kiln.strain": "Overheating strain: %s%%",
-  "gui.mechanical.kiln.cracked": "Cracked: no hotter than 600\u00b0 until patched with %s Clay Balls"
+  "gui.mechanical.kiln.cracked": "Cracked: no hotter than 600° until patched with %s Clay Balls",
+  "message.mechanical.straw_bed_rest": "You rest a while in the straw. The night goes on."
 }
