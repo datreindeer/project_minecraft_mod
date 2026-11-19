@@ -290,6 +290,8 @@ flytande.
 - Stelnar efter **60 s** utanför kilnen (en orange stapel visar värmen som är kvar) och blir en **Crucible of Solid
   Copper**, som måste smältas om i kilnen (10 s vid 1085°). Kollas när degeln ligger i spelarens inventory och när man
   häller (har den legat i en kista för länge är den stel när man tar fram den).
+- En Crucible of Solid Copper kan **fyllas på med mer malm** på samma sätt som en tom (upp till 8 enheter totalt); allt
+  smälter ihop när den smälts om.
 - Hälls i en Clay Mold (nedan). Blir degeln tom får man tillbaka en tom Crucible.
 
 ### Clay Molds

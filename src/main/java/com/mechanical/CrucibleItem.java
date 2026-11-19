@@ -46,7 +46,8 @@ public class CrucibleItem extends Item {
         return stack.getOrDefault(Casting.CRUCIBLE_CONTENTS.get(), CrucibleContents.EMPTY);
     }
 
-    /** Puts up to {@code max} items of ore from {@code ore} into the crucible; returns how many went in. */
+    /** Puts up to {@code max} items of ore from {@code ore} into the crucible (empty, with ore, or with set metal: it all
+     * melts together); returns how many went in. */
     static int fill(ItemStack crucible, ItemStack ore, int max) {
         Casting.OreUnits per = Casting.oreUnits(ore);
         if (per == null) return 0;
@@ -60,7 +61,7 @@ public class CrucibleItem extends Item {
 
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack self, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess carried) {
-        if (kind != Kind.ORE || self.getCount() != 1 || other.isEmpty() || Casting.oreUnits(other) == null) return false;
+        if (kind == Kind.MOLTEN || self.getCount() != 1 || other.isEmpty() || Casting.oreUnits(other) == null) return false;
         if (!slot.allowModification(player)) return false;
         int n = fill(self, other, action == ClickAction.PRIMARY ? Integer.MAX_VALUE : 1);
         player.playSound(n > 0 ? SoundEvents.BUNDLE_INSERT : SoundEvents.BUNDLE_INSERT_FAIL, 0.8F, 0.8F + player.level().getRandom().nextFloat() * 0.4F);
@@ -71,7 +72,7 @@ public class CrucibleItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack self = player.getItemInHand(hand);
         ItemStack ore = player.getItemInHand(hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-        if (kind != Kind.ORE || self.getCount() != 1 || Casting.oreUnits(ore) == null) return InteractionResult.PASS;
+        if (kind == Kind.MOLTEN || self.getCount() != 1 || Casting.oreUnits(ore) == null) return InteractionResult.PASS;
         if (!level.isClientSide()) {
             int n = fill(self, ore, 1);
             level.playSound(null, player.blockPosition(), n > 0 ? SoundEvents.BUNDLE_INSERT : SoundEvents.BUNDLE_INSERT_FAIL, SoundSource.PLAYERS, 0.8F, 1.0F);
