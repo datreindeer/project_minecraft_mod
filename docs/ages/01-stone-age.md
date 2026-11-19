@@ -1275,6 +1275,8 @@ upp släpper det som vanligt.
 Stenålderns säng. Man kan inte sova bort natten, men man kan **vila**: högerklicka på en Straw Bed så sätts din
 respawnpunkt där och tiden sedan du vilade nollställs, så **phantoms** inte kommer (de kommer annars efter 3 nätter utan vila).
 Natten fortsätter som vanligt. Vilan ger också tillbaka sanity (se Mörkerrädsla).
+Respawnpunkten håller när man dör: vanilla 26.3 låter annars inte en Straw Bed vara spawn (`straw_bed_rule` säger never),
+så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw Bed och Furred Straw Bed.
 - Recept (crafting table): `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]` → 1 Straw Bed. Straw får man när man skördar säd med Sickle.
 - Bryts den ger den 2–4 Plant Fibre, inte sängen (samma för de gamla i Abandoned Camps).
 - **Furred Straw Bed (fäll):** högerklicka på en Straw Bed med en **Wolf Pelt** i handen så breds pälsen ut över sängen
