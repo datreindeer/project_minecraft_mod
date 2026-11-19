@@ -1,5 +1,6 @@
 package com.mechanical.people;
 
+import static com.mechanical.Mechanical.BLOCKS;
 import static com.mechanical.Mechanical.ENTITY_TYPES;
 import static com.mechanical.Mechanical.ITEMS;
 
@@ -10,6 +11,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -21,9 +25,18 @@ public final class People {
     public static final DeferredItem<SpawnEggItem> TRIBESPERSON_SPAWN_EGG = ITEMS.registerItem("tribesperson_spawn_egg", SpawnEggItem::new,
             p -> p.spawnEgg(TRIBESPERSON.get()));
 
+    /** Palisade stake tops for tribe villages (items come from Mechanical.registerMissingBlockItems). */
+    public static final DeferredBlock<SharpenedLogBlock> SHARPENED_OAK_LOG = sharpened("sharpened_oak_log", MapColor.WOOD);
+    public static final DeferredBlock<SharpenedLogBlock> SHARPENED_SPRUCE_LOG = sharpened("sharpened_spruce_log", MapColor.PODZOL);
+
+    private static DeferredBlock<SharpenedLogBlock> sharpened(String name, MapColor color) {
+        return BLOCKS.registerBlock(name, SharpenedLogBlock::new, p -> p.mapColor(color).strength(2.0F).sound(SoundType.WOOD).ignitedByLava().noOcclusion());
+    }
+
     /** Call from the mod constructor: loads the registrations and registers the worldgen features. */
     public static void init(IEventBus modEventBus) {
         com.mechanical.worldgen.PeopleFeatures.FEATURE_TYPES.register(modEventBus);
+        Tribe.init();
     }
 
     @SubscribeEvent

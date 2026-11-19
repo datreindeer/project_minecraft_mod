@@ -81,6 +81,8 @@
     "mechanical:linden_button",
     "mechanical:linden_pressure_plate",
     "mechanical:stripped_linden_log",
-    "mechanical:stripped_linden_wood"
+    "mechanical:stripped_linden_wood",
+    "mechanical:sharpened_oak_log",
+    "mechanical:sharpened_spruce_log"
   ]
 }

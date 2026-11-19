@@ -1,0 +1,7 @@
+{
+  "type": "mechanical:tribe_village",
+  "biomes": "#mechanical:has_structure/tribe_village",
+  "spawn_overrides": {},
+  "step": "top_layer_modification",
+  "terrain_adaptation": "beard_box"
+}

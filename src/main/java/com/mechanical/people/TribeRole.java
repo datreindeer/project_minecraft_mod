@@ -5,7 +5,7 @@ package com.mechanical.people;
  * Each role has {@link #SKINS} skin variants: even ones are men (wide arms), odd ones women (slim arms).
  */
 public enum TribeRole {
-    HUNTER(0), GATHERER(18), FISHER(18), WOODCUTTER(16), ELDER(6);
+    HUNTER(24), GATHERER(18), FISHER(18), WOODCUTTER(16), ELDER(6);
 
     public static final int SKINS = 4, GREETINGS = 3;
 

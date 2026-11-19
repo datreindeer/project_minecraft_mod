@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/sharpened_spruce_log"
+      },
+      {
+        "model": "mechanical:block/sharpened_spruce_log",
+        "y": 90
+      }
+    ]
+  }
+}
