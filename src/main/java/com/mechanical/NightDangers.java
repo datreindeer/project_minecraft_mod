@@ -367,6 +367,10 @@ public final class NightDangers {
             ticks = 0;
             direct = false;
             LivingEntity target = mob.getTarget();
+            if (target == null) { // dropped its target between canUse and start (another goal ran in between)
+                direct = true;
+                return;
+            }
             Path path = mob.getNavigation().createPath(target, 1);
             if (path == null || !path.canReach()) path = mob.getNavigation().createPath(target.blockPosition(), 4);
             if (path != null && path.getNodeCount() > 1) mob.getNavigation().moveTo(path, 1.1);
