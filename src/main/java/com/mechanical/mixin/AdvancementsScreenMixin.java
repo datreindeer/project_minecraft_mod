@@ -48,7 +48,7 @@ public abstract class AdvancementsScreenMixin {
 
     /** window.png as a nine-slice: corners kept, edges stretched (the inside is transparent). */
     @Redirect(method = "extractWindow", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom.mojang.renderpearl.api.pipeline.RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V"))
+            target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V"))
     private void mechanical$frame(GuiGraphicsExtractor graphics, RenderPipeline pipeline, Identifier texture, int x, int y,
             float u, float v, int w, int h, int texW, int texH) {
         int[] srcX = {0, 9, 243, 252}, srcY = {0, 18, 131, 140};
