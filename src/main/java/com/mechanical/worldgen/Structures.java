@@ -34,6 +34,7 @@ public final class Structures {
         FEATURE_TYPES.register("stone_head", () -> StoneHead.CODEC);
         FEATURE_TYPES.register("animal_carving", () -> AnimalCarving.CODEC);
         FEATURE_TYPES.register("shrine_statue", () -> ShrineStatue.CODEC);
+        FEATURE_TYPES.register("trail", () -> Trails.CODEC);
     }
 
     public static void init() {}

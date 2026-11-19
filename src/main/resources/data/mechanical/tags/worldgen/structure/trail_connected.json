@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#minecraft:village",
+    "mechanical:ancient_oak",
     "mechanical:tribe_village"
   ]
 }
