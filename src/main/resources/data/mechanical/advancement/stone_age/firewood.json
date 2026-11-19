@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/flint_axe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:firewood"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:oak_firewood"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.firewood.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.firewood.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

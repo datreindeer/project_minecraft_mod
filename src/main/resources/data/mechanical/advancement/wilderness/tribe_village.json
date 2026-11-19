@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "visit": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "mechanical:tribe_village"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "visit"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sharpened_oak_log"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.tribe_village.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.tribe_village.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

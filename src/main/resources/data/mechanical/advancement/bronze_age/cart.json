@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/wooden_wheel",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cart"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cart"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.cart.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.cart.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

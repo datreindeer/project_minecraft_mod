@@ -197,7 +197,7 @@ Kod: `KilnBlockEntity` (temperatur, påfrestning, lagning), `KilnBlock` (CRACKS,
 `client/KilnScreen` (termometer), `Casting` (registrering). Data: `scripts/gen_copper.py` och kilnens modeller i
 `gen_data.py`; texturer: `scripts/gen_copper_textures.py`. Generatorordning: gen_data.py src/main/resources → gen_tribe_village →
 gen_trails → gen_bronze_ores → gen_age_recipes → gen_farming → gen_wind → **gen_copper** → **gen_bronze** → gen_smoke → ... →
-gen_block_items → gen_unlocks → gen_registry.
+gen_block_items → gen_unlocks → gen_advancements → gen_registry.
 
 ### Temperatur i Clay Kiln
 

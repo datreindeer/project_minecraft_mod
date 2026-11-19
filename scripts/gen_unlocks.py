@@ -2,7 +2,7 @@
 carries one of its telling ingredients (common ones like planks, sticks and twine only count when the recipe has nothing
 else). Without this, recipes such as the Bellows never show up in the recipe book.
 
-Run last before gen_registry.py (after every generator that writes recipes): python scripts/gen_unlocks.py
+Run after every generator that writes recipes, before gen_advancements.py and gen_registry.py: python scripts/gen_unlocks.py
 """
 import json
 from pathlib import Path

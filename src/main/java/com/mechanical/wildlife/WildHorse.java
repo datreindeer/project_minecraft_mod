@@ -115,6 +115,8 @@ public class WildHorse extends WildAnimal {
         });
         if (horse == null) return;
         level().broadcastEntityEvent(horse, (byte) 7); // vanilla taming hearts
+        // the Bronze Age "Horse Whisperer" advancement listens for this
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) net.minecraft.advancements.triggers.CriteriaTriggers.TAME_ANIMAL.trigger(sp, horse);
         player.sendOverlayMessage(Component.translatable("message.mechanical.horse.tamed"));
     }
 

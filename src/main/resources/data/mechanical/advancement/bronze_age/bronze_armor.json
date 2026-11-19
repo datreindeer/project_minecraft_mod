@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:bronze_age/bronze",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_helmet"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_greaves"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_helmet"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.bronze_armor.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.bronze_armor.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

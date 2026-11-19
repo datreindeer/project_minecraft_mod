@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/tame_horse",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hide_saddle_blanket"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hide_saddle_blanket"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.saddle_blanket.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.saddle_blanket.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

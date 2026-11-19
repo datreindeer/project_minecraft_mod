@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/flour",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dough"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:dough"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.dough.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.dough.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

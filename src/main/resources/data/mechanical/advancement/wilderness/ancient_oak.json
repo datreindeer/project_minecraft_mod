@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "visit": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "mechanical:ancient_oak"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "visit"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:ancient_oak_rune_log"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.ancient_oak.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.ancient_oak.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/armor_station",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:leather_satchel"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:leather_satchel"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.leather_satchel.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.leather_satchel.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

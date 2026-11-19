@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:stone_age/kiln",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clay_bucket"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clay_water_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:clay_bucket"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.clay_bucket.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.clay_bucket.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

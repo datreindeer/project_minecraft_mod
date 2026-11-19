@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/twine",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cordage"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cordage"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.cordage.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.cordage.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:knives"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:flint_knife"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.root.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:gui/advancements/backgrounds/adventure"
+  }
+}

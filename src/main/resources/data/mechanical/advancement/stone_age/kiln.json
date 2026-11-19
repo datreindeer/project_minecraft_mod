@@ -1,0 +1,34 @@
+{
+  "parent": "mechanical:stone_age/light_fire",
+  "criteria": {
+    "placed_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:kiln"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placed_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:kiln"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.kiln.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.kiln.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

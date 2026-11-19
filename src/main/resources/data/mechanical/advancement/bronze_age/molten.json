@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bellows",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:molten_crucible"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:molten_crucible"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.molten.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.molten.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

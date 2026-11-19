@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crude_bow"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:crude_bow"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.crude_bow.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.crude_bow.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
