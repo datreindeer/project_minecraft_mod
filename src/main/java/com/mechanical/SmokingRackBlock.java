@@ -32,7 +32,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A wooden frame to hang up to {@link #MAX} strips of raw meat or fish on (right-click), over or next to a fire. In smoke
  * (a lit or glowing campfire up to 2 blocks below or right beside it, or a smoky room, see {@link Smoke}) they turn into
- * Smoked Meat / Smoked Fish after {@link SmokingRackBlockEntity#SMOKE_SECONDS}; without smoke they spoil as usual. Empty
+ * Smoked Meat / Smoked Fish (not Rotting ones: {@link Preserving#tooFarGone}) after {@link SmokingRackBlockEntity#SMOKE_SECONDS}; without smoke they spoil as usual. Empty
  * hand takes everything off. The blockstate only shows what hangs there; the items themselves live in the block entity.
  */
 public class SmokingRackBlock extends Block implements EntityBlock {
@@ -76,6 +76,7 @@ public class SmokingRackBlock extends Block implements EntityBlock {
         Content raw = stack.is(Preserving.SMOKABLE_MEAT) ? Content.RAW_MEAT : stack.is(Preserving.SMOKABLE_FISH) ? Content.RAW_FISH : null;
         Content now = state.getValue(CONTENT);
         if (raw == null || state.getValue(STRIPS) >= MAX || now != Content.EMPTY && now != raw) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (Preserving.tooFarGone(stack, level, player)) return InteractionResult.FAIL;
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof SmokingRackBlockEntity rack) {
             rack.hang(stack.consumeAndReturn(1, player), level.getGameTime());
             level.setBlock(pos, state.setValue(CONTENT, raw).setValue(STRIPS, state.getValue(STRIPS) + 1), Block.UPDATE_ALL);

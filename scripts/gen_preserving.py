@@ -2,11 +2,12 @@
 
 - item tags: how long each perishable food keeps (perishes_1_day / 2_days / 3_days / 30_days), what rots into Rotten
   Flesh (rots_to_flesh; the rest becomes Spoiled Food), and what goes on the racks (smokable_meat, smokable_fish,
-  dryable_berries); Spoiled Food is added to #mechanical:compostable
-- items: Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Spoiled Food (models, lang)
+  dryable_berries, dryable_mushrooms); Spoiled Food is added to #mechanical:compostable
+- items: Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Dried Mushrooms, Spoiled Food (models, lang)
 - Smoking Rack: frame + hanging strip models, a multipart blockstate (facing, content, strips), loot, recipe + unlock
-- Drying Rack food stages (hide 6-11): models (the frame from gen_data.py's drying_rack_0 plus a food plane), extra
-  blockstate variants and drops merged into the files gen_data.py writes
+- Drying Rack: food stages (hide 6-13) as models (the frame from gen_data.py's drying_rack_0 plus a food plane); the
+  2-tall rack (part=lower/upper, DryingRackBlock): frame halves and a left (hide) / right (hide2) spot plane per content;
+  the whole multipart blockstate and the loot table (rack + what is on each spot)
 Textures: scripts/gen_preserving_textures.py.
 Generator order: ... gen_soot.py, gen_phantom.py, gen_preserving.py, gen_block_items.py, gen_registry.py.
 Run: python scripts/gen_preserving.py"""
@@ -47,26 +48,30 @@ COOKED = [f"mechanical:cooked_{m}_scraps" for m in MEATS + ["game_meat", "veniso
 BERRIES = [f"mechanical:{b}" for b in ("raspberries", "blueberries", "lingonberries", "wild_strawberries", "elderberries", "cloudberries",
                                        "blackberries", "juniper_berries")] + ["minecraft:sweet_berries"]
 MUSHROOMS = [f"mechanical:{m}" for m in ("chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball")]
+# what dries into Dried Mushrooms: the edible ones (not Fly Agaric; vanilla mushrooms aren't food here)
+DRYABLE_MUSHROOMS = [m for m in MUSHROOMS if m != "mechanical:fly_agaric"]
 PRESERVED_FLESH = ["mechanical:smoked_meat", "mechanical:smoked_fish", "mechanical:jerky", "mechanical:dried_fish"]
 
 tag("perishes_1_day", RAW_MEAT + RAW_FISH)
 tag("perishes_2_days", BERRIES + ["minecraft:glow_berries"] + MUSHROOMS + ["mechanical:porridge", "mechanical:raw_porridge", "mechanical:peeled_egg"])
 tag("perishes_3_days", COOKED + ["mechanical:roasted_mushrooms", "mechanical:boiled_egg"])
-tag("perishes_30_days", PRESERVED_FLESH + ["mechanical:dried_berries"])
+tag("perishes_30_days", PRESERVED_FLESH + ["mechanical:dried_berries", "mechanical:dried_mushrooms"])
 tag("rots_to_flesh", RAW_MEAT + RAW_FISH + COOKED + PRESERVED_FLESH)
 tag("smokable_meat", RAW_MEAT)
 tag("smokable_fish", ["minecraft:cod", "minecraft:salmon"])  # the fillets you get from gutting a whole fish
 tag("dryable_berries", BERRIES)
+tag("dryable_mushrooms", DRYABLE_MUSHROOMS)
 tag_add(D / "mechanical/tags/item/compostable.json", "mechanical:spoiled_food")
 
 # ---- items ----
 ITEMS = {"smoked_meat": "Smoked Meat", "smoked_fish": "Smoked Fish", "jerky": "Jerky", "dried_fish": "Dried Fish",
-         "dried_berries": "Dried Berries", "spoiled_food": "Spoiled Food"}
+         "dried_berries": "Dried Berries", "dried_mushrooms": "Dried Mushrooms", "spoiled_food": "Spoiled Food"}
 for item in ITEMS:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
 merge(A / "lang/en_us.json", {**{f"item.mechanical.{k}": v for k, v in ITEMS.items()}, "block.mechanical.smoking_rack": "Smoking Rack",
-                              "tooltip.mechanical.fresh": "Fresh", "tooltip.mechanical.stale": "Stale", "tooltip.mechanical.rotting": "Rotting"})
+                              "tooltip.mechanical.fresh": "Fresh", "tooltip.mechanical.stale": "Stale", "tooltip.mechanical.rotting": "Rotting",
+                              "message.mechanical.too_far_gone": "This is too far gone to keep"})
 
 # ---- Smoking Rack (built facing north: the bar runs east-west, strips hang from it) ----
 FACES = ["down", "up", "north", "south", "east", "west"]
@@ -111,27 +116,55 @@ w(D / "mechanical/advancement/recipes/smoking_rack.json", {"parent": "minecraft:
                  "has_fish": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": "#mechanical:smokable_fish"}]}}},
     "requirements": [["has_meat", "has_fish"]], "rewards": {"recipes": ["mechanical:smoking_rack"]}})
 
-# ---- Drying Rack food stages (DryingRackBlock HIDE 6-11) ----
+# ---- Drying Rack (DryingRackBlock: facing, part single/lower/upper, hide = left spot, hide2 = right spot, 0-13) ----
 rack0 = json.loads((A / "models/block/drying_rack_0.json").read_text())
 plane = {"from": [3, 4, 8], "to": [13, 13, 8], "faces": {"north": {"uv": [3, 3, 13, 12], "texture": "#food"},
                                                        "south": {"uv": [13, 3, 3, 12], "texture": "#food"}}}
-FOOD_STAGES = {6: "meat", 7: "jerky", 8: "fish", 9: "dried_fish", 10: "berries", 11: "dried_berries"}
+FOOD_STAGES = {6: "meat", 7: "jerky", 8: "fish", 9: "dried_fish", 10: "berries", 11: "dried_berries", 12: "mushrooms", 13: "dried_mushrooms"}
 for stage, tex in FOOD_STAGES.items():
     w(A / f"models/block/drying_rack_{stage}.json", {"parent": "minecraft:block/block",
         "textures": {**rack0["textures"], "food": f"mechanical:block/drying_rack_{tex}"}, "elements": rack0["elements"] + [plane]})
-bs_path = A / "blockstates/drying_rack.json"
-bs = json.loads(bs_path.read_text())
-bs["variants"].update({f"facing={f},hide={h}": {"model": f"mechanical:block/drying_rack_{h}", **({"y": y} if y else {})}
-                       for f, y in ROT for h in FOOD_STAGES})
-w(bs_path, bs)
-loot_path = D / "mechanical/loot_table/blocks/drying_rack.json"
-loot = json.loads(loot_path.read_text())
-entries = loot["pools"][1]["entries"]
-for h, item, count in ((7, "mechanical:jerky", 1), (9, "mechanical:dried_fish", 1), (11, "mechanical:dried_berries", 4)):
+# 2-tall rack, built facing north: taller posts with feet, the lower half's bottom bar and crossbar, the upper half's top bar;
+# each half has two spots side by side (left x 3-8, right x 8-13) hanging from its bar. Spot textures are 5 px wide
+# (x 0-4, y 3-11, gen_preserving_textures.py).
+tall_lower = [box([1, 0, 7], [3, 16, 9]), box([13, 0, 7], [15, 16, 9]),                    # posts
+              box([0.5, 0, 5], [3.5, 2, 11]), box([12.5, 0, 5], [15.5, 2, 11]),            # feet
+              box([3, 2, 7.25], [13, 4, 8.75]), box([3, 13, 7.25], [13, 15, 8.75])]        # bottom bar, crossbar
+tall_upper = [box([1, 0, 7], [3, 16, 9]), box([13, 0, 7], [15, 16, 9]), box([3, 13, 7.25], [13, 15, 8.75]),
+              box([0.75, 15.5, 6.75], [3.25, 16.5, 9.25]), box([12.75, 15.5, 6.75], [15.25, 16.5, 9.25])]  # post caps
+for half, elements in (("lower", tall_lower), ("upper", tall_upper)):
+    w(A / f"models/block/drying_rack_tall_{half}.json", {"parent": "minecraft:block/block", "textures": rack0["textures"], "elements": elements})
+SPOT = {1: "hide_wet", 2: "hide_dry", 3: "phantom_wet", 4: "phantom_dry", 5: "phantom_rotten", **FOOD_STAGES}
+for side, x0 in (("left", 3), ("right", 8)):
+    for tex in SPOT.values():
+        w(A / f"models/block/drying_rack_{side}_{tex}.json", {"textures": {"particle": "mechanical:block/drying_rack",
+            "spot": f"mechanical:block/drying_rack_narrow_{tex}"}, "elements": [{"from": [x0, 4, 8], "to": [x0 + 5, 13, 8], "faces": {
+                "north": {"uv": [0, 3, 5, 12], "texture": "#spot"}, "south": {"uv": [5, 3, 0, 12], "texture": "#spot"}}}]})
+rot = lambda y: {"y": y} if y else {}
+parts = [{"when": {"facing": f, "part": "single", "hide": str(h)}, "apply": {"model": f"mechanical:block/drying_rack_{h}", **rot(y)}}
+         for f, y in ROT for h in range(14)]
+parts += [{"when": {"facing": f, "part": half}, "apply": {"model": f"mechanical:block/drying_rack_tall_{half}", **rot(y)}}
+          for f, y in ROT for half in ("lower", "upper")]
+parts += [{"when": {"facing": f, "part": "lower|upper", prop: str(h)}, "apply": {"model": f"mechanical:block/drying_rack_{side}_{tex}", **rot(y)}}
+          for f, y in ROT for prop, side in (("hide", "left"), ("hide2", "right")) for h, tex in SPOT.items()]
+w(A / "blockstates/drying_rack.json", {"multipart": parts})
+# drops: the rack itself (each half of a tall one is a rack), plus what hangs on each spot: hides come back as they are,
+# finished things as they are, food still drying is lost
+SPOT_DROPS = {1: ("mechanical:scraped_hide", 1), 2: ("minecraft:leather", 1), 3: ("mechanical:scraped_phantom_hide", 1),
+              4: ("mechanical:phantom_leather", 1), 5: ("minecraft:rotten_flesh", 1), 7: ("mechanical:jerky", 1),
+              9: ("mechanical:dried_fish", 1), 11: ("mechanical:dried_berries", 4), 13: ("mechanical:dried_mushrooms", 4)}
+
+
+def spot_drop(prop, h, item, count):
     entry = {"type": "minecraft:item", "name": item,
-             "condition": {"type": "minecraft:match_block", "blocks": "mechanical:drying_rack", "state": {"hide": str(h)}}}
+             "condition": {"type": "minecraft:match_block", "blocks": "mechanical:drying_rack", "state": {prop: str(h)}}}
     if count > 1:
         entry["modifier"] = [{"type": "minecraft:set_count", "count": count}]
-    entries[:] = [e for e in entries if e["name"] != item] + [entry]
-w(loot_path, loot)
+    return entry
+
+
+w(D / "mechanical/loot_table/blocks/drying_rack.json", {"type": "minecraft:block", "pools": [
+    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:drying_rack"}]}]
+    + [{"rolls": 1, "entries": [spot_drop(prop, h, item, n) for h, (item, n) in SPOT_DROPS.items()]} for prop in ("hide", "hide2")],
+    "random_sequence": "mechanical:blocks/drying_rack"})
 print("preserving ok")

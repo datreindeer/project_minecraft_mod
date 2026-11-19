@@ -271,6 +271,26 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
   vilda bär + Sweet Berries) → **4 Dried Berries**. Torkar bara i **solen utan regn**: ~7 min i snitt ute i vinden (fri himmel,
   inte inbyggd på tre sidor), ~14 min i lä. Natt och regn **pausar** bara, inget ruttnar på ställningen. Högerklicka med tom
   hand när den är klar. Bryts ställningen släpps färdig torkad mat, men mat som håller på att torka går förlorad.
+- **Svamp torkar också:** en näve med **4 svampar** (Chanterelle, Porcini, Morel, Oyster Mushroom, Puffball, gärna
+  blandat) → **4 Dried Mushrooms**, på samma sätt som bär. Fly Agaric och vanilla-svamp går inte (Fly Agaric är giftig,
+  och vanilla-svamp är inte mat här).
+- **Rotting-mat** (under 20 % kvar, se "Förskämd mat") går inte att hänga upp, varken här eller på Smoking Rack:
+  "This is too far gone to keep". Fresh och Stale går bra.
+- **Hög ställning:** högerklicka på en Drying Rack med en till Drying Rack så växer den uppåt till **2 block** (rutan
+  ovanför måste vara tom; högst 2 block, föremålet går åt). En hög ställning har **4 platser**, två bredvid varandra i
+  varje block (nedre raden hänger från en tvärslå mitt på, övre raden från toppslån; stolparna har fötter). Varje plats
+  rymmer en hud eller en sats mat och torkar för sig, med samma regler som ovan. Det som hängde på den låga ställningen
+  hamnar på nedre vänstra platsen.
+  - Högerklick med något att hänga: platsen man pekar på (vänster/höger halva av blocket) om den är ledig, annars nästa
+    lediga i samma block, sedan i den andra halvan.
+  - Tom hand tar ner **allt som är klart** på hela ställningen.
+  - Bryts ena halvan går båda (i creative utan drops). Varje halva släpper en Drying Rack + det som hänger på den.
+    Kolvar knuffar inte ställningen, den lossnar som föremål.
+  - Solen kollas ovanför övre halvan, så den nedre torkar lika fort. Två Phantom Hides i samma block delar mörkerräkningen
+    (den nya ärver den gamlas räkning); i olika block räknas de var för sig.
+  - En låg ställning har kvar **1 plats** och fungerar som förut. Gamla ställningar (från före den höga) behåller det som
+    hänger på dem: tillståndet heter fortfarande `hide`, och de nya egenskaperna `part`/`hide2` får sina standardvärden
+    (`single`/0) när världen laddas.
 
 ### Smoking Rack
 Recept: `[Stick][Cordage][Stick]` / `[Stick][ ][Stick]` / `[Stick][ ][Stick]` (låses upp när man får rått kött eller rå fisk).
@@ -888,7 +908,7 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Rått kött (alla scraps, vanilla rått kött), rå fisk (filéer och Whole fish) | **1 dag** (20 min) |
 | Bär (vilda, Sweet Berries, Glow Berries), vild svamp, Raw Porridge, Porridge, Peeled Egg | **2 dagar** |
 | Tillagat kött och fisk (scraps och vanilla), Roasted Mushrooms, Boiled Egg | **3 dagar** |
-| **Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries** | **30 dagar** |
+| **Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Dried Mushrooms** | **30 dagar** |
 
 - Allt annat (bröd, äpplen, morötter, vanilla-soppor …) förskäms inte.
 - Maten kontrolleras en gång i sekunden i spelarens inventory och i den behållare man har öppen. Mat som ligger i en kista
@@ -907,6 +927,9 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Jerky | rått kött, torkat i solen (~7–14 min) | 2 | 0,8 |
 | Dried Fish | Raw Cod/Salmon, torkad i solen | 2 | 0,7 |
 | Dried Berries | 4 bär → 4, torkade i solen | 1 | 0,5 |
+| Dried Mushrooms | 4 ätliga svampar → 4, torkade i solen | 1 | 0,6 |
+
+Mat som redan är **Rotting** går inte att röka eller torka ("This is too far gone to keep").
 
 Rökning går fortare och ger lite mer mat; torkning kräver ingen eld men bara fungerar i solsken.
 

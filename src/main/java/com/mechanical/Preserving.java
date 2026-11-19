@@ -50,7 +50,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * spoil when the chest is next opened. The time is rounded up to 1/16 of the shelf life so food stamped close together
  * still stacks. Eating rotting food (last 20 % of its life) may give Hunger.
  * <p>
- * Smoking ({@link SmokingRackBlock}) and drying ({@link DryingRackBlock}) turn raw meat, fish and berries into foods that
+ * Smoking ({@link SmokingRackBlock}) and drying ({@link DryingRackBlock}) turn raw meat, fish, berries and mushrooms into foods that
  * keep for 30 days. Data: scripts/gen_preserving.py, textures: scripts/gen_preserving_textures.py.
  */
 @EventBusSubscriber(modid = MODID)
@@ -71,13 +71,15 @@ public final class Preserving {
 
     public static final TagKey<Item> PERISHES_1_DAY = tag("perishes_1_day"), PERISHES_2_DAYS = tag("perishes_2_days"),
             PERISHES_3_DAYS = tag("perishes_3_days"), PERISHES_30_DAYS = tag("perishes_30_days"), ROTS_TO_FLESH = tag("rots_to_flesh"),
-            SMOKABLE_MEAT = tag("smokable_meat"), SMOKABLE_FISH = tag("smokable_fish"), DRYABLE_BERRIES = tag("dryable_berries");
+            SMOKABLE_MEAT = tag("smokable_meat"), SMOKABLE_FISH = tag("smokable_fish"), DRYABLE_BERRIES = tag("dryable_berries"),
+            DRYABLE_MUSHROOMS = tag("dryable_mushrooms");
 
     public static final DeferredItem<Item> SMOKED_MEAT = food("smoked_meat", 3, 0.8F);
     public static final DeferredItem<Item> SMOKED_FISH = food("smoked_fish", 3, 0.7F);
     public static final DeferredItem<Item> JERKY = food("jerky", 2, 0.8F);
     public static final DeferredItem<Item> DRIED_FISH = food("dried_fish", 2, 0.7F);
     public static final DeferredItem<Item> DRIED_BERRIES = food("dried_berries", 1, 0.5F);
+    public static final DeferredItem<Item> DRIED_MUSHROOMS = food("dried_mushrooms", 1, 0.6F);
     /** What plant food turns into; goes in the Compost Heap. */
     public static final DeferredItem<Item> SPOILED_FOOD = ITEMS.registerSimpleItem("spoiled_food");
 
@@ -140,6 +142,14 @@ public final class Preserving {
         Long at = out.get(SPOILS_AT.get());
         if (at != null && now > since) out.set(SPOILS_AT.get(), at + (long) ((now - since) * (1 - BASKET_RATE)));
         return out;
+    }
+
+    /** Rotting food can't go on a rack: tells the player so (overlay) and returns true. */
+    public static boolean tooFarGone(ItemStack stack, net.minecraft.world.level.Level level, Player player) {
+        float fresh = freshness(stack, level.getGameTime());
+        if (fresh < 0 || fresh >= ROTTING) return false;
+        if (!level.isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.too_far_gone"));
+        return true;
     }
 
     /** What a stack spoils into (same count). */

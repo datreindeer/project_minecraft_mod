@@ -729,5 +729,7 @@
   "biome.mechanical.hazel_meadow": "Hazel Meadow",
   "biome.mechanical.willow_fen": "Willow Fen",
   "biome.mechanical.pine_heath": "Pine Heath",
-  "block.mechanical.heather": "Heather"
+  "block.mechanical.heather": "Heather",
+  "item.mechanical.dried_mushrooms": "Dried Mushrooms",
+  "message.mechanical.too_far_gone": "This is too far gone to keep"
 }

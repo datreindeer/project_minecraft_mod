@@ -1,5 +1,8 @@
 package com.mechanical;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -7,6 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +19,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -27,34 +34,55 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Stretch a scraped hide on it (right-click), wait for it to dry (random ticks, a few minutes), take the leather.
- * HIDE: 0 empty, 1 drying, 2 dry, 3 phantom hide drying, 4 phantom leather, 5 rotted phantom hide.
+ * <p>
+ * A rack is one block ({@link Part#SINGLE}, one spot: {@link #HIDE}) or, after right-clicking it with another Drying Rack,
+ * two blocks tall ({@link Part#LOWER} + {@link Part#UPPER}) with two spots in each block ({@link #HIDE} on the left,
+ * {@link #HIDE2} on the right, seen from the front), four in all. Each spot holds one hide or one batch of food and dries
+ * on its own. The contents live in the blockstate (no block entity), so racks from before the tall rack keep what hangs
+ * on them: old states have no {@code part}/{@code hide2} and load as a single rack with the same {@code hide}.
+ * <p>
+ * Spot values: 0 empty, 1 drying, 2 dry, 3 phantom hide drying, 4 phantom leather, 5 rotted phantom hide.
  * A phantom hide only dries in daylight (bright sky above the rack); each random tick in the dark (night, rain, indoors)
- * counts in DARK, and on the {@link #ROT_TICKS}th it rots (undead flesh needs the sun).
+ * counts in DARK, and on the {@link #ROT_TICKS}th it rots (undead flesh needs the sun). DARK is per block, so two phantom
+ * hides side by side in one block share it.
  * Food dries on it too (Preserving): 6 meat strip drying, 7 jerky, 8 fish drying, 9 dried fish, 10 berries drying
- * (a handful of {@link #BERRIES}), 11 dried berries. Food dries only in sunlight without rain, slower than smoking, and
- * faster out in the wind ({@link Wind#exposed}); night and rain just pause it.
+ * (a handful of {@link #HANDFUL}), 11 dried berries, 12 mushrooms drying (a handful), 13 dried mushrooms. Food dries
+ * only in sunlight without rain, slower than smoking, and faster out in the wind ({@link Wind#exposed}); night and rain
+ * just pause it. Rotting food ({@link Preserving#ROTTING}) can't be hung up.
  */
 public class DryingRackBlock extends Block {
+    public enum Part implements StringRepresentable {
+        SINGLE, LOWER, UPPER;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(java.util.Locale.ROOT);
+        }
+    }
+
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 11);
+    public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
+    public static final int EMPTY = 0, HIDE_WET = 1, PHANTOM_WET = 3, MEAT = 6, FISH = 8, BERRIES = 10, MUSHROOMS = 12;
+    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 13), HIDE2 = IntegerProperty.create("hide2", 0, 13);
     /** Dark random ticks (~68 s each on average) before a phantom hide rots: 8, about one full night. */
     public static final int ROT_TICKS = 8;
     public static final IntegerProperty DARK = IntegerProperty.create("dark", 0, ROT_TICKS - 1);
     private static final float DRY_CHANCE = 1.0F / 3.0F; // per random tick, about 3 minutes on average
     /** Food per random tick in the sun: ~7 minutes out in the wind, ~14 minutes sheltered. */
     private static final float FOOD_DRY_CHANCE = 1.0F / 6.0F, FOOD_DRY_SHELTERED = 1.0F / 12.0F;
-    /** Berries go up (and come down dried) by the handful. */
-    public static final int BERRIES = 4;
+    /** Berries and mushrooms go up (and come down dried) by the handful. */
+    public static final int HANDFUL = 4;
     private static final VoxelShape SHAPE_NS = box(0, 0, 6, 16, 16, 10), SHAPE_EW = box(6, 0, 0, 10, 16, 16);
 
     public DryingRackBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HIDE, 0).setValue(DARK, 0));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, Part.SINGLE)
+                .setValue(HIDE, 0).setValue(HIDE2, 0).setValue(DARK, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HIDE, DARK);
+        builder.add(FACING, PART, HIDE, HIDE2, DARK);
     }
 
     @Override
@@ -67,44 +95,139 @@ public class DryingRackBlock extends Block {
         return state.getValue(FACING).getAxis() == Direction.Axis.Z ? SHAPE_NS : SHAPE_EW;
     }
 
-    @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        boolean berries = stack.is(Preserving.DRYABLE_BERRIES);
-        int hang = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get()) ? 3 : stack.is(Mechanical.SCRAPED_HIDE.get()) ? 1 : stack.is(Preserving.SMOKABLE_MEAT) ? 6
-                : stack.is(Preserving.SMOKABLE_FISH) ? 8 : berries && stack.getCount() >= BERRIES ? 10 : 0;
-        if (state.getValue(HIDE) != 0 || hang == 0) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (!level.isClientSide()) {
-            stack.consume(berries ? BERRIES : 1, player);
-            level.setBlock(pos, state.setValue(HIDE, hang).setValue(DARK, 0), Block.UPDATE_ALL);
-            level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
-        }
-        return InteractionResult.SUCCESS;
+    /** The spots in this block. */
+    private static List<IntegerProperty> spots(BlockState state) {
+        return state.getValue(PART) == Part.SINGLE ? List.of(HIDE) : List.of(HIDE, HIDE2);
     }
 
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        ItemStack taken = switch (state.getValue(HIDE)) {
+    /** The other half of a tall rack, or null for a single one. */
+    private static BlockPos partner(BlockState state, BlockPos pos) {
+        return switch (state.getValue(PART)) {
+            case SINGLE -> null;
+            case LOWER -> pos.above();
+            case UPPER -> pos.below();
+        };
+    }
+
+    private boolean whole(BlockState state, BlockState partnerState) {
+        return partnerState.is(this) && partnerState.getValue(PART) == (state.getValue(PART) == Part.LOWER ? Part.UPPER : Part.LOWER);
+    }
+
+    private static boolean drying(int spot) {
+        return spot == HIDE_WET || spot == PHANTOM_WET || spot >= MEAT && spot % 2 == 0;
+    }
+
+    /** What a finished spot gives (empty while it is drying or empty). */
+    private static ItemStack finished(int spot) {
+        return switch (spot) {
             case 2 -> new ItemStack(Items.LEATHER);
             case 4 -> new ItemStack(Mechanical.PHANTOM_LEATHER.get());
             case 5 -> new ItemStack(Items.ROTTEN_FLESH);
             case 7 -> new ItemStack(Preserving.JERKY.get());
             case 9 -> new ItemStack(Preserving.DRIED_FISH.get());
-            case 11 -> new ItemStack(Preserving.DRIED_BERRIES.get(), BERRIES);
+            case 11 -> new ItemStack(Preserving.DRIED_BERRIES.get(), HANDFUL);
+            case 13 -> new ItemStack(Preserving.DRIED_MUSHROOMS.get(), HANDFUL);
             default -> ItemStack.EMPTY;
         };
-        if (taken.isEmpty()) return InteractionResult.PASS;
-        if (!level.isClientSide()) {
-            player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
-            level.setBlock(pos, state.setValue(HIDE, 0), Block.UPDATE_ALL);
-            level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (stack.is(Mechanical.DRYING_RACK_ITEM.get()) && state.getValue(PART) == Part.SINGLE) {
+            BlockPos up = pos.above();
+            if (!level.isInsideBuildHeight(up) || !level.getBlockState(up).canBeReplaced()) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (!level.isClientSide()) { // grow upward: the old spot becomes the lower left one
+                stack.consume(1, player);
+                level.setBlock(up, defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(PART, Part.UPPER), Block.UPDATE_ALL);
+                level.setBlock(pos, state.setValue(PART, Part.LOWER), Block.UPDATE_ALL);
+                level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 0.9F);
+            }
+            return InteractionResult.SUCCESS;
         }
+        int handful = stack.is(Preserving.DRYABLE_BERRIES) ? BERRIES : stack.is(Preserving.DRYABLE_MUSHROOMS) ? MUSHROOMS : 0;
+        int hang = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get()) ? PHANTOM_WET : stack.is(Mechanical.SCRAPED_HIDE.get()) ? HIDE_WET
+                : stack.is(Preserving.SMOKABLE_MEAT) ? MEAT : stack.is(Preserving.SMOKABLE_FISH) ? FISH
+                : handful != 0 && stack.getCount() >= HANDFUL ? handful : 0;
+        if (hang == 0) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (Preserving.tooFarGone(stack, level, player)) return InteractionResult.FAIL;
+        // the spot pointed at first, then the other one in this block, then the other half's
+        Direction right = state.getValue(FACING).getClockWise();
+        double along = (hit.getLocation().x - pos.getX() - 0.5) * right.getStepX() + (hit.getLocation().z - pos.getZ() - 0.5) * right.getStepZ();
+        List<BlockPos> where = new ArrayList<>();
+        List<IntegerProperty> which = new ArrayList<>();
+        for (IntegerProperty p : state.getValue(PART) == Part.SINGLE ? List.of(HIDE) : along < 0 ? List.of(HIDE, HIDE2) : List.of(HIDE2, HIDE)) {
+            where.add(pos);
+            which.add(p);
+        }
+        BlockPos other = partner(state, pos);
+        if (other != null && whole(state, level.getBlockState(other))) for (IntegerProperty p : List.of(HIDE, HIDE2)) {
+            where.add(other);
+            which.add(p);
+        }
+        for (int i = 0; i < where.size(); i++) {
+            BlockState at = level.getBlockState(where.get(i));
+            if (at.getValue(which.get(i)) != EMPTY) continue;
+            if (!level.isClientSide()) {
+                stack.consume(handful != 0 ? HANDFUL : 1, player);
+                boolean phantomThere = spots(at).stream().anyMatch(p -> at.getValue(p) == PHANTOM_WET);
+                // a fresh phantom hide starts its dark count at 0, unless it joins one already drying in this block
+                BlockState next = at.setValue(which.get(i), hang);
+                level.setBlock(where.get(i), hang == PHANTOM_WET && !phantomThere ? next.setValue(DARK, 0) : next, Block.UPDATE_ALL);
+                level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    /** Empty hand takes everything that is done, from the whole rack. */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        BlockPos other = partner(state, pos);
+        List<BlockPos> blocks = other != null && whole(state, level.getBlockState(other)) ? List.of(pos, other) : List.of(pos);
+        boolean any = false;
+        for (BlockPos at : blocks) {
+            BlockState s = level.getBlockState(at), next = s;
+            for (IntegerProperty p : spots(s)) {
+                ItemStack taken = finished(s.getValue(p));
+                if (taken.isEmpty()) continue;
+                any = true;
+                next = next.setValue(p, EMPTY);
+                if (!level.isClientSide()) player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
+            }
+            if (!level.isClientSide() && next != s) level.setBlock(at, next, Block.UPDATE_ALL);
+        }
+        if (!any) return InteractionResult.PASS;
+        if (!level.isClientSide()) level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         return InteractionResult.SUCCESS;
+    }
+
+    /** The halves of a tall rack go together: if one is gone, the other breaks (dropping what hangs on it) next tick. */
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction,
+                                     BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if (neighbourPos.equals(partner(state, pos)) && !whole(state, neighbourState)) ticks.scheduleTick(pos, this, 1);
+        return state;
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        BlockPos other = partner(state, pos);
+        if (other != null && !whole(state, level.getBlockState(other))) level.destroyBlock(pos, true);
+    }
+
+    /** In creative the other half goes too, without drops. */
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        BlockPos other = partner(state, pos);
+        if (!level.isClientSide() && player.isCreative() && other != null && whole(state, level.getBlockState(other)))
+            level.setBlock(other, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        int hide = state.getValue(HIDE);
-        return hide == 1 || hide == 3 || hide == 6 || hide == 8 || hide == 10;
+        return drying(state.getValue(HIDE)) || drying(state.getValue(HIDE2));
     }
 
     /** Sunlight reaches the rack: daytime and open sky. */
@@ -114,25 +237,35 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (state.getValue(HIDE) == 1) {
-            if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(HIDE, 2), Block.UPDATE_ALL);
-            return;
+        BlockPos top = state.getValue(PART) == Part.LOWER ? pos.above() : pos; // the upper half would block the lower one's sky
+        boolean sun = inDaylight(level, top), dryWeather = sun && !level.isRainingAt(top.above());
+        float foodChance = Wind.exposed(level, top) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED;
+        BlockState next = state;
+        boolean phantom = false;
+        for (IntegerProperty p : spots(state)) {
+            int spot = state.getValue(p);
+            if (spot == HIDE_WET) {
+                if (random.nextFloat() < DRY_CHANCE) next = next.setValue(p, 2);
+            } else if (spot >= MEAT && spot % 2 == 0) {
+                if (dryWeather && random.nextFloat() < foodChance) next = next.setValue(p, spot + 1);
+            } else if (spot == PHANTOM_WET) { // dries as fast as a normal hide, but only in daylight; the dark adds up until it rots
+                if (sun && random.nextFloat() < DRY_CHANCE) next = next.setValue(p, 4);
+                else phantom = true;
+            }
         }
-        int hide = state.getValue(HIDE);
-        if (hide >= 6) { // food: sun and no rain, faster in the wind; otherwise it just waits. Odd states are done.
-            if (hide % 2 == 0 && inDaylight(level, pos) && !level.isRainingAt(pos.above())
-                    && random.nextFloat() < (Wind.exposed(level, pos) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED))
-                level.setBlock(pos, state.setValue(HIDE, hide + 1), Block.UPDATE_ALL);
-            return;
+        if (phantom && !sun) {
+            if (state.getValue(DARK) + 1 >= ROT_TICKS) {
+                for (IntegerProperty p : spots(state)) if (next.getValue(p) == PHANTOM_WET) next = next.setValue(p, 5);
+                next = next.setValue(DARK, 0);
+                level.playSound(null, pos, SoundEvents.ZOMBIE_AMBIENT, SoundSource.BLOCKS, 0.4F, 0.6F);
+            } else {
+                next = next.setValue(DARK, state.getValue(DARK) + 1);
+            }
+        } else if (!phantom) {
+            next = next.setValue(DARK, 0); // no phantom hide left drying here
         }
-        // phantom hide: dries as fast as a normal one, but only in daylight; the dark adds up until it rots
-        if (inDaylight(level, pos)) {
-            if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(HIDE, 4).setValue(DARK, 0), Block.UPDATE_ALL);
-        } else if (state.getValue(DARK) + 1 >= ROT_TICKS) {
-            level.setBlock(pos, state.setValue(HIDE, 5).setValue(DARK, 0), Block.UPDATE_ALL);
-            level.playSound(null, pos, SoundEvents.ZOMBIE_AMBIENT, SoundSource.BLOCKS, 0.4F, 0.6F);
-        } else {
-            level.setBlock(pos, state.setValue(DARK, state.getValue(DARK) + 1), Block.UPDATE_CLIENTS);
-        }
+        if (next == state) return;
+        // only the dark count changed: nothing to see, no neighbour updates
+        level.setBlock(pos, next, next.setValue(DARK, state.getValue(DARK)) == state ? Block.UPDATE_CLIENTS : Block.UPDATE_ALL);
     }
 }

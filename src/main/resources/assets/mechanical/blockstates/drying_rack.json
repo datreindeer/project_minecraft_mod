@@ -1,184 +1,1802 @@
 {
-  "variants": {
-    "facing=north,hide=0": {
-      "model": "mechanical:block/drying_rack_0"
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0"
+      }
     },
-    "facing=north,hide=1": {
-      "model": "mechanical:block/drying_rack_1"
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_1"
+      }
     },
-    "facing=north,hide=2": {
-      "model": "mechanical:block/drying_rack_2"
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_2"
+      }
     },
-    "facing=north,hide=3": {
-      "model": "mechanical:block/drying_rack_3"
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_3"
+      }
     },
-    "facing=north,hide=4": {
-      "model": "mechanical:block/drying_rack_4"
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_4"
+      }
     },
-    "facing=north,hide=5": {
-      "model": "mechanical:block/drying_rack_5"
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_5"
+      }
     },
-    "facing=east,hide=0": {
-      "model": "mechanical:block/drying_rack_0",
-      "y": 90
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_6"
+      }
     },
-    "facing=east,hide=1": {
-      "model": "mechanical:block/drying_rack_1",
-      "y": 90
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_7"
+      }
     },
-    "facing=east,hide=2": {
-      "model": "mechanical:block/drying_rack_2",
-      "y": 90
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_8"
+      }
     },
-    "facing=east,hide=3": {
-      "model": "mechanical:block/drying_rack_3",
-      "y": 90
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_9"
+      }
     },
-    "facing=east,hide=4": {
-      "model": "mechanical:block/drying_rack_4",
-      "y": 90
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_10"
+      }
     },
-    "facing=east,hide=5": {
-      "model": "mechanical:block/drying_rack_5",
-      "y": 90
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_11"
+      }
     },
-    "facing=south,hide=0": {
-      "model": "mechanical:block/drying_rack_0",
-      "y": 180
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_12"
+      }
     },
-    "facing=south,hide=1": {
-      "model": "mechanical:block/drying_rack_1",
-      "y": 180
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_13"
+      }
     },
-    "facing=south,hide=2": {
-      "model": "mechanical:block/drying_rack_2",
-      "y": 180
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 90
+      }
     },
-    "facing=south,hide=3": {
-      "model": "mechanical:block/drying_rack_3",
-      "y": 180
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_1",
+        "y": 90
+      }
     },
-    "facing=south,hide=4": {
-      "model": "mechanical:block/drying_rack_4",
-      "y": 180
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_2",
+        "y": 90
+      }
     },
-    "facing=south,hide=5": {
-      "model": "mechanical:block/drying_rack_5",
-      "y": 180
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_3",
+        "y": 90
+      }
     },
-    "facing=west,hide=0": {
-      "model": "mechanical:block/drying_rack_0",
-      "y": 270
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_4",
+        "y": 90
+      }
     },
-    "facing=west,hide=1": {
-      "model": "mechanical:block/drying_rack_1",
-      "y": 270
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_5",
+        "y": 90
+      }
     },
-    "facing=west,hide=2": {
-      "model": "mechanical:block/drying_rack_2",
-      "y": 270
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_6",
+        "y": 90
+      }
     },
-    "facing=west,hide=3": {
-      "model": "mechanical:block/drying_rack_3",
-      "y": 270
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_7",
+        "y": 90
+      }
     },
-    "facing=west,hide=4": {
-      "model": "mechanical:block/drying_rack_4",
-      "y": 270
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_8",
+        "y": 90
+      }
     },
-    "facing=west,hide=5": {
-      "model": "mechanical:block/drying_rack_5",
-      "y": 270
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_9",
+        "y": 90
+      }
     },
-    "facing=north,hide=6": {
-      "model": "mechanical:block/drying_rack_6"
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_10",
+        "y": 90
+      }
     },
-    "facing=north,hide=7": {
-      "model": "mechanical:block/drying_rack_7"
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_11",
+        "y": 90
+      }
     },
-    "facing=north,hide=8": {
-      "model": "mechanical:block/drying_rack_8"
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_12",
+        "y": 90
+      }
     },
-    "facing=north,hide=9": {
-      "model": "mechanical:block/drying_rack_9"
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_13",
+        "y": 90
+      }
     },
-    "facing=north,hide=10": {
-      "model": "mechanical:block/drying_rack_10"
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 180
+      }
     },
-    "facing=north,hide=11": {
-      "model": "mechanical:block/drying_rack_11"
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_1",
+        "y": 180
+      }
     },
-    "facing=east,hide=6": {
-      "model": "mechanical:block/drying_rack_6",
-      "y": 90
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_2",
+        "y": 180
+      }
     },
-    "facing=east,hide=7": {
-      "model": "mechanical:block/drying_rack_7",
-      "y": 90
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_3",
+        "y": 180
+      }
     },
-    "facing=east,hide=8": {
-      "model": "mechanical:block/drying_rack_8",
-      "y": 90
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_4",
+        "y": 180
+      }
     },
-    "facing=east,hide=9": {
-      "model": "mechanical:block/drying_rack_9",
-      "y": 90
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_5",
+        "y": 180
+      }
     },
-    "facing=east,hide=10": {
-      "model": "mechanical:block/drying_rack_10",
-      "y": 90
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_6",
+        "y": 180
+      }
     },
-    "facing=east,hide=11": {
-      "model": "mechanical:block/drying_rack_11",
-      "y": 90
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_7",
+        "y": 180
+      }
     },
-    "facing=south,hide=6": {
-      "model": "mechanical:block/drying_rack_6",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_8",
+        "y": 180
+      }
     },
-    "facing=south,hide=7": {
-      "model": "mechanical:block/drying_rack_7",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_9",
+        "y": 180
+      }
     },
-    "facing=south,hide=8": {
-      "model": "mechanical:block/drying_rack_8",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_10",
+        "y": 180
+      }
     },
-    "facing=south,hide=9": {
-      "model": "mechanical:block/drying_rack_9",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_11",
+        "y": 180
+      }
     },
-    "facing=south,hide=10": {
-      "model": "mechanical:block/drying_rack_10",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_12",
+        "y": 180
+      }
     },
-    "facing=south,hide=11": {
-      "model": "mechanical:block/drying_rack_11",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_13",
+        "y": 180
+      }
     },
-    "facing=west,hide=6": {
-      "model": "mechanical:block/drying_rack_6",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 270
+      }
     },
-    "facing=west,hide=7": {
-      "model": "mechanical:block/drying_rack_7",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_1",
+        "y": 270
+      }
     },
-    "facing=west,hide=8": {
-      "model": "mechanical:block/drying_rack_8",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_2",
+        "y": 270
+      }
     },
-    "facing=west,hide=9": {
-      "model": "mechanical:block/drying_rack_9",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_3",
+        "y": 270
+      }
     },
-    "facing=west,hide=10": {
-      "model": "mechanical:block/drying_rack_10",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_4",
+        "y": 270
+      }
     },
-    "facing=west,hide=11": {
-      "model": "mechanical:block/drying_rack_11",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_5",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_6",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_7",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_8",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_9",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_10",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_11",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_12",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_13",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_lower",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_lower",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_tall_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_wet"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_wet"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_rotten"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_jerky"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_berries"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_berries"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_mushrooms"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_mushrooms"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_wet"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_wet"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_rotten"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_meat"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_jerky"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_fish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_berries"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_berries"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_mushrooms"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower|upper",
+        "hide2": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_mushrooms"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_wet",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_wet",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_rotten",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_jerky",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_berries",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_berries",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_mushrooms",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_mushrooms",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_wet",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_wet",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_rotten",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_meat",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_jerky",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_fish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_berries",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_berries",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_mushrooms",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower|upper",
+        "hide2": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_mushrooms",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_wet",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_wet",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_rotten",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_jerky",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_berries",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_berries",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_mushrooms",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_mushrooms",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_wet",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_wet",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_rotten",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_meat",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_jerky",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_fish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_berries",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_berries",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_mushrooms",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower|upper",
+        "hide2": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_mushrooms",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_wet",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_hide_dry",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_wet",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_dry",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_phantom_rotten",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_jerky",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_berries",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_berries",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_mushrooms",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_left_dried_mushrooms",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_wet",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_hide_dry",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_wet",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_dry",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_phantom_rotten",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_meat",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_jerky",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_fish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_berries",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_berries",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_mushrooms",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower|upper",
+        "hide2": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_right_dried_mushrooms",
+        "y": 270
+      }
     }
-  }
+  ]
 }

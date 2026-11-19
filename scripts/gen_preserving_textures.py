@@ -6,7 +6,10 @@
 - Smoking Rack: soot-darkened stripped oak for the frame, and the hanging-strip sheets (raw / smoked meat and fish,
   rotten): four strips, 2 px wide and 9 tall, in columns 0, 4, 8, 12, a twine loop on top
 - Drying Rack food planes (drawn in the hide plane's area, x 3-12, y 3-11, under a twine line): meat strips / jerky,
-  fish fillets / dried fish, berry strands / dried berries
+  fish fillets / dried fish, berry strands / dried berries, mushroom strands / dried mushrooms
+- Dried Mushrooms item (drawn: three shrivelled mushroom slices, cut side up, tan flesh and dark brown skin)
+- the 2-tall rack's narrow spot planes (drying_rack_narrow_*, 5 px wide at x 0-4, twine at y 3, content y 4-11): food
+  drawn again with fewer strands; hides (from gen_food_textures.py / gen_phantom_textures.py) scaled to half width
 Run: python scripts/gen_preserving_textures.py
 """
 import math
@@ -263,6 +266,123 @@ save(meat_plane("jerky"), "block/drying_rack_jerky")
 STRIPS["fish"] = STRIPS["raw_fish"]
 save(fish_plane("fish"), "block/drying_rack_fish")
 save(fish_plane("dried_fish"), "block/drying_rack_dried_fish")
+# fresh mushrooms on the strands: chanterelle gold, porcini brown, oyster grey-cream (cap, cap shade, stem)
+SHROOMS = [((232, 172, 52), (190, 124, 30), (246, 212, 120)), ((150, 96, 52), (110, 66, 32), (226, 210, 176)),
+           ((196, 186, 164), (150, 140, 120), (232, 226, 210))]
+DRIED_SHROOM = ((122, 86, 48), (78, 52, 28), (178, 142, 96))
+
+
+def shroom(img, cx, y, cols, dried):
+    """A mushroom hung by its stem from a strand at x cx: 3 px cap (2 rows fresh, 1 shrivelled row dried) over a stem pixel."""
+    cap, dark, stem = cols
+    img.putpixel((cx, y), stem + (255,))  # stem, tied to the strand
+    if dried:
+        img.putpixel((cx - 1, y + 1), dark + (255,))
+        img.putpixel((cx, y + 1), cap + (255,))
+        img.putpixel((cx + 1, y + 1), dark + (255,))
+    else:
+        for dx in (-1, 0, 1):
+            img.putpixel((cx + dx, y + 1), (cap if dx < 1 else dark) + (255,))
+        img.putpixel((cx, y + 2), dark + (255,))  # the cap's rounded underside
+
+
+def mushroom_plane(dried, xs=(5, 8, 11)):
+    img = plane() if len(xs) == 3 else narrow_plane()
+    for i, x0 in enumerate(xs):
+        for y in range(4, 11):
+            img.putpixel((x0, y), shade(TWINE, 0.85))
+        for j, y in enumerate((4, 8) if len(xs) > 1 else (4, 7, 10)[:3]):
+            if y + 2 > 11:
+                break
+            shroom(img, x0, y, DRIED_SHROOM if dried else SHROOMS[(i + j) % 3], dried)
+    return img
+
+
+def narrow_plane():
+    img = Image.new("RGBA", (16, 16))
+    for x in range(5):
+        img.putpixel((x, 3), TWINE if x % 3 else shade(TWINE, 0.8))
+    return img
+
+
 save(berry_plane(False), "block/drying_rack_berries")
 save(berry_plane(True), "block/drying_rack_dried_berries")
+save(mushroom_plane(False), "block/drying_rack_mushrooms")
+save(mushroom_plane(True), "block/drying_rack_dried_mushrooms")
+
+# Dried Mushrooms item: three slices (cut through cap and stem), shrivelled; the back two darker
+SLICE = ["..####..",
+         ".######.",
+         "########",
+         "########",
+         ".#.##.#.",
+         "...##...",
+         "...##...",
+         "..####.."]
+FLESH = [(150, 112, 66), (186, 148, 96), (214, 182, 130)]
+img = Image.new("RGBA", (16, 16))
+for sx, sy, f in ((0, 1, 0.78), (8, 2, 0.86), (4, 7, 1.0)):  # back to front
+    pts = {(x, y) for y, row in enumerate(SLICE) for x, c in enumerate(row) if c == "#"}
+    for x, y in pts:
+        col = ramp(FLESH, 0.75 - y * 0.06 + (h(x + sx, y + sy, 51) % 100) / 500)
+        if edge(pts, x, y) or y <= 1:
+            col = (92, 60, 32, 255) if y < 4 else (120, 88, 54, 255)  # brown skin on the cap, paler on the stem
+        if 2 <= y <= 3 and h(x + sx, y + sy, 52) < 220:
+            col = shade(col, 0.82)  # wrinkles
+        if 0 <= x + sx < 16 and 0 <= y + sy < 16:
+            img.putpixel((x + sx, y + sy), shade(col, f))
+save(img, "item/dried_mushrooms")
+
+
+# ---------------------------------------------------------------- 2-tall rack: narrow spot planes (5 px wide)
+def narrow_meat(kind):
+    img = narrow_plane()
+    for i, (x0, length) in enumerate(((0, 7), (3, 6))):
+        if kind == "jerky":
+            length -= 1
+        for y in range(1, length + 1):
+            for x in range(2):
+                c = strip_px(kind, x, y, 2, length, 80 + i)
+                if c:
+                    img.putpixel((x0 + x, 3 + y), c)
+    return img
+
+
+def narrow_fish(kind):
+    img = Image.new("RGBA", (16, 16))
+    wide = fish_plane(kind)
+    img.paste(wide.crop((3, 3, 8, 12)), (0, 3))  # the left fillet (x 4-6) with its twine
+    return img
+
+
+def narrow_berries(dried):
+    img = Image.new("RGBA", (16, 16))
+    img.paste(berry_plane(dried).crop((6, 3, 11, 12)), (0, 3))  # the middle strand, and the halves of its neighbours' berries
+    for y in range(4, 12):  # drop the cut halves: keep only columns 1-3 below the twine
+        for x in (0, 4):
+            img.putpixel((x, y), (0, 0, 0, 0))
+    for x in range(5):
+        img.putpixel((x, 3), TWINE if x % 3 else shade(TWINE, 0.8))
+    return img
+
+
+def narrow_hide(name):
+    src = Image.open(TEX / f"block/drying_rack_{name}.png").convert("RGBA").crop((3, 3, 13, 12))
+    img = Image.new("RGBA", (16, 16))
+    img.paste(src.resize((5, 9), Image.LANCZOS).point(lambda v: v), (0, 3))
+    a = img.getchannel("A").point(lambda v: 255 if v > 127 else 0)
+    img.putalpha(a)
+    return img
+
+
+for name in ("hide_wet", "hide_dry", "phantom_wet", "phantom_dry", "phantom_rotten"):
+    save(narrow_hide(name), f"block/drying_rack_narrow_{name}")
+save(narrow_meat("raw_meat"), "block/drying_rack_narrow_meat")
+save(narrow_meat("jerky"), "block/drying_rack_narrow_jerky")
+save(narrow_fish("fish"), "block/drying_rack_narrow_fish")
+save(narrow_fish("dried_fish"), "block/drying_rack_narrow_dried_fish")
+save(narrow_berries(False), "block/drying_rack_narrow_berries")
+save(narrow_berries(True), "block/drying_rack_narrow_dried_berries")
+save(mushroom_plane(False, xs=(2,)), "block/drying_rack_narrow_mushrooms")
+save(mushroom_plane(True, xs=(2,)), "block/drying_rack_narrow_dried_mushrooms")
 print("preserving textures ok")

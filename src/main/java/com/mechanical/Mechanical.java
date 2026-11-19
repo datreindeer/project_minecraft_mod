@@ -299,7 +299,8 @@ public class Mechanical {
     }
 
     public static final DeferredBlock<DryingRackBlock> DRYING_RACK = BLOCKS.registerBlock("drying_rack", DryingRackBlock::new, p -> p
-            .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).noOcclusion().randomTicks());
+            .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).noOcclusion().randomTicks()
+            .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)); // a piston would split a tall rack
     public static final DeferredItem<BlockItem> DRYING_RACK_ITEM = ITEMS.registerSimpleBlockItem("drying_rack", DRYING_RACK);
 
     public static final DeferredBlock<BonePileBlock> BONE_PILE = BLOCKS.registerBlock("bone_pile", BonePileBlock::new, p -> p
