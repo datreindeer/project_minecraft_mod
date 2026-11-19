@@ -169,7 +169,7 @@ public final class AnimalFear {
 
         @Override
         public void tick() {
-            if (mob.tickCount % 10 != 0) return;
+            if ((mob.tickCount + mob.getId()) % 10 != 0) return;
             // keep running while the threat is close, and spread the panic to animals that can see us
             Vec3 t = findThreat();
             if (t != null && (mob.getNavigation().isDone() || headingTowards(t))) {

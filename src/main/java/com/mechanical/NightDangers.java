@@ -100,6 +100,9 @@ public final class NightDangers {
     }
 
     // ---- monsters ----
+    // Goals only run when (tickCount + id) is even (Mob.serverAiStep), so their periodic checks use that same phase:
+    // a plain tickCount % 10 would never fire for mobs with an odd id.
+
 
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
@@ -164,7 +167,7 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            if (mob.tickCount % 10 != 0 || BloodMoon.isActive(mob.level())) return false; // a blood moon makes them fearless
+            if ((mob.tickCount + mob.getId()) % 10 != 0 || BloodMoon.isActive(mob.level())) return false; // a blood moon makes them fearless
             fire = nearestFire(mob.level(), mob.position(), AVOID_RADIUS);
             if (fire == null) return false;
             if (mob.getTarget() != null && nearFire(mob.level(), mob.getTarget().position(), SAFE_RADIUS)) mob.setTarget(null);
@@ -194,7 +197,7 @@ public final class NightDangers {
         public boolean canUse() {
             // a blood moon makes them go for every torch around, often
             boolean bloodMoon = BloodMoon.isActive(mob.level());
-            if (mob.getTarget() != null || mob.tickCount % (bloodMoon ? 20 : 100) != 0 || (!bloodMoon && mob.getRandom().nextFloat() > CHANCE)) return false;
+            if (mob.getTarget() != null || (mob.tickCount + mob.getId()) % (bloodMoon ? 20 : 100) != 0 || (!bloodMoon && mob.getRandom().nextFloat() > CHANCE)) return false;
             torch = findTorch();
             return torch != null && mob.getNavigation().moveTo(torch.getX() + 0.5, torch.getY(), torch.getZ() + 0.5, 1.0);
         }
@@ -238,7 +241,7 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            return mob.tickCount % 10 == 0 && BloodMoon.isActive(mob.level());
+            return (mob.tickCount + mob.getId()) % 10 == 0 && BloodMoon.isActive(mob.level());
         }
 
         @Override
@@ -302,7 +305,7 @@ public final class NightDangers {
         @Override
         public boolean canUse() {
             LivingEntity target = mob.getTarget();
-            if (target == null || mob.tickCount % 20 != 0) return false;
+            if (target == null || (mob.tickCount + mob.getId()) % 20 != 0) return false;
             boolean stuck = mob.position().distanceToSqr(lastPos) < 0.5 && mob.distanceTo(target) > 3;
             lastPos = mob.position();
             still = stuck ? still + 1 : 0;
@@ -358,7 +361,7 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            if (mob.getTarget() != null || mob.tickCount % 20 != 0) return false;
+            if (mob.getTarget() != null || (mob.tickCount + mob.getId()) % 20 != 0) return false;
             player = mob.level().getNearestPlayer(mob, 40);
             if (player == null || player.isCreative() || player.isSpectator()) return false;
             long now = mob.level().getGameTime();
@@ -427,7 +430,7 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            if (mob.tickCount % 20 != 0) return false;
+            if ((mob.tickCount + mob.getId()) % 20 != 0) return false;
             light = findLight();
             if (light == null) return false;
             mob.setTarget(null); // lights first
@@ -559,7 +562,7 @@ public final class NightDangers {
 
         @Override
         public boolean canUse() {
-            if (mob.getTarget() != null || mob.tickCount % 40 != 0) return false;
+            if (mob.getTarget() != null || (mob.tickCount + mob.getId()) % 40 != 0) return false;
             List<Monster> horde = mob.level().getEntitiesOfClass(Monster.class, mob.getBoundingBox().inflate(24),
                     o -> o != mob && o.entityTags().contains(HORDE_TAG));
             Vec3 goal;

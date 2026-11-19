@@ -35,7 +35,7 @@ class ButcherCarcassGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.killPos == null || mob.getTarget() != null || mob.tickCount % 10 != 0) return false;
+        if (mob.killPos == null || mob.getTarget() != null || (mob.tickCount + mob.getId()) % 10 != 0) return false;
         if (mob.level().getGameTime() - mob.killTime > KILL_MEMORY) {
             mob.killPos = null;
             return false;
