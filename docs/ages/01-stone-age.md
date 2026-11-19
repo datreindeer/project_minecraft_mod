@@ -1257,6 +1257,46 @@ Monster spawnar **utan rustning av järn, guld, chainmail eller diamant**. Vapen
 bågar, järnsvärd, crossbows, tridents) har de kvar i handen, men de **släpps aldrig**. Saker ett monster själv plockat
 upp släpper det som vanligt.
 
+### Zombier och skelett i olika skepnader
+De odöda ser olika ut och slåss olika (`Undead.java`, skinn från `scripts/gen_undead_textures.py`). Skepnaden lottas
+viktat ur entitetens UUID, så den följer med när världen sparas och klienten vet den utan extra data. Gäller vanliga
+Zombie och Skeleton (även spawn egg, `/summon`, horder och spawners); Husk, Drowned, Zombie Villager, Stray, Bogged och
+babyzombier är som i vanilla.
+
+**Zombier** (vuxna), åtta stenålderskroppar med ruttet grönt kött, tomma ögonhålor, sår och trasiga kläder:
+
+| Skepnad | Vikt | Utseende | Egenskaper |
+|---|---|---|---|
+| Hide man | 20 | jägare i hudtunika, björnpäls över axlarna, tandhalsband | – |
+| Fur woman | 20 | kvinna i rökt grå hud, vargpälscape, flätor | – |
+| Bone elder | 14 | flintskallig gubbe med långt vitt skägg, pälsrock, benhalsband, mjölkvita ögon | – |
+| Painted | 14 | ung kvinna med ockra krigsmålning och hudsvep | – |
+| Bog body | 12 | gammal mosslik: brunt läderartat kött, rödfärgat hår, mossa | – |
+| **Brute** | 7 | jättestor man med bar ärrad bringa och björnskinnscape | +60 % liv (32), +0,6 knockback resistance, −20 % fart, +50 % skada, scale 1,25 |
+| **Gaunt** | 7 | utsvulten, grå, revben syns, smal (renderas 18 % smalare) | −35 % liv (13), +30 % fart, scale 1,05 |
+| **Clubber** | 6 | ung krigare med blå lerränder, fjäder, läderväst | bär en **Crude Stone Axe** som klubba |
+
+Egenskaperna är permanenta attribute modifiers (`mechanical:undead_variant`) som sätts första gången zombien kommer in i
+världen (taggen `mechanical.undead` hindrar att det lottas om).
+
+**Skelett**: utseende vanilla (40), **mossigt** (25, mossa och lav på gulnat ben), **hudrester** (20, höftskynke,
+hudremsa över axeln, snörning, tandhalsband, fjädrar i pannbandet) och **myrben** (15, tebruna ben med torvfläckar och
+rester av rött hår). Vapen lottas en gång när det spawnar (bara om det har vanillas båge):
+
+| Vapen | Andel | Strid |
+|---|---|---|
+| Bow | 35 % | skjuter som vanligt (bågen släpps aldrig, se ovan) |
+| Flint Spear | 25 % | närstrid; anfaller med spjutet som vanillas spjutzombier (`SpearUseGoal`: ansats, stöt, backar och tar sats igen) |
+| Crude Stone Axe | 10 % | närstrid |
+| Flint Axe | 10 % | närstrid |
+| Inget | 20 % | närstrid med benhänderna (svagast, 2 skada) |
+
+Skelett utan båge byter själva till närstridsmålet (vanillas `reassessWeaponGoal`), jagar och slår. Vapnen släpps med
+vanillas vanliga chans (8,5 %).
+
+Framsteg i Wilderness & Hunting: **The Bigger They Are** (döda en Brute) och **Broken Spear** (döda ett skelett med
+Flint Spear).
+
 ### Byarna är fattiga (stenåldern)
 - **Kistor:** bara primitiva saker: sticks, flint, plant fibre, cordage, bark, twine, bone, seeds, plus lite efter hus
   (smed: flint-verktyg och tool rods, garveri: hudar, slaktare: kött och lard, fiskare: fisk och krokar, hus: bär och mat).
@@ -1427,8 +1467,8 @@ behövs först, så trädet läses som progressionen:
 - **Stone Age**: lösa stenar och flinta → fiber, Twine, flintverktyg → Tool Station → stenverktyg; eld (Fire Drill,
   Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Crucible; flotte, paddel och kanot; pigment och grottmålning.
 - **Wilderness & Hunting**: kniv → styckning → hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
-  Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak och
-  stambyar.
+  Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak,
+  stambyar och de odöda (Brute, spjutskelett).
 - **Food & Farming**: bär och svamp → lagad, rökt och torkad mat, förskämning; vild säd → skära, sådd, skörd, tröskning,
   Straw Bed, gröt, Manure, Compost, Scarecrow, mjöl, deg och bröd.
 - **Bronze Age**: första kopparfyndet → Raw Copper, vaskning, Stone Anvil, koncentrat, Tuyere, Bellows, formar, smält

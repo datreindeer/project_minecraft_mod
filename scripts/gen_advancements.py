@@ -86,6 +86,12 @@ def tamed(entity):
         "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": mid(entity)}}}}}
 
 
+def killed(predicate):
+    """The player kills an entity matching the predicate."""
+    return {"killed": {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
+        "type": "minecraft:entity_properties", "entity": "this", "predicate": predicate}}}}
+
+
 SCRAPS = [f"{a}_scraps" for a in ("beef", "porkchop", "mutton", "chicken", "rabbit", "game_meat", "venison")]
 COOKED = [f"cooked_{s}" for s in SCRAPS] + ["cooked_haunch", "cooked_ribs", "cooked_loin"]
 BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "elderberries", "cloudberries",
@@ -269,6 +275,13 @@ TABS = {
         ("mythic", "giant_antler", "thunderstone", C, "Gift of the Oak",
          "Offer the Giant Antler on the Offering Altar inside the Ancient Oak",
          has("thunderstone", "mistletoe_charm", "ancient_amber", "heart_of_the_oak", "antler_crown")),
+        ("undead_brute", "root", "minecraft:rotten_flesh", G, "The Bigger They Are",
+         "Kill a Brute: the rare huge zombie in a bearskin cape, slow but tough and hard to knock back",
+         killed({"minecraft:entity_type": "minecraft:zombie", "minecraft:entity_tags": {"any_of": ["mechanical.zombie_brute"]}})),
+        ("spear_skeleton", "flint_spear", "minecraft:skeleton_skull", T, "Broken Spear",
+         "Kill a skeleton charging with a Flint Spear. Now and then it drops the spear",
+         killed({"minecraft:entity_type": "minecraft:skeleton",
+                 "minecraft:equipment": {"mainhand": {"items": check_item("flint_spear")}}})),
         ("tribe_village", "root", "sharpened_oak_log", T, "Palisade",
          "Find a Tribe Village. Stay on good terms: camps that burn for days draw raiders", visit("tribe_village")),
     ]),
