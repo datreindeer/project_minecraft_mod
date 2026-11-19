@@ -800,6 +800,24 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 
 Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är borttagna.
 
+### Recept från senare åldrar (avstängda)
+Vanilla-recept som går att göra av saker man hittar i stenåldern (creepers, häxor, fiske, strukturer) men som hör till
+en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säger också varför); de kommer tillbaka i sin ålder.
+
+| Recept | Varför det gick | Tillbaka i |
+|---|---|---|
+| TNT | Gunpowder (creeper) + Sand | Ångåldern |
+| Firework Rocket (båda recepten), Firework Star, Firework Star (fade) | Gunpowder + Paper / Dye | Ångåldern |
+| Leather Horse Armor | 7 Leather | Bronsåldern |
+| Wolf Armor | Armadillo Scute (bältdjur fäller dem själva) | Bronsåldern |
+| Spectral Arrow | Glowstone Dust (häxor) + Arrow | Järnåldern |
+| Conduit | Nautilus Shell (fiske) + Heart of the Sea (begravd skatt) | Elåldern |
+| Respawn Anchor | Crying Obsidian (Ruined Portal-kistor) + Glowstone | Järnåldern |
+| Wind Charge, Mace | Breeze Rod och Heavy Core (Trial Chambers) | Järnåldern |
+| Cartography Table | Paper + Planks (kartor och kompass kommer senare) | Järnåldern |
+| Fermented Spider Eye | Används bara till bryggning | Järnåldern |
+| Copper Ingot från Block of Copper (även vaxad) | Kopparblock i Trial Chambers bryts med stenhacka → 9 tackor var | Bronsåldern |
+
 ## Öppna frågor / att göra
 
 - **Tin Ore / Tin Ingot / Block of Tin** finns sedan tidigare. Tin Ingot kan inte smältas fram nu (Furnace borttagen) och
