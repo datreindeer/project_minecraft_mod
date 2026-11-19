@@ -100,7 +100,7 @@ public final class CarcassHauling {
     /** Hands full of something heavy: no sprinting (see PlayerMixin). */
     public static boolean blocksSprint(Player player) {
         CarcassEntity c = hauled(player);
-        if (c != null && !c.isSmall()) return true;
+        if (c != null && !c.isLight()) return true;
         TravoisEntity t = TravoisEntity.harnessedTo(player);
         return t != null && t.blocksSprint();
     }
@@ -237,7 +237,7 @@ public final class CarcassHauling {
         if (player.level().isClientSide() || player.tickCount % 5 != 0) return;
         double slow = 0;
         CarcassEntity c = hauled(player);
-        if (c != null) slow += c.isLarge() ? SLOW_DRAG : c.isSmall() ? 0 : SLOW_CARRY;
+        if (c != null) slow += c.isLarge() ? SLOW_DRAG : c.isLight() ? 0 : SLOW_CARRY;
         TravoisEntity t = TravoisEntity.harnessedTo(player);
         if (t != null) slow += t.slowdown();
         AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);

@@ -20,6 +20,15 @@
     "mechanical:whole_salmon",
     "mechanical:whole_tropical_fish",
     "mechanical:whole_pufferfish",
-    "mechanical:dough"
+    "mechanical:dough",
+    "mechanical:raw_goose",
+    "mechanical:raw_pheasant",
+    "mechanical:raw_ptarmigan",
+    "mechanical:raw_pigeon",
+    "mechanical:plucked_goose",
+    "mechanical:plucked_pheasant",
+    "mechanical:plucked_ptarmigan",
+    "mechanical:plucked_pigeon",
+    "mechanical:plucked_chicken"
   ]
 }

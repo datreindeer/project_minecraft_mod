@@ -1,0 +1,252 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/bird_nest",
+    "twigs": "mechanical:block/bird_nest",
+    "lining": "mechanical:block/bird_nest_lining"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        1,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#lining"
+        },
+        "up": {
+          "texture": "#lining"
+        },
+        "north": {
+          "texture": "#lining"
+        },
+        "south": {
+          "texture": "#lining"
+        },
+        "east": {
+          "texture": "#lining"
+        },
+        "west": {
+          "texture": "#lining"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        3,
+        4
+      ],
+      "faces": {
+        "down": {
+          "texture": "#twigs"
+        },
+        "up": {
+          "texture": "#twigs"
+        },
+        "north": {
+          "texture": "#twigs"
+        },
+        "south": {
+          "texture": "#twigs"
+        },
+        "east": {
+          "texture": "#twigs"
+        },
+        "west": {
+          "texture": "#twigs"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        0,
+        12
+      ],
+      "to": [
+        14,
+        3,
+        14
+      ],
+      "faces": {
+        "down": {
+          "texture": "#twigs"
+        },
+        "up": {
+          "texture": "#twigs"
+        },
+        "north": {
+          "texture": "#twigs"
+        },
+        "south": {
+          "texture": "#twigs"
+        },
+        "east": {
+          "texture": "#twigs"
+        },
+        "west": {
+          "texture": "#twigs"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        0,
+        4
+      ],
+      "to": [
+        4,
+        3,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#twigs"
+        },
+        "up": {
+          "texture": "#twigs"
+        },
+        "north": {
+          "texture": "#twigs"
+        },
+        "south": {
+          "texture": "#twigs"
+        },
+        "east": {
+          "texture": "#twigs"
+        },
+        "west": {
+          "texture": "#twigs"
+        }
+      }
+    },
+    {
+      "from": [
+        12,
+        0,
+        4
+      ],
+      "to": [
+        14,
+        3,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#twigs"
+        },
+        "up": {
+          "texture": "#twigs"
+        },
+        "north": {
+          "texture": "#twigs"
+        },
+        "south": {
+          "texture": "#twigs"
+        },
+        "east": {
+          "texture": "#twigs"
+        },
+        "west": {
+          "texture": "#twigs"
+        }
+      }
+    },
+    {
+      "from": [
+        0.5,
+        2,
+        7
+      ],
+      "to": [
+        15.5,
+        3,
+        8
+      ],
+      "faces": {
+        "down": {
+          "texture": "#twigs"
+        },
+        "up": {
+          "texture": "#twigs"
+        },
+        "north": {
+          "texture": "#twigs"
+        },
+        "south": {
+          "texture": "#twigs"
+        },
+        "east": {
+          "texture": "#twigs"
+        },
+        "west": {
+          "texture": "#twigs"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          2.5,
+          7.5
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    },
+    {
+      "from": [
+        7.5,
+        1.5,
+        0.5
+      ],
+      "to": [
+        8.5,
+        2.5,
+        15.5
+      ],
+      "faces": {
+        "down": {
+          "texture": "#twigs"
+        },
+        "up": {
+          "texture": "#twigs"
+        },
+        "north": {
+          "texture": "#twigs"
+        },
+        "south": {
+          "texture": "#twigs"
+        },
+        "east": {
+          "texture": "#twigs"
+        },
+        "west": {
+          "texture": "#twigs"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          2,
+          8
+        ],
+        "axis": "y",
+        "angle": -22.5
+      }
+    }
+  ]
+}

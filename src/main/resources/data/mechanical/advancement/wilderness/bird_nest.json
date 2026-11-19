@@ -1,0 +1,34 @@
+{
+  "parent": "mechanical:wilderness/pluck_goose",
+  "criteria": {
+    "placed_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:bird_nest"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placed_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bird_nest"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.bird_nest.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.bird_nest.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

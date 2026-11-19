@@ -127,6 +127,11 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return animal.getWidth() < 0.6F;
     }
 
+    /** Light enough to carry at full speed: small bodies and the edible birds (a goose too). */
+    public boolean isLight() {
+        return isSmall() || Birds.isBird(animal);
+    }
+
     public boolean isLarge() {
         return animal.getWidth() >= 1.1F;
     }
@@ -285,6 +290,16 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         if (tickCount < HIDDEN_TICKS) return InteractionResult.PASS;
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && (player.isShiftKeyDown() || haulerId() == player.getId()))
             return CarcassHauling.pickUpOrLetGo(player, this);
+        if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && stage() > 0 && Birds.isBird(animal)) {
+            // a plucked bird is taken whole (Birds): cut up in the grid with a knife or cooked whole
+            if (!level().isClientSide()) {
+                player.getInventory().placeItemBackInInventory(new net.minecraft.world.item.ItemStack(spoiled()
+                        ? net.minecraft.world.item.Items.ROTTEN_FLESH : Birds.pluckedOf(animal)), net.minecraft.util.Prediction.SERVER_ONLY);
+                playSound(SoundEvents.ITEM_PICKUP, 0.6F, 0.8F);
+                discard();
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && hungAt() != null) {
             // a look at the body on the rack: how long it has hung and how long it keeps
             if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(

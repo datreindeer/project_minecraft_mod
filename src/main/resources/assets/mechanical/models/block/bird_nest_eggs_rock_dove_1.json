@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "particle": "mechanical:block/bird_egg_rock_dove",
+    "egg": "mechanical:block/bird_egg_rock_dove"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        1,
+        5.5
+      ],
+      "to": [
+        7.5,
+        3,
+        8.0
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          6.5,
+          1,
+          6.75
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S S",
+    "WSW"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "W": [
+      "mechanical:straw",
+      "mechanical:plant_fibre"
+    ]
+  },
+  "result": {
+    "id": "mechanical:bird_nest"
+  }
+}

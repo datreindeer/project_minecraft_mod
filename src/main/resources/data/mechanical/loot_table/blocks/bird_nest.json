@@ -1,0 +1,313 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bird_nest"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:goose_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "goose",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:goose_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "goose",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:goose_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "goose",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pheasant_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "pheasant",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pheasant_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "pheasant",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pheasant_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "pheasant",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:ptarmigan_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "ptarmigan",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:ptarmigan_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "ptarmigan",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:ptarmigan_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "ptarmigan",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pigeon_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "rock_dove",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pigeon_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "rock_dove",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pigeon_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "rock_dove",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "chicken",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "chicken",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "chicken",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "none",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "none",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "none",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/bird_nest"
+}

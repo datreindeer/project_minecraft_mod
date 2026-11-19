@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_chicken",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:chicken",
+    "count": 1
+  }
+}

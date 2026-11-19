@@ -14,6 +14,10 @@
     "minecraft:rabbit",
     "mechanical:raw_haunch",
     "mechanical:raw_ribs",
-    "mechanical:raw_loin"
+    "mechanical:raw_loin",
+    "mechanical:raw_goose",
+    "mechanical:raw_pheasant",
+    "mechanical:raw_ptarmigan",
+    "mechanical:raw_pigeon"
   ]
 }

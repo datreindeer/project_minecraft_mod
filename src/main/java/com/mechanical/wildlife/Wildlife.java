@@ -68,7 +68,7 @@ public final class Wildlife {
     public static final DeferredHolder<EntityType<?>, EntityType<GiantDeer>> GIANT_DEER = ENTITY_TYPES.registerEntityType(
             "giant_deer", GiantDeer::new, MobCategory.CREATURE, b -> b.sized(2.2F, 4.6F).eyeHeight(4.0F).clientTrackingRange(16));
 
-    // flocking birds (FlockBird): no carcass, they drop feathers (loot tables)
+    // flocking birds (FlockBird): crows and gulls drop feathers (loot tables); geese, doves and ptarmigans leave a carcass (Birds)
     public static final DeferredHolder<EntityType<?>, EntityType<FlockBird>> CROW = ENTITY_TYPES.registerEntityType(
             "crow", (t, l) -> new FlockBird(t, l, FlockBird.CROW), MobCategory.CREATURE, b -> b.sized(0.45F, 0.5F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<FlockBird>> GOOSE = ENTITY_TYPES.registerEntityType(

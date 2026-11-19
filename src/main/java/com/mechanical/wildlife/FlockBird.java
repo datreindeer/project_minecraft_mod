@@ -36,7 +36,7 @@ import net.minecraft.world.phys.Vec3;
  * loose cloud (each holds its own slot around the leader, keeping apart from its neighbours) or, for geese, in a V.
  * After a while the leader picks a landing spot (ground, tree tops or water, depending on the kind) and the flock
  * comes down around it. A player getting close (or any panic, see AnimalFear) makes the whole flock burst up and
- * fly off away from the threat. Any arrow kills (feathers drop; small birds leave no carcass, see Butchery).
+ * fly off away from the threat. Any arrow kills (crows and gulls drop feathers; the edible ones leave a carcass, see Birds).
  */
 public class FlockBird extends WildAnimal {
     /**
@@ -74,6 +74,8 @@ public class FlockBird extends WildAnimal {
     protected List<FlockBird> flock = List.of();
     protected FlockBird leader = this;
     private float paddleYaw;
+    /** The nest it keeps to (BirdNestBlock's random tick sets it, and again after a reload); roams and now and then lands around it. */
+    protected BlockPos nest;
 
     // ---- client-side animation ----
     private float flap, flapO, flapSpeed, glide, glideO;
@@ -96,6 +98,12 @@ public class FlockBird extends WildAnimal {
     @Override
     public Identifier texture() {
         return texture;
+    }
+
+    /** Homes on the nest at {@code pos}: roams around it and comes down by it now and then (see BirdNestBlock). */
+    public void setNest(BlockPos pos) {
+        nest = pos;
+        home = Vec3.atBottomCenterOf(pos);
     }
 
     public boolean isFlying() {
@@ -202,6 +210,7 @@ public class FlockBird extends WildAnimal {
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
         if (home == null) home = position();
+        if (nest != null && (tickCount + getId()) % 400 == 0 && !com.mechanical.BirdNestBlock.isNestOf(level, nest, getType())) nest = null; // robbed out or gone
         if (tickCount % 10 == 0 || !leader.isAlive()) refreshFlock();
         if (isFlying()) flyTick(level);
         else groundTick(level);
@@ -319,6 +328,7 @@ public class FlockBird extends WildAnimal {
             else if (!following && flightTimer <= 0 && leader != this && leader.isAlive()) landingSpot = findLandingSpot(leader.position(), 4);
             else if (!following && flightTimer <= 0) {
                 Vec3 ahead = position().add(getDeltaMovement().multiply(20, 0, 20));
+                if (nest != null && random.nextBoolean()) landingSpot = findLandingSpot(Vec3.atBottomCenterOf(nest), 3); // back to the nest
                 if (kind == CROW) { // crows come down on an unguarded field of young crops (Farming)
                     BlockPos crop = com.mechanical.Farming.cropForCrows(level, position());
                     if (crop != null) landingSpot = Vec3.atBottomCenterOf(crop);

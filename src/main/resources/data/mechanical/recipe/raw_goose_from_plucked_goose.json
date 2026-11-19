@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_goose",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_goose",
+    "count": 2
+  }
+}
