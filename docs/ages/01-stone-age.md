@@ -783,6 +783,7 @@ Verktygen i Tool Station låses upp separat (se Tool Station).
 | Log drops | Log → **2 Firewood** (en enskild log). Fällda träd → **Fallen Logs** som måste huggas |
 | Löv från fällda träd | Blir **Leaf Litter** på marken |
 | Wheat Seeds från gräs | **Borttaget** (byar) |
+| Hay Bale | Ger inte sig själv (= 9 Wheat) när den bryts: gammalt, ruttet hö → 1–3 Plant Fibre, 25 % chans på 1 Wheat |
 | Facklor | Skyddar inte mot monster, kan slås sönder |
 | Logs | Kräver yxa |
 | Iron Ore, Coal Ore, Lapis Ore (+ deepslate, Block of Raw Iron, Lapis Block) | Ger inget med trä-/stenhacka. Kräver Bronze Pickaxe (bronsåldern). Stenhackan bryter bara sten, Copper Ore och Tin Ore |

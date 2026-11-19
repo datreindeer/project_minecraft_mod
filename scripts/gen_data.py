@@ -1141,6 +1141,13 @@ TOO_ADVANCED = {  # block: (scrap item, min, max); max 0 = nothing
 for block, (item, lo, hi) in TOO_ADVANCED.items():
     w(D / f"minecraft/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": _scraps(item, lo, hi),
         "random_sequence": f"minecraft:blocks/{block}"})
+# village hay bales are old and half rotten: no free bale (= 9 wheat), just fibre and now and then a usable sheaf
+w(D / "minecraft/loot_table/blocks/hay_block.json", {"type": "minecraft:block", "pools": [
+    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:plant_fibre",
+        "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}]},
+    {"rolls": 1, "condition": {"type": "minecraft:random_chance", "chance": 0.25},
+     "entries": [{"type": "minecraft:item", "name": "minecraft:wheat"}]}],
+    "random_sequence": "minecraft:blocks/hay_block"})
 # using them is locked; cauldrons, bells and lanterns stay usable (water, ringing, light), only their loot changes
 w(D / "mechanical/tags/block/too_advanced.json", {"values": [f"minecraft:{b}" for b in
     ("furnace", "smoker", "blast_furnace", "stonecutter", "brewing_stand", "anvil", "chipped_anvil", "damaged_anvil", "smithing_table", "grindstone")]
