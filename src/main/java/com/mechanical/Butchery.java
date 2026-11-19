@@ -218,6 +218,7 @@ public final class Butchery {
         if (Birds.isBird(type)) {
             // a bird has no big cuts and no bones worth taking: hung game just gains a piece once it has aged
             drop(level, at, spoiled ? Items.ROTTEN_FLESH : meat, scraps + (hung && aged ? 1 : 0));
+            dropExtras(level, at, y.inner(), yieldMultiplier); // bones and bills of the bigger birds
             return;
         }
         if (spoiled || meat == Items.ROTTEN_FLESH) drop(level, at, Items.ROTTEN_FLESH, hung ? scraps * 2 : scraps);

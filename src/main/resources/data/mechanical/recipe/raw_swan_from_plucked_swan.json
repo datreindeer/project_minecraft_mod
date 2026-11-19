@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_swan",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_swan",
+    "count": 3
+  }
+}

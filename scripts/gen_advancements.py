@@ -480,6 +480,27 @@ TABS = {
     ]),
 }
 
+# fauna: waterfowl
+TABS["wilderness"][1].extend([
+    ("pluck_swan", "pluck_goose", "plucked_swan", T, "Swan Song",
+     "Bring down a Mute Swan and pluck it: Down, a Swan Quill and a big Plucked Swan. Keep clear of its nest", has("plucked_swan")),
+    ("down_tinder", "pluck_goose", "down", T, "Light as Down",
+     "Pluck Down from a Mallard or Mute Swan. Laid in an unlit campfire, Fire Pit or kiln it is the best tinder", has("down")),
+    ("heron_bill", "butcher", "heron_bill", T, "Patient Fisher",
+     "Butcher a Grey Heron for its Heron Bill: a knife carves it into 2 Bone Fish Hooks", has("heron_bill")),
+    ("plume_headdress", "heron_bill", "plume_headdress", T, "Among the Reeds",
+     "Make a Plume Headdress from Heron Plumes, Down and Leather: herons and cranes let you come close", has("plume_headdress")),
+    ("bone_flute", "butcher", "bone_flute", G, "First Music",
+     "Carve the Hollow Bird Bone of a swan or crane into a Bone Flute. Playing it lifts the spirits around you", has("bone_flute")),
+])
+TABS["food"][1].extend([
+    ("cooked_waterfowl", "cooked_bird", "cooked_swan", T, "Swan Feast",
+     "Cook Raw Mallard, Swan, Heron or Crane on a Campfire, or roast the whole Plucked bird",
+     has("cooked_mallard", "cooked_swan", "cooked_heron", "cooked_crane")),
+    ("swan_egg", "nest_egg", "swan_egg", T, "Swan's Egg", "Take an egg from a Mute Swan's nest without getting chased off",
+     has("swan_egg")),
+])
+
 
 def build():
     out_root = D / "mechanical/advancement"
