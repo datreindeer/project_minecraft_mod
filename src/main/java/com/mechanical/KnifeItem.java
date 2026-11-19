@@ -19,7 +19,7 @@ import net.minecraft.world.phys.EntityHitResult;
  * scales the first pass (hide, pelt, wool, feathers): the tusk dagger is a skinning knife and gets more of it.
  */
 public class KnifeItem extends Item {
-    public static final int FLINT = 1, TUSK = 2, IRON = 3;
+    public static final int FLINT = 1, TUSK = 2, BRONZE = 2, IRON = 3;
     private final float speed, yieldMultiplier, hideMultiplier;
     private final int tier;
 

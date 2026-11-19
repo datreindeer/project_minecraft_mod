@@ -54,6 +54,7 @@ w(D / "mechanical/loot_table/blocks/tin_ore.json", {
     "random_sequence": "mechanical:blocks/tin_ore"})
 
 # ---- panning: one roll from the base table, plus an extra Cassiterite chance by rivers, beaches and stony shores ----
+# Cassiterite is cut to about a third (Tin Ore needs a Copper Pickaxe; panning only gives a taste of tin)
 WATERSIDE = ["minecraft:river", "minecraft:frozen_river", "minecraft:beach", "minecraft:snowy_beach", "minecraft:stony_shore"]
 
 
@@ -63,9 +64,9 @@ def item(name, weight):
 
 PANNING = {
     "gravel": [{"type": "minecraft:empty", "weight": 40}, item("minecraft:flint", 22), item("mechanical:stone_chunk", 16),
-               item("mechanical:cassiterite", 8), item("mechanical:native_copper", 2)],
+               item("mechanical:cassiterite", 3), item("mechanical:native_copper", 2)],
     "sand": [{"type": "minecraft:empty", "weight": 55}, item("minecraft:flint", 6), item("mechanical:stone_chunk", 8),
-             item("mechanical:cassiterite", 10), item("mechanical:native_copper", 1)],
+             item("mechanical:cassiterite", 3), item("mechanical:native_copper", 1)],
 }
 for fill, entries in PANNING.items():
     w(D / f"mechanical/loot_table/gameplay/panning/{fill}.json", {
@@ -73,7 +74,7 @@ for fill, entries in PANNING.items():
         "pools": [
             {"rolls": 1, "entries": entries},
             {"rolls": 1, "condition": {"type": "minecraft:location_check", "predicate": {"biomes": WATERSIDE}},
-             "entries": [item("mechanical:cassiterite", 1), {"type": "minecraft:empty", "weight": 3}]}],
+             "entries": [item("mechanical:cassiterite", 1), {"type": "minecraft:empty", "weight": 11}]}],
         "random_sequence": f"mechanical:gameplay/panning/{fill}"})
 
 # ---- Stone Anvil ----

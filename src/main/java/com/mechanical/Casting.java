@@ -100,20 +100,22 @@ public final class Casting {
 
     public record OreUnits(Metal metal, int units) {}
 
-    /** What one ore item adds to a crucible, or null if it can't go in. Bronze adds Crushed Tin Ore here. */
+    /** What one ore item adds to a crucible, or null if it can't go in. A Bronze Ingot melts back into its 2 units. */
     public static OreUnits oreUnits(ItemStack stack) {
         if (stack.is(BronzeOres.CRUSHED_COPPER_ORE.get())) return new OreUnits(Metal.COPPER, 1);
+        if (stack.is(BronzeOres.CRUSHED_TIN_ORE.get())) return new OreUnits(Metal.TIN, 1);
+        if (stack.is(Bronze.BRONZE_INGOT.get())) return new OreUnits(Bronze.isPoor(stack) ? Metal.POOR_BRONZE : Metal.BRONZE, 2);
         if (stack.is(BronzeOres.NATIVE_COPPER.get())) return new OreUnits(Metal.COPPER, 2); // nearly pure metal
         return null;
     }
 
-    /** The ground head for a rough cast one, or empty. */
+    /** The ground head for a rough cast one (keeping Poor Bronze), or empty. */
     public static ItemStack ground(ItemStack rough) {
         for (var e : GROUND.entrySet()) if (rough.is(e.getKey().get())) return new ItemStack(e.getValue().get());
-        return ItemStack.EMPTY;
+        return Bronze.ground(rough);
     }
 
-    private static DeferredBlock<ClayMoldBlock> mold(String name, ClayMoldBlock.Shape shape) {
+    static DeferredBlock<ClayMoldBlock> mold(String name, ClayMoldBlock.Shape shape) {
         return BLOCKS.registerBlock(name, p -> new ClayMoldBlock(p, shape), p -> p
                 .mapColor(MapColor.TERRACOTTA_ORANGE).strength(0.6F).sound(SoundType.DECORATED_POT).noOcclusion().pushReaction(PushReaction.POPPED)
                 .lightLevel(s -> s.getValue(ClayMoldBlock.FILL) == ClayMoldBlock.Fill.MOLTEN ? 9 : 0));

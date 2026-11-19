@@ -58,7 +58,14 @@ public final class ToolStationRecipes {
             new Recipe(() -> Items.COPPER_AXE, Casting.COPPER_AXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_AXE_HEAD.get())),
             new Recipe(() -> Items.COPPER_SHOVEL, Casting.COPPER_SHOVEL_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_SHOVEL_HEAD.get())),
             new Recipe(() -> Items.COPPER_HOE, Casting.COPPER_HOE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_HOE_HEAD.get())),
-            new Recipe(() -> Casting.COPPER_KNIFE.get(), Casting.COPPER_KNIFE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Casting.COPPER_KNIFE_BLADE.get())));
+            new Recipe(() -> Casting.COPPER_KNIFE.get(), Casting.COPPER_KNIFE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Casting.COPPER_KNIFE_BLADE.get())),
+            // bronze: like copper (a Poor Bronze head makes a tool with 70 % durability, see Bronze.inheritPoor)
+            new Recipe(Bronze.BRONZE_PICKAXE, Bronze.BRONZE_PICKAXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_PICKAXE_HEAD.get())),
+            new Recipe(Bronze.BRONZE_AXE, Bronze.BRONZE_AXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_AXE_HEAD.get())),
+            new Recipe(Bronze.BRONZE_SHOVEL, Bronze.BRONZE_SHOVEL_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_SHOVEL_HEAD.get())),
+            new Recipe(Bronze.BRONZE_HOE, Bronze.BRONZE_HOE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_HOE_HEAD.get())),
+            new Recipe(() -> Bronze.BRONZE_KNIFE.get(), Bronze.BRONZE_KNIFE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Bronze.BRONZE_KNIFE_BLADE.get())),
+            new Recipe(() -> Bronze.BRONZE_SAW.get(), Bronze.BRONZE_SAW_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Bronze.BRONZE_SAW_BLADE.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

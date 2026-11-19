@@ -15,7 +15,8 @@ import net.minecraft.network.codec.StreamCodec;
  * Crucible of Molten/Solid Metal it is the melted, alloyed metal. One unit = one Crushed Copper Ore.
  */
 public record CrucibleContents(Map<String, Integer> units) {
-    public static final int CAPACITY = 8;
+    /** 10 units, so 9 copper : 1 tin (10 % tin) fits. */
+    public static final int CAPACITY = 10;
     public static final CrucibleContents EMPTY = new CrucibleContents(Map.of());
     public static final Codec<CrucibleContents> CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT).xmap(CrucibleContents::new, CrucibleContents::units);
     public static final StreamCodec<ByteBuf, CrucibleContents> STREAM_CODEC = ByteBufCodecs.<ByteBuf, String, Integer, Map<String, Integer>>map(HashMap::new,
@@ -40,18 +41,68 @@ public record CrucibleContents(Map<String, Integer> units) {
         return new CrucibleContents(out);
     }
 
-    /**
-     * The metal this melts into, or null if the mix makes nothing castable. Now only pure copper; bronze adds the
-     * copper + tin rule here (about 9:1) without changing how contents are stored.
-     */
-    public Metal alloy() {
-        if (units.size() != 1) return null;
-        return Metal.byId(units.keySet().iterator().next());
+    public int units(Metal metal) {
+        return units.getOrDefault(metal.getSerializedName(), 0);
     }
 
-    /** The same metal units, all as the alloy (what the Crucible of Molten Metal holds). */
+    /** Can ore / ingots of this metal go in? Copper and tin mix; melted bronze only takes more of the same bronze. */
+    public boolean canAdd(Metal metal) {
+        if (isEmpty()) return true;
+        if (metal.isAlloy()) return units.size() == 1 && units(metal) > 0;
+        return units.keySet().stream().noneMatch(k -> Metal.byId(k).isAlloy());
+    }
+
+    /** Tin share of copper + tin in percent (0 without tin). */
+    public float tinPercent() {
+        int cu = units(Metal.COPPER), sn = units(Metal.TIN);
+        return cu + sn == 0 ? 0 : sn * 100F / (cu + sn);
+    }
+
+    /**
+     * The metal this melts into, or null if it makes nothing castable (tin alone). Copper + tin: 9-11.5 % tin is
+     * Bronze, 8-15 % Poor Bronze (both melt at 950°); any other share melts as Copper at 1085° and the tin is lost as
+     * slag (see {@link #melted}).
+     */
+    public Metal alloy() {
+        if (units.size() == 1) {
+            Metal only = Metal.byId(units.keySet().iterator().next());
+            return only == Metal.TIN ? null : only;
+        }
+        int cu = units(Metal.COPPER), sn = units(Metal.TIN);
+        if (cu == 0 || cu + sn != total()) return null;
+        return alloy(cu, sn);
+    }
+
+    static Metal alloy(int copper, int tin) {
+        int total = copper + tin;
+        if (tin * 1000 >= 90 * total && tin * 1000 <= 115 * total) return Metal.BRONZE;
+        if (tin * 100 >= 8 * total && tin * 100 <= 15 * total) return Metal.POOR_BRONZE;
+        return Metal.COPPER;
+    }
+
+    /** What the Crucible of Molten Metal holds: all units as the alloy; copper with the wrong share of tin loses the tin. */
     public CrucibleContents melted() {
         Metal metal = alloy();
-        return metal == null ? EMPTY : new CrucibleContents(Map.of(metal.getSerializedName(), total()));
+        if (metal == null) return EMPTY;
+        int n = metal == Metal.COPPER ? units(Metal.COPPER) : total();
+        return new CrucibleContents(Map.of(metal.getSerializedName(), n));
+    }
+
+    /** Thrown on load if the alloy rules drift from what the docs promise. */
+    static void selfCheck() {
+        check(alloy(9, 1) == Metal.BRONZE && alloy(8, 1) == Metal.BRONZE, "9:1 and 8:1 are bronze");
+        check(alloy(7, 1) == Metal.POOR_BRONZE && alloy(6, 1) == Metal.POOR_BRONZE, "7:1 and 6:1 are poor bronze");
+        check(alloy(5, 1) == Metal.COPPER && alloy(12, 1) == Metal.COPPER, "16.7 % and 7.7 % tin are no bronze");
+        check(alloy(23, 2) == Metal.POOR_BRONZE && alloy(92, 8) == Metal.POOR_BRONZE && alloy(85, 15) == Metal.POOR_BRONZE, "8 % and 15 % are inside");
+        CrucibleContents slag = EMPTY.add(Metal.COPPER, 5).add(Metal.TIN, 1);
+        check(slag.alloy() == Metal.COPPER && slag.melted().equals(EMPTY.add(Metal.COPPER, 5)), "slag: the tin is lost");
+        CrucibleContents good = EMPTY.add(Metal.COPPER, 9).add(Metal.TIN, 1);
+        check(good.melted().equals(EMPTY.add(Metal.BRONZE, 10)) && good.alloy().melt == 950, "9:1 melts into 10 bronze at 950");
+        check(EMPTY.add(Metal.TIN, 2).alloy() == null && EMPTY.add(Metal.COPPER, 3).alloy() == Metal.COPPER, "tin alone / copper alone");
+        check(!EMPTY.add(Metal.BRONZE, 2).canAdd(Metal.COPPER) && !good.canAdd(Metal.BRONZE) && good.canAdd(Metal.TIN), "bronze doesn't mix with ore");
+    }
+
+    private static void check(boolean ok, String what) {
+        if (!ok) throw new IllegalStateException("Crucible alloy self-check failed: " + what);
     }
 }

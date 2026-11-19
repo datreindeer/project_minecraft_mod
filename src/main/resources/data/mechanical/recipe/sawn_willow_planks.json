@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "sawn_planks",
+  "ingredients": [
+    "#mechanical:willow_logs",
+    "mechanical:bronze_saw"
+  ],
+  "result": {
+    "id": "mechanical:willow_planks",
+    "count": 4
+  }
+}

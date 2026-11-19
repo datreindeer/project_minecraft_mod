@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:flint_pickaxe",
-    "mechanical:crude_stone_pickaxe"
+    "mechanical:crude_stone_pickaxe",
+    "mechanical:bronze_pickaxe"
   ]
 }
