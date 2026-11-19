@@ -25,6 +25,8 @@ public class CartModel extends Model<Float> {
     /** Wheel: radius 7 px (CartEntity.WHEEL_RADIUS), axle height, axle z, hub x. */
     private static final float AXLE_Y = -7, AXLE_Z = 2, WHEEL_X = 13;
     private static final int RIM_SEGMENTS = 12, SPOKES = 3;
+    /** The axle in blocks, y up and z back: CartRenderer tips the cart about it. */
+    static final float AXLE_HEIGHT = -AXLE_Y / 16.0F, AXLE_BACK = AXLE_Z / 16.0F;
     /** Shafts: from under the front of the bed, tilted up 9.5 degrees to about hand height at the tips. */
     private static final float SHAFT_TILT = -0.165F;
     private final ModelPart leftWheel, rightWheel;

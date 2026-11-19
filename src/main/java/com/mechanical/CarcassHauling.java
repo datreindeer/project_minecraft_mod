@@ -191,10 +191,15 @@ public final class CarcassHauling {
         if (c != null) letGo(c, player, null);
     }
 
-    /** Heavy loads slow you down. */
+    /** Heavy loads slow you down; a stuck travois holds you back. */
     @SubscribeEvent
     static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
+        if (player.isLocalInstanceAuthoritative() && !player.isPassenger()) {
+            // client, own player, after it moved: a stuck travois holds it back
+            TravoisEntity held = TravoisEntity.harnessedTo(player);
+            if (held != null) TravoisEntity.tether(player, held);
+        }
         if (player.level().isClientSide() || player.tickCount % 5 != 0) return;
         double slow = 0;
         CarcassEntity c = hauled(player);

@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
@@ -59,6 +60,10 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     public static final int SPOILS = 24000;
     /** Hung this long (3 minutes) it has aged: a little more meat on the rack. */
     public static final int AGED = 3600;
+    /** Has hung {@link #AGED} ticks: synced so it looks dried (CarcassRenderer), stops dripping and draws a fly or two. */
+    private static final EntityDataAccessor<Boolean> AGED_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Colour of the flies around an aged carcass. */
+    private static final int FLY = 0x1A1712;
     /** Each of the two passes takes this share of the work for the body size. */
     private static final float WORK_PER_PASS = 0.6F;
 
@@ -152,6 +157,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         stopRiding();
         entityData.set(HUNG_AT, java.util.Optional.of(pos));
         hungTicks = 0;
+        entityData.set(AGED_LOOK, false);
         setYRot(front.getOpposite().toYRot());
         refreshDimensions();
         setPos(hangPosition(pos));
@@ -176,6 +182,11 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return hungTicks >= AGED;
     }
 
+    /** Both sides: has aged on the rack (it keeps the dried look when taken down, until hung again). */
+    public boolean isAged() {
+        return entityData.get(AGED_LOOK);
+    }
+
     /** Flat fliers (the phantom) rest on their belly instead of lying on the side. */
     public boolean liesFlat() {
         return animal == EntityTypes.PHANTOM;
@@ -197,15 +208,22 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide()) return; // the client may not simulate movement; it gets the position from the server
+        if (level().isClientSide()) {
+            // a fly or two buzzing round an aged body on the rack
+            if (isAged() && hungAt() != null && random.nextInt(8) == 0)
+                level().addParticle(new DustParticleOptions(FLY, 0.45F), getX() + random.nextGaussian() * getBbWidth() * 0.6,
+                        getY() + random.nextDouble() * getBbHeight(), getZ() + random.nextGaussian() * getBbWidth() * 0.6,
+                        random.nextGaussian() * 0.02, random.nextGaussian() * 0.01, random.nextGaussian() * 0.02);
+            return; // the client may not simulate movement; it gets the position from the server
+        }
         age++;
         BlockPos rack = hungAt();
         if (rack != null) {
             if (!level().getBlockState(rack).is(CarcassHauling.HANGING_RACK.get())) unhang(); // the rack is gone: it drops
             else {
                 setPos(hangPosition(rack));
-                hungTicks++;
-                if (tickCount % 30 == 0 && !spoiled() && random.nextInt(3) == 0)
+                if (++hungTicks == AGED) entityData.set(AGED_LOOK, true);
+                if (tickCount % 30 == 0 && !spoiled() && !aged() && random.nextInt(3) == 0) // aged: the blood has stopped
                     Blood.drip((ServerLevel) level(), getX() + random.nextGaussian() * 0.1, getY() + 0.1, getZ() + random.nextGaussian() * 0.1);
                 return;
             }
@@ -309,6 +327,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(STAGE, 0);
         builder.define(HAULER, -1);
         builder.define(HUNG_AT, java.util.Optional.empty());
+        builder.define(AGED_LOOK, false);
     }
 
     @Override
@@ -318,6 +337,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         age = input.getIntOr("age", 0);
         groundTicks = input.getIntOr("ground_ticks", 0);
         hungTicks = input.getIntOr("hung_ticks", 0);
+        entityData.set(AGED_LOOK, hungTicks >= AGED);
         input.read("hung_at", BlockPos.CODEC).ifPresent(p -> entityData.set(HUNG_AT, java.util.Optional.of(p)));
         work = input.getFloatOr("work", 0);
         entityData.set(STAGE, input.getIntOr("stage", 0));

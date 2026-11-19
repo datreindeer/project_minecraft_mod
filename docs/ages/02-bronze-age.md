@@ -647,6 +647,12 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
 - **Förråd:** **smyg + högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
   vagnen.
 - Rovdjur: den som drar en lastad vagn (spelare eller häst) blir bytet, som med travoisen.
+- **Rörelse som travoisen** (se *Bära hem bytet* i 01-stone-age.md): tyngdkraft, ettblockssteg, jämn rörelse i klienten.
+  Fastnar vagnen håller den emot dig (eller hästen) vid dragavståndet + 1 block; drar du bort från den i 3 sekunder, eller
+  kommer mer än 5 block bort, lossnar den ("The cart is stuck. It came loose from the shafts" / "The cart came loose from
+  the shafts").
+- **Lutning:** vagnen tippar kring axeln så att skaklarnas spetsar når höften på den som drar (en häst: bogen, 60 % av
+  höjden). **Parkerad** vilar den på hjulen med skaklarna på marken (bädden lutar ~16° framåt). Lasten lutar med bädden.
 
 ### Tämja vildhästar
 

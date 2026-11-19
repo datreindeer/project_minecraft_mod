@@ -20,6 +20,10 @@ public final class TravoisModel {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Mechanical.MODID, "travois"), "main");
     /** Rear end of a pole (on the ground) and front end (raised to the hands), for the left pole; the right one mirrors x. */
     private static final float REAR_X = 10, REAR_Y = -1, REAR_Z = 24, FRONT_X = -1, FRONT_Y = -17, FRONT_Z = -32;
+    /** The poles' rise as modelled (degrees, front up); TravoisRenderer turns the model about the rear ends to the travois' pitch. */
+    public static final float POLE_ANGLE = (float) Math.toDegrees(Math.atan2(REAR_Y - FRONT_Y, REAR_Z - FRONT_Z));
+    /** Rear ends of the poles in blocks, y up and z back: the pivot for that turn. */
+    public static final float PIVOT_Y = -REAR_Y / 16.0F, PIVOT_Z = REAR_Z / 16.0F;
     /** The poles' height at z: a straight line from the rear end to the front end. */
     private static float poleY(float z) {
         return REAR_Y + (FRONT_Y - REAR_Y) * (REAR_Z - z) / (REAR_Z - FRONT_Z);

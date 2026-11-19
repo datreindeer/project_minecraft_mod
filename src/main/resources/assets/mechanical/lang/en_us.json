@@ -834,5 +834,9 @@
   "message.mechanical.horse.needs_halter": "Put a Rope Halter on it before feeding it more",
   "message.mechanical.horse.refuses_halter": "The horse won't take the halter yet. Feed it first",
   "message.mechanical.horse.haltered": "Haltered. Keep feeding it to tame it (trust %s/%s)",
-  "message.mechanical.horse.tamed": "The horse is tame. Right-click to ride, sneak + right-click for its gear"
+  "message.mechanical.horse.tamed": "The horse is tame. Right-click to ride, sneak + right-click for its gear",
+  "message.mechanical.travois.stuck": "The travois is stuck. You let go of the poles",
+  "message.mechanical.travois.torn_loose": "The poles slipped out of your hands",
+  "message.mechanical.cart.stuck": "The cart is stuck. It came loose from the shafts",
+  "message.mechanical.cart.torn_loose": "The cart came loose from the shafts"
 }

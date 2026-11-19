@@ -21,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -38,6 +39,12 @@ public class CartEntity extends TravoisEntity {
     static final double BED = 0.7, WHEEL_RADIUS = 7 / 16.0;
     /** Speed lost by a player in the shafts: empty, plus per load unit (travois: 0.1 + 0.1). Horses pull it freely. */
     static final double SLOW = 0.05, SLOW_LOAD = 0.04;
+    /**
+     * Shaft geometry (CartModel): the axle sits {@link #AXLE_BACK} behind the centre, {@link #AXLE_HEIGHT} up; the shaft
+     * tips are {@link #SHAFT_REACH} from the axle, {@link #SHAFT_ANGLE} degrees above level when the bed is level. The bed
+     * tips about the axle ({@link #pitch}): shaft tips at the puller's hip (a horse: its shoulder), on the ground when parked.
+     */
+    static final double AXLE_BACK = 2 / 16.0, AXLE_HEIGHT = 7 / 16.0, SHAFT_REACH = 2.75, SHAFT_ANGLE = 7.75;
     /** Search range for a led horse to put in the shafts. */
     private static final double HORSE_RANGE = 10;
 
@@ -95,6 +102,19 @@ public class CartEntity extends TravoisEntity {
             wheelSpin += (float) (along / WHEEL_RADIUS);
         }
         super.tick();
+    }
+
+    @Override
+    protected float targetPitch(LivingEntity puller) {
+        double axleY = getY() + AXLE_HEIGHT, tipAngle;
+        if (puller != null) {
+            double hitch = puller.getY() + puller.getBbHeight() * (puller instanceof Player ? 0.5 : 0.6);
+            tipAngle = Math.atan2(hitch - axleY, position().subtract(puller.position()).horizontalDistance() + AXLE_BACK);
+        } else {
+            double ground = groundAhead(SHAFT_REACH - AXLE_BACK) + 1 / 16.0; // the shaft tips rest on the ground
+            tipAngle = Math.asin(Mth.clamp((ground - axleY) / SHAFT_REACH, -1, 1));
+        }
+        return Mth.clamp((float) (Math.toDegrees(tipAngle) - SHAFT_ANGLE), -20.0F, 25.0F);
     }
 
     /** Sneak + right-click with an empty hand: the goods box. */
@@ -155,7 +175,8 @@ public class CartEntity extends TravoisEntity {
         }
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
         Vec3 right = Vec3.directionFromRotation(0, getYRot() + 90);
-        moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED, getZ() + dir.z * along + right.z * side);
+        double rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch)); // the bed tips about the axle (client only)
+        moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED + rise, getZ() + dir.z * along + right.z * side);
         passenger.setYRot(getYRot());
     }
 

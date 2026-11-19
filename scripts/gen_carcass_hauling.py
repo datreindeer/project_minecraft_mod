@@ -129,5 +129,7 @@ merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items(
     "message.mechanical.travois.unharnessed": "Unharnessed",
     "message.mechanical.travois.full": "The travois is full",
     "message.mechanical.travois.too_big": "Too big for the travois",
+    "message.mechanical.travois.stuck": "The travois is stuck. You let go of the poles",
+    "message.mechanical.travois.torn_loose": "The poles slipped out of your hands",
 })
 print("carcass hauling ok")
