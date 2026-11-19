@@ -3,6 +3,11 @@
     "mechanical:aspen_button",
     "mechanical:alder_button",
     "mechanical:beech_button",
-    "mechanical:linden_button"
+    "mechanical:linden_button",
+    "mechanical:willow_button",
+    "mechanical:ash_button",
+    "mechanical:hazel_button",
+    "mechanical:pine_button",
+    "mechanical:yew_button"
   ]
 }

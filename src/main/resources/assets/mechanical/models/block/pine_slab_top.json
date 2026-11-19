@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/pine_planks",
+    "side": "mechanical:block/pine_planks",
+    "top": "mechanical:block/pine_planks"
+  }
+}

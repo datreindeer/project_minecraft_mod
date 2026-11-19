@@ -176,7 +176,7 @@ public class Mechanical {
 
     // Stumps left by felled trees, one per wood type (looked up by the log's name: oak_log -> oak_stump).
     public static final List<String> WOODS = List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-            "aspen", "alder", "beech", "linden");
+            "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew");
     public static final Map<String, DeferredBlock<StumpBlock>> STUMPS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             BLOCKS.registerBlock(w + "_stump", StumpBlock::new, p -> p.mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion())));
 
@@ -188,7 +188,7 @@ public class Mechanical {
     public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
     /** Leaves (block name minus "_leaves") that get their own fresh, leaf-coloured litter when their tree is felled. */
     public static final List<String> LITTER_LEAVES = List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry",
-            "pale_oak", "yellow_poplar", "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden");
+            "pale_oak", "yellow_poplar", "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew");
     public static final Map<String, DeferredBlock<FreshLeafLitterBlock>> LEAF_LITTERS = LITTER_LEAVES.stream().collect(Collectors.toMap(l -> l, l ->
             BLOCKS.registerBlock(l + "_leaf_litter", FreshLeafLitterBlock::new, p -> p.mapColor(MapColor.PLANT).replaceable().noCollision()
                     .randomTicks().sound(SoundType.LEAF_LITTER).pushReaction(PushReaction.POPPED))));
@@ -354,7 +354,7 @@ public class Mechanical {
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
         Sanity.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); Pigments.init();
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus);
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

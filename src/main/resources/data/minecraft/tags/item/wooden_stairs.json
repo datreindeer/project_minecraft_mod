@@ -3,6 +3,11 @@
     "mechanical:aspen_stairs",
     "mechanical:alder_stairs",
     "mechanical:beech_stairs",
-    "mechanical:linden_stairs"
+    "mechanical:linden_stairs",
+    "mechanical:willow_stairs",
+    "mechanical:ash_stairs",
+    "mechanical:hazel_stairs",
+    "mechanical:pine_stairs",
+    "mechanical:yew_stairs"
   ]
 }

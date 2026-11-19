@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": "mechanical:pine_resin",
+    "#": "minecraft:stick"
+  },
+  "pattern": [
+    "R",
+    "#"
+  ],
+  "result": {
+    "id": "minecraft:torch",
+    "count": 2
+  }
+}

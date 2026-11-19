@@ -1,0 +1,12 @@
+{
+  "feature": "mechanical:aspen",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": "mechanical:aspen_sapling"
+      }
+    }
+  ]
+}

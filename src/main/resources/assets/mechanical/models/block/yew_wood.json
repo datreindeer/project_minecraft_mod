@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mechanical:block/yew_log",
+    "side": "mechanical:block/yew_log"
+  }
+}

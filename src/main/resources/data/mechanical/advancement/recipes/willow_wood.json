@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:willow_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:willow_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:willow_planks",
+      "mechanical:willow_wood",
+      "mechanical:stripped_willow_wood",
+      "mechanical:willow_slab",
+      "mechanical:willow_stairs",
+      "mechanical:willow_fence",
+      "mechanical:willow_fence_gate",
+      "mechanical:willow_door",
+      "mechanical:willow_trapdoor",
+      "mechanical:willow_button",
+      "mechanical:willow_pressure_plate"
+    ]
+  }
+}

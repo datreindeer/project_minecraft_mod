@@ -1,0 +1,82 @@
+{
+  "textures": {
+    "particle": "mechanical:block/stripped_hazel_log",
+    "side": "mechanical:block/stripped_hazel_log",
+    "end": "mechanical:block/stripped_hazel_log_top"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        0
+      ],
+      "to": [
+        14,
+        12,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#end",
+          "uv": [
+            2,
+            4,
+            14,
+            16
+          ],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#end",
+          "uv": [
+            2,
+            4,
+            14,
+            16
+          ],
+          "cullface": "south"
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            2,
+            0,
+            14,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            2,
+            0,
+            14,
+            16
+          ],
+          "cullface": "down"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            2,
+            16,
+            14
+          ],
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            2,
+            16,
+            14
+          ],
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

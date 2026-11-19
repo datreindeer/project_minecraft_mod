@@ -34,7 +34,12 @@
       "mechanical:aspen_log_from_firewood",
       "mechanical:alder_log_from_firewood",
       "mechanical:beech_log_from_firewood",
-      "mechanical:linden_log_from_firewood"
+      "mechanical:linden_log_from_firewood",
+      "mechanical:willow_log_from_firewood",
+      "mechanical:ash_log_from_firewood",
+      "mechanical:hazel_log_from_firewood",
+      "mechanical:pine_log_from_firewood",
+      "mechanical:yew_log_from_firewood"
     ]
   }
 }

@@ -3,6 +3,11 @@
     "mechanical:aspen_door",
     "mechanical:alder_door",
     "mechanical:beech_door",
-    "mechanical:linden_door"
+    "mechanical:linden_door",
+    "mechanical:willow_door",
+    "mechanical:ash_door",
+    "mechanical:hazel_door",
+    "mechanical:pine_door",
+    "mechanical:yew_door"
   ]
 }

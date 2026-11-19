@@ -1,7 +1,7 @@
-# Textures for the mod's own tree species (aspen, alder, beech, linden): logs, stripped logs, planks,
+# Textures for the mod's own tree species (aspen, alder, beech, linden, willow, ash, hazel, pine, yew): logs, stripped logs, planks,
 # leaves (pre-coloured, no biome tint), saplings, doors and trapdoors.
 # Planks and ring ends reuse vanilla's shared plank/ring layout recoloured (vanilla does the same per wood);
-# bark, leaves, saplings, doors and trapdoors are drawn per species.
+# bark, leaves, saplings, doors and trapdoors are drawn per species. Also Beechnuts, Roasted Beechnuts and Pine Resin.
 # usage: python gen_wood_textures.py <vanilla block texture dir> [preview png]
 import math, os, random, sys
 from PIL import Image
@@ -235,6 +235,10 @@ def leaves(name, p):
         for x, y in [(3, 9), (12, 2)]: stamp(img, [".y", "yx", "xx", ".x"], x, y, c)
     if name == "linden":                     # pale flower clusters
         for x, y in [(9, 10), (2, 2)]: stamp(img, [".f.", "fFf", ".f."], x, y, c)
+    if name == "hazel":                      # hanging catkins
+        for x, y in [(4, 6), (12, 12)]: stamp(img, ["C", "c", "C", "c"], x, y, c)
+    if name == "yew":                        # red arils
+        for x, y in [(3, 4), (11, 10), (13, 2)]: stamp(img, ["r.", "rR"], x, y, c)
     return img
 
 # ------------------------------------------------------------------ saplings: twigs + leaf sprites placed by hand
@@ -378,6 +382,208 @@ def item_door(name, p, planks):
     img = new()
     return paint(ITEM_DOORS[name], p, planks, 3, 2, img)
 
+# ------------------------------------------------------------------ willow, ash, hazel, pine, yew (gen_trees.py)
+SPECIES.update({
+    "willow": dict(   # pale creamy wood, grey furrowed bark, narrow light silvery-green leaves
+        wood=[(170, 156, 120), (183, 169, 132), (195, 181, 144), (206, 193, 156), (216, 204, 168), (225, 214, 180), (234, 224, 192)],
+        stripped_base="stripped_birch_log", stripped_range=(1.4, 6.2),
+        leaf=dict(D=(62, 92, 40), S=(88, 122, 52), M=(118, 152, 68), L=(152, 182, 92), H=(196, 216, 144)),
+        bark=[(48, 48, 44), (70, 70, 64), (92, 91, 84), (112, 111, 102), (132, 130, 120), (152, 150, 140)],
+        metal=((54, 54, 54), (146, 146, 146))),
+    "ash": dict(      # very pale, almost white strong wood, light grey diamond-ridged bark, mid-green leaflets
+        wood=[(196, 186, 160), (207, 198, 173), (217, 209, 185), (226, 219, 196), (234, 228, 206), (241, 236, 216), (248, 244, 227)],
+        stripped_base="stripped_birch_log", stripped_range=(1.8, 6.5),
+        leaf=dict(D=(36, 76, 28), S=(52, 100, 36), M=(72, 128, 46), L=(98, 154, 60), H=(140, 186, 88)),
+        bark=[(84, 86, 82), (108, 110, 105), (130, 132, 126), (150, 152, 145), (168, 170, 162), (186, 188, 180)],
+        metal=((40, 40, 42), (120, 120, 124))),
+    "hazel": dict(    # pinkish-pale wood, smooth glossy copper-brown bark with pale lenticels, round leaves and catkins
+        wood=[(170, 128, 106), (183, 141, 118), (195, 153, 129), (205, 164, 139), (214, 175, 150), (222, 186, 161), (230, 197, 173)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.6, 6.3),
+        leaf=dict(D=(40, 80, 26), S=(56, 106, 34), M=(78, 134, 44), L=(106, 160, 58), H=(146, 192, 86),
+                  c=(214, 196, 98), C=(160, 138, 62)),
+        bark=[(56, 40, 32), (78, 56, 42), (100, 72, 52), (122, 88, 62), (142, 104, 74), (164, 124, 92)],
+        metal=((48, 48, 50), (136, 136, 140))),
+    "pine": dict(     # yellowish resinous wood, orange flaky bark plates, blue-green needles
+        wood=[(166, 120, 70), (180, 133, 80), (193, 146, 90), (204, 158, 100), (214, 170, 110), (223, 181, 121), (231, 192, 132)],
+        stripped_base="stripped_spruce_log", stripped_range=(1.6, 6.4),
+        leaf=dict(D=(24, 52, 40), S=(34, 70, 52), M=(48, 92, 66), L=(68, 116, 84), H=(104, 148, 112)),
+        bark=[(58, 38, 30), (90, 56, 38), (136, 76, 44), (170, 98, 54), (196, 122, 68), (220, 150, 90)],
+        metal=((44, 44, 46), (128, 128, 132))),
+    "yew": dict(      # red-orange heartwood, reddish peeling bark, very dark flat needles with red arils
+        wood=[(132, 54, 32), (150, 66, 38), (166, 78, 44), (180, 90, 52), (193, 102, 60), (205, 115, 70), (216, 128, 82)],
+        stripped_base="stripped_acacia_log", stripped_range=(1.2, 6.2),
+        leaf=dict(D=(12, 34, 20), S=(18, 46, 26), M=(26, 60, 34), L=(38, 78, 44), H=(58, 100, 60),
+                  r=(204, 44, 40), R=(140, 22, 26)),
+        bark=[(44, 24, 24), (68, 36, 32), (94, 50, 40), (120, 64, 48), (150, 84, 60), (184, 106, 74)],
+        metal=((150, 110, 40), (214, 174, 76))),
+})
+
+def bark_willow(p):
+    """deep grey furrows that wander, split and rejoin into a coarse net, with long ridges between"""
+    b = p["bark"]; img = new()
+    n1, n2 = noise("willow1", 2, 8), noise("willow2", 8, 8)
+    for y in range(16):
+        for x in range(16): put(img, x, y, ramp_at(b, 2.6 + (0.6 * n1[y][x] + 0.4 * n2[y][x]) * 2.2))
+    lines = [wobble_line(f"willow{i}", x0) for i, x0 in enumerate((1, 4, 8, 11, 14))]
+    for k, (pi, y) in enumerate([(0, 3), (1, 9), (2, 1), (2, 12), (3, 6), (4, 14), (0, 10)]):  # diagonal joins between furrows
+        a, c = lines[pi][y], lines[(pi + 1) % 5][(y + 2) % 16] + (16 if pi == 4 else 0)
+        for i, x in enumerate(range(a, c + 1)): put(img, x, y + round(2 * i / max(1, c - a)), b[1])
+    for xs in lines:
+        for y in range(16):
+            put(img, xs[y], y, b[0]); put(img, xs[y] + 1, y, b[1]); put(img, xs[y] - 1, y, b[2])
+            if (y * 7 + xs[y]) % 3: put(img, xs[y] + 2, y, b[5])   # lit ridge edge
+    return img
+
+def bark_ash(p):
+    """light grey with a fine interlaced diamond net of shallow furrows (8 wide, 16 tall, tiles both ways)"""
+    b = p["bark"]; img = new()
+    n1 = noise("ash1", 4, 4)
+    for y in range(16):
+        for x in range(16):
+            u, v = (x + y // 2) % 8, (x - y // 2) % 8
+            c = ramp_at(b, 3.0 + n1[y][x] * 1.8)
+            if u == 0 or v == 0: c = b[1]
+            elif u == 1 or v == 7: c = mix(c, b[2], 0.6)
+            elif u == 7 or v == 1: c = mix(c, b[5], 0.5)
+            put(img, x, y, c)
+    for x, y in [(4, 3), (12, 11)]: put(img, x, y, b[5]); put(img, x, y + 1, b[4])
+    return img
+
+def bark_hazel(p):
+    """smooth, glossy copper-brown with silvery sheen patches and pale horizontal lenticels"""
+    b = p["bark"]; img = new()
+    n1, n2 = noise("hazel1", 4, 4), noise("hazel2", 2, 8)
+    for y in range(16):
+        for x in range(16):
+            c = ramp_at(b, 2.2 + (0.7 * n1[y][x] + 0.3 * n2[y][x]) * 2.2)
+            if n2[y][x] > 0.72: c = mix(c, (150, 146, 136), 0.45)   # silvery sheen
+            put(img, x, y, c)
+    for x, y, l in [(1, 2, 3), (9, 4, 2), (5, 8, 3), (13, 9, 2), (2, 13, 2), (10, 14, 3), (14, 0, 2), (6, 1, 2)]:
+        for i in range(l): put(img, x + i, y, (206, 184, 152) if i % 2 == 0 else (178, 150, 116))
+        put(img, x, y + 1, b[1])
+    return img
+
+def bark_pine(p):
+    """orange flaky plates (tiled Voronoi, stretched upwards) parted by dark grey-brown cracks"""
+    b = p["bark"]; img = new()
+    r = random.Random("pine")
+    seeds = [(r.uniform(0, 16), r.uniform(0, 16), r.uniform(2.6, 4.6)) for _ in range(9)]
+    n1 = noise("pine1", 8, 8)
+    for y in range(16):
+        for x in range(16):
+            ds = []
+            for sx, sy, tone in seeds:
+                dx = min(abs(x - sx), 16 - abs(x - sx)); dy = min(abs(y - sy), 16 - abs(y - sy)) * 0.55
+                ds.append((dx * dx + dy * dy, sy, tone))
+            ds.sort()
+            d0, d1 = math.sqrt(ds[0][0]), math.sqrt(ds[1][0])
+            tone = ds[0][2] + (n1[y][x] - 0.5) * 0.8
+            if d1 - d0 < 0.7: c = b[0] if d1 - d0 < 0.35 else b[1]   # crack
+            elif d1 - d0 < 1.3: c = ramp_at(b, tone - 1.0)          # plate edge curling into shade
+            else: c = ramp_at(b, tone)
+            put(img, x, y, c)
+    return img
+
+def bark_yew(p):
+    """purple-brown bark peeling in long vertical strips, fresh red-orange showing where flakes came off"""
+    b = p["bark"]; img = new()
+    n1, n2 = noise("yew1", 3, 6), noise("yew2", 8, 8)
+    for y in range(16):
+        for x in range(16): put(img, x, y, ramp_at(b, 1.8 + (0.6 * n1[y][x] + 0.4 * n2[y][x]) * 2.0))
+    fresh, fresh2 = (204, 104, 66), (176, 82, 52)
+    for x0, y0, h in [(2, 1, 6), (9, 4, 7), (13, 11, 6), (5, 10, 5)]:   # bare patches, 2 wide, darker rim above
+        for i in range(h):
+            put(img, x0, y0 + i, fresh if i % 3 else fresh2); put(img, x0 + 1, y0 + i, fresh2)
+        put(img, x0, y0 - 1, b[0]); put(img, x0 + 1, y0 - 1, b[0]); put(img, x0 + 2, y0 + h // 2, b[0])
+    for i, x0 in enumerate((0, 4, 7, 11, 15)):                           # strip edges
+        for y in range(16):
+            x = x0 + (1 if (y + i * 5) % 11 < 4 else 0)
+            put(img, x, y, b[0] if (y + i) % 5 else b[1])
+    return img
+
+BARK.update({"willow": bark_willow, "ash": bark_ash, "hazel": bark_hazel, "pine": bark_pine, "yew": bark_yew})
+
+LEAF_SPRITES.update({
+    "willow": [["L.", "LH", "MM", ".S"], [".L", "LM", "MS", "S."], ["L", "M", "M", "S"]],   # narrow, drooping
+    "ash": [["L.L", "MLM", ".S."], ["LL.", ".MS"], [".L", "LM", "MS"]],                   # paired leaflets
+    "hazel": [[".LL.", "LHMM", "LMMS", ".MS."], ["LL.", "LMS", ".S."]],                    # round, toothed
+    "pine": [["L.L", ".M.", "S.S"], ["L.L.L", ".MMM.", "..S.."], ["L..", ".M.", "..S"]],   # needle tufts
+    "yew": [["L.L", "MMM", "S.S"], [".L.", "LMS", ".S."], ["LMS"]],                       # flat needles along twigs
+})
+LEAF_HOLES.update({"willow": 0.32, "ash": 0.30, "hazel": 0.22, "pine": 0.30, "yew": 0.14})
+
+SAPLINGS.update({
+    "willow": ([(7, 9, 4, 7, 2), (8, 7, 11, 5, 2)],
+               [(2, 3, 5), (0, 2, 7), (1, 10, 4), (2, 12, 6), (0, 6, 1), (1, 8, 1), (2, 4, 10), (1, 10, 9)], 2, 12),
+    "ash": ([(7, 9, 4, 6, 3), (8, 7, 11, 4, 3)],
+            [(0, 2, 3), (0, 10, 1), (1, 5, 0), (2, 3, 7), (2, 11, 6), (1, 8, 3)], 1, 12),
+    "hazel": ([(7, 12, 4, 6, 2), (8, 12, 11, 5, 2), (7, 9, 6, 3, 2)],
+              [(0, 2, 3), (0, 9, 2), (1, 4, 0), (1, 11, 6), (1, 1, 7)], 5, 13),
+    "pine": ([(7, 6, 4, 8, 1), (8, 6, 11, 8, 1), (7, 10, 3, 12, 1), (8, 10, 12, 12, 1)],
+             [(0, 6, 0), (1, 5, 3), (1, 1, 6), (1, 9, 6), (2, 2, 9), (2, 10, 9), (0, 6, 7)], 1, 12),
+    "yew": ([(7, 10, 3, 9, 1), (8, 9, 12, 8, 1), (7, 6, 4, 5, 1), (8, 5, 11, 4, 1)],
+            [(0, 2, 7), (0, 10, 6), (0, 3, 3), (0, 9, 2), (1, 6, 0), (2, 5, 9), (2, 1, 5), (2, 11, 4)], 2, 12),
+})
+
+def _door(top_inner, bottom_head, bottom_inner):
+    """inner 12x12 designs framed like the doors above; bottom_head = the two 11-wide rows beside the handle"""
+    top = ["2222222222222222", "2555555555555532"] + ["25" + r + "32" for r in top_inner] + ["2544444444444432", "2533333333333332"]
+    bottom = ["25" + bottom_head[0] + "kK2", "25" + bottom_head[1] + "k32"] + ["25" + r + "32" for r in bottom_inner] \
+        + ["2544444444444432", "2222222222222222"]
+    return top, bottom
+
+def _item_door(top6, bottom5):
+    return ["5555555552"] + ["54" + r + "32" for r in top6] + ["544444kK32"] + ["54" + r + "32" for r in bottom5] + ["3222222222"]
+
+P12 = "pppppppppppp"
+CROSS = ["pp...44...pp"] * 3 + ["pp44444444pp"] * 2 + ["pp...44...pp"] * 3
+ARCH = ["pppp....pppp", "ppp......ppp", "pp........pp", "pp........pp", "pp........pp", "pp44444444pp"]
+DOORS.update({
+    "willow": _door([P12] + ["pp..pppp..pp"] * 7 + [P12] * 4, ("ppppppppppp", "pppdppppdpp"), ["pppdppppdppp"] * 12),
+    "ash": _door([P12] + CROSS + [P12] * 3, ("ppppppppppp", "p553p553p55"), ["p5l2p5l2p5l2"] * 11 + ["p322p322p322"]),
+    "hazel": _door([P12] + ["pp..p..p..pp", "pp..p..p..pp", P12] * 3 + [P12] * 2, ("qqqqqqqqqqq", "ccccccccccc"),
+                   ["qqqqqqqqqqqq", "qqqqqqqqqqqq", "cccccccccccc"] * 4),
+    "pine": _door([P12] + ARCH + [P12] * 5, ("ppppppppppp", "44444444444"),
+                  ["pppdppppdppp"] * 4 + ["444444444444", "333333333333"] + ["pppdppppdppp"] * 4 + ["444444444444", "333333333333"]),
+    "yew": _door([P12, "ppp..44..ppp", "pp...44...pp", "pp...44...pp", "pp44444444pp", "pp...44...pp", "pp...44...pp", "ppp..44..ppp"] + [P12] * 4,
+                 ("ppppppppppp", "p5553pp5553"), ["p5dd2pp5dd2p"] * 11 + ["p3222pp3222p"]),
+})
+TRAPDOORS.update({
+    "willow": [P12] + ["pp..pppp..pp"] * 8 + [P12] * 3,
+    "ash": [P12, P12] + ["pp...44...pp"] * 3 + ["pp44444444pp"] * 2 + ["pp...44...pp"] * 3 + [P12, P12],
+    "hazel": ["qqqqqqqqqqqq", "qqqqqqqqqqqq", "cccccccccccc"] * 4,
+    "pine": [P12] + ARCH[:5] + ["pp44444444pp", "pp........pp", "pp........pp", "ppp......ppp", "pppp....pppp", P12],
+    "yew": [P12, "ppp..44..ppp"] + ["pp...44...pp"] * 3 + ["pp44444444pp"] * 2 + ["pp...44...pp"] * 3 + ["ppp..44..ppp", P12],
+})
+ITEM_DOORS.update({
+    "willow": _item_door(["pppppp", "p.pp.p", "p.pp.p", "p.pp.p", "p.pp.p", "pppppp"], ["pdppdp"] * 5),
+    "ash": _item_door(["pppppp", "p.44.p", "p4444p", "p.44.p", "p.44.p", "pppppp"], ["5l25l2"] * 4 + ["322322"]),
+    "hazel": _item_door(["pppppp", "p.pp.p", "pppppp", "p.pp.p", "pppppp", "pppppp"], ["qqqqqq", "cccccc", "qqqqqq", "cccccc", "qqqqqq"]),
+    "pine": _item_door(["pp..pp", "p....p", "p....p", "p4444p", "pppppp", "pppppp"], ["pdppdp", "444444", "pdppdp", "pdppdp", "444444"]),
+    "yew": _item_door(["pp44pp", "p.44.p", "444444", "p.44.p", "pp44pp", "pppppp"], ["5d25d2"] * 4 + ["322322"]),
+})
+
+# ------------------------------------------------------------------ tree extras: beechnuts, roasted beechnuts, pine resin
+def item_sprite(rows, cols):
+    assert len(rows) == 16 and all(len(r) == 16 for r in rows), [len(r) for r in rows]
+    img = new()
+    stamp(img, rows, 0, 0, cols, wrap=False)
+    return img
+
+NUTS = ["................", "................", "................", "......d.........", ".....dld........",
+        "....dlhmd.......", "....dlmmd...d...", "...dlmmmmd.dld..", "...dmmmmmddlhmd.", "...dmmmmd.dlmmd.",
+        "....dddd.dlmmmmd", "..........dmmmmd", "..........dmmmd.", "...........ddd..", "................", "................"]
+RESIN = ["................", "................", "......oo........", ".....oaao.......", "....oabbao......",
+         "....oabyba......", "...oabyybao.....", "...oabbbbbao....", "..oaabbbbbao....", "..oaabbbbbbao...",
+         "..oaaabbbbbao...", "...oaaaabbao....", "....oaaaaao.....", ".....ooooo......", "................", "................"]
+
+def extras():
+    raw = dict(d=(70, 40, 22), m=(132, 84, 44), l=(178, 124, 70), h=(214, 168, 112))
+    roast = dict(d=(42, 24, 14), m=(98, 58, 28), l=(140, 90, 46), h=(186, 136, 80))
+    save(item_sprite(NUTS, raw), "item/beechnuts.png")
+    save(item_sprite(NUTS, roast), "item/roasted_beechnuts.png")
+    save(item_sprite(RESIN, dict(o=(116, 58, 12), a=(186, 112, 22), b=(228, 162, 44), y=(255, 228, 140))), "item/pine_resin.png")
+
 # ------------------------------------------------------------------ assemble
 _rims = {}
 def rim(name, x, y): return _rims[name].getpixel((x, y))[:3]
@@ -405,10 +611,11 @@ for name, p in SPECIES.items():
     save(paint(bottom_rows, p, planks), f"block/{name}_door_bottom.png")
     save(trapdoor(name, p, planks), f"block/{name}_trapdoor.png")
     save(item_door(name, p, planks), f"item/{name}_door.png")
+extras()
 
 if prev:
     S, per = 8, 11
-    sheet = Image.new("RGBA", (per * (16 * S + 8) + 8, 4 * (16 * S + 8) + 8), (118, 118, 118, 255))
+    sheet = Image.new("RGBA", (per * (16 * S + 8) + 8, -(-len(written) // per) * (16 * S + 8) + 8), (118, 118, 118, 255))
     for i, (rel, img) in enumerate(written):
         big = img.resize((16 * S, 16 * S), Image.NEAREST)
         sheet.paste(big, (8 + (i % per) * (16 * S + 8), 8 + (i // per) * (16 * S + 8)), big)

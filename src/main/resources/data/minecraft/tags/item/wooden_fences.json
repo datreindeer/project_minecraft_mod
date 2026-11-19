@@ -3,6 +3,11 @@
     "mechanical:aspen_fence",
     "mechanical:alder_fence",
     "mechanical:beech_fence",
-    "mechanical:linden_fence"
+    "mechanical:linden_fence",
+    "mechanical:willow_fence",
+    "mechanical:ash_fence",
+    "mechanical:hazel_fence",
+    "mechanical:pine_fence",
+    "mechanical:yew_fence"
   ]
 }

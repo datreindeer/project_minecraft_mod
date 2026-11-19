@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:meadow"
+  ],
+  "features": "mechanical:ash_plains",
+  "step": "vegetal_decoration"
+}

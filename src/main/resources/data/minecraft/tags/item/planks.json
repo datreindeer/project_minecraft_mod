@@ -3,6 +3,11 @@
     "mechanical:aspen_planks",
     "mechanical:alder_planks",
     "mechanical:beech_planks",
-    "mechanical:linden_planks"
+    "mechanical:linden_planks",
+    "mechanical:willow_planks",
+    "mechanical:ash_planks",
+    "mechanical:hazel_planks",
+    "mechanical:pine_planks",
+    "mechanical:yew_planks"
   ]
 }
