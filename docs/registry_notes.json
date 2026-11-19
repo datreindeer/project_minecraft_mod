@@ -1109,6 +1109,11 @@
     "text": "Mytisk hjälm från [[offering_altar]]: mörkerseende, djur märker dig först på 3 blocks håll.",
     "category": "tools"
   },
+  "structure:trail": {
+    "name": "Trails",
+    "icon": "minecraft:dirt_path",
+    "text": "Upptrampade stigar (Dirt Path, Coarse Dirt, Gravel, Packed Mud) mellan närliggande byar och Ancient Oak (tagg mechanical:trail_connected), med plankspång över djupt vatten, trampstenar i grunt vatten och små stenrösen."
+  },
   "structure:ancient_oak": {
     "name": "Ancient Oak",
     "icon": "mechanical:offering_altar",

@@ -489,6 +489,20 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
 
+### Stigar mellan platser (trails)
+Upptrampade **stigar** går mellan närliggande större platser: byar och Ancient Oak (och Tribe-byar när de finns).
+Varje plats får stig till sina närmaste grannar inom ca **640 block**, men aldrig förbi en tredje plats som ligger
+närmare båda (så det blir ett glest nät, inte ett spindelnät), och aldrig över hav. Stigen slingrar sig, följer
+terrängen och är 1–3 block bred med trasiga, gräsiga kanter: Dirt Path, Coarse Dirt, Gravel och Packed Mud. Den går
+runt trädstammar och lämnar hus, åkrar, sand och berg i fred, och slutar några block från platsens mitt.
+- **Vatten:** över djupt vatten (3+ block) en **spång** av plankslabs, med stockstolpar ner till botten och ett
+  staketräcke var fjärde block (ek eller gran). I grunt vatten (1–2 block) **trampstenar** av kullersten och mossig
+  kullersten, i nivå med ytan.
+- **Rösen:** ungefär var 96:e block står ett litet stenröse (kullersten med en kullerstensmur ovanpå) bredvid stigen.
+
+Vilka strukturer som får stigar styrs av taggen `mechanical:trail_connected` (bara strukturer med random_spread-placering).
+Byggs bara i nya chunks.
+
 ### Ancient Oak (uråldrig ek) och Offering Altar
 En väldig, förtrollad ek: en egen **struktur** (hitta den med `/locate structure mechanical:ancient_oak`), mycket
 sällsynt (en chans per 24×24 chunks, bara i Forest och Dark Forest). Sju väldiga rotben gör stammen ca **22 block bred
