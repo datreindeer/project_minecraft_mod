@@ -190,6 +190,10 @@ Temperature-systemet (×1,5 av kroppsskalan: slätt ~18°, snöbiom några grade
 | Firewood, Log (och lägerelden) | 650° | 900° |
 | Charcoal, Coal | 800° | 1300° |
 
+**Hetare bränsle tar direkt:** lägger man ett bränsle med högre max i bränsleslotten medan ett sämre brinner (t.ex.
+Charcoal på ved) tas det in genast. Det som var kvar av det gamla bränslet brinner med (brinntiden läggs ihop), så
+inget går förlorat och temperaturen börjar stiga mot det nya maxet direkt.
+
 Brons (950°) och koppar (1085°) kräver alltså **Charcoal och Bellows**. Trä räcker för lera.
 
 ### Temperaturkrav på kilnens recept

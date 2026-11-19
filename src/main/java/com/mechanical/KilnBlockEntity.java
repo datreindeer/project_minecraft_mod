@@ -334,6 +334,13 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         if (kiln.isLit()) NightDangers.markLit(level, pos);
         if (kiln.isLit() && working) {
             kiln.idle = 0;
+            // hotter fuel put in catches at once: it joins the fire (what's left of the old fuel keeps burning with it)
+            Fuel next = fuelFor(kiln.items.get(FUEL)).orElse(null);
+            if (kiln.burn > 0 && next != null && next.maxTemp() > kiln.maxTemp) {
+                int left = kiln.burn;
+                kiln.takeFuel(kiln.items.get(FUEL));
+                kiln.burn = kiln.burnTotal = kiln.burn + left;
+            }
             if (kiln.burn <= 0) {
                 if (burnTicks(kiln.items.get(FUEL)) > 0) {
                     kiln.takeFuel(kiln.items.get(FUEL));
