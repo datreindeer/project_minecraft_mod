@@ -353,6 +353,7 @@ public class Mechanical {
 
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
+        Sanity.init();
         Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Traps.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);

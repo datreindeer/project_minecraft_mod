@@ -26,6 +26,7 @@ public final class StrawBedRest {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         player.setRespawnPosition(new ServerPlayer.RespawnConfig(
                 LevelData.RespawnData.of(player.level().dimension(), event.getPos(), player.getYRot(), player.getXRot()), false), false);
+        Sanity.rest(player);
         player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
         player.sendOverlayMessage(Component.translatable("message.mechanical.straw_bed_rest").withStyle(ChatFormatting.GRAY));
     }

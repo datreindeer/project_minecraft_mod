@@ -534,5 +534,9 @@
   "item.mechanical.glider_frame": "Glider Frame",
   "item.mechanical.glider_cloak": "Glider Cloak",
   "block.mechanical.snare": "Snare",
-  "block.mechanical.fish_trap": "Fish Trap"
+  "block.mechanical.fish_trap": "Fish Trap",
+  "message.mechanical.sanity.uneasy": "You feel watched...",
+  "message.mechanical.sanity.afraid": "The dark presses in. Find a fire.",
+  "message.mechanical.sanity.mad": "Your mind is slipping. Was that real?",
+  "message.mechanical.sanity.restless": "You toss and turn. The shadows won't let you rest."
 }
