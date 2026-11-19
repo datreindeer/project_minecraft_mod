@@ -1,0 +1,19 @@
+{
+  "smoke.cough": {
+    "subtitle": "subtitles.mechanical.smoke.cough",
+    "sounds": [
+      {
+        "name": "entity.player.hurt_drown",
+        "type": "event",
+        "pitch": 1.3,
+        "volume": 0.7,
+        "weight": 2
+      },
+      {
+        "name": "entity.panda.sneeze",
+        "type": "event",
+        "pitch": 0.6
+      }
+    ]
+  }
+}
