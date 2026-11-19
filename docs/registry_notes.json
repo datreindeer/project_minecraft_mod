@@ -55,7 +55,7 @@
   "unlit_torch": {"text": "En fackla som vinden blåste ut en blåsig natt. Lyser inte. Tänds igen med en fackla, [[fire_drill]] eller Flint and Steel; bryts den får man tillbaka facklan.", "category": "blocks"},
   "unlit_wall_torch": {"text": "Väggversionen av [[unlit_torch]]: en väggfackla som vinden blåste ut.", "category": "blocks"},
   "crucible": {
-    "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (40 s). Behövs i bronsåldern för att smälta koppar och tenn. Ingen användning än."
+    "text": "Bränn en [[unfired_crucible]] i en [[kiln]] (800°, 40 s). Klicka **Crushed Copper Ore (1 enhet) eller Native Copper (2)** på den i inventoryt, upp till 8 enheter, och smält den i kilnen vid 1085° till en [[molten_crucible]]. Staplas inte."
   },
   "tin_ore": {
     "text": "Tennmalm (bronsåldern). Kräver minst stenpickaxe. Ger 1–2 [[cassiterite]] (Fortune hjälper), sig själv med Silk Touch. Över ådror nära ytan ligger [[loose_cassiterite]] på marken."
@@ -265,7 +265,7 @@
     "text": "Bygger verktyg av huvud + bindning + skaft. **Högerklicka för att öppna.**\nTill vänster listas upplåsta verktyg (ett verktyg låses upp första gången man har dess material, sparas per spelare även efter döden). Verktyg där man har alla delar är upplysta; klick flyttar delarna till platserna. Scrolla med mushjulet."
   },
   "kiln": {
-    "text": "**Placeras bara ovanpå en Campfire**, som blir ugnens eldstad (2 block hög). Var Campfire tänd bakar ugnen på lägereldens ved (3 min). Annars: lägg bränsle och tänd med [[fire_drill]].\nGUI som en Furnace. Bränsle går bara åt medan något bakas; tänd utan att baka pyr den i 60 s och slocknar. Kyla och regn gör att bränslet tar slut fortare. Lyser (ljus 13) och skyddar mot monster när den brinner.\nBryts någon halva får man tillbaka Clay Kiln + 1–3 Stick + innehållet.\n**Ny ugn måste brännas först:** leran är rå och ugnen bakar inget förrän en eld har brunnit i den i 2 min (bränsle går åt). Leran mörknar i 3 steg till bränd rödbrun lera. En bränd ugn förblir bränd även om man bryter och flyttar den."
+    "text": "**Placeras bara ovanpå en Campfire**, som blir ugnens eldstad (2 block hög). Var Campfire tänd bakar ugnen på lägereldens ved (3 min). Annars: lägg bränsle och tänd med [[fire_drill]].\nGUI som en Furnace. Bränsle går bara åt medan något bakas; tänd utan att baka pyr den i 60 s och slocknar. Kyla och regn gör att bränslet tar slut fortare. Lyser (ljus 13) och skyddar mot monster när den brinner.\nBryts någon halva får man tillbaka Clay Kiln + 1–3 Stick + innehållet.\n**Ny ugn måste brännas först:** leran är rå och ugnen bakar inget förrän en eld har brunnit i den i 2 min (bränsle går åt). Leran mörknar i 3 steg till bränd rödbrun lera. En bränd ugn förblir bränd även om man bryter och flyttar den.\n**Temperatur:** stiger 5°/s mot bränslets max (trä 500°, Firewood/Log 650°, Charcoal 800°), sjunker 3°/s släckt. Varje recept kräver en temperatur (Charcoal 400°, Brick 600°, Crucible 800°, koppar smälter 1085°). [[bellows]] höjer den (+40° per pump). Överhettning vid 1300° kan spräcka den; lagas med 4 Clay Ball och bränns in igen."
   },
   "drying_rack": {
     "text": "**Högerklicka med [[scraped_hide]]** för att spänna upp den. Efter några minuter (~3 min i snitt) är den torr: högerklicka för att ta Leather. Bryts den släpper den sig själv + huden."
@@ -1428,5 +1428,34 @@
     "text": "Har nu **bördighet 0–3** (ny åker 2, från Podzol 3). Skörd sänker 1 (ärtor höjer 1), träda höjer ~1 per dag, [[compost]] +1, [[manure]] +2. Bördighet 0: halv fart och halv skörd; 1: 75 % fart; 3: snabbare och chans på extra. Torkar snabbare när det är varmt (över 15). Smyg + högerklicka med tom hand: visar bördighet, fukt och grödans temperatur. Vattnas med [[clay_water_bucket]] (3×3).",
     "vanilla": true,
     "category": "blocks"
-  }
+  },
+  "clay_ingot_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[minecraft:copper_ingot]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_ingot_mold]] i en [[kiln]] (600°).", "category": "blocks"},
+  "unfired_clay_ingot_mold": {"text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[C][C][C]`. Bränns till [[clay_ingot_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "clay_pickaxe_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (6 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_pickaxe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_pickaxe_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
+  "unfired_clay_pickaxe_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][C][C]` / `[C][ ][C]` / `[C][ ][C]`. Bränns till [[clay_pickaxe_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "clay_axe_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (6 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_axe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_axe_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
+  "unfired_clay_axe_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][C][C]` / `[C][ ][C]` / `[C][C][ ]`. Bränns till [[clay_axe_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "clay_shovel_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_shovel_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_shovel_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
+  "unfired_clay_shovel_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[C][ ][C]` / `[ ][C][ ]`. Bränns till [[clay_shovel_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "clay_hoe_head_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (4 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_hoe_head]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_hoe_head_mold]] i en [[kiln]] (600°).", "category": "blocks"},
+  "unfired_clay_hoe_head_mold": {"text": "Clay Ball (C) i crafting table: `[C][C][ ]` / `[C][ ][ ]` / `[C][C][C]`. Bränns till [[clay_hoe_head_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "clay_knife_blade_mold": {"text": "Bränd lerform som ställs på marken. Högerklicka med en [[molten_crucible]] för att hälla (2 enheter), metallen stelnar på 5 s, tom hand tar ut [[rough_cast_copper_knife_blade]]. Tål **5 gjutningar**, sedan spricker den. Bränns av [[unfired_clay_knife_blade_mold]] i en [[kiln]] (600°).", "category": "blocks"},
+  "unfired_clay_knife_blade_mold": {"text": "Clay Ball (C) i crafting table: `[C][ ][C]` / `[ ][C][ ]` / `[ ][C][ ]`. Bränns till [[clay_knife_blade_mold]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "rough_cast_copper_pickaxe_head": {"text": "Gjuts i [[clay_pickaxe_head_mold]] (6 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_pickaxe_head]].", "category": "materials"},
+  "copper_pickaxe_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_pickaxe_head]]. Monteras i Tool Station till [[minecraft:copper_pickaxe]].", "category": "materials"},
+  "rough_cast_copper_axe_head": {"text": "Gjuts i [[clay_axe_head_mold]] (6 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_axe_head]].", "category": "materials"},
+  "copper_axe_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_axe_head]]. Monteras i Tool Station till [[minecraft:copper_axe]].", "category": "materials"},
+  "rough_cast_copper_shovel_head": {"text": "Gjuts i [[clay_shovel_head_mold]] (2 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_shovel_head]].", "category": "materials"},
+  "copper_shovel_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_shovel_head]]. Monteras i Tool Station till [[minecraft:copper_shovel]].", "category": "materials"},
+  "rough_cast_copper_hoe_head": {"text": "Gjuts i [[clay_hoe_head_mold]] (4 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_hoe_head]].", "category": "materials"},
+  "copper_hoe_head": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_hoe_head]]. Monteras i Tool Station till [[minecraft:copper_hoe]].", "category": "materials"},
+  "rough_cast_copper_knife_blade": {"text": "Gjuts i [[clay_knife_blade_mold]] (2 enheter koppar). Slipas på en [[whetstone]] (4 drag) till [[copper_knife_blade]].", "category": "materials"},
+  "copper_knife_blade": {"text": "Slipad på en [[whetstone]] av [[rough_cast_copper_knife_blade]]. Monteras i Tool Station till [[copper_knife]].", "category": "materials"},
+  "bellows": {"text": "Ställs bredvid en [[kiln]]s eldstad med munstycket mot den. **Högerklick = en pump: +40°** upp till bränslets max med bälg (Charcoal 1300°, Firewood/Log 900°, trä 700°). 0,5 s mellan pumpningarna. Pumpar man vid taket (1300°) byggs påfrestning upp och kilnen kan spricka. Recept: `[Planks][Scraped Hide][Planks]` / `[Planks][Scraped Hide][Planks]` / `[Twine][Clay Tuyere][Twine]`.", "category": "blocks"},
+  "unfired_clay_tuyere": {"text": "3 Clay Ball diagonalt. Bränns till [[clay_tuyere]] i en [[kiln]] (600°).", "category": "materials"},
+  "clay_tuyere": {"text": "Lerrör till [[bellows]]. Bränns av [[unfired_clay_tuyere]] i en [[kiln]] (600°, 20 s).", "category": "materials"},
+  "whetstone": {"text": "Sandsten på en träbänk. Högerklicka med ett Rough Cast-huvud **4 gånger** (gnistor) för att slipa det till ett huvud som Tool Station tar. Recept: `[ ][Sandstone][ ]` / `[Stick][Planks][Stick]`.", "category": "blocks"},
+  "molten_crucible": {"text": "Crucible of Molten Copper: en [[crucible]] med malm som smälts i en [[kiln]] vid **1085°** (15 s). Häll i en Clay Mold inom **60 s**, annars stelnar den till [[solid_crucible]]. Hålls flytande så länge den ligger kvar i en kiln som är minst 1085°.", "category": "materials"},
+  "solid_crucible": {"text": "Crucible of Solid Copper: smält metall som stelnade innan den hälldes. Smälts om i en [[kiln]] vid 1085° (10 s).", "category": "materials"},
+  "copper_knife": {"text": "Tool Station: [[copper_knife_blade]] + Twine + Stick. 200 hållbarhet, styckar **1,5×** så snabbt och ger **1,2×** så mycket som [[flint_knife]]. Klarar inte björn (det gör [[tusk_dagger]]).", "category": "tools"}
 }
