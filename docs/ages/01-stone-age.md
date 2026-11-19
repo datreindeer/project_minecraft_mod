@@ -629,6 +629,13 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
   Pölar torkar in steg för steg.
 - Blod på marken (blocket **Blood**) ersätter gräs, Leaf Litter och liknande, bleknar bort efter några minuter, går att gå igenom och har inget item. Blodet syns som droppar som faller (egen partikel).
 
+### Viltet kommer tillbaka
+Djur placeras när en chunk skapas, så ett område man jagat tomt skulle annars förbli tomt. Var 30:e sekund tittar spelet
+på en plats 48–96 block från varje spelare. Om platsens område (128×128 block) inte har fyllts på på **3 dagar** och det
+finns färre än 3 djur inom 48 block där, vandrar **en flock** av något som biomen har (samma lista som när världen skapas)
+in där, utom synhåll (aldrig närmare än 32 block från en spelare) och inte nära en brinnande eld. Ett område man ser för
+första gången räknas som påfyllt just då. Tiderna sparas med världen (`WildlifeRestock.java`).
+
 ### Vilda djur (skog)
 Spawnar i skogsbiomer (`#minecraft:is_forest`). Förökar sig inte. Alla har egna modeller och texturer, flådda
 texturer och fungerar med kroppar, styckning, blod och rädsla.
