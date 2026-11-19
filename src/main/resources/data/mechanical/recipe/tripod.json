@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    " R ",
+    "R R"
+  ],
+  "key": {
+    "C": "mechanical:cordage",
+    "R": "mechanical:tool_rod"
+  },
+  "result": {
+    "id": "mechanical:tripod"
+  }
+}

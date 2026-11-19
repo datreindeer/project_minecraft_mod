@@ -774,7 +774,124 @@ den plockas upp; tooltip "Water: 3/6"). Mynningen visar tom/lite/mycket vatten, 
   Krukorna här är egna, funktionella kärl.
 - Formen väljs med smyg-klick (inte efter antal lerbollar), så man ser vad man drejar innan leran läggs på.
 - **Inte gjort (valfritt):** Clay Bowl/fat, Amphora (större förvaring), att kärl går sönder vid fall/explosion, att
-  dricka ur kannan (modden har ingen törst), att hälla kannan i en kittel (Clay Bucket fyller inte heller kittlar).
+  dricka ur kannan (modden har ingen törst), att hälla kannan i en kittel (Bronze Kettle fylls med Water Bucket eller
+  Clay Water Bucket, inte med kannan).
+
+## Bronze Kettle och Tripod (byggd)
+
+En gjuten bronskittel som hänger i ett stativ över elden. Den kokar soppa av vad som helst, kokar hela fåglar, smälter
+talg, kokar lim och garvar hudar. Kod: `Kettle` (registrering, värden, recept i koden), `TripodBlock`,
+`TripodBlockEntity` (kitteln, vattnet, innehållet, värmen), `client/KettleRenderer` (vätskeyta och bitar). Data:
+`scripts/gen_kettle.py`, texturer: `scripts/gen_kettle_textures.py`.
+
+### Recept och gjutning
+
+| Item | Recept | Not |
+|---|---|---|
+| **Tripod** | `[ ][Cordage][ ]` / `[ ][Tool Rod][ ]` / `[Tool Rod][ ][Tool Rod]` | Tre stänger surrade i toppen |
+| **Unfired Clay Kettle Mold** | 5 **Clay** (block) `[C][ ][C]` / `[C][C][C]` | Bränns i kilnen (600°) till **Clay Kettle Mold** |
+| **Rough Cast Bronze Kettle** | Gjuts i Clay Kettle Mold: **8 enheter brons** | Bara brons (koppar passar inte) |
+| **Bronze Kettle** | Rough Cast Bronze Kettle slipas på Whetstone (4 drag) | Som alla gjutna delar |
+
+- **8 enheter** är mest av en full degel (10): hackhuvud och svärdsblad tar 6, plåt 4, tacka 2. En kittel är det största
+  man gjuter och kostar ungefär lika mycket brons som en pickaxe och en kniv tillsammans. Formen fylls både ur en
+  degel och via Clay Channels från Smelting Furnace (32 kvartsenheter av poolen).
+- **Poor Bronze:** kitteln bär märket vidare och är tunnare: rymmer **6** saker i stället för 8 (tooltip).
+
+### Stativet över elden
+
+- Tripod ställs **ovanpå en Campfire eller en Fire Pit** (högerklicka på elden uppifrån). Benen når ner till marken
+  runt elden. På en Fire Pit står den på valfri del men ritas **mitt över hela 2×2** (bara ett stativ per grop), och
+  kitteln hänger 4 px högre så att den går fri från spetten. Utan eld under går det inte att ställa den, och tas elden
+  bort faller stativet (Tripod och kittel kommer tillbaka).
+- Högerklicka stativet med en **Bronze Kettle** för att hänga upp den (kedja ner till ett handtag).
+- **Värme:** tänd Campfire värmer 1×, tänd **Fire Pit 1,5×** (kokar fortare). Glöd håller den bara varm (högst 60°),
+  den kokar inte. Kall eld: den svalnar. Kokpunkt 100°, ungefär 10 s över en Campfire.
+- Stativet har ingen kollision och skymmer inte rök eller ljus. Firewood läggs på elden genom att klicka på elden, inte
+  på stativet.
+
+### Använda kitteln
+
+1. **Vatten:** Water Bucket (ger tillbaka hinken) eller Clay Water Bucket (slits 1, som vid alla hällningar).
+2. **Ingredienser:** högerklicka med en sak i taget, upp till **8** (Poor: 6). **Det första som läggs i bestämmer
+   läget**, och saker som inte hör dit tas inte emot (meddelande). Ruttnande mat tas inte emot.
+3. **Sjuda:** när vattnet kokar räknas tiden: mat 90 s, rendering 2 min, garvning 3 min över en Campfire
+   (Fire Pit: två tredjedelar av tiden). Läggs något nytt i börjar tiden om.
+4. **Ta ut:** skålar öses med en **Bowl**; fasta saker (talg, lim, läder, kokta fåglar) tas med **tom hand**. När allt
+   är uttaget är kitteln tom igen.
+
+| Kontroll | Vad som händer |
+|---|---|
+| Tom hand | Tar ut det som är klart, annars status i chatten: läge, antal, ingredienser, värme och tid kvar |
+| Smyg + tom hand | Häller ut allt (innehållet går förlorat); är kitteln redan tom tas den ner |
+| Riva stativet | Tripod och Bronze Kettle kommer tillbaka, innehållet spills ut |
+
+Läget syns också på vätskans färg: blått vatten, soppa i en brun ton dragen mot ingredienserna (bär rödlila, morot
+orange, fisk ljus, svamp gråbrun), mjölkvit fettlake vid rendering, mörkt rödbrun barklake vid garvning. När det kokar
+bubblar och ångar det, och upp till fyra av ingredienserna flyter och guppar i ytan.
+
+### Soppa (Stew)
+
+Allt som går att äta utan bieffekter får ligga i (kött, hela plockade fåglar, fisk, grönsaker, svamp, bär, nötter,
+ägg), plus grain, Flour, Brown/Red Mushroom och Boiled Egg. Inte: ruttet kött, Pufferfish, Spider Eye, Golden Apple,
+rätter i egen skål (Porridge, Mushroom Stew) eller soppa och buljong själva.
+
+- **Värde:** varje ingrediens räknas som det den blir på en Campfire (Raw Beef räknas som Steak, Plucked Goose som
+  2 Cooked Goose, ägg som Peeled Egg). Summan av hunger och mättnad × **1,25 + 0,05 per olik ingrediens** (högst
+  **1,5×**), delas på skålar à ungefär 7 hunger (1–6 skålar), avrundat nedåt.
+- **Exempel:** 2 Raw Beef + 2 Carrot + 1 Potato: stekt 8 + 8 + 3 + 3 + 5 = 27 hunger (38,8 mättnad), tre olika ×1,35 →
+  36,5 → **5 skålar à 7 hunger, 10,5 mättnad** (35 hunger i stället för 27 stekt).
+- **Stew** stackar inte, har sitt värde på sig (FOOD-komponent) och listar ingredienserna i tooltip. Förskäms på
+  **1 dag**; skålen kommer tillbaka när man ätit.
+
+### Hela fåglar (Broth)
+
+Bara plockade fåglar (Plucked Goose, Pheasant, Ptarmigan, Pigeon, Chicken) i vattnet: när de kokat kommer fåglarna upp
+**kokta** (samma kött som stekta hela på en Campfire, tom hand) och lämnar **2 skålar Broth per fågel** (högst 8).
+Broth: 4 hunger, förskäms på 1 dag. Blandas fåglarna med annat blir det vanlig soppa (fågeln räknas som sitt kokta kött).
+
+### Rendering: talg och Hide Glue
+
+| I kitteln | Ger | Jämför |
+|---|---|---|
+| Lard | 2 Tallow | 1 på Campfire |
+| Bear Fat | 3 Tallow | 2 på Campfire |
+| 2 Bone | 1 Tallow (benfett) | nytt |
+| Raw Hide | 3 **Hide Glue** | |
+| Rabbit Hide | 1 Hide Glue | |
+| 2 Fish Bones | 1 Hide Glue | |
+
+Udda ben och fiskben blir över och går förlorade. **Hide Glue** binder som Cordage:
+- **Tool Station:** alla verktyg med Cordage som bindning (Stone Pickaxe/Axe, Flint Spear, Tusk Dagger, koppar- och
+  bronsverktyg utom kniv och såg, Bronze Spear, Bronze Sword) kan skaftas med Hide Glue. Klick i listan tar Cordage om
+  man har, annars lim.
+- **Sinew Bow:** Hide Glue i stället för Cordage i Fletching Table.
+- **Bellows:** `[Planks][Scraped Hide][Planks]` ×2 / `[Hide Glue][Clay Tuyere][Hide Glue]` (i stället för Twine).
+
+### Garvning
+
+Bark och **Scraped Hide** i vattnet: varje hud som får en Bark garvas, och **2 garvade hudar ger 3 Leather**. Hudar
+utan bark kommer tillbaka som Scraped Hide. Till skillnad från Drying Rack behövs varken sol eller torrt väder, och
+upp till 4 hudar (med 4 Bark) garvas på en gång.
+
+### Säkert mot dubblering
+
+Ingredienserna försvinner när de läggs i och räknas om till resultat **en gång**, när kitteln är klar. Varje skål tar
+en Bowl, fasta resultat tas ut en gång, och att riva eller tömma kitteln ger aldrig tillbaka innehållet. Talg, lim,
+läder och soppa går inte att lägga i igen.
+
+### Advancements
+
+- **Bronze Age:** *Kettle* (efter Bronze!: ha en Bronze Kettle), *Sticky Business* (Hide Glue), *Tanner* (ta ut garvat
+  läder, ges från koden).
+- **Food & Farming:** *Hearty Stew* (efter Cooked Meal: ös upp en soppa med 4 eller fler ingredienser, ges från koden).
+
+### Beslut
+
+- Kitteln färdigställs på Whetstone som alla gjutna delar. Poor Bronze: mindre kittel (6), inget läckage.
+- Ett läge per kittelfyllning (första ingrediensen), så resultatet är tydligt.
+- **Inte gjort (valfritt):** färgning med pigment i kitteln (ull, läderrustning, banderoller), örter (finns inga än),
+  att fylla kitteln med Water Jug.
 
 ## Vagn och häst (byggd)
 

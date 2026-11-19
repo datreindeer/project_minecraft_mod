@@ -166,6 +166,7 @@
     "mechanical:smoking_rack",
     "mechanical:hanging_rack",
     "mechanical:potters_wheel",
+    "mechanical:tripod",
     "mechanical:root_cellar"
   ]
 }

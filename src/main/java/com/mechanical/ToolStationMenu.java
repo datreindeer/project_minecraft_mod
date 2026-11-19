@@ -85,7 +85,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
             slotsChanged(inputs);
             return true;
         }
-        List<Item> parts = recipe.parts();
+        List<Item> parts = recipe.parts(player.getInventory());
         int sets = 1;
         if (all) {
             sets = Integer.MAX_VALUE;

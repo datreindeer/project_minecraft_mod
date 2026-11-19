@@ -1,0 +1,95 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "pit": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/tripod_campfire"
+      }
+    },
+    {
+      "when": {
+        "pit": "0",
+        "kettle": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kettle_campfire"
+      }
+    },
+    {
+      "when": {
+        "pit": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/tripod_pit"
+      }
+    },
+    {
+      "when": {
+        "pit": "1",
+        "kettle": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kettle_pit"
+      }
+    },
+    {
+      "when": {
+        "pit": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/tripod_pit",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "pit": "2",
+        "kettle": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kettle_pit",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "pit": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/tripod_pit",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "pit": "3",
+        "kettle": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kettle_pit",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "pit": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/tripod_pit",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "pit": "4",
+        "kettle": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kettle_pit",
+        "y": 180
+      }
+    }
+  ]
+}
