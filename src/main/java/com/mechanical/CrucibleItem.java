@@ -1,5 +1,11 @@
 package com.mechanical;
 
+import net.minecraft.world.item.Items;
+
+import java.util.List;
+
+import java.util.ArrayList;
+
 import java.util.function.Consumer;
 
 import net.minecraft.ChatFormatting;
@@ -69,9 +75,41 @@ public class CrucibleItem extends Item {
         return true;
     }
 
+    /**
+     * Emptying (sneak + use in the air): ore comes back out as crushed ore (a unit each; bronze in it as Bronze Ingots),
+     * set metal is knocked out as ingots (two units each, an odd unit is lost as scrap). Molten metal must cool first.
+     */
+    static List<ItemStack> emptied(CrucibleContents contents, Kind kind) {
+        List<ItemStack> out = new ArrayList<>();
+        contents.units().forEach((metal, n) -> {
+            if (kind == Kind.ORE && metal.equals("copper")) out.add(new ItemStack(BronzeOres.CRUSHED_COPPER_ORE.get(), n));
+            else if (kind == Kind.ORE && metal.equals("tin")) out.add(new ItemStack(BronzeOres.CRUSHED_TIN_ORE.get(), n));
+            else if (n / 2 > 0) {
+                ItemStack ingot = new ItemStack(metal.equals("copper") ? Items.COPPER_INGOT : Bronze.BRONZE_INGOT.get(), n / 2);
+                if (metal.equals("poor_bronze")) Bronze.markPoor(ingot);
+                out.add(ingot);
+            }
+        });
+        return out;
+    }
+
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack self = player.getItemInHand(hand);
+        if (player.isSecondaryUseActive() && self.getCount() == 1) {
+            if (kind == Kind.MOLTEN) {
+                if (!level.isClientSide()) player.sendOverlayMessage(Component.translatable("message.mechanical.crucible.too_hot"));
+                return InteractionResult.FAIL;
+            }
+            if (contents(self).isEmpty()) return InteractionResult.PASS;
+            if (!level.isClientSide()) {
+                for (ItemStack out : emptied(contents(self), kind)) player.getInventory().placeItemBackInInventory(out, net.minecraft.util.Prediction.SERVER_ONLY);
+                player.setItemInHand(hand, new ItemStack(Mechanical.CRUCIBLE.get()));
+                level.playSound(null, player.blockPosition(), kind == Kind.SOLID ? SoundEvents.ANVIL_LAND : SoundEvents.BUNDLE_DROP_CONTENTS,
+                        SoundSource.PLAYERS, kind == Kind.SOLID ? 0.3F : 0.8F, 1.2F);
+            }
+            return InteractionResult.SUCCESS;
+        }
         ItemStack ore = player.getItemInHand(hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
         if (kind == Kind.MOLTEN || self.getCount() != 1 || Casting.oreUnits(ore) == null) return InteractionResult.PASS;
         if (!level.isClientSide()) {

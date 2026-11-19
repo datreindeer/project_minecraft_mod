@@ -136,6 +136,7 @@ lang.update({
     "item.mechanical.bronze_ingot": "Bronze Ingot", "item.mechanical.bronze_helmet": "Bronze Helmet", "item.mechanical.bronze_greaves": "Bronze Greaves",
     "metal.mechanical.bronze": "Bronze", "metal.mechanical.poor_bronze": "Poor Bronze", "metal.mechanical.tin": "Tin",
     "tooltip.mechanical.poor_bronze": "Poor Bronze: 70% durability",
+    "message.mechanical.crucible.too_hot": "Let it cool before you knock it out",
     "tooltip.mechanical.crucible.mix": "%s%% tin: %s",
     "tooltip.mechanical.crucible.slag": "%s%% tin: no bronze (8-15%% makes bronze, about 10%% the best). Melts as copper; the tin is lost as slag",
     "tooltip.mechanical.crucible.tin_only": "Tin alone casts nothing: add copper (about 9 copper to 1 tin)",

@@ -322,6 +322,9 @@ flytande.
 - En Crucible of Solid Copper kan **fyllas på med mer malm** på samma sätt som en tom (upp till 8 enheter totalt); allt
   smälter ihop när den smälts om.
 - Hälls i en Clay Mold (nedan). Blir degeln tom får man tillbaka en tom Crucible.
+- **Tömma degeln:** smyg + använd degeln i luften. Malm kommer tillbaka som krossad malm (1 Crushed Copper/Tin Ore per enhet;
+  brons i den som Bronze Ingots), stelnad metall slås ut som tackor (Copper Ingot / Bronze Ingot, 2 enheter per tacka, en
+  udda enhet blir skrot). Smält metall går inte: "Let it cool before you knock it out". Kvar blir en tom Crucible.
 
 ### Clay Molds
 
