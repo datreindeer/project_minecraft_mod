@@ -99,9 +99,15 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return bodyYaw;
     }
 
+    /** Flat fliers (the phantom) rest on their belly instead of lying on the side. */
+    public boolean liesFlat() {
+        return animal == EntityTypes.PHANTOM;
+    }
+
     /** Lying on its side: a square as long as the animal was tall or wide, as high as it was wide. The renderer centres the body on it. */
     @Override
     public EntityDimensions getDimensions(Pose pose) {
+        if (liesFlat()) return EntityDimensions.scalable(animal.getWidth(), animal.getHeight());
         return EntityDimensions.scalable(Math.max(animal.getWidth(), animal.getHeight()), Math.max(0.25F, animal.getWidth()));
     }
 

@@ -27,22 +27,27 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Stretch a scraped hide on it (right-click), wait for it to dry (random ticks, a few minutes), take the leather.
- * HIDE: 0 empty, 1 drying, 2 dry.
+ * HIDE: 0 empty, 1 drying, 2 dry, 3 phantom hide drying, 4 phantom leather, 5 rotted phantom hide.
+ * A phantom hide only dries in daylight (bright sky above the rack); each random tick in the dark (night, rain, indoors)
+ * counts in DARK, and on the {@link #ROT_TICKS}th it rots (undead flesh needs the sun).
  */
 public class DryingRackBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 2);
+    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 5);
+    /** Dark random ticks (~68 s each on average) before a phantom hide rots: 8, about one full night. */
+    public static final int ROT_TICKS = 8;
+    public static final IntegerProperty DARK = IntegerProperty.create("dark", 0, ROT_TICKS - 1);
     private static final float DRY_CHANCE = 1.0F / 3.0F; // per random tick, about 3 minutes on average
     private static final VoxelShape SHAPE_NS = box(0, 0, 6, 16, 16, 10), SHAPE_EW = box(6, 0, 0, 10, 16, 16);
 
     public DryingRackBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HIDE, 0));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HIDE, 0).setValue(DARK, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HIDE);
+        builder.add(FACING, HIDE, DARK);
     }
 
     @Override
@@ -57,10 +62,11 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (state.getValue(HIDE) != 0 || !stack.is(Mechanical.SCRAPED_HIDE.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        boolean phantom = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get());
+        if (state.getValue(HIDE) != 0 || !(phantom || stack.is(Mechanical.SCRAPED_HIDE.get()))) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (!level.isClientSide()) {
             stack.consume(1, player);
-            level.setBlock(pos, state.setValue(HIDE, 1), Block.UPDATE_ALL);
+            level.setBlock(pos, state.setValue(HIDE, phantom ? 3 : 1).setValue(DARK, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
         }
         return InteractionResult.SUCCESS;
@@ -68,9 +74,11 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (state.getValue(HIDE) != 2) return InteractionResult.PASS;
+        int hide = state.getValue(HIDE);
+        if (hide != 2 && hide < 4) return InteractionResult.PASS;
         if (!level.isClientSide()) {
-            player.getInventory().placeItemBackInInventory(new ItemStack(Items.LEATHER), Prediction.SERVER_ONLY);
+            ItemStack taken = new ItemStack(hide == 2 ? Items.LEATHER : hide == 4 ? Mechanical.PHANTOM_LEATHER.get() : Items.ROTTEN_FLESH);
+            player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
             level.setBlock(pos, state.setValue(HIDE, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
@@ -79,11 +87,28 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        return state.getValue(HIDE) == 1;
+        return state.getValue(HIDE) == 1 || state.getValue(HIDE) == 3;
+    }
+
+    /** Sunlight reaches the rack: daytime and open sky. */
+    public static boolean inDaylight(Level level, BlockPos pos) {
+        return level.isBrightOutside() && level.canSeeSky(pos);
     }
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(HIDE, 2), Block.UPDATE_ALL);
+        if (state.getValue(HIDE) == 1) {
+            if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(HIDE, 2), Block.UPDATE_ALL);
+            return;
+        }
+        // phantom hide: dries as fast as a normal one, but only in daylight; the dark adds up until it rots
+        if (inDaylight(level, pos)) {
+            if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(HIDE, 4).setValue(DARK, 0), Block.UPDATE_ALL);
+        } else if (state.getValue(DARK) + 1 >= ROT_TICKS) {
+            level.setBlock(pos, state.setValue(HIDE, 5).setValue(DARK, 0), Block.UPDATE_ALL);
+            level.playSound(null, pos, SoundEvents.ZOMBIE_AMBIENT, SoundSource.BLOCKS, 0.4F, 0.6F);
+        } else {
+            level.setBlock(pos, state.setValue(DARK, state.getValue(DARK) + 1), Block.UPDATE_CLIENTS);
+        }
     }
 }

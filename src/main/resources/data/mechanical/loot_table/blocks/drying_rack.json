@@ -34,6 +34,39 @@
               "hide": "2"
             }
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:scraped_phantom_hide",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "3"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:phantom_leather",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "4"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:rotten_flesh",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "5"
+            }
+          }
         }
       ]
     }

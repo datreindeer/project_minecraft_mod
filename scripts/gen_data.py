@@ -721,19 +721,22 @@ def rack_box(f, t):
     return {"from": f, "to": t, "faces": {d: {"texture": "#wood"} for d in ["down", "up", "north", "south", "east", "west"]}}
 frame = [rack_box([1, 0, 7], [3, 16, 9]), rack_box([13, 0, 7], [15, 16, 9]), rack_box([3, 13, 7.25], [13, 15, 8.75]), rack_box([3, 2, 7.25], [13, 4, 8.75])]
 hide_plane = {"from": [3, 4, 8], "to": [13, 13, 8], "faces": {"north": {"uv": [3, 3, 13, 12], "texture": "#hide"}, "south": {"uv": [3, 3, 13, 12], "texture": "#hide"}}}
-for stage, tex in ((0, None), (1, "drying_rack_hide_wet"), (2, "drying_rack_hide_dry")):
+# 3-5: phantom hide drying / phantom leather / rotted (DryingRackBlock; textures from gen_phantom_textures.py)
+for stage, tex in ((0, None), (1, "drying_rack_hide_wet"), (2, "drying_rack_hide_dry"), (3, "drying_rack_phantom_wet"),
+                   (4, "drying_rack_phantom_dry"), (5, "drying_rack_phantom_rotten")):
     textures = {"particle": "mechanical:block/drying_rack", "wood": "mechanical:block/drying_rack"}
     if tex: textures["hide"] = f"mechanical:block/{tex}"
     w(A / f"models/block/drying_rack_{stage}.json", {"parent": "minecraft:block/block", "textures": textures,
         "elements": frame + ([hide_plane] if tex else [])})
 w(A / "blockstates/drying_rack.json", {"variants": {f"facing={f},hide={h}": {"model": f"mechanical:block/drying_rack_{h}", **({"y": y} if y else {})}
-                                                    for f, y in [("north", 0), ("east", 90), ("south", 180), ("west", 270)] for h in (0, 1, 2)}})
+                                                    for f, y in [("north", 0), ("east", 90), ("south", 180), ("west", 270)] for h in range(6)}})
 w(A / "items/drying_rack.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/drying_rack_0"}})
 hide_drop = lambda h, item: {"type": "minecraft:item", "name": item,
     "condition": {"type": "minecraft:match_block", "blocks": "mechanical:drying_rack", "state": {"hide": str(h)}}}
 w(D / "mechanical/loot_table/blocks/drying_rack.json", {"type": "minecraft:block", "pools": [
     {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:drying_rack"}]},
-    {"rolls": 1, "entries": [hide_drop(1, "mechanical:scraped_hide"), hide_drop(2, "minecraft:leather")]}],
+    {"rolls": 1, "entries": [hide_drop(1, "mechanical:scraped_hide"), hide_drop(2, "minecraft:leather"), hide_drop(3, "mechanical:scraped_phantom_hide"),
+                             hide_drop(4, "mechanical:phantom_leather"), hide_drop(5, "minecraft:rotten_flesh")]}],
     "random_sequence": "mechanical:blocks/drying_rack"})
 w(D / "minecraft/tags/block/mineable/axe.json", {"values": ["mechanical:tool_station", "mechanical:drying_rack"] + [f"mechanical:{x}_stump" for x in WOODS]
     + [f"mechanical:{x}_fallen_log" for x in WOODS]})

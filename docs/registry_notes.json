@@ -1428,5 +1428,10 @@
     "text": "Har nu **bördighet 0–3** (ny åker 2, från Podzol 3). Skörd sänker 1 (ärtor höjer 1), träda höjer ~1 per dag, [[compost]] +1, [[manure]] +2. Bördighet 0: halv fart och halv skörd; 1: 75 % fart; 3: snabbare och chans på extra. Torkar snabbare när det är varmt (över 15). Smyg + högerklicka med tom hand: visar bördighet, fukt och grödans temperatur. Vattnas med [[clay_water_bucket]] (3×3).",
     "vanilla": true,
     "category": "blocks"
-  }
+  },
+  "raw_phantom_hide": {"text": "Styckning av en Phantom (bara om en spelare dödade den), omgång 1: 60 %.\nRaw Phantom Hide + kniv → [[scraped_phantom_hide]]."},
+  "scraped_phantom_hide": {"text": "[[raw_phantom_hide]] + kniv (formlöst, kniven slits 1). Häng på en [[drying_rack]]: torkar **bara i dagsljus** (dag + fri himmel, ~3 min sol i snitt) till [[phantom_leather]]. Efter ~8 slumpade ticks i mörker (natt, regn, inomhus; ungefär en hel natt) **ruttnar** den till Rotten Flesh."},
+  "phantom_leather": {"text": "Torkad [[scraped_phantom_hide]] från [[drying_rack]] i dagsljus. 6 st + [[glider_frame]] sys till [[glider_cloak]] i [[armor_station]]. Lagar Glider Cloak."},
+  "glider_frame": {"text": "Crafting: 4 [[tool_rod]], 2 Bone, [[sinew]] och [[cordage]] (`RSR / BCB / R R`). Stagen till [[glider_cloak]]. Låses upp av [[phantom_leather]]."},
+  "glider_cloak": {"text": "Sys i [[armor_station]]: 6 [[phantom_leather]] + [[glider_frame]] med [[bone_needle]]. Bröstplats, skydd 1, 96 hållbarhet, lagas med Phantom Leather.\n**Håll inne hopp när du faller** (mer än 2 block): fallet bromsas (~2,4 m/s) och du glider framåt i blickriktningen (högst ~6 m/s, aldrig uppåt). Ingen fallskada efter en glidning, 1 hållbarhet per sekund. Smyg eller släpp hopp för att släppa."}
 }

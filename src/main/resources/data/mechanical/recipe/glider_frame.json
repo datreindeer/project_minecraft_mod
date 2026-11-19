@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RSR",
+    "BCB",
+    "R R"
+  ],
+  "key": {
+    "R": "mechanical:tool_rod",
+    "S": "mechanical:sinew",
+    "B": "minecraft:bone",
+    "C": "mechanical:cordage"
+  },
+  "result": {
+    "id": "mechanical:glider_frame"
+  }
+}

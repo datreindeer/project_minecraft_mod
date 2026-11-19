@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.PhantomRenderState;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
@@ -37,6 +38,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     public static final float LIMB_SAG = -0.7F;
     /** Head yaw (degrees) that turns the head down to the ground. */
     private static final float HEAD_SAG = -50.0F;
+    /** PhantomModel flap time where the wings droop a little (cos ~0.35 of the 16 degree flap). */
+    private static final float LIMP_FLAP = 9.3F;
 
     /** Skinned/plucked carcass: rendered with the flesh texture (see LivingEntityRendererMixin). */
     private static final ContextKey<Boolean> SKINNED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "skinned"));
@@ -68,6 +71,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         EntityRenderState animal;
         EntityRenderer<Entity, EntityRenderState> renderer;
         float bodyYaw, width, height;
+        boolean flat;
     }
 
     public CarcassRenderer(EntityRendererProvider.Context context) {
@@ -120,6 +124,9 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
                 else living.hasRedOverlay = true;
             }
         }
+        // a dead phantom: wings spread limp on the ground instead of flapping
+        if (state.animal instanceof PhantomRenderState phantom) phantom.flapTime = LIMP_FLAP;
+        state.flat = carcass.liesFlat();
         state.bodyYaw = carcass.bodyYaw();
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
@@ -130,6 +137,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         if (state.animal == null) return;
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(180.0F - state.bodyYaw));
+        if (state.flat) {
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
+        }
         // lift so the flank rests on the ground, and shift so the body (not the feet) is centred on the hitbox
         // the hitbox width overstates the body thickness for long animals (horse), so estimate the flank height and cap it
         float lift = Math.clamp(state.width * 0.42F, 0.1F, 0.38F);
