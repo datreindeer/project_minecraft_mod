@@ -659,7 +659,7 @@ upp släpper det som vanligt.
   och Brewing Stand går inte att använda ("You don't know how to use this yet"). Bryts de blir det bara Rocks eller
   Sticks (Anvil inget). Cauldron, Bell och Lantern går att använda men släpper inget när de bryts (inget järn/guld).
   Listan är taggen `mechanical:too_advanced`, så senare åldrar kan låsa upp dem.
-- **Sängarna går inte att sova i** (sängar kan inte tillverkas i stenåldern). Bryts de ger de 1–3 ull av sin färg.
+- **Sängarna går inte att sova i** (sängar kan inte tillverkas i stenåldern). Bryts de ger de bara 1–2 Sticks (ramen); tyget är mal-ätet och ger ingen ull.
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
   senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
   Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk

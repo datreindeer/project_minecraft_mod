@@ -1152,12 +1152,13 @@ w(D / "minecraft/loot_table/blocks/hay_block.json", {"type": "minecraft:block", 
 w(D / "mechanical/tags/block/too_advanced.json", {"values": [f"minecraft:{b}" for b in
     ("furnace", "smoker", "blast_furnace", "stonecutter", "brewing_stand", "anvil", "chipped_anvil", "damaged_anvil", "smithing_table", "grindstone")]
     + ["#minecraft:beds"]})
-# village beds can't be slept in (beds aren't craftable in the stone age); broken, they give back their wool
+# village beds can't be slept in (beds aren't craftable in the stone age); broken, the moth-eaten cloth is worthless
+# (no wool: that would be a shortcut to Wool Thread) and only the rotten frame gives a couple of sticks
 for c in COLORS:
     w(D / f"minecraft/loot_table/blocks/{c}_bed.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-        {"type": "minecraft:item", "name": f"minecraft:{c}_wool", "condition": {"type": "minecraft:match_block",
+        {"type": "minecraft:item", "name": "minecraft:stick", "condition": {"type": "minecraft:match_block",
             "blocks": f"minecraft:{c}_bed", "state": {"part": "head"}},
-         "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}]}],
+         "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]}],
         "random_sequence": f"minecraft:blocks/{c}_bed"})
 lang["message.mechanical.too_advanced"] = "You don't know how to use this yet"
 w(lang_path, lang)
