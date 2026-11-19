@@ -169,6 +169,52 @@
               "hide": "17"
             }
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_sealskin",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "18"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:sealskin",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "19"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_walrus_hide",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "20",
+              "part": "lower"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:walrus_hide",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "21",
+              "part": "lower"
+            }
+          }
         }
       ]
     },

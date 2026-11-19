@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "mechanical:willow_fen"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:common_crane",
+      "weight": 8,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 3,
+        "max_inclusive": 6
+      }
+    }
+  ]
+}

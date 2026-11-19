@@ -32,6 +32,25 @@
     "mechanical:plucked_chicken",
     "mechanical:stew",
     "mechanical:broth",
-    "mechanical:sea_beet_leaves"
+    "mechanical:sea_beet_leaves",
+    "mechanical:raw_seal_meat",
+    "mechanical:raw_walrus_meat",
+    "mechanical:raw_pike",
+    "mechanical:raw_sturgeon",
+    "mechanical:whole_pike",
+    "mechanical:whole_sturgeon",
+    "mechanical:sturgeon_roe",
+    "mechanical:raw_capercaillie",
+    "mechanical:raw_bustard",
+    "mechanical:plucked_capercaillie",
+    "mechanical:plucked_bustard",
+    "mechanical:raw_mallard",
+    "mechanical:raw_swan",
+    "mechanical:raw_heron",
+    "mechanical:raw_crane",
+    "mechanical:plucked_mallard",
+    "mechanical:plucked_swan",
+    "mechanical:plucked_heron",
+    "mechanical:plucked_crane"
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/pluck_goose",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:down"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:down"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.down_tinder.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.down_tinder.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

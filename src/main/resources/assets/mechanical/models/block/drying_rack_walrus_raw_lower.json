@@ -1,0 +1,41 @@
+{
+  "textures": {
+    "particle": "mechanical:block/drying_rack",
+    "front": "mechanical:block/drying_rack_walrus_raw_lower",
+    "back": "mechanical:block/drying_rack_walrus_raw_lower_back"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        4,
+        7
+      ],
+      "to": [
+        13,
+        16,
+        7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            0,
+            13,
+            12
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "uv": [
+            13,
+            0,
+            3,
+            12
+          ],
+          "texture": "#back"
+        }
+      }
+    }
+  ]
+}

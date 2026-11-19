@@ -12,7 +12,6 @@ import com.mechanical.BloodMoon;
 import com.mechanical.Butchery;
 import com.mechanical.Butchery.Extra;
 import com.mechanical.Butchery.Yield;
-import com.mechanical.KnifeItem;
 import com.mechanical.Mechanical;
 import com.mechanical.wildlife.Predators;
 import com.mechanical.wildlife.Wildlife;
@@ -209,7 +208,7 @@ public final class MountainFauna {
                         x(Wildlife.SINEW, 0.7F, 1, 2))));
         Butchery.register(CAVE_HYENA::get, new Yield(HYENA_MEAT, 1, 2, List.of(x(RAW_HYENA_PELT, 0.8F, 1, 1)),
                 List.of(x(HYENA_FANG, 0.6F, 1, 2), x(() -> Items.BONE, 0.6F, 1, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
-        Butchery.requireKnife(CAVE_BEAR::get, KnifeItem.TUSK);
+        Butchery.toughHide(CAVE_BEAR::get);
     }
 
     @SubscribeEvent

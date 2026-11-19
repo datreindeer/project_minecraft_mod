@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FCF",
+    "PPP"
+  ],
+  "key": {
+    "F": "minecraft:flint",
+    "C": "minecraft:clay",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:mold_bench"
+  }
+}

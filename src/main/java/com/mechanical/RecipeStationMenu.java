@@ -25,10 +25,10 @@ import net.minecraft.world.level.block.Block;
  * input slots and a result. Parts can need several items; a tool part (the bone needle) only loses durability.
  */
 public class RecipeStationMenu extends AbstractContainerMenu {
-    public static final int RESULT = 3;
     /** Button ids from this up mean "shift-clicked": fill as many sets of the recipe's parts as the inventory has. */
     public static final int FILL_ALL = 1000;
-    private static final int INV_START = 4, INV_END = 40;
+    /** Slot indices: the inputs come first, then the result, then the player's inventory. */
+    private final int inputCount, resultSlot, invStart, invEnd;
 
     private final ContainerLevelAccess access;
     private final Supplier<? extends Block> block;
@@ -37,24 +37,33 @@ public class RecipeStationMenu extends AbstractContainerMenu {
     /** The recipe last picked in the list: it wins when the inputs fit several recipes (boots and satchel share parts). */
     private int selected = -1;
     private final ResultContainer result = new ResultContainer();
-    private final SimpleContainer inputs = new SimpleContainer(3) {
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            RecipeStationMenu.this.slotsChanged(this);
-        }
-    };
+    private final SimpleContainer inputs;
 
     public RecipeStationMenu(MenuType<?> type, int containerId, Inventory inventory, ContainerLevelAccess access,
             Supplier<? extends Block> block, List<StationRecipe> recipes) {
+        this(type, containerId, inventory, access, block, recipes, 3);
+    }
+
+    /** {@code inputCount}: input slots (1-3) stacked round the middle of the column; every recipe has at most this many parts. */
+    public RecipeStationMenu(MenuType<?> type, int containerId, Inventory inventory, ContainerLevelAccess access,
+            Supplier<? extends Block> block, List<StationRecipe> recipes, int inputCount) {
         super(type, containerId);
         this.access = access;
         this.block = block;
         this.recipes = recipes;
         this.player = inventory.player;
-        addSlot(new Slot(inputs, 0, 80, 17));
-        addSlot(new Slot(inputs, 1, 80, 35));
-        addSlot(new Slot(inputs, 2, 80, 53));
+        this.inputCount = inputCount;
+        this.resultSlot = inputCount;
+        this.invStart = inputCount + 1;
+        this.invEnd = invStart + 36;
+        this.inputs = new SimpleContainer(inputCount) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                RecipeStationMenu.this.slotsChanged(this);
+            }
+        };
+        for (int i = 0; i < inputCount; i++) addSlot(new Slot(inputs, i, 80, 35 + (2 * i - inputCount + 1) * 9));
         addSlot(new Slot(result, 0, 134, 35) {
             @Override
             public boolean mayPlace(ItemStack stack) {
@@ -77,13 +86,13 @@ public class RecipeStationMenu extends AbstractContainerMenu {
 
     /** The picked recipe if the inputs fit it, else the fitting recipe that uses the most (5 leather makes a helmet, not boots). */
     private Optional<StationRecipe> current() {
-        java.util.function.Predicate<StationRecipe> fits = r -> r.isUnlocked(player) && r.matches(inputs.getItem(0), inputs.getItem(1), inputs.getItem(2));
+        java.util.function.Predicate<StationRecipe> fits = r -> r.isUnlocked(player) && r.matches(inputs.getItems().toArray(ItemStack[]::new));
         if (selected >= 0 && selected < recipes.size() && fits.test(recipes.get(selected))) return Optional.of(recipes.get(selected));
         return recipes.stream().filter(fits).max(java.util.Comparator.comparingInt(r -> r.parts().stream().mapToInt(StationRecipe.Part::count).sum()));
     }
 
     private void consume(StationRecipe recipe) {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < recipe.parts().size(); i++) {
             StationRecipe.Part part = recipe.parts().get(i);
             if (part.tool()) {
                 ItemStack tool = inputs.getItem(i);
@@ -113,13 +122,13 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         StationRecipe recipe = recipes.get(index);
         if (!recipe.isUnlocked(player)) return false;
         selected = index;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < inputCount; i++) {
             ItemStack old = inputs.removeItemNoUpdate(i);
             if (!old.isEmpty()) player.getInventory().placeItemBackInInventory(old, Prediction.SERVER_ONLY);
         }
         if (recipe.hasParts(player)) {
             int sets = all ? sets(player.getInventory(), recipe) : 1;
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < recipe.parts().size(); i++) {
                 StationRecipe.Part part = recipe.parts().get(i);
                 inputs.setItem(i, take(player.getInventory(), part.pick(player.getInventory()), part.tool() ? 1 : part.count() * sets));
             }
@@ -157,12 +166,12 @@ public class RecipeStationMenu extends AbstractContainerMenu {
         if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack stack = slot.getItem();
         ItemStack copy = stack.copy();
-        if (index == RESULT) {
-            if (!moveItemStackTo(stack, INV_START, INV_END, true)) return ItemStack.EMPTY;
+        if (index == resultSlot) {
+            if (!moveItemStackTo(stack, invStart, invEnd, true)) return ItemStack.EMPTY;
             slot.onQuickCraft(stack, copy);
-        } else if (index < INV_START) {
-            if (!moveItemStackTo(stack, INV_START, INV_END, false)) return ItemStack.EMPTY;
-        } else if (!moveItemStackTo(stack, 0, RESULT, false)) {
+        } else if (index < invStart) {
+            if (!moveItemStackTo(stack, invStart, invEnd, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, 0, resultSlot, false)) {
             return ItemStack.EMPTY;
         }
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
