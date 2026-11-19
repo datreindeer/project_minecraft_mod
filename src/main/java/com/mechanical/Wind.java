@@ -33,7 +33,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 /**
  * Windy nights: about one night in five (fixed by the world seed, like the blood moon) a strong wind blows from dusk to
  * dawn. Campfires and torches out in the open can blow out: a campfire sinks to embers, a torch becomes an Unlit Torch.
- * A roof over them, or walls on three sides, keeps the wind off. Both get random ticks (mixins) which call in here.
+ * A roof over them, or walls on three sides, keeps the wind off. Rain under open sky puts them out too, at any time of
+ * day (more slowly; twice as fast in a thunderstorm). Both get random ticks (mixins) which call in here.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Wind {
@@ -41,6 +42,8 @@ public final class Wind {
     private static final long START = 12000, END = 23500;
     /** Chance per random tick (~ every 68 s per block) that an exposed fire blows out: a torch lasts ~2-3 min, a campfire ~3 min. */
     private static final float TORCH_BLOW = 0.45F, CAMPFIRE_BLOW = 0.35F;
+    /** Rain on an exposed fire (any time of day): a torch lasts ~4-5 min, a campfire ~6 min; a thunderstorm doubles it. */
+    private static final float TORCH_RAIN = 0.25F, CAMPFIRE_RAIN = 0.18F;
     private static final Map<Level, Boolean> ACTIVE = new WeakHashMap<>();
     /** Night forced windy by /windynight (testing). */
     private static final Map<Level, Long> FORCED = new WeakHashMap<>();
@@ -81,15 +84,22 @@ public final class Wind {
         return walls < 3;
     }
 
+    /** Chance this random tick that wind or rain puts out an exposed fire (0 if neither is blowing/falling on it). */
+    private static float douse(ServerLevel level, BlockPos pos, float wind, float rain) {
+        float chance = isWindy(level) ? wind : 0;
+        if (level.isRainingAt(pos.above())) chance = Math.max(chance, rain * (level.isThundering() ? 2 : 1));
+        return chance;
+    }
+
     /** Random tick of a lit campfire (CampfireBlockMixin). */
     public static void campfireTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!isWindy(level) || random.nextFloat() > CAMPFIRE_BLOW || !exposed(level, pos)) return;
+        if (random.nextFloat() >= douse(level, pos, CAMPFIRE_BLOW, CAMPFIRE_RAIN) || !exposed(level, pos)) return;
         if (level.getBlockEntity(pos) instanceof CampfireBlockEntity fire) ((CampfireAccess) fire).mechanical$blowOut();
     }
 
     /** Random tick of a torch (TorchBlockMixin): torch and wall torch become their unlit versions. */
     public static void torchTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!isWindy(level) || random.nextFloat() > TORCH_BLOW || !exposed(level, pos)) return;
+        if (random.nextFloat() >= douse(level, pos, TORCH_BLOW, TORCH_RAIN) || !exposed(level, pos)) return;
         BlockState unlit;
         if (state.is(Blocks.TORCH)) unlit = Mechanical.UNLIT_TORCH.get().defaultBlockState();
         else if (state.is(Blocks.WALL_TORCH)) unlit = Mechanical.UNLIT_WALL_TORCH.get().defaultBlockState().setValue(WallTorchBlock.FACING, state.getValue(WallTorchBlock.FACING));

@@ -597,6 +597,10 @@ Nytt item: **Horn** (material för senare recept).
   under bar himmel kan blåsa ut:** en Campfire sjunker till glöd (mata med Firewood), en fackla blir en **Unlit Torch**
   (tänds igen med en fackla, Fire Drill eller Flint and Steel; bryts den får man facklan). I snitt håller en fackla ute
   2–3 min och en lägereld ~3 min i vinden. **Tak över, eller väggar på tre sidor, skyddar.** Testa med `/windynight` (op).
+- **Regn släcker:** när det regnar på en Campfire eller fackla under bar himmel kan den slockna, när som helst på dygnet
+  (samma sätt som vinden: glöd respektive Unlit Torch). Lite långsammare än vinden: en fackla håller i snitt 4–5 min och en
+  lägereld ~6 min i regnet, **hälften så länge vid åska**. Tak skyddar (då regnar det inte på den). I snöbiomer regnar det
+  inte, där gäller bara vinden. Regnet gör också att en eld bränner sitt bränsle dubbelt så fort.
 - **Zombiehorder:** bara under blodmåne, i två vågor (en tidigt på natten och en efter midnatt), med 8–12 zombies per våg
   32–48 block från en spelare. De håller ihop och
   går **först på ljuset**: de söker upp närmaste brinnande Campfire eller Clay Kiln (inom 48 block) och släcker den helt
