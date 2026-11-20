@@ -69,6 +69,7 @@
 - **Inträde:** spelarens och stammens advancements slås ihop åt båda hållen.
 - **Utträde:** spelaren behåller allt.
 - **Ingen friendly fire** mellan medlemmar.
+- **Locator bar:** prickarna för andra spelare visas bara för medlemmar i samma stam (spectators ser alla). Spelare utan stam syns inte för någon.
 - **Ålder:** räknas ut från advancements, alltså den högsta ålderns rot-advancement. Inget eget fält som kan hamna ur fas.
 - **Spelare utan stam** räknas som en stam med en medlem när ålder räknas ut.
 - **I koden:** `Tribe` används redan för NPC-stammar. Spelarstammarna får ett eget namn i koden, t.ex. `Clan`, men

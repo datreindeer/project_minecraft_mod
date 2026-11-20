@@ -164,6 +164,7 @@ public final class ClanNetwork {
 
     /** Send every online player a fresh view (players are few; only open screens use it). */
     static void refreshAll(MinecraftServer server) {
+        Clans.refreshLocator(server);
         for (ServerPlayer sp : server.getPlayerList().getPlayers()) PacketDistributor.sendToPlayer(sp, view(sp, false));
     }
 

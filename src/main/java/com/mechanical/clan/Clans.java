@@ -51,7 +51,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * as no), or, when the leader hasn't been seen for {@link #ABSENT_DAYS}, a new leader (only votes cast count). The
  * tribe shares all mod advancements (and so their recipes): one member's advancement is every member's, offline ones
  * get them when they log in, and joining merges both ways. Its age is the latest age it has reached (WorldAge), and the world's age follows the tribes'. No friendly fire.
- * Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
+ * The locator bar shows only tribe mates (mixin.LivingEntityWaypointMixin). Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Clans extends SavedData {
@@ -171,6 +171,21 @@ public final class Clans extends SavedData {
 
     public static long today(MinecraftServer server) {
         return Calendar.day(server.overworld().getOverworldClockTime());
+    }
+
+    /** Are both players in the same tribe? (Locator bar: mixin.LivingEntityWaypointMixin.) */
+    public static boolean sameTribe(ServerPlayer a, ServerPlayer b) {
+        Clan clan = get(a.level().getServer()).clanOf(a.getUUID());
+        return clan != null && clan.member(b.getUUID()) != null;
+    }
+
+    /** Tribes changed: rebuild every player's locator bar links, so tribe mates appear and others vanish at once. */
+    static void refreshLocator(MinecraftServer server) {
+        for (ServerPlayer sp : server.getPlayerList().getPlayers()) {
+            var waypoints = sp.level().getWaypointManager();
+            waypoints.removePlayer(sp);
+            waypoints.addPlayer(sp);
+        }
     }
 
     public Clan clanOf(UUID player) {
@@ -406,6 +421,7 @@ public final class Clans extends SavedData {
             case VOTE_DISBAND -> {
                 tell(server, clan, Component.translatable("message.mechanical.clan.disbanded", clan.name));
                 clans.remove(clan);
+                refreshLocator(server);
             }
             case VOTE_MOVE -> clan.pit = Optional.empty();
             case VOTE_LEADER -> {

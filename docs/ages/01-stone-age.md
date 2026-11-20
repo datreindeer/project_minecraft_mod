@@ -341,7 +341,7 @@ till sig större räder.
   som nej. Har ledaren varit borta i 10 speldygn kan stammen rösta fram en ny ledare (då räknas bara avgivna röster).
   Efter en flytt väljer ledaren en ny Fire Pit från stamsidan.
 - **Delat:** alla advancements i modden (och därmed recepten de låser upp) delas av hela stammen; den som går med ger
-  och får allt. Stammens ålder är den senaste åldern den nått. Medlemmar kan inte skada varandra.
+  och får allt. Stammens ålder är den senaste åldern den nått. Medlemmar kan inte skada varandra, och bara stammedlemmar syns för varandra i locator bar (prickarna ovanför snabbfältet).
 - **Advancements:** Hearth of the Tribe (grunda en stam), Kin (bjud in någon).
 
 ### Mold Bench
