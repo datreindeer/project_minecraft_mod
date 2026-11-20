@@ -862,6 +862,14 @@ TABS["stone_age"][1].extend([
     ("sinew_thread", "flint_knife", "sinew_thread", T, "Sinew Thread",
      "Split Sinew from a butchered animal with a knife into Sinew Thread: it sews Leather like any other thread", has("sinew_thread")),
 ])
+# player tribes (clan/Clans.java): granted from Java
+TABS["stone_age"][1].extend([
+    ("found_tribe", "fire_pit", "fire_pit", T, "Hearth of the Tribe",
+     "Press G by a Fire Pit and found a tribe: the pit becomes its centre and can't be broken. Members share their advancements",
+     by_code()),
+    ("grow_tribe", "found_tribe", "fire_pit", G, "Kin",
+     "Invite another player into your tribe from the tribe page (G)", by_code()),
+])
 TABS["bronze_age"][1].extend([
     ("flax", "root", "flax_seeds", T, "Flax",
      "Buy Flax Seeds from a village Farmer (trade level 3) and sow them on farmland", has("flax_seeds")),

@@ -212,8 +212,11 @@
    Moon, vind, nattfaror, raider, djurens dygnsrytm) blev rätt utan ändring. Vanilla-djurens uppväxt och
    korta timers (sekunder till minuter) är oförändrade. `CalendarTest` testar matematiken. Lang:
    `scripts/gen_calendar.py`.
-2. **Spelarstammar** (oförstörbar Fire Pit, ledare, ranker, stam-GUI med inbjudningar, delade advancements, stammens
-   ålder, ingen friendly fire). Straw Bed som spolar fram natten och ny mättnad per mattyp passar också här.
+2. **Spelarstammar** (byggd, v0.85.0): oförstörbar Fire Pit, ledare, ranker, stam-GUI med inbjudningar och röstningar,
+   delade advancements, stammens ålder, ingen friendly fire. Kod: `clan/Clans.java` (data, regler, händelser),
+   `clan/ClanNetwork.java` (paket och vy), `client/clan/ClanScreen.java` (sidan, G). `ClanTest` testar röstreglerna och
+   åldern. Lang: `scripts/gen_clans.py`. Advancements: Hearth of the Tribe och Kin (Stenåldern, under Bonfire).
+   Förenklingar: inbjudningar sparas inte över en omstart; sidan visar 7 medlemmar per sida. Straw Bed som spolar fram natten och ny mättnad per mattyp passar också här.
 3. **Världsålder + NPC-stammars fördröjning.** NPC-byar som byggs om är ett eget, större steg, eftersom varje ålder
    behöver egna byggnadsritningar.
 4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder.

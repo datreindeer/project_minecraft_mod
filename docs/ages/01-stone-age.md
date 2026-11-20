@@ -330,6 +330,19 @@ till sig större räder.
   (efter gen_cart, före gen_block_items), texturer `scripts/gen_firepit_textures.py`. Krok för senare: ett bronsgaller eller
   bronsspett kan läggas som egen del i blockstatens multipart och läsas i `FirePitBlockEntity`.
 
+### Stam (spelarstammar, G)
+- **Grunda:** tryck **G** nära (inom 4 block) en Fire Pit som ingen stam har, skriv ett namn och tryck Found. Fire Pit:en
+  blir stammens centrum och kan inte brytas eller sprängas så länge stammen finns. Du blir ledare.
+- **Ranker:** Leader, Elder, Member, Newcomer. Ledare och Elder bjuder in (spelare utan stam, online). Ledaren kickar,
+  befordrar, degraderar och kan göra någon annan till ledare (blir själv Elder). En Elder kan kicka Newcomers. En
+  Newcomer blir Member efter 7 speldygn. Ledaren kan inte lämna förrän någon annan är ledare.
+- **Röstningar** (3 speldygn, 2/3 av stammen): flytta Fire Pit:en eller upplösa stammen; den som inte röstar räknas
+  som nej. Har ledaren varit borta i 10 speldygn kan stammen rösta fram en ny ledare (då räknas bara avgivna röster).
+  Efter en flytt väljer ledaren en ny Fire Pit från stamsidan.
+- **Delat:** alla advancements i modden (och därmed recepten de låser upp) delas av hela stammen; den som går med ger
+  och får allt. Stammens ålder är den senaste åldern den nått. Medlemmar kan inte skada varandra.
+- **Advancements:** Hearth of the Tribe (grunda en stam), Kin (bjud in någon).
+
 ### Mold Bench
 Recept: `[Flint][Clay][Flint]` / `[Planks][Planks][Planks]` (Clay = lerblocket av 4 Clay Balls). Låses upp när man bär
 Clay Ball. En låg träbänk med lerkladdad skiva; här formas **Unfired Crucible** (7 Clay Balls) och alla bronsålderns
