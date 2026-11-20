@@ -240,7 +240,12 @@
    regn- eller uppehållsperiod som vanilla slumpar skalas efter säsong (regn ×1.0/0.7/1.3/1.2, uppehåll
    ×0.9/1.4/0.6/0.8 för vår/sommar/höst/vinter). Advancements i Wilderness-fliken: First Frost, Through the Winter,
    A Full Year. **Snö och is smälter inte än:** det är fas 5.
-5. **Upptining** + ikappkörning när chunks laddas.
+5. **Upptining** + ikappkörning när chunks laddas (byggd, v0.89.0). `Thaw.java` + `mixin/ServerLevelThawMixin`: vanillas
+   snö- och istick (en slumpad kolumn per chunk då och då) smälter också. Där temperaturen (med säsong) är minst 0.2
+   går ett snölager ner ett steg och is vid ytan blir vatten, så upptiningen kryper fram under några minuter. Chunks som
+   laddas en ny kalenderdag körs ikapp när deras grannar är laddade (4 per tick): varmt ger att all snö och is smälter
+   direkt, snöväder ger ett tunt snötäcke, så en skog man besöker först mitt i vintern är redan vit. Varje chunk minns
+   dagen (`Thaw.UPDATED`). Hav fryser bara där de är kalla hela året (inga säsongsisar på havet); sjöar och älvar fryser.
 6. **Grödor och bär** (profiler, frysta stadier) och **djur**.
 7. **Färger + kala träd.**
 
