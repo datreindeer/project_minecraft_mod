@@ -6,7 +6,10 @@ the kiln, bronze poured in, the Rough Cast piece ground on the Whetstone, then a
 - molds (bronze only): bucket, sickle blade, shears, fish hooks (gang: 4), needles (gang: 4), tongs, chisel blade: block
   models (as gen_copper.py's), blockstates, item models, loot (keeps uses), lang
 - items: rough casts, ground pieces, Bronze Bucket / Water / Lava / Milk Bucket, Bronze Sickle, Bronze Shears, Bronze Hook
-  Fishing Rod (cast / uncast models as vanilla), Bronze Needle, Bronze Tongs, Bronze Chisel
+  Fishing Rod (cast / uncast models as vanilla), Bronze Needle, Bronze Tongs, Bronze Chisel, Bronze Quarry Hammer (Tool
+  Station: Bronze Hammer Head + Bronze Plate + Tool Rod)
+- quarry hammer tags: mechanical:quarry_hammer_mineable (natural stone of every kind + the ores), mechanical:quarry_ores
+  (#c:ores + the gemstone ores from gem_table.py)
 - tags: mechanical:sickles, mechanical:needles, c:tools/shear, c:tools/fishing_rod, enchantable fishing / durability
 - damage type mechanical:hot_metal (molten metal handled without tongs; fire resistance helps: minecraft:is_fire)
 - shears: the vanilla tool/can_shear predicate (leaves, grass, vines, cobwebs ...) also takes the Bronze Shears
@@ -18,6 +21,8 @@ gen_advancements.py, gen_registry.py. Run: python scripts/gen_bronzetools.py
 """
 import json
 from pathlib import Path
+
+from gem_table import GEMS
 
 R = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = R / "assets/mechanical", R / "data"
@@ -77,7 +82,7 @@ FLAT = ([f"unfired_clay_{s}_mold" for s in SHAPES] + [f"rough_cast_bronze_{s}" f
 for name in FLAT:
     item_model(name)
     item_def(name)
-for name in ("bronze_sickle", "bronze_tongs", "bronze_chisel"):
+for name in ("bronze_sickle", "bronze_tongs", "bronze_chisel", "bronze_quarry_hammer"):
     item_model(name, "minecraft:item/handheld")
     item_def(name)
 rod = "bronze_hook_fishing_rod"
@@ -94,7 +99,16 @@ w(D / "mechanical/tags/item/needles.json", {"values": [M + "bone_needle", M + "b
 patch_tag(D / "c/tags/item/tools/shear.json", [M + "bronze_shears"])
 patch_tag(D / "c/tags/item/tools/fishing_rod.json", [M + rod])
 patch_tag(D / "minecraft/tags/item/enchantable/fishing.json", [M + rod])
-patch_tag(D / "minecraft/tags/item/enchantable/durability.json", [M + rod, M + "bronze_shears"])
+patch_tag(D / "minecraft/tags/item/enchantable/durability.json", [M + rod, M + "bronze_shears", M + "bronze_quarry_hammer"])
+patch_tag(D / "minecraft/tags/item/enchantable/mining.json", [M + "bronze_quarry_hammer"])
+
+# quarry hammer: what it breaks (the mod has no stone of its own; its ores sit in vanilla stone, deepslate, sandstone)
+GEM_ORES = [M + (f"{g['name']}_ore" if h == "stone" else f"{h}_{g['name']}_ore") for g in GEMS if g["kind"] == "ore" for h in g["hosts"]]
+w(D / "mechanical/tags/block/quarry_ores.json", {"values": ["#c:ores"] + GEM_ORES})
+w(D / "mechanical/tags/block/quarry_hammer_mineable.json", {"values": [
+    "#minecraft:base_stone_overworld", "#minecraft:base_stone_nether", "minecraft:cobblestone", "minecraft:mossy_cobblestone",
+    "minecraft:cobbled_deepslate", "minecraft:calcite", "minecraft:dripstone_block", "minecraft:smooth_basalt",
+    "minecraft:sandstone", "minecraft:red_sandstone", "minecraft:end_stone", "#mechanical:quarry_ores"]})
 
 w(D / "mechanical/damage_type/hot_metal.json", {"exhaustion": 0.1, "message_id": "mechanical.hot_metal", "scaling": "never"})
 patch_tag(D / "minecraft/tags/damage_type/is_fire.json", [M + "hot_metal"])
@@ -177,6 +191,9 @@ lang.update({
     "item.mechanical.bronze_sickle": "Bronze Sickle", "item.mechanical.bronze_shears": "Bronze Shears",
     "item.mechanical.bronze_hook_fishing_rod": "Bronze Hook Fishing Rod", "item.mechanical.bronze_needle": "Bronze Needle",
     "item.mechanical.bronze_tongs": "Bronze Tongs", "item.mechanical.bronze_chisel": "Bronze Chisel",
+    "item.mechanical.bronze_quarry_hammer": "Bronze Quarry Hammer",
+    "message.mechanical.quarry_hammer.ore": "You need more precision to break ores: they crumble to stone",
+    "message.mechanical.quarry_hammer.too_hard": "This ore is too hard for the hammer: the blow rings off",
     "tooltip.mechanical.poor_bronze_bucket": "Poor Bronze: too brittle to carry lava",
     "message.mechanical.bronze_bucket.poor_lava": "Poor Bronze is too brittle to carry lava",
     "message.mechanical.hot_metal.crucible": "The crucible burns your hand: hold Bronze Tongs",

@@ -10,9 +10,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.cauldron.CauldronInteractions;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -40,6 +42,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -72,7 +75,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * More bronze tools, made like the others: a clay mold shaped at the Mold Bench and fired, bronze poured in, the casting
  * ground on the Whetstone, then (most of them) assembled at the Tool Station. Bronze Bucket (water, lava, milk; never
  * cracks), Bronze Sickle (reaps 3x3), Bronze Shears, Bronze Hook Fishing Rod, Bronze Needle, Bronze Tongs (handle molten
- * metal without burns, see {@link #HOT_METAL}) and Bronze Chisel (carves stone). Data: scripts/gen_bronzetools.py,
+ * metal without burns, see {@link #HOT_METAL}), Bronze Chisel (carves stone) and Bronze Quarry Hammer (breaks stone 3x3,
+ * {@link #quarry}). Data: scripts/gen_bronzetools.py,
  * textures: scripts/gen_bronzetools_textures.py, docs/ages/02-bronze-age.md "Fler bronsverktyg".
  */
 @EventBusSubscriber(modid = MODID)
@@ -84,6 +88,14 @@ public final class BronzeTools {
     public static final float BURN_DAMAGE = 1.0F;
     /** A Molten Crucible in hand burns every this many ticks without tongs. */
     public static final int BURN_INTERVAL = 40;
+    /** What a Quarry Hammer breaks: stone of every kind, and the ores in it ({@link #QUARRY_ORES}). */
+    public static final TagKey<Block> QUARRY_MINEABLE = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "quarry_hammer_mineable"));
+    /** Ores a Quarry Hammer crumbles to their rock (#c:ores plus the gemstone ores). */
+    public static final TagKey<Block> QUARRY_ORES = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "quarry_ores"));
+    /** Bronze's tier and durability at half its speed: a 3x3 face of stone a blow is slow, heavy work. */
+    public static final ToolMaterial QUARRY_BRONZE = new ToolMaterial(Bronze.INCORRECT_FOR_BRONZE_TOOL, 460, 3.0F, 2.0F, 12, Bronze.BRONZE_TOOL_MATERIALS);
+    /** Extra wear for each ore the hammer crumbles, and for a blow that rings off an ore too hard for it. */
+    public static final int ORE_WEAR = 2, TOO_HARD_WEAR = 4;
 
     // --- molds (Clay Balls at the Mold Bench -> kiln 600°) ---
     public static final DeferredItem<Item> UNFIRED_CLAY_BUCKET_MOLD = ITEMS.registerSimpleItem("unfired_clay_bucket_mold");
@@ -148,6 +160,9 @@ public final class BronzeTools {
     /** Held in either hand: molten crucibles and fresh castings don't burn ({@link #scald}, {@link #takeHotCasting}). */
     public static final DeferredItem<Item> BRONZE_TONGS = ITEMS.registerSimpleItem("bronze_tongs", p -> p.durability(250));
     public static final DeferredItem<ChiselItem> BRONZE_CHISEL = ITEMS.registerItem("bronze_chisel", ChiselItem::new, p -> p.durability(320));
+    /** Breaks the 3x3 face of stone it hits ({@link #quarry}); on anything else it is a bare hand. */
+    public static final DeferredItem<Item> BRONZE_QUARRY_HAMMER = ITEMS.registerSimpleItem("bronze_quarry_hammer",
+            p -> p.tool(QUARRY_BRONZE, QUARRY_MINEABLE, 6.0F, -3.4F, 0.0F));
 
     /** Rough cast -> what the Whetstone grinds it into (fish hooks and needles: {@link #PER_GANG_CAST} of them). */
     private static final Map<Supplier<Item>, Supplier<? extends Item>> GROUND = Map.of(
@@ -253,6 +268,68 @@ public final class BronzeTools {
         } finally {
             reaping = false;
         }
+    }
+
+    // ---------------------------------------------------------------- quarry hammer: a 3x3 face of stone
+
+    private static boolean quarrying;
+
+    /** The 9 blocks around {@code center} across {@code axis}: the face the player hit. */
+    static List<BlockPos> face(BlockPos center, Direction.Axis axis) {
+        List<BlockPos> out = new ArrayList<>();
+        for (int a = -1; a <= 1; a++) for (int b = -1; b <= 1; b++) out.add(switch (axis) {
+            case X -> center.offset(0, a, b);
+            case Y -> center.offset(a, 0, b);
+            case Z -> center.offset(a, b, 0);
+        });
+        return out;
+    }
+
+    /** The rock an ore sits in, told by its name (deepslate_, nether_, sandstone_ ores; stone otherwise). */
+    static BlockState host(BlockState ore) {
+        String id = BuiltInRegistries.BLOCK.getKey(ore.getBlock()).getPath();
+        return (id.startsWith("deepslate_") ? Blocks.DEEPSLATE : id.startsWith("nether_") ? Blocks.NETHERRACK
+                : id.startsWith("sandstone_") ? Blocks.SANDSTONE : Blocks.STONE).defaultBlockState();
+    }
+
+    /** Hitting stone with the Quarry Hammer breaks the face the player looks at instead (the clicked block too). */
+    @SubscribeEvent
+    static void onQuarry(BreakBlockEvent event) {
+        if (quarrying || !(event.getPlayer() instanceof ServerPlayer player) || !(event.getLevel() instanceof ServerLevel level)
+                || !player.getMainHandItem().is(BRONZE_QUARRY_HAMMER.get()) || !event.getState().is(QUARRY_MINEABLE)) return;
+        event.setCanceled(true);
+        quarry(level, player, event.getPos(), ((BlockHitResult) player.pick(player.blockInteractionRange(), 1.0F, false)).getDirection().getAxis());
+    }
+
+    /**
+     * Breaks the stone and ores of the face; an ore the hammer's tier could mine crumbles to its rock and wears the hammer
+     * {@link #ORE_WEAR} more, one beyond its tier stops the whole blow ({@link #TOO_HARD_WEAR}). False if nothing broke.
+     */
+    static boolean quarry(ServerLevel level, ServerPlayer player, BlockPos center, Direction.Axis axis) {
+        List<BlockPos> face = face(center, axis);
+        if (face.stream().map(level::getBlockState).anyMatch(s -> s.is(QUARRY_ORES) && s.is(QUARRY_BRONZE.incorrectBlocksForDrops()))) {
+            player.getMainHandItem().hurtAndBreak(TOO_HARD_WEAR, player, InteractionHand.MAIN_HAND);
+            player.sendOverlayMessage(Component.translatable("message.mechanical.quarry_hammer.too_hard"));
+            return false;
+        }
+        boolean ore = false;
+        quarrying = true;
+        try {
+            for (BlockPos p : face) {
+                if (!player.getMainHandItem().is(BRONZE_QUARRY_HAMMER.get())) break; // worn out mid-blow
+                BlockState s = level.getBlockState(p);
+                if (!s.is(QUARRY_MINEABLE)) continue;
+                boolean crumbles = s.is(QUARRY_ORES);
+                if (crumbles) level.setBlock(p, host(s), Block.UPDATE_CLIENTS);
+                player.gameMode.destroyBlock(p);
+                if (crumbles) player.getMainHandItem().hurtAndBreak(ORE_WEAR, player, InteractionHand.MAIN_HAND);
+                ore |= crumbles;
+            }
+        } finally {
+            quarrying = false;
+        }
+        if (ore) player.sendOverlayMessage(Component.translatable("message.mechanical.quarry_hammer.ore"));
+        return true;
     }
 
     // ---------------------------------------------------------------- tongs and burns
@@ -420,6 +497,24 @@ public final class BronzeTools {
         h.assertTrue(Casting.ground(new ItemStack(ROUGH_CAST_BRONZE_NEEDLES.get())).getCount() == PER_GANG_CAST, "4 needles per sprue");
         h.assertTrue(Casting.ground(new ItemStack(ROUGH_CAST_BRONZE_SHEARS.get())).is(BRONZE_SHEARS.get()), "rough shears grind into Bronze Shears");
         h.assertTrue(new ItemStack(BRONZE_NEEDLE.get()).is(NEEDLES) && new ItemStack(Mechanical.BONE_NEEDLE.get()).is(NEEDLES), "both needles sew");
+
+        // quarry hammer: a 3x3 wall (x 8..10, y 1..3, z 4) with coal ore in the middle: all of it breaks, the ore as stone; gold ore stops it
+        for (int x = 8; x <= 10; x++) for (int y = 1; y <= 3; y++) h.setBlock(new BlockPos(x, y, 4), Blocks.STONE);
+        h.setBlock(new BlockPos(9, 2, 4), Blocks.COAL_ORE);
+        h.setBlock(new BlockPos(9, 2, 3), Blocks.DIRT); // in front: not part of the face
+        ServerPlayer quarrier = FakePlayerFactory.getMinecraft(level);
+        quarrier.setGameMode(GameType.SURVIVAL);
+        quarrier.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BRONZE_QUARRY_HAMMER.get()));
+        h.assertTrue(quarry(level, quarrier, h.absolutePos(new BlockPos(9, 2, 4)), Direction.Axis.Z), "the hammer strikes");
+        for (int x = 8; x <= 10; x++) for (int y = 1; y <= 3; y++) h.assertBlockPresent(Blocks.AIR, new BlockPos(x, y, 4));
+        h.assertBlockPresent(Blocks.DIRT, new BlockPos(9, 2, 3));
+        h.assertTrue(quarrier.getMainHandItem().getDamageValue() == 9 + ORE_WEAR, "9 blocks and an ore's extra wear");
+        h.assertFalse(new ItemStack(BRONZE_QUARRY_HAMMER.get()).isCorrectToolForDrops(Blocks.DIRT.defaultBlockState()), "no better than a hand on dirt");
+        for (int x = 8; x <= 10; x++) for (int y = 1; y <= 3; y++) h.setBlock(new BlockPos(x, y, 4), Blocks.STONE);
+        h.setBlock(new BlockPos(10, 3, 4), Blocks.GOLD_ORE);
+        h.assertFalse(quarry(level, quarrier, h.absolutePos(new BlockPos(9, 2, 4)), Direction.Axis.Z), "gold is beyond bronze");
+        h.assertBlockPresent(Blocks.STONE, new BlockPos(9, 2, 4));
+        quarrier.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         h.succeed();
     }
 

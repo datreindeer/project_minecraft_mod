@@ -1357,6 +1357,7 @@ det som ligger i härden kräver (grönt när det nåtts), tooltipen temperatur 
 | Unfired Clay Hammer Head Mold | Mold Bench, 5 Clay Balls → kilnen (600°, 20 s) → **Clay Hammer Head Mold** |
 | Rough Cast Bronze Hammer Head | 4 enheter brons i formen → Whetstone (4 drag) → **Bronze Hammer Head** |
 | **Bronze Smithing Hammer** | Tool Station: Bronze Hammer Head + Cordage (eller Hide Glue) + Tool Rod |
+| **Bronze Quarry Hammer** | Tool Station: Bronze Hammer Head + **Bronze Plate** + Tool Rod (se nedan) |
 | Unfired Clay Anvil Mold | Mold Bench, **32 Clay Balls** → kilnen (600°, 30 s) → **Clay Anvil Mold** |
 | Rough Cast Bronze Anvil | **10 enheter brons**, en hel degel (eller via Clay Channels från Smelting Furnace) → Whetstone → **Bronze Anvil** |
 
@@ -1366,6 +1367,25 @@ det som ligger i härden kräver (grönt när det nåtts), tooltipen temperatur 
   bär huvudet.
 - **Bronze Anvil:** ett gjutet bronsstäd (fot, midja, bana och horn; banan blankare). Vänds med hornet åt sidan. Bryts
   med hacka. Poor Bronze-märket följer inte med (blocket bär inget).
+
+### Bronze Quarry Hammer (v0.82.0)
+
+En tung stenhammare som bryter **3×3** i taget: planet mot spelaren, efter vilken sida av blocket man slår på (golv,
+tak eller vägg). Görs i Tool Station av samma Bronze Hammer Head som smideshammaren, med en Bronze Plate runt skaftet
+som "bindning"; låses upp när man bär huvudet. Poor Bronze: 70 % hållbarhet.
+
+- **Bara sten:** taggen `#mechanical:quarry_hammer_mineable` = `#minecraft:base_stone_overworld` (Stone, Granite, Diorite,
+  Andesite, Tuff, Deepslate), `#minecraft:base_stone_nether` (Netherrack, Basalt, Blackstone), Cobblestone, Mossy
+  Cobblestone, Cobbled Deepslate, Calcite, Dripstone Block, Smooth Basalt, Sandstone, Red Sandstone, End Stone och malmerna.
+  Modden har ingen egen naturlig sten. På allt annat (jord, trä ...) är hammaren som en bar hand.
+- Bronsnivå (som Bronze Pickaxe), **halva hackans fart** (3 mot 6), 460 hållbarhet, 1 per block (9 per fullt slag),
+  6 skada, långsam (-3.4).
+- **Malm den klarar** (`#mechanical:quarry_ores` = `#c:ores` + ädelstensmalmerna) smulas till sin bergart: den ger det
+  stenen ger (Stone Chunks, Deepslate, Netherrack, Sandstone), aldrig malmen, och hammaren slits **2 extra** per malm.
+  "You need more precision to break ores: they crumble to stone". Bryt malm med en Bronze Pickaxe.
+- **Malm över bronsnivån** (Gold, Diamond, Redstone, Emerald, Ruby utom deepslate ...; `#mechanical:incorrect_for_bronze_tool`)
+  någonstans i 3×3: **inget** går sönder, hammaren slits **4**, "This ore is too hard for the hammer: the blow rings off".
+- Advancement *Quarryman* (efter Smith).
 
 ### Smida
 
@@ -1386,7 +1406,8 @@ det som ligger i härden kräver (grönt när det nåtts), tooltipen temperatur 
 ### Advancements (Bronze Age-fliken)
 
 *Fire Brick* (efter Toward Iron), *Bloomery* (goal, från koden), *Iron Bloom* (goal), *Wrought Iron* (challenge),
-*Bronze Anvil* (goal, efter Bronze!), *Smith* (Bronze Smithing Hammer, efter Bronze!).
+*Bronze Anvil* (goal, efter Bronze!), *Smith* (Bronze Smithing Hammer, efter Bronze!), *Quarryman* (Bronze Quarry
+Hammer, efter Smith).
 
 ### Test
 
