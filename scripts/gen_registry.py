@@ -137,26 +137,35 @@ def tag_members(tag, depth=0):
 
 # ---------------------------------------------------------------- pictures
 
-_img_cache = {}  # texture ref -> PIL image or None
+_img_cache = {}  # texture ref -> (frames, frame ms)
 IMAGES = {}      # key -> data uri (embedded once each)
 
 
-def load_texture(ref):
+def texture_frames(ref):
+    """All frames of a texture (animated strips give several) plus the frame time in ms, or ([], 0)."""
     ns, p = split_id(ref)
     key = f"{ns}:{p}"
     if key in _img_cache:
         return _img_cache[key]
     raw = read_res(f"assets/{ns}/textures/{p}.png")
-    img = None
+    frames, ms = [], 0
     if raw:
         try:
             img = Image.open(io.BytesIO(raw)).convert("RGBA")
-            if img.height > img.width:  # animated strip: first frame
-                img = img.crop((0, 0, img.width, img.width))
+            w = img.width
+            frames = [img.crop((0, y, w, y + w)) for y in range(0, max(img.height - w, 0) + 1, w)]
+            # shortcut: plays strip frames in order, ignores a custom "frames" list in .mcmeta
+            meta = read_json(f"assets/{ns}/textures/{p}.png.mcmeta") or {}
+            ms = 50 * (meta.get("animation", {}).get("frametime") or 1)
         except Exception as e:
             warn(f"kan inte läsa textur {key}: {e}")
-    _img_cache[key] = img
-    return img
+    _img_cache[key] = (frames, ms)
+    return _img_cache[key]
+
+
+def load_texture(ref, frame=0):
+    frames = texture_frames(ref)[0]
+    return frames[frame % len(frames)] if frames else None
 
 
 def model_textures(model_ref, depth=0):
@@ -204,7 +213,7 @@ def iso_cube(top, side):
     return out
 
 
-def picture_from_model(model_ref):
+def picture_from_model(model_ref, frame=0):
     tex = model_textures(model_ref)
     if not tex:
         return None
@@ -212,16 +221,47 @@ def picture_from_model(model_ref):
         top = tex.get("top") or tex.get("end") or tex.get("all")
         side = tex.get("side") or tex.get("all")
         if top and side:
-            t, s = load_texture(top), load_texture(side)
+            t, s = load_texture(top, frame), load_texture(side, frame)
             if t and s:
                 return iso_cube(t, s)
     for k in ("layer0", "cross", "front", "side", "all", "top", "texture", "particle"):
         if k in tex and load_texture(tex[k]):
-            return load_texture(tex[k])
+            return load_texture(tex[k], frame)
     for v in tex.values():
         if load_texture(v):
-            return load_texture(v)
+            return load_texture(v, frame)
     return None
+
+
+def model_animation(model_ref):
+    """(frame count, frame time ms) of the most animated texture a model uses."""
+    best = (1, 0)
+    for v in model_textures(model_ref).values():
+        n, ms = len(texture_frames(v)[0]), texture_frames(v)[1]
+        if n > best[0]:
+            best = (n, ms)
+    return best
+
+
+def all_models(node, out):
+    """Every model an item definition can show (count stacks, states...), in-hand-only display_context branches skipped."""
+    if isinstance(node, dict):
+        if node.get("property") == "minecraft:display_context":
+            gui = [c for c in node.get("cases", []) if "gui" in (c.get("when") if isinstance(c.get("when"), list) else [c.get("when")])]
+            for c in gui or [{"model": node.get("fallback")}]:
+                all_models(c.get("model"), out)
+            return out
+        for key in ("model", "base"):
+            if isinstance(node.get(key), str) and node[key] not in out:
+                out.append(node[key])
+        # fallback / on_false first: that is the default look (e.g. a single item of a count-dispatched stack)
+        for k in sorted(node, key=lambda k: k not in ("fallback", "on_false")):
+            if isinstance(node[k], (dict, list)):
+                all_models(node[k], out)
+    elif isinstance(node, list):
+        for v in node:
+            all_models(v, out)
+    return out
 
 
 def first_model(node):
@@ -248,39 +288,66 @@ def first_model(node):
     return None
 
 
+def frames_from_model(m):
+    """[(image, ms)] for one model: its animation frames, or just the still picture."""
+    n, ms = model_animation(m)
+    out = [(picture_from_model(m, f), ms) for f in range(n)]
+    return [(i, t) for i, t in out if i is not None]
+
+
 def picture(item_id):
-    """Returns an image key (into IMAGES) or None."""
+    """Returns an image key (into IMAGES) or None. Items with several looks (stack sizes, states, animated textures)
+    become an animated PNG cycling through them."""
     if item_id in _pic_done:
         return _pic_done[item_id]
     ns, p = split_id(item_id)
-    img = None
+    frames = []
     try:
         idef = read_json(f"assets/{ns}/items/{p}.json")
         if idef:
-            m = first_model(idef.get("model"))
-            if m:
-                img = picture_from_model(m)
-        if img is None:
+            for m in all_models(idef.get("model"), []):
+                fr = frames_from_model(m)
+                # several models: hold each look a while; an animated texture keeps its own timing
+                frames += [(i, t if len(fr) > 1 else 700) for i, t in fr]
+        if not frames:
             bs = read_json(f"assets/{ns}/blockstates/{p}.json")
             if bs:
                 m = first_model(bs.get("variants") or bs.get("multipart"))
                 if m:
-                    img = picture_from_model(m)
-        if img is None:
+                    frames = frames_from_model(m)
+        if not frames:
             for d in ("item", "block"):
-                img = load_texture(f"{ns}:{d}/{p}")
-                if img:
+                fr, ms = texture_frames(f"{ns}:{d}/{p}")
+                if fr:
+                    frames = [(f, ms) for f in fr]
                     break
     except Exception as e:
         warn(f"bild för {item_id} misslyckades: {e}")
-        img = None
+        frames = []
+    # drop looks identical to the previous one (e.g. two count models sharing a texture)
+    uniq = []
+    for img, ms in frames:
+        if not uniq or img.tobytes() != uniq[-1][0].tobytes() or img.size != uniq[-1][0].size:
+            uniq.append((img, ms))
+    if len(uniq) > 1 and uniq[0][0].tobytes() == uniq[-1][0].tobytes():
+        uniq.pop()
     key = None
-    if img is not None:
-        if img.width < ICON:
-            f = max(1, ICON // img.width)
-            img = img.resize((img.width * f, img.height * f), Image.NEAREST)
+    if uniq:
+        size = max(i.width for i, _ in uniq), max(i.height for i, _ in uniq)
+        imgs = []
+        for img, _ in uniq:
+            if img.size != size:
+                img = img.resize(size, Image.NEAREST)
+            if img.width < ICON:
+                f = max(1, ICON // img.width)
+                img = img.resize((img.width * f, img.height * f), Image.NEAREST)
+            imgs.append(img)
         buf = io.BytesIO()
-        img.save(buf, "PNG", optimize=True)
+        if len(imgs) > 1:
+            imgs[0].save(buf, "PNG", save_all=True, append_images=imgs[1:], duration=[ms or 700 for _, ms in uniq],
+                         loop=0, disposal=1, blend=0)
+        else:
+            imgs[0].save(buf, "PNG", optimize=True)
         key = item_id
         IMAGES[key] = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
     else:
