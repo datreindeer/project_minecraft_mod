@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:bark",
+    "mechanical:bark",
+    "mechanical:bark",
+    "#minecraft:dark_oak_logs"
+  ],
+  "result": {
+    "id": "mechanical:dark_oak_bark_roof",
+    "count": 4
+  }
+}

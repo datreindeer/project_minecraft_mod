@@ -186,6 +186,9 @@ public class Mechanical {
     public static final Map<String, DeferredItem<Item>> ROUGH_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
     public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
+    /** Bark shingles for roofs, one per wood: slopes against a wall, flat on top (BarkRoofBlock); 3 Bark + that wood's log. */
+    public static final Map<String, DeferredBlock<BarkRoofBlock>> BARK_ROOFS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
+            BLOCKS.registerBlock(w + "_bark_roof", BarkRoofBlock::new, p -> p.mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().noOcclusion())));
     /** Leaves (block name minus "_leaves") that get their own fresh, leaf-coloured litter when their tree is felled. */
     public static final List<String> LITTER_LEAVES = List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry",
             "pale_oak", "yellow_poplar", "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew");

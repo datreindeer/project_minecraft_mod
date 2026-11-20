@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:bark",
+    "mechanical:bark",
+    "mechanical:bark",
+    "#mechanical:aspen_logs"
+  ],
+  "result": {
+    "id": "mechanical:aspen_bark_roof",
+    "count": 4
+  }
+}

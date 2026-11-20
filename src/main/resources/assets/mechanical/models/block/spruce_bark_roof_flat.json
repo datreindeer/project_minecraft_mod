@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_flat",
+  "textures": {
+    "top": "mechanical:block/spruce_bark_roof",
+    "under": "minecraft:block/stripped_spruce_log"
+  }
+}

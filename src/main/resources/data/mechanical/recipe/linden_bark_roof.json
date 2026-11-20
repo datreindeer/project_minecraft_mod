@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:bark",
+    "mechanical:bark",
+    "mechanical:bark",
+    "#mechanical:linden_logs"
+  ],
+  "result": {
+    "id": "mechanical:linden_bark_roof",
+    "count": 4
+  }
+}

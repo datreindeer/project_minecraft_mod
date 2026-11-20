@@ -500,6 +500,91 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return home != null ? home : blockPosition();
     }
 
+    /** A wall round home: how far out it stands, and a spot on the path just outside its gate. */
+    record Wall(double radius, BlockPos gate) {}
+
+    private Wall wall;
+    private BlockPos wallFor;
+
+    /** The wall round home: a tribe village's palisade, or a settled camp's once it goes up; null if none. Looked up per home. */
+    Wall wall() {
+        if (home == null || !(level() instanceof ServerLevel level)) return null;
+        if (!home.equals(wallFor) || wall == null && tickCount % 200 == 0) {
+            wallFor = home;
+            var village = com.mechanical.worldgen.TribeVillageStructure.villageAt(level, home);
+            Neighbours.Settlement s = village == null ? Settlements.of(this) : null;
+            wall = village != null ? new Wall(com.mechanical.worldgen.TribeVillageStructure.WALL_R, village.trailEnd(-1))
+                    : s != null && s.stage >= 2 && s.centre.equals(home) ? new Wall(Settlements.PALISADE_R, s.centre.relative(s.gate, Settlements.PALISADE_R + 2))
+                    : null;
+        }
+        return wall;
+    }
+
+    /** For game tests: a wall round the current home. */
+    void setWall(Wall wall) {
+        this.wall = wall;
+        wallFor = home;
+    }
+
+    /** How far round home the camp itself reaches (its buildings, its wall): nothing in it is felled, work is looked for beyond it. */
+    int campRadius() {
+        if (home == null) return 0;
+        Wall w = wall();
+        return w != null ? (int) Math.ceil(w.radius()) + 2 : 5;
+    }
+
+    /** Outside the camp round home (anywhere, for a band without a home). */
+    boolean outsideCamp(BlockPos p) {
+        if (home == null) return true;
+        double dx = p.getX() - home.getX(), dz = p.getZ() - home.getZ(), r = campRadius();
+        return dx * dx + dz * dz > r * r;
+    }
+
+    private boolean insideWall(Wall w, Vec3 p) {
+        double dx = p.x - home.getX() - 0.5, dz = p.z - home.getZ() - 0.5;
+        return dx * dx + dz * dz < w.radius() * w.radius();
+    }
+
+    /**
+     * Walks toward {@code target}; when the wall round home lies between, first to the gate (from inside or outside), and
+     * outside it round the wall an eighth of the way at a time (a path straight at a spot behind the wall runs out of
+     * search inside it and ends against the wall).
+     */
+    void walkTo(BlockPos target, double speed) {
+        Wall w = wall();
+        Vec3 to = Vec3.atBottomCenterOf(target), at = position();
+        if (w != null) {
+            if (insideWall(w, at) != insideWall(w, to) && distanceToSqr(Vec3.atBottomCenterOf(w.gate())) > 2.5 * 2.5) to = Vec3.atBottomCenterOf(w.gate());
+            double hx = home.getX() + 0.5, hz = home.getZ() + 0.5;
+            if (!insideWall(w, at) && !insideWall(w, to) && segmentDistance(hx, hz, at, to) < w.radius() + 1) {
+                double from = Math.atan2(at.z - hz, at.x - hx), d = Math.atan2(to.z - hz, to.x - hx) - from;
+                d = Math.atan2(Math.sin(d), Math.cos(d)); // the short way round
+                double a = from + Math.signum(d) * Math.min(Math.abs(d), Math.PI / 4), r = w.radius() + 3;
+                BlockPos round = level().getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        BlockPos.containing(hx + Math.cos(a) * r, 0, hz + Math.sin(a) * r));
+                to = Vec3.atBottomCenterOf(round);
+            }
+        }
+        getNavigation().moveTo(to.x, to.y, to.z, speed);
+    }
+
+    /** Horizontal distance from (x, z) to the segment a-b. */
+    private static double segmentDistance(double x, double z, Vec3 a, Vec3 b) {
+        double vx = b.x - a.x, vz = b.z - a.z, len = vx * vx + vz * vz;
+        double t = len == 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * vx + (z - a.z) * vz) / len));
+        double dx = a.x + t * vx - x, dz = a.z + t * vz - z;
+        return Math.sqrt(dx * dx + dz * dz);
+    }
+
+    /** Out on a job (gathering, fishing, felling, planting), however far: ReturnHomeGoal leaves them to it. */
+    boolean atWork() {
+        for (var g : goalSelector.getAvailableGoals()) {
+            if (g.isRunning() && (g.getGoal() instanceof GatherGoal || g.getGoal() instanceof FishGoal || g.getGoal() instanceof ChopWoodGoal
+                    || g.getGoal() instanceof PlantGoal)) return true;
+        }
+        return false;
+    }
+
     /** Group members around catch up on who the group is angry with (members that were unloaded when it happened). */
     private void shareAnger() {
         long now = level().getGameTime();

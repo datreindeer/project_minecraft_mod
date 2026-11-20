@@ -49,26 +49,26 @@ class PlantGoal extends Goal {
         ServerLevel level = (ServerLevel) mob.level();
         BlockPos home = mob.home();
         if (woodcutter) {
-            if (countAround(level, home, s -> isTrunk(s) || s.getBlock() instanceof SaplingBlock) >= ENOUGH_TREES) return false;
+            if (countAround(level, mob, s -> isTrunk(s) || s.getBlock() instanceof SaplingBlock) >= ENOUGH_TREES) return false;
             plant = saplingNear(level, home);
         } else {
-            if (countAround(level, home, s -> s.getBlock() instanceof WildBerryBushBlock) >= ENOUGH_BUSHES) return false;
+            if (countAround(level, mob, s -> s.getBlock() instanceof WildBerryBushBlock) >= ENOUGH_BUSHES) return false;
             plant = bushFor(level, home);
         }
         if (plant == null) return false;
-        spot = findSpot(level, home, plant);
+        spot = findSpot(level, mob, plant);
         return spot != null;
     }
 
     @Override
     public void start() {
         ticks = 0;
-        mob.getNavigation().moveTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0.6);
+        mob.walkTo(spot, 0.6);
     }
 
     @Override
     public boolean canContinueToUse() {
-        return spot != null && ticks < 400 && mob.getTarget() == null && !mob.level().isDarkOutside();
+        return spot != null && ticks < 900 && mob.getTarget() == null && !mob.level().isDarkOutside();
     }
 
     @Override
@@ -77,7 +77,7 @@ class PlantGoal extends Goal {
         Vec3 c = Vec3.atBottomCenterOf(spot);
         mob.getLookControl().setLookAt(c);
         if (mob.distanceToSqr(c) > 2.2 * 2.2) {
-            if (mob.getNavigation().isDone()) mob.getNavigation().moveTo(c.x, c.y, c.z, 0.6);
+            if (mob.getNavigation().isDone()) mob.walkTo(spot, 0.6);
             return;
         }
         mob.getNavigation().stop();
@@ -114,12 +114,15 @@ class PlantGoal extends Goal {
         return s.is(BlockTags.LOGS);
     }
 
-    /** Ground-level trunks (or saplings / bushes) around camp, sampled on the surface. */
-    private static int countAround(ServerLevel level, BlockPos home, java.util.function.Predicate<BlockState> what) {
-        int n = 0;
-        for (int dx = -RANGE; dx <= RANGE; dx += 2) {
-            for (int dz = -RANGE; dz <= RANGE; dz += 2) {
-                BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, home.offset(dx, 0, dz));
+    /** Ground-level trunks (or saplings / bushes) round the camp (outside it), sampled on the surface. */
+    private static int countAround(ServerLevel level, Tribesperson mob, java.util.function.Predicate<BlockState> what) {
+        int n = 0, r = mob.campRadius() + RANGE;
+        BlockPos home = mob.home();
+        for (int dx = -r; dx <= r; dx += 2) {
+            for (int dz = -r; dz <= r; dz += 2) {
+                BlockPos col = home.offset(dx, 0, dz);
+                if (!mob.outsideCamp(col) || !level.isLoaded(col)) continue;
+                BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, col);
                 for (int y = -1; y <= 1; y++) if (what.test(level.getBlockState(ground.above(y)))) n++;
             }
         }
@@ -166,11 +169,17 @@ class PlantGoal extends Goal {
         return bush == null ? null : bush.get().defaultBlockState().setValue(WildBerryBushBlock.AGE, 0);
     }
 
-    /** A free, open, sunny spot on natural ground between MIN_FROM_FIRE and RANGE from home, SPACING clear of other plants. */
-    private static BlockPos findSpot(ServerLevel level, BlockPos home, BlockState plant) {
+    /**
+     * A free, open, sunny spot on natural ground round the camp (at least MIN_FROM_FIRE from home and never inside a
+     * village's or camp's wall, where a tree would grow into the huts), SPACING clear of other plants.
+     */
+    private static BlockPos findSpot(ServerLevel level, Tribesperson mob, BlockState plant) {
+        BlockPos home = mob.home();
+        int r = mob.campRadius() + RANGE;
         for (int i = 0; i < 30; i++) {
-            BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                    home.offset(level.getRandom().nextInt(RANGE * 2 + 1) - RANGE, 0, level.getRandom().nextInt(RANGE * 2 + 1) - RANGE));
+            BlockPos col = home.offset(level.getRandom().nextInt(r * 2 + 1) - r, 0, level.getRandom().nextInt(r * 2 + 1) - r);
+            if (!mob.outsideCamp(col) || !level.isLoaded(col)) continue;
+            BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, col);
             if (p.distSqr(home) < MIN_FROM_FIRE * MIN_FROM_FIRE) continue;
             if (!level.getBlockState(p).canBeReplaced() || !level.getFluidState(p).isEmpty() || !level.canSeeSky(p) || !plant.canSurvive(level, p)) continue;
             if (!level.getBlockState(p.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) continue;

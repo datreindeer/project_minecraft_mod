@@ -12,17 +12,19 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.component.SwingAnimation;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Fishers walk to the shore near camp and fish for a while: cast (swing), the line lands with a splash a few blocks
+ * Fishers walk out to a shore round the camp (through the gate of a walled one) and fish for a while: cast (swing), the line lands with a splash a few blocks
  * out, and now and then a fish bites (bubbles, splash). Visual only: no bobber entity, no catch.
  */
 class FishGoal extends Goal {
     private static final int RANGE = 16;
     private final Tribesperson mob;
-    private BlockPos stand, spot;
+    BlockPos stand, spot;
     private int ticks, duration;
+    private boolean arrived;
 
     FishGoal(Tribesperson mob) {
         this.mob = mob;
@@ -33,12 +35,18 @@ class FishGoal extends Goal {
         return level.getFluidState(p).is(FluidTags.WATER) && level.getBlockState(p.above()).isAir();
     }
 
-    /** Dry ground to stand on next to water, with water a couple of blocks out in that direction. */
-    private boolean findSpot(ServerLevel level) {
+    /** Dry ground to stand on next to water, with water a couple of blocks out in that direction; beyond the camp. */
+    boolean findSpot(ServerLevel level) {
         BlockPos c = mob.workCenter();
+        int camp = mob.campRadius(), r = camp + RANGE;
         for (int i = 0; i < 60; i++) {
-            BlockPos p = c.offset(mob.getRandom().nextInt(RANGE * 2 + 1) - RANGE, mob.getRandom().nextInt(7) - 3, mob.getRandom().nextInt(RANGE * 2 + 1) - RANGE);
-            if (!level.getBlockState(p).isAir() || !level.getBlockState(p.above()).isAir() || !level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) continue;
+            int dx = mob.getRandom().nextInt(r * 2 + 1) - r, dz = mob.getRandom().nextInt(r * 2 + 1) - r;
+            if (dx * dx + dz * dz <= camp * camp) continue;
+            BlockPos col = c.offset(dx, 0, dz);
+            if (!level.isLoaded(col)) continue;
+            BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, col); // the air over the ground (or water)
+            if (Math.abs(p.getY() - c.getY()) > 12 || !level.getBlockState(p).isAir() || !level.getBlockState(p.above()).isAir()
+                    || !level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) continue;
             for (Direction d : Direction.Plane.HORIZONTAL) {
                 if (openWater(level, p.relative(d).below()) && openWater(level, p.relative(d, 3).below())) {
                     stand = p.immutable();
@@ -58,8 +66,9 @@ class FishGoal extends Goal {
     @Override
     public void start() {
         ticks = 0;
+        arrived = false;
         duration = 600 + mob.getRandom().nextInt(900);
-        mob.getNavigation().moveTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, 0.7);
+        mob.walkTo(stand, 0.7);
     }
 
     @Override
@@ -74,12 +83,16 @@ class FishGoal extends Goal {
         Vec3 bob = Vec3.atBottomCenterOf(spot.above()).add(0, -0.1, 0);
         if (mob.distanceToSqr(Vec3.atBottomCenterOf(stand)) > 1.5 * 1.5) {
             if (mob.getNavigation().isDone()) {
-                if (ticks > 300) duration = 0; // can't get there
-                else mob.getNavigation().moveTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, 0.7);
+                if (ticks > 900) duration = 0; // can't get there
+                else mob.walkTo(stand, 0.7);
             }
             return;
         }
         mob.getNavigation().stop();
+        if (!arrived) { // the fishing time starts on the shore, however long the walk
+            arrived = true;
+            duration += ticks;
+        }
         mob.getLookControl().setLookAt(bob);
         int t = ticks % 240;
         if (t == 1) {

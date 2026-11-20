@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_outer",
+  "textures": {
+    "top": "mechanical:block/mangrove_bark_roof",
+    "under": "minecraft:block/stripped_mangrove_log"
+  }
+}

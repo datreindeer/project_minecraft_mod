@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.mechanical.BarkRoofBlock;
 import com.mechanical.Campfires;
 import com.mechanical.DryingRackBlock;
 import com.mechanical.Mechanical;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -55,7 +57,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
  * A tribe village (/locate structure mechanical:tribe_village): a ring of sharpened log stakes about 43 blocks across with
  * a gate flying the tribe's banner, a longhouse for the elder, round huts and hide tents facing a central fire, a flag pole,
  * drying racks, food storage pots and work spots for each role, and ten or more people of one tribe. The tribe (and so its
- * temperament) decides the wood, hide colours, roofs and the mix of roles; raiders put skulls by their gate.
+ * temperament) decides the wood, hide colours, walls, roofs (bark shingles, turf, hide) and the mix of roles; raiders put skulls by their gate.
  * <p>
  * One piece holding a seed and the centre; the whole layout follows from those, so each chunk draws only its own slice and
  * never reads terrain outside it. The structure's beard_box terrain adaptation levels the ground under the piece's box at
@@ -66,7 +68,8 @@ public final class TribeVillageStructure extends Structure {
     public static final StructureType<TribeVillageStructure> TYPE = () -> CODEC;
     public static final StructurePieceType.ContextlessType PIECE = Piece::new;
     public static final Identifier ID = Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_village");
-    static final int WALL_R = 21, CLEAR_R = 25, HALF = 26, HEIGHT = 24;
+    public static final int WALL_R = 21;
+    static final int CLEAR_R = 25, HALF = 26, HEIGHT = 24;
 
     public TribeVillageStructure(StructureSettings settings) {
         super(settings);
@@ -108,6 +111,14 @@ public final class TribeVillageStructure extends Structure {
         BlockPos centre = new BlockPos(x, heights.get(heights.size() / 2), z);
         long seed = context.random().nextLong();
         return Optional.of(new GenerationStub(centre, builder -> builder.addPiece(new Piece(seed, centre))));
+    }
+
+    /** The tribe village whose bounds hold {@code pos}, or null. */
+    public static Piece villageAt(net.minecraft.server.level.ServerLevel level, BlockPos pos) {
+        Structure village = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getValue(ID);
+        if (village == null) return null;
+        var start = level.structureManager().getStructureAt(pos, village);
+        return start.isValid() && start.getPieces().getFirst() instanceof Piece piece ? piece : null;
     }
 
     // ------------------------------------------------------------------ the piece
@@ -206,9 +217,9 @@ public final class TribeVillageStructure extends Structure {
         private final BlockPos c;
         private final int y;
         private final double gate;
-        private final boolean spruce, thatch;
+        private final boolean spruce, daub;
         private final DyeColor[] hides;
-        private final BlockState log, stripped, fence, stake;
+        private final BlockState log, stripped, fence, stake, roof;
 
         Layout(long seed, BlockPos centre) {
             rnd = RandomSource.create(seed);
@@ -218,7 +229,7 @@ public final class TribeVillageStructure extends Structure {
             tribe = Tribe.of(group);
             Tribe.Temperament t = tribe.temperament;
             spruce = t == Tribe.Temperament.WARY || t == Tribe.Temperament.RAIDERS;
-            thatch = t == Tribe.Temperament.PEACEFUL || t == Tribe.Temperament.TRADERS;
+            daub = t == Tribe.Temperament.PEACEFUL || t == Tribe.Temperament.TRADERS;
             hides = switch (t) {
                 case PEACEFUL -> new DyeColor[] {DyeColor.WHITE, DyeColor.BROWN, DyeColor.LIGHT_GRAY};
                 case WARY -> new DyeColor[] {DyeColor.BROWN, DyeColor.GRAY, DyeColor.BROWN};
@@ -229,6 +240,7 @@ public final class TribeVillageStructure extends Structure {
             stripped = (spruce ? Blocks.STRIPPED_SPRUCE_LOG : Blocks.STRIPPED_OAK_LOG).defaultBlockState();
             fence = (spruce ? Blocks.SPRUCE_FENCE : Blocks.OAK_FENCE).defaultBlockState();
             stake = (spruce ? People.SHARPENED_SPRUCE_LOG : People.SHARPENED_OAK_LOG).get().defaultBlockState();
+            roof = Mechanical.BARK_ROOFS.get(spruce ? "spruce" : "oak").get().defaultBlockState();
             gate = gateAngle(seed);
             rnd.nextDouble(); // the draw gateAngle repeats, so the rest of the layout stays as it was
 
@@ -349,10 +361,26 @@ public final class TribeVillageStructure extends Structure {
             banner(pole.above(5), Math.cos(gate), Math.sin(gate));
         }
 
-        /** The elder's longhouse: 5 deep, 9 long, log walls, a stepped gable roof of thatch or hides, the door toward the fire. */
+        /** A bark roof slope rising toward {@code up}, or an outer corner of one peaking toward up and {@code side}. */
+        private BlockState slope(Direction up, Direction side) {
+            BlockState s = roof.setValue(BarkRoofBlock.FACING, up);
+            if (side == null) return s;
+            return s.setValue(BarkRoofBlock.SHAPE, up.getCounterClockWise() == side ? StairsShape.OUTER_LEFT : StairsShape.OUTER_RIGHT);
+        }
+
+        /**
+         * The elder's longhouse: 5 deep, 9 long, log walls, the door toward the fire. A 45-degree gable roof of bark shingles
+         * with a ridge log; wary tribes lay turf over it above the bark eaves. The gable ends are daub, hide or split logs.
+         */
         private void longhouse(BlockPos m) {
             Direction front = facing(m), side = front.getClockWise();
-            BlockState roof = roofBlock(hides[0]), wall = log.setValue(RotatedPillarBlock.AXIS, side.getAxis());
+            BlockState wall = log.setValue(RotatedPillarBlock.AXIS, side.getAxis());
+            boolean turf = tribe.temperament == Tribe.Temperament.WARY;
+            BlockState gable = switch (tribe.temperament) {
+                case PEACEFUL -> Blocks.PACKED_MUD.defaultBlockState();
+                case WARY -> stripped;
+                case RAIDERS, TRADERS -> Blocks.WOOL.pick(hides[1]).defaultBlockState();
+            };
             for (int a = -3; a <= 3; a++) { // a: toward the fire, b: along the house
                 for (int b = -5; b <= 5; b++) {
                     BlockPos p = m.relative(front, a).relative(side, b);
@@ -363,13 +391,17 @@ public final class TribeVillageStructure extends Structure {
                         boolean door = a == 2 && b == 0;
                         for (int h = 0; h < 2; h++) if (!door) put(p.above(h), corner ? log : Math.abs(b) == 4 ? log : wall);
                     }
-                    // gable: each layer narrower toward the ridge
-                    for (int h = 2; h <= 5; h++) {
-                        int outer = 5 - h; // two-block steps: rows outer and outer-1, ridge log on top
-                        if (h == 5) {
-                            if (a == 0) put(p.above(h), log.setValue(RotatedPillarBlock.AXIS, side.getAxis()));
-                        } else if (Math.abs(a) == outer || Math.abs(a) == outer - 1) put(p.above(h), roof);
-                        else if (Math.abs(a) < outer - 1 && Math.abs(b) == 4) put(p.above(h), Blocks.WOOL.pick(hides[1]).defaultBlockState());
+                    // the gable ends under the slopes
+                    if (Math.abs(b) == 4) for (int h = 2; h < 5 - Math.abs(a); h++) put(p.above(h), gable);
+                    // the roof: one row of slopes per step, rising toward the ridge (the eaves 2 high, the ridge log 5)
+                    if (a == 0) {
+                        put(p.above(5), turf ? Blocks.MOSS_BLOCK.defaultBlockState() : wall);
+                    } else {
+                        int h = 5 - Math.abs(a);
+                        if (turf && Math.abs(a) < 3) {
+                            put(p.above(h - 1), Blocks.ROOTED_DIRT.defaultBlockState()); // sod in steps over the bark eaves
+                            put(p.above(h), Blocks.GRASS_BLOCK.defaultBlockState());
+                        } else put(p.above(h), slope(a > 0 ? front.getOpposite() : front, null));
                     }
                 }
             }
@@ -379,17 +411,15 @@ public final class TribeVillageStructure extends Structure {
             storage.add(back.relative(side, -3));
             put(back.relative(side, 3), Mechanical.DRYING_RACK.get().defaultBlockState().setValue(DryingRackBlock.FACING, front)
                     .setValue(DryingRackBlock.HIDE, 2));
-            put(back.relative(side, 2), Blocks.HAY_BLOCK.defaultBlockState());
+            put(back.relative(side, 2), People.HIDE_CANVAS.get().defaultBlockState()); // a pile of hides to sleep on
         }
 
-        private BlockState roofBlock(DyeColor hide) {
-            return thatch ? Blocks.HAY_BLOCK.defaultBlockState() : Blocks.WOOL.pick(hide == DyeColor.RED ? DyeColor.BLACK : hide).defaultBlockState();
-        }
-
-        /** A round hut (5 across) of daub or hides, a dome roof with eaves, the door toward the fire. */
+        /**
+         * A round hut (5 across) of daub or hides, the door toward the fire, under a hipped bark roof (7 across at the eaves)
+         * rising in three rings to a cap: turf for peaceful and wary tribes, hide for traders, a log and smoke pole for raiders.
+         */
         private void roundHut(BlockPos m, Direction front, DyeColor hide) {
-            BlockState wall = thatch ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.WOOL.pick(hide).defaultBlockState();
-            BlockState roof = roofBlock(hide);
+            BlockState wall = daub ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.WOOL.pick(hide).defaultBlockState();
             for (int dx = -3; dx <= 3; dx++) {
                 for (int dz = -3; dz <= 3; dz++) {
                     double d = Math.sqrt(dx * dx + dz * dz);
@@ -402,9 +432,21 @@ public final class TribeVillageStructure extends Structure {
                             put(p.above(), wall);
                         }
                     }
-                    if (d <= 3.1) put(p.above(2), roof);
-                    if (d <= 1.6) put(p.above(3), roof);
-                    if (d < 0.5) put(p.above(4), thatch ? Blocks.HAY_BLOCK.defaultBlockState() : log);
+                    int ring = Math.max(Math.abs(dx), Math.abs(dz));
+                    if (ring == 0) continue;
+                    // each ring one higher toward the middle: on a side it rises toward the middle, at a corner it peaks inward
+                    Direction xIn = dx > 0 ? Direction.WEST : Direction.EAST, zIn = dz > 0 ? Direction.NORTH : Direction.SOUTH;
+                    BlockState s = Math.abs(dx) == Math.abs(dz) ? slope(zIn, xIn) : Math.abs(dx) > Math.abs(dz) ? slope(xIn, null) : slope(zIn, null);
+                    put(p.above(5 - ring), s);
+                }
+            }
+            switch (tribe.temperament) {
+                case PEACEFUL -> put(m.above(4), Blocks.MOSS_BLOCK.defaultBlockState());
+                case WARY -> put(m.above(4), Blocks.GRASS_BLOCK.defaultBlockState());
+                case TRADERS -> put(m.above(4), Blocks.WOOL.pick(hide).defaultBlockState());
+                case RAIDERS -> {
+                    put(m.above(4), log);
+                    put(m.above(5), fence);
                 }
             }
             put(m, Blocks.CARPET.pick(hide == DyeColor.BROWN ? DyeColor.WHITE : DyeColor.BROWN).defaultBlockState());
