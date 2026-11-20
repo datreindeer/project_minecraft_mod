@@ -134,6 +134,8 @@ TABS = {
          "Hold right-click with an axe on a Fallen Log to peel off Bark (tinder, bast, baskets)", has("bark")),
         ("bark_basket", "bark", "bark_basket", T, "Gatherer's Basket",
          "Craft a Bark Basket for berries, mushrooms and hides. Food keeps longer inside", has("bark_basket")),
+        ("bark_roof", "bark", "spruce_bark_roof", T, "Shingled",
+         "Craft a Bark Roof from 3 Bark and a log. Against a wall it lies as a slope, on top of a block it lies flat", has("#bark_roofs")),
         ("tool_rod", "flint_knife", "tool_rod", T, "Straight Shaft",
          "Put a knife above any Log in the crafting grid to carve a Tool Rod", has("tool_rod")),
         ("pine_resin", "flint_knife", "pine_resin", T, "Resin Torch",

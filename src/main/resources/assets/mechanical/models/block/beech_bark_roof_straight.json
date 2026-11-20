@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_straight",
+  "textures": {
+    "top": "mechanical:block/beech_bark_roof",
+    "under": "mechanical:block/stripped_beech_log"
+  }
+}

@@ -27,6 +27,7 @@ class ReturnHomeGoal extends Goal {
         BlockPos home = mob.home();
         if (home == null || mob.getTarget() != null || mob.getTradingPlayer() != null) return false;
         boolean close = mob.level().isDarkOutside() || mob.wantsHome || mob.carryingWood;
+        if (!close && mob.atWork()) return false; // out gathering, fishing or felling: they come back when done
         double r = close ? 3.5 : mob.role().roam + 6;
         return distSqr() > r * r && mob.getRandom().nextInt(close ? 10 : 40) == 0;
     }
@@ -35,7 +36,7 @@ class ReturnHomeGoal extends Goal {
     public void start() {
         BlockPos home = mob.home();
         double a = mob.getRandom().nextDouble() * Math.PI * 2, d = 2.0 + mob.getRandom().nextDouble();
-        mob.getNavigation().moveTo(home.getX() + 0.5 + Math.cos(a) * d, home.getY(), home.getZ() + 0.5 + Math.sin(a) * d, 0.8);
+        mob.walkTo(BlockPos.containing(home.getX() + 0.5 + Math.cos(a) * d, home.getY(), home.getZ() + 0.5 + Math.sin(a) * d), 0.8); // in through the gate
     }
 
     @Override

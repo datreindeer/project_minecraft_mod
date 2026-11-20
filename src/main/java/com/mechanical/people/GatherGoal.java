@@ -15,7 +15,7 @@ import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-/** Gatherers walk to a ripe wild berry bush (or a mushroom in a patch) near camp, kneel, pick it, then head home. */
+/** Gatherers walk out to a ripe wild berry bush (or a mushroom in a patch) round the camp, kneel, pick it, then head home. */
 class GatherGoal extends Goal {
     private static final int RANGE = 14, PICK_TICKS = 50;
     private final Tribesperson mob;
@@ -41,8 +41,12 @@ class GatherGoal extends Goal {
     public boolean canUse() {
         if (!mob.canWork(TribeRole.GATHERER) || mob.getRandom().nextInt(80) != 0) return false;
         ServerLevel level = (ServerLevel) mob.level();
-        BlockPos c = mob.workCenter();
         target = null;
+        // a patch beyond the camp (a village's clearing has nothing to pick), in a random direction each time
+        BlockPos h = mob.workCenter();
+        double a = mob.getRandom().nextDouble() * Math.PI * 2, out = mob.campRadius() + (mob.home() != null ? mob.getRandom().nextInt(7) : 0);
+        BlockPos c = h.offset((int) Math.round(Math.cos(a) * out), 0, (int) Math.round(Math.sin(a) * out));
+        if (!level.hasChunksAt(c.offset(-RANGE, 0, -RANGE), c.offset(RANGE, 0, RANGE))) return false;
         double best = Double.MAX_VALUE;
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-RANGE, -4, -RANGE), c.offset(RANGE, 4, RANGE))) {
             double d = p.distSqr(mob.blockPosition());
@@ -54,12 +58,12 @@ class GatherGoal extends Goal {
     @Override
     public void start() {
         ticks = kneel = 0;
-        mob.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.7);
+        mob.walkTo(target, 0.7);
     }
 
     @Override
     public boolean canContinueToUse() {
-        return ticks < 400 && kneel <= PICK_TICKS && mob.getTarget() == null && worthPicking((ServerLevel) mob.level(), target);
+        return ticks < 900 && kneel <= PICK_TICKS && mob.getTarget() == null && worthPicking((ServerLevel) mob.level(), target);
     }
 
     @Override
@@ -67,7 +71,7 @@ class GatherGoal extends Goal {
         ticks++;
         mob.getLookControl().setLookAt(Vec3.atCenterOf(target));
         if (mob.distanceToSqr(Vec3.atBottomCenterOf(target)) > 2.2 * 2.2) {
-            if (mob.getNavigation().isDone()) mob.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.7);
+            if (mob.getNavigation().isDone()) mob.walkTo(target, 0.7);
             return;
         }
         mob.getNavigation().stop();

@@ -1423,10 +1423,16 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
 - **Tribe Village** (sällsynt, högst en per 36x36 chunks, i slätt, meadow, skog, björkskog, taiga, snöig taiga/slätt och savann;
   `/locate structure mechanical:tribe_village`): en rund **palissad** (ca 43 block bred) av stockar med **Sharpened Logs**
   (spetsade stockar) överst och en port med två höga stolpar med stammens banderoll. Inne: ett Longhouse för Elder (stockväggar,
-  tak av halm eller hudar), runda hyddor och hudtält runt en stor lägereld med stenar och sittstockar, en flaggstång med
+  sadeltak i 45° av **Bark Roof** i byns träslag med en takås av stock), runda hyddor med valmat barktak i tre ringar och hudtält runt en stor lägereld med stenar och sittstockar, en flaggstång med
   banderollen, Drying Racks, förråd (Decorated Pots och tunna med mat, hudar och flint), vedtrave och huggkubbe,
   Fletching Table och Bone Pile för jägarna, kompost för samlarna. Marken jämnas ut. 10–12 personer av alla roller, alla
-  med lägerelden som hem; stammens humör bestämmer rollerna, träslaget, hudfärgerna och taken. Ingen metall.
+  med lägerelden som hem; stammens humör bestämmer rollerna, träslaget, hudfärgerna och taken. Ingen metall och inget hö
+  på taken (de odlar inget):
+  - *Peaceful:* ek, hyddor av lerklining (Packed Mud) med barktak och en **torvtopp** av mossa; Longhouse med gavlar av lerklining.
+  - *Traders:* ek, hyddor av lerklining med barktak och en topp av hud i stammens färger; Longhouse med hudgavlar.
+  - *Wary:* gran, hyddor av hudar med barktak och en grästorvtopp; Longhouse med **torvtak** (grästorv i trappsteg över
+    rotad jord, mosstakås) ovanför barkade takfötter och gavlar av kluven stock.
+  - *Raiders:* gran, hyddor av mörka hudar med barktak, en stock och en rökstång överst; Longhouse med svarta hudgavlar.
 - **Stammar ("lag"):** varje läger, jaktlag och by är en egen stam med namn (ett totemdjur, t.ex. Raven Tribe), egen
   **banderoll** (färg och mönster) på en stång i lägret/byn, och Elder respektive jaktlagets ledare bär banderollen på huvudet.
   - **Rykte per spelare** (-100 till 100, sparas på spelaren): slå en medlem -8, döda en → fientlig för alltid, bryt
@@ -1438,11 +1444,23 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
     *Raiders* (nästan bara jägare och vedhuggare, börjar ovänliga, handlar först vid 30, **försvarar sitt land**: kommer du
     nära utan Friendly-rykte varnar de och anfaller om du stannar; dödskallar vid porten), *Traders* (börjar vänliga, 9
     byten i stället för 6, större rabatt, två Elders och extra förråd).
+- **Bark Roof** (en per träslag: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar och modens
+  egna träslag): 3 **Bark** + valfri log av träslaget → 4 (formlöst, building). Barkspån i överlappande rader ritade från
+  träslagets egen bark, undersidan av skalad stock. **Mot sidan av ett block** läggs den som en riktig **45°-sluttning** som
+  stiger mot blocket; **ovanpå ett block** ligger den platt (ett tunt lager). Klickar man på sidan av en annan sluttning
+  fortsätter raden åt samma håll. Möts sluttningar blir det inner- och ytterhörn som för trappor (valmade tak). Kollision
+  som en trappa i fyra steg. Hackas med yxa. Avancemang: *Shingled* (efter *Bark Peeler*).
 - **Sharpened Oak/Spruce Log:** stock + flint (formlöst, building). Spetsig topp till palissader; faller man på den gör
   fallet dubbel skada.
 - **Vardag:** Hunters jagar vilda djur (inte björnar, tama djur eller bydjur) och styckar kroppen (en Bone Pile blir kvar).
   Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters **fäller riktiga
   träd** nära lägret (trädet faller och blir Fallen Logs som vanligt), hugger upp Fallen Logs och bär veden till elden. Elder håller elden vid liv.
+  - Arbetet letas **utanför lägret**: i en Tribe Village bortom palissaden (byns röjda mark har inget att plocka eller fiska),
+    i ett bofast läger bortom dess palissad, annars bortom några block från elden. Bor de innanför en palissad går de ut och
+    hem genom **porten**, och de kallas inte hem mitt i ett jobb hur långt bort det än är (bara när natten kommer).
+  - Woodcutters fäller bara **träd som vuxit där**: en stam av en sorts stock på jord med naturliga (inte utplacerade) löv
+    runt toppen, eller stubbar och Fallen Logs, och aldrig något inom lägret. Byns väggar, hus, takåsar, flaggstång och
+    vedtrave, palissader och spelarens stockbyggen lämnas i fred, och ett träd som vuxit ihop med en palissad fälls inte.
 - **Natt:** alla samlas runt lägerelden men går aldrig in i den. Jaktlaget håller ihop där det är.
 - **Ny lägereld:** försvinner lägrets eld samlas gruppen efter ca 2 minuter, väljer en plan, torr plats nära den gamla
   (helst samma), går dit tillsammans och gör en ny Campfire med en ring av Loose Stones; den blir deras nya hem. Ett

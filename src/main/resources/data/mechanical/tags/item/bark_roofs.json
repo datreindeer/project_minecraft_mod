@@ -1,0 +1,23 @@
+{
+  "values": [
+    "mechanical:oak_bark_roof",
+    "mechanical:spruce_bark_roof",
+    "mechanical:birch_bark_roof",
+    "mechanical:jungle_bark_roof",
+    "mechanical:acacia_bark_roof",
+    "mechanical:dark_oak_bark_roof",
+    "mechanical:mangrove_bark_roof",
+    "mechanical:cherry_bark_roof",
+    "mechanical:pale_oak_bark_roof",
+    "mechanical:poplar_bark_roof",
+    "mechanical:aspen_bark_roof",
+    "mechanical:alder_bark_roof",
+    "mechanical:beech_bark_roof",
+    "mechanical:linden_bark_roof",
+    "mechanical:willow_bark_roof",
+    "mechanical:ash_bark_roof",
+    "mechanical:hazel_bark_roof",
+    "mechanical:pine_bark_roof",
+    "mechanical:yew_bark_roof"
+  ]
+}
