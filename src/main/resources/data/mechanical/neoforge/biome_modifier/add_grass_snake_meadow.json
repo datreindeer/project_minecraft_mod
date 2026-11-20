@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:meadow",
+    "mechanical:hazel_meadow",
+    "minecraft:flower_forest"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:grass_snake",
+      "weight": 2,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 1
+      }
+    }
+  ]
+}
