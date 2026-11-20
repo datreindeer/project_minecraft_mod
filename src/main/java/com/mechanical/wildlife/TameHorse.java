@@ -5,7 +5,10 @@ import com.mechanical.Carting;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * A tamed {@link WildHorse}: a vanilla horse underneath (riding, jumping, inventory, horse armour, breeding) that keeps
@@ -76,6 +80,39 @@ public class TameHorse extends Horse {
             standIfPossible();
         }
         playerJumpPendingScale = (jumpAmount >= 90 ? 1.0F : 0.4F + 0.4F * Math.max(0, jumpAmount) / 90.0F) * BAREBACK_JUMP;
+    }
+
+    /** Led by a living Trader Caravan member: the lead never breaks or comes off, and players can't take the horse. */
+    public boolean caravanLed() {
+        return getLeashHolder() instanceof com.mechanical.people.Tribesperson t && t.isAlive() && t.role().caravan();
+    }
+
+    /** Too far from its caravan (stuck, pushed, chased off): it catches up behind the leader instead of snapping the lead. */
+    @Override
+    public void leashTooFarBehaviour() {
+        Entity holder = getLeashHolder();
+        if (!caravanLed() || holder == null) {
+            super.leashTooFarBehaviour();
+            return;
+        }
+        Vec3 back = holder.position().add(Vec3.directionFromRotation(0, holder.getYRot()).scale(-3));
+        ejectPassengers();
+        teleportTo(back.x, holder.getY(), back.z);
+    }
+
+    @Override
+    public void dropLeash() {
+        if (!caravanLed()) super.dropLeash();
+    }
+
+    @Override
+    public void removeLeash() {
+        if (!caravanLed()) super.removeLeash();
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        return caravanLed() ? InteractionResult.PASS : super.mobInteract(player, hand);
     }
 
     @Override

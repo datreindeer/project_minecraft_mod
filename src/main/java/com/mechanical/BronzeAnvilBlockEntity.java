@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * The bloom lying on a Bronze Anvil. A hot one takes {@link Ironworking#HITS} blows of the Bronze Smithing Hammer
  * (counted on the bloom, so a cooled one keeps them), then it is wrought iron and slag; a cold one takes none.
+ * A Copper Ingot is struck cold: {@link Coins#MINT_HITS} blows mint {@link Coins#COINS_PER_INGOT} Copper Coins.
  */
 public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
     public BronzeAnvilBlockEntity(BlockPos pos, BlockState state) {
@@ -30,6 +31,10 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
     @Override
     public void strike(ServerLevel level, Player player, ItemStack hammer, InteractionHand hand) {
         double x = worldPosition.getX() + 0.5, y = worldPosition.getY() + top() + 0.05, z = worldPosition.getZ() + 0.5;
+        if (Coins.mintable(item)) {
+            mint(level, player, hammer, hand, x, y, z);
+            return;
+        }
         if (!Ironworking.isHot(item, level.getGameTime())) {
             cool(level);
             level.playSound(null, worldPosition, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.4F, 1.6F);
@@ -51,6 +56,20 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 4, 0.1, 0.05, 0.1, 0.01);
         Block.popResource(level, worldPosition.above(), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get(), Ironworking.INGOTS_PER_BLOOM));
         Block.popResource(level, worldPosition.above(), new ItemStack(Ironworking.SLAG.get(), Ironworking.SLAG_PER_BLOOM));
+        sync();
+    }
+
+    private void mint(ServerLevel level, Player player, ItemStack hammer, InteractionHand hand, double x, double y, double z) {
+        level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.5F, 1.4F + level.getRandom().nextFloat() * 0.2F);
+        level.sendParticles(ParticleTypes.CRIT, x, y, z, 6, 0.15, 0.05, 0.15, 0.3);
+        hammer.hurtAndBreak(1, player, hand);
+        if (++hits < Coins.MINT_HITS) {
+            setChanged();
+            return;
+        }
+        item = ItemStack.EMPTY;
+        hits = 0;
+        Block.popResource(level, worldPosition.above(), new ItemStack(Coins.COPPER_COIN.get(), Coins.COINS_PER_INGOT));
         sync();
     }
 

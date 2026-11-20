@@ -4,7 +4,8 @@
     "count": 24
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "mechanical:copper_coin",
+    "count": 4
   },
   "max_uses": 16,
   "xp": 20,

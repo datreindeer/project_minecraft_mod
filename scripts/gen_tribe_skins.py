@@ -5,7 +5,8 @@ cold: fur hoods, long hide coats with fur trim, fur trousers and mittens; temper
 warm: light linen wraps and kilts, head cloths, sandals; jungle: loincloths and grass skirts, feather headdresses, paint.
 Temperate skins go in tribesperson/, the others in tribesperson/<climate>/. Next to every skin a "_tint" mask marks the
 dyed parts (headbands, sashes, coat bands, loincloths) in grey; client/people/TintedSkin multiplies them by the tribe's
-colour. Run: python scripts/gen_tribe_skins.py [preview_dir]"""
+colour. Trader Caravans (trader, guard) get one temperate set: fine gem-set robes and clean linen under armour.
+Run: python scripts/gen_tribe_skins.py [preview_dir]"""
 import random
 import sys
 from pathlib import Path
@@ -70,6 +71,8 @@ AMBER = hexc("c8862a")
 LINEN = hexc("d9cba8")       # pale woven plant fibre (warm climates)
 LEAF = hexc("6f8a3c")        # grass/leaf skirts and aprons (jungle)
 WHITE_CLAY = hexc("e4ddd0")
+GOLD = hexc("d4a838")
+GEMS = [hexc("c0283a"), hexc("2c5cc8"), hexc("2a9a5a"), hexc("8a3ac0"), hexc("e8c030")]  # ruby, sapphire, emerald, amethyst, topaz
 FEATHERS = [hexc("c43a2a"), hexc("2f8a4a"), hexc("2e5fa8"), hexc("e0b830"), hexc("f0ece2"), hexc("3a3030")]
 
 
@@ -223,6 +226,8 @@ class Look:
         self.armband = None            # a band round the upper arms (colour)
         self.body_paint = None         # dots and bars on bare skin (colour)
         self.barefoot = False
+        self.fine = False              # well-made clothes: straight hems, not ragged (caravan traders and guards)
+        self.gems = None               # gemstones set along the band, the headband and the necklace (list of colours)
         self.s = None
 
     def tint(self, col, f):
@@ -329,6 +334,8 @@ class Look:
                     c = shade(self.body_paint, side_shade(face))
             if self.band and self.top is not None and Y == 5 and face in ("front", "back", "left", "right"):
                 c = self.material(s, self.band, "weave", key, x, y, face)  # dyed band across the coat
+                if self.gems and x % 3 == 1:
+                    c = self.tint(self.gems[(x // 3 + len(face)) % len(self.gems)], side_shade(face))  # set with gemstones
             if self.skirt and Y >= 9:
                 c = self.material(s, self.skirt, self.skirt_mat, key, x, y, face)
             if self.apron and face == "front" and 8 <= Y <= 11 and 1 <= x <= 6:
@@ -350,12 +357,12 @@ class Look:
             if self.skirt and Y < self.skirt_to:
                 c = self.material(s, self.skirt, self.skirt_mat, key, x, y, face)
                 if Y == self.skirt_to - 1:
-                    c = self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
+                    c = self.sh(c, 0.85) if self.fine else self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
                 return c
             if Y < self.skirt_to and self.top is not None and self.top_kind != "vest":
                 c = self.material(s, self.top, tm, key, x, y, face)
                 if Y == self.skirt_to - 1:
-                    c = self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
+                    c = self.sh(c, 0.85) if self.fine else self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
                 return c
             if self.top_kind == "vest" and Y < 14 and self.legs:
                 return self.material(s, shade(self.legs, 0.92), "hide", key, x, y, face)
@@ -445,6 +452,8 @@ class Look:
         if long_hair and x in (0, 7) and y <= 6:
             return self.hair_px(s, key, x, y, 0.86)  # hair framing the face
         if self.headband and y == 1 and self.hair_style not in ("bald_top",):
+            if self.gems and x in (3, 4):
+                return self.gems[0] if x == 3 else shade(self.gems[0], 0.8)  # a stone on the brow
             return self.tint(self.headband, 1.0 if x % 3 else 0.82)
         if y == 3 and x in (1, 2, 5, 6):  # brows
             return shade(self.hair, 1.15 if self.hair in (HAIR["white"], HAIR["grey"]) else 0.9)
@@ -559,6 +568,13 @@ class Look:
         kind = self.necklace
         # V-shaped string over the chest
         on_string = (Y == 0 and x in (0, 7)) or (Y == 1 and x in (1, 6)) or (Y == 2 and x in (2, 5))
+        if kind == "gems":
+            # a gold chain with a stone on every other link and a big one below
+            if on_string or (Y == 2 and x in (3, 4)):
+                return self.gems[(x + Y) % len(self.gems)] if (x + Y) % 2 == 0 else GOLD
+            if Y == 3 and x in (3, 4):
+                return self.gems[0] if x == 3 else shade(self.gems[0], 0.8)
+            return None
         if kind == "amber":
             if Y == 3 and x in (3, 4):
                 return AMBER if x == 3 else shade(AMBER, 0.8)
@@ -843,6 +859,41 @@ def dress(L, zone, i):
 
 
 ROLES = ["hunter", "gatherer", "fisher", "woodcutter", "elder"]
+# Trader Caravans (people/Caravans.java) travel far: one temperate set, no climate variants
+CARAVAN_ROLES = ["trader", "guard"]
+
+
+def caravan_person(role, i):
+    """The caravan's old trader in a fine robe of the tribe's colour, gold-banded and set with gemstones; or a guard in
+    clean linen and leather (the armour goes on top in game, never a helmet), the tribe's colour on the headband."""
+    r = random.Random(f"{role}-{i}")
+    woman = i % 2 == 1
+    L = Look(r, woman, role)
+    L.fine = True
+    L.eyes = EYES[pick(r, ["brown", "dark", "blue", "green", "grey"])]
+    L.wraps = None
+    if role == "trader":
+        L.skin = SKIN[["light", "olive", "tan", "pale"][i]]
+        L.hair = HAIR[pick(r, ["grey", "white"])]
+        L.wrinkles = True
+        L.top, L.top_kind, L.top_mat, L.sleeves, L.skirt_to = DYE, "robe", "weave", 12, 21
+        L.band, L.trim, L.belt = GOLD, GOLD, LEATHER
+        L.gems = [GEMS[(i + k) % len(GEMS)] for k in range(3)]
+        L.necklace = "gems"
+        L.headband = GOLD
+        L.legs, L.boots = None, LEATHER
+        L.hair_style = pick(r, ["long", "bun"]) if woman else pick(r, ["bald_top", "short"])
+        L.beard = None if woman else pick(r, ["long", "full"])
+    else:
+        L.skin = SKIN[["tan", "light", "brown", "olive"][i]]
+        L.hair = HAIR[pick(r, ["black", "darkbrown", "brown", "auburn", "blond"])]
+        L.top, L.top_kind, L.top_mat, L.sleeves, L.skirt_to = LINEN, "tunic", "weave", 4, 14
+        L.belt, L.bracers = LEATHER, LEATHER
+        L.legs, L.legs_to, L.boots = LEATHER, 22, LEATHER
+        L.headband = DYE
+        L.hair_style = pick(r, ["braids", "bun"]) if woman else pick(r, ["short", "short", "long"])
+        L.beard = None if woman else pick(r, ["short", "stubble", "full"])
+    return L
 
 
 def flat_view(img, slim, back=False):
@@ -887,6 +938,15 @@ def build():
                 img.save(out / f"{role}_{i}.png")
                 sk.mask.save(out / f"{role}_{i}_tint.png")
                 made[(zone, role, i)] = (img, sk.mask, L.woman)
+    for role in CARAVAN_ROLES:
+        for i in range(4):
+            L = caravan_person(role, i)
+            sk = Skin(f"{role}{i}", L.woman)
+            img = sk.build(L)
+            assert sk.mask.getbbox() is not None, f"{role}_{i}: nothing in the tribe's colour"
+            img.save(OUT / f"{role}_{i}.png")
+            sk.mask.save(OUT / f"{role}_{i}_tint.png")
+            made[("caravan", role, i)] = (img, sk.mask, L.woman)
     return made
 
 
@@ -920,6 +980,15 @@ def preview(made, out_dir):
                     v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
                     sheet.alpha_composite(v, (((i * 2 + k) * 18 + 1) * scale, (row * 34 + 1) * scale))
         sheet.save(out_dir / f"tribe_sheet_{zone}.png")
+    sheet = Image.new("RGBA", (cols * 18 * scale, len(CARAVAN_ROLES) * 34 * scale), (70, 90, 70, 255))
+    for row, role in enumerate(CARAVAN_ROLES):
+        for i in range(4):
+            img, mask, slim = made[("caravan", role, i)]
+            img = dyed(img, mask, PREVIEW_DYES[(row + i) % len(PREVIEW_DYES)])
+            for k, back in enumerate((False, True)):
+                v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
+                sheet.alpha_composite(v, (((i * 2 + k) * 18 + 1) * scale, (row * 34 + 1) * scale))
+    sheet.save(out_dir / "tribe_sheet_caravan.png")
 
 
 if __name__ == "__main__":

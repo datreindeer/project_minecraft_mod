@@ -261,6 +261,14 @@ public final class Ironworking {
         h.assertItemEntityPresent(SLAG.get(), anvilAt, 2);
         h.assertTrue(anvil.item().isEmpty() && hammer.getDamageValue() == HITS * HAMMER_WEAR, "the bloom is used up and the hammer worn " + HITS * HAMMER_WEAR);
 
+        // a Copper Ingot is struck cold into Copper Coins
+        anvil.place(level, new ItemStack(Items.COPPER_INGOT));
+        for (int i = 0; i < Coins.MINT_HITS - 1; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertItemEntityNotPresent(Coins.COPPER_COIN.get(), anvilAt, 2);
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertItemEntityPresent(Coins.COPPER_COIN.get(), anvilAt, 2);
+        h.assertTrue(anvil.item().isEmpty(), "the ingot is used up");
+
         // a cooled bloom keeps its blows and is reheated (1100°) in the Clay Kiln
         ItemStack half = IRON_BLOOM.get().getDefaultInstance();
         half.set(BLOOM_HITS.get(), 3);

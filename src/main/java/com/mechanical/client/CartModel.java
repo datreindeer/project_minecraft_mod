@@ -67,6 +67,31 @@ public class CartModel extends Model<Float> {
         return LayerDefinition.create(mesh, 128, 128);
     }
 
+    /**
+     * A caravan's covered cart (CartEntity#isCaravan): a canvas tilt over the bed, two side panels leaning in from the
+     * boards' top to a flat roof, the hoops under it painted on. Texture 128 x 128: scripts/gen_cart_canopy_textures.py.
+     */
+    public static class Canopy extends Model<Float> {
+        public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Mechanical.MODID, "cart"), "canopy");
+        /** Side panels lean in this far (radians) from upright. */
+        private static final float LEAN = 0.26F;
+
+        public Canopy(ModelPart root) {
+            super(root, RenderTypes::entityCutout);
+        }
+
+        public static LayerDefinition create() {
+            MeshDefinition mesh = new MeshDefinition();
+            PartDefinition root = mesh.getRoot();
+            root.addOrReplaceChild("roof", CubeListBuilder.create().texOffs(0, 0).addBox(-8, -32, -15, 16, 1, 30), PartPose.ZERO);
+            root.addOrReplaceChild("left_side", CubeListBuilder.create().texOffs(0, 32).addBox(-0.5F, -16, -15, 1, 16, 30),
+                    PartPose.offsetAndRotation(11.5F, -16, 0, 0, 0, -LEAN));
+            root.addOrReplaceChild("right_side", CubeListBuilder.create().texOffs(0, 32).mirror().addBox(-0.5F, -16, -15, 1, 16, 30),
+                    PartPose.offsetAndRotation(-11.5F, -16, 0, 0, 0, LEAN));
+            return LayerDefinition.create(mesh, 128, 128);
+        }
+    }
+
     /** Hub on the axle end, spokes through it, a ring of felloe segments; spins about its x axis. */
     private static void wheel(PartDefinition root, String name, float x) {
         PartDefinition wheel = root.addOrReplaceChild(name, CubeListBuilder.create().texOffs(0, 72).addBox(-2, -2, -2, 4, 4, 4),
