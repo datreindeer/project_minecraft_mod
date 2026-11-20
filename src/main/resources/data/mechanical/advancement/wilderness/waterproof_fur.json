@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/pelt_hoop",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beaver_fur_hat"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:otter_fur_cape"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:beaver_fur_hat"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.waterproof_fur.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.waterproof_fur.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

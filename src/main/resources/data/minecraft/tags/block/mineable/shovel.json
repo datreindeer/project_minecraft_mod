@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:worn_grass",
-    "mechanical:trodden_path"
+    "mechanical:trodden_path",
+    "mechanical:beaver_dam"
   ]
 }

@@ -19,6 +19,7 @@
     "mechanical:barley_grain",
     "mechanical:einkorn_grain",
     "mechanical:emmer_grain",
-    "mechanical:peas"
+    "mechanical:peas",
+    "mechanical:castoreum"
   ]
 }

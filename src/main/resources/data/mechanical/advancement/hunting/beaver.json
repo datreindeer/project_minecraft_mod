@@ -1,0 +1,100 @@
+{
+  "parent": "mechanical:hunting/waters",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_beaver"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_beaver_pelt"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beaver_tail"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:castoreum"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beaver_tooth"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sinew"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ],
+    [
+      "has_3"
+    ],
+    [
+      "has_4"
+    ],
+    [
+      "has_5"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:beaver_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.beaver.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.beaver.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

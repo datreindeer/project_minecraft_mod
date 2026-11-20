@@ -1,0 +1,195 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "pelt": "beaver"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "pelt": "beaver_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "pelt": "otter"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "pelt": "otter_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter_dry"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "pelt": "beaver"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "pelt": "beaver_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "pelt": "otter"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "pelt": "otter_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter_dry",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "pelt": "beaver"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "pelt": "beaver_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "pelt": "otter"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "pelt": "otter_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter_dry",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "pelt": "beaver"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "pelt": "beaver_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_beaver_dry",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "pelt": "otter"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "pelt": "otter_dry"
+      },
+      "apply": {
+        "model": "mechanical:block/pelt_hoop_otter_dry",
+        "y": 270
+      }
+    }
+  ]
+}

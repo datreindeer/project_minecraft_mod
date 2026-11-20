@@ -60,6 +60,7 @@ public final class Temperature {
         if (item.is(FUR_INSULATION)) return FUR_PER_PIECE; // fur pieces added by other features (data tag)
         if (item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PARKA.get()) || item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_BOOTS.get()))
             return com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PER_PIECE;
+        if (item.is(com.mechanical.wildlife.river.RiverFauna.WATERPROOF_FUR)) return com.mechanical.wildlife.river.RiverFauna.FUR_INSULATION;
         return 0;
     }
 
@@ -114,7 +115,10 @@ public final class Temperature {
         Level level = player.level();
         BlockPos pos = player.blockPosition();
         float t = ambient(level, pos);
-        if (player.isInWater()) t -= WATER * (1 - waterproofing(player)); // sealskin keeps the water out
+        // waterproof sealskin and fur (beaver, otter) keep the wet's chill off
+        float furDry = com.mechanical.wildlife.river.RiverFauna.waterproofing(player);
+        if (player.isInWater()) t -= WATER * (1 - Math.min(1, waterproofing(player) + furDry));
+        if (level.isRainingAt(pos.above())) t += RAIN * furDry;
 
         BlockPos fire = NightDangers.nearestFire(level, player.position(), FIRE_RANGE);
         if (fire != null) {

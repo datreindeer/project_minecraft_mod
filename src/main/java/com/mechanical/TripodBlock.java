@@ -38,9 +38,10 @@ public class TripodBlock extends Block implements EntityBlock {
     public static final IntegerProperty PIT = IntegerProperty.create("pit", 0, 4);
     public static final BooleanProperty KETTLE = BooleanProperty.create("kettle");
     public static final BooleanProperty HOT = BooleanProperty.create("hot");
-    private static final VoxelShape CAMPFIRE_SHAPE = box(2, 0, 2, 14, 16, 14);
+    // around the kettle as drawn: over a campfire it hangs down into the fire's block, over a pit it hangs at the 2x2's centre
+    private static final VoxelShape CAMPFIRE_SHAPE = box(1.5, -6, 1.5, 14.5, 16, 14.5);
     /** Over a pit: the quarter of the block next to the pit's middle (part 0's middle is at its south-east corner). */
-    private static final VoxelShape[] PIT_SHAPES = {box(6, 0, 6, 16, 16, 16), box(0, 0, 6, 10, 16, 16), box(6, 0, 0, 16, 16, 10), box(0, 0, 0, 10, 16, 10)};
+    private static final VoxelShape[] PIT_SHAPES = {box(9.5, -2, 9.5, 22.5, 16, 22.5), box(-6.5, -2, 9.5, 6.5, 16, 22.5), box(9.5, -2, -6.5, 22.5, 16, 6.5), box(-6.5, -2, -6.5, 6.5, 16, 6.5)};
 
     public TripodBlock(Properties properties) {
         super(properties);

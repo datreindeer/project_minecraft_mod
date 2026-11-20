@@ -1,0 +1,67 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "mechanical:blocks/pelt_hoop",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pelt_hoop"
+        }
+      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_beaver_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:pelt_hoop",
+            "state": {
+              "pelt": "beaver"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:beaver_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:pelt_hoop",
+            "state": {
+              "pelt": "beaver_dry"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_otter_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:pelt_hoop",
+            "state": {
+              "pelt": "otter"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:otter_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:pelt_hoop",
+            "state": {
+              "pelt": "otter_dry"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

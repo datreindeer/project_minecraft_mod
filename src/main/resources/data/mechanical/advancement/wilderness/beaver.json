@@ -1,0 +1,57 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_beaver_pelt"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:castoreum"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beaver_tooth"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:raw_beaver_pelt"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.beaver.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.beaver.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

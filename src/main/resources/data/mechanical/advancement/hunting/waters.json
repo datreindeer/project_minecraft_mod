@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_seal_meat"
+            "items": "mechanical:raw_beaver"
           }
         ]
       }
@@ -16,12 +16,32 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_sturgeon"
+            "items": "mechanical:raw_otter"
           }
         ]
       }
     },
     "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_seal_meat"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_sturgeon"
+          }
+        ]
+      }
+    },
+    "has_4": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -36,7 +56,9 @@
     [
       "has_0",
       "has_1",
-      "has_2"
+      "has_2",
+      "has_3",
+      "has_4"
     ]
   ],
   "display": {

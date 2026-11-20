@@ -33,6 +33,10 @@
     "mechanical:puffball",
     "mechanical:beechnuts",
     "mechanical:roasted_beechnuts",
-    "mechanical:pine_resin"
+    "mechanical:pine_resin",
+    "mechanical:raw_beaver_pelt",
+    "mechanical:beaver_pelt",
+    "mechanical:raw_otter_pelt",
+    "mechanical:otter_pelt"
   ]
 }

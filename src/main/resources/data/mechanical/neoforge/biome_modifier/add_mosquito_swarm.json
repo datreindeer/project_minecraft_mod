@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "mechanical:willow_fen"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:mosquito_swarm",
+      "weight": 12,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 2
+      }
+    }
+  ]
+}

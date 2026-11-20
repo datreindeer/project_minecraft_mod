@@ -49,7 +49,7 @@ public final class StrawBedRest {
             return;
         }
         player.setRespawnPosition(new ServerPlayer.RespawnConfig(
-                LevelData.RespawnData.of(player.level().dimension(), pos, player.getYRot(), player.getXRot()), false), false);
+                LevelData.RespawnData.of(player.level().dimension(), pos, player.getYRot(), player.getXRot()), false), true); // vanilla "Respawn point set" (only when it changes)
         if (Sanity.rest(player, furred) && furred) player.heal(FURRED_HEAL);
         if (furred) Temperature.warmFromBedroll(player);
         player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
