@@ -2,6 +2,8 @@
   "values": [
     "minecraft:carrot",
     "minecraft:beetroot",
-    "mechanical:wild_carrot"
+    "mechanical:wild_carrot",
+    "minecraft:melon",
+    "minecraft:pumpkin"
   ]
 }

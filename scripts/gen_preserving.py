@@ -55,8 +55,8 @@ DRYABLE_MUSHROOMS = [m for m in MUSHROOMS if m != "mechanical:fly_agaric"]
 PRESERVED_FLESH = ["mechanical:smoked_meat", "mechanical:smoked_fish", "mechanical:jerky", "mechanical:dried_fish"]
 
 tag("perishes_1_day", RAW_MEAT + RAW_FISH)
-tag("perishes_2_days", BERRIES + ["minecraft:glow_berries"] + MUSHROOMS + ["mechanical:porridge", "mechanical:raw_porridge", "mechanical:peeled_egg"])
-tag("perishes_3_days", COOKED + ["mechanical:roasted_mushrooms", "mechanical:boiled_egg"])
+tag("perishes_2_days", BERRIES + ["minecraft:glow_berries"] + MUSHROOMS + ["minecraft:melon_slice", "mechanical:porridge", "mechanical:raw_porridge", "mechanical:peeled_egg"])
+tag("perishes_3_days", COOKED + ["mechanical:roasted_mushrooms", "mechanical:boiled_egg", "minecraft:pumpkin_pie"])
 tag("perishes_30_days", PRESERVED_FLESH + ["mechanical:dried_berries", "mechanical:dried_mushrooms"])
 tag("rots_to_flesh", RAW_MEAT + RAW_FISH + COOKED + PRESERVED_FLESH)
 tag("smokable_meat", RAW_MEAT)

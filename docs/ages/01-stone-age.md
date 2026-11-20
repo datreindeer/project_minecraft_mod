@@ -1215,10 +1215,10 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Mat | Håller |
 |---|---|
 | Rått kött (alla scraps, vanilla rått kött, rått fågelkött, Plucked-fåglar), rå fisk (filéer och Whole fish) | **1 dag** (20 min) |
-| Bär (vilda, Sweet Berries, Glow Berries), vild svamp, Raw Porridge, Porridge, Peeled Egg | **2 dagar** |
-| Tillagat kött och fisk (scraps, fågelkött och vanilla), Roasted Mushrooms, Boiled Egg | **3 dagar** |
+| Bär (vilda, Sweet Berries, Glow Berries), vild svamp, Raw Porridge, Porridge, Peeled Egg, Melon Slice | **2 dagar** |
+| Tillagat kött och fisk (scraps, fågelkött och vanilla), Roasted Mushrooms, Boiled Egg, Pumpkin Pie | **3 dagar** |
 | Sea Beet Leaves | **1 dag** |
-| Carrot, Beetroot, Wild Carrot | **10 dagar** |
+| Carrot, Beetroot, Wild Carrot, hel Melon och Pumpkin (som block i inventory; utplacerade block förskäms inte) | **10 dagar** |
 | Potato | **20 dagar** |
 | **Smoked Meat, Smoked Fish, Smoked Haunch/Ribs/Loin, Jerky och alla torkade kött utom nedan, Dried Fish, Dried Berries, Dried Mushrooms** | **30 dagar** |
 | Dried Pork, Dried Seal Meat (fettet härsknar) | **20 dagar** |

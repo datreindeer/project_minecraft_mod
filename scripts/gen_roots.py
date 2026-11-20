@@ -148,7 +148,8 @@ tag_add(BT / "mineable/axe.json", M + "root_cellar")
 tag_add(D / "mechanical/tags/block/mineable/sickle.json", M + "wild_carrot_plant", M + "sea_beet")
 tag_add(IT / "compostable.json", M + "wild_carrot", M + "sea_beet_leaves")
 tag_add(IT / "perishes_1_day.json", M + "sea_beet_leaves")
-w(IT / "perishes_10_days.json", {"values": ["minecraft:carrot", "minecraft:beetroot", M + "wild_carrot"]})
+w(IT / "perishes_10_days.json", {"values": ["minecraft:carrot", "minecraft:beetroot", M + "wild_carrot",
+                                         "minecraft:melon", "minecraft:pumpkin"]})  # whole fruit keeps longer than a cut slice
 w(IT / "perishes_20_days.json", {"values": ["minecraft:potato"]})
 w(IT / "cellar_produce.json", {"values": ["minecraft:carrot", "minecraft:potato", "minecraft:beetroot", M + "wild_carrot", M + "sea_beet_leaves"]})
 
