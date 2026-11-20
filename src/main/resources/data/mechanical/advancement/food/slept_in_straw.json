@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:food/straw_bed",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:straw_bed"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.slept_in_straw.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.slept_in_straw.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

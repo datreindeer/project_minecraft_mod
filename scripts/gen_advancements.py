@@ -68,6 +68,12 @@ def has(*items):
             for n, i in enumerate(items)}
 
 
+def ate(*items):
+    """Ate any one of the items."""
+    return {f"ate_{n}": {"trigger": "minecraft:consume_item", "conditions": {"item": {"items": check_item(i)}}}
+            for n, i in enumerate(items)}
+
+
 def placed(*blocks):
     return {f"placed_{n}": {"trigger": "minecraft:placed_block",
                             "conditions": {"location": {"type": "minecraft:match_block", "blocks": mid(b)}}}
@@ -543,8 +549,14 @@ TABS = {
         ("straw_bed", "sheaf", "minecraft:straw_bed", G, "Rest Easy",
          "Craft a Straw Bed (3 Straw, 3 Planks) and right-click it to rest: sets spawn, keeps Phantoms away",
          has("minecraft:straw_bed")),
+        ("slept_in_straw", "straw_bed", "minecraft:straw_bed", G, "Night Spins By",
+         "Lie down in a Straw Bed at night. Once every player is lying down, the night runs fast till morning",
+         by_code()),
         ("porridge", "wild_grain", "porridge", G, "Porridge",
          "Mix 2 Grain, a Clay Water Bucket and a Bowl, then cook it on a Campfire", has("porridge")),
+        ("square_meal", "porridge", "minecraft:bread", T, "Square Meal",
+         "Eat Porridge, Bread, Broth or a Stew. Prepared meals keep you full far longer than raw food",
+         ate("porridge", "minecraft:bread", "broth", "stew")),
         ("wild_carrot", "root", "wild_carrot", T, "Wild Root",
          "Dig up a Wild Carrot (white flower umbels on meadows and plains). A knife or sickle gets the whole root",
          has("wild_carrot")),

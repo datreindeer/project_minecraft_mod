@@ -24,7 +24,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 /**
  * The year (docs/seasons-and-tribes.md). A day lasts an hour: the overworld clock runs at a third of vanilla speed on
  * average, faster or slower so that the day is 40 min and the night 20 min at midsummer and the other way round at
- * midwinter (NeoForge clock rate, synced to clients, so the sky follows). The calendar is read off the clock: 30 days a
+ * midwinter (NeoForge clock rate, synced to clients, so the sky follows). While everyone lies in a Straw Bed at night
+ * the clock runs at {@link StrawBedRest#SPEED} instead. The calendar is read off the clock: 30 days a
  * month, 3 months a season, 360 days a year, a new world starting on 15 Sowing (mid spring) of year 1.
  * <p>
  * Two kinds of day: {@link #CLOCK_DAY} clock ticks (time of day, day number: anything read from
@@ -128,8 +129,8 @@ public final class Calendar {
         if (!(event.getLevel() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD) return;
         overworldClock(level.getServer()).ifPresent(clock -> {
             var clocks = level.getServer().clockManager();
-            float rate = rate(clocks.getInstance(clock).totalTicks());
-            // setRate broadcasts a packet: only when it changes (twice a day)
+            float rate = StrawBedRest.nightRunsFast(level) ? StrawBedRest.SPEED : rate(clocks.getInstance(clock).totalTicks());
+            // setRate broadcasts a packet: only when it changes (twice a day, and when a straw-bed fast-forward starts or ends)
             if (Math.abs(clocks.getInstance(clock).rate() - rate) > 1e-5F) clocks.setRate(clock, rate);
         });
     }

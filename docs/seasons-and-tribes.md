@@ -22,8 +22,8 @@
 | Dygn | 60 min: i snitt 30 min dag + 30 min natt. Längden på dag och natt varierar med säsongen. |
 | Kalender | 30 dagar/månad, 3 månader/säsong, 4 säsonger/år (360 dagar). En säsong = 90 h, ett år = 360 h. |
 | Start | Mitt i våren (dag 15 i vårens andra månad). |
-| Sova bort natten | När **alla** spelare ligger i en Straw Bed spolas natten fram. Himlen snurrar synligt, och natten är över på cirka 20–30 s. |
-| Hunger | Bättre och större mat ger mer mättnad som räcker längre. |
+| Sova bort natten | **Byggd.** När **alla** spelare ligger i en Straw Bed spolas natten fram. Himlen snurrar synligt, och natten är över på cirka 23 s. |
+| Hunger | **Byggd.** Bättre och större mat ger mer mättnad som räcker längre (`FoodValues`). |
 | Tid när servern är tom | Står still (vanilla-standard). Ingen missar vintern, och mat ruttnar inte medan man är borta. |
 | Temperatur | Sänks globalt på vintern. Kalla biomes kan skada spelare som saknar skydd. |
 | Väder | Följer säsongen. |
@@ -113,8 +113,11 @@
     (`Calendar`) får ge dygn, timme, dag/natt, säsong och år.
 - **Sova:** när alla spelare ligger i en Straw Bed (eller Furred Straw Bed) **spolas natten fram**. Klockan går då
   många gånger snabbare, så att natten tar cirka 20–30 s och himlen snurrar synligt. Om någon kliver ur går klockan i
-  vanlig takt igen. Det ersätter dagens beteende i `StrawBedRest`, där natten fortsätter som vanligt. Vila, sanity och
-  värme från Furred Straw Bed finns kvar. Matförstörelse räknas i dygn, så maten åldras även över en framspolad natt.
+  vanlig takt igen. Vila, sanity och värme från Furred Straw Bed finns kvar. **Byggt:** `StrawBedRest.nightRunsFast`
+  avgör, och `Calendar.onLevelTick` sätter då klockans takt till `StrawBedRest.SPEED` (24 klockticks per tick, en natt på
+  cirka 23 s) i stället för dygnets vanliga takt. Vanillas nattskip är fortfarande avstängt för halmsängar
+  (`mixin/PlayerMixin`). Advancement **Night Spins By**. Matförstörelse och annat som räknas i speltid går som vanligt
+  under en framspolad natt (bara ~23 s), så maten åldras knappt över natten.
 - **Tom server:** tiden står still.
 
 ### Kalender
@@ -194,7 +197,9 @@
   blir viktiga.
 - **Hunger med längre dygn:** man äter fler gånger per dygn än förut, men bättre och större mat ger mer mättnad
   (saturation) som räcker längre. Råa bär och små bitar ger lite. Tillagat kött ger mer. Måltider som gröt, stuvning
-  från Kettle och bröd ger mest. Det gör matlagning värd mödan.
+  från Kettle och bröd ger mest. Det gör matlagning värd mödan. **Byggt:** tabell i `FoodValues.java` (rått 0,1,
+  tillagat/konserverat 0,8, delikatess 1,0, måltid 1,2 i mättnadsmodifierare; hungern är oförändrad), se
+  01-stone-age.md "Mättnad". Hungern sjunker lika fort som i vanilla. Advancement **Square Meal**.
 
 ### Advancements
 - Advancements som "First Frost", "Survive your first winter" och "A full year", i en lämplig ålders flik.
@@ -216,7 +221,8 @@
    delade advancements, stammens ålder, ingen friendly fire. Kod: `clan/Clans.java` (data, regler, händelser),
    `clan/ClanNetwork.java` (paket och vy), `client/clan/ClanScreen.java` (sidan, G). `ClanTest` testar röstreglerna och
    åldern. Lang: `scripts/gen_clans.py`. Advancements: Hearth of the Tribe och Kin (Stenåldern, under Bonfire).
-   Förenklingar: inbjudningar sparas inte över en omstart; sidan visar 7 medlemmar per sida. Straw Bed som spolar fram natten och ny mättnad per mattyp passar också här.
+   Förenklingar: inbjudningar sparas inte över en omstart; sidan visar 7 medlemmar per sida.
+   Straw Bed som spolar fram natten och ny mättnad per mattyp är också byggda (v0.85.0).
 3. **Världsålder + NPC-stammars fördröjning.** NPC-byar som byggs om är ett eget, större steg, eftersom varje ålder
    behöver egna byggnadsritningar.
 4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder.

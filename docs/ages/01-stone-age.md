@@ -806,9 +806,9 @@ Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppe
 
 | Bit | Hunger | Mättnad | Tillagas | Smoking Rack |
 |---|---|---|---|---|
-| Raw Haunch | 3 | 0,2 | Campfire 30 s → **Cooked Haunch** (9 / 0,8) | 3 Smoked Meat |
-| Raw Ribs | 2 | 0,2 | Campfire 25 s → **Cooked Ribs** (6 / 0,8) | 2 Smoked Meat |
-| Raw Loin | 2 | 0,2 | Campfire 25 s → **Cooked Loin** (6 / 1,0) | 2 Smoked Meat |
+| Raw Haunch | 3 | 0,1 | Campfire 30 s → **Cooked Haunch** (9 / 0,8) | 3 Smoked Meat |
+| Raw Ribs | 2 | 0,1 | Campfire 25 s → **Cooked Ribs** (6 / 0,8) | 2 Smoked Meat |
+| Raw Loin | 2 | 0,1 | Campfire 25 s → **Cooked Loin** (6 / 1,0) | 2 Smoked Meat |
 
 En hel bit hängs på Smoking Rack som en remsa och röks till en Smoked Meat per enhet. (Drying Rack tar dem också men ger
 bara 1 Jerky per bit, så det lönar sig inte.)
@@ -932,10 +932,10 @@ Seagull gör det inte).
 | Fågel | Fjädrar | Rått kött (hunger) | Lagat (hunger / mättnad) |
 |---|---|---|---|
 | Greylag Goose | 3–5 | 2 Raw Goose (3) | Cooked Goose (7 / 0,8) |
-| Pheasant | 2–3 | 1 Raw Pheasant (2) | Cooked Pheasant (6 / 0,7) |
-| Willow Ptarmigan | 2–3 | 1 Raw Ptarmigan (2) | Cooked Ptarmigan (5 / 0,7) |
-| Rock Dove | 1–2 | 1 Raw Pigeon (1) | Cooked Pigeon (4 / 0,6) |
-| Chicken | 1–2 (80 %) | 1 Raw Chicken (2, vanilla) | Cooked Chicken (6 / 0,6, vanilla) |
+| Pheasant | 2–3 | 1 Raw Pheasant (2) | Cooked Pheasant (6 / 0,8) |
+| Willow Ptarmigan | 2–3 | 1 Raw Ptarmigan (2) | Cooked Ptarmigan (5 / 0,8) |
+| Rock Dove | 1–2 | 1 Raw Pigeon (1) | Cooked Pigeon (4 / 0,8) |
+| Chicken | 1–2 (80 %) | 1 Raw Chicken (2, vanilla) | Cooked Chicken (6 / 0,8) |
 
 - Rått fågelkött ger 30 % chans på Hunger (som vanilla Raw Chicken), lagas på Campfire (20 s, eller i smoker), går att
   **röka** (Smoked Meat) och **torka** (Jerky). Förskäms som annat kött: rått 1 dag, lagat 3 dagar; blir Rotten Flesh.
@@ -1310,6 +1310,21 @@ En flätad korg av pinnar med en tratt i mynningen, som läggs i vatten (stilla 
   Tropical Fish, 10 % Whole Pufferfish, 40 % Whole Cod; annars 70 % Whole Cod / 30 % Whole Salmon.
 - Testat: två fällor i en flod fylldes till 3 med random_tick_speed 30; en fälla i en vattenpöl på 2 block fick inget.
 
+### Mättnad (`FoodValues`)
+Ett dygn är en timme, så man blir hungrig ungefär tre gånger per dygn. Därför fyller bättre mat längre. Varje mat behåller
+sin hunger (storleken), men mättnaden räknas om från en tabell i `FoodValues.java`: mättnad = hunger × 2 × modifierare.
+Första regel som matchar item-id:t gäller, så ny mat med vanliga namn (`cooked_*`, `smoked_*`, `*_stew` …) hamnar rätt av sig själv.
+
+| Grupp | Modifierare | Vilka |
+|---|---|---|
+| Rått | 0,1 | rått kött och fisk, scraps, bär, nötter, svamp, rötter, blad, frukt, morot, potatis |
+| Tillagat och konserverat | 0,8 | `cooked_*`, `roasted_*`, `baked_*`, `smoked_*`, `dried_*`, jerky, Stockfish, Peeled Egg |
+| Delikatess | 1,0 | Cooked Bison Tongue, Roasted Beaver Tail, Cooked Loin, Sturgeon Roe |
+| Måltid | 1,2 | Porridge, Bread, Broth, Stew från Kettle, Mushroom/Rabbit/Beetroot Stew/Soup, Pumpkin Pie |
+| Orört (vanilla) | – | Golden Apple/Carrot, Honey Bottle, Chorus Fruit, Rotten Flesh, Spider Eye, Poisonous Potato, Pufferfish, Dried Kelp, Cookie |
+
+Hungern sjunker lika fort som i vanilla. Advancement **Square Meal** (ät en måltid) under Porridge.
+
 ### Förskämd mat, rökning och torkning
 Färsk mat **förskäms** med tiden. Tiden räknas i speltid (ticks, inte `/time set`) från när maten först hamnar i ett
 inventory. I tooltipen står **Fresh** (mer än halva tiden kvar), **Stale** (20–50 %) eller **Rotting** (under 20 %), och en
@@ -1342,21 +1357,21 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Mat | Från | Hunger | Mättnad |
 |---|---|---|---|
 | Smoked Meat | rått kött, 4 min rök | 3 | 0,8 |
-| Smoked Fish | Raw Cod/Salmon, 4 min rök | 3 | 0,7 |
-| Smoked Haunch / Ribs / Loin | en hel Raw Haunch / Ribs / Loin, 4 min rök | 9 / 6 / 6 | 0,8 / 0,8 / 0,9 |
+| Smoked Fish | Raw Cod/Salmon, 4 min rök | 3 | 0,8 |
+| Smoked Haunch / Ribs / Loin | en hel Raw Haunch / Ribs / Loin, 4 min rök | 9 / 6 / 6 | 0,8 |
 | Venison Jerky | Venison Scraps, Saiga Meat | 3 | 0,8 |
-| Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,9 |
-| Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,7 |
+| Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,8 |
+| Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,8 |
 | Dried Mutton | Raw Mutton, Mutton Scraps, Ibex Meat, Chamois Meat | 3 | 0,8 |
 | Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat | 2 | 0,8 |
-| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,6 |
-| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,7 |
-| Dried Seal Meat | Raw Seal Meat | 3 | 0,9 |
+| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
+| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
+| Dried Seal Meat | Raw Seal Meat | 3 | 0,8 |
 | Stockfish | Raw Cod, Raw Pike, Raw Sturgeon | 2 | 0,8 |
-| Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,7 |
+| Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,8 |
 | Jerky | Raw Meat Strips (och kött utan egen sort) | 2 | 0,8 |
-| Dried Berries | 4 bär → 4, torkade i solen | 1 | 0,5 |
-| Dried Mushrooms | 4 ätliga svampar → 4, torkade i solen | 1 | 0,6 |
+| Dried Berries | 4 bär → 4, torkade i solen | 1 | 0,8 |
+| Dried Mushrooms | 4 ätliga svampar → 4, torkade i solen | 1 | 0,8 |
 
 Mat som redan är **Rotting** går inte att röka eller torka ("This is too far gone to keep").
 
@@ -1878,7 +1893,7 @@ Flint Spear).
 ### Straw Bed (vila)
 Stenålderns säng. Man kan **vila**: högerklicka på en Straw Bed så sätts din
 respawnpunkt där och tiden sedan du vilade nollställs, så **phantoms** inte kommer (de kommer annars efter 3 nätter utan vila).
-**På natten lägger man sig** (inte med monster inom 8 block). Ligger alla spelare i en säng, och minst en i en Straw Bed, går klockan **40 gånger fortare** tills det ljusnar (ungefär 14 s), och man ser solen gå upp. Man vaknar själv när det blir ljust. Vanilla hoppar inte över natten och skärmen blir inte svart (`mixin/PlayerMixin`). Vilan ger också tillbaka sanity (se Mörkerrädsla).
+**På natten lägger man sig** (inte med monster inom 8 block). Ligger alla spelare (utom spectators) i en säng, och minst en i en Straw Bed, **spolas natten fram**: `Calendar` låter klockan gå 24 klockticks per tick (`StrawBedRest.SPEED`, ungefär 72 gånger dygnets vanliga takt) tills det ljusnar, så en hel natt tar cirka 23 s och man ser himlen snurra. Kliver någon ur går klockan i vanlig takt igen. När natten är slut får alla advancement **Night Spins By**. Ticks räknade med speltid (matförstörelse, ugnar) går som vanligt, så de hinner bara ~23 s under en framspolad natt. Man vaknar själv när det blir ljust. Vanilla hoppar inte över natten och skärmen blir inte svart (`mixin/PlayerMixin`). Vilan ger också tillbaka sanity (se Mörkerrädsla).
 Respawnpunkten håller när man dör: vanilla 26.3 låter annars inte en Straw Bed vara spawn (`straw_bed_rule` säger never),
 så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw Bed och Furred Straw Bed.
 - Recept (crafting table): `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]` → 1 Straw Bed. Straw får man när man skördar säd med Sickle.

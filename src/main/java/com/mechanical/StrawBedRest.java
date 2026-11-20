@@ -5,6 +5,7 @@ import com.mechanical.wildlife.Wildlife;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.Monster;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.CanContinueSleepingEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -32,7 +32,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 /**
  * Straw Bed: the stone age can't sleep the night away, but lying down in straw is a rest. Right-click sets your respawn
- * point and resets the time since you last rested (so phantoms keep away); the night goes on.
+ * point and resets the time since you last rested (so phantoms keep away). At night you lie down, and once everyone is
+ * lying down the night runs fast ({@link #nightRunsFast}); there is no vanilla night skip.
  * Right-click one holding a Wolf Pelt to spread it over the bed: a Furred Straw Bed, which rests better (more sanity, a
  * little healing, and warmth for a while afterwards). Broken, it gives the pelt back.
  */
@@ -67,7 +68,7 @@ public final class StrawBedRest {
         if (level.isDarkOutside() && level.dimensionType().defaultClock().isPresent()) lieDown(player, pos, state);
     }
 
-    /** At night you lie down in it; once every player is lying in a bed the night runs fast (see onLevelTick). */
+    /** At night you lie down in it; once every player is lying in a bed the night runs fast (see nightRunsFast). */
     private static void lieDown(ServerPlayer player, BlockPos pos, BlockState state) {
         ServerLevel level = player.level();
         if (state.getValue(AbstractBedBlock.OCCUPIED) || player.isSleeping()) return;
@@ -92,15 +93,12 @@ public final class StrawBedRest {
     }
 
     /**
-     * When all players in a level are lying down and at least one is in straw, the clock runs SPEED times faster till
-     * morning (vanilla doesn't skip: PlayerMixin keeps straw sleepers from "sleeping long enough"). The rate goes over the
-     * network, so clients see the sun come up fast instead of a jump.
+     * True while every player in the overworld (but spectators) is lying down at night and at least one is in straw: then
+     * {@link Calendar} runs the clock at {@link #SPEED} till morning (vanilla doesn't skip: PlayerMixin keeps straw sleepers
+     * from "sleeping long enough"). The rate goes over the network, so clients see the sky spin instead of a jump. Called
+     * every overworld tick; when a fast night ends in daylight, everyone gets {@link #SLEPT_ADVANCEMENT}.
      */
-    @SubscribeEvent
-    static void onLevelTick(LevelTickEvent.Post event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || level.players().isEmpty()) return;
-        var clock = level.dimensionType().defaultClock();
-        if (clock.isEmpty()) return;
+    static boolean nightRunsFast(ServerLevel level) {
         boolean straw = false, all = true;
         for (ServerPlayer p : level.players()) {
             if (p.isSpectator()) continue;
@@ -108,20 +106,17 @@ public final class StrawBedRest {
             else if (inStrawBed(p)) straw = true;
         }
         boolean fast = all && straw && level.isDarkOutside();
-        var clocks = level.getServer().clockManager();
-        float rate = clocks.getInstance(clock.get()).rate();
-        // shortcut: assumes nothing else sets the rate to exactly SPEED, so a rate left over from a server stop mid-night resets to 1
-        if (fast && rate != SPEED) {
-            restoreRate = rate;
-            clocks.setRate(clock.get(), SPEED);
-        } else if (!fast && rate == SPEED) {
-            clocks.setRate(clock.get(), restoreRate);
-            restoreRate = 1.0F;
-        }
+        // players already woke up this tick (CanContinueSleepingEvent), so award whoever is here
+        if (wasFast && !fast && !level.isDarkOutside())
+            for (ServerPlayer p : level.players()) if (!p.isSpectator()) Kettle.award(p, SLEPT_ADVANCEMENT);
+        wasFast = fast;
+        return fast;
     }
 
-    static final float SPEED = 40.0F; // a night (~11000 ticks) in about 14 s
-    private static float restoreRate = 1.0F;
+    /** Clock ticks per game tick on a fast night: a night (~11000 clock ticks) in about 23 s. */
+    static final float SPEED = 24.0F;
+    public static final Identifier SLEPT_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "food/slept_in_straw");
+    private static boolean wasFast;
 
     /** Swaps both halves for the furred bed, keeping facing and part (no shape updates, so neither half breaks the other). */
     static void spreadPelt(Level level, BlockPos pos, BlockState state) {
