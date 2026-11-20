@@ -1,0 +1,779 @@
+[
+ {
+  "title": {
+   "sv": "Stenåldern: de första dagarna",
+   "en": "Stone Age: the first days"
+  },
+  "intro": {
+   "sv": "Du börjar med bara händerna. Vanilla-genvägarna är borta: stockar kräver yxa, plankor splittras utan yxa och djur släpper inget kött förrän du styckar dem. Målet med de första dagarna är flintverktyg, stenverktyg, eld och en [[kiln]] som kan bränna en [[crucible]], det som bronsåldern behöver.",
+   "en": "You start with your bare hands. The vanilla shortcuts are gone: logs need an axe, planks splinter without an axe and animals drop no meat until you butcher them. The goal of the first days is flint tools, stone tools, fire and a [[kiln]] that can fire a [[crucible]], which is what the Bronze Age needs."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Fiber och snöre",
+     "en": "Fibre and twine"
+    },
+    "items": [
+     "plant_fibre",
+     "twine",
+     "cordage",
+     "minecraft:short_grass"
+    ],
+    "text": {
+     "sv": "Slå sönder gräs och ormbunkar. Gräs släpper inga frön längre, men 20 % av gångerna får du en [[plant_fibre]] (60 % senare, när du har en [[flint_knife]]; kniven slits 1 per strå).\n\n**3 Plant Fibre blir 1 [[twine]]** (formlöst, går i inventoryts 2×2). Twine binder ihop alla flintverktyg och behövs till [[fire_drill]] och [[tool_station]]. **3 Twine blir 1 [[cordage]]**, det kraftigare repet till riktiga stenverktyg, flotte och ställningar.\n\nTips: samla hellre för mycket. Du behöver Twine och Cordage i nästan allt under hela stenåldern.",
+     "en": "Break grass and ferns. Grass no longer drops seeds, but 20 % of the time you get a [[plant_fibre]] (60 % later, once you have a [[flint_knife]]; the knife loses 1 durability per blade of grass).\n\n**3 Plant Fibre make 1 [[twine]]** (shapeless, works in the inventory 2×2). Twine binds every flint tool and is needed for the [[fire_drill]] and the [[tool_station]]. **3 Twine make 1 [[cordage]]**, the stronger rope for real stone tools, rafts and racks.\n\nTip: gather more than you think. You need Twine and Cordage in almost everything throughout the Stone Age."
+    }
+   },
+   {
+    "title": {
+     "sv": "Flinta, stenar och pinnar",
+     "en": "Flint, rocks and sticks"
+    },
+    "items": [
+     "loose_flint",
+     "loose_stone",
+     "stone_chunk",
+     "minecraft:flint",
+     "minecraft:gravel",
+     "minecraft:stick"
+    ],
+    "text": {
+     "sv": "Titta efter **lösa stenar** på gräs och berg: [[loose_stone]], [[loose_granite]], [[loose_diorite]], [[loose_andesite]] och [[loose_flint]]. Små och mellanstora plockas med ett slag och ger 1–2 chunks ([[stone_chunk]] med flera); stora kräver en hacka och ger 3–4. Loose Flint ger [[minecraft:flint]] i stället. Flinta kommer också ur [[minecraft:gravel]].\n\n**Pinnar:** slå på löv. Löv släpper [[minecraft:stick]] betydligt oftare än i vanilla (ungefär 10 %).\n\nAlla fyra sorters rock chunks räknas som samma material och kan blandas i recepten.",
+     "en": "Look for **loose rocks** on grass and stone: [[loose_stone]], [[loose_granite]], [[loose_diorite]], [[loose_andesite]] and [[loose_flint]]. Small and medium ones are picked up with one hit and give 1–2 chunks ([[stone_chunk]] and friends); large ones need a pickaxe and give 3–4. Loose Flint gives [[minecraft:flint]] instead. Flint also comes from [[minecraft:gravel]].\n\n**Sticks:** punch leaves. Leaves drop a [[minecraft:stick]] far more often than in vanilla (about 10 %).\n\nAll four kinds of rock chunks count as the same material and can be mixed in recipes."
+    }
+   },
+   {
+    "title": {
+     "sv": "Flintverktygen",
+     "en": "The flint tools"
+    },
+    "items": [
+     "flint_knife",
+     "flint_axe",
+     "flint_pickaxe",
+     "flint_shovel",
+     "flint_hoe"
+    ],
+    "text": {
+     "sv": "Flint + Twine + Stick blir fem verktyg: [[flint_knife]], [[flint_axe]], [[flint_pickaxe]], [[flint_shovel]] och [[flint_hoe]]. **Kniven, yxan och hackan går inte att hoppa över.** Yxan är 2×2 och kan göras i inventoryt, vilket behövs eftersom du inte har någon crafting table än.\n\nFlintverktyg bryter som trä (sten blir cobblestone, men inte järnmalm), har 48 i hållbarhet och lagas med Flint.\n\n**Kniven är ett verktyg i recept:** den ligger kvar i rutan och tappar 1. Du behöver den för att stycka djur, skrapa hudar, göra [[tool_rod]] och mycket mer. **Hackan är din hammarsten** för att knacka stenhuvuden.",
+     "en": "Flint + Twine + Stick make five tools: [[flint_knife]], [[flint_axe]], [[flint_pickaxe]], [[flint_shovel]] and [[flint_hoe]]. **The knife, the axe and the pickaxe cannot be skipped.** The axe is 2×2 and can be made in the inventory, which matters because you have no crafting table yet.\n\nFlint tools mine like wood (stone gives cobblestone, but not iron ore), have 48 durability and are repaired with Flint.\n\n**The knife is a tool in recipes:** it stays in the grid and loses 1 durability. You need it to butcher animals, scrape hides, make a [[tool_rod]] and much more. **The pickaxe is your hammerstone** for knapping stone heads."
+    }
+   },
+   {
+    "title": {
+     "sv": "Fälla träd och få ved",
+     "en": "Felling trees and getting firewood"
+    },
+    "items": [
+     "flint_axe",
+     "oak_firewood",
+     "oak_fallen_log",
+     "oak_stump",
+     "oak_rough_log",
+     "bark",
+     "oak_firewood_pile"
+    ],
+    "text": {
+     "sv": "**Stockar går inte att bryta utan yxa.** Hugg ett naturligt träd med [[flint_axe]] så fälls hela trädet: det faller bort från dig och blir liggande som [[oak_fallen_log]], löven blir leaf litter och en [[oak_stump]] står kvar. Smyg för att hugga en enda stock. Varje stock ger **2 [[oak_firewood]]** av sitt träslag i stället för sig själv.\n\n**Bearbeta en Fallen Log:** håll in högerklick med yxan. Först lossnar 1–2 [[bark]], sedan blir stocken smalare och ger pinnar och [[oak_rough_log]]. Ställ en Rough Log på en stubbe (högerklick) och hugg den till 2–3 Firewood. Flint Axe lyckas 60 %, Stone Axe 75 %.\n\n**4 Firewood blir 1 stock**, och stocken blir plankor och [[minecraft:crafting_table]] (som också kräver yxa för att brytas). Lägg överbliven ved i en vedhög: högerklicka ovanpå ett block med Firewood, så får du en [[oak_firewood_pile]].",
+     "en": "**Logs cannot be broken without an axe.** Chop a natural tree with the [[flint_axe]] and the whole tree comes down: it falls away from you and stays where it lands as [[oak_fallen_log]], the leaves turn into leaf litter and an [[oak_stump]] is left behind. Sneak to chop a single log. Each log drops **2 [[oak_firewood]]** of its wood type instead of itself.\n\n**Working a Fallen Log:** hold right-click with the axe. First 1–2 [[bark]] come off, then the log gets thinner and drops sticks and [[oak_rough_log]]. Stand a Rough Log on a stump (right-click) and chop it into 2–3 Firewood. A Flint Axe succeeds 60 %, a Stone Axe 75 %.\n\n**4 Firewood make 1 log**, and the log makes planks and a [[minecraft:crafting_table]] (which also needs an axe to break). Store spare wood in a woodpile: right-click the top of a block with Firewood to get an [[oak_firewood_pile]]."
+    }
+   },
+   {
+    "title": {
+     "sv": "Skaft och stenhuvuden",
+     "en": "Shafts and stone heads"
+    },
+    "items": [
+     "tool_rod",
+     "stone_pickaxe_head",
+     "double_stone_pickaxe_head",
+     "stone_axe_head",
+     "double_stone_axe_head"
+    ],
+    "text": {
+     "sv": "**[[tool_rod]]:** lägg [[flint_knife]] ovanför valfri stock i crafting table. Det är skaftet till de riktiga stenverktygen.\n\n**Knacka huvuden** med [[flint_pickaxe]] som hammarsten (den ligger kvar och slits 1 per knackning): 3 rocks över hackan ger ett [[stone_pickaxe_head]], 3 rocks runt hackan ger ett [[stone_axe_head]]. Två enkla huvuden med hackan emellan blir ett [[double_stone_pickaxe_head]] respektive [[double_stone_axe_head]].\n\nEnkla huvuden räcker till crude-verktyg, dubbla behövs för de riktiga.",
+     "en": "**[[tool_rod]]:** put the [[flint_knife]] above any log in a crafting table. It is the shaft for the real stone tools.\n\n**Knap heads** with the [[flint_pickaxe]] as a hammerstone (it stays in the grid and loses 1 per knap): 3 rocks above the pickaxe make a [[stone_pickaxe_head]], 3 rocks around it make a [[stone_axe_head]]. Two single heads with the pickaxe between them become a [[double_stone_pickaxe_head]] or [[double_stone_axe_head]].\n\nSingle heads are enough for the crude tools, double heads are needed for the real ones."
+    }
+   },
+   {
+    "title": {
+     "sv": "Tool Station och stenverktyg",
+     "en": "Tool Station and stone tools"
+    },
+    "items": [
+     "tool_station",
+     "crude_stone_pickaxe",
+     "crude_stone_axe",
+     "minecraft:stone_pickaxe",
+     "minecraft:stone_axe",
+     "flint_spear"
+    ],
+    "text": {
+     "sv": "[[tool_station]] byggs av [[flint_axe]] + [[twine]] + [[flint_pickaxe]] över plankor och en crafting table (flintverktygen går åt, så gör nya). Den har en lista till vänster och tre platser: **huvud, bindning, skaft**. Ett verktyg låses upp första gången du bär dess material; klicka i listan så hämtas delarna (shift-klick hämtar flera satser).\n\n- [[crude_stone_pickaxe]] / [[crude_stone_axe]]: enkelt huvud + Twine + Stick. 80 i hållbarhet. Räcker för kopparmalm senare.\n- [[minecraft:stone_pickaxe]] / [[minecraft:stone_axe]]: dubbelt huvud + [[cordage]] + [[tool_rod]]. Stone Axe har 250 i hållbarhet.\n- [[flint_spear]]: Flint + Cordage + Tool Rod. Håll in högerklick och spring för en ansatsstöt.\n\nVerktygen visar sina siffror direkt i tooltipen (fart, hållbarhet, chans), så det är lätt att jämföra.",
+     "en": "The [[tool_station]] is made from a [[flint_axe]] + [[twine]] + [[flint_pickaxe]] over planks and a crafting table (the flint tools are used up, so make new ones). It has a list on the left and three slots: **head, binding, shaft**. A tool unlocks the first time you carry its materials; click it in the list to pull the parts in (shift-click pulls several sets).\n\n- [[crude_stone_pickaxe]] / [[crude_stone_axe]]: single head + Twine + Stick. 80 durability. Good enough for copper ore later.\n- [[minecraft:stone_pickaxe]] / [[minecraft:stone_axe]]: double head + [[cordage]] + [[tool_rod]]. The Stone Axe has 250 durability.\n- [[flint_spear]]: Flint + Cordage + Tool Rod. Hold right-click and sprint for a charged thrust.\n\nTools show their numbers right in the tooltip (speed, durability, chance), so they are easy to compare."
+    }
+   },
+   {
+    "title": {
+     "sv": "Eld",
+     "en": "Fire"
+    },
+    "items": [
+     "minecraft:campfire",
+     "fire_drill",
+     "minecraft:leaf_litter",
+     "bark",
+     "fire_pit"
+    ],
+    "text": {
+     "sv": "[[minecraft:campfire]] görs av sticks och 3 Firewood och **placeras släckt**. Tänd den med en [[fire_drill]] (Twine + sticks): det lyckas ungefär var tredje gång. Lägg först **tändmaterial** på elden, [[minecraft:leaf_litter]] eller [[bark]], så lyckas det i 75 %.\n\nEn lägereld brinner 3–5 minuter, glöder sedan i 2 minuter och slocknar. **Högerklicka med Firewood** för att tända glöd igen eller ge en brinnande eld +1 minut. Kyla, regn och blåst gör att den brinner ut fortare. Maten lagas på elden men blir **Burnt Food** om den ligger kvar för länge.\n\nEn brinnande eld håller monster på avstånd, värmer och läker mörkerrädsla. Senare kan du bygga en [[fire_pit]] (8 rock chunks runt en Firewood): 2×2, 8 matplatser, längre räckvidd, men den drar dubbelt så mycket ved.",
+     "en": "A [[minecraft:campfire]] is made from sticks and 3 Firewood and is **placed unlit**. Light it with a [[fire_drill]] (Twine + sticks): it works about one try in three. Put **tinder** on the fire first, [[minecraft:leaf_litter]] or [[bark]], and it works 75 % of the time.\n\nA campfire burns for 3–5 minutes, then smoulders as embers for 2 minutes and goes out. **Right-click with Firewood** to rekindle embers or give a burning fire +1 minute. Cold, rain and wind make it burn out faster. Food cooks on the fire but turns into **Burnt Food** if you leave it too long.\n\nA burning fire keeps monsters away, warms you and soothes fear of the dark. Later you can build a [[fire_pit]] (8 rock chunks around a Firewood): 2×2, 8 cooking spots, longer reach, but it eats twice as much wood."
+    }
+   },
+   {
+    "title": {
+     "sv": "Clay Kiln",
+     "en": "Clay Kiln"
+    },
+    "items": [
+     "kiln",
+     "minecraft:clay_ball",
+     "minecraft:charcoal",
+     "minecraft:brick",
+     "clay_water_bucket"
+    ],
+    "text": {
+     "sv": "[[kiln]] görs av [[minecraft:clay_ball]] och rock chunks och **placeras ovanpå en Campfire**, som blir dess eldstad. **En ny ugn är rå lera** och måste brännas först: en eld i minst 500° i 2 minuter (ungefär 3,5 minuter totalt på lägereldens ved). Leran mörknar tills den är rödbrun.\n\nUgnen har en **temperatur** (termometer i GUI:t). Ved når 650°, [[minecraft:charcoal]] 800°. Recept: Clay Ball → [[minecraft:brick]] (600°), stock eller 2 Firewood → Charcoal (400°), [[unfired_clay_bucket]] → [[clay_bucket]] (600°).\n\n**Gör Charcoal tidigt.** Det brinner 4 minuter och är det enda bränslet som når 800°, vilket [[crucible]] kräver. Clay Bucket bär bara vatten ([[clay_water_bucket]]) och spricker efter 16 hällningar.",
+     "en": "The [[kiln]] is made from [[minecraft:clay_ball]] and rock chunks and is **placed on top of a Campfire**, which becomes its firebox. **A new kiln is raw clay** and must be fired first: a fire at 500° or more for 2 minutes (about 3.5 minutes in total on the campfire's wood). The clay darkens until it is reddish brown.\n\nThe kiln has a **temperature** (thermometer in the GUI). Wood reaches 650°, [[minecraft:charcoal]] 800°. Recipes: Clay Ball → [[minecraft:brick]] (600°), a log or 2 Firewood → Charcoal (400°), [[unfired_clay_bucket]] → [[clay_bucket]] (600°).\n\n**Make Charcoal early.** It burns for 4 minutes and is the only fuel that reaches 800°, which the [[crucible]] needs. The Clay Bucket only carries water ([[clay_water_bucket]]) and cracks after 16 pours."
+    }
+   },
+   {
+    "title": {
+     "sv": "Mold Bench och Crucible",
+     "en": "Mold Bench and Crucible"
+    },
+    "items": [
+     "mold_bench",
+     "unfired_crucible",
+     "crucible"
+    ],
+    "text": {
+     "sv": "[[mold_bench]] görs av Flint, ett lerblock och plankor. Här formas allt av lera: välj i listan så hämtas Clay Balls ur inventoryt. Det första du behöver är en [[unfired_crucible]] (7 Clay Balls).\n\nBränn den i Clay Kiln: **40 s vid 800°**, alltså med Charcoal som bränsle. Ut kommer en [[crucible]], en degel som inte staplas.\n\nMed en Crucible är stenålderns mål nått. Allt annat i stenåldern handlar om att överleva och få det bättre, och degeln väntar på malm i bronsåldern.",
+     "en": "The [[mold_bench]] is made from Flint, a clay block and planks. All clay shaping happens here: pick a shape in the list and the Clay Balls are pulled from your inventory. The first thing you need is an [[unfired_crucible]] (7 Clay Balls).\n\nFire it in the Clay Kiln: **40 s at 800°**, meaning Charcoal as fuel. Out comes a [[crucible]], which does not stack.\n\nWith a Crucible the Stone Age goal is reached. Everything else in the Stone Age is about surviving and living better, and the crucible waits for ore in the Bronze Age."
+    }
+   }
+  ]
+ },
+ {
+  "title": {
+   "sv": "Stenåldern: livet i vildmarken",
+   "en": "Stone Age: life in the wild"
+  },
+  "intro": {
+   "sv": "Mat ruttnar, djur flyr, natten är mörk och full av rovdjur och kylan biter. De här stegen kan göras i nästan vilken ordning som helst parallellt med de första verktygen, men de är vad som håller dig vid liv.",
+   "en": "Food rots, animals flee, the night is dark and full of predators, and the cold bites. These steps can be done in almost any order alongside the first tools, but they are what keeps you alive."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Bär, svamp och nötter",
+     "en": "Berries, mushrooms and nuts"
+    },
+    "items": [
+     "raspberries",
+     "blueberries",
+     "chanterelle",
+     "fly_agaric",
+     "roasted_mushrooms",
+     "bark_basket",
+     "hazelnuts"
+    ],
+    "text": {
+     "sv": "Bärbuskar växer i fläckar efter biom: [[raspberries]] och [[blueberries]] i skog, [[lingonberries]] i taiga, [[wild_strawberries]] på slätten med flera. **Högerklicka en mogen buske** för 1–3 bär; den mognar igen på ~12 minuter.\n\nSvamp växer i fält i skuggan: [[chanterelle]], [[porcini]], [[morel]], [[puffball]] och fler. **Undvik [[fly_agaric]]**, den är giftig. Svamp släpper alltid med kniv, bara hälften av gångerna utan. På en Campfire blir den [[roasted_mushrooms]] (4 hunger).\n\nEn [[bark_basket]] (Bark + Cordage) rymmer frukt, bär och hudar, och **i en stängd korg åldras maten bara en tredjedel så fort**.",
+     "en": "Berry bushes grow in patches by biome: [[raspberries]] and [[blueberries]] in forests, [[lingonberries]] in taiga, [[wild_strawberries]] on plains and more. **Right-click a ripe bush** for 1–3 berries; it ripens again in ~12 minutes.\n\nMushrooms grow in shady fields: [[chanterelle]], [[porcini]], [[morel]], [[puffball]] and more. **Avoid the [[fly_agaric]]**, it is poisonous. Mushrooms always drop with a knife, only half the time without. On a Campfire they become [[roasted_mushrooms]] (4 hunger).\n\nA [[bark_basket]] (Bark + Cordage) holds fruit, berries and hides, and **food in a closed basket ages at only a third of the normal rate**."
+    }
+   },
+   {
+    "title": {
+     "sv": "Jakt",
+     "en": "Hunting"
+    },
+    "items": [
+     "crude_bow",
+     "minecraft:arrow",
+     "minecraft:fletching_table",
+     "bone_arrow",
+     "flint_spear",
+     "entity:red_deer"
+    ],
+    "text": {
+     "sv": "Kor, får, grisar och höns spawnar inte i naturen. I stället finns vilt: [[entity:red_deer]], [[entity:roe_deer]], [[entity:wild_boar]], [[entity:aurochs]], harar, fåglar och mycket mer. **Vilda djur märker dig** på 16 block om du springer, 10 om du går och 4 om du smyger. Skadade djur får panik och paniken smittar.\n\n[[crude_bow]] (Tool Station: Cordage + Twine + Tool Rod) skjuter med 70 % skada. Pilar görs i [[minecraft:fletching_table]], som nu öppnas med högerklick: Flint + Stick + Feather → 4 [[minecraft:arrow]], eller ben → [[bone_arrow]].\n\nTips: smyg nära, sikta väl. En bom som slår ner i marken skrämmer allt vilt inom 12 block. Blödande djur slutar slåss och flyr, så följ blodspåret.",
+     "en": "Cows, sheep, pigs and chickens do not spawn in the wild. Instead there is game: [[entity:red_deer]], [[entity:roe_deer]], [[entity:wild_boar]], [[entity:aurochs]], hares, birds and much more. **Wild animals notice you** at 16 blocks if you sprint, 10 if you walk and 4 if you sneak. Wounded animals panic and the panic spreads.\n\nThe [[crude_bow]] (Tool Station: Cordage + Twine + Tool Rod) shoots at 70 % damage. Arrows are made at the [[minecraft:fletching_table]], which now opens with right-click: Flint + Stick + Feather → 4 [[minecraft:arrow]], or bone → [[bone_arrow]].\n\nTip: sneak close and aim well. A miss that hits the ground scares all game within 12 blocks. Bleeding animals stop fighting and flee, so follow the blood trail."
+    }
+   },
+   {
+    "title": {
+     "sv": "Stycka bytet",
+     "en": "Butchering"
+    },
+    "items": [
+     "flint_knife",
+     "raw_hide",
+     "venison_scraps",
+     "cooked_venison_scraps",
+     "sinew",
+     "minecraft:feather",
+     "bone_pile"
+    ],
+    "text": {
+     "sv": "Vilda djur släpper ingen loot. De blir liggande som en kropp i 5 minuter. **Håll in högerklick med en kniv** på kroppen. Styckningen sker i två omgångar: först det yttre ([[raw_hide]], ull, [[minecraft:feather]]), sedan köttet, till exempel [[venison_scraps]], ibland [[sinew]], horn och fett. Kvar blir en [[bone_pile]] som kan ge ben.\n\nKöttbitarna (scraps) lagas på en Campfire på 20 s, till exempel [[cooked_venison_scraps]].\n\nBättre knivar styckar snabbare och ger mer. [[tusk_dagger]] (Tusk + Cordage + Leather) ger 1,6× i första omgången och är den första kniven som klarar en björn.",
+     "en": "Wild animals drop no loot. They stay on the ground as a carcass for 5 minutes. **Hold right-click with a knife** on the carcass. Butchering happens in two rounds: first the outside ([[raw_hide]], wool, [[minecraft:feather]]), then the meat, for example [[venison_scraps]], sometimes [[sinew]], horn and fat. What is left is a [[bone_pile]] that can give bones.\n\nMeat scraps cook on a Campfire in 20 s, for example [[cooked_venison_scraps]].\n\nBetter knives butcher faster and yield more. The [[tusk_dagger]] (Tusk + Cordage + Leather) gives 1.6× in the first round and is the first knife that can handle a bear."
+    }
+   },
+   {
+    "title": {
+     "sv": "Bära hem bytet",
+     "en": "Hauling the kill home"
+    },
+    "items": [
+     "travois",
+     "hanging_rack",
+     "raw_haunch",
+     "raw_ribs",
+     "raw_loin",
+     "cooked_haunch"
+    ],
+    "text": {
+     "sv": "**Smyg + högerklick med tom hand** på en kropp lyfter upp den på axlarna (små och mellanstora djur) eller släpar den (stora). Det gör dig långsammare och kroppen blöder på vägen, vilket lockar rovdjur på natten.\n\n[[travois]] (Tool Rod, Cordage, Scraped Hide) är en släpsläde med 3 platser: en stor, en mellanstor + en lätt eller tre lätta kroppar.\n\n**[[hanging_rack]]** är det stora lyftet: häng kroppen där så ger styckningen hela huden utan slump och **dubbelt så mycket kött** i stora bitar ([[raw_haunch]], [[raw_ribs]], [[raw_loin]]). Har den hängt 3 minuter blir det ×1,25 till. En hängande kropp håller 3 dygn i stället för 1. Ställ en lägereld bredvid ställningen, annars kommer vargarna och äter upp den.",
+     "en": "**Sneak + right-click with an empty hand** on a carcass lifts it onto your shoulders (small and medium animals) or drags it (large ones). It slows you down and the carcass bleeds along the way, which draws predators at night.\n\nThe [[travois]] (Tool Rod, Cordage, Scraped Hide) is a drag sledge with 3 slots: one large, one medium + one light, or three light carcasses.\n\nThe **[[hanging_rack]]** is the big upgrade: hang the carcass there and butchering gives the whole hide with no chance roll and **twice as much meat** in big cuts ([[raw_haunch]], [[raw_ribs]], [[raw_loin]]). If it has hung for 3 minutes you get ×1.25 on top. A hanging carcass keeps for 3 days instead of 1. Put a campfire next to the rack, or the wolves will come and eat it."
+    }
+   },
+   {
+    "title": {
+     "sv": "Hudar, läder och Armor Station",
+     "en": "Hides, leather and the Armor Station"
+    },
+    "items": [
+     "scraped_hide",
+     "drying_rack",
+     "minecraft:leather",
+     "armor_station",
+     "bone_needle",
+     "leather_satchel"
+    ],
+    "text": {
+     "sv": "Djur släpper inte läder. [[raw_hide]] + kniv blir [[scraped_hide]]. Spänn upp den på en [[drying_rack]] (sticks + Twine) och vänta ~3 minuter: den blir [[minecraft:leather]]. En Drying Rack kan byggas på höjden till 2 block med 4 platser.\n\n[[armor_station]] (Leather, [[bone_needle]], plankor och crafting table) syr rustning. Bone Needle görs av ben eller fiskben + kniv. Läderrustning tar läder + tråd: hjälm 5, bröst 8, ben 7, stövlar 4 Leather. Varje del isolerar 15 % mot kyla.\n\n[[leather_satchel]] (4 Leather + tråd) är en väska med 9 platser för vad som helst.",
+     "en": "Animals do not drop leather. [[raw_hide]] + knife makes [[scraped_hide]]. Stretch it on a [[drying_rack]] (sticks + Twine) and wait ~3 minutes: it becomes [[minecraft:leather]]. A Drying Rack can be built up to 2 blocks tall with 4 slots.\n\nThe [[armor_station]] (Leather, [[bone_needle]], planks and a crafting table) sews armour. A Bone Needle is made from a bone or fish bones + knife. Leather armour takes leather + thread: helmet 5, chest 8, legs 7, boots 4 Leather. Each piece insulates 15 % against cold.\n\nThe [[leather_satchel]] (4 Leather + thread) is a bag with 9 slots for anything."
+    }
+   },
+   {
+    "title": {
+     "sv": "Tråd",
+     "en": "Thread"
+    },
+    "items": [
+     "stinging_nettle",
+     "nettle_fiber",
+     "drop_spindle",
+     "nettle_thread",
+     "wool_thread",
+     "sinew_thread"
+    ],
+    "text": {
+     "sv": "Läder sys med tråd, och det finns flera sorter. [[stinging_nettle]] växer i lövskog och längs vatten. **Den bränns** om du går genom den utan byxor; smyg eller ha leggings på. Den ger [[nettle_stalks]], och stjälkar + kniv ger [[nettle_fiber]].\n\n[[drop_spindle]] (en Stick över en rock chunk, ett ben eller en Clay Ball) spinner fiber till tråd: Nettle Fiber → [[nettle_thread]]. Ett ullblock ger 3 [[wool_thread]]. [[sinew]] + kniv ger 2 [[sinew_thread]].\n\nArmor Station tar vilken tråd som helst (även String från spindlar) till läderdelarna. Pälsdelar sys fortfarande med hel Sinew.",
+     "en": "Leather is sewn with thread, and there are several kinds. [[stinging_nettle]] grows in broadleaf forest and along water. **It stings** if you walk through it without trousers; sneak or wear leggings. It drops [[nettle_stalks]], and stalks + knife give [[nettle_fiber]].\n\nThe [[drop_spindle]] (a Stick over a rock chunk, a bone or a Clay Ball) spins fibre into thread: Nettle Fiber → [[nettle_thread]]. A wool block gives 3 [[wool_thread]]. [[sinew]] + knife gives 2 [[sinew_thread]].\n\nThe Armor Station accepts any thread (even String from spiders) for leather pieces. Fur pieces are still sewn with whole Sinew."
+    }
+   },
+   {
+    "title": {
+     "sv": "Förskämd mat, rökning och torkning",
+     "en": "Spoilage, smoking and drying"
+    },
+    "items": [
+     "smoking_rack",
+     "smoked_meat",
+     "venison_jerky",
+     "dried_berries",
+     "stockfish",
+     "spoiled_food"
+    ],
+    "text": {
+     "sv": "**Maten förskäms.** Rått kött och fisk håller 1 dag (20 minuter), bär 2 dagar, tillagat kött 3 dagar. Tooltipen visar Fresh, Stale eller Rotting. När tiden är slut blir det Rotten Flesh eller [[spoiled_food]].\n\n**Röka:** [[smoking_rack]] (sticks + Cordage) ovanför eller bredvid en brinnande Campfire. Efter 4 minuter i rök blir upp till 4 remsor [[smoked_meat]] eller [[smoked_fish]], och hela stycken som Raw Haunch röks hela. Håller 30 dagar.\n\n**Torka:** häng rått kött på en [[drying_rack]] utomhus på dagen, så blir varje sort sin egen torkade mat: [[venison_jerky]], [[beef_jerky]], [[dried_fowl]], [[stockfish]] (förskäms aldrig) med flera. 4 bär blir [[dried_berries]], 4 svampar [[dried_mushrooms]]. Det tar 7–14 minuter i sol och pausar på natten och i regn. Stora och feta bitar går inte att torka: röka dem.",
+     "en": "**Food spoils.** Raw meat and fish keep 1 day (20 minutes), berries 2 days, cooked meat 3 days. The tooltip shows Fresh, Stale or Rotting. When time runs out it turns into Rotten Flesh or [[spoiled_food]].\n\n**Smoking:** a [[smoking_rack]] (sticks + Cordage) above or next to a burning Campfire. After 4 minutes in smoke up to 4 strips become [[smoked_meat]] or [[smoked_fish]], and whole cuts like a Raw Haunch are smoked whole. Keeps 30 days.\n\n**Drying:** hang raw meat on a [[drying_rack]] outdoors during the day and each kind becomes its own dried food: [[venison_jerky]], [[beef_jerky]], [[dried_fowl]], [[stockfish]] (never spoils) and more. 4 berries become [[dried_berries]], 4 mushrooms [[dried_mushrooms]]. It takes 7–14 minutes in sunlight and pauses at night and in rain. Big and fatty cuts cannot be dried: smoke them."
+    }
+   },
+   {
+    "title": {
+     "sv": "Fiske och fällor",
+     "en": "Fishing and traps"
+    },
+    "items": [
+     "crude_fishing_rod",
+     "bone_fish_hook",
+     "bone_hook_fishing_rod",
+     "fish_trap",
+     "whole_cod",
+     "fish_bones",
+     "snare"
+    ],
+    "text": {
+     "sv": "[[crude_fishing_rod]] (Tool Station: Flint + Twine + Tool Rod) fungerar som ett fiskespö men tål 24 kast. Fisk kommer som hel fisk, till exempel [[whole_cod]], som rensas med kniv och ger [[fish_bones]]. Fish Bones + kniv blir [[bone_fish_hook]], och kroken ger [[bone_hook_fishing_rod]] (napp 5 s snabbare).\n\n**Mat utan att jaga själv:** [[fish_trap]] läggs i vatten (minst 12 vattenblock runt omkring) och fångar upp till 3 fiskar, ungefär en var 6:e minut i en sjö och dubbelt så fort i en flod. [[snare]] (sticks + Cordage) fångar småvilt med 80 % chans; beta den med bär eller säd så lockar den djur inom 8 block. Snaror på stigar och nära bärbuskar fångar mer.",
+     "en": "The [[crude_fishing_rod]] (Tool Station: Flint + Twine + Tool Rod) works like a fishing rod but lasts 24 casts. Fish come whole, for example [[whole_cod]], which you clean with a knife for [[fish_bones]]. Fish Bones + knife make a [[bone_fish_hook]], and the hook makes a [[bone_hook_fishing_rod]] (bites 5 s faster).\n\n**Food without hunting yourself:** the [[fish_trap]] goes in water (at least 12 water blocks around it) and catches up to 3 fish, about one every 6 minutes in a lake and twice as fast in a river. The [[snare]] (sticks + Cordage) catches small game with an 80 % chance; bait it with berries or grain and it lures animals within 8 blocks. Snares on paths and near berry bushes catch more."
+    }
+   },
+   {
+    "title": {
+     "sv": "Överleva natten",
+     "en": "Surviving the night"
+    },
+    "items": [
+     "minecraft:torch",
+     "unlit_torch",
+     "entity:grey_wolf",
+     "entity:cave_lion",
+     "tallow",
+     "minecraft:candle"
+    ],
+    "text": {
+     "sv": "Natten är **nästan svart** och extra monster spawnar. [[entity:grey_wolf]] och [[entity:cave_lion]] jagar och omringar dig. **En brinnande Campfire eller Clay Kiln skyddar:** monster håller sig ~20 block bort och spawnar inte nära. Glöd och [[minecraft:torch]] skyddar inte, och facklor kan blåsa ut till [[unlit_torch]] i blåst och regn.\n\n**Blodmåne** ungefär var sjunde natt: dubbelt så många monster, zombiehorder som släcker dina eldar och elden skyddar inte. **Blåsiga nätter** blåser ut eldar och facklor under bar himmel; tak eller väggar på tre sidor skyddar.\n\n**Mörkerrädsla:** står du länge i mörker tappar du sanity och börjar höra och se saker; under 15 får du Mining Fatigue och Weakness. Elden, dagsljus, sällskap, varm mat och vila ger tillbaka. **Kyla:** natt, snö och regn kyler; en eld inom 6 block värmer. [[tallow]] (av fett på Campfire) blir [[minecraft:candle]].",
+     "en": "The night is **almost black** and extra monsters spawn. [[entity:grey_wolf]] and [[entity:cave_lion]] hunt and surround you. **A burning Campfire or Clay Kiln protects you:** monsters stay ~20 blocks away and do not spawn close. Embers and a [[minecraft:torch]] do not protect, and torches can blow out into an [[unlit_torch]] in wind and rain.\n\n**Blood moon** about every seventh night: twice as many monsters, zombie hordes that put out your fires, and the fire does not protect. **Windy nights** blow out fires and torches under open sky; a roof or walls on three sides protect.\n\n**Fear of the dark:** standing in darkness for long drains sanity and you start hearing and seeing things; below 15 you get Mining Fatigue and Weakness. Fire, daylight, company, hot food and rest restore it. **Cold:** night, snow and rain chill you; a fire within 6 blocks warms you. [[tallow]] (fat on a Campfire) makes a [[minecraft:candle]]."
+    }
+   },
+   {
+    "title": {
+     "sv": "Odling och vila",
+     "en": "Farming and rest"
+    },
+    "items": [
+     "wild_einkorn",
+     "einkorn_grain",
+     "flint_sickle",
+     "flail",
+     "straw",
+     "porridge",
+     "minecraft:straw_bed"
+    ],
+    "text": {
+     "sv": "**Säd är utsäde.** Leta [[wild_einkorn]] och [[wild_emmer]] på slätter och ängar och [[wild_pea]] i skogen; med kniv eller [[flint_sickle]] ger de alltid [[einkorn_grain]] (eller Emmer Grain, [[peas]]). Gör farmland med Flint Hoe och så. Grödor växer bara på dagen under öppen himmel, inom sitt temperaturspann, på fuktig jord; frost dödar unga plantor och jorden tappar bördighet för varje skörd.\n\nMogen säd ger en kärve. **[[flail]]** i handen och kärven i andra handen, slå på sten: Grain + [[straw]]. Flint Sickle ger extra kärve och Straw. 2 Grain + Clay Water Bucket + skål → [[raw_porridge]], kokad på Campfire → [[porridge]]. Bröd finns inte än. [[wild_carrot]] och Sea Beet ger rotfrukter, och en nedgrävd [[root_cellar]] håller dem 4× längre.\n\n**Vila:** [[minecraft:straw_bed]] (3 Straw + 3 plankor). Du sover inte bort natten, men vilan sätter respawn, håller phantoms borta och ger sanity. En Wolf Pelt på sängen gör en [[furred_straw_bed]] som också läker och värmer.",
+     "en": "**Grain is seed.** Look for [[wild_einkorn]] and [[wild_emmer]] on plains and meadows and [[wild_pea]] in forests; with a knife or [[flint_sickle]] they always drop [[einkorn_grain]] (or Emmer Grain, [[peas]]). Make farmland with the Flint Hoe and sow. Crops only grow by day under open sky, within their temperature range, on moist soil; frost kills young plants and the soil loses fertility with each harvest.\n\nRipe grain gives a sheaf. **[[flail]]** in hand and the sheaf in the other hand, strike stone: Grain + [[straw]]. The Flint Sickle gives an extra sheaf and Straw. 2 Grain + Clay Water Bucket + bowl → [[raw_porridge]], cooked on a Campfire → [[porridge]]. There is no bread yet. [[wild_carrot]] and Sea Beet give root crops, and a buried [[root_cellar]] keeps them 4× longer.\n\n**Rest:** the [[minecraft:straw_bed]] (3 Straw + 3 planks). You do not sleep the night away, but resting sets your respawn, keeps phantoms away and restores sanity. A Wolf Pelt on the bed makes a [[furred_straw_bed]] that also heals and warms you."
+    }
+   },
+   {
+    "title": {
+     "sv": "Björn, varg och pälsar",
+     "en": "Bear, wolf and furs"
+    },
+    "items": [
+     "tusk_dagger",
+     "entity:brown_bear",
+     "raw_bear_pelt",
+     "bear_pelt",
+     "fur_coat",
+     "wolf_hood",
+     "sinew_bow"
+    ],
+    "text": {
+     "sv": "[[entity:brown_bear]] slåss alltid och kan bara styckas med en jägarkniv, [[tusk_dagger]] eller bättre. Den ger [[raw_bear_pelt]], fett och klor. Stora pälsar torkas bara på en **hög** Drying Rack (björnen tar hela ställningen, ~6 minuter) till [[bear_pelt]]. Vargar ger [[raw_wolf_pelt]] → [[wolf_pelt]].\n\nPälsrustning sys i Armor Station med Sinew: [[fur_hood]], [[fur_coat]], [[fur_leggings]], [[fur_boots]] isolerar **25 % per del**, full sats tar bort kylan helt. Vargpäls isolerar 20 %. [[wolf_hood]] gör att vargarna tar dig för en i flocken: de anfaller inte om du inte är illa skadad eller slår först.\n\nBättre pilbågar och pilar i Fletching Table: Sinew + Crude Bow + Cordage → [[sinew_bow]] (full skada, 200 hållbarhet), Bear Claw → [[barbed_arrow]] (3 skada), Tallow → [[fire_arrow]].",
+     "en": "The [[entity:brown_bear]] always fights and can only be butchered with a hunting knife, the [[tusk_dagger]] or better. It gives a [[raw_bear_pelt]], fat and claws. Big pelts only dry on a **tall** Drying Rack (the bear takes the whole rack, ~6 minutes) into a [[bear_pelt]]. Wolves give a [[raw_wolf_pelt]] → [[wolf_pelt]].\n\nFur armour is sewn at the Armor Station with Sinew: [[fur_hood]], [[fur_coat]], [[fur_leggings]], [[fur_boots]] insulate **25 % per piece**, and a full set removes the cold entirely. Wolf fur insulates 20 %. The [[wolf_hood]] makes wolves take you for one of the pack: they do not attack unless you are badly hurt or strike first.\n\nBetter bows and arrows at the Fletching Table: Sinew + Crude Bow + Cordage → [[sinew_bow]] (full damage, 200 durability), Bear Claw → [[barbed_arrow]] (3 damage), Tallow → [[fire_arrow]]."
+    }
+   },
+   {
+    "title": {
+     "sv": "Flotte och kanot",
+     "en": "Raft and canoe"
+    },
+    "items": [
+     "log_raft",
+     "paddle",
+     "dugout_blank",
+     "dugout_canoe"
+    ],
+    "text": {
+     "sv": "Vanilla-båtar går inte att göra i stenåldern. [[log_raft]] görs av 6 stockar (eller Rough Logs) och 3 Cordage: en plats, ungefär halva båtfarten.\n\n[[dugout_canoe]] görs i världen. Högerklicka med kniv på en liggande stock eller Fallen Log så blir den en [[dugout_blank]]. Sedan växlar du: hugg ur med yxa, bränn (fackla, Fire Drill), skrapa ur kolet, bränn igen, hugg ur en sista gång och jämna till med kniven. Fel verktyg säger vad som behövs.\n\nKanoten har 2 platser och går nästan som en båt **om du håller en [[paddle]]** (Rough Log + kniv).",
+     "en": "Vanilla boats cannot be made in the Stone Age. The [[log_raft]] takes 6 logs (or Rough Logs) and 3 Cordage: one seat, about half boat speed.\n\nThe [[dugout_canoe]] is made in the world. Right-click a log lying on its side or a Fallen Log with a knife and it becomes a [[dugout_blank]]. Then you alternate: hollow it with an axe, burn it (torch, Fire Drill), scrape out the charcoal, burn again, hollow it one last time and smooth it with the knife. The wrong tool tells you what is needed.\n\nThe canoe has 2 seats and goes almost as fast as a boat **if you hold a [[paddle]]** (Rough Log + knife)."
+    }
+   },
+   {
+    "title": {
+     "sv": "Glider Cloak",
+     "en": "Glider Cloak"
+    },
+    "items": [
+     "raw_phantom_hide",
+     "scraped_phantom_hide",
+     "phantom_leather",
+     "glider_frame",
+     "glider_cloak"
+    ],
+    "text": {
+     "sv": "En sen stenåldersbedrift. Phantoms kommer bara om du inte har vilat på 3 nätter. En nedskjuten phantom blir en kropp som ger [[raw_phantom_hide]] i 60 % av fallen.\n\nSkrapa den till [[scraped_phantom_hide]] och torka den på Drying Rack **i dagsljus**. I mörker ruttnar den efter ungefär en natt, så häng ut den på morgonen. Den blir [[phantom_leather]].\n\n6 Phantom Leather + en [[glider_frame]] (Tool Rods, ben, Sinew, Cordage) sys till [[glider_cloak]]. **Håll in hopp när du faller** så glider du: långsamt fall, framåt i blickriktningen, ingen fallskada när du landar.",
+     "en": "A late Stone Age feat. Phantoms only come if you have not rested for 3 nights. A phantom you shoot down becomes a carcass that gives [[raw_phantom_hide]] 60 % of the time.\n\nScrape it into [[scraped_phantom_hide]] and dry it on a Drying Rack **in daylight**. In darkness it rots after about one night, so hang it out in the morning. It becomes [[phantom_leather]].\n\n6 Phantom Leather + a [[glider_frame]] (Tool Rods, bones, Sinew, Cordage) are sewn into the [[glider_cloak]]. **Hold jump while falling** and you glide: slow descent, forward in the direction you look, no fall damage when you land."
+    }
+   },
+   {
+    "title": {
+     "sv": "Jättehjorten och Ancient Oak",
+     "en": "The Giant Deer and the Ancient Oak"
+    },
+    "items": [
+     "entity:giant_deer",
+     "giant_antler",
+     "structure:ancient_oak",
+     "offering_altar",
+     "thunderstone",
+     "heart_of_the_oak"
+    ],
+    "text": {
+     "sv": "[[entity:giant_deer]] är stenålderns miniboss: 120 liv, ser dig på 48 block och rusar mot där du stod. **Kliv åt sidan** i sista stund och slå medan den pustar. Står flera nära sveper den med hornen. Vid 25 % liv ger den upp och flyr. Styckad (minst Tusk Dagger) ger den alltid en [[giant_antler]].\n\n[[structure:ancient_oak]] är en väldig förtrollad ek i skog, mycket sällsynt. Inne i stammen står ett [[offering_altar]]. Lägg hornet där så ger ritualen ett av fem mytiska föremål: [[thunderstone]] (yxa som kallar ner blixten), [[mistletoe_charm]] (läker), [[ancient_amber]] (lyser och smyger), [[heart_of_the_oak]] (växer plantor) eller [[antler_crown]] (mörkerseende).",
+     "en": "The [[entity:giant_deer]] is the Stone Age miniboss: 120 health, spots you at 48 blocks and charges at where you stood. **Step aside** at the last moment and strike while it catches its breath. With several enemies close it sweeps its antlers. At 25 % health it gives up and flees. Butchered (at least a Tusk Dagger) it always drops a [[giant_antler]].\n\nThe [[structure:ancient_oak]] is a huge enchanted oak in forests, very rare. Inside the trunk stands an [[offering_altar]]. Place the antler on it and the ritual gives one of five mythic items: [[thunderstone]] (an axe that calls down lightning), [[mistletoe_charm]] (heals), [[ancient_amber]] (glows and hides you), [[heart_of_the_oak]] (grows saplings) or [[antler_crown]] (night vision)."
+    }
+   }
+  ]
+ },
+ {
+  "title": {
+   "sv": "Stenåldern: lägret och stammarna",
+   "en": "Stone Age: the camp and the tribes"
+  },
+  "intro": {
+   "sv": "Världen har folk: stenåldersstammar i läger, jaktlag och byar med palissad. Ju längre din eld brinner på samma plats, desto mer märks ditt läger. Stammar kommer för att handla, slår sig ner i närheten, och fientliga stammar kan plundra dig.",
+   "en": "The world has people: Stone Age tribes in camps, hunting bands and palisaded villages. The longer your fire burns in the same place, the more your camp is noticed. Tribes come to trade, settle nearby, and hostile tribes may raid you."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Stammarna",
+     "en": "The tribes"
+    },
+    "items": [
+     "entity:tribesperson",
+     "structure:tribe_camp",
+     "structure:tribe_village",
+     "structure:hunting_band"
+    ],
+    "text": {
+     "sv": "[[entity:tribesperson]] lever i [[structure:tribe_camp]], strövar i [[structure:hunting_band]] eller bor i en [[structure:tribe_village]] med palissad. Varje stam har namn, banderoll och humör: *Peaceful*, *Traders*, *Wary* eller *Raiders* (som försvarar sitt land).\n\n**Rykte** (−100 till 100) gäller hela stammen. Handel och matgåvor höjer det; att slå någon, stjäla eller bryta deras eld sänker det. **Dödar du en blir stammen fientlig för alltid.** Vid 30+ är de vänner och säljer billigare.\n\n**Byteshandel hos Elder:** till exempel 10 Flint → [[flint_knife]], 6 Raw Hide → [[bone_needle]], 3 Scraped Hide → 2 Leather. En sällsynt Elder byter till sig 3 [[minecraft:potato]], spelets enda källa till potatis.",
+     "en": "[[entity:tribesperson]] folk live in a [[structure:tribe_camp]], roam as a [[structure:hunting_band]] or live in a palisaded [[structure:tribe_village]]. Each tribe has a name, a banner and a mood: *Peaceful*, *Traders*, *Wary* or *Raiders* (who defend their land).\n\n**Reputation** (−100 to 100) counts for the whole tribe. Trading and gifts of food raise it; hitting someone, stealing or breaking their fire lowers it. **Kill one and the tribe is hostile forever.** At 30+ they are friends and sell cheaper.\n\n**Bartering with the Elder:** for example 10 Flint → [[flint_knife]], 6 Raw Hide → [[bone_needle]], 3 Scraped Hide → 2 Leather. A rare Elder trades 3 [[minecraft:potato]], the only source of potatoes in the game."
+    }
+   },
+   {
+    "title": {
+     "sv": "Ditt läger: besök och räder",
+     "en": "Your camp: visitors and raids"
+    },
+    "items": [
+     "fire_pit",
+     "hide_canvas",
+     "hide_tent_slope",
+     "oak_bark_roof",
+     "sharpened_oak_log"
+    ],
+    "text": {
+     "sv": "All tid en eld brinner inom 24 block från din första eld räknas som **lägrets ålder** (en [[fire_pit]] räknas dubbelt). Smyg + högerklick med tom hand på elden visar hur länge den brunnit.\n\n**Efter 3 dagar** kommer besökare ungefär var 5:e dag. Prata med ledaren för att handla, och låt dem sova vid din eld (+4 rykte och en gåva på morgonen). Är ni vänner kan de slå sig ner i närheten och bygga ett eget läger som växer till en palissad, med handelsbud och upptrampade stigar mellan lägren.\n\n**Efter 5 dagar** kan fientliga stammar plundra dig på natten: krigstrummor först, sedan rädare med facklor som stjäl mat och tänder eld. Försvar: vapen, eld och en palissad med [[sharpened_oak_log]]. Bygg som stammarna gör med [[hide_canvas]], [[hide_tent_slope]] och [[oak_bark_roof]] (3 Bark + en stock → 4).",
+     "en": "All the time a fire burns within 24 blocks of your first fire counts as the **camp's age** (a [[fire_pit]] counts double). Sneak + right-click the fire with an empty hand to see how long it has burned.\n\n**After 3 days** visitors come about every 5 days. Talk to the leader to trade, and let them sleep by your fire (+4 reputation and a gift in the morning). If you are friends they may settle nearby and build their own camp that grows into a palisade, with traders and worn paths between the camps.\n\n**After 5 days** hostile tribes may raid you at night: war drums first, then raiders with torches who steal food and set fires. Defence: weapons, fire and a palisade with [[sharpened_oak_log]]. Build like the tribes do with [[hide_canvas]], [[hide_tent_slope]] and [[oak_bark_roof]] (3 Bark + a log → 4)."
+    }
+   }
+  ]
+ },
+ {
+  "title": {
+   "sv": "Bronsåldern: koppar",
+   "en": "Bronze Age: copper"
+  },
+  "intro": {
+   "sv": "Från sten till metall. Först koppar: hitta malmen, krossa den, få kilnen het nog, smält och gjut. Kopparverktyg är ett mjukt mellansteg, men utan en Copper Pickaxe kommer du inte åt tennet.",
+   "en": "From stone to metal. Copper first: find the ore, crush it, get the kiln hot enough, melt and cast. Copper tools are a soft middle step, but without a Copper Pickaxe you cannot get at the tin."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Hitta malm",
+     "en": "Finding ore"
+    },
+    "items": [
+     "loose_malachite",
+     "loose_native_copper",
+     "malachite",
+     "native_copper",
+     "minecraft:copper_ore",
+     "pan",
+     "cassiterite"
+    ],
+    "text": {
+     "sv": "**Ytfynd visar var malmen ligger.** Små gröna [[loose_malachite]] och klumpar av [[loose_native_copper]] ligger bland de lösa stenarna ovanför kopparådror nära ytan. Gräv där. [[minecraft:copper_ore]] kräver en stenhacka (även Crude Stone Pickaxe) och ger Raw Copper.\n\n[[pan]] (plankor + Twine): högerklicka på grus eller sand, ställ dig i vatten och håll in Använd i 3 s. Ger flinta, stenar och ibland [[cassiterite]] (tennsten) eller [[native_copper]], lite oftare vid floder och stränder. Vaskning ger en smak av tenn men räcker inte till verktyg.\n\n[[loose_cassiterite]] på marken visar var Tin Ore ligger, men den kräver en Copper Pickaxe.",
+     "en": "**Surface finds show where the ore is.** Small green [[loose_malachite]] and lumps of [[loose_native_copper]] lie among the loose rocks above copper veins near the surface. Dig there. [[minecraft:copper_ore]] needs a stone pickaxe (a Crude Stone Pickaxe works) and gives Raw Copper.\n\nThe [[pan]] (planks + Twine): right-click gravel or sand, stand in water and hold Use for 3 s. It gives flint, rocks and sometimes [[cassiterite]] (tin stone) or [[native_copper]], a little more often by rivers and beaches. Panning gives a taste of tin but not enough for tools.\n\n[[loose_cassiterite]] on the ground shows where Tin Ore is, but it needs a Copper Pickaxe."
+    }
+   },
+   {
+    "title": {
+     "sv": "Krossa och tvätta",
+     "en": "Crushing and washing"
+    },
+    "items": [
+     "stone_anvil",
+     "minecraft:raw_copper",
+     "crushed_copper_ore",
+     "copper_concentrate"
+    ],
+    "text": {
+     "sv": "[[stone_anvil]]: rock chunks, Flint Pickaxe och cobblestone. Lägg malm på stenen och slå 4 gånger med en hammarsten (Flint, Crude Stone eller Stone Pickaxe). [[minecraft:raw_copper]] ger 2 [[crushed_copper_ore]], Malachite 1.\n\nEn degel räknar **enheter**: Crushed Copper Ore 1, Native Copper 2. Rymmer 10.\n\n**Tvätta:** tom Pan i ena handen, krossad malm i den andra, håll in Använd i vatten → [[copper_concentrate]], som räknas som **2 enheter**. Det dubblar utbytet för 3 s och en användning av pannan.",
+     "en": "The [[stone_anvil]]: rock chunks, a Flint Pickaxe and cobblestone. Put ore on the stone and strike 4 times with a hammerstone (Flint, Crude Stone or Stone Pickaxe). [[minecraft:raw_copper]] gives 2 [[crushed_copper_ore]], Malachite 1.\n\nA crucible counts **units**: Crushed Copper Ore 1, Native Copper 2. It holds 10.\n\n**Washing:** an empty Pan in one hand, crushed ore in the other, hold Use in water → [[copper_concentrate]], which counts as **2 units**. It doubles the yield for 3 s and one use of the pan."
+    }
+   },
+   {
+    "title": {
+     "sv": "Värme: Bellows",
+     "en": "Heat: Bellows"
+    },
+    "items": [
+     "bellows",
+     "unfired_clay_tuyere",
+     "clay_tuyere",
+     "minecraft:charcoal",
+     "kiln"
+    ],
+    "text": {
+     "sv": "Koppar smälter vid **1085°**, men Charcoal når bara 800° i [[kiln]]. Du behöver [[bellows]]: plankor, Scraped Hide, Twine och en [[clay_tuyere]] (en [[unfired_clay_tuyere]] av 3 Clay Balls diagonalt, bränd vid 600°).\n\nStäll bälgen **bredvid kilnens nedre halva** med munstycket mot den. Varje högerklick är en pump: +40°, upp till 1300° med [[minecraft:charcoal]]. Från 800° tar det ~8 pumpar att nå koppar, och sedan ~3 i minuten för att hålla värmen.\n\n**Pumpa inte över taket.** Vid 1280° och mer byggs påfrestning upp, leran spricker och kilnen kan spricka helt (den når då bara 600° tills du lagar den med 4 Clay Balls och bränner in lagningen).",
+     "en": "Copper melts at **1085°**, but Charcoal only reaches 800° in the [[kiln]]. You need [[bellows]]: planks, Scraped Hide, Twine and a [[clay_tuyere]] (an [[unfired_clay_tuyere]] of 3 Clay Balls in a diagonal, fired at 600°).\n\nPlace the bellows **next to the kiln's lower half** with the nozzle facing it. Each right-click is one pump: +40°, up to 1300° with [[minecraft:charcoal]]. From 800° it takes ~8 pumps to reach copper, then ~3 a minute to keep it there.\n\n**Do not pump past the ceiling.** At 1280° and above strain builds up, the clay cracks and the kiln can crack for good (it then only reaches 600° until you patch it with 4 Clay Balls and fire the patch in)."
+    }
+   },
+   {
+    "title": {
+     "sv": "Smälta och gjuta",
+     "en": "Melting and casting"
+    },
+    "items": [
+     "crucible",
+     "molten_crucible",
+     "clay_pickaxe_head_mold",
+     "rough_cast_copper_pickaxe_head",
+     "whetstone",
+     "minecraft:copper_ingot"
+    ],
+    "text": {
+     "sv": "Fyll [[crucible]] med malm (klicka malmen på degeln i inventoryt) och lägg den i kilnens input. Vid 1085° smälter den på 15 s till en [[molten_crucible]]. Utanför kilnen stelnar den efter 60 s och måste smältas om.\n\n**Formar** görs i Mold Bench och bränns vid 600°: [[unfired_clay_ingot_mold]] (2 enheter), [[clay_pickaxe_head_mold]] och yxform (6), spadform (2), hoeform (4), knivform (2). Ställ formen på marken och högerklicka med smält degel. Efter 5 s tar du ut gjutningen med tom hand. En form tål 5 gjutningar.\n\nGjutningen kommer ut grov, till exempel [[rough_cast_copper_pickaxe_head]]. Slipa den på [[whetstone]] (sandsten på en bänk) med 4 högerklick. Ingotformen ger [[minecraft:copper_ingot]]. Tips: smält metall i handen bränns lite; det får man tåla tills bronset ger tänger.",
+     "en": "Fill the [[crucible]] with ore (click the ore onto the crucible in your inventory) and put it in the kiln's input. At 1085° it melts in 15 s into a [[molten_crucible]]. Outside the kiln it solidifies after 60 s and must be remelted.\n\n**Molds** are made at the Mold Bench and fired at 600°: [[unfired_clay_ingot_mold]] (2 units), [[clay_pickaxe_head_mold]] and the axe mold (6), shovel (2), hoe (4), knife (2). Place the mold on the ground and right-click it with the molten crucible. After 5 s take the casting out with an empty hand. A mold lasts 5 casts.\n\nThe casting comes out rough, for example [[rough_cast_copper_pickaxe_head]]. Grind it on the [[whetstone]] (sandstone on a bench) with 4 right-clicks. The ingot mold gives a [[minecraft:copper_ingot]]. Tip: molten metal in your hand burns a little; you will have to put up with it until bronze gives you tongs."
+    }
+   },
+   {
+    "title": {
+     "sv": "Kopparverktyg",
+     "en": "Copper tools"
+    },
+    "items": [
+     "copper_pickaxe_head",
+     "minecraft:copper_pickaxe",
+     "minecraft:copper_axe",
+     "copper_knife",
+     "copper_knife_blade"
+    ],
+    "text": {
+     "sv": "Slipade huvuden monteras i Tool Station: huvud + Cordage + Tool Rod blir [[minecraft:copper_pickaxe]], [[minecraft:copper_axe]], Copper Shovel och Copper Hoe. [[copper_knife_blade]] + Twine + Stick blir [[copper_knife]].\n\nKoppar har 190 i hållbarhet (Stone 131) och är lite snabbare. Copper Knife styckar 1,5× fortare och ger 1,2× mer, men klarar inte björn.\n\n**Det viktiga är [[minecraft:copper_pickaxe]]:** bara den (eller bättre) bryter **Tin Ore**. En full degel räcker till en hacka + 2 tackor. Copper Ingot låser också upp bronsålderns jordbruk (Quern, Baking Stone, Compost Heap, Scarecrow).",
+     "en": "Ground heads are assembled at the Tool Station: head + Cordage + Tool Rod make the [[minecraft:copper_pickaxe]], [[minecraft:copper_axe]], Copper Shovel and Copper Hoe. [[copper_knife_blade]] + Twine + Stick make the [[copper_knife]].\n\nCopper has 190 durability (Stone 131) and is a bit faster. The Copper Knife butchers 1.5× faster and yields 1.2× more, but cannot handle a bear.\n\n**The one that matters is the [[minecraft:copper_pickaxe]]:** only it (or better) mines **Tin Ore**. A full crucible is enough for a pickaxe + 2 ingots. A Copper Ingot also unlocks Bronze Age farming (Quern, Baking Stone, Compost Heap, Scarecrow)."
+    }
+   }
+  ]
+ },
+ {
+  "title": {
+   "sv": "Bronsåldern: brons",
+   "en": "Bronze Age: bronze"
+  },
+  "intro": {
+   "sv": "Med tenn blir koppar till brons, ungefär 9 delar koppar mot 1 del tenn. Brons är lika starkt som järn i vanilla och ger hela bronsålderns verktyg, vapen och den första metallrustningen.",
+   "en": "With tin, copper becomes bronze, roughly 9 parts copper to 1 part tin. Bronze is as strong as vanilla iron and gives the whole Bronze Age set of tools, weapons and the first metal armour."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Tenn och legering",
+     "en": "Tin and alloying"
+    },
+    "items": [
+     "tin_ore",
+     "cassiterite",
+     "crushed_tin_ore",
+     "tin_concentrate",
+     "bronze_ingot"
+    ],
+    "text": {
+     "sv": "Bryt [[tin_ore]] med Copper Pickaxe: 1–2 [[cassiterite]]. Krossa på Stone Anvil → [[crushed_tin_ore]] (1 enhet), eller tvätta till [[tin_concentrate]] (2).\n\nLägg tenn och koppar i samma degel. Andelen tenn avgör:\n- **9–11,5 %:** Bronze, smälter vid 950°. 9 koppar + 1 tenn eller 4 Copper Concentrate + 1 Crushed Tin Ore.\n- **8–9 % eller 11,5–15 %:** Poor Bronze, allt som gjuts av det får 70 % hållbarhet.\n- **Annars:** koppar, och tennet går förlorat som slagg.\n\nDegelns tooltip visar procent och resultat i färg innan du smälter. Gjut tackor i ingotformen: [[bronze_ingot]] (2 enheter) kan smältas om senare.",
+     "en": "Mine [[tin_ore]] with a Copper Pickaxe: 1–2 [[cassiterite]]. Crush it on the Stone Anvil → [[crushed_tin_ore]] (1 unit), or wash it into [[tin_concentrate]] (2).\n\nPut tin and copper in the same crucible. The share of tin decides:\n- **9–11.5 %:** Bronze, melts at 950°. 9 copper + 1 tin, or 4 Copper Concentrate + 1 Crushed Tin Ore.\n- **8–9 % or 11.5–15 %:** Poor Bronze, everything cast from it gets 70 % durability.\n- **Otherwise:** copper, and the tin is lost as slag.\n\nThe crucible tooltip shows the percentage and the result in colour before you melt. Cast ingots in the ingot mold: a [[bronze_ingot]] (2 units) can be remelted later."
+    }
+   },
+   {
+    "title": {
+     "sv": "Bronsverktyg och vapen",
+     "en": "Bronze tools and weapons"
+    },
+    "items": [
+     "bronze_pickaxe",
+     "bronze_axe",
+     "bronze_knife",
+     "bronze_spear",
+     "bronze_sword",
+     "clay_sword_blade_mold"
+    ],
+    "text": {
+     "sv": "Samma formar som för koppar gjuter brons, plus nya: [[clay_spear_head_mold]], [[clay_sword_blade_mold]], [[clay_saw_blade_mold]] och [[clay_plate_mold]]. Slipa och montera som förut.\n\nBrons: **460 i hållbarhet**, järnets fart och skada. [[bronze_pickaxe]] bryter **Iron, Coal och Lapis Ore** (inte guld, diamant eller redstone). [[bronze_knife]] styckar 1,75× fortare, ger 1,35× mer och klarar björn och jättehjort.\n\nVapen: [[bronze_spear]] (laddad stöt som järnspjutet) och [[bronze_sword]] (Sword Blade + Cordage + Leather, 5,5 skada). Pilar: [[clay_arrowheads_mold]] ger 4 [[bronze_arrowhead]], och i Fletching Table blir de 4 [[bronze_arrow]] (3 skada, går sällan sönder).",
+     "en": "The same molds as for copper cast bronze, plus new ones: [[clay_spear_head_mold]], [[clay_sword_blade_mold]], [[clay_saw_blade_mold]] and [[clay_plate_mold]]. Grind and assemble as before.\n\nBronze: **460 durability**, iron's speed and damage. The [[bronze_pickaxe]] mines **Iron, Coal and Lapis Ore** (not gold, diamond or redstone). The [[bronze_knife]] butchers 1.75× faster, yields 1.35× more and handles bears and the giant deer.\n\nWeapons: the [[bronze_spear]] (charged thrust like the iron spear) and the [[bronze_sword]] (Sword Blade + Cordage + Leather, 5.5 damage). Arrows: the [[clay_arrowheads_mold]] gives 4 [[bronze_arrowhead]], and at the Fletching Table they become 4 [[bronze_arrow]] (3 damage, rarely break)."
+    }
+   },
+   {
+    "title": {
+     "sv": "Bronze Saw och rustning",
+     "en": "Bronze Saw and armour"
+    },
+    "items": [
+     "bronze_saw",
+     "minecraft:oak_planks",
+     "bronze_plate",
+     "bronze_helmet",
+     "bronze_greaves"
+    ],
+    "text": {
+     "sv": "[[bronze_saw]] (Saw Blade + Twine + Stick): **stock + såg = 4 plankor** i stället för 2. På en Fallen Log kapar 8 sågtag hela stocken till 3 Rough Logs, utan slump. Sågen behövs också till Potter's Wheel och vagnshjul.\n\n**Rustning:** gjut plåt i Clay Plate Mold (4 enheter), slipa till [[bronze_plate]] och sy på läder i Armor Station: [[bronze_helmet]] (2 plåtar + 2 Leather, skydd 2) och [[bronze_greaves]] (3 + 3, skydd 5). Det finns ingen bröstplåt i bronsåldern; bålen skyddas fortfarande av päls eller läder.",
+     "en": "The [[bronze_saw]] (Saw Blade + Twine + Stick): **log + saw = 4 planks** instead of 2. On a Fallen Log, 8 saw strokes cut the whole log into 3 Rough Logs, no chance involved. The saw is also needed for the Potter's Wheel and cart wheels.\n\n**Armour:** cast plate in the Clay Plate Mold (4 units), grind it into a [[bronze_plate]] and sew it onto leather at the Armor Station: the [[bronze_helmet]] (2 plates + 2 Leather, armour 2) and [[bronze_greaves]] (3 + 3, armour 5). There is no chestplate in the Bronze Age; your torso is still protected by fur or leather."
+    }
+   },
+   {
+    "title": {
+     "sv": "Fler bronsverktyg",
+     "en": "More bronze tools"
+    },
+    "items": [
+     "bronze_bucket",
+     "bronze_sickle",
+     "bronze_shears",
+     "bronze_tongs",
+     "bronze_needle",
+     "bronze_chisel",
+     "bronze_hook_fishing_rod"
+    ],
+    "text": {
+     "sv": "Varje verktyg har sin egen lerform och görs på samma sätt:\n- [[bronze_bucket]]: spricker aldrig, öser vatten och **lava**, mjölkar kor.\n- [[bronze_sickle]]: skär 3×3 mogen säd med ett drag (smyg för ett i taget).\n- [[bronze_shears]]: vanillas sax i brons.\n- [[bronze_tongs]]: håll dem i någon hand så bränns du inte av smält metall.\n- [[bronze_needle]]: syr i Armor Station och tål 250 (benet 32).\n- [[bronze_chisel]]: hugger sten till finare varianter och halverar slipningen på Whetstone om du har den i andra handen.\n- [[bronze_hook_fishing_rod]]: napp som Lure II och fångst som Luck of the Sea I.",
+     "en": "Each tool has its own clay mold and is made the same way:\n- [[bronze_bucket]]: never cracks, scoops water and **lava**, milks cows.\n- [[bronze_sickle]]: cuts 3×3 ripe grain in one stroke (sneak for one at a time).\n- [[bronze_shears]]: vanilla shears in bronze.\n- [[bronze_tongs]]: hold them in either hand and molten metal does not burn you.\n- [[bronze_needle]]: sews at the Armor Station and lasts 250 (bone 32).\n- [[bronze_chisel]]: carves stone into finer variants and halves the grinding at the Whetstone when held in the off hand.\n- [[bronze_hook_fishing_rod]]: bites like Lure II and catches like Luck of the Sea I."
+    }
+   },
+   {
+    "title": {
+     "sv": "Bröd, gödsel och lin",
+     "en": "Bread, manure and flax"
+    },
+    "items": [
+     "quern",
+     "flour",
+     "dough",
+     "baking_stone",
+     "minecraft:bread",
+     "compost_heap",
+     "scarecrow",
+     "flax_seeds"
+    ],
+    "text": {
+     "sv": "Med en Copper eller Bronze Ingot låses bronsålderns jordbruk upp. [[quern]]: högerklicka med Grain → [[flour]]. 2 Flour + Clay Water Bucket → [[dough]]. Baka på en [[baking_stone]] bredvid en Campfire eller i kilnen vid 200° → [[minecraft:bread]].\n\n[[compost_heap]]: 7 växtrester eller förskämd mat → 2 [[compost]] (bördighet +1). Tama djur släpper [[manure]] (bördighet +2). [[scarecrow]] håller kråkorna borta inom 12 block.\n\n**Lin:** byns Farmer (nivå 3) säljer [[flax_seeds]]. Flax Stalks + vatten + kniv → [[flax_fiber]], och på Drop Spindle blir det [[linen_thread]].",
+     "en": "With a Copper or Bronze Ingot, Bronze Age farming unlocks. The [[quern]]: right-click with Grain → [[flour]]. 2 Flour + Clay Water Bucket → [[dough]]. Bake it on a [[baking_stone]] next to a Campfire or in the kiln at 200° → [[minecraft:bread]].\n\nThe [[compost_heap]]: 7 plant scraps or spoiled food → 2 [[compost]] (fertility +1). Tame animals drop [[manure]] (fertility +2). The [[scarecrow]] keeps crows away within 12 blocks.\n\n**Flax:** the village Farmer (level 3) sells [[flax_seeds]]. Flax Stalks + water + knife → [[flax_fiber]], and on the Drop Spindle it becomes [[linen_thread]]."
+    }
+   }
+  ]
+ },
+ {
+  "title": {
+   "sv": "Sen bronsålder",
+   "en": "Late Bronze Age"
+  },
+  "intro": {
+   "sv": "När bronset flyter kommer de stora projekten: en kittel över elden, drejskiva och lerkärl, vagn och tam häst, och till sist en riktig smältugn. Det här är så långt spelet går just nu.",
+   "en": "Once bronze flows, the big projects arrive: a kettle over the fire, a potter's wheel and pottery, a cart and a tame horse, and finally a real smelting furnace. This is as far as the game goes right now."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Bronze Kettle",
+     "en": "Bronze Kettle"
+    },
+    "items": [
+     "tripod",
+     "clay_kettle_mold",
+     "bronze_kettle",
+     "stew",
+     "broth",
+     "hide_glue"
+    ],
+    "text": {
+     "sv": "[[clay_kettle_mold]] (28 Clay Balls i Mold Bench) tar **8 enheter brons**. Slipa gjutningen till [[bronze_kettle]]. Ställ ett [[tripod]] (Tool Rods + Cordage) på en Campfire eller Fire Pit och häng upp kitteln. Häll i vatten.\n\nDet första du lägger i bestämmer läget, upp till 8 saker:\n- **Soppa:** blanda mat, och [[stew]] ger upp till 1,5× näringen mot att äta det stekt. Fler olika ingredienser ger mer.\n- **Hela fåglar** ger kokt fågel + 2 skålar [[broth]] per fågel.\n- **Rendering:** fett ger mer [[tallow]] än på elden; Raw Hide ger 3 [[hide_glue]], som binder verktyg i stället för Cordage.\n- **Garvning:** Scraped Hide + Bark ger 3 Leather per 2 hudar, utan sol.",
+     "en": "The [[clay_kettle_mold]] (28 Clay Balls at the Mold Bench) takes **8 units of bronze**. Grind the casting into the [[bronze_kettle]]. Place a [[tripod]] (Tool Rods + Cordage) on a Campfire or Fire Pit and hang the kettle. Pour in water.\n\nThe first thing you add decides the mode, up to 8 items:\n- **Soup:** mix food, and [[stew]] gives up to 1.5× the nourishment of eating it roasted. More different ingredients give more.\n- **Whole birds** give cooked fowl + 2 bowls of [[broth]] per bird.\n- **Rendering:** fat gives more [[tallow]] than on the fire; Raw Hide gives 3 [[hide_glue]], which binds tools instead of Cordage.\n- **Tanning:** Scraped Hide + Bark gives 3 Leather per 2 hides, no sun needed."
+    }
+   },
+   {
+    "title": {
+     "sv": "Keramik",
+     "en": "Pottery"
+    },
+    "items": [
+     "potters_wheel",
+     "storage_jar",
+     "water_jug",
+     "minecraft:flower_pot",
+     "minecraft:decorated_pot"
+    ],
+    "text": {
+     "sv": "[[potters_wheel]]: plankor, Bronze Saw (blir kvar), Bronze Ingot och cobblestone. Smyg + högerklick väljer form, lägg i Clay Balls, håll in högerklick för att dreja. Bränn råformen i kilnen vid 600°.\n\n- [[storage_jar]] (4 Clay Balls): 9 platser, och **förseglad åldras maten bara en fjärdedel så fort**.\n- [[water_jug]] (3): rymmer 6 hällningar, fylls av regn och vattnar åkern som en Clay Water Bucket.\n- [[minecraft:flower_pot]] (2) och [[minecraft:decorated_pot]] (4); tryck in Pottery Sherds medan krukan står på skivan.",
+     "en": "The [[potters_wheel]]: planks, a Bronze Saw (kept), a Bronze Ingot and cobblestone. Sneak + right-click picks the shape, add Clay Balls, hold right-click to throw. Fire the raw shape in the kiln at 600°.\n\n- [[storage_jar]] (4 Clay Balls): 9 slots, and **sealed, food ages at only a quarter of the rate**.\n- [[water_jug]] (3): holds 6 pours, fills from rain and waters fields like a Clay Water Bucket.\n- [[minecraft:flower_pot]] (2) and [[minecraft:decorated_pot]] (4); press Pottery Sherds in while the pot is on the wheel."
+    }
+   },
+   {
+    "title": {
+     "sv": "Vagn och häst",
+     "en": "Cart and horse"
+    },
+    "items": [
+     "wooden_wheel",
+     "cart",
+     "rope_halter",
+     "hide_saddle_blanket",
+     "entity:wild_horse"
+    ],
+    "text": {
+     "sv": "[[wooden_wheel]] kräver Bronze Saw och Bronze Ingot. Två hjul och plankor blir en [[cart]]: 6 platser för kroppar (dubbelt mot travoisen), ett förråd med 18 platser och en Chest kan monteras på den (54 platser).\n\n**Tämja en [[entity:wild_horse]]:** smyg fram med foder (säd, kärvar, äpplen, morötter) och mata ur handen, högst en gång per 10 s. Vid 3 förtroende sätter du på en [[rope_halter]] (Cordage), och vid 6 är hästen tam.\n\nHästen kan ridas barbacka (80 % fart). [[hide_saddle_blanket]] ger full fart och fulla hopp. Rid eller led hästen till vagnen och högerklicka för att spänna för den. Två tama hästar som matas med kärvar får föl.",
+     "en": "The [[wooden_wheel]] needs a Bronze Saw and a Bronze Ingot. Two wheels and planks make a [[cart]]: 6 slots for carcasses (double the travois), an 18-slot storage, and a Chest can be mounted on it (54 slots).\n\n**Taming a [[entity:wild_horse]]:** sneak up with feed (grain, sheaves, apples, carrots) and feed it by hand, at most once every 10 s. At 3 trust put on a [[rope_halter]] (Cordage), and at 6 the horse is tame.\n\nThe horse can be ridden bareback (80 % speed). The [[hide_saddle_blanket]] gives full speed and full jumps. Ride or lead the horse to the cart and right-click to hitch it. Two tame horses fed sheaves have a foal."
+    }
+   },
+   {
+    "title": {
+     "sv": "Smelting Furnace",
+     "en": "Smelting Furnace"
+    },
+    "items": [
+     "unfired_furnace_brick",
+     "furnace_brick",
+     "furnace_bricks",
+     "furnace_chute",
+     "furnace_tap",
+     "clay_channel"
+    ],
+    "text": {
+     "sv": "När degeln blir för liten: Clay Ball + Sand → [[unfired_furnace_brick]], bränd → [[furnace_brick]], 4 st → [[furnace_bricks]]. Bygg en kub 3×3×3 med tom mitt, en [[furnace_chute]] mitt på taket och en [[furnace_tap]] mitt i nedersta framväggen. Totalt ungefär 50 Clay Balls och 50 Sand.\n\n**Kasta malm och Charcoal i tratten.** Tänd tappen med Fire Drill och pumpa med Bellows mot väggarna. Ugnen rymmer **40 enheter**, blandar brons själv och ger **25 % mer metall per malm**. Ha tappen pluggad medan du fyller på.\n\nSmyg + högerklick på tappen drar ur pluggen. Metallen rinner i en form framför pipen eller genom [[clay_channel]] till flera formar. Rännor som läggs ett block lägre blir lutningar. Ös ur rännor med en tom Crucible.",
+     "en": "When the crucible gets too small: Clay Ball + Sand → [[unfired_furnace_brick]], fired → [[furnace_brick]], 4 of them → [[furnace_bricks]]. Build a 3×3×3 cube with an empty middle, a [[furnace_chute]] in the middle of the top and a [[furnace_tap]] in the middle of the bottom front wall. About 50 Clay Balls and 50 Sand in total.\n\n**Throw ore and Charcoal into the chute.** Light the tap with a Fire Drill and pump Bellows against the walls. The furnace holds **40 units**, mixes bronze by itself and gives **25 % more metal per ore**. Keep the tap plugged while you fill it.\n\nSneak + right-click the tap to pull the plug. Metal flows into a mold in front of the spout or through [[clay_channel]] to several molds. Channels placed one block lower become slopes. Scoop metal out of channels with an empty Crucible."
+    }
+   },
+   {
+    "title": {
+     "sv": "Handel och vägen mot järnet",
+     "en": "Trade and the road to iron"
+    },
+    "items": [
+     "minecraft:emerald",
+     "bronze_pickaxe",
+     "minecraft:iron_ore",
+     "minecraft:raw_iron"
+    ],
+    "text": {
+     "sv": "Byborna handlar efter ålder. I stenåldern har de bara nivå 1–2; bronsåldern öppnar **nivå 3 och 4**: Toolsmith säljer Bronze Pickaxe och Bronze Saw och kan sälja Tin Concentrate om du saknar tenn, Armorer säljer Bronze Helmet och Greaves, Farmer säljer Flax Seeds. Allt betalas med [[minecraft:emerald]].\n\nMed [[bronze_pickaxe]] kan du bryta [[minecraft:iron_ore]] och få [[minecraft:raw_iron]]. **Här tar spelet slut just nu:** järnåldern (Bloomery av eldfast tegel) är inte byggd än, så järnet väntar.",
+     "en": "Villagers trade by age. In the Stone Age they only have levels 1–2; the Bronze Age opens **levels 3 and 4**: the Toolsmith sells the Bronze Pickaxe and Bronze Saw and can sell Tin Concentrate if you lack tin, the Armorer sells the Bronze Helmet and Greaves, the Farmer sells Flax Seeds. Everything is paid in [[minecraft:emerald]].\n\nWith the [[bronze_pickaxe]] you can mine [[minecraft:iron_ore]] and get [[minecraft:raw_iron]]. **This is where the game ends for now:** the Iron Age (a Bloomery of fire brick) is not built yet, so the iron waits."
+    }
+   }
+  ]
+ }
+]

@@ -33,6 +33,7 @@ JAR_GLOB = os.path.join(ROOT, "build", "moddev", "artifacts", "minecraft-patched
 NOTES = os.path.join(ROOT, "docs", "registry_notes.json")
 NOTES_EN = os.path.join(ROOT, "docs", "registry_notes_en.json")
 OUT = os.path.join(ROOT, "docs", "registry.html")
+GUIDE = os.path.join(ROOT, "docs", "progression.json")
 MOD = "mechanical"
 ICON = 64  # embedded picture size (nearest-neighbour)
 
@@ -966,7 +967,26 @@ def main():
         for ing in ing_ids(rec):
             picture(ing["opts"][0])
 
+    guide = []
+    try:
+        with open(GUIDE, encoding="utf-8") as f:
+            guide = json.load(f)
+    except FileNotFoundError:
+        warn("docs/progression.json saknas: spelguiden blir tom")
+    except Exception as e:
+        warn(f"docs/progression.json är trasig: {e}")
+    for ch in guide:
+        for st in ch.get("steps", []):
+            refs = list(st.get("items", []))
+            for txt in (st.get("text") or {}).values():
+                refs += re.findall(r"\[\[([a-z0-9_:]+)\]\]", txt)
+            for r in refs:
+                r = r if ":" in r else f"{MOD}:{r}"
+                if r not in entries and not picture(r):
+                    warn(f"progression.json: okänt id {r}")
+
     data = {
+        "guide": guide,
         "items": sorted(entries.values(), key=lambda e: e["name"].lower()),
         "recipes": RECIPES,
         "fuels": fuels,
@@ -1010,16 +1030,16 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui
 img{image-rendering:pixelated;image-rendering:crisp-edges}
 a{color:inherit}
 header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px 10px}
-.top{display:flex;gap:12px;align-items:center;max-width:1400px;margin:0 auto}
+.top{display:flex;gap:12px;align-items:center;margin:0 auto}
 h1{font-size:18px;margin:0;white-space:nowrap;letter-spacing:-.01em}
 h1 span{color:var(--mute);font-weight:400}
 #q{flex:1;min-width:0;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);outline:none}
 #q:focus{border-color:var(--accent)}
-.chips{display:flex;gap:6px;overflow-x:auto;max-width:1400px;margin:10px auto 0;padding-bottom:2px;scrollbar-width:none}
+.chips{display:flex;gap:6px;overflow-x:auto;margin:10px auto 0;padding-bottom:2px;scrollbar-width:none}
 .chip{flex:none;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:4px 11px;font:inherit;font-size:13px;cursor:pointer}
 .chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
 .chip small{opacity:.7;margin-left:4px}
-main{max-width:1400px;margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr;gap:16px}
+main{margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr;gap:16px}
 @media (min-width:980px){main.open{grid-template-columns:1fr 440px}}
 #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(116px,1fr));gap:10px;align-content:start}
 .card{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 8px 10px;text-align:center;font-size:13px;line-height:1.25;box-shadow:var(--shadow);transition:transform .08s}
@@ -1075,22 +1095,37 @@ td img{width:24px;height:24px}
 .m3d canvas:active{cursor:grabbing}
 .hint{font-size:12px;color:var(--mute);margin:6px 0 0}
 .vars{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-footer{max-width:1400px;margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
+#tabs{display:flex;gap:4px;margin-bottom:10px}
+#tabs button{border:0;background:none;color:var(--mute);font:inherit;font-size:14px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer}
+#tabs button[aria-selected=true]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+#guide{padding:16px 16px 32px;max-width:900px;margin:0 auto}
+#guide h2{scroll-margin-top:110px;font-size:24px;margin:28px 0 6px}
+#guide .intro{color:var(--mute)}
+#guide nav{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0;box-shadow:var(--shadow)}
+.step h3{margin:0 0 10px;font-size:16px;text-transform:none;letter-spacing:0;color:var(--ink)}
+.step h3 span{color:var(--accent);margin-right:8px}
+.step .uses{margin-bottom:10px}
+body.g .chips,body.g #q,body.g main,body.g #sum{display:none}
+body:not(.g) #guide{display:none}
+footer{margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
 @media (max-width:600px){.top{flex-wrap:wrap}h1{order:1}.lang{order:2;margin-left:auto}#q{order:3;flex-basis:100%}}
 </style>
 </head>
 <body>
 <header>
+  <div id="tabs" role="tablist"><button role="tab" data-t="reg"></button><button role="tab" data-t="guide"></button></div>
   <div class="top"><h1>Mechanical <span id="h1s">register</span></h1><input id="q" type="search" autocomplete="off"><div class="lang" role="group" aria-label="Språk / Language"><button data-l="sv">Svenska</button><button data-l="en">English</button></div></div>
   <div class="chips" id="chips"></div>
 </header>
 <main id="main"><section id="grid" aria-live="polite"></section><aside id="detail"></aside></main>
 <footer id="sum"></footer>
+<section id="guide"></section>
 <script>
 const D=/*DATA*/null;
 const L={
-sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
-en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
+sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",tabReg:"Register",tabGuide:"Spelguide",guideIntro:"Så tar du dig framåt i spelet, steg för steg. Klicka på ett item för recept och detaljer i registret.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
+en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",tabReg:"Registry",tabGuide:"Guide",guideIntro:"How to progress through the game, step by step. Click an item for its recipes and details in the registry.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
 let lang="sv";try{const s=new URLSearchParams(location.search).get("lang")||localStorage.getItem("mreg-lang");if(s==="en"||s==="sv")lang=s}catch(e){}
 const t=k=>L[lang][k]??L.sv[k];
 const T=x=>x&&typeof x==="object"?(x[lang]??x.sv):(x||"");
@@ -1204,16 +1239,32 @@ function makeView(THREE,cv,geoKey){
   set(geoKey);
   return {set,dispose(){ro.disconnect();clear();Object.values(texCache).forEach(x=>x.dispose());r.dispose();if(r.forceContextLoss)r.forceContextLoss()}};
 }
+// ---- guide tab
+const G=document.getElementById("guide");
+function drawGuide(){
+  let n=0;
+  G.innerHTML=`<p class="intro">${t("guideIntro")}</p><nav>${(D.guide||[]).map((c,i)=>`<a class="chip" href="#guide-${i}">${esc(T(c.title))}</a>`).join("")}</nav>`+(D.guide||[]).map((c,i)=>`<h2 id="guide-${i}">${esc(T(c.title))}</h2>${c.intro?`<div class="note intro">${noteHtml(T(c.intro))}</div>`:""}`+(c.steps||[]).map(s=>`<div class="step"><h3><span>${++n}</span>${esc(T(s.title))}</h3>${(s.items||[]).length?`<div class="uses">${s.items.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`:""}<div class="note">${noteHtml(T(s.text))}</div></div>`).join("")).join("");
+}
+function setTab(g){
+  document.body.classList.toggle("g",g);
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",(b.dataset.t==="guide")===g));
+}
+document.getElementById("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;const g=b.dataset.t==="guide";if(g)location.hash="guide";else if(document.body.classList.contains("g"))history.pushState("",document.title,location.pathname+location.search),route()};
 // ---- language
 function applyLang(){
   document.documentElement.lang=lang;document.getElementById("h1s").textContent=t("reg");q.placeholder=t("search");q.setAttribute("aria-label",t("search"));
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
+  document.querySelectorAll("#tabs button").forEach(b=>b.textContent=t(b.dataset.t==="guide"?"tabGuide":"tabReg"));drawGuide();
   const items=D.items.filter(i=>!i.kind&&inAll(i)).length,cre=D.items.filter(i=>i.kind==="entity").length,mods=D.items.filter(i=>i.m3d).length;
   document.getElementById("sum").textContent=t("summary").replace("{i}",items).replace("{r}",D.recipes.length).replace("{c}",cre).replace("{m}",mods);
   drawChips();if(sel)show(sel);else drawGrid();
 }
 document.querySelector(".lang").onclick=e=>{const b=e.target.closest("button");if(!b||b.dataset.l===lang)return;lang=b.dataset.l;try{localStorage.setItem("mreg-lang",lang)}catch(err){}applyLang()};
-const route=()=>show(decodeURIComponent(location.hash.slice(1))||null);
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(h==="guide"||h.startsWith("guide-")){setTab(true);const el=document.getElementById(h);if(el&&h!=="guide")el.scrollIntoView();else scrollTo(0,0);return}
+  const was=document.body.classList.contains("g");setTab(false);show(h||null);if(was)scrollTo(0,0);
+}
 addEventListener("hashchange",route);
 addEventListener("keydown",e=>{if(e.key==="Escape"&&sel)document.getElementById("close").click();if(e.key==="/"&&document.activeElement!==q){e.preventDefault();q.focus()}});
 applyLang();route();
