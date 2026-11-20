@@ -1,12 +1,15 @@
 package com.mechanical.people;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.mechanical.Bronze;
 import com.mechanical.BronzeOres;
+import com.mechanical.Butchery;
 import com.mechanical.CarcassEntity;
 import com.mechanical.CartEntity;
 import com.mechanical.Carting;
@@ -29,6 +32,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,7 +55,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
  * 20 min, 25-75 % chance, near a random player); the trader it makes is cancelled on joining the world and a caravan of a
  * trading tribe comes in its place: an old {@link TribeRole#TRADER} and 2-3 armoured {@link TribeRole#GUARD}s (no helmets,
  * no banners), and 1-2 tame horses on leads held by the trader, each pulling a covered cart with a chest (now and then a
- * carcass instead) that stays hitched (CartEntity#hitchCaravan). They roam as a hunting band does (FollowBandLeaderGoal)
+ * trophy carcass instead, see {@link #trophy}) that stays hitched (CartEntity#hitchCaravan). They roam as a hunting band does (FollowBandLeaderGoal)
  * and move on after {@link #STAY} like vanilla's trader. Guards are armed for the age of the players about (Stone Age,
  * Bronze Age after making Bronze, Iron Age after Wrought Iron), sometimes one age ahead; the trader sells a mix up to one
  * age ahead for coins, changes coins and buys gemstones (#mechanical:gemstones, diamonds, emeralds, amethyst) for silver
@@ -108,18 +112,45 @@ public final class Caravans {
             cart.setPos(horse.position().add(Vec3.directionFromRotation(0, horse.getYRot()).scale(-CartEntity.LEAD_HORSE)));
             cart.hitchCaravan(horse, !carcass);
             level.addFreshEntity(cart);
-            if (carcass) {
-                // a deer from the road, for the cook pot
-                LivingEntity deer = Wildlife.RED_DEER.get().create(level, EntitySpawnReason.EVENT);
-                if (deer != null) {
-                    deer.setPos(cart.position());
-                    CarcassEntity body = CarcassEntity.of(level, deer);
-                    level.addFreshEntity(body);
-                    body.startRiding(cart, true, true);
-                }
-            }
+            if (carcass) trophy(level, cart, trader, r);
         }
         return trader;
+    }
+
+    /** Big game a caravan brings in as trade goods. */
+    static final List<Supplier<? extends EntityType<? extends LivingEntity>>> TROPHIES = List.of(Wildlife.GIANT_DEER, Wildlife.CAVE_LION, Wildlife.AUROCHS, Wildlife.BROWN_BEAR);
+
+    /**
+     * A trophy from the road on {@code cart}: dressed and lashed, the caravan's property (CarcassEntity#isCaravanProperty),
+     * and the trader sells what it yields ({@link #goodsOf}). Returns it (null if it couldn't be made).
+     */
+    static CarcassEntity trophy(ServerLevel level, CartEntity cart, Tribesperson trader, RandomSource r) {
+        LivingEntity animal = TROPHIES.get(r.nextInt(TROPHIES.size())).get().create(level, EntitySpawnReason.EVENT);
+        if (animal == null) return null;
+        animal.setPos(cart.position());
+        CarcassEntity body = CarcassEntity.of(level, animal);
+        body.setPrepared();
+        level.addFreshEntity(body);
+        body.startRiding(cart, true, true);
+        trader.offers.addAll(0, goodsOf(body.animal()));
+        return body;
+    }
+
+    /** Copper a piece of a trophy's products is worth (on the scale of {@link #sales}); other pieces 1, meat 2 scraps a copper. */
+    private static int unitPrice(Item item) {
+        return item == Wildlife.GIANT_ANTLER.get() ? 24 : item == Wildlife.RAW_BEAR_PELT.get() ? 16
+                : item == Mechanical.RAW_HIDE.get() || item == Wildlife.HORN.get() ? 3 : item == Wildlife.BEAR_CLAW.get() ? 2 : 1;
+    }
+
+    /** One offer per product of {@code animal} (Butchery: the meat, then each extra at its most), each sold once for copper. */
+    static List<MerchantOffer> goodsOf(EntityType<?> animal) {
+        Butchery.Yield y = Butchery.yieldFor(animal);
+        Map<Item, Integer> goods = new LinkedHashMap<>();
+        goods.put(y.meat().get(), y.maxMeat());
+        for (Butchery.Extra e : y.outer()) goods.merge(e.item().get(), e.max(), Integer::sum);
+        for (Butchery.Extra e : y.inner()) goods.merge(e.item().get(), e.max(), Integer::sum);
+        return goods.entrySet().stream().map(g -> new MerchantOffer(new ItemCost(Coins.COPPER_COIN.get(),
+                Math.max(2, g.getKey() == y.meat().get() ? g.getValue() / 2 : g.getValue() * unitPrice(g.getKey()))), new ItemStack(g.getKey(), g.getValue()), 1, 0, 0)).toList();
     }
 
     /** The age of the players about: 0 Stone, 1 Bronze (made Bronze), 2 Iron (made Wrought Iron). */

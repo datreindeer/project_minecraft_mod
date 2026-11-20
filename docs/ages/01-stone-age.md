@@ -1739,10 +1739,19 @@ från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan**
   på huvudet), stammens färg på pannbandet. Inga trasiga stamkläder och inga klimatvarianter: karavaner kommer långväga.
 - **Hästar och vagnar:** **1–2 tama hästar** (Tame Horse) i rep som handlaren håller, var och en drar en **Wheeled Cart**
   med ett **tygkapell** (välvt tak av linnekanvas över vagnen, bara på karavanens vagnar). Vagnen bär en **kista**, men
-  var fjärde gång ligger ett **Red Deer-kadaver** på den i stället. Karavanens vagnar **lossnar aldrig** från hästen (de
+  var fjärde gång ligger ett **storvilt** på den i stället (se nedan). Karavanens vagnar **lossnar aldrig** från hästen (de
   hittar tillbaka till den efter omladdning och hänger med i stället för att slitas loss), och spelare kan inte koppla
   loss, öppna eller slå sönder dem ("The caravan's cart: its guards would not like that"). **Dör hästen** blir vagnen en
   vanlig vagn.
+- **Storvilt till salu:** kadavret på var fjärde vagn är ett troféjaktbyte, slumpat bland **Giant Deer**, **Cave Lion**,
+  **Aurochs** och **Brown Bear**. Det är **handelsvara**: rensat, insvept mitt på i en **saltad hud** med snören och surrat
+  under en **bärstång**, krympt så att det ryms under kapellet (textur från `scripts/gen_carcass_lashing_textures.py`).
+  Så länge det ligger på karavanens vagn är det **karavanens egendom**: det kan inte styckas med kniv eller lyftas, dras,
+  läggas på travois eller hängas, och det **ruttnar inte och försvinner inte**. Den som försöker får "The caravan's goods:
+  buy from the trader, or answer to its guards" och gör karavanen arg som vid **stöld**. Lämnar karavanen följer kadavret
+  med vagnen; dör hästen blir det ett vanligt kadaver. **Handlaren säljer djurets produkter** (efter dess styckningsutbyte:
+  köttet, och varje bi-produkt med högsta antal) för **Copper Coin**, en gång var: köttet 1 mynt per 2 bitar, Raw Hide och
+  Horn 3, Bear Claw 2, Raw Bear Pelt 16, Giant Antler 24, Sinew, Bear Fat och Bone 1 per styck (minst 2).
 - **Rörelse:** handlaren strövar som ledaren för ett jaktlag och vakterna följer efter (de slår aldrig läger). Hästarna
   följer handlarens rep, vagnarna hästarna.
 - **Vakternas vapen** följer **spelarnas ålder** i närheten (inom 64 block när karavanen kommer; den mest avancerade

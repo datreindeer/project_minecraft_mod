@@ -1527,6 +1527,7 @@
   "chat.mechanical.tribesperson.greet.guard.2": "The road is long and full of thieves. Do not be one.",
   "dialog.mechanical.tribe.caravan": "Greetings, traveller! The caravan of the %s has come a long way with goods from far lands, for coin. And gemstones... if you have gemstones, I pay well, in silver and gold.",
   "message.mechanical.cart.caravan": "The caravan's cart: its guards would not like that",
+  "message.mechanical.carcass.caravan": "The caravan's goods: buy from the trader, or answer to its guards",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",

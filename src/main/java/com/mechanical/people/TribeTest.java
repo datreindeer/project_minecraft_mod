@@ -49,7 +49,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * in the jungle, spruce and bone in the cold); a settled camp's three stages build in every climate and stay standing.</li>
  * <li>tribe_caravan: a Wandering Trader never joins the world, a Trader Caravan comes instead: 3-4 people of one trading
  * tribe (one trader, guards armed and armoured without helmets), the trader changes coins and buys diamonds, every horse
- * is led by the trader and pulls a covered cart that is still hitched 5 seconds on; when its time is up all of it goes.</li>
+ * is led by the trader and pulls a covered cart that is still hitched 5 seconds on; when its time is up all of it goes.
+ * A trophy cart's carcass is big game (Giant Deer, Cave Lion, Aurochs, Brown Bear), the caravan's property (a player can't
+ * take or butcher it, and trying angers them), and the trader sells its products for copper.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
@@ -329,6 +331,30 @@ public final class TribeTest {
             List<net.minecraft.world.entity.animal.equine.AbstractHorse> horses = level.getEntitiesOfClass(
                     net.minecraft.world.entity.animal.equine.AbstractHorse.class, box, x -> x.getLeashHolder() == trader);
             h.assertTrue(!horses.isEmpty() && horses.size() <= 2, "1-2 horses led by the trader, got " + horses.size());
+            // a trophy cart (forced): big game, the caravan's property, its products on sale
+            com.mechanical.CartEntity cart = com.mechanical.Carting.CART.get().create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+            cart.setPos(horses.get(0).position());
+            cart.hitchCaravan(horses.get(0), false);
+            level.addFreshEntity(cart);
+            com.mechanical.CarcassEntity body = Caravans.trophy(level, cart, trader, level.getRandom());
+            h.assertTrue(body != null && body.getVehicle() == cart && Caravans.TROPHIES.stream().anyMatch(t -> t.get() == body.animal()),
+                    "the caravan's carcass is a trophy animal on its cart");
+            h.assertTrue(body.isPrepared() && body.isCaravanProperty(), "the trophy is the caravan's property");
+            net.minecraft.world.entity.player.Player thief = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            thief.setPos(body.position());
+            thief.setShiftKeyDown(true);
+            body.interact(thief, net.minecraft.world.InteractionHand.MAIN_HAND, body.position());
+            h.assertTrue(body.haulerId() < 0 && body.getVehicle() == cart, "a player can't take the caravan's carcass");
+            thief.setShiftKeyDown(false);
+            thief.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(com.mechanical.Mechanical.FLINT_KNIFE.get()));
+            h.assertTrue(body.interact(thief, net.minecraft.world.InteractionHand.MAIN_HAND, body.position()) == net.minecraft.world.InteractionResult.FAIL
+                    && !thief.isUsingItem(), "a player can't butcher the caravan's carcass");
+            h.assertTrue(trader.isAngryAt(thief), "trying angers the caravan as theft");
+            var meat = com.mechanical.Butchery.yieldFor(body.animal()).meat().get();
+            var goods = trader.getOffers().stream().filter(o -> o.getMaxUses() == 1 && o.getBaseCostA().is(com.mechanical.Coins.COPPER_COIN.get())).toList();
+            h.assertTrue(goods.size() >= 2 && goods.stream().anyMatch(o -> o.getResult().is(meat)), "the trader sells the trophy's products, got " + goods.size());
+            cart.getPassengers().forEach(net.minecraft.world.entity.Entity::discard);
+            cart.discard();
             h.runAfterDelay(100, () -> guarded(h, () -> {
                 List<com.mechanical.CartEntity> carts = level.getEntitiesOfClass(com.mechanical.CartEntity.class, box.inflate(16));
                 h.assertTrue(carts.size() == horses.size(), "a cart per horse, got " + carts.size());

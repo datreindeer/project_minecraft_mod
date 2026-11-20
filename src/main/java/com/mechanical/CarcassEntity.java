@@ -44,6 +44,10 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  * shoulders, or drags a large one behind you ({@link #hauler()}). It can go on a {@link TravoisEntity} (as a passenger)
  * or hang on a {@link HangingRackBlock} ({@link #hungAt()}), where butchering yields twice the meat in big cuts. While
  * hauled, on a travois or hung it does not vanish, but it spoils a day after the kill ({@link #spoiled()}).
+ * <p>
+ * A Trader Caravan's trophy (people.Caravans#trophy) is {@link #isPrepared() prepared} trade goods: while it lies on its
+ * caravan's cart ({@link #isCaravanProperty()}) it can't be butchered or taken (trying angers the caravan as theft), and
+ * it neither spoils nor vanishes. Once the cart's horse falls it is an ordinary carcass.
  */
 public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     public static final int HIDDEN_TICKS = 0, LIFETIME = 6000;
@@ -69,6 +73,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     /** Has hung {@link #AGED} ticks: synced so it looks dried (CarcassRenderer), stops dripping and draws a fly or two. */
     private static final EntityDataAccessor<Boolean> AGED_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> TURNING_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Dressed and lashed as a caravan's trade goods. Synced for the renderer and the property check on both sides. */
+    private static final EntityDataAccessor<Boolean> PREPARED = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
     /** Colour of the flies around an aged carcass. */
     private static final int FLY = 0x1A1712;
     /** Each of the two passes takes this share of the work for the body size. */
@@ -211,6 +217,19 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return entityData.get(AGED_LOOK);
     }
 
+    public boolean isPrepared() {
+        return entityData.get(PREPARED);
+    }
+
+    public void setPrepared() {
+        entityData.set(PREPARED, true);
+    }
+
+    /** A caravan's goods still on its caravan's cart (CartEntity#isCaravan: until the horse falls or the caravan leaves). */
+    public boolean isCaravanProperty() {
+        return isPrepared() && getVehicle() instanceof CartEntity cart && cart.isCaravan();
+    }
+
     /** Flat fliers (the phantom) rest on their belly instead of lying on the side. */
     public boolean liesFlat() {
         return animal == EntityTypes.PHANTOM;
@@ -240,6 +259,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
                         random.nextGaussian() * 0.02, random.nextGaussian() * 0.01, random.nextGaussian() * 0.02);
             return; // the client may not simulate movement; it gets the position from the server
         }
+        if (isCaravanProperty()) return; // salted and kept by the traders
         age++;
         boolean turning = age >= spoilLimit() * TURNING;
         if (turning != isTurning()) entityData.set(TURNING_LOOK, turning);
@@ -294,6 +314,15 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (tickCount < HIDDEN_TICKS) return InteractionResult.PASS;
+        if (isCaravanProperty() && (player.getItemInHand(hand).getItem() instanceof KnifeItem
+                || hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && player.isShiftKeyDown())) {
+            if (!level().isClientSide()) {
+                player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.carcass.caravan"));
+                if (getVehicle() instanceof CartEntity cart && cart.harness() instanceof net.minecraft.world.entity.Leashable horse
+                        && horse.getLeashHolder() instanceof com.mechanical.people.Tribesperson owner) owner.caughtStealing(player);
+            }
+            return InteractionResult.FAIL;
+        }
         // a loaded body covers most of its cart: clicks meant for the cart (load another, harness) go through to it
         if (hand == InteractionHand.MAIN_HAND && getVehicle() instanceof TravoisEntity bed && (CarcassHauling.hauled(player) != null
                 || player.getMainHandItem().isEmpty() && !player.isShiftKeyDown() && !(stage() > 0 && Birds.isBird(animal))))
@@ -328,6 +357,10 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** One tick of butchering by {@code player} with a knife of the given speed. Server side. */
     void butcher(ServerLevel level, Player player, KnifeItem knife) {
+        if (isCaravanProperty()) {
+            player.stopUsingItem();
+            return;
+        }
         work += knife.speed();
         if (tickCount % 4 == 0) {
             Vec3 c = getBoundingBox().getCenter();
@@ -380,6 +413,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(HUNG_AT, java.util.Optional.empty());
         builder.define(AGED_LOOK, false);
         builder.define(TURNING_LOOK, false);
+        builder.define(PREPARED, false);
     }
 
     @Override
@@ -394,6 +428,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         work = input.getFloatOr("work", 0);
         entityData.set(STAGE, input.getIntOr("stage", 0));
         trophy = input.getBooleanOr("trophy", false);
+        entityData.set(PREPARED, input.getBooleanOr("prepared", false));
         looks = input.read("looks", CompoundTag.CODEC).orElseGet(CompoundTag::new);
         refreshDimensions();
     }
@@ -409,6 +444,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         output.putFloat("work", work);
         output.putInt("stage", stage());
         output.putBoolean("trophy", trophy);
+        output.putBoolean("prepared", isPrepared());
         output.store("looks", CompoundTag.CODEC, looks);
     }
 

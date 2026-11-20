@@ -186,6 +186,7 @@ LANG = {
     "chat.mechanical.tribesperson.greet.guard.2": "The road is long and full of thieves. Do not be one.",
     "dialog.mechanical.tribe.caravan": "Greetings, traveller! The caravan of the %s has come a long way with goods from far lands, for coin. And gemstones... if you have gemstones, I pay well, in silver and gold.",
     "message.mechanical.cart.caravan": "The caravan's cart: its guards would not like that",
+    "message.mechanical.carcass.caravan": "The caravan's goods: buy from the trader, or answer to its guards",
 }
 
 
