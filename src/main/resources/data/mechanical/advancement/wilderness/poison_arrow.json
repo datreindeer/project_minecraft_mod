@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/venom_gland",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:tipped_arrow"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:tipped_arrow"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.poison_arrow.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.poison_arrow.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_boots",
+    "mechanical:snakeskin",
+    "mechanical:snakeskin",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:snakeskin_boots"
+  }
+}

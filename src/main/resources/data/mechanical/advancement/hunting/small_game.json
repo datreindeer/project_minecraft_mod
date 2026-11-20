@@ -70,6 +70,46 @@
           }
         ]
       }
+    },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_mole"
+          }
+        ]
+      }
+    },
+    "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_snake"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_vole"
+          }
+        ]
+      }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wildcat"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -80,7 +120,11 @@
       "has_3",
       "has_4",
       "has_5",
-      "has_6"
+      "has_6",
+      "has_7",
+      "has_8",
+      "has_9",
+      "has_10"
     ]
   ],
   "display": {

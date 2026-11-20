@@ -431,6 +431,26 @@ TABS = {
          "Kill a Lynx. It stalks lone wanderers at night: company, fire and torches keep it off", has("raw_lynx_pelt")),
         ("lynx_rug", "lynx", "lynx_rug", T, "Spotted Rug",
          "Cure 2 Lynx Pelts on a Drying Rack and craft them with a Bone into a Lynx Rug", has("lynx_rug")),
+        # fauna: meadow
+        ("wild_cat", "butcher", "raw_wildcat_pelt", T, "Wildcat",
+         "Hunt the shy, night-prowling Wild Cat of forest edges and meadows and skin it for its pelt", has("raw_wildcat_pelt")),
+        ("wildcat_fur_cap", "wild_cat", "wildcat_fur_cap", T, "Tabby Cap",
+         "Flesh the pelt with a knife, then craft 2 Wildcat Pelts and Sinew into a Wildcat Fur Cap", has("wildcat_fur_cap")),
+        ("moleskin", "snare", "moleskin", T, "Velvet",
+         "Catch a Mole: snare its runs, or dig up a fresh molehill to flush it out. Flesh its pelt into Moleskin",
+         has("moleskin")),
+        ("field_vole", "snare", "raw_vole", T, "Pest Control",
+         "Catch a Field Vole, the pest that nibbles crops and raids chests by the fields at night", has("raw_vole")),
+        ("snakeskin", "butcher", "snakeskin", T, "Shed Skin", "Butcher an Adder or a Grass Snake for Snakeskin", has("snakeskin")),
+        ("snakeskin_boots", "snakeskin", "snakeskin_boots", G, "Watch Your Step",
+         "Craft Leather Boots, 2 Snakeskin and Sinew into Snakeskin Boots: an adder can't bite through them",
+         has("snakeskin_boots")),
+        ("venom_gland", "snakeskin", "venom_gland", T, "Fangs",
+         "Kill an Adder, the viper of heaths and sunny meadows, and butcher it for its Venom Gland", has("venom_gland")),
+        ("poison_arrow", "venom_gland", "minecraft:tipped_arrow", T, "Venom Tips",
+         "Craft 8 arrows around a Venom Gland into Arrows of Poison", has("minecraft:tipped_arrow")),
+        ("snakebite_poultice", "venom_gland", "snakebite_poultice", T, "Antidote",
+         "Bind a Venom Gland, Lard and Plant Fibre into Snakebite Poultices. Eating one cures poison", has("snakebite_poultice")),
     ]),
     "food": ("minecraft:gui/advancements/backgrounds/husbandry", [
         ("root", None, "blueberries", T, "Food & Farming",
@@ -527,6 +547,10 @@ TABS = {
         ("taiga_fare", "cooked", "cooked_lynx", T, "Taiga Fare",
          "Cook the meat of a Lynx, Wolverine, Pine Marten, Ermine or Lemming on a Campfire",
          has("cooked_lynx", "cooked_wolverine", "cooked_marten", "cooked_ermine", "cooked_lemming")),
+        # fauna: meadow
+        ("small_game", "cooked", "cooked_wildcat", T, "Small Game",
+         "Roast Wildcat Meat, a Mole, a Vole or Snake Meat on the Campfire",
+         has("cooked_wildcat", "cooked_mole", "cooked_vole", "cooked_snake")),
     ]),
     "bronze_age": ("minecraft:block/cut_copper", [
         ("root", None, "malachite", T, "Bronze Age",
@@ -700,7 +724,7 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
     "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
-                   "pine_marten", "marmot"],
+                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
                  "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga"],

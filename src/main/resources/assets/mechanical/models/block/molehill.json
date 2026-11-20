@@ -1,0 +1,109 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/molehill",
+    "soil": "mechanical:block/molehill"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        2,
+        15
+      ],
+      "faces": {
+        "down": {
+          "texture": "#soil",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#soil"
+        },
+        "north": {
+          "texture": "#soil"
+        },
+        "south": {
+          "texture": "#soil"
+        },
+        "east": {
+          "texture": "#soil"
+        },
+        "west": {
+          "texture": "#soil"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        2,
+        3
+      ],
+      "to": [
+        13,
+        4,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#soil",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#soil"
+        },
+        "north": {
+          "texture": "#soil"
+        },
+        "south": {
+          "texture": "#soil"
+        },
+        "east": {
+          "texture": "#soil"
+        },
+        "west": {
+          "texture": "#soil"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        4,
+        5
+      ],
+      "to": [
+        11,
+        5,
+        11
+      ],
+      "faces": {
+        "down": {
+          "texture": "#soil",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#soil"
+        },
+        "north": {
+          "texture": "#soil"
+        },
+        "south": {
+          "texture": "#soil"
+        },
+        "east": {
+          "texture": "#soil"
+        },
+        "west": {
+          "texture": "#soil"
+        }
+      }
+    }
+  ]
+}

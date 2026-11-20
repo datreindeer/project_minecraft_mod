@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_wildcat_pelt",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:wildcat_pelt"
+  }
+}
