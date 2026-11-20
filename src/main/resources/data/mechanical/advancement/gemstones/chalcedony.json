@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:chalcedony"
+            "items": "mechanical:rough_chalcedony"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:chalcedony"
+      "id": "mechanical:rough_chalcedony"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.chalcedony.title"

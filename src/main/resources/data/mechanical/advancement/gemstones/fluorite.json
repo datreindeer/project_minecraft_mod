@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:fluorite"
+            "items": "mechanical:rough_fluorite"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:fluorite"
+      "id": "mechanical:rough_fluorite"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.fluorite.title"

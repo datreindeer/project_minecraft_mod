@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:tourmaline",
+              "name": "mechanical:rough_tourmaline",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

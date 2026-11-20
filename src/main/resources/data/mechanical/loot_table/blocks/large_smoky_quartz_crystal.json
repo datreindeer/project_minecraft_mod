@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:smoky_quartz",
+              "name": "mechanical:rough_smoky_quartz",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

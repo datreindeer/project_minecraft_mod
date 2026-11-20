@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:garnet"
+            "items": "mechanical:rough_garnet"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:ruby"
+            "items": "mechanical:rough_ruby"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:sapphire"
+            "items": "mechanical:rough_sapphire"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:topaz"
+            "items": "mechanical:rough_topaz"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:jade"
+            "items": "mechanical:rough_jade"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:opal"
+            "items": "mechanical:rough_opal"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:turquoise"
+            "items": "mechanical:rough_turquoise"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:peridot"
+            "items": "mechanical:rough_peridot"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:amber"
+            "items": "mechanical:rough_amber"
           }
         ]
       }
@@ -107,7 +107,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:garnet"
+      "id": "mechanical:rough_garnet"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.ore_gems.title"

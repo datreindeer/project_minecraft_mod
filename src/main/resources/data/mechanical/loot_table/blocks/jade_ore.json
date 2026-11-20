@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:jade",
+              "name": "mechanical:rough_jade",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",

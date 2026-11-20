@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:smoky_quartz"
+            "items": "mechanical:rough_smoky_quartz"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:smoky_quartz"
+      "id": "mechanical:rough_smoky_quartz"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.smoky_quartz.title"

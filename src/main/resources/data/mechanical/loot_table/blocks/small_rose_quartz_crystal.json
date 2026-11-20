@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:rose_quartz",
+              "name": "mechanical:rough_rose_quartz",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

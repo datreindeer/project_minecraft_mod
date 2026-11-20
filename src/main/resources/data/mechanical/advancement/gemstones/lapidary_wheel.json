@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:gemstones/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:lapidary_wheel"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:lapidary_wheel"
+    },
+    "title": {
+      "translate": "advancements.mechanical.gemstones.lapidary_wheel.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.gemstones.lapidary_wheel.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

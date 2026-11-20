@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mechanical:chalcedony",
+          "name": "mechanical:rough_chalcedony",
           "modifier": [
             {
               "type": "minecraft:set_count",

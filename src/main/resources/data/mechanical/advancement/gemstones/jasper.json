@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:jasper"
+            "items": "mechanical:rough_jasper"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:jasper"
+      "id": "mechanical:rough_jasper"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.jasper.title"

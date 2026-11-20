@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:ruby",
+              "name": "mechanical:rough_ruby",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",

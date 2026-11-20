@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:celestine",
+              "name": "mechanical:rough_celestine",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

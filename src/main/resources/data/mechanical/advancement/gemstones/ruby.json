@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:ruby"
+            "items": "mechanical:rough_ruby"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:ruby"
+      "id": "mechanical:rough_ruby"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.ruby.title"

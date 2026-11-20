@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:turquoise"
+            "items": "mechanical:rough_turquoise"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:turquoise"
+      "id": "mechanical:rough_turquoise"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.turquoise.title"

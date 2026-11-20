@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:rose_quartz"
+            "items": "mechanical:rough_rose_quartz"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:rose_quartz"
+      "id": "mechanical:rough_rose_quartz"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.rose_quartz.title"

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mechanical:agate",
+          "name": "mechanical:rough_agate",
           "modifier": [
             {
               "type": "minecraft:set_count",

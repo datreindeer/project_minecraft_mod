@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:sapphire",
+              "name": "mechanical:rough_sapphire",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",

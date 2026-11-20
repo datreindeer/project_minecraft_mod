@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:tourmaline"
+            "items": "mechanical:rough_tourmaline"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:tourmaline"
+      "id": "mechanical:rough_tourmaline"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.tourmaline.title"

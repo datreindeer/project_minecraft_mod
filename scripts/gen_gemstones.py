@@ -3,7 +3,9 @@
 import json
 from pathlib import Path
 
-from gem_table import GEMS, SIZES, blocks_of, ore_block
+import zipfile
+
+from gem_table import ABRASIVE_NAMES, ABRASIVES, GEMS, HARDNESS, MOHS, SIZES, VANILLA, blocks_of, ore_block
 
 ROOT = Path(__file__).resolve().parent.parent
 R = ROOT / "src/main/resources"
@@ -77,7 +79,7 @@ pickaxe, bronze, features = [], [], []
 
 for g in GEMS:
     gem, title, kind = g["name"], g["title"], g["kind"]
-    lang[f"item.mechanical.{gem}"] = title
+    lang[f"item.mechanical.{gem}"] = ("Polished " if kind == "pebble" else "Cut ") + title
     w(A / f"models/item/{gem}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{gem}"}})
     w(A / f"items/{gem}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{gem}"}})
     w(D / f"c/tags/item/gems/{gem}.json", {"values": [M + gem]})
@@ -94,7 +96,7 @@ for g in GEMS:
             lang[f"block.mechanical.{b}"] = f"{'Deepslate ' if host == 'deepslate' else ''}{title} Ore"
             w(A / f"models/block/{b}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": f"mechanical:block/{b}"}})
             w(A / f"blockstates/{b}.json", {"variants": {"": {"model": f"mechanical:block/{b}"}}})
-            loot(b, silk_or(b, drop(M + gem, FORTUNE, DECAY)))
+            loot(b, silk_or(b, drop(M + "rough_" + gem, FORTUNE, DECAY)))
             if g.get("tier") == "bronze":
                 bronze.append(M + b)
         w(D / f"mechanical/worldgen/feature/gem_{gem}.json", {
@@ -108,12 +110,12 @@ for g in GEMS:
         placed.append(f"gem_{gem}")
         tool = "**Bronze Pickaxe** eller bättre" if g.get("tier") == "bronze" else "valfri pickaxe"
         tool_en = "a **Bronze Pickaxe** or better" if g.get("tier") == "bronze" else "any pickaxe"
-        sv_notes[gem] = {"text": f"Ädelsten ur malm. {g['sv']}. Bryts ur {links} med {tool} (Fortune ger fler).", "category": "materials"}
-        en_notes[gem] = {"text": f"Gemstone from ore. {g['en']}. Mined from {links} with {tool_en} (Fortune gives more).", "category": "materials"}
+        sv_notes[gem] = {"text": f"Ädelsten ur malm. {g['sv']}. Bryts som [[rough_{gem}]] ur {links} med {tool} (Fortune ger fler).", "category": "materials"}
+        en_notes[gem] = {"text": f"Gemstone from ore. {g['en']}. Mined as [[rough_{gem}]] from {links} with {tool_en} (Fortune gives more).", "category": "materials"}
         for b in blocks:
-            sv_notes[b] = {"text": f"Malm med [[{gem}]]. {g['sv']}. Kräver {tool}; ger 1 [[{gem}]] (Fortune hjälper), sig själv med Silk Touch.",
+            sv_notes[b] = {"text": f"Malm med [[{gem}]]. {g['sv']}. Kräver {tool}; ger 1 [[rough_{gem}]] (Fortune hjälper), sig själv med Silk Touch.",
                            "category": "blocks"}
-            en_notes[b] = {"text": f"Ore holding [[{gem}]]. {g['en']}. Needs {tool_en}; drops 1 [[{gem}]] (Fortune helps), itself with Silk Touch.",
+            en_notes[b] = {"text": f"Ore holding [[{gem}]]. {g['en']}. Needs {tool_en}; drops 1 [[rough_{gem}]] (Fortune helps), itself with Silk Touch.",
                            "category": "blocks"}
 
     elif kind == "crystal":
@@ -124,12 +126,12 @@ for g in GEMS:
             lang[f"block.mechanical.{b}"] = f"{s.title()} {title} Crystal"
             w(A / f"models/block/{b}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{b}"}})
             w(A / f"blockstates/{b}.json", {"variants": {f"facing={f}": {"model": f"mechanical:block/{b}", **r} for f, r in FACING_ROT.items()}})
-            loot(b, silk_or(b, drop(M + gem, *drops[s], DECAY)))
+            loot(b, silk_or(b, drop(M + "rough_" + gem, *drops[s], DECAY)))
             sv_notes[b] = {"text": f"En {sv_size[s]} kristall av [[{gem}]] som växer på grottgolv och grottak. {g['sv']}. "
-                                   f"Bryts med pickaxe → {['1', '1–2', '2–4 (Fortune hjälper)'][SIZES.index(s)]} [[{gem}]]; "
+                                   f"Bryts med pickaxe → {['1', '1–2', '2–4 (Fortune hjälper)'][SIZES.index(s)]} [[rough_{gem}]]; "
                                    f"sig själv med Silk Touch. Lyser svagt.", "category": "blocks"}
             en_notes[b] = {"text": f"A {s} [[{gem}]] crystal growing on cave floors and ceilings. {g['en']}. "
-                                   f"Mined with a pickaxe → {['1', '1–2', '2–4 (Fortune helps)'][SIZES.index(s)]} [[{gem}]]; "
+                                   f"Mined with a pickaxe → {['1', '1–2', '2–4 (Fortune helps)'][SIZES.index(s)]} [[rough_{gem}]]; "
                                    f"itself with Silk Touch. Glows faintly.", "category": "blocks"}
         crystals = [(M + f"{s}_{gem}_crystal", wt) for s, wt in zip(SIZES, (6, 3, 1))]
         for side, facing, up, n in (("floor", "up", False, g["count"]), ("ceiling", "down", True, max(1, g["count"] // 2))):
@@ -152,24 +154,137 @@ for g in GEMS:
                                                        "textures": {"all": f"mechanical:block/{gem}_pebble"}})
             variants[f"size={size}"] = [{"model": f"mechanical:block/{b}_size{size}", "y": y} for y in (0, 90, 180, 270)]
         w(A / f"blockstates/{b}.json", {"variants": variants})
-        loot(b, drop(M + gem, *[{"type": "minecraft:set_count", "count": s,
+        loot(b, drop(M + "rough_" + gem, *[{"type": "minecraft:set_count", "count": s,
                                  "condition": {"type": "minecraft:match_block", "blocks": M + b, "state": {"size": str(s)}}}
                                 for s in (2, 3)]))
         w(D / f"mechanical/worldgen/feature/gem_{gem}.json", weighted([(M + b, {"size": str(s)}, wt) for s, wt in ((1, 6), (2, 3), (3, 1))]))
         w(D / f"mechanical/worldgen/placed_feature/gem_{gem}.json", {"feature": f"mechanical:gem_{gem}",
                                                                     "placement": cave_surface(g["count"], *g["y"], False)})
         placed.append(f"gem_{gem}")
-        sv_notes[gem] = {"text": f"Ädelsten som lösa stenar. {g['sv']}. Plockas från [[{b}]].", "category": "materials"}
-        en_notes[gem] = {"text": f"Gemstone found as loose pebbles. {g['en']}. Picked up from [[{b}]].", "category": "materials"}
+        sv_notes[gem] = {"text": f"Ädelsten som lösa stenar. {g['sv']}. Plockas som [[rough_{gem}]] från [[{b}]].", "category": "materials"}
+        en_notes[gem] = {"text": f"Gemstone found as loose pebbles. {g['en']}. Picked up as [[rough_{gem}]] from [[{b}]].", "category": "materials"}
         sv_notes[b] = {"text": f"Lösa stenar av [[{gem}]] på grottgolv. {g['sv']}. Storlek 1–2 plockas för hand, storlek 3 kräver pickaxe. "
-                               f"Ger 1–3 [[{gem}]] efter storlek.", "category": "blocks"}
+                               f"Ger 1–3 [[rough_{gem}]] efter storlek.", "category": "blocks"}
         en_notes[b] = {"text": f"Loose [[{gem}]] pebbles on cave floors. {g['en']}. Sizes 1–2 are picked up by hand, size 3 needs a pickaxe. "
-                               f"Drops 1–3 [[{gem}]] by size.", "category": "blocks"}
+                               f"Drops 1–3 [[rough_{gem}]] by size.", "category": "blocks"}
 
     w(D / f"mechanical/neoforge/biome_modifier/add_gem_{gem}.json", {
         "type": "neoforge:add_features", "biomes": f"#mechanical:has_gem/{gem}",
         "features": [M + p for p in placed], "step": modifier_step})
     features += placed
+
+# ---- rough and flawed gems, cutting on the Lapidary Wheel ----
+ALL = [(g["name"], g["title"], f"[[{g['name']}]]") for g in GEMS] + [(n, t, f"[[{v}]]") for n, (t, v, _) in VANILLA.items()]
+SV_TIER = {1: "Sand", 2: "[[flint_grit]]", 3: "[[garnet_grit]]", 4: "[[corundum_grit]]", 5: "[[diamond_dust]]"}
+for gem, title, cut in ALL:
+    tier, tool = HARDNESS[gem], SV_TIER[HARDNESS[gem]]
+    for kind_ in ("rough", "flawed"):
+        i = f"{kind_}_{gem}"
+        lang[f"item.mechanical.{i}"] = f"{kind_.title()} {title}"
+        w(A / f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{i}"}})
+        w(A / f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{i}"}})
+    higher = "" if tier == 5 else " Med ett hårdare slipmedel blir den alltid fin."
+    higher_en = "" if tier == 5 else " A harder abrasive always gives a fine one."
+    sv_notes[f"rough_{gem}"] = {"text": f"Oslipad {title} (Mohs {MOHS[gem]}). Slipas på [[lapidary_wheel]] till {cut}: kräver minst {tool} "
+                                        f"(nivå {tier}). Med exakt det slipmedlet kan den spricka till [[flawed_{gem}]] (35 %).{higher}",
+                                "category": "materials"}
+    en_notes[f"rough_{gem}"] = {"text": f"Uncut {title} (Mohs {MOHS[gem].replace(',', '.')}). Cut on the [[lapidary_wheel]] into {cut}: needs "
+                                        f"at least {tool} (tier {tier}). With exactly that abrasive it may crack into [[flawed_{gem}]] (35 %).{higher_en}",
+                                "category": "materials"}
+    sv_notes[f"flawed_{gem}"] = {"text": f"En {title} som sprack vid slipningen på [[lapidary_wheel]] (slipmedlet var precis hårt nog). "
+                                         f"Mindre värd (smycken kommer senare).", "category": "materials"}
+    en_notes[f"flawed_{gem}"] = {"text": f"A {title} that cracked while being cut on the [[lapidary_wheel]] (the abrasive was only just hard "
+                                         f"enough). Worth less (jewellery comes later).", "category": "materials"}
+    if gem in sv_notes:
+        sv_notes[gem]["text"] += f" Hittas som [[rough_{gem}]] och slipas på [[lapidary_wheel]] (nivå {tier}, Mohs {MOHS[gem]})."
+        en_notes[gem]["text"] += f" Found as [[rough_{gem}]] and cut on the [[lapidary_wheel]] (tier {tier}, Mohs {MOHS[gem].replace(',', '.')})."
+for t in range(1, 6):
+    w(D / f"mechanical/tags/item/gem_hardness/{t}.json", {"values": [f"{M}rough_{n}" for n, *_ in ALL if HARDNESS[n] == t]})
+    w(D / f"mechanical/tags/item/abrasives/{t}.json", {"values": ABRASIVES[t]})
+w(D / "mechanical/tags/item/rough_gemstones.json", {"values": [f"{M}rough_{n}" for n, *_ in ALL]})
+
+GRITS = {"flint_grit": ("Flint Grit", "Krossad Flint", "Crushed Flint", 2),
+         "garnet_grit": ("Garnet Grit", "Krossad [[rough_garnet]] eller [[flawed_garnet]]", "Crushed [[rough_garnet]] or [[flawed_garnet]]", 3),
+         "corundum_grit": ("Corundum Grit", "Krossad Rough/Flawed Ruby eller Sapphire ([[rough_ruby]], [[rough_sapphire]])",
+                           "Crushed Rough/Flawed Ruby or Sapphire ([[rough_ruby]], [[rough_sapphire]])", 4),
+         "diamond_dust": ("Diamond Dust", "Krossad [[rough_diamond]] eller [[flawed_diamond]] (diamant slipas med diamant)",
+                          "Crushed [[rough_diamond]] or [[flawed_diamond]] (diamond is cut with diamond)", 5)}
+for i, (title, sv, en, tier) in GRITS.items():
+    lang[f"item.mechanical.{i}"] = title
+    w(A / f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{i}"}})
+    w(A / f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{i}"}})
+    cuts = ", ".join(f"[[rough_{n}]]" for n, *_ in ALL if HARDNESS[n] <= tier)
+    sv_notes[i] = {"text": f"Slipmedel nivå {tier} för [[lapidary_wheel]]. {sv} på [[stone_anvil]] → 2. Ett item räcker till 4 stenar. "
+                           f"Slipar allt upp till nivå {tier}: {cuts}.", "category": "materials"}
+    en_notes[i] = {"text": f"Tier {tier} abrasive for the [[lapidary_wheel]]. {en} on the [[stone_anvil]] → 2. One item cuts 4 gems. "
+                           f"Cuts everything up to tier {tier}: {cuts}.", "category": "materials"}
+
+# vanilla gems drop rough: vanilla's own loot tables with the gem swapped for the rough one
+jar = next(p for p in (ROOT / "build/moddev/artifacts", ROOT.parent.parent / "project_minecraft_mod/build/moddev/artifacts")
+           if (p / "minecraft-patched-26.3.0.95-merged.jar").exists()) / "minecraft-patched-26.3.0.95-merged.jar"
+with zipfile.ZipFile(jar) as z:
+    for gem, (title, item, blocks) in VANILLA.items():
+        for b in blocks:
+            text = z.read(f"data/minecraft/loot_table/blocks/{b}.json").decode()
+            assert f'"{item}"' in text, b
+            w(D / f"minecraft/loot_table/blocks/{b}.json", json.loads(text.replace(f'"{item}"', f'"{M}rough_{gem}"')))
+
+
+# the Lapidary Wheel: an octagonal sandstone wheel on an axle between two posts over a wooden trough, with a crank
+def el(f, t, tex, rot=None):
+    e = {"from": f, "to": t, "faces": {d: {"texture": ("#wheel_face" if tex == "#wheel" and d in ("east", "west") else tex)}
+                                       for d in ("north", "south", "east", "west", "up", "down")}}
+    if rot:
+        e["rotation"] = rot
+    return e
+
+
+wheel = [el([1, 0, 4], [15, 3, 12], "#planks"), el([1, 3, 4], [15, 5, 5], "#planks"), el([1, 3, 11], [15, 5, 12], "#planks"),
+         el([2, 3, 7], [4, 12, 9], "#planks"), el([12, 3, 7], [14, 12, 9], "#planks"),
+         el([7, 2.5, 2.5], [9, 13.5, 13.5], "#wheel"),
+         el([7, 2.5, 2.5], [9, 13.5, 13.5], "#wheel", {"angle": 45, "axis": "x", "origin": [8, 8, 8]}),
+         el([0.5, 7.5, 7.5], [15.5, 8.5, 8.5], "#axle"),
+         el([0, 8.5, 7.5], [1, 12, 8.5], "#axle"), el([0, 11, 6.5], [1, 12, 7.5], "#axle")]
+w(A / "models/block/lapidary_wheel.json", {"textures": {"particle": "minecraft:block/oak_planks", "planks": "minecraft:block/oak_planks",
+    "wheel": "minecraft:block/sandstone", "wheel_face": "minecraft:block/sandstone_top", "axle": "minecraft:block/stripped_oak_log"},
+    "elements": wheel})
+w(A / "blockstates/lapidary_wheel.json", {"variants": {f"facing={f}": {"model": "mechanical:block/lapidary_wheel", **({"y": y} if y else {})}
+                                                      for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270))}})
+w(A / "items/lapidary_wheel.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/lapidary_wheel"}})
+loot("lapidary_wheel", {"type": "minecraft:item", "name": M + "lapidary_wheel", "condition": {"type": "minecraft:survives_explosion"}})
+patch_tag(D / "minecraft/tags/block/mineable/axe.json", [M + "lapidary_wheel"])
+w(D / "mechanical/recipe/lapidary_wheel.json", {"type": "minecraft:crafting_shaped", "category": "misc",
+    "pattern": [" A ", "TRT", "P P"], "key": {"A": "minecraft:sandstone", "R": "mechanical:tool_rod", "T": "mechanical:twine",
+                                              "P": "#minecraft:planks"}, "result": {"id": "mechanical:lapidary_wheel"}})
+lang.update({
+    "block.mechanical.lapidary_wheel": "Lapidary Wheel",
+    "message.mechanical.lapidary.empty": "Load an abrasive first: Sand, Flint Grit, Garnet Grit, Corundum Grit or Diamond Dust",
+    "message.mechanical.lapidary.loaded": "Wheel: %s, %s gems left",
+    "message.mechanical.lapidary.full": "The wheel holds no more of that grit",
+    "message.mechanical.lapidary.too_hard": "%s is too hard for this grit: it needs %s or harder",
+    "message.mechanical.lapidary.grinding": "Grinding... %s/%s",
+    "message.mechanical.lapidary.cut": "Cut: %s",
+    "message.mechanical.lapidary.cracked": "It cracked: %s",
+    **{f"message.mechanical.lapidary.grit.{t}": n for t, n in ABRASIVE_NAMES.items()},
+})
+tiers_sv = "; ".join(f"nivå {t} {SV_TIER[t]}: " + ", ".join(title for n, title, _ in ALL if HARDNESS[n] == t) for t in range(1, 6))
+tiers_en = "; ".join(f"tier {t} {SV_TIER[t]}: " + ", ".join(title for n, title, _ in ALL if HARDNESS[n] == t) for t in range(1, 6))
+sv_notes["lapidary_wheel"] = {"text": "Handvevad slipskiva för ädelstenar. Recept: Sandstone över Twine + [[tool_rod]] + Twine, planks under. "
+    "**Högerklicka med ett slipmedel** för att ladda den (ett item = 4 stenar), sedan **högerklicka 4 gånger med en Rough-sten** → slipad "
+    "sten. Slipmedlet måste vara minst lika hårt som stenen (Mohs); är det exakt lika hårt kan stenen spricka (35 % Flawed). Tom hand "
+    f"visar vad som är laddat. {tiers_sv}.", "category": "blocks"}
+en_notes["lapidary_wheel"] = {"text": "Hand-cranked grinding wheel for gems. Recipe: Sandstone over Twine + [[tool_rod]] + Twine, planks below. "
+    "**Right-click with an abrasive** to load it (one item = 4 gems), then **right-click 4 times with a Rough gem** → the cut gem. The "
+    "abrasive must be at least as hard as the gem (Mohs); exactly as hard, the gem may crack (35 % Flawed). An empty hand shows what is "
+    f"loaded. {tiers_en}.", "category": "blocks"}
+for v, sv, en in (("minecraft:diamond", "Diamond Ore släpper nu [[rough_diamond]]; slipas med [[diamond_dust]] på [[lapidary_wheel]].",
+                   "Diamond Ore now drops [[rough_diamond]]; cut with [[diamond_dust]] on the [[lapidary_wheel]]."),
+                  ("minecraft:emerald", "Emerald Ore släpper nu [[rough_emerald]]; slipas med [[garnet_grit]] på [[lapidary_wheel]].",
+                   "Emerald Ore now drops [[rough_emerald]]; cut with [[garnet_grit]] on the [[lapidary_wheel]]."),
+                  ("minecraft:amethyst_shard", "Amethyst Cluster släpper nu [[rough_amethyst]]; slipas med [[flint_grit]] på [[lapidary_wheel]].",
+                   "Amethyst Clusters now drop [[rough_amethyst]]; cut with [[flint_grit]] on the [[lapidary_wheel]].")):
+    sv_notes[v] = {"text": sv, "vanilla": True}
+    en_notes[v] = {"text": en, "vanilla": True}
 
 # ---- tags ----
 w(D / "c/tags/item/gems.json", {"values": [f"#c:gems/{g['name']}" for g in GEMS]})

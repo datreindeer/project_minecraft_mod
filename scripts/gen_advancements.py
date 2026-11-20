@@ -1048,19 +1048,46 @@ TABS["hunting"] = ("minecraft:gui/advancements/backgrounds/husbandry", hunting_r
 
 
 def gemstone_rows():
-    """Gemstones tab from gem_table.py: a group per kind, one advancement per gem telling where it is found."""
-    from gem_table import GEMS
-    groups = {"ore": ("ore_gems", "garnet", "Veins of Colour", "Mine a gem ore: each gem has its own depth and biome"),
-              "crystal": ("crystal_gems", "clear_quartz", "Crystal Caves", "Break a crystal growing on a cave floor or ceiling"),
-              "pebble": ("pebble_gems", "agate", "Lucky Pebbles", "Pick up a loose gem pebble from a cave floor")}
-    rows = [("root", None, "garnet", T, "Gemstones",
-             "Find any gemstone underground: gem ores, crystals in caves, or loose pebbles", has("#gemstones"))]
+    """Gemstones tab from gem_table.py: a group per kind, one advancement per gem telling where its rough stone is found,
+    then the Lapidary Wheel and its abrasives, hardest last."""
+    from gem_table import GEMS, HARDNESS, VANILLA
+    groups = {"ore": ("ore_gems", "rough_garnet", "Veins of Colour", "Mine a gem ore: each gem has its own depth and biome"),
+              "crystal": ("crystal_gems", "rough_clear_quartz", "Crystal Caves", "Break a crystal growing on a cave floor or ceiling"),
+              "pebble": ("pebble_gems", "rough_agate", "Lucky Pebbles", "Pick up a loose gem pebble from a cave floor")}
+    rows = [("root", None, "rough_garnet", T, "Gemstones",
+             "Find any Rough gem underground: gem ores, crystals in caves, or loose pebbles", has("#rough_gemstones"))]
     for kind, (gid, icon, title, desc) in groups.items():
         gems = [g for g in GEMS if g["kind"] == kind]
-        rows.append((gid, "root", icon, T, title, desc, has(*[g["name"] for g in gems])))
-        rows += [(g["name"], gid, g["name"], G if g.get("tier") or g["name"] == "moonstone" else T, g["title"], g["en"], has(g["name"]))
-                 for g in gems]
-    rows.append(("all_gems", "root", "opal", C, "Treasure Hoard", "Collect every gemstone", has_all(*[g["name"] for g in GEMS])))
+        rows.append((gid, "root", icon, T, title, desc, has(*[f"rough_{g['name']}" for g in gems])))
+        rows += [(g["name"], gid, f"rough_{g['name']}", G if g.get("tier") or g["name"] == "moonstone" else T, g["title"], g["en"],
+                  has(f"rough_{g['name']}")) for g in gems]
+    rows.append(("old_favourites", "root", "rough_diamond", T, "Old Favourites",
+                 "Diamond Ore, Emerald Ore and Amethyst Clusters now give Rough gems: cut them on a Lapidary Wheel",
+                 has(*[f"rough_{v}" for v in VANILLA])))
+    names = {"diamond": "Diamond Dust", "emerald": "Garnet Grit", "amethyst": "Flint Grit"}
+    rows += [(f"cut_{v}", "old_favourites", item, G if v == "diamond" else T, f"Cut {t}", f"Cut a Rough {t} on the Lapidary Wheel with {names[v]}",
+              has(item)) for v, (t, item, _) in VANILLA.items()]
+    rows += [
+        ("lapidary_wheel", "root", "lapidary_wheel", T, "Lapidary",
+         "Build a Lapidary Wheel (Sandstone, Twine, a Tool Rod and planks). Right-click it with Sand, then 4 times with a soft Rough gem",
+         has("lapidary_wheel")),
+        ("first_cut", "lapidary_wheel", "amber", T, "First Facet", "Cut a gem: an abrasive at least as hard as the stone (Mohs) is needed",
+         has("#gemstones")),
+        ("flawed", "first_cut", "flawed_garnet", T, "Hairline Crack",
+         "An abrasive only just hard enough can crack the stone into a Flawed gem. A harder one never does",
+         has(*[f"flawed_{n}" for n in [g["name"] for g in GEMS] + list(VANILLA)])),
+        ("flint_grit", "first_cut", "flint_grit", T, "Harder Than Sand",
+         "Crush Flint on the Stone Anvil into Flint Grit: it cuts quartz, jade, peridot and the pebble gems", has("flint_grit")),
+        ("garnet_grit", "flint_grit", "garnet_grit", T, "Garnet Paper",
+         "Crush Rough Garnet on the Stone Anvil into Garnet Grit: it cuts garnet, topaz, tourmaline, aquamarine and emerald", has("garnet_grit")),
+        ("corundum_grit", "garnet_grit", "corundum_grit", G, "Corundum",
+         "Crush Rough Ruby or Sapphire into Corundum Grit: the only grit hard enough for ruby and sapphire", has("corundum_grit")),
+        ("diamond_dust", "corundum_grit", "diamond_dust", G, "Diamond Cuts Diamond",
+         "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond", has("diamond_dust")),
+    ]
+    rows.append(("all_gems", "first_cut", "opal", C, "Treasure Hoard", "Cut every kind of gemstone",
+                 has_all(*[g["name"] for g in GEMS], *[item for _, item, _ in VANILLA.values()])))
+    assert all(HARDNESS[g["name"]] for g in GEMS)
     return rows
 
 

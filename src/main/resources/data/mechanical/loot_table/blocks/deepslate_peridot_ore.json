@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:peridot",
+              "name": "mechanical:rough_peridot",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",

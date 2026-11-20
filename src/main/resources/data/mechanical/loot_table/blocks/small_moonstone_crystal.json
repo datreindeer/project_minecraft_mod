@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:moonstone",
+              "name": "mechanical:rough_moonstone",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

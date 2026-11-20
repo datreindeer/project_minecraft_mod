@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:citrine"
+            "items": "mechanical:rough_citrine"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:citrine"
+      "id": "mechanical:rough_citrine"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.citrine.title"

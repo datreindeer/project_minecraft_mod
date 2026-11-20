@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:garnet"
+            "items": "mechanical:rough_garnet"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:garnet"
+      "id": "mechanical:rough_garnet"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.garnet.title"

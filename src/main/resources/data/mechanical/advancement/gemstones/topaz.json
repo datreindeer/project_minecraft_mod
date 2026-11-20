@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:topaz"
+            "items": "mechanical:rough_topaz"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:topaz"
+      "id": "mechanical:rough_topaz"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.topaz.title"

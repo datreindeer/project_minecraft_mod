@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mechanical:jasper",
+          "name": "mechanical:rough_jasper",
           "modifier": [
             {
               "type": "minecraft:set_count",

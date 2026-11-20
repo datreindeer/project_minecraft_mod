@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:amber",
+              "name": "mechanical:rough_amber",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",

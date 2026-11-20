@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:turquoise",
+              "name": "mechanical:rough_turquoise",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",

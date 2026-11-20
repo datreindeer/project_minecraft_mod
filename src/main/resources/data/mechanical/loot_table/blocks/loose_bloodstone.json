@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mechanical:bloodstone",
+          "name": "mechanical:rough_bloodstone",
           "modifier": [
             {
               "type": "minecraft:set_count",

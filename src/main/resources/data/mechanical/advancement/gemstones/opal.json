@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:opal"
+            "items": "mechanical:rough_opal"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:opal"
+      "id": "mechanical:rough_opal"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.opal.title"

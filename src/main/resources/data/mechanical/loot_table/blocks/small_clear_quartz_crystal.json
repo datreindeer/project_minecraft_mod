@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:clear_quartz",
+              "name": "mechanical:rough_clear_quartz",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

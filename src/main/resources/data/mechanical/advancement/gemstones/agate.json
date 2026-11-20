@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:agate"
+            "items": "mechanical:rough_agate"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:agate"
+      "id": "mechanical:rough_agate"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.agate.title"

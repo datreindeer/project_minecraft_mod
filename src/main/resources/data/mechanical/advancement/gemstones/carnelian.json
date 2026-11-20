@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:carnelian"
+            "items": "mechanical:rough_carnelian"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:carnelian"
+      "id": "mechanical:rough_carnelian"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.carnelian.title"

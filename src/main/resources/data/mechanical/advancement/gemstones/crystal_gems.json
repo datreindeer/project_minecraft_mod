@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:clear_quartz"
+            "items": "mechanical:rough_clear_quartz"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:rose_quartz"
+            "items": "mechanical:rough_rose_quartz"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:citrine"
+            "items": "mechanical:rough_citrine"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:smoky_quartz"
+            "items": "mechanical:rough_smoky_quartz"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:aquamarine"
+            "items": "mechanical:rough_aquamarine"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:fluorite"
+            "items": "mechanical:rough_fluorite"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:celestine"
+            "items": "mechanical:rough_celestine"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:moonstone"
+            "items": "mechanical:rough_moonstone"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:tourmaline"
+            "items": "mechanical:rough_tourmaline"
           }
         ]
       }
@@ -107,7 +107,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:clear_quartz"
+      "id": "mechanical:rough_clear_quartz"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.crystal_gems.title"

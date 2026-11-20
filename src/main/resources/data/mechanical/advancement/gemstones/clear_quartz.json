@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:clear_quartz"
+            "items": "mechanical:rough_clear_quartz"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:clear_quartz"
+      "id": "mechanical:rough_clear_quartz"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.clear_quartz.title"

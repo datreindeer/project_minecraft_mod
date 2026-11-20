@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:aquamarine"
+            "items": "mechanical:rough_aquamarine"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:aquamarine"
+      "id": "mechanical:rough_aquamarine"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.aquamarine.title"

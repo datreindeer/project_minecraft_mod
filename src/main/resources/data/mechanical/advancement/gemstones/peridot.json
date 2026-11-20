@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:peridot"
+            "items": "mechanical:rough_peridot"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:peridot"
+      "id": "mechanical:rough_peridot"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.peridot.title"

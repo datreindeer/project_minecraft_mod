@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:citrine",
+              "name": "mechanical:rough_citrine",
               "modifier": [
                 {
                   "type": "minecraft:set_count",

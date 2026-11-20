@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:gemstones/root",
+  "parent": "mechanical:gemstones/first_cut",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",
@@ -230,6 +230,36 @@
           }
         ]
       }
+    },
+    "has_23": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:diamond"
+          }
+        ]
+      }
+    },
+    "has_24": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:emerald"
+          }
+        ]
+      }
+    },
+    "has_25": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:amethyst_shard"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -301,6 +331,15 @@
     ],
     [
       "has_22"
+    ],
+    [
+      "has_23"
+    ],
+    [
+      "has_24"
+    ],
+    [
+      "has_25"
     ]
   ],
   "display": {

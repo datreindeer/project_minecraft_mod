@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:moonstone"
+            "items": "mechanical:rough_moonstone"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:moonstone"
+      "id": "mechanical:rough_moonstone"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.moonstone.title"

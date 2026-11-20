@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bloodstone"
+            "items": "mechanical:rough_bloodstone"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:bloodstone"
+      "id": "mechanical:rough_bloodstone"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.bloodstone.title"

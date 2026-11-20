@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:amber"
+            "items": "mechanical:rough_amber"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:amber"
+      "id": "mechanical:rough_amber"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.amber.title"

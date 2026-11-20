@@ -107,3 +107,28 @@ def blocks_of(g):
     if g["kind"] == "crystal":
         return [f"{s}_{g['name']}_crystal" for s in SIZES]
     return [f"loose_{g['name']}"]
+
+# ---- cutting (Lapidary Wheel): Mohs tier of each gem = the abrasive tier it needs; an abrasive of exactly that tier may
+# crack it (Flawed). Abrasives: 1 Sand, 2 Flint Grit, 3 Garnet Grit, 4 Corundum Grit, 5 Diamond Dust.
+HARDNESS = {
+    "amber": 1, "celestine": 1, "fluorite": 1, "turquoise": 1, "opal": 1, "moonstone": 1,
+    "jade": 2, "peridot": 2, "clear_quartz": 2, "rose_quartz": 2, "citrine": 2, "smoky_quartz": 2,
+    "agate": 2, "jasper": 2, "carnelian": 2, "chalcedony": 2, "bloodstone": 2, "amethyst": 2,
+    "garnet": 3, "tourmaline": 3, "aquamarine": 3, "topaz": 3, "emerald": 3,
+    "ruby": 4, "sapphire": 4,
+    "diamond": 5,
+}
+MOHS = {"amber": "2–2,5", "celestine": "3–3,5", "fluorite": "4", "turquoise": "5–6", "opal": "5,5–6,5", "moonstone": "6",
+        "jade": "6,5", "peridot": "6,5–7", "clear_quartz": "7", "rose_quartz": "7", "citrine": "7", "smoky_quartz": "7",
+        "agate": "7", "jasper": "7", "carnelian": "7", "chalcedony": "7", "bloodstone": "7", "amethyst": "7",
+        "garnet": "7–7,5", "tourmaline": "7–7,5", "aquamarine": "7,5–8", "topaz": "8", "emerald": "7,5–8",
+        "ruby": "9", "sapphire": "9", "diamond": "10"}
+ABRASIVES = {1: ["minecraft:sand", "minecraft:red_sand"], 2: ["mechanical:flint_grit"], 3: ["mechanical:garnet_grit"],
+             4: ["mechanical:corundum_grit"], 5: ["mechanical:diamond_dust"]}
+ABRASIVE_NAMES = {1: "Sand", 2: "Flint Grit", 3: "Garnet Grit", 4: "Corundum Grit", 5: "Diamond Dust"}
+# vanilla gems that are found rough too: name -> (title, the finished vanilla item, vanilla blocks whose drop becomes the rough gem)
+VANILLA = {
+    "diamond": ("Diamond", "minecraft:diamond", ["diamond_ore", "deepslate_diamond_ore"]),
+    "emerald": ("Emerald", "minecraft:emerald", ["emerald_ore", "deepslate_emerald_ore"]),
+    "amethyst": ("Amethyst", "minecraft:amethyst_shard", ["amethyst_cluster"]),
+}

@@ -548,13 +548,216 @@ def pebble_tile(gem, seed):
     return img
 
 
+# ---------------------------------------------------------------- cuts for the crystal gems (their raw habit is now the rough gem)
+
+def princess(dx, dy):
+    if max(abs(dx), abs(dy)) > 6.0:
+        return None
+    if max(abs(dx), abs(dy)) < 2.0:
+        return 0.88
+    return 0.4 + 0.18 * ((dx > 0) ^ (dy > 0) ^ (abs(dx) > abs(dy))) + 0.25 * light(dx, dy, 7) - (0.1 if max(abs(dx), abs(dy)) > 4.8 else 0)
+
+
+def heart(dx, dy):
+    x, y = dx / 7.6, -dy / 7.6 + 0.12
+    if (x * x + y * y - 1) ** 3 - x * x * y ** 3 > 0:
+        return None
+    return 0.45 + 0.2 * (sector(dx, dy, 6) % 2) + 0.3 * light(dx, dy, 7)
+
+
+def pear(dx, dy):
+    if dy > 0.5:
+        if math.hypot(dx, dy - 0.5) > 5.6:
+            return None
+    elif dy < -6.9 or abs(dx) > 5.6 * ((dy + 6.9) / 7.4) ** 1.2:
+        return None
+    if math.hypot(dx, dy) < 2.0:
+        return 0.86
+    return 0.4 + 0.2 * (sector(dx, dy - 1, 7) % 2) + 0.28 * light(dx, dy, 7)
+
+
+def marquise(dx, dy):
+    u, v = rot(dx, dy, 45)
+    if abs(u) > 3.6 * (1 - (v / 7.6) ** 2):
+        return None
+    if abs(v) > 7.6:
+        return None
+    return 0.82 if abs(u) < 1.0 and abs(v) < 3 else 0.4 + 0.22 * ((u > 0) ^ (abs(v) > 3.5)) + 0.25 * light(dx, dy, 7)
+
+
+def hex_step(dx, dy):
+    if abs(dy) > 4.4 or abs(dx) + abs(dy) * 0.6 > 7.0:
+        return None
+    band = int(min(4.4 - abs(dy), (7.0 - abs(dx) - abs(dy) * 0.6) * 0.8) / 1.1)
+    return 0.32 + 0.14 * band + 0.18 * light(dx, dy, 7) + (0.07 if band % 2 else 0)
+
+
+def checkerboard(dx, dy):
+    if max(abs(dx), abs(dy)) > 6.2 or abs(dx) + abs(dy) > 8.8:
+        return None
+    t = 0.45 + 0.25 * ((int(dx + 8) // 2 + int(dy + 8) // 2) % 2) + 0.2 * light(dx, dy, 7)
+    return (t, GREEN_FLUORITE) if abs(dy) < 1.6 else t
+
+
+def kite(dx, dy):
+    if dy < -6.8 or dy > 6.8:
+        return None
+    w = 5.4 * (dy + 6.8) / 4.8 if dy < -2 else 5.4 * (6.8 - dy) / 8.8
+    if abs(dx) > w:
+        return None
+    return 0.86 if abs(dx) < 1 and -3 < dy < 2 else 0.4 + 0.2 * ((dx > 0) ^ (dy > -2)) + 0.28 * light(dx, dy, 7)
+
+
+def round_cabochon(dx, dy):
+    if math.hypot(dx, dy) > 6.0:
+        return None
+    return 0.95 - 0.75 * math.hypot(dx + 2.2, dy + 2.2) / 6.0
+
+
+def bicolour_bar(dx, dy):
+    u, v = rot(dx, dy, 45)
+    if abs(u) > 2.6 or abs(v) > 7.4:
+        return None
+    band = int(min(2.6 - abs(u), 7.4 - abs(v)) / 0.9)
+    t = 0.35 + 0.18 * band + 0.15 * light(dx, dy, 7)
+    return (t, GREEN_TOURMALINE) if v > 0 else t
+
+
+CUT_SHAPES = {"clear_quartz": princess, "rose_quartz": heart, "citrine": pear, "smoky_quartz": marquise, "aquamarine": hex_step,
+              "fluorite": checkerboard, "celestine": kite, "moonstone": round_cabochon, "tourmaline": bicolour_bar}
+CUT |= {"rose_quartz", "celestine"}
+
+# ---------------------------------------------------------------- rough gems
+
+VPAL = {"diamond": [(120, 150, 160), (170, 205, 212), (206, 236, 240), (232, 250, 252), (255, 255, 255)],
+        "emerald": [(6, 60, 30), (14, 110, 54), (30, 160, 80), (90, 210, 130), (190, 250, 210)],
+        "amethyst": [(52, 26, 90), (92, 50, 150), (140, 90, 200), (186, 140, 232), (230, 206, 255)]}
+CRUST = {"stone": [(70, 70, 72), (100, 100, 102), (128, 128, 130)], "deepslate": [(40, 40, 46), (62, 62, 68), (86, 86, 92)],
+         "sandstone": [(170, 150, 100), (200, 182, 130), (222, 208, 160)], "kimberlite": [(40, 52, 60), (62, 78, 86), (86, 104, 110)],
+         "mica": [(170, 168, 150), (206, 204, 186), (236, 234, 220)], "calcite": [(190, 192, 188), (220, 222, 218), (244, 244, 240)],
+         "clay": [(110, 90, 70), (140, 116, 92), (168, 142, 116)]}
+
+
+def lump(seed, r=5.6):
+    rng = random.Random(seed)
+    h = [rng.uniform(0.4, 1.1) for _ in range(3)]
+    ph = [rng.uniform(0, 6.3) for _ in range(3)]
+    return lambda dx, dy: math.hypot(dx, dy) <= r + sum(h[i] * math.sin((i + 2) * math.atan2(dy, dx) + ph[i]) for i in range(3))
+
+
+def rough_render(gem, pal, core, crust, seed, crust_share=0.35):
+    """A rough stone: core(dx, dy) -> t or None for the gem, the rest of the lump is rock crust (matte, grainy)."""
+    rng = random.Random(seed)
+    inside = lump(seed)
+    cells = [(rng.uniform(-6, 6), rng.uniform(-6, 6), rng.uniform(-0.1, 0.1)) for _ in range(8)]
+
+    def fn(dx, dy):
+        t = core(dx, dy)
+        if t is not None:
+            return (t if isinstance(t, tuple) else t + rng.uniform(-0.06, 0.06))
+        if not inside(dx, dy):
+            return None
+        sx, sy, j = min(cells, key=lambda c: (c[0] - dx) ** 2 + (c[1] - dy) ** 2)
+        if rng.random() < 0.08:  # a speck of the gem showing through the crust
+            return 0.55
+        return (clamp(0.5 + 0.35 * light(sx, sy, 6) + j + rng.uniform(-0.08, 0.08)), crust + [crust[-1]] * 2)
+    return render(fn, pal, None)
+
+
+def rough_core(gem, kind, seed):
+    """The gem's own part of the rough stone, in its natural habit."""
+    rng = random.Random(seed)
+    if gem in ("ruby", "sapphire"):  # hexagonal barrel
+        return lambda dx, dy: prism(dx + 0.5, dy, half=2.8, top=3.6, flat=True, deg=-20)
+    if gem in ("topaz", "emerald", "aquamarine"):
+        return lambda dx, dy: prism(dx, dy, half=2.4, top=5.0, flat=True, deg=30)
+    if gem == "garnet":  # dodecahedral crystal
+        return lambda dx, dy: (None if max(abs(dx) * 0.87 + abs(dy) * 0.5, abs(dy)) > 4.6 else
+                               0.45 + 0.2 * (sector(dx, dy, 6) % 2) + 0.3 * light(dx, dy, 5))
+    if gem == "diamond":  # octahedron
+        return lambda dx, dy: (None if abs(dx) / 4.6 + abs(dy) / 5.6 > 1 else
+                               {(False, False): 0.92, (True, False): 0.66, (False, True): 0.55, (True, True): 0.38}[(dx > 0, dy > 0)])
+    if gem == "amethyst":  # a geode piece: points on a calcite base
+        return lambda dx, dy: blades(dx, dy + 1.5)
+    if kind == "crystal":
+        return lambda dx, dy: (lambda v: v)(ITEM_SHAPES[gem](dx * 1.25, dy * 1.25))
+    if kind == "pebble":
+        return lambda dx, dy: (None if math.hypot(dx - 0.5, dy - 0.5) > 4.0 else 0.5 + 0.25 * light(dx, dy, 5))
+    # opaque ore gems (jade, opal, turquoise, peridot, amber): an irregular seam through the rock
+    cx, cy, ang = rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(0, 180)
+    return lambda dx, dy: (lambda u, v: None if abs(v) > 2.2 + 0.8 * math.sin(u * 0.9 + ang) or abs(u) > 6 else
+                           0.5 + 0.3 * light(dx, dy, 6))(*rot(dx - cx, dy - cy, ang))
+
+
+def crust_of(gem, g):
+    if gem == "diamond":
+        return CRUST["kimberlite"]
+    if gem in ("emerald", "aquamarine"):
+        return CRUST["mica"]
+    if gem in ("amethyst", "celestine", "fluorite"):
+        return CRUST["calcite"]
+    if gem == "amber":
+        return CRUST["clay"]
+    if g is None:
+        return CRUST["stone"]
+    return CRUST[g["hosts"][0]] if g["kind"] == "ore" else CRUST["stone"]
+
+
+def flawed(cut, seed):
+    """The cut gem, dulled, with a crack across it and a chipped corner."""
+    rng = random.Random(seed)
+    img = cut.copy()
+    px = [(x, y) for y in range(16) for x in range(16) if img.getpixel((x, y))[3]]
+    for p in px:
+        r, g, b, a = img.getpixel(p)
+        grey = (r + g + b) // 3
+        img.putpixel(p, (int((r * 0.6 + grey * 0.4) * 0.88), int((g * 0.6 + grey * 0.4) * 0.88), int((b * 0.6 + grey * 0.4) * 0.88), a))
+    top = min(px, key=lambda p: (p[1], abs(p[0] - 9)))
+    x, y = top[0], top[1] + 1
+    while (x, y) in px:  # jagged crack, dark with a pale lip on its right
+        img.putpixel((x, y), (30, 26, 28, 255))
+        if (x + 1, y) in px:
+            c = img.getpixel((x + 1, y))
+            img.putpixel((x + 1, y), tuple(min(255, v + 60) for v in c[:3]) + (255,))
+        x, y = x + rng.choice((-1, 0, 0, 1)), y + 1
+    edge = [p for p in px if sum((p[0] + a, p[1] + b) in px for a, b in N4) <= 2]
+    for p in rng.sample(edge, min(2, len(edge))):  # chipped
+        img.putpixel(p, (0, 0, 0, 0))
+    return img
+
+
+LIB = Path(r"C:\Users\Yngve\Documents\Minecraft Modding\item")
+
+
+def recolour(src, pal):
+    out = src.copy()
+    px = [(x, y) for y in range(16) for x in range(16) if src.getpixel((x, y))[3]]
+    lums = [sum(src.getpixel(p)[:3]) / 3 for p in px]
+    lo, hi = min(lums), max(lums)
+    for (x, y), lum in zip(px, lums):
+        out.putpixel((x, y), ramp(pal, (lum - lo) / max(1, hi - lo)) + (src.getpixel((x, y))[3],))
+    return out
+
+
 # ---------------------------------------------------------------- write everything
 done = 0
 for n, g in enumerate(GEMS):
     gem, kind = g["name"], g["kind"]
-    img, vals = render(ITEM_SHAPES[gem], PAL[gem], gem)
-    item_marks(gem, img, vals, random.Random(n)).save(TEX / f"item/{gem}.png")
-    done += 1
+    raw_img, raw_vals = render(ITEM_SHAPES[gem], PAL[gem], gem)
+    raw_img = item_marks(gem, raw_img, raw_vals, random.Random(n))
+    if kind == "crystal":  # the raw crystal is the rough gem, a new cut is the finished one
+        cut_img, cut_vals = render(CUT_SHAPES[gem], PAL[gem], gem)
+        cut_img = item_marks(gem, cut_img, cut_vals, random.Random(n + 50))
+        rough_img, _ = rough_render(gem, PAL[gem], rough_core(gem, kind, n), crust_of(gem, g), n + 100)
+    else:
+        cut_img = raw_img
+        rough_img, rough_vals = rough_render(gem, PAL[gem], rough_core(gem, kind, n), crust_of(gem, g), n + 100)
+        if gem in ("opal", "turquoise", "amber", "bloodstone", "jasper"):
+            rough_img = item_marks(gem, rough_img, {p: v for p, v in rough_vals.items()}, random.Random(n + 7))
+    cut_img.save(TEX / f"item/{gem}.png")
+    rough_img.save(TEX / f"item/rough_{gem}.png")
+    flawed(cut_img, n).save(TEX / f"item/flawed_{gem}.png")
+    done += 3
     if kind == "ore":
         for host in g["hosts"]:
             ore_texture(gem, host, n * 7 + len(host)).save(TEX / f"block/{ore_block(gem, host)}.png")
@@ -566,4 +769,16 @@ for n, g in enumerate(GEMS):
     else:
         pebble_tile(gem, n).save(TEX / f"block/{gem}_pebble.png")
         done += 1
+for n, (gem, item) in enumerate((("diamond", "item/diamond"), ("emerald", "item/emerald"), ("amethyst", "item/amethyst_shard"))):
+    rough_img, _ = rough_render(gem, VPAL[gem], rough_core(gem, "ore", 200 + n), crust_of(gem, None), 300 + n, 0.3)
+    rough_img.save(TEX / f"item/rough_{gem}.png")
+    flawed(vanilla(item), 400 + n).save(TEX / f"item/flawed_{gem}.png")
+    done += 2
+# grits from the user's dust library: obsidian dust as flint, ruby dust recoloured garnet-brown and corundum-grey-pink, diamond dust
+dust = lambda name: Image.open(LIB / name).convert("RGBA")
+recolour(dust("obsidian_dust.png"), [(18, 18, 22), (40, 40, 46), (70, 70, 78), (110, 110, 118), (170, 170, 176)]).save(TEX / "item/flint_grit.png")
+recolour(dust("ruby_dust.png"), [(50, 10, 10), (96, 24, 22), (140, 44, 36), (180, 80, 66), (220, 150, 130)]).save(TEX / "item/garnet_grit.png")
+recolour(dust("ruby_dust.png"), [(70, 64, 70), (110, 100, 108), (150, 132, 142), (190, 170, 180), (236, 220, 228)]).save(TEX / "item/corundum_grit.png")
+dust("diamond_dust.png").save(TEX / "item/diamond_dust.png")
+done += 4
 print(f"gemstone textures: {done}")

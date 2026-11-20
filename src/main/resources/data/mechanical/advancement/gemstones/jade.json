@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:jade"
+            "items": "mechanical:rough_jade"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:jade"
+      "id": "mechanical:rough_jade"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.jade.title"

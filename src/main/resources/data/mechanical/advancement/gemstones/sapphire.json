@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:sapphire"
+            "items": "mechanical:rough_sapphire"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:sapphire"
+      "id": "mechanical:rough_sapphire"
     },
     "title": {
       "translate": "advancements.mechanical.gemstones.sapphire.title"

@@ -14,7 +14,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:topaz",
+              "name": "mechanical:rough_topaz",
               "modifier": [
                 {
                   "type": "minecraft:apply_bonus",
