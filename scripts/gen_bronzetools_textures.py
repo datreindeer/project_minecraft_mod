@@ -10,6 +10,8 @@ output and seeds stay untouched).
   the Bronze Hook Fishing Rod is the Bone Hook rod with the hook in bronze (cast: as the bone rod's, the hook is in the water).
 - Bronze Tongs / Tong Arms: drawn here, two arms crossing at a rivet, short jaws upper right; the tongs wrap the handles in
   leather. Bronze Chisel / Chisel Blade: drawn here, a flat-edged blade on a wooden handle with a bronze ferrule.
+- Bronze Quarry Hammer: the head of the user's library quarry_hammer (25x25, box-scaled to 16x16) in bronze on the Bronze
+  Smithing Hammer's haft (gen_bloomery_textures.py's output).
 - Rough Cast pieces: the same shapes, dull and mottled with casting flash; the fish hooks and needles are gang castings
   (four on a runner), also the cavities of their molds.
 - Clay molds: fired tops, unfired item icons, molten and solid bronze in the cavity (as gen_bronze_textures.py).
@@ -294,6 +296,16 @@ def chisel(handle):
 
 items["bronze_chisel"] = chisel(True)
 items["bronze_chisel_blade"] = rough_src["chisel_blade"] = chisel(False)
+
+# ---- Bronze Quarry Hammer ----
+src = Image.open(Path(r"C:\Users\Yngve\Documents\Minecraft Modding\item") / "quarry_hammer.png").convert("RGBA").resize((16, 16), Image.BOX)
+head = [p for p in px(src) if src.getpixel(p)[3] >= 128 and src.getpixel(p)[0] - src.getpixel(p)[2] > 20 and p[1] < 10]  # the red head
+hammer = recolor(only(src, head), BRONZE[1:], mask=head)
+smith = ours("bronze_smithing_hammer")
+for p in px(smith):
+    if p[1] >= 8 and p[0] < 8 and p not in head:
+        hammer.putpixel(p, smith.getpixel(p))  # the haft, lower left
+items["bronze_quarry_hammer"] = outline(hammer)
 
 for name, img in items.items():
     save(img, ITEM / f"{name}.png")

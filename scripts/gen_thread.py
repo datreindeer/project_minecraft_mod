@@ -125,7 +125,7 @@ loot("flax_crop", [{"rolls": 1, "condition": RIPE, "entries": [item(M + "flax_st
 tag_add(D / "minecraft/tags/block/crops.json", M + "flax_crop")
 tag_add(D / "minecraft/tags/block/maintains_farmland.json", M + "flax_crop")
 # seed source: the village Farmer at trade level 3 (the Bronze Age levels, gen_bronze.py)
-w(D / "mechanical/villager_trade/farmer/3/flax_seeds.json", {"wants": {"id": "minecraft:emerald", "count": 2},
+w(D / "mechanical/villager_trade/farmer/3/flax_seeds.json", {"wants": {"id": M + "copper_coin", "count": 8},
     "gives": {"id": M + "flax_seeds", "count": 4}, "max_uses": 12, "xp": 10, "reputation_discount": 0.05})
 tag_add(D / "minecraft/tags/villager_trade/farmer/level_3.json", M + "farmer/3/flax_seeds")
 

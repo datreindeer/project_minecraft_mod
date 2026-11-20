@@ -27,7 +27,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * A cast bronze anvil (horn along FACING's clockwise side). Right-click puts an Iron Bloom on it, an empty hand takes it
+ * A cast bronze anvil (horn along FACING's clockwise side). Right-click puts an Iron Bloom or a Copper Ingot on it, an empty hand takes it
  * back; the Bronze Smithing Hammer (attack or use, {@link Ironworking#HAMMER_COOLDOWN} ticks apart) works a hot one
  * ({@link BronzeAnvilBlockEntity#strike}).
  */
@@ -73,7 +73,7 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
             if (level instanceof ServerLevel server) strike(server, pos, player, stack, hand);
             return InteractionResult.SUCCESS;
         }
-        if (!anvil.item().isEmpty() || !(stack.getItem() instanceof IronBloomItem)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (!anvil.item().isEmpty() || !(stack.getItem() instanceof IronBloomItem || Coins.mintable(stack))) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level instanceof ServerLevel server) anvil.place(server, stack.consumeAndReturn(1, player));
         return InteractionResult.SUCCESS;
     }

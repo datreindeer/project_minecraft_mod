@@ -1,10 +1,10 @@
 {
   "wants": {
     "id": "mechanical:raw_hide",
-    "count": 6
+    "count": 3
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "minecraft:leather"
   },
   "max_uses": 16,
   "xp": 2,

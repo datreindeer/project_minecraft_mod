@@ -1,12 +1,12 @@
 {
   "wants": {
     "id": "minecraft:leather",
-    "count": 10
+    "count": 8
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "minecraft:leather_helmet"
   },
-  "max_uses": 16,
+  "max_uses": 8,
   "xp": 2,
   "reputation_discount": 0.05
 }

@@ -1,10 +1,11 @@
 {
   "wants": {
-    "id": "minecraft:clay_ball",
-    "count": 10
+    "id": "mechanical:stone_chunk",
+    "count": 16
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "minecraft:clay_ball",
+    "count": 6
   },
   "max_uses": 16,
   "xp": 2,

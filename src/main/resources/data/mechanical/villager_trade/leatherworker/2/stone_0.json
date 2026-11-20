@@ -1,10 +1,11 @@
 {
   "wants": {
-    "id": "minecraft:rabbit_hide",
+    "id": "mechanical:lard",
     "count": 6
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "minecraft:leather",
+    "count": 2
   },
   "max_uses": 16,
   "xp": 10,
