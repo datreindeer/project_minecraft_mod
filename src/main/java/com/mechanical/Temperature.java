@@ -22,7 +22,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * Body temperature, 0 (freezing) .. 20 (warm), 12 is comfortable. It drifts towards a target set by the biome, the time
- * of day, rain/water, altitude and nearby burning fires; leather armour insulates against the cold. Cold makes you
+ * of day, rain/water, altitude and nearby burning fires; leather armour and fur (also a worn cloak) insulate against the cold. Cold makes you
  * hungry; very cold freezes you (vanilla frost overlay and freeze damage). Shown by a bar above the hunger bar.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -62,6 +62,13 @@ public final class Temperature {
             return com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PER_PIECE;
         if (item.is(com.mechanical.wildlife.river.RiverFauna.WATERPROOF_FUR)) return com.mechanical.wildlife.river.RiverFauna.FUR_INSULATION;
         return 0;
+    }
+
+    /** What is worn that can keep the cold out: the four armour pieces and the cloak (equipment.Accessory.CLOAK). */
+    public static java.util.List<ItemStack> wornForWarmth(Player player) {
+        return java.util.List.of(player.getItemBySlot(EquipmentSlot.HEAD), player.getItemBySlot(EquipmentSlot.CHEST),
+                player.getItemBySlot(EquipmentSlot.LEGS), player.getItemBySlot(EquipmentSlot.FEET),
+                com.mechanical.equipment.Equipment.get(player, com.mechanical.equipment.Accessory.CLOAK));
     }
 
     /** Share of the water's chill kept out: each Sealskin piece worn. */
@@ -128,9 +135,7 @@ public final class Temperature {
         }
         if (t < COMFORT) {
             float insulation = 0;
-            for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
-                insulation += insulation(player.getItemBySlot(slot));
-            }
+            for (ItemStack worn : wornForWarmth(player)) insulation += insulation(worn);
             if (warmBedrollUntil(player) > level.getGameTime()) insulation += FURRED_BED_WARMTH;
             insulation = Math.min(insulation, 1);
             t = COMFORT - (COMFORT - t) * (1 - insulation);

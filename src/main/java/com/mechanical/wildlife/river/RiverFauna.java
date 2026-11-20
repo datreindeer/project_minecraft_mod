@@ -104,7 +104,9 @@ public final class RiverFauna {
     public static final ArmorMaterial BEAVER_FUR = fur("beaver_fur", 8, 1, 1, 1, 1);
     public static final ArmorMaterial OTTER_FUR = fur("otter_fur", 7, 1, 2, 1, 1);
     public static final DeferredItem<Item> BEAVER_FUR_HAT = ITEMS.registerSimpleItem("beaver_fur_hat", p -> p.humanoidArmor(BEAVER_FUR, ArmorType.HELMET));
-    public static final DeferredItem<Item> OTTER_FUR_CAPE = ITEMS.registerSimpleItem("otter_fur_cape", p -> p.humanoidArmor(OTTER_FUR, ArmorType.CHESTPLATE));
+    /** A cloak (Cloak slot) of sleek otter fur: warm and waterproof over whatever armour is worn under it. */
+    public static final DeferredItem<com.mechanical.equipment.CloakItem> OTTER_FUR_CAPE = ITEMS.registerItem("otter_fur_cape",
+            p -> new com.mechanical.equipment.CloakItem(p, OTTER_FUR, true), p -> com.mechanical.equipment.CloakItem.properties(p, OTTER_FUR));
 
     // ---- blocks ----
     /** Sticks, logs and mud packed by beavers: the dam across a stream and the lodge. Drops sticks. */
@@ -135,11 +137,11 @@ public final class RiverFauna {
                 ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, asset)));
     }
 
-    /** Share (0..1) of the chill of water and rain kept off by the waterproof fur this player wears. */
+    /** Share (0..1) of the chill of water and rain kept off by the waterproof fur this player wears (armour and cloak). */
     public static float waterproofing(Player player) {
         float w = 0;
-        for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
-            if (player.getItemBySlot(slot).is(WATERPROOF_FUR)) w += WATERPROOF_PER_PIECE;
+        for (net.minecraft.world.item.ItemStack worn : com.mechanical.Temperature.wornForWarmth(player)) {
+            if (worn.is(WATERPROOF_FUR)) w += WATERPROOF_PER_PIECE;
         }
         return Math.min(w, 1);
     }

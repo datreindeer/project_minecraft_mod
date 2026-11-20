@@ -149,6 +149,7 @@ Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma 
 |---|---|---|---|---|
 | Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 tråd | Leather |
 | **Leather Satchel** | 4 Leather | Bone Needle | 2 tråd | Leather |
+| **Quiver** | 3 Leather | Bone Needle | 2 tråd | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
 | **Wolf Hood** | 2 Wolf Pelt | Bone Needle | 1 Sinew | Wolf Pelt |
 | Wolf Fur Coat / Leggings / Boots | 4 / 3 / 2 Wolf Pelt | Bone Needle | 3 / 2 / 1 Sinew | Wolf Pelt |
@@ -157,8 +158,48 @@ Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma 
 Vanilla-recepten för läderrustning är borttagna.
 
 ### Leather Satchel
-Sys i Armor Station (se ovan). Högerklicka för att öppna ett förråd med **9 platser (3x3)** för vad som
-helst, utom andra förråd (Leather Satchel, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. Staplas inte.
+Sys i Armor Station (se ovan). Ett förråd med **9 platser (3x3)** för vad som helst, utom andra förråd (Leather Satchel,
+Quiver, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. Staplas inte.
+- **Bärs i Back-platsen** (se Utrustning nedan). Då hänger den framtill på vänster höft med en rem över höger axel, synlig
+  på spelaren.
+- **Öppna:** tryck **B** ("Open Satchel & Quiver" under Controls > Inventory, går att byta) för att öppna den burna väskan
+  och kogret tillsammans. B eller E stänger. Trycker man B i inventoriet byter man till väskan. Högerklick med väskan i
+  handen öppnar den också.
+
+### Quiver
+Sys i Armor Station: 3 Leather + 2 tråd (vilken tråd som helst) med Bone Needle (eller bronsnålarna), låses upp av
+Leather. **4 platser, bara pilar** (allt i taggen `#minecraft:arrows`, även moddens pilar). Pilarna ligger kvar i kogret
+när man tar av det.
+- **Bärs i Hip-platsen:** bågar och armborst skjuter från kogret före inventoriet (en pil i andra handen går fortfarande
+  först). Pilar man plockar upp (på marken eller fast i marken efter ett skott) hamnar i kogret först, resten i inventoriet.
+- **Öppna:** B öppnar kogret (bredvid väskan om man bär en). Högerklick med kogret i handen öppnar det också.
+- På spelaren: ett hudkoger på ett midjebälte bakom höger höft, med en pil synlig per fylld plats.
+
+### Utrustning (accessory-platser)
+Inventoriet har **7 nya platser** för sådant man bär. En kolumn till höger om spelarmodellen: **Cloak**, **Neck**, **Back**
+(off-hand-platsen ligger kvar under dem). En rad under spelarmodellen: **Ring**, **Ring**, **Hip**, **Charm**. Fönstret är
+lite högre än vanligt, och grå konturer visar vad som ska var. Shift-klick lägger en bärbar sak i dess lediga plats. I
+creative ligger platserna i inventoriefliken till höger om rustningen (Charm till vänster om off hand). Bärbara saker
+har tooltipraden "Worn in the X slot".
+
+| Plats | Saker |
+|---|---|
+| Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak |
+| Back | Leather Satchel |
+| Hip | Quiver |
+| Neck / Ring / Charm | inga än (kommer i senare åldrar) |
+
+- **Död:** burna saker tappas som inventoriet (inte med keepInventory; Curse of Vanishing förstör dem). Curse of Binding
+  håller dem på.
+- **Mantlar** (Otter Fur Cape, Ermine Mantle, Glider Cloak) är inte längre bröstrustning. De bärs i Cloak-platsen **över**
+  rustningen, så man kan ha en päls och en mantel samtidigt. De behåller sina värden: skydd (Otter 2, Ermine 2, Glider 1,
+  visas som "When worn"), hållbarhet (slits när rustningen träffas), förtrollningsbarhet (Ermine 22, fortfarande lätt att
+  förtrolla) och lagningsmaterial. Förtrollningar (Protection, Thorns, Unbreaking, Mending ...) verkar från Cloak-platsen
+  som om de satt på bröstet. **Värme:** de räknas för isolering som rustningsdelar (Otter 20 %, Ermine 25 %), och Otter Fur
+  Cape är fortfarande vattentät från Cloak-platsen. Högerklicka med en mantel i handen för att ta på den. På spelaren
+  visar pälsmantlarna pälsen över axlarna och en hängande cape; Glider Cloak visar sina vingar, utfällda när man glider.
+- **Advancements** (Wilderness-fliken): **Shoulder Bag** (bär väskan i Back-platsen, efter Satchel), **Cloaked** (bär en
+  mantel, efter Hide Clothes), **Quiver** (sy och bär ett koger, efter Fletcher).
 
 ### Fur-rustning och Bear Rug
 - **Fur Hood / Coat / Leggings / Boots:** sys i Armor Station (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.
@@ -180,11 +221,11 @@ helst, utom andra förråd (Leather Satchel, Bark Basket, shulker boxes, bundles
 En sen stenåldersbedrift: Phantoms finns bara när en spelare inte har sovit på 3+ nätter, varje Phantom ger Raw Phantom
 Hide bara i 60 % av fallen, och huden måste torka i solen utan att ruttna. Totalt: 6 Phantom Leather (~10 Phantoms) +
 **Glider Frame** (4 Tool Rod, 2 Bone, Sinew, Cordage) sys med Bone Needle i Armor Station.
-- Bröstplats, **skydd 1**, 96 i hållbarhet, lagas med Phantom Leather. Ser ut som en mantel av hinna (krage med benspänne,
-  axelslag) med hopvikta fladdermusvingar på ryggen (elytra-modellen med egen textur).
+- Bärs i **Cloak-platsen** över rustningen (se Utrustning), **skydd 1**, 96 i hållbarhet, lagas med Phantom Leather. Ser
+  ut som en mantel av hinna (krage med benspänne, axelslag) med hopvikta fladdermusvingar på ryggen, utfällda när man glider.
 - **Glidflygning:** faller du (mer än 2 block) och **håller inne hopp** fångar manteln luften. Fallet bromsas till
   ~2,4 m/s och du driver framåt i blickriktningen, högst ~6 m/s (elytra ~30). Det går aldrig uppåt. Släpp hopp eller
-  smyg för att släppa. Ingen fallskada när du landar från en glidning. Kostar 1 hållbarhet per sekund i luften.
+  smyg för att släppa. Ingen fallskada när du landar från en glidning. Kostar 1 hållbarhet per sekund i luften. Manteln måste sitta i Cloak-platsen.
   Fungerar inte i vatten, på stegar, när man rider eller flyger.
 
 ### Ägg

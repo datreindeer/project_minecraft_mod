@@ -83,7 +83,7 @@ en uppspänd hud. Lemming Pelt är för liten att torka: 4 st + Twine → Raw Hi
 
 **Produkter:** Raw Ermine (1) → **Cooked Ermine** (3 / 0,5). Raw Ermine Pelt → **Ermine Fur** (fin vit lyxpäls; vita och
 bruna hermeliner ger samma skinn). **Ermine Mantle:** 6 Ermine Fur + Leather + Sinew (`E E` / `ELE` / `ESE`):
-bröstdel, rustning 2, isolerar 25 %, förtrollbarhet 22 – en hövdingamantel av vit hermelin med svarta svanstippar.
+bärs i Cloak-slotten över rustningen, rustning 2, isolerar 25 %, förtrollbarhet 22 – en hövdingamantel av vit hermelin med svarta svanstippar.
 
 ## Lemming (fjällämmel)
 

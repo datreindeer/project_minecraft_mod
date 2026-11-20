@@ -4,6 +4,7 @@
   "package": "com.mechanical.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "AbstractContainerScreenAccessor",
     "AdultChickenModelMixin",
     "BloodMoonMoonMixin",
     "BloodMoonSkyMixin",
@@ -17,7 +18,9 @@
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
     "ModelFeatureRendererMixin",
-    "QuadrupedModelMixin"
+    "QuadrupedModelMixin",
+    "CreativeModeInventoryScreenMixin",
+    "InventoryScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -31,6 +34,12 @@
     "MultiNoiseBiomeSourceParameterListsMixin",
     "OverworldBiomeBuilderMixin",
     "PlayerMixin",
-    "TorchBlockMixin"
+    "TorchBlockMixin",
+    "AbstractArrowMixin",
+    "EnchantmentHelperMixin",
+    "InventoryMenuMixin",
+    "ItemEntityMixin",
+    "ProjectileWeaponItemMixin",
+    "ServerGamePacketListenerImplMixin"
   ]
 }

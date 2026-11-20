@@ -84,7 +84,7 @@ torkar på en Drying Rack (färsk eller torkad) inom 8 block.
 |---|---|---|
 | Raw Otter → Cooked Otter | Campfire 20 s / Smoker | 2 → 5 hunger |
 | Raw Otter Pelt → Otter Pelt | Stretching Hoop | Otter Fur Cape |
-| Otter Fur Cape | 3 Otter Pelt + 2 Sinew | Bröstdel 2 rustning, isolerar 20 %, vattentät |
+| Otter Fur Cape | 3 Otter Pelt + 2 Sinew | Cloak-slot (över rustningen), 2 rustning, isolerar 20 %, vattentät |
 
 ## Mosquito Swarm
 

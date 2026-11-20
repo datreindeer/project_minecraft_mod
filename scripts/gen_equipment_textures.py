@@ -1,0 +1,404 @@
+"""Equipment textures for the accessory slots, the quiver and worn models.
+
+Makes (under src/main/resources/assets/mechanical/textures/):
+  item/quiver.png                         16x16 hide quiver with three fletched arrows
+  gui/sprites/container/slot/cloak.png    16x16 empty-slot ghost icons, vanilla style (one grey, rest clear):
+  gui/sprites/container/slot/neck.png       cloak, neck, back, ring, hip, charm
+  gui/sprites/container/slot/back.png
+  gui/sprites/container/slot/ring.png
+  gui/sprites/container/slot/hip.png
+  gui/sprites/container/slot/charm.png
+  entity/cloak/otter_fur_cape.png         64x32 cape textures in the vanilla player-cape UV
+  entity/cloak/ermine_mantle.png
+  entity/worn/satchel.png                 32x32 worn satchel (bag, flap, strap segment, shoulder pad)
+  entity/worn/quiver.png                  32x32 worn quiver (tube, rim, belt, arrow)
+  gui/container/pack_both.png             176x166 (on 256x256) backgrounds for equipment.PackMenu, vanilla container
+  gui/container/pack_satchel.png            style: the satchel 3x3 and/or the quiver 2x2 over the player inventory
+  gui/container/pack_quiver.png             (slot positions as in PackMenu)
+Run: python scripts/gen_equipment_textures.py"""
+import random
+from pathlib import Path
+
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parent.parent / "src/main/resources/assets/mechanical/textures"
+
+
+def rgba(h):
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), 255)
+
+
+def draw(img, grid, pal, ox=0, oy=0):
+    """Paint a character grid at (ox, oy); '.' stays transparent."""
+    for y, row in enumerate(grid):
+        for x, c in enumerate(row):
+            if c != ".":
+                img.putpixel((ox + x, oy + y), rgba(pal[c]))
+
+
+def save(img, rel):
+    out = ROOT / rel
+    out.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out)
+    print(f"{rel} ok")
+
+
+def box_faces(u, v, w, h, d):
+    """Minecraft box UV: face name -> (x, y, width, height)."""
+    return {
+        "top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d),
+        "right": (u, v + d, d, h), "front": (u + d, v + d, w, h),
+        "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h),
+    }
+
+
+def fill(img, rect, pal_chars, pal, rng, weights=None):
+    x0, y0, w, h = rect
+    for y in range(y0, y0 + h):
+        for x in range(x0, x0 + w):
+            img.putpixel((x, y), rgba(pal[rng.choices(pal_chars, weights)[0]]))
+
+
+# Leather family shared with leather_satchel.png
+LEATHER = {
+    "O": "3b1f12", "D": "6e3a1f", "M": "8f4f2b", "L": "a8653a", "H": "c47f4c",
+    "s": "e0c9a0", "S": "7a4424", "T": "53291a", "B": "eee6cf", "b": "b8ab88",
+    "R": "53291a", "r": "6e3a1f",
+    "W": "f2f1ea", "G": "b5b3aa", "n": "7a5530", "c": "a5794a",
+}
+
+# ---------------------------------------------------------------- 1. quiver item
+QUIVER_ITEM = [
+    "......OnO.......",
+    "......OWGO......",
+    "...OnOOWGOnO....",
+    "...OWGOWGOWGO...",
+    "...OWGOcOOWGO...",
+    "...OWGOcOOWGO...",
+    "..OOOOOOOOOOOO..",
+    "..OrRRRRRRRRRO..",
+    "...OHLLLLsMDOSO.",
+    "...OHLLLLDMDOSO.",
+    "...OTTTTTTTTOSO.",
+    "...OHLLLLsMDOSO.",
+    "...OHLLLLDMDOSO.",
+    "...ODTTTTTTDOO..",
+    "...OMMMMMDDDO...",
+    "....OOOOOOOO....",
+]
+img = Image.new("RGBA", (16, 16))
+draw(img, QUIVER_ITEM, LEATHER)
+save(img, "item/quiver.png")
+
+# ---------------------------------------------------------------- 2. slot ghost icons
+GHOST = {"#": "555555"}
+SLOTS = {
+    "cloak": [
+        "................",
+        "......####......",
+        ".....#....#.....",
+        "....#.####.#....",
+        "....#.#..#.#....",
+        "...#..#..#..#...",
+        "..#...####...#..",
+        "..#..........#..",
+        ".#............#.",
+        ".#............#.",
+        ".#............#.",
+        ".#............#.",
+        "#..............#",
+        "#..............#",
+        "################",
+        "................",
+    ],
+    "neck": [
+        "................",
+        ".#............#.",
+        ".#............#.",
+        "..#..........#..",
+        "..#..........#..",
+        "...#........#...",
+        "....#......#....",
+        ".....##..##.....",
+        ".......##.......",
+        "......####......",
+        "......#..#......",
+        "......#..#......",
+        "......#.#.......",
+        "......##........",
+        "......#.........",
+        "................",
+    ],
+    "back": [
+        "................",
+        "....########....",
+        "...#........#...",
+        "..#..........#..",
+        "..#..........#..",
+        ".##############.",
+        ".#............#.",
+        ".#............#.",
+        ".##..........##.",
+        ".#.##......##.#.",
+        ".#...##..##...#.",
+        ".#.....##.....#.",
+        ".#....####....#.",
+        ".#............#.",
+        "..############..",
+        "................",
+    ],
+    "ring": [
+        "................",
+        "......####......",
+        ".....#....#.....",
+        ".....#....#.....",
+        "....#.####.#....",
+        "...#........#...",
+        "..#...####...#..",
+        "..#..#....#..#..",
+        "..#.#......#.#..",
+        "..#.#......#.#..",
+        "..#..#....#..#..",
+        "..#...####...#..",
+        "...#........#...",
+        "....##....##....",
+        "......####......",
+        "................",
+    ],
+    "hip": [
+        ".......##.......",
+        "....##.##.##....",
+        "....##.##.##....",
+        ".....#..#..#....",
+        "...##########...",
+        "...#........#...",
+        "...##########...",
+        "....#......#....",
+        "....#......#....",
+        "....#......#....",
+        "....########....",
+        "....#......#....",
+        "....#......#....",
+        "....#......#....",
+        ".....######.....",
+        "................",
+    ],
+    "charm": [
+        "......####......",
+        ".....#....#.....",
+        "......#..#......",
+        ".......##.......",
+        "......####......",
+        "......#..#......",
+        "......#..#......",
+        "......#...#.....",
+        ".......#..#.....",
+        ".......#...#....",
+        "........#..#....",
+        ".........#.#....",
+        "..........##....",
+        "...........#....",
+        "................",
+        "................",
+    ],
+}
+for name, grid in SLOTS.items():
+    assert len(grid) == 16 and all(len(r) == 16 for r in grid), name
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    draw(img, grid, GHOST)
+    save(img, f"gui/sprites/container/slot/{name}.png")
+
+# ---------------------------------------------------------------- 3. capes (vanilla cape UV, box 10x16x1 at 0,0)
+CAPE = box_faces(0, 0, 10, 16, 1)  # outer face = "front" (x1..10), inner = "back" (x12..21)
+
+
+def cape(fur, fur_w, gloss, hem, lining, lining_w, seed, spots=()):
+    rng = random.Random(seed)
+    img = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+    pal = {**fur, **hem, **lining}
+    for face in ("top", "right", "front", "left"):
+        x0, y0, w, h = CAPE[face]
+        fill(img, CAPE[face], list(fur), pal, rng, fur_w)
+        # vertical strands: a darker or lighter streak 2-3px long
+        for _ in range(w * h // 6):
+            x, y = x0 + rng.randrange(w), y0 + rng.randrange(h)
+            c = rgba(pal[rng.choice(gloss)])
+            for k in range(rng.randint(2, 3)):
+                if y + k < y0 + h:
+                    img.putpixel((x, y + k), c)
+    for face in ("right", "front", "left"):  # hem rows at the bottom edge
+        x0, y0, w, h = CAPE[face]
+        for i, row in enumerate(hem["rows"]):
+            for x in range(x0, x0 + w):
+                img.putpixel((x, y0 + h - len(hem["rows"]) + i), rgba(pal[rng.choice(row)]))
+    fill(img, CAPE["bottom"], [hem["rows"][-1][0]], pal, rng)
+    fill(img, CAPE["back"], list(lining), pal, rng, lining_w)
+    for x, y, c in spots:
+        img.putpixel((x, y), rgba(pal[c]))
+    return img
+
+
+OTTER_FUR = {"a": "4e331f", "b": "3a2516", "c": "664530"}
+OTTER_HEM = {"p": "b08a5e", "q": "c9a77c", "d": "8a6a48", "rows": ["pq", "qp", "d"]}
+OTTER_LINING = {"l": "6b4a32", "m": "5c3f2a"}
+OTTER_FUR_G = {**OTTER_FUR, "x": "82603f"}  # x = glossy highlight, only used in strands
+img = cape(OTTER_FUR_G, [5, 3, 2, 0], ["b", "c", "c", "x"], OTTER_HEM, OTTER_LINING, [3, 2], 7)
+save(img, "entity/cloak/otter_fur_cape.png")
+
+ERMINE_FUR = {"a": "f0eee3", "b": "e6e3d6", "c": "f7f6ee", "k": "1e1a18"}
+ERMINE_HEM = {"e": "dcd8c9", "f": "d0ccbc", "rows": ["ea", "f"]}
+ERMINE_LINING = {"l": "c4a276", "m": "b39066", "n": "d0b084"}
+# sparse black tail-tip spots on the outer face (x1..10, y1..16): a dot with a tail below
+SPOTS = []
+for sx, sy in [(2, 2), (7, 3), (4, 6), (9, 7), (2, 10), (6, 11)]:
+    SPOTS += [(sx, sy, "k"), (sx, sy + 1, "k")]
+img = cape(ERMINE_FUR, [5, 3, 2, 0], ["b", "b", "c"], ERMINE_HEM, ERMINE_LINING, [4, 2, 2], 11, SPOTS)
+save(img, "entity/cloak/ermine_mantle.png")
+
+# ---------------------------------------------------------------- 4a. worn satchel (32x32)
+img = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
+bag = box_faces(0, 0, 4, 4, 2)
+FACE = {
+    "top": ["DMMD", "DMMD"],
+    "bottom": ["TDDT", "TDDT"],
+    "right": ["MD", "sD", "MD", "sT"],
+    "front": ["LLLM", "DDDD", "MBbD", "sMsT"],
+    "left": ["DM", "Ds", "DM", "Ts"],
+    "back": ["MMMD", "sMsD", "MMMD", "TDDT"],
+}
+for f, (x, y, w, h) in bag.items():
+    draw(img, FACE[f], LEATHER, x, y)
+flap = box_faces(0, 8, 4, 2, 1)
+FACE = {
+    "top": ["HLLL"], "bottom": ["MMMM"], "right": ["L", "M"],
+    "front": ["HLLL", "sLsL"], "left": ["L", "M"], "back": ["MMMM", "DMMD"],
+}
+for f, (x, y, w, h) in flap.items():
+    draw(img, FACE[f], LEATHER, x, y)
+rng = random.Random(3)
+for rect in box_faces(0, 12, 2, 1, 1).values():
+    fill(img, rect, ["S", "T"], LEATHER, rng, [3, 1])
+for rect in box_faces(0, 16, 2, 1, 4).values():
+    fill(img, rect, ["S", "T"], LEATHER, rng, [3, 1])
+save(img, "entity/worn/satchel.png")
+
+# ---------------------------------------------------------------- 4b. worn quiver (32x32)
+img = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
+tube = box_faces(0, 0, 3, 9, 3)
+SIDE = ["HLM", "HLM", "TTT", "HLM", "LLM", "HLM", "TTT", "LMM", "MDD"]
+FACE = {
+    "top": ["TOT", "OOO", "TOT"],  # open mouth, mostly hidden by the rim
+    "bottom": ["DDD", "DTD", "DDD"],
+    "right": SIDE, "front": SIDE, "left": SIDE,
+    "back": ["LsM", "LDM", "TTT", "LsM", "LDM", "LsM", "TTT", "MsD", "MDD"],  # vertical seam
+}
+for f, (x, y, w, h) in tube.items():
+    draw(img, FACE[f], LEATHER, x, y)
+rim = box_faces(0, 14, 4, 1, 4)
+FACE = {
+    "top": ["RrrR", "rOOr", "rOOr", "RrrR"], "bottom": ["RRRR"] * 4,
+    "right": ["rRRR"], "front": ["rrRR"], "left": ["rRRR"], "back": ["RRRR"],
+}
+for f, (x, y, w, h) in rim.items():
+    draw(img, FACE[f], LEATHER, x, y)
+belt = box_faces(0, 20, 8, 1, 4)
+for f, rect in belt.items():
+    fill(img, rect, ["S", "T"], LEATHER, rng, [4, 1])
+draw(img, ["SBbS"], LEATHER, belt["front"][0] + 2, belt["front"][1])  # bone buckle
+arrow = box_faces(24, 0, 1, 4, 1)
+draw(img, ["n"], LEATHER, *arrow["top"][:2])
+draw(img, ["c"], LEATHER, *arrow["bottom"][:2])
+for f, fe in (("right", "WG"), ("front", "GW"), ("left", "WG"), ("back", "GW")):
+    draw(img, [fe[0], fe[1], "c", "c"], LEATHER, *arrow[f][:2])
+save(img, "entity/worn/quiver.png")
+
+
+# ---------------------------------------------------------------- PackMenu backgrounds (vanilla container look)
+PANEL, LIGHT, SHADE, OUTLINE, SLOT_DARK, SLOT_FILL = 198, 255, 85, 0, 55, 139
+
+
+def grey(v):
+    return (v, v, v, 255)
+
+
+def panel(w=176, h=166):
+    img = Image.new("RGBA", (256, 256))
+    for y in range(h):
+        for x in range(w):
+            img.putpixel((x, y), grey(PANEL))
+    for x in range(2, w - 3):
+        img.putpixel((x, 0), grey(OUTLINE))
+        img.putpixel((x, h - 1), grey(OUTLINE))
+    for y in range(2, h - 3):
+        img.putpixel((0, y), grey(OUTLINE))
+        img.putpixel((w - 1, y), grey(OUTLINE))
+    # rounded outline corners, a 2px highlight along the top/left and a 2px shade along the bottom/right
+    for x, y in ((1, 1), (w - 3, 1), (w - 2, 2), (1, h - 3), (2, h - 2), (w - 2, h - 3), (w - 3, h - 2)):
+        img.putpixel((x, y), grey(OUTLINE))
+    for x in range(1, w - 3):
+        for y in (1, 2):
+            if (x, y) != (1, 1):
+                img.putpixel((x, y), grey(LIGHT))
+    for y in range(1, h - 3):
+        for x in (1, 2):
+            if (x, y) != (1, 1):
+                img.putpixel((x, y), grey(LIGHT))
+    img.putpixel((3, 3), grey(LIGHT))
+    for x in range(3, w - 2):
+        for y in (h - 3, h - 2):
+            if img.getpixel((x, y))[0] != OUTLINE or x < w - 3:
+                img.putpixel((x, y), grey(SHADE))
+    for y in range(3, h - 2):
+        for x in (w - 3, w - 2):
+            img.putpixel((x, y), grey(SHADE))
+    img.putpixel((w - 4, h - 4), grey(SHADE))
+    for x, y in ((w - 2, h - 3), (w - 3, h - 2)):
+        img.putpixel((x, y), grey(OUTLINE))
+    img.putpixel((w - 2, h - 2), (0, 0, 0, 0))
+    img.putpixel((w - 3, h - 1), (0, 0, 0, 0))
+    img.putpixel((w - 1, h - 3), (0, 0, 0, 0))
+    for x, y in ((0, 0), (1, 0), (0, 1), (w - 1, 0), (w - 2, 0), (w - 1, 1), (0, h - 1), (1, h - 1), (0, h - 2), (w - 1, h - 1), (w - 2, h - 1), (w - 1, h - 2)):
+        img.putpixel((x, y), (0, 0, 0, 0))
+    # the rounded bottom-left/top-right/bottom-right corners, pixel for pixel as vanilla's containers
+    for x, y in ((0, h - 3), (1, h - 2), (2, h - 1), (w - 3, 0), (w - 2, 1), (w - 1, 2)):
+        img.putpixel((x, y), (0, 0, 0, 0))
+    for x, y in ((w - 3, h - 2), (w - 2, h - 3)):
+        img.putpixel((x, y), grey(SHADE))
+    for x, y in ((w - 3, h - 1), (w - 2, h - 2), (w - 1, h - 3)):
+        img.putpixel((x, y), grey(OUTLINE))
+    return img
+
+
+def slot(img, x, y):
+    """A slot frame for an item drawn at (x, y): 18x18 from (x-1, y-1), dark top/left, light bottom/right."""
+    for i in range(18):
+        for j in range(18):
+            img.putpixel((x - 1 + i, y - 1 + j), grey(SLOT_FILL))
+    for i in range(17):
+        img.putpixel((x - 1 + i, y - 1), grey(SLOT_DARK))
+        img.putpixel((x - 1, y - 1 + i), grey(SLOT_DARK))
+        img.putpixel((x + i, y + 16), grey(LIGHT))
+        img.putpixel((x + 16, y + i), grey(LIGHT))
+
+
+def pack(satchel_left, quiver_left, name):
+    img = panel()
+    if satchel_left is not None:
+        for r in range(3):
+            for c in range(3):
+                slot(img, satchel_left + c * 18, 17 + r * 18)
+    if quiver_left is not None:
+        for r in range(2):
+            for c in range(2):
+                slot(img, quiver_left + c * 18, 26 + r * 18)
+    for r in range(3):
+        for c in range(9):
+            slot(img, 8 + c * 18, 84 + r * 18)
+    for c in range(9):
+        slot(img, 8 + c * 18, 142)
+    save(img, f"gui/container/{name}.png")
+
+
+pack(30, 116, "pack_both")
+pack(62, None, "pack_satchel")
+pack(None, 71, "pack_quiver")
