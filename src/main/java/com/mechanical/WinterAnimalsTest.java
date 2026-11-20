@@ -77,17 +77,20 @@ public final class WinterAnimalsTest {
             a.setInLove(null);
             b.setInLove(null);
             a.spawnChildFromBreeding(level, b);
-            check(h, level.getEntitiesOfClass(Animal.class, box).size() == 2 && !a.isInLove(), "no calf in winter");
+            check(h, level.getEntitiesOfClass(Animal.class, box, Animal::isBaby).isEmpty() && !a.isInLove(), "no calf in winter");
             setClock(server, Calendar.clockOn(saved, 10));
             a.setAge(0);
             b.setAge(0);
             a.setInLove(null);
             b.setInLove(null);
             a.spawnChildFromBreeding(level, b);
-            check(h, level.getEntitiesOfClass(Animal.class, box).size() == 3, "a calf in spring");
+            check(h, level.getEntitiesOfClass(Animal.class, box, Animal::isBaby).size() == 1, "a calf in spring");
         } finally {
             setClock(server, saved);
-            level.getEntitiesOfClass(Animal.class, box).forEach(e -> e.discard());
+            // only our cows and their calf: other tests' animals may stand nearby
+            a.discard();
+            b.discard();
+            level.getEntitiesOfClass(Animal.class, box, Animal::isBaby).forEach(e -> e.discard());
         }
         h.succeed();
     }
