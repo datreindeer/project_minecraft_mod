@@ -204,6 +204,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return tribe;
     }
 
+    /** This person's tribe's age (WorldAge.npcAge): the world's, or one behind. Stone Age without a tribe or on the client. */
+    public int age() {
+        return group != null && level() instanceof ServerLevel sl ? com.mechanical.WorldAge.npcAge(sl.getServer(), group) : com.mechanical.WorldAge.STONE;
+    }
+
+    private net.minecraft.world.item.Item spear() {
+        return age() >= com.mechanical.WorldAge.BRONZE ? com.mechanical.Bronze.BRONZE_SPEAR.get() : Mechanical.FLINT_SPEAR.get();
+    }
+
     public boolean isRaider() {
         return raid != null;
     }
@@ -211,7 +220,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** Turns this person into a raider: spear (or now and then a bow) or axe, a torch, more health, longer sight. */
     void makeRaider(RaidGoal.State state) {
         raid = state;
-        if (role() == TribeRole.HUNTER) setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(getRandom().nextInt(4) == 0 ? Mechanical.CRUDE_BOW.get() : Mechanical.FLINT_SPEAR.get()));
+        if (role() == TribeRole.HUNTER) setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(getRandom().nextInt(4) == 0 ? Mechanical.CRUDE_BOW.get() : spear()));
         setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.TORCH));
         // their weapons, torches and the leader's banner are the spoils of a beaten raid
         setDropChance(EquipmentSlot.MAINHAND, 0.5F);
@@ -289,13 +298,14 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         setCustomName(Component.translatable("entity.mechanical.tribesperson.named", tribeName,
                 Component.translatable("entity.mechanical.tribesperson.role." + role.id()), tribe().name()));
         setCustomNameVisible(false);
+        boolean bronze = age() >= com.mechanical.WorldAge.BRONZE; // no iron tools exist yet
         ItemStack tool = switch (role) {
-            case HUNTER -> new ItemStack(r.nextBoolean() ? Mechanical.CRUDE_BOW.get() : Mechanical.FLINT_SPEAR.get());
-            case GATHERER -> new ItemStack(Mechanical.FLINT_KNIFE.get());
+            case HUNTER -> new ItemStack(r.nextBoolean() ? Mechanical.CRUDE_BOW.get() : spear());
+            case GATHERER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_KNIFE.get() : Mechanical.FLINT_KNIFE.get());
             case FISHER -> new ItemStack(Mechanical.CRUDE_FISHING_ROD.get());
-            case WOODCUTTER -> new ItemStack(Mechanical.FLINT_AXE.get());
+            case WOODCUTTER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_AXE.get() : Mechanical.FLINT_AXE.get());
             case ELDER, TRADER -> new ItemStack(Items.STICK);
-            case GUARD -> new ItemStack(Mechanical.FLINT_SPEAR.get()); // Caravans arms them for the players' age
+            case GUARD -> new ItemStack(spear()); // Caravans arms them for their tribe's age
         };
         setItemSlot(EquipmentSlot.MAINHAND, tool);
         setItemSlot(EquipmentSlot.OFFHAND, role == TribeRole.GATHERER ? new ItemStack(Mechanical.BARK_BASKET.get()) : ItemStack.EMPTY);

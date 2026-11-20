@@ -223,8 +223,15 @@
    åldern. Lang: `scripts/gen_clans.py`. Advancements: Hearth of the Tribe och Kin (Stenåldern, under Bonfire).
    Förenklingar: inbjudningar sparas inte över en omstart; sidan visar 7 medlemmar per sida.
    Straw Bed som spolar fram natten och ny mättnad per mattyp är också byggda (v0.85.0).
-3. **Världsålder + NPC-stammars fördröjning.** NPC-byar som byggs om är ett eget, större steg, eftersom varje ålder
-   behöver egna byggnadsritningar.
+3. **Världsålder + NPC-stammars fördröjning** (byggd, v0.86.0). `WorldAge.java` sparar den högsta ålder någon stam eller
+   ensam spelare nått och sjunker aldrig. En ålder nås med samma markörer som karavanerna redan använde: Bronze Age när
+   man gjort Bronze, Iron Age när man gjort Wrought Iron (stammens ålder räknas nu likadant, inte längre från flikens
+   första advancement). Alla får ett meddelande när världen går in i en ny ålder. Varje NPC-stam ligger 0 eller 1 ålder
+   efter (`Tribe.ageLag()`, fast utifrån stammens id). Efter stammens ålder: verktyg och vapen för jägare, vakter,
+   samlare, vedhuggare och raiders (bronsspjut, bronskniv, bronsyxa; järnverktyg finns inte än) och karavanernas vakter
+   och varor (tidigare efter spelarna i närheten). Monster får behålla kopparutrustning från bronsåldern och järn och
+   ringbrynja från järnåldern (`LaterAgeGear`). `/worldage` och `/worldage set <0-2>` för op.
+   **Kvar:** NPC-byar som byggs om, vilket är ett eget, större steg eftersom varje ålder behöver egna byggnadsritningar.
 4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder.
 5. **Upptining** + ikappkörning när chunks laddas.
 6. **Grödor och bär** (profiler, frysta stadier) och **djur**.

@@ -27,7 +27,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -56,8 +55,8 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
  * trading tribe comes in its place: an old {@link TribeRole#TRADER} and 2-3 armoured {@link TribeRole#GUARD}s (no helmets,
  * no banners), and 1-2 tame horses on leads held by the trader, each pulling a covered cart with a chest (now and then a
  * trophy carcass instead, see {@link #trophy}) that stays hitched (CartEntity#hitchCaravan). They roam as a hunting band does (FollowBandLeaderGoal)
- * and move on after {@link #STAY} like vanilla's trader. Guards are armed for the age of the players about (Stone Age,
- * Bronze Age after making Bronze, Iron Age after Wrought Iron), sometimes one age ahead; the trader sells a mix up to one
+ * and move on after {@link #STAY} like vanilla's trader. Guards are armed for their tribe's age (WorldAge.npcAge: the
+ * world's age, or one behind); the trader sells a mix up to one
  * age ahead for coins, changes coins and buys gemstones (#mechanical:gemstones, diamonds, emeralds, amethyst) for silver
  * and gold. Talk: TribeVisits.openDialog.
  */
@@ -65,7 +64,6 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 public final class Caravans {
     /** Vanilla's wandering trader stays 48000 ticks (2 days). */
     static final long STAY = 48000;
-    static final int PLAYER_RANGE = 64;
     public static final TagKey<Item> GEMSTONES = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Mechanical.MODID, "gemstones"));
 
     @SubscribeEvent
@@ -81,7 +79,7 @@ public final class Caravans {
         RandomSource r = level.getRandom();
         UUID tribe;
         do tribe = new UUID(r.nextLong(), r.nextLong()); while (Tribe.of(tribe).temperament != Tribe.Temperament.TRADERS);
-        int age = age(level, at);
+        int age = com.mechanical.WorldAge.npcAge(level.getServer(), tribe);
         long leaveAt = level.getGameTime() + STAY;
         Tribesperson trader = null;
         int size = 3 + r.nextInt(2);
@@ -93,7 +91,7 @@ public final class Caravans {
             if (i == 0) {
                 trader = t;
                 t.offers = offers(age, r);
-            } else arm(t, Math.min(age + r.nextInt(2), 1), r);
+            } else arm(t, Math.min(age, 1), r);
         }
         if (trader == null) return null;
         int carts = 1 + r.nextInt(2);
@@ -154,18 +152,6 @@ public final class Caravans {
     }
 
     /** The age of the players about: 0 Stone, 1 Bronze (made Bronze), 2 Iron (made Wrought Iron). */
-    static int age(ServerLevel level, BlockPos pos) {
-        int age = 0;
-        for (ServerPlayer p : TribeVisits.playersNear(level, pos, PLAYER_RANGE))
-            age = Math.max(age, done(p, "bronze_age/wrought_iron") ? 2 : done(p, "bronze_age/bronze") ? 1 : 0);
-        return age;
-    }
-
-    private static boolean done(ServerPlayer player, String id) {
-        var holder = player.level().getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Mechanical.MODID, id));
-        return holder != null && player.getAdvancements().getOrStartProgress(holder).isDone();
-    }
-
     /**
      * A guard's gear for {@code tier} (0 Stone, 1 Bronze; no iron weapons or armour exist yet): a weapon, and hide armour in
      * the tribe's colour, Bronze Greaves from the Bronze Age. Never a helmet.

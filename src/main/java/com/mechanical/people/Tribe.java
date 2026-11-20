@@ -104,6 +104,11 @@ public final class Tribe {
         }
     }
 
+    /** How many ages this tribe lags behind the world (WorldAge.npcAge): 0 or 1, fixed by its id. */
+    public int ageLag() {
+        return (int) Math.floorMod(id.getMostSignificantBits() ^ id.getLeastSignificantBits(), 2L);
+    }
+
     public static Tribe of(UUID id) {
         return new Tribe(id);
     }

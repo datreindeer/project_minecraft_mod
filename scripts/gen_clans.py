@@ -1,4 +1,4 @@
-"""Player tribes: lang lines for the tribe page (G) and its chat messages (clan/Clans.java, client/clan/ClanScreen.java).
+"""Player tribes and the world age: lang lines for the tribe page (G) and its chat messages (clan/Clans.java, client/clan/ClanScreen.java).
 Generator order: ... gen_equipment.py, gen_calendar.py, gen_clans.py, gen_block_items.py, ... gen_registry.py.
 Run: python scripts/gen_clans.py"""
 import json
@@ -69,6 +69,8 @@ LANG = {
     M + "vote_failed": "The vote to %s failed",
     M + "vote_open": "Your tribe is voting. Press G to vote",
     M + "disbanded": "The tribe %s is no more",
+    "message.mechanical.world_age.entered": "The world has entered the %s",
+    "message.mechanical.world_age.is": "The world is in the %s",
 }
 for age in ("stone", "bronze", "iron", "steam", "electric"):
     LANG[G + "age." + age] = age.capitalize() + " Age"

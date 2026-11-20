@@ -50,7 +50,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * leave after handing over. Votes (3 days, 2/3 of the tribe): move the Fire Pit or disband (members who don't vote count
  * as no), or, when the leader hasn't been seen for {@link #ABSENT_DAYS}, a new leader (only votes cast count). The
  * tribe shares all mod advancements (and so their recipes): one member's advancement is every member's, offline ones
- * get them when they log in, and joining merges both ways. Its age is the latest age root it has. No friendly fire.
+ * get them when they log in, and joining merges both ways. Its age is the latest age it has reached (WorldAge), and the world's age follows the tribes'. No friendly fire.
  * Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -62,7 +62,7 @@ public final class Clans extends SavedData {
     public static final int VOTE_DAYS = 3, NEWCOMER_DAYS = 7, ABSENT_DAYS = 10, NAME_MAX = 24;
     /** How far from a Fire Pit you may found a tribe or make it the centre. */
     static final int PIT_REACH = 4;
-    public static final String[] AGES = {"stone", "bronze", "iron", "steam", "electric"};
+    public static final String[] AGES = com.mechanical.WorldAge.AGES;
     static final Identifier FOUNDED = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/found_tribe");
     static final Identifier GREW = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/grow_tribe");
 
@@ -147,10 +147,9 @@ public final class Clans extends SavedData {
             return members.getFirst();
         }
 
-        /** Index into {@link #AGES}: the latest age whose root advancement the tribe has. */
+        /** Index into {@link #AGES}: the latest age the tribe has reached (WorldAge). */
         public int age() {
-            for (int a = AGES.length - 1; a > 0; a--) if (advancements.contains(ageRoot(a))) return a;
-            return 0;
+            return com.mechanical.WorldAge.of(advancements);
         }
     }
 
@@ -168,10 +167,6 @@ public final class Clans extends SavedData {
 
     public static Clans get(MinecraftServer server) {
         return server.overworld().getDataStorage().computeIfAbsent(TYPE);
-    }
-
-    static Identifier ageRoot(int age) {
-        return Identifier.fromNamespaceAndPath(Mechanical.MODID, AGES[age] + "_age/root");
     }
 
     public static long today(MinecraftServer server) {

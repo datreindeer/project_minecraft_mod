@@ -2650,5 +2650,7 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
+  "message.mechanical.world_age.entered": "The world has entered the %s",
+  "message.mechanical.world_age.is": "The world is in the %s"
 }

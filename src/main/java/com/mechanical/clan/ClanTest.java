@@ -26,7 +26,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast) and the tribe's age. */
+/** Game test for tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's. */
 @EventBusSubscriber(modid = MODID)
 public final class ClanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -110,8 +110,22 @@ public final class ClanTest {
 
         // age: the latest age root the tribe has
         check(h, c.age() == 0, "stone age by default");
-        c.advancements.add(Clans.ageRoot(1));
-        check(h, c.age() == 1, "bronze age root makes the bronze age");
+        c.advancements.add(com.mechanical.WorldAge.MARKERS[1]);
+        check(h, c.age() == 1, "making bronze starts the bronze age");
+
+        // world age: a high-water mark; NPC tribes lag 0 or 1 behind
+        int before = com.mechanical.WorldAge.of(server);
+        com.mechanical.WorldAge.set(server, 0);
+        com.mechanical.WorldAge.reach(server, 1);
+        com.mechanical.WorldAge.reach(server, 0);
+        check(h, com.mechanical.WorldAge.of(server) == 1, "world age never drops");
+        UUID lagging = null, keeping = null;
+        while (lagging == null || keeping == null) {
+            UUID t = UUID.randomUUID();
+            if (com.mechanical.people.Tribe.of(t).ageLag() == 1) lagging = t; else keeping = t;
+        }
+        check(h, com.mechanical.WorldAge.npcAge(server, lagging) == 0 && com.mechanical.WorldAge.npcAge(server, keeping) == 1, "NPC tribes 0-1 behind");
+        com.mechanical.WorldAge.set(server, before);
         h.succeed();
     }
 }

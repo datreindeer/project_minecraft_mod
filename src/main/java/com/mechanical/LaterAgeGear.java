@@ -11,7 +11,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 /**
- * Monsters spawn without gear from later ages: iron/gold/chainmail/diamond armour is taken off, and weapons they need
+ * Monsters spawn without gear from ages the world hasn't reached (WorldAge; copper from the Bronze Age, iron and
+ * chainmail from the Iron Age): iron/gold/chainmail/diamond armour is taken off, and weapons they need
  * to fight (skeleton bows, iron swords, crossbows, tridents) stay in hand but are never dropped.
  * Items a monster picked up itself are guaranteed drops and are left alone.
  */
@@ -19,20 +20,26 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 public final class LaterAgeGear {
     private static final String[] METALS = {"iron", "gold", "chainmail", "diamond", "netherite", "copper"};
 
-    static boolean isLaterAge(ItemStack stack) {
+    /** Is this gear from an age the world hasn't reached? Copper from the Bronze Age, iron and chainmail from the Iron Age. */
+    static boolean isLaterAge(ItemStack stack, int worldAge) {
         if (stack.isEmpty()) return false;
         if (stack.is(Items.BOW) || stack.is(Items.CROSSBOW) || stack.is(Items.TRIDENT) || stack.isEnchanted()) return true;
         String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
-        for (String metal : METALS) if (id.contains(metal)) return true;
+        for (String metal : METALS) {
+            if (!id.contains(metal)) continue;
+            boolean reached = metal.equals("copper") ? worldAge >= WorldAge.BRONZE : (metal.equals("iron") || metal.equals("chainmail")) && worldAge >= WorldAge.IRON;
+            if (!reached) return true;
+        }
         return false;
     }
 
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide() || !(event.getEntity() instanceof Mob mob) || !(mob instanceof Enemy)) return;
+        int worldAge = WorldAge.of(((net.minecraft.server.level.ServerLevel) event.getLevel()).getServer());
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack stack = mob.getItemBySlot(slot);
-            if (!isLaterAge(stack) || mob.getDropChances().isPreserved(slot)) continue;
+            if (!isLaterAge(stack, worldAge) || mob.getDropChances().isPreserved(slot)) continue;
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) mob.setItemSlot(slot, ItemStack.EMPTY);
             else mob.setDropChance(slot, 0.0F);
         }
