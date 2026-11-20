@@ -1240,6 +1240,7 @@ vildhästens utseende (vildhästmodellen och -texturen; föl med fölmodellen). 
 sig på bakbenen.
 
 - **Hälsa 20–26, fart 0,2–0,3, hopp 0,5–0,75** (en vanilla-häst: 15–30, 0,11–0,34, 0,4–1,0).
+- **Rope Halter** på en tam häst/åsna/onager som inte redan har koppel: den leds som med en Lead (i stället för att du sitter upp).
 - **Barbacka:** högerklicka för att rida, den styrs **utan sadel** men går i **80 %** av sin fart och hoppar **70 %**
   så högt.
 - **Hide Saddle Blanket:** läggs i sadelplatsen (smyg + högerklicka på hästen, eller högerklicka med filten): full fart

@@ -305,6 +305,8 @@ smith = ours("bronze_smithing_hammer")
 for p in px(smith):
     if p[1] >= 8 and p[0] < 8 and p not in head:
         hammer.putpixel(p, smith.getpixel(p))  # the haft, lower left
+for p in head:
+    hammer.putpixel(p, hammer.getpixel(p)[:3] + (255,))  # BOX downscale leaves half-alpha pixels: see-through in hand
 items["bronze_quarry_hammer"] = outline(hammer)
 
 for name, img in items.items():

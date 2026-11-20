@@ -241,11 +241,24 @@ public final class WarmFauna {
                 }, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
-    /** The Rope Halter (Carting) only knows the wild horse: on an onager it goes through {@link Onager#halter}. */
+    /**
+     * The Rope Halter (Carting) only knows the wild horse: on an onager it goes through {@link Onager#halter}, and on a
+     * tame horse or donkey it leads like a Lead (its own right-click would mount it first, before the item is asked).
+     */
     @SubscribeEvent
     static void onHalter(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof Onager onager && !onager.isBaby() && event.getItemStack().is(Carting.ROPE_HALTER.get())) {
+        if (!event.getItemStack().is(Carting.ROPE_HALTER.get())) return;
+        if (event.getTarget() instanceof Onager onager && !onager.isBaby()) {
             event.setCancellationResult(onager.halter(event.getEntity(), event.getItemStack()));
+            event.setCanceled(true);
+        } else if (event.getTarget() instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse && !horse.isBaby()
+                && !horse.isLeashed() && !horse.isVehicle() && horse.canBeLeashed()) {
+            if (!event.getLevel().isClientSide()) {
+                horse.setLeashedTo(event.getEntity(), true);
+                event.getItemStack().consume(1, event.getEntity());
+                horse.playSound(net.minecraft.sounds.SoundEvents.LEAD_TIED, 1.0F, 1.0F);
+            }
+            event.setCancellationResult(event.getLevel().isClientSide() ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.SUCCESS_SERVER);
             event.setCanceled(true);
         }
     }
