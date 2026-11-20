@@ -1,5 +1,5 @@
-# Coin item textures: Copper, Silver and Gold Coin (Coins.java). Each is a small stack of coins with one lying beside it,
-# seen from slightly above: dark outline, rim, face with a highlight and a stamped mark (a dot, a cross, a ring).
+# Coin item textures: Copper, Silver and Gold Coin (Coins.java), five per metal (<name>_1.._5) for growing stack sizes
+# like firewood (gen_bronze.py picks them by count): one coin, up to three stacks. Coins seen from slightly above: dark outline, rim, face with a highlight and a stamped mark (a dot, a cross, a ring).
 # usage: python scripts/gen_coin_textures.py
 from pathlib import Path
 from PIL import Image
@@ -45,21 +45,33 @@ def coin(px, cx, cy, pal, stamp):
                 px[(nx, ny)] = outline
 
 
-def build(name):
+# per stage: stacks drawn back to front as (centre x, bottom coin's centre y, coins)
+STAGES = [
+    [(8.0, 10.0, 1)],
+    [(10.5, 11.5, 1), (5.5, 11.0, 2)],
+    [(10.5, 11.5, 1), (5.0, 11.0, 3)],
+    [(10.5, 9.5, 3), (5.0, 11.5, 3)],
+    [(5.0, 8.5, 3), (11.0, 9.0, 4), (7.5, 11.5, 4)],
+]
+
+
+def build(name, stage):
     pal, stamp = METALS[name], STAMPS[name]
     px = {}
-    coin(px, 10.5, 11.5, pal, stamp)         # the loose one, behind and to the right
-    for i, cy in enumerate((11.0, 9.0, 7.0)):   # the stack, bottom up: only the top coin shows its stamp
-        coin(px, 5.0, cy, pal, stamp if i == 2 else [])
+    for cx, cy, n in STAGES[stage]:
+        for i in range(n):  # bottom up: only the top coin shows its stamp
+            coin(px, cx, cy - 2 * i, pal, stamp if i == n - 1 else [])
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for (x, y), c in px.items():
-        img.putpixel((x, y), c)
+        if 0 <= x < 16 and 0 <= y < 16:
+            img.putpixel((x, y), c)
     return img
 
 
 if __name__ == "__main__":
     for name in METALS:
-        img = build(name)
-        assert img.getbbox() is not None and img.size == (16, 16), name
-        img.save(OUT / f"{name}.png")
-        print(OUT / f"{name}.png")
+        for stage in range(len(STAGES)):
+            img = build(name, stage)
+            assert img.getbbox() is not None and img.size == (16, 16), name
+            img.save(OUT / f"{name}_{stage + 1}.png")
+            print(OUT / f"{name}_{stage + 1}.png")

@@ -1,6 +1,41 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/copper_coin"
+    "type": "minecraft:range_dispatch",
+    "property": "minecraft:count",
+    "normalize": false,
+    "entries": [
+      {
+        "threshold": 7,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/copper_coin_2"
+        }
+      },
+      {
+        "threshold": 17,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/copper_coin_3"
+        }
+      },
+      {
+        "threshold": 33,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/copper_coin_4"
+        }
+      },
+      {
+        "threshold": 47,
+        "model": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/copper_coin_5"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mechanical:item/copper_coin_1"
+    }
   }
 }

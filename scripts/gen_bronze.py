@@ -29,10 +29,18 @@ TOOLS = ["pickaxe", "axe", "shovel", "hoe", "knife", "saw", "sword"]
 title = lambda s: s.replace("_", " ").title()
 
 # ---- item models ----
-FLAT = ["copper_coin", "silver_coin", "gold_coin", "bronze_ingot", "bronze_helmet", "bronze_greaves", "copper_concentrate", "tin_concentrate"] + [f"rough_cast_bronze_{p}" for p in PIECES] + [f"bronze_{p}" for p in PIECES]
+FLAT = ["bronze_ingot", "bronze_helmet", "bronze_greaves", "copper_concentrate", "tin_concentrate"] + [f"rough_cast_bronze_{p}" for p in PIECES] + [f"bronze_{p}" for p in PIECES]
 for item in FLAT:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
+# coins grow with the stack like firewood: 1-6, 7-16, 17-32, 33-46, 47-64 (textures: gen_coin_textures.py)
+COIN_STAGES = [7, 17, 33, 47]
+for coin in ("copper_coin", "silver_coin", "gold_coin"):
+    for n in range(1, 6):
+        w(A / f"models/item/{coin}_{n}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{coin}_{n}"}})
+    w(A / f"items/{coin}.json", {"model": {"type": "minecraft:range_dispatch", "property": "minecraft:count", "normalize": False,
+        "entries": [{"threshold": t, "model": {"type": "minecraft:model", "model": f"mechanical:item/{coin}_{n}"}} for n, t in enumerate(COIN_STAGES, 2)],
+        "fallback": {"type": "minecraft:model", "model": f"mechanical:item/{coin}_1"}}})
 for t in TOOLS:
     w(A / f"models/item/bronze_{t}.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": f"mechanical:item/bronze_{t}"}})
     w(A / f"items/bronze_{t}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/bronze_{t}"}})
