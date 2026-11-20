@@ -16,7 +16,7 @@ import net.minecraft.world.item.Items;
  * any thread (#mechanical:threads: wool, nettle, linen, sinew thread, string) and unlock with Leather; fur pieces are heavy pelts sewn with Sinew and unlock with a Bear Pelt
  * (Wolf Fur and the Wolf Hood: with a Wolf Pelt). The Glider
  * Cloak sews Phantom Leather onto a Glider Frame and unlocks with Phantom Leather. The Satchel and the Quiver unlock with Leather,
- * Leather Horse Armor (for the tamed horse) with a Rope Halter.
+ * Leather Horse Armor (for the tamed horse) too.
  * Smithed (metal) armour is made at the Armor Station, see {@link ArmorStationRecipes}.
  */
 public final class LeatherworkingRecipes {
@@ -63,9 +63,9 @@ public final class LeatherworkingRecipes {
                     PHANTOM_LEATHER),
             // the Quiver: a leather tube stitched shut
             StationRecipe.of(() -> Mechanical.QUIVER.get(), 1, of(() -> Items.LEATHER, 2), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Spinning.THREADS, Mechanical.WOOL_THREAD, 2), LEATHER),
-            // barding for the tamed horse (vanilla's crafting recipe stays off): unlocks with the Rope Halter, i.e. once horses can be tamed
+            // barding for the tamed horse (vanilla's crafting recipe stays off)
             StationRecipe.of(() -> Items.LEATHER_HORSE_ARMOR, 1, of(() -> Items.LEATHER, 7), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Spinning.THREADS, Mechanical.WOOL_THREAD, 4),
-                    s -> s.is(Carting.ROPE_HALTER.get())));
+                    LEATHER));
 
     private LeatherworkingRecipes() {}
 }

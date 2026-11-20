@@ -1253,8 +1253,8 @@ sig på bakbenen.
 - Släpper Manure som andra hästar. Flyr inte (tam).
 - **Inventory (egen skärm):** smyg + högerklicka (eller E när du rider) öppnar hästens skärm: sadelplats och rustningsplats
   till vänster, sedan vänster satchel, hästen och höger satchel. (Vanillas hästskärm har bara plats för 5 kolumner.)
-- **Leather Horse Armor:** sys på **Leatherworking Bench**: 7 Leather + needle + 4 Thread (valfri tråd). Låses upp när du
-  bär en **Rope Halter**. Läggs i rustningsplatsen och ger vanillas 3 armor. Syns som en ljus läderbarding över rygg,
+- **Leather Horse Armor:** sys på **Leatherworking Bench**: 7 Leather + needle + 4 Thread (valfri tråd). Låses upp av
+  Leather, som de andra läderföremålen. Läggs i rustningsplatsen och ger vanillas 3 armor. Syns som en ljus läderbarding över rygg,
   flanker, hals, panna och överben, **färgad efter rustningens färg** (färga den som vanlig läderrustning; ofärgad är den
   läderbrun). Vanillas recept på crafting table är fortfarande avstängt. Andra hästrustningar ritas med samma läderbarding
   tills de får egna texturer.

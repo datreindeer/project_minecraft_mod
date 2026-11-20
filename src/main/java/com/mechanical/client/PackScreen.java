@@ -35,8 +35,11 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (menu.hasSatchel && menu.hasHip) {
+            // the hip bag's name, right-aligned, may use whatever room the satchel's name leaves ("Leather Pouch" doesn't fit over its 2x2)
+            int satchelWidth = Math.min(font.width(menu.satchelName), 104);
             label(graphics, menu.satchelName, 8, 104);
-            label(graphics, menu.hipName, 115, imageWidth - 8 - 115);
+            int room = imageWidth - 8 - (8 + satchelWidth + 8);
+            label(graphics, menu.hipName, imageWidth - 8 - Math.min(font.width(menu.hipName), room), room);
         } else {
             label(graphics, menu.hasSatchel ? menu.satchelName : menu.hipName, 8, imageWidth - 16);
         }
