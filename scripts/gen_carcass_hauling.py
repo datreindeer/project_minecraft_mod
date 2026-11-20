@@ -137,7 +137,9 @@ w(A / "blockstates/hanging_rack.json", {"variants": {
     for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)) for name in ("lower", "middle", "upper")}})
 w(A / "items/hanging_rack.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/hanging_rack"}})
 w(D / "mechanical/loot_table/blocks/hanging_rack.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
-    "entries": [{"type": "minecraft:item", "name": "mechanical:hanging_rack"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+    "entries": [{"type": "minecraft:item", "name": "mechanical:hanging_rack"}], "conditions": [{"condition": "minecraft:survives_explosion"},
+    # only the bottom block drops the rack: breaking any part removes the other two, and they would each drop one too
+    {"condition": "minecraft:block_state_property", "block": "mechanical:hanging_rack", "properties": {"part": "lower"}}]}],
     "random_sequence": "mechanical:blocks/hanging_rack"})
 tag_add(D / "minecraft/tags/block/mineable/axe.json", "mechanical:hanging_rack")
 w(D / "mechanical/recipe/hanging_rack.json", {"type": "minecraft:crafting_shaped", "category": "building",
