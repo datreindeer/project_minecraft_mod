@@ -805,11 +805,21 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
 - Blod på marken (blocket **Blood**) ersätter gräs, Leaf Litter och liknande, bleknar bort efter några minuter, går att gå igenom och har inget item. Blodet syns som droppar som faller (egen partikel).
 
 ### Viltet kommer tillbaka
-Djur placeras när en chunk skapas, så ett område man jagat tomt skulle annars förbli tomt. Var 30:e sekund tittar spelet
-på en plats 48–96 block från varje spelare. Om platsens område (128×128 block) inte har fyllts på på **3 dagar** och det
-finns färre än 3 djur inom 48 block där, vandrar **en flock** av något som biomen har (samma lista som när världen skapas)
-in där, utom synhåll (aldrig närmare än 32 block från en spelare) och inte nära en brinnande eld. Ett område man ser för
-första gången räknas som påfyllt just då. Tiderna sparas med världen (`WildlifeRestock.java`).
+Djur placeras när en chunk skapas, så ett område man jagat tomt skulle annars förbli tomt. Var **15:e sekund** tittar
+spelet på en plats 48–96 block från varje spelare. Om platsens område (128×128 block) inte har fyllts på på **3 dagar**
+(eller aldrig, så att en gammal världs utforskade land också fylls på inom några minuter) och det finns färre än 3 djur
+inom 48 block där, vandrar **en flock** in där, utom synhåll (aldrig närmare än 32 block från en spelare) och inte nära en
+brinnande eld. Högst en flock per spelare och 15 sekunder (4 i minuten), och aldrig där det redan finns djur.
+
+- **Vilken art:** väljs ur biomens spawnlista (samma som när världen skapas): landdjuren, plus våra egna vattendjur
+  (gädda, stör). **Arter som saknas** i området (ingen levande inom 64 block) går först, så nya arter från en nyare
+  version når gamla världar snabbt.
+- **Rätt plats för varje art:** varje djur ställs där artens egna spawnregler godkänner det: fisk i vatten, sälar och
+  valrossar på bar strand eller is, landdjur på marken.
+- **Ny version med nya arter:** när modens uppsättning djur ändras räknas alla redan påfyllda områden som "dags" en gång
+  till.
+
+Tiderna sparas med världen (`WildlifeRestock.java`).
 
 ### Vilda djur (skog)
 Spawnar i skogsbiomer (`#minecraft:is_forest`). Förökar sig inte. Alla har egna modeller och texturer, flådda
@@ -1342,7 +1352,7 @@ Rökning går fortare och ger lite mer mat; torkning kräver ingen eld men bara 
   (vanilla-hagar, hästar) finns kvar.
 
 ### Strukturer i världen
-Små, sällsynta platser som gör världen levande. Byggs bara i **nya chunks**. Behållarna är **Decorated Pots** med
+Små, sällsynta platser som gör världen levande. Byggs i **nya chunks**; de minsta läggs också in i gamla (se *retrogen* nedan). Behållarna är **Decorated Pots** med
 stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 
 | Struktur | Var | Ungefär 1 på N chunks | Innehåll |
@@ -1358,7 +1368,7 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
 
 ### Småsaker i landskapet (dekorationer)
-Små, vanliga saker som gör världen roligare att vandra i, byggs också bara i nya chunks (`scripts/gen_decorations.py`).
+Små, vanliga saker som gör världen roligare att vandra i, byggs i nya chunks och läggs in i gamla orörda chunks (retrogen, nedan) (`scripts/gen_decorations.py`).
 Varje sak slumpar storlek, riktning och stensort, så ingen ser likadan ut. Runt de flesta ligger Loose rocks av samma sten.
 
 | Dekoration | Var | Ungefär 1 på N chunks | Utseende / innehåll |
@@ -1372,6 +1382,28 @@ Varje sak slumpar storlek, riktning och stensort, så ingen ser likadan ut. Runt
 | Stone Head | Slätt, meadow, savann, windswept hills, stony shore | 200 | Jättelikt stenansikte nedsjunket till hakan, med panna, mörka ögon, lång näsa och mun. Var fjärde är dubbelt så stort |
 | Animal Carving | Slätt, meadow, savann, skog, taiga | 160 | En hjort, björn eller vildsvin huggen i sten på en låg sockel |
 | Shrine Statue | Slätt, meadow, savann, skog, taiga | 200 | Gammal stenfigur på en sockel mitt på ett litet torg av kullersten, grus och trampad jord, med slitna trappsteg, ljus, blommor och en **Decorated Pot** med offergåvor (bär, nötter, tallow, horn, antler, sällan Bear Claw). Ibland har huvudet ramlat av |
+
+### Gamla världar får nya småsaker (retrogen)
+Strukturer och dekorationer byggs när en chunk skapas. För att en gammal värld ändå ska få det som kommit i nyare
+versioner läggs **små saker** in i redan skapade chunks när de laddas (`worldgen/Retrogen.java`):
+
+- **Vad:** Tin Ore, malm-fynd på ytan, Loose rocks/flint/chalk/ochre, Twigs, undervegetation (undergrowth, Sapling
+  Thicket), vilda växter och bärbuskar, svampar, fågelbon, Hazel Shrub, Juniper, och de små platserna Abandoned Campsite,
+  Hunter's Lean-to, Fishing Camp, Flint Quarry, Standing Stones, Cairn, stenblock, Balanced Rock, Rune Stone, Stone Head,
+  Animal Carving och Shrine Statue. Samma regler som vid skapandet (biom, sällsynthet, mark), slumpat per chunk.
+- **Aldrig:** strukturer (Tribe Village, Ancient Oak), Bear Den, Hermit's Hut, Tribe Camp, Mammoth Bone Hut, Burial Mound,
+  jaktlag, träd och skogar (skulle bli dubbelt så tätt), och stigar (de hänger på platsernas lägen).
+- **Bara orörd mark:** chunken och alla 8 grannar måste vara laddade, spelare får ha varit i närheten **högst 1 minut**
+  (chunkens InhabitedTime) och ingen av de 9 chunkarna får ha "spelarblock" på eller högst 3 block under marken: block
+  entities som worldgen inte gör (kistor, ugnar, krukor, lägereldar, våra stationer...), plankor, trätrappor/-plattor,
+  dörrar, luckor, staket, sängar, ull, glas, facklor, stegar, crafting table. Byar och ruiner räknas också, då hoppas de
+  bara över. En överhoppad chunk prövas aldrig igen.
+- **Bara en gång:** varje chunk får en markering om vilka saker den har; nyskapade chunks markeras som klara direkt. När
+  en ny sak läggs till listan får gamla chunks bara den nya.
+- **Takt:** högst 2 chunks per tick. Loggen säger med jämna mellanrum t.ex. `Retrogen: 344 chunks updated (594 features
+  placed), 106 skipped as players' land, 0 queued`.
+- Chunks skapade innan retrogen fanns (v0.74.0) saknar markering och får alla småsaker en gång, även de som fanns när
+  chunken skapades, så där kan det bli lite tätare med stenar och växter.
 
 ### Stigar mellan platser (trails)
 Upptrampade **stigar** går mellan närliggande större platser: byar, Tribe Villages och Ancient Oak.
