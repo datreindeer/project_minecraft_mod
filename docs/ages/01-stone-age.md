@@ -1390,6 +1390,74 @@ Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och t
     eller döda rädare sänker inte ryktet. Fallna rädare tappar vapen och facklor (50 %) och ledaren sin banderoll (alltid).
   - Op: `/raid` startar en räd mot lägret där du står (trummor, sedan rädare efter 5 s).
 
+### Besökande stammar och grannläger
+Har ditt läger brunnit länge nog söker stammarna upp dig. De kommer för att handla, ber att få sova vid din eld, och
+ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/TribeVisits.java`, `Settlements.java`,
+`Neighbours.java`, `TribeDialog.java`; data `scripts/gen_tribes2.py`, texturer `scripts/gen_tribes2_textures.py`.)
+- **Första besöket** kommer när ett spelarläger (Lägerålder, se nedan) har brunnit i **3 speldagar**, sedan ett ungefär
+  **var 5:e dag** (4–6, slumpat). Bara på dagen (de ger sig av mellan dagtid 3000 och 8000) och bara när en spelare är
+  inom 48 block från lägret. "People are coming toward your camp from the east..."
+- **Bandet:** en ledare (en **Elder** med stammens banderoll på huvudet) och 3–6 till (Hunters, Gatherers, Woodcutters),
+  med vanliga Tribesperson-skins. De går in från **80–120 block** bort (närmare, minst 40, om det inte är laddat så långt)
+  mot lägrets eld. Varannan gång kommer en stam som varit här förut (om ni är på talefot), annars en ny (aldrig *Raiders*).
+- **Vid elden** går de runt i närheten under bar himmel (aldrig in i hus) och ledaren hälsar. **Högerklicka ledaren** för
+  att prata: en ruta med vad han säger, ditt rykte hos stammen och knapparna **Trade** (vanlig byteshandel, priser efter
+  ryktet), **Farewell**, och på kvällen **Yes, stay / No**. Mat som gåva fungerar som vanligt.
+- **"May we stay by your fire tonight?"** Vid dagtid 11000 frågar ledaren i chatten och går fram till närmaste spelare.
+  - **Ja:** de håller sig vid elden, var och en knäböjer på sin plats 2–3 block från elden hela natten (beväpnade slåss mot
+    monster som kommer). **+4 rykte** för den som svarade. Vid gryningen (dagtid 23000) får värden en **gåva** (i
+    inventoryt om du är nära, annars läggs den vid elden), sedan går de.
+  - **Nej:** de går direkt, **-3 rykte**. Svarar ingen före dagtid 13800 går de ändå (utan att ta illa upp).
+  - På en server gäller **den som svarar först**; de andra får "Someone has already answered them".
+- **Gåvan:** under Friendly 2 vardagssaker (3 Cordage, 6 Flint, 4 Bone Arrows, 4 Cooked Venison Scraps, 2 Raw Hide,
+  4 Twine eller 8 Blueberries); Friendly (30+) 3 bättre (3 Scraped Hide, Bone Needle, Flint Knife, 8 Bone Arrows, 3 Sinew,
+  2 Leather, 2 Antler, 3 Bone Fish Hooks); Honoured (70+) dessutom en sällsynt (Crude Bow, Tusk Dagger, 3 Potato,
+  3 Malachite, 2 Cassiterite eller ett Copper Knife Blade).
+- **De slår sig ner:** efter en natt vid elden kan bandet stanna i trakten: chans **50 %** vid rykte 70+, **35 %** vid 30+,
+  **15 %** vid 0+, annars aldrig. Högst **3 läger** inom 150 block från samma spelarläger och högst ett nytt per 2 dagar.
+  De väljer den plattaste platsen av 32 försök **50–150 block** bort: naturlig mark (gräs, jord, sand, grus, sten) inom
+  11 block, plan inom 8 block, inget vatten, inga byggen (då lämnas platsen i fred), minst 45 block från spelarläger och
+  60 från andra stammars läger. "This is good land. We will make our camp not far from here, to the north."
+- **Lägret byggs block för block** (en i taget lägger ut nästa block efter några slag; ingen bygger på natten):
+  1. **Tältläger:** Campfire med en ring av Loose Stones, **två hudtält**, en **Hanging Rack**, banderollen på en stång och
+     en sittstock. Bandet bär med sig det som behövs. När elden brinner: "The Raven Tribe have lit a fire and made camp
+     to the north of your camp."
+  2. **Större läger:** två tält till, två Drying Racks med hudar, en **tunna med förråd** (Cooked Venison Scraps, Flint,
+     Cordage, Scraped Hide) och en vedtrave. Två nya stamfränder flyttar dit.
+  3. **Palissad:** en ring av stockar, två höga med **Sharpened Log** överst, radie 10, med en 3 block bred port mot ditt
+     läger (portstolparna ett block högre). Två till flyttar dit.
+  - **Förråd och kostnad:** varje block kostar ved, sten eller hudar (stock 1 ved, Campfire 2, Hanging Rack 4, tunna 3,
+    Drying Rack 2 ved + 1 hud, Loose Stone 1 sten, varje tältblock, matta och banderoll 1 hud). Ett steg **börjar när
+    förrådet räcker till hela steget**: steg 2 ca 10 ved + 24 hudar, steg 3 ca 190 ved (beror på marken).
+  - **Insamling:** Woodcutters fäller träd (stående träd **bara med gamerule `mob_griefing`**) och bär hem 4 ved per tur,
+    Gatherers och Elder plockar Loose Stones (bara med `mob_griefing`, annars hackar de loss bitar ur berg utan att ta
+    bort något) när stenen inte räcker, Hunters jagar **bara medan lägret vill ha hudar** (under 60) och ger 2 hudar per
+    byte. Ett byte **släpas hem och hängs på lägrets Hanging Rack** om den är ledig, och styckas där när det hängt färdigt.
+  - **Grov simulering:** förrådet växer också av sig självt, även när ingen är i närheten: +2 ved per 1000 ticks, +1 sten
+    och +1 hud per 2000 ticks (högst 400/120/120). **Block läggs bara medan lägret är laddat**, så ett läger du inte
+    besökt på länge kommer ikapp när du kommer dit.
+  - Ett läger utan folk (alla döda eller borta i 3 kontroller i rad medan det är laddat) överges; byggnaderna står kvar.
+- **Handelsbud och stigar:** ungefär var 8000–16000:e tick (dagtid 2000–7000) går någon från lägret iväg: en **handlare**
+  (helst Elder, aldrig en Hunter) till ditt lägers eld, där hen väntar ca 2 minuter ("Greetings from the camp of the Raven
+  Tribe!"; högerklicka för samma ruta med Trade), eller ett besök hos ett av de andra lägren inom 300 block. Handlare
+  kommer bara om spelaren vid lägret inte är fientlig och stammen handlar med hen. På vägen **nöter de marken tre gånger
+  så hårt** som en spelare, så det växer fram **Worn Grass och Trodden Paths** mellan lägren.
+- **Rykte per stam** (samma som förut, -100 till 100): handel +2, matgåva +2, låta dem sova vid elden +4, säga nej -3,
+  slå en -8, döda en → fientlig för alltid, bryta deras eld -15, stöld -10: öppna deras tunna **eller bryta ett block de
+  byggt** (tält, rack, palissad) medan någon av dem ser det. Ryktet styr priser, gåvornas kvalitet och om de slår sig ner.
+  Vid **-40 (Hostile)** handlar de inte, skickar inga handlare, anfaller dig vid sitt läger och kan **plundra ditt läger**
+  (de räknas av Räder även när deras läger inte är laddat).
+- **Hudtält (block):** **Hide Canvas** (2 Scraped Hide + Cordage, formlöst) är ett helt block av sydda hudar.
+  **Hide Tent Slope** (2 Hide Canvas + Stick → 2) är en sluttande hudvägg i 45° som reser sig bort från dig, och
+  **Hide Tent Ridge** (2 Hide Canvas + Stick → 2) är tältets topp med två sluttningar mot en åsstång (öppna änden mot dig).
+  Smyg-högerklicka med tom hand för att sätta en **gavel** (triangelvägg) på sluttningens vänstra eller högra sida, eller
+  stänga åsens bakre ände. Ett tält: sluttningar längs båda sidorna, åsar ovanpå i mitten, en Hide Canvas längst in.
+- **Avancemang** (Wilderness & Hunting): *Guests at the Fire* (första besöket), *A Night by the Fire* (låta dem sova
+  över), *Neighbours* (en stam slår sig ner), *Walls of Their Own* (ett grannläger bygger palissad), *Best of Friends*
+  (rykte 80 hos en stam).
+- Op: `/tribes visit` skickar ett band mot lägret där du står, `/tribes info` visar besök, lägrens nästa besök och
+  grannlägrens steg, förråd och vad nästa steg kräver.
+
 ### Strukturernas loot (vanilla)
 Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,
 Stronghold, Outpost, Mansion, Igloo, Ancient City, Trial Chambers, Nether- och End-strukturer), arkeologi, krukor,

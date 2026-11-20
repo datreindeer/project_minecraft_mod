@@ -66,10 +66,15 @@ public final class TrampledPaths {
 
     /** Server: {@code e} moved this tick; if it stepped onto a new block on the ground, that block may wear. */
     public static void step(Entity e) {
+        step(e, 1);
+    }
+
+    /** Like {@link #step(Entity)}, but a new block is worn {@code times} times (tribe folk walking between camps). */
+    public static void step(Entity e, int times) {
         if (!e.onGround()) return;
         BlockPos on = e.getOnPos();
         Long last = LAST.put(e, on.asLong());
-        if (last != null && last != on.asLong()) wear((ServerLevel) e.level(), on, e.getRandom());
+        if (last != null && last != on.asLong()) for (int i = 0; i < times; i++) wear((ServerLevel) e.level(), on, e.getRandom());
     }
 
     /** One step onto {@code pos}: maybe one stage more worn; a path stepped on is RECENT and won't grow back for now. */

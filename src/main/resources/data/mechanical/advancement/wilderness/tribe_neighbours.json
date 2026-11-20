@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/tribe_guests",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hide_tent_slope"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.tribe_neighbours.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.tribe_neighbours.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

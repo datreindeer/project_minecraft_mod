@@ -91,6 +91,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     static final long ANGER_TICKS = 24000, FOREVER = Long.MAX_VALUE;
     private static final double GROUP_RANGE = 48, GREET_RANGE = 6;
+    /** Each new block a traveller between camps steps onto wears this many times (TrampledPaths), so paths form. */
+    private static final int TRAVEL_WEAR = 3;
     private static final int GREET_COOLDOWN = 6000, GREET_COOLDOWN_ANY = 600, FIRE_TEND_TICKS = 1200;
     private static final Codec<Map<UUID, Long>> ANGER_CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.LONG);
 
@@ -123,6 +125,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** Where the group is going to set up a new camp (SetUpCampGoal); since when it has had no fire. */
     BlockPos newCamp;
     long homelessSince = -1;
+    /** The visit (Neighbours.Visit id) this person came to a player camp with, saved; null when not visiting. */
+    UUID visit;
+    /** A walk to another camp and back (ErrandGoal), not saved; walking it wears paths. */
+    ErrandGoal.Errand errand;
+    boolean travelling;
 
     public Tribesperson(EntityType<? extends Tribesperson> type, Level level) {
         super(type, level);
@@ -317,11 +324,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         });
         goalSelector.addGoal(3, new RaidGoal(this));
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
+        goalSelector.addGoal(3, new VisitGoal(this));
+        goalSelector.addGoal(4, new ErrandGoal(this));
         goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
         goalSelector.addGoal(5, new GatherGoal(this));
         goalSelector.addGoal(5, new FishGoal(this));
         goalSelector.addGoal(5, new ChopWoodGoal(this));
+        goalSelector.addGoal(5, new BuildCampGoal(this));
+        goalSelector.addGoal(5, new FetchStoneGoal(this));
         goalSelector.addGoal(6, new PlantGoal(this));
         goalSelector.addGoal(6, new FollowBandLeaderGoal(this));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.55) {
@@ -347,7 +358,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
                 (t, l) -> isArmed() && (!(t instanceof Creeper) || isHolding(s -> s.getItem() instanceof BowItem)) && t.distanceToSqr(this) < 12 * 12));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
-                (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && isPrey(t)));
+                (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && visit == null && errand == null && Settlements.wantsGame(this) && isPrey(t)));
     }
 
     /** Wild game a hunter may take: the mod's wild animals (not bears) and wild rabbits; never pets, leashed or village animals. */
@@ -434,8 +445,9 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         long now = level.getGameTime();
         boolean night = level.isDarkOutside();
         // keep near home: wide by day, close to the fire at night, further while fighting
-        if (home != null) setHomeTo(home, getTarget() != null ? 32 : night ? 5 : Math.max(role().roam, 4));
+        if (home != null && errand == null) setHomeTo(home, getTarget() != null ? 32 : night ? 5 : Math.max(role().roam, 4));
         else clearHome();
+        if (travelling) com.mechanical.TrampledPaths.step(this, TRAVEL_WEAR);
 
         if (getTarget() instanceof Player p && !isAngryAt(p) && getLastHurtByMob() != p) setTarget(null);
         if (getTarget() != null && !isArmed() && !isCornered() && FleeThreatGoal.isThreat(this, getTarget())) setTarget(null);
@@ -448,11 +460,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (tickCount % 100 == 0) shareAnger();
         if (tickCount % 20 == 0) greetNearby(level, now);
         if (tickCount % 20 == 0 && raid != null) RaidGoal.update(this, level);
-        if (tickCount % 20 == 0 && raid == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
+        if (tickCount % 20 == 0 && raid == null && visit == null && errand == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
         if (tickCount % 100 == 0 && raid == null) SetUpCampGoal.check(this, level, now);
         if (getTarget() == null) tendWounds(level);
-        if (role() == TribeRole.ELDER) restock(level);
+        restock(level); // elders, and envoys of any role
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
     }
 
@@ -547,6 +559,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         nextFireTend = now + FIRE_TEND_TICKS;
         getLookControl().setLookAt(Vec3.atCenterOf(home));
         swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT);
+        if (carryingWood) Settlements.deliver(this, Neighbours.Settlement.WOOD, Settlements.WOOD_PER_TRIP);
         if (lit) {
             fire.mechanical$addFuel(carryingWood ? Campfires.FIREWOOD_TICKS * 2 : Campfires.FIREWOOD_TICKS);
         } else {
@@ -579,6 +592,12 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             say(player, Component.translatable("chat.mechanical.tribesperson.gift"));
             return InteractionResult.SUCCESS_SERVER;
         }
+        if (isEnvoy() && hand == InteractionHand.MAIN_HAND && tradingPlayer == null && getTarget() == null && player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            getNavigation().stop();
+            getLookControl().setLookAt(player);
+            TribeVisits.openDialog(sp, this);
+            return InteractionResult.SUCCESS_SERVER;
+        }
         if (role() == TribeRole.ELDER && tribe() != null && !tribe().trades(player)) {
             say(player, Component.translatable("chat.mechanical.tribesperson.no_trade_stranger"));
             return InteractionResult.CONSUME;
@@ -587,12 +606,22 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             if (hand == InteractionHand.MAIN_HAND) say(player, Component.translatable("chat.mechanical.tribesperson.greet." + role().id() + "." + getRandom().nextInt(TribeRole.GREETINGS)));
             return InteractionResult.CONSUME;
         }
+        openTrade(player);
+        return InteractionResult.SUCCESS_SERVER;
+    }
+
+    /** A visiting band's leader, or a camp's trader on the way to a player camp: they talk through TribeDialog. */
+    public boolean isEnvoy() {
+        return visit != null && leader || errand != null && errand.trade();
+    }
+
+    /** Opens the barter screen, prices following the player's standing (not while angry or busy, nor for strangers they won't trade with). */
+    void openTrade(Player player) {
+        if (tradingPlayer != null || getTarget() != null || isAngryAt(player) || tribe() != null && !tribe().trades(player)) return;
         getNavigation().stop();
-        // prices follow the player's standing with the tribe
         for (MerchantOffer offer : getOffers()) offer.setSpecialPriceDiff(tribe() != null ? tribe().priceDiff(player, offer.getBaseCostA().getCount()) : 0);
         setTradingPlayer(player);
         openTradingScreen(player, getDisplayName(), 1);
-        return InteractionResult.SUCCESS_SERVER;
     }
 
     /** One elder in this many offers seed potatoes (in a trading tribe one in {@link #POTATO_ODDS_TRADERS}). */
@@ -745,6 +774,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         output.putLong("restock_day", restockDay);
         if (offers != null) output.store("offers", MerchantOffers.CODEC, offers);
         if (raid != null) raid.save(output);
+        if (visit != null) output.store("visit", UUIDUtil.CODEC, visit);
     }
 
     @Override
@@ -761,6 +791,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         restockDay = input.getLongOr("restock_day", -1);
         offers = input.read("offers", MerchantOffers.CODEC).orElse(null);
         raid = RaidGoal.State.load(input);
+        visit = input.read("visit", UUIDUtil.CODEC).orElse(null);
         if (raid != null) raiderNavigation();
     }
 }

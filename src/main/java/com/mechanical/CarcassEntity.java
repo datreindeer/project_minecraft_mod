@@ -164,7 +164,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** Hangs it from the rack at {@code pos}, belly to the rack's front. */
-    void hang(BlockPos pos, net.minecraft.core.Direction front) {
+    public void hang(BlockPos pos, net.minecraft.core.Direction front) {
         setHauler(null);
         stopRiding();
         entityData.set(HUNG_AT, java.util.Optional.of(pos));

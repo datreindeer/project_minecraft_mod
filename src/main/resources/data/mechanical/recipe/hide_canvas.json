@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:scraped_hide",
+    "mechanical:scraped_hide",
+    "mechanical:cordage"
+  ],
+  "result": {
+    "id": "mechanical:hide_canvas"
+  }
+}

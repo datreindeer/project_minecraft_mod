@@ -38,6 +38,7 @@ class SetUpCampGoal extends Goal {
 
     /** Called every few seconds: notices a missing fire and, when the time has come, lets the group pick a new spot. */
     static void check(Tribesperson mob, ServerLevel level, long now) {
+        if (mob.visit != null || Settlements.of(mob) != null) return; // visiting bands and settled camps (Neighbours) see to their own fire
         BlockPos home = mob.home();
         boolean homeless = home == null || level.isLoaded(home) && !level.getBlockState(home).is(Blocks.CAMPFIRE);
         if (!homeless) {

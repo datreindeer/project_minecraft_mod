@@ -743,6 +743,20 @@ TABS["food"][1].extend([
      "Pick up an egg a Jungle Fowl hen laid. Throw it: it may hatch a chick", has("jungle_fowl_egg")),
 ])
 # end fauna: warm
+# tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
+TABS["wilderness"][1].extend([
+    ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
+     "Keep your camp fire burning for 3 days and a tribe comes to see who you are. Right-click their leader to talk and trade",
+     by_code()),
+    ("tribe_guests", "tribe_visit", "minecraft:campfire", T, "A Night by the Fire",
+     "When the leader asks at dusk, let the band stay the night. At dawn they leave you a gift", by_code()),
+    ("tribe_neighbours", "tribe_guests", "hide_tent_slope", G, "Neighbours",
+     "A tribe you hosted settles nearby and builds a camp of hide tents. Its traders walk over to you", by_code()),
+    ("tribe_palisade", "tribe_neighbours", "sharpened_spruce_log", G, "Walls of Their Own",
+     "A neighbouring camp gathers enough wood, stone and hides to grow, and raises a palisade", by_code()),
+    ("tribe_friends", "tribe_visit", "hide_canvas", C, "Best of Friends",
+     "Reach a standing of 80 with a tribe: trade with them, bring them food, let them stay by your fire", by_code()),
+])
 
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per

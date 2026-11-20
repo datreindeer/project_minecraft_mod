@@ -84,6 +84,7 @@ public final class Raids {
         for (Tribesperson t : level.getEntitiesOfClass(Tribesperson.class, new AABB(camp).inflate(TRIBE_RANGE), t -> t.group() != null && t.raid == null)) {
             ids.add(t.group());
         }
+        for (Neighbours.Settlement s : Neighbours.get(level).settlementsNear(camp, TRIBE_RANGE)) ids.add(s.tribe); // settled neighbours, loaded or not
         Choice best = null;
         int bestScore = Integer.MAX_VALUE;
         for (UUID id : ids) {

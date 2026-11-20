@@ -54,6 +54,8 @@ public final class Tribe {
 
     public static final int HOSTILE = -40, FRIENDLY = 30, MIN = -100, MAX = 100;
     public static final int HIT = -8, KILL = -60, FIRE = -15, THEFT = -10, TRADE = 2, GIFT = 2;
+    /** Letting a visiting band stay the night, or sending it away (TribeVisits); standing of a best friend (advancement). */
+    public static final int STAY = 4, REFUSE = -3, BEST_FRIENDS = 80;
 
     static final String[] TOTEMS = {"raven", "wolf", "bear", "elk", "salmon", "owl", "fox", "boar", "lynx", "eagle", "otter", "badger",
             "stag", "heron", "mammoth", "aurochs", "hare", "crane", "wolverine", "bison"};
@@ -140,7 +142,10 @@ public final class Tribe {
         Map<String, Integer> map = new java.util.HashMap<>(player.getData(REPUTATION));
         map.put(id.toString(), now);
         player.setData(REPUTATION, Map.copyOf(map));
-        if (player instanceof ServerPlayer sp) sp.sendOverlayMessage(Component.translatable("message.mechanical.tribe.standing", name(), standing(now)));
+        if (player instanceof ServerPlayer sp) {
+            sp.sendOverlayMessage(Component.translatable("message.mechanical.tribe.standing", name(), standing(now)));
+            if (now >= BEST_FRIENDS) TribeVisits.award(sp, "tribe_friends");
+        }
     }
 
     /** Hostile, unfriendly, neutral, friendly or honoured. */
