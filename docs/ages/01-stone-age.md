@@ -1723,6 +1723,51 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
 - Op: `/tribes visit` skickar ett band mot lägret där du står, `/tribes info` visar besök, lägrens nästa besök och
   grannlägrens steg, förråd och vad nästa steg kräver.
 
+### Handelskaravaner (Trader Caravan)
+Vanillas **Wandering Trader** och hans **Trader Llamas** finns inte längre: ingen av dem kommer in i världen (inte heller
+från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan** från en rik handelsstam (temperament
+*Traders*). (`people/Caravans.java`; språk `scripts/gen_tribes2.py`, skins `scripts/gen_tribe_skins.py`, kapell
+`scripts/gen_cart_canopy_textures.py`.)
+- **När:** lika ofta som vandrande handlaren skulle ha kommit. Vanillas egen räknare används: ett försök var 20:e minut
+  (24000 ticks), 25 % chans första gången, +25 % per miss upp till 75 %, nära en slumpad spelare (inom 48 block, helst vid
+  byns klocka). Där handlaren skulle ha dykt upp kommer karavanen i stället. Gamerule `spawn_wandering_traders` stänger av
+  den. Den stannar **48000 ticks (2 speldagar)** som vanillas handlare, sedan försvinner allt (folk, hästar, vagnar).
+  Ett Wandering Trader Spawn Egg ger också en karavan.
+- **Folket:** **3–4 personer**. En **äldre man eller kvinna, handlaren (Trader)**, i fina kläder: en lång rock i stammens
+  färg med guldband och guldkant, **ädelstenar** i bandet, ett halsband av guld och stenar och en sten i pannbandet. De
+  andra är **vakter (Caravan Guard)** i rena linne- och läderkläder med **rustning men ingen hjälm** (och ingen banderoll
+  på huvudet), stammens färg på pannbandet. Inga trasiga stamkläder och inga klimatvarianter: karavaner kommer långväga.
+- **Hästar och vagnar:** **1–2 tama hästar** (Tame Horse) i rep som handlaren håller, var och en drar en **Wheeled Cart**
+  med ett **tygkapell** (välvt tak av linnekanvas över vagnen, bara på karavanens vagnar). Vagnen bär en **kista**, men
+  var fjärde gång ligger ett **Red Deer-kadaver** på den i stället. Karavanens vagnar **lossnar aldrig** från hästen (de
+  hittar tillbaka till den efter omladdning och hänger med i stället för att slitas loss), och spelare kan inte koppla
+  loss, öppna eller slå sönder dem ("The caravan's cart: its guards would not like that"). **Dör hästen** blir vagnen en
+  vanlig vagn.
+- **Rörelse:** handlaren strövar som ledaren för ett jaktlag och vakterna följer efter (de slår aldrig läger). Hästarna
+  följer handlarens rep, vagnarna hästarna.
+- **Vakternas vapen** följer **spelarnas ålder** i närheten (inom 64 block när karavanen kommer; den mest avancerade
+  spelaren räknas): **stenåldern** som grund, **bronsåldern** när någon har avancemanget *Bronze*, **järnåldern** när
+  någon har *Wrought Iron*. Varje vakt får samma ålder eller **en ålder över** (slumpat), men högst bronsålder eftersom
+  inga järnvapen eller järnrustningar finns än:
+  - Sten: Flint Spear, Crude Bow eller Flint Axe; Leather Chestplate, Leather Leggings och Leather Boots i stammens färg.
+  - Brons: Bronze Spear, Bronze Sword, Bronze Axe eller Crude Bow; Leather Chestplate, **Bronze Greaves**, Leather Boots.
+- **Handel** (högerklicka handlaren: samma ruta som besökande stammar, "Trade"; priser efter ditt rykte som hos andra
+  stammar, *Traders* ger störst rabatt). Priserna följer bybornas skala (ett Bronze Sword kostar 36 koppar hos dem).
+  Handlaren säljer **8 varor** slumpade ur allt upp till **en ålder över** din:
+  - Sten (Copper Coin): 3 Potato 8, Flint Knife 4, Crude Bow 8, 8 Bone Arrow 6, 2 Leather 6, 4 Cordage 4, 3 Sinew 4,
+    Tusk Dagger 10, 6 Cooked Venison Scraps 4, Bone Needle 3.
+  - Brons: 3 Malachite 6 koppar, 2 Cassiterite 8 koppar, Copper Knife 16 koppar, Bronze Knife 24 koppar, 8 Bronze Arrow
+    2 silver, 2 Bronze Ingot 3 silver, Tin Ingot 2 silver, Rope Halter 12 koppar, Hide Saddle Blanket 2 silver,
+    4 Linen Thread 10 koppar, Bronze Greaves 5 silver.
+  - Järn: 4 Raw Iron 6 silver, Iron Knife 8 silver, Wrought Iron Ingot 1 guld.
+  - **Växling** (alltid utan rabatt): 10 Copper Coin ↔ 1 Silver Coin, 10 Silver Coin ↔ 1 Gold Coin.
+  - **Ädelstenar:** de **älskar ädelstenar** och köper varje slipad sten i taggen `#mechanical:gemstones` för
+    **4 Silver Coin**, Diamond för **2 Gold Coin**, Emerald för **1 Gold Coin** och Amethyst Shard för **2 Silver Coin**.
+- **Som en fredlig stam:** rykte, matgåvor, ilska och vakter som försvarar gruppen fungerar som hos andra stammar; slår du
+  någon i karavanen vänder sig vakterna mot dig, dödar du någon blir stammen fientlig för alltid.
+- **Avancemang** (Wilderness & Hunting): *The Caravan Has Come* (prata med en karavans handlare) och *Treasures for Coin*
+  (sälj en ädelsten till karavanen).
+
 ### Strukturernas loot (vanilla)
 Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,
 Stronghold, Outpost, Mansion, Igloo, Ancient City, Trial Chambers, Nether- och End-strukturer), arkeologi, krukor,

@@ -47,6 +47,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>tribe_climate: biomes map to the right climate; village layouts of every climate (16 seeds, so every temperament)
  * keep the gate open and use their climate's materials (no hay outside temperate lands, acacia in warm ones, bamboo
  * in the jungle, spruce and bone in the cold); a settled camp's three stages build in every climate and stay standing.</li>
+ * <li>tribe_caravan: a Wandering Trader never joins the world, a Trader Caravan comes instead: 3-4 people of one trading
+ * tribe (one trader, guards armed and armoured without helmets), the trader changes coins and buys diamonds, every horse
+ * is led by the trader and pulls a covered cart that is still hitched 5 seconds on; when its time is up all of it goes.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
@@ -55,12 +58,14 @@ public final class TribeTest {
     private static final ResourceKey<Consumer<GameTestHelper>> CHOP = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_chop"));
     private static final ResourceKey<Consumer<GameTestHelper>> GATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_gate"));
     private static final ResourceKey<Consumer<GameTestHelper>> CLIMATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_climate"));
+    private static final ResourceKey<Consumer<GameTestHelper>> CARAVAN = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_caravan"));
     private static final int C = 20, WALL = 6; // the ring's centre (relative x, z) and radius in tribe_gate
 
     static {
         TEST_FUNCTIONS.register("tribe_chop", () -> TribeTest::chop);
         TEST_FUNCTIONS.register("tribe_gate", () -> TribeTest::gate);
         TEST_FUNCTIONS.register("tribe_climate", () -> TribeTest::climate);
+        TEST_FUNCTIONS.register("tribe_caravan", () -> TribeTest::caravan);
     }
 
     static void init(IEventBus modEventBus) {
@@ -77,6 +82,8 @@ public final class TribeTest {
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 2400, 0, true, Rotation.NONE, false, 1, 1, false, 48)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_climate"), new FunctionGameTestInstance(CLIMATE,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_caravan"), new FunctionGameTestInstance(CARAVAN,
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 200, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
     }
 
     private static void guarded(GameTestHelper h, Runnable test) {
@@ -295,6 +302,46 @@ public final class TribeTest {
         });
     }
 
+
+    private static void caravan(GameTestHelper h) {
+        guarded(h, () -> {
+            ServerLevel level = h.getLevel();
+            BlockPos at = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, h.absolutePos(new BlockPos(10, 1, 10)));
+            var vanilla = net.minecraft.world.entity.EntityTypes.WANDERING_TRADER.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+            vanilla.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+            h.assertFalse(level.addFreshEntity(vanilla), "the Wandering Trader joined the world");
+            net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(at).inflate(16);
+            List<Tribesperson> people = level.getEntitiesOfClass(Tribesperson.class, box);
+            Tribesperson trader = people.stream().filter(t -> t.role() == TribeRole.TRADER).findFirst().orElse(null);
+            h.assertTrue(trader != null, "no caravan came in the trader's place");
+            h.assertTrue(people.size() >= 3 && people.size() <= 4 && people.stream().allMatch(trader::inGroup), "caravan of 3-4 of one tribe, got " + people.size());
+            h.assertTrue(trader.tribe().temperament == Tribe.Temperament.TRADERS, "a caravan is of a trading tribe");
+            for (Tribesperson g : people) {
+                if (g == trader) continue;
+                h.assertTrue(g.role() == TribeRole.GUARD && g.isArmed(), "guards carry weapons");
+                h.assertTrue(g.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).isEmpty()
+                        && !g.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).isEmpty(), "guards wear armour, no helmet or banner");
+            }
+            var offers = trader.getOffers();
+            h.assertTrue(offers.stream().anyMatch(Caravans::isExchange), "the trader changes coins");
+            h.assertTrue(offers.stream().anyMatch(o -> o.getBaseCostA().is(net.minecraft.world.item.Items.DIAMOND)
+                    && o.getResult().is(com.mechanical.Coins.GOLD_COIN.get())), "the trader buys diamonds for gold");
+            List<net.minecraft.world.entity.animal.equine.AbstractHorse> horses = level.getEntitiesOfClass(
+                    net.minecraft.world.entity.animal.equine.AbstractHorse.class, box, x -> x.getLeashHolder() == trader);
+            h.assertTrue(!horses.isEmpty() && horses.size() <= 2, "1-2 horses led by the trader, got " + horses.size());
+            h.runAfterDelay(100, () -> guarded(h, () -> {
+                List<com.mechanical.CartEntity> carts = level.getEntitiesOfClass(com.mechanical.CartEntity.class, box.inflate(16));
+                h.assertTrue(carts.size() == horses.size(), "a cart per horse, got " + carts.size());
+                for (com.mechanical.CartEntity c : carts)
+                    h.assertTrue(c.isCaravan() && horses.contains(c.harness()), "the caravan's cart is still hitched to its horse");
+                List<Tribesperson> all = level.getEntitiesOfClass(Tribesperson.class, box.inflate(16), t -> t.inGroup(trader));
+                all.forEach(Caravans::leave);
+                h.assertTrue(level.getEntitiesOfClass(com.mechanical.CartEntity.class, box.inflate(16)).isEmpty()
+                        && horses.stream().allMatch(x -> x.isRemoved()), "carts and horses leave with the caravan");
+                h.succeed();
+            }));
+        });
+    }
 
     private TribeTest() {}
 }
