@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/bear",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cave_bear_skull"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_cave_bear_pelt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cave_bear_skull"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.cave_bear.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.cave_bear.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:rabbit_scraps"
+            "items": "mechanical:marmot_meat"
           }
         ]
       }
@@ -26,7 +26,47 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:rabbit_scraps"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_ermine"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "mechanical:raw_hide"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_lemming"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_marten"
           }
         ]
       }
@@ -36,7 +76,11 @@
     [
       "has_0",
       "has_1",
-      "has_2"
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5",
+      "has_6"
     ]
   ],
   "display": {

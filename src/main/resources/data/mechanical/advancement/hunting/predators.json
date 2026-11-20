@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:game_meat_scraps"
+            "items": "mechanical:cave_bear_meat"
           }
         ]
       }
@@ -16,12 +16,52 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:game_meat_scraps"
           }
         ]
       }
     },
     "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hyena_meat"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_hide"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_lynx"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wolverine"
+          }
+        ]
+      }
+    },
+    "has_6": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -36,7 +76,11 @@
     [
       "has_0",
       "has_1",
-      "has_2"
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5",
+      "has_6"
     ]
   ],
   "display": {

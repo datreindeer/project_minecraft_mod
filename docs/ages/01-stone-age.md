@@ -1639,6 +1639,9 @@ tabellen**, så att man lär sig hur den görs.
 De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och recept):
 
 <!-- fauna-links -->
+- [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
+- [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
+- [Istidsjättar](../fauna/giants.md): Woolly Mammoth, Woolly Rhinoceros, Steppe Bison, Musk Ox (Pegged Hide, Ivory)
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
 - [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane

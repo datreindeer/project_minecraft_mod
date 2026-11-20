@@ -40,3 +40,7 @@ repo/
 !**/src/**/repo/
 update-mechanical.txt
 __pycache__/
+
+# local Claude worktrees and stray copies
+.claude/
+/registry.html

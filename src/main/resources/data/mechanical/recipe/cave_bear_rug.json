@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:cave_bear_pelt",
+    "mechanical:bear_claw"
+  ],
+  "result": {
+    "id": "mechanical:cave_bear_rug",
+    "count": 1
+  }
+}

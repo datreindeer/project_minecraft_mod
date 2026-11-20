@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:remove_spawns",
+  "biomes": [
+    "minecraft:snowy_slopes",
+    "minecraft:jagged_peaks",
+    "minecraft:frozen_peaks",
+    "minecraft:stony_peaks"
+  ],
+  "entity_types": "minecraft:goat"
+}

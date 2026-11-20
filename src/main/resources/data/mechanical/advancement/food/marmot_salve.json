@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:marmot_salve"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:marmot_salve"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.marmot_salve.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.marmot_salve.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

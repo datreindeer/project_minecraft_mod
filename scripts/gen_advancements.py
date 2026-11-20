@@ -650,6 +650,42 @@ TABS["food"][1].extend([
 ])
 
 
+# fauna: mountain
+TABS["wilderness"][1].extend([
+    ("ibex", "butcher", "ibex_horn", T, "Lord of the Peaks",
+     "Get close to an Ibex on the peaks (it flees uphill, up the rock face) and butcher it for its Horns and pelt",
+     has("ibex_horn", "raw_ibex_pelt")),
+    ("horn_bow", "sinew_bow", "horn_bow", G, "Composite Bow",
+     "Fletching Table: 2 Sinew + Sinew Bow + 2 Ibex Horns makes the Horn Bow: its arrows fly faster and hit harder", has("horn_bow")),
+    ("fat_tanning", "scraped_hide", "chamois_leather", T, "Fat Tanning",
+     "Work a raw Ibex, Saiga or Hyena pelt or a Raw Chamois Hide with a knife and fat (Tallow, Lard, Bear or Marmot Fat) in the grid",
+     has("ibex_pelt", "saiga_pelt", "hyena_pelt", "chamois_leather")),
+    ("chamois_boots", "fat_tanning", "chamois_boots", T, "Sure-Footed",
+     "Sew 3 Chamois Leather and Sinew into Chamois Boots at the Armor Station: long falls hurt less", has("chamois_boots")),
+    ("marmot", "snare", "marmot_pelt", T, "Sentinel",
+     "Catch a Marmot before its whistle sends the colony - and every animal around - running", has("marmot_pelt", "marmot_fat")),
+    ("saiga", "arrows", "saiga_horn", T, "Steppe Runner",
+     "Bring down a Saiga, the most skittish game of the steppe (take a bow), and take its amber horns", has("saiga_horn", "raw_saiga_pelt")),
+    ("horn_window", "saiga", "horn_window", T, "Amber Light",
+     "Set Saiga Horns in a lattice of sticks: Horn Windows let the light in", has("horn_window")),
+    ("cave_bear", "bear", "cave_bear_skull", C, "Cave Bear",
+     "Wake a Cave Bear in its den under the mountains, survive, and butcher it with a Tusk Dagger or better: its skull is your trophy",
+     has("cave_bear_skull", "raw_cave_bear_pelt")),
+    ("cave_bear_pelt", "cave_bear", "cave_bear_pelt", T, "Ice Age Fur",
+     "Dry the Raw Cave Bear Pelt on a tall Drying Rack outdoors by day (it takes the whole rack)", has("cave_bear_pelt")),
+    ("cave_hyena", "raw_wolf_pelt", "hyena_fang", T, "Laughing Thieves",
+     "Kill a Cave Hyena - they steal carcasses and harass you at night in packs - for its fangs and spotted pelt",
+     has("hyena_fang", "raw_hyena_pelt")),
+])
+TABS["food"][1].extend([
+    ("mountain_meat", "cooked", "cooked_ibex_meat", T, "Mountain Fare",
+     "Cook Ibex, Chamois, Marmot, Saiga, Cave Bear or Hyena meat on a Campfire",
+     has(*[f"cooked_{m}_meat" for m in ("ibex", "chamois", "marmot", "saiga", "cave_bear", "hyena")])),
+    ("marmot_salve", "root", "marmot_salve", T, "Marmot Grease",
+     "Mix 2 Marmot Fat with Juniper Berries into Marmot Salve: rub it on to heal", has("marmot_salve")),
+])
+
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
@@ -662,22 +698,27 @@ JAVA = ROOT / "src/main/java"
 VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("utf-8")) \
     if "assets/minecraft/lang/en_us.json" in JAR_NAMES else {}
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
-HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game"
-    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit"],
+HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
+    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
+                   "pine_marten", "marmot"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
-                 "minecraft:sheep"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom"],
+                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga"],
+    "ice_age": ["woolly_mammoth", "woolly_rhino"],
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena"],
+    "waters": ["seal", "walrus", "pike", "sturgeon"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)
     "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),
     "deer": ("venison_scraps", "Deer and Elk", "Butcher the deer of the woods and the tundra"),
     "big_game": ("beef_scraps", "Big Game", "Butcher aurochs, wild horses, boars and wild sheep"),
     "predators": ("bear_claw", "Predators", "Butcher the hunters that hunt you"),
+    "ice_age": ("mammoth_ivory", "Ice Age Giants", "Bring down the mammoth and the woolly rhinoceros"),
+    "waters": ("blubber", "Shore and River", "Butcher seals, walruses and the great river fish"),
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"giant_deer", "cave_lion", "brown_bear"}
+CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear"}
 
 
 def _args(src, start):
@@ -693,18 +734,37 @@ def _args(src, start):
     return ""
 
 
-def _item(ref):
-    """'Wildlife.SINEW' / 'Items.BONE' -> item id if it exists, else None."""
-    owner, field = ref.split(".")
-    i = ("minecraft:" if owner == "Items" else M) + field.lower()
-    try:
-        return check_item(i)
-    except AssertionError:
-        return None
+FIELD_IDS = {}  # (ClassName, FIELD) and FIELD -> registered id (from `NAME = X.register...("id"` lines)
+
+
+def _field_ids():
+    import re
+    if not FIELD_IDS:
+        for f in sorted(JAVA.rglob("*.java")):
+            for m in re.finditer(r'\b([A-Z][A-Z0-9_]+)\s*=\s*[\w.]+\.register\w*\(\s*"([a-z0-9_]+)"', f.read_text(encoding="utf-8")):
+                FIELD_IDS[(f.stem, m.group(1))] = m.group(2)
+                FIELD_IDS.setdefault(m.group(1), m.group(2))
+    return FIELD_IDS
+
+
+def _item(ref, here=""):
+    """'Wildlife.SINEW' / 'SINEW' (a field of class `here`) / 'Items.BONE' -> item id if it exists, else None."""
+    owner, _, field = ref.rpartition(".")
+    if owner == "Items":
+        cands = ["minecraft:" + field.lower()]
+    else:
+        ids = _field_ids()
+        cands = [M + i for i in (ids.get((owner or here, field)), ids.get(field), field.lower()) if i]
+    for i in cands:
+        try:
+            return check_item(i)
+        except AssertionError:
+            pass
+    return None
 
 
 def hunting_yields():
-    """[(entity id, [item ids])] from every Yield in the Java sources."""
+    """{entity id: [item ids]} from every Yield in the Java sources."""
     import re
     out = {}
     for f in sorted(JAVA.rglob("*.java")):
@@ -714,16 +774,20 @@ def hunting_yields():
             if "Yield(" not in body:
                 continue
             head, _, rest = body.partition("Yield(")
-            ent = re.search(r"(?:EntityTypes\.([A-Z_]+)|(\w+)\.([A-Z_]+)\.get\(\))", head)
+            ent = re.search(r"EntityTypes\.([A-Z_]+)|(?:(\w+)\.)?([A-Z][A-Z0-9_]+)(?:\.get\(\)|::get)", head)
             if not ent:
                 continue
-            eid = "minecraft:" + ent.group(1).lower() if ent.group(1) else ent.group(3).lower()
+            if ent.group(1):
+                eid = "minecraft:" + ent.group(1).lower()
+            else:
+                ids = _field_ids()
+                eid = ids.get((ent.group(2) or f.stem, ent.group(3))) or ids.get(ent.group(3)) or ent.group(3).lower()
             items = []
             for h, i in HELPERS.items():
                 if h in rest:
                     items.append(mid(i))
-            for ref in re.findall(r"\b([A-Z][A-Za-z]+\.[A-Z][A-Z0-9_]+)\b", rest):
-                i = _item(ref)
+            for ref in re.findall(r"(?<![\w.])((?:[A-Z][A-Za-z]+\.)?[A-Z][A-Z0-9_]+)\b(?!\s*\()", rest):
+                i = _item(ref, f.stem)
                 if i and i not in items:
                     items.append(i)
             if items:

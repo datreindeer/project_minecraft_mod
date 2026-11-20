@@ -215,6 +215,30 @@
               "part": "lower"
             }
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:raw_cave_bear_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "22",
+              "part": "lower"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:cave_bear_pelt",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "23",
+              "part": "lower"
+            }
+          }
         }
       ]
     },
