@@ -294,6 +294,25 @@ public class MooseModel extends EntityModel<WildAnimalRenderState> {
 
         this.tail.xRot = TAIL_X + speed * 0.5F;
         this.tail.zRot = pulse(age * 0.05F + seed * 1.3F) * Mth.sin(age * 1.2F) * 0.35F;
+
+        if (state.swimming) {
+            // a strong swimmer: neck stretched out level on the water, muzzle lifted clear, the bell floating back,
+            // ears laid back; long slow reaching strokes, forelegs pulling deep under the chest
+            float stroke = age * 0.22F;
+            this.neck.xRot = 1.4F + Mth.sin(stroke * 2.0F) * 0.03F;
+            this.head.xRot = -0.95F;
+            this.dewlap.xRot = DEWLAP_X + 0.15F;
+            this.leftEar.xRot = this.rightEar.xRot = -0.7F;
+            ModelPart[][] pairs = {{leftFrontLeg, rightHindLeg}, {rightFrontLeg, leftHindLeg}};
+            for (int i = 0; i < 2; i++) {
+                float s = Mth.sin(stroke + i * Mth.PI);
+                for (ModelPart leg : pairs[i]) {
+                    leg.xRot = -0.2F + s * 0.75F;
+                    leg.getChild("lower").xRot = Math.max(0.0F, -s) * 1.3F; // knee folds on the recovery
+                }
+            }
+            this.tail.xRot = TAIL_X + 0.9F;
+        }
     }
 
     /** Lying pose for one leg: pivot dropped (and moved back by {@code back}), upper and lower bone folded, splayed by {@code splay}. */

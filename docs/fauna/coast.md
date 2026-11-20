@@ -126,6 +126,9 @@ Mat: Sea Meat (stekt säl/valross), Caviar.
 
 ## Tekniskt
 
+- Säl och valross simmar gärna (`WaterHabit.SWIMMER`, egen simstyrning och egna simrörelser: sälen slår med
+  höfter och bakfenor, valrossen sculler med bakfenorna och håller huvudet uppe). Från vattnet tar de sig upp på en
+  strandkant på ett block (gemensamt för alla vilda djur, `WildAnimal`).
 - `Pinniped`: gemensam bas för säl och valross (amfibisk navigering, egen simstyrning, `EscapeToWaterGoal`,
   `BreatheGoal`, `ChangeElementGoal` för att gå upp på land och ner i vattnet).
 - Drying Rack: värden 18/19 (sälskinn, ett block) och 20/21 (valrosshud, båda blocken) i `DryingRackBlock`;

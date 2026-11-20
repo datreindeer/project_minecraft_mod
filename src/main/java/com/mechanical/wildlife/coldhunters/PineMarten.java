@@ -52,6 +52,11 @@ public class PineMarten extends WildAnimal {
         super(type, level);
     }
 
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.POOR;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return createAnimalAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, 0.32).add(Attributes.ATTACK_DAMAGE, 3.0);
     }

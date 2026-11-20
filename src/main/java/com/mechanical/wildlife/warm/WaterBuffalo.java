@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.PathType;
 
 /**
  * Water Buffalo: huge, slate-grey wild cattle of jungle rivers, swamps and mangroves, in herds, with great swept-back
@@ -44,7 +43,11 @@ public class WaterBuffalo extends WildAnimal {
 
     public WaterBuffalo(EntityType<? extends WaterBuffalo> type, Level level) {
         super(type, level);
-        setPathfindingMalus(PathType.WATER, 0.0F); // wades in without a second thought
+    }
+
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.SWIMMER;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

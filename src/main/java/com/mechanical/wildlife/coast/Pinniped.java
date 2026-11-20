@@ -21,7 +21,6 @@ import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -37,8 +36,12 @@ public abstract class Pinniped extends WildAnimal {
 
     protected Pinniped(EntityType<? extends Pinniped> type, Level level) {
         super(type, level);
-        setPathfindingMalus(PathType.WATER, 0.0F);
         moveControl = new PinnipedMoveControl(this);
+    }
+
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.SWIMMER;
     }
 
     /** Swimming speed as a multiple of the (slow) land speed. */

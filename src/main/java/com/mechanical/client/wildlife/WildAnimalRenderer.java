@@ -2,6 +2,9 @@ package com.mechanical.client.wildlife;
 
 import com.mechanical.wildlife.Pheasant;
 import com.mechanical.wildlife.WildAnimal;
+import com.mechanical.wildlife.coast.Pinniped;
+import com.mechanical.wildlife.river.SemiAquatic;
+import com.mojang.math.Axis;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.EntityModel;
@@ -10,6 +13,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 
 /**
  * One renderer for all wildlife: adult and baby models are passed in, the texture comes from the entity.
@@ -19,6 +24,8 @@ import net.minecraft.resources.Identifier;
 public class WildAnimalRenderer<T extends WildAnimal> extends MobRenderer<T, WildAnimalRenderState, EntityModel<WildAnimalRenderState>> {
     private final EntityModel<WildAnimalRenderState> adult, baby;
     private final float babyScale;
+    /** Swimming: water up to this share of the body height, nose-up tilt (degrees), walk-cycle steps per tick while paddling. */
+    private static final float LAND_DEPTH = 0.6F, SWIMMER_DEPTH = 0.72F, SWIM_TILT = 8.0F, PADDLE_RATE = 0.6F;
 
     public WildAnimalRenderer(EntityRendererProvider.Context context, EntityModel<WildAnimalRenderState> adult,
             EntityModel<WildAnimalRenderState> baby, float babyScale, float shadow) {
@@ -56,6 +63,30 @@ public class WildAnimalRenderer<T extends WildAnimal> extends MobRenderer<T, Wil
         if (entity instanceof Pheasant pheasant) {
             state.flying = !pheasant.onGround();
             state.flap = pheasant.flapPhase(partialTicks);
+        }
+        WildAnimal.WaterHabit habit = entity.waterHabit();
+        state.swimming = habit != WildAnimal.WaterHabit.OWN && entity.isSwimmingNow() && entity.isAlive() && !state.dozing;
+        state.swimSink = 0.0F;
+        // otters, beavers, seals and walruses have their own depth (they dive) and strokes
+        if (state.swimming && !(entity instanceof SemiAquatic) && !(entity instanceof Pinniped)) {
+            // the float goal only keeps the feet under: sink the body until the water reaches this share of its height,
+            // measured from the surface so the float bobbing doesn't show
+            float depth = habit == WildAnimal.WaterHabit.SWIMMER ? SWIMMER_DEPTH : LAND_DEPTH;
+            double surface = entity.getY() + entity.getFluidHeight(FluidTags.WATER);
+            float h = entity.getBbHeight();
+            state.swimSink = Mth.clamp((float) (state.y + depth * h - surface), 0.0F, 0.7F * h);
+            state.xRot = -20.0F; // head up, muzzle clear of the water
+            state.walkAnimationPos = state.ageInTicks * PADDLE_RATE;
+            state.walkAnimationSpeed = Math.max(state.walkAnimationSpeed, 0.7F);
+        }
+    }
+
+    @Override
+    protected void setupRotations(WildAnimalRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
+        super.setupRotations(state, poseStack, bodyRot, entityScale);
+        if (state.swimSink > 0.0F) {
+            poseStack.translate(0.0F, -state.swimSink / entityScale, 0.0F);
+            poseStack.rotateDegrees(Axis.XP, SWIM_TILT); // chest down, rump lower still: nose up
         }
     }
 

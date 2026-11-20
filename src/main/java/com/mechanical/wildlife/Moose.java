@@ -37,6 +37,11 @@ public class Moose extends WildAnimal {
         super(type, level);
     }
 
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.SWIMMER;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return createAnimalAttributes().add(Attributes.MAX_HEALTH, 50.0).add(Attributes.MOVEMENT_SPEED, 0.26)
                 .add(Attributes.ATTACK_DAMAGE, 8.0).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.5);

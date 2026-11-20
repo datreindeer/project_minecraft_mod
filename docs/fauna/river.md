@@ -97,6 +97,12 @@ och var tredje gång ½ hjärta. **Rök och eld driver bort den:** en brinnande 
 svärmen eller spelaren, eller ett rökigt rum (Smoke): den drar sig undan och skingras efter några sekunder. Den dör
 av ett slag (2 hälsa) eller eld och skingras när solen går upp. Ingen kropp (`Butchery.neverCarcass`), inget byte.
 
+## I vattnet
+
+Båda simmar gärna (`WaterHabit.SWIMMER`): vägar genom vatten kostar inget, de simmar under ytan med egen fart (otter
+fortare än bäver), dyker och håller andan i minuter, och tar sig upp på en strandkant på ett block. Egen simrörelse:
+bävern ligger platt med bakfötterna sparkande och svansen som roder, uttern böljar från huvudet ner genom svansen.
+
 ## Stretching Hoop
 
 4 Stick runt en Twine (`[ S ]` / `[STS]` / `[ S ]`). En böjd ring på två fötter. Högerklicka med Raw Beaver Pelt

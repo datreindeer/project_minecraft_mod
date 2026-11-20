@@ -38,6 +38,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | | |
 |---|---|
 | Var | desert, badlands, savann (5, 1–2) |
+| Vatten | undviker vatten och simmar dåligt: paddlar långsamt till närmaste strand (som Desert Lizard) |
 | Liv / fart | 16 / 0,08, rustning 6, knuffmotstånd 0,8; ungar (35 %) |
 | Beteende | flyr aldrig. Kommer en spelare inom 4 block (smygande 1,5) eller skadas den **drar den in huvud, ben och svans i skalet** i 8 s (så länge någon står intill). Indragen tar skalet **80 % av varje slag** (inte eld, fall eller rustningsgenomträngande skada) och går inte att knuffa. |
 | Ljud | sköldpaddans, mörkare |
@@ -74,7 +75,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Var | jungle, sparse jungle, swamp, mangrove swamp, Willow Fen (6, 3–5) |
 | Liv / fart | 48 / 0,23, skada 8, knuffmotstånd 0,7, steg 1; kalvar (30 %) |
 | Utseende | skiffergrå, väldiga breda bakåtsvepta horn hos alla vuxna |
-| Beteende | inte skygg (0,6). Skadar du en **anfaller alla vuxna buffler inom 16 block**. På dagen går den till grunt vatten eller lera inom 12 block och **vältrar** sig där 20–40 s. Vadar gärna. **Tjock hud**: kräver Tusk Dagger eller bättre för att styckas. |
+| Beteende | inte skygg (0,6). Skadar du en **anfaller alla vuxna buffler inom 16 block**. På dagen går den till grunt vatten eller lera inom 12 block och **vältrar** sig där 20–40 s. Vadar gärna och **simmar gärna** över djupt vatten: lågt som en flodhäst, bara huvud och horn över ytan, nosen högt så att hornen ligger bakåt. **Tjock hud**: kräver Tusk Dagger eller bättre för att styckas. |
 | Ljud | kons (moody), mycket mörkare |
 
 | Styckning | Antal | Chans |
@@ -94,7 +95,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 |---|---|
 | Var | jungle, sparse jungle, bamboo jungle (6, 1–2) |
 | Liv / fart | 26 / 0,26, steg 1; randiga ungar (40 %) |
-| Beteende | skygg (1,6). Skrämd **springer den till närmaste djupa vatten** (2 block) inom 16 block och stannar i vattnet tills paniken är över; annars flyr den som andra. |
+| Beteende | skygg (1,6). Skrämd **springer den till närmaste djupa vatten** (2 block) inom 16 block och stannar i vattnet tills paniken är över; annars flyr den som andra. **Simmar gärna** och fort: kroppen nästan under ytan, snabeln uppåt som en snorkel, snabba hundsimtag. |
 | Ljud | grisens (stora), mörkare; tyst annars |
 
 | Styckning | Antal | Chans |

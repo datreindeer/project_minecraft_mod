@@ -243,5 +243,18 @@ public class WaterBuffaloModel extends EntityModel<WildAnimalRenderState> {
         float swish = MammalPose.pulse(age * 0.07F + seed * 1.3F);
         this.tail.zRot = swish * Mth.sin(age * 0.9F) * 0.55F + Mth.sin(phase) * 0.1F * speed;
         this.tail.xRot = TAIL_X + speed * 0.4F + (state.charging ? 0.7F : 0.0F);
+
+        if (state.swimming) {
+            // swims low like a hippo: only the head and the swept horns above water, nose held high so the horns lie back,
+            // droopy ears floating out flat; short churning strokes, tail trailing on the water
+            float stroke = age * 0.3F;
+            MammalPose.walk(leftFrontLeg, rightFrontLeg, leftHindLeg, rightHindLeg, stroke, 0.6F, 1.0F);
+            this.neck.xRot = NECK_X - 0.3F;
+            this.head.xRot = HEAD_X - 0.75F + Mth.sin(stroke * 2.0F) * 0.03F;
+            this.leftEar.zRot = EAR_Z + 0.5F;
+            this.rightEar.zRot = -EAR_Z - 0.5F;
+            this.tail.xRot = 1.3F;
+            this.tail.zRot = Mth.sin(stroke) * 0.25F;
+        }
     }
 }

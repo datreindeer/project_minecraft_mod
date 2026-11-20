@@ -3,6 +3,7 @@ package com.mechanical.wildlife;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,6 +28,9 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Base for the mod's wild animals (forest wildlife). They don't breed, roam in loose herds, graze now and then, and
@@ -45,8 +49,53 @@ public abstract class WildAnimal extends Animal {
     private static final Identifier WINTER_ID = Identifier.fromNamespaceAndPath("mechanical", "winter_sluggish");
     private static final AttributeModifier WINTER_SLOW = new AttributeModifier(WINTER_ID, -0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
+    /**
+     * How a species deals with water. {@code slowDown} is the per-tick water drag in place of vanilla's 0.8 (which leaves
+     * land animals crawling along at a seventh of their walking pace).
+     */
+    public enum WaterHabit {
+        /** Water animals: path through water like over land, swim at a good pace, own swimming animation. */
+        SWIMMER(0.95F),
+        /** Keep out of water (path around it), but when they must go in they swim properly and make for the shore. */
+        AVOIDS(0.91F),
+        /** Keep out of water and swim poorly: paddle slowly to the nearest shore. */
+        POOR(0.86F),
+        /** Handles water itself (birds, snakes): vanilla. */
+        OWN(0.8F);
+
+        final float slowDown;
+
+        WaterHabit(float slowDown) {
+            this.slowDown = slowDown;
+        }
+
+        /** Shares the generic quadruped swimming pose (head up, body low, legs paddling) and makes for the shore. */
+        public boolean landAnimal() {
+            return this == AVOIDS || this == POOR;
+        }
+    }
+
     protected WildAnimal(EntityType<? extends WildAnimal> type, Level level) {
         super(type, level);
+        if (waterHabit() == WaterHabit.SWIMMER) {
+            setPathfindingMalus(PathType.WATER, 0.0F);
+            setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
+        } // the others keep vanilla's water malus (8 per block): they go round water unless there's no other way
+    }
+
+    /** Called from the constructor: return a constant. Most large land animals keep the default. */
+    public WaterHabit waterHabit() {
+        return WaterHabit.AVOIDS;
+    }
+
+    @Override
+    protected float getWaterSlowDown() {
+        return waterHabit().slowDown;
+    }
+
+    /** Swimming (for models): in water and not standing on the bottom. */
+    public boolean isSwimmingNow() {
+        return isInWater() && !onGround();
     }
 
     /** Texture for the renderer (common-side so variants like male/female can pick one). */
@@ -116,11 +165,13 @@ public abstract class WildAnimal extends Animal {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
+        if (waterHabit().landAnimal()) goalSelector.addGoal(1, new ShoreGoal(this));
         goalSelector.addGoal(3, new DozeGoal(this));
         goalSelector.addGoal(4, new FollowParentGoal(this, 1.1));
         goalSelector.addGoal(5, new FollowHerdGoal(this));
         goalSelector.addGoal(6, new GrazeGoal(this));
-        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.8) {
+        // water animals now and then stroll into the water too
+        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.8, waterHabit() == WaterHabit.SWIMMER ? 0.25F : 0.001F) {
             @Override
             public boolean canUse() {
                 return (!com.mechanical.WinterAnimals.winter(mob.level()) || mob.getRandom().nextInt(3) == 0) && super.canUse();
@@ -137,6 +188,28 @@ public abstract class WildAnimal extends Animal {
         if (isDozing() && !level().isClientSide()) wakeIfDisturbed();
         if (!level().isClientSide() && (tickCount + getId()) % 100 == 0) winterPace();
         super.aiStep();
+        if (!level().isClientSide() && isInWater()) hauloutOntoBank();
+    }
+
+    /**
+     * Swimming against a bank on its way somewhere: haul out onto it (swimming alone won't climb out of a ditch, and a
+     * one-block bank is already too high for the float-jumps of most animals).
+     */
+    private void hauloutOntoBank() {
+        if (!horizontalCollision || zza <= 0.0F) return; // zza: the move control steered for its wanted position this tick
+        Vec3 step = new Vec3(getMoveControl().getWantedX() - getX(), 0.0, getMoveControl().getWantedZ() - getZ());
+        if (step.lengthSqr() < 1.0E-4) return;
+        step = step.normalize().scale(getBbWidth() / 2 + 0.5);
+        double x = getX() + step.x, z = getZ() + step.z;
+        for (int y = getBlockY() + 1; y <= getBlockY() + 2; y++) {
+            BlockPos at = BlockPos.containing(x, y, z);
+            if (level().getFluidState(at).isEmpty() && level().getBlockState(at).getCollisionShape(level(), at).isEmpty()
+                    && level().getBlockState(at.below()).isFaceSturdy(level(), at.below(), net.minecraft.core.Direction.UP)
+                    && level().noCollision(this, getBoundingBox().move(x - getX(), y - getY(), z - getZ()))) {
+                setPos(x, y, z);
+                return;
+            }
+        }
     }
 
     private void winterPace() {
@@ -215,6 +288,57 @@ public abstract class WildAnimal extends Animal {
         public boolean canContinueToUse() {
             return other.isAlive() && mob.distanceTo(other) > STRAY / 2 && !mob.getNavigation().isDone();
         }
+    }
+
+    /**
+     * Land animals in the water with nowhere to go (a flight ended there, a herd stroll gave out): swim to the nearest
+     * dry ground instead of bobbing in place. Fleeing (AnimalFear, priority 0) or a hunt takes precedence.
+     */
+    static class ShoreGoal extends Goal {
+        private static final int RANGE = 16, MAX_TICKS = 400;
+        private final WildAnimal mob;
+        private BlockPos shore;
+        private int ticks;
+
+        ShoreGoal(WildAnimal mob) {
+            this.mob = mob;
+            setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (!mob.isInWater() || (mob.tickCount + mob.getId()) % 20 != 0 || !mob.getNavigation().isDone() || mob.getTarget() != null) return false;
+            shore = null;
+            for (BlockPos p : BlockPos.withinBoxByManhattanDistance(mob.blockPosition(), RANGE, 4, RANGE)) {
+                if (WalkNodeEvaluator.getPathTypeStatic(mob, p) == PathType.WALKABLE) {
+                    shore = p.immutable();
+                    break;
+                }
+            }
+            return shore != null;
+        }
+
+        private double speed() {
+            return mob.waterHabit() == WaterHabit.POOR ? 1.0 : 1.3;
+        }
+
+        @Override
+        public void start() {
+            ticks = MAX_TICKS;
+            mob.getNavigation().moveTo(shore.getX() + 0.5, shore.getY(), shore.getZ() + 0.5, speed());
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return --ticks > 0 && mob.isInWater() && mob.getTarget() == null;
+        }
+
+        @Override
+        public void tick() {
+            // no path (odd terrain): steer straight for it
+            if (mob.getNavigation().isDone()) mob.getMoveControl().setWantedPosition(shore.getX() + 0.5, shore.getY(), shore.getZ() + 0.5, speed());
+        }
+
     }
 
     /** At night: lies down and sleeps until morning, or until woken (see {@link #wakeIfDisturbed}). */

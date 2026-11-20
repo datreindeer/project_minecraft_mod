@@ -210,5 +210,18 @@ public class TapirModel extends EntityModel<WildAnimalRenderState> {
 
         this.tail.zRot = MammalPose.pulse(age * 0.06F + seed * 1.3F) * Mth.sin(age * 1.2F) * 0.4F;
         this.tail.xRot = TAIL_X + speed * 0.3F;
+
+        if (state.swimming) {
+            // at home in the water: body almost under, head up and the trunk curled high like a snorkel, still sniffing;
+            // quick dog-paddle strokes
+            float stroke = age * 0.4F;
+            MammalPose.walk(leftFrontLeg, rightFrontLeg, leftHindLeg, rightHindLeg, stroke, 0.8F, 1.0F);
+            this.neck.xRot = NECK_X - 0.35F;
+            this.head.xRot = HEAD_X - 0.4F;
+            this.trunk.xRot = TRUNK_X - 0.9F + sniff * 0.3F;
+            this.trunk2.xRot = TRUNK2_X - 0.7F + sniff;
+            this.trunkTip.xRot = TIP_X - 0.5F + sniff;
+            this.tail.xRot = TAIL_X + 0.8F;
+        }
     }
 }

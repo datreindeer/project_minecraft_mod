@@ -17,7 +17,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.PathType;
 
 /**
  * Tapir: a shy, heavy, dark jungle browser with a short trunk, alone or a mother with her striped calf. Very wary; when
@@ -31,7 +30,11 @@ public class Tapir extends WildAnimal {
 
     public Tapir(EntityType<? extends Tapir> type, Level level) {
         super(type, level);
-        setPathfindingMalus(PathType.WATER, 0.0F);
+    }
+
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.SWIMMER;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

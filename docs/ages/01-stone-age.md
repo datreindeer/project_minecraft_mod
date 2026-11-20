@@ -924,6 +924,26 @@ Vilda djur rör sig långsammare och strövar mindre på vintern, och inga djur 
 djur). Det finns mindre vilt: djurpåfyllningen halveras, björnar sover i ide och flyttfåglarna (Common Crane, Grey Heron,
 Greylag Goose, Mute Swan) är borta från Frostfall till våren. Bunkra mat inför vintern. Se seasons-and-tribes.md, Djur.
 
+### Djur i vatten
+Varje vilt djur hör till en av tre grupper (`WildAnimal.WaterHabit`):
+- **Simmar gärna:** Otter, Beaver, Seal, Walrus, Water Buffalo, Tapir och Moose. Går i vattnet av sig själva (vägar
+  genom vatten kostar inget, och de strövar ut i det ibland), simmar fort och har egen simrörelse: älgen sträcker
+  halsen platt på vattnet med mulen i luften och tar långa simtag, buffeln ligger djupt med bara huvud och horn över
+  ytan, tapiren håller snabeln uppe som en snorkel. Otter, bäver och säl dyker.
+- **Undviker vatten men simmar bra:** hjortar (Red Deer, Roe Deer, Reindeer, Giant Deer), Aurochs, Steppe Bison, Musk
+  Ox, Wild Horse, Onager, Wild Boar, Brown Bear, Cave Bear, Grey Wolf, Cave Lion, Leopard, Lynx, Wolverine, Cave Hyena,
+  Woolly Mammoth, Woolly Rhino, Mouflon, Ibex, Chamois och Saiga. De går runt vatten, men jagade eller i panik springer
+  de rakt ut i det om det behövs och simmar då i god fart (ungefär halva gångfarten) mot andra stranden eller närmaste
+  strand.
+- **Undviker vatten och simmar dåligt:** Hare, Hedgehog, Field Vole, Lemming, Mole, Squirrel, Marmot, Badger, Ermine,
+  Pine Marten, Wild Cat, Desert Lizard, Tortoise och Pheasant (med Jungle Fowl och Peafowl). Hamnar de i vatten paddlar
+  de långsamt till närmaste strand.
+
+Inget djur blir längre stående och guppar på stället: hamnar ett landdjur i vatten utan mål simmar det till närmaste
+torra mark (inom 16 block), och den klättrar upp för en strandkant på ett block. Landdjuren simmar med huvudet över
+ytan, kroppen lågt i vattnet och benen paddlande. Flockfåglar (Willow Ptarmigan, Capercaillie, Bustard m.fl.) lyfter
+från vattnet, sjöfåglarna flyter som förut och ormarna är som förut (Grass Snake simmar gärna).
+
 ### Fåglar i flock
 Lever i flockar som går och pickar på marken, sover på natten och då och då lyfter tillsammans (ledaren flyger upp, de
 andra följer efter ett och ett), flyger runt en stund och landar igen. Kommer en spelare nära (smyg för att komma
@@ -1042,7 +1062,7 @@ Samma system som skogsdjuren (kroppar, styckning, blod, rädsla, ungar, sömn). 
 | Aurochs (uroxe) | Plains, Sunflower Plains, Meadow, Savanna. Flock 3–6 | Tjurar (30 %) har stora horn och anfaller när de skadas. Skadar man en kalv anfaller tjurarna | Raw Hide 60 % | 3–5 Beef Scraps, Sinew 50 %, Horn 50 % |
 | Wild Horse | Plains, Savanna. Flock 3–6 | Mycket skygg (1,8×) och snabb, slåss aldrig | Raw Hide 50 % | 2–4 Game Meat Scraps, Sinew 50 % |
 | Mouflon (vildfår) | Windswept Hills, Meadow, Savanna Plateau, Stony Peaks. Flock 2–5 | Baggar (40 %) med krökta horn. Skygg (1,4×), klättrar | Wool Thread 40 % | 1–3 Mutton Scraps, Raw Hide 30 %, Sinew, Horn 30 % |
-| Moose (älg) | Taiga, Old Growth Taiga, Swamp. 1–3 | 50 liv. Tjurar (45 %) med skovelhorn anfaller när de skadas (8 skada) | Raw Hide 70 % | 3–6 Venison Scraps, Sinew 60 % (1–3), tjur: Antler |
+| Moose (älg) | Taiga, Old Growth Taiga, Swamp. 1–3 | 50 liv. Tjurar (45 %) med skovelhorn anfaller när de skadas (8 skada). Simmar gärna (se Djur i vatten) | Raw Hide 70 % | 3–6 Venison Scraps, Sinew 60 % (1–3), tjur: Antler |
 | Reindeer (ren) | Snowy Plains, Snowy Taiga, Grove, Snowy Slopes, Ice Spikes. Flock 4–8 | Båda könen har horn. Skygg, slåss aldrig | Raw Hide 45 % | 2–3 Venison Scraps, Sinew 50 %, tjur: Antler |
 
 Nytt item: **Horn** (material för senare recept).

@@ -41,6 +41,11 @@ public class Tortoise extends WildAnimal {
         super(type, level);
     }
 
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.POOR;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return createAnimalAttributes().add(Attributes.MAX_HEALTH, 16.0).add(Attributes.MOVEMENT_SPEED, 0.08)
                 .add(Attributes.ARMOR, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.8);

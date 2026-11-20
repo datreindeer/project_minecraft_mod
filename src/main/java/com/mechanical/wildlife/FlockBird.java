@@ -91,6 +91,12 @@ public class FlockBird extends WildAnimal {
         this.restTimer = 100 + random.nextInt(kind.maxRest());
     }
 
+    /** Handles water itself: land birds take off from it, waterfowl float (see groundTick / swim). */
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.OWN;
+    }
+
     public static AttributeSupplier.Builder createAttributes(double health) {
         return createAnimalAttributes().add(Attributes.MAX_HEALTH, health).add(Attributes.MOVEMENT_SPEED, 0.22);
     }

@@ -26,6 +26,11 @@ public class Pheasant extends WildAnimal {
         super(type, level);
     }
 
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.POOR;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return createAnimalAttributes().add(Attributes.MAX_HEALTH, 7.0).add(Attributes.MOVEMENT_SPEED, 0.25);
     }

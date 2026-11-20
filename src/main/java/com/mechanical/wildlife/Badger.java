@@ -29,6 +29,11 @@ public class Badger extends WildAnimal {
         super(type, level);
     }
 
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.POOR;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return createAnimalAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.24)
                 .add(Attributes.ATTACK_DAMAGE, 3.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.3);

@@ -31,6 +31,12 @@ public abstract class Snake extends WildAnimal {
         super(type, level);
     }
 
+    /** Snakes keep vanilla water handling (the grass snake goes in readily, see GrassSnake). */
+    @Override
+    public WaterHabit waterHabit() {
+        return WaterHabit.OWN;
+    }
+
     public boolean isCoiled() {
         return entityData.get(BASKING) || isDozing();
     }
