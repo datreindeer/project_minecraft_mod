@@ -710,8 +710,8 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   läggs över axlarna och syns där (i tredje person; i första person döljs den). Mellanstora gör dig **25 % långsammare**
   och du **kan inte springa**; små väger ingenting.
 - **Släpa:** stora djur (bredd 1,1 eller mer: uroxe, häst, björn, älg, grottlejon, jättehjort) kan inte bäras. Samma grepp
-  tar tag i ett ben och du **släpar** kroppen. Du **vänder dig mot kroppen och går baklänges**: kameran låses mot ditt grepp
-  (du kan bara titta lite upp och ner), **S** drar den med dig, **W** går mot den och **A/D** går runt den och styr.
+  tar tag i ett ben och du **släpar** kroppen. Kameran är fri: kroppen följer efter dig vart du än går
+  och tittar.
   Kroppen vrider huvudänden mot den eller de som drar och glider jämnt efter, upp och ner för steg (servern skickar läget
   varje tick och klienten jämnar ut det över 4 tick). **50 % långsammare**, ingen sprint. Högerklicka på den igen för att släppa.
 - **Släpa tillsammans:** upp till **4 spelare** kan ta tag i samma stora kropp (smyg + högerklick med tom hand), var och en
