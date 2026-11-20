@@ -126,7 +126,8 @@ class Models:
         src = lambda name: g.strip_comments(open(java[name], encoding="utf-8").read()) if name in java else ""
         tex_root = os.path.join(g.RES, "assets", g.MOD, "textures", "entity")
         all_tex = sorted(os.path.relpath(f, tex_root).replace("\\", "/") for f in glob.glob(os.path.join(tex_root, "**", "*.png"), recursive=True))
-        all_tex = [t for t in all_tex if not t.split("/")[0].startswith("skinned")]  # carcass skins, not live looks
+        # carcass skins and worn equipment (chamois_leather, beaver_fur ...) are not live looks
+        all_tex = [t for t in all_tex if not t.split("/")[0].startswith(("skinned", "equipment"))]
 
         def textures_for(eid):
             out = []
@@ -202,6 +203,8 @@ class Models:
                 other = re.search(r"\b([A-Z]\w+)\.(?:[A-Z_]*_)?TEXTURE\b", ecode)
                 if other:
                     texes = textures_for(re.sub(r"(?<!^)([A-Z])", r"_\1", other.group(1)).lower())
+            if not texes:  # entity field named apart from its layer/texture (BUSTARD -> great_bustard)
+                texes = textures_for(adult.split(":", 1)[1].split("#")[0])
             if not texes and vanilla:
                 texes = [f"minecraft:textures/entity/{eid}/{eid}.png"]
             hb = re.search(r"boolean\s+showsHorns\s*\(\s*\)\s*\{(.*?)\}", ecode, re.S)
