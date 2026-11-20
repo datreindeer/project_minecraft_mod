@@ -268,7 +268,7 @@
    laddas en ny kalenderdag körs ikapp när deras grannar är laddade (4 per tick): varmt ger att all snö och is smälter
    direkt, snöväder ger ett tunt snötäcke, så en skog man besöker först mitt i vintern är redan vit. Varje chunk minns
    dagen (`Thaw.UPDATED`). Hav fryser bara där de är kalla hela året (inga säsongsisar på havet); sjöar och älvar fryser.
-6. **Grödor och bär** (profiler, frysta stadier; byggda) och **djur**.
+6. **Grödor och bär** (profiler, frysta stadier) och **djur** (vinterlugn, ingen parning, björnar i ide, flyttfåglar): byggda, v0.90.0. `WinterAnimals.java`, säsongsprofiler i `Farming.climate()`, frysta buskar i `WildBerryBushBlock`.
 7. **Färger + kala träd.**
 
 Varje fas: advancements, `mod_version`-bump, registry och anteckningar, ålders-dokument, och ett laddtest
