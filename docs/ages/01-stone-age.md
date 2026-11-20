@@ -880,7 +880,18 @@ genast mot skytten: den vet var skottet kom ifrån. Den glömmer dig först bort
 Sedan **laddar den upp**: står still, sänker huvudet, frustar och stampar så att marken yr (ca 1,2 s, 0,7 s på nära
 håll). Då rusar den **rakt mot platsen där du stod** och lite förbi, ca 9 block/s – du hinner inte springa undan, men
 ett **kliv åt sidan** i rätt ögonblick gör att den missar. Efter varje rusning står den och pustar i 1,5 s (ditt
-tillfälle), och laddar sedan om.
+tillfälle), och laddar sedan om. Rusningen **trampar ner alla** fiender i vägen, inte bara målet.
+
+**Mot en grupp (hornsvep):** har den **två eller fler fiender** inom ca 3,5 block från kroppen (spelare, Tribespeople,
+vargar, alla djur som anfaller den eller nyss skadat den), eller sitt mål på nära håll, **sveper den med hornen**. Varning:
+den stannar, sänker huvudet och vrider det åt sidan med ett frustande vrål (0,7 s), sedan svingar hornen över hela
+halvcirkeln framför den, **räckvidd 4,5 block** från mitten: **9 skada** på var och en och de kastas långt utåt. Står
+**två eller fler bakom** den **stegrar den sig** istället och stampar ner framhovarna (0,5 s varning): 5 skada och
+knuff på alla inom ca 2,5 block från kroppen. Efter ett svep eller stamp väntar den 3 s innan nästa (alltså högst ett
+var 4:e sekund). Inte när den rusar eller är bruten. Den träffar aldrig andra jättehjortar, ungdjur, föremål eller kroppar.
+Ett band Tribespeople (20 hp) klarar två svep; **den som fått under halva hälsan av den flyr** och jagar den inte igen,
+så ett jaktlag förlorar folk eller drar sig undan. En förberedd spelare (rustning, spjut, båge) backar ur svepet när
+huvudet sänks, eller skjuter på avstånd.
 
 **Klättrar du upp i ett träd** (står på löv eller stockar högre än 2 block över den) letar den upp stammen under dig,
 laddar upp och **rammar ner hela trädet** (som när en spelare fäller det, åt det håll den springer). Bara riktiga träd

@@ -29,9 +29,14 @@ public class GiantDeerModel extends EntityModel<WildAnimalRenderState> {
     /** Charging: neck lowered, nose down, so the palms point at the target like a plough. */
     private static final float CHARGE_NECK_X = 1.3F, CHARGE_HEAD_X = 0.2F;
     private static final float EAR_Z = 1.0F, TAIL_X = 0.3F;
+    /** Antler sweep: how far the head cocks aside in the wind-up, and swings across to the other side. */
+    private static final float SWEEP_COCK = 0.7F, SWEEP_SWING = 0.8F;
+    /** Rear-up stomp: how far it rears (radians), pivoting on the hind hooves (model y, z). */
+    private static final float REAR = 0.7F, HOOF_Y = 24.0F, HOOF_Z = 8.9F;
     /** Long, slow strides. */
     private static final float GAIT = 0.5F;
 
+    private final ModelPart whole;
     private final ModelPart body;
     private final ModelPart tail;
     private final ModelPart neck;
@@ -46,6 +51,7 @@ public class GiantDeerModel extends EntityModel<WildAnimalRenderState> {
 
     public GiantDeerModel(ModelPart root) {
         super(root);
+        this.whole = root;
         this.body = root.getChild("body");
         this.tail = body.getChild("tail");
         this.neck = body.getChild("neck");
@@ -212,11 +218,45 @@ public class GiantDeerModel extends EntityModel<WildAnimalRenderState> {
         head.xRot = headX;
         head.yRot = yaw * 0.4F;
 
+        float sweep = state.sweep;
+        if (sweep > 0.0F) {
+            // antler sweep (hit at 0.7): the head drops and cocks to one side (the tell), then swings hard across
+            float wind = ease(Math.min(sweep / 0.6F, 1.0F));
+            float swingAcross = ease(Mth.clamp((sweep - 0.6F) / 0.15F, 0.0F, 1.0F));
+            float settle = 1.0F - Mth.clamp((sweep - 0.75F) / 0.25F, 0.0F, 1.0F);
+            float low = wind * settle;
+            float turn = Mth.lerp(swingAcross, SWEEP_COCK * wind, -SWEEP_SWING) * settle;
+            neck.xRot = Mth.lerp(low, neck.xRot, CHARGE_NECK_X + 0.2F);
+            head.xRot = Mth.lerp(low, head.xRot, CHARGE_HEAD_X);
+            neck.yRot = turn * 0.6F;
+            head.yRot = turn * 0.4F;
+            head.zRot = -turn * 0.35F;
+        }
+        // rear-up stomp (state.stand is its progress; the forehooves land at 10/16)
+        float st = state.stand;
+        float rear = st <= 0.0F ? 0.0F : st < 0.5F ? ease(st / 0.5F) : st < 0.56F ? 1.0F : Mth.clamp(1.0F - (st - 0.56F) / 0.065F, 0.0F, 1.0F);
+        if (rear > 0.0F) {
+            float a = -REAR * rear;
+            whole.xRot = a;
+            // keep the hind hooves where they are: the whole deer pivots on them
+            whole.y = HOOF_Y - (HOOF_Y * Mth.cos(a) - HOOF_Z * Mth.sin(a));
+            whole.z = HOOF_Z - (HOOF_Y * Mth.sin(a) + HOOF_Z * Mth.cos(a));
+            for (ModelPart leg : new ModelPart[] {leftFrontLeg, rightFrontLeg}) {
+                leg.xRot = Mth.lerp(rear, leg.xRot, -0.9F);
+                leg.getChild("lower").xRot = Mth.lerp(rear, leg.getChild("lower").xRot, 1.6F);
+            }
+            neck.xRot -= 0.4F * rear;
+        }
+
         float flick = Mth.sin(age * 0.05F) > 0.95F ? Mth.sin(age * 1.6F) * 0.3F : 0.0F;
         leftEar.zRot = EAR_Z + flick;
         rightEar.zRot = -EAR_Z - flick;
         leftEar.xRot = rightEar.xRot = -speed * 0.4F - (state.charging ? 0.6F : 0.0F);
         tail.xRot = TAIL_X + speed * 0.6F;
         tail.zRot = Mth.sin(age * 0.2F) * 0.15F;
+    }
+
+    private static float ease(float t) {
+        return t * t * (3.0F - 2.0F * t);
     }
 }

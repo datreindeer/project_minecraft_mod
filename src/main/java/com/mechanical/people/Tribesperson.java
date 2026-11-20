@@ -358,7 +358,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
                 (t, l) -> isArmed() && (!(t instanceof Creeper) || isHolding(s -> s.getItem() instanceof BowItem)) && t.distanceToSqr(this) < 12 * 12));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
-                (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && visit == null && errand == null && Settlements.wantsGame(this) && isPrey(t)));
+                (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && visit == null && errand == null && Settlements.wantsGame(this) && isPrey(t) && !FleeThreatGoal.dreads(this, t)));
     }
 
     /** Wild game a hunter may take: the mod's wild animals (not bears) and wild rabbits; never pets, leashed or village animals. */
