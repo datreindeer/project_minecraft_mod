@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "fuel=0,lit=false": {
+      "model": "mechanical:block/oil_lamp"
+    },
+    "fuel=0,lit=true": {
+      "model": "mechanical:block/oil_lamp"
+    },
+    "fuel=1,lit=false": {
+      "model": "mechanical:block/oil_lamp_filled"
+    },
+    "fuel=1,lit=true": {
+      "model": "mechanical:block/oil_lamp_lit"
+    },
+    "fuel=2,lit=false": {
+      "model": "mechanical:block/oil_lamp_filled"
+    },
+    "fuel=2,lit=true": {
+      "model": "mechanical:block/oil_lamp_lit"
+    },
+    "fuel=3,lit=false": {
+      "model": "mechanical:block/oil_lamp_filled"
+    },
+    "fuel=3,lit=true": {
+      "model": "mechanical:block/oil_lamp_lit"
+    },
+    "fuel=4,lit=false": {
+      "model": "mechanical:block/oil_lamp_filled"
+    },
+    "fuel=4,lit=true": {
+      "model": "mechanical:block/oil_lamp_lit"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:whole_sturgeon",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_sturgeon",
+    "count": 2
+  }
+}

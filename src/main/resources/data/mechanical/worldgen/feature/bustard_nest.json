@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": {
+          "id": "mechanical:bird_nest",
+          "properties": {
+            "bird": "bustard",
+            "eggs": "0",
+            "robbed": "0"
+          }
+        },
+        "weight": 2
+      },
+      {
+        "data": {
+          "id": "mechanical:bird_nest",
+          "properties": {
+            "bird": "bustard",
+            "eggs": "1",
+            "robbed": "0"
+          }
+        },
+        "weight": 2
+      },
+      {
+        "data": {
+          "id": "mechanical:bird_nest",
+          "properties": {
+            "bird": "bustard",
+            "eggs": "2",
+            "robbed": "0"
+          }
+        },
+        "weight": 1
+      }
+    ]
+  }
+}

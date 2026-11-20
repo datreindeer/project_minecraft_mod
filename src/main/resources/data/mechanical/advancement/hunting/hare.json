@@ -1,0 +1,61 @@
+{
+  "parent": "mechanical:hunting/small_game",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rabbit_scraps"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:rabbit_hide"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:rabbit_foot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hare_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.hare.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.hare.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

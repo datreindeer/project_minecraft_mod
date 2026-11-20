@@ -128,7 +128,8 @@ public final class Butchery {
 
     private record Registered(Supplier<? extends EntityType<?>> type, Yield yield) {}
     private static final List<Registered> REGISTERED = new ArrayList<>();
-    private static final List<Supplier<? extends EntityType<?>>> ALWAYS_CARCASS = new ArrayList<>(), NEVER_CARCASS = new ArrayList<>();
+    private static final List<Supplier<? extends EntityType<?>>> ALWAYS_CARCASS = new ArrayList<>(), NEVER_CARCASS = new ArrayList<>(),
+            TOUGH_HIDE = new ArrayList<>(), WHOLE_MEAT = new ArrayList<>();
 
     /**
      * Adds an animal's yield from its own feature class (call during mod construction, e.g. from an init()), so new animal
@@ -146,6 +147,16 @@ public final class Butchery {
     /** An animal that should not leave a carcass (insect swarms, tiny critters that just drop items). */
     public static void neverCarcass(Supplier<? extends EntityType<?>> type) {
         NEVER_CARCASS.add(type);
+    }
+
+    /** A thick hide (like the bear's) that needs a tusk-grade knife or better to butcher at all. */
+    public static void toughHide(Supplier<? extends EntityType<?>> type) {
+        TOUGH_HIDE.add(type);
+    }
+
+    /** Meat that never comes as Haunch, Ribs and Loin on the Hanging Rack (fish): only its own meat, one more piece once aged. */
+    public static void wholeMeat(Supplier<? extends EntityType<?>> type) {
+        WHOLE_MEAT.add(type);
     }
 
     private static boolean listed(List<Supplier<? extends EntityType<?>>> list, EntityType<?> type) {
@@ -186,7 +197,7 @@ public final class Butchery {
 
     /** Knife tier needed to butcher this animal at all (thick hides like the bear's need iron). */
     public static int requiredKnifeTier(EntityType<?> animal) {
-        return animal == Wildlife.BROWN_BEAR.get() || animal == Wildlife.GIANT_DEER.get() ? KnifeItem.TUSK : KnifeItem.FLINT;
+        return animal == Wildlife.BROWN_BEAR.get() || animal == Wildlife.GIANT_DEER.get() || listed(TOUGH_HIDE, animal) ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 
     /**
@@ -218,6 +229,12 @@ public final class Butchery {
         if (Birds.isBird(type)) {
             // a bird has no big cuts and no bones worth taking: hung game just gains a piece once it has aged
             drop(level, at, spoiled ? Items.ROTTEN_FLESH : meat, scraps + (hung && aged ? 1 : 0));
+            dropExtras(level, at, y.inner(), yieldMultiplier); // bones and bills of the bigger birds
+            return;
+        }
+        if (listed(WHOLE_MEAT, type)) {
+            drop(level, at, spoiled ? Items.ROTTEN_FLESH : meat, scraps + (hung && aged ? 1 : 0));
+            dropExtras(level, at, y.inner(), yieldMultiplier);
             return;
         }
         if (spoiled || meat == Items.ROTTEN_FLESH) drop(level, at, Items.ROTTEN_FLESH, hung ? scraps * 2 : scraps);

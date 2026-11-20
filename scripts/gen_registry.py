@@ -1,8 +1,16 @@
 """Generate docs/registry.html: a searchable, self-contained registry of every item/block the mod adds or changes.
 
-Run from the project root:  python scripts/gen_registry.py
-Reads lang, models, textures, recipes (JSON + the Java-coded Tool Station / Clay Kiln / Fletching recipes), tags and
-docs/registry_notes.json. Never crashes on bad input: problems are collected as warnings and printed at the end.
+Run from the project root:  python scripts/gen_registry.py  [--no-gradle]
+Reads lang, models, textures, recipes (JSON + the Java-coded Tool Station / Clay Kiln / Fletching recipes), tags,
+docs/registry_notes.json (Swedish) and docs/registry_notes_en.json (English, same keys; missing keys fall back to Swedish
+and are listed as warnings). The page has a Svenska / English toggle.
+
+3D models (scripts/registry_models.py): mobs come from build/model_export/models.json, written by the dev-only Java
+exporter (`./gradlew exportModels`, source set src/modelexport, not in the mod jar). When that file is missing or older
+than the Java sources / entity textures, this script runs gradlew exportModels itself (needs the build/moddev artifacts;
+--no-gradle skips that and uses the old file, with a warning). Blocks and multiblocks are built from the model JSON.
+Thumbnails are embedded PNGs; the interactive 3D viewer loads three.js r128 from cdnjs (needs internet).
+Needs Python with Pillow and numpy. Never crashes on bad input: problems are collected as warnings and printed at the end.
 """
 import base64
 import glob
@@ -15,11 +23,15 @@ import zipfile
 
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import registry_models  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = os.path.join(ROOT, "src", "main", "resources")
 JAVA = os.path.join(ROOT, "src", "main", "java", "com", "mechanical")
 JAR_GLOB = os.path.join(ROOT, "build", "moddev", "artifacts", "minecraft-patched-*-merged.jar")
 NOTES = os.path.join(ROOT, "docs", "registry_notes.json")
+NOTES_EN = os.path.join(ROOT, "docs", "registry_notes_en.json")
 OUT = os.path.join(ROOT, "docs", "registry.html")
 MOD = "mechanical"
 ICON = 64  # embedded picture size (nearest-neighbour)
@@ -495,9 +507,14 @@ def ing_from_refs(refs, label=None, count=1):
 RESULT_NAMES = ("result", "output", "out", "product")
 UNLOCK_NAMES = ("material", "unlock", "unlocks", "requirement", "unlockedby")
 NUM_TYPES = ("int", "long", "float", "double", "short")
-LABELS = {"head": "Huvud", "binding": "Bindning", "rod": "Skaft", "input": "In", "shaft": "Skaft",
-          "tip": "Spets", "feather": "Fjäder", "fletching": "Fjäder", "item": "Bränsle",
-          "first": "", "second": "", "third": ""}
+LABELS = {"head": ("Huvud", "Head"), "binding": ("Bindning", "Binding"), "rod": ("Skaft", "Handle"), "input": ("In", "In"),
+          "shaft": ("Skaft", "Shaft"), "tip": ("Spets", "Tip"), "feather": ("Fjäder", "Fletching"),
+          "fletching": ("Fjäder", "Fletching"), "item": ("Bränsle", "Fuel"), "first": "", "second": "", "third": ""}
+
+
+def label_of(sv, en=None):
+    """Slot label in both languages (the page picks one)."""
+    return {"sv": sv, "en": sv if en is None else en} if sv else ""
 
 
 def parse_java_recipes(path, station, consts, known):
@@ -551,7 +568,8 @@ def parse_java_recipes(path, station, consts, known):
                         continue
                     if not refs:
                         continue
-                    label = LABELS.get(low, pname)
+                    lab = LABELS.get(low, pname)
+                    label = label_of(*lab) if isinstance(lab, tuple) else label_of(lab)
                     if "List.of" in arg or "new " in arg and "[]" in arg:
                         for r in refs:
                             ing = ing_from_refs([r], label)
@@ -585,7 +603,7 @@ def parse_java_recipes(path, station, consts, known):
 
 
 def parse_station_recipes(path, station, consts, known):
-    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Armor Station)."""
+    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Armor Station, Mold Bench)."""
     try:
         src = strip_comments(open(path, encoding="utf-8").read())
     except Exception as e:
@@ -597,7 +615,7 @@ def parse_station_recipes(path, station, consts, known):
         if body is None:
             continue
         args = split_top(body)
-        if len(args) < 5:
+        if len(args) < 4:  # result, count, 1-3 parts, unlockedBy
             continue
         try:
             res = java_refs(args[0], consts, known)
@@ -606,10 +624,10 @@ def parse_station_recipes(path, station, consts, known):
                 continue
             count = int(re.search(r"\d+", args[1]).group())
             ings = []
-            for part in args[2:5]:
+            for part in args[2:-1]:
                 is_tool = re.match(r"\s*tool\s*\(", part) is not None
                 n = re.search(r",\s*(\d+)\s*\)\s*$", part)
-                ing = ing_from_refs(java_refs(part, consts, known), "Verktyg" if is_tool else "", int(n.group(1)) if n else 1)
+                ing = ing_from_refs(java_refs(part, consts, known), label_of("Verktyg", "Tool") if is_tool else "", int(n.group(1)) if n else 1)
                 if ing:
                     ings.append(ing)
             out.append({"station": station, "result": {"id": res[0], "count": count}, "src": os.path.basename(path),
@@ -622,10 +640,11 @@ def parse_station_recipes(path, station, consts, known):
 # ---------------------------------------------------------------- categories
 
 CATS = [
-    ("tools", "Verktyg"), ("materials", "Material"), ("food", "Mat"), ("blocks", "Block"),
-    ("wildlife", "Från djur"), ("foraging", "Plocka"), ("changed", "Ändrat i vanilla"),
-    ("removed", "Borttaget från vanilla"), ("vanilla", "Vanilla i recept"),
-    ("creatures", "Varelser"), ("structures", "Strukturer"),
+    ("tools", "Verktyg", "Tools"), ("materials", "Material", "Materials"), ("food", "Mat", "Food"), ("blocks", "Block", "Blocks"),
+    ("multiblocks", "Multiblock", "Multiblocks"), ("wildlife", "Från djur", "From animals"), ("foraging", "Plocka", "Foraging"),
+    ("changed", "Ändrat i vanilla", "Changed in vanilla"), ("removed", "Borttaget från vanilla", "Removed from vanilla"),
+    ("vanilla", "Vanilla i recept", "Vanilla in recipes"), ("creatures", "Varelser", "Creatures"),
+    ("vehicles", "Fordon", "Vehicles"), ("structures", "Strukturer", "Structures"),
 ]
 TOOL_TAGS = ("axes", "pickaxes", "shovels", "hoes", "swords", "spears")
 
@@ -647,16 +666,16 @@ def guess_category(item_id, is_block, tool_ids):
 
 # ---------------------------------------------------------------- creatures and structures (worldgen)
 
-def biome_text(b):
-    """Biome filter of a biome modifier as readable text."""
+def biome_text(b, en=False):
+    """Biome filter of a biome modifier as readable text (Swedish, or English with en=True)."""
     if isinstance(b, dict):
         vals = b.get("values") or b.get("biomes") or []
-        return ", ".join(biome_text(v) for v in (vals if isinstance(vals, list) else [vals]))
+        return ", ".join(biome_text(v, en) for v in (vals if isinstance(vals, list) else [vals]))
     if isinstance(b, list):
-        return ", ".join(biome_text(v) for v in b)
+        return ", ".join(biome_text(v, en) for v in b)
     b = str(b)
     if b.startswith("#"):
-        return "alla " + b.split(":")[-1].removeprefix("is_").replace("_", " ")
+        return ("all " if en else "alla ") + b.split(":")[-1].removeprefix("is_").replace("_", " ")
     return b.split(":")[-1].replace("_", " ")
 
 
@@ -681,7 +700,7 @@ def worldgen_entries(notes):
         if not m or f"item.mechanical.{m.group(1)}_spawn_egg" not in MOD_LANG:
             continue  # carcasses, falling trees ... have no egg
         eid = m.group(1)
-        where = []
+        where, where_en = [], []
         for bm in mods:
             if bm.get("type") != "neoforge:add_spawns":
                 continue
@@ -689,8 +708,10 @@ def worldgen_entries(notes):
             for sp in spawners if isinstance(spawners, list) else [spawners]:
                 if sp.get("type") == f"{MOD}:{eid}":
                     where.append(f"{biome_text(bm.get('biomes'))} (vikt {sp.get('weight', '?')})")
+                    where_en.append(f"{biome_text(bm.get('biomes'), True)} (weight {sp.get('weight', '?')})")
         e = {"id": f"entity:{eid}", "name": name, "cats": ["creatures"], "kind": "entity",
-             "info": "; ".join(where) if where else "Spawnar inte av sig själv (strukturer, ritualer eller spawn egg)."}
+             "info": {"sv": "; ".join(where) if where else "Spawnar inte av sig själv (strukturer, ritualer eller spawn egg).",
+                      "en": "; ".join(where_en) if where_en else "Does not spawn on its own (structures, rituals or spawn egg)."}}
         e["img"] = picture(f"{MOD}:{eid}_spawn_egg")
         out.append(e)
     feature_dir = os.path.join(RES, "data", MOD, "worldgen", "feature")
@@ -705,11 +726,12 @@ def worldgen_entries(notes):
             continue  # plain block/tree features (bushes, trees) are not structures
         placed = read_json(f"data/{MOD}/worldgen/placed_feature/{name}.json") or {}
         rarity = next((pm.get("chance") for pm in placed.get("placement", []) if pm.get("type") == "minecraft:rarity_filter"), None)
-        biomes = [biome_text(bm.get("biomes")) for bm in mods
-                  if bm.get("type") == "neoforge:add_features" and f"{MOD}:{name}" in json.dumps(bm.get("features"))]
-        info = ", ".join(biomes) or "okänd plats"
+        feats = [bm for bm in mods if bm.get("type") == "neoforge:add_features" and f"{MOD}:{name}" in json.dumps(bm.get("features"))]
+        info = {"sv": ", ".join(biome_text(bm.get("biomes")) for bm in feats) or "okänd plats",
+                "en": ", ".join(biome_text(bm.get("biomes"), True) for bm in feats) or "unknown place"}
         if rarity:
-            info += f"; ungefär 1 på {rarity} chunks"
+            info["sv"] += f"; ungefär 1 på {rarity} chunks"
+            info["en"] += f"; about 1 in {rarity} chunks"
         n = notes.get(f"structure:{name}", {})
         e = {"id": f"structure:{name}", "name": n.get("name") or name.replace("_", " ").title(), "cats": ["structures"],
              "kind": "structure", "info": info}
@@ -721,10 +743,11 @@ def worldgen_entries(notes):
         name = os.path.basename(f)[:-5]
         st = read_json(f"data/{MOD}/worldgen/structure/{name}.json") or {}
         sset = read_json(f"data/{MOD}/worldgen/structure_set/{name}.json") or {}
-        info = biome_text(st.get("biomes", "?"))
+        info = {"sv": biome_text(st.get("biomes", "?")), "en": biome_text(st.get("biomes", "?"), True)}
         spacing = (sset.get("placement") or {}).get("spacing")
         if spacing:
-            info += f"; en chans per {spacing}×{spacing} chunks"
+            info["sv"] += f"; en chans per {spacing}×{spacing} chunks"
+            info["en"] += f"; one chance per {spacing}×{spacing} chunks"
         n = notes.get(f"structure:{name}", {})
         e = {"id": f"structure:{name}", "name": n.get("name") or name.replace("_", " ").title(), "cats": ["structures"],
              "kind": "structure", "info": info}
@@ -732,6 +755,52 @@ def worldgen_entries(notes):
             e["img"] = picture(n["icon"])
         out.append(e)
     return out
+
+
+# ---------------------------------------------------------------- 3D models (registry_models.py)
+
+MODELS = None
+
+
+def add_models(entries, ids, notes):
+    """3D views: every entity with an exported model (variants = its looks), every mod block, the Smelting Furnace."""
+    global MODELS
+    try:
+        MODELS = registry_models.Models(sys.modules[__name__], use_gradle="--no-gradle" not in sys.argv)
+    except Exception as e:
+        warn(f"3D-modellerna kunde inte laddas: {e}")
+        return
+    for ent in MODELS.entities():
+        if not ent["variants"]:
+            continue
+        eid = "entity:" + ent["id"]
+        e = entries.get(eid)
+        if e is None:
+            n = len(ent["variants"])
+            e = entries[eid] = {"id": eid, "name": ent["name"], "kind": "entity",
+                                "cats": ["creatures" if ent["creature"] else "vehicles"]}
+            if ent["vanilla"]:
+                e["info"] = {"sv": f"Vanilla-mob med modens utseenden ({n} varianter).",
+                             "en": f"Vanilla mob with the mod's looks ({n} variants)."}
+        e["m3d"] = ent["variants"]
+        e["img"] = ent["variants"][0]["img"]
+    for rid, b in MODELS.blocks([r for r, kinds in ids.items() if "block" in kinds]).items():
+        e = entries.get(rid)
+        if e is None:
+            continue
+        if b["thumb"]:
+            e["img"] = b["img"]
+        e["m3d"] = [{"label": "", "geo": b["geo"], "img": b["img"] or e.get("img")}]
+        if b["multi"] and "multiblocks" not in e["cats"]:
+            e["cats"].append("multiblocks")
+    gk, ik = MODELS.smelting_furnace()
+    if gk:
+        mid = "multiblock:smelting_furnace"
+        entries[mid] = {"id": mid, "name": MOD_LANG.get("container.mechanical.smelting_furnace", "Smelting Furnace"),
+                        "kind": "multiblock", "cats": ["multiblocks"], "img": ik,
+                        "m3d": [{"label": "", "geo": gk, "img": ik}],
+                        "info": {"sv": "3×3×3: 23 Furnace Bricks och en Furnace Tap mitt i nedersta raden fram, runt ett öppet schakt.",
+                                 "en": "3×3×3: 23 Furnace Bricks and a Furnace Tap in the middle of the bottom front row, around an open shaft."}}
 
 
 # ---------------------------------------------------------------- main
@@ -755,6 +824,23 @@ def main():
         if k.startswith("_"):
             continue
         notes[k if ":" in k else f"{MOD}:{k}"] = {"text": v} if isinstance(v, str) else v
+    try:
+        with open(NOTES_EN, encoding="utf-8") as f:
+            notes_en_raw = json.load(f)
+    except FileNotFoundError:
+        notes_en_raw = None
+        warn("docs/registry_notes_en.json saknas: engelska sidan visar de svenska anteckningarna")
+    except Exception as e:
+        notes_en_raw = None
+        warn(f"docs/registry_notes_en.json är trasig: {e}")
+    notes_en = {}
+    for k, v in (notes_en_raw or {}).items():
+        if not k.startswith("_"):
+            notes_en[k if ":" in k else f"{MOD}:{k}"] = {"text": v} if isinstance(v, str) else v
+    if notes_en_raw is not None:
+        untranslated = [k for k, n in notes.items() if n.get("text") and not (notes_en.get(k) or {}).get("text")]
+        if untranslated:
+            warn(f"{len(untranslated)} anteckningar saknar engelsk text (visar svenska): " + ", ".join(k.removeprefix(MOD + ":") for k in untranslated))
 
     # Mod items and blocks from the lang file (an item and a block with the same id are one entry).
     ids, eggs = {}, 0
@@ -783,7 +869,8 @@ def main():
         RECIPES.extend(recs)
         fuels.extend(fl)
 
-    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("ArmorStationRecipes.java", "Armor Station")):
+    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("ArmorStationRecipes.java", "Armor Station"),
+                          ("MoldBench.java", "Mold Bench")):
         path = os.path.join(JAVA, fname)
         if os.path.isfile(path):
             recs = parse_station_recipes(path, station, consts, known)
@@ -844,6 +931,11 @@ def main():
                 e["name"] = n["name"]
             if n.get("text"):
                 e["note"] = n["text"]
+            en = notes_en.get(rid, {})
+            if en.get("text"):
+                e["note_en"] = en["text"]
+            if en.get("name"):
+                e["name_en"] = en["name"]
     for rid, srcs in REMOVED.items():
         entries[rid]["removedRecipes"] = srcs
 
@@ -855,12 +947,19 @@ def main():
     for e in entries.values():
         e["img"] = picture(e["id"])
     for e in worldgen_entries(notes):
-        n = notes.get(e["id"], {})
-        if n.get("text"):
-            e["note"] = n["text"]
-        if n.get("name"):
-            e["name"] = n["name"]
         entries[e["id"]] = e
+    add_models(entries, ids, notes)
+    for e in entries.values():
+        if e.get("kind"):
+            n, en = notes.get(e["id"], {}), notes_en.get(e["id"], {})
+            if n.get("text"):
+                e["note"] = n["text"]
+            if n.get("name"):
+                e["name"] = n["name"]
+            if en.get("text"):
+                e["note_en"] = en["text"]
+            if en.get("name"):
+                e["name_en"] = en["name"]
     for rec in RECIPES:  # pictures for tag members shown in slots are only needed for the first option
         for ing in ing_ids(rec):
             picture(ing["opts"][0])
@@ -871,6 +970,7 @@ def main():
         "fuels": fuels,
         "cats": CATS,
         "images": IMAGES,
+        "geo": MODELS.geo if MODELS else {},
     }
     html = TEMPLATE.replace("/*DATA*/null", json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -964,20 +1064,39 @@ table{border-collapse:collapse;width:100%;font-size:14px}
 td{padding:4px 6px;border-top:1px solid var(--line)}
 td a{display:flex;align-items:center;gap:6px;text-decoration:none}
 td img{width:24px;height:24px}
+.lang{display:flex;flex:none;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+.lang button{border:0;background:none;color:var(--ink);font:inherit;font-size:13px;font-weight:600;padding:8px 12px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--accent);color:#fff}
+.m3d{position:relative;margin-top:14px;background:var(--slot);border-radius:12px;aspect-ratio:1/1;max-height:400px;display:grid;place-items:center;overflow:hidden}
+.m3d img{width:70%;height:70%;object-fit:contain}
+.m3d canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+.m3d canvas:active{cursor:grabbing}
+.hint{font-size:12px;color:var(--mute);margin:6px 0 0}
+.vars{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+footer{max-width:1400px;margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
+@media (max-width:600px){.top{flex-wrap:wrap}h1{order:1}.lang{order:2;margin-left:auto}#q{order:3;flex-basis:100%}}
 </style>
 </head>
 <body>
 <header>
-  <div class="top"><h1>Mechanical <span>register</span></h1><input id="q" type="search" placeholder="Sök item eller block…" autocomplete="off" aria-label="Sök"></div>
+  <div class="top"><h1>Mechanical <span id="h1s">register</span></h1><input id="q" type="search" autocomplete="off"><div class="lang" role="group" aria-label="Språk / Language"><button data-l="sv">Svenska</button><button data-l="en">English</button></div></div>
   <div class="chips" id="chips"></div>
 </header>
 <main id="main"><section id="grid" aria-live="polite"></section><aside id="detail"></aside></main>
+<footer id="sum"></footer>
 <script>
 const D=/*DATA*/null;
+const L={
+sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
+en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
+let lang="sv";try{const s=new URLSearchParams(location.search).get("lang")||localStorage.getItem("mreg-lang");if(s==="en"||s==="sv")lang=s}catch(e){}
+const t=k=>L[lang][k]??L.sv[k];
+const T=x=>x&&typeof x==="object"?(x[lang]??x.sv):(x||"");
 const byId=Object.fromEntries(D.items.map(i=>[i.id,i]));
-const catName=Object.fromEntries(D.cats);
+const catName=c=>{const x=D.cats.find(k=>k[0]===c);return x?(lang==="en"?x[2]:x[1]):c};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const nm=id=>(byId[id]&&byId[id].name)||id.split(":")[1].replace(/_/g," ");
+const iname=i=>lang==="en"&&i.name_en||i.name;
+const nm=id=>(byId[id]&&iname(byId[id]))||id.split(":")[1].replace(/_/g," ");
 const pic=(id,cls="")=>{const k=(byId[id]&&byId[id].img)||(D.images[id]?id:null);return k?`<img src="${D.images[k]}" alt="" class="${cls}" loading="lazy">`:`<span class="ph ${cls}">${esc(nm(id)[0]||"?")}</span>`};
 const allIngs=r=>(r.ings||[]).concat((r.grid||[]).flat().filter(Boolean));
 const makes={},uses={};
@@ -986,58 +1105,116 @@ let cat="all",sel=null;
 const chips=document.getElementById("chips"),grid=document.getElementById("grid"),q=document.getElementById("q"),det=document.getElementById("detail"),main=document.getElementById("main");
 const inAll=i=>!i.cats.every(x=>x==="vanilla"||x==="removed");
 const count=c=>D.items.filter(i=>c==="all"?inAll(i):i.cats.includes(c)).length;
-function drawChips(){chips.innerHTML=[["all","Alla"],...D.cats].filter(([c])=>count(c)).map(([c,n])=>`<button class="chip" data-c="${c}" aria-pressed="${c===cat}">${esc(n)}<small>${count(c)}</small></button>`).join("")}
+function drawChips(){chips.innerHTML=[["all"],...D.cats].filter(([c])=>count(c)).map(([c])=>`<button class="chip" data-c="${c}" aria-pressed="${c===cat}">${esc(c==="all"?t("all"):catName(c))}<small>${count(c)}</small></button>`).join("")}
 chips.onclick=e=>{const b=e.target.closest(".chip");if(b){cat=b.dataset.c;drawChips();drawGrid()}};
 function drawGrid(){
   const s=q.value.trim().toLowerCase();
-  const list=D.items.filter(i=>(cat==="all"?(s||inAll(i)):i.cats.includes(cat))&&(!s||i.name.toLowerCase().includes(s)||i.id.includes(s)));
-  grid.innerHTML=list.length?list.map(i=>`<a class="card${i.id===sel?" sel":""}" href="#${i.id}">${pic(i.id)}<span>${esc(i.name)}</span></a>`).join(""):`<p class="empty">Inget hittades.</p>`;
+  const list=D.items.filter(i=>(cat==="all"?(s||inAll(i)):i.cats.includes(cat))&&(!s||iname(i).toLowerCase().includes(s)||i.name.toLowerCase().includes(s)||i.id.includes(s)));
+  grid.innerHTML=list.length?list.map(i=>`<a class="card${i.id===sel?" sel":""}" href="#${i.id}">${pic(i.id)}<span>${esc(iname(i))}</span></a>`).join(""):`<p class="empty">${t("none")}</p>`;
 }
 q.oninput=drawGrid;
 function slot(g,cls=""){
   if(!g)return `<span class="slot ${cls}"></span>`;
-  const id=g.opts[0],alt=g.opts.length>1?" (eller "+g.opts.slice(1,6).map(nm).join(", ")+(g.opts.length>6?" …":"")+")":"";
+  const id=g.opts[0],alt=g.opts.length>1?" ("+t("or")+" "+g.opts.slice(1,6).map(nm).join(", ")+(g.opts.length>6?" …":"")+")":"";
   return `<a class="slot ${cls}${g.tag?" tagged":""}" href="#${id}" title="${esc((g.tag?g.tag+": ":"")+nm(id)+alt)}">${pic(id)}${g.count>1?`<i>${g.count}</i>`:""}</a>`;
 }
 const out=r=>`<span class="arrow">→</span>${slot({opts:[r.result.id],count:r.result.count},"out")}`;
 function recipe(r){
   let body;
   if(r.kind==="grid")body=`<div class="g3">${r.grid.flat().map(g=>slot(g)).join("")}</div>`;
-  else if(r.kind==="slots")body=`<div class="line">${r.ings.map(g=>`<span class="lab">${slot(g)}${esc(g.label||"")}</span>`).join("")}</div>`;
-  else if(r.kind==="cook")body=`<div class="line">${r.ings.map(g=>slot(g)).join("")}</div><svg class="fire" viewBox="0 0 16 16" width="22" height="22" aria-label="värme"><path d="M8 1c1 3 4 4.5 4 8.5A4 4 0 0 1 4 9.5C4 7 5.5 6 6 4c.8 1.2 1 2 1 3 1-1.5 1.3-3.5 1-6z" fill="#e8772e"/></svg>`;
+  else if(r.kind==="slots")body=`<div class="line">${r.ings.map(g=>`<span class="lab">${slot(g)}${esc(T(g.label))}</span>`).join("")}</div>`;
+  else if(r.kind==="cook")body=`<div class="line">${r.ings.map(g=>slot(g)).join("")}</div><svg class="fire" viewBox="0 0 16 16" width="22" height="22" aria-label="${t("heat")}"><path d="M8 1c1 3 4 4.5 4 8.5A4 4 0 0 1 4 9.5C4 7 5.5 6 6 4c.8 1.2 1 2 1 3 1-1.5 1.3-3.5 1-6z" fill="#e8772e"/></svg>`;
   else body=`<div class="line">${r.ings.map(g=>slot(g)).join("")}</div>`;
-  const t=r.time?`${r.time>=60?(r.time/60).toFixed(r.time%60?1:0)+" min":r.time+" s"}`:"";
-  return `<div class="rec"><div class="st"><b>${esc(r.station)}</b><span>${[r.kind==="list"?"formlöst":"",t].filter(Boolean).join(" · ")}</span></div><div class="row">${body}${out(r)}</div></div>`;
+  const tm=r.time?fmtT(r.time):"";
+  return `<div class="rec"><div class="st"><b>${esc(r.station)}</b><span>${[r.kind==="list"?t("shapeless"):"",tm].filter(Boolean).join(" · ")}</span></div><div class="row">${body}${out(r)}</div></div>`;
 }
-function noteHtml(t){
-  return t.split(/\n\s*\n|\n/).map(p=>"<p>"+esc(p).replace(/\[\[([a-z0-9_:]+)\]\]/g,(m,id)=>{id=id.includes(":")?id:"mechanical:"+id;return `<a href="#${id}">${esc(nm(id))}</a>`}).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")+"</p>").join("");
+function noteHtml(s){
+  return s.split(/\n\s*\n|\n/).map(p=>"<p>"+esc(p).replace(/\[\[([a-z0-9_:]+)\]\]/g,(m,id)=>{id=id.includes(":")?id:"mechanical:"+id;return `<a href="#${id}">${esc(nm(id))}</a>`}).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")+"</p>").join("");
 }
 const fmtT=s=>s>=60?(s/60).toFixed(s%60?1:0)+" min":s+" s";
-function show(id){
-  sel=id;const i=byId[id];
-  if(!i){det.innerHTML="";main.classList.remove("open");drawGrid();return}
-  const mk=makes[id]||[],us=[...new Set(uses[id]||[])];
-  let h=`<div class="dh">${pic(id)}<div><h2>${esc(i.name)}</h2><div class="id">${esc(id)}</div><div class="tags">${i.cats.map(c=>`<span class="tag">${esc(catName[c]||c)}</span>`).join("")}</div></div><button id="close" aria-label="Stäng">×</button></div>`;
-  if(i.note)h+=`<h3>Beskrivning</h3><div class="note">${noteHtml(i.note)}</div>`;
-  if(i.info)h+=`<h3>${i.kind==="entity"?"Var den spawnar":"Var den finns"}</h3><p class="muted">${esc(i.info)}</p>`;
-  if(i.kind){det.innerHTML=h;det.scrollTop=0;main.classList.add("open");document.getElementById("close").onclick=()=>{history.pushState("",document.title,location.pathname+location.search);show(null)};drawGrid();return}
-  if(i.removedRecipes)h+=`<h3>Borttaget från vanilla</h3><p class="muted">Vanilla-receptet är borttaget (${i.removedRecipes.map(esc).join(", ")}).</p>`;
-  if(i.fuel)h+=`<h3>Bränsle</h3><p class="muted">Brinner i ${fmtT(i.fuel)} i en <a href="#mechanical:kiln">Clay Kiln</a>.</p>`;
-  if(id==="mechanical:kiln"&&D.fuels.length)h+=`<h3>Bränsle i Clay Kiln</h3><table>${D.fuels.map(f=>`<tr><td><a href="#${f.ing.opts[0]}">${pic(f.ing.opts[0])}${esc((f.ing.refs||[f.ing.opts[0]]).map(r=>r[0]==="#"?r:nm(r)).join(", "))}</a></td><td>${f.time?fmtT(f.time):""}</td></tr>`).join("")}</table>`;
-  h+=`<h3>Så tillverkas det</h3>`+(mk.length?mk.map(n=>recipe(D.recipes[n])).join(""):`<p class="muted">Inget recept.</p>`);
-  if(us.length){
-    const res=[...new Set(us.map(n=>D.recipes[n].result.id))];
-    h+=`<h3>Används i</h3><div class="uses">${res.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`;
-    h+=`<details><summary class="muted" style="cursor:pointer;margin-top:10px">Visa recepten (${us.length})</summary><div style="margin-top:10px">${us.map(n=>recipe(D.recipes[n])).join("")}</div></details>`;
-  }
-  det.innerHTML=h;det.scrollTop=0;main.classList.add("open");
+function finish(h,i){
+  stop3d();det.innerHTML=h;det.scrollTop=0;main.classList.add("open");
   document.getElementById("close").onclick=()=>{history.pushState("",document.title,location.pathname+location.search);show(null)};
+  if(i.m3d)mount3d(i);
   drawGrid();
 }
+function show(id){
+  sel=id;const i=byId[id];
+  if(!i){stop3d();det.innerHTML="";main.classList.remove("open");drawGrid();return}
+  const mk=makes[id]||[],us=[...new Set(uses[id]||[])];
+  let h=`<div class="dh">${pic(id)}<div><h2>${esc(iname(i))}</h2><div class="id">${esc(id)}</div><div class="tags">${i.cats.map(c=>`<span class="tag">${esc(catName(c))}</span>`).join("")}</div></div><button id="close" aria-label="${t("close")}">×</button></div>`;
+  if(i.m3d)h+=`<div class="m3d"><img id="m3dimg" src="${D.images[i.m3d[0].img]}" alt=""><canvas id="m3dc" hidden></canvas></div><p class="hint" id="m3dhint">${t("hint")}</p>`+(i.m3d.length>1?`<div class="vars">${i.m3d.map((v,n)=>`<button class="chip" data-v="${n}" aria-pressed="${n===0}">${esc(v.label)}</button>`).join("")}</div>`:"");
+  const note=lang==="en"&&i.note_en||i.note;
+  if(note)h+=`<h3>${t("desc")}</h3><div class="note">${noteHtml(note)}</div>`;
+  if(i.info)h+=`<h3>${i.kind==="entity"?t("spawn"):i.kind==="multiblock"?t("build"):t("where")}</h3><p class="muted">${esc(T(i.info))}</p>`;
+  if(i.kind)return finish(h,i);
+  if(i.removedRecipes)h+=`<h3>${t("removed")}</h3><p class="muted">${t("removedTxt")} (${i.removedRecipes.map(esc).join(", ")}).</p>`;
+  if(i.fuel)h+=`<h3>${t("fuel")}</h3><p class="muted">${t("burns").replace("{t}",fmtT(i.fuel))} <a href="#mechanical:kiln">Clay Kiln</a>.</p>`;
+  if(id==="mechanical:kiln"&&D.fuels.length)h+=`<h3>${t("fuelKiln")}</h3><table>${D.fuels.map(f=>`<tr><td><a href="#${f.ing.opts[0]}">${pic(f.ing.opts[0])}${esc((f.ing.refs||[f.ing.opts[0]]).map(r=>r[0]==="#"?r:nm(r)).join(", "))}</a></td><td>${f.time?fmtT(f.time):""}</td></tr>`).join("")}</table>`;
+  h+=`<h3>${t("made")}</h3>`+(mk.length?mk.map(n=>recipe(D.recipes[n])).join(""):`<p class="muted">${t("norec")}</p>`);
+  if(us.length){
+    const res=[...new Set(us.map(n=>D.recipes[n].result.id))];
+    h+=`<h3>${t("used")}</h3><div class="uses">${res.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`;
+    h+=`<details><summary class="muted" style="cursor:pointer;margin-top:10px">${t("show")} (${us.length})</summary><div style="margin-top:10px">${us.map(n=>recipe(D.recipes[n])).join("")}</div></details>`;
+  }
+  finish(h,i);
+}
+// ---- 3D viewer: three.js from cdnjs, loaded on first use (the thumbnails work offline)
+const THREE_URL="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+let threeP=null,view=null;
+function loadThree(){if(window.THREE)return Promise.resolve(window.THREE);return threeP??=new Promise((ok,no)=>{const s=document.createElement("script");s.src=THREE_URL;s.crossOrigin="anonymous";s.onload=()=>ok(window.THREE);s.onerror=()=>{threeP=null;s.remove();no(new Error("offline"))};document.head.appendChild(s)})}
+function stop3d(){if(view){view.dispose();view=null}}
+function mount3d(i){
+  const img=document.getElementById("m3dimg"),cv=document.getElementById("m3dc"),hint=document.getElementById("m3dhint"),myId=i.id;
+  let cur=0;
+  document.querySelectorAll(".vars .chip").forEach(b=>b.onclick=()=>{cur=+b.dataset.v;document.querySelectorAll(".vars .chip").forEach(x=>x.setAttribute("aria-pressed",x===b));img.src=D.images[i.m3d[cur].img];if(view)view.set(i.m3d[cur].geo)});
+  loadThree().then(THREE=>{if(sel!==myId||!document.body.contains(cv)||view)return;cv.hidden=false;img.hidden=true;view=makeView(THREE,cv,i.m3d[cur].geo)}).catch(()=>{hint.textContent=t("offline")});
+}
+function makeView(THREE,cv,geoKey){
+  const r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+  r.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,0.01,500),texCache={};
+  scene.add(new THREE.AmbientLight(0xffffff,0.62));
+  const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-0.45,1,-0.7);scene.add(dl);
+  let group=null,yaw=Math.atan2(-1,-1),pitch=0.54,dist=3,base=3,drag=null;
+  const tex=k=>{if(texCache[k])return texCache[k];const x=new THREE.TextureLoader().load(D.images[k],()=>draw());x.magFilter=x.minFilter=THREE.NearestFilter;x.generateMipmaps=false;x.flipY=false;return texCache[k]=x};
+  const clear=()=>{if(group){scene.remove(group);group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}};
+  function set(gk){
+    clear();
+    const G=D.geo[gk],qd=G.q,per=G.t.map(()=>({p:[],u:[]}));
+    group=new THREE.Group();
+    for(let n=0;n<qd.length;n+=21){const b=per[qd[n]];for(const k of [0,1,2,0,2,3]){b.p.push(qd[n+1+k*3],qd[n+2+k*3],qd[n+3+k*3]);b.u.push(qd[n+13+k*2],qd[n+14+k*2])}}
+    per.forEach((b,ti)=>{if(!b.p.length)return;const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(b.p,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(b.u,2));g.computeVertexNormals();group.add(new THREE.Mesh(g,new THREE.MeshLambertMaterial({map:tex(G.t[ti]),side:THREE.DoubleSide,alphaTest:0.5})))});
+    const bb=new THREE.Box3().setFromObject(group),c=bb.getCenter(new THREE.Vector3()),sz=bb.getSize(new THREE.Vector3());
+    group.position.sub(c);base=dist=Math.max(sz.x,sz.y,sz.z)*3.2+0.2;scene.add(group);draw();
+  }
+  function draw(){
+    const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+    r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+    cam.position.set(dist*Math.cos(pitch)*Math.cos(yaw),dist*Math.sin(pitch),dist*Math.cos(pitch)*Math.sin(yaw));cam.lookAt(0,0,0);
+    r.render(scene,cam);
+  }
+  cv.onpointerdown=e=>{drag=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId)};
+  cv.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*0.01;pitch=Math.max(-1.5,Math.min(1.5,pitch+(e.clientY-drag[1])*0.01));drag=[e.clientX,e.clientY];draw()};
+  cv.onpointerup=cv.onpointercancel=()=>drag=null;
+  cv.onwheel=e=>{e.preventDefault();dist=Math.max(base*0.15,Math.min(base*4,dist*Math.exp(e.deltaY*0.0012)));draw()};
+  const ro=new ResizeObserver(draw);ro.observe(cv);
+  set(geoKey);
+  return {set,dispose(){ro.disconnect();clear();Object.values(texCache).forEach(x=>x.dispose());r.dispose();if(r.forceContextLoss)r.forceContextLoss()}};
+}
+// ---- language
+function applyLang(){
+  document.documentElement.lang=lang;document.getElementById("h1s").textContent=t("reg");q.placeholder=t("search");q.setAttribute("aria-label",t("search"));
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
+  const items=D.items.filter(i=>!i.kind&&inAll(i)).length,cre=D.items.filter(i=>i.kind==="entity").length,mods=D.items.filter(i=>i.m3d).length;
+  document.getElementById("sum").textContent=t("summary").replace("{i}",items).replace("{r}",D.recipes.length).replace("{c}",cre).replace("{m}",mods);
+  drawChips();if(sel)show(sel);else drawGrid();
+}
+document.querySelector(".lang").onclick=e=>{const b=e.target.closest("button");if(!b||b.dataset.l===lang)return;lang=b.dataset.l;try{localStorage.setItem("mreg-lang",lang)}catch(err){}applyLang()};
 const route=()=>show(decodeURIComponent(location.hash.slice(1))||null);
 addEventListener("hashchange",route);
 addEventListener("keydown",e=>{if(e.key==="Escape"&&sel)document.getElementById("close").click();if(e.key==="/"&&document.activeElement!==q){e.preventDefault();q.focus()}});
-drawChips();route();if(!sel)drawGrid();
+applyLang();route();
 </script>
 </body>
 </html>

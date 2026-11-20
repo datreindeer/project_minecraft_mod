@@ -19,9 +19,17 @@
     "mechanical:raw_pheasant",
     "mechanical:raw_ptarmigan",
     "mechanical:raw_pigeon",
+    "mechanical:raw_seal_meat",
+    "mechanical:raw_walrus_meat",
+    "mechanical:raw_capercaillie",
+    "mechanical:raw_bustard",
     "mechanical:raw_wildcat",
     "mechanical:raw_mole",
     "mechanical:raw_vole",
-    "mechanical:raw_snake"
+    "mechanical:raw_snake",
+    "mechanical:raw_mallard",
+    "mechanical:raw_swan",
+    "mechanical:raw_heron",
+    "mechanical:raw_crane"
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:hollow_bird_bone",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:bone_flute",
+    "count": 1
+  }
+}
