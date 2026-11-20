@@ -10,7 +10,9 @@ Bronze is golden brown, kept apart from copper's salmon pink: one palette for ev
   bright metal glints; tin concentrate is the black "tin sand" cassiterite washes down to.
 - Saw Blade / Bronze Saw: drawn here, a toothed blade along the diagonal, the saw on a wooden D-handle.
 - Rough Cast pieces: the same shapes, dull and mottled with casting flash (as copper's).
-- Clay Saw Blade / Plate / Spear Head / Sword Blade Mold tops and unfired items; molten and solid bronze overlays for every mold shape (the cavity
+- Bronze Arrowhead (drawn here), Rough Cast Bronze Arrowheads (four heads on a runner, the gang mold's cavity), Bronze Arrow
+  (vanilla's arrow with a bronze head).
+- Clay Saw Blade / Plate / Spear Head / Sword Blade / Arrowheads Mold tops and unfired items; molten and solid bronze overlays for every mold shape (the cavity
   masks are the same as gen_copper_textures.py uses, so the metal fills the cavity drawn there).
 - Bronze Helmet / Bronze Greaves items (iron's shapes, bronze) and worn layers: the helmet from iron's, the greaves are
   only the shins of iron's leggings with a leather strap at the knee.
@@ -197,6 +199,67 @@ for i, (name, img) in enumerate(pieces.items()):
 for t, img in tools.items():
     save(img, ITEM / f"bronze_{t}.png")
 
+
+# ---- Bronze Arrowhead, the arrowhead sprue, Bronze Arrow ----
+def arrowhead():
+    """One cast arrowhead along the diagonal, point to the upper right: a leaf blade (lit edge upper left), two barbs
+    trailing back past the shoulders, a tang for the shaft; outlined dark on the shaded side."""
+    img = Image.new("RGBA", (16, 16))
+    shape = {}
+    for x in range(16):
+        for y in range(16):
+            a, c = x - y, x + y - 15  # a: along (-15 lower left .. 15 upper right), c: across (- = upper left, lit)
+            if 0 <= a <= 13:
+                half = 4.2 if a <= 4 else (13 - a) * 4.2 / 9  # square shoulders, tapering to the point
+                if abs(c) <= half:
+                    edge = abs(c) > half - 1.2 and abs(c) >= 2  # the ground edge
+                    shape[x, y] = (0.92 if edge else 0.7) if c < 0 else (0.25 if edge else 0.5) if c > 0 else 0.98
+            elif -4 <= a <= -1 and 4 <= abs(c) <= 5:  # barbs
+                shape[x, y] = 0.75 if c < 0 else 0.3
+            elif -9 <= a <= -1 and abs(c) <= 1:  # tang
+                shape[x, y] = 0.45 if c < 0 else 0.28
+    for (x, y), t in shape.items():
+        img.putpixel((x, y), ramp(BRONZE, t) + (255,))
+    for x in range(16):
+        for y in range(16):
+            if (x, y) not in shape and x + y - 15 > 0 and any((x + dx, y + dy) in shape for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                img.putpixel((x, y), BRONZE[0] + (255,))
+    return img
+
+
+ARROW_SPRUE = [  # four heads on a runner (# metal), as cast in the gang mold; also the mold's cavity
+    "................",
+    "...#.......#....",
+    "..###.....###...",
+    "..###.....###...",
+    ".#####...#####..",
+    ".#.#.#...#.#.#..",
+    "...#.......#....",
+    "...#########....",
+    "...#...#...#....",
+    "..###..#..###...",
+    "..###..#..###...",
+    ".#####.#.#####..",
+    ".#.#.#.#.#.#.#..",
+    "...#...#...#....",
+    "...#########....",
+    "................",
+]
+sprue = Image.new("RGBA", (16, 16))
+for y, row in enumerate(ARROW_SPRUE):
+    for x, ch in enumerate(row):
+        if ch == "#":
+            up = y == 0 or ARROW_SPRUE[y - 1][x] != "#"
+            left = x == 0 or row[x - 1] != "#"
+            sprue.putpixel((x, y), ramp(BRONZE, 0.8 if up or left else 0.45 if row[x + 1] == "#" else 0.25) + (255,))
+save(arrowhead(), ITEM / "bronze_arrowhead.png")
+save(rough(sprue, 90), ITEM / "rough_cast_bronze_arrowheads.png")
+
+# the vanilla arrow with its flint head swapped for bronze (head pixels: top right quarter, the greys)
+arrow = vanilla("item/arrow")
+head_px = [(x, y) for x in range(8, 16) for y in range(8) if is_iron(arrow.getpixel((x, y)))]
+save(recolor(arrow, BRONZE, lo=40, hi=270, mask=head_px), ITEM / "bronze_arrow.png")
+
 # ---- armour: items and worn layers ----
 save(recolor(vanilla("item/iron_helmet"), BRONZE), ITEM / "bronze_helmet.png")
 save(recolor(vanilla("item/iron_leggings"), BRONZE), ITEM / "bronze_greaves.png")
@@ -232,8 +295,9 @@ copper_knife_blade = only(knife_src, blade_px)
 masks = {"ingot": vanilla("item/copper_ingot"), "pickaxe_head": without_stick(vanilla("item/copper_pickaxe")),
          "axe_head": without_stick(vanilla("item/copper_axe")), "shovel_head": without_stick(vanilla("item/copper_shovel")),
          "hoe_head": without_stick(vanilla("item/copper_hoe")), "knife_blade": copper_knife_blade,
-         "saw_blade": pieces["saw_blade"], "plate": pieces["plate"], "spear_head": pieces["spear_head"], "sword_blade": pieces["sword_blade"]}
-NEW = ("saw_blade", "plate", "spear_head", "sword_blade")
+         "saw_blade": pieces["saw_blade"], "plate": pieces["plate"], "spear_head": pieces["spear_head"], "sword_blade": pieces["sword_blade"],
+         "arrowheads": sprue}
+NEW = ("saw_blade", "plate", "spear_head", "sword_blade", "arrowheads")
 
 
 def cavity(m, x, y):

@@ -96,15 +96,48 @@ public class SootBlock extends MultifaceBlock {
         return !state.isAir() && !state.is(Mechanical.SOOT.get());
     }
 
-    /** Soot on the {@code face} side of the air at {@code pos}, or one stage darker if it is already there. */
-    private static void add(ServerLevel level, BlockPos pos, Direction face) {
+    /**
+     * Soot on the {@code face} side of the air at {@code pos}, or one stage darker if it is already there. It only darkens
+     * once the soot beside it on the same surface is as dark: a lighter neighbour (or bare surface next to it) takes the
+     * deposit instead, so a patch fades out over a block or two (3, 2, 1, none) instead of ending in a hard edge.
+     */
+    static void add(ServerLevel level, BlockPos pos, Direction face) {
         BlockState old = level.getBlockState(pos);
         SootBlock soot = Mechanical.SOOT.get();
         if (old.is(soot) && hasFace(old, face)) {
-            if (old.getValue(STAGE) < MAX_STAGE) level.setBlock(pos, old.setValue(STAGE, old.getValue(STAGE) + 1), UPDATE_ALL);
+            int stage = old.getValue(STAGE);
+            if (stage >= MAX_STAGE) return;
+            java.util.List<BlockPos> lighter = new java.util.ArrayList<>(4);
+            for (Direction d : Direction.values()) {
+                if (d.getAxis() == face.getAxis()) continue;
+                BlockPos n = pos.relative(d);
+                if (stageOn(level, n, face) < stage) lighter.add(n);
+            }
+            // the chain ends: each step goes to a strictly lighter block
+            if (!lighter.isEmpty()) add(level, lighter.get(level.getRandom().nextInt(lighter.size())), face);
+            else level.setBlock(pos, old.setValue(STAGE, stage + 1), UPDATE_ALL);
             return;
         }
         BlockState state = soot.getStateForPlacement(old, level, pos, face); // null if that face can't hold it (not a full side)
         if (state != null) level.setBlock(pos, state, UPDATE_ALL);
+    }
+
+    /** How dark soot on {@code face} at {@code pos} is: 0 if it could go there but there is none, MAX_STAGE + 1 if it can't. */
+    static int stageOn(ServerLevel level, BlockPos pos, Direction face) {
+        BlockState state = level.getBlockState(pos);
+        SootBlock soot = Mechanical.SOOT.get();
+        if (state.is(soot) && hasFace(state, face)) return state.getValue(STAGE);
+        if (!state.isAir() && !state.is(soot) || soot.getStateForPlacement(state, level, pos, face) == null) return MAX_STAGE + 1;
+        return state.is(soot) ? state.getValue(STAGE) : 0; // a new face on soot that is already there shares its stage
+    }
+
+    /** Sweeping (Broom): one stage lighter, the lightest is swept away. True if there was soot. */
+    public static boolean sweep(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        if (!state.is(Mechanical.SOOT.get())) return false;
+        int stage = state.getValue(STAGE);
+        if (stage > 1) level.setBlock(pos, state.setValue(STAGE, stage - 1), UPDATE_ALL);
+        else level.removeBlock(pos, false);
+        return true;
     }
 }

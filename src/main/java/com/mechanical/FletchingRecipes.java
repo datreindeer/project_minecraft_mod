@@ -27,6 +27,8 @@ public final class FletchingRecipes {
             StationRecipe.of(() -> Items.ARROW, 6, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.CAPERCAILLIE_TAIL_FEATHER.get(), 1), null),
             StationRecipe.of(() -> ForestBirdsFauna.EAGLE_FLETCHED_ARROW.get(), 4, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.EAGLE_FEATHER.get(), 1), null),
             StationRecipe.of(() -> ForestBirdsFauna.SILENT_ARROW.get(), 4, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.OWL_FEATHER.get(), 1), null),
+            // bronze: four ground Bronze Arrowheads (one cast) on four shafts; a Poor Bronze head makes poor arrows (Bronze.inheritPoor)
+            StationRecipe.of(() -> Bronze.BRONZE_ARROW.get(), 4, of(() -> Bronze.BRONZE_ARROWHEAD.get(), 4), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
             StationRecipe.of(() -> Mechanical.FIRE_ARROW.get(), 1, of(() -> Mechanical.TALLOW.get(), 1), of(() -> Items.ARROW, 1), of(() -> Mechanical.TWINE.get(), 1), null),
             StationRecipe.of(() -> Mechanical.SINEW_BOW.get(), 1, of(() -> Wildlife.SINEW.get(), 1), of(() -> Mechanical.CRUDE_BOW.get(), 1), of(() -> Mechanical.CORDAGE.get(), 1, () -> Kettle.HIDE_GLUE.get()), null));
 

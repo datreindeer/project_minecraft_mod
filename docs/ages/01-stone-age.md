@@ -117,6 +117,7 @@ klicka för att lägga i dem. Tre platser + resultat:
 | Flint | Stick | Feather | 4 Arrow (vanilla-receptet borttaget) |
 | Fish Bones eller Bone | Stick | Feather | 4 **Bone Arrow** (1,5 skada, vanlig pil 2) |
 | Bear Claw | Stick | Feather | 4 **Barbed Arrow** (3 skada) |
+| 4 Bronze Arrowhead | Stick | Feather | 4 **Bronze Arrow** (3 skada, går sönder 10 %; bronsåldern) |
 | Tallow | Arrow | Twine | 1 **Fire Arrow** (sätter målet i brand) |
 | Sinew | Crude Bow | Cordage | **Sinew Bow** (full pilskada, 200 i hållbarhet) |
 
@@ -677,6 +678,12 @@ Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppe
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Blodpöl under ställningen:** en **flådd** kropp (efter första knivomgången) droppar dubbelt så ofta, och var 10:e
+  sekund (chans 1 på 2) rinner blod ner på marken under ställningen: en pöl i ställningens nedre block som växer i 4
+  steg (samma texturer som blocket Blood). När den är full rinner det över till marken bredvid ställningen (vanliga
+  Blood-fläckar inom 1 block). Slutar när kroppen har åldrats (3 min), börjat bli dålig eller om djuret saknar blod;
+  totalt ca 9 droppar. Pölen torkar in ett steg i taget (25 % per random tick, som Blood). Kod:
+  `HangingRackBlock#bleedOnto`, egenskapen `blood` på ställningen.
 - **Benen hänger naturligt:** bakbenen pekar rakt upp mot gambreln (lite isär), frambenen/vingarna dinglar ned mot
   marken, och hals och huvud hänger slappt i linje med kroppen med öron och svans nedhängande.
 - **Mognad syns:** när kroppen har hängt **3 minuter** (×1,25 kött, se nedan) har den torkat: pälsen/huden blir mörkare,
@@ -722,7 +729,7 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
   det dör**: det springer i panik, sprutar mer och mer blod och tappar liv allt snabbare (1 hp per pil, var 3:e sekund
   i början och sedan varje sekund; Barbed Arrow blöder dubbelt). Följ blodspåret.
 - När djuret dör **faller pilarna ut** bredvid kroppen så du kan plocka upp dem. Dåliga pilar kan ha gått sönder och
-  blir då en Feather: Arrow 30 %, Bone Arrow 50 %, Fire Arrow 70 %, Barbed Arrow 15 %.
+  blir då en Feather: Arrow 30 %, Bone Arrow 50 %, Fire Arrow 70 %, Barbed Arrow 15 %, Bronze Arrow 10 %.
 - **Blod på blod blir en större pöl** (4 storlekar). En full pöl **rinner över** till ett grannblock (eller ner ett steg).
   Pölar torkar in steg för steg.
 - Blod på marken (blocket **Blood**) ersätter gräs, Leaf Litter och liknande, bleknar bort efter några minuter, går att gå igenom och har inget item. Blodet syns som droppar som faller (egen partikel).
@@ -1052,6 +1059,11 @@ Fire Pit sotar 3× så fort och bränner marken 2× så fort runt alla fyra bloc
 - **Testat (20 min brinnande eld, tak 4 block över elden):** stängt 7×7-rum (full rök): 50 sotblock, 24 i taket och
   26 på väggarna, 16 av dem stadium 3. Öppet skjul (bara tak och en vägg): 21 sotblock, 19 i taket, 10 stadium 3.
   Första fläckarna kom strax efter 2 minuter.
+- **Toning:** sotet blir bara mörkare där sotet bredvid på samma yta redan är lika mörkt. Träffar en ny sotpartikel en
+  fläck som har en ljusare granne (eller en bar yta som kan ta sot) bredvid sig, hamnar den hos grannen i stället (i sin
+  tur hos grannens ljusare granne osv.). Fläcken växer alltså ut innan mitten blir tjock, och tonar ut över ett par
+  block (3, 2, 1, inget) i stället för att sluta i en skarp kant. Kod: `SootBlock#add`.
+- **Sopa (Broom):** se nedan. Varje sopning gör sotet i 3×3 runt det man klickar på ett stadium ljusare.
 - **Skrapa bort:** bryts för hand (lite segt), **4× snabbare med en kniv**. Ger item **Soot**: stadium 1 50 % chans på
   1, stadium 2 1 st, stadium 3 2 st; med kniv (Flint Knife, Iron Knife) **+1**.
 - **Item: Soot**, ett svart pigment: 1 Soot → 1 Black Dye (formlöst).
@@ -1060,6 +1072,16 @@ Fire Pit sotar 3× så fort och bränner marken 2× så fort runt alla fyra bloc
   Moss Block blir Dirt, Dirt blir Coarse Dirt, och sedan (eller direkt på sten, grus, sand osv.) läggs ett sot- och
   asklager på marken som blir mörkare i 3 stadier. En eld som hålls vid liv i ungefär en timme har bränt en mörk ring
   runt sig. Gäller Campfire, Soul Campfire och Clay Kiln.
+
+### Broom (kvast)
+Tool Station: **Straw + Twine + Tool Rod** (låses upp när man har Straw). Halmknippe surrat på ett skaft.
+- **Högerklicka** på sot (eller på väggen, taket eller marken det sitter på): allt sot i **3×3** runt den punkten, i
+  ytans plan, blir **ett stadium ljusare**; stadium 1 sopas bort helt. Ger inget Soot-item (skrapa med kniv för det).
+- **Sopar också Leaf Litter** (vanilla och färsk från fällda träd): ett löv mindre per sopning i samma 3×3.
+- **96 i hållbarhet**, 1 per sopning som flyttade något. Sopljud (borstljud) och partiklar av det som sopas. Kort
+  nedkylning (0,4 s) mellan sopningarna.
+- Advancement **Clean Sweep** (Stenåldern, efter Let There Be Fire) när man sopar sot första gången.
+- Kod: `BroomItem.java`, `SootBlock#sweep`. Data: `scripts/gen_smallbatch.py`, textur: `scripts/gen_smallbatch_textures.py`.
 
 ### Pigment och grottmålningar
 Jordfärger, krita och sot mals till pigment, blandas till färg i en skål och målas på berget med en pensel.
@@ -1272,6 +1294,13 @@ texturer: `scripts/gen_paths_textures.py`.
   Grass Block; med snö ovanpå blir blocket som snötäckt gräs.
 - **Som gräs annars:** bryts med spade, ger Dirt (Silk Touch: blocket självt). **Hacka** gör Farmland, **spade** gör
   vanilla Dirt Path. Blommor, plantor, sockerrör m.m. kan växa på dem (taggen `minecraft:dirt`), och djur spawnar på dem.
+- **Under tunna täcken:** stigen trampas fram även under det som ligger på marken. Står man på ett tunt block (taggen
+  `mechanical:path_covers`: Soot, alla mattor, Moss Carpet, alla fällar/rugs som Bear Rug, Wolf Rug, Lynx Rug, Mammoth
+  Rug m.fl., Leaf Litter och den färska lövströn; eller vilket block som helst med kollisionshöjd högst **3 px**, t.ex.
+  2 lager snö) slits gräset/jorden **under** det. Täcken utan kollision (sot, lövströ, 1 lager snö) står man redan
+  igenom. Täckena ligger kvar när stigen bildas (gräs och ormbunkar trampas fortfarande bort), och anslutningarna mellan
+  stigblocken bryr sig bara om grannblocken bredvid, så de fungerar som vanligt med täcken ovanpå. Djupare snö (3+
+  lager) skyddar marken. Kod: `TrampledPaths#isCover`.
 - **Världens stigar** (*Stigar mellan platser* ovan) är byggda av samma block men växer aldrig igen.
 - Snaror: Worn Grass och Trodden Path räknas som stig (×2 lockchans).
 

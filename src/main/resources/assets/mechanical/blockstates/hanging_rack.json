@@ -1,49 +1,157 @@
 {
-  "variants": {
-    "facing=north,part=lower": {
-      "model": "mechanical:block/hanging_rack_lower"
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_lower"
+      }
     },
-    "facing=north,part=middle": {
-      "model": "mechanical:block/hanging_rack_middle"
+    {
+      "when": {
+        "facing": "north",
+        "part": "middle"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_middle"
+      }
     },
-    "facing=north,part=upper": {
-      "model": "mechanical:block/hanging_rack_upper"
+    {
+      "when": {
+        "facing": "north",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_upper"
+      }
     },
-    "facing=east,part=lower": {
-      "model": "mechanical:block/hanging_rack_lower",
-      "y": 90
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_lower",
+        "y": 90
+      }
     },
-    "facing=east,part=middle": {
-      "model": "mechanical:block/hanging_rack_middle",
-      "y": 90
+    {
+      "when": {
+        "facing": "east",
+        "part": "middle"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_middle",
+        "y": 90
+      }
     },
-    "facing=east,part=upper": {
-      "model": "mechanical:block/hanging_rack_upper",
-      "y": 90
+    {
+      "when": {
+        "facing": "east",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_upper",
+        "y": 90
+      }
     },
-    "facing=south,part=lower": {
-      "model": "mechanical:block/hanging_rack_lower",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_lower",
+        "y": 180
+      }
     },
-    "facing=south,part=middle": {
-      "model": "mechanical:block/hanging_rack_middle",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "middle"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_middle",
+        "y": 180
+      }
     },
-    "facing=south,part=upper": {
-      "model": "mechanical:block/hanging_rack_upper",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_upper",
+        "y": 180
+      }
     },
-    "facing=west,part=lower": {
-      "model": "mechanical:block/hanging_rack_lower",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_lower",
+        "y": 270
+      }
     },
-    "facing=west,part=middle": {
-      "model": "mechanical:block/hanging_rack_middle",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "middle"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_middle",
+        "y": 270
+      }
     },
-    "facing=west,part=upper": {
-      "model": "mechanical:block/hanging_rack_upper",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "part": "upper"
+      },
+      "apply": {
+        "model": "mechanical:block/hanging_rack_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "blood": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/blood_0"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "blood": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/blood_pool_2"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "blood": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/blood_pool_3"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "blood": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/blood_pool_4"
+      }
     }
-  }
+  ]
 }
