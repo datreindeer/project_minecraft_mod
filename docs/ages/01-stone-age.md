@@ -1639,6 +1639,7 @@ tabellen**, så att man lär sig hur den görs.
 De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och recept):
 
 <!-- fauna-links -->
+- [Varma biomer](../fauna/warm.md): Onager (packdjur), Tortoise, Desert Lizard, Water Buffalo, Tapir, Leopard, Hornbill, Jungle Fowl, Peafowl
 - [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
