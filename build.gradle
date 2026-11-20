@@ -204,8 +204,10 @@ tasks.register('exportModels', JavaExec) {
 
 // The play server's server list entry follows the mod: name + version in the MOTD, mod icon as server icon.
 tasks.matching { it.name == 'runServer' }.configureEach {
+    // captured at configuration time: the configuration cache forbids touching the project inside doFirst
+    def props = file('run/server.properties')
+    def motd = "motd=${mod_name} v${mod_version}"
     doFirst {
-        def props = file('run/server.properties')
-        if (props.exists()) props.text = props.text.replaceAll(/(?m)^motd=.*$/, "motd=${mod_name} v${mod_version}")
+        if (props.exists()) props.text = props.text.replaceAll(/(?m)^motd=.*$/, motd)
     }
 }

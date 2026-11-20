@@ -93,9 +93,14 @@ public final class ArrowWounds {
     @SubscribeEvent
     static void onDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (!(entity.level() instanceof ServerLevel level)) return;
+        if (entity.level() instanceof ServerLevel level) pullOut(entity, level);
+    }
+
+    /** The stuck arrows fall out next to it (poor ones may have broken) and the wound stops bleeding. */
+    static void pullOut(LivingEntity entity, ServerLevel level) {
         List<ItemStack> stuck = entity.getData(STUCK);
         if (stuck.isEmpty()) return;
+        entity.setArrowCount(0);
         for (ItemStack arrow : stuck) {
             ItemStack drop = level.getRandom().nextFloat() < breakChance(arrow.getItem()) ? new ItemStack(Items.FEATHER) : arrow.copy();
             ItemEntity item = new ItemEntity(level, entity.getX(), entity.getY() + 0.3, entity.getZ(), drop);

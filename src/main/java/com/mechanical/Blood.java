@@ -16,6 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
@@ -43,6 +49,22 @@ public final class Blood {
         }
         float below = entity instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
         return entity.isAlive() && (entity.getHealth() < entity.getMaxHealth() * below || ArrowWounds.count(entity) > 0);
+    }
+
+    /** Feeding a bleeding animal its food calms it and stops the bleeding: arrows come out and it heals to just above the bleed line. */
+    @SubscribeEvent
+    static void onFeed(PlayerInteractEvent.EntityInteract event) {
+        if (!(event.getTarget() instanceof Animal animal) || !(animal.level() instanceof ServerLevel level) || !bleeds(animal) || !isBleeding(animal)) return;
+        ItemStack food = event.getItemStack();
+        if (!animal.isFood(food)) return;
+        ArrowWounds.pullOut(animal, level);
+        float below = animal instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
+        animal.setHealth(Math.max(animal.getHealth(), (float) Math.ceil(animal.getMaxHealth() * below)));
+        food.consume(1, event.getEntity());
+        level.sendParticles(ParticleTypes.HEART, animal.getX(), animal.getY() + animal.getBbHeight(), animal.getZ(), 3, 0.3, 0.2, 0.3, 0);
+        level.playSound(null, animal, SoundEvents.GENERIC_EAT.value(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
