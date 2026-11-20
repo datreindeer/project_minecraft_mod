@@ -102,7 +102,7 @@ public class HangingRackBlock extends Block {
         return state.getValue(PART) == Part.UPPER ? (x ? TOP_X : TOP_Z) : x ? POSTS_X : POSTS_Z;
     }
 
-    static boolean occupied(ServerLevel level, BlockPos pos) {
+    public static boolean occupied(ServerLevel level, BlockPos pos) {
         return !level.getEntitiesOfClass(CarcassEntity.class, new AABB(pos).inflate(1, 3, 1), c -> pos.equals(c.hungAt())).isEmpty();
     }
 

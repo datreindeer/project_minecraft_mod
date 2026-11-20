@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "closed=false,facing=north": {
+      "model": "mechanical:block/hide_tent_ridge"
+    },
+    "closed=true,facing=north": {
+      "model": "mechanical:block/hide_tent_ridge_closed"
+    },
+    "closed=false,facing=east": {
+      "model": "mechanical:block/hide_tent_ridge",
+      "y": 90
+    },
+    "closed=true,facing=east": {
+      "model": "mechanical:block/hide_tent_ridge_closed",
+      "y": 90
+    },
+    "closed=false,facing=south": {
+      "model": "mechanical:block/hide_tent_ridge",
+      "y": 180
+    },
+    "closed=true,facing=south": {
+      "model": "mechanical:block/hide_tent_ridge_closed",
+      "y": 180
+    },
+    "closed=false,facing=west": {
+      "model": "mechanical:block/hide_tent_ridge",
+      "y": 270
+    },
+    "closed=true,facing=west": {
+      "model": "mechanical:block/hide_tent_ridge_closed",
+      "y": 270
+    }
+  }
+}

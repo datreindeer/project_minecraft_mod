@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "end=none,facing=north": {
+      "model": "mechanical:block/hide_tent_slope"
+    },
+    "end=left,facing=north": {
+      "model": "mechanical:block/hide_tent_slope_left"
+    },
+    "end=right,facing=north": {
+      "model": "mechanical:block/hide_tent_slope_right"
+    },
+    "end=none,facing=east": {
+      "model": "mechanical:block/hide_tent_slope",
+      "y": 90
+    },
+    "end=left,facing=east": {
+      "model": "mechanical:block/hide_tent_slope_left",
+      "y": 90
+    },
+    "end=right,facing=east": {
+      "model": "mechanical:block/hide_tent_slope_right",
+      "y": 90
+    },
+    "end=none,facing=south": {
+      "model": "mechanical:block/hide_tent_slope",
+      "y": 180
+    },
+    "end=left,facing=south": {
+      "model": "mechanical:block/hide_tent_slope_left",
+      "y": 180
+    },
+    "end=right,facing=south": {
+      "model": "mechanical:block/hide_tent_slope_right",
+      "y": 180
+    },
+    "end=none,facing=west": {
+      "model": "mechanical:block/hide_tent_slope",
+      "y": 270
+    },
+    "end=left,facing=west": {
+      "model": "mechanical:block/hide_tent_slope_left",
+      "y": 270
+    },
+    "end=right,facing=west": {
+      "model": "mechanical:block/hide_tent_slope_right",
+      "y": 270
+    }
+  }
+}

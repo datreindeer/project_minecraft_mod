@@ -34,6 +34,15 @@ public final class CampFireTheft {
                     .stream().findFirst().ifPresent(t -> t.fireTakenBy(event.getPlayer()));
         } else if (isStorage(event.getLevel().getBlockEntity(pos))) {
             stealing(event.getLevel(), pos, event.getPlayer());
+        } else if (event.getLevel() instanceof net.minecraft.server.level.ServerLevel level && level.dimension() == Level.OVERWORLD) {
+            // a tent, rack or stake of a settled camp (Neighbours): theft if they see it
+            Neighbours data = Neighbours.get(level);
+            Neighbours.Settlement s = data.builtBy(pos);
+            if (s != null) {
+                s.built.remove(Long.valueOf(pos.asLong()));
+                data.setDirty();
+                stealing(level, pos, event.getPlayer());
+            }
         }
     }
 

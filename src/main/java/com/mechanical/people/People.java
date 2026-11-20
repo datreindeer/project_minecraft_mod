@@ -29,6 +29,14 @@ public final class People {
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_OAK_LOG = sharpened("sharpened_oak_log", MapColor.WOOD);
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_SPRUCE_LOG = sharpened("sharpened_spruce_log", MapColor.PODZOL);
 
+    /** Sewn hides: tent walls, and the slopes and ridge of an A-frame tent (tribe camps build them, see Neighbours). */
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> HIDE_CANVAS = BLOCKS.registerSimpleBlock("hide_canvas",
+            p -> p.mapColor(MapColor.TERRACOTTA_BROWN).strength(0.8F).sound(SoundType.WOOL).ignitedByLava());
+    public static final DeferredBlock<HideTentBlock> HIDE_TENT_SLOPE = BLOCKS.registerBlock("hide_tent_slope", HideTentBlock::new,
+            p -> p.mapColor(MapColor.TERRACOTTA_BROWN).strength(0.8F).sound(SoundType.WOOL).ignitedByLava().noOcclusion());
+    public static final DeferredBlock<HideTentBlock.Ridge> HIDE_TENT_RIDGE = BLOCKS.registerBlock("hide_tent_ridge", HideTentBlock.Ridge::new,
+            p -> p.mapColor(MapColor.TERRACOTTA_BROWN).strength(0.8F).sound(SoundType.WOOL).ignitedByLava().noOcclusion());
+
     private static DeferredBlock<SharpenedLogBlock> sharpened(String name, MapColor color) {
         return BLOCKS.registerBlock(name, SharpenedLogBlock::new, p -> p.mapColor(color).strength(2.0F).sound(SoundType.WOOD).ignitedByLava().noOcclusion());
     }

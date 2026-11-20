@@ -47,7 +47,9 @@ class ChopWoodGoal extends Goal {
         BlockPos c = mob.workCenter();
         for (int i = 0; i < 80; i++) {
             BlockPos p = c.offset(mob.getRandom().nextInt(RANGE * 2 + 1) - RANGE, mob.getRandom().nextInt(7) - 3, mob.getRandom().nextInt(RANGE * 2 + 1) - RANGE);
-            if (choppable(level, p)) {
+            // a settled camp (Neighbours) fells standing trees only with mobGriefing
+            if (choppable(level, p) && (!level.getBlockState(p).is(BlockTags.LOGS) || Settlements.of(mob) == null
+                    || level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.MOB_GRIEFING))) {
                 target = p.immutable();
                 return true;
             }
