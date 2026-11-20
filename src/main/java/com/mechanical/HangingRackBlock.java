@@ -45,6 +45,12 @@ public class HangingRackBlock extends Block {
 
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
+    /** Blood soaked into the ground under the rack (bottom part only): a pool that grows under a skinned carcass and dries. */
+    public static final int MAX_BLOOD = 4;
+    public static final net.minecraft.world.level.block.state.properties.IntegerProperty BLOOD =
+            net.minecraft.world.level.block.state.properties.IntegerProperty.create("blood", 0, MAX_BLOOD);
+    /** Chance per random tick that the pool dries a step (as {@link BloodBlock}). */
+    private static final float DRY_CHANCE = 0.25F;
     /** Height of the gambrel hook above the rack's base, in blocks (the model's gambrel at y = 41 px). */
     public static final float HOOK = 41 / 16.0F;
     // per part, built facing north (beam along x): posts, and the crossbeam at 44-47 px in the top block
@@ -55,12 +61,12 @@ public class HangingRackBlock extends Block {
 
     public HangingRackBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, Part.LOWER));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, Part.LOWER).setValue(BLOOD, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART);
+        builder.add(FACING, PART, BLOOD);
     }
 
     @Override
@@ -100,6 +106,24 @@ public class HangingRackBlock extends Block {
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         boolean x = state.getValue(FACING).getAxis() == Direction.Axis.Z;
         return state.getValue(PART) == Part.UPPER ? (x ? TOP_X : TOP_Z) : x ? POSTS_X : POSTS_Z;
+    }
+
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return state.getValue(BLOOD) > 0;
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(BLOOD, state.getValue(BLOOD) - 1), UPDATE_ALL);
+    }
+
+    /** A drop of blood from the carcass hanging on the rack at {@code base}: the pool under it grows, a full one runs over beside the rack. */
+    static void bleedOnto(ServerLevel level, BlockPos base) {
+        BlockState state = level.getBlockState(base);
+        if (!state.is(CarcassHauling.HANGING_RACK.get())) return;
+        if (state.getValue(BLOOD) < MAX_BLOOD) level.setBlock(base, state.setValue(BLOOD, state.getValue(BLOOD) + 1), UPDATE_ALL);
+        else Blood.splatter(level, base, 1, 1);
     }
 
     static boolean occupied(ServerLevel level, BlockPos pos) {

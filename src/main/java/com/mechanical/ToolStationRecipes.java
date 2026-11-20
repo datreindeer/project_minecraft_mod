@@ -65,6 +65,8 @@ public final class ToolStationRecipes {
             new Recipe(() -> Mechanical.BONE_HOOK_FISHING_ROD.get(), () -> Mechanical.BONE_FISH_HOOK.get(), Mechanical.TWINE, Mechanical.TOOL_ROD,
                     s -> s.is(Mechanical.BONE_FISH_HOOK.get())),
             new Recipe(() -> Farming.FLINT_SICKLE.get(), () -> Items.FLINT, Mechanical.TWINE, () -> Items.STICK, FLINT),
+            // the Broom: "head" = a bundle of Straw, bound with Twine on a Tool Rod
+            new Recipe(() -> Mechanical.BROOM.get(), () -> Farming.STRAW.get(), Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Farming.STRAW.get())),
             // copper: cast heads, ground on the Whetstone; unlocked by holding the ground head
             new Recipe(() -> Items.COPPER_PICKAXE, Casting.COPPER_PICKAXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_PICKAXE_HEAD.get())),
             new Recipe(() -> Items.COPPER_AXE, Casting.COPPER_AXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_AXE_HEAD.get())),

@@ -356,6 +356,7 @@ flintkniv och spatel. Förr var de crafting-recept av Clay Balls, men mönstren 
 | Clay Saw Blade Mold / Plate Mold | 5 / 8 |
 | Clay Spear Head Mold / Sword Blade Mold | 4 / 6 |
 | Clay Kettle Mold | 28 (= 7 Clay-block; bänken tar bara Clay Balls) |
+| Clay Arrowheads Mold | 3 |
 
 Kod: `MoldBench` (registrering, recepten, menyn), `MoldBenchBlock`, `RecipeStationMenu` (1 inputruta). Data:
 `scripts/gen_moldbench.py`, texturer: `scripts/gen_moldbench_textures.py`.
@@ -458,9 +459,29 @@ blandar dem inte när de hämtar delar.
 | Clay Plate Mold | 8 | 4 | Rough Cast Bronze Plate |
 | Clay Spear Head Mold | 4 | 4 | Rough Cast Bronze Spear Head |
 | Clay Sword Blade Mold | 6 | 6 | Rough Cast Bronze Sword Blade |
+| Clay Arrowheads Mold | 3 | 2 | Rough Cast Bronze Arrowheads (4 spetsar på en gjuttapp) |
 
 Bara brons kan gjutas i dem. De andra formarna gjuter brons som koppar: Bronze Ingot, Rough Cast Bronze Pickaxe/Axe/
 Shovel/Hoe Head och Knife Blade. Allt Rough Cast slipas på Whetstone (4 drag) till Bronze ... Head / Blade / Plate.
+
+### Bronze Arrowheads och Bronze Arrow
+
+- **Clay Arrowheads Mold:** en flerform med **fyra pilspetsar** på en gjutkanal (3 Clay Balls i Mold Bench, bränns i
+  kilnen 600° som de andra formarna). Tar **2 enheter** brons (som ett tackel) och ger **Rough Cast Bronze Arrowheads**.
+  Bara brons.
+- **Whetstone:** 4 drag på Rough Cast Bronze Arrowheads ger **4 Bronze Arrowhead** (spetsarna slipas loss från tappen).
+- **Fletching Table:** **4 Bronze Arrowhead + Stick + Feather → 4 Bronze Arrow**. En hel degel (10 enheter, 5 gjutningar)
+  räcker till 40 pilar; formen spricker efter 5 gjutningar som de andra.
+- **Bronze Arrow:** **3 skada** (Arrow 2, Eagle Fletched Arrow 2,75, Barbed Arrow 3 men den blöder mer) och går sönder
+  bara **10 %** av gångerna när den faller ur ett djur (Arrow 30 %). Står i `minecraft:arrows`, så alla bågar skjuter den.
+  Genomborrning (pierce) gick inte utan en access transformer (`AbstractArrow.setPierceLevel` är privat), så den är
+  bara starkare och tåligare.
+- **Poor Bronze:** följer med från gjutningen till spetsarna och pilarna (Fletching Table ärver märket som Tool
+  Station). En pil av Poor Bronze gör **0,5 mindre skada** (2,5); tooltip "Poor Bronze: half a point less damage".
+- Advancement **Bronze Tips** (Bronze Age-fliken, efter Bronze!).
+- Kod: `Bronze` (items, `ground`), `ClayMoldBlock.Shape.ARROWHEADS`, `Metal`, `MoldBench`, `KilnBlockEntity`,
+  `FletchingRecipes`, `SpecialArrowItem`, `ArrowWounds#breakChance`. Data: `scripts/gen_copper.py` (formen),
+  `scripts/gen_smallbatch.py`; texturer: `scripts/gen_bronze_textures.py`.
 
 ### Bronsverktyg
 

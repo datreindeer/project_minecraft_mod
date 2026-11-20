@@ -44,7 +44,8 @@ public final class MoldBench {
             StationRecipe.of(Bronze.UNFIRED_CLAY_PLATE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 8), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_SPEAR_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_SWORD_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 6), null),
-            StationRecipe.of(Bronze.UNFIRED_CLAY_KETTLE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 28), null));
+            StationRecipe.of(Bronze.UNFIRED_CLAY_KETTLE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 28), null),
+            StationRecipe.of(Bronze.UNFIRED_CLAY_ARROWHEADS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null));
 
     public static void init() {}
 

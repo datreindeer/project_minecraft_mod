@@ -24,7 +24,7 @@ def patch_tag(path, values):
 
 SHAPES = ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
 # every mold lives here; these only take bronze (their textures: gen_bronze_textures.py, items: gen_bronze.py)
-MOLDS = SHAPES + ["saw_blade", "plate", "spear_head", "sword_blade"]
+MOLDS = SHAPES + ["saw_blade", "plate", "spear_head", "sword_blade", "arrowheads"]
 METALS = ["copper", "bronze", "poor_bronze"]  # ClayMoldBlock.METAL; poor bronze looks like bronze
 HEADS = ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
 

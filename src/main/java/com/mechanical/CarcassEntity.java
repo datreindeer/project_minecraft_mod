@@ -64,6 +64,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     private static final float TURNING = 0.75F;
     /** Hung this long (3 minutes) it has aged: a little more meat on the rack. */
     public static final int AGED = 3600;
+    /** A skinned carcass on the rack may stain the ground under it this often (1 in 2): about 9 times before it has aged. */
+    private static final int RACK_BLOOD_INTERVAL = 200;
     /** Has hung {@link #AGED} ticks: synced so it looks dried (CarcassRenderer), stops dripping and draws a fly or two. */
     private static final EntityDataAccessor<Boolean> AGED_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> TURNING_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
@@ -247,8 +249,12 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
             else {
                 setPos(hangPosition(rack));
                 if (++hungTicks == AGED) entityData.set(AGED_LOOK, true);
-                if (tickCount % 30 == 0 && !spoiled() && !aged() && random.nextInt(3) == 0) // aged: the blood has stopped
+                boolean bleeds = !spoiled() && !aged() && !animal.builtInRegistryHolder().is(Blood.BLOODLESS); // aged: the blood has stopped
+                // skinned, it drips twice as often and the ground under the rack soaks red (HangingRackBlock#bleedOnto)
+                if (bleeds && tickCount % (stage() > 0 ? 15 : 30) == 0 && random.nextInt(3) == 0)
                     Blood.drip((ServerLevel) level(), getX() + random.nextGaussian() * 0.1, getY() + 0.1, getZ() + random.nextGaussian() * 0.1);
+                if (bleeds && stage() > 0 && tickCount % RACK_BLOOD_INTERVAL == 0 && random.nextInt(2) == 0)
+                    HangingRackBlock.bleedOnto((ServerLevel) level(), rack);
                 return;
             }
         }

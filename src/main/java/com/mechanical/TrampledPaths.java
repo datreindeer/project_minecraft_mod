@@ -44,6 +44,10 @@ public final class TrampledPaths {
 
     /** Ground the earth of a path runs out toward (everything else frays into grass). */
     public static final TagKey<Block> CONNECTS = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "path_connects"));
+    /** Thin covers a path wears in under (soot, carpets, rugs, leaf litter); they stay when the path forms. Any block with a
+     * collision top of at most {@link #COVER_HEIGHT} counts as a cover too (a carpet, two snow layers, a rug). */
+    public static final TagKey<Block> COVERS = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "path_covers"));
+    static final double COVER_HEIGHT = 3 / 16.0;
 
     public static final DeferredBlock<TrampledPathBlock> WORN_GRASS = BLOCKS.registerBlock("worn_grass", TrampledPathBlock::new, p -> p
             .mapColor(MapColor.GRASS).strength(0.6F).sound(SoundType.GRASS).randomTicks().speedFactor(WORN_SPEED));
@@ -68,6 +72,7 @@ public final class TrampledPaths {
     public static void step(Entity e) {
         if (!e.onGround()) return;
         BlockPos on = e.getOnPos();
+        if (isCover(e.level().getBlockState(on), e.level(), on)) on = on.below(); // standing on a carpet: the ground under it wears
         Long last = LAST.put(e, on.asLong());
         if (last != null && last != on.asLong()) wear((ServerLevel) e.level(), on, e.getRandom());
     }
@@ -88,11 +93,19 @@ public final class TrampledPaths {
             level.setBlockAndUpdate(pos, next.setValue(TrampledPathBlock.RECENT, true));
             BlockState above = level.getBlockState(pos.above());
             // grass and ferns don't survive the middle of a path
-            if (next.is(TRODDEN_PATH) && !above.isAir() && above.canBeReplaced() && above.getFluidState().isEmpty() && !above.is(BlockTags.SNOW))
+            if (next.is(TRODDEN_PATH) && !above.isAir() && above.canBeReplaced() && above.getFluidState().isEmpty() && !above.is(BlockTags.SNOW) && !above.is(COVERS))
                 level.destroyBlock(pos.above(), false);
         } else if (s.getBlock() instanceof TrampledPathBlock && !s.getValue(TrampledPathBlock.RECENT) && !s.getValue(TrampledPathBlock.PERSISTENT)) {
             level.setBlock(pos, s.setValue(TrampledPathBlock.RECENT, true), Block.UPDATE_CLIENTS | Block.UPDATE_INVISIBLE);
         }
+    }
+
+    /** A thin cover on the ground: tagged mechanical:path_covers, or a solid sliver at most {@link #COVER_HEIGHT} high. */
+    static boolean isCover(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
+        if (state.is(COVERS)) return true;
+        if (state.isAir()) return false;
+        var shape = state.getCollisionShape(level, pos);
+        return !shape.isEmpty() && shape.max(net.minecraft.core.Direction.Axis.Y) <= COVER_HEIGHT + 1.0E-6;
     }
 
     private TrampledPaths() {}

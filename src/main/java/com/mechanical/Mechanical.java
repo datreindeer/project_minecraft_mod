@@ -341,6 +341,8 @@ public class Mechanical {
             .mapColor(MapColor.COLOR_BLACK).replaceable().noCollision().noOcclusion().strength(0.5F)
             .sound(SoundType.SAND).pushReaction(PushReaction.POPPED));
     public static final DeferredItem<Item> SOOT_ITEM = ITEMS.registerSimpleItem("soot");
+    /** Sweeps soot and leaf litter in a 3x3, a stage at a time (Tool Station: Straw + Twine + Tool Rod). */
+    public static final DeferredItem<BroomItem> BROOM = ITEMS.registerItem("broom", BroomItem::new, p -> p.durability(96));
     // Torches blown out by the wind on windy nights (Wind); relit with a torch, fire drill or flint and steel.
     public static final DeferredBlock<UnlitTorchBlock> UNLIT_TORCH = BLOCKS.registerBlock("unlit_torch", UnlitTorchBlock::new, p -> p
             .noCollision().instabreak().sound(SoundType.WOOD).pushReaction(PushReaction.POPPED));

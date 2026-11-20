@@ -38,7 +38,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class ClayMoldBlock extends Block {
     public enum Shape implements StringRepresentable {
-        INGOT(2), PICKAXE_HEAD(6), AXE_HEAD(6), SHOVEL_HEAD(2), HOE_HEAD(4), KNIFE_BLADE(2), SAW_BLADE(4), PLATE(4), SPEAR_HEAD(4), SWORD_BLADE(6), KETTLE(8);
+        INGOT(2), PICKAXE_HEAD(6), AXE_HEAD(6), SHOVEL_HEAD(2), HOE_HEAD(4), KNIFE_BLADE(2), SAW_BLADE(4), PLATE(4), SPEAR_HEAD(4), SWORD_BLADE(6), KETTLE(8), ARROWHEADS(2);
 
         /** Metal units one cast takes (a Crucible holds 10; one Crushed Copper Ore is 1). */
         public final int units;

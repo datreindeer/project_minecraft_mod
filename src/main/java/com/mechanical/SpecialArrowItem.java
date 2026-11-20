@@ -31,7 +31,7 @@ public class SpecialArrowItem extends ArrowItem {
     @Override
     public AbstractArrow createArrow(Level level, ItemStack stack, LivingEntity owner, ItemStack weapon) {
         AbstractArrow arrow = super.createArrow(level, stack, owner, weapon);
-        arrow.setBaseDamage(damage);
+        arrow.setBaseDamage(Bronze.isPoor(stack) ? damage - Bronze.POOR_ARROW_DAMAGE : damage);
         if (fire) arrow.igniteForSeconds(100);
         return arrow;
     }

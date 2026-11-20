@@ -75,6 +75,11 @@ public final class Bronze {
     public static final DeferredItem<Item> UNFIRED_CLAY_KETTLE_MOLD = ITEMS.registerSimpleItem("unfired_clay_kettle_mold");
     public static final DeferredBlock<ClayMoldBlock> CLAY_KETTLE_MOLD = Casting.mold("clay_kettle_mold", ClayMoldBlock.Shape.KETTLE);
     public static final DeferredItem<BlockItem> CLAY_KETTLE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_kettle_mold", CLAY_KETTLE_MOLD);
+    /** A gang mold: four arrowheads on one sprue (2 units), ground apart on the Whetstone into {@link #ARROWHEADS_PER_CAST}. */
+    public static final DeferredItem<Item> UNFIRED_CLAY_ARROWHEADS_MOLD = ITEMS.registerSimpleItem("unfired_clay_arrowheads_mold");
+    public static final DeferredBlock<ClayMoldBlock> CLAY_ARROWHEADS_MOLD = Casting.mold("clay_arrowheads_mold", ClayMoldBlock.Shape.ARROWHEADS);
+    public static final DeferredItem<BlockItem> CLAY_ARROWHEADS_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_arrowheads_mold", CLAY_ARROWHEADS_MOLD);
+    public static final int ARROWHEADS_PER_CAST = 4;
 
     // --- castings, rough and ground ---
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_pickaxe_head");
@@ -86,6 +91,11 @@ public final class Bronze {
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PLATE = ITEMS.registerSimpleItem("rough_cast_bronze_plate");
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SPEAR_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_spear_head");
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_SWORD_BLADE = ITEMS.registerSimpleItem("rough_cast_bronze_sword_blade");
+    public static final DeferredItem<Item> ROUGH_CAST_BRONZE_ARROWHEADS = ITEMS.registerSimpleItem("rough_cast_bronze_arrowheads");
+    public static final DeferredItem<Item> BRONZE_ARROWHEAD = ITEMS.registerSimpleItem("bronze_arrowhead");
+    /** Fletched from Bronze Arrowheads: 3.0 damage (flint 2.0), and it seldom breaks (ArrowWounds). Poor Bronze: {@link #POOR_ARROW_DAMAGE} less. */
+    public static final DeferredItem<SpecialArrowItem> BRONZE_ARROW = ITEMS.registerItem("bronze_arrow", p -> new SpecialArrowItem(p, 3.0, false));
+    public static final double POOR_ARROW_DAMAGE = 0.5;
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_KETTLE = ITEMS.registerSimpleItem("rough_cast_bronze_kettle", p -> p.stacksTo(1));
     public static final DeferredItem<Item> BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("bronze_pickaxe_head");
     public static final DeferredItem<Item> BRONZE_AXE_HEAD = ITEMS.registerSimpleItem("bronze_axe_head");
@@ -129,6 +139,11 @@ public final class Bronze {
 
     /** The ground piece for a rough bronze casting (Poor Bronze stays poor), or empty. */
     static ItemStack ground(ItemStack rough) {
+        if (rough.is(ROUGH_CAST_BRONZE_ARROWHEADS.get())) {
+            ItemStack heads = new ItemStack(BRONZE_ARROWHEAD.get(), ARROWHEADS_PER_CAST);
+            if (isPoor(rough)) markPoor(heads);
+            return heads;
+        }
         for (var e : GROUND.entrySet()) {
             if (!rough.is(e.getKey().get())) continue;
             ItemStack out = new ItemStack(e.getValue().get());
@@ -166,7 +181,8 @@ public final class Bronze {
         static void onTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
             if (isPoor(stack) && !event.getToolTip().isEmpty()) event.getToolTip().add(1, Component.translatable(
-                    stack.is(BRONZE_KETTLE.get()) || stack.is(ROUGH_CAST_BRONZE_KETTLE.get()) ? "tooltip.mechanical.poor_bronze_kettle" : "tooltip.mechanical.poor_bronze",
+                    stack.is(BRONZE_KETTLE.get()) || stack.is(ROUGH_CAST_BRONZE_KETTLE.get()) ? "tooltip.mechanical.poor_bronze_kettle"
+                            : stack.is(BRONZE_ARROW.get()) ? "tooltip.mechanical.poor_bronze_arrow" : "tooltip.mechanical.poor_bronze",
                     Kettle.POOR_CAPACITY, Kettle.CAPACITY).withStyle(ChatFormatting.YELLOW));
         }
 

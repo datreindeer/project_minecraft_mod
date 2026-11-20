@@ -132,9 +132,12 @@ w(A / "models/item/hanging_rack.json", {
         "thirdperson_righthand": {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.3, 0.3, 0.3]},
         "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [0, -2, 0], "scale": [0.35, 0.35, 0.35]},
     }})
-w(A / "blockstates/hanging_rack.json", {"variants": {
-    f"facing={f},part={name}": {"model": f"mechanical:block/hanging_rack_{name}", **({"y": y} if y else {})}
-    for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)) for name in ("lower", "middle", "upper")}})
+# multipart: the frame, plus the blood pool soaking the ground under a skinned carcass (bottom part, blood 1-4; BloodBlock's models)
+POOL = {1: "blood_0", 2: "blood_pool_2", 3: "blood_pool_3", 4: "blood_pool_4"}
+w(A / "blockstates/hanging_rack.json", {"multipart": [
+    {"when": {"facing": f, "part": name}, "apply": {"model": f"mechanical:block/hanging_rack_{name}", **({"y": y} if y else {})}}
+    for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)) for name in ("lower", "middle", "upper")] + [
+    {"when": {"part": "lower", "blood": str(n)}, "apply": {"model": f"mechanical:block/{m}"}} for n, m in POOL.items()]})
 w(A / "items/hanging_rack.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/hanging_rack"}})
 w(D / "mechanical/loot_table/blocks/hanging_rack.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
     "entries": [{"type": "minecraft:item", "name": "mechanical:hanging_rack"}], "conditions": [{"condition": "minecraft:survives_explosion"},
