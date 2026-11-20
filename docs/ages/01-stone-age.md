@@ -2037,8 +2037,8 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 - **Bördighet 0–3:** ny åker 2. Varje skörd tar 1 (ärtor ger 1 tillbaka). 0 = halv fart och halv skörd, 3 = snabbare
   och ibland extra. Lämnas jorden i **träda** (tom) återhämtar den sig ~1 per dag. **Syns på jorden:** 0 blek och grå,
   1 lite blekare, 2 vanlig, 3 mörk mylla med kompostfläckar.
-- **Crop Stakes** på farmland (4 stolpar med snöre runt grödan): högerklicka en mogen gröda med tom hand → skörd + omsådd,
-  men bara 60 % av skörden.
+- **Crop Stakes** på farmland (4 stolpar med snöre runt grödan): högerklicka en mogen gröda med tom hand eller skära → skörd +
+  omsådd, men bara 60 % av skörden. Skäran ger sin extra kärve och Straw ovanpå.
 - **Kråkor:** Hooded Crow-flockar landar på åkrar med unga grödor och äter dem steg för steg. Skrämma bort dem eller
   vakta; Scarecrow kommer i bronsåldern.
 - **Smyg + högerklicka med tom hand** på farmland/en gröda: bördighet, fukt, temperatur och varför den inte växer.
@@ -2047,7 +2047,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 |---|---|---|
 | Flint Sickle | Tool Station: Flint + Twine + Stick | Skörd: extra kärve + Straw, vild säd alltid. 48 i hållbarhet |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska kärvar. 64 i hållbarhet |
-| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand → skördas och sås om, men varje item i skörden bara 60 % chans. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Straw | Tröskning, skära | Kompost (bronsåldern) |
 | Raw Porridge → Porridge | 2 Grain + Clay Water Bucket + Bowl, sedan Campfire | Mat |
 | Root Cellar | `[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks][Planks][Planks]` | Nedgrävd: rotfrukter 4× längre |

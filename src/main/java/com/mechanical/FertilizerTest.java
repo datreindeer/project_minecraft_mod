@@ -91,6 +91,13 @@ public final class FertilizerTest {
         click(h, p, new BlockPos(3, 2, 1), ItemStack.EMPTY);
         BlockState after = h.getBlockState(new BlockPos(3, 2, 1));
         if (!after.is(Blocks.WHEAT) || wheat.getAge(after) != 0) throw h.assertionException("staked harvest left " + after);
+        // a sickle on a staked ripe crop: replanted too, and the sickle wears 1
+        h.setBlock(new BlockPos(4, 1, 1), farmland.setValue(Fertility.FERTILITY, 2).setValue(Fertility.STAKED, true));
+        h.setBlock(new BlockPos(4, 2, 1), wheat.getStateForAge(wheat.getMaxAge()));
+        ItemStack sickle = new ItemStack(Farming.FLINT_SICKLE.get());
+        click(h, p, new BlockPos(4, 2, 1), sickle);
+        if (wheat.getAge(h.getBlockState(new BlockPos(4, 2, 1))) != 0) throw h.assertionException("sickle staked harvest left " + h.getBlockState(new BlockPos(4, 2, 1)));
+        if (sickle.getDamageValue() != 1) throw h.assertionException("sickle wear " + sickle.getDamageValue() + ", expected 1");
         h.succeed();
     }
 

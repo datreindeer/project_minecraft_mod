@@ -280,10 +280,7 @@ public final class Farming {
     static void onDrops(BlockDropsEvent event) {
         BlockState state = event.getState();
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null) return;
-        float bonus = sickleBonus(event.getTool());
-        if (bonus > 0 && event.getLevel().getRandom().nextFloat() < bonus) {
-            event.getDrops().stream().map(ItemEntity::getItem).filter(s -> s.is(SHEAVES)).findFirst().ifPresent(s -> s.grow(1));
-        }
+        addSickleBonus(event.getDrops().stream().map(ItemEntity::getItem).toList(), event.getTool(), event.getLevel().getRandom());
         if (!harvestSoil(event.getLevel(), event.getPos().below(), crop, event.getDrops().stream().map(ItemEntity::getItem).toList())) return;
         event.getDrops().removeIf(e -> e.getItem().isEmpty());
         if (event.getBreaker() instanceof LivingEntity breaker && event.getTool().is(SICKLES)) {
@@ -296,6 +293,12 @@ public final class Farming {
         if (tool.is(BronzeTools.BRONZE_SICKLE.get())) return 0.8F;
         if (tool.is(FLINT_SICKLE.get())) return 0.5F;
         return 0;
+    }
+
+    /** The sickle's chance of one more sheaf: grows the first sheaf in {@code drops}. */
+    private static void addSickleBonus(List<ItemStack> drops, ItemStack tool, RandomSource random) {
+        float bonus = sickleBonus(tool);
+        if (bonus > 0 && random.nextFloat() < bonus) drops.stream().filter(s -> s.is(SHEAVES)).findFirst().ifPresent(s -> s.grow(1));
     }
 
     @EventBusSubscriber(modid = MODID, value = net.neoforged.api.distmarker.Dist.CLIENT)
@@ -331,10 +334,15 @@ public final class Farming {
     /** Each item of a staked harvest is kept with this chance: the free replant costs some of the yield. */
     public static final float STAKED_YIELD = 0.6F;
 
-    /** Right-click a ripe crop on staked farmland with an empty hand: harvested and replanted at age 0, a smaller yield. */
+    /**
+     * Right-click a ripe crop on staked farmland with an empty hand or a sickle: harvested and replanted at age 0, a smaller
+     * yield. A sickle adds its Straw (loot tables) and, after the yield cut, its chance of an extra sheaf, and wears 1.
+     */
     @SubscribeEvent
     static void onStakedHarvest(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getEntity().isShiftKeyDown() || event.getHand() != net.minecraft.world.InteractionHand.MAIN_HAND || !event.getItemStack().isEmpty()) return;
+        if (event.getEntity().isShiftKeyDown() || event.getHand() != net.minecraft.world.InteractionHand.MAIN_HAND) return;
+        ItemStack tool = event.getItemStack();
+        if (!tool.isEmpty() && !tool.is(SICKLES)) return;
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
@@ -342,15 +350,20 @@ public final class Farming {
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null
                 || !soil.hasProperty(Fertility.STAKED) || !soil.getValue(Fertility.STAKED)) return;
         if (level instanceof ServerLevel server) {
-            List<ItemStack> drops = Block.getDrops(state, server, pos, null, event.getEntity(), ItemStack.EMPTY);
+            List<ItemStack> drops = Block.getDrops(state, server, pos, null, event.getEntity(), tool);
             harvestSoil(server, pos.below(), crop, drops);
             RandomSource random = server.getRandom();
+            Item sheaf = drops.stream().filter(s -> s.is(SHEAVES)).findFirst().map(ItemStack::getItem).orElse(null); // before the cut empties it
             for (ItemStack s : drops) {
                 int kept = 0;
                 for (int i = 0; i < s.getCount(); i++) if (random.nextFloat() < STAKED_YIELD) kept++;
                 s.setCount(kept);
-                if (!s.isEmpty()) Block.popResource(server, pos, s);
             }
+            if (!tool.isEmpty()) {
+                if (sheaf != null && random.nextFloat() < sickleBonus(tool)) drops.add(new ItemStack(sheaf));
+                tool.hurtAndBreak(1, event.getEntity(), EquipmentSlot.MAINHAND);
+            }
+            for (ItemStack s : drops) if (!s.isEmpty()) Block.popResource(server, pos, s);
             server.setBlock(pos, crop.getStateForAge(0), Block.UPDATE_ALL);
             server.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }

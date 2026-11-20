@@ -169,7 +169,7 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 | Flint Sickle | Tool Station: Flint + Twine + Stick (låses upp av Flint) | Extra kärve + Straw, skär gräs/grödor/vild säd snabbt. Hållbarhet 48 |
 | Bronze Sickle (bronsåldern) | Tool Station: Bronze Sickle Blade (gjuten i Clay Sickle Blade Mold, slipad) + Twine + Stick | Samma bonusar som flintskäran men 80 % chans på extra kärve (flint 50 %), och skär **3×3** mogna grödor eller gräs med ett drag (smyg: ett). Hållbarhet 460. Se docs/ages/02-bronze-age.md "Fler bronsverktyg" |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska. Hållbarhet 64 |
-| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand → skördas och sås om, men varje item i skörden bara 60 % chans. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Raw Porridge | 2 Grain + Clay Water Bucket + Bowl | Kokas till Porridge |
 | Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` | Mal Grain → Flour |
 | Baking Stone | `[R][C][R]` | Baka Dough → Bread |
