@@ -167,11 +167,37 @@
 ### Lövträd
 - Sent på hösten tappar lövträden gradvis löven och blir kala grenar. På våren kommer knoppar och sedan löv igen.
   Barrträd (gran, tall, en) ändras inte.
-- **Teknik som behöver provas:** antingen en egen blockstate "bare" på lövblocken (mixin på vanilla-löv) eller att
-  löven byts mot egna "bare branches"-block som minns trädtyp och avstånd. Förändringen drivs av random ticks och
-  ikappkörning när chunken laddas.
 - Gräs och löv byter färg efter säsong: grönt, sedan gult, orange och rött, och blekt på vintern. Färgerna ändras i
   ungefär 3 steg per säsong så att chunkarna bara behöver renderas om vid stegen.
+- **Byggt (fas 7):** bara på klienten och bara i utseendet. Inga block byts och inget sparas, så det behövs ingen
+  ikappkörning. Matematiken ligger i `SeasonLook.java` (testas i `CalendarTest`), ritandet i
+  `client/SeasonalFoliage.java`.
+  - **Färger, ett steg per månad (3 per säsong):** biomens egen färg dras mot månadens färg. Thaw: blekt (gräs) och
+    ljust nytt grönt (löv). Sowing och Blossom: friskt grönt som klingar av. Midsun och Haymonth: biomens vanliga
+    färg. Reaping: lite torrt. Leaffall: gult. Hunting: orange (gräset gulbrunt). Frostfall: rött (gräset brunt).
+    Deepwinter till Snowmelt: blekt brunt gräs. Lövträd blir antingen gula (Birch, Aspen, Alder, Linden, Willow, Ash,
+    Hazel) eller orange och sedan röda (Oak, Dark Oak, Cherry, Beech). Egna färgresolvers för gräs, Oak/Dark Oak/Vine
+    och Birch, så färgerna blandas över biomgränser och cachas som vanillas. Gräs: Grass Block, Short/Tall Grass,
+    Fern, Bush, Pink Petals, Wildflowers, Worn Grass och Trodden Path. Löv utan tint (Cherry och våra träslag) ritas på
+    hösten med en grå kopia av sin textur som tintas med höstfärgen.
+  - **Kala träd:** lövblockens modeller lindas in (`ModelEvent.ModifyBakingResult`) och ritar kala grenar eller knoppar
+    i stället för löv. Varje block har en egen tröskel (hash av positionen), så ett träd glesnar under 10 dagar från
+    6 Frostfall och är helt kalt från 15 Frostfall. Det står kalt hela vintern. 11–20 Thaw kommer knoppar (rosa blom på
+    Cherry) och 21–30 Thaw löven. Grentexturerna ritas av `scripts/gen_seasonal_leaves_textures.py` (fristående
+    texturskript, ingen plats i kedjan) i trädets barkfärger.
+  - **Lövträd:** Oak, Dark Oak, Birch, Cherry, Red/Orange/Yellow Poplar (kala men ingen färgändring, de är redan
+    höstfärgade), Aspen, Alder, Beech, Linden, Willow, Ash och Hazel. **Ändras inte:** Spruce, Pine, Yew, Jungle,
+    Acacia, Mangrove, Azalea, Pale Oak och Ancient Oak.
+  - **Klimat:** i biomer med bastemperatur från 0.95 (djungel, savann, öken, badlands) ändras varken färg eller löv.
+    I biomer som är snöiga hela året (under 0.1) ändras inte färgerna, men lövträd blir ändå kala. Nether och End
+    ändras inte.
+  - **Omritning:** när månaden byts, eller en dag medan löven faller eller slår ut, töms tint-cachen och sektionerna
+    runt spelaren byggs om på plats (`LevelExtractor.setSectionRangeDirty`, ingen tom värld som vid `allChanged`).
+    Det händer högst runt 30 gånger per år.
+  - **Begränsningar:** kala löv är fortfarande lövblock. Kollision, drops, lövförfall och fallande lövpartiklar är
+    oförändrade, och partiklarna när man slår sönder ett kalt block ser ut som löv. Med Cutout Leaves avstängt (snabb
+    grafik) ritar vanilla alla löv ogenomskinliga, så kala träd syns då som mörka block. Ingen advancement, eftersom
+    det bara är utseende.
 
 ### Grödor och mark
 - Varje gröda har en **säsongsprofil som data**: en tillväxtfaktor per säsong och eventuellt frostkänslighet (dör
@@ -269,7 +295,8 @@
    direkt, snöväder ger ett tunt snötäcke, så en skog man besöker först mitt i vintern är redan vit. Varje chunk minns
    dagen (`Thaw.UPDATED`). Hav fryser bara där de är kalla hela året (inga säsongsisar på havet); sjöar och älvar fryser.
 6. **Grödor och bär** (profiler, frysta stadier) och **djur** (vinterlugn, ingen parning, björnar i ide, flyttfåglar): byggda, v0.90.0. `WinterAnimals.java`, säsongsprofiler i `Farming.climate()`, frysta buskar i `WildBerryBushBlock`.
-7. **Färger + kala träd.**
+7. **Färger + kala träd** (byggd, fas 7). Bara på klienten: färgresolvers för gräs och löv med ett steg per månad, och
+   inlindade lövmodeller som ritar kala grenar eller knoppar efter dag och position. Se "Lövträd" under 4. Säsonger.
 
 Varje fas: advancements, `mod_version`-bump, registry och anteckningar, ålders-dokument, och ett laddtest
 (`runGameTestServer`) innan push. Kalendermatematiken får ett eget gametest.

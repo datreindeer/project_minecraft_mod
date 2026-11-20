@@ -68,7 +68,32 @@ public final class CalendarTest {
         check(h, 2.0F + Seasons.offset(2.0F, -1) > 1.5F && 0.95F + Seasons.offset(0.95F, 1) < 1.1F, "deserts stay hot, summer only a little warmer");
         thaw(h);
         cropsAndBerries(h);
+        seasonLook(h);
         h.succeed();
+    }
+
+    /** Colours step once a month; deciduous leaves fall late in autumn, stay bare in winter, bud then leaf out in spring. */
+    private static void seasonLook(GameTestHelper h) {
+        int green = 0xFF48B518, summer = 3 * Calendar.MONTH_DAYS + 5, winter = 3 * Calendar.SEASON_DAYS + 10;
+        check(h, SeasonLook.grass(green, 0.8F, summer / Calendar.MONTH_DAYS) == green && SeasonLook.grass(green, 0.8F, 9) != green, "grass green in summer, not in winter");
+        check(h, SeasonLook.grass(green, 2.0F, 9) == green && SeasonLook.grass(green, 0.0F, 9) == green && SeasonLook.grass(green, 0.8F, -1) == green,
+                "no colour change in deserts, snowy biomes or other dimensions");
+        int hunting = SeasonLook.foliage(green, 0.7F, 7, false);
+        check(h, (hunting >> 16 & 0xFF) > (hunting >> 8 & 0xFF), "oak leaves more red than green in Hunting");
+        check(h, SeasonLook.autumn(0.7F, 5, true) == -1 && SeasonLook.autumn(0.7F, 6, true) != -1, "untinted leaves tinted from Leaffall");
+        int bare = 0, leafy = 0;
+        for (int t = 0; t < 100; t++) {
+            check(h, SeasonLook.stage(summer, t) == SeasonLook.LEAVES && SeasonLook.stage(winter, t) == SeasonLook.BARE
+                    && SeasonLook.stage(SeasonLook.FALL_START - 1, t) == SeasonLook.LEAVES && SeasonLook.stage(5, t) == SeasonLook.BARE
+                    && SeasonLook.stage(SeasonLook.LEAF_START - 1, t) == SeasonLook.BUDS && SeasonLook.stage(Calendar.MONTH_DAYS, t) == SeasonLook.LEAVES,
+                    "leaf stage " + t);
+            if (SeasonLook.stage(SeasonLook.FALL_START + SeasonLook.CHANGE_DAYS / 2, t) == SeasonLook.BARE) bare++;
+            if (SeasonLook.stage(SeasonLook.LEAF_START + SeasonLook.CHANGE_DAYS / 2, t) == SeasonLook.LEAVES) leafy++;
+        }
+        check(h, bare > 20 && bare < 80 && leafy > 20 && leafy < 80, "trees thin out and leaf out gradually");
+        check(h, SeasonLook.key(summer) == SeasonLook.key(summer + 1) && SeasonLook.key(SeasonLook.FALL_START) != SeasonLook.key(SeasonLook.FALL_START + 1)
+                && SeasonLook.key(Calendar.MONTH_DAYS - 1) != SeasonLook.key(Calendar.MONTH_DAYS), "re-render key changes only when the look does");
+        check(h, SeasonLook.seasonal(0.7F) && !SeasonLook.seasonal(0.95F), "tropical trees keep their leaves");
     }
 
     /** Every crop rests in winter; bushes freeze only in a cold winter, and a frozen bush gives nothing until it thaws. */

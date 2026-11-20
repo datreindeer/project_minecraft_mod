@@ -33,12 +33,7 @@ public class MechanicalClient {
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/mold_bench.png")));
     }
 
-    /** Worn Grass and Trodden Path: the grass parts (tintindex 0) take the biome's grass colour, like a Grass Block. */
-    @SubscribeEvent
-    static void registerBlockTints(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.BlockTintSources event) {
-        event.register(java.util.List.of(net.minecraft.client.color.block.BlockTintSources.grassBlock()),
-                com.mechanical.TrampledPaths.WORN_GRASS.get(), com.mechanical.TrampledPaths.TRODDEN_PATH.get());
-    }
+    // Worn Grass and Trodden Path take the (seasonal) grass colour like a Grass Block: SeasonalFoliage.registerTints
 
     @SubscribeEvent
     static void registerHud(RegisterGuiLayersEvent event) {

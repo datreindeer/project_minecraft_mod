@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mechanical:block/seasonal/yellow_poplar_buds"
+  }
+}
