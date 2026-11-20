@@ -590,6 +590,8 @@ måste fyllas på.
 | Weaponsmith | 3 | 3 Bronze Ingot | 20 Coin → Bronze Knife (max 3) |
 |  | 4 | 12 Crushed Copper Ore | 32 Coin → Bronze Spear (max 3), 36 Coin → Bronze Sword (max 3) |
 
+- **Myntens ikon växer med stacken** som Firewood: 1–6, 7–16, 17–32, 33–46 och 47–64 mynt ger fem bilder
+  (ett mynt upp till tre staplar; texturer från `scripts/gen_coin_textures.py`, modeller från `gen_bronze.py`).
 - **Pengarna är Copper Coin** (ersätter vanillas Emerald, ungefär 1 Emerald = 4 Copper Coin). Byborna betalar med mynt
   när de köper och tar mynt när de säljer. Mynt präglas på Bronze Anvil (se Prägla mynt nedan).
 - Priser: ett bronsverktyg 20–48 Copper Coin, en Bronze Ingot drygt 1, mat och råvaror 4–12. Köpen ger 20 xp (nivå 3)
