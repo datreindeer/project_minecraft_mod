@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PHP",
+    "PPP",
+    " P "
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "H": "mechanical:rhino_hide"
+  },
+  "result": {
+    "id": "minecraft:shield",
+    "count": 1
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/mammoth_ivory",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mammoth_fat"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:mammoth_fat"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.mammoth_tallow.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.mammoth_tallow.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

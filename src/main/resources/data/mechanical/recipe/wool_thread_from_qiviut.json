@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:qiviut"
+  ],
+  "result": {
+    "id": "mechanical:wool_thread",
+    "count": 2
+  }
+}

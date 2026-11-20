@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lynx_rug"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/lynx_rug"
+}

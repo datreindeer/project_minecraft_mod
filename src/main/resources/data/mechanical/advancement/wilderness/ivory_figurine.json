@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/mammoth_ivory",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:ivory_figurine"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:ivory_figurine"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.ivory_figurine.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.ivory_figurine.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

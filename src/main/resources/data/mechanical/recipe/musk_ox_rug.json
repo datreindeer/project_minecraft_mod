@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:musk_ox_hide",
+    "mechanical:qiviut"
+  ],
+  "result": {
+    "id": "mechanical:musk_ox_rug",
+    "count": 1
+  }
+}

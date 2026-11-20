@@ -92,7 +92,7 @@ public abstract class Predator extends WildAnimal {
         return entityData.get(CROUCHING);
     }
 
-    void setCrouching(boolean crouching) {
+    protected void setCrouching(boolean crouching) {
         entityData.set(CROUCHING, crouching);
     }
 
@@ -100,7 +100,7 @@ public abstract class Predator extends WildAnimal {
         return entityData.get(LEAPING);
     }
 
-    void setLeaping(boolean leaping) {
+    protected void setLeaping(boolean leaping) {
         entityData.set(LEAPING, leaping);
     }
 
@@ -110,11 +110,11 @@ public abstract class Predator extends WildAnimal {
         return t <= 0 ? 0 : Math.min(1.0F, Math.min(t, 50 - t) / 8.0F);
     }
 
-    void startCalling(int ticks) {
+    protected void startCalling(int ticks) {
         entityData.set(CALLING, ticks);
     }
 
-    boolean isCalling() {
+    protected boolean isCalling() {
         return entityData.get(CALLING) > 0;
     }
 
@@ -123,21 +123,21 @@ public abstract class Predator extends WildAnimal {
     }
 
     /** Blood moon or starving: fire no longer keeps it off. */
-    boolean fearless() {
+    protected boolean fearless() {
         return BloodMoon.isActive(level()) || starving();
     }
 
     /** Night (or a blood moon, or hunger): time to hunt. */
-    boolean huntingTime() {
+    protected boolean huntingTime() {
         return level().isDarkOutside() || BloodMoon.isActive(level()) || starving();
     }
 
-    boolean retreating() {
+    protected boolean retreating() {
         return retreatUntil > level().getGameTime();
     }
 
     /** Breaks off and runs (badly hurt, pack halved, scared off). */
-    void retreat(Vec3 from, int ticks) {
+    protected void retreat(Vec3 from, int ticks) {
         retreatUntil = level().getGameTime() + ticks;
         setTarget(null);
         setCrouching(false);
@@ -164,7 +164,7 @@ public abstract class Predator extends WildAnimal {
         return e.getMainHandItem().is(SCARES_PREDATORS) || e.getOffhandItem().is(SCARES_PREDATORS);
     }
 
-    boolean torchKeepsOff(LivingEntity e) {
+    protected boolean torchKeepsOff(LivingEntity e) {
         return !fearless() && holdsFire(e);
     }
 
@@ -172,7 +172,7 @@ public abstract class Predator extends WildAnimal {
      * If {@code t} shelters by a fire: prowls round that fire just beyond its reach (FIRE_AVOID + 4), on its own side of
      * it (so the path never crosses the light), and returns true. Call every tick; repaths every second.
      */
-    boolean prowlRoundFire(LivingEntity t, double speed) {
+    protected boolean prowlRoundFire(LivingEntity t, double speed) {
         if (fearless()) return false;
         BlockPos fire = NightDangers.nearestFire(level(), t.position(), FIRE_SAFE);
         if (fire == null) return false;
@@ -209,7 +209,7 @@ public abstract class Predator extends WildAnimal {
     }
 
     /** Valid quarry right now. */
-    boolean canHunt(LivingEntity e) {
+    protected boolean canHunt(LivingEntity e) {
         if (e == null || !e.isAlive() || e == this) return false;
         if (e instanceof Player p) return !p.isCreative() && !p.isSpectator();
         return isPrey(e);
