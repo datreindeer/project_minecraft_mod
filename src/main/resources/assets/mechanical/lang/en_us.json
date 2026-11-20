@@ -1783,6 +1783,10 @@
   "advancements.mechanical.hunting.woolly_rhino.description": "Butcher a Woolly Rhinoceros: Raw Rhino Meat, Raw Rhino Hide, Rhino Horn, Sinew, Bone",
   "advancements.mechanical.hunting.waters.title": "Shore and River",
   "advancements.mechanical.hunting.waters.description": "Butcher seals, walruses and the great river fish",
+  "advancements.mechanical.hunting.beaver.title": "Beaver",
+  "advancements.mechanical.hunting.beaver.description": "Butcher a Beaver: Raw Beaver, Raw Beaver Pelt, Beaver Tail, Castoreum, Beaver Tooth, Sinew",
+  "advancements.mechanical.hunting.otter.title": "Otter",
+  "advancements.mechanical.hunting.otter.description": "Butcher a Otter: Raw Otter, Raw Otter Pelt, Sinew",
   "advancements.mechanical.hunting.seal.title": "Seal",
   "advancements.mechanical.hunting.seal.description": "Butcher a Seal: Raw Seal Meat, Raw Sealskin, Blubber, Sinew",
   "advancements.mechanical.hunting.sturgeon.title": "Sturgeon",
@@ -1814,11 +1818,5 @@
   "advancements.mechanical.hunting.ptarmigan.title": "Willow Ptarmigan",
   "advancements.mechanical.hunting.ptarmigan.description": "Butcher a Willow Ptarmigan: Feather, Raw Ptarmigan",
   "advancements.mechanical.hunting.rock_dove.title": "Rock Dove",
-  "advancements.mechanical.hunting.rock_dove.description": "Butcher a Rock Dove: Feather, Raw Pigeon",
-  "advancements.mechanical.hunting.more_game.title": "More Game",
-  "advancements.mechanical.hunting.more_game.description": "Butcher the rest of the wild",
-  "advancements.mechanical.hunting.beaver.title": "Beaver",
-  "advancements.mechanical.hunting.beaver.description": "Butcher a Beaver: Raw Beaver, Raw Beaver Pelt, Beaver Tail, Castoreum, Beaver Tooth, Sinew",
-  "advancements.mechanical.hunting.otter.title": "Otter",
-  "advancements.mechanical.hunting.otter.description": "Butcher a Otter: Raw Otter, Raw Otter Pelt, Sinew"
+  "advancements.mechanical.hunting.rock_dove.description": "Butcher a Rock Dove: Feather, Raw Pigeon"
 }

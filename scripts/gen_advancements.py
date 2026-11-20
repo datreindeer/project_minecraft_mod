@@ -730,7 +730,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
                  "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
     "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena"],
-    "waters": ["seal", "walrus", "pike", "sturgeon"],
+    "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)
     "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),

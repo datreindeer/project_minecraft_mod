@@ -1639,6 +1639,7 @@ tabellen**, så att man lär sig hur den görs.
 De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och recept):
 
 <!-- fauna-links -->
+- [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
 - [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
