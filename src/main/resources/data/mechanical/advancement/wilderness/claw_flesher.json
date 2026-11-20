@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/wolverine",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:claw_flesher"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:claw_flesher"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.claw_flesher.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.claw_flesher.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

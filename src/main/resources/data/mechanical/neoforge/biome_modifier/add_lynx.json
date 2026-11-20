@@ -1,0 +1,22 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:old_growth_pine_taiga",
+    "mechanical:pine_heath",
+    "minecraft:snowy_taiga",
+    "minecraft:dark_forest"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:lynx",
+      "weight": 2,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 2
+      }
+    }
+  ]
+}

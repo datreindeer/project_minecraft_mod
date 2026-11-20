@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/snare",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_lemming"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:lemming_pelt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:lemming_pelt"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.lemming.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.lemming.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

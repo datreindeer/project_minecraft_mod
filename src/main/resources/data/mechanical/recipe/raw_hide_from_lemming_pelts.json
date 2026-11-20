@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:lemming_pelt",
+    "mechanical:lemming_pelt",
+    "mechanical:lemming_pelt",
+    "mechanical:lemming_pelt",
+    "mechanical:twine"
+  ],
+  "result": {
+    "id": "mechanical:raw_hide",
+    "count": 1
+  }
+}

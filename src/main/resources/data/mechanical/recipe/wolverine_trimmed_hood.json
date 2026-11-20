@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:fur_hood",
+    "mechanical:wolverine_fur",
+    "mechanical:wolverine_fur",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:wolverine_trimmed_hood",
+    "count": 1
+  }
+}

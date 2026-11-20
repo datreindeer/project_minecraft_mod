@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/wolverine",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wolverine_trimmed_hood"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:wolverine_trimmed_hood"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.wolverine_hood.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.wolverine_hood.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

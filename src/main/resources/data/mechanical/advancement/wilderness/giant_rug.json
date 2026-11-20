@@ -1,0 +1,57 @@
+{
+  "parent": "mechanical:wilderness/pegged_hide",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bison_rug"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:musk_ox_rug"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mammoth_rug"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bison_rug"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.giant_rug.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.giant_rug.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:snowy_plains",
+    "minecraft:snowy_taiga",
+    "minecraft:grove",
+    "minecraft:ice_spikes"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:woolly_mammoth",
+      "weight": 1,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    }
+  ]
+}
