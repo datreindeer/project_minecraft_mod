@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:disk",
+  "half_height": 1,
+  "radius": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 1,
+    "max_inclusive": 2
+  },
+  "state_provider": {
+    "type": "minecraft:rule_based",
+    "fallback": {
+      "id": "mechanical:bog_iron_ore"
+    },
+    "rules": []
+  },
+  "target": {
+    "type": "minecraft:matching_blocks",
+    "blocks": [
+      "minecraft:mud",
+      "minecraft:clay",
+      "minecraft:dirt",
+      "minecraft:grass_block",
+      "minecraft:coarse_dirt",
+      "minecraft:sand",
+      "minecraft:gravel"
+    ]
+  }
+}

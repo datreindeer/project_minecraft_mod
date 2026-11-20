@@ -1267,6 +1267,8 @@ texturer: `scripts/gen_bloomery_textures.py`.
 
 - **Iron Ore kräver Bronze Pickaxe** (taggen `mechanical:needs_bronze_tool`, som förut): koppar-, sten- och flinthackor
   bryter den utan drop. Ger vanillas **Raw Iron**.
+- **Raw Bog Iron** (myrmalm, grävs med spade i gölar) smälts också i Bloomery: 6 st per lupp. Se *Bog Iron* i
+  [03-iron-age.md](03-iron-age.md).
 - **Raw Iron smälts bara i Bloomery.** Vanillas sex ugnsrecept (`iron_ingot_from_smelting/blasting_raw_iron`, `..._iron_ore`,
   `..._deepslate_iron_ore`) är avstängda, Clay Kiln och Smelting Furnace har inget recept för den, den går inte i en
   Crucible och krossas inte på Stone Anvil. Lägerelden har inget recept heller.

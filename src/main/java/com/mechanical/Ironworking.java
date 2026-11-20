@@ -67,6 +67,12 @@ public final class Ironworking {
     /** What a worked bloom gives. */
     public static final int INGOTS_PER_BLOOM = 2, SLAG_PER_BLOOM = 1;
 
+    // --- bog iron: rusty lumps in the floors of fen and swamp pools, dug with any shovel (scripts/gen_bog_iron.py) ---
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> BOG_IRON_ORE = BLOCKS.registerSimpleBlock("bog_iron_ore", p -> p
+            .mapColor(MapColor.TERRACOTTA_BROWN).strength(0.8F).sound(SoundType.MUD).requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> BOG_IRON_ORE_ITEM = ITEMS.registerSimpleBlockItem("bog_iron_ore", BOG_IRON_ORE);
+    public static final DeferredItem<Item> RAW_BOG_IRON = ITEMS.registerSimpleItem("raw_bog_iron");
+
     // --- refractory ---
     public static final DeferredItem<Item> GROG = ITEMS.registerSimpleItem("grog");
     public static final DeferredItem<Item> FIRE_CLAY = ITEMS.registerSimpleItem("fire_clay");
@@ -207,6 +213,17 @@ public final class Ironworking {
         for (int i = 0; i < BloomeryBlockEntity.SMELT_TICKS; i++) BloomeryBlockEntity.serverTick(level, bloomery);
         h.assertTrue(bloomery.getItem(BloomeryBlockEntity.OUTPUT).is(HOT_IRON_BLOOM.get()), "4 Raw Iron at 1500° make a Hot Iron Bloom (got "
                 + bloomery.getItem(BloomeryBlockEntity.OUTPUT) + ")");
+
+        // bog iron: any shovel digs it (not a pickaxe or a bare hand), and 6 Raw Bog Iron make a bloom
+        var bog = BOG_IRON_ORE.get().defaultBlockState();
+        h.assertTrue(new ItemStack(Mechanical.FLINT_SHOVEL.get()).isCorrectToolForDrops(bog), "a Flint Shovel digs Bog Iron Ore");
+        h.assertFalse(new ItemStack(Bronze.BRONZE_PICKAXE.get()).isCorrectToolForDrops(bog), "a pickaxe gets nothing from Bog Iron Ore");
+        h.assertFalse(ItemStack.EMPTY.isCorrectToolForDrops(bog), "nor a bare hand");
+        h.assertTrue(BloomeryBlockEntity.canSmelt(new ItemStack(RAW_BOG_IRON.get())), "the bloomery takes Raw Bog Iron");
+        h.assertTrue(BloomeryBlockEntity.recipeFor(new ItemStack(RAW_BOG_IRON.get())).orElseThrow().count() == BloomeryBlockEntity.BOG_ORE_PER_BLOOM,
+                "6 Raw Bog Iron per bloom");
+        h.assertTrue(KilnBlockEntity.bakeFor(new ItemStack(RAW_BOG_IRON.get())) == null && Casting.oreUnits(new ItemStack(RAW_BOG_IRON.get())) == null,
+                "Raw Bog Iron smelts nowhere else");
 
         // Raw Iron smelts nowhere else: not in the Clay Kiln, the crucible, the Smelting Furnace, on the Stone Anvil or in vanilla furnaces
         ItemStack raw = new ItemStack(Items.RAW_IRON);

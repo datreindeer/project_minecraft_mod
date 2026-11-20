@@ -776,6 +776,20 @@
    },
    {
     "title": {
+     "sv": "Myrmalm",
+     "en": "Bog iron"
+    },
+    "items": [
+     "bog_iron_ore",
+     "raw_bog_iron"
+    ],
+    "text": {
+     "sv": "Järnålderns lättaste järn ligger i myren. Leta i botten av gölar i **Willow Fen**, Swamp och Mangrove Swamp (ibland i åfåror): rostbruna fläckar av [[bog_iron_ore]] i de översta lagren under vattnet.\n\nGräv med **vilken spade som helst**, även Flint Shovel; hacka eller händer ger inget. Varje block ger 1 [[raw_bog_iron]] (Fortune hjälper). Den är fattigare än järnmalm: **6 Raw Bog Iron** blir en lupp i Bloomery, mot 4 [[minecraft:raw_iron]].",
+     "en": "The Iron Age's easiest iron lies in the bog. Look in the floors of pools in **Willow Fen**, Swamp and Mangrove Swamp (sometimes river beds): rusty-brown patches of [[bog_iron_ore]] in the top layers under the water.\n\nDig with **any shovel**, even a Flint Shovel; a pickaxe or bare hands get nothing. Each block gives 1 [[raw_bog_iron]] (Fortune helps). It is poorer than iron ore: **6 Raw Bog Iron** make a bloom in the Bloomery, against 4 [[minecraft:raw_iron]]."
+    }
+   },
+   {
+    "title": {
      "sv": "Bloomery och smidesjärn",
      "en": "Bloomery and wrought iron"
     },
@@ -791,8 +805,8 @@
      "wrought_iron_ingot"
     ],
     "text": {
-     "sv": "Krossa Brick på Stone Anvil till [[grog]], blanda 2 Clay Ball + 2 Grog till [[fire_clay]] och bränn den i kilnen vid **1100°** (Charcoal och Bellows) till [[fire_brick]]. Bygg en **Bloomery**: en [[bloomery_hearth]] med två [[bloomery_stack]] ovanpå och toppen öppen (19 Fire Brick och en Clay Tuyere).\n\nLägg 4 Raw Iron och Charcoal i härden, tänd med Fire Drill och pumpa Bellows mot härden: järnet reduceras först vid **1350°**, hetare än kilnen och Smelting Furnace når. Ut kommer en glödande [[hot_iron_bloom]].\n\nGjut en [[bronze_anvil]] (10 enheter brons, en hel degel) och en [[bronze_smithing_hammer]]. Lägg den heta luppen på städet och slå **8 gånger** innan den svalnar (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. En kall lupp värms om vid 1100° i Bloomery eller kilnen. **Här tar spelet slut just nu:** järnåldern är inte byggd än.",
-     "en": "Crush Brick on the Stone Anvil into [[grog]], mix 2 Clay Ball + 2 Grog into [[fire_clay]] and fire it in the kiln at **1100°** (Charcoal and Bellows) into [[fire_brick]]. Build a **Bloomery**: a [[bloomery_hearth]] with two [[bloomery_stack]]s on it and the top left open (19 Fire Bricks and a Clay Tuyere).\n\nPut 4 Raw Iron and Charcoal in the hearth, light it with a Fire Drill and pump Bellows into the hearth: the iron only reduces at **1350°**, hotter than the kiln and the Smelting Furnace reach. Out comes a glowing [[hot_iron_bloom]].\n\nCast a [[bronze_anvil]] (10 units of bronze, a full crucible) and a [[bronze_smithing_hammer]]. Put the hot bloom on the anvil and strike it **8 times** before it cools (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. A cold bloom is reheated at 1100° in the Bloomery or the kiln. **This is where the game ends for now:** the Iron Age is not built yet."
+     "sv": "Krossa Brick på Stone Anvil till [[grog]], blanda 2 Clay Ball + 2 Grog till [[fire_clay]] och bränn den i kilnen vid **1100°** (Charcoal och Bellows) till [[fire_brick]]. Bygg en **Bloomery**: en [[bloomery_hearth]] med två [[bloomery_stack]] ovanpå och toppen öppen (19 Fire Brick och en Clay Tuyere).\n\nLägg 4 Raw Iron (eller 6 [[raw_bog_iron]]) och Charcoal i härden, tänd med Fire Drill och pumpa Bellows mot härden: järnet reduceras först vid **1350°**, hetare än kilnen och Smelting Furnace når. Ut kommer en glödande [[hot_iron_bloom]].\n\nGjut en [[bronze_anvil]] (10 enheter brons, en hel degel) och en [[bronze_smithing_hammer]]. Lägg den heta luppen på städet och slå **8 gånger** innan den svalnar (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. En kall lupp värms om vid 1100° i Bloomery eller kilnen. **Här tar spelet slut just nu:** järnåldern är inte byggd än.",
+     "en": "Crush Brick on the Stone Anvil into [[grog]], mix 2 Clay Ball + 2 Grog into [[fire_clay]] and fire it in the kiln at **1100°** (Charcoal and Bellows) into [[fire_brick]]. Build a **Bloomery**: a [[bloomery_hearth]] with two [[bloomery_stack]]s on it and the top left open (19 Fire Bricks and a Clay Tuyere).\n\nPut 4 Raw Iron (or 6 [[raw_bog_iron]]) and Charcoal in the hearth, light it with a Fire Drill and pump Bellows into the hearth: the iron only reduces at **1350°**, hotter than the kiln and the Smelting Furnace reach. Out comes a glowing [[hot_iron_bloom]].\n\nCast a [[bronze_anvil]] (10 units of bronze, a full crucible) and a [[bronze_smithing_hammer]]. Put the hot bloom on the anvil and strike it **8 times** before it cools (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. A cold bloom is reheated at 1100° in the Bloomery or the kiln. **This is where the game ends for now:** the Iron Age is not built yet."
     }
    }
   ]
