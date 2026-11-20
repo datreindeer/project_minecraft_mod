@@ -243,9 +243,9 @@ public final class Farming {
                 return;
             }
         }
-        // days are Calendar.SLOWDOWN times vanilla length: same growth per day
+        // vanilla speed per real minute, not per (3x longer) day: divided by Calendar.SLOWDOWN a field took ~5 hours of play
         float chance = blocker(level, pos, c, temp, soil) != null ? 0 : c.factor(temp) * c.season(Calendar.season(level.getOverworldClockTime()))
-                * fertilityFactor(Fertility.get(soil)) / Calendar.SLOWDOWN;
+                * fertilityFactor(Fertility.get(soil));
         if (random.nextFloat() >= chance) event.setResult(CropGrowEvent.Pre.Result.DO_NOT_GROW);
     }
 

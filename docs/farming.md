@@ -80,6 +80,8 @@ Barley har ingen vild källa än (bara creative); kommer med handel/byar senare.
 Alla grödor (även vanilla) går genom NeoForges `CropGrowEvent`. Vanillas egen tillväxtchans gäller fortfarande; vår
 faktor multipliceras på: **temperaturfaktor × säsongsfaktor × fukt × bördighet × dagsljus**. Temperaturen är `Temperature.ambient`
 (0–20; slätt ~12,4, taiga 8, snö 2–6, savann/öken 22, natt −5 under bar himmel, regn −2).
+Ingen delning med dagens längd (dagarna är 3× vanillas): tidigare delades chansen med 3 och ett vetefält tog ~5 timmars
+spel att mogna. Nu växer det i vanilla-takt per riktig minut, men bara på dagen: runt 1–2 timmar för vete på fuktig jord.
 
 | Gröda | Växer (temp) | Bäst | Frost dödar under | Övrigt |
 |---|---|---|---|---|
