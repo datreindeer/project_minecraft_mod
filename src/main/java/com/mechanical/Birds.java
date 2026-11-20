@@ -55,9 +55,23 @@ public final class Birds {
     private static Map<EntityType<?>, Supplier<Item>> plucked;
 
     private static Map<EntityType<?>, Supplier<Item>> plucked() {
-        if (plucked == null) plucked = Map.of(Wildlife.GOOSE.get(), PLUCKED_GOOSE, Wildlife.PHEASANT.get(), PLUCKED_PHEASANT,
-                Wildlife.PTARMIGAN.get(), PLUCKED_PTARMIGAN, Wildlife.ROCK_DOVE.get(), PLUCKED_PIGEON, EntityTypes.CHICKEN, PLUCKED_CHICKEN);
+        if (plucked == null) {
+            Map<EntityType<?>, Supplier<Item>> all = new java.util.HashMap<>(Map.of(Wildlife.GOOSE.get(), PLUCKED_GOOSE, Wildlife.PHEASANT.get(), PLUCKED_PHEASANT,
+                    Wildlife.PTARMIGAN.get(), PLUCKED_PTARMIGAN, Wildlife.ROCK_DOVE.get(), PLUCKED_PIGEON, EntityTypes.CHICKEN, PLUCKED_CHICKEN));
+            for (var e : REGISTERED) all.put(e.getKey().get(), e.getValue());
+            plucked = all;
+        }
         return plucked;
+    }
+
+    private static final java.util.List<Map.Entry<Supplier<? extends EntityType<?>>, Supplier<Item>>> REGISTERED = new java.util.ArrayList<>();
+
+    /**
+     * Adds an edible bird (it leaves a carcass that is plucked, is light to carry, hangs by the feet and can be taken whole
+     * once plucked) from its own feature class; call during mod construction. Its yield goes to {@link Butchery#register}.
+     */
+    public static void register(Supplier<? extends EntityType<?>> type, Supplier<Item> pluckedItem) {
+        REGISTERED.add(Map.entry(type, pluckedItem));
     }
 
     /** One of the edible birds that leave a carcass (light to carry, hung by the feet, can be taken whole once plucked). */
