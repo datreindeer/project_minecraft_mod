@@ -51,6 +51,7 @@ Sinew, Tool Station och Leatherworking Bench.
 | Basic Smithing Hammer, Basic Binding | Verktyg/item | Texturer finns |
 | Whetstone | Block/verktyg | Slipa gjutna huvuden |
 | Saw | Verktyg | Planks från logs (den öppna punkten från stenåldern) |
+| Bronze Fire Grate | Item | Smids av 3 Bronze Ingot på Bronze Anvil. I Fire Pit och Clay Kiln: längre brinntid, mindre rök och sot, Charcoal i Fire Pit |
 
 ## Vad bronsen låser upp (förslag)
 
@@ -1416,6 +1417,40 @@ Pengar ersätter Emerald (`Coins.java`): **Copper Coin**, **Silver Coin** och **
 Det finns ingen kopparplåt, så tackan präglas direkt. Att prägla ger mer än att sälja koppar till Armorer (6 Copper
 Ingot → 4 Coin), så smedjan lönar sig. Texturer: `gen_coin_textures.py`; modeller och namn i `gen_bronze.py`.
 
+### Bronze Fire Grate
+
+Ett galler av bronsstänger som läggs i en Fire Pit eller i en Clay Kilns eldstad. Elden får luft underifrån: veden räcker
+längre och det ryker och sotar mycket mindre. Inga nackdelar.
+
+**Smida:**
+
+1. Högerklicka **Bronze Anvil** med **Bronze Ingot** (kall, ingen värme). Upp till **3** läggs på banan, vilken kvalitet
+   som helst (Poor Bronze går bra, gallret bär ingen kvalitet). Tom hand tar tillbaka dem.
+2. **6 slag** med **Bronze Smithing Hammer** (1 slitage per slag) → **1 Bronze Fire Grate** hoppar upp.
+3. Med färre än 3 tackor klingar hammaren av: "A Bronze Fire Grate needs 3 Bronze Ingots (2/3)", inget slitage.
+
+**I Fire Pit:** högerklicka vilken del som helst med gallret. Det ligger i gropen (stänger syns i modellen, i alla fyra
+delarna). Ett galler per eld.
+
+- Veden brinner i **en Campfires takt** i stället för dubbelt så fort, så varje vedträ räcker **2× så länge** som förut.
+- Rök och sot inomhus bara **0,3×** en Campfires (utan galler 3×). Marken bränns som av en Campfire (1×, utan galler 2×).
+  Rökpelaren utomhus blir mycket tunnare.
+- **Charcoal** läggs på högen som Firewood (räknas mot samma 16, tänder glöd igen). En Charcoal brinner som **2 Firewood**.
+  Utan galler: "Charcoal needs a grate to draw air: lay a Bronze Fire Grate in the pit", och inget händer.
+- Rivs Fire Pit kommer gallret tillbaka.
+
+**I Clay Kiln:** högerklicka någon av halvorna med gallret. Det läggs i eldstaden (stänger syns i eldöppningen).
+
+- Allt bränsle (även lägerelden ugnen byggdes på) räcker **1,5×** så länge.
+- Rök och sot **0,3×** en Campfires (utan galler 1×).
+- Temperaturerna ändras inte: Bellows behövs fortfarande för koppar och brons.
+- Bryts ugnen kommer gallret tillbaka.
+
+Kod: `FirePit.java` (`FIRE_GRATE` och konstanterna), `FirePitBlock.java`/`FirePitBlockEntity.java`,
+`KilnBlock.java`/`KilnBlockEntity.java` (`GRATE_SKIP`), `BronzeAnvilBlockEntity.smithGrate`, `Smoke.smokeFactor`. Data
+`scripts/gen_firepit.py` (gallrets modell, item, namn), `scripts/gen_data.py` (kilnens gallermodell, multipart-blockstate),
+texturer `scripts/gen_fire_grate_textures.py`. Advancement *Clean Burn* (efter Bronze Anvil).
+
 ### Slag
 
 1 per lupp. **4 Slag → 1 Gravel** (formlöst, vägfyllning). Ingen annan användning än.
@@ -1423,7 +1458,8 @@ Ingot → 4 Coin), så smedjan lönar sig. Texturer: `gen_coin_textures.py`; mod
 ### Advancements (Bronze Age-fliken)
 
 *Fire Brick* (efter Toward Iron), *Bloomery* (goal, från koden), *Iron Bloom* (goal), *Wrought Iron* (challenge),
-*Bronze Anvil* (goal, efter Bronze!), *Mint* (första Copper Coin, efter Bronze Anvil), *Smith* (Bronze Smithing Hammer, efter Bronze!),
+*Bronze Anvil* (goal, efter Bronze!), *Mint* (första Copper Coin, efter Bronze Anvil), *Clean Burn* (Bronze Fire Grate,
+efter Bronze Anvil), *Smith* (Bronze Smithing Hammer, efter Bronze!),
 *Quarryman* (Bronze Quarry Hammer, efter Smith).
 
 ### Test

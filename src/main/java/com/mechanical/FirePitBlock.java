@@ -47,16 +47,18 @@ public class FirePitBlock extends Block implements EntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final BooleanProperty EMBERS = Campfires.EMBERS;
     public static final IntegerProperty FUEL = IntegerProperty.create("fuel", 0, 3);
+    /** A Bronze Fire Grate lies in it (FirePit.FIRE_GRATE); kept on all four parts like LIT. */
+    public static final BooleanProperty GRATE = BooleanProperty.create("grate");
     private static final VoxelShape SHAPE = column(16, 0, 5);
 
     public FirePitBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(PART, 0).setValue(LIT, false).setValue(EMBERS, false).setValue(FUEL, 0));
+        registerDefaultState(stateDefinition.any().setValue(PART, 0).setValue(LIT, false).setValue(EMBERS, false).setValue(FUEL, 0).setValue(GRATE, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(PART, LIT, EMBERS, FUEL);
+        builder.add(PART, LIT, EMBERS, FUEL, GRATE);
     }
 
     public static BlockPos controller(BlockState state, BlockPos pos) {
@@ -143,6 +145,23 @@ public class FirePitBlock extends Block implements EntityBlock {
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         FirePitBlockEntity pit = FirePit.entity(level, pos, state);
         if (pit == null || stack.getItem() instanceof FireDrillItem) return InteractionResult.PASS; // the drill lights it (FireDrillItem)
+        if (stack.is(FirePit.FIRE_GRATE.get())) {
+            if (state.getValue(GRATE)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (!level.isClientSide()) {
+                setAll(level, pit.getBlockPos(), s -> s.setValue(GRATE, true));
+                level.playSound(null, pit.getBlockPos(), net.minecraft.sounds.SoundEvents.CHAIN_PLACE, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+                stack.consume(1, player);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (stack.is(net.minecraft.world.item.Items.CHARCOAL)) {
+            if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+            if (!state.getValue(GRATE)) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.fire_pit.needs_grate"));
+                return InteractionResult.FAIL;
+            }
+            return pit.feed(server, player, stack) ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
+        }
         if (stack.is(Mechanical.FIREWOOD_TAG)) {
             if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
             return pit.feed(server, player, stack) ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;

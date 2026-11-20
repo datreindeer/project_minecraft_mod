@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,6 +42,17 @@ public final class FirePit {
     /** Raids on a camp with a burning Fire Pit at dusk: this many extra raiders (cap raised by the same), and this chance multiplier. */
     public static final int RAID_EXTRA = 2;
     public static final float RAID_CHANCE = 1.5F;
+    /**
+     * Bronze Fire Grate (Bronze Age): smithed from {@link #GRATE_INGOTS} Bronze Ingots with {@link #GRATE_HITS} blows on the
+     * Bronze Anvil, laid in a Fire Pit or a Clay Kiln's firebox. Air from below: a pit burns at {@link #GRATE_DRAIN} (wood lasts
+     * twice as long) and takes Charcoal; a kiln's fuel lasts 1.5 times as long ({@link KilnBlockEntity#GRATE_SKIP}); both smoke and soot
+     * only {@link #GRATE_SMOKE} times as much as a campfire, and a grated pit scorches no more than a campfire.
+     */
+    public static final DeferredItem<Item> FIRE_GRATE = ITEMS.registerSimpleItem("bronze_fire_grate");
+    public static final int GRATE_INGOTS = 3, GRATE_HITS = 6, GRATE_DRAIN = 1;
+    public static final float GRATE_SMOKE = 0.3F;
+    /** Charcoal on a grated pit burns this many Firewood pieces' worth. */
+    public static final int CHARCOAL_BURN = 2;
 
     public static final DeferredBlock<FirePitBlock> FIRE_PIT = BLOCKS.registerBlock("fire_pit", FirePitBlock::new, p -> p
             .mapColor(MapColor.STONE).strength(1.5F).sound(SoundType.STONE).noOcclusion().pushReaction(PushReaction.IMMOVEABLE)
@@ -62,6 +74,10 @@ public final class FirePit {
     /** Burning or glowing (smokes a Smoking Rack over it). */
     public static boolean smoulders(BlockState state) {
         return isPit(state) && (state.getValue(FirePitBlock.LIT) || state.getValue(FirePitBlock.EMBERS));
+    }
+
+    public static boolean grated(BlockState state) {
+        return isPit(state) && state.getValue(FirePitBlock.GRATE);
     }
 
     /** Unlit (cold or embers): the Fire Drill can light it. */

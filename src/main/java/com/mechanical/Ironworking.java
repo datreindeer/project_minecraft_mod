@@ -269,6 +269,19 @@ public final class Ironworking {
         h.assertItemEntityPresent(Coins.COPPER_COIN.get(), anvilAt, 2);
         h.assertTrue(anvil.item().isEmpty(), "the ingot is used up");
 
+        // three Bronze Ingots struck cold make a Bronze Fire Grate; two take no blows
+        anvil.place(level, Bronze.BRONZE_INGOT.get().getDefaultInstance());
+        anvil.add(level, Bronze.BRONZE_INGOT.get().getDefaultInstance());
+        int worn = hammer.getDamageValue();
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(anvil.item().getCount() == 2 && hammer.getDamageValue() == worn, "two ingots: no grate and no wear");
+        anvil.add(level, Bronze.BRONZE_INGOT.get().getDefaultInstance());
+        for (int i = 0; i < FirePit.GRATE_HITS - 1; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertItemEntityNotPresent(FirePit.FIRE_GRATE.get(), anvilAt, 2);
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertItemEntityPresent(FirePit.FIRE_GRATE.get(), anvilAt, 2);
+        h.assertTrue(anvil.item().isEmpty() && hammer.getDamageValue() == worn + FirePit.GRATE_HITS, "the ingots are used up, 1 wear per blow");
+
         // a cooled bloom keeps its blows and is reheated (1100°) in the Clay Kiln
         ItemStack half = IRON_BLOOM.get().getDefaultInstance();
         half.set(BLOOM_HITS.get(), 3);

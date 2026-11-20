@@ -65,6 +65,23 @@
           }
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:kiln",
+        "state": {
+          "half": "lower",
+          "grate": "true"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bronze_fire_grate"
+        }
+      ]
     }
   ],
   "random_sequence": "mechanical:blocks/kiln"

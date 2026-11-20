@@ -1777,6 +1777,11 @@
   "gui.mechanical.clan.age.iron": "Iron Age",
   "gui.mechanical.clan.age.steam": "Steam Age",
   "gui.mechanical.clan.age.electric": "Electric Age",
+  "message.mechanical.world_age.entered": "The world has entered the %s",
+  "message.mechanical.world_age.is": "The world is in the %s",
+  "item.mechanical.bronze_fire_grate": "Bronze Fire Grate",
+  "message.mechanical.fire_pit.needs_grate": "Charcoal needs a grate to draw air: lay a Bronze Fire Grate in the pit",
+  "message.mechanical.fire_grate.ingots": "A Bronze Fire Grate needs 3 Bronze Ingots (%s/%s)",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -2377,6 +2382,8 @@
   "advancements.mechanical.bronze_age.bronze_anvil.description": "Fire a Clay Anvil Mold (32 Clay Balls), pour a full crucible of bronze (10 units) into it and grind the casting",
   "advancements.mechanical.bronze_age.copper_coin.title": "Mint",
   "advancements.mechanical.bronze_age.copper_coin.description": "Lay a Copper Ingot on a Bronze Anvil and strike it 4 times with the Bronze Smithing Hammer: 4 Copper Coins, the money villagers take",
+  "advancements.mechanical.bronze_age.fire_grate.title": "Clean Burn",
+  "advancements.mechanical.bronze_age.fire_grate.description": "Strike 3 Bronze Ingots 6 times on a Bronze Anvil and lay the grate in a Fire Pit or Clay Kiln: longer burn, far less smoke, Charcoal in the pit",
   "advancements.mechanical.bronze_age.smithing_hammer.title": "Smith",
   "advancements.mechanical.bronze_age.smithing_hammer.description": "Cast a hammer head, grind it and assemble a Bronze Smithing Hammer at the Tool Station",
   "advancements.mechanical.bronze_age.quarry_hammer.title": "Quarryman",
@@ -2650,7 +2657,5 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
-  "message.mechanical.world_age.entered": "The world has entered the %s",
-  "message.mechanical.world_age.is": "The world is in the %s"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
 }

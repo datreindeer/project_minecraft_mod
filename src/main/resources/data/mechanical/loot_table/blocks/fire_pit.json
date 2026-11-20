@@ -19,6 +19,23 @@
           }
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:fire_pit",
+        "state": {
+          "part": "0",
+          "grate": "true"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bronze_fire_grate"
+        }
+      ]
     }
   ],
   "random_sequence": "mechanical:blocks/fire_pit"

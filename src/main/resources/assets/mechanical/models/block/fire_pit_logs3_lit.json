@@ -14,7 +14,8 @@
     "log_end_lit": "mechanical:block/fire_pit_log_end_lit",
     "log_charred": "mechanical:block/fire_pit_log_charred",
     "log_end_charred": "mechanical:block/fire_pit_log_end_charred",
-    "fire": "mechanical:block/fire_pit_fire"
+    "fire": "mechanical:block/fire_pit_fire",
+    "grate": "mechanical:block/bronze_fire_grate"
   },
   "elements": [
     {

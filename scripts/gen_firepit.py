@@ -7,7 +7,8 @@
 - logs: the base layer (charred when cold, glowing when lit or embers) and three more layers for FUEL 1-3 (fresh bark
   when cold, glowing when burning), stacked log-cabin style: x, z, x, then two crossed diagonals on top
 - fire: four crossed planes of the animated fire texture, taller with FUEL 2-3; only while LIT
-- multipart blockstate over part / lit / embers / fuel; item: a flat picture (item/fire_pit)
+- Bronze Fire Grate (bars over the ash when GRATE) and its item, the grate drops with the pit; messages
+- multipart blockstate over part / lit / embers / fuel / grate; item: a flat picture (item/fire_pit)
 - recipe: 8 rock chunks round a Firewood (misc); loot: the Fire Pit from part 0 (FirePitBlock drops it when a side part
   is broken); lang
 Textures: scripts/gen_firepit_textures.py.
@@ -190,6 +191,7 @@ TEX = {
     "log_lit": M + "block/fire_pit_log_lit", "log_end_lit": M + "block/fire_pit_log_end_lit",
     "log_charred": M + "block/fire_pit_log_charred", "log_end_charred": M + "block/fire_pit_log_end_charred",
     "fire": M + "block/fire_pit_fire",
+    "grate": M + "block/bronze_fire_grate",
 }
 
 
@@ -211,6 +213,10 @@ for state, tex in LOGS.items():
         if layer == 0 and state == "fresh" or layer > 0 and state == "charred":
             continue  # the base layer is never fresh wood; fuel stacked on top is never charred
         model(f"fire_pit_logs{layer}_{state}", make(tex), glow=state == "lit")
+# Bronze Fire Grate (FirePitBlock.GRATE): a frame with six bars along z, just over the ash, under the logs
+GRATE = [box([7, 1, 6.5], [25, 2, 7.5], "#grate", seed=1), box([7, 1, 24.5], [25, 2, 25.5], "#grate", seed=2)] + [
+    box([x, 1.2, 7.5], [x + 1, 1.9, 24.5], "#grate", seed=3 + i) for i, x in enumerate((8, 11, 14, 17, 20, 23))]
+model("fire_pit_grate", GRATE)
 model("fire_pit_fire", fire(20))
 model("fire_pit_fire_tall", fire(27))
 
@@ -229,12 +235,16 @@ for layer in (1, 2, 3):
     fuel = "|".join(str(f) for f in range(layer, 4))
     parts.append({"when": COLD | {"fuel": fuel}, "apply": {"model": B + f"fire_pit_logs{layer}_fresh"}})
     parts.append({"when": {"OR": [h | {"fuel": fuel} for h in HOT]}, "apply": {"model": B + f"fire_pit_logs{layer}_lit"}})
+parts.append({"when": P0 | {"grate": "true"}, "apply": {"model": B + "fire_pit_grate"}})
 parts.append({"when": P0 | {"lit": "true", "fuel": "0|1"}, "apply": {"model": B + "fire_pit_fire"}})
 parts.append({"when": P0 | {"lit": "true", "fuel": "2|3"}, "apply": {"model": B + "fire_pit_fire_tall"}})
 w(A / "blockstates/fire_pit.json", {"multipart": parts})
 
 w(A / "models/item/fire_pit.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/fire_pit"}})
 w(A / "items/fire_pit.json", {"model": {"type": "minecraft:model", "model": M + "item/fire_pit"}})
+
+w(A / "models/item/bronze_fire_grate.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/bronze_fire_grate"}})
+w(A / "items/bronze_fire_grate.json", {"model": {"type": "minecraft:model", "model": M + "item/bronze_fire_grate"}})
 
 w(D / "mechanical/recipe/fire_pit.json", {"type": "minecraft:crafting_shaped", "category": "misc",
     "pattern": ["RRR", "RFR", "RRR"], "key": {"R": "#mechanical:rock_chunks", "F": "#mechanical:firewood"},
@@ -243,7 +253,9 @@ w(D / "mechanical/recipe/fire_pit.json", {"type": "minecraft:crafting_shaped", "
 w(D / "mechanical/loot_table/blocks/fire_pit.json", {"type": "minecraft:block", "pools": [{
     "rolls": 1, "condition": {"type": "minecraft:survives_explosion"},
     "entries": [{"type": "minecraft:item", "name": M + "fire_pit",
-                 "condition": {"type": "minecraft:match_block", "blocks": M + "fire_pit", "state": {"part": "0"}}}]}],
+                 "condition": {"type": "minecraft:match_block", "blocks": M + "fire_pit", "state": {"part": "0"}}}]}, {
+    "rolls": 1, "condition": {"type": "minecraft:match_block", "blocks": M + "fire_pit", "state": {"part": "0", "grate": "true"}},
+    "entries": [{"type": "minecraft:item", "name": M + "bronze_fire_grate"}]}],
     "random_sequence": "mechanical:blocks/fire_pit"})
 
 merge(A / "lang/en_us.json", {
@@ -251,5 +263,8 @@ merge(A / "lang/en_us.json", {
     "message.mechanical.fire_pit.no_room": "A Fire Pit needs a flat 2×2 of solid ground in front of you",
     "message.mechanical.fire_pit.full": "The Fire Pit holds no more firewood (%s)",
     "message.mechanical.fire_pit.fuel": "Firewood stacked on the fire: %s/%s",
+    "item.mechanical.bronze_fire_grate": "Bronze Fire Grate",
+    "message.mechanical.fire_pit.needs_grate": "Charcoal needs a grate to draw air: lay a Bronze Fire Grate in the pit",
+    "message.mechanical.fire_grate.ingots": "A Bronze Fire Grate needs 3 Bronze Ingots (%s/%s)",
 })
 print("firepit ok")

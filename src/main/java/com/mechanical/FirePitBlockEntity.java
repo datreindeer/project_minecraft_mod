@@ -21,6 +21,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -101,14 +102,14 @@ public class FirePitBlockEntity extends BlockEntity {
         RandomSource random = level.getRandom();
         NightDangers.markLit(level, pos, FirePit.REACH);
         if (burnLeft < 0) burnLeft = Campfires.MIN_BURN + random.nextInt(Campfires.MAX_BURN - Campfires.MIN_BURN);
-        if ((burnLeft -= FirePit.DRAIN * Temperature.fireDrain(level, pos, random)) <= 0) {
+        if ((burnLeft -= (state.getValue(FirePitBlock.GRATE) ? FirePit.GRATE_DRAIN : FirePit.DRAIN) * Temperature.fireDrain(level, pos, random)) <= 0) {
             // nothing stacked on it: a Firewood Pile beside the pit (2x2 from this corner, so 2 blocks out) feeds it
             if (stock.isEmpty() && FirewoodPileBlock.takeNear(level, pos, 2).isEmpty()) {
                 sinkToEmbers();
                 return;
             }
-            if (!stock.isEmpty()) stock.removeLast(); // the next piece of the stack catches
-            burnLeft += Campfires.FIREWOOD_TICKS;
+            boolean charcoal = !stock.isEmpty() && stock.removeLast().is(Items.CHARCOAL); // the next piece of the stack catches
+            burnLeft += Campfires.FIREWOOD_TICKS * (charcoal ? FirePit.CHARCOAL_BURN : 1);
             updateFuel();
         }
         boolean changed = false;
@@ -139,7 +140,7 @@ public class FirePitBlockEntity extends BlockEntity {
         double cx = pos.getX() + 1, cy = pos.getY(), cz = pos.getZ() + 1;
         if (state.getValue(FirePitBlock.LIT)) {
             int fuel = state.getValue(FirePitBlock.FUEL);
-            if (r.nextFloat() < 0.3F + 0.1F * fuel) {
+            if (r.nextFloat() < (0.3F + 0.1F * fuel) * (state.getValue(FirePitBlock.GRATE) ? FirePit.GRATE_SMOKE : 1)) { // a grate burns clean
                 for (int i = 0; i < 2 + r.nextInt(3); i++) {
                     level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, cx + (r.nextDouble() - 0.5) * 1.1, cy + 0.6 + r.nextDouble() * 1.4,
                             cz + (r.nextDouble() - 0.5) * 1.1, 0, 0.07 + r.nextDouble() * 0.03, 0);
@@ -201,7 +202,7 @@ public class FirePitBlockEntity extends BlockEntity {
         if (level != null) level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 0.8F);
     }
 
-    /** Firewood: blows embers back into flame (as on the campfire), else goes on the stack. False if the stack is full. */
+    /** Firewood (or Charcoal on a grated pit): blows embers back into flame (as on the campfire), else goes on the stack. False if the stack is full. */
     boolean feed(ServerLevel level, Player player, ItemStack stack) {
         if (getBlockState().getValue(FirePitBlock.EMBERS) && !getBlockState().getValue(FirePitBlock.LIT)) {
             light();

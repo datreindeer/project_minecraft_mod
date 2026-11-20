@@ -44,6 +44,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     public static final int INPUT = 0, FUEL = 1, OUTPUT = 2;
     /** The firewood of the campfire the kiln was built on: three firewood's worth. */
     public static final int CAMPFIRE_BURN_TICKS = 3600;
+    /** With a Bronze Fire Grate the fuel skips burning one tick in this many (3: it lasts 1.5x as long). */
+    public static final int GRATE_SKIP = 3;
     /** A new kiln's clay must burn this long (2 min, at {@link #FIRING_TEMP}° or more) before it can bake; it fires in 3 visible steps. */
     public static final int FIRE_TICKS = 2400;
     public static final int FIRING_TEMP = 500, CEILING = 1300, CRACKED_MAX = 600, HOT = 900, PUMP = 40;
@@ -382,7 +384,9 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
                     kiln.setLit(false);
                 }
             }
-            if (kiln.burn > 0) kiln.burn = Math.max(0, kiln.burn - Temperature.fireDrain(level, pos, level.getRandom()));
+            // a Bronze Fire Grate skips every GRATE_SKIP-th tick: fuel lasts 1.5x as long
+            boolean saved = state.getValue(KilnBlock.GRATE) && level.getGameTime() % GRATE_SKIP == 0;
+            if (kiln.burn > 0 && !saved) kiln.burn = Math.max(0, kiln.burn - Temperature.fireDrain(level, pos, level.getRandom()));
         }
         kiln.heat(level);
         kiln.keepMoltenHot(level);

@@ -454,20 +454,23 @@ for key, clay_tex in KILN_CLAY_BY.items():
         kbox([2.5, 6, 2.5], [13.5, 8, 13.5]), kbox([3.5, 8, 3.5], [12.5, 10, 12.5]), kbox([5, 10, 5], [11, 12, 11]),  # dome
         kbox([6.5, 12, 6.5], [9.5, 14.5, 9.5]), soot([6.5, 14.5, 6.5], [9.5, 16, 9.5]),  # chimney, blackened top
     ]})
+# Bronze Fire Grate in the firebox (KilnBlock.GRATE, lower half only): a frame and four bars over the coals, seen through the opening
+grate_box = lambda frm, to: {"from": frm, "to": to, "faces": {f: {"texture": "#grate"} for f in ("north", "south", "east", "west", "up", "down")}}
+w(A / "models/block/kiln_grate.json", {"textures": {"particle": "mechanical:block/bronze_fire_grate", "grate": "mechanical:block/bronze_fire_grate"},
+    "elements": [grate_box([3.5, 2, 3.5], [12.5, 3, 4.5]), grate_box([3.5, 2, 11.5], [12.5, 3, 12.5])]
+                + [grate_box([x, 2.2, 4.5], [x + 1, 2.8, 11.5]) for x in (4.5, 6.5, 8.5, 10.5)]})
 rot = {"north": 0, "east": 90, "south": 180, "west": 270}
-variants = {}
+# multipart (not variants): the grate is an extra part, and the clay key only needs firing when uncracked
+parts = []
 for f, y in rot.items():
-    for half in ("lower", "upper"):
-        for lit in ("false", "true"):
-            for active in ("false", "true"):
-                for st in range(4):
-                    for cracks in range(4):
-                        for hot in ("false", "true"):
-                            key = kiln_clay_key(st, cracks)
-                            lower = f"_lit{'_hot' if hot == 'true' else ''}" if lit == "true" else ""
-                            model = f"mechanical:block/kiln_upper{key}" if half == "upper" else f"mechanical:block/kiln_lower{lower}{key}"
-                            variants[f"active={active},cracks={cracks},facing={f},firing={st},half={half},hot={hot},lit={lit}"] = {"model": model, **({"y": y} if y else {})}
-w(A / "blockstates/kiln.json", {"variants": variants})
+    yr = {"y": y} if y else {}
+    clay = [({"firing": str(st), "cracks": "0"}, kiln_suffix(st)) for st in range(4)] + [({"cracks": str(c)}, f"_c{c}") for c in (1, 2, 3)]
+    for cond, key in clay:
+        parts.append({"when": {"facing": f, "half": "upper", **cond}, "apply": {"model": f"mechanical:block/kiln_upper{key}", **yr}})
+        for fire, lower in (({"lit": "false"}, ""), ({"lit": "true", "hot": "false"}, "_lit"), ({"lit": "true", "hot": "true"}, "_lit_hot")):
+            parts.append({"when": {"facing": f, "half": "lower", **cond, **fire}, "apply": {"model": f"mechanical:block/kiln_lower{lower}{key}", **yr}})
+    parts.append({"when": {"facing": f, "half": "lower", "grate": "true"}, "apply": {"model": "mechanical:block/kiln_grate", **yr}})
+w(A / "blockstates/kiln.json", {"multipart": parts})
 # the item shows how far its clay is fired (kept in its block_state component when a fired kiln is broken)
 w(A / "items/kiln.json", {"model": {"type": "minecraft:select", "property": "minecraft:block_state", "block_state_property": "firing",
     "cases": [{"when": str(st), "model": {"type": "minecraft:model", "model": f"mechanical:block/kiln_upper{kiln_suffix(st)}"}} for st in range(1, 4)],
@@ -483,7 +486,10 @@ w(D / "mechanical/loot_table/blocks/kiln.json", {"type": "minecraft:block", "poo
         {"type": "minecraft:item", "name": "mechanical:kiln", "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "upper", "firing": "0"}}},
         {"type": "minecraft:item", "name": "mechanical:kiln", "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "upper", "firing": {"min": "1"}}},
          "modifier": [{"type": "minecraft:copy_state", "block": "mechanical:kiln", "properties": ["firing", "cracks"]}]},
-        {**STICKS, "condition": half_drop("lower", "")["condition"]}]}],
+        {**STICKS, "condition": half_drop("lower", "")["condition"]}]},
+    # the Bronze Fire Grate comes back out of the firebox
+    {"rolls": 1, "condition": {"type": "minecraft:match_block", "blocks": "mechanical:kiln", "state": {"half": "lower", "grate": "true"}},
+     "entries": [{"type": "minecraft:item", "name": "mechanical:bronze_fire_grate"}]}],
     "random_sequence": "mechanical:blocks/kiln"})
 w(D / "minecraft/tags/block/mineable/pickaxe.json", {"values": ["mechanical:tin_ore", "mechanical:tin_block", "mechanical:kiln", "mechanical:stone_anvil", "mechanical:loose_malachite", "mechanical:loose_native_copper", "mechanical:loose_cassiterite"] + [f"mechanical:loose_{v}" for v in ROCKS]})
 

@@ -172,6 +172,15 @@
     {
       "when": {
         "part": "0",
+        "grate": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_grate"
+      }
+    },
+    {
+      "when": {
+        "part": "0",
         "lit": "true",
         "fuel": "0|1"
       },

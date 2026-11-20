@@ -59,18 +59,20 @@ public class KilnBlock extends Block implements EntityBlock {
     public static final int CRACKED = 3;
     /** Lit and at least {@link KilnBlockEntity#HOT}°: the fire opening glows and the flames are brighter. */
     public static final BooleanProperty HOT = BooleanProperty.create("hot");
+    /** A Bronze Fire Grate in the firebox (FirePit.FIRE_GRATE); only ever true on the LOWER half. */
+    public static final BooleanProperty GRATE = BooleanProperty.create("grate");
 
     private static final VoxelShape LOWER_SHAPE = column(15, 0, 16);
     private static final VoxelShape UPPER_SHAPE = Shapes.or(column(13, 0, 6), column(11, 6, 8), column(9, 8, 10), column(6, 10, 12), column(3, 12, 16));
 
     public KilnBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(LIT, false).setValue(ACTIVE, false).setValue(FIRING, FIRED).setValue(CRACKS, 0).setValue(HOT, false));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(LIT, false).setValue(ACTIVE, false).setValue(FIRING, FIRED).setValue(CRACKS, 0).setValue(HOT, false).setValue(GRATE, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HALF, LIT, ACTIVE, FIRING, CRACKS, HOT);
+        builder.add(FACING, HALF, LIT, ACTIVE, FIRING, CRACKS, HOT, GRATE);
     }
 
     public static BlockPos lowerPos(BlockState state, BlockPos pos) {
@@ -145,6 +147,18 @@ public class KilnBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (stack.getItem() instanceof FireDrillItem) return InteractionResult.PASS;
+        // a Bronze Fire Grate goes into the firebox
+        if (stack.is(FirePit.FIRE_GRATE.get())) {
+            BlockPos lower = lowerPos(state, pos);
+            BlockState firebox = level.getBlockState(lower);
+            if (!firebox.is(this) || firebox.getValue(GRATE)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (!level.isClientSide()) {
+                level.setBlock(lower, firebox.setValue(GRATE, true), Block.UPDATE_ALL);
+                level.playSound(null, lower, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
+                stack.consume(1, player);
+            }
+            return InteractionResult.SUCCESS;
+        }
         // a cracked kiln is patched with Clay Balls, one per click
         if (stack.is(net.minecraft.world.item.Items.CLAY_BALL) && state.getValue(CRACKS) >= CRACKED) {
             if (!level.isClientSide() && level.getBlockEntity(lowerPos(state, pos)) instanceof KilnBlockEntity kiln) {

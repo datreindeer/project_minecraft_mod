@@ -327,8 +327,9 @@ till sig större räder.
   ved, mat, partiklar), `client/FirePitRenderer.java` (maten på spetten). Kopplingar: `NightDangers` (eldregistret har en
   räckvidd per eld), `Temperature`, `Smoke`, `Wind.firePitTick`, `CampAge`, `people/Raids`, `FireDrillItem`, `Tinder`,
   `SmokingRackBlock`, `BakingStoneBlock`, `wildlife/Predator`, `client/NightAmbience`. Data `scripts/gen_firepit.py`
-  (efter gen_cart, före gen_block_items), texturer `scripts/gen_firepit_textures.py`. Krok för senare: ett bronsgaller eller
-  bronsspett kan läggas som egen del i blockstatens multipart och läsas i `FirePitBlockEntity`.
+  (efter gen_cart, före gen_block_items), texturer `scripts/gen_firepit_textures.py`.
+- **Bronze Fire Grate** (bronsåldern): ett galler i gropen ger Campfire-takt på veden, 0,3× rök och sot, Charcoal som
+  bränsle. Se 02-bronze-age.md (Bronze Fire Grate).
 
 ### Stam (spelarstammar, G)
 - **Grunda:** tryck **G** nära (inom 4 block) en Fire Pit som ingen stam har, skriv ett namn och tryck Found. Fire Pit:en
@@ -370,6 +371,7 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
   stiger ~5°/s mot bränslets max när den brinner och sjunker ~3°/s när den är släckt. Varje recept kräver en viss
   temperatur och väntar (utan att börja om) tills ugnen är varm nog. Trä räcker för allt i stenåldern; Crucible (800°)
   kräver Charcoal eller en Bellows.
+- **Bronze Fire Grate** (bronsåldern) i eldstaden: bränslet räcker 1,5× så länge, 0,3× rök och sot. Se 02-bronze-age.md.
 
 **Recept i Clay Kiln**
 
@@ -1183,10 +1185,12 @@ hörnet med blockentiteten), och Clay Kiln när den brinner (inte facklor eller 
 - **Röken skingras** långsamt när elden slocknar eller rummet öppnas: från full rök till ingenting på 1,5 minut.
 - Testa med `/smoke <pos>` (op): röknivån vid positionen och alla eldar som följs (stängt, rumsstorlek, läckor).
   Eldar hittas inom 3 chunks från spelare (och runt positionen i `/smoke`).
+- En **Bronze Fire Grate** (bronsåldern) i Fire Pit eller Clay Kiln sänker röken till 0,3× en Campfires (`Smoke.smokeFactor`).
 
 ### Sot
 Samma eldar som ger rök (tänd Campfire, Soul Campfire, Fire Pit, brinnande Clay Kiln) sotar ner ytorna runt sig, både ute och inne.
-Fire Pit sotar 3× så fort och bränner marken 2× så fort runt alla fyra blocken.
+Fire Pit sotar 3× så fort och bränner marken 2× så fort runt alla fyra blocken. Med en **Bronze Fire Grate** (bronsåldern)
+sotar Fire Pit och Clay Kiln bara 0,3× en Campfire, och Fire Pit bränner marken som en Campfire.
 - **Block: Soot.** Ett tunt svart lager på blockytor (som Glow Lichen): ingen kollision, går att ersätta, kan sitta på
   flera sidor av samma luftblock. Tre stadier: **1** ljus fläck, **2** sotigt, **3** tjockt svart sot (gäller alla sidor
   i blocket). Regn tvättar inte bort det, det sitter kvar tills man skrapar bort det. Har inget eget item.

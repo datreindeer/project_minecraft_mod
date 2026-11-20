@@ -73,7 +73,13 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
             if (level instanceof ServerLevel server) strike(server, pos, player, stack, hand);
             return InteractionResult.SUCCESS;
         }
-        if (!anvil.item().isEmpty() || !(stack.getItem() instanceof IronBloomItem || Coins.mintable(stack))) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        // Bronze Ingots pile up (FirePit.GRATE_INGOTS) for a Bronze Fire Grate
+        if (stack.is(Bronze.BRONZE_INGOT.get()) && anvil.item().is(Bronze.BRONZE_INGOT.get()) && anvil.item().getCount() < FirePit.GRATE_INGOTS) {
+            if (level instanceof ServerLevel server) anvil.add(server, stack.consumeAndReturn(1, player));
+            return InteractionResult.SUCCESS;
+        }
+        if (!anvil.item().isEmpty() || !(stack.getItem() instanceof IronBloomItem || Coins.mintable(stack) || stack.is(Bronze.BRONZE_INGOT.get())))
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level instanceof ServerLevel server) anvil.place(server, stack.consumeAndReturn(1, player));
         return InteractionResult.SUCCESS;
     }

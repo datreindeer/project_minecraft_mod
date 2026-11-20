@@ -1,3844 +1,1455 @@
 {
-  "variants": {
-    "active=false,cracks=0,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=false,cracks=0,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=false,cracks=0,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=false,cracks=0,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=false,cracks=0,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=1,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=2,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=3,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=true,cracks=0,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=true,cracks=0,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=true,cracks=0,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=true,cracks=0,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=1,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=2,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=true,cracks=3,facing=north,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3"
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=1,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=2,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=3,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=true,cracks=0,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=1,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=2,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=true,cracks=3,facing=east,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 90
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=1,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=2,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=3,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=true,cracks=0,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=1,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=2,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=true,cracks=3,facing=south,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 180
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_2",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_3",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=lower,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=lower,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_lower_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_1",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_2",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_2",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_3",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=lower,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=lower,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_lower_lit_hot_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=upper,hot=false,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=upper,hot=true,lit=false": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=false,cracks=0,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=1,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=2,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=false,cracks=3,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=0,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=1,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_2",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=2,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=true,cracks=0,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_3",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=1,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c1",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=2,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c2",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=upper,hot=false,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
-    },
-    "active=true,cracks=3,facing=west,firing=3,half=upper,hot=true,lit=true": {
-      "model": "mechanical:block/kiln_upper_c3",
-      "y": 270
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "firing": "0",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "firing": "1",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "firing": "2",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "firing": "3",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "cracks": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "cracks": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "upper",
+        "cracks": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "half": "lower",
+        "grate": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_grate"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "firing": "0",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "firing": "1",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "firing": "2",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "firing": "3",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "cracks": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "cracks": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "upper",
+        "cracks": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "half": "lower",
+        "grate": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_grate",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "firing": "0",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "firing": "1",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "firing": "2",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "firing": "3",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "cracks": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "cracks": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "upper",
+        "cracks": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "half": "lower",
+        "grate": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_grate",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "firing": "0",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "0",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "firing": "1",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "1",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "firing": "2",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "2",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "firing": "3",
+        "cracks": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "firing": "3",
+        "cracks": "0",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "cracks": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "1",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "cracks": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "2",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "upper",
+        "cracks": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_upper_c3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_c3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_c3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "cracks": "3",
+        "lit": "true",
+        "hot": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_lower_lit_hot_c3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "half": "lower",
+        "grate": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kiln_grate",
+        "y": 270
+      }
     }
-  }
+  ]
 }

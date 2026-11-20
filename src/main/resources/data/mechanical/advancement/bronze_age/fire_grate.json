@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bronze_anvil",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_fire_grate"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_fire_grate"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.fire_grate.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.fire_grate.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
