@@ -183,12 +183,24 @@ public final class ModelExport {
                 break;
             }
             if (model == null) return root;
-            Object state = newState(cls);
-            if (state == null) return root;
-            setField(state, "showsHorns", horns == null || horns);
-            if (texture != null) setField(state, "texture", net.minecraft.resources.Identifier.parse(texture));
-            model.setupAnim(state);
-            return root;
+            Class<?> type = stateClass(cls);
+            for (int tries = 0; ; tries++) {
+                Object state = newState(type);
+                if (state == null) return root;
+                setField(state, "showsHorns", horns == null || horns);
+                if (texture != null) setField(state, "texture", net.minecraft.resources.Identifier.parse(texture));
+                try {
+                    model.setupAnim(state);
+                    return root;
+                } catch (ClassCastException e) {
+                    // setupAnim(WildAnimalRenderState) that casts to the renderer's subclass (birds): retry with that class
+                    java.util.regex.Matcher m = java.util.regex.Pattern.compile("cannot be cast to class (\\S+)").matcher(String.valueOf(e.getMessage()));
+                    Class<?> sub = m.find() ? Class.forName(m.group(1)) : null;
+                    if (tries > 3 || sub == null || !type.isAssignableFrom(sub)) throw e;
+                    type = sub;
+                    root.getAllParts().forEach(ModelPart::resetPose);
+                }
+            }
         } catch (Throwable t) {
             errors.add(id + " setupAnim (raw pose used): " + t);
             root.getAllParts().forEach(ModelPart::resetPose);
@@ -196,8 +208,7 @@ public final class ModelExport {
         }
     }
 
-    private static Object newState(Class<?> cls) throws ReflectiveOperationException {
-        Class<?> type = stateClass(cls);
+    private static Object newState(Class<?> type) throws ReflectiveOperationException {
         if (type == null) return null;
         if (type == Float.class) return 0.0F;
         if (type == net.minecraft.util.Unit.class) return net.minecraft.util.Unit.INSTANCE;
