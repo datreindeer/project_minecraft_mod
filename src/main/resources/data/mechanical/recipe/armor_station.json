@@ -2,12 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "LNL",
+    "BIB",
     "PCP"
   ],
   "key": {
-    "L": "minecraft:leather",
-    "N": "#mechanical:needles",
+    "B": "mechanical:bronze_plate",
+    "I": "mechanical:bronze_ingot",
     "P": "#minecraft:planks",
     "C": "minecraft:crafting_table"
   },

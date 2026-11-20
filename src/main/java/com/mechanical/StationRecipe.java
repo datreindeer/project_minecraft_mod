@@ -108,6 +108,7 @@ public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, 
     /** All station recipes that unlock by material (the Tool Station has its own list in ToolStationRecipes). */
     static List<StationRecipe> lockable() {
         List<StationRecipe> all = new ArrayList<>(ArmorStationRecipes.ALL);
+        all.addAll(LeatherworkingRecipes.ALL);
         all.addAll(FletchingRecipes.ALL);
         all.removeIf(r -> r.unlockedBy() == null);
         return all;

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "mechanical:block/leatherworking_bench_front",
+    "up": "mechanical:block/leatherworking_bench_top",
+    "down": "minecraft:block/oak_planks",
+    "north": "mechanical:block/leatherworking_bench_front",
+    "south": "mechanical:block/leatherworking_bench_front",
+    "east": "mechanical:block/leatherworking_bench_side",
+    "west": "mechanical:block/leatherworking_bench_side"
+  }
+}

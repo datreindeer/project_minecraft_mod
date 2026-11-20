@@ -240,6 +240,16 @@ public final class Gemstones {
                 new ItemStack(Items.IRON_PICKAXE));
         h.assertTrue(!drops.isEmpty() && drops.stream().allMatch(d -> d.is(item("rough_citrine")) && isFine(d)),
                 "a Large Citrine Crystal drops fine Rough Citrine (got " + drops + ")");
+        // /regengems: "ores" picks exactly the 9 ore veins; a chunk gets its gems once, a second run leaves it alone
+        var oreFeatures = com.mechanical.worldgen.GemRegen.features(h.getLevel(), false);
+        h.assertTrue(oreFeatures.size() == ORES.length && com.mechanical.worldgen.GemRegen.features(h.getLevel(), true).size() == 32,
+                "regengems ores = the 9 ore veins, all = 32 gem features (got " + oreFeatures + ")");
+        var chunk = new net.minecraft.world.level.ChunkPos(net.minecraft.core.SectionPos.blockToSectionCoord(h.absolutePos(BlockPos.ZERO).getX()) + 4,
+                net.minecraft.core.SectionPos.blockToSectionCoord(h.absolutePos(BlockPos.ZERO).getZ()) + 4);
+        h.getLevel().getChunk(chunk.x(), chunk.z()).setData(com.mechanical.worldgen.GemRegen.HAS_GEMS, false);
+        int[] first = com.mechanical.worldgen.GemRegen.regen(h.getLevel(), chunk, 0, true);
+        int[] second = com.mechanical.worldgen.GemRegen.regen(h.getLevel(), chunk, 0, true);
+        h.assertTrue(first[0] == 1 && second[0] == 0 && second[1] == 1, "regengems does a chunk once (got " + first[0] + ", then " + second[0] + ")");
         h.assertTrue(BronzeOres.crushed(garnet).is(GARNET_GRIT.get()) && BronzeOres.crushed(ruby).is(CORUNDUM_GRIT.get())
                 && BronzeOres.crushed(new ItemStack(Items.FLINT)).is(FLINT_GRIT.get()), "grit is crushed on the Stone Anvil");
 

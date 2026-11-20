@@ -20,7 +20,8 @@
     "ModelFeatureRendererMixin",
     "QuadrupedModelMixin",
     "CreativeModeInventoryScreenMixin",
-    "InventoryScreenMixin"
+    "InventoryScreenMixin",
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

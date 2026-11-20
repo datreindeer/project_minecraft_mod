@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/many_hands",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:mammoth_ivory"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.moving_a_mountain.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.moving_a_mountain.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

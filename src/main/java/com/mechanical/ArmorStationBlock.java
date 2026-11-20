@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** Leatherworker's bench: right-click to sew armour (see {@link ArmorStationMenu}). */
+/** Smith's bench: right-click to rivet metal armour (see {@link ArmorStationMenu}). */
 public class ArmorStationBlock extends Block {
     private static final Component TITLE = Component.translatable("container.mechanical.armor_station");
 

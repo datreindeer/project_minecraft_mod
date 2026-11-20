@@ -1,8 +1,9 @@
-"""Generate rock items, the bone needle, the Armor Station block and the station GUIs.
+"""Generate rock items, the bone needle, the Leatherworking Bench and Armor Station blocks and the station GUIs.
 
 Rocks: stone_chunk / granite_chunk / diorite_chunk / andesite_chunk (shown as "Rock", "Granite Rock", ...),
 each a different shape, coloured from its vanilla block texture and lit from the top left.
-Armor Station: an oak leatherworker's bench (top / side / front), built on vanilla oak planks.
+Leatherworking Bench: an oak leatherworker's bench (top / side / front), built on vanilla oak planks.
+Armor Station: the same bench as a smithy, with bronze plates, a helmet and a hammer.
 GUIs: copies of tool_station.png (same slots, list and scroll bar) with only a small icon added.
 
 Run: python scripts/gen_station_textures.py
@@ -214,7 +215,7 @@ NEEDLE_PAL = {
 }
 
 
-# ---------- armor station block ----------
+# ---------- leatherworking bench / armor station blocks ----------
 
 def plank_base():
     """Oak planks with the crafting table's dark side frame (legs) and top edge."""
@@ -288,7 +289,7 @@ SIDE_DECOR = [
 ]
 
 
-def armor_station():
+def leatherworking_bench():
     pal = {**LEATHER, **BONE, **THREAD, **WOOD, **STONE_TOOL, "o": "#2a2820", "O": "#2e2416"}
     out = TEX / "block"
     top = vanilla("block/oak_planks")
@@ -296,9 +297,83 @@ def armor_station():
     for i in range(16):
         for p in ((i, 0), (i, 15), (0, i), (15, i)):
             top.putpixel(p, edge)
-    from_grid(TOP_DECOR, pal, top).save(out / "armor_station_top.png")
-    from_grid(FRONT_DECOR, pal, plank_base()).save(out / "armor_station_front.png")
-    from_grid(SIDE_DECOR, pal, plank_base()).save(out / "armor_station_side.png")
+    from_grid(TOP_DECOR, pal, top).save(out / "leatherworking_bench_top.png")
+    from_grid(FRONT_DECOR, pal, plank_base()).save(out / "leatherworking_bench_front.png")
+    from_grid(SIDE_DECOR, pal, plank_base()).save(out / "leatherworking_bench_side.png")
+
+
+def bench_top():
+    top = vanilla("block/oak_planks")
+    edge = hexc("#67502c")
+    for i in range(16):
+        for p in ((i, 0), (i, 15), (0, i), (15, i)):
+            top.putpixel(p, edge)
+    return top
+
+
+BRONZE = {"b": "#5e3e18", "c": "#9a6428", "d": "#c88e40", "e": "#f0c878"}
+SMITH_TOP = [
+    "................",
+    ".p............p.",
+    "....bbbbbb......",
+    "...bcddddcb.....",
+    "..bcdeeeddcb....",
+    "..bcdedddccb....",
+    "..bcddddcccb....",
+    "..bbcdddccbb.SS.",
+    "...bbccccbb.SssS",
+    "....b.bb.b.qSsS.",
+    "..........q..S..",
+    ".........q......",
+    "........q.......",
+    ".......q........",
+    ".p............p.",
+    "................",
+]
+SMITH_FRONT = [
+    "................",
+    "................",
+    "................",
+    "...p...p....p...",
+    "..bcb.bcb..SSS..",
+    "..bdb.bdb..SsS..",
+    "..bdb.bdb...q...",
+    "..bdcbbdc...q...",
+    "..bdeb.de...q...",
+    "..bdc.bdc...q...",
+    "..bcb.bcb...q...",
+    "..bbb.bbb...q...",
+    "................",
+    "................",
+    "................",
+    "................",
+]
+SMITH_SIDE = [
+    "................",
+    "................",
+    "................",
+    "................",
+    "......ppp.......",
+    ".......p........",
+    "......bbbb......",
+    ".....bcddcb.....",
+    "....bcdeddcb....",
+    "....bcddddcb....",
+    "....bcddccbb....",
+    "....bb.bb.bb....",
+    "....b......b....",
+    "................",
+    "................",
+    "................",
+]
+
+
+def armor_station():
+    pal = {**BRONZE, **WOOD, **STONE_TOOL}
+    out = TEX / "block"
+    from_grid(SMITH_TOP, pal, bench_top()).save(out / "armor_station_top.png")
+    from_grid(SMITH_FRONT, pal, plank_base()).save(out / "armor_station_front.png")
+    from_grid(SMITH_SIDE, pal, plank_base()).save(out / "armor_station_side.png")
 
 
 # ---------- GUIs ----------
@@ -334,6 +409,21 @@ NEEDLE_ICON = [
     "OO..........",
 ]
 
+HAMMER_ICON = [
+    "......OOOO..",
+    ".....OSssSO.",
+    "....OSssSSO.",
+    ".....OSSOO..",
+    "....OqO.....",
+    "...OqO......",
+    "..OqO.......",
+    ".OqO........",
+    "OqO.........",
+    "OO..........",
+    "............",
+    "............",
+]
+
 
 def gui(name, icon, pal):
     im = Image.open(TEX / "gui/container/tool_station.png").convert("RGBA")
@@ -345,9 +435,11 @@ def gui(name, icon, pal):
 def main():
     rocks()
     from_grid(NEEDLE, NEEDLE_PAL).save(TEX / "item/bone_needle.png")
+    leatherworking_bench()
     armor_station()
     gui("gui/container/fletching_table.png", FEATHER_ICON, FEATHER_PAL)
-    gui("gui/container/armor_station.png", NEEDLE_ICON, {**LEATHER, **BONE, "o": "#2a2820", "O": "#373737"})
+    gui("gui/container/leatherworking_bench.png", NEEDLE_ICON, {**LEATHER, **BONE, "o": "#2a2820", "O": "#373737"})
+    gui("gui/container/armor_station.png", HAMMER_ICON, {**STONE_TOOL, **WOOD, "O": "#373737"})
 
 
 if __name__ == "__main__":

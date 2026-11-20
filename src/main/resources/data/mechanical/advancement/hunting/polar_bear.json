@@ -60,6 +60,9 @@
           }
         ]
       }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
     }
   },
   "requirements": [
@@ -80,6 +83,9 @@
     ],
     [
       "has_5"
+    ],
+    [
+      "butchered"
     ]
   ],
   "display": {

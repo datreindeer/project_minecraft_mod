@@ -101,12 +101,24 @@ public class RecipeStationScreen<M extends RecipeStationMenu> extends AbstractCo
             boolean has = part.has(minecraft.player.getInventory());
             Component name = new ItemStack(part.item().get()).getHoverName();
             if (part.alt() != null) name = name.copy().append(" / ").append(new ItemStack(part.alt().get()).getHoverName());
-            if (part.tag() != null) name = Component.translatable("tag.item." + part.tag().location().getNamespace() + "." + part.tag().location().getPath().replace('/', '.'));
+            if (part.tag() != null) {
+                String path = part.tag().location().getPath();
+                name = Component.translatableWithFallback("tag.item." + part.tag().location().getNamespace() + "." + path.replace('/', '.'), tagFallback(path));
+            }
             lines.add(Component.literal(part.tool() ? "" : part.count() + "× ").append(name)
                     .append(part.tool() ? Component.literal(" (tool, loses durability)") : Component.empty())
                     .withStyle(has ? ChatFormatting.GREEN : ChatFormatting.RED));
         }
         graphics.setComponentTooltipForNextFrame(font, lines, mouseX, mouseY);
+    }
+
+    /** "rock_chunks" → "Rock Chunks (any kind)", for tags without a lang entry. */
+    static String tagFallback(String path) {
+        StringBuilder out = new StringBuilder();
+        for (String word : path.substring(path.lastIndexOf('/') + 1).split("_")) {
+            if (!word.isEmpty()) out.append(out.isEmpty() ? "" : " ").append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
+        }
+        return out + " (any kind)";
     }
 
     @Override

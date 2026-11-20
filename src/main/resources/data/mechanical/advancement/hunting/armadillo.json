@@ -20,6 +20,9 @@
           }
         ]
       }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
     }
   },
   "requirements": [
@@ -28,6 +31,9 @@
     ],
     [
       "has_1"
+    ],
+    [
+      "butchered"
     ]
   ],
   "display": {

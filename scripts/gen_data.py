@@ -290,7 +290,7 @@ shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "#
 w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
-# leather satchel: 3x3 for anything but other containers, sewn in the Armor Station (ArmorStationRecipes)
+# leather satchel: 3x3 for anything but other containers, sewn at the Leatherworking Bench (LeatherworkingRecipes)
 w(A / "models/item/leather_satchel.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/leather_satchel"}})
 w(A / "items/leather_satchel.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/leather_satchel"}})
 lang["item.mechanical.leather_satchel"] = "Leather Satchel"
@@ -575,7 +575,7 @@ for tag, piece in [("head_armor", "fur_hood"), ("chest_armor", "fur_coat"), ("le
 w(D / "mechanical/tags/item/repairs_fur_armor.json", {"values": ["mechanical:bear_pelt"]})
 # fur armour: the leather piece lined with bear pelt
 w(A / "equipment/fur.json", {"layers": {"humanoid": [{"texture": "mechanical:fur"}], "humanoid_leggings": [{"texture": "mechanical:fur"}]}})
-# (fur and leather armour are sewn at the Armor Station: ArmorStationRecipes.java)
+# (fur and leather armour are sewn at the Leatherworking Bench: LeatherworkingRecipes.java)
 # bear rug: flat, facing
 w(A / "models/block/bear_rug.json", {"textures": {"particle": "mechanical:block/bear_rug", "top": "mechanical:block/bear_rug"}, "elements": [{
     "from": [0, 0, 0], "to": [16, 1, 16], "faces": {
@@ -603,20 +603,24 @@ shapeless("peeled_egg", ["mechanical:boiled_egg"], "mechanical:peeled_egg")
 for item, name in [("boiled_egg", "Boiled Egg"), ("peeled_egg", "Peeled Egg"), ("eggshell", "Eggshell")]:
     flat_item(item)
     lang[f"item.mechanical.{item}"] = name
-# ---- armor station + bone needle ----
-w(A / "blockstates/armor_station.json", {"variants": {"": {"model": "mechanical:block/armor_station"}}})
-w(A / "models/block/armor_station.json", {"parent": "minecraft:block/cube", "textures": {
-    "particle": "mechanical:block/armor_station_front", "up": "mechanical:block/armor_station_top", "down": "minecraft:block/oak_planks",
-    "north": "mechanical:block/armor_station_front", "south": "mechanical:block/armor_station_front",
-    "east": "mechanical:block/armor_station_side", "west": "mechanical:block/armor_station_side"}})
-w(A / "items/armor_station.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/armor_station"}})
-w(D / "mechanical/loot_table/blocks/armor_station.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
-    "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": "mechanical:armor_station"}]}],
-    "random_sequence": "mechanical:blocks/armor_station"})
-lang["block.mechanical.armor_station"] = "Armor Station"
-lang["container.mechanical.armor_station"] = "Armor Station"
-w(D / "mechanical/recipe/armor_station.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["LNL", "PCP"],
+# ---- armor station (smithed armour), leatherworking bench (sewn pieces) + bone needle ----
+for station, name in [("armor_station", "Armor Station"), ("leatherworking_bench", "Leatherworking Bench")]:
+    w(A / f"blockstates/{station}.json", {"variants": {"": {"model": f"mechanical:block/{station}"}}})
+    w(A / f"models/block/{station}.json", {"parent": "minecraft:block/cube", "textures": {
+        "particle": f"mechanical:block/{station}_front", "up": f"mechanical:block/{station}_top", "down": "minecraft:block/oak_planks",
+        "north": f"mechanical:block/{station}_front", "south": f"mechanical:block/{station}_front",
+        "east": f"mechanical:block/{station}_side", "west": f"mechanical:block/{station}_side"}})
+    w(A / f"items/{station}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:block/{station}"}})
+    w(D / f"mechanical/loot_table/blocks/{station}.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
+        "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": f"mechanical:{station}"}]}],
+        "random_sequence": f"mechanical:blocks/{station}"})
+    lang[f"block.mechanical.{station}"] = name
+    lang[f"container.mechanical.{station}"] = name
+w(D / "mechanical/recipe/leatherworking_bench.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["LNL", "PCP"],
     "key": {"L": "minecraft:leather", "N": "mechanical:bone_needle", "P": "#minecraft:planks", "C": "minecraft:crafting_table"},
+    "result": {"id": "mechanical:leatherworking_bench"}})
+w(D / "mechanical/recipe/armor_station.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["BIB", "PCP"],
+    "key": {"B": "mechanical:bronze_plate", "I": "mechanical:bronze_ingot", "P": "#minecraft:planks", "C": "minecraft:crafting_table"},
     "result": {"id": "mechanical:armor_station"}})
 flat_item("bone_needle")
 lang["item.mechanical.bone_needle"] = "Bone Needle"
@@ -652,7 +656,8 @@ UNLOCKS = {
     "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones", "bone_needle_from_fish_bones", "bone_fish_hook"]),
     "bark": ("#mechanical:barks", ["plant_fibre_from_bark", "bark_basket"]),
     "bear_pelt": ("mechanical:bear_pelt", ["bear_rug"]),
-    "leather": ("minecraft:leather", ["armor_station"]),
+    "leather": ("minecraft:leather", ["leatherworking_bench"]),
+    "bronze_plate": ("mechanical:bronze_plate", ["armor_station"]),
     "bone": ("minecraft:bone", ["bone_needle_from_bone"]),
     "horn": ("mechanical:horn", ["bone_needle_from_horn"]),
     "tallow": ("mechanical:tallow", ["candle_from_tallow"]),
@@ -878,7 +883,7 @@ w(D / "mechanical/tags/item/knives.json", {"values": ["mechanical:flint_knife", 
 w(A / "models/item/iron_knife.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": "mechanical:item/iron_knife"}})
 w(A / "items/iron_knife.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/iron_knife"}})
 lang["item.mechanical.iron_knife"] = "Iron Knife"
-lang["message.mechanical.knife_too_weak"] = "This hide is too tough for your knife"
+lang["message.mechanical.knife_too_weak"] = "Too tough for this knife: it needs a Tusk Dagger, Bronze Knife or better"
 w(lang_path, lang)
 print("wildlife data ok")
 
@@ -895,36 +900,37 @@ def _vanilla(path):
     return _json.loads(_jar.read(path).decode())
 
 # Trades: each profession's level 1-2 get stone age trades; levels 3-5 are empty here (gen_bronze.py fills 3-4).
+# The Stone Age has no money (Copper Coins come with the Bronze Anvil, Coins.java): pure barter, goods for goods.
 # (wants, wants_count, gives, gives_count, max_uses, xp)
 M = "mechanical:"
-E = "minecraft:emerald"
+V = "minecraft:"
 TRADES = {
-    "armorer":       [[("minecraft:leather", 10, E, 1, 16, 2), (E, 3, "minecraft:leather_helmet", 1, 8, 1)],
-                      [(M + "sinew", 6, E, 1, 16, 10), (E, 5, "minecraft:leather_chestplate", 1, 6, 5)]],
-    "butcher":       [[(M + "game_meat_scraps", 10, E, 1, 16, 2), (E, 1, M + "cooked_venison_scraps", 4, 16, 1)],
-                      [(M + "lard", 6, E, 1, 16, 10), (E, 1, M + "cooked_beef_scraps", 4, 16, 5)]],
-    "cartographer":  [[("minecraft:paper", 24, E, 1, 16, 2), (E, 3, "minecraft:map", 1, 8, 1)],
-                      [(M + "oak_bark", 16, E, 1, 16, 10), (E, 1, M + "cordage", 6, 12, 5)]],
-    "cleric":        [[("minecraft:rotten_flesh", 24, E, 1, 16, 2), (E, 1, "minecraft:candle", 3, 12, 1)],
-                      [(M + "eggshell", 8, E, 1, 16, 10), (E, 1, "minecraft:bone_meal", 6, 12, 5)]],
-    "farmer":        [[(M + "raspberries", 16, E, 1, 16, 2), (E, 1, "minecraft:wheat_seeds", 8, 12, 1)],
-                      [(M + "blueberries", 16, E, 1, 16, 10), (E, 2, "minecraft:carrot", 3, 8, 5)]],
-    "fisherman":     [[(M + "whole_cod", 6, E, 1, 16, 2), (E, 1, M + "bone_fish_hook", 1, 12, 1)],
-                      [(M + "whole_salmon", 5, E, 1, 16, 10), (E, 3, M + "crude_fishing_rod", 1, 6, 5)]],
-    "fletcher":      [[("minecraft:stick", 32, E, 1, 16, 2), (E, 1, "minecraft:arrow", 8, 12, 1)],
-                      [("minecraft:flint", 24, E, 1, 16, 10), (E, 3, M + "crude_bow", 1, 6, 5)]],
-    "leatherworker": [[(M + "raw_hide", 6, E, 1, 16, 2), (E, 1, "minecraft:leather", 2, 12, 1)],
-                      [("minecraft:rabbit_hide", 6, E, 1, 16, 10), (E, 3, M + "bark_basket", 1, 6, 5)]],
-    "librarian":     [[("minecraft:paper", 24, E, 1, 16, 2), (E, 2, "minecraft:book", 1, 12, 1)],
-                      [("minecraft:ink_sac", 6, E, 1, 16, 10), (E, 1, "minecraft:candle", 3, 12, 5)]],
-    "mason":         [[("minecraft:clay_ball", 10, E, 1, 16, 2), (E, 1, M + "stone_chunk", 12, 16, 1)],
-                      [(M + "granite_chunk", 20, E, 1, 16, 10), (E, 1, "minecraft:packed_mud", 8, 12, 5)]],
-    "shepherd":      [[("minecraft:white_wool", 18, E, 1, 16, 2), (E, 1, M + "wool_thread", 6, 12, 1)],
-                      [(M + "plant_fibre", 24, E, 1, 16, 10), (E, 1, "minecraft:white_carpet", 4, 12, 5)]],
-    "toolsmith":     [[("minecraft:flint", 16, E, 1, 16, 2), (E, 1, M + "flint_axe", 1, 12, 1)],
-                      [(M + "stone_chunk", 24, E, 1, 16, 10), (E, 3, M + "crude_stone_axe", 1, 6, 5)]],
-    "weaponsmith":   [[(M + "cordage", 12, E, 1, 16, 2), (E, 2, M + "flint_spear", 1, 12, 1)],
-                      [(M + "tusk", 4, E, 1, 16, 10), (E, 4, M + "tusk_dagger", 1, 6, 5)]],
+    "armorer":       [[(V + "leather", 8, V + "leather_helmet", 1, 8, 2), (M + "cooked_venison_scraps", 8, V + "leather", 2, 16, 1)],
+                      [(M + "sinew", 6, V + "leather", 2, 16, 10), (V + "leather", 12, V + "leather_chestplate", 1, 6, 5)]],
+    "butcher":       [[(M + "game_meat_scraps", 10, M + "cooked_venison_scraps", 4, 16, 2), (V + "stick", 24, M + "cooked_venison_scraps", 3, 16, 1)],
+                      [(M + "lard", 6, M + "cooked_beef_scraps", 4, 16, 10), (M + "raspberries", 16, M + "cooked_beef_scraps", 3, 16, 5)]],
+    "cartographer":  [[(M + "oak_bark", 16, M + "cordage", 4, 16, 2), (V + "paper", 12, V + "map", 1, 8, 1)],
+                      [(V + "feather", 12, V + "paper", 4, 16, 10), (V + "ink_sac", 3, V + "map", 1, 8, 5)]],
+    "cleric":        [[(V + "rotten_flesh", 16, V + "candle", 2, 12, 2), (M + "eggshell", 8, V + "bone_meal", 6, 12, 1)],
+                      [(M + "tallow", 4, V + "candle", 3, 12, 10), (V + "rotten_flesh", 24, V + "bone_meal", 8, 12, 5)]],
+    "farmer":        [[(M + "raspberries", 16, V + "wheat_seeds", 8, 12, 2), (M + "twine", 6, V + "wheat_seeds", 6, 12, 1)],
+                      [(M + "blueberries", 16, V + "carrot", 3, 8, 10), (M + "cordage", 6, V + "carrot", 2, 8, 5)]],
+    "fisherman":     [[(V + "bone", 6, M + "bone_fish_hook", 1, 12, 2), (M + "cordage", 8, M + "whole_cod", 4, 16, 1)],
+                      [(M + "cordage", 12, M + "crude_fishing_rod", 1, 6, 10), (M + "raspberries", 16, M + "whole_salmon", 3, 16, 5)]],
+    "fletcher":      [[(V + "stick", 32, V + "flint", 4, 16, 2), (V + "feather", 12, V + "arrow", 8, 12, 1)],
+                      [(V + "flint", 16, V + "arrow", 8, 12, 10), (M + "cordage", 8, M + "crude_bow", 1, 6, 5)]],
+    "leatherworker": [[(M + "raw_hide", 3, V + "leather", 1, 16, 2), (V + "rabbit_hide", 4, V + "leather", 1, 16, 1)],
+                      [(M + "lard", 6, V + "leather", 2, 16, 10), (M + "oak_bark", 12, M + "bark_basket", 1, 6, 5)]],
+    "librarian":     [[(V + "paper", 12, V + "book", 1, 12, 2), (M + "cooked_mutton_scraps", 6, V + "paper", 4, 16, 1)],
+                      [(V + "ink_sac", 4, V + "book", 1, 12, 10), (M + "tallow", 4, V + "candle", 3, 12, 5)]],
+    "mason":         [[(M + "stone_chunk", 16, V + "clay_ball", 6, 16, 2), (M + "raspberries", 16, M + "stone_chunk", 12, 16, 1)],
+                      [(M + "granite_chunk", 20, V + "packed_mud", 8, 12, 10), (M + "plant_fibre", 16, V + "packed_mud", 6, 12, 5)]],
+    "shepherd":      [[(V + "white_wool", 2, M + "wool_thread", 4, 16, 2), (M + "raspberries", 12, V + "white_wool", 1, 12, 1)],
+                      [(M + "plant_fibre", 24, M + "wool_thread", 4, 16, 10), (V + "white_wool", 4, V + "white_carpet", 6, 12, 5)]],
+    "toolsmith":     [[(V + "flint", 8, M + "flint_axe", 1, 12, 2), (V + "stick", 16, M + "tool_rod", 2, 16, 1)],
+                      [(M + "stone_chunk", 16, M + "stone_axe_head", 1, 12, 10), (M + "cordage", 6, M + "crude_stone_axe", 1, 6, 5)]],
+    "weaponsmith":   [[(M + "cordage", 8, M + "flint_spear", 1, 12, 2), (V + "flint", 12, M + "flint_knife", 1, 12, 1)],
+                      [(M + "tusk", 2, M + "tusk_dagger", 1, 6, 10), (M + "sinew", 6, M + "flint_spear", 1, 12, 5)]],
 }
 def _stack(i, n):
     return {"id": i, "count": n} if n > 1 else {"id": i}
@@ -932,6 +938,8 @@ for prof, levels in TRADES.items():
     for lvl in range(1, 6):
         ids = []
         for i, (wi, wn, gi, gn, uses, xp) in enumerate(levels[lvl - 1] if lvl <= len(levels) else []):
+            for item in (wi, gi):  # every traded item must exist (a typo makes the trade fail to load silently)
+                assert item.startswith(V) or f"item.{item.replace(':', '.')}" in lang, item
             name = f"{prof}/{lvl}/stone_{i}"
             w(D / f"mechanical/villager_trade/{name}.json", {"wants": _stack(wi, wn), "gives": _stack(gi, gn),
                 "max_uses": uses, "xp": xp, "reputation_discount": 0.05})
@@ -1215,7 +1223,7 @@ w(D / "minecraft/loot_table/blocks/white_wool.json", {"type": "minecraft:block",
     {"type": "minecraft:item", "name": "mechanical:wool_thread",
      "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}]}],
     "random_sequence": "minecraft:blocks/white_wool"})
-lang["message.mechanical.straw_bed_rest"] = "You rest a while in the straw. The night goes on."
+lang["message.mechanical.straw_bed_rest"] = "You rest a while in the straw."
 w(lang_path, lang)
 
 # ---- structure loot everywhere else (mineshafts, portals, shipwrecks, temples, dungeons ...): no metal, gems or enchanting ----

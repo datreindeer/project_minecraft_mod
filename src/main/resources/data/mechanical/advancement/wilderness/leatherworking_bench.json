@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/leather",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:leatherworking_bench"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:leatherworking_bench"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.leatherworking_bench.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.leatherworking_bench.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

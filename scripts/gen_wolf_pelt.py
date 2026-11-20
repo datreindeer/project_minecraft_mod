@@ -114,5 +114,5 @@ w(D / "mechanical/loot_table/blocks/furred_straw_bed.json", {"type": "minecraft:
 
 merge(A / "lang/en_us.json", {**{f"item.mechanical.{k}": v[0] for k, v in ARMOR.items()},
                               "block.mechanical.wolf_rug": "Wolf Rug", "block.mechanical.furred_straw_bed": "Furred Straw Bed",
-                              "message.mechanical.furred_straw_bed_rest": "You rest warm under the wolf pelt. The night goes on."})
+                              "message.mechanical.furred_straw_bed_rest": "You rest warm under the wolf pelt."})
 print("wolf pelt ok")

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/smithing_hammer",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_quarry_hammer"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_quarry_hammer"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.quarry_hammer.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.quarry_hammer.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

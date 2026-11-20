@@ -3,7 +3,7 @@ package com.mechanical;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 
-/** The armor station: leather and fur armour sewn with a bone needle, see {@link ArmorStationRecipes}. */
+/** The armor station: bronze plates riveted onto leather with a hammer, see {@link ArmorStationRecipes}. */
 public class ArmorStationMenu extends RecipeStationMenu {
     public ArmorStationMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, ContainerLevelAccess.NULL);

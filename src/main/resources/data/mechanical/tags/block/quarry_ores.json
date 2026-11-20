@@ -1,0 +1,16 @@
+{
+  "values": [
+    "#c:ores",
+    "mechanical:garnet_ore",
+    "mechanical:deepslate_garnet_ore",
+    "mechanical:deepslate_ruby_ore",
+    "mechanical:sapphire_ore",
+    "mechanical:deepslate_sapphire_ore",
+    "mechanical:topaz_ore",
+    "mechanical:jade_ore",
+    "mechanical:sandstone_opal_ore",
+    "mechanical:turquoise_ore",
+    "mechanical:deepslate_peridot_ore",
+    "mechanical:amber_ore"
+  ]
+}

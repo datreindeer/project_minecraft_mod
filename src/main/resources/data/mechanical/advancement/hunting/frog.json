@@ -10,11 +10,17 @@
           }
         ]
       }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
     }
   },
   "requirements": [
     [
       "has_0"
+    ],
+    [
+      "butchered"
     ]
   ],
   "display": {

@@ -18,7 +18,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 /**
- * Wild animals keep away from players and flee in panic when hurt. Panic spreads: an animal that sees a panicking or
+ * Wild animals (not farm animals, see DOMESTIC) keep away from players and flee in panic when hurt. Panic spreads: an animal that sees a panicking or
  * bleeding animal panics too. Sneaking lets you get much closer.
  * Only animals using the goal system (cow, pig, sheep, chicken, rabbit, horse, llama, fox, wolf ...); "brain" animals
  * (goat, camel, frog, axolotl, armadillo, sniffer) don't get this yet.
@@ -34,6 +34,10 @@ public final class AnimalFear {
     public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> SILENT_ARROWS = net.minecraft.tags.TagKey.create(
             net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "silent_arrows"));
 
+    /** Village farm animals (cow, sheep, pig, chicken): never keep away from players or catch panic. */
+    private static final net.minecraft.tags.TagKey<net.minecraft.world.entity.EntityType<?>> DOMESTIC = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ENTITY_TYPE, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "domestic"));
+
     /** Server-side: game time until which each animal panics, and what it runs from. */
     private record Panic(long until, Vec3 from) {}
     private static final Map<LivingEntity, Panic> PANIC = new WeakHashMap<>();
@@ -42,7 +46,7 @@ public final class AnimalFear {
         if (entity instanceof com.mechanical.wildlife.BrownBear) return false; // bears never flee or panic
         if (entity instanceof com.mechanical.wildlife.Predator p && !p.fearsPlayers()) return false; // hunting at night
         if (entity instanceof com.mechanical.wildlife.GiantDeer) return false; // fights, hides and flees by its own goal
-        if (!(entity instanceof Animal animal)) return false;
+        if (!(entity instanceof Animal animal) || entity.getType().builtInRegistryHolder().is(DOMESTIC)) return false;
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;
         if (animal instanceof AbstractHorse horse && horse.isTamed()) return false;
         return !animal.isLeashed();

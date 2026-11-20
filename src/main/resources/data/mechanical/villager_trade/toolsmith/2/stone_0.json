@@ -1,12 +1,12 @@
 {
   "wants": {
     "id": "mechanical:stone_chunk",
-    "count": 24
+    "count": 16
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "mechanical:stone_axe_head"
   },
-  "max_uses": 16,
+  "max_uses": 12,
   "xp": 10,
   "reputation_discount": 0.05
 }

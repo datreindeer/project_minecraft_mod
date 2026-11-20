@@ -1,11 +1,13 @@
 {
   "wants": {
-    "id": "minecraft:emerald"
+    "id": "mechanical:cordage",
+    "count": 8
   },
   "gives": {
-    "id": "mechanical:bone_fish_hook"
+    "id": "mechanical:whole_cod",
+    "count": 4
   },
-  "max_uses": 12,
+  "max_uses": 16,
   "xp": 1,
   "reputation_discount": 0.05
 }

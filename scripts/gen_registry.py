@@ -596,7 +596,7 @@ def parse_java_recipes(path, station, consts, known):
                         warn(f"{os.path.basename(path)}: okänt resultat i new {rec_name}({args[res_idx][:60]})")
                     continue
                 rec = {"station": station, "result": result, "src": os.path.basename(path),
-                       "kind": "slots" if station in ("Tool Station", "Fletching Table", "Armor Station") else "cook", "ings": ings}
+                       "kind": "slots" if station in ("Tool Station", "Fletching Table", "Leatherworking Bench", "Armor Station") else "cook", "ings": ings}
                 if ticks:
                     rec["time"] = ticks / 20
                 recipes.append(rec)
@@ -606,7 +606,7 @@ def parse_java_recipes(path, station, consts, known):
 
 
 def parse_station_recipes(path, station, consts, known):
-    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Armor Station, Mold Bench)."""
+    """StationRecipe.of(result, count, of(item, n) | tool(item), ..., unlockedBy) calls (Fletching Table, Leatherworking Bench, Armor Station, Mold Bench)."""
     try:
         src = strip_comments(open(path, encoding="utf-8").read())
     except Exception as e:
@@ -882,7 +882,7 @@ def main():
         RECIPES.extend(recs)
         fuels.extend(fl)
 
-    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("ArmorStationRecipes.java", "Armor Station"),
+    for fname, station in (("FletchingRecipes.java", "Fletching Table"), ("LeatherworkingRecipes.java", "Leatherworking Bench"), ("ArmorStationRecipes.java", "Armor Station"),
                           ("MoldBench.java", "Mold Bench")):
         path = os.path.join(JAVA, fname)
         if os.path.isfile(path):

@@ -1,12 +1,12 @@
 {
-  "parent": "mechanical:wilderness/leather",
+  "parent": "mechanical:bronze_age/bronze_anvil",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": "mechanical:armor_station"
+            "items": "mechanical:copper_coin"
           }
         ]
       }
@@ -19,13 +19,13 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:armor_station"
+      "id": "mechanical:copper_coin"
     },
     "title": {
-      "translate": "advancements.mechanical.wilderness.armor_station.title"
+      "translate": "advancements.mechanical.bronze_age.copper_coin.title"
     },
     "description": {
-      "translate": "advancements.mechanical.wilderness.armor_station.description"
+      "translate": "advancements.mechanical.bronze_age.copper_coin.description"
     },
     "frame": "task",
     "show_toast": true,

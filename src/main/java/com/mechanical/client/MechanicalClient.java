@@ -27,6 +27,8 @@ public class MechanicalClient {
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/fletching_table.png")));
         event.<com.mechanical.ArmorStationMenu, RecipeStationScreen<com.mechanical.ArmorStationMenu>>register(Mechanical.ARMOR_STATION_MENU.get(), (menu, inventory, title) ->
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/armor_station.png")));
+        event.<com.mechanical.LeatherworkingMenu, RecipeStationScreen<com.mechanical.LeatherworkingMenu>>register(Mechanical.LEATHERWORKING_MENU.get(), (menu, inventory, title) ->
+                new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/leatherworking_bench.png")));
         event.<com.mechanical.MoldBench.Menu, RecipeStationScreen<com.mechanical.MoldBench.Menu>>register(com.mechanical.MoldBench.MENU.get(), (menu, inventory, title) ->
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/mold_bench.png")));
     }
@@ -141,6 +143,8 @@ public class MechanicalClient {
         event.registerLayerDefinition(WatercraftModel.RAFT, WatercraftModel::createRaft);
         event.registerLayerDefinition(TravoisModel.LAYER, TravoisModel::create);
         event.registerLayerDefinition(CartModel.LAYER, CartModel::create);
+        event.registerLayerDefinition(CartModel.Canopy.LAYER, CartModel.Canopy::create);
+        event.registerLayerDefinition(CarcassRenderer.Lashing.LAYER, CarcassRenderer.Lashing::create);
         event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.BLANKET,
                 () -> WildHorseModel.createBodyLayer(new net.minecraft.client.model.geom.builders.CubeDeformation(0.4F)));
         event.registerLayerDefinition(WatercraftModel.CANOE, WatercraftModel::createCanoe);

@@ -42,6 +42,9 @@ import net.minecraft.world.phys.Vec3;
  * the hind legs from the top of its hitbox. Dragged or on a travois it lies as on the ground, on a travois or cart tilted
  * with the bed. Hung long enough to have aged ({@link CarcassEntity#isAged()}) it looks dried: the hide darker and duller
  * ({@link #AGED_TINT}), the bare flesh of a skinned one from textures/entity/skinned_aged/ (scripts/gen_aged_textures.py).
+ * A caravan's trade goods ({@link CarcassEntity#isPrepared()}) are wrapped round the middle in a salted hide tied with
+ * cords and lashed under a carrying pole ({@link Lashing}, textures/entity/carcass_lashing.png from
+ * scripts/gen_carcass_lashing_textures.py), and shrunk to fit under a caravan cart's canopy.
  * shortcut: the copy has default looks (white sheep, default cow variant); sync the dead animal's data if that matters.
  */
 public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRenderer.State> {
@@ -49,6 +52,12 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     private static final ContextKey<Boolean> CARCASS = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "carcass"));
     /** Marks the animal's render state as hung head down on a Hanging Rack, so the models let the limbs hang (see {@link #hangLegs}). */
     private static final ContextKey<Boolean> HUNG = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "hung"));
+    /** Dragged: bit i set when a player holds limb i (CarcassEntity#gripPoint): those legs are pulled out ahead ({@link #gripLegs}). */
+    private static final ContextKey<Integer> GRIP = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "grip"));
+    /** Limb order of the grip slots, by the part names vanilla and the mod's animal models share. */
+    private static final String[] GRIP_LEGS = {"right_front_leg", "left_front_leg", "right_hind_leg", "left_hind_leg"};
+    /** A held leg: pitched forward towards the head (towards the puller), less sag. */
+    private static final float GRIP_PITCH = -1.3F, GRIP_SAG = -0.25F;
     /** Limb roll (model z rotation, radians) towards the ground for an animal lying on its side. */
     public static final float LIMB_SAG = -0.7F;
     /** Head yaw (degrees) that turns the head down to the ground. */
@@ -67,6 +76,43 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     private static final ContextKey<Boolean> TURNING = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "turning"));
     /** Model tint of a body close to spoiling: a sickly green-grey cast. */
     public static final int TURNING_TINT = 0xFF9AA67A;
+
+    /** Room under a caravan cart's canopy for a prepared body lying across the bed (its legs) and along it (its length). */
+    private static final float FIT_ACROSS = 1.2F, FIT_ALONG = 1.75F, POLE_LENGTH = 1.7F;
+    private static final Identifier LASHING_TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/carcass_lashing.png");
+
+    /**
+     * A prepared body's wrapping (part 0: a 1-block cube, the salted hide with its cords) and carrying pole (part 1: 2 x 2 px,
+     * a block long); the renderer scales each to the body. Texture 64 x 64: scripts/gen_carcass_lashing_textures.py.
+     */
+    public static class Lashing extends Model<Integer> {
+        public static final net.minecraft.client.model.geom.ModelLayerLocation LAYER = new net.minecraft.client.model.geom.ModelLayerLocation(
+                Identifier.fromNamespaceAndPath(Mechanical.MODID, "carcass"), "lashing");
+        private final ModelPart wrap, pole;
+
+        public Lashing(ModelPart root) {
+            super(root, net.minecraft.client.renderer.rendertype.RenderTypes::entityCutout);
+            wrap = root.getChild("wrap");
+            pole = root.getChild("pole");
+        }
+
+        @Override
+        public void setupAnim(Integer part) {
+            super.setupAnim(part);
+            wrap.visible = part == 0;
+            pole.visible = part == 1;
+        }
+
+        public static net.minecraft.client.model.geom.builders.LayerDefinition create() {
+            var mesh = new net.minecraft.client.model.geom.builders.MeshDefinition();
+            var root = mesh.getRoot();
+            root.addOrReplaceChild("wrap", net.minecraft.client.model.geom.builders.CubeListBuilder.create().texOffs(0, 0).addBox(-8, -8, -8, 16, 16, 16),
+                    net.minecraft.client.model.geom.PartPose.ZERO);
+            root.addOrReplaceChild("pole", net.minecraft.client.model.geom.builders.CubeListBuilder.create().texOffs(0, 32).addBox(-1, -1, -8, 2, 2, 16),
+                    net.minecraft.client.model.geom.PartPose.ZERO);
+            return net.minecraft.client.model.geom.builders.LayerDefinition.create(mesh, 64, 64);
+        }
+    }
 
     public static boolean isCarcass(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(CARCASS));
@@ -102,6 +148,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
      */
     public static void poseVanillaCarcass(Model<?> model, Object state) {
         if (!(state instanceof LivingEntityRenderState s) || !isCarcass(s) && !isHung(s)) return;
+        if (s.getRenderData(GRIP) != null) gripLegs(model, s.getRenderData(GRIP));
         // their own mixins / the mod's models pose themselves
         if (model instanceof QuadrupedModel || model instanceof ChickenModel || !model.getClass().getName().startsWith("net.minecraft.")) return;
         var part = PARTS.computeIfAbsent(model, m -> m.root().createPartLookup());
@@ -117,6 +164,17 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         if (isCarcass(s)) {
             for (ModelPart leg : hind) leg.zRot = LIMB_SAG;
             for (ModelPart leg : front) leg.zRot = LIMB_SAG;
+        }
+    }
+
+    /** Every model (after its own carcass pose): the legs the pullers hold stretch out ahead, towards them. */
+    private static void gripLegs(Model<?> model, int held) {
+        var part = PARTS.computeIfAbsent(model, m -> m.root().createPartLookup());
+        for (int i = 0; i < GRIP_LEGS.length; i++) {
+            ModelPart leg = (held & 1 << i) != 0 ? part.apply(GRIP_LEGS[i]) : null;
+            if (leg == null) continue;
+            leg.xRot = GRIP_PITCH;
+            leg.zRot = GRIP_SAG;
         }
     }
 
@@ -195,6 +253,9 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
         double dx, dy, dz;
         float shoulder;
+        /** A caravan's trade goods, and the scale that fits it under the canopy. */
+        boolean prepared;
+        float fit = 1.0F;
     }
 
     /** Carried by the camera's player in first person: it would fill the screen. */
@@ -210,8 +271,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         return carcass.haulerId() >= 0 || super.shouldRender(carcass, frustum, camX, camY, camZ, partialTicks);
     }
 
+    private final Lashing lashing;
+
     public CarcassRenderer(EntityRendererProvider.Context context) {
         super(context);
+        lashing = new Lashing(context.bakeLayer(Lashing.LAYER));
     }
 
     @Override
@@ -254,6 +318,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // skinned/plucked: raw red flesh look (the vanilla hurt tint); a sheared sheep already looks bare
         // carried the legs hang stiff from the body; hung they hang from the hook (HUNG) instead of sagging sideways
         if (state.pose == Pose.LYING) state.animal.setRenderData(CARCASS, true);
+        if (state.pose == Pose.LYING && carcass.isLarge() && carcass.haulerId() >= 0) {
+            int held = 0;
+            for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) if (carcass.haulerId(i) >= 0) held |= 1 << i;
+            state.animal.setRenderData(GRIP, held);
+        }
         if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) state.animal.setRenderData(HUNG, true);
         if (state.animal instanceof LivingEntityRenderState living) {
             // models use yRot as head yaw; lying on the side that points the head at the ground
@@ -277,6 +346,9 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // slung: as long as it would hang on the rack (its own hitbox is the lying one)
         state.hangLength = state.pose == Pose.SLUNG ? Math.max(state.width, state.height) : carcass.getBbHeight();
         state.tilt = carcass.getVehicle() instanceof TravoisEntity bed ? bed.pitch(partialTicks) : 0.0F;
+        state.prepared = carcass.isPrepared() && state.pose == Pose.LYING && !state.flat && !state.upright;
+        // the legs lie across the bed, the body along it (a hitbox is about two thirds of the body's length)
+        state.fit = state.prepared ? Math.min(1.0F, Math.min(FIT_ACROSS / state.height, FIT_ALONG / (state.width * 1.4F))) : 1.0F;
         if (state.pose == Pose.CARRIED || state.pose == Pose.SLUNG) {
             Vec3 at = hauler.getPosition(partialTicks).subtract(carcass.getPosition(partialTicks));
             state.dx = at.x;
@@ -347,9 +419,25 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // lift so the flank rests on the ground, and shift so the body (not the feet) is centred on the hitbox
         // the hitbox width overstates the body thickness for long animals (horse), so estimate the flank height and cap it
         float lift = Math.clamp(state.width * 0.42F, 0.1F, 0.38F);
+        if (state.prepared) {
+            // the hide round the torso (the body is centred here), the pole on top along the bed, then the body shrunk to fit
+            float s = state.fit, thick = 2 * lift * s;
+            submitLashing(state, poseStack, collector, 0, s * 0.45F * Math.min(state.height, state.width * 1.4F), thick + 0.08F, s * state.width * 0.6F, thick / 2);
+            submitLashing(state, poseStack, collector, 1, 1.0F, 1.0F, POLE_LENGTH, thick + 0.04F + 0.0625F);
+            poseStack.scale(s, s, s);
+        }
         poseStack.translate(state.height / 2.0F, lift, 0.0F);
         poseStack.rotate(Axis.ZP.rotationDegrees(90.0F));
         state.renderer.submit(state.animal, poseStack, collector, camera);
+        poseStack.popPose();
+    }
+
+    /** One {@link Lashing} part scaled to x by y by z blocks, centred at height {@code y0}. */
+    private void submitLashing(State state, PoseStack poseStack, SubmitNodeCollector collector, int part, float x, float y, float z, float y0) {
+        poseStack.pushPose();
+        poseStack.translate(0.0F, y0, 0.0F);
+        poseStack.scale(-x, -y, z); // model y points down
+        collector.submitModel(lashing, part, poseStack, LASHING_TEXTURE, state.lightCoords, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
     }
 }
