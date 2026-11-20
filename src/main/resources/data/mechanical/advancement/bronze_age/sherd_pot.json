@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:bronze_age/decorated_pot",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:arms_up_pottery_sherd"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.sherd_pot.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.sherd_pot.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

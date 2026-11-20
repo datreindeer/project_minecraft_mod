@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -102,6 +103,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(BronzeTools.UNFIRED_CLAY_CHISEL_BLADE_MOLD.get()), 1, () -> BronzeTools.CLAY_CHISEL_BLADE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Pottery.UNFIRED_STORAGE_JAR.get()), 1, () -> Pottery.STORAGE_JAR_ITEM.get(), 600, 600),
             new Recipe(s -> s.is(Pottery.UNFIRED_WATER_JUG.get()), 1, () -> Pottery.WATER_JUG_ITEM.get(), 600, 600),
+            new Recipe(s -> s.is(Pottery.UNFIRED_FLOWER_POT.get()), 1, () -> Items.FLOWER_POT, 400, 600),
+            new Recipe(s -> s.is(Pottery.UNFIRED_DECORATED_POT.get()), 1, () -> Items.DECORATED_POT, 600, 600),
             new Recipe(s -> s.is(Smelting.UNFIRED_FURNACE_BRICK.get()), 1, () -> Smelting.FURNACE_BRICK.get(), 200, 600),
             new Recipe(s -> s.is(Smelting.UNFIRED_CLAY_CHANNEL.get()), 1, () -> Smelting.CLAY_CHANNEL_ITEM.get(), 400, 600));
 
@@ -163,7 +166,12 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             if (metal == null) return null;
             return new Bake(1, crucible.kind() == CrucibleItem.Kind.ORE ? MELT_TICKS : REMELT_TICKS, metal.melt, CrucibleItem.molten(contents.melted(), 0));
         }
-        return recipeFor(stack).map(r -> new Bake(r.count(), r.ticks(), r.temp(), new ItemStack(r.result().get()))).orElse(null);
+        return recipeFor(stack).map(r -> {
+            ItemStack out = new ItemStack(r.result().get());
+            // sherds pressed into an Unfired Decorated Pot stay on the fired pot
+            if (stack.has(DataComponents.POT_DECORATIONS)) out.set(DataComponents.POT_DECORATIONS, stack.get(DataComponents.POT_DECORATIONS));
+            return new Bake(r.count(), r.ticks(), r.temp(), out);
+        }).orElse(null);
     }
 
     public static boolean canBake(ItemStack stack) {
