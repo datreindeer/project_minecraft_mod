@@ -1,5 +1,6 @@
 package com.mechanical.wildlife.warm;
 
+import com.mechanical.Calendar;
 import java.util.EnumSet;
 
 import com.mechanical.AnimalFear;
@@ -36,7 +37,7 @@ public class DesertLizard extends WildAnimal {
     private static final EntityDataAccessor<Boolean> TAILLESS = SynchedEntityData.defineId(DesertLizard.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> BASKING = SynchedEntityData.defineId(DesertLizard.class, EntityDataSerializers.BOOLEAN);
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/desert_lizard.png");
-    private static final int REGROW_TICKS = 24000;
+    private static final int REGROW_TICKS = Calendar.DAY;
     private int regrow;
 
     public DesertLizard(EntityType<? extends DesertLizard> type, Level level) {

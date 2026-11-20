@@ -35,13 +35,13 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class CampAge extends SavedData {
-    public static final int RADIUS = 24, DAY = 24000, HOUR = 1000;
+    public static final int RADIUS = 24, DAY = Calendar.DAY, HOUR = DAY / 24;
     private static final int STEP = 100, TRIBE_CHECK = 32;
 
     public static final class Camp {
         public final BlockPos centre;
         public long ticks;
-        /** Night (game time / 24000) of the last raid on this camp, so it is raided at most once a night. */
+        /** Night (overworld clock / Calendar.CLOCK_DAY) of the last raid on this camp, so it is raided at most once a night. */
         public long raidedNight;
 
         Camp(BlockPos centre, long ticks, long raidedNight) {

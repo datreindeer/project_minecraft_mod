@@ -1,5 +1,6 @@
 package com.mechanical.wildlife;
 
+import com.mechanical.Calendar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,7 @@ public final class WildlifeRestock extends SavedData {
     boolean due(BlockPos pos, long now) {
         String key = Math.floorDiv(pos.getX(), AREA) + "," + Math.floorDiv(pos.getZ(), AREA);
         Long last = stocked.get(key);
-        if (last != null && now - last < RESTOCK_DAYS * 24000L) return false;
+        if (last != null && now - last < RESTOCK_DAYS * (long) Calendar.DAY) return false;
         stocked.put(key, now);
         setDirty();
         return true;

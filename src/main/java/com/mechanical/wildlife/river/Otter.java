@@ -1,5 +1,6 @@
 package com.mechanical.wildlife.river;
 
+import com.mechanical.Calendar;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class Otter extends SemiAquatic {
     private static final EntityDataAccessor<Boolean> HOLDING_FISH = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> EATING = SynchedEntityData.defineId(Otter.class, EntityDataSerializers.BOOLEAN);
     static final double UNWATCHED = 12;
-    static final int STEAL_COOLDOWN = 24000;
+    static final int STEAL_COOLDOWN = Calendar.DAY;
     private long nextSteal;
     /** Diving for a fish (FishGoal): stays under. */
     private boolean fishing;

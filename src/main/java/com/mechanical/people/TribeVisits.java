@@ -1,5 +1,6 @@
 package com.mechanical.people;
 
+import com.mechanical.Calendar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public final class TribeVisits {
     }
 
     private static long dayTime(ServerLevel level) {
-        return level.getOverworldClockTime() % CampAge.DAY;
+        return level.getOverworldClockTime() % Calendar.CLOCK_DAY;
     }
 
     static List<ServerPlayer> playersNear(ServerLevel level, BlockPos pos, double range) {
@@ -136,7 +137,7 @@ public final class TribeVisits {
         }
         if (from == null) return null;
         Visit v = new Visit(UUID.randomUUID(), tribe, info.camp, from, fire, Visit.ARRIVING, level.getGameTime(),
-                level.getOverworldClockTime() / CampAge.DAY, false, Optional.empty());
+                level.getOverworldClockTime() / Calendar.CLOCK_DAY, false, Optional.empty());
         int size = 3 + r.nextInt(4);
         for (int i = 0; i <= size; i++) {
             TribeRole role = i == 0 ? TribeRole.ELDER : switch (r.nextInt(4)) {
@@ -198,7 +199,7 @@ public final class TribeVisits {
         }
         Tribesperson leader = members.stream().filter(Tribesperson::isLeader).findFirst().orElse(null);
         if (leader == null) (leader = members.get(0)).setLeader(true);
-        long clock = level.getOverworldClockTime(), dayTime = clock % CampAge.DAY;
+        long clock = level.getOverworldClockTime(), dayTime = clock % Calendar.CLOCK_DAY;
         switch (v.state) {
             case Visit.ARRIVING -> {
                 if (leader.distanceToSqr(Vec3.atCenterOf(v.fire)) < 10 * 10) arrive(level, data, v, leader, now);
@@ -210,14 +211,14 @@ public final class TribeVisits {
                     data.setDirty();
                     for (ServerPlayer p : playersNear(level, v.fire, PLAYER_RANGE))
                         leader.say(p, Component.translatable("chat.mechanical.visit.ask", leader.tribeName()));
-                } else if (dayTime >= GIVE_UP || dayTime < SET_OUT || clock / CampAge.DAY > v.day) {
+                } else if (dayTime >= GIVE_UP || dayTime < SET_OUT || clock / Calendar.CLOCK_DAY > v.day) {
                     // nobody answered (or they came too late to ask): they move on, no hard feelings
                     for (ServerPlayer p : playersNear(level, v.fire, PLAYER_RANGE)) leader.say(p, Component.translatable("chat.mechanical.visit.move_on"));
                     setState(data, v, Visit.LEAVING, now);
                 }
             }
             case Visit.STAYING -> {
-                if (clock >= (v.day + 1) * CampAge.DAY - (CampAge.DAY - DAWN)) dawn(level, data, v, leader, members, now);
+                if (clock >= (v.day + 1) * Calendar.CLOCK_DAY - (Calendar.CLOCK_DAY - DAWN)) dawn(level, data, v, leader, members, now);
             }
             case Visit.LEAVING -> {
                 if (now - v.since > LEAVE_TIMEOUT) members.forEach(Tribesperson::discard); // walked out of sight

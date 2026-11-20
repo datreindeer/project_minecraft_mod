@@ -1,5 +1,6 @@
 package com.mechanical.people;
 
+import com.mechanical.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     private static final EntityDataAccessor<Integer> CLIMATE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COLOUR = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
 
-    static final long ANGER_TICKS = 24000, FOREVER = Long.MAX_VALUE;
+    static final long ANGER_TICKS = Calendar.DAY, FOREVER = Long.MAX_VALUE;
     private static final double GROUP_RANGE = 48, GREET_RANGE = 6;
     /** Each new block a traveller between camps steps onto wears this many times (TrampledPaths), so paths form. */
     private static final int TRAVEL_WEAR = 3;

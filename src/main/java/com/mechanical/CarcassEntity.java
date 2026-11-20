@@ -57,9 +57,9 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     /** The Hanging Rack it hangs on. Synced for the renderer and the hitbox. */
     private static final EntityDataAccessor<java.util.Optional<BlockPos>> HUNG_AT = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     /** Ticks after the kill when a carcass that is hauled, on a travois or hung has spoiled (one day). */
-    public static final int SPOILS = 24000;
+    public static final int SPOILS = Calendar.DAY;
     /** On a Hanging Rack (cool, airy, off the ground) a body keeps three days from the kill. */
-    public static final int HUNG_SPOILS = 3 * 24000;
+    public static final int HUNG_SPOILS = 3 * Calendar.DAY;
     /** From this share of its time it starts to turn: greenish and flies (a warning before it spoils). */
     private static final float TURNING = 0.75F;
     /** Hung this long (3 minutes) it has aged: a little more meat on the rack. */

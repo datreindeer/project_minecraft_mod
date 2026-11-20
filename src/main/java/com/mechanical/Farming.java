@@ -224,7 +224,8 @@ public final class Farming {
                 return;
             }
         }
-        float chance = blocker(level, pos, c, temp, soil) != null ? 0 : c.factor(temp) * fertilityFactor(Fertility.get(soil));
+        // days are Calendar.SLOWDOWN times vanilla length: same growth per day
+        float chance = blocker(level, pos, c, temp, soil) != null ? 0 : c.factor(temp) * fertilityFactor(Fertility.get(soil)) / Calendar.SLOWDOWN;
         if (random.nextFloat() >= chance) event.setResult(CropGrowEvent.Pre.Result.DO_NOT_GROW);
     }
 

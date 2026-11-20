@@ -1,5 +1,6 @@
 package com.mechanical.people;
 
+import com.mechanical.Calendar;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -454,7 +455,7 @@ public final class Settlements {
     // ---- every few seconds (from TribeVisits) ----
 
     static void tick(ServerLevel level, Neighbours data, long now) {
-        long dayTime = level.getOverworldClockTime() % CampAge.DAY;
+        long dayTime = level.getOverworldClockTime() % Calendar.CLOCK_DAY;
         for (Settlement s : List.copyOf(data.settlements)) {
             if (s.hasFire() && now % INCOME_TICKS == 0) {
                 // the work of a day nobody watched: a little of everything (blocks only go down while loaded)

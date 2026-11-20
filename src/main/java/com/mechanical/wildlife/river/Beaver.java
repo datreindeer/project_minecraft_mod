@@ -1,5 +1,6 @@
 package com.mechanical.wildlife.river;
 
+import com.mechanical.Calendar;
 import java.util.EnumSet;
 
 import com.mechanical.AnimalFear;
@@ -300,7 +301,7 @@ public class Beaver extends SemiAquatic {
                     beaver.lastFell = target;
                     beaver.fellAt = level.getGameTime();
                 }
-                beaver.nextFell = level.getGameTime() + 24000 + beaver.getRandom().nextInt(12000);
+                beaver.nextFell = level.getGameTime() + Calendar.DAY + beaver.getRandom().nextInt(12000);
                 done = true;
             } else if (task == Task.LOG && gnawed >= LOG_TICKS) {
                 if (state.getBlock() instanceof FallenLogBlock) {

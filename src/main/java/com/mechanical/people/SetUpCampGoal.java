@@ -1,5 +1,6 @@
 package com.mechanical.people;
 
+import com.mechanical.Calendar;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
  * down. That fire becomes everyone's home. Bands never settle in the middle of a hunt.
  */
 class SetUpCampGoal extends Goal {
-    static final int FIRE_LOST_DELAY = 2400, BAND_DELAY = 24000, RETRY = 1200, GATHER_TIMEOUT = 1200;
+    static final int FIRE_LOST_DELAY = 2400, BAND_DELAY = Calendar.DAY, RETRY = 1200, GATHER_TIMEOUT = 1200;
     private final Tribesperson mob;
     private int walking;
 

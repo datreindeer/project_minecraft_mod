@@ -55,7 +55,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  */
 @EventBusSubscriber(modid = MODID)
 public final class Preserving {
-    public static final long DAY = 24000;
+    public static final long DAY = Calendar.DAY;
     /** Freshness above this is Fresh, above {@link #ROTTING} Stale, below it Rotting. */
     public static final float STALE = 0.5F, ROTTING = 0.2F;
 
