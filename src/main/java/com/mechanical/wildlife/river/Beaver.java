@@ -57,6 +57,8 @@ public class Beaver extends SemiAquatic {
     boolean raised;
     /** Not saved: when the next search for a dam site / lodge spot may run (they scan the area). */
     long nextSiteSearch;
+    /** Not saved: when it last felled a tree. */
+    long fellAt;
     private int slapCooldown;
 
     public Beaver(EntityType<? extends Beaver> type, Level level) {
@@ -207,7 +209,7 @@ public class Beaver extends SemiAquatic {
                 task = Task.BUILD;
             } else if (beaver.lastFell != null) {
                 target = BeaverWorks.findFallenLog(level, beaver.lastFell);
-                if (target == null) beaver.lastFell = null;
+                if (target == null && now - beaver.fellAt > 100) beaver.lastFell = null; // (the tree takes a moment to come down)
                 task = Task.LOG;
             } else if (now >= beaver.nextFell) {
                 target = BeaverWorks.findTree(level, beaver.getHomePosition(), beaver.getRandom());
@@ -228,7 +230,20 @@ public class Beaver extends SemiAquatic {
         }
 
         private void moveTo() {
-            beaver.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 1.0);
+            BlockPos to = target;
+            if (task != Task.BUILD) {
+                // a trunk or log is solid: walk to open ground beside it, the side nearest the beaver first
+                double best = Double.MAX_VALUE;
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    BlockPos side = target.relative(d);
+                    if (beaver.level().getBlockState(side).getCollisionShape(beaver.level(), side).isEmpty()
+                            && side.distSqr(beaver.blockPosition()) < best) {
+                        best = side.distSqr(beaver.blockPosition());
+                        to = side;
+                    }
+                }
+            }
+            beaver.getNavigation().moveTo(to.getX() + 0.5, to.getY(), to.getZ() + 0.5, 1.0);
         }
 
         @Override
@@ -253,7 +268,7 @@ public class Beaver extends SemiAquatic {
             ticks++;
             ServerLevel level = (ServerLevel) beaver.level();
             Vec3 centre = Vec3.atCenterOf(target);
-            double reach = task == Task.BUILD ? 3.0 : 2.2;
+            double reach = 3.0; // the path stops within a block of where it was sent
             if (beaver.position().distanceToSqr(centre.x, beaver.getY(), centre.z) > reach * reach
                     || Math.abs(beaver.getY() - target.getY()) > 2.5) {
                 if (beaver.getNavigation().isDone() && ticks % 20 == 0) moveTo();
@@ -283,6 +298,7 @@ public class Beaver extends SemiAquatic {
                     if (fall.getAxis().isVertical()) fall = beaver.getDirection();
                     TreeFelling.fell(level, target, tree, fall, beaver, ItemStack.EMPTY);
                     beaver.lastFell = target;
+                    beaver.fellAt = level.getGameTime();
                 }
                 beaver.nextFell = level.getGameTime() + 24000 + beaver.getRandom().nextInt(12000);
                 done = true;
@@ -296,3 +312,4 @@ public class Beaver extends SemiAquatic {
         }
     }
 }
+

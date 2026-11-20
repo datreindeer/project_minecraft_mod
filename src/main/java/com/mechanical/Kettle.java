@@ -108,8 +108,7 @@ public final class Kettle {
     // ---- what can go in ----
 
     static boolean isPlucked(ItemStack s) {
-        return s.is(Birds.PLUCKED_GOOSE.get()) || s.is(Birds.PLUCKED_PHEASANT.get()) || s.is(Birds.PLUCKED_PTARMIGAN.get())
-                || s.is(Birds.PLUCKED_PIGEON.get()) || s.is(Birds.PLUCKED_CHICKEN.get());
+        return Birds.isPlucked(s);
     }
 
     private static boolean renders(ItemStack s) {

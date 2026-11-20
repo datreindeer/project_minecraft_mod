@@ -147,10 +147,10 @@ public final class RiverFauna {
     /** Loads this class so its registrations happen; call from the mod constructor. */
     public static void init() {
         // beaver: the pelt first, then meat, the tail, castoreum and the teeth
-        Butchery.register(BEAVER::get, new Butchery.Yield(RAW_BEAVER, 1, 2, List.of(new Butchery.Extra(RAW_BEAVER_PELT, 1.0F, 1, 1)),
-                List.of(new Butchery.Extra(BEAVER_TAIL, 1.0F, 1, 1), new Butchery.Extra(CASTOREUM, 0.6F, 1, 2),
-                        new Butchery.Extra(BEAVER_TOOTH, 0.5F, 1, 2), new Butchery.Extra(Wildlife.SINEW, 0.3F, 1, 1))));
-        Butchery.register(OTTER::get, new Butchery.Yield(RAW_OTTER, 1, 1, List.of(new Butchery.Extra(RAW_OTTER_PELT, 1.0F, 1, 1)),
+        Butchery.register(() -> RiverFauna.BEAVER.get(), new Butchery.Yield(RiverFauna.RAW_BEAVER, 1, 2, List.of(new Butchery.Extra(RiverFauna.RAW_BEAVER_PELT, 1.0F, 1, 1)),
+                List.of(new Butchery.Extra(RiverFauna.BEAVER_TAIL, 1.0F, 1, 1), new Butchery.Extra(RiverFauna.CASTOREUM, 0.6F, 1, 2),
+                        new Butchery.Extra(RiverFauna.BEAVER_TOOTH, 0.5F, 1, 2), new Butchery.Extra(Wildlife.SINEW, 0.3F, 1, 1))));
+        Butchery.register(() -> RiverFauna.OTTER.get(), new Butchery.Yield(RiverFauna.RAW_OTTER, 1, 1, List.of(new Butchery.Extra(RiverFauna.RAW_OTTER_PELT, 1.0F, 1, 1)),
                 List.of(new Butchery.Extra(Wildlife.SINEW, 0.3F, 1, 1))));
         Butchery.neverCarcass(MOSQUITO_SWARM::get);
     }

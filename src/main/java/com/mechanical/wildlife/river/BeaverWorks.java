@@ -37,7 +37,7 @@ import net.minecraft.world.phys.AABB;
  * </ul>
  */
 final class BeaverWorks {
-    static final int MAX_DAM = 7, MAX_FLOOD = 64, MAX_TREE_LOGS = 12, TREE_RANGE = 10, SITE_RANGE = 12, SITE_SEARCH_TICKS = 1200;
+    static final int MAX_DAM = 7, MAX_FLOOD = 64, MAX_TREE_LOGS = 16, TREE_RANGE = 10, SITE_RANGE = 12, SITE_SEARCH_TICKS = 1200;
 
     /** Open water surface: a water block with air (or a plant) above. */
     static boolean surfaceWater(Level level, BlockPos pos) {
@@ -101,7 +101,7 @@ final class BeaverWorks {
                 int x = felled.getX() + dx, z = felled.getZ() + dz;
                 if (!level.isLoaded(new BlockPos(x, 0, z))) continue;
                 BlockPos top = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
-                for (BlockPos p : new BlockPos[] {top, top.below()}) {
+                for (BlockPos p : new BlockPos[] {top.above(), top, top.below()}) { // fallen logs may not show in the heightmap
                     if (level.getBlockState(p).getBlock() instanceof FallenLogBlock) return p;
                 }
             }

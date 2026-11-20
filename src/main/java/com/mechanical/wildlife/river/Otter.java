@@ -52,6 +52,8 @@ public class Otter extends SemiAquatic {
     static final double UNWATCHED = 12;
     static final int STEAL_COOLDOWN = 24000;
     private long nextSteal;
+    /** Diving for a fish (FishGoal): stays under. */
+    private boolean fishing;
 
     public Otter(EntityType<? extends Otter> type, Level level) {
         super(type, level, 0.2F);
@@ -87,6 +89,11 @@ public class Otter extends SemiAquatic {
     /** Sitting up, eating its catch (model). */
     public boolean isEating() {
         return entityData.get(EATING);
+    }
+
+    @Override
+    protected boolean diving() {
+        return fishing;
     }
 
     @Override
@@ -227,6 +234,7 @@ public class Otter extends SemiAquatic {
         @Override
         public void start() {
             ticks = 0;
+            otter.fishing = true;
             // down towards the bottom a few blocks off
             BlockPos at = otter.blockPosition().offset(otter.getRandom().nextInt(9) - 4, -3, otter.getRandom().nextInt(9) - 4);
             for (int i = 0; i < 3 && !otter.level().getFluidState(at).is(FluidTags.WATER); i++) at = at.above();
@@ -245,6 +253,7 @@ public class Otter extends SemiAquatic {
 
         @Override
         public void stop() {
+            otter.fishing = false;
             if (ticks >= 60 && otter.isInWater() && otter.getRandom().nextInt(3) != 0) {
                 otter.entityData.set(HOLDING_FISH, true);
                 otter.playSound(SoundEvents.FISH_SWIM, 0.6F, 1.2F);
@@ -321,8 +330,8 @@ public class Otter extends SemiAquatic {
         @Override
         public void tick() {
             ticks++;
-            Vec3 to = item != null ? item.position() : Vec3.atCenterOf(rack);
-            if (otter.position().distanceToSqr(to) > 2.5 * 2.5) {
+            Vec3 to = item != null ? item.position() : Vec3.atBottomCenterOf(rack);
+            if (otter.position().distanceToSqr(to) > 3.0 * 3.0) {
                 if (otter.getNavigation().isDone() && ticks % 20 == 0) otter.getNavigation().moveTo(to.x, to.y, to.z, 1.2);
                 return;
             }

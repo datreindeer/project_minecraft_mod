@@ -182,3 +182,22 @@ idea {
         downloadJavadoc = true
     }
 }
+
+// Dev-only model exporter for scripts/gen_registry.py (entity models -> build/model_export/models.json).
+// Its own source set: never part of the mod jar, never loaded by the game.
+sourceSets {
+    modelexport {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+    }
+}
+tasks.register('exportModels', JavaExec) {
+    group = 'documentation'
+    description = 'Bakes every entity model layer and writes its quads to build/model_export/models.json'
+    dependsOn tasks.named('modelexportClasses')
+    classpath = sourceSets.modelexport.runtimeClasspath
+    mainClass = 'com.mechanical.devtools.ModelExport'
+    workingDir = file('build/model_export') // Minecraft's logger writes logs/ into the working directory
+    doFirst { workingDir.mkdirs() }
+    args file('build/model_export/models.json').absolutePath, file('src/main/resources').absolutePath, *sourceSets.main.output.classesDirs.files.collect { it.absolutePath }
+}

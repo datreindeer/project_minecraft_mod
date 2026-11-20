@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " T ",
+    "FFF",
+    " B "
+  ],
+  "key": {
+    "T": "mechanical:twine",
+    "F": "mechanical:raven_feather",
+    "B": "minecraft:bone"
+  },
+  "result": {
+    "id": "mechanical:raven_talisman"
+  }
+}

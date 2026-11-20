@@ -18,6 +18,7 @@
     "mechanical:loose_chalk",
     "mechanical:furnace_bricks",
     "mechanical:furnace_tap",
-    "mechanical:clay_channel"
+    "mechanical:clay_channel",
+    "mechanical:oil_lamp"
   ]
 }

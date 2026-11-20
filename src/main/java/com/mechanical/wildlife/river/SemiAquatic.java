@@ -29,7 +29,24 @@ public abstract class SemiAquatic extends WildAnimal {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.removeAllGoals(g -> g instanceof FloatGoal); // dives instead of bobbing at the surface
+        // swims at the surface (so it can haul out onto the bank), except while it means to dive
+        goalSelector.removeAllGoals(g -> g instanceof FloatGoal);
+        goalSelector.addGoal(0, new FloatGoal(this) {
+            @Override
+            public boolean canUse() {
+                return !diving() && super.canUse();
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return !diving() && super.canContinueToUse();
+            }
+        });
+    }
+
+    /** Under water on purpose (the otter fishing): no floating up. */
+    protected boolean diving() {
+        return false;
     }
 
     @Override
@@ -42,6 +59,21 @@ public abstract class SemiAquatic extends WildAnimal {
         moveRelative(getSpeed(), input);
         move(MoverType.SELF, getDeltaMovement());
         setDeltaMovement(getDeltaMovement().scale(0.9));
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        // swimming against a bank on its way somewhere: haul out onto it (the swim control alone won't climb out of a ditch)
+        net.minecraft.world.level.pathfinder.Path path = getNavigation().getPath();
+        if (!level().isClientSide() && isInWater() && path != null && !path.isDone()) {
+            net.minecraft.core.BlockPos next = path.getNextNodePos();
+            double dx = next.getX() + 0.5 - getX(), dz = next.getZ() + 0.5 - getZ();
+            if (next.getY() > getBlockY() && next.getY() - getY() <= 2.6 && dx * dx + dz * dz < 1.7
+                    && level().noCollision(this, getBoundingBox().move(dx, next.getY() - getY(), dz))) {
+                setPos(next.getX() + 0.5, next.getY(), next.getZ() + 0.5);
+            }
+        }
     }
 
     @Override
