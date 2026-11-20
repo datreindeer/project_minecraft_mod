@@ -1012,16 +1012,25 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
 (högerklicka på marken, slå på den: last och varor faller ut).
 
 - **Dra själv:** högerklicka med tom hand (igen för att släppa). Den följer **2,6 block** bakom, mellan skaklarnas spetsar.
-  Fart **−5 % tom, −4 % per lastenhet** (travois −10 % + −10 %), alltså −21 % fullastad. Spring går med upp till 2
-  lastenheter (en stor eller två mellanstora); mer än så går inte.
+  Fart **−5 % tom, −3 % per plats last** (travois −10 % + −7 %), alltså −23 % fullastad. Spring går med upp till 3
+  platser last (en stor eller en mellanstor + en lätt); mer än så går inte.
+- **Kostar mat** när du drar själv, per block du går: **0,01 utmattning tom, upp till 0,08 full** (en vagn med kista: efter
+  hur många av kistans platser som är fyllda). 300 block med full vagn kostar ~24, ungefär tre klubbor. Drar en häst
+  eller onager betalar du inget.
 - **Häst:** högerklicka på vagnen när du **rider** en tam häst, eller när du **leder** en tam häst i koppel (inom 10
   block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Högerklicka igen för att
-  spänna från. Föl kan inte dra.
-- **Last:** **4 lastenheter**, två stora eller fyra mellanstora/små kroppar (jättehjorten är för stor). Lasta som på
-  travoisen (högerklicka med kroppen du bär eller släpar). Kropparna ligger i två halvor, fram och bak: en stor tar en
-  halva, mellanstora ligger två i bredd. **Ta av en kropp:** smyg + högerklicka på kroppen (som på travoisen).
+  spänna från. Föl kan inte dra. En tämjd onager (Tame Onager) drar på samma sätt.
+- **Last:** **6 platser** (lätt kropp 1, mellanstor 2, stor 3, jättar går inte; se tabellen i 01-stone-age.md):
+  två stora, tre mellanstora, en stor + en mellanstor + en lätt, eller sex lätta. Lasta som på travoisen (högerklicka med
+  kroppen du bär eller släpar; det går också att klicka på en kropp som redan ligger på vagnen, den täcker nästan hela
+  flaket). Kropparna ligger på längden **sida vid sida** över flaket, var och en så bred som sina platser (0,22 block per
+  plats), gruppen centrerad. **Ta av en kropp:** smyg + högerklicka på kroppen (som på travoisen).
 - **Förråd:** **smyg + högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
   vagnen.
+- **Kärra med kista (storage cart):** högerklicka en **tom** vagn med en vanlig **Chest** så monteras kistan på flaket
+  (syns på vagnen). Smyg + högerklicka öppnar då **54 platser** (6 rader; förrådets 18 ingår). Kistan tar hela flaket:
+  inga kroppar ("The chest takes up the whole bed"). Ligger det kroppar på vagnen måste de av först. Kistan går inte att
+  ta av; slå sönder vagnen så faller vagnen, kistan och allt innehåll ut. Hästen eller onagern drar den som vanligt.
 - Rovdjur: den som drar en lastad vagn (spelare eller häst) blir bytet, som med travoisen.
 - **Rörelse som travoisen** (se *Bära hem bytet* i 01-stone-age.md): tyngdkraft, ettblockssteg, jämn rörelse i klienten.
   Fastnar vagnen håller den emot dig (eller hästen) vid dragavståndet + 1 block; drar du bort från den i 3 sekunder, eller
@@ -1070,4 +1079,4 @@ sig på bakbenen.
   en vanilla-häst med annan färg.
 - Ingen sadel i bronsåldern: barbacka fungerar, filten gör den bättre. Vanillas Saddle (järn) fungerar också men syns inte
   på modellen.
-- **Inte gjort:** hästrustning syns inte på vildhästmodellen; vagnen visar inte varorna i förrådet; ingen tvåhästvagn.
+- **Inte gjort:** hästrustning syns inte på vildhästmodellen; vagnen visar inte varorna i förrådet; kistan kan inte tas av vagnen; ingen tvåhästvagn.

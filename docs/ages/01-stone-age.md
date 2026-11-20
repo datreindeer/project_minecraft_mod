@@ -650,11 +650,24 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   fall, knuff) glider stängerna ur händerna ("The poles slipped out of your hands"). Gå tillbaka och lirka runt hindret.
 - **Släppt** ligger den på marken: bakändarna och de korsade framändarna vilar på marken, framänden en aning upphöjd
   (~4°), och den lutar efter marken framför (upp på ett block, ner i en grop). Lasten ligger på huden och lutar med den.
-- **Last:** en stor eller två mellanstora/små kroppar. Högerklicka på släden med kroppen du bär eller släpar för att lasta
-  (jättehjorten är för stor). **Smyg + högerklicka** med tom hand lastar av den sista. Lasten ligger på huden och syns.
-- Fart: −10 % tom, −10 % till per lastenhet (en stor = 2), alltså −30 % med en uroxe mot −50 % om du släpar den. Lastad
+- **Last efter storlek:** släden rymmer **3 platser**. En kropp tar plats efter storlek (`CarcassEntity.loadUnits`):
+
+  | Storlek | Exempel | Platser |
+  |---|---|---|
+  | Lätt (bredd < 0,6, och alla ätliga fåglar) | hare, ekorre, fasan, gås, svan | 1 |
+  | Mellanstor | rådjur, kronhjort, ren, vildsvin, mufflon, varg | 2 |
+  | Stor (bredd 1,1 eller mer) | uroxe, häst, björn, älg, grottlejon | 3 |
+  | Jätte (bredd 2 eller mer) | jättehjort, valross, mammut | går inte |
+
+  Alltså en stor, en mellanstor + en lätt, eller tre lätta. Högerklicka på släden med kroppen du bär eller släpar för att
+  lasta (det går också att klicka på en kropp som redan ligger där). **Smyg + högerklicka** med tom hand lastar av den
+  sista. Kropparna ligger efter varandra på huden, var och en så lång som sina platser, och syns för alla.
+- Fart: −10 % tom, −7 % till per plats last, alltså −31 % med en uroxe mot −50 % om du släpar den. Lastad
   går det inte att springa. Slå på släden för att plocka upp den (lasten hamnar på marken).
-- I bronsåldern kommer **Wheeled Cart** (se 02-bronze-age.md, *Vagn och häst*): dubbelt så mycket last, ett förråd, och en tam häst kan dra den.
+- **Kostar mat:** att bära och dra tar på krafterna, räknat per block du går (utmattning; 4 = en halv klubba, sprint
+  kostar 0,1 per block): en mellanstor kropp på axlarna **0,03**, en stor släpad för hand **0,08**, travoisen **0,02 tom
+  upp till 0,10 full**. Lätta kroppar kostar inget. (`CarcassHauling.exhaust`)
+- I bronsåldern kommer **Wheeled Cart** (se 02-bronze-age.md, *Vagn och häst*): dubbelt så mycket last, ett förråd, en kista kan monteras på den, och en tam häst kan dra den.
 
 **Hanging Rack** (slaktställning): recept `[Tool Rod][Cordage][Tool Rod]` / `[Tool Rod][ ][Tool Rod]` /
 `[Tool Rod][ ][Tool Rod]` (låses upp med en Raw Hide). Två stolpar **tre block** höga, en tvärbjälke och en gambrel (krokpinne)

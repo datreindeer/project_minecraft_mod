@@ -140,9 +140,9 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return animal.getWidth() >= 2.0F;
     }
 
-    /** Room it takes on a travois (which holds 2). */
+    /** Room it takes on a travois (holds 3) or a cart (holds 6): light 1, medium 2, large 3. Huge ones don't go on at all. */
     public int loadUnits() {
-        return isLarge() ? 2 : 1;
+        return isLight() ? 1 : isLarge() ? 3 : 2;
     }
 
     public int haulerId() {
@@ -288,6 +288,10 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (tickCount < HIDDEN_TICKS) return InteractionResult.PASS;
+        // a loaded body covers most of its cart: clicks meant for the cart (load another, harness) go through to it
+        if (hand == InteractionHand.MAIN_HAND && getVehicle() instanceof TravoisEntity bed && (CarcassHauling.hauled(player) != null
+                || player.getMainHandItem().isEmpty() && !player.isShiftKeyDown() && !(stage() > 0 && Birds.isBird(animal))))
+            return bed.interact(player, hand, location);
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && (player.isShiftKeyDown() || haulerId() == player.getId()))
             return CarcassHauling.pickUpOrLetGo(player, this);
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && stage() > 0 && Birds.isBird(animal)) {

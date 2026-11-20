@@ -39,7 +39,8 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Travois: two long poles lashed into a V with a hide stretched between them, dragged on the ground. Right-click with an
  * empty hand to harness it (or unharness); harnessed it follows {@link #LEAD} blocks behind you, climbing steps. Holds
- * {@link #CAPACITY} load units: one large or two medium/small carcasses (right-click it with the one you haul). Sneak +
+ * {@link #CAPACITY} room: a body takes {@link CarcassEntity#loadUnits} (light 1, medium 2, large 3; right-click it with the
+ * one you haul), so one large, a medium and a light, or three light ones. Sneak +
  * right-click with an empty hand unloads the last one. Loaded carcasses are its passengers. Punch it to pick it up.
  * <p>
  * Movement is simulated on both sides ({@link MoveSimulationType#SERVER_AND_CLIENT}, as dropped items): gravity, a rigid
@@ -53,7 +54,7 @@ public class TravoisEntity extends Entity {
     /** Entity id of the player in the harness, -1 if none. Synced (sprint check, renderer). */
     private static final EntityDataAccessor<Integer> HARNESS = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.INT);
     public static final double LEAD = 2.4;
-    public static final int CAPACITY = 2;
+    public static final int CAPACITY = 3;
     /** Height of the hide platform above the ground. */
     static final double PLATFORM = 0.2;
     /** Blocks/tick^2 down, terminal fall speed, horizontal speed kept per tick when nobody pulls (sliding on the ground, in the air). */
@@ -121,6 +122,11 @@ public class TravoisEntity extends Entity {
         for (TravoisEntity t : player.level().getEntitiesOfClass(TravoisEntity.class, player.getBoundingBox().inflate(10), t -> t.harnessId() == player.getId()))
             return t;
         return null;
+    }
+
+    /** How full it is, 0..1: what a player in the harness pays in food for (CarcassHauling). */
+    public double loadFraction() {
+        return capacity() == 0 ? 0 : load() / (double) capacity();
     }
 
     /** Load units on it. */
@@ -296,12 +302,14 @@ public class TravoisEntity extends Entity {
     }
 
     private void loadOn(CarcassEntity carcass, Player player) {
-        if (carcass.isHuge()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".too_big"));
+        if (capacity() == 0) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".no_room"));
+        else if (carcass.isHuge()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".too_big"));
         else if (load() + carcass.loadUnits() > capacity()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".full"));
         else {
             carcass.setHauler(null);
             carcass.startRiding(this, true, true);
             playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0F, 0.6F);
+            if (this instanceof CartEntity && getPassengers().size() >= 2 && player instanceof ServerPlayer sp) Kettle.award(sp, CartEntity.LOADED_ADVANCEMENT);
         }
     }
 
@@ -317,12 +325,24 @@ public class TravoisEntity extends Entity {
         playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0F, 0.5F);
     }
 
-    /** Loaded bodies lie along the hide: one in the middle, or two one behind the other. */
+    /**
+     * Where {@code passenger} lies in the row of loaded bodies, centred on 0: each body gets {@code perRoom} times the room it
+     * takes, in passenger order, so they lie side by side (cart) or one behind the other (travois) without overlapping.
+     */
+    protected double rowOffset(Entity passenger, double perRoom) {
+        int before = 0;
+        for (Entity e : getPassengers()) {
+            if (e == passenger) break;
+            if (e instanceof CarcassEntity c) before += c.loadUnits();
+        }
+        int room = passenger instanceof CarcassEntity c ? c.loadUnits() : 0;
+        return (before + room / 2.0 - load() / 2.0) * perRoom;
+    }
+
+    /** Loaded bodies lie along the hide, one behind the other, the group centred a little behind the middle. */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
-        List<Entity> on = getPassengers();
-        int i = on.indexOf(passenger);
-        double along = on.size() == 1 ? -0.4 : i == 0 ? 0.25 : -1.0;
+        double along = -0.4 - rowOffset(passenger, 0.6);
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
         // on the tilted hide (pitch stays 0 on the server, where the height doesn't show)
         double rise = (along + REAR_BACK) * Math.tan(Math.toRadians(pitch));

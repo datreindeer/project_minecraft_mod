@@ -45,7 +45,8 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * both arms up holding the body on the shoulders, or reaching back to the dragged one (client/HaulingClient).</li>
  * <li>A fresh body bleeds on the way ({@link #bleed}): a dragged one leaves a smear about every {@link #DRAG_TRAIL} blocks,
  * one on the shoulders drips and leaves a stain now and then. Aged, turning or spoiled ones no longer bleed.</li>
- * <li>{@link TravoisEntity}: a drag sledge that follows you when harnessed and holds one large or two medium bodies.</li>
+ * <li>{@link TravoisEntity}: a drag sledge that follows you when harnessed and holds 3 room of bodies (light 1, medium 2, large 3).
+ * Hauling by hand or in the harness costs food by the block ({@link #exhaust}).</li>
  * <li>{@link HangingRackBlock}: right-click it with a hauled body to hang it; butchered there it gives twice the meat as
  * Haunches, Ribs and Loins (see {@link Butchery#dropInner}), the whole hide, and more fat, sinew and bone.</li>
  * </ul>
@@ -55,8 +56,16 @@ import net.neoforged.neoforge.registries.DeferredItem;
 @EventBusSubscriber(modid = MODID)
 public final class CarcassHauling {
     private static final Identifier SLOW = Identifier.fromNamespaceAndPath(MODID, "hauling");
-    /** Speed lost: a medium body on the shoulders, a large one dragged, a harnessed travois (plus per load unit; the Cart: CartEntity). */
-    static final double SLOW_CARRY = 0.25, SLOW_DRAG = 0.5, SLOW_TRAVOIS = 0.1, SLOW_TRAVOIS_LOAD = 0.1;
+    /** Speed lost: a medium body on the shoulders, a large one dragged, a harnessed travois (plus per room of load; the Cart: CartEntity). */
+    static final double SLOW_CARRY = 0.25, SLOW_DRAG = 0.5, SLOW_TRAVOIS = 0.1, SLOW_TRAVOIS_LOAD = 0.07;
+    /**
+     * Food exhaustion per block walked (4 = half a drumstick; vanilla sprinting costs 0.1): a body on the shoulders (not a
+     * light one) or dragged by hand, and a travois or cart in the harness: empty, plus this much more when full. A horse
+     * in the shafts pulls for free. 300 blocks with a full cart: ~24, three drumsticks.
+     */
+    static final double FOOD_CARRY = 0.03, FOOD_DRAG = 0.08, FOOD_TRAVOIS = 0.02, FOOD_TRAVOIS_FULL = 0.08, FOOD_CART = 0.01, FOOD_CART_FULL = 0.07;
+    /** Server: where each hauling player was at the last food check. */
+    private static final java.util.Map<Player, Vec3> LAST_POS = new java.util.WeakHashMap<>();
     /** A hit this hard makes you drop what you haul. */
     static final float DROP_DAMAGE = 4.0F;
     /** Blocks travelled between blood stains: dragged (always), carried (half the time, so one every ~6 blocks). */
@@ -235,15 +244,30 @@ public final class CarcassHauling {
             if (held != null) TravoisEntity.tether(player, held);
         }
         if (player.level().isClientSide() || player.tickCount % 5 != 0) return;
-        double slow = 0;
+        double slow = 0, food = 0;
         CarcassEntity c = hauled(player);
-        if (c != null) slow += c.isLarge() ? SLOW_DRAG : c.isLight() ? 0 : SLOW_CARRY;
+        if (c != null) {
+            slow += c.isLarge() ? SLOW_DRAG : c.isLight() ? 0 : SLOW_CARRY;
+            food += c.isLarge() ? FOOD_DRAG : c.isLight() ? 0 : FOOD_CARRY;
+        }
         TravoisEntity t = TravoisEntity.harnessedTo(player);
-        if (t != null) slow += t.slowdown();
+        if (t != null) {
+            slow += t.slowdown();
+            food += t instanceof CartEntity ? FOOD_CART + FOOD_CART_FULL * t.loadFraction() : FOOD_TRAVOIS + FOOD_TRAVOIS_FULL * t.loadFraction();
+        }
+        exhaust(player, food);
         AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (speed == null) return;
         if (slow == 0) speed.removeModifier(SLOW);
         else speed.addOrUpdateTransientModifier(new AttributeModifier(SLOW, -Math.min(0.7, slow), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    }
+
+    /** Server, every 5 ticks: {@code perBlock} food exhaustion for each block walked since the last check (0: not hauling). */
+    static void exhaust(Player player, double perBlock) {
+        Vec3 last = perBlock > 0 ? LAST_POS.put(player, player.position()) : LAST_POS.remove(player);
+        if (last == null || perBlock <= 0) return;
+        double walked = player.position().subtract(last).horizontalDistance();
+        if (walked < 5) player.causeFoodExhaustion((float) (walked * perBlock)); // more in 5 ticks: a teleport
     }
 
     private CarcassHauling() {}

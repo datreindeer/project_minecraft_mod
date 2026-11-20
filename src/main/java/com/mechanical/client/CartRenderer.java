@@ -9,27 +9,39 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
  * Draws the {@link CartModel} turned to the cart's yaw (shafts forward), wheels rolling, the whole cart tipped about the axle
- * to its {@link CartEntity#pitch}: shafts up to the puller, or down on the ground when parked. Loaded carcasses draw themselves.
+ * to its {@link CartEntity#pitch}: shafts up to the puller, or down on the ground when parked. Loaded carcasses draw themselves;
+ * a mounted chest is the Chest item model standing on the bed.
  */
 public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/cart.png");
+    /** Bed floor top (CartModel floor box), blocks. */
+    private static final float FLOOR = 11 / 16.0F;
     private final CartModel model;
+    private final ItemModelResolver items;
+    private ItemStack chest;
 
     public static class State extends EntityRenderState {
         float yaw, spin, pitch;
+        final ItemStackRenderState chest = new ItemStackRenderState();
     }
 
     public CartRenderer(EntityRendererProvider.Context context) {
         super(context);
         model = new CartModel(context.bakeLayer(CartModel.LAYER));
         shadowRadius = 0.8F;
+        items = context.getItemModelResolver();
     }
 
     @Override
@@ -43,6 +55,10 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         state.yaw = cart.getViewYRot(partialTicks);
         state.spin = Mth.lerp(partialTicks, cart.wheelSpinO, cart.wheelSpin);
         state.pitch = cart.pitch(partialTicks);
+        if (cart.hasChest()) {
+            if (chest == null) chest = new ItemStack(Items.CHEST);
+            items.updateForNonLiving(state.chest, chest, ItemDisplayContext.NONE, cart);
+        } else state.chest.clear();
     }
 
     @Override
@@ -54,6 +70,13 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         poseStack.translate(0.0F, CartModel.AXLE_HEIGHT, CartModel.AXLE_BACK);
         poseStack.rotate(Axis.XP.rotationDegrees(state.pitch));
         poseStack.translate(0.0F, -CartModel.AXLE_HEIGHT, -CartModel.AXLE_BACK);
+        if (!state.chest.isEmpty()) {
+            // the item model is a block centred on the origin: lift it onto the floor
+            poseStack.pushPose();
+            poseStack.translate(0.0F, FLOOR + 0.5F, 0.1F);
+            state.chest.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+            poseStack.popPose();
+        }
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         collector.submitModel(model, state.spin, poseStack, TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();

@@ -3,10 +3,15 @@ package com.mechanical;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -18,6 +23,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -27,18 +34,24 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Wheeled Cart: the Bronze Age travois. A plank bed with side boards on two spoked wheels and a pair of shafts. Pulled by
  * a player (right-click with an empty hand, as the travois) or by a tamed horse (right-click it while riding one, or while
- * leading one on a lead). Holds {@link #CAPACITY} load units of carcasses (two large or four medium, loaded like the
- * travois; sneak + right-click a loaded body to take it off) and {@link #SLOTS} slots of goods (sneak + right-click the
- * cart with an empty hand). Punch it to pick it up: bodies and goods fall out.
+ * leading one on a lead). Holds {@link #CAPACITY} room of carcasses (two large, three medium or six light ones, loaded like
+ * the travois, lying side by side; sneak + right-click a loaded body to take it off) and {@link #SLOTS} slots of goods
+ * (sneak + right-click the cart with an empty hand). Right-click an empty cart with a Chest to mount it: a storage cart,
+ * {@link #CHEST_SLOTS} slots, no room left for bodies. Punch it to pick it up: bodies, goods and the chest fall out.
  */
 public class CartEntity extends TravoisEntity {
-    public static final int CAPACITY = 4, SLOTS = 18;
+    public static final int CAPACITY = 6, SLOTS = 18, CHEST_SLOTS = 54;
+    /** A Chest mounted on the bed. Synced (renderer). */
+    private static final EntityDataAccessor<Boolean> CHEST = SynchedEntityData.defineId(CartEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Advancements granted from code, see scripts/gen_advancements.py. */
+    static final Identifier LOADED_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "bronze_age/full_cart"),
+            STORAGE_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "bronze_age/storage_cart");
     /** Behind a player (at the shaft tips) and behind a horse (between the shafts). */
     public static final double LEAD_PLAYER = 2.6, LEAD_HORSE = 2.0;
     /** Bed height, and the wheels' radius (blocks) for their spin. */
     static final double BED = 0.7, WHEEL_RADIUS = 7 / 16.0;
-    /** Speed lost by a player in the shafts: empty, plus per load unit (travois: 0.1 + 0.1). Horses pull it freely. */
-    static final double SLOW = 0.05, SLOW_LOAD = 0.04;
+    /** Speed lost by a player in the shafts: empty, plus per room of load (travois: 0.1 + 0.07). Horses pull it freely. */
+    static final double SLOW = 0.05, SLOW_LOAD = 0.03;
     /**
      * Shaft geometry (CartModel): the axle sits {@link #AXLE_BACK} behind the centre, {@link #AXLE_HEIGHT} up; the shaft
      * tips are {@link #SHAFT_REACH} from the axle, {@link #SHAFT_ANGLE} degrees above level when the bed is level. The bed
@@ -48,7 +61,8 @@ public class CartEntity extends TravoisEntity {
     /** Search range for a led horse to put in the shafts. */
     private static final double HORSE_RANGE = 10;
 
-    private final SimpleContainer goods = new SimpleContainer(SLOTS) {
+    /** The goods box uses the first {@link #SLOTS}; a mounted chest opens all of them. */
+    private final SimpleContainer goods = new SimpleContainer(CHEST_SLOTS) {
         @Override
         public boolean stillValid(Player player) {
             return isAlive() && player.distanceTo(CartEntity.this) < 8;
@@ -62,8 +76,46 @@ public class CartEntity extends TravoisEntity {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHEST, false);
+    }
+
+    public boolean hasChest() {
+        return entityData.get(CHEST);
+    }
+
+    @Override
     public int capacity() {
-        return CAPACITY;
+        return hasChest() ? 0 : CAPACITY;
+    }
+
+    /** A storage cart is as heavy as its chest is full. */
+    @Override
+    public double loadFraction() {
+        if (!hasChest()) return super.loadFraction();
+        int filled = 0;
+        for (ItemStack s : goods.getItems()) if (!s.isEmpty()) filled++;
+        return filled / (double) CHEST_SLOTS;
+    }
+
+    /** Right-click an empty cart with a Chest: mounts it. */
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+        ItemStack held = player.getItemInHand(hand);
+        if (hand != InteractionHand.MAIN_HAND || !held.is(Items.CHEST) || hasChest() || CarcassHauling.hauled(player) != null)
+            return super.interact(player, hand, location);
+        if (!level().isClientSide()) {
+            if (!getPassengers().isEmpty()) player.sendOverlayMessage(Component.translatable("message.mechanical.cart.unload_first"));
+            else {
+                entityData.set(CHEST, true);
+                held.consume(1, player);
+                playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.9F);
+                player.sendOverlayMessage(Component.translatable("message.mechanical.cart.chest_mounted"));
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) Kettle.award(sp, STORAGE_ADVANCEMENT);
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -79,7 +131,7 @@ public class CartEntity extends TravoisEntity {
     /** On wheels you can still run with a light load. */
     @Override
     public boolean blocksSprint() {
-        return load() > 2;
+        return load() > 3;
     }
 
     @Override
@@ -117,11 +169,13 @@ public class CartEntity extends TravoisEntity {
         return Mth.clamp((float) (Math.toDegrees(tipAngle) - SHAFT_ANGLE), -20.0F, 25.0F);
     }
 
-    /** Sneak + right-click with an empty hand: the goods box. */
+    /** Sneak + right-click with an empty hand: the goods box, or the whole mounted chest. */
     @Override
     protected InteractionResult sneakUse(Player player) {
         if (!level().isClientSide()) {
-            player.openMenu(new SimpleMenuProvider((id, inventory, p) -> new ChestMenu(MenuType.GENERIC_9x2, id, inventory, goods, 2), getDisplayName()));
+            boolean chest = hasChest();
+            player.openMenu(new SimpleMenuProvider((id, inventory, p) -> chest ? ChestMenu.sixRows(id, inventory, goods)
+                    : new ChestMenu(MenuType.GENERIC_9x2, id, inventory, goods, 2), getDisplayName()));
             playSound(SoundEvents.CHEST_OPEN, 0.5F, 1.2F);
         }
         return InteractionResult.SUCCESS;
@@ -150,29 +204,10 @@ public class CartEntity extends TravoisEntity {
         return led.isEmpty() ? null : led.get(0);
     }
 
-    /**
-     * Bodies lie on the bed in two halves (front, back). A large one takes a whole half, medium/small ones take a side
-     * each; the layout is laid out again in passenger order, so whatever {@link #canAddPassenger} let on always fits.
-     */
+    /** Bodies lie side by side across the bed, lengthwise, each as wide as its room ({@link #rowOffset}). */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
-        boolean[] used = new boolean[4]; // front left, front right, back left, back right
-        double along = 0, side = 0;
-        for (Entity e : getPassengers()) {
-            boolean large = e instanceof CarcassEntity c && c.loadUnits() > 1;
-            int slot = -1;
-            for (int s = 0; s < 4 && slot < 0; s++) {
-                if (large ? s % 2 == 0 && !used[s] && !used[s + 1] : !used[s]) slot = s;
-            }
-            if (slot < 0) slot = 0; // can't happen within capacity
-            used[slot] = true;
-            if (large) used[slot + 1] = true;
-            if (e == passenger) {
-                along = slot < 2 ? 0.4 : -0.45;
-                side = large ? 0 : slot % 2 == 0 ? 0.3 : -0.3;
-                break;
-            }
-        }
+        double along = 0, side = rowOffset(passenger, 0.22);
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
         Vec3 right = Vec3.directionFromRotation(0, getYRot() + 90);
         double rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch)); // the bed tips about the axle (client only)
@@ -183,16 +218,19 @@ public class CartEntity extends TravoisEntity {
     @Override
     protected void dropContents(ServerLevel level) {
         Containers.dropContents(level, this, goods);
+        if (hasChest()) spawnAtLocation(level, new ItemStack(Items.CHEST));
     }
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         goods.clearContent();
         ContainerHelper.loadAllItems(input, goods.getItems());
+        entityData.set(CHEST, input.getBooleanOr("chest", false));
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         ContainerHelper.saveAllItems(output, goods.getItems());
+        output.putBoolean("chest", hasChest());
     }
 }
