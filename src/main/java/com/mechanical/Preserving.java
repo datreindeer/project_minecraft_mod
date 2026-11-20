@@ -262,13 +262,14 @@ public final class Preserving {
 
     /**
      * Food of the same kind caught or picked at different times stacks again: stacks in the same container that differ only
-     * in spoil time are combined, and the combined stack takes the earliest time (the oldest food decides).
+     * in spoil time are combined, and the combined stack takes the earliest time (the oldest food decides). Not in a crafting
+     * grid: there each item sits in its own slot on purpose (2 Flour + water is two flour slots).
      */
-    private static void mergeAged(List<Slot> slots, Player player) {
+    static void mergeAged(List<Slot> slots, Player player) {
         for (int i = 0; i < slots.size(); i++) {
             Slot into = slots.get(i);
             ItemStack a = into.getItem();
-            if (into instanceof ResultSlot || a.isEmpty() || !a.has(SPOILS_AT.get()) || a.getCount() >= a.getMaxStackSize()) continue;
+            if (into instanceof ResultSlot || into.container instanceof net.minecraft.world.inventory.CraftingContainer || a.isEmpty() || !a.has(SPOILS_AT.get()) || a.getCount() >= a.getMaxStackSize()) continue;
             for (int j = i + 1; j < slots.size() && a.getCount() < a.getMaxStackSize(); j++) {
                 Slot from = slots.get(j);
                 ItemStack b = from.getItem();
