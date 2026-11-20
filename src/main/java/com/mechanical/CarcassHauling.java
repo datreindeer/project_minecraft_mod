@@ -5,6 +5,7 @@ import static com.mechanical.Mechanical.ENTITY_TYPES;
 import static com.mechanical.Mechanical.ITEMS;
 import static com.mechanical.Mechanical.MODID;
 
+import net.minecraft.tags.FluidTags;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -204,9 +205,12 @@ public final class CarcassHauling {
         int need = c.pullersNeeded();
         double strength = n < need ? STRAIN_CREEP * n / need : 1.0;
         if (pulling > 0) pull = pull.scale(strength / pulling);
-        double fall = c.onGround() ? -0.01 : Math.max(-0.5, c.getDeltaMovement().y - 0.08);
+        // in water it floats half under like a loose body (CarcassEntity#tick) instead of sinking
+        boolean afloat = c.getFluidHeight(FluidTags.WATER) > c.getBbHeight() * 0.5;
+        double fall = afloat ? Math.min(c.getDeltaMovement().y + 0.01, 0.06)
+                : c.onGround() ? -0.01 : Math.max(-0.5, c.getDeltaMovement().y - 0.08);
         c.drag(new Vec3(pull.x, fall, pull.z));
-        c.setDeltaMovement(0, c.onGround() ? 0 : fall, 0);
+        c.setDeltaMovement(0, afloat || !c.onGround() ? fall : 0, 0);
         // head end round towards the pullers, a little each tick
         Vec3 to = centre.scale(1.0 / n).subtract(c.position()).multiply(1, 0, 1);
         if (to.length() > 0.3) {
