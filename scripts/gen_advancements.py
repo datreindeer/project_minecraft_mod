@@ -52,6 +52,16 @@ def check_item(i):
 
 # ---------------------------------------------------------------- criteria helpers (each returns {name: criterion})
 
+class AllOf(dict):
+    """Criteria that must ALL be met (plain dicts mean any one)."""
+
+
+def has_all(*items):
+    """Every one of the items in the inventory at some time (each criterion stays done once met)."""
+    return AllOf({f"has_{n}": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": check_item(i)}]}}
+                  for n, i in enumerate(items)})
+
+
 def has(*items):
     """Any one of the items (or #tags) in the inventory."""
     return {f"has_{n}": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": check_item(i)}]}}
@@ -110,6 +120,8 @@ BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "
            "blackberries", "chanterelle", "porcini", "morel", "oyster_mushroom", "puffball", "hazelnuts", "beechnuts",
            "juniper_berries", "minecraft:sweet_berries"]
 T, G, C = "task", "goal", "challenge"
+BARK_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
+              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew"]  # Mechanical.WOODS
 
 # (id, parent, icon, frame, title, description, criteria). The first row of a tab is its root.
 TABS = {
@@ -130,12 +142,15 @@ TABS = {
         ("cordage", "twine", "cordage", T, "Strong Rope", "Craft 3 Twine into Cordage", has("cordage")),
         ("firewood", "flint_axe", "oak_firewood", T, "Firewood",
          "Chop a tree with an axe: its logs split into Firewood", has("#firewood")),
-        ("bark", "flint_axe", "bark", T, "Bark Peeler",
-         "Hold right-click with an axe on a Fallen Log to peel off Bark (tinder, bast, baskets)", has("bark")),
+        ("bark", "flint_axe", "oak_bark", T, "Bark Peeler",
+         "Hold right-click with an axe on a Fallen Log to peel off its Bark, one kind per wood (tinder, bast, baskets, roofs)", has("#barks")),
+        ("bark_collector", "bark", "birch_bark", C, "Bark Collector",
+         f"Collect the Bark of all {len(BARK_WOODS)} woods, from Oak to Yew: each wood's Fallen Log gives its own",
+         has_all(*[f"{w}_bark" for w in BARK_WOODS])),
         ("bark_basket", "bark", "bark_basket", T, "Gatherer's Basket",
          "Craft a Bark Basket for berries, mushrooms and hides. Food keeps longer inside", has("bark_basket")),
         ("bark_roof", "bark", "spruce_bark_roof", T, "Shingled",
-         "Craft a Bark Roof from 3 Bark and a log. Against a wall it lies as a slope, on top of a block it lies flat", has("#bark_roofs")),
+         "Craft a Bark Roof from 3 Bark of one wood. Against a wall it lies as a slope, on top of a block it lies flat", has("#bark_roofs")),
         ("tool_rod", "flint_knife", "tool_rod", T, "Straight Shaft",
          "Put a knife above any Log in the crafting grid to carve a Tool Rod", has("tool_rod")),
         ("pine_resin", "flint_knife", "pine_resin", T, "Resin Torch",
@@ -849,10 +864,6 @@ TABS["bronze_age"][1].extend([
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
-
-class AllOf(dict):
-    """Criteria that must ALL be met (plain dicts mean any one)."""
-
 
 JAVA = ROOT / "src/main/java"
 VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("utf-8")) \

@@ -6,17 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bark"
-          }
-        ]
-      }
-    },
-    "has_1": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "#minecraft:mangrove_logs"
+            "items": "mechanical:mangrove_bark"
           }
         ]
       }
@@ -31,7 +21,6 @@
   "requirements": [
     [
       "has_0",
-      "has_1",
       "has_the_recipe"
     ]
   ],

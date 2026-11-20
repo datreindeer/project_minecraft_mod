@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bark"
+            "items": "#mechanical:barks"
           }
         ]
       }
@@ -19,7 +19,7 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:bark"
+      "id": "mechanical:oak_bark"
     },
     "title": {
       "translate": "advancements.mechanical.stone_age.bark.title"

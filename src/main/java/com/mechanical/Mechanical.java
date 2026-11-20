@@ -185,8 +185,13 @@ public class Mechanical {
             BLOCKS.registerBlock(w + "_fallen_log", p -> new FallenLogBlock(w, p), p -> p.mapColor(MapColor.WOOD).strength(6.0F).sound(SoundType.WOOD).noOcclusion())));
     public static final Map<String, DeferredItem<Item>> ROUGH_LOGS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             ITEMS.registerSimpleItem(w + "_rough_log", p -> p.stacksTo(16))));
-    public static final DeferredItem<Item> BARK = ITEMS.registerSimpleItem("bark");
-    /** Bark shingles for roofs, one per wood: slopes against a wall, flat on top (BarkRoofBlock); 3 Bark + that wood's log. */
+    /** Bark peeled off a fallen log, one per wood (Oak Bark ... Yew Bark); every use takes the item tag mechanical:barks. */
+    public static final Map<String, DeferredItem<Item>> BARKS = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.registerSimpleItem(w + "_bark")));
+    public static final TagKey<Item> BARK_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "barks"));
+    static { // the single Bark of v0.71 and earlier loads as Oak Bark, so no one's bark disappears
+        ITEMS.addAlias(Identifier.fromNamespaceAndPath(MODID, "bark"), Identifier.fromNamespaceAndPath(MODID, "oak_bark"));
+    }
+    /** Bark shingles for roofs, one per wood: slopes against a wall, flat on top (BarkRoofBlock); 3 of that wood's Bark. */
     public static final Map<String, DeferredBlock<BarkRoofBlock>> BARK_ROOFS = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
             BLOCKS.registerBlock(w + "_bark_roof", BarkRoofBlock::new, p -> p.mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().noOcclusion())));
     /** Leaves (block name minus "_leaves") that get their own fresh, leaf-coloured litter when their tree is felled. */
@@ -387,7 +392,7 @@ public class Mechanical {
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
         Sanity.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Bronze.init(); Pottery.init(modEventBus); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); DoughTest.init(modEventBus); com.mechanical.wildlife.GiantDeerTest.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus); CarcassHauling.init(); Carting.init(); TrampledPaths.init(); Smelting.init(); FirePit.init(); Birds.init(); Roots.init(); Spinning.init(modEventBus); Kettle.init(); BronzeTools.init(modEventBus); com.mechanical.wildlife.giants.GiantsFauna.init(); MoldBench.init(); com.mechanical.wildlife.waterfowl.WaterfowlFauna.init(); com.mechanical.wildlife.forestbirds.ForestBirdsFauna.init(); com.mechanical.wildlife.coast.CoastFauna.init(); com.mechanical.wildlife.coldhunters.ColdhuntersFauna.init(); com.mechanical.wildlife.mountain.MountainFauna.init(); com.mechanical.wildlife.meadow.MeadowFauna.init(); com.mechanical.wildlife.river.RiverFauna.init(); com.mechanical.wildlife.warm.WarmFauna.init(); com.mechanical.wildlife.VanillaGame.init();
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Bronze.init(); Pottery.init(modEventBus); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); DoughTest.init(modEventBus); BarkTest.init(modEventBus); com.mechanical.wildlife.GiantDeerTest.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus); CarcassHauling.init(); Carting.init(); TrampledPaths.init(); Smelting.init(); FirePit.init(); Birds.init(); Roots.init(); Spinning.init(modEventBus); Kettle.init(); BronzeTools.init(modEventBus); com.mechanical.wildlife.giants.GiantsFauna.init(); MoldBench.init(); com.mechanical.wildlife.waterfowl.WaterfowlFauna.init(); com.mechanical.wildlife.forestbirds.ForestBirdsFauna.init(); com.mechanical.wildlife.coast.CoastFauna.init(); com.mechanical.wildlife.coldhunters.ColdhuntersFauna.init(); com.mechanical.wildlife.mountain.MountainFauna.init(); com.mechanical.wildlife.meadow.MeadowFauna.init(); com.mechanical.wildlife.river.RiverFauna.init(); com.mechanical.wildlife.warm.WarmFauna.init(); com.mechanical.wildlife.VanillaGame.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

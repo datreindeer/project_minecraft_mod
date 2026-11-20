@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "building",
-  "ingredients": [
-    "mechanical:bark",
-    "mechanical:bark",
-    "mechanical:bark",
-    "#mechanical:willow_logs"
+  "pattern": [
+    "B ",
+    "BB"
   ],
+  "key": {
+    "B": "mechanical:willow_bark"
+  },
   "result": {
     "id": "mechanical:willow_bark_roof",
     "count": 4

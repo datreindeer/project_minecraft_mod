@@ -1,0 +1,269 @@
+{
+  "parent": "mechanical:stone_age/bark",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:oak_bark"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:spruce_bark"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:birch_bark"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:jungle_bark"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:acacia_bark"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dark_oak_bark"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mangrove_bark"
+          }
+        ]
+      }
+    },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cherry_bark"
+          }
+        ]
+      }
+    },
+    "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pale_oak_bark"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:poplar_bark"
+          }
+        ]
+      }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:aspen_bark"
+          }
+        ]
+      }
+    },
+    "has_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:alder_bark"
+          }
+        ]
+      }
+    },
+    "has_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beech_bark"
+          }
+        ]
+      }
+    },
+    "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:linden_bark"
+          }
+        ]
+      }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:willow_bark"
+          }
+        ]
+      }
+    },
+    "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:ash_bark"
+          }
+        ]
+      }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hazel_bark"
+          }
+        ]
+      }
+    },
+    "has_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pine_bark"
+          }
+        ]
+      }
+    },
+    "has_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:yew_bark"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ],
+    [
+      "has_3"
+    ],
+    [
+      "has_4"
+    ],
+    [
+      "has_5"
+    ],
+    [
+      "has_6"
+    ],
+    [
+      "has_7"
+    ],
+    [
+      "has_8"
+    ],
+    [
+      "has_9"
+    ],
+    [
+      "has_10"
+    ],
+    [
+      "has_11"
+    ],
+    [
+      "has_12"
+    ],
+    [
+      "has_13"
+    ],
+    [
+      "has_14"
+    ],
+    [
+      "has_15"
+    ],
+    [
+      "has_16"
+    ],
+    [
+      "has_17"
+    ],
+    [
+      "has_18"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:birch_bark"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.bark_collector.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.bark_collector.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

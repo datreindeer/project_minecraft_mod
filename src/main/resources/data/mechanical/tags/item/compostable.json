@@ -15,7 +15,7 @@
     "minecraft:potato",
     "minecraft:poisonous_potato",
     "minecraft:apple",
-    "mechanical:bark",
+    "#mechanical:barks",
     "mechanical:fish_bones",
     "mechanical:spoiled_food",
     "mechanical:heather",

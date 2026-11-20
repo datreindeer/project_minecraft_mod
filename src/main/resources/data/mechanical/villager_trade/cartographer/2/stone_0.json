@@ -1,6 +1,6 @@
 {
   "wants": {
-    "id": "mechanical:bark",
+    "id": "mechanical:oak_bark",
     "count": 16
   },
   "gives": {

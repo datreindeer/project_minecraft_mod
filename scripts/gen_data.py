@@ -282,13 +282,11 @@ for wood in WOODS:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
     lang[f"item.mechanical.{item}"] = f"Rough {title(wood)} Log"
-w(A / "models/item/bark.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark"}})
-w(A / "items/bark.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark"}})
-lang["item.mechanical.bark"] = "Bark"
+# Bark (one item per wood, item tag mechanical:barks) is made by gen_bark_roof.py
 # bast: the inner bark gives fibre
-shapeless("plant_fibre_from_bark", ["mechanical:bark", "#mechanical:knives"], "mechanical:plant_fibre", count=2)
+shapeless("plant_fibre_from_bark", ["#mechanical:barks", "#mechanical:knives"], "mechanical:plant_fibre", count=2)
 # bark basket: a small 3x3 store for fruit, berries and hides
-shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "mechanical:bark"}, "mechanical:bark_basket")
+shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "#mechanical:barks"}, "mechanical:bark_basket")
 w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
@@ -652,7 +650,7 @@ UNLOCKS = {
     "twine": ("mechanical:twine", ["cordage", "fire_drill"]),
     "whole_fish": ("#mechanical:whole_fish", ["gut_cod", "gut_salmon", "gut_tropical_fish", "gut_pufferfish"]),
     "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones", "bone_needle_from_fish_bones", "bone_fish_hook"]),
-    "bark": ("mechanical:bark", ["plant_fibre_from_bark", "bark_basket"]),
+    "bark": ("#mechanical:barks", ["plant_fibre_from_bark", "bark_basket"]),
     "bear_pelt": ("mechanical:bear_pelt", ["bear_rug"]),
     "leather": ("minecraft:leather", ["armor_station"]),
     "bone": ("minecraft:bone", ["bone_needle_from_bone"]),
@@ -906,7 +904,7 @@ TRADES = {
     "butcher":       [[(M + "game_meat_scraps", 10, E, 1, 16, 2), (E, 1, M + "cooked_venison_scraps", 4, 16, 1)],
                       [(M + "lard", 6, E, 1, 16, 10), (E, 1, M + "cooked_beef_scraps", 4, 16, 5)]],
     "cartographer":  [[("minecraft:paper", 24, E, 1, 16, 2), (E, 3, "minecraft:map", 1, 8, 1)],
-                      [(M + "bark", 16, E, 1, 16, 10), (E, 1, M + "cordage", 6, 12, 5)]],
+                      [(M + "oak_bark", 16, E, 1, 16, 10), (E, 1, M + "cordage", 6, 12, 5)]],
     "cleric":        [[("minecraft:rotten_flesh", 24, E, 1, 16, 2), (E, 1, "minecraft:candle", 3, 12, 1)],
                       [(M + "eggshell", 8, E, 1, 16, 10), (E, 1, "minecraft:bone_meal", 6, 12, 5)]],
     "farmer":        [[(M + "raspberries", 16, E, 1, 16, 2), (E, 1, "minecraft:wheat_seeds", 8, 12, 1)],
@@ -951,7 +949,7 @@ def _e(item, lo, hi, weight):
     return {"type": "minecraft:item", "name": item, "weight": weight,
             "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]}
 BASE = [_e("minecraft:stick", 2, 6, 10), _e("minecraft:flint", 1, 4, 8), _e(M + "plant_fibre", 2, 6, 8),
-        _e(M + "cordage", 1, 3, 5), _e(M + "bark", 1, 3, 5), _e("minecraft:wheat_seeds", 1, 4, 6),
+        _e(M + "cordage", 1, 3, 5), _e(M + "oak_bark", 1, 3, 5), _e("minecraft:wheat_seeds", 1, 4, 6),
         _e(M + "twine", 1, 3, 4), _e("minecraft:bone", 1, 3, 4)]
 EXTRA = {
     "weaponsmith": [_e(M + "flint_spear", 1, 1, 2), _e("minecraft:arrow", 2, 6, 4), _e(M + "flint_knife", 1, 1, 2)],

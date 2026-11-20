@@ -1,4 +1,5 @@
-# Rough log textures (a whole chopped log section, lying diagonally) and bark strips,
+# Rough log textures (a whole chopped log section, lying diagonally) and bark strips (<wood>_bark: three curled strips,
+# the outside in the log's bark colours, the upper one weathered greyer, the curled-in inner side the stripped log's),
 # colours taken from each wood's vanilla log textures.
 # usage: python gen_rough_log_textures.py <vanilla block texture dir> <out item texture dir> <preview png>
 import math, os, random, sys
@@ -66,7 +67,7 @@ AXE_CHIPS = [(1, 9), (6, 13)]
 AXE_LINE = [(2, 10), (3, 11), (4, 12)]   # chop ridge across the end grain
 AXE_LIT = [(3, 10), (4, 11), (5, 12)]    # lit edge of the ridge
 
-# o/m/l = bark dark/mid/light, i/j = inner side light/mid; upper case = grey-brown bark
+# o/m/l = bark dark/mid/light, i/j = inner side light/mid; upper case = the same bark weathered greyer
 BARK = """
 ................
 ......oMMO......
@@ -86,10 +87,10 @@ oi..............
 ..ji.......jiO..
 """
 
-def bark_strips():
-    brown = palette(Image.open(f"{src}/oak_log.png").convert("RGBA"))
-    grey = tuple(tuple(int(v * 0.55 + sum(c) / 3 * 0.45) for v in c) for c in brown)  # desaturated oak bark
-    inner = palette(Image.open(f"{src}/stripped_oak_log.png").convert("RGBA"))
+def bark_strips(wood):
+    brown = palette(Image.open(tex(f"{wood}_log")).convert("RGBA"))
+    grey = tuple(tuple(int(v * 0.55 + sum(c) / 3 * 0.45) for v in c) for c in brown)  # the same bark, desaturated
+    inner = palette(Image.open(tex(f"stripped_{wood}_log")).convert("RGBA"))
     cols = {"o": brown[0], "m": brown[1], "l": brown[2], "O": grey[0], "M": grey[1], "L": grey[2],
             "i": inner[2], "j": inner[1], "I": inner[2], "J": inner[1]}
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
@@ -99,15 +100,15 @@ def bark_strips():
             if ch != ".": img.putpixel((x, y), cols[ch] + (255,))
     return img
 
-sheet = Image.new("RGBA", (16 * 4 * 6, 16 * 4 * 3), (200, 200, 200, 255))
+sheet = Image.new("RGBA", (16 * 4 * 6, 16 * 4 * 8), (200, 200, 200, 255))  # rough logs in rows 0-3, bark in 4-7
 for i, wood in enumerate(WOODS):
     bark = palette(Image.open(tex(f"{wood}_log")).convert("RGBA"))
     end = palette(Image.open(tex(f"{wood}_log_top")).convert("RGBA").crop((4, 4, 12, 12)).resize((16, 16)))
     img = rough_log(wood, bark, end)
     img.save(f"{out}/{wood}_rough_log.png")
     big = img.resize((64, 64), Image.NEAREST); sheet.paste(big, ((i % 6) * 64, (i // 6) * 64), big)
-img = bark_strips()
-img.save(f"{out}/bark.png")
-big = img.resize((64, 64), Image.NEAREST); sheet.paste(big, (2 * 64, 2 * 64), big)
+    img = bark_strips(wood)
+    img.save(f"{out}/{wood}_bark.png")
+    big = img.resize((64, 64), Image.NEAREST); sheet.paste(big, ((i % 6) * 64, (4 + i // 6) * 64), big)
 sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).save(prev)
 print("ok")

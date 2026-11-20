@@ -1,11 +1,13 @@
-"""Bark Roof, one per wood (BarkRoofBlock, Mechanical.BARK_ROOFS): models, blockstates, loot tables, recipes, tags, lang.
+"""Bark (Mechanical.BARKS) and Bark Roof, one per wood (BarkRoofBlock, Mechanical.BARK_ROOFS): models, blockstates, loot tables, recipes, tags, lang.
 
 - A slope is a real 45-degree plate (high edge north in the models, turned by the blockstate). Corners follow vanilla
   stairs: the inner corner (high north and east) is two crossing plates, of which the upper one shows from above; the outer
   corner (peaking north-west) is cut along its diagonal into strips, the south-west half from the north slope and the
   north-east half from the west slope. Flat: a 2 px layer on the floor of the block.
 - Top: the wood's bark shingles (gen_bark_roof_textures.py), underside: the wood's stripped log.
-- Recipe (building): 3 Bark + any log of that wood -> 4.
+- Bark: <wood>_bark items (texture from gen_rough_log_textures.py), item tag mechanical:barks that every bark use takes.
+  The old single mechanical:bark is aliased to oak_bark in Java, so its lang key and model are dropped here.
+- Recipe (building): 3 of that wood's Bark in a slope (B. / BB) -> 4.
 - Tags: minecraft:mineable/axe; item tag mechanical:bark_roofs (advancement stone_age/bark_roof in gen_advancements.py).
 Generator order: ... gen_tribes2.py, gen_bark_roof.py, gen_wildtweaks.py ... (before gen_block_items, gen_unlocks).
 Run: python scripts/gen_bark_roof.py"""
@@ -31,9 +33,11 @@ def w(path, obj):
     path.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
 
 
-def merge(path, obj):
+def merge(path, obj, drop=()):
     old = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     old.update(obj)
+    for k in drop:
+        old.pop(k, None)
     path.write_text(json.dumps(old, indent=2) + "\n", encoding="utf-8")
 
 
@@ -183,14 +187,16 @@ def name(wood):
 def data():
     for wood in WOODS:
         b = f"{wood}_bark_roof"
-        logs = f"#{ns(wood)}:{wood}_logs"
-        if ns(wood) == "mechanical":
-            assert (D / f"mechanical/tags/item/{wood}_logs.json").exists(), logs
-        w(D / f"mechanical/recipe/{b}.json", {"type": "minecraft:crafting_shapeless", "category": "building",
-                                               "ingredients": [M + "bark", M + "bark", M + "bark", logs], "result": {"id": M + b, "count": 4}})
+        w(A / f"models/item/{wood}_bark.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}item/{wood}_bark"}})
+        w(A / f"items/{wood}_bark.json", {"model": {"type": "minecraft:model", "model": f"{M}item/{wood}_bark"}})
+        w(D / f"mechanical/recipe/{b}.json", {"type": "minecraft:crafting_shaped", "category": "building", "pattern": ["B ", "BB"],
+                                               "key": {"B": f"{M}{wood}_bark"}, "result": {"id": M + b, "count": 4}})
         w(D / f"mechanical/loot_table/blocks/{b}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
             {"type": "minecraft:item", "name": M + b}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
             "random_sequence": f"mechanical:blocks/{b}"})
+    w(D / "mechanical/tags/item/barks.json", {"values": [f"{M}{x}_bark" for x in WOODS]})
+    for old in (A / "models/item/bark.json", A / "items/bark.json"):
+        old.unlink(missing_ok=True)
     ids = [f"{M}{x}_bark_roof" for x in WOODS]
     w(D / "mechanical/tags/item/bark_roofs.json", {"values": ids})
     w(D / "mechanical/tags/block/bark_roofs.json", {"values": ids})
@@ -198,7 +204,8 @@ def data():
     tag = json.loads(axe.read_text(encoding="utf-8"))
     tag["values"] = [v for v in tag["values"] if v not in ids] + ids
     w(axe, tag)
-    merge(A / "lang/en_us.json", {f"block.mechanical.{x}_bark_roof": f"{name(x)} Bark Roof" for x in WOODS})
+    merge(A / "lang/en_us.json", {f"block.mechanical.{x}_bark_roof": f"{name(x)} Bark Roof" for x in WOODS}
+          | {f"item.mechanical.{x}_bark": f"{name(x)} Bark" for x in WOODS}, drop=["item.mechanical.bark"])
 
 
 if __name__ == "__main__":
