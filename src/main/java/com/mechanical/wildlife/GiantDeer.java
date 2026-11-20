@@ -4,6 +4,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import java.util.EnumSet;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -27,11 +30,24 @@ import net.minecraft.world.phys.Vec3;
  * ({@link #SIGHT}), and any hit (an arrow from any range too) turns it on the attacker at once. Fights with telegraphed
  * straight-line charges ({@link HuntGoal}), rams down the tree a player climbs, hides from a player it can't reach, and
  * doesn't bleed or back off until it is down to a quarter of its health; then it bleeds and runs for cover (its own goal,
- * not AnimalFear). Always yields a giant antler.
+ * not AnimalFear). Against a crowd it swings its antlers in a wide arc in front ({@link #sweep}) and rears up to stamp on
+ * whoever is behind it ({@link #stomp}). Always yields a giant antler.
  */
 public class GiantDeer extends WildAnimal {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/giant_deer.png");
     private static final float BREAK_POINT = 0.25F;
+    /** Ticks left of the antler sweep / the rear-up stomp (synced for the model). */
+    private static final EntityDataAccessor<Integer> SWEEP = SynchedEntityData.defineId(GiantDeer.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> STOMP = SynchedEntityData.defineId(GiantDeer.class, EntityDataSerializers.INT);
+    /** Sweep: head lowers and cocks aside for {@code SWEEP_HIT} ticks (the tell), then the swing lands; recovers to the end. */
+    static final int SWEEP_TICKS = 20, SWEEP_HIT = 14, STOMP_TICKS = 16, STOMP_HIT = 10, AREA_COOLDOWN = 60;
+    /** Foes this close to its hide set off an area attack; the sweep's reach (180 degrees in front) and the stomp's, from its centre. */
+    static final double CROWD = 3.5, SWEEP_REACH = 4.5, STOMP_REACH = 3.6;
+    static final float SWEEP_DAMAGE = 9.0F, STOMP_DAMAGE = 5.0F;
+    private int areaCooldown;
+    private HuntGoal hunt;
+    /** Who it turns toward while winding up the sweep. */
+    private net.minecraft.world.entity.LivingEntity sweepFacing;
     private final ServerBossEvent bossEvent = new ServerBossEvent(net.minecraft.util.Mth.createInsecureUUID(random), getDisplayName(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.PROGRESS);
 
     public GiantDeer(EntityType<? extends GiantDeer> type, Level level) {
@@ -64,7 +80,7 @@ public class GiantDeer extends WildAnimal {
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.removeAllGoals(g -> g instanceof FollowHerdGoal); // always alone
-        goalSelector.addGoal(1, new HuntGoal(this));
+        goalSelector.addGoal(1, hunt = new HuntGoal(this));
         targetSelector.addGoal(2, new AttackNearbyPlayerGoal(this));
     }
 
@@ -96,8 +112,132 @@ public class GiantDeer extends WildAnimal {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SWEEP, 0);
+        builder.define(STOMP, 0);
+    }
+
+    /** 0..1 progress of the antler sweep, for the model. */
+    public float sweepAmount(float partialTick) {
+        int t = entityData.get(SWEEP);
+        return t <= 0 ? 0 : net.minecraft.util.Mth.clamp((SWEEP_TICKS - t + partialTick) / SWEEP_TICKS, 0, 1);
+    }
+
+    /** 0..1 progress of the rear-up stomp, for the model. */
+    public float stompAmount(float partialTick) {
+        int t = entityData.get(STOMP);
+        return t <= 0 ? 0 : net.minecraft.util.Mth.clamp((STOMP_TICKS - t + partialTick) / STOMP_TICKS, 0, 1);
+    }
+
+    boolean areaAttacking() {
+        return entityData.get(SWEEP) > 0 || entityData.get(STOMP) > 0;
+    }
+
+    /** Who it may hit: anyone fighting it (players, and mobs after it or that hurt it lately); never its kind, young, or items. */
+    boolean isFoe(net.minecraft.world.entity.LivingEntity e) {
+        if (e == this || !e.isAlive() || e instanceof GiantDeer || e.isBaby()) return false;
+        if (e instanceof Player p) return fair(p);
+        return e instanceof net.minecraft.world.entity.Mob m && (m.getTarget() == this || e == getTarget()
+                || e == getLastHurtByMob() && tickCount - getLastHurtByMobTimestamp() < 100);
+    }
+
+    /** Foes whose near side is within {@code reach} of its centre, horizontally. */
+    private java.util.List<net.minecraft.world.entity.LivingEntity> foes(double reach) {
+        return level().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, getBoundingBox().inflate(reach, 1.0, reach),
+                e -> isFoe(e) && flatDistance(e) <= reach + e.getBbWidth() / 2);
+    }
+
+    private double flatDistance(Entity e) {
+        return Math.sqrt(net.minecraft.util.Mth.square(e.getX() - getX()) + net.minecraft.util.Mth.square(e.getZ() - getZ()));
+    }
+
+    /** In the half-circle in front of where it faces. */
+    boolean inFront(Entity e) {
+        float yaw = getYRot() * net.minecraft.util.Mth.DEG_TO_RAD;
+        return (e.getX() - getX()) * -net.minecraft.util.Mth.sin(yaw) + (e.getZ() - getZ()) * net.minecraft.util.Mth.cos(yaw) >= 0;
+    }
+
+    /** Crowded (two or more foes at its hide, or its target at melee range): sweep the ones in front, or stomp the ones behind. */
+    private void startAreaAttack() {
+        var near = foes(CROWD + getBbWidth() / 2);
+        var target = getTarget();
+        if (near.size() < 2 && (target == null || !near.contains(target))) return;
+        long behind = near.stream().filter(e -> !inFront(e) && flatDistance(e) <= STOMP_REACH + e.getBbWidth() / 2).count();
+        areaCooldown = AREA_COOLDOWN;
+        getNavigation().stop();
+        if (behind >= 2) {
+            entityData.set(STOMP, STOMP_TICKS);
+            playSound(SoundEvents.HORSE_ANGRY, 2.0F, 0.4F);
+        } else {
+            sweepFacing = target != null && near.contains(target) ? target : near.get(0);
+            entityData.set(SWEEP, SWEEP_TICKS);
+            playSound(SoundEvents.GOAT_PREPARE_RAM, 2.0F, 0.4F);
+            playSound(SoundEvents.RAVAGER_ROAR, 1.2F, 1.1F);
+        }
+    }
+
+    /** Runs the sweep and stomp timers, and starts one when crowded (not mid-charge, not once broken). */
+    private void tickAreaAttack(ServerLevel level) {
+        int sweep = entityData.get(SWEEP), stomp = entityData.get(STOMP);
+        if (sweep > 0) {
+            getNavigation().stop();
+            if (SWEEP_TICKS - sweep < SWEEP_HIT && sweepFacing != null && sweepFacing.isAlive()) {
+                float yaw = (float) (net.minecraft.util.Mth.atan2(sweepFacing.getZ() - getZ(), sweepFacing.getX() - getX()) * net.minecraft.util.Mth.RAD_TO_DEG) - 90.0F;
+                setYRot(net.minecraft.util.Mth.approachDegrees(getYRot(), yaw, 25.0F));
+                yBodyRot = yHeadRot = getYRot();
+            }
+            entityData.set(SWEEP, --sweep);
+            if (SWEEP_TICKS - sweep == SWEEP_HIT) sweep(level);
+        } else if (stomp > 0) {
+            getNavigation().stop();
+            entityData.set(STOMP, --stomp);
+            if (STOMP_TICKS - stomp == STOMP_HIT) stomp(level);
+        } else if (areaCooldown > 0) {
+            areaCooldown--;
+        } else if (!isBroken() && !isDozing() && tickCount % 5 == 0 && (hunt == null || hunt.phase != Phase.CHARGE)) {
+            startAreaAttack();
+        }
+    }
+
+    /** The antler swing: every foe in the half-circle in front, out to {@link #SWEEP_REACH}, is hit hard and thrown outward. */
+    int sweep(ServerLevel level) {
+        int n = 0;
+        DamageSource source = damageSources().mobAttack(this);
+        for (var e : foes(SWEEP_REACH)) {
+            if (!inFront(e) || !e.hurtServer(level, source, SWEEP_DAMAGE)) continue;
+            e.knockback(1.8, getX() - e.getX(), getZ() - e.getZ(), source, SWEEP_DAMAGE);
+            e.setDeltaMovement(e.getDeltaMovement().add(0, 0.4, 0));
+            e.needsSync = true;
+            n++;
+        }
+        float yaw = getYRot() * net.minecraft.util.Mth.DEG_TO_RAD;
+        level.sendParticles(ParticleTypes.SWEEP_ATTACK, getX() - net.minecraft.util.Mth.sin(yaw) * 2.5, getY() + 1.5,
+                getZ() + net.minecraft.util.Mth.cos(yaw) * 2.5, 3, 1.2, 0.3, 1.2, 0);
+        playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 2.0F, 0.5F);
+        if (n > 0) playSound(SoundEvents.GOAT_RAM_IMPACT, 2.0F, 0.5F);
+        return n;
+    }
+
+    /** Rearing up and slamming down its forehooves: everyone close all round (mostly the ones behind it) is hit and pushed off. */
+    int stomp(ServerLevel level) {
+        int n = 0;
+        DamageSource source = damageSources().mobAttack(this);
+        for (var e : foes(STOMP_REACH)) {
+            if (!e.hurtServer(level, source, STOMP_DAMAGE)) continue;
+            e.knockback(1.2, getX() - e.getX(), getZ() - e.getZ(), source, STOMP_DAMAGE);
+            e.needsSync = true;
+            n++;
+        }
+        HuntGoal.stomp(this);
+        playSound(SoundEvents.RAVAGER_STUNNED, 1.5F, 0.6F);
+        return n;
+    }
+
+    @Override
     public void aiStep() {
         super.aiStep();
+        if (level() instanceof ServerLevel server) tickAreaAttack(server);
         if (level().isClientSide()) {
             magicMotes();
             return;
@@ -288,6 +428,8 @@ public class GiantDeer extends WildAnimal {
         /** Base of the tree the target is up, while it goes for that tree. */
         BlockPos trunk;
         private boolean hit;
+        /** Everyone the current charge has already run down. */
+        private final java.util.Set<Entity> trampled = new java.util.HashSet<>();
 
         HuntGoal(GiantDeer deer) {
             this.deer = deer;
@@ -345,7 +487,7 @@ public class GiantDeer extends WildAnimal {
         @Override
         public void tick() {
             var target = threat();
-            if (target == null) return;
+            if (target == null || deer.areaAttacking()) return; // the sweep/stomp has the deer for now
             timer--;
             if (deer.isBroken() && phase != Phase.FLEE) {
                 deer.setTarget(null);
@@ -419,17 +561,18 @@ public class GiantDeer extends WildAnimal {
             float yaw = (float) (net.minecraft.util.Mth.atan2(aim.z - deer.getZ(), aim.x - deer.getX()) * net.minecraft.util.Mth.RAD_TO_DEG) - 90.0F;
             deer.setYRot(net.minecraft.util.Mth.approachDegrees(deer.getYRot(), yaw, 20.0F));
             deer.yBodyRot = deer.getYRot();
-            if (timer % 8 == 0) stomp();
+            if (timer % 8 == 0) stomp(deer);
             if (timer > 0) return;
             // locked on where the target stands now, and on past it: no turning mid-charge
             Vec3 flat = new Vec3(aim.x - deer.getX(), 0, aim.z - deer.getZ());
             chargeAt = trunk != null || flat.lengthSqr() < 1.0E-4 ? aim : aim.add(flat.normalize().scale(3.0));
             hit = false;
+            trampled.clear();
             deer.playSound(SoundEvents.RAVAGER_ROAR, 1.5F, 0.8F);
             to(Phase.CHARGE, CHARGE_TICKS);
         }
 
-        private void stomp() {
+        static void stomp(GiantDeer deer) {
             deer.playSound(SoundEvents.RAVAGER_STEP, 1.5F, 0.5F);
             if (deer.level() instanceof ServerLevel server) {
                 BlockState ground = server.getBlockState(deer.blockPosition().below());
@@ -451,8 +594,14 @@ public class GiantDeer extends WildAnimal {
                     to(Phase.RECOVER, RECOVER);
                     return;
                 }
-            } else if (!hit && deer.getBoundingBox().inflate(0.6).intersects(target.getBoundingBox())) {
-                hit = deer.doHurtTarget(level, target);
+            } else {
+                // runs down everyone in its path, not just the target; reaching the target ends the charge
+                for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, deer.getBoundingBox().inflate(0.6),
+                        e -> e != target && deer.isFoe(e) && !trampled.contains(e))) {
+                    trampled.add(e);
+                    deer.doHurtTarget(level, e);
+                }
+                if (!hit && deer.getBoundingBox().inflate(0.6).intersects(target.getBoundingBox())) hit = deer.doHurtTarget(level, target);
             }
             if (timer <= 0 || hit || trunk == null && toPoint < 1.5) to(Phase.RECOVER, RECOVER);
         }

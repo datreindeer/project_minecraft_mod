@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Unarmed people (and anyone near a hissing creeper) keep away from monsters: they run toward the camp fire or an armed
  * member of their group if that leads away from the threat, else just away. With nowhere to run they are cornered and
- * may hit back (see {@link Tribesperson#isCornered()}).
+ * may hit back (see {@link Tribesperson#isCornered()}). Anyone badly hurt runs from a Giant Deer too ({@link #dreads}).
  */
 class FleeThreatGoal extends Goal {
     private static final double RANGE = 8, CREEPER_RANGE = 6;
@@ -34,6 +34,11 @@ class FleeThreatGoal extends Goal {
         return e instanceof Enemy && !(e instanceof NeutralMob) || e instanceof Mob m && m.getTarget() == mob;
     }
 
+    /** Even hunters break off from a fighting Giant Deer once it has hurt them badly (below half health). */
+    static boolean dreads(Tribesperson mob, LivingEntity e) {
+        return e instanceof com.mechanical.wildlife.GiantDeer deer && deer.isAlive() && !deer.isBroken() && mob.getHealth() < mob.getMaxHealth() * 0.5F;
+    }
+
     private static boolean hissing(LivingEntity e) {
         return e instanceof Creeper c && c.getSwellDir() > 0;
     }
@@ -43,7 +48,7 @@ class FleeThreatGoal extends Goal {
         if (mob.getTradingPlayer() != null) return false;
         boolean armed = mob.isArmed();
         List<LivingEntity> near = mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(RANGE),
-                e -> isThreat(mob, e) && (!armed || hissing(e) && e.distanceToSqr(mob) < CREEPER_RANGE * CREEPER_RANGE));
+                e -> isThreat(mob, e) && (!armed || hissing(e) && e.distanceToSqr(mob) < CREEPER_RANGE * CREEPER_RANGE) || dreads(mob, e));
         threat = near.stream().min((a, b) -> Double.compare(a.distanceToSqr(mob), b.distanceToSqr(mob))).orElse(null);
         if (threat == null) return false;
         Vec3 to = refuge();

@@ -49,6 +49,10 @@ public class WildAnimalRenderer<T extends WildAnimal> extends MobRenderer<T, Wil
             state.leaping = predator.isLeaping();
             state.calling = predator.callAmount();
         }
+        if (entity instanceof com.mechanical.wildlife.GiantDeer deer) {
+            state.sweep = deer.sweepAmount(partialTicks);
+            state.stand = deer.stompAmount(partialTicks);
+        }
         if (entity instanceof Pheasant pheasant) {
             state.flying = !pheasant.onGround();
             state.flap = pheasant.flapPhase(partialTicks);
