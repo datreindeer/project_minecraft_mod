@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:hyena_pelt",
+    "mechanical:hyena_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:hyena_rug",
+    "count": 1
+  }
+}

@@ -160,7 +160,7 @@ public abstract class Predator extends WildAnimal {
     }
 
     /** {@code e} holds a torch or similar (main or off hand). */
-    static boolean holdsFire(LivingEntity e) {
+    protected static boolean holdsFire(LivingEntity e) {
         return e.getMainHandItem().is(SCARES_PREDATORS) || e.getOffhandItem().is(SCARES_PREDATORS);
     }
 

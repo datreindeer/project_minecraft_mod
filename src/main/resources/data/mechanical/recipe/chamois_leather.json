@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_chamois_hide",
+    "#mechanical:knives",
+    "#mechanical:tanning_fats"
+  ],
+  "result": {
+    "id": "mechanical:chamois_leather",
+    "count": 1
+  }
+}

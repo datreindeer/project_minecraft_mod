@@ -168,6 +168,7 @@
     "mechanical:potters_wheel",
     "mechanical:tripod",
     "mechanical:mold_bench",
-    "mechanical:root_cellar"
+    "mechanical:root_cellar",
+    "mechanical:horn_window"
   ]
 }

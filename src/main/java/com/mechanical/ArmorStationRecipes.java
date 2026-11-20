@@ -39,6 +39,17 @@ public final class ArmorStationRecipes {
             StationRecipe.of(Mechanical.WOLF_FUR_COAT::get, 1, of(Wildlife.WOLF_PELT, 4), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 3), WOLF_PELT),
             StationRecipe.of(Mechanical.WOLF_FUR_LEGGINGS::get, 1, of(Wildlife.WOLF_PELT, 3), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 2), WOLF_PELT),
             StationRecipe.of(Mechanical.WOLF_FUR_BOOTS::get, 1, of(Wildlife.WOLF_PELT, 2), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), WOLF_PELT),
+            // fauna: mountain - Chamois Boots; marmot pelts and the big cave bear pelt as fur (fewer pelts per piece than the bear's)
+            StationRecipe.of(com.mechanical.wildlife.mountain.MountainFauna.CHAMOIS_BOOTS::get, 1, of(com.mechanical.wildlife.mountain.MountainFauna.CHAMOIS_LEATHER, 3), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1),
+                    s -> s.is(com.mechanical.wildlife.mountain.MountainFauna.CHAMOIS_LEATHER.get())),
+            StationRecipe.of(Mechanical.FUR_HOOD::get, 1, of(com.mechanical.wildlife.mountain.MountainFauna.MARMOT_PELT, 3), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1),
+                    s -> s.is(com.mechanical.wildlife.mountain.MountainFauna.MARMOT_PELT.get())),
+            StationRecipe.of(Mechanical.FUR_BOOTS::get, 1, of(com.mechanical.wildlife.mountain.MountainFauna.MARMOT_PELT, 3), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1),
+                    s -> s.is(com.mechanical.wildlife.mountain.MountainFauna.MARMOT_PELT.get())),
+            StationRecipe.of(Mechanical.FUR_COAT::get, 1, of(com.mechanical.wildlife.mountain.MountainFauna.CAVE_BEAR_PELT, 2), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 3),
+                    s -> s.is(com.mechanical.wildlife.mountain.MountainFauna.CAVE_BEAR_PELT.get())),
+            StationRecipe.of(Mechanical.FUR_LEGGINGS::get, 1, of(com.mechanical.wildlife.mountain.MountainFauna.CAVE_BEAR_PELT, 1), tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 2),
+                    s -> s.is(com.mechanical.wildlife.mountain.MountainFauna.CAVE_BEAR_PELT.get())),
             // coast fauna: sealskin (warm and waterproof) and layered walrus hide; unlocked by carrying the cured skin
             StationRecipe.of(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PARKA::get, 1, of(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN, 4),
                     tool(Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 3), s -> s.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN.get())),

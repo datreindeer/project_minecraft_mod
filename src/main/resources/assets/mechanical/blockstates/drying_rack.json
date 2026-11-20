@@ -2399,6 +2399,221 @@
         "model": "mechanical:block/drying_rack_walrus_dry_upper",
         "y": 270
       }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "single",
+        "hide": "22|23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "single",
+        "hide": "22|23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "single",
+        "hide": "22|23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "single",
+        "hide": "22|23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "lower",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_lower"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "upper",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "upper",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_upper"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "lower",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_lower",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "upper",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "upper",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_lower",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "lower",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_lower",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "upper",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "upper",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_lower",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "lower",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_lower",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "upper",
+        "hide": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_raw_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "upper",
+        "hide": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/drying_rack_cave_bear_dry_upper",
+        "y": 270
+      }
     }
   ]
 }

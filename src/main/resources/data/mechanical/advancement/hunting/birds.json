@@ -6,6 +6,26 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:raw_bustard"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_capercaillie"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "minecraft:feather"
           }
         ]
@@ -14,7 +34,9 @@
   },
   "requirements": [
     [
-      "has_0"
+      "has_0",
+      "has_1",
+      "has_2"
     ]
   ],
   "display": {

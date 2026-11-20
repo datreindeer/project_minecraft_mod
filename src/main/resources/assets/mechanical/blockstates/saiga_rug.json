@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mechanical:block/saiga_rug"
+    },
+    "facing=east": {
+      "model": "mechanical:block/saiga_rug",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mechanical:block/saiga_rug",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mechanical:block/saiga_rug",
+      "y": 270
+    }
+  }
+}

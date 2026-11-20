@@ -19,6 +19,10 @@ public final class FletchingRecipes {
             StationRecipe.of(() -> Mechanical.BONE_ARROW.get(), 4, of(() -> Mechanical.FISH_BONES.get(), 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
             StationRecipe.of(() -> Mechanical.BONE_ARROW.get(), 4, of(() -> Items.BONE, 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
             StationRecipe.of(() -> Mechanical.BARBED_ARROW.get(), 4, of(() -> Wildlife.BEAR_CLAW.get(), 1, () -> ForestBirdsFauna.EAGLE_TALON.get()), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            // fauna: mountain - hyena fangs barb arrows like bear claws; ibex horn glued over a sinew bow makes the composite Horn Bow
+            StationRecipe.of(() -> Mechanical.BARBED_ARROW.get(), 4, of(() -> com.mechanical.wildlife.mountain.MountainFauna.HYENA_FANG.get(), 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> com.mechanical.wildlife.mountain.MountainFauna.HORN_BOW.get(), 1, of(() -> Wildlife.SINEW.get(), 2), of(() -> Mechanical.SINEW_BOW.get(), 1),
+                    of(() -> com.mechanical.wildlife.mountain.MountainFauna.IBEX_HORN.get(), 2), null),
             // fauna: forestbirds (broad capercaillie tail feathers fletch more arrows; eagle feathers fly hardest; owl feathers fly silent)
             StationRecipe.of(() -> Items.ARROW, 6, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.CAPERCAILLIE_TAIL_FEATHER.get(), 1), null),
             StationRecipe.of(() -> ForestBirdsFauna.EAGLE_FLETCHED_ARROW.get(), 4, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.EAGLE_FEATHER.get(), 1), null),

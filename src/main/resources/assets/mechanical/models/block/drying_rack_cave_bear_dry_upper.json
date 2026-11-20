@@ -1,0 +1,41 @@
+{
+  "textures": {
+    "particle": "mechanical:block/drying_rack",
+    "front": "mechanical:block/drying_rack_cave_bear_dry_upper",
+    "back": "mechanical:block/drying_rack_cave_bear_dry_upper_back"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        7
+      ],
+      "to": [
+        13,
+        13,
+        7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            3,
+            13,
+            16
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "uv": [
+            13,
+            3,
+            3,
+            16
+          ],
+          "texture": "#back"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "values": [
+    "minecraft:savanna",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:badlands",
+    "minecraft:wooded_badlands",
+    "minecraft:eroded_badlands",
+    "mechanical:hazel_meadow"
+  ]
+}

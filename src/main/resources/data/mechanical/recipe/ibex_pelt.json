@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_ibex_pelt",
+    "#mechanical:knives",
+    "#mechanical:tanning_fats"
+  ],
+  "result": {
+    "id": "mechanical:ibex_pelt",
+    "count": 1
+  }
+}

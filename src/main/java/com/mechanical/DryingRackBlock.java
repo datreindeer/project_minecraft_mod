@@ -74,9 +74,10 @@ public class DryingRackBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
     public static final int EMPTY = 0, HIDE_WET = 1, PHANTOM_WET = 3, MEAT = 6, FISH = 8, BERRIES = 10, MUSHROOMS = 12,
-            BEAR_WET = 14, BEAR_DRY = 15, WOLF_WET = 16, WOLF_DRY = 17, SEAL_WET = 18, SEAL_DRY = 19, WALRUS_WET = 20, WALRUS_DRY = 21;
+            BEAR_WET = 14, BEAR_DRY = 15, WOLF_WET = 16, WOLF_DRY = 17, SEAL_WET = 18, SEAL_DRY = 19, WALRUS_WET = 20, WALRUS_DRY = 21,
+            CAVE_BEAR_WET = 22, CAVE_BEAR_DRY = 23; // fauna: mountain (whole rack, like the bear)
     // shortcut: pelts only in HIDE keeps the state count at ~30k (HIDE2 0-21 too would be ~47k)
-    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 21), HIDE2 = IntegerProperty.create("hide2", 0, 13);
+    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 23), HIDE2 = IntegerProperty.create("hide2", 0, 13);
     /** Dark random ticks (~68 s each on average) before a phantom hide rots: 8, about one full night. */
     public static final int ROT_TICKS = 8;
     public static final IntegerProperty DARK = IntegerProperty.create("dark", 0, ROT_TICKS - 1);
@@ -147,6 +148,7 @@ public class DryingRackBlock extends Block {
             case BEAR_DRY -> new ItemStack(Wildlife.BEAR_PELT.get());
             case WOLF_DRY -> new ItemStack(Wildlife.WOLF_PELT.get());
             case SEAL_DRY -> new ItemStack(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN.get());
+            case CAVE_BEAR_DRY -> new ItemStack(com.mechanical.wildlife.mountain.MountainFauna.CAVE_BEAR_PELT.get());
             case WALRUS_DRY -> new ItemStack(com.mechanical.wildlife.coast.CoastFauna.WALRUS_HIDE.get());
             default -> ItemStack.EMPTY;
         };
@@ -167,7 +169,8 @@ public class DryingRackBlock extends Block {
         }
         int pelt = stack.is(Wildlife.RAW_BEAR_PELT.get()) ? BEAR_WET : stack.is(Wildlife.RAW_WOLF_PELT.get()) ? WOLF_WET
                 : stack.is(com.mechanical.wildlife.coast.CoastFauna.RAW_SEALSKIN.get()) ? SEAL_WET
-                : stack.is(com.mechanical.wildlife.coast.CoastFauna.RAW_WALRUS_HIDE.get()) ? WALRUS_WET : 0;
+                : stack.is(com.mechanical.wildlife.coast.CoastFauna.RAW_WALRUS_HIDE.get()) ? WALRUS_WET
+                : stack.is(com.mechanical.wildlife.mountain.MountainFauna.RAW_CAVE_BEAR_PELT.get()) ? CAVE_BEAR_WET : 0;
         if (pelt != 0) return hangPelt(pelt, stack, state, level, pos, player);
         int handful = stack.is(Preserving.DRYABLE_BERRIES) ? BERRIES : stack.is(Preserving.DRYABLE_MUSHROOMS) ? MUSHROOMS : 0;
         int hang = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get()) ? PHANTOM_WET : stack.is(Mechanical.SCRAPED_HIDE.get()) ? HIDE_WET
@@ -207,7 +210,7 @@ public class DryingRackBlock extends Block {
 
     /** Pelts that fill both blocks of a tall rack (the others take one block). */
     private static boolean wholeRack(int wet) {
-        return wet == BEAR_WET || wet == WALRUS_WET;
+        return wet == BEAR_WET || wet == WALRUS_WET || wet == CAVE_BEAR_WET;
     }
 
     /** A big pelt takes a whole block of a tall rack: the bear both, the wolf the block pointed at, else the other one. */
@@ -249,7 +252,7 @@ public class DryingRackBlock extends Block {
                 if (taken.isEmpty()) continue;
                 any = true;
                 next = next.setValue(p, EMPTY);
-                boolean bearTop = (s.getValue(p) == BEAR_DRY || s.getValue(p) == WALRUS_DRY) && s.getValue(PART) == Part.UPPER; // the lower block gives the bear pelt
+                boolean bearTop = (s.getValue(p) == BEAR_DRY || s.getValue(p) == WALRUS_DRY || s.getValue(p) == CAVE_BEAR_DRY) && s.getValue(PART) == Part.UPPER; // the lower block gives the bear pelt
                 if (!level.isClientSide() && !bearTop) player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
             }
             if (!level.isClientSide() && next != s) level.setBlock(at, next, Block.UPDATE_ALL);
@@ -303,7 +306,7 @@ public class DryingRackBlock extends Block {
         boolean phantom = false;
         for (IntegerProperty p : spots(state)) {
             int spot = state.getValue(p);
-            if (spot == BEAR_WET || spot == WOLF_WET || spot == SEAL_WET || spot == WALRUS_WET) {
+            if (spot == BEAR_WET || spot == WOLF_WET || spot == SEAL_WET || spot == WALRUS_WET || spot == CAVE_BEAR_WET) {
                 if (dryWeather && random.nextFloat() < (wholeRack(spot) ? BEAR_DRY_CHANCE : WOLF_DRY_CHANCE)) {
                     next = next.setValue(p, spot + 1);
                     BlockPos other = partner(state, pos); // the bear pelt is one hide over both blocks
