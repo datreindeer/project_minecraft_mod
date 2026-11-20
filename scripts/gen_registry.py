@@ -170,6 +170,8 @@ def model_textures(model_ref, depth=0):
         for k, v in tex.items():
             if isinstance(v, str) and v.startswith("#"):
                 tex[k] = tex.get(v[1:], v)
+    if depth:  # parents keep their "#var" entries so the child's textures can fill them in
+        return tex
     return {k: v for k, v in tex.items() if isinstance(v, str) and not v.startswith("#")}
 
 
