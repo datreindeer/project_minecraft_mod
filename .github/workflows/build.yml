@@ -36,12 +36,17 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           if git rev-parse "v$version" >/dev/null 2>&1; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
 
+      # shortcut: old copies of update-mechanical.ps1 only look for mechanical-*.jar; drop this once everyone has the new script
+      - name: Copy jar under old name
+        run: cp build/libs/jackt-${{ steps.version.outputs.version }}.jar build/libs/mechanical-${{ steps.version.outputs.version }}.jar
+
       - name: Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.version.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: Mechanical ${{ steps.version.outputs.version }}
+          name: Jackt - Ages of Man ${{ steps.version.outputs.version }}
           files: |
+            build/libs/jackt-${{ steps.version.outputs.version }}.jar
             build/libs/mechanical-${{ steps.version.outputs.version }}.jar
             docs/registry.html

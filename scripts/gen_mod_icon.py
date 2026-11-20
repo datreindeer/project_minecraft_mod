@@ -1,4 +1,4 @@
-"""Mod icon: crossed flint spear + bronze sword (pixel art, 256x256). Usage: gen_mod_icon.py [stone|glow|forest|none] [out]"""
+"""Mod icon: crossed flint spear + bronze sword (pixel art, 256x256). Usage: gen_mod_icon.py [forest|stone|glow|none] [out]"""
 import random, sys
 from PIL import Image, ImageOps
 T = "src/main/resources/assets/mechanical/textures/item/"
@@ -33,6 +33,6 @@ def icon(kind):
     return img
 
 if __name__ == "__main__":
-    kind = sys.argv[1] if len(sys.argv) > 1 else "stone"
+    kind = sys.argv[1] if len(sys.argv) > 1 else "forest"
     out = sys.argv[2] if len(sys.argv) > 2 else "src/main/resources/jackt.png"
     icon(kind).save(out); print("wrote", out)
