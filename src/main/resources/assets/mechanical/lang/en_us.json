@@ -1789,6 +1789,13 @@
   "tooltip.mechanical.sickle_swath": "Cuts 3x3 ripe crops or grass in one stroke (sneak: one)",
   "message.mechanical.fertilizer.full": "This soil is already as rich as it gets (fertility 3/3)",
   "item.mechanical.leather_pouch": "Leather Pouch",
+  "chat.mechanical.visit.seek": "This is good land, and we would stay. But we see no place for our camp yet. We will walk the land nearby and look.",
+  "dialog.mechanical.tribe.seeking": "The %s walk the land near your fire, looking for a good place for our camp. When we find it, we stay.",
+  "message.mechanical.firewood_pile.too_high": "The pile is as high as it goes",
+  "block.mechanical.rough_log_pile": "Rough Log Pile",
+  "message.mechanical.rough_log_pile.too_high": "No room: the pile is as high as it goes",
+  "message.mechanical.rough_log_pile.rolled": "The log rolls off the pile",
+  "message.mechanical.rough_log_pile.fell_off": "The log rolls off and falls",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -1834,7 +1841,9 @@
   "advancements.mechanical.stone_age.fire_drill.title": "Friction",
   "advancements.mechanical.stone_age.fire_drill.description": "Craft a Fire Drill from Twine and Sticks",
   "advancements.mechanical.stone_age.woodpile.title": "Woodpile",
-  "advancements.mechanical.stone_age.woodpile.description": "Right-click the top of a solid block with Firewood to stack a pile. More of the same wood stacks higher; an empty hand takes a piece back",
+  "advancements.mechanical.stone_age.woodpile.description": "Right-click the top of a solid block with Firewood to stack a pile, up to 3 blocks high. Any wood stacks on, mixed; an empty hand takes a piece back",
+  "advancements.mechanical.stone_age.log_pile.title": "Log Pile",
+  "advancements.mechanical.stone_age.log_pile.description": "Right-click the ground with a Rough Log to start a log pile, any woods mixed. Round logs roll off a tall, narrow pile: build it wider to build it higher, or between walls",
   "advancements.mechanical.stone_age.campfire.title": "Hearth",
   "advancements.mechanical.stone_age.campfire.description": "Build a Campfire from Sticks and 3 Firewood. It is placed unlit",
   "advancements.mechanical.stone_age.light_fire.title": "Let There Be Fire",
@@ -2690,7 +2699,5 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
-  "chat.mechanical.visit.seek": "This is good land, and we would stay. But we see no place for our camp yet. We will walk the land nearby and look.",
-  "dialog.mechanical.tribe.seeking": "The %s walk the land near your fire, looking for a good place for our camp. When we find it, we stay."
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
 }

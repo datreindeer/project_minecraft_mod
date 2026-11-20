@@ -53,15 +53,35 @@ Texturen för Firewood visar 1 vedträ (1 st), 2 vedträn (2–15 st) eller 3 ve
   t.ex. Oak Firewood Pile; ändar och bark ritas från träslagets egna stocktexturer). Ändarna vänds mot den som staplar.
 - Varje Firewood är ett **lager**: två kluvna vedträn (4×4 px i genomskärning, 16 långa) bredvid varandra, fyra vedträn i
   rad, fyra rader i ett block = **8 lager** (som snölager). Formen följer höjden (ett udda lager fyller bara halva raden).
-- **Samma Firewood** på högen lägger på ett lager till; när blocket är fullt fortsätter högen i blocket ovanför. Annan
-  sorts Firewood på en full hög startar en ny hög ovanpå. **Tom hand** tar tillbaka det översta vedträt. **Bryts** den
-  släpps all ved. Tappar den underlaget rasar den (släpper veden). Inget eget föremål: högen är veden.
+- **All sorts Firewood** på högen lägger på ett lager till, blandat: varje lager behåller sitt träslag och ritas i det
+  (sparas i en block entity, `WoodPileEntity`, bara när högen är blandad). När blocket är fullt fortsätter högen i blocket
+  ovanför, **högst 3 block** hög ("The pile is as high as it goes"). **Tom hand** tar tillbaka det översta vedträt. **Bryts**
+  den släpps all ved (varje lagers eget träslag). Tappar den underlaget rasar den (släpper veden). Inget eget föremål: högen är veden.
 - Läggs bara på ett vanligt fast block: inte på eldar, stationer eller block med innehåll (block entities), och bara på
   ovansidan. **Smyg** så händer ingenting (som förut). Allt annat man gör med Firewood fungerar som förut eftersom blocket
   man klickar på får först: mata Campfire och glöd, Fire Pit, Clay Kiln, Tripod.
 - **Bränsleförråd:** en brinnande **Fire Pit** vars vedstapel är tom tar ett vedträ från en vedhög bredvid (inom 2 block,
   samma höjd eller ett upp) i stället för att sjunka till glöd. Campfire och Clay Kiln matas fortfarande för hand.
 - Avancemang: **Woodpile** (Stone Age, efter Firewood).
+
+### Rough Log Pile (stockhög)
+- **Högerklicka ovanpå ett fast block med en Rough Log** (vilket träslag som helst) så läggs en stockhög (ett block,
+  `rough_log_pile`). Samma regler som vedhögen för var den får ligga: inte på block med innehåll, bara ovansidan, smyg =
+  inget. En Stump tar stocken först (ställs på stubben). Ändarna vänds mot den som staplar.
+- **4 grova stockar per block:** 8×8 px tjocka (avfasade hörn så de ser runda ut), 16 långa, 2 bredvid varandra och 2 rader
+  upp. Bark och ändar från träslagets egen stock (Fallen Log-texturerna). Alla träslag kan **blandas**, varje stock behåller
+  sitt (block entity). Högerklicka på högen med fler stockar så läggs de på den kolumnen; fullt block → fortsätter ovanför.
+- **Runda stockar rullar** (tvärs över stockarna, åt sidorna): en ny rad som ligger på andra stockar får vara högst **1 block
+  högre än grannkolumnerna** på båda sidor. Är den högre rullar stocken åt den lägre sidan och vidare så länge det går nedåt,
+  tills den hamnar på en lägre kolumn eller på marken ("The log rolls off the pile"). Hittar den ingen plats (vatten, kant,
+  för långt ned) faller den av som föremål. Första raden på marken rullar aldrig.
+  - Ensam kolumn: **1 block** (4 stockar). Tre i bredd: mitten **2 block**. Fem i bredd: **3 block**, osv. – som en riktig
+    stockhög med sluttande sidor.
+  - Ett **fast block bredvid** den nya stocken räknas som **vägg** och håller den kvar. Mellan två väggar går högen rakt upp,
+    **högst 4 block** (8 rader); sedan "No room: the pile is as high as it goes".
+- **Tom hand** tar tillbaka översta stocken i kolumnen. **Bryts** den släpps alla stockar. Tappar den underlaget rasar den.
+  Inget eget föremål.
+- Avancemang: **Log Pile** (Stone Age, efter Woodpile).
 
 ## Verktyg
 
@@ -331,7 +351,7 @@ till sig större räder.
   för 12). Mörkerrädslan (sanity) räknar elden på 1,5× avstånd.
 - **Värme:** +15° nära elden (Campfire +10°), avtar ut till 9 block (Campfire 6).
 - **Rök:** inomhus fylls rummet **3× så fort**, och **sot** sätter sig 3× så fort. Marken runt elden bränns 2× så fort och över
-  en större yta. Utomhus en hög, tät **rökpelare** (signalrök) som syns på långt håll, högre med mer ved. Smoking Rack över
+  en större yta. Utomhus en hög, tät **rökpelare** (signalrök, stiger ca 50–60 block) som syns på långt håll, högre med mer ved. Smoking Rack över
   eller bredvid den röks som över en Campfire. Baking Stone bredvid fungerar.
 - **Regn och vind:** under öppen himmel slocknar den till glöd i regn efter i snitt **ca 19 min** (Campfire ca 6), i blåst
   ca 9 min (Campfire ca 3). Hordernas zombier släcker den helt, en spade också.

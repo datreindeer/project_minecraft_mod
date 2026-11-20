@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/firewood_pile_piece_7",
+  "textures": {
+    "end": "mechanical:block/beech_firewood_pile_end",
+    "side": "mechanical:block/beech_firewood_pile_side"
+  }
+}

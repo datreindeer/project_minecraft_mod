@@ -141,9 +141,10 @@ public class FirePitBlockEntity extends BlockEntity {
         if (state.getValue(FirePitBlock.LIT)) {
             int fuel = state.getValue(FirePitBlock.FUEL);
             if (r.nextFloat() < (0.3F + 0.1F * fuel) * (state.getValue(FirePitBlock.GRATE) ? FirePit.GRATE_SMOKE : 1)) { // a grate burns clean
-                for (int i = 0; i < 2 + r.nextInt(3); i++) {
+                // signal smoke lives ~300 ticks and barely slows: 0.16-0.22/tick climbs ~50-60 blocks, seen from far off
+                for (int i = 0; i < 3 + r.nextInt(3); i++) {
                     level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, cx + (r.nextDouble() - 0.5) * 1.1, cy + 0.6 + r.nextDouble() * 1.4,
-                            cz + (r.nextDouble() - 0.5) * 1.1, 0, 0.07 + r.nextDouble() * 0.03, 0);
+                            cz + (r.nextDouble() - 0.5) * 1.1, 0, 0.16 + r.nextDouble() * 0.06, 0);
                 }
             }
             if (r.nextInt(3) == 0) level.addParticle(ParticleTypes.FLAME, cx + (r.nextDouble() - 0.5) * 0.9, cy + 0.3 + r.nextDouble() * 0.6, cz + (r.nextDouble() - 0.5) * 0.9, 0, 0.02, 0);

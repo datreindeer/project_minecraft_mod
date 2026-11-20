@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "axis=x,logs=1": {
+      "model": "mechanical:block/rough_log_pile_1",
+      "y": 90
+    },
+    "axis=x,logs=2": {
+      "model": "mechanical:block/rough_log_pile_2",
+      "y": 90
+    },
+    "axis=x,logs=3": {
+      "model": "mechanical:block/rough_log_pile_3",
+      "y": 90
+    },
+    "axis=x,logs=4": {
+      "model": "mechanical:block/rough_log_pile_4",
+      "y": 90
+    },
+    "axis=z,logs=1": {
+      "model": "mechanical:block/rough_log_pile_1"
+    },
+    "axis=z,logs=2": {
+      "model": "mechanical:block/rough_log_pile_2"
+    },
+    "axis=z,logs=3": {
+      "model": "mechanical:block/rough_log_pile_3"
+    },
+    "axis=z,logs=4": {
+      "model": "mechanical:block/rough_log_pile_4"
+    }
+  }
+}

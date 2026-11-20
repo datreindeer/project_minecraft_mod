@@ -3,7 +3,10 @@
 - Firewood Piles, one block per wood (<wood>_firewood_pile, no item: it drops its firewood): layers 1-8, two billets each,
   four billets a row (4 px square, 16 long, a hair of gap between them), four rows a block; axis x/z is the billets' run.
   Models: firewood_pile_<n> (parents, textures #end / #side) and <wood>_firewood_pile_<n>; blockstates; loot (n firewood);
-  mineable/axe; lang
+  mineable/axe; lang. One layer alone (firewood_pile_piece_<k>, <wood>_firewood_pile_piece_<k>) for mixed piles
+- Rough Log Pile (RoughLogPileBlock, one block, woods mixed per log): rough_log_piece_<i> + <wood>_rough_log_piece_<i>
+  (the wood's Fallen Log textures), plain oak rough_log_pile_<n>, blockstate, mineable/axe, lang (no loot table: it drops
+  its logs from code)
 - What dries into what: item tags mechanical:dryable_meat/<product> (one per family; mechanical:dryable_meat holds them all),
   mechanical:not_dryable (big cuts: too thick; fat-rich meat: goes rancid); anything else smokable dries into plain Jerky /
   Dried Fish (Raw Meat Strips cut from a big cut, and meat added later without a family). mechanical:dried_meat (all of them,
@@ -92,7 +95,65 @@ for wood in WOODS:
          **({"modifier": {"type": "minecraft:set_count", "count": n}} if n > 1 else {})} for n in range(1, 9)]}],
         "random_sequence": f"mechanical:blocks/{name}"})
     lang[f"block.mechanical.{name}"] = wood.replace("_", " ").title() + " Firewood Pile"
+# one layer (two billets) alone, for mixed piles drawn layer by layer (client/WoodPileModels; turned y:90 there for axis x)
+for k in range(1, 9):
+    w(A / f"models/block/firewood_pile_piece_{k}.json", {"parent": "minecraft:block/block", "textures": {"particle": "#side"},
+                                                         "elements": [billet(i % 4, i // 4) for i in (2 * k - 2, 2 * k - 1)]})
+    for wood in WOODS:
+        name = f"{wood}_firewood_pile"
+        w(A / f"models/block/{wood}_firewood_pile_piece_{k}.json", {"parent": f"mechanical:block/firewood_pile_piece_{k}", "textures": {
+            "end": f"mechanical:block/{name}_end", "side": f"mechanical:block/{name}_side"}})
+lang["message.mechanical.firewood_pile.too_high"] = "The pile is as high as it goes"
 tag_add(D / "minecraft/tags/block/mineable/axe.json", *[f"{M}{wood}_firewood_pile" for wood in WOODS])
+
+# ---------------------------------------------------------------- rough log pile (RoughLogPileBlock)
+# Four logs a block: log i in column i % 2 (x 0-8 / 8-16) and row i // 2 up, 8 px thick and 16 long along z, the corners
+# taken off so they read round: a tall box and a wide one. Bark (#side, grain along the log) and end grain (#end, the
+# whole log top squeezed onto the 8 px end, rings to the bark). Textures per wood: those of its Fallen Log.
+
+
+def rough_log(i):
+    c, r = i % 2 * 8, i // 2 * 8
+    out = []
+    for x0, x1, y0, y1 in ((c + 1, c + 7, r, r + 8), (c, c + 8, r + 1, r + 7)):
+        u0, u1, v0, v1 = (x0 - c) * 2, (x1 - c) * 2, (y0 - r) * 2, (y1 - r) * 2
+        end = {"uv": [u0, v0, u1, v1], "texture": "#end"}
+        faces = {"north": {**end, "cullface": "north"}, "south": {**end, "cullface": "south"},
+                 "east": {"uv": [0, 0, y1 - y0, 16], "texture": "#side", "rotation": 90},
+                 "west": {"uv": [0, 0, y1 - y0, 16], "texture": "#side", "rotation": 90},
+                 "up": {"uv": [8 - (x1 - x0) / 2, 0, 8 + (x1 - x0) / 2, 16], "texture": "#side"},
+                 "down": {"uv": [8 - (x1 - x0) / 2, 0, 8 + (x1 - x0) / 2, 16], "texture": "#side"}}
+        if x1 == 16: faces["east"]["cullface"] = "east"
+        if x0 == 0: faces["west"]["cullface"] = "west"
+        if y1 == 16: faces["up"]["cullface"] = "up"
+        if y0 == 0: faces["down"]["cullface"] = "down"
+        out.append({"from": [x0, y0, 0], "to": [x1, y1, 16], "faces": faces})
+    return out
+
+
+def log_textures(wood):
+    t = read(A / f"models/block/{wood}_fallen_log_0.json")["textures"]
+    return {"particle": t["side"], "side": t["side"], "end": t["end"]}
+
+
+for i in range(4):
+    w(A / f"models/block/rough_log_piece_{i}.json", {"parent": "minecraft:block/block", "textures": {"particle": "#side"},
+                                                     "elements": rough_log(i)})
+    for wood in WOODS:
+        w(A / f"models/block/{wood}_rough_log_piece_{i}.json", {"parent": f"mechanical:block/rough_log_piece_{i}",
+                                                                 "textures": log_textures(wood)})
+# the plain models (oak): what shows before the woods arrive, and the break particles
+for n in range(1, 5):
+    w(A / f"models/block/rough_log_pile_{n}.json", {"parent": "minecraft:block/block", "textures": log_textures("oak"),
+                                                    "elements": [e for i in range(n) for e in rough_log(i)]})
+w(A / "blockstates/rough_log_pile.json", {"variants": {
+    f"axis={a},logs={n}": {"model": f"mechanical:block/rough_log_pile_{n}", **({"y": 90} if a == "x" else {})}
+    for a in ("x", "z") for n in range(1, 5)}})
+tag_add(D / "minecraft/tags/block/mineable/axe.json", M + "rough_log_pile")
+lang |= {"block.mechanical.rough_log_pile": "Rough Log Pile",
+         "message.mechanical.rough_log_pile.too_high": "No room: the pile is as high as it goes",
+         "message.mechanical.rough_log_pile.rolled": "The log rolls off the pile",
+         "message.mechanical.rough_log_pile.fell_off": "The log rolls off and falls"}
 
 # ---------------------------------------------------------------- what each meat dries into
 FAMILIES = {

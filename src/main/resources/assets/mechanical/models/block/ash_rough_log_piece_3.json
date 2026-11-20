@@ -1,0 +1,8 @@
+{
+  "parent": "mechanical:block/rough_log_piece_3",
+  "textures": {
+    "particle": "mechanical:block/ash_log",
+    "side": "mechanical:block/ash_log",
+    "end": "mechanical:block/ash_log_top"
+  }
+}

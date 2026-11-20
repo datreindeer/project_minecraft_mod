@@ -1,0 +1,8 @@
+{
+  "parent": "mechanical:block/rough_log_piece_2",
+  "textures": {
+    "particle": "minecraft:block/mangrove_log",
+    "side": "minecraft:block/mangrove_log",
+    "end": "minecraft:block/mangrove_log_top"
+  }
+}

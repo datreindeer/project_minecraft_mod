@@ -1,5 +1,9 @@
 package com.mechanical;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -17,11 +21,15 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -31,12 +39,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * A neat pile of split firewood, one block per wood type ({@link Mechanical#FIREWOOD_PILES}). Right-click the top of a
  * solid block with Firewood ({@link FirewoodItem}) to start one; each piece is a {@link #LAYERS layer} of two billets
  * lying side by side along {@link #AXIS} (end grain towards the player who stacked it), four billets to a row, four rows
- * to a block. More of the same firewood stacks on (and carries on in the block above once this one is full), an empty hand
- * takes the top piece back, breaking it drops them all (loot table). A Fire Pit next to a pile feeds itself from it
- * ({@link #takeNear}).
+ * to a block. Any firewood stacks on (and carries on in the block above once this one is full), up to {@link #MAX_HEIGHT}
+ * blocks; mixed woods are kept per layer in a {@link WoodPileEntity} and drawn each in its own wood. An empty hand takes the
+ * top piece back, breaking it drops them all (loot table, or the mixed layers). A Fire Pit next to a pile feeds itself
+ * from it ({@link #takeNear}).
  */
-public class FirewoodPileBlock extends Block {
+public class FirewoodPileBlock extends Block implements EntityBlock {
     public static final int MAX = 8;
+    /** Blocks a firewood stack goes up: about as high as one can reach to stack it. */
+    public static final int MAX_HEIGHT = 3;
     public static final IntegerProperty LAYERS = IntegerProperty.create("layers", 1, MAX);
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     private static final VoxelShape[] SHAPES_Z = new VoxelShape[MAX + 1], SHAPES_X = new VoxelShape[MAX + 1];
@@ -64,6 +75,40 @@ public class FirewoodPileBlock extends Block {
 
     public String wood() {
         return wood;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new WoodPileEntity(pos, state);
+    }
+
+    /** The wood of each layer of the pile block at {@code pos}, bottom first. */
+    static int[] layers(Level level, BlockPos pos, BlockState state) {
+        int n = state.getValue(LAYERS), own = Mechanical.WOODS.indexOf(((FirewoodPileBlock) state.getBlock()).wood);
+        int[] stored = level.getBlockEntity(pos) instanceof WoodPileEntity pile ? pile.woods() : new int[0];
+        int[] out = new int[n];
+        for (int i = 0; i < n; i++) out[i] = i < stored.length ? stored[i] : own;
+        return out;
+    }
+
+    /** Sets the layers of the pile block at {@code pos} (their count is the state's): stored only while mixed. */
+    static void setLayers(Level level, BlockPos pos, BlockState state, int[] woods) {
+        int own = Mechanical.WOODS.indexOf(((FirewoodPileBlock) state.getBlock()).wood);
+        boolean plain = Arrays.stream(woods).allMatch(w -> w == own);
+        if (level.getBlockEntity(pos) instanceof WoodPileEntity pile) pile.setWoods(plain ? new int[0] : woods);
+    }
+
+    @Override
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        if (!(params.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof WoodPileEntity pile) || pile.woods().length == 0)
+            return super.getDrops(state, params);
+        List<ItemStack> drops = new ArrayList<>();
+        int[] woods = pile.woods();
+        for (int i = 0; i < Math.min(woods.length, state.getValue(LAYERS)); i++) {
+            ItemStack piece = new ItemStack(Mechanical.FIREWOOD.get(Mechanical.WOODS.get(woods[i])).get());
+            drops.stream().filter(d -> ItemStack.isSameItem(d, piece)).findFirst().ifPresentOrElse(d -> d.grow(1), () -> drops.add(piece));
+        }
+        return drops;
     }
 
     @Override
@@ -105,30 +150,48 @@ public class FirewoodPileBlock extends Block {
         level.playSound(null, pos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 0.9F);
     }
 
-    /** Same firewood: one more piece on top, here or (when this block is full) in the block above. */
+    /** Any firewood: one more piece on top, here or (when this block is full) in the block above, up to {@link #MAX_HEIGHT}. */
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         // an empty hand takes a piece (useWithoutItem); other things don't, and go on to their own use
-        if (!stack.is(Mechanical.FIREWOOD.get(wood).get())) return stack.isEmpty() ? InteractionResult.TRY_WITH_EMPTY_HAND : InteractionResult.PASS;
+        if (!(stack.getItem() instanceof FirewoodItem firewood)) return stack.isEmpty() ? InteractionResult.TRY_WITH_EMPTY_HAND : InteractionResult.PASS;
+        return add(level, pos, firewood.wood(), player, stack) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+    }
+
+    /**
+     * One piece of {@code wood} on top of the stack {@code pos} is in (from {@code player}'s hand when not null). False if the
+     * stack is {@link #MAX_HEIGHT} high or there is no room above.
+     */
+    static boolean add(Level level, BlockPos pos, String wood, Player player, ItemStack stack) {
         BlockPos at = pos;
-        while (level.getBlockState(at).is(this) && level.getBlockState(at).getValue(LAYERS) == MAX && level.getBlockState(at.above()).is(this)) at = at.above();
+        while (level.getBlockState(at.above()).getBlock() instanceof FirewoodPileBlock) at = at.above();
         BlockState top = level.getBlockState(at);
         if (top.getValue(LAYERS) == MAX) {
             BlockPos up = at.above();
-            if (!level.isInsideBuildHeight(up) || !level.getBlockState(up).canBeReplaced() || !level.getFluidState(up).isEmpty())
-                return InteractionResult.FAIL;
+            int height = 1;
+            while (level.getBlockState(at.below(height)).getBlock() instanceof FirewoodPileBlock) height++;
+            if (height >= MAX_HEIGHT) {
+                if (player != null) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.firewood_pile.too_high"));
+                return false;
+            }
+            if (!level.isInsideBuildHeight(up) || !level.getBlockState(up).canBeReplaced() || !level.getFluidState(up).isEmpty()) return false;
             if (!level.isClientSide()) {
                 place(level, up, wood, top.getValue(AXIS));
-                stack.consume(1, player);
+                if (player != null) stack.consume(1, player);
             }
-            return InteractionResult.SUCCESS;
+            return true;
         }
         if (!level.isClientSide()) {
-            level.setBlock(at, top.setValue(LAYERS, top.getValue(LAYERS) + 1), Block.UPDATE_ALL);
+            int[] woods = layers(level, at, top);
+            int[] more = Arrays.copyOf(woods, woods.length + 1);
+            more[woods.length] = Mechanical.WOODS.indexOf(wood);
+            BlockState grown = top.setValue(LAYERS, more.length);
+            level.setBlock(at, grown, Block.UPDATE_ALL);
+            setLayers(level, at, grown, more);
             level.playSound(null, at, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 0.9F + level.getRandom().nextFloat() * 0.2F);
-            stack.consume(1, player);
+            if (player != null) stack.consume(1, player);
         }
-        return InteractionResult.SUCCESS;
+        return true;
     }
 
     /** Empty hand: takes the top piece of the stack (the highest pile block above this one). */
@@ -142,12 +205,18 @@ public class FirewoodPileBlock extends Block {
     }
 
     /** Takes one piece off the pile at {@code pos}, into the player's inventory (or nowhere when {@code player} is null). */
-    private static ItemStack takeOne(Level level, BlockPos pos, BlockState state, Player player) {
-        FirewoodPileBlock pile = (FirewoodPileBlock) state.getBlock();
-        int n = state.getValue(LAYERS);
-        level.setBlock(pos, n > 1 ? state.setValue(LAYERS, n - 1) : Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+    static ItemStack takeOne(Level level, BlockPos pos, BlockState state, Player player) {
+        int[] woods = layers(level, pos, state);
+        int n = woods.length;
+        if (n > 1) {
+            BlockState less = state.setValue(LAYERS, n - 1);
+            level.setBlock(pos, less, Block.UPDATE_ALL);
+            setLayers(level, pos, less, Arrays.copyOf(woods, n - 1));
+        } else {
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        }
         level.playSound(null, pos, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 1.0F, 1.0F);
-        ItemStack piece = new ItemStack(Mechanical.FIREWOOD.get(pile.wood).get());
+        ItemStack piece = new ItemStack(Mechanical.FIREWOOD.get(Mechanical.WOODS.get(woods[n - 1])).get());
         if (player != null) player.getInventory().placeItemBackInInventory(piece, Prediction.SERVER_ONLY);
         return piece;
     }

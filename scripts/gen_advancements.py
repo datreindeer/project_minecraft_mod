@@ -183,8 +183,11 @@ TABS = {
         ("fire_drill", "twine", "fire_drill", T, "Friction", "Craft a Fire Drill from Twine and Sticks",
          has("fire_drill")),
         ("woodpile", "firewood", "oak_firewood", T, "Woodpile",
-         "Right-click the top of a solid block with Firewood to stack a pile. More of the same wood stacks higher; an empty hand takes a piece back",
+         "Right-click the top of a solid block with Firewood to stack a pile, up to 3 blocks high. Any wood stacks on, mixed; an empty hand takes a piece back",
          by_code()),
+        ("log_pile", "woodpile", "oak_rough_log", T, "Log Pile",
+         "Right-click the ground with a Rough Log to start a log pile, any woods mixed. Round logs roll off a tall, narrow pile: "
+         "build it wider to build it higher, or between walls", by_code()),
         ("campfire", "firewood", "minecraft:campfire", T, "Hearth",
          "Build a Campfire from Sticks and 3 Firewood. It is placed unlit", has("minecraft:campfire")),
         ("light_fire", "campfire", "fire_drill", G, "Let There Be Fire",

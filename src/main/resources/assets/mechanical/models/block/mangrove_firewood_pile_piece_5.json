@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/firewood_pile_piece_5",
+  "textures": {
+    "end": "mechanical:block/mangrove_firewood_pile_end",
+    "side": "mechanical:block/mangrove_firewood_pile_side"
+  }
+}

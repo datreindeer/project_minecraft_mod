@@ -24,6 +24,10 @@ public class FirewoodItem extends Item {
         this.wood = wood;
     }
 
+    public String wood() {
+        return wood;
+    }
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
