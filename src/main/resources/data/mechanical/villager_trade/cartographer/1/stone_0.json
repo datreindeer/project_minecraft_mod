@@ -1,10 +1,11 @@
 {
   "wants": {
-    "id": "minecraft:paper",
-    "count": 24
+    "id": "mechanical:oak_bark",
+    "count": 16
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "mechanical:cordage",
+    "count": 4
   },
   "max_uses": 16,
   "xp": 2,

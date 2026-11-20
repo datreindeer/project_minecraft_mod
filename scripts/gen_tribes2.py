@@ -4,7 +4,7 @@ HideTentBlock.java, client/people/TribeDialogScreen.java).
 - Hide Canvas (full block of sewn hides), Hide Tent Slope (a 45-degree hide panel rising toward FACING, with an optional
   triangular end wall on its left or right) and Hide Tent Ridge (two panels meeting at a ridge pole along FACING, the
   back end closed when CLOSED): models, blockstates, loot tables, recipes (building)
-- lang: the blocks, the talk screen (TribeDialog), what visitors and camp traders say, messages
+- lang: the blocks, the talk screen (TribeDialog), what visitors, camp traders and Trader Caravans (Caravans.java) say, messages
 Textures: scripts/gen_tribes2_textures.py. Advancements: gen_advancements.py (wilderness: tribe_visit ...).
 Generator order: ... gen_fauna_*.py, gen_tribes2.py, gen_block_items.py, gen_unlocks.py, gen_advancements.py, gen_registry.py.
 Run: python scripts/gen_tribes2.py"""
@@ -175,6 +175,18 @@ LANG = {
     "message.mechanical.settlement.founded": "The %s have lit a fire and made camp to the %s of your camp.",
     "message.mechanical.settlement.stage2": "The camp of the %s grows: more tents, drying racks and stores.",
     "message.mechanical.settlement.stage3": "The %s have raised a palisade around their camp.",
+    # Trader Caravans (people/Caravans.java): they take the Wandering Trader's place
+    "entity.mechanical.tribesperson.role.trader": "Trader",
+    "entity.mechanical.tribesperson.role.guard": "Caravan Guard",
+    "chat.mechanical.tribesperson.greet.trader.0": "Goods from far lands, friend! Come, look.",
+    "chat.mechanical.tribesperson.greet.trader.1": "A gemstone, perhaps? I pay in silver. In gold, for the best.",
+    "chat.mechanical.tribesperson.greet.trader.2": "Copper, silver, gold: all good coin with me.",
+    "chat.mechanical.tribesperson.greet.guard.0": "Keep your hands where I can see them, stranger.",
+    "chat.mechanical.tribesperson.greet.guard.1": "Talk to the old one if you want to trade.",
+    "chat.mechanical.tribesperson.greet.guard.2": "The road is long and full of thieves. Do not be one.",
+    "dialog.mechanical.tribe.caravan": "Greetings, traveller! The caravan of the %s has come a long way with goods from far lands, for coin. And gemstones... if you have gemstones, I pay well, in silver and gold.",
+    "message.mechanical.cart.caravan": "The caravan's cart: its guards would not like that",
+    "message.mechanical.carcass.caravan": "The caravan's goods: buy from the trader, or answer to its guards",
 }
 
 

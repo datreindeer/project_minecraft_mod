@@ -38,11 +38,15 @@ import net.minecraft.world.phys.Vec3;
  * the travois, lying side by side; sneak + right-click a loaded body to take it off) and {@link #SLOTS} slots of goods
  * (sneak + right-click the cart with an empty hand). Right-click an empty cart with a Chest to mount it: a storage cart,
  * {@link #CHEST_SLOTS} slots, no room left for bodies. Punch it to pick it up: bodies, goods and the chest fall out.
+ * A Trader Caravan's cart ({@link #hitchCaravan}) wears a canvas tilt, stays hitched to its horse and is locked to players
+ * until the horse dies.
  */
 public class CartEntity extends TravoisEntity {
     public static final int CAPACITY = 6, SLOTS = 18, CHEST_SLOTS = 54;
     /** A Chest mounted on the bed. Synced (renderer). */
     private static final EntityDataAccessor<Boolean> CHEST = SynchedEntityData.defineId(CartEntity.class, EntityDataSerializers.BOOLEAN);
+    /** A Trader Caravan's cart (people.Caravans): covered with a canvas tilt. Synced (renderer). */
+    private static final EntityDataAccessor<Boolean> CARAVAN = SynchedEntityData.defineId(CartEntity.class, EntityDataSerializers.BOOLEAN);
     /** Advancements granted from code, see scripts/gen_advancements.py. */
     static final Identifier LOADED_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "bronze_age/full_cart"),
             STORAGE_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "bronze_age/storage_cart");
@@ -68,6 +72,8 @@ public class CartEntity extends TravoisEntity {
             return isAlive() && player.distanceTo(CartEntity.this) < 8;
         }
     };
+    /** A caravan cart's horse: it stays hitched to it (found again by id after a reload), never torn loose. */
+    private java.util.UUID caravanHorse;
     /** Client: wheel angle (radians), this tick and the last. */
     public float wheelSpin, wheelSpinO;
 
@@ -79,6 +85,39 @@ public class CartEntity extends TravoisEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CHEST, false);
+        builder.define(CARAVAN, false);
+    }
+
+    public boolean isCaravan() {
+        return entityData.get(CARAVAN);
+    }
+
+    /** Server: a caravan's cart behind {@code horse}, with a chest or empty (for a carcass); locked to players while the horse lives. */
+    public void hitchCaravan(AbstractHorse horse, boolean chest) {
+        caravanHorse = horse.getUUID();
+        entityData.set(CARAVAN, true);
+        entityData.set(CHEST, chest);
+        setHarness(horse);
+    }
+
+    /** Server: finds its horse again (reloads lose the harness), and keeps up with it instead of breaking loose. */
+    private void keepHitched(ServerLevel level) {
+        LivingEntity horse = harness();
+        if (horse != null && !horse.isAlive()) {
+            caravanHorse = null; // the horse fell: an ordinary cart now, free to take
+            entityData.set(CARAVAN, false);
+            return;
+        }
+        if (horse == null && level.getEntity(caravanHorse) instanceof AbstractHorse h && h.isAlive()) setHarness(horse = h);
+        if (horse != null && horse.distanceTo(this) > BREAK - 1) {
+            Vec3 back = Vec3.directionFromRotation(0, horse.getYRot()).scale(-LEAD_HORSE);
+            setPos(horse.getX() + back.x, horse.getY(), horse.getZ() + back.z);
+        }
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float damage) {
+        return caravanHorse == null && super.hurtServer(level, source, damage);
     }
 
     public boolean hasChest() {
@@ -102,6 +141,10 @@ public class CartEntity extends TravoisEntity {
     /** Right-click an empty cart with a Chest: mounts it. */
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+        if (caravanHorse != null) {
+            if (hand == InteractionHand.MAIN_HAND) player.sendOverlayMessage(Component.translatable("message.mechanical.cart.caravan"));
+            return InteractionResult.CONSUME;
+        }
         ItemStack held = player.getItemInHand(hand);
         if (hand != InteractionHand.MAIN_HAND || !held.is(Items.CHEST) || hasChest() || CarcassHauling.hauled(player) != null)
             return super.interact(player, hand, location);
@@ -152,7 +195,7 @@ public class CartEntity extends TravoisEntity {
             double along = (getX() - xo) * dir.x + (getZ() - zo) * dir.z;
             wheelSpinO = wheelSpin;
             wheelSpin += (float) (along / WHEEL_RADIUS);
-        }
+        } else if (caravanHorse != null) keepHitched((ServerLevel) level());
         super.tick();
     }
 
@@ -226,11 +269,14 @@ public class CartEntity extends TravoisEntity {
         goods.clearContent();
         ContainerHelper.loadAllItems(input, goods.getItems());
         entityData.set(CHEST, input.getBooleanOr("chest", false));
+        caravanHorse = input.read("caravan_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+        entityData.set(CARAVAN, caravanHorse != null);
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         ContainerHelper.saveAllItems(output, goods.getItems());
         output.putBoolean("chest", hasChest());
+        if (caravanHorse != null) output.store("caravan_horse", net.minecraft.core.UUIDUtil.CODEC, caravanHorse);
     }
 }

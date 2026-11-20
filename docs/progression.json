@@ -496,6 +496,21 @@
      "sv": "All tid en eld brinner inom 24 block från din första eld räknas som **lägrets ålder** (en [[fire_pit]] räknas dubbelt). Smyg + högerklick med tom hand på elden visar hur länge den brunnit.\n\n**Efter 3 dagar** kommer besökare ungefär var 5:e dag. Prata med ledaren för att handla, och låt dem sova vid din eld (+4 rykte och en gåva på morgonen). Är ni vänner kan de slå sig ner i närheten och bygga ett eget läger som växer till en palissad, med handelsbud och upptrampade stigar mellan lägren.\n\n**Efter 5 dagar** kan fientliga stammar plundra dig på natten: krigstrummor först, sedan rädare med facklor som stjäl mat och tänder eld. Försvar: vapen, eld och en palissad med [[sharpened_oak_log]]. Bygg som stammarna gör med [[hide_canvas]], [[hide_tent_slope]] och [[oak_bark_roof]] (3 Bark + en stock → 4).",
      "en": "All the time a fire burns within 24 blocks of your first fire counts as the **camp's age** (a [[fire_pit]] counts double). Sneak + right-click the fire with an empty hand to see how long it has burned.\n\n**After 3 days** visitors come about every 5 days. Talk to the leader to trade, and let them sleep by your fire (+4 reputation and a gift in the morning). If you are friends they may settle nearby and build their own camp that grows into a palisade, with traders and worn paths between the camps.\n\n**After 5 days** hostile tribes may raid you at night: war drums first, then raiders with torches who steal food and set fires. Defence: weapons, fire and a palisade with [[sharpened_oak_log]]. Build like the tribes do with [[hide_canvas]], [[hide_tent_slope]] and [[oak_bark_roof]] (3 Bark + a log → 4)."
     }
+   },
+   {
+    "title": {
+     "sv": "Handelskaravaner",
+     "en": "Trader Caravans"
+    },
+    "items": [
+     "entity:tribesperson",
+     "cart",
+     "minecraft:diamond"
+    ],
+    "text": {
+     "sv": "Den vandrande handlaren finns inte. I stället kommer ibland en **handelskaravan** nära dig (lika ofta som han skulle ha kommit): en gammal handlare i fin rock med ädelstenar, 2–3 vakter i rustning och hästar som drar [[cart]] med tygkapell och kistor. Högerklicka handlaren: varor upp till en ålder över din för Copper, Silver och Gold Coin, växling (10 koppar = 1 silver, 10 silver = 1 guld), och de **köper ädelstenar** dyrt: slipade stenar 4 silver, [[minecraft:diamond]] 2 guld, Emerald 1 guld. Karavanen stannar 2 dagar.",
+     "en": "There is no Wandering Trader. Instead a **Trader Caravan** now and then comes near you (as often as he would have): an old trader in a fine gem-set robe, 2-3 armoured guards and horses pulling covered [[cart]]s with chests. Right-click the trader: goods up to one age ahead of yours for Copper, Silver and Gold Coins, coin changing (10 copper = 1 silver, 10 silver = 1 gold), and they **buy gemstones** dearly: cut stones 4 silver, [[minecraft:diamond]] 2 gold, Emerald 1 gold. The caravan stays 2 days."
+    }
    }
   ]
  },
@@ -788,14 +803,14 @@
      "en": "Trade and the road to iron"
     },
     "items": [
-     "minecraft:emerald",
+     "copper_coin",
      "bronze_pickaxe",
      "minecraft:iron_ore",
      "minecraft:raw_iron"
     ],
     "text": {
-     "sv": "Byborna handlar efter ålder. I stenåldern har de bara nivå 1–2; bronsåldern öppnar **nivå 3 och 4**: Toolsmith säljer Bronze Pickaxe och Bronze Saw och kan sälja Tin Concentrate om du saknar tenn, Armorer säljer Bronze Helmet och Greaves, Farmer säljer Flax Seeds. Allt betalas med [[minecraft:emerald]].\n\nMed [[bronze_pickaxe]] kan du bryta [[minecraft:iron_ore]] och få [[minecraft:raw_iron]]. Järnmalmen smälts bara i en Bloomery, se nästa steg.",
-     "en": "Villagers trade by age. In the Stone Age they only have levels 1–2; the Bronze Age opens **levels 3 and 4**: the Toolsmith sells the Bronze Pickaxe and Bronze Saw and can sell Tin Concentrate if you lack tin, the Armorer sells the Bronze Helmet and Greaves, the Farmer sells Flax Seeds. Everything is paid in [[minecraft:emerald]].\n\nWith the [[bronze_pickaxe]] you can mine [[minecraft:iron_ore]] and get [[minecraft:raw_iron]]. Iron ore only smelts in a Bloomery, see the next step."
+     "sv": "Byborna handlar efter ålder. I stenåldern har de bara nivå 1–2, ren byteshandel (varor mot varor); bronsåldern öppnar **nivå 3 och 4**: Toolsmith säljer Bronze Pickaxe och Bronze Saw och kan sälja Tin Concentrate om du saknar tenn, Armorer säljer Bronze Helmet och Greaves, Farmer säljer Flax Seeds. Allt betalas med [[copper_coin]] i stället för Emerald: en Copper Ingot som slås 4 gånger på en Bronze Anvil ger 4 Copper Coin (se nästa steg), och byborna betalar själva med mynt när de köper.\n\nMed [[bronze_pickaxe]] kan du bryta [[minecraft:iron_ore]] och få [[minecraft:raw_iron]]. Järnmalmen smälts bara i en Bloomery, se nästa steg.",
+     "en": "Villagers trade by age. In the Stone Age they only have levels 1–2, pure barter (goods for goods); the Bronze Age opens **levels 3 and 4**: the Toolsmith sells the Bronze Pickaxe and Bronze Saw and can sell Tin Concentrate if you lack tin, the Armorer sells the Bronze Helmet and Greaves, the Farmer sells Flax Seeds. Everything is paid in [[copper_coin]] instead of Emeralds: a Copper Ingot struck 4 times on a Bronze Anvil gives 4 Copper Coins (see the next step), and villagers pay in coins when they buy.\n\nWith the [[bronze_pickaxe]] you can mine [[minecraft:iron_ore]] and get [[minecraft:raw_iron]]. Iron ore only smelts in a Bloomery, see the next step."
     }
    },
    {
@@ -829,8 +844,8 @@
      "wrought_iron_ingot"
     ],
     "text": {
-     "sv": "Krossa Brick på Stone Anvil till [[grog]], blanda 2 Clay Ball + 2 Grog till [[fire_clay]] och bränn den i kilnen vid **1100°** (Charcoal och Bellows) till [[fire_brick]]. Bygg en **Bloomery**: en [[bloomery_hearth]] med två [[bloomery_stack]] ovanpå och toppen öppen (19 Fire Brick och en Clay Tuyere).\n\nLägg 4 Raw Iron (eller 6 [[raw_bog_iron]]) och Charcoal i härden, tänd med Fire Drill och pumpa Bellows mot härden: järnet reduceras först vid **1350°**, hetare än kilnen och Smelting Furnace når. Ut kommer en glödande [[hot_iron_bloom]].\n\nGjut en [[bronze_anvil]] (10 enheter brons, en hel degel) och en [[bronze_smithing_hammer]]. Lägg den heta luppen på städet och slå **8 gånger** innan den svalnar (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. En kall lupp värms om vid 1100° i Bloomery eller kilnen. **Här tar spelet slut just nu:** järnåldern är inte byggd än.",
-     "en": "Crush Brick on the Stone Anvil into [[grog]], mix 2 Clay Ball + 2 Grog into [[fire_clay]] and fire it in the kiln at **1100°** (Charcoal and Bellows) into [[fire_brick]]. Build a **Bloomery**: a [[bloomery_hearth]] with two [[bloomery_stack]]s on it and the top left open (19 Fire Bricks and a Clay Tuyere).\n\nPut 4 Raw Iron (or 6 [[raw_bog_iron]]) and Charcoal in the hearth, light it with a Fire Drill and pump Bellows into the hearth: the iron only reduces at **1350°**, hotter than the kiln and the Smelting Furnace reach. Out comes a glowing [[hot_iron_bloom]].\n\nCast a [[bronze_anvil]] (10 units of bronze, a full crucible) and a [[bronze_smithing_hammer]]. Put the hot bloom on the anvil and strike it **8 times** before it cools (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. A cold bloom is reheated at 1100° in the Bloomery or the kiln. **This is where the game ends for now:** the Iron Age is not built yet."
+     "sv": "Krossa Brick på Stone Anvil till [[grog]], blanda 2 Clay Ball + 2 Grog till [[fire_clay]] och bränn den i kilnen vid **1100°** (Charcoal och Bellows) till [[fire_brick]]. Bygg en **Bloomery**: en [[bloomery_hearth]] med två [[bloomery_stack]] ovanpå och toppen öppen (19 Fire Brick och en Clay Tuyere).\n\nLägg 4 Raw Iron (eller 6 [[raw_bog_iron]]) och Charcoal i härden, tänd med Fire Drill och pumpa Bellows mot härden: järnet reduceras först vid **1350°**, hetare än kilnen och Smelting Furnace når. Ut kommer en glödande [[hot_iron_bloom]].\n\nGjut en [[bronze_anvil]] (10 enheter brons, en hel degel) och en [[bronze_smithing_hammer]]. Lägg den heta luppen på städet och slå **8 gånger** innan den svalnar (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. En kall lupp värms om vid 1100° i Bloomery eller kilnen. På städet präglas också mynt: en kall Copper Ingot, 4 slag → **4 [[copper_coin]]**. **Här tar spelet slut just nu:** järnåldern är inte byggd än.",
+     "en": "Crush Brick on the Stone Anvil into [[grog]], mix 2 Clay Ball + 2 Grog into [[fire_clay]] and fire it in the kiln at **1100°** (Charcoal and Bellows) into [[fire_brick]]. Build a **Bloomery**: a [[bloomery_hearth]] with two [[bloomery_stack]]s on it and the top left open (19 Fire Bricks and a Clay Tuyere).\n\nPut 4 Raw Iron (or 6 [[raw_bog_iron]]) and Charcoal in the hearth, light it with a Fire Drill and pump Bellows into the hearth: the iron only reduces at **1350°**, hotter than the kiln and the Smelting Furnace reach. Out comes a glowing [[hot_iron_bloom]].\n\nCast a [[bronze_anvil]] (10 units of bronze, a full crucible) and a [[bronze_smithing_hammer]]. Put the hot bloom on the anvil and strike it **8 times** before it cools (30 s): **2 [[wrought_iron_ingot]] + 1 Slag**. A cold bloom is reheated at 1100° in the Bloomery or the kiln. The anvil also mints coins: a cold Copper Ingot, 4 blows → **4 [[copper_coin]]**. **This is where the game ends for now:** the Iron Age is not built yet."
     }
    }
   ]

@@ -818,6 +818,12 @@ TABS["wilderness"][1].extend([
      "A neighbouring camp gathers enough wood, stone and hides to grow, and raises a palisade", by_code()),
     ("tribe_friends", "tribe_visit", "hide_canvas", C, "Best of Friends",
      "Reach a standing of 80 with a tribe: trade with them, bring them food, let them stay by your fire", by_code()),
+    # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
+    ("caravan", "root", "minecraft:chest", T, "The Caravan Has Come",
+     "Talk to the old trader of a Trader Caravan: horses, covered carts and armed guards, now and then near you as the Wandering Trader once was",
+     by_code()),
+    ("caravan_gem", "caravan", "minecraft:diamond", G, "Treasures for Coin",
+     "Sell a gemstone to a caravan's trader: they love gems and pay in silver and gold", by_code()),
     # granted per climate from Java (people/TribeVisits.java, ClimateZone), criteria named after the climates
     ("tribe_climates", "tribe_village", "sharpened_bamboo_block", G, "Peoples of the World",
      "Walk into a Tribe Village in each climate: turf and bone huts in the snow, bark-roofed halls in the woods, "
@@ -898,6 +904,9 @@ TABS["bronze_age"][1].extend([
     ("bronze_anvil", "bronze", "bronze_anvil", G, "Bronze Anvil",
      "Fire a Clay Anvil Mold (32 Clay Balls), pour a full crucible of bronze (10 units) into it and grind the casting",
      has("bronze_anvil")),
+    ("copper_coin", "bronze_anvil", "copper_coin", T, "Mint",
+     "Lay a Copper Ingot on a Bronze Anvil and strike it 4 times with the Bronze Smithing Hammer: 4 Copper Coins, the money villagers take",
+     has("copper_coin")),
     ("smithing_hammer", "bronze", "bronze_smithing_hammer", T, "Smith",
      "Cast a hammer head, grind it and assemble a Bronze Smithing Hammer at the Tool Station", has("bronze_smithing_hammer")),
     ("wrought_iron", "iron_bloom", "wrought_iron_ingot", C, "Wrought Iron",

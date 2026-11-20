@@ -1,6 +1,7 @@
 {
   "wants": {
-    "id": "minecraft:emerald"
+    "id": "mechanical:raspberries",
+    "count": 16
   },
   "gives": {
     "id": "mechanical:stone_chunk",
