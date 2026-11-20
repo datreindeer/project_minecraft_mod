@@ -56,6 +56,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * age's buildings (kiln, quern, pens, no bone huts; anvil and firebrick in the Iron Age); a Stone Age village whose tribe
  * reaches the Bronze Age is swapped to the Bronze layout at once (nobody near), and a settled camp's tents become huts with
  * a kiln, both exactly once, leaving blocks a player put in their way alone.</li>
+ * <li>tribe_settle: bands of a wary tribe (no chance to settle) that stay the night are counted at the camp; the 4th settles
+ * anyway (count back to 0), and with no site at hand looks for one (SEEKING): it then lets other bands visit, keeps others
+ * from settling, is never forgotten while about, and its state and the count survive saving (codecs).</li>
+ * <li>tribe_swim: a tribesperson swims across a pool in the swimming pose, well faster than mobs crawl through water, and
+ * keeps its head above water.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
@@ -66,6 +71,8 @@ public final class TribeTest {
     private static final ResourceKey<Consumer<GameTestHelper>> CLIMATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_climate"));
     private static final ResourceKey<Consumer<GameTestHelper>> CARAVAN = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_caravan"));
     private static final ResourceKey<Consumer<GameTestHelper>> REBUILD = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_rebuild"));
+    private static final ResourceKey<Consumer<GameTestHelper>> SETTLE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_settle"));
+    private static final ResourceKey<Consumer<GameTestHelper>> SWIM = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_swim"));
     private static final int C = 20, WALL = 6; // the ring's centre (relative x, z) and radius in tribe_gate
 
     static {
@@ -74,6 +81,8 @@ public final class TribeTest {
         TEST_FUNCTIONS.register("tribe_climate", () -> TribeTest::climate);
         TEST_FUNCTIONS.register("tribe_caravan", () -> TribeTest::caravan);
         TEST_FUNCTIONS.register("tribe_rebuild", () -> TribeTest::rebuild);
+        TEST_FUNCTIONS.register("tribe_settle", () -> TribeTest::settle);
+        TEST_FUNCTIONS.register("tribe_swim", () -> TribeTest::swim);
     }
 
     static void init(IEventBus modEventBus) {
@@ -95,6 +104,10 @@ public final class TribeTest {
         // a whole village (53 across) is built in this one
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_rebuild"), new FunctionGameTestInstance(REBUILD,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 64)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_settle"), new FunctionGameTestInstance(SETTLE,
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_swim"), new FunctionGameTestInstance(SWIM,
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 600, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
     }
 
     private static void guarded(GameTestHelper h, Runnable test) {
@@ -507,6 +520,118 @@ public final class TribeTest {
                         && horses.stream().allMatch(x -> x.isRemoved()), "carts and horses leave with the caravan");
                 h.succeed();
             }));
+        });
+    }
+
+    private static void settle(GameTestHelper h) {
+        guarded(h, () -> {
+            ServerLevel level = h.getLevel();
+            Neighbours data = Neighbours.get(level);
+            BlockPos fire = h.absolutePos(new BlockPos(10, 1, 10));
+            UUID wary = null;
+            for (int i = 0; wary == null; i++) {
+                UUID id = UUID.nameUUIDFromBytes(("settle" + i).getBytes());
+                if (Tribe.of(id).temperament == Tribe.Temperament.WARY) wary = id; // starts below 0: never settles by chance
+            }
+            final UUID tribe = wary;
+            Neighbours.CampInfo info = new Neighbours.CampInfo(fire, Long.MAX_VALUE, List.of(), -1, 0);
+            data.camps.add(info);
+            List<Neighbours.Visit> mine = new java.util.ArrayList<>();
+            try {
+                h.assertTrue(Settlements.canSettleNear(data, info, level.getGameTime()), "nobody has settled by the test camp");
+                Neighbours.Visit v = null;
+                for (int night = 1; night <= TribeVisits.SURE_SETTLE; night++) {
+                    v = new Neighbours.Visit(UUID.randomUUID(), tribe, fire, fire, fire, Neighbours.Visit.STAYING, level.getGameTime(), 0, true, java.util.Optional.empty(), 0);
+                    data.visits.add(v);
+                    mine.add(v);
+                    Tribesperson leader = h.spawn(People.TRIBESPERSON.get(), new BlockPos(12, 1, 10));
+                    leader.setup(TribeRole.ELDER, null, tribe, true);
+                    leader.visit = v.id;
+                    TribeVisits.dawn(level, data, v, leader, List.of(leader), level.getGameTime());
+                    if (night < TribeVisits.SURE_SETTLE) {
+                        h.assertTrue(v.state == Neighbours.Visit.LEAVING && info.stays == night, "night " + night + ": they leave and are counted (stays " + info.stays + ")");
+                        data.visits.remove(v);
+                    }
+                }
+                final Neighbours.Visit seeking = v;
+                h.assertTrue(info.stays == 0, "the 4th band settles: the count starts over (got " + info.stays + ")");
+                Neighbours.Settlement founded = data.settlement(tribe);
+                if (founded != null) { // a site was at hand (not in the test world as a rule): founded at once
+                    data.settlements.remove(founded);
+                    h.assertFalse(data.visits.contains(seeking), "a band that settled is no longer visiting");
+                } else {
+                    h.assertTrue(seeking.state == Neighbours.Visit.SEEKING, "no site at hand: the band looks for one (state " + seeking.state + ")");
+                    h.assertTrue(data.visitAt(fire) == null, "a band looking for land lets other bands visit");
+                    h.assertFalse(Settlements.canSettleNear(data, info, level.getGameTime()), "nobody else settles while a band looks for land");
+                    Tribesperson leader = level.getEntitiesOfClass(Tribesperson.class, new net.minecraft.world.phys.AABB(fire).inflate(8),
+                            t -> t.isLeader() && seeking.id.equals(t.visit)).get(0);
+                    TribeVisits.seek(level, data, seeking, leader, List.of(leader), level.getGameTime() + 6000);
+                    h.assertTrue(seeking.state == Neighbours.Visit.SEEKING || data.settlement(tribe) != null, "a seeking band goes on looking");
+                    h.assertTrue(seeking.since == level.getGameTime() + 6000, "a seeking band is seen while about, so it is never forgotten");
+                    // saved and loaded: still seeking, same spot and tries; the camp keeps its count
+                    seeking.tries = 7;
+                    info.stays = 2;
+                    var ops = level.registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE);
+                    Neighbours.Visit back = Neighbours.Visit.CODEC.parse(ops, Neighbours.Visit.CODEC.encodeStart(ops, seeking).getOrThrow()).getOrThrow();
+                    Neighbours.CampInfo backInfo = Neighbours.CampInfo.CODEC.parse(ops, Neighbours.CampInfo.CODEC.encodeStart(ops, info).getOrThrow()).getOrThrow();
+                    h.assertTrue(back.state == Neighbours.Visit.SEEKING && back.tries == 7 && back.fire.equals(seeking.fire), "a seeking band survives a restart");
+                    h.assertTrue(backInfo.stays == 2, "the camp's count survives a restart");
+                    Neighbours.Settlement extra = data.settlement(tribe);
+                    if (extra != null) data.settlements.remove(extra);
+                }
+            } finally {
+                data.visits.removeAll(mine);
+                data.camps.remove(info);
+                data.setDirty();
+                level.getEntitiesOfClass(Tribesperson.class, new net.minecraft.world.phys.AABB(fire).inflate(16)).forEach(Tribesperson::discard);
+                level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(fire).inflate(16))
+                        .forEach(net.minecraft.world.entity.Entity::discard);
+            }
+            h.succeed();
+        });
+    }
+
+    private static void swim(GameTestHelper h) {
+        guarded(h, () -> {
+            // a pool 3 deep and 24 long, walled in too high to climb out
+            floor(h, 28, 6);
+            for (int x = 1; x <= 26; x++) {
+                for (int z = 1; z <= 9; z++) {
+                    boolean wall = x == 1 || x == 26 || z == 1 || z == 9;
+                    for (int y = 1; y <= 5; y++) h.setBlock(new BlockPos(x, y, z), wall ? Blocks.STONE.defaultBlockState() : y <= 3 ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
+                }
+            }
+            // the test area's own chunks may not tick entities: keep the pool's chunks loaded and ticking meanwhile
+            ServerLevel level = h.getLevel();
+            BlockPos lo = h.absolutePos(new BlockPos(0, 0, 0)), hi = h.absolutePos(new BlockPos(28, 0, 10));
+            List<net.minecraft.world.level.ChunkPos> forced = new java.util.ArrayList<>();
+            for (int cx = Math.min(lo.getX(), hi.getX()) >> 4; cx <= Math.max(lo.getX(), hi.getX()) >> 4; cx++)
+                for (int cz = Math.min(lo.getZ(), hi.getZ()) >> 4; cz <= Math.max(lo.getZ(), hi.getZ()) >> 4; cz++)
+                    if (level.setChunkForced(cx, cz, true)) forced.add(new net.minecraft.world.level.ChunkPos(cx, cz));
+            Runnable unforce = () -> forced.forEach(c -> level.setChunkForced(c.x(), c.z(), false));
+            Tribesperson t = h.spawn(People.TRIBESPERSON.get(), new BlockPos(3, 2, 5));
+            t.setup(TribeRole.GATHERER, null, UUID.randomUUID(), false);
+            BlockPos target = h.absolutePos(new BlockPos(24, 3, 5));
+            double startX = t.getX();
+            boolean[] swamPose = {false};
+            boolean[] done = {false};
+            h.onEachTick(() -> {
+                if (done[0] || t.tickCount == 0) return; // its chunk may start ticking late
+                if (t.getNavigation().isDone()) t.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.8);
+                if (t.getPose() == net.minecraft.world.entity.Pose.SWIMMING) swamPose[0] = true;
+                if (t.tickCount < 140) return;
+                done[0] = true;
+                unforce.run();
+                guarded(h, () -> {
+                    double moved = t.getX() - startX;
+                    h.assertTrue(moved >= 8, "swam only " + String.format("%.1f", moved) + " blocks in 7 s (at " + h.relativeVec(t.position()) + ", pose " + t.getPose()
+                            + ", path " + t.getNavigation().getPath() + ", in water " + t.isInWater() + ")");
+                    h.assertTrue(swamPose[0], "never in the swimming pose");
+                    h.assertTrue(t.getAirSupply() >= t.getMaxAirSupply() - 20, "kept its head above water (air " + t.getAirSupply() + ")");
+                    t.discard();
+                    h.succeed();
+                });
+            });
         });
     }
 

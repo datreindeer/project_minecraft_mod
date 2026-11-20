@@ -15,7 +15,8 @@ import net.minecraft.world.phys.Vec3;
  * A visiting band member (Tribesperson#visit) does what the visit's state says (TribeVisits): walks in to the player's
  * fire, then mills about it in the open (never into buildings: only spots under open sky), the leader coming up to a
  * player when they have asked to stay; through a granted night each kneels at their own spot round the fire; leaving,
- * they walk back the way they came and are gone once out of sight. With the visit forgotten they just walk off.
+ * they walk back the way they came and are gone once out of sight; looking for land, they walk round the player camp
+ * from spot to spot. With the visit forgotten they just walk off.
  */
 class VisitGoal extends Goal {
     private final Tribesperson mob;
@@ -81,6 +82,12 @@ class VisitGoal extends Goal {
                 }
                 if (mob.distanceToSqr(Vec3.atBottomCenterOf(fire)) > 14 * 14) ErrandGoal.walk(mob, fire, 0.8);
                 else if (mob.getNavigation().isDone() && (ticks + mob.getId()) % 160 == 0) mill(mob, fire, 3, 9);
+            }
+            case Visit.SEEKING -> {
+                // looking for land: all walk to the band's next spot round the player camp (TribeVisits.seek)
+                mob.travelling = false;
+                if (mob.isWorking()) mob.setWorking(false);
+                if (mob.distanceToSqr(Vec3.atBottomCenterOf(fire)) > 5 * 5) ErrandGoal.walk(mob, fire, 0.7);
             }
             default -> {
                 mob.travelling = true;
