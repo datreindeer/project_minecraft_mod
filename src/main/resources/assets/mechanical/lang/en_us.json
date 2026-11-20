@@ -2682,5 +2682,6 @@
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
   "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
   "tooltip.mechanical.sickle_yield": "Ripe grain: %s%% chance of an extra Sheaf, and 1 Straw",
-  "tooltip.mechanical.sickle_swath": "Cuts 3x3 ripe crops or grass in one stroke (sneak: one)"
+  "tooltip.mechanical.sickle_swath": "Cuts 3x3 ripe crops or grass in one stroke (sneak: one)",
+  "message.mechanical.fertilizer.full": "This soil is already as rich as it gets (fertility 3/3)"
 }

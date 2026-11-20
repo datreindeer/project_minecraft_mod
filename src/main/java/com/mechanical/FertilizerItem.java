@@ -2,6 +2,7 @@ package com.mechanical;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-/** Compost (+1), Manure (+2) and Guano (+3): right-click farmland, or a crop on it, to raise its fertility (max 3). */
+/** Compost (+1), Manure (+2) and Guano (+3): right-click farmland, or a crop on it, to raise its fertility (max 3); at 3 it says the soil is already rich. */
 public class FertilizerItem extends Item {
     private final int amount;
 
@@ -24,7 +25,11 @@ public class FertilizerItem extends Item {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         if (!level.getBlockState(pos).hasProperty(Fertility.FERTILITY)) pos = pos.below(); // clicked the crop
-        if (!level.getBlockState(pos).hasProperty(Fertility.FERTILITY) || Fertility.get(level.getBlockState(pos)) >= Fertility.MAX) return InteractionResult.PASS;
+        if (!level.getBlockState(pos).hasProperty(Fertility.FERTILITY)) return InteractionResult.PASS;
+        if (Fertility.get(level.getBlockState(pos)) >= Fertility.MAX) { // say so, or it looks like nothing works
+            if (!level.isClientSide() && context.getPlayer() != null) context.getPlayer().sendOverlayMessage(Component.translatable("message.mechanical.fertilizer.full"));
+            return InteractionResult.FAIL;
+        }
         if (level instanceof ServerLevel server) {
             Fertility.add(level, pos, amount);
             context.getItemInHand().consume(1, context.getPlayer());

@@ -268,6 +268,7 @@ for name, (it, recipes) in UNLOCKS.items():
 # ---------------------------------------------------------------- crop stakes (CropStakesItem; farmland model: gen_farmland_textures.py)
 item_model("crop_stakes")
 lang["item.mechanical.crop_stakes"] = "Crop Stakes"
+lang["message.mechanical.fertilizer.full"] = "This soil is already as rich as it gets (fertility 3/3)"
 lang["tooltip.mechanical.sickle_yield"] = "Ripe grain: %s%% chance of an extra Sheaf, and 1 Straw"
 lang["tooltip.mechanical.sickle_swath"] = "Cuts 3x3 ripe crops or grass in one stroke (sneak: one)"
 w(D / "mechanical/recipe/crop_stakes.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["S S", "STS"],
