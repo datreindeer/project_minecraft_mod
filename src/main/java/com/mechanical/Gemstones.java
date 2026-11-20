@@ -54,6 +54,10 @@ public final class Gemstones {
     static final java.util.Map<String, Item> VANILLA = java.util.Map.of("diamond", Items.DIAMOND, "emerald", Items.EMERALD, "amethyst", Items.AMETHYST_SHARD);
     /** Chance that an abrasive of the gem's own tier (only just hard enough) cracks it into a Flawed gem. */
     static final float FLAW_CHANCE = 0.35F;
+    /** Chance of a Flawless cut with a grit one tier harder than the gem, and two or more tiers harder; doubled for a fine
+     *  rough stone (from a Large Crystal, marked by custom data {@link #FINE}). */
+    static final float FLAWLESS_ONE_UP = 0.03F, FLAWLESS_TWO_UP = 0.06F;
+    static final String FINE = "mechanical_fine";
 
     public static final DeferredItem<Item> FLINT_GRIT = ITEMS.registerSimpleItem("flint_grit");
     public static final DeferredItem<Item> GARNET_GRIT = ITEMS.registerSimpleItem("garnet_grit");
@@ -66,6 +70,7 @@ public final class Gemstones {
         for (String gem : List.of("diamond", "emerald", "amethyst")) { // the finished gem is the vanilla item
             ITEMS.registerSimpleItem("rough_" + gem);
             ITEMS.registerSimpleItem("flawed_" + gem);
+            flawless(gem);
         }
         for (String[] ore : ORES) {
             gem(ore[0]);
@@ -99,6 +104,19 @@ public final class Gemstones {
         ITEMS.registerSimpleItem(name);
         ITEMS.registerSimpleItem("rough_" + name);
         ITEMS.registerSimpleItem("flawed_" + name);
+        flawless(name);
+    }
+
+    /** Flawless gems shine like enchanted items and carry the rare (aqua) name colour. */
+    private static void flawless(String name) {
+        ITEMS.registerSimpleItem("flawless_" + name, p -> p.rarity(net.minecraft.world.item.Rarity.RARE)
+                .component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
+    }
+
+    /** A rough stone from a Large Crystal: double the chance of a Flawless cut. */
+    static boolean isFine(ItemStack stack) {
+        var data = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        return data != null && data.copyTag().contains(FINE);
     }
 
     private static void crystal(String id, float height, float width, int light, SoundType sound) {
@@ -131,9 +149,12 @@ public final class Gemstones {
         int hard = hardness(rough);
         if (hard == 0 || grit < hard) return ItemStack.EMPTY;
         String name = BuiltInRegistries.ITEM.getKey(rough.getItem()).getPath().substring("rough_".length());
-        boolean flawed = grit == hard && random.nextFloat() < FLAW_CHANCE;
-        if (!flawed && VANILLA.containsKey(name)) return new ItemStack(VANILLA.get(name));
-        return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, (flawed ? "flawed_" : "") + name)));
+        int margin = grit - hard;
+        // nothing is harder than Diamond Dust, so a diamond gets the one-up chance on its own tier (after the crack check)
+        float flawless = (margin >= 2 ? FLAWLESS_TWO_UP : margin == 1 || hard == 5 ? FLAWLESS_ONE_UP : 0) * (isFine(rough) ? 2 : 1);
+        String prefix = margin == 0 && random.nextFloat() < FLAW_CHANCE ? "flawed_" : random.nextFloat() < flawless ? "flawless_" : "";
+        if (prefix.isEmpty() && VANILLA.containsKey(name)) return new ItemStack(VANILLA.get(name));
+        return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, prefix + name)));
     }
 
     /** Grit crushed from one item on the Stone Anvil, or empty. */
@@ -176,7 +197,10 @@ public final class Gemstones {
         h.assertTrue(hardness(garnet) == 3 && hardness(citrine) == 2 && hardness(ruby) == 4, "Mohs tiers: garnet 3, citrine 2, ruby 4");
         h.assertTrue(abrasive(new ItemStack(Items.SAND)) == 1 && abrasive(new ItemStack(GARNET_GRIT.get())) == 3, "Sand is tier 1, Garnet Grit tier 3");
         h.assertTrue(cut(garnet, 2, random).isEmpty(), "Flint Grit is too soft for Garnet");
-        for (int i = 0; i < 20; i++) h.assertTrue(cut(citrine, 3, random).is(item("citrine")), "a harder grit always gives a fine Cut Citrine");
+        for (int i = 0; i < 40; i++) {
+            ItemStack c = cut(citrine, 3, random);
+            h.assertTrue(c.is(item("citrine")) || c.is(item("flawless_citrine")), "a harder grit never cracks Citrine (got " + c + ")");
+        }
         boolean fine = false, flawed = false;
         for (int i = 0; i < 60; i++) {
             ItemStack out = cut(garnet, 3, random);
@@ -190,8 +214,32 @@ public final class Gemstones {
             ItemStack d = cut(diamond, 5, random);
             h.assertTrue(d.is(Items.DIAMOND) || d.is(item("flawed_diamond")), "Diamond Dust cuts a Rough Diamond into a vanilla Diamond (got " + d + ")");
         }
+        boolean flawlessDiamond = false;
+        for (int i = 0; i < 2000 && !flawlessDiamond; i++) flawlessDiamond = cut(diamond, 5, random).is(item("flawless_diamond"));
+        h.assertTrue(flawlessDiamond, "Diamond Dust can give a Flawless Diamond");
         h.assertTrue(BronzeOres.crushed(diamond).is(DIAMOND_DUST.get()), "a Rough Diamond crushes into Diamond Dust");
         h.assertTrue(cut(new ItemStack(item("rough_amethyst")), 3, random).is(Items.AMETHYST_SHARD), "Rough Amethyst cuts into an Amethyst Shard");
+        // Flawless: never with a grit of the gem's own tier, ~6 % two tiers up, doubled for a fine stone from a Large Crystal
+        int plain = 0, fineCount = 0, same = 0;
+        ItemStack fineCitrine = citrine.copy();
+        var tag = new net.minecraft.nbt.CompoundTag();
+        tag.putBoolean(FINE, true);
+        fineCitrine.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
+        for (int i = 0; i < 4000; i++) {
+            if (cut(citrine, 5, random).is(item("flawless_citrine"))) plain++;
+            if (cut(fineCitrine, 5, random).is(item("flawless_citrine"))) fineCount++;
+            if (cut(citrine, 2, random).is(item("flawless_citrine"))) same++;
+        }
+        h.assertTrue(same == 0, "no Flawless cut with a grit only just hard enough");
+        h.assertTrue(plain > 140 && plain < 340, "about 6 % Flawless with a much harder grit (got " + plain + "/4000)");
+        h.assertTrue(fineCount > 340 && fineCount < 640, "about 12 % for a fine stone (got " + fineCount + "/4000)");
+        BlockPos crystalAt = h.absolutePos(new BlockPos(3, 1, 1));
+        h.setBlock(new BlockPos(3, 0, 1), net.minecraft.world.level.block.Blocks.STONE);
+        h.setBlock(new BlockPos(3, 1, 1), BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(MODID, "large_citrine_crystal")));
+        var drops = net.minecraft.world.level.block.Block.getDrops(h.getLevel().getBlockState(crystalAt), h.getLevel(), crystalAt, null, null,
+                new ItemStack(Items.IRON_PICKAXE));
+        h.assertTrue(!drops.isEmpty() && drops.stream().allMatch(d -> d.is(item("rough_citrine")) && isFine(d)),
+                "a Large Citrine Crystal drops fine Rough Citrine (got " + drops + ")");
         h.assertTrue(BronzeOres.crushed(garnet).is(GARNET_GRIT.get()) && BronzeOres.crushed(ruby).is(CORUNDUM_GRIT.get())
                 && BronzeOres.crushed(new ItemStack(Items.FLINT)).is(FLINT_GRIT.get()), "grit is crushed on the Stone Anvil");
 

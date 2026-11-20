@@ -119,7 +119,9 @@ for g in GEMS:
                            "category": "blocks"}
 
     elif kind == "crystal":
-        drops = {"small": [count(1, 1)], "medium": [count(1, 2)], "large": [count(2, 4), FORTUNE]}
+        FINE = {"type": "minecraft:set_components", "components": {"minecraft:custom_data": {"mechanical_fine": True},
+            "minecraft:lore": [{"translate": "tooltip.mechanical.fine_rough", "color": "aqua", "italic": False}]}}
+        drops = {"small": [count(1, 1)], "medium": [count(1, 2)], "large": [count(2, 4), FORTUNE, FINE]}  # large: fine stones
         sv_size = {"small": "liten", "medium": "mellanstor", "large": "stor"}
         for s in SIZES:
             b = f"{s}_{gem}_crystal"
@@ -128,10 +130,10 @@ for g in GEMS:
             w(A / f"blockstates/{b}.json", {"variants": {f"facing={f}": {"model": f"mechanical:block/{b}", **r} for f, r in FACING_ROT.items()}})
             loot(b, silk_or(b, drop(M + "rough_" + gem, *drops[s], DECAY)))
             sv_notes[b] = {"text": f"En {sv_size[s]} kristall av [[{gem}]] som växer på grottgolv och grottak. {g['sv']}. "
-                                   f"Bryts med pickaxe → {['1', '1–2', '2–4 (Fortune hjälper)'][SIZES.index(s)]} [[rough_{gem}]]; "
+                                   f"Bryts med pickaxe → {['1', '1–2', '2–4 fina (Fortune hjälper; dubbel chans till Flawless)'][SIZES.index(s)]} [[rough_{gem}]]; "
                                    f"sig själv med Silk Touch. Lyser svagt.", "category": "blocks"}
             en_notes[b] = {"text": f"A {s} [[{gem}]] crystal growing on cave floors and ceilings. {g['en']}. "
-                                   f"Mined with a pickaxe → {['1', '1–2', '2–4 (Fortune helps)'][SIZES.index(s)]} [[rough_{gem}]]; "
+                                   f"Mined with a pickaxe → {['1', '1–2', '2–4 fine ones (Fortune helps; double Flawless chance)'][SIZES.index(s)]} [[rough_{gem}]]; "
                                    f"itself with Silk Touch. Glows faintly.", "category": "blocks"}
         crystals = [(M + f"{s}_{gem}_crystal", wt) for s, wt in zip(SIZES, (6, 3, 1))]
         for side, facing, up, n in (("floor", "up", False, g["count"]), ("ceiling", "down", True, max(1, g["count"] // 2))):
@@ -178,19 +180,29 @@ ALL = [(g["name"], g["title"], f"[[{g['name']}]]") for g in GEMS] + [(n, t, f"[[
 SV_TIER = {1: "Sand", 2: "[[flint_grit]]", 3: "[[garnet_grit]]", 4: "[[corundum_grit]]", 5: "[[diamond_dust]]"}
 for gem, title, cut in ALL:
     tier, tool = HARDNESS[gem], SV_TIER[HARDNESS[gem]]
-    for kind_ in ("rough", "flawed"):
+    for kind_ in ("rough", "flawed", "flawless"):
         i = f"{kind_}_{gem}"
         lang[f"item.mechanical.{i}"] = f"{kind_.title()} {title}"
         w(A / f"models/item/{i}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{i}"}})
         w(A / f"items/{i}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{i}"}})
-    higher = "" if tier == 5 else " Med ett hårdare slipmedel blir den alltid fin."
-    higher_en = "" if tier == 5 else " A harder abrasive always gives a fine one."
+    higher = (" Inget slipmedel är hårdare, men den kan ändå bli [[flawless_diamond]] (3 %)." if tier == 5 else
+              f" Ett hårdare slipmedel spricker den aldrig med och kan ge [[flawless_{gem}]] (3 % en nivå hårdare, 6 % två eller fler).")
+    higher_en = (" Nothing is harder, but it can still turn out [[flawless_diamond]] (3 %)." if tier == 5 else
+                 f" A harder abrasive never cracks it and may give [[flawless_{gem}]] (3 % one tier harder, 6 % two or more).")
     sv_notes[f"rough_{gem}"] = {"text": f"Oslipad {title} (Mohs {MOHS[gem]}). Slipas på [[lapidary_wheel]] till {cut}: kräver minst {tool} "
                                         f"(nivå {tier}). Med exakt det slipmedlet kan den spricka till [[flawed_{gem}]] (35 %).{higher}",
                                 "category": "materials"}
     en_notes[f"rough_{gem}"] = {"text": f"Uncut {title} (Mohs {MOHS[gem].replace(',', '.')}). Cut on the [[lapidary_wheel]] into {cut}: needs "
                                         f"at least {tool} (tier {tier}). With exactly that abrasive it may crack into [[flawed_{gem}]] (35 %).{higher_en}",
                                 "category": "materials"}
+    sv_notes[f"flawless_{gem}"] = {"text": f"En felfri {title}: skiner som ett förtrollat item. Blir det ibland när en [[rough_{gem}]] slipas på "
+                                           f"[[lapidary_wheel]] med ett **hårdare** slipmedel än stenen kräver: 3 % en nivå hårdare, 6 % två eller fler. "
+                                           f"Dubbel chans för en fin råsten från en Large Crystal. Diamond: 3 % med Diamond Dust. Ger bättre smycken (kommer senare).",
+                                   "category": "materials"}
+    en_notes[f"flawless_{gem}"] = {"text": f"A flawless {title}: shines like an enchanted item. Sometimes comes from cutting a [[rough_{gem}]] on the "
+                                           f"[[lapidary_wheel]] with a **harder** abrasive than the stone needs: 3 % one tier harder, 6 % two or more. "
+                                           f"Double chance for a fine rough stone from a Large Crystal. Diamond: 3 % with Diamond Dust. Makes better jewellery (coming later).",
+                                   "category": "materials"}
     sv_notes[f"flawed_{gem}"] = {"text": f"En {title} som sprack vid slipningen på [[lapidary_wheel]] (slipmedlet var precis hårt nog). "
                                          f"Mindre värd (smycken kommer senare).", "category": "materials"}
     en_notes[f"flawed_{gem}"] = {"text": f"A {title} that cracked while being cut on the [[lapidary_wheel]] (the abrasive was only just hard "
@@ -265,6 +277,8 @@ lang.update({
     "message.mechanical.lapidary.grinding": "Grinding... %s/%s",
     "message.mechanical.lapidary.cut": "Cut: %s",
     "message.mechanical.lapidary.cracked": "It cracked: %s",
+    "message.mechanical.lapidary.flawless": "Flawless! %s",
+    "tooltip.mechanical.fine_rough": "From a large crystal: better odds of a Flawless cut",
     **{f"message.mechanical.lapidary.grit.{t}": n for t, n in ABRASIVE_NAMES.items()},
 })
 tiers_sv = "; ".join(f"nivå {t} {SV_TIER[t]}: " + ", ".join(title for n, title, _ in ALL if HARDNESS[n] == t) for t in range(1, 6))

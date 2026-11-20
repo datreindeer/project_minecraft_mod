@@ -726,6 +726,33 @@ def flawed(cut, seed):
     return img
 
 
+def flawless(cut, seed):
+    """The cut gem, clearer and brighter, with a light rim and twinkling four-point stars (the glint comes in game)."""
+    rng = random.Random(seed)
+    img = cut.copy()
+    px = [(x, y) for y in range(16) for x in range(16) if img.getpixel((x, y))[3]]
+    for p in px:
+        r, g, b, a = img.getpixel(p)
+        m = (r + g + b) / 3
+        img.putpixel(p, tuple(max(0, min(255, int(m + (v - m) * 1.25 + 18))) for v in (r, g, b)) + (a,))
+    inner_px = [p for p in px if all((p[0] + a, p[1] + b) in px for a, b in N4)]
+    for p in px:  # light rim on the top-left edge
+        if p not in inner_px and ((p[0] - 1, p[1]) not in px or (p[0], p[1] - 1) not in px) and p[0] + p[1] < 16:
+            c = img.getpixel(p)
+            img.putpixel(p, tuple(min(255, v + 70) for v in c[:3]) + (255,))
+    stars = sorted(inner_px, key=lambda p: p[0] + p[1])
+    for cx, cy in (stars[len(stars) // 6], stars[len(stars) * 4 // 5]) if stars else ():
+        for (a, b), f in (((0, 0), 1.0), ((1, 0), 0.6), ((-1, 0), 0.6), ((0, 1), 0.6), ((0, -1), 0.6)):
+            q = (cx + a, cy + b)
+            if q in px:
+                c = img.getpixel(q)
+                img.putpixel(q, tuple(int(c[i] + (255 - c[i]) * f) for i in range(3)) + (255,))
+    for _ in range(3):  # a few loose sparkles
+        if inner_px:
+            img.putpixel(rng.choice(inner_px), (255, 255, 240, 255))
+    return img
+
+
 LIB = Path(r"C:\Users\Yngve\Documents\Minecraft Modding\item")
 
 
@@ -757,7 +784,8 @@ for n, g in enumerate(GEMS):
     cut_img.save(TEX / f"item/{gem}.png")
     rough_img.save(TEX / f"item/rough_{gem}.png")
     flawed(cut_img, n).save(TEX / f"item/flawed_{gem}.png")
-    done += 3
+    flawless(cut_img, n).save(TEX / f"item/flawless_{gem}.png")
+    done += 4
     if kind == "ore":
         for host in g["hosts"]:
             ore_texture(gem, host, n * 7 + len(host)).save(TEX / f"block/{ore_block(gem, host)}.png")
@@ -773,7 +801,8 @@ for n, (gem, item) in enumerate((("diamond", "item/diamond"), ("emerald", "item/
     rough_img, _ = rough_render(gem, VPAL[gem], rough_core(gem, "ore", 200 + n), crust_of(gem, None), 300 + n, 0.3)
     rough_img.save(TEX / f"item/rough_{gem}.png")
     flawed(vanilla(item), 400 + n).save(TEX / f"item/flawed_{gem}.png")
-    done += 2
+    flawless(vanilla(item), 500 + n).save(TEX / f"item/flawless_{gem}.png")
+    done += 3
 # grits from the user's dust library: obsidian dust as flint, ruby dust recoloured garnet-brown and corundum-grey-pink, diamond dust
 dust = lambda name: Image.open(LIB / name).convert("RGBA")
 recolour(dust("obsidian_dust.png"), [(18, 18, 22), (40, 40, 46), (70, 70, 78), (110, 110, 118), (170, 170, 176)]).save(TEX / "item/flint_grit.png")

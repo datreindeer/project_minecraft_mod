@@ -30,6 +30,21 @@
                   "formula": "minecraft:ore_drops"
                 },
                 {
+                  "type": "minecraft:set_components",
+                  "components": {
+                    "minecraft:custom_data": {
+                      "mechanical_fine": true
+                    },
+                    "minecraft:lore": [
+                      {
+                        "translate": "tooltip.mechanical.fine_rough",
+                        "color": "aqua",
+                        "italic": false
+                      }
+                    ]
+                  }
+                },
+                {
                   "type": "minecraft:explosion_decay"
                 }
               ]

@@ -2044,7 +2044,7 @@ Nautilus. Squid, Dolphin och fisk är inte vilt (fisk fås med spö).
 på 1 av 6). Det blir en **Guano Pile** som växer till 4 lager; bryt den för 1 Guano per lager. **Guano** är den
 starkaste gödseln: högerklicka farmland, fertilitet **+3** (dålig jord blir rik direkt; Compost +1, Manure +2).
 
-## Ädelstenar (v0.78.0)
+## Ädelstenar (v0.79.0)
 
 26 ädelstenar: 23 nya i tre former, plus vanilla Diamond, Emerald och Amethyst. Allt som hittas är **oslipat** (Rough X) och slipas på en **Lapidary Wheel**. Slipade stenar har inga recept än; smycken till Neck/Ring/Charm kommer senare. Taggar: `#mechanical:rough_gemstones`, `#mechanical:gemstones` (slipade), `#c:gems/<gem>`, `#mechanical:gem_hardness/1..5`, `#mechanical:abrasives/1..5`.
 Advancement-fliken **Gemstones** visar var varje sten finns och hur slipningen går till. Data: `scripts/gem_table.py` → `gen_gemstones.py`, texturer: `gen_gemstone_textures.py`.
@@ -2101,7 +2101,8 @@ Recept (crafting): `_A_ / TRT / P_P`. A = Sandstone, T = Twine, R = Tool Rod, P 
 
 1. **Högerklicka med ett slipmedel** → hjulet laddas (ett item = 4 stenar, max 8; ett annat slipmedel ersätter det gamla).
 2. **Högerklicka 4 gånger med en Rough-sten** → den slipade stenen hamnar i inventoryt. Tom hand visar vad som är laddat.
-3. Slipmedlet måste vara **minst lika hårt** som stenen. **Exakt lika hårt** → 35 % chans att stenen spricker till **Flawed X**. Hårdare → alltid fin.
+3. Slipmedlet måste vara **minst lika hårt** som stenen. **Exakt lika hårt** → 35 % chans att stenen spricker till **Flawed X**. Hårdare → spricker aldrig.
+4. **Flawless X**: med ett **hårdare** slipmedel än stenen kräver blir den ibland felfri: 3 % en nivå hårdare, 6 % två eller fler. Råstenar från **Large Crystal** är *fina* (tooltip) och ger dubbel chans (6 % / 12 %). Diamond (inget är hårdare): 3 % med Diamond Dust. Flawless skiner (glint, sällsynt-färg) och ska ge bättre smycken senare.
 
 | Nivå | Slipmedel | Hur | Slipar |
 |---|---|---|---|

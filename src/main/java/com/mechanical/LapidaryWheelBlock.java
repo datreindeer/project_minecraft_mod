@@ -134,10 +134,18 @@ public class LapidaryWheelBlock extends Block {
         rough.consume(1, player);
         int charges = state.getValue(CHARGES) - 1;
         level.setBlockAndUpdate(pos, state.setValue(PROGRESS, 0).setValue(CHARGES, charges).setValue(GRIT, charges == 0 ? 0 : grit));
-        boolean flawed = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(out.getItem()).getPath().startsWith("flawed_");
-        if (flawed) level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 0.6F);
-        else level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0F, 1.2F);
-        player.sendOverlayMessage(Component.translatable(flawed ? "message.mechanical.lapidary.cracked" : "message.mechanical.lapidary.cut", out.getHoverName()));
+        String path = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(out.getItem()).getPath();
+        String result = path.startsWith("flawed_") ? "cracked" : path.startsWith("flawless_") ? "flawless" : "cut";
+        switch (result) {
+            case "cracked" -> level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 0.6F);
+            case "flawless" -> {
+                level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 1.2F, 1.5F);
+                level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 0.6F, 1.8F);
+                level.sendParticles(ParticleTypes.END_ROD, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 12, 0.3, 0.3, 0.3, 0.02);
+            }
+            default -> level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0F, 1.2F);
+        }
+        player.sendOverlayMessage(Component.translatable("message.mechanical.lapidary." + result, out.getHoverName()));
         player.getInventory().placeItemBackInInventory(out, net.minecraft.util.Prediction.SERVER_ONLY);
     }
 }
