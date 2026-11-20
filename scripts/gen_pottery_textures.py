@@ -1,5 +1,6 @@
-"""Textures for the ceramics (gen_pottery.py): fired terracotta and raw grey greenware for the Storage Jar and Water Jug,
-the Potter's Wheel's plank head and the wet clay on the wheel.
+"""Textures for the ceramics (gen_pottery.py, gen_pots.py): fired terracotta and raw grey greenware for the Storage Jar
+and Water Jug, the Potter's Wheel's plank head, the wet clay on the wheel, and the raw greenware of vanilla's Flower Pot
+and Decorated Pot.
 
 The pots' side textures are a wrap of the profile: texture row r is model height 16 - r, so each round slice of the
 model takes its own rows (belly, shoulder, neck, rim, lid). Columns are shaded darker towards the face edges so the
@@ -142,4 +143,22 @@ for r in range(16):
 clay.save(OUT / "wheel_clay.png")
 radial(WET, 91).save(OUT / "wheel_clay_top.png")
 radial(WET, 92, lambda t, x, y, rng: ramp(WET, 0.1 + 0.15 * t), 2.6).save(OUT / "wheel_clay_mouth.png")
+# ---- greenware for vanilla's pots (gen_pots.py): Unfired Flower Pot and Unfired Decorated Pot ----
+# flower pot: vanilla's texture (its model's UV layout) recoloured by brightness into the raw grey clay
+pot = Image.open(BytesIO(jar.read("assets/minecraft/textures/block/flower_pot.png"))).convert("RGBA")
+lums = [0.3 * r + 0.59 * g + 0.11 * b for r, g, b, a in (pot.getpixel((x, y)) for y in range(pot.height) for x in range(pot.width)) if a]
+lo, hi = min(lums), max(lums)
+rng = random.Random(81)
+green_pot = Image.new("RGBA", pot.size)
+for y in range(pot.height):
+    for x in range(pot.width):
+        r, g, b, a = pot.getpixel((x, y))
+        if a:
+            t = 0.25 + 0.6 * ((0.3 * r + 0.59 * g + 0.11 * b) - lo) / max(1, hi - lo) + rng.uniform(-0.03, 0.03)
+            green_pot.putpixel((x, y), ramp(RAW, t))
+green_pot.save(OUT / "unfired_flower_pot.png")
+# decorated pot: the body wrap (14 px wide on each face), a top and the rim's open mouth
+side(RAW, 82).save(OUT / "unfired_decorated_pot_side.png")
+radial(RAW, 83).save(OUT / "unfired_decorated_pot_top.png")
+radial(RAW, 84, dark, 2.4).save(OUT / "unfired_decorated_pot_mouth.png")
 print("pottery textures ok")

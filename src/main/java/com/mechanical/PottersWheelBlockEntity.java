@@ -1,9 +1,11 @@
 package com.mechanical;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -18,12 +20,15 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
 /**
  * What sits on a Potter's Wheel: the chosen {@link Shape}, how many Clay Balls are on it and how far the throwing has
@@ -38,7 +43,9 @@ public class PottersWheelBlockEntity extends BlockEntity {
 
     public enum Shape {
         STORAGE_JAR(4, Pottery.UNFIRED_STORAGE_JAR),
-        WATER_JUG(3, Pottery.UNFIRED_WATER_JUG);
+        WATER_JUG(3, Pottery.UNFIRED_WATER_JUG),
+        FLOWER_POT(2, Pottery.UNFIRED_FLOWER_POT),
+        DECORATED_POT(4, Pottery.UNFIRED_DECORATED_POT);
 
         public final int clay;
         public final Supplier<? extends Item> greenware;
@@ -59,6 +66,8 @@ public class PottersWheelBlockEntity extends BlockEntity {
 
     private Shape shape = Shape.STORAGE_JAR;
     private int clay, steps;
+    /** Pottery Sherds pressed into a finished Unfired Decorated Pot; carried onto the item and through the kiln. */
+    private PotDecorations decorations = PotDecorations.EMPTY;
     private long spinUntil;
     /** Client only: where the wheel stopped, so it doesn't jump back when it stops spinning. */
     public float lastAngle;
@@ -122,10 +131,47 @@ public class PottersWheelBlockEntity extends BlockEntity {
         sync();
     }
 
+    /**
+     * Presses a Pottery Sherd into the next bare side of a finished Unfired Decorated Pot (front, left, right, back, the
+     * order the pot's tooltip lists them). Returns the side's name, or null when there's no such pot or all four are done.
+     */
+    public @Nullable String pressSherd(ServerLevel level, ItemStack sherd) {
+        if (!done() || shape != Shape.DECORATED_POT) return null;
+        PotDecorations d = decorations;
+        Optional<ItemStackTemplate> s = Optional.of(new ItemStackTemplate(sherd.getItem()));
+        String side;
+        if (d.front().isEmpty()) {
+            decorations = new PotDecorations(d.back(), d.left(), d.right(), s);
+            side = "front";
+        } else if (d.left().isEmpty()) {
+            decorations = new PotDecorations(d.back(), s, d.right(), d.front());
+            side = "left";
+        } else if (d.right().isEmpty()) {
+            decorations = new PotDecorations(d.back(), d.left(), s, d.front());
+            side = "right";
+        } else if (d.back().isEmpty()) {
+            decorations = new PotDecorations(s, d.left(), d.right(), d.front());
+            side = "back";
+        } else {
+            return null;
+        }
+        level.playSound(null, worldPosition, SoundEvents.DECORATED_POT_INSERT, SoundSource.BLOCKS, 0.8F, 0.8F);
+        sync();
+        return side;
+    }
+
+    /** The finished greenware as an item, with any pressed sherds. */
+    public ItemStack greenware() {
+        ItemStack out = new ItemStack(shape.greenware.get());
+        if (!decorations.equals(PotDecorations.EMPTY)) out.set(DataComponents.POT_DECORATIONS, decorations);
+        return out;
+    }
+
     /** Takes the finished greenware off the wheel. */
     public ItemStack take() {
-        ItemStack out = new ItemStack(shape.greenware.get());
+        ItemStack out = greenware();
         clay = steps = 0;
+        decorations = PotDecorations.EMPTY;
         sync();
         return out;
     }
@@ -139,7 +185,7 @@ public class PottersWheelBlockEntity extends BlockEntity {
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (level == null || clay == 0) return;
-        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), done() ? new ItemStack(shape.greenware.get()) : new ItemStack(Items.CLAY_BALL, clay));
+        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), done() ? greenware() : new ItemStack(Items.CLAY_BALL, clay));
     }
 
     @Override
@@ -149,6 +195,7 @@ public class PottersWheelBlockEntity extends BlockEntity {
         output.putInt("clay", clay);
         output.putInt("steps", steps);
         output.putLong("spin_until", spinUntil);
+        if (!decorations.equals(PotDecorations.EMPTY)) output.store("decorations", PotDecorations.CODEC, decorations);
     }
 
     @Override
@@ -162,6 +209,7 @@ public class PottersWheelBlockEntity extends BlockEntity {
         clay = input.getIntOr("clay", 0);
         steps = input.getIntOr("steps", 0);
         spinUntil = input.getLongOr("spin_until", 0);
+        decorations = input.read("decorations", PotDecorations.CODEC).orElse(PotDecorations.EMPTY);
     }
 
     @Override

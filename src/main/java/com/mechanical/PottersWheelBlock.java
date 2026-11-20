@@ -3,6 +3,8 @@ package com.mechanical;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +24,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Kick wheel: a stone flywheel at the bottom, an axle and a plank wheel head on top. Clay Balls go on the head (as many
  * as the shape needs), sneak + empty hand picks the shape, holding right-click with an empty hand throws it, and an
- * empty hand takes the finished greenware off ({@link PottersWheelBlockEntity}).
+ * empty hand takes the finished greenware off ({@link PottersWheelBlockEntity}). Pottery Sherds are pressed into a
+ * finished Unfired Decorated Pot while it is still on the wheel, one side per sherd.
  */
 public class PottersWheelBlock extends Block implements EntityBlock {
     private static final VoxelShape SHAPE = Shapes.or(box(1, 0, 1, 15, 3, 15), box(7, 3, 7, 9, 11, 9), box(2, 11, 2, 14, 12, 14));
@@ -43,6 +46,21 @@ public class PottersWheelBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (stack.is(ItemTags.DECORATED_POT_SHERDS) && level.getBlockEntity(pos) instanceof PottersWheelBlockEntity wheel) {
+            if (level instanceof ServerLevel server) {
+                String side = wheel.pressSherd(server, stack);
+                if (side == null) {
+                    boolean full = wheel.done() && wheel.shape() == PottersWheelBlockEntity.Shape.DECORATED_POT;
+                    player.sendOverlayMessage(Component.translatable(full ? "message.mechanical.wheel.sherds_full" : "message.mechanical.wheel.sherd_needs_pot"));
+                    return InteractionResult.SUCCESS;
+                }
+                player.sendOverlayMessage(Component.translatable("message.mechanical.wheel.sherd", stack.getHoverName(),
+                        Component.translatable("message.mechanical.wheel.side." + side)));
+                stack.consume(1, player);
+                if (player instanceof ServerPlayer sp) Kettle.award(sp, Pottery.SHERD_POT_ADVANCEMENT);
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (!stack.is(Items.CLAY_BALL) || !(level.getBlockEntity(pos) instanceof PottersWheelBlockEntity wheel)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (wheel.steps() > 0 || wheel.clay() >= wheel.shape().clay) {
             if (!level.isClientSide()) player.sendOverlayMessage(Component.translatable("message.mechanical.wheel.enough_clay"));

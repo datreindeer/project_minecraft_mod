@@ -4,7 +4,7 @@
 > Helmet + Greaves, byhandel nivå 3) och odlingens fas 3 (Quern, bröd, kompost, Manure, Scarecrow) är byggda**, se
 > avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
 
-> Helmet + Greaves, byhandel nivå 3) och keramik (Potter's Wheel, Storage Jar, Water Jug) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
+> Helmet + Greaves, byhandel nivå 3) och keramik (Potter's Wheel, Storage Jar, Water Jug, Flower Pot, Decorated Pot) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
 > Beslut står under Beslut.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
@@ -248,6 +248,8 @@ takten ("Baking speed: 2.0x"). Gäller även smältning i Crucible, inte bränni
 | Crucible of Solid Copper / Bronze | Crucible of Molten ... | 10 s | 1085° / 950° |
 | Unfired Clay Saw Blade / Plate Mold | Clay Saw Blade / Plate Mold | 20 s | 600° |
 | Unfired Storage Jar / Unfired Water Jug | Storage Jar / Water Jug | 30 s | 600° |
+| Unfired Flower Pot | Flower Pot (vanilla) | 20 s | 600° |
+| Unfired Decorated Pot | Decorated Pot (vanilla), med inpressade Pottery Sherds kvar | 30 s | 600° |
 
 **Första bränningen** av en ny kiln räknas bara medan den är minst **500°** (2 min). På lägereldens ved tar det ~1,5 min
 att komma dit.
@@ -844,7 +846,8 @@ Lin är bronsålderns trådgröda (stenålderns: brännässla, se `docs/ages/01-
 Drejskiva och lerkärl: förvaring där maten håller längre, och en kruka för vatten. Kod: `Pottery` (registrering,
 `JAR_RATE`), `PottersWheelBlock` + `PottersWheelBlockEntity`, `client/PottersWheelRenderer`, `StorageJarBlock` +
 `StorageJarBlockEntity`, `WaterJugBlock` + `WaterJugItem`; bränningen i `KilnBlockEntity.RECIPES`. Data:
-`scripts/gen_pottery.py` (efter gen_wolf_pelt.py, före gen_block_items.py), texturer: `scripts/gen_pottery_textures.py`.
+`scripts/gen_pottery.py` (efter gen_wolf_pelt.py, före gen_block_items.py) och `scripts/gen_pots.py` (vanillas krukor,
+efter gen_thread.py), texturer: `scripts/gen_pottery_textures.py`.
 
 ### Potter's Wheel
 
@@ -861,15 +864,34 @@ Sågen skär ut drejskivan, bronstappen är lagret och kullerstenen svänghjulet
 - Modell: ett runt svänghjul av slät sten nere, en axel av skalad ek och ett runt plankhuvud överst. Huvudet och leran
   ritas av en block entity renderer och snurrar (~1,3 varv/s) medan man drejar.
 - **Form:** smyg + högerklick med tom hand (innan man börjat dreja) väljer form: **Storage Jar (4 Clay Balls)** eller
-  **Water Jug (3 Clay Balls)**. Lera som blir över när man byter till en mindre form går tillbaka till spelaren.
+  **Water Jug (3 Clay Balls)**, **Flower Pot (2 Clay Balls)** eller **Decorated Pot (4 Clay Balls)**. Lera som blir över när man byter till en mindre form går tillbaka till spelaren.
 - **Lera:** högerklicka med Clay Ball, en i taget, tills formen har sin lera. Leran ligger som en skev klump på huvudet.
 - **Dreja:** håll in högerklick med tom hand. Varje upprepning (var 4:e tick) är ett steg; **24 steg** (~5 s) ger en
   färdig råform. Leran går klump → centrerad kupol → uppdragen cylinder → öppnad med mynning → färdig form, med
   lerstänk och ljud. Släpper man fortsätter man där man var.
-- **Ta av:** tom hand på den färdiga formen → **Unfired Storage Jar** / **Unfired Water Jug** (grå rå lera).
-- Bryts skivan: färdig form faller ut som den är, annars Clay Balls tillbaka.
+- **Ta av:** tom hand på den färdiga formen → **Unfired Storage Jar** / **Unfired Water Jug** / **Unfired Flower Pot** /
+  **Unfired Decorated Pot** (grå rå lera).
+- Bryts skivan: färdig form faller ut som den är (med inpressade sherds), annars Clay Balls tillbaka.
 
-Råformerna bränns i Clay Kiln: **30 s vid 600°**.
+Råformerna bränns i Clay Kiln vid **600°**: krukor och kannor **30 s**, Flower Pot **20 s**.
+
+### Flower Pot och Decorated Pot
+
+Vanillas krukor görs nu på drejskivan. **Vanillas recept är borttagna** (`flower_pot` av 3 Brick, `decorated_pot_simple`
+av 4 Brick och `decorated_pot` med sherds; bara ugnen ger krukorna). Brick är kvar som förut.
+
+- **Flower Pot:** 2 Clay Balls på skivan → **Unfired Flower Pot** (vanillas form i grå lera) → kilnen (20 s, 600°) →
+  vanillas **Flower Pot**.
+- **Decorated Pot:** 4 Clay Balls → **Unfired Decorated Pot** (vanillas form: bred kropp, smal hals, bred kant) →
+  kilnen (30 s, 600°) → vanillas **Decorated Pot**. Utan sherds blir den en vanlig slät kruka (staplas med vanillas).
+- **Pottery Sherds:** medan den färdiga Unfired Decorated Pot står kvar på skivan, högerklicka med en Pottery Sherd:
+  den pressas in i nästa tomma sida i ordningen **fram, vänster, höger, bak** (samma ordning som krukans tooltip), en
+  sherd per sida, max 4. Sidor utan sherd blir släta. Råformen bär `pot_decorations` (syns i tooltipen) och kilnen för
+  över den till den brända krukan, så mönstren syns på Decorated Pot när den ställs ut. Sherds går inte att pressa in
+  efter att formen tagits av skivan (leran har torkat).
+- Råformerna är vanliga items (som Unfired Storage Jar), inte block. Mönstren syns inte på råformen, bara i tooltipen.
+- Advancements (Bronze Age-fliken): **Potted** (bränn en Flower Pot), **Potter's Pride** (bränn en Decorated Pot),
+  **Storyteller** (pressa in en sherd på skivan, ges från koden).
 
 ### Storage Jar
 
@@ -900,8 +922,8 @@ den plockas upp; tooltip "Water: 3/6"). Mynningen visar tom/lite/mycket vatten, 
 
 ### Beslut
 
-- Vanillas **Decorated Pot** (4 Brick, receptet är kvar) får vara som den är: dekoration och behållare i strukturerna.
-  Krukorna här är egna, funktionella kärl.
+- Vanillas **Flower Pot** och **Decorated Pot** drejas och bränns (v0.67.0) i stället för att craftas av Brick.
+  Sherds pressas in på skivan i stället för i craftingrutnätet. Storage Jar och Water Jug är egna, funktionella kärl.
 - Formen väljs med smyg-klick (inte efter antal lerbollar), så man ser vad man drejar innan leran läggs på.
 - **Inte gjort (valfritt):** Clay Bowl/fat, Amphora (större förvaring), att kärl går sönder vid fall/explosion, att
   dricka ur kannan (modden har ingen törst), att hälla kannan i en kittel (Bronze Kettle fylls med Water Bucket eller
