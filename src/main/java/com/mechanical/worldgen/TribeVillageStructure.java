@@ -112,9 +112,23 @@ public final class TribeVillageStructure extends Structure {
 
     // ------------------------------------------------------------------ the piece
 
+    /** The gate's direction (radians) for a layout seed: the third draw of the layout's random, after the tribe's id. */
+    static double gateAngle(long seed) {
+        RandomSource r = RandomSource.create(seed);
+        r.nextLong();
+        r.nextLong();
+        return r.nextDouble() * Math.PI * 2;
+    }
+
     public static final class Piece extends StructurePiece {
         private final long seed;
         private final BlockPos centre;
+
+        /** Where a trail from outside should end: on the gate's line, {@code beyond} blocks past the start of the village path. */
+        public BlockPos trailEnd(int beyond) {
+            double a = gateAngle(seed), r = WALL_R + 3 + beyond;
+            return new BlockPos(centre.getX() + (int) Math.round(Math.cos(a) * r), centre.getY(), centre.getZ() + (int) Math.round(Math.sin(a) * r));
+        }
 
         Piece(long seed, BlockPos centre) {
             // the box's floor is the village floor: beard_box fills below it and carves above it
@@ -215,7 +229,8 @@ public final class TribeVillageStructure extends Structure {
             stripped = (spruce ? Blocks.STRIPPED_SPRUCE_LOG : Blocks.STRIPPED_OAK_LOG).defaultBlockState();
             fence = (spruce ? Blocks.SPRUCE_FENCE : Blocks.OAK_FENCE).defaultBlockState();
             stake = (spruce ? People.SHARPENED_SPRUCE_LOG : People.SHARPENED_OAK_LOG).get().defaultBlockState();
-            gate = rnd.nextDouble() * Math.PI * 2;
+            gate = gateAngle(seed);
+            rnd.nextDouble(); // the draw gateAngle repeats, so the rest of the layout stays as it was
 
             palisade();
             path();

@@ -161,7 +161,12 @@ final class Trails extends StoneAgeFeature {
             if (start.isValid()) {
                 if (!sel.structure().is(CONNECTED)) return Optional.empty();
                 // the first piece is the heart of the structure (a village's meeting point, the oak's trunk)
-                BoundingBox box = start.getPieces().getFirst().getBoundingBox();
+                var first = start.getPieces().getFirst();
+                if (first instanceof TribeVillageStructure.Piece village) { // a palisade: meet the village path at the gate
+                    BlockPos gate = village.trailEnd(END_R);
+                    return Optional.of(new Node(mix(p.pack() * 31 + index), gate.getX(), gate.getZ()));
+                }
+                BoundingBox box = first.getBoundingBox();
                 return Optional.of(new Node(mix(p.pack() * 31 + index), box.getCenter().getX(), box.getCenter().getZ()));
             }
             options.remove(index2);

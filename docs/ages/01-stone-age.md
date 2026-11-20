@@ -1317,7 +1317,8 @@ Varje plats får stig till sina närmaste grannar inom ca **640 block**, men ald
 närmare båda (så det blir ett glest nät, inte ett spindelnät), och aldrig över hav. Stigen slingrar sig, följer
 terrängen och är 1–3 block bred med trasiga, gräsiga kanter: **Trodden Path** i mitten med fläckar av Coarse Dirt, Gravel
 och Packed Mud, och **Worn Grass** längs kanterna (se *Upptrampade stigar* nedan; stigarnas block växer aldrig igen). Den går
-runt trädstammar och lämnar hus, åkrar, sand och berg i fred, och slutar några block från platsens mitt.
+runt trädstammar och lämnar hus, åkrar, sand och berg i fred, och slutar några block från platsens mitt. Vid en Tribe Village slutar den i stället precis utanför porten, där byns egen
+väg in till elden börjar.
 - **Vatten:** över djupt vatten (3+ block) en **spång** av plankslabs, med stockstolpar ner till botten och ett
   staketräcke var fjärde block (ek eller gran). I grunt vatten (1–2 block) **trampstenar** av kullersten och mossig
   kullersten, i nivå med ytan.
