@@ -293,7 +293,7 @@ TABS = {
         ("fire_arrow", "arrows", "fire_arrow", T, "Fire Arrow", "Fletching Table: Tallow + Arrow + Twine",
          has("fire_arrow")),
         ("quiver", "arrows", "quiver", T, "Quiver",
-         "Sew 3 Leather into a Quiver at the Armor Station and wear it in the Hip slot: bows shoot from it, picked-up arrows go in",
+         "Make a Quiver at the Tool Station (Leather, Twine, Tool Rod) and wear it in the Hip slot: bows shoot from it, picked-up arrows go in",
          by_code()),
         ("tusk_dagger", "leather", "tusk_dagger", T, "Hunter's Knife",
          "Butcher a Wild Boar for a Tusk. Tool Station: Tusk + Cordage + Leather makes a Tusk Dagger",

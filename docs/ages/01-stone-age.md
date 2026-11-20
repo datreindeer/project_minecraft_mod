@@ -119,6 +119,9 @@ knivrecept och för styckning): 1,3× snabbare och 1,1× mer kött än Flint Kni
 **Jägarkniv:** kan stycka **Brown Bear** (Flint Knife kan inte) och ger **1,6× mer i första omgången** (hudar, päls, ull,
 fjädrar): högre chans och fler, t.ex. Raw Bear Pelt 1–2 i stället för 1.
 
+### Quiver (Tool Station)
+Huvud: **Leather** (röret), bindning: **Twine** (sömmen), skaft: **Tool Rod** (stomme). Låses upp när man har Leather. Se "Quiver" under väskor.
+
 ### Bone Hook Fishing Rod (Tool Station)
 **Bone Fish Hook** = Fish Bones + kniv (crafting). Spöet: huvud **Bone Fish Hook**, bindning **Twine**, skaft **Tool Rod**.
 Napp kommer 5 s snabbare (som Lure I, utöver förtrollningar). Hållbarhet 48.
@@ -149,7 +152,6 @@ Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma 
 |---|---|---|---|---|
 | Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 tråd | Leather |
 | **Leather Satchel** | 4 Leather | Bone Needle | 2 tråd | Leather |
-| **Quiver** | 3 Leather | Bone Needle | 2 tråd | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
 | **Wolf Hood** | 2 Wolf Pelt | Bone Needle | 1 Sinew | Wolf Pelt |
 | Wolf Fur Coat / Leggings / Boots | 4 / 3 / 2 Wolf Pelt | Bone Needle | 3 / 2 / 1 Sinew | Wolf Pelt |
