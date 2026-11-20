@@ -559,7 +559,7 @@ def princess(dx, dy):
 
 
 def heart(dx, dy):
-    x, y = dx / 7.6, -dy / 7.6 + 0.12
+    x, y = dx / 5.4, -dy / 5.4 + 0.1  # the curve is ~2.3 wide, so this keeps it inside 16 px
     if (x * x + y * y - 1) ** 3 - x * x * y ** 3 > 0:
         return None
     return 0.45 + 0.2 * (sector(dx, dy, 6) % 2) + 0.3 * light(dx, dy, 7)
