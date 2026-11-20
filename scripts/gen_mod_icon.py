@@ -20,19 +20,21 @@ def background(kind):
             bg.putpixel((x, y), (0, 0, 0, 0) if corner else c + (255,))
     return bg
 
-def icon(kind):
-    img = background(kind).resize((N * S,) * 2, Image.NEAREST)
+def icon(kind, size=256):
+    img = background(kind).resize((size, size), Image.NEAREST)
+    tsize, toff, soff = (198, 29, 35) if size == 256 else (54, 5, 7)
     for name, flip in (("flint_spear", False), ("bronze_sword", True)):
         tex = Image.open(T + name + ".png").convert("RGBA")
         if flip: tex = ImageOps.mirror(tex)
         out_l = Image.new("RGBA", (18, 18)); a = tex.getchannel("A")  # 1px dark outline so blades read against the background
         for dx, dy in ((0, 1), (2, 1), (1, 0), (1, 2)): out_l.paste((28, 18, 20, 255), (dx, dy), a)
-        out_l.alpha_composite(tex, (1, 1)); tex = out_l.resize((198, 198), Image.NEAREST)
+        out_l.alpha_composite(tex, (1, 1)); tex = out_l.resize((tsize, tsize), Image.NEAREST)
         shadow = Image.new("RGBA", tex.size, (0, 0, 0, 0)); shadow.putalpha(tex.getchannel("A").point(lambda v: 110 if v else 0))
-        img.alpha_composite(shadow, (35, 35)); img.alpha_composite(tex, (29, 29))
+        img.alpha_composite(shadow, (soff, soff)); img.alpha_composite(tex, (toff, toff))
     return img
 
 if __name__ == "__main__":
     kind = sys.argv[1] if len(sys.argv) > 1 else "forest"
     out = sys.argv[2] if len(sys.argv) > 2 else "src/main/resources/jackt.png"
     icon(kind).save(out); print("wrote", out)
+    icon(kind, 64).save("run/server-icon.png"); print("wrote run/server-icon.png")  # 64x64 is what the server list requires

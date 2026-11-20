@@ -201,3 +201,11 @@ tasks.register('exportModels', JavaExec) {
     doFirst { workingDir.mkdirs() }
     args file('build/model_export/models.json').absolutePath, file('src/main/resources').absolutePath, *sourceSets.main.output.classesDirs.files.collect { it.absolutePath }
 }
+
+// The play server's server list entry follows the mod: name + version in the MOTD, mod icon as server icon.
+tasks.matching { it.name == 'runServer' }.configureEach {
+    doFirst {
+        def props = file('run/server.properties')
+        if (props.exists()) props.text = props.text.replaceAll(/(?m)^motd=.*$/, "motd=${mod_name} v${mod_version}")
+    }
+}
