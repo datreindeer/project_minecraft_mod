@@ -1777,6 +1777,8 @@
   "gui.mechanical.clan.age.iron": "Iron Age",
   "gui.mechanical.clan.age.steam": "Steam Age",
   "gui.mechanical.clan.age.electric": "Electric Age",
+  "message.mechanical.world_age.entered": "The world has entered the %s",
+  "message.mechanical.world_age.is": "The world is in the %s",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -2149,6 +2151,12 @@
   "advancements.mechanical.wilderness.night_eye_salve.description": "Grind 2 Bat Wings with Soot and Lard into Night-Eye Salve. Rub it under your eyes to see in the dark",
   "advancements.mechanical.wilderness.giant_deer_charge.title": "Taking the Antlers",
   "advancements.mechanical.wilderness.giant_deer_charge.description": "Live through a Giant Deer's charge. When it lowers its head and stomps, jump aside",
+  "advancements.mechanical.wilderness.first_frost.title": "First Frost",
+  "advancements.mechanical.wilderness.first_frost.description": "Live to see winter. Lakes freeze, snow falls where it rained, and the cold bites: wear fur and keep a fire burning",
+  "advancements.mechanical.wilderness.through_winter.title": "Through the Winter",
+  "advancements.mechanical.wilderness.through_winter.description": "Be there when winter turns to spring. Stock food before the cold comes: little grows and less is found in winter",
+  "advancements.mechanical.wilderness.full_year.title": "A Full Year",
+  "advancements.mechanical.wilderness.full_year.description": "Be there when a new year begins (1 Thaw)",
   "advancements.mechanical.food.root.title": "Food & Farming",
   "advancements.mechanical.food.root.description": "Pick wild berries, mushrooms or nuts. Fresh food spoils: raw meat in 1 day, berries in 2",
   "advancements.mechanical.food.cooked.title": "Cooked Meal",
@@ -2650,7 +2658,5 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
-  "message.mechanical.world_age.entered": "The world has entered the %s",
-  "message.mechanical.world_age.is": "The world is in the %s"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
 }

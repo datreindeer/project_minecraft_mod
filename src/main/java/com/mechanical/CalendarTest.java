@@ -18,7 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for the calendar maths: start date, month and year roll-over, clock, and that day + night is one hour. */
+/** Game test for the calendar maths (start date, roll-overs, clock, day + night is one hour) and the seasons' temperature. */
 @EventBusSubscriber(modid = MODID)
 public final class CalendarTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -60,6 +60,12 @@ public final class CalendarTest {
         check(h, Math.round(Calendar.dayMinutes(Calendar.clockOn(0, Calendar.MIDSUMMER))) == 40, "midsummer day 40 min");
         check(h, Math.round(Calendar.dayMinutes(Calendar.clockOn(0, Calendar.MIDSUMMER + Calendar.YEAR_DAYS / 2))) == 20, "midwinter day 20 min");
         check(h, Calendar.dayOfYear(Calendar.clockOn(5000, 0)) == 0 && Calendar.clockOn(5000, 0) % d == 5000, "jump keeps time of day");
+        // seasons: warmest at midsummer, coldest at midwinter; temperate biomes snow in winter, deserts stay hot
+        long midsummer = Calendar.clockOn(0, Calendar.MIDSUMMER), midwinter = Calendar.clockOn(0, Calendar.MIDSUMMER + Calendar.YEAR_DAYS / 2);
+        check(h, Seasons.curve(midsummer) > 0.99F && Seasons.curve(midwinter) < -0.99F, "season curve");
+        check(h, 0.7F + Seasons.offset(0.7F, -1) < 0.15F && 0.8F + Seasons.offset(0.8F, -1) < 0.15F, "forest and plains snow at midwinter");
+        check(h, 0.7F + Seasons.offset(0.7F, Seasons.curve(Calendar.clockOn(0, 2 * Calendar.SEASON_DAYS))) >= 0.15F, "no snow in the forest at the start of autumn");
+        check(h, 2.0F + Seasons.offset(2.0F, -1) > 1.5F && 0.95F + Seasons.offset(0.95F, 1) < 1.1F, "deserts stay hot, summer only a little warmer");
         h.succeed();
     }
 }

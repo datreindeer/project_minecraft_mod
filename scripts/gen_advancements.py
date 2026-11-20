@@ -874,6 +874,17 @@ TABS["stone_age"][1].extend([
     ("sinew_thread", "flint_knife", "sinew_thread", T, "Sinew Thread",
      "Split Sinew from a butchered animal with a knife into Sinew Thread: it sews Leather like any other thread", has("sinew_thread")),
 ])
+# seasons (Seasons.java): granted from Java
+TABS["wilderness"][1].extend([
+    ("first_frost", "root", "minecraft:snowball", T, "First Frost",
+     "Live to see winter. Lakes freeze, snow falls where it rained, and the cold bites: wear fur and keep a fire burning",
+     by_code()),
+    ("through_winter", "first_frost", "minecraft:campfire", G, "Through the Winter",
+     "Be there when winter turns to spring. Stock food before the cold comes: little grows and less is found in winter",
+     by_code()),
+    ("full_year", "through_winter", "minecraft:clock", C, "A Full Year",
+     "Be there when a new year begins (1 Thaw)", by_code()),
+])
 # player tribes (clan/Clans.java): granted from Java
 TABS["stone_age"][1].extend([
     ("found_tribe", "fire_pit", "fire_pit", T, "Hearth of the Tribe",

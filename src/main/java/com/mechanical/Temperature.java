@@ -95,11 +95,12 @@ public final class Temperature {
         return player.getData(BODY);
     }
 
-    /** Air temperature at a spot (same scale as the body): biome, night, rain and altitude. */
+    /** Air temperature at a spot (same scale as the body): biome (shifted by the season, Seasons), night, rain and altitude. */
     public static float ambient(Level level, BlockPos pos) {
         if (level.dimension() == Level.NETHER) return MAX;
         // biome: plains ~0.8 -> 12.4, taiga 0.25 -> 8, snowy -0.5..0 -> 2..6, desert 2.0 -> hot
-        float t = 6 + level.getBiome(pos).value().getBaseTemperature() * 8;
+        float base = level.getBiome(pos).value().getBaseTemperature();
+        float t = 6 + (base + Seasons.offset(base, Seasons.curve(level.getOverworldClockTime()))) * 8;
         if (level.isDarkOutside()) t -= level.canSeeSky(pos) ? NIGHT : NIGHT / 2;
         if (level.isRainingAt(pos.above())) t -= RAIN;
         if (pos.getY() > 100) t -= (pos.getY() - 100) * 0.05F;
