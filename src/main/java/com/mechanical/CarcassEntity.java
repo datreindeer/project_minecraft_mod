@@ -379,7 +379,12 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         else if (!onGround()) setDeltaMovement(v.add(0, -0.04, 0));
         move(MoverType.SELF, getDeltaMovement());
         setDeltaMovement(getDeltaMovement().multiply(0.5, 0.98, 0.5));
-        if (++groundTicks > LIFETIME) discard();
+        if (++groundTicks > LIFETIME) { // rotted away to the bones
+            BlockPos pos = blockPosition();
+            BlockState pile = Mechanical.BONE_PILE.get().defaultBlockState();
+            if (level().getBlockState(pos).canBeReplaced() && level().getFluidState(pos).isEmpty() && pile.canSurvive(level(), pos)) level().setBlock(pos, pile, Block.UPDATE_ALL);
+            discard();
+        }
     }
 
     /** Dragged, it slides up steps and over roots. */

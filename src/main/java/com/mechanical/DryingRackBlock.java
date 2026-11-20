@@ -160,7 +160,11 @@ public class DryingRackBlock extends Block {
     }
 
     private static boolean drying(int spot) {
-        return spot == HIDE_WET || spot == PHANTOM_WET || food(spot) && spot % 2 == 0;
+        return spot == HIDE_WET || spot == PHANTOM_WET || wetPelt(spot) || food(spot) && spot % 2 == 0;
+    }
+
+    private static boolean wetPelt(int spot) {
+        return spot >= BEAR_WET && spot <= CAVE_BEAR_DRY && spot % 2 == 0;
     }
 
     /** What a finished spot gives (empty while it is drying or empty). */
@@ -345,7 +349,7 @@ public class DryingRackBlock extends Block {
         boolean phantom = false;
         for (IntegerProperty p : spots(state)) {
             int spot = spot(state, p);
-            if (spot == BEAR_WET || spot == WOLF_WET || spot == SEAL_WET || spot == WALRUS_WET || spot == CAVE_BEAR_WET) {
+            if (wetPelt(spot)) {
                 if (dryWeather && random.nextFloat() < (wholeRack(spot) ? BEAR_DRY_CHANCE : WOLF_DRY_CHANCE)) {
                     next = next.setValue(p, spot + 1);
                     BlockPos other = partner(state, pos); // the bear pelt is one hide over both blocks
