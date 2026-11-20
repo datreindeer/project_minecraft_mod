@@ -29,6 +29,8 @@ public final class FirePit {
     public static final int SLOTS = 8;
     /** Firewood stacked on the pit, waiting to burn. Each piece is {@link Campfires#FIREWOOD_TICKS} of campfire burning. */
     public static final int STOCK_MAX = 16;
+    /** A whole Rough Log put on the pit burns as this many pieces of firewood (splitting it on a stump gives 2-3). */
+    public static final int LOG_FIREWOOD = 2;
     /** Burns this many times as fast as a campfire (so the same firewood lasts half as long). */
     public static final int DRAIN = 2;
     /** The big ash bed glows longer than a campfire's (3 min). */

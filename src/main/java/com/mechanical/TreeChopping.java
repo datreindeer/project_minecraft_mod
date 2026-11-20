@@ -106,7 +106,7 @@ public final class TreeChopping {
         event.setCancellationResult(result);
     }
 
-    private static String roughLogWood(ItemStack stack) {
+    static String roughLogWood(ItemStack stack) {
         for (var e : Mechanical.ROUGH_LOGS.entrySet()) if (stack.is(e.getValue().get())) return e.getKey();
         return null;
     }

@@ -219,6 +219,20 @@ public class FirePitBlockEntity extends BlockEntity {
         return true;
     }
 
+    /** A whole Rough Log: relights embers like firewood, else goes on the stack as {@link FirePit#LOG_FIREWOOD} pieces (needs that much room). */
+    boolean feedLog(ServerLevel level, Player player, ItemStack log, ItemStack firewood) {
+        boolean embers = getBlockState().getValue(FirePitBlock.EMBERS) && !getBlockState().getValue(FirePitBlock.LIT);
+        if (!embers && stock.size() + FirePit.LOG_FIREWOOD > FirePit.STOCK_MAX) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.fire_pit.full", FirePit.STOCK_MAX));
+            return false;
+        }
+        if (!feed(level, player, firewood.copy())) return false;
+        for (int i = 1; i < FirePit.LOG_FIREWOOD && !embers; i++) stock.add(firewood.copy());
+        updateFuel();
+        log.consume(1, player);
+        return true;
+    }
+
     // ---- food ----
 
     boolean placeFood(ServerLevel level, Player player, ItemStack stack) {

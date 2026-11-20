@@ -166,6 +166,11 @@ public class FirePitBlock extends Block implements EntityBlock {
             if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
             return pit.feed(server, player, stack) ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
         }
+        String wood = TreeChopping.roughLogWood(stack);
+        if (wood != null) { // a whole Rough Log burns as FirePit.LOG_FIREWOOD pieces of its wood's firewood
+            if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+            return pit.feedLog(server, player, stack, new ItemStack(Mechanical.FIREWOOD.get(wood).get())) ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
+        }
         if (level.recipeAccess().propertySet(RecipePropertySet.CAMPFIRE_INPUT).test(stack)) {
             if (level instanceof ServerLevel server && pit.placeFood(server, player, stack)) return InteractionResult.SUCCESS_SERVER;
             return InteractionResult.CONSUME;

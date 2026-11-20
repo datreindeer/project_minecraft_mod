@@ -322,6 +322,8 @@ till sig större räder.
   Elden brinner **dubbelt så fort** som en Campfire: tänd brinner den 1,5–2,5 min (3–5 min Campfire-tid), sedan tar den nästa
   vedträ från högen (30 s var), sist blir den glöd i **3 min**, sedan kall. Full hög räcker ca 8 min till. Kyla och regn gör att
   den brinner fortare, som för Campfire. Vedhögen syns på modellen (0, 1–6, 7–12, 13–16 vedträn).
+- **Rough Log direkt:** en hel Rough Log kan läggas på utan att klyvas och räknas som **2 Firewood** av sitt träslag
+  (behöver plats för 2 på högen). Klyven på en stubbe ger den 2–3, så det lönar sig fortfarande att klyva. Väcker glöd som Firewood.
 - **Mat: 8 platser** (4 på varje spett), samma recept som Campfire. Maten ligger kvar när den är klar och blir Burnt Food
   efter 30–60 s till. Tom hand tar av en bit (klar eller bränd först). Maten syns på spetten och ryker.
 - **Ljus 15 på alla fyra blocken** (glöd 3). **Monster och rovdjur håller sig 1,5× så långt bort** som från en Campfire
