@@ -8,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
 
 /**
  * Cave bear: the brown bear's bigger, heavier Ice Age cousin (all of {@link BrownBear}'s behaviour: rears and swipes,
@@ -19,9 +18,6 @@ import net.minecraft.world.level.LightLayer;
  */
 public class CaveBear extends BrownBear {
     private static final Identifier TEXTURE = Ibex.tex("cave_bear"), CUB_TEXTURE = Ibex.tex("cave_bear_cub");
-    /** Sky light at or below this counts as inside the den. */
-    private static final int DEN_SKYLIGHT = 4;
-
     public CaveBear(EntityType<? extends CaveBear> type, Level level) {
         super(type, level);
     }
@@ -32,14 +28,10 @@ public class CaveBear extends BrownBear {
                 .add(Attributes.STEP_HEIGHT, 1.0);
     }
 
-    public boolean inDen() {
-        return level().getBrightness(LightLayer.SKY, blockPosition()) <= DEN_SKYLIGHT;
-    }
-
-    /** Dormant all the time in its den; outside, asleep at night. */
+    /** Dormant all year in its den; outside, asleep at night and hibernating in winter like the brown bear. */
     @Override
     protected boolean sleepTime() {
-        return inDen() || level().isDarkOutside();
+        return inDen() || super.sleepTime();
     }
 
     /** Roused from its winter sleep: a deep, long roar, then it charges. */

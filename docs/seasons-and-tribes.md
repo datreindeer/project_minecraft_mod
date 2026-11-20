@@ -190,6 +190,18 @@
 - **Björnar går i ide** över vintern i en håla eller grotta. De sover och vaknar om man stör dem (då är de farliga).
 - **Flyttfåglar** (tranor, hägrar och andra) flyger söderut på hösten, försvinner över vintern och kommer tillbaka på
   våren.
+- **Byggt** (`WinterAnimals.java`): vilda djur (`WildAnimal`) går 20 % långsammare på vintern och strövar en tredjedel
+  så ofta. Inga djur parar sig på vintern (vanilla, byns och tama djur som Tame Horse): paret tappar kärleken och den
+  som matade dem får "Too cold: animals don't mate in winter". **Brown Bear och Cave Bear går i ide:** på vintern letar
+  en björn utanför ett ide upp en mörk plats under sten i närheten (himmelsljus högst 4) och sover där tills våren.
+  Hittar den inget efter ett tag sover den där den är. Väcks den anfaller den (Cave Bear ryter först). På våren vaknar
+  Brown Bear och går ut igen; Cave Bear ligger i sin lya året runt som förut. **Flyttfåglar:** Common Crane, Grey
+  Heron, Greylag Goose och Mute Swan. Från sista höstmånaden (Frostfall) till vårens början lyfter flockarna på dagen
+  och flyger söderut, och försvinner när ingen spelare är nära (eller efter en minut). Under tiden spawnar de inte och
+  fylls inte på. På våren kommer de tillbaka med djurpåfyllningen. Mallard och övriga fåglar stannar. **Djurpåfyllningen
+  halveras på vintern** (hälften av områdena får inget). Advancements i Wilderness: **Rude Awakening** (väck en björn
+  ur vintersömnen, under First Frost) och **The Cranes Return** (se flyttfåglarna komma tillbaka på våren, under
+  Through the Winter). `WinterAnimalsTest` testar flyttiden, vilka arter som flyttar och att ingen kalv föds på vintern.
 - NPC-stammar samlar förråd inför vintern.
 
 ### Mat och bunkring

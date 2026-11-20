@@ -21,6 +21,7 @@ def merge(path, obj):
 LANG = {
     "calendar.mechanical.date": "%1$s · %2$s %3$s, Year %4$s · %5$s",
     "calendar.mechanical.day_length": "(day %s min, night %s min)",
+    "message.mechanical.no_mating_in_winter": "Too cold: animals don't mate in winter",
 }
 LANG.update({f"calendar.mechanical.season.{k}": v for k, v in SEASONS.items()})
 LANG.update({f"calendar.mechanical.month.{k}": v for k, v in MONTHS.items()})

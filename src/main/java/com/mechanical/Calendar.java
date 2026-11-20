@@ -120,7 +120,7 @@ public final class Calendar {
                 String.format("%02d:%02d", hour(clock), minute(clock)));
     }
 
-    private static Optional<Holder.Reference<WorldClock>> overworldClock(MinecraftServer server) {
+    static Optional<Holder.Reference<WorldClock>> overworldClock(MinecraftServer server) {
         return server.registryAccess().get(WorldClocks.OVERWORLD);
     }
 

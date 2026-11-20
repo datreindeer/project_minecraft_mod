@@ -884,6 +884,13 @@ TABS["wilderness"][1].extend([
      by_code()),
     ("full_year", "through_winter", "minecraft:clock", C, "A Full Year",
      "Be there when a new year begins (1 Thaw)", by_code()),
+    # animals in winter (WinterAnimals.java)
+    ("rude_awakening", "first_frost", "bear_claw", G, "Rude Awakening",
+     "Wake a bear from its winter sleep. Bears hibernate in a den all winter, and a woken bear is an angry one",
+     by_code()),
+    ("cranes_return", "through_winter", "minecraft:feather", T, "The Cranes Return",
+     "See the migratory birds back in spring. Cranes, Grey Herons, Geese and Mute Swans fly south in late autumn",
+     by_code()),
 ])
 # player tribes (clan/Clans.java): granted from Java
 TABS["stone_age"][1].extend([

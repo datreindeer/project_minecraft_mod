@@ -32,7 +32,9 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Eurasian brown bear: solitary, or a mother with cubs. Attacks players that come close, rears up on its hind legs
- * and swipes down, and runs faster than a walking player for a few seconds before it tires. Does not flee.
+ * and swipes down, and runs faster than a walking player for a few seconds before it tires. Does not flee. Hibernates:
+ * in winter it seeks out a den (a cave, out of the sky) and sleeps there until spring; woken, it attacks whoever woke it.
+ * A bear that finds no den sleeps the winter where it is.
  */
 public class BrownBear extends WildAnimal {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/brown_bear.png");
@@ -47,8 +49,13 @@ public class BrownBear extends WildAnimal {
     private static final Identifier TIRED_ID = Identifier.fromNamespaceAndPath("mechanical", "bear_tired");
     private static final AttributeModifier TIRED = new AttributeModifier(TIRED_ID, -0.4, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
+    /** Sky light at or below this counts as inside a den. */
+    private static final int DEN_SKYLIGHT = 4;
+    /** Failed den searches before it gives up and hibernates where it is (not saved). */
+    private static final int DEN_TRIES = 15;
+
     private float standAnimO, standAnim;
-    private int warningTicks, chaseTicks;
+    private int warningTicks, chaseTicks, denTries;
 
     public BrownBear(EntityType<? extends BrownBear> type, Level level) {
         super(type, level);
@@ -72,6 +79,7 @@ public class BrownBear extends WildAnimal {
         goalSelector.addGoal(1, new BearAttackGoal());
         goalSelector.addGoal(5, new ForageBerriesGoal(this));
         goalSelector.addGoal(6, new LeaveDenGoal(this));
+        goalSelector.addGoal(6, new SeekDenGoal(this));
         targetSelector.addGoal(1, new HurtByTargetGoal(this) {
             @Override
             public boolean canUse() {
@@ -85,6 +93,17 @@ public class BrownBear extends WildAnimal {
     @Override
     protected void onWoken(Player near) {
         if (!isBaby()) setTarget(near);
+        if (com.mechanical.WinterAnimals.winter(level()) && near instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.WinterAnimals.wokeHibernatingBear(sp);
+    }
+
+    public boolean inDen() {
+        return level().getBrightness(LightLayer.SKY, blockPosition()) <= DEN_SKYLIGHT;
+    }
+
+    /** Asleep at night, and all winter once in a den (or once it has given up looking for one). */
+    @Override
+    protected boolean sleepTime() {
+        return super.sleepTime() || com.mechanical.WinterAnimals.winter(level()) && (inDen() || denTries >= DEN_TRIES);
     }
 
     /** A hurt cub calls its mother (any grown bear nearby) onto the attacker. */
@@ -271,7 +290,7 @@ public class BrownBear extends WildAnimal {
         @Override
         public boolean canUse() {
             Level level = bear.level();
-            if (bear.getTarget() != null || bear.isDozing() || !level.isBrightOutside() || bear.getRandom().nextInt(200) != 0
+            if (bear.getTarget() != null || bear.isDozing() || !level.isBrightOutside() || com.mechanical.WinterAnimals.winter(level) || bear.getRandom().nextInt(200) != 0
                     || level.getBrightness(LightLayer.SKY, bear.blockPosition()) > 10) return false;
             for (int i = 0; i < 5; i++) {
                 Vec3 p = LandRandomPos.getPos(bear, 16, 7);
@@ -285,6 +304,39 @@ public class BrownBear extends WildAnimal {
         @Override
         public boolean canContinueToUse() {
             return bear.getTarget() == null && !bear.getNavigation().isDone();
+        }
+    }
+
+    /** In winter, outside a den: now and then looks for a dark, reachable spot under rock nearby and walks into it. */
+    static class SeekDenGoal extends Goal {
+        private final BrownBear bear;
+
+        SeekDenGoal(BrownBear bear) {
+            this.bear = bear;
+            setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            Level level = bear.level();
+            if (!com.mechanical.WinterAnimals.winter(level)) {
+                bear.denTries = 0;
+                return false;
+            }
+            if (bear.getTarget() != null || bear.isDozing() || bear.denTries >= DEN_TRIES || bear.inDen() || bear.getRandom().nextInt(40) != 0) return false;
+            for (int i = 0; i < 10; i++) {
+                Vec3 p = LandRandomPos.getPos(bear, 24, 8);
+                if (p == null || level.getBrightness(LightLayer.SKY, BlockPos.containing(p)) > DEN_SKYLIGHT) continue;
+                Path path = bear.getNavigation().createPath(BlockPos.containing(p), 0);
+                if (path != null && path.canReach()) return bear.getNavigation().moveTo(path, 0.8);
+            }
+            bear.denTries++;
+            return false;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return bear.getTarget() == null && !bear.inDen() && !bear.getNavigation().isDone();
         }
     }
 }

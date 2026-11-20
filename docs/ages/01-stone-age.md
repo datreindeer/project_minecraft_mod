@@ -886,6 +886,8 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
 - Reser sig på bakbenen och slår med ramarna. Flyr aldrig och får aldrig panik.
 - Skadar man en unge anfaller alla vuxna björnar inom 20 block. Väcker man en sovande björn anfaller den direkt.
 - En björn djupt inne i ett ide (eller annan grotta) går ibland ut i dagsljuset.
+- **Går i ide på vintern:** letar upp en mörk plats under sten i närheten och sover där hela vintern (hittar den ingen
+  sover den där den är). Väcks den anfaller den direkt (advancement **Rude Awakening**). På våren vaknar den och går ut.
 - **Kräver Tusk Dagger eller Iron Knife för att styckas** (Flint Knife: "This hide is too tough for your knife").
   Omgång 1: **Raw Bear Pelt** (torkas till Bear Pelt på en hög Drying Rack, se Drying Rack) + Raw Hide 40 %. Omgång 2: 4–6 Game Meat Scraps, **Bear Fat** 80 % (1–3), **Bear Claw** 60 % (1–3), Sinew.
 
@@ -898,6 +900,11 @@ Skog och alla taigor, sällsynt, och **bara nära vilda bärbuskar** (inom 16 bl
 
 **4 Squirrel Pelt + Twine → Raw Hide** (shapeless), som sedan skrapas och torkas som vanligt.
 
+### Djur på vintern
+Vilda djur rör sig långsammare och strövar mindre på vintern, och inga djur parar sig (inte heller tama djur eller byns
+djur). Det finns mindre vilt: djurpåfyllningen halveras, björnar sover i ide och flyttfåglarna (Common Crane, Grey Heron,
+Greylag Goose, Mute Swan) är borta från Frostfall till våren. Bunkra mat inför vintern. Se seasons-and-tribes.md, Djur.
+
 ### Fåglar i flock
 Lever i flockar som går och pickar på marken, sover på natten och då och då lyfter tillsammans (ledaren flyger upp, de
 andra följer efter ett och ett), flyger runt en stund och landar igen. Kommer en spelare nära (smyg för att komma
@@ -909,7 +916,7 @@ och styckas (se Fåglar: kadaver, plockning och kött).
 | Fågel | Var | Beteende | Ger |
 |---|---|---|---|
 | **Hooded Crow** (gråkråka) | Slätt, skog, björkskog, dark forest, savann (3–6) | Lös, föränderlig flock; landar på marken eller i trädtopparna | 1–2 Feather, 0–1 Game Meat Scraps (direkt) |
-| **Greylag Goose** (grågås) | Floder, träsk, frusna floder (4–7) | Flyger högt i **V-formation**, landar helst på vatten och simmar omkring; landar vid sitt bo ibland | Carcass: 3–5 Feather, 2 Raw Goose; bo vid vattnet, Goose Egg |
+| **Greylag Goose** (grågås) | Floder, träsk, frusna floder (4–7) | Flyger högt i **V-formation**, landar helst på vatten och simmar omkring; landar vid sitt bo ibland. **Flyttfågel:** flyger söderut i Frostfall och är borta till våren | Carcass: 3–5 Feather, 2 Raw Goose; bo vid vattnet, Goose Egg |
 | **Rock Dove** (klippduva) | Meadow, windswept hills, stony peaks, klippstränder (4–7) | Snabb flock, landar på marken | Carcass: 1–2 Feather, 1 Raw Pigeon; bo på kala klippor, Pigeon Egg |
 | **Willow Ptarmigan** (dalripa) | Snöiga slätter/taiga, grove, taiga (3–5) | Trycker (låter dig komma nära), flyger lågt och kort. **Vit** där det snöar, annars brun med vita vingar | Carcass: 2–3 Feather, 1 Raw Ptarmigan; markbo, Ptarmigan Egg |
 | **Seagull** (fiskmås) | Stränder, klippstränder (2–4); ibland floder och hav | Seglar i cirklar över vattnet och skriker, **dyker mot ytan där det finns fisk**, vilar på stranden eller flyter på vattnet | 1–3 Feather (direkt) |
