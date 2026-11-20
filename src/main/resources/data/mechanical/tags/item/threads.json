@@ -1,0 +1,9 @@
+{
+  "values": [
+    "mechanical:wool_thread",
+    "mechanical:nettle_thread",
+    "mechanical:linen_thread",
+    "mechanical:sinew_thread",
+    "minecraft:string"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:nettle_fiber",
+    "mechanical:drop_spindle"
+  ],
+  "result": {
+    "id": "mechanical:nettle_thread",
+    "count": 1
+  }
+}

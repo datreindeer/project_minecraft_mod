@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:river",
+    "minecraft:swamp",
+    "mechanical:willow_fen"
+  ],
+  "features": "mechanical:stinging_nettle_riverbank",
+  "step": "vegetal_decoration"
+}

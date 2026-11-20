@@ -228,7 +228,7 @@ TABS = {
         ("armor_station", "leather", "armor_station", T, "Armor Station",
          "Craft an Armor Station from Leather, a Bone Needle, Planks and a Crafting Table", has("armor_station")),
         ("leather_armor", "armor_station", "minecraft:leather_chestplate", T, "Hide Clothes",
-         "Sew Leather and Wool Thread (or String) into Leather armor at the Armor Station",
+         "Sew Leather and thread (wool, nettle, linen or sinew) into Leather armor at the Armor Station",
          has("minecraft:leather_helmet", "minecraft:leather_chestplate", "minecraft:leather_leggings",
              "minecraft:leather_boots")),
         ("leather_satchel", "armor_station", "leather_satchel", T, "Satchel",
@@ -792,6 +792,26 @@ TABS["wilderness"][1].extend([
 TABS["food"][1].extend([
     ("guano", "manure", "guano", T, "Bat Droppings",
      "Scrape Guano from under a bat roost in a cave. Right-click farmland with it: poor soil turns rich at once", has("guano")),
+])
+
+# thread sources (Spinning.java; gen_thread.py)
+TABS["stone_age"][1].extend([
+    ("nettle", "plant_fibre", "nettle_stalks", T, "Stinging Nettle",
+     "Cut Stinging Nettle in forests and on riverbanks for Nettle Stalks. It stings bare legs: wear leggings or sneak through",
+     has("nettle_stalks")),
+    ("drop_spindle", "nettle", "drop_spindle", T, "Drop Spindle",
+     "Craft a Drop Spindle: a Stick over a whorl of rock, Bone or Clay. It stays in the grid as a tool", has("drop_spindle")),
+    ("spun_thread", "drop_spindle", "nettle_thread", G, "Spun Yarn",
+     "Strip Nettle Stalks into Nettle Fiber with a knife, then spin it with the Drop Spindle into Nettle Thread", has("nettle_thread")),
+    ("sinew_thread", "flint_knife", "sinew_thread", T, "Sinew Thread",
+     "Split Sinew from a butchered animal with a knife into Sinew Thread: it sews Leather like any other thread", has("sinew_thread")),
+])
+TABS["bronze_age"][1].extend([
+    ("flax", "root", "flax_seeds", T, "Flax",
+     "Buy Flax Seeds from a village Farmer (trade level 3) and sow them on farmland", has("flax_seeds")),
+    ("linen", "flax", "linen_thread", G, "Linen",
+     "Ret 4 Flax Stalks in a Clay Water Bucket with a knife into Flax Fiber, then spin it on a Drop Spindle into Linen Thread",
+     has("linen_thread")),
 ])
 
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java

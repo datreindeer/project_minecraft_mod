@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "age=1": {
+      "model": "mechanical:block/stinging_nettle"
+    },
+    "age=0": {
+      "model": "mechanical:block/stinging_nettle_young"
+    }
+  }
+}

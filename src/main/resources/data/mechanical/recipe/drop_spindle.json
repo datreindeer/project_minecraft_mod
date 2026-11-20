@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "S",
+    "W"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "W": [
+      "mechanical:stone_chunk",
+      "mechanical:granite_chunk",
+      "mechanical:diorite_chunk",
+      "mechanical:andesite_chunk",
+      "minecraft:bone",
+      "minecraft:clay_ball"
+    ]
+  },
+  "result": {
+    "id": "mechanical:drop_spindle"
+  }
+}

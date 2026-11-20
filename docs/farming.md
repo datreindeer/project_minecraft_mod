@@ -89,6 +89,7 @@ faktor multipliceras på: **temperaturfaktor × fukt × bördighet × dagsljus**
 | Potato | 6–16 | 9–13 | 2 | rotfrukt |
 | Beetroot | 5–16 | 8–13 | 1 | rotfrukt |
 | Peas | 6–16 | 9–13 | 2 | skörden höjer bördigheten |
+| Flax (bronsåldern) | 5–16 | 8–13 | 0 | som korn; se "Lin" nedan |
 | Melon / Pumpkin (stjälk) | 12–**25** | 15–20 | 6 | maxgräns 25 i stället för 22: savann och öken ligger på exakt 22 och hade annars fått noll |
 
 - **Temperaturfaktor:** 1 i bästa spannet, linjärt ner till 0 vid kanterna.
@@ -205,6 +206,14 @@ Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de i
   redan i stenåldern men kräver att man gräver. Takten avgörs när locket lyfts (genväg, se koden).
 - **Hållbarhet** (nytt, de förskämdes inte förut): Carrot, Beetroot, Wild Carrot **10 dagar**, Potato **20 dagar**, Sea
   Beet Leaves **1 dag** (taggarna `perishes_10_days` / `perishes_20_days`).
+
+## Lin (byggt, v0.65.0, bronsåldern)
+
+- **Flax Seeds** köps av byns Farmer på handelsnivå 3 (2 Emerald → 4). Ingen vild källa (lin kommer som odlad gröda).
+- Sås på farmland som **Flax** (`mechanical:flax_crop`, ålder 0–7) och följer alla regler ovan: dagsljus, fukt,
+  bördighet (−1 per skörd), frost, torka, kråkor, skäran slits.
+- **Mogen:** 2 Flax Stalks (skära: +50 % en till) och 1–2 Flax Seeds. **Omogen:** ingenting.
+- Stjälkarna röts och skäktas till Flax Fiber och spinns till Linen Thread (`docs/ages/02-bronze-age.md`, "Lin").
 
 ## Teknik
 

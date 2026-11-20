@@ -101,6 +101,7 @@ public class RecipeStationScreen<M extends RecipeStationMenu> extends AbstractCo
             boolean has = part.has(minecraft.player.getInventory());
             Component name = new ItemStack(part.item().get()).getHoverName();
             if (part.alt() != null) name = name.copy().append(" / ").append(new ItemStack(part.alt().get()).getHoverName());
+            if (part.tag() != null) name = Component.translatable("tag.item." + part.tag().location().getNamespace() + "." + part.tag().location().getPath().replace('/', '.'));
             lines.add(Component.literal(part.tool() ? "" : part.count() + "× ").append(name)
                     .append(part.tool() ? Component.literal(" (tool, loses durability)") : Component.empty())
                     .withStyle(has ? ChatFormatting.GREEN : ChatFormatting.RED));

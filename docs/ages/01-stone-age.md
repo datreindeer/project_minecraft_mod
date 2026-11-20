@@ -141,13 +141,14 @@ klicka för att lägga i dem. Tre platser + resultat:
 Recept: `[Leather][Bone Needle][Leather]` / `[Planks][Crafting Table][Planks]`. Fungerar som Tool Station (lista till
 vänster, tre platser, resultat). **Bone Needle** = Fish Bones, Bone eller Horn + kniv (crafting), 32 i hållbarhet; den
 ligger kvar i stationen och tappar 1 per rustningsdel.
-**String** (från spindlar) fungerar överallt där receptet vill ha Wool Thread (samma antal, en sort per ruta).
+**Tråd:** läderdelarna tar vilken tråd som helst i taggen `mechanical:threads` (Wool Thread, Nettle Thread, Linen
+Thread, Sinew Thread och String från spindlar; samma antal, en sort per ruta). Se "Tråd" under Mekaniker.
 Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma delar) gäller receptet man senast klickade på i listan; annars det som använder mest (5 Leather blir en hjälm, inte stövlar).
 
 | Rustning | Material | Verktyg | Tråd | Låses upp av |
 |---|---|---|---|---|
-| Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 Wool Thread | Leather |
-| **Leather Satchel** | 4 Leather | Bone Needle | 2 Wool Thread | Leather |
+| Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 tråd | Leather |
+| **Leather Satchel** | 4 Leather | Bone Needle | 2 tråd | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
 | **Wolf Hood** | 2 Wolf Pelt | Bone Needle | 1 Sinew | Wolf Pelt |
 | Wolf Fur Coat / Leggings / Boots | 4 / 3 / 2 Wolf Pelt | Bone Needle | 3 / 2 / 1 Sinew | Wolf Pelt |
@@ -1805,6 +1806,38 @@ behövs först, så trädet läses som progressionen:
 Genereras av `scripts/gen_advancements.py` (tabellen `TABS`; körs efter gen_unlocks.py, före gen_registry.py). Vanillas
 framsteg skrivs över med `neoforge:never` (bara `recipes/**` behålls). **Varje ny sak i moddet ska få sina rader i
 tabellen**, så att man lär sig hur den görs.
+
+## Tråd (byggt, v0.65.0)
+
+Ull är inte den enda tråden längre. Kod: `Spinning.java`, data: `scripts/gen_thread.py`, texturer:
+`scripts/gen_thread_textures.py`. Bronsålderns lin: se `docs/ages/02-bronze-age.md` ("Lin").
+
+- **Stinging Nettle** (brännässla) växer vild: fläckar i forest, flower forest, birch forest, old growth birch forest,
+  dark forest och Deciduous Forest (1/5 per chunk, 8 försök, spridning ±3), och längs river, swamp och Willow Fen där
+  vatten finns inom 2 block från stranden (16 försök per chunk). Bryts direkt; skäran är rätt verktyg.
+  - **Den bränns:** en spelare som går (rör sig) genom en vuxen nässla utan något i benplatsen tar 0,5 hjärta, i snitt
+    ungefär en gång i sekunden (1/12 per tick). Smyger man, eller har byxor/leggings på, bränns man inte. Djur bränns
+    inte (de strövar genom nässlor hela dagen). Dödsmeddelande "was stung to death by nettles" (skadetyp `mechanical:nettle`).
+  - Ger **1–2 Nettle Stalks** och ibland **Nettle Seeds** (kniv eller skära 35 %, för hand 20 %).
+  - **Nettle Seeds** sätts på jord som en liten planta (bränns inte än) som växer upp i dagsljus (ljus ≥ 9, 1/8 per random
+    tick). En planta som bryts ger fröet tillbaka.
+- **Nettle Stalks + kniv** (crafting) → **2 Nettle Fiber** (kniven slits 1).
+- **Drop Spindle** (slända): `[Stick]` över `[sländtrissa]`, där trissan är en rock chunk (sten, granit, diorit, andesit),
+  en Bone eller en Clay Ball. 64 i hållbarhet; ligger kvar i craftingrutan och slits 1 per spunnen tråd.
+  - **Nettle Fiber + Drop Spindle → Nettle Thread**
+  - **Flax Fiber + Drop Spindle → Linen Thread** (bronsåldern)
+  - **valfri Wool (block) + Drop Spindle → 3 Wool Thread** (för hand ger ett ullblock 1–3 när det bryts; Qiviut → 2 Wool
+    Thread för hand som förut)
+- **Sinew + kniv** (crafting) → **2 Sinew Thread** (kniven slits 1). Pälsdelarna vid Armor Station syr fortfarande med hel
+  Sinew; Sinew Thread är för läder.
+- **Taggen `mechanical:threads`:** Wool Thread, Nettle Thread, Linen Thread, Sinew Thread, String. Läderrustningen och
+  Leather Satchel vid Armor Station tar vilken som helst. `9 Wool Thread → White Wool` tar fortfarande bara ull.
+- **Advancements (Stone Age-fliken):** Stinging Nettle (efter Grass Roots) → Drop Spindle → Spun Yarn (Nettle Thread);
+  Sinew Thread (efter Sharp Edge).
+
+**Beslut:** bearbetningen återanvänder det som redan finns (kniven i craftingrutan, Clay Water Bucket för rötning) i
+stället för ett nytt block. Nässlan bränns bara spelare och bara när man rör sig, så den känns men inte stör. String
+räknas som tråd eftersom den redan fungerade i stationen. Linen Cloth gjordes inte (inget använder tyg än).
 
 ## Fler vilda djur
 
