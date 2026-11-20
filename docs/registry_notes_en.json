@@ -362,7 +362,7 @@
   "entity:squirrel": {"text": "Shy squirrel that climbs up trees when startled. Drops Squirrel Pelt."},
   "entity:hedgehog": {"text": "Nocturnal hedgehog that curls up instead of fleeing and pricks anyone who hits it bare-handed."},
   "entity:badger": {"text": "Badger in sloping forests. Flees, but bites hard if hurt or cornered."},
-  "entity:giant_deer": {"text": "Rare miniboss with palmate antlers, 120 hp. Attacks, bleeds, and only flees at 25 % hp. Always drops a Giant Antler. Fells trees it runs into when angry."},
+  "entity:giant_deer": {"text": "Rare miniboss with palmate antlers, 120 hp. **Keen eyes:** sees players 48 blocks away (32 sneaking), and any damage from a player (arrows from any range) turns it on the shooter. Winds up visibly (head down, snorting, stomping for about 1.2 s), then charges straight at where you stood at about 9 blocks/s: step aside. Pants for 1.5 s after each charge. If you stand in a tree it rams the tree down; if it can't reach you (a pillar) it backs off out of bow range and into cover until you come down. Only bleeds and flees for cover at 25 % hp. Always drops a [[giant_antler]]."},
   "ancient_oak_rune_log": {"text": "Rune bark with a glowing rune (light 6) spiraling up the Ancient Oak; specks of light drift from it. Unbreakable.", "category": "blocks"},
   "glowcap": {"text": "Small glowing mushroom (light 8) by the Ancient Oak's roots, in the hollow and in a fairy ring in the clearing. Can be picked.", "category": "foraging"},
   "spirit_bloom": {"text": "Pale cyan-white glowing flower (light 10) in the Ancient Oak's clearing. Can be picked and planted on dirt, grass and moss.", "category": "foraging"},
@@ -1011,5 +1011,9 @@
   "bronze_arrow": {"text": "4 [[bronze_arrowhead]] + [[minecraft:stick]] + [[minecraft:feather]] at the Fletching Table give 4. **3 damage** (Arrow 2) and breaks only 10 % of the time when it falls out of an animal. Poor Bronze: 2.5 damage.", "category": "tools"},
   "clay_arrowheads_mold": {"text": "Fired from an [[unfired_clay_arrowheads_mold]] in the kiln (600°). Takes 2 units of bronze and gives [[rough_cast_bronze_arrowheads]]. Bronze only. Cracks after 5 casts.", "category": "blocks"},
   "unfired_clay_arrowheads_mold": {"text": "3 [[minecraft:clay_ball]] at the [[mold_bench]]. Fired in the kiln into a [[clay_arrowheads_mold]].", "category": "materials"},
-  "broom": {"text": "Tool Station: [[straw]] + [[twine]] + [[tool_rod]]. Right-click soot: all [[soot]] in a 3×3 gets one stage lighter (the lightest is swept away). Also sweeps leaf litter a leaf at a time. 96 durability, 1 per sweep.", "category": "tools"}
+  "broom": {"text": "Tool Station: [[straw]] + [[twine]] + [[tool_rod]]. Right-click soot: all [[soot]] in a 3×3 gets one stage lighter (the lightest is swept away). Also sweeps leaf litter a leaf at a time. 96 durability, 1 per sweep.", "category": "tools"},
+  "bat_wing": {"text": "The bat's thin wing membrane, from a butchered bat (85 %, 1–2). 2 of them with [[soot]] and [[lard]] make [[night_eye_salve]].", "category": "wildlife"},
+  "night_eye_salve": {"text": "2 [[bat_wing]] + [[soot]] + [[lard]] (shapeless) make 2. Rubbed under the eyes: Night Vision for 90 s.", "category": "food"},
+  "guano": {"text": "Bat droppings from a [[guano_pile]] under a cave roost. The strongest fertiliser: right-click farmland, fertility **+3** (poor soil turns rich at once).", "category": "materials"},
+  "guano_pile": {"text": "Builds up on the floor under resting bats (1–4 layers). Break it for 1 [[guano]] per layer.", "category": "blocks"}
 }

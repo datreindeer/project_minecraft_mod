@@ -1,0 +1,150 @@
+{
+  "textures": {
+    "particle": "mechanical:block/guano_pile",
+    "pile": "mechanical:block/guano_pile",
+    "splatter": "mechanical:block/guano_splatter"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0.1,
+        0
+      ],
+      "to": [
+        16,
+        0.1,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#splatter"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        1,
+        14
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#pile"
+        },
+        "north": {
+          "uv": [
+            2,
+            15,
+            14,
+            16
+          ],
+          "texture": "#pile"
+        },
+        "south": {
+          "uv": [
+            2,
+            15,
+            14,
+            16
+          ],
+          "texture": "#pile"
+        },
+        "east": {
+          "uv": [
+            2,
+            15,
+            14,
+            16
+          ],
+          "texture": "#pile"
+        },
+        "west": {
+          "uv": [
+            2,
+            15,
+            14,
+            16
+          ],
+          "texture": "#pile"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        1,
+        4
+      ],
+      "to": [
+        12,
+        2,
+        13
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            3,
+            4,
+            12,
+            13
+          ],
+          "texture": "#pile"
+        },
+        "north": {
+          "uv": [
+            3,
+            14,
+            12,
+            15
+          ],
+          "texture": "#pile"
+        },
+        "south": {
+          "uv": [
+            3,
+            14,
+            12,
+            15
+          ],
+          "texture": "#pile"
+        },
+        "east": {
+          "uv": [
+            3,
+            14,
+            12,
+            15
+          ],
+          "texture": "#pile"
+        },
+        "west": {
+          "uv": [
+            3,
+            14,
+            12,
+            15
+          ],
+          "texture": "#pile"
+        }
+      }
+    }
+  ]
+}

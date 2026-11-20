@@ -16,6 +16,7 @@
     "AdvancementsScreenMixin",
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
+    "ModelFeatureRendererMixin",
     "QuadrupedModelMixin"
   ],
   "injectors": {

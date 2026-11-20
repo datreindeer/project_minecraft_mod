@@ -362,7 +362,7 @@
   "entity:squirrel": {"text": "Skygg ekorre som klättrar upp i träd när den blir skrämd. Ger Squirrel Pelt."},
   "entity:hedgehog": {"text": "Nattaktiv igelkott som rullar ihop sig i stället för att fly och sticker den som slår med bar hand."},
   "entity:badger": {"text": "Grävling i sluttande skog. Flyr, men biter hårt om den skadas eller trängs."},
-  "entity:giant_deer": {"text": "Sällsynt miniboss med skovelhorn, 120 hp. Anfaller, blöder och flyr först vid 25 % hp. Ger alltid en Giant Antler. Fäller träd den springer in i när den är arg."},
+  "entity:giant_deer": {"text": "Sällsynt miniboss med skovelhorn, 120 hp. **Skarp syn:** ser spelare på 48 block (32 smygande), och varje skada från en spelare (pilar från hur långt bort som helst) vänder den mot skytten. Laddar upp synligt (sänkt huvud, frustar, stampar ca 1,2 s) och rusar sedan rakt mot där du stod, ca 9 block/s: kliv åt sidan. Står och pustar 1,5 s efter varje rusning. Står du i ett träd rammar den ner trädet; når den dig inte (pelare) drar den sig undan utom bågskottshåll och i skydd tills du kliver ner. Blöder och flyr mot skydd först vid 25 % hp. Ger alltid en [[giant_antler]]."},
   "ancient_oak_rune_log": {"text": "Runbark med lysande runa (ljus 6) i spiraler uppför Ancient Oak; ljusprickar driver från den. Okrossbar.", "category": "blocks"},
   "glowcap": {"text": "Liten lysande svamp (ljus 8) vid Ancient Oaks rötter, i håligheten och i en älvring i gläntan. Går att plocka.", "category": "foraging"},
   "spirit_bloom": {"text": "Blek cyanvit lysande blomma (ljus 10) i Ancient Oaks glänta. Går att plocka och plantera på jord, gräs och mossa.", "category": "foraging"},
@@ -1011,5 +1011,9 @@
   "bronze_arrow": {"text": "4 [[bronze_arrowhead]] + [[minecraft:stick]] + [[minecraft:feather]] i Fletching Table ger 4 st. **3 skada** (Arrow 2) och går sönder bara 10 % av gångerna när den faller ur ett djur. Av Poor Bronze: 2,5 skada.", "category": "tools"},
   "clay_arrowheads_mold": {"text": "Bränns av [[unfired_clay_arrowheads_mold]] i kilnen (600°). Tar 2 enheter brons och ger [[rough_cast_bronze_arrowheads]]. Bara brons. Spricker efter 5 gjutningar.", "category": "blocks"},
   "unfired_clay_arrowheads_mold": {"text": "3 [[minecraft:clay_ball]] i [[mold_bench]]. Bränns i kilnen till [[clay_arrowheads_mold]].", "category": "materials"},
-  "broom": {"text": "Tool Station: [[straw]] + [[twine]] + [[tool_rod]]. Högerklicka på sot: allt [[soot]] i 3×3 blir ett stadium ljusare (det ljusaste sopas bort). Sopar också Leaf Litter ett löv i taget. 96 i hållbarhet, 1 per sopning.", "category": "tools"}
+  "broom": {"text": "Tool Station: [[straw]] + [[twine]] + [[tool_rod]]. Högerklicka på sot: allt [[soot]] i 3×3 blir ett stadium ljusare (det ljusaste sopas bort). Sopar också Leaf Litter ett löv i taget. 96 i hållbarhet, 1 per sopning.", "category": "tools"},
+  "bat_wing": {"text": "Fladdermusens tunna vingmembran, från en styckad fladdermus (85 %, 1–2). 2 st med [[soot]] och [[lard]] blir [[night_eye_salve]].", "category": "wildlife"},
+  "night_eye_salve": {"text": "2 [[bat_wing]] + [[soot]] + [[lard]] (formlöst) ger 2 st. Stryks under ögonen: Night Vision i 90 s.", "category": "food"},
+  "guano": {"text": "Fladdermusspillning från en [[guano_pile]] under en grotta där fladdermöss vilar. Starkaste gödseln: högerklicka farmland, bördighet **+3** (dålig jord blir rik på en gång).", "category": "materials"},
+  "guano_pile": {"text": "Växer på golvet under vilande fladdermöss (1–4 lager). Bryt den för 1 [[guano]] per lager.", "category": "blocks"}
 }

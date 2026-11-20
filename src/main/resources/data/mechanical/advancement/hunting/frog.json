@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:hunting/small_game",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:game_meat_scraps"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:frog_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.frog.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.frog.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

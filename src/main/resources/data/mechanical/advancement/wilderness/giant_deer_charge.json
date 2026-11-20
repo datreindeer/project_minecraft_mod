@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/ancient_oak",
+  "criteria": {
+    "hurt": {
+      "trigger": "minecraft:entity_hurt_player",
+      "conditions": {
+        "damage": {
+          "source_entity": {
+            "minecraft:entity_type": "mechanical:giant_deer"
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hurt"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:goat_horn"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.giant_deer_charge.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.giant_deer_charge.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
