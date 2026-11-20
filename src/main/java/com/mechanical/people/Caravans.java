@@ -118,7 +118,7 @@ public final class Caravans {
     }
 
     /** Big game a caravan brings in as trade goods. */
-    static final List<Supplier<? extends EntityType<? extends LivingEntity>>> TROPHIES = List.of(Wildlife.GIANT_DEER, Wildlife.CAVE_LION, Wildlife.AUROCHS, Wildlife.BROWN_BEAR);
+    static final List<Supplier<? extends EntityType<? extends LivingEntity>>> TROPHIES = List.of(Wildlife.CAVE_LION, Wildlife.AUROCHS, Wildlife.BROWN_BEAR);
 
     /**
      * A trophy from the road on {@code cart}: dressed and lashed, the caravan's property (CarcassEntity#isCaravanProperty),
@@ -138,7 +138,7 @@ public final class Caravans {
 
     /** Copper a piece of a trophy's products is worth (on the scale of {@link #sales}); other pieces 1, meat 2 scraps a copper. */
     private static int unitPrice(Item item) {
-        return item == Wildlife.GIANT_ANTLER.get() ? 24 : item == Wildlife.RAW_BEAR_PELT.get() ? 16
+        return item == Wildlife.RAW_BEAR_PELT.get() ? 16
                 : item == Mechanical.RAW_HIDE.get() || item == Wildlife.HORN.get() ? 3 : item == Wildlife.BEAR_CLAW.get() ? 2 : 1;
     }
 

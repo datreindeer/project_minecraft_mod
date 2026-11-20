@@ -50,7 +50,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>tribe_caravan: a Wandering Trader never joins the world, a Trader Caravan comes instead: 3-4 people of one trading
  * tribe (one trader, guards armed and armoured without helmets), the trader changes coins and buys diamonds, every horse
  * is led by the trader and pulls a covered cart that is still hitched 5 seconds on; when its time is up all of it goes.
- * A trophy cart's carcass is big game (Giant Deer, Cave Lion, Aurochs, Brown Bear), the caravan's property (a player can't
+ * A trophy cart's carcass is big game (Cave Lion, Aurochs, Brown Bear), the caravan's property (a player can't
  * take or butcher it, and trying angers them), and the trader sells its products for copper.</li>
  * </ul>
  */
