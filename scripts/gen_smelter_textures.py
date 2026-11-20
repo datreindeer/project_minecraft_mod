@@ -1,14 +1,19 @@
 """Smelting Furnace textures. Run: python scripts/gen_smelter_textures.py
 
 - Furnace Bricks: buff fireclay bricks in offset courses with light lime mortar, each brick its own tone, lit from the
-  top left, with dark iron specks; the Furnace Tap's front is the same wall with a breast of darker rammed clay, the
-  tap hole (sooty above) and a peephole.
+  top left, with dark iron specks; the Furnace Tap's front is the same wall with an arched fire mouth (fired-clay rim,
+  dark with dull embers; the animated flames furnace_tap_fire.png fill it while lit, cut out to the arch) above a breast
+  of darker rammed clay with the tap hole (sooty above); the tuyere is the wall with a fired-clay blowpipe ring round a
+  dark hole (the glow fills it while lit), soot licked up above it.
+- Furnace Chute: the top of its walls (bricks, sooted toward the opening) and its inside (soot-blackened firebrick,
+  darker deeper down, with glassy slag drips).
 - Furnace Brick / Unfired Furnace Brick items: vanilla's brick shape recoloured (buff fired, grey raw clay with sand).
 - Clay Channel: smooth fired clay outside, a darker sooty trough inside with a few metal splashes; the plug (raw
   clay); the Unfired Clay Channel item (a short trough seen from above).
 - Glows: the fire through the peephole / tap hole (animated), the metal running down the spout (animated), and
   molten_flow.png, the near-white strip client/MoltenRenderer tints per metal and scrolls along channels.
-- GUI: smelting_furnace.png, the kiln's thermometer, a tank for the melt (marks every 10 units) and the flame socket.
+- GUI: smelting_furnace.png, the kiln's thermometer, a tank for the melt (marks every 10 units), the flame socket and
+  a slot-like frame for the Charcoal icon under them; the right side is left plain for the text rows.
 """
 import json
 import random
@@ -99,12 +104,27 @@ save(wall, BLOCK / "furnace_bricks.png")
 # ---------------- Furnace Tap front ----------------
 rng = random.Random(72)
 front = wall.copy()
-for y in range(16):
-    for x in range(16):
-        half = 3 if y == 6 else 4 if y >= 7 else -1  # an arched breast of rammed clay, x 4..11
-        if half < 0 or abs(x - 7.5) > half:
+# the fire mouth: an arch, x 4..11 at rows 3..5, narrower above (= the lit model's plane, model y 10..15)
+MOUTH = {(x, y) for y in range(1, 6) for x in range(16)
+         if (y == 1 and 6 <= x <= 9) or (y == 2 and 5 <= x <= 10) or (y >= 3 and 4 <= x <= 11)}
+for y in range(0, 7):  # its fired-clay rim (and the lintel row under it), lit from the top left
+    for x in range(2, 14):
+        if (x, y) in MOUTH:
             continue
-        edge = abs(x - 7.5) > half - 1 or y == 6
+        near = any((x + dx, y + dy) in MOUTH for dx in (-1, 0, 1) for dy in (-1, 0, 1))
+        if near or (y == 6 and 3 <= x <= 12):
+            t = 0.7 + rng.uniform(-0.06, 0.06) + (0.12 if x < 7 and y < 4 else -0.1 if x > 9 or y == 6 else 0)
+            front.putpixel((x, y), ramp(FIRED, t) + (255,))
+for (x, y) in MOUTH:  # inside: soot-black, dull embers lying at the bottom
+    c = mix(SOOT, (12, 8, 6), 0.4 + rng.uniform(0, 0.3))
+    if y == 5 and rng.random() < 0.6:
+        c = rng.choice([(92, 30, 12), (70, 24, 10), (110, 40, 14)])
+    front.putpixel((x, y), c + (255,))
+for y in range(7, 16):  # a breast of rammed clay under it, x 4..11, rounded at the top
+    for x in range(4, 12):
+        if y == 7 and x in (4, 11):
+            continue
+        edge = x in (4, 11) or y == 7
         c = ramp(FIRED, 0.62 + rng.uniform(-0.08, 0.08) + (0.18 if edge else 0))
         front.putpixel((x, y), c + (255,))
 for x in range(6, 10):  # the tap hole: rows 9..11 = model y 4..7, glowing deep inside, dark at the rim
@@ -112,14 +132,62 @@ for x in range(6, 10):  # the tap hole: rows 9..11 = model y 4..7, glowing deep 
         inner = 1 if 7 <= x <= 8 and y >= 10 else 0
         front.putpixel((x, y), ((88, 30, 12) if inner else (26, 14, 10)) + (255,))
 for x in range(5, 11):  # soot licking up from the hole
-    for y in range(6, 9):
-        if rng.random() < 0.55 - (8 - y) * 0.12 + (0.2 if 6 <= x <= 9 else 0):
+    for y in range(7, 9):
+        if rng.random() < 0.6 - (8 - y) * 0.2 + (0.2 if 6 <= x <= 9 else 0):
             front.putpixel((x, y), mix(front.getpixel((x, y))[:3], SOOT, 0.5 + rng.uniform(0, 0.2)) + (255,))
-for x in range(6, 10):  # peephole ring and the hole (rows 2..3 = model y 12..14)
-    for y in range(1, 5):
-        ring = not (7 <= x <= 8 and 2 <= y <= 3)
-        front.putpixel((x, y), (ramp(FIRED, 0.75 + rng.uniform(-0.05, 0.05)) if ring else (24, 14, 10)) + (255,))
 save(front, BLOCK / "furnace_tap_front.png")
+
+# flames in the fire mouth: tongues licking up from a white-hot bed, cut out to the arch; 6 frames
+FIRE = [(60, 14, 4), (150, 36, 6), (226, 88, 12), (252, 160, 34), (255, 222, 110), (255, 250, 214)]
+fire = Image.new("RGBA", (16, 16 * 6), (0, 0, 0, 0))
+for f in range(6):
+    r = random.Random(700 + f)
+    heights = [2.2 + 2.6 * abs(((x * 0.9 + f * 1.3) % 3.0) - 1.5) / 1.5 + r.uniform(-0.6, 0.6) for x in range(16)]
+    for (x, y) in MOUTH:
+        d = 5 - y  # rows above the bed
+        h = max(1.0, heights[x])
+        t = 1.0 - d / h * 0.85 + r.uniform(-0.1, 0.1) if d < h else 0.12 + r.uniform(0, 0.12)
+        fire.putpixel((x, y + f * 16), ramp(FIRE, t) + (255,))
+save(fire, BLOCK / "furnace_tap_fire.png", frames=3)
+
+# ---------------- tuyere: a clay blowpipe ring round a dark hole (x/y 6..9), soot above ----------------
+rng = random.Random(75)
+tuy = bricks(78)
+for y in range(16):
+    for x in range(16):
+        d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+        if 6 <= x <= 9 and 6 <= y <= 9:
+            c = (54, 18, 8) if 7 <= x <= 8 and 7 <= y <= 8 else (20, 12, 10)
+            tuy.putpixel((x, y), c + (255,))
+        elif d <= 3.9:
+            light = (7.5 - x) + (7.5 - y)  # lit from the top left
+            tuy.putpixel((x, y), ramp(FIRED, 0.6 + light * 0.05 + rng.uniform(-0.05, 0.05)) + (255,))
+for y in range(0, 4):  # soot licked up from the pipe
+    for x in range(5, 11):
+        if rng.random() < 0.25 + y * 0.15 - abs(x - 7.5) * 0.08:
+            tuy.putpixel((x, y), mix(tuy.getpixel((x, y))[:3], SOOT, 0.4 + rng.uniform(0, 0.25)) + (255,))
+save(tuy, BLOCK / "furnace_bricks_tuyere.png")
+
+# ---------------- Furnace Chute: top of its walls, its inside ----------------
+rng = random.Random(76)
+top = bricks(79)
+for y in range(16):
+    for x in range(16):
+        inward = 3 - min(x, y, 15 - x, 15 - y)  # 0 at the outer edge, 3 at the opening
+        if inward > 0:
+            top.putpixel((x, y), mix(top.getpixel((x, y))[:3], SOOT, min(0.75, inward * 0.18 + rng.uniform(0, 0.12))) + (255,))
+save(top, BLOCK / "furnace_chute_top.png")
+inside = bricks(80)
+for y in range(16):
+    for x in range(16):
+        c = mix(inside.getpixel((x, y))[:3], SOOT, 0.45 + y * 0.025 + rng.uniform(0, 0.1))  # darker deeper down
+        inside.putpixel((x, y), c + (255,))
+for _ in range(4):  # glassy slag run down the walls
+    x, y = rng.randrange(16), rng.randrange(10)
+    for i in range(rng.randint(2, 4)):
+        if y + i < 16:
+            inside.putpixel((x, y + i), rng.choice([(58, 62, 40), (74, 70, 44), (46, 50, 36)]) + (255,))
+save(inside, BLOCK / "furnace_chute_inside.png")
 
 # ---------------- clay: channel outside, inside, plug ----------------
 rng = random.Random(73)
@@ -226,7 +294,7 @@ for x in range(1, 15):
 save(img, ITEM / "unfired_clay_channel.png")
 
 # ---------------- GUI ----------------
-W, H = 220, 96
+W, H = 220, 112
 gui = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
 BG, DARK, LIGHT, INNER, BLACK = (198, 198, 198, 255), (85, 85, 85, 255), (255, 255, 255, 255), (30, 22, 20, 255), (0, 0, 0, 255)
 for x in range(W):  # a vanilla-style panel: black rim with rounded corners, white top-left bevel, dark bottom-right
@@ -272,7 +340,11 @@ for units in (10, 20, 30):
     y = 62 - round(units / 40 * 44)
     for x in (53, 54):
         gui.putpixel((x, y), GLASS_DARK)
-# flame socket: vanilla furnace's unlit flame
-gui.paste(vanilla("gui/container/furnace").crop((56, 36, 70, 50)), (22, 76))
+# flame socket: vanilla furnace's unlit flame, and a slot frame beside it for the Charcoal icon (x 38..53, y 69..84)
+gui.paste(vanilla("gui/container/furnace").crop((56, 36, 70, 50)), (22, 70))
+for x in range(37, 55):
+    for y in range(68, 86):
+        edge_dark, edge_light = x == 37 or y == 68, x == 54 or y == 85
+        gui.putpixel((x, y), GLASS_DARK if edge_dark else LIGHT if edge_light else (139, 139, 139, 255))
 gui.save(TEX / "gui/container/smelting_furnace.png")
 print("smelter textures ok")

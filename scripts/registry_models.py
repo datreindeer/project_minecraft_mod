@@ -337,8 +337,9 @@ class Models:
         return m if els and not full else None
 
     def smelting_furnace(self):
-        """The Smelting Furnace from FurnaceTapBlockEntity.check(): bricks in the loop ranges around the shaft (open
-        centre column), the tap in front of the shaft's bottom (shaft = tap pos + opposite of facing; facing north)."""
+        """The Smelting Furnace from FurnaceTapBlockEntity.check(): bricks in the loop ranges, the middle of the centre
+        column empty, the Furnace Chute on top of it, the tap in front of the bottom middle (shaft = tap pos + opposite of
+        facing; facing north), the side and back walls' bottom middles shown as the tuyeres the formed furnace marks."""
         path = os.path.join(self.g.JAVA, "FurnaceTapBlockEntity.java")
         code = self.g.strip_comments(open(path, encoding="utf-8").read()) if os.path.isfile(path) else ""
         body = re.search(r"void\s+check\s*\(.*?\{(.*?)\n    \}", code, re.S)
@@ -351,8 +352,11 @@ class Models:
         for dy in range(rng["dy"][0], rng["dy"][1] + 1):
             for dx in range(rng["dx"][0], rng["dx"][1] + 1):
                 for dz in range(rng["dz"][0], rng["dz"][1] + 1):
-                    if (dx, dz) != (0, 0) and (dx, dy, dz) != (0, 0, -1):
-                        layout.append((dx, dy, dz, f"{self.g.MOD}:furnace_bricks", {}))
+                    if (dx, dy, dz) == (0, 0, -1) or ((dx, dz) == (0, 0) and dy > rng["dy"][0]):
+                        continue
+                    tuyere = {(1, 0): "east", (-1, 0): "west", (0, 1): "south"}.get((dx, dz)) if dy == rng["dy"][0] else None
+                    layout.append((dx, dy, dz, f"{self.g.MOD}:furnace_bricks", {"facing": tuyere, "tuyere": "cold"} if tuyere else {}))
+        layout.append((0, rng["dy"][1], 0, f"{self.g.MOD}:furnace_chute", {}))
         quads, keys, imgs = self.block_quads(layout)
         return self.add_geo(quads, keys, imgs, "thumb:multiblock:smelting_furnace")
 

@@ -9,18 +9,19 @@
     "plug": "mechanical:block/furnace_tap_plug",
     "stick": "minecraft:block/stripped_oak_log",
     "glow": "mechanical:block/furnace_tap_glow",
-    "molten": "mechanical:block/furnace_tap_molten"
+    "molten": "mechanical:block/furnace_tap_molten",
+    "fire": "mechanical:block/furnace_tap_fire"
   },
   "elements": [
     {
       "from": [
-        7,
-        12,
+        4,
+        10,
         -0.01
       ],
       "to": [
-        9,
-        14,
+        12,
+        15,
         -0.01
       ],
       "light_emission": 15,
@@ -28,12 +29,12 @@
       "faces": {
         "north": {
           "uv": [
-            7,
-            2,
-            9,
-            4
+            4,
+            1,
+            12,
+            6
           ],
-          "texture": "#glow"
+          "texture": "#fire"
         }
       }
     },

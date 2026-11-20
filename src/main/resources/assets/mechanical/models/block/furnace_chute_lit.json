@@ -1,0 +1,112 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/furnace_bricks",
+    "bricks": "mechanical:block/furnace_bricks",
+    "top": "mechanical:block/furnace_chute_top",
+    "inside": "mechanical:block/furnace_chute_inside",
+    "glow": "mechanical:block/furnace_tap_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        5.01,
+        0,
+        5
+      ],
+      "to": [
+        5.01,
+        6,
+        11
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "east": {
+          "uv": [
+            5,
+            10,
+            11,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    },
+    {
+      "from": [
+        10.99,
+        0,
+        5
+      ],
+      "to": [
+        10.99,
+        6,
+        11
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "west": {
+          "uv": [
+            5,
+            10,
+            11,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        0,
+        5.01
+      ],
+      "to": [
+        11,
+        6,
+        5.01
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "south": {
+          "uv": [
+            5,
+            10,
+            11,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        0,
+        10.99
+      ],
+      "to": [
+        11,
+        6,
+        10.99
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            10,
+            11,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    }
+  ]
+}

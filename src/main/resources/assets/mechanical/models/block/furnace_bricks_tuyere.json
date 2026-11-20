@@ -1,0 +1,49 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/furnace_bricks",
+    "bricks": "mechanical:block/furnace_bricks",
+    "front": "mechanical:block/furnace_bricks_tuyere",
+    "glow": "mechanical:block/furnace_tap_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#bricks",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#bricks",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#front",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#bricks",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#bricks",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#bricks",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

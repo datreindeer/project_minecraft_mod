@@ -79,6 +79,19 @@ public class FurnaceTapBlock extends Block implements EntityBlock {
         return InteractionResult.SUCCESS;
     }
 
+    // a channel one block down in front of the spout slopes up to it
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (!level.isClientSide() && !oldState.is(this)) ClayChannelBlock.refreshAround(level, pos);
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        ClayChannelBlock.refreshAround(level, pos);
+    }
+
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         if (level.getBlockEntity(pos) instanceof FurnaceTapBlockEntity tap) tap.recheck();
@@ -89,7 +102,7 @@ public class FurnaceTapBlock extends Block implements EntityBlock {
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         Direction front = state.getValue(FACING);
         if (state.getValue(LIT)) {
-            // smoke and flames out of the shaft's mouth, two blocks up behind the tap
+            // smoke and flames out of the chute on top, behind the tap
             BlockPos top = pos.relative(front.getOpposite()).above(3);
             double x = top.getX() + 0.3 + random.nextDouble() * 0.4, z = top.getZ() + 0.3 + random.nextDouble() * 0.4;
             level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, top.getY(), z, 0, 0.07, 0);

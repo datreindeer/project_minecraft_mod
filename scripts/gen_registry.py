@@ -799,8 +799,8 @@ def add_models(entries, ids, notes):
         entries[mid] = {"id": mid, "name": MOD_LANG.get("container.mechanical.smelting_furnace", "Smelting Furnace"),
                         "kind": "multiblock", "cats": ["multiblocks"], "img": ik,
                         "m3d": [{"label": "", "geo": gk, "img": ik}],
-                        "info": {"sv": "3×3×3: 23 Furnace Bricks och en Furnace Tap mitt i nedersta raden fram, runt ett öppet schakt.",
-                                 "en": "3×3×3: 23 Furnace Bricks and a Furnace Tap in the middle of the bottom front row, around an open shaft."}}
+                        "info": {"sv": "3×3×3: 24 Furnace Bricks, en Furnace Chute mitt på taket och en Furnace Tap mitt i nedersta raden fram; bara mittblocket är tomt. Munstyckshålen visas när ugnen är hel.",
+                                 "en": "3×3×3: 24 Furnace Bricks, a Furnace Chute in the middle of the roof and a Furnace Tap in the middle of the bottom front row; only the middle block is empty. The tuyere holes show once it is complete."}}
 
 
 # ---------------------------------------------------------------- main
