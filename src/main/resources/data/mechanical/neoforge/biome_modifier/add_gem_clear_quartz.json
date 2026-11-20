@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/clear_quartz",
+  "features": [
+    "mechanical:gem_clear_quartz_floor",
+    "mechanical:gem_clear_quartz_ceiling"
+  ],
+  "step": "underground_decoration"
+}

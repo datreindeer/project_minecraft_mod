@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "mechanical:block/small_tourmaline_crystal"
+  }
+}

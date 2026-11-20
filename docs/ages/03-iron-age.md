@@ -1,6 +1,6 @@
 # Järnåldern
 
-> Status: **planering**. Byggt: **Bog Iron** (v0.79.0). Resten är förslag (2026-11-20).
+> Status: **planering**. Byggt: **Bog Iron** (v0.80.0). Resten är förslag (2026-11-20).
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
 **Bronze Smithing Hammer**, **Wrought Iron Ingot**, Bronze Pickaxe (bryter Iron, Coal och Lapis Ore) och Charcoal.
@@ -13,7 +13,7 @@ Diamond och Emerald Ore (taggen `#minecraft:needs_iron_tool`).
 
 ## Starkt rekommenderat
 
-### 1. Bog Iron (myrmalm) (byggd, v0.79.0)
+### 1. Bog Iron (myrmalm) (byggd, v0.80.0)
 
 Den nordiska järnålderns huvudsakliga järnkälla, och järnålderns huvudväg till järn. Iron Ore (Bronze Pickaxe) är den
 rikare uppgraderingen. Kod: `Ironworking` (block, item, gametest), `BloomeryBlockEntity` (receptet). Data:

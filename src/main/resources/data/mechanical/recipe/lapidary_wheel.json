@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "TRT",
+    "P P"
+  ],
+  "key": {
+    "A": "minecraft:sandstone",
+    "R": "mechanical:tool_rod",
+    "T": "mechanical:twine",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:lapidary_wheel"
+  }
+}

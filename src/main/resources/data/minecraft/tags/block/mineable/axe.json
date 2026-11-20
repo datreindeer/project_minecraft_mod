@@ -211,6 +211,7 @@
     "mechanical:ash_firewood_pile",
     "mechanical:hazel_firewood_pile",
     "mechanical:pine_firewood_pile",
-    "mechanical:yew_firewood_pile"
+    "mechanical:yew_firewood_pile",
+    "mechanical:lapidary_wheel"
   ]
 }

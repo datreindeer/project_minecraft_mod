@@ -1,0 +1,310 @@
+{
+  "parent": "mechanical:gemstones/first_cut",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_garnet"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_ruby"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_sapphire"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_topaz"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_jade"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_opal"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_turquoise"
+          }
+        ]
+      }
+    },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_peridot"
+          }
+        ]
+      }
+    },
+    "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_amber"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_clear_quartz"
+          }
+        ]
+      }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_rose_quartz"
+          }
+        ]
+      }
+    },
+    "has_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_citrine"
+          }
+        ]
+      }
+    },
+    "has_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_smoky_quartz"
+          }
+        ]
+      }
+    },
+    "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_aquamarine"
+          }
+        ]
+      }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_fluorite"
+          }
+        ]
+      }
+    },
+    "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_celestine"
+          }
+        ]
+      }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_moonstone"
+          }
+        ]
+      }
+    },
+    "has_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_tourmaline"
+          }
+        ]
+      }
+    },
+    "has_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_agate"
+          }
+        ]
+      }
+    },
+    "has_19": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_jasper"
+          }
+        ]
+      }
+    },
+    "has_20": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_carnelian"
+          }
+        ]
+      }
+    },
+    "has_21": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_chalcedony"
+          }
+        ]
+      }
+    },
+    "has_22": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_bloodstone"
+          }
+        ]
+      }
+    },
+    "has_23": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_diamond"
+          }
+        ]
+      }
+    },
+    "has_24": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_emerald"
+          }
+        ]
+      }
+    },
+    "has_25": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:flawed_amethyst"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5",
+      "has_6",
+      "has_7",
+      "has_8",
+      "has_9",
+      "has_10",
+      "has_11",
+      "has_12",
+      "has_13",
+      "has_14",
+      "has_15",
+      "has_16",
+      "has_17",
+      "has_18",
+      "has_19",
+      "has_20",
+      "has_21",
+      "has_22",
+      "has_23",
+      "has_24",
+      "has_25"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:flawed_garnet"
+    },
+    "title": {
+      "translate": "advancements.mechanical.gemstones.flawed.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.gemstones.flawed.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

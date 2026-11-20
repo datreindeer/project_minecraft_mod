@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/aquamarine",
+  "features": [
+    "mechanical:gem_aquamarine_floor",
+    "mechanical:gem_aquamarine_ceiling"
+  ],
+  "step": "underground_decoration"
+}

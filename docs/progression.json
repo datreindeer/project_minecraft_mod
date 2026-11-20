@@ -428,6 +428,29 @@
      "sv": "[[entity:giant_deer]] är stenålderns miniboss: 120 liv, ser dig på 48 block och rusar mot där du stod. **Kliv åt sidan** i sista stund och slå medan den pustar. Står flera nära sveper den med hornen. Vid 25 % liv ger den upp och flyr. Styckad (minst Tusk Dagger) ger den alltid en [[giant_antler]].\n\n[[structure:ancient_oak]] är en väldig förtrollad ek i skog, mycket sällsynt. Inne i stammen står ett [[offering_altar]]. Lägg hornet där så ger ritualen ett av fem mytiska föremål: [[thunderstone]] (yxa som kallar ner blixten), [[mistletoe_charm]] (läker), [[ancient_amber]] (lyser och smyger), [[heart_of_the_oak]] (växer plantor) eller [[antler_crown]] (mörkerseende).",
      "en": "The [[entity:giant_deer]] is the Stone Age miniboss: 120 health, spots you at 48 blocks and charges at where you stood. **Step aside** at the last moment and strike while it catches its breath. With several enemies close it sweeps its antlers. At 25 % health it gives up and flees. Butchered (at least a Tusk Dagger) it always drops a [[giant_antler]].\n\nThe [[structure:ancient_oak]] is a huge enchanted oak in forests, very rare. Inside the trunk stands an [[offering_altar]]. Place the antler on it and the ritual gives one of five mythic items: [[thunderstone]] (an axe that calls down lightning), [[mistletoe_charm]] (heals), [[ancient_amber]] (glows and hides you), [[heart_of_the_oak]] (grows saplings) or [[antler_crown]] (night vision)."
     }
+   },
+   {
+    "title": {
+     "sv": "Ädelstenar och slipning",
+     "en": "Gemstones and cutting"
+    },
+    "items": [
+     "rough_garnet",
+     "rough_citrine",
+     "rough_agate",
+     "lapidary_wheel",
+     "flint_grit",
+     "garnet_grit",
+     "corundum_grit",
+     "diamond_dust",
+     "garnet",
+     "flawed_garnet",
+     "flawless_garnet"
+    ],
+    "text": {
+     "sv": "Under marken finns 26 ädelstenar, var och en på sitt eget djup och ofta i sin egen biome: **malm** (t.ex. [[garnet_ore]], [[deepslate_ruby_ore]]), **kristaller** som växer på grottgolv och grottak i tre storlekar (t.ex. [[large_citrine_crystal]] i Dripstone Caves) och **lösa stenar** på grottgolven ([[loose_agate]]). Allt du hittar är **oslipat** ([[rough_garnet]]); även Diamond Ore, Emerald Ore och Amethyst Clusters ger nu [[rough_diamond]], [[rough_emerald]] och [[rough_amethyst]].\n\nBygg en [[lapidary_wheel]] (Sandstone, Twine, [[tool_rod]], planks). **Högerklicka med ett slipmedel** för att ladda hjulet, sedan **4 gånger med en Rough-sten**. Slipmedlet måste vara minst lika hårt som stenen (Mohs-skalan):\n\n1. **Sand**: Amber, Celestine, Fluorite, Turquoise, Opal, Moonstone\n2. **[[flint_grit]]** (Flint krossad på [[stone_anvil]]): kvartserna, Jade, Peridot, Amethyst och de lösa stenarna\n3. **[[garnet_grit]]** (krossad Rough Garnet): Garnet, Topaz, Tourmaline, Aquamarine, Emerald\n4. **[[corundum_grit]]** (krossad Rough Ruby/Sapphire): Ruby, Sapphire\n5. **[[diamond_dust]]** (krossad Rough Diamond): Diamond\n\nÄr slipmedlet **exakt** lika hårt som stenen kan den spricka till en **Flawed**-sten ([[flawed_garnet]], 35 %); ett hårdare slipmedel spricker aldrig och kan i stället ge en skinande **Flawless**-sten ([[flawless_garnet]]): 3 % en nivå hårdare, 6 % två eller fler, dubbelt för fina råstenar från Large Crystals. Fliken **Gemstones** bland advancements visar var varje sten finns.",
+     "en": "Underground there are 26 gemstones, each at its own depth and often in its own biome: **ores** (e.g. [[garnet_ore]], [[deepslate_ruby_ore]]), **crystals** growing on cave floors and ceilings in three sizes (e.g. [[large_citrine_crystal]] in Dripstone Caves) and **loose pebbles** on cave floors ([[loose_agate]]). Everything you find is **rough** ([[rough_garnet]]); Diamond Ore, Emerald Ore and Amethyst Clusters now give [[rough_diamond]], [[rough_emerald]] and [[rough_amethyst]] too.\n\nBuild a [[lapidary_wheel]] (Sandstone, Twine, [[tool_rod]], planks). **Right-click it with an abrasive** to load it, then **4 times with a Rough gem**. The abrasive must be at least as hard as the stone (Mohs scale):\n\n1. **Sand**: Amber, Celestine, Fluorite, Turquoise, Opal, Moonstone\n2. **[[flint_grit]]** (Flint crushed on the [[stone_anvil]]): the quartzes, Jade, Peridot, Amethyst and the pebble gems\n3. **[[garnet_grit]]** (crushed Rough Garnet): Garnet, Topaz, Tourmaline, Aquamarine, Emerald\n4. **[[corundum_grit]]** (crushed Rough Ruby/Sapphire): Ruby, Sapphire\n5. **[[diamond_dust]]** (crushed Rough Diamond): Diamond\n\nIf the abrasive is **exactly** as hard as the stone it may crack into a **Flawed** gem ([[flawed_garnet]], 35 %); a harder abrasive never cracks it and may instead give a shining **Flawless** gem ([[flawless_garnet]]): 3 % one tier harder, 6 % two or more, doubled for fine rough stones from Large Crystals. The **Gemstones** advancement tab shows where each stone is found."
+    }
    }
   ]
  },

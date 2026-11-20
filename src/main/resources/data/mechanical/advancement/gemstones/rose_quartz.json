@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:gemstones/crystal_gems",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rough_rose_quartz"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rough_rose_quartz"
+    },
+    "title": {
+      "translate": "advancements.mechanical.gemstones.rose_quartz.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.gemstones.rose_quartz.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

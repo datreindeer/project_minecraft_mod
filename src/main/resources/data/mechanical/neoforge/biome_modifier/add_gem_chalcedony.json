@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/chalcedony",
+  "features": [
+    "mechanical:gem_chalcedony"
+  ],
+  "step": "underground_decoration"
+}

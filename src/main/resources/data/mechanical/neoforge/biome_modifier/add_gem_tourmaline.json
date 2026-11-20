@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/tourmaline",
+  "features": [
+    "mechanical:gem_tourmaline_floor",
+    "mechanical:gem_tourmaline_ceiling"
+  ],
+  "step": "underground_decoration"
+}

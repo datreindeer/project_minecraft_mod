@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/citrine",
+  "features": [
+    "mechanical:gem_citrine_floor",
+    "mechanical:gem_citrine_ceiling"
+  ],
+  "step": "underground_decoration"
+}

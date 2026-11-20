@@ -7,6 +7,10 @@
     "minecraft:deepslate_coal_ore",
     "minecraft:lapis_ore",
     "minecraft:deepslate_lapis_ore",
-    "minecraft:lapis_block"
+    "minecraft:lapis_block",
+    "mechanical:deepslate_ruby_ore",
+    "mechanical:sapphire_ore",
+    "mechanical:deepslate_sapphire_ore",
+    "mechanical:deepslate_peridot_ore"
   ]
 }

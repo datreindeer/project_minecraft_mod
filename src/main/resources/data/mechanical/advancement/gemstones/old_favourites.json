@@ -1,0 +1,57 @@
+{
+  "parent": "mechanical:gemstones/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rough_diamond"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rough_emerald"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rough_amethyst"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rough_diamond"
+    },
+    "title": {
+      "translate": "advancements.mechanical.gemstones.old_favourites.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.gemstones.old_favourites.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
