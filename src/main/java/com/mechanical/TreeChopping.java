@@ -142,6 +142,24 @@ public final class TreeChopping {
         return true;
     }
 
+    /** Stripping a standing log or wood block with an axe peels off that wood's bark. */
+    @SubscribeEvent
+    static void stripBark(net.neoforged.neoforge.event.level.BlockEvent.BlockToolModificationEvent event) {
+        if (event.isSimulated() || !"axe_strip".equals(event.getItemAbility().name())
+                || !(event.getLevel() instanceof ServerLevel level)) return;
+        String wood = barkWood(event.getState());
+        if (wood != null) Block.popResourceFromFace(level, event.getPos(), event.getContext().getClickedFace(), new ItemStack(Mechanical.BARKS.get(wood).get()));
+    }
+
+    /** The wood of an unstripped log or wood block ("birch" for minecraft:birch_log), or null. */
+    static String barkWood(BlockState state) {
+        if (!state.is(net.minecraft.tags.BlockTags.LOGS)) return null;
+        String path = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+        if (path.startsWith("stripped_")) return null;
+        String wood = path.endsWith("_log") ? path.substring(0, path.length() - 4) : path.endsWith("_wood") ? path.substring(0, path.length() - 5) : null;
+        return wood != null && Mechanical.WOODS.contains(wood) ? wood : null;
+    }
+
     static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {
         int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
         int stage = state.getValue(FallenLogBlock.STAGE);

@@ -545,7 +545,7 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 
 **Bark, en per träslag:** Oak Bark, Spruce Bark, Birch Bark, Jungle Bark, Acacia Bark, Dark Oak Bark, Mangrove Bark,
 Cherry Bark, Pale Oak Bark, Poplar Bark, Aspen Bark, Alder Bark, Beech Bark, Linden Bark, Willow Bark, Ash Bark, Hazel Bark,
-Pine Bark och Yew Bark (`mechanical:<träslag>_bark`). En Fallen Log ger barken av sitt eget träslag (Birch Bark från björk).
+Pine Bark och Yew Bark (`mechanical:<träslag>_bark`). En Fallen Log ger barken av sitt eget träslag (Birch Bark från björk), och att barka en stående stock eller ett Wood-block med yxa (högerklick) ger 1 bark av samma träslag.
 Texturen är tre böjda barkremsor i träslagets egna barkfärger (gen_rough_log_textures.py). Alla sorter ligger i item-taggen
 `mechanical:barks`, och **varje användning tar taggen**: bast, Bark Basket, Castoreum Salve, tändmaterial, garvning i Bronze
 Kettle, kompost. Undantag är byten som bara kan be om ett bestämt item (bybornas och stammarnas byten, kistor): där är det

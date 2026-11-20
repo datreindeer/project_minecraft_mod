@@ -107,6 +107,19 @@ public final class BarkTest {
         h.assertTrue(Tinder.isTinder(bark("aspen")), "Aspen Bark is tinder");
         h.assertTrue(Kettle.modeOf(h.getLevel(), bark("alder")) == Kettle.Mode.TAN, "Alder Bark tans in the Bronze Kettle");
 
+        // stripping a standing log with an axe peels its bark (and only an unstripped log of a known wood)
+        h.assertTrue("birch".equals(TreeChopping.barkWood(net.minecraft.world.level.block.Blocks.BIRCH_LOG.defaultBlockState())), "a birch log gives birch bark");
+        h.assertTrue("oak".equals(TreeChopping.barkWood(net.minecraft.world.level.block.Blocks.OAK_WOOD.defaultBlockState())), "oak wood gives oak bark");
+        h.assertTrue(TreeChopping.barkWood(net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState()) == null, "a stripped log has no bark");
+        h.assertTrue(TreeChopping.barkWood(net.minecraft.world.level.block.Blocks.CRIMSON_STEM.defaultBlockState()) == null, "a nether stem has no bark");
+        BlockPos logAt = new BlockPos(3, 1, 3);
+        h.setBlock(logAt, net.minecraft.world.level.block.Blocks.BIRCH_LOG);
+        net.minecraft.world.entity.player.Player stripper = h.makeMockPlayer(GameType.SURVIVAL);
+        stripper.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.STONE_AXE));
+        h.useBlock(logAt, stripper);
+        h.assertBlockPresent(net.minecraft.world.level.block.Blocks.STRIPPED_BIRCH_LOG, logAt);
+        h.assertItemEntityPresent(Mechanical.BARKS.get("birch").get(), logAt, 2);
+
         // the single Bark of older versions loads as Oak Bark
         h.assertTrue(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, "bark")) == Mechanical.BARKS.get("oak").get(),
                 "mechanical:bark is an alias of Oak Bark");
