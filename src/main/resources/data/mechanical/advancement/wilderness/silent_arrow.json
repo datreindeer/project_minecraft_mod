@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/owl_feather",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:silent_arrow"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:silent_arrow"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.silent_arrow.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.silent_arrow.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

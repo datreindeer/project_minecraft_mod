@@ -1,0 +1,20 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:meadow",
+    "minecraft:cherry_grove",
+    "minecraft:grove",
+    "minecraft:windswept_forest"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:chamois",
+      "weight": 4,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    }
+  ]
+}

@@ -139,20 +139,7 @@ shaped("unfired_clay_tuyere", ["  C", " C ", "C  "], C, M + "unfired_clay_tuyere
 shaped("bellows", ["PHP", "PHP", "TUT"], {"P": "#minecraft:planks", "H": M + "scraped_hide", "T": M + "twine", "U": M + "clay_tuyere"},
        M + "bellows", "equipment")
 shaped("whetstone", [" S ", "TPT"], {"S": "minecraft:sandstone", "T": "minecraft:stick", "P": "#minecraft:planks"}, M + "whetstone", "equipment")
-MOLD_PATTERNS = {  # clay balls around the cavity; each one unique (and unlike the crucible / clay bucket)
-    "ingot": ["C C", "CCC"],
-    "pickaxe_head": ["CCC", "C C", "C C"],
-    "axe_head": ["CCC", "C C", "CC "],
-    "shovel_head": ["C C", "C C", " C "],
-    "hoe_head": ["CC ", "C  ", "CCC"],
-    "knife_blade": ["C C", " C ", " C "],
-    "saw_blade": ["CCC", "C C"],
-    "plate": ["CCC", "C C", "CCC"],
-    "spear_head": [" C ", "C C", " C "],
-    "sword_blade": ["C C", "C C", "C C"],
-}
-for s, pattern in MOLD_PATTERNS.items():
-    shaped(f"unfired_clay_{s}_mold", pattern, C, M + f"unfired_clay_{s}_mold")
+# the unfired molds are shaped at the Mold Bench (MoldBench.ALL, scripts/gen_moldbench.py), not in the crafting grid
 
 # ---- lang ----
 lang_path = A / "lang/en_us.json"

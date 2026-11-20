@@ -118,7 +118,7 @@ public final class WarmFauna {
     public static final DeferredItem<Item> RAW_ONAGER_HIDE = ITEMS.registerSimpleItem("raw_onager_hide");
     public static final DeferredItem<Item> RAW_TAPIR_HIDE = ITEMS.registerSimpleItem("raw_tapir_hide");
     public static final DeferredItem<Item> RAW_BUFFALO_HIDE = ITEMS.registerSimpleItem("raw_buffalo_hide");
-    /** Fresh off the carcass; cured into a Leopard Pelt on a tall Drying Rack (one block, like the wolf's). */
+    /** Fresh off the carcass; fat-tanned in the crafting grid (knife + #mechanical:tanning_fats) into a Leopard Pelt. */
     public static final DeferredItem<Item> RAW_LEOPARD_PELT = ITEMS.registerSimpleItem("raw_leopard_pelt");
     public static final DeferredItem<Item> LEOPARD_PELT = ITEMS.registerSimpleItem("leopard_pelt");
     public static final DeferredItem<Item> LIZARD_SKIN = ITEMS.registerSimpleItem("lizard_skin");
@@ -178,6 +178,7 @@ public final class WarmFauna {
         Butchery.register(DESERT_LIZARD::get, new Yield(LIZARD_TAIL, 1, 1, List.of(x(LIZARD_SKIN, 0.6F, 1, 1)), List.of()));
         Butchery.register(WATER_BUFFALO::get, new Yield(BUFFALO_MEAT, 3, 6, List.of(x(RAW_BUFFALO_HIDE, 0.8F, 1, 1)),
                 List.of(x(BUFFALO_HORN, 0.6F, 1, 2), x(Wildlife.SINEW, 0.5F, 1, 2), x(Wildlife.LARD, 0.4F, 1, 2))));
+        Butchery.toughHide(WATER_BUFFALO::get); // a thick hide: tusk-grade knife or better
         Butchery.register(TAPIR::get, new Yield(TAPIR_MEAT, 2, 4, List.of(x(RAW_TAPIR_HIDE, 0.6F, 1, 1)),
                 List.of(x(Wildlife.LARD, 0.5F, 1, 2), x(Wildlife.SINEW, 0.3F, 1, 1))));
         Butchery.register(LEOPARD::get, new Yield(LEOPARD_MEAT, 1, 3, List.of(x(RAW_LEOPARD_PELT, 1.0F, 1, 1)),
@@ -188,9 +189,9 @@ public final class WarmFauna {
         Butchery.register(JUNGLE_FOWL::get, new Yield(RAW_JUNGLE_FOWL, 1, 1, List.of(x(() -> Items.FEATHER, 1.0F, 1, 3)), List.of()));
         Butchery.register(PEAFOWL::get, new Yield(RAW_PEAFOWL, 1, 1,
                 List.of(x(() -> Items.FEATHER, 1.0F, 2, 3), x(PEACOCK_FEATHER, 0.6F, 1, 3)), List.of()));
-        Birds.register(HORNBILL::get, PLUCKED_HORNBILL);
-        Birds.register(JUNGLE_FOWL::get, PLUCKED_JUNGLE_FOWL);
-        Birds.register(PEAFOWL::get, PLUCKED_PEAFOWL);
+        Birds.registerEdible(HORNBILL::get, PLUCKED_HORNBILL);
+        Birds.registerEdible(JUNGLE_FOWL::get, PLUCKED_JUNGLE_FOWL);
+        Birds.registerEdible(PEAFOWL::get, PLUCKED_PEAFOWL);
     }
 
     @SubscribeEvent

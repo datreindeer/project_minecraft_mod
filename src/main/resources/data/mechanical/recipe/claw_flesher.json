@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:wolverine_claw",
+    "mechanical:wolverine_claw",
+    "minecraft:stick",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:claw_flesher",
+    "count": 1
+  }
+}

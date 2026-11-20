@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:mammoth_hide",
+    "mechanical:mammoth_wool"
+  ],
+  "result": {
+    "id": "mechanical:mammoth_rug",
+    "count": 1
+  }
+}

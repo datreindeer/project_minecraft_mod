@@ -8,14 +8,14 @@ import net.minecraft.util.Mth;
  * the ground, legs folded under it (forearm / thigh forward, cannon bone tucked back), slow breathing. Legs must have a
  * "lower" child. Neck and head are posed by each model.
  */
-final class LyingPose {
+public final class LyingPose {
     private LyingPose() {}
 
     /**
      * @param drop how far (px) the body sinks so the belly rests on the ground
      * @param legY pivot height (px) of the folded legs, about half a leg's thickness above the ground (y = 24)
      */
-    static void apply(ModelPart body, float drop, float legY, float ageInTicks, ModelPart[] front, ModelPart[] hind) {
+    public static void apply(ModelPart body, float drop, float legY, float ageInTicks, ModelPart[] front, ModelPart[] hind) {
         body.y += drop + Mth.sin(ageInTicks * 0.08F) * 0.15F;
         for (ModelPart leg : front) fold(leg, legY, -1.45F, 2.8F, 1.5F);
         for (ModelPart leg : hind) fold(leg, legY, -1.35F, 2.65F, 0.0F);

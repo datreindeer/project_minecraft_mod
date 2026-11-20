@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/sinew_bow",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:horn_bow"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:horn_bow"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.horn_bow.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.horn_bow.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

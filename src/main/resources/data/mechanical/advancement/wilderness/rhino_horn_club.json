@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/rhino_horn",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rhino_horn_club"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rhino_horn_club"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.rhino_horn_club.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.rhino_horn_club.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:lynx_pelt",
+    "mechanical:lynx_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:lynx_rug",
+    "count": 1
+  }
+}

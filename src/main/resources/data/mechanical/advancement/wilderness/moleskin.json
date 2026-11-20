@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/snare",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:moleskin"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:moleskin"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.moleskin.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.moleskin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

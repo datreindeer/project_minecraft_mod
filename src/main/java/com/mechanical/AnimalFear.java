@@ -30,6 +30,9 @@ public final class AnimalFear {
     private static final double PANIC_RANGE = 32, CONTAGION_RANGE = 12;
     private static final double FLEE_SPEED = 1.5, PANIC_SPEED = 2.0;
     private static final int PANIC_TICKS = 200;
+    /** Arrows whose miss doesn't startle anything (the owl-fletched Silent Arrow). */
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> SILENT_ARROWS = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "silent_arrows"));
 
     /** Server-side: game time until which each animal panics, and what it runs from. */
     private record Panic(long until, Vec3 from) {}
@@ -67,6 +70,7 @@ public final class AnimalFear {
     static void onArrowMiss(net.neoforged.neoforge.event.entity.ProjectileImpactEvent event) {
         if (!(event.getProjectile() instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow) || arrow.level().isClientSide()
                 || event.getRayTraceResult().getType() != net.minecraft.world.phys.HitResult.Type.BLOCK) return;
+        if (arrow.getPickupItemStackOrigin().is(SILENT_ARROWS)) return; // owl-fletched: lands without a sound
         Vec3 hit = event.getRayTraceResult().getLocation();
         var owner = arrow.getOwner();
         // they run from the shooter when he's close enough to be noticed, otherwise just away from the thud

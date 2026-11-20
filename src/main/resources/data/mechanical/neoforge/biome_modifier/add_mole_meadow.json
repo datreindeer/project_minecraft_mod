@@ -1,0 +1,23 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "mechanical:hazel_meadow",
+    "minecraft:forest",
+    "minecraft:flower_forest",
+    "mechanical:deciduous_forest"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:mole",
+      "weight": 4,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/raw_wolf_pelt",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hyena_fang"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_hyena_pelt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hyena_fang"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.cave_hyena.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.cave_hyena.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

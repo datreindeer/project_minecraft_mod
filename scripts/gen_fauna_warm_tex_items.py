@@ -8,8 +8,7 @@
 - hides on the house raw_hide shape (onager, tapir, buffalo), the leopard pelt like the wolf pelt (gen_predator_textures)
   and its raw version like raw_wolf_pelt (gen_pelt_rack_textures.raw_item), lizard skin.
 - parts, made items, spawn eggs (gen_wildlife_item_textures.egg).
-- blocks: leopard_rug (top of the Bear Rug slab, head north) and the leopard pelt on the Drying Rack, on the wolf's
-  plane and mask (gen_pelt_rack_textures.py: texture row = 15 - model y, column = model x, rows 3-13, x 3-12).
+- blocks: leopard_rug (top of the Bear Rug slab, head north).
 Deterministic (hash noise). Run: python scripts/gen_fauna_warm_tex_items.py"""
 import math
 import sys
@@ -606,76 +605,6 @@ def rack_fur(x, y, dry, salt):
     return col
 
 
-def rack_front(dry, salt):
-    out = []
-    for y, row in enumerate(RACK):
-        for x, c in enumerate(row):
-            if c == ".":
-                continue
-            if c == "T":
-                col = TWINE if h(x, y, salt) < 0.7 else TWINE_DK
-            elif c == "N":
-                col = (150, 92, 80)
-            elif c == "E":
-                col = EYE
-            elif c == "s":
-                col = L_CREAM
-            elif c == "e":
-                col = (40, 30, 22)
-            elif c == "w":
-                col = (220, 212, 192) if x in (0, 9) and h(x, y, salt + 1) < 0.5 else (52, 40, 32)
-            elif c == "t":
-                col = L_SPOT if y % 2 == x % 2 else L_GOLD
-            elif c == "k":
-                col = L_SPOT
-            elif c == "o":
-                if dry:
-                    col = lerp(SKIN[0], (40, 30, 24), 0.5) if h(x, y, salt + 3) < 0.5 else rack_fur(x, y, dry, salt + 4)
-                else:
-                    col = ramp(RAW_FLESH, h(x, y, salt + 5)) if h(x, y, salt + 6) < 0.8 else FAT
-            else:
-                col = rack_fur(x, y, dry, salt + 7)
-            if not dry and c in "xste":
-                col = shade(lerp(col, (60, 40, 34), 0.12), 0.8)  # wet, matted, darker
-                if h(x, y, salt + 8) < 0.06:
-                    col = shade(col, 1.35)
-            out.append((x, y, col))
-    return out
-
-
-def rack_back(dry, salt):
-    out = []
-    for y, row in enumerate(RACK):
-        for x, c in enumerate(row):
-            if c == ".":
-                continue
-            if c == "T":
-                col = TWINE if h(x, y, salt) < 0.7 else TWINE_DK
-            elif c == "E":
-                col = EYE
-            elif c in "ow" or (c == "x" and (row[x - 1:x] in ("", ".", "T") or row[x + 1:x + 2] in ("", ".", "T"))):
-                col = shade(L_GOLD, 0.85) if dry else (70, 48, 30)  # fur fringe round the edge
-                if not dry and c == "o":
-                    col = ramp(RAW_FLESH, 0.2 + 0.5 * h(x, y, salt + 1))
-            elif dry:
-                col = ramp(SKIN, 0.35 + 0.5 * h(x, y // 2, salt + 2))
-                if h(x, y, salt + 3) < 0.08:
-                    col = shade(col, 0.82)
-            else:
-                col = ramp(RAW_FLESH, 0.3 + 0.6 * h(x, y // 2, salt + 4))
-                if h(x // 2, y // 2, salt + 5) < 0.3:
-                    col = lerp(col, FAT, 0.75)
-            out.append((x, y, col))
-    return out
-
-
-def rack_place(pixels):
-    im = Image.new("RGBA", (16, 16), CLEAR)
-    for x, y, col in pixels:
-        put(im, 3 + x, 3 + y, col)  # model y 12..2 -> texture rows 3-13
-    return im
-
-
 # ---------------------------------------------------------------- parts
 
 TORTOISE_SHELL = [  # side view: the domed carapace, scutes with pale areolae, marginal scutes and the plastron rim
@@ -983,12 +912,7 @@ def items():
 
 
 def blocks():
-    out = {"leopard_rug": leopard_rug()}
-    for dry in (False, True):
-        stage = "dry" if dry else "raw"
-        out[f"drying_rack_leopard_{stage}"] = rack_place(rack_front(dry, 900 + dry))
-        out[f"drying_rack_leopard_{stage}_back"] = rack_place(rack_back(dry, 940 + dry))
-    return out
+    return {"leopard_rug": leopard_rug()}
 
 
 def main():

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mechanical:block/ivory_figurine"
+    },
+    "facing=east": {
+      "model": "mechanical:block/ivory_figurine",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mechanical:block/ivory_figurine",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mechanical:block/ivory_figurine",
+      "y": 270
+    }
+  }
+}

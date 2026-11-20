@@ -1,0 +1,131 @@
+{
+  "textures": {
+    "particle": "mechanical:block/bird_egg_bustard",
+    "egg": "mechanical:block/bird_egg_bustard"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        1,
+        5.5
+      ],
+      "to": [
+        8.5,
+        4,
+        9.5
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          7.0,
+          1,
+          7.5
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    },
+    {
+      "from": [
+        8.5,
+        1,
+        7
+      ],
+      "to": [
+        11.5,
+        4,
+        11
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          10.0,
+          1,
+          9.0
+        ],
+        "axis": "y",
+        "angle": -22.5
+      }
+    },
+    {
+      "from": [
+        6,
+        1,
+        9
+      ],
+      "to": [
+        9,
+        4,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          7.5,
+          1,
+          11.0
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    }
+  ]
+}

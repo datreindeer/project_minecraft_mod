@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "particle": "mechanical:block/bird_egg_mute_swan",
+    "egg": "mechanical:block/bird_egg_mute_swan"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        1,
+        5.5
+      ],
+      "to": [
+        9.0,
+        4.5,
+        10.0
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          7.25,
+          1,
+          7.75
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    }
+  ]
+}

@@ -12,7 +12,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
    **Stone Pickaxe Head** / **Stone Axe Head** av rocks.
 5. **Tool Station** (byggs av Flint Axe + Flint Pickaxe) → **Crude Stone Pickaxe** och **Crude Stone Axe**.
 6. **Cordage** + **Tool Rod** + dubbla huvuden → **Stone Pickaxe** och **Stone Axe**.
-7. **Campfire** av Firewood, tänd med **Fire Drill**. Sätt en **Clay Kiln** på den → **Brick**, **Charcoal**, **Crucible**.
+7. **Campfire** av Firewood, tänd med **Fire Drill**. Sätt en **Clay Kiln** på den → **Brick**, **Charcoal**; **Mold Bench** → Unfired Crucible → **Crucible**.
 8. Mat: döda djur → **Carcass** → stycka med Flint Knife → **meat scraps** (laga på Campfire), **Raw Hide** → **Scraped Hide** →
    **Drying Rack** → **Leather** → Leather Armor.
 9. Maten förskäms (rått kött på 1 dag). **Smoking Rack** över en Campfire → Smoked Meat/Fish, eller torka på Drying Rack →
@@ -28,11 +28,11 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Twine | 3 Plant Fibre (shapeless) | Flintverktyg, bindning i Tool Station, Fire Drill, Tool Station, Cordage |
 | Cordage | 3 Twine (shapeless) | Bindning för Stone Pickaxe / Stone Axe |
 | Stick | Vanilla, plus löv släpper Stick oftare (+8 %, totalt ~10 %) | Skaft, flintverktyg, Campfire, Fire Drill |
-| Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station |
+| Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station, Mold Bench |
 | Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
 | Firewood (19 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
-| Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Unfired Crucible |
+| Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Mold Bench (Unfired Crucible, lerformar) |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
 | Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather (bronsåldern: garvas med Bark i en **Bronze Kettle**, 3 Leather av 2 hudar) |
 | Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor-recept | Sys i **Armor Station** med Bone Needle + Wool Thread |
@@ -270,6 +270,12 @@ till sig större räder.
   (efter gen_cart, före gen_block_items), texturer `scripts/gen_firepit_textures.py`. Krok för senare: ett bronsgaller eller
   bronsspett kan läggas som egen del i blockstatens multipart och läsas i `FirePitBlockEntity`.
 
+### Mold Bench
+Recept: `[Flint][Clay][Flint]` / `[Planks][Planks][Planks]` (Clay = lerblocket av 4 Clay Balls). Låses upp när man bär
+Clay Ball. En låg träbänk med lerkladdad skiva; här formas **Unfired Crucible** (7 Clay Balls) och alla bronsålderns
+lerformar av Clay Balls. Fungerar som Armor Station: välj i listan, leran hämtas ur inventoryt, ta resultatet. Se
+02-bronze-age.md (Mold Bench).
+
 ### Clay Kiln
 Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk][Chunk][Chunk]`.
 
@@ -386,7 +392,7 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 
 | Item | Hur | Används till |
 |---|---|---|
-| Unfired Crucible | `[Clay Ball][ ][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Clay Ball][Clay Ball][Clay Ball]` | Bränns till Crucible i Clay Kiln |
+| Unfired Crucible | **Mold Bench:** 7 Clay Balls (inget crafting-recept) | Bränns till Crucible i Clay Kiln |
 | Crucible | Clay Kiln (800°) | Bronsåldern: fylls med malm och smälts i Clay Kiln (se 02-bronze-age.md). Staplas inte (1 per stack) |
 | Unfired Clay Bucket | `[Clay Ball][ ][Clay Ball]` / `[ ][Clay Ball][ ]` | Bränns till Clay Bucket i Clay Kiln |
 | Clay Bucket / Clay Water Bucket | Clay Kiln | Som en hink men **bara vatten**. Tål 16 hällningar, sedan spricker den. Fyller inte kittlar |
@@ -1589,7 +1595,7 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Twine | Cordage, Fire Drill |
 | Firewood (valfritt) | Tool Rod, Campfire, Firewood → Log (alla träslag) |
 | Rock chunk (valfri) | Stone Pickaxe Head, Stone Axe Head, Clay Kiln |
-| Clay Ball | Clay Kiln, Unfired Crucible |
+| Clay Ball | Clay Kiln, Mold Bench, Unfired Clay Bucket |
 | Stone Pickaxe Head | Double Stone Pickaxe Head |
 | Whole fish (valfri) | Rensning av alla fyra |
 | Fish Bones | Bone Meal |
@@ -1614,7 +1620,7 @@ framåt. Varje framsteg har föremålet som ikon och en beskrivning som säger h
 behövs först, så trädet läses som progressionen:
 
 - **Stone Age**: lösa stenar och flinta → fiber, Twine, flintverktyg → Tool Station → stenverktyg; eld (Fire Drill,
-  Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Crucible; flotte, paddel och kanot; pigment och grottmålning; upptrampad stig (Beaten Path).
+  Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Mold Bench → Crucible; flotte, paddel och kanot; pigment och grottmålning; upptrampad stig (Beaten Path).
 - **Wilderness & Hunting**: kniv → styckning → plocka en gås, bygga ett fågelbo; hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
   Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak,
   stambyar och de odöda (Brute, spjutskelett).
@@ -1627,6 +1633,19 @@ behövs först, så trädet läses som progressionen:
 Genereras av `scripts/gen_advancements.py` (tabellen `TABS`; körs efter gen_unlocks.py, före gen_registry.py). Vanillas
 framsteg skrivs över med `neoforge:never` (bara `recipes/**` behålls). **Varje ny sak i moddet ska få sina rader i
 tabellen**, så att man lär sig hur den görs.
+
+## Fler vilda djur
+
+De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och recept):
+
+<!-- fauna-links -->
+- [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
+- [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
+- [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
+- [Istidsjättar](../fauna/giants.md): Woolly Mammoth, Woolly Rhinoceros, Steppe Bison, Musk Ox (Pegged Hide, Ivory)
+- [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
+- [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
+- [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane
 
 ## Borttaget och ersatt (vanilla)
 

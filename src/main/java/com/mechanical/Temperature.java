@@ -32,6 +32,9 @@ public final class Temperature {
     private static final float NIGHT = 5, RAIN = 2, WATER = 5;
     private static final double FIRE_RANGE = 6;
     private static final float FIRE_WARMTH = 10;
+    /** Armour pieces that keep out the cold like Fur armour (FUR_PER_PIECE), so new fur goods need no code here. */
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> FUR_INSULATION = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "fur_insulation"));
     public static final float LEATHER_PER_PIECE = 0.15F, FUR_PER_PIECE = 0.25F, WOLF_FUR_PER_PIECE = 0.2F;
     /** A rest in a Furred Straw Bed (StrawBedRest) keeps you this much warmer for FURRED_BED_TICKS. */
     public static final float FURRED_BED_WARMTH = 0.3F;
@@ -54,7 +57,21 @@ public final class Temperature {
         if (item.is(Items.LEATHER_HELMET) || item.is(Items.LEATHER_CHESTPLATE) || item.is(Items.LEATHER_LEGGINGS) || item.is(Items.LEATHER_BOOTS)) return LEATHER_PER_PIECE;
         if (item.is(Mechanical.FUR_HOOD.get()) || item.is(Mechanical.FUR_COAT.get()) || item.is(Mechanical.FUR_LEGGINGS.get()) || item.is(Mechanical.FUR_BOOTS.get())) return FUR_PER_PIECE;
         if (item.is(Mechanical.WOLF_HOOD.get()) || item.is(Mechanical.WOLF_FUR_COAT.get()) || item.is(Mechanical.WOLF_FUR_LEGGINGS.get()) || item.is(Mechanical.WOLF_FUR_BOOTS.get())) return WOLF_FUR_PER_PIECE;
+        if (item.is(FUR_INSULATION)) return FUR_PER_PIECE; // fur pieces added by other features (data tag)
+        if (item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PARKA.get()) || item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_BOOTS.get()))
+            return com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PER_PIECE;
         return 0;
+    }
+
+    /** Share of the water's chill kept out: each Sealskin piece worn. */
+    static float waterproofing(Player player) {
+        float w = 0;
+        for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.CHEST, EquipmentSlot.FEET}) {
+            ItemStack item = player.getItemBySlot(slot);
+            if (item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PARKA.get()) || item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_BOOTS.get()))
+                w += com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_WATERPROOF;
+        }
+        return w;
     }
 
     static long warmBedrollUntil(Player player) {
@@ -97,7 +114,7 @@ public final class Temperature {
         Level level = player.level();
         BlockPos pos = player.blockPosition();
         float t = ambient(level, pos);
-        if (player.isInWater()) t -= WATER;
+        if (player.isInWater()) t -= WATER * (1 - waterproofing(player)); // sealskin keeps the water out
 
         BlockPos fire = NightDangers.nearestFire(level, player.position(), FIRE_RANGE);
         if (fire != null) {

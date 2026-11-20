@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/seal",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sealskin"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sealskin"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.sealskin.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.sealskin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:mammoth_wool"
+  ],
+  "result": {
+    "id": "mechanical:twine",
+    "count": 2
+  }
+}

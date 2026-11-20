@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:mammoth_ivory",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:ivory_figurine",
+    "count": 1
+  }
+}

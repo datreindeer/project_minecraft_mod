@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:bison_hide",
+    "mechanical:horn"
+  ],
+  "result": {
+    "id": "mechanical:bison_rug",
+    "count": 1
+  }
+}

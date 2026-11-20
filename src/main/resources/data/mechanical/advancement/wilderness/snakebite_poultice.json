@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/venom_gland",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:snakebite_poultice"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:snakebite_poultice"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.snakebite_poultice.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.snakebite_poultice.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

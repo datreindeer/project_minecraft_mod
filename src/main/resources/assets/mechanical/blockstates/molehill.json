@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/molehill"
+      },
+      {
+        "model": "mechanical:block/molehill",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/molehill",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/molehill",
+        "y": 270
+      }
+    ]
+  }
+}

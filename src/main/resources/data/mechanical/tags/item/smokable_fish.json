@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:cod",
-    "minecraft:salmon"
+    "minecraft:salmon",
+    "mechanical:raw_pike",
+    "mechanical:raw_sturgeon"
   ]
 }
