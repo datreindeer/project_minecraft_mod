@@ -9,7 +9,8 @@
     "plug": "mechanical:block/furnace_tap_plug",
     "stick": "minecraft:block/stripped_oak_log",
     "glow": "mechanical:block/furnace_tap_glow",
-    "molten": "mechanical:block/furnace_tap_molten"
+    "molten": "mechanical:block/furnace_tap_molten",
+    "fire": "mechanical:block/furnace_tap_fire"
   },
   "elements": [
     {

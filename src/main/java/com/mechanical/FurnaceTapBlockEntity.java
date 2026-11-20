@@ -1,11 +1,5 @@
 package com.mechanical;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -37,21 +31,24 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The Smelting Furnace's controller, in its {@link FurnaceTapBlock}. The furnace is the 3x3x3 of Furnace Bricks around
- * a 1x1 open shaft, the tap being the middle of the bottom front wall; checked every second and on neighbour changes.
+ * an empty middle block (the chamber) with a {@link FurnaceChuteBlock} above it, the tap being the middle of the bottom
+ * front wall; checked every second and on neighbour changes. Formed, it marks the side and back walls' bottom middles
+ * as tuyeres and lights the chute ({@link #decorate}).
  * <ul>
- * <li>Intake: item entities in the shaft. Ore and ingots go into the {@link FurnaceMelt} charge (up to its capacity, and
- * only what mixes), Charcoal / Coal into the fuel (up to {@link #FUEL_MAX}); anything else is thrown back out the top.</li>
+ * <li>Intake: item entities in the chute's opening. Ore and ingots go into the {@link FurnaceMelt} charge (up to its
+ * capacity, and only what mixes), Charcoal / Coal into the fuel (up to {@link #FUEL_MAX}); anything else is thrown back
+ * off the chute.</li>
  * <li>Heat: the kiln's model ({@link KilnBlockEntity#heatStep}, charcoal's 800° natural, 1300° with bellows,
  * {@link KilnBlockEntity#PUMP}° per pump). Lit with a Fire Drill; burns its fuel while lit; goes out when it runs out.</li>
  * <li>Melting: one quarter unit per {@link #QUARTER_TICKS} at the melting point, faster when hotter ({@link KilnBlockEntity#speed}).</li>
- * <li>Tapping: open, hot enough, and with a settled melt, the tap finds the nearest empty Clay Mold that casts the metal
- * (directly in front, or along connected Clay Channels), lets the metal run for a moment and fills it. The metal only
- * leaves the furnace when the mold is filled; with nowhere to go it simply waits.</li>
+ * <li>Tapping: open, hot enough, and with a settled melt, the tap fills an empty Clay Mold right in front of the spout
+ * after a moment, or pours into the Clay Channel there and the metal runs through the network ({@link ChannelFlow}).
+ * The flow keeps running (downhill, into molds) with the tap closed too.</li>
  * </ul>
  */
 public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
-    public static final int FUEL_MAX = 16, QUARTER_TICKS = 6, MAX_CHANNELS = 64;
-    /** A pour takes this long plus {@link #TICKS_PER_UNIT} per unit of the mold, plus 2 per channel the metal runs along. */
+    public static final int FUEL_MAX = 16, QUARTER_TICKS = 6;
+    /** A pour straight into a mold in front of the spout takes this long plus {@link #TICKS_PER_UNIT} per unit of the mold. */
     public static final int POUR_TICKS = 10, TICKS_PER_UNIT = 5;
 
     final FurnaceMelt melt = new FurnaceMelt();
@@ -60,11 +57,8 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
     // not saved: worked out again after loading
     private boolean formed;
     private @Nullable Component problem = Component.translatable("message.mechanical.furnace.checking");
-    private int checkIn, searchIn, pourLeft, syncIn;
+    private int checkIn, stepIn, pourLeft, syncIn, pouringFor;
     private boolean dirty;
-    private @Nullable Route route;
-
-    record Route(BlockPos mold, List<BlockPos> path) {}
 
     /** Synced to the screen: 0 temperature, 1 lit, 2 burn left, 3 burn total, 4 fuel items, 5 open, 6 melting point needed,
      * 7-10 pool quarters, 11-14 charge quarters (copper, tin, bronze, poor bronze). */
@@ -112,9 +106,13 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
         return getBlockState().getValue(FurnaceTapBlock.FACING);
     }
 
-    /** The bottom of the shaft, right behind the tap. */
+    /** The bottom of the furnace's middle column (a brick), right behind the tap; the chamber is above it, the chute on top. */
     public BlockPos shaft() {
         return worldPosition.relative(facing().getOpposite());
+    }
+
+    public BlockPos chute() {
+        return shaft().above(2);
     }
 
     /** Null when the furnace is complete, else what is wrong. */
@@ -140,27 +138,35 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
         return null;
     }
 
-    /** Checks the structure: 23 Furnace Bricks and this tap around an open shaft three blocks deep. */
+    /** Checks the structure: 24 Furnace Bricks, this tap and the chute around the empty chamber. */
     public void check(ServerLevel level) {
         BlockPos c = shaft();
         int missing = 0;
         BlockPos firstMissing = null, blocked = null;
+        boolean bottomOpen = false, chute = false;
         for (int dy = 0; dy <= 2; dy++) {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
                     BlockPos p = c.offset(dx, dy, dz);
                     if (p.equals(worldPosition)) continue;
                     BlockState s = level.getBlockState(p);
-                    if (dx == 0 && dz == 0) {
-                        if (!s.isAir() && blocked == null) blocked = p.immutable();
+                    if (dx == 0 && dz == 0 && dy == 1) {
+                        if (!s.isAir()) blocked = p.immutable();
+                    } else if (dx == 0 && dz == 0 && dy == 2) {
+                        chute = s.is(Smelting.FURNACE_CHUTE.get());
                     } else if (!s.is(Smelting.FURNACE_BRICKS.get())) {
+                        if (dx == 0 && dz == 0) bottomOpen = s.isAir();
                         if (missing++ == 0) firstMissing = p.immutable();
                     }
                 }
             }
         }
         boolean was = formed;
-        if (missing > 0) problem = Component.translatable("message.mechanical.furnace.missing", missing, firstMissing.getX(), firstMissing.getY(), firstMissing.getZ());
+        BlockPos top = chute();
+        if (bottomOpen && !chute && level.getBlockState(top).isAir()) // built before 0.58: the shaft was open top to bottom
+            problem = Component.translatable("message.mechanical.furnace.old_shaft", c.getX(), c.getY(), c.getZ(), top.getX(), top.getY(), top.getZ());
+        else if (missing > 0) problem = Component.translatable("message.mechanical.furnace.missing", missing, firstMissing.getX(), firstMissing.getY(), firstMissing.getZ());
+        else if (!chute) problem = Component.translatable("message.mechanical.furnace.no_chute", top.getX(), top.getY(), top.getZ());
         else if (blocked != null) problem = Component.translatable("message.mechanical.furnace.blocked", blocked.getX(), blocked.getY(), blocked.getZ());
         else problem = null;
         formed = problem == null;
@@ -168,6 +174,27 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
             level.playSound(null, worldPosition, SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0F, 0.6F);
             Smelting.award(level, worldPosition, Smelting.FORMED_ADVANCEMENT, 12);
         }
+        decorate(level);
+    }
+
+    /**
+     * Shows the formed furnace: the middle of the bottom row of the side and back walls as tuyeres (glowing while lit),
+     * the chute's glow. Only touches bricks that aren't another furnace's tuyere; client update only, no neighbour updates.
+     */
+    void decorate(ServerLevel level) {
+        Direction f = facing();
+        FurnaceBricksBlock.Tuyere want = !formed ? FurnaceBricksBlock.Tuyere.NONE : lit() ? FurnaceBricksBlock.Tuyere.LIT : FurnaceBricksBlock.Tuyere.COLD;
+        for (Direction d : new Direction[] {f.getClockWise(), f.getCounterClockWise(), f.getOpposite()}) {
+            BlockPos p = shaft().relative(d);
+            BlockState s = level.getBlockState(p);
+            if (!s.is(Smelting.FURNACE_BRICKS.get())) continue;
+            if (s.getValue(FurnaceBricksBlock.TUYERE) != FurnaceBricksBlock.Tuyere.NONE && s.getValue(FurnaceBricksBlock.FACING) != d) continue;
+            BlockState t = s.setValue(FurnaceBricksBlock.TUYERE, want).setValue(FurnaceBricksBlock.FACING, d);
+            if (t != s) level.setBlock(p, t, Block.UPDATE_CLIENTS);
+        }
+        BlockState s = level.getBlockState(chute());
+        if (s.is(Smelting.FURNACE_CHUTE.get()) && s.getValue(FurnaceChuteBlock.LIT) != (formed && lit()))
+            level.setBlock(chute(), s.setValue(FurnaceChuteBlock.LIT, formed && lit()), Block.UPDATE_CLIENTS);
     }
 
     public boolean canLight() {
@@ -206,7 +233,9 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void setLit(boolean lit) {
-        if (level != null && lit() != lit) level.setBlock(worldPosition, getBlockState().setValue(FurnaceTapBlock.LIT, lit), Block.UPDATE_ALL);
+        if (level == null || lit() == lit) return;
+        level.setBlock(worldPosition, getBlockState().setValue(FurnaceTapBlock.LIT, lit), Block.UPDATE_ALL);
+        if (level instanceof ServerLevel server) decorate(server);
     }
 
     private void setPouring(boolean pouring) {
@@ -238,7 +267,7 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
             }
             if (burn > 0) burn = Math.max(0, burn - Temperature.fireDrain(level, worldPosition, level.getRandom()));
         }
-        BlockPos top = shaft().above(3);
+        BlockPos top = chute().above();
         temp = Math.min(KilnBlockEntity.heatStep(temperature(), lit, maxTemp, ambient, level.isRainingAt(top)), KilnBlockEntity.CEILING);
 
         int need = melt.meltTemp();
@@ -261,77 +290,87 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
         }
     }
 
-    /** Takes what falls down the shaft. */
+    /** Takes what fell through the chute into the chamber, or lies in the chute (or on its rim). */
     private void intake(ServerLevel level) {
-        BlockPos c = shaft();
-        AABB box = new AABB(c.getX(), c.getY(), c.getZ(), c.getX() + 1, c.getY() + 3, c.getZ() + 1);
+        BlockPos c = chute();
+        AABB box = new AABB(c.getX(), c.getY() - 1, c.getZ(), c.getX() + 1, c.getY() + 1.25, c.getZ() + 1);
         for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, box)) {
             if (!e.isAlive()) continue;
             ItemStack stack = e.getItem().copy();
-            int taken = 0;
-            FurnaceMelt.Amount a = FurnaceMelt.quarters(stack);
-            if (a != null) {
-                taken = melt.fits(a, stack.getCount());
-                melt.add(a, taken);
-            } else if (isFuel(stack)) {
-                taken = Math.min(stack.getCount(), FUEL_MAX - fuel);
-                fuel += taken;
-            }
+            boolean metal = FurnaceMelt.quarters(stack) != null;
+            int taken = take(stack);
             if (taken > 0) {
                 stack.shrink(taken);
-                dirty = true;
-                level.playSound(null, c, a != null ? SoundEvents.LAVA_POP : SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.5F, 0.8F + level.getRandom().nextFloat() * 0.4F);
-                level.sendParticles(ParticleTypes.LARGE_SMOKE, c.getX() + 0.5, c.getY() + 3.0, c.getZ() + 0.5, 2, 0.1, 0.1, 0.1, 0.02);
+                level.playSound(null, c, metal ? SoundEvents.LAVA_POP : SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.5F, 0.8F + level.getRandom().nextFloat() * 0.4F);
+                level.sendParticles(ParticleTypes.LARGE_SMOKE, c.getX() + 0.5, c.getY() + 1.0, c.getZ() + 0.5, 2, 0.1, 0.1, 0.1, 0.02);
             }
             if (stack.isEmpty()) {
                 e.discard();
                 continue;
             }
-            // doesn't fit / doesn't melt / doesn't mix: thrown back out of the top
+            // doesn't fit / doesn't melt / doesn't mix: thrown back off the chute (from above the intake box)
             e.setItem(stack);
-            e.setPos(c.getX() + 0.5, c.getY() + 3.2, c.getZ() + 0.5);
+            e.setPos(c.getX() + 0.5, c.getY() + 1.6, c.getZ() + 0.5);
             double angle = level.getRandom().nextDouble() * Math.PI * 2;
             e.setDeltaMovement(Math.cos(angle) * 0.25, 0.4, Math.sin(angle) * 0.25);
-            level.playSound(null, c.above(3), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.6F);
+            level.playSound(null, c.above(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.6F);
         }
     }
 
-    private void pour(ServerLevel level, BlockState state) {
+    /** Puts what it can of {@code stack} into the charge or the fuel; returns how many items it took. */
+    int take(ItemStack stack) {
+        FurnaceMelt.Amount a = FurnaceMelt.quarters(stack);
+        int taken = 0;
+        if (a != null) {
+            taken = melt.fits(a, stack.getCount());
+            melt.add(a, taken);
+        } else if (isFuel(stack)) {
+            taken = Math.min(stack.getCount(), FUEL_MAX - fuel);
+            fuel += taken;
+        }
+        if (taken > 0) dirty = true;
+        return taken;
+    }
+
+    /** The metal the tap lets out now, or null (closed, broken, too cold, still settling, nothing castable). */
+    @Nullable Metal flowing(BlockState state) {
         Metal metal = melt.alloy();
         boolean flows = formed && state.getValue(FurnaceTapBlock.OPEN) && metal != null && !melt.settling() && temperature() >= metal.melt;
-        if (!flows) {
-            route = null;
-            setPouring(false);
-            return;
-        }
-        if (route == null) {
-            if (searchIn-- > 0) return;
-            searchIn = 10;
-            route = findRoute(level, metal, melt.pourable());
-            if (route == null) {
-                setPouring(false);
-                return;
+        return flows ? metal : null;
+    }
+
+    /** A mold right in front of the spout fills after a moment; a channel there gets the metal and runs it on ({@link ChannelFlow}). */
+    private void pour(ServerLevel level, BlockState state) {
+        Metal metal = flowing(state);
+        BlockPos spout = worldPosition.relative(facing());
+        BlockState front = level.getBlockState(spout);
+        if (front.getBlock() instanceof ClayMoldBlock mold) {
+            if (metal != null && accepts(front, metal, melt.pourable())) {
+                if (pourLeft <= 0) {
+                    pourLeft = POUR_TICKS + mold.shape.units * TICKS_PER_UNIT;
+                    level.playSound(null, worldPosition, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 0.7F, 1.1F);
+                }
+                pouringFor = 2;
+                if (--pourLeft <= 0 && melt.pour(mold.shape.units * 4)) {
+                    dirty = true;
+                    level.setBlock(spout, front.setValue(ClayMoldBlock.FILL, ClayMoldBlock.Fill.MOLTEN).setValue(ClayMoldBlock.METAL, metal), Block.UPDATE_ALL);
+                    level.scheduleTick(spout, mold, ClayMoldBlock.SET_TICKS);
+                    level.playSound(null, spout, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.4F);
+                    level.sendParticles(ParticleTypes.LAVA, spout.getX() + 0.5, spout.getY() + 0.25, spout.getZ() + 0.5, 3, 0.2, 0.05, 0.2, 0.0);
+                }
+            } else {
+                pourLeft = 0;
             }
-            pourLeft = POUR_TICKS + ((ClayMoldBlock) level.getBlockState(route.mold()).getBlock()).shape.units * TICKS_PER_UNIT + route.path().size() * 2;
-            markFlow(level, route, metal, level.getGameTime() + pourLeft + 15);
-            setPouring(true);
-            level.playSound(null, worldPosition, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 0.7F, 1.1F);
+        } else if (--stepIn <= 0) {
+            stepIn = ChannelFlow.STEP_TICKS;
+            BlockPos first = ChannelFlow.across(level, worldPosition, ChannelFlow.port(worldPosition, facing(), worldPosition.getY()));
+            if (first != null && level.getBlockState(first).getBlock() instanceof ClayChannelBlock && ChannelFlow.step(level, first, melt, metal)) {
+                dirty = true;
+                pouringFor = ChannelFlow.STEP_TICKS * 2;
+            }
         }
-        if (--pourLeft > 0) return;
-        Route done = route;
-        route = null;
-        searchIn = 0;
-        for (BlockPos p : done.path()) if (!(level.getBlockState(p).getBlock() instanceof ClayChannelBlock)) return; // the channel was broken: nothing lost
-        BlockState ms = level.getBlockState(done.mold());
-        if (!accepts(ms, metal, melt.pourable())) return;
-        ClayMoldBlock mold = (ClayMoldBlock) ms.getBlock();
-        if (!melt.pour(mold.shape.units * 4)) return;
-        dirty = true;
-        level.setBlock(done.mold(), ms.setValue(ClayMoldBlock.FILL, ClayMoldBlock.Fill.MOLTEN).setValue(ClayMoldBlock.METAL, metal), Block.UPDATE_ALL);
-        level.scheduleTick(done.mold(), mold, ClayMoldBlock.SET_TICKS);
-        level.playSound(null, done.mold(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.4F);
-        level.sendParticles(ParticleTypes.LAVA, done.mold().getX() + 0.5, done.mold().getY() + 0.25, done.mold().getZ() + 0.5, 3, 0.2, 0.05, 0.2, 0.0);
-        if (!done.path().isEmpty()) Smelting.award(level, worldPosition, Smelting.TAPPED_ADVANCEMENT, 16);
+        if (pouringFor > 0) pouringFor--;
+        setPouring(pouringFor > 0);
     }
 
     static boolean accepts(BlockState s, Metal metal, int quarters) {
@@ -339,51 +378,14 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
                 && metal.casts(mold.shape) && mold.shape.units * 4 <= quarters;
     }
 
-    /** The nearest mold that takes a cast of this metal: right in front of the spout, or along the channels from there. */
-    @Nullable Route findRoute(ServerLevel level, Metal metal, int quarters) {
-        BlockPos start = worldPosition.relative(facing());
-        BlockState first = level.getBlockState(start);
-        if (accepts(first, metal, quarters)) return new Route(start, List.of());
-        if (!(first.getBlock() instanceof ClayChannelBlock)) return null;
-        Map<BlockPos, BlockPos> from = new HashMap<>();
-        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-        from.put(start, worldPosition);
-        queue.add(start);
-        while (!queue.isEmpty()) {
-            BlockPos c = queue.poll();
-            for (Direction d : Direction.Plane.HORIZONTAL) {
-                BlockPos n = c.relative(d);
-                if (from.containsKey(n) || n.equals(worldPosition) || !level.isLoaded(n)) continue;
-                BlockState s = level.getBlockState(n);
-                if (s.getBlock() instanceof ClayChannelBlock) {
-                    if (from.size() >= MAX_CHANNELS) continue;
-                    from.put(n, c);
-                    queue.add(n);
-                } else if (accepts(s, metal, quarters)) {
-                    List<BlockPos> path = new ArrayList<>();
-                    for (BlockPos p = c; !p.equals(worldPosition); p = from.get(p)) path.addFirst(p);
-                    return new Route(n, path);
-                }
-            }
-        }
-        return null;
-    }
-
-    /** Lights up the channels on the route: each one shows metal running from where it came in to where it goes out. */
-    private void markFlow(ServerLevel level, Route route, Metal metal, long until) {
-        List<BlockPos> path = route.path();
-        for (int i = 0; i < path.size(); i++) {
-            BlockPos p = path.get(i);
-            BlockPos prev = i == 0 ? worldPosition : path.get(i - 1), next = i == path.size() - 1 ? route.mold() : path.get(i + 1);
-            if (level.getBlockEntity(p) instanceof ClayChannelBlockEntity channel)
-                channel.flow(metal, Direction.getNearest(prev.subtract(p), Direction.NORTH), Direction.getNearest(next.subtract(p), Direction.NORTH), until);
-        }
-    }
-
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         // the fuel falls out; molten metal and unmelted ore in a broken tap are lost
         if (level != null && fuel > 0) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.CHARCOAL, fuel));
+        if (level instanceof ServerLevel server) {
+            formed = false;
+            decorate(server); // plain bricks again
+        }
     }
 
     @Override

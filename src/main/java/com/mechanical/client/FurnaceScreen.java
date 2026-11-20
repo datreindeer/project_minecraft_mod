@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.mechanical.Bronze;
+import com.mechanical.BronzeOres;
 import com.mechanical.CrucibleContents;
 import com.mechanical.FurnaceMelt;
 import com.mechanical.FurnaceMenu;
@@ -20,22 +22,31 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
  * The Smelting Furnace's status: the kiln's thermometer (white notch at the melting point the charge needs), a tank
- * showing the molten pool in the metal's colour with the unmelted charge above it (darker), the fuel flame and
- * text lines: molten metal per kind, ore still melting, the copper : tin mix, and what the tap is doing.
+ * showing the molten pool in the metal's colour with the unmelted charge above it (darker), the fuel (flame, Charcoal,
+ * count) and, on the right, rows with an item icon: the molten metal (alloy, amount, quality: Good / Poor bronze, pure
+ * copper or slag), each kind of ore / ingots still melting, then the copper : tin mix and what the tap is doing.
  * Background: textures/gui/container/smelting_furnace.png (gen_smelter_textures.py).
  */
 public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
     private static final Identifier BG = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/smelting_furnace.png");
     private static final Identifier FLAME = Identifier.withDefaultNamespace("container/furnace/lit_progress");
     /** Inside of the tank: x 40..51, rows 18..61 (= {@link FurnaceMelt#CAPACITY} quarters). */
-    public static final int TANK_X = 40, TANK_W = 12, FLAME_X = 22, FLAME_Y = 76, TEXT_X = 62;
-    private static final int DARK = 0xFF404040, GREEN = 0xFF2E7D32, RED = 0xFFB71C1C, GOLD = 0xFF8A6A00;
+    public static final int TANK_X = 40, TANK_W = 12, FLAME_X = 22, FLAME_Y = 70, FUEL_X = 38, TEXT_X = 62, ROW_H = 21;
+    private static final int DARK = 0xFF404040, GREEN = 0xFF2E7D32, RED = 0xFFB71C1C, GOLD = 0xFF8A6A00, GREY = 0xFF6A6A6A;
+
+    // built when the screen opens (never in a static initializer: items must be registered first)
+    private final ItemStack copperIngot = new ItemStack(Items.COPPER_INGOT), bronzeIngot = new ItemStack(Bronze.BRONZE_INGOT.get()),
+            poorIngot = new ItemStack(Bronze.BRONZE_INGOT.get()), copperOre = new ItemStack(BronzeOres.CRUSHED_COPPER_ORE.get()),
+            tinOre = new ItemStack(BronzeOres.CRUSHED_TIN_ORE.get()), charcoal = new ItemStack(Items.CHARCOAL);
 
     public FurnaceScreen(FurnaceMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 220, 96);
+        super(menu, inventory, title, 220, 112);
+        Bronze.markPoor(poorIngot);
     }
 
     /** Molten colour of a metal (also the channel strip's tint, client/MoltenRenderer). */
@@ -50,6 +61,19 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
 
     static String units(int quarters) {
         return String.format(Locale.ROOT, "%.2f", quarters / 4F);
+    }
+
+    private static Component metalName(Metal m) {
+        return Component.translatable("metal.mechanical." + m.getSerializedName());
+    }
+
+    private ItemStack icon(Metal m, boolean ore) {
+        return switch (m) {
+            case COPPER -> ore ? copperOre : copperIngot;
+            case TIN -> tinOre;
+            case BRONZE -> bronzeIngot;
+            case POOR_BRONZE -> poorIngot;
+        };
     }
 
     @Override
@@ -75,6 +99,18 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
             int h = (int) Math.ceil(menu.burn() * 13) + 1;
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, FLAME, 14, 14, 0, 14 - h, leftPos + FLAME_X, topPos + FLAME_Y + 14 - h, 14, h);
         }
+        graphics.item(charcoal, leftPos + FUEL_X, topPos + FLAME_Y - 1);
+        // the icon of each row on the right (the text is drawn in extractLabels)
+        int y = topPos + 18;
+        if (metal != null && melt.poolTotal() > 0) {
+            graphics.item(icon(metal, false), leftPos + TEXT_X, y + 2);
+            y += ROW_H;
+        }
+        for (Metal m : Metal.values()) {
+            if (melt.charge(m) == 0) continue;
+            graphics.item(icon(m, true), leftPos + TEXT_X, y + 2);
+            y += ROW_H;
+        }
     }
 
     /** The heat the notch marks: the charge's melting point, or the pool's while nothing is left to melt. */
@@ -87,32 +123,55 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
     protected void extractLabels(GuiGraphicsExtractor graphics, int xm, int ym) {
         graphics.text(font, title, titleLabelX, titleLabelY, DARK, false);
         FurnaceMelt melt = menu.melt();
-        int y = 18;
-        for (Metal m : Metal.values()) {
-            if (melt.pool(m) == 0) continue;
-            graphics.text(font, Component.translatable("gui.mechanical.furnace.molten", Component.translatable("metal.mechanical." + m.getSerializedName()),
-                    units(melt.pool(m))), TEXT_X, y, DARK, false);
-            y += 10;
+        int x = TEXT_X + 19, y = 18;
+        Metal alloy = melt.alloy();
+        // the molten metal: what it pours as, how much, and its quality
+        if (melt.poolTotal() > 0 && (alloy != null || melt.pool(Metal.TIN) > 0)) {
+            Component quality;
+            int colour;
+            if (alloy == null) {
+                quality = Component.translatable("gui.mechanical.furnace.quality.needs_copper");
+                colour = GREY;
+            } else if (melt.settling()) {
+                quality = Component.translatable("gui.mechanical.furnace.quality.mixing");
+                colour = GOLD;
+            } else if (melt.slags()) {
+                quality = Component.translatable("gui.mechanical.furnace.quality.slag");
+                colour = RED;
+            } else {
+                quality = Component.translatable("gui.mechanical.furnace.quality." + switch (alloy) {
+                    case BRONZE -> "good";
+                    case POOR_BRONZE -> "poor";
+                    default -> "pure";
+                });
+                colour = alloy == Metal.POOR_BRONZE ? GOLD : GREEN;
+            }
+            graphics.text(font, Component.translatable("gui.mechanical.furnace.molten", metalName(alloy != null ? alloy : Metal.TIN)), x, y + 1, DARK, false);
+            int shown = alloy != null && !melt.settling() ? melt.pourable() : melt.poolTotal();
+            graphics.text(font, Component.translatable("gui.mechanical.furnace.amount", units(shown), quality), x, y + 11, colour, false);
+            y += ROW_H;
         }
-        if (melt.chargeTotal() > 0) {
-            graphics.text(font, Component.translatable("gui.mechanical.furnace.charge", units(melt.chargeTotal())), TEXT_X, y, DARK, false);
-            y += 10;
+        // what is still melting, per kind
+        for (Metal m : Metal.values()) {
+            if (melt.charge(m) == 0) continue;
+            graphics.text(font, Component.translatable("gui.mechanical.furnace.unmelted", metalName(m)), x, y + 1, DARK, false);
+            graphics.text(font, Component.translatable("gui.mechanical.furnace.units", units(melt.charge(m))), x, y + 11, GREY, false);
+            y += ROW_H;
         }
         int cu = melt.pool(Metal.COPPER) + melt.charge(Metal.COPPER), sn = melt.pool(Metal.TIN) + melt.charge(Metal.TIN);
         if (cu > 0 && sn > 0) {
             String pct = String.format(Locale.ROOT, "%.1f", sn * 100F / (cu + sn));
             Metal mix = melt.chargeTotal() > 0 ? null : melt.alloy();
-            Component result = Component.translatable("metal.mechanical." + (mix != null ? mix : CrucibleContents.alloy(cu, sn)).getSerializedName());
-            graphics.text(font, Component.translatable("gui.mechanical.furnace.mix", pct, result), TEXT_X, y, DARK, false);
-            y += 10;
+            graphics.text(font, Component.translatable("gui.mechanical.furnace.mix", pct, metalName(mix != null ? mix : CrucibleContents.alloy(cu, sn))),
+                    TEXT_X, y + 1, DARK, false);
+            y += 11;
         }
         if (melt.poolTotal() + melt.chargeTotal() == 0) {
-            graphics.text(font, Component.translatable("gui.mechanical.furnace.empty"), TEXT_X, y, DARK, false);
-            y += 10;
+            graphics.text(font, Component.translatable("gui.mechanical.furnace.empty"), TEXT_X, y + 1, DARK, false);
+            y += 11;
         }
         Component status;
         int colour;
-        Metal alloy = melt.alloy();
         if (alloy == null) {
             status = Component.translatable(menu.open() ? "gui.mechanical.furnace.open" : "gui.mechanical.furnace.closed");
             colour = DARK;
@@ -129,9 +188,8 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
             status = Component.translatable(menu.open() ? "gui.mechanical.furnace.pouring" : "gui.mechanical.furnace.closed");
             colour = menu.open() ? GREEN : DARK;
         }
-        graphics.text(font, status, TEXT_X, Math.max(y, 68), colour, false);
-        graphics.text(font, Component.translatable("gui.mechanical.furnace.fuel", menu.fuel(), FurnaceTapBlockEntity.FUEL_MAX), FLAME_X + 18, FLAME_Y + 3,
-                menu.lit() ? DARK : RED, false);
+        graphics.text(font, status, TEXT_X, Math.max(y + 3, 98), colour, false);
+        graphics.text(font, menu.fuel() + "/" + FurnaceTapBlockEntity.FUEL_MAX, FLAME_X, FLAME_Y + 18, menu.lit() ? DARK : RED, false);
     }
 
     @Override
@@ -148,8 +206,9 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
         } else if (rx >= TANK_X - 1 && rx < TANK_X + TANK_W + 1 && ry >= KilnScreen.TUBE_TOP - 1 && ry <= KilnScreen.TUBE_BOTTOM) {
             FurnaceMelt melt = menu.melt();
             lines.add(Component.translatable("gui.mechanical.furnace.tank", units(melt.poolTotal() + melt.chargeTotal()), FurnaceMelt.CAPACITY / 4));
-        } else if (rx >= FLAME_X && rx < FLAME_X + 14 && ry >= FLAME_Y && ry < FLAME_Y + 14) {
-            lines.add(Component.translatable(menu.lit() ? "gui.mechanical.kiln.lit" : "gui.mechanical.furnace.unlit"));
+        } else if (rx >= FLAME_X && rx < FUEL_X + 16 && ry >= FLAME_Y - 1 && ry < FLAME_Y + 27) {
+            lines.add(Component.translatable("gui.mechanical.furnace.fuel", menu.fuel(), FurnaceTapBlockEntity.FUEL_MAX));
+            lines.add(Component.translatable(menu.lit() ? "gui.mechanical.kiln.lit" : "gui.mechanical.furnace.unlit").withStyle(ChatFormatting.GRAY));
         }
         if (lines.isEmpty()) return;
         List<FormattedCharSequence> seq = lines.stream().map(Component::getVisualOrderText).toList();

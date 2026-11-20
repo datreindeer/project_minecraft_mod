@@ -1,12 +1,16 @@
 {
   "multipart": [
     {
+      "when": {
+        "slope": "none"
+      },
       "apply": {
         "model": "mechanical:block/clay_channel_middle"
       }
     },
     {
       "when": {
+        "slope": "none",
         "north": "true"
       },
       "apply": {
@@ -15,6 +19,7 @@
     },
     {
       "when": {
+        "slope": "none",
         "north": "false"
       },
       "apply": {
@@ -23,6 +28,15 @@
     },
     {
       "when": {
+        "slope": "north"
+      },
+      "apply": {
+        "model": "mechanical:block/clay_channel_slope"
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
         "east": "true"
       },
       "apply": {
@@ -33,6 +47,7 @@
     },
     {
       "when": {
+        "slope": "none",
         "east": "false"
       },
       "apply": {
@@ -43,6 +58,16 @@
     },
     {
       "when": {
+        "slope": "east"
+      },
+      "apply": {
+        "model": "mechanical:block/clay_channel_slope",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
         "south": "true"
       },
       "apply": {
@@ -53,6 +78,7 @@
     },
     {
       "when": {
+        "slope": "none",
         "south": "false"
       },
       "apply": {
@@ -63,6 +89,16 @@
     },
     {
       "when": {
+        "slope": "south"
+      },
+      "apply": {
+        "model": "mechanical:block/clay_channel_slope",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
         "west": "true"
       },
       "apply": {
@@ -73,12 +109,22 @@
     },
     {
       "when": {
+        "slope": "none",
         "west": "false"
       },
       "apply": {
         "model": "mechanical:block/clay_channel_end",
         "y": 270,
         "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "west"
+      },
+      "apply": {
+        "model": "mechanical:block/clay_channel_slope",
+        "y": 270
       }
     }
   ]

@@ -14,7 +14,6 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
@@ -23,9 +22,10 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 /**
- * Late Bronze Age: the Smelting Furnace, a 3x3x3 shaft of {@link #FURNACE_BRICKS} with a {@link FurnaceTapBlock} in the
- * bottom front wall (the controller, {@link FurnaceTapBlockEntity}). Ore, ingots and charcoal dropped down the shaft go
- * in; bellows on a wall heat it; opened, the tap pours along {@link ClayChannelBlock Clay Channels} into Clay Molds.
+ * Late Bronze Age: the Smelting Furnace, a 3x3x3 of {@link #FURNACE_BRICKS} around an empty middle chamber, a
+ * {@link FurnaceChuteBlock} on top and a {@link FurnaceTapBlock} in the bottom front wall (the controller,
+ * {@link FurnaceTapBlockEntity}). Ore, ingots and charcoal thrown onto the chute go in; bellows on a wall heat it;
+ * opened, the tap fills {@link ClayChannelBlock Clay Channels} downhill ({@link ChannelFlow}) and they fill Clay Molds.
  * Melt and yield rules: {@link FurnaceMelt}. Data: scripts/gen_smelter.py, textures: scripts/gen_smelter_textures.py.
  */
 public final class Smelting {
@@ -33,9 +33,14 @@ public final class Smelting {
     public static final DeferredItem<Item> FURNACE_BRICK = ITEMS.registerSimpleItem("furnace_brick");
     public static final DeferredItem<Item> UNFIRED_CLAY_CHANNEL = ITEMS.registerSimpleItem("unfired_clay_channel");
 
-    public static final DeferredBlock<Block> FURNACE_BRICKS = BLOCKS.registerBlock("furnace_bricks", Block::new, p -> p
-            .mapColor(MapColor.SAND).strength(2.0F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops());
+    public static final DeferredBlock<FurnaceBricksBlock> FURNACE_BRICKS = BLOCKS.registerBlock("furnace_bricks", FurnaceBricksBlock::new, p -> p
+            .mapColor(MapColor.SAND).strength(2.0F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()
+            .lightLevel(s -> s.getValue(FurnaceBricksBlock.TUYERE) == FurnaceBricksBlock.Tuyere.LIT ? 6 : 0));
     public static final DeferredItem<BlockItem> FURNACE_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("furnace_bricks", FURNACE_BRICKS);
+    public static final DeferredBlock<FurnaceChuteBlock> FURNACE_CHUTE = BLOCKS.registerBlock("furnace_chute", FurnaceChuteBlock::new, p -> p
+            .mapColor(MapColor.SAND).strength(2.0F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()
+            .lightLevel(s -> s.getValue(FurnaceChuteBlock.LIT) ? 9 : 0));
+    public static final DeferredItem<BlockItem> FURNACE_CHUTE_ITEM = ITEMS.registerSimpleBlockItem("furnace_chute", FURNACE_CHUTE);
 
     public static final DeferredBlock<FurnaceTapBlock> FURNACE_TAP = BLOCKS.registerBlock("furnace_tap", FurnaceTapBlock::new, p -> p
             .mapColor(MapColor.SAND).strength(2.0F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion()
@@ -55,6 +60,7 @@ public final class Smelting {
     /** Advancements granted from code (their criterion is minecraft:impossible), see scripts/gen_advancements.py. */
     public static final Identifier FORMED_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "bronze_age/smelting_furnace");
     public static final Identifier TAPPED_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "bronze_age/tap_metal");
+    public static final Identifier SCOOP_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "bronze_age/scoop_channel");
 
     /** Grants a code-driven advancement to every player within {@code radius} blocks. */
     static void award(ServerLevel level, BlockPos pos, Identifier id, double radius) {

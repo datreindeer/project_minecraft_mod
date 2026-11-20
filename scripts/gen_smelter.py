@@ -1,7 +1,9 @@
-"""Late Bronze Age Smelting Furnace: Furnace Bricks, the Furnace Tap and Clay Channels.
-Writes block models (the tap: brick cube, clay spout, plug in / pulled out, glow planes for the fire and the metal
-running down the spout; the channel: trough middle, arm and end wall for the multipart), blockstates, item model
-definitions, loot tables, crafting recipes, the mineable tag and lang. The kiln firing (Unfired Furnace Brick ->
+"""Late Bronze Age Smelting Furnace: Furnace Bricks (plain, or a tuyere while the furnace is formed), the Furnace
+Chute, the Furnace Tap and Clay Channels.
+Writes block models (the tap: brick cube, clay spout, plug in / pulled out, glow planes for the fire mouth, the tap
+hole and the metal running down the spout; the chute: a funnel down to a hole; the channel: trough middle, arm and end
+wall for the multipart, and the 45-degree slope), blockstates, item model definitions, loot tables, crafting recipes,
+the mineable tag and lang. The kiln firing (Unfired Furnace Brick ->
 Furnace Brick, Unfired Clay Channel -> Clay Channel) is in Java (KilnBlockEntity.RECIPES). Code: Smelting.java and the
 classes it names. Textures: gen_smelter_textures.py.
 Generator order: ... gen_pottery.py, gen_cart.py, gen_smelter.py, gen_block_items.py, gen_unlocks.py, gen_advancements.py, gen_registry.py.
@@ -68,14 +70,75 @@ def turn180(el):
 
 # ---------------- Furnace Bricks: a full cube of fireclay bricks ----------------
 w(A / "models/block/furnace_bricks.json", {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/furnace_bricks"}})
-w(A / "blockstates/furnace_bricks.json", {"variants": {"": {"model": M + "block/furnace_bricks"}}})
+# tuyere (set by the tap on the side and back walls' bottom middles while formed): a clay blowpipe hole on the north face
+TUY_TEX = {"particle": M + "block/furnace_bricks", "bricks": M + "block/furnace_bricks", "front": M + "block/furnace_bricks_tuyere",
+           "glow": M + "block/furnace_tap_glow"}
+model("furnace_bricks_tuyere", [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": {
+    f: {"texture": "#front" if f == "north" else "#bricks", "cullface": f} for f in FACES}}], TUY_TEX)
+# lit: the fire glows in the hole (texture px x 6..9, y 7..10 = model x 6..10, y 6..9)
+model("furnace_bricks_tuyere_lit", [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": {
+    f: {"texture": "#front" if f == "north" else "#bricks", "cullface": f} for f in FACES}},
+    {"from": [6, 6, -0.01], "to": [10, 10, -0.01], "light_emission": 15, "shade": False,
+     "faces": {"north": {"uv": [6, 6, 10, 10], "texture": "#glow", "cullface": "north"}}}], TUY_TEX)
+variants = {}
+for facing, y in ROT.items():
+    rot = {"y": y} if y else {}
+    variants[f"facing={facing},tuyere=none"] = {"model": M + "block/furnace_bricks"}
+    variants[f"facing={facing},tuyere=cold"] = {"model": M + "block/furnace_bricks_tuyere", **rot}
+    variants[f"facing={facing},tuyere=lit"] = {"model": M + "block/furnace_bricks_tuyere_lit", **rot}
+w(A / "blockstates/furnace_bricks.json", {"variants": variants})
 w(A / "items/furnace_bricks.json", {"model": {"type": "minecraft:model", "model": M + "block/furnace_bricks"}})
 
+# ---------------- Furnace Chute: a basin (x/z 3..13, y 6..16) narrowing to a hole (5..11) down into the chamber ----------------
+def cull(el):
+    """Culls the faces of an element that lie on the block's boundary."""
+    (x0, y0, z0), (x1, y1, z1) = el["from"], el["to"]
+    edge = {"down": y0 == 0, "up": y1 == 16, "north": z0 == 0, "south": z1 == 16, "west": x0 == 0, "east": x1 == 16}
+    for f, face in el["faces"].items():
+        if edge[f]:
+            face["cullface"] = f
+    return el
+
+
+CHUTE_TEX = {"particle": M + "block/furnace_bricks", "bricks": M + "block/furnace_bricks", "top": M + "block/furnace_chute_top",
+             "inside": M + "block/furnace_chute_inside", "glow": M + "block/furnace_tap_glow"}
+OUT = {"north": "#bricks", "south": "#bricks", "east": "#bricks", "west": "#bricks", "down": "#bricks"}
+CHUTE = [cull(e) for e in [
+    # the ring around the hole, its top the basin's floor
+    box([0, 0, 0], [16, 6, 5], {**OUT, "up": "#inside", "south": "#inside"}),
+    box([0, 0, 11], [16, 6, 16], {**OUT, "up": "#inside", "north": "#inside"}),
+    box([0, 0, 5], [5, 6, 11], {**OUT, "up": "#inside", "east": "#inside", "north": "#inside", "south": "#inside"}),
+    box([11, 0, 5], [16, 6, 11], {**OUT, "up": "#inside", "west": "#inside", "north": "#inside", "south": "#inside"}),
+    # the basin's walls
+    box([0, 6, 0], [16, 16, 3], {**OUT, "up": "#top", "south": "#inside", "down": "#inside"}),
+    box([0, 6, 13], [16, 16, 16], {**OUT, "up": "#top", "north": "#inside", "down": "#inside"}),
+    box([0, 6, 3], [3, 16, 13], {**OUT, "up": "#top", "east": "#inside", "down": "#inside"}),
+    box([13, 6, 3], [16, 16, 13], {**OUT, "up": "#top", "west": "#inside", "down": "#inside"}),
+]]
+for e in CHUTE:  # the inner faces of the ring and walls face the opening: never culled
+    for f in e["faces"].values():
+        if f["texture"] == "#inside":
+            f.pop("cullface", None)
+model("furnace_chute", CHUTE, CHUTE_TEX)
+# lit: the fire glows up the hole's four walls
+GLOW_PLANE = {"light_emission": 15, "shade": False}
+model("furnace_chute_lit", [
+    {"from": [5.01, 0, 5], "to": [5.01, 6, 11], **GLOW_PLANE, "faces": {"east": {"uv": [5, 10, 11, 16], "texture": "#glow"}}},
+    {"from": [10.99, 0, 5], "to": [10.99, 6, 11], **GLOW_PLANE, "faces": {"west": {"uv": [5, 10, 11, 16], "texture": "#glow"}}},
+    {"from": [5, 0, 5.01], "to": [11, 6, 5.01], **GLOW_PLANE, "faces": {"south": {"uv": [5, 10, 11, 16], "texture": "#glow"}}},
+    {"from": [5, 0, 10.99], "to": [11, 6, 10.99], **GLOW_PLANE, "faces": {"north": {"uv": [5, 10, 11, 16], "texture": "#glow"}}},
+], CHUTE_TEX)
+w(A / "blockstates/furnace_chute.json", {"multipart": [{"apply": {"model": M + "block/furnace_chute"}},
+                                                       {"when": {"lit": "true"}, "apply": {"model": M + "block/furnace_chute_lit"}}]})
+w(A / "items/furnace_chute.json", {"model": {"type": "minecraft:model", "model": M + "block/furnace_chute"}})
+
 # ---------------- Furnace Tap (built facing north: the spout sticks out of the north face) ----------------
-# The front texture has the tap hole (x 6..10, y 4..7) in a breast of darker clay and a peephole (x 7..9, y 12..14).
+# The front texture has the tap hole (x 6..10, y 4..7) in a breast of darker clay and, above it, an arched fire mouth
+# (texture x 4..11, rows 1..6 = model y 10..15) where the fire shows while lit.
 TAP_TEX = {"particle": M + "block/furnace_bricks", "bricks": M + "block/furnace_bricks", "front": M + "block/furnace_tap_front",
            "clay": M + "block/clay_channel", "inside": M + "block/clay_channel_inside", "plug": M + "block/furnace_tap_plug",
-           "stick": "minecraft:block/stripped_oak_log", "glow": M + "block/furnace_tap_glow", "molten": M + "block/furnace_tap_molten"}
+           "stick": "minecraft:block/stripped_oak_log", "glow": M + "block/furnace_tap_glow", "molten": M + "block/furnace_tap_molten",
+           "fire": M + "block/furnace_tap_fire"}
 cube = {"from": [0, 0, 0], "to": [16, 16, 16], "faces": {f: {"texture": "#front" if f == "north" else "#bricks", "cullface": f} for f in FACES}}
 cube["faces"]["north"].pop("cullface")  # the spout sits in front of it: never culled
 SPOUT = [
@@ -91,10 +154,10 @@ PLUG_IN = [box([6, 4, -1], [10, 7, 0.01], "#plug"), box([7.5, 5, -3], [8.5, 6, -
 PLUG_OUT = [box([11.5, 0, -2.5], [14.5, 2, 0.5], "#plug"), box([12.5, 0.5, -4.5], [13.5, 1.5, -2.5], "#stick")]
 model("furnace_tap_plug_in", PLUG_IN, TAP_TEX)
 model("furnace_tap_plug_out", PLUG_OUT, TAP_TEX)
-# lit: fire seen through the peephole and the (open) tap hole; the plug covers the hole glow when it is in
+# lit: flames in the fire mouth (cut out to its arch) and the glow of the (open) tap hole; the plug covers the hole glow when it is in
 GLOW = {"light_emission": 15, "shade": False}
 model("furnace_tap_lit", [
-    {"from": [7, 12, -0.01], "to": [9, 14, -0.01], **GLOW, "faces": {"north": {"uv": [7, 2, 9, 4], "texture": "#glow"}}},
+    {"from": [4, 10, -0.01], "to": [12, 15, -0.01], **GLOW, "faces": {"north": {"uv": [4, 1, 12, 6], "texture": "#fire"}}},
     {"from": [6, 4, -0.01], "to": [10, 7, -0.01], **GLOW, "faces": {"north": {"uv": [6, 9, 10, 12], "texture": "#glow"}}},
 ], TAP_TEX)
 # pouring: molten metal running down the spout and dropping off its lip into the channel
@@ -128,11 +191,19 @@ ARM = [box([3, 0, 0], [13, 2, 3], {**CLAY, "up": "#inside"}),
 END = [box([5, 2, 3], [11, 5, 5], {**CLAY, "south": "#inside"})]  # north end wall, inner face south
 for name, els in (("clay_channel_middle", MIDDLE), ("clay_channel_arm", ARM), ("clay_channel_end", END)):
     model(name, els, CH_TEX)
-parts = [{"apply": {"model": M + "block/clay_channel_middle"}}]
+# slope climbing north (like vanilla's raised rail): a straight trough, floor top at y 8, turned 45 degrees about x through
+# the block's middle and stretched to the diagonal, so its floor runs from the south edge's bottom to the north edge's top
+TILT = {"origin": [8, 8, 8], "axis": "x", "angle": 45, "rescale": True}
+SLOPE = [box([3, 6, 0], [13, 8, 16], {**CLAY, "up": "#inside"}, rotation=TILT),
+         box([3, 8, 0], [5, 11, 16], {**CLAY, "east": "#inside"}, rotation=TILT),
+         box([11, 8, 0], [13, 11, 16], {**CLAY, "west": "#inside"}, rotation=TILT)]
+model("clay_channel_slope", SLOPE, CH_TEX)
+parts = [{"when": {"slope": "none"}, "apply": {"model": M + "block/clay_channel_middle"}}]
 for side, y in ROT.items():
     rot = {"y": y, "uvlock": True} if y else {}
-    parts += [{"when": {side: "true"}, "apply": {"model": M + "block/clay_channel_arm", **rot}},
-              {"when": {side: "false"}, "apply": {"model": M + "block/clay_channel_end", **rot}}]
+    parts += [{"when": {"slope": "none", side: "true"}, "apply": {"model": M + "block/clay_channel_arm", **rot}},
+              {"when": {"slope": "none", side: "false"}, "apply": {"model": M + "block/clay_channel_end", **rot}},
+              {"when": {"slope": side}, "apply": {"model": M + "block/clay_channel_slope", **({"y": y} if y else {})}}]
 w(A / "blockstates/clay_channel.json", {"multipart": parts})
 # held: a straight north-south length
 model("clay_channel_inventory", MIDDLE + ARM + [turn180(e) for e in ARM], CH_TEX)
@@ -144,11 +215,11 @@ for item in ("unfired_furnace_brick", "furnace_brick", "unfired_clay_channel"):
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": M + f"item/{item}"}})
 
 # ---------------- loot, tags ----------------
-for block in ("furnace_bricks", "furnace_tap", "clay_channel"):
+for block in ("furnace_bricks", "furnace_chute", "furnace_tap", "clay_channel"):
     w(D / f"mechanical/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [
         {"rolls": 1, "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": M + block}]}],
         "random_sequence": f"mechanical:blocks/{block}"})
-tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "furnace_bricks", M + "furnace_tap", M + "clay_channel")
+tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "furnace_bricks", M + "furnace_chute", M + "furnace_tap", M + "clay_channel")
 
 # ---------------- recipes ----------------
 def shaped(name, pattern, key, result, count=1, category="misc"):
@@ -160,6 +231,7 @@ def shaped(name, pattern, key, result, count=1, category="misc"):
 shaped("unfired_furnace_brick", ["CS", "SC"], {"C": "minecraft:clay_ball", "S": "#minecraft:sand"}, "unfired_furnace_brick", 4)
 shaped("furnace_bricks", ["BB", "BB"], {"B": M + "furnace_brick"}, "furnace_bricks", 1, "building")
 shaped("unfired_clay_channel", ["C C", "C C"], {"C": "minecraft:clay_ball"}, "unfired_clay_channel", 4)
+shaped("furnace_chute", ["B B", " B "], {"B": M + "furnace_brick"}, "furnace_chute", 1, "building")  # a funnel of three bricks
 w(D / "mechanical/recipe/furnace_tap.json", {"type": "minecraft:crafting_shapeless", "category": "building",
     "ingredients": [M + "furnace_bricks", M + "clay_channel", "minecraft:clay_ball", "minecraft:stick"], "result": {"id": M + "furnace_tap"}})
 
@@ -168,20 +240,32 @@ merge(A / "lang/en_us.json", {
     "item.mechanical.furnace_brick": "Furnace Brick",
     "block.mechanical.furnace_bricks": "Furnace Bricks",
     "block.mechanical.furnace_tap": "Furnace Tap",
+    "block.mechanical.furnace_chute": "Furnace Chute",
     "item.mechanical.unfired_clay_channel": "Unfired Clay Channel",
     "block.mechanical.clay_channel": "Clay Channel",
     "container.mechanical.smelting_furnace": "Smelting Furnace",
     "message.mechanical.furnace.checking": "Checking the furnace...",
-    "message.mechanical.furnace.missing": "Not a furnace yet: %s Furnace Bricks missing (one at %s %s %s). 3x3x3 around an open shaft, the tap mid-bottom front",
-    "message.mechanical.furnace.blocked": "The shaft must be open from top to bottom: clear %s %s %s",
-    "message.mechanical.furnace.tap_open": "Tap open: molten metal runs out into the molds",
+    "message.mechanical.furnace.missing": "Not a furnace yet: %s Furnace Bricks missing (one at %s %s %s). 3x3x3, the middle block empty, a Furnace Chute on top, the tap mid-bottom front",
+    "message.mechanical.furnace.blocked": "The middle of the furnace must be empty: clear %s %s %s",
+    "message.mechanical.furnace.no_chute": "Put a Furnace Chute on top of the furnace's middle: %s %s %s",
+    "message.mechanical.furnace.old_shaft": "Rebuild for 0.58: only the middle block stays empty. Furnace Bricks into the bottom of the shaft (%s %s %s), a Furnace Chute on top (%s %s %s)",
+    "message.mechanical.channel.nothing_to_scoop": "Not a whole unit of metal in these channels",
+    "message.mechanical.furnace.tap_open": "Tap open: molten metal runs out into the channels and molds",
     "message.mechanical.furnace.tap_closed": "Tap plugged",
     "message.mechanical.furnace.unlit": "The furnace is not lit",
-    "message.mechanical.furnace.needs_fuel": "Drop Charcoal down the shaft first",
-    "gui.mechanical.furnace.molten": "%s: %s units",
-    "gui.mechanical.furnace.charge": "Ore melting: %s units",
+    "message.mechanical.furnace.needs_fuel": "Throw Charcoal onto the chute first",
+    "gui.mechanical.furnace.molten": "Molten %s",
+    "gui.mechanical.furnace.amount": "%s units (%s)",
+    "gui.mechanical.furnace.units": "%s units",
+    "gui.mechanical.furnace.unmelted": "Unmelted %s",
+    "gui.mechanical.furnace.quality.good": "Good",
+    "gui.mechanical.furnace.quality.poor": "Poor",
+    "gui.mechanical.furnace.quality.pure": "pure",
+    "gui.mechanical.furnace.quality.slag": "tin lost as slag",
+    "gui.mechanical.furnace.quality.mixing": "still mixing",
+    "gui.mechanical.furnace.quality.needs_copper": "needs copper",
     "gui.mechanical.furnace.mix": "Mix: %s%% tin = %s",
-    "gui.mechanical.furnace.empty": "Empty: drop ore down the shaft",
+    "gui.mechanical.furnace.empty": "Empty: throw ore onto the chute",
     "gui.mechanical.furnace.open": "Tap open",
     "gui.mechanical.furnace.closed": "Tap closed (sneak + use)",
     "gui.mechanical.furnace.pouring": "Tap open: pouring",

@@ -1,0 +1,17 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/furnace_chute"
+      }
+    },
+    {
+      "when": {
+        "lit": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/furnace_chute_lit"
+      }
+    }
+  ]
+}

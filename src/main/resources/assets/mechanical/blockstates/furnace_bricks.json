@@ -1,7 +1,46 @@
 {
   "variants": {
-    "": {
+    "facing=north,tuyere=none": {
       "model": "mechanical:block/furnace_bricks"
+    },
+    "facing=north,tuyere=cold": {
+      "model": "mechanical:block/furnace_bricks_tuyere"
+    },
+    "facing=north,tuyere=lit": {
+      "model": "mechanical:block/furnace_bricks_tuyere_lit"
+    },
+    "facing=east,tuyere=none": {
+      "model": "mechanical:block/furnace_bricks"
+    },
+    "facing=east,tuyere=cold": {
+      "model": "mechanical:block/furnace_bricks_tuyere",
+      "y": 90
+    },
+    "facing=east,tuyere=lit": {
+      "model": "mechanical:block/furnace_bricks_tuyere_lit",
+      "y": 90
+    },
+    "facing=south,tuyere=none": {
+      "model": "mechanical:block/furnace_bricks"
+    },
+    "facing=south,tuyere=cold": {
+      "model": "mechanical:block/furnace_bricks_tuyere",
+      "y": 180
+    },
+    "facing=south,tuyere=lit": {
+      "model": "mechanical:block/furnace_bricks_tuyere_lit",
+      "y": 180
+    },
+    "facing=west,tuyere=none": {
+      "model": "mechanical:block/furnace_bricks"
+    },
+    "facing=west,tuyere=cold": {
+      "model": "mechanical:block/furnace_bricks_tuyere",
+      "y": 270
+    },
+    "facing=west,tuyere=lit": {
+      "model": "mechanical:block/furnace_bricks_tuyere_lit",
+      "y": 270
     }
   }
 }

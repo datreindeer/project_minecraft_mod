@@ -20,6 +20,12 @@ public final class FurnaceMelt {
     /** 40 units: four crucibles, a full bronze tool kit (26 units) with ingots to spare. */
     public static final int CAPACITY = 160;
     public static final int ORE_QUARTERS = 5, INGOT_QUARTERS = 4;
+    /**
+     * Tin is taken only up to the most a full furnace can hold and still be good bronze (11.5 % of 160), and copper
+     * without tin only up to the rest, so a furnace filled from whole stacks always has room for the other ore.
+     * (Before 0.58 the first stack thrown in filled it: 32 copper and the tin bounced out, or tin that never poured.)
+     */
+    public static final int TIN_MAX = 18, COPPER_ALONE = CAPACITY - TIN_MAX;
     /** Metals by ordinal: copper, tin, bronze, poor bronze. */
     static final Metal[] METALS = Metal.values();
 
@@ -80,8 +86,12 @@ public final class FurnaceMelt {
 
     /** How many of these items fit (0 if they don't mix: melted bronze only takes the same bronze, as in the crucible). */
     public int fits(Amount a, int count) {
-        if (!all().canAdd(a.metal())) return 0;
-        return Math.max(0, Math.min(count, (CAPACITY - total()) / a.quarters()));
+        CrucibleContents all = all();
+        if (!all.canAdd(a.metal())) return 0;
+        int room = CAPACITY - total();
+        if (a.metal() == Metal.TIN) room = Math.min(room, TIN_MAX - all.units(Metal.TIN));
+        else if (a.metal() == Metal.COPPER && all.units(Metal.TIN) == 0) room = Math.min(room, COPPER_ALONE - all.units(Metal.COPPER));
+        return Math.max(0, Math.min(count, room / a.quarters()));
     }
 
     public void add(Amount a, int count) {
@@ -217,6 +227,19 @@ public final class FurnaceMelt {
         check(slag.alloy() == Metal.COPPER && slag.slags() && slag.pour(8) && slag.pool(Metal.TIN) == 0 && slag.pool(Metal.COPPER) == 17, "slag: the tin is lost");
         check(sameAllTheWay(135, 15) && sameAllTheWay(36, 4) && sameAllTheWay(130, 16) && sameAllTheWay(7, 1), "tapping keeps the mix: every ingot of a pool is the same metal");
         check(poor.fits(new Amount(Metal.BRONZE, 8), 1) == 0 && r.fits(new Amount(Metal.COPPER, 5), 1) > 0, "bronze doesn't mix with ore");
+        // whole stacks, either ore first: there is always room for the other, and it comes out good bronze
+        check(stacks(Metal.COPPER, Metal.TIN) == Metal.BRONZE && stacks(Metal.TIN, Metal.COPPER) == Metal.BRONZE, "a stack of each ore makes bronze");
+    }
+
+    /** Throws a stack of 64 crushed ore of {@code first}, then 64 of {@code second}, as the tap's intake would; melts it all. */
+    private static Metal stacks(Metal first, Metal second) {
+        FurnaceMelt f = new FurnaceMelt();
+        for (Metal m : new Metal[] {first, second}) {
+            Amount a = new Amount(m, ORE_QUARTERS);
+            f.add(a, f.fits(a, 64));
+        }
+        while (f.chargeTotal() > 0) f.meltQuarter();
+        return f.alloy();
     }
 
     /** Pours ingots from a copper : tin pool (quarters) until it can't; true if every one came out the same metal. */
