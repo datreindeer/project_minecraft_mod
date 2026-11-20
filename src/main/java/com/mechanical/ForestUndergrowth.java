@@ -150,6 +150,10 @@ public final class ForestUndergrowth {
                 pickSound(level, pos);
                 level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));
                 Block.popResource(server, pos, new ItemStack(fruit.get(), 1 + level.getRandom().nextInt(3)));
+                // juniper is winter-hardy, like lingonberry
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp && Calendar.season(server.getOverworldClockTime()) == 3) {
+                    Kettle.award(sp, WildBerryBushBlock.WINTER_BERRIES);
+                }
             }
             return InteractionResult.SUCCESS;
         }

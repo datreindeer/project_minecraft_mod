@@ -885,6 +885,14 @@ TABS["wilderness"][1].extend([
     ("full_year", "through_winter", "minecraft:clock", C, "A Full Year",
      "Be there when a new year begins (1 Thaw)", by_code()),
 ])
+# seasons for crops and berries (Farming.Climate seasons, WildBerryBushBlock.FROZEN): granted from Java
+TABS["food"][1].extend([
+    ("winter_berries", "root", "lingonberries", G, "Winter Larder",
+     "Pick Lingonberries or Juniper Berries in winter. Other berry bushes freeze and give nothing until spring", by_code()),
+    ("fallow_season", "root", "minecraft:wheat_seeds", T, "Out of Season",
+     "Sneak-click a crop with an empty hand in winter: nothing grows in the fields until spring, so harvest and store before",
+     by_code()),
+])
 # player tribes (clan/Clans.java): granted from Java
 TABS["stone_age"][1].extend([
     ("found_tribe", "fire_pit", "fire_pit", T, "Hearth of the Tribe",

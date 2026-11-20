@@ -6,6 +6,7 @@ import static com.mechanical.Mechanical.ITEMS;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -42,6 +43,8 @@ public final class Foraging {
         BUSHES.put("cloudberry", "cloudberries");
         BUSHES.put("blackberry", "blackberries");
     }
+    /** Bushes that stand through winter and can be picked then; the others freeze (WildBerryBushBlock.FROZEN). */
+    public static final Set<String> WINTER_HARDY = Set.of("lingonberry");
     public static final List<String> MUSHROOMS = List.of("chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball");
 
     public static final Map<String, DeferredItem<Item>> BERRIES = new LinkedHashMap<>();
@@ -60,7 +63,7 @@ public final class Foraging {
         BUSHES.forEach((bush, berries) -> {
             DeferredItem<Item> item = ITEMS.registerSimpleItem(berries, p -> p.food(BERRY));
             BERRIES.put(bush, item);
-            BUSH_BLOCKS.put(bush, BLOCKS.registerBlock(bush + "_bush", p -> new WildBerryBushBlock(item, p), p -> p
+            BUSH_BLOCKS.put(bush, BLOCKS.registerBlock(bush + "_bush", p -> new WildBerryBushBlock(item, WINTER_HARDY.contains(bush), p), p -> p
                     .mapColor(MapColor.PLANT).noCollision().randomTicks().strength(0.3F).sound(SoundType.SWEET_BERRY_BUSH)
                     .pushReaction(PushReaction.POPPED)));
         });

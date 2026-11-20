@@ -179,11 +179,21 @@
 - Marktyp kan ändra värdena (växthus, kompost och liknande längre fram).
 - Nya grödor och marktyper behöver bara en egen rad i datan.
 - Uppdatera `docs/farming.md` när det byggs.
+- **Byggt:** säsongsprofilen ligger i grödans rad i `Farming.climate` (`Climate.seasons`, vår/sommar/höst/vinter;
+  standard 1.0/1.2/0.6/0) och multipliceras på tillväxtchansen ovanpå temperaturen. Frostkänsligheten är den befintliga
+  frostgränsen. Tabellen per gröda står i farming.md. Fältinfon visar "resting till spring" på vintern. Advancement
+  **Out of Season**. Marktyper är inte byggda.
 
 ### Bär
 - **Vintertåliga** (förslag): Lingonberry och Juniper Berries. De står kvar och kan plockas på vintern.
 - **Övriga** (Raspberry, Blueberry, Wild Strawberry, Elderberry, Cloudberry, Blackberry): får ett **fruset** stadium
   på vintern. Busken minns sitt stadium, kan inte plockas, och växer vidare från samma stadium när det blir varmt.
+- **Byggt:** blockstate `frozen` på `WildBerryBushBlock`. En buske är frusen när det är vinter **och** biomens temperatur
+  (med säsong) där är under 0.2 (`Thaw.MELT_AT`, där snön inte smälter). Säsongen ensam skulle frysa buskar i öknen;
+  temperaturen ensam skulle hålla buskar i snöbiomer frusna hela året. Kollas på random tick (även mogna buskar tickar
+  nu) och när någon plockar, så en buske i en chunk som sovit hela vintern ger inget. Vintertåliga: `Foraging.WINTER_HARDY`
+  (Lingonberry); Juniper är en egen buske som aldrig fryser. Frostiga texturer från `gen_berry_textures.py`. Björnar och
+  samlare plockar inte frusna buskar. Advancement **Winter Larder**.
 
 ### Djur
 - På vintern rör de sig långsammare, vandrar mindre och parar sig inte.
@@ -246,7 +256,7 @@
    laddas en ny kalenderdag körs ikapp när deras grannar är laddade (4 per tick): varmt ger att all snö och is smälter
    direkt, snöväder ger ett tunt snötäcke, så en skog man besöker först mitt i vintern är redan vit. Varje chunk minns
    dagen (`Thaw.UPDATED`). Hav fryser bara där de är kalla hela året (inga säsongsisar på havet); sjöar och älvar fryser.
-6. **Grödor och bär** (profiler, frysta stadier) och **djur**.
+6. **Grödor och bär** (profiler, frysta stadier; byggda) och **djur**.
 7. **Färger + kala träd.**
 
 Varje fas: advancements, `mod_version`-bump, registry och anteckningar, ålders-dokument, och ett laddtest

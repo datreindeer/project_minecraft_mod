@@ -67,7 +67,29 @@ public final class CalendarTest {
         check(h, 0.7F + Seasons.offset(0.7F, Seasons.curve(Calendar.clockOn(0, 2 * Calendar.SEASON_DAYS))) >= 0.15F, "no snow in the forest at the start of autumn");
         check(h, 2.0F + Seasons.offset(2.0F, -1) > 1.5F && 0.95F + Seasons.offset(0.95F, 1) < 1.1F, "deserts stay hot, summer only a little warmer");
         thaw(h);
+        cropsAndBerries(h);
         h.succeed();
+    }
+
+    /** Every crop rests in winter; bushes freeze only in a cold winter, and a frozen bush gives nothing until it thaws. */
+    private static void cropsAndBerries(GameTestHelper h) {
+        for (var crop : List.of(net.minecraft.world.level.block.Blocks.WHEAT, net.minecraft.world.level.block.Blocks.MELON_STEM,
+                Farming.CROPS.get("barley").get(), Farming.PEA_CROP.get(), Spinning.FLAX_CROP.get())) {
+            Farming.Climate c = Farming.climate(crop);
+            check(h, c != null && c.season(3) == 0 && c.season(0) > 0 && c.season(1) > 0, crop + " season profile");
+        }
+        check(h, WildBerryBushBlock.wintry(3, 0.0F) && !WildBerryBushBlock.wintry(3, 0.5F) && !WildBerryBushBlock.wintry(0, -0.5F),
+                "bushes freeze in a cold winter only");
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos pos = h.absolutePos(new net.minecraft.core.BlockPos(3, 2, 3));
+        level.setBlockAndUpdate(pos.below(), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+        WildBerryBushBlock bush = Foraging.BUSH_BLOCKS.get("raspberry").get();
+        var frozen = bush.defaultBlockState().setValue(WildBerryBushBlock.FROZEN, true);
+        check(h, !WildBerryBushBlock.isRipe(frozen), "a frozen bush is not ripe");
+        level.setBlock(pos, frozen, net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+        // the test world is in spring: picking checks the season first, so the bush thaws and gives berries
+        check(h, !bush.pick(level, pos, frozen).isEmpty() && !level.getBlockState(pos).getValue(WildBerryBushBlock.FROZEN), "a bush thaws in spring when used");
+        level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
     }
 
     /** Thaw where it is warm (the test world's spring): a thick snow layer melts a layer at a time, then the ice under it. */
