@@ -1,0 +1,9 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:wolverine_trimmed_hood"
+      }
+    ]
+  }
+}

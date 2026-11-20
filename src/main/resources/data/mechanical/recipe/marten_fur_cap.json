@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "MMM",
+    "M M",
+    " S "
+  ],
+  "key": {
+    "M": "mechanical:marten_fur",
+    "S": "mechanical:sinew"
+  },
+  "result": {
+    "id": "mechanical:marten_fur_cap",
+    "count": 1
+  }
+}
