@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -22,26 +23,40 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * carries a matching item (null = always unlocked).
  */
 public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, Predicate<ItemStack> unlockedBy) {
-    /** {@code alt}: an item that may stand in for {@code item} (e.g. String for Wool Thread), or null. One kind per slot. */
-    public record Part(Supplier<Item> item, int count, boolean tool, @Nullable Supplier<Item> alt) {
+    /**
+     * {@code alt}: an item that may stand in for {@code item}, or null. {@code tag}: any item of this tag will do (e.g.
+     * #mechanical:threads); {@code item} is then only what the screen shows. One kind per slot.
+     */
+    public record Part(Supplier<Item> item, int count, boolean tool, @Nullable Supplier<Item> alt, @Nullable TagKey<Item> tag) {
         public static Part of(Supplier<Item> item, int count) {
-            return new Part(item, count, false, null);
+            return new Part(item, count, false, null, null);
         }
 
         public static Part of(Supplier<Item> item, int count, Supplier<Item> alt) {
-            return new Part(item, count, false, alt);
+            return new Part(item, count, false, alt, null);
+        }
+
+        public static Part of(TagKey<Item> tag, Supplier<Item> shown, int count) {
+            return new Part(shown, count, false, null, tag);
         }
 
         public static Part tool(Supplier<Item> item) {
-            return new Part(item, 1, true, null);
+            return new Part(item, 1, true, null, null);
         }
 
         public boolean matches(ItemStack stack) {
-            return (stack.is(item.get()) || alt != null && stack.is(alt.get())) && stack.getCount() >= count;
+            boolean kind = tag != null ? stack.is(tag) : stack.is(item.get()) || alt != null && stack.is(alt.get());
+            return kind && stack.getCount() >= count;
         }
 
-        /** The item to use from this inventory: the main one if there is enough of it, else the stand-in if that suffices. */
+        /** The item to use from this inventory: the main one if there is enough of it, else the stand-in (or a tag item) that suffices. */
         public Item pick(Inventory inventory) {
+            if (tag != null) {
+                for (ItemStack s : inventory.getNonEquipmentItems()) {
+                    if (s.is(tag) && inventory.countItem(s.getItem()) >= count) return s.getItem();
+                }
+                return item.get();
+            }
             if (alt == null || inventory.countItem(item.get()) >= count || inventory.countItem(alt.get()) < count) return item.get();
             return alt.get();
         }

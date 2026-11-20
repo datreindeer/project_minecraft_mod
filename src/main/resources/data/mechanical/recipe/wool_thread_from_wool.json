@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#minecraft:wool",
+    "mechanical:drop_spindle"
+  ],
+  "result": {
+    "id": "mechanical:wool_thread",
+    "count": 3
+  }
+}

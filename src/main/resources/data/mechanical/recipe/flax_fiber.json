@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flax_stalks",
+    "mechanical:flax_stalks",
+    "mechanical:flax_stalks",
+    "mechanical:flax_stalks",
+    [
+      "mechanical:clay_water_bucket",
+      "minecraft:water_bucket"
+    ],
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:flax_fiber",
+    "count": 6
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:stinging_nettle",
+        "state": {
+          "age": "1"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:nettle_stalks",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:stinging_nettle",
+        "state": {
+          "age": "1"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:nettle_seeds",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:any_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:knives"
+                        }
+                      },
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:sickles"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.35
+                  }
+                ]
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:nettle_seeds",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:stinging_nettle",
+        "state": {
+          "age": "0"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:nettle_seeds"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/stinging_nettle"
+}

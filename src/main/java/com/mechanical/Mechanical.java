@@ -357,7 +357,7 @@ public class Mechanical {
             "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
 
     /** Blocks that are never items (decals, pots holding plants). Everything else gets a block item, for creative. */
-    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "furred_straw_bed", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop", "wild_carrot_crop");
+    private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "furred_straw_bed", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop", "wild_carrot_crop", "flax_crop");
 
     /**
      * Every mod block without an item of its own gets a plain block item, so all of them (bushes, mushrooms, twigs,
@@ -384,7 +384,7 @@ public class Mechanical {
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
         Sanity.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Bronze.init(); Pottery.init(); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus); CarcassHauling.init(); Carting.init(); TrampledPaths.init(); Smelting.init(); FirePit.init(); Birds.init(); Roots.init(); Kettle.init(); com.mechanical.wildlife.giants.GiantsFauna.init(); MoldBench.init(); com.mechanical.wildlife.waterfowl.WaterfowlFauna.init(); com.mechanical.wildlife.forestbirds.ForestBirdsFauna.init(); com.mechanical.wildlife.coast.CoastFauna.init(); com.mechanical.wildlife.coldhunters.ColdhuntersFauna.init(); com.mechanical.wildlife.mountain.MountainFauna.init(); com.mechanical.wildlife.meadow.MeadowFauna.init(); com.mechanical.wildlife.river.RiverFauna.init(); com.mechanical.wildlife.warm.WarmFauna.init(); com.mechanical.wildlife.VanillaGame.init();
+        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Bronze.init(); Pottery.init(); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus); CarcassHauling.init(); Carting.init(); TrampledPaths.init(); Smelting.init(); FirePit.init(); Birds.init(); Roots.init(); Spinning.init(modEventBus); Kettle.init(); com.mechanical.wildlife.giants.GiantsFauna.init(); MoldBench.init(); com.mechanical.wildlife.waterfowl.WaterfowlFauna.init(); com.mechanical.wildlife.forestbirds.ForestBirdsFauna.init(); com.mechanical.wildlife.coast.CoastFauna.init(); com.mechanical.wildlife.coldhunters.ColdhuntersFauna.init(); com.mechanical.wildlife.mountain.MountainFauna.init(); com.mechanical.wildlife.meadow.MeadowFauna.init(); com.mechanical.wildlife.river.RiverFauna.init(); com.mechanical.wildlife.warm.WarmFauna.init(); com.mechanical.wildlife.VanillaGame.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

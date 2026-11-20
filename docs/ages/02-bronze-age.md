@@ -559,7 +559,7 @@ måste fyllas på.
 | | 4 | 8 Yellow Pigment | 3 Emerald → Painting |
 | Cleric | 3 | 6 White Pigment | 1 Emerald → 4 Red Pigment |
 | | 4 | 6 Honeycomb | 1 Emerald → 4 Dried Mushrooms |
-| Farmer | 3 | 20 Barley Grain | 1 Emerald → 4 Flour |
+| Farmer | 3 | 20 Barley Grain | 1 Emerald → 4 Flour, 2 Emerald → 4 Flax Seeds |
 | | 4 | 20 Emmer Grain | 2 Emerald → 6 Dried Berries |
 | Fisherman | 3 | 4 Whole Tropical Fish | 2 Emerald → 4 Smoked Fish |
 | | 4 | 3 Whole Pufferfish | 2 Emerald → 4 Dried Fish |
@@ -824,6 +824,20 @@ Recepten syns i receptboken när man bär en sådan tacka. Data: `scripts/gen_fa
 - Kvar: bronsskära och plog, källa för Barley.
 
 - Bronslykta, Bloomery mot järnet, lerkärl i handeln.
+
+## Lin (byggt, v0.65.0)
+
+Lin är bronsålderns trådgröda (stenålderns: brännässla, se `docs/ages/01-stone-age.md`, "Tråd"). Odlingen: `docs/farming.md`.
+
+- **Källa: byns Farmer på handelsnivå 3** (bronsålderns nivåer): **2 Emerald → 4 Flax Seeds** (max 12, 10 xp). Valt för
+  att nivå 3 redan är bronsålderns handel och lin kommer utifrån som en odlad gröda; ingen vild lin i världen.
+- **Flax** på farmland, ålder 0–7 (5 ritade stadier: groddar, bladiga stjälkar, himmelsblå blommor, gyllene mogna stjälkar
+  med fröknoppar). Mogen: **2 Flax Stalks** (skära: 50 % en till) + **1–2 Flax Seeds**; omogen ger ingenting.
+- **Rötning och skäktning:** 4 Flax Stalks + Clay Water Bucket (eller vattenhink) + kniv → **6 Flax Fiber**; hinken blir
+  tom, kniven slits 1.
+- **Flax Fiber + Drop Spindle → Linen Thread** (i taggen `mechanical:threads`: syr läder vid Armor Station).
+- **Advancements (Bronze Age-fliken):** Flax (Flax Seeds) → Linen (Linen Thread).
+- Inte gjort: Linen Cloth (inget använder tyg än), linfröolja.
 
 ## Keramik (byggd)
 

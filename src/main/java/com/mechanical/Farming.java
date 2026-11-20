@@ -168,6 +168,7 @@ public final class Farming {
             m.put(Blocks.POTATOES, new Climate(6, 9, 13, 16, 2, true));
             m.put(Blocks.BEETROOTS, new Climate(5, 8, 13, 16, 1, true));
             m.put(PEA_CROP.get(), new Climate(6, 9, 13, 16, 2, false));
+            m.put(Spinning.FLAX_CROP.get(), new Climate(5, 8, 13, 16, 0, false)); // a cool-climate crop, like barley
             Climate warm = new Climate(12, 15, 20, 25, 6, false); // max 25 (spec 22): savanna and desert are 22, the only biomes this warm
             m.put(Blocks.MELON_STEM, warm);
             m.put(Blocks.PUMPKIN_STEM, warm);

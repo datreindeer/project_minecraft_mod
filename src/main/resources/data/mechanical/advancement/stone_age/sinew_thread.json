@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/flint_knife",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sinew_thread"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sinew_thread"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.sinew_thread.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.sinew_thread.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

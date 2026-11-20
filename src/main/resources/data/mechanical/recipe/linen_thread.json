@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flax_fiber",
+    "mechanical:drop_spindle"
+  ],
+  "result": {
+    "id": "mechanical:linen_thread",
+    "count": 1
+  }
+}
