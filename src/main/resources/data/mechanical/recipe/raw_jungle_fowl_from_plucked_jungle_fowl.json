@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_jungle_fowl",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_jungle_fowl",
+    "count": 1
+  }
+}

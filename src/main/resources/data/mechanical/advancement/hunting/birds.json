@@ -26,6 +26,36 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:raw_hornbill"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_jungle_fowl"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_peafowl"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "minecraft:feather"
           }
         ]
@@ -36,7 +66,10 @@
     [
       "has_0",
       "has_1",
-      "has_2"
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5"
     ]
   ],
   "display": {

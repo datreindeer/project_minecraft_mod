@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:buffalo_horn",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:bone_needle",
+    "count": 2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:peacock_feather",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:feather",
+    "count": 3
+  }
+}

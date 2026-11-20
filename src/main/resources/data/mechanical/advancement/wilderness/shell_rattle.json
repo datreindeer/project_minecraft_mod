@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/tortoise_shell",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:shell_rattle"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:shell_rattle"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.shell_rattle.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.shell_rattle.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

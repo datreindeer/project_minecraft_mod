@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:lizard_skin",
+    "mechanical:lizard_skin",
+    "mechanical:lizard_skin"
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 1
+  }
+}

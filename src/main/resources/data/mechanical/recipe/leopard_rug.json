@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:leopard_pelt",
+    "mechanical:leopard_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:leopard_rug",
+    "count": 1
+  }
+}

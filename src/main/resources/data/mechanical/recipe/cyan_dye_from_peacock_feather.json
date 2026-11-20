@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:peacock_feather",
+    "mechanical:peacock_feather"
+  ],
+  "result": {
+    "id": "minecraft:cyan_dye",
+    "count": 1
+  }
+}

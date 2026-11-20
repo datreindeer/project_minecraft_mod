@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_hornbill",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_hornbill",
+    "count": 1
+  }
+}

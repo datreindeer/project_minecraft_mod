@@ -1,0 +1,61 @@
+{
+  "parent": "mechanical:hunting/birds",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_peafowl"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:feather"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:peacock_feather"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:peafowl_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.peafowl.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.peafowl.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

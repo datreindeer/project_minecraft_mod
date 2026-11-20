@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_tapir_hide",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:scraped_hide",
+    "count": 2
+  }
+}

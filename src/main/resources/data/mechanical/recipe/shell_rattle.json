@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " S",
+    "TG",
+    "R "
+  ],
+  "key": {
+    "S": "mechanical:tortoise_shell",
+    "T": "mechanical:twine",
+    "G": "minecraft:gravel",
+    "R": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:shell_rattle",
+    "count": 1
+  }
+}

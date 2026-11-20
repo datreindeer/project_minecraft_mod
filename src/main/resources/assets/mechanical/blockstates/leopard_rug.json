@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mechanical:block/leopard_rug"
+    },
+    "facing=east": {
+      "model": "mechanical:block/leopard_rug",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mechanical:block/leopard_rug",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mechanical:block/leopard_rug",
+      "y": 270
+    }
+  }
+}

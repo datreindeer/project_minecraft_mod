@@ -685,6 +685,40 @@ TABS["food"][1].extend([
 ])
 
 
+# fauna: warm
+TABS["bronze_age"][1].extend([
+    ("tame_onager", "rope_halter", "pack_baskets", G, "Beast of Burden",
+     "Win over a skittish Onager with feed, halter it and keep feeding it until it is tame", tamed("tame_onager")),
+    ("pack_baskets", "tame_onager", "pack_baskets", T, "Pack Animal",
+     "Sling Pack Baskets (2 Bark Baskets, Scraped Hide, Cordage) on a tame Onager: it carries your load", has("pack_baskets")),
+])
+TABS["wilderness"][1].extend([
+    ("tortoise_shell", "butcher", "tortoise_shell", T, "Slow and Steady",
+     "Butcher a Tortoise. Pulled into its shell it shrugs off most blows", has("tortoise_shell")),
+    ("shell_rattle", "tortoise_shell", "shell_rattle", T, "Rattle",
+     "Bind a Tortoise Shell with gravel inside onto a stick: held in hand it keeps predators off like a torch", has("shell_rattle")),
+    ("lizard_tail", "root", "lizard_tail", T, "Left Holding the Tail",
+     "Grab at a Desert Lizard: it sheds its tail and escapes", has("lizard_tail")),
+    ("water_buffalo", "butcher", "buffalo_horn", C, "Herd Bull",
+     "Bring down a Water Buffalo (its whole herd will charge you) and butcher it with a Tusk Dagger or better",
+     has("buffalo_horn", "raw_buffalo_hide")),
+    ("leopard", "butcher", "raw_leopard_pelt", C, "Tree Cat",
+     "Kill a Leopard. It sleeps up in the trees by day and drops on its prey at dusk", has("raw_leopard_pelt")),
+    ("leopard_rug", "leopard", "leopard_rug", T, "Rosettes",
+     "Fat-tan 2 Raw Leopard Pelts with a knife and Tallow or Lard, then craft them with a Bone into a Leopard Rug",
+     has("leopard_rug")),
+    ("jungle_plumage", "butcher", "peacock_feather", T, "Jungle Plumage",
+     "Pluck a Peacock for its eyed feathers, or a Hornbill for its casque", has("peacock_feather", "hornbill_casque")),
+])
+TABS["food"][1].extend([
+    ("warm_fare", "cooked", "cooked_buffalo_meat", T, "Far Country Fare",
+     "Cook the meat of an Onager, Tortoise, Water Buffalo, Tapir or Leopard, or a Lizard Tail, on a Campfire",
+     has(*[f"cooked_{m}" for m in ("onager_meat", "tortoise_meat", "buffalo_meat", "tapir_meat", "leopard_meat", "lizard_tail")])),
+    ("jungle_fowl_egg", "root", "jungle_fowl_egg", T, "First Chicken",
+     "Pick up an egg a Jungle Fowl hen laid. Throw it: it may hatch a chick", has("jungle_fowl_egg")),
+])
+# end fauna: warm
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
@@ -699,12 +733,12 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
     "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
-                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake"],
+                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
-                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga"],
+                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena"],
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena", "leopard"],
     "waters": ["seal", "walrus", "pike", "sturgeon"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)

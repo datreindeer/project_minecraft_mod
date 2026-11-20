@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "CHC",
+    "B B"
+  ],
+  "key": {
+    "C": "mechanical:cordage",
+    "H": "mechanical:scraped_hide",
+    "B": "mechanical:bark_basket"
+  },
+  "result": {
+    "id": "mechanical:pack_baskets",
+    "count": 1
+  }
+}

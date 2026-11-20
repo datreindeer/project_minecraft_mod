@@ -1,0 +1,37 @@
+{
+  "parent": "mechanical:bronze_age/rope_halter",
+  "criteria": {
+    "tamed": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:tame_onager"
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "tamed"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pack_baskets"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.tame_onager.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.tame_onager.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

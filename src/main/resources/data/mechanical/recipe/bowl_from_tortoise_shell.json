@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:tortoise_shell",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:bowl",
+    "count": 2
+  }
+}

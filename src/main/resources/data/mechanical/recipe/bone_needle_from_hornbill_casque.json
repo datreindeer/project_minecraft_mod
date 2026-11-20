@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:hornbill_casque",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:bone_needle",
+    "count": 2
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "HTH",
+    " C "
+  ],
+  "key": {
+    "C": "mechanical:cordage",
+    "H": "mechanical:buffalo_horn",
+    "T": "minecraft:torch"
+  },
+  "result": {
+    "id": "minecraft:lantern",
+    "count": 1
+  }
+}
