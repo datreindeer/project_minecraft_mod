@@ -2127,6 +2127,76 @@ Nautilus. Squid, Dolphin och fisk är inte vilt (fisk fås med spö).
 på 1 av 6). Det blir en **Guano Pile** som växer till 4 lager; bryt den för 1 Guano per lager. **Guano** är den
 starkaste gödseln: högerklicka farmland, fertilitet **+3** (dålig jord blir rik direkt; Compost +1, Manure +2).
 
+## Ädelstenar (v0.79.0)
+
+26 ädelstenar: 23 nya i tre former, plus vanilla Diamond, Emerald och Amethyst. Allt som hittas är **oslipat** (Rough X) och slipas på en **Lapidary Wheel**. Slipade stenar har inga recept än; smycken till Neck/Ring/Charm kommer senare. Taggar: `#mechanical:rough_gemstones`, `#mechanical:gemstones` (slipade), `#c:gems/<gem>`, `#mechanical:gem_hardness/1..5`, `#mechanical:abrasives/1..5`.
+Advancement-fliken **Gemstones** visar var varje sten finns och hur slipningen går till. Data: `scripts/gem_table.py` → `gen_gemstones.py`, texturer: `gen_gemstone_textures.py`.
+
+### Malm (hela ore-block)
+
+| Gem | Block | Var | Bryts med | Slipas med (Mohs) |
+|---|---|---|---|---|
+| Garnet | Garnet Ore, Deepslate Garnet Ore | Mörkröd granat. Vanlig i hela övervärlden, y −32 till 64 | valfri pickaxe | Garnet Grit (7–7,5) |
+| Ruby | Deepslate Ruby Ore | Sällsynt, bara djupt i deepslate (y −64 till −16) | Bronze Pickaxe+ | Corundum Grit (9) |
+| Sapphire | Sapphire Ore, Deepslate Sapphire Ore | Bara under berg (bergsbiomer), y −48 till 32 | Bronze Pickaxe+ | Corundum Grit (9) |
+| Topaz | Topaz Ore | Gyllene topas under badlands, y 0 till 80 | valfri pickaxe | Garnet Grit (8) |
+| Jade | Jade Ore | Grön jade under djungeln, y 16 till 100 | valfri pickaxe | Flint Grit (6,5) |
+| Opal | Opal Ore | Sitter i sandsten under öknen, y 30 till 100 | valfri pickaxe | Sand (5,5–6,5) |
+| Turquoise | Turquoise Ore | Turkos under savannen, y 32 till 120 | valfri pickaxe | Sand (5–6) |
+| Peridot | Deepslate Peridot Ore | Djupt i deepslate under djuphavet, y −64 till −16 | Bronze Pickaxe+ | Flint Grit (6,5–7) |
+| Amber | Amber Ore | Fossil kåda under skogar, y 32 till 80 | valfri pickaxe | Sand (2–2,5) |
+
+### Kristaller (small / medium / large på grottgolv och grottak)
+
+| Gem | Block | Var | Bryts med | Slipas med (Mohs) |
+|---|---|---|---|---|
+| Clear Quartz | Small Clear Quartz Crystal, Medium Clear Quartz Crystal, Large Clear Quartz Crystal | Bergkristall. Växer i grottor i hela övervärlden, y −16 till 48 | valfri pickaxe | Flint Grit (7) |
+| Rose Quartz | Small Rose Quartz Crystal, Medium Rose Quartz Crystal, Large Rose Quartz Crystal | I grottor under Cherry Grove, Meadow och Flower Forest, y 0 till 56 | valfri pickaxe | Flint Grit (7) |
+| Citrine | Small Citrine Crystal, Medium Citrine Crystal, Large Citrine Crystal | Bara i Dripstone Caves | valfri pickaxe | Flint Grit (7) |
+| Smoky Quartz | Small Smoky Quartz Crystal, Medium Smoky Quartz Crystal, Large Smoky Quartz Crystal | I grottor under snöiga biomer, y −32 till 56 | valfri pickaxe | Flint Grit (7) |
+| Aquamarine | Small Aquamarine Crystal, Medium Aquamarine Crystal, Large Aquamarine Crystal | I grottor under hav, floder och stränder, y −16 till 40 | valfri pickaxe | Garnet Grit (7,5–8) |
+| Fluorite | Small Fluorite Crystal, Medium Fluorite Crystal, Large Fluorite Crystal | Lila-grön fluorit, djupt i hela övervärlden, y −48 till 16 | valfri pickaxe | Sand (4) |
+| Celestine | Small Celestine Crystal, Medium Celestine Crystal, Large Celestine Crystal | Bara i Lush Caves | valfri pickaxe | Sand (3–3,5) |
+| Moonstone | Small Moonstone Crystal, Medium Moonstone Crystal, Large Moonstone Crystal | Lyser svagt. Bara i Deep Dark | valfri pickaxe | Sand (6) |
+| Tourmaline | Small Tourmaline Crystal, Medium Tourmaline Crystal, Large Tourmaline Crystal | Melon-turmalin, i grottor under Windswept-biomer och Stony Peaks, y −48 till 32 | valfri pickaxe | Garnet Grit (7–7,5) |
+
+### Lösa stenar (size 1–3 på grottgolv)
+
+| Gem | Block | Var | Bryts med | Slipas med (Mohs) |
+|---|---|---|---|---|
+| Agate | Loose Agate | Randig agat, ligger på grottgolv i hela övervärlden, y 0 till 64 | hand (size 3: pickaxe) | Flint Grit (7) |
+| Jasper | Loose Jasper | Röd jaspis på grottgolv under badlands och öken, y −16 till 80 | hand (size 3: pickaxe) | Flint Grit (7) |
+| Carnelian | Loose Carnelian | Orange karneol på grottgolv under savannen, y 0 till 64 | hand (size 3: pickaxe) | Flint Grit (7) |
+| Chalcedony | Loose Chalcedony | Blågrå kalcedon på grottgolv under taigan, y −32 till 48 | hand (size 3: pickaxe) | Flint Grit (7) |
+| Bloodstone | Loose Bloodstone | Mörkgrön med röda prickar, djupt nere i hela övervärlden, y −64 till −16 | hand (size 3: pickaxe) | Flint Grit (7) |
+
+### Vanilla-ädelstenar (ändrat)
+
+| Block | Släpper nu | Slipas med (Mohs) | Blir |
+|---|---|---|---|
+| Diamond Ore, Deepslate Diamond Ore | Rough Diamond | Diamond Dust (10) | Diamond |
+| Emerald Ore, Deepslate Emerald Ore | Rough Emerald | Garnet Grit (7,5–8) | Emerald |
+| Amethyst Cluster | Rough Amethyst | Flint Grit (7) | Amethyst Shard |
+
+### Slipning: Lapidary Wheel
+
+Recept (crafting): `_A_ / TRT / P_P`. A = Sandstone, T = Twine, R = Tool Rod, P = valfria planks. Bryts med yxa.
+
+1. **Högerklicka med ett slipmedel** → hjulet laddas (ett item = 4 stenar, max 8; ett annat slipmedel ersätter det gamla).
+2. **Högerklicka 4 gånger med en Rough-sten** → den slipade stenen hamnar i inventoryt. Tom hand visar vad som är laddat.
+3. Slipmedlet måste vara **minst lika hårt** som stenen. **Exakt lika hårt** → 35 % chans att stenen spricker till **Flawed X**. Hårdare → spricker aldrig.
+4. **Flawless X**: med ett **hårdare** slipmedel än stenen kräver blir den ibland felfri: 3 % en nivå hårdare, 6 % två eller fler. Råstenar från **Large Crystal** är *fina* (tooltip) och ger dubbel chans (6 % / 12 %). Diamond (inget är hårdare): 3 % med Diamond Dust. Flawless skiner (glint, sällsynt-färg) och ska ge bättre smycken senare.
+
+| Nivå | Slipmedel | Hur | Slipar |
+|---|---|---|---|
+| 1 | Sand | Sand eller Red Sand | Opal, Turquoise, Amber, Fluorite, Celestine, Moonstone |
+| 2 | Flint Grit | Flint krossad på Stone Anvil → 2 | Jade, Peridot, Clear Quartz, Rose Quartz, Citrine, Smoky Quartz, Agate, Jasper, Carnelian, Chalcedony, Bloodstone, Amethyst |
+| 3 | Garnet Grit | Rough/Flawed Garnet krossad på Stone Anvil → 2 | Garnet, Topaz, Aquamarine, Tourmaline, Emerald |
+| 4 | Corundum Grit | Rough/Flawed Ruby eller Sapphire krossad → 2 | Ruby, Sapphire |
+| 5 | Diamond Dust | Rough/Flawed Diamond krossad → 2 | Diamond |
+
+Drops: malm → 1 Rough (Fortune), blocket självt med Silk Touch. Small Crystal → 1, Medium → 1–2, Large → 2–4 (Fortune). Kristallerna lyser svagt (Moonstone ljus 3/5/7). Lösa stenar ger 1–3 efter storlek. Gamla chunkar får stenarna via retrogen.
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

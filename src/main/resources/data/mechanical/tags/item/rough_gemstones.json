@@ -1,0 +1,30 @@
+{
+  "values": [
+    "mechanical:rough_garnet",
+    "mechanical:rough_ruby",
+    "mechanical:rough_sapphire",
+    "mechanical:rough_topaz",
+    "mechanical:rough_jade",
+    "mechanical:rough_opal",
+    "mechanical:rough_turquoise",
+    "mechanical:rough_peridot",
+    "mechanical:rough_amber",
+    "mechanical:rough_clear_quartz",
+    "mechanical:rough_rose_quartz",
+    "mechanical:rough_citrine",
+    "mechanical:rough_smoky_quartz",
+    "mechanical:rough_aquamarine",
+    "mechanical:rough_fluorite",
+    "mechanical:rough_celestine",
+    "mechanical:rough_moonstone",
+    "mechanical:rough_tourmaline",
+    "mechanical:rough_agate",
+    "mechanical:rough_jasper",
+    "mechanical:rough_carnelian",
+    "mechanical:rough_chalcedony",
+    "mechanical:rough_bloodstone",
+    "mechanical:rough_diamond",
+    "mechanical:rough_emerald",
+    "mechanical:rough_amethyst"
+  ]
+}

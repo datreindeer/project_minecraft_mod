@@ -35,6 +35,8 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
     public static final int CEILING = 1500, NATURAL_MAX = 800, SMELT_TEMP = 1350, FORGE_TEMP = 1100, SMELT_TICKS = 1200;
     /** Raw Iron per bloom. */
     public static final int ORE_PER_BLOOM = 4;
+    /** Raw Bog Iron per bloom: a poorer ore than Raw Iron. */
+    public static final int BOG_ORE_PER_BLOOM = 6;
 
     /** {@code count} input items make one result; only at {@code temp}° or hotter (hotter goes faster, {@link KilnBlockEntity#speed}). */
     public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp) {}
@@ -44,6 +46,7 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
     // shortcut: hardcoded like the kiln's; move to datapack recipes when modpacks need to edit them.
     public static final List<Recipe> RECIPES = List.of(
             new Recipe(s -> s.is(Items.RAW_IRON), ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP),
+            new Recipe(s -> s.is(Ironworking.RAW_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP),
             new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, FORGE_TEMP));
     // a bloomery eats charcoal: half as long a burn as in the kiln
     public static final List<Fuel> FUELS = List.of(

@@ -68,7 +68,14 @@ public final class Retrogen {
             "loose_granite", "loose_diorite", "loose_andesite", "loose_flint", "mallard_nest", "morel", "mute_swan_nest",
             "ore_indicators", "oyster_mushroom", "pheasant_nest", "porcini", "ptarmigan_nest", "puffball", "raspberry_bush",
             "rock_dove_nest", "sapling_thicket", "sea_beet", "stinging_nettle_forest", "stinging_nettle_riverbank", "twigs",
-            "undergrowth", "wild_carrot", "wild_einkorn", "wild_emmer", "wild_emmer_forest", "wild_pea", "wild_strawberry_bush");
+            "undergrowth", "wild_carrot", "wild_einkorn", "wild_emmer", "wild_emmer_forest", "wild_pea", "wild_strawberry_bush",
+            // gemstones (gen_gemstones.py)
+            "gem_garnet", "gem_ruby", "gem_sapphire", "gem_topaz", "gem_jade", "gem_opal", "gem_turquoise", "gem_peridot", "gem_amber",
+            "gem_clear_quartz_floor", "gem_clear_quartz_ceiling", "gem_rose_quartz_floor", "gem_rose_quartz_ceiling", "gem_citrine_floor",
+            "gem_citrine_ceiling", "gem_smoky_quartz_floor", "gem_smoky_quartz_ceiling", "gem_aquamarine_floor", "gem_aquamarine_ceiling",
+            "gem_fluorite_floor", "gem_fluorite_ceiling", "gem_celestine_floor", "gem_celestine_ceiling", "gem_moonstone_floor",
+            "gem_moonstone_ceiling", "gem_tourmaline_floor", "gem_tourmaline_ceiling", "gem_agate", "gem_jasper", "gem_carnelian",
+            "gem_chalcedony", "gem_bloodstone");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
     static final long MAX_INHABITED = 1200;
     /** How far below the ground of its column a player-made block still counts. */

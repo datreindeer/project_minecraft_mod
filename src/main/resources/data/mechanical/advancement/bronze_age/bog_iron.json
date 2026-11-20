@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/raw_iron",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_bog_iron"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:raw_bog_iron"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.bog_iron.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.bog_iron.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

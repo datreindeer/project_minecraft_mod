@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": {
+          "id": "mechanical:small_rose_quartz_crystal",
+          "properties": {
+            "facing": "up",
+            "waterlogged": "false"
+          }
+        },
+        "weight": 6
+      },
+      {
+        "data": {
+          "id": "mechanical:medium_rose_quartz_crystal",
+          "properties": {
+            "facing": "up",
+            "waterlogged": "false"
+          }
+        },
+        "weight": 3
+      },
+      {
+        "data": {
+          "id": "mechanical:large_rose_quartz_crystal",
+          "properties": {
+            "facing": "up",
+            "waterlogged": "false"
+          }
+        },
+        "weight": 1
+      }
+    ]
+  }
+}

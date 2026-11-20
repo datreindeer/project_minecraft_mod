@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_bog_iron",
+  "features": "mechanical:bog_iron_fen",
+  "step": "underground_ores"
+}
