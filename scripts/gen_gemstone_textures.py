@@ -473,20 +473,21 @@ def ore_texture(gem, host, seed):
     style, n = ORE_STYLE[gem]
     placed = {}
     for _ in range(n):
-        for _ in range(30):  # spread inclusions apart, wrapping round the tile
-            cx, cy = rng.randint(0, 15), rng.randint(0, 15)
+        for _ in range(80):  # spread inclusions apart; whole ones only, a pixel in from the edge (no wrapping: on a cube a
+            # wrapped inclusion shows as half a gem cut off at every block edge)
+            cx, cy = rng.randint(1, 14), rng.randint(1, 14)
             k = kernel(style, rng)
-            spots = {((cx + dx) % 16, (cy + dy) % 16): t for (dx, dy), t in k.items()}
-            if not any(abs(x - px) + abs(y - py) < 2 for x, y in spots for px, py in placed):
+            spots = {(cx + dx, cy + dy): t for (dx, dy), t in k.items()}
+            if all(1 <= x <= 14 and 1 <= y <= 14 for x, y in spots) and                     not any(abs(x - px) + abs(y - py) < 2 for x, y in spots for px, py in placed):
                 placed |= spots
                 break
     for (x, y), t in placed.items():
-        sx, sy = (x + 1) % 16, (y + 1) % 16
+        sx, sy = x + 1, y + 1
         if (sx, sy) not in placed:  # a shadow under each inclusion
             r, g, b, a = out.getpixel((sx, sy))
             out.putpixel((sx, sy), (int(r * 0.7), int(g * 0.7), int(b * 0.7), a))
         for a, b in ((-1, 0), (0, -1), (-1, -1), (1, -1), (-1, 1)):  # mineral-stained rock round each inclusion
-            q = ((x + a) % 16, (y + b) % 16)
+            q = (x + a, y + b)
             if q not in placed and q != (sx, sy):
                 c, tint = out.getpixel(q), ramp(PAL[gem], 0.25)
                 out.putpixel(q, tuple(int(c[i] * 0.8 + tint[i] * 0.2) for i in range(3)) + (255,))
@@ -494,8 +495,8 @@ def ore_texture(gem, host, seed):
         if t < 0:
             out.putpixel((x, y), rng.choice(OPAL_FIRE + [ramp(PAL[gem], 0.9)] * 3) + (255,))
             continue
-        lit = ((x - 1) % 16, y) not in placed or (x, (y - 1) % 16) not in placed
-        dark = ((x + 1) % 16, y) not in placed or (x, (y + 1) % 16) not in placed
+        lit = (x - 1, y) not in placed or (x, y - 1) not in placed
+        dark = (x + 1, y) not in placed or (x, y + 1) not in placed
         t += (0.18 if lit else 0) - (0.2 if dark and not lit else 0) + rng.uniform(-0.04, 0.04)
         out.putpixel((x, y), ramp(PAL[gem], t) + (255,))
     # one glint per tile on the brightest inclusion pixel (not on the opaque stones)
