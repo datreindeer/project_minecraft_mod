@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:chest"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.caravan.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.caravan.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

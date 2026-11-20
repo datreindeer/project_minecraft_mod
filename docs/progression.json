@@ -473,6 +473,21 @@
      "sv": "All tid en eld brinner inom 24 block från din första eld räknas som **lägrets ålder** (en [[fire_pit]] räknas dubbelt). Smyg + högerklick med tom hand på elden visar hur länge den brunnit.\n\n**Efter 3 dagar** kommer besökare ungefär var 5:e dag. Prata med ledaren för att handla, och låt dem sova vid din eld (+4 rykte och en gåva på morgonen). Är ni vänner kan de slå sig ner i närheten och bygga ett eget läger som växer till en palissad, med handelsbud och upptrampade stigar mellan lägren.\n\n**Efter 5 dagar** kan fientliga stammar plundra dig på natten: krigstrummor först, sedan rädare med facklor som stjäl mat och tänder eld. Försvar: vapen, eld och en palissad med [[sharpened_oak_log]]. Bygg som stammarna gör med [[hide_canvas]], [[hide_tent_slope]] och [[oak_bark_roof]] (3 Bark + en stock → 4).",
      "en": "All the time a fire burns within 24 blocks of your first fire counts as the **camp's age** (a [[fire_pit]] counts double). Sneak + right-click the fire with an empty hand to see how long it has burned.\n\n**After 3 days** visitors come about every 5 days. Talk to the leader to trade, and let them sleep by your fire (+4 reputation and a gift in the morning). If you are friends they may settle nearby and build their own camp that grows into a palisade, with traders and worn paths between the camps.\n\n**After 5 days** hostile tribes may raid you at night: war drums first, then raiders with torches who steal food and set fires. Defence: weapons, fire and a palisade with [[sharpened_oak_log]]. Build like the tribes do with [[hide_canvas]], [[hide_tent_slope]] and [[oak_bark_roof]] (3 Bark + a log → 4)."
     }
+   },
+   {
+    "title": {
+     "sv": "Handelskaravaner",
+     "en": "Trader Caravans"
+    },
+    "items": [
+     "entity:tribesperson",
+     "cart",
+     "minecraft:diamond"
+    ],
+    "text": {
+     "sv": "Den vandrande handlaren finns inte. I stället kommer ibland en **handelskaravan** nära dig (lika ofta som han skulle ha kommit): en gammal handlare i fin rock med ädelstenar, 2–3 vakter i rustning och hästar som drar [[cart]] med tygkapell och kistor. Högerklicka handlaren: varor upp till en ålder över din för Copper, Silver och Gold Coin, växling (10 koppar = 1 silver, 10 silver = 1 guld), och de **köper ädelstenar** dyrt: slipade stenar 4 silver, [[minecraft:diamond]] 2 guld, Emerald 1 guld. Karavanen stannar 2 dagar.",
+     "en": "There is no Wandering Trader. Instead a **Trader Caravan** now and then comes near you (as often as he would have): an old trader in a fine gem-set robe, 2-3 armoured guards and horses pulling covered [[cart]]s with chests. Right-click the trader: goods up to one age ahead of yours for Copper, Silver and Gold Coins, coin changing (10 copper = 1 silver, 10 silver = 1 gold), and they **buy gemstones** dearly: cut stones 4 silver, [[minecraft:diamond]] 2 gold, Emerald 1 gold. The caravan stays 2 days."
+    }
    }
   ]
  },

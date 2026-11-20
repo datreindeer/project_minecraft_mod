@@ -340,6 +340,9 @@ public final class TribeVisits {
             buttons = 0;
         } else if (v != null) {
             key = "greet." + tribe.temperament.id();
+        } else if (t.role() == TribeRole.TRADER) {
+            key = "caravan";
+            award(player, "caravan");
         } else {
             key = "trader";
             Neighbours.Settlement s = Neighbours.get(level).settlement(t.group());
