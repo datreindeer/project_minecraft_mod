@@ -70,7 +70,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "mechanical:bark",
+          "name": "mechanical:oak_bark",
           "weight": 5,
           "modifier": [
             {

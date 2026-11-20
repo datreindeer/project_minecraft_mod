@@ -528,7 +528,7 @@ värld kan bli tvär.
 Ett tungt hugg var 0,45:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
 (Flint Axe / Crude Stone Axe 3, Stone Axe 2, Iron Axe 2) och sliter yxan 1.
 
-1. **Fallen Log:** barken av (ger **1–2 Bark**) → hugget smalare → ännu smalare → klar. Varje gång den blir smalare
+1. **Fallen Log:** barken av (ger **1–2 Bark** av stockens träslag) → hugget smalare → ännu smalare → klar. Varje gång den blir smalare
    faller **1–2 Sticks** av och ibland en **Rough Log** (halva lyckochansen). Sista steget ger en **Rough Log** om det
    lyckas, annars bara 2–3 Sticks. En stock kan alltså ge upp till 3 Rough Logs.
 2. **Högerklicka en Rough Log på en Stump:** den står upp på stubben (tom hand tar tillbaka den).
@@ -541,7 +541,17 @@ Bryter man en Fallen Log med vanlig brytning blir det bara 1–2 Sticks.
 till **3 Rough Logs**, alltid, utan slump, plus barken (1–2 Bark) om den satt kvar. Har yxan redan huggit den smalare blir det
 färre (2 respektive 1).
 
-Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bast, korg; senare garvning).
+Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bast, korg, takspån; senare garvning).
+
+**Bark, en per träslag:** Oak Bark, Spruce Bark, Birch Bark, Jungle Bark, Acacia Bark, Dark Oak Bark, Mangrove Bark,
+Cherry Bark, Pale Oak Bark, Poplar Bark, Aspen Bark, Alder Bark, Beech Bark, Linden Bark, Willow Bark, Ash Bark, Hazel Bark,
+Pine Bark och Yew Bark (`mechanical:<träslag>_bark`). En Fallen Log ger barken av sitt eget träslag (Birch Bark från björk).
+Texturen är tre böjda barkremsor i träslagets egna barkfärger (gen_rough_log_textures.py). Alla sorter ligger i item-taggen
+`mechanical:barks`, och **varje användning tar taggen**: bast, Bark Basket, Castoreum Salve, tändmaterial, garvning i Bronze
+Kettle, kompost. Undantag är byten som bara kan be om ett bestämt item (bybornas och stammarnas byten, kistor): där är det
+Oak Bark. Det gamla enda itemet `mechanical:bark` (före v0.72) är ett registeralias för `mechanical:oak_bark`, så bark i
+gamla världar blir Oak Bark och försvinner inte. Avancemang: *Bark Peeler* (valfri bark) och utmaningen *Bark Collector*
+(alla 19 sorter).
 
 **Bark används till:**
 - **Bast:** Bark + kniv (crafting, kniven slits 1) → **2 Plant Fibre**.
@@ -1495,7 +1505,8 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
     nära utan Friendly-rykte varnar de och anfaller om du stannar; dödskallar vid porten), *Traders* (börjar vänliga, 9
     byten i stället för 6, större rabatt, två Elders och extra förråd).
 - **Bark Roof** (en per träslag: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar och modens
-  egna träslag): 3 **Bark** + valfri log av träslaget → 4 (formlöst, building). Barkspån i överlappande rader ritade från
+  egna träslag): 3 **Bark** av samma träslag i trappform `[Bark][ ]` / `[Bark][Bark]` → 4 (building), t.ex. 3 Birch
+  Bark → 4 Birch Bark Roof. Barkspån i överlappande rader ritade från
   träslagets egen bark, undersidan av skalad stock. **Mot sidan av ett block** läggs den som en riktig **45°-sluttning** som
   stiger mot blocket; **ovanpå ett block** ligger den platt (ett tunt lager). Klickar man på sidan av en annan sluttning
   fortsätter raden åt samma håll. Möts sluttningar blir det inner- och ytterhörn som för trappor (valmade tak). Kollision
@@ -1524,7 +1535,7 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
 - **Humör:** de hälsar ibland i chatten. **Slår du en blir hela gruppen arg i ungefär en speldag. Dödar du en är gruppen
   fientlig för alltid** (och hela stammen, se Stammar). **Bryter du lägrets Campfire blir de också arga** (en speldag). Verktyget faller med 10 % chans när en spelare dödar dem.
 - **Byteshandel (Elder):** 6 av 12 byten, t.ex. 6 Raw Hide → Bone Needle, 10 Flint → Flint Knife, 12 Raspberries → 4
-  Cooked Game Meat Scraps, 6 Cordage → 8 Bone Arrows, 12 Bark → 4 Twine, 3 Scraped Hide → 2 Leather, 4 Sinew + 2 Cordage →
+  Cooked Game Meat Scraps, 6 Cordage → 8 Bone Arrows, 12 Oak Bark → 4 Twine, 3 Scraped Hide → 2 Leather, 4 Sinew + 2 Cordage →
   Crude Bow, 3 Tusk + 2 Cordage → Tusk Dagger, 2 Antler → 3 Bone Fish Hooks. Fylls på varje morgon. Ingen handel när de är arga.
   **Sällsynt:** 1 Elder av 8 (i en Traders-stam 1 av 3) har också **4 Leather + 1 Antler → 3 Potato**, en gång om dagen.
   Det är spelets enda källa till potatis (se `docs/farming.md`, Rotfrukter).

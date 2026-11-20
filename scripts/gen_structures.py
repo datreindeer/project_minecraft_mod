@@ -42,7 +42,7 @@ for name, (biomes, rarity) in STRUCTURES.items():
 LOOT = {
     "abandoned_campsite": [("minecraft:flint", 10, 2, 4), ("mechanical:cordage", 6, 1, 3), ("mechanical:plant_fibre", 10, 3, 8),
                            ("mechanical:twine", 6, 1, 3), ("mechanical:cooked_game_meat_scraps", 5, 1, 3),
-                           ("mechanical:cooked_venison_scraps", 4, 1, 3), ("minecraft:stick", 8, 3, 8), ("mechanical:bark", 6, 2, 5)],
+                           ("mechanical:cooked_venison_scraps", 4, 1, 3), ("minecraft:stick", 8, 3, 8), ("mechanical:oak_bark", 6, 2, 5)],
     "hunters_lean_to": [("minecraft:leather", 6, 1, 3), ("mechanical:raw_hide", 8, 1, 2), ("minecraft:arrow", 6, 2, 6),
                         ("mechanical:bone_arrow", 8, 2, 6), ("mechanical:crude_bow", 1, 1, 1), ("mechanical:sinew", 8, 1, 3),
                         ("mechanical:bear_pelt", 1, 1, 1)],

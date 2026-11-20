@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bark"
+            "items": "#mechanical:barks"
           }
         ]
       }

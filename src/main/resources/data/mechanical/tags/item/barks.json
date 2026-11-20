@@ -1,0 +1,23 @@
+{
+  "values": [
+    "mechanical:oak_bark",
+    "mechanical:spruce_bark",
+    "mechanical:birch_bark",
+    "mechanical:jungle_bark",
+    "mechanical:acacia_bark",
+    "mechanical:dark_oak_bark",
+    "mechanical:mangrove_bark",
+    "mechanical:cherry_bark",
+    "mechanical:pale_oak_bark",
+    "mechanical:poplar_bark",
+    "mechanical:aspen_bark",
+    "mechanical:alder_bark",
+    "mechanical:beech_bark",
+    "mechanical:linden_bark",
+    "mechanical:willow_bark",
+    "mechanical:ash_bark",
+    "mechanical:hazel_bark",
+    "mechanical:pine_bark",
+    "mechanical:yew_bark"
+  ]
+}

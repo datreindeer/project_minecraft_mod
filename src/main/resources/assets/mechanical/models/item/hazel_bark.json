@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mechanical:item/bark"
+    "layer0": "mechanical:item/hazel_bark"
   }
 }

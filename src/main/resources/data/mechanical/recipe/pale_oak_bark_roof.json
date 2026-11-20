@@ -1,12 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "building",
-  "ingredients": [
-    "mechanical:bark",
-    "mechanical:bark",
-    "mechanical:bark",
-    "#minecraft:pale_oak_logs"
+  "pattern": [
+    "B ",
+    "BB"
   ],
+  "key": {
+    "B": "mechanical:pale_oak_bark"
+  },
   "result": {
     "id": "mechanical:pale_oak_bark_roof",
     "count": 4

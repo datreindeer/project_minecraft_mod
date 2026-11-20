@@ -8,7 +8,7 @@
   ],
   "key": {
     "C": "mechanical:cordage",
-    "B": "mechanical:bark"
+    "B": "#mechanical:barks"
   },
   "result": {
     "id": "mechanical:bark_basket"

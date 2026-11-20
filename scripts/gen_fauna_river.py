@@ -82,7 +82,7 @@ item_tag("smokable_meat", *(M + r for r in COOK))
 recipe("pelt_hoop", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": [" S ", "STS", " S "],
                      "key": {"S": "minecraft:stick", "T": "mechanical:twine"}, "result": {"id": M + "pelt_hoop"}})
 recipe("castoreum_salve", {"type": "minecraft:crafting_shapeless", "category": "misc",
-                           "ingredients": [M + "castoreum", M + "tallow", M + "bark"], "result": {"id": M + "castoreum_salve", "count": 2}})
+                           "ingredients": [M + "castoreum", M + "tallow", "#mechanical:barks"], "result": {"id": M + "castoreum_salve", "count": 2}})
 recipe("beaver_tooth_knife", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["B ", "TS"],
                               "key": {"B": M + "beaver_tooth", "S": "minecraft:stick", "T": M + "twine"}, "result": {"id": M + "beaver_tooth_knife"}})
 recipe("beaver_fur_hat", {"type": "minecraft:crafting_shapeless", "category": "equipment",

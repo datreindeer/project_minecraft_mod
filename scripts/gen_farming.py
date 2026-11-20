@@ -274,7 +274,7 @@ w(D / "mechanical/tags/item/sickles.json", {"values": ["mechanical:flint_sickle"
 w(D / "mechanical/tags/item/compostable.json", {"values": ["minecraft:leaf_litter", "mechanical:straw", "mechanical:plant_fibre",
     "minecraft:rotten_flesh", "mechanical:burnt_food", "#minecraft:leaves", "#minecraft:saplings", "minecraft:short_grass", "minecraft:fern",
     "minecraft:melon_slice", "minecraft:beetroot", "minecraft:carrot", "minecraft:potato", "minecraft:poisonous_potato", "minecraft:apple",
-    "mechanical:bark", "mechanical:fish_bones"]})
+    "#mechanical:barks", "mechanical:fish_bones"]})
 w(D / "mechanical/tags/block/threshing_floors.json", {"values": ["minecraft:stone", "minecraft:cobblestone", "minecraft:mossy_cobblestone",
     "minecraft:smooth_stone", "minecraft:stone_bricks", "minecraft:cobbled_deepslate", "minecraft:deepslate", "minecraft:granite",
     "minecraft:diorite", "minecraft:andesite", "minecraft:polished_granite", "minecraft:polished_diorite", "minecraft:polished_andesite",

@@ -38,7 +38,7 @@ public final class Tinder {
     public static void init() {}
 
     public static boolean isTinder(ItemStack stack) {
-        return stack.is(Items.LEAF_LITTER) || stack.is(Mechanical.BARK.get());
+        return stack.is(Items.LEAF_LITTER) || stack.is(Mechanical.BARK_TAG);
     }
 
     /** The block entity that holds the tinder for an unlit campfire or kiln at {@code pos}, or null. */

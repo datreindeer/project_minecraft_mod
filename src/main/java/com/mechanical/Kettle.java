@@ -118,7 +118,7 @@ public final class Kettle {
 
     /** The mode this item would put the pot in, or null if it can't go in at all. */
     public static Mode modeOf(ServerLevel level, ItemStack s) {
-        if (s.is(Mechanical.BARK.get()) || s.is(Mechanical.SCRAPED_HIDE.get())) return Mode.TAN;
+        if (s.is(Mechanical.BARK_TAG) || s.is(Mechanical.SCRAPED_HIDE.get())) return Mode.TAN;
         if (renders(s)) return Mode.RENDER;
         return cookedValue(level, s) != null ? Mode.FOOD : null;
     }
@@ -170,7 +170,7 @@ public final class Kettle {
         Mode mode = contents.isEmpty() ? null : modeOf(level, contents.getFirst());
         List<ItemStack> out = new ArrayList<>();
         if (mode == Mode.TAN) {
-            int hides = count(contents, Mechanical.SCRAPED_HIDE.get()), bark = count(contents, Mechanical.BARK.get());
+            int hides = count(contents, Mechanical.SCRAPED_HIDE.get()), bark = (int) contents.stream().filter(s -> s.is(Mechanical.BARK_TAG)).count();
             int tanned = Math.min(hides, bark);
             add(out, Items.LEATHER, tanned + tanned / 2); // bark-tanned hides come out fuller: 3 Leather from 2
             add(out, Mechanical.SCRAPED_HIDE.get(), hides - tanned); // no bark left for these

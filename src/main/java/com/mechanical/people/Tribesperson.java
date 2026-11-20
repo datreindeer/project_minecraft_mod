@@ -743,7 +743,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
                 new MerchantOffer(new ItemCost(Foraging.BERRIES.get("raspberry").get(), 12), new ItemStack(Mechanical.COOKED_GAME_MEAT_SCRAPS.get(), 4), 6, 0, 0),
                 new MerchantOffer(new ItemCost(Foraging.BERRIES.get("blueberry").get(), 12), new ItemStack(com.mechanical.wildlife.Wildlife.COOKED_VENISON_SCRAPS.get(), 4), 6, 0, 0),
                 new MerchantOffer(new ItemCost(Mechanical.CORDAGE.get(), 6), new ItemStack(Mechanical.BONE_ARROW.get(), 8), 4, 0, 0),
-                new MerchantOffer(new ItemCost(Mechanical.BARK.get(), 12), new ItemStack(Mechanical.TWINE.get(), 4), 6, 0, 0),
+                new MerchantOffer(new ItemCost(Mechanical.BARKS.get("oak").get(), 12), new ItemStack(Mechanical.TWINE.get(), 4), 6, 0, 0),
                 new MerchantOffer(new ItemCost(Mechanical.SCRAPED_HIDE.get(), 3), new ItemStack(Items.LEATHER, 2), 4, 0, 0),
                 new MerchantOffer(new ItemCost(Mechanical.WHOLE_COD.get(), 4), new ItemStack(Mechanical.CORDAGE.get(), 3), 6, 0, 0),
                 new MerchantOffer(new ItemCost(com.mechanical.wildlife.Wildlife.SINEW.get(), 4), Optional.of(new ItemCost(Mechanical.CORDAGE.get(), 2)),

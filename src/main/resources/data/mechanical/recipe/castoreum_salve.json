@@ -4,7 +4,7 @@
   "ingredients": [
     "mechanical:castoreum",
     "mechanical:tallow",
-    "mechanical:bark"
+    "#mechanical:barks"
   ],
   "result": {
     "id": "mechanical:castoreum_salve",

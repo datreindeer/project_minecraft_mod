@@ -142,12 +142,12 @@ public final class TreeChopping {
         return true;
     }
 
-    private static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {
+    static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {
         int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
         int stage = state.getValue(FallenLogBlock.STAGE);
         RandomSource random = level.getRandom();
         String wood = ((FallenLogBlock) state.getBlock()).wood();
-        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARK.get(), 1 + random.nextInt(2)));
+        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + random.nextInt(2)));
         else if (stage < FallenLogBlock.LAST_STAGE) {
             // hewn thinner: chips of sticks, and sometimes a usable piece of rough log
             Block.popResource(level, pos, new ItemStack(Items.STICK, 1 + random.nextInt(2)));
@@ -191,7 +191,7 @@ public final class TreeChopping {
         int stage = state.getValue(FallenLogBlock.STAGE);
         RandomSource random = level.getRandom();
         String wood = ((FallenLogBlock) state.getBlock()).wood();
-        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARK.get(), 1 + random.nextInt(2)));
+        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + random.nextInt(2)));
         int logs = Math.max(1, SAWN_LOGS - Math.max(0, stage - 1));
         level.removeBlock(pos, false);
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mechanical:item/bark"
+    "model": "mechanical:item/beech_bark"
   }
 }
