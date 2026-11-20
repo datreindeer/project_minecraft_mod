@@ -4,7 +4,8 @@
     "count": 6
   },
   "gives": {
-    "id": "minecraft:emerald"
+    "id": "mechanical:cooked_beef_scraps",
+    "count": 4
   },
   "max_uses": 16,
   "xp": 10,

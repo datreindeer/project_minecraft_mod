@@ -1,7 +1,7 @@
 {
   "wants": {
-    "id": "minecraft:emerald",
-    "count": 3
+    "id": "minecraft:paper",
+    "count": 12
   },
   "gives": {
     "id": "minecraft:map"

@@ -1804,9 +1804,38 @@ så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw
   +20, **läker 2 hjärtan** och håller dig **varm i 5 minuter** (+30 % isolering mot kyla). Respawn och phantoms som en vanlig
   Straw Bed. Bryts den ger den 2–4 Plant Fibre + Wolf Pelt tillbaka. Har inget item (görs bara på plats).
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
-  senare åldrar låser upp dem. Exempel: Toolsmith köper flint och säljer Flint Axe / Crude Stone Axe, Fletcher säljer
-  Arrow och Crude Bow, Fisherman säljer Bone Fish Hook och Crude Fishing Rod, Weaponsmith säljer Flint Spear och Tusk
-  Dagger. Wandering Trader säljer inget av metall (inga hinkar eller järnhackor).
+  senare åldrar låser upp dem. **Inga pengar:** stenåldern har ingen Emerald-handel, bara **byteshandel**, varor mot varor
+  (Copper Coin präglas först i bronsåldern, se 02-bronze-age.md). Wandering Trader säljer inget av metall (inga hinkar
+  eller järnhackor). Max 12–16 gånger per byte, 6–8 för verktyg och rustning (`gen_data.py`, `TRADES`):
+
+| Yrke | Nivå | Byte 1 | Byte 2 |
+|---|---|---|---|
+| Armorer | 1 | 8 Leather → Leather Cap (max 8) | 8 Cooked Venison Scraps → 2 Leather |
+|  | 2 | 6 Sinew → 2 Leather | 12 Leather → Leather Tunic (max 6) |
+| Butcher | 1 | 10 Game Meat Scraps → 4 Cooked Venison Scraps | 24 Stick → 3 Cooked Venison Scraps |
+|  | 2 | 6 Lard → 4 Cooked Beef Scraps | 16 Raspberries → 3 Cooked Beef Scraps |
+| Cartographer | 1 | 16 Oak Bark → 4 Cordage | 12 Paper → Map (max 8) |
+|  | 2 | 12 Feather → 4 Paper | 3 Ink Sac → Map (max 8) |
+| Cleric | 1 | 16 Rotten Flesh → 2 Candle | 8 Eggshell → 6 Bone Meal |
+|  | 2 | 4 Tallow → 3 Candle | 24 Rotten Flesh → 8 Bone Meal |
+| Farmer | 1 | 16 Raspberries → 8 Wheat Grain | 6 Twine → 6 Wheat Grain |
+|  | 2 | 16 Blueberries → 3 Carrot (max 8) | 6 Cordage → 2 Carrot (max 8) |
+| Fisherman | 1 | 6 Bone → Bone Fish Hook | 8 Cordage → 4 Whole Cod |
+|  | 2 | 12 Cordage → Crude Fishing Rod (max 6) | 16 Raspberries → 3 Whole Salmon |
+| Fletcher | 1 | 32 Stick → 4 Flint | 12 Feather → 8 Arrow |
+|  | 2 | 16 Flint → 8 Arrow | 8 Cordage → Crude Bow (max 6) |
+| Leatherworker | 1 | 3 Raw Hide → Leather | 4 Rabbit Hide → Leather |
+|  | 2 | 6 Lard → 2 Leather | 12 Oak Bark → Bark Basket (max 6) |
+| Librarian | 1 | 12 Paper → Book | 6 Cooked Mutton Scraps → 4 Paper |
+|  | 2 | 4 Ink Sac → Book | 4 Tallow → 3 Candle |
+| Mason | 1 | 16 Rock → 6 Clay Ball | 16 Raspberries → 12 Rock |
+|  | 2 | 20 Granite Rock → 8 Packed Mud | 16 Plant Fibre → 6 Packed Mud |
+| Shepherd | 1 | 2 White Wool → 4 Wool Thread | 12 Raspberries → White Wool |
+|  | 2 | 24 Plant Fibre → 4 Wool Thread | 4 White Wool → 6 White Carpet |
+| Toolsmith | 1 | 8 Flint → Flint Axe | 16 Stick → 2 Tool Rod |
+|  | 2 | 16 Rock → Stone Axe Head | 6 Cordage → Crude Stone Axe (max 6) |
+| Weaponsmith | 1 | 8 Cordage → Flint Spear | 12 Flint → Flint Knife |
+|  | 2 | 2 Tusk → Tusk Dagger (max 6) | 6 Sinew → Flint Spear |
 
 ### Bär och svamp (plocka)
 Växer i **fläckar**: en bärbuske kommer sällan ensam (upp till ~7 buskar ihop), svamp växer i **svampfält** (upp

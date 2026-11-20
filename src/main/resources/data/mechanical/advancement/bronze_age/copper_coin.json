@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bronze_anvil",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:copper_coin"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:copper_coin"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.copper_coin.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.copper_coin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

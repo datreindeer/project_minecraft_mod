@@ -29,7 +29,7 @@ TOOLS = ["pickaxe", "axe", "shovel", "hoe", "knife", "saw", "sword"]
 title = lambda s: s.replace("_", " ").title()
 
 # ---- item models ----
-FLAT = ["bronze_ingot", "bronze_helmet", "bronze_greaves", "copper_concentrate", "tin_concentrate"] + [f"rough_cast_bronze_{p}" for p in PIECES] + [f"bronze_{p}" for p in PIECES]
+FLAT = ["copper_coin", "silver_coin", "gold_coin", "bronze_ingot", "bronze_helmet", "bronze_greaves", "copper_concentrate", "tin_concentrate"] + [f"rough_cast_bronze_{p}" for p in PIECES] + [f"bronze_{p}" for p in PIECES]
 for item in FLAT:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
@@ -77,36 +77,37 @@ for f in sorted(D.glob("*/recipe/*_planks.json")):
 assert made >= 20, made
 
 # ---- villages: levels 3-4 are the Bronze Age (levels 1-2, stone age: gen_data.py; level 5 stays empty for later ages).
-# No iron, gold or diamond goods. Rough emerald worth: a bronze tool 5-10, a bronze ingot ~1/3, 6 crushed tin 1. ----
-E = "minecraft:emerald"
+# No iron, gold or diamond goods. Money is the Copper Coin (Coins.java; vanilla's emerald at about 4 coins): a bronze tool
+# 20-40 coins, a bronze ingot ~1, 6 crushed tin 4. ----
+C = M + "copper_coin"
 V = "minecraft:"
 TRADES = {  # profession: {level: [(wants, wants_count, gives, gives_count, max_uses, xp)]}
-    "armorer": {3: [(M + "bronze_ingot", 3, E, 1, 12, 20), (E, 9, M + "bronze_helmet", 1, 3, 10)],
-                4: [(V + "copper_ingot", 6, E, 1, 12, 30), (E, 12, M + "bronze_greaves", 1, 3, 15)]},
-    "butcher": {3: [(M + "tallow", 8, E, 1, 16, 20), (E, 1, M + "smoked_meat", 3, 16, 10)],
-                4: [(M + "bear_fat", 3, E, 1, 12, 30), (E, 2, M + "jerky", 4, 12, 15)]},
-    "cartographer": {3: [(M + "black_pigment", 8, E, 1, 16, 20), (E, 2, V + "item_frame", 1, 12, 10)],
-                     4: [(M + "yellow_pigment", 8, E, 1, 16, 30), (E, 3, V + "painting", 1, 12, 15)]},
-    "cleric": {3: [(M + "white_pigment", 6, E, 1, 16, 20), (E, 1, M + "red_pigment", 4, 12, 10)],
-               4: [(V + "honeycomb", 6, E, 1, 12, 30), (E, 1, M + "dried_mushrooms", 4, 12, 15)]},
-    "farmer": {3: [(M + "barley_grain", 20, E, 1, 16, 20), (E, 1, M + "flour", 4, 16, 10)],
-               4: [(M + "emmer_grain", 20, E, 1, 16, 30), (E, 2, M + "dried_berries", 6, 12, 15)]},
-    "fisherman": {3: [(M + "whole_tropical_fish", 4, E, 1, 16, 20), (E, 2, M + "smoked_fish", 4, 16, 10)],
-                  4: [(M + "whole_pufferfish", 3, E, 1, 12, 30), (E, 2, M + "dried_fish", 4, 12, 15)]},
-    "fletcher": {3: [(V + "feather", 24, E, 1, 16, 20), (E, 2, M + "bone_arrow", 8, 12, 10)],
-                 4: [(M + "sinew", 8, E, 1, 16, 30), (E, 6, M + "sinew_bow", 1, 6, 15)]},
-    "leatherworker": {3: [(M + "scraped_hide", 4, E, 1, 16, 20), (E, 6, M + "leather_satchel", 1, 6, 10)],
-                      4: [(M + "wolf_pelt", 2, E, 1, 12, 30), (E, 5, V + "leather_leggings", 1, 6, 15)]},
-    "librarian": {3: [(V + "book", 4, E, 1, 12, 20), (E, 6, V + "bookshelf", 1, 12, 10)],
-                  4: [(V + "writable_book", 2, E, 1, 12, 30), (E, 8, V + "name_tag", 1, 6, 15)]},
-    "mason": {3: [(M + "andesite_chunk", 20, E, 1, 16, 20), (E, 1, V + "bricks", 4, 16, 10)],
-              4: [(V + "terracotta", 12, E, 1, 12, 30), (E, 2, M + "clay_bucket", 1, 8, 15)]},
-    "shepherd": {3: [(V + "red_dye", 12, E, 1, 16, 20), (E, 3, V + "white_bed", 1, 8, 10)],
-                 4: [(V + "yellow_dye", 12, E, 1, 16, 30), (E, 1, V + "red_wool", 3, 12, 15)]},
-    "toolsmith": {3: [(M + "crushed_tin_ore", 6, E, 1, 12, 20), (E, 7, M + "bronze_pickaxe", 1, 3, 10), (E, 5, M + "bronze_saw", 1, 3, 10)],
-                  4: [(M + "copper_concentrate", 8, E, 1, 12, 30), (E, 3, M + "tin_concentrate", 2, 8, 15), (E, 6, M + "bronze_axe", 1, 3, 15)]},
-    "weaponsmith": {3: [(M + "bronze_ingot", 3, E, 1, 12, 20), (E, 5, M + "bronze_knife", 1, 3, 10)],
-                    4: [(M + "crushed_copper_ore", 12, E, 1, 16, 30), (E, 8, M + "bronze_spear", 1, 3, 15), (E, 9, M + "bronze_sword", 1, 3, 15)]},
+    "armorer": {3: [(M + "bronze_ingot", 3, C, 4, 12, 20), (C, 36, M + "bronze_helmet", 1, 3, 10)],
+                4: [(V + "copper_ingot", 6, C, 4, 12, 30), (C, 48, M + "bronze_greaves", 1, 3, 15)]},
+    "butcher": {3: [(M + "tallow", 8, C, 4, 16, 20), (C, 4, M + "smoked_meat", 3, 16, 10)],
+                4: [(M + "bear_fat", 3, C, 4, 12, 30), (C, 8, M + "jerky", 4, 12, 15)]},
+    "cartographer": {3: [(M + "black_pigment", 8, C, 4, 16, 20), (C, 8, V + "item_frame", 1, 12, 10)],
+                     4: [(M + "yellow_pigment", 8, C, 4, 16, 30), (C, 12, V + "painting", 1, 12, 15)]},
+    "cleric": {3: [(M + "white_pigment", 6, C, 4, 16, 20), (C, 4, M + "red_pigment", 4, 12, 10)],
+               4: [(V + "honeycomb", 6, C, 4, 12, 30), (C, 4, M + "dried_mushrooms", 4, 12, 15)]},
+    "farmer": {3: [(M + "barley_grain", 20, C, 4, 16, 20), (C, 4, M + "flour", 4, 16, 10)],
+               4: [(M + "emmer_grain", 20, C, 4, 16, 30), (C, 8, M + "dried_berries", 6, 12, 15)]},
+    "fisherman": {3: [(M + "whole_tropical_fish", 4, C, 4, 16, 20), (C, 8, M + "smoked_fish", 4, 16, 10)],
+                  4: [(M + "whole_pufferfish", 3, C, 4, 12, 30), (C, 8, M + "dried_fish", 4, 12, 15)]},
+    "fletcher": {3: [(V + "feather", 24, C, 4, 16, 20), (C, 8, M + "bone_arrow", 8, 12, 10)],
+                 4: [(M + "sinew", 8, C, 4, 16, 30), (C, 24, M + "sinew_bow", 1, 6, 15)]},
+    "leatherworker": {3: [(M + "scraped_hide", 4, C, 4, 16, 20), (C, 24, M + "leather_satchel", 1, 6, 10)],
+                      4: [(M + "wolf_pelt", 2, C, 4, 12, 30), (C, 20, V + "leather_leggings", 1, 6, 15)]},
+    "librarian": {3: [(V + "book", 4, C, 4, 12, 20), (C, 24, V + "bookshelf", 1, 12, 10)],
+                  4: [(V + "writable_book", 2, C, 4, 12, 30), (C, 32, V + "name_tag", 1, 6, 15)]},
+    "mason": {3: [(M + "andesite_chunk", 20, C, 4, 16, 20), (C, 4, V + "bricks", 4, 16, 10)],
+              4: [(V + "terracotta", 12, C, 4, 12, 30), (C, 8, M + "clay_bucket", 1, 8, 15)]},
+    "shepherd": {3: [(V + "red_dye", 12, C, 4, 16, 20), (C, 12, V + "white_bed", 1, 8, 10)],
+                 4: [(V + "yellow_dye", 12, C, 4, 16, 30), (C, 4, V + "red_wool", 3, 12, 15)]},
+    "toolsmith": {3: [(M + "crushed_tin_ore", 6, C, 4, 12, 20), (C, 28, M + "bronze_pickaxe", 1, 3, 10), (C, 20, M + "bronze_saw", 1, 3, 10)],
+                  4: [(M + "copper_concentrate", 8, C, 4, 12, 30), (C, 12, M + "tin_concentrate", 2, 8, 15), (C, 24, M + "bronze_axe", 1, 3, 15)]},
+    "weaponsmith": {3: [(M + "bronze_ingot", 3, C, 4, 12, 20), (C, 20, M + "bronze_knife", 1, 3, 10)],
+                    4: [(M + "crushed_copper_ore", 12, C, 4, 16, 30), (C, 32, M + "bronze_spear", 1, 3, 15), (C, 36, M + "bronze_sword", 1, 3, 15)]},
 }
 stack = lambda i, n: {"id": i, "count": n} if n > 1 else {"id": i}
 lang_now = json.loads((A / "lang/en_us.json").read_text(encoding="utf-8"))
@@ -116,7 +117,7 @@ for prof, levels in TRADES.items():
         for i, (wi, wn, gi, gn, uses, xp) in enumerate(trades):
             for item in (wi, gi):  # every traded item must exist (a typo makes the trade fail to load silently)
                 ns, path = item.split(":")
-                assert ns == "minecraft" or f"item.mechanical.{path}" in lang_now or f"block.mechanical.{path}" in lang_now                     or path in ("copper_concentrate", "tin_concentrate", "bronze_spear", "bronze_sword"), item
+                assert ns == "minecraft" or f"item.mechanical.{path}" in lang_now or f"block.mechanical.{path}" in lang_now                     or path in ("copper_concentrate", "tin_concentrate", "bronze_spear", "bronze_sword", "copper_coin"), item
             name = f"{prof}/{lvl}/bronze_{i}"
             w(D / f"mechanical/villager_trade/{name}.json", {"wants": stack(wi, wn), "gives": stack(gi, gn), "max_uses": uses, "xp": xp,
                                                               "reputation_discount": 0.05})
@@ -131,6 +132,7 @@ lang.update({f"item.mechanical.bronze_{p}": f"Bronze {title(p)}" for p in PIECES
 lang.update({f"item.mechanical.bronze_{t}": f"Bronze {title(t)}" for t in TOOLS})
 lang.update({
     "item.mechanical.bronze_spear": "Bronze Spear",
+    "item.mechanical.copper_coin": "Copper Coin", "item.mechanical.silver_coin": "Silver Coin", "item.mechanical.gold_coin": "Gold Coin",
     "item.mechanical.copper_concentrate": "Copper Concentrate", "item.mechanical.tin_concentrate": "Tin Concentrate",
     "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper / Tin Ore, Concentrate or Native Copper onto it in your inventory",
     "item.mechanical.bronze_ingot": "Bronze Ingot", "item.mechanical.bronze_helmet": "Bronze Helmet", "item.mechanical.bronze_greaves": "Bronze Greaves",

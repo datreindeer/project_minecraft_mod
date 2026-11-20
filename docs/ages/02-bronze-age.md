@@ -1,7 +1,7 @@
 # Bronsåldern
 
 > Status: **hela bronsåldern är byggd**: fas 1 (malm, tvättat koncentrat), fas 2 (värme), fas 3 koppar och fas 3b brons
-> (legering, bronsverktyg med spjut, svärd och skära, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3–4), Smelting
+> (legering, bronsverktyg med spjut, svärd och skära, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3–4 med Copper Coin), Smelting
 > Furnace, odlingens fas 3 (Quern, bröd, kompost, Manure, Scarecrow, Barley), keramik, Bronze Kettle, fler bronsverktyg,
 > vagn och häst, och till sist **Bloomery** (järnlupp, Bronze Anvil, smidesjärn), se avsnitten sist. Kvar (valfritt):
 > bronslykta, plog. Beslut står under Beslut.
@@ -559,38 +559,40 @@ Nivå 1–2 är stenålderns (`gen_data.py`), nivå 3–4 bronsålderns (`gen_br
 järn, guld eller diamant. Formatet: köper = vad byborna tar emot, säljer = vad de ger. Max = hur många gånger innan den
 måste fyllas på.
 
-| Yrke | Nivå | Köper (→ 1 Emerald) | Säljer |
+| Yrke | Nivå | Köper (→ 4 Copper Coin) | Säljer |
 |---|---|---|---|
-| Armorer | 3 | 3 Bronze Ingot | 9 Emerald → Bronze Helmet (max 3) |
-| | 4 | 6 Copper Ingot | 12 Emerald → Bronze Greaves (max 3) |
-| Butcher | 3 | 8 Tallow | 1 Emerald → 3 Smoked Meat |
-| | 4 | 3 Bear Fat | 2 Emerald → 4 Jerky |
-| Cartographer | 3 | 8 Black Pigment | 2 Emerald → Item Frame |
-| | 4 | 8 Yellow Pigment | 3 Emerald → Painting |
-| Cleric | 3 | 6 White Pigment | 1 Emerald → 4 Red Pigment |
-| | 4 | 6 Honeycomb | 1 Emerald → 4 Dried Mushrooms |
-| Farmer | 3 | 20 Barley Grain | 1 Emerald → 4 Flour, 2 Emerald → 4 Flax Seeds |
-| | 4 | 20 Emmer Grain | 2 Emerald → 6 Dried Berries |
-| Fisherman | 3 | 4 Whole Tropical Fish | 2 Emerald → 4 Smoked Fish |
-| | 4 | 3 Whole Pufferfish | 2 Emerald → 4 Dried Fish |
-| Fletcher | 3 | 24 Feather | 2 Emerald → 8 Bone Arrow |
-| | 4 | 8 Sinew | 6 Emerald → Sinew Bow |
-| Leatherworker | 3 | 4 Scraped Hide | 6 Emerald → Leather Satchel |
-| | 4 | 2 Wolf Pelt | 5 Emerald → Leather Leggings |
-| Librarian | 3 | 4 Book | 6 Emerald → Bookshelf |
-| | 4 | 2 Book and Quill | 8 Emerald → Name Tag |
-| Mason | 3 | 20 Andesite Rock | 1 Emerald → 4 Bricks |
-| | 4 | 12 Terracotta | 2 Emerald → Clay Bucket |
-| Shepherd | 3 | 12 Red Dye | 3 Emerald → White Bed |
-| | 4 | 12 Yellow Dye | 1 Emerald → 3 Red Wool |
-| Toolsmith | 3 | 6 Crushed Tin Ore | 7 Emerald → Bronze Pickaxe, 5 Emerald → Bronze Saw (max 3) |
-| | 4 | 8 Copper Concentrate | 3 Emerald → 2 Tin Concentrate (max 8), 6 Emerald → Bronze Axe (max 3) |
-| Weaponsmith | 3 | 3 Bronze Ingot | 5 Emerald → Bronze Knife (max 3) |
-| | 4 | 12 Crushed Copper Ore | 8 Emerald → Bronze Spear, 9 Emerald → Bronze Sword (max 3) |
+| Armorer | 3 | 3 Bronze Ingot | 36 Coin → Bronze Helmet (max 3) |
+|  | 4 | 6 Copper Ingot | 48 Coin → Bronze Greaves (max 3) |
+| Butcher | 3 | 8 Tallow | 4 Coin → 3 Smoked Meat |
+|  | 4 | 3 Bear Fat | 8 Coin → 4 Jerky |
+| Cartographer | 3 | 8 Black Pigment | 8 Coin → Item Frame |
+|  | 4 | 8 Yellow Pigment | 12 Coin → Painting |
+| Cleric | 3 | 6 White Pigment | 4 Coin → 4 Red Pigment |
+|  | 4 | 6 Honeycomb | 4 Coin → 4 Dried Mushrooms |
+| Farmer | 3 | 20 Barley Grain | 4 Coin → 4 Flour, 8 Coin → 4 Flax Seeds |
+|  | 4 | 20 Emmer Grain | 8 Coin → 6 Dried Berries |
+| Fisherman | 3 | 4 Whole Tropical Fish | 8 Coin → 4 Smoked Fish |
+|  | 4 | 3 Whole Pufferfish | 8 Coin → 4 Dried Fish |
+| Fletcher | 3 | 24 Feather | 8 Coin → 8 Bone Arrow |
+|  | 4 | 8 Sinew | 24 Coin → Sinew Bow |
+| Leatherworker | 3 | 4 Scraped Hide | 24 Coin → Leather Satchel |
+|  | 4 | 2 Wolf Pelt | 20 Coin → Leather Leggings |
+| Librarian | 3 | 4 Book | 24 Coin → Bookshelf |
+|  | 4 | 2 Book and Quill | 32 Coin → Name Tag |
+| Mason | 3 | 20 Andesite Rock | 4 Coin → 4 Bricks |
+|  | 4 | 12 Terracotta | 8 Coin → Clay Bucket |
+| Shepherd | 3 | 12 Red Dye | 12 Coin → White Bed |
+|  | 4 | 12 Yellow Dye | 4 Coin → 3 Red Wool |
+| Toolsmith | 3 | 6 Crushed Tin Ore | 28 Coin → Bronze Pickaxe (max 3), 20 Coin → Bronze Saw (max 3) |
+|  | 4 | 8 Copper Concentrate | 12 Coin → 2 Tin Concentrate, 24 Coin → Bronze Axe (max 3) |
+| Weaponsmith | 3 | 3 Bronze Ingot | 20 Coin → Bronze Knife (max 3) |
+|  | 4 | 12 Crushed Copper Ore | 32 Coin → Bronze Spear (max 3), 36 Coin → Bronze Sword (max 3) |
 
-- Priser: ett bronsverktyg 5–12 Emerald, en Bronze Ingot ~1/3 Emerald, mat och råvaror 1–3. Köpen ger 20 xp (nivå 3)
+- **Pengarna är Copper Coin** (ersätter vanillas Emerald, ungefär 1 Emerald = 4 Copper Coin). Byborna betalar med mynt
+  när de köper och tar mynt när de säljer. Mynt präglas på Bronze Anvil (se Prägla mynt nedan).
+- Priser: ett bronsverktyg 20–48 Copper Coin, en Bronze Ingot drygt 1, mat och råvaror 4–12. Köpen ger 20 xp (nivå 3)
   och 30 xp (nivå 4), säljen 10 / 15; max 12–16 för köp, 3 för bronsverktyg och rustning.
-- Toolsmiths Tin Concentrate är en väg till tenn för den som saknar tennådror (dyrt: 3 Emerald för 4 enheter).
+- Toolsmiths Tin Concentrate är en väg till tenn för den som saknar tennådror (dyrt: 12 Copper Coin för 4 enheter).
 - Lerkärl (pottery) läggs till här när det finns.
 
 ### Kvar
@@ -1375,6 +1377,17 @@ det som ligger i härden kräver (grönt när det nåtts), tooltipen temperatur 
 8 slag tar ungefär 4 s, så den som har städet nära härden hinner med en hetta; längre bort får man värma om.
 **Stone Anvil** tar inte luppar: "Stone is too soft for iron: hammer the bloom on a Bronze Anvil".
 
+### Prägla mynt (Copper Coin)
+
+Pengar ersätter Emerald (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold Coin**, 1 Silver = 10 Copper,
+1 Gold = 10 Silver. Bara Copper Coin går att prägla i bronsåldern; silver och guld väntar på järnåldern.
+
+1. Högerklicka **Bronze Anvil** med en **Copper Ingot** (kall, ingen värme behövs). Den ligger på banan.
+2. **4 slag** med **Bronze Smithing Hammer** (1 slitage per slag) → **4 Copper Coin** hoppar upp.
+
+Det finns ingen kopparplåt, så tackan präglas direkt. Att prägla ger mer än att sälja koppar till Armorer (6 Copper
+Ingot → 4 Coin), så smedjan lönar sig. Texturer: `gen_coin_textures.py`; modeller och namn i `gen_bronze.py`.
+
 ### Slag
 
 1 per lupp. **4 Slag → 1 Gravel** (formlöst, vägfyllning). Ingen annan användning än.
@@ -1382,7 +1395,7 @@ det som ligger i härden kräver (grönt när det nåtts), tooltipen temperatur 
 ### Advancements (Bronze Age-fliken)
 
 *Fire Brick* (efter Toward Iron), *Bloomery* (goal, från koden), *Iron Bloom* (goal), *Wrought Iron* (challenge),
-*Bronze Anvil* (goal, efter Bronze!), *Smith* (Bronze Smithing Hammer, efter Bronze!).
+*Bronze Anvil* (goal, efter Bronze!), *Mint* (första Copper Coin, efter Bronze Anvil), *Smith* (Bronze Smithing Hammer, efter Bronze!).
 
 ### Test
 
@@ -1390,7 +1403,7 @@ Gametest `mechanical:bloomery`: härd + en stack, härd + tre stackar och ett lo
 stackar med öppen topp är det (den övre stacken är toppen); 4 Raw Iron smälter inte vid 1300° men blir en Hot Iron Bloom
 vid 1500°; Raw Iron tas inte av Clay Kiln, Crucible, Stone Anvil eller vanillas smelting/blasting/campfire/smoking-recept;
 Copper och Stone Pickaxe bryter inte Iron Ore men Bronze Pickaxe gör; en kall lupp tar inga slag på Bronze Anvil, en het ger
-Wrought Iron Ingot och Slag efter 8 slag och hammaren slits 16; kilnen värmer om en lupp vid 1100° och den behåller sina slag.
+Wrought Iron Ingot och Slag efter 8 slag och hammaren slits 16; kilnen värmer om en lupp vid 1100° och den behåller sina slag; en Copper Ingot på Bronze Anvil ger Copper Coin först efter 4 slag.
 
 ### Beslut
 
