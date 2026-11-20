@@ -232,7 +232,14 @@
    och varor (tidigare efter spelarna i närheten). Monster får behålla kopparutrustning från bronsåldern och järn och
    ringbrynja från järnåldern (`LaterAgeGear`). `/worldage` och `/worldage set <0-2>` för op.
    **Kvar:** NPC-byar som byggs om, vilket är ett eget, större steg eftersom varje ålder behöver egna byggnadsritningar.
-4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder.
+4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder (byggd, v0.87.0). `Seasons.java` + `mixin/BiomeSeasonMixin`
+   förskjuter varje bioms temperatur längs en mjuk kurva över året: +0.1 mitt i sommaren, mitt i vintern −0.8 i
+   tempererade och kalla biomes (bas under 1.0), −0.3 i varma (under 1.5) och −0.2 i torra. Vanilla ger då snö i
+   stället för regn, snötäcke och isade sjöar. Kroppstemperaturen (`Temperature.ambient`) följer samma förskjutning, så
+   vinternätter blir farliga utan päls eller eld, och grödornas temperaturgränser (frost) följer med. Vädret: varje ny
+   regn- eller uppehållsperiod som vanilla slumpar skalas efter säsong (regn ×1.0/0.7/1.3/1.2, uppehåll
+   ×0.9/1.4/0.6/0.8 för vår/sommar/höst/vinter). Advancements i Wilderness-fliken: First Frost, Through the Winter,
+   A Full Year. **Snö och is smälter inte än:** det är fas 5.
 5. **Upptining** + ikappkörning när chunks laddas.
 6. **Grödor och bär** (profiler, frysta stadier) och **djur**.
 7. **Färger + kala träd.**

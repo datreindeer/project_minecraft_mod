@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/through_winter",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:clock"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.full_year.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.full_year.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
