@@ -140,6 +140,8 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 - Bördighet 0: halv tillväxt och halv skörd (varje stack halveras, udda avrundas slumpvis). 1: 75 % tillväxt.
   2: normal. 3: efter varje tillväxtsteg 30 % chans på ett steg till (~1,3× fart), och 30 % chans på en extra vid skörd.
   Uppmätt: 24 mogna vete gav 11 / 24 / 29 kärvar på bördighet 0 / 2 / 3.
+- **Syns på blocket:** 0 = blek och gråaktig, 1 = lite blekare, 2 = som vanilla, 3 = mörk mylla med fläckar av
+  kompost (torr och fuktig variant). Texturer + blockstate-override: `scripts/gen_farmland_textures.py`.
 - **Återställa:**
   - **Träda:** farmland utan något ovanpå får +1 med chansen 1/18 per random tick (~1 per Minecraft-dag).
   - **Compost** (bronsåldern): Compost Heap fylls med 7 komposterbara saker (taggen `mechanical:compostable`: Leaf Litter,
