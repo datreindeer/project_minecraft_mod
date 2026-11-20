@@ -1,15 +1,8 @@
 {
   "values": [
     "minecraft:cow",
-    "minecraft:mooshroom",
     "minecraft:sheep",
     "minecraft:pig",
-    "minecraft:chicken",
-    "minecraft:horse",
-    "minecraft:donkey",
-    "minecraft:mule",
-    "minecraft:llama",
-    "minecraft:trader_llama",
-    "mechanical:tame_horse"
+    "minecraft:chicken"
   ]
 }

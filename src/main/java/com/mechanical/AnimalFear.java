@@ -34,7 +34,7 @@ public final class AnimalFear {
     public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> SILENT_ARROWS = net.minecraft.tags.TagKey.create(
             net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "silent_arrows"));
 
-    /** Farm animals (no wild spawns in this mod): never keep away from players or catch panic. */
+    /** Village farm animals (cow, sheep, pig, chicken): never keep away from players or catch panic. */
     private static final net.minecraft.tags.TagKey<net.minecraft.world.entity.EntityType<?>> DOMESTIC = net.minecraft.tags.TagKey.create(
             net.minecraft.core.registries.Registries.ENTITY_TYPE, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "domestic"));
 
