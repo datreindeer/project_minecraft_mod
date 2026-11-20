@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "mechanical:block/wild_strawberry_bush_stage3_frozen"
+  }
+}

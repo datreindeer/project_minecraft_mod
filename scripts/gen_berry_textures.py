@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from PIL import Image
 
+WINTER_HARDY = {"lingonberry"}  # never freeze (Foraging.WINTER_HARDY)
 RES = Path(__file__).resolve().parent.parent / "src/main/resources/assets/mechanical/textures"
 
 # Shared letters: L light leaf, g mid leaf (speckled between two mids), d dark leaf, D darkest,
@@ -475,23 +476,42 @@ def paint(grid, plant, fruit, seed):
     return img
 
 
+def frost(img, seed):
+    """Frozen bush (winter): greyed, pale blue-white, with a few rime-white specks."""
+    rng = random.Random(seed)
+    out = img.copy()
+    for y in range(16):
+        for x in range(16):
+            r, g, b, a = img.getpixel((x, y))
+            if a == 0:
+                continue
+            grey = (r * 30 + g * 59 + b * 11) // 100
+            mix = 0.65 if rng.random() < 0.15 else 0.3  # rime specks
+            dull = [grey * 0.6 + c * 0.4 for c in (r, g, b)]  # most of the colour gone
+            out.putpixel((x, y), tuple(int(d * (1 - mix) + c * mix) for d, c in zip(dull, (214, 230, 245))) + (255,))
+    return out
+
+
 def build():
     out = {}
     for name, p in PLANTS.items():
         out[f"block/{name}_bush_stage0.png"] = paint(p["stage0"], name, {}, name)
         for st, fr in enumerate(p["fruit"], start=1):
             out[f"block/{name}_bush_stage{st}.png"] = paint(p["grown"], name, fr, name)
+        if name not in WINTER_HARDY:
+            for st in range(4):
+                out[f"block/{name}_bush_stage{st}_frozen.png"] = frost(out[f"block/{name}_bush_stage{st}.png"], f"{name}{st}")
         item = name[:-1] + "ies"  # raspberry -> raspberries, wild_strawberry -> wild_strawberries
         out[f"item/{item}.png"] = paint(p["item"], name, p["fruit"][2], name + "_item")
     return out
 
 
 def preview(images, dst):
-    s, cols = 12, 5
+    s, cols = 12, 9
     sheet = Image.new("RGBA", (cols * 16 * s + (cols + 1) * 8, len(PLANTS) * (16 * s + 8) + 8), (198, 206, 214, 255))
     keys = list(images)
     for r, name in enumerate(PLANTS):
-        row = [k for k in keys if k.startswith(f"block/{name}_")] + [k for k in keys if k.startswith("item/")][r:r + 1]
+        row = [k for k in keys if k.startswith(f"block/{name}_")] + [f"item/{name[:-1]}ies.png"]
         for c, k in enumerate(row):
             big = images[k].resize((16 * s, 16 * s), Image.NEAREST)
             sheet.alpha_composite(big, (8 + c * (16 * s + 8), 8 + r * (16 * s + 8)))

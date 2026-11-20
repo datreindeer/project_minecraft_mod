@@ -537,7 +537,7 @@ Skogarna har fått buskar och sly, i grupper. Inget har kollision (man kan gå i
 | Block | Var | Ger |
 |---|---|---|
 | **Hazel Shrub** (hassel, 2 block) | Lövskog, björkskog, blomsterskog | Högerklicka när nötterna syns: 1–2 Hazelnuts (växer tillbaka på ca 23 min i ljus). Bryts: 1–3 Sticks, ibland en nöt |
-| **Juniper** (en) | Taiga, snötaiga, gammal taiga, blåsiga berg | Högerklicka: 1–3 Juniper Berries (tillbaka på ca 14 min). Bryts: 1–2 Sticks |
+| **Juniper** (en) | Taiga, snötaiga, gammal taiga, blåsiga berg | Högerklicka: 1–3 Juniper Berries (tillbaka på ca 14 min, även på vintern). Bryts: 1–2 Sticks |
 | **Bramble** (snår) | Lövskog, mörk skog, ibland slätt | Saktar ner och sticks (1 skada ibland, inte om man smyger). Plant Fibre, ibland en Stick |
 | **Undergrowth** (ris, ormbunkar) | Tätt i alla lövskogar | Halv chans till Plant Fibre |
 | **Sapling Thicket** (sly, 2 block) | Lövskog, björkskog | 2–3 Sticks |
@@ -1956,11 +1956,17 @@ hälften av gångerna utan.**
 sedan börjar den om från blommor (~12 min tills den är mogen igen). Inga taggar. Hugger man sönder busken: 1–2 Sticks +
 1–2 Plant Fibre, och den är borta.
 
+**På vintern fryser buskarna** (utom Lingonberry): en frostig, gråvit busk som minns sitt stadium, inte kan plockas och
+inte växer. Den tinar på våren och växer vidare därifrån. Den fryser bara där det är kallt nog för att snön ska ligga
+kvar (biomens temperatur med säsong under 0.2, samma gräns som upptiningen), så i varma biomer står buskarna kvar.
+**Lingonberry** och **Juniper** är vintertåliga och kan plockas hela vintern. Advancement **Winter Larder** (Food &
+Farming): plocka Lingonberries eller Juniper Berries på vintern.
+
 | Buske | Biomer | Bär (1 hunger) |
 |---|---|---|
 | Raspberry Bush | Forest, Birch Forest, Old Growth Birch, Flower Forest | Raspberries |
 | Blueberry Bush | Forest, Dark Forest, Taiga, Old Growth Pine Taiga | Blueberries |
-| Lingonberry Bush | Taiga, Snowy Taiga, Old Growth Pine/Spruce Taiga | Lingonberries |
+| Lingonberry Bush | Taiga, Snowy Taiga, Old Growth Pine/Spruce Taiga | Lingonberries (fryser inte på vintern) |
 | Wild Strawberry Bush | Plains, Sunflower Plains, Meadow, Flower Forest | Wild Strawberries |
 | Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries |
 | Cloudberry Bush | Swamp, Snowy Plains, Snowy Taiga, Grove | Cloudberries |

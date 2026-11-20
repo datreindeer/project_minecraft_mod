@@ -78,7 +78,7 @@ Barley har ingen vild källa än (bara creative); kommer med handel/byar senare.
 ## Växtvillkor (byggt)
 
 Alla grödor (även vanilla) går genom NeoForges `CropGrowEvent`. Vanillas egen tillväxtchans gäller fortfarande; vår
-faktor multipliceras på: **temperaturfaktor × fukt × bördighet × dagsljus**. Temperaturen är `Temperature.ambient`
+faktor multipliceras på: **temperaturfaktor × säsongsfaktor × fukt × bördighet × dagsljus**. Temperaturen är `Temperature.ambient`
 (0–20; slätt ~12,4, taiga 8, snö 2–6, savann/öken 22, natt −5 under bar himmel, regn −2).
 
 | Gröda | Växer (temp) | Bäst | Frost dödar under | Övrigt |
@@ -93,6 +93,23 @@ faktor multipliceras på: **temperaturfaktor × fukt × bördighet × dagsljus**
 | Melon / Pumpkin (stjälk) | 12–**25** | 15–20 | 6 | maxgräns 25 i stället för 22: savann och öken ligger på exakt 22 och hade annars fått noll |
 
 - **Temperaturfaktor:** 1 i bästa spannet, linjärt ner till 0 vid kanterna.
+- **Säsongsfaktor:** varje gröda har en profil per säsong (vår, sommar, höst, vinter), utöver temperaturen. Den ligger
+  i samma tabell som temperaturen (`Farming.climate`, sista fältet i `Climate`). En ny gröda lägger bara till en rad;
+  utan egen profil gäller standarden 1.0 / 1.2 / 0.6 / 0. På vintern växer ingenting (0), och fältinfon säger då
+  "resting till spring". Frosten är oförändrad (grödans frostgräns ovan).
+
+| Gröda | Vår | Sommar | Höst | Vinter |
+|---|---|---|---|---|
+| Wheat / Einkorn / Emmer (standard) | 1.0 | 1.2 | 0.6 | 0 |
+| Barley | 1.2 | 1.0 | 0.7 | 0 |
+| Carrot / Wild Carrots | 1.0 | 1.0 | 0.8 | 0 |
+| Potato | 0.9 | 1.2 | 0.5 | 0 |
+| Beetroot | 1.0 | 1.1 | 0.8 | 0 |
+| Peas | 1.2 | 1.0 | 0.4 | 0 |
+| Flax | 1.1 | 1.2 | 0.4 | 0 |
+| Melon / Pumpkin | 0.5 | 1.3 | 0.6 | 0 |
+
+  Advancement **Out of Season** (Food & Farming): smyg-högerklicka en gröda på vintern.
 - **Dagsljus:** växer bara på dagen med himmelsljus ≥ 9. Facklor räcker inte, och ingenting växer på natten.
 - **Fukt:** fukt 0 → ingen tillväxt.
 - **Frost:** på natten, under bar himmel, när luften är under grödans frostgräns: 10 % chans per random tick att en ung
@@ -100,7 +117,8 @@ faktor multipliceras på: **temperaturfaktor × fukt × bördighet × dagsljus**
 - **Torka:** unga plantor på torr farmland (fukt 0): 5 % chans per random tick att vissna.
 - **Rotröta:** rotfrukter på helt blöt farmland (fukt 7) i träsk eller i regn: 1 % chans per random tick.
 - **Smyg + högerklicka med tom hand** på farmland eller en gröda: "Fertility 2/3, moisture 7/7", och för en gröda
-  dess temperatur, spann och varför den inte växer (too cold / too hot / too dry / needs daylight / ripe).
+  dess temperatur, spann och varför den inte växer (too cold / too hot / too dry / needs daylight / resting till
+  spring / ripe).
 
 Uppmätt (random_tick_speed 100, 1200 ticks): slätt vete växer på dagen, inte alls på natten; snöslätt på dagen: vete
 står still, korn och morötter växer långsamt; snöslätt på natten: allt vete fryser ihjäl, korn och morötter klarar sig;
@@ -231,7 +249,7 @@ Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de i
 
 ## Att bestämma senare
 
-- Säsonger (vår/höst) finns inte; temperaturen räcker tills vidare.
+- Marktyper som ändrar säsongsprofilen (växthus, kompost).
 - Bronsålderns bronsskära och plog (snabbare åker, större skörd).
 - Källa för Barley (handel, byar).
 - Manure bara från djur i fållor eller tamdjur (nu släpper alla vuxna i taggen, även vilda).

@@ -302,6 +302,7 @@ lang.update({
     "message.mechanical.crop_info": "%s: %s° (grows %s-%s) | %s | %s",
     "message.mechanical.crop.growing": "growing", "message.mechanical.crop.dry": "too dry", "message.mechanical.crop.dark": "needs daylight",
     "message.mechanical.crop.cold": "too cold", "message.mechanical.crop.hot": "too hot", "message.mechanical.crop.ripe": "ripe",
+    "message.mechanical.crop.season": "resting till spring",
 })
 lang_path = A / "lang/en_us.json"
 full = json.loads(lang_path.read_text(encoding="utf-8"))

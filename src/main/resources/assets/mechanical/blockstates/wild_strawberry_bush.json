@@ -1,16 +1,28 @@
 {
   "variants": {
-    "age=0": {
+    "age=0,frozen=false": {
       "model": "mechanical:block/wild_strawberry_bush_stage0"
     },
-    "age=1": {
+    "age=0,frozen=true": {
+      "model": "mechanical:block/wild_strawberry_bush_stage0_frozen"
+    },
+    "age=1,frozen=false": {
       "model": "mechanical:block/wild_strawberry_bush_stage1"
     },
-    "age=2": {
+    "age=1,frozen=true": {
+      "model": "mechanical:block/wild_strawberry_bush_stage1_frozen"
+    },
+    "age=2,frozen=false": {
       "model": "mechanical:block/wild_strawberry_bush_stage2"
     },
-    "age=3": {
+    "age=2,frozen=true": {
+      "model": "mechanical:block/wild_strawberry_bush_stage2_frozen"
+    },
+    "age=3,frozen=false": {
       "model": "mechanical:block/wild_strawberry_bush_stage3"
+    },
+    "age=3,frozen=true": {
+      "model": "mechanical:block/wild_strawberry_bush_stage3_frozen"
     }
   }
 }

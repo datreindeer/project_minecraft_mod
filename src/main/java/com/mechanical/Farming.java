@@ -142,8 +142,20 @@ public final class Farming {
 
     // ---------------------------------------------------------------- growth rules
 
-    /** Temperature range (Temperature.ambient scale): grows in min..max, full speed in bestLo..bestHi; young plants die below frost at night. */
-    public record Climate(float min, float bestLo, float bestHi, float max, float frost, boolean root) {
+    /**
+     * Temperature range (Temperature.ambient scale): grows in min..max, full speed in bestLo..bestHi; young plants die below
+     * frost at night. On top of that, growth speed per season ({@link #season}). One row per crop in {@link #climate}.
+     */
+    public record Climate(float min, float bestLo, float bestHi, float max, float frost, boolean root, float[] seasons) {
+        Climate(float min, float bestLo, float bestHi, float max, float frost, boolean root) {
+            this(min, bestLo, bestHi, max, frost, root, DEFAULT_SEASONS);
+        }
+
+        /** Growth factor in a season (0 spring .. 3 winter, Calendar.season); 0 = rests for the season. */
+        public float season(int season) {
+            return seasons[season];
+        }
+
         float factor(float t) {
             if (t <= min || t >= max) return 0;
             if (t < bestLo) return (t - min) / (bestLo - min);
@@ -152,7 +164,9 @@ public final class Farming {
         }
     }
 
-    private static final Climate WHEAT = new Climate(7, 10, 14, 17, 2, false);
+    /** Spring, summer, autumn, winter. Crops without their own profile: sown in spring, best in summer, slow in autumn, rest in winter. */
+    public static final float[] DEFAULT_SEASONS = {1.0F, 1.2F, 0.6F, 0};
+    private static final Climate WHEAT = new Climate(7, 10, 14, 17, 2, false); // the default profile
     private static Map<Block, Climate> climates;
 
     public static @Nullable Climate climate(Block block) {
@@ -161,15 +175,16 @@ public final class Farming {
             m.put(Blocks.WHEAT, WHEAT);
             m.put(CROPS.get("einkorn").get(), WHEAT);
             m.put(CROPS.get("emmer").get(), WHEAT);
-            m.put(CROPS.get("barley").get(), new Climate(5, 8, 12, 16, 0, false));
-            Climate carrot = new Climate(4, 7, 12, 15, -1, true);
+            m.put(CROPS.get("barley").get(), new Climate(5, 8, 12, 16, 0, false, new float[] {1.2F, 1.0F, 0.7F, 0})); // quick, early
+            Climate carrot = new Climate(4, 7, 12, 15, -1, true, new float[] {1.0F, 1.0F, 0.8F, 0}); // roots fill out in autumn
             m.put(Blocks.CARROTS, carrot);
             m.put(Roots.WILD_CARROT_CROP.get(), carrot); // the wild form, same needs
-            m.put(Blocks.POTATOES, new Climate(6, 9, 13, 16, 2, true));
-            m.put(Blocks.BEETROOTS, new Climate(5, 8, 13, 16, 1, true));
-            m.put(PEA_CROP.get(), new Climate(6, 9, 13, 16, 2, false));
-            m.put(Spinning.FLAX_CROP.get(), new Climate(5, 8, 13, 16, 0, false)); // a cool-climate crop, like barley
-            Climate warm = new Climate(12, 15, 20, 25, 6, false); // max 25 (spec 22): savanna and desert are 22, the only biomes this warm
+            m.put(Blocks.POTATOES, new Climate(6, 9, 13, 16, 2, true, new float[] {0.9F, 1.2F, 0.5F, 0}));
+            m.put(Blocks.BEETROOTS, new Climate(5, 8, 13, 16, 1, true, new float[] {1.0F, 1.1F, 0.8F, 0}));
+            m.put(PEA_CROP.get(), new Climate(6, 9, 13, 16, 2, false, new float[] {1.2F, 1.0F, 0.4F, 0})); // early, done by autumn
+            m.put(Spinning.FLAX_CROP.get(), new Climate(5, 8, 13, 16, 0, false, new float[] {1.1F, 1.2F, 0.4F, 0})); // a cool-climate crop, like barley
+            // max 25 (spec 22): savanna and desert are 22, the only biomes this warm; needs the summer heat
+            Climate warm = new Climate(12, 15, 20, 25, 6, false, new float[] {0.5F, 1.3F, 0.6F, 0});
             m.put(Blocks.MELON_STEM, warm);
             m.put(Blocks.PUMPKIN_STEM, warm);
             climates = m;
@@ -182,6 +197,7 @@ public final class Farming {
     /** Extra growth on the best soil: chance of a second stage after a growth step (~1.3x speed). */
     public static final float RICH_SOIL_BONUS = 0.3F;
     public static final int DAYLIGHT = 9;
+    static final Identifier FALLOW = Identifier.fromNamespaceAndPath(MODID, "food/fallow_season");
 
     public static boolean isYoungCrop(BlockState state) {
         if (state.getBlock() instanceof CropBlock crop) return !crop.isMaxAge(state);
@@ -196,6 +212,7 @@ public final class Farming {
     private static @Nullable String blocker(Level level, BlockPos pos, Climate c, float temp, BlockState soil) {
         if (soil.hasProperty(FarmlandBlock.MOISTURE) && soil.getValue(FarmlandBlock.MOISTURE) == 0) return "dry";
         if (level.isDarkOutside() || level.getBrightness(LightLayer.SKY, pos) < DAYLIGHT) return "dark";
+        if (c.season(Calendar.season(level.getOverworldClockTime())) == 0) return "season";
         if (temp <= c.min()) return "cold";
         if (temp >= c.max()) return "hot";
         return null;
@@ -225,7 +242,8 @@ public final class Farming {
             }
         }
         // days are Calendar.SLOWDOWN times vanilla length: same growth per day
-        float chance = blocker(level, pos, c, temp, soil) != null ? 0 : c.factor(temp) * fertilityFactor(Fertility.get(soil)) / Calendar.SLOWDOWN;
+        float chance = blocker(level, pos, c, temp, soil) != null ? 0 : c.factor(temp) * c.season(Calendar.season(level.getOverworldClockTime()))
+                * fertilityFactor(Fertility.get(soil)) / Calendar.SLOWDOWN;
         if (random.nextFloat() >= chance) event.setResult(CropGrowEvent.Pre.Result.DO_NOT_GROW);
     }
 
@@ -356,6 +374,7 @@ public final class Farming {
             if (c != null) {
                 float temp = Temperature.ambient(level, soilPos.above());
                 String why = isYoungCrop(crop) ? blocker(level, soilPos.above(), c, temp, soil) : "ripe";
+                if ("season".equals(why) && event.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp) Kettle.award(sp, FALLOW);
                 msg = Component.translatable("message.mechanical.crop_info", crop.getBlock().getName(), String.format("%.1f", temp),
                         (int) c.min(), (int) c.max(), msg, Component.translatable("message.mechanical.crop." + (why == null ? "growing" : why)));
             }
