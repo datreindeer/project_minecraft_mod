@@ -23,6 +23,7 @@ public class MechanicalClient {
         event.register(com.mechanical.Smelting.FURNACE_MENU.get(), FurnaceScreen::new);
         event.register(Mechanical.BARK_BASKET_MENU.get(), BarkBasketScreen::new);
         event.register(com.mechanical.equipment.PackMenu.TYPE.get(), PackScreen::new);
+        event.register(com.mechanical.wildlife.SaddlebagMenu.TYPE.get(), SaddlebagScreen::new);
         event.<com.mechanical.FletchingMenu, RecipeStationScreen<com.mechanical.FletchingMenu>>register(Mechanical.FLETCHING_MENU.get(), (menu, inventory, title) ->
                 new RecipeStationScreen<>(menu, inventory, title, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/fletching_table.png")));
         event.<com.mechanical.ArmorStationMenu, RecipeStationScreen<com.mechanical.ArmorStationMenu>>register(Mechanical.ARMOR_STATION_MENU.get(), (menu, inventory, title) ->
@@ -142,6 +143,9 @@ public class MechanicalClient {
         event.registerLayerDefinition(CarcassRenderer.Lashing.LAYER, CarcassRenderer.Lashing::create);
         event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.BLANKET,
                 () -> WildHorseModel.createBodyLayer(new net.minecraft.client.model.geom.builders.CubeDeformation(0.4F)));
+        event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.ARMOR,
+                () -> WildHorseModel.createBodyLayer(new net.minecraft.client.model.geom.builders.CubeDeformation(0.2F)));
+        event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.SATCHELS, WildHorseModel::createSatchelLayer);
         event.registerLayerDefinition(WatercraftModel.CANOE, WatercraftModel::createCanoe);
         event.registerLayerDefinition(WatercraftModel.CANOE_WATER_PATCH, WatercraftModel::createCanoeWaterPatch);
         event.registerLayerDefinition(RoeDeerModel.LAYER, RoeDeerModel::createBodyLayer);

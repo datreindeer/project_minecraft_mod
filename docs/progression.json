@@ -260,11 +260,12 @@
      "minecraft:leather",
      "leatherworking_bench",
      "bone_needle",
-     "leather_satchel"
+     "leather_satchel",
+     "leather_pouch"
     ],
     "text": {
-     "sv": "Djur släpper inte läder. [[raw_hide]] + kniv blir [[scraped_hide]]. Spänn upp den på en [[drying_rack]] (sticks + Twine) och vänta ~3 minuter: den blir [[minecraft:leather]]. En Drying Rack kan byggas på höjden till 2 block med 4 platser.\n\n[[leatherworking_bench]] (Leather, [[bone_needle]], plankor och crafting table) syr kläder, rustning och väskor. Bone Needle görs av ben eller fiskben + kniv. Läderrustning tar läder + tråd: hjälm 5, bröst 8, ben 7, stövlar 4 Leather. Varje del isolerar 15 % mot kyla.\n\n[[leather_satchel]] (4 Leather + tråd) är en väska med 9 platser för vad som helst, och [[quiver]] (2 Leather + tråd) håller pilar.",
-     "en": "Animals do not drop leather. [[raw_hide]] + knife makes [[scraped_hide]]. Stretch it on a [[drying_rack]] (sticks + Twine) and wait ~3 minutes: it becomes [[minecraft:leather]]. A Drying Rack can be built up to 2 blocks tall with 4 slots.\n\nThe [[leatherworking_bench]] (Leather, [[bone_needle]], planks and a crafting table) sews clothes, armour and bags. A Bone Needle is made from a bone or fish bones + knife. Leather armour takes leather + thread: helmet 5, chest 8, legs 7, boots 4 Leather. Each piece insulates 15 % against cold.\n\nThe [[leather_satchel]] (4 Leather + thread) is a bag with 9 slots for anything, and the [[quiver]] (2 Leather + thread) holds arrows."
+     "sv": "Djur släpper inte läder. [[raw_hide]] + kniv blir [[scraped_hide]]. Spänn upp den på en [[drying_rack]] (sticks + Twine) och vänta ~3 minuter: den blir [[minecraft:leather]]. En Drying Rack kan byggas på höjden till 2 block med 4 platser.\n\n[[leatherworking_bench]] (Leather, [[bone_needle]], plankor och crafting table) syr kläder, rustning och väskor. Bone Needle görs av ben eller fiskben + kniv. Läderrustning tar läder + tråd: hjälm 5, bröst 8, ben 7, stövlar 4 Leather. Varje del isolerar 15 % mot kyla.\n\n[[leather_satchel]] (4 Leather + tråd) är en väska med 9 platser för vad som helst, och [[quiver]] (2 Leather + tråd) håller pilar. [[leather_pouch]] (Cordage över Leather på crafting table) är en liten påse med 4 platser som bärs på höften i stället för kogret.",
+     "en": "Animals do not drop leather. [[raw_hide]] + knife makes [[scraped_hide]]. Stretch it on a [[drying_rack]] (sticks + Twine) and wait ~3 minutes: it becomes [[minecraft:leather]]. A Drying Rack can be built up to 2 blocks tall with 4 slots.\n\nThe [[leatherworking_bench]] (Leather, [[bone_needle]], planks and a crafting table) sews clothes, armour and bags. A Bone Needle is made from a bone or fish bones + knife. Leather armour takes leather + thread: helmet 5, chest 8, legs 7, boots 4 Leather. Each piece insulates 15 % against cold.\n\nThe [[leather_satchel]] (4 Leather + thread) is a bag with 9 slots for anything, and the [[quiver]] (2 Leather + thread) holds arrows. The [[leather_pouch]] (Cordage over Leather at a crafting table) is a small 4-slot bag worn at the hip in place of the quiver."
     }
    },
    {
@@ -774,11 +775,13 @@
      "cart",
      "rope_halter",
      "hide_saddle_blanket",
+     "minecraft:leather_horse_armor",
+     "leather_satchel",
      "entity:wild_horse"
     ],
     "text": {
-     "sv": "[[wooden_wheel]] kräver Bronze Saw och Bronze Ingot. Två hjul och plankor blir en [[cart]]: 6 platser för kroppar (dubbelt mot travoisen), ett förråd med 18 platser och en Chest kan monteras på den (54 platser).\n\n**Tämja en [[entity:wild_horse]]:** smyg fram med foder (säd, kärvar, äpplen, morötter) och mata ur handen, högst en gång per 10 s. Vid 3 förtroende sätter du på en [[rope_halter]] (Cordage), och vid 6 är hästen tam.\n\nHästen kan ridas barbacka (80 % fart). [[hide_saddle_blanket]] ger full fart och fulla hopp. Rid eller led hästen till vagnen och högerklicka för att spänna för den. Två tama hästar som matas med kärvar får föl.",
-     "en": "The [[wooden_wheel]] needs a Bronze Saw and a Bronze Ingot. Two wheels and planks make a [[cart]]: 6 slots for carcasses (double the travois), an 18-slot storage, and a Chest can be mounted on it (54 slots).\n\n**Taming a [[entity:wild_horse]]:** sneak up with feed (grain, sheaves, apples, carrots) and feed it by hand, at most once every 10 s. At 3 trust put on a [[rope_halter]] (Cordage), and at 6 the horse is tame.\n\nThe horse can be ridden bareback (80 % speed). The [[hide_saddle_blanket]] gives full speed and full jumps. Ride or lead the horse to the cart and right-click to hitch it. Two tame horses fed sheaves have a foal."
+     "sv": "[[wooden_wheel]] kräver Bronze Saw och Bronze Ingot. Två hjul och plankor blir en [[cart]]: 6 platser för kroppar (dubbelt mot travoisen), ett förråd med 18 platser och en Chest kan monteras på den (54 platser).\n\n**Tämja en [[entity:wild_horse]]:** smyg fram med foder (säd, kärvar, äpplen, morötter) och mata ur handen, högst en gång per 10 s. Vid 3 förtroende sätter du på en [[rope_halter]] (Cordage), och vid 6 är hästen tam.\n\nHästen kan ridas barbacka (80 % fart). [[hide_saddle_blanket]] ger full fart och fulla hopp. [[minecraft:leather_horse_armor]] sys vid Leatherworking Bench, och två [[leather_satchel]] kan hänga på hästen som saddlebags (smyg + högerklicka för att packa dem). Rid eller led hästen till vagnen och högerklicka för att spänna för den. Två tama hästar som matas med kärvar får föl.",
+     "en": "The [[wooden_wheel]] needs a Bronze Saw and a Bronze Ingot. Two wheels and planks make a [[cart]]: 6 slots for carcasses (double the travois), an 18-slot storage, and a Chest can be mounted on it (54 slots).\n\n**Taming a [[entity:wild_horse]]:** sneak up with feed (grain, sheaves, apples, carrots) and feed it by hand, at most once every 10 s. At 3 trust put on a [[rope_halter]] (Cordage), and at 6 the horse is tame.\n\nThe horse can be ridden bareback (80 % speed). The [[hide_saddle_blanket]] gives full speed and full jumps. [[minecraft:leather_horse_armor]] is sewn at the Leatherworking Bench, and two [[leather_satchel]] can hang on the horse as saddlebags (sneak + right-click to pack them). Ride or lead the horse to the cart and right-click to hitch it. Two tame horses fed sheaves have a foal."
     }
    },
    {

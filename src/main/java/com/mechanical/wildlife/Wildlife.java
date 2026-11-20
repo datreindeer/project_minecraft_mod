@@ -143,7 +143,9 @@ public final class Wildlife {
     }
 
     /** Loads this class so its registrations happen; call from the mod constructor. */
-    public static void init() {}
+    public static void init() {
+        SaddlebagMenu.init();
+    }
 
     @SubscribeEvent
     static void attributes(EntityAttributeCreationEvent event) {

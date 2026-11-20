@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "mechanical:bundle_from_moleskin"
+        "recipes": "mechanical:leather_pouch_from_moleskin"
       }
     }
   },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "mechanical:bundle_from_moleskin"
+      "mechanical:leather_pouch_from_moleskin"
     ]
   }
 }

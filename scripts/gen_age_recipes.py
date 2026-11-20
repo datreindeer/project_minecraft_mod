@@ -30,7 +30,7 @@ RECIPES = [
     ("copper_ingot", "misc", "copper blocks in trial chambers (stone pickaxe) -> 9 ingots each, skips smelting", "Bronze"),
     ("copper_ingot_from_waxed_copper_block", "misc", "as above, waxed copper blocks", "Bronze"),
     # decided with the user (borderline cases)
-    ("bundle", "tools", "leather + string; the Leather Satchel is the stone-age bag", "Iron"),
+    ("bundle", "tools", "replaced by the mod's Leather Pouch (Cordage over Leather, 2x2, worn at the hip)", "never"),
     ("paper", "misc", "writing comes with papyrus", "Bronze"),
     ("book", "misc", "needs paper", "Bronze"),
     ("writable_book", "misc", "needs paper", "Bronze"),
@@ -45,7 +45,7 @@ RECIPES = [
 ]
 COLORS = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue",
           "brown", "green", "red", "black"]
-RECIPES += [(f"{c}_bundle", "tools", "dyed bundle", "Iron") for c in COLORS]
+RECIPES += [(f"{c}_bundle", "tools", "dyed bundle (replaced by the Leather Pouch)", "never") for c in COLORS]
 RECIPES += [(f"{c}_concrete_powder", "building_blocks", "concrete belongs to a later age", "Iron") for c in COLORS]
 # planked boats need sawn planks and nails/pegs; the stone age has the Log Raft and Dugout Canoe (Watercraft.java)
 BOAT_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar"]

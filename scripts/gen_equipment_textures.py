@@ -2,6 +2,8 @@
 
 Makes (under src/main/resources/assets/mechanical/textures/):
   item/quiver.png                         16x16 hide quiver with three fletched arrows
+  item/leather_pouch.png                  16x16 leather drawstring pouch, tied with cordage
+  entity/worn/leather_pouch.png           32x32 worn pouch (bag, tied neck, belt as the quiver's)
   gui/sprites/container/slot/cloak.png    16x16 empty-slot ghost icons, vanilla style (one grey, rest clear):
   gui/sprites/container/slot/neck.png       cloak, neck, back, ring, hip, charm
   gui/sprites/container/slot/back.png
@@ -15,6 +17,7 @@ Makes (under src/main/resources/assets/mechanical/textures/):
   gui/container/pack_both.png             176x166 (on 256x256) backgrounds for equipment.PackMenu, vanilla container
   gui/container/pack_satchel.png            style: the satchel 3x3 and/or the quiver 2x2 over the player inventory
   gui/container/pack_quiver.png             (slot positions as in PackMenu)
+  gui/container/saddlebags_0/1/2.png       190x166 tamed horse screen (wildlife.SaddlebagMenu) with 0-2 satchels
 Run: python scripts/gen_equipment_textures.py"""
 import random
 from pathlib import Path
@@ -89,6 +92,29 @@ QUIVER_ITEM = [
 img = Image.new("RGBA", (16, 16))
 draw(img, QUIVER_ITEM, LEATHER)
 save(img, "item/quiver.png")
+
+# ---------------------------------------------------------------- 1b. leather pouch item (c/n = the cordage drawstring)
+POUCH_ITEM = [
+    "................",
+    "................",
+    ".....c....c.....",
+    "......c..c......",
+    ".......cc.......",
+    "......OnnO......",
+    ".....OMLLMO.....",
+    "......OccO......",
+    ".....OHLLMDO....",
+    "....OHLLLLMDO...",
+    "...OHHLLLLLMDO..",
+    "...OHLLLLLLMDO..",
+    "...OHLLLLLLMDO..",
+    "...OLLLLLLMMDO..",
+    "....OMMMMMDDO...",
+    ".....OOOOOOO....",
+]
+img = Image.new("RGBA", (16, 16))
+draw(img, POUCH_ITEM, LEATHER)
+save(img, "item/leather_pouch.png")
 
 # ---------------------------------------------------------------- 2. slot ghost icons
 GHOST = {"#": "555555"}
@@ -312,6 +338,24 @@ for f, fe in (("right", "WG"), ("front", "GW"), ("left", "WG"), ("back", "GW")):
     draw(img, [fe[0], fe[1], "c", "c"], LEATHER, *arrow[f][:2])
 save(img, "entity/worn/quiver.png")
 
+# ---------------------------------------------------------------- 4c. worn leather pouch (32x32)
+img = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
+bag = box_faces(0, 0, 3, 3, 2)
+SIDE3 = ["HLM", "LLM", "MDD"]
+SIDE2 = ["LM", "LM", "DD"]
+FACE = {"top": ["TTT", "TTT"], "bottom": ["DDD", "DDD"], "front": ["HLM", "LsM", "MMD"], "back": SIDE3,
+        "right": SIDE2, "left": SIDE2}
+for f, (x, y, w, h) in bag.items():
+    draw(img, FACE[f], LEATHER, x, y)
+neck = box_faces(0, 6, 2, 1, 1)
+for f, (x, y, w, h) in neck.items():
+    draw(img, [("cn" * w)[:w]] * h, LEATHER, x, y)
+belt = box_faces(0, 20, 8, 1, 4)
+for f, rect in belt.items():
+    fill(img, rect, ["S", "T"], LEATHER, rng, [4, 1])
+draw(img, ["SBbS"], LEATHER, belt["front"][0] + 2, belt["front"][1])  # bone buckle
+save(img, "entity/worn/leather_pouch.png")
+
 
 # ---------------------------------------------------------------- PackMenu backgrounds (vanilla container look)
 PANEL, LIGHT, SHADE, OUTLINE, SLOT_DARK, SLOT_FILL = 198, 255, 85, 0, 55, 139
@@ -402,3 +446,29 @@ def pack(satchel_left, quiver_left, name):
 pack(30, 116, "pack_both")
 pack(62, None, "pack_satchel")
 pack(None, 71, "pack_quiver")
+
+
+def saddlebags(satchels):
+    """wildlife.SaddlebagMenu, 190 wide: saddle + armour slots, left satchel, the horse in a dark box, right satchel."""
+    w = 190
+    img = panel(w)
+    slot(img, 8, 18)
+    slot(img, 8, 36)
+    for side, left in enumerate((30, 130)):
+        if side < satchels:
+            for r in range(3):
+                for c in range(3):
+                    slot(img, left + c * 18, 18 + r * 18)
+    for x in range(85, 127):                              # the horse preview box, as vanilla's horse screen
+        for y in range(17, 71):
+            img.putpixel((x, y), grey(0))
+    for r in range(3):
+        for c in range(9):
+            slot(img, 15 + c * 18, 84 + r * 18)
+    for c in range(9):
+        slot(img, 15 + c * 18, 142)
+    save(img, f"gui/container/saddlebags_{satchels}.png")
+
+
+for n in range(3):
+    saddlebags(n)

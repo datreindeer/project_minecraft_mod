@@ -34,4 +34,7 @@ public class WildAnimalRenderState extends LivingEntityRenderState {
     /** Tamed horse (and Giant Deer stomp): 0..1 reared up on the hind legs, and the Hide Saddle Blanket on. */
     public float stand;
     public boolean saddled;
+    /** Tamed horse: satchels on its flanks (0-2), and the horse armour's tint (0 = none). */
+    public int satchels;
+    public int armorColor;
 }

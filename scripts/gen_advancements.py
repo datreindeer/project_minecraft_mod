@@ -260,6 +260,8 @@ TABS = {
              "minecraft:leather_boots")),
         ("leather_satchel", "leatherworking_bench", "leather_satchel", T, "Satchel",
          "Sew 4 Leather into a Leather Satchel: 9 slots that go with you", has("leather_satchel")),
+        ("leather_pouch", "leather_satchel", "leather_pouch", T, "Pouch",
+         "Tie a Leather Pouch: Cordage over Leather. 4 slots, worn at the hip in place of a quiver (B opens it)", has("leather_pouch")),
         ("worn_satchel", "leather_satchel", "leather_satchel", T, "Shoulder Bag",
          "Put the Leather Satchel in the Back slot next to your player in the inventory, then press B to open it anywhere",
          by_code()),
@@ -731,6 +733,11 @@ TABS = {
          "Halter a Wild Horse that trusts you and keep feeding it until it is tame", tamed("tame_horse")),
         ("saddle_blanket", "tame_horse", "hide_saddle_blanket", T, "Bareback No More",
          "Craft a Hide Saddle Blanket (3 Leather, 2 Cordage) for full speed and jumps", has("hide_saddle_blanket")),
+        ("saddlebags", "tame_horse", "leather_satchel", T, "Saddlebags",
+         "Right-click a tamed horse with a Leather Satchel. Two fit, one on each side; sneak + right-click to pack them, shears take them off",
+         by_code()),
+        ("leather_barding", "tame_horse", "minecraft:leather_horse_armor", T, "Leather Barding",
+         "Sew Leather Horse Armor at the Leatherworking Bench (7 Leather, 4 Thread) and dye it as you like", has("minecraft:leather_horse_armor")),
     ]),
 }
 

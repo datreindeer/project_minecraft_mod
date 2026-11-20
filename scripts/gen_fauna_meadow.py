@@ -92,9 +92,9 @@ recipe("wildcat_fur_cap", {"type": "minecraft:crafting_shapeless", "category": "
 recipe("snakeskin_boots", {"type": "minecraft:crafting_shapeless", "category": "equipment",
                            "ingredients": ["minecraft:leather_boots", M + "snakeskin", M + "snakeskin", M + "sinew"],
                            "result": {"id": M + "snakeskin_boots"}})
-# soft, supple moleskin sewn into a pouch: the vanilla Bundle
-recipe("bundle_from_moleskin", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": [" T ", "M M", " M "],
-                                "key": {"T": M + "twine", "M": M + "moleskin"}, "result": {"id": "minecraft:bundle"}})
+# soft, supple moleskin sewn into a pouch: the Leather Pouch (which replaces vanilla's Bundle)
+recipe("leather_pouch_from_moleskin", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": [" T ", "M M", " M "],
+                                       "key": {"T": M + "twine", "M": M + "moleskin"}, "result": {"id": M + "leather_pouch"}})
 # venom-tipped arrows (vanilla Arrow of Poison)
 recipe("poison_arrows_from_venom_gland", {"type": "minecraft:crafting_shaped", "category": "equipment",
                                           "pattern": ["AAA", "AVA", "AAA"], "key": {"A": "minecraft:arrow", "V": M + "venom_gland"},

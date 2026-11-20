@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "C",
+    "L"
+  ],
+  "key": {
+    "C": "mechanical:cordage",
+    "L": "minecraft:leather"
+  },
+  "result": {
+    "id": "mechanical:leather_pouch"
+  }
+}

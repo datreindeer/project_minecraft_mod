@@ -13,7 +13,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 /**
- * {@link PackMenu}: the satchel's 3x3 and/or the quiver's 2x2, each under its own (item) name, on a background drawn
+ * {@link PackMenu}: the satchel's 3x3 and/or the 2x2 of the quiver or pouch at the hip, each under its own (item) name, on a background drawn
  * for that layout by scripts/gen_equipment_textures.py. The B key closes it again, like E closes the inventory.
  */
 public class PackScreen extends AbstractContainerScreen<PackMenu> {
@@ -22,7 +22,7 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
 
     public PackScreen(PackMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        String layout = menu.hasSatchel && menu.hasQuiver ? "both" : menu.hasSatchel ? "satchel" : "quiver";
+        String layout = menu.hasSatchel && menu.hasHip ? "both" : menu.hasSatchel ? "satchel" : "quiver";
         background = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/pack_" + layout + ".png");
     }
 
@@ -34,11 +34,11 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
 
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        if (menu.hasSatchel && menu.hasQuiver) {
+        if (menu.hasSatchel && menu.hasHip) {
             label(graphics, menu.satchelName, 8, 104);
-            label(graphics, menu.quiverName, 115, imageWidth - 8 - 115);
+            label(graphics, menu.hipName, 115, imageWidth - 8 - 115);
         } else {
-            label(graphics, menu.hasSatchel ? menu.satchelName : menu.quiverName, 8, imageWidth - 16);
+            label(graphics, menu.hasSatchel ? menu.satchelName : menu.hipName, 8, imageWidth - 16);
         }
         graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, LABEL_COLOR, false);
     }

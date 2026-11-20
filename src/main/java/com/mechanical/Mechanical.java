@@ -295,6 +295,9 @@ public class Mechanical {
     /** Leather Satchel: 9 slots for anything but other containers, worn in the Back slot (B opens it); sewn in the Armor Station. */
     public static final DeferredItem<LeatherSatchelItem> LEATHER_SATCHEL = ITEMS.registerItem("leather_satchel", LeatherSatchelItem::new, p -> p.stacksTo(1)
             .component(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY));
+    /** Leather Pouch: 4 slots like a small satchel, worn in the Hip slot (B opens it); crafted from Leather and Cordage, replaces the Bundle. */
+    public static final DeferredItem<LeatherPouchItem> LEATHER_POUCH = ITEMS.registerItem("leather_pouch", LeatherPouchItem::new, p -> p.stacksTo(1)
+            .component(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY));
     /** Quiver: 4 slots for arrows, worn in the Hip slot (com.mechanical.equipment.Quiver); sewn in the Armor Station. */
     public static final DeferredItem<com.mechanical.equipment.QuiverItem> QUIVER = ITEMS.registerItem("quiver", com.mechanical.equipment.QuiverItem::new, p -> p.stacksTo(1)
             .component(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY));

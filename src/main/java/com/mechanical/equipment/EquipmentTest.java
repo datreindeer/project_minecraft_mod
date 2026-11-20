@@ -7,7 +7,13 @@ import java.util.function.Consumer;
 
 import com.mechanical.Mechanical;
 import com.mechanical.Temperature;
+import com.mechanical.wildlife.TameHorse;
+import com.mechanical.wildlife.Wildlife;
 import com.mechanical.wildlife.river.RiverFauna;
+
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
@@ -36,7 +42,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * Game test for the accessory slots: the inventory menu gets them (InventoryMenuMixin), they take only their own items,
  * shift-click fills them, a worn cloak gives its armour and warmth, a worn quiver takes arrows in and a bow shoots from it
- * (ProjectileWeaponItemMixin), and everything worn drops on death.
+ * (ProjectileWeaponItemMixin), and everything worn drops on death. Also the satchels on a tamed horse (saddlebags).
  */
 @EventBusSubscriber(modid = MODID)
 public final class EquipmentTest {
@@ -94,6 +100,25 @@ public final class EquipmentTest {
         h.assertTrue(cloakSlot.mayPlace(cape) && !cloakSlot.mayPlace(satchel), "the cloak slot takes cloaks only");
         h.assertTrue(menu.slots.get(Equipment.MENU_START + Accessory.BACK.ordinal()).mayPlace(satchel), "the back slot takes the satchel");
 
+        // the Leather Pouch: worn at the hip, a small satchel and no quiver, never inside another bag
+        ItemStack pouch = new ItemStack(Mechanical.LEATHER_POUCH.get());
+        h.assertTrue(menu.slots.get(Equipment.MENU_START + Accessory.HIP.ordinal()).mayPlace(pouch), "the hip slot takes the pouch");
+        h.assertTrue(!com.mechanical.BarkBasketMenu.SATCHEL.test(pouch), "a pouch doesn't go in a satchel or pouch");
+        Equipment.of(p).set(Accessory.HIP, pouch);
+        ItemStack loose = new ItemStack(Items.ARROW, 5);
+        h.assertTrue(Quiver.worn(p).isEmpty() && !Quiver.insert(p, loose) && loose.getCount() == 5, "a worn pouch is not a quiver: arrows aren't picked into it");
+        Equipment.of(p).set(Accessory.HIP, ItemStack.EMPTY);
+
+        // a vanilla Bundle in the inventory turns into a Leather Pouch: 4 stacks inside, the rest given back loose
+        ItemStack bundle = new ItemStack(Items.BUNDLE);
+        List<net.minecraft.world.item.Item> kinds = List.of(Items.STICK, Items.FLINT, Items.DIRT, Items.SAND, Items.GRAVEL, Items.CLAY_BALL);
+        bundle.set(DataComponents.BUNDLE_CONTENTS, net.minecraft.world.item.component.BundleContents.EMPTY.copyWithContents(kinds.stream().map(i -> new ItemStack(i, 5))));
+        List<ItemStack> spilled = new java.util.ArrayList<>();
+        ItemStack converted = com.mechanical.BundleConversion.convert(bundle, spilled);
+        h.assertTrue(converted.is(Mechanical.LEATHER_POUCH.get())
+                && converted.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().count() == 4 && spilled.size() == 2,
+                "a bundle of 6 stacks becomes a pouch holding 4, with 2 given back (" + spilled.size() + " spilled)");
+
         // shift-click from the inventory into the free slot, and back out
         p.getInventory().setItem(9, cape.copy());
         menu.quickMoveStack(p, InventoryMenu.INV_SLOT_START);
@@ -129,7 +154,42 @@ public final class EquipmentTest {
         h.assertTrue(drops.stream().anyMatch(e -> e.getItem().is(Mechanical.QUIVER.get())) && drops.stream().anyMatch(e -> e.getItem().is(Mechanical.LEATHER_SATCHEL.get())),
                 "the quiver and the satchel lie on the ground");
         drops.forEach(ItemEntity::discard);
+        saddlebags(h, p);
         h.succeed();
+    }
+
+    /** Satchels on a tamed horse: left then right, contents kept in place, shears take the last off, death drops them packed. */
+    private static void saddlebags(GameTestHelper h, Player p) {
+        TameHorse horse = h.spawn(Wildlife.TAME_HORSE.get(), new net.minecraft.core.BlockPos(3, 2, 3));
+        horse.setTamed(true);
+        h.assertTrue(horse.isEquippableInSlot(new ItemStack(Items.LEATHER_HORSE_ARMOR), EquipmentSlot.BODY), "the tame horse wears leather horse armour");
+        ItemStack left = new ItemStack(Mechanical.LEATHER_SATCHEL.get());
+        left.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.FLINT, 5))));
+        ItemStack right = new ItemStack(Mechanical.LEATHER_SATCHEL.get());
+        right.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(ItemStack.EMPTY, new ItemStack(Items.STICK, 3))));
+        p.setItemInHand(InteractionHand.MAIN_HAND, left);
+        horse.interact(p, InteractionHand.MAIN_HAND, horse.position());
+        p.setItemInHand(InteractionHand.MAIN_HAND, right);
+        horse.interact(p, InteractionHand.MAIN_HAND, horse.position());
+        p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Mechanical.LEATHER_SATCHEL.get()));
+        horse.interact(p, InteractionHand.MAIN_HAND, horse.position());
+        h.assertTrue(horse.satchelCount() == 2 && !p.getMainHandItem().isEmpty() && !horse.isVehicle(), "two satchels go on, not a third, and the third does not mount the horse");
+        h.assertTrue(horse.getInventory().getContainerSize() == 18 && horse.getInventory().getItem(0).is(Items.FLINT) && horse.getInventory().getItem(4).is(Items.STICK),
+                "the left satchel's flint stays top left, the right's sticks in its own columns");
+
+        p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SHEARS));
+        horse.interact(p, InteractionHand.MAIN_HAND, horse.position());
+        h.assertTrue(horse.satchelCount() == 1 && horse.getInventory().getItem(0).is(Items.FLINT), "shears take the right satchel off");
+        List<ItemEntity> off = h.getLevel().getEntitiesOfClass(ItemEntity.class, horse.getBoundingBox().inflate(4));
+        h.assertTrue(off.size() == 1 && off.get(0).getItem().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().anyMatch(s -> s.is(Items.STICK)),
+                "it comes off with its sticks inside");
+        off.forEach(ItemEntity::discard);
+
+        horse.kill(h.getLevel());
+        List<ItemEntity> dead = h.getLevel().getEntitiesOfClass(ItemEntity.class, horse.getBoundingBox().inflate(4));
+        h.assertTrue(dead.stream().anyMatch(e -> e.getItem().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItemCopyStream().anyMatch(s -> s.is(Items.FLINT)))
+                && dead.stream().noneMatch(e -> e.getItem().is(Items.FLINT)), "on death the satchel drops with the flint still inside");
+        dead.forEach(ItemEntity::discard);
     }
 
     private EquipmentTest() {}

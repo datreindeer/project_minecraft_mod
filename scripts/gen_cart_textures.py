@@ -2,6 +2,9 @@
 - entity/cart.png (128x128) for client/CartModel.java: BOXES mirrors its cubes (texOffs, origin, size)
 - entity/wildlife/hide_saddle_blanket.png (128x64): the blanket over the tamed horse's back, drawn on an inflated
   WildHorseModel (client/wildlife/TameHorseRenderer); only the body box is painted, everything else stays transparent
+- entity/wildlife/leather_horse_armor.png (128x64): pale leather barding on an inflated WildHorseModel, tinted with the
+  armour's dye in game (ARMOR_BOXES mirror the model's body, neck, head and upper-leg cubes)
+- entity/wildlife/tame_horse_satchels.png (128x64): the saddlebags (WildHorseModel.createSatchelLayer) and their strap
 - items: cart, wooden_wheel, rope_halter, hide_saddle_blanket (16x16)
 Wood is planed oak planks, the hub a cast bronze cap, the felloes pinned with bronze nails; colours for cordage, tool rods,
 bronze and hide are sampled from the mod's own item textures so everything matches. Deterministic, overwrites its outputs.
@@ -160,6 +163,104 @@ def blanket(v, face, x, y, z, i, j):
 BLANKET_BOXES = {"body": (0, 0, -4.5, -5, -10, 9, 10, 20, blanket)}
 
 
+# ---------------------------------------------------------------- leather horse armour (tinted with the dye in game)
+PALE = [(150, 150, 150), (190, 190, 190), (218, 218, 218), (238, 238, 238)]   # grey so the dye colour multiplies cleanly
+
+
+def leather(i, j, salt):
+    c = lerp(PALE[2], PALE[3], h(i, j, salt))
+    return fur(c, i, j, salt + 1, 0.04, streak=False)
+
+
+def stitched(c, i, j, edge):
+    """Darker hem with a stitch every other texel along it."""
+    if not edge:
+        return c
+    return PALE[1] if (i + j) % 2 else PALE[0]
+
+
+def barding(v, face, x, y, z, i, j):
+    """Body: a caparison over the back and flanks, open under the belly, the rump covered to the tail."""
+    clear = (0, 0, 0, 0)
+    if face == "bottom" or face == "back" and y > -1.0 or face in ("left", "right") and y > 3.5:
+        return clear
+    edge = face in ("left", "right") and y > 2.5 or face == "back" and y > -2.0 or face == "front" and y > 3.0
+    c = stitched(leather(i, j, 91), i, j, edge)
+    if face == "top" and abs(x) < 0.6:
+        c = PALE[1] if j % 2 else c                       # seam along the spine
+    return (*c, 255)
+
+
+def neck_guard(v, face, x, y, z, i, j):
+    if face in ("top", "bottom"):
+        return (0, 0, 0, 0)
+    c = leather(i, j, 93)
+    return (*stitched(c, i, j, y < -8.0), 255)            # hem at the poll
+
+
+def chanfron(v, face, x, y, z, i, j):
+    """Head plate over the forehead and down the face (the ears and the eyes stay free)."""
+    if face == "bottom" or face in ("left", "right") and y > -0.5 or face == "back":
+        return (0, 0, 0, 0)
+    c = leather(i, j, 95)
+    return (*stitched(c, i, j, face in ("left", "right") and y > -1.5), 255)
+
+
+def nose_band(v, face, x, y, z, i, j):
+    if face != "top" or z < -9.0:
+        return (0, 0, 0, 0)
+    return (*stitched(leather(i, j, 97), i, j, z > -6.0), 255)
+
+
+def leg_guard(v, face, x, y, z, i, j):
+    """Upper legs: the caparison's skirt hangs over the forearm and gaskin."""
+    if face in ("top", "bottom") or y > 2.5:
+        return (0, 0, 0, 0)
+    return (*stitched(leather(i, j, 99), i, j, y > 1.5), 255)
+
+
+ARMOR_BOXES = {
+    "body": (0, 0, -4.5, -5, -10, 9, 10, 20, barding),
+    "neck": (58, 0, -2, -9, -3, 4, 10, 6, neck_guard),
+    "head": (86, 0, -2.5, -2.5, -5, 5, 5, 6, chanfron),
+    "muzzle": (86, 11, -2, -1.5, -11, 4, 4, 6, nose_band),
+    "front_leg": (0, 30, -1.5, -1, -1.5, 3, 6, 3, leg_guard),
+    "hind_leg": (12, 30, -1.5, -1, -2, 3, 6, 4, leg_guard),
+}
+
+
+# ---------------------------------------------------------------- saddlebags (Leather Satchels on the flanks)
+def satchel_strap(v, face, x, y, z, i, j):
+    """Body box (inflated): only the strap over the back that the bags hang from."""
+    if 3.5 < z < 5.5 and face in ("top", "left", "right") and (face == "top" or y < -2.5):
+        return (*CORD[1 + (i + j) % 2], 255) if face != "top" else (*LEATHER[1 + (j % 2)], 255)
+    return (0, 0, 0, 0)
+
+
+def saddlebag(v, face, x, y, z, i, j):
+    """Bag 3 wide, 7 tall, 7 long: stitched leather with a flap over the top third, a bronze toggle on the flap."""
+    c = lerp(LEATHER[1], LEATHER[2], h(i, j, 101))
+    c = fur(c, i, j, 102, 0.05, streak=False)
+    outer = face in ("left", "right")
+    if face == "top":
+        c = LEATHER[2]
+    elif outer and y < -0.5:
+        c = shade(LEATHER[2], 1.05)                       # the flap
+        if -0.5 - y < 0.9:
+            c = LEATHER[0]                                # its lower edge
+        if abs(z - 4.5) < 0.6 and -1.5 < y < -0.5:
+            c = BRONZE[2]                                 # toggle
+    if outer and (z < 1.6 or z > 7.4 or y > 3.4):
+        c = shade(LEATHER[0], 1.1) if (i + j) % 2 else CORD[1]   # stitched seams round the edge
+    return (*c, 255)
+
+
+SATCHEL_BOXES = {
+    "body": (0, 0, -4.5, -5, -10, 9, 10, 20, satchel_strap),
+    "bag": (40, 30, 5, -3, 1, 3, 7, 7, saddlebag),
+}
+
+
 # ---------------------------------------------------------------- items
 def item(draw):
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
@@ -242,6 +343,8 @@ def main():
     cart = paint(BOXES, None, (128, 128))
     cart.save(T / "entity/cart.png")
     paint(BLANKET_BOXES, None, (128, 64)).save(T / "entity/wildlife/hide_saddle_blanket.png")
+    paint(ARMOR_BOXES, None, (128, 64)).save(T / "entity/wildlife/leather_horse_armor.png")
+    paint(SATCHEL_BOXES, None, (128, 64)).save(T / "entity/wildlife/tame_horse_satchels.png")
     for name, fn in (("wooden_wheel", wheel_px), ("cart", cart_px), ("rope_halter", halter_px), ("hide_saddle_blanket", blanket_px)):
         item(fn).save(T / f"item/{name}.png")
     print("cart textures ok")

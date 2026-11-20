@@ -65,8 +65,26 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
         return createBodyLayer(CubeDeformation.NONE);
     }
 
-    /** Inflated: the Hide Saddle Blanket layer of the tamed horse (TameHorseRenderer), drawn over the same pose. */
+    /** Inflated: the Hide Saddle Blanket and leather armour layers of the tamed horse (TameHorseRenderer), drawn over the same pose. */
     public static LayerDefinition createBodyLayer(CubeDeformation g) {
+        return LayerDefinition.create(mesh(g), 128, 64);
+    }
+
+    /**
+     * Saddlebags: a Leather Satchel hanging on each flank behind the rider, children of the (inflated, so its strap
+     * clears the blanket) body. Texture tame_horse_satchels.png paints only the bags and the strap over the back.
+     */
+    public static LayerDefinition createSatchelLayer() {
+        MeshDefinition mesh = mesh(new CubeDeformation(0.45F));
+        PartDefinition body = mesh.getRoot().getChild("body");
+        body.addOrReplaceChild(LEFT_SATCHEL, CubeListBuilder.create().texOffs(40, 30).addBox(5.0F, -3.0F, 1.0F, 3.0F, 7.0F, 7.0F), PartPose.ZERO);
+        body.addOrReplaceChild(RIGHT_SATCHEL, CubeListBuilder.create().texOffs(40, 30).mirror().addBox(-8.0F, -3.0F, 1.0F, 3.0F, 7.0F, 7.0F), PartPose.ZERO);
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+
+    public static final String LEFT_SATCHEL = "left_satchel", RIGHT_SATCHEL = "right_satchel";
+
+    private static MeshDefinition mesh(CubeDeformation g) {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
@@ -103,7 +121,7 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
         addLeg(root, "right_front_leg", -2.7F, -7.5F, false, g);
         addLeg(root, "left_hind_leg", 2.7F, 7.5F, true, g);
         addLeg(root, "right_hind_leg", -2.7F, 7.5F, true, g);
-        return LayerDefinition.create(mesh, 128, 64);
+        return mesh;
     }
 
     private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind, CubeDeformation g) {

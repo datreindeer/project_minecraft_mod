@@ -1251,6 +1251,17 @@ sig på bakbenen.
   guldmat fungerar också). Fölet blir en **tam** häst, ägd av den som matade. Med en vanilla-häst eller åsna gäller
   vanillas regler (fölet blir en vanilla-häst eller mula). Annat foder läker 2 hälsa och får föl att växa.
 - Släpper Manure som andra hästar. Flyr inte (tam).
+- **Inventory (egen skärm):** smyg + högerklicka (eller E när du rider) öppnar hästens skärm: sadelplats och rustningsplats
+  till vänster, sedan vänster satchel, hästen och höger satchel. (Vanillas hästskärm har bara plats för 5 kolumner.)
+- **Leather Horse Armor:** sys på **Leatherworking Bench**: 7 Leather + needle + 4 Thread (valfri tråd). Låses upp när du
+  bär en **Rope Halter**. Läggs i rustningsplatsen och ger vanillas 3 armor. Syns som en ljus läderbarding över rygg,
+  flanker, hals, panna och överben, **färgad efter rustningens färg** (färga den som vanlig läderrustning; ofärgad är den
+  läderbrun). Vanillas recept på crafting table är fortfarande avstängt. Andra hästrustningar ritas med samma läderbarding
+  tills de får egna texturer.
+- **Saddlebags:** högerklicka en tam, vuxen häst med en **Leather Satchel**: den första hänger på **vänster** sida och den
+  andra på **höger** sida. Högst 2. Varje satchel ger 3×3 platser i hästens skärm, och det som låg i satcheln flyttas in.
+  Där går det in samma saker som i en satchel (inga andra väskor eller korgar). **Shears** tar av den senast fastsatta
+  satcheln, med innehållet kvar i den. Om hästen dör släpper den satchlarna packade. Advancement **Saddlebags**.
 
 ### Beslut
 
@@ -1258,7 +1269,9 @@ sig på bakbenen.
   en vanilla-häst med annan färg.
 - Ingen sadel i bronsåldern: barbacka fungerar, filten gör den bättre. Vanillas Saddle (järn) fungerar också men syns inte
   på modellen.
-- **Inte gjort:** hästrustning syns inte på vildhästmodellen; vagnen visar inte varorna i förrådet; kistan kan inte tas av vagnen; ingen tvåhästvagn.
+- Satchlarna lagras i hästens eget inventory medan de sitter på (3 kolumner per satchel), så att vanillas logik för
+  inventory, tappade saker och sparning går att använda. Innehållet packas tillbaka i satcheln när den tas av.
+- **Inte gjort:** vagnen visar inte varorna i förrådet; kistan kan inte tas av vagnen; ingen tvåhästvagn.
 
 ## Bloomery (byggd, v0.76.0)
 

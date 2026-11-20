@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/tame_horse",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:leather_horse_armor"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:leather_horse_armor"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.leather_barding.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.leather_barding.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

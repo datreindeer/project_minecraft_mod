@@ -160,12 +160,28 @@ Vanilla-recepten för läderrustning är borttagna.
 
 ### Leather Satchel
 Sys vid Leatherworking Bench (se ovan). Ett förråd med **9 platser (3x3)** för vad som helst, utom andra förråd (Leather Satchel,
-Quiver, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. Staplas inte.
+Leather Pouch, Quiver, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. Staplas inte.
 - **Bärs i Back-platsen** (se Utrustning nedan). Då hänger den framtill på vänster höft med en rem över höger axel, synlig
   på spelaren.
-- **Öppna:** tryck **B** ("Open Satchel & Quiver" under Controls > Inventory, går att byta) för att öppna den burna väskan
-  och kogret tillsammans. B eller E stänger. Trycker man B i inventoriet byter man till väskan. Högerklick med väskan i
+- **Öppna:** tryck **B** ("Open Satchel, Pouch & Quiver" under Controls > Inventory, går att byta) för att öppna den burna
+  väskan och det som hänger i Hip-platsen (Quiver eller Leather Pouch) tillsammans. B eller E stänger. Trycker man B i inventoriet byter man till väskan. Högerklick med väskan i
   handen öppnar den också.
+
+### Leather Pouch
+Ersätter vanillas **Bundle** (alla Bundle-recept är avstängda för gott). En liten dragsko-påse.
+- **Vanilla-bundles blir pouches:** en Bundle (vilken färg som helst) som hamnar i en spelares inventory (från en kista,
+  upplockad, från en gammal värld) blir en Leather Pouch inom en sekund. De 4 första stackarna ligger kvar i påsen, resten
+  läggs i inventoriet (eller tappas om det är fullt). Namnet följer med, färgen gör det inte. Bundles finns inte heller i
+  creative-flikarna.
+- **Recept (crafting table):** 1 Cordage över 1 Leather (`C` / `L`, samma form som vanillas bundle med string). Också
+  3 Moleskin + Twine (` T `/`M M`/` M `).
+- **4 platser (2x2)** för samma saker som Leather Satchel tar (inga andra väskor, korgar, kogret eller shulker boxes).
+  Innehållet sparas på påsen. Staplas inte.
+- **Bärs i Hip-platsen**, i stället för kogret. Då hänger den i ett midjebälte framtill på höger höft, synlig på spelaren.
+  En påse i Hip-platsen är inget koger: pilar plockas inte in i den, och bågen skjuter inte från den.
+- **Öppna:** B öppnar påsen bredvid den burna Leather Satchel, i samma fönster (satcheln 3x3 till vänster, påsen 2x2 till
+  höger). Shift-klick från inventoriet fyller satcheln först och sedan påsen. Högerklick med påsen i handen öppnar den också.
+- Advancement **Pouch** (Wilderness-fliken, efter Satchel).
 
 ### Quiver
 Sys vid Leatherworking Bench: 2 Leather + 2 tråd (vilken tråd som helst) med Bone Needle (eller bronsnålarna), låses upp av
@@ -187,7 +203,7 @@ har tooltipraden "Worn in the X slot".
 |---|---|
 | Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak |
 | Back | Leather Satchel |
-| Hip | Quiver |
+| Hip | Quiver, Leather Pouch |
 | Neck / Ring / Charm | inga än (kommer i senare åldrar) |
 
 - **Död:** burna saker tappas som inventoriet (inte med keepInventory; Curse of Vanishing förstör dem). Curse of Binding
@@ -2320,7 +2336,7 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
 |---|---|---|
 | TNT | Gunpowder (creeper) + Sand | Ångåldern |
 | Firework Rocket (båda recepten), Firework Star, Firework Star (fade) | Gunpowder + Paper / Dye | Ångåldern |
-| Leather Horse Armor | 7 Leather | Bronsåldern |
+| Leather Horse Armor | 7 Leather | Bronsåldern (sys på Leatherworking Bench) |
 | Wolf Armor | Armadillo Scute (bältdjur fäller dem själva) | Bronsåldern |
 | Spectral Arrow | Glowstone Dust (häxor) + Arrow | Järnåldern |
 | Conduit | Nautilus Shell (fiske) + Heart of the Sea (begravd skatt) | Elåldern |
@@ -2329,7 +2345,7 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
 | Cartography Table | Paper + Planks (kartor och kompass kommer senare) | Järnåldern |
 | Fermented Spider Eye | Används bara till bryggning | Järnåldern |
 | Copper Ingot från Block of Copper (även vaxad) | Kopparblock i Trial Chambers bryts med stenhacka → 9 tackor var | Bronsåldern |
-| Bundle (alla färger) | Leather + String; Leather Satchel är stenålderns väska | Järnåldern |
+| Bundle (alla färger) | Leather + String; ersatt av **Leather Pouch** (Cordage över Leather) | Aldrig |
 | Paper, Book, Writable Book, Bookshelf, Chiseled Bookshelf, Lectern | Skrift kommer med papyrus | Bronsåldern |
 | Concrete Powder (alla färger) | Betong hör till en senare ålder | Järnåldern |
 | Lever | En redstone-del | Järnåldern |

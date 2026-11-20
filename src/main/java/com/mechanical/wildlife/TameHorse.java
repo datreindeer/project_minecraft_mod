@@ -1,6 +1,24 @@
 package com.mechanical.wildlife;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mechanical.BarkBasketMenu;
 import com.mechanical.Carting;
+import com.mechanical.LeatherSatchelItem;
+import com.mechanical.equipment.PackMenu;
+
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.ItemStackWithSlot;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -26,11 +44,20 @@ import net.minecraft.world.phys.Vec3;
  * the wild horse's looks (client/wildlife/TameHorseRenderer). Ridden bareback it is steered without a saddle but goes at
  * {@link #BAREBACK_SPEED} and jumps {@link #BAREBACK_JUMP} as high; the Hide Saddle Blanket (saddle slot) gives the full
  * speed and jump. Bred with sheaves or hay bales ({@link Carting#HORSE_BREEDING_FEED}); foals of two tame horses are tame.
+ * Up to {@link #MAX_SATCHELS} Leather Satchels hang on its sides (right-click one on the horse: left side, then right;
+ * shears take the last one off). Each adds its 3x3 as three columns of the horse's inventory: the satchel's contents
+ * move into the horse when it is put on and back into the satchel when it comes off or the horse dies.
  */
 public class TameHorse extends Horse {
     public static final float BAREBACK_SPEED = 0.8F, BAREBACK_JUMP = 0.7F;
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/wild_horse.png");
     private static final Identifier FOAL_TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/wild_horse_foal.png");
+    public static final int MAX_SATCHELS = 2, SATCHEL_COLUMNS = 3;
+    private static final EntityDataAccessor<Byte> DATA_SATCHELS = SynchedEntityData.defineId(TameHorse.class, EntityDataSerializers.BYTE);
+    /** The satchels hanging on it (server), emptied: their contents live in the inventory meanwhile. */
+    private final List<ItemStack> satchels = new ArrayList<>();
+    /** Granted from code, see scripts/gen_advancements.py. */
+    private static final Identifier SADDLEBAGS_ADVANCEMENT = Identifier.fromNamespaceAndPath("mechanical", "bronze_age/saddlebags");
 
     public TameHorse(EntityType<? extends TameHorse> type, Level level) {
         super(type, level);
@@ -112,7 +139,135 @@ public class TameHorse extends Horse {
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        return caravanLed() ? InteractionResult.PASS : super.mobInteract(player, hand);
+        if (caravanLed()) return InteractionResult.PASS;
+        ItemStack held = player.getItemInHand(hand);
+        if (isTamed() && !isBaby() && !isVehicle() && !player.isSecondaryUseActive()) {
+            if (held.getItem() instanceof LeatherSatchelItem) {
+                if (satchelCount() >= MAX_SATCHELS) return InteractionResult.FAIL; // full: don't mount instead
+                if (!level().isClientSide()) attachSatchel(held.copyWithCount(1));
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+                    var advancement = sp.level().getServer().getAdvancements().get(SADDLEBAGS_ADVANCEMENT);
+                    if (advancement != null) sp.getAdvancements().award(advancement, "done");
+                }
+                held.consume(1, player);
+                playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value());
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return super.mobInteract(player, hand);
+    }
+
+    /** Shears (anything with the shears-remove-armour ability) take the satchels off first, then vanilla's saddle and armour. */
+    @Override
+    protected boolean attemptToShearEquipment(Player player, InteractionHand hand, ItemStack heldItem) {
+        if (satchelCount() == 0 || !isTamed()) return super.attemptToShearEquipment(player, hand, heldItem);
+        heldItem.hurtAndBreak(1, player, hand.asEquipmentSlot());
+        if (level() instanceof ServerLevel server) dropLastSatchel(server);
+        playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value());
+        return true;
+    }
+
+    // ---------------------------------------------------------------- satchels
+
+    /** Its own screen ({@link SaddlebagMenu}): vanilla's has room for 5 columns, two satchels need 6. */
+    @Override
+    public void openCustomInventoryScreen(Player player) {
+        if (!level().isClientSide() && (!isVehicle() || hasPassenger(player)) && isTamed()) SaddlebagMenu.open(player, this);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder entityData) {
+        super.defineSynchedData(entityData);
+        entityData.define(DATA_SATCHELS, (byte) 0);
+    }
+
+    public int satchelCount() {
+        return entityData.get(DATA_SATCHELS);
+    }
+
+    @Override
+    public int getInventoryColumns() {
+        return satchelCount() * SATCHEL_COLUMNS;
+    }
+
+    /** Vanilla copies slot by index, but the grid's width changes with the satchels: keep each item at its row and column. */
+    @Override
+    protected void createInventory() {
+        SimpleContainer old = inventory;
+        super.createInventory();
+        int oldCols = old == null ? 0 : old.getContainerSize() / 3, cols = getInventoryColumns();
+        if (oldCols == cols) return;
+        inventory.clearContent();
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < Math.min(oldCols, cols); x++) inventory.setItem(x + y * cols, old.getItem(x + y * oldCols));
+        }
+    }
+
+    /** Inventory index of slot i (0-8, row by row) of the satchel on that side (0 left, 1 right). */
+    private int slot(int side, int i) {
+        return side * SATCHEL_COLUMNS + i % 3 + i / 3 * getInventoryColumns();
+    }
+
+    private void attachSatchel(ItemStack satchel) {
+        int side = satchels.size();
+        entityData.set(DATA_SATCHELS, (byte) (side + 1));
+        createInventory();
+        NonNullList<ItemStack> items = NonNullList.withSize(PackMenu.SATCHEL_SIZE, ItemStack.EMPTY);
+        satchel.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(items);
+        for (int i = 0; i < items.size(); i++) inventory.setItem(slot(side, i), items.get(i));
+        satchel.remove(DataComponents.CONTAINER);
+        satchels.add(satchel);
+    }
+
+    /** Takes the last satchel off with its slots packed back in; what a satchel may not hold drops loose beside it. */
+    private void dropLastSatchel(ServerLevel level) {
+        int side = satchels.size() - 1;
+        List<ItemStack> drops = new ArrayList<>();
+        NonNullList<ItemStack> items = NonNullList.withSize(PackMenu.SATCHEL_SIZE, ItemStack.EMPTY);
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack s = inventory.removeItemNoUpdate(slot(side, i));
+            if (BarkBasketMenu.SATCHEL.test(s)) items.set(i, s);
+            else if (!s.isEmpty()) drops.add(s);
+        }
+        ItemStack satchel = satchels.remove(side);
+        satchel.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
+        drops.add(satchel);
+        entityData.set(DATA_SATCHELS, (byte) side);
+        createInventory();
+        for (ItemStack s : drops) spawnAtLocation(level, s);
+    }
+
+    /** The satchels drop packed instead of spilling (vanilla then drops whatever is left in the inventory). */
+    @Override
+    protected void dropEquipment(ServerLevel level) {
+        while (!satchels.isEmpty()) dropLastSatchel(level);
+        super.dropEquipment(level);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        ValueOutput.TypedOutputList<ItemStack> bags = output.list("Satchels", ItemStack.CODEC);
+        satchels.forEach(bags::add);
+        ValueOutput.TypedOutputList<ItemStackWithSlot> items = output.list("SatchelItems", ItemStackWithSlot.CODEC);
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            if (!inventory.getItem(i).isEmpty()) items.add(new ItemStackWithSlot(i, inventory.getItem(i)));
+        }
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        satchels.clear();
+        for (ItemStack s : input.listOrEmpty("Satchels", ItemStack.CODEC)) {
+            if (satchels.size() < MAX_SATCHELS) satchels.add(s);
+        }
+        entityData.set(DATA_SATCHELS, (byte) satchels.size());
+        inventory = null; // a fresh grid, not one remapped from whatever was there
+        createInventory();
+        for (ItemStackWithSlot item : input.listOrEmpty("SatchelItems", ItemStackWithSlot.CODEC)) {
+            if (item.isValidInContainer(inventory.getContainerSize())) inventory.setItem(item.slot(), item.stack());
+        }
     }
 
     @Override
