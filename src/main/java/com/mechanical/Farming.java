@@ -280,11 +280,37 @@ public final class Farming {
     static void onDrops(BlockDropsEvent event) {
         BlockState state = event.getState();
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null) return;
+        float bonus = sickleBonus(event.getTool());
+        if (bonus > 0 && event.getLevel().getRandom().nextFloat() < bonus) {
+            event.getDrops().stream().map(ItemEntity::getItem).filter(s -> s.is(SHEAVES)).findFirst().ifPresent(s -> s.grow(1));
+        }
         if (!harvestSoil(event.getLevel(), event.getPos().below(), crop, event.getDrops().stream().map(ItemEntity::getItem).toList())) return;
         event.getDrops().removeIf(e -> e.getItem().isEmpty());
         if (event.getBreaker() instanceof LivingEntity breaker && event.getTool().is(SICKLES)) {
             event.getTool().hurtAndBreak(1, breaker, EquipmentSlot.MAINHAND); // crops break instantly, so tools don't wear by themselves
         }
+    }
+
+    /** Chance of one extra sheaf from a ripe grain crop cut with this sickle (Straw comes from the loot tables): better metal, better yield. */
+    public static float sickleBonus(ItemStack tool) {
+        if (tool.is(BronzeTools.BRONZE_SICKLE.get())) return 0.8F;
+        if (tool.is(FLINT_SICKLE.get())) return 0.5F;
+        return 0;
+    }
+
+    @EventBusSubscriber(modid = MODID, value = net.neoforged.api.distmarker.Dist.CLIENT)
+    static final class SickleTooltip {
+        @SubscribeEvent
+        static void onTooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {
+            ItemStack stack = event.getItemStack();
+            float bonus = sickleBonus(stack);
+            if (bonus == 0 || event.getToolTip().isEmpty()) return;
+            List<Component> tip = event.getToolTip();
+            tip.add(1, Component.translatable("tooltip.mechanical.sickle_yield", Math.round(bonus * 100)).withStyle(net.minecraft.ChatFormatting.GRAY));
+            if (stack.is(BronzeTools.BRONZE_SICKLE.get())) tip.add(2, Component.translatable("tooltip.mechanical.sickle_swath").withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+
+        private SickleTooltip() {}
     }
 
     /** Soil rules for a ripe harvest, changing {@code drops} in place (may leave empty stacks); false if not on farmland. */

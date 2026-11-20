@@ -61,11 +61,10 @@ for crop, name in list(GRAINS.items()) + [("pea", "Peas")]:
     w(A / f"blockstates/{block}.json", {"variants": {f"age={a}": {"model": f"mechanical:block/{crop}_stage{STAGE[a]}"} for a in range(8)}})
     lang[f"block.mechanical.{block}"] = name
 
-# ripe grain: 1 sheaf; a sickle adds a second half the time, and 1 straw. Unripe: nothing (einkorn/emmer, still wild: 0-1 grain)
+# ripe grain: 1 sheaf; a sickle adds 1 straw (and a chance of a second sheaf, per sickle: Farming.sickleBonus). Unripe: nothing (einkorn/emmer, still wild: 0-1 grain)
 def grain_loot(block, sheaf, grain=None, seq=None):
     every = lambda *t: {"type": "minecraft:all_of", "terms": list(t)}
     pools = [{"rolls": 1, "condition": ripe(block), "entries": [item(sheaf)]},
-             {"rolls": 1, "condition": every(ripe(block), SICKLE, {"type": "minecraft:random_chance", "chance": 0.5}), "entries": [item(sheaf)]},
              {"rolls": 1, "condition": every(ripe(block), SICKLE), "entries": [item(M + "straw")]}]
     if grain:
         pools.append({"rolls": 1, "condition": {"type": "minecraft:inverted", "term": ripe(block)},
@@ -269,6 +268,8 @@ for name, (it, recipes) in UNLOCKS.items():
 # ---------------------------------------------------------------- crop stakes (CropStakesItem; farmland model: gen_farmland_textures.py)
 item_model("crop_stakes")
 lang["item.mechanical.crop_stakes"] = "Crop Stakes"
+lang["tooltip.mechanical.sickle_yield"] = "Ripe grain: %s%% chance of an extra Sheaf, and 1 Straw"
+lang["tooltip.mechanical.sickle_swath"] = "Cuts 3x3 ripe crops or grass in one stroke (sneak: one)"
 w(D / "mechanical/recipe/crop_stakes.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["S S", "STS"],
     "key": {"S": "minecraft:stick", "T": "mechanical:twine"}, "result": {"id": "mechanical:crop_stakes", "count": 2}})
 # breaking staked farmland gives the stakes back (trampling and drying: FarmlandBlockMixin)

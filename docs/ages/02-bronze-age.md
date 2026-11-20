@@ -1109,7 +1109,7 @@ texturer: `scripts/gen_bronzetools_textures.py`.
 - **Svep 3×3:** skär du ett moget sädesstrå (eller gräs, nässlor, vild säd ...) går de 8 runt om på samma höjd med samma
   drag, av samma sort (mogna grödor tar bara mogna grödor, gräs tar gräs). Omogna grödor rörs inte. **Smyg** för att skära
   ett i taget. Varje mogen gröda sliter skäran 1, som förut.
-- Alla skärbonusar gäller (taggen `#mechanical:sickles`): extra kärve och Straw, Flax Stalks, vild säd, morot och
+- Alla skärbonusar gäller (taggen `#mechanical:sickles`): extra kärve (80 %, flintskäran 50 %) och Straw, Flax Stalks, vild säd, morot och
   strandbeta med kniv-eller-skära.
 
 ### Bronze Shears
