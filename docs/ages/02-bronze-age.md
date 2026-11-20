@@ -357,6 +357,9 @@ flintkniv och spatel. Förr var de crafting-recept av Clay Balls, men mönstren 
 | Clay Spear Head Mold / Sword Blade Mold | 4 / 6 |
 | Clay Kettle Mold | 28 (= 7 Clay-block; bänken tar bara Clay Balls) |
 | Clay Arrowheads Mold | 3 |
+| Clay Bucket / Sickle Blade / Shears Mold | 8 / 5 / 5 |
+| Clay Fish Hooks / Needles Mold | 3 / 3 |
+| Clay Tongs / Chisel Blade Mold | 6 / 4 (se "Fler bronsverktyg") |
 
 Kod: `MoldBench` (registrering, recepten, menyn), `MoldBenchBlock`, `RecipeStationMenu` (1 inputruta). Data:
 `scripts/gen_moldbench.py`, texturer: `scripts/gen_moldbench_textures.py`.
@@ -1022,6 +1025,111 @@ läder och soppa går inte att lägga i igen.
 - Ett läge per kittelfyllning (första ingrediensen), så resultatet är tydligt.
 - **Inte gjort (valfritt):** färgning med pigment i kitteln (ull, läderrustning, banderoller), örter (finns inga än),
   att fylla kitteln med Water Jug.
+
+## Fler bronsverktyg (byggda, v0.66.0)
+
+Hink, skära, sax, fiskekrok, nål, tång och mejsel i brons. Alla görs som de andra bronsverktygen: en lerform formas i
+**Mold Bench** och bränns i kilnen (600°), brons hälls i (ur degeln eller via Clay Channels), gjutningen slipas på
+**Whetstone** (4 drag) och sätts ihop i **Tool Station**; saxen och nålarna är färdiga direkt från slipstenen. Formarna
+tar bara brons och tål 5 gjutningar. Recepten i Tool Station låses upp när man bär den slipade delen, så allt kräver brons.
+Kod: `BronzeTools` (registrering, mjölkning, cauldrons, skärans svep, tång och brännskador, mejseln, gametest),
+`BronzeBucketItem`, `BoneHookRodItem` (nu med lure/luck per stav), formarna i `ClayMoldBlock.Shape`/`Metal`, bränning i
+`KilnBlockEntity`, formrecepten i `MoldBench`, monteringen i `ToolStationRecipes`. Data: `scripts/gen_bronzetools.py`,
+texturer: `scripts/gen_bronzetools_textures.py`.
+
+### Formar och gjutning
+
+| Form (Mold Bench) | Clay Balls | Enheter brons | Gjutning → slipas till | Tool Station |
+|---|---|---|---|---|
+| Clay Bucket Mold | 8 | 6 | Rough Cast Bronze Bucket → **Bronze Bucket Body** | Body + Cordage (hänklet) + Stick → **Bronze Bucket** |
+| Clay Sickle Blade Mold | 5 | 4 | Rough Cast Bronze Sickle Blade → **Bronze Sickle Blade** | Blade + Twine + Stick → **Bronze Sickle** |
+| Clay Shears Mold | 5 | 4 | Rough Cast Bronze Shears → **Bronze Shears** (färdig) | – |
+| Clay Fish Hooks Mold | 3 | 2 | Rough Cast Bronze Fish Hooks (4 krokar på en kanal) → **4 Bronze Fish Hook** | Hook + Twine + Tool Rod → **Bronze Hook Fishing Rod** |
+| Clay Needles Mold | 3 | 2 | Rough Cast Bronze Needles (4 nålar på en kanal) → **4 Bronze Needle** (färdiga) | – |
+| Clay Tongs Mold | 6 | 4 | Rough Cast Bronze Tongs → **Bronze Tong Arms** | Arms + Twine + Leather (grepp mot värmen) → **Bronze Tongs** |
+| Clay Chisel Blade Mold | 4 | 2 | Rough Cast Bronze Chisel Blade → **Bronze Chisel Blade** | Blade + Twine + Stick → **Bronze Chisel** |
+
+- **Poor Bronze** följer med som vanligt: verktygen får 70 % hållbarhet. En Poor Bronze-hink (tooltip) är för spröd för
+  lava men bär vatten och mjölk.
+- Hinkens bindning är Cordage, så Hide Glue duger i stället (som för andra verktyg med Cordage).
+
+### Bronze Bucket
+
+- **Spricker aldrig** (Clay Bucket spricker efter 16 hällningar). Staplas till 16 tomma.
+- Öser upp **vatten och lava** (källblock, även vatten ur vattenfyllda block) och häller ut dem som vanilla-hinken:
+  **Bronze Water Bucket** och **Bronze Lava Bucket**. Lava går att hälla ut och ösa upp igen i världen.
+- **Mjölkar** kor, mooshrooms och getter → **Bronze Milk Bucket** (drick: tar bort alla effekter, hinken blir kvar).
+- **Cauldrons:** häll i vatten eller lava, ös upp en full vattencauldron eller en lavacauldron.
+- Bronze Water Bucket fungerar överallt där Clay Water Bucket gör: **kitteln** (Tripod), **Water Jug** (fyll och töm),
+  **recept** (Dough, Raw Porridge, färgernas bindemedel, rötning av lin till Flax Fiber; hinken blir kvar i rutnätet)
+  och **farmland** (blöter 3×3). Bronze Milk Bucket går i **Cake** i stället för Milk Bucket.
+- Generatorn lägger brons-hinken bredvid Clay Water Bucket / Milk Bucket i varje recept som tar dem, så nya recept får den
+  automatiskt.
+- **Inte gjort:** dispensrar häller inte bronshinkar (vanilla-hinkens dispenser-beteende gäller bara vanilla-hinkar).
+  Mjölk och kaka lämnar en vanlig Bronze Bucket (en Poor Bronze-hink blir hel igen där; litet hål, avsiktligt kvar).
+
+### Bronze Sickle
+
+- Flint Sickles verktyg i brons: **460 hållbarhet** (flinta 48), järnets fart.
+- **Svep 3×3:** skär du ett moget sädesstrå (eller gräs, nässlor, vild säd ...) går de 8 runt om på samma höjd med samma
+  drag, av samma sort (mogna grödor tar bara mogna grödor, gräs tar gräs). Omogna grödor rörs inte. **Smyg** för att skära
+  ett i taget. Varje mogen gröda sliter skäran 1, som förut.
+- Alla skärbonusar gäller (taggen `#mechanical:sickles`): extra kärve och Straw, Flax Stalks, vild säd, morot och
+  strandbeta med kniv-eller-skära.
+
+### Bronze Shears
+
+- Vanilla-saxen i brons (fjädersax i ett stycke): klipper får, behåller löv, spindelväv, gräs, pumpor, bikupor,
+  snubbeltråd. **476 hållbarhet** (järnsaxen 238). Vanillas predikat `minecraft:tool/can_shear` (lövens och gräsets
+  loot) tar nu båda saxarna.
+
+### Bronze Hook Fishing Rod
+
+- Napp som med **Lure II** (10 s tidigare; Bone Hook-staven är Lure I) och fångst som med **Luck of the Sea I** (mer
+  skatter, mindre skräp), ovanpå förtrollningar. **128 hållbarhet** (benkroken 48). Förtrollningsbar som andra spön.
+
+### Bronze Needle
+
+- Syr i Armor Station som Bone Needle men tål **250** (benet 32). Armor Stations nålruta tar taggen `#mechanical:needles`
+  (Bone Needle, Bronze Needle), liksom receptet för själva Armor Station.
+
+### Bronze Tongs och brännskador
+
+- **Ny regel:** smält metall bränns. En **Crucible of Molten Metal i handen** (huvudhanden eller offhand) bränner ½ hjärta
+  varannan sekund; i resten av inventoryt bränner den inte. En **färsk gjutning** som tas ur en lerform bränner ½
+  hjärta. Skadetypen `mechanical:hot_metal` ("was burnt by molten metal") räknas som eld, så Fire Resistance skyddar.
+- **Håll Bronze Tongs i någon av händerna:** inga brännskador. Tången slits 1 per gjutning den tar ur en form.
+  250 hållbarhet. Med degeln i huvudhanden och tången i offhand häller man som vanligt; med tången i huvudhanden
+  högerklickar man formen för att ta ut gjutningen.
+- Skadan är liten med avsikt: innan man har brons (de första koppargjutningarna) får man ta några brännskador.
+
+### Bronze Chisel
+
+- Högerklicka sten: den huggs **ett steg** längre, 1 hållbarhet per hugg (320 totalt):
+  Stone → Smooth Stone → Stone Bricks → Chiseled Stone Bricks; Sandstone → Cut Sandstone → Chiseled Sandstone (och röd);
+  Andesite/Diorite/Granite → Polished; Cobbled Deepslate → Polished Deepslate → Deepslate Bricks → Chiseled Deepslate;
+  Tuff → Polished Tuff → Tuff Bricks → Chiseled Tuff Bricks; Blackstone → Polished → Polished Blackstone Bricks →
+  Chiseled Polished Blackstone; Nether Bricks, Quartz Block, Resin Bricks → Chiseled.
+- **Rensa gjutningar:** med mejseln i andra handen vid Whetstone slår man av gjutskägget först: en gjutning slipas på
+  **2 drag** i stället för 4 (mejseln slits 1 per drag). Utan mejsel fungerar slipstenen som förut.
+
+### Vanilla
+
+- **Järnhinken och järnsaxen** är kvar men kräver järntackor, som inte går att få före järnåldern. Bronze Bucket och
+  Bronze Shears är bronsålderns hink och sax. Vanilla-hinkar som hittas (de filtreras ur loot) fungerar som förut.
+- `minecraft:tool/can_shear` skrivs över (shears + bronze_shears). Cake-receptet tar Bronze Milk Bucket som alternativ.
+
+### Advancements (Bronze Age-fliken, efter Bronze!)
+
+*Bronze Bucket*, *Hot Stuff* (ös lava med bronshinken), *Reaper* (Bronze Sickle), *Shearer* (Bronze Shears), *Bronze
+Hook* (Bronze Hook Fishing Rod), *Fine Needlework* (Bronze Needle), *Tongs* (Bronze Tongs), *Stonemason* (Bronze Chisel).
+
+### Test
+
+Gametest `mechanical:bronze_tools`: lava hälls ut och öses upp med bronshinken (en Poor Bronze-hink vägrar), vatten öses
+upp, Dough med Bronze Water Bucket lämnar hinken kvar, Bronze Sickle skär 3×3 mogen vete med ett drag (omogen utanför
+står kvar), degeln i handen bränner utan tång men inte med tång i andra handen, mejseln gör Stone Bricks till Chiseled
+Stone Bricks och slits 1, nålgjutningen ger 4 nålar.
 
 ## Vagn och häst (byggd)
 

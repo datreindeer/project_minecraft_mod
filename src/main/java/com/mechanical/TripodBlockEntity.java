@@ -131,7 +131,7 @@ public class TripodBlockEntity extends BlockEntity {
     // ---- use ----
 
     private static boolean isWater(ItemStack s) {
-        return s.is(Items.WATER_BUCKET) || s.is(Mechanical.CLAY_WATER_BUCKET.get());
+        return s.is(Items.WATER_BUCKET) || s.is(Mechanical.CLAY_WATER_BUCKET.get()) || s.is(BronzeTools.BRONZE_WATER_BUCKET.get());
     }
 
     /** Does this held item do something with this tripod (else the click goes on to the item, e.g. placing a block)? */
@@ -157,7 +157,8 @@ public class TripodBlockEntity extends BlockEntity {
             }
             water = true;
             if (!player.hasInfiniteMaterials()) {
-                ItemStack empty = stack.is(Items.WATER_BUCKET) ? new ItemStack(Items.BUCKET) : ClayBucketItem.emptied(stack);
+                ItemStack empty = stack.is(Items.WATER_BUCKET) ? new ItemStack(Items.BUCKET)
+                        : stack.is(BronzeTools.BRONZE_WATER_BUCKET.get()) ? stack.transmuteCopy(BronzeTools.BRONZE_BUCKET.get(), 1) : ClayBucketItem.emptied(stack);
                 if (empty.isEmpty()) player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
                 player.setItemInHand(hand, empty);
             }

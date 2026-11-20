@@ -150,7 +150,7 @@ public final class Bronze {
             if (isPoor(rough)) markPoor(out);
             return out;
         }
-        return ItemStack.EMPTY;
+        return BronzeTools.ground(rough);
     }
 
     public static boolean isPoor(ItemStack stack) {
@@ -182,6 +182,7 @@ public final class Bronze {
             ItemStack stack = event.getItemStack();
             if (isPoor(stack) && !event.getToolTip().isEmpty()) event.getToolTip().add(1, Component.translatable(
                     stack.is(BRONZE_KETTLE.get()) || stack.is(ROUGH_CAST_BRONZE_KETTLE.get()) ? "tooltip.mechanical.poor_bronze_kettle"
+                            : BronzeTools.isBucket(stack) ? "tooltip.mechanical.poor_bronze_bucket"
                             : stack.is(BRONZE_ARROW.get()) ? "tooltip.mechanical.poor_bronze_arrow" : "tooltip.mechanical.poor_bronze",
                     Kettle.POOR_CAPACITY, Kettle.CAPACITY).withStyle(ChatFormatting.YELLOW));
         }

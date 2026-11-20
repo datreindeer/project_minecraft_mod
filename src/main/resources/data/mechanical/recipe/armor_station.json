@@ -7,7 +7,7 @@
   ],
   "key": {
     "L": "minecraft:leather",
-    "N": "mechanical:bone_needle",
+    "N": "#mechanical:needles",
     "P": "#minecraft:planks",
     "C": "minecraft:crafting_table"
   },

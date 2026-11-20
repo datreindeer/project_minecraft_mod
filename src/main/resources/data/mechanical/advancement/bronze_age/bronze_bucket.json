@@ -1,0 +1,68 @@
+{
+  "parent": "mechanical:bronze_age/bronze",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_bucket"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_water_bucket"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_lava_bucket"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_milk_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_bucket"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.bronze_bucket.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.bronze_bucket.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
