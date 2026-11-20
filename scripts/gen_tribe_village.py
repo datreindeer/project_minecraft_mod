@@ -30,7 +30,10 @@ w(D / "worldgen/structure_set/tribe_village.json", {
                   "exclusion_zone": {"other_set": "minecraft:villages", "chunk_count": 6}}})
 w(D / "tags/worldgen/biome/has_structure/tribe_village.json", {"values": [
     "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:forest", "minecraft:birch_forest",
-    "minecraft:taiga", "minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:savanna"]})
+    "minecraft:taiga", "minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:savanna",
+    # every climate has its villages (people/ClimateZone.java): cold, warm and jungle ones too
+    "minecraft:savanna_plateau", "minecraft:desert", "minecraft:badlands", "minecraft:wooded_badlands", "minecraft:ice_spikes",
+    "minecraft:grove", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle", "minecraft:swamp"]})
 # the paths agent connects these with trails
 # the trail tag (mechanical:trail_connected) is written by gen_trails.py, which lists the tribe village
 
@@ -83,10 +86,18 @@ def tip_texture(light, mid, dark, bark):
 WOODS = {
     "oak": dict(light=(196, 160, 104), mid=(168, 133, 82), dark=(110, 84, 50), bark=[(92, 72, 44), (74, 58, 36), (106, 84, 52)]),
     "spruce": dict(light=(160, 122, 80), mid=(132, 98, 60), dark=(82, 58, 34), bark=[(58, 40, 24), (46, 32, 20), (70, 50, 30)]),
+    # warm villages: acacia's orange heartwood under grey bark; jungle villages: bundled bamboo, pale green-gold cut ends
+    "acacia": dict(light=(214, 128, 74), mid=(178, 98, 52), dark=(118, 58, 30), bark=[(104, 96, 86), (86, 80, 72), (120, 112, 100)]),
+    "bamboo": dict(light=(218, 204, 112), mid=(188, 170, 78), dark=(112, 120, 40), bark=[(96, 128, 40), (78, 108, 32), (112, 142, 52)]),
 }
+# block id, side/end textures and the crafting ingredient (bamboo comes as bundles, not logs)
+BLOCK = {w: f"sharpened_{w}_log" for w in WOODS}
+BLOCK["bamboo"] = "sharpened_bamboo_block"
+SIDE = {w: f"{w}_log" for w in WOODS}
+SIDE["bamboo"] = "bamboo_block"
 names = {}
 for wood, pal in WOODS.items():
-    name = f"sharpened_{wood}_log"
+    name = BLOCK[wood]
     tip_texture(**pal).save(A / f"textures/block/{name}_tip.png")
     tip = f"mechanical:block/{name}_tip"
 
@@ -101,8 +112,8 @@ for wood, pal in WOODS.items():
     base["down"] = {"uv": [0, 0, 16, 16], "texture": "#end", "cullface": "down"}
     w(A / f"models/block/{name}.json", {
         "parent": "minecraft:block/block",
-        "textures": {"side": f"minecraft:block/{wood}_log", "end": f"minecraft:block/{wood}_log_top", "tip": tip,
-                     "particle": f"minecraft:block/{wood}_log"},
+        "textures": {"side": f"minecraft:block/{SIDE[wood]}", "end": f"minecraft:block/{SIDE[wood]}_top", "tip": tip,
+                     "particle": f"minecraft:block/{SIDE[wood]}"},
         "elements": [
             {"from": [0, 0, 0], "to": [16, 9, 16], "faces": base},
             {"from": [2, 9, 2], "to": [14, 12, 14], "faces": faces([2, 9, 14, 12])},
@@ -115,14 +126,14 @@ for wood, pal in WOODS.items():
         "random_sequence": f"mechanical:blocks/{name}"})
     # a log shaped to a point with flint
     w(D / f"recipe/{name}.json", {"type": "minecraft:crafting_shapeless", "category": "building",
-                                  "ingredients": [f"minecraft:{wood}_log", "minecraft:flint"], "result": {"id": f"mechanical:{name}"}})
-    names[f"block.mechanical.{name}"] = f"Sharpened {wood.capitalize()} Log"
+                                  "ingredients": [f"minecraft:{SIDE[wood]}", "minecraft:flint"], "result": {"id": f"mechanical:{name}"}})
+    names[f"block.mechanical.{name}"] = "Sharpened " + SIDE[wood].replace("_", " ").title()
 
 axe = D.parent / "minecraft/tags/block/mineable/axe.json"
 tag = json.loads(axe.read_text(encoding="utf-8"))
 for wood in WOODS:
-    if f"mechanical:sharpened_{wood}_log" not in tag["values"]:
-        tag["values"].append(f"mechanical:sharpened_{wood}_log")
+    if f"mechanical:{BLOCK[wood]}" not in tag["values"]:
+        tag["values"].append(f"mechanical:{BLOCK[wood]}")
 w(axe, tag)
 
 # ---------------------------------------------------------------- lang

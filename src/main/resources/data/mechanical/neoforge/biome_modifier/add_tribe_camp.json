@@ -5,11 +5,18 @@
     "values": [
       "#minecraft:is_forest",
       "#minecraft:is_taiga",
+      "#minecraft:is_savanna",
+      "#minecraft:is_jungle",
       [
         "minecraft:plains",
         "minecraft:sunflower_plains",
         "minecraft:meadow",
-        "minecraft:river"
+        "minecraft:river",
+        "minecraft:snowy_plains",
+        "minecraft:desert",
+        "minecraft:badlands",
+        "minecraft:wooded_badlands",
+        "minecraft:swamp"
       ]
     ]
   },

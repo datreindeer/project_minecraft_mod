@@ -80,6 +80,10 @@ def by_code():
     return {"done": {"trigger": "minecraft:impossible"}}
 
 
+class AllOf(dict):
+    """Criteria that must ALL be met (plain dicts mean any one)."""
+
+
 def visit(structure):
     return {"visit": {"trigger": "minecraft:location", "conditions": {"player": {
         "type": "minecraft:entity_properties", "entity": "this",
@@ -787,6 +791,11 @@ TABS["wilderness"][1].extend([
      "A neighbouring camp gathers enough wood, stone and hides to grow, and raises a palisade", by_code()),
     ("tribe_friends", "tribe_visit", "hide_canvas", C, "Best of Friends",
      "Reach a standing of 80 with a tribe: trade with them, bring them food, let them stay by your fire", by_code()),
+    # granted per climate from Java (people/TribeVisits.java, ClimateZone), criteria named after the climates
+    ("tribe_climates", "tribe_village", "sharpened_bamboo_block", G, "Peoples of the World",
+     "Walk into a Tribe Village in each climate: turf and bone huts in the snow, bark-roofed halls in the woods, "
+     "mud brick on the savanna and in the desert, stilt houses in the jungle and swamps",
+     AllOf({z: {"trigger": "minecraft:impossible"} for z in ("cold", "temperate", "warm", "jungle")})),
 ])
 
 # bats and the Giant Deer's charge (wildlife/VanillaGame.java, GiantDeer.java; gen_wildtweaks.py)
@@ -849,10 +858,6 @@ TABS["bronze_age"][1].extend([
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
-
-class AllOf(dict):
-    """Criteria that must ALL be met (plain dicts mean any one)."""
-
 
 JAVA = ROOT / "src/main/java"
 VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("utf-8")) \

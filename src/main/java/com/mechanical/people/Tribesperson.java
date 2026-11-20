@@ -88,6 +88,8 @@ import net.minecraft.world.phys.Vec3;
 public class Tribesperson extends PathfinderMob implements Merchant, RangedAttackMob, Npc {
     private static final EntityDataAccessor<Integer> ROLE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SKIN = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> CLIMATE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> COLOUR = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
 
     static final long ANGER_TICKS = 24000, FOREVER = Long.MAX_VALUE;
     private static final double GROUP_RANGE = 48, GREET_RANGE = 6;
@@ -161,8 +163,21 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return skin() % 2 == 1;
     }
 
+    /** The climate this person dresses for (set where they were born, see ClimateZone). */
+    public ClimateZone climate() {
+        return ClimateZone.byId(entityData.get(CLIMATE));
+    }
+
+    /** The tribe's colour (a DyeColor id) for the dyed parts of the clothes, or -1 without a tribe. */
+    public int colour() {
+        return entityData.get(COLOUR);
+    }
+
+    /** The skin: temperate people in tribesperson/, the other climates in a folder of their own; its "_tint" mask marks the dyed parts. */
     public Identifier texture() {
-        return Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/tribesperson/" + role().id() + "_" + skin() + ".png");
+        ClimateZone zone = climate();
+        String dir = zone == ClimateZone.TEMPERATE ? "" : zone.id() + "/";
+        return Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/tribesperson/" + dir + role().id() + "_" + skin() + ".png");
     }
 
     public String tribeName() {
@@ -252,9 +267,17 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     /** Sets role, home campfire (null for a roaming band) and group; gives a fresh look, name and the role's tools. */
     public void setup(TribeRole role, BlockPos home, UUID group, boolean leader) {
+        // a loaded spot (runtime spawns); worldgen passes the climate it already knows instead
+        setup(role, home, group, leader, ClimateZone.of(level().getBiome(home != null ? home : blockPosition())));
+    }
+
+    /** As {@link #setup(TribeRole, BlockPos, UUID, boolean)}, dressed for {@code climate}. */
+    public void setup(TribeRole role, BlockPos home, UUID group, boolean leader, ClimateZone climate) {
         RandomSource r = getRandom();
         entityData.set(ROLE, role.ordinal());
         entityData.set(SKIN, r.nextInt(TribeRole.SKINS));
+        entityData.set(CLIMATE, climate.ordinal());
+        entityData.set(COLOUR, group == null ? -1 : Tribe.of(group).baseColour().getId());
         this.home = home;
         this.group = group;
         this.leader = leader;
@@ -844,6 +867,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         super.defineSynchedData(builder);
         builder.define(ROLE, 0);
         builder.define(SKIN, 0);
+        builder.define(CLIMATE, ClimateZone.TEMPERATE.ordinal());
+        builder.define(COLOUR, -1);
     }
 
     @Override
@@ -851,6 +876,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         super.addAdditionalSaveData(output);
         output.putInt("role", entityData.get(ROLE));
         output.putInt("skin", skin());
+        output.putInt("climate", climate().ordinal());
         output.putString("tribe_name", tribeName);
         if (home != null) output.store("camp", BlockPos.CODEC, home);
         if (group != null) output.store("group", UUIDUtil.CODEC, group);
@@ -870,6 +896,9 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         tribeName = input.getStringOr("tribe_name", "");
         home = input.read("camp", BlockPos.CODEC).orElse(null);
         group = input.read("group", UUIDUtil.CODEC).orElse(null);
+        // people saved before climates dress as they did (temperate); the colour follows from the tribe
+        entityData.set(CLIMATE, input.getIntOr("climate", ClimateZone.TEMPERATE.ordinal()));
+        entityData.set(COLOUR, group == null ? -1 : Tribe.of(group).baseColour().getId());
         leader = input.getBooleanOr("leader", false);
         anger.clear();
         input.read("anger", ANGER_CODEC).ifPresent(anger::putAll);

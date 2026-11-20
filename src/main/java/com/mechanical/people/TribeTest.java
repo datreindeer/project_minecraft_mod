@@ -22,6 +22,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -42,6 +44,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * under placed leaves, or a natural tree inside the camp; Bark Roof slopes join into stair-like corners.</li>
  * <li>tribe_gate: inside a log ring with a gate on the far side, a gatherer walks out through the gate and picks a bush
  * behind the wall, and a fisher finds a shore beyond the wall.</li>
+ * <li>tribe_climate: biomes map to the right climate; village layouts of every climate (16 seeds, so every temperament)
+ * keep the gate open and use their climate's materials (no hay outside temperate lands, acacia in warm ones, bamboo
+ * in the jungle, spruce and bone in the cold); a settled camp's three stages build in every climate and stay standing.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
@@ -49,11 +54,13 @@ public final class TribeTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
     private static final ResourceKey<Consumer<GameTestHelper>> CHOP = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_chop"));
     private static final ResourceKey<Consumer<GameTestHelper>> GATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_gate"));
+    private static final ResourceKey<Consumer<GameTestHelper>> CLIMATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_climate"));
     private static final int C = 20, WALL = 6; // the ring's centre (relative x, z) and radius in tribe_gate
 
     static {
         TEST_FUNCTIONS.register("tribe_chop", () -> TribeTest::chop);
         TEST_FUNCTIONS.register("tribe_gate", () -> TribeTest::gate);
+        TEST_FUNCTIONS.register("tribe_climate", () -> TribeTest::climate);
     }
 
     static void init(IEventBus modEventBus) {
@@ -68,6 +75,8 @@ public final class TribeTest {
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_gate"), new FunctionGameTestInstance(GATE,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 2400, 0, true, Rotation.NONE, false, 1, 1, false, 48)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_climate"), new FunctionGameTestInstance(CLIMATE,
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
     }
 
     private static void guarded(GameTestHelper h, Runnable test) {
@@ -190,6 +199,102 @@ public final class TribeTest {
                             + gatherer.goalSelector.getAvailableGoals().stream().filter(g -> g.isRunning()).map(g -> g.getGoal().getClass().getSimpleName()).toList() + ")"));
         });
     }
+
+    private static void climate(GameTestHelper h) {
+        guarded(h, () -> {
+            ServerLevel level = h.getLevel();
+            var biomes = level.registryAccess().lookupOrThrow(Registries.BIOME);
+            Object[][] cases = {{Biomes.PLAINS, ClimateZone.TEMPERATE}, {Biomes.FOREST, ClimateZone.TEMPERATE}, {Biomes.TAIGA, ClimateZone.TEMPERATE},
+                    {Biomes.SNOWY_PLAINS, ClimateZone.COLD}, {Biomes.SNOWY_TAIGA, ClimateZone.COLD}, {Biomes.ICE_SPIKES, ClimateZone.COLD},
+                    {Biomes.GROVE, ClimateZone.COLD}, {Biomes.DESERT, ClimateZone.WARM}, {Biomes.SAVANNA, ClimateZone.WARM},
+                    {Biomes.BADLANDS, ClimateZone.WARM}, {Biomes.JUNGLE, ClimateZone.JUNGLE}, {Biomes.BAMBOO_JUNGLE, ClimateZone.JUNGLE},
+                    {Biomes.SWAMP, ClimateZone.JUNGLE}, {Biomes.MANGROVE_SWAMP, ClimateZone.JUNGLE}};
+            for (Object[] c : cases) {
+                @SuppressWarnings("unchecked") ResourceKey<Biome> key = (ResourceKey<Biome>) c[0];
+                ClimateZone got = ClimateZone.of(biomes.getOrThrow(key));
+                h.assertTrue(got == c[1], key + " should be " + c[1] + ", is " + got);
+            }
+
+            // village layouts: every climate, 16 seeds (so every temperament)
+            BlockPos centre = new BlockPos(0, 64, 0);
+            int wall = com.mechanical.worldgen.TribeVillageStructure.WALL_R;
+            for (ClimateZone zone : ClimateZone.values()) {
+                java.util.Set<Block> seen = new java.util.HashSet<>();
+                for (long seed = 0; seed < 16; seed++) {
+                    var plan = com.mechanical.worldgen.TribeVillageStructure.plan(seed * 7919, centre, zone);
+                    h.assertTrue(plan.size() > 500, zone + " village " + seed + " has only " + plan.size() + " blocks");
+                    double a = com.mechanical.worldgen.TribeVillageStructure.gateAngle(seed * 7919);
+                    for (int r = wall - 1; r <= wall + 1; r++) {
+                        BlockPos g = centre.offset((int) Math.round(Math.cos(a) * r), 0, (int) Math.round(Math.sin(a) * r));
+                        for (int y = 0; y < 3; y++)
+                            h.assertTrue(!plan.containsKey(g.above(y)), zone + " village " + seed + ": the gate is blocked at " + g.above(y) + " by " + plan.get(g.above(y)));
+                    }
+                    for (BlockState b : plan.values()) {
+                        seen.add(b.getBlock());
+                        if (b.getBlock() instanceof LeavesBlock) h.assertTrue(b.getValue(LeavesBlock.PERSISTENT), zone + ": roof leaves must not decay");
+                    }
+                }
+                switch (zone) {
+                    case COLD -> {
+                        h.assertTrue(seen.contains(Blocks.SPRUCE_LOG) && seen.contains(People.SHARPENED_SPRUCE_LOG.get()) && seen.contains(Blocks.BONE_BLOCK)
+                                && seen.contains(Blocks.SNOW) && seen.contains(Blocks.COBBLESTONE), "cold villages: spruce, bone huts, turf under snow, stone footings");
+                        h.assertFalse(seen.contains(Blocks.OAK_LOG) || seen.contains(Blocks.HAY_BLOCK), "no oak or hay in the cold");
+                    }
+                    case TEMPERATE -> h.assertTrue(seen.contains(Blocks.HAY_BLOCK) && seen.contains(Blocks.OAK_LOG) && seen.contains(Blocks.SPRUCE_LOG)
+                            && seen.contains(Mechanical.BARK_ROOFS.get("oak").get()), "temperate villages as before: oak or spruce, bark roofs, hay");
+                    case WARM -> {
+                        h.assertTrue(seen.contains(Blocks.ACACIA_LOG) && seen.contains(People.SHARPENED_ACACIA_LOG.get()) && seen.contains(Blocks.MUD_BRICKS)
+                                && seen.contains(Blocks.PACKED_MUD) && seen.contains(Blocks.ACACIA_FENCE), "warm villages: acacia, mud brick, packed mud, hide shades");
+                        h.assertFalse(seen.contains(Blocks.HAY_BLOCK) || seen.contains(Blocks.OAK_LOG) || seen.contains(Blocks.SPRUCE_LOG), "no hay, oak or spruce where it is warm");
+                    }
+                    case JUNGLE -> {
+                        h.assertTrue(seen.contains(Blocks.BAMBOO_BLOCK) && seen.contains(People.SHARPENED_BAMBOO_BLOCK.get()) && seen.contains(Blocks.JUNGLE_LOG)
+                                && seen.contains(Blocks.JUNGLE_LEAVES) && seen.contains(Blocks.LADDER) && seen.contains(Blocks.JUNGLE_PLANKS),
+                                "jungle villages: bamboo palisade, stilt houses of jungle wood with ladders, leaf roofs");
+                        h.assertFalse(seen.contains(Blocks.HAY_BLOCK) || seen.contains(Blocks.OAK_LOG), "no hay or oak in the jungle");
+                    }
+                }
+            }
+
+            // a settled camp's three stages in every climate, built on a grass floor and left standing
+            int R = Settlements.PALISADE_R + 2;
+            BlockPos mid = new BlockPos(R, 1, R);
+            for (ClimateZone zone : ClimateZone.values()) {
+                for (int x = 0; x <= 2 * R; x++) {
+                    for (int z = 0; z <= 2 * R; z++) {
+                        h.setBlock(new BlockPos(x, 0, z), Blocks.GRASS_BLOCK.defaultBlockState());
+                        for (int y = 1; y <= 5; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
+                    }
+                }
+                Neighbours.Settlement s = new Neighbours.Settlement(UUID.nameUUIDFromBytes(zone.id().getBytes()), h.absolutePos(mid.east(60)),
+                        h.absolutePos(mid), Direction.EAST, 0, 0, true, List.of(), List.of(), 0, 0, List.of(), java.util.Optional.empty());
+                java.util.Set<Block> seen = new java.util.HashSet<>();
+                java.util.Arrays.fill(s.stock, 999);
+                for (int stage = 1; stage <= 3; stage++) {
+                    List<Neighbours.Placement> plan = Settlements.plan(level, s, stage, zone);
+                    h.assertTrue(!plan.isEmpty(), zone + " stage " + stage + " builds nothing");
+                    if (stage == 3) h.assertTrue(Settlements.cost(plan, 0)[0] > 0, zone + " palisade costs wood");
+                    for (Neighbours.Placement p : plan) Settlements.place(level, s, p, null); // as a builder puts them down
+                    for (Neighbours.Placement p : plan) {
+                        BlockState now = level.getBlockState(p.pos());
+                        h.assertTrue(now.getBlock() == p.state().getBlock(), zone + " stage " + stage + ": " + p.state() + " at " + h.relativePos(p.pos()) + " did not stay (" + now + ")");
+                        seen.add(now.getBlock());
+                    }
+                }
+                boolean ok = switch (zone) {
+                    case COLD -> seen.contains(Blocks.SPRUCE_LOG) && seen.contains(People.SHARPENED_SPRUCE_LOG.get()) && seen.contains(People.HIDE_TENT_SLOPE.get());
+                    case TEMPERATE -> seen.contains(Blocks.OAK_LOG) && seen.contains(People.SHARPENED_OAK_LOG.get()) && seen.contains(People.HIDE_TENT_SLOPE.get());
+                    case WARM -> seen.contains(Blocks.ACACIA_LOG) && seen.contains(People.SHARPENED_ACACIA_LOG.get()) && seen.contains(Blocks.ACACIA_FENCE)
+                            && seen.contains(Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.ORANGE)) && !seen.contains(People.HIDE_TENT_SLOPE.get());
+                    case JUNGLE -> seen.contains(Blocks.BAMBOO_BLOCK) && seen.contains(People.SHARPENED_BAMBOO_BLOCK.get()) && seen.contains(Blocks.JUNGLE_LEAVES)
+                            && seen.contains(Blocks.JUNGLE_LOG);
+                };
+                h.assertTrue(ok, zone + " settled camp built of the wrong things: " + seen);
+            }
+            h.succeed();
+        });
+    }
+
 
     private TribeTest() {}
 }

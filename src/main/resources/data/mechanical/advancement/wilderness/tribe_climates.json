@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/tribe_village",
+  "criteria": {
+    "cold": {
+      "trigger": "minecraft:impossible"
+    },
+    "temperate": {
+      "trigger": "minecraft:impossible"
+    },
+    "warm": {
+      "trigger": "minecraft:impossible"
+    },
+    "jungle": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "cold"
+    ],
+    [
+      "temperate"
+    ],
+    [
+      "warm"
+    ],
+    [
+      "jungle"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sharpened_bamboo_block"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.tribe_climates.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.tribe_climates.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

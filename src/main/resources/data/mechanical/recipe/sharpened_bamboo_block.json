@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:bamboo_block",
+    "minecraft:flint"
+  ],
+  "result": {
+    "id": "mechanical:sharpened_bamboo_block"
+  }
+}

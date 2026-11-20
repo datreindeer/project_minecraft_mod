@@ -9,10 +9,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.mechanical.BarkRoofBlock;
+import com.mechanical.BearRugBlock;
 import com.mechanical.Campfires;
 import com.mechanical.DryingRackBlock;
 import com.mechanical.Mechanical;
 import com.mechanical.RockBlock;
+import com.mechanical.people.ClimateZone;
 import com.mechanical.people.People;
 import com.mechanical.people.Tribe;
 import com.mechanical.people.TribeRole;
@@ -20,6 +22,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -35,8 +38,11 @@ import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
@@ -58,6 +64,8 @@ import net.neoforged.neoforge.registries.RegisterEvent;
  * a gate flying the tribe's banner, a longhouse for the elder, round huts and hide tents facing a central fire, a flag pole,
  * drying racks, food storage pots and work spots for each role, and ten or more people of one tribe. The tribe (and so its
  * temperament) decides the wood, hide colours, walls, roofs (bark shingles, turf, hide) and the mix of roles; raiders put skulls by their gate.
+ * The climate at the centre ({@link ClimateZone}, saved in the piece) sets the style: turf houses and mammoth-bone huts in
+ * the cold, mud-brick halls, mud huts and hide shades where it is warm, stilt houses under leaf roofs in the jungle.
  * <p>
  * One piece holding a seed and the centre; the whole layout follows from those, so each chunk draws only its own slice and
  * never reads terrain outside it. The structure's beard_box terrain adaptation levels the ground under the piece's box at
@@ -110,7 +118,10 @@ public final class TribeVillageStructure extends Structure {
         if (heights.getLast() - heights.getFirst() > 8) return Optional.empty();
         BlockPos centre = new BlockPos(x, heights.get(heights.size() / 2), z);
         long seed = context.random().nextLong();
-        return Optional.of(new GenerationStub(centre, builder -> builder.addPiece(new Piece(seed, centre))));
+        // the climate at the centre decides how the whole village is built (the layout never reads biomes itself)
+        ClimateZone climate = ClimateZone.of(context.biomeResolver().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(centre.getY()),
+                QuartPos.fromBlock(z)));
+        return Optional.of(new GenerationStub(centre, builder -> builder.addPiece(new Piece(seed, centre, climate))));
     }
 
     /** The tribe village whose bounds hold {@code pos}, or null. */
@@ -123,8 +134,13 @@ public final class TribeVillageStructure extends Structure {
 
     // ------------------------------------------------------------------ the piece
 
+    /** Every block a village with this seed and centre would place in {@code zone}, in placing order (for tests). */
+    public static Map<BlockPos, BlockState> plan(long seed, BlockPos centre, ClimateZone zone) {
+        return new Layout(seed, centre, zone).blocks;
+    }
+
     /** The gate's direction (radians) for a layout seed: the third draw of the layout's random, after the tribe's id. */
-    static double gateAngle(long seed) {
+    public static double gateAngle(long seed) {
         RandomSource r = RandomSource.create(seed);
         r.nextLong();
         r.nextLong();
@@ -134,6 +150,12 @@ public final class TribeVillageStructure extends Structure {
     public static final class Piece extends StructurePiece {
         private final long seed;
         private final BlockPos centre;
+        private final ClimateZone climate;
+
+        /** The climate the village is built for (villages saved before climates were temperate). */
+        public ClimateZone climate() {
+            return climate;
+        }
 
         /** Where a trail from outside should end: on the gate's line, {@code beyond} blocks past the start of the village path. */
         public BlockPos trailEnd(int beyond) {
@@ -141,30 +163,33 @@ public final class TribeVillageStructure extends Structure {
             return new BlockPos(centre.getX() + (int) Math.round(Math.cos(a) * r), centre.getY(), centre.getZ() + (int) Math.round(Math.sin(a) * r));
         }
 
-        Piece(long seed, BlockPos centre) {
+        Piece(long seed, BlockPos centre, ClimateZone climate) {
             // the box's floor is the village floor: beard_box fills below it and carves above it
             super(PIECE, 0, new BoundingBox(centre.getX() - HALF, centre.getY(), centre.getZ() - HALF,
                     centre.getX() + HALF, centre.getY() + HEIGHT, centre.getZ() + HALF));
             this.seed = seed;
             this.centre = centre;
+            this.climate = climate;
         }
 
         Piece(CompoundTag tag) {
             super(PIECE, tag);
             seed = tag.getLongOr("seed", 0);
             centre = BlockPos.of(tag.getLongOr("centre", 0));
+            climate = ClimateZone.byId(tag.getIntOr("climate", ClimateZone.TEMPERATE.ordinal()));
         }
 
         @Override
         protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tag) {
             tag.putLong("seed", seed);
             tag.putLong("centre", centre.asLong());
+            tag.putInt("climate", climate.ordinal());
         }
 
         @Override
         public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
                 BoundingBox box, ChunkPos chunkPos, BlockPos referencePos) {
-            Layout layout = new Layout(seed, centre);
+            Layout layout = new Layout(seed, centre, climate);
             prepareGround(level, box);
             for (Map.Entry<BlockPos, BlockState> e : layout.blocks.entrySet()) {
                 if (box.isInside(e.getKey())) level.setBlock(e.getKey(), e.getValue(), Block.UPDATE_CLIENTS);
@@ -192,8 +217,9 @@ public final class TribeVillageStructure extends Structure {
                         if (!level.getBlockState(p.set(x, y, z)).isAir()) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                     }
                     BlockState top = level.getBlockState(p.set(x, y0 - 1, z));
-                    if (!top.is(BlockTags.SUBSTRATE_OVERWORLD) || !top.getFluidState().isEmpty()) {
-                        level.setBlock(p, Blocks.GRASS_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    boolean dry = climate == ClimateZone.WARM && (top.is(BlockTags.SAND) || top.is(BlockTags.TERRACOTTA)); // desert floors stay
+                    if (!(top.is(BlockTags.SUBSTRATE_OVERWORLD) || dry) || !top.getFluidState().isEmpty()) {
+                        level.setBlock(p, (climate == ClimateZone.WARM ? Blocks.COARSE_DIRT : Blocks.GRASS_BLOCK).defaultBlockState(), Block.UPDATE_CLIENTS);
                     }
                     for (int y = y0 - 2; y > y0 - 14; y--) {
                         BlockState s = level.getBlockState(p.set(x, y, z));
@@ -207,11 +233,17 @@ public final class TribeVillageStructure extends Structure {
 
     // ------------------------------------------------------------------ the layout
 
-    /** Every block of the village (in placing order), the banners and storage to fill in, and the people. */
+    /**
+     * Every block of the village (in placing order), the banners and storage to fill in, and the people. The climate picks
+     * the building style ({@link ClimateZone}); the temperament still varies the wood, walls, roofs and hides within it.
+     * Every style keeps the same plan (palisade of radius {@link #WALL_R}, gate, longhouse across the fire, six huts and
+     * tents on a ring of 14), so the gate and wall lookups work the same everywhere.
+     */
     static final class Layout {
         final Map<BlockPos, BlockState> blocks = new LinkedHashMap<>();
         final List<BlockPos> banners = new ArrayList<>(), storage = new ArrayList<>();
         final Tribe tribe;
+        final ClimateZone zone;
         private final UUID group;
         private final RandomSource rnd;
         private final BlockPos c;
@@ -219,9 +251,10 @@ public final class TribeVillageStructure extends Structure {
         private final double gate;
         private final boolean spruce, daub;
         private final DyeColor[] hides;
-        private final BlockState log, stripped, fence, stake, roof;
+        private final BlockState log, stripped, fence, post, stake, roof;
 
-        Layout(long seed, BlockPos centre) {
+        Layout(long seed, BlockPos centre, ClimateZone zone) {
+            this.zone = zone;
             rnd = RandomSource.create(seed);
             c = centre;
             y = centre.getY();
@@ -236,11 +269,12 @@ public final class TribeVillageStructure extends Structure {
                 case RAIDERS -> new DyeColor[] {DyeColor.BLACK, DyeColor.GRAY, DyeColor.RED};
                 case TRADERS -> new DyeColor[] {DyeColor.ORANGE, DyeColor.YELLOW, DyeColor.WHITE};
             };
-            log = (spruce ? Blocks.SPRUCE_LOG : Blocks.OAK_LOG).defaultBlockState();
-            stripped = (spruce ? Blocks.STRIPPED_SPRUCE_LOG : Blocks.STRIPPED_OAK_LOG).defaultBlockState();
-            fence = (spruce ? Blocks.SPRUCE_FENCE : Blocks.OAK_FENCE).defaultBlockState();
-            stake = (spruce ? People.SHARPENED_SPRUCE_LOG : People.SHARPENED_OAK_LOG).get().defaultBlockState();
-            roof = Mechanical.BARK_ROOFS.get(spruce ? "spruce" : "oak").get().defaultBlockState();
+            log = zone.log(spruce);
+            stripped = zone.stripped(spruce);
+            fence = zone.fence(spruce);
+            post = zone.post(spruce);
+            stake = zone.stake(spruce);
+            roof = zone.barkRoof(spruce);
             gate = gateAngle(seed);
             rnd.nextDouble(); // the draw gateAngle repeats, so the rest of the layout stays as it was
 
@@ -248,12 +282,17 @@ public final class TribeVillageStructure extends Structure {
             path();
             centre();
             // the longhouse faces the gate across the fire; huts and tents around the rest of the ring
-            longhouse(at(gate + Math.PI, 12));
+            BlockPos hall = at(gate + Math.PI, 12);
+            switch (zone) {
+                case TEMPERATE, COLD -> longhouse(hall);
+                case WARM -> mudLonghouse(hall);
+                case JUNGLE -> stiltLonghouse(hall);
+            }
             double[] slots = {60, 100, 140, 220, 260, 300};
             for (int i = 0; i < slots.length; i++) {
                 BlockPos p = at(gate + Math.toRadians(slots[i] + rnd.nextInt(11) - 5), 14);
-                if (i % 2 == 0 || rnd.nextInt(3) == 0) roundHut(p, facing(p), hides[i % hides.length]);
-                else tent(p, facing(p), hides[(i + 1) % hides.length]);
+                if (i % 2 == 0 || rnd.nextInt(3) == 0) hut(p, facing(p), hides[i % hides.length], i);
+                else shelter(p, facing(p), hides[(i + 1) % hides.length]);
             }
             racks();
             foodStore(at(gate + Math.toRadians(150), 8));
@@ -293,7 +332,7 @@ public final class TribeVillageStructure extends Structure {
             return d * WALL_R;
         }
 
-        /** Stakes 4-5 high with pointed tops in a ring, a 3-wide gate between two tall posts flying the banner. */
+        /** Stakes 4-5 high with pointed tops in a ring (bamboo bundles in the jungle), a 3-wide gate between two tall posts flying the banner. */
         private void palisade() {
             for (int dx = -WALL_R - 1; dx <= WALL_R + 1; dx++) {
                 for (int dz = -WALL_R - 1; dz <= WALL_R + 1; dz++) {
@@ -309,7 +348,7 @@ public final class TribeVillageStructure extends Structure {
                         continue;
                     }
                     int h = 3 + hash(base.getX(), base.getZ()) % 2;
-                    for (int i = 0; i < h; i++) put(base.above(i), log);
+                    for (int i = 0; i < h; i++) put(base.above(i), post);
                     put(base.above(h), stake);
                 }
             }
@@ -368,16 +407,35 @@ public final class TribeVillageStructure extends Structure {
             return s.setValue(BarkRoofBlock.SHAPE, up.getCounterClockWise() == side ? StairsShape.OUTER_LEFT : StairsShape.OUTER_RIGHT);
         }
 
+        private static final BlockState GRASS = Blocks.GRASS_BLOCK.defaultBlockState(), SNOWY_GRASS = GRASS.setValue(SnowyBlock.SNOWY, true),
+                SNOW = Blocks.SNOW.defaultBlockState();
+
+        /** Turf at p: sod, under a skin of snow in the cold. */
+        private void turf(BlockPos p) {
+            if (zone == ClimateZone.COLD) {
+                put(p, SNOWY_GRASS);
+                put(p.above(), SNOW);
+            } else put(p, GRASS);
+        }
+
+        /** Leaves for a roof that never decays. */
+        private BlockState leaves() {
+            Block b = tribe.temperament == Tribe.Temperament.WARY || tribe.temperament == Tribe.Temperament.RAIDERS ? Blocks.MANGROVE_LEAVES : Blocks.JUNGLE_LEAVES;
+            return b.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true);
+        }
+
         /**
          * The elder's longhouse: 5 deep, 9 long, log walls, the door toward the fire. A 45-degree gable roof of bark shingles
          * with a ridge log; wary tribes lay turf over it above the bark eaves. The gable ends are daub, hide or split logs.
+         * In the cold the walls stand on a footing of field stone and every tribe lays turf (under snow) over the bark.
          */
         private void longhouse(BlockPos m) {
             Direction front = facing(m), side = front.getClockWise();
             BlockState wall = log.setValue(RotatedPillarBlock.AXIS, side.getAxis());
-            boolean turf = tribe.temperament == Tribe.Temperament.WARY;
+            boolean cold = zone == ClimateZone.COLD;
+            boolean turf = tribe.temperament == Tribe.Temperament.WARY || cold;
             BlockState gable = switch (tribe.temperament) {
-                case PEACEFUL -> Blocks.PACKED_MUD.defaultBlockState();
+                case PEACEFUL -> cold ? Blocks.WOOL.pick(hides[0]).defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
                 case WARY -> stripped;
                 case RAIDERS, TRADERS -> Blocks.WOOL.pick(hides[1]).defaultBlockState();
             };
@@ -389,24 +447,37 @@ public final class TribeVillageStructure extends Structure {
                     if (in && (Math.abs(a) == 2 || Math.abs(b) == 4)) {
                         boolean corner = Math.abs(a) == 2 && Math.abs(b) == 4;
                         boolean door = a == 2 && b == 0;
-                        for (int h = 0; h < 2; h++) if (!door) put(p.above(h), corner ? log : Math.abs(b) == 4 ? log : wall);
+                        for (int h = 0; h < 2; h++) {
+                            if (door) continue;
+                            BlockState w = corner ? log : Math.abs(b) == 4 ? log : wall;
+                            if (cold && h == 0) w = hash(p.getX(), p.getZ()) % 3 == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : Blocks.COBBLESTONE.defaultBlockState();
+                            put(p.above(h), w);
+                        }
                     }
                     // the gable ends under the slopes
                     if (Math.abs(b) == 4) for (int h = 2; h < 5 - Math.abs(a); h++) put(p.above(h), gable);
                     // the roof: one row of slopes per step, rising toward the ridge (the eaves 2 high, the ridge log 5)
                     if (a == 0) {
-                        put(p.above(5), turf ? Blocks.MOSS_BLOCK.defaultBlockState() : wall);
+                        if (cold) turf(p.above(5));
+                        else put(p.above(5), turf ? Blocks.MOSS_BLOCK.defaultBlockState() : wall);
                     } else {
                         int h = 5 - Math.abs(a);
                         if (turf && Math.abs(a) < 3) {
                             put(p.above(h - 1), Blocks.ROOTED_DIRT.defaultBlockState()); // sod in steps over the bark eaves
-                            put(p.above(h), Blocks.GRASS_BLOCK.defaultBlockState());
+                            if (cold) turf(p.above(h));
+                            else put(p.above(h), Blocks.GRASS_BLOCK.defaultBlockState());
                         } else put(p.above(h), slope(a > 0 ? front.getOpposite() : front, null));
                     }
                 }
             }
-            for (int b = -3; b <= 3; b++) put(m.relative(side, b), Blocks.CARPET.pick(hides[2]).defaultBlockState());
-            BlockPos back = m.relative(front, -1);
+            interior(m, front, side, 3, -1);
+        }
+
+        /** Hides on the floor, a storage pot, a drying rack and a pile of hides to sleep on, along the back of a long hall. */
+        private void interior(BlockPos m, Direction front, Direction side, int len, int up) {
+            BlockPos floor = m.above(up + 1);
+            for (int b = -len; b <= len; b++) put(floor.relative(side, b), Blocks.CARPET.pick(hides[2]).defaultBlockState());
+            BlockPos back = floor.relative(front, -1);
             put(back.relative(side, -3), Blocks.DECORATED_POT.defaultBlockState());
             storage.add(back.relative(side, -3));
             put(back.relative(side, 3), Mechanical.DRYING_RACK.get().defaultBlockState().setValue(DryingRackBlock.FACING, front)
@@ -415,11 +486,134 @@ public final class TribeVillageStructure extends Structure {
         }
 
         /**
+         * Warm: the elder's hall of mud brick (packed mud for wary tribes, sandstone for traders, red sandstone for raiders),
+         * three high with acacia corner posts and windows, under a flat roof of packed mud on acacia beams whose ends stick
+         * out of the walls, a hide shade on poles before the door.
+         */
+        private void mudLonghouse(BlockPos m) {
+            Direction front = facing(m), side = front.getClockWise();
+            BlockState wall = warmWall();
+            BlockState beam = stripped.setValue(RotatedPillarBlock.AXIS, front.getAxis());
+            for (int a = -3; a <= 3; a++) {
+                for (int b = -5; b <= 5; b++) {
+                    BlockPos p = m.relative(front, a).relative(side, b);
+                    boolean in = Math.abs(a) <= 2 && Math.abs(b) <= 4;
+                    if (in) {
+                        put(p.below(), Blocks.COARSE_DIRT.defaultBlockState());
+                        put(p.above(3), Blocks.PACKED_MUD.defaultBlockState());
+                    }
+                    if (in && (Math.abs(a) == 2 || Math.abs(b) == 4)) {
+                        boolean corner = Math.abs(a) == 2 && Math.abs(b) == 4;
+                        boolean door = a == 2 && b == 0, window = Math.abs(a) == 2 && Math.abs(b) == 2;
+                        for (int h = 0; h < 3; h++) {
+                            if (door && h < 2 || window && h == 1) continue;
+                            put(p.above(h), corner ? log : wall);
+                        }
+                        if (Math.abs(b) < 4 && b % 2 == 0 || corner) put(p.above(4), wall); // a low parapet, notched
+                    }
+                    if (Math.abs(a) == 3 && Math.abs(b) <= 4 && b % 2 == 0) put(p.above(2), beam); // beam ends
+                }
+            }
+            // the shade before the door: two poles and a hide stretched back to the wall
+            for (int a = 3; a <= 4; a++) {
+                for (int b = -2; b <= 2; b++) {
+                    BlockPos p = m.relative(front, a).relative(side, b);
+                    if (a == 4 && Math.abs(b) == 2) for (int h = 0; h < 2; h++) put(p.above(h), fence);
+                    put(p.above(2), Blocks.WOOL.pick(hides[0]).defaultBlockState());
+                }
+            }
+            interior(m, front, side, 3, -1);
+        }
+
+        private BlockState warmWall() {
+            return switch (tribe.temperament) {
+                case PEACEFUL -> Blocks.MUD_BRICKS.defaultBlockState();
+                case WARY -> Blocks.PACKED_MUD.defaultBlockState();
+                case RAIDERS -> Blocks.RED_SANDSTONE.defaultBlockState();
+                case TRADERS -> Blocks.SMOOTH_SANDSTONE.defaultBlockState();
+            };
+        }
+
+        /**
+         * Jungle: a platform of jungle planks three blocks up on log posts, reached by a ladder on the fire side, walls of
+         * bamboo bundles with bamboo-fence windows, a door over the ladder. Corner and side posts run up to the eaves.
+         */
+        private void stilts(BlockPos m, Direction front, int ra, int rb) {
+            Direction side = front.getClockWise();
+            BlockState bamboo = Blocks.BAMBOO_BLOCK.defaultBlockState(), rail = Blocks.BAMBOO_FENCE.defaultBlockState();
+            for (int a = -ra; a <= ra; a++) {
+                for (int b = -rb; b <= rb; b++) {
+                    BlockPos p = m.relative(front, a).relative(side, b);
+                    put(p.above(2), Blocks.JUNGLE_PLANKS.defaultBlockState());
+                    boolean edge = Math.abs(a) == ra || Math.abs(b) == rb;
+                    boolean postHere = Math.abs(a) == ra && (Math.abs(b) == rb || b == 0 && a < 0) || Math.abs(b) == rb && a == 0;
+                    if (postHere) for (int h = -1; h < 5; h++) put(p.above(h), log);
+                    else if (edge) {
+                        boolean door = a == ra && b == 0;
+                        if (!door) {
+                            put(p.above(3), bamboo);
+                            put(p.above(4), (a + b) % 2 == 0 ? bamboo : rail);
+                        }
+                    }
+                }
+            }
+            // the door's posts and the ladder below it
+            BlockPos door = m.relative(front, ra);
+            for (int h = 0; h < 2; h++) put(door.above(h), log);
+            for (int h = 0; h < 3; h++) put(door.relative(front).above(h), Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, front));
+        }
+
+        /** Jungle: the elder's hall on stilts (5 by 9) under a steep gable roof of leaves, the gable ends planked. */
+        private void stiltLonghouse(BlockPos m) {
+            Direction front = facing(m), side = front.getClockWise();
+            stilts(m, front, 2, 4);
+            BlockState leaf = leaves();
+            for (int a = -3; a <= 3; a++) {
+                for (int b = -5; b <= 5; b++) {
+                    BlockPos p = m.relative(front, a).relative(side, b);
+                    int h = 8 - Math.abs(a);
+                    put(p.above(h), leaf);
+                    if (Math.abs(a) < 3) put(p.above(h - 1), leaf); // two layers thick
+                    if (Math.abs(b) == 4 && Math.abs(a) < 3) for (int k = 5; k < h - 1; k++) put(p.above(k), Blocks.JUNGLE_PLANKS.defaultBlockState());
+                }
+            }
+            interior(m, front, side, 1, 2);
+        }
+
+        /** Hut slot i: a round hut, in the cold a mammoth-bone hut or a turf hut, a mud hut where it is warm, a stilt hut in the jungle. */
+        private void hut(BlockPos m, Direction front, DyeColor hide, int i) {
+            switch (zone) {
+                case TEMPERATE -> roundHut(m, front, hide);
+                case COLD -> {
+                    // raiders and wary tribes are hunters: more bone huts; the others build more turf
+                    boolean bones = tribe.temperament == Tribe.Temperament.RAIDERS || tribe.temperament == Tribe.Temperament.WARY ? i != 2 : i == 2;
+                    if (bones) boneHut(m, front, hide);
+                    else roundHut(m, front, hide);
+                }
+                case WARM -> mudHut(m, front, hide);
+                case JUNGLE -> stiltHut(m, front, hide);
+            }
+        }
+
+        /** A tent slot: a hide tent (white and grey hides in the cold), a hide shade where it is warm, a leaf-roofed lean-to in the jungle. */
+        private void shelter(BlockPos t, Direction front, DyeColor hide) {
+            switch (zone) {
+                case TEMPERATE -> tent(t, front, hide);
+                case COLD -> tent(t, front, hide == DyeColor.BROWN || hide == DyeColor.BLACK ? DyeColor.LIGHT_GRAY : DyeColor.WHITE);
+                case WARM -> shade(t, front, hide);
+                case JUNGLE -> leanTo(t, front, hide);
+            }
+        }
+
+        /**
          * A round hut (5 across) of daub or hides, the door toward the fire, under a hipped bark roof (7 across at the eaves)
          * rising in three rings to a cap: turf for peaceful and wary tribes, hide for traders, a log and smoke pole for raiders.
+         * In the cold it is a turf hut: a wall of field stone under a mound of turf and snow.
          */
         private void roundHut(BlockPos m, Direction front, DyeColor hide) {
+            boolean cold = zone == ClimateZone.COLD;
             BlockState wall = daub ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.WOOL.pick(hide).defaultBlockState();
+            if (cold) wall = Blocks.COBBLESTONE.defaultBlockState();
             for (int dx = -3; dx <= 3; dx++) {
                 for (int dz = -3; dz <= 3; dz++) {
                     double d = Math.sqrt(dx * dx + dz * dz);
@@ -429,28 +623,108 @@ public final class TribeVillageStructure extends Structure {
                         int ahead = dx * front.getStepX() + dz * front.getStepZ(), across = dx * front.getStepZ() - dz * front.getStepX();
                         if (!(ahead >= 2 && across == 0)) {
                             put(p, wall);
-                            put(p.above(), wall);
+                            put(p.above(), cold && hash(p.getX(), p.getZ()) % 3 == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : wall);
                         }
                     }
                     int ring = Math.max(Math.abs(dx), Math.abs(dz));
                     if (ring == 0) continue;
+                    if (cold) {
+                        if (ring < 3) put(p.above(4 - ring), Blocks.ROOTED_DIRT.defaultBlockState());
+                        turf(p.above(5 - ring));
+                        continue;
+                    }
                     // each ring one higher toward the middle: on a side it rises toward the middle, at a corner it peaks inward
                     Direction xIn = dx > 0 ? Direction.WEST : Direction.EAST, zIn = dz > 0 ? Direction.NORTH : Direction.SOUTH;
                     BlockState s = Math.abs(dx) == Math.abs(dz) ? slope(zIn, xIn) : Math.abs(dx) > Math.abs(dz) ? slope(xIn, null) : slope(zIn, null);
                     put(p.above(5 - ring), s);
                 }
             }
-            switch (tribe.temperament) {
-                case PEACEFUL -> put(m.above(4), Blocks.MOSS_BLOCK.defaultBlockState());
-                case WARY -> put(m.above(4), Blocks.GRASS_BLOCK.defaultBlockState());
-                case TRADERS -> put(m.above(4), Blocks.WOOL.pick(hide).defaultBlockState());
-                case RAIDERS -> {
-                    put(m.above(4), log);
-                    put(m.above(5), fence);
+            if (cold) {
+                turf(m.above(4));
+                put(m.above(4), stripped); // the smoke hole's frame
+            } else {
+                switch (tribe.temperament) {
+                    case PEACEFUL -> put(m.above(4), Blocks.MOSS_BLOCK.defaultBlockState());
+                    case WARY -> put(m.above(4), Blocks.GRASS_BLOCK.defaultBlockState());
+                    case TRADERS -> put(m.above(4), Blocks.WOOL.pick(hide).defaultBlockState());
+                    case RAIDERS -> {
+                        put(m.above(4), log);
+                        put(m.above(5), fence);
+                    }
                 }
             }
             put(m, Blocks.CARPET.pick(hide == DyeColor.BROWN ? DyeColor.WHITE : DyeColor.BROWN).defaultBlockState());
             BlockPos back = m.relative(front, -1).relative(front.getClockWise());
+            put(back, Blocks.DECORATED_POT.defaultBlockState());
+            if (rnd.nextBoolean()) storage.add(back.immutable());
+        }
+
+        /** Cold: a dome of mammoth-bone arches (as worldgen MammothBoneHut), the gaps packed with hides and snow, a bear rug inside. */
+        private void boneHut(BlockPos m, Direction front, DyeColor hide) {
+            BlockState fill = Blocks.WOOL.pick(hide == DyeColor.BLACK ? DyeColor.GRAY : hide).defaultBlockState();
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    if (dx * dx + dz * dz <= 7) put(m.offset(dx, -1, dz), Blocks.COARSE_DIRT.defaultBlockState());
+                    for (int dy = 0; dy <= 3; dy++) {
+                        double dist = Math.sqrt(dx * dx + dz * dz + dy * dy * 0.8);
+                        if (dist >= 3.5 || dist < 2.4) continue;
+                        boolean arch = dx == 0 || dz == 0 || Math.abs(dx) == Math.abs(dz);
+                        BlockPos p = m.offset(dx, dy, dz);
+                        put(p, arch ? Blocks.BONE_BLOCK.defaultBlockState() : hash(p.getX(), p.getY() * 31 + p.getZ()) % 3 == 0 ? fill : Blocks.SNOW_BLOCK.defaultBlockState());
+                    }
+                }
+            }
+            for (int step = 2; step <= 3; step++) { // the doorway toward the fire
+                blocks.remove(m.relative(front, step));
+                blocks.remove(m.relative(front, step).above());
+            }
+            put(m, Mechanical.BEAR_RUG.get().defaultBlockState().setValue(BearRugBlock.FACING, front));
+            BlockPos back = m.relative(front, -1).relative(front.getClockWise());
+            put(back, Blocks.DECORATED_POT.defaultBlockState());
+            if (rnd.nextBoolean()) storage.add(back.immutable());
+            put(m.relative(front, -1).relative(front.getCounterClockWise()), Mechanical.BONE_PILE.get().defaultBlockState());
+        }
+
+        /** Warm: a round hut of mud brick or packed mud (5 across) under a flat roof of packed mud, or of hide for traders. */
+        private void mudHut(BlockPos m, Direction front, DyeColor hide) {
+            BlockState wall = warmWall();
+            BlockState top = tribe.temperament == Tribe.Temperament.TRADERS ? Blocks.WOOL.pick(hide).defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    double d = Math.sqrt(dx * dx + dz * dz);
+                    BlockPos p = m.offset(dx, 0, dz);
+                    if (d > 2.6) continue;
+                    put(p.below(), Blocks.COARSE_DIRT.defaultBlockState());
+                    put(p.above(2), top);
+                    if (d > 1.8) {
+                        int ahead = dx * front.getStepX() + dz * front.getStepZ(), across = dx * front.getStepZ() - dz * front.getStepX();
+                        if (!(ahead >= 2 && across == 0)) {
+                            put(p, wall);
+                            put(p.above(), wall);
+                        }
+                        if ((dx + dz) % 2 == 0) put(p.above(3), wall); // notched rim round the roof
+                    }
+                }
+            }
+            put(m, Blocks.CARPET.pick(hide == DyeColor.ORANGE ? DyeColor.BROWN : DyeColor.ORANGE).defaultBlockState());
+            BlockPos back = m.relative(front, -1).relative(front.getClockWise());
+            put(back, Blocks.DECORATED_POT.defaultBlockState());
+            if (rnd.nextBoolean()) storage.add(back.immutable());
+        }
+
+        /** Jungle: a hut on stilts (5 by 5) under a hipped roof of leaves rising in rings to a point. */
+        private void stiltHut(BlockPos m, Direction front, DyeColor hide) {
+            stilts(m, front, 2, 2);
+            BlockState leaf = leaves();
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    int ring = Math.max(Math.abs(dx), Math.abs(dz));
+                    put(m.offset(dx, 8 - ring, dz), leaf);
+                    if (ring > 0 && ring < 3) put(m.offset(dx, 7 - ring, dz), leaf);
+                }
+            }
+            put(m.above(3), Blocks.CARPET.pick(hide == DyeColor.BROWN ? DyeColor.GREEN : DyeColor.BROWN).defaultBlockState());
+            BlockPos back = m.relative(front, -1).relative(front.getClockWise()).above(3);
             put(back, Blocks.DECORATED_POT.defaultBlockState());
             if (rnd.nextBoolean()) storage.add(back.immutable());
         }
@@ -476,6 +750,34 @@ public final class TribeVillageStructure extends Structure {
             }
         }
 
+        /** Warm: a hide stretched flat over four acacia poles (3x3), open all round, a mat under it. */
+        private void shade(BlockPos t, Direction front, DyeColor hide) {
+            Direction side = front.getClockWise();
+            for (int a = -1; a <= 1; a++) {
+                for (int b = -1; b <= 1; b++) {
+                    BlockPos p = t.relative(front, a).relative(side, b);
+                    if (Math.abs(a) == 1 && Math.abs(b) == 1) for (int h = 0; h < 2; h++) put(p.above(h), fence);
+                    put(p.above(2), Blocks.WOOL.pick(hide).defaultBlockState());
+                }
+            }
+            put(t, Blocks.CARPET.pick(DyeColor.BROWN).defaultBlockState());
+        }
+
+        /** Jungle: a lean-to (3x3): a back wall of bamboo, two front poles and a roof of leaves, a mat on the floor. */
+        private void leanTo(BlockPos t, Direction front, DyeColor hide) {
+            Direction side = front.getClockWise();
+            BlockState leaf = leaves();
+            for (int a = -1; a <= 1; a++) {
+                for (int b = -1; b <= 1; b++) {
+                    BlockPos p = t.relative(front, a).relative(side, b);
+                    if (a == -1) for (int h = 0; h < 2; h++) put(p.above(h), Blocks.BAMBOO_BLOCK.defaultBlockState());
+                    else if (a == 1 && Math.abs(b) == 1) for (int h = 0; h < 2; h++) put(p.above(h), fence);
+                    put(p.above(2), leaf);
+                }
+            }
+            put(t, Blocks.CARPET.pick(hide).defaultBlockState());
+        }
+
         /** Drying racks with hides between the huts. */
         private void racks() {
             for (double a : new double[] {80, 120, 240, 280}) {
@@ -486,13 +788,13 @@ public final class TribeVillageStructure extends Structure {
             }
         }
 
-        /** Food storage: a cluster of sealed pots and a barrel, with a hay bale. */
+        /** Food storage: a cluster of sealed pots and a barrel, with a hay bale (ice, jars or melons in other climates). */
         private void foodStore(BlockPos m) {
             int[][] spots = {{0, 0}, {1, 0}, {0, 1}, {-1, 0}, {1, 1}};
             for (int i = 0; i < spots.length; i++) {
                 BlockPos p = m.offset(spots[i][0], 0, spots[i][1]);
                 if (i == 4) {
-                    put(p, Blocks.HAY_BLOCK.defaultBlockState());
+                    put(p, zone.store());
                     continue;
                 }
                 put(p, i == 0 ? Blocks.BARREL.defaultBlockState() : Blocks.DECORATED_POT.defaultBlockState());
@@ -507,7 +809,7 @@ public final class TribeVillageStructure extends Structure {
             for (int i = -1; i <= 1; i++) {
                 for (int h = 0; h < 2; h++) put(wood.relative(along, i).above(h), log.setValue(RotatedPillarBlock.AXIS, along.getAxis()));
             }
-            put(wood.relative(facing(wood), 2), Mechanical.STUMPS.get(spruce ? "spruce" : "oak").get().defaultBlockState());
+            put(wood.relative(facing(wood), 2), zone.stump(spruce));
             BlockPos hunt = at(gate - Math.toRadians(35), 17);
             put(hunt, Blocks.FLETCHING_TABLE.defaultBlockState());
             put(hunt.relative(facing(hunt).getClockWise(), 2), Mechanical.DRYING_RACK.get().defaultBlockState()
@@ -515,7 +817,7 @@ public final class TribeVillageStructure extends Structure {
             put(hunt.relative(facing(hunt).getCounterClockWise(), 2), Mechanical.BONE_PILE.get().defaultBlockState());
             BlockPos gather = at(gate + Math.toRadians(200), 18.5);
             put(gather, Blocks.COMPOSTER.defaultBlockState());
-            put(gather.relative(facing(gather).getClockWise()), Blocks.HAY_BLOCK.defaultBlockState());
+            put(gather.relative(facing(gather).getClockWise()), zone.store());
         }
 
         /** The tribe's roles by temperament; everyone lives by the central fire. */
@@ -544,7 +846,7 @@ public final class TribeVillageStructure extends Structure {
                 }
                 if (p == null) p = c.offset(1, 0, 2);
                 boolean chief = i == 0;
-                StoneAgeFeature.spawn(level, random, People.TRIBESPERSON.get(), p, t -> t.setup(role, c, group, chief));
+                StoneAgeFeature.spawn(level, random, People.TRIBESPERSON.get(), p, t -> t.setup(role, c, group, chief, zone));
             }
         }
     }

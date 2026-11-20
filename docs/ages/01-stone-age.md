@@ -1419,7 +1419,25 @@ De mytiska föremålens namn är **feta och tonar från skogsgrönt till guld**,
 
 ### Stenåldersmänniskor (Tribesperson)
 Folk som lever i läger eller strövar i jaktlag. De **despawnar aldrig**, men nya kommer heller aldrig: dör de är de borta.
-Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor, 4 varianter per roll).
+Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor, 4 varianter per roll och klimat).
+
+- **Klimat (v0.71.0):** varje stam bygger och klär sig efter klimatet där den bor, valt från biomet vid lägrets/byns mitt
+  (ett jaktlag: där det föddes). Biomtaggar först, sedan temperatur:
+  - **Kallt:** snöiga biom (`c:is_snowy`) och allt med bastemperatur under 0,15 (snöig slätt och taiga, Ice Spikes, Grove,
+    frusna toppar). Vanlig taiga är tempererad.
+  - **Varmt:** öken, savann och badlands (`c:is_desert`, `#is_savanna`, `#is_badlands`), och heta biom utan nederbörd.
+  - **Djungel:** djungel, gles djungel, bambudjungel, träsk, mangroveträsk och Willow Fen (`#is_jungle`, `c:is_swamp`).
+  - **Tempererat:** allt annat.
+- **Kläder per klimat** (egna skins, rollens detaljer ovanpå: jägarens koger, rem, tandhalsband och krigsmålning, samlarens
+  förkläde och pung, fiskarens fiskbenshalsband, vedhuggarens armskydd, den äldstes mantel och bärnsten):
+  - *Kallt:* pälshuva med vit pälskant runt ansiktet (variant 4: huvan nere, pälskrage och pannband), lång hudrock till knät
+    med pälskant och långa ärmar, pälsbyxor, pälsstövlar och ibland vantar. Ljusare hy.
+  - *Tempererat:* som förut (hud, läder, flätade förkläden).
+  - *Varmt:* lätta svepningar och kjolar av linne (växtfiber), bar överkropp för jägare och fiskare, huvudduk, sandaler. Mörkare hy.
+  - *Djungel:* höftskynke (män) eller gräskjol och bröstsvepning (kvinnor), barfota, fjäderskrud på huvudet och nedför
+    nacken, armband, kroppsmålning i lera, ockra eller kol; den äldste bär en mantel av papegojfjädrar.
+  - **Stammens färg:** pannband, skärp, rockband och manschetter, huvudduk, höftskynken, fjäderspetsar och fållar färgas i
+    stammens banderollfärg (skinnet har en grå mask som klienten färgar). Folk från före v0.71.0 klär sig tempererat.
 
 - **Roller:** Hunter (Crude Bow eller Flint Spear), Gatherer (Flint Knife och Bark Basket), Fisher (Crude Fishing Rod),
   Woodcutter (Flint Axe), Elder (stav). Var och en har ett eget namn och sin stam, t.ex. "Aruk the Hunter of the Raven Tribe".
@@ -1427,11 +1445,15 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   finns färre än 4 träd inom 14 block från elden planterar han plantor runt lägret (sorten från närmaste träd, annars en
   som passar biomet). En Gatherer planterar unga vilda bärbuskar som passar klimatet när det finns färre än 3. Aldrig
   närmare elden än 5 block och med minst 4 blocks mellanrum, så ett läger på kal mark växer långsamt upp med skog och bär.
-- **Läger** (ca 1 på 150 chunks i skog, taiga, slätt, meadow och vid floder; plan mark, aldrig nära byar): brinnande
-  Campfire, 2–3 hudtält, Drying Rack och en sittstock. 3–5 personer: en Elder plus Gatherers, Woodcutters och Fishers
-  (bara nära vatten).
-- **Jaktlag** (ca 1 på 200 chunks i skog och taiga): 2–3 Hunters som följer en ledare.
-- **Tribe Village** (sällsynt, högst en per 36x36 chunks, i slätt, meadow, skog, björkskog, taiga, snöig taiga/slätt och savann;
+- **Läger** (ca 1 på 150 chunks i skog, taiga, slätt, meadow, vid floder, snöig slätt, savann, öken, badlands, djungel och
+  träsk; plan mark, aldrig nära byar): brinnande Campfire, 2–3 skydd, Drying Rack och en sittstock (i lägrets träslag).
+  Skydden följer klimatet: hudtält (ljusa hudar och granstänger i kylan), en **hudskugga** på fyra akaciastolpar där det är
+  varmt, ett **skjul** med bambuvägg, två stolpar och lövtak i djungeln. 3–5 personer: en Elder plus Gatherers, Woodcutters
+  och Fishers (bara nära vatten).
+- **Jaktlag** (ca 1 på 200 chunks i skog, taiga, savann, djungel, snöig slätt, öken och badlands): 2–3 Hunters som följer
+  en ledare, klädda för klimatet där de strövar.
+- **Tribe Village** (sällsynt, högst en per 36x36 chunks, i slätt, meadow, skog, björkskog, taiga, snöig taiga/slätt, Ice Spikes,
+  Grove, savann, öken, badlands, djungel, gles djungel, bambudjungel och träsk;
   `/locate structure mechanical:tribe_village`): en rund **palissad** (ca 43 block bred) av stockar med **Sharpened Logs**
   (spetsade stockar) överst och en port med två höga stolpar med stammens banderoll. Inne: ett Longhouse för Elder (stockväggar,
   sadeltak i 45° av **Bark Roof** i byns träslag med en takås av stock), runda hyddor med valmat barktak i tre ringar och hudtält runt en stor lägereld med stenar och sittstockar, en flaggstång med
@@ -1444,6 +1466,23 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   - *Wary:* gran, hyddor av hudar med barktak och en grästorvtopp; Longhouse med **torvtak** (grästorv i trappsteg över
     rotad jord, mosstakås) ovanför barkade takfötter och gavlar av kluven stock.
   - *Raiders:* gran, hyddor av mörka hudar med barktak, en stock och en rökstång överst; Longhouse med svarta hudgavlar.
+  - **Byar i andra klimat** (samma plan: palissad med radie 21, port, Longhouse mitt emot porten, sex hyddor/tält på en
+    ring, förråd och arbetsplatser, så porten och arbetet utanför fungerar likadant; humöret varierar fortfarande stilen):
+    - *Kallt:* granpalissad. Longhouse med stockväggar på en **stenfot** (kullersten och mossig kullersten) och
+      **torvtak under snö** över barkade takfötter, gavlar av hud (Peaceful), kluven stock (Wary) eller hud. Hyddorna är
+      **mammutbenshyddor** (kupol av benbågar som worldgen-strukturen, glipor fyllda med hudar och packad snö, björnfäll och
+      Bone Pile inuti; flest hos Raiders och Wary) och **torvhyddor** (kullerstensvägg under en hög av torv och snö, rökhål
+      med skalad stock). Tälten har ljusa hudar. **Packad is** i förrådet i stället för hö.
+    - *Varmt:* palissad av akacia med **Sharpened Acacia Log**. Longhouse tre block högt av lertegel (Peaceful), packad
+      lera (Wary), röd sandsten (Raiders) eller slät sandsten (Traders) med akaciastolpar i hörnen, fönster, ett **platt
+      tak av packad lera** på akaciabjälkar vars ändar sticker ut, en tandad bröstvärn och en **hudskugga** på två stolpar
+      framför dörren. Hyddorna är runda **lerhyddor** med platt lertak (Traders: tak av hud) och tandad kant. Tälten är
+      hudskuggor (hud spänd platt över fyra akaciastolpar). **Krukor** i stället för hö.
+    - *Djungel:* palissad av **bambubuntar** med **Sharpened Bamboo Block**. Longhouse (5x9) och hyddor (5x5) på
+      **pålar**: golv av djungelplank tre block upp på djungelstockar, **stege** upp mot elden, väggar av bambubuntar med
+      bambustaket som fönster, branta tak av **löv** (djungellöv; mangrovelöv hos Wary och Raiders) som aldrig vissnar,
+      plankade gavlar. Tälten är skjul av bambu och löv. **Meloner** i förrådet.
+    - Byarnas mark: i öken och badlands ligger sanden/terrakottan kvar (grov jord där något måste fyllas), annars gräs.
 - **Stammar ("lag"):** varje läger, jaktlag och by är en egen stam med namn (ett totemdjur, t.ex. Raven Tribe), egen
   **banderoll** (färg och mönster) på en stång i lägret/byn, och Elder respektive jaktlagets ledare bär banderollen på huvudet.
   - **Rykte per spelare** (-100 till 100, sparas på spelaren): slå en medlem -8, döda en → fientlig för alltid, bryt
@@ -1461,8 +1500,8 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   stiger mot blocket; **ovanpå ett block** ligger den platt (ett tunt lager). Klickar man på sidan av en annan sluttning
   fortsätter raden åt samma håll. Möts sluttningar blir det inner- och ytterhörn som för trappor (valmade tak). Kollision
   som en trappa i fyra steg. Hackas med yxa. Avancemang: *Shingled* (efter *Bark Peeler*).
-- **Sharpened Oak/Spruce Log:** stock + flint (formlöst, building). Spetsig topp till palissader; faller man på den gör
-  fallet dubbel skada.
+- **Sharpened Oak/Spruce/Acacia Log, Sharpened Bamboo Block:** stock (eller bambubunt) + flint (formlöst, building).
+  Spetsig topp till palissader; faller man på den gör fallet dubbel skada. Acacia i varma byar, bambu i djungelbyar.
 - **Vardag:** Hunters jagar vilda djur (inte björnar, tama djur eller bydjur) och styckar kroppen (en Bone Pile blir kvar).
   Gatherers plockar mogna bär och svamp (bara i större svampfält). Fishers fiskar vid stranden. Woodcutters **fäller riktiga
   träd** nära lägret (trädet faller och blir Fallen Logs som vanligt), hugger upp Fallen Logs och bär veden till elden. Elder håller elden vid liv.
@@ -1561,6 +1600,10 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
      Cordage, Scraped Hide) och en vedtrave. Två nya stamfränder flyttar dit.
   3. **Palissad:** en ring av stockar, två höga med **Sharpened Log** överst, radie 10, med en 3 block bred port mot ditt
      läger (portstolparna ett block högre). Två till flyttar dit.
+  - **Klimatet vid lägret** styr materialen: gran i kylan, ek (gran i taiga) i tempererade trakter, **akacia** där det är
+    varmt (tälten blir hudskuggor: fyra akaciastolpar och orange hud spänd platt ovanpå), **djungelträ** i djungeln (tälten
+    blir skjul med bambuvägg och lövtak, palissaden **bambubuntar** med Sharpened Bamboo Block). Staket och bambubuntar
+    kostar 1 ved, ull 1 hud, löv inget.
   - **Förråd och kostnad:** varje block kostar ved, sten eller hudar (stock 1 ved, Campfire 2, Hanging Rack 4, tunna 3,
     Drying Rack 2 ved + 1 hud, Loose Stone 1 sten, varje tältblock, matta och banderoll 1 hud). Ett steg **börjar när
     förrådet räcker till hela steget**: steg 2 ca 10 ved + 24 hudar, steg 3 ca 190 ved (beror på marken).
@@ -1589,7 +1632,8 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
   stänga åsens bakre ände. Ett tält: sluttningar längs båda sidorna, åsar ovanpå i mitten, en Hide Canvas längst in.
 - **Avancemang** (Wilderness & Hunting): *Guests at the Fire* (första besöket), *A Night by the Fire* (låta dem sova
   över), *Neighbours* (en stam slår sig ner), *Walls of Their Own* (ett grannläger bygger palissad), *Best of Friends*
-  (rykte 80 hos en stam).
+  (rykte 80 hos en stam), *Peoples of the World* (gå in i en Tribe Village i vart och ett av de fyra klimaten: kallt,
+  tempererat, varmt och djungel; efter *Palisade*).
 - Op: `/tribes visit` skickar ett band mot lägret där du står, `/tribes info` visar besök, lägrens nästa besök och
   grannlägrens steg, förråd och vad nästa steg kräver.
 

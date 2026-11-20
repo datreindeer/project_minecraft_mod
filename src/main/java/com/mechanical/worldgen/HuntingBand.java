@@ -25,12 +25,13 @@ final class HuntingBand extends StoneAgeFeature {
         BlockPos c = PeopleFeatures.ground(level, origin.getX(), origin.getZ());
         if (!room(level, c) || !natural(level.getBlockState(c.below())) || PeopleFeatures.nearVillage(level, c)) return false;
         UUID group = new UUID(random.nextLong(), random.nextLong());
+        com.mechanical.people.ClimateZone zone = com.mechanical.people.ClimateZone.of(level.getBiome(c)); // dressed for where they roam
         int count = 2 + random.nextInt(2);
         for (int i = 0; i < count; i++) {
             BlockPos p = i == 0 ? c : PeopleFeatures.ground(level, c.getX() + random.nextInt(5) - 2, c.getZ() + random.nextInt(5) - 2);
             if (!room(level, p)) p = c;
             boolean leader = i == 0;
-            spawn(level, random, People.TRIBESPERSON.get(), p, t -> t.setup(TribeRole.HUNTER, null, group, leader));
+            spawn(level, random, People.TRIBESPERSON.get(), p, t -> t.setup(TribeRole.HUNTER, null, group, leader, zone));
         }
         return true;
     }

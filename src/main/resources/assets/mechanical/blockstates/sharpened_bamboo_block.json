@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/sharpened_bamboo_block"
+      },
+      {
+        "model": "mechanical:block/sharpened_bamboo_block",
+        "y": 90
+      }
+    ]
+  }
+}

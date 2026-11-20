@@ -24,9 +24,12 @@ def anyof(*sets):
 
 # name: (biomes, 1-in-N chunks). Camps need flat dry ground and bail out often, so the real rate is lower than 1/N.
 FEATURES = {
-    "tribe_camp": (anyof("#minecraft:is_forest", "#minecraft:is_taiga",
-                         ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:river"]), 150),
-    "hunting_band": (anyof("#minecraft:is_forest", "#minecraft:is_taiga"), 200),
+    # every climate (people/ClimateZone.java): camps and bands in the snow, on the savanna, in desert and jungle too
+    "tribe_camp": (anyof("#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_jungle",
+                         ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:river", "minecraft:snowy_plains",
+                          "minecraft:desert", "minecraft:badlands", "minecraft:wooded_badlands", "minecraft:swamp"]), 150),
+    "hunting_band": (anyof("#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_jungle",
+                           ["minecraft:snowy_plains", "minecraft:desert", "minecraft:badlands"]), 200),
 }
 for name, (biomes, rarity) in FEATURES.items():
     w(D / f"worldgen/feature/{name}.json", {"type": f"mechanical:{name}"})
