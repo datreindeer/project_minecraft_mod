@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/beaver",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:beaver_dam"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:beaver_dam"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.beaver_dam.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.beaver_dam.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

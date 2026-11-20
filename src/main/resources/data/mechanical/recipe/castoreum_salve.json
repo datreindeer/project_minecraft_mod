@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:castoreum",
+    "mechanical:tallow",
+    "mechanical:bark"
+  ],
+  "result": {
+    "id": "mechanical:castoreum_salve",
+    "count": 2
+  }
+}

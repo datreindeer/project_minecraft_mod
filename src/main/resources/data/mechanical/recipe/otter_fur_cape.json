@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:otter_pelt",
+    "mechanical:otter_pelt",
+    "mechanical:otter_pelt",
+    "mechanical:sinew",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:otter_fur_cape"
+  }
+}

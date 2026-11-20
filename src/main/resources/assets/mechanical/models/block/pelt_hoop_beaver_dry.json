@@ -1,0 +1,41 @@
+{
+  "textures": {
+    "particle": "mechanical:block/pelt_hoop_beaver_dry_skin",
+    "skin": "mechanical:block/pelt_hoop_beaver_dry_skin",
+    "fur": "mechanical:block/pelt_hoop_beaver_dry_fur"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        2,
+        8
+      ],
+      "to": [
+        15,
+        15,
+        8
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            1,
+            15,
+            14
+          ],
+          "texture": "#skin"
+        },
+        "south": {
+          "uv": [
+            15,
+            1,
+            1,
+            14
+          ],
+          "texture": "#fur"
+        }
+      }
+    }
+  ]
+}
