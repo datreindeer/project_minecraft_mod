@@ -206,9 +206,13 @@ public final class Butchery {
         if (holder != null) player.getAdvancements().award(holder, "butchered");
     }
 
-    /** Knife tier needed to butcher this animal at all (thick hides like the bear's need iron). */
+    /**
+     * Knife tier needed to butcher this animal at all: thick hides (bears, buffalo, walrus ...) and every huge body (width 2+:
+     * giant deer, mammoth) need a Tusk Dagger, bronze knife or better; flint and copper do the rest. How long it takes grows
+     * with the body's bulk (CarcassEntity#workNeeded).
+     */
     public static int requiredKnifeTier(EntityType<?> animal) {
-        return animal == Wildlife.BROWN_BEAR.get() || animal == Wildlife.GIANT_DEER.get() || listed(TOUGH_HIDE, animal) ? KnifeItem.TUSK : KnifeItem.FLINT;
+        return animal == Wildlife.BROWN_BEAR.get() || animal.getWidth() >= 2.0F || listed(TOUGH_HIDE, animal) ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 
     /**

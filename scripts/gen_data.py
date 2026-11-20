@@ -883,7 +883,7 @@ w(D / "mechanical/tags/item/knives.json", {"values": ["mechanical:flint_knife", 
 w(A / "models/item/iron_knife.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": "mechanical:item/iron_knife"}})
 w(A / "items/iron_knife.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/iron_knife"}})
 lang["item.mechanical.iron_knife"] = "Iron Knife"
-lang["message.mechanical.knife_too_weak"] = "This hide is too tough for your knife"
+lang["message.mechanical.knife_too_weak"] = "Too tough for this knife: it needs a Tusk Dagger, Bronze Knife or better"
 w(lang_path, lang)
 print("wildlife data ok")
 

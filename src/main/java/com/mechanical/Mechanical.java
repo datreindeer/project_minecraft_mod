@@ -370,7 +370,7 @@ public class Mechanical {
             .noCollision().instabreak().sound(SoundType.WOOD).pushReaction(PushReaction.POPPED));
 
     public static final DeferredHolder<EntityType<?>, EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.registerEntityType(
-            "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8));
+            "carcass", CarcassEntity::new, MobCategory.MISC, b -> b.sized(0.9F, 0.5F).clientTrackingRange(8).updateInterval(1)); // every tick: a dragged body glides (CarcassEntity interpolates)
 
     /** Blocks that are never items (decals, pots holding plants). Everything else gets a block item, for creative. */
     private static final java.util.Set<String> NO_ITEM = java.util.Set.of("blood", "furred_straw_bed", "cave_painting", "unlit_torch", "unlit_wall_torch", "barley_crop", "einkorn_crop", "emmer_crop", "pea_crop", "wild_carrot_crop", "flax_crop");

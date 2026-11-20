@@ -655,7 +655,14 @@ Båtar med plankor (vanilla Boat, Chest Boat, Bamboo Raft) kommer tillbaka i **b
   1. **Det yttre:** får klipps (Wool Thread), fåglar plockas (Feathers), kaniner flås (Rabbit Hide), övriga
      flås (Raw Hide). Kroppen ser sedan klippt (får) eller flådd ut (egna flådda köttexturer för alla djur, `textures/entity/skinned/`).
   2. **Det inre:** köttet (och Raw Hide för får, Rabbit's Foot för kaniner). Kvar blir en **Bone Pile**.
-- Flint Knife: ~2 s per omgång (längre för stora djur). Bättre knivar (senare metaller) är snabbare och ger mer.
+- **Tiden växer med djurets storlek** (hitboxens bredd² × höjd, upphöjt till 0,75). Med Flint Knife per omgång: rådjur,
+  får och allt mindre ~2 s, kronhjort ~2,5 s, björn ~3,5 s, älg ~6 s, mammut ~17 s. Bättre knivar är snabbare (Copper
+  1,5×, Bronze 1,75×, Iron 2×) och ger mer.
+- **Flera kan stycka samtidigt:** alla som håller in högerklick med kniv på samma kropp lägger till sitt arbete, så två
+  blir klara på halva tiden (fyra jägare med bronskniv tar en mammut på ~2,5 s per omgång).
+- **Kniven måste klara djuret:** tjocka hudar (Brown Bear, Cave Bear, Polar Bear, Panda, Water Buffalo, Walrus) och alla
+  **jättar** (bredd 2 eller mer: Giant Deer, Woolly Mammoth) kräver **Tusk Dagger, Bronze Knife eller bättre**. Flint
+  och Copper Knife räcker inte; då står det att det behövs en starkare kniv.
 
 **Utbyte med Flint Knife**
 
@@ -688,15 +695,26 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   läggs över axlarna och syns där (i tredje person; i första person döljs den). Mellanstora gör dig **25 % långsammare**
   och du **kan inte springa**; små väger ingenting.
 - **Släpa:** stora djur (bredd 1,1 eller mer: uroxe, häst, björn, älg, grottlejon, jättehjort) kan inte bäras. Samma grepp
-  gör att du **släpar** kroppen efter dig, huvudet först, en kroppslängd bakom (den tar sig upp för steg). **50 % långsammare**,
-  ingen sprint. Högerklicka på den igen för att släppa.
+  tar tag i ett ben och du **släpar** kroppen. Du **vänder dig mot kroppen och går baklänges**: kameran låses mot ditt grepp
+  (du kan bara titta lite upp och ner), **S** drar den med dig, **W** går mot den och **A/D** går runt den och styr.
+  Kroppen vrider huvudänden mot den eller de som drar och glider jämnt efter, upp och ner för steg (servern skickar läget
+  varje tick och klienten jämnar ut det över 4 tick). **50 % långsammare**, ingen sprint. Högerklicka på den igen för att släppa.
+- **Släpa tillsammans:** upp till **4 spelare** kan ta tag i samma stora kropp (smyg + högerklick med tom hand), var och en
+  i sitt ben (framben först, sedan bakben), och de greppade benen sträcks ut mot den som drar. Arbetet delas: långsamheten
+  och matkostnaden blir 50 % × behövda / antal som drar (två på en björn: 25 % långsammare, halva maten). Små och
+  mellanstora djur bärs av en.
+- **Jättar kräver flera:** Giant Deer och Walrus (bredd 2 eller mer) behöver **3** som drar, **Woolly Mammoth 4**. Är ni
+  för få kan ni försöka: ni spänner er och darrar, kroppen kryper bara fram (10 % × antal/behövda), ni blir 70 %
+  långsammare och kommer inte längre än 2,5 block från ert grepp, och det står hur många som behövs. Se
+  advancements **Many Hands** och **Moving a Mountain**.
 - **Båda händerna är upptagna:** inget i någon hand kan användas (äta, dricka, kasta, båge, Shield …), inga block kan
   placeras och inga items användas på djur (klippa, koppla, mata). Bara Travois (lasta) och kroppen själv (släppa) svarar
   på högerklick. Föremålen i händerna syns inte medan du bär (i första person syns inte heller händerna). Ett slag, att bryta
   ett block eller en **träff på 4 skada eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör
   eller loggar du ut, eller kommer mer än 12 block ifrån den, ligger den kvar.
-- **Armarna håller kroppen**, och alla spelare ser det: bär du på axlarna är båda armarna uppe och håller kroppen, släpar
-  du sträcker båda armarna sig bakåt mot den.
+- **Armarna håller kroppen**, och alla spelare ser det: bär du på axlarna är båda armarna uppe och håller kroppen. Släpar
+  du har du båda händerna nere på benet framför dig och rycker bakåt i varje steg; är kroppen för tung spänner du armarna
+  och darrar.
 - **Blodspår:** en färsk kropp blöder på vägen, glest men lätt att följa. En släpad kropp lämnar en blodfläck på marken
   ungefär **var 2:a block**, en buren droppar då och då och lämnar en fläck ungefär **var 6:e block**. Står du still blir
   det inga fläckar. Har kroppen åldrats på en Hanging Rack, börjat bli dålig eller förskämts blöder den inte längre.

@@ -49,6 +49,12 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     private static final ContextKey<Boolean> CARCASS = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "carcass"));
     /** Marks the animal's render state as hung head down on a Hanging Rack, so the models let the limbs hang (see {@link #hangLegs}). */
     private static final ContextKey<Boolean> HUNG = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "hung"));
+    /** Dragged: bit i set when a player holds limb i (CarcassEntity#gripPoint): those legs are pulled out ahead ({@link #gripLegs}). */
+    private static final ContextKey<Integer> GRIP = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "grip"));
+    /** Limb order of the grip slots, by the part names vanilla and the mod's animal models share. */
+    private static final String[] GRIP_LEGS = {"right_front_leg", "left_front_leg", "right_hind_leg", "left_hind_leg"};
+    /** A held leg: pitched forward towards the head (towards the puller), less sag. */
+    private static final float GRIP_PITCH = -1.3F, GRIP_SAG = -0.25F;
     /** Limb roll (model z rotation, radians) towards the ground for an animal lying on its side. */
     public static final float LIMB_SAG = -0.7F;
     /** Head yaw (degrees) that turns the head down to the ground. */
@@ -102,6 +108,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
      */
     public static void poseVanillaCarcass(Model<?> model, Object state) {
         if (!(state instanceof LivingEntityRenderState s) || !isCarcass(s) && !isHung(s)) return;
+        if (s.getRenderData(GRIP) != null) gripLegs(model, s.getRenderData(GRIP));
         // their own mixins / the mod's models pose themselves
         if (model instanceof QuadrupedModel || model instanceof ChickenModel || !model.getClass().getName().startsWith("net.minecraft.")) return;
         var part = PARTS.computeIfAbsent(model, m -> m.root().createPartLookup());
@@ -117,6 +124,17 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         if (isCarcass(s)) {
             for (ModelPart leg : hind) leg.zRot = LIMB_SAG;
             for (ModelPart leg : front) leg.zRot = LIMB_SAG;
+        }
+    }
+
+    /** Every model (after its own carcass pose): the legs the pullers hold stretch out ahead, towards them. */
+    private static void gripLegs(Model<?> model, int held) {
+        var part = PARTS.computeIfAbsent(model, m -> m.root().createPartLookup());
+        for (int i = 0; i < GRIP_LEGS.length; i++) {
+            ModelPart leg = (held & 1 << i) != 0 ? part.apply(GRIP_LEGS[i]) : null;
+            if (leg == null) continue;
+            leg.xRot = GRIP_PITCH;
+            leg.zRot = GRIP_SAG;
         }
     }
 
@@ -254,6 +272,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // skinned/plucked: raw red flesh look (the vanilla hurt tint); a sheared sheep already looks bare
         // carried the legs hang stiff from the body; hung they hang from the hook (HUNG) instead of sagging sideways
         if (state.pose == Pose.LYING) state.animal.setRenderData(CARCASS, true);
+        if (state.pose == Pose.LYING && carcass.isLarge() && carcass.haulerId() >= 0) {
+            int held = 0;
+            for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) if (carcass.haulerId(i) >= 0) held |= 1 << i;
+            state.animal.setRenderData(GRIP, held);
+        }
         if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) state.animal.setRenderData(HUNG, true);
         if (state.animal instanceof LivingEntityRenderState living) {
             // models use yRot as head yaw; lying on the side that points the head at the ground

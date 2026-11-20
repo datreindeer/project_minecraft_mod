@@ -8,6 +8,8 @@ import static com.mechanical.Mechanical.MODID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -42,7 +44,13 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * you and stop you sprinting), a large one is dragged along behind you (slower still). Both hands are full: no item can be
  * used or placed, nor used on an animal (only the Travois and the body itself react), an attack or a hard hit (4+ damage)
  * drops it, and right-clicking a block puts it down there. Right-click a dragged body again to let go. Players show it:
- * both arms up holding the body on the shoulders, or reaching back to the dragged one (client/HaulingClient).</li>
+ * both arms up holding the body on the shoulders, or both hands on the dragged one's leg, tugging at every step
+ * (client/HaulingClient).</li>
+ * <li>Dragging ({@link #follow}): you face the body and walk backwards pulling it (the client locks your view on your grip,
+ * HaulingClient#lockView); it turns its head end towards its pullers and glides after them, smoothed on the client.
+ * Up to {@link CarcassEntity#MAX_HAULERS} players can drag one large body together, each holding a limb: the slowdown and
+ * food cost are shared ({@code SLOW_DRAG * needed / pullers}). A huge one needs {@link CarcassEntity#pullersNeeded} (3,
+ * the mammoth 4): fewer only strain at it, it creeps ({@link #STRAIN_CREEP}) and holds them back ({@link #tether}).</li>
  * <li>A fresh body bleeds on the way ({@link #bleed}): a dragged one leaves a smear about every {@link #DRAG_TRAIL} blocks,
  * one on the shoulders drips and leaves a stain now and then. Aged, turning or spoiled ones no longer bleed.</li>
  * <li>{@link TravoisEntity}: a drag sledge that follows you when harnessed and holds 3 room of bodies (light 1, medium 2, large 3).
@@ -70,6 +78,14 @@ public final class CarcassHauling {
     static final float DROP_DAMAGE = 4.0F;
     /** Blocks travelled between blood stains: dragged (always), carried (half the time, so one every ~6 blocks). */
     static final double DRAG_TRAIL = 2.0, CARRY_TRAIL = 3.0;
+    /** Arm's length: how far a dragged body's grip trails its puller. Up to {@link #TETHER_SLACK} past it, a body too heavy to move holds him (client). */
+    static final double GRIP_REACH = 1.0, TETHER_SLACK = 1.5;
+    /** Too few pullers on a huge body: it moves only this share of their pull times pullers/needed (it barely creeps), and slows them this much. */
+    static final double STRAIN_CREEP = 0.1, SLOW_STRAIN = 0.7;
+    /** Most degrees a dragged body turns per tick towards its pullers (smooth, no snapping round). */
+    static final float TURN_RATE = 8.0F;
+    static final Identifier MANY_HANDS = Identifier.fromNamespaceAndPath(MODID, "wilderness/many_hands"),
+            MOVING_A_MOUNTAIN = Identifier.fromNamespaceAndPath(MODID, "wilderness/moving_a_mountain");
 
     public static final DeferredBlock<HangingRackBlock> HANGING_RACK = BLOCKS.registerBlock("hanging_rack", HangingRackBlock::new, p -> p
             .mapColor(MapColor.WOOD).strength(1.5F).sound(SoundType.WOOD).noOcclusion().ignitedByLava());
@@ -99,11 +115,16 @@ public final class CarcassHauling {
         return raw.is(RAW_HAUNCH.get()) ? 3 : raw.is(RAW_RIBS.get()) || raw.is(RAW_LOIN.get()) ? 2 : 1;
     }
 
-    /** The carcass {@code player} carries or drags, or null. Works on both sides (the hauler is synced). */
+    /** The carcass {@code player} carries or drags (alone or with others), or null. Works on both sides (the haulers are synced). */
     public static CarcassEntity hauled(Player player) {
-        for (CarcassEntity c : player.level().getEntitiesOfClass(CarcassEntity.class, player.getBoundingBox().inflate(12), c -> c.haulerId() == player.getId()))
+        for (CarcassEntity c : player.level().getEntitiesOfClass(CarcassEntity.class, player.getBoundingBox().inflate(12), c -> c.slotOf(player) >= 0))
             return c;
         return null;
+    }
+
+    /** Fewer players on it than it takes to move it (both sides: drives the strain pose too). */
+    public static boolean straining(CarcassEntity c) {
+        return c.isLarge() && c.haulerCount() < c.pullersNeeded();
     }
 
     /** Hands full of something heavy: no sprinting (see PlayerMixin). */
@@ -116,39 +137,111 @@ public final class CarcassHauling {
 
     /** Sneak + right-click with an empty hand: shoulder it or start dragging it; right-click what you drag to let go. */
     static InteractionResult pickUpOrLetGo(Player player, CarcassEntity carcass) {
-        if (carcass.haulerId() == player.getId()) {
+        if (carcass.slotOf(player) >= 0) {
             if (!player.level().isClientSide()) letGo(carcass, player, null);
             return InteractionResult.SUCCESS;
         }
         if (hauled(player) != null) return InteractionResult.PASS;
+        boolean joining = carcass.haulerId() >= 0;
         if (!player.level().isClientSide()) {
-            carcass.stopRiding();
-            if (carcass.hungAt() != null) carcass.unhang();
-            carcass.setHauler(player);
+            if (joining && !carcass.addHauler(player)) {
+                // on someone's shoulders, or every limb of a big one already held
+                player.sendOverlayMessage(Component.translatable("message.mechanical.carcass.taken"));
+                return InteractionResult.SUCCESS;
+            }
+            if (!joining) {
+                carcass.stopRiding();
+                if (carcass.hungAt() != null) carcass.unhang();
+                carcass.addHauler(player);
+            }
             player.level().playSound(null, carcass.getX(), carcass.getY(), carcass.getZ(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, 0.7F);
-            player.sendOverlayMessage(Component.translatable(carcass.isLarge() ? "message.mechanical.carcass.drag" : "message.mechanical.carcass.carry"));
+            if (carcass.isLarge()) tellPullers(carcass);
+            else player.sendOverlayMessage(Component.translatable("message.mechanical.carcass.carry"));
         }
         return InteractionResult.SUCCESS;
     }
 
-    /** Server tick of a hauled carcass: on the shoulders it rides along with the player; a large one is dragged a body length behind. */
-    static void follow(CarcassEntity c, Player p) {
+    /** Server: tells everyone dragging {@code c} how it goes: alone, together, or too few to move it. */
+    private static void tellPullers(CarcassEntity c) {
+        int n = c.haulerCount(), need = c.pullersNeeded();
+        Component msg = n < need ? Component.translatable("message.mechanical.carcass.too_heavy", need, n)
+                : Component.translatable(n > 1 ? "message.mechanical.carcass.drag_together" : "message.mechanical.carcass.drag", n);
+        for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
+            Player p = c.hauler(i);
+            if (p != null) p.sendOverlayMessage(msg);
+        }
+    }
+
+    /**
+     * Server tick of a hauled carcass: on the shoulders it rides along with the player. A large one is dragged: each puller
+     * draws his grip ({@link CarcassEntity#gripPoint}) to within {@link #GRIP_REACH} of himself, the body moving by the
+     * average of those pulls (too few pullers: a creep of it) and turning its head end towards them a little each tick.
+     */
+    static void follow(CarcassEntity c) {
         if (!c.isLarge()) {
+            Player p = c.hauler();
             // the renderer draws it across the shoulders from the player's own position; this only keeps it tracked and near
             c.setPos(p.getX(), p.getY() + 1.0, p.getZ());
             c.setDeltaMovement(Vec3.ZERO);
             bleed(c, p.position(), false);
             return;
         }
-        Vec3 off = c.position().subtract(p.position()).multiply(1, 0, 1);
-        double d = off.length(), keep = 0.5 + c.getBbWidth() / 2;
-        Vec3 pull = d > keep ? off.scale((keep - d) / d) : Vec3.ZERO;
+        Vec3 pull = Vec3.ZERO, centre = Vec3.ZERO;
+        int n = 0, pulling = 0;
+        for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
+            Player p = c.hauler(i);
+            if (p == null) continue;
+            n++;
+            centre = centre.add(p.position());
+            Vec3 off = p.position().subtract(c.gripPoint(i, 1.0F)).multiply(1, 0, 1);
+            double d = off.length();
+            if (d > GRIP_REACH) {
+                pull = pull.add(off.scale((d - GRIP_REACH) / d));
+                pulling++;
+            }
+        }
+        if (n == 0) return;
+        int need = c.pullersNeeded();
+        double strength = n < need ? STRAIN_CREEP * n / need : 1.0;
+        if (pulling > 0) pull = pull.scale(strength / pulling);
         double fall = c.onGround() ? -0.01 : Math.max(-0.5, c.getDeltaMovement().y - 0.08);
         c.drag(new Vec3(pull.x, fall, pull.z));
         c.setDeltaMovement(0, c.onGround() ? 0 : fall, 0);
-        // head first towards the one pulling it
-        if (d > 0.3) c.setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z)));
+        // head end round towards the pullers, a little each tick
+        Vec3 to = centre.scale(1.0 / n).subtract(c.position()).multiply(1, 0, 1);
+        if (to.length() > 0.3) {
+            float target = (float) Math.toDegrees(Math.atan2(-to.x, to.z)), turn = (float) (TURN_RATE * strength);
+            c.setYRot(c.getYRot() + Mth.clamp(Mth.wrapDegrees(target - c.getYRot()), -turn, turn));
+        }
         bleed(c, c.position(), true);
+        if (c.tickCount % 40 == 0 && n < need && pulling > 0) tellPullers(c); // keeps telling them while they strain
+        if (c.tickCount % 20 == 0 && n > 1 && n >= need && pulling > 0) {
+            boolean mammoth = c.animal() == com.mechanical.wildlife.giants.GiantsFauna.WOOLLY_MAMMOTH.get();
+            for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
+                if (!(c.hauler(i) instanceof ServerPlayer sp)) continue;
+                Kettle.award(sp, MANY_HANDS);
+                if (mammoth) Kettle.award(sp, MOVING_A_MOUNTAIN);
+            }
+        }
+    }
+
+    /**
+     * Client, own player, after it moved: a body too heavy for its pullers holds him within {@link #GRIP_REACH} +
+     * {@link #TETHER_SLACK} of his grip, like a rope (as TravoisEntity#tether; never pulled in from further than he was).
+     */
+    static void tether(Player mover, CarcassEntity c) {
+        int slot = c.slotOf(mover);
+        if (slot < 0 || !straining(c)) return;
+        Vec3 grip = c.gripPoint(slot, 1.0F);
+        Vec3 off = mover.position().subtract(grip).multiply(1, 0, 1);
+        double d = off.length(), max = GRIP_REACH + TETHER_SLACK;
+        if (d <= max) return;
+        Vec3 n = off.scale(1 / d);
+        double limit = Math.max(max, new Vec3(mover.xo - grip.x, 0, mover.zo - grip.z).length());
+        if (d > limit) mover.setPos(grip.x + n.x * limit, mover.getY(), grip.z + n.z * limit);
+        Vec3 v = mover.getDeltaMovement();
+        double out = v.x * n.x + v.z * n.z;
+        if (out > 0) mover.setDeltaMovement(v.subtract(n.x * out, 0, n.z * out));
     }
 
     /** A fresh body leaves a sparse trail where it goes ({@code at}: the ground under it); counted by distance, so none while standing still. */
@@ -164,11 +257,15 @@ public final class CarcassHauling {
         if (dragged || r.nextInt(2) == 0) Blood.splatter(level, net.minecraft.core.BlockPos.containing(at), 0, 1);
     }
 
-    /** Puts it down at {@code at} (a carried one; null: in front of the player). A dragged one stays where it is. */
+    /** {@code p} lets go. A carried one is put down at {@code at} (null: in front of the player); a dragged one stays where it is (or the others pull on). */
     static void letGo(CarcassEntity c, Player p, Vec3 at) {
-        c.setHauler(null);
+        int slot = c.slotOf(p);
+        if (slot >= 0) c.removeHauler(slot);
         c.setDeltaMovement(Vec3.ZERO);
-        if (c.isLarge()) return;
+        if (c.isLarge()) {
+            if (c.haulerId() >= 0) tellPullers(c);
+            return;
+        }
         if (at == null) at = p.position().add(Vec3.directionFromRotation(0, p.getYRot()).scale(0.9)).add(0, 0.3, 0);
         Vec3 old = c.position();
         c.setPos(at);
@@ -242,13 +339,20 @@ public final class CarcassHauling {
             // client, own player, after it moved: a stuck travois holds it back
             TravoisEntity held = TravoisEntity.harnessedTo(player);
             if (held != null) TravoisEntity.tether(player, held);
+            CarcassEntity dragged = hauled(player);
+            if (dragged != null) tether(player, dragged);
         }
         if (player.level().isClientSide() || player.tickCount % 5 != 0) return;
         double slow = 0, food = 0;
         CarcassEntity c = hauled(player);
-        if (c != null) {
-            slow += c.isLarge() ? SLOW_DRAG : c.isLight() ? 0 : SLOW_CARRY;
-            food += c.isLarge() ? FOOD_DRAG : c.isLight() ? 0 : FOOD_CARRY;
+        if (c != null && c.isLarge()) {
+            // the work is shared: two on a bear go at 75 % speed, four on the mammoth at 50 %; too few on a huge one barely move
+            double share = straining(c) ? 1.0 : (double) c.pullersNeeded() / c.haulerCount();
+            slow += straining(c) ? SLOW_STRAIN : SLOW_DRAG * share;
+            food += FOOD_DRAG * share;
+        } else if (c != null) {
+            slow += c.isLight() ? 0 : SLOW_CARRY;
+            food += c.isLight() ? 0 : FOOD_CARRY;
         }
         TravoisEntity t = TravoisEntity.harnessedTo(player);
         if (t != null) {
