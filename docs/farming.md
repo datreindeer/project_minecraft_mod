@@ -49,7 +49,7 @@
 - **Peas:** mogna ärtor ger 1–3.
 - **Melon/Pumpkin:** stjälkarna ger ingenting; melonen 3–7 skivor + 0–1 frö (Silk Touch: melonen). Pumpa → 1 frö.
 - **Porridge:** 2 Grain (valfri sort, taggen `mechanical:grains`) + Clay Water Bucket + Bowl → Raw Porridge (hinken blir
-  kvar tom, slits 1); kokas på Campfire 20 s → **Porridge** (5 hunger, 0,6 mättnad, skålen kommer tillbaka).
+  kvar tom, slits 1); kokas på Campfire 20 s → **Porridge** (5 hunger, 1,2 mättnad som en måltid, skålen kommer tillbaka).
 - **Bröd (bronsåldern):** Quern mal 1 Grain → 1 Flour (4 klick, överstenen vrids ett kvarts varv per klick). 2 Flour +
   Clay Water Bucket → Dough. Dough på Baking Stone vid brinnande Campfire: 30 s → Bread, 45 s till → Burnt Food. Clay
   Kiln: Dough → Bread på 20 s.
@@ -187,11 +187,11 @@ vanliga shaped-recept (kategori misc) och visas i receptboken först när man b�
 Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de inte bara kommer från döende byfält.
 
 - **Wild Carrot Plant** (Daucus carota, vit flockblomma): se tabellen ovan. Ger **Wild Carrot**: tunn, blek rot, mat
-  (1 hunger, 0,3 mättnad). Sås på farmland som grödan **Wild Carrots** (samma växtvillkor som Carrot). Mogen: 1–2 Wild Carrot
+  (1 hunger, 0,1 mättnad). Sås på farmland som grödan **Wild Carrots** (samma växtvillkor som Carrot). Mogen: 1–2 Wild Carrot
   + **25 % chans på en Carrot** ("tämjning": det vilda utsädet finns alltid kvar, och de riktiga morötterna kommer en och
   en, sedan odlas de som vanligt). Valt i stället för att Wild Carrot blir vanilla-morötter direkt: det följer
   Einkorn/Emmer (odlad vild typ ger vild skörd) och gör en riktig morot till ett litet framsteg.
-- **Sea Beet** (strandbeta): se tabellen ovan. **Sea Beet Leaves** är blad att äta (1 hunger, 0,2 mättnad, håller 1 dag).
+- **Sea Beet** (strandbeta): se tabellen ovan. **Sea Beet Leaves** är blad att äta (1 hunger, 0,1 mättnad, håller 1 dag).
   **Beetroot Seeds** gör att rödbetor kan odlas utan byar.
 - **Potatis** kommer från Amerika och växer inte vilt här. Borttagen ur byarnas kistor, byarnas fält (blir morötter),
   zombiebyarnas fält, all strukturloot (shipwreck, pillager outpost, trial chambers, ancient city), zombiernas/huskernas

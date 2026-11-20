@@ -1003,10 +1003,11 @@ Allt som går att äta utan bieffekter får ligga i (kött, hela plockade fågla
 rätter i egen skål (Porridge, Mushroom Stew) eller soppa och buljong själva.
 
 - **Värde:** varje ingrediens räknas som det den blir på en Campfire (Raw Beef räknas som Steak, Plucked Goose som
-  2 Cooked Goose, ägg som Peeled Egg). Summan av hunger och mättnad × **1,25 + 0,05 per olik ingrediens** (högst
-  **1,5×**), delas på skålar à ungefär 7 hunger (1–6 skålar), avrundat nedåt.
-- **Exempel:** 2 Raw Beef + 2 Carrot + 1 Potato: stekt 8 + 8 + 3 + 3 + 5 = 27 hunger (38,8 mättnad), tre olika ×1,35 →
-  36,5 → **5 skålar à 7 hunger, 10,5 mättnad** (35 hunger i stället för 27 stekt).
+  2 Cooked Goose, ägg som Peeled Egg). Summan av hungern × **1,25 + 0,05 per olik ingrediens** (högst
+  **1,5×**), delas på skålar à ungefär 7 hunger (1–6 skålar), avrundat nedåt. En skål är en måltid: mättnad = hunger × 2,4
+  (`FoodValues.MEAL`, se 01-stone-age.md "Mättnad").
+- **Exempel:** 2 Raw Beef + 2 Carrot + 1 Potato: stekt 8 + 8 + 3 + 3 + 5 = 27 hunger, tre olika ×1,35 →
+  36,5 → **5 skålar à 7 hunger, 16,8 mättnad** (35 hunger i stället för 27 stekt).
 - **Stew** stackar inte, har sitt värde på sig (FOOD-komponent) och listar ingredienserna i tooltip. Förskäms på
   **1 dag**; skålen kommer tillbaka när man ätit.
 

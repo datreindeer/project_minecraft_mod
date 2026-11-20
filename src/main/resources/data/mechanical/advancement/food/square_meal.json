@@ -1,0 +1,60 @@
+{
+  "parent": "mechanical:food/porridge",
+  "criteria": {
+    "ate_0": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:porridge"
+        }
+      }
+    },
+    "ate_1": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "minecraft:bread"
+        }
+      }
+    },
+    "ate_2": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:broth"
+        }
+      }
+    },
+    "ate_3": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:stew"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ate_0",
+      "ate_1",
+      "ate_2",
+      "ate_3"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:bread"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.square_meal.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.square_meal.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

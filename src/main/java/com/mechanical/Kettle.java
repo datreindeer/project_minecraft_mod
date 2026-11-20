@@ -191,13 +191,11 @@ public final class Kettle {
             return new Result(out, new ItemStack(BROTH.get()), Math.min(MAX_BROTH, BROTH_PER_BIRD * contents.size()));
         }
         int nutrition = 0;
-        float saturation = 0;
         List<Item> items = new ArrayList<>();
         for (ItemStack s : contents) {
             FoodProperties f = cookedValue(level, s);
             if (f == null) continue;
             nutrition += f.nutrition();
-            saturation += f.saturation();
             items.add(s.getItem());
         }
         if (items.isEmpty()) return new Result(out, ItemStack.EMPTY, 0);
@@ -205,8 +203,9 @@ public final class Kettle {
         float total = nutrition * bonus;
         int portions = Math.clamp(Math.round(total / PORTION_NUTRITION), 1, MAX_PORTIONS);
         ItemStack bowl = new ItemStack(STEW.get());
-        // rounded down: dividing the pot never makes more food than went in (times the bonus)
-        bowl.set(DataComponents.FOOD, new FoodProperties(Math.max(1, (int) (total / portions)), saturation * bonus / portions, false));
+        // rounded down: dividing the pot never makes more food than went in (times the bonus); a meal fills you longest
+        int n = Math.max(1, (int) (total / portions));
+        bowl.set(DataComponents.FOOD, new FoodProperties(n, FoodValues.saturation(n, FoodValues.MEAL), false));
         bowl.set(INGREDIENTS.get(), List.copyOf(items));
         return new Result(out, bowl, portions);
     }
