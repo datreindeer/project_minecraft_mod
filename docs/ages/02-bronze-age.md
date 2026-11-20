@@ -11,7 +11,7 @@ legera brons och smida verktyg och rustning. Åldern slutar när spelaren kan by
 (en Bloomery av eldfast tegel och bälgar, och en bronshacka som klarar järnmalm).
 
 Stenåldern lämnar över: **Clay Kiln**, **Crucible**, **Charcoal**, **Tin Ore** (finns redan i världen), Raw Hide/Leather,
-Sinew, Tool Station och Armor Station.
+Sinew, Tool Station och Leatherworking Bench.
 
 ## Progression i korthet (förslag)
 
@@ -534,12 +534,14 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
 
 ### Bronze Helmet och Bronze Greaves
 
-Rustningsplåt gjuts (Clay Plate Mold), slipas och sys på ett läderfoder i **Armor Station** (låses upp av Bronze Plate):
+Rustningsplåt gjuts (Clay Plate Mold), slipas och nitas på ett läderfoder vid **Armor Station**, smedjan för metallrustning.
+Recept: `[Bronze Plate][Bronze Ingot][Bronze Plate]` / `[Planks][Crafting Table][Planks]`, låses upp av Bronze Plate.
+Hammaren är vilken pickaxe som helst eller Bronze Smithing Hammer (taggen `#mechanical:hammerstones`); den ligger kvar och slits 1 per del:
 
 | Del | Recept | Rustning | Hållbarhet |
 |---|---|---|---|
-| Bronze Helmet | 2 Bronze Plate + Bone Needle (slits 1) + 2 Leather | 2 | 110 |
-| Bronze Greaves (leggings-platsen) | 3 Bronze Plate + Bone Needle + 3 Leather | 5 | 150 |
+| Bronze Helmet | 2 Bronze Plate + hammare (slits 1) + 2 Leather | 2 | 110 |
+| Bronze Greaves (leggings-platsen) | 3 Bronze Plate + hammare + 3 Leather | 5 | 150 |
 
 - Järnets rustningsvärden, toughness 0, ~70 % av järnets hållbarhet (multiplikator 10 mot 15). Ingen bröstplåt eller
   boots. Egna texturer på kroppen: hjälmen är en bronsfärgad järnhjälm, benskydden täcker bara smalbenen med en läderrem
@@ -845,7 +847,7 @@ Lin är bronsålderns trådgröda (stenålderns: brännässla, se `docs/ages/01-
   med fröknoppar). Mogen: **2 Flax Stalks** (skära: 50 % en till) + **1–2 Flax Seeds**; omogen ger ingenting.
 - **Rötning och skäktning:** 4 Flax Stalks + Clay Water Bucket (eller vattenhink) + kniv → **6 Flax Fiber**; hinken blir
   tom, kniven slits 1.
-- **Flax Fiber + Drop Spindle → Linen Thread** (i taggen `mechanical:threads`: syr läder vid Armor Station).
+- **Flax Fiber + Drop Spindle → Linen Thread** (i taggen `mechanical:threads`: syr läder vid Leatherworking Bench).
 - **Advancements (Bronze Age-fliken):** Flax (Flax Seeds) → Linen (Linen Thread).
 - Inte gjort: Linen Cloth (inget använder tyg än), linfröolja.
 
@@ -1117,8 +1119,8 @@ texturer: `scripts/gen_bronzetools_textures.py`.
 
 ### Bronze Needle
 
-- Syr i Armor Station som Bone Needle men tål **250** (benet 32). Armor Stations nålruta tar taggen `#mechanical:needles`
-  (Bone Needle, Bronze Needle), liksom receptet för själva Armor Station.
+- Syr vid Leatherworking Bench som Bone Needle men tål **250** (benet 32). Bänkens nålruta tar taggen `#mechanical:needles`
+  (Bone Needle, Bronze Needle), liksom receptet för själva Leatherworking Bench.
 
 ### Bronze Tongs och brännskador
 

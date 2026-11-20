@@ -251,20 +251,20 @@
    },
    {
     "title": {
-     "sv": "Hudar, läder och Armor Station",
-     "en": "Hides, leather and the Armor Station"
+     "sv": "Hudar, läder och Leatherworking Bench",
+     "en": "Hides, leather and the Leatherworking Bench"
     },
     "items": [
      "scraped_hide",
      "drying_rack",
      "minecraft:leather",
-     "armor_station",
+     "leatherworking_bench",
      "bone_needle",
      "leather_satchel"
     ],
     "text": {
-     "sv": "Djur släpper inte läder. [[raw_hide]] + kniv blir [[scraped_hide]]. Spänn upp den på en [[drying_rack]] (sticks + Twine) och vänta ~3 minuter: den blir [[minecraft:leather]]. En Drying Rack kan byggas på höjden till 2 block med 4 platser.\n\n[[armor_station]] (Leather, [[bone_needle]], plankor och crafting table) syr rustning. Bone Needle görs av ben eller fiskben + kniv. Läderrustning tar läder + tråd: hjälm 5, bröst 8, ben 7, stövlar 4 Leather. Varje del isolerar 15 % mot kyla.\n\n[[leather_satchel]] (4 Leather + tråd) är en väska med 9 platser för vad som helst.",
-     "en": "Animals do not drop leather. [[raw_hide]] + knife makes [[scraped_hide]]. Stretch it on a [[drying_rack]] (sticks + Twine) and wait ~3 minutes: it becomes [[minecraft:leather]]. A Drying Rack can be built up to 2 blocks tall with 4 slots.\n\nThe [[armor_station]] (Leather, [[bone_needle]], planks and a crafting table) sews armour. A Bone Needle is made from a bone or fish bones + knife. Leather armour takes leather + thread: helmet 5, chest 8, legs 7, boots 4 Leather. Each piece insulates 15 % against cold.\n\nThe [[leather_satchel]] (4 Leather + thread) is a bag with 9 slots for anything."
+     "sv": "Djur släpper inte läder. [[raw_hide]] + kniv blir [[scraped_hide]]. Spänn upp den på en [[drying_rack]] (sticks + Twine) och vänta ~3 minuter: den blir [[minecraft:leather]]. En Drying Rack kan byggas på höjden till 2 block med 4 platser.\n\n[[leatherworking_bench]] (Leather, [[bone_needle]], plankor och crafting table) syr kläder, rustning och väskor. Bone Needle görs av ben eller fiskben + kniv. Läderrustning tar läder + tråd: hjälm 5, bröst 8, ben 7, stövlar 4 Leather. Varje del isolerar 15 % mot kyla.\n\n[[leather_satchel]] (4 Leather + tråd) är en väska med 9 platser för vad som helst, och [[quiver]] (2 Leather + tråd) håller pilar.",
+     "en": "Animals do not drop leather. [[raw_hide]] + knife makes [[scraped_hide]]. Stretch it on a [[drying_rack]] (sticks + Twine) and wait ~3 minutes: it becomes [[minecraft:leather]]. A Drying Rack can be built up to 2 blocks tall with 4 slots.\n\nThe [[leatherworking_bench]] (Leather, [[bone_needle]], planks and a crafting table) sews clothes, armour and bags. A Bone Needle is made from a bone or fish bones + knife. Leather armour takes leather + thread: helmet 5, chest 8, legs 7, boots 4 Leather. Each piece insulates 15 % against cold.\n\nThe [[leather_satchel]] (4 Leather + thread) is a bag with 9 slots for anything, and the [[quiver]] (2 Leather + thread) holds arrows."
     }
    },
    {
@@ -281,8 +281,8 @@
      "sinew_thread"
     ],
     "text": {
-     "sv": "Läder sys med tråd, och det finns flera sorter. [[stinging_nettle]] växer i lövskog och längs vatten. **Den bränns** om du går genom den utan byxor; smyg eller ha leggings på. Den ger [[nettle_stalks]], och stjälkar + kniv ger [[nettle_fiber]].\n\n[[drop_spindle]] (en Stick över en rock chunk, ett ben eller en Clay Ball) spinner fiber till tråd: Nettle Fiber → [[nettle_thread]]. Ett ullblock ger 3 [[wool_thread]]. [[sinew]] + kniv ger 2 [[sinew_thread]].\n\nArmor Station tar vilken tråd som helst (även String från spindlar) till läderdelarna. Pälsdelar sys fortfarande med hel Sinew.",
-     "en": "Leather is sewn with thread, and there are several kinds. [[stinging_nettle]] grows in broadleaf forest and along water. **It stings** if you walk through it without trousers; sneak or wear leggings. It drops [[nettle_stalks]], and stalks + knife give [[nettle_fiber]].\n\nThe [[drop_spindle]] (a Stick over a rock chunk, a bone or a Clay Ball) spins fibre into thread: Nettle Fiber → [[nettle_thread]]. A wool block gives 3 [[wool_thread]]. [[sinew]] + knife gives 2 [[sinew_thread]].\n\nThe Armor Station accepts any thread (even String from spiders) for leather pieces. Fur pieces are still sewn with whole Sinew."
+     "sv": "Läder sys med tråd, och det finns flera sorter. [[stinging_nettle]] växer i lövskog och längs vatten. **Den bränns** om du går genom den utan byxor; smyg eller ha leggings på. Den ger [[nettle_stalks]], och stjälkar + kniv ger [[nettle_fiber]].\n\n[[drop_spindle]] (en Stick över en rock chunk, ett ben eller en Clay Ball) spinner fiber till tråd: Nettle Fiber → [[nettle_thread]]. Ett ullblock ger 3 [[wool_thread]]. [[sinew]] + kniv ger 2 [[sinew_thread]].\n\nLeatherworking Bench tar vilken tråd som helst (även String från spindlar) till läderdelarna. Pälsdelar sys fortfarande med hel Sinew.",
+     "en": "Leather is sewn with thread, and there are several kinds. [[stinging_nettle]] grows in broadleaf forest and along water. **It stings** if you walk through it without trousers; sneak or wear leggings. It drops [[nettle_stalks]], and stalks + knife give [[nettle_fiber]].\n\nThe [[drop_spindle]] (a Stick over a rock chunk, a bone or a Clay Ball) spins fibre into thread: Nettle Fiber → [[nettle_thread]]. A wool block gives 3 [[wool_thread]]. [[sinew]] + knife gives 2 [[sinew_thread]].\n\nThe Leatherworking Bench accepts any thread (even String from spiders) for leather pieces. Fur pieces are still sewn with whole Sinew."
     }
    },
    {
@@ -374,8 +374,8 @@
      "sinew_bow"
     ],
     "text": {
-     "sv": "[[entity:brown_bear]] slåss alltid och kan bara styckas med en jägarkniv, [[tusk_dagger]] eller bättre. Den ger [[raw_bear_pelt]], fett och klor. Stora pälsar torkas bara på en **hög** Drying Rack (björnen tar hela ställningen, ~6 minuter) till [[bear_pelt]]. Vargar ger [[raw_wolf_pelt]] → [[wolf_pelt]].\n\nPälsrustning sys i Armor Station med Sinew: [[fur_hood]], [[fur_coat]], [[fur_leggings]], [[fur_boots]] isolerar **25 % per del**, full sats tar bort kylan helt. Vargpäls isolerar 20 %. [[wolf_hood]] gör att vargarna tar dig för en i flocken: de anfaller inte om du inte är illa skadad eller slår först.\n\nBättre pilbågar och pilar i Fletching Table: Sinew + Crude Bow + Cordage → [[sinew_bow]] (full skada, 200 hållbarhet), Bear Claw → [[barbed_arrow]] (3 skada), Tallow → [[fire_arrow]].",
-     "en": "The [[entity:brown_bear]] always fights and can only be butchered with a hunting knife, the [[tusk_dagger]] or better. It gives a [[raw_bear_pelt]], fat and claws. Big pelts only dry on a **tall** Drying Rack (the bear takes the whole rack, ~6 minutes) into a [[bear_pelt]]. Wolves give a [[raw_wolf_pelt]] → [[wolf_pelt]].\n\nFur armour is sewn at the Armor Station with Sinew: [[fur_hood]], [[fur_coat]], [[fur_leggings]], [[fur_boots]] insulate **25 % per piece**, and a full set removes the cold entirely. Wolf fur insulates 20 %. The [[wolf_hood]] makes wolves take you for one of the pack: they do not attack unless you are badly hurt or strike first.\n\nBetter bows and arrows at the Fletching Table: Sinew + Crude Bow + Cordage → [[sinew_bow]] (full damage, 200 durability), Bear Claw → [[barbed_arrow]] (3 damage), Tallow → [[fire_arrow]]."
+     "sv": "[[entity:brown_bear]] slåss alltid och kan bara styckas med en jägarkniv, [[tusk_dagger]] eller bättre. Den ger [[raw_bear_pelt]], fett och klor. Stora pälsar torkas bara på en **hög** Drying Rack (björnen tar hela ställningen, ~6 minuter) till [[bear_pelt]]. Vargar ger [[raw_wolf_pelt]] → [[wolf_pelt]].\n\nPälsrustning sys vid Leatherworking Bench med Sinew: [[fur_hood]], [[fur_coat]], [[fur_leggings]], [[fur_boots]] isolerar **25 % per del**, full sats tar bort kylan helt. Vargpäls isolerar 20 %. [[wolf_hood]] gör att vargarna tar dig för en i flocken: de anfaller inte om du inte är illa skadad eller slår först.\n\nBättre pilbågar och pilar i Fletching Table: Sinew + Crude Bow + Cordage → [[sinew_bow]] (full skada, 200 hållbarhet), Bear Claw → [[barbed_arrow]] (3 skada), Tallow → [[fire_arrow]].",
+     "en": "The [[entity:brown_bear]] always fights and can only be butchered with a hunting knife, the [[tusk_dagger]] or better. It gives a [[raw_bear_pelt]], fat and claws. Big pelts only dry on a **tall** Drying Rack (the bear takes the whole rack, ~6 minutes) into a [[bear_pelt]]. Wolves give a [[raw_wolf_pelt]] → [[wolf_pelt]].\n\nFur armour is sewn at the Leatherworking Bench with Sinew: [[fur_hood]], [[fur_coat]], [[fur_leggings]], [[fur_boots]] insulate **25 % per piece**, and a full set removes the cold entirely. Wolf fur insulates 20 %. The [[wolf_hood]] makes wolves take you for one of the pack: they do not attack unless you are badly hurt or strike first.\n\nBetter bows and arrows at the Fletching Table: Sinew + Crude Bow + Cordage → [[sinew_bow]] (full damage, 200 durability), Bear Claw → [[barbed_arrow]] (3 damage), Tallow → [[fire_arrow]]."
     }
    },
    {
@@ -652,12 +652,13 @@
      "bronze_saw",
      "minecraft:oak_planks",
      "bronze_plate",
+     "armor_station",
      "bronze_helmet",
      "bronze_greaves"
     ],
     "text": {
-     "sv": "[[bronze_saw]] (Saw Blade + Twine + Stick): **stock + såg = 4 plankor** i stället för 2. På en Fallen Log kapar 8 sågtag hela stocken till 3 Rough Logs, utan slump. Sågen behövs också till Potter's Wheel och vagnshjul.\n\n**Rustning:** gjut plåt i Clay Plate Mold (4 enheter), slipa till [[bronze_plate]] och sy på läder i Armor Station: [[bronze_helmet]] (2 plåtar + 2 Leather, skydd 2) och [[bronze_greaves]] (3 + 3, skydd 5). Det finns ingen bröstplåt i bronsåldern; bålen skyddas fortfarande av päls eller läder.",
-     "en": "The [[bronze_saw]] (Saw Blade + Twine + Stick): **log + saw = 4 planks** instead of 2. On a Fallen Log, 8 saw strokes cut the whole log into 3 Rough Logs, no chance involved. The saw is also needed for the Potter's Wheel and cart wheels.\n\n**Armour:** cast plate in the Clay Plate Mold (4 units), grind it into a [[bronze_plate]] and sew it onto leather at the Armor Station: the [[bronze_helmet]] (2 plates + 2 Leather, armour 2) and [[bronze_greaves]] (3 + 3, armour 5). There is no chestplate in the Bronze Age; your torso is still protected by fur or leather."
+     "sv": "[[bronze_saw]] (Saw Blade + Twine + Stick): **stock + såg = 4 plankor** i stället för 2. På en Fallen Log kapar 8 sågtag hela stocken till 3 Rough Logs, utan slump. Sågen behövs också till Potter's Wheel och vagnshjul.\n\n**Rustning:** gjut plåt i Clay Plate Mold (4 enheter), slipa till [[bronze_plate]], bygg en [[armor_station]] (2 Bronze Plate, Bronze Ingot, plankor, crafting table) och nita plåten på läder med en pickaxe eller hammare: [[bronze_helmet]] (2 plåtar + 2 Leather, skydd 2) och [[bronze_greaves]] (3 + 3, skydd 5). Det finns ingen bröstplåt i bronsåldern; bålen skyddas fortfarande av päls eller läder.",
+     "en": "The [[bronze_saw]] (Saw Blade + Twine + Stick): **log + saw = 4 planks** instead of 2. On a Fallen Log, 8 saw strokes cut the whole log into 3 Rough Logs, no chance involved. The saw is also needed for the Potter's Wheel and cart wheels.\n\n**Armour:** cast plate in the Clay Plate Mold (4 units), grind it into a [[bronze_plate]], build an [[armor_station]] (2 Bronze Plates, a Bronze Ingot, planks, a crafting table) and rivet the plate onto leather with a pickaxe or hammer: the [[bronze_helmet]] (2 plates + 2 Leather, armour 2) and [[bronze_greaves]] (3 + 3, armour 5). There is no chestplate in the Bronze Age; your torso is still protected by fur or leather."
     }
    },
    {
@@ -675,8 +676,8 @@
      "bronze_hook_fishing_rod"
     ],
     "text": {
-     "sv": "Varje verktyg har sin egen lerform och görs på samma sätt:\n- [[bronze_bucket]]: spricker aldrig, öser vatten och **lava**, mjölkar kor.\n- [[bronze_sickle]]: skär 3×3 mogen säd med ett drag (smyg för ett i taget).\n- [[bronze_shears]]: vanillas sax i brons.\n- [[bronze_tongs]]: håll dem i någon hand så bränns du inte av smält metall.\n- [[bronze_needle]]: syr i Armor Station och tål 250 (benet 32).\n- [[bronze_chisel]]: hugger sten till finare varianter och halverar slipningen på Whetstone om du har den i andra handen.\n- [[bronze_hook_fishing_rod]]: napp som Lure II och fångst som Luck of the Sea I.",
-     "en": "Each tool has its own clay mold and is made the same way:\n- [[bronze_bucket]]: never cracks, scoops water and **lava**, milks cows.\n- [[bronze_sickle]]: cuts 3×3 ripe grain in one stroke (sneak for one at a time).\n- [[bronze_shears]]: vanilla shears in bronze.\n- [[bronze_tongs]]: hold them in either hand and molten metal does not burn you.\n- [[bronze_needle]]: sews at the Armor Station and lasts 250 (bone 32).\n- [[bronze_chisel]]: carves stone into finer variants and halves the grinding at the Whetstone when held in the off hand.\n- [[bronze_hook_fishing_rod]]: bites like Lure II and catches like Luck of the Sea I."
+     "sv": "Varje verktyg har sin egen lerform och görs på samma sätt:\n- [[bronze_bucket]]: spricker aldrig, öser vatten och **lava**, mjölkar kor.\n- [[bronze_sickle]]: skär 3×3 mogen säd med ett drag (smyg för ett i taget).\n- [[bronze_shears]]: vanillas sax i brons.\n- [[bronze_tongs]]: håll dem i någon hand så bränns du inte av smält metall.\n- [[bronze_needle]]: syr vid Leatherworking Bench och tål 250 (benet 32).\n- [[bronze_chisel]]: hugger sten till finare varianter och halverar slipningen på Whetstone om du har den i andra handen.\n- [[bronze_hook_fishing_rod]]: napp som Lure II och fångst som Luck of the Sea I.",
+     "en": "Each tool has its own clay mold and is made the same way:\n- [[bronze_bucket]]: never cracks, scoops water and **lava**, milks cows.\n- [[bronze_sickle]]: cuts 3×3 ripe grain in one stroke (sneak for one at a time).\n- [[bronze_shears]]: vanilla shears in bronze.\n- [[bronze_tongs]]: hold them in either hand and molten metal does not burn you.\n- [[bronze_needle]]: sews at the Leatherworking Bench and lasts 250 (bone 32).\n- [[bronze_chisel]]: carves stone into finer variants and halves the grinding at the Whetstone when held in the off hand.\n- [[bronze_hook_fishing_rod]]: bites like Lure II and catches like Luck of the Sea I."
     }
    },
    {

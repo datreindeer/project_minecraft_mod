@@ -36,7 +36,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Mold Bench (Unfired Crucible, lerformar) |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
 | Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather (bronsåldern: garvas med Bark i en **Bronze Kettle**, 3 Leather av 2 hudar) |
-| Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor-recept | Sys i **Armor Station** med Bone Needle + Wool Thread |
+| Leather | Torkad Scraped Hide på Drying Rack (djur släpper inte Leather längre) | Leather Armor-recept | Sys vid **Leatherworking Bench** med Bone Needle + Wool Thread |
 | Leather Armor |
 | Raw Phantom Hide | Styckning av Phantom, omgång 1 (60 %) | Scraped Phantom Hide |
 | Scraped Phantom Hide | Raw Phantom Hide + kniv (shapeless, kniven slits 1) | Läggs på Drying Rack **i dagsljus** → Phantom Leather |
@@ -119,9 +119,6 @@ knivrecept och för styckning): 1,3× snabbare och 1,1× mer kött än Flint Kni
 **Jägarkniv:** kan stycka **Brown Bear** (Flint Knife kan inte) och ger **1,6× mer i första omgången** (hudar, päls, ull,
 fjädrar): högre chans och fler, t.ex. Raw Bear Pelt 1–2 i stället för 1.
 
-### Quiver (Tool Station)
-Huvud: **Leather** (röret), bindning: **Twine** (sömmen), skaft: **Tool Rod** (stomme). Låses upp när man har Leather. Se "Quiver" under väskor.
-
 ### Bone Hook Fishing Rod (Tool Station)
 **Bone Fish Hook** = Fish Bones + kniv (crafting). Spöet: huvud **Bone Fish Hook**, bindning **Twine**, skaft **Tool Rod**.
 Napp kommer 5 s snabbare (som Lure I, utöver förtrollningar). Hållbarhet 48.
@@ -140,7 +137,8 @@ klicka för att lägga i dem. Tre platser + resultat:
 | Tallow | Arrow | Twine | 1 **Fire Arrow** (sätter målet i brand) |
 | Sinew | Crude Bow | Cordage | **Sinew Bow** (full pilskada, 200 i hållbarhet) |
 
-### Armor Station
+### Leatherworking Bench
+All läder- och pälssömnad (smidd metallrustning görs vid Armor Station i bronsåldern).
 Recept: `[Leather][Bone Needle][Leather]` / `[Planks][Crafting Table][Planks]`. Fungerar som Tool Station (lista till
 vänster, tre platser, resultat). **Bone Needle** = Fish Bones, Bone eller Horn + kniv (crafting), 32 i hållbarhet; den
 ligger kvar i stationen och tappar 1 per rustningsdel.
@@ -152,6 +150,7 @@ Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma 
 |---|---|---|---|---|
 | Leather Helmet / Chestplate / Leggings / Boots | 5 / 8 / 7 / 4 Leather | Bone Needle | 2 / 4 / 3 / 2 tråd | Leather |
 | **Leather Satchel** | 4 Leather | Bone Needle | 2 tråd | Leather |
+| **Quiver** | 2 Leather | Bone Needle | 2 tråd | Leather |
 | Fur Hood / Coat / Leggings / Boots | 1 / 3 / 2 / 1 Bear Pelt | Bone Needle | 1 / 3 / 2 / 1 Sinew | Bear Pelt |
 | **Wolf Hood** | 2 Wolf Pelt | Bone Needle | 1 Sinew | Wolf Pelt |
 | Wolf Fur Coat / Leggings / Boots | 4 / 3 / 2 Wolf Pelt | Bone Needle | 3 / 2 / 1 Sinew | Wolf Pelt |
@@ -160,7 +159,7 @@ Passar ingredienserna flera recept (Leather Boots och Leather Satchel har samma 
 Vanilla-recepten för läderrustning är borttagna.
 
 ### Leather Satchel
-Sys i Armor Station (se ovan). Ett förråd med **9 platser (3x3)** för vad som helst, utom andra förråd (Leather Satchel,
+Sys vid Leatherworking Bench (se ovan). Ett förråd med **9 platser (3x3)** för vad som helst, utom andra förråd (Leather Satchel,
 Quiver, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. Staplas inte.
 - **Bärs i Back-platsen** (se Utrustning nedan). Då hänger den framtill på vänster höft med en rem över höger axel, synlig
   på spelaren.
@@ -169,7 +168,7 @@ Quiver, Bark Basket, shulker boxes, bundles). Innehållet sparas på väskan. St
   handen öppnar den också.
 
 ### Quiver
-Sys i Armor Station: 3 Leather + 2 tråd (vilken tråd som helst) med Bone Needle (eller bronsnålarna), låses upp av
+Sys vid Leatherworking Bench: 2 Leather + 2 tråd (vilken tråd som helst) med Bone Needle (eller bronsnålarna), låses upp av
 Leather. **4 platser, bara pilar** (allt i taggen `#minecraft:arrows`, även moddens pilar). Pilarna ligger kvar i kogret
 när man tar av det.
 - **Bärs i Hip-platsen:** bågar och armborst skjuter från kogret före inventoriet (en pil i andra handen går fortfarande
@@ -204,17 +203,17 @@ har tooltipraden "Worn in the X slot".
   mantel, efter Hide Clothes), **Quiver** (sy och bär ett koger, efter Fletcher).
 
 ### Fur-rustning och Bear Rug
-- **Fur Hood / Coat / Leggings / Boots:** sys i Armor Station (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.
+- **Fur Hood / Coat / Leggings / Boots:** sys vid Leatherworking Bench (se ovan). Skydd 1/3/2/1, lagas med Bear Pelt.
   **Isolerar 25 % per del mot kyla** (läder 15 %).
 - **Bear Rug:** Bear Pelt + Bear Claw. Platt dekoration (som en matta) med huvudet bort från den som placerar den.
 
 ### Wolf Pelt: Wolf Hood, Wolf Fur och Wolf Rug
 - **Wolf Hood:** jägarhuva gjord av en vargs huvud: överkäken med huggtänderna över pannan, öronen på toppen, ansiktet
-  öppet och pälsen över axlarna och nedför ryggen till svansen (egen 3D-modell). Sys i Armor Station av 2 Wolf Pelt +
+  öppet och pälsen över axlarna och nedför ryggen till svansen (egen 3D-modell). Sys vid Leatherworking Bench av 2 Wolf Pelt +
   1 Sinew. Skydd 1, **isolerar 20 %**. **Vargarna tar dig för en i flocken:** en Grey Wolf känner bara vittringen av dig
   på halva avståndet och anfaller inte alls om du inte är **illa skadad (under 30 % liv)** eller **slår en varg först**
   (då anfaller flocken som vanligt). Under **blodmåne** eller när vargarna **svälter** hjälper huvan inte.
-- **Wolf Fur Coat / Leggings / Boots:** sys i Armor Station av 4 / 3 / 2 Wolf Pelt + 3 / 2 / 1 Sinew. Skydd 2/2/1
+- **Wolf Fur Coat / Leggings / Boots:** sys vid Leatherworking Bench av 4 / 3 / 2 Wolf Pelt + 3 / 2 / 1 Sinew. Skydd 2/2/1
   (med huvan 6 mot björnpälsens 7), lite lägre hållbarhet än Fur. **Isolerar 20 % per del** (björnpäls 25 %, läder 15 %).
   Lagas med Wolf Pelt.
 - **Wolf Rug:** 2 Wolf Pelt + Bone (formlöst). Platt dekoration som Bear Rug, med vargens huvud bort från den som placerar den.
@@ -222,7 +221,7 @@ har tooltipraden "Worn in the X slot".
 ### Glider Cloak
 En sen stenåldersbedrift: Phantoms finns bara när en spelare inte har sovit på 3+ nätter, varje Phantom ger Raw Phantom
 Hide bara i 60 % av fallen, och huden måste torka i solen utan att ruttna. Totalt: 6 Phantom Leather (~10 Phantoms) +
-**Glider Frame** (4 Tool Rod, 2 Bone, Sinew, Cordage) sys med Bone Needle i Armor Station.
+**Glider Frame** (4 Tool Rod, 2 Bone, Sinew, Cordage) sys med Bone Needle vid Leatherworking Bench.
 - Bärs i **Cloak-platsen** över rustningen (se Utrustning), **skydd 1**, 96 i hållbarhet, lagas med Phantom Leather. Ser
   ut som en mantel av hinna (krage med benspänne, axelslag) med hopvikta fladdermusvingar på ryggen, utfällda när man glider.
 - **Glidflygning:** faller du (mer än 2 block) och **håller inne hopp** fångar manteln luften. Fallet bromsas till
@@ -268,7 +267,7 @@ Recept: `[Flint Axe][Twine][Flint Pickaxe]` / `[Planks][Crafting Table][Planks]`
 
 GUI: lista till vänster med upplåsta verktyg, i mitten tre platser (huvud, bindning, skaft) och en resultatruta.
 - Klick på ett recept hämtar en sats delar ur inventoryt; **shift-klick hämtar så många satser du har** (upp till en
-  stack per plats). Gäller även Fletching Table och Armor Station (verktyg som Bone Needle läggs alltid bara en).
+  stack per plats). Gäller även Fletching Table, Leatherworking Bench och Armor Station (verktyg som Bone Needle läggs alltid bara en).
 - Ett verktyg låses upp första gången man har dess material i inventoryt (stenverktyg: valfri rock). Upplåsningen
   sparas per spelare och finns kvar efter döden.
 - Verktyg där man har alla delar är upplysta. Tooltip visar varje del i grönt/rött.
@@ -334,7 +333,7 @@ till sig större räder.
 ### Mold Bench
 Recept: `[Flint][Clay][Flint]` / `[Planks][Planks][Planks]` (Clay = lerblocket av 4 Clay Balls). Låses upp när man bär
 Clay Ball. En låg träbänk med lerkladdad skiva; här formas **Unfired Crucible** (7 Clay Balls) och alla bronsålderns
-lerformar av Clay Balls. Fungerar som Armor Station: välj i listan, leran hämtas ur inventoryt, ta resultatet. Se
+lerformar av Clay Balls. Fungerar som Leatherworking Bench: välj i listan, leran hämtas ur inventoryt, ta resultatet. Se
 02-bronze-age.md (Mold Bench).
 
 ### Clay Kiln
@@ -1792,9 +1791,9 @@ Flint Spear).
   White Wool, även egen. Campens **Straw Beds** ger 2–4 Plant Fibre (inte sängen).
 
 ### Straw Bed (vila)
-Stenålderns säng. Man kan inte sova bort natten, men man kan **vila**: högerklicka på en Straw Bed så sätts din
+Stenålderns säng. Man kan **vila**: högerklicka på en Straw Bed så sätts din
 respawnpunkt där och tiden sedan du vilade nollställs, så **phantoms** inte kommer (de kommer annars efter 3 nätter utan vila).
-Natten fortsätter som vanligt. Vilan ger också tillbaka sanity (se Mörkerrädsla).
+**På natten lägger man sig** (inte med monster inom 8 block). Ligger alla spelare i en säng, och minst en i en Straw Bed, går klockan **40 gånger fortare** tills det ljusnar (ungefär 14 s), och man ser solen gå upp. Man vaknar själv när det blir ljust. Vanilla hoppar inte över natten och skärmen blir inte svart (`mixin/PlayerMixin`). Vilan ger också tillbaka sanity (se Mörkerrädsla).
 Respawnpunkten håller när man dör: vanilla 26.3 låter annars inte en Straw Bed vara spawn (`straw_bed_rule` säger never),
 så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw Bed och Furred Straw Bed.
 - Recept (crafting table): `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]` → 1 Straw Bed. Straw får man när man skördar säd med Sickle.
@@ -1954,7 +1953,7 @@ behövs först, så trädet läses som progressionen:
 
 - **Stone Age**: lösa stenar och flinta → fiber, Twine, flintverktyg → Tool Station → stenverktyg; eld (Fire Drill,
   Campfire) → Clay Kiln → Brick, Charcoal, Clay Bucket, Mold Bench → Crucible; flotte, paddel och kanot; pigment och grottmålning; upptrampad stig (Beaten Path).
-- **Wilderness & Hunting**: kniv → styckning → plocka en gås, bygga ett fågelbo; hudar, Drying Rack, Leather, Armor Station och rustning; Travois, Hanging
+- **Wilderness & Hunting**: kniv → styckning → plocka en gås, bygga ett fågelbo; hudar, Drying Rack, Leather, Leatherworking Bench och rustning; Travois, Hanging
   Rack, snaror, fiske, spjut, bågar och pilar, Tallow, Tusk Dagger, björn, varg, Phantom och Glider Cloak, Ancient Oak,
   stambyar och de odöda (Brute, spjutskelett).
 - **Food & Farming**: bär och svamp → lagad mat och fågelkött, rökt och torkad mat, förskämning, ägg ur ett fågelbo; vild säd → skära, sådd, skörd, tröskning,
@@ -1988,10 +1987,10 @@ Ull är inte den enda tråden längre. Kod: `Spinning.java`, data: `scripts/gen_
   - **Flax Fiber + Drop Spindle → Linen Thread** (bronsåldern)
   - **valfri Wool (block) + Drop Spindle → 3 Wool Thread** (för hand ger ett ullblock 1–3 när det bryts; Qiviut → 2 Wool
     Thread för hand som förut)
-- **Sinew + kniv** (crafting) → **2 Sinew Thread** (kniven slits 1). Pälsdelarna vid Armor Station syr fortfarande med hel
+- **Sinew + kniv** (crafting) → **2 Sinew Thread** (kniven slits 1). Pälsdelarna vid Leatherworking Bench syr fortfarande med hel
   Sinew; Sinew Thread är för läder.
 - **Taggen `mechanical:threads`:** Wool Thread, Nettle Thread, Linen Thread, Sinew Thread, String. Läderrustningen och
-  Leather Satchel vid Armor Station tar vilken som helst. `9 Wool Thread → White Wool` tar fortfarande bara ull.
+  Leather Satchel vid Leatherworking Bench tar vilken som helst. `9 Wool Thread → White Wool` tar fortfarande bara ull.
 - **Advancements (Stone Age-fliken):** Stinging Nettle (efter Grass Roots) → Drop Spindle → Spun Yarn (Nettle Thread);
   Sinew Thread (efter Sharp Edge).
 
@@ -2016,7 +2015,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 
 ### Vanilla-djur som vilt
 Vilda vanilla-djur som fortfarande spawnar lämnar kadaver som moddens egna djur (styckas med kniv, hängs på Hanging
-Rack). Hud och kött som för moddens djur; flådda kadaver får köttexturer, och benen hänger slappt (alla vanilla-modeller).
+Rack). Kadaver flyter i vatten och driver med strömmen. Hud och kött som för moddens djur; flådda kadaver får köttexturer, och benen hänger slappt (alla vanilla-modeller).
 
 | Djur | Omgång 1 | Omgång 2 |
 |---|---|---|
@@ -2026,6 +2025,7 @@ Rack). Hud och kött som för moddens djur; flådda kadaver får köttexturer, o
 | Armadillo | 1–2 Armadillo Scute | 1 Game Meat Scraps |
 | Frog | – | 1 Game Meat Scraps |
 | Turtle | 1–2 Turtle Scute | 2–3 Game Meat Scraps, Bone 40 % |
+| Squid / Glow Squid | 1–3 Ink Sac / Glow Ink Sac | 1–2 Game Meat Scraps |
 | Polar Bear (tjock hud: Tusk Dagger) | Raw Bear Pelt, Raw Hide 40 % | 4–6 Game Meat Scraps, 2–3 Bear Fat, Bear Claw 60 %, Sinew 60 % |
 | Panda (tjock hud: Tusk Dagger) | Raw Bear Pelt | 3–5 Game Meat Scraps, Bear Fat 70 %, Sinew 50 % |
 | Wolf (vanilla, otämjd) | Raw Wolf Pelt | 1–2 Game Meat Scraps, Sinew 50 %, Bone 60 % |
@@ -2035,7 +2035,7 @@ Rack). Hud och kött som för moddens djur; flådda kadaver får köttexturer, o
 | Hoglin | Raw Hide 50 % | 3–5 Porkchop Scraps, Tusk 50 %, Lard 50 % |
 
 **Inga kadaver** (vanilla-beteende): Cat, Axolotl, Bee, Strider, Sniffer, Happy Ghast, Camel Husk, Nautilus, Zombie
-Nautilus. Squid, Dolphin och fisk är inte vilt (fisk fås med spö).
+Nautilus. Dolphin och fisk är inte vilt (fisk fås med spö).
 
 **Bat Wing** mals med **Soot** och **Lard** till **Night-Eye Salve** (2 st): stryk under ögonen så ser du i mörker
 (Night Vision, 90 s).
@@ -2112,7 +2112,7 @@ Recept (crafting): `_A_ / TRT / P_P`. A = Sandstone, T = Twine, R = Tool Rod, P 
 | 4 | Corundum Grit | Rough/Flawed Ruby eller Sapphire krossad → 2 | Ruby, Sapphire |
 | 5 | Diamond Dust | Rough/Flawed Diamond krossad → 2 | Diamond |
 
-Drops: malm → 1 Rough (Fortune), blocket självt med Silk Touch. Small Crystal → 1, Medium → 1–2, Large → 2–4 (Fortune). Kristallerna lyser svagt (Moonstone ljus 3/5/7). Lösa stenar ger 1–3 efter storlek. Gamla chunkar får stenarna via retrogen.
+Drops: malm → 1 Rough (Fortune), blocket självt med Silk Touch. Small Crystal → 1, Medium → 1–2, Large → 2–4 (Fortune). Kristallerna lyser svagt (Moonstone ljus 3/5/7). Lösa stenar ger 1–3 efter storlek. Gamla chunkar får stenarna via retrogen. Retrogen hoppar dock över land som spelare vistats på; där lägger en op till dem med **`/regengems <radie 0–16> [ores]`** (chunkar runt dig; `ores` = bara malmådrorna, inte kristaller och stenar i grottor). Varje chunk får dem bara en gång.
 
 ## Borttaget och ersatt (vanilla)
 
@@ -2201,7 +2201,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 ## Teknik (för utveckling)
 
 - Bär och svamp: `Foraging.java` (registrering), `WildBerryBushBlock.java`, `WildMushroomBlock.java`, björnens `wildlife/ForageBerriesGoal.java`; worldgen i `gen_data.py`.
-- Stationer med receptlista (Fletching Table, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug och Wolf Rug: `BearRugBlock.java`. Wolf Pelt-saker: `client/WolfHoodModel.java` (huvans modell), `StrawBedRest.java` (fäll), data `scripts/gen_wolf_pelt.py` (körs efter gen_biomes.py, före gen_block_items.py), texturer `scripts/gen_wolf_pelt_textures.py`.
+- Stationer med receptlista (Fletching Table, Leatherworking Bench, Armor Station): `StationRecipe.java`, `RecipeStationMenu.java`, `client/RecipeStationScreen.java`; recept i `FletchingRecipes.java`, `LeatherworkingRecipes.java`, `ArmorStationRecipes.java`. Pilar: `SpecialArrowItem.java`. Benkrok: `BoneHookRodItem.java`. Bear Rug och Wolf Rug: `BearRugBlock.java`. Wolf Pelt-saker: `client/WolfHoodModel.java` (huvans modell), `StrawBedRest.java` (fäll), data `scripts/gen_wolf_pelt.py` (körs efter gen_biomes.py, före gen_block_items.py), texturer `scripts/gen_wolf_pelt_textures.py`.
 - Advancements: `scripts/gen_advancements.py` (alla flikar och texter; vanillas flikar döljs). Ordning: ... gen_block_items → gen_unlocks → gen_advancements → gen_registry. Tämjd häst ger `minecraft:tame_animal` (`WildHorse.tame`).
 - Register: `docs/registry.html` genereras av `scripts/gen_registry.py` (+ `docs/registry_notes.json`), följer med varje release och laddas ned av `update-mechanical.cmd`.
 - Verktygstips: `client/StatTooltips.java`.

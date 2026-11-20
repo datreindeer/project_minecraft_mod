@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import net.minecraft.tags.FluidTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -267,8 +268,10 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
             setHauler(null); // dead, gone or left behind: it drops where it is
         }
         if (isPassenger()) return; // on a travois, which places it
-        // fall and settle like a dropped item
-        if (!onGround()) setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
+        // fall and settle like a dropped item; in water it rises and floats half under, drifting with the current
+        Vec3 v = getDeltaMovement();
+        if (getFluidHeight(FluidTags.WATER) > getBbHeight() * 0.5) setDeltaMovement(v.x, Math.min(v.y + 0.01, 0.06), v.z);
+        else if (!onGround()) setDeltaMovement(v.add(0, -0.04, 0));
         move(MoverType.SELF, getDeltaMovement());
         setDeltaMovement(getDeltaMovement().multiply(0.5, 0.98, 0.5));
         if (++groundTicks > LIFETIME) discard();
@@ -339,6 +342,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         if (work < workNeeded()) return;
         work = 0;
         player.getUseItem().hurtAndBreak(1, player, player.getUsedItemHand());
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) Butchery.awardButchered(sp, animal);
         if (stage() == 0 && !Butchery.yieldFor(animal).outer().isEmpty()) {
             // first pass: wool sheared / hide skinned / feathers plucked; keep holding to go on with the meat
             Butchery.dropOuter(level, this, animal, knife.hideMultiplier(), hungAt() != null);

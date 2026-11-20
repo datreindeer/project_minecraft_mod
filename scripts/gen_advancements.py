@@ -246,13 +246,13 @@ TABS = {
          "Take the dry Leather off the Drying Rack after about 3 minutes", has("minecraft:leather")),
         ("bone_needle", "root", "bone_needle", T, "Needlework",
          "Carve Fish Bones, a Bone or a Horn into a Bone Needle with a knife", has("bone_needle")),
-        ("armor_station", "leather", "armor_station", T, "Armor Station",
-         "Craft an Armor Station from Leather, a Bone Needle, Planks and a Crafting Table", has("armor_station")),
-        ("leather_armor", "armor_station", "minecraft:leather_chestplate", T, "Hide Clothes",
-         "Sew Leather and thread (wool, nettle, linen or sinew) into Leather armor at the Armor Station",
+        ("leatherworking_bench", "leather", "leatherworking_bench", T, "Leatherworker",
+         "Craft a Leatherworking Bench from Leather, a Bone Needle, Planks and a Crafting Table", has("leatherworking_bench")),
+        ("leather_armor", "leatherworking_bench", "minecraft:leather_chestplate", T, "Hide Clothes",
+         "Sew Leather and thread (wool, nettle, linen or sinew) into Leather armor at the Leatherworking Bench",
          has("minecraft:leather_helmet", "minecraft:leather_chestplate", "minecraft:leather_leggings",
              "minecraft:leather_boots")),
-        ("leather_satchel", "armor_station", "leather_satchel", T, "Satchel",
+        ("leather_satchel", "leatherworking_bench", "leather_satchel", T, "Satchel",
          "Sew 4 Leather into a Leather Satchel: 9 slots that go with you", has("leather_satchel")),
         ("worn_satchel", "leather_satchel", "leather_satchel", T, "Shoulder Bag",
          "Put the Leather Satchel in the Back slot next to your player in the inventory, then press B to open it anywhere",
@@ -293,7 +293,7 @@ TABS = {
         ("fire_arrow", "arrows", "fire_arrow", T, "Fire Arrow", "Fletching Table: Tallow + Arrow + Twine",
          has("fire_arrow")),
         ("quiver", "arrows", "quiver", T, "Quiver",
-         "Make a Quiver at the Tool Station (Leather, Twine, Tool Rod) and wear it in the Hip slot: bows shoot from it, picked-up arrows go in",
+         "Sew a Quiver at the Leatherworking Bench (2 Leather, thread) and wear it in the Hip slot: bows shoot from it, picked-up arrows go in",
          by_code()),
         ("tusk_dagger", "leather", "tusk_dagger", T, "Hunter's Knife",
          "Butcher a Wild Boar for a Tusk. Tool Station: Tusk + Cordage + Leather makes a Tusk Dagger",
@@ -656,8 +656,11 @@ TABS = {
         ("bronze_arrows", "bronze", "bronze_arrow", T, "Bronze Tips",
          "Shape a Clay Arrowheads Mold (3 Clay Balls), cast bronze in it, grind the sprue into 4 Bronze Arrowheads and fletch Bronze Arrows: 3 damage, seldom break",
          has("bronze_arrow")),
-        ("bronze_armor", "bronze", "bronze_helmet", G, "Bronze Plate",
-         "Cast plates, sharpen them and sew a Bronze Helmet or Greaves at the Armor Station",
+        ("armor_station", "bronze", "armor_station", T, "Armor Station",
+         "Cast and sharpen a Bronze Plate, then build an Armor Station from 2 Bronze Plates, a Bronze Ingot, Planks and a Crafting Table",
+         has("armor_station")),
+        ("bronze_armor", "armor_station", "bronze_helmet", G, "Bronze Plate",
+         "Rivet Bronze Plates onto Leather with a pickaxe or hammer at the Armor Station: a Bronze Helmet or Greaves",
          has("bronze_helmet", "bronze_greaves")),
         ("furnace_bricks", "bronze", "furnace_bricks", T, "Firebrick",
          "Shape Clay Balls and Sand into Unfired Furnace Bricks, fire them in the kiln (600°) and put 4 together",
@@ -1043,6 +1046,8 @@ def hunting_rows():
             names = ", ".join(name_of(i, "item") for i in items)
             crit = AllOf({f"has_{n}": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": i}]}}
                           for n, i in enumerate(items)})
+            # products are shared between animals: Butchery.awardButchered grants this one when this very animal is cut up
+            crit["butchered"] = {"trigger": "minecraft:impossible"}
             rows.append((path, g, icon, C if path in CHALLENGE else T, animal, f"Butcher a {animal}: {names}", crit))
     return rows
 

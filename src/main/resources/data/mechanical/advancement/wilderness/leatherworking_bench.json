@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:armor_station"
+            "items": "mechanical:leatherworking_bench"
           }
         ]
       }
@@ -19,13 +19,13 @@
   ],
   "display": {
     "icon": {
-      "id": "mechanical:armor_station"
+      "id": "mechanical:leatherworking_bench"
     },
     "title": {
-      "translate": "advancements.mechanical.wilderness.armor_station.title"
+      "translate": "advancements.mechanical.wilderness.leatherworking_bench.title"
     },
     "description": {
-      "translate": "advancements.mechanical.wilderness.armor_station.description"
+      "translate": "advancements.mechanical.wilderness.leatherworking_bench.description"
     },
     "frame": "task",
     "show_toast": true,

@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:bronze_age/bronze",
+  "parent": "mechanical:bronze_age/armor_station",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",

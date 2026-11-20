@@ -5,7 +5,7 @@ docs/ages/01-stone-age.md "Utrustning").
   back (Leather Satchel), hip (Quiver), neck / ring / charm (empty for now: later ages add theirs)
 - the cloaks stay in #minecraft:chest_armor: that tag is what makes them enchantable like a chest piece (Protection,
   Thorns, Unbreaking, Mending), and Equipment applies those enchantments from the Cloak slot
-- Quiver: item model + definition, lang. Made in the Tool Station (ToolStationRecipes, Java)
+- Quiver: item model + definition, lang. Sewn at the Leatherworking Bench (LeatherworkingRecipes, Java)
 - lang: the B key, slot names for the "Worn in the ... slot" tooltip, the message when nothing is worn to open
 Textures: scripts/gen_equipment_textures.py. Advancements (worn_satchel, quiver, worn_cloak): scripts/gen_advancements.py.
 Generator order: ... gen_pots.py, gen_equipment.py, gen_block_items.py, gen_unlocks.py, gen_advancements.py, gen_registry.py.

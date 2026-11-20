@@ -290,7 +290,7 @@ shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "#
 w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
-# leather satchel: 3x3 for anything but other containers, sewn in the Armor Station (ArmorStationRecipes)
+# leather satchel: 3x3 for anything but other containers, sewn at the Leatherworking Bench (LeatherworkingRecipes)
 w(A / "models/item/leather_satchel.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/leather_satchel"}})
 w(A / "items/leather_satchel.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/leather_satchel"}})
 lang["item.mechanical.leather_satchel"] = "Leather Satchel"
@@ -575,7 +575,7 @@ for tag, piece in [("head_armor", "fur_hood"), ("chest_armor", "fur_coat"), ("le
 w(D / "mechanical/tags/item/repairs_fur_armor.json", {"values": ["mechanical:bear_pelt"]})
 # fur armour: the leather piece lined with bear pelt
 w(A / "equipment/fur.json", {"layers": {"humanoid": [{"texture": "mechanical:fur"}], "humanoid_leggings": [{"texture": "mechanical:fur"}]}})
-# (fur and leather armour are sewn at the Armor Station: ArmorStationRecipes.java)
+# (fur and leather armour are sewn at the Leatherworking Bench: LeatherworkingRecipes.java)
 # bear rug: flat, facing
 w(A / "models/block/bear_rug.json", {"textures": {"particle": "mechanical:block/bear_rug", "top": "mechanical:block/bear_rug"}, "elements": [{
     "from": [0, 0, 0], "to": [16, 1, 16], "faces": {
@@ -603,20 +603,24 @@ shapeless("peeled_egg", ["mechanical:boiled_egg"], "mechanical:peeled_egg")
 for item, name in [("boiled_egg", "Boiled Egg"), ("peeled_egg", "Peeled Egg"), ("eggshell", "Eggshell")]:
     flat_item(item)
     lang[f"item.mechanical.{item}"] = name
-# ---- armor station + bone needle ----
-w(A / "blockstates/armor_station.json", {"variants": {"": {"model": "mechanical:block/armor_station"}}})
-w(A / "models/block/armor_station.json", {"parent": "minecraft:block/cube", "textures": {
-    "particle": "mechanical:block/armor_station_front", "up": "mechanical:block/armor_station_top", "down": "minecraft:block/oak_planks",
-    "north": "mechanical:block/armor_station_front", "south": "mechanical:block/armor_station_front",
-    "east": "mechanical:block/armor_station_side", "west": "mechanical:block/armor_station_side"}})
-w(A / "items/armor_station.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/armor_station"}})
-w(D / "mechanical/loot_table/blocks/armor_station.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
-    "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": "mechanical:armor_station"}]}],
-    "random_sequence": "mechanical:blocks/armor_station"})
-lang["block.mechanical.armor_station"] = "Armor Station"
-lang["container.mechanical.armor_station"] = "Armor Station"
-w(D / "mechanical/recipe/armor_station.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["LNL", "PCP"],
+# ---- armor station (smithed armour), leatherworking bench (sewn pieces) + bone needle ----
+for station, name in [("armor_station", "Armor Station"), ("leatherworking_bench", "Leatherworking Bench")]:
+    w(A / f"blockstates/{station}.json", {"variants": {"": {"model": f"mechanical:block/{station}"}}})
+    w(A / f"models/block/{station}.json", {"parent": "minecraft:block/cube", "textures": {
+        "particle": f"mechanical:block/{station}_front", "up": f"mechanical:block/{station}_top", "down": "minecraft:block/oak_planks",
+        "north": f"mechanical:block/{station}_front", "south": f"mechanical:block/{station}_front",
+        "east": f"mechanical:block/{station}_side", "west": f"mechanical:block/{station}_side"}})
+    w(A / f"items/{station}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:block/{station}"}})
+    w(D / f"mechanical/loot_table/blocks/{station}.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
+        "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": f"mechanical:{station}"}]}],
+        "random_sequence": f"mechanical:blocks/{station}"})
+    lang[f"block.mechanical.{station}"] = name
+    lang[f"container.mechanical.{station}"] = name
+w(D / "mechanical/recipe/leatherworking_bench.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["LNL", "PCP"],
     "key": {"L": "minecraft:leather", "N": "mechanical:bone_needle", "P": "#minecraft:planks", "C": "minecraft:crafting_table"},
+    "result": {"id": "mechanical:leatherworking_bench"}})
+w(D / "mechanical/recipe/armor_station.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["BIB", "PCP"],
+    "key": {"B": "mechanical:bronze_plate", "I": "mechanical:bronze_ingot", "P": "#minecraft:planks", "C": "minecraft:crafting_table"},
     "result": {"id": "mechanical:armor_station"}})
 flat_item("bone_needle")
 lang["item.mechanical.bone_needle"] = "Bone Needle"
@@ -652,7 +656,8 @@ UNLOCKS = {
     "fish_bones": ("mechanical:fish_bones", ["bone_meal_from_fish_bones", "bone_needle_from_fish_bones", "bone_fish_hook"]),
     "bark": ("#mechanical:barks", ["plant_fibre_from_bark", "bark_basket"]),
     "bear_pelt": ("mechanical:bear_pelt", ["bear_rug"]),
-    "leather": ("minecraft:leather", ["armor_station"]),
+    "leather": ("minecraft:leather", ["leatherworking_bench"]),
+    "bronze_plate": ("mechanical:bronze_plate", ["armor_station"]),
     "bone": ("minecraft:bone", ["bone_needle_from_bone"]),
     "horn": ("mechanical:horn", ["bone_needle_from_horn"]),
     "tallow": ("mechanical:tallow", ["candle_from_tallow"]),
@@ -1215,7 +1220,7 @@ w(D / "minecraft/loot_table/blocks/white_wool.json", {"type": "minecraft:block",
     {"type": "minecraft:item", "name": "mechanical:wool_thread",
      "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]}]}],
     "random_sequence": "minecraft:blocks/white_wool"})
-lang["message.mechanical.straw_bed_rest"] = "You rest a while in the straw. The night goes on."
+lang["message.mechanical.straw_bed_rest"] = "You rest a while in the straw."
 w(lang_path, lang)
 
 # ---- structure loot everywhere else (mineshafts, portals, shipwrecks, temples, dungeons ...): no metal, gems or enchanting ----

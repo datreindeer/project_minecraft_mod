@@ -1,5 +1,7 @@
 package com.mechanical.mixin;
 
+import com.mechanical.StrawBedRest;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,5 +35,16 @@ public abstract class PlayerMixin {
     @Inject(method = "hurtArmor", at = @At("TAIL"))
     private void mechanical$hurtCloak(DamageSource source, float damage, CallbackInfo ci) {
         Equipment.hurtCloak((Player) (Object) this, source, damage);
+    }
+
+    /** Straw: no vanilla night skip (StrawBedRest fast-forwards instead), and no fade to black, so you see the sky turn. */
+    @Inject(method = "isSleepingLongEnough", at = @At("HEAD"), cancellable = true)
+    private void mechanical$strawNoSkip(CallbackInfoReturnable<Boolean> cir) {
+        if (StrawBedRest.inStrawBed((Player) (Object) this)) cir.setReturnValue(false);
+    }
+
+    @Inject(method = "getSleepTimer", at = @At("HEAD"), cancellable = true)
+    private void mechanical$strawNoFade(CallbackInfoReturnable<Integer> cir) {
+        if (StrawBedRest.inStrawBed((Player) (Object) this)) cir.setReturnValue(0);
     }
 }

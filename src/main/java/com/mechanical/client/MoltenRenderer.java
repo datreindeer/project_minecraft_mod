@@ -60,6 +60,19 @@ public final class MoltenRenderer {
         }
     }
 
+    /** A vertical quad from (x0, z0) to (x1, z1), from y0 up to y1, seen from both sides: the metal's edge down to the trough floor. */
+    private static void side(PoseStack.Pose pose, VertexConsumer buf, int colour, float x0, float z0, float x1, float z1, float y0, float y1, float t) {
+        float[][] c = {{x0, y0, z0}, {x0, y1, z0}, {x1, y1, z1}, {x1, y0, z1}};
+        float len = Math.abs(x1 - x0) + Math.abs(z1 - z0);
+        for (int s = 0; s < 2; s++) {
+            for (int i = 0; i < 4; i++) {
+                float[] q = c[s == 0 ? i : 3 - i];
+                boolean start = q[0] == x0 && q[2] == z0;
+                vertex(pose, buf, colour, q[0], q[1], q[2], start ? 0.25F : 0.25F + len, (q[1] == y1 ? 0 : y1 - y0) - t);
+            }
+        }
+    }
+
     private static void vertex(PoseStack.Pose pose, VertexConsumer buf, int colour, float x, float y, float z, float u, float v) {
         buf.addVertex(pose, x, y, z).setColor(colour).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT)
                 .setNormal(pose, 0, 1, 0);
@@ -120,6 +133,29 @@ public final class MoltenRenderer {
                 float y = (ClayChannelBlock.FLOOR + 0.3F + (ClayChannelBlock.WALL - 0.8F - ClayChannelBlock.FLOOR) * fill) / 16;
                 flat(p, buf, colour, LO, LO, HI, HI, y, 0.25F, 0.75F, LO - t, HI - t, true);
                 float y2 = y + 0.001F; // a hair above the middle: no flicker where they meet
+                float floor = ClayChannelBlock.FLOOR / 16F;
+                // the metal's edges down to the floor, so it reads as a pool and not a floating sheet
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    boolean open = (sides & 1 << d.get2DDataValue()) != 0;
+                    switch (d) {
+                        case NORTH -> {
+                            if (open) { side(p, buf, colour, LO, 0, LO, LO, floor, y2, t); side(p, buf, colour, HI, 0, HI, LO, floor, y2, t); side(p, buf, colour, LO, 0, HI, 0, floor, y2, t); }
+                            else side(p, buf, colour, LO, LO, HI, LO, floor, y, t);
+                        }
+                        case SOUTH -> {
+                            if (open) { side(p, buf, colour, LO, HI, LO, 1, floor, y2, t); side(p, buf, colour, HI, HI, HI, 1, floor, y2, t); side(p, buf, colour, LO, 1, HI, 1, floor, y2, t); }
+                            else side(p, buf, colour, LO, HI, HI, HI, floor, y, t);
+                        }
+                        case WEST -> {
+                            if (open) { side(p, buf, colour, 0, LO, LO, LO, floor, y2, t); side(p, buf, colour, 0, HI, LO, HI, floor, y2, t); side(p, buf, colour, 0, LO, 0, HI, floor, y2, t); }
+                            else side(p, buf, colour, LO, LO, LO, HI, floor, y, t);
+                        }
+                        default -> {
+                            if (open) { side(p, buf, colour, HI, LO, 1, LO, floor, y2, t); side(p, buf, colour, HI, HI, 1, HI, floor, y2, t); side(p, buf, colour, 1, LO, 1, HI, floor, y2, t); }
+                            else side(p, buf, colour, HI, LO, HI, HI, floor, y, t);
+                        }
+                    }
+                }
                 for (Direction d : Direction.Plane.HORIZONTAL) {
                     if ((sides & 1 << d.get2DDataValue()) == 0) continue;
                     switch (d) {

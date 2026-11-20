@@ -206,13 +206,18 @@ public class Mechanical {
     public static final DeferredItem<KnifeItem> TUSK_DAGGER = ITEMS.registerItem("tusk_dagger", p -> new KnifeItem(p, 1.3F, 1.1F, KnifeItem.TUSK, 1.6F),
             p -> p.sword(TUSK, 1.5F, -1.8F));
     public static final DeferredItem<Item> BONE_FISH_HOOK = ITEMS.registerSimpleItem("bone_fish_hook");
-    /** Sews armour at the Armor Station (loses 1 durability per piece). */
+    /** Sews at the Leatherworking Bench (loses 1 durability per piece). */
     public static final DeferredItem<Item> BONE_NEEDLE = ITEMS.registerSimpleItem("bone_needle", p -> p.durability(32));
     public static final DeferredBlock<ArmorStationBlock> ARMOR_STATION = BLOCKS.registerBlock("armor_station", ArmorStationBlock::new, p -> p
             .mapColor(MapColor.WOOD).strength(2.5F).sound(SoundType.WOOD));
     public static final DeferredItem<BlockItem> ARMOR_STATION_ITEM = ITEMS.registerSimpleBlockItem("armor_station", ARMOR_STATION);
     public static final Supplier<MenuType<ArmorStationMenu>> ARMOR_STATION_MENU = MENUS.register("armor_station",
             () -> new MenuType<>(ArmorStationMenu::new, FeatureFlags.VANILLA_SET));
+    public static final DeferredBlock<LeatherworkingBenchBlock> LEATHERWORKING_BENCH = BLOCKS.registerBlock("leatherworking_bench", LeatherworkingBenchBlock::new, p -> p
+            .mapColor(MapColor.WOOD).strength(2.5F).sound(SoundType.WOOD));
+    public static final DeferredItem<BlockItem> LEATHERWORKING_BENCH_ITEM = ITEMS.registerSimpleBlockItem("leatherworking_bench", LEATHERWORKING_BENCH);
+    public static final Supplier<MenuType<LeatherworkingMenu>> LEATHERWORKING_MENU = MENUS.register("leatherworking_bench",
+            () -> new MenuType<>(LeatherworkingMenu::new, FeatureFlags.VANILLA_SET));
     public static final DeferredItem<BoneHookRodItem> BONE_HOOK_FISHING_ROD = ITEMS.registerItem("bone_hook_fishing_rod", BoneHookRodItem::new,
             p -> p.durability(48).enchantable(1));
     public static final DeferredItem<Item> TALLOW = ITEMS.registerSimpleItem("tallow");

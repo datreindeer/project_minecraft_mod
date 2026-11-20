@@ -84,6 +84,13 @@ public final class VanillaGame {
         // the turtle's shell plates come off first; no big cuts under a shell
         Butchery.register(() -> EntityTypes.TURTLE, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 2, 3, List.of(x(() -> Items.TURTLE_SCUTE, 1.0F, 1, 2)), List.of(x(() -> Items.BONE, 0.4F, 1, 1))));
         Butchery.wholeMeat(() -> EntityTypes.TURTLE);
+        // squid: not Animals either; the ink sacs come off first, then the meat in one piece
+        Butchery.alwaysCarcass(() -> EntityTypes.SQUID);
+        Butchery.wholeMeat(() -> EntityTypes.SQUID);
+        Butchery.register(() -> EntityTypes.SQUID, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 2, List.of(x(() -> Items.INK_SAC, 1.0F, 1, 3)), List.of()));
+        Butchery.alwaysCarcass(() -> EntityTypes.GLOW_SQUID);
+        Butchery.wholeMeat(() -> EntityTypes.GLOW_SQUID);
+        Butchery.register(() -> EntityTypes.GLOW_SQUID, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 2, List.of(x(() -> Items.GLOW_INK_SAC, 1.0F, 1, 3)), List.of()));
         // bears and wolves: like the brown bear and the grey wolf
         Butchery.register(() -> EntityTypes.POLAR_BEAR, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 4, 6, List.of(x(Wildlife.RAW_BEAR_PELT, 1.0F, 1, 1), hide(0.4F)),
                 List.of(x(Wildlife.BEAR_FAT, 0.9F, 2, 3), x(Wildlife.BEAR_CLAW, 0.6F, 1, 3), x(Wildlife.SINEW, 0.6F, 1, 2))));

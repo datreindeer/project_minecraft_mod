@@ -157,8 +157,8 @@ for f in sorted(D.glob("*/loot_table/**/*.json")):
         widened += 1
 assert M + "bronze_water_bucket" in (D / "mechanical/recipe/dough.json").read_text(encoding="utf-8")  # re-runs widen nothing
 
-# the Armor Station itself is sewn with any needle
-p = D / "mechanical/recipe/armor_station.json"
+# the Leatherworking Bench itself is sewn with any needle
+p = D / "mechanical/recipe/leatherworking_bench.json"
 r = json.loads(p.read_text(encoding="utf-8"))
 r["key"]["N"] = "#mechanical:needles"
 w(p, r)

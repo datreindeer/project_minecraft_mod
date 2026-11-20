@@ -6,6 +6,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.StrawBedBlock;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.entity.player.CanContinueSleepingEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -55,7 +64,64 @@ public final class StrawBedRest {
         player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
         player.sendOverlayMessage(Component.translatable(furred ? "message.mechanical.furred_straw_bed_rest" : "message.mechanical.straw_bed_rest")
                 .withStyle(ChatFormatting.GRAY));
+        if (level.isDarkOutside() && level.dimensionType().defaultClock().isPresent()) lieDown(player, pos, state);
     }
+
+    /** At night you lie down in it; once every player is lying in a bed the night runs fast (see onLevelTick). */
+    private static void lieDown(ServerPlayer player, BlockPos pos, BlockState state) {
+        ServerLevel level = player.level();
+        if (state.getValue(AbstractBedBlock.OCCUPIED) || player.isSleeping()) return;
+        Vec3 c = Vec3.atBottomCenterOf(pos);
+        if (!level.getEntitiesOfClass(Monster.class, new AABB(c.x - 8, c.y - 5, c.z - 8, c.x + 8, c.y + 5, c.z + 8),
+                m -> m.isPreventingPlayerRest(level, player)).isEmpty()) {
+            player.sendOverlayMessage(Component.translatable("block.minecraft.bed.not_safe"));
+            return;
+        }
+        player.startSleeping(state.getValue(AbstractBedBlock.PART) == BedPart.HEAD ? pos : pos.relative(AbstractBedBlock.getConnectedDirection(state)));
+        level.updateSleepingPlayerList();
+    }
+
+    public static boolean inStrawBed(Player player) {
+        return player.isSleeping() && player.getSleepingPos().map(p -> player.level().getBlockState(p).getBlock() instanceof StrawBedBlock).orElse(false);
+    }
+
+    /** Vanilla wakes you at once from a bed you can't sleep in; a straw bed keeps you lying until it gets light. */
+    @SubscribeEvent
+    static void onContinueSleeping(CanContinueSleepingEvent event) {
+        if (event.getEntity() instanceof Player player && inStrawBed(player)) event.setContinueSleeping(player.level().isDarkOutside());
+    }
+
+    /**
+     * When all players in a level are lying down and at least one is in straw, the clock runs SPEED times faster till
+     * morning (vanilla doesn't skip: PlayerMixin keeps straw sleepers from "sleeping long enough"). The rate goes over the
+     * network, so clients see the sun come up fast instead of a jump.
+     */
+    @SubscribeEvent
+    static void onLevelTick(LevelTickEvent.Post event) {
+        if (!(event.getLevel() instanceof ServerLevel level) || level.players().isEmpty()) return;
+        var clock = level.dimensionType().defaultClock();
+        if (clock.isEmpty()) return;
+        boolean straw = false, all = true;
+        for (ServerPlayer p : level.players()) {
+            if (p.isSpectator()) continue;
+            if (!p.isSleeping()) all = false;
+            else if (inStrawBed(p)) straw = true;
+        }
+        boolean fast = all && straw && level.isDarkOutside();
+        var clocks = level.getServer().clockManager();
+        float rate = clocks.getInstance(clock.get()).rate();
+        // shortcut: assumes nothing else sets the rate to exactly SPEED, so a rate left over from a server stop mid-night resets to 1
+        if (fast && rate != SPEED) {
+            restoreRate = rate;
+            clocks.setRate(clock.get(), SPEED);
+        } else if (!fast && rate == SPEED) {
+            clocks.setRate(clock.get(), restoreRate);
+            restoreRate = 1.0F;
+        }
+    }
+
+    static final float SPEED = 40.0F; // a night (~11000 ticks) in about 14 s
+    private static float restoreRate = 1.0F;
 
     /** Swaps both halves for the furred bed, keeping facing and part (no shape updates, so neither half breaks the other). */
     static void spreadPelt(Level level, BlockPos pos, BlockState state) {

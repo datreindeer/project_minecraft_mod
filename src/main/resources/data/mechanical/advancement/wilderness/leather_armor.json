@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:wilderness/armor_station",
+  "parent": "mechanical:wilderness/leatherworking_bench",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",
