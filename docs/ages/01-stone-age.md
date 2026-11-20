@@ -1319,8 +1319,8 @@ terrängen och är 1–3 block bred med trasiga, gräsiga kanter: **Trodden Path
 och Packed Mud, och **Worn Grass** längs kanterna (se *Upptrampade stigar* nedan; stigarnas block växer aldrig igen). Den går
 runt trädstammar och lämnar hus, åkrar, sand och berg i fred, och slutar några block från platsens mitt. Vid en Tribe Village slutar den i stället precis utanför porten, där byns egen
 väg in till elden börjar.
-- **Vatten:** över djupt vatten (3+ block) en **spång** av plankslabs, med stockstolpar ner till botten och ett
-  staketräcke var fjärde block (ek eller gran). I grunt vatten (1–2 block) **trampstenar** av kullersten och mossig
+- **Vatten:** över djupt vatten (3+ block) en **spång** av plankslabs, alltid 3 block bred (räknat längs stigens huvudriktning, så en sned bro blir ett helt däck), med
+  stockstolpar ner till botten i par på båda sidor var fjärde block, med staket ovanpå (ek eller gran). I grunt vatten (1–2 block) **trampstenar** av kullersten och mossig
   kullersten, i nivå med ytan.
 - **Rösen:** ungefär var 96:e block står ett litet stenröse (kullersten med en kullerstensmur ovanpå) bredvid stigen.
 

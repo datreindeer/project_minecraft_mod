@@ -61,6 +61,8 @@ final class Trails extends StoneAgeFeature {
     static final TagKey<Structure> CONNECTED = TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "trail_connected"));
     /** Longest link, largest sideways wobble of a curve, trail-free radius around each endpoint, cairn spacing. */
     static final int MAX_LEN = 640, MAX_AMP = 24, END_R = 8, CAIRN_EVERY = 96;
+    /** Half width of a footbridge deck across the trail's main axis: 3 blocks. */
+    static final double BRIDGE_HALF = 1.5;
     private static final int SEARCH = 2 * MAX_LEN + MAX_AMP + 32;
 
     record Node(long id, int x, int z) {}
@@ -211,7 +213,7 @@ final class Trails extends StoneAgeFeature {
             for (int k = 0; k < 256; k++) {
                 if (best[k] == Float.MAX_VALUE) continue;
                 double t = at[k], s = t * r.len, w = r.width(t), d = Math.sqrt(best[k]);
-                if (d <= w && s > END_R && r.len - s > END_R) column(level, x0 + k / 16, z0 + k % 16, d, w, s, r, soil);
+                if (d <= Math.max(w, BRIDGE_HALF + 0.1) && s > END_R && r.len - s > END_R) column(level, x0 + k / 16, z0 + k % 16, d, w, s, r, soil);
             }
             // worldgen runs no updateShape: join up the paths here, and their neighbours in chunks drawn earlier
             for (BlockPos p : soil) {
@@ -236,6 +238,7 @@ final class Trails extends StoneAgeFeature {
             water(level, g, d, w, s, r);
             return;
         }
+        if (d > w) return; // only bridges are wider than the trail
         if (!gs.is(BlockTags.SUBSTRATE_OVERWORLD) || gs.is(Blocks.MUDDY_MANGROVE_ROOTS)) return; // houses, fields, sand and rock stay
         double h = hash(x, z, 1);
         boolean edge = d > 0.8 && d > w - 0.6;
@@ -269,16 +272,20 @@ final class Trails extends StoneAgeFeature {
         BlockPos floor = top.below(depth - 1);
         if (depth <= 2) {
             // stepping stones, flush with the water surface
-            if (d > Math.max(0.7, w - 0.7) || hash(top.getX(), top.getZ(), 3) > 0.65) return;
+            if (d > w || d > Math.max(0.7, w - 0.7) || hash(top.getX(), top.getZ(), 3) > 0.65) return;
             for (BlockPos p = floor; p.getY() <= top.getY(); p = p.above())
                 set(level, p, (p.equals(top) && hash(top.getX(), top.getZ(), 4) < 0.5 ? Blocks.MOSSY_COBBLESTONE : Blocks.COBBLESTONE).defaultBlockState());
             return;
         }
+        // a 3-wide deck measured across the trail's main axis, so a slanting bridge stays one solid deck, not a diagonal
+        // of single slabs; posts stand in pairs on both edges every 4 blocks along that axis
         BlockPos deck = top.above();
         BlockState there = level.getBlockState(deck);
-        if (d > Math.max(1.0, w) || !there.isAir() && !there.canBeReplaced()) return;
+        double across = d * r.axisStretch;
+        if (across > BRIDGE_HALF || !there.isAir() && !there.canBeReplaced()) return;
         boolean grounded = !level.getFluidState(floor.below()).is(FluidTags.WATER);
-        if (grounded && d > Math.max(1.0, w) - 0.9 && (int) s % 4 == 0) {
+        int along = r.alongX ? top.getX() : top.getZ();
+        if (grounded && across > BRIDGE_HALF - 1 && Math.floorMod(along, 4) == 0) {
             BlockState log = r.log().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
             for (BlockPos p = floor; p.getY() <= deck.getY(); p = p.above()) set(level, p, log);
             set(level, deck.above(), r.fence());
@@ -315,7 +322,9 @@ final class Trails extends StoneAgeFeature {
     static final class Route {
         final long seed;
         final double ax, az, dx, dz, len, nx, nz, a1, k1, p1, a2, k2, p2, p3, p4;
-        final boolean spruce;
+        final boolean spruce, alongX;
+        /** Distance to the curve times this = distance across the main (x or z) axis, for the bridge deck. */
+        final double axisStretch;
 
         Route(Node a, Node b) {
             seed = mix(a.id * 31 + b.id);
@@ -335,6 +344,8 @@ final class Trails extends StoneAgeFeature {
             p3 = unit(6) * Math.PI * 2;
             p4 = unit(7) * Math.PI * 2;
             spruce = unit(8) < 0.5;
+            alongX = Math.abs(dx) >= Math.abs(dz);
+            axisStretch = len / Math.max(Math.abs(dx), Math.abs(dz));
         }
 
         private double unit(int salt) {
