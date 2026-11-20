@@ -62,10 +62,16 @@ def billet(c, r):
     faces = {"north": {**end, "cullface": "north"}, "south": {**end, "cullface": "south"},
              "east": {**side, "rotation": 90}, "west": {**side, "rotation": 90},
              "up": dict(side), "down": dict(side)}
+    if r % 2:  # every other row lies crosswise, like a real stack: run along x, end grain east/west
+        faces = {"east": {**end, "cullface": "east"}, "west": {**end, "cullface": "west"},
+                 "north": {**side, "rotation": 90}, "south": {**side, "rotation": 90},
+                 "up": {**side, "rotation": 90}, "down": {**side, "rotation": 90}}
     if y1 == 16:
         faces["up"]["cullface"] = "up"
     if y0 == 0:
         faces["down"]["cullface"] = "down"
+    if r % 2:
+        return {"from": [0, y0, x0], "to": [16, y1, x1], "faces": faces}
     return {"from": [x0, y0, 0], "to": [x1, y1, 16], "faces": faces}
 
 

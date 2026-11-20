@@ -45,9 +45,12 @@ public class FirewoodPileBlock extends Block {
         for (int n = 1; n <= MAX; n++) {
             int rows = n / 2, top = rows * 4;
             VoxelShape full = rows > 0 ? box(0, 0, 0, 16, top, 16) : Shapes.empty();
-            // an odd piece starts the next row: two billets on one side (the model's west half, north once turned)
-            SHAPES_Z[n] = n % 2 == 0 ? full : Shapes.or(full, box(0, top, 0, 8, top + 4, 16));
-            SHAPES_X[n] = n % 2 == 0 ? full : Shapes.or(full, box(0, top, 0, 16, top + 4, 8));
+            // an odd piece starts the next row: two billets on one side (the model's west half, north once turned);
+            // every other row lies crosswise, so its half is the other way round
+            // (turned y:90 the model's north half lands east)
+            boolean cross = rows % 2 == 1;
+            SHAPES_Z[n] = n % 2 == 0 ? full : Shapes.or(full, cross ? box(0, top, 0, 16, top + 4, 8) : box(0, top, 0, 8, top + 4, 16));
+            SHAPES_X[n] = n % 2 == 0 ? full : Shapes.or(full, cross ? box(8, top, 0, 16, top + 4, 16) : box(0, top, 0, 16, top + 4, 8));
         }
     }
 
