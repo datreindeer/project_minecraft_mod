@@ -410,6 +410,8 @@ def default_state(props, given):
             st[k] = "false"
         elif "0" in vals:
             st[k] = "0"
+        elif "none" in vals:
+            st[k] = "none"
         else:
             st[k] = sorted(vals, key=lambda v: (not v.isdigit(), int(v) if v.isdigit() else 0, v))[0]
     return st
