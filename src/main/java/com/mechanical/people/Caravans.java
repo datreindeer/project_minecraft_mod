@@ -239,7 +239,6 @@ public final class Caravans {
             }
             h.discard();
         }
-        // shortcut: a horse that broke its lead stays behind with its cart; track carts per caravan if that turns out common
         t.discard();
     }
 
