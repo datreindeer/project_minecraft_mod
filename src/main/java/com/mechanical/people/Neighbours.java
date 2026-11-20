@@ -98,6 +98,18 @@ public final class Neighbours extends SavedData {
                 BlockState.CODEC.fieldOf("state").forGetter(Placement::state)).apply(i, Placement::new));
     }
 
+    /**
+     * One block of a rebuild as a tribe goes up an age (AgeRebuild): {@code from} is the tribe's block standing there (air for
+     * an empty spot), {@code to} what goes there now (air to tear it down). Done only while the spot still holds {@code from}
+     * or is free, so whatever a player put there stays.
+     */
+    public record Job(BlockPos pos, BlockState from, BlockState to) {
+        static final Codec<Job> CODEC = RecordCodecBuilder.create(i -> i.group(
+                BlockPos.CODEC.fieldOf("pos").forGetter(Job::pos),
+                BlockState.CODEC.fieldOf("from").forGetter(Job::from),
+                BlockState.CODEC.fieldOf("to").forGetter(Job::to)).apply(i, Job::new));
+    }
+
     /** A tribe that settled near a player camp. */
     public static final class Settlement {
         public static final int WOOD = 0, STONE = 1, HIDES = 2;
@@ -117,9 +129,14 @@ public final class Neighbours extends SavedData {
         /** Blocks they built that still stand (breaking one in sight of them is theft). */
         public final List<Long> built;
         public Optional<BlockPos> rack;
+        /** The age (WorldAge) its buildings are in, and what is left of the rebuild into it (AgeRebuild). */
+        public int age;
+        public List<Job> rebuild;
+        /** While a rebuild is planned: the built blocks it may take down, which count as free ground. Not saved. */
+        java.util.Set<Long> clearing;
 
         Settlement(UUID tribe, BlockPos anchor, BlockPos centre, Direction gate, int stage, int step, boolean started, List<Placement> plan,
-                List<Integer> stock, long founded, long nextErrand, List<Long> built, Optional<BlockPos> rack) {
+                List<Integer> stock, long founded, long nextErrand, List<Long> built, Optional<BlockPos> rack, int age, List<Job> rebuild) {
             this.tribe = tribe;
             this.anchor = anchor;
             this.centre = centre;
@@ -134,6 +151,8 @@ public final class Neighbours extends SavedData {
             this.nextErrand = nextErrand;
             this.built = new ArrayList<>(built);
             this.rack = rack;
+            this.age = age;
+            this.rebuild = new ArrayList<>(rebuild);
         }
 
         /** The camp's fire stands (the first block of the first stage is the fire). */
@@ -158,7 +177,9 @@ public final class Neighbours extends SavedData {
                 Codec.LONG.fieldOf("founded").forGetter(s -> s.founded),
                 Codec.LONG.fieldOf("next_errand").forGetter(s -> s.nextErrand),
                 Codec.LONG.listOf().fieldOf("built").forGetter(s -> s.built),
-                BlockPos.CODEC.optionalFieldOf("rack").forGetter(s -> s.rack)).apply(i, Settlement::new));
+                BlockPos.CODEC.optionalFieldOf("rack").forGetter(s -> s.rack),
+                Codec.INT.optionalFieldOf("age", 0).forGetter(s -> s.age),
+                Job.CODEC.listOf().optionalFieldOf("rebuild", List.of()).forGetter(s -> s.rebuild)).apply(i, Settlement::new));
     }
 
     private static final Codec<Neighbours> CODEC = RecordCodecBuilder.create(i -> i.group(

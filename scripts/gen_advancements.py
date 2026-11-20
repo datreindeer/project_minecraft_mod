@@ -847,6 +847,14 @@ TABS["wilderness"][1].extend([
      "mud brick on the savanna and in the desert, stilt houses in the jungle and swamps",
      AllOf({z: {"trigger": "minecraft:impossible"} for z in ("cold", "temperate", "warm", "jungle")})),
 ])
+# NPC villages rebuilt as their tribe goes up an age (people/AgeRebuild.java; granted from Java)
+TABS["bronze_age"][1].extend([
+    ("tribe_village_bronze", "root", "kiln", T, "Bronze Age Neighbours",
+     "Come to a tribe's village or camp rebuilt for the Bronze Age: timber halls on stone footings, thatch, pens and a clay kiln",
+     by_code()),
+    ("tribe_village_iron", "tribe_village_bronze", "bronze_anvil", G, "Iron Age Neighbours",
+     "Come to a tribe's village rebuilt for the Iron Age: taller halls and walls, and a smith at work", by_code()),
+])
 
 # bats and the Giant Deer's charge (wildlife/VanillaGame.java, GiantDeer.java; gen_wildtweaks.py)
 TABS["wilderness"][1].extend([

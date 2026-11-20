@@ -10,6 +10,13 @@ import java.util.UUID;
 
 import com.mechanical.BarkRoofBlock;
 import com.mechanical.BearRugBlock;
+import com.mechanical.BronzeAnvilBlock;
+import com.mechanical.Farming;
+import com.mechanical.Ironworking;
+import com.mechanical.KilnBlock;
+import com.mechanical.Smelting;
+import com.mechanical.WorldAge;
+import com.mechanical.wildlife.mountain.MountainFauna;
 import com.mechanical.Campfires;
 import com.mechanical.DryingRackBlock;
 import com.mechanical.Mechanical;
@@ -23,6 +30,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.QuartPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -38,6 +46,7 @@ import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -45,6 +54,7 @@ import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -77,7 +87,8 @@ public final class TribeVillageStructure extends Structure {
     public static final StructurePieceType.ContextlessType PIECE = Piece::new;
     public static final Identifier ID = Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_village");
     public static final int WALL_R = 21;
-    static final int CLEAR_R = 25, HALF = 26, HEIGHT = 24;
+    public static final int HALF = 26;
+    static final int CLEAR_R = 25, HEIGHT = 24;
 
     public TribeVillageStructure(StructureSettings settings) {
         super(settings);
@@ -136,7 +147,18 @@ public final class TribeVillageStructure extends Structure {
 
     /** Every block a village with this seed and centre would place in {@code zone}, in placing order (for tests). */
     public static Map<BlockPos, BlockState> plan(long seed, BlockPos centre, ClimateZone zone) {
-        return new Layout(seed, centre, zone).blocks;
+        return plan(seed, centre, zone, com.mechanical.WorldAge.STONE);
+    }
+
+    /** The same village as built in {@code age} (WorldAge): what its tribe tears down and rebuilds as it goes up an age (AgeRebuild). */
+    public static Map<BlockPos, BlockState> plan(long seed, BlockPos centre, ClimateZone zone, int age) {
+        return new Layout(seed, centre, zone, age).blocks;
+    }
+
+    /** The tribe of a village seed: the layout's first two draws. */
+    public static UUID tribeOf(long seed) {
+        RandomSource r = RandomSource.create(seed);
+        return new UUID(r.nextLong(), r.nextLong());
     }
 
     /** The gate's direction (radians) for a layout seed: the third draw of the layout's random, after the tribe's id. */
@@ -155,6 +177,14 @@ public final class TribeVillageStructure extends Structure {
         /** The climate the village is built for (villages saved before climates were temperate). */
         public ClimateZone climate() {
             return climate;
+        }
+
+        public long seed() {
+            return seed;
+        }
+
+        public BlockPos centre() {
+            return centre;
         }
 
         /** Where a trail from outside should end: on the gate's line, {@code beyond} blocks past the start of the village path. */
@@ -189,7 +219,7 @@ public final class TribeVillageStructure extends Structure {
         @Override
         public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
                 BoundingBox box, ChunkPos chunkPos, BlockPos referencePos) {
-            Layout layout = new Layout(seed, centre, climate);
+            Layout layout = new Layout(seed, centre, climate, com.mechanical.WorldAge.STONE); // generated in the Stone Age, rebuilt later (AgeRebuild)
             prepareGround(level, box);
             for (Map.Entry<BlockPos, BlockState> e : layout.blocks.entrySet()) {
                 if (box.isInside(e.getKey())) level.setBlock(e.getKey(), e.getValue(), Block.UPDATE_CLIENTS);
@@ -244,6 +274,8 @@ public final class TribeVillageStructure extends Structure {
         final List<BlockPos> banners = new ArrayList<>(), storage = new ArrayList<>();
         final Tribe tribe;
         final ClimateZone zone;
+        /** The age it is built in (WorldAge): Stone Age as generated, Bronze and Iron Age as its tribe rebuilds it. */
+        private final int age;
         private final UUID group;
         private final RandomSource rnd;
         private final BlockPos c;
@@ -253,8 +285,9 @@ public final class TribeVillageStructure extends Structure {
         private final DyeColor[] hides;
         private final BlockState log, stripped, fence, post, stake, roof;
 
-        Layout(long seed, BlockPos centre, ClimateZone zone) {
+        Layout(long seed, BlockPos centre, ClimateZone zone, int age) {
             this.zone = zone;
+            this.age = age;
             rnd = RandomSource.create(seed);
             c = centre;
             y = centre.getY();
@@ -347,7 +380,7 @@ public final class TribeVillageStructure extends Structure {
                         banner(base.above(6), dx, dz);
                         continue;
                     }
-                    int h = 3 + hash(base.getX(), base.getZ()) % 2;
+                    int h = 3 + hash(base.getX(), base.getZ()) % 2 + (age >= WorldAge.IRON ? 1 : 0); // Iron Age walls a stake higher
                     for (int i = 0; i < h; i++) put(base.above(i), post);
                     put(base.above(h), stake);
                 }
@@ -428,13 +461,17 @@ public final class TribeVillageStructure extends Structure {
          * The elder's longhouse: 5 deep, 9 long, log walls, the door toward the fire. A 45-degree gable roof of bark shingles
          * with a ridge log; wary tribes lay turf over it above the bark eaves. The gable ends are daub, hide or split logs.
          * In the cold the walls stand on a footing of field stone and every tribe lays turf (under snow) over the bark.
+         * Bronze Age: a course taller on a stone footing, timber-framed (stripped posts with daub between, horn windows),
+         * daub gables, thatch over the bark eaves (turf in the cold and for wary tribes). Iron Age: another course, of stone.
          */
         private void longhouse(BlockPos m) {
             Direction front = facing(m), side = front.getClockWise();
             BlockState wall = log.setValue(RotatedPillarBlock.AXIS, side.getAxis());
-            boolean cold = zone == ClimateZone.COLD;
-            boolean turf = tribe.temperament == Tribe.Temperament.WARY || cold;
-            BlockState gable = switch (tribe.temperament) {
+            boolean cold = zone == ClimateZone.COLD, metal = age >= WorldAge.BRONZE;
+            int up = age, footing = Math.max(age, cold ? 1 : 0);
+            boolean turf = tribe.temperament == Tribe.Temperament.WARY || cold, thatch = metal && !turf;
+            BlockState daub = Blocks.PACKED_MUD.defaultBlockState(), hay = Blocks.HAY_BLOCK.defaultBlockState();
+            BlockState gable = metal ? daub : switch (tribe.temperament) {
                 case PEACEFUL -> cold ? Blocks.WOOL.pick(hides[0]).defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
                 case WARY -> stripped;
                 case RAIDERS, TRADERS -> Blocks.WOOL.pick(hides[1]).defaultBlockState();
@@ -447,27 +484,27 @@ public final class TribeVillageStructure extends Structure {
                     if (in && (Math.abs(a) == 2 || Math.abs(b) == 4)) {
                         boolean corner = Math.abs(a) == 2 && Math.abs(b) == 4;
                         boolean door = a == 2 && b == 0;
-                        for (int h = 0; h < 2; h++) {
-                            if (door) continue;
+                        for (int h = 0; h < 2 + up; h++) {
+                            if (door && h < 2) continue;
                             BlockState w = corner ? log : Math.abs(b) == 4 ? log : wall;
-                            if (cold && h == 0) w = hash(p.getX(), p.getZ()) % 3 == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : Blocks.COBBLESTONE.defaultBlockState();
+                            if (metal && !corner) w = door ? wall : Math.abs(a) == 2 && b % 2 == 0 ? stripped : daub; // the lintel over the door
+                            if (metal && h == footing && Math.abs(a) == 2 && Math.abs(b) == 3) w = MountainFauna.HORN_WINDOW.get().defaultBlockState();
+                            if (h < footing) w = hash(p.getX(), p.getZ() + h) % 3 == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : Blocks.COBBLESTONE.defaultBlockState();
                             put(p.above(h), w);
                         }
                     }
                     // the gable ends under the slopes
-                    if (Math.abs(b) == 4) for (int h = 2; h < 5 - Math.abs(a); h++) put(p.above(h), gable);
+                    if (Math.abs(b) == 4) for (int h = 2 + up; h < 5 + up - Math.abs(a); h++) put(p.above(h), gable);
                     // the roof: one row of slopes per step, rising toward the ridge (the eaves 2 high, the ridge log 5)
+                    int h = 5 + up - Math.abs(a);
                     if (a == 0) {
-                        if (cold) turf(p.above(5));
-                        else put(p.above(5), turf ? Blocks.MOSS_BLOCK.defaultBlockState() : wall);
-                    } else {
-                        int h = 5 - Math.abs(a);
-                        if (turf && Math.abs(a) < 3) {
-                            put(p.above(h - 1), Blocks.ROOTED_DIRT.defaultBlockState()); // sod in steps over the bark eaves
-                            if (cold) turf(p.above(h));
-                            else put(p.above(h), Blocks.GRASS_BLOCK.defaultBlockState());
-                        } else put(p.above(h), slope(a > 0 ? front.getOpposite() : front, null));
-                    }
+                        if (cold) turf(p.above(h));
+                        else put(p.above(h), turf ? Blocks.MOSS_BLOCK.defaultBlockState() : wall);
+                    } else if ((turf || thatch) && Math.abs(a) < 3) {
+                        put(p.above(h - 1), thatch ? hay : Blocks.ROOTED_DIRT.defaultBlockState()); // sod (or thatch) in steps over the bark eaves
+                        if (cold) turf(p.above(h));
+                        else put(p.above(h), thatch ? hay : Blocks.GRASS_BLOCK.defaultBlockState());
+                    } else put(p.above(h), slope(a > 0 ? front.getOpposite() : front, null));
                 }
             }
             interior(m, front, side, 3, -1);
@@ -488,11 +525,12 @@ public final class TribeVillageStructure extends Structure {
         /**
          * Warm: the elder's hall of mud brick (packed mud for wary tribes, sandstone for traders, red sandstone for raiders),
          * three high with acacia corner posts and windows, under a flat roof of packed mud on acacia beams whose ends stick
-         * out of the walls, a hide shade on poles before the door.
+         * out of the walls, a hide shade on poles before the door. Bronze and Iron Age: a course taller, a porch roofed with packed mud.
          */
         private void mudLonghouse(BlockPos m) {
             Direction front = facing(m), side = front.getClockWise();
             BlockState wall = warmWall();
+            int up = age >= WorldAge.BRONZE ? 1 : 0;
             BlockState beam = stripped.setValue(RotatedPillarBlock.AXIS, front.getAxis());
             for (int a = -3; a <= 3; a++) {
                 for (int b = -5; b <= 5; b++) {
@@ -500,26 +538,26 @@ public final class TribeVillageStructure extends Structure {
                     boolean in = Math.abs(a) <= 2 && Math.abs(b) <= 4;
                     if (in) {
                         put(p.below(), Blocks.COARSE_DIRT.defaultBlockState());
-                        put(p.above(3), Blocks.PACKED_MUD.defaultBlockState());
+                        put(p.above(3 + up), Blocks.PACKED_MUD.defaultBlockState());
                     }
                     if (in && (Math.abs(a) == 2 || Math.abs(b) == 4)) {
                         boolean corner = Math.abs(a) == 2 && Math.abs(b) == 4;
                         boolean door = a == 2 && b == 0, window = Math.abs(a) == 2 && Math.abs(b) == 2;
-                        for (int h = 0; h < 3; h++) {
+                        for (int h = 0; h < 3 + up; h++) {
                             if (door && h < 2 || window && h == 1) continue;
                             put(p.above(h), corner ? log : wall);
                         }
-                        if (Math.abs(b) < 4 && b % 2 == 0 || corner) put(p.above(4), wall); // a low parapet, notched
+                        if (Math.abs(b) < 4 && b % 2 == 0 || corner) put(p.above(4 + up), wall); // a low parapet, notched
                     }
-                    if (Math.abs(a) == 3 && Math.abs(b) <= 4 && b % 2 == 0) put(p.above(2), beam); // beam ends
+                    if (Math.abs(a) == 3 && Math.abs(b) <= 4 && b % 2 == 0) put(p.above(2 + up), beam); // beam ends
                 }
             }
             // the shade before the door: two poles and a hide stretched back to the wall
             for (int a = 3; a <= 4; a++) {
                 for (int b = -2; b <= 2; b++) {
                     BlockPos p = m.relative(front, a).relative(side, b);
-                    if (a == 4 && Math.abs(b) == 2) for (int h = 0; h < 2; h++) put(p.above(h), fence);
-                    put(p.above(2), Blocks.WOOL.pick(hides[0]).defaultBlockState());
+                    if (a == 4 && Math.abs(b) == 2) for (int h = 0; h < 2 + up; h++) put(p.above(h), fence);
+                    put(p.above(2 + up), up > 0 ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.WOOL.pick(hides[0]).defaultBlockState());
                 }
             }
             interior(m, front, side, 3, -1);
@@ -540,7 +578,8 @@ public final class TribeVillageStructure extends Structure {
          */
         private void stilts(BlockPos m, Direction front, int ra, int rb) {
             Direction side = front.getClockWise();
-            BlockState bamboo = Blocks.BAMBOO_BLOCK.defaultBlockState(), rail = Blocks.BAMBOO_FENCE.defaultBlockState();
+            // Bronze and Iron Age: plank walls (sawn with metal tools) in place of bamboo bundles
+            BlockState bamboo = (age >= WorldAge.BRONZE ? Blocks.JUNGLE_PLANKS : Blocks.BAMBOO_BLOCK).defaultBlockState(), rail = Blocks.BAMBOO_FENCE.defaultBlockState();
             for (int a = -ra; a <= ra; a++) {
                 for (int b = -rb; b <= rb; b++) {
                     BlockPos p = m.relative(front, a).relative(side, b);
@@ -587,7 +626,7 @@ public final class TribeVillageStructure extends Structure {
                 case COLD -> {
                     // raiders and wary tribes are hunters: more bone huts; the others build more turf
                     boolean bones = tribe.temperament == Tribe.Temperament.RAIDERS || tribe.temperament == Tribe.Temperament.WARY ? i != 2 : i == 2;
-                    if (bones) boneHut(m, front, hide);
+                    if (bones && age == WorldAge.STONE) boneHut(m, front, hide); // the mammoths are gone by the Bronze Age
                     else roundHut(m, front, hide);
                 }
                 case WARM -> mudHut(m, front, hide);
@@ -597,6 +636,10 @@ public final class TribeVillageStructure extends Structure {
 
         /** A tent slot: a hide tent (white and grey hides in the cold), a hide shade where it is warm, a leaf-roofed lean-to in the jungle. */
         private void shelter(BlockPos t, Direction front, DyeColor hide) {
+            if (age >= WorldAge.BRONZE) {
+                pen(t, front);
+                return;
+            }
             switch (zone) {
                 case TEMPERATE -> tent(t, front, hide);
                 case COLD -> tent(t, front, hide == DyeColor.BROWN || hide == DyeColor.BLACK ? DyeColor.LIGHT_GRAY : DyeColor.WHITE);
@@ -611,8 +654,9 @@ public final class TribeVillageStructure extends Structure {
          * In the cold it is a turf hut: a wall of field stone under a mound of turf and snow.
          */
         private void roundHut(BlockPos m, Direction front, DyeColor hide) {
-            boolean cold = zone == ClimateZone.COLD;
-            BlockState wall = daub ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.WOOL.pick(hide).defaultBlockState();
+            boolean cold = zone == ClimateZone.COLD, metal = age >= WorldAge.BRONZE;
+            int up = metal ? 1 : 0; // Bronze and Iron Age: a roundhouse a course taller, daub on a stone footing, thatched
+            BlockState wall = daub || metal ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.WOOL.pick(hide).defaultBlockState();
             if (cold) wall = Blocks.COBBLESTONE.defaultBlockState();
             for (int dx = -3; dx <= 3; dx++) {
                 for (int dz = -3; dz <= 3; dz++) {
@@ -621,27 +665,34 @@ public final class TribeVillageStructure extends Structure {
                     if (d <= 2.6) put(p.below(), Blocks.COARSE_DIRT.defaultBlockState());
                     if (d > 1.8 && d <= 2.6) {
                         int ahead = dx * front.getStepX() + dz * front.getStepZ(), across = dx * front.getStepZ() - dz * front.getStepX();
-                        if (!(ahead >= 2 && across == 0)) {
-                            put(p, wall);
+                        boolean door = ahead >= 2 && across == 0;
+                        if (!door) {
+                            put(p, metal ? Blocks.COBBLESTONE.defaultBlockState() : wall);
                             put(p.above(), cold && hash(p.getX(), p.getZ()) % 3 == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : wall);
                         }
+                        if (metal) put(p.above(2), wall);
                     }
                     int ring = Math.max(Math.abs(dx), Math.abs(dz));
                     if (ring == 0) continue;
                     if (cold) {
-                        if (ring < 3) put(p.above(4 - ring), Blocks.ROOTED_DIRT.defaultBlockState());
-                        turf(p.above(5 - ring));
+                        if (ring < 3) put(p.above(4 - ring + up), Blocks.ROOTED_DIRT.defaultBlockState());
+                        turf(p.above(5 - ring + up));
                         continue;
                     }
                     // each ring one higher toward the middle: on a side it rises toward the middle, at a corner it peaks inward
                     Direction xIn = dx > 0 ? Direction.WEST : Direction.EAST, zIn = dz > 0 ? Direction.NORTH : Direction.SOUTH;
                     BlockState s = Math.abs(dx) == Math.abs(dz) ? slope(zIn, xIn) : Math.abs(dx) > Math.abs(dz) ? slope(xIn, null) : slope(zIn, null);
-                    put(p.above(5 - ring), s);
+                    put(p.above(5 - ring + up), metal && ring < 3 ? Blocks.HAY_BLOCK.defaultBlockState() : s); // thatch above the bark eaves
                 }
             }
             if (cold) {
-                turf(m.above(4));
-                put(m.above(4), stripped); // the smoke hole's frame
+                turf(m.above(4 + up));
+                put(m.above(4 + up), stripped); // the smoke hole's frame
+            } else if (metal && tribe.temperament != Tribe.Temperament.RAIDERS) {
+                put(m.above(5), Blocks.HAY_BLOCK.defaultBlockState());
+            } else if (metal) {
+                put(m.above(5), log);
+                put(m.above(6), fence);
             } else {
                 switch (tribe.temperament) {
                     case PEACEFUL -> put(m.above(4), Blocks.MOSS_BLOCK.defaultBlockState());
@@ -688,21 +739,23 @@ public final class TribeVillageStructure extends Structure {
         /** Warm: a round hut of mud brick or packed mud (5 across) under a flat roof of packed mud, or of hide for traders. */
         private void mudHut(BlockPos m, Direction front, DyeColor hide) {
             BlockState wall = warmWall();
-            BlockState top = tribe.temperament == Tribe.Temperament.TRADERS ? Blocks.WOOL.pick(hide).defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
+            BlockState top = tribe.temperament == Tribe.Temperament.TRADERS && age == WorldAge.STONE ? Blocks.WOOL.pick(hide).defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
+            int up = age >= WorldAge.BRONZE ? 1 : 0; // Bronze and Iron Age: a course taller
             for (int dx = -3; dx <= 3; dx++) {
                 for (int dz = -3; dz <= 3; dz++) {
                     double d = Math.sqrt(dx * dx + dz * dz);
                     BlockPos p = m.offset(dx, 0, dz);
                     if (d > 2.6) continue;
                     put(p.below(), Blocks.COARSE_DIRT.defaultBlockState());
-                    put(p.above(2), top);
+                    put(p.above(2 + up), top);
                     if (d > 1.8) {
                         int ahead = dx * front.getStepX() + dz * front.getStepZ(), across = dx * front.getStepZ() - dz * front.getStepX();
                         if (!(ahead >= 2 && across == 0)) {
                             put(p, wall);
                             put(p.above(), wall);
                         }
-                        if ((dx + dz) % 2 == 0) put(p.above(3), wall); // notched rim round the roof
+                        if (up > 0) put(p.above(2), wall);
+                        if ((dx + dz) % 2 == 0) put(p.above(3 + up), wall); // notched rim round the roof
                     }
                 }
             }
@@ -748,6 +801,21 @@ public final class TribeVillageStructure extends Structure {
                     }
                 }
             }
+        }
+
+        /** Bronze and Iron Age: a fenced pen (5x5) in a tent's place, its gate toward the fire, hay inside in temperate lands. */
+        private void pen(BlockPos t, Direction front) {
+            Direction side = front.getClockWise();
+            BlockState gateBlock = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(zone.wood(spruce) + "_fence_gate"))
+                    .defaultBlockState().setValue(FenceGateBlock.FACING, front);
+            for (int a = -2; a <= 2; a++) {
+                for (int b = -2; b <= 2; b++) {
+                    BlockPos p = t.relative(front, a).relative(side, b);
+                    put(p.below(), Blocks.COARSE_DIRT.defaultBlockState());
+                    if (Math.abs(a) == 2 || Math.abs(b) == 2) put(p, a == 2 && b == 0 ? gateBlock : fence);
+                }
+            }
+            if (zone == ClimateZone.TEMPERATE) put(t.relative(front, -1), Blocks.HAY_BLOCK.defaultBlockState());
         }
 
         /** Warm: a hide stretched flat over four acacia poles (3x3), open all round, a mat under it. */
@@ -818,6 +886,20 @@ public final class TribeVillageStructure extends Structure {
             BlockPos gather = at(gate + Math.toRadians(200), 18.5);
             put(gather, Blocks.COMPOSTER.defaultBlockState());
             put(gather.relative(facing(gather).getClockWise()), zone.store());
+            if (age >= WorldAge.BRONZE) {
+                // the potters' clay kiln and a quern; in the Iron Age a smith's anvil and a firebrick hearth beside them
+                BlockPos kiln = at(gate + Math.toRadians(165), 17);
+                Direction f = facing(kiln);
+                BlockState k = Mechanical.KILN.get().defaultBlockState().setValue(KilnBlock.FACING, f);
+                put(kiln, k.setValue(KilnBlock.HALF, DoubleBlockHalf.LOWER));
+                put(kiln.above(), k.setValue(KilnBlock.HALF, DoubleBlockHalf.UPPER));
+                put(kiln.relative(f.getClockWise(), 2), Farming.QUERN.get().defaultBlockState());
+                if (age >= WorldAge.IRON) {
+                    BlockPos smith = kiln.relative(f.getCounterClockWise(), 2);
+                    put(smith, Ironworking.BRONZE_ANVIL.get().defaultBlockState().setValue(BronzeAnvilBlock.FACING, f));
+                    put(smith.relative(f.getCounterClockWise()), Smelting.FURNACE_BRICKS.get().defaultBlockState());
+                }
+            }
         }
 
         /** The tribe's roles by temperament; everyone lives by the central fire. */

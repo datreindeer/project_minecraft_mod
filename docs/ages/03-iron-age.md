@@ -119,3 +119,11 @@ Pengarna finns redan (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold
 
 Inget nytt i järnåldern ännu. Spärrat sedan tidigare: järnverktyg, järnrustning, vanillas järnugnsrecept (Raw Iron smälts bara i
 Bloomery), Gold/Redstone/Diamond/Emerald Ore (kräver järnhacka).
+
+## NPC-byar i järnåldern (byggd)
+
+Järnålderns material är för tunna för en egen byggstil, så NPC-byar i järnåldern är bronsålderns med små uppgraderingar
+(`people/AgeRebuild.java`, `TribeVillageStructure` med ålder 2): långhuset en kurs till (två skift sten i foten),
+palissaden en stock högre, och en smedja med Bronze Anvil och Furnace Bricks bredvid Clay Kiln och Quern. Lägren vid
+spelarläger är desamma som i bronsåldern. Advancement **Iron Age Neighbours** (i bronsålderns flik, där Wrought Iron ligger).
+

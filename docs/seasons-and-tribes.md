@@ -82,11 +82,83 @@
 - När världen går in i en ny ålder visas ett meddelande i chatten för alla, t.ex. "The world has entered the Iron Age".
 - **NPC-stammar** ligger 0–1 ålder efter. Förslag: varje NPC-stam får vid skapandet en fast fördröjning på 0 eller 1, så
   att världen blir blandad. Deras utrustning (`LaterAgeGear`), handel och raider följer stammens ålder.
-- **När en NPC-stam går upp en ålder** river den sina gamla byggnader och bygger nya i den nya ålderns stil. Det sker
-  med samma byggbeteende som redan finns (`BuildCampGoal`, `SetUpCampGoal`). Stammen byter också ut sin utrustning.
-  Varje ålder behöver alltså egna byggnadsritningar för NPC-byar.
-- Ombyggnaden sker **mest när ingen spelare är i närheten**, för att minska lagg: byn byts då ut i större steg, t.ex.
-  när chunken laddas. Är en spelare nära byggs det synligt men långsamt, block för block.
+- **När en NPC-stam går upp en ålder** river den sina gamla byggnader och bygger nya i den nya ålderns stil. Stammen
+  byter också ut sin utrustning. **Byggt** (`people/AgeRebuild.java`), se *Ombyggnad av NPC-byar* nedan.
+- Ombyggnaden sker **mest när ingen spelare är i närheten**, för att minska lagg: byn byts då ut på en gång. Är en
+  spelare nära byggs det synligt men långsamt, block för block.
+
+### Ombyggnad av NPC-byar (byggd)
+
+**Vilka bosättningar finns och vad händer med dem:**
+
+| Bosättning | Hur den vet sin stam | Vid ny ålder |
+|---|---|---|
+| Stambyar från worldgen (`TribeVillageStructure`) | Stammens id följer av byns frö (`tribeOf(seed)`) | Rivs och byggs om |
+| Läger som stammar bygger vid ett spelarläger (`Settlements`, sparade i `Neighbours`) | `Settlement.tribe` | Hyddorna (och ugn och kvarn) rivs och byggs om |
+| Läger från worldgen (`TribeCamp`) | Bara folkets `group` | Byggs inte om: blocken är inte kända (slumpade, inte sparade) |
+| Fiskeläger (`FishingCamp`) | Ingen stam, inget folk | Byggs inte om |
+| Jaktgängens eldar (`SetUpCampGoal`) | Folkets `group` | Bara eld och stenring, inget att bygga om |
+
+Utrustningen byts för alla (redan gjort i fas 3).
+
+**Minnet:** en by minns åldern den står i. Stambyar noteras när chunken där byn började laddas (`ChunkEvent.Load`) i
+`SavedData` `mechanical:village_ages` (centrum, frö, klimat, ålder, kvarvarande jobb). De genereras alltid i stenåldern.
+Ett läger har fälten `age` och `rebuild` i `Settlement` (gamla sparfiler läses som ålder 0; nya läger får stammens ålder
+direkt när de grundas). När stammens ålder (`WorldAge.npcAge`) är högre än byns planeras ombyggnaden **en gång** och åldern
+sätts direkt. Jobben sparas, så en omstart mitt i fortsätter där den var och planerar inte om. Hoppar världen två åldrar
+byggs byn om direkt till den senaste.
+
+**Planen:** en lista jobb (`Neighbours.Job`: plats, stammens gamla block, nytt block). För en stamby är det skillnaden
+mellan byns layout i den gamla och den nya åldern (layouten följer helt av frö, centrum, klimat och ålder): först rivs det
+som försvinner (uppifrån och ned, marken under golvet lämnas), sedan byggs det nya i byggordning. För ett läger rivs
+hyddorna i de etapper som är klara (deras 3x3-ytor, plus ugn och kvarn) och byggs upp igen på samma platser. Eld,
+ställningar, förråd, banér och palissad står kvar. Ett läger byggs bara om när första etappen står och det inte är mitt i
+en etapp, och nästa etapp planeras om i den nya stilen.
+
+**Spelarblock rörs inte:** ett jobb görs bara om platsen fortfarande har stammens gamla block (samma blocktyp) eller är
+fri (luft, växter, snö), eller är vanlig mark under golvet. Står ett spelarblock där hoppas jobbet över. För läger räknas
+bara block lägret själv byggt (`Settlement.built`; ett block en spelare bryter tas bort därifrån), och en hydda vars plats
+en spelare byggt i hoppas över helt.
+
+**Nära och långt borta:** en plan görs först när hela byn är laddad (alla chunks inom 26 block för en stamby). Finns ingen
+spelare inom 64 block görs alla jobb direkt, så som worldgen lägger block (inga drops, inga grannuppdateringar). Är en
+spelare nära tar en medlem av stammen (inte jägare, på dagen) jobben ett i taget med `BuildCampGoal`: går dit, svingar en
+halv sekund, river (med brytpartiklar) eller sätter blocket med ljud, och fortsätter med nästa. Går spelaren därifrån byts
+resten ut på en gång. Ombyggnaden kostar lägret inget ur förrådet.
+
+**Ritningar per ålder** (stambyar; samma plan och platser i alla åldrar, så porten och muren hittas som förut):
+
+| | Stenåldern | Bronsåldern | Järnåldern |
+|---|---|---|---|
+| Långhus (tempererat, kallt) | Timmerväggar 2 högt, barktak, torv för försiktiga stammar och i kylan | En kurs högre på stenfot (Cobblestone, Mossy Cobblestone), korsvirke: Stripped Log-stolpar med lerklining (Packed Mud) emellan, Horn Window, gavlar av lera, halmtak (Hay Block) över barkfoten; torv i kylan och för försiktiga stammar | Som brons med en kurs till, två skift sten |
+| Rundhyddor | Lera eller hudar, barktak; i kylan stenvägg under torv | En kurs högre på stenfot, lerväggar, halmtak (Hay Block) över barkfoten med halmtopp (raiders behåller rökstolpen); i kylan sten under torv | Som brons |
+| Mammutbenhyddor (kallt) | Benbågar, hudar, snö | Rundhyddor (mammutarna är borta) | Som brons |
+| Tältplatser | Hudtält, hudskydd (varmt), lövskjul (djungel) | Inhägnader 5x5 av staket med grind mot elden, Hay Block inuti i tempererat land | Som brons |
+| Varmt | Lertegelhus, platta tak, hudskydd | En kurs högre, veranda med tak av Packed Mud, handlarnas hudtak blir lera | Som brons |
+| Djungel | Pålhus av bambu, lövtak | Väggar av Jungle Planks i stället för bambu | Som brons |
+| Arbetsplatser | Vedtrave, Fletching Table, Composter | + Clay Kiln och Quern vid samlarna | + Bronze Anvil och Furnace Bricks (smedja) |
+| Palissad | Spetsade stockar 3–4 högt | Som sten | En stock högre |
+
+Järnålderns material är tunna i modden (ingen järnflik, inga järnverktyg än), så järnåldern återanvänder brons med små
+uppgraderingar: högre långhus och palissad och en smedja.
+
+**Läger** (`Settlements`): stenålderns hudtält (hudskydd där det är varmt, lövskjul i djungeln) blir i brons- och
+järnåldern små 3x3-hyddor: hörnstolpar av Stripped Log (bambu i djungeln), väggar av Packed Mud (Mud Bricks där det är
+varmt, bambu i djungeln) med dörr, tak av Hay Block (platt Bark Roof i kylan, Packed Mud där det är varmt, löv i
+djungeln). Etapp 2 får en Clay Kiln och en Quern vid elden. Palissaden är densamma i alla åldrar.
+
+**Advancements** (bronsålderns flik): **Bronze Age Neighbours** (kom inom 40 block från en stamby eller ett läger som står
+ombyggt i bronsåldern) och **Iron Age Neighbours** (järnåldern).
+
+**Gametest** `tribe_rebuild`: layouter i alla klimat och 16 frön i brons- och järnåldern (porten öppen, ugn och kvarn,
+inga benhyddor, smedja i järnåldern), en stenåldersby som byts till bronsålderns layout på en gång och exakt en gång med
+två spelarblock orörda, och ett läger i tre etapper vars tält blir hyddor med ugn, en gång, med ett spelarblock orört.
+
+**Inte gjort / gränser:** worldgen-läger (`TribeCamp`) och fiskeläger byggs inte om. En by genereras alltid i stenåldern
+och byts sedan (först när hela byn är laddad), den ritas inte direkt i sin ålder. Den långsamma ombyggnaden har en byggare
+per stam, så en spelare som bor precis vid en by kan få vänta länge (resten byts när hen går mer än 64 block bort).
+Ombyggnaden nära spelare är inte gametestad (gametest har inga spelare). Snö på ett tak som rivs i det stora steget kan
+bli hängande i luften.
 - Senare kan världsåldern styra vilka strukturer som spawnar, och stammar som ligger efter kan få hjälp att komma ikapp
   via NPC-handel.
 
@@ -279,7 +351,8 @@
    samlare, vedhuggare och raiders (bronsspjut, bronskniv, bronsyxa; järnverktyg finns inte än) och karavanernas vakter
    och varor (tidigare efter spelarna i närheten). Monster får behålla kopparutrustning från bronsåldern och järn och
    ringbrynja från järnåldern (`LaterAgeGear`). `/worldage` och `/worldage set <0-2>` för op.
-   **Kvar:** NPC-byar som byggs om, vilket är ett eget, större steg eftersom varje ålder behöver egna byggnadsritningar.
+   NPC-byar och lägren stammarna bygger rivs och byggs om i den nya ålderns stil (byggd, `AgeRebuild`, se *Ombyggnad av
+   NPC-byar* under 2. Världsålder). Worldgen-läger och fiskeläger byggs inte om.
 4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder (byggd, v0.87.0). `Seasons.java` + `mixin/BiomeSeasonMixin`
    förskjuter varje bioms temperatur längs en mjuk kurva över året: +0.1 mitt i sommaren, mitt i vintern −0.8 i
    tempererade och kalla biomes (bas under 1.0), −0.3 i varma (under 1.5) och −0.2 i torra. Vanilla ger då snö i

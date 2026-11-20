@@ -52,6 +52,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * is led by the trader and pulls a covered cart that is still hitched 5 seconds on; when its time is up all of it goes.
  * A trophy cart's carcass is big game (Cave Lion, Aurochs, Brown Bear), the caravan's property (a player can't
  * take or butcher it, and trying angers them), and the trader sells its products for copper.</li>
+ * <li>tribe_rebuild (AgeRebuild): village layouts of every climate in the Bronze and Iron Age keep the gate open and use their
+ * age's buildings (kiln, quern, pens, no bone huts; anvil and firebrick in the Iron Age); a Stone Age village whose tribe
+ * reaches the Bronze Age is swapped to the Bronze layout at once (nobody near), and a settled camp's tents become huts with
+ * a kiln, both exactly once, leaving blocks a player put in their way alone.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
@@ -61,6 +65,7 @@ public final class TribeTest {
     private static final ResourceKey<Consumer<GameTestHelper>> GATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_gate"));
     private static final ResourceKey<Consumer<GameTestHelper>> CLIMATE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_climate"));
     private static final ResourceKey<Consumer<GameTestHelper>> CARAVAN = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_caravan"));
+    private static final ResourceKey<Consumer<GameTestHelper>> REBUILD = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_rebuild"));
     private static final int C = 20, WALL = 6; // the ring's centre (relative x, z) and radius in tribe_gate
 
     static {
@@ -68,6 +73,7 @@ public final class TribeTest {
         TEST_FUNCTIONS.register("tribe_gate", () -> TribeTest::gate);
         TEST_FUNCTIONS.register("tribe_climate", () -> TribeTest::climate);
         TEST_FUNCTIONS.register("tribe_caravan", () -> TribeTest::caravan);
+        TEST_FUNCTIONS.register("tribe_rebuild", () -> TribeTest::rebuild);
     }
 
     static void init(IEventBus modEventBus) {
@@ -86,6 +92,9 @@ public final class TribeTest {
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_caravan"), new FunctionGameTestInstance(CARAVAN,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 200, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
+        // a whole village (53 across) is built in this one
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_rebuild"), new FunctionGameTestInstance(REBUILD,
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 64)));
     }
 
     private static void guarded(GameTestHelper h, Runnable test) {
@@ -276,7 +285,7 @@ public final class TribeTest {
                     }
                 }
                 Neighbours.Settlement s = new Neighbours.Settlement(UUID.nameUUIDFromBytes(zone.id().getBytes()), h.absolutePos(mid.east(60)),
-                        h.absolutePos(mid), Direction.EAST, 0, 0, true, List.of(), List.of(), 0, 0, List.of(), java.util.Optional.empty());
+                        h.absolutePos(mid), Direction.EAST, 0, 0, true, List.of(), List.of(), 0, 0, List.of(), java.util.Optional.empty(), 0, List.of());
                 java.util.Set<Block> seen = new java.util.HashSet<>();
                 java.util.Arrays.fill(s.stock, 999);
                 for (int stage = 1; stage <= 3; stage++) {
@@ -304,6 +313,138 @@ public final class TribeTest {
         });
     }
 
+
+    /** A tribe id that lags 0 ages behind the world (so its age is the world's). */
+    private static UUID keenTribe(String name) {
+        for (int i = 0; ; i++) {
+            UUID id = UUID.nameUUIDFromBytes((name + i).getBytes());
+            if (Tribe.of(id).ageLag() == 0) return id;
+        }
+    }
+
+    /** Clears x, z in 0..size (relative) to a grass floor at y 0 with air above. */
+    private static void floor(GameTestHelper h, int size, int height) {
+        for (int x = 0; x <= size; x++) {
+            for (int z = 0; z <= size; z++) {
+                h.setBlock(new BlockPos(x, 0, z), Blocks.GRASS_BLOCK.defaultBlockState());
+                for (int y = 1; y <= height; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
+            }
+        }
+    }
+
+    private static void rebuild(GameTestHelper h) {
+        guarded(h, () -> {
+            ServerLevel level = h.getLevel();
+            var server = level.getServer();
+            // layouts of every age: the gate stays open, each age has its own buildings
+            BlockPos origin = new BlockPos(0, 64, 0);
+            int wall = com.mechanical.worldgen.TribeVillageStructure.WALL_R;
+            for (ClimateZone zone : ClimateZone.values()) {
+                for (long seed = 0; seed < 16; seed++) {
+                    var stone = com.mechanical.worldgen.TribeVillageStructure.plan(seed * 7919, origin, zone, 0);
+                    for (int age = 1; age <= 2; age++) {
+                        var plan = com.mechanical.worldgen.TribeVillageStructure.plan(seed * 7919, origin, zone, age);
+                        double a = com.mechanical.worldgen.TribeVillageStructure.gateAngle(seed * 7919);
+                        for (int r = wall - 1; r <= wall + 1; r++) {
+                            BlockPos g = origin.offset((int) Math.round(Math.cos(a) * r), 0, (int) Math.round(Math.sin(a) * r));
+                            for (int y = 0; y < 3; y++)
+                                h.assertTrue(!plan.containsKey(g.above(y)), zone + " age " + age + " village " + seed + ": the gate is blocked at " + g.above(y));
+                        }
+                        java.util.Set<Block> seen = new java.util.HashSet<>();
+                        for (BlockState b : plan.values()) {
+                            seen.add(b.getBlock());
+                            if (b.getBlock() instanceof LeavesBlock) h.assertTrue(b.getValue(LeavesBlock.PERSISTENT), zone + ": roof leaves must not decay");
+                        }
+                        h.assertTrue(seen.contains(Mechanical.KILN.get()) && seen.contains(com.mechanical.Farming.QUERN.get()) && !seen.contains(Blocks.BONE_BLOCK), zone + " age " + age + ": kiln and quern, no bone huts: " + seen);
+                        if (zone == ClimateZone.TEMPERATE) h.assertTrue(seen.contains(Blocks.PACKED_MUD) && seen.contains(Blocks.HAY_BLOCK), "temperate: daub and thatch");
+                        if (zone == ClimateZone.COLD) h.assertFalse(seen.contains(Blocks.HAY_BLOCK) || seen.contains(Blocks.OAK_LOG), "no hay or oak in the cold");
+                        h.assertTrue(age < 2 || seen.contains(com.mechanical.Ironworking.BRONZE_ANVIL.get()) && seen.contains(com.mechanical.Smelting.FURNACE_BRICKS.get()),
+                                zone + ": an Iron Age village has a smith");
+                        h.assertTrue(AgeRebuild.diff(stone, plan, origin.getY()).size() > 100, zone + " age " + age + ": hardly changes");
+                    }
+                    h.assertTrue(AgeRebuild.diff(stone, stone, origin.getY()).isEmpty(), "the same age changes nothing");
+                }
+            }
+
+            int before = com.mechanical.WorldAge.of(server);
+            try {
+                // a Stone Age village (temperate) whose tribe reaches the Bronze Age, swapped at once (no player near)
+                int size = 2 * com.mechanical.worldgen.TribeVillageStructure.HALF + 2;
+                floor(h, size, 14);
+                BlockPos centre = h.absolutePos(new BlockPos(size / 2, 1, size / 2));
+                long seed = 0;
+                while (Tribe.of(com.mechanical.worldgen.TribeVillageStructure.tribeOf(seed)).ageLag() != 0) seed++;
+                var stone = com.mechanical.worldgen.TribeVillageStructure.plan(seed, centre, ClimateZone.TEMPERATE, 0);
+                var bronze = com.mechanical.worldgen.TribeVillageStructure.plan(seed, centre, ClimateZone.TEMPERATE, 1);
+                stone.forEach((p, st) -> level.setBlock(p, st, Block.UPDATE_CLIENTS));
+                // a player's blocks: one in place of a tribe block that goes, one on a spot the Bronze village wants
+                BlockPos gone = stone.keySet().stream().filter(p -> !bronze.containsKey(p) && p.getY() > centre.getY()).findFirst().orElseThrow();
+                BlockPos wanted = bronze.keySet().stream().filter(p -> !stone.containsKey(p) && p.getY() >= centre.getY()).findFirst().orElseThrow();
+                level.setBlock(gone, Blocks.GOLD_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
+                level.setBlock(wanted, Blocks.DIAMOND_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
+                AgeRebuild.Village v = new AgeRebuild.Village(centre, seed, ClimateZone.TEMPERATE.ordinal(), 0, List.of());
+                com.mechanical.WorldAge.set(server, 1);
+                h.assertTrue(AgeRebuild.update(level, v), "the village was not rebuilt");
+                h.assertTrue(v.age == 1 && v.jobs.isEmpty(), "the village should stand in the Bronze Age, done: age " + v.age + ", " + v.jobs.size() + " jobs left");
+                h.assertTrue(level.getBlockState(gone).is(Blocks.GOLD_BLOCK) && level.getBlockState(wanted).is(Blocks.DIAMOND_BLOCK), "a player's blocks were touched");
+                for (var e : bronze.entrySet()) {
+                    if (e.getKey().equals(wanted)) continue;
+                    BlockState now = level.getBlockState(e.getKey());
+                    h.assertTrue(now.getBlock() == e.getValue().getBlock(), "village: " + e.getValue() + " at " + h.relativePos(e.getKey()) + " is " + now);
+                }
+                for (var p : stone.keySet()) {
+                    if (!bronze.containsKey(p) && !p.equals(gone) && p.getY() >= centre.getY())
+                        h.assertTrue(level.getBlockState(p).isAir(), "village: the old " + stone.get(p) + " at " + h.relativePos(p) + " still stands");
+                }
+                h.assertFalse(AgeRebuild.update(level, v), "the village was rebuilt twice");
+
+                // a camp built in the Stone Age (all three stages): its tents become huts with a kiln, once
+                floor(h, size, 14);
+                int R = Settlements.PALISADE_R + 2;
+                BlockPos mid = new BlockPos(size / 2, 1, size / 2);
+                com.mechanical.WorldAge.set(server, 0);
+                Neighbours.Settlement s = new Neighbours.Settlement(keenTribe("rebuild"), h.absolutePos(mid.east(60)), h.absolutePos(mid), Direction.EAST,
+                        0, 0, false, List.of(), List.of(), 0, 0, List.of(), java.util.Optional.empty(), 0, List.of());
+                java.util.Arrays.fill(s.stock, 999);
+                ClimateZone zone = ClimateZone.of(level.getBiome(s.centre));
+                java.util.Set<BlockPos> palisade = new java.util.HashSet<>();
+                for (int stage = 1; stage <= 3; stage++) {
+                    List<Neighbours.Placement> plan = Settlements.plan(level, s, stage, zone);
+                    for (Neighbours.Placement p : plan) Settlements.place(level, s, p, null);
+                    if (stage == 3) plan.forEach(p -> palisade.add(p.pos()));
+                }
+                s.stage = 3;
+                // a player took a block of the first shelter (east gate: it stands 5 south of the fire) and put their own there
+                BlockPos ridge = s.built.stream().map(BlockPos::of).filter(p -> p.getY() == s.centre.getY() + 1 && Math.abs(p.getX() - s.centre.getX()) <= 1
+                        && Math.abs(p.getZ() - s.centre.getZ() - 5) <= 1).findFirst().orElseThrow();
+                s.built.remove(Long.valueOf(ridge.asLong()));
+                level.setBlock(ridge, Blocks.GOLD_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
+                h.assertFalse(AgeRebuild.update(level, s), "a Stone Age camp in the Stone Age was rebuilt");
+                com.mechanical.WorldAge.set(server, 1);
+                h.assertTrue(AgeRebuild.update(level, s), "the camp was not rebuilt");
+                h.assertTrue(s.age == 1 && s.rebuild.isEmpty(), "the camp should stand in the Bronze Age, done: age " + s.age + ", " + s.rebuild.size() + " jobs left");
+                h.assertTrue(level.getBlockState(ridge).is(Blocks.GOLD_BLOCK), "the player's block was touched");
+                int kilns = 0, huts = 0, tents = 0;
+                for (int x = -R; x <= R; x++) {
+                    for (int z = -R; z <= R; z++) {
+                        for (int y = 0; y <= 4; y++) {
+                            BlockState b = level.getBlockState(s.centre.offset(x, y, z));
+                            if (b.is(Mechanical.KILN.get())) kilns++;
+                            if (b.is(Blocks.PACKED_MUD) || b.is(Blocks.MUD_BRICKS) || b.is(Blocks.BAMBOO_BLOCK)) huts++;
+                            if (b.getBlock() instanceof HideTentBlock || b.getBlock() instanceof HideTentBlock.Ridge || b.is(People.HIDE_CANVAS.get())) tents++;
+                        }
+                    }
+                }
+                h.assertTrue(kilns == 2 && huts > 10 && tents == 0, "camp in the Bronze Age: kiln halves " + kilns + ", hut walls " + huts + ", tent pieces left " + tents);
+                h.assertTrue(level.getBlockState(s.centre).is(Blocks.CAMPFIRE), "the camp's fire went");
+                for (BlockPos p : palisade) h.assertTrue(!level.getBlockState(p).isAir(), "the palisade lost a block at " + h.relativePos(p));
+                h.assertFalse(AgeRebuild.update(level, s), "the camp was rebuilt twice");
+            } finally {
+                com.mechanical.WorldAge.set(server, before);
+            }
+            h.succeed();
+        });
+    }
 
     private static void caravan(GameTestHelper h) {
         guarded(h, () -> {

@@ -12,6 +12,8 @@ import java.util.UUID;
 import com.mechanical.CampAge;
 import com.mechanical.DryingRackBlock;
 import com.mechanical.HangingRackBlock;
+import com.mechanical.KilnBlock;
+import com.mechanical.WorldAge;
 import com.mechanical.Mechanical;
 import com.mechanical.RockBlock;
 import com.mechanical.TrampledPathBlock;
@@ -42,6 +44,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 
@@ -150,7 +153,8 @@ public final class Settlements {
     /** The band of a visit becomes the settlers of a new camp at {@code site}; they walk there and build (BuildCampGoal). */
     static Settlement found(ServerLevel level, Neighbours data, Neighbours.Visit v, BlockPos site, List<Tribesperson> members, long now) {
         Direction gate = Direction.getApproximateNearest(v.camp.getX() - site.getX(), 0, v.camp.getZ() - site.getZ());
-        Settlement s = new Settlement(v.tribe, v.camp, site, gate, 0, 0, true, List.of(), List.of(), now, now + CampAge.DAY, List.of(), Optional.empty());
+        Settlement s = new Settlement(v.tribe, v.camp, site, gate, 0, 0, true, List.of(), List.of(), now, now + CampAge.DAY, List.of(), Optional.empty(),
+                WorldAge.npcAge(level.getServer(), v.tribe), List.of()); // built in the tribe's age from the start
         s.plan = plan(level, s, 1);
         int[] cost = cost(s.plan, 0);
         for (int k = 0; k < 3; k++) s.stock[k] = cost[k] + START_EXTRA[k]; // what the band carries
@@ -180,46 +184,126 @@ public final class Settlements {
         Direction right = s.gate.getClockWise();
         switch (stage) {
             case 1 -> {
-                BlockState fire = Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true);
-                out.add(new Placement(s.centre, fire));
-                for (int[] o : RING) add(out, level, ground(level, at(s, o[0], o[1])),
-                        Mechanical.LOOSE_STONE.get().defaultBlockState().setValue(RockBlock.SIZE, 1 + r.nextInt(3)));
-                add(out, level, ground(level, at(s, -4, 0)), com.mechanical.CarcassHauling.HANGING_RACK.get().defaultBlockState()
-                        .setValue(HangingRackBlock.FACING, s.gate).setValue(HangingRackBlock.PART, HangingRackBlock.Part.LOWER));
-                tent(out, level, s, 0, 5, right.getOpposite(), zone);
-                tent(out, level, s, 0, -5, right, zone);
-                BlockPos pole = ground(level, at(s, 3, 3));
-                BlockState stripped = zone.stripped(taiga);
-                if (add(out, level, pole, stripped) && add(out, level, pole.above(), stripped))
-                    add(out, level, pole.above(2), Blocks.BANNER.pick(s.tribeInfo().baseColour()).defaultBlockState().setValue(BannerBlock.ROTATION, r.nextInt(16)));
-                add(out, level, ground(level, at(s, -2, 3)), log.setValue(RotatedPillarBlock.AXIS, s.gate.getAxis()));
+                boolean fresh = s.clearing == null; // a rebuild (AgeRebuild) redoes only the shelters
+                if (fresh) {
+                    BlockState fire = Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true);
+                    out.add(new Placement(s.centre, fire));
+                    for (int[] o : RING) add(out, level, s, ground(level, s, at(s, o[0], o[1])),
+                            Mechanical.LOOSE_STONE.get().defaultBlockState().setValue(RockBlock.SIZE, 1 + r.nextInt(3)));
+                    add(out, level, s, ground(level, s, at(s, -4, 0)), com.mechanical.CarcassHauling.HANGING_RACK.get().defaultBlockState()
+                            .setValue(HangingRackBlock.FACING, s.gate).setValue(HangingRackBlock.PART, HangingRackBlock.Part.LOWER));
+                }
+                tent(out, level, s, SHELTERS[0][0], SHELTERS[0][1], right.getOpposite(), zone);
+                tent(out, level, s, SHELTERS[1][0], SHELTERS[1][1], right, zone);
+                if (fresh) {
+                    BlockPos pole = ground(level, s, at(s, 3, 3));
+                    BlockState stripped = zone.stripped(taiga);
+                    if (add(out, level, s, pole, stripped) && add(out, level, s, pole.above(), stripped))
+                        add(out, level, s, pole.above(2), Blocks.BANNER.pick(s.tribeInfo().baseColour()).defaultBlockState().setValue(BannerBlock.ROTATION, r.nextInt(16)));
+                    add(out, level, s, ground(level, s, at(s, -2, 3)), log.setValue(RotatedPillarBlock.AXIS, s.gate.getAxis()));
+                }
             }
             case 2 -> {
-                tent(out, level, s, -5, 4, s.gate, zone);
-                tent(out, level, s, -5, -4, s.gate, zone);
-                BlockState rack = Mechanical.DRYING_RACK.get().defaultBlockState().setValue(DryingRackBlock.HIDE, DryingRackBlock.HIDE_WET);
-                add(out, level, ground(level, at(s, 3, -3)), rack.setValue(DryingRackBlock.FACING, s.gate.getClockWise()));
-                add(out, level, ground(level, at(s, 2, -4)), rack.setValue(DryingRackBlock.FACING, s.gate.getClockWise()));
-                add(out, level, ground(level, at(s, -3, -3)), Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP));
-                BlockState pile = log.setValue(RotatedPillarBlock.AXIS, right.getAxis());
-                BlockPos a = ground(level, at(s, 4, 4)), b = ground(level, at(s, 5, 4));
-                if (add(out, level, a, pile) & add(out, level, b, pile)) add(out, level, a.above(), pile);
+                tent(out, level, s, SHELTERS[2][0], SHELTERS[2][1], s.gate, zone);
+                tent(out, level, s, SHELTERS[3][0], SHELTERS[3][1], s.gate, zone);
+                if (s.clearing == null) {
+                    BlockState rack = Mechanical.DRYING_RACK.get().defaultBlockState().setValue(DryingRackBlock.HIDE, DryingRackBlock.HIDE_WET);
+                    add(out, level, s, ground(level, s, at(s, 3, -3)), rack.setValue(DryingRackBlock.FACING, s.gate.getClockWise()));
+                    add(out, level, s, ground(level, s, at(s, 2, -4)), rack.setValue(DryingRackBlock.FACING, s.gate.getClockWise()));
+                    add(out, level, s, ground(level, s, at(s, -3, -3)), Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP));
+                    BlockState pile = log.setValue(RotatedPillarBlock.AXIS, right.getAxis());
+                    BlockPos a = ground(level, s, at(s, 4, 4)), b = ground(level, s, at(s, 5, 4));
+                    if (add(out, level, s, a, pile) & add(out, level, s, b, pile)) add(out, level, s, a.above(), pile);
+                }
+                if (s.age >= WorldAge.BRONZE) {
+                    // Bronze Age and later: a clay kiln and a quern by the fire
+                    BlockState kiln = Mechanical.KILN.get().defaultBlockState().setValue(KilnBlock.FACING, right);
+                    BlockPos k = ground(level, s, at(s, WORKSHOP[0][0], WORKSHOP[0][1]));
+                    if (free(level, s, k.above()) && add(out, level, s, k, kiln.setValue(KilnBlock.HALF, DoubleBlockHalf.LOWER)))
+                        out.add(new Placement(k.above().immutable(), kiln.setValue(KilnBlock.HALF, DoubleBlockHalf.UPPER)));
+                    add(out, level, s, ground(level, s, at(s, WORKSHOP[1][0], WORKSHOP[1][1])), com.mechanical.Farming.QUERN.get().defaultBlockState());
+                }
             }
-            case 3 -> palisade(out, level, s, zone.post(taiga), zone.stake(taiga));
+            case 3 -> {
+                if (s.clearing == null) palisade(out, level, s, zone.post(taiga), zone.stake(taiga));
+            }
             default -> {}
         }
         return out;
     }
 
     /** Adds a block if its spot is free now (air, plants, snow; no water). */
-    private static boolean add(List<Placement> out, ServerLevel level, BlockPos pos, BlockState state) {
-        if (!level.isLoaded(pos) || !free(level, pos)) return false;
+    private static boolean add(List<Placement> out, ServerLevel level, Settlement s, BlockPos pos, BlockState state) {
+        if (!level.isLoaded(pos) || !free(level, s, pos)) return false;
         out.add(new Placement(pos.immutable(), state));
         return true;
     }
 
     private static boolean free(ServerLevel level, BlockPos pos) {
         return level.getBlockState(pos).canBeReplaced() && level.getFluidState(pos).isEmpty();
+    }
+
+    /** Free, or one of the camp's own blocks that the rebuild being planned takes down. */
+    private static boolean free(ServerLevel level, Settlement s, BlockPos pos) {
+        return s.clearing != null && s.clearing.contains(pos.asLong()) || free(level, pos);
+    }
+
+    /** The ground of a column, looking through the blocks a rebuild being planned takes down (and the air under them). */
+    private static BlockPos ground(ServerLevel level, Settlement s, BlockPos column) {
+        BlockPos g = ground(level, column);
+        if (s.clearing == null) return g;
+        boolean through = false;
+        for (int i = 0; i < 8; i++) {
+            BlockPos below = g.below();
+            boolean ours = s.clearing.contains(below.asLong());
+            if (!ours && !(through && free(level, below))) break;
+            through |= ours;
+            g = below;
+        }
+        return g;
+    }
+
+    /** Camp-local spots of the shelters (stages 1, 1, 2, 2) and of the Bronze Age kiln and quern (stage 2). */
+    private static final int[][] SHELTERS = {{0, 5}, {0, -5}, {-5, 4}, {-5, -4}}, WORKSHOP = {{-1, -3}, {1, -3}};
+
+    /**
+     * Plans the camp's rebuild into {@code age} (AgeRebuild): the shelters (and kiln and quern) of the stages it has finished
+     * come down and go up again in that age's style, on the same spots. Its fire, racks, stores, banner and palisade stay.
+     * Only blocks the camp built are taken down. Sets the camp's age; the pending stage is planned anew in the new style.
+     */
+    static List<Neighbours.Job> rebuild(ServerLevel level, Settlement s, int age) {
+        Direction right = s.gate.getClockWise();
+        s.clearing = new java.util.HashSet<>();
+        for (long key : s.built) {
+            BlockPos p = BlockPos.of(key);
+            int dx = p.getX() - s.centre.getX(), dz = p.getZ() - s.centre.getZ();
+            int x = dx * s.gate.getStepX() + dz * s.gate.getStepZ(), z = dx * right.getStepX() + dz * right.getStepZ();
+            boolean restyled = false;
+            for (int i = 0; i < SHELTERS.length; i++) {
+                if (s.stage >= (i < 2 ? 1 : 2) && Math.abs(x - SHELTERS[i][0]) <= 1 && Math.abs(z - SHELTERS[i][1]) <= 1) restyled = true;
+            }
+            for (int[] w : WORKSHOP) if (s.stage >= 2 && x == w[0] && z == w[1]) restyled = true;
+            if (restyled && !level.getBlockState(p).is(Blocks.DIRT)) s.clearing.add(key); // the dirt made up under a shelter stays
+        }
+        s.age = age;
+        ClimateZone zone = ClimateZone.of(level.getBiome(s.centre));
+        List<Placement> plan = new ArrayList<>();
+        for (int stage = 1; stage <= Math.min(s.stage, 2); stage++) plan.addAll(plan(level, s, stage, zone));
+        java.util.Set<Long> planned = new java.util.HashSet<>();
+        for (Placement p : plan) planned.add(p.pos().asLong());
+        List<Neighbours.Job> jobs = new ArrayList<>();
+        s.clearing.stream().filter(k -> !planned.contains(k)).map(BlockPos::of).sorted(Comparator.comparingInt((BlockPos p) -> p.getY()).reversed())
+                .forEach(p -> jobs.add(new Neighbours.Job(p, level.getBlockState(p), Blocks.AIR.defaultBlockState()))); // roofs first
+        for (Placement p : plan) {
+            BlockState now = level.getBlockState(p.pos());
+            if (!now.equals(p.state())) jobs.add(new Neighbours.Job(p.pos(), s.clearing.contains(p.pos().asLong()) ? now : Blocks.AIR.defaultBlockState(), p.state()));
+        }
+        s.clearing = null;
+        if (s.stage < 3 && !s.started) {
+            s.plan = plan(level, s, s.stage + 1);
+            s.step = 0;
+        }
+        return jobs;
     }
 
     /**
@@ -232,20 +316,52 @@ public final class Settlements {
         BlockPos c = at(s, x, z);
         Direction side = front.getClockWise();
         int y = Integer.MIN_VALUE;
-        for (int a = -1; a <= 1; a++) for (int b = -1; b <= 1; b++) y = Math.max(y, ground(level, c.relative(front, a).relative(side, b)).getY());
+        for (int a = -1; a <= 1; a++) for (int b = -1; b <= 1; b++) y = Math.max(y, ground(level, s, c.relative(front, a).relative(side, b)).getY());
         List<Placement> fill = new ArrayList<>(), tent = new ArrayList<>();
-        boolean roofed = zone == ClimateZone.WARM || zone == ClimateZone.JUNGLE; // a flat roof 2 up on posts
+        boolean hut = s.age >= WorldAge.BRONZE;
+        boolean roofed = hut || zone == ClimateZone.WARM || zone == ClimateZone.JUNGLE; // a flat roof 2 up on posts
         for (int a = -1; a <= 1; a++) {
             for (int b = -1; b <= 1; b++) {
                 BlockPos col = c.relative(front, a).relative(side, b);
-                int g = ground(level, col).getY();
+                int g = ground(level, s, col).getY();
                 BlockPos p = new BlockPos(col.getX(), y, col.getZ());
-                if (y - g > 1 || !level.isLoaded(p) || !free(level, p) || !free(level, p.above())
-                        || roofed && !free(level, p.above(2))) return;
+                if (y - g > 1 || !level.isLoaded(p) || !free(level, s, p) || !free(level, s, p.above())
+                        || roofed && !free(level, s, p.above(2))) return;
                 if (g < y) fill.add(new Placement(p.below(), Blocks.DIRT.defaultBlockState()));
             }
         }
         BlockPos base = new BlockPos(c.getX(), y, c.getZ());
+        if (hut) {
+            // Bronze Age and later: a small wattle hut, posts at the corners, daub (mud brick, bamboo) walls with a door toward
+            // the fire's side, under a roof of thatch (bark in the cold, packed mud where it is warm, leaves in the jungle)
+            BlockState post = zone == ClimateZone.JUNGLE ? Blocks.BAMBOO_BLOCK.defaultBlockState() : zone.stripped(false);
+            BlockState wall = switch (zone) {
+                case WARM -> Blocks.MUD_BRICKS.defaultBlockState();
+                case JUNGLE -> Blocks.BAMBOO_BLOCK.defaultBlockState();
+                default -> Blocks.PACKED_MUD.defaultBlockState();
+            };
+            BlockState top = switch (zone) {
+                case TEMPERATE -> Blocks.HAY_BLOCK.defaultBlockState();
+                case COLD -> zone.barkRoof(true).setValue(com.mechanical.BarkRoofBlock.FLAT, true);
+                case WARM -> Blocks.PACKED_MUD.defaultBlockState();
+                case JUNGLE -> Blocks.JUNGLE_LEAVES.defaultBlockState().setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true);
+            };
+            for (int a = -1; a <= 1; a++) {
+                for (int b = -1; b <= 1; b++) {
+                    BlockPos p = base.relative(front, a).relative(side, b);
+                    boolean corner = Math.abs(a) == 1 && Math.abs(b) == 1, open = b == 0 && a >= 0; // the middle and the door
+                    if (corner || !open) {
+                        tent.add(new Placement(p, corner ? post : wall));
+                        tent.add(new Placement(p.above(), corner ? post : wall));
+                    }
+                }
+            }
+            for (int a = -1; a <= 1; a++) for (int b = -1; b <= 1; b++) tent.add(new Placement(base.relative(front, a).relative(side, b).above(2), top));
+            tent.add(new Placement(base, Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.BROWN).defaultBlockState()));
+            out.addAll(fill);
+            out.addAll(tent);
+            return;
+        }
         if (roofed) {
             BlockState pole = zone.fence(false);
             for (int a = -1; a <= 1; a++) {
@@ -302,15 +418,16 @@ public final class Settlements {
             if (!level.isLoaded(g) || !natural(level.getBlockState(g.below()))) continue; // a tree or a build in the way
             int h = c[0] > 0 && Math.abs(c[1]) == 2 ? 3 : 2;
             boolean ok = true;
-            for (int i = 0; i < h && ok; i++) ok = add(out, level, g.above(i), log.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
-            if (ok) add(out, level, g.above(h), sharp);
+            for (int i = 0; i < h && ok; i++) ok = add(out, level, s, g.above(i), log.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
+            if (ok) add(out, level, s, g.above(h), sharp);
         }
     }
 
     /** Wood, stone and hides a block costs. */
     static int[] cost(BlockState s) {
         Block b = s.getBlock();
-        if (b instanceof RockBlock) return new int[] {0, 1, 0};
+        if (b instanceof RockBlock || s.is(Blocks.PACKED_MUD) || s.is(Blocks.MUD_BRICKS) || b instanceof KilnBlock || b instanceof com.mechanical.QuernBlock) return new int[] {0, 1, 0};
+        if (s.is(Blocks.HAY_BLOCK) || b instanceof com.mechanical.BarkRoofBlock) return new int[] {1, 0, 0};
         if (s.is(Blocks.CAMPFIRE)) return new int[] {2, 0, 0};
         if (b instanceof HangingRackBlock) return new int[] {4, 0, 0};
         if (b instanceof DryingRackBlock) return new int[] {2, 0, 1};
@@ -339,9 +456,14 @@ public final class Settlements {
 
     /** One builder at a time per camp: true if {@code mob} is (now) it. */
     static boolean claim(Settlement s, Tribesperson mob, long now) {
-        long[] cur = BUILDER.get(s.tribe);
+        return claim(s.tribe, mob, now);
+    }
+
+    /** One builder at a time per tribe (camp building and AgeRebuild): true if {@code mob} is (now) it. */
+    static boolean claim(UUID tribe, Tribesperson mob, long now) {
+        long[] cur = BUILDER.get(tribe);
         if (cur != null && cur[0] != mob.getId() && now - cur[1] < 200) return false;
-        BUILDER.put(s.tribe, new long[] {mob.getId(), now});
+        BUILDER.put(tribe, new long[] {mob.getId(), now});
         return true;
     }
 

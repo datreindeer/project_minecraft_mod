@@ -1482,3 +1482,15 @@ Wrought Iron Ingot och Slag efter 8 slag och hammaren slits 16; kilnen värmer o
   Fire Brick kräver redan bälg och kol.
 - **Inte gjort (valfritt):** att beskicka genom toppen (allt läggs i GUI:t), slaggtappning ur valvet medan den brinner,
   att städet krossar malm, en Poor Bronze-variant av städet.
+
+## NPC-byar i bronsåldern (byggd)
+
+När en NPC-stam når bronsåldern (`WorldAge.npcAge`) river den sina gamla byggnader och bygger nya (`people/AgeRebuild.java`,
+detaljer i `docs/seasons-and-tribes.md`, *Ombyggnad av NPC-byar*). Stambyar: långhuset står en kurs högre på stenfot
+(Cobblestone), korsvirke med Stripped Log och Packed Mud, Horn Window och halmtak (Hay Block) över barkfoten. Rundhyddorna
+får stenfot, lerväggar och halmtak, mammutbenhyddorna blir rundhyddor och tältplatserna blir inhägnader av staket med
+grind. Vid samlarna står en Clay Kiln och en Quern. Varmt: husen en kurs högre och verandor med tak av Packed Mud.
+Djungel: plankväggar i pålhusen. Lägren stammarna bygger vid spelarläger byter hudtälten mot små lerhyddor och får Clay
+Kiln och Quern. Ingen spelare nära: byn byts på en gång. Spelare nära: en stammedlem bygger om block för block.
+Spelarblock rörs inte. Advancement **Bronze Age Neighbours**.
+
