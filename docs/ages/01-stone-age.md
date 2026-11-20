@@ -1290,7 +1290,7 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Bear Den | Taiga, skog, dark forest | 120 | Grotta i en sluttning med mossiga stenblock vid öppningen, eller en grop under rotkakan på ett omfallet träd. Bädd av mossa och löv, hängande rötter, ben och en kruka; utanför en trampad stig, ett träd med klösmärken och rester av ett mål. Öppningen är minst 3 block bred, och en **Brown Bear** bor där och går ut på dagen |
 | Standing Stones | Slätt, savann, meadow | 100 | Stencirkel med altarsten, lite flinta och ben |
 | Burial Mound | Slätt, meadow, taiga | 180 | Gravhög med gång in, skalle och ben; bone tools, horn, antler |
-| Fishing Camp | Floder, stränder | 40 (kräver vatten) | Torkställningar, brygga; krokar, fisk, sällan Crude Fishing Rod |
+| Fishing Camp | Floder, stränder | 24 (letar upp en strandkant i chunken) | Torkställningar, brygga; krokar, fisk, sällan Crude Fishing Rod |
 | Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |

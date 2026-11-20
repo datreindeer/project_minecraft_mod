@@ -24,7 +24,16 @@ final class FishingCamp extends StoneAgeFeature {
 
     @Override
     public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
-        BlockPos c = surface(level, origin.getX(), origin.getZ());
+        // a river or beach chunk is mostly water: look for a bank anywhere in the chunk, not just at the one random spot
+        int x0 = origin.getX() & ~15, z0 = origin.getZ() & ~15;
+        for (int i = 0; i < 24; i++) {
+            BlockPos c = i == 0 ? surface(level, origin.getX(), origin.getZ()) : surface(level, x0 + 2 + random.nextInt(12), z0 + 2 + random.nextInt(12));
+            if (tryCamp(level, random, c)) return true;
+        }
+        return false;
+    }
+
+    private static boolean tryCamp(WorldGenLevel level, RandomSource random, BlockPos c) {
         if (!flat(level, c, 2, 1)) return false;
         // open water 3-5 blocks away, its surface level with the bank or up to 2 below it
         Direction toWater = null;

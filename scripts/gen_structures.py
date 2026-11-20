@@ -23,7 +23,7 @@ STRUCTURES = {
     "bear_den": (anyof("#minecraft:is_taiga", ["minecraft:forest", "minecraft:dark_forest", "minecraft:windswept_forest"]), 120),
     "standing_stones": (["minecraft:plains", "minecraft:sunflower_plains", "minecraft:savanna", "minecraft:savanna_plateau", "minecraft:meadow"], 100),
     "burial_mound": (["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:taiga", "minecraft:snowy_taiga"], 180),
-    "fishing_camp": (["minecraft:river", "minecraft:frozen_river", "minecraft:beach", "minecraft:snowy_beach"], 40),
+    "fishing_camp": (["minecraft:river", "minecraft:frozen_river", "minecraft:beach", "minecraft:snowy_beach"], 24),
     "flint_quarry": (["minecraft:plains", "minecraft:sunflower_plains", "minecraft:river", "minecraft:stony_shore", "minecraft:windswept_hills"], 120),
     "mammoth_bone_hut": (["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove"], 220),
     "hermits_hut": (["minecraft:dark_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga",
