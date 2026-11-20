@@ -23,7 +23,8 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Tribespeople use the player model and 64x64 player-format skins: wide arms for men, slim for women.
  * Vanilla draws every AvatarRenderState with the player renderer picked by state.skin, so this renderer only
- * fills the state; the skin (texture + arm width) goes into state.skin.
+ * fills the state; the skin (texture + arm width) goes into state.skin. The skin is the person's climate outfit, dyed in
+ * their tribe's colour (TintedSkin).
  */
 public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRenderState, PlayerModel> {
     private static final Map<Identifier, PlayerSkin> SKINS = new HashMap<>();
@@ -45,7 +46,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         state.rightArmPose = armPose(entity, HumanoidArm.RIGHT);
         state.arrowCount = entity.getArrowCount();
         boolean slim = entity.isWoman();
-        state.skin = SKINS.computeIfAbsent(entity.texture(), t -> PlayerSkin.insecure(
+        state.skin = SKINS.computeIfAbsent(TintedSkin.of(entity.texture(), entity.colour()), t -> PlayerSkin.insecure(
                 new ClientAsset.ResourceTexture(t, t), null, null, slim ? PlayerModelType.SLIM : PlayerModelType.WIDE));
     }
 

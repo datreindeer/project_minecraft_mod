@@ -28,6 +28,9 @@ public final class People {
     /** Palisade stake tops for tribe villages (items come from Mechanical.registerMissingBlockItems). */
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_OAK_LOG = sharpened("sharpened_oak_log", MapColor.WOOD);
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_SPRUCE_LOG = sharpened("sharpened_spruce_log", MapColor.PODZOL);
+    /** Warm-climate palisades (acacia) and jungle ones (bundled bamboo), see ClimateZone. */
+    public static final DeferredBlock<SharpenedLogBlock> SHARPENED_ACACIA_LOG = sharpened("sharpened_acacia_log", MapColor.COLOR_ORANGE);
+    public static final DeferredBlock<SharpenedLogBlock> SHARPENED_BAMBOO_BLOCK = sharpened("sharpened_bamboo_block", MapColor.COLOR_YELLOW);
 
     /** Sewn hides: tent walls, and the slopes and ridge of an A-frame tent (tribe camps build them, see Neighbours). */
     public static final DeferredBlock<net.minecraft.world.level.block.Block> HIDE_CANVAS = BLOCKS.registerSimpleBlock("hide_canvas",

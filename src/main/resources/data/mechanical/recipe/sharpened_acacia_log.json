@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:acacia_log",
+    "minecraft:flint"
+  ],
+  "result": {
+    "id": "mechanical:sharpened_acacia_log"
+  }
+}

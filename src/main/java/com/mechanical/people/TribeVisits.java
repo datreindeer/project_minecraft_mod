@@ -61,6 +61,12 @@ public final class TribeVisits {
         schedule(level, data, now);
         for (Visit v : List.copyOf(data.visits)) update(level, data, v, now);
         Settlements.tick(level, data, now);
+        // Peoples of the World: a player inside a tribe village has seen that climate's villages
+        for (ServerPlayer p : level.players()) {
+            if (p.isSpectator()) continue;
+            var village = com.mechanical.worldgen.TribeVillageStructure.villageAt(level, p.blockPosition());
+            if (village != null) award(p, "tribe_climates", village.climate().id());
+        }
     }
 
     private static long dayTime(ServerLevel level) {
@@ -347,9 +353,14 @@ public final class TribeVisits {
 
     /** Grants the advancement mechanical:wilderness/{@code id} (not to fake players). */
     static void award(ServerPlayer player, String id) {
+        award(player, id, "done");
+    }
+
+    /** Grants one criterion of mechanical:wilderness/{@code id}. */
+    static void award(ServerPlayer player, String id, String criterion) {
         if (player instanceof net.neoforged.neoforge.common.util.FakePlayer) return;
         var holder = player.level().getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Mechanical.MODID, "wilderness/" + id));
-        if (holder != null) player.getAdvancements().award(holder, "done");
+        if (holder != null) player.getAdvancements().award(holder, criterion);
     }
 
     /** /tribes visit: a band sets out for the camp where you stand now (ops, for testing); /tribes info: the camps nearby. */

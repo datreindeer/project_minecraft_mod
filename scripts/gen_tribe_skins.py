@@ -1,6 +1,11 @@
-"""Skins for the Stone Age tribespeople (mechanical:tribesperson): 64x64 player-format skins, 4 per role
+"""Skins for the Stone Age tribespeople (mechanical:tribesperson): 64x64 player-format skins, 4 per role and climate
 (0, 2: men with wide arms; 1, 3: women with slim arms), painted pixel by pixel: hide and fur clothing, bone and
-tooth necklaces, braids, beards, war paint. Run: python scripts/gen_tribe_skins.py [preview_dir]"""
+tooth necklaces, braids, beards, war paint. Each climate (people/ClimateZone.java) dresses its own way on top of the role:
+cold: fur hoods, long hide coats with fur trim, fur trousers and mittens; temperate: hide and leather, woven aprons;
+warm: light linen wraps and kilts, head cloths, sandals; jungle: loincloths and grass skirts, feather headdresses, paint.
+Temperate skins go in tribesperson/, the others in tribesperson/<climate>/. Next to every skin a "_tint" mask marks the
+dyed parts (headbands, sashes, coat bands, loincloths) in grey; client/people/TintedSkin multiplies them by the tribe's
+colour. Run: python scripts/gen_tribe_skins.py [preview_dir]"""
 import random
 import sys
 from pathlib import Path
@@ -62,6 +67,18 @@ OCHRE = hexc("9c3420")
 CHARCOAL = hexc("2a2622")
 BLUE_CLAY = hexc("4a6a86")
 AMBER = hexc("c8862a")
+LINEN = hexc("d9cba8")       # pale woven plant fibre (warm climates)
+LEAF = hexc("6f8a3c")        # grass/leaf skirts and aprons (jungle)
+WHITE_CLAY = hexc("e4ddd0")
+FEATHERS = [hexc("c43a2a"), hexc("2f8a4a"), hexc("2e5fa8"), hexc("e0b830"), hexc("f0ece2"), hexc("3a3030")]
+
+
+class Dye(tuple):
+    """The tribe's colour: painted in this stand-in colour and marked in the tint mask."""
+
+
+DYE = Dye(hexc("b04a30"))
+ZONES = ["cold", "temperate", "warm", "jungle"]
 
 
 class Skin:
@@ -72,6 +89,8 @@ class Skin:
         self.r = random.Random(seed)
         self.slim = slim
         self.base = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+        self.mask = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+        self.dyed = None   # set by Look.tint while a pixel is in the tribe's colour: its brightness
         self.noise = {}
 
     def n(self, key, amt):
@@ -98,12 +117,28 @@ class Skin:
 
     def put(self, tx, ty, c):
         self.base.putpixel((tx, ty), clamp(c) + (255,))
+        if self.dyed is None:
+            self.mask.putpixel((tx, ty), (0, 0, 0, 0))
+        else:
+            g = max(0, min(255, round(235 * self.dyed)))
+            self.mask.putpixel((tx, ty), (g, g, g, 255))
+        self.dyed = None
+
+    def darken(self, tx, ty, f):
+        """Shades a painted pixel (and its mask grey, if dyed)."""
+        self.base.putpixel((tx, ty), clamp(shade(self.base.getpixel((tx, ty)), f)) + (255,))
+        m = self.mask.getpixel((tx, ty))
+        if m[3]:
+            g = max(0, min(255, round(m[0] * f)))
+            self.mask.putpixel((tx, ty), (g, g, g, 255))
 
     def build(self, look):
+        look.s = self
         for part in BASE:
             kinds = {}
             for face, x, y, fw, fh, tx, ty in self.each(part):
                 self.kind = "cloth"
+                self.dyed = None
                 self.put(tx, ty, look.base(self, part, face, x, y, fw, fh))
                 kinds[(face, x, y)] = (self.kind, tx, ty, fw, fh)
             # sewn edges: garment pixels next to bare skin get a darker rim
@@ -113,10 +148,10 @@ class Skin:
                         continue
                     nb = [kinds.get((face, x + dx, y + dy), ("", 0, 0, 0, 0))[0] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))]
                     if "skin" in nb:
-                        c = self.base.getpixel((tx, ty))
-                        self.put(tx, ty, shade(c, 0.8))
+                        self.darken(tx, ty, 0.8)
             over = {}
             for face, x, y, fw, fh, tx, ty in self.each(part, overlay=True):
+                self.dyed = None
                 c = look.over(self, part, face, x, y, fw, fh)
                 if c is not None:
                     self.put(tx, ty, c)
@@ -124,7 +159,7 @@ class Skin:
             # outer layer: the lower edge of fur, hair and beads is in shadow
             for (face, x, y), (tx, ty) in over.items():
                 if face not in ("top", "bottom") and (face, x, y + 1) not in over:
-                    self.put(tx, ty, shade(self.base.getpixel((tx, ty)), 0.82))
+                    self.darken(tx, ty, 0.82)
         return self.base
 
 
@@ -176,6 +211,30 @@ class Look:
         self.quiver = False
         self.pouch = None
         self.trim = None               # fringe/edge colour
+        self.top_mat = "hide"          # what the top is made of: hide, fur, weave
+        self.skirt = None              # loincloth / kilt / grass skirt from the belt down (colour), drawn over everything
+        self.skirt_mat = "hide"
+        self.hood = None               # fur hood (colour) over the head; hood_trim rims the face
+        self.hood_trim = None
+        self.headwrap = None           # cloth wound round the head (colour)
+        self.headdress = None          # feathers on the crown and down the back (list of colours)
+        self.band = None               # a band across the coat and round the cuffs (colour)
+        self.mittens = None            # fur mittens (colour)
+        self.armband = None            # a band round the upper arms (colour)
+        self.body_paint = None         # dots and bars on bare skin (colour)
+        self.barefoot = False
+        self.s = None
+
+    def tint(self, col, f):
+        """col shaded by f; the tribe's colour (DYE) also goes into the tint mask."""
+        self.s.dyed = f if isinstance(col, Dye) else None
+        return shade(col, f)
+
+    def sh(self, c, f):
+        """Shades a pixel already painted (keeps a dyed pixel's mask in step)."""
+        if self.s.dyed is not None:
+            self.s.dyed *= f
+        return shade(c, f)
 
     # ---------- base layer ----------
     def skin_px(self, s, part, face, x, y, fw, fh):
@@ -202,37 +261,48 @@ class Look:
             # streaky fur: vertical tufts, light tips
             streak = s.n(("fs",) + key[:3] + (x,), 0.12) + s.n(key + ("f",), 0.08)
             tip = 1.08 if (y + x * 3) % 4 == 0 else 1.0
-            return shade(col, f * (1 + streak) * tip)
+            return self.tint(col, f * (1 + streak) * tip)
         if kind == "weave":
             # woven grass/bark: checker of light and dark strands
             k = 1.1 if (x + y) % 2 == 0 else 0.88
-            return shade(col, f * k * (1 + s.n(key + ("w",), 0.05)))
+            return self.tint(col, f * k * (1 + s.n(key + ("w",), 0.05)))
         if kind == "cord":
             k = 1.12 if (x + y) % 2 == 0 else 0.84
-            return shade(col, f * k)
+            return self.tint(col, f * k)
         # hide/leather: soft mottling and the odd darker patch
         m = s.n(key + ("h",), 0.06) + (s.n(("patch",) + key[:2] + (x // 2, y // 3), 0.05))
-        return shade(col, f * (1 + m))
+        return self.tint(col, f * (1 + m))
 
     def cloth(self, s, part, face, x, y, fw, fh, Y):
         key = (part, face, x, y)
         arm = part in ("rarm", "larm")
         leg = part in ("rleg", "lleg")
+        tm = self.top_mat
         if face == "top" and part == "body":
-            return None if self.top is None else self.material(s, self.top, "hide", key, x, y, face)
+            return None if self.top is None else self.material(s, self.top, tm, key, x, y, face)
         if face == "bottom" and leg:
+            if self.barefoot:
+                return shade(self.skin, 0.8)
             return self.material(s, self.boots or LEATHER, "fur", key, x, y, face)
         if arm:
+            if self.mittens and (Y >= 11 or face == "bottom"):
+                return self.material(s, self.mittens, "fur", key, x, y, face)
             if self.bracers and 8 <= Y <= 10 and face != "top":
                 c = self.material(s, self.bracers, "hide", key, x, y, face)
-                return shade(c, 0.8) if Y == 8 else c
+                return self.sh(c, 0.8) if Y == 8 else c
             if self.wraps and Y == 9 and not self.bracers and face != "top":
                 return self.material(s, self.wraps, "cord", key, x, y, face)
+            if self.band and self.sleeves >= 12 and Y == 10 and face != "top":
+                return self.material(s, self.band, "weave", key, x, y, face)  # dyed cuff
             if self.top is not None and (Y < self.sleeves or (face == "top" and self.sleeves)):
-                c = self.material(s, self.top, "hide", key, x, y, face)
-                return shade(c, 0.82) if Y == self.sleeves - 1 else c
+                c = self.material(s, self.top, tm, key, x, y, face)
+                return self.sh(c, 0.82) if Y == self.sleeves - 1 else c
+            if self.armband and Y in (2, 3) and face != "top":
+                return self.material(s, self.armband, "cord" if Y == 3 else "hide", key, x, y, face)
             if face == "bottom":  # hands
                 return shade(self.skin, 0.85)
+            if self.body_paint and Y in (5, 6) and face in ("front", "right", "left") and (x + Y) % 2 == 0:
+                return shade(self.body_paint, side_shade(face))
             return None
         if part == "body":
             if self.top is None:
@@ -242,51 +312,65 @@ class Look:
             elif self.top_kind == "wrap" and face in ("front", "back") and Y < 5:
                 # one-shoulder wrap: over the left shoulder only (texture x: front left side is x>=4)
                 edge = (x - 4 + Y) if face == "front" else (3 - x + Y)
-                c = self.material(s, self.top, "hide", key, x, y, face) if edge >= 0 else None
+                c = self.material(s, self.top, tm, key, x, y, face) if edge >= 0 else None
             else:
-                c = self.material(s, self.top, "hide", key, x, y, face)
+                c = self.material(s, self.top, tm, key, x, y, face)
                 if face == "front" and Y == 0 and 2 <= x <= 5 and self.top_kind != "robe":
                     c = None  # neckline
-                if face == "front" and self.top_kind == "robe" and x == 3 and 3 <= Y:
-                    c = shade(c, 0.78)  # robe overlap seam
+                if c is not None and face == "front" and self.top_kind == "robe" and x == 3 and 3 <= Y:
+                    c = self.sh(c, 0.78)  # robe overlap seam
             if c is None:
                 s.kind = "skin"
+                s.dyed = None
                 c = self.skin_px(s, part, face, x, y, fw, fh)
                 if face == "front" and Y in (3, 4) and x in (1, 2, 5, 6):  # chest shading
                     c = shade(c, 0.94)
+                if self.body_paint and face in ("front", "back") and ((Y == 2 and x in (1, 6)) or (Y == 6 and 2 <= x <= 5 and x % 2 == 0)):
+                    c = shade(self.body_paint, side_shade(face))
+            if self.band and self.top is not None and Y == 5 and face in ("front", "back", "left", "right"):
+                c = self.material(s, self.band, "weave", key, x, y, face)  # dyed band across the coat
+            if self.skirt and Y >= 9:
+                c = self.material(s, self.skirt, self.skirt_mat, key, x, y, face)
             if self.apron and face == "front" and 8 <= Y <= 11 and 1 <= x <= 6:
                 c = self.material(s, self.apron, "weave", key, x, y, face)
             if self.strap and face in ("front", "back") and self.strap_hit(face, x, Y):
                 c = self.material(s, self.strap, "hide", key, x, y, face)
                 if (Y + x) % 3 == 0:
-                    c = shade(c, 0.8)  # stitches
+                    c = self.sh(c, 0.8)  # stitches
             if self.belt and Y == 8:
                 c = self.material(s, self.belt, "cord" if self.belt == CORD else "hide", key, x, y, face)
                 if face == "front" and x == 3:
-                    c = BONE  # bone toggle
+                    c = self.tint(BONE, 1.0)  # bone toggle
             if self.pouch and face == "front" and Y in (9, 10) and x in (5, 6):
-                c = shade(self.pouch, 0.9 if Y == 10 else 1.0)
+                c = self.tint(self.pouch, 0.9 if Y == 10 else 1.0)
             if self.trim and Y == 11 and face in ("front", "back", "left", "right") and x % 2 == 0:
-                c = self.trim
+                c = self.tint(self.trim, side_shade(face))
             return c
         if leg:
-            if Y < self.skirt_to and self.top is not None and self.top_kind != "vest":
-                c = self.material(s, self.top, "hide", key, x, y, face)
+            if self.skirt and Y < self.skirt_to:
+                c = self.material(s, self.skirt, self.skirt_mat, key, x, y, face)
                 if Y == self.skirt_to - 1:
-                    c = shade(c, 0.78) if (x + y) % 2 == 0 else shade(c, 0.9)  # ragged hem
+                    c = self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
+                return c
+            if Y < self.skirt_to and self.top is not None and self.top_kind != "vest":
+                c = self.material(s, self.top, tm, key, x, y, face)
+                if Y == self.skirt_to - 1:
+                    c = self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
                 return c
             if self.top_kind == "vest" and Y < 14 and self.legs:
                 return self.material(s, shade(self.legs, 0.92), "hide", key, x, y, face)
             if self.boots and Y >= 21:
                 c = self.material(s, self.boots, "fur", key, x, y, face)
-                return shade(c, 0.85) if Y == 21 else c
+                return self.sh(c, 0.85) if Y == 21 else c
             if self.legs and Y < self.legs_to:
                 c = self.material(s, self.legs, "hide", key, x, y, face)
                 if face in ("right", "left") and x == 2:  # side seam
-                    c = shade(c, 0.85)
+                    c = self.sh(c, 0.85)
                 return c
             if self.wraps and Y >= self.legs_to and (Y + x // 2) % 2 == 0:
                 return self.material(s, self.wraps, "cord", key, x, y, face)
+            if self.body_paint and Y in (16, 17) and face == "front" and x in (1, 2):
+                return shade(self.body_paint, side_shade(face))
             return None
         return None
 
@@ -307,6 +391,20 @@ class Look:
         skin = tuple(v + s.n(key + ("sk",), 4) for v in skin)
         long_hair = self.hair_style in ("long", "braids", "bun", "shaggy")
         bald = self.hair_style == "bald_top"
+        if self.hood:
+            # the inside of a fur hood: all round the head, a rim of fur round the face
+            if face in ("top", "back", "right", "left"):
+                return self.material(s, self.hood, "fur", key, x, y, face)
+            if face == "front" and (y == 0 or x in (0, 7)):
+                return self.material(s, self.hood_trim or self.hood, "fur", key, x, y, face)
+        if self.headwrap and face != "bottom":
+            # a cloth wound round the head down to the brows; long hair hangs out below it at the back
+            fx = x if face == "right" else 7 - x
+            if face == "top" or (face == "back" and y < 4) or (face in ("right", "left") and (y < 3 or (y == 3 and fx <= 2))) \
+                    or (face == "front" and y < 2):
+                c = self.material(s, self.headwrap, "weave", key, x, y, face)
+                lower = (face == "front" and y == 1) or (face == "back" and y == 3) or (face in ("right", "left") and y == 2)
+                return self.sh(c, 0.84) if lower else c
         if face == "top":
             if bald:
                 return shade(skin, 1.02) if 2 <= x <= 5 and 1 <= y <= 6 else self.hair_px(s, key, x, y, 1.05)
@@ -347,7 +445,7 @@ class Look:
         if long_hair and x in (0, 7) and y <= 6:
             return self.hair_px(s, key, x, y, 0.86)  # hair framing the face
         if self.headband and y == 1 and self.hair_style not in ("bald_top",):
-            return shade(self.headband, 1.0 if x % 3 else 0.82)
+            return self.tint(self.headband, 1.0 if x % 3 else 0.82)
         if y == 3 and x in (1, 2, 5, 6):  # brows
             return shade(self.hair, 1.15 if self.hair in (HAIR["white"], HAIR["grey"]) else 0.9)
         if y == 4:
@@ -410,14 +508,14 @@ class Look:
             if self.fur_kind == "cape" and face in ("back", "right", "left") and Y <= 10:
                 c = self.material(s, self.fur, "fur", key, x, y, face)
                 if Y == 10 or (face != "back" and Y > 6):
-                    return None if (x + Y) % 2 else shade(c, 0.8)
+                    return None if (x + Y) % 2 else self.sh(c, 0.8)
                 return c
             if self.fur_kind in ("cape", "shoulders", "collar") and Y <= (1 if self.fur_kind == "collar" else 2) and face != "bottom":
                 if face == "front" and 2 <= x <= 5 and Y >= 1 and self.fur_kind != "collar":
                     pass
                 else:
                     c = self.material(s, self.fur, "fur", key, x, y, face)
-                    return shade(c, 0.84) if Y >= 1 and (x % 2) else c
+                    return self.sh(c, 0.84) if Y >= 1 and (x % 2) else c
             if self.necklace and face == "front":
                 c = self.neck_px(x, Y)
                 if c is not None:
@@ -436,7 +534,7 @@ class Look:
                 c = self.material(s, self.fur, "fur", key, x, y, face)
                 return c if Y == 0 or face == "top" or x % 2 == 0 else None
             if self.bracers and face != "top" and Y == 10 and x % 2 == 0:
-                return shade(self.bracers, 0.75)  # laced edge
+                return self.tint(self.bracers, 0.75)  # laced edge
             return None
         if leg:
             if self.fur_kind == "cape" and False:
@@ -445,16 +543,17 @@ class Look:
                 if face == "bottom":
                     return None
                 return self.material(s, self.boots, "fur", key, x, y, face)
-            if self.top is not None and self.top_kind != "vest" and Y == self.skirt_to and face not in ("top", "bottom") and x % 2 == 0:
-                return shade(self.top, 0.88 * side_shade(face))  # fringe
+            hem = self.skirt or (self.top if self.top is not None and self.top_kind != "vest" else None)
+            if hem is not None and Y == self.skirt_to and face not in ("top", "bottom") and x % 2 == 0:
+                return self.tint(hem, 0.88 * side_shade(face))  # fringe
             return None
         return None
 
     def braid_px(self, Y, x):
         k = 1.0 if (Y + x) % 2 == 0 else 0.72
         if Y == 3:
-            return shade(self.headband or CORD, 1.0)  # tied off
-        return shade(self.hair, k)
+            return self.tint(self.headband or CORD, 1.0)  # tied off
+        return self.tint(self.hair, k)
 
     def neck_px(self, x, Y):
         kind = self.necklace
@@ -490,6 +589,29 @@ class Look:
     def hat(self, s, face, x, y, key):
         style = self.hair_style
         fx = x if face == "right" else 7 - x
+        if self.hood:
+            # the hood's outer fur; the trim stands out round the face
+            if face == "bottom":
+                return None
+            if face == "front":
+                return self.material(s, self.hood_trim or self.hood, "fur", key, x, y, face) if (y == 0 or x in (0, 7)) else None
+            if face != "top" and y == 7 and x % 2:
+                return None  # shaggy lower edge
+            return self.material(s, self.hood, "fur", key, x, y, face)
+        if self.headwrap:
+            if face == "top" and 1 <= x <= 6 and 1 <= y <= 6:
+                return self.material(s, self.headwrap, "weave", key, x, y, face)  # wound up high
+            if face == "back" and x in (3, 4) and 1 <= y <= 5:
+                return self.tint(self.headwrap, (0.82 if x == 4 else 0.95) * (0.9 if y == 5 else 1.0))  # the loose end
+            if face in ("right", "left", "front", "back") and y == 1 and x % 3 != 0:
+                return self.material(s, self.headwrap, "weave", key, x, y, face)  # folds
+        if self.headdress:
+            feathers = self.headdress
+            if face == "top" and y >= 5 and 1 <= x <= 6:
+                return self.tint(feathers[x % len(feathers)], 1.0 if y == 5 else 0.88)
+            if face == "back" and y <= 4 and x % 2 == 0:
+                col = feathers[(x // 2) % len(feathers)]
+                return self.tint(col, 1.12 if y == 0 else 1.0 - 0.05 * y)  # light tips
         if face == "top":
             if style == "shaggy" and (x + y) % 3 != 0:
                 return self.hair_px(s, key, x, y, 1.12)
@@ -501,7 +623,7 @@ class Look:
         if face == "bottom":
             return None
         if self.headband and y == 2 and face in ("right", "left", "back") and style != "bald_top":
-            return shade(self.headband, 0.95 if (x + y) % 2 else 0.8)
+            return self.tint(self.headband, 0.95 if (x + y) % 2 else 0.8)
         if self.feather and face == "left" and fx == 1 and y <= 2:
             return [hexc("f0ece2"), hexc("e0dccf"), hexc("3a3030")][y]
         if style == "long" and face in ("right", "left") and fx <= 4 and y >= 2:
@@ -509,7 +631,7 @@ class Look:
         if style == "long" and face == "back" and y >= 1:
             return self.hair_px(s, key, x, y, 0.85 + (0.08 if x % 2 else 0))
         if style == "braids" and face in ("right", "left") and fx in (4, 5) and y >= 3:
-            return self.braid_px(y, fx) if y < 7 else shade(self.headband or CORD, 1.0)
+            return self.braid_px(y, fx) if y < 7 else self.tint(self.headband or CORD, 1.0)
         if style == "bun" and face == "back" and 2 <= x <= 5 and y <= 2:
             return self.hair_px(s, key, x, y, 1.0 if (x + y) % 2 else 0.8)
         if style == "shaggy" and face in ("right", "left", "back") and y <= 4 and (x * 7 + y) % 3 != 0:
@@ -606,6 +728,120 @@ def person(role, i):
     return L
 
 
+def dress(L, zone, i):
+    """Dresses a person (role details already set by person()) for a climate. The role's tools of the trade stay: the
+    hunter's quiver, strap, fang necklace and war paint, the gatherer's apron and pouch, the fisher's fishbone necklace,
+    the woodcutter's bracers, the elder's robe and amber; what changes is the clothing under them. Every skin carries
+    some of the tribe's colour (DYE)."""
+    r = random.Random(f"{L.role}-{i}-{zone}")
+    role, woman = L.role, L.woman
+    if zone == "temperate":
+        # as before; the headband, the gatherer women's hem and the elder's trim take the tribe's colour
+        if L.headband is not None:
+            L.headband = DYE
+        if L.trim is not None:
+            L.trim = DYE
+        if L.headband is None and L.trim is None:
+            L.belt = DYE
+        return L
+    if zone == "cold":
+        L.skin = SKIN[["pale", "light", "tan", "light"][i]]
+        L.hair = HAIR[pick(r, ["black", "darkbrown", "brown", "blond", "darkbrown"])] if role != "elder" else L.hair
+        coat = {"hunter": [HIDE_DARK, HIDE_GREY, HIDE_RED, HIDE_DARK], "gatherer": [HIDE_GREY, HIDE_LIGHT, HIDE, HIDE_LIGHT],
+                "fisher": [HIDE_GREY, HIDE, HIDE_DARK, HIDE_GREY], "woodcutter": [LEATHER, HIDE_DARK, HIDE_RED, LEATHER],
+                "elder": [FUR_BROWN, FUR_GREY, FUR_WHITE, FUR_BROWN]}[role][i]
+        L.top, L.top_mat = coat, "fur" if role == "elder" else "hide"
+        L.top_kind = "robe" if role == "elder" else "tunic"
+        L.sleeves = 12
+        L.skirt_to = 21 if role == "elder" else 15
+        L.legs, L.legs_to = pick(r, [FUR_BROWN, LEATHER, FUR_GREY]), 22
+        L.boots = pick(r, [FUR_WHITE, FUR_GREY, FUR_BROWN])
+        L.wraps = None
+        L.trim = FUR_WHITE
+        L.band = DYE
+        L.mittens = pick(r, [FUR_BROWN, FUR_GREY]) if i % 2 == 0 else None
+        if i == 3 and role != "elder":
+            # hood down: a fur collar and the tribe's headband show
+            L.hood = None
+            L.fur, L.fur_kind = pick(r, [FUR_WHITE, FUR_GREY]), "collar"
+            L.headband = DYE
+        else:
+            L.hood = pick(r, [FUR_BROWN, FUR_GREY, FUR_WHITE, FUR_RED]) if role != "elder" else FUR_WHITE
+            L.hood_trim = FUR_WHITE if L.hood != FUR_WHITE else FUR_GREY
+            L.headband = None
+            if L.fur_kind == "collar":
+                L.fur_kind = None  # the hood covers it
+        if role == "hunter":
+            L.fur_kind = "cape" if L.fur_kind == "cape" else "shoulders"
+            L.fur = pick(r, [FUR_GREY, FUR_WHITE, FUR_BROWN])
+        if L.top_kind == "vest":
+            L.top_kind = "tunic"
+        L.feather = False
+        return L
+    if zone == "warm":
+        L.skin = SKIN[[["brown", "dark", "olive", "tan"], ["olive", "brown", "dark", "tan"]][i % 2 == 1][i]]
+        L.hair = HAIR[pick(r, ["black", "black", "darkbrown"])] if role != "elder" else L.hair
+        L.fur, L.fur_kind = None, None
+        L.top_mat = "weave"
+        if role == "elder":
+            L.top, L.top_kind, L.sleeves, L.skirt_to = LINEN, "robe", 4, 21
+            L.trim = DYE
+        elif woman:
+            L.top, L.top_kind, L.sleeves = pick(r, [LINEN, HIDE_LIGHT]), "wrap", 0
+            L.skirt, L.skirt_mat, L.skirt_to = LINEN, "weave", 17
+        else:
+            L.top = None if role in ("hunter", "fisher") else LINEN
+            L.top_kind, L.sleeves = "vest", 0
+            L.skirt, L.skirt_mat, L.skirt_to = pick(r, [LINEN, HIDE_LIGHT]), "weave", 15
+        L.legs, L.boots = None, None
+        L.wraps, L.legs_to = CORD, 22  # sandal straps
+        L.hood = None
+        L.headband = None
+        if i in (0, 2):
+            L.headwrap = DYE
+            L.strap = L.strap or LINEN
+        else:
+            L.headwrap = pick(r, [LINEN, HIDE_LIGHT])
+            if L.strap is None:
+                L.strap = DYE  # a sash in the tribe's colour
+            else:
+                L.belt = DYE
+        L.feather = False
+        return L
+    # jungle
+    L.skin = SKIN[[["brown", "dark", "olive", "dark"], ["dark", "brown", "olive", "brown"]][role in ("gatherer", "elder")][i]]
+    L.hair = HAIR[pick(r, ["black", "black", "darkbrown"])] if role != "elder" else L.hair
+    L.fur, L.fur_kind = None, None
+    L.legs, L.boots, L.wraps = None, None, None
+    L.barefoot = True
+    L.sleeves = 0
+    L.hood = None
+    L.top_mat = "hide"
+    if role == "elder":
+        L.top, L.top_kind = (HIDE_LIGHT, "wrap") if woman else (None, "vest")
+        L.fur, L.fur_kind = FEATHERS[1], "cape"  # a cloak of parrot feathers
+        L.skirt, L.skirt_mat, L.skirt_to = DYE, "hide", 20
+        L.trim = None
+    elif woman:
+        L.top, L.top_kind = pick(r, [HIDE_LIGHT, HIDE]), "wrap"
+        L.skirt, L.skirt_mat, L.skirt_to = LEAF, "weave", 17
+        L.trim = DYE
+    else:
+        L.top, L.top_kind = None, "vest"
+        L.skirt, L.skirt_mat, L.skirt_to = DYE, "hide", 14  # loincloth
+        L.armband = DYE if L.bracers is None else None
+        L.trim = None
+    if L.apron is not None:
+        L.apron = LEAF
+    L.headband = DYE
+    L.headdress = [FEATHERS[(i + k) % 4] for k in range(3)] + [DYE]
+    L.body_paint = pick(r, [WHITE_CLAY, OCHRE, CHARCOAL])
+    if L.necklace is None:
+        L.necklace = "shell"
+    L.feather = False
+    return L
+
+
 ROLES = ["hunter", "gatherer", "fisher", "woodcutter", "elder"]
 
 
@@ -638,34 +874,52 @@ def flat_view(img, slim, back=False):
 
 
 def build():
-    OUT.mkdir(parents=True, exist_ok=True)
     made = {}
-    for role in ROLES:
-        for i in range(4):
-            L = person(role, i)
-            img = Skin(f"{role}{i}", L.woman).build(L)
-            img.save(OUT / f"{role}_{i}.png")
-            made[(role, i)] = (img, L.woman)
+    for zone in ZONES:
+        out = OUT if zone == "temperate" else OUT / zone
+        out.mkdir(parents=True, exist_ok=True)
+        for role in ROLES:
+            for i in range(4):
+                L = dress(person(role, i), zone, i)
+                sk = Skin(f"{role}{i}{zone}", L.woman)
+                img = sk.build(L)
+                assert sk.mask.getbbox() is not None, f"{zone}/{role}_{i}: nothing in the tribe's colour"
+                img.save(out / f"{role}_{i}.png")
+                sk.mask.save(out / f"{role}_{i}_tint.png")
+                made[(zone, role, i)] = (img, sk.mask, L.woman)
     return made
+
+
+def dyed(img, mask, rgb):
+    """img with the masked pixels in colour rgb, as client/people/TintedSkin does in game."""
+    out = img.copy()
+    for y in range(64):
+        for x in range(64):
+            m = mask.getpixel((x, y))
+            if m[3]:
+                a = out.getpixel((x, y))[3]
+                out.putpixel((x, y), tuple(c * m[0] // 255 for c in rgb) + (a,))
+    return out
+
+
+# a few DyeColor texture colours for the preview
+PREVIEW_DYES = [(0xb0, 0x2e, 0x26), (0x3c, 0x44, 0xaa), (0x5e, 0x7c, 0x16), (0xf9, 0x80, 0x1d), (0xf9, 0xff, 0xfe)]
 
 
 def preview(made, out_dir):
     out_dir = Path(out_dir)
-    scale = 6
+    scale = 5
     cols = 8  # 4 variants x (front, back)
-    sheet = Image.new("RGBA", (cols * 18 * scale, len(ROLES) * 34 * scale), (70, 90, 70, 255))
-    for row, role in enumerate(ROLES):
-        for i in range(4):
-            img, slim = made[(role, i)]
-            for k, back in enumerate((False, True)):
-                v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
-                sheet.alpha_composite(v, (((i * 2 + k) * 18 + 1) * scale, (row * 34 + 1) * scale))
-    sheet.save(out_dir / "tribe_sheet.png")
-    raw = Image.new("RGBA", (5 * 66 * 4, 4 * 66 * 4), (60, 60, 60, 255))
-    for row, role in enumerate(ROLES):
-        for i in range(4):
-            raw.alpha_composite(made[(role, i)][0].resize((256, 256), Image.NEAREST), (row * 264, i * 264))
-    raw.save(out_dir / "tribe_raw.png")
+    for zone in ZONES:
+        sheet = Image.new("RGBA", (cols * 18 * scale, len(ROLES) * 34 * scale), (70, 90, 70, 255))
+        for row, role in enumerate(ROLES):
+            for i in range(4):
+                img, mask, slim = made[(zone, role, i)]
+                img = dyed(img, mask, PREVIEW_DYES[(row + i) % len(PREVIEW_DYES)])
+                for k, back in enumerate((False, True)):
+                    v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
+                    sheet.alpha_composite(v, (((i * 2 + k) * 18 + 1) * scale, (row * 34 + 1) * scale))
+        sheet.save(out_dir / f"tribe_sheet_{zone}.png")
 
 
 if __name__ == "__main__":

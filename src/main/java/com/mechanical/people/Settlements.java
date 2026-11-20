@@ -53,6 +53,8 @@ import net.minecraft.world.phys.AABB;
  * <li>two more tents, drying racks, a barrel of stores and a woodpile;</li>
  * <li>a palisade of sharpened logs (radius {@link #PALISADE_R}) with a gate toward the player camp.</li>
  * </ol>
+ * The climate at the site ({@link ClimateZone}) picks the materials: spruce in the cold, oak or spruce in temperate lands,
+ * acacia and hide shades where it is warm, jungle wood, bamboo palisades and leaf lean-tos in the jungle.
  * Each stage starts once the stockpile (wood, stone, hides) covers all its blocks; one member at a time builds
  * (BuildCampGoal), paying for each block as it goes down. Woodcutters bring wood (felling trees only with mobGriefing),
  * gatherers stone (FetchStoneGoal), hunters hides (ButcherCarcassGoal; kills hung on the camp's rack first). On top of
@@ -165,10 +167,15 @@ public final class Settlements {
     }
 
     static List<Placement> plan(ServerLevel level, Settlement s, int stage) {
+        return plan(level, s, stage, ClimateZone.of(level.getBiome(s.centre)));
+    }
+
+    /** The blocks of a stage, built of {@code zone}'s materials. */
+    static List<Placement> plan(ServerLevel level, Settlement s, int stage, ClimateZone zone) {
         List<Placement> out = new ArrayList<>();
         RandomSource r = RandomSource.create(s.tribe.getLeastSignificantBits() * 31 + stage);
         boolean taiga = level.getBiome(s.centre).is(BiomeTags.IS_TAIGA);
-        BlockState log = (taiga ? Blocks.SPRUCE_LOG : Blocks.OAK_LOG).defaultBlockState();
+        BlockState log = zone.log(taiga);
         Direction right = s.gate.getClockWise();
         switch (stage) {
             case 1 -> {
@@ -178,17 +185,17 @@ public final class Settlements {
                         Mechanical.LOOSE_STONE.get().defaultBlockState().setValue(RockBlock.SIZE, 1 + r.nextInt(3)));
                 add(out, level, ground(level, at(s, -4, 0)), com.mechanical.CarcassHauling.HANGING_RACK.get().defaultBlockState()
                         .setValue(HangingRackBlock.FACING, s.gate).setValue(HangingRackBlock.PART, HangingRackBlock.Part.LOWER));
-                tent(out, level, s, 0, 5, right.getOpposite());
-                tent(out, level, s, 0, -5, right);
+                tent(out, level, s, 0, 5, right.getOpposite(), zone);
+                tent(out, level, s, 0, -5, right, zone);
                 BlockPos pole = ground(level, at(s, 3, 3));
-                BlockState stripped = (taiga ? Blocks.STRIPPED_SPRUCE_LOG : Blocks.STRIPPED_OAK_LOG).defaultBlockState();
+                BlockState stripped = zone.stripped(taiga);
                 if (add(out, level, pole, stripped) && add(out, level, pole.above(), stripped))
                     add(out, level, pole.above(2), Blocks.BANNER.pick(s.tribeInfo().baseColour()).defaultBlockState().setValue(BannerBlock.ROTATION, r.nextInt(16)));
                 add(out, level, ground(level, at(s, -2, 3)), log.setValue(RotatedPillarBlock.AXIS, s.gate.getAxis()));
             }
             case 2 -> {
-                tent(out, level, s, -5, 4, s.gate);
-                tent(out, level, s, -5, -4, s.gate);
+                tent(out, level, s, -5, 4, s.gate, zone);
+                tent(out, level, s, -5, -4, s.gate, zone);
                 BlockState rack = Mechanical.DRYING_RACK.get().defaultBlockState().setValue(DryingRackBlock.HIDE, DryingRackBlock.HIDE_WET);
                 add(out, level, ground(level, at(s, 3, -3)), rack.setValue(DryingRackBlock.FACING, s.gate.getClockWise()));
                 add(out, level, ground(level, at(s, 2, -4)), rack.setValue(DryingRackBlock.FACING, s.gate.getClockWise()));
@@ -197,7 +204,7 @@ public final class Settlements {
                 BlockPos a = ground(level, at(s, 4, 4)), b = ground(level, at(s, 5, 4));
                 if (add(out, level, a, pile) & add(out, level, b, pile)) add(out, level, a.above(), pile);
             }
-            case 3 -> palisade(out, level, s, log, (taiga ? People.SHARPENED_SPRUCE_LOG : People.SHARPENED_OAK_LOG).get().defaultBlockState());
+            case 3 -> palisade(out, level, s, zone.post(taiga), zone.stake(taiga));
             default -> {}
         }
         return out;
@@ -216,25 +223,51 @@ public final class Settlements {
 
     /**
      * A 3x3 A-frame hide tent centred on camp-local x,z, its open end facing {@code front}: slopes along both sides, the
-     * ridge on top, the back closed with a wall of hide, a hide on the floor. Uneven ground under it is made up with dirt
-     * (one block at most); a tent that doesn't fit is left out.
+     * ridge on top, the back closed with a wall of hide, a hide on the floor. Where it is warm a hide shade on four poles
+     * instead, in the jungle a lean-to of bamboo and leaves (see {@link ClimateZone}). Uneven ground under it is made up
+     * with dirt (one block at most); a tent that doesn't fit is left out.
      */
-    private static void tent(List<Placement> out, ServerLevel level, Settlement s, int x, int z, Direction front) {
+    private static void tent(List<Placement> out, ServerLevel level, Settlement s, int x, int z, Direction front, ClimateZone zone) {
         BlockPos c = at(s, x, z);
         Direction side = front.getClockWise();
         int y = Integer.MIN_VALUE;
         for (int a = -1; a <= 1; a++) for (int b = -1; b <= 1; b++) y = Math.max(y, ground(level, c.relative(front, a).relative(side, b)).getY());
         List<Placement> fill = new ArrayList<>(), tent = new ArrayList<>();
+        boolean roofed = zone == ClimateZone.WARM || zone == ClimateZone.JUNGLE; // a flat roof 2 up on posts
         for (int a = -1; a <= 1; a++) {
             for (int b = -1; b <= 1; b++) {
                 BlockPos col = c.relative(front, a).relative(side, b);
                 int g = ground(level, col).getY();
                 BlockPos p = new BlockPos(col.getX(), y, col.getZ());
-                if (y - g > 1 || !level.isLoaded(p) || !free(level, p) || !free(level, p.above())) return;
+                if (y - g > 1 || !level.isLoaded(p) || !free(level, p) || !free(level, p.above())
+                        || roofed && !free(level, p.above(2))) return;
                 if (g < y) fill.add(new Placement(p.below(), Blocks.DIRT.defaultBlockState()));
             }
         }
         BlockPos base = new BlockPos(c.getX(), y, c.getZ());
+        if (roofed) {
+            BlockState pole = zone.fence(false);
+            for (int a = -1; a <= 1; a++) {
+                for (int b = -1; b <= 1; b++) {
+                    BlockPos p = base.relative(front, a).relative(side, b);
+                    if (zone == ClimateZone.JUNGLE && a == -1) {
+                        tent.add(new Placement(p, Blocks.BAMBOO_BLOCK.defaultBlockState()));
+                        tent.add(new Placement(p.above(), Blocks.BAMBOO_BLOCK.defaultBlockState()));
+                    } else if (Math.abs(a) == 1 && Math.abs(b) == 1) {
+                        tent.add(new Placement(p, pole));
+                        tent.add(new Placement(p.above(), pole));
+                    }
+                }
+            }
+            // the roof goes on once its posts stand: a hide stretched flat, or leaves
+            BlockState top = zone == ClimateZone.WARM ? Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.ORANGE).defaultBlockState()
+                    : Blocks.JUNGLE_LEAVES.defaultBlockState().setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true);
+            for (int a = -1; a <= 1; a++) for (int b = -1; b <= 1; b++) tent.add(new Placement(base.relative(front, a).relative(side, b).above(2), top));
+            tent.add(new Placement(base, Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.BROWN).defaultBlockState()));
+            out.addAll(fill);
+            out.addAll(tent);
+            return;
+        }
         tent.add(new Placement(base.relative(front, -1), People.HIDE_CANVAS.get().defaultBlockState()));
         for (int a = -1; a <= 1; a++) {
             HideTentBlock.End left = a == -1 ? HideTentBlock.End.RIGHT : HideTentBlock.End.NONE, right = a == -1 ? HideTentBlock.End.LEFT : HideTentBlock.End.NONE;
@@ -282,8 +315,8 @@ public final class Settlements {
         if (b instanceof DryingRackBlock) return new int[] {2, 0, 1};
         if (s.is(Blocks.BARREL)) return new int[] {3, 0, 0};
         if (b == People.HIDE_CANVAS.get() || b instanceof HideTentBlock || b instanceof HideTentBlock.Ridge || s.is(BlockTags.WOOL_CARPETS)
-                || s.is(BlockTags.BANNERS)) return new int[] {0, 0, 1};
-        if (s.is(BlockTags.LOGS) || b instanceof SharpenedLogBlock) return new int[] {1, 0, 0};
+                || s.is(BlockTags.WOOL) || s.is(BlockTags.BANNERS)) return new int[] {0, 0, 1};
+        if (s.is(BlockTags.LOGS) || s.is(BlockTags.BAMBOO_BLOCKS) || s.is(BlockTags.WOODEN_FENCES) || b instanceof SharpenedLogBlock) return new int[] {1, 0, 0};
         return new int[] {0, 0, 0};
     }
 

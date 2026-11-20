@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.mechanical.Campfires;
 import com.mechanical.DryingRackBlock;
 import com.mechanical.Mechanical;
+import com.mechanical.people.ClimateZone;
 import com.mechanical.people.People;
 import com.mechanical.people.TribeRole;
 import com.mojang.serialization.MapCodec;
@@ -21,12 +22,14 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
- * An inhabited Stone Age camp: a burning campfire in a cleared spot, two or three hide tents facing it, a drying rack,
+ * An inhabited Stone Age camp: a burning campfire in a cleared spot, two or three shelters facing it (hide tents; hide
+ * shades where it is warm, leaf lean-tos in the jungle, see {@link ClimateZone}), a drying rack,
  * a log to sit on, the tribe's banner on a pole, and three to five people (an elder plus gatherers, woodcutters and, by water, fishers) who all call
  * this campfire home and share one group.
  */
@@ -44,6 +47,7 @@ final class TribeCamp extends StoneAgeFeature {
         BlockPos c = PeopleFeatures.ground(level, origin.getX(), origin.getZ());
         if (!groundFlat(level, c) || PeopleFeatures.nearVillage(level, c)) return false;
         boolean taiga = level.getBiome(c).is(BiomeTags.IS_TAIGA);
+        ClimateZone zone = ClimateZone.of(level.getBiome(c));
         clear(level, c);
 
         BlockState fire = Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true);
@@ -55,7 +59,7 @@ final class TribeCamp extends StoneAgeFeature {
         for (int i = 0; i < tents; i++) {
             double a = base + i * Math.PI * 2 / tents + (random.nextDouble() - 0.5) * 0.5;
             BlockPos t = c.offset((int) Math.round(Math.cos(a) * TENT_DIST), 0, (int) Math.round(Math.sin(a) * TENT_DIST));
-            tent(level, random, t, Direction.getApproximateNearest((double) (c.getX() - t.getX()), 0.0, (double) (c.getZ() - t.getZ())), taiga);
+            tent(level, random, t, Direction.getApproximateNearest((double) (c.getX() - t.getX()), 0.0, (double) (c.getZ() - t.getZ())), zone, taiga);
         }
         // between the first two tents: the drying rack; opposite: a log seat
         double between = base + Math.PI / tents;
@@ -64,13 +68,13 @@ final class TribeCamp extends StoneAgeFeature {
                 .setValue(DryingRackBlock.FACING, randomSide(random)).setValue(DryingRackBlock.HIDE, 1 + random.nextInt(2)));
         BlockPos seat = c.offset((int) Math.round(-Math.cos(between) * 2), 0, (int) Math.round(-Math.sin(between) * 2));
         Direction.Axis axis = Math.abs(seat.getX() - c.getX()) >= Math.abs(seat.getZ() - c.getZ()) ? Direction.Axis.Z : Direction.Axis.X;
-        set(level, seat, (taiga ? Blocks.SPRUCE_LOG : Blocks.OAK_LOG).defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis));
+        set(level, seat, zone.log(taiga).setValue(RotatedPillarBlock.AXIS, axis));
 
         // the tribe's flag on a short pole beside the seat
         UUID group = new UUID(random.nextLong(), random.nextLong());
         BlockPos pole = c.offset((int) Math.round(-Math.cos(between + 0.9) * 3), 0, (int) Math.round(-Math.sin(between + 0.9) * 3));
         if (level.getBlockState(pole).isAir()) {
-            for (int h = 0; h < 2; h++) set(level, pole.above(h), (taiga ? Blocks.STRIPPED_SPRUCE_LOG : Blocks.STRIPPED_OAK_LOG).defaultBlockState());
+            for (int h = 0; h < 2; h++) set(level, pole.above(h), zone.stripped(taiga));
             com.mechanical.people.Tribe tribe = com.mechanical.people.Tribe.of(group);
             set(level, pole.above(2), Blocks.BANNER.pick(tribe.baseColour()).defaultBlockState()
                     .setValue(net.minecraft.world.level.block.BannerBlock.ROTATION, random.nextInt(16)));
@@ -89,7 +93,7 @@ final class TribeCamp extends StoneAgeFeature {
             BlockPos p = c.offset((int) Math.round(Math.cos(a) * 3), 0, (int) Math.round(Math.sin(a) * 3));
             if (!level.getBlockState(p).isAir() || !level.getBlockState(p.above()).isAir()) p = c.offset(i % 2 == 0 ? 2 : -2, 0, i < 2 ? 2 : -2);
             TribeRole role = roles.get(i);
-            spawn(level, random, People.TRIBESPERSON.get(), p, t -> t.setup(role, c, group, false));
+            spawn(level, random, People.TRIBESPERSON.get(), p, t -> t.setup(role, c, group, false, zone));
         }
         return true;
     }
@@ -133,12 +137,16 @@ final class TribeCamp extends StoneAgeFeature {
         return water >= 6;
     }
 
-    /** A small A-frame hide tent on a 3x3 footprint, the door (open front) facing {@code front}. */
-    private static void tent(WorldGenLevel level, RandomSource random, BlockPos t, Direction front, boolean taiga) {
+    /**
+     * A shelter on a 3x3 footprint, the door (open front) facing {@code front}: a small A-frame hide tent (pale hides in the
+     * cold), a hide stretched over four acacia poles where it is warm, a bamboo-backed lean-to under leaves in the jungle.
+     */
+    private static void tent(WorldGenLevel level, RandomSource random, BlockPos t, Direction front, ClimateZone zone, boolean taiga) {
         DyeColor hide = random.nextInt(3) == 0 ? DyeColor.WHITE : DyeColor.BROWN;
+        if (zone == ClimateZone.COLD) hide = hide == DyeColor.BROWN ? DyeColor.LIGHT_GRAY : DyeColor.WHITE;
         BlockState wall = Blocks.WOOL.pick(hide).defaultBlockState();
         BlockState slope = Blocks.CARPET.pick(hide == DyeColor.WHITE ? DyeColor.BROWN : DyeColor.LIGHT_GRAY).defaultBlockState();
-        BlockState pole = (taiga ? Blocks.SPRUCE_FENCE : Blocks.OAK_FENCE).defaultBlockState();
+        BlockState pole = zone.fence(taiga);
         Direction side = front.getClockWise();
         BlockState ground = level.getBlockState(t.below());
         for (int a = -1; a <= 1; a++) {
@@ -146,7 +154,17 @@ final class TribeCamp extends StoneAgeFeature {
                 BlockPos p = t.relative(front, a).relative(side, b);
                 foundation(level, p.below(), ground.isAir() ? Blocks.DIRT.defaultBlockState() : ground);
                 for (int y = 0; y < 4; y++) set(level, p.above(y), AIR);
-                if (b != 0) {
+                boolean corner = Math.abs(a) == 1 && Math.abs(b) == 1;
+                if (zone == ClimateZone.WARM) {
+                    if (corner) for (int y = 0; y < 2; y++) set(level, p.above(y), pole);
+                    set(level, p.above(2), Blocks.WOOL.pick(hide == DyeColor.WHITE ? DyeColor.WHITE : DyeColor.ORANGE).defaultBlockState());
+                    if (a == 0 && b == 0) set(level, p, Blocks.CARPET.pick(DyeColor.BROWN).defaultBlockState());
+                } else if (zone == ClimateZone.JUNGLE) {
+                    if (a == -1) for (int y = 0; y < 2; y++) set(level, p.above(y), Blocks.BAMBOO_BLOCK.defaultBlockState());
+                    else if (corner) for (int y = 0; y < 2; y++) set(level, p.above(y), pole);
+                    set(level, p.above(2), Blocks.JUNGLE_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true));
+                    if (a == 0 && b == 0) set(level, p, Blocks.CARPET.pick(DyeColor.GREEN).defaultBlockState());
+                } else if (b != 0) {
                     set(level, p, wall);
                     set(level, p.above(), slope);
                 } else {
