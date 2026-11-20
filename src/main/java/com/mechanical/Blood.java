@@ -57,14 +57,19 @@ public final class Blood {
         if (!(event.getTarget() instanceof Animal animal) || !(animal.level() instanceof ServerLevel level) || !bleeds(animal) || !isBleeding(animal)) return;
         ItemStack food = event.getItemStack();
         if (!animal.isFood(food)) return;
-        ArrowWounds.pullOut(animal, level);
-        float below = animal instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
-        animal.setHealth(Math.max(animal.getHealth(), (float) Math.ceil(animal.getMaxHealth() * below)));
+        stanch(animal, level);
         food.consume(1, event.getEntity());
         level.sendParticles(ParticleTypes.HEART, animal.getX(), animal.getY() + animal.getBbHeight(), animal.getZ(), 3, 0.3, 0.2, 0.3, 0);
         level.playSound(null, animal, SoundEvents.GENERIC_EAT.value(), SoundSource.NEUTRAL, 1.0F, 1.0F);
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
+    }
+
+    /** Stops the bleeding: arrows come out and it heals to just above the bleed line. */
+    public static void stanch(LivingEntity animal, ServerLevel level) {
+        ArrowWounds.pullOut(animal, level);
+        float below = animal instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
+        animal.setHealth(Math.max(animal.getHealth(), (float) Math.ceil(animal.getMaxHealth() * below)));
     }
 
     @SubscribeEvent

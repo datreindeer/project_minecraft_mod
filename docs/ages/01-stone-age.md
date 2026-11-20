@@ -834,6 +834,9 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
   i början och sedan varje sekund; Barbed Arrow blöder dubbelt). Följ blodspåret.
 - När djuret dör **faller pilarna ut** bredvid kroppen så du kan plocka upp dem. Dåliga pilar kan ha gått sönder och
   blir då en Feather: Arrow 30 %, Bone Arrow 50 %, Fire Arrow 70 %, Barbed Arrow 15 %, Bronze Arrow 10 %.
+- **Mata ett blödande djur så slutar det blöda:** tama djur och farm animals med sin vanliga mat, en Wild Horse med
+  hästfoder (när den äter ur handen). Pilarna faller ut som vid döden och djuret läks upp till precis över
+  blödningsgränsen (`Blood#stanch`).
 - **Blod på blod blir en större pöl** (4 storlekar). En full pöl **rinner över** till ett grannblock (eller ner ett steg).
   Pölar torkar in steg för steg.
 - Blod på marken (blocket **Blood**) ersätter gräs, Leaf Litter och liknande, bleknar bort efter några minuter, går att gå igenom och har inget item. Blodet syns som droppar som faller (egen partikel).
