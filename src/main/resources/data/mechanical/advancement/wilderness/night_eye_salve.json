@@ -1,0 +1,33 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "used": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:night_eye_salve"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "used"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:night_eye_salve"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.night_eye_salve.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.night_eye_salve.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

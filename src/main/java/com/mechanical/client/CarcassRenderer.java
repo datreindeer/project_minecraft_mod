@@ -18,6 +18,11 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.PhantomRenderState;
+import net.minecraft.client.renderer.entity.state.BatRenderState;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.QuadrupedModel;
+import net.minecraft.client.model.ambient.BatModel;
+import net.minecraft.client.model.animal.chicken.ChickenModel;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
@@ -88,6 +93,43 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         leg.zRot = 0.0F;
     }
 
+    private static final Map<Model<?>, java.util.function.Function<String, ModelPart>> PARTS = new java.util.WeakHashMap<>();
+
+    /**
+     * Vanilla models without a pose mixin of their own (fox, wolf, cat, llama, camel, frog ...): legs found by their part
+     * names sag like a quadruped's, or hang on the rack; a hung bat folds its wings as it does at roost. Called right after
+     * setupAnim (ModelFeatureRendererMixin), so it also poses layers drawn with the same model shape.
+     */
+    public static void poseVanillaCarcass(Model<?> model, Object state) {
+        if (!(state instanceof LivingEntityRenderState s) || !isCarcass(s) && !isHung(s)) return;
+        // their own mixins / the mod's models pose themselves
+        if (model instanceof QuadrupedModel || model instanceof ChickenModel || !model.getClass().getName().startsWith("net.minecraft.")) return;
+        var part = PARTS.computeIfAbsent(model, m -> m.root().createPartLookup());
+        if (model instanceof BatModel) {
+            if (!isHung(s)) return; // lying it keeps its wings spread on the ground
+            foldWing(part.apply("right_wing"), part.apply("right_wing_tip"), -1);
+            foldWing(part.apply("left_wing"), part.apply("left_wing_tip"), 1);
+            return;
+        }
+        ModelPart[] hind = parts(part, "right_hind_leg", "left_hind_leg", "right_leg", "left_leg");
+        ModelPart[] front = parts(part, "right_front_leg", "left_front_leg", "right_arm", "left_arm");
+        if (isHung(s)) hangLegs(front, hind);
+        if (isCarcass(s)) {
+            for (ModelPart leg : hind) leg.zRot = LIMB_SAG;
+            for (ModelPart leg : front) leg.zRot = LIMB_SAG;
+        }
+    }
+
+    /** As BatAnimation.BAT_RESTING: the wing close to the body, the tip folded right back. */
+    private static void foldWing(ModelPart wing, ModelPart tip, int side) {
+        if (wing != null) wing.yRot = side * 10.0F * Mth.DEG_TO_RAD;
+        if (tip != null) tip.yRot = side * 120.0F * Mth.DEG_TO_RAD;
+    }
+
+    private static ModelPart[] parts(java.util.function.Function<String, ModelPart> lookup, String... names) {
+        return java.util.Arrays.stream(names).map(lookup).filter(java.util.Objects::nonNull).toArray(ModelPart[]::new);
+    }
+
     public static boolean isSkinned(EntityRenderState state) {
         return Boolean.TRUE.equals(state.getRenderData(SKINNED));
     }
@@ -147,6 +189,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         /** On a travois or cart: its bed's tilt (degrees, front up). */
         float tilt;
         boolean flat;
+        /** An upright model (the bat): lies on its belly, wings spread; hangs head down from its feet. */
+        boolean upright;
         Pose pose = Pose.LYING;
         /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
         double dx, dy, dz;
@@ -202,7 +246,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             living.setYRot(180.0F);
         }
         Entity hauler = carcass.isLarge() ? null : carcass.hauler();
-        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (com.mechanical.Birds.isBird(carcass.animal()) ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
+        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (com.mechanical.Birds.isBird(carcass.animal()) || carcass.animal() == net.minecraft.world.entity.EntityTypes.BAT ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
         boolean skinned = carcass.stage() > 0;
         if (dummy instanceof Sheep sheep) sheep.setSheared(skinned);
         state.renderer = (EntityRenderer<Entity, EntityRenderState>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dummy);
@@ -226,6 +270,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // a dead phantom: wings spread limp on the ground instead of flapping
         if (state.animal instanceof PhantomRenderState phantom) phantom.flapTime = LIMP_FLAP;
         state.flat = carcass.liesFlat();
+        state.upright = state.animal instanceof BatRenderState;
         state.bodyYaw = carcass.getViewYRot(partialTicks);
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
@@ -264,6 +309,14 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // (+x is the hauler's right, +z behind him here; HaulingClient raises the arm)
             poseStack.translate(0.3F, 0.55F - state.hangLength, 0.3F);
         }
+        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && state.upright) {
+            // a bat hangs by its feet as at roost: just upside down, the feet at the hook
+            poseStack.translate(0.0F, state.hangLength, 0.0F);
+            poseStack.rotate(Axis.ZP.rotationDegrees(180.0F));
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
+        }
         if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) {
             // head down from the hook: the rump (z = +rear) goes up to the top of the hitbox, the body centred under it.
             // The hind legs point up past the rump (hangLegs), so drop the body until the hook is at about the hocks,
@@ -278,6 +331,14 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         }
         // lying on a travois or cart: along its tilted bed (the body faces the way it does)
         poseStack.rotate(Axis.XP.rotationDegrees(state.tilt));
+        if (state.upright) {
+            // on its belly, head forward, wings flat on the ground (the model stands 10 px tall, its face to -z)
+            poseStack.translate(0.0F, 0.07F, 0.31F);
+            poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
+        }
         if (state.flat) {
             state.renderer.submit(state.animal, poseStack, collector, camera);
             poseStack.popPose();

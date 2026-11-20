@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:bat_wing",
+    "mechanical:bat_wing",
+    "mechanical:soot",
+    "mechanical:lard"
+  ],
+  "result": {
+    "id": "mechanical:night_eye_salve",
+    "count": 2
+  }
+}

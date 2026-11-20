@@ -842,13 +842,31 @@ Seagull gör det inte).
 
 ### Giant Deer (miniboss)
 Megaloceros, jättehjorten: sällsynt (vikt 1), alltid ensam, i skog, taiga, slätt och meadow. **Dubbelt så stor som
-modellen** (ca 5 block hög med hornen), med enorma skovelhorn. Kliver upp 1,5 block. **120 hp**, slag 10 med kraftig knockback, bossmätare. Anfaller spelare inom 14 block (6 om du
-smyger) och får då **röda lysande ögon**. **Blöder inte och flyr inte förrän den har 25 % hp kvar** — då börjar den blöda och flyr i panik. Kräver
-minst Tusk Dagger för att styckas: 6–9 Game Meat Scraps, 1–2 Raw Hide, 2–3 Sinew och **alltid en Giant Antler**
-(offras vid Offering Altar i Ancient Oak).
+modellen** (ca 5 block hög med hornen), med enorma skovelhorn. Kliver upp 1,5 block. **120 hp**, slag 10 med kraftig
+knockback, bossmätare. Kräver minst Tusk Dagger för att styckas: 6–9 Game Meat Scraps, 1–2 Raw Hide, 2–3 Sinew och
+**alltid en Giant Antler** (offras vid Offering Altar i Ancient Oak).
 
-**Fäller träd:** när den är arg och springer rakt in i en trädstam fälls hela trädet (som när en spelare fäller det),
-åt det håll den springer. Bara riktiga träd med löv, inte timmerväggar, och aldrig Ancient Oak. Följer `mobGriefing`.
+**Skarp syn:** ser spelare på **48 block** (32 om du smyger) om den har fri sikt, och går då till anfall (röda lysande
+ögon, ett djupt hornrop). **Varje skada från en spelare** – en pil från hur långt bort som helst också – vänder den
+genast mot skytten: den vet var skottet kom ifrån. Den glömmer dig först bortom 64 block.
+
+**Anfallet (går att undvika):** den närmar sig i trav (snabbare än du springer) tills den är inom 18 block och ser dig.
+Sedan **laddar den upp**: står still, sänker huvudet, frustar och stampar så att marken yr (ca 1,2 s, 0,7 s på nära
+håll). Då rusar den **rakt mot platsen där du stod** och lite förbi, ca 9 block/s – du hinner inte springa undan, men
+ett **kliv åt sidan** i rätt ögonblick gör att den missar. Efter varje rusning står den och pustar i 1,5 s (ditt
+tillfälle), och laddar sedan om.
+
+**Klättrar du upp i ett träd** (står på löv eller stockar högre än 2 block över den) letar den upp stammen under dig,
+laddar upp och **rammar ner hela trädet** (som när en spelare fäller det, åt det håll den springer). Bara riktiga träd
+med löv, aldrig Ancient Oak; följer `mobGriefing`. Träd som står i vägen när den rusar fälls också.
+
+**Kan den inte nå dig** på annat sätt (en pelare, en klippa) drar den sig undan **utom bågskotts­håll** (minst ca 36
+block) och helst **i skydd** där du inte ser den, och lurar där. Ser du den inom 36 block flyttar den sig igen. **Kliver
+du ner** kommer den tillbaka och anfaller.
+
+**Bruten vid 25 % hp:** först då börjar den blöda och ger upp. Den flyr **bort från den som skadade den, mot skydd**
+(utom sikt), och flyr igen om du kommer nära eller ser den på nära håll. Den sköts nu av egen logik, inte den vanliga
+rädslan.
 
 **Magisk:** runor i hornen och tagg-spetsarna lyser svagt grönt-guld (syns i mörker), den sprider ett svagt ljus omkring
 sig, sporer och glimtar driver runt hornen (en virvel när den laddar), blommor och ormbunkar spirar ibland där den går,
@@ -1729,6 +1747,36 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
 - [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane
+
+### Vanilla-djur som vilt
+Vilda vanilla-djur som fortfarande spawnar lämnar kadaver som moddens egna djur (styckas med kniv, hängs på Hanging
+Rack). Hud och kött som för moddens djur; flådda kadaver får köttexturer, och benen hänger slappt (alla vanilla-modeller).
+
+| Djur | Omgång 1 | Omgång 2 |
+|---|---|---|
+| Bat (fladdermus) | Bat Wing 85 % (1–2) | 0–1 Game Meat Scraps |
+| Fox | Raw Hide 45 % | 1 Game Meat Scraps, Sinew 30 % |
+| Ocelot | Raw Hide 40 % | 1–2 Game Meat Scraps, Sinew 30 % |
+| Armadillo | 1–2 Armadillo Scute | 1 Game Meat Scraps |
+| Frog | – | 1 Game Meat Scraps |
+| Turtle | 1–2 Turtle Scute | 2–3 Game Meat Scraps, Bone 40 % |
+| Polar Bear (tjock hud: Tusk Dagger) | Raw Bear Pelt, Raw Hide 40 % | 4–6 Game Meat Scraps, 2–3 Bear Fat, Bear Claw 60 %, Sinew 60 % |
+| Panda (tjock hud: Tusk Dagger) | Raw Bear Pelt | 3–5 Game Meat Scraps, Bear Fat 70 %, Sinew 50 % |
+| Wolf (vanilla, otämjd) | Raw Wolf Pelt | 1–2 Game Meat Scraps, Sinew 50 %, Bone 60 % |
+| Camel | Raw Hide 70 % + 30 % | 4–6 Game Meat Scraps, Sinew 60 % |
+| Llama / Trader Llama | Wool Thread 40 % | 2–3 Game Meat Scraps, Raw Hide 40 %, Sinew 40 % |
+| Goat | Raw Hide 30 % | 1–2 Mutton Scraps, Horn 40 % |
+| Hoglin | Raw Hide 50 % | 3–5 Porkchop Scraps, Tusk 50 %, Lard 50 % |
+
+**Inga kadaver** (vanilla-beteende): Cat, Axolotl, Bee, Strider, Sniffer, Happy Ghast, Camel Husk, Nautilus, Zombie
+Nautilus. Squid, Dolphin och fisk är inte vilt (fisk fås med spö).
+
+**Bat Wing** mals med **Soot** och **Lard** till **Night-Eye Salve** (2 st): stryk under ögonen så ser du i mörker
+(Night Vision, 90 s).
+
+**Guano:** fladdermöss som hänger och vilar i grottor tappar då och då guano på golvet under sig (var 20:e s en chans
+på 1 av 6). Det blir en **Guano Pile** som växer till 4 lager; bryt den för 1 Guano per lager. **Guano** är den
+starkaste gödseln: högerklicka farmland, fertilitet **+3** (dålig jord blir rik direkt; Compost +1, Manure +2).
 
 ## Borttaget och ersatt (vanilla)
 

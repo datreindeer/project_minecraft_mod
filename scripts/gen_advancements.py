@@ -298,7 +298,8 @@ TABS = {
         ("ancient_oak", "root", "ancient_oak_rune_log", G, "The Ancient Oak",
          "Find the great hollow oak. Trails lead to it from the villages", visit("ancient_oak")),
         ("giant_antler", "ancient_oak", "giant_antler", C, "Giant Slayer",
-         "Hunt the rare Giant Deer for its Giant Antler", has("giant_antler")),
+         "Bring down the rare, keen-eyed Giant Deer for its Giant Antler. It charges anyone who hurts it and rams down the tree you climb",
+         has("giant_antler")),
         ("mythic", "giant_antler", "thunderstone", C, "Gift of the Oak",
          "Offer the Giant Antler on the Offering Altar inside the Ancient Oak",
          has("thunderstone", "mistletoe_charm", "ancient_amber", "heart_of_the_oak", "antler_crown")),
@@ -765,6 +766,20 @@ TABS["wilderness"][1].extend([
      "Reach a standing of 80 with a tribe: trade with them, bring them food, let them stay by your fire", by_code()),
 ])
 
+# bats and the Giant Deer's charge (wildlife/VanillaGame.java, GiantDeer.java; gen_wildtweaks.py)
+TABS["wilderness"][1].extend([
+    ("night_eye_salve", "butcher", "night_eye_salve", T, "Eyes of the Bat",
+     "Grind 2 Bat Wings with Soot and Lard into Night-Eye Salve. Rub it under your eyes to see in the dark",
+     {"used": {"trigger": "minecraft:consume_item", "conditions": {"item": {"items": check_item("night_eye_salve")}}}}),
+    ("giant_deer_charge", "ancient_oak", "minecraft:goat_horn", G, "Taking the Antlers",
+     "Live through a Giant Deer's charge. When it lowers its head and stomps, jump aside",
+     {"hurt": {"trigger": "minecraft:entity_hurt_player", "conditions": {"damage": {"source_entity": {"minecraft:entity_type": mid("giant_deer")}}}}}),
+])
+TABS["food"][1].extend([
+    ("guano", "manure", "guano", T, "Bat Droppings",
+     "Scrape Guano from under a bat roost in a cave. Right-click farmland with it: poor soil turns rich at once", has("guano")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
@@ -779,13 +794,16 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
     "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
-                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise"],
+                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise",
+                   "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
-                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir"],
+                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir",
+                 "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena", "leopard"],
-    "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter"],
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena", "leopard",
+                   "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
+    "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)
     "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),

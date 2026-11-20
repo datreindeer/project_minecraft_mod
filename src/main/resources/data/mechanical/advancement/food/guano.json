@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/manure",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:guano"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:guano"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.guano.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.guano.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
