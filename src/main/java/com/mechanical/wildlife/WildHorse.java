@@ -79,6 +79,7 @@ public class WildHorse extends WildAnimal {
             return;
         }
         stack.consume(1, player);
+        com.mechanical.Blood.stanch(this, (ServerLevel) level());
         feedCooldown = FEED_COOLDOWN;
         trust++;
         getNavigation().stop();

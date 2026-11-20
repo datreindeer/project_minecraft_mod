@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S S",
+    "STS"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "T": "mechanical:twine"
+  },
+  "result": {
+    "id": "mechanical:crop_stakes",
+    "count": 2
+  }
+}

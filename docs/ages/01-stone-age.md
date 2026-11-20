@@ -710,8 +710,8 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   läggs över axlarna och syns där (i tredje person; i första person döljs den). Mellanstora gör dig **25 % långsammare**
   och du **kan inte springa**; små väger ingenting.
 - **Släpa:** stora djur (bredd 1,1 eller mer: uroxe, häst, björn, älg, grottlejon, jättehjort) kan inte bäras. Samma grepp
-  tar tag i ett ben och du **släpar** kroppen. Du **vänder dig mot kroppen och går baklänges**: kameran låses mot ditt grepp
-  (du kan bara titta lite upp och ner), **S** drar den med dig, **W** går mot den och **A/D** går runt den och styr.
+  tar tag i ett ben och du **släpar** kroppen. Kameran är fri: kroppen följer efter dig vart du än går
+  och tittar.
   Kroppen vrider huvudänden mot den eller de som drar och glider jämnt efter, upp och ner för steg (servern skickar läget
   varje tick och klienten jämnar ut det över 4 tick). **50 % långsammare**, ingen sprint. Högerklicka på den igen för att släppa.
 - **Släpa tillsammans:** upp till **4 spelare** kan ta tag i samma stora kropp (smyg + högerklick med tom hand), var och en
@@ -834,6 +834,9 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
   i början och sedan varje sekund; Barbed Arrow blöder dubbelt). Följ blodspåret.
 - När djuret dör **faller pilarna ut** bredvid kroppen så du kan plocka upp dem. Dåliga pilar kan ha gått sönder och
   blir då en Feather: Arrow 30 %, Bone Arrow 50 %, Fire Arrow 70 %, Barbed Arrow 15 %, Bronze Arrow 10 %.
+- **Mata ett blödande djur så slutar det blöda:** tama djur och farm animals med sin vanliga mat, en Wild Horse med
+  hästfoder (när den äter ur handen). Pilarna faller ut som vid döden och djuret läks upp till precis över
+  blödningsgränsen (`Blood#stanch`).
 - **Blod på blod blir en större pöl** (4 storlekar). En full pöl **rinner över** till ett grannblock (eller ner ett steg).
   Pölar torkar in steg för steg.
 - Blod på marken (blocket **Blood**) ersätter gräs, Leaf Litter och liknande, bleknar bort efter några minuter, går att gå igenom och har inget item. Blodet syns som droppar som faller (egen partikel).
@@ -2016,7 +2019,10 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
   torkar jorden fortare. **Rotröta:** rotfrukter på dyblöt jord i träsk eller regn kan ruttna.
 - **Vattna:** högerklicka farmland med **Clay Water Bucket** → den och de 8 runt om blir blöta (hinken töms).
 - **Bördighet 0–3:** ny åker 2. Varje skörd tar 1 (ärtor ger 1 tillbaka). 0 = halv fart och halv skörd, 3 = snabbare
-  och ibland extra. Lämnas jorden i **träda** (tom) återhämtar den sig ~1 per dag.
+  och ibland extra. Lämnas jorden i **träda** (tom) återhämtar den sig ~1 per dag. **Syns på jorden:** 0 blek och grå,
+  1 lite blekare, 2 vanlig, 3 mörk mylla med kompostfläckar.
+- **Crop Stakes** på farmland (4 stolpar med snöre runt grödan): högerklicka en mogen gröda med tom hand → skörd + omsådd,
+  men bara 60 % av skörden.
 - **Kråkor:** Hooded Crow-flockar landar på åkrar med unga grödor och äter dem steg för steg. Skrämma bort dem eller
   vakta; Scarecrow kommer i bronsåldern.
 - **Smyg + högerklicka med tom hand** på farmland/en gröda: bördighet, fukt, temperatur och varför den inte växer.
@@ -2025,6 +2031,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 |---|---|---|
 | Flint Sickle | Tool Station: Flint + Twine + Stick | Skörd: extra kärve + Straw, vild säd alltid. 48 i hållbarhet |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska kärvar. 64 i hållbarhet |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand → skördas och sås om, men varje item i skörden bara 60 % chans. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Straw | Tröskning, skära | Kompost (bronsåldern) |
 | Raw Porridge → Porridge | 2 Grain + Clay Water Bucket + Bowl, sedan Campfire | Mat |
 | Root Cellar | `[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks][Planks][Planks]` | Nedgrävd: rotfrukter 4× längre |
@@ -2082,7 +2089,7 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Rått kött eller Raw Cod/Salmon | Smoking Rack |
 | Wool Thread | White Wool (från tråd) |
 | Stone Axe Head | Double Stone Axe Head |
-| Twine | Flail |
+| Twine | Flail, Crop Stakes |
 | Sheaf (valfri) | Tröska för hand (Sheaf → Grain) |
 | Grain (valfri) | Raw Porridge |
 | Cordage | Log Raft |

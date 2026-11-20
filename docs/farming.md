@@ -140,6 +140,8 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 - Bördighet 0: halv tillväxt och halv skörd (varje stack halveras, udda avrundas slumpvis). 1: 75 % tillväxt.
   2: normal. 3: efter varje tillväxtsteg 30 % chans på ett steg till (~1,3× fart), och 30 % chans på en extra vid skörd.
   Uppmätt: 24 mogna vete gav 11 / 24 / 29 kärvar på bördighet 0 / 2 / 3.
+- **Syns på blocket:** 0 = blek och gråaktig, 1 = lite blekare, 2 = som vanilla, 3 = mörk mylla med fläckar av
+  kompost (torr och fuktig variant). Texturer + blockstate-override: `scripts/gen_farmland_textures.py`.
 - **Återställa:**
   - **Träda:** farmland utan något ovanpå får +1 med chansen 1/18 per random tick (~1 per Minecraft-dag).
   - **Compost** (bronsåldern): Compost Heap fylls med 7 komposterbara saker (taggen `mechanical:compostable`: Leaf Litter,
@@ -165,6 +167,7 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 | Flint Sickle | Tool Station: Flint + Twine + Stick (låses upp av Flint) | Extra kärve + Straw, skär gräs/grödor/vild säd snabbt. Hållbarhet 48 |
 | Bronze Sickle (bronsåldern) | Tool Station: Bronze Sickle Blade (gjuten i Clay Sickle Blade Mold, slipad) + Twine + Stick | Samma bonusar som flintskäran (taggen `#mechanical:sickles`) och skär **3×3** mogna grödor eller gräs med ett drag (smyg: ett). Hållbarhet 460. Se docs/ages/02-bronze-age.md "Fler bronsverktyg" |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska. Hållbarhet 64 |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand → skördas och sås om, men varje item i skörden bara 60 % chans. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Raw Porridge | 2 Grain + Clay Water Bucket + Bowl | Kokas till Porridge |
 | Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` | Mal Grain → Flour |
 | Baking Stone | `[R][C][R]` | Baka Dough → Bread |

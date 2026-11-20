@@ -259,12 +259,24 @@ w(D / "minecraft/recipe/pumpkin_seeds.json", {"type": "minecraft:crafting_shapel
 
 UNLOCKS = {"farming_sheaf": ("#mechanical:sheaves", [f"{g.split(':')[1]}_by_hand" for g in SHEAF_GRAIN.values()]),
            "farming_grain": ("#mechanical:grains", ["raw_porridge"]),
-           "farming_twine": ("mechanical:twine", ["flail"]),
+           "farming_twine": ("mechanical:twine", ["flail", "crop_stakes"]),
            "farming_flour": ("mechanical:flour", ["dough"])}
 for name, (it, recipes) in UNLOCKS.items():
     w(D / f"mechanical/advancement/recipes/{name}.json", {"parent": "minecraft:recipes/root",
         "criteria": {"has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": it}]}}},
         "requirements": [["has_item"]], "rewards": {"recipes": [f"mechanical:{r}" for r in recipes]}})
+
+# ---------------------------------------------------------------- crop stakes (CropStakesItem; farmland model: gen_farmland_textures.py)
+item_model("crop_stakes")
+lang["item.mechanical.crop_stakes"] = "Crop Stakes"
+w(D / "mechanical/recipe/crop_stakes.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["S S", "STS"],
+    "key": {"S": "minecraft:stick", "T": "mechanical:twine"}, "result": {"id": "mechanical:crop_stakes", "count": 2}})
+# breaking staked farmland gives the stakes back (trampling and drying: FarmlandBlockMixin)
+with zipfile.ZipFile(JAR) as jar:
+    farmland = json.loads(jar.read("data/minecraft/loot_table/blocks/farmland.json").decode())
+farmland["pools"].append({"rolls": 1, "entries": [item(M + "crop_stakes")], "condition":
+    {"type": "minecraft:match_block", "blocks": "minecraft:farmland", "state": {"staked": "true"}}})
+w(D / "minecraft/loot_table/blocks/farmland.json", farmland)
 
 # ---------------------------------------------------------------- tags
 CROP_BLOCKS = [f"mechanical:{c}_crop" for c in list(GRAINS) + ["pea"]]

@@ -47,8 +47,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * drops it, and right-clicking a block puts it down there. Right-click a dragged body again to let go. Players show it:
  * both arms up holding the body on the shoulders, or both hands on the dragged one's leg, tugging at every step
  * (client/HaulingClient).</li>
- * <li>Dragging ({@link #follow}): you face the body and walk backwards pulling it (the client locks your view on your grip,
- * HaulingClient#lockView); it turns its head end towards its pullers and glides after them, smoothed on the client.
+ * <li>Dragging ({@link #follow}): you pull it by a leg, the view stays free; it turns its head end towards its pullers and glides after them, smoothed on the client.
  * Up to {@link CarcassEntity#MAX_HAULERS} players can drag one large body together, each holding a limb: the slowdown and
  * food cost are shared ({@code SLOW_DRAG * needed / pullers}). A huge one needs {@link CarcassEntity#pullersNeeded} (3,
  * the mammoth 4): fewer only strain at it, it creeps ({@link #STRAIN_CREEP}) and holds them back ({@link #tether}).</li>
