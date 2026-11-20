@@ -977,7 +977,8 @@ def main():
         warn(f"docs/progression.json är trasig: {e}")
     for ch in guide:
         for st in ch.get("steps", []):
-            refs = list(st.get("items", []))
+            st["items"] = [r if ":" in r else f"{MOD}:{r}" for r in st.get("items", [])]
+            refs = list(st["items"])
             for txt in (st.get("text") or {}).values():
                 refs += re.findall(r"\[\[([a-z0-9_:]+)\]\]", txt)
             for r in refs:
