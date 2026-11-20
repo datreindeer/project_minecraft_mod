@@ -171,6 +171,7 @@ w(D / "mechanical/worldgen/placed_feature/hazel_meadow_hazels.json", {"feature":
     {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"}, survives("mechanical:hazel_sapling")]})
 biome("hazel_meadow", "plains", temperature=0.75, downfall=0.6,
       effects={"grass_color": "#8cc152", "foliage_color": "#6fae3c", "dry_foliage_color": "#a07a4a", "water_color": "#3f76e4"},
+      attributes=music(M + "music.overworld.meadow"),
       drop=[M + "trees_plains", M + "flower_plains"], veg_after=M + "patch_bush",
       veg=[hazel_clumps,
            trees("hazel_meadow_trees", [("mechanical:ash_checked", 0.45), ("mechanical:linden_checked", 0.15)], M + "oak_checked",

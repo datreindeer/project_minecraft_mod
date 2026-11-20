@@ -828,6 +828,21 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     // ---- sounds: human, so mostly quiet ----
 
     @Override
+    protected SoundEvent getAmbientSound() {
+        return isSleeping() ? null : SoundEvents.VILLAGER_AMBIENT; // a low mumble, pitched down by getVoicePitch
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 400; // about every 20 s, not the default 4
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.7F + getRandom().nextFloat() * 0.2F; // same range as say()
+    }
+
+    @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return SoundEvents.PLAYER_HURT;
     }

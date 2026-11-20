@@ -51,6 +51,11 @@ public final class NightAmbience {
         scheduleEvent(player, random);
     }
 
+    /** Queues a positioned ambient sound {@code delay} ticks from now (shared with BiomeAmbience). */
+    static void schedule(int delay, Vec3 pos, SoundEvent sound, float volume, float pitch) {
+        QUEUE.add(new Scheduled(ticks + delay, pos, sound, volume, pitch));
+    }
+
     private static void scheduleEvent(LocalPlayer player, RandomSource random) {
         double angle = random.nextDouble() * Math.PI * 2;
         double dist = 8 + random.nextDouble() * 12;
