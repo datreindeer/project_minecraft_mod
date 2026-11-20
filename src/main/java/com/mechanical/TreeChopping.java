@@ -42,7 +42,7 @@ public final class TreeChopping {
     private static final Map<Level, Map<BlockPos, Integer>> PROGRESS = new WeakHashMap<>();
 
     /** Rough Logs a whole (unhewn) fallen log gives when sawn up. */
-    private static final int SAWN_LOGS = 3;
+    public static final int SAWN_LOGS = 3;
 
     /** Chops per stage: flint axe 3, stone 2, iron 2. */
     public static int chopsNeeded(ItemStack axe) {

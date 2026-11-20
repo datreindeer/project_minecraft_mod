@@ -39,7 +39,7 @@ import net.minecraft.world.phys.Vec3;
  */
 public class PanItem extends Item {
     public static final int USES = 64;
-    private static final int WASH_TICKS = 60;
+    public static final int WASH_TICKS = 60;
     private final String fill; // null = empty pan
 
     public PanItem(Properties properties, String fill) {
