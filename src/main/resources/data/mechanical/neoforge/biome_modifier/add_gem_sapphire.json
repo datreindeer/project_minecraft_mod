@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/sapphire",
+  "features": [
+    "mechanical:gem_sapphire"
+  ],
+  "step": "underground_ores"
+}

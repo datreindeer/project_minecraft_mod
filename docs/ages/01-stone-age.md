@@ -2044,6 +2044,52 @@ Nautilus. Squid, Dolphin och fisk är inte vilt (fisk fås med spö).
 på 1 av 6). Det blir en **Guano Pile** som växer till 4 lager; bryt den för 1 Guano per lager. **Guano** är den
 starkaste gödseln: högerklicka farmland, fertilitet **+3** (dålig jord blir rik direkt; Compost +1, Manure +2).
 
+## Ädelstenar (v0.77.0)
+
+23 ädelstenar som hittas under marken, i tre former. Var och en har sitt eget djup och ofta sin egen biome.
+De har inga recept än (tänkta för smycken/Neck/Ring/Charm-platser och senare tidsåldrar). Taggar: `#mechanical:gemstones`, `#c:gems/<gem>`.
+Egen advancement-flik **Gemstones** visar var varje sten finns. Data: `scripts/gem_table.py` → `gen_gemstones.py`, texturer `gen_gemstone_textures.py`.
+
+### Malm-ädelstenar (hela ore-block)
+
+| Gem | Block | Var | Verktyg |
+|---|---|---|---|
+| Garnet | Garnet Ore, Deepslate Garnet Ore | Mörkröd granat. Vanlig i hela övervärlden, y −32 till 64 | valfri pickaxe |
+| Ruby | Deepslate Ruby Ore | Sällsynt, bara djupt i deepslate (y −64 till −16) | Bronze Pickaxe+ |
+| Sapphire | Sapphire Ore, Deepslate Sapphire Ore | Bara under berg (bergsbiomer), y −48 till 32 | Bronze Pickaxe+ |
+| Topaz | Topaz Ore | Gyllene topas under badlands, y 0 till 80 | valfri pickaxe |
+| Jade | Jade Ore | Grön jade under djungeln, y 16 till 100 | valfri pickaxe |
+| Opal | Opal Ore | Sitter i sandsten under öknen, y 30 till 100 | valfri pickaxe |
+| Turquoise | Turquoise Ore | Turkos under savannen, y 32 till 120 | valfri pickaxe |
+| Peridot | Deepslate Peridot Ore | Djupt i deepslate under djuphavet, y −64 till −16 | Bronze Pickaxe+ |
+| Amber | Amber Ore | Fossil kåda under skogar, y 32 till 80 | valfri pickaxe |
+
+### Kristaller (small / medium / large, växer på grottgolv och grottak)
+
+| Gem | Block | Var | Verktyg |
+|---|---|---|---|
+| Clear Quartz | Small Clear Quartz Crystal, Medium Clear Quartz Crystal, Large Clear Quartz Crystal | Bergkristall. Växer i grottor i hela övervärlden, y −16 till 48 | valfri pickaxe |
+| Rose Quartz | Small Rose Quartz Crystal, Medium Rose Quartz Crystal, Large Rose Quartz Crystal | I grottor under Cherry Grove, Meadow och Flower Forest, y 0 till 56 | valfri pickaxe |
+| Citrine | Small Citrine Crystal, Medium Citrine Crystal, Large Citrine Crystal | Bara i Dripstone Caves | valfri pickaxe |
+| Smoky Quartz | Small Smoky Quartz Crystal, Medium Smoky Quartz Crystal, Large Smoky Quartz Crystal | I grottor under snöiga biomer, y −32 till 56 | valfri pickaxe |
+| Aquamarine | Small Aquamarine Crystal, Medium Aquamarine Crystal, Large Aquamarine Crystal | I grottor under hav, floder och stränder, y −16 till 40 | valfri pickaxe |
+| Fluorite | Small Fluorite Crystal, Medium Fluorite Crystal, Large Fluorite Crystal | Lila-grön fluorit, djupt i hela övervärlden, y −48 till 16 | valfri pickaxe |
+| Celestine | Small Celestine Crystal, Medium Celestine Crystal, Large Celestine Crystal | Bara i Lush Caves | valfri pickaxe |
+| Moonstone | Small Moonstone Crystal, Medium Moonstone Crystal, Large Moonstone Crystal | Lyser svagt. Bara i Deep Dark | valfri pickaxe |
+| Tourmaline | Small Tourmaline Crystal, Medium Tourmaline Crystal, Large Tourmaline Crystal | Melon-turmalin, i grottor under Windswept-biomer och Stony Peaks, y −48 till 32 | valfri pickaxe |
+
+### Lösa stenar (sizes 1–3 på grottgolv)
+
+| Gem | Block | Var | Verktyg |
+|---|---|---|---|
+| Agate | Loose Agate | Randig agat, ligger på grottgolv i hela övervärlden, y 0 till 64 | hand (size 3: pickaxe) |
+| Jasper | Loose Jasper | Röd jaspis på grottgolv under badlands och öken, y −16 till 80 | hand (size 3: pickaxe) |
+| Carnelian | Loose Carnelian | Orange karneol på grottgolv under savannen, y 0 till 64 | hand (size 3: pickaxe) |
+| Chalcedony | Loose Chalcedony | Blågrå kalcedon på grottgolv under taigan, y −32 till 48 | hand (size 3: pickaxe) |
+| Bloodstone | Loose Bloodstone | Mörkgrön med röda prickar, djupt nere i hela övervärlden, y −64 till −16 | hand (size 3: pickaxe) |
+
+Drops: malm → 1 gem (Fortune), sig själv med Silk Touch. Small Crystal → 1, Medium → 1–2, Large → 2–4 (Fortune); Silk Touch ger kristallen. Kristallerna lyser svagt (Moonstone starkare, ljus 3/5/7). Loose-stenar ger 1–3 efter storlek. Allt läggs även i gamla chunkar via retrogen.
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

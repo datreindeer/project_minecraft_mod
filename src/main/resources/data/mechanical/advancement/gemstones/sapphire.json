@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:gemstones/ore_gems",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sapphire"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sapphire"
+    },
+    "title": {
+      "translate": "advancements.mechanical.gemstones.sapphire.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.gemstones.sapphire.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

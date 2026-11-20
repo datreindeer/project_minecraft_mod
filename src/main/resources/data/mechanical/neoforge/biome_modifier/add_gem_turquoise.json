@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/turquoise",
+  "features": [
+    "mechanical:gem_turquoise"
+  ],
+  "step": "underground_ores"
+}

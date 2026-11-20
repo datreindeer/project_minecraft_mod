@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/peridot",
+  "features": [
+    "mechanical:gem_peridot"
+  ],
+  "step": "underground_ores"
+}

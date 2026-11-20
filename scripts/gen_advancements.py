@@ -1047,6 +1047,26 @@ def hunting_rows():
 TABS["hunting"] = ("minecraft:gui/advancements/backgrounds/husbandry", hunting_rows())
 
 
+def gemstone_rows():
+    """Gemstones tab from gem_table.py: a group per kind, one advancement per gem telling where it is found."""
+    from gem_table import GEMS
+    groups = {"ore": ("ore_gems", "garnet", "Veins of Colour", "Mine a gem ore: each gem has its own depth and biome"),
+              "crystal": ("crystal_gems", "clear_quartz", "Crystal Caves", "Break a crystal growing on a cave floor or ceiling"),
+              "pebble": ("pebble_gems", "agate", "Lucky Pebbles", "Pick up a loose gem pebble from a cave floor")}
+    rows = [("root", None, "garnet", T, "Gemstones",
+             "Find any gemstone underground: gem ores, crystals in caves, or loose pebbles", has("#gemstones"))]
+    for kind, (gid, icon, title, desc) in groups.items():
+        gems = [g for g in GEMS if g["kind"] == kind]
+        rows.append((gid, "root", icon, T, title, desc, has(*[g["name"] for g in gems])))
+        rows += [(g["name"], gid, g["name"], G if g.get("tier") or g["name"] == "moonstone" else T, g["title"], g["en"], has(g["name"]))
+                 for g in gems]
+    rows.append(("all_gems", "root", "opal", C, "Treasure Hoard", "Collect every gemstone", has_all(*[g["name"] for g in GEMS])))
+    return rows
+
+
+TABS["gemstones"] = ("minecraft:gui/advancements/backgrounds/stone", gemstone_rows())
+
+
 def build():
     out_root = D / "mechanical/advancement"
     lang = {}

@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "mechanical:block/small_tourmaline_crystal"
+    },
+    "facing=down": {
+      "model": "mechanical:block/small_tourmaline_crystal",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "mechanical:block/small_tourmaline_crystal",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "mechanical:block/small_tourmaline_crystal",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mechanical:block/small_tourmaline_crystal",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mechanical:block/small_tourmaline_crystal",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

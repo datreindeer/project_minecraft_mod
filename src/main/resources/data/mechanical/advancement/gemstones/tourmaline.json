@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:gemstones/crystal_gems",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:tourmaline"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:tourmaline"
+    },
+    "title": {
+      "translate": "advancements.mechanical.gemstones.tourmaline.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.gemstones.tourmaline.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

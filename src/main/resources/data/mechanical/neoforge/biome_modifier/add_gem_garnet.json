@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/garnet",
+  "features": [
+    "mechanical:gem_garnet"
+  ],
+  "step": "underground_ores"
+}

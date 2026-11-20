@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gem/celestine",
+  "features": [
+    "mechanical:gem_celestine_floor",
+    "mechanical:gem_celestine_ceiling"
+  ],
+  "step": "underground_decoration"
+}
