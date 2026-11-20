@@ -60,6 +60,9 @@ public class WaterJugBlock extends Block {
         if (water > 0 && stack.is(Mechanical.CLAY_BUCKET.get())) {
             out = stack.transmuteCopy(Mechanical.CLAY_WATER_BUCKET.get(), 1);
             change = -1;
+        } else if (water > 0 && stack.is(BronzeTools.BRONZE_BUCKET.get())) {
+            out = stack.transmuteCopy(BronzeTools.BRONZE_WATER_BUCKET.get(), 1);
+            change = -1;
         } else if (water > 0 && stack.is(Items.BUCKET)) {
             out = new ItemStack(Items.WATER_BUCKET);
             change = -1;
@@ -68,6 +71,9 @@ public class WaterJugBlock extends Block {
             change = -1;
         } else if (water < MAX && stack.is(Mechanical.CLAY_WATER_BUCKET.get())) {
             out = ClayBucketItem.emptied(stack);
+            change = 1;
+        } else if (water < MAX && stack.is(BronzeTools.BRONZE_WATER_BUCKET.get())) {
+            out = stack.transmuteCopy(BronzeTools.BRONZE_BUCKET.get(), 1);
             change = 1;
         } else if (water < MAX && stack.is(Items.WATER_BUCKET)) {
             out = new ItemStack(Items.BUCKET);

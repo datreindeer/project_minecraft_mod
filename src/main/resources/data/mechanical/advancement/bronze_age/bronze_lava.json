@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bronze_bucket",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_lava_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_lava_bucket"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.bronze_lava.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.bronze_lava.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

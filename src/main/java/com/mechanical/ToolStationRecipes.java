@@ -82,7 +82,13 @@ public final class ToolStationRecipes {
             new Recipe(() -> Bronze.BRONZE_SAW.get(), Bronze.BRONZE_SAW_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(Bronze.BRONZE_SAW_BLADE.get())),
             new Recipe(Bronze.BRONZE_SPEAR, Bronze.BRONZE_SPEAR_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_SPEAR_HEAD.get())),
             // the sword's "rod" is the leather-wrapped grip (as the Tusk Dagger's)
-            new Recipe(Bronze.BRONZE_SWORD, Bronze.BRONZE_SWORD_BLADE, Mechanical.CORDAGE, () -> Items.LEATHER, s -> s.is(Bronze.BRONZE_SWORD_BLADE.get())));
+            new Recipe(Bronze.BRONZE_SWORD, Bronze.BRONZE_SWORD_BLADE, Mechanical.CORDAGE, () -> Items.LEATHER, s -> s.is(Bronze.BRONZE_SWORD_BLADE.get())),
+            // more bronze tools (BronzeTools): the bucket's "binding" is its cordage bail, the tongs' "rod" a leather grip against the heat
+            new Recipe(() -> BronzeTools.BRONZE_BUCKET.get(), BronzeTools.BRONZE_BUCKET_BODY, Mechanical.CORDAGE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_BUCKET_BODY.get())),
+            new Recipe(BronzeTools.BRONZE_SICKLE, BronzeTools.BRONZE_SICKLE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_SICKLE_BLADE.get())),
+            new Recipe(() -> BronzeTools.BRONZE_HOOK_FISHING_ROD.get(), BronzeTools.BRONZE_FISH_HOOK, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(BronzeTools.BRONZE_FISH_HOOK.get())),
+            new Recipe(BronzeTools.BRONZE_TONGS, BronzeTools.BRONZE_TONG_ARMS, Mechanical.TWINE, () -> Items.LEATHER, s -> s.is(BronzeTools.BRONZE_TONG_ARMS.get())),
+            new Recipe(() -> BronzeTools.BRONZE_CHISEL.get(), BronzeTools.BRONZE_CHISEL_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_CHISEL_BLADE.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

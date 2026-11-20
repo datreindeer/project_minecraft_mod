@@ -45,7 +45,14 @@ public final class MoldBench {
             StationRecipe.of(Bronze.UNFIRED_CLAY_SPEAR_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_SWORD_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 6), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_KETTLE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 28), null),
-            StationRecipe.of(Bronze.UNFIRED_CLAY_ARROWHEADS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null));
+            StationRecipe.of(Bronze.UNFIRED_CLAY_ARROWHEADS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_BUCKET_MOLD::get, 1, of(() -> Items.CLAY_BALL, 8), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_SICKLE_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_SHEARS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_FISH_HOOKS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_NEEDLES_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_TONGS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 6), null),
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_CHISEL_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null));
 
     public static void init() {}
 

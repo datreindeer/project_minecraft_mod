@@ -814,6 +814,29 @@ TABS["bronze_age"][1].extend([
      has("linen_thread")),
 ])
 
+# more bronze tools (BronzeTools.java; gen_bronzetools.py)
+TABS["bronze_age"][1].extend([
+    ("bronze_bucket", "bronze", "bronze_bucket", T, "Bronze Bucket",
+     "Cast a bucket in a Clay Bucket Mold, grind it and fit a Cordage bail at the Tool Station. It never cracks",
+     has("bronze_bucket", "bronze_water_bucket", "bronze_lava_bucket", "bronze_milk_bucket")),
+    ("bronze_lava", "bronze_bucket", "bronze_lava_bucket", G, "Hot Stuff",
+     "Scoop up lava with a Bronze Bucket (Poor Bronze is too brittle for it)", has("bronze_lava_bucket")),
+    ("bronze_sickle", "bronze", "bronze_sickle", T, "Reaper",
+     "Assemble a Bronze Sickle: it cuts a 3x3 swath of ripe crops or grass in one stroke (sneak to cut one)", has("bronze_sickle")),
+    ("bronze_shears", "bronze", "bronze_shears", T, "Shearer",
+     "Cast Bronze Shears and grind them: shear sheep and keep leaves", has("bronze_shears")),
+    ("bronze_hook", "bronze", "bronze_hook_fishing_rod", T, "Bronze Hook",
+     "Cast 4 Bronze Fish Hooks in one mold, grind them apart and rig a Bronze Hook Fishing Rod: faster bites, better catches",
+     has("bronze_hook_fishing_rod")),
+    ("bronze_needle", "bronze", "bronze_needle", T, "Fine Needlework",
+     "Cast 4 Bronze Needles in one mold. They sew at the Armor Station 8 times as long as a Bone Needle", has("bronze_needle")),
+    ("bronze_tongs", "bronze", "bronze_tongs", G, "Tongs",
+     "Assemble Bronze Tongs. Held in either hand, molten crucibles and fresh castings don't burn you", has("bronze_tongs")),
+    ("bronze_chisel", "bronze", "bronze_chisel", T, "Stonemason",
+     "Assemble a Bronze Chisel and right-click Stone, Stone Bricks or Sandstone with it to carve it one step further",
+     has("bronze_chisel")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

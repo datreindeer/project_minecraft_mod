@@ -7,7 +7,10 @@
     "CCC"
   ],
   "key": {
-    "A": "minecraft:milk_bucket",
+    "A": [
+      "minecraft:milk_bucket",
+      "mechanical:bronze_milk_bucket"
+    ],
     "B": "minecraft:sugar",
     "C": "mechanical:flour",
     "E": "#minecraft:eggs"

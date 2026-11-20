@@ -14,6 +14,7 @@
     [
       "mechanical:tallow",
       "mechanical:clay_water_bucket",
+      "mechanical:bronze_water_bucket",
       "minecraft:water_bucket"
     ],
     "minecraft:bowl"

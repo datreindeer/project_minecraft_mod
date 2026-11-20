@@ -29,7 +29,8 @@
                     "mechanical:iron_knife",
                     "mechanical:copper_knife",
                     "mechanical:bronze_knife",
-                    "mechanical:flint_sickle"
+                    "mechanical:flint_sickle",
+                    "mechanical:bronze_sickle"
                   ]
                 }
               }

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:match_tool",
+  "predicate": {
+    "items": [
+      "minecraft:shears",
+      "mechanical:bronze_shears"
+    ]
+  }
+}

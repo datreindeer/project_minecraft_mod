@@ -44,6 +44,11 @@ public record StationRecipe(Supplier<Item> result, int count, List<Part> parts, 
             return new Part(item, 1, true, null, null);
         }
 
+        /** A tool part any item of the tag fills (#mechanical:needles); {@code shown} is what the screen shows. */
+        public static Part tool(TagKey<Item> tag, Supplier<Item> shown) {
+            return new Part(shown, 1, true, null, tag);
+        }
+
         public boolean matches(ItemStack stack) {
             boolean kind = tag != null ? stack.is(tag) : stack.is(item.get()) || alt != null && stack.is(alt.get());
             return kind && stack.getCount() >= count;

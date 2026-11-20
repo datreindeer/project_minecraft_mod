@@ -26,12 +26,22 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:water_bucket"
+            "items": "mechanical:bronze_water_bucket"
           }
         ]
       }
     },
     "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:water_bucket"
+          }
+        ]
+      }
+    },
+    "has_4": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -54,6 +64,7 @@
       "has_1",
       "has_2",
       "has_3",
+      "has_4",
       "has_the_recipe"
     ]
   ],
