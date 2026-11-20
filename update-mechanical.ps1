@@ -19,8 +19,8 @@ if (-not (Test-Path $ModsDir)) { New-Item -ItemType Directory -Force $ModsDir | 
 
 Write-Host "Checking the latest version..."
 $Release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -Headers @{ 'User-Agent' = 'mechanical-updater' }
-$Asset = $Release.assets | Where-Object { $_.name -like 'mechanical-*.jar' } | Select-Object -First 1
-if (-not $Asset) { throw "The latest release ($($Release.tag_name)) has no mechanical jar." }
+$Asset = $Release.assets | Where-Object { $_.name -like 'jackt-*.jar' } | Select-Object -First 1
+if (-not $Asset) { throw "The latest release ($($Release.tag_name)) has no Jackt jar." }
 
 $Target = Join-Path $ModsDir $Asset.name
 if (Test-Path $Target) {
@@ -29,7 +29,8 @@ if (Test-Path $Target) {
     $Temp = "$Target.download"
     Invoke-WebRequest -Uri $Asset.browser_download_url -OutFile $Temp -Headers @{ 'User-Agent' = 'mechanical-updater' }
     # only now that the download worked: remove old versions, put the new one in place
-    Get-ChildItem -Path $ModsDir -Filter 'mechanical-*.jar' | Remove-Item -Force
+    # old jars were named mechanical-*.jar; remove both so the same mod id is never loaded twice
+    'jackt-*.jar', 'mechanical-*.jar' | ForEach-Object { Get-ChildItem -Path $ModsDir -Filter $_ } | Remove-Item -Force
     Move-Item -Path $Temp -Destination $Target
     Write-Host "Installed $($Asset.name) in $ModsDir"
 }
