@@ -104,9 +104,10 @@ public final class ColdhuntersFauna {
     /** A Fur Hood with a ruff of wolverine fur round the face: frost does not cling to it (no freezing damage). */
     public static final DeferredItem<Item> WOLVERINE_TRIMMED_HOOD = ITEMS.registerSimpleItem("wolverine_trimmed_hood",
             p -> p.humanoidArmor(fur(8, 1, 12, "wolverine_fur", "wolverine_trimmed_hood"), ArmorType.HELMET));
-    /** Snow-white ermine sewn over the shoulders: a chieftain's mantle, warm as fur and easy to enchant. */
-    public static final DeferredItem<Item> ERMINE_MANTLE = ITEMS.registerSimpleItem("ermine_mantle",
-            p -> p.humanoidArmor(fur(7, 2, 22, "ermine_fur", "ermine_mantle"), ArmorType.CHESTPLATE));
+    /** Snow-white ermine sewn over the shoulders: a chieftain's mantle (Cloak slot), warm as fur and easy to enchant. */
+    private static final ArmorMaterial ERMINE_MANTLE_MATERIAL = fur(7, 2, 22, "ermine_fur", "ermine_mantle");
+    public static final DeferredItem<com.mechanical.equipment.CloakItem> ERMINE_MANTLE = ITEMS.registerItem("ermine_mantle",
+            p -> new com.mechanical.equipment.CloakItem(p, ERMINE_MANTLE_MATERIAL, true), p -> com.mechanical.equipment.CloakItem.properties(p, ERMINE_MANTLE_MATERIAL));
     public static final DeferredItem<Item> MARTEN_FUR_CAP = ITEMS.registerSimpleItem("marten_fur_cap",
             p -> p.humanoidArmor(fur(7, 1, 15, "marten_fur", "marten_fur_cap"), ArmorType.HELMET));
     public static final DeferredBlock<BearRugBlock> LYNX_RUG = BLOCKS.registerBlock("lynx_rug", BearRugBlock::new, p -> p

@@ -264,9 +264,10 @@ public class Mechanical {
             10, net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_ELYTRA, 0.0F, 0.0F,
             TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "repairs_glider_cloak")),
             net.minecraft.resources.ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, "glider_cloak")));
-    /** Chest slot, armour 1, 96 durability (one per second of gliding). */
-    public static final DeferredItem<Item> GLIDER_CLOAK = ITEMS.registerSimpleItem("glider_cloak",
-            p -> p.humanoidArmor(PHANTOM_LEATHER_MATERIAL, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+    /** Cloak slot, armour 1, 96 durability (one per second of gliding); drawn as folded wings, spread while gliding. */
+    public static final DeferredItem<com.mechanical.equipment.CloakItem> GLIDER_CLOAK = ITEMS.registerItem("glider_cloak",
+            p -> new com.mechanical.equipment.CloakItem(p, PHANTOM_LEATHER_MATERIAL, false),
+            p -> com.mechanical.equipment.CloakItem.properties(p, PHANTOM_LEATHER_MATERIAL));
     public static final DeferredBlock<BearRugBlock> BEAR_RUG = BLOCKS.registerBlock("bear_rug", BearRugBlock::new, p -> p
             .mapColor(MapColor.COLOR_BROWN).strength(0.2F).sound(SoundType.WOOL).noOcclusion());
     public static final DeferredItem<BlockItem> BEAR_RUG_ITEM = ITEMS.registerSimpleBlockItem("bear_rug", BEAR_RUG);
@@ -281,10 +282,12 @@ public class Mechanical {
     public static final DeferredItem<BarkBasketItem> BARK_BASKET = ITEMS.registerItem("bark_basket", BarkBasketItem::new, p -> p.stacksTo(1));
     public static final Supplier<MenuType<BarkBasketMenu>> BARK_BASKET_MENU = MENUS.register("bark_basket",
             () -> new MenuType<>(BarkBasketMenu::new, FeatureFlags.VANILLA_SET));
-    /** Leather Satchel: 9 slots for anything but other containers; sewn in the Armor Station. */
-    public static final DeferredItem<LeatherSatchelItem> LEATHER_SATCHEL = ITEMS.registerItem("leather_satchel", LeatherSatchelItem::new, p -> p.stacksTo(1));
-    public static final Supplier<MenuType<BarkBasketMenu>> LEATHER_SATCHEL_MENU = MENUS.register("leather_satchel",
-            () -> new MenuType<>(BarkBasketMenu::satchel, FeatureFlags.VANILLA_SET));
+    /** Leather Satchel: 9 slots for anything but other containers, worn in the Back slot (B opens it); sewn in the Armor Station. */
+    public static final DeferredItem<LeatherSatchelItem> LEATHER_SATCHEL = ITEMS.registerItem("leather_satchel", LeatherSatchelItem::new, p -> p.stacksTo(1)
+            .component(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY));
+    /** Quiver: 4 slots for arrows, worn in the Hip slot (com.mechanical.equipment.Quiver); sewn in the Armor Station. */
+    public static final DeferredItem<com.mechanical.equipment.QuiverItem> QUIVER = ITEMS.registerItem("quiver", com.mechanical.equipment.QuiverItem::new, p -> p.stacksTo(1)
+            .component(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY));
 
     // Firewood: what logs drop (2 each), one per wood type so 4 of them (2x2) craft back into that log.
     public static final Map<String, DeferredItem<Item>> FIREWOOD = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.<Item>registerItem(w + "_firewood", p -> new FirewoodItem(p, w))));
@@ -387,7 +390,7 @@ public class Mechanical {
     public Mechanical(IEventBus modEventBus) {
         com.mechanical.wildlife.Wildlife.init();
         Sanity.init();
-        Temperature.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Bronze.init(); Pottery.init(modEventBus); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); DoughTest.init(modEventBus); com.mechanical.wildlife.GiantDeerTest.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus); CarcassHauling.init(); Carting.init(); TrampledPaths.init(); Smelting.init(); FirePit.init(); Birds.init(); Roots.init(); Spinning.init(modEventBus); Kettle.init(); BronzeTools.init(modEventBus); com.mechanical.wildlife.giants.GiantsFauna.init(); MoldBench.init(); com.mechanical.wildlife.waterfowl.WaterfowlFauna.init(); com.mechanical.wildlife.forestbirds.ForestBirdsFauna.init(); com.mechanical.wildlife.coast.CoastFauna.init(); com.mechanical.wildlife.coldhunters.ColdhuntersFauna.init(); com.mechanical.wildlife.mountain.MountainFauna.init(); com.mechanical.wildlife.meadow.MeadowFauna.init(); com.mechanical.wildlife.river.RiverFauna.init(); com.mechanical.wildlife.warm.WarmFauna.init(); com.mechanical.wildlife.VanillaGame.init();
+        Temperature.init(); com.mechanical.equipment.Equipment.init(); com.mechanical.equipment.EquipmentTest.init(modEventBus); Glider.init(); Trees.init(); VillageAnimals.init(); ArrowWounds.init(); Tinder.init(); Foraging.init(); ForestUndergrowth.init(); AncientOak.init(); com.mechanical.worldgen.Structures.init(); com.mechanical.people.People.init(modEventBus); BronzeOres.init(); Farming.init(); Casting.init(); Bronze.init(); Pottery.init(modEventBus); Traps.init(); Watercraft.init(); Preserving.init(modEventBus); DoughTest.init(modEventBus); com.mechanical.wildlife.GiantDeerTest.init(modEventBus); Pigments.init(); TreeShapes.init(modEventBus); CarcassHauling.init(); Carting.init(); TrampledPaths.init(); Smelting.init(); FirePit.init(); Birds.init(); Roots.init(); Spinning.init(modEventBus); Kettle.init(); BronzeTools.init(modEventBus); com.mechanical.wildlife.giants.GiantsFauna.init(); MoldBench.init(); com.mechanical.wildlife.waterfowl.WaterfowlFauna.init(); com.mechanical.wildlife.forestbirds.ForestBirdsFauna.init(); com.mechanical.wildlife.coast.CoastFauna.init(); com.mechanical.wildlife.coldhunters.ColdhuntersFauna.init(); com.mechanical.wildlife.mountain.MountainFauna.init(); com.mechanical.wildlife.meadow.MeadowFauna.init(); com.mechanical.wildlife.river.RiverFauna.init(); com.mechanical.wildlife.warm.WarmFauna.init(); com.mechanical.wildlife.VanillaGame.init();
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

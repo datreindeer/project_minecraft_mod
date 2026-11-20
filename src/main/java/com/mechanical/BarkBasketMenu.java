@@ -18,8 +18,7 @@ import net.minecraft.world.inventory.MenuType;
 import java.util.function.Predicate;
 
 /**
- * A held 3x3 item inventory, used by the Bark Basket and the Leather Satchel (each with its own menu type and rule for
- * what fits). The Bark Basket's 3x3 inventory. Only fruit, berries and hides/leather fit (tag mechanical:basket_storable). The contents
+ * The Bark Basket's held 3x3 inventory (the Leather Satchel has equipment.PackMenu, with the rule {@link #SATCHEL}). Only fruit, berries and hides/leather fit (tag mechanical:basket_storable). The contents
  * live on the basket item itself (container component) and are written back on every change. While open, the basket's
  * own inventory slot is locked so it can't be moved or dropped.
  */
@@ -27,9 +26,10 @@ public class BarkBasketMenu extends AbstractContainerMenu {
     public static final int SIZE = 9;
     public static final TagKey<Item> STORABLE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Mechanical.MODID, "basket_storable"));
     public static final Predicate<ItemStack> BASKET = s -> s.is(STORABLE);
-    /** The satchel takes anything except other containers (no bags in bags). */
+    /** The Leather Satchel (equipment.PackMenu) takes anything except other containers (no bags in bags). */
     public static final Predicate<ItemStack> SATCHEL = s -> !s.has(DataComponents.CONTAINER) && !s.has(DataComponents.BUNDLE_CONTENTS)
-            && !(s.getItem() instanceof BarkBasketItem) && !(s.getItem() instanceof LeatherSatchelItem);
+            && !(s.getItem() instanceof BarkBasketItem) && !(s.getItem() instanceof LeatherSatchelItem)
+            && !(s.getItem() instanceof com.mechanical.equipment.QuiverItem);
     private static final int INV_START = SIZE, INV_END = SIZE + 36;
 
     /** Inventory index of the open basket (40 = off hand), -1 on the client. */
@@ -40,11 +40,6 @@ public class BarkBasketMenu extends AbstractContainerMenu {
     /** Client side. */
     public BarkBasketMenu(int containerId, Inventory inventory) {
         this(Mechanical.BARK_BASKET_MENU.get(), BASKET, containerId, inventory, new SimpleContainer(SIZE), -1, ItemStack.EMPTY);
-    }
-
-    /** Client side, Leather Satchel. */
-    public static BarkBasketMenu satchel(int containerId, Inventory inventory) {
-        return new BarkBasketMenu(Mechanical.LEATHER_SATCHEL_MENU.get(), SATCHEL, containerId, inventory, new SimpleContainer(SIZE), -1, ItemStack.EMPTY);
     }
 
     /** Server side: {@code stack} is the basket being held, at inventory index {@code slot}. */
