@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:dirt"
+        }
+      ],
+      "rolls": 1
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:crop_stakes"
+        }
+      ],
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "minecraft:farmland",
+        "state": {
+          "staked": "true"
+        }
+      }
+    }
+  ],
+  "random_sequence": "minecraft:blocks/farmland"
+}

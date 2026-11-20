@@ -1,6 +1,7 @@
 # Farmland shows its fertility (Fertility.java, 0-3): exhausted soil is pale and grey, a new field (2) looks like
 # vanilla, rich soil (3) is dark humus with flecks of compost. Recolours vanilla's farmland tops (dry and moist) and
-# overrides minecraft:farmland's blockstate with fertility x moisture variants. Standalone, like the other texture scripts.
+# overrides minecraft:farmland's blockstate (multipart): fertility x moisture, plus four corner posts and a twine line
+# when Crop Stakes stand on it (Fertility.STAKED). Also the Crop Stakes item texture. Standalone, like the other texture scripts.
 # usage: python scripts/gen_farmland_textures.py
 import io, json, random, zipfile
 from pathlib import Path
@@ -43,7 +44,7 @@ def w(path, obj):
     path.write_text(json.dumps(obj, indent=2) + "\n")
 
 
-variants = {}
+parts = []
 for f in range(4):
     for moist in ("", "_moist"):
         if f == 2:
@@ -54,7 +55,32 @@ for f in range(4):
             w(A / f"mechanical/models/block/{name}.json", {"parent": "minecraft:block/template_cube_bottom_top_indented", "textures": {
                 "bottom": "minecraft:block/dirt", "side": "minecraft:block/dirt", "top": f"mechanical:block/{name}"}})
             model = f"mechanical:block/{name}"
-        for m in range(8):
-            if (m == 7) == (moist == "_moist"):
-                variants[f"fertility={f},moisture={m}"] = {"model": model}
-w(A / "minecraft/blockstates/farmland.json", {"variants": variants})
+        parts.append({"when": {"fertility": str(f), "moisture": "7" if moist else "0|1|2|3|4|5|6"}, "apply": {"model": model}})
+
+
+# ---- Crop Stakes: posts at the corners of the crop above, twine run round them
+def el(lo, hi, t):
+    dx, dy, dz = (hi[i] - lo[i] for i in range(3))
+    uv = {"north": [0, 0, dx, dy], "south": [0, 0, dx, dy], "east": [0, 0, dz, dy], "west": [0, 0, dz, dy],
+          "up": [0, 0, dx, dz], "down": [0, 0, dx, dz]}
+    return {"from": lo, "to": hi, "faces": {d: {"texture": t, "uv": [min(v, 16) for v in u]} for d, u in uv.items()}}
+
+
+POSTS = [el([x, 15, z], [x + 1.5, 29, z + 1.5], "#stake") for x in (0.25, 14.25) for z in (0.25, 14.25)]
+TWINE = [el([1.75, 25, 0.75], [14.25, 25.5, 1.25], "#twine"), el([1.75, 25, 14.75], [14.25, 25.5, 15.25], "#twine"),
+         el([0.75, 25, 1.75], [1.25, 25.5, 14.25], "#twine"), el([14.75, 25, 1.75], [15.25, 25.5, 14.25], "#twine")]
+w(A / "mechanical/models/block/crop_stakes.json", {"textures": {"particle": "mechanical:block/snare_stake",
+    "stake": "mechanical:block/snare_stake", "twine": "mechanical:block/snare_twine"}, "elements": POSTS + TWINE})
+parts.append({"when": {"staked": "true"}, "apply": {"model": "mechanical:block/crop_stakes"}})
+w(A / "minecraft/blockstates/farmland.json", {"multipart": parts})
+
+# item: three stakes with a twine wrap
+ITEM = ["................", "..a....a....a...", "..b....b....b...", "..b....b....b...", "..c....c....c...",
+        ".tttttttttttttt.", "..c....c....c...", "..b....b....b...", "..b....b....b...", "..c....c....c...",
+        "..b....b....b...", "..b....b....b...", "..c....c....c...", "..b....b....b...", "..d....d....d...", "................"]
+PAL = {"a": (196, 160, 112), "b": (140, 102, 62), "c": (110, 78, 46), "d": (84, 60, 36), "t": (214, 196, 150)}
+img = Image.new("RGBA", (16, 16))
+for y, row in enumerate(ITEM):
+    for x, ch in enumerate(row):
+        if ch != ".": img.putpixel((x, y), PAL[ch] + (255,))
+img.save(A / "mechanical/textures/item/crop_stakes.png")

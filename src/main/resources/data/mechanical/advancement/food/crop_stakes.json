@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/sheaf",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crop_stakes"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:crop_stakes"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.crop_stakes.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.crop_stakes.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

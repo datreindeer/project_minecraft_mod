@@ -59,7 +59,8 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * Farming (docs/farming.md). Grain is the seed: a ripe grain crop gives a Sheaf, threshed with the {@link FlailItem}
  * into Grain + Straw. Every crop, vanilla ones too, grows only by day in its temperature range on moist farmland, and
  * slower on poor soil ({@link Fertility}); frost kills young plants at night, drought and root rot wither them (Withered
- * Crop). Harvests use up fertility. Hooded Crows eat young crops unless a Scarecrow stands near (FlockBird). Data
+ * Crop). Harvests use up fertility. Hooded Crows eat young crops unless a Scarecrow stands near (FlockBird). Crop Stakes on farmland: right-click
+ * harvest and replant, for a smaller yield. Data
  * (loot, recipes, worldgen, models): scripts/gen_farming.py. Vanilla wheat: the Wheat item is the Wheat Sheaf, Wheat
  * Seeds are Wheat Grain (renamed in lang).
  */
@@ -119,6 +120,7 @@ public final class Farming {
             .food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.6F).build()).usingConvertsTo(Items.BOWL));
     public static final DeferredItem<Item> FLINT_SICKLE = ITEMS.registerSimpleItem("flint_sickle", p -> p.tool(Mechanical.FLINT, SICKLE_MINEABLE, 1.0F, -2.2F, 0.0F));
     public static final DeferredItem<FlailItem> FLAIL = ITEMS.registerItem("flail", FlailItem::new, p -> p.durability(64));
+    public static final DeferredItem<CropStakesItem> CROP_STAKES = ITEMS.registerItem("crop_stakes", CropStakesItem::new);
 
     // ---- Bronze Age (recipes: bronze phase 3, scripts/gen_farming3.py) ----
     public static final DeferredItem<Item> FLOUR = ITEMS.registerSimpleItem("flour");
@@ -278,26 +280,56 @@ public final class Farming {
     static void onDrops(BlockDropsEvent event) {
         BlockState state = event.getState();
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null) return;
-        ServerLevel level = event.getLevel();
-        BlockPos soilPos = event.getPos().below();
-        BlockState soil = level.getBlockState(soilPos);
-        if (!soil.hasProperty(Fertility.FERTILITY)) return;
-        int fertility = Fertility.get(soil);
-        RandomSource random = level.getRandom();
-        List<ItemEntity> drops = event.getDrops();
-        if (fertility == 0) {
-            for (ItemEntity e : drops) {
-                ItemStack s = e.getItem();
-                s.setCount(s.getCount() / 2 + (s.getCount() % 2 == 1 && random.nextBoolean() ? 1 : 0));
-            }
-            drops.removeIf(e -> e.getItem().isEmpty());
-        } else if (fertility == Fertility.MAX && !drops.isEmpty() && random.nextFloat() < RICH_SOIL_BONUS) {
-            drops.getFirst().getItem().grow(1);
-        }
-        Fertility.add(level, soilPos, crop == PEA_CROP.get() ? 1 : -1);
+        if (!harvestSoil(event.getLevel(), event.getPos().below(), crop, event.getDrops().stream().map(ItemEntity::getItem).toList())) return;
+        event.getDrops().removeIf(e -> e.getItem().isEmpty());
         if (event.getBreaker() instanceof LivingEntity breaker && event.getTool().is(SICKLES)) {
             event.getTool().hurtAndBreak(1, breaker, EquipmentSlot.MAINHAND); // crops break instantly, so tools don't wear by themselves
         }
+    }
+
+    /** Soil rules for a ripe harvest, changing {@code drops} in place (may leave empty stacks); false if not on farmland. */
+    private static boolean harvestSoil(ServerLevel level, BlockPos soilPos, CropBlock crop, List<ItemStack> drops) {
+        BlockState soil = level.getBlockState(soilPos);
+        if (!soil.hasProperty(Fertility.FERTILITY)) return false;
+        int fertility = Fertility.get(soil);
+        RandomSource random = level.getRandom();
+        if (fertility == 0) {
+            for (ItemStack s : drops) s.setCount(s.getCount() / 2 + (s.getCount() % 2 == 1 && random.nextBoolean() ? 1 : 0));
+        } else if (fertility == Fertility.MAX && !drops.isEmpty() && random.nextFloat() < RICH_SOIL_BONUS) {
+            drops.getFirst().grow(1);
+        }
+        Fertility.add(level, soilPos, crop == PEA_CROP.get() ? 1 : -1);
+        return true;
+    }
+
+    /** Each item of a staked harvest is kept with this chance: the free replant costs some of the yield. */
+    public static final float STAKED_YIELD = 0.6F;
+
+    /** Right-click a ripe crop on staked farmland with an empty hand: harvested and replanted at age 0, a smaller yield. */
+    @SubscribeEvent
+    static void onStakedHarvest(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getEntity().isShiftKeyDown() || event.getHand() != net.minecraft.world.InteractionHand.MAIN_HAND || !event.getItemStack().isEmpty()) return;
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        BlockState state = level.getBlockState(pos);
+        BlockState soil = level.getBlockState(pos.below());
+        if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null
+                || !soil.hasProperty(Fertility.STAKED) || !soil.getValue(Fertility.STAKED)) return;
+        if (level instanceof ServerLevel server) {
+            List<ItemStack> drops = Block.getDrops(state, server, pos, null, event.getEntity(), ItemStack.EMPTY);
+            harvestSoil(server, pos.below(), crop, drops);
+            RandomSource random = server.getRandom();
+            for (ItemStack s : drops) {
+                int kept = 0;
+                for (int i = 0; i < s.getCount(); i++) if (random.nextFloat() < STAKED_YIELD) kept++;
+                s.setCount(kept);
+                if (!s.isEmpty()) Block.popResource(server, pos, s);
+            }
+            server.setBlock(pos, crop.getStateForAge(0), Block.UPDATE_ALL);
+            server.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+        event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+        event.setCanceled(true);
     }
 
     /** Sheaf -> its grain (threshing); empty if the stack isn't a sheaf. */

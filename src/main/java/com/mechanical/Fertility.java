@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 /**
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
  */
 public final class Fertility {
     public static final IntegerProperty FERTILITY = IntegerProperty.create("fertility", 0, 3);
+    /** Crop Stakes stand on this farmland: a ripe crop on it is harvested and replanted with a right-click (Farming). */
+    public static final BooleanProperty STAKED = BooleanProperty.create("staked");
     public static final int MAX = 3, NEW_FIELD = 2;
     /** A random tick on fallow farmland (nothing growing on it) restores 1 with this chance: ~once per Minecraft day. */
     private static final float FALLOW_CHANCE = 1 / 18F;

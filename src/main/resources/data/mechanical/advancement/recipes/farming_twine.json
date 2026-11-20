@@ -19,7 +19,8 @@
   ],
   "rewards": {
     "recipes": [
-      "mechanical:flail"
+      "mechanical:flail",
+      "mechanical:crop_stakes"
     ]
   }
 }

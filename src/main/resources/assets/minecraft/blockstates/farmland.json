@@ -1,100 +1,84 @@
 {
-  "variants": {
-    "fertility=0,moisture=0": {
-      "model": "mechanical:block/farmland_fertility0"
+  "multipart": [
+    {
+      "when": {
+        "fertility": "0",
+        "moisture": "0|1|2|3|4|5|6"
+      },
+      "apply": {
+        "model": "mechanical:block/farmland_fertility0"
+      }
     },
-    "fertility=0,moisture=1": {
-      "model": "mechanical:block/farmland_fertility0"
+    {
+      "when": {
+        "fertility": "0",
+        "moisture": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/farmland_moist_fertility0"
+      }
     },
-    "fertility=0,moisture=2": {
-      "model": "mechanical:block/farmland_fertility0"
+    {
+      "when": {
+        "fertility": "1",
+        "moisture": "0|1|2|3|4|5|6"
+      },
+      "apply": {
+        "model": "mechanical:block/farmland_fertility1"
+      }
     },
-    "fertility=0,moisture=3": {
-      "model": "mechanical:block/farmland_fertility0"
+    {
+      "when": {
+        "fertility": "1",
+        "moisture": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/farmland_moist_fertility1"
+      }
     },
-    "fertility=0,moisture=4": {
-      "model": "mechanical:block/farmland_fertility0"
+    {
+      "when": {
+        "fertility": "2",
+        "moisture": "0|1|2|3|4|5|6"
+      },
+      "apply": {
+        "model": "minecraft:block/farmland"
+      }
     },
-    "fertility=0,moisture=5": {
-      "model": "mechanical:block/farmland_fertility0"
+    {
+      "when": {
+        "fertility": "2",
+        "moisture": "7"
+      },
+      "apply": {
+        "model": "minecraft:block/farmland_moist"
+      }
     },
-    "fertility=0,moisture=6": {
-      "model": "mechanical:block/farmland_fertility0"
+    {
+      "when": {
+        "fertility": "3",
+        "moisture": "0|1|2|3|4|5|6"
+      },
+      "apply": {
+        "model": "mechanical:block/farmland_fertility3"
+      }
     },
-    "fertility=0,moisture=7": {
-      "model": "mechanical:block/farmland_moist_fertility0"
+    {
+      "when": {
+        "fertility": "3",
+        "moisture": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/farmland_moist_fertility3"
+      }
     },
-    "fertility=1,moisture=0": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=1": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=2": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=3": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=4": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=5": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=6": {
-      "model": "mechanical:block/farmland_fertility1"
-    },
-    "fertility=1,moisture=7": {
-      "model": "mechanical:block/farmland_moist_fertility1"
-    },
-    "fertility=2,moisture=0": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=1": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=2": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=3": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=4": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=5": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=6": {
-      "model": "minecraft:block/farmland"
-    },
-    "fertility=2,moisture=7": {
-      "model": "minecraft:block/farmland_moist"
-    },
-    "fertility=3,moisture=0": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=1": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=2": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=3": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=4": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=5": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=6": {
-      "model": "mechanical:block/farmland_fertility3"
-    },
-    "fertility=3,moisture=7": {
-      "model": "mechanical:block/farmland_moist_fertility3"
+    {
+      "when": {
+        "staked": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/crop_stakes"
+      }
     }
-  }
+  ]
 }
