@@ -84,7 +84,8 @@ public final class Settlements {
     }
 
     static boolean canSettleNear(Neighbours data, CampInfo info, long now) {
-        return data.settlementsNear(info.camp, AREA).size() < MAX_NEAR && (info.lastSettled < 0 || now - info.lastSettled > SETTLE_GAP);
+        return data.settlementsNear(info.camp, AREA).size() < MAX_NEAR && (info.lastSettled < 0 || now - info.lastSettled > SETTLE_GAP)
+                && data.visits.stream().noneMatch(v -> v.state == Neighbours.Visit.SEEKING && v.camp.equals(info.camp)); // one band looking for land at a time
     }
 
     // ---- the site ----
@@ -101,14 +102,20 @@ public final class Settlements {
 
     /** The flattest fit spot of 32 tries round {@code anchor}, or null. */
     static BlockPos findSite(ServerLevel level, Neighbours data, BlockPos anchor) {
+        return findSite(level, data, anchor, anchor, MIN_DIST, MAX_DIST, MAX_DIST);
+    }
+
+    /** The flattest fit spot of 32 tries {@code min}-{@code max} blocks round {@code around}, {@link #MIN_DIST}-{@code maxDist} from {@code anchor}; or null. */
+    static BlockPos findSite(ServerLevel level, Neighbours data, BlockPos anchor, BlockPos around, int min, int max, int maxDist) {
         RandomSource r = level.getRandom();
         BlockPos best = null;
         int bestScore = Integer.MAX_VALUE;
         for (int i = 0; i < 32; i++) {
-            double a = r.nextDouble() * Math.PI * 2, d = MIN_DIST + r.nextDouble() * (MAX_DIST - MIN_DIST);
-            int x = anchor.getX() + (int) (Math.cos(a) * d), z = anchor.getZ() + (int) (Math.sin(a) * d);
+            double a = r.nextDouble() * Math.PI * 2, d = min + r.nextDouble() * (max - min);
+            int x = around.getX() + (int) (Math.cos(a) * d), z = around.getZ() + (int) (Math.sin(a) * d);
             BlockPos c = new BlockPos(x, 0, z);
-            if (CampAge.get(level).camps().stream().anyMatch(cp -> horizontal(cp.centre, c) < CAMP_GAP)
+            double fromAnchor = horizontal(anchor, c);
+            if (fromAnchor < MIN_DIST || fromAnchor > maxDist || CampAge.get(level).camps().stream().anyMatch(cp -> horizontal(cp.centre, c) < CAMP_GAP)
                     || data.settlements.stream().anyMatch(s -> horizontal(s.centre, c) < SETTLEMENT_GAP)) continue;
             int score = siteScore(level, x, z);
             if (score >= 0 && score < bestScore) {

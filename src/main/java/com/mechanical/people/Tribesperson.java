@@ -80,7 +80,8 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * A Stone Age person: hunter, gatherer, fisher, woodcutter or elder. Lives at a camp (home = its campfire) or roams in a
- * hunting band (no home, follows the band leader). Never despawns and never comes back once dead.
+ * hunting band (no home, follows the band leader). Never despawns and never comes back once dead. Swims like a player
+ * (surface swimming in the swimming pose, across water where the way round is much longer).
  * <p>
  * Friendly by default and greets players now and then. Hitting one angers its whole group (same {@link #group}) at
  * that player for a day; killing one makes the group hostile to that player for good. Elders barter (vanilla merchant
@@ -96,6 +97,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     private static final double GROUP_RANGE = 48, GREET_RANGE = 6;
     /** Each new block a traveller between camps steps onto wears this many times (TrampledPaths), so paths form. */
     private static final int TRAVEL_WEAR = 3;
+    /** Walking input times this in water: at a goal's 0.8 about 80% of a player's swimming speed. */
+    private static final double SWIM_BOOST = 3.3;
     private static final int GREET_COOLDOWN = 6000, GREET_COOLDOWN_ANY = 600, FIRE_TEND_TICKS = 1200;
     private static final Codec<Map<UUID, Long>> ANGER_CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.LONG);
 
@@ -142,6 +145,9 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, 16.0F);
         setPathfindingMalus(PathType.DAMAGING_IN_NEIGHBOR, 16.0F);
         setPathfindingMalus(PathType.LAVA, -1.0F);
+        // they swim: across water when the way round is much longer (vanilla mobs pay 8 per block of it, and shun the shore)
+        setPathfindingMalus(PathType.WATER, 1.5F);
+        setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         setDropChance(EquipmentSlot.MAINHAND, 0.1F);
         setDropChance(EquipmentSlot.OFFHAND, 0.0F);
         setDropChance(EquipmentSlot.HEAD, 0.0F);
@@ -504,6 +510,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
+        // the player's swimming pose while swimming somewhere (FloatGoal keeps the head above water, so nobody drowns)
+        boolean swimming = isInWater() && !onGround() && getNavigation().isInProgress();
+        if (swimming != (getPose() == Pose.SWIMMING)) setPose(swimming ? Pose.SWIMMING : Pose.STANDING);
+    }
+
+    /** A mob's walking input is small (speed 0.3 times the goal's modifier), which in water crawls along: scaled up it swims about as fast as a player. */
+    @Override
+    protected void travelInWater(Vec3 input, double baseGravity, boolean isFalling, double oldY) {
+        super.travelInWater(input.scale(SWIM_BOOST), baseGravity, isFalling, oldY);
     }
 
     /** Out of a fight, people heal slowly and now and then pull out a stuck arrow. */

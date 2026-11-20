@@ -167,6 +167,8 @@ LANG = {
     "chat.mechanical.visit.gift": "Dawn. Thank you for your fire, friend. Take these, from all of us.",
     "chat.mechanical.visit.gift_left": "Dawn. We leave a gift by your fire for the night. Thank you.",
     "chat.mechanical.visit.settle": "This is good land. We will make our camp not far from here, to the %s. Come and see us!",
+    "chat.mechanical.visit.seek": "This is good land, and we would stay. But we see no place for our camp yet. We will walk the land nearby and look.",
+    "dialog.mechanical.tribe.seeking": "The %s walk the land near your fire, looking for a good place for our camp. When we find it, we stay.",
     "chat.mechanical.settlement.trader": "Greetings from the camp of the %s! I have goods; talk to me before I walk back.",
     "message.mechanical.visit.approach": "People are coming toward your camp from the %s...",
     "message.mechanical.visit.answered": "Someone has already answered them.",

@@ -1693,6 +1693,10 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
     runt toppen, eller stubbar och Fallen Logs, och aldrig något inom lägret. Byns väggar, hus, takåsar, flaggstång och
     vedtrave, palissader och spelarens stockbyggen lämnas i fred, och ett träd som vuxit ihop med en palissad fälls inte.
 - **Natt:** alla samlas runt lägerelden men går aldrig in i den. Jaktlaget håller ihop där det är.
+- **Simmar:** de simmar som spelare, i ytan och i spelarens simpose, ungefär 80 % av en spelares simfart (förut
+  guppade de nästan stilla). De **går genom vatten när vägen runt är mycket längre** (ett vattenblock kostar 2,5 gånger
+  ett landblock i vägvalet, och strandkanten skyr de inte längre), annars går de på land. Huvudet hålls ovan ytan, så
+  de drunknar inte. De dyker inte under ytan.
 - **Ny lägereld:** försvinner lägrets eld samlas gruppen efter ca 2 minuter, väljer en plan, torr plats nära den gamla
   (helst samma), går dit tillsammans och gör en ny Campfire med en ring av Loose Stones; den blir deras nya hem. Ett
   jaktlag som strövat en hel dag (och inte är mitt i en jakt) slår sig ner på samma sätt.
@@ -1773,6 +1777,16 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
   De väljer den plattaste platsen av 32 försök **50–150 block** bort: naturlig mark (gräs, jord, sand, grus, sten) inom
   11 block, plan inom 8 block, inget vatten, inga byggen (då lämnas platsen i fred), minst 45 block från spelarläger och
   60 från andra stammars läger. "This is good land. We will make our camp not far from here, to the north."
+  - **Det fjärde bandet stannar säkert:** lägret räknar banden som sovit över utan att slå sig ner. Det **4:e** slår sig ner
+    **oavsett rykte** (räkningen börjar om när ett band slår sig ner). Är lägret redan fullt (3 grannläger) händer inget.
+  - **De ger aldrig upp:** ett band som bestämt sig (av chans eller säkert) men inte hittar någon plats direkt säger "This
+    is good land, and we would stay. But we see no place for our camp yet. We will walk the land nearby and look." och
+    **strövar runt ditt läger** (ca 32 block i taget, åt samma håll runt, ibland längre ut, upp till 100 block längre än
+    150 ju längre de letar) och söker där de är tills de hittar en plats. Sedan grundar de lägret där, och spelare nära
+    ledaren får det vanliga beskedet (riktningen räknas från ditt läger). De försvinner aldrig medan de letar, rör sig bara
+    i laddade chunks och sparas i världen (Neighbours). Medan ett band letar kan andra band komma på besök, men inget
+    annat slår sig ner. Högerklicka ledaren: "The Raven Tribe walk the land near your fire, looking for a good place for
+    our camp."
 - **Lägret byggs block för block** (en i taget lägger ut nästa block efter några slag; ingen bygger på natten):
   1. **Tältläger:** Campfire med en ring av Loose Stones, **två hudtält**, en **Hanging Rack**, banderollen på en stång och
      en sittstock. Bandet bär med sig det som behövs. När elden brinner: "The Raven Tribe have lit a fire and made camp

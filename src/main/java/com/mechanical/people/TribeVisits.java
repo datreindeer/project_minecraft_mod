@@ -43,7 +43,10 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * camp: a leader (an Elder with the tribe's banner) and 3-6 others walk in from 80-120 blocks away toward the camp's fire.
  * They mill about the fire and trade; right-click the leader to talk (TribeDialog). In the evening the leader asks to stay
  * the night: yes and they keep to the fire until dawn, then leave a gift (better the higher the standing) and go; no and
- * they leave at once. After a good night they may settle nearby ({@link Settlements}). Bands are checked every
+ * they leave at once. After a good night they may settle nearby ({@link Settlements}): by chance (better the higher the
+ * standing), and for sure the {@link #SURE_SETTLE}th band to stay the night since a tribe last settled there (CampInfo#stays).
+ * A band that means to settle never gives up: with no fit spot at hand it roams round the camp ({@link Visit#SEEKING}),
+ * ranging wider the longer it looks, until it finds one. Bands are checked every
  * {@link #CHECK} ticks (no scans per tick); members find their visit by id ({@link Tribesperson#visit}, VisitGoal).
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -53,6 +56,10 @@ public final class TribeVisits {
     /** Day times: bands set out between these, the leader asks at ASK, nobody answering by GIVE_UP sends them on, dawn. */
     static final long SET_OUT = 3000, SET_OUT_END = 8000, ASK = 11000, GIVE_UP = 13800, DAWN = 23000;
     static final long ARRIVE_TIMEOUT = 8000, LEAVE_TIMEOUT = 9000, LOST = 36000;
+    /** The band that stays the night this many times since the last settling settles whatever the standing. */
+    static final int SURE_SETTLE = 4;
+    /** A band looking for land walks about this far at a time, and ranges up to this much beyond Settlements.MAX_DIST. */
+    static final int ROAM_STEP = 32, ROAM_EXTRA = 100;
 
     @SubscribeEvent
     static void onLevelTick(LevelTickEvent.Post event) {
@@ -86,7 +93,7 @@ public final class TribeVisits {
             if (camp.ticks < FIRST_VISIT) continue;
             CampInfo info = data.camp(camp.centre);
             if (info == null) {
-                data.camps.add(new CampInfo(camp.centre, now + level.getRandom().nextInt(CampAge.DAY / 4), List.of(), -1));
+                data.camps.add(new CampInfo(camp.centre, now + level.getRandom().nextInt(CampAge.DAY / 4), List.of(), -1, 0));
                 data.setDirty();
                 continue;
             }
@@ -137,7 +144,7 @@ public final class TribeVisits {
         }
         if (from == null) return null;
         Visit v = new Visit(UUID.randomUUID(), tribe, info.camp, from, fire, Visit.ARRIVING, level.getGameTime(),
-                level.getOverworldClockTime() / Calendar.CLOCK_DAY, false, Optional.empty());
+                level.getOverworldClockTime() / Calendar.CLOCK_DAY, false, Optional.empty(), 0);
         int size = 3 + r.nextInt(4);
         for (int i = 0; i <= size; i++) {
             TribeRole role = i == 0 ? TribeRole.ELDER : switch (r.nextInt(4)) {
@@ -190,8 +197,9 @@ public final class TribeVisits {
     private static void update(ServerLevel level, Neighbours data, Visit v, long now) {
         List<Tribesperson> members = members(level, v);
         if (members.isEmpty()) {
-            // gone (walked off, or all fell), or just not loaded: forget it once it can't matter any more
-            if (v.state == Visit.LEAVING || level.isPositionEntityTicking(v.fire) && now - v.since > 600 || now - v.since > LOST) {
+            // gone (walked off, or all fell), or just not loaded: forget it once it can't matter any more (a band looking for land
+            // only when its spot is loaded and nobody is there: unloaded it just waits)
+            if (v.state == Visit.LEAVING || level.isPositionEntityTicking(v.fire) && now - v.since > 600 || v.state != Visit.SEEKING && now - v.since > LOST) {
                 data.visits.remove(v);
                 data.setDirty();
             }
@@ -223,6 +231,7 @@ public final class TribeVisits {
             case Visit.LEAVING -> {
                 if (now - v.since > LEAVE_TIMEOUT) members.forEach(Tribesperson::discard); // walked out of sight
             }
+            case Visit.SEEKING -> seek(level, data, v, leader, members, now);
             default -> {}
         }
     }
@@ -265,7 +274,7 @@ public final class TribeVisits {
     }
 
     /** Dawn after a night by the fire: the gift, then they go on, or settle nearby. */
-    private static void dawn(ServerLevel level, Neighbours data, Visit v, Tribesperson leader, List<Tribesperson> members, long now) {
+    static void dawn(ServerLevel level, Neighbours data, Visit v, Tribesperson leader, List<Tribesperson> members, long now) {
         Tribe tribe = Tribe.of(v.tribe);
         ServerPlayer host = v.host.map(id -> level.getServer().getPlayerList().getPlayer(id)).orElse(null);
         int rep = host != null ? tribe.reputation(host) : tribe.temperament.start;
@@ -281,22 +290,81 @@ public final class TribeVisits {
         if (host != null) award(host, "tribe_guests");
         for (ServerPlayer p : playersNear(level, v.fire, PLAYER_RANGE))
             leader.say(p, Component.translatable(handed && p == host ? "chat.mechanical.visit.gift" : "chat.mechanical.visit.gift_left"));
-        // a good night may make them want to stay in these parts
+        // a good night may make them want to stay in these parts; the 4th band since the last to settle stays for sure
         CampInfo info = data.camp(v.camp);
         float chance = rep >= 70 ? 0.5F : rep >= Tribe.FRIENDLY ? 0.35F : rep >= 0 ? 0.15F : 0;
-        if (info != null && level.getRandom().nextFloat() < chance && Settlements.canSettleNear(data, info, now)) {
-            BlockPos site = Settlements.findSite(level, data, v.camp);
-            if (site != null) {
-                Settlements.found(level, data, v, site, members, now);
-                info.lastSettled = now;
-                Component dir = direction(v.fire, site);
-                for (ServerPlayer p : playersNear(level, v.fire, PLAYER_RANGE)) leader.say(p, Component.translatable("chat.mechanical.visit.settle", dir));
-                data.visits.remove(v);
-                data.setDirty();
-                return;
-            }
+        if (info == null) {
+            setState(data, v, Visit.LEAVING, now);
+            return;
         }
-        setState(data, v, Visit.LEAVING, now);
+        boolean settle = Settlements.canSettleNear(data, info, now) && (info.stays >= SURE_SETTLE - 1 || level.getRandom().nextFloat() < chance);
+        info.stays = settle ? 0 : info.stays + 1;
+        data.setDirty();
+        if (!settle) {
+            setState(data, v, Visit.LEAVING, now);
+            return;
+        }
+        BlockPos site = Settlements.findSite(level, data, v.camp);
+        if (site != null) {
+            settle(level, data, v, site, leader, members, now);
+            return;
+        }
+        // no fit spot in sight: they look about for one (seek), and say so
+        for (ServerPlayer p : playersNear(level, v.fire, PLAYER_RANGE)) leader.say(p, Component.translatable("chat.mechanical.visit.seek"));
+        v.tries = 0;
+        setState(data, v, Visit.SEEKING, now);
+    }
+
+    /** The band founds its camp at {@code site}; players near the leader hear where (seen from the player camp). */
+    private static void settle(ServerLevel level, Neighbours data, Visit v, BlockPos site, Tribesperson leader, List<Tribesperson> members, long now) {
+        Settlements.found(level, data, v, site, members, now);
+        CampInfo info = data.camp(v.camp);
+        if (info != null) info.lastSettled = now;
+        Component dir = direction(v.camp, site);
+        for (ServerPlayer p : playersNear(level, leader.blockPosition(), PLAYER_RANGE)) leader.say(p, Component.translatable("chat.mechanical.visit.settle", dir));
+        data.visits.remove(v);
+        data.setDirty();
+    }
+
+    /**
+     * A band looking for land (every CHECK ticks while loaded): a fit spot round the camp or where they are, and they found
+     * their camp there; else on to the next spot of their walk round the camp. They give up only if the camp's neighbours
+     * fill up meanwhile (Settlements.MAX_NEAR).
+     */
+    static void seek(ServerLevel level, Neighbours data, Visit v, Tribesperson leader, List<Tribesperson> members, long now) {
+        v.since = now; // last seen
+        data.setDirty();
+        if (data.settlementsNear(v.camp, Settlements.AREA).size() >= Settlements.MAX_NEAR) {
+            setState(data, v, Visit.LEAVING, now);
+            return;
+        }
+        int maxDist = Settlements.MAX_DIST + Math.min(ROAM_EXTRA, v.tries * 5);
+        BlockPos site = Settlements.findSite(level, data, v.camp, v.camp, Settlements.MIN_DIST, maxDist, maxDist);
+        if (site == null) site = Settlements.findSite(level, data, v.camp, leader.blockPosition(), 0, ROAM_STEP, maxDist);
+        if (site != null) {
+            settle(level, data, v, site, leader, members, now);
+            return;
+        }
+        // there, or stuck a while: on to the next spot
+        if (leader.distanceToSqr(Vec3.atBottomCenterOf(v.fire)) < 8 * 8 || (now / CHECK) % 6 == 0) {
+            v.fire = nextSpot(level, v, leader.blockPosition(), maxDist);
+            v.tries++;
+        }
+    }
+
+    /** The next spot of a band's walk round the camp: about ROAM_STEP on (always the same way round), drifting in or out, loaded and dry; else where it was. */
+    static BlockPos nextSpot(ServerLevel level, Visit v, BlockPos at, int maxDist) {
+        RandomSource r = level.getRandom();
+        double dx = at.getX() - v.camp.getX(), dz = at.getZ() - v.camp.getZ(), dist = Math.sqrt(dx * dx + dz * dz);
+        double angle = Math.atan2(dz, dx), way = (v.id.getLeastSignificantBits() & 1) == 0 ? 1 : -1;
+        for (int i = 0; i < 8; i++) {
+            double d = Math.max(Settlements.MIN_DIST, Math.min(maxDist, dist + r.nextInt(41) - 15)); // out a little more often than in
+            double a = angle + way * ROAM_STEP / d + r.nextGaussian() * 0.2 * i;
+            BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    v.camp.offset((int) (Math.cos(a) * d), 0, (int) (Math.sin(a) * d)));
+            if (level.isPositionEntityTicking(p) && level.getFluidState(p).isEmpty() && level.getFluidState(p.below()).isEmpty()) return p;
+        }
+        return v.fire;
     }
 
     /** A thank-you gift: two everyday things from strangers, three better ones from friends, plus a rare one when honoured. */
@@ -336,6 +404,8 @@ public final class TribeVisits {
             buttons |= TribeDialog.YES_NO;
         } else if (v != null && v.state == Visit.STAYING) {
             key = "staying";
+        } else if (v != null && v.state == Visit.SEEKING) {
+            key = "seeking";
         } else if (v != null && v.state == Visit.LEAVING) {
             key = "leaving";
             buttons = 0;
@@ -378,7 +448,7 @@ public final class TribeVisits {
                     if (camp == null) camp = CampAge.get(level).burn(pos, 0);
                     Neighbours data = Neighbours.get(level);
                     CampInfo info = data.camp(camp.centre);
-                    if (info == null) data.camps.add(info = new CampInfo(camp.centre, 0, List.of(), -1));
+                    if (info == null) data.camps.add(info = new CampInfo(camp.centre, 0, List.of(), -1, 0));
                     if (data.visitAt(camp.centre) != null) {
                         ctx.getSource().sendFailure(Component.literal("A band is already visiting this camp"));
                         return 0;

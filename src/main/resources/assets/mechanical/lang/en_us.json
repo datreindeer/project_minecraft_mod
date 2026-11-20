@@ -2690,5 +2690,7 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
+  "chat.mechanical.visit.seek": "This is good land, and we would stay. But we see no place for our camp yet. We will walk the land nearby and look.",
+  "dialog.mechanical.tribe.seeking": "The %s walk the land near your fire, looking for a good place for our camp. When we find it, we stay."
 }

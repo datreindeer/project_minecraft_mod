@@ -34,38 +34,44 @@ public final class Neighbours extends SavedData {
         public final List<UUID> known;
         /** When a tribe last settled near this camp (game time), so they come one at a time. */
         public long lastSettled;
+        /** Bands that stayed the night here since a tribe last settled by this camp (the 4th settles for sure, TribeVisits). */
+        public int stays;
 
-        CampInfo(BlockPos camp, long nextVisit, List<UUID> known, long lastSettled) {
+        CampInfo(BlockPos camp, long nextVisit, List<UUID> known, long lastSettled, int stays) {
             this.camp = camp;
             this.nextVisit = nextVisit;
             this.known = new ArrayList<>(known);
             this.lastSettled = lastSettled;
+            this.stays = stays;
         }
 
         static final Codec<CampInfo> CODEC = RecordCodecBuilder.create(i -> i.group(
                 BlockPos.CODEC.fieldOf("camp").forGetter(c -> c.camp),
                 Codec.LONG.fieldOf("next_visit").forGetter(c -> c.nextVisit),
                 UUIDUtil.STRING_CODEC.listOf().fieldOf("known").forGetter(c -> c.known),
-                Codec.LONG.optionalFieldOf("last_settled", -1L).forGetter(c -> c.lastSettled)).apply(i, CampInfo::new));
+                Codec.LONG.optionalFieldOf("last_settled", -1L).forGetter(c -> c.lastSettled),
+                Codec.INT.optionalFieldOf("stays", 0).forGetter(c -> c.stays)).apply(i, CampInfo::new));
     }
 
-    /** A band visiting a player camp. */
+    /** A band visiting a player camp; SEEKING: it means to settle and roams round the camp looking for land (never given up). */
     public static final class Visit {
-        public static final int ARRIVING = 0, AT_CAMP = 1, STAYING = 2, LEAVING = 3;
+        public static final int ARRIVING = 0, AT_CAMP = 1, STAYING = 2, LEAVING = 3, SEEKING = 4;
         public final UUID id, tribe;
         public final BlockPos camp, from;
-        /** The fire they make for (the camp's fire nearest its centre when they came). */
+        /** The fire they make for (the camp's fire nearest its centre when they came); while SEEKING the spot they walk to next. */
         public BlockPos fire;
         public int state;
-        /** Game time of the last change of state. */
+        /** Game time of the last change of state; while SEEKING when the band was last seen. */
         public long since;
         /** Day number (overworld clock / 24000) they came; they leave at the next dawn. */
         public final long day;
         public boolean asked;
         /** The player who let them stay. */
         public Optional<UUID> host;
+        /** While SEEKING: spots walked to so far (they range wider the longer they look). */
+        public int tries;
 
-        Visit(UUID id, UUID tribe, BlockPos camp, BlockPos from, BlockPos fire, int state, long since, long day, boolean asked, Optional<UUID> host) {
+        Visit(UUID id, UUID tribe, BlockPos camp, BlockPos from, BlockPos fire, int state, long since, long day, boolean asked, Optional<UUID> host, int tries) {
             this.id = id;
             this.tribe = tribe;
             this.camp = camp;
@@ -76,6 +82,7 @@ public final class Neighbours extends SavedData {
             this.day = day;
             this.asked = asked;
             this.host = host;
+            this.tries = tries;
         }
 
         static final Codec<Visit> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -88,7 +95,8 @@ public final class Neighbours extends SavedData {
                 Codec.LONG.fieldOf("since").forGetter(v -> v.since),
                 Codec.LONG.fieldOf("day").forGetter(v -> v.day),
                 Codec.BOOL.fieldOf("asked").forGetter(v -> v.asked),
-                UUIDUtil.STRING_CODEC.optionalFieldOf("host").forGetter(v -> v.host)).apply(i, Visit::new));
+                UUIDUtil.STRING_CODEC.optionalFieldOf("host").forGetter(v -> v.host),
+                Codec.INT.optionalFieldOf("tries", 0).forGetter(v -> v.tries)).apply(i, Visit::new));
     }
 
     /** One block of a camp's build plan. */
@@ -215,8 +223,9 @@ public final class Neighbours extends SavedData {
         return null;
     }
 
+    /** The band visiting this camp now (one looking for land nearby does not count: others may still come). */
     public Visit visitAt(BlockPos camp) {
-        for (Visit v : visits) if (v.camp.equals(camp)) return v;
+        for (Visit v : visits) if (v.camp.equals(camp) && v.state != Visit.SEEKING) return v;
         return null;
     }
 
