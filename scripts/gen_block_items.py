@@ -54,7 +54,7 @@ def main():
     made = []
     for f in sorted((A / "blockstates").glob("*.json")):
         block = f.stem
-        if block in NO_ITEM or block.startswith("potted_") or (A / "items" / f"{block}.json").exists():
+        if block in NO_ITEM or block.startswith("potted_") or block.endswith("_firewood_pile") or (A / "items" / f"{block}.json").exists():
             continue
         definition = item_model(block)
         if definition is None:

@@ -171,6 +171,25 @@
     "mechanical:root_cellar",
     "mechanical:horn_window",
     "mechanical:beaver_dam",
-    "mechanical:pelt_hoop"
+    "mechanical:pelt_hoop",
+    "mechanical:oak_firewood_pile",
+    "mechanical:spruce_firewood_pile",
+    "mechanical:birch_firewood_pile",
+    "mechanical:jungle_firewood_pile",
+    "mechanical:acacia_firewood_pile",
+    "mechanical:dark_oak_firewood_pile",
+    "mechanical:mangrove_firewood_pile",
+    "mechanical:cherry_firewood_pile",
+    "mechanical:pale_oak_firewood_pile",
+    "mechanical:poplar_firewood_pile",
+    "mechanical:aspen_firewood_pile",
+    "mechanical:alder_firewood_pile",
+    "mechanical:beech_firewood_pile",
+    "mechanical:linden_firewood_pile",
+    "mechanical:willow_firewood_pile",
+    "mechanical:ash_firewood_pile",
+    "mechanical:hazel_firewood_pile",
+    "mechanical:pine_firewood_pile",
+    "mechanical:yew_firewood_pile"
   ]
 }

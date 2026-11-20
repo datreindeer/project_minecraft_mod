@@ -115,7 +115,7 @@ public final class PeltCuring extends SavedData {
             // hang it on the first free spot: this block first, then the other half
             for (BlockPos at : blocks) {
                 BlockState s = level.getBlockState(at);
-                if (s.getValue(DryingRackBlock.HIDE) >= DryingRackBlock.BEAR_WET) continue; // a big pelt fills this block
+                if (DryingRackBlock.bigPelt(s)) continue; // a big pelt fills this block
                 for (IntegerProperty p : spotsOf(s)) {
                     if (s.getValue(p) != DryingRackBlock.EMPTY) continue;
                     event.setCanceled(true);

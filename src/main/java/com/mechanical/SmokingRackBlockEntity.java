@@ -57,8 +57,8 @@ public class SmokingRackBlockEntity extends BlockEntity {
                 return;
             }
             boolean meat = content == Content.RAW_MEAT;
-            // a whole cut (Haunch, Ribs, Loin) smokes into one piece per meat unit
-            items.replaceAll(s -> new ItemStack(meat ? Preserving.SMOKED_MEAT.get() : Preserving.SMOKED_FISH.get(), s.getCount() * CarcassHauling.smokedPieces(s)));
+            // a whole cut (Haunch, Ribs, Loin) smokes whole; a knife slices it into Smoked Meat later
+            items.replaceAll(s -> new ItemStack(meat ? Preserving.smoked(s) : Preserving.SMOKED_FISH.get(), s.getCount()));
             finish(level, pos, state, meat ? Content.SMOKED_MEAT : Content.SMOKED_FISH);
             return;
         }

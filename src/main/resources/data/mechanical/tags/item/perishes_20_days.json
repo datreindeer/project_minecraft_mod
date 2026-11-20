@@ -1,5 +1,7 @@
 {
   "values": [
-    "minecraft:potato"
+    "minecraft:potato",
+    "mechanical:dried_pork",
+    "mechanical:dried_seal_meat"
   ]
 }
