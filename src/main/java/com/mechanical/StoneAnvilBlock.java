@@ -49,6 +49,10 @@ public class StoneAnvilBlock extends Block implements EntityBlock {
             if (level instanceof ServerLevel server) anvil.strike(server, player, stack, hand);
             return InteractionResult.SUCCESS;
         }
+        if (stack.getItem() instanceof IronBloomItem) { // iron needs the bronze anvil
+            if (!level.isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.bloom.stone_anvil"));
+            return InteractionResult.SUCCESS;
+        }
         if (!anvil.item().isEmpty() || BronzeOres.crushed(stack).isEmpty()) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level instanceof ServerLevel server) anvil.place(server, stack.consumeAndReturn(1, player));
         return InteractionResult.SUCCESS;

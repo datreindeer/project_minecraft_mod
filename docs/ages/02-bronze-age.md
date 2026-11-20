@@ -1,11 +1,10 @@
 # Bronsåldern
 
-> Status: **fas 1 (malm), fas 2 (värme), fas 3 för koppar och fas 3b brons (legering, bronsverktyg, Bronze Saw, Bronze
-> Helmet + Greaves, byhandel nivå 3) och odlingens fas 3 (Quern, bröd, kompost, Manure, Scarecrow) är byggda**, se
-> avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
-
-> Helmet + Greaves, byhandel nivå 3) och keramik (Potter's Wheel, Storage Jar, Water Jug, Flower Pot, Decorated Pot) är byggda**, se avsnitten sist. Kvar: tvättat koncentrat, spjut/svärd, mot järnet.
-> Beslut står under Beslut.
+> Status: **hela bronsåldern är byggd**: fas 1 (malm, tvättat koncentrat), fas 2 (värme), fas 3 koppar och fas 3b brons
+> (legering, bronsverktyg med spjut, svärd och skära, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3–4), Smelting
+> Furnace, odlingens fas 3 (Quern, bröd, kompost, Manure, Scarecrow, Barley), keramik, Bronze Kettle, fler bronsverktyg,
+> vagn och häst, och till sist **Bloomery** (järnlupp, Bronze Anvil, smidesjärn), se avsnitten sist. Kvar (valfritt):
+> bronslykta, plog. Beslut står under Beslut.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
 legera brons och smida verktyg och rustning. Åldern slutar när spelaren kan bygga det som behövs för järn
@@ -31,8 +30,8 @@ Sinew, Tool Station och Armor Station.
    skaft och binding, som stenverktygen.
 8. **Rustning (bara delvis).** Gjut **Bronze Helmet** och **Bronze Greaves** (benskydd), slipa dem och sätt ihop i
    Armor Station. Ingen bröstplåt: bålen skyddas fortfarande av fur/läder. Full plåtrustning kommer med järnet.
-9. **Mot järnet.** Fire Clay → eldfast tegel → **Bloomery**, som behöver bälgar och ger en järnlupp. Järnmalm kräver
-   en bronshacka.
+9. **Mot järnet** (byggt, se *Bloomery*). Fire Clay → eldfast tegel → **Bloomery**, som behöver bälgar och ger en
+   järnlupp som smids till smidesjärn på ett Bronze Anvil. Järnmalm kräver en bronshacka.
 
 ## Nytt innehåll (förslag)
 
@@ -84,11 +83,13 @@ Sinew, Tool Station och Armor Station.
 
 1. **Malm** (fas 1, **byggd**): ytfynd, vaskning, krossning. Se nedan.
 2. **Värme** (**byggd**): kilnens temperatur, Bellows, mätare i GUI.
-3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots, legering till brons (**byggt**); tvättat koncentrat återstår.
+3. **Gjutning:** smält metall i Crucible, Clay Molds, ingots, legering till brons, tvättat koncentrat (**byggt**).
 4. **Verktyg och rustning:** kopparverktyg, Whetstone, bronsverktyg, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3
    (**byggda**, se Fas 3b).
 5. **Smelting Furnace** (sen bronsålder, **byggd**, se Fas 3c): 3×3×3 ugn av Furnace Bricks med Furnace Chute och Furnace Tap,
    Clay Channels till formarna, 40 enheter, +25 % metall per malm.
+6. **Bloomery** (slutet av bronsåldern, **byggd**, se *Bloomery*): Fire Brick, 1×1×3-schakt, järnlupp vid 1350°,
+   Bronze Anvil och Bronze Smithing Hammer, Wrought Iron Ingot.
 
 ## Fas 1: malm (byggd)
 
@@ -250,6 +251,9 @@ takten ("Baking speed: 2.0x"). Gäller även smältning i Crucible, inte bränni
 | Unfired Storage Jar / Unfired Water Jug | Storage Jar / Water Jug | 30 s | 600° |
 | Unfired Flower Pot | Flower Pot (vanilla) | 20 s | 600° |
 | Unfired Decorated Pot | Decorated Pot (vanilla), med inpressade Pottery Sherds kvar | 30 s | 600° |
+| Fire Clay | Fire Brick (se *Bloomery*) | 20 s | 1100° |
+| Unfired Clay Hammer Head / Anvil Mold | Clay Hammer Head / Anvil Mold | 20 s / 30 s | 600° |
+| Iron Bloom (kall) | Hot Iron Bloom, slagen behålls | 10 s | 1100° |
 
 **Första bränningen** av en ny kiln räknas bara medan den är minst **500°** (2 min). På lägereldens ved tar det ~1,5 min
 att komma dit.
@@ -362,6 +366,7 @@ flintkniv och spatel. Förr var de crafting-recept av Clay Balls, men mönstren 
 | Clay Bucket / Sickle Blade / Shears Mold | 8 / 5 / 5 |
 | Clay Fish Hooks / Needles Mold | 3 / 3 |
 | Clay Tongs / Chisel Blade Mold | 6 / 4 (se "Fler bronsverktyg") |
+| Clay Hammer Head / Anvil Mold | 5 / 32 (se "Bloomery") |
 
 Kod: `MoldBench` (registrering, recepten, menyn), `MoldBenchBlock`, `RecipeStationMenu` (1 inputruta). Data:
 `scripts/gen_moldbench.py`, texturer: `scripts/gen_moldbench_textures.py`.
@@ -590,7 +595,7 @@ måste fyllas på.
 
 ### Kvar
 
-- Tvättat koncentrat (mer metall per smältning), spjut och svärd i brons, bronslykta, Bloomery mot järnet.
+- Bronslykta (valfritt). Tvättat koncentrat, spjut, svärd, skära och Bloomery är byggda.
 - Crucible of Solid Bronze har samma (kopparfärgade) ikon som Solid Copper; namnet visar metallen.
 
 ## Fas 3c: Smelting Furnace (byggd)
@@ -826,9 +831,9 @@ Recepten syns i receptboken när man bär en sådan tacka. Data: `scripts/gen_fa
 - **Manure:** vuxna Cow, Mooshroom, Sheep, Pig, Goat, Horse, Donkey, Mule, Aurochs och Wild Horse släpper i snitt en
   Manure var 10:e minut. På farmland: bördighet +2 (Compost +1).
 - **Hållbarhet:** Flour 30 dagar, Dough 1 dag, Bread 3 dagar.
-- Kvar: bronsskära och plog, källa för Barley.
+- Kvar: plog. (Bronze Sickle och Barley är byggda.)
 
-- Bronslykta, Bloomery mot järnet, lerkärl i handeln.
+- Kvar (valfritt): bronslykta, lerkärl i handeln.
 
 ## Lin (byggt, v0.65.0)
 
@@ -1245,3 +1250,157 @@ sig på bakbenen.
 - Ingen sadel i bronsåldern: barbacka fungerar, filten gör den bättre. Vanillas Saddle (järn) fungerar också men syns inte
   på modellen.
 - **Inte gjort:** hästrustning syns inte på vildhästmodellen; vagnen visar inte varorna i förrådet; kistan kan inte tas av vagnen; ingen tvåhästvagn.
+
+## Bloomery (byggd, v0.76.0)
+
+Bronsålderns sista steg: en liten blästugn av eldfast tegel som reducerar järnmalm till en glödande järnlupp, och ett
+gjutet bronsstäd där luppen smids till smidesjärn medan den är het. Kod: `Ironworking` (registrering, värden,
+gametest), `BloomeryHearthBlock` + `BloomeryBlockEntity` (struktur, värme, smältning; samma GUI som kilnen via
+`KilnMenu.bloomery`), `BloomeryStackBlock`, `IronBloomItem` (het/kall lupp), `BronzeAnvilBlock` + `BronzeAnvilBlockEntity`
+(bygger på `StoneAnvilBlockEntity`, ritas av `client/AnvilRenderer`). Ändrat: `KilnBlockEntity` (Fire Brick, formarna,
+omvärmning), `KilnMenu`/`client/KilnScreen` (termometer med 1500°-skala), `BellowsBlock`, `FireDrillItem`, `Tinder`,
+`BronzeOres.crushed` (Brick → Grog), `ClayMoldBlock.Shape`, `Metal`, `MoldBench`, `ToolStationRecipes`, `BronzeTools`
+(heta luppar bränner), `StoneAnvilBlock`. Data: `scripts/gen_bloomery.py` (efter gen_pots.py, före gen_block_items.py),
+texturer: `scripts/gen_bloomery_textures.py`.
+
+### Järnmalm och Raw Iron
+
+- **Iron Ore kräver Bronze Pickaxe** (taggen `mechanical:needs_bronze_tool`, som förut): koppar-, sten- och flinthackor
+  bryter den utan drop. Ger vanillas **Raw Iron**.
+- **Raw Iron smälts bara i Bloomery.** Vanillas sex ugnsrecept (`iron_ingot_from_smelting/blasting_raw_iron`, `..._iron_ore`,
+  `..._deepslate_iron_ore`) är avstängda, Clay Kiln och Smelting Furnace har inget recept för den, den går inte i en
+  Crucible och krossas inte på Stone Anvil. Lägerelden har inget recept heller.
+- **Temperaturen spärrar också:** Clay Kiln och Smelting Furnace når högst 1300° med Charcoal och Bellows, och järnet
+  reduceras först vid **1350°**, som bara Bloomery når.
+- Järnverktyg och järnrustning är fortfarande avstängda, och vanillas järntackor går inte att få: Bloomery ger
+  **Wrought Iron Ingot**, ett eget item, så hinkar, saxar, städ m.m. av järn väntar på järnåldern.
+
+### Eldfast tegel
+
+| Vad | Hur |
+|---|---|
+| Grog ×2 | En Brick på **Stone Anvil**, 4 slag med hammarsten (krossat tegel, chamotte) |
+| Fire Clay ×4 | 2 Clay Ball + 2 Grog (formlöst) |
+| Fire Brick | Fire Clay i Clay Kiln, **20 s vid 1100°** (kräver Charcoal och Bellows; Furnace Brick tar 600°) |
+| Bloomery Hearth | `[F][F][F]` / `[F][T][F]` / `[F][ ][F]` (F = Fire Brick, T = Clay Tuyere) |
+| Bloomery Stack | `[F][ ][F]` / `[F][ ][F]` / `[F][ ][F]` |
+
+En hel Bloomery = 19 Fire Brick + 1 Clay Tuyere ≈ 10 Clay Balls + 10 Grog (5 Brick). Allt bryts med hacka.
+
+### Bygga
+
+- **1×1×3:** en **Bloomery Hearth** längst ner och **två Bloomery Stacks** ovanpå. Blocket ovanför det översta får inte
+  vara fast (beskickningen läggs i och röken går ut där). En tredje stack gör schaktet för högt.
+- Härden vänds mot spelaren när den sätts: fram ett lågt **slaggvalv** av bränd lera (mörkt, slaggdroppar vid tröskeln),
+  bak ett **lerrör (tuyère)** som sticker ut ur väggen. Den översta stacken visar den öppna **mynningen**: 4 px tjocka
+  sotiga väggar runt ett hål med beskickningen (träkol och rostig malm) en bit ner.
+- **Tänd:** valvet och munstycket glöder (animerat, lyser 10), beskickningen i mynningen glöder (lyser 9), rök, lågor
+  och gnistor ur toppen, knaster och lavagnistor vid valvet.
+- Strukturen kollas varje sekund. Saknas något slocknar elden (bränslet ligger kvar) och högerklick på härden säger
+  vad som fattas: "Not a bloomery yet: stack 1 more Bloomery Stack(s) on the hearth", "The shaft is too tall ..." eller
+  "The top of the shaft must be open: clear x y z".
+- Advancement **Bloomery** ges från koden till spelare inom 12 block när den blir hel.
+
+### Värme
+
+Samma modell som kilnen (`KilnBlockEntity.heatStep`), men det eldfasta schaktet tål mer:
+
+- **Bränsle: bara Charcoal (och Coal).** Brinner **2 min** per st (hälften av kilnens 4 min: en blästugn slukar kol).
+- **Tänds** med Fire Drill på härden (Tinder hjälper), bara när den är hel och har bränsle.
+- Tänd stiger den **5°/s** mot Charcoals naturliga **800°**; släckt sjunker den 3°/s (×2 i regn på toppen).
+- **Bellows** som pekar på härden (vilken sida som helst; munstycket bak visar var den hör hemma): **+40°** per pump upp
+  till **1500°**. Över 800° sjunker den **2°/s** tillbaka. Från 800° till 1350° krävs 14 pumpningar; att hålla 1350°
+  kräver ungefär 3 pumpningar i minuten.
+- Ingen överhettning och inga sprickor (eldfast tegel).
+
+| Temperatur | Vad |
+|---|---|
+| 800° | Charcoals naturliga max (utan bälg) |
+| 1100° | Smideshetta: värmer om en kall lupp (här och i Clay Kiln) |
+| 1300° | Taket för Clay Kiln och Smelting Furnace: räcker **inte** till järn |
+| **1350°** | Raw Iron reduceras till en lupp (bara Bloomery, alltså bara med bälg) |
+| 1500° | Bloomerys tak med bälg |
+
+### Smälta
+
+Högerklick på härden öppnar **kilnens GUI** (samma rutor: in, bränsle, ut), men termometern går till **1500°** och har
+markeringar vid **1100°** (smideshetta, orange) och **1350°** (järn, vit). Det vita strecket vid termometern visar vad
+det som ligger i härden kräver (grönt när det nåtts), tooltipen temperatur och takt.
+
+| In | Ut | Tid | Kräver |
+|---|---|---|---|
+| **4 Raw Iron** | **Hot Iron Bloom** | 60 s | 1350° |
+| Iron Bloom (kall) | Hot Iron Bloom (slagen behålls) | 10 s | 1100° |
+
+- För kallt: framstegen står still (nollställs inte), som i kilnen. **Hetare går fortare**: +1 takt per 200° över (vid
+  1500° 1,75×).
+- En lupp i utrutan **hålls het** så länge härden är minst 1100°. Nästa smältning väntar tills luppen tagits ut.
+- Clay Kiln värmer också om en kall lupp: **Iron Bloom → Hot Iron Bloom, 10 s vid 1100°** (kilnen når 1300° med bälg),
+  och håller den het i sin utruta på samma sätt. Smelting Furnace tar inte luppar (den tar bara det som smälter genom tratten).
+
+### Järnluppen
+
+- **Hot Iron Bloom:** glödande järnsvamp (animerad). Het i **30 s** utanför elden, en orange stapel visar värmen som är
+  kvar. **Bränner** i bar hand som en Crucible of Molten Metal (½ hjärta varannan sekund) om man inte håller **Bronze
+  Tongs** i någon hand. Svalnar den blir den en **Iron Bloom** (mörk, rostig, med slaggporer).
+- Luppen bär hur många slag den fått (`mechanical:bloom_hits`, tooltip "Hammered 3/8"). Slagen följer med när den
+  svalnar och värms om, så man fortsätter där man var.
+
+### Bronze Anvil och Bronze Smithing Hammer
+
+| Sak | Hur |
+|---|---|
+| Unfired Clay Hammer Head Mold | Mold Bench, 5 Clay Balls → kilnen (600°, 20 s) → **Clay Hammer Head Mold** |
+| Rough Cast Bronze Hammer Head | 4 enheter brons i formen → Whetstone (4 drag) → **Bronze Hammer Head** |
+| **Bronze Smithing Hammer** | Tool Station: Bronze Hammer Head + Cordage (eller Hide Glue) + Tool Rod |
+| Unfired Clay Anvil Mold | Mold Bench, **32 Clay Balls** → kilnen (600°, 30 s) → **Clay Anvil Mold** |
+| Rough Cast Bronze Anvil | **10 enheter brons**, en hel degel (eller via Clay Channels från Smelting Furnace) → Whetstone → **Bronze Anvil** |
+
+- Båda formarna tar bara brons och tål 5 gjutningar, som de andra. Bronze Anvil är det största som gjuts (Bronze Kettle 8).
+- **Bronze Smithing Hammer:** 160 hållbarhet, **2 per slag** på en lupp (järn sliter brons fort: 10 luppar per hammare).
+  Den är också en hammarsten på Stone Anvil (1 per slag). Poor Bronze: 70 % hållbarhet. Låses upp i Tool Station när man
+  bär huvudet.
+- **Bronze Anvil:** ett gjutet bronsstäd (fot, midja, bana och horn; banan blankare). Vänds med hornet åt sidan. Bryts
+  med hacka. Poor Bronze-märket följer inte med (blocket bär inget).
+
+### Smida
+
+1. Högerklicka **Bronze Anvil** med luppen (het eller kall). Den ligger på banan. Tom hand tar tillbaka den.
+2. Slå med **Bronze Smithing Hammer** (vänster- eller högerklick), ett slag per halv sekund: städljud, gnistor.
+   Med en lupp på städet slår hammaren luppen i stället för att bryta städet.
+3. **8 slag** på en het lupp → **2 Wrought Iron Ingot + 1 Slag** hoppar upp. 4 Raw Iron blir alltså 2 tackor.
+4. **Kall lupp:** inga slag och inget slitage, "The bloom has cooled: reheat it to 1100° in the Bloomery or a Clay Kiln".
+   En het lupp som ligger kvar på städet svalnar där (fräs) när tiden gått ut.
+
+8 slag tar ungefär 4 s, så den som har städet nära härden hinner med en hetta; längre bort får man värma om.
+**Stone Anvil** tar inte luppar: "Stone is too soft for iron: hammer the bloom on a Bronze Anvil".
+
+### Slag
+
+1 per lupp. **4 Slag → 1 Gravel** (formlöst, vägfyllning). Ingen annan användning än.
+
+### Advancements (Bronze Age-fliken)
+
+*Fire Brick* (efter Toward Iron), *Bloomery* (goal, från koden), *Iron Bloom* (goal), *Wrought Iron* (challenge),
+*Bronze Anvil* (goal, efter Bronze!), *Smith* (Bronze Smithing Hammer, efter Bronze!).
+
+### Test
+
+Gametest `mechanical:bloomery`: härd + en stack, härd + tre stackar och ett lock på schaktet är ingen Bloomery, härd + två
+stackar med öppen topp är det (den övre stacken är toppen); 4 Raw Iron smälter inte vid 1300° men blir en Hot Iron Bloom
+vid 1500°; Raw Iron tas inte av Clay Kiln, Crucible, Stone Anvil eller vanillas smelting/blasting/campfire/smoking-recept;
+Copper och Stone Pickaxe bryter inte Iron Ore men Bronze Pickaxe gör; en kall lupp tar inga slag på Bronze Anvil, en het ger
+Wrought Iron Ingot och Slag efter 8 slag och hammaren slits 16; kilnen värmer om en lupp vid 1100° och den behåller sina slag.
+
+### Beslut
+
+- **Wrought Iron Ingot** i stället för vanillas Iron Ingot, så att allt av vanilla-järn (hink, sax, städ, räls ...) fortsatt
+  väntar på järnåldern utan att varje recept måste stängas av.
+- **Temperaturspärr:** järn kräver 1350°, över kilnens och Smelting Furnaces 1300°-tak, så Bloomery och bälgen behövs
+  även om man skulle få in Raw Iron någon annanstans.
+- **Kilnens GUI återanvänds** (samma rutor och data) med en hetare termometer, i stället för ett eget gränssnitt.
+- Omvärmning i Bloomery och Clay Kiln; Smelting Furnace tar bara emot det som smälter.
+- Fire Clay av lera + Grog (krossat tegel), bränd vid 1100°: Furnace Brick (lera + sand, 600°) är det enklare teglet,
+  Fire Brick kräver redan bälg och kol.
+- **Inte gjort (valfritt):** att beskicka genom toppen (allt läggs i GUI:t), slaggtappning ur valvet medan den brinner,
+  att städet krossar malm, en Poor Bronze-variant av städet.

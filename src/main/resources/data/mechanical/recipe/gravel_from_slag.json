@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:slag",
+    "mechanical:slag",
+    "mechanical:slag",
+    "mechanical:slag"
+  ],
+  "result": {
+    "id": "minecraft:gravel"
+  }
+}

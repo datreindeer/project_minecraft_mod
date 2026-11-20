@@ -879,6 +879,26 @@ TABS["bronze_age"][1].extend([
      has("bronze_chisel")),
 ])
 
+# the Bloomery and wrought iron (Ironworking.java; gen_bloomery.py)
+TABS["bronze_age"][1].extend([
+    ("fire_brick", "raw_iron", "fire_brick", T, "Fire Brick",
+     "Crush Brick on the Stone Anvil into Grog, mix Fire Clay from Clay Balls and Grog, and fire it in the kiln at 1100°",
+     has("fire_brick")),
+    ("bloomery", "fire_brick", "bloomery_hearth", G, "Bloomery",
+     "Build a Bloomery: a Bloomery Hearth with two Bloomery Stacks on it and the top left open", by_code()),
+    ("iron_bloom", "bloomery", "hot_iron_bloom", G, "Iron Bloom",
+     "Smelt 4 Raw Iron with Charcoal in the Bloomery. It needs 1350°: pump the bellows into the hearth",
+     has("hot_iron_bloom", "iron_bloom")),
+    ("bronze_anvil", "bronze", "bronze_anvil", G, "Bronze Anvil",
+     "Fire a Clay Anvil Mold (32 Clay Balls), pour a full crucible of bronze (10 units) into it and grind the casting",
+     has("bronze_anvil")),
+    ("smithing_hammer", "bronze", "bronze_smithing_hammer", T, "Smith",
+     "Cast a hammer head, grind it and assemble a Bronze Smithing Hammer at the Tool Station", has("bronze_smithing_hammer")),
+    ("wrought_iron", "iron_bloom", "wrought_iron_ingot", C, "Wrought Iron",
+     "Hammer a hot Iron Bloom 8 times on a Bronze Anvil before it cools: Wrought Iron Ingots and Slag",
+     has("wrought_iron_ingot")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

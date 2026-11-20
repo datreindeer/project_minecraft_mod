@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:clay_ball",
+    "minecraft:clay_ball",
+    "mechanical:grog",
+    "mechanical:grog"
+  ],
+  "result": {
+    "id": "mechanical:fire_clay",
+    "count": 4
+  }
+}

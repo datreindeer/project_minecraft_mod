@@ -165,7 +165,7 @@ public final class BronzeTools {
             if (Bronze.isPoor(rough)) Bronze.markPoor(out);
             return out;
         }
-        return ItemStack.EMPTY;
+        return Ironworking.ground(rough);
     }
 
     public static boolean isBucket(ItemStack s) {
@@ -262,7 +262,7 @@ public final class BronzeTools {
     }
 
     private static boolean hot(ItemStack stack, long now) {
-        return stack.is(Casting.MOLTEN_CRUCIBLE.get()) && !CrucibleItem.isCold(stack, now);
+        return stack.is(Casting.MOLTEN_CRUCIBLE.get()) && !CrucibleItem.isCold(stack, now) || Ironworking.isHot(stack, now);
     }
 
     /** A Molten Crucible held in a hand burns unless Bronze Tongs are in a hand too; true if it burnt. */

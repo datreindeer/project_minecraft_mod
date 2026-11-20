@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -28,11 +29,21 @@ public class StoneAnvilBlockEntity extends BlockEntity {
     /** Height of the anvil's top face, in blocks (the renderer lays the item there). */
     public static final float TOP = 5 / 16.0F;
 
-    private ItemStack item = ItemStack.EMPTY;
-    private int hits;
+    protected ItemStack item = ItemStack.EMPTY;
+    protected int hits;
 
     public StoneAnvilBlockEntity(BlockPos pos, BlockState state) {
-        super(BronzeOres.STONE_ANVIL_ENTITY.get(), pos, state);
+        this(BronzeOres.STONE_ANVIL_ENTITY.get(), pos, state);
+    }
+
+    /** Also the Bronze Anvil ({@link BronzeAnvilBlockEntity}): an item lying on a working face. */
+    protected StoneAnvilBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    /** Height of the working face in blocks, where the renderer lays the item. */
+    public float top() {
+        return TOP;
     }
 
     public ItemStack item() {
@@ -74,7 +85,7 @@ public class StoneAnvilBlockEntity extends BlockEntity {
         sync();
     }
 
-    private void sync() {
+    protected void sync() {
         setChanged();
         if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }

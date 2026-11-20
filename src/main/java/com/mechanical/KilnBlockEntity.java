@@ -106,7 +106,12 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Pottery.UNFIRED_FLOWER_POT.get()), 1, () -> Items.FLOWER_POT, 400, 600),
             new Recipe(s -> s.is(Pottery.UNFIRED_DECORATED_POT.get()), 1, () -> Items.DECORATED_POT, 600, 600),
             new Recipe(s -> s.is(Smelting.UNFIRED_FURNACE_BRICK.get()), 1, () -> Smelting.FURNACE_BRICK.get(), 200, 600),
-            new Recipe(s -> s.is(Smelting.UNFIRED_CLAY_CHANNEL.get()), 1, () -> Smelting.CLAY_CHANNEL_ITEM.get(), 400, 600));
+            new Recipe(s -> s.is(Smelting.UNFIRED_CLAY_CHANNEL.get()), 1, () -> Smelting.CLAY_CHANNEL_ITEM.get(), 400, 600),
+            new Recipe(s -> s.is(Ironworking.FIRE_CLAY.get()), 1, () -> Ironworking.FIRE_BRICK.get(), 400, 1100),
+            new Recipe(s -> s.is(Ironworking.UNFIRED_CLAY_HAMMER_HEAD_MOLD.get()), 1, () -> Ironworking.CLAY_HAMMER_HEAD_MOLD_ITEM.get(), 400, 600),
+            new Recipe(s -> s.is(Ironworking.UNFIRED_CLAY_ANVIL_MOLD.get()), 1, () -> Ironworking.CLAY_ANVIL_MOLD_ITEM.get(), 600, 600),
+            // a cooled Iron Bloom back to forging heat (BloomeryBlockEntity.FORGE_TEMP); it keeps its blows
+            new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, 1100));
 
     // Our own fuel list (vanilla's fuel component needs a loot context); controls what burns in the stone age.
     public static final List<Fuel> FUELS = List.of(
@@ -170,6 +175,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             ItemStack out = new ItemStack(r.result().get());
             // sherds pressed into an Unfired Decorated Pot stay on the fired pot
             if (stack.has(DataComponents.POT_DECORATIONS)) out.set(DataComponents.POT_DECORATIONS, stack.get(DataComponents.POT_DECORATIONS));
+            if (stack.has(Ironworking.BLOOM_HITS.get())) out.set(Ironworking.BLOOM_HITS.get(), stack.get(Ironworking.BLOOM_HITS.get()));
             return new Bake(r.count(), r.ticks(), r.temp(), out);
         }).orElse(null);
     }
@@ -402,6 +408,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             ItemStack out = kiln.items.get(OUTPUT);
             ItemStack result = bake.result;
             if (result.has(Casting.COOLS_AT.get())) result.set(Casting.COOLS_AT.get(), level.getGameTime() + CrucibleItem.COOL_SECONDS * 20L);
+            if (result.is(Ironworking.HOT_IRON_BLOOM.get())) result = Ironworking.hotBloom(result, level.getGameTime());
             if (out.isEmpty()) kiln.items.set(OUTPUT, result);
             else out.grow(1);
         }
@@ -412,9 +419,13 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         return Math.clamp(1 + (temp - need) / DEGREES_PER_SPEED, 1, MAX_SPEED);
     }
 
-    /** Molten metal in the output slot stays molten while the kiln is at its melting point. */
+    /** Molten metal in the output slot stays molten while the kiln is at its melting point (a hot bloom at forging heat). */
     private void keepMoltenHot(ServerLevel level) {
         ItemStack out = items.get(OUTPUT);
+        if (out.is(Ironworking.HOT_IRON_BLOOM.get()) && temp >= BloomeryBlockEntity.FORGE_TEMP && level.getGameTime() % 20 == 0) {
+            out.set(Casting.COOLS_AT.get(), level.getGameTime() + Ironworking.HOT_SECONDS * 20L);
+            out.setDamageValue(0);
+        }
         if (!out.is(Casting.MOLTEN_CRUCIBLE.get()) || level.getGameTime() % 20 != 0) return;
         Metal metal = CrucibleItem.contents(out).alloy();
         if (metal != null && temp >= metal.melt) {

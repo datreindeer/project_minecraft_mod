@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:bronze_age/bloomery",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hot_iron_bloom"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:iron_bloom"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hot_iron_bloom"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.iron_bloom.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.iron_bloom.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -67,6 +67,16 @@ public class BellowsBlock extends Block {
         double nx = pos.getX() + 0.5 + facing.getStepX() * 0.55, nz = pos.getZ() + 0.5 + facing.getStepZ() * 0.55;
         server.sendParticles(ParticleTypes.POOF, nx, pos.getY() + 0.25, nz, 2, 0.02, 0.02, 0.02, 0.02);
         BlockPos target = pos.relative(facing);
+        if (level.getBlockEntity(target) instanceof BloomeryBlockEntity bloomery) {
+            if (!bloomery.pump()) player.sendOverlayMessage(Component.translatable("message.mechanical.bloomery.unlit"));
+            else { // the charge roars at the top of the shaft
+                BlockPos top = target.above(3);
+                server.sendParticles(ParticleTypes.FLAME, top.getX() + 0.5, top.getY() + 0.05, top.getZ() + 0.5, 8, 0.12, 0.1, 0.12, 0.04);
+                server.sendParticles(ParticleTypes.LAVA, top.getX() + 0.5, top.getY() + 0.05, top.getZ() + 0.5, 2, 0.1, 0.1, 0.1, 0.0);
+                server.playSound(null, target, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.25F, 0.6F + server.getRandom().nextFloat() * 0.2F);
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (!(level.getBlockEntity(target) instanceof KilnBlockEntity kiln)) {
             FurnaceTapBlockEntity furnace = FurnaceTapBlockEntity.find(server, target);
             if (furnace == null) player.sendOverlayMessage(Component.translatable("message.mechanical.bellows.no_kiln"));

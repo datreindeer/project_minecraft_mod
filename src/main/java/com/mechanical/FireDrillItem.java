@@ -41,7 +41,8 @@ public class FireDrillItem extends Item {
         boolean kiln = state.getBlock() instanceof KilnBlock && !state.getValue(KilnBlock.LIT);
         boolean furnace = state.getBlock() instanceof FurnaceTapBlock && !state.getValue(FurnaceTapBlock.LIT);
         boolean pit = FirePit.canLight(state);
-        if (!kiln && !furnace && !pit && !CampfireBlock.canLight(state)) return InteractionResult.PASS;
+        boolean bloomery = state.getBlock() instanceof BloomeryHearthBlock && !state.getValue(BloomeryHearthBlock.LIT);
+        if (!kiln && !furnace && !pit && !bloomery && !CampfireBlock.canLight(state)) return InteractionResult.PASS;
         if (level instanceof ServerLevel server) {
             KilnBlockEntity kilnEntity = kiln && server.getBlockEntity(KilnBlock.lowerPos(state, pos)) instanceof KilnBlockEntity k ? k : null;
             if (kiln && (kilnEntity == null || !kilnEntity.canLight())) {
@@ -54,11 +55,18 @@ public class FireDrillItem extends Item {
                         : Component.translatable("message.mechanical.furnace.needs_fuel"));
                 return InteractionResult.FAIL;
             }
+            BloomeryBlockEntity hearth = bloomery && server.getBlockEntity(pos) instanceof BloomeryBlockEntity b ? b : null;
+            if (bloomery && (hearth == null || !hearth.canLight())) {
+                Component why = hearth != null ? hearth.check(server) : null;
+                if (context.getPlayer() != null) context.getPlayer().sendOverlayMessage(why != null ? why : Component.translatable("message.mechanical.bloomery.needs_fuel"));
+                return InteractionResult.FAIL;
+            }
             var tinder = Tinder.holder(server, pos, state);
             if (server.getRandom().nextFloat() < (Tinder.has(tinder) ? Tinder.CHANCE_WITH : Tinder.CHANCE_WITHOUT)) {
                 if (tinder != null) Tinder.set(tinder, false);
                 if (kilnEntity != null) kilnEntity.tryLight();
                 else if (tap != null) tap.tryLight();
+                else if (hearth != null) hearth.tryLight(server);
                 else if (pit) { FirePitBlockEntity e = FirePit.entity(server, pos, state); if (e != null) e.light(); }
                 else server.setBlock(pos, state.setValue(CampfireBlock.LIT, true).trySetValue(Campfires.EMBERS, false), 11);
                 server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);

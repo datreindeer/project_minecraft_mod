@@ -1,0 +1,147 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/bloomery_bricks",
+    "bricks": "mechanical:block/bloomery_bricks",
+    "front": "mechanical:block/bloomery_hearth_front",
+    "back": "mechanical:block/bloomery_tuyere",
+    "clay": "mechanical:block/kiln_clay_fired",
+    "glow": "mechanical:block/bloomery_hearth_glow",
+    "tuyere_glow": "mechanical:block/bloomery_tuyere_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#bricks",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#bricks",
+          "cullface": "up"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#front",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#back",
+          "cullface": "south"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#bricks",
+          "cullface": "east"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#bricks",
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        2.5,
+        16
+      ],
+      "to": [
+        10,
+        6.5,
+        18
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            4,
+            4,
+            8,
+            6
+          ],
+          "texture": "#clay"
+        },
+        "down": {
+          "uv": [
+            4,
+            4,
+            8,
+            6
+          ],
+          "texture": "#clay"
+        },
+        "east": {
+          "uv": [
+            4,
+            4,
+            8,
+            6
+          ],
+          "texture": "#clay"
+        },
+        "west": {
+          "uv": [
+            4,
+            4,
+            8,
+            6
+          ],
+          "texture": "#clay"
+        },
+        "south": {
+          "uv": [
+            5.5,
+            9.5,
+            9.5,
+            13.5
+          ],
+          "texture": "#back"
+        }
+      }
+    }
+  ]
+}

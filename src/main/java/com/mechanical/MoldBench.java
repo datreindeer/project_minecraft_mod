@@ -52,7 +52,9 @@ public final class MoldBench {
             StationRecipe.of(BronzeTools.UNFIRED_CLAY_FISH_HOOKS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null),
             StationRecipe.of(BronzeTools.UNFIRED_CLAY_NEEDLES_MOLD::get, 1, of(() -> Items.CLAY_BALL, 3), null),
             StationRecipe.of(BronzeTools.UNFIRED_CLAY_TONGS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 6), null),
-            StationRecipe.of(BronzeTools.UNFIRED_CLAY_CHISEL_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null));
+            StationRecipe.of(BronzeTools.UNFIRED_CLAY_CHISEL_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),
+            StationRecipe.of(Ironworking.UNFIRED_CLAY_HAMMER_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
+            StationRecipe.of(Ironworking.UNFIRED_CLAY_ANVIL_MOLD::get, 1, of(() -> Items.CLAY_BALL, 32), null));
 
     public static void init() {}
 

@@ -23,11 +23,11 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jspecify.annotations.Nullable;
 
-/** The ore on a Stone Anvil, lying flat on the top face, turned a little per block so anvils side by side differ. */
-public class AnvilRenderer implements BlockEntityRenderer<StoneAnvilBlockEntity, AnvilRenderer.State> {
+/** The ore on a Stone Anvil (or the bloom on a Bronze Anvil), lying flat on the top face, turned a little per block so anvils side by side differ. */
+public class AnvilRenderer<T extends StoneAnvilBlockEntity> implements BlockEntityRenderer<T, AnvilRenderer.State> {
     public static class State extends BlockEntityRenderState {
         final ItemStackRenderState item = new ItemStackRenderState();
-        float turn;
+        float turn, top;
     }
 
     private final ItemModelResolver items;
@@ -42,18 +42,19 @@ public class AnvilRenderer implements BlockEntityRenderer<StoneAnvilBlockEntity,
     }
 
     @Override
-    public void extractRenderState(StoneAnvilBlockEntity anvil, State state, float partialTicks, Vec3 camera,
+    public void extractRenderState(T anvil, State state, float partialTicks, Vec3 camera,
             ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(anvil, state, partialTicks, camera, breakProgress);
         items.updateForTopItem(state.item, anvil.item(), ItemDisplayContext.FIXED, anvil.getLevel(), null, (int) anvil.getBlockPos().asLong());
         state.turn = (anvil.getBlockPos().hashCode() & 7) * 45.0F;
+        state.top = anvil.top();
     }
 
     @Override
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.item.isEmpty()) return;
         pose.pushPose();
-        pose.translate(0.5F, StoneAnvilBlockEntity.TOP + 0.02F, 0.5F);
+        pose.translate(0.5F, state.top + 0.02F, 0.5F);
         pose.rotateDegrees(Axis.YP, state.turn);
         pose.rotateDegrees(Axis.XP, 90.0F);
         pose.scale(0.5F, 0.5F, 0.5F);
@@ -66,6 +67,7 @@ public class AnvilRenderer implements BlockEntityRenderer<StoneAnvilBlockEntity,
         @SubscribeEvent
         static void register(EntityRenderersEvent.RegisterRenderers event) {
             event.registerBlockEntityRenderer(BronzeOres.STONE_ANVIL_ENTITY.get(), AnvilRenderer::new);
+            event.registerBlockEntityRenderer(com.mechanical.Ironworking.BRONZE_ANVIL_ENTITY.get(), AnvilRenderer::new);
         }
     }
 }

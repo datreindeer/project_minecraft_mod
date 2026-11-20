@@ -363,6 +363,15 @@ class Models:
         quads, keys, imgs = self.block_quads(layout)
         return self.add_geo(quads, keys, imgs, "thumb:multiblock:smelting_furnace")
 
+    def bloomery(self):
+        """The Bloomery (BloomeryBlockEntity.check()): the hearth with two stacks on it, the top one open."""
+        m = self.g.MOD
+        layout = [(0, 0, 0, f"{m}:bloomery_hearth", {"facing": "north", "lit": "true"}),
+                  (0, 1, 0, f"{m}:bloomery_stack", {"top": "false", "lit": "true"}),
+                  (0, 2, 0, f"{m}:bloomery_stack", {"top": "true", "lit": "true"})]
+        quads, keys, imgs = self.block_quads(layout)
+        return self.add_geo(quads, keys, imgs, "thumb:multiblock:bloomery")
+
     def block_props(self, block):
         ns, p = self.g.split_id(block)
         bs = self.g.read_json(f"assets/{ns}/blockstates/{p}.json")

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FFF",
+    "FTF",
+    "F F"
+  ],
+  "key": {
+    "F": "mechanical:fire_brick",
+    "T": "mechanical:clay_tuyere"
+  },
+  "result": {
+    "id": "mechanical:bloomery_hearth"
+  }
+}

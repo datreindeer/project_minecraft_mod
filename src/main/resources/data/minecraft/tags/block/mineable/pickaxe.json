@@ -20,6 +20,9 @@
     "mechanical:furnace_chute",
     "mechanical:furnace_tap",
     "mechanical:clay_channel",
-    "mechanical:oil_lamp"
+    "mechanical:oil_lamp",
+    "mechanical:bloomery_hearth",
+    "mechanical:bloomery_stack",
+    "mechanical:bronze_anvil"
   ]
 }

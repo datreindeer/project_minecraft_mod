@@ -3,6 +3,7 @@ package com.mechanical.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mechanical.BloomeryBlockEntity;
 import com.mechanical.KilnBlockEntity;
 import com.mechanical.KilnMenu;
 import com.mechanical.Mechanical;
@@ -23,6 +24,8 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
     private static final Identifier BG = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/kiln.png");
+    /** The Bloomery's: the same screen with the tube scaled to its 1500° and marks at 1100° / 1350° (gen_bloomery_textures.py). */
+    private static final Identifier BLOOMERY_BG = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/bloomery.png");
     private static final Identifier FLAME = Identifier.withDefaultNamespace("container/furnace/lit_progress");
     private static final Identifier ARROW = Identifier.withDefaultNamespace("container/furnace/burn_progress");
     private static final int FLAME_X = 56, FLAME_Y = 36;
@@ -36,12 +39,17 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
 
     /** Row (screen-relative) for a temperature on the tube. */
     public static int rowFor(int degrees) {
-        return TUBE_BOTTOM - Math.round(Math.clamp(degrees / (float) KilnBlockEntity.CEILING, 0, 1) * (TUBE_BOTTOM - TUBE_TOP));
+        return rowFor(degrees, KilnBlockEntity.CEILING);
+    }
+
+    /** Row for a temperature on a tube whose top stands for {@code max}°. */
+    public static int rowFor(int degrees, int max) {
+        return TUBE_BOTTOM - Math.round(Math.clamp(degrees / (float) max, 0, 1) * (TUBE_BOTTOM - TUBE_TOP));
     }
 
     /** Glow colour of hot clay: dark red, red at 600°, orange at 950°, white-yellow at the ceiling. */
     public static int heatColour(int degrees) {
-        int[][] stops = {{0, 0x4A1A14}, {600, 0xB0200C}, {950, 0xF07A10}, {1085, 0xFFB030}, {1300, 0xFFF4C0}};
+        int[][] stops = {{0, 0x4A1A14}, {600, 0xB0200C}, {950, 0xF07A10}, {1085, 0xFFB030}, {1300, 0xFFF4C0}, {1500, 0xFFFFFF}};
         for (int i = 1; i < stops.length; i++) {
             if (degrees > stops[i][0] && i < stops.length - 1) continue;
             float f = Math.clamp((degrees - stops[i - 1][0]) / (float) (stops[i][0] - stops[i - 1][0]), 0, 1);
@@ -55,7 +63,7 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(graphics, mouseX, mouseY, partialTick);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, BG, leftPos, topPos, 0.0F, 0.0F, imageWidth, imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, menu.isBloomery() ? BLOOMERY_BG : BG, leftPos, topPos, 0.0F, 0.0F, imageWidth, imageHeight, 256, 256);
         if (menu.lit()) {
             int h = (int) Math.ceil(menu.burn() * 13) + 1;
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, FLAME, 14, 14, 0, 14 - h, leftPos + FLAME_X, topPos + FLAME_Y + 14 - h, 14, h);
@@ -63,7 +71,7 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
         int arrow = (int) Math.ceil(menu.progress() * 24);
         if (arrow > 0) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARROW, 24, 16, 0, 0, leftPos + 79, topPos + 34, arrow, 16);
 
-        thermometer(graphics, leftPos, topPos, menu.temperature(), menu.needed());
+        thermometer(graphics, leftPos, topPos, menu.temperature(), menu.needed(), menu.isBloomery() ? BloomeryBlockEntity.CEILING : KilnBlockEntity.CEILING);
         float strain = menu.cracked() ? 1 : menu.strain();
         if (strain > 0) {
             int x = leftPos + STRAIN_X, y0 = topPos + TUBE_TOP - 1, y1 = topPos + TUBE_BOTTOM + 1;
@@ -79,15 +87,20 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
      * left of the tube marks {@code need} (white, green once reached; none for 0). Also the Smelting Furnace's.
      */
     public static void thermometer(GuiGraphicsExtractor graphics, int leftPos, int topPos, int t, int need) {
-        for (int y = rowFor(t); y < TUBE_BOTTOM; y++) {
-            int deg = (TUBE_BOTTOM - y) * KilnBlockEntity.CEILING / (TUBE_BOTTOM - TUBE_TOP);
+        thermometer(graphics, leftPos, topPos, t, need, KilnBlockEntity.CEILING);
+    }
+
+    /** The same on a tube whose top stands for {@code max}° (the Bloomery's 1500°). */
+    public static void thermometer(GuiGraphicsExtractor graphics, int leftPos, int topPos, int t, int need, int max) {
+        for (int y = rowFor(t, max); y < TUBE_BOTTOM; y++) {
+            int deg = (TUBE_BOTTOM - y) * max / (TUBE_BOTTOM - TUBE_TOP);
             graphics.fill(leftPos + TUBE_X, topPos + y, leftPos + TUBE_X + TUBE_W, topPos + y + 1, heatColour(deg));
         }
         int bulb = heatColour(Math.max(t, 0));
         graphics.fill(leftPos + TUBE_X, topPos + TUBE_BOTTOM, leftPos + TUBE_X + TUBE_W, topPos + TUBE_BOTTOM + 6, bulb);
         graphics.fill(leftPos + TUBE_X - 1, topPos + TUBE_BOTTOM + 1, leftPos + TUBE_X + TUBE_W + 1, topPos + TUBE_BOTTOM + 5, bulb);
         if (need > 0) {
-            int y = topPos + rowFor(need);
+            int y = topPos + rowFor(need, max);
             graphics.fill(leftPos + TUBE_X - 4, y, leftPos + TUBE_X - 1, y + 1, t >= need ? 0xFF80FF80 : 0xFFFFFFFF);
         }
     }

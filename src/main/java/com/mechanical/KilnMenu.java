@@ -4,36 +4,56 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import java.util.function.Predicate;
+
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-/** Furnace layout: input top, fuel bottom, flame between, arrow to the output. */
+/** Furnace layout: input top, fuel bottom, flame between, arrow to the output. Also the Bloomery's (same slots and data). */
 public class KilnMenu extends AbstractContainerMenu {
     private static final int INV_START = 3, INV_END = 39;
     private final Container kiln;
     private final ContainerData data;
+    private final Predicate<ItemStack> input, fuel;
 
     public KilnMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new SimpleContainer(3), new SimpleContainerData(8));
     }
 
     public KilnMenu(int containerId, Inventory inventory, Container kiln, ContainerData data) {
-        super(Mechanical.KILN_MENU.get(), containerId);
+        this(Mechanical.KILN_MENU.get(), containerId, inventory, kiln, data, KilnBlockEntity::canBake, s -> KilnBlockEntity.burnTicks(s) > 0);
+    }
+
+    /** The Bloomery's screen: Raw Iron or a cold bloom in, Charcoal as fuel, the bloom out. */
+    public static KilnMenu bloomery(int containerId, Inventory inventory) {
+        return bloomery(containerId, inventory, new SimpleContainer(3), new SimpleContainerData(8));
+    }
+
+    public static KilnMenu bloomery(int containerId, Inventory inventory, Container bloomery, ContainerData data) {
+        return new KilnMenu(Ironworking.BLOOMERY_MENU.get(), containerId, inventory, bloomery, data, BloomeryBlockEntity::canSmelt,
+                s -> BloomeryBlockEntity.burnTicks(s) > 0);
+    }
+
+    private KilnMenu(MenuType<?> type, int containerId, Inventory inventory, Container kiln, ContainerData data, Predicate<ItemStack> input, Predicate<ItemStack> fuel) {
+        super(type, containerId);
         this.kiln = kiln;
         this.data = data;
+        this.input = input;
+        this.fuel = fuel;
         addSlot(new Slot(kiln, KilnBlockEntity.INPUT, 56, 17) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return KilnBlockEntity.canBake(stack);
+                return input.test(stack);
             }
         });
         addSlot(new Slot(kiln, KilnBlockEntity.FUEL, 56, 53) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return KilnBlockEntity.burnTicks(stack) > 0;
+                return fuel.test(stack);
             }
         });
         addSlot(new Slot(kiln, KilnBlockEntity.OUTPUT, 116, 35) {
@@ -72,6 +92,11 @@ public class KilnMenu extends AbstractContainerMenu {
         return data.get(5) / (float) KilnBlockEntity.STRAIN_MAX;
     }
 
+    /** The Bloomery's screen (hotter thermometer scale, its own marks). */
+    public boolean isBloomery() {
+        return getType() == Ironworking.BLOOMERY_MENU.get();
+    }
+
     public boolean cracked() {
         return data.get(6) != 0;
     }
@@ -91,8 +116,8 @@ public class KilnMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, INV_START, INV_END, true)) return ItemStack.EMPTY;
         } else {
             // recipe input first (logs are both), then fuel
-            boolean moved = (KilnBlockEntity.canBake(stack) && moveItemStackTo(stack, KilnBlockEntity.INPUT, KilnBlockEntity.INPUT + 1, false))
-                    || (KilnBlockEntity.burnTicks(stack) > 0 && moveItemStackTo(stack, KilnBlockEntity.FUEL, KilnBlockEntity.FUEL + 1, false));
+            boolean moved = (input.test(stack) && moveItemStackTo(stack, KilnBlockEntity.INPUT, KilnBlockEntity.INPUT + 1, false))
+                    || (fuel.test(stack) && moveItemStackTo(stack, KilnBlockEntity.FUEL, KilnBlockEntity.FUEL + 1, false));
             if (!moved) return ItemStack.EMPTY;
         }
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);

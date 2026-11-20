@@ -805,6 +805,15 @@ def add_models(entries, ids, notes):
                         "info": {"sv": "3×3×3: 24 Furnace Bricks, en Furnace Chute mitt på taket och en Furnace Tap mitt i nedersta raden fram; bara mittblocket är tomt. Munstyckshålen visas när ugnen är hel.",
                                  "en": "3×3×3: 24 Furnace Bricks, a Furnace Chute in the middle of the roof and a Furnace Tap in the middle of the bottom front row; only the middle block is empty. The tuyere holes show once it is complete."}}
 
+    gk, ik = MODELS.bloomery()
+    if gk:
+        mid = "multiblock:bloomery"
+        entries[mid] = {"id": mid, "name": MOD_LANG.get("container.mechanical.bloomery", "Bloomery"),
+                        "kind": "multiblock", "cats": ["multiblocks"], "img": ik,
+                        "m3d": [{"label": "", "geo": gk, "img": ik}],
+                        "info": {"sv": "1×1×3: en Bloomery Hearth längst ner, två Bloomery Stacks ovanpå och toppen öppen. Bälgen blåser in i härden.",
+                                 "en": "1×1×3: a Bloomery Hearth at the bottom, two Bloomery Stacks on it and the top left open. Bellows blow into the hearth."}}
+
 
 # ---------------------------------------------------------------- main
 
@@ -862,7 +871,8 @@ def main():
     consts = java_constants()
     fuels = []
     for path, station in [(os.path.join(JAVA, "ToolStationRecipes.java"), "Tool Station"),
-                          (os.path.join(JAVA, "KilnBlockEntity.java"), "Clay Kiln")]:
+                          (os.path.join(JAVA, "KilnBlockEntity.java"), "Clay Kiln"),
+                          (os.path.join(JAVA, "BloomeryBlockEntity.java"), "Bloomery")]:
         if not os.path.isfile(path):
             warn(f"saknas: {os.path.relpath(path, ROOT)}")
             continue

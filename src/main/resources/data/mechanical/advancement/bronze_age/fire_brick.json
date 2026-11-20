@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/raw_iron",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fire_brick"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fire_brick"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.fire_brick.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.fire_brick.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

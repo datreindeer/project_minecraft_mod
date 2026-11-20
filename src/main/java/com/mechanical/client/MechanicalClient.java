@@ -19,6 +19,7 @@ public class MechanicalClient {
     static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(Mechanical.TOOL_STATION_MENU.get(), ToolStationScreen::new);
         event.register(Mechanical.KILN_MENU.get(), KilnScreen::new);
+        event.register(com.mechanical.Ironworking.BLOOMERY_MENU.get(), KilnScreen::new);
         event.register(com.mechanical.Smelting.FURNACE_MENU.get(), FurnaceScreen::new);
         event.register(Mechanical.BARK_BASKET_MENU.get(), BarkBasketScreen::new);
         event.register(com.mechanical.equipment.PackMenu.TYPE.get(), PackScreen::new);

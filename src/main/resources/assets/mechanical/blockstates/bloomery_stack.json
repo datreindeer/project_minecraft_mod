@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "lit=false,top=false": {
+      "model": "mechanical:block/bloomery_stack"
+    },
+    "lit=false,top=true": {
+      "model": "mechanical:block/bloomery_stack_top"
+    },
+    "lit=true,top=false": {
+      "model": "mechanical:block/bloomery_stack"
+    },
+    "lit=true,top=true": {
+      "model": "mechanical:block/bloomery_stack_top_lit"
+    }
+  }
+}

@@ -11,6 +11,7 @@
     "mechanical:glider_cloak",
     "mechanical:horn_bow",
     "mechanical:bronze_hook_fishing_rod",
-    "mechanical:bronze_shears"
+    "mechanical:bronze_shears",
+    "mechanical:bronze_smithing_hammer"
   ]
 }
