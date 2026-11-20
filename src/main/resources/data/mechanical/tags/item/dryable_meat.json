@@ -1,0 +1,13 @@
+{
+  "values": [
+    "#mechanical:dryable_meat/venison_jerky",
+    "#mechanical:dryable_meat/beef_jerky",
+    "#mechanical:dryable_meat/dried_pork",
+    "#mechanical:dryable_meat/dried_mutton",
+    "#mechanical:dryable_meat/game_jerky",
+    "#mechanical:dryable_meat/small_game_jerky",
+    "#mechanical:dryable_meat/dried_fowl",
+    "#mechanical:dryable_meat/dried_seal_meat",
+    "#mechanical:dryable_meat/stockfish"
+  ]
+}

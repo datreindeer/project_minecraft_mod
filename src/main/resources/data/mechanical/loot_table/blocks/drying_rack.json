@@ -239,6 +239,17 @@
               "part": "lower"
             }
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_fowl",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide": "25"
+            }
+          }
         }
       ]
     },
@@ -355,6 +366,17 @@
               "count": 4
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:dried_fowl",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:drying_rack",
+            "state": {
+              "hide2": "15"
+            }
+          }
         }
       ]
     }

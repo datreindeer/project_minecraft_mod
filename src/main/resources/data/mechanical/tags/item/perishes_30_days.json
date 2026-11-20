@@ -6,6 +6,15 @@
     "mechanical:dried_fish",
     "mechanical:dried_berries",
     "mechanical:dried_mushrooms",
-    "mechanical:flour"
+    "mechanical:flour",
+    "mechanical:venison_jerky",
+    "mechanical:beef_jerky",
+    "mechanical:dried_mutton",
+    "mechanical:game_jerky",
+    "mechanical:small_game_jerky",
+    "mechanical:dried_fowl",
+    "mechanical:smoked_haunch",
+    "mechanical:smoked_ribs",
+    "mechanical:smoked_loin"
   ]
 }

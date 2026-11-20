@@ -94,7 +94,7 @@ public final class CarcassHauling {
     public static void init() {
     }
 
-    /** Smoked Meat a strip on the Smoking Rack turns into: a whole cut gives one per meat unit. */
+    /** Meat units in a piece: a big cut holds several (the Smoked Meat or strips a knife slices it into). */
     public static int smokedPieces(ItemStack raw) {
         return raw.is(RAW_HAUNCH.get()) ? 3 : raw.is(RAW_RIBS.get()) || raw.is(RAW_LOIN.get()) ? 2 : 1;
     }

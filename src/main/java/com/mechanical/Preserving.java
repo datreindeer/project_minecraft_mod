@@ -81,6 +81,54 @@ public final class Preserving {
     public static final DeferredItem<Item> DRIED_FISH = food("dried_fish", 2, 0.7F);
     public static final DeferredItem<Item> DRIED_BERRIES = food("dried_berries", 1, 0.5F);
     public static final DeferredItem<Item> DRIED_MUSHROOMS = food("dried_mushrooms", 1, 0.6F);
+    // ---- what each meat dries into (DryingRackBlock, item tags mechanical:dryable_meat/<product>); Jerky is what's left:
+    // strips cut from a big cut, and any smokable meat not in a family ----
+    public static final DeferredItem<Item> VENISON_JERKY = food("venison_jerky", 3, 0.8F);
+    public static final DeferredItem<Item> BEEF_JERKY = food("beef_jerky", 3, 0.9F);
+    public static final DeferredItem<Item> DRIED_PORK = food("dried_pork", 3, 0.7F);
+    public static final DeferredItem<Item> DRIED_MUTTON = food("dried_mutton", 3, 0.8F);
+    public static final DeferredItem<Item> GAME_JERKY = food("game_jerky", 2, 0.8F);
+    public static final DeferredItem<Item> SMALL_GAME_JERKY = food("small_game_jerky", 2, 0.6F);
+    public static final DeferredItem<Item> DRIED_FOWL = food("dried_fowl", 2, 0.7F);
+    public static final DeferredItem<Item> DRIED_SEAL_MEAT = food("dried_seal_meat", 3, 0.9F);
+    public static final DeferredItem<Item> STOCKFISH = food("stockfish", 2, 0.8F);
+    /** Cut from a Raw Haunch / Ribs / Loin with a knife: thin enough to dry (into Jerky), or to smoke. */
+    public static final DeferredItem<Item> RAW_MEAT_STRIPS = food("raw_meat_strips", 1, 0.2F);
+    /** A big cut smoked whole on the Smoking Rack; a knife slices it into Smoked Meat. */
+    public static final DeferredItem<Item> SMOKED_HAUNCH = food("smoked_haunch", 9, 0.8F);
+    public static final DeferredItem<Item> SMOKED_RIBS = food("smoked_ribs", 6, 0.8F);
+    public static final DeferredItem<Item> SMOKED_LOIN = food("smoked_loin", 6, 0.9F);
+    /** Meat that can't go on the Drying Rack: big cuts (too thick) and fat-rich meat (goes rancid in the air). */
+    public static final TagKey<Item> NOT_DRYABLE = tag("not_dryable");
+
+    /** A rack look (DryingRackBlock spot value while drying) and product per family; tags {@code mechanical:dryable_meat/<product>}. */
+    public record Drying(TagKey<Item> tag, Supplier<Item> product, int look) {}
+
+    public static final List<Drying> DRYING = List.of(
+            dries("venison_jerky", VENISON_JERKY, DryingRackBlock.MEAT), dries("beef_jerky", BEEF_JERKY, DryingRackBlock.MEAT),
+            dries("dried_pork", DRIED_PORK, DryingRackBlock.MEAT), dries("dried_mutton", DRIED_MUTTON, DryingRackBlock.MEAT),
+            dries("game_jerky", GAME_JERKY, DryingRackBlock.MEAT), dries("small_game_jerky", SMALL_GAME_JERKY, DryingRackBlock.MEAT),
+            dries("dried_seal_meat", DRIED_SEAL_MEAT, DryingRackBlock.MEAT), dries("dried_fowl", DRIED_FOWL, DryingRackBlock.FOWL),
+            dries("stockfish", STOCKFISH, DryingRackBlock.FISH));
+
+    /** What a strip on the Smoking Rack smokes into: a big cut stays whole (Smoked Haunch / Ribs / Loin). */
+    public static Item smoked(ItemStack raw) {
+        return raw.is(CarcassHauling.RAW_HAUNCH.get()) ? SMOKED_HAUNCH.get() : raw.is(CarcassHauling.RAW_RIBS.get()) ? SMOKED_RIBS.get()
+                : raw.is(CarcassHauling.RAW_LOIN.get()) ? SMOKED_LOIN.get() : SMOKED_MEAT.get();
+    }
+
+    private static Drying dries(String product, DeferredItem<Item> item, int look) {
+        return new Drying(tag("dryable_meat/" + product), item::get, look);
+    }
+
+    /** How this raw meat or fish dries: its family, else the plain Jerky / Dried Fish; null if it doesn't go on the rack. */
+    public static Drying drying(ItemStack stack) {
+        if (stack.is(NOT_DRYABLE)) return null;
+        for (Drying d : DRYING) if (stack.is(d.tag())) return d;
+        if (stack.is(SMOKABLE_MEAT)) return new Drying(SMOKABLE_MEAT, JERKY::get, DryingRackBlock.MEAT);
+        if (stack.is(SMOKABLE_FISH)) return new Drying(SMOKABLE_FISH, DRIED_FISH::get, DryingRackBlock.FISH);
+        return null;
+    }
     /** What plant food turns into; goes in the Compost Heap. */
     public static final DeferredItem<Item> SPOILED_FOOD = ITEMS.registerSimpleItem("spoiled_food");
 

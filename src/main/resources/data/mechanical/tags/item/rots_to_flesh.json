@@ -152,6 +152,18 @@
     "mechanical:cooked_mallard",
     "mechanical:cooked_swan",
     "mechanical:cooked_heron",
-    "mechanical:cooked_crane"
+    "mechanical:cooked_crane",
+    "mechanical:venison_jerky",
+    "mechanical:beef_jerky",
+    "mechanical:dried_mutton",
+    "mechanical:game_jerky",
+    "mechanical:small_game_jerky",
+    "mechanical:dried_fowl",
+    "mechanical:smoked_haunch",
+    "mechanical:smoked_ribs",
+    "mechanical:smoked_loin",
+    "mechanical:dried_pork",
+    "mechanical:dried_seal_meat",
+    "mechanical:raw_meat_strips"
   ]
 }

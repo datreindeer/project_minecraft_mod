@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_haunch",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_meat_strips",
+    "count": 3
+  }
+}

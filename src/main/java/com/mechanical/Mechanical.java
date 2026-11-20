@@ -284,7 +284,11 @@ public class Mechanical {
             () -> new MenuType<>(BarkBasketMenu::satchel, FeatureFlags.VANILLA_SET));
 
     // Firewood: what logs drop (2 each), one per wood type so 4 of them (2x2) craft back into that log.
-    public static final Map<String, DeferredItem<Item>> FIREWOOD = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.registerSimpleItem(w + "_firewood")));
+    public static final Map<String, DeferredItem<Item>> FIREWOOD = WOODS.stream().collect(Collectors.toMap(w -> w, w -> ITEMS.<Item>registerItem(w + "_firewood", p -> new FirewoodItem(p, w))));
+    /** Firewood stacked on the ground (FirewoodItem): no item of its own, it is the firewood. */
+    public static final Map<String, DeferredBlock<FirewoodPileBlock>> FIREWOOD_PILES = WOODS.stream().collect(Collectors.toMap(w -> w, w ->
+            BLOCKS.registerBlock(w + "_firewood_pile", p -> new FirewoodPileBlock(w, p), p -> p.mapColor(MapColor.WOOD).strength(1.5F)
+                    .sound(SoundType.WOOD).noOcclusion().ignitedByLava())));
     public static final TagKey<Item> FIREWOOD_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "firewood"));
 
     // --- Food: animals leave a carcass that is butchered with a knife (see Butchery) ---
@@ -365,7 +369,7 @@ public class Mechanical {
         ITEMS.getEntries().forEach(i -> items.add(i.getId().getPath()));
         for (var block : java.util.List.copyOf(BLOCKS.getEntries())) {
             String id = block.getId().getPath();
-            if (items.contains(id) || NO_ITEM.contains(id) || id.startsWith("potted_")) continue;
+            if (items.contains(id) || NO_ITEM.contains(id) || id.startsWith("potted_") || id.endsWith("_firewood_pile")) continue;
             ITEMS.registerItem(id, p -> new net.minecraft.world.item.BlockItem(block.get(), p), p -> p.useBlockDescriptionPrefix());
         }
     }

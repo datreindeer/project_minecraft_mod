@@ -58,6 +58,7 @@
     "mechanical:raw_mallard",
     "mechanical:raw_swan",
     "mechanical:raw_heron",
-    "mechanical:raw_crane"
+    "mechanical:raw_crane",
+    "mechanical:raw_meat_strips"
   ]
 }

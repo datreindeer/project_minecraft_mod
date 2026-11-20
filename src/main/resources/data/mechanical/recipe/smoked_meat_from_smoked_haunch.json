@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:smoked_haunch",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:smoked_meat",
+    "count": 3
+  }
+}

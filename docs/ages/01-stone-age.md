@@ -16,7 +16,8 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 8. Mat: döda djur → **Carcass** → stycka med Flint Knife → **meat scraps** (laga på Campfire), **Raw Hide** → **Scraped Hide** →
    **Drying Rack** → **Leather** → Leather Armor.
 9. Maten förskäms (rått kött på 1 dag). **Smoking Rack** över en Campfire → Smoked Meat/Fish, eller torka på Drying Rack →
-   Jerky, Dried Fish, Dried Berries: håller 30 dagar.
+   varje kött blir sitt eget (Venison Jerky, Beef Jerky, Dried Fowl, Stockfish ...), Dried Berries: håller 20–30 dagar.
+   Ved staplas i **Firewood Piles** (högerklicka med Firewood ovanpå ett block).
 
 ---
 
@@ -30,7 +31,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Stick | Vanilla, plus löv släpper Stick oftare (+8 %, totalt ~10 %) | Skaft, flintverktyg, Campfire, Fire Drill |
 | Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station, Mold Bench |
 | Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
-| Firewood (19 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log |
+| Firewood (19 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log, **Firewood Pile** (vedhög, se Block) |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Mold Bench (Unfired Crucible, lerformar) |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
@@ -46,6 +47,21 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Bone, Bone Meal | Bone Pile (låg chans) | |
 
 Texturen för Firewood visar 1 vedträ (1 st), 2 vedträn (2–15 st) eller 3 vedträn (16+ st).
+
+### Firewood Pile (vedhög)
+- **Högerklicka ovanpå ett fast block med Firewood** så läggs en vedhög av det träslaget (ett block per träslag,
+  t.ex. Oak Firewood Pile; ändar och bark ritas från träslagets egna stocktexturer). Ändarna vänds mot den som staplar.
+- Varje Firewood är ett **lager**: två kluvna vedträn (4×4 px i genomskärning, 16 långa) bredvid varandra, fyra vedträn i
+  rad, fyra rader i ett block = **8 lager** (som snölager). Formen följer höjden (ett udda lager fyller bara halva raden).
+- **Samma Firewood** på högen lägger på ett lager till; när blocket är fullt fortsätter högen i blocket ovanför. Annan
+  sorts Firewood på en full hög startar en ny hög ovanpå. **Tom hand** tar tillbaka det översta vedträt. **Bryts** den
+  släpps all ved. Tappar den underlaget rasar den (släpper veden). Inget eget föremål: högen är veden.
+- Läggs bara på ett vanligt fast block: inte på eldar, stationer eller block med innehåll (block entities), och bara på
+  ovansidan. **Smyg** så händer ingenting (som förut). Allt annat man gör med Firewood fungerar som förut eftersom blocket
+  man klickar på får först: mata Campfire och glöd, Fire Pit, Clay Kiln, Tripod.
+- **Bränsleförråd:** en brinnande **Fire Pit** vars vedstapel är tom tar ett vedträ från en vedhög bredvid (inom 2 block,
+  samma höjd eller ett upp) i stället för att sjunka till glöd. Campfire och Clay Kiln matas fortfarande för hand.
+- Avancemang: **Woodpile** (Stone Age, efter Firewood).
 
 ## Verktyg
 
@@ -331,9 +347,10 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
   räknas, och efter 8 sådana (~9 min, ungefär en hel natt; räknas ihop, nollställs inte av sol) **ruttnar** den. En
   ruttnad hud ger **Rotten Flesh** när man högerklickar. Häng den alltså ute på morgonen och ta in läder före natten.
 - Bryts den släpper den sig själv + hud/Leather som satt på.
-- **Mat torkar också på den** (se "Förskämd mat, rökning och torkning"): en remsa rått kött (vilket rått kött som helst,
-  scraps eller vanilla) → **Jerky**, en rå fiskfilé (Raw Cod/Salmon) → **Dried Fish**, eller en näve med **4 bär** (alla
-  vilda bär + Sweet Berries) → **4 Dried Berries**. Torkar **utomhus på dagen utan regn**, även i skugga (t.ex. under ett träd,
+- **Mat torkar också på den** (se "Förskämd mat, rökning och torkning"): en bit rått kött eller fisk blir **sin egen sorts
+  torkade mat** (Venison Jerky, Beef Jerky, Dried Fowl, Stockfish ..., tabellen under Förskämd mat), eller en näve med
+  **4 bär** (alla vilda bär + Sweet Berries) → **4 Dried Berries**. Stora bitar (Raw Haunch/Ribs/Loin) och fett kött går
+  inte (se tabellen). Kött hänger som remsor, fisk som fiskar och fåglar som uppfläkta fåglar. Torkar **utomhus på dagen utan regn**, även i skugga (t.ex. under ett träd,
   skylight minst 10): ~7 min i snitt i full sol ute i vinden (fri himmel, inte inbyggd på tre sidor), ~14 min i skugga
   eller lä. Inne i ett hus med tak torkar inget. Natt och regn **pausar** bara, inget ruttnar på ställningen. Högerklicka med tom
   hand när den är klar. Bryts ställningen släpps färdig torkad mat, men mat som håller på att torka går förlorad.
@@ -373,10 +390,11 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
 
 ### Smoking Rack
 Recept: `[Stick][Cordage][Stick]` / `[Stick][ ][Stick]` / `[Stick][ ][Stick]` (låses upp när man får rått kött eller rå fisk).
-- En hög träram med en tvärslå. Högerklicka med **rått kött eller rå fisk** (samma sorter som på Drying Rack) för att hänga
-  upp en remsa; upp till **4 remsor**, kött och fisk blandas inte. Remsorna syns på ramen (rå, rökt eller ruttna).
+- En hög träram med en tvärslå. Högerklicka med **rått kött eller rå fisk** (alla sorter, även stora bitar och fett kött som
+  inte går att torka) för att hänga upp en remsa; upp till **4 remsor**, kött och fisk blandas inte. Remsorna syns på ramen (rå, rökt eller ruttna).
 - **Rök:** ställ den **ovanför** (1–2 block upp) eller **bredvid** en brinnande eller glödande Campfire, eller i ett rökigt rum
-  (rökhalt ≥ 0,3, se "Rök inomhus"). Efter **4 minuter i rök** blir alla remsor **Smoked Meat** / **Smoked Fish**. Hänger man
+  (rökhalt ≥ 0,3, se "Rök inomhus"). Efter **4 minuter i rök** blir alla remsor **Smoked Meat** / **Smoked Fish**; en hel
+  Raw Haunch / Ribs / Loin röks hel till **Smoked Haunch / Ribs / Loin** (kniv i craftingrutan skär den till 3 / 2 / 2 Smoked Meat). Hänger man
   upp en ny remsa börjar röktiden om. En lägereld brinner 3–5 min och glöder 2 min till, så en eld räcker oftast; lägg på Firewood för säkerhets skull.
 - **Utan rök händer ingenting**, och remsorna förskäms på sin vanliga tid (1 dag). Den första remsan som ruttnar tar alla med sig → Rotten Flesh.
 - Tom hand tar ner allt (råa remsor behåller sin färskhet). Bryts den släpps ramen och det som hängde på.
@@ -1201,7 +1219,9 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Sea Beet Leaves | **1 dag** |
 | Carrot, Beetroot, Wild Carrot | **10 dagar** |
 | Potato | **20 dagar** |
-| **Smoked Meat, Smoked Fish, Jerky, Dried Fish, Dried Berries, Dried Mushrooms** | **30 dagar** |
+| **Smoked Meat, Smoked Fish, Smoked Haunch/Ribs/Loin, Jerky och alla torkade kött utom nedan, Dried Fish, Dried Berries, Dried Mushrooms** | **30 dagar** |
+| Dried Pork, Dried Seal Meat (fettet härsknar) | **20 dagar** |
+| Stockfish (torkad benhård) | förskäms inte |
 
 - Allt annat (äpplen, vanilla-soppor …) förskäms inte.
 - **Root Cellar** nedgrävd: rotfrukter och blad håller 4× längre, annan mat 2× (se Odling).
@@ -1218,12 +1238,36 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 |---|---|---|---|
 | Smoked Meat | rått kött, 4 min rök | 3 | 0,8 |
 | Smoked Fish | Raw Cod/Salmon, 4 min rök | 3 | 0,7 |
-| Jerky | rått kött, torkat i solen (~7–14 min) | 2 | 0,8 |
-| Dried Fish | Raw Cod/Salmon, torkad i solen | 2 | 0,7 |
+| Smoked Haunch / Ribs / Loin | en hel Raw Haunch / Ribs / Loin, 4 min rök | 9 / 6 / 6 | 0,8 / 0,8 / 0,9 |
+| Venison Jerky | Venison Scraps, Saiga Meat | 3 | 0,8 |
+| Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,9 |
+| Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,7 |
+| Dried Mutton | Raw Mutton, Mutton Scraps, Ibex Meat, Chamois Meat | 3 | 0,8 |
+| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat | 2 | 0,8 |
+| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,6 |
+| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,7 |
+| Dried Seal Meat | Raw Seal Meat | 3 | 0,9 |
+| Stockfish | Raw Cod, Raw Pike, Raw Sturgeon | 2 | 0,8 |
+| Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,7 |
+| Jerky | Raw Meat Strips (och kött utan egen sort) | 2 | 0,8 |
 | Dried Berries | 4 bär → 4, torkade i solen | 1 | 0,5 |
 | Dried Mushrooms | 4 ätliga svampar → 4, torkade i solen | 1 | 0,6 |
 
 Mat som redan är **Rotting** går inte att röka eller torka ("This is too far gone to keep").
+
+**Vad som går att torka** (taggar `mechanical:dryable_meat/<produkt>`, samlade i `mechanical:dryable_meat`):
+- Tunt och magert kött och fisk torkar, var familj till sin egen produkt (tabellen ovan). Allt torkar lika fort (~7–14 min sol).
+- **Stora bitar** (Raw Haunch, Raw Ribs, Raw Loin) är för tjocka: "Too thick to dry whole: smoke it, or cut it into strips
+  with a knife". Antingen röks de hela (Smoked Haunch/Ribs/Loin) eller går i kitteln, eller så skärs de med kniv i
+  craftingrutan till **Raw Meat Strips** (Haunch 3, Ribs/Loin 2), som torkar till Jerky (eller röks till Smoked Meat).
+- **Fett kött** (Cave Bear Meat, Raw Beaver, Beaver Tail, Raw Walrus Meat) härsknar i luften: "Too fatty to dry, it would go
+  rancid: smoke it instead". Det röks på Smoking Rack (talg kokas som förut av Lard och Bear Fat).
+- Båda står i taggen `mechanical:not_dryable`. Rått kött som saknar familj (t.ex. från nya djur) torkar till vanlig
+  **Jerky**, fisk utan familj till **Dried Fish**.
+- Vilken produkt en plats på ställningen gör sparas per plats i världsdata (`rack_food`); ställningens tillstånd har bara
+  utseendet (köttremsor `hide` 6/7, fisk 8/9, fågel 24/25; på högra platsen `hide2` 14/15). Gamla ställningar som hade
+  torkat kött på sig ger Jerky / Dried Fish som förut.
+- Avancemang **Larder of the North** (Food): ta ner tre olika torkade kött eller fiskar från en Drying Rack.
 
 Rökning går fortare och ger lite mer mat; torkning kräver ingen eld men bara fungerar i solsken.
 

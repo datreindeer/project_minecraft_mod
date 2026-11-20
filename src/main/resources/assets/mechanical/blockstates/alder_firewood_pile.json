@@ -1,0 +1,60 @@
+{
+  "variants": {
+    "axis=x,layers=1": {
+      "model": "mechanical:block/alder_firewood_pile_1",
+      "y": 90
+    },
+    "axis=x,layers=2": {
+      "model": "mechanical:block/alder_firewood_pile_2",
+      "y": 90
+    },
+    "axis=x,layers=3": {
+      "model": "mechanical:block/alder_firewood_pile_3",
+      "y": 90
+    },
+    "axis=x,layers=4": {
+      "model": "mechanical:block/alder_firewood_pile_4",
+      "y": 90
+    },
+    "axis=x,layers=5": {
+      "model": "mechanical:block/alder_firewood_pile_5",
+      "y": 90
+    },
+    "axis=x,layers=6": {
+      "model": "mechanical:block/alder_firewood_pile_6",
+      "y": 90
+    },
+    "axis=x,layers=7": {
+      "model": "mechanical:block/alder_firewood_pile_7",
+      "y": 90
+    },
+    "axis=x,layers=8": {
+      "model": "mechanical:block/alder_firewood_pile_8",
+      "y": 90
+    },
+    "axis=z,layers=1": {
+      "model": "mechanical:block/alder_firewood_pile_1"
+    },
+    "axis=z,layers=2": {
+      "model": "mechanical:block/alder_firewood_pile_2"
+    },
+    "axis=z,layers=3": {
+      "model": "mechanical:block/alder_firewood_pile_3"
+    },
+    "axis=z,layers=4": {
+      "model": "mechanical:block/alder_firewood_pile_4"
+    },
+    "axis=z,layers=5": {
+      "model": "mechanical:block/alder_firewood_pile_5"
+    },
+    "axis=z,layers=6": {
+      "model": "mechanical:block/alder_firewood_pile_6"
+    },
+    "axis=z,layers=7": {
+      "model": "mechanical:block/alder_firewood_pile_7"
+    },
+    "axis=z,layers=8": {
+      "model": "mechanical:block/alder_firewood_pile_8"
+    }
+  }
+}

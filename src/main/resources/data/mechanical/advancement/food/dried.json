@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:jerky"
+            "items": "#mechanical:dried_meat"
           }
         ]
       }
@@ -16,22 +16,12 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:dried_fish"
-          }
-        ]
-      }
-    },
-    "has_2": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:dried_berries"
           }
         ]
       }
     },
-    "has_3": {
+    "has_2": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -46,8 +36,7 @@
     [
       "has_0",
       "has_1",
-      "has_2",
-      "has_3"
+      "has_2"
     ]
   ],
   "display": {

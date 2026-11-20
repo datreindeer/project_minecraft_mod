@@ -102,11 +102,12 @@ public class FirePitBlockEntity extends BlockEntity {
         NightDangers.markLit(level, pos, FirePit.REACH);
         if (burnLeft < 0) burnLeft = Campfires.MIN_BURN + random.nextInt(Campfires.MAX_BURN - Campfires.MIN_BURN);
         if ((burnLeft -= FirePit.DRAIN * Temperature.fireDrain(level, pos, random)) <= 0) {
-            if (stock.isEmpty()) {
+            // nothing stacked on it: a Firewood Pile beside the pit (2x2 from this corner, so 2 blocks out) feeds it
+            if (stock.isEmpty() && FirewoodPileBlock.takeNear(level, pos, 2).isEmpty()) {
                 sinkToEmbers();
                 return;
             }
-            stock.removeLast(); // the next piece of the stack catches
+            if (!stock.isEmpty()) stock.removeLast(); // the next piece of the stack catches
             burnLeft += Campfires.FIREWOOD_TICKS;
             updateFuel();
         }

@@ -60,6 +60,11 @@ import com.mechanical.wildlife.Wildlife;
  * the lower block gives it (taking it, loot), the upper one only shows its top half.
  * Coast fauna (wildlife.coast): 18 raw sealskin / 19 Sealskin in one block (like the wolf's), 20 raw walrus hide /
  * 21 Walrus Hide in both blocks (like the bear's).
+ * <p>
+ * Meat and fish dry into their own products ({@link Preserving#drying}): 6/7 and 8/9 are only the red meat and fish looks,
+ * the product is remembered per spot ({@link RackFood}); 24 fowl drying / 25 Dried Fowl is the bird look. Big cuts and
+ * fat-rich meat ({@code mechanical:not_dryable}) are refused. {@link #HIDE2} never holds a pelt, so it stores fowl as
+ * 14/15: always read and write spots through {@link #spot} / {@link #withSpot}.
  */
 public class DryingRackBlock extends Block {
     public enum Part implements StringRepresentable {
@@ -75,9 +80,12 @@ public class DryingRackBlock extends Block {
     public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
     public static final int EMPTY = 0, HIDE_WET = 1, PHANTOM_WET = 3, MEAT = 6, FISH = 8, BERRIES = 10, MUSHROOMS = 12,
             BEAR_WET = 14, BEAR_DRY = 15, WOLF_WET = 16, WOLF_DRY = 17, SEAL_WET = 18, SEAL_DRY = 19, WALRUS_WET = 20, WALRUS_DRY = 21,
-            CAVE_BEAR_WET = 22, CAVE_BEAR_DRY = 23; // fauna: mountain (whole rack, like the bear)
-    // shortcut: pelts only in HIDE keeps the state count at ~30k (HIDE2 0-21 too would be ~47k)
-    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, 23), HIDE2 = IntegerProperty.create("hide2", 0, 13);
+            CAVE_BEAR_WET = 22, CAVE_BEAR_DRY = 23, // fauna: mountain (whole rack, like the bear)
+            FOWL = 24; // woodmeat: birds hang spread out (25 Dried Fowl); HIDE2 keeps them as 14/15
+    /** HIDE2 value = spot value minus this, for the fowl look. */
+    private static final int HIDE2_FOWL_SHIFT = FOWL - 14;
+    // shortcut: pelts only in HIDE (and fowl at 14/15 in HIDE2) keeps the state count at ~40k (a full HIDE2 would be ~65k)
+    public static final IntegerProperty HIDE = IntegerProperty.create("hide", 0, FOWL + 1), HIDE2 = IntegerProperty.create("hide2", 0, 15);
     /** Dark random ticks (~68 s each on average) before a phantom hide rots: 8, about one full night. */
     public static final int ROT_TICKS = 8;
     public static final IntegerProperty DARK = IntegerProperty.create("dark", 0, ROT_TICKS - 1);
@@ -113,6 +121,22 @@ public class DryingRackBlock extends Block {
         return state.getValue(FACING).getAxis() == Direction.Axis.Z ? SHAPE_NS : SHAPE_EW;
     }
 
+    /** What hangs on a spot (the fowl look is stored as 14/15 in HIDE2). */
+    public static int spot(BlockState state, IntegerProperty p) {
+        int v = state.getValue(p);
+        return p == HIDE2 && v >= 14 ? v + HIDE2_FOWL_SHIFT : v;
+    }
+
+    public static BlockState withSpot(BlockState state, IntegerProperty p, int value) {
+        return state.setValue(p, p == HIDE2 && value >= FOWL ? value - HIDE2_FOWL_SHIFT : value);
+    }
+
+    /** A big pelt (bear, wolf, seal, walrus, cave bear) fills this block. */
+    public static boolean bigPelt(BlockState state) {
+        int v = state.getValue(HIDE);
+        return v >= BEAR_WET && v <= CAVE_BEAR_DRY;
+    }
+
     /** The spots in this block. */
     private static List<IntegerProperty> spots(BlockState state) {
         return state.getValue(PART) == Part.SINGLE ? List.of(HIDE) : List.of(HIDE, HIDE2);
@@ -131,8 +155,12 @@ public class DryingRackBlock extends Block {
         return partnerState.is(this) && partnerState.getValue(PART) == (state.getValue(PART) == Part.LOWER ? Part.UPPER : Part.LOWER);
     }
 
+    private static boolean food(int spot) {
+        return spot >= MEAT && spot < BEAR_WET || spot >= FOWL;
+    }
+
     private static boolean drying(int spot) {
-        return spot == HIDE_WET || spot == PHANTOM_WET || spot >= MEAT && spot % 2 == 0;
+        return spot == HIDE_WET || spot == PHANTOM_WET || food(spot) && spot % 2 == 0;
     }
 
     /** What a finished spot gives (empty while it is drying or empty). */
@@ -145,6 +173,7 @@ public class DryingRackBlock extends Block {
             case 9 -> new ItemStack(Preserving.DRIED_FISH.get());
             case 11 -> new ItemStack(Preserving.DRIED_BERRIES.get(), HANDFUL);
             case 13 -> new ItemStack(Preserving.DRIED_MUSHROOMS.get(), HANDFUL);
+            case FOWL + 1 -> new ItemStack(Preserving.DRIED_FOWL.get());
             case BEAR_DRY -> new ItemStack(Wildlife.BEAR_PELT.get());
             case WOLF_DRY -> new ItemStack(Wildlife.WOLF_PELT.get());
             case SEAL_DRY -> new ItemStack(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN.get());
@@ -173,9 +202,14 @@ public class DryingRackBlock extends Block {
                 : stack.is(com.mechanical.wildlife.mountain.MountainFauna.RAW_CAVE_BEAR_PELT.get()) ? CAVE_BEAR_WET : 0;
         if (pelt != 0) return hangPelt(pelt, stack, state, level, pos, player);
         int handful = stack.is(Preserving.DRYABLE_BERRIES) ? BERRIES : stack.is(Preserving.DRYABLE_MUSHROOMS) ? MUSHROOMS : 0;
+        Preserving.Drying meat = Preserving.drying(stack);
+        if (meat == null && stack.is(Preserving.NOT_DRYABLE)) { // too thick or too fatty: say what to do instead
+            if (level.isClientSide()) player.sendOverlayMessage(Component.translatable(CarcassHauling.smokedPieces(stack) > 1
+                    ? "message.mechanical.drying_rack.too_thick" : "message.mechanical.drying_rack.too_fatty"));
+            return InteractionResult.FAIL;
+        }
         int hang = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get()) ? PHANTOM_WET : stack.is(Mechanical.SCRAPED_HIDE.get()) ? HIDE_WET
-                : stack.is(Preserving.SMOKABLE_MEAT) ? MEAT : stack.is(Preserving.SMOKABLE_FISH) ? FISH
-                : handful != 0 && stack.getCount() >= HANDFUL ? handful : 0;
+                : meat != null ? meat.look() : handful != 0 && stack.getCount() >= HANDFUL ? handful : 0;
         if (hang == 0) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (Preserving.tooFarGone(stack, level, player)) return InteractionResult.FAIL;
         // the spot pointed at first, then the other one in this block, then the other half's
@@ -194,12 +228,13 @@ public class DryingRackBlock extends Block {
         }
         for (int i = 0; i < where.size(); i++) {
             BlockState at = level.getBlockState(where.get(i));
-            if (at.getValue(which.get(i)) != EMPTY || at.getValue(HIDE) >= BEAR_WET) continue;
+            if (spot(at, which.get(i)) != EMPTY || bigPelt(at)) continue;
             if (!level.isClientSide()) {
+                if (meat != null) RackFood.put((ServerLevel) level, where.get(i), which.get(i), meat.product().get());
                 stack.consume(handful != 0 ? HANDFUL : 1, player);
                 boolean phantomThere = spots(at).stream().anyMatch(p -> at.getValue(p) == PHANTOM_WET);
                 // a fresh phantom hide starts its dark count at 0, unless it joins one already drying in this block
-                BlockState next = at.setValue(which.get(i), hang);
+                BlockState next = withSpot(at, which.get(i), hang);
                 level.setBlock(where.get(i), hang == PHANTOM_WET && !phantomThere ? next.setValue(DARK, 0) : next, Block.UPDATE_ALL);
                 level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
             }
@@ -248,12 +283,16 @@ public class DryingRackBlock extends Block {
         for (BlockPos at : blocks) {
             BlockState s = level.getBlockState(at), next = s;
             for (IntegerProperty p : spots(s)) {
-                ItemStack taken = finished(s.getValue(p));
+                int v = spot(s, p);
+                ItemStack taken = finished(v);
                 if (taken.isEmpty()) continue;
                 any = true;
                 next = next.setValue(p, EMPTY);
-                boolean bearTop = (s.getValue(p) == BEAR_DRY || s.getValue(p) == WALRUS_DRY || s.getValue(p) == CAVE_BEAR_DRY) && s.getValue(PART) == Part.UPPER; // the lower block gives the bear pelt
-                if (!level.isClientSide() && !bearTop) player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
+                boolean bearTop = (v == BEAR_DRY || v == WALRUS_DRY || v == CAVE_BEAR_DRY) && s.getValue(PART) == Part.UPPER; // the lower block gives the bear pelt
+                if (level.isClientSide() || bearTop) continue;
+                if (v == MEAT + 1 || v == FISH + 1) taken = RackFood.take((ServerLevel) level, at, p, taken); // what this spot really made
+                if (v == MEAT + 1 || v == FISH + 1 || v == FOWL + 1) RackFood.taken(player, taken);
+                player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
             }
             if (!level.isClientSide() && next != s) level.setBlock(at, next, Block.UPDATE_ALL);
         }
@@ -287,7 +326,7 @@ public class DryingRackBlock extends Block {
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        return drying(state.getValue(HIDE)) || drying(state.getValue(HIDE2));
+        return drying(spot(state, HIDE)) || drying(spot(state, HIDE2));
     }
 
     /** Sunlight reaches the rack: daytime and open sky. */
@@ -305,7 +344,7 @@ public class DryingRackBlock extends Block {
         BlockState next = state;
         boolean phantom = false;
         for (IntegerProperty p : spots(state)) {
-            int spot = state.getValue(p);
+            int spot = spot(state, p);
             if (spot == BEAR_WET || spot == WOLF_WET || spot == SEAL_WET || spot == WALRUS_WET || spot == CAVE_BEAR_WET) {
                 if (dryWeather && random.nextFloat() < (wholeRack(spot) ? BEAR_DRY_CHANCE : WOLF_DRY_CHANCE)) {
                     next = next.setValue(p, spot + 1);
@@ -315,8 +354,8 @@ public class DryingRackBlock extends Block {
                 }
             } else if (spot == HIDE_WET) {
                 if (random.nextFloat() < DRY_CHANCE) next = next.setValue(p, 2);
-            } else if (spot >= MEAT && spot % 2 == 0) {
-                if (dryWeather && random.nextFloat() < foodChance) next = next.setValue(p, spot + 1);
+            } else if (food(spot) && spot % 2 == 0) {
+                if (dryWeather && random.nextFloat() < foodChance) next = withSpot(next, p, spot + 1);
             } else if (spot == PHANTOM_WET) { // dries as fast as a normal hide, but only in daylight; the dark adds up until it rots
                 if (sun && random.nextFloat() < DRY_CHANCE) next = next.setValue(p, 4);
                 else phantom = true;
