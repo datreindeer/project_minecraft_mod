@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/first_frost",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bear_claw"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.rude_awakening.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.rude_awakening.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

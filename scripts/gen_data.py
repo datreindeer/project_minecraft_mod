@@ -296,6 +296,7 @@ w(A / "items/leather_satchel.json", {"model": {"type": "minecraft:model", "model
 lang["item.mechanical.leather_satchel"] = "Leather Satchel"
 BUSHES = {"raspberry": "raspberries", "blueberry": "blueberries", "lingonberry": "lingonberries",
           "wild_strawberry": "wild_strawberries", "elderberry": "elderberries", "cloudberry": "cloudberries", "blackberry": "blackberries"}
+WINTER_HARDY = {"lingonberry"}  # Foraging.WINTER_HARDY
 MUSHROOMS = ["chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball"]
 w(D / "mechanical/tags/item/basket_storable.json", {"values": ["minecraft:apple", "minecraft:golden_apple", "minecraft:sweet_berries",
     "minecraft:glow_berries", "minecraft:melon_slice", "minecraft:chorus_fruit", "minecraft:leather", "minecraft:rabbit_hide",
@@ -330,9 +331,13 @@ BUSH_BIOMES = {
 }
 for bush, berries in BUSHES.items():
     block = f"{bush}_bush"
+    # frozen in winter (WildBerryBushBlock.FROZEN): a frosted look of the same stage; winter-hardy bushes never freeze
+    looks = [""] if bush in WINTER_HARDY else ["", "_frozen"]
     for stage in range(4):
-        w(A / f"models/block/{block}_stage{stage}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{block}_stage{stage}"}})
-    w(A / f"blockstates/{block}.json", {"variants": {f"age={a}": {"model": f"mechanical:block/{block}_stage{a}"} for a in range(4)}})
+        for f in looks:
+            w(A / f"models/block/{block}_stage{stage}{f}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{block}_stage{stage}{f}"}})
+    w(A / f"blockstates/{block}.json", {"variants": {f"age={a},frozen={str(fr).lower()}": {"model": f"mechanical:block/{block}_stage{a}{looks[-1] if fr else ''}"}
+                                                    for a in range(4) for fr in (False, True)}})
     w(D / f"mechanical/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [
         {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:stick",
             "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]},

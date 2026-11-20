@@ -13,6 +13,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -38,6 +41,9 @@ public abstract class WildAnimal extends Animal {
     private static final EntityDataAccessor<Boolean> DOZING = SynchedEntityData.defineId(WildAnimal.class, EntityDataSerializers.BOOLEAN);
     /** A sleeping animal wakes when a player comes this close (sneaking: much closer), then bolts. */
     private static final double WAKE_RANGE = 7, WAKE_RANGE_SNEAKING = 2.5;
+    /** Sluggish in winter (WinterAnimals): slower, and strolls a third as often. */
+    private static final Identifier WINTER_ID = Identifier.fromNamespaceAndPath("mechanical", "winter_sluggish");
+    private static final AttributeModifier WINTER_SLOW = new AttributeModifier(WINTER_ID, -0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     protected WildAnimal(EntityType<? extends WildAnimal> type, Level level) {
         super(type, level);
@@ -114,7 +120,12 @@ public abstract class WildAnimal extends Animal {
         goalSelector.addGoal(4, new FollowParentGoal(this, 1.1));
         goalSelector.addGoal(5, new FollowHerdGoal(this));
         goalSelector.addGoal(6, new GrazeGoal(this));
-        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.8));
+        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.8) {
+            @Override
+            public boolean canUse() {
+                return (!com.mechanical.WinterAnimals.winter(mob.level()) || mob.getRandom().nextInt(3) == 0) && super.canUse();
+            }
+        });
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(9, new RandomLookAroundGoal(this));
     }
@@ -124,7 +135,16 @@ public abstract class WildAnimal extends Animal {
         int t = entityData.get(GRAZE);
         if (t > 0) entityData.set(GRAZE, t - 1);
         if (isDozing() && !level().isClientSide()) wakeIfDisturbed();
+        if (!level().isClientSide() && (tickCount + getId()) % 100 == 0) winterPace();
         super.aiStep();
+    }
+
+    private void winterPace() {
+        AttributeInstance speed = getAttribute(Attributes.MOVEMENT_SPEED);
+        boolean winter = com.mechanical.WinterAnimals.winter(level());
+        if (speed == null || winter == speed.hasModifier(WINTER_ID)) return;
+        if (winter) speed.addTransientModifier(WINTER_SLOW);
+        else speed.removeModifier(WINTER_ID);
     }
 
     private void wakeIfDisturbed() {
@@ -150,7 +170,7 @@ public abstract class WildAnimal extends Animal {
         com.mechanical.AnimalFear.panic(this, near.position());
     }
 
-    // ---- wild: no breeding ----
+    // ---- wild: no breeding (tame and farm animals don't mate in winter either, see WinterAnimals) ----
 
     @Override
     public boolean isFood(ItemStack stack) {

@@ -164,14 +164,14 @@ public final class WaterfowlFauna {
                 (type, level, reason, pos, random) -> waterBirdSpawn(level, pos, s -> false)
                         || reason != EntitySpawnReason.CHUNK_GENERATION && waterBirdSpawn(level, pos, WaterfowlFauna::bank) && waterNear(level, pos.below(), 2),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        // swans only on open water
+        // swans only on open water; swans, herons and cranes not while they are away for the winter (WinterAnimals)
         event.register(MUTE_SWAN.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING,
-                (type, level, reason, pos, random) -> waterBirdSpawn(level, pos, s -> false),
+                (type, level, reason, pos, random) -> waterBirdSpawn(level, pos, s -> false) && !com.mechanical.WinterAnimals.birdsAway(level.getLevel()),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // herons and cranes on the shore, in marsh and meadow, or in shallow water
         for (var type : List.of(GREY_HERON.get(), COMMON_CRANE.get())) {
             event.register(type, SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING,
-                    (t, level, reason, pos, random) -> waterBirdSpawn(level, pos, WaterfowlFauna::bank),
+                    (t, level, reason, pos, random) -> waterBirdSpawn(level, pos, WaterfowlFauna::bank) && !com.mechanical.WinterAnimals.birdsAway(level.getLevel()),
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
         }
     }

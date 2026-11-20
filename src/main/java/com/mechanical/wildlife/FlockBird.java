@@ -37,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
  * After a while the leader picks a landing spot (ground, tree tops or water, depending on the kind) and the flock
  * comes down around it. A player getting close (or any panic, see AnimalFear) makes the whole flock burst up and
  * fly off away from the threat. Any arrow kills (crows and gulls drop feathers; the edible ones leave a carcass, see Birds).
+ * Migratory kinds (WinterAnimals#migrates) fly off south in late autumn and are gone until spring.
  */
 public class FlockBird extends WildAnimal {
     /**
@@ -76,6 +77,9 @@ public class FlockBird extends WildAnimal {
     private float paddleYaw;
     /** The nest it keeps to (BirdNestBlock's random tick sets it, and again after a reload); roams and now and then lands around it. */
     protected BlockPos nest;
+    /** Migrating south (late autumn): flies off and is removed once out of sight. Not saved: a reloaded migrant leaves again. */
+    private boolean leaving;
+    private int leavingTicks;
 
     // ---- client-side animation ----
     private float flap, flapO, flapSpeed, glide, glideO;
@@ -212,8 +216,36 @@ public class FlockBird extends WildAnimal {
         if (home == null) home = position();
         if (nest != null && (tickCount + getId()) % 400 == 0 && !com.mechanical.BirdNestBlock.isNestOf(level, nest, getType())) nest = null; // robbed out or gone
         if (tickCount % 10 == 0 || !leader.isAlive()) refreshFlock();
+        if ((tickCount + getId()) % 100 == 0 && com.mechanical.WinterAnimals.migrates(getType())) migrationCheck(level);
+        if (leaving) {
+            flySouth(level);
+            return;
+        }
         if (isFlying()) flyTick(level);
         else groundTick(level);
+    }
+
+    /** Late autumn: by day the flock sets off (each bird now and then, or with its leader). Back in spring: seen returning. */
+    private void migrationCheck(ServerLevel level) {
+        long clock = level.getOverworldClockTime();
+        if (com.mechanical.WinterAnimals.birdsAway(clock)) {
+            if (!hasCustomName() && (leader.leaving || !restTime(level) && random.nextInt(6) == 0)) leaving = true;
+        } else if (com.mechanical.Calendar.season(clock) == 0 && com.mechanical.Calendar.year(clock) > 1) {
+            com.mechanical.WinterAnimals.migrantBack(level, this);
+        }
+    }
+
+    /** Migrating: climbs and flies off south (+z), keeping with a leaving leader; gone once no player is near, or after a minute. */
+    private void flySouth(ServerLevel level) {
+        if (!isFlying()) takeOff(false, null);
+        if (++leavingTicks > 1200 || level.getNearestPlayer(this, 96) == null) {
+            discard();
+            return;
+        }
+        getNavigation().stop();
+        if (!isNoGravity()) setNoGravity(true);
+        if (leader != this && leader.leaving && leader.isFlying()) steer(follow(leader));
+        else steer(keepAltitude(seek(new Vec3(getX(), surfaceY(getX(), getZ()) + kind.maxAlt(), getZ() + 64), speed()), 2));
     }
 
     /** When it comes down and stays down to roost: at night; night birds (the owl) roost by day instead. */

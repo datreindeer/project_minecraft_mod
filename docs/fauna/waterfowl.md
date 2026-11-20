@@ -7,6 +7,11 @@ med kniv (första passet), sedan styckas (andra passet) eller tas hel som **Pluc
 Hanging Rack ger de en extra köttbit när kroppen åldrats. De häckar i **Bird Nest** (vilda bon vid vattnet, eller bon du
 bygger nära dem) och lägger egna ägg.
 
+**Flyttfåglar:** Mute Swan, Grey Heron och Common Crane (och Greylag Goose) flyger söderut i sista höstmånaden
+(Frostfall): flockarna lyfter på dagen och flyger mot söder tills de är utom synhåll. De är borta, spawnar inte och fylls
+inte på förrän våren, då djurpåfyllningen tar tillbaka dem (advancement **The Cranes Return**, Wilderness). **Mallard
+stannar** hela vintern. Kod: `WinterAnimals`, `FlockBird.migrationCheck`.
+
 Kod: `com.mechanical.wildlife.waterfowl` (`WaterfowlFauna`, `Mallard`, `MuteSwan`, `WadingBird`, `GreyHeron`,
 `CommonCrane`, `BoneFluteItem`), klient `com.mechanical.client.wildlife.waterfowl`. Data `scripts/gen_fauna_waterfowl.py`,
 texturer och modeller `scripts/gen_fauna_waterfowl_textures.py`.

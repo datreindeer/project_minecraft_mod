@@ -93,7 +93,7 @@ Kod: `wildlife/mountain/` (MountainFauna, Ibex, Chamois, Saiga, MountainBovid, M
 |---|---|
 | Var | under bergen: windswept hills/forest, stony/jagged/frozen peaks, snowy slopes, grove, meadow, dripstone caves (vikt 2, 1–2: hona med unge). **Spawnar bara i mörker under sten utan himmel** (en lya), aldrig två inom 48 block, inte vid världsgenerering. |
 | Liv / skada | 90 / 11, rustningsmotstånd 0,85, fart 0,28 – större och farligare än Brown Bear |
-| Beteende | allt brunbjörnens (reser sig och slår, rusar i korta sprintar, flyr aldrig, honan försvarar ungarna). **Ligger i dvala** i lyan dag och natt (utomhus sover den på natten) tills någon kommer nära – väcks den, ryter den och anfaller. Smygande kommer man närmare. |
+| Beteende | allt brunbjörnens (reser sig och slår, rusar i korta sprintar, flyr aldrig, honan försvarar ungarna). **Ligger i dvala** i lyan dag och natt (utomhus sover den på natten) tills någon kommer nära – väcks den, ryter den och anfaller. Smygande kommer man närmare. En grottbjörn ute i det fria på vintern letar upp en mörk plats under sten och går i ide som Brown Bear (väcker man den på vintern: **Rude Awakening**). |
 | Modell | brunbjörnens kropp 20 % större, med grottbjörnens höga välvda panna |
 
 | Styckning (kräver Tusk Dagger eller bättre) | Antal | Chans |

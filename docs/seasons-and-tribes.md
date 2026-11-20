@@ -179,17 +179,39 @@
 - Marktyp kan ändra värdena (växthus, kompost och liknande längre fram).
 - Nya grödor och marktyper behöver bara en egen rad i datan.
 - Uppdatera `docs/farming.md` när det byggs.
+- **Byggt:** säsongsprofilen ligger i grödans rad i `Farming.climate` (`Climate.seasons`, vår/sommar/höst/vinter;
+  standard 1.0/1.2/0.6/0) och multipliceras på tillväxtchansen ovanpå temperaturen. Frostkänsligheten är den befintliga
+  frostgränsen. Tabellen per gröda står i farming.md. Fältinfon visar "resting till spring" på vintern. Advancement
+  **Out of Season**. Marktyper är inte byggda.
 
 ### Bär
 - **Vintertåliga** (förslag): Lingonberry och Juniper Berries. De står kvar och kan plockas på vintern.
 - **Övriga** (Raspberry, Blueberry, Wild Strawberry, Elderberry, Cloudberry, Blackberry): får ett **fruset** stadium
   på vintern. Busken minns sitt stadium, kan inte plockas, och växer vidare från samma stadium när det blir varmt.
+- **Byggt:** blockstate `frozen` på `WildBerryBushBlock`. En buske är frusen när det är vinter **och** biomens temperatur
+  (med säsong) där är under 0.2 (`Thaw.MELT_AT`, där snön inte smälter). Säsongen ensam skulle frysa buskar i öknen;
+  temperaturen ensam skulle hålla buskar i snöbiomer frusna hela året. Kollas på random tick (även mogna buskar tickar
+  nu) och när någon plockar, så en buske i en chunk som sovit hela vintern ger inget. Vintertåliga: `Foraging.WINTER_HARDY`
+  (Lingonberry); Juniper är en egen buske som aldrig fryser. Frostiga texturer från `gen_berry_textures.py`. Björnar och
+  samlare plockar inte frusna buskar. Advancement **Winter Larder**.
 
 ### Djur
 - På vintern rör de sig långsammare, vandrar mindre och parar sig inte.
 - **Björnar går i ide** över vintern i en håla eller grotta. De sover och vaknar om man stör dem (då är de farliga).
 - **Flyttfåglar** (tranor, hägrar och andra) flyger söderut på hösten, försvinner över vintern och kommer tillbaka på
   våren.
+- **Byggt** (`WinterAnimals.java`): vilda djur (`WildAnimal`) går 20 % långsammare på vintern och strövar en tredjedel
+  så ofta. Inga djur parar sig på vintern (vanilla, byns och tama djur som Tame Horse): paret tappar kärleken och den
+  som matade dem får "Too cold: animals don't mate in winter". **Brown Bear och Cave Bear går i ide:** på vintern letar
+  en björn utanför ett ide upp en mörk plats under sten i närheten (himmelsljus högst 4) och sover där tills våren.
+  Hittar den inget efter ett tag sover den där den är. Väcks den anfaller den (Cave Bear ryter först). På våren vaknar
+  Brown Bear och går ut igen; Cave Bear ligger i sin lya året runt som förut. **Flyttfåglar:** Common Crane, Grey
+  Heron, Greylag Goose och Mute Swan. Från sista höstmånaden (Frostfall) till vårens början lyfter flockarna på dagen
+  och flyger söderut, och försvinner när ingen spelare är nära (eller efter en minut). Under tiden spawnar de inte och
+  fylls inte på. På våren kommer de tillbaka med djurpåfyllningen. Mallard och övriga fåglar stannar. **Djurpåfyllningen
+  halveras på vintern** (hälften av områdena får inget). Advancements i Wilderness: **Rude Awakening** (väck en björn
+  ur vintersömnen, under First Frost) och **The Cranes Return** (se flyttfåglarna komma tillbaka på våren, under
+  Through the Winter). `WinterAnimalsTest` testar flyttiden, vilka arter som flyttar och att ingen kalv föds på vintern.
 - NPC-stammar samlar förråd inför vintern.
 
 ### Mat och bunkring
@@ -246,7 +268,7 @@
    laddas en ny kalenderdag körs ikapp när deras grannar är laddade (4 per tick): varmt ger att all snö och is smälter
    direkt, snöväder ger ett tunt snötäcke, så en skog man besöker först mitt i vintern är redan vit. Varje chunk minns
    dagen (`Thaw.UPDATED`). Hav fryser bara där de är kalla hela året (inga säsongsisar på havet); sjöar och älvar fryser.
-6. **Grödor och bär** (profiler, frysta stadier) och **djur**.
+6. **Grödor och bär** (profiler, frysta stadier) och **djur** (vinterlugn, ingen parning, björnar i ide, flyttfåglar): byggda, v0.90.0. `WinterAnimals.java`, säsongsprofiler i `Farming.climate()`, frysta buskar i `WildBerryBushBlock`.
 7. **Färger + kala träd.**
 
 Varje fas: advancements, `mod_version`-bump, registry och anteckningar, ålders-dokument, och ett laddtest

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "mechanical:block/raspberry_bush_stage2_frozen"
+  }
+}

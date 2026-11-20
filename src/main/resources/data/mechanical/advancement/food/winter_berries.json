@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:food/root",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:lingonberries"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.winter_berries.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.winter_berries.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

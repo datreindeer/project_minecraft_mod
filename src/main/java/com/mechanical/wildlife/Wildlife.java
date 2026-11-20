@@ -205,7 +205,8 @@ public final class Wildlife {
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         // water birds: on the water surface or the shore (sand, gravel, stone for gulls; grass for geese)
         event.register(GOOSE.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING,
-                (type, level, reason, pos, random) -> waterBirdSpawn(level, pos, s -> s.is(BlockTags.ANIMALS_SPAWNABLE_ON)),
+                (type, level, reason, pos, random) -> waterBirdSpawn(level, pos, s -> s.is(BlockTags.ANIMALS_SPAWNABLE_ON))
+                        && !com.mechanical.WinterAnimals.birdsAway(level.getLevel()), // geese fly south for the winter
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(SEAGULL.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING,
                 (type, level, reason, pos, random) -> waterBirdSpawn(level, pos,

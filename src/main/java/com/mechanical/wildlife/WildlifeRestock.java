@@ -46,6 +46,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * The group is picked from the biome's spawn lists (creatures, plus our own water animals), preferring species with no living
  * member in the area, so species added in a newer version reach old worlds. When the mod's set of species changes, every
  * known area is due once more. Each member must pass its own spawn placement and spawn rules (water for fish, shore for seals).
+ * Winter (WinterAnimals): half the due areas get nothing, and migratory birds are left out while they are away.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class WildlifeRestock extends SavedData {
@@ -112,7 +113,8 @@ public final class WildlifeRestock extends SavedData {
             BlockPos at = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     BlockPos.containing(player.getX() + Math.cos(angle) * dist, 0, player.getZ() + Math.sin(angle) * dist));
             if (!level.isLoaded(at) || level.getEntitiesOfClass(Animal.class, new AABB(at).inflate(48)).size() >= SPARSE) continue;
-            if (data.due(at, level.getGameTime())) spawnGroup(level, at, random);
+            // winter: half the due areas get nothing (less game; stock food before the cold)
+            if (data.due(at, level.getGameTime()) && !(com.mechanical.WinterAnimals.winter(level) && random.nextBoolean())) spawnGroup(level, at, random);
         }
     }
 
@@ -131,8 +133,10 @@ public final class WildlifeRestock extends SavedData {
     public static List<Weighted<MobSpawnSettings.SpawnerData>> candidates(ServerLevel level, BlockPos at) {
         MobSpawnSettings settings = level.environmentAttributes().getValue(EnvironmentAttributes.NATURAL_MOB_SPAWNS, at);
         List<Weighted<MobSpawnSettings.SpawnerData>> all = new ArrayList<>();
+        boolean away = com.mechanical.WinterAnimals.birdsAway(level);
         for (MobCategory category : CATEGORIES) {
             for (Weighted<MobSpawnSettings.SpawnerData> entry : settings.getMobsToSpawn(category).unwrap()) {
+                if (away && com.mechanical.WinterAnimals.migrates(entry.value().type())) continue; // flown south
                 if (category == MobCategory.CREATURE || BuiltInRegistries.ENTITY_TYPE.getKey(entry.value().type()).getNamespace().equals(Mechanical.MODID)) all.add(entry);
             }
         }
