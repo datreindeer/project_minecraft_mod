@@ -89,7 +89,11 @@ STICK = {c[:3] for c in (vanilla("item/stick").getpixel(p) for p in px(vanilla("
 
 
 def head_pixels(img):
-    return [p for p in px(img) if img.getpixel(p)[:3] not in STICK]
+    head = [p for p in px(img) if img.getpixel(p)[:3] not in STICK]
+    # the iron hoe outlines its haft in the head's own dark colour: keep an outline pixel only if it borders the metal
+    dark = min(img.getpixel(p)[:3] for p in head)
+    metal = {p for p in head if img.getpixel(p)[:3] != dark}
+    return [p for p in head if p in metal or any((p[0] + dx, p[1] + dy) in metal for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
 
 
 def only(img, pts):
