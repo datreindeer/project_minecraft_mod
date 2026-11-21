@@ -72,6 +72,7 @@ public final class CalendarTest {
         shelter(h);
         cropsAndBerries(h);
         seasonLook(h);
+        spear(h);
         h.succeed();
     }
 
@@ -94,6 +95,22 @@ public final class CalendarTest {
         for (int x = 0; x <= 4; x++) for (int z = 0; z <= 4; z++) h.setBlock(x, 4, z, net.minecraft.world.level.block.Blocks.AIR);
         check(h, Temperature.shelter(level, head) == 0, "no roof, no shelter");
         for (int x = 0; x <= 4; x++) for (int y = 1; y <= 4; y++) for (int z = 0; z <= 4; z++) h.setBlock(x, y, z, net.minecraft.world.level.block.Blocks.AIR);
+    }
+
+    /** A spear skeleton whose target is cleared mid-tick (fire/light goals) must not crash (crash 2026-11-21, SpearUseGoal NPE). */
+    private static void spear(GameTestHelper h) {
+        var skeleton = h.spawn(net.minecraft.world.entity.EntityTypes.SKELETON, 1, 2, 1);
+        var pig = h.spawn(net.minecraft.world.entity.EntityTypes.PIG, 3, 2, 3);
+        skeleton.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, new net.minecraft.world.item.ItemStack(Mechanical.FLINT_SPEAR.get()));
+        skeleton.setTarget(pig);
+        var goal = skeleton.goalSelector.getAvailableGoals().stream().map(g -> g.getGoal())
+                .filter(g -> g instanceof net.minecraft.world.entity.ai.goal.SpearUseGoal).findFirst().orElse(null);
+        check(h, goal != null && goal.getClass() != net.minecraft.world.entity.ai.goal.SpearUseGoal.class, "skeleton has the safe spear goal");
+        goal.start();
+        skeleton.setTarget(null);
+        goal.tick(); // vanilla's threw a NullPointerException here
+        skeleton.discard();
+        pig.discard();
     }
 
     private static void seasonLook(GameTestHelper h) {

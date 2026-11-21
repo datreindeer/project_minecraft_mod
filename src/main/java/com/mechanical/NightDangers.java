@@ -190,9 +190,13 @@ public final class NightDangers {
             if ((mob.tickCount + mob.getId()) % 10 != 0 || BloodMoon.isActive(mob.level())) return false; // a blood moon makes them fearless
             fire = nearestFire(mob.level(), mob.position(), AVOID_RADIUS);
             if (fire == null) return false;
-            if (mob.getTarget() != null && nearFire(mob.level(), mob.getTarget().position(), SAFE_RADIUS)) mob.setTarget(null);
             Vec3 away = DefaultRandomPos.getPosAway(mob, (int) (AVOID_RADIUS * reach(mob.level(), fire)) + 4, 7, Vec3.atCenterOf(fire));
             return away != null && mob.getNavigation().moveTo(away.x, away.y, away.z, 1.2);
+        }
+
+        @Override
+        public void start() { // not in canUse: a running goal may still read the target this tick
+            if (mob.getTarget() != null && nearFire(mob.level(), mob.getTarget().position(), SAFE_RADIUS)) mob.setTarget(null);
         }
 
         @Override
@@ -503,8 +507,12 @@ public final class NightDangers {
             if ((mob.tickCount + mob.getId()) % 20 != 0) return false;
             light = findLight();
             if (light == null) return false;
-            mob.setTarget(null); // lights first
             return mob.getNavigation().moveTo(light.getX() + 0.5, light.getY(), light.getZ() + 0.5, 1.1);
+        }
+
+        @Override
+        public void start() {
+            mob.setTarget(null); // lights first (not in canUse: a running goal may still read the target this tick)
         }
 
         private BlockPos findLight() {

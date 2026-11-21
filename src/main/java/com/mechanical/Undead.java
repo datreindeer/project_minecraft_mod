@@ -77,17 +77,43 @@ public final class Undead {
         return weights.length - 1;
     }
 
+    /**
+     * Vanilla's spear charge reads the target in tick() without checking it, but it can be cleared in the same tick
+     * after canContinueToUse (our fire, light and fear goals let go of targets): swap it for one that waits a tick.
+     */
+    static void safeSpear(net.minecraft.world.entity.monster.Monster monster) {
+        if (monster.goalSelector.getAvailableGoals().stream().anyMatch(g -> g.getGoal().getClass() == SpearUseGoal.class)) {
+            monster.goalSelector.removeAllGoals(g -> g.getClass() == SpearUseGoal.class);
+            monster.goalSelector.addGoal(2, new SafeSpearUseGoal<>(monster));
+        }
+    }
+
+    static final class SafeSpearUseGoal<T extends net.minecraft.world.entity.monster.Monster> extends SpearUseGoal<T> {
+        private final T mob;
+
+        SafeSpearUseGoal(T mob) {
+            super(mob, 1.0, 1.0, 10.0F, 2.0F);
+            this.mob = mob;
+        }
+
+        @Override
+        public void tick() {
+            if (mob.getTarget() != null) super.tick(); // lost it this tick: canContinueToUse stops the goal next tick
+        }
+    }
+
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) return;
         Entity entity = event.getEntity();
+        if (entity instanceof net.minecraft.world.entity.monster.Monster monster) safeSpear(monster);
         if (entity.getType() == EntityTypes.ZOMBIE && entity instanceof Zombie zombie && !zombie.isBaby()) {
             if (zombie.entityTags().contains(SETUP_TAG)) return;
             zombie.addTag(SETUP_TAG);
             setUpZombie(zombie, zombieLook(zombie));
         } else if (entity.getType() == EntityTypes.SKELETON && entity instanceof Skeleton skeleton) {
             // goals aren't saved: add the spear charge on every load (it only runs while a spear is held)
-            skeleton.goalSelector.addGoal(2, new SpearUseGoal<>(skeleton, 1.0, 1.0, 10.0F, 2.0F));
+            skeleton.goalSelector.addGoal(2, new SafeSpearUseGoal<>(skeleton));
             if (skeleton.entityTags().contains(SETUP_TAG)) return;
             skeleton.addTag(SETUP_TAG);
             armSkeleton(skeleton);
