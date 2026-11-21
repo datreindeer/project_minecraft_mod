@@ -60,6 +60,10 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
     private static HumanoidModel.ArmPose armPose(Tribesperson mob, HumanoidArm arm) {
         ItemStack held = mob.getItemHeldByArm(arm);
         if (held.isEmpty()) return HumanoidModel.ArmPose.EMPTY;
+        // item poses from IClientItemExtensions (client/HoldPoses: staffs ...), as vanilla does for players
+        HumanoidModel.ArmPose custom = net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.of(held).getArmPose(mob,
+                arm == mob.getMainArm() ? net.minecraft.world.InteractionHand.MAIN_HAND : net.minecraft.world.InteractionHand.OFF_HAND, held);
+        if (custom != null) return custom;
         if (held.getItem() instanceof BowItem && mob.isAggressive() && mob.getMainArm() == arm) return HumanoidModel.ArmPose.BOW_AND_ARROW;
         if (HumanoidMobRenderer.usesSpearPose(held, arm, mob)) return HumanoidModel.ArmPose.SPEAR;
         return HumanoidModel.ArmPose.ITEM;

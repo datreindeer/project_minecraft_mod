@@ -103,6 +103,8 @@
   "bone_hook_fishing_rod": {"text": "Tool Station: [[bone_fish_hook]] + [[twine]] + [[tool_rod]]. Bites come 5 s faster (like Lure I, on top of enchantments). Durability 48."},
   "fire_drill": {"text": "Right-click an unlit Campfire or Clay Kiln. Succeeds about one time in three (33 %), 75 % with tinder (bark of any wood ([[oak_bark]]) or Leaf Litter, right-click it first). Also lights Candles (60 %). Each attempt costs 1 durability (16). A Clay Kiln must have fuel to be lit."},
   "bark_basket": {"text": "**Right-click to open** (3×3). Only holds fruit, berries, mushrooms and hides (Apple, Sweet Berries, Glow Berries, Melon Slice, wild berries, mushrooms, Leather, Rabbit Hide, Raw Hide, Scraped Hide …). The contents are saved in the basket. Does not stack. **Cold store:** opened in cold air (below 8: half, below 3: a quarter) the cold counts for the time it was closed."},
+  "walking_staff": {"text": "A long walking staff, about body height. [[tool_rod]] / Twine / [[tool_rod]] (a column in crafting) → 1, doesn't stack. Held upright with the tip at the ground and planted in step while walking. Caravan **Traders** walk with one.", "category": "tools"},
+  "elders_staff": {"text": "The elder's carved staff with a bone head and feathers. Feather, Bone, Feather over a [[walking_staff]] (crafting) → 1, doesn't stack. Held and planted in step like the Walking Staff. Every tribe's **Elder** carries one.", "category": "tools"},
   "bone_arrow": {"text": "Fletching Table: [[fish_bones]] or Bone + Stick + Feather → 4. 1.5 damage (regular arrow 2)."},
   "barbed_arrow": {"text": "Fletching Table: [[bear_claw]] + Stick + Feather → 4. 3 damage."},
   "fire_arrow": {"text": "Fletching Table: [[tallow]] + Arrow + [[twine]] → 1. Sets the target on fire."},

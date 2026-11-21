@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "FBF",
+    " S "
+  ],
+  "key": {
+    "F": "minecraft:feather",
+    "B": "minecraft:bone",
+    "S": "mechanical:walking_staff"
+  },
+  "result": {
+    "id": "mechanical:elders_staff",
+    "count": 1
+  }
+}

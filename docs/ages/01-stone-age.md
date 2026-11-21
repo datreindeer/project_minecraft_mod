@@ -286,6 +286,19 @@ Högerklicka på en släckt Campfire eller Clay Kiln. Lyckas ungefär var tredje
 Då lyckas Fire Drill i 75 % av försöken. Tändmaterialet går åt när elden tar sig. Varje
 försök kostar 1 i hållbarhet. En Clay Kiln går bara att tända om den har bränsle (eller rest av påbörjat bränsle).
 
+### Stavar: Walking Staff och Elder's Staff (crafting)
+Två långa stavar, ungefär kroppshöga, som spelare kan göra och bära (stackas inte). I handen hålls staven **upprätt med
+spetsen mot marken**; när man går svingar armen staven framåt, lyfter den lite och sätter spetsen i marken i takt med
+stegen (motsatt fot, som en vanlig armsving), och står man still vilar den upprätt. Samma pose för spelare och stamfolk:
+**Elder** i varje stam bär en Elder's Staff och karavanernas **Trader** en Walking Staff. Ingen spelmekanisk effekt.
+
+| Item | Recept |
+|---|---|
+| Walking Staff | `[Tool Rod]` / `[Twine]` / `[Tool Rod]` |
+| Elder's Staff | `[Feather][Bone][Feather]` / `[ ][Walking Staff][ ]` |
+
+Avancemang (Stone Age, under *Straight Shaft*): *Long Road* (Walking Staff) och *Wisdom of Elders* (Elder's Staff).
+
 ### Verktygstips med stats
 Alla verktyg visar sina värden direkt under namnet: hållbarhet (alltid, färgad efter hur sliten), bryt-/hugg-/grävfart,
 vad en hacka kan bryta, yxans hugg per steg, chans att lyckas och Firewood-bonus, knivens styckningsfart, köttutbyte,
@@ -1707,7 +1720,7 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
     stammens banderollfärg (skinnet har en grå mask som klienten färgar). Folk från före v0.71.0 klär sig tempererat.
 
 - **Roller:** Hunter (Crude Bow eller Flint Spear), Gatherer (Flint Knife och Bark Basket), Fisher (Crude Fishing Rod),
-  Woodcutter (Flint Axe), Elder (stav). Var och en har ett eget namn och sin stam, t.ex. "Aruk the Hunter of the Raven Tribe".
+  Woodcutter (Flint Axe), Elder (**Elder's Staff**, se Stavar). Var och en har ett eget namn och sin stam, t.ex. "Aruk the Hunter of the Raven Tribe".
 - **De sköter sin omgivning:** en Woodcutter planterar en planta bredvid stubben efter varje träd han fäller, och när det
   finns färre än 4 träd inom 14 block från elden planterar han plantor runt lägret (sorten från närmaste träd, annars en
   som passar biomet). En Gatherer planterar unga vilda bärbuskar som passar klimatet när det finns färre än 3. Aldrig
@@ -1930,7 +1943,8 @@ från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan**
   den. Den stannar **48000 ticks (2 speldagar)** som vanillas handlare, sedan försvinner allt (folk, hästar, vagnar).
   Ett Wandering Trader Spawn Egg ger också en karavan.
 - **Folket:** **3–4 personer**. En **äldre man eller kvinna, handlaren (Trader)**, i fina kläder: en lång rock i stammens
-  färg med guldband och guldkant, **ädelstenar** i bandet, ett halsband av guld och stenar och en sten i pannbandet. De
+  färg med guldband och guldkant, **ädelstenar** i bandet, ett halsband av guld och stenar och en sten i pannbandet, och
+  en **Walking Staff** i handen. De
   andra är **vakter (Caravan Guard)** i rena linne- och läderkläder med **rustning men ingen hjälm** (och ingen banderoll
   på huvudet), stammens färg på pannbandet. Inga trasiga stamkläder och inga klimatvarianter: karavaner kommer långväga.
 - **Hästar och vagnar:** **1–2 tama hästar** (Tame Horse) i rep som handlaren håller, var och en drar en **Wheeled Cart**

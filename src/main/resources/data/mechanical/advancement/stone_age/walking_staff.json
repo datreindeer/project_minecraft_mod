@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/tool_rod",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:walking_staff"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:walking_staff"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.walking_staff.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.walking_staff.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

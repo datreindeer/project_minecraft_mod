@@ -480,6 +480,7 @@ public final class TribeTest {
             h.assertTrue(trader != null, "no caravan came in the trader's place");
             h.assertTrue(people.size() >= 3 && people.size() <= 4 && people.stream().allMatch(trader::inGroup), "caravan of 3-4 of one tribe, got " + people.size());
             h.assertTrue(trader.tribe().temperament == Tribe.Temperament.TRADERS, "a caravan is of a trading tribe");
+            h.assertTrue(trader.getMainHandItem().is(com.mechanical.Mechanical.WALKING_STAFF.get()), "the trader walks with a Walking Staff");
             for (Tribesperson g : people) {
                 if (g == trader) continue;
                 h.assertTrue(g.role() == TribeRole.GUARD && g.isArmed(), "guards carry weapons");
@@ -554,6 +555,7 @@ public final class TribeTest {
                     mine.add(v);
                     Tribesperson leader = h.spawn(People.TRIBESPERSON.get(), new BlockPos(12, 1, 10));
                     leader.setup(TribeRole.ELDER, null, tribe, true);
+                    h.assertTrue(leader.getMainHandItem().is(com.mechanical.Mechanical.ELDERS_STAFF.get()), "the elder carries an Elder's Staff");
                     leader.visit = v.id;
                     TribeVisits.dawn(level, data, v, leader, List.of(leader), level.getGameTime());
                     if (night < TribeVisits.SURE_SETTLE) {
