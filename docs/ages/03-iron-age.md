@@ -489,6 +489,22 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
   högerklicka en tom plats.
 - Säte för spelare än så länge; stamfolk åker inte med.
 
+### Släpvagn (Wheeled Cart bakom vagnen, v0.134.0)
+
+- **Koppla på:** ställ en Wheeled Cart bakom vagnen, högst **4 block** från mitten av vagnens bakgavel, och högerklicka
+  kärran med tom hand: den kopplas efter vagnen ("The cart is hitched behind the wagon"). Det går före att dra kärran själv.
+  Högerklicka kärran igen för att koppla loss ("The cart is unhitched from the wagon").
+- **En släpvagn per vagn** ("That wagon already tows a cart"). En kärra som dras av en häst eller spelare kopplas först
+  loss av klicket; en kopplad kärra kan inte samtidigt dras av en häst eller spelare (ett fordon per dragare).
+- **Följer** vagnens bakgavel **2,3 block** bakom med skaklarna vilande på bakgaveln (skaklarnas spetsar når lite in över
+  gaveln), svänger med vagnen. Fastnar den och vagnen drar vidare lossnar den mer än 6,5 block från vagnens mitt
+  ("The cart came loose from the shafts"); drar ryttaren på ledhästen bort från en fastkörd släpvagn i 3 sekunder
+  lossnar den också.
+- **Lasten tynger spannet:** kärrans fyllnadsgrad räknas som halv vagn (6 platser mot vagnens 12) och läggs på vagnens:
+  en ensam häst rör inte vagnen alls om släpvagnen har last, och paret saktas av den sammanlagda lasten (upp till 15 %).
+  Kroppar, tama djur och kistans varor ligger kvar på kärran.
+- Kopplingen sparas inte när världen laddas om (som spannet): koppla på igen.
+
 ### Advancements (Iron Age-fliken, efter *Forged*)
 
 - **Iron Shod**: gör en Iron-Rimmed Wheel.
@@ -496,6 +512,7 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 - **A Pair in the Yoke**: spänn för två hästar.
 - **Heavy Haul** (mål): 12 rum kroppar på en vagn med alla fyra platser tomma.
 - **Freight**: en Chest på alla fyra platserna.
+- **Road Train**: koppla en Wheeled Cart efter vagnen.
 
 ## Plogen (Mouldboard Plough) (byggd, v0.132.0)
 

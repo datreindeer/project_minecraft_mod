@@ -1480,6 +1480,9 @@ TABS["iron_age"][1].extend([
     ("wagon_chests", "wagon", "minecraft:chest", T, "Freight",
      "Right-click each of a Wagon's four places with a Chest: 108 slots on wheels. Hay Bales feed the team, wooden slabs make seats",
      by_code()),
+    ("wagon_trailer", "wagon_team", "cart", T, "Road Train",
+     "Stand a Wheeled Cart close behind a Wagon and right-click it with an empty hand: it rolls along as a trailer. Its load weighs on the team",
+     by_code()),
 ])
 
 # the Mouldboard Plough (PloughEntity.java, gen_plough.py)

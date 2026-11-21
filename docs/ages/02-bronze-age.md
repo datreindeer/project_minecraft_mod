@@ -1292,6 +1292,8 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
   inga kroppar ("The chest takes up the whole bed"). Ligger det kroppar på vagnen måste de av först. Kistan går inte att
   ta av; slå sönder vagnen så faller vagnen, kistan och allt innehåll ut. Hästen eller onagern drar den som vanligt.
 - Rovdjur: den som drar en lastad vagn (spelare eller häst) blir bytet, som med travoisen.
+- **Släpvagn bakom en Wagon (järnåldern):** ställ kärran nära bakom en Wagon och högerklicka den med tom hand, så kopplas
+  den efter vagnen. Se *Släpvagn* under Vagnen i 03-iron-age.md.
 - **Rörelse som travoisen** (se *Bära hem bytet* i 01-stone-age.md): tyngdkraft, ettblockssteg, jämn rörelse i klienten.
   Fastnar vagnen håller den emot dig (eller hästen) vid dragavståndet + 1 block; drar du bort från den i 3 sekunder, eller
   kommer mer än 5 block bort, lossnar den ("The cart is stuck. It came loose from the shafts" / "The cart came loose from

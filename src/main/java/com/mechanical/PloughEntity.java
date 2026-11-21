@@ -12,8 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -78,12 +78,12 @@ public class PloughEntity extends TravoisEntity {
     }
 
     @Override
-    protected double lead(LivingEntity puller) {
+    protected double lead(Entity puller) {
         return LEAD;
     }
 
     @Override
-    protected float targetPitch(LivingEntity puller) {
+    protected float targetPitch(Entity puller) {
         return isShareDown() ? TILT_DOWN : TILT_UP;
     }
 

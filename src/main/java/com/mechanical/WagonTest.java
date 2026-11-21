@@ -41,10 +41,12 @@ public final class WagonTest {
     private static final ResourceKey<Consumer<GameTestHelper>> TEST = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "wagon"));
 
     private static final ResourceKey<Consumer<GameTestHelper>> LIVESTOCK = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "livestock_cart"));
+    private static final ResourceKey<Consumer<GameTestHelper>> TRAILER = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "wagon_trailer"));
 
     static {
         TEST_FUNCTIONS.register("wagon", () -> WagonTest::test);
         TEST_FUNCTIONS.register("livestock_cart", () -> WagonTest::livestock);
+        TEST_FUNCTIONS.register("wagon_trailer", () -> WagonTest::trailer);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -58,6 +60,77 @@ public final class WagonTest {
                 new FunctionGameTestInstance(TEST, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "livestock_cart"),
                 new FunctionGameTestInstance(LIVESTOCK, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "wagon_trailer"),
+                new FunctionGameTestInstance(TRAILER, new TestData<>(env, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"),
+                        100, 0, true, net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 16))); // padding: the team drives 16 blocks of floor
+    }
+
+    /**
+     * A cart right-clicked behind a wagon is hitched as its trailer and follows the moving team; a second cart is refused;
+     * a led horse can't take the towed cart; a loaded trailer stops a single horse; right-clicking again unhitches.
+     */
+    private static void trailer(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (int x = 0; x < 7; x++) for (int z = 0; z < 16; z++) h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+        Vec3 at = h.absoluteVec(new Vec3(3.5, 1, 6.5));
+        WagonEntity wagon = Carting.WAGON.get().create(level, EntitySpawnReason.EVENT);
+        wagon.setPos(at);
+        wagon.setYRot(0); // facing +z
+        level.addFreshEntity(wagon);
+        AbstractHorse lead = horse(level, at.add(-WagonEntity.PAIR / 2, 0, WagonEntity.LEAD)), second = horse(level, at.add(WagonEntity.PAIR / 2, 0, WagonEntity.LEAD));
+        lead.setYRot(0);
+        wagon.setHarness(lead);
+        wagon.setPartner(second);
+        CartEntity cart = cart(level, wagon.towPoint().add(0, 0, -CartEntity.LEAD_TOWED));
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.setPos(at.add(2, 0, -3));
+        cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+        h.assertTrue(cart.puller() == wagon && cart.harness() == null, "the cart is hitched behind the wagon, not to the player");
+        h.assertTrue(cart.pullsOther(player) == false && TravoisEntity.pulling(wagon) == cart, "the wagon tows it");
+        CartEntity other = cart(level, wagon.towPoint().add(1, 0, -1.5));
+        other.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+        h.assertTrue(other.puller() == null, "a wagon takes one trailer only (the second cart: " + other.puller() + ")");
+        other.discard();
+        double startZ = wagon.getZ();
+        for (int t = 1; t <= 6; t++) h.runAfterDelay(t, () -> lead.setPos(lead.position().add(0, 0, 0.5))); // the team walks on, 3 blocks
+        h.runAfterDelay(12, () -> {
+            h.assertTrue(wagon.getZ() > startZ + 2, "the pair drew the wagon on (" + (wagon.getZ() - startZ) + "; wagon " + wagon.position() + " lead " + lead.position()
+                    + " harness " + wagon.harness() + " partner " + wagon.partner() + ")");
+            double gap = cart.position().subtract(wagon.towPoint()).horizontalDistance();
+            h.assertTrue(cart.puller() == wagon && gap < CartEntity.LEAD_TOWED + 0.5, "the trailer followed the wagon (gap " + gap + ")");
+            // a led horse can't take the towed cart: the click unhitches it instead
+            AbstractHorse third = horse(level, cart.position().add(2, 0, 0));
+            third.setLeashedTo(player, true);
+            player.setPos(cart.position().add(1.5, 0, 0));
+            cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cart.puller() == null && cart.harness() != third, "the click unhitched the trailer, the led horse stayed out");
+            third.dropLeash();
+            third.discard();
+            cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cart.puller() == wagon, "hitched again behind the wagon");
+            // load: an empty trailer leaves one horse crawling; a cow on it stops the lone horse, the pair still pulls
+            wagon.setPartner(null);
+            h.assertTrue(wagon.pullFactor() == WagonEntity.CRAWL, "one horse crawls with an empty wagon and empty trailer");
+            var cow = net.minecraft.world.entity.EntityTypes.COW.create(level, EntitySpawnReason.EVENT);
+            cow.setPos(cart.position().add(1.5, 0, 0));
+            level.addFreshEntity(cow);
+            cow.setLeashedTo(player, true);
+            cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cow.getVehicle() == cart && cart.puller() == wagon, "the cow climbs on, the trailer stays hitched");
+            h.assertTrue(wagon.loadFraction() > 0 && wagon.pullFactor() == 0, "one horse can't move a wagon with a loaded trailer");
+            wagon.setPartner(second);
+            h.assertTrue(wagon.pullFactor() == 1.0, "the pair pulls it");
+            cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cart.puller() == null && wagon.loadFraction() == 0, "unhitched: the trailer's load is off the team");
+            h.succeed();
+        });
+    }
+
+    private static CartEntity cart(ServerLevel level, Vec3 at) {
+        CartEntity cart = Carting.CART.get().create(level, EntitySpawnReason.EVENT);
+        cart.setPos(at);
+        level.addFreshEntity(cart);
+        return cart;
     }
 
     /** Led farm animals climb onto a cart, tied to it; a full cart refuses more; a cut lead lets one off; untying leads it off. */

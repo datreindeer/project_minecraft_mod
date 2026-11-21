@@ -70,6 +70,10 @@ public class WagonEntity extends TravoisEntity {
     private static final Identifier TEAM_SLOW = Identifier.fromNamespaceAndPath(Mechanical.MODID, "wagon_team");
     /** Centre of the pair to the wagon centre; the pair's spacing (horse width 1.3 + a gap). */
     public static final double LEAD = 2.8, PAIR = 1.45;
+    /** The bed's rear end behind the centre: a towed cart's shafts rest there ({@link #towPoint}). */
+    public static final double REAR = SLOTS * 0.75 / 2;
+    /** A trailer (Wheeled Cart) weighs on the team by its fullness times this (its 6 room against the wagon's 12). */
+    static final double TRAILER_WEIGHT = CartEntity.CAPACITY / (double) CAPACITY;
     /** The yoke breaks when the second horse is held this far from the first. */
     static final double YOKE_BREAK = 4.0;
     /** Bed floor top, wheel radius (WagonModel), place depth along the bed, seat top above the floor (blocks). */
@@ -147,17 +151,19 @@ public class WagonEntity extends TravoisEntity {
         return ROOM_PER_SLOT * count(EMPTY);
     }
 
-    /** As heavy as its bodies, or its chests, whichever is fuller. */
+    /** As heavy as its bodies, or its chests, whichever is fuller, plus a towed cart's share ({@link #TRAILER_WEIGHT}), at most 1. */
     @Override
     public double loadFraction() {
         if (level().isClientSide()) return entityData.get(FULLNESS);
+        TravoisEntity trailer = pulling(this);
+        double towed = trailer == null ? 0 : trailer.loadFraction() * TRAILER_WEIGHT;
         int filled = 0, slots = 0;
         for (int i = 0; i < SLOTS; i++) {
             if (module(i) != CHEST) continue;
             slots += CHEST_SIZE;
             for (ItemStack s : chests[i].getItems()) if (!s.isEmpty()) filled++;
         }
-        return Math.max(load() / (double) CAPACITY, slots == 0 ? 0 : filled / (double) slots);
+        return Math.min(1, towed + Math.max(load() / (double) CAPACITY, slots == 0 ? 0 : filled / (double) slots));
     }
 
     private void placeModule(Player player, int slot, int module, ItemStack held) {
@@ -228,7 +234,7 @@ public class WagonEntity extends TravoisEntity {
 
     /** Between the two horses (or the lead horse alone). */
     @Override
-    protected Vec3 pullPoint(LivingEntity puller) {
+    protected Vec3 pullPoint(Entity puller) {
         AbstractHorse partner = partner();
         return partner == null ? puller.position() : puller.position().add(partner.position()).scale(0.5);
     }
@@ -243,13 +249,18 @@ public class WagonEntity extends TravoisEntity {
     }
 
     @Override
-    protected double lead(LivingEntity puller) {
+    protected double lead(Entity puller) {
         return LEAD;
+    }
+
+    /** Where a towed cart's shafts rest: the middle of the bed's rear end. */
+    public Vec3 towPoint() {
+        return position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(REAR));
     }
 
     /** Wheels on both axles: the bed stays level. */
     @Override
-    protected float targetPitch(LivingEntity puller) {
+    protected float targetPitch(Entity puller) {
         return 0;
     }
 

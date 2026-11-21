@@ -65,5 +65,9 @@ merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items(
     "message.mechanical.wagon.module.1": "Chest in place. Sneak + right-click it to open",
     "message.mechanical.wagon.module.2": "Hay Bale in place. Hurt horses in the team eat from it",
     "message.mechanical.wagon.module.3": "Seat in place. Right-click it to sit",
+    # a Wheeled Cart hitched behind a wagon (CartEntity.toggleHarness)
+    "message.mechanical.cart.towed": "The cart is hitched behind the wagon. Right-click it again to unhitch",
+    "message.mechanical.cart.untowed": "The cart is unhitched from the wagon",
+    "message.mechanical.cart.wagon_has_trailer": "That wagon already tows a cart",
 })
 print("wagon ok")

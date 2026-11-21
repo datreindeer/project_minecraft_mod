@@ -40,6 +40,11 @@ import net.minecraft.world.phys.Vec3;
  * {@link #CHEST_SLOTS} slots, no room left for bodies. Punch it to pick it up: bodies, goods and the chest fall out.
  * A Trader Caravan's cart ({@link #hitchCaravan}) wears a canvas tilt, stays hitched to its horse and is locked to players
  * until the horse dies.
+ * <p>
+ * A trailer: right-click it with an empty hand while it stands behind a Wagon, within {@link #TOW_RANGE} of the wagon's
+ * rear, and it is hitched behind (the wagon then is its {@link #puller}), its shafts resting on the wagon's back board; its
+ * load weighs on the wagon's team ({@link WagonEntity#loadFraction}). Right-click again to unhitch. A wagon tows one cart.
+ * shortcut: the tow, like every harness, is not saved: a reload leaves the cart standing; save the wagon's UUID if players mind.
  */
 public class CartEntity extends TravoisEntity {
     public static final int CAPACITY = 6, SLOTS = 18, CHEST_SLOTS = 54;
@@ -62,6 +67,11 @@ public class CartEntity extends TravoisEntity {
      * tips about the axle ({@link #pitch}): shaft tips at the puller's hip (a horse: its shoulder), on the ground when parked.
      */
     static final double AXLE_BACK = 2 / 16.0, AXLE_HEIGHT = 7 / 16.0, SHAFT_REACH = 2.75, SHAFT_ANGLE = 7.75;
+    /** Behind a wagon's tow point (the shaft tips reach a little over its back board); how far from it a cart can be hitched. */
+    public static final double LEAD_TOWED = 2.3, TOW_RANGE = 4.0;
+    /** Shaft tips on a wagon's back board: its top, above the wagon's position (WagonModel). */
+    static final double TOW_HEIGHT = 19 / 16.0;
+    static final Identifier TRAILER_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "iron_age/wagon_trailer");
     /** Search range for a led horse to put in the shafts. */
     private static final double HORSE_RANGE = 10;
 
@@ -172,8 +182,14 @@ public class CartEntity extends TravoisEntity {
     }
 
     @Override
-    protected double lead(LivingEntity puller) {
-        return puller instanceof Player ? LEAD_PLAYER : LEAD_HORSE;
+    protected double lead(Entity puller) {
+        return puller instanceof Player ? LEAD_PLAYER : puller instanceof WagonEntity ? LEAD_TOWED : LEAD_HORSE;
+    }
+
+    /** Behind a wagon: its rear tow point. */
+    @Override
+    protected Vec3 pullPoint(Entity puller) {
+        return puller instanceof WagonEntity w ? w.towPoint() : puller.position();
     }
 
     @Override
@@ -210,11 +226,11 @@ public class CartEntity extends TravoisEntity {
     }
 
     @Override
-    protected float targetPitch(LivingEntity puller) {
+    protected float targetPitch(Entity puller) {
         double axleY = getY() + AXLE_HEIGHT, tipAngle;
         if (puller != null) {
-            double hitch = puller.getY() + puller.getBbHeight() * (puller instanceof Player ? 0.5 : 0.6);
-            tipAngle = Math.atan2(hitch - axleY, position().subtract(puller.position()).horizontalDistance() + AXLE_BACK);
+            double hitch = puller.getY() + (puller instanceof WagonEntity ? TOW_HEIGHT : puller.getBbHeight() * (puller instanceof Player ? 0.5 : 0.6));
+            tipAngle = Math.atan2(hitch - axleY, position().subtract(pullPoint(puller)).horizontalDistance() + AXLE_BACK);
         } else {
             double ground = groundAhead(SHAFT_REACH - AXLE_BACK) + 1 / 16.0; // the shaft tips rest on the ground
             tipAngle = Math.asin(Mth.clamp((ground - axleY) / SHAFT_REACH, -1, 1));
@@ -234,14 +250,27 @@ public class CartEntity extends TravoisEntity {
         return InteractionResult.SUCCESS;
     }
 
-    /** Unhitches whoever pulls it; else hitches the tamed horse you ride, a tamed horse you lead, or you. */
+    /** Unhitches whoever pulls it; else hitches it behind a wagon just ahead, or the tamed horse you ride, a tamed horse you lead, or you. */
     @Override
     protected void toggleHarness(Player player) {
-        LivingEntity old = harness();
+        Entity old = puller();
         if (old != null) {
             setHarness(null);
-            player.sendOverlayMessage(Component.translatable(old instanceof Player ? "message.mechanical.travois.unharnessed" : "message.mechanical.cart.unhitched"));
+            player.sendOverlayMessage(Component.translatable(old instanceof Player ? "message.mechanical.travois.unharnessed"
+                    : old instanceof WagonEntity ? "message.mechanical.cart.untowed" : "message.mechanical.cart.unhitched"));
             playSound(SoundEvents.LEAD_UNTIED, 1.0F, 0.8F);
+            return;
+        }
+        WagonEntity wagon = wagonAhead();
+        if (wagon != null) {
+            if (pullsOther(wagon)) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.cart.wagon_has_trailer"));
+                return;
+            }
+            setHarness(wagon);
+            player.sendOverlayMessage(Component.translatable("message.mechanical.cart.towed"));
+            playSound(SoundEvents.LEAD_TIED, 1.0F, 0.7F);
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp) Kettle.award(sp, TRAILER_ADVANCEMENT);
             return;
         }
         AbstractHorse horse = player.getVehicle() instanceof AbstractHorse ridden && ridden.isTamed() ? ridden : ledHorse(player);
@@ -253,6 +282,21 @@ public class CartEntity extends TravoisEntity {
         setHarness(horse != null ? horse : player);
         player.sendOverlayMessage(Component.translatable(horse != null ? "message.mechanical.cart.hitched" : "message.mechanical.travois.harnessed"));
         playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);
+    }
+
+    /** The nearest wagon this cart stands behind, within {@link #TOW_RANGE} of its tow point, or null. */
+    WagonEntity wagonAhead() {
+        WagonEntity best = null;
+        double bestDist = TOW_RANGE;
+        for (WagonEntity w : level().getEntitiesOfClass(WagonEntity.class, getBoundingBox().inflate(TOW_RANGE + WagonEntity.REAR))) {
+            double d = w.towPoint().distanceTo(position());
+            boolean behind = position().subtract(w.position()).dot(Vec3.directionFromRotation(0, w.getYRot())) < 0;
+            if (behind && d <= bestDist) {
+                best = w;
+                bestDist = d;
+            }
+        }
+        return best;
     }
 
     private AbstractHorse ledHorse(Player player) {

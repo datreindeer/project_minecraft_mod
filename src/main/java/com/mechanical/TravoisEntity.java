@@ -77,10 +77,22 @@ public class TravoisEntity extends Entity {
         return entityData.get(HARNESS);
     }
 
-    /** Who pulls it: a player, or a tamed horse for the {@link CartEntity}. */
+    /** Who pulls it: a player, or a tamed horse for the {@link CartEntity}; null when a Wagon tows it ({@link #puller}). */
     public LivingEntity harness() {
+        return puller() instanceof LivingEntity e ? e : null;
+    }
+
+    /** What pulls it: {@link #harness}, or the Wagon a cart is hitched behind as a trailer. */
+    public Entity puller() {
         int id = harnessId();
-        return id >= 0 && level().getEntity(id) instanceof LivingEntity e ? e : null;
+        return id >= 0 ? level().getEntity(id) : null;
+    }
+
+    /** The player steering {@code puller}: the puller itself, the horse's rider, or the rider of a towing wagon's lead horse. */
+    static Player driver(Entity puller) {
+        if (puller instanceof Player p) return p;
+        if (puller instanceof TravoisEntity t) puller = t.harness();
+        return puller != null && puller.getControllingPassenger() instanceof Player rider ? rider : null;
     }
 
     protected void setHarness(Entity puller) {
@@ -93,7 +105,7 @@ public class TravoisEntity extends Entity {
     }
 
     /** Where the tow line pulls from: the puller (the Wagon: between its pair of horses). */
-    protected Vec3 pullPoint(LivingEntity puller) {
+    protected Vec3 pullPoint(Entity puller) {
         return puller.position();
     }
 
@@ -103,7 +115,7 @@ public class TravoisEntity extends Entity {
     }
 
     /** How far behind {@code puller} it follows. */
-    protected double lead(LivingEntity puller) {
+    protected double lead(Entity puller) {
         return LEAD;
     }
 
@@ -244,10 +256,10 @@ public class TravoisEntity extends Entity {
                 if (isLivestock(e) && ((net.minecraft.world.entity.animal.Animal) e).getLeashHolder() != this) dismount(e);
             if (carriesLivestock() && tickCount % 20 == 0) retie();
         }
-        LivingEntity p = harness();
+        Entity p = puller();
         if (!level().isClientSide() && harnessId() >= 0) {
             if (p == null || !p.isAlive()) p = letGo(null, null); // dead or gone
-            else if (p.distanceTo(this) > BREAK) p = letGo(p, "torn_loose");
+            else if (p.distanceTo(this) > BREAK + (p instanceof WagonEntity ? WagonEntity.REAR : 0)) p = letGo(p, "torn_loose");
         }
         Vec3 v = getDeltaMovement();
         double glide = onGround() ? GROUND_GLIDE : AIR_GLIDE;
@@ -269,7 +281,7 @@ public class TravoisEntity extends Entity {
         if (p != null) {
             double d = position().subtract(pullPoint(p)).horizontalDistance();
             stuckTicks = d > lead(p) + 0.3 ? stuckTicks + 1 : 0;
-            if (!(p instanceof Player) && p.isLocalInstanceAuthoritative()) tether(p, this); // a horse; players: CarcassHauling.onPlayerTick
+            if (p instanceof LivingEntity && !(p instanceof Player) && p.isLocalInstanceAuthoritative()) tether(p, this); // a horse; players: CarcassHauling.onPlayerTick; a towing wagon isn't held back
             if (!level().isClientSide()) {
                 TrampledPaths.step(this); // runners and wheels wear paths too
                 strainTicks = isStuck() && d > lead(p) + SLACK - 0.2 && pullsAway(p) ? strainTicks + 1 : 0;
@@ -277,7 +289,7 @@ public class TravoisEntity extends Entity {
             }
         } else stuckTicks = strainTicks = 0;
         if (level().isClientSide()) {
-            float target = targetPitch(harness());
+            float target = targetPitch(puller());
             if (tickCount <= 1) pitch = target;
             pitchO = pitch;
             pitch += (target - pitch) * 0.4F;
@@ -285,20 +297,19 @@ public class TravoisEntity extends Entity {
     }
 
     /** Server: takes {@code puller} out of the harness, telling them why ({@code why}: lang key part; null: silently). */
-    private LivingEntity letGo(LivingEntity puller, String why) {
+    private Entity letGo(Entity puller, String why) {
         setHarness(null);
         stuckTicks = strainTicks = 0;
         if (why == null) return null;
-        Player told = puller instanceof Player pl ? pl : puller.getControllingPassenger() instanceof Player rider ? rider : null;
+        Player told = driver(puller);
         if (told != null) told.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + "." + why));
         playSound(SoundEvents.LEAD_BREAK, 1.0F, 0.8F);
         return null;
     }
 
     /** Server: the puller's (or the horse's rider's) movement keys push away from this. */
-    private boolean pullsAway(LivingEntity puller) {
-        Entity driver = puller instanceof Player ? puller : puller.getControllingPassenger();
-        if (!(driver instanceof ServerPlayer player)) return false;
+    private boolean pullsAway(Entity puller) {
+        if (!(driver(puller) instanceof ServerPlayer player)) return false;
         Input in = player.getLastClientInput();
         double fwd = (in.forward() ? 1 : 0) - (in.backward() ? 1 : 0), side = (in.left() ? 1 : 0) - (in.right() ? 1 : 0);
         if (fwd == 0 && side == 0) return false;
@@ -327,7 +338,7 @@ public class TravoisEntity extends Entity {
     }
 
     /** Client: the poles' tilt: up to the puller's hip from the rear ends, or down onto the ground ahead when let go. */
-    protected float targetPitch(LivingEntity puller) {
+    protected float targetPitch(Entity puller) {
         double rise, run;
         if (puller != null) {
             rise = puller.getY() + puller.getBbHeight() * 0.5 - getY();
