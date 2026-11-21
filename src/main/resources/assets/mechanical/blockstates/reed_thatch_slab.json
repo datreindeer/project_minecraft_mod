@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/reed_thatch_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/reed_thatch"
+    },
+    "type=top": {
+      "model": "mechanical:block/reed_thatch_slab_top"
+    }
+  }
+}

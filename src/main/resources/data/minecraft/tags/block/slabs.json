@@ -63,6 +63,15 @@
     "mechanical:smooth_alabaster_slab",
     "mechanical:alum_shale_brick_slab",
     "mechanical:alum_shale_slab",
-    "mechanical:polished_alum_shale_slab"
+    "mechanical:polished_alum_shale_slab",
+    "mechanical:peat_brick_slab",
+    "mechanical:adobe_brick_slab",
+    "mechanical:loess_brick_slab",
+    "mechanical:rammed_earth_slab",
+    "mechanical:kaolin_tile_slab",
+    "mechanical:red_ochre_brick_slab",
+    "mechanical:yellow_ochre_brick_slab",
+    "mechanical:turf_slab",
+    "mechanical:reed_thatch_slab"
   ]
 }

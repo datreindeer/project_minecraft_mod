@@ -125,13 +125,13 @@ public final class Trees {
                         () -> Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.POPPED)));
     }
 
-    private static Properties logProperties(MapColor top, MapColor side) {
+    static Properties logProperties(MapColor top, MapColor side) {
         return Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? top : side)
                 .instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava();
     }
 
     /** Registers the block and its block item (doors get the two-block-high item). */
-    private static <B extends Block> DeferredBlock<B> block(String name, Function<Properties, B> factory, Supplier<Properties> properties) {
+    static <B extends Block> DeferredBlock<B> block(String name, Function<Properties, B> factory, Supplier<Properties> properties) {
         DeferredBlock<B> block = Mechanical.BLOCKS.registerBlock(name, factory, properties);
         if (name.endsWith("_door")) Mechanical.ITEMS.registerItem(name, p -> new DoubleHighBlockItem(block.get(), p), p -> p.useBlockDescriptionPrefix());
         else Mechanical.ITEMS.registerSimpleBlockItem(name, block);

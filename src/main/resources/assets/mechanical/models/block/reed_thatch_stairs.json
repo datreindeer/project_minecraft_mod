@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "top": "mechanical:block/reed_thatch_top",
+    "side": "mechanical:block/reed_thatch_side",
+    "bottom": "mechanical:block/reed_thatch_top"
+  }
+}

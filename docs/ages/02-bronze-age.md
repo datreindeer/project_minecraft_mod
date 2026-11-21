@@ -219,6 +219,7 @@ Temperature-systemet (×1,5 av kroppsskalan: slätt ~18°, snöbiom några grade
 |---|---|---|
 | Stick, Sapling, Planks | 500° | 700° |
 | Firewood, Log (och lägerelden) | 650° | 900° |
+| Peat (3 min, se stenålderns *Myr och jord*) | 600° | 850° |
 | Charcoal, Coal | 800° | 1300° |
 
 **Hetare bränsle tar direkt:** lägger man ett bränsle med högre max i bränsleslotten medan ett sämre brinner (t.ex.
@@ -255,6 +256,7 @@ takten ("Baking speed: 2.0x"). Gäller även smältning i Crucible, inte bränni
 | Fire Clay | Fire Brick (se *Bloomery*) | 20 s | 1100° |
 | Unfired Clay Hammer Head / Anvil Mold | Clay Hammer Head / Anvil Mold | 20 s / 30 s | 600° |
 | Iron Bloom (kall) | Hot Iron Bloom, slagen behålls | 10 s | 1100° |
+| Kaolin (blocket) | Kaolin Tiles | 20 s | 1000° |
 
 **Första bränningen** av en ny kiln räknas bara medan den är minst **500°** (2 min). På lägereldens ved tar det ~1,5 min
 att komma dit.
@@ -1550,3 +1552,14 @@ från `worldgen/feature/coastal_basalt_columns.json` (vanilla `block_column`).
 Advancements i Bronze Age-fliken (under Bronze Pickaxe): *Marble*, *Quartzite*, *Porphyry*, *Rapakivi*, *Basalt Columns*,
 *Serpentine*, *Alabaster*. Senare användning (planen fas 9): statyer, slipstenar, kvarnstenar av Rapakivi, lyxsten,
 inläggningar, lampor av Alabaster.
+
+## Kaolin Tiles (byggt, fas 3 av världsmaterialplanen)
+
+**Kaolin** är en vit lera i sällsynta fläckar i jorden (y 50–75) i skog, Plains, Meadow och djungel
+(`#mechanical:has_kaolin`). Grävs med spade och smular sönder till **4 Kaolin Clay** som vanlig lera (Silk Touch: blocket).
+2×2 Kaolin Clay → 1 Kaolin. Det är inte samma sak som Fire Clay.
+
+Ett Kaolin-block bränt i **Clay Kiln vid 1000°** (Charcoal + Bellows) blir **Kaolin Tiles**, vitt kakel med slab, stairs och
+wall (vanilla-bricks-mönster: 3 i rad → 6 slabs, trappmönster av 6 → 4 stairs, 2×3 → 6 walls). Advancement *White Tiles*
+i Bronze Age-fliken (under Bellows). Senare: vit glasyr och porslin.
+

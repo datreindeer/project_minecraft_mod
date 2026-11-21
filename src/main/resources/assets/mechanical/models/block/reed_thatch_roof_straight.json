@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_straight",
+  "textures": {
+    "top": "mechanical:block/reed_thatch_side",
+    "under": "mechanical:block/reed_thatch_top"
+  }
+}

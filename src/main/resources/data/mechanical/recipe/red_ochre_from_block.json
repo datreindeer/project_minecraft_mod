@@ -1,0 +1,11 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "mechanical:red_ochre_block"
+  ],
+  "result": {
+    "id": "mechanical:red_ochre",
+    "count": 4
+  }
+}

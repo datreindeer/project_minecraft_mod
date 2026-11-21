@@ -8,6 +8,7 @@
     "mechanical:ash_pressure_plate",
     "mechanical:hazel_pressure_plate",
     "mechanical:pine_pressure_plate",
-    "mechanical:yew_pressure_plate"
+    "mechanical:yew_pressure_plate",
+    "mechanical:bog_oak_pressure_plate"
   ]
 }

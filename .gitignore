@@ -44,3 +44,4 @@ __pycache__/
 # local Claude worktrees and stray copies
 .claude/
 /registry.html
+*_preview.png

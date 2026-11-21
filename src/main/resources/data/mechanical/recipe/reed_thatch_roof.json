@@ -1,0 +1,15 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# ",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:reed"
+  },
+  "result": {
+    "id": "mechanical:reed_thatch_roof",
+    "count": 4
+  }
+}

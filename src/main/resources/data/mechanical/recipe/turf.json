@@ -1,0 +1,12 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:dirt",
+    "mechanical:plant_fibre"
+  ],
+  "result": {
+    "id": "mechanical:turf",
+    "count": 1
+  }
+}

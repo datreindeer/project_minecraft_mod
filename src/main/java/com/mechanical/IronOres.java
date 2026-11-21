@@ -216,12 +216,17 @@ public final class IronOres {
         ItemStack flintPick = new ItemStack(Mechanical.FLINT_PICKAXE.get());
         for (StoneFamilies.Stone stone : StoneFamilies.STONES) {
             BlockState base = StoneFamilies.block(stone.base()).defaultBlockState();
-            h.assertTrue(flintPick.isCorrectToolForDrops(base) != stone.hard(), "a Flint Pickaxe " + (stone.hard() ? "can't mine " : "mines ") + stone.base());
-            h.assertTrue(bronzePick.isCorrectToolForDrops(base), "a Bronze Pickaxe mines " + stone.base());
+            if (base.requiresCorrectToolForDrops()) { // Loess is soft, dug with a shovel (checked below)
+                h.assertTrue(flintPick.isCorrectToolForDrops(base) != stone.hard(), "a Flint Pickaxe " + (stone.hard() ? "can't mine " : "mines ") + stone.base());
+                h.assertTrue(bronzePick.isCorrectToolForDrops(base), "a Bronze Pickaxe mines " + stone.base());
+            }
             List<ItemStack> got = drops(h, base, miner, bronzePick);
             if (stone.name().equals("chalk"))
                 h.assertTrue(dropsOnly(got, Pigments.CHALK.get()) && got.get(0).getCount() == 4, "Chalk Block drops 4 Chalk (got " + got + ")");
-            else if (stone.name().equals("slate"))
+            else if (stone.name().endsWith("_ochre")) {
+                Item ochre = stone.name().startsWith("red") ? Pigments.RED_OCHRE.get() : Pigments.YELLOW_OCHRE.get();
+                h.assertTrue(dropsOnly(got, ochre) && got.get(0).getCount() == 4, stone.base() + " drops 4 ochre (got " + got + ")");
+            } else if (stone.name().equals("slate"))
                 h.assertTrue(dropsOnly(got, StoneFamilies.block("cobbled_slate").asItem()), "Slate drops Cobbled Slate like deepslate (got " + got + ")");
             else h.assertTrue(dropsOnly(got, base.getBlock().asItem()), stone.base() + " drops itself (got " + got + ")");
             for (List<String> chain : stone.chains())
@@ -268,6 +273,26 @@ public final class IronOres {
                 "Slaked Lime + 2 Sand + Straw = 4 Lime Plaster");
         h.assertTrue(craft(h, "Scraped Hide + Slaked Lime", new ItemStack(Mechanical.SCRAPED_HIDE.get()), new ItemStack(SLAKED_LIME.get())).is(Items.LEATHER),
                 "a Scraped Hide limed is Leather");
+
+        // bog and earth (EarthBlocks): soft blocks dug with a shovel, their drops, Peat as fuel, Kaolin fired into Kaolin Tiles
+        ItemStack shovel = new ItemStack(Items.STONE_SHOVEL);
+        for (Block soft : List.of(EarthBlocks.PEAT.get(), EarthBlocks.LOESS.get(), EarthBlocks.KAOLIN.get(), EarthBlocks.TURF.get())) {
+            h.assertTrue(shovel.getDestroySpeed(soft.defaultBlockState()) > 1, "a shovel digs " + soft);
+            if (soft != EarthBlocks.KAOLIN.get())
+                h.assertTrue(dropsOnly(drops(h, soft.defaultBlockState(), miner, shovel), soft.asItem()), soft + " drops itself");
+        }
+        List<ItemStack> kaolin = drops(h, EarthBlocks.KAOLIN.get().defaultBlockState(), miner, shovel);
+        h.assertTrue(dropsOnly(kaolin, EarthBlocks.KAOLIN_CLAY.get()) && kaolin.get(0).getCount() == 4, "Kaolin drops 4 Kaolin Clay (got " + kaolin + ")");
+        ItemStack peat = new ItemStack(EarthBlocks.PEAT.get());
+        var peatFuel = KilnBlockEntity.FUELS.stream().filter(f -> f.item().test(peat)).findFirst();
+        h.assertTrue(peatFuel.isPresent() && peatFuel.get().ticks() > KilnBlockEntity.FUELS.get(1).ticks(), "Peat burns in the Clay Kiln, longer than firewood");
+        h.assertTrue(EarthBlocks.PEAT_CAMPFIRE_TICKS > Campfires.FIREWOOD_TICKS, "Peat outlasts firewood on a campfire");
+        KilnBlockEntity.Bake tiles = KilnBlockEntity.bakeFor(new ItemStack(EarthBlocks.KAOLIN.get()));
+        h.assertTrue(tiles != null && tiles.result.is(StoneFamilies.block("kaolin_tiles").asItem()) && tiles.temp == EarthBlocks.KAOLIN_TEMP
+                && tiles.temp > KilnBlockEntity.FUELS.getLast().maxTemp(), "Kaolin fires into Kaolin Tiles at 1000°, with a bellows");
+        h.assertTrue(craft(h, "Dirt + Plant Fibre", new ItemStack(Items.DIRT), new ItemStack(Mechanical.PLANT_FIBRE.get())).is(EarthBlocks.TURF.get().asItem()),
+                "Dirt + Plant Fibre make Turf");
+        h.assertTrue(new ItemStack(Items.STONE_AXE).getDestroySpeed(EarthBlocks.BOG_OAK_LOG.get().defaultBlockState()) > 1, "an axe chops Bog Oak");
 
         // the kiln: lead at 800°, cupellation at 1000°, gold at 1100° (9 nuggets per ingot)
         KilnBlockEntity.Bake lead = KilnBlockEntity.bakeFor(new ItemStack(RAW_GALENA.get()));

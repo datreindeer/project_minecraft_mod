@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:rammed_earth",
+  "result": {
+    "id": "mechanical:rammed_earth_stairs"
+  }
+}

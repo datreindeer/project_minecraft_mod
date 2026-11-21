@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_kaolin",
+  "features": [
+    "mechanical:ore_kaolin"
+  ],
+  "step": "underground_ores"
+}

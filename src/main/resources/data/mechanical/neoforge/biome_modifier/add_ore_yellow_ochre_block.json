@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_ochre",
+  "features": [
+    "mechanical:ore_yellow_ochre_block"
+  ],
+  "step": "underground_ores"
+}

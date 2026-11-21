@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:loess_bricks",
+  "result": {
+    "id": "mechanical:loess_brick_wall"
+  }
+}

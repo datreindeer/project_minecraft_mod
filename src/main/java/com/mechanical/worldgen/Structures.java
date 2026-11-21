@@ -35,6 +35,7 @@ public final class Structures {
         FEATURE_TYPES.register("animal_carving", () -> AnimalCarving.CODEC);
         FEATURE_TYPES.register("shrine_statue", () -> ShrineStatue.CODEC);
         FEATURE_TYPES.register("trail", () -> Trails.CODEC);
+        FEATURE_TYPES.register("bog_oak_logs", () -> BogOakLogs.CODEC); // scripts/gen_earth.py
     }
 
     public static void init() {}

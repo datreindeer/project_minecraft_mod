@@ -47,6 +47,13 @@
     "mechanical:gypsum_wall",
     "mechanical:alum_shale_brick_wall",
     "mechanical:alum_shale_wall",
-    "mechanical:polished_alum_shale_wall"
+    "mechanical:polished_alum_shale_wall",
+    "mechanical:peat_brick_wall",
+    "mechanical:adobe_brick_wall",
+    "mechanical:loess_brick_wall",
+    "mechanical:rammed_earth_wall",
+    "mechanical:kaolin_tile_wall",
+    "mechanical:red_ochre_brick_wall",
+    "mechanical:yellow_ochre_brick_wall"
   ]
 }

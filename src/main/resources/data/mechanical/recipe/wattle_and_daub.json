@@ -1,0 +1,18 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "mechanical:wattle",
+    "minecraft:clay_ball",
+    "minecraft:clay_ball",
+    [
+      "mechanical:straw",
+      "mechanical:plant_fibre"
+    ],
+    "mechanical:manure"
+  ],
+  "result": {
+    "id": "mechanical:wattle_and_daub",
+    "count": 2
+  }
+}

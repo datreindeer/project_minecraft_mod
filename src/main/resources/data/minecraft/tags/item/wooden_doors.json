@@ -8,6 +8,7 @@
     "mechanical:ash_door",
     "mechanical:hazel_door",
     "mechanical:pine_door",
-    "mechanical:yew_door"
+    "mechanical:yew_door",
+    "mechanical:bog_oak_door"
   ]
 }

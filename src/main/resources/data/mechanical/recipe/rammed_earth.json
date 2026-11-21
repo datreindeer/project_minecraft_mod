@@ -1,0 +1,17 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    [
+      "minecraft:dirt",
+      "minecraft:coarse_dirt",
+      "mechanical:loess"
+    ],
+    "minecraft:gravel",
+    "minecraft:clay_ball"
+  ],
+  "result": {
+    "id": "mechanical:rammed_earth",
+    "count": 2
+  }
+}

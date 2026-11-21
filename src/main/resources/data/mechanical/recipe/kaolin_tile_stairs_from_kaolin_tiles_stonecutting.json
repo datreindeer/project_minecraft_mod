@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:kaolin_tiles",
+  "result": {
+    "id": "mechanical:kaolin_tile_stairs"
+  }
+}

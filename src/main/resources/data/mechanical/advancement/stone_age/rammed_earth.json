@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rammed_earth"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rammed_earth"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.rammed_earth.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.rammed_earth.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -8,6 +8,7 @@
     "mechanical:ash_trapdoor",
     "mechanical:hazel_trapdoor",
     "mechanical:pine_trapdoor",
-    "mechanical:yew_trapdoor"
+    "mechanical:yew_trapdoor",
+    "mechanical:bog_oak_trapdoor"
   ]
 }

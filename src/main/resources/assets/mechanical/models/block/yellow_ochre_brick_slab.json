@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/yellow_ochre_bricks",
+    "side": "mechanical:block/yellow_ochre_bricks",
+    "top": "mechanical:block/yellow_ochre_bricks"
+  }
+}

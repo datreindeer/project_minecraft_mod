@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:peat_bricks",
+  "result": {
+    "id": "mechanical:peat_brick_wall"
+  }
+}

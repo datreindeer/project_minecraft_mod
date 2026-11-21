@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:stone_age/rammed_earth",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wattle_and_daub"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:framed_wattle_and_daub"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:framed_wattle_and_daub"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.wattle_and_daub.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.wattle_and_daub.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

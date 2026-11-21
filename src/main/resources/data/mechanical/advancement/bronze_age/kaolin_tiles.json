@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bellows",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:kaolin_tiles"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:kaolin_tiles"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.kaolin_tiles.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.kaolin_tiles.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

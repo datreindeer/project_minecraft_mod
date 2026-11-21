@@ -1,0 +1,14 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:turf"
+  },
+  "result": {
+    "id": "mechanical:turf_slab",
+    "count": 6
+  }
+}

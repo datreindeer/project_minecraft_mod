@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_trapdoor_top",
+  "textures": {
+    "texture": "mechanical:block/bog_oak_trapdoor"
+  }
+}
