@@ -76,7 +76,27 @@ Bara den som **tror** ser väsendena. Allt magiskt syns bara för spelare med ti
 - Gröt i en Bowl på julafton (kalendern) → djuren i byn mår bra (snabbare växt) vintern ut. Glöms gröten: små sabotage
   (en dörr öppen, ett djur utsläppt).
 
+## 9. Ekens småfolk (Oak Sprites)
+Små bevingade väsen som bor runt **Ancient Oak**. Undantag från regeln ovan: de går att slå, och de slår tillbaka, men med
+**älvablåst**, inte med vapen.
+- **Entity `oak_sprite`**: liten (ca 0,3 block), vingar som fladdrar, glittrande partiklar efter sig. 4–6 per Ancient
+  Oak-glänta, håller sig inom ~24 block från eken. Flyger mellan svampar, bärbuskar och blommor och glimmar när de stannar.
+- **Syn ≥ 25** (mellan stubben 10 och Mountain Watcher 40): då ritas väsendet. Under det syns bara glittret som svävar
+  omkring, och de går inte att träffa (som övriga väsen).
+- **Lugna**: planterar långsamt runt eken: en planta, buske, blomma eller svamp per glänta och dygn, bara på gräs/jord i
+  gläntans kant, med tak för hur tätt det får bli så eken inte kväver sin glänta.
+- **Liten gåva**: ibland, högst en gång per dygn och spelare, lämnar de något litet (frö, blomma, bär, en vacker sten) åt den
+  som har syn ≥ 25 och inte gjort dem illa. Loot `gameplay/oak_sprite_gift`.
+- **Slår man en**: fler kommer fram (3–5 extra, från eken) och alla jagar den spelaren. De skadar inte, de skjuter
+  **älvablåst**: effekten `mechanical:elf_shot` (Weakness + Slowness + Hunger medan den varar, staplas längre per träff)
+  och −5 Faith per träff man delar ut. Att döda ett: −15 Faith.
+- **Ilskan** gäller bara den spelaren och slutar när hen dör eller efter 3 kalenderdygn. Då flyger de extra tillbaka in i
+  eken och försvinner.
+- Ingen Carcass, inga drops.
+- Advancements *The Oak's Little Folk* (se en), *Elf-Shot* (drabbas av älvablåst), *A Gift from the Glade* (få en gåva).
+
 ## Beslutat
+- Ekens småfolk: syn ≥ 25, annars bara glitter. Hämnden är älvablåst (debuffs + Faith), inte skada. Liten gåva när de är lugna.
 - y 150 för Mountain Watcher.
 - Väsen syns per spelare, efter syn (Faith + Second Sight).
 - Textures och ljud görs av oss (genererade).
