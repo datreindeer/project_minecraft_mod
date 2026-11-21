@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:reed"
+            "items": "mechanical:dried_reed"
           }
         ]
       }

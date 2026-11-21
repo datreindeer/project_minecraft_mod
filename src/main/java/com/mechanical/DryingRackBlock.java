@@ -25,7 +25,11 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -65,8 +69,11 @@ import com.mechanical.wildlife.Wildlife;
  * the product is remembered per spot ({@link RackFood}); 24 fowl drying / 25 Dried Fowl is the bird look. Big cuts and
  * fat-rich meat ({@code mechanical:not_dryable}) are refused. {@link #HIDE2} never holds a pelt, so it stores fowl as
  * 14/15: always read and write spots through {@link #spot} / {@link #withSpot}.
+ * <p>
+ * Everything else that dries (adobe, peat, reed, kelp: {@link DryingRackBlockEntity#TABLE}) hangs in the block entity as an
+ * item stack while the spot's blockstate value stays 0; a spot is free only when both are empty.
  */
-public class DryingRackBlock extends Block {
+public class DryingRackBlock extends Block implements EntityBlock {
     public enum Part implements StringRepresentable {
         SINGLE, LOWER, UPPER;
 
@@ -104,6 +111,18 @@ public class DryingRackBlock extends Block {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, Part.SINGLE)
                 .setValue(HIDE, 0).setValue(HIDE2, 0).setValue(DARK, 0));
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new DryingRackBlockEntity(pos, state);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return level.isClientSide() || type != Mechanical.DRYING_RACK_ENTITY.get() ? null
+                : (BlockEntityTicker<T>) (BlockEntityTicker<DryingRackBlockEntity>) DryingRackBlockEntity::serverTick;
     }
 
     @Override
@@ -214,7 +233,8 @@ public class DryingRackBlock extends Block {
         }
         int hang = stack.is(Mechanical.SCRAPED_PHANTOM_HIDE.get()) ? PHANTOM_WET : stack.is(Mechanical.SCRAPED_HIDE.get()) ? HIDE_WET
                 : meat != null ? meat.look() : handful != 0 && stack.getCount() >= HANDFUL ? handful : 0;
-        if (hang == 0) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        DryingRackBlockEntity.Drying goods = hang == 0 ? DryingRackBlockEntity.of(stack) : null;
+        if (hang == 0 && goods == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (Preserving.tooFarGone(stack, level, player)) return InteractionResult.FAIL;
         // the spot pointed at first, then the other one in this block, then the other half's
         Direction right = state.getValue(FACING).getClockWise();
@@ -232,7 +252,16 @@ public class DryingRackBlock extends Block {
         }
         for (int i = 0; i < where.size(); i++) {
             BlockState at = level.getBlockState(where.get(i));
-            if (spot(at, which.get(i)) != EMPTY || bigPelt(at)) continue;
+            if (spot(at, which.get(i)) != EMPTY || bigPelt(at) || DryingRackBlockEntity.occupied(level, where.get(i), which.get(i))) continue;
+            if (goods != null) { // up to a spot's worth goes into the block entity; the blockstate stays empty
+                if (!level.isClientSide() && level.getBlockEntity(where.get(i)) instanceof DryingRackBlockEntity be) {
+                    ItemStack put = stack.copyWithCount(Math.min(goods.perSpot(), stack.getCount()));
+                    stack.consume(put.getCount(), player);
+                    be.hang(which.get(i), put);
+                    level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
+                }
+                return InteractionResult.SUCCESS;
+            }
             if (!level.isClientSide()) {
                 if (meat != null) RackFood.put((ServerLevel) level, where.get(i), which.get(i), meat.product().get());
                 stack.consume(handful != 0 ? HANDFUL : 1, player);
@@ -262,7 +291,7 @@ public class DryingRackBlock extends Block {
         List<BlockPos> free = new ArrayList<>();
         for (BlockPos at : List.of(pos, other)) {
             BlockState s = level.getBlockState(at);
-            if (s.getValue(HIDE) == EMPTY && s.getValue(HIDE2) == EMPTY) free.add(at);
+            if (s.getValue(HIDE) == EMPTY && s.getValue(HIDE2) == EMPTY && DryingRackBlockEntity.empty(level, at)) free.add(at);
         }
         boolean bear = wholeRack(wet);
         if (bear ? free.size() < 2 : free.isEmpty()) {
@@ -296,9 +325,18 @@ public class DryingRackBlock extends Block {
                 if (level.isClientSide() || bearTop) continue;
                 if (v == MEAT + 1 || v == FISH + 1) taken = RackFood.take((ServerLevel) level, at, p, taken); // what this spot really made
                 if (v == MEAT + 1 || v == FISH + 1 || v == FOWL + 1) RackFood.taken(player, taken);
+                DryingRackBlockEntity.taken(player, taken);
                 player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
             }
             if (!level.isClientSide() && next != s) level.setBlock(at, next, Block.UPDATE_ALL);
+            if (level.getBlockEntity(at) instanceof DryingRackBlockEntity be) for (IntegerProperty p : spots(s)) {
+                if (!be.done(DryingRackBlockEntity.slot(p))) continue;
+                any = true;
+                if (level.isClientSide()) continue;
+                ItemStack taken = be.take(DryingRackBlockEntity.slot(p));
+                DryingRackBlockEntity.taken(player, taken);
+                player.getInventory().placeItemBackInInventory(taken, Prediction.SERVER_ONLY);
+            }
         }
         if (!any) return InteractionResult.PASS;
         if (!level.isClientSide()) level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -338,13 +376,27 @@ public class DryingRackBlock extends Block {
         return level.isBrightOutside() && level.canSeeSky(pos);
     }
 
+    /** The upper half would block the lower one's sky, so a tall rack looks from its top. */
+    private static BlockPos top(BlockState state, BlockPos pos) {
+        return state.getValue(PART) == Part.LOWER ? pos.above() : pos;
+    }
+
+    /**
+     * How fast food and goods dry here: 0 not at all (night, rain, indoors), 2 in the sun out in the wind, 1 otherwise.
+     * Outdoors in the day is enough, shade too (under a tree skylight drops below 15); rain only reaches open racks.
+     */
+    public static int dryRate(Level level, BlockPos pos, BlockState state) {
+        BlockPos top = top(state, pos);
+        if (!level.isBrightOutside() || level.getBrightness(LightLayer.SKY, top) < OUTDOORS_SKYLIGHT || level.isRainingAt(top.above())) return 0;
+        return inDaylight(level, top) && Wind.exposed(level, top) ? 2 : 1;
+    }
+
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        BlockPos top = state.getValue(PART) == Part.LOWER ? pos.above() : pos; // the upper half would block the lower one's sky
-        boolean sun = inDaylight(level, top);
-        // outdoors in the day is enough, shade too (under a tree skylight drops below 15); rain only reaches open racks
-        boolean dryWeather = level.isBrightOutside() && level.getBrightness(LightLayer.SKY, top) >= OUTDOORS_SKYLIGHT && !level.isRainingAt(top.above());
-        float foodChance = sun && Wind.exposed(level, top) ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED;
+        boolean sun = inDaylight(level, top(state, pos));
+        int rate = dryRate(level, pos, state);
+        boolean dryWeather = rate > 0;
+        float foodChance = rate == 2 ? FOOD_DRY_CHANCE : FOOD_DRY_SHELTERED;
         BlockState next = state;
         boolean phantom = false;
         for (IntegerProperty p : spots(state)) {

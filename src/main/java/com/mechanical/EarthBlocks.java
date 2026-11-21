@@ -59,6 +59,12 @@ public final class EarthBlocks {
     public static final DeferredBlock<Block> KAOLIN = block("kaolin", Block::new, () -> Properties.of().mapColor(MapColor.SNOW)
             .instrument(NoteBlockInstrument.FLUTE).strength(0.6F).sound(SoundType.GRAVEL));
     public static final DeferredItem<Item> KAOLIN_CLAY = Mechanical.ITEMS.registerSimpleItem("kaolin_clay");
+    // dried on the Drying Rack (DryingRackBlockEntity.TABLE): adobe from clay, peat cut from the block, reed for thatch
+    public static final DeferredItem<Item> WET_ADOBE_BRICK = Mechanical.ITEMS.registerSimpleItem("wet_adobe_brick");
+    public static final DeferredItem<Item> ADOBE_BRICK = Mechanical.ITEMS.registerSimpleItem("adobe_brick");
+    public static final DeferredItem<Item> CUT_PEAT = Mechanical.ITEMS.registerSimpleItem("cut_peat");
+    public static final DeferredItem<Item> DRIED_PEAT = Mechanical.ITEMS.registerSimpleItem("dried_peat");
+    public static final DeferredItem<Item> DRIED_REED = Mechanical.ITEMS.registerSimpleItem("dried_reed");
 
     public static final DeferredBlock<Block> TURF = block("turf", Block::new, soil(MapColor.GRASS, 0.6F, SoundType.GRASS));
     public static final DeferredBlock<SlabBlock> TURF_SLAB = block("turf_slab", SlabBlock::new, () -> Properties.ofLegacyCopy(TURF.get()));
@@ -122,6 +128,11 @@ public final class EarthBlocks {
 
     public static boolean isPeat(ItemStack stack) {
         return stack.is(PEAT.get().asItem());
+    }
+
+    /** Campfire burn ticks of Peat (a block) or Dried Peat (a quarter block, dried: half a block's burn each), else 0. */
+    public static int peatCampfireTicks(ItemStack stack) {
+        return isPeat(stack) ? PEAT_CAMPFIRE_TICKS : stack.is(DRIED_PEAT.get()) ? Campfires.FIREWOOD_TICKS : 0;
     }
 
     /** Fire odds: thatch and reed like hay, wattle and bog oak like wood. */

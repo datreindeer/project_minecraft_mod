@@ -142,6 +142,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Fuel(s -> s.is(ItemTags.PLANKS), 600, 500, 700),                                // 30 s
             new Fuel(s -> s.is(ItemTags.LOGS_THAT_BURN), 2400, 650, 900),                       // 2 min, as its 2 firewood
             new Fuel(EarthBlocks::isPeat, 3600, 600, 850),                                     // 3 min, slow and low (Peat)
+            new Fuel(s -> s.is(EarthBlocks.DRIED_PEAT.get()), 1800, 650, 900),                 // 1.5 min, dried: hot as firewood (4 per Peat)
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 4800, 800, 1300));          // 4 min
 
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
