@@ -141,6 +141,8 @@ public final class SeasonalFoliage {
         event.register(GRASS);
         event.register(FOLIAGE);
         event.register(BIRCH);
+        event.register(REED);
+        event.register(HEATHER);
     }
 
     /** Vanilla's grass and foliage tints with our resolvers (also Worn Grass and Trodden Path, like a Grass Block). */
