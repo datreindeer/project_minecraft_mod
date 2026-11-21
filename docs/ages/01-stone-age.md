@@ -615,7 +615,7 @@ Ancient Oak-block ...), även de som inte går att få i survival.
   - Nya saker: **Beechnuts** (1 mat, rostas på Campfire till **Roasted Beechnuts**, 3 mat), **Pine Resin**
     (kåda: 1 Pine Resin över 1 Stick → 2 Torches, en kådfackla innan man har kol; används mer senare, t.ex. som lim).
     Nötter och kåda får plats i Bark Basket.
-  - Framtida idé: **Yew Bow**, en bättre båge av idegran i Tool Station. Idegranens löv kan bli giftiga för djur.
+  - **Yew Longbow** (bronsåldern, se 02-bronze-age.md): Yew Rough Log + Bronze Saw ger Yew Stave, som Tool Station gör till en tung långbåge. Framtida idé: idegranens löv kan bli giftiga för djur.
   - För biomer: varje träd har `mechanical:<träd>` (trädet, som saplings växer) och `mechanical:<träd>_checked`
     (bara sapling-kontrollen) att använda i egna biomer.
   - Birch Forest och Taiga behåller sina vanliga träd. Vanilla-träden är kvar överallt.

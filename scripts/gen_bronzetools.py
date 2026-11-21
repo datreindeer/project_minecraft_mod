@@ -7,7 +7,8 @@ the kiln, bronze poured in, the Rough Cast piece ground on the Whetstone, then a
   models (as gen_copper.py's), blockstates, item models, loot (keeps uses), lang
 - items: rough casts, ground pieces, Bronze Bucket / Water / Milk Bucket, Bronze Sickle, Bronze Shears, Bronze Hook
   Fishing Rod (cast / uncast models as vanilla), Bronze Needle, Bronze Tongs, Bronze Chisel, Bronze Quarry Hammer (Tool
-  Station: Bronze Hammer Head + Bronze Plate + Tool Rod)
+  Station: Bronze Hammer Head + Bronze Plate + Tool Rod), Yew Stave (Yew Rough Log + Bronze Saw) and Yew Longbow (Tool
+  Station: Sinew + Leather + Yew Stave; pulling models on a 30-tick draw)
 - quarry hammer tags: mechanical:quarry_hammer_mineable (natural stone of every kind + the ores), mechanical:quarry_ores
   (#c:ores + the gemstone ores from gem_table.py)
 - tags: mechanical:sickles, mechanical:needles, c:tools/shear, c:tools/fishing_rod, enchantable fishing / durability
@@ -15,7 +16,7 @@ the kiln, bronze poured in, the Rough Cast piece ground on the Whetstone, then a
 - shears: the vanilla tool/can_shear predicate (leaves, grass, vines, cobwebs ...) also takes the Bronze Shears
 - wherever the data already takes the Clay Water Bucket, the Milk Bucket, the Flint Sickle or vanilla shears (recipes, loot
   tool checks), the bronze tool is added next to it, so later recipes pick it up by themselves
-Textures: scripts/gen_bronzetools_textures.py.
+Textures: scripts/gen_bronzetools_textures.py, scripts/gen_longbow_textures.py.
 Generator order: ... gen_woodmeat.py, gen_thread.py, gen_bronzetools.py, gen_block_items.py, gen_unlocks.py,
 gen_advancements.py, gen_registry.py. Run: python scripts/gen_bronzetools.py
 """
@@ -182,6 +183,24 @@ r = json.loads(p.read_text(encoding="utf-8"))
 r["key"]["N"] = "#mechanical:needles"
 w(p, r)
 
+# ---------------------------------------------------------------- Yew Longbow (YewLongbowItem; Tool Station: Sinew + Leather + Yew Stave)
+
+item_model("yew_stave", "minecraft:item/handheld")
+item_def("yew_stave")
+for n in ("", "_pulling_0", "_pulling_1", "_pulling_2"):
+    item_model("yew_longbow" + n, "minecraft:item/bow")
+pull = lambda n: {"type": "minecraft:model", "model": M + f"item/yew_longbow_pulling_{n}"}
+# use_duration scaled by 1/DRAW_TICKS (30), so the pulling stages keep step with the slower draw
+w(A / "items/yew_longbow.json", {"model": {"type": "minecraft:condition", "property": "minecraft:using_item",
+    "on_false": {"type": "minecraft:model", "model": M + "item/yew_longbow"},
+    "on_true": {"type": "minecraft:range_dispatch", "property": "minecraft:use_duration", "scale": 1 / 30, "fallback": pull(0),
+                "entries": [{"threshold": 0.65, "model": pull(1)}, {"threshold": 0.9, "model": pull(2)}]}}})
+# the saw cuts a stave out of the log and stays, losing 1 (FlintPickaxeItem rule)
+w(D / "mechanical/recipe/yew_stave.json", {"type": "minecraft:crafting_shapeless", "category": "equipment",
+    "ingredients": [M + "yew_rough_log", M + "bronze_saw"], "result": {"id": M + "yew_stave"}})
+for tag in ("bow", "durability"):
+    patch_tag(D / f"minecraft/tags/item/enchantable/{tag}.json", [M + "yew_longbow"])
+
 # ---------------------------------------------------------------- lang
 
 lang_path = A / "lang/en_us.json"
@@ -197,6 +216,7 @@ lang.update({
     "item.mechanical.bronze_hook_fishing_rod": "Bronze Hook Fishing Rod", "item.mechanical.bronze_needle": "Bronze Needle",
     "item.mechanical.bronze_tongs": "Bronze Tongs", "item.mechanical.bronze_chisel": "Bronze Chisel",
     "item.mechanical.bronze_quarry_hammer": "Bronze Quarry Hammer",
+    "item.mechanical.yew_stave": "Yew Stave", "item.mechanical.yew_longbow": "Yew Longbow",
     "message.mechanical.quarry_hammer.ore": "You need more precision to break ores: they crumble to stone",
     "message.mechanical.quarry_hammer.too_hard": "This ore is too hard for the hammer: the blow rings off",
     "tooltip.mechanical.poor_bronze_bucket": "Poor Bronze: still holds water and milk",

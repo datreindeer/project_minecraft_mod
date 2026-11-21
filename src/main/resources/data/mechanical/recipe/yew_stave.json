@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:yew_rough_log",
+    "mechanical:bronze_saw"
+  ],
+  "result": {
+    "id": "mechanical:yew_stave"
+  }
+}

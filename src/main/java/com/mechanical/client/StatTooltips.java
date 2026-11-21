@@ -87,7 +87,14 @@ public final class StatTooltips {
         }
 
         if (stack.getItem() instanceof BowItem) {
-            lines.add(stat("Arrow damage", percent(stack.getItem() instanceof CrudeBowItem ? (float) CrudeBowItem.DAMAGE_FACTOR : 1.0F)));
+            float damage = stack.getItem() instanceof CrudeBowItem ? (float) CrudeBowItem.DAMAGE_FACTOR
+                    : stack.getItem() instanceof com.mechanical.wildlife.mountain.HornBowItem ? com.mechanical.wildlife.mountain.HornBowItem.SPEED_FACTOR
+                    : stack.getItem() instanceof com.mechanical.YewLongbowItem ? com.mechanical.YewLongbowItem.SPEED_FACTOR : 1.0F;
+            lines.add(stat("Arrow damage", percent(damage)));
+            if (stack.getItem() instanceof com.mechanical.YewLongbowItem) {
+                lines.add(stat("Arrow speed", times(com.mechanical.YewLongbowItem.SPEED_FACTOR)));
+                lines.add(stat("Full draw", Component.literal(String.format("%.1f s (bow: 1.0 s)", com.mechanical.YewLongbowItem.DRAW_TICKS / 20.0F)).withStyle(BAD)));
+            }
         }
         if (stack.getItem() instanceof SpecialArrowItem arrow) {
             lines.add(stat("Damage", value(String.format("%.1f", arrow.damage()) + " (arrow: 2.0)")));

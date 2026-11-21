@@ -1168,6 +1168,42 @@ upp, Dough med Bronze Water Bucket lämnar hinken kvar, Bronze Sickle skär 3×3
 står kvar), degeln i handen bränner utan tång men inte med tång i andra handen, mejseln gör Stone Bricks till Chiseled
 Stone Bricks och slits 1, nålgjutningen ger 4 nålar.
 
+## Yew Longbow (byggd, v0.128.0)
+
+Bronsålderns tunga båge, av idegran. Horn Bow är fortfarande den snabba bågen, Yew Longbow den tunga.
+
+### Recept
+
+- **Yew Stave** (crafting, shapeless): 1 **Yew Rough Log** + **Bronze Saw** → 1 Yew Stave. Sågen stannar kvar i
+  rutnätet och tappar 1 hållbarhet (som Sawn Planks). Staplas till 16.
+- **Yew Longbow** (Tool Station): **Sinew** (bågsträng) + **Leather** (grepp) + **Yew Stave**. Receptet låses upp när
+  man bär en Yew Stave.
+
+### Egenskaper
+
+| | Sinew Bow | Horn Bow | Yew Longbow |
+|---|---|---|---|
+| Pilfart (skada och räckvidd) | ×1.0 | ×1.2 | **×1.3** |
+| Full dragning | 1.0 s (20 ticks) | 1.0 s | **1.5 s (30 ticks)** |
+| Hållbarhet | 200 | 384 | **450** |
+
+- Pilens skada följer farten, så pilarna gör ungefär 30 % mer skada och flyger längre än från en vanlig båge, oavsett
+  pil. Spridningen är som en vanlig båges (Horn Bow är träffsäkrare).
+- Dragkurvan är vanillas, utsträckt över 30 ticks: släpper man efter 1 s har bågen bara ~57 % kraft.
+- Förtrollas som en båge (Power, Punch, Flame, Infinity, Unbreaking, Mending).
+- Tooltip visar Arrow damage 130 %, Arrow speed ×1.3 och Full draw 1.5 s. Modellens dragsteg följer den längre
+  dragningen. (Kamerans zoom vid dragning är vanillas och gäller bara vanilla-bågen.)
+
+### Advancement
+
+*Longbowman* (Bronze Age-fliken, efter *Saw*): såga en Yew Stave och stränga den i Tool Station.
+
+### Test
+
+Gametest `mechanical:bronze_tools`: Yew Rough Log + Bronze Saw ger Yew Stave och sågen stannar kvar, Tool Station-receptet
+(Sinew + Leather + Yew Stave) finns, full kraft först efter 30 ticks (20 ticks ger under 0.9), fartfaktorn är större än
+Horn Bows, 450 hållbarhet.
+
 ## Vagn och häst (byggd)
 
 Bronsålderns transport: travoisen får hjul, och vildhästen kan tämjas och dra vagnen. Kod: `Carting` (registrering,

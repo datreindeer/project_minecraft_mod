@@ -160,6 +160,9 @@ public final class BronzeTools {
     /** Breaks the 3x3 face of stone it hits ({@link #quarry}); on anything else it is a bare hand. */
     public static final DeferredItem<Item> BRONZE_QUARRY_HAMMER = ITEMS.registerSimpleItem("bronze_quarry_hammer",
             p -> p.tool(QUARRY_BRONZE, QUARRY_MINEABLE, 6.0F, -3.4F, 0.0F));
+    /** Sawn from a Yew Rough Log with the Bronze Saw (crafting grid); the Tool Station strings it into a Yew Longbow. */
+    public static final DeferredItem<Item> YEW_STAVE = ITEMS.registerSimpleItem("yew_stave", p -> p.stacksTo(16));
+    public static final DeferredItem<YewLongbowItem> YEW_LONGBOW = ITEMS.registerItem("yew_longbow", YewLongbowItem::new, p -> p.durability(450).enchantable(1));
 
     /** Rough cast -> what the Whetstone grinds it into (fish hooks and needles: {@link #PER_GANG_CAST} of them). */
     private static final Map<Supplier<Item>, Supplier<? extends Item>> GROUND = Map.of(
@@ -527,6 +530,20 @@ public final class BronzeTools {
         h.assertFalse(quarry(level, quarrier, h.absolutePos(new BlockPos(9, 2, 4)), Direction.Axis.Z), "gold is beyond bronze");
         h.assertBlockPresent(Blocks.STONE, new BlockPos(9, 2, 4));
         quarrier.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
+        // Yew Longbow: the stave is sawn from a Yew Rough Log (the saw stays), the bow strung at the Tool Station
+        CraftingInput staveIn = CraftingInput.of(2, 1, List.of(new ItemStack(Mechanical.ROUGH_LOGS.get("yew").get()), new ItemStack(Bronze.BRONZE_SAW.get())));
+        var stave = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, staveIn, level).orElseThrow(() -> h.assertionException("no Yew Stave recipe"));
+        h.assertTrue(stave.value().assemble(staveIn).is(YEW_STAVE.get()) && stave.value().getRemainingItems(staveIn).get(1).is(Bronze.BRONZE_SAW.get()),
+                "Yew Rough Log + Bronze Saw -> Yew Stave, the saw stays");
+        h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == YEW_LONGBOW.get()
+                && r.matches(new ItemStack(com.mechanical.wildlife.Wildlife.SINEW.get()), new ItemStack(net.minecraft.world.item.Items.LEATHER), new ItemStack(YEW_STAVE.get()))),
+                "Tool Station: Sinew + Leather + Yew Stave -> Yew Longbow");
+        h.assertTrue(YewLongbowItem.powerForTime(20) < 0.9F && YewLongbowItem.powerForTime(YewLongbowItem.DRAW_TICKS) == 1.0F
+                && YewLongbowItem.powerForTime(YewLongbowItem.DRAW_TICKS - 1) < 1.0F,
+                "the longbow needs 30 ticks for a full draw");
+        h.assertTrue(YewLongbowItem.SPEED_FACTOR > com.mechanical.wildlife.mountain.HornBowItem.SPEED_FACTOR, "heavier than the Horn Bow");
+        h.assertTrue(new ItemStack(YEW_LONGBOW.get()).getMaxDamage() == 450, "450 uses");
         h.succeed();
     }
 

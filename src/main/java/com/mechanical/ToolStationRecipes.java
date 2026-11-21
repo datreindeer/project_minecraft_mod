@@ -92,6 +92,9 @@ public final class ToolStationRecipes {
             new Recipe(Ironworking.BRONZE_SMITHING_HAMMER, Ironworking.BRONZE_HAMMER_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Ironworking.BRONZE_HAMMER_HEAD.get())),
             // the quarry hammer: the same head, a Bronze Plate wrapped round the haft as its binding for the heavy blows
             new Recipe(BronzeTools.BRONZE_QUARRY_HAMMER, Ironworking.BRONZE_HAMMER_HEAD, Bronze.BRONZE_PLATE, Mechanical.TOOL_ROD, s -> s.is(Ironworking.BRONZE_HAMMER_HEAD.get())),
+            // the Yew Longbow: "head" = a Sinew bowstring, "binding" = the leather grip, "rod" = the Yew Stave (unlocked by holding one)
+            new Recipe(() -> BronzeTools.YEW_LONGBOW.get(), () -> com.mechanical.wildlife.Wildlife.SINEW.get(), () -> Items.LEATHER, BronzeTools.YEW_STAVE,
+                    s -> s.is(BronzeTools.YEW_STAVE.get())),
             // forged iron (Smithing): vanilla's iron tools, a leather wrap on a wooden haft; each unlocks with its forged part
             new Recipe(() -> Items.IRON_PICKAXE, Smithing.IRON_PICKAXE_HEAD, () -> Items.LEATHER, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_PICKAXE_HEAD.get())),
             new Recipe(() -> Items.IRON_AXE, Smithing.IRON_AXE_HEAD, () -> Items.LEATHER, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_AXE_HEAD.get())),

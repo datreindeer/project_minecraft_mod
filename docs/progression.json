@@ -705,14 +705,16 @@
     "items": [
      "bronze_saw",
      "minecraft:oak_planks",
+     "yew_stave",
+     "yew_longbow",
      "bronze_plate",
      "armor_station",
      "bronze_helmet",
      "bronze_greaves"
     ],
     "text": {
-     "sv": "[[bronze_saw]] (Saw Blade + Twine + Stick): **stock + såg = 4 plankor** i stället för 2. På en Fallen Log kapar 8 sågtag hela stocken till 3 Rough Logs, utan slump. Sågen behövs också till Potter's Wheel och vagnshjul.\n\n**Rustning:** gjut plåt i Clay Plate Mold (4 enheter), slipa till [[bronze_plate]], bygg en [[armor_station]] (2 Bronze Plate, Bronze Ingot, plankor, crafting table) och nita plåten på läder med en pickaxe eller hammare: [[bronze_helmet]] (2 plåtar + 2 Leather, skydd 2) och [[bronze_greaves]] (3 + 3, skydd 5). Det finns ingen bröstplåt i bronsåldern; bålen skyddas fortfarande av päls eller läder.",
-     "en": "The [[bronze_saw]] (Saw Blade + Twine + Stick): **log + saw = 4 planks** instead of 2. On a Fallen Log, 8 saw strokes cut the whole log into 3 Rough Logs, no chance involved. The saw is also needed for the Potter's Wheel and cart wheels.\n\n**Armour:** cast plate in the Clay Plate Mold (4 units), grind it into a [[bronze_plate]], build an [[armor_station]] (2 Bronze Plates, a Bronze Ingot, planks, a crafting table) and rivet the plate onto leather with a pickaxe or hammer: the [[bronze_helmet]] (2 plates + 2 Leather, armour 2) and [[bronze_greaves]] (3 + 3, armour 5). There is no chestplate in the Bronze Age; your torso is still protected by fur or leather."
+     "sv": "[[bronze_saw]] (Saw Blade + Twine + Stick): **stock + såg = 4 plankor** i stället för 2. På en Fallen Log kapar 8 sågtag hela stocken till 3 Rough Logs, utan slump. Sågen behövs också till Potter's Wheel och vagnshjul. Yew Rough Log + såg ger en [[yew_stave]], som Tool Station gör till en [[yew_longbow]] (+ Sinew + Leather): pilarna flyger 30 % fortare och gör mer skada, men full dragning tar 1,5 s.\n\n**Rustning:** gjut plåt i Clay Plate Mold (4 enheter), slipa till [[bronze_plate]], bygg en [[armor_station]] (2 Bronze Plate, Bronze Ingot, plankor, crafting table) och nita plåten på läder med en pickaxe eller hammare: [[bronze_helmet]] (2 plåtar + 2 Leather, skydd 2) och [[bronze_greaves]] (3 + 3, skydd 5). Det finns ingen bröstplåt i bronsåldern; bålen skyddas fortfarande av päls eller läder.",
+     "en": "The [[bronze_saw]] (Saw Blade + Twine + Stick): **log + saw = 4 planks** instead of 2. On a Fallen Log, 8 saw strokes cut the whole log into 3 Rough Logs, no chance involved. The saw is also needed for the Potter's Wheel and cart wheels. A Yew Rough Log + saw gives a [[yew_stave]], which the Tool Station turns into a [[yew_longbow]] (+ Sinew + Leather): arrows fly 30 % faster and hit harder, but a full draw takes 1.5 s.\n\n**Armour:** cast plate in the Clay Plate Mold (4 units), grind it into a [[bronze_plate]], build an [[armor_station]] (2 Bronze Plates, a Bronze Ingot, planks, a crafting table) and rivet the plate onto leather with a pickaxe or hammer: the [[bronze_helmet]] (2 plates + 2 Leather, armour 2) and [[bronze_greaves]] (3 + 3, armour 5). There is no chestplate in the Bronze Age; your torso is still protected by fur or leather."
     }
    },
    {
