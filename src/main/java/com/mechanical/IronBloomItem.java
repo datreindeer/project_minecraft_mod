@@ -53,6 +53,7 @@ public class IronBloomItem extends Item {
         ItemStack out = new ItemStack(Ironworking.IRON_BLOOM.get());
         int hits = Ironworking.hits(hot);
         if (hits > 0) out.set(Ironworking.BLOOM_HITS.get(), hits);
+        if (hot.has(Ironworking.BLOOM_YIELD.get())) out.set(Ironworking.BLOOM_YIELD.get(), hot.get(Ironworking.BLOOM_YIELD.get()));
         return out;
     }
 
@@ -65,6 +66,9 @@ public class IronBloomItem extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
         int hits = Ironworking.hits(stack);
         if (hits > 0) builder.accept(Component.translatable("tooltip.mechanical.iron_bloom.hits", hits, Ironworking.HITS).withStyle(ChatFormatting.GRAY));
+        int yield = Ironworking.bloomYield(stack);
+        builder.accept(Component.translatable("tooltip.mechanical.iron_bloom.yield", yield, Ironworking.BLOOM_PARTS - yield)
+                .withStyle(yield >= Ironworking.ROASTED_YIELD ? ChatFormatting.GRAY : ChatFormatting.RED));
         builder.accept(Component.translatable(hot ? "tooltip.mechanical.iron_bloom.hot" : "tooltip.mechanical.iron_bloom.cold",
                 BloomeryBlockEntity.FORGE_TEMP).withStyle(hot ? ChatFormatting.GOLD : ChatFormatting.GRAY));
     }

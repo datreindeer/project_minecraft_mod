@@ -55,6 +55,17 @@ public class BloomeryHearthBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.getItem() instanceof FireDrillItem) return InteractionResult.PASS; // the drill lights it
+        if (stack.is(Ironworking.FLUX)) { // limestone flux: the next bloom one ingot richer
+            if (!(level instanceof ServerLevel server) || !(level.getBlockEntity(pos) instanceof BloomeryBlockEntity bloomery)) return InteractionResult.SUCCESS;
+            if (!bloomery.addFlux()) {
+                player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.bloomery.flux_full", Ironworking.MAX_FLUX));
+                return InteractionResult.FAIL;
+            }
+            stack.consume(1, player);
+            server.playSound(null, pos, net.minecraft.sounds.SoundEvents.GRAVEL_PLACE, net.minecraft.sounds.SoundSource.BLOCKS, 0.8F, 1.2F);
+            player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.bloomery.flux", bloomery.flux(), Ironworking.MAX_FLUX));
+            return InteractionResult.SUCCESS;
+        }
         return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 

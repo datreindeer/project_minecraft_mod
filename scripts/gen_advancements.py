@@ -1003,6 +1003,9 @@ TABS["bronze_age"][1].extend([
 TABS["iron_age"] = ("minecraft:block/iron_block", [
     ("root", None, "wrought_iron_ingot", T, "Iron Age",
      "Work a hot Iron Bloom into Wrought Iron on a Bronze Anvil: the Iron Age begins", has("wrought_iron_ingot")),
+    ("roasted_ore", "root", "roasted_iron_ore", T, "Roasted",
+     "Roast Raw Iron or Raw Bog Iron on a Campfire or Fire Pit: roasted ore blooms twice as rich (2 Wrought Iron instead of 1)",
+     has("roasted_iron_ore", "roasted_bog_iron")),
 ])
 
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java

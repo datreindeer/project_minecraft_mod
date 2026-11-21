@@ -56,11 +56,12 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
             sync();
             return;
         }
+        int ingots = Ironworking.bloomYield(item);
         item = ItemStack.EMPTY;
         level.playSound(null, worldPosition, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.6F, 1.2F);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 4, 0.1, 0.05, 0.1, 0.01);
-        Block.popResource(level, worldPosition.above(), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get(), Ironworking.INGOTS_PER_BLOOM));
-        Block.popResource(level, worldPosition.above(), new ItemStack(Ironworking.SLAG.get(), Ironworking.SLAG_PER_BLOOM));
+        Block.popResource(level, worldPosition.above(), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get(), ingots));
+        if (ingots < Ironworking.BLOOM_PARTS) Block.popResource(level, worldPosition.above(), new ItemStack(Ironworking.SLAG.get(), Ironworking.BLOOM_PARTS - ingots));
         sync();
     }
 

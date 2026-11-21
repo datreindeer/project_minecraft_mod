@@ -64,8 +64,23 @@ public final class Ironworking {
     public static final int HOT_SECONDS = 30;
     /** Blows that work a bloom into iron; each costs the hammer {@link #HAMMER_WEAR}. */
     public static final int HITS = 8, HAMMER_WEAR = 2, HAMMER_COOLDOWN = 10;
-    /** What a worked bloom gives. */
-    public static final int INGOTS_PER_BLOOM = 2, SLAG_PER_BLOOM = 1;
+    /**
+     * A worked bloom is {@link #BLOOM_PARTS} parts, iron and slag: its {@link #BLOOM_YIELD} are Wrought Iron Ingots and the
+     * rest Slag. Unroasted ore gives {@link #RAW_YIELD}, roasted {@link #ROASTED_YIELD}, a charge of flux in the hearth one more.
+     */
+    public static final int BLOOM_PARTS = 3, RAW_YIELD = 1, ROASTED_YIELD = 2;
+    /** Wrought Iron Ingots a bloom will give (blooms from before roasting existed count as roasted). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> BLOOM_YIELD = Casting.COMPONENTS.registerComponentType(
+            "bloom_yield", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    /** Flux charges the Bloomery hearth holds at most. */
+    public static final int MAX_FLUX = 4;
+    /** Limestone flux (Iron Age ores): laid in the hearth, the next bloom gives one more ingot and one less slag. */
+    public static final net.minecraft.tags.TagKey<Item> FLUX = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM,
+            Identifier.fromNamespaceAndPath(MODID, "flux"));
+
+    // --- Iron Age: roasting drives water and sulphur out of the ore (campfire or Fire Pit); roasted ore blooms richer ---
+    public static final DeferredItem<Item> ROASTED_IRON_ORE = ITEMS.registerSimpleItem("roasted_iron_ore");
+    public static final DeferredItem<Item> ROASTED_BOG_IRON = ITEMS.registerSimpleItem("roasted_bog_iron");
 
     // --- bog iron: rusty lumps in the floors of fen and swamp pools, dug with any shovel (scripts/gen_bog_iron.py) ---
     public static final DeferredBlock<net.minecraft.world.level.block.Block> BOG_IRON_ORE = BLOCKS.registerSimpleBlock("bog_iron_ore", p -> p
@@ -138,8 +153,13 @@ public final class Ironworking {
     public static ItemStack hotBloom(ItemStack from, long now) {
         ItemStack out = new ItemStack(HOT_IRON_BLOOM.get());
         out.set(BLOOM_HITS.get(), hits(from));
+        if (from.has(BLOOM_YIELD.get())) out.set(BLOOM_YIELD.get(), from.get(BLOOM_YIELD.get()));
         out.set(Casting.COOLS_AT.get(), now + HOT_SECONDS * 20L);
         return out;
+    }
+
+    public static int bloomYield(ItemStack bloom) {
+        return bloom.getOrDefault(BLOOM_YIELD.get(), ROASTED_YIELD);
     }
 
     public static int hits(ItemStack bloom) {
@@ -230,7 +250,8 @@ public final class Ironworking {
         h.assertFalse(KilnBlockEntity.canBake(raw), "the Clay Kiln won't take Raw Iron");
         h.assertTrue(Casting.oreUnits(raw) == null, "Raw Iron doesn't go in a crucible (nor the Smelting Furnace)");
         h.assertTrue(BronzeOres.crushed(raw).isEmpty(), "Raw Iron isn't crushed on the Stone Anvil");
-        for (RecipeType<?> type : List.of(RecipeType.SMELTING, RecipeType.BLASTING, RecipeType.CAMPFIRE_COOKING, RecipeType.SMOKING)) {
+        // (a campfire only roasts it, into Roasted Iron Ore: IronAgeTest)
+        for (RecipeType<?> type : List.of(RecipeType.SMELTING, RecipeType.BLASTING, RecipeType.SMOKING)) {
             @SuppressWarnings("unchecked")
             var cooking = (RecipeType<net.minecraft.world.item.crafting.AbstractCookingRecipe>) type;
             h.assertTrue(level.recipeAccess().getRecipeFor(cooking, new SingleRecipeInput(raw), level).isEmpty(), "no " + type + " recipe for Raw Iron");

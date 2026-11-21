@@ -39,14 +39,20 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
     public static final int BOG_ORE_PER_BLOOM = 6;
 
     /** {@code count} input items make one result; only at {@code temp}° or hotter (hotter goes faster, {@link KilnBlockEntity#speed}). */
-    public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp) {}
+    public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp, int yield) {
+        Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp) {
+            this(input, count, result, ticks, temp, 0);
+        }
+    }
     /** Burns {@code ticks}; heats to {@code maxTemp}° by itself, {@code bellowsTemp}° with bellows. */
     public record Fuel(Predicate<ItemStack> item, int ticks, int maxTemp, int bellowsTemp) {}
 
     // shortcut: hardcoded like the kiln's; move to datapack recipes when modpacks need to edit them.
     public static final List<Recipe> RECIPES = List.of(
-            new Recipe(s -> s.is(Items.RAW_IRON), ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP),
-            new Recipe(s -> s.is(Ironworking.RAW_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP),
+            new Recipe(s -> s.is(Ironworking.ROASTED_IRON_ORE.get()), ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.ROASTED_YIELD),
+            new Recipe(s -> s.is(Ironworking.ROASTED_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.ROASTED_YIELD),
+            new Recipe(s -> s.is(Items.RAW_IRON), ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.RAW_YIELD),
+            new Recipe(s -> s.is(Ironworking.RAW_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.RAW_YIELD),
             new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, FORGE_TEMP));
     // a bloomery eats charcoal: half as long a burn as in the kiln
     public static final List<Fuel> FUELS = List.of(
@@ -54,6 +60,8 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
 
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
     private int progress, total, burn, burnTotal, needTemp;
+    /** Charges of flux laid in the hearth: each makes the next bloom one ingot richer. */
+    private int flux;
     private float partial, temp = Float.NaN, ambient = 20;
     /** Why it isn't a bloomery (null when whole); refreshed every second. */
     private Component problem;
@@ -234,7 +242,13 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
         if (b.progress < b.total) return;
         b.progress = 0;
         b.partial = 0;
-        b.items.set(OUTPUT, Ironworking.hotBloom(input, level.getGameTime())); // a reheated bloom keeps its blows
+        ItemStack bloom = Ironworking.hotBloom(input, level.getGameTime()); // a reheated bloom keeps its blows
+        if (r.yield() > 0) {
+            int extra = b.flux > 0 ? 1 : 0;
+            b.flux -= extra;
+            bloom.set(Ironworking.BLOOM_YIELD.get(), Math.min(Ironworking.BLOOM_PARTS, r.yield() + extra));
+        }
+        b.items.set(OUTPUT, bloom);
         input.shrink(r.count());
         level.playSound(null, pos, net.minecraft.sounds.SoundEvents.LAVA_POP, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.7F);
     }
@@ -248,6 +262,18 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
         };
     }
 
+    public int flux() {
+        return flux;
+    }
+
+    /** One charge of flux into the hearth; false when it holds {@link Ironworking#MAX_FLUX} already. */
+    public boolean addFlux() {
+        if (flux >= Ironworking.MAX_FLUX) return false;
+        flux++;
+        setChanged();
+        return true;
+    }
+
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
@@ -256,6 +282,7 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
         progress = input.getIntOr("progress", 0);
         burn = input.getIntOr("burn", 0);
         burnTotal = input.getIntOr("burn_total", 0);
+        flux = input.getIntOr("flux", 0);
         temp = input.getFloatOr("temp", Float.NaN);
     }
 
@@ -266,6 +293,7 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
         output.putInt("progress", progress);
         output.putInt("burn", burn);
         output.putInt("burn_total", burnTotal);
+        if (flux > 0) output.putInt("flux", flux);
         if (!Float.isNaN(temp)) output.putFloat("temp", temp);
     }
 

@@ -1,6 +1,6 @@
 # Järnåldern
 
-> Status: **planering**. Byggt: **Bog Iron** (v0.80.0). Resten är förslag (2026-11-20).
+> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**. Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
 **Bronze Smithing Hammer**, **Wrought Iron Ingot**, Bronze Pickaxe (bryter Iron, Coal och Lapis Ore) och Charcoal.
@@ -36,11 +36,24 @@ rikare uppgraderingen. Kod: `Ironworking` (block, item, gametest), `BloomeryBloc
 **Advancement:** *Bog Iron* (Bronze Age-fliken, efter *Toward Iron*): "Dig rusty Bog Iron Ore with a shovel from the
 floors of fen and swamp pools". *Iron Bloom* nämner nu "4 Raw Iron or 6 Raw Bog Iron".
 
-### 2. Rostning före Bloomery
+### 2. Rostning före Bloomery (byggd)
 
-- Raw Iron och Raw Bog Iron rostas på en **rostbädd** (vedbädd eller eldgrop) → **Roasted Iron Ore**.
-- Bara rostad malm ger en full lupp. Orostad malm ger en mindre lupp eller mest slagg (beslut kvar).
-- Historiskt riktigt: rostningen driver ut vatten och svavel.
+Rostningen driver ut vatten och svavel ur malmen. Kod: `Ironworking`, `BloomeryBlockEntity`, `BronzeAnvilBlockEntity`.
+Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
+
+| Vad | Hur |
+|---|---|
+| **Roasted Iron Ore** | Raw Iron rostad på **Campfire eller Fire Pit** (campfire-recept, 30 s). |
+| **Roasted Bog Iron** | Raw Bog Iron rostad likadant. |
+
+- En lupp är **3 delar** järn och slagg. **Rostad malm** (4 Roasted Iron Ore eller 6 Roasted Bog Iron) ger en full lupp:
+  **2 Wrought Iron + 1 Slag**. **Orostad malm** fungerar fortfarande men ger en fattig lupp: **1 Wrought Iron + 2 Slag**
+  (beslut 2026-11-21: sämre, inte oanvändbar). Luppens tooltip visar vad den kommer att ge.
+- **Flux:** högerklicka på Bloomery Hearth med flux (item-taggen `mechanical:flux`, krossad Limestone) för att lägga i
+  en laddning, högst **4**. Varje lupp som smälts av malm tar en laddning och ger **en Wrought Iron mer och en Slag
+  mindre** (rostad malm + flux = 3 Wrought Iron, ingen slagg).
+- Luppar från före rostningen räknas som rostade (2 + 1).
+- Advancement **Roasted** (Iron Age-fliken).
 
 ### 3. Kolmila (charcoal pile)
 
@@ -96,7 +109,6 @@ Pengarna finns redan (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold
 
 ## Öppna beslut
 
-1. Rostning: blir orostad malm helt oanvändbar, eller bara sämre?
 2. Vilka av de nya malmerna (Galena, Gold, Limestone, Salt) hör till järnåldern, och vilka väntar?
 3. Kallnar en het tacka mitt i smidet (som luppen), och hur många slag kräver en plåt eller ett huvud?
 
