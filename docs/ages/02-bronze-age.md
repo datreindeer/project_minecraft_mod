@@ -1273,6 +1273,8 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
 - **Häst:** högerklicka på vagnen när du **rider** en tam häst, eller när du **leder** en tam häst i koppel (inom 10
   block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Högerklicka igen för att
   spänna från. Föl kan inte dra. En tämjd onager (Tame Onager) drar på samma sätt.
+- **Ett fordon åt gången:** en häst eller spelare som redan drar en travois, kärra, vagn eller plog kan inte spännas för
+  ett till ("That one already pulls something: unhitch it first").
 - **Last:** **6 platser** (lätt kropp 1, mellanstor 2, stor 3, jättar går inte; se tabellen i 01-stone-age.md):
   två stora, tre mellanstora, en stor + en mellanstor + en lätt, eller sex lätta. Lasta som på travoisen (högerklicka med
   kroppen du bär eller släpar; det går också att klicka på en kropp som redan ligger på vagnen, den täcker nästan hela

@@ -246,6 +246,10 @@ public class CartEntity extends TravoisEntity {
         }
         AbstractHorse horse = player.getVehicle() instanceof AbstractHorse ridden && ridden.isTamed() ? ridden : ledHorse(player);
         if (horse != null && horse.isBaby()) horse = null;
+        if (pullsOther(horse != null ? horse : player)) {
+            sayAlreadyPulling(player);
+            return;
+        }
         setHarness(horse != null ? horse : player);
         player.sendOverlayMessage(Component.translatable(horse != null ? "message.mechanical.cart.hitched" : "message.mechanical.travois.harnessed"));
         playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);

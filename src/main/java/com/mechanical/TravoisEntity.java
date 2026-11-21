@@ -126,6 +126,25 @@ public class TravoisEntity extends Entity {
         return CarcassHauling.TRAVOIS_ITEM.get();
     }
 
+    /** The vehicle {@code puller} already draws (in its harness, or as a wagon's second horse), or null: one each. */
+    public static TravoisEntity pulling(Entity puller) {
+        for (TravoisEntity t : puller.level().getEntitiesOfClass(TravoisEntity.class, puller.getBoundingBox().inflate(16),
+                t -> t.harnessId() == puller.getId() || t instanceof WagonEntity w && w.partner() == puller))
+            return t;
+        return null;
+    }
+
+    /** {@code puller} already draws another vehicle. */
+    protected boolean pullsOther(Entity puller) {
+        TravoisEntity t = pulling(puller);
+        return t != null && t != this;
+    }
+
+    /** Server: tells {@code player} that what would pull this already pulls something else. */
+    protected void sayAlreadyPulling(Player player) {
+        player.sendOverlayMessage(Component.translatable("message.mechanical.travois.already_pulling"));
+    }
+
     /** The travois {@code player} pulls, or null. */
     public static TravoisEntity harnessedTo(Player player) {
         for (TravoisEntity t : player.level().getEntitiesOfClass(TravoisEntity.class, player.getBoundingBox().inflate(10), t -> t.harnessId() == player.getId()))
@@ -364,6 +383,10 @@ public class TravoisEntity extends Entity {
     /** Server: right-click with an empty hand puts {@code player} in the harness, or takes them out. */
     protected void toggleHarness(Player player) {
         boolean off = harnessId() == player.getId();
+        if (!off && pullsOther(player)) {
+            sayAlreadyPulling(player);
+            return;
+        }
         setHarness(off ? null : player);
         stuckTicks = strainTicks = 0;
         player.sendOverlayMessage(Component.translatable(off ? "message.mechanical.travois.unharnessed" : "message.mechanical.travois.harnessed"));

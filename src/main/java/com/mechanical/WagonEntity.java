@@ -301,10 +301,11 @@ public class WagonEntity extends TravoisEntity {
     /** Tamed adult horses {@code player} rides or leads, not already in this team; the ridden one first. */
     private List<AbstractHorse> candidates(Player player, LivingEntity lead, AbstractHorse partner) {
         List<AbstractHorse> out = new ArrayList<>();
-        if (player.getVehicle() instanceof AbstractHorse ridden && ridden.isTamed() && !ridden.isBaby() && ridden != lead && ridden != partner)
+        if (player.getVehicle() instanceof AbstractHorse ridden && ridden.isTamed() && !ridden.isBaby() && ridden != lead && ridden != partner
+                && !pullsOther(ridden))
             out.add(ridden);
         for (AbstractHorse h : level().getEntitiesOfClass(AbstractHorse.class, player.getBoundingBox().inflate(HORSE_RANGE),
-                h -> h.isTamed() && !h.isBaby() && h.getLeashHolder() == player && h != lead && h != partner && !out.contains(h)))
+                h -> h.isTamed() && !h.isBaby() && h.getLeashHolder() == player && h != lead && h != partner && !out.contains(h) && !pullsOther(h)))
             out.add(h);
         return out;
     }

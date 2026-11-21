@@ -148,6 +148,11 @@ public final class WagonTest {
         h.assertTrue(wagon.pullFactor() == 0, "one horse can't move a loaded wagon");
         wagon.setPartner(second);
         h.assertTrue(wagon.pullFactor() == 1.0, "a pair pulls it");
+        CartEntity cart = Carting.CART.get().create(level, EntitySpawnReason.EVENT);
+        cart.setPos(at.add(0, 0, -3));
+        level.addFreshEntity(cart);
+        h.assertTrue(cart.pullsOther(lead) && cart.pullsOther(second) && !wagon.pullsOther(lead), "a horse in the wagon's team can't pull a cart too");
+        cart.discard();
         wagon.setHarness(null);
         wagon.setPartner(null);
 

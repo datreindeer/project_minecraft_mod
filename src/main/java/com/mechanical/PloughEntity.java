@@ -150,6 +150,10 @@ public class PloughEntity extends TravoisEntity {
             player.sendOverlayMessage(Component.translatable("message.mechanical.plough.needs_horse"));
             return;
         }
+        if (pullsOther(horse)) {
+            sayAlreadyPulling(player);
+            return;
+        }
         setHarness(horse);
         player.sendOverlayMessage(Component.translatable("message.mechanical.plough.hitched"));
         playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);

@@ -813,6 +813,7 @@
   "message.mechanical.hanging_rack.too_big": "Too big to hang. Butcher it where it lies",
   "message.mechanical.hanging_rack.occupied": "Something already hangs here",
   "message.mechanical.travois.harnessed": "Harnessed. Right-click again to unharness",
+  "message.mechanical.travois.already_pulling": "That one already pulls something: unhitch it first",
   "message.mechanical.travois.unharnessed": "Unharnessed",
   "message.mechanical.travois.full": "The travois is full",
   "message.mechanical.travois.too_big": "Too big for the travois",
