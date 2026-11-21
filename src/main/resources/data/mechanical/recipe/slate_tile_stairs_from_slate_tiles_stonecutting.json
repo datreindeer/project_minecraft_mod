@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:slate_tiles",
+  "result": {
+    "id": "mechanical:slate_tile_stairs"
+  }
+}

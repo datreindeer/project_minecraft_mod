@@ -1048,6 +1048,28 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      has("steel_helmet", "steel_chestplate", "steel_leggings", "steel_boots")),
 ])
 
+# stone families (StoneFamilies.java; gen_stone_families.py): one per Stone Age stone
+TABS["stone_age"][1].extend([
+    ("slate", "flint_pickaxe", "slate_tiles", T, "Slate Roof",
+     "Mine Slate with a Flint Pickaxe, mostly in cold windswept hills and peaks. Polish it, then craft Slate Bricks into Slate Tiles: a roof that doesn't burn",
+     has("slate", "slate_tiles")),
+    ("gneiss", "flint_pickaxe", "gneiss_bricks", T, "Old Rock",
+     "Mine banded Gneiss with a Bronze Pickaxe (flint only scratches it), mostly under mountains: Smooth Gneiss, Gneiss Bricks, mossy and cracked",
+     has("gneiss", "gneiss_bricks")),
+    ("chalk_block", "ochre", "chalk_block", T, "White Cliffs",
+     "Press 4 Chalk into a Chalk Block, or find chalk beds near the surface by beaches and plains. Broken, it crumbles back into 4 Chalk",
+     has("chalk_block", "cut_chalk")),
+    ("soapstone", "flint_pickaxe", "polished_soapstone", T, "Soapstone",
+     "Mine soft grey-green Soapstone with a Flint Pickaxe, mostly under mountains, and craft it into Polished Soapstone and Soapstone Bricks",
+     has("soapstone", "polished_soapstone")),
+    ("shale", "flint_pickaxe", "shale_bricks", T, "Shale",
+     "Mine dark Shale with a Flint Pickaxe, low down under plains, swamps and rivers, and craft it into Polished Shale and Shale Bricks",
+     has("shale", "shale_bricks")),
+    ("conglomerate", "flint_pickaxe", "conglomerate_bricks", T, "Pudding Stone",
+     "Mine pebbly Conglomerate with a Flint Pickaxe in river banks, and craft it into Polished Conglomerate and Conglomerate Bricks",
+     has("conglomerate", "conglomerate_bricks")),
+])
+
 # the Iron Age's new ores (IronOres.java; gen_iron_ores.py)
 TABS["iron_age"][1].extend([
     ("galena", "root", "raw_galena", T, "Galena",

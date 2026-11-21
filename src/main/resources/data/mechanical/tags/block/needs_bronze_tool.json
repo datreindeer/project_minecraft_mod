@@ -14,6 +14,21 @@
     "mechanical:deepslate_peridot_ore",
     "mechanical:galena_ore",
     "mechanical:deepslate_galena_ore",
-    "mechanical:rock_salt"
+    "mechanical:rock_salt",
+    "mechanical:chiseled_gneiss_bricks",
+    "mechanical:cracked_gneiss_bricks",
+    "mechanical:gneiss",
+    "mechanical:gneiss_brick_slab",
+    "mechanical:gneiss_brick_stairs",
+    "mechanical:gneiss_brick_wall",
+    "mechanical:gneiss_bricks",
+    "mechanical:gneiss_slab",
+    "mechanical:gneiss_stairs",
+    "mechanical:mossy_gneiss_brick_slab",
+    "mechanical:mossy_gneiss_brick_stairs",
+    "mechanical:mossy_gneiss_brick_wall",
+    "mechanical:mossy_gneiss_bricks",
+    "mechanical:smooth_gneiss",
+    "mechanical:smooth_gneiss_slab"
   ]
 }

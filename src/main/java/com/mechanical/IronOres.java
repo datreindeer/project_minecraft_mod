@@ -82,26 +82,6 @@ public final class IronOres {
     public static final DeferredItem<BlockItem> LIMESTONE_ITEM = ITEMS.registerSimpleBlockItem("limestone", LIMESTONE);
     public static final DeferredItem<BlockItem> ROCK_SALT_ITEM = ITEMS.registerSimpleBlockItem("rock_salt", ROCK_SALT);
 
-    // Limestone building blocks, the Tuff family copied block for block (data: scripts/gen_limestone_blocks.py)
-    public static final DeferredBlock<Block> POLISHED_LIMESTONE = stone("polished_limestone", Block::new);
-    public static final DeferredBlock<Block> LIMESTONE_BRICKS = stone("limestone_bricks", Block::new);
-    public static final DeferredBlock<Block> CHISELED_LIMESTONE_BRICKS = stone("chiseled_limestone_bricks", Block::new);
-    static {
-        stone("chiseled_limestone", Block::new);
-        for (var base : List.of(LIMESTONE, POLISHED_LIMESTONE, LIMESTONE_BRICKS)) {
-            String name = base.getId().getPath().replace("bricks", "brick");
-            stone(name + "_slab", SlabBlock::new);
-            stone(name + "_stairs", p -> new StairBlock(base.get().defaultBlockState(), p));
-            stone(name + "_wall", p -> new WallBlock(p.forceSolidOn()));
-        }
-    }
-
-    private static <B extends Block> DeferredBlock<B> stone(String name, Function<BlockBehaviour.Properties, B> factory) {
-        DeferredBlock<B> block = BLOCKS.registerBlock(name, factory, () -> BlockBehaviour.Properties.ofLegacyCopy(LIMESTONE.get()));
-        ITEMS.registerSimpleBlockItem(name, block);
-        return block;
-    }
-
     public static final DeferredItem<Item> RAW_GALENA = ITEMS.registerSimpleItem("raw_galena");
     public static final DeferredItem<Item> LEAD_INGOT = ITEMS.registerSimpleItem("lead_ingot");
     /** Lead Ingot pressed into a bone-ash cupel (crafted with Bone Meal); fired at {@link #CUPEL_TEMP}° it leaves a Silver Nugget. */
@@ -208,10 +188,28 @@ public final class IronOres {
         // limestone crushes into flux
         ItemStack flux = BronzeOres.crushed(new ItemStack(LIMESTONE_ITEM.get()));
         h.assertTrue(flux.is(FLUX.get()) && flux.getCount() == FLUX_PER_LIMESTONE && flux.is(FLUX_TAG), "Limestone crushes into 2 Flux, tagged mechanical:flux");
-        // the Bronze Chisel works limestone like tuff
-        h.assertTrue(BronzeTools.ChiselItem.carved(LIMESTONE.get()) == POLISHED_LIMESTONE.get()
-                && BronzeTools.ChiselItem.carved(POLISHED_LIMESTONE.get()) == LIMESTONE_BRICKS.get()
-                && BronzeTools.ChiselItem.carved(LIMESTONE_BRICKS.get()) == CHISELED_LIMESTONE_BRICKS.get(), "the chisel carves Limestone -> Polished -> Bricks -> Chiseled Bricks");
+        // stone families (StoneFamilies): tool, drops, chisel chains, and data for every block the Java registers
+        ItemStack flintPick = new ItemStack(Mechanical.FLINT_PICKAXE.get());
+        for (StoneFamilies.Stone stone : StoneFamilies.STONES) {
+            BlockState base = StoneFamilies.block(stone.base()).defaultBlockState();
+            h.assertTrue(flintPick.isCorrectToolForDrops(base) != stone.hard(), "a Flint Pickaxe " + (stone.hard() ? "can't mine " : "mines ") + stone.base());
+            h.assertTrue(bronzePick.isCorrectToolForDrops(base), "a Bronze Pickaxe mines " + stone.base());
+            List<ItemStack> got = drops(h, base, miner, bronzePick);
+            if (stone.name().equals("chalk"))
+                h.assertTrue(dropsOnly(got, Pigments.CHALK.get()) && got.get(0).getCount() == 4, "Chalk Block drops 4 Chalk (got " + got + ")");
+            else if (stone.name().equals("slate"))
+                h.assertTrue(dropsOnly(got, StoneFamilies.block("cobbled_slate").asItem()), "Slate drops Cobbled Slate like deepslate (got " + got + ")");
+            else h.assertTrue(dropsOnly(got, base.getBlock().asItem()), stone.base() + " drops itself (got " + got + ")");
+            for (List<String> chain : stone.chains())
+                for (int i = 0; i + 1 < chain.size(); i++)
+                    h.assertTrue(BronzeTools.ChiselItem.carved(StoneFamilies.block(chain.get(i))) == StoneFamilies.block(chain.get(i + 1)),
+                            "the chisel carves " + chain.get(i) + " -> " + chain.get(i + 1));
+        }
+        for (var block : StoneFamilies.BLOCKS_BY_NAME.values()) {
+            var key = block.get().getLootTable().orElseThrow();
+            h.assertTrue(level.getServer().reloadableRegistries().getLootTable(key) != net.minecraft.world.level.storage.loot.LootTable.EMPTY,
+                    block.getId() + " has a loot table (gen_stone_families.py and StoneFamilies.java agree)");
+        }
 
         // the kiln: lead at 800°, cupellation at 1000°, gold at 1100° (9 nuggets per ingot)
         KilnBlockEntity.Bake lead = KilnBlockEntity.bakeFor(new ItemStack(RAW_GALENA.get()));

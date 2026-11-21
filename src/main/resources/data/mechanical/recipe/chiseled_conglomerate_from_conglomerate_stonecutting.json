@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:conglomerate",
+  "result": {
+    "id": "mechanical:chiseled_conglomerate"
+  }
+}

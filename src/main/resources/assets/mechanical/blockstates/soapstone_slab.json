@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/soapstone_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/soapstone"
+    },
+    "type=top": {
+      "model": "mechanical:block/soapstone_slab_top"
+    }
+  }
+}

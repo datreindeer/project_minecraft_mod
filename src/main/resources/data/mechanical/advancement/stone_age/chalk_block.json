@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:stone_age/ochre",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:chalk_block"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cut_chalk"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:chalk_block"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.chalk_block.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.chalk_block.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

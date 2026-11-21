@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:shale",
+  "result": {
+    "id": "mechanical:polished_shale"
+  }
+}

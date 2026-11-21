@@ -2352,6 +2352,36 @@ Recept (crafting): `_A_ / TRT / P_P`. A = Sandstone, T = Twine, R = Tool Rod, P 
 
 Drops: malm → 1 Rough (Fortune), blocket självt med Silk Touch. Small Crystal → 1, Medium → 1–2, Large → 2–4 (Fortune). Kristallerna lyser svagt (Moonstone ljus 3/5/7). Lösa stenar ger 1–3 efter storlek. Gamla chunkar får stenarna via retrogen. Retrogen hoppar dock över land som spelare vistats på; där lägger en op till dem med **`/regengems <radie 0–16> [ores]`** (chunkar runt dig; `ores` = bara malmådrorna, inte kristaller och stenar i grottor). Varje chunk får dem bara en gång.
 
+## Bergarter och byggsten (byggt, fas 1 av världsmaterialplanen)
+
+Sex nya bergarter i berget, var och en med en hel familj byggblock kopierad från en vanilla-familj (samma recept och
+former). Alla ligger i den nya creative-fliken **Building Blocks**. Klumparna finns i hela världen men är mycket vanligare
+i "sin" biom. De ligger i `base_stone_overworld` och `stone_ore_replaceables`, så grottor skär igenom dem och malm kan
+ligga i dem. Data: `scripts/gen_stone_families.py`, Java: `StoneFamilies.java`.
+
+| Sten | Mall | Var | Verktyg | Ger |
+|---|---|---|---|---|
+| **Slate** | deepslate | Överallt y 0–110 (1 klump i var 4:e chunk), 2 extra per chunk på y 40–200 i Windswept Hills/Gravelly Hills/Forest, Grove, Snowy Slopes och topparna | Flint Pickaxe | **Cobbled Slate** (Silk Touch: Slate) |
+| **Gneiss** | stone | Överallt y 0–100 (var 4:e chunk), 2 extra på y 40–220 under berg (`#minecraft:is_mountain`) | **Bronze Pickaxe** | sig själv |
+| **Chalk Block** | sandstone | Nära ytan y 50–90 (var 5:e chunk), 2 extra vid Beach, Snowy Beach, Stony Shore, Plains, Sunflower Plains och Meadow. Eller 2×2 **Chalk** | Flint Pickaxe | **4 Chalk** som Clay (Silk Touch: sig själv) |
+| **Soapstone** | tuff | Överallt y 0–90 (var 6:e chunk), 1 extra på y 30–160 under berg | Flint Pickaxe | sig själv |
+| **Shale** | tuff | Lågt, y −8–50 (var 4:e chunk), 2 extra på y 0–55 under Plains, Swamp, Mangrove Swamp och floder | Flint Pickaxe | sig själv |
+| **Conglomerate** | tuff | y 30–80 (var 6:e chunk), 2 extra på y 40–70 under floder | Flint Pickaxe | sig själv |
+
+**Familjerna** (vanilla-mönster: 2×2 → 4 nästa steg, 3 i rad → 6 slabs, trappmönster av 6 → 4 stairs, 2×3 → 6 walls, 2 slabs
+på varandra → chiseled):
+
+| Sten | Block | Bronze Chisel |
+|---|---|---|
+| Slate | Cobbled Slate, Polished Slate, Slate Bricks, **Slate Tiles** (takplattor som inte brinner), Cracked Slate Bricks/Tiles (smält), Chiseled Slate, slab/stairs/wall av Cobbled, Polished, Bricks och Tiles | Slate → Polished → Bricks → Tiles → Chiseled, Cobbled → Polished |
+| Gneiss | Smooth Gneiss (smält), Gneiss Bricks, Cracked (smält), Mossy (+ Vine eller Moss Block), Chiseled Gneiss Bricks, slab/stairs av Gneiss, Smooth (slab), Bricks och Mossy Bricks, walls av Bricks och Mossy Bricks | Gneiss → Smooth → Bricks → Chiseled Bricks |
+| Chalk | Cut Chalk, Smooth Chalk (smält), Chiseled Chalk, Chalk Slab/Stairs/Wall, Cut Chalk Slab, Smooth Chalk Slab/Stairs | Chalk Block → Cut → Chiseled |
+| Soapstone, Shale, Conglomerate | Som Limestone (tuff): Polished, Bricks, Chiseled, Chiseled Bricks + slab/stairs/wall av sten, Polished och Bricks | Sten → Polished → Bricks → Chiseled Bricks |
+
+Smältrecepten är vanillas ugnsrecept, Stonecutter-recepten finns men Stonecutter är låst tills en senare ålder.
+Advancements i Stone Age-fliken: *Slate Roof*, *Old Rock* (Gneiss), *White Cliffs* (Chalk), *Soapstone*, *Shale*,
+*Pudding Stone* (Conglomerate). Senare användning (planen fas 9): Soapstone-formar, Shale till lera, Conglomerate till grus.
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

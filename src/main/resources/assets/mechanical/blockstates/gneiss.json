@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/gneiss"
+      },
+      {
+        "model": "mechanical:block/gneiss_mirrored"
+      },
+      {
+        "model": "mechanical:block/gneiss",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/gneiss_mirrored",
+        "y": 180
+      }
+    ]
+  }
+}

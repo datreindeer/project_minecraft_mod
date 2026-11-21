@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/shale_bricks",
+    "side": "mechanical:block/shale_bricks",
+    "top": "mechanical:block/shale_bricks"
+  }
+}

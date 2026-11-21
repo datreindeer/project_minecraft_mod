@@ -2,6 +2,24 @@
   "values": [
     "mechanical:limestone_brick_stairs",
     "mechanical:limestone_stairs",
-    "mechanical:polished_limestone_stairs"
+    "mechanical:polished_limestone_stairs",
+    "mechanical:cobbled_slate_stairs",
+    "mechanical:polished_slate_stairs",
+    "mechanical:slate_brick_stairs",
+    "mechanical:slate_tile_stairs",
+    "mechanical:gneiss_brick_stairs",
+    "mechanical:gneiss_stairs",
+    "mechanical:mossy_gneiss_brick_stairs",
+    "mechanical:chalk_stairs",
+    "mechanical:smooth_chalk_stairs",
+    "mechanical:polished_soapstone_stairs",
+    "mechanical:soapstone_brick_stairs",
+    "mechanical:soapstone_stairs",
+    "mechanical:polished_shale_stairs",
+    "mechanical:shale_brick_stairs",
+    "mechanical:shale_stairs",
+    "mechanical:conglomerate_brick_stairs",
+    "mechanical:conglomerate_stairs",
+    "mechanical:polished_conglomerate_stairs"
   ]
 }

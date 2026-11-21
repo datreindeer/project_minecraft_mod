@@ -206,6 +206,8 @@ Slag mindre (se *Rostning*).
 | **Slab / Stairs / Wall** | Av Limestone, Polished Limestone och Limestone Bricks (Limestone Brick Slab/Stairs/Wall), vanliga vanilla-mönster: 3 i rad → 6 slabs, trappmönster av 6 → 4 stairs, 2×3 → 6 walls. |
 
 Stonecutter-recepten finns också, men Stonecutter är låst tills en senare ålder. Advancement: *Limestone Mason* (efter Flux).
+Familjen kommer från `scripts/gen_stone_families.py` / `StoneFamilies.java` (en rad per sten, samma som stenålderns
+bergarter) och ligger i creative-fliken **Building Blocks**.
 
 ### 8. Salt
 

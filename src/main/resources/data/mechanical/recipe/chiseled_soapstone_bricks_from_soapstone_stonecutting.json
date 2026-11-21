@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:soapstone",
+  "result": {
+    "id": "mechanical:chiseled_soapstone_bricks"
+  }
+}

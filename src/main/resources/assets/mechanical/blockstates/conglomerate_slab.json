@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/conglomerate_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/conglomerate"
+    },
+    "type=top": {
+      "model": "mechanical:block/conglomerate_slab_top"
+    }
+  }
+}

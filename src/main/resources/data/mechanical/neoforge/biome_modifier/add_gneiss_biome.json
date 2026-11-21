@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_gneiss",
+  "features": [
+    "mechanical:ore_gneiss_biome"
+  ],
+  "step": "underground_ores"
+}

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_conglomerate",
+  "features": [
+    "mechanical:ore_conglomerate_biome"
+  ],
+  "step": "underground_ores"
+}

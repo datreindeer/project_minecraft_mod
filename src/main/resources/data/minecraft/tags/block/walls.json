@@ -2,6 +2,22 @@
   "values": [
     "mechanical:limestone_brick_wall",
     "mechanical:limestone_wall",
-    "mechanical:polished_limestone_wall"
+    "mechanical:polished_limestone_wall",
+    "mechanical:cobbled_slate_wall",
+    "mechanical:polished_slate_wall",
+    "mechanical:slate_brick_wall",
+    "mechanical:slate_tile_wall",
+    "mechanical:gneiss_brick_wall",
+    "mechanical:mossy_gneiss_brick_wall",
+    "mechanical:chalk_wall",
+    "mechanical:polished_soapstone_wall",
+    "mechanical:soapstone_brick_wall",
+    "mechanical:soapstone_wall",
+    "mechanical:polished_shale_wall",
+    "mechanical:shale_brick_wall",
+    "mechanical:shale_wall",
+    "mechanical:conglomerate_brick_wall",
+    "mechanical:conglomerate_wall",
+    "mechanical:polished_conglomerate_wall"
   ]
 }
