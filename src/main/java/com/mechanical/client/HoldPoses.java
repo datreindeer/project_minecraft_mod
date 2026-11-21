@@ -3,6 +3,7 @@ package com.mechanical.client;
 import org.jspecify.annotations.Nullable;
 
 import com.mechanical.BronzeTools;
+import com.mechanical.client.FirstPersonHolds.Fp;
 import com.mechanical.Mechanical;
 import com.mechanical.equipment.PackMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,6 +21,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -64,6 +66,8 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
  * <li>Strokes for click-used items (fire drill, broom, flail, paint and brush, chisel, bone flute), driven by the arm swing
  * the click makes (sent to everyone), which {@link #extract} takes off vanilla's swing.</li>
  * </ul>
+ * First person: {@link FirstPersonHolds} (the {@code Fp} column of {@link #extensionsFor}). Items with a 3D model in hand
+ * (scripts/gen_held_models.py) keep their sprite's footprint, so the display transforms of gen_hold_displays.py hold for them.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class HoldPoses {
@@ -105,44 +109,57 @@ public final class HoldPoses {
         return new EnumProxy<>(HumanoidModel.ArmPose.class, twoHanded, affectsOffhand, transformer);
     }
 
-    private static IClientItemExtensions extensions(EnumProxy<HumanoidModel.ArmPose> pose) {
-        return extensions(pose, e -> true);
+    private static Held extensions(EnumProxy<HumanoidModel.ArmPose> pose, @Nullable Fp fp) {
+        return new Held(pose, e -> true, fp);
     }
 
-    /** The pose while {@code when} holds for the holder, otherwise vanilla's. */
-    private static IClientItemExtensions extensions(EnumProxy<HumanoidModel.ArmPose> pose, Predicate<LivingEntity> when) {
-        return new IClientItemExtensions() {
-            @Override
-            public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
-                return when.test(entity) ? pose.getValue() : null;
-            }
-        };
+    private static Held extensions(EnumProxy<HumanoidModel.ArmPose> pose, Predicate<LivingEntity> when, @Nullable Fp fp) {
+        return new Held(pose, when, fp);
     }
 
-    /** The pose for an item, or null for vanilla's. */
-    private static @Nullable IClientItemExtensions extensionsFor(Item item) {
-        if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get()) return extensions(STAFF_POSE);
-        if (item == Mechanical.BARK_BASKET.get()) return extensions(BASKET_POSE);
-        if (item == BronzeTools.BRONZE_TONGS.get()) return extensions(TONGS_POSE);
+    /** The pose while {@code when} holds for the holder, otherwise vanilla's; in first person (local player) the {@code fp} hold. */
+    record Held(EnumProxy<HumanoidModel.ArmPose> pose, Predicate<LivingEntity> when, @Nullable Fp fp) implements IClientItemExtensions {
+        @Override
+        public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+            return when.test(entity) ? pose.getValue() : null;
+        }
+
+        @Override
+        public boolean applyForgeHandTransform(PoseStack poseStack, PlayerRenderState playerState, HumanoidArm arm, ItemStack stack,
+                float partialTick, float equipProcess, float swingProcess) {
+            Player player = Minecraft.getInstance().player;
+            return fp != null && player != null && when.test(player)
+                    && FirstPersonHolds.transform(fp, poseStack, player, arm, stack, partialTick, equipProcess, swingProcess);
+        }
+    }
+
+    /**
+     * The mapping table: the pose for an item (third person, everyone) and its first-person hold (local player,
+     * {@link FirstPersonHolds}; null: vanilla's - the tongs' grip is drawn there by item), or null for vanilla's.
+     */
+    private static @Nullable Held extensionsFor(Item item) {
+        if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get()) return extensions(STAFF_POSE, Fp.STAFF);
+        if (item == Mechanical.BARK_BASKET.get()) return extensions(BASKET_POSE, Fp.BASKET);
+        if (item == BronzeTools.BRONZE_TONGS.get()) return extensions(TONGS_POSE, null);
         if (item instanceof com.mechanical.WaterJugItem || item instanceof com.mechanical.ClayBucketItem || item instanceof com.mechanical.BronzeBucketItem
-                || item == BronzeTools.BRONZE_MILK_BUCKET.get()) return extensions(BUCKET_POSE);
-        if (item instanceof com.mechanical.FirewoodItem || item instanceof com.mechanical.RoughLogItem) return extensions(CARRY_POSE);
-        if (item == com.mechanical.Bronze.BRONZE_KETTLE.get()) return extensions(HEAVY_POSE);
-        if (item == com.mechanical.Watercraft.PADDLE.get()) return extensions(PADDLE_POSE, Entity::isPassenger);
+                || item == BronzeTools.BRONZE_MILK_BUCKET.get()) return extensions(BUCKET_POSE, Fp.BUCKET);
+        if (item instanceof com.mechanical.FirewoodItem || item instanceof com.mechanical.RoughLogItem) return extensions(CARRY_POSE, Fp.CARRY);
+        if (item == com.mechanical.Bronze.BRONZE_KETTLE.get()) return extensions(HEAVY_POSE, Fp.HEAVY);
+        if (item == com.mechanical.Watercraft.PADDLE.get()) return extensions(PADDLE_POSE, Entity::isPassenger, Fp.PADDLE);
         if (item == com.mechanical.Ironworking.BRONZE_SMITHING_HAMMER.get() || item == com.mechanical.Smithing.IRON_SMITHING_HAMMER.get()
                 || item == BronzeTools.BRONZE_QUARRY_HAMMER.get() || item == com.mechanical.Smithing.STEEL_QUARRY_HAMMER.get()
                 || item == Mechanical.FLINT_AXE.get() || item == Mechanical.CRUDE_STONE_AXE.get() || item == com.mechanical.Bronze.BRONZE_AXE.get())
-            return extensions(SHOULDER_POSE);
+            return extensions(SHOULDER_POSE, Fp.SHOULDER);
         if (item == Mechanical.FLINT_SPEAR.get() || item == com.mechanical.Bronze.BRONZE_SPEAR.get() || item == com.mechanical.Smithing.STEEL_SPEAR.get())
-            return extensions(SPEAR_LOW_POSE, e -> e.isCrouching() && !e.isUsingItem()); // otherwise vanilla's spear poses
-        if (item == Mechanical.CRUDE_FISHING_ROD.get() || item instanceof com.mechanical.BoneHookRodItem) return extensions(ROD_POSE);
-        if (item instanceof com.mechanical.PanItem) return extensions(PAN_POSE, LivingEntity::isUsingItem);
-        if (item instanceof com.mechanical.FireDrillItem) return extensions(FIRE_DRILL_POSE);
-        if (item instanceof com.mechanical.BroomItem) return extensions(BROOM_POSE);
-        if (item instanceof com.mechanical.FlailItem) return extensions(FLAIL_POSE);
-        if (item instanceof com.mechanical.PaintbrushItem || item instanceof com.mechanical.PaintItem) return extensions(PAINT_POSE);
-        if (item == BronzeTools.BRONZE_CHISEL.get()) return extensions(CHISEL_POSE);
-        if (item instanceof com.mechanical.wildlife.waterfowl.BoneFluteItem) return extensions(FLUTE_POSE);
+            return extensions(SPEAR_LOW_POSE, e -> e.isCrouching() && !e.isUsingItem(), Fp.SPEAR_LOW); // otherwise vanilla's spear poses
+        if (item == Mechanical.CRUDE_FISHING_ROD.get() || item instanceof com.mechanical.BoneHookRodItem) return extensions(ROD_POSE, null);
+        if (item instanceof com.mechanical.PanItem) return extensions(PAN_POSE, LivingEntity::isUsingItem, Fp.PAN);
+        if (item instanceof com.mechanical.FireDrillItem) return extensions(FIRE_DRILL_POSE, Fp.FIRE_DRILL);
+        if (item instanceof com.mechanical.BroomItem) return extensions(BROOM_POSE, Fp.BROOM);
+        if (item instanceof com.mechanical.FlailItem) return extensions(FLAIL_POSE, Fp.FLAIL);
+        if (item instanceof com.mechanical.PaintbrushItem || item instanceof com.mechanical.PaintItem) return extensions(PAINT_POSE, Fp.PAINT);
+        if (item == BronzeTools.BRONZE_CHISEL.get()) return extensions(CHISEL_POSE, Fp.CHISEL);
+        if (item instanceof com.mechanical.wildlife.waterfowl.BoneFluteItem) return extensions(FLUTE_POSE, Fp.FLUTE);
         return null;
     }
 
@@ -155,7 +172,7 @@ public final class HoldPoses {
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         for (Item item : BuiltInRegistries.ITEM) {
             if (!BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(Mechanical.MODID)) continue;
-            IClientItemExtensions extensions = extensionsFor(item);
+            Held extensions = extensionsFor(item);
             if (extensions != null) event.registerItem(extensions, item);
         }
     }
@@ -200,13 +217,18 @@ public final class HoldPoses {
         if (tongs == null) return;
         boolean right = tongs == HumanoidArm.LEFT;
         ItemStack hot = right ? state.rightHandItemStack : state.leftHandItemStack;
-        if (hot.isEmpty() || !BronzeTools.hot(hot, entity.level().getGameTime()) && !(hot.getItem() instanceof com.mechanical.CrucibleItem)) return;
+        if (!grippable(hot, entity.level().getGameTime())) return;
         ItemStackRenderState item = new ItemStackRenderState();
         Minecraft.getInstance().getItemModelResolver().updateForLiving(item, hot, ItemDisplayContext.GROUND, entity);
         state.setRenderData(GRIP, new Grip(item, tongs));
         (right ? state.rightHandItemState : state.leftHandItemState).clear();
         if (right) state.rightArmPose = HumanoidModel.ArmPose.EMPTY;
         else state.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+    }
+
+    /** What the tongs grip: something hot, or a crucible. */
+    static boolean grippable(ItemStack stack, long now) {
+        return !stack.isEmpty() && (BronzeTools.hot(stack, now) || stack.getItem() instanceof com.mechanical.CrucibleItem);
     }
 
     private static void rummage(Player player, AvatarRenderState state) {
@@ -324,7 +346,7 @@ public final class HoldPoses {
         return arm == HumanoidArm.RIGHT ? state.rightHandItemStack : state.leftHandItemStack;
     }
 
-    private static boolean full(ItemStack stack) {
+    static boolean full(ItemStack stack) {
         if (stack.getItem() instanceof com.mechanical.WaterJugItem) return com.mechanical.WaterJugItem.water(stack) > 0;
         return !stack.is(Mechanical.CLAY_BUCKET.get()) && !stack.is(BronzeTools.BRONZE_BUCKET.get());
     }
