@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/cementation",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:steel_ingot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:steel_ingot"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.steel.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.steel.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

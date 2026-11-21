@@ -192,6 +192,30 @@ public final class IronAgeTest {
         CharcoalClamp.get(level).checkNow(level);
         h.assertTrue(level.getBlockState(fwAbs).isAir(), "opened, it burns away");
         CharcoalClamp.get(level).finishAll(level);
+
+        // ---- cementation: pot fired, packed, held at 1000° in the bloomery, opened to Blister Steel
+        h.assertTrue(KilnBlockEntity.canBake(new ItemStack(Smithing.UNFIRED_CEMENTATION_POT.get())), "the kiln fires the pot");
+        var packIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 2, List.of(new ItemStack(Smithing.CEMENTATION_POT.get()),
+                new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()),
+                new ItemStack(Items.CHARCOAL), new ItemStack(Items.CHARCOAL), new ItemStack(Mechanical.SOOT_ITEM.get())));
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, packIn, level)
+                .map(r -> r.value().assemble(packIn).is(Smithing.PACKED_CEMENTATION_POT.get())).orElse(false), "pot + 2 Wrought Iron + 2 Charcoal + Soot: packed");
+        bloomery.setItem(BloomeryBlockEntity.INPUT, new ItemStack(Smithing.PACKED_CEMENTATION_POT.get()));
+        bloomery.setItem(BloomeryBlockEntity.FUEL, new ItemStack(Items.CHARCOAL, 16));
+        bloomery.tryLight(level);
+        for (int i = 0; i < Smithing.CEMENT_TICKS * 2 && bloomery.getItem(BloomeryBlockEntity.OUTPUT).isEmpty(); i++) {
+            bloomery.forceTemperature(Smithing.CEMENT_TEMP + 100); // over its 800° it sinks back each tick
+            BloomeryBlockEntity.serverTick(level, bloomery);
+        }
+        ItemStack cemented = bloomery.removeItemNoUpdate(BloomeryBlockEntity.OUTPUT);
+        h.assertTrue(cemented.is(Smithing.CEMENTED_POT.get()) && !cemented.has(Casting.COOLS_AT.get()), "3 min at 1000°: a Cemented Pot (not hot metal), got " + cemented);
+        var openIn = net.minecraft.world.item.crafting.CraftingInput.of(1, 1, List.of(cemented));
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, openIn, level)
+                .map(r -> { ItemStack o = r.value().assemble(openIn); return o.is(Smithing.BLISTER_STEEL.get()) && o.getCount() == Smithing.BLISTER_PER_POT; }).orElse(false),
+                "opened: 2 Blister Steel");
+        var flintIn = net.minecraft.world.item.crafting.CraftingInput.of(2, 1, List.of(new ItemStack(Items.FLINT), new ItemStack(Smithing.STEEL_PLATE.get())));
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, flintIn, level)
+                .map(r -> r.value().assemble(flintIn).is(Items.FLINT_AND_STEEL)).orElse(false), "Flint + Steel Plate: Flint and Steel");
         h.succeed();
     }
 

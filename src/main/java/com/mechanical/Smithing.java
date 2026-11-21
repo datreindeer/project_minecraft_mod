@@ -41,6 +41,14 @@ public final class Smithing {
     /** Blows that fold hot Blister Steel into an even Steel Ingot. */
     public static final int BLISTER_HITS = 6;
 
+    // ---- cementation: wrought iron packed with charcoal and soot in a sealed fire-clay pot, held at 1000° a long time,
+    // takes up carbon into Blister Steel (BloomeryBlockEntity / KilnBlockEntity recipes, scripts/gen_iron_age.py)
+    public static final DeferredItem<Item> UNFIRED_CEMENTATION_POT = ITEMS.registerSimpleItem("unfired_cementation_pot");
+    public static final DeferredItem<Item> CEMENTATION_POT = ITEMS.registerSimpleItem("cementation_pot");
+    public static final DeferredItem<Item> PACKED_CEMENTATION_POT = ITEMS.registerSimpleItem("packed_cementation_pot", p -> p.stacksTo(1));
+    public static final DeferredItem<Item> CEMENTED_POT = ITEMS.registerSimpleItem("cemented_pot", p -> p.stacksTo(1));
+    public static final int CEMENT_TEMP = 1000, CEMENT_TICKS = 3600, BLISTER_PER_POT = 2;
+
     // ---- forged parts
     public static final DeferredItem<Item> IRON_PLATE = ITEMS.registerSimpleItem("iron_plate");
     public static final DeferredItem<Item> IRON_TOOL_ROD = ITEMS.registerSimpleItem("iron_tool_rod");

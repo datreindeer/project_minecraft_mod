@@ -53,7 +53,9 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
             // iron and steel to forging heat for the anvil (Smithing)
             new Recipe(s -> s.is(Ironworking.WROUGHT_IRON_INGOT.get()), 1, () -> Smithing.HOT_WROUGHT_IRON_INGOT.get(), 200, FORGE_TEMP, 0),
             new Recipe(s -> s.is(Smithing.BLISTER_STEEL.get()), 1, () -> Smithing.HOT_BLISTER_STEEL.get(), 200, FORGE_TEMP, 0),
-            new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, FORGE_TEMP, 0));
+            new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, FORGE_TEMP, 0),
+            // cementation: a packed pot held at 1000° (Smithing)
+            new Recipe(s -> s.is(Smithing.PACKED_CEMENTATION_POT.get()), 1, () -> Smithing.CEMENTED_POT.get(), Smithing.CEMENT_TICKS, Smithing.CEMENT_TEMP, 0));
     // a bloomery eats charcoal: half as long a burn as in the kiln
     public static final List<Fuel> FUELS = List.of(
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 2400, NATURAL_MAX, CEILING));

@@ -219,5 +219,35 @@ lang |= {
     "message.mechanical.clamp.too_big": "Too big for one clamp: %s wood piles at most",
 }
 
+# ---------------------------------------------------------------- cementation (Smithing): steel
+# The pot is a crucible thrown in pale fire clay; packed, its mouth is black with charcoal; cemented, it is scorched.
+def mouth_black(img, rows=4):
+    out = img.copy()
+    px = out.load()
+    top = next(y for y in range(out.height) if any(px[x, y][3] for x in range(out.width)))
+    for y in range(top, min(out.height, top + rows)):
+        for x in range(out.width):
+            r, g, b, a = px[x, y]
+            if a and 3 < x < out.width - 4:
+                px[x, y] = (24 + (x * 5 % 9), 22 + (x * 3 % 7), 20, a)
+    return out
+
+
+item("unfired_cementation_pot", recolor(mod_texture("item/unfired_crucible"), hue=0.1, sat=0.35, light=1.2), "Unfired Cementation Pot")
+pot = recolor(mod_texture("item/crucible"), hue=0.09, sat=0.3, light=1.15)
+item("cementation_pot", pot, "Cementation Pot")
+item("packed_cementation_pot", mouth_black(pot), "Packed Cementation Pot")
+item("cemented_pot", recolor(mouth_black(pot), hue=0.07, sat=0.25, light=0.55), "Cemented Pot")
+w(D / "mechanical/recipe/unfired_cementation_pot.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["F F", "FFF"],
+                                                          "key": {"F": M + "fire_clay"}, "result": {"id": M + "unfired_cementation_pot", "count": 1}})
+w(D / "mechanical/recipe/packed_cementation_pot.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [M + "cementation_pot", M + "wrought_iron_ingot", M + "wrought_iron_ingot", "minecraft:charcoal", "minecraft:charcoal", M + "soot"],
+    "result": {"id": M + "packed_cementation_pot", "count": 1}})
+w(D / "mechanical/recipe/blister_steel_from_cemented_pot.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [M + "cemented_pot"], "result": {"id": M + "blister_steel", "count": 2}})
+# vanilla's Flint and Steel wants an Iron Ingot (none in the mod): a struck Steel Plate instead
+w(D / "minecraft/recipe/flint_and_steel.json", {"type": "minecraft:crafting_shapeless", "category": "equipment",
+    "ingredients": ["minecraft:flint", M + "steel_plate"], "result": {"id": "minecraft:flint_and_steel", "count": 1}})
+
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

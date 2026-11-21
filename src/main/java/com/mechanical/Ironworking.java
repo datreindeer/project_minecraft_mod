@@ -179,6 +179,7 @@ public final class Ironworking {
     /** {@code from} (a cold bloom or ingot, or the ore) heated into {@code hot}: full heat from {@code now}, its blows and yield kept. */
     public static ItemStack heated(ItemStack from, Item hot, long now) {
         if (hot == HOT_IRON_BLOOM.get()) return hotBloom(from, now);
+        if (!(hot instanceof HotMetalItem)) return new ItemStack(hot); // not hot metal (a cemented pot): just the result
         ItemStack out = new ItemStack(hot);
         if (hits(from) > 0) out.set(BLOOM_HITS.get(), hits(from));
         out.set(Casting.COOLS_AT.get(), now + HOT_SECONDS * 20L);

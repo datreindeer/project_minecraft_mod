@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:cementation_pot",
+    "mechanical:wrought_iron_ingot",
+    "mechanical:wrought_iron_ingot",
+    "minecraft:charcoal",
+    "minecraft:charcoal",
+    "mechanical:soot"
+  ],
+  "result": {
+    "id": "mechanical:packed_cementation_pot",
+    "count": 1
+  }
+}

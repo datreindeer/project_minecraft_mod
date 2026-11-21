@@ -1022,6 +1022,17 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
     ("charcoal_clamp", "root", "minecraft:charcoal", G, "Charcoal Burner",
      "Stack wood piles, cover them with earth on every side and on top, leave one side open and light it with the Fire Drill. "
      "After 5 minutes every piece of firewood is a Charcoal (a rough log two)", by_code()),
+    ("cementation", "forged", "cemented_pot", G, "Cementation",
+     "Shape a Cementation Pot from Fire Clay and fire it, pack it with 2 Wrought Iron, 2 Charcoal and Soot, and hold it at 1000° "
+     "in the Bloomery or Clay Kiln for 3 minutes. Break it open: 2 Blister Steel", has("cemented_pot", "blister_steel")),
+    ("steel", "cementation", "steel_ingot", C, "Steel",
+     "Heat Blister Steel to forging heat and fold it with 6 blows on the anvil into a Steel Ingot: the end of the Iron Age",
+     has("steel_ingot")),
+    ("steel_tools", "steel", "steel_pickaxe", G, "Steelsmith",
+     "Forge a steel head from a hot Steel Ingot and assemble it with Leather and an Iron Tool Rod. Steel mines obsidian",
+     has("steel_pickaxe", "steel_axe", "steel_shovel", "steel_hoe", "steel_sword", "steel_spear", "steel_knife")),
+    ("flint_and_steel", "steel", "minecraft:flint_and_steel", T, "Strike a Light",
+     "Flint + Steel Plate: a Flint and Steel lights a fire every time", has("minecraft:flint_and_steel")),
 ])
 
 # the Iron Age's new ores (IronOres.java; gen_iron_ores.py)

@@ -1,6 +1,6 @@
 # Järnåldern
 
-> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**,
+> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**, **stål**,
 > **de nya malmerna** Galena, guld, Limestone och Rock Salt. Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
@@ -106,7 +106,7 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 Bloomery slukar kol, och Clay Kiln ger bara 1 Charcoal per 2 Firewood. Kolmilan ger dubbelt så mycket. Kod:
 `CharcoalClamp` (milan, sparas i världsdata), `CharcoalHeapBlock`, `FireDrillItem`. Data: `scripts/gen_iron_age.py`.
 
-- **Bygg:** stapla vedtravar ([[Firewood Pile]] och/eller [[Rough Log Pile]], högst 64 block som rör varandra) och
+- **Bygg:** stapla vedtravar (Firewood Pile och/eller Rough Log Pile, högst 64 block som rör varandra) och
   **täck dem** på alla sidor och ovanpå med jord (taggen `mechanical:clamp_cover`: all dirt, gräs och lera, sand,
   grus, Clay, Packed Mud) eller fast block som inte brinner (sten). Underlaget ska vara fast. **En sida lämnas öppen:
   rökhålet.**
@@ -118,13 +118,28 @@ Bloomery slukar kol, och Clay Kiln ger bara 1 Charcoal per 2 Firewood. Kolmilan 
   2 per Rough Log** (en full trave = 8). Bryt den med spade (släpper allt) eller ta en i taget med tom hand.
 - Advancement **Charcoal Burner** (Iron Age-fliken). Test: `IronAgeTest`.
 
-### 4. Steel (åldersslutet)
+### 4. Steel (åldersslutet) (byggd)
 
-- **Wrought Iron + Charcoal** i en degel eller ett härdningsrör (cementering) → **Steel**.
-- Steel smids på städ till de bästa verktygen och full plåtrustning (bröstplåten kommer med järnet, se bronsålderns
-  rustning).
-- Texturer finns redan i texturbiblioteket: `crude_steel_ingot`, `crude_steel_ingot_hot`, `steel_ingot`,
-  `steel_bloom`, `steel_plate`, `steel_dust`.
+Cementering (kol och sot vandrar in i järnet). Kod: `Smithing`, `BloomeryBlockEntity` / `KilnBlockEntity` (recepten).
+Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
+
+| Steg | Hur |
+|---|---|
+| **Unfired Cementation Pot** | 5 Fire Clay (F F / FFF) |
+| **Cementation Pot** | Bränd i Clay Kiln vid 1100° |
+| **Packed Cementation Pot** | Cementation Pot + 2 Wrought Iron Ingot + 2 Charcoal + 1 Soot (formlöst) |
+| **Cemented Pot** | Packed pot i **Bloomery eller Clay Kiln** vid **1000°** i 3 min (snabbare hetare). Bloomery sjunker mot 800° utan bälg, så pumpa |
+| **Blister Steel** | Cemented Pot (formlöst) → **2 Blister Steel** (krukan går sönder) |
+| **Steel Ingot** | Blister Steel värmd till 1100° (Hot Blister Steel), **6 slag** på städet |
+
+- Heta Steel Ingots smids efter städets mönster till **Steel Plate** och stålets huvuden och blad (se *Smide*; ingen
+  Tool Rod eller Hammer Head av stål).
+- **Stålverktyg** (Tool Station): huvud + Leather + **Iron Tool Rod** → Steel Pickaxe / Axe / Shovel / Hoe; Steel Sword
+  (Sword Blade + Leather + Iron Tool Rod), Steel Spear (Spear Head + Cordage + Iron Tool Rod), Steel Knife (Knife Blade +
+  Leather + Stick). Materialet: **1100** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2), bryter som diamant (obsidian).
+- **Flint and Steel:** Flint + Steel Plate (vanillas recept ville ha Iron Ingot). Tänder varje gång.
+- **Inte byggt än:** stålrustning. Texturer finns i biblioteket.
+- Advancements: **Cementation**, **Steel**, **Steelsmith**, **Strike a Light**.
 
 ## Nya malmer (byggda, 2026-11-21)
 

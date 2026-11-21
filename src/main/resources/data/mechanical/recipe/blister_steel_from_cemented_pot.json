@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:cemented_pot"
+  ],
+  "result": {
+    "id": "mechanical:blister_steel",
+    "count": 2
+  }
+}

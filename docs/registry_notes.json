@@ -1392,5 +1392,10 @@
   "minecraft:iron_boots": {"vanilla": true, "category": "tools", "text": "Armor Station: 2 [[iron_plate]] + 2 Leather + hammare."},
   "minecraft:bucket": {"vanilla": true, "category": "tools", "text": "3 [[iron_plate]] i V-form."},
   "minecraft:shears": {"vanilla": true, "category": "tools", "text": "2 [[iron_plate]] diagonalt."},
-  "charcoal_heap": {"category": "blocks", "text": "Det en kolmila lämnar av en vedtrave: förkolnade vedträn, 1 Charcoal per Firewood och 2 per Rough Log (högst 8). Spade bryter, tom hand tar en i taget.\n**Kolmila:** stapla vedtravar, täck med jord på alla sidor och ovanpå, lämna en sida öppen och tänd den med [[fire_drill]]. 5 minuter; öppnas den brinner traven upp."}
+  "charcoal_heap": {"category": "blocks", "text": "Det en kolmila lämnar av en vedtrave: förkolnade vedträn, 1 Charcoal per Firewood och 2 per Rough Log (högst 8). Spade bryter, tom hand tar en i taget.\n**Kolmila:** stapla vedtravar, täck med jord på alla sidor och ovanpå, lämna en sida öppen och tänd den med [[fire_drill]]. 5 minuter; öppnas den brinner traven upp."},
+  "unfired_cementation_pot": {"category": "materials", "text": "5 [[fire_clay]] (F F / FFF). Bränns vid 1100° i Clay Kiln till [[cementation_pot]]."},
+  "cementation_pot": {"category": "materials", "text": "Kruka av eldfast lera. + 2 [[wrought_iron_ingot]] + 2 Charcoal + 1 [[soot]] → [[packed_cementation_pot]]."},
+  "packed_cementation_pot": {"category": "materials", "text": "Håll den vid 1000° i Bloomery eller Clay Kiln i 3 min → [[cemented_pot]]."},
+  "cemented_pot": {"category": "materials", "text": "Knacka upp den (formlöst): 2 [[blister_steel]]."},
+  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanillas recept ville ha Iron Ingot). Tänder varje gång, till skillnad från Fire Drill."}
 }
