@@ -82,7 +82,8 @@ public final class CalendarTest {
         net.minecraft.core.BlockPos head = h.absolutePos(new net.minecraft.core.BlockPos(2, 2, 2));
         java.util.function.Consumer<net.minecraft.world.level.block.Block> hut = b -> {
             for (int x = 0; x <= 4; x++) for (int y = 1; y <= 4; y++) for (int z = 0; z <= 4; z++)
-                if (x == 0 || x == 4 || z == 0 || z == 4 || y == 4) h.setBlock(x, y, z, b);
+                // the inside is cleared too: other tests may have left blocks here (tests don't clean up)
+                h.setBlock(x, y, z, x == 0 || x == 4 || z == 0 || z == 4 || y == 4 ? b : net.minecraft.world.level.block.Blocks.AIR);
         };
         hut.accept(EarthBlocks.TURF.get());
         check(h, Temperature.shelter(level, head) == 1, "turf hut is full shelter, got " + Temperature.shelter(level, head));

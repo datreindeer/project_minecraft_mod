@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/troll",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:troll_tusk_knife"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:troll_tusk_knife"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.troll_tusk_knife.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.troll_tusk_knife.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/giant_centipede",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:centipede_venom_sac"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:centipede_venom_sac"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.centipede_venom.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.centipede_venom.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

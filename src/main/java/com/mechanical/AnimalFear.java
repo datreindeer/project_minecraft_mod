@@ -44,6 +44,7 @@ public final class AnimalFear {
 
     static boolean isWild(LivingEntity entity) {
         if (entity instanceof com.mechanical.wildlife.BrownBear) return false; // bears never flee or panic
+        if (entity instanceof com.mechanical.wildlife.underground.Underground.Fearless) return false; // trolls, the lindworm
         if (entity instanceof com.mechanical.wildlife.Predator p && !p.fearsPlayers()) return false; // hunting at night
         if (entity instanceof com.mechanical.wildlife.GiantDeer) return false; // fights, hides and flees by its own goal
         if (!(entity instanceof Animal animal) || entity.getType().builtInRegistryHolder().is(DOMESTIC)) return false;

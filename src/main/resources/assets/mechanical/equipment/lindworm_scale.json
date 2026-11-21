@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:lindworm_scale"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mechanical:lindworm_scale"
+      }
+    ]
+  }
+}

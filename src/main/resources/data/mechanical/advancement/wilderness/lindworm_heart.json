@@ -1,0 +1,33 @@
+{
+  "parent": "mechanical:wilderness/lindworm",
+  "criteria": {
+    "ate_0": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:lindworm_heart"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ate_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:lindworm_heart"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.lindworm_heart.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.lindworm_heart.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "C C",
+    "CSC",
+    "CCC"
+  ],
+  "key": {
+    "C": "mechanical:centipede_chitin",
+    "S": "mechanical:sinew"
+  },
+  "result": {
+    "id": "mechanical:chitin_vest",
+    "count": 1
+  }
+}

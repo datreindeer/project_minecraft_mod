@@ -1,0 +1,31 @@
+{
+  "parent": "mechanical:wilderness/vittra",
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": {
+        "recipes": "mechanical:night_vision_potion_from_vittra_eye"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:glass_bottle"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.vittra_eyes.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.vittra_eyes.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

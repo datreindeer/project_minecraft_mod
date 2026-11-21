@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:troll_hair",
+    "mechanical:troll_hair"
+  ],
+  "result": {
+    "id": "mechanical:twine",
+    "count": 3
+  }
+}

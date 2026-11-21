@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:centipede_venom_sac",
+    "mechanical:lard",
+    "mechanical:plant_fibre"
+  ],
+  "result": {
+    "id": "mechanical:snakebite_poultice",
+    "count": 2
+  }
+}

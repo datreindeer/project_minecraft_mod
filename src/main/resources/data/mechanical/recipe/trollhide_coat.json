@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "H H",
+    "HSH",
+    "HHH"
+  ],
+  "key": {
+    "H": "mechanical:troll_hide",
+    "S": "mechanical:sinew"
+  },
+  "result": {
+    "id": "mechanical:trollhide_coat",
+    "count": 1
+  }
+}

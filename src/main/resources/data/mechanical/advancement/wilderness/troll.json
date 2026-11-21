@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:wilderness/deep_cold",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:troll_hide"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:troll_tusk"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:troll_tusk"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.troll.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.troll.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

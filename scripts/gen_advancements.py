@@ -815,6 +815,52 @@ TABS["food"][1].extend([
 ])
 
 
+# fauna: underground (Cave Hyena and Cave Bear are the mountain fauna's; underground they come only in total darkness)
+TABS["wilderness"][1].extend([
+    ("giant_centipede", "deep_cold", "centipede_fang", T, "Look Up",
+     "Kill a Giant Centipede in the dark below Y 0 - it clings to cave ceilings and drops on you - and butcher it for chitin, fangs and venom",
+     has("centipede_chitin", "centipede_fang")),
+    ("chitin_vest", "giant_centipede", "chitin_vest", T, "Plated",
+     "Sew 7 Centipede Chitin and Sinew into a Chitin Vest: a chestplate long before bronze", has("chitin_vest")),
+    ("centipede_venom", "giant_centipede", "centipede_venom_sac", T, "Venom of the Deep",
+     "Ring a Centipede Venom Sac with 8 Arrows for 8 Arrows of Poison, or bind it with Lard and Plant Fibre into Snakebite Poultice",
+     has("centipede_venom_sac")),
+])
+TABS["food"][1].extend([
+    ("cooked_centipede", "cooked", "cooked_centipede", T, "Crunchy", "Cook a Raw Centipede on a Campfire", has("cooked_centipede")),
+    ("cooked_folk", "cooked_centipede", "cooked_troll_meat", T, "Strange Meat",
+     "Cook the meat of a Vittra, a Troll or a Lindworm on a Campfire", has("cooked_vittra_meat", "cooked_troll_meat", "cooked_lindworm_meat")),
+])
+# the folk of the dark (Nordic folklore): Vittra, Troll, Lindworm - light is the defence
+TABS["wilderness"][1].extend([
+    ("vittra", "deep_cold", "vittra_eye", T, "Hush",
+     "Kill a Vittra below Y 0 - it hunts by sound: mining and sprinting call it, torchlight keeps it off - and butcher it for hide and eyes",
+     has("vittra_hide", "vittra_eye")),
+    ("vittra_hood", "vittra", "vittra_hood", T, "Unheard", "Sew 5 Vittra Hide into a Vittra Hood: no vittra hears you through it",
+     has("vittra_hood")),
+    ("vittra_eyes", "vittra", "minecraft:glass_bottle", T, "Eyes of the Dark",
+     "Put a Vittra Eye in a Glass Bottle: a Potion of Night Vision",
+     {"crafted": {"trigger": "minecraft:recipe_crafted", "conditions": {"recipes": "mechanical:night_vision_potion_from_vittra_eye"}}}),
+    ("troll", "deep_cold", "troll_tusk", G, "Troll Slayer",
+     "Kill a Troll below Y -30 - it shuns torchlight - and butcher it with a tusk-grade knife for its hide, hair and tusks",
+     has("troll_hide", "troll_tusk")),
+    ("troll_stone", "troll", "troll_stone", C, "Sunrise", "Lure a Troll out under the open sky by day: it turns to stone. Mine a Troll Stone",
+     has("troll_stone")),
+    ("trollhide_coat", "troll", "trollhide_coat", T, "Thick Skinned", "Sew 7 Troll Hide and Sinew into a Trollhide Coat", has("trollhide_coat")),
+    ("troll_tusk_knife", "troll", "troll_tusk_knife", T, "Tusk and Twine",
+     "Bind a Troll Tusk to a stick with Twine: a skinning knife that cuts the thickest hides", has("troll_tusk_knife")),
+    ("lindworm", "troll", "lindworm_scale", C, "Wyrmslayer",
+     "Slay a Lindworm in the deepest dark below Y -45 - fast, armoured, venomous - and claim the hoard it lay on",
+     killed({"minecraft:entity_type": "mechanical:lindworm"})),
+    ("lindworm_scale_armor", "lindworm", "lindworm_scale_chestplate", G, "Dragon Scale",
+     "Make armour of Lindworm Scales", has("lindworm_scale_helmet", "lindworm_scale_chestplate", "lindworm_scale_leggings", "lindworm_scale_boots")),
+    ("lindworm_fang_blade", "lindworm", "lindworm_fang_blade", T, "Fang Blade", "Bind two Lindworm Fangs to a stick: the Lindworm Fang Blade",
+     has("lindworm_fang_blade")),
+    ("lindworm_heart", "lindworm", "lindworm_heart", T, "Heart of the Wyrm", "Eat the Lindworm Heart: its strength becomes yours",
+     ate("lindworm_heart")),
+])
+
+
 # fauna: warm
 TABS["bronze_age"][1].extend([
     ("tame_onager", "rope_halter", "pack_baskets", G, "Beast of Burden",
@@ -1228,6 +1274,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
     "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena", "leopard",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
+    "underground": ["giant_centipede", "vittra", "troll", "lindworm"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)
     "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),
@@ -1236,10 +1283,11 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "predators": ("bear_claw", "Predators", "Butcher the hunters that hunt you"),
     "ice_age": ("mammoth_ivory", "Ice Age Giants", "Bring down the mammoth and the woolly rhinoceros"),
     "waters": ("blubber", "Shore and River", "Butcher seals, walruses and the great river fish"),
+    "underground": ("centipede_chitin", "The Deep", "Butcher the creatures that breed in the dark under the earth"),
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear"}
+CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
 
 
 def _args(src, start):
