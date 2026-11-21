@@ -9,6 +9,9 @@ import com.mechanical.equipment.PackMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
@@ -60,14 +63,16 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
  * {@link GripLayer} draws it at the jaws and the other hand is empty (third person only).</li>
  * <li>Rummaging in an open satchel, pouch or basket: head down, hands in the bag (WornSatchelModel / WornPouchModel
  * pull the worn bag forward).</li>
- * <li>Carrying: buckets and the water jug hang at the side, firewood / rough logs and the kettle in both arms, hammers and
- * axes on the shoulder while walking, a spear low in both hands while sneaking, the rod held out, the paddle stroking when
- * seated, the pan swirled while panning (display transforms: scripts/gen_hold_displays.py).</li>
+ * <li>Carrying: the water jug hangs at the side; buckets and crucibles in both hands underneath, firewood / rough logs on
+ * both forearms close to the chest, the kettle likewise but lower; hammers and axes with the head resting behind the
+ * shoulder while walking (all of these drawn by {@link GripLayer} from {@link Load}, not from the hand, so they sit
+ * between the arms whichever hand holds them); a spear low in both hands while sneaking, the rod held out, the paddle
+ * stroking when seated, the pan swirled while panning (display transforms: scripts/gen_hold_displays.py).</li>
  * <li>Strokes for click-used items (fire drill, broom, flail, paint and brush, chisel, bone flute), driven by the arm swing
- * the click makes (sent to everyone), which {@link #extract} takes off vanilla's swing.</li>
+ * the click makes (sent to everyone), which {@link #extract} takes off vanilla's swing. The fire drill spins on game time
+ * for as long as the swings keep coming (held right-click repeats them), so the drilling is continuous.</li>
  * </ul>
- * First person: {@link FirstPersonHolds} (the {@code Fp} column of {@link #extensionsFor}). Items with a 3D model in hand
- * (scripts/gen_held_models.py) keep their sprite's footprint, so the display transforms of gen_hold_displays.py hold for them.
+ * First person: {@link FirstPersonHolds} (the {@code Fp} column of {@link #extensionsFor}).
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class HoldPoses {
@@ -79,6 +84,8 @@ public final class HoldPoses {
     public static final EnumProxy<HumanoidModel.ArmPose> BUCKET_POSE = pose(false, false, HoldPoses::poseBucket);
     public static final EnumProxy<HumanoidModel.ArmPose> CARRY_POSE = pose(true, true, (m, s, a) -> poseCarry(m, s, a, false));
     public static final EnumProxy<HumanoidModel.ArmPose> HEAVY_POSE = pose(true, true, (m, s, a) -> poseCarry(m, s, a, true));
+    /** Both hands under a bucket or crucible in front of the belly. */
+    public static final EnumProxy<HumanoidModel.ArmPose> UNDER_POSE = pose(true, true, HoldPoses::poseUnder);
     public static final EnumProxy<HumanoidModel.ArmPose> PADDLE_POSE = pose(true, true, HoldPoses::posePaddle);
     public static final EnumProxy<HumanoidModel.ArmPose> SHOULDER_POSE = pose(false, false, HoldPoses::poseShoulder);
     public static final EnumProxy<HumanoidModel.ArmPose> SPEAR_LOW_POSE = pose(true, true, HoldPoses::poseSpearLow);
@@ -102,6 +109,12 @@ public final class HoldPoses {
     private static final ContextKey<Float> STROKE = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "stroke"));
     /** How fast the boat the paddler sits in goes (blocks/tick). */
     private static final ContextKey<Float> BOAT_SPEED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "boat_speed"));
+    /** What sits between the arms (or on the shoulder) instead of in the hand: drawn by {@link GripLayer}. */
+    enum LoadKind { LOGS, HEAVY, UNDER, SHOULDER }
+    private record Load(ItemStackRenderState item, LoadKind kind, HumanoidArm arm) {}
+    private static final ContextKey<Load> LOAD = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "load"));
+    /** Game time of each holder's last fire-drill swing: the drilling goes on while they keep coming. */
+    private static final java.util.Map<LivingEntity, Long> DRILLING = new java.util.WeakHashMap<>();
     /** How far past the shoulder pivot (model px along the arm) the tongs' jaws are, by bronze_tongs.json's display. */
     private static final float JAWS = 21.0F;
 
@@ -141,8 +154,9 @@ public final class HoldPoses {
         if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get()) return extensions(STAFF_POSE, Fp.STAFF);
         if (item == Mechanical.BARK_BASKET.get()) return extensions(BASKET_POSE, Fp.BASKET);
         if (item == BronzeTools.BRONZE_TONGS.get()) return extensions(TONGS_POSE, null);
-        if (item instanceof com.mechanical.WaterJugItem || item instanceof com.mechanical.ClayBucketItem || item instanceof com.mechanical.BronzeBucketItem
-                || item == BronzeTools.BRONZE_MILK_BUCKET.get()) return extensions(BUCKET_POSE, Fp.BUCKET);
+        if (item instanceof com.mechanical.WaterJugItem) return extensions(BUCKET_POSE, Fp.BUCKET);
+        if (item instanceof com.mechanical.ClayBucketItem || item instanceof com.mechanical.BronzeBucketItem || item == BronzeTools.BRONZE_MILK_BUCKET.get()
+                || item instanceof com.mechanical.CrucibleItem) return extensions(UNDER_POSE, Fp.UNDER);
         if (item instanceof com.mechanical.FirewoodItem || item instanceof com.mechanical.RoughLogItem) return extensions(CARRY_POSE, Fp.CARRY);
         if (item == com.mechanical.Bronze.BRONZE_KETTLE.get()) return extensions(HEAVY_POSE, Fp.HEAVY);
         if (item == com.mechanical.Watercraft.PADDLE.get()) return extensions(PADDLE_POSE, Entity::isPassenger, Fp.PADDLE);
@@ -203,11 +217,49 @@ public final class HoldPoses {
     /** For players and tribespeople, after the arm poses are picked: the tongs' grip and a stroke in progress. */
     public static void extract(LivingEntity entity, HumanoidRenderState state) {
         grip(entity, state);
-        if (state.swingAnimation <= 0.0F || state.currentSwing == null) return;
+        load(entity, state);
+        boolean swinging = state.swingAnimation > 0.0F && state.currentSwing != null;
+        HumanoidModel.ArmPose drill = FIRE_DRILL_POSE.getValue();
+        if (state.rightArmPose == drill || state.leftArmPose == drill) {
+            if (drilling(entity, swinging || FirstPersonHolds.usingOnBlock(entity)))
+                state.setRenderData(STROKE, (state.ageInTicks / 10.0F) % 1.0F); // continuous, not per swing
+            if (swinging) state.swingAnimation = 0.0F;
+            return;
+        }
+        if (!swinging) return;
         if (strokes(state.getArmPose(state.currentSwing.hand().asArm(state.mainArm)))) {
             state.setRenderData(STROKE, state.swingAnimation);
             state.swingAnimation = 0.0F;
         }
+    }
+
+    /** True while the holder keeps swinging the fire drill (a swing within the last 6 ticks; held right-click repeats every 4). */
+    static boolean drilling(LivingEntity entity, boolean swingingNow) {
+        long now = entity.level().getGameTime();
+        if (swingingNow) DRILLING.put(entity, now);
+        Long last = DRILLING.get(entity);
+        return last != null && now - last <= 6;
+    }
+
+    /** A load carried in both arms, or a hammer shouldered while walking: taken out of the hand for GripLayer to draw. */
+    private static void load(LivingEntity entity, HumanoidRenderState state) {
+        for (HumanoidArm arm : HumanoidArm.values()) {
+            HumanoidModel.ArmPose pose = arm == HumanoidArm.RIGHT ? state.rightArmPose : state.leftArmPose;
+            LoadKind kind = pose == CARRY_POSE.getValue() ? LoadKind.LOGS : pose == HEAVY_POSE.getValue() ? LoadKind.HEAVY
+                    : pose == UNDER_POSE.getValue() ? LoadKind.UNDER
+                    : pose == SHOULDER_POSE.getValue() && shouldered(state) ? LoadKind.SHOULDER : null;
+            if (kind == null) continue;
+            ItemStackRenderState item = new ItemStackRenderState();
+            Minecraft.getInstance().getItemModelResolver().updateForLiving(item, held(state, arm), ItemDisplayContext.NONE, entity);
+            state.setRenderData(LOAD, new Load(item, kind, arm));
+            (arm == HumanoidArm.RIGHT ? state.rightHandItemState : state.leftHandItemState).clear();
+            return;
+        }
+    }
+
+    /** Walking with a hammer or axe (not swinging it): on the shoulder. */
+    private static boolean shouldered(HumanoidRenderState state) {
+        return speed(state) > 0.25F && state.swingAnimation <= 0.0F;
     }
 
     /** Tongs in one hand and something hot (or a crucible) in the other: it moves to the tongs' jaws, its hand goes empty. */
@@ -222,8 +274,9 @@ public final class HoldPoses {
         Minecraft.getInstance().getItemModelResolver().updateForLiving(item, hot, ItemDisplayContext.GROUND, entity);
         state.setRenderData(GRIP, new Grip(item, tongs));
         (right ? state.rightHandItemState : state.leftHandItemState).clear();
-        if (right) state.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-        else state.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+        // the piece's hand goes empty, the tongs' arm holds them out (the piece's own two-handed pose may have taken it)
+        state.rightArmPose = right ? HumanoidModel.ArmPose.EMPTY : TONGS_POSE.getValue();
+        state.leftArmPose = right ? TONGS_POSE.getValue() : HumanoidModel.ArmPose.EMPTY;
     }
 
     /** What the tongs grip: something hot, or a crucible. */
@@ -364,15 +417,26 @@ public final class HoldPoses {
         }
     }
 
-    /** Both arms forward round a load in front of the chest (firewood, a rough log; heavy: the kettle, lower), bobbing with the steps. */
+    /** Both forearms forward under a load against the chest (firewood, a rough log; heavy: the kettle, lower), bobbing with the steps. */
     static void poseCarry(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm, boolean heavy) {
         float bob = 0.05F * Mth.cos(state.walkAnimationPos * 0.6662F * 2.0F) * speed(state);
         for (HumanoidArm a : HumanoidArm.values()) {
             ModelPart part = arm(model, a);
-            part.xRot = (heavy ? -1.0F : -0.9F) + bob;
-            part.yRot = side(a) * (heavy ? -0.45F : -0.4F);
+            part.xRot = (heavy ? -0.7F : -0.85F) + bob;
+            part.yRot = side(a) * (heavy ? -0.5F : -0.55F);
             part.zRot = 0.0F;
             if (heavy) part.y += 0.7F;
+        }
+    }
+
+    /** Both hands together under a bucket or crucible in front of the belly, bobbing with the steps. */
+    static void poseUnder(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        float bob = 0.04F * Mth.cos(state.walkAnimationPos * 0.6662F * 2.0F) * speed(state);
+        for (HumanoidArm a : HumanoidArm.values()) {
+            ModelPart part = arm(model, a);
+            part.xRot = -0.6F + bob;
+            part.yRot = side(a) * -0.6F;
+            part.zRot = 0.0F;
         }
     }
 
@@ -389,13 +453,13 @@ public final class HoldPoses {
         low.zRot = high.zRot = 0.0F;
     }
 
-    /** Walking: the hammer or axe rests on the shoulder, standing it is held as usual (vanilla's swing plays over both). */
+    /** Walking: the hand low in front holding the handle, the head resting behind the shoulder (GripLayer draws it); standing it is held as usual. */
     static void poseShoulder(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
         ModelPart part = arm(model, arm);
-        float w = Math.min(1.0F, speed(state) * 2.5F);
         rest(part);
-        part.xRot = Mth.lerp(w, part.xRot, -1.0F);
-        part.yRot = Mth.lerp(w, 0.0F, side(arm) * -0.45F);
+        if (!shouldered(state)) return;
+        part.xRot = -0.75F + 0.06F * Mth.cos(phase(state, arm)) * speed(state);
+        part.yRot = side(arm) * -0.35F;
     }
 
     /** Sneaking with a spear: held low in both hands, point forward (the hunting stance). */
@@ -443,7 +507,7 @@ public final class HoldPoses {
             part.yRot = side(a) * -0.5F;
             part.zRot = 0.0F;
         }
-        model.head.xRot += 0.35F * Mth.sin(p * Mth.PI);
+        model.head.xRot += 0.3F; // bent down to the tinder
     }
 
     /** Both hands low on the handle; a stroke sweeps it across and back. */
@@ -514,7 +578,10 @@ public final class HoldPoses {
 
     // ---------------------------------------------------------------- the gripped piece
 
-    /** Draws the hot piece held in the tongs at their jaws (render data from {@link #grip}). Players and tribespeople. */
+    /**
+     * Draws the hot piece held in the tongs at their jaws (render data from {@link #grip}) and a {@link Load} carried
+     * between the arms or on the shoulder (from {@link #load}). Players and tribespeople.
+     */
     public static final class GripLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
         public GripLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
             super(renderer);
@@ -522,6 +589,14 @@ public final class HoldPoses {
 
         @Override
         public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, AvatarRenderState state, float yRot, float xRot) {
+            Load load = state.getRenderData(LOAD);
+            if (load != null && !state.isInvisible) {
+                poseStack.pushPose();
+                getParentModel().body.translateAndRotate(poseStack);
+                placeLoad(poseStack, state, load);
+                load.item().submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                poseStack.popPose();
+            }
             Grip grip = state.getRenderData(GRIP);
             if (grip == null || state.isInvisible) return;
             poseStack.pushPose();
@@ -530,6 +605,46 @@ public final class HoldPoses {
             poseStack.rotateDegrees(Axis.XP, -90.0F); // the piece lies across the jaws, level with the arm
             grip.item().submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
             poseStack.popPose();
+        }
+    }
+
+    /**
+     * From the body (model space: px / 16, y down, front -z) to the load's centre, the item model unturned (ItemDisplayContext.NONE:
+     * item x across, y up, z out of its face). Solved for poseCarry / poseUnder / poseShoulder's arm angles.
+     */
+    static void placeLoad(PoseStack ps, HumanoidRenderState state, Load load) {
+        float bob = 0.3F * Mth.cos(state.walkAnimationPos * 0.6662F * 2.0F) * speed(state);
+        switch (load.kind()) {
+            case LOGS -> { // on both forearms against the chest, lying across
+                ps.translate(0.0F, (5.2F + bob) / 16.0F, -5.6F / 16.0F);
+                ps.rotateDegrees(Axis.XP, 180.0F);
+                ps.scale(0.8F, 0.8F, 0.8F);
+            }
+            case HEAVY -> { // the kettle, lower in both arms
+                ps.translate(0.0F, (8.0F + bob) / 16.0F, -6.0F / 16.0F);
+                ps.rotateDegrees(Axis.XP, 180.0F);
+                ps.scale(0.75F, 0.75F, 0.75F);
+            }
+            case UNDER -> { // standing on both hands in front of the belly
+                ps.translate(0.0F, (6.5F + bob) / 16.0F, -6.5F / 16.0F);
+                ps.rotateDegrees(Axis.XP, 180.0F);
+                ps.scale(0.6F, 0.6F, 0.6F);
+            }
+            case SHOULDER -> { // the handle from the hand low in front up over the shoulder, the head behind it
+                float x = load.arm() == HumanoidArm.RIGHT ? -1.0F : 1.0F; // model x of the holding side
+                Vector3f hand = new Vector3f(x * 2.6F, 9.3F, -6.8F), head = new Vector3f(x * 4.6F, -2.0F, 3.0F);
+                Vector3f axis = head.sub(hand, new Vector3f()).normalize();
+                // the item's handle-to-head diagonal onto that line, its face turned to the side
+                Quaternionf turn = new Quaternionf().rotationTo(new Vector3f(1.0F, 1.0F, 0.0F).normalize(), axis);
+                Vector3f face = turn.transform(new Vector3f(0.0F, 0.0F, 1.0F));
+                Vector3f side = new Vector3f(1.0F, 0.0F, 0.0F).sub(new Vector3f(axis).mul(axis.x)).normalize();
+                float roll = (float) Math.atan2(new Vector3f(face).cross(side).dot(axis), face.dot(side));
+                turn.premul(new Quaternionf().rotationAxis(roll, axis));
+                Vector3f centre = new Vector3f(axis).mul(7.0F * 0.9F).add(hand); // grip ~7 px from the model's centre
+                ps.translate(centre.x / 16.0F, centre.y / 16.0F, centre.z / 16.0F);
+                ps.rotate(turn);
+                ps.scale(0.9F, 0.9F, 0.9F);
+            }
         }
     }
 

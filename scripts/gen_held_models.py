@@ -1,22 +1,22 @@
-"""3D models in hand, on the ground and in item frames for items that are flat sprites (the GUI keeps the sprite).
+"""3D models in hand, on the ground and in item frames (the GUI keeps the sprite) - only where they beat the extruded
+sprite: rough logs and firewood (their wood's real log / stripped log / log top block textures, more wood the bigger the
+stack) and the Bark Basket (a woven-bark texture painted here, textures/item/bark_basket_weave.png).
+Every other held item stays the extruded sprite, which keeps every pixel of its hand-made texture.
 
-Each 3D model ("<model>_held") is built from cuboids that sample the item's own sprite (one texture, so one atlas) - the
-logs use their wood's log / stripped log / log top block textures. Every model keeps the sprite's footprint and slant
-(tools and logs run up the bottom-left to top-right diagonal, containers stand upright facing the front, the pan's dish
-faces the front), so the display transforms written for the sprites (vanilla generated / handheld, and the third-person
-hold poses of gen_hold_displays.py) still place them. First-person transforms of the items client/HoldPoses animates
-itself (basket, buckets, carried logs and kettle) are set here, the rest stay vanilla's.
-
-The item definitions are wrapped in a display_context select: "gui" shows the old tree, everything else the same tree with
-each model swapped for its _held one (count stacks of firewood, the bronze crucible's condition... keep working).
-Re-running is safe (an already wrapped definition is unwrapped first).
+Models are "<model>_held" ("<wood>_rough_log_held_2/_3" for bigger stacks). Item definitions are wrapped in a
+display_context select: "gui" shows the old tree, everything else the same tree with each model swapped for its _held one
+(firewood's own count variants keep working; rough logs get a count dispatch here). Re-running is safe: a wrapped
+definition is unwrapped first, and definitions / _held files of items no longer listed are restored / deleted.
+In hand the logs and the basket are placed by client/HoldPoses / FirstPersonHolds (ItemDisplayContext.NONE), so only
+ground / fixed / on_shelf displays matter here.
 Generator order: after gen_staffs.py / gen_block_items.py (every flat model and definition exists), before
-gen_hold_displays.py (which writes the third-person transforms into the _held models). Run: python scripts/gen_held_models.py
+gen_hold_displays.py. Run: python scripts/gen_held_models.py
 """
-import copy
 import json
 import math
 from pathlib import Path
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 A = ROOT / "src/main/resources/assets/mechanical"
@@ -25,17 +25,11 @@ M = "mechanical:"
 DIRS = {"n": "north", "s": "south", "e": "east", "w": "west", "u": "up", "d": "down"}
 
 
-
-def cube(frm, to, uv, tex="#t", rot=None, light=None, skip=""):
-    """A cuboid. uv: one rect for every face, or {"side": .., "end": ..} (end: up/down), or a dict per face name."""
+def cube(frm, to, uv, tex="#t", rot=None):
+    """A cuboid. uv: one rect for every face, {"side": .., "end": ..} (end: up/down), or per face name."""
     faces = {}
-    for f, name in DIRS.items():
-        if f in skip:
-            continue
-        if isinstance(uv, dict):
-            r = uv.get(name) or (uv.get("end") if name in ("up", "down") else None) or uv.get("side")
-        else:
-            r = uv
+    for name in DIRS.values():
+        r = uv.get(name) or (uv.get("end") if name in ("up", "down") else None) or uv.get("side") if isinstance(uv, dict) else uv
         if r is None:
             continue
         face = {"uv": list(r[:4]), "texture": tex}
@@ -45,130 +39,96 @@ def cube(frm, to, uv, tex="#t", rot=None, light=None, skip=""):
     e = {"from": [round(v, 4) for v in frm], "to": [round(v, 4) for v in to], "faces": faces}
     if rot:
         e["rotation"] = rot
-    if light:
-        e["light_emission"] = light
     return e
 
 
-def stick(p0, p1, w, d, uv, z=8.0, tex="#t", light=None):
-    """A bar in the front plane from 2D point p0 to p1 (model x, y), w wide in that plane, d deep (z)."""
+def stick(p0, p1, w, d, uv, z=8.0):
+    """A bar in the front plane from 2D point p0 to p1 (model x, y), w wide, d deep."""
     cx, cy = (p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2
     length = math.dist(p0, p1)
-    angle = math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0])) - 90  # the cube runs along y
-    return cube([cx - w / 2, cy - length / 2, z - d / 2], [cx + w / 2, cy + length / 2, z + d / 2], uv, tex,
-                rot={"origin": [round(cx, 4), round(cy, 4), z], "axis": "z", "angle": round(angle, 3)}, light=light)
+    angle = math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0])) - 90
+    return cube([cx - w / 2, cy - length / 2, z - d / 2], [cx + w / 2, cy + length / 2, z + d / 2], uv,
+                rot={"origin": [round(cx, 4), round(cy, 4), z], "axis": "z", "angle": round(angle, 3)})
 
 
-def hollow(x0, x1, z0, z1, y0, y1, outer, inner, rim, t=1.0):
-    """Four walls (t thick) of an open box: outer faces outer, inner faces inner, tops rim."""
-    walls = [([x0, y0, z0], [x1, y1, z0 + t], "north", "south"), ([x0, y0, z1 - t], [x1, y1, z1], "south", "north"),
-             ([x0, y0, z0 + t], [x0 + t, y1, z1 - t], "west", "east"), ([x1 - t, y0, z0 + t], [x1, y1, z1 - t], "east", "west")]
-    return [cube(frm, to, {"side": outer, "up": rim, "down": outer, facing_in: inner}) for frm, to, _, facing_in in walls]
+# ------------------------------------------------------------------ the Bark Basket and its woven texture
+
+def rgb(h):
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) + (255,)
 
 
-# ------------------------------------------------------------------ containers (upright, facing the front like the sprite)
-
-def bucket(body, inner, rim, bottom, fill=None, handle=None, light=None):
-    """10 wide, 11 tall; a fill surface at y 9 (water, milk, lava); a bail handle over the top."""
-    els = [cube([3.5, 0, 3.5], [12.5, 1, 12.5], {"side": body, "up": inner, "down": bottom})]
-    els += hollow(3, 13, 3, 13, 1, 11, body, rim if fill else inner, rim)  # a full sprite's inside rows are the fill
-    if fill:
-        els.append(cube([4, 1, 4], [12, 9, 12], {"up": fill}, light=light))
-    if handle:
-        els += [stick((2.6, 8), (2.6, 14.4), 0.75, 1, handle), stick((13.4, 8), (13.4, 14.4), 0.75, 1, handle),
-                cube([2.25, 14.25, 7.5], [13.75, 15, 8.5], handle)]
-    return els
+# bark_basket.png's own colours, dark -> light
+DARK, DARK2, SHADE, MID, MID2, BARK, LIGHT, LIGHT2, HI = map(rgb, ["241b12", "2e2419", "3d2b1e", "4c3d26", "5c4319", "665844",
+                                                                    "87755b", "987849", "be9d5f"])
 
 
-BRONZE_BUCKET = dict(body=[3, 8, 13, 15], inner=[4, 5, 12, 6], rim=[5, 2, 11, 3], bottom=[4, 15, 12, 16], handle=[5, 0, 11, 1])
-CLAY_BUCKET = dict(body=[3, 7, 13, 13], inner=[4, 4, 12, 5], rim=[5, 1, 11, 2], bottom=[5, 14, 11, 15])
+def weave_texture():
+    """16x16: rows 0-7 the outside wall (over-under bark strips, 2 px weft x 4 px warp), 8-9 the braided rim, 10-11 the
+    bark-wrapped handle, 12-15 the inside (the same weave in shadow)."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.putpixel
+
+    def weave(y0, rows, light, mid, dark, deep):
+        for y in range(rows):
+            for x in range(16):
+                row, col = y // 2, x // 4
+                weft_over = (row + col) % 2 == 0
+                if weft_over:  # horizontal strip on top: lit upper edge, shaded lower edge, darker where it dives under
+                    c = light if y % 2 == 0 else mid
+                    if x % 4 in (0, 3):
+                        c = mid if y % 2 == 0 else dark
+                else:  # vertical stake on top: lit left side, shaded right side
+                    c = (mid, light, light, dark)[x % 4]
+                    if y % 2 == 1 and x % 4 == 3:
+                        c = deep
+                px((x, y0 + y), c)
+
+    weave(0, 8, LIGHT2, BARK, MID, SHADE)
+    for x in range(16):  # rim: two twisted bark ropes
+        px((x, 8), (HI, LIGHT2, BARK, MID)[x % 4])
+        px((x, 9), (BARK, MID, SHADE, LIGHT)[x % 4])
+    for x in range(16):  # handle: bark wrapped round in a spiral
+        px((x, 10), (LIGHT2, LIGHT, BARK, MID2)[x % 4])
+        px((x, 11), (BARK, MID2, LIGHT2, LIGHT)[x % 4])
+    weave(12, 4, MID, SHADE, DARK2, DARK)
+    for x in range(16):  # the bottom edge of the wall
+        px((x, 7), SHADE if x % 4 == 3 else MID)
+    return img
+
+
+WALL, RIM, HANDLE, INSIDE = [0, 0, 16, 8], [0, 8, 16, 9.5], [0, 10, 4, 12], [0, 12, 16, 16]
+
+
+def hollow(x0, x1, z0, z1, y0, y1, t=1.0):
+    """Four woven walls (t thick) of an open basket: outside the weave, inside the shaded weave, rim on top."""
+    def uv(width):  # outside weave, one texel per model px across, the full 8 rows down the 7 px wall
+        return [0, 0, min(16, width), 8]
+    walls = [([x0, y0, z0], [x1, y1, z0 + t], "south"), ([x0, y0, z1 - t], [x1, y1, z1], "north"),
+             ([x0, y0, z0 + t], [x0 + t, y1, z1 - t], "east"), ([x1 - t, y0, z0 + t], [x1, y1, z1 - t], "west")]
+    out = []
+    for frm, to, inward in walls:
+        width = max(to[0] - frm[0], to[2] - frm[2])
+        out.append(cube(frm, to, {"side": uv(width), "up": [0, 8, width, 9], "down": [0, 7, width, 8],
+                                  inward: [0, 12, min(16, width), 16]}))
+    return out
 
 
 def basket():
-    """Woven bark basket, 12 x 8, with a carrying handle across."""
-    handle = [5, 1, 11, 2]
-    els = [cube([2.5, 0, 4.5], [13.5, 1, 11.5], {"side": [1, 14, 15, 15], "up": [3, 7, 13, 8], "down": [3, 15, 13, 16]})]
-    els += hollow(2, 14, 4, 12, 1, 8, [1, 10, 15, 14], [3, 7, 13, 8], [2, 9, 14, 10])
-    els += [stick((3.5, 7.5), (3.5, 12.5), 1, 1, handle), stick((12.5, 7.5), (12.5, 12.5), 1, 1, handle),
-            stick((3.5, 12.2), (5.3, 15.2), 1, 1, handle), stick((12.5, 12.2), (10.7, 15.2), 1, 1, handle),
-            cube([5, 14.6, 7.5], [11, 15.6, 8.5], handle)]
+    """Woven bark basket, 12 x 8, 7 tall, with a bark-wrapped handle across."""
+    els = [cube([2.5, 0, 4.5], [13.5, 1, 11.5], {"side": [0, 7, 11, 8], "up": [0, 12, 11, 16], "down": [0, 12, 11, 16]})]
+    els += hollow(2, 14, 4, 12, 1, 8)
+    els += [cube([1.75, 7.25, 3.75], [14.25, 8.5, 4.75], {"side": RIM, "end": RIM}),  # braided rim, proud of the walls
+            cube([1.75, 7.25, 11.25], [14.25, 8.5, 12.25], {"side": RIM, "end": RIM}),
+            cube([1.75, 7.25, 4.75], [2.75, 8.5, 11.25], {"side": RIM, "end": RIM}),
+            cube([13.25, 7.25, 4.75], [14.25, 8.5, 11.25], {"side": RIM, "end": RIM})]
+    h = {"side": [0, 10, 16, 12, 90], "end": [0, 10, 2, 12]}
+    els += [stick((3.2, 7.5), (3.2, 12.0), 1, 1, h), stick((12.8, 7.5), (12.8, 12.0), 1, 1, h),
+            stick((3.2, 11.6), (5.4, 14.9), 1, 1, h), stick((12.8, 11.6), (10.6, 14.9), 1, 1, h),
+            cube([5, 14.4, 7.5], [11, 15.4, 8.5], {"side": [0, 10, 16, 12], "end": [0, 10, 6, 11]})]
     return els
 
 
-def kettle():
-    """A round-bellied bronze pot with a bail handle, open at the top."""
-    side, rim = [2, 6, 14, 13], [3, 5, 13, 6]
-    handle = [5, 1, 11, 2]
-    return [cube([4, 0, 4], [12, 1, 12], {"side": [3, 12, 13, 13], "up": [3, 12, 13, 13]}),
-            cube([2.5, 1, 2.5], [13.5, 8, 13.5], {"side": side, "up": rim, "down": [3, 13, 13, 14]}),
-            *hollow(3.5, 12.5, 3.5, 12.5, 8, 10.5, rim, [4, 13, 12, 14], rim),
-            cube([4.5, 7, 4.5], [11.5, 9.5, 11.5], {"up": [4, 13, 12, 14]}),
-            stick((3.1, 9), (4.6, 14.5), 0.75, 1, handle), stick((12.9, 9), (11.4, 14.5), 0.75, 1, handle),
-            cube([4.4, 14.1, 7.5], [11.6, 14.9, 8.5], handle)]
-
-
-def pan(content):
-    """A shallow dish facing the front (the sprite looks down into it): 12 x 12, rim 2 deep."""
-    rim, outer = [3, 4, 13, 5], [1, 11, 15, 12]
-    els = [cube([3, 3, 7], [13, 13, 8], {"south": content, "north": outer, "side": outer})]
-    for frm, to in (([2, 2, 7], [14, 3, 10]), ([2, 13, 7], [14, 14, 10]), ([2, 3, 7], [3, 13, 10]), ([13, 3, 7], [14, 13, 10])):
-        els.append(cube(frm, to, {"south": rim, "side": outer}))
-    return els
-
-
-def crucible(molten):
-    """A clay crucible; molten: the glowing melt at the top (the animated texture's own pixels, full bright)."""
-    body, inner, rim = [2, 7, 13, 12], [4, 4, 11, 5], [3, 2, 12, 3]
-    els = [cube([4.5, 0, 4.5], [11.5, 2, 11.5], {"side": [3, 11, 12, 13], "up": inner, "down": [4, 12, 11, 13]})]
-    els += hollow(3.5, 12.5, 3.5, 12.5, 2, 11, body, rim if molten else inner, rim)
-    if molten:
-        els.append(cube([4.5, 2, 4.5], [11.5, 10, 11.5], {"up": [3, 3, 11, 5]}, light=15))
-    return els
-
-
-# ------------------------------------------------------------------ tools (up the diagonal like the sprite)
-
-def tongs():
-    """Two bronze arms crossing at a rivet: handles at the bottom left, jaws at the top right."""
-    a, b, pad = [11, 4, 12, 5], [10, 3, 11, 4], [11, 1, 12, 2]
-    return [stick((1.5, 4), (14.5, 13), 1, 0.75, a, z=7.6),
-            stick((4.5, 1), (11.5, 16), 1, 0.75, b, z=8.4),
-            stick((13.8, 12.6), (13.0, 14.6), 1.25, 1.5, pad, z=7.6),  # jaws bent in towards each other
-            stick((11.6, 15.6), (13.2, 14.4), 1.25, 1.5, pad, z=8.4),
-            cube([7.25, 7.75, 6.9], [8.75, 9.25, 9.1], pad)]  # rivet
-
-
-def broom():
-    handle = {"north": [4, 11, 5, 12], "south": [4, 11, 5, 12], "side": [5, 11, 6, 12]}
-    straw = {"side": [8, 2, 13, 7], "end": [9, 3, 11, 4]}
-    return [stick((1, 1), (8, 8), 1, 1, handle),
-            stick((7.2, 7.2), (8.9, 8.9), 2.2, 2.2, [5, 8, 7, 9]),
-            stick((8.8, 8.8), (11.5, 11.5), 3.6, 2.2, straw),
-            stick((11.4, 11.4), (15, 15), 5.4, 2.6, straw)]
-
-
-def flail():
-    return [stick((1.5, 4), (8.6, 11), 1, 1, [2, 10, 3, 11]),
-            cube([7.9, 10.4, 7.25], [9.4, 11.9, 8.75], [8, 5, 10, 6]),  # leather joint
-            stick((9.6, 11), (14.6, 5), 1.5, 1.5, [11, 8, 12, 9])]
-
-
-def fire_drill():
-    """Pump drill: spindle, cross bar on cords, flywheel low on the spindle."""
-    return [cube([7.5, 0, 7.5], [8.5, 15.5, 8.5], {"north": [9, 2, 10, 13], "south": [9, 2, 10, 13], "side": [8, 2, 9, 13], "end": [8, 1, 10, 2]}),
-            cube([2.5, 7.5, 7.25], [13.5, 10, 8.75], {"side": [3, 6, 14, 9], "east": [3, 7, 4, 8], "west": [3, 7, 4, 8], "end": [3, 7, 14, 8]}),
-            cube([5, 1, 5], [11, 2.75, 11], {"side": [5, 14, 13, 16], "end": [5, 14, 11, 16]})]
-
-
-def hammer(handle, head, end, w):
-    """Handle up the diagonal, the head a real block across its top (w thick)."""
-    c, half = (10.4, 10.4), 4.6
-    return [stick((0.5, 0.5), (10.5, 10.5), 1, 1, handle),
-            stick((c[0] - half / math.sqrt(2) * 1.0, c[1] + half / math.sqrt(2)), (c[0] + half / math.sqrt(2), c[1] - half / math.sqrt(2)),
-                  w, w, {"side": head, "end": end})]
-
-
-# ------------------------------------------------------------------ logs (block textures)
+# ------------------------------------------------------------------ logs (block textures), lying along x
 
 WOODS = sorted(p.name[:-len("_rough_log.json")] for p in MODELS.glob("*_rough_log.json"))
 
@@ -179,126 +139,95 @@ def wood_textures(w):
     return {"side": ns(f"{w}_log"), "end": ns(f"{w}_log_top"), "inner": ns(f"stripped_{w}_log"), "particle": ns(f"{w}_log")}
 
 
-DIAG = {"origin": [8, 8, 8], "axis": "z", "angle": 45}
-
-
-def log_piece(x0, x1, cy, cz, size, bark_faces, end_uv):
-    """A log (or split piece) along x before the diagonal turn: bark faces carry the grain along the log."""
+def log_piece(x0, x1, cy, cz, size, bark_faces, end_uv, tilt=0.0):
+    """A log or split piece along x; bark faces carry the grain along it. tilt: degrees round x (a piece lying askew)."""
     h = size / 2
+    long_ = round(x1 - x0, 3)
     faces = {}
     for name in ("north", "south", "up", "down"):
-        long_ = round(x1 - x0, 3)
         faces[name] = {"uv": [8 - h, 8 - long_ / 2, 8 + h, 8 + long_ / 2], "rotation": 90,
                        "texture": "#side" if name in bark_faces else "#inner"}
     for name in ("east", "west"):
         faces[name] = {"uv": end_uv, "texture": "#end"}
-    return {"from": [x0, cy - h, cz - h], "to": [x1, cy + h, cz + h], "rotation": DIAG, "faces": faces}
+    e = {"from": [x0, cy - h, cz - h], "to": [x1, cy + h, cz + h], "faces": faces}
+    if tilt:
+        e["rotation"] = {"origin": [8, cy, cz], "axis": "x", "angle": tilt}
+    return e
 
 
-def rough_log():
-    return [log_piece(1.5, 14.5, 8, 8, 5.5, ("north", "south", "up", "down"), [5.25, 5.25, 10.75, 10.75])]
+BARK_ALL = ("north", "south", "up", "down")
+# rough logs: 1, 2 side by side with one on top... (centre y, z, length offset)
+ROUGH = {1: [(8, 8, 0)], 2: [(5.5, 5.4, -0.5), (5.5, 10.6, 0.5)], 3: [(5.2, 5.2, -0.5), (5.2, 10.8, 0.6), (9.8, 8, 0)]}
+# firewood: a split piece, three, an armful of six (y, z, x offset, tilt)
+SPLIT = {1: [(8, 8, 0, 0)],
+         2: [(6.5, 6.4, -0.8, 0), (6.5, 9.6, 0.6, 0), (9.4, 8, 0, 45)],
+         3: [(5.0, 4.4, -0.6, 0), (5.0, 7.6, 0.8, 0), (5.0, 10.8, -0.2, 0), (8.0, 6.0, 0.4, 45), (8.0, 9.2, -0.8, 0), (11.0, 7.6, 0.2, 45)]}
 
 
-FIREWOOD_SPOTS = {1: [(0, 0, 0)], 2: [(-1.6, 0, -0.6), (1.6, 0, 0.6)], 3: [(-1.6, -1.2, 0), (1.6, -1.2, 0.8), (0, 1.6, -0.8)]}
+def rough_log(n):
+    return [log_piece(1.5 + dx, 14.5 + dx, y, z, 5.2 if n > 1 else 6, BARK_ALL, [5, 5, 11, 11]) for y, z, dx in ROUGH[n]]
 
 
 def firewood(n):
-    """1-3 split quarters of a log: bark on two faces, split wood on the others."""
-    return [log_piece(2.5 + dx, 13.5 + dx, 8 + dy, 8 + dz, 3, ("up", "south"), [8, 8, 11, 11]) for dy, dz, dx in FIREWOOD_SPOTS[n]]
+    return [log_piece(2.5 + dx, 13.5 + dx, y, z, 3, ("up", "south"), [8, 8, 11, 11], tilt) for y, z, dx, tilt in SPLIT[n]]
 
 
-# ------------------------------------------------------------------ the list
+GROUND = {"ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
+          "fixed": {"rotation": [0, 180, 0], "scale": [1, 1, 1]},
+          "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]}}
+LOG_DISPLAY = {"ground": {"rotation": [0, 30, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
+               "fixed": {"rotation": [0, 180, 0], "scale": [0.9, 0.9, 0.9]},
+               "on_shelf": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0.9, 0.9, 0.9]},
+               "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]}}
 
-HELD = {
-    "bark_basket": basket(),
-    "bronze_bucket": bucket(**BRONZE_BUCKET),
-    "bronze_water_bucket": bucket(**BRONZE_BUCKET, fill=[5, 3, 11, 6]),
-    "bronze_milk_bucket": bucket(**BRONZE_BUCKET, fill=[5, 3, 11, 6]),
-    "clay_bucket": bucket(**CLAY_BUCKET),
-    "clay_water_bucket": bucket(**CLAY_BUCKET, fill=[5, 3, 11, 5]),
-    "bronze_kettle": kettle(),
-    "pan": pan([5, 6, 11, 10]),
-    "pan_with_sand": pan([5, 6, 11, 10]),
-    "pan_with_gravel": pan([5, 6, 11, 10]),
-    "crucible": crucible(False),
-    "molten_crucible": crucible(True),
-    "molten_crucible_bronze": crucible(True),
-    "bronze_tongs": tongs(),
-    "broom": broom(),
-    "flail": flail(),
-    "fire_drill": fire_drill(),
-    "bronze_smithing_hammer": hammer([1, 13, 3, 14], [7, 3, 12, 7], [10, 6, 13, 8], 3.4),
-    "iron_smithing_hammer": hammer([1, 13, 3, 14], [7, 3, 12, 7], [10, 6, 13, 8], 3.4),
-    "bronze_quarry_hammer": hammer([2, 12, 4, 13], [6, 2, 12, 7], [9, 4, 13, 6], 4.4),
-    "steel_quarry_hammer": hammer([2, 12, 4, 13], [6, 2, 12, 7], [9, 4, 13, 6], 4.4),
-}
-LOGS = {}
+written = {}
+tex = A / "textures/item"
+weave_texture().save(tex / "bark_basket_weave.png")
+flat_basket = json.loads((MODELS / "bark_basket.json").read_text(encoding="utf-8"))
+written["bark_basket"] = {"textures": {"t": M + "item/bark_basket_weave", "particle": M + "item/bark_basket"}, "elements": basket(),
+                          "display": {**GROUND, **{k: v for k, v in flat_basket.get("display", {}).items() if k.startswith("thirdperson")}}}
 for w in WOODS:
-    LOGS[f"{w}_rough_log"] = (rough_log(), wood_textures(w))
+    t = wood_textures(w)
+    written[f"{w}_rough_log"] = {"textures": t, "elements": rough_log(1), "display": LOG_DISPLAY}
+    for n in (2, 3):
+        written[f"{w}_rough_log/{n}"] = {"textures": t, "elements": rough_log(n), "display": LOG_DISPLAY}
     for n in (1, 2, 3):
-        LOGS[f"{w}_firewood_{n}"] = (firewood(n), wood_textures(w))
-
-# first person, for the items HoldPoses places itself (it applies the position, these the model's turn and size)
-FIRST_PERSON = {
-    "basket": ([0, 25, 0], [0, 0, 0], 0.6),
-    "bucket": ([0, 20, 0], [0, 0, 0], 0.55),
-    "carry": ([0, 0, -45], [0, 0, 0], 0.7),   # the log turned to lie across, in both arms
-    "kettle": ([0, 30, 0], [0, 0, 0], 0.45),
-}
-FP_KIND = {"bark_basket": "basket", "bronze_kettle": "kettle", **{n: "bucket" for n in HELD if "bucket" in n},
-           **{n: "carry" for n in LOGS}}
-
-GENERATED = {"ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
-             "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
-             "thirdperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.55, 0.55, 0.55]},
-             "thirdperson_lefthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.55, 0.55, 0.55]},
-             "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
-             "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
-             "fixed": {"rotation": [0, 180, 0], "scale": [1, 1, 1]}}
-HANDHELD = {**GENERATED,
-            "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
-            "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]}}
+        written[f"{w}_firewood_{n}"] = {"textures": t, "elements": firewood(n), "display": LOG_DISPLAY}
 
 
-def display(name, flat):
-    d = copy.deepcopy(HANDHELD if flat.get("parent", "").endswith("handheld") else GENERATED)
-    for k in ("thirdperson_righthand", "thirdperson_lefthand"):  # the sprite's own hold transform (gen_hold_displays rewrites these)
-        if k in flat.get("display", {}):
-            d[k] = flat["display"][k]
-    if name.startswith("pan"):
-        d["ground"] = {"rotation": [-90, 0, 0], "translation": [0, 1, 0], "scale": [0.5, 0.5, 0.5]}  # lying flat
-    if name in FP_KIND:
-        rot, tr, s = FIRST_PERSON[FP_KIND[name]]
-        d["firstperson_righthand"] = {"rotation": rot, "translation": tr, "scale": [s, s, s]}
-        d["firstperson_lefthand"] = copy.deepcopy(d["firstperson_righthand"])  # ItemTransform.apply mirrors left-hand transforms itself
-    return d
+def held_name(key):
+    base, _, n = key.partition("/")
+    return f"{base}_held" + (f"_{n}" if n else "")
 
 
 def write(path, obj):
     path.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
 
 
-written = {}
-for name, elements in HELD.items():
-    flat = json.loads((MODELS / f"{name}.json").read_text(encoding="utf-8"))
-    tex = flat["textures"]["layer0"]
-    written[name] = {"textures": {"t": tex, "particle": tex}, "elements": elements, "display": display(name, flat)}
-for name, (elements, textures) in LOGS.items():
-    flat = json.loads((MODELS / f"{name}.json").read_text(encoding="utf-8"))
-    written[name] = {"textures": textures, "elements": elements, "display": display(name, flat)}
-for name, model in written.items():
+keep = set()
+for key, model in written.items():
     for e in model["elements"]:
-        assert all(-16 <= v <= 32 for v in e["from"] + e["to"]), (name, e)
-    write(MODELS / f"{name}_held.json", model)
+        assert all(-16 <= v <= 32 for v in e["from"] + e["to"]), (key, e)
+    write(MODELS / f"{held_name(key)}.json", model)
+    keep.add(f"{held_name(key)}.json")
+stale = [p for p in MODELS.glob("*_held*.json") if p.name not in keep]
+for p in stale:
+    p.unlink()
 
 
 def held_tree(node):
-    """The definition's model tree with every model that has a _held version swapped for it."""
+    """The definition's model tree with every model that has a _held version swapped for it (rough logs: by count)."""
     if isinstance(node, dict):
         out = {k: held_tree(v) for k, v in node.items()}
         ref = node.get("model")
         if node.get("type") == "minecraft:model" and isinstance(ref, str) and ref.startswith(M + "item/") and ref[len(M + "item/"):] in written:
+            name = ref[len(M + "item/"):]
             out["model"] = ref + "_held"
+            if f"{name}/2" in written:
+                return {"type": "minecraft:range_dispatch", "property": "minecraft:count", "normalize": False,
+                        "entries": [{"threshold": 2, "model": {"type": "minecraft:model", "model": ref + "_held_2"}},
+                                    {"threshold": 5, "model": {"type": "minecraft:model", "model": ref + "_held_3"}}],
+                        "fallback": out}
         return out
     if isinstance(node, list):
         return [held_tree(v) for v in node]
@@ -310,18 +239,23 @@ def ours(node):
             and node["cases"][0].get("when") == ["gui"])
 
 
-wrapped = 0
+wrapped = restored = 0
 for path in sorted(ITEMS.glob("*.json")):
     item = json.loads(path.read_text(encoding="utf-8"))
     tree = item["model"]
-    if ours(tree):
+    was = ours(tree)
+    if was:
         tree = tree["cases"][0]["model"]
     held = held_tree(tree)
     if held == tree:
+        if was:  # no 3D model any more: back to the plain definition
+            item["model"] = tree
+            write(path, item)
+            restored += 1
         continue
     item["model"] = {"type": "minecraft:select", "property": "minecraft:display_context",
                      "cases": [{"when": ["gui"], "model": tree}], "fallback": held}
     write(path, item)
     wrapped += 1
-assert wrapped >= len(WOODS) * 2 + 15, wrapped
-print(f"{len(written)} held models, {wrapped} item definitions")
+assert wrapped == len(WOODS) * 2 + 1, wrapped
+print(f"{len(written)} held models, {wrapped} item definitions wrapped, {restored} restored, {len(stale)} stale models removed")
