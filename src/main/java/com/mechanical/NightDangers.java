@@ -16,7 +16,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.pathfinder.Path;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
@@ -61,7 +60,7 @@ public final class NightDangers {
     /** Extra night spawns: chance per player every 5 s, while fewer than NEARBY_CAP monsters are within 48 blocks. */
     private static final float EXTRA_SPAWN_CHANCE = 0.45F, BLOOD_MOON_SPAWN_CHANCE = 0.9F;
     private static final int NEARBY_CAP = 12, BLOOD_MOON_CAP = 20;
-    /** Some zombies and creepers stalk: they circle the player for a while (30-70 s) before attacking. */
+    /** Some zombies stalk: they circle the player for a while (30-70 s) before attacking (the Gloson does its own circling). */
     private static final float LURK_CHANCE = 0.4F;
     private static final String LURKER_TAG = "mechanical.lurker", ROLLED_TAG = "mechanical.rolled";
     private static final Map<Monster, Long> LURK_END = new WeakHashMap<>();
@@ -136,14 +135,14 @@ public final class NightDangers {
         }
         if (!monster.entityTags().contains(ROLLED_TAG)) {
             monster.addTag(ROLLED_TAG);
-            if ((monster instanceof Zombie || monster instanceof Creeper) && monster.getRandom().nextFloat() < LURK_CHANCE) monster.addTag(LURKER_TAG);
+            if (monster instanceof Zombie && monster.getRandom().nextFloat() < LURK_CHANCE) monster.addTag(LURKER_TAG);
         }
         if (monster.entityTags().contains(LURKER_TAG)) monster.goalSelector.addGoal(3, new LurkGoal(monster));
         monster.goalSelector.addGoal(4, new SmashTorchGoal(monster));
         if (horde) monster.goalSelector.addGoal(5, new FollowHordeGoal(monster));
         // blood moon: torches within reach get smashed even mid-chase, and melee walkers break down wooden doors
         monster.goalSelector.addGoal(2, new BloodMoonTorchesGoal(monster));
-        if (monster.getNavigation() instanceof GroundPathNavigation && !(monster instanceof Creeper)
+        if (monster.getNavigation() instanceof GroundPathNavigation && !(monster instanceof com.mechanical.wildlife.night.MushroomMan)
                 && !(monster instanceof net.minecraft.world.entity.monster.skeleton.AbstractSkeleton) && !(monster instanceof net.minecraft.world.entity.monster.Enderman)) {
             monster.goalSelector.addGoal(1, new BloodMoonDoorGoal(monster));
         }
@@ -478,7 +477,13 @@ public final class NightDangers {
                 || !level.getFluidState(pos).isEmpty() || !level.getFluidState(pos.below()).isEmpty()
                 || nearFire(level, Vec3.atCenterOf(pos), BloodMoon.isActive(level) ? 10 : NO_SPAWN_RADIUS)) return;
         int roll = random.nextInt(100);
-        EntityType<? extends Monster> type = roll < 50 ? EntityTypes.ZOMBIE : roll < 72 ? EntityTypes.SKELETON : roll < 88 ? EntityTypes.SPIDER : EntityTypes.CREEPER;
+        // the creeper's old 12 %: a Gloson or a Mushroom Man (NightFauna#create picks by the land)
+        if (roll >= 88) {
+            net.minecraft.world.entity.Mob mob = com.mechanical.wildlife.night.NightFauna.create(level, pos, EntitySpawnReason.NATURAL);
+            if (mob != null && level.noCollision(mob)) level.addFreshEntity(mob);
+            return;
+        }
+        EntityType<? extends Monster> type = roll < 50 ? EntityTypes.ZOMBIE : roll < 72 ? EntityTypes.SKELETON : EntityTypes.SPIDER;
         Monster monster = type.create(level, EntitySpawnReason.NATURAL);
         if (monster == null) return;
         monster.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);

@@ -22,7 +22,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 /**
- * Tinder: right-click an unlit campfire, Fire Pit or clay kiln with Leaf Litter or Bark to lay tinder in it. The next Fire Drill
+ * Tinder: right-click an unlit campfire, Fire Pit or clay kiln with Leaf Litter, Bark or Mushroom Flesh to lay tinder in it. The next Fire Drill
  * attempt then catches much more easily; the tinder is used up when the fire catches.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -38,7 +38,7 @@ public final class Tinder {
     public static void init() {}
 
     public static boolean isTinder(ItemStack stack) {
-        return stack.is(Items.LEAF_LITTER) || stack.is(Mechanical.BARK_TAG);
+        return stack.is(Items.LEAF_LITTER) || stack.is(Mechanical.BARK_TAG) || stack.is(com.mechanical.wildlife.night.NightFauna.MUSHROOM_FLESH.get());
     }
 
     /** The block entity that holds the tinder for an unlit campfire or kiln at {@code pos}, or null. */

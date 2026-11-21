@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:razor_ridge"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:razor_ridge"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.gloson.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.gloson.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

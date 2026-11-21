@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:raw_gloson"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_lynx"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -66,12 +66,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wolverine"
+            "items": "mechanical:raw_lynx"
           }
         ]
       }
     },
     "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wolverine"
+          }
+        ]
+      }
+    },
+    "has_8": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -91,7 +101,8 @@
       "has_4",
       "has_5",
       "has_6",
-      "has_7"
+      "has_7",
+      "has_8"
     ]
   ],
   "display": {

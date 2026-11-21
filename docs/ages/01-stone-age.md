@@ -898,7 +898,7 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
 ### Blod
 - Djur **och monster** blöder när de träffas (blodpartiklar, fler vid hårda slag). Monster blöder likadant som djur
   (droppar, spår, blödning under 50 %). Undantag utan blod (taggen `mechanical:bloodless`): alla skelett, Slime, Magma
-  Cube, Blaze, Breeze, Creeper, Vex, Ghast, Shulker, Wither, golems, Creaking, Endermite och Silverfish.
+  Cube, Blaze, Breeze, Mushroom Man, Vex, Ghast, Shulker, Wither, golems, Creaking, Endermite och Silverfish.
 - **Under 50 % hälsa blöder de:** droppar blod, lämnar **bloddroppar på marken** när de rör sig (går att spåra) och
   tar en halv hjärta var 5:e sekund. Blödningen slutar på 1 hjärta, den dödar aldrig.
 - Styckning sprutar blod och lämnar blodfläckar runt kroppen (en pöl runt Bone Pile).
@@ -1187,9 +1187,14 @@ Nytt item: **Wolf Pelt**: Wolf Hood, Wolf Fur-rustning, Wolf Rug och fäll på S
 - **Sovande djur:** vilda djur lägger sig och sover på natten. Kommer man inom 7 block (2,5 om man smyger) vaknar de och
   flyr i panik. De vaknar också när de skadas och när det blir morgon.
 - **Fler monster:** var 5:e sekund är det 45 % chans att ett extra monster spawnar 24–40 block från spelaren (på ytan,
-  i mörker, inte nära eld), tills det finns 12 monster inom 48 block. Zombie 50 %, Skeleton 22 %, Spider 16 %, Creeper 12 %.
-- **Smygare:** 40 % av alla zombies och creepers smyger först runt spelaren på 12–18 blocks avstånd och tittar i 30–70 s
-  innan de anfaller. De anfaller direkt om man slår dem eller går närmare än 5 block.
+  i mörker, inte nära eld), tills det finns 12 monster inom 48 block. Zombie 50 %, Skeleton 22 %, Spider 16 %, Gloson eller Mushroom Man 12 %.
+- **Smygare:** 40 % av alla zombies smyger först runt spelaren på 12–18 blocks avstånd och tittar i 30–70 s
+  innan de anfaller. De anfaller direkt om man slår dem eller går närmare än 5 block. **Gloson** gör samma sak på sitt
+  eget sätt (cirklar 10–16 block bort med glödande ögon, anfaller och springer vidare).
+- **Ingen creeper:** creepern finns inte (inte heller i gamla världar). Där den skulle ha spawnat kommer i stället en
+  **Gloson** (grå sugga med glödande ögon och vass rygg som cirklar och anfaller: blödande sår och knockback) eller en
+  **Mushroom Man** (vandrande svamp som fräser, sväller och spricker i ett sporoln: Blindness, Nausea och −15 sanity,
+  inga block går sönder). Mushroom Man är vanligast i skog, träsk och grottor. Se `docs/fauna/night.md`.
 - **Ingen knockback på monster:** de fortsätter trycka sig fram mot spelaren när man slår dem.
 - **Smartare pathfinding:** monster söker längre vägar. Står en med mål stilla i ~2 s försöker den en ny väg, sedan halvvägs
   mot målet, och till sist rakt mot målet (och hoppar när den går in i något).
@@ -1206,7 +1211,7 @@ Nytt item: **Wolf Pelt**: Wolf Hood, Wolf Fur-rustning, Wolf Rug och fäll på S
   blir lite ljusare i rött. Vid skymningen kommer ett meddelande ("The moon rises red...") och ett mörkt hornljud. Under
   blodmånen spawnar dubbelt så många extra monster (upp till 20 inom 48 block i stället för 12) och zombiehorderna kommer.
   Monstren är rasande: de **slår sönder facklor** inom räckhåll även medan de jagar dig (och söker upp facklor i
-  närheten oftare), och alla närstridsmonster som går på marken (inte creepers, skelett eller endermen) **slår in
+  närheten oftare), och alla närstridsmonster som går på marken (inte Mushroom Men, skelett eller endermen) **slår in
   trädörrar**, som zombier gör på Hard. **Elden skyddar inte under blodmånen:** monstren håller sig inte undan från
   campfires och kilns, anfaller spelare som står vid elden och kan spawna ända in till 10 block från den (annars 28).
   Testa med `/bloodmoon` (op), som gör kvällens natt till blodmåne.
@@ -1241,6 +1246,7 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
   havsnivån), ×0,5 med sällskap (annan spelare eller vänlig tribesperson inom 12 block), ×2 under blodmåne. Ensam ute
   i mörkret på natten: 0,125/s, alltså 100 → 0 på ~13 minuter (100 → 70 på 4 min). Under blodmånen tappar man också
   0,05/s i skymningsljus.
+- **Sporer:** en Mushroom Man som spricker (eller en kastad Spore Bomb) tar 15 på en gång från alla spelare inom 4 block.
 - **Kommer tillbaka (per sekund):** vid brinnande eld (Campfire eller tänd Clay Kiln inom 6 block) +0,5, alltid, även
   under blodmåne; i dagsljus +0,3; på upplysta ställen +0,05; sällskap +0,1 extra. Under blodmånen halveras allt
   utom elden. **Vila i Straw Bed** ger +20 (+35 i en Furred Straw Bed; bara +8 om man är under 15, "man vänder och vrider sig") och hjälper bara
@@ -1252,11 +1258,11 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
   hotbaren, värre för varje steg.
 - **Under 40:** "The dark presses in." Mörka gestalter i ögonvrån (i kanten av synfältet) som försvinner när man
   tittar på dem, hjärtslag (snabbare och starkare ju lägre), en långsam gungning i bilden och falska monsterljud: ett
-  zombiestön, en creeper som fräser precis bakom dig, skelett, spindlar. Undertexterna visar som vanligt, så de går
+  zombiestön, en Mushroom Man som fräser precis bakom dig, skelett, spindlar. Undertexterna visar som vanligt, så de går
   inte att skilja från riktiga.
 - **Under 15:** "Your mind is slipping." Kraftig vinjett, falska stötar (skadetilt och skadeljud utan skada) och ett
-  **inbillat monster** (zombie, skeleton eller creeper) som står 9–14 block bort och stirrar. Det löses upp i rök när
-  man slår det, går närmare än 4 block, efter en minut eller när sanity stiger över 20; en inbillad creeper fräser när
+  **inbillat monster** (zombie, skeleton eller Mushroom Man) som står 9–14 block bort och stirrar. Det löses upp i rök när
+  man slår det, går närmare än 4 block, efter en minut eller när sanity stiger över 20; en inbillad Mushroom Man fräser när
   man är inom 7 block och försvinner sedan. **Riktiga effekter:** Mining Fatigue I och Weakness I så länge man är under 15.
 - **Vid 0:** dessutom anfall av illamående (Nausea i 8 s, i snitt var 30:e sekund). Ingen direkt skada.
 - Testa med `/sanity` (visar värdet), `/sanity <0–100>` eller `/sanity <värde> <spelare>` (op).
@@ -1774,8 +1780,8 @@ Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor
   jaktlag som strövat en hel dag (och inte är mitt i en jakt) slår sig ner på samma sätt.
 - **Försvar:** bara **beväpnade** (Hunters, och den som håller yxa, svärd, spjut, båge e.d.) anfaller monster och hjälper
   andra i gruppen. Obeväpnade (fiskare med spö, samlare, Elder) **flyr** från monster mot elden eller en beväpnad, och slår
-  bara tillbaka om de är instängda. Alla backar från en fräsande creeper; jägare med båge skjuter creepers på håll.
-  Monster jagar dem också, som zombier jagar bybor (även creepers; inte endermen eller piglins).
+  bara tillbaka om de är instängda. Alla backar från en svällande Mushroom Man; jägare med båge skjuter Mushroom Men på håll.
+  Monster jagar dem också, som zombier jagar bybor (även Mushroom Men; inte endermen eller piglins).
 - **Sår:** de blöder som djur (blod när de träffas, droppar under halv hälsa) och **pilar fastnar** i dem. Pilsår blöder
   dem ner till ett hjärta men aldrig ihjäl; utan strid läker de sakta och drar ut en pil i taget.
 - **Humör:** de hälsar ibland i chatten. **Slår du en blir hela gruppen arg i ungefär en speldag. Dödar du en är gruppen
@@ -2683,12 +2689,12 @@ Advancements i fliken **Folklore**: *Folklore* (ät Fly Agaric, rå eller kokt),
 Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är borttagna.
 
 ### Recept från senare åldrar (avstängda)
-Vanilla-recept som går att göra av saker man hittar i stenåldern (creepers, häxor, fiske, strukturer) men som hör till
+Vanilla-recept som går att göra av saker man hittar i stenåldern (häxor, fiske, strukturer) men som hör till
 en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säger också varför); de kommer tillbaka i sin ålder.
 
 | Recept | Varför det gick | Tillbaka i |
 |---|---|---|
-| TNT | Gunpowder (creeper) + Sand | Ångåldern |
+| TNT | Gunpowder (häxor; creepers finns inte) + Sand | Ångåldern |
 | Firework Rocket (båda recepten), Firework Star, Firework Star (fade) | Gunpowder + Paper / Dye | Ångåldern |
 | Leather Horse Armor | 7 Leather | Bronsåldern (sys på Leatherworking Bench) |
 | Wolf Armor | Armadillo Scute (bältdjur fäller dem själva) | Bronsåldern |

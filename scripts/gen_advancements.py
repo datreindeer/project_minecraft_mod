@@ -1341,6 +1341,25 @@ TABS["iron_age"][1].extend([
      has("lime_plaster")),
 ])
 
+# fauna: night (the Gloson and the Mushroom Man, in the creeper's place)
+TABS["wilderness"][1].extend([
+    ("gloson", "butcher", "razor_ridge", C, "Razorback",
+     "Kill a Gloson - the grey sow that circles you in the dark with glowing eyes and charges - and cut the Razor Ridge off its back",
+     has("razor_ridge")),
+    ("razor_knife", "gloson", "razor_knife", T, "Razor's Edge", "Lash a Razor Ridge to a Stick with Sinew: a Razor Knife",
+     has("razor_knife")),
+    ("bristle_brush", "gloson", "gloson_bristles", T, "Bristle Brush", "Bind Gloson Bristles to a Stick: a Paintbrush",
+     {"crafted": {"trigger": "minecraft:recipe_crafted", "conditions": {"recipes": "mechanical:paintbrush_from_gloson_bristles"}}}),
+    ("spore_sac", "butcher", "spore_sac", T, "Before It Bursts",
+     "Kill a Mushroom Man before it swells and bursts into spores, and take its Spore Sac", has("spore_sac")),
+    ("spore_bomb", "spore_sac", "spore_bomb", T, "Spore Bomb", "Wrap a Spore Sac in a Puffball: a Spore Bomb to throw", has("spore_bomb")),
+    ("fungal_tinder", "spore_sac", "mushroom_flesh", T, "Fungal Tinder",
+     "Lay Mushroom Flesh as tinder in an unlit fire: it catches like dry bark", has("mushroom_flesh")),
+])
+TABS["food"][1].extend([
+    ("cooked_gloson", "cooked", "cooked_gloson", T, "Ghost Pork", "Cook Raw Gloson on a Campfire", has("cooked_gloson")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
@@ -1358,7 +1377,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
                  "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir",
                  "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena", "leopard",
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm"],

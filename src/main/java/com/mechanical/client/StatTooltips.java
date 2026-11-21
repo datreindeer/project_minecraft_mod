@@ -164,7 +164,7 @@ public final class StatTooltips {
             lines.add(stat("Catch chance", percent(Tinder.CHANCE_WITHOUT)));
             lines.add(stat("With tinder", percent(Tinder.CHANCE_WITH)));
             use(lines, "Lights campfires, Fire Pits, kilns, furnaces and bloomeries");
-            use(lines, "Tinder: Leaf Litter or Bark on the unlit fire");
+            use(lines, "Tinder: Leaf Litter, Bark or Mushroom Flesh on the unlit fire");
         }
         if (stack.is(Farming.FLAIL.get())) {
             lines.add(stat("Sheaf per stroke", value("1 in " + FlailItem.STROKES)));

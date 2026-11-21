@@ -35,7 +35,7 @@ public final class Blood {
     private static final float BLEED_FLOOR = 2.0F;       // one heart: bleeding stops here
     private static final int BLEED_INTERVAL = 100, TRAIL_INTERVAL = 15;
 
-    /** Mobs without blood: skeletons, slimes, blazes, creepers ... (entity type tag {@code mechanical:bloodless}). */
+    /** Mobs without blood: skeletons, slimes, blazes, Mushroom Men ... (entity type tag {@code mechanical:bloodless}). */
     public static final TagKey<EntityType<?>> BLOODLESS = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "bloodless"));
 
     /** Animals, monsters and tribespeople bleed, unless they have no blood. */

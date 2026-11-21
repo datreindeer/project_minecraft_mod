@@ -8,18 +8,17 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Unarmed people (and anyone near a hissing creeper) keep away from monsters: they run toward the camp fire or an armed
+ * Unarmed people (and anyone near a swelling Mushroom Man) keep away from monsters: they run toward the camp fire or an armed
  * member of their group if that leads away from the threat, else just away. With nowhere to run they are cornered and
  * may hit back (see {@link Tribesperson#isCornered()}). Anyone badly hurt runs from a Giant Deer too ({@link #dreads}).
  */
 class FleeThreatGoal extends Goal {
-    private static final double RANGE = 8, CREEPER_RANGE = 6;
+    private static final double RANGE = 8, BURST_RANGE = 6;
     private final Tribesperson mob;
     private LivingEntity threat;
 
@@ -40,7 +39,7 @@ class FleeThreatGoal extends Goal {
     }
 
     private static boolean hissing(LivingEntity e) {
-        return e instanceof Creeper c && c.getSwellDir() > 0;
+        return e instanceof com.mechanical.wildlife.night.MushroomMan m && m.getSwellDir() > 0;
     }
 
     @Override
@@ -48,7 +47,7 @@ class FleeThreatGoal extends Goal {
         if (mob.getTradingPlayer() != null) return false;
         boolean armed = mob.isArmed();
         List<LivingEntity> near = mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(RANGE),
-                e -> isThreat(mob, e) && (!armed || hissing(e) && e.distanceToSqr(mob) < CREEPER_RANGE * CREEPER_RANGE) || dreads(mob, e));
+                e -> isThreat(mob, e) && (!armed || hissing(e) && e.distanceToSqr(mob) < BURST_RANGE * BURST_RANGE) || dreads(mob, e));
         threat = near.stream().min((a, b) -> Double.compare(a.distanceToSqr(mob), b.distanceToSqr(mob))).orElse(null);
         if (threat == null) return false;
         Vec3 to = refuge();

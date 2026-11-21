@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:spore_sac",
+    "mechanical:puffball"
+  ],
+  "result": {
+    "id": "mechanical:spore_bomb",
+    "count": 1
+  }
+}

@@ -30,7 +30,6 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -150,7 +149,7 @@ public final class SanityClient {
             }
             case 2 -> play(0, behind(player, random, 4 + random.nextDouble() * 4), SoundEvents.SCAFFOLDING_BREAK, SoundSource.AMBIENT, 0.6F, 0.55F); // twig snap
             case 3 -> play(0, behind(player, random, 6 + random.nextDouble() * 8), SoundEvents.ZOMBIE_AMBIENT, SoundSource.HOSTILE, 0.6F, 0.8F + random.nextFloat() * 0.2F);
-            case 4 -> play(0, behind(player, random, 2.5), SoundEvents.CREEPER_PRIMED, SoundSource.HOSTILE, 0.8F, 0.5F); // the hiss is the scary one
+            case 4 -> play(0, behind(player, random, 2.5), SoundEvents.CREEPER_PRIMED, SoundSource.HOSTILE, 0.8F, 0.6F); // a Mushroom Man's hiss: the scary one
             case 5 -> play(0, behind(player, random, 6 + random.nextDouble() * 8), SoundEvents.SKELETON_AMBIENT, SoundSource.HOSTILE, 0.6F, 0.8F + random.nextFloat() * 0.2F);
             case 6 -> play(0, behind(player, random, 4 + random.nextDouble() * 6), SoundEvents.SPIDER_AMBIENT, SoundSource.HOSTILE, 0.6F, 0.9F);
             case 7 -> { // a jolt as if hit: hurt tilt and sound, no damage
@@ -191,7 +190,7 @@ public final class SanityClient {
         if (fake != null) return;
         EntityType<? extends Mob> type = switch (random.nextInt(3)) {
             case 0 -> EntityTypes.SKELETON;
-            case 1 -> EntityTypes.CREEPER;
+            case 1 -> com.mechanical.wildlife.night.NightFauna.MUSHROOM_MAN.get();
             default -> EntityTypes.ZOMBIE;
         };
         for (int attempt = 0; attempt < 10; attempt++) { // a dark spot 9-14 blocks off, with ground under it
@@ -230,8 +229,8 @@ public final class SanityClient {
         fakeAge++;
         facePlayer(fake, player); // it just stands there and stares
         double dist = fake.distanceTo(player);
-        if (fake instanceof Creeper && dist < 7 && fuse < 0) { // hisses, then dissolves 2 s later (unless reached first)
-            mc.level.playLocalSound(fake.getX(), fake.getY(), fake.getZ(), SoundEvents.CREEPER_PRIMED, SoundSource.HOSTILE, 1.0F, 0.5F, false);
+        if (fake instanceof com.mechanical.wildlife.night.MushroomMan && dist < 7 && fuse < 0) { // hisses, then dissolves 2 s later (unless reached first)
+            mc.level.playLocalSound(fake.getX(), fake.getY(), fake.getZ(), SoundEvents.CREEPER_PRIMED, SoundSource.HOSTILE, 1.0F, 0.6F, false);
             fuse = 40;
         }
         if (fuse > 0 && --fuse == 0 || dist < 4 || fakeAge > 1200 || shown >= Sanity.MAD + 5) dissolve(mc);
