@@ -101,14 +101,15 @@ public final class ToolStationRecipes {
             new Recipe(() -> Items.IRON_SWORD, Smithing.IRON_SWORD_BLADE, Mechanical.CORDAGE, () -> Items.LEATHER, s -> s.is(Smithing.IRON_SWORD_BLADE.get())),
             new Recipe(() -> Items.IRON_SPEAR, Smithing.IRON_SPEAR_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_SPEAR_HEAD.get())),
             new Recipe(Smithing.IRON_SMITHING_HAMMER, Smithing.IRON_HAMMER_HEAD, () -> Items.LEATHER, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_HAMMER_HEAD.get())),
-            // steel: the head's tang runs through an Iron Tool Rod under the leather
-            new Recipe(Smithing.STEEL_PICKAXE, Smithing.STEEL_PICKAXE_HEAD, () -> Items.LEATHER, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_PICKAXE_HEAD.get())),
-            new Recipe(Smithing.STEEL_AXE, Smithing.STEEL_AXE_HEAD, () -> Items.LEATHER, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_AXE_HEAD.get())),
-            new Recipe(Smithing.STEEL_SHOVEL, Smithing.STEEL_SHOVEL_HEAD, () -> Items.LEATHER, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_SHOVEL_HEAD.get())),
-            new Recipe(Smithing.STEEL_HOE, Smithing.STEEL_HOE_HEAD, () -> Items.LEATHER, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_HOE_HEAD.get())),
+            // steel: forged heads with an eye on a wooden haft, locked by an Iron Tool Rod driven in as wedge and ferrule (no lashing)
+            new Recipe(Smithing.STEEL_PICKAXE, Smithing.STEEL_PICKAXE_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_PICKAXE_HEAD.get())),
+            new Recipe(Smithing.STEEL_AXE, Smithing.STEEL_AXE_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_AXE_HEAD.get())),
+            new Recipe(Smithing.STEEL_SHOVEL, Smithing.STEEL_SHOVEL_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_SHOVEL_HEAD.get())),
+            new Recipe(Smithing.STEEL_HOE, Smithing.STEEL_HOE_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_HOE_HEAD.get())),
             new Recipe(() -> Smithing.STEEL_KNIFE.get(), Smithing.STEEL_KNIFE_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_KNIFE_BLADE.get())),
-            new Recipe(Smithing.STEEL_SWORD, Smithing.STEEL_SWORD_BLADE, () -> Items.LEATHER, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_SWORD_BLADE.get())),
-            new Recipe(Smithing.STEEL_SPEAR, Smithing.STEEL_SPEAR_HEAD, Mechanical.CORDAGE, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_SPEAR_HEAD.get())));
+            // the sword: an Iron Tool Rod forged into guard and tang, a leather grip
+            new Recipe(Smithing.STEEL_SWORD, Smithing.STEEL_SWORD_BLADE, Smithing.IRON_TOOL_ROD, () -> Items.LEATHER, s -> s.is(Smithing.STEEL_SWORD_BLADE.get())),
+            new Recipe(Smithing.STEEL_SPEAR, Smithing.STEEL_SPEAR_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_SPEAR_HEAD.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

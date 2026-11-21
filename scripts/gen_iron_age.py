@@ -91,7 +91,7 @@ def lib(path):
     return Image.open(LIB / f"{path}.png").convert("RGBA")
 
 
-def metal(img, kind, mask=None, min_light=0.0):
+def metal(img, kind, mask=None, min_light=0.0, max_sat=1.0):
     """Recolour the metal of a bronze texture to iron or steel: every opaque pixel, or those under {@code mask} (the
     part's own texture, drawn at the same place on the tool), or those at least {@code min_light} light."""
     hue, sat, light = kind
@@ -103,7 +103,7 @@ def metal(img, kind, mask=None, min_light=0.0):
             if a == 0 or (mk and mk[x, y][3] == 0):
                 continue
             h, l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
-            if l < min_light:
+            if l < min_light or s > max_sat:
                 continue
             r2, g2, b2 = colorsys.hls_to_rgb(hue, min(1, l * light * 1.08), sat)
             px[x, y] = (round(r2 * 255), round(g2 * 255), round(b2 * 255), a)
@@ -152,12 +152,15 @@ for part, title in PARTS.items():
     item(f"steel_{part}", metal(bronze(part), STEEL), f"Steel {title}")
 item("iron_hammer_head", metal(bronze("hammer_head"), IRON), "Iron Hammer Head")
 handheld("iron_smithing_hammer", metal(bronze("smithing_hammer"), IRON, mask=bronze("hammer_head")), "Iron Smithing Hammer")
-for tool in ("axe", "hoe", "shovel", "sword", "knife"):
-    handheld(f"steel_{tool}", lib(f"tools/steel_{tool}"), f"Steel {tool.title()}")
-handheld("steel_pickaxe", metal(bronze("pickaxe"), STEEL, mask=bronze("pickaxe_head")), "Steel Pickaxe")
-item("steel_spear", metal(bronze("spear"), STEEL, mask=bronze("spear_head")), "Steel Spear")
+# steel tools: vanilla's iron tools with the grey metal blued to steel and the wooden haft kept: forged heads on a
+# wedged haft, no lashing (the knife: the mod's Iron Knife, its leather grip kept)
+STEEL_TOOL = (0.6, 0.2, 0.82)
+for tool in ("pickaxe", "axe", "hoe", "shovel", "sword"):
+    handheld(f"steel_{tool}", metal(vanilla_texture(f"item/iron_{tool}"), STEEL_TOOL, max_sat=0.2), f"Steel {tool.title()}")
+handheld("steel_knife", metal(mod_texture("item/iron_knife"), STEEL_TOOL, max_sat=0.2), "Steel Knife")
+item("steel_spear", metal(vanilla_texture("item/iron_spear"), STEEL_TOOL, max_sat=0.2), "Steel Spear")
 spear_hand = A / "textures/item/steel_spear_in_hand.png"
-metal(bronze("spear_in_hand"), STEEL, min_light=0.33).save(spear_hand)
+metal(vanilla_texture("item/iron_spear_in_hand"), STEEL_TOOL, max_sat=0.2).save(spear_hand)
 w(A / "models/item/steel_spear_in_hand.json", {"parent": "minecraft:item/spear_in_hand", "textures": {"layer0": M + "item/steel_spear_in_hand"}})
 spear = json.loads((A / "items/bronze_spear.json").read_text(encoding="utf-8"))
 w(A / "items/steel_spear.json", json.loads(json.dumps(spear).replace("bronze_spear", "steel_spear")))

@@ -141,9 +141,11 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 
 - Heta Steel Ingots smids efter städets mönster till **Steel Plate** och stålets huvuden och blad (se *Smide*; ingen
   Tool Rod eller Hammer Head av stål).
-- **Stålverktyg** (Tool Station): huvud + Leather + **Iron Tool Rod** → Steel Pickaxe / Axe / Shovel / Hoe; Steel Sword
-  (Sword Blade + Leather + Iron Tool Rod), Steel Spear (Spear Head + Cordage + Iron Tool Rod), Steel Knife (Knife Blade +
-  Leather + Stick). Materialet: **1100** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2), bryter som diamant (obsidian).
+- **Stålverktyg** (Tool Station): smitt huvud med skafthål på ett träskaft, låst med en **Iron Tool Rod** som kil och
+  beslag, ingen surrning: huvud + Iron Tool Rod + Tool Rod → Steel Pickaxe / Axe / Shovel / Hoe; Steel Spear (Spear Head
+  + Iron Tool Rod + Tool Rod); Steel Sword (Sword Blade + Iron Tool Rod som parerstång och tånge + Leather som grepp);
+  Steel Knife (Knife Blade + Leather + Stick). Materialet: **1100** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2),
+  bryter som diamant (obsidian). Texturerna är vanillas järnverktyg med blått stål.
 - **Flint and Steel:** Flint + Steel Plate (vanillas recept ville ha Iron Ingot). Tänder varje gång.
 - **Stålrustning** (Armor Station): 3 / 6 / 5 / 2 Steel Plate + 2 / 4 / 3 / 2 Leather + hammare → Steel Helmet /
   Chestplate / Leggings / Boots. Skydd 3 / 7 / 6 / 2 och 1 i seghet (järn 2 / 6 / 5 / 2, diamant 3 / 8 / 6 / 3),
