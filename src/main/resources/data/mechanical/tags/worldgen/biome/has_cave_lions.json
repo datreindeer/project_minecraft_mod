@@ -7,6 +7,9 @@
     "minecraft:windswept_hills",
     "minecraft:windswept_gravelly_hills",
     "minecraft:stony_peaks",
-    "minecraft:meadow"
+    "minecraft:meadow",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge"
   ]
 }

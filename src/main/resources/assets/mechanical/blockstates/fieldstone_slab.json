@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/fieldstone_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/fieldstone"
+    },
+    "type=top": {
+      "model": "mechanical:block/fieldstone_slab_top"
+    }
+  }
+}

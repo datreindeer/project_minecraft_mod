@@ -2,6 +2,8 @@
   "values": [
     "minecraft:windswept_hills",
     "minecraft:windswept_gravelly_hills",
-    "minecraft:windswept_forest"
+    "minecraft:windswept_forest",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley"
   ]
 }

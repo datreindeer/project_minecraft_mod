@@ -6,7 +6,9 @@
     "minecraft:windswept_gravelly_hills",
     "minecraft:plains",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

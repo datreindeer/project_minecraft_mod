@@ -5,7 +5,8 @@
     "minecraft:birch_forest",
     "minecraft:taiga",
     "mechanical:deciduous_forest",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:glacial_moraine"
   ],
   "spawners": [
     {

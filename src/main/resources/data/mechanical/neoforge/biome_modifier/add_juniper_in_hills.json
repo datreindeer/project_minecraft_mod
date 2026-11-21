@@ -3,7 +3,9 @@
   "biomes": [
     "minecraft:windswept_hills",
     "minecraft:windswept_forest",
-    "minecraft:windswept_gravelly_hills"
+    "minecraft:windswept_gravelly_hills",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley"
   ],
   "features": "mechanical:juniper_in_hills",
   "step": "vegetal_decoration"

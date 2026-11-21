@@ -10,7 +10,8 @@
     "minecraft:old_growth_spruce_taiga",
     "mechanical:deciduous_forest",
     "mechanical:pine_heath",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:glacial_moraine"
   ],
   "spawners": [
     {

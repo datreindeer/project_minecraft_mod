@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:old_growth_spruce_taiga",
     "minecraft:old_growth_pine_taiga",
-    "minecraft:windswept_forest"
+    "minecraft:windswept_forest",
+    "mechanical:soapstone_valley"
   ],
   "features": "mechanical:yew_old_growth",
   "step": "vegetal_decoration"

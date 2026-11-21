@@ -2,7 +2,9 @@
   "type": "neoforge:add_features",
   "biomes": [
     "minecraft:windswept_forest",
-    "minecraft:windswept_hills"
+    "minecraft:windswept_hills",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley"
   ],
   "features": "mechanical:pine_windswept",
   "step": "vegetal_decoration"

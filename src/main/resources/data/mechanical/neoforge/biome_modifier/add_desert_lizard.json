@@ -7,7 +7,10 @@
     "minecraft:wooded_badlands",
     "minecraft:savanna",
     "minecraft:savanna_plateau",
-    "minecraft:windswept_savanna"
+    "minecraft:windswept_savanna",
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands",
+    "mechanical:gypsum_flats"
   ],
   "spawners": [
     {

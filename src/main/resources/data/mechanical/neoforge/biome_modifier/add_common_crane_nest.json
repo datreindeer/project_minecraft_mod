@@ -3,7 +3,9 @@
   "biomes": [
     "mechanical:willow_fen",
     "minecraft:swamp",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ],
   "features": "mechanical:common_crane_nest",
   "step": "vegetal_decoration"

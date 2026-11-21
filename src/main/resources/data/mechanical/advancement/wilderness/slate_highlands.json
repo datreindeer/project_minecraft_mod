@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/chalk_downs",
+  "criteria": {
+    "in_biome": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "mechanical:slate_highlands"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "in_biome"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:slate_tiles"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.slate_highlands.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.slate_highlands.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

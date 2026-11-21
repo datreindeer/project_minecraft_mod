@@ -1760,5 +1760,12 @@
   "bog_oak_button": {"text": "Bog Oak: from [[bog_oak_log]] / [[bog_oak_planks]], like vanilla oak.", "category": "blocks"},
   "bog_oak_pressure_plate": {"text": "Bog Oak: from [[bog_oak_log]] / [[bog_oak_planks]], like vanilla oak.", "category": "blocks"},
   "stripped_bog_oak_log": {"text": "Bog Oak: an axe on a [[bog_oak_log]]/Wood.", "category": "blocks"},
-  "stripped_bog_oak_wood": {"text": "Bog Oak: an axe on a [[bog_oak_log]]/Wood.", "category": "blocks"}
+  "stripped_bog_oak_wood": {"text": "Bog Oak: an axe on a [[bog_oak_log]]/Wood.", "category": "blocks"},
+  "beach_pebbles": {"text": "Beach Pebbles (Stone Age). The top layer of shingle shores: Shingle Beach, Basalt Coast and patches on vanilla Stony Shores. Shovel, drops itself. Shapeless: 2 Gravel + 2 [[loose_stone]] → 2. 3 in a row → 6 [[beach_pebble_slab]] for a pebble floor.", "category": "blocks"},
+  "beach_pebble_slab": {"text": "Slab of [[beach_pebbles]] (3 in a row → 6). Shovel.", "category": "blocks"},
+  "fieldstone": {"text": "Fieldstone (Stone Age): round stones left by the ice. Lies loose on the ground in Glacial Moraine and on Shingle Beach. Any pickaxe, drops itself. Shapeless: 4 [[loose_stone]] → 1 (stones cleared from a field). Slab, stairs and 2×3 → 6 [[dry_stone_wall]].", "category": "blocks"},
+  "fieldstone_slab": {"text": "Slab of [[fieldstone]] (3 in a row → 6). Pickaxe.", "category": "blocks"},
+  "fieldstone_stairs": {"text": "Stairs of [[fieldstone]] (stair pattern of 6 → 4). Pickaxe.", "category": "blocks"},
+  "dry_stone_wall": {"text": "Dry Stone Wall (Stone Age): a wall of [[fieldstone]] laid without mortar, 2×3 Fieldstone → 6. Connects like other walls. Boundary walls for farms and clan land.", "category": "blocks"},
+  "structure:glacial_boulder": {"text": "A big glacial boulder (radius 2–4) of Gneiss, Granite or Rapakivi Granite, half sunk into the ground with loose stones around it. In Glacial Moraine (every other chunk) and Shingle Beach (one chunk in five).", "icon": "mechanical:gneiss"}
 }

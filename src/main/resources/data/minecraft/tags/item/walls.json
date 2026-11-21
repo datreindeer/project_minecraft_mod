@@ -54,6 +54,7 @@
     "mechanical:rammed_earth_wall",
     "mechanical:kaolin_tile_wall",
     "mechanical:red_ochre_brick_wall",
-    "mechanical:yellow_ochre_brick_wall"
+    "mechanical:yellow_ochre_brick_wall",
+    "mechanical:dry_stone_wall"
   ]
 }

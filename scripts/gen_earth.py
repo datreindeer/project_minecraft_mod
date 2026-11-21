@@ -1,6 +1,7 @@
 """Bog and earth (docs/world-materials-plan.md phase 3; EarthBlocks.java): Peat, Turf (+ slab/stairs), Bog Oak (a wood set
 without tree, copied from vanilla oak), Reed (grows like sugar cane) and Reed Thatch (+ slab/stairs and a Bark Roof-style
-roof), Loess, Wattle, Wattle & Daub (+ framed), Kaolin + Kaolin Clay. Blockstates, models, loot, recipes, tags, lang,
+roof), Loess, Wattle, Wattle & Daub (+ framed), Kaolin + Kaolin Clay, and (phases 4 and 7) Beach Pebbles (+ slab), Fieldstone (+ slab,
+stairs) and Dry Stone Wall, whose worldgen is in gen_world_biomes.py. Blockstates, models, loot, recipes, tags, lang,
 textures (recoloured vanilla), axe stripping, and worldgen for these and the earth families
 (Peat, Bog Oak logs, Reed, Mudstone, Loess, Kaolin, Red/Yellow Ochre). The families themselves (Peat Bricks, Adobe/Mudstone,
 Loess Bricks, Rammed Earth, Kaolin Tiles, Ochre blocks) are rows in gen_stone_families.py; this script only replaces the
@@ -154,6 +155,22 @@ for y in range(16):
         rammed.putpixel((x, y), ramp(RAMMED, (band + rng.uniform(-0.5, 0.5)) / 4) + (255,))
 save(rammed, "rammed_earth")
 
+# beach pebbles: gravel recoloured to sea-worn grey, each pebble lit on top; fieldstone: cobblestone in weathered grey-brown
+PEBBLES = [(70, 72, 74), (104, 104, 102), (138, 136, 130), (170, 166, 158), (204, 200, 190)]
+FIELDSTONE = [(62, 60, 56), (88, 85, 78), (114, 110, 100), (140, 135, 122), (166, 160, 146)]
+pebbles = recolour(vanilla("gravel"), PEBBLES)
+rng = random.Random(11)
+for _ in range(10):  # a few rounded light pebbles with a shadow underneath
+    x, y = rng.randrange(1, 14), rng.randrange(1, 14)
+    for dx, dy, c in ((0, 0, PEBBLES[4]), (1, 0, PEBBLES[3]), (0, 1, PEBBLES[3]), (1, 1, PEBBLES[2]), (1, 2, PEBBLES[0]), (2, 1, PEBBLES[1])):
+        pebbles.putpixel((x + dx, y + dy), c + (255,))
+save(pebbles, "beach_pebbles")
+fieldstone = recolour(vanilla("cobblestone"), FIELDSTONE)
+for _ in range(6):  # lichen flecks
+    x, y = rng.randrange(16), rng.randrange(16)
+    fieldstone.putpixel((x, y), (126, 134, 92, 255))
+save(fieldstone, "fieldstone")
+
 # ---------------------------------------------------------------- simple blocks
 
 blocks, lang = [], {}
@@ -198,10 +215,14 @@ def shapeless(name, ingredients, result, count=1):
     recipe(name, {"type": "minecraft:crafting_shapeless", "ingredients": ingredients, "result": {"id": M + result, "count": count}})
 
 
-def slab_stairs(name, tex):
-    """<name>_slab and <name>_stairs (vanilla sandstone's blockstates; tex: top/side/bottom), 3 in a row -> 6, stairs -> 4."""
+def slab_stairs(name, tex, stem=None, stairs=True):
+    """<stem>_slab and <stem>_stairs (vanilla sandstone's blockstates; tex: top/side/bottom), 3 in a row -> 6, stairs -> 4.
+    stem: the name the slab/stairs take (default name); stairs=False: only the slab."""
+    stem = stem or name
     for kind, models in (("slab", {"": "slab", "_top": "slab_top"}), ("stairs", {"": "stairs", "_inner": "inner_stairs", "_outer": "outer_stairs"})):
-        b = f"{name}_{kind}"
+        if kind == "stairs" and not stairs:
+            continue
+        b = f"{stem}_{kind}"
         blocks.append(b)
         state = jar.read(f"assets/minecraft/blockstates/sandstone_{kind}.json").decode()
         state = state.replace(f"minecraft:block/sandstone_{kind}", f"{M}block/{b}").replace('"minecraft:block/sandstone"', f'"{M}block/{name}"')
@@ -211,8 +232,9 @@ def slab_stairs(name, tex):
         loot = jar.read(f"data/minecraft/loot_table/blocks/sandstone_{kind}.json").decode().replace(f"minecraft:sandstone_{kind}", M + b)
         w(D / f"mechanical/loot_table/blocks/{b}.json", json.loads(loot.replace(f"minecraft:blocks/sandstone_{kind}", f"mechanical:blocks/{b}")))
         lang[f"block.mechanical.{b}"] = title(b)
-    shaped(f"{name}_slab", ["###"], {"#": M + name}, f"{name}_slab", 6)
-    shaped(f"{name}_stairs", ["#  ", "## ", "###"], {"#": M + name}, f"{name}_stairs", 4)
+    shaped(f"{stem}_slab", ["###"], {"#": M + name}, f"{stem}_slab", 6)
+    if stairs:
+        shaped(f"{stem}_stairs", ["#  ", "## ", "###"], {"#": M + name}, f"{stem}_stairs", 4)
 
 
 # Peat: dug with a shovel, drops itself; a long-burning fuel (KilnBlockEntity.FUELS, Campfires)
@@ -283,6 +305,26 @@ shapeless("adobe_bricks_from_clay", ["minecraft:clay_ball", "#minecraft:sand", M
 shapeless("red_ochre_from_block", [M + "red_ochre_block"], "red_ochre", 4)
 shapeless("yellow_ochre_from_block", [M + "yellow_ochre_block"], "yellow_ochre", 4)
 
+# Beach Pebbles (+ slab) and Fieldstone (+ slab, stairs, Dry Stone Wall): phases 4 and 7, worldgen in gen_world_biomes.py
+block("beach_pebbles", cube("beach_pebbles"))
+slab_stairs("beach_pebbles", {k: M + "block/beach_pebbles" for k in ("top", "side", "bottom")}, stem="beach_pebble", stairs=False)
+shapeless("beach_pebbles", ["minecraft:gravel", "minecraft:gravel", M + "loose_stone", M + "loose_stone"], "beach_pebbles", 2)
+block("fieldstone", cube("fieldstone"))
+slab_stairs("fieldstone", {k: M + "block/fieldstone" for k in ("top", "side", "bottom")})
+shapeless("fieldstone", [M + "loose_stone"] * 4, "fieldstone")  # field clearing: four loose stones make a block
+blocks.append("dry_stone_wall")
+state = jar.read("assets/minecraft/blockstates/cobblestone_wall.json").decode().replace("minecraft:block/cobblestone_wall_", M + "block/dry_stone_wall_")
+w(A / "blockstates/dry_stone_wall.json", json.loads(state))
+for part in ("post", "side", "side_tall", "inventory"):
+    w(A / f"models/block/dry_stone_wall_{part}.json", {"parent": f"minecraft:block/{'wall_inventory' if part == 'inventory' else 'template_wall_' + part}",
+      "textures": {"wall": M + "block/fieldstone"}})
+w(A / "items/dry_stone_wall.json", {"model": {"type": "minecraft:model", "model": M + "block/dry_stone_wall_inventory"}})
+w(D / "mechanical/loot_table/blocks/dry_stone_wall.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+    {"type": "minecraft:item", "name": M + "dry_stone_wall"}], "condition": {"type": "minecraft:survives_explosion"}}],
+    "random_sequence": "mechanical:blocks/dry_stone_wall"})
+lang["block.mechanical.dry_stone_wall"] = "Dry Stone Wall"
+shaped("dry_stone_wall", ["###", "###"], {"#": M + "fieldstone"}, "dry_stone_wall", 6)
+
 # ---------------------------------------------------------------- Bog Oak: vanilla oak's files, no leaves/sapling/sign/boat/shelf
 OAK_FILE = re.compile(r"(?:stripped_)?oak_(?!.*(?:sign|boat|shelf|leaves|sapling))[a-z_]*\.json")
 textures = set()
@@ -327,11 +369,14 @@ w(axe, transformer)
 # ---------------------------------------------------------------- tags
 tag_add("minecraft/tags/block/mineable/shovel.json", [M + b for b in ("peat", "loess", "kaolin", "turf", "turf_slab", "turf_stairs",
                                                                        "wattle_and_daub", "framed_wattle_and_daub")])
+tag_add("minecraft/tags/block/mineable/shovel.json", [M + "beach_pebbles", M + "beach_pebble_slab"])
+tag_add("minecraft/tags/block/mineable/pickaxe.json", [M + b for b in ("fieldstone", "fieldstone_slab", "fieldstone_stairs", "dry_stone_wall")])
 tag_add("minecraft/tags/block/mineable/axe.json", [M + b for b in bog + ["wattle"]])
 tag_add("minecraft/tags/block/mineable/hoe.json", [M + b for b in ("reed_thatch", "reed_thatch_slab", "reed_thatch_stairs", "reed_thatch_roof")])
 for kind in ("block", "item"):
-    tag_add(f"minecraft/tags/{kind}/slabs.json", [M + "turf_slab", M + "reed_thatch_slab"])
-    tag_add(f"minecraft/tags/{kind}/stairs.json", [M + "turf_stairs", M + "reed_thatch_stairs"])
+    tag_add(f"minecraft/tags/{kind}/slabs.json", [M + "turf_slab", M + "reed_thatch_slab", M + "beach_pebble_slab", M + "fieldstone_slab"])
+    tag_add(f"minecraft/tags/{kind}/stairs.json", [M + "turf_stairs", M + "reed_thatch_stairs", M + "fieldstone_stairs"])
+    tag_add(f"minecraft/tags/{kind}/walls.json", [M + "dry_stone_wall"])
 
 # ---------------------------------------------------------------- worldgen
 BIOMES = {

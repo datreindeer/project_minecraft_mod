@@ -66,6 +66,7 @@
     "mechanical:red_ochre_brick_stairs",
     "mechanical:yellow_ochre_brick_stairs",
     "mechanical:turf_stairs",
-    "mechanical:reed_thatch_stairs"
+    "mechanical:reed_thatch_stairs",
+    "mechanical:fieldstone_stairs"
   ]
 }

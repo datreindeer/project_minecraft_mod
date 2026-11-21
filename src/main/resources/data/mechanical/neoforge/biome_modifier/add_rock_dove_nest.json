@@ -6,7 +6,11 @@
     "minecraft:windswept_gravelly_hills",
     "minecraft:stony_peaks",
     "minecraft:stony_shore",
-    "minecraft:savanna_plateau"
+    "minecraft:savanna_plateau",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:basalt_coast"
   ],
   "features": "mechanical:rock_dove_nest",
   "step": "vegetal_decoration"

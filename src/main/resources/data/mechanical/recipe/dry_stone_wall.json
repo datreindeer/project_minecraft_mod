@@ -1,0 +1,15 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:fieldstone"
+  },
+  "result": {
+    "id": "mechanical:dry_stone_wall",
+    "count": 6
+  }
+}

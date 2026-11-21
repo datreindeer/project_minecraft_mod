@@ -5,7 +5,9 @@
     "minecraft:savanna_plateau",
     "minecraft:windswept_savanna",
     "minecraft:desert",
-    "minecraft:river"
+    "minecraft:river",
+    "mechanical:marble_gorge",
+    "mechanical:gypsum_flats"
   ],
   "features": "mechanical:loose_yellow_ochre",
   "step": "vegetal_decoration"

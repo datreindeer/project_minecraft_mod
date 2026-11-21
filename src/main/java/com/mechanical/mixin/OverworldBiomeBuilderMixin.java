@@ -31,6 +31,7 @@ import net.minecraft.world.level.biome.OverworldBiomeBuilder;
  * <li>Plains, cool, humidity 0 (driest): becomes Pine Heath (cool dappled forest, its weird-side variant, stays).</li>
  * <li>Swamp (cool + temperate): the cool half, and the humid part (humidity above 0.1) of the temperate half, becomes
  * Willow Fen; Swamp keeps the drier temperate part.</li>
+ * <li>Every other vanilla slot: the {@link ModBiomes#SURFACE} rows (world-materials surface biomes) cut out their sub-range.</li>
  * </ul>
  * Cave biomes: {@link ModBiomes#CAVES} rows are added after vanilla's underground biomes.
  */
@@ -77,10 +78,41 @@ public abstract class OverworldBiomeBuilderMixin {
             addSurfaceBiome(biomes, temperatures[1], humidity, continentalness, erosion, weirdness, offset, WILLOW_FEN);
             addSurfaceBiome(biomes, temperatures[2], Climate.Parameter.span(-1.0F, 0.1F), continentalness, erosion, weirdness, offset, biome);
             addSurfaceBiome(biomes, temperatures[2], Climate.Parameter.span(0.1F, 1.0F), continentalness, erosion, weirdness, offset, WILLOW_FEN);
-        } else {
+        } else if (!mechanical$share(biomes, new Climate.Parameter[] {temperature, humidity, continentalness, erosion, weirdness}, offset, biome)) {
             return;
         }
         ci.cancel();
+    }
+
+    /** The first {@link ModBiomes#SURFACE} row of this biome whose ranges the slot overlaps: cut it (box minus box). */
+    private boolean mechanical$share(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> biomes, Climate.Parameter[] slot, float offset,
+            ResourceKey<Biome> biome) {
+        for (ModBiomes.SurfaceShare share : ModBiomes.SURFACE) {
+            if (share.source() != biome) continue;
+            Climate.Parameter[] cut = share.ranges();
+            boolean overlaps = true;
+            for (int i = 0; i < 5; i++)
+                if (cut[i] != null && (slot[i].max() <= cut[i].min() || slot[i].min() >= cut[i].max())) overlaps = false;
+            if (!overlaps) continue;
+            Climate.Parameter[] p = slot.clone();
+            for (int i = 0; i < 5; i++) {
+                if (cut[i] == null) continue;
+                // the parts outside the cut stay with the source (re-entering, they no longer overlap this row on axis i)
+                if (p[i].min() < cut[i].min()) mechanical$add(biomes, p, i, new Climate.Parameter(p[i].min(), cut[i].min()), offset, biome);
+                if (p[i].max() > cut[i].max()) mechanical$add(biomes, p, i, new Climate.Parameter(cut[i].max(), p[i].max()), offset, biome);
+                p[i] = new Climate.Parameter(Math.max(p[i].min(), cut[i].min()), Math.min(p[i].max(), cut[i].max()));
+            }
+            addSurfaceBiome(biomes, p[0], p[1], p[2], p[3], p[4], offset, share.biome());
+            return true;
+        }
+        return false;
+    }
+
+    private void mechanical$add(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> biomes, Climate.Parameter[] p, int axis,
+            Climate.Parameter value, float offset, ResourceKey<Biome> biome) {
+        Climate.Parameter[] q = p.clone();
+        q[axis] = value;
+        addSurfaceBiome(biomes, q[0], q[1], q[2], q[3], q[4], offset, biome);
     }
 
     @Inject(method = "addUndergroundBiomes", at = @At("TAIL"))

@@ -1,5 +1,7 @@
 {
   "values": [
-    "#minecraft:is_mountain"
+    "#minecraft:is_mountain",
+    "mechanical:slate_highlands",
+    "mechanical:glacial_moraine"
   ]
 }

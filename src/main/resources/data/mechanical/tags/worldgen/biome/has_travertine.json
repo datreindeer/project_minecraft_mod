@@ -5,6 +5,9 @@
     "minecraft:mangrove_swamp",
     "minecraft:plains",
     "minecraft:sunflower_plains",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:peat_bog",
+    "mechanical:limestone_karst",
+    "mechanical:reed_delta"
   ]
 }

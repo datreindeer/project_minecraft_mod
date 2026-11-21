@@ -2,8 +2,7 @@
   "type": "neoforge:add_features",
   "biomes": [
     "minecraft:plains",
-    "minecraft:sunflower_plains",
-    "mechanical:chalk_downs"
+    "minecraft:sunflower_plains"
   ],
   "features": "mechanical:linden_plains",
   "step": "vegetal_decoration"

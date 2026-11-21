@@ -72,6 +72,8 @@
     "mechanical:red_ochre_brick_slab",
     "mechanical:yellow_ochre_brick_slab",
     "mechanical:turf_slab",
-    "mechanical:reed_thatch_slab"
+    "mechanical:reed_thatch_slab",
+    "mechanical:beach_pebble_slab",
+    "mechanical:fieldstone_slab"
   ]
 }

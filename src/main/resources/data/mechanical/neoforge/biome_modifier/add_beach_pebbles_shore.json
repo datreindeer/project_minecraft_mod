@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:stony_shore",
+    "mechanical:basalt_coast"
+  ],
+  "features": "mechanical:beach_pebbles_shore",
+  "step": "underground_ores"
+}

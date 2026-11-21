@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:stone_age/flint_pickaxe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fieldstone"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dry_stone_wall"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:dry_stone_wall"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.fieldstone.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.fieldstone.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -8,7 +8,9 @@
     "minecraft:meadow",
     "mechanical:hazel_meadow",
     "mechanical:pine_heath",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge"
   ],
   "features": "mechanical:standing_stones",
   "step": "surface_structures"

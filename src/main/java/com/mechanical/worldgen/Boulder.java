@@ -2,6 +2,7 @@ package com.mechanical.worldgen;
 
 import java.util.List;
 
+import com.mechanical.StoneFamilies;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -15,12 +16,14 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
  * A big rounded boulder (sometimes two or three together), sunk into the ground with loose rocks scattered around.
- * Three kinds: glacial erratics of foreign stone on open land, mossy boulders in forests, sandstone in deserts.
+ * Four kinds: glacial erratics of foreign stone on open land, mossy boulders in forests, sandstone in deserts, and big
+ * glacial boulders (radius 2-4) of Gneiss, Granite or Rapakivi Granite in Glacial Moraine and Shingle Beach.
  */
 final class Boulder extends StoneAgeFeature {
-    enum Kind { ERRATIC, MOSSY, SANDSTONE }
+    enum Kind { ERRATIC, MOSSY, SANDSTONE, GLACIAL }
 
-    static final Boulder ERRATIC = new Boulder(Kind.ERRATIC), MOSSY = new Boulder(Kind.MOSSY), SANDSTONE = new Boulder(Kind.SANDSTONE);
+    static final Boulder ERRATIC = new Boulder(Kind.ERRATIC), MOSSY = new Boulder(Kind.MOSSY), SANDSTONE = new Boulder(Kind.SANDSTONE),
+            GLACIAL = new Boulder(Kind.GLACIAL);
     // erratic stone sets: main block, then the odd fleck mixed in
     private static final Block[][] ERRATICS = {
             {Blocks.GRANITE, Blocks.STONE}, {Blocks.DIORITE, Blocks.CALCITE}, {Blocks.ANDESITE, Blocks.STONE},
@@ -50,14 +53,19 @@ final class Boulder extends StoneAgeFeature {
             case SANDSTONE -> level.getBlockState(c.below()).is(Blocks.RED_SAND)
                     ? new Block[] {Blocks.RED_SANDSTONE, Blocks.SMOOTH_RED_SANDSTONE}
                     : new Block[] {Blocks.SANDSTONE, Blocks.SMOOTH_SANDSTONE};
+            case GLACIAL -> switch (random.nextInt(3)) {
+                case 0 -> new Block[] {StoneFamilies.block("gneiss"), StoneFamilies.block("smooth_gneiss")};
+                case 1 -> new Block[] {Blocks.GRANITE, Blocks.DIORITE};
+                default -> new Block[] {StoneFamilies.block("rapakivi_granite"), Blocks.GRANITE};
+            };
         };
         int pieces = random.nextInt(4) == 0 ? 2 + random.nextInt(2) : 1;
-        double big = kind == Kind.ERRATIC ? 3.5 : 2.6;
+        double big = kind == Kind.GLACIAL ? 4.0 : kind == Kind.ERRATIC ? 3.5 : 2.6, small = kind == Kind.GLACIAL ? 2.0 : 1.4;
         for (int i = 0; i < pieces; i++) {
             BlockPos at = i == 0 ? c : surface(level, c.getX() + random.nextInt(9) - 4, c.getZ() + random.nextInt(9) - 4);
             if (!level.getFluidState(at).isEmpty()) continue;
             double scale = i == 0 ? 1 : 0.6;
-            double rx = (1.4 + random.nextDouble() * (big - 1.4)) * scale, rz = (1.4 + random.nextDouble() * (big - 1.4)) * scale;
+            double rx = (small + random.nextDouble() * (big - small)) * scale, rz = (small + random.nextDouble() * (big - small)) * scale;
             double ry = Math.max(1, Math.min(rx, rz) * (0.6 + random.nextDouble() * 0.4));
             // a third or more of it is buried, so it sits in the ground instead of on it
             BlockPos center = at.below(1 + (int) (ry * 0.35));
@@ -84,7 +92,7 @@ final class Boulder extends StoneAgeFeature {
                     if (random.nextInt(3) > 0) set(level, p, Blocks.MOSS_BLOCK.defaultBlockState());
                     if (random.nextInt(4) == 0) set(level, p.above(), Blocks.MOSS_CARPET.defaultBlockState());
                 }
-                case ERRATIC -> {
+                case ERRATIC, GLACIAL -> {
                     if (random.nextInt(7) == 0) set(level, p.above(), Blocks.MOSS_CARPET.defaultBlockState());
                 }
                 case SANDSTONE -> { }

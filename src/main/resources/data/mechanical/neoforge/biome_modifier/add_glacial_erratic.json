@@ -12,7 +12,11 @@
     "minecraft:stony_shore",
     "mechanical:hazel_meadow",
     "mechanical:pine_heath",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:basalt_coast"
   ],
   "features": "mechanical:glacial_erratic",
   "step": "surface_structures"

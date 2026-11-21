@@ -4,7 +4,9 @@
     "minecraft:river",
     "minecraft:swamp",
     "minecraft:frozen_river",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ],
   "spawners": [
     {

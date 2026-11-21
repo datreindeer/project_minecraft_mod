@@ -5,7 +5,10 @@
     "minecraft:old_growth_pine_taiga",
     "minecraft:old_growth_spruce_taiga",
     "minecraft:swamp",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta",
+    "mechanical:glacial_moraine"
   ],
   "spawners": [
     {

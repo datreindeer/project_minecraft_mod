@@ -3,6 +3,11 @@
     "mechanical:hazel_meadow",
     "mechanical:willow_fen",
     "mechanical:chalk_downs",
-    "mechanical:limestone_caverns"
+    "mechanical:limestone_caverns",
+    "mechanical:peat_bog",
+    "mechanical:marble_gorge",
+    "mechanical:basalt_coast",
+    "mechanical:reed_delta",
+    "mechanical:gypsum_flats"
   ]
 }

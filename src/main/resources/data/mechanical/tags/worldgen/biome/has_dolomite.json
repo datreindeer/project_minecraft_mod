@@ -1,5 +1,6 @@
 {
   "values": [
-    "#mechanical:has_limestone_cliffs"
+    "#mechanical:has_limestone_cliffs",
+    "mechanical:limestone_karst"
   ]
 }

@@ -3,7 +3,9 @@
   "biomes": [
     "minecraft:river",
     "minecraft:swamp",
-    "minecraft:frozen_river"
+    "minecraft:frozen_river",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ],
   "features": "mechanical:goose_nest",
   "step": "vegetal_decoration"

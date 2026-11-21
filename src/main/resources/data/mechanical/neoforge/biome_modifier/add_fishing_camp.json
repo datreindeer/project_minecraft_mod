@@ -4,7 +4,8 @@
     "minecraft:river",
     "minecraft:frozen_river",
     "minecraft:beach",
-    "minecraft:snowy_beach"
+    "minecraft:snowy_beach",
+    "mechanical:shingle_beach"
   ],
   "features": "mechanical:fishing_camp",
   "step": "surface_structures"

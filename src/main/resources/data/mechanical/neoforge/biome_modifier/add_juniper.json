@@ -5,7 +5,8 @@
     "minecraft:snowy_taiga",
     "minecraft:old_growth_pine_taiga",
     "minecraft:old_growth_spruce_taiga",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:juniper",
   "step": "vegetal_decoration"

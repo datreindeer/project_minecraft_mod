@@ -2,6 +2,8 @@
   "values": [
     "mechanical:willow_fen",
     "minecraft:swamp",
-    "minecraft:mangrove_swamp"
+    "minecraft:mangrove_swamp",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ]
 }

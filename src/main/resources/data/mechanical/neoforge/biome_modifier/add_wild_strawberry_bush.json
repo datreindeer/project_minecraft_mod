@@ -6,7 +6,8 @@
     "minecraft:flower_forest",
     "minecraft:sunflower_plains",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst"
   ],
   "features": "mechanical:wild_strawberry_bush",
   "step": "vegetal_decoration"

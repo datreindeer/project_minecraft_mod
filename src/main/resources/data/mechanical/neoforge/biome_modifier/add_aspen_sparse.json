@@ -2,7 +2,9 @@
   "type": "neoforge:add_features",
   "biomes": [
     "minecraft:meadow",
-    "minecraft:taiga"
+    "minecraft:taiga",
+    "mechanical:limestone_karst",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:aspen_sparse",
   "step": "vegetal_decoration"

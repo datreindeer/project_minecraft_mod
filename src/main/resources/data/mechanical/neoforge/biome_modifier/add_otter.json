@@ -7,7 +7,11 @@
     "minecraft:mangrove_swamp",
     "minecraft:stony_shore",
     "minecraft:beach",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:peat_bog",
+    "mechanical:basalt_coast",
+    "mechanical:shingle_beach",
+    "mechanical:reed_delta"
   ],
   "spawners": [
     {

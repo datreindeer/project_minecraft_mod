@@ -4,6 +4,7 @@
     "minecraft:stony_shore",
     "minecraft:ocean",
     "minecraft:lukewarm_ocean",
-    "minecraft:warm_ocean"
+    "minecraft:warm_ocean",
+    "mechanical:basalt_coast"
   ]
 }

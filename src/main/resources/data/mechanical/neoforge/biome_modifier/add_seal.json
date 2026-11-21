@@ -4,7 +4,9 @@
     "minecraft:snowy_beach",
     "minecraft:stony_shore",
     "minecraft:frozen_ocean",
-    "minecraft:deep_frozen_ocean"
+    "minecraft:deep_frozen_ocean",
+    "mechanical:basalt_coast",
+    "mechanical:shingle_beach"
   ],
   "spawners": [
     {

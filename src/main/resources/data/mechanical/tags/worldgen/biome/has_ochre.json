@@ -2,6 +2,7 @@
   "values": [
     "#minecraft:is_badlands",
     "#minecraft:is_savanna",
-    "#minecraft:is_river"
+    "#minecraft:is_river",
+    "mechanical:ochre_badlands"
   ]
 }

@@ -106,6 +106,12 @@ def visit(structure):
         "predicate": {"minecraft:location": {"structures": mid(structure)}}}}}}
 
 
+def in_biome(biome):
+    """The player inside the biome (checked about once a second)."""
+    return {"in_biome": {"trigger": "minecraft:location", "conditions": {"player": {
+        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"biomes": mid(biome)}}}}}}
+
+
 def tamed(entity):
     return {"tamed": {"trigger": "minecraft:tame_animal", "conditions": {"entity": {
         "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": mid(entity)}}}}}
@@ -1123,6 +1129,43 @@ TABS["bronze_age"][1].extend([
     ("alabaster", "bronze_pickaxe", "alabaster_pillar", T, "Alabaster",
      "Mine creamy Alabaster with a Bronze Pickaxe: small blobs in the gypsum under deserts and badlands (y 40 to 90)",
      has("alabaster", "alabaster_bricks", "alabaster_pillar")),
+])
+
+# surface biomes (world-materials plan phases 4 and 7; gen_world_biomes.py): one exploration step per biome, saying what is there
+TABS["wilderness"][1].extend([
+    ("chalk_downs", "root", "chalk_block", T, "White Downs",
+     "Find the Chalk Downs: open grass on white Chalk near the coast, flint lying in the turf, hares and sheep", in_biome("chalk_downs")),
+    ("peat_bog", "chalk_downs", "peat", T, "Into the Bog",
+     "Find a Peat Bog in the cool taiga: Peat under the moss, dark pools, Bog Iron in the pool floors, buried Bog Oak, Reed and cranes", in_biome("peat_bog")),
+    ("slate_highlands", "chalk_downs", "slate_tiles", T, "Slate Highlands",
+     "Find the Slate Highlands: cold windswept hills with Slate on every slope, Gneiss beneath, heather, mouflon and eagles", in_biome("slate_highlands")),
+    ("soapstone_valley", "chalk_downs", "soapstone", T, "Soapstone Valley",
+     "Find the rare Soapstone Valley in the temperate windswept forests: grey-green Soapstone lies in the open, soft enough for flint", in_biome("soapstone_valley")),
+    ("limestone_karst", "chalk_downs", "limestone", T, "Karst",
+     "Find a Limestone Karst: bare limestone pavement with thin grass and flowers, dry sinkholes, Travertine in the pools", in_biome("limestone_karst")),
+    ("marble_gorge", "chalk_downs", "marble", T, "Marble Gorge",
+     "Find a Marble Gorge on the warm plateaus: white Marble cliffs and Limestone. Marble needs a Bronze Pickaxe", in_biome("marble_gorge")),
+    ("ochre_badlands", "chalk_downs", "red_ochre_block", T, "Painted Cliffs",
+     "Find the Ochre Badlands: cliffs striped with Red and Yellow Ochre, Gypsum and Mudstone. Loose ochre lies on the red sand", in_biome("ochre_badlands")),
+    ("basalt_coast", "chalk_downs", "coastal_basalt", T, "Basalt Coast",
+     "Find a Basalt Coast: black Coastal Basalt columns standing in the sea, Beach Pebbles between them, seals on the rocks", in_biome("basalt_coast")),
+    ("shingle_beach", "chalk_downs", "beach_pebbles", T, "Shingle",
+     "Find a Shingle Beach on a cool coast: Beach Pebbles over gravel, loose Fieldstone and great glacial boulders", in_biome("shingle_beach")),
+    ("reed_delta", "chalk_downs", "reed", T, "Reed Delta",
+     "Find a Reed Delta where swamp meets the coast: dense Reed beds, mud banks, Clay, Loess and Mudstone, ducks and swans", in_biome("reed_delta")),
+    ("glacial_moraine", "chalk_downs", "fieldstone", T, "Moraine",
+     "Find a Glacial Moraine in the cold taiga: gravel ridges, Conglomerate, Fieldstone and boulders of Gneiss and Granite left by the ice",
+     in_biome("glacial_moraine")),
+    ("gypsum_flats", "chalk_downs", "gypsum", T, "White Flats",
+     "Find the Gypsum Flats in the driest desert: a white crust of Gypsum and Rock Salt, Alabaster below", in_biome("gypsum_flats")),
+])
+TABS["stone_age"][1].extend([
+    ("beach_pebbles", "root", "beach_pebbles", T, "Shingle Floor",
+     "Dig Beach Pebbles with a shovel on stony shores, shingle beaches and basalt coasts, or mix 2 Gravel and 2 Loose Stones. Slabs make a pebble floor",
+     has("beach_pebbles", "beach_pebble_slab")),
+    ("fieldstone", "flint_pickaxe", "dry_stone_wall", T, "Dry Stone Wall",
+     "Pick up Fieldstone lying on moraines and shingle (any pickaxe), or put 4 Loose Stones together. Six make 6 Dry Stone Wall: no mortar needed",
+     has("fieldstone", "dry_stone_wall")),
 ])
 
 # bog and earth (EarthBlocks.java; gen_earth.py, gen_stone_families.py): one per material family

@@ -9,7 +9,11 @@
     "minecraft:grove",
     "minecraft:meadow",
     "minecraft:stony_peaks",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst",
+    "mechanical:glacial_moraine"
   ],
   "spawners": [
     {
