@@ -2446,6 +2446,8 @@
   "advancements.mechanical.bronze_age.quarry_hammer.description": "Assemble a Bronze Quarry Hammer (Bronze Hammer Head, Bronze Plate, Tool Rod): it breaks stone 3x3, ores crumble to stone",
   "advancements.mechanical.bronze_age.wrought_iron.title": "Wrought Iron",
   "advancements.mechanical.bronze_age.wrought_iron.description": "Hammer a hot Iron Bloom 8 times on a Bronze Anvil before it cools: Wrought Iron Ingots and Slag",
+  "advancements.mechanical.iron_age.root.title": "Iron Age",
+  "advancements.mechanical.iron_age.root.description": "Work a hot Iron Bloom into Wrought Iron on a Bronze Anvil: the Iron Age begins",
   "advancements.mechanical.hunting.root.title": "Hunting",
   "advancements.mechanical.hunting.root.description": "Every animal gives its own meat, hide and parts: butcher one of each kind and collect them all",
   "advancements.mechanical.hunting.small_game.title": "Small Game",

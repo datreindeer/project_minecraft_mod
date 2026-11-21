@@ -998,6 +998,13 @@ TABS["bronze_age"][1].extend([
      has("wrought_iron_ingot")),
 ])
 
+# ---------------------------------------------------------------- Iron Age tab (docs/ages/03-iron-age.md): starts where the
+# Bronze Age's Wrought Iron leaves off. Every Iron Age feature adds its rows here.
+TABS["iron_age"] = ("minecraft:block/iron_block", [
+    ("root", None, "wrought_iron_ingot", T, "Iron Age",
+     "Work a hot Iron Bloom into Wrought Iron on a Bronze Anvil: the Iron Age begins", has("wrought_iron_ingot")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.
