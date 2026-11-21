@@ -51,7 +51,8 @@ public final class StatTooltips {
         ItemStack stack = event.getItemStack();
         List<Component> lines = new ArrayList<>();
 
-        if (stack.isDamageableItem()) {
+        // hot metal's bar is its heat, not wear
+        if (stack.isDamageableItem() && !com.mechanical.Ironworking.hotItem(stack)) {
             int max = stack.getMaxDamage(), left = max - stack.getDamageValue();
             float frac = (float) left / max;
             lines.add(stat("Durability", Component.literal(left + " / " + max)
