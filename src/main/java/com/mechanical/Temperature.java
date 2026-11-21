@@ -95,9 +95,18 @@ public final class Temperature {
         return player.getData(BODY);
     }
 
-    /** Air temperature at a spot (same scale as the body): biome (shifted by the season, Seasons), night, rain and altitude. */
+    /** Below this Y and out of sight of the sky you are in a cave: only the depth counts, not biome, season, night or rain. */
+    public static final int CAVE_TOP = 50;
+
+    /** A cave's air: 10 at CAVE_TOP, 0 (freezing) at the bottom of the world (Y -64); unclamped, so the deep end stays cold. */
+    public static float cave(int y) {
+        return 10F * (y + 64) / (CAVE_TOP + 64);
+    }
+
+    /** Air temperature at a spot (same scale as the body): biome (shifted by the season, Seasons), night, rain and altitude; in caves the depth. */
     public static float ambient(Level level, BlockPos pos) {
         if (level.dimension() == Level.NETHER) return MAX;
+        if (level.dimension() == Level.OVERWORLD && pos.getY() < CAVE_TOP && !level.canSeeSky(pos)) return cave(pos.getY());
         // biome: plains ~0.8 -> 12.4, taiga 0.25 -> 8, snowy -0.5..0 -> 2..6, desert 2.0 -> hot
         float base = level.getBiome(pos).value().getBaseTemperature();
         float t = 6 + (base + Seasons.offset(base, Seasons.curve(level.getOverworldClockTime()))) * 8;

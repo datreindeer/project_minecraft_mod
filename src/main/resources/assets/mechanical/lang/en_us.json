@@ -2067,6 +2067,8 @@
   "advancements.mechanical.wilderness.bear_pelt.description": "Dry the Raw Bear Pelt on a tall Drying Rack outdoors by day (it takes the whole rack)",
   "advancements.mechanical.wilderness.fur_armor.title": "Winter Furs",
   "advancements.mechanical.wilderness.fur_armor.description": "Sew Bear Pelt and Sinew into Fur armor at the Armor Station. Each piece blocks 25 % of the cold",
+  "advancements.mechanical.wilderness.deep_cold.title": "The Cold Deep",
+  "advancements.mechanical.wilderness.deep_cold.description": "Go below Y 0. Caves get colder the deeper you go and freeze you near the bottom: wear furs and light a fire",
   "advancements.mechanical.wilderness.bear_rug.title": "Bear Rug",
   "advancements.mechanical.wilderness.bear_rug.description": "Craft a Bear Pelt and a Bear Claw into a Bear Rug",
   "advancements.mechanical.wilderness.barbed_arrow.title": "Barbed Arrow",

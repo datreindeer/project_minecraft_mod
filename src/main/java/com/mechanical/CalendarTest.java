@@ -66,6 +66,8 @@ public final class CalendarTest {
         check(h, 0.7F + Seasons.offset(0.7F, -1) < 0.15F && 0.8F + Seasons.offset(0.8F, -1) < 0.15F, "forest and plains snow at midwinter");
         check(h, 0.7F + Seasons.offset(0.7F, Seasons.curve(Calendar.clockOn(0, 2 * Calendar.SEASON_DAYS))) >= 0.15F, "no snow in the forest at the start of autumn");
         check(h, 2.0F + Seasons.offset(2.0F, -1) > 1.5F && 0.95F + Seasons.offset(0.95F, 1) < 1.1F, "deserts stay hot, summer only a little warmer");
+        // caves: colder the deeper, freezing near the bottom of the world
+        check(h, Temperature.cave(Temperature.CAVE_TOP) == 10 && Temperature.cave(0) > Temperature.FREEZING_BELOW && Temperature.cave(-50) < Temperature.FREEZING_BELOW, "caves colder with depth");
         thaw(h);
         cropsAndBerries(h);
         seasonLook(h);

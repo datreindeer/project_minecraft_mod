@@ -118,6 +118,13 @@ def stood_on(block, state=None):
         "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:stepping_on": {"block": pred}}}}}}
 
 
+def below_y(y):
+    """The player at or below height y (checked about once a second)."""
+    return {"below": {"trigger": "minecraft:location", "conditions": {"player": {
+        "type": "minecraft:entity_properties", "entity": "this",
+        "predicate": {"minecraft:location": {"position": {"y": {"max": y}}}}}}}}
+
+
 def killed(predicate):
     """The player kills an entity matching the predicate."""
     return {"killed": {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
@@ -322,6 +329,9 @@ TABS = {
         ("fur_armor", "bear_pelt", "fur_coat", G, "Winter Furs",
          "Sew Bear Pelt and Sinew into Fur armor at the Armor Station. Each piece blocks 25 % of the cold",
          has("fur_hood", "fur_coat", "fur_leggings", "fur_boots")),
+        ("deep_cold", "fur_armor", "minecraft:deepslate", G, "The Cold Deep",
+         "Go below Y 0. Caves get colder the deeper you go and freeze you near the bottom: wear furs and light a fire",
+         below_y(0)),
         ("bear_rug", "bear_pelt", "bear_rug", T, "Bear Rug", "Craft a Bear Pelt and a Bear Claw into a Bear Rug",
          has("bear_rug")),
         ("barbed_arrow", "bear", "barbed_arrow", T, "Barbed Arrow", "Fletching Table: Bear Claw + Stick + Feather",

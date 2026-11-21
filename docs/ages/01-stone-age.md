@@ -1235,6 +1235,9 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
 - Kroppstemperatur 0–20 (12 = lagom), visas som 10 termometrar ovanför matmätaren (varm / kall / iskall).
 - Rör sig sakta mot en måltemperatur: biomen (snöbiomer är kalla även på dagen, öken varm), natten (−5 ute, −2,5
   under tak), regn (−2), i vatten (−5), höjd över y 100. **Brinnande eld inom 6 block värmer** (upp till +10).
+- **Grottor:** under y 50 utan himmel räknas bara djupet (inte biom, årstid, natt eller regn): 10 vid y 50, ~6 vid y 0,
+  fryser under ungefär y −30, 0 vid y −64. En grund grotta är alltså ett varmt skydd en vinternatt, djupa gruvor kräver
+  päls och eld (elden drar också mer bränsle där nere). Advancement **The Cold Deep** (Wilderness, efter Winter Furs): gå under y 0.
 - **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla). **Wolf Fur** och Wolf Hood 20 % per del. En vila i en Furred Straw Bed ger +30 % i 5 minuter (högst 100 % totalt).
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
