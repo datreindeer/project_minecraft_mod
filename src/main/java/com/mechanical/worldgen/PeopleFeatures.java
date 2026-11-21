@@ -13,13 +13,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Worldgen for Stone Age people: inhabited camps and roaming hunting bands. Placement data: scripts/gen_people.py. */
+/** Worldgen for Stone Age people: inhabited camps, roaming hunting bands and the Miner under ground. Placement data: scripts/gen_people.py. */
 public final class PeopleFeatures {
     public static final DeferredRegister<MapCodec<? extends Feature>> FEATURE_TYPES = DeferredRegister.create(Registries.FEATURE_TYPE, Mechanical.MODID);
 
     static {
         FEATURE_TYPES.register("tribe_camp", () -> TribeCamp.CODEC);
         FEATURE_TYPES.register("hunting_band", () -> HuntingBand.CODEC);
+        FEATURE_TYPES.register("miner_camp", () -> MinerCamp.CODEC);
     }
 
     /** True if a village or tribe village (structure start reference) covers this chunk or one next to it: people don't camp in villages. */

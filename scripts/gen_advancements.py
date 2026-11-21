@@ -867,6 +867,10 @@ TABS["wilderness"][1].extend([
      by_code()),
     ("caravan_gem", "caravan", "minecraft:diamond", G, "Treasures for Coin",
      "Sell a gemstone to a caravan's trader: they love gems and pay in silver and gold", by_code()),
+    # the Miner under ground (people/Miners.java)
+    ("miner_trade", "deep_cold", "minecraft:torch", T, "Deep Trade",
+     "Trade with a Miner, a rare wanderer of the caves below Y 30, hunched under his ore sack. He sells the ores missing nearby",
+     by_code()),
     # granted per climate from Java (people/TribeVisits.java, ClimateZone), criteria named after the climates
     ("tribe_climates", "tribe_village", "sharpened_bamboo_block", G, "Peoples of the World",
      "Walk into a Tribe Village in each climate: turf and bone huts in the snow, bark-roofed halls in the woods, "

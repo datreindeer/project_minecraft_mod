@@ -14,6 +14,7 @@ Makes (under src/main/resources/assets/mechanical/textures/):
   entity/cloak/ermine_mantle.png
   entity/worn/satchel.png                 32x32 worn satchel (bag, flap, strap segment, shoulder pad)
   entity/worn/quiver.png                  32x32 worn quiver (tube, rim, belt, arrow)
+  entity/worn/miner_sack.png              64x32 the Miner's ore sack (client/MinerSackModel): sackcloth, ore lumps, straps
   gui/container/pack_both.png             176x166 (on 256x256) backgrounds for equipment.PackMenu, vanilla container
   gui/container/pack_satchel.png            style: the satchel 3x3 and/or the quiver 2x2 over the player inventory
   gui/container/pack_quiver.png             (slot positions as in PackMenu)
@@ -356,6 +357,34 @@ for f, rect in belt.items():
 draw(img, ["SBbS"], LEATHER, belt["front"][0] + 2, belt["front"][1])  # bone buckle
 save(img, "entity/worn/leather_pouch.png")
 
+
+# ---------------------------------------------------------------- 4d. the Miner's ore sack (64x32, client/MinerSackModel)
+img = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+SACK = {"a": "8a7656", "b": "7a6648", "c": "6a573c", "d": "5a4a32", "e": "9a8664", "s": "4a3c28", "x": "3b1f12"}
+rng = random.Random(11)
+for f, (x, y, w, h) in box_faces(0, 0, 9, 11, 6).items():
+    fill(img, (x, y, w, h), list("abcde"), SACK, rng, [4, 4, 2, 1, 2])
+    if f in ("front", "back", "right", "left"):
+        for yy in range(y, y + h):  # dirt and wear toward the bottom
+            for xx in range(x, x + w):
+                if yy - y > h - 3 and rng.random() < 0.6:
+                    img.putpixel((xx, yy), rgba(SACK["d" if rng.random() < 0.7 else "s"]))
+        for xx in range(x, x + w):  # the rim of the mouth
+            img.putpixel((xx, y), rgba(SACK["s"]))
+    if f == "back":  # a sewn patch and a seam
+        for yy in range(y + 3, y + 7):
+            for xx in range(x + 2, x + 5):
+                img.putpixel((xx, yy), rgba(SACK["c"] if (xx + yy) % 2 else SACK["d"]))
+        for yy in range(y + 1, y + h - 1, 2):
+            img.putpixel((x + w // 2 + 1, yy), rgba(SACK["s"]))
+ORE = {"g": "7d7d7d", "G": "5f5f5f", "k": "9a9a9a", "t": "2e2a2a", "o": "c4703a", "m": "3c9a6a", "i": "d8af93", "n": "272522"}
+for (u, v, w, h, d), chars, weights in (((0, 18, 3, 2, 3), "gGkto", [4, 3, 2, 2, 2]), ((14, 18, 2, 2, 2), "gGkmi", [4, 3, 2, 2, 2]),
+                                       ((24, 18, 2, 1, 2), "gGknt", [3, 3, 2, 2, 1])):
+    for rect in box_faces(u, v, w, h, d).values():
+        fill(img, rect, list(chars), ORE, rng, weights)
+for rect in list(box_faces(32, 0, 1, 7, 1).values()) + list(box_faces(40, 0, 1, 1, 5).values()):
+    fill(img, rect, ["S", "T"], LEATHER, rng, [3, 1])
+save(img, "entity/worn/miner_sack.png")
 
 # ---------------------------------------------------------------- PackMenu backgrounds (vanilla container look)
 PANEL, LIGHT, SHADE, OUTLINE, SLOT_DARK, SLOT_FILL = 198, 255, 85, 0, 55, 139

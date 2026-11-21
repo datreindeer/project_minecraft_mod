@@ -25,6 +25,12 @@ public final class People {
     public static final DeferredItem<SpawnEggItem> TRIBESPERSON_SPAWN_EGG = ITEMS.registerItem("tribesperson_spawn_egg", SpawnEggItem::new,
             p -> p.spawnEgg(TRIBESPERSON.get()));
 
+    /** The Miner: a Tribesperson of role MINER, his own type for the spawn egg (Miners). */
+    public static final DeferredHolder<EntityType<?>, EntityType<Tribesperson>> MINER = ENTITY_TYPES.registerEntityType(
+            "miner", Tribesperson::new, MobCategory.MISC, b -> b.sized(0.6F, 1.8F).eyeHeight(1.62F).clientTrackingRange(10));
+    public static final DeferredItem<SpawnEggItem> MINER_SPAWN_EGG = ITEMS.registerItem("miner_spawn_egg", SpawnEggItem::new,
+            p -> p.spawnEgg(MINER.get()));
+
     /** Palisade stake tops for tribe villages (items come from Mechanical.registerMissingBlockItems). */
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_OAK_LOG = sharpened("sharpened_oak_log", MapColor.WOOD);
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_SPRUCE_LOG = sharpened("sharpened_spruce_log", MapColor.PODZOL);
@@ -54,6 +60,7 @@ public final class People {
     @SubscribeEvent
     static void attributes(EntityAttributeCreationEvent event) {
         event.put(TRIBESPERSON.get(), Tribesperson.createAttributes().build());
+        event.put(MINER.get(), Tribesperson.createAttributes().build());
     }
 
     private People() {}

@@ -59,6 +59,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>tribe_settle: bands of a wary tribe (no chance to settle) that stay the night are counted at the camp; the 4th settles
  * anyway (count back to 0), and with no site at hand looks for one (SEEKING): it then lets other bands visit, keeps others
  * from settling, is never forgotten while about, and its state and the count survive saving (codecs).</li>
+ * <li>tribe_miner: a Miner from his spawn egg is a lone MINER of a trading tribe at the campfire nearby, holding a pickaxe
+ * and a torch, unarmed (so he flees monsters), no banner; with no ore round him he sells tin (Cassiterite), torches and
+ * food, and buys raw copper and stone: for barter in the Stone Age, for coins once his tribe is in a later age.</li>
  * <li>tribe_swim: a tribesperson swims across a pool in the swimming pose, well faster than mobs crawl through water, and
  * keeps its head above water.</li>
  * </ul>
@@ -72,6 +75,7 @@ public final class TribeTest {
     private static final ResourceKey<Consumer<GameTestHelper>> CARAVAN = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_caravan"));
     private static final ResourceKey<Consumer<GameTestHelper>> REBUILD = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_rebuild"));
     private static final ResourceKey<Consumer<GameTestHelper>> SETTLE = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_settle"));
+    private static final ResourceKey<Consumer<GameTestHelper>> MINER = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_miner"));
     private static final ResourceKey<Consumer<GameTestHelper>> SWIM = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "tribe_swim"));
     private static final int C = 20, WALL = 6; // the ring's centre (relative x, z) and radius in tribe_gate
 
@@ -83,6 +87,7 @@ public final class TribeTest {
         TEST_FUNCTIONS.register("tribe_rebuild", () -> TribeTest::rebuild);
         TEST_FUNCTIONS.register("tribe_settle", () -> TribeTest::settle);
         TEST_FUNCTIONS.register("tribe_swim", () -> TribeTest::swim);
+        TEST_FUNCTIONS.register("tribe_miner", () -> TribeTest::miner);
     }
 
     static void init(IEventBus modEventBus) {
@@ -105,6 +110,8 @@ public final class TribeTest {
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_rebuild"), new FunctionGameTestInstance(REBUILD,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 64)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_settle"), new FunctionGameTestInstance(SETTLE,
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_miner"), new FunctionGameTestInstance(MINER,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
         // not required: movement timing in the shared test world is flaky (chunks that don't tick yet); it still runs and reports
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_swim"), new FunctionGameTestInstance(SWIM,
@@ -587,6 +594,45 @@ public final class TribeTest {
                 level.getEntitiesOfClass(Tribesperson.class, new net.minecraft.world.phys.AABB(fire).inflate(16)).forEach(Tribesperson::discard);
                 level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(fire).inflate(16))
                         .forEach(net.minecraft.world.entity.Entity::discard);
+            }
+            h.succeed();
+        });
+    }
+
+    private static void miner(GameTestHelper h) {
+        guarded(h, () -> {
+            ServerLevel level = h.getLevel();
+            var server = level.getServer();
+            h.setBlock(new BlockPos(5, 1, 5), Blocks.CAMPFIRE.defaultBlockState());
+            Tribesperson miner = People.MINER.get().spawn(level, h.absolutePos(new BlockPos(7, 1, 5)), net.minecraft.world.entity.EntitySpawnReason.SPAWN_ITEM_USE);
+            h.assertTrue(miner != null && miner.role() == TribeRole.MINER, "the egg makes a Miner");
+            h.assertTrue(h.absolutePos(new BlockPos(5, 1, 5)).equals(miner.home()), "he lives at the campfire nearby");
+            h.assertTrue(miner.tribe().temperament == Tribe.Temperament.TRADERS && miner.skin() % 2 == 0, "a man of a trading tribe");
+            h.assertTrue(miner.getMainHandItem().is(net.minecraft.tags.ItemTags.PICKAXES) && miner.getOffhandItem().is(net.minecraft.world.item.Items.TORCH),
+                    "he holds a pickaxe and a torch");
+            h.assertFalse(miner.isArmed(), "a pickaxe is no weapon: he flees monsters");
+            h.assertTrue(miner.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).isEmpty(), "no banner");
+            int before = com.mechanical.WorldAge.of(server);
+            try {
+                for (int age : new int[] {com.mechanical.WorldAge.STONE, com.mechanical.WorldAge.IRON}) {
+                    com.mechanical.WorldAge.set(server, age);
+                    Tribesperson m = People.MINER.get().spawn(level, h.absolutePos(new BlockPos(9, 1, 9)), net.minecraft.world.entity.EntitySpawnReason.SPAWN_ITEM_USE);
+                    boolean coins = m.age() > com.mechanical.WorldAge.STONE;
+                    h.assertTrue(age == com.mechanical.WorldAge.STONE ? !coins : coins, "his tribe's age follows the world (age " + age + ")");
+                    var offers = m.getOffers();
+                    var tin = offers.stream().filter(o -> o.getResult().is(com.mechanical.BronzeOres.CASSITERITE.get())).findFirst().orElse(null);
+                    h.assertTrue(tin != null, "with no tin about he sells Cassiterite");
+                    h.assertTrue(Caravans.isCoin(tin.getBaseCostA()) == coins, "tin for " + (coins ? "coins" : "barter") + ", got " + tin.getBaseCostA());
+                    h.assertTrue(offers.stream().anyMatch(o -> o.getResult().is(net.minecraft.world.item.Items.TORCH) && !o.getBaseCostA().is(net.minecraft.world.item.Items.RAW_COPPER)),
+                            "he sells torches");
+                    var copper = offers.stream().filter(o -> o.getBaseCostA().is(net.minecraft.world.item.Items.RAW_COPPER)).findFirst().orElse(null);
+                    h.assertTrue(copper != null && (coins ? copper.getResult().is(com.mechanical.Coins.COPPER_COIN.get()) : copper.getResult().is(net.minecraft.world.item.Items.TORCH)),
+                            "he buys raw copper");
+                    h.assertTrue(offers.stream().anyMatch(o -> o.getBaseCostA().is(net.minecraft.world.item.Items.COBBLESTONE)), "he buys stone");
+                    m.discard();
+                }
+            } finally {
+                com.mechanical.WorldAge.set(server, before);
             }
             h.succeed();
         });
