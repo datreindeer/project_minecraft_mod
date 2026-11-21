@@ -1029,7 +1029,7 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "Heat Blister Steel to forging heat and fold it with 6 blows on the anvil into a Steel Ingot: the end of the Iron Age",
      has("steel_ingot")),
     ("steel_tools", "steel", "steel_pickaxe", G, "Steelsmith",
-     "Forge a steel head from a hot Steel Ingot and assemble it with Leather and an Iron Tool Rod. Steel mines obsidian",
+     "Forge a steel head from hot Steel Ingots and fit it on a Tool Rod, wedged with an Iron Tool Rod. Steel mines obsidian",
      has("steel_pickaxe", "steel_axe", "steel_shovel", "steel_hoe", "steel_sword", "steel_spear", "steel_knife")),
     ("flint_and_steel", "steel", "minecraft:flint_and_steel", T, "Strike a Light",
      "Flint + Steel Plate: a Flint and Steel lights a fire every time", has("minecraft:flint_and_steel")),

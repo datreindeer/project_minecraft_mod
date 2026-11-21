@@ -139,8 +139,20 @@ public final class IronAgeTest {
         anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
         h.assertTrue(Ironworking.hits(anvil.item()) == 0, "no steel tool rod");
         anvil.setPattern(Smithing.Pattern.PICKAXE_HEAD);
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(Ironworking.hits(anvil.item()) == 0, "a pickaxe head takes 3 ingots: one alone takes no blows");
+        h.assertTrue(anvil.addIngot(level, null) && anvil.addIngot(level, null) && !anvil.addIngot(level, null), "two more stack on, then it is full");
+        h.assertTrue(anvil.pile() == 3, "3 ingots lie on the anvil");
         for (int i = 0; i < Smithing.Pattern.PICKAXE_HEAD.hits; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
-        h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_PICKAXE_HEAD.get()) == 1, "a Steel Pickaxe Head");
+        h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_PICKAXE_HEAD.get()) == 1 && anvil.item().isEmpty(), "3 ingots: a Steel Pickaxe Head");
+        // an ingot the part doesn't need stays on the anvil
+        anvil.setPattern(Smithing.Pattern.PLATE);
+        anvil.place(level, Ironworking.heated(new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), Smithing.HOT_WROUGHT_IRON_INGOT.get(), level.getGameTime()));
+        anvil.addIngot(level, null);
+        for (int i = 0; i < Smithing.Pattern.PLATE.hits; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(anvil.pile() == 1 && anvil.item().is(Smithing.HOT_WROUGHT_IRON_INGOT.get()) && Ironworking.hits(anvil.item()) == 0,
+                "a plate from 2 ingots: the other stays, unworked");
+        h.assertTrue(anvil.progress() == 0 && anvil.take().is(Smithing.HOT_WROUGHT_IRON_INGOT.get()), "and can be taken back");
         ItemStack ironHammer = new ItemStack(Smithing.IRON_SMITHING_HAMMER.get());
         h.assertTrue(Smithing.wear(ironHammer) == 1 && Smithing.wear(hammer) == Ironworking.HAMMER_WEAR, "an iron hammer wears half as fast");
 
