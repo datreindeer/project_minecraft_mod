@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-/** Compost (+1), Manure (+2) and Guano (+3): right-click farmland, or a crop on it, to raise its fertility (max 3); at 3 it says the soil is already rich. */
+/** Compost and Soot (+1), Manure (+2) and Guano (+3): right-click farmland, or a crop on it, to raise its fertility (max 3); at 3 it says the soil is already rich. */
 public class FertilizerItem extends Item {
     private final int amount;
 

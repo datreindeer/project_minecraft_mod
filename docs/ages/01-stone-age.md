@@ -1287,6 +1287,9 @@ sotar Fire Pit och Clay Kiln bara 0,3× en Campfire, och Fire Pit bränner marke
 - **Skrapa bort:** bryts för hand (lite segt), **4× snabbare med en kniv**. Ger item **Soot**: stadium 1 50 % chans på
   1, stadium 2 1 st, stadium 3 2 st; med kniv (Flint Knife, Iron Knife) **+1**.
 - **Item: Soot**, ett svart pigment: 1 Soot → 1 Black Dye (formlöst).
+- **Soot som gödsel:** högerklicka på farmland (eller en gröda på den) med Soot: **fertility +1**, som Compost (sot har
+  kväve och kalium och användes förr på åkrar). Advancement **Black Gold** (Food & Farming, efter Manure).
+- **Soot Ink** (bronsåldern, se 02-bronze-age.md *Skrift*): 2 Soot + Tallow eller Lard → 2 Soot Ink.
 - **Härden nöts in:** efter **1 minut** brinnande eld (samma räkning som sotet) ändras marken runt elden, 1 chans på 20
   varje sekund, en plats i taget inom 2 block: gräs, blommor och plantor brinner bort; Grass Block, Podzol, Mycelium och
   Moss Block blir Dirt, Dirt blir Coarse Dirt, och sedan (eller direkt på sten, grus, sand osv.) läggs ett sot- och

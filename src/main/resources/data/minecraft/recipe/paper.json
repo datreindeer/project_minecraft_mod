@@ -1,7 +1,17 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:never"
-    }
-  ]
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:sugar_cane",
+    "minecraft:sugar_cane",
+    "minecraft:sugar_cane",
+    [
+      "mechanical:bronze_knife",
+      "mechanical:iron_knife"
+    ]
+  ],
+  "result": {
+    "id": "minecraft:paper",
+    "count": 3
+  }
 }

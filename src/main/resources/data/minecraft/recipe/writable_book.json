@@ -1,7 +1,13 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:never"
-    }
-  ]
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:book",
+    "mechanical:soot_ink",
+    "minecraft:feather"
+  ],
+  "result": {
+    "id": "minecraft:writable_book",
+    "count": 1
+  }
 }
