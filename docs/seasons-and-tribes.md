@@ -59,7 +59,9 @@
   knappar för att bjuda in, befordra, degradera och kicka, samt pågående röstningar. Ledaren väljer stammens
   **färg** (en av de 16 dye-färgerna) med vimpelknappen uppe till höger; klick ger nästa färg. Gamla stammar får
   en färg utifrån sitt id.
-- **Tab-listan** (spelarlistan) ersätter vanilla: en ram i stamsidans barkstil med serverns namn, världsåldern och
+- **Tab-listan** (spelarlistan) ersätter vanilla och syns bara medan Tab hålls nere, så den tar stor plats: upp till 88 %
+  av skärmbredden (en ensam kolumn högst 420 GUI-pixlar), rader på 14 px med 12 px ansikten, rankord bredvid namnet,
+  ålder som ikon och namn och ping i ms bredvid staplarna. En ram i stamsidans barkstil med serverns namn, världsåldern och
   datumet överst. Varje stam med någon online har en vimpelrad i sin färg (namn, online/alla medlemmar, åldern som
   en ikon), och under den medlemmarna efter rank och namn: ansikte, rankmärke (★ Leader, ✦ Elder,
   • Member, ◦ Newcomer), namn, åldersikon och ping. Ikonerna (9x9, `scripts/gen_tab_age_textures.py`): Stone en
