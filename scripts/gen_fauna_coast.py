@@ -128,7 +128,7 @@ w(A / "equipment/walrus_hide.json", {"layers": {"humanoid": [{"texture": "mechan
 # ---- loot: a dead pike is a whole pike (like vanilla fish); seal, walrus and sturgeon leave a carcass (Butchery) ----
 w(D / "mechanical/loot_table/entities/pike.json", {"type": "minecraft:entity", "pools": [
     {"rolls": 1, "entries": [{"type": "minecraft:item", "name": M + "whole_pike"}]},
-    {"rolls": 1, "conditions": [{"condition": "minecraft:random_chance", "chance": 0.05}],
+    {"rolls": 1, "condition": {"type": "minecraft:random_chance", "chance": 0.05},
      "entries": [{"type": "minecraft:item", "name": "minecraft:bone_meal"}]}], "random_sequence": "mechanical:entities/pike"})
 
 # ---- fishing: pike in fresh water, a rare young sturgeon in rivers (added to gen_data.py's fish pool) ----
@@ -137,9 +137,9 @@ fish = json.loads(fish_path.read_text(encoding="utf-8"))
 entries = [e for e in fish["pools"][0]["entries"] if e["name"] not in (M + "whole_pike", M + "whole_sturgeon")]
 PIKE_WATERS = ["minecraft:river", "minecraft:frozen_river", "minecraft:swamp", "mechanical:willow_fen"]
 entries.append({"type": "minecraft:item", "name": M + "whole_pike", "weight": 30,
-                "conditions": [{"condition": "minecraft:location_check", "predicate": {"biomes": PIKE_WATERS}}]})
+                "condition": {"type": "minecraft:location_check", "predicate": {"biomes": PIKE_WATERS}}})
 entries.append({"type": "minecraft:item", "name": M + "whole_sturgeon", "weight": 4,
-                "conditions": [{"condition": "minecraft:location_check", "predicate": {"biomes": ["minecraft:river"]}}]})
+                "condition": {"type": "minecraft:location_check", "predicate": {"biomes": ["minecraft:river"]}}})
 fish["pools"][0]["entries"] = entries
 w(fish_path, fish)
 
@@ -187,7 +187,7 @@ w(A / "blockstates/oil_lamp.json", {"variants": {f"fuel={f},lit={str(lit).lower(
     for f in range(5) for lit in (False, True)}})
 w(A / "items/oil_lamp.json", {"model": {"type": "minecraft:model", "model": M + "block/oil_lamp_filled"}})
 w(D / "mechanical/loot_table/blocks/oil_lamp.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-    {"type": "minecraft:item", "name": M + "oil_lamp"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+    {"type": "minecraft:item", "name": M + "oil_lamp"}], "condition": {"type": "minecraft:survives_explosion"}}],
     "random_sequence": "mechanical:blocks/oil_lamp"})
 tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "oil_lamp")
 lang["block.mechanical.oil_lamp"] = "Oil Lamp"

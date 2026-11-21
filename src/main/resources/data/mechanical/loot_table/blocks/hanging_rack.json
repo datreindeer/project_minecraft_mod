@@ -9,18 +9,21 @@
           "name": "mechanical:hanging_rack"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        },
-        {
-          "condition": "minecraft:block_state_property",
-          "block": "mechanical:hanging_rack",
-          "properties": {
-            "part": "lower"
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:survives_explosion"
+          },
+          {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:hanging_rack",
+            "state": {
+              "part": "lower"
+            }
           }
-        }
-      ]
+        ]
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/hanging_rack"

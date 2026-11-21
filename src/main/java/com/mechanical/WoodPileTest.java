@@ -15,6 +15,14 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import com.mechanical.wildlife.GuanoPileBlock;
+import com.mechanical.wildlife.VanillaGame;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,7 +37,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * Game test for wood piles: Firewood Piles take any wood mixed (kept per layer, dropped per layer, the top piece taken back
  * is the last one put on) and stop at {@link FirewoodPileBlock#MAX_HEIGHT}; a lone Rough Log Pile column stands one block,
  * the next log rolls off to the side; three columns side by side let the middle one stand two blocks; between walls a
- * column goes up to {@link RoughLogPileBlock#MAX_ROWS} and no further.
+ * column goes up to {@link RoughLogPileBlock#MAX_ROWS} and no further; taking a neighbour away makes it slump. Also that
+ * loot tables in the 26.x format take effect (scripts/gen_loot_format.py): one Hanging Rack per rack, guano by layers.
  */
 @EventBusSubscriber(modid = MODID)
 public final class WoodPileTest {
@@ -128,6 +137,24 @@ public final class WoodPileTest {
         }
         h.assertTrue(RoughLogPileBlock.add(level, walled, OAK, Direction.Axis.Z, null, 0) == null, "no log past " + RoughLogPileBlock.MAX_ROWS + " rows");
         h.assertTrue(RoughLogPileBlock.takeTop(level, walled).is(Mechanical.ROUGH_LOGS.get("oak").get()), "an empty hand takes the top log");
+        // ---- loot tables in the 26.x format take effect: one Hanging Rack whichever third is broken, a guano pile drops its layers
+        for (int part = 0; part < 3; part++) {
+            BlockPos base = h.absolutePos(new BlockPos(2 + part * 3, 1, 3));
+            BlockState rack = CarcassHauling.HANGING_RACK.get().defaultBlockState();
+            level.setBlock(base, rack, Block.UPDATE_ALL);
+            level.setBlock(base.above(), rack.setValue(HangingRackBlock.PART, HangingRackBlock.Part.MIDDLE), Block.UPDATE_ALL);
+            level.setBlock(base.above(2), rack.setValue(HangingRackBlock.PART, HangingRackBlock.Part.UPPER), Block.UPDATE_ALL);
+            ServerPlayer breaker = FakePlayerFactory.getMinecraft(level);
+            breaker.setGameMode(GameType.SURVIVAL);
+            breaker.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            breaker.gameMode.destroyBlock(base.above(part));
+            int racks = level.getEntitiesOfClass(ItemEntity.class, new AABB(base).inflate(1.5, 4, 1.5)).stream()
+                    .filter(e -> e.getItem().is(CarcassHauling.HANGING_RACK_ITEM.get())).mapToInt(e -> e.getItem().getCount()).sum();
+            h.assertTrue(racks == 1, "breaking part " + part + " of a Hanging Rack drops one rack, not " + racks);
+        }
+        BlockState guano = VanillaGame.GUANO_PILE.get().defaultBlockState().setValue(GuanoPileBlock.LAYERS, 3);
+        int dung = Block.getDrops(guano, level, h.absolutePos(new BlockPos(0, 1, 0)), null).stream().mapToInt(ItemStack::getCount).sum();
+        h.assertTrue(dung == 3, "a guano pile of 3 layers drops 3 Guano, not " + dung);
         h.succeed();
     }
 

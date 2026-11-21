@@ -27,34 +27,30 @@
           "type": "minecraft:item",
           "name": "mechanical:whole_pike",
           "weight": 30,
-          "conditions": [
-            {
-              "condition": "minecraft:location_check",
-              "predicate": {
-                "biomes": [
-                  "minecraft:river",
-                  "minecraft:frozen_river",
-                  "minecraft:swamp",
-                  "mechanical:willow_fen"
-                ]
-              }
+          "condition": {
+            "type": "minecraft:location_check",
+            "predicate": {
+              "biomes": [
+                "minecraft:river",
+                "minecraft:frozen_river",
+                "minecraft:swamp",
+                "mechanical:willow_fen"
+              ]
             }
-          ]
+          }
         },
         {
           "type": "minecraft:item",
           "name": "mechanical:whole_sturgeon",
           "weight": 4,
-          "conditions": [
-            {
-              "condition": "minecraft:location_check",
-              "predicate": {
-                "biomes": [
-                  "minecraft:river"
-                ]
-              }
+          "condition": {
+            "type": "minecraft:location_check",
+            "predicate": {
+              "biomes": [
+                "minecraft:river"
+              ]
             }
-          ]
+          }
         }
       ],
       "rolls": 1

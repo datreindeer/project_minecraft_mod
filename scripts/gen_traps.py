@@ -109,7 +109,7 @@ for item in ("snare", "fish_trap"):
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
     w(D / f"mechanical/loot_table/blocks/{item}.json", {"type": "minecraft:block", "random_sequence": f"mechanical:blocks/{item}",
         "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"mechanical:{item}"}],
-                   "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+                   "condition": {"type": "minecraft:survives_explosion"}}]})
     tag_add(D / "minecraft/tags/block/mineable/axe.json", f"mechanical:{item}")
 
 # Snare: two sticks and a cordage noose. Fish Trap: six sticks woven with two twine.

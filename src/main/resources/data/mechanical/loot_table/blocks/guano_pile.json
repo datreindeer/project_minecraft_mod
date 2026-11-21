@@ -7,45 +7,39 @@
         {
           "type": "minecraft:item",
           "name": "mechanical:guano",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": 2,
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "mechanical:guano_pile",
-                  "properties": {
-                    "layers": "2"
-                  }
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:guano_pile",
+                "state": {
+                  "layers": "2"
                 }
-              ]
+              }
             },
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": 3,
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "mechanical:guano_pile",
-                  "properties": {
-                    "layers": "3"
-                  }
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:guano_pile",
+                "state": {
+                  "layers": "3"
                 }
-              ]
+              }
             },
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": 4,
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "mechanical:guano_pile",
-                  "properties": {
-                    "layers": "4"
-                  }
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:guano_pile",
+                "state": {
+                  "layers": "4"
                 }
-              ]
+              }
             }
           ]
         }

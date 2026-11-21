@@ -9,11 +9,9 @@
           "name": "mechanical:dark_oak_bark_roof"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/dark_oak_bark_roof"

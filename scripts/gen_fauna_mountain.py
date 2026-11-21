@@ -139,7 +139,7 @@ rot = lambda y: {"y": y} if y else {}
 
 def simple_loot(block):
     w(D / f"mechanical/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-        {"type": "minecraft:item", "name": M + block}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+        {"type": "minecraft:item", "name": M + block}], "condition": {"type": "minecraft:survives_explosion"}}],
         "random_sequence": f"mechanical:blocks/{block}"})
 
 

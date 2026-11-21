@@ -7,19 +7,15 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:dirt",
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.5
-            }
-          ]
+          "condition": {
+            "type": "minecraft:random_chance",
+            "chance": 0.5
+          }
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/molehill"
