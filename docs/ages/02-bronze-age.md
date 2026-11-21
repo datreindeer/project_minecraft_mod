@@ -242,7 +242,7 @@ takten ("Baking speed: 2.0x"). Gäller även smältning i Crucible, inte bränni
 | In | Ut | Tid | Kräver |
 |---|---|---|---|
 | 1 Clay Ball | Brick | 20 s | 600° |
-| 1 Log / 2 Firewood | Charcoal | 30 s | 400° |
+| 1 Log / 1 Rough Log / 2 Firewood | Charcoal | 30 s | 400° |
 | Unfired Crucible | Crucible | 40 s | 800° |
 | Unfired Clay Bucket | Clay Bucket | 30 s | 600° |
 | Dough | Bread | 20 s | 200° |

@@ -57,7 +57,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     /** Baking speeds up with heat: one extra speed per this many degrees over what the recipe needs, up to {@link #MAX_SPEED}. */
     public static final float DEGREES_PER_SPEED = 200, MAX_SPEED = 4;
     /** An Iron Bellows pumps {@link #PUMP} times this, and holds the heat over the natural max this long after a pump. */
-    public static final int IRON_PUMP_FACTOR = 2, IRON_HOLD_TICKS = 600;
+    public static final int IRON_PUMP_FACTOR = 2, IRON_HOLD_TICKS = 1200;
     /** Game time until which an Iron Bellows holds the heat. */
     private long heldUntil;
 
@@ -80,11 +80,14 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     }
 
     // shortcut: hardcoded like the Tool Station recipes; move to datapack recipes when modpacks need to edit them.
+    private static final net.minecraft.tags.TagKey<Item> ROUGH_LOGS = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM,
+            net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "rough_logs"));
     public static final List<Recipe> RECIPES = List.of(
             new Recipe(s -> s.is(Items.CLAY_BALL), 1, () -> Items.BRICK, 400, 600),
             new Recipe(s -> s.is(EarthBlocks.KAOLIN.get().asItem()), 1, () -> StoneFamilies.block("kaolin_tiles").asItem(), 400, EarthBlocks.KAOLIN_TEMP),
             new Recipe(s -> s.is(ItemTags.LOGS_THAT_BURN), 1, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(Mechanical.FIREWOOD_TAG), 2, () -> Items.CHARCOAL, 600, 400),
+            new Recipe(s -> s.is(ROUGH_LOGS), 1, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(Mechanical.UNFIRED_CRUCIBLE.get()), 1, () -> Mechanical.CRUCIBLE.get(), 800, 800),
             new Recipe(s -> s.is(Mechanical.UNFIRED_CLAY_BUCKET.get()), 1, () -> Mechanical.CLAY_BUCKET.get(), 600, 600),
             new Recipe(s -> s.is(Farming.DOUGH.get()), 1, () -> Items.BREAD, 400, 200),
@@ -135,7 +138,6 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, 1100),
             // cementation (Smithing): the fire-clay pot fired, then a packed pot held at 1000°
             new Recipe(s -> s.is(Smithing.UNFIRED_CEMENTATION_POT.get()), 1, () -> Smithing.CEMENTATION_POT.get(), 400, 1100),
-            new Recipe(s -> s.is(Smithing.PACKED_CEMENTATION_POT.get()), 1, () -> Smithing.CEMENTED_POT.get(), 3600, 1000),
             // lime burning (IronOres): a lime stone block, or 4 Chalk, -> Quicklime
             new Recipe(IronOres::limeStone, 1, () -> IronOres.QUICKLIME.get(), 400, IronOres.LIME_TEMP),
             new Recipe(s -> s.is(Pigments.CHALK.get()), 4, () -> IronOres.QUICKLIME.get(), 400, IronOres.LIME_TEMP));

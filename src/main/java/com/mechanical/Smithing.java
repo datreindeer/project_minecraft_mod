@@ -49,7 +49,7 @@ public final class Smithing {
     public static final DeferredItem<Item> CEMENTATION_POT = ITEMS.registerSimpleItem("cementation_pot");
     public static final DeferredItem<Item> PACKED_CEMENTATION_POT = ITEMS.registerSimpleItem("packed_cementation_pot", p -> p.stacksTo(1));
     public static final DeferredItem<Item> CEMENTED_POT = ITEMS.registerSimpleItem("cemented_pot", p -> p.stacksTo(1));
-    public static final int CEMENT_TEMP = 1000, CEMENT_TICKS = 3600, BLISTER_PER_POT = 3;
+    public static final int CEMENT_TEMP = 1000, CEMENT_TICKS = 7200, BLISTER_PER_POT = 3;
 
     // ---- forged parts
     public static final DeferredItem<Item> IRON_PLATE = ITEMS.registerSimpleItem("iron_plate");
@@ -112,7 +112,7 @@ public final class Smithing {
     public static final DeferredItem<Item> STEEL_QUARRY_HAMMER = ITEMS.registerSimpleItem("steel_quarry_hammer",
             p -> p.tool(QUARRY_STEEL, BronzeTools.QUARRY_MINEABLE, 7.0F, -3.4F, 0.0F));
 
-    /** Pumps twice as hard as the wooden Bellows and holds the heat for 30 s after a pump (KilnBlockEntity#IRON_HOLD_TICKS). */
+    /** Pumps twice as hard as the wooden Bellows and holds the heat for 60 s after a pump (KilnBlockEntity#IRON_HOLD_TICKS). */
     public static final net.neoforged.neoforge.registries.DeferredBlock<BellowsBlock> IRON_BELLOWS = Mechanical.BLOCKS.registerBlock("iron_bellows",
             p -> new BellowsBlock(p, true), p -> p.mapColor(net.minecraft.world.level.material.MapColor.METAL).strength(3.0F, 6.0F)
                     .sound(net.minecraft.world.level.block.SoundType.METAL).noOcclusion().requiresCorrectToolForDrops());

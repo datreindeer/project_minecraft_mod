@@ -436,6 +436,7 @@ Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk]
 | 1 Clay Ball | Brick | 20 s | 600° |
 | 1 Log (alla som brinner) | Charcoal | 30 s | 400° |
 | 2 Firewood | Charcoal | 30 s | 400° |
+| 1 Rough Log | Charcoal | 30 s | 400° |
 | 1 Unfired Crucible | Crucible | 40 s | 800° |
 | 1 Unfired Clay Bucket | Clay Bucket | 30 s | 600° |
 | 1 Dough (bronsåldern) | Bread | 20 s | 200° |

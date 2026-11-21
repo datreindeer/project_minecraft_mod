@@ -64,7 +64,7 @@ client/`SmithingHearthRenderer`. Data: `scripts/gen_iron_age.py`. Test: `IronAge
 
 | Block | Recept | Vad det gör |
 |---|---|---|
-| **Iron Bellows** | Bellows + 2 Iron Plate + Iron Tool Rod (formlöst) | Pumpar **dubbelt så hårt** (+80° mot +40°) i Clay Kiln, Bloomery och Smelting Furnace, och **håller värmen** över ugnens naturliga max i **30 s** efter varje pump (annars sjunker den 2°/s). Ungefär en pump i minuten räcker. |
+| **Iron Bellows** | Bellows + 2 Iron Plate + Iron Tool Rod (formlöst) | Pumpar **dubbelt så hårt** (+80° mot +40°) i Clay Kiln, Bloomery och Smelting Furnace, och **håller värmen** över ugnens naturliga max i **60 s** efter varje pump (annars sjunker den 2°/s). Ungefär en pump i minuten räcker. |
 | **Smithing Hearth** | 7 Fire Brick + 1 Iron Plate (B B / BPB / BBB) | En liten härd vid städet. Högerklicka med **Charcoal** (högst 16 i förråd, 1 min per Charcoal), tänd med Fire Drill eller Flint and Steel. Fyra platser i glöden: kalla luppar och tackor av järn eller stål blir **heta på 10 s**, heta **hålls heta** så länge den brinner. Tom hand tar ut den senast ilagda. |
 
 - Med härden bredvid städet hinner man lägga tre heta tackor på städet till ett hackhuvud utan att springa till Bloomery.
@@ -141,7 +141,7 @@ Bloomery slukar kol, och Clay Kiln ger bara 1 Charcoal per 2 Firewood. Kolmilan 
 
 ### 4. Steel (åldersslutet) (byggd)
 
-Cementering (kol och sot vandrar in i järnet). Kod: `Smithing`, `BloomeryBlockEntity` / `KilnBlockEntity` (recepten).
+Cementering (kol och sot vandrar in i järnet). Kod: `Smithing`, `BloomeryBlockEntity` (receptet; Clay Kiln bränner bara krukan).
 Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 
 | Steg | Hur |
@@ -149,7 +149,7 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 | **Unfired Cementation Pot** | 5 Fire Clay (F F / FFF) |
 | **Cementation Pot** | Bränd i Clay Kiln vid 1100° |
 | **Packed Cementation Pot** | Cementation Pot + 3 Wrought Iron Ingot + 2 Charcoal + 1 Soot (formlöst) |
-| **Cemented Pot** | Packed pot i **Bloomery eller Clay Kiln** vid **1000°** i 3 min (snabbare hetare). Bloomery sjunker mot 800° utan bälg, så pumpa |
+| **Cemented Pot** | Packed pot **bara i Bloomery** vid **1000°** i 6 min (snabbare hetare). Bloomery sjunker mot 800° utan bälg, så pumpa (Iron Bellows: en pump i minuten) |
 | **Blister Steel** | Cemented Pot (formlöst) → **3 Blister Steel** (krukan går sönder) |
 | **Steel Ingot** | Blister Steel värmd till 1100° (Hot Blister Steel), **6 slag** på städet med **Iron Smithing Hammer** |
 

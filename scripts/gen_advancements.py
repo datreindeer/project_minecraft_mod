@@ -1145,7 +1145,7 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "After 5 minutes every piece of firewood is a Charcoal (a rough log two)", by_code()),
     ("cementation", "forged", "cemented_pot", G, "Cementation",
      "Shape a Cementation Pot from Fire Clay and fire it, pack it with 3 Wrought Iron, 2 Charcoal and Soot, and hold it at 1000° "
-     "in the Bloomery or Clay Kiln for 3 minutes. Break it open: 3 Blister Steel", has("cemented_pot", "blister_steel")),
+     "in a Bloomery for 6 minutes. Break it open: 3 Blister Steel", has("cemented_pot", "blister_steel")),
     ("steel", "cementation", "steel_ingot", C, "Steel",
      "Heat Blister Steel to forging heat and fold it with 6 blows of an Iron Smithing Hammer into a Steel Ingot: the end of the Iron Age",
      has("steel_ingot")),
@@ -1155,7 +1155,7 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
     ("flint_and_steel", "steel", "minecraft:flint_and_steel", T, "Strike a Light",
      "Flint + Steel Plate: a Flint and Steel lights a fire every time", has("minecraft:flint_and_steel")),
     ("iron_bellows", "forged", "iron_bellows", T, "Iron Lungs",
-     "Plate a Bellows with 2 Iron Plates and an Iron Tool Rod: it pumps twice as hard and the heat holds for 30 s after each pump",
+     "Plate a Bellows with 2 Iron Plates and an Iron Tool Rod: it pumps twice as hard and the heat holds for 60 s after each pump",
      has("iron_bellows")),
     ("smithing_hearth", "forged", "smithing_hearth", G, "Smithing Hearth",
      "Build a Smithing Hearth (7 Fire Brick, an Iron Plate), stock it with Charcoal and light it: iron and steel in its coals heat up "

@@ -211,6 +211,8 @@ public final class IronAgeTest {
 
         // ---- cementation: pot fired, packed, held at 1000° in the bloomery, opened to Blister Steel
         h.assertTrue(KilnBlockEntity.canBake(new ItemStack(Smithing.UNFIRED_CEMENTATION_POT.get())), "the kiln fires the pot");
+        h.assertFalse(KilnBlockEntity.canBake(new ItemStack(Smithing.PACKED_CEMENTATION_POT.get())), "cementation only in the bloomery");
+        h.assertTrue(KilnBlockEntity.canBake(new ItemStack(Mechanical.ROUGH_LOGS.get("oak").get())), "the kiln chars a rough log");
         var packIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, List.of(new ItemStack(Smithing.CEMENTATION_POT.get()),
                 new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()),
                 new ItemStack(Items.CHARCOAL), new ItemStack(Items.CHARCOAL), new ItemStack(Mechanical.SOOT_ITEM.get()), ItemStack.EMPTY, ItemStack.EMPTY));

@@ -36,6 +36,12 @@ Som Limestone: klumpar via `ore`-features i `base_stone_overworld`, plus att de 
 `stone_ore_replaceables`. **Varje bergart finns i hela världen men är mycket vanligare i "sin" biom**, så att den går att
 hitta utan att just den biomen ligger nära.
 
+**Gamla världar:** en op lägger in bergarterna i chunkar som skapades innan de fanns med **`/regenstones <radie 0–16>`**
+(chunkar runt dig, även land man bott på). Den tar varje `mechanical:ore_*`-åder som bara ersätter naturlig sten och
+inte redan retrogenereras (alla bergarter här plus Galena och Rock Salt; inte Peat, Loess, Kaolin och ockra, som ersätter
+jord, och inte Tin). Varje chunk får dem en gång (`has_stones`); en chunk som redan har något av blocken räknas som klar.
+Kod: `GemRegen` (samma som `/regengems`).
+
 ### 1.3 Ytbiomer
 Samma väg som de fyra biomerna i `gen_biomes.py`: varje biom tar en del av en vanilla-biomens klimatzon via
 `OverworldBiomeBuilderMixin.addSurfaceBiome`. Terrängens form ändras inte, bara biomkartan.

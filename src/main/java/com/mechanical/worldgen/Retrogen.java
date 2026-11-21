@@ -145,6 +145,7 @@ public final class Retrogen {
         if (event.isNewChunk()) {
             mark(chunk, sets(level).current()); // generated now: already has every current feature
             GemRegen.markHasGems(chunk);
+            GemRegen.markHasStones(chunk);
             return;
         }
         // this chunk, and neighbours that were only waiting for it to load
@@ -244,9 +245,10 @@ public final class Retrogen {
         FeaturePlacer placer = new FeaturePlacer(level, level.getChunkSource().getGenerator());
         boolean prime = true;
         int placed = 0;
-        for (int i = 0; i < FEATURES.size(); i++) {
-            if (!features.contains(FEATURES.get(i))) continue;
-            PlacedFeature feature = registry.getValue(Identifier.fromNamespaceAndPath(Mechanical.MODID, FEATURES.get(i)));
+        for (String name : features) {
+            int i = FEATURES.indexOf(name); // a feature's own seed index; regen-only features (GemRegen stones) get one after the list
+            if (i < 0) i = FEATURES.size() + (name.hashCode() & 0xffff);
+            PlacedFeature feature = registry.getValue(Identifier.fromNamespaceAndPath(Mechanical.MODID, name));
             if (feature == null || biomes.stream().noneMatch(b -> b.value().getGenerationSettings().hasFeature(feature))) continue;
             // a live chunk doesn't keep the worldgen heightmaps up to date: rebuild them before the first feature and after each change
             if (prime) for (LevelChunk c : around) Heightmap.primeHeightmaps(c, WG_HEIGHTMAPS);

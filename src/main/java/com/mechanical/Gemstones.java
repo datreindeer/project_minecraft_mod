@@ -250,6 +250,14 @@ public final class Gemstones {
         int[] first = com.mechanical.worldgen.GemRegen.regen(h.getLevel(), chunk, 0, true);
         int[] second = com.mechanical.worldgen.GemRegen.regen(h.getLevel(), chunk, 0, true);
         h.assertTrue(first[0] == 1 && second[0] == 0 && second[1] == 1, "regengems does a chunk once (got " + first[0] + ", then " + second[0] + ")");
+        // /regenstones: the stone-only veins (marble, galena...), never dirt-replacing ones (peat) or retrogenned ones (tin); once per chunk
+        var stones = com.mechanical.worldgen.GemRegen.stoneFeatures(h.getLevel());
+        h.assertTrue(stones.contains("ore_marble") && !stones.contains("ore_peat")
+                && !stones.contains("ore_tin") && !stones.contains("ore_kaolin"), "regenstones veins (got " + stones + ")");
+        h.getLevel().getChunk(chunk.x(), chunk.z()).setData(com.mechanical.worldgen.GemRegen.HAS_STONES, false);
+        int[] s1 = com.mechanical.worldgen.GemRegen.regenStones(h.getLevel(), chunk, 0);
+        int[] s2 = com.mechanical.worldgen.GemRegen.regenStones(h.getLevel(), chunk, 0);
+        h.assertTrue(s1[0] + s1[1] == 1 && s2[0] == 0 && s2[1] == 1, "regenstones does a chunk once");
         h.assertTrue(BronzeOres.crushed(garnet).is(GARNET_GRIT.get()) && BronzeOres.crushed(ruby).is(CORUNDUM_GRIT.get())
                 && BronzeOres.crushed(new ItemStack(Items.FLINT)).is(FLINT_GRIT.get()), "grit is crushed on the Stone Anvil");
 
