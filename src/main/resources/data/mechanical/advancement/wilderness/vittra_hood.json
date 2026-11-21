@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/vittra",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:vittra_hood"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:vittra_hood"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.vittra_hood.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.vittra_hood.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

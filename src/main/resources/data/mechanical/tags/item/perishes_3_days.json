@@ -67,6 +67,9 @@
     "mechanical:cooked_swan",
     "mechanical:cooked_heron",
     "mechanical:cooked_crane",
-    "mechanical:cooked_centipede"
+    "mechanical:cooked_centipede",
+    "mechanical:cooked_vittra_meat",
+    "mechanical:cooked_troll_meat",
+    "mechanical:cooked_lindworm_meat"
   ]
 }

@@ -60,6 +60,9 @@
     "mechanical:raw_heron",
     "mechanical:raw_crane",
     "mechanical:raw_meat_strips",
-    "mechanical:raw_centipede"
+    "mechanical:raw_centipede",
+    "mechanical:vittra_meat",
+    "mechanical:troll_meat",
+    "mechanical:lindworm_meat"
   ]
 }

@@ -6,7 +6,37 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:lindworm_meat"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "mechanical:raw_centipede"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:troll_meat"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:vittra_meat"
           }
         ]
       }
@@ -14,7 +44,10 @@
   },
   "requirements": [
     [
-      "has_0"
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3"
     ]
   ],
   "display": {

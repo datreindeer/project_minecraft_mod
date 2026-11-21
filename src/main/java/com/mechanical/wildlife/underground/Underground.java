@@ -51,6 +51,24 @@ public final class Underground {
     private static final double CROWD = 64, PLAYER_CLEAR = 12;
     private static final List<Band> BANDS = new ArrayList<>();
 
+    /** A creature of the dark that never panics when hurt or startled (AnimalFear leaves it be): it fights or backs off by its own goals. */
+    public interface Fearless {}
+
+    /** Block light at which the folk of the dark (Vittra, Troll) keep away: about 7 blocks from a torch. */
+    public static final int LIT = 7;
+
+    /** In light the creatures of the dark shun: holding a torch or the like, or standing in block light {@link #LIT} or more. */
+    public static boolean inLight(net.minecraft.world.entity.LivingEntity e) {
+        return GiantCentipede.holdsLight(e) || e.level().getBrightness(LightLayer.BLOCK, e.blockPosition()) >= LIT;
+    }
+
+    /** Walks {@code mob} off, away from {@code from} (light, or whoever carries it). */
+    static void backOff(net.minecraft.world.entity.PathfinderMob mob, net.minecraft.world.phys.Vec3 from, double speed) {
+        mob.setTarget(null);
+        net.minecraft.world.phys.Vec3 away = net.minecraft.world.entity.ai.util.DefaultRandomPos.getPosAway(mob, 12, 5, from);
+        if (away != null) mob.getNavigation().moveTo(away.x, away.y, away.z, speed);
+    }
+
     /** Registers a creature for the spawner (call during mod construction). */
     public static void addBand(Supplier<? extends EntityType<? extends Mob>> type, int minY, int maxY, int weight, int minGroup, int maxGroup) {
         BANDS.add(new Band(type, minY, maxY, weight, minGroup, maxGroup));

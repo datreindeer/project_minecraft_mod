@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "HHH",
+    "H H"
+  ],
+  "key": {
+    "H": "mechanical:vittra_hide"
+  },
+  "result": {
+    "id": "mechanical:vittra_hood",
+    "count": 1
+  }
+}

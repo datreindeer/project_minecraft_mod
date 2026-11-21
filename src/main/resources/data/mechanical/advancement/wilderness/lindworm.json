@@ -1,0 +1,37 @@
+{
+  "parent": "mechanical:wilderness/troll",
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:lindworm"
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:lindworm_scale"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.lindworm.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.lindworm.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 400,
+  "experience": 0.2,
+  "ingredient": "mechanical:troll_meat",
+  "result": {
+    "id": "mechanical:cooked_troll_meat"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "T ",
+    "WS"
+  ],
+  "key": {
+    "T": "mechanical:troll_tusk",
+    "W": "mechanical:twine",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:troll_tusk_knife",
+    "count": 1
+  }
+}
