@@ -14,6 +14,7 @@
     "mechanical:bronze_shears",
     "mechanical:bronze_quarry_hammer",
     "mechanical:bronze_smithing_hammer",
-    "mechanical:iron_smithing_hammer"
+    "mechanical:iron_smithing_hammer",
+    "mechanical:steel_quarry_hammer"
   ]
 }

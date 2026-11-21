@@ -224,10 +224,18 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     /** One pump of a bellows on a wall: +{@link KilnBlockEntity#PUMP}° up to the fuel's bellows max. False if it isn't lit. */
+    private long heldUntil;
+
     public boolean pump() {
+        return pump(false);
+    }
+
+    /** One pump; an Iron Bellows ({@code iron}) pumps twice as hard and holds the heat ({@link KilnBlockEntity#IRON_HOLD_TICKS}). */
+    public boolean pump(boolean iron) {
         if (!formed || !lit()) return false;
+        if (iron && level != null) heldUntil = level.getGameTime() + KilnBlockEntity.IRON_HOLD_TICKS;
         float max = Math.min(bellowsTemp, KilnBlockEntity.CEILING);
-        if (temperature() < max) temp = Math.min(max, temperature() + KilnBlockEntity.PUMP);
+        if (temperature() < max) temp = Math.min(max, temperature() + KilnBlockEntity.PUMP * (iron ? KilnBlockEntity.IRON_PUMP_FACTOR : 1));
         setChanged();
         return true;
     }
@@ -268,7 +276,8 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
             if (burn > 0) burn = Math.max(0, burn - Temperature.fireDrain(level, worldPosition, level.getRandom()));
         }
         BlockPos top = chute().above();
-        temp = Math.min(KilnBlockEntity.heatStep(temperature(), lit, maxTemp, ambient, level.isRainingAt(top)), KilnBlockEntity.CEILING);
+        temp = Math.min(KilnBlockEntity.heatStep(temperature(), lit, maxTemp, ambient, level.isRainingAt(top), level.getGameTime() < heldUntil),
+                KilnBlockEntity.CEILING);
 
         int need = melt.meltTemp();
         if (formed && need > 0 && temp >= need) {

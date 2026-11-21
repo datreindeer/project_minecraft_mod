@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "mechanical:block/smithing_hearth"
+    },
+    "lit=true": {
+      "model": "mechanical:block/smithing_hearth_lit"
+    }
+  }
+}

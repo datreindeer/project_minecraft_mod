@@ -272,6 +272,11 @@ public final class BronzeTools {
 
     // ---------------------------------------------------------------- quarry hammer: a 3x3 face of stone
 
+    /** The Bronze Quarry Hammer or the Steel one (Smithing): steel's reach takes every ore a steel pickaxe mines. */
+    public static boolean isQuarryHammer(ItemStack stack) {
+        return stack.is(BRONZE_QUARRY_HAMMER.get()) || stack.is(Smithing.STEEL_QUARRY_HAMMER.get());
+    }
+
     private static boolean quarrying;
 
     /** The 9 blocks around {@code center} across {@code axis}: the face the player hit. */
@@ -296,7 +301,7 @@ public final class BronzeTools {
     @SubscribeEvent
     static void onQuarry(BreakBlockEvent event) {
         if (quarrying || !(event.getPlayer() instanceof ServerPlayer player) || !(event.getLevel() instanceof ServerLevel level)
-                || !player.getMainHandItem().is(BRONZE_QUARRY_HAMMER.get()) || !event.getState().is(QUARRY_MINEABLE)) return;
+                || !isQuarryHammer(player.getMainHandItem()) || !event.getState().is(QUARRY_MINEABLE)) return;
         event.setCanceled(true);
         quarry(level, player, event.getPos(), ((BlockHitResult) player.pick(player.blockInteractionRange(), 1.0F, false)).getDirection().getAxis());
     }
@@ -307,7 +312,9 @@ public final class BronzeTools {
      */
     static boolean quarry(ServerLevel level, ServerPlayer player, BlockPos center, Direction.Axis axis) {
         List<BlockPos> face = face(center, axis);
-        if (face.stream().map(level::getBlockState).anyMatch(s -> s.is(QUARRY_ORES) && s.is(QUARRY_BRONZE.incorrectBlocksForDrops()))) {
+        var tooHard = player.getMainHandItem().is(Smithing.STEEL_QUARRY_HAMMER.get()) ? Smithing.QUARRY_STEEL.incorrectBlocksForDrops()
+                : QUARRY_BRONZE.incorrectBlocksForDrops();
+        if (face.stream().map(level::getBlockState).anyMatch(s -> s.is(QUARRY_ORES) && s.is(tooHard))) {
             player.getMainHandItem().hurtAndBreak(TOO_HARD_WEAR, player, InteractionHand.MAIN_HAND);
             player.sendOverlayMessage(Component.translatable("message.mechanical.quarry_hammer.too_hard"));
             return false;
@@ -316,7 +323,7 @@ public final class BronzeTools {
         quarrying = true;
         try {
             for (BlockPos p : face) {
-                if (!player.getMainHandItem().is(BRONZE_QUARRY_HAMMER.get())) break; // worn out mid-blow
+                if (!isQuarryHammer(player.getMainHandItem())) break; // worn out mid-blow
                 BlockState s = level.getBlockState(p);
                 if (!s.is(QUARRY_MINEABLE)) continue;
                 boolean crumbles = s.is(QUARRY_ORES);

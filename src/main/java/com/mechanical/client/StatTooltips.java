@@ -63,7 +63,7 @@ public final class StatTooltips {
         mining(lines, stack, ItemTags.PICKAXES, Blocks.STONE.defaultBlockState(), "Mining speed");
         mining(lines, stack, ItemTags.AXES, Blocks.OAK_LOG.defaultBlockState(), "Chopping speed");
         mining(lines, stack, ItemTags.SHOVELS, Blocks.DIRT.defaultBlockState(), "Digging speed");
-        boolean quarry = stack.is(BronzeTools.BRONZE_QUARRY_HAMMER.get());
+        boolean quarry = BronzeTools.isQuarryHammer(stack);
         if (quarry) lines.add(stat("Mining speed", value(String.format("%.1f", stack.getDestroySpeed(Blocks.STONE.defaultBlockState())))));
         if (stack.is(ItemTags.PICKAXES) || quarry) {
             String tier = stack.isCorrectToolForDrops(Blocks.DIAMOND_ORE.defaultBlockState()) ? "Diamond"
@@ -141,7 +141,7 @@ public final class StatTooltips {
             use(lines, "Right-click stone: smooth → bricks → chiseled");
             use(lines, "In the off hand at a Whetstone it knocks the flash off");
         }
-        if (stack.is(BronzeTools.BRONZE_QUARRY_HAMMER.get())) {
+        if (BronzeTools.isQuarryHammer(stack)) {
             lines.add(stat("Area", value("3×3")));
             lines.add(stat("Wear per ore", Component.literal("+" + BronzeTools.ORE_WEAR + " (ore crumbles to rock)").withStyle(BAD)));
             lines.add(stat("Ore too hard", Component.literal(BronzeTools.TOO_HARD_WEAR + " wear, nothing breaks").withStyle(BAD)));

@@ -170,6 +170,8 @@
     "mechanical:polished_conglomerate",
     "mechanical:polished_conglomerate_slab",
     "mechanical:polished_conglomerate_stairs",
-    "mechanical:polished_conglomerate_wall"
+    "mechanical:polished_conglomerate_wall",
+    "mechanical:iron_bellows",
+    "mechanical:smithing_hearth"
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:bellows",
+    "mechanical:iron_plate",
+    "mechanical:iron_plate",
+    "mechanical:iron_tool_rod"
+  ],
+  "result": {
+    "id": "mechanical:iron_bellows",
+    "count": 1
+  }
+}

@@ -25,6 +25,15 @@ public class FireDrillItem extends Item {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
+        // the Smithing Hearth: catches as often as a campfire without tinder
+        if (state.getBlock() instanceof SmithingHearthBlock && level.getBlockEntity(pos) instanceof SmithingHearthBlockEntity hearth) {
+            if (level instanceof ServerLevel server && context.getPlayer() != null && !hearth.lit()) {
+                if (server.getRandom().nextFloat() < Tinder.CHANCE_WITHOUT) SmithingHearthBlock.lightUp(server, pos, hearth, context.getPlayer());
+                else server.playSound(null, pos, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.6F, 1.6F);
+                context.getItemInHand().hurtAndBreak(1, context.getPlayer(), EquipmentSlot.MAINHAND);
+            }
+            return InteractionResult.SUCCESS;
+        }
         // a covered wood pile: the vent of a charcoal clamp
         if (CharcoalClamp.isPile(state)) {
             if (level instanceof ServerLevel server && context.getPlayer() != null) {

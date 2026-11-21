@@ -56,6 +56,20 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 - Luppar från före rostningen räknas som rostade (2 + 1).
 - Advancement **Roasted** (Iron Age-fliken).
 
+### Järnbälg och Smithing Hearth (byggd)
+
+Två block som gör smidet mindre stressigt. Kod: `BellowsBlock` (iron), `KilnBlockEntity` / `BloomeryBlockEntity` /
+`FurnaceTapBlockEntity` (pump och värmehållning), `SmithingHearthBlock`, `SmithingHearthBlockEntity`,
+client/`SmithingHearthRenderer`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
+
+| Block | Recept | Vad det gör |
+|---|---|---|
+| **Iron Bellows** | Bellows + 2 Iron Plate + Iron Tool Rod (formlöst) | Pumpar **dubbelt så hårt** (+80° mot +40°) i Clay Kiln, Bloomery och Smelting Furnace, och **håller värmen** över ugnens naturliga max i **30 s** efter varje pump (annars sjunker den 2°/s). Ungefär en pump i minuten räcker. |
+| **Smithing Hearth** | 7 Fire Brick + 1 Iron Plate (B B / BPB / BBB) | En liten härd vid städet. Högerklicka med **Charcoal** (högst 16 i förråd, 1 min per Charcoal), tänd med Fire Drill eller Flint and Steel. Fyra platser i glöden: kalla luppar och tackor av järn eller stål blir **heta på 10 s**, heta **hålls heta** så länge den brinner. Tom hand tar ut den senast ilagda. |
+
+- Med härden bredvid städet hinner man lägga tre heta tackor på städet till ett hackhuvud utan att springa till Bloomery.
+- Advancements: **Iron Lungs** (Iron Bellows), **Smithing Hearth**.
+
 ### Smide av järn (byggd)
 
 Järn smids, det gjuts inte (beslut 2026-11-20). Kod: `Smithing` (items, mönster, stålverktyg), `HotMetalItem` (het
@@ -79,7 +93,7 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Knife Blade | 1 | 5 | Iron Knife Blade | Steel Knife Blade |
 | Sword Blade | 2 | 7 | Iron Sword Blade | Steel Sword Blade |
 | Spear Head | 1 | 6 | Iron Spear Head | Steel Spear Head |
-| Hammer Head | 2 | 6 | Iron Hammer Head | – |
+| Hammer Head | 2 | 6 | Iron Hammer Head | Steel Hammer Head |
 
 - **Fler tackor:** stora delar kräver flera heta tackor av samma metall. Lägg den första på städet och högerklicka med
   fler heta tackor (högst 3); högen ritas tacka för tacka. Den första håller hettan och slagen. För få tackor: inga slag,
@@ -134,19 +148,22 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 |---|---|
 | **Unfired Cementation Pot** | 5 Fire Clay (F F / FFF) |
 | **Cementation Pot** | Bränd i Clay Kiln vid 1100° |
-| **Packed Cementation Pot** | Cementation Pot + 2 Wrought Iron Ingot + 2 Charcoal + 1 Soot (formlöst) |
+| **Packed Cementation Pot** | Cementation Pot + 3 Wrought Iron Ingot + 2 Charcoal + 1 Soot (formlöst) |
 | **Cemented Pot** | Packed pot i **Bloomery eller Clay Kiln** vid **1000°** i 3 min (snabbare hetare). Bloomery sjunker mot 800° utan bälg, så pumpa |
-| **Blister Steel** | Cemented Pot (formlöst) → **2 Blister Steel** (krukan går sönder) |
-| **Steel Ingot** | Blister Steel värmd till 1100° (Hot Blister Steel), **6 slag** på städet |
+| **Blister Steel** | Cemented Pot (formlöst) → **3 Blister Steel** (krukan går sönder) |
+| **Steel Ingot** | Blister Steel värmd till 1100° (Hot Blister Steel), **6 slag** på städet med **Iron Smithing Hammer** |
 
 - Heta Steel Ingots smids efter städets mönster till **Steel Plate** och stålets huvuden och blad (se *Smide*; ingen
   Tool Rod eller Hammer Head av stål).
 - **Stålverktyg** (Tool Station): smitt huvud med skafthål på ett träskaft, låst med en **Iron Tool Rod** som kil och
   beslag, ingen surrning: huvud + Iron Tool Rod + Tool Rod → Steel Pickaxe / Axe / Shovel / Hoe; Steel Spear (Spear Head
   + Iron Tool Rod + Tool Rod); Steel Sword (Sword Blade + Iron Tool Rod som parerstång och tånge + Leather som grepp);
-  Steel Knife (Knife Blade + Leather + Stick). Materialet: **1100** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2),
+  Steel Knife (Knife Blade + Leather + Stick). Materialet: **2200** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2),
   bryter som diamant (obsidian). Texturerna är vanillas järnverktyg med blått stål.
 - **Flint and Steel:** Flint + Steel Plate (vanillas recept ville ha Iron Ingot). Tänder varje gång.
+- **Stål kräver Iron Smithing Hammer:** Bronze Smithing Hammer biter inte på stål (Blister Steel eller Steel Ingot).
+- **Steel Quarry Hammer** (Tool Station): Steel Hammer Head + Steel Plate + Iron Tool Rod. Bryter 3×3 som Bronze Quarry
+  Hammer, men varje malm en stålhacka bryter smulas (guld, diamant m.m.); 1800 i hållbarhet.
 - **Stålrustning** (Armor Station): 3 / 6 / 5 / 2 Steel Plate + 2 / 4 / 3 / 2 Leather + hammare → Steel Helmet /
   Chestplate / Leggings / Boots. Skydd 3 / 7 / 6 / 2 och 1 i seghet (järn 2 / 6 / 5 / 2, diamant 3 / 8 / 6 / 3),
   hållbarhet ×25 (järn 15, diamant 33).
