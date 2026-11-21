@@ -68,8 +68,10 @@ public final class UndergroundClient {
 
     @SubscribeEvent
     static void registerFolk(EntityRenderersEvent.RegisterRenderers event) {
-        event.<Vittra>registerEntityRenderer(UndergroundFauna.VITTRA.get(), c -> scaled(c, new FolkModel(c.bakeLayer(FolkModel.VITTRA), 0.1F), 0.75F, 0.4F));
+        event.<Vittra>registerEntityRenderer(UndergroundFauna.VITTRA.get(), c -> scaled(c, new FolkModel(c.bakeLayer(FolkModel.VITTRA), 0.35F, true), 0.75F, 0.4F));
         event.<Troll>registerEntityRenderer(UndergroundFauna.TROLL.get(), c -> scaled(c, new FolkModel(c.bakeLayer(FolkModel.TROLL), 0.45F), 1.45F, 1.0F));
+        com.mechanical.client.CarcassRenderer.ON_BACK.add(UndergroundFauna.VITTRA.get());
+        com.mechanical.client.CarcassRenderer.ON_BACK.add(UndergroundFauna.TROLL.get());
         event.<Lindworm>registerEntityRenderer(UndergroundFauna.LINDWORM.get(), c -> scaled(c, new LindwormModel(c.bakeLayer(LindwormModel.LAYER)), 1.3F, 1.2F));
     }
 

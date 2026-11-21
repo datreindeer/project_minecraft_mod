@@ -27,8 +27,14 @@ public class FolkModel extends EntityModel<WildAnimalRenderState> {
 
     private final ModelPart body, head, rightArm, leftArm, rightLeg, leftLeg;
     private final float hunch;
+    /** Gaunt (the Vittra): a longer torso, a smaller head and arms to the knees, drawn by scaling the parts (UVs unchanged). */
+    private final boolean gaunt;
 
     public FolkModel(ModelPart root, float hunch) {
+        this(root, hunch, false);
+    }
+
+    public FolkModel(ModelPart root, float hunch, boolean gaunt) {
         super(root);
         body = root.getChild("body");
         head = body.getChild("head");
@@ -37,6 +43,7 @@ public class FolkModel extends EntityModel<WildAnimalRenderState> {
         rightLeg = root.getChild("right_leg");
         leftLeg = root.getChild("left_leg");
         this.hunch = hunch;
+        this.gaunt = gaunt;
     }
 
     /** Vittra: 6x12x3 body, 8x8x8 head with 1x4x2 ears, 3x12x3 limbs. 2 blocks tall before the renderer's scale. */
@@ -96,21 +103,39 @@ public class FolkModel extends EntityModel<WildAnimalRenderState> {
     @Override
     public void setupAnim(WildAnimalRenderState state) {
         super.setupAnim(state);
-        if (CarcassRenderer.isHung(state)) return;
-        if (CarcassRenderer.isCarcass(state)) { // limp: arms and legs fallen aside
-            rightArm.zRot = 0.5F;
-            leftArm.zRot = -0.5F;
-            rightLeg.zRot = 0.2F;
-            leftLeg.zRot = -0.2F;
+        if (gaunt) {
+            // body x1.2 tall, head 0.7 and arms 1.4 of their size (children inherit the body's stretch); same 2 blocks overall
+            body.yScale = 1.2F;
+            body.xScale = 0.85F;
+            head.xScale = head.zScale = 0.8F;
+            head.yScale = 0.7F / 1.2F;
+            rightArm.yScale = leftArm.yScale = 1.4F / 1.2F;
+            rightArm.xScale = leftArm.xScale = rightArm.zScale = leftArm.zScale = 0.8F;
+            rightLeg.xScale = leftLeg.xScale = rightLeg.zScale = leftLeg.zScale = 0.85F;
+        }
+        if (CarcassRenderer.isHung(state)) { // hung by the feet (upside down): the arms dangle past the head
+            rightArm.xRot = leftArm.xRot = Mth.PI;
+            rightArm.zRot = -0.15F;
+            leftArm.zRot = 0.15F;
+            return;
+        }
+        if (CarcassRenderer.isCarcass(state)) { // on its back (CarcassRenderer.ON_BACK): arms and legs fallen aside, head rolled over
+            rightArm.zRot = 0.6F;
+            leftArm.zRot = -0.45F;
+            rightLeg.zRot = 0.25F;
+            leftLeg.zRot = -0.15F;
+            head.yRot = 0.6F;
             return;
         }
         float pos = state.walkAnimationPos, speed = Math.min(state.walkAnimationSpeed, 1.0F);
-        float swing = Mth.cos(pos * 0.6662F) * 1.2F * speed;
+        // the gaunt stalk with short slow strides, the long arms hanging near still
+        float swing = Mth.cos(pos * (gaunt ? 0.45F : 0.6662F)) * (gaunt ? 0.7F : 1.2F) * speed;
+        float armSwing = gaunt ? 0.3F : 0.8F;
         rightLeg.xRot = swing;
         leftLeg.xRot = -swing;
         body.xRot = hunch;
-        rightArm.xRot = -swing * 0.8F - hunch;
-        leftArm.xRot = swing * 0.8F - hunch;
+        rightArm.xRot = -swing * armSwing - hunch;
+        leftArm.xRot = swing * armSwing - hunch;
         float sway = Mth.sin(state.ageInTicks * 0.067F) * 0.05F;
         rightArm.zRot = 0.05F + sway;
         leftArm.zRot = -0.05F - sway;

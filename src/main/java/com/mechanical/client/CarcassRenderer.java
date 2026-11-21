@@ -76,6 +76,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     private static final ContextKey<Boolean> TURNING = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "turning"));
     /** Model tint of a body close to spoiling: a sickly green-grey cast. */
     public static final int TURNING_TINT = 0xFF9AA67A;
+    /** Two-legged bodies (the folk of the dark): lie on their back, limbs spread on the ground, and hang by the feet. */
+    public static final java.util.Set<net.minecraft.world.entity.EntityType<?>> ON_BACK = new java.util.HashSet<>();
 
     /** Room under a caravan cart's canopy for a prepared body lying across the bed (its legs) and along it (its length). */
     private static final float FIT_ACROSS = 1.2F, FIT_ALONG = 1.75F, POLE_LENGTH = 1.7F;
@@ -249,6 +251,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         boolean flat;
         /** An upright model (the bat): lies on its belly, wings spread; hangs head down from its feet. */
         boolean upright;
+        /** Two-legged ({@link #ON_BACK}): standing tall along +y, its face to -z. */
+        boolean onBack;
         Pose pose = Pose.LYING;
         /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
         double dx, dy, dz;
@@ -340,6 +344,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         if (state.animal instanceof PhantomRenderState phantom) phantom.flapTime = LIMP_FLAP;
         state.flat = carcass.liesFlat();
         state.upright = state.animal instanceof BatRenderState;
+        state.onBack = ON_BACK.contains(carcass.animal());
         state.bodyYaw = carcass.getViewYRot(partialTicks);
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
@@ -381,7 +386,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // (+x is the hauler's right, +z behind him here; HaulingClient raises the arm)
             poseStack.translate(0.3F, 0.55F - state.hangLength, 0.3F);
         }
-        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && state.upright) {
+        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && (state.upright || state.onBack)) {
             // a bat hangs by its feet as at roost: just upside down, the feet at the hook
             poseStack.translate(0.0F, state.hangLength, 0.0F);
             poseStack.rotate(Axis.ZP.rotationDegrees(180.0F));
@@ -407,6 +412,14 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // on its belly, head forward, wings flat on the ground (the model stands 10 px tall, its face to -z)
             poseStack.translate(0.0F, 0.07F, 0.31F);
             poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
+        }
+        if (state.onBack) {
+            // on its back, face up, head along +z: the body centred on the hitbox, resting on its back
+            poseStack.translate(0.0F, state.width * 0.2F, -state.height / 2.0F);
+            poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
             state.renderer.submit(state.animal, poseStack, collector, camera);
             poseStack.popPose();
             return;
