@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/jasper_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/jasper_stone"
+    },
+    "type=top": {
+      "model": "mechanical:block/jasper_slab_top"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:bronze_age/bronze_pickaxe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:coastal_basalt"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:polished_coastal_basalt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:polished_coastal_basalt"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.coastal_basalt.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.coastal_basalt.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

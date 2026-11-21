@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_alabaster",
+  "result": {
+    "id": "mechanical:smooth_alabaster_stairs"
+  }
+}

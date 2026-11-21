@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "mechanical:block/polished_scoria",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "mechanical:block/polished_scoria"
+    },
+    "axis=z": {
+      "model": "mechanical:block/polished_scoria",
+      "x": 90
+    }
+  }
+}

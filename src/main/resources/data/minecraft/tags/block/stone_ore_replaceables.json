@@ -6,6 +6,19 @@
     "mechanical:chalk_block",
     "mechanical:soapstone",
     "mechanical:shale",
-    "mechanical:conglomerate"
+    "mechanical:conglomerate",
+    "mechanical:marble",
+    "mechanical:quartzite",
+    "mechanical:red_porphyry",
+    "mechanical:green_porphyry",
+    "mechanical:rapakivi_granite",
+    "mechanical:coastal_basalt",
+    "mechanical:pumice",
+    "mechanical:scoria",
+    "mechanical:serpentine",
+    "mechanical:jasper_stone",
+    "mechanical:gypsum",
+    "mechanical:alabaster",
+    "mechanical:alum_shale"
   ]
 }

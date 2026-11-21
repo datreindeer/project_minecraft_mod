@@ -42,7 +42,10 @@ public final class StoneFamilies {
                 "{}_tile_slab", "{}_tile_stairs", "{}_tile_wall", "cracked_{}_bricks", "cracked_{}_tiles", "chiseled_{}"),
         STONE(false, "{}_slab", "{}_stairs", "smooth_{}", "smooth_{}_slab", "{}_bricks", "{}_brick_slab", "{}_brick_stairs", "{}_brick_wall",
                 "cracked_{}_bricks", "chiseled_{}_bricks", "mossy_{}_bricks", "mossy_{}_brick_slab", "mossy_{}_brick_stairs", "mossy_{}_brick_wall"),
-        SANDSTONE(false, "{}_slab", "{}_stairs", "{}_wall", "cut_{}", "cut_{}_slab", "smooth_{}", "smooth_{}_slab", "smooth_{}_stairs", "chiseled_{}");
+        SANDSTONE(false, "{}_slab", "{}_stairs", "{}_wall", "cut_{}", "cut_{}_slab", "smooth_{}", "smooth_{}_slab", "smooth_{}_stairs", "chiseled_{}"),
+        QUARTZ(false, "{}_slab", "{}_stairs", "{}_bricks", "{}_pillar", "chiseled_{}", "smooth_{}", "smooth_{}_slab", "smooth_{}_stairs"),
+        /** polished_{} turns like the base (vanilla polished basalt). */
+        BASALT(true, "polished_{}", "smooth_{}");
 
         /** The base block turns like a log (deepslate's axis). */
         final boolean pillarBase;
@@ -79,7 +82,34 @@ public final class StoneFamilies {
             Stone.of("shale", "shale", Template.TUFF, false, MapColor.COLOR_BROWN, 1.2F, SoundType.TUFF,
                     List.of(List.of("shale", "polished_shale", "shale_bricks", "chiseled_shale_bricks"))),
             Stone.of("conglomerate", "conglomerate", Template.TUFF, false, MapColor.DIRT, 1.5F, SoundType.STONE,
-                    List.of(List.of("conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"))));
+                    List.of(List.of("conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"))),
+            // phase 6: the remaining rock types
+            Stone.of("marble", "marble", Template.QUARTZ, true, MapColor.QUARTZ, 2.5F, SoundType.STONE,
+                    List.of(List.of("marble", "marble_bricks", "chiseled_marble"), List.of("smooth_marble", "marble_pillar"))),
+            Stone.of("quartzite", "quartzite", Template.TUFF, true, MapColor.TERRACOTTA_PINK, 3.0F, SoundType.STONE,
+                    List.of(List.of("quartzite", "polished_quartzite", "quartzite_bricks", "chiseled_quartzite_bricks"))),
+            Stone.of("red_porphyry", "red_porphyry", Template.TUFF, true, MapColor.COLOR_RED, 3.0F, SoundType.STONE,
+                    List.of(List.of("red_porphyry", "polished_red_porphyry", "red_porphyry_bricks", "chiseled_red_porphyry_bricks"))),
+            Stone.of("green_porphyry", "green_porphyry", Template.TUFF, true, MapColor.TERRACOTTA_GREEN, 3.0F, SoundType.STONE,
+                    List.of(List.of("green_porphyry", "polished_green_porphyry", "green_porphyry_bricks", "chiseled_green_porphyry_bricks"))),
+            Stone.of("rapakivi_granite", "rapakivi_granite", Template.STONE, true, MapColor.COLOR_ORANGE, 3.0F, SoundType.STONE,
+                    List.of(List.of("rapakivi_granite", "smooth_rapakivi_granite", "rapakivi_granite_bricks", "chiseled_rapakivi_granite_bricks"))),
+            Stone.of("coastal_basalt", "coastal_basalt", Template.BASALT, true, MapColor.COLOR_BLACK, 2.5F, SoundType.BASALT,
+                    List.of(List.of("coastal_basalt", "polished_coastal_basalt"))),
+            Stone.of("pumice", "pumice", Template.TUFF, false, MapColor.COLOR_LIGHT_GRAY, 0.8F, SoundType.TUFF,
+                    List.of(List.of("pumice", "polished_pumice", "pumice_bricks", "chiseled_pumice_bricks"))),
+            Stone.of("scoria", "scoria", Template.BASALT, false, MapColor.TERRACOTTA_BLACK, 1.0F, SoundType.BASALT,
+                    List.of(List.of("scoria", "polished_scoria"))),
+            Stone.of("serpentine", "serpentine", Template.TUFF, true, MapColor.COLOR_GREEN, 2.5F, SoundType.STONE,
+                    List.of(List.of("serpentine", "polished_serpentine", "serpentine_bricks", "chiseled_serpentine_bricks"))),
+            Stone.of("jasper", "jasper_stone", Template.TUFF, false, MapColor.TERRACOTTA_RED, 1.2F, SoundType.TUFF,
+                    List.of(List.of("jasper_stone", "polished_jasper", "jasper_bricks", "chiseled_jasper_bricks"))),
+            Stone.of("gypsum", "gypsum", Template.SANDSTONE, false, MapColor.SAND, 0.8F, SoundType.CALCITE,
+                    List.of(List.of("gypsum", "cut_gypsum", "chiseled_gypsum"))),
+            Stone.of("alabaster", "alabaster", Template.QUARTZ, true, MapColor.TERRACOTTA_WHITE, 2.0F, SoundType.CALCITE,
+                    List.of(List.of("alabaster", "alabaster_bricks", "chiseled_alabaster"), List.of("smooth_alabaster", "alabaster_pillar"))),
+            Stone.of("alum_shale", "alum_shale", Template.TUFF, false, MapColor.DEEPSLATE, 1.2F, SoundType.TUFF,
+                    List.of(List.of("alum_shale", "polished_alum_shale", "alum_shale_bricks", "chiseled_alum_shale_bricks"))));
 
     /** Every stone family block by id path, base blocks included. */
     public static final Map<String, DeferredBlock<? extends Block>> BLOCKS_BY_NAME = new LinkedHashMap<>();
@@ -98,7 +128,7 @@ public final class StoneFamilies {
                 Function<BlockBehaviour.Properties, ? extends Block> factory;
                 if (name.endsWith("_slab")) factory = SlabBlock::new;
                 else if (name.endsWith("_wall")) factory = p -> new WallBlock(p.forceSolidOn());
-                else if (name.endsWith("_pillar")) factory = RotatedPillarBlock::new;
+                else if (name.endsWith("_pillar") || s.template() == Template.BASALT && name.startsWith("polished_")) factory = RotatedPillarBlock::new;
                 else if (name.endsWith("_stairs")) {
                     String of = stairsOf(s, name.substring(0, name.length() - "_stairs".length()));
                     factory = p -> new StairBlock(BLOCKS_BY_NAME.get(of).get().defaultBlockState(), p);

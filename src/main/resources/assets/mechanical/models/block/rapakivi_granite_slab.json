@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/rapakivi_granite",
+    "side": "mechanical:block/rapakivi_granite",
+    "top": "mechanical:block/rapakivi_granite"
+  }
+}

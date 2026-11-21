@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/smooth_gypsum_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/smooth_gypsum"
+    },
+    "type=top": {
+      "model": "mechanical:block/smooth_gypsum_slab_top"
+    }
+  }
+}

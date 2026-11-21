@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_alum_shale",
+  "result": {
+    "id": "mechanical:chiseled_alum_shale_bricks"
+  }
+}

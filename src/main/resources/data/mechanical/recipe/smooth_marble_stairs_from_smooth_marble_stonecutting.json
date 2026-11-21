@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_marble",
+  "result": {
+    "id": "mechanical:smooth_marble_stairs"
+  }
+}

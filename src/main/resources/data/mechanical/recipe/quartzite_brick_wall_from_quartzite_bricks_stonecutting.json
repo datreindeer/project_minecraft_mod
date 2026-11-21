@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:quartzite_bricks",
+  "result": {
+    "id": "mechanical:quartzite_brick_wall"
+  }
+}

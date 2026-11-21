@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mechanical:block/polished_scoria_top",
+    "side": "mechanical:block/polished_scoria_side"
+  }
+}

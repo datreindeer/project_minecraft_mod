@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "minecraft:stony_shore",
+  "features": "mechanical:coastal_basalt_columns",
+  "step": "local_modifications"
+}

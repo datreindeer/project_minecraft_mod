@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:serpentine",
+  "result": {
+    "id": "mechanical:serpentine_brick_stairs"
+  }
+}

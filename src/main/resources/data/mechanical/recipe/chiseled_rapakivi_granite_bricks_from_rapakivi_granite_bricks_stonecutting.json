@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:rapakivi_granite_bricks",
+  "result": {
+    "id": "mechanical:chiseled_rapakivi_granite_bricks"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/serpentine",
+    "side": "mechanical:block/serpentine",
+    "top": "mechanical:block/serpentine"
+  }
+}

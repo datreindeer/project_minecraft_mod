@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/alabaster_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/alabaster"
+    },
+    "type=top": {
+      "model": "mechanical:block/alabaster_slab_top"
+    }
+  }
+}

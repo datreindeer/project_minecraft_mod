@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_quartzite",
+  "features": [
+    "mechanical:ore_quartzite_biome"
+  ],
+  "step": "underground_ores"
+}

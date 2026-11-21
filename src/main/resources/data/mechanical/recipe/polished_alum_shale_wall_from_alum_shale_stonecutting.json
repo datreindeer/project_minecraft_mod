@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:alum_shale",
+  "result": {
+    "id": "mechanical:polished_alum_shale_wall"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_serpentine",
+  "result": {
+    "id": "mechanical:chiseled_serpentine_bricks"
+  }
+}

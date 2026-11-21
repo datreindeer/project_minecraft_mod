@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_green_porphyry",
+  "result": {
+    "id": "mechanical:polished_green_porphyry_stairs"
+  }
+}

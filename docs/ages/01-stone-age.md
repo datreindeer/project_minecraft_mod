@@ -2382,6 +2382,24 @@ Smältrecepten är vanillas ugnsrecept, Stonecutter-recepten finns men Stonecutt
 Advancements i Stone Age-fliken: *Slate Roof*, *Old Rock* (Gneiss), *White Cliffs* (Chalk), *Soapstone*, *Shale*,
 *Pudding Stone* (Conglomerate). Senare användning (planen fas 9): Soapstone-formar, Shale till lera, Conglomerate till grus.
 
+## Fler bergarter, mjuka (byggt, fas 6 av världsmaterialplanen)
+
+Fem mjuka bergarter till, byggda som fas 1 (en rad i `gen_stone_families.py` och `StoneFamilies.java`, creative-fliken
+**Building Blocks**). Alla bryts med **Flint Pickaxe** och ger sig själva. De hårda bergarterna från samma fas
+(Marble, Quartzite, Porphyry, Rapakivi Granite, Coastal Basalt, Serpentine, Alabaster) står i bronsålderns dokument.
+
+| Sten | Mall | Var | Familj | Bronze Chisel |
+|---|---|---|---|---|
+| **Pumice** | tuff | Djupt nära lavan, y −30–20 (1 klump i var 10:e chunk), 1 extra per chunk på y 30–80 under badlands | Som Limestone: Polished, Bricks, Chiseled, Chiseled Bricks + slab/stairs/wall | Pumice → Polished → Bricks → Chiseled Bricks |
+| **Scoria** | basalt | Som Pumice | Polished Scoria (2×2, vrids som en stock), Smooth Scoria (smält) | Scoria → Polished |
+| **Jasper Stone** | tuff | y 40–100 (var 10:e chunk), 1 extra på y 50–100 under badlands och öken | Jasper Slab/Stairs/Wall, Polished Jasper, Jasper Bricks, Chiseled Jasper (Bricks) | Jasper Stone → Polished → Bricks → Chiseled Bricks |
+| **Gypsum** | sandstone | y 40–90 (var 8:e chunk), 2 extra under öken och badlands | Som Chalk: Cut, Smooth (smält), Chiseled + slab/stairs/wall | Gypsum → Cut → Chiseled |
+| **Alum Shale** | tuff | Djupt, y −30–40 (var 8:e chunk), 1 extra under taiga, Snowy Plains, Ice Spikes, Grove, Snowy Slopes och Frozen River | Som Limestone | Alum Shale → Polished → Bricks → Chiseled Bricks |
+
+Jasper Stone är stenen; ädelstenen `jasper` och `loose_jasper` är oförändrade (därav namnet, och familjen heter Jasper ...).
+Advancements i Stone Age-fliken: *Pumice*, *Scoria*, *Red Rock* (Jasper Stone), *Gypsum*, *Black Layers* (Alum Shale).
+Senare användning (planen fas 9): Pumice som slipmedel, Scoria som filter, Gypsum till puts, alun ur Alum Shale.
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

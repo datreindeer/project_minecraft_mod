@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_serpentine",
+  "features": [
+    "mechanical:ore_serpentine_biome"
+  ],
+  "step": "underground_ores"
+}

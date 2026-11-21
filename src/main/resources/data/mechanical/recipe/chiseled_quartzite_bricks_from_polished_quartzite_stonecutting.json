@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_quartzite",
+  "result": {
+    "id": "mechanical:chiseled_quartzite_bricks"
+  }
+}

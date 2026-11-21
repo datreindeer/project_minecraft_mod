@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mechanical:block/chiseled_red_porphyry_top",
+    "side": "mechanical:block/chiseled_red_porphyry"
+  }
+}

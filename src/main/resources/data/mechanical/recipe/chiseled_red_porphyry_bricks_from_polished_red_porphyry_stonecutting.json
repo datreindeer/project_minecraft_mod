@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_red_porphyry",
+  "result": {
+    "id": "mechanical:chiseled_red_porphyry_bricks"
+  }
+}

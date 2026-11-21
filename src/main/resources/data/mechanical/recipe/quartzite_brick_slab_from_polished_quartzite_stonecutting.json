@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_quartzite",
+  "result": {
+    "count": 2,
+    "id": "mechanical:quartzite_brick_slab"
+  }
+}
