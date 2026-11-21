@@ -224,7 +224,8 @@ biome("pine_heath", "old_growth_pine_taiga", temperature=0.35, downfall=0.4,
       creatures=[spawn("mechanical:hare", 8, 1, 2), spawn("mechanical:red_deer", 5, 2, 4)])
 
 # ---------------------------------------------------------------- heather block
-w(A / "models/block/heather.json", {"parent": "minecraft:block/cross", "textures": {"cross": "mechanical:block/heather"}})
+w(A / "models/block/heather.json", {"parent": "minecraft:block/tinted_cross",  # dulls by season (SeasonLook.heather)
+   "textures": {"cross": "mechanical:block/heather"}})
 w(A / "blockstates/heather.json", {"variants": {"": {"model": "mechanical:block/heather"}}})
 w(D / "mechanical/loot_table/blocks/heather.json", {"type": "minecraft:block", "pools": [
     {"rolls": 1, "entries": [{"type": "minecraft:alternatives", "children": [

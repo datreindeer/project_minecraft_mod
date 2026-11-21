@@ -104,6 +104,11 @@ public final class CalendarTest {
         int hunting = SeasonLook.foliage(green, 0.7F, 7, false);
         check(h, (hunting >> 16 & 0xFF) > (hunting >> 8 & 0xFF), "oak leaves more red than green in Hunting");
         check(h, SeasonLook.autumn(0.7F, 5, true) == -1 && SeasonLook.autumn(0.7F, 6, true) != -1, "untinted leaves tinted from Leaffall");
+        int autumnReed = SeasonLook.reed(0.8F, 7);
+        check(h, SeasonLook.reed(0.8F, 3) == SeasonLook.REED_SUMMER && (autumnReed >> 16 & 0xFF) > (autumnReed >> 8 & 0xFF) - 40
+                && SeasonLook.reed(2.0F, 9) == SeasonLook.REED_SUMMER, "reed green in summer, gold in autumn, unchanged in deserts");
+        check(h, SeasonLook.heather(0.8F, 4) == -1 && SeasonLook.heather(0.8F, 10) != -1 && SeasonLook.heather(0.8F, -1) == -1,
+                "heather unchanged in summer and other dimensions, duller in winter");
         int bare = 0, leafy = 0;
         for (int t = 0; t < 100; t++) {
             check(h, SeasonLook.stage(summer, t) == SeasonLook.LEAVES && SeasonLook.stage(winter, t) == SeasonLook.BARE

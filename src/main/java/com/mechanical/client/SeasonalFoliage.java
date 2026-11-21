@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mechanical.Calendar;
+import com.mechanical.EarthBlocks;
+import com.mechanical.ForestUndergrowth;
 import com.mechanical.Mechanical;
 import com.mechanical.SeasonLook;
 import com.mechanical.TrampledPaths;
@@ -81,7 +83,9 @@ public final class SeasonalFoliage {
 
     static final ColorResolver GRASS = (biome, x, z) -> SeasonLook.grass(biome.getGrassColor(x, z), biome.getBaseTemperature(), month);
     static final ColorResolver FOLIAGE = (biome, x, z) -> SeasonLook.foliage(biome.getFoliageColor(), biome.getBaseTemperature(), month, false);
-    static final ColorResolver BIRCH = (biome, x, z) -> SeasonLook.foliage(FoliageColor.FOLIAGE_BIRCH, biome.getBaseTemperature(), month, true);
+    static final ColorResolver REED = (biome, x, z) -> SeasonLook.reed(biome.getBaseTemperature(), month);
+    static final ColorResolver HEATHER = (biome, x, z) -> SeasonLook.heather(biome.getBaseTemperature(), month);
+    static final ColorResolver BIRCH =(biome, x, z) -> SeasonLook.foliage(FoliageColor.FOLIAGE_BIRCH, biome.getBaseTemperature(), month, true);
 
     private SeasonalFoliage() {}
 
@@ -145,7 +149,10 @@ public final class SeasonalFoliage {
         BlockTintSource grass = tint(GrassColor.getDefaultColor(), GRASS, false);
         event.register(List.of(grass), Blocks.FERN, Blocks.SHORT_GRASS, Blocks.POTTED_FERN, Blocks.BUSH, Blocks.TALL_GRASS, Blocks.LARGE_FERN);
         event.register(List.of(tint(GrassColor.getDefaultColor(), GRASS, true)), Blocks.GRASS_BLOCK,
-                TrampledPaths.WORN_GRASS.get(), TrampledPaths.TRODDEN_PATH.get());
+                TrampledPaths.WORN_GRASS.get(), TrampledPaths.TRODDEN_PATH.get(),
+                EarthBlocks.TURF.get(), EarthBlocks.TURF_SLAB.get(), EarthBlocks.TURF_STAIRS.get());
+        event.register(List.of(tint(SeasonLook.REED_SUMMER, REED, false)), EarthBlocks.REED.get());
+        event.register(List.of(tint(-1, HEATHER, false)), ForestUndergrowth.HEATHER.get());
         event.register(List.of(BlockTintSources.constant(-1), grass), Blocks.PINK_PETALS, Blocks.WILDFLOWERS);
         event.register(List.of(tint(FoliageColor.FOLIAGE_DEFAULT, FOLIAGE, false)), Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE);
         event.register(List.of(tint(FoliageColor.FOLIAGE_BIRCH, BIRCH, false)), Blocks.BIRCH_LEAVES);

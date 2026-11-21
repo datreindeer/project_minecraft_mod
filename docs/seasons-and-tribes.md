@@ -282,7 +282,9 @@ well / fairly / poorly". Kod: `Temperature.shelter`, taggarna från `scripts/gen
     Deepwinter till Snowmelt: blekt brunt gräs. Lövträd blir antingen gula (Birch, Aspen, Alder, Linden, Willow, Ash,
     Hazel) eller orange och sedan röda (Oak, Dark Oak, Cherry, Beech). Egna färgresolvers för gräs, Oak/Dark Oak/Vine
     och Birch, så färgerna blandas över biomgränser och cachas som vanillas. Gräs: Grass Block, Short/Tall Grass,
-    Fern, Bush, Pink Petals, Wildflowers, Worn Grass och Trodden Path. Löv utan tint (Cherry och våra träslag) ritas på
+    Fern, Bush, Pink Petals, Wildflowers, Worn Grass, Trodden Path och Turf (block, slab, stairs: vanillas grå
+    gräs-texturer med tintad topp och kantöverlägg). Reed (grå textur) är ljusgrön på våren, grön på sommaren, guld på
+    hösten och halmfärgad på vintern; Heather mattas och brunnar från sen höst till tidig vår (`SeasonLook.reed/heather`). Löv utan tint (Cherry och våra träslag) ritas på
     hösten med en grå kopia av sin textur som tintas med höstfärgen.
   - **Kala träd:** lövblockens modeller lindas in (`ModelEvent.ModifyBakingResult`) och ritar kala grenar eller knoppar
     i stället för löv. Varje block har en egen tröskel (hash av positionen), så ett träd glesnar under 10 dagar från
