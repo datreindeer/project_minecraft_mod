@@ -967,6 +967,8 @@ Inget djur blir längre stående och guppar på stället: hamnar ett landdjur i 
 torra mark (inom 16 block), och den klättrar upp för en strandkant på ett block. Landdjuren simmar med huvudet över
 ytan, kroppen lågt i vattnet och benen paddlande. Flockfåglar (Willow Ptarmigan, Capercaillie, Bustard m.fl.) lyfter
 från vattnet, sjöfåglarna flyter som förut och ormarna är som förut (Grass Snake simmar gärna).
+Den **tama hästen** simmar likadant (paddlande ben, huvudet uppe), och **flyter när man rider den**: vattnet når ungefär
+60 % av kroppen, så ryttaren sitter kvar i sadeln över ytan i stället för att sjunka till botten och kastas av.
 
 ### Fåglar i flock
 Lever i flockar som går och pickar på marken, sover på natten och då och då lyfter tillsammans (ledaren flyger upp, de

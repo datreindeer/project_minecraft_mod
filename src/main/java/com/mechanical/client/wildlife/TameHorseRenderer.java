@@ -64,6 +64,9 @@ public class TameHorseRenderer extends MobRenderer<TameHorse, WildAnimalRenderSt
         state.armorColor = armor.isEmpty() ? 0 : armor.is(Items.LEATHER_HORSE_ARMOR) ? ARGB.opaque(DyedItemColor.getOrDefault(armor, DyedItemColor.LEATHER_COLOR)) : -1;
         state.arrowCount = horse.getArrowCount();
         state.entityId = horse.getId();
+        state.swimming = horse.isInWater() && !horse.onGround() && horse.isAlive();
+        state.swimSink = 0.0F;
+        if (state.swimming) WildAnimalRenderer.swimPose(horse, state, WildAnimalRenderer.LAND_DEPTH);
     }
 
     @Override
@@ -75,6 +78,7 @@ public class TameHorseRenderer extends MobRenderer<TameHorse, WildAnimalRenderSt
     @Override
     protected void setupRotations(WildAnimalRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
         super.setupRotations(state, poseStack, bodyRot, entityScale);
+        WildAnimalRenderer.swimRotations(state, poseStack, entityScale);
         if (state.stand <= 0 || state.deathTime > 0) return;
         poseStack.translate(0, 0, HIND_Z);
         poseStack.rotateDegrees(Axis.XP, state.stand * REAR_DEGREES);

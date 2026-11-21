@@ -81,6 +81,23 @@ public class TameHorse extends Horse {
     }
 
     /** Steered bareback: no saddle needed. */
+    /**
+     * Swims under a rider too: the AI's float goal doesn't run while the horse is ridden, so it would sink. It treads water
+     * until the water reaches {@link #RIDDEN_FLOAT_DEPTH} of its height (the
+     * depth its swimming pose shows), deep enough that the rider stays in the saddle and above water. Runs on the
+     * controlling side (the rider's client) like the rest of the ridden movement.
+     */
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (isVehicle() && isInWater() && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > RIDDEN_FLOAT_DEPTH * getBbHeight()) {
+            jumpInLiquid(net.minecraft.tags.FluidTags.WATER);
+        }
+    }
+
+    /** Share of its height a ridden horse floats at (the same as WildAnimalRenderer.LAND_DEPTH, kept here: no client class on the server). */
+    static final float RIDDEN_FLOAT_DEPTH = 0.6F;
+
     @Override
     public LivingEntity getControllingPassenger() {
         return isTamed() && getFirstPassenger() instanceof Player p ? p : super.getControllingPassenger();
