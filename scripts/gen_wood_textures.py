@@ -75,104 +75,65 @@ SPECIES = {
         metal=((50, 50, 52), (140, 140, 144))),
 }
 
-# ------------------------------------------------------------------ bark (log side), all tile in both directions
+# ------------------------------------------------------------------ bark (log side)
+# Rough barks take a vanilla bark's structure and repaint it with the species ramp by brightness rank, so they sit
+# next to vanilla logs without hand-stamped patterns repeating in a grid. Smooth barks get soft noise plus a few
+# lenticels/scars scattered at random (never on a grid).
+def lum(c): return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+def desat(c, s):
+    g = lum(c); return tuple(max(0, min(255, int(round(g + (v - g) * s)))) for v in c[:3])
+
+def remap(pattern, ramp, lo, hi, sat=1.0):
+    """pattern's k-th darkest opaque pixel -> ramp at quantile lo..hi (transparent pixels stay transparent)"""
+    px = sorted(((i, c) for i, c in enumerate(pattern.get_flattened_data()) if c[3] > 0), key=lambda t: lum(t[1]))
+    img = new(); n = len(px)
+    for k, (i, _) in enumerate(px):
+        put(img, i % 16, i // 16, desat(ramp_at(ramp, (lo + (hi - lo) * k / max(1, n - 1)) * (len(ramp) - 1)), sat))
+    return img
+
+def scatter(img, seed, n, cols, shapes, min_d, opaque_only=False):
+    """n marks at random spots at least min_d apart (measured across the tile seam)"""
+    r = random.Random(seed); pts = []
+    def d2(a, b): return min((a[0] - b[0]) % 16, (b[0] - a[0]) % 16) ** 2 + min((a[1] - b[1]) % 16, (b[1] - a[1]) % 16) ** 2
+    for _ in range(2000):
+        if len(pts) == n: break
+        q = (r.randrange(16), r.randrange(16))
+        if all(d2(q, o) >= min_d * min_d for o in pts): pts.append(q)
+    for x, y in pts:
+        for dx, dy, k in r.choice(shapes):
+            if not opaque_only or img.getpixel(((x + dx) % 16, (y + dy) % 16))[3]: put(img, x + dx, y + dy, cols[k])
+    return img
+
+def smooth_bark(seed, b, lo, hi):
+    n1, n2 = noise(seed, 4), noise(seed + "f", 8); r = random.Random(seed); img = new()
+    for y in range(16):
+        for x in range(16):
+            v = 0.7 * n1[y][x] + 0.18 * n2[y][x] + 0.12 * r.random()
+            put(img, x, y, ramp_at(b, (lo + (hi - lo) * v) * (len(b) - 1)))
+    return img
+
 def bark_aspen(p):
-    b = p["bark"]; img = new()
-    n1, n2 = noise("aspen1", 4, 8), noise("aspen2", 8, 16)
-    for y in range(16):
-        for x in range(16):
-            v = 0.6 * n1[y][x] + 0.4 * n2[y][x]
-            put(img, x, y, ramp_at(b, 2.0 + v * 3.6))
-    r = random.Random("aspen")
-    # faint horizontal lenticel dashes
-    for x, y, l in [(1, 1, 2), (10, 3, 3), (5, 7, 2), (13, 11, 2), (0, 13, 3), (7, 14, 2), (12, 6, 2), (4, 10, 2),
-                    (14, 0, 2), (8, 1, 2), (1, 8, 2), (6, 12, 2), (11, 15, 2), (15, 4, 2)]:
-        for i in range(l): put(img, x + i, y, b[2] if i % 2 == 0 else b[3])
-    dk, md, bl = (44, 44, 38), (86, 88, 76), (26, 26, 22)
-    big = ["...m...", ".mmkdm.", "mkkkkkm", ".mdkmm.", "...m..."]
-    small = [".m.", "mkd", ".m."]
-    cols = {"m": md, "d": dk, "k": bl}
-    for sx, sy in [(1, 2), (8, 9)]:
-        stamp(img, big, sx, sy, cols)
-        put(img, sx + 3, sy + 5, b[5]); put(img, sx + 2, sy - 1, b[2]); put(img, sx + 4, sy - 1, b[2])
-    stamp(img, small, 12, 3, cols)
-    for x, y in [(3, 12), (4, 12), (4, 13), (5, 13)]: put(img, x, y, bl)  # black scar
-    put(img, 3, 13, md); put(img, 5, 12, md)
-    return img
-
-def wobble_line(seed, x0, amp=1):
-    """x position per row for a vertical line that wanders but meets itself across the tile seam"""
-    r = random.Random(seed); xs = [0.0]
-    for _ in range(15): xs.append(xs[-1] + r.choice([-1, 0, 0, 0, 1]) * amp)
-    drift = xs[-1] / 16
-    return [x0 + round(xs[y] - drift * y) for y in range(16)]
-
-def bark_alder(p):
-    b = p["bark"]; img = new()
-    n1, n2 = noise("alder1", 4, 4), noise("alder2", 8, 8)
-    for y in range(16):
-        for x in range(16):
-            put(img, x, y, ramp_at(b, 2.2 + (0.6 * n1[y][x] + 0.4 * n2[y][x]) * 2.4))
-    r = random.Random("alder")
-    lines = [wobble_line(f"alder{i}", x0) for i, x0 in enumerate((1, 5, 9, 12))]
-    # horizontal breaks between plates: (plate index, y)
-    breaks = [(0, 4), (0, 11), (1, 7), (1, 14), (2, 2), (2, 10), (3, 6), (3, 13)]
-    for k, (pi, y) in enumerate(breaks):
-        a, c = lines[pi][y], lines[(pi + 1) % 4][y] + (16 if pi == 3 else 0)
-        for x in range(a + 1, c):
-            put(img, x, y, b[1]); put(img, x, y + 1, b[4] if (x + k) % 3 else b[5])
-    for li, xs in enumerate(lines):
-        for y in range(16):
-            x = xs[y]
-            deep = r.random() > 0.15
-            put(img, x, y, b[0] if deep else b[1])
-            put(img, x + 1, y, b[1] if deep else b[2])   # shadowed wall
-            put(img, x - 1, y, b[2])
-            if r.random() < 0.45: put(img, x + 2, y, b[4])  # lit plate edge
-    for x, y in [(3, 1), (7, 9), (14, 3), (10, 13), (2, 8)]:  # pale warty lenticels
-        put(img, x, y, b[5]); put(img, x + 1, y, b[4])
-    return img
+    b = p["bark"]; img = smooth_bark("aspen", b, 0.45, 0.95)
+    dark, mid = (40, 42, 38), (92, 96, 86)
+    scatter(img, "aspen_l", 5, {1: dark, 2: mid}, [[(0, 0, 1), (1, 0, 1), (-1, 0, 2), (2, 0, 2), (0, 1, 2)],
+            [(0, 0, 1), (1, 0, 2)], [(0, 0, 1), (1, 0, 1), (0, -1, 2), (1, 1, 2)]], 6)
+    # a few big dark diamond lenticels, aspen's signature
+    return scatter(img, "aspen_d", 3, {1: dark, 2: (70, 72, 66)},
+                   [[(0, 0, 1), (1, 0, 1), (-1, 0, 2), (2, 0, 2), (0, 1, 2), (1, 1, 2), (0, -1, 2), (1, -1, 2)]], 7)
 
 def bark_beech(p):
-    b = p["bark"]; img = new()
-    n1, n2, n3 = noise("beech1", 4, 4), noise("beech2", 8, 8), noise("beech3", 4, 4)
-    lichen = (150, 160, 138)
-    for y in range(16):
-        for x in range(16):
-            v = 0.7 * n1[y][x] + 0.3 * n2[y][x]
-            c = ramp_at(b, 2.4 + v * 2.4)
-            if n3[y][x] > 0.68: c = mix(c, lichen, 0.7)        # faint green-grey lichen patches
-            elif n3[y][x] < 0.26: c = mix(c, b[5], 0.8)         # pale mottling
-            put(img, x, y, c)
-    for x, y, l in [(2, 3, 4), (11, 5, 3), (6, 10, 5), (13, 14, 3), (0, 15, 2)]:  # fine horizontal wrinkles
-        for i in range(l): put(img, x + i, y, b[1] if i not in (0, l - 1) else b[2])
-    # branch scar with its drooping 'moustache'
-    stamp(img, ["..k..", ".m.m.", "m...m"], 9, 8, {"k": b[0], "m": b[1]})
-    put(img, 11, 7, b[5])
-    stamp(img, [".k.", "m.m"], 2, 12, {"k": b[0], "m": b[2]})
-    return img
+    b = p["bark"]; img = smooth_bark("beech", b, 0.3, 0.85)
+    return scatter(img, "beech_l", 4, {1: shade(b[0], 1.1), 2: b[1]},
+                   [[(0, 0, 1), (1, 0, 1), (2, 0, 2)], [(-1, 0, 2), (0, 0, 1), (1, 0, 2)]], 6)
 
-def bark_linden(p):
-    b = p["bark"]; img = new()
-    n1 = noise("linden1", 2, 8)
-    for y in range(16):
-        for x in range(16): put(img, x, y, ramp_at(b, 2.2 + n1[y][x] * 1.6))
-    r = random.Random("linden")
-    furrows = [[x0 + round(0.8 * math.sin(2 * math.pi * y / 16 + ph)) for y in range(16)]
-               for x0, ph in ((0, 0.0), (3, 2.1), (7, 4.0), (10, 1.2), (13, 3.3))]
-    for fi, xs in enumerate(furrows):
-        nxt = furrows[(fi + 1) % 5]
-        for y in range(16):
-            x = xs[y]; w = (nxt[y] - x) % 16
-            put(img, x + 1, y, b[4] if r.random() > 0.1 else b[5])      # lit left face of the ridge
-            for i in range(2, w - 1): put(img, x + i, y, b[3] if r.random() > 0.3 else b[2])
-            put(img, x + w - 1, y, b[2] if r.random() > 0.3 else b[1])  # shaded right face
-            put(img, x, y, b[0] if r.random() > 0.2 else b[1])          # shallow furrow
-    for x, y, l in [(4, 5, 2), (11, 12, 2), (1, 9, 2)]:                  # rare breaks in the ridges
-        for i in range(l): put(img, x + i, y, b[1])
-    return img
+# species: (vanilla bark to borrow, ramp quantile lo, hi, saturation)
+ROUGH = {"alder": ("dark_oak_log", 0.05, 0.9, 0.85), "linden": ("oak_log", 0.05, 0.95, 0.9),
+         "willow": ("dark_oak_log", 0.05, 0.95, 0.85), "ash": ("spruce_log", 0.15, 0.95, 0.8),
+         "hazel": ("oak_log", 0.1, 0.95, 0.8), "pine": ("dark_oak_log", 0.05, 0.95, 0.7),
+         "yew": ("spruce_log", 0.0, 0.9, 0.7)}
+BARK = {"aspen": bark_aspen, "beech": bark_beech}
+BARK.update({k: (lambda p, v=v: remap(van(v[0]), p["bark"], v[1], v[2], v[3])) for k, v in ROUGH.items()})
 
-BARK = {"aspen": bark_aspen, "alder": bark_alder, "beech": bark_beech, "linden": bark_linden}
 
 # ------------------------------------------------------------------ planks, ends, stripped
 OAK_PLANKS = sorted({c[:3] for c in van("oak_planks").get_flattened_data()}, key=sum)
@@ -210,36 +171,28 @@ LEAF_SPRITES = {
     "beech": [[".L.", "LHM", "LHM", "MMS", ".S."], [".LLM.", "LHHMS", ".MSS."], [".L.", "LHM", "MMS", ".S."]],
     "linden": [["LL.LM", "LHMMS", "LMMMS", ".MMS.", "..S.."], [".LM.", "LHMS", "MMMS", ".SS."]],
 }
-LEAF_HOLES = {"aspen": 0.34, "alder": 0.30, "beech": 0.18, "linden": 0.26}
+
+# vanilla's per-pixel leaf noise in the species greens, ~45% of the holes filled with the darkest tone for a denser
+# crown; berries/flowers/catkins scattered sparsely at random spots
+LEAF_BASE = {"beech": "birch_leaves", "willow": "birch_leaves", "pine": "spruce_leaves", "yew": "spruce_leaves"}
+LEAF_ACCENTS = {  # (count, shapes using the species' leaf colour keys, min distance)
+    "alder": (3, [[(0, 0, "y")], [(0, 0, "x"), (0, 1, "x")]], 7),                  # last year's cones
+    "linden": (3, [[(0, 0, "f"), (1, 0, "F")], [(0, 0, "f"), (0, 1, "F")]], 7),    # pale flowers
+    "hazel": (3, [[(0, 0, "C"), (0, 1, "c")]], 7),                                 # hanging catkins
+    "yew": (4, [[(0, 0, "r"), (1, 0, "R")], [(0, 0, "r"), (0, 1, "R")]], 6),       # red arils
+}
 
 def leaves(name, p):
     c = p["leaf"]; r = random.Random(name + "leaves")
-    n = noise(name + "h", 3, 3); n2 = noise(name + "h2", 7, 7)  # lattices off the 4px leaf grid
-    hv = sorted(0.6 * n[y][x] + 0.4 * n2[y][x] for y in range(16) for x in range(16))
-    thr = hv[int(len(hv) * (1 - LEAF_HOLES[name]))]
-    img = new()
+    img = remap(van(LEAF_BASE.get(name, "oak_leaves")), [c[k] for k in "DSMLH"], 0.0, 1.0)
     for y in range(16):
         for x in range(16):
-            v = 0.6 * n[y][x] + 0.4 * n2[y][x]
-            if v < thr: put(img, x, y, c["D"] if (x * 7 + y * 3) % 5 else c["S"])
-    sprites = LEAF_SPRITES[name]
-    for gy in range(4):                      # one leaf per 4x4 cell, jittered; wraps across the tile seam
-        for gx in range(4):
-            s = sprites[r.randrange(len(sprites))]
-            stamp(img, s, gx * 4 + 2 * (gy % 2) + r.randint(-1, 1), gy * 4 + r.randint(-1, 1), c)  # staggered rows
-    core = hv[int(len(hv) * (1 - 0.8 * LEAF_HOLES[name]))]
-    for y in range(16):                      # re-open the hole cores the leaves were stamped over
-        for x in range(16):
-            if 0.6 * n[y][x] + 0.4 * n2[y][x] >= core: img.putpixel((x, y), (0, 0, 0, 0))
-    if name == "alder":                      # last year's cones
-        for x, y in [(3, 9), (12, 2)]: stamp(img, [".y", "yx", "xx", ".x"], x, y, c)
-    if name == "linden":                     # pale flower clusters
-        for x, y in [(9, 10), (2, 2)]: stamp(img, [".f.", "fFf", ".f."], x, y, c)
-    if name == "hazel":                      # hanging catkins
-        for x, y in [(4, 6), (12, 12)]: stamp(img, ["C", "c", "C", "c"], x, y, c)
-    if name == "yew":                        # red arils
-        for x, y in [(3, 4), (11, 10), (13, 2)]: stamp(img, ["r.", "rR"], x, y, c)
+            if img.getpixel((x, y))[3] == 0 and r.random() < 0.45: put(img, x, y, c["D"])
+    if name in LEAF_ACCENTS:
+        n, shapes, d = LEAF_ACCENTS[name]
+        scatter(img, name + "acc", n, c, shapes, d, opaque_only=True)
     return img
+
 
 # ------------------------------------------------------------------ saplings: twigs + leaf sprites placed by hand
 def line(img, x0, y0, x1, y1, col):
@@ -418,91 +371,6 @@ SPECIES.update({
         metal=((150, 110, 40), (214, 174, 76))),
 })
 
-def bark_willow(p):
-    """deep grey furrows that wander, split and rejoin into a coarse net, with long ridges between"""
-    b = p["bark"]; img = new()
-    n1, n2 = noise("willow1", 2, 8), noise("willow2", 8, 8)
-    for y in range(16):
-        for x in range(16): put(img, x, y, ramp_at(b, 2.6 + (0.6 * n1[y][x] + 0.4 * n2[y][x]) * 2.2))
-    lines = [wobble_line(f"willow{i}", x0) for i, x0 in enumerate((1, 4, 8, 11, 14))]
-    for k, (pi, y) in enumerate([(0, 3), (1, 9), (2, 1), (2, 12), (3, 6), (4, 14), (0, 10)]):  # diagonal joins between furrows
-        a, c = lines[pi][y], lines[(pi + 1) % 5][(y + 2) % 16] + (16 if pi == 4 else 0)
-        for i, x in enumerate(range(a, c + 1)): put(img, x, y + round(2 * i / max(1, c - a)), b[1])
-    for xs in lines:
-        for y in range(16):
-            put(img, xs[y], y, b[0]); put(img, xs[y] + 1, y, b[1]); put(img, xs[y] - 1, y, b[2])
-            if (y * 7 + xs[y]) % 3: put(img, xs[y] + 2, y, b[5])   # lit ridge edge
-    return img
-
-def bark_ash(p):
-    """light grey with a fine interlaced diamond net of shallow furrows (8 wide, 16 tall, tiles both ways)"""
-    b = p["bark"]; img = new()
-    n1 = noise("ash1", 4, 4)
-    for y in range(16):
-        for x in range(16):
-            u, v = (x + y // 2) % 8, (x - y // 2) % 8
-            c = ramp_at(b, 3.0 + n1[y][x] * 1.8)
-            if u == 0 or v == 0: c = b[1]
-            elif u == 1 or v == 7: c = mix(c, b[2], 0.6)
-            elif u == 7 or v == 1: c = mix(c, b[5], 0.5)
-            put(img, x, y, c)
-    for x, y in [(4, 3), (12, 11)]: put(img, x, y, b[5]); put(img, x, y + 1, b[4])
-    return img
-
-def bark_hazel(p):
-    """smooth, glossy copper-brown with silvery sheen patches and pale horizontal lenticels"""
-    b = p["bark"]; img = new()
-    n1, n2 = noise("hazel1", 4, 4), noise("hazel2", 2, 8)
-    for y in range(16):
-        for x in range(16):
-            c = ramp_at(b, 2.2 + (0.7 * n1[y][x] + 0.3 * n2[y][x]) * 2.2)
-            if n2[y][x] > 0.72: c = mix(c, (150, 146, 136), 0.45)   # silvery sheen
-            put(img, x, y, c)
-    for x, y, l in [(1, 2, 3), (9, 4, 2), (5, 8, 3), (13, 9, 2), (2, 13, 2), (10, 14, 3), (14, 0, 2), (6, 1, 2)]:
-        for i in range(l): put(img, x + i, y, (206, 184, 152) if i % 2 == 0 else (178, 150, 116))
-        put(img, x, y + 1, b[1])
-    return img
-
-def bark_pine(p):
-    """orange flaky plates (tiled Voronoi, stretched upwards) parted by dark grey-brown cracks"""
-    b = p["bark"]; img = new()
-    r = random.Random("pine")
-    seeds = [(r.uniform(0, 16), r.uniform(0, 16), r.uniform(2.6, 4.6)) for _ in range(9)]
-    n1 = noise("pine1", 8, 8)
-    for y in range(16):
-        for x in range(16):
-            ds = []
-            for sx, sy, tone in seeds:
-                dx = min(abs(x - sx), 16 - abs(x - sx)); dy = min(abs(y - sy), 16 - abs(y - sy)) * 0.55
-                ds.append((dx * dx + dy * dy, sy, tone))
-            ds.sort()
-            d0, d1 = math.sqrt(ds[0][0]), math.sqrt(ds[1][0])
-            tone = ds[0][2] + (n1[y][x] - 0.5) * 0.8
-            if d1 - d0 < 0.7: c = b[0] if d1 - d0 < 0.35 else b[1]   # crack
-            elif d1 - d0 < 1.3: c = ramp_at(b, tone - 1.0)          # plate edge curling into shade
-            else: c = ramp_at(b, tone)
-            put(img, x, y, c)
-    return img
-
-def bark_yew(p):
-    """purple-brown bark peeling in long vertical strips, fresh red-orange showing where flakes came off"""
-    b = p["bark"]; img = new()
-    n1, n2 = noise("yew1", 3, 6), noise("yew2", 8, 8)
-    for y in range(16):
-        for x in range(16): put(img, x, y, ramp_at(b, 1.8 + (0.6 * n1[y][x] + 0.4 * n2[y][x]) * 2.0))
-    fresh, fresh2 = (204, 104, 66), (176, 82, 52)
-    for x0, y0, h in [(2, 1, 6), (9, 4, 7), (13, 11, 6), (5, 10, 5)]:   # bare patches, 2 wide, darker rim above
-        for i in range(h):
-            put(img, x0, y0 + i, fresh if i % 3 else fresh2); put(img, x0 + 1, y0 + i, fresh2)
-        put(img, x0, y0 - 1, b[0]); put(img, x0 + 1, y0 - 1, b[0]); put(img, x0 + 2, y0 + h // 2, b[0])
-    for i, x0 in enumerate((0, 4, 7, 11, 15)):                           # strip edges
-        for y in range(16):
-            x = x0 + (1 if (y + i * 5) % 11 < 4 else 0)
-            put(img, x, y, b[0] if (y + i) % 5 else b[1])
-    return img
-
-BARK.update({"willow": bark_willow, "ash": bark_ash, "hazel": bark_hazel, "pine": bark_pine, "yew": bark_yew})
-
 LEAF_SPRITES.update({
     "willow": [["L.", "LH", "MM", ".S"], [".L", "LM", "MS", "S."], ["L", "M", "M", "S"]],   # narrow, drooping
     "ash": [["L.L", "MLM", ".S."], ["LL.", ".MS"], [".L", "LM", "MS"]],                   # paired leaflets
@@ -510,7 +378,6 @@ LEAF_SPRITES.update({
     "pine": [["L.L", ".M.", "S.S"], ["L.L.L", ".MMM.", "..S.."], ["L..", ".M.", "..S"]],   # needle tufts
     "yew": [["L.L", "MMM", "S.S"], [".L.", "LMS", ".S."], ["LMS"]],                       # flat needles along twigs
 })
-LEAF_HOLES.update({"willow": 0.32, "ash": 0.30, "hazel": 0.22, "pine": 0.30, "yew": 0.14})
 
 SAPLINGS.update({
     "willow": ([(7, 9, 4, 7, 2), (8, 7, 11, 5, 2)],
