@@ -81,6 +81,8 @@ Texturen för Firewood visar 1 vedträ (1 st), 2 vedträn (2–15 st) eller 3 ve
     **högst 4 block** (8 rader); sedan "No room: the pile is as high as it goes".
 - **Tom hand** tar tillbaka översta stocken i kolumnen. **Bryts** den släpps alla stockar. Tappar den underlaget rasar den.
   Inget eget föremål.
+- **Högen jämnas ut:** tar man stockar (eller försvinner ett block) och en grannkolumn då står mer än 1 block över sina
+  grannar, rullar dess översta stock ned åt den lägre sidan, en stock var 4:e tick, tills högen ligger still igen.
 - Avancemang: **Log Pile** (Stone Age, efter Woodpile).
 
 ## Verktyg

@@ -101,6 +101,21 @@ public final class WoodPileTest {
         RoughLogPileBlock.Outcome off = RoughLogPileBlock.add(level, mid, OAK, Direction.Axis.Z, null, 0);
         h.assertTrue(off != null && off.rolled(), "but not a third block");
 
+        // ---- a neighbour taken away: the middle column slumps until it stands no more than a block over its sides
+        int before = logsInRow(level, h);
+        level.removeBlock(mid.west(), false);
+        boolean moved = true;
+        for (int i = 0; i < 40 && moved; i++) {
+            moved = false;
+            for (int x = 0; x <= 13; x++) {
+                BlockPos p = h.absolutePos(new BlockPos(x, 1, 1));
+                if (level.getBlockState(p).getBlock() instanceof RoughLogPileBlock) moved |= RoughLogPileBlock.settle(level, p);
+            }
+        }
+        h.assertFalse(moved, "the pile comes to rest");
+        h.assertTrue(RoughLogPileBlock.columnLogs(level, mid) < 8, "the middle column slumped: " + RoughLogPileBlock.columnLogs(level, mid) + " logs");
+        h.assertTrue(logsInRow(level, h) == before - 4, "no log lost: " + logsInRow(level, h) + " of " + (before - 4));
+
         // ---- between walls a column goes straight up to MAX_ROWS, then no further
         BlockPos walled = h.absolutePos(new BlockPos(6, 1, 4));
         for (int y = 0; y < 6; y++) {
@@ -114,5 +129,15 @@ public final class WoodPileTest {
         h.assertTrue(RoughLogPileBlock.add(level, walled, OAK, Direction.Axis.Z, null, 0) == null, "no log past " + RoughLogPileBlock.MAX_ROWS + " rows");
         h.assertTrue(RoughLogPileBlock.takeTop(level, walled).is(Mechanical.ROUGH_LOGS.get("oak").get()), "an empty hand takes the top log");
         h.succeed();
+    }
+
+    /** Rough logs lying in row z = 1 (x 0-13). */
+    private static int logsInRow(ServerLevel level, GameTestHelper h) {
+        int n = 0;
+        for (int x = 0; x <= 13; x++) for (int y = 1; y <= 5; y++) {
+            BlockState s = level.getBlockState(h.absolutePos(new BlockPos(x, y, 1)));
+            if (s.getBlock() instanceof RoughLogPileBlock) n += s.getValue(RoughLogPileBlock.LOGS);
+        }
+        return n;
     }
 }

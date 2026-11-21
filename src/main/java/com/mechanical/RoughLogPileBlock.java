@@ -51,7 +51,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * between two walls a pile goes straight up to {@link #MAX_ROWS}. The first row lies on the ground and never rolls.
  * <p>
  * An empty hand takes the top log of a column back; breaking a block drops its logs; a block that loses its footing
- * tumbles.
+ * tumbles. Logs taken away (or a block gone) leave the columns beside to {@link #settle}: one standing too high now sheds
+ * its top log the same way, log by log, until the pile is at rest again.
  */
 public class RoughLogPileBlock extends Block implements EntityBlock {
     public static final int PER_BLOCK = 4;
@@ -114,9 +115,63 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
         return state;
     }
 
+    /** Lost its footing: tumbles. Otherwise a nudge from a neighbour ({@link #nudgeSides}): settles one log if it stands too high. */
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!canSurvive(state, level, pos)) level.destroyBlock(pos, true);
+        else settle(level, pos);
+    }
+
+    /** Gone (broken, burnt, tumbled, last log taken): the columns beside may now stand too high. */
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        nudgeSides(level, pos, state.getValue(AXIS));
+    }
+
+    // ---------------------------------------------------------------- settling
+
+    /** Ticks between one log settling and the next look: the pile slumps log by log, not all at once. */
+    static final int SETTLE_TICKS = 4;
+
+    /** The columns on both sides across the logs of {@code pos} take a look soon ({@link #settle}). */
+    static void nudgeSides(Level level, BlockPos pos, Direction.Axis axis) {
+        Direction left = axis == Direction.Axis.Z ? Direction.WEST : Direction.NORTH;
+        for (Direction d : new Direction[] {left, left.getOpposite()}) {
+            BlockPos side = pos.relative(d);
+            for (int dy : new int[] {0, 1, 2, 3, 4, -1, -2}) {
+                BlockPos p = side.above(dy);
+                if (level.getBlockState(p).getBlock() instanceof RoughLogPileBlock pile) {
+                    level.scheduleTick(p, pile, SETTLE_TICKS);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * When the column at {@code pos} stands higher than {@link #allowed} (a neighbour lost logs), its top log rolls off to
+     * the lower side like a newly put one, and this column and its sides look again soon. True if a log moved.
+     */
+    static boolean settle(ServerLevel level, BlockPos pos) {
+        BlockPos bottom = bottom(level, pos), top = top(level, pos);
+        int rows = (columnLogs(level, bottom) + 1) / 2;
+        if (rows <= 1) return false; // the ground row never rolls
+        Direction.Axis axis = level.getBlockState(top).getValue(AXIS);
+        Direction left = axis == Direction.Axis.Z ? Direction.WEST : Direction.NORTH;
+        int height = bottom.getY() * 2 + rows;
+        int a = surface(level, top.relative(left)), b = surface(level, top.relative(left.getOpposite()));
+        if (allowed(rows, height, a, b)) return false;
+        Direction way = lower(level.getRandom(), left, a, height, left.getOpposite(), b, height);
+        if (way == null) return false;
+        int wood = removeTop(level, top);
+        BlockPos side = top.relative(way), landing = landing(level, side);
+        Outcome out = landing == null ? null : add(level, landing, wood, axis, way, 1);
+        if (out == null) drop(level, side, wood);
+        level.playSound(null, side, SoundEvents.WOOD_FALL, SoundSource.BLOCKS, 1.0F, 0.7F);
+        level.scheduleTick(bottom, level.getBlockState(bottom).getBlock(), SETTLE_TICKS);
+        nudgeSides(level, bottom, axis);
+        return true;
     }
 
     @Override
@@ -306,9 +361,18 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
         return Arrays.copyOf(stored, state.getValue(LOGS));
     }
 
-    /** Takes the top log off the column at {@code pos}. */
+    /** Takes the top log off the column at {@code pos}; the columns beside settle if that leaves them too high. */
     static ItemStack takeTop(Level level, BlockPos pos) {
         BlockPos top = top(level, pos);
+        Direction.Axis axis = level.getBlockState(top).getValue(AXIS);
+        int wood = removeTop(level, top);
+        level.playSound(null, top, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 1.0F, 0.8F);
+        nudgeSides(level, top, axis);
+        return log(wood);
+    }
+
+    /** Removes the last log of the pile block {@code top} (the top of its column); returns its wood. */
+    private static int removeTop(Level level, BlockPos top) {
         BlockState state = level.getBlockState(top);
         int[] woods = woods(level, top, state);
         int n = woods.length;
@@ -318,7 +382,6 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
         } else {
             level.setBlock(top, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
-        level.playSound(null, top, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 1.0F, 0.8F);
-        return log(woods[n - 1]);
+        return woods[n - 1];
     }
 }
