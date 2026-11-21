@@ -66,6 +66,10 @@
     "mechanical:loose_jasper",
     "mechanical:loose_carnelian",
     "mechanical:loose_chalcedony",
-    "mechanical:loose_bloodstone"
+    "mechanical:loose_bloodstone",
+    "mechanical:galena_ore",
+    "mechanical:deepslate_galena_ore",
+    "mechanical:limestone",
+    "mechanical:rock_salt"
   ]
 }

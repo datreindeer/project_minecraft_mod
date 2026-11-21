@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_galena"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:raw_galena"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.galena.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.galena.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

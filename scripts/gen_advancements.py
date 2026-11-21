@@ -1005,6 +1005,31 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "Work a hot Iron Bloom into Wrought Iron on a Bronze Anvil: the Iron Age begins", has("wrought_iron_ingot")),
 ])
 
+# the Iron Age's new ores (IronOres.java; gen_iron_ores.py)
+TABS["iron_age"][1].extend([
+    ("galena", "root", "raw_galena", T, "Galena",
+     "Mine Galena Ore with a Bronze Pickaxe: heavy grey lead ore, with a little silver in it", has("raw_galena")),
+    ("lead", "galena", "lead_ingot", T, "Lead",
+     "Smelt Raw Galena into a Lead Ingot in the Clay Kiln at 800°: Charcoal gets there without bellows", has("lead_ingot")),
+    ("cupellation", "lead", "silver_nugget", G, "Cupellation",
+     "Press a Lead Ingot into Bone Meal for a Leaded Cupel and fire it at 1000°: the lead soaks away and a Silver Nugget is left",
+     has("silver_nugget")),
+    ("silver_coin", "cupellation", "silver_coin", T, "Sterling",
+     "Strike a Silver Ingot (9 Silver Nuggets) 4 times on a Bronze Anvil: 4 Silver Coins, each worth 10 Copper", has("silver_coin")),
+    ("gold", "root", "minecraft:gold_ingot", T, "Gold",
+     "Melt Raw Gold, or 9 Gold Nuggets panned from gravel and sand, into a Gold Ingot in the Clay Kiln at 1100°",
+     has("minecraft:gold_ingot")),
+    ("gold_coin", "gold", "gold_coin", G, "Treasury",
+     "Strike a Gold Ingot 4 times on a Bronze Anvil: 4 Gold Coins, each worth 10 Silver", has("gold_coin")),
+    ("flux", "root", "flux", T, "Flux",
+     "Crush Limestone on the Stone Anvil into 2 Flux, for the Bloomery", has("flux")),
+    ("salt", "root", "salt", T, "Salt of the Earth",
+     "Mine Rock Salt with a Bronze Pickaxe, deep under deserts, badlands and savannas", has("salt")),
+    ("salted", "salt", "salted_meat", T, "Salt Cured",
+     "Salt meat or fish: it never spoils. A Scraped Hide and Salt make Leather without the drying rack",
+     has("salted_meat", "salted_fish")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

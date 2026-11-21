@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_limestone_cliffs",
+  "features": [
+    "mechanical:ore_limestone_cliffs"
+  ],
+  "step": "underground_ores"
+}

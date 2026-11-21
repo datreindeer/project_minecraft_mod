@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:lead_ingot",
+    "minecraft:bone_meal"
+  ],
+  "result": {
+    "id": "mechanical:leaded_cupel",
+    "count": 1
+  }
+}

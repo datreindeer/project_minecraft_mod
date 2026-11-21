@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": "mechanical:silver_nugget"
+  },
+  "result": {
+    "id": "mechanical:silver_ingot"
+  }
+}

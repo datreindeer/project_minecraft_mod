@@ -110,6 +110,11 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Smelting.UNFIRED_FURNACE_BRICK.get()), 1, () -> Smelting.FURNACE_BRICK.get(), 200, 600),
             new Recipe(s -> s.is(Smelting.UNFIRED_CLAY_CHANNEL.get()), 1, () -> Smelting.CLAY_CHANNEL_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Ironworking.FIRE_CLAY.get()), 1, () -> Ironworking.FIRE_BRICK.get(), 400, 1100),
+            // Iron Age ores (IronOres): lead, cupellation (silver), gold
+            new Recipe(s -> s.is(IronOres.RAW_GALENA.get()), 1, () -> IronOres.LEAD_INGOT.get(), 400, IronOres.LEAD_TEMP),
+            new Recipe(s -> s.is(IronOres.LEADED_CUPEL.get()), 1, () -> IronOres.SILVER_NUGGET.get(), 600, IronOres.CUPEL_TEMP),
+            new Recipe(s -> s.is(Items.RAW_GOLD), 1, () -> Items.GOLD_INGOT, 400, IronOres.GOLD_TEMP),
+            new Recipe(s -> s.is(Items.GOLD_NUGGET), 9, () -> Items.GOLD_INGOT, 400, IronOres.GOLD_TEMP),
             new Recipe(s -> s.is(Ironworking.UNFIRED_CLAY_HAMMER_HEAD_MOLD.get()), 1, () -> Ironworking.CLAY_HAMMER_HEAD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Ironworking.UNFIRED_CLAY_ANVIL_MOLD.get()), 1, () -> Ironworking.CLAY_ANVIL_MOLD_ITEM.get(), 600, 600),
             // a cooled Iron Bloom back to forging heat (BloomeryBlockEntity.FORGE_TEMP); it keeps its blows
