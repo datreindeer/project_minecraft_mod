@@ -166,9 +166,23 @@ public final class Ironworking {
         return bloom.getOrDefault(BLOOM_HITS.get(), 0);
     }
 
-    /** Is it a hot bloom that hasn't cooled by {@code now}? */
+    /** Is it a hot bloom, or hot iron or steel ({@link HotMetalItem}), that hasn't cooled by {@code now}? */
     public static boolean isHot(ItemStack stack, long now) {
-        return stack.is(HOT_IRON_BLOOM.get()) && !CrucibleItem.isCold(stack, now);
+        return hotItem(stack) && !CrucibleItem.isCold(stack, now);
+    }
+
+    /** A hot bloom or hot iron/steel item, whether or not its time is up. */
+    public static boolean hotItem(ItemStack stack) {
+        return stack.is(HOT_IRON_BLOOM.get()) || stack.getItem() instanceof HotMetalItem;
+    }
+
+    /** {@code from} (a cold bloom or ingot, or the ore) heated into {@code hot}: full heat from {@code now}, its blows and yield kept. */
+    public static ItemStack heated(ItemStack from, Item hot, long now) {
+        if (hot == HOT_IRON_BLOOM.get()) return hotBloom(from, now);
+        ItemStack out = new ItemStack(hot);
+        if (hits(from) > 0) out.set(BLOOM_HITS.get(), hits(from));
+        out.set(Casting.COOLS_AT.get(), now + HOT_SECONDS * 20L);
+        return out;
     }
 
     // ---------------------------------------------------------------- game test

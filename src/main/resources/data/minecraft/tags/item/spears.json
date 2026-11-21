@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:flint_spear",
-    "mechanical:bronze_spear"
+    "mechanical:bronze_spear",
+    "mechanical:steel_spear"
   ]
 }

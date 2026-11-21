@@ -53,7 +53,11 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Ironworking.ROASTED_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.ROASTED_YIELD),
             new Recipe(s -> s.is(Items.RAW_IRON), ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.RAW_YIELD),
             new Recipe(s -> s.is(Ironworking.RAW_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.RAW_YIELD),
-            new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, FORGE_TEMP));
+            new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, FORGE_TEMP),
+            // iron and steel to forging heat for the anvil (Smithing)
+            new Recipe(s -> s.is(Ironworking.WROUGHT_IRON_INGOT.get()), 1, () -> Smithing.HOT_WROUGHT_IRON_INGOT.get(), 200, FORGE_TEMP),
+            new Recipe(s -> s.is(Smithing.BLISTER_STEEL.get()), 1, () -> Smithing.HOT_BLISTER_STEEL.get(), 200, FORGE_TEMP),
+            new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, FORGE_TEMP));
     // a bloomery eats charcoal: half as long a burn as in the kiln
     public static final List<Fuel> FUELS = List.of(
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 2400, NATURAL_MAX, CEILING));
@@ -218,7 +222,7 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
 
         // the bloom waiting in the output stays hot while the bloomery has forging heat
         ItemStack out = b.items.get(OUTPUT);
-        if (out.is(Ironworking.HOT_IRON_BLOOM.get()) && b.temp >= FORGE_TEMP && level.getGameTime() % 20 == 0) {
+        if (Ironworking.hotItem(out) && b.temp >= FORGE_TEMP && level.getGameTime() % 20 == 0) {
             out.set(Casting.COOLS_AT.get(), level.getGameTime() + Ironworking.HOT_SECONDS * 20L);
             out.setDamageValue(0);
         }
@@ -242,7 +246,7 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
         if (b.progress < b.total) return;
         b.progress = 0;
         b.partial = 0;
-        ItemStack bloom = Ironworking.hotBloom(input, level.getGameTime()); // a reheated bloom keeps its blows
+        ItemStack bloom = Ironworking.heated(input, r.result().get(), level.getGameTime()); // a reheated bloom or ingot keeps its blows
         if (r.yield() > 0) {
             int extra = b.flux > 0 ? 1 : 0;
             b.flux -= extra;

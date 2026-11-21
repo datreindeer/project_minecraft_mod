@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " P",
+    "P "
+  ],
+  "key": {
+    "P": "mechanical:iron_plate"
+  },
+  "result": {
+    "id": "minecraft:shears",
+    "count": 1
+  }
+}

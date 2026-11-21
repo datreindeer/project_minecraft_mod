@@ -103,6 +103,61 @@ public final class IronAgeTest {
         for (int i = 0; i < Ironworking.HITS; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
         h.assertTrue(dropped(level, h, anvilAt, Ironworking.WROUGHT_IRON_INGOT.get()) == 1 && dropped(level, h, anvilAt, Ironworking.SLAG.get()) == 2,
                 "a poor bloom: 1 Wrought Iron, 2 Slag");
+        clearItems(level, h);
+
+        // ---- smithing: the bloomery heats an ingot, the anvil forges it by its pattern before it cools
+        bloomery.setItem(BloomeryBlockEntity.INPUT, new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()));
+        for (int i = 0; i < 400 && bloomery.getItem(BloomeryBlockEntity.OUTPUT).isEmpty(); i++) {
+            bloomery.forceTemperature(1500);
+            BloomeryBlockEntity.serverTick(level, bloomery);
+        }
+        ItemStack hot = bloomery.removeItemNoUpdate(BloomeryBlockEntity.OUTPUT);
+        h.assertTrue(hot.is(Smithing.HOT_WROUGHT_IRON_INGOT.get()) && Ironworking.isHot(hot, level.getGameTime()), "the bloomery heats Wrought Iron to forging heat");
+        h.assertTrue(KilnBlockEntity.canBake(new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get())), "so does the Clay Kiln");
+        anvil.setPattern(Smithing.Pattern.PLATE);
+        anvil.place(level, new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()));
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(Ironworking.hits(anvil.item()) == 0, "a cold ingot takes no blows");
+        anvil.take();
+        anvil.place(level, hot);
+        for (int i = 0; i < Smithing.Pattern.PLATE.hits - 1; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(dropped(level, h, anvilAt, Smithing.IRON_PLATE.get()) == 0 && Ironworking.hits(anvil.item()) == Smithing.Pattern.PLATE.hits - 1, "not yet");
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(dropped(level, h, anvilAt, Smithing.IRON_PLATE.get()) == 1 && anvil.item().isEmpty(), "4 blows: an Iron Plate");
+        // a cooled ingot keeps its blows
+        ItemStack half = Ironworking.heated(new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), Smithing.HOT_WROUGHT_IRON_INGOT.get(), level.getGameTime());
+        half.set(Ironworking.BLOOM_HITS.get(), 3);
+        ItemStack cold = HotMetalItem.cooled(half);
+        h.assertTrue(cold.is(Ironworking.WROUGHT_IRON_INGOT.get()) && Ironworking.hits(cold) == 3, "cooled, it keeps 3 blows");
+        h.assertTrue(Ironworking.hits(Ironworking.heated(cold, Smithing.HOT_WROUGHT_IRON_INGOT.get(), level.getGameTime())) == 3, "and reheated too");
+        // steel: blister folds into a Steel Ingot; a hot Steel Ingot has no Tool Rod pattern but a pickaxe head
+        anvil.place(level, Ironworking.heated(new ItemStack(Smithing.BLISTER_STEEL.get()), Smithing.HOT_BLISTER_STEEL.get(), level.getGameTime()));
+        for (int i = 0; i < Smithing.BLISTER_HITS; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_INGOT.get()) == 1, "Blister Steel folds into a Steel Ingot");
+        anvil.setPattern(Smithing.Pattern.TOOL_ROD);
+        anvil.place(level, Ironworking.heated(new ItemStack(Smithing.STEEL_INGOT.get()), Smithing.HOT_STEEL_INGOT.get(), level.getGameTime()));
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(Ironworking.hits(anvil.item()) == 0, "no steel tool rod");
+        anvil.setPattern(Smithing.Pattern.PICKAXE_HEAD);
+        for (int i = 0; i < Smithing.Pattern.PICKAXE_HEAD.hits; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_PICKAXE_HEAD.get()) == 1, "a Steel Pickaxe Head");
+        ItemStack ironHammer = new ItemStack(Smithing.IRON_SMITHING_HAMMER.get());
+        h.assertTrue(Smithing.wear(ironHammer) == 1 && Smithing.wear(hammer) == Ironworking.HAMMER_WEAR, "an iron hammer wears half as fast");
+
+        // ---- the parts make vanilla's iron tools and armour; forged iron outlasts bronze
+        h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == Items.IRON_PICKAXE && r.head().get() == Smithing.IRON_PICKAXE_HEAD.get()),
+                "Tool Station: Iron Pickaxe from an Iron Pickaxe Head");
+        h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == Smithing.STEEL_PICKAXE.get()), "and a Steel Pickaxe");
+        h.assertTrue(ArmorStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == Items.IRON_CHESTPLATE), "Armor Station: Iron Chestplate");
+        h.assertTrue(new ItemStack(Items.IRON_PICKAXE).getMaxDamage() == Smithing.IRON_TOOL_DURABILITY
+                && Smithing.IRON_TOOL_DURABILITY > new ItemStack(Bronze.BRONZE_PICKAXE.get()).getMaxDamage(), "iron tools outlast bronze");
+        h.assertTrue(new ItemStack(Smithing.STEEL_PICKAXE.get()).getMaxDamage() > Smithing.IRON_TOOL_DURABILITY
+                && new ItemStack(Smithing.STEEL_PICKAXE.get()).isCorrectToolForDrops(net.minecraft.world.level.block.Blocks.OBSIDIAN.defaultBlockState()),
+                "steel outlasts iron and mines obsidian");
+        var plates = net.minecraft.world.item.crafting.CraftingInput.of(3, 2, List.of(new ItemStack(Smithing.IRON_PLATE.get()), ItemStack.EMPTY,
+                new ItemStack(Smithing.IRON_PLATE.get()), ItemStack.EMPTY, new ItemStack(Smithing.IRON_PLATE.get()), ItemStack.EMPTY));
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, plates, level).map(r -> r.value().assemble(plates).is(Items.BUCKET)).orElse(false),
+                "3 Iron Plates make a Bucket");
         h.succeed();
     }
 
@@ -118,6 +173,10 @@ public final class IronAgeTest {
         }
         ItemStack out = bloomery.removeItemNoUpdate(BloomeryBlockEntity.OUTPUT);
         return out.is(Ironworking.HOT_IRON_BLOOM.get()) ? Ironworking.bloomYield(out) : -1;
+    }
+
+    static void clearItems(ServerLevel level, GameTestHelper h) {
+        level.getEntitiesOfClass(ItemEntity.class, new AABB(h.absolutePos(BlockPos.ZERO)).inflate(12)).forEach(ItemEntity::discard);
     }
 
     static int dropped(ServerLevel level, GameTestHelper h, BlockPos rel, net.minecraft.world.item.Item item) {

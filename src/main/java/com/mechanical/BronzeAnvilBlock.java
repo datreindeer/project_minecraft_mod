@@ -57,7 +57,7 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
     }
 
     private static boolean striking(BlockGetter level, BlockPos pos, ItemStack tool) {
-        return tool.is(Ironworking.BRONZE_SMITHING_HAMMER.get()) && level.getBlockEntity(pos) instanceof BronzeAnvilBlockEntity anvil && !anvil.item().isEmpty();
+        return Smithing.isHammer(tool) && level.getBlockEntity(pos) instanceof BronzeAnvilBlockEntity anvil && !anvil.item().isEmpty();
     }
 
     private static void strike(ServerLevel level, BlockPos pos, Player player, ItemStack hammer, InteractionHand hand) {
@@ -69,6 +69,11 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof BronzeAnvilBlockEntity anvil)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        // sneak-use with a hammer: what hot iron or steel is forged into (Smithing.Pattern)
+        if (player.isSecondaryUseActive() && Smithing.isHammer(stack)) {
+            if (level instanceof ServerLevel) anvil.nextPattern(player);
+            return InteractionResult.SUCCESS;
+        }
         if (striking(level, pos, stack)) {
             if (level instanceof ServerLevel server) strike(server, pos, player, stack, hand);
             return InteractionResult.SUCCESS;
@@ -78,9 +83,13 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
             if (level instanceof ServerLevel server) anvil.add(server, stack.consumeAndReturn(1, player));
             return InteractionResult.SUCCESS;
         }
-        if (!anvil.item().isEmpty() || !(stack.getItem() instanceof IronBloomItem || Coins.mintable(stack) || stack.is(Bronze.BRONZE_INGOT.get())))
+        if (!anvil.item().isEmpty() || !(stack.getItem() instanceof IronBloomItem || Coins.mintable(stack) || stack.is(Bronze.BRONZE_INGOT.get())
+                || Smithing.forgeable(stack)))
             return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (level instanceof ServerLevel server) anvil.place(server, stack.consumeAndReturn(1, player));
+        if (level instanceof ServerLevel server) {
+            anvil.place(server, stack.consumeAndReturn(1, player));
+            if (Smithing.forgeable(anvil.item())) anvil.tellPattern(player);
+        }
         return InteractionResult.SUCCESS;
     }
 

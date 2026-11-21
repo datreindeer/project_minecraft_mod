@@ -1,6 +1,6 @@
 # Järnåldern
 
-> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**. Resten är förslag.
+> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**. Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
 **Bronze Smithing Hammer**, **Wrought Iron Ingot**, Bronze Pickaxe (bryter Iron, Coal och Lapis Ore) och Charcoal.
@@ -54,6 +54,51 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
   mindre** (rostad malm + flux = 3 Wrought Iron, ingen slagg).
 - Luppar från före rostningen räknas som rostade (2 + 1).
 - Advancement **Roasted** (Iron Age-fliken).
+
+### Smide av järn (byggd)
+
+Järn smids, det gjuts inte (beslut 2026-11-20). Kod: `Smithing` (items, mönster, stålverktyg), `HotMetalItem` (het
+metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEntity` (värmning),
+`ToolStationRecipes`, `ArmorStationRecipes`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
+
+- **Värm:** en Wrought Iron Ingot i **Bloomery eller Clay Kiln** vid **1100°** (10 s) blir en **Hot Wrought Iron Ingot**.
+  Den håller hettan **30 s** (stapeln visar hur mycket som är kvar; den hålls varm så länge den ligger kvar i en het
+  ugn), bränner en bar hand som en het lupp (Bronze Tongs i andra handen) och blir sedan en kall tacka igen. Slagen som
+  hunnits sitter kvar, så den kan värmas igen och smidas klart.
+- **Välj mönster:** smyg och högerklicka städet med hammaren. Mönstret står kvar på städet och visas när en tacka läggs på.
+- **Smid:** hamra den heta tackan på **Bronze Anvil** (vänster- eller högerklick med Bronze eller Iron Smithing Hammer):
+
+| Mönster | Slag | Av järn | Av stål |
+|---|---|---|---|
+| Plate | 4 | Iron Plate | Steel Plate |
+| Tool Rod | 3 | Iron Tool Rod | – |
+| Pickaxe / Axe Head | 6 | Iron Pickaxe / Axe Head | Steel Pickaxe / Axe Head |
+| Shovel / Hoe Head | 5 | Iron Shovel / Hoe Head | Steel Shovel / Hoe Head |
+| Knife Blade | 5 | Iron Knife Blade | Steel Knife Blade |
+| Sword Blade | 7 | Iron Sword Blade | Steel Sword Blade |
+| Spear Head | 6 | Iron Spear Head | Steel Spear Head |
+| Hammer Head | 6 | Iron Hammer Head | – |
+
+- En tacka ger en del. Bronze Smithing Hammer nöts 2 per slag på het metall, **Iron Smithing Hammer** (Iron Hammer Head +
+  Leather + Tool Rod, 500 i hållbarhet) bara 1.
+
+**Järnverktyg och rustning** (vanillas items, deras Iron Ingot-recept går inte att göra):
+
+| Vad | Hur |
+|---|---|
+| Iron Pickaxe / Axe / Shovel / Hoe | Tool Station: huvud + Leather + Tool Rod |
+| Iron Knife | Tool Station: Iron Knife Blade + Leather + Stick |
+| Iron Sword | Tool Station: Iron Sword Blade + Cordage + Leather |
+| Iron Spear | Tool Station: Iron Spear Head + Cordage + Tool Rod |
+| Iron Helmet / Chestplate / Leggings / Boots | Armor Station: 3 / 6 / 5 / 2 Iron Plate + 2 / 4 / 3 / 2 Leather + hammare |
+| Bucket | 3 Iron Plate (V) |
+| Shears | 2 Iron Plate (diagonalt) |
+
+- Smitt järn håller längre än brons: järnverktygen har **600** i hållbarhet (vanilla 250, brons 460) och Iron Pickaxe
+  bryter guld, redstone, diamant och smaragd. Full järnrustning, bröstplåten som bronsåldern saknade.
+- Andra vanilla-järnsaker (Iron Bars, Chain, Rail, Hopper, Anvil, Cauldron m.m.) kräver fortfarande Iron Ingot och går
+  inte att göra än.
+- Advancements: **Forged**, **Iron Hammer**, **Ironsmith**, **Iron Clad** (Iron Age-fliken).
 
 ### 3. Kolmila (charcoal pile)
 
@@ -110,7 +155,6 @@ Pengarna finns redan (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold
 ## Öppna beslut
 
 2. Vilka av de nya malmerna (Galena, Gold, Limestone, Salt) hör till järnåldern, och vilka väntar?
-3. Kallnar en het tacka mitt i smidet (som luppen), och hur många slag kräver en plåt eller ett huvud?
 
 ## Items och block (planerade)
 

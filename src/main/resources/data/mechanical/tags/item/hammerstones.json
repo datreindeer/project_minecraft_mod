@@ -5,6 +5,7 @@
     "minecraft:stone_pickaxe",
     "minecraft:copper_pickaxe",
     "mechanical:bronze_pickaxe",
-    "mechanical:bronze_smithing_hammer"
+    "mechanical:bronze_smithing_hammer",
+    "mechanical:iron_smithing_hammer"
   ]
 }

@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:flint_hoe",
-    "mechanical:bronze_hoe"
+    "mechanical:bronze_hoe",
+    "mechanical:steel_hoe"
   ]
 }

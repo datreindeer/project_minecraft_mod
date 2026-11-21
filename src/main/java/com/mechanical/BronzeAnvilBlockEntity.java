@@ -40,6 +40,10 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
             smithGrate(level, player, hammer, hand, x, y, z);
             return;
         }
+        if (Smithing.forgeable(item)) {
+            forge(level, player, hammer, hand, x, y, z);
+            return;
+        }
         if (!Ironworking.isHot(item, level.getGameTime())) {
             cool(level);
             level.playSound(null, worldPosition, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.4F, 1.6F);
@@ -108,10 +112,87 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         sync();
     }
 
-    /** A hot bloom whose time is up turns into a cold one (with its blows). */
+    // ---------------------------------------------------------------- forging iron and steel (Smithing)
+
+    /** What hot iron or steel on this anvil is forged into. */
+    private Smithing.Pattern pattern = Smithing.Pattern.PLATE;
+
+    public Smithing.Pattern pattern() {
+        return pattern;
+    }
+
+    public void setPattern(Smithing.Pattern pattern) {
+        this.pattern = pattern;
+        setChanged();
+    }
+
+    /** Sneak-use with a hammer: the next pattern. */
+    void nextPattern(Player player) {
+        setPattern(pattern.next());
+        tellPattern(player);
+    }
+
+    void tellPattern(Player player) {
+        if (item.is(Smithing.BLISTER_STEEL.get()) || item.is(Smithing.HOT_BLISTER_STEEL.get())) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.forge.blister", Smithing.BLISTER_HITS));
+            return;
+        }
+        player.sendOverlayMessage(Component.translatable("message.mechanical.forge.pattern",
+                Component.translatable("pattern.mechanical." + pattern.id), pattern.hits));
+    }
+
+    /** One blow on hot iron or steel: after enough the part (or, from Blister Steel, a Steel Ingot) pops out. */
+    private void forge(ServerLevel level, Player player, ItemStack hammer, InteractionHand hand, double x, double y, double z) {
+        if (!Ironworking.isHot(item, level.getGameTime())) {
+            cool(level);
+            level.playSound(null, worldPosition, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.4F, 1.6F);
+            player.sendOverlayMessage(Component.translatable("message.mechanical.forge.cold", BloomeryBlockEntity.FORGE_TEMP));
+            return;
+        }
+        boolean blister = item.is(Smithing.HOT_BLISTER_STEEL.get());
+        ItemStack result = blister ? new ItemStack(Smithing.STEEL_INGOT.get()) : pattern.result(item);
+        if (result.isEmpty()) {
+            level.playSound(null, worldPosition, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.4F, 1.6F);
+            player.sendOverlayMessage(Component.translatable("message.mechanical.forge.no_part",
+                    Component.translatable("pattern.mechanical." + pattern.id)));
+            return;
+        }
+        int needed = blister ? Smithing.BLISTER_HITS : pattern.hits;
+        level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.7F, 0.9F + level.getRandom().nextFloat() * 0.3F);
+        level.sendParticles(ParticleTypes.CRIT, x, y, z, 8, 0.15, 0.05, 0.15, 0.3);
+        level.sendParticles(ParticleTypes.SMALL_FLAME, x, y, z, 2, 0.1, 0.02, 0.1, 0.01);
+        hammer.hurtAndBreak(Smithing.wear(hammer), player, hand);
+        int done = Ironworking.hits(item) + 1;
+        if (done < needed) {
+            item.set(Ironworking.BLOOM_HITS.get(), done);
+            sync();
+            return;
+        }
+        item = ItemStack.EMPTY;
+        level.playSound(null, worldPosition, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.6F, 1.3F);
+        level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 3, 0.1, 0.05, 0.1, 0.01);
+        Block.popResource(level, worldPosition.above(), result);
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) Kettle.award(sp, Smithing.FORGE_ADVANCEMENT);
+        sync();
+    }
+
+    @Override
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput output) {
+        super.saveAdditional(output);
+        if (pattern != Smithing.Pattern.PLATE) output.putString("pattern", pattern.id);
+    }
+
+    @Override
+    protected void loadAdditional(net.minecraft.world.level.storage.ValueInput input) {
+        super.loadAdditional(input);
+        String id = input.getStringOr("pattern", Smithing.Pattern.PLATE.id);
+        pattern = java.util.Arrays.stream(Smithing.Pattern.values()).filter(p -> p.id.equals(id)).findFirst().orElse(Smithing.Pattern.PLATE);
+    }
+
+    /** A hot bloom, ingot or steel whose time is up turns into the cold one (with its blows). */
     void cool(ServerLevel level) {
-        if (!item.is(Ironworking.HOT_IRON_BLOOM.get()) || Ironworking.isHot(item, level.getGameTime())) return;
-        item = IronBloomItem.cooled(item);
+        if (!Ironworking.hotItem(item) || Ironworking.isHot(item, level.getGameTime())) return;
+        item = item.getItem() instanceof HotMetalItem ? HotMetalItem.cooled(item) : IronBloomItem.cooled(item);
         level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.4F);
         sync();
     }

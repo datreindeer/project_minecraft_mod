@@ -1006,6 +1006,19 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
     ("roasted_ore", "root", "roasted_iron_ore", T, "Roasted",
      "Roast Raw Iron or Raw Bog Iron on a Campfire or Fire Pit: roasted ore blooms twice as rich (2 Wrought Iron instead of 1)",
      has("roasted_iron_ore", "roasted_bog_iron")),
+    ("forged", "root", "iron_plate", G, "Forged",
+     "Heat a Wrought Iron Ingot to 1100° in a Bloomery or Clay Kiln, choose a pattern (sneak-use the anvil with the hammer) "
+     "and hammer it on a Bronze Anvil before it cools: Iron Plate, Tool Rod or a tool head", by_code()),
+    ("iron_hammer", "forged", "iron_smithing_hammer", T, "Iron Hammer",
+     "Forge an Iron Hammer Head and assemble an Iron Smithing Hammer (Leather, Tool Rod): it wears half as fast on hot metal",
+     has("iron_smithing_hammer")),
+    ("iron_tools", "forged", "minecraft:iron_pickaxe", G, "Ironsmith",
+     "Assemble an iron tool at the Tool Station: forged head + Leather + Tool Rod. Iron Pickaxes mine gold, redstone and diamond",
+     has("minecraft:iron_pickaxe", "minecraft:iron_axe", "minecraft:iron_shovel", "minecraft:iron_hoe", "minecraft:iron_sword",
+         "minecraft:iron_spear", "iron_knife")),
+    ("iron_armor", "forged", "minecraft:iron_chestplate", G, "Iron Clad",
+     "Rivet Iron Plates onto leather at the Armor Station: the full iron armour, chestplate included",
+     has("minecraft:iron_helmet", "minecraft:iron_chestplate", "minecraft:iron_leggings", "minecraft:iron_boots")),
 ])
 
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java

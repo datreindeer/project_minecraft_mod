@@ -70,8 +70,8 @@ def item(name, img, title):
 
 
 # ---------------------------------------------------------------- roasting
-item("roasted_iron_ore", recolor(vanilla_texture("item/raw_iron"), hue=0.02, sat=1.6, light=0.62), "Roasted Iron Ore")
-item("roasted_bog_iron", recolor(mod_texture("item/raw_bog_iron"), hue=0.03, sat=1.3, light=0.7), "Roasted Bog Iron")
+item("roasted_iron_ore", recolor(vanilla_texture("item/raw_iron"), hue=0.025, sat=0.75, light=0.6), "Roasted Iron Ore")
+item("roasted_bog_iron", recolor(mod_texture("item/raw_bog_iron"), hue=0.03, sat=0.8, light=0.68), "Roasted Bog Iron")
 for raw, roasted in (("minecraft:raw_iron", "roasted_iron_ore"), (M + "raw_bog_iron", "roasted_bog_iron")):
     w(D / f"mechanical/recipe/{roasted}.json", {"type": "minecraft:campfire_cooking", "category": "misc", "cookingtime": 600,
                                                  "experience": 0.1, "ingredient": raw, "result": {"id": M + roasted}})
@@ -79,6 +79,115 @@ lang |= {
     "tooltip.mechanical.iron_bloom.yield": "Gives %s Wrought Iron, %s Slag",
     "message.mechanical.bloomery.flux": "Flux in the hearth: %s/%s (each bloom one ingot richer)",
     "message.mechanical.bloomery.flux_full": "The hearth holds %s charges of flux already",
+}
+
+# ---------------------------------------------------------------- smithing (Smithing.java)
+# Iron and steel parts are recoloured bronze parts; where the user's texture library has the piece, that is used.
+LIB = Path.home() / "Documents/Minecraft Modding/item"
+IRON, STEEL = (0.62, 0.06, 1.0), (0.58, 0.16, 1.06)  # hue, saturation, lightness factor
+
+
+def lib(path):
+    return Image.open(LIB / f"{path}.png").convert("RGBA")
+
+
+def metal(img, kind, mask=None, min_light=0.0):
+    """Recolour the metal of a bronze texture to iron or steel: every opaque pixel, or those under {@code mask} (the
+    part's own texture, drawn at the same place on the tool), or those at least {@code min_light} light."""
+    hue, sat, light = kind
+    out = img.copy()
+    px, mk = out.load(), mask.load() if mask else None
+    for y in range(out.height):
+        for x in range(out.width):
+            r, g, b, a = px[x, y]
+            if a == 0 or (mk and mk[x, y][3] == 0):
+                continue
+            h, l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+            if l < min_light:
+                continue
+            r2, g2, b2 = colorsys.hls_to_rgb(hue, min(1, l * light * 1.08), sat)
+            px[x, y] = (round(r2 * 255), round(g2 * 255), round(b2 * 255), a)
+    return out
+
+
+def glowing(img):
+    """Metal at forging heat: dark to deep red, light to orange-yellow."""
+    out = img.copy()
+    px = out.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+            l = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)[1]
+            r2, g2, b2 = colorsys.hls_to_rgb(0.01 + 0.1 * l, 0.28 + 0.55 * l, 0.95)
+            px[x, y] = (round(r2 * 255), round(g2 * 255), round(b2 * 255), a)
+    return out
+
+
+def handheld(name, img, title):
+    item(name, img, title)
+    w(A / f"models/item/{name}.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": M + "item/" + name}})
+
+
+def tag_add(path, *values):
+    old = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"values": []}
+    old["values"] += [v for v in values if v not in old["values"]]
+    w(path, old)
+
+
+bronze = lambda n: mod_texture(f"item/bronze_{n}")
+item("hot_wrought_iron_ingot", glowing(mod_texture("item/wrought_iron_ingot")), "Hot Wrought Iron Ingot")
+item("blister_steel", lib("crude_steel_ingot"), "Blister Steel")
+item("hot_blister_steel", lib("crude_steel_ingot_hot"), "Hot Blister Steel")
+item("steel_ingot", lib("steel_ingot"), "Steel Ingot")
+item("hot_steel_ingot", glowing(lib("steel_ingot")), "Hot Steel Ingot")
+item("iron_plate", lib("iron_plate"), "Iron Plate")
+item("iron_tool_rod", lib("iron_tool_rod"), "Iron Tool Rod")
+item("steel_plate", lib("steel_plate"), "Steel Plate")
+PARTS = {"pickaxe_head": "Pickaxe Head", "axe_head": "Axe Head", "shovel_head": "Shovel Head", "hoe_head": "Hoe Head",
+         "knife_blade": "Knife Blade", "sword_blade": "Sword Blade", "spear_head": "Spear Head"}
+for part, title in PARTS.items():
+    item(f"iron_{part}", metal(bronze(part), IRON), f"Iron {title}")
+    item(f"steel_{part}", metal(bronze(part), STEEL), f"Steel {title}")
+item("iron_hammer_head", metal(bronze("hammer_head"), IRON), "Iron Hammer Head")
+handheld("iron_smithing_hammer", metal(bronze("smithing_hammer"), IRON, mask=bronze("hammer_head")), "Iron Smithing Hammer")
+for tool in ("axe", "hoe", "shovel", "sword", "knife"):
+    handheld(f"steel_{tool}", lib(f"tools/steel_{tool}"), f"Steel {tool.title()}")
+handheld("steel_pickaxe", metal(bronze("pickaxe"), STEEL, mask=bronze("pickaxe_head")), "Steel Pickaxe")
+item("steel_spear", metal(bronze("spear"), STEEL, mask=bronze("spear_head")), "Steel Spear")
+spear_hand = A / "textures/item/steel_spear_in_hand.png"
+metal(bronze("spear_in_hand"), STEEL, min_light=0.33).save(spear_hand)
+w(A / "models/item/steel_spear_in_hand.json", {"parent": "minecraft:item/spear_in_hand", "textures": {"layer0": M + "item/steel_spear_in_hand"}})
+spear = json.loads((A / "items/bronze_spear.json").read_text(encoding="utf-8"))
+w(A / "items/steel_spear.json", json.loads(json.dumps(spear).replace("bronze_spear", "steel_spear")))
+
+T = D / "minecraft/tags/item"
+tag_add(D / "mechanical/tags/item/steel_tool_materials.json", M + "steel_ingot")
+tag_add(D / "mechanical/tags/item/hammerstones.json", M + "iron_smithing_hammer")
+tag_add(T / "enchantable/durability.json", M + "iron_smithing_hammer")
+tag_add(T / "pickaxes.json", M + "steel_pickaxe")
+tag_add(T / "axes.json", M + "steel_axe")
+tag_add(T / "shovels.json", M + "steel_shovel")
+tag_add(T / "hoes.json", M + "steel_hoe")
+tag_add(T / "swords.json", M + "steel_sword", M + "steel_knife")
+tag_add(T / "spears.json", M + "steel_spear")
+tag_add(D / "mechanical/tags/item/knives.json", M + "steel_knife")
+
+# vanilla's iron things from forged parts (their Iron Ingot recipes can't be made: no Iron Ingot in the mod)
+w(D / "minecraft/recipe/bucket.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", " P "],
+                                       "key": {"P": M + "iron_plate"}, "result": {"id": "minecraft:bucket", "count": 1}})
+w(D / "minecraft/recipe/shears.json", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": [" P", "P "],
+                                       "key": {"P": M + "iron_plate"}, "result": {"id": "minecraft:shears", "count": 1}})
+
+lang |= {
+    "tooltip.mechanical.forge.hot": "At forging heat: work it on a Bronze Anvil before it cools",
+    "tooltip.mechanical.forge.hits": "%s blows struck",
+    "message.mechanical.forge.pattern": "Forging: %s (%s blows). Sneak-use with the hammer to change",
+    "message.mechanical.forge.blister": "Hot Blister Steel: %s blows fold it into a Steel Ingot",
+    "message.mechanical.forge.cold": "Too cold to forge: heat it to %s° in a Bloomery or Clay Kiln",
+    "message.mechanical.forge.no_part": "No %s from this metal: sneak-use with the hammer to choose another",
+    **{f"pattern.mechanical.{p}": t for p, t in [("plate", "Plate"), ("tool_rod", "Tool Rod"), *PARTS.items(), ("hammer_head", "Hammer Head")]},
 }
 
 merge(A / "lang/en_us.json", lang)
