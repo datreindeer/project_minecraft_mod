@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **alla faser 0–8 byggda** (material och 24 biomer); fas 9B och 9C byggda (se "Fas N: resultat"); kvar: 9A (stenhantverk) och fas 10 (åldrande). Skriven 2026-11-21.
+Status: **faser 0–9 byggda** (material, 24 biomer och användningarna 9A–9C, se "Fas N: resultat"); kvar: fas 10 (åldrande). Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -624,3 +624,32 @@ Advancements: Iron Age *Alum* → *Mordant*, *Tawed*; Bronze Age *Plaster of Par
 vatten), eget Gypsum Plaster-block (gipset blir i stället en väg till den befintliga putsen), gipsformar för gjutning
 (del A har formarna), grönt pigment av Serpentine och svart av Alum Shale (det finns inget grönt pigment eller grön
 grottfärg att mata, och svart finns redan av kol och sot). Slate Tablet går inte att sätta upp som skylt.
+
+---
+
+## Fas 9A: resultat (byggt)
+
+Stenhantverket: Java i **`StoneCrafts.java`** (block, Pumice Chunk, gametest `stone_crafts`), data och texturer i
+**`scripts/gen_stone_crafts.py`** (körs efter `gen_stone_families.py`, `gen_copper.py`, `gen_bronze*.py`, `gen_fauna_coast.py`
+och `gen_moldbench.py`, eftersom den kopierar deras modeller). Spelartext: `docs/ages/01-stone-age.md` "Pumice och krossad sten",
+`02-bronze-age.md` "Stenhantverk", `03-iron-age.md` "Jaspis som tändsten".
+
+| Sten | Användning | Hur |
+|---|---|---|
+| Soapstone | 21 gjutformar `soapstone_<form>_mold` som aldrig spricker | `ClayMoldBlock` med `cracks = false`; skärs i Mold Bench av Polished Soapstone (`StoneCrafts.moldRecipes`, efter lerformarna i `MoldBench.ALL`). Modellerna är lerformens med täljstenssidor och omfärgad ovansida; metallfyllningens texturer delas |
+| Quartzite | `quartzite_whetstone`: 2 drag i stället för 4 | `WhetstoneBlock(p, bite = 2)` |
+| Rapakivi Granite | `rapakivi_quern`: 2 klick per Flour | `QuernBlock(p, step = 2)` (halvt varv per klick) |
+| Coastal Basalt | `basalt_anvil`: krossar på 2 slag | Samma `StoneAnvilBlock` och block entity-typ som Stone Anvil; `StoneAnvilBlockEntity.hitsNeeded()` |
+| Pumice | `pumice_chunk` (krossat Pumice, 16 användningar) polerar grov sten | Bronze Chisels steg om det leder till ett `polished_`/`smooth_`-block (`StoneCrafts.polished`) |
+| Conglomerate, Shale | Stone Anvil: 2 Gravel + 1 Flint, 2 Clay Ball | `StoneCrafts.crushed`/`crushedExtra` (från `BronzeOres.crushed` och anvilens slag) |
+| Jasper | Rough/Polished Jasper + Steel Plate → Flint and Steel | recept `flint_and_steel_from_jasper` |
+| Alabaster | `alabaster_lamp`, ljus 15 | `OilLampBlock` med alabastertextur och eget ljus |
+
+Advancements: *Rubbed Smooth* (Stone Age), *Stone That Remembers*, *Rubble*, *Heavy Stone*, *Hard Grit*, *Millstone*, *Glowing Stone*
+(Bronze Age), *Red Spark* (Iron Age). *Rubbed Smooth* och *Rubble* ges från Java.
+
+**Inte gjort:** vind- och vattenkvarn (finns inte i modden; Rapakivi blev handkvarnens stenar). Pumice som putsar rustning (ingen
+mekanik att haka i utan att hitta på reparation). Marble-statyer och piedestaler (egna modeller, inte billigt). Porphyry och
+Serpentine som inläggningar (ring- och charm-platserna har inga smycken än). Täljstensgrytor och -oljelampor. Täljstensformarna
+syns inte i registrets receptlista (gen_registry.py läser bara `StationRecipe.of`-anrop rad för rad; formarna görs i en loop),
+men registry notes beskriver dem under `soapstone_ingot_mold`.

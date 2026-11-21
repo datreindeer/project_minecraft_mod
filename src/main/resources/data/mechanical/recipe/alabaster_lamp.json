@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "AWA",
+    "AAA"
+  ],
+  "key": {
+    "A": "mechanical:alabaster",
+    "W": "mechanical:plant_fibre"
+  },
+  "result": {
+    "id": "mechanical:alabaster_lamp"
+  }
+}

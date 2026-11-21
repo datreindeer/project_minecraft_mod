@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/basalt_anvil",
+        "y": 0
+      },
+      {
+        "model": "mechanical:block/basalt_anvil",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/basalt_anvil",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/basalt_anvil",
+        "y": 270
+      }
+    ]
+  }
+}

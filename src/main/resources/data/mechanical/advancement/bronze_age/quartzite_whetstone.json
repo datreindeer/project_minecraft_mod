@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/quartzite",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:quartzite_whetstone"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:quartzite_whetstone"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.quartzite_whetstone.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.quartzite_whetstone.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

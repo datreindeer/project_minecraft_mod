@@ -49,7 +49,7 @@ public final class BronzeOres {
             .mapColor(MapColor.STONE).strength(2.0F, 6.0F).sound(SoundType.STONE).noOcclusion());
     public static final DeferredItem<BlockItem> STONE_ANVIL_ITEM = ITEMS.registerSimpleBlockItem("stone_anvil", STONE_ANVIL);
     public static final Supplier<BlockEntityType<StoneAnvilBlockEntity>> STONE_ANVIL_ENTITY = Mechanical.BLOCK_ENTITIES.register("stone_anvil",
-            () -> new BlockEntityType<>(StoneAnvilBlockEntity::new, STONE_ANVIL.get()));
+            () -> new BlockEntityType<>(StoneAnvilBlockEntity::new, STONE_ANVIL.get(), StoneCrafts.BASALT_ANVIL.get()));
 
     /** Tools that work as a hammerstone on the Stone Anvil: Flint Pickaxe, Crude Stone Pickaxe, Stone Pickaxe. */
     public static final TagKey<Item> HAMMERSTONES = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "hammerstones"));
@@ -71,6 +71,8 @@ public final class BronzeOres {
         if (ore.is(Items.BRICK)) return new ItemStack(Ironworking.GROG.get(), 2); // grog for Fire Clay
         ItemStack flux = IronOres.crushed(ore); // Limestone -> Flux
         if (!flux.isEmpty()) return flux;
+        ItemStack rubble = StoneCrafts.crushed(ore); // Conglomerate, Shale, Pumice
+        if (!rubble.isEmpty()) return rubble;
         ItemStack grit = Gemstones.grit(ore); // Flint Grit, Garnet Grit, Corundum Grit for the Lapidary Wheel
         if (!grit.isEmpty()) return grit;
         return Pigments.ground(ore); // ochre, chalk, calcite, charcoal

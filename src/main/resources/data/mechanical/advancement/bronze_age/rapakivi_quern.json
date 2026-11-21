@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/rapakivi_granite",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rapakivi_quern"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rapakivi_quern"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.rapakivi_quern.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.rapakivi_quern.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

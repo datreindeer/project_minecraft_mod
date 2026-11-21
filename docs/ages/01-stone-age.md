@@ -2759,3 +2759,18 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
   skrivna i Java (inte datapack).
 - Övriga recept, loot tables, modeller och taggar genereras av `scripts/gen_data.py` (kör `python scripts/gen_data.py src/main/resources`). Texturskript: `scripts/gen_firewood.py`, `scripts/gen_textures.py`.
 - Moddet laddas **efter NeoForge** (`neoforge.mods.toml`), annars skriver NeoForges kopior av vanilla-recept över våra.
+
+## Pumice och krossad sten (byggt, fas 9A av världsmaterialplanen)
+
+Mjuka stenar som krossas på **Stone Anvil** (4 slag med hammarsten, som malm):
+
+- **Conglomerate** → 2 Gravel och 1 Flint (stenen är full av rundade stenar och flinta).
+- **Shale** → 2 Clay Ball (skiffer vittrar till lera).
+- **Pumice** → 1 **Pumice Chunk**.
+
+**Pumice Chunk** är ett slipmedel. Högerklicka grov sten med den så poleras blocket, samma steg som Bronze Chisels
+första men utan brons: Soapstone → Polished Soapstone, Shale, Conglomerate, Pumice, Jasper och de andra familjerna till sin
+polerade form, och vanillas Andesite, Diorite, Granite, Tuff, Blackstone, Cobbled Deepslate och Stone (→ Smooth Stone).
+Den polerar bara: Bricks och Chiseled kräver fortfarande Bronze Chisel. En bit tål 16 block.
+
+Advancements: *Rubbed Smooth* (Stone Age-fliken, under Pumice) och *Rubble* (Bronze Age-fliken, under Stone Anvil).

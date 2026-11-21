@@ -1,0 +1,255 @@
+{
+  "parent": "mechanical:bronze_age/molds",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_ingot_mold"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_pickaxe_head_mold"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_axe_head_mold"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_shovel_head_mold"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_hoe_head_mold"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_knife_blade_mold"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_saw_blade_mold"
+          }
+        ]
+      }
+    },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_plate_mold"
+          }
+        ]
+      }
+    },
+    "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_spear_head_mold"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_sword_blade_mold"
+          }
+        ]
+      }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_kettle_mold"
+          }
+        ]
+      }
+    },
+    "has_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_arrowheads_mold"
+          }
+        ]
+      }
+    },
+    "has_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_bucket_mold"
+          }
+        ]
+      }
+    },
+    "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_sickle_blade_mold"
+          }
+        ]
+      }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_shears_mold"
+          }
+        ]
+      }
+    },
+    "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_fish_hooks_mold"
+          }
+        ]
+      }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_needles_mold"
+          }
+        ]
+      }
+    },
+    "has_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_tongs_mold"
+          }
+        ]
+      }
+    },
+    "has_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_chisel_blade_mold"
+          }
+        ]
+      }
+    },
+    "has_19": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_hammer_head_mold"
+          }
+        ]
+      }
+    },
+    "has_20": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:soapstone_anvil_mold"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5",
+      "has_6",
+      "has_7",
+      "has_8",
+      "has_9",
+      "has_10",
+      "has_11",
+      "has_12",
+      "has_13",
+      "has_14",
+      "has_15",
+      "has_16",
+      "has_17",
+      "has_18",
+      "has_19",
+      "has_20"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:soapstone_ingot_mold"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.soapstone_molds.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.soapstone_molds.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

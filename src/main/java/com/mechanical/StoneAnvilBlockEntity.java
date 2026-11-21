@@ -56,7 +56,12 @@ public class StoneAnvilBlockEntity extends BlockEntity {
 
     /** How far the work on the piece has come, 0 to 1 (client/AnvilRenderer flattens and spreads it as it goes). */
     public float progress() {
-        return hits / (float) HITS;
+        return hits / (float) hitsNeeded();
+    }
+
+    /** Blows to crush one piece: the heavy Basalt Anvil ({@link StoneCrafts#BASALT_ANVIL}) needs half. */
+    public int hitsNeeded() {
+        return getBlockState().is(StoneCrafts.BASALT_ANVIL.get()) ? HITS / 2 : HITS;
     }
 
     /** How many pieces lie on the face, for the renderer. */
@@ -103,11 +108,13 @@ public class StoneAnvilBlockEntity extends BlockEntity {
         level.playSound(null, worldPosition, SoundEvents.STONE_HIT, SoundSource.BLOCKS, 1.0F, 0.7F + level.getRandom().nextFloat() * 0.3F);
         tool.hurtAndBreak(1, player, hand);
         struck();
-        if (++hits < HITS) {
+        if (++hits < hitsNeeded()) {
             sync();
             return;
         }
         ItemStack out = BronzeOres.crushed(item);
+        Block.popResource(level, worldPosition.above(), StoneCrafts.crushedExtra(item)); // Conglomerate: the flint in it
+        StoneCrafts.crushedBy(player, item);
         item = ItemStack.EMPTY;
         hits = 0;
         level.playSound(null, worldPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 1.0F, 0.9F);

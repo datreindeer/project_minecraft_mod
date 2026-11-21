@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:bronze_age/stone_anvil",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:gravel"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.rubble.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.rubble.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

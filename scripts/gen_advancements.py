@@ -1230,6 +1230,35 @@ TABS["bronze_age"][1].extend([
      has("alabaster", "alabaster_bricks", "alabaster_pillar")),
 ])
 
+# stone crafts (StoneCrafts.java; gen_stone_crafts.py, world-materials plan phase 9A): each stone's real use
+TABS["stone_age"][1].extend([
+    ("pumice_polish", "pumice", "pumice_chunk", T, "Rubbed Smooth",
+     "Crush Pumice on the Stone Anvil into a Pumice Chunk and right-click rough stone with it: Soapstone, Andesite, Tuff ... come out "
+     "polished, no bronze needed. A chunk polishes 16 blocks", by_code()),
+])
+TABS["bronze_age"][1].extend([
+    ("soapstone_molds", "molds", "soapstone_ingot_mold", T, "Stone That Remembers",
+     "Carve a mold from Polished Soapstone at the Mold Bench: no firing, and it never cracks however often you cast",
+     has(*[f"soapstone_{s}_mold" for s in ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade", "saw_blade", "plate", "spear_head", "sword_blade", "kettle", "arrowheads", "bucket", "sickle_blade", "shears", "fish_hooks", "needles", "tongs", "chisel_blade", "hammer_head", "anvil"]])),
+    ("rubble", "stone_anvil", "minecraft:gravel", T, "Rubble",
+     "Crush Conglomerate on the Stone Anvil into 2 Gravel and a Flint, or Shale into 2 Clay Balls", by_code()),
+    ("basalt_anvil", "coastal_basalt", "basalt_anvil", T, "Heavy Stone",
+     "Set a Stone Anvil on 3 Coastal Basalt: the heavy Basalt Anvil crushes in 2 blows instead of 4", has("basalt_anvil")),
+    ("quartzite_whetstone", "quartzite", "quartzite_whetstone", T, "Hard Grit",
+     "Build a Whetstone with Quartzite instead of Sandstone: it grinds a Rough Cast head in 2 strokes instead of 4",
+     has("quartzite_whetstone")),
+    ("rapakivi_quern", "rapakivi_granite", "rapakivi_quern", T, "Millstone",
+     "Build a Quern from Rapakivi Granite: it grinds a Grain into Flour in 2 clicks instead of 4", has("rapakivi_quern")),
+    ("alabaster_lamp", "alabaster", "alabaster_lamp", T, "Glowing Stone",
+     "Carve an Alabaster Lamp (5 Alabaster, Plant Fibre), fill it with Tallow or Blubber and light it: the flame shines through the "
+     "stone, light 15", placed("alabaster_lamp")),
+])
+TABS["iron_age"][1].extend([
+    ("jasper_striker", "flint_and_steel", "rough_jasper", T, "Red Spark",
+     "Jasper strikes sparks off steel like flint: Rough or Polished Jasper + Steel Plate make a Flint and Steel",
+     {"crafted": {"trigger": "minecraft:recipe_crafted", "conditions": {"recipes": "mechanical:flint_and_steel_from_jasper"}}}),
+])
+
 # surface biomes (world-materials plan phases 4 and 7; gen_world_biomes.py): one exploration step per biome, saying what is there
 TABS["wilderness"][1].extend([
     ("chalk_downs", "root", "chalk_block", T, "White Downs",

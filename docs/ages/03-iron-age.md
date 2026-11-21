@@ -351,3 +351,7 @@ Järnålderns material är för tunna för en egen byggstil, så NPC-byar i jär
 palissaden en stock högre, och en smedja med Bronze Anvil och Furnace Bricks bredvid Clay Kiln och Quern. Lägren vid
 spelarläger är desamma som i bronsåldern. Advancement **Iron Age Neighbours** (i bronsålderns flik, där Wrought Iron ligger).
 
+## Jaspis som tändsten (byggt, fas 9A av världsmaterialplanen)
+
+Jaspis slår gnistor mot stål som flinta: **Rough Jasper eller Polished Jasper + Steel Plate** (formlöst) ger en
+Flint and Steel, precis som Flint + Steel Plate. Advancement *Red Spark* under *Strike a Light*.

@@ -30,6 +30,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A sandstone whetstone on a wooden bench. Use a Rough Cast head on it {@link #STROKES} times (sparks, grinding
  * sound) to grind one into a head the Tool Station takes. Progress lives on the block (GRIND), so one piece at a time.
+ * The Quartzite Whetstone ({@link StoneCrafts#QUARTZITE_WHETSTONE}) bites harder: {@link #bite} strokes' worth per stroke.
  */
 public class WhetstoneBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
@@ -37,8 +38,16 @@ public class WhetstoneBlock extends Block {
     public static final IntegerProperty GRIND = IntegerProperty.create("grind", 0, STROKES - 1);
     private static final VoxelShape SHAPE = Shapes.or(box(1, 0, 3, 15, 8, 13), box(3, 8, 4, 13, 12, 12));
 
+    /** GRIND added per stroke: 1 for sandstone, 2 for quartzite. */
+    public final int bite;
+
     public WhetstoneBlock(Properties properties) {
+        this(properties, 1);
+    }
+
+    public WhetstoneBlock(Properties properties, int bite) {
         super(properties);
+        this.bite = bite;
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(GRIND, 0));
     }
 
@@ -72,7 +81,7 @@ public class WhetstoneBlock extends Block {
         InteractionHand other = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         boolean chisel = player.getItemInHand(other).is(BronzeTools.BRONZE_CHISEL.get());
         if (chisel) player.getItemInHand(other).hurtAndBreak(1, player, other);
-        int grind = state.getValue(GRIND) + (chisel ? 2 : 1);
+        int grind = state.getValue(GRIND) + (chisel ? 2 : 1) * bite;
         if (grind < STROKES) {
             server.setBlock(pos, state.setValue(GRIND, grind), Block.UPDATE_ALL);
             return InteractionResult.SUCCESS;

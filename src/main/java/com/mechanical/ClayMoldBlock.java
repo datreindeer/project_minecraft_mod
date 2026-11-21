@@ -35,6 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Fired clay mold lying on the ground. Use a Crucible of Molten Metal on an empty one to pour ({@link Shape#units}
  * units); after {@link #SET_TICKS} the metal has set and an empty hand takes the casting out. The clay survives
  * {@link #MAX_USES} casts, then cracks. USES is kept on the item when the mold is picked up (loot copy_state).
+ * Soapstone molds ({@link StoneCrafts#SOAPSTONE_MOLDS}) are the same block with {@link #cracks} false: they never crack.
  */
 public class ClayMoldBlock extends Block {
     public enum Shape implements StringRepresentable {
@@ -73,10 +74,17 @@ public class ClayMoldBlock extends Block {
     private static final VoxelShape SHAPE = box(1, 0, 1, 15, 3, 15);
 
     public final Shape shape;
+    /** False for carved soapstone: it takes any number of casts. */
+    public final boolean cracks;
 
     public ClayMoldBlock(Properties properties, Shape shape) {
+        this(properties, shape, true);
+    }
+
+    public ClayMoldBlock(Properties properties, Shape shape, boolean cracks) {
         super(properties);
         this.shape = shape;
+        this.cracks = cracks;
         registerDefaultState(stateDefinition.any().setValue(FILL, Fill.EMPTY).setValue(USES, 0).setValue(METAL, Metal.COPPER));
     }
 
@@ -143,7 +151,7 @@ public class ClayMoldBlock extends Block {
         }
         BronzeTools.takeHotCasting(server, player); // fresh out of the mold: hot
         player.getInventory().placeItemBackInInventory(state.getValue(METAL).cast(shape), net.minecraft.util.Prediction.SERVER_ONLY);
-        int uses = state.getValue(USES) + 1;
+        int uses = cracks ? state.getValue(USES) + 1 : 0;
         if (uses >= MAX_USES) {
             server.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + 0.5, pos.getY() + 0.15, pos.getZ() + 0.5, 20, 0.3, 0.05, 0.3, 0.0);
             server.playSound(null, pos, SoundEvents.DECORATED_POT_SHATTER, SoundSource.BLOCKS, 0.8F, 1.0F);

@@ -31,8 +31,9 @@ public final class MoldBench {
     public static final Supplier<MenuType<Menu>> MENU = Mechanical.MENUS.register("mold_bench",
             () -> new MenuType<>(Menu::new, FeatureFlags.VANILLA_SET));
 
-    /** Clay Balls only, costs as the old crafting recipes (gen_registry.py reads these calls); the kettle mold took 7 Clay blocks, so 28 balls. */
-    public static final List<StationRecipe> ALL = List.of(
+    /** Clay Balls, costs as the old crafting recipes (gen_registry.py reads these calls); the kettle mold took 7 Clay blocks, so 28 balls.
+     *  Then one soapstone mold per shape from Polished Soapstone (StoneCrafts.moldRecipes). */
+    public static final List<StationRecipe> ALL = java.util.stream.Stream.concat(java.util.stream.Stream.of(
             StationRecipe.of(Mechanical.UNFIRED_CRUCIBLE::get, 1, of(() -> Items.CLAY_BALL, 7), null),
             StationRecipe.of(Casting.UNFIRED_CLAY_INGOT_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
             StationRecipe.of(Casting.UNFIRED_CLAY_PICKAXE_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 7), null),
@@ -54,7 +55,8 @@ public final class MoldBench {
             StationRecipe.of(BronzeTools.UNFIRED_CLAY_TONGS_MOLD::get, 1, of(() -> Items.CLAY_BALL, 6), null),
             StationRecipe.of(BronzeTools.UNFIRED_CLAY_CHISEL_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),
             StationRecipe.of(Ironworking.UNFIRED_CLAY_HAMMER_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
-            StationRecipe.of(Ironworking.UNFIRED_CLAY_ANVIL_MOLD::get, 1, of(() -> Items.CLAY_BALL, 32), null));
+            StationRecipe.of(Ironworking.UNFIRED_CLAY_ANVIL_MOLD::get, 1, of(() -> Items.CLAY_BALL, 32), null)),
+            StoneCrafts.moldRecipes()).toList(); // then the soapstone molds, carved from Polished Soapstone
 
     public static void init() {}
 
