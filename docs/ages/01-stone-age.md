@@ -437,6 +437,8 @@ Bronsålderns recept (Clay Tuyere, Clay Molds, smältning i Crucible) står i 02
 | Planks | 30 s | 500° | 700° |
 | Firewood (och lägerelden ugnen byggdes på) | 1 min | 650° | 900° |
 | Log | 2 min | 650° | 900° |
+| Peat (blocket) | 3 min | 600° | 850° |
+| Dried Peat | 1,5 min | 650° | 900° |
 | Charcoal, Coal | 4 min | 800° | 1300° |
 
 ### Drying Rack
@@ -488,6 +490,34 @@ Recept: `[Stick][Twine][Stick]` / `[Stick][ ][Stick]`.
     gulbrun) syns bakifrån.
   - Tom hand tar ner den färdiga pälsen (en Bear Pelt för hela björnen). Bryts ställningen släpps pälsen **en gång**
     (rå eller färdig), inte en gång per plats eller block.
+- **Annat som torkar** (lera, torv, vass, tång). Varje sak hänger på ställningen som sig själv (föremålet syns på sin
+  plats), och en plats tar upp till så många som står i tabellen; har man färre går de som finns upp. Det torkar med samma
+  regler som maten: **utomhus på dagen utan regn**, även i skugga. Tiden nedan gäller i full sol ute i vinden; i skugga
+  eller lä tar det **dubbelt så lång tid**. Natt och regn pausar bara. Det räknas varje sekund, inte slumpmässigt, så
+  tiden är exakt. Tom hand tar ner det som är klart (samma antal som man hängde upp). Bryts ställningen släpps det som
+  hänger, torrt eller inte.
+
+  | Upp | Per plats | Blir | Tid (sol och vind) | I lä |
+  |---|---|---|---|---|
+  | Wet Adobe Brick | 4 | Adobe Brick | 6 min | 12 min |
+  | Cut Peat | 4 | Dried Peat | 8 min | 16 min |
+  | Reed | 8 | Dried Reed | 4 min | 8 min |
+  | Kelp | 8 | Dried Kelp | 3 min | 6 min |
+
+  Hudar, pälsar och mat ovan torkar som förut (de ligger kvar i blockets tillstånd, se nedan).
+  - **Wet Adobe Brick**: formlöst `Clay Ball + Sand + Straw` → 2. Torkad blir den **Adobe Brick**; 2×2 Adobe Brick → 4
+    **Adobe Bricks** (lika många block per lera som förut).
+  - **Cut Peat**: formlöst 1 Peat → 4. **Dried Peat** är ett bränsle: 1 min på en Campfire (som en Firewood) och 1,5 min i
+    Clay Kiln, lika varm som ved (650°, 900° med bälg). Fyra torkade torvbitar ger alltså dubbelt så mycket eld som
+    blocket (som brinner 2 min på Campfire och 3 min i ugnen men bara når 600°).
+  - **Dried Reed** är det **Reed Thatch** och **Reed Thatch Roof** görs av (färsk vass går inte längre).
+  - **Dried Kelp** är vanilla-maten, ett alternativ till att röka tången.
+  - Avancemang *Sun and Wind* (Wilderness, under Drying Rack): ta ner **fem olika** torkade saker från en ställning
+    (Leather, Jerky, Dried Berries, Adobe Brick, Dried Peat ... allt räknas).
+  - Tekniskt: de här sakerna ligger i ett **block entity** på ställningen (två platser per block), medan platsens
+    `hide`/`hide2`-värde står kvar på 0. Gamla ställningar har inget block entity sparat; det skapas tomt första gången
+    ställningen används, så det som redan hänger (hudar, mat, pälsar) är kvar. Tabellen är `DryingRackBlockEntity.TABLE`:
+    en rad `new Drying(in, ut, sekunder, perPlats)` lägger till något nytt.
 
 ### Smoking Rack
 Recept: `[Stick][Cordage][Stick]` / `[Stick][ ][Stick]` / `[Stick][ ][Stick]` (låses upp när man får rått kött eller rå fisk).
@@ -2458,17 +2488,20 @@ Java: `EarthBlocks.java` (block) och raderna i `StoneFamilies.java` (familjerna)
 
 **Red/Yellow Ochre Block**: 2×2 Red/Yellow Ochre → 1. Formlöst: Ochre Block → 4 Ochre.
 
-**Adobe Bricks** av lera (formlöst) → 2: `Clay Ball + Sand + Straw`. (Torkställningen torkar bara hudar och mat i sina
-egna lägen, så Adobe craftas i stället för att soltorkas.)
+**Wet Adobe Brick** av lera (formlöst) → 2: `Clay Ball + Sand + Straw`. Den torkas på en Drying Rack (6 min i sol och
+vind) till **Adobe Brick**, och 2×2 Adobe Brick → 4 **Adobe Bricks**. Mudstone är redan soltorkad lera och blir Adobe
+Bricks direkt.
+
+**Cut Peat** (formlöst) → 4: `Peat`. Torkas på en Drying Rack (8 min) till **Dried Peat**, ett bättre bränsle.
 
 **Rammed Earth** (formlöst) → 2: `Dirt / Coarse Dirt / Loess + Gravel + Clay Ball`
 
 **Turf** (formlöst) → 1: `Dirt + Plant Fibre`
 
-**Reed Thatch** → 1, **Reed Thatch Roof** → 4:
+**Reed Thatch** → 1, **Reed Thatch Roof** → 4, av **Dried Reed** (Reed torkad på en Drying Rack, 4 min):
 ```
-[Reed][Reed]        [Reed][    ]
-[Reed][Reed]        [Reed][Reed]
+[Dried Reed][Dried Reed]        [Dried Reed][          ]
+[Dried Reed][Dried Reed]        [Dried Reed][Dried Reed]
 ```
 
 **Wattle** → 4:
@@ -2503,14 +2536,15 @@ Ingen av familjerna har Bronze Chisel-kedjor.
 ### Egenskaper
 
 - **Peat är bränsle:** på en Campfire 2 minuter (dubbelt så länge som en Firewood), i Clay Kiln 3 minuter med max
-  600° (850° med bälg). Inte i Fire Pit (och vanilla-ugnen är borttagen).
+  600° (850° med bälg). Inte i Fire Pit (och vanilla-ugnen är borttagen). Skuren och torkad (4 **Dried Peat** per block,
+  se Drying Rack) brinner varje bit 1 minut på Campfire och 1,5 minut i Clay Kiln vid 650° (900° med bälg).
 - **Loess plöjs** med en hacka till farmland med **bördighet 3**, som Podzol (`block_transformer/hoe.json`, gen_farming.py).
 - **Reed** växer som sugar cane: på jord eller sand bredvid vatten, upp till 3 högt. Reed och allt Reed Thatch brinner
   som hö; Bog Oak och Wattle som trä.
 - **Wattle** är ett panelblock som kopplar ihop sig som glasrutor.
 - **Turf värmer inte:** modden har ingen isolering i byggnader (temperaturen räknar bara kläder, eld och väder).
 
-Advancements i Stone Age-fliken: *Peat Cutter*, *Bog Oak*, *Sod Roof* (Turf), *Thatcher* (Reed Thatch), *Adobe*,
+Advancements i Stone Age-fliken: *Peat Cutter*, *Turf Stack* (Dried Peat), *Bog Oak*, *Sod Roof* (Turf), *Thatcher* (Reed Thatch), *Adobe*,
 *Yellow Earth* (Loess), *Rammed Earth*, *Wattle and Daub*, *Red Earth, Yellow Earth* (Ochre Block). *White Tiles* (Kaolin
 Tiles) ligger i Bronze Age-fliken. Senare (planen fas 4): Peat Bog och Reed Delta läggs till i biomtaggarna.
 

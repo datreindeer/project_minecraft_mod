@@ -117,7 +117,7 @@ public final class PeltCuring extends SavedData {
                 BlockState s = level.getBlockState(at);
                 if (DryingRackBlock.bigPelt(s)) continue; // a big pelt fills this block
                 for (IntegerProperty p : spotsOf(s)) {
-                    if (s.getValue(p) != DryingRackBlock.EMPTY) continue;
+                    if (s.getValue(p) != DryingRackBlock.EMPTY || com.mechanical.DryingRackBlockEntity.occupied(level, at, p)) continue;
                     event.setCanceled(true);
                     event.setCancellationResult(InteractionResult.SUCCESS);
                     if (data != null) {

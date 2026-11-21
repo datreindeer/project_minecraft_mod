@@ -260,6 +260,9 @@ TABS = {
          "Build a Drying Rack and right-click it with a Scraped Hide", has("drying_rack")),
         ("leather", "drying_rack", "minecraft:leather", G, "Leather",
          "Take the dry Leather off the Drying Rack after about 3 minutes", has("minecraft:leather")),
+        ("five_kinds_dried", "drying_rack", "dried_peat", G, "Sun and Wind",
+         "Take five different dried things off a Drying Rack: leather, jerky, dried berries, Adobe Bricks, Dried Peat, Dried Reed, "
+         "Dried Kelp...", by_code()),
         ("bone_needle", "root", "bone_needle", T, "Needlework",
          "Carve Fish Bones, a Bone or a Horn into a Bone Needle with a knife", has("bone_needle")),
         ("leatherworking_bench", "leather", "leatherworking_bench", T, "Leatherworker",
@@ -1130,16 +1133,21 @@ TABS["stone_age"][1].extend([
     ("peat", "light_fire", "peat", T, "Peat Cutter",
      "Dig Peat with a shovel at the bottom of ponds and streams in swamps and taigas. It burns twice as long as firewood on a campfire "
      "and three minutes in the Clay Kiln; 4 Peat make 4 Peat Bricks", has("peat", "peat_bricks")),
+    ("dried_peat", "peat", "dried_peat", T, "Turf Stack",
+     "Cut a Peat block into 4 Cut Peat and dry them on a Drying Rack outdoors by day. Each Dried Peat burns as long as a firewood "
+     "and as hot, so a block of peat gives twice the fire once dried", has("dried_peat")),
     ("bog_oak", "peat", "bog_oak_log", T, "Bog Oak",
      "Dig out a black Bog Oak trunk buried in the ground of swamps and taigas (y 55-62): a whole wood set without a tree", has("#bog_oak_logs")),
     ("turf", "root", "turf", T, "Sod Roof",
      "Bind Dirt with Plant Fibre into Turf, and cut it into slabs and stairs for a turf roof", has("turf", "turf_slab", "turf_stairs")),
     ("reed_thatch", "root", "reed_thatch_roof", T, "Thatcher",
-     "Cut Reed by rivers and swamps (it grows like sugar cane) and lay it as Reed Thatch or a sloped Reed Thatch Roof. It burns easily",
+     "Cut Reed by rivers and swamps (it grows like sugar cane), dry it on a Drying Rack and lay the Dried Reed as Reed Thatch "
+     "or a sloped Reed Thatch Roof. It burns easily",
      has("reed_thatch", "reed_thatch_roof", "reed_thatch_slab", "reed_thatch_stairs")),
     ("adobe", "root", "adobe_bricks", T, "Adobe",
-     "Find Mudstone on river banks in deserts, savannas and badlands and craft it into Adobe Bricks, or mix Clay, Sand and Straw",
-     has("mudstone", "adobe_bricks")),
+     "Find Mudstone on river banks in deserts, savannas and badlands and craft it into Adobe Bricks, or mix Clay, Sand and Straw "
+     "into Wet Adobe Bricks and dry them on a Drying Rack: 4 Adobe Bricks make 4 blocks",
+     has("mudstone", "adobe_bricks", "adobe_brick")),
     ("loess", "root", "loess", T, "Yellow Earth",
      "Dig pale Loess under the grass of plains and savannas. Tilled with a hoe it is the richest farmland; 4 make Loess Bricks",
      has("loess", "loess_bricks")),

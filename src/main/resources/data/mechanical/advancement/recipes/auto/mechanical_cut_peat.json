@@ -6,17 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#minecraft:sand"
-          }
-        ]
-      }
-    },
-    "has_1": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:straw"
+            "items": "mechanical:peat"
           }
         ]
       }
@@ -24,20 +14,19 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "mechanical:adobe_bricks_from_clay"
+        "recipes": "mechanical:cut_peat"
       }
     }
   },
   "requirements": [
     [
       "has_0",
-      "has_1",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "mechanical:adobe_bricks_from_clay"
+      "mechanical:cut_peat"
     ]
   }
 }
