@@ -1,0 +1,36 @@
+{
+  "parent": "mechanical:iron_age/alum",
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": {
+        "recipes": [
+          "mechanical:black_dye_from_black_pigment_with_alum",
+          "mechanical:red_dye_from_red_pigment_with_alum",
+          "mechanical:yellow_dye_from_yellow_pigment_with_alum",
+          "mechanical:white_dye_from_white_pigment_with_alum"
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:red_dye"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.mordant.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.mordant.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

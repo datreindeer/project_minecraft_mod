@@ -689,11 +689,12 @@
      "bronze_knife",
      "bronze_spear",
      "bronze_sword",
-     "clay_sword_blade_mold"
+     "clay_sword_blade_mold",
+     "slate_tablet"
     ],
     "text": {
-     "sv": "Samma formar som för koppar gjuter brons, plus nya: [[clay_spear_head_mold]], [[clay_sword_blade_mold]], [[clay_saw_blade_mold]] och [[clay_plate_mold]]. Slipa och montera som förut.\n\nBrons: **460 i hållbarhet**, järnets fart och skada. [[bronze_pickaxe]] bryter **Iron, Coal och Lapis Ore** (inte guld, diamant eller redstone). [[bronze_knife]] styckar 1,75× fortare, ger 1,35× mer och klarar björn och jättehjort.\n\nVapen: [[bronze_spear]] (laddad stöt som järnspjutet) och [[bronze_sword]] (Sword Blade + Cordage + Leather, 5,5 skada). Pilar: [[clay_arrowheads_mold]] ger 4 [[bronze_arrowhead]], och i Fletching Table blir de 4 [[bronze_arrow]] (3 skada, går sällan sönder).\n\n**Skrift:** med [[bronze_knife]] blir 3 Sugar Cane till 3 [[minecraft:paper]]; 3 Paper + Leather blir en Book, och Book + [[soot_ink]] (2 Soot + Tallow) + Feather blir [[minecraft:writable_book]].",
-     "en": "The same molds as for copper cast bronze, plus new ones: [[clay_spear_head_mold]], [[clay_sword_blade_mold]], [[clay_saw_blade_mold]] and [[clay_plate_mold]]. Grind and assemble as before.\n\nBronze: **460 durability**, iron's speed and damage. The [[bronze_pickaxe]] mines **Iron, Coal and Lapis Ore** (not gold, diamond or redstone). The [[bronze_knife]] butchers 1.75× faster, yields 1.35× more and handles bears and the giant deer.\n\nWeapons: the [[bronze_spear]] (charged thrust like the iron spear) and the [[bronze_sword]] (Sword Blade + Cordage + Leather, 5.5 damage). Arrows: the [[clay_arrowheads_mold]] gives 4 [[bronze_arrowhead]], and at the Fletching Table they become 4 [[bronze_arrow]] (3 damage, rarely break).\n\n**Writing:** with a [[bronze_knife]], 3 Sugar Cane become 3 [[minecraft:paper]]; 3 Paper + Leather make a Book, and Book + [[soot_ink]] (2 Soot + Tallow) + Feather make a [[minecraft:writable_book]]."
+     "sv": "Samma formar som för koppar gjuter brons, plus nya: [[clay_spear_head_mold]], [[clay_sword_blade_mold]], [[clay_saw_blade_mold]] och [[clay_plate_mold]]. Slipa och montera som förut.\n\nBrons: **460 i hållbarhet**, järnets fart och skada. [[bronze_pickaxe]] bryter **Iron, Coal och Lapis Ore** (inte guld, diamant eller redstone). [[bronze_knife]] styckar 1,75× fortare, ger 1,35× mer och klarar björn och jättehjort.\n\nVapen: [[bronze_spear]] (laddad stöt som järnspjutet) och [[bronze_sword]] (Sword Blade + Cordage + Leather, 5,5 skada). Pilar: [[clay_arrowheads_mold]] ger 4 [[bronze_arrowhead]], och i Fletching Table blir de 4 [[bronze_arrow]] (3 skada, går sällan sönder).\n\n**Skrift:** med [[bronze_knife]] blir 3 Sugar Cane till 3 [[minecraft:paper]]; 3 Paper + Leather blir en Book, och Book + [[soot_ink]] (2 Soot + Tallow) + Feather blir [[minecraft:writable_book]]. En [[slate_tablet]] (Polished Slate + 2 Stick) är en tavla att skriva på med [[chalk]] i andra handen (1 Chalk per gång, en sida); sneak-use torkar av den.",
+     "en": "The same molds as for copper cast bronze, plus new ones: [[clay_spear_head_mold]], [[clay_sword_blade_mold]], [[clay_saw_blade_mold]] and [[clay_plate_mold]]. Grind and assemble as before.\n\nBronze: **460 durability**, iron's speed and damage. The [[bronze_pickaxe]] mines **Iron, Coal and Lapis Ore** (not gold, diamond or redstone). The [[bronze_knife]] butchers 1.75× faster, yields 1.35× more and handles bears and the giant deer.\n\nWeapons: the [[bronze_spear]] (charged thrust like the iron spear) and the [[bronze_sword]] (Sword Blade + Cordage + Leather, 5.5 damage). Arrows: the [[clay_arrowheads_mold]] gives 4 [[bronze_arrowhead]], and at the Fletching Table they become 4 [[bronze_arrow]] (3 damage, rarely break).\n\n**Writing:** with a [[bronze_knife]], 3 Sugar Cane become 3 [[minecraft:paper]]; 3 Paper + Leather make a Book, and Book + [[soot_ink]] (2 Soot + Tallow) + Feather make a [[minecraft:writable_book]]. A [[slate_tablet]] (Polished Slate + 2 Sticks) is a board to write on with [[chalk]] in the other hand (1 Chalk each time, one page); sneak-use wipes it."
     }
    },
    {
@@ -1062,11 +1063,28 @@
      "white_lime_plaster",
      "black_lime_plaster",
      "red_lime_plaster",
-     "yellow_lime_plaster"
+     "yellow_lime_plaster",
+     "gypsum_powder",
+     "plaster_of_paris"
     ],
     "text": {
-     "sv": "Bränn [[limestone]], [[dolomite]] (ligger ihop med kalkstenen), [[chalk_block]], [[travertine]] (under åar, träsk och slätter) eller [[shell_bank]] (under stränder) i kilnen vid **900°** (Charcoal + Bellows) till [[quicklime]]. Quicklime + en hink vatten → [[slaked_lime]].\n\nSlaked Lime + Sand + Gravel → **4 [[lime_mortar]]**. 4 av det ett tegel görs av + 1 Lime Mortar ger **dubbelt så mycket tegel**, för alla stenars Bricks och vanillas Stone, Deepslate och Mud Bricks. Murbruket krävs aldrig.\n\nSlaked Lime + 2 Sand + Straw → **4 [[lime_plaster]]**, vita putsade väggar. 8 runt ett pigment färgar dem vita, svarta, röda eller gula. Scraped Hide + Slaked Lime → Leather, som med salt.",
-     "en": "Burn [[limestone]], [[dolomite]] (it lies with the limestone), a [[chalk_block]], [[travertine]] (under rivers, swamps and plains) or [[shell_bank]] (under beaches) in the kiln at **900°** (Charcoal + Bellows) into [[quicklime]]. Quicklime + a bucket of water → [[slaked_lime]].\n\nSlaked Lime + Sand + Gravel → **4 [[lime_mortar]]**. 4 of what a bricks block is made from + 1 Lime Mortar gives **twice the bricks**, for every stone's Bricks and vanilla's Stone, Deepslate and Mud Bricks. Mortar is never required.\n\nSlaked Lime + 2 Sand + Straw → **4 [[lime_plaster]]**, white plastered walls. 8 around a pigment dye them white, black, red or yellow. Scraped Hide + Slaked Lime → Leather, like salt."
+     "sv": "Bränn [[limestone]], [[dolomite]] (ligger ihop med kalkstenen), [[chalk_block]], [[travertine]] (under åar, träsk och slätter) eller [[shell_bank]] (under stränder) i kilnen vid **900°** (Charcoal + Bellows) till [[quicklime]]. Quicklime + en hink vatten → [[slaked_lime]].\n\nSlaked Lime + Sand + Gravel → **4 [[lime_mortar]]**. 4 av det ett tegel görs av + 1 Lime Mortar ger **dubbelt så mycket tegel**, för alla stenars Bricks och vanillas Stone, Deepslate och Mud Bricks. Murbruket krävs aldrig.\n\nSlaked Lime + 2 Sand + Straw → **4 [[lime_plaster]]**, vita putsade väggar. 8 runt ett pigment färgar dem vita, svarta, röda eller gula. Scraped Hide + Slaked Lime → Leather, som med salt.\n\nUtan Bellows: krossa [[gypsum]] på [[stone_anvil]] till [[gypsum_powder]] och bränn den vid **300°** till [[plaster_of_paris]]. Plaster of Paris + 2 Sand + Straw → 4 Lime Plaster, precis som Slaked Lime.",
+     "en": "Burn [[limestone]], [[dolomite]] (it lies with the limestone), a [[chalk_block]], [[travertine]] (under rivers, swamps and plains) or [[shell_bank]] (under beaches) in the kiln at **900°** (Charcoal + Bellows) into [[quicklime]]. Quicklime + a bucket of water → [[slaked_lime]].\n\nSlaked Lime + Sand + Gravel → **4 [[lime_mortar]]**. 4 of what a bricks block is made from + 1 Lime Mortar gives **twice the bricks**, for every stone's Bricks and vanilla's Stone, Deepslate and Mud Bricks. Mortar is never required.\n\nSlaked Lime + 2 Sand + Straw → **4 [[lime_plaster]]**, white plastered walls. 8 around a pigment dye them white, black, red or yellow. Scraped Hide + Slaked Lime → Leather, like salt.\n\nWithout Bellows: crush [[gypsum]] on the [[stone_anvil]] into [[gypsum_powder]] and burn it at **300°** into [[plaster_of_paris]]. Plaster of Paris + 2 Sand + Straw → 4 Lime Plaster, just like Slaked Lime."
+    }
+   },
+   {
+    "title": {
+     "sv": "Alun: färg och garvning",
+     "en": "Alum: dyeing and tanning"
+    },
+    "items": [
+     "alum_shale",
+     "roasted_alum_shale",
+     "alum"
+    ],
+    "text": {
+     "sv": "Rosta [[alum_shale]] (svarta lager djupt under kalla biomer och i Galena Seams) i kilnen vid **800°** till [[roasted_alum_shale]] och laka den med en hink vatten: **2 [[alum]]**.\n\nAlun är ett betningsmedel: **2 pigment + Alum → 4 dye**, dubbelt så mycket som pigmentet ger ensamt. Och ett garvsalt: **2 [[scraped_hide]] + Alum → 2 Leather**.",
+     "en": "Roast [[alum_shale]] (black layers deep under cold biomes and in the Galena Seams) in the kiln at **800°** into [[roasted_alum_shale]] and leach it with a bucket of water: **2 [[alum]]**.\n\nAlum is a mordant: **2 pigment + Alum → 4 dye**, twice what the pigment gives alone. And a tawing salt: **2 [[scraped_hide]] + Alum → 2 Leather**."
     }
    }
   ]

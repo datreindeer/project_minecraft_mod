@@ -64,7 +64,7 @@ public final class Pigments {
         if (stack.is(CHALK.get())) return new ItemStack(WHITE_PIGMENT.get(), 2);
         if (stack.is(Items.CALCITE)) return new ItemStack(WHITE_PIGMENT.get(), 4);
         if (stack.is(Items.CHARCOAL)) return new ItemStack(BLACK_PIGMENT.get(), 2);
-        return ItemStack.EMPTY;
+        return Chemistry.ground(stack); // gypsum, chalk and ochre blocks
     }
 
     public static void init() {}

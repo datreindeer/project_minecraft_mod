@@ -1519,7 +1519,7 @@
   "quicklime": {"text": "Bränd kalk. 1 [[limestone]], [[dolomite]], [[chalk_block]], [[travertine]] eller [[shell_bank]], eller 4 [[chalk]], i [[kiln]] vid **900°** (kräver [[bellows]]) → 1. Släcks med vatten till [[slaked_lime]].", "category": "materials"},
   "slaked_lime": {"text": "Släckt kalk. [[quicklime]] + Water Bucket (eller [[clay_water_bucket]]), formlöst → 1, hinken kommer tillbaka. Till [[lime_mortar]], [[lime_plaster]] och kalkad hud: [[scraped_hide]] + Slaked Lime → Leather.", "category": "materials"},
   "lime_mortar": {"text": "Kalkbruk. [[slaked_lime]] + Sand + Gravel → 4. 4 av det ett tegel läggs av + 1 Lime Mortar → dubbelt så mycket tegel (8 [[limestone_bricks]], Stone Bricks, Mud Bricks ...). Krävs aldrig.", "category": "materials"},
-  "lime_plaster": {"text": "Kalkputs. [[slaked_lime]] + 2 Sand + [[straw]] → 4. 8 runt ett pigment färgar den: [[white_lime_plaster]], [[black_lime_plaster]], [[red_lime_plaster]], [[yellow_lime_plaster]]."},
+  "lime_plaster": {"text": "Kalkputs. [[slaked_lime]] eller [[plaster_of_paris]] + 2 Sand + [[straw]] → 4. 8 runt ett pigment färgar den: [[white_lime_plaster]], [[black_lime_plaster]], [[red_lime_plaster]], [[yellow_lime_plaster]]."},
   "white_lime_plaster": {"text": "Vit kalkputs. 8 [[lime_plaster]] runt [[white_pigment]] → 8."},
   "black_lime_plaster": {"text": "Svart kalkputs. 8 [[lime_plaster]] runt [[black_pigment]] → 8."},
   "red_lime_plaster": {"text": "Röd kalkputs. 8 [[lime_plaster]] runt [[red_pigment]] → 8."},
@@ -1669,7 +1669,7 @@
   "polished_jasper_slab": {"text": "Jaspis, polished jasper slab. 3 i rad → 6 av [[polished_jasper]]."},
   "polished_jasper_stairs": {"text": "Jaspis, polished jasper stairs. trappmönster av 6 [[polished_jasper]] → 4."},
   "polished_jasper_wall": {"text": "Jaspis, polished jasper wall. 2×3 → 6 av [[polished_jasper]]."},
-  "gypsum": {"text": "Gips (stenåldern, mjuk). Kritvit beige sten. Klumpar överallt (y 40–90), 2 extra per chunk under öken och badlands. [[flint_pickaxe]] räcker. Ger sig själv. Familjen är vanilla-sandstone: Cut, Smooth, Chiseled. Senare: gips och puts."},
+  "gypsum": {"text": "Gips (stenåldern, mjuk). Kritvit beige sten. Klumpar överallt (y 40–90), 2 extra per chunk under öken och badlands. [[flint_pickaxe]] räcker. Ger sig själv. Familjen är vanilla-sandstone: Cut, Smooth, Chiseled. Krossas på [[stone_anvil]] till 2 [[gypsum_powder]] → [[plaster_of_paris]] (puts)."},
   "chiseled_gypsum": {"text": "Gips, chiseled gypsum. 2 [[gypsum_slab]] på varandra → 1, eller [[bronze_chisel]] på [[cut_gypsum]]."},
   "cut_gypsum": {"text": "Gips, cut gypsum. 2×2 [[gypsum]] → 4, eller [[bronze_chisel]] på [[gypsum]]."},
   "cut_gypsum_slab": {"text": "Gips, cut gypsum slab. 3 i rad → 6 av [[cut_gypsum]]."},
@@ -1688,7 +1688,7 @@
   "smooth_alabaster": {"text": "Alabaster, smooth alabaster. Smält [[alabaster]]."},
   "smooth_alabaster_slab": {"text": "Alabaster, smooth alabaster slab. 3 i rad → 6 av [[smooth_alabaster]]."},
   "smooth_alabaster_stairs": {"text": "Alabaster, smooth alabaster stairs. trappmönster av 6 [[smooth_alabaster]] → 4."},
-  "alum_shale": {"text": "Alunskiffer (stenåldern, mjuk). Nästan svarta lager. Klumpar överallt djupt (y −30–40), fler under taiga, Snowy Plains, Ice Spikes, Grove, Snowy Slopes och Frozen River. [[flint_pickaxe]] räcker. Ger sig själv. Familjen är vanilla-tuff. Senare: alun till färgning."},
+  "alum_shale": {"text": "Alunskiffer (stenåldern, mjuk). Nästan svarta lager. Klumpar överallt djupt (y −30–40), fler under taiga, Snowy Plains, Ice Spikes, Grove, Snowy Slopes och Frozen River. [[flint_pickaxe]] räcker. Ger sig själv. Familjen är vanilla-tuff. Rostas i [[kiln]] till [[roasted_alum_shale]] → [[alum]] (färgning, garvning)."},
   "alum_shale_brick_slab": {"text": "Alunskiffer, alum shale brick slab. 3 i rad → 6 av [[alum_shale_bricks]]."},
   "alum_shale_brick_stairs": {"text": "Alunskiffer, alum shale brick stairs. trappmönster av 6 [[alum_shale_bricks]] → 4."},
   "alum_shale_brick_wall": {"text": "Alunskiffer, alum shale brick wall. 2×3 → 6 av [[alum_shale_bricks]]."},
@@ -1818,5 +1818,10 @@
   "dry_stone_wall": {"text": "Kallmur (stenåldern): mur av [[fieldstone]] utan murbruk, 2×3 Fieldstone → 6. Kopplar ihop sig som andra murar. Gränsmurar för gårdar och klanmark.", "category": "blocks"},
   "structure:glacial_boulder": {"text": "Stort flyttblock (radie 2–4) av Gneiss, Granite eller Rapakivi Granite, halvt nedsjunket, med lösa stenar runt. I Glacial Moraine (varannan chunk) och Shingle Beach (var femte chunk).", "icon": "mechanical:gneiss"},
   "glowworm": {"text": "Lysmaskar. Hänger i taket i **Glowworm Caves** (se `docs/caves.md`): mörka trådar med blåa lysande pärlor. Ger svagt ljus (nivå 6), man går igenom dem och de **ger inget** när de går sönder. Måste sitta under ett fast block. Det enda naturliga ljuset under jord i stenåldern.", "category": "blocks"},
-  "tool_cache": {"text": "Verktygsgömsle (loot table `chests/tool_cache`): en kista på grottgolvet i **Soapstone Grottos**, sällsynt. 2–4 Stone Age-verktyg ([[flint_knife]], [[flint_pickaxe]], [[flint_axe]], [[flint_spear]], [[crude_stone_pickaxe]] …) och lite [[minecraft:flint]], [[stone_chunk]], [[soapstone]] och pinnar.", "category": "blocks", "name": "Tool Cache"}
+  "tool_cache": {"text": "Verktygsgömsle (loot table `chests/tool_cache`): en kista på grottgolvet i **Soapstone Grottos**, sällsynt. 2–4 Stone Age-verktyg ([[flint_knife]], [[flint_pickaxe]], [[flint_axe]], [[flint_spear]], [[crude_stone_pickaxe]] …) och lite [[minecraft:flint]], [[stone_chunk]], [[soapstone]] och pinnar.", "category": "blocks", "name": "Tool Cache"},
+  "roasted_alum_shale": {"text": "Rostad alunskiffer. 1 [[alum_shale]] i [[kiln]] vid **800°** (Charcoal räcker, ingen [[bellows]]) → 1. Lakas med en hink vatten till 2 [[alum]].", "category": "materials"},
+  "alum": {"text": "Alun (järnåldern). [[roasted_alum_shale]] + Water Bucket (eller Clay/Bronze Water Bucket; hinken kommer tillbaka) → **2**. Betningsmedel: **2 pigment + Alum → 4 dye** (utan alun ger 1 pigment 1 dye). Garvning: **2 [[scraped_hide]] + Alum → 2 Leather**.", "category": "materials"},
+  "gypsum_powder": {"text": "Gipspulver. 1 [[gypsum]] krossas på [[stone_anvil]] → 2. Bränns i [[kiln]] vid **300°** till [[plaster_of_paris]].", "category": "materials"},
+  "plaster_of_paris": {"text": "Bränd gips (bronsåldern). 1 [[gypsum_powder]] i [[kiln]] vid **300°** (vilket bränsle som helst) → 1. **Plaster of Paris + 2 Sand + [[straw]] → 4 [[lime_plaster]]**, i stället för [[slaked_lime]], så puts går att göra utan Bellows.", "category": "materials"},
+  "slate_tablet": {"text": "Skrivtavla av skiffer (bronsåldern). 1 [[polished_slate]] + 2 Stick (formlöst) → 1, stackas inte. Håll [[chalk]] i andra handen och använd den: bokskärmen öppnas och det kostar **1 Chalk**. **En sida**; Sign sparar bara sidan. Texten syns i tooltipen. **Sneak-use torkar av** tavlan.", "category": "tools"}
 }

@@ -115,6 +115,9 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Smelting.UNFIRED_FURNACE_BRICK.get()), 1, () -> Smelting.FURNACE_BRICK.get(), 200, 600),
             new Recipe(s -> s.is(Smelting.UNFIRED_CLAY_CHANNEL.get()), 1, () -> Smelting.CLAY_CHANNEL_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Ironworking.FIRE_CLAY.get()), 1, () -> Ironworking.FIRE_BRICK.get(), 400, 1100),
+            // stone chemistry (Chemistry): alum shale roasted for leaching, gypsum burnt to Plaster of Paris
+            new Recipe(s -> s.is(StoneFamilies.block("alum_shale").asItem()), 1, () -> Chemistry.ROASTED_ALUM_SHALE.get(), 400, Chemistry.ALUM_ROAST_TEMP),
+            new Recipe(s -> s.is(Chemistry.GYPSUM_POWDER.get()), 1, () -> Chemistry.PLASTER_OF_PARIS.get(), 300, Chemistry.PLASTER_TEMP),
             // Iron Age ores (IronOres): lead, cupellation (silver), gold
             new Recipe(s -> s.is(IronOres.RAW_GALENA.get()), 1, () -> IronOres.LEAD_INGOT.get(), 400, IronOres.LEAD_TEMP),
             new Recipe(s -> s.is(IronOres.LEADED_CUPEL.get()), 1, () -> IronOres.SILVER_NUGGET.get(), 600, IronOres.CUPEL_TEMP),

@@ -1,6 +1,7 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
 Status: **alla faser 0–8 byggda** (material och 24 biomer, se "Fas N: resultat"); kvar: fas 9 (användningar) och 10 (åldrande). Skriven 2026-11-21.
+Fas 9B (alun, Slate Tablet, gips) byggd, se "Fas 9B: resultat".
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -566,3 +567,30 @@ spawnregel kräver ljus, så lejon dyker i praktiken inte upp i mörka grottor. 
 (vattendjurens regel). Cave Bear finns i alla grottbiomer, eftersom mallen dripstone_caves står i `add_cave_bear`. Beach
 Pebbles i Flooded Caves (ytagenten gör blocket parallellt; Gravel och Clay används nu). Dev-servern fick OutOfMemory eller
 watchdog när 1 089 tvångsladdade chunks lastades ur efter täckningsmätningen (mätverktyget, inte modden).
+
+---
+
+## Fas 9B: resultat (byggt)
+
+Kemi, skrift och puts. Java: **`Chemistry.java`** (items, `SlateTabletItem`, krossningen i `Chemistry.ground` som
+`Pigments.ground` anropar, gametest `chemistry`), två rader i `KilnBlockEntity.RECIPES` och två injects i
+`ServerGamePacketListenerImplMixin`. Data och texturer: **`scripts/gen_chemistry.py`** (efter `gen_lime.py` och
+`gen_pigments.py`). Spelartext: `docs/ages/03-iron-age.md` "10. Alun" och `02-bronze-age.md` "Gips och Slate Tablet".
+
+| Användning | Hur | Ålder |
+|---|---|---|
+| **Alun** | Alum Shale i Clay Kiln vid 800° (Charcoal, ingen Bellows) → Roasted Alum Shale, + vattenhink (kommer tillbaka) → **2 Alum** | Iron |
+| **Betningsmedel** | 2 pigment + Alum → **4 dye** (Black, Red, Yellow, White; utan alun 1 pigment → 1 dye). Modden har ingen egen färgning av ull/läder, bara vanillas dye-recept, så alunet ger mer färg per pigment | Iron |
+| **Alungarvning** | 2 Scraped Hide + Alum → **2 Leather** (Salt och Slaked Lime: en hud var) | Iron |
+| **Gips** | Gypsum på Stone Anvil → 2 Gypsum Powder, Clay Kiln 300° → **Plaster of Paris**, + 2 Sand + Straw → **4 Lime Plaster** (samma block och färger som kalkputsen) | Bronze |
+| **Slate Tablet** | Polished Slate + 2 Stick → Slate Tablet: bokskärmen med **en sida**, kräver Chalk i andra handen (1 per gång), sneak-use torkar av, texten i tooltipen, Sign sparar bara sidan (mixin) | Bronze |
+| **Pigment av block** | Chalk Block, Red/Yellow Ochre Block på Stone Anvil → 8 pigment (2 per ockra/krita blocket görs av) | Bronze |
+
+**Nya id:** `roasted_alum_shale`, `alum`, `gypsum_powder`, `plaster_of_paris`, `slate_tablet`. Recept: `alum`,
+`<färg>_dye_from_<färg>_pigment_with_alum` (4), `leather_from_alum`, `lime_plaster_from_plaster_of_paris`, `slate_tablet`.
+Advancements: Iron Age *Alum* → *Mordant*, *Tawed*; Bronze Age *Plaster of Paris*, *Slate and Chalk*.
+
+**Inte gjort:** Scoria-filter (modden har inget smutsigt vatten, ingen törst och ingen rening; Kettle kokar mat, inte
+vatten), eget Gypsum Plaster-block (gipset blir i stället en väg till den befintliga putsen), gipsformar för gjutning
+(del A har formarna), grönt pigment av Serpentine och svart av Alum Shale (det finns inget grönt pigment eller grön
+grottfärg att mata, och svart finns redan av kol och sot). Slate Tablet går inte att sätta upp som skylt.

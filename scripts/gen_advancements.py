@@ -1341,6 +1341,29 @@ TABS["iron_age"][1].extend([
      has("lime_plaster")),
 ])
 
+# stone chemistry, writing and plaster (world-materials-plan phase 9B; Chemistry.java, gen_chemistry.py)
+def crafted(*recipes):
+    return {"crafted": {"trigger": "minecraft:recipe_crafted", "conditions": {"recipes": [f"mechanical:{r}" for r in recipes]}}}
+
+
+TABS["iron_age"][1].extend([
+    ("alum", "root", "alum", T, "Alum",
+     "Roast Alum Shale in the Clay Kiln at 800° and leach it with a bucket of water: 2 Alum", has("alum")),
+    ("mordant", "alum", "minecraft:red_dye", T, "Mordant",
+     "Mix 2 pigment with an Alum: 4 dye, twice what the pigment gives alone",
+     crafted(*(f"{c}_dye_from_{c}_pigment_with_alum" for c in ("black", "red", "yellow", "white")))),
+    ("tawed", "alum", "minecraft:leather", T, "Tawed",
+     "Taw 2 Scraped Hides with one Alum: 2 Leather", crafted("leather_from_alum")),
+])
+TABS["bronze_age"][1].extend([
+    ("plaster_of_paris", "stone_anvil", "plaster_of_paris", T, "Plaster of Paris",
+     "Crush Gypsum on the Stone Anvil and burn the powder in the Clay Kiln at 300°. With 2 Sand and Straw it makes 4 Lime Plaster, no bellows needed",
+     has("plaster_of_paris")),
+    ("slate_tablet", "bronze_tools", "slate_tablet", T, "Slate and Chalk",
+     "Frame Polished Slate with 2 Sticks into a Slate Tablet. Write on it with Chalk in your other hand; sneak-use wipes it clean",
+     has("slate_tablet")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

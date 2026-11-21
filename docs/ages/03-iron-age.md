@@ -271,6 +271,20 @@ Putsen bryts snabbast med hacka men vad som helst ger blocket. Bara block, inga 
 **Advancements** (Iron Age-fliken, under *Limestone Mason*): *Dolomite*, *Travertine*, *Shell Bank*, *Quicklime* →
 *Lime Mortar* och *Lime Plaster*.
 
+### 10. Alun (byggd, world-materials-plan fas 9B)
+
+Alum Shale (svart skiffer, Galena Seams och kalla biomer) ger alun: ett betningsmedel som får färgen att fästa och ett
+garvsalt. Kod: `Chemistry` (gametest `chemistry`), kilnreceptet i `KilnBlockEntity.RECIPES`. Data: `scripts/gen_chemistry.py`.
+
+| Vad | Hur |
+|---|---|
+| **Roasted Alum Shale** | 1 **Alum Shale** (block) i **Clay Kiln vid 800°**, 20 s → 1. 800° är Charcoals egen värme, ingen Bellows. |
+| **Alum** | Roasted Alum Shale + Water Bucket (eller Clay/Bronze Water Bucket), formlöst → **2**. Hinken kommer tillbaka (lakning). |
+| **Färg med alun** | 2 pigment (Black, Red, Yellow eller White Pigment) + Alum, formlöst → **4 Dye**. Utan alun ger 1 pigment 1 dye, så alunet dubblar färgen. |
+| **Alungarvning** | 2 Scraped Hide + Alum, formlöst → **2 Leather**. Salt och Slaked Lime garvar en hud var. |
+
+**Advancements** (Iron Age): *Alum* → *Mordant* och *Tawed*.
+
 ## Vänta med
 
 - **Zinc** (mässing), **Nickel**, **Redstone**, **Sulfur**: ång- och elåldern.

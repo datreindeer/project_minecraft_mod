@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "white_dye",
+  "ingredients": [
+    "mechanical:white_pigment",
+    "mechanical:white_pigment",
+    "mechanical:alum"
+  ],
+  "result": {
+    "id": "minecraft:white_dye",
+    "count": 4
+  }
+}
