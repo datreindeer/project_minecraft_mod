@@ -2,5 +2,41 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "mechanical:item/bronze_kettle"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        -147.3,
+        25.8,
+        -180.0
+      ],
+      "translation": [
+        -2.24,
+        -3.49,
+        -1.57
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        -147.3,
+        -25.8,
+        180.0
+      ],
+      "translation": [
+        2.24,
+        -3.49,
+        -1.57
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    }
   }
 }

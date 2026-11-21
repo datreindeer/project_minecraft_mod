@@ -48,7 +48,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         HumanoidMobRenderer.extractHumanoidRenderState(entity, state, partialTicks, itemModelResolver);
         state.leftArmPose = armPose(entity, HumanoidArm.LEFT);
         state.rightArmPose = armPose(entity, HumanoidArm.RIGHT);
-        com.mechanical.client.HoldPoses.grip(entity, state);
+        com.mechanical.client.HoldPoses.extract(entity, state);
         state.arrowCount = entity.getArrowCount();
         boolean slim = entity.isWoman();
         state.skin = SKINS.computeIfAbsent(TintedSkin.of(entity.texture(), entity.colour()), t -> PlayerSkin.insecure(

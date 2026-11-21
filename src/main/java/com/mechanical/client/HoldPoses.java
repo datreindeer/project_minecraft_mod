@@ -25,7 +25,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.InteractionHand;
+import java.util.function.Predicate;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -53,6 +58,11 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
  * {@link GripLayer} draws it at the jaws and the other hand is empty (third person only).</li>
  * <li>Rummaging in an open satchel, pouch or basket: head down, hands in the bag (WornSatchelModel / WornPouchModel
  * pull the worn bag forward).</li>
+ * <li>Carrying: buckets and the water jug hang at the side, firewood / rough logs and the kettle in both arms, hammers and
+ * axes on the shoulder while walking, a spear low in both hands while sneaking, the rod held out, the paddle stroking when
+ * seated, the pan swirled while panning (display transforms: scripts/gen_hold_displays.py).</li>
+ * <li>Strokes for click-used items (fire drill, broom, flail, paint and brush, chisel, bone flute), driven by the arm swing
+ * the click makes (sent to everyone), which {@link #extract} takes off vanilla's swing.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
@@ -62,6 +72,21 @@ public final class HoldPoses {
     public static final EnumProxy<HumanoidModel.ArmPose> TONGS_POSE = pose(false, false, HoldPoses::poseTongs);
     /** Both arms: set on the arm holding the bag (or the main arm for a worn one) by the render-state modifier. */
     public static final EnumProxy<HumanoidModel.ArmPose> RUMMAGE_POSE = pose(true, true, HoldPoses::poseRummage);
+    public static final EnumProxy<HumanoidModel.ArmPose> BUCKET_POSE = pose(false, false, HoldPoses::poseBucket);
+    public static final EnumProxy<HumanoidModel.ArmPose> CARRY_POSE = pose(true, true, (m, s, a) -> poseCarry(m, s, a, false));
+    public static final EnumProxy<HumanoidModel.ArmPose> HEAVY_POSE = pose(true, true, (m, s, a) -> poseCarry(m, s, a, true));
+    public static final EnumProxy<HumanoidModel.ArmPose> PADDLE_POSE = pose(true, true, HoldPoses::posePaddle);
+    public static final EnumProxy<HumanoidModel.ArmPose> SHOULDER_POSE = pose(false, false, HoldPoses::poseShoulder);
+    public static final EnumProxy<HumanoidModel.ArmPose> SPEAR_LOW_POSE = pose(true, true, HoldPoses::poseSpearLow);
+    public static final EnumProxy<HumanoidModel.ArmPose> ROD_POSE = pose(false, false, HoldPoses::poseRod);
+    public static final EnumProxy<HumanoidModel.ArmPose> PAN_POSE = pose(true, true, HoldPoses::posePan);
+    // strokes: one per swing of the arm (the click that uses the item swings it, and swings are sent to everyone)
+    public static final EnumProxy<HumanoidModel.ArmPose> FIRE_DRILL_POSE = pose(true, true, HoldPoses::poseFireDrill);
+    public static final EnumProxy<HumanoidModel.ArmPose> BROOM_POSE = pose(true, true, HoldPoses::poseBroom);
+    public static final EnumProxy<HumanoidModel.ArmPose> FLAIL_POSE = pose(true, true, HoldPoses::poseFlail);
+    public static final EnumProxy<HumanoidModel.ArmPose> PAINT_POSE = pose(false, false, HoldPoses::posePaint);
+    public static final EnumProxy<HumanoidModel.ArmPose> CHISEL_POSE = pose(true, true, HoldPoses::poseChisel);
+    public static final EnumProxy<HumanoidModel.ArmPose> FLUTE_POSE = pose(true, true, HoldPoses::poseFlute);
 
     /** The hot item held in the tongs, resolved for drawing at the jaws, and the tongs' arm. */
     private record Grip(ItemStackRenderState item, HumanoidArm arm) {}
@@ -69,6 +94,10 @@ public final class HoldPoses {
     private static final ContextKey<Byte> RUMMAGE = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "rummaging"));
     /** Where the worn bag is that the hands go to (model x): the satchel hangs on the left, the pouch on the right. */
     private static final ContextKey<Float> BAG_X = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "bag_x"));
+    /** Progress (0..1) of the swing that uses a stroke item, taken off vanilla's attack swing so only the stroke shows. */
+    private static final ContextKey<Float> STROKE = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "stroke"));
+    /** How fast the boat the paddler sits in goes (blocks/tick). */
+    private static final ContextKey<Float> BOAT_SPEED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "boat_speed"));
     /** How far past the shoulder pivot (model px along the arm) the tongs' jaws are, by bronze_tongs.json's display. */
     private static final float JAWS = 21.0F;
 
@@ -77,19 +106,58 @@ public final class HoldPoses {
     }
 
     private static IClientItemExtensions extensions(EnumProxy<HumanoidModel.ArmPose> pose) {
+        return extensions(pose, e -> true);
+    }
+
+    /** The pose while {@code when} holds for the holder, otherwise vanilla's. */
+    private static IClientItemExtensions extensions(EnumProxy<HumanoidModel.ArmPose> pose, Predicate<LivingEntity> when) {
         return new IClientItemExtensions() {
             @Override
-            public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
-                return pose.getValue();
+            public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+                return when.test(entity) ? pose.getValue() : null;
             }
         };
     }
 
+    /** The pose for an item, or null for vanilla's. */
+    private static @Nullable IClientItemExtensions extensionsFor(Item item) {
+        if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get()) return extensions(STAFF_POSE);
+        if (item == Mechanical.BARK_BASKET.get()) return extensions(BASKET_POSE);
+        if (item == BronzeTools.BRONZE_TONGS.get()) return extensions(TONGS_POSE);
+        if (item instanceof com.mechanical.WaterJugItem || item instanceof com.mechanical.ClayBucketItem || item instanceof com.mechanical.BronzeBucketItem
+                || item == BronzeTools.BRONZE_MILK_BUCKET.get()) return extensions(BUCKET_POSE);
+        if (item instanceof com.mechanical.FirewoodItem || item instanceof com.mechanical.RoughLogItem) return extensions(CARRY_POSE);
+        if (item == com.mechanical.Bronze.BRONZE_KETTLE.get()) return extensions(HEAVY_POSE);
+        if (item == com.mechanical.Watercraft.PADDLE.get()) return extensions(PADDLE_POSE, Entity::isPassenger);
+        if (item == com.mechanical.Ironworking.BRONZE_SMITHING_HAMMER.get() || item == com.mechanical.Smithing.IRON_SMITHING_HAMMER.get()
+                || item == BronzeTools.BRONZE_QUARRY_HAMMER.get() || item == com.mechanical.Smithing.STEEL_QUARRY_HAMMER.get()
+                || item == Mechanical.FLINT_AXE.get() || item == Mechanical.CRUDE_STONE_AXE.get() || item == com.mechanical.Bronze.BRONZE_AXE.get())
+            return extensions(SHOULDER_POSE);
+        if (item == Mechanical.FLINT_SPEAR.get() || item == com.mechanical.Bronze.BRONZE_SPEAR.get() || item == com.mechanical.Smithing.STEEL_SPEAR.get())
+            return extensions(SPEAR_LOW_POSE, e -> e.isCrouching() && !e.isUsingItem()); // otherwise vanilla's spear poses
+        if (item == Mechanical.CRUDE_FISHING_ROD.get() || item instanceof com.mechanical.BoneHookRodItem) return extensions(ROD_POSE);
+        if (item instanceof com.mechanical.PanItem) return extensions(PAN_POSE, LivingEntity::isUsingItem);
+        if (item instanceof com.mechanical.FireDrillItem) return extensions(FIRE_DRILL_POSE);
+        if (item instanceof com.mechanical.BroomItem) return extensions(BROOM_POSE);
+        if (item instanceof com.mechanical.FlailItem) return extensions(FLAIL_POSE);
+        if (item instanceof com.mechanical.PaintbrushItem || item instanceof com.mechanical.PaintItem) return extensions(PAINT_POSE);
+        if (item == BronzeTools.BRONZE_CHISEL.get()) return extensions(CHISEL_POSE);
+        if (item instanceof com.mechanical.wildlife.waterfowl.BoneFluteItem) return extensions(FLUTE_POSE);
+        return null;
+    }
+
+    private static boolean strokes(HumanoidModel.ArmPose pose) {
+        return pose == FIRE_DRILL_POSE.getValue() || pose == BROOM_POSE.getValue() || pose == FLAIL_POSE.getValue()
+                || pose == PAINT_POSE.getValue() || pose == CHISEL_POSE.getValue() || pose == FLUTE_POSE.getValue();
+    }
+
     @SubscribeEvent
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(extensions(STAFF_POSE), Mechanical.WALKING_STAFF.get(), Mechanical.ELDERS_STAFF.get());
-        event.registerItem(extensions(BASKET_POSE), Mechanical.BARK_BASKET.get());
-        event.registerItem(extensions(TONGS_POSE), BronzeTools.BRONZE_TONGS.get());
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (!BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(Mechanical.MODID)) continue;
+            IClientItemExtensions extensions = extensionsFor(item);
+            if (extensions != null) event.registerItem(extensions, item);
+        }
     }
 
     @SubscribeEvent
@@ -106,22 +174,33 @@ public final class HoldPoses {
             @Override
             public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
                 if (!(avatar instanceof Player player)) return;
-                grip(player, state);
+                extract(player, state);
                 rummage(player, state);
+                if (player.getVehicle() != null) state.setRenderData(BOAT_SPEED, (float) player.getVehicle().getDeltaMovement().horizontalDistance());
             }
         });
     }
 
     // ---------------------------------------------------------------- render state
 
-    /** Tongs in one hand and something hot in the other: the hot piece moves to the tongs' jaws, its hand goes empty. */
-    public static void grip(LivingEntity entity, HumanoidRenderState state) {
+    /** For players and tribespeople, after the arm poses are picked: the tongs' grip and a stroke in progress. */
+    public static void extract(LivingEntity entity, HumanoidRenderState state) {
+        grip(entity, state);
+        if (state.swingAnimation <= 0.0F || state.currentSwing == null) return;
+        if (strokes(state.getArmPose(state.currentSwing.hand().asArm(state.mainArm)))) {
+            state.setRenderData(STROKE, state.swingAnimation);
+            state.swingAnimation = 0.0F;
+        }
+    }
+
+    /** Tongs in one hand and something hot (or a crucible) in the other: it moves to the tongs' jaws, its hand goes empty. */
+    private static void grip(LivingEntity entity, HumanoidRenderState state) {
         HumanoidArm tongs = state.rightHandItemStack.is(BronzeTools.BRONZE_TONGS.get()) ? HumanoidArm.RIGHT
                 : state.leftHandItemStack.is(BronzeTools.BRONZE_TONGS.get()) ? HumanoidArm.LEFT : null;
         if (tongs == null) return;
         boolean right = tongs == HumanoidArm.LEFT;
         ItemStack hot = right ? state.rightHandItemStack : state.leftHandItemStack;
-        if (hot.isEmpty() || !BronzeTools.hot(hot, entity.level().getGameTime())) return;
+        if (hot.isEmpty() || !BronzeTools.hot(hot, entity.level().getGameTime()) && !(hot.getItem() instanceof com.mechanical.CrucibleItem)) return;
         ItemStackRenderState item = new ItemStackRenderState();
         Minecraft.getInstance().getItemModelResolver().updateForLiving(item, hot, ItemDisplayContext.GROUND, entity);
         state.setRenderData(GRIP, new Grip(item, tongs));
@@ -233,6 +312,182 @@ public final class HoldPoses {
             }
             part.zRot = 0.0F;
         }
+    }
+
+    /** Vanilla's ITEM arm (for a stroke item between strokes). */
+    private static void rest(ModelPart part) {
+        part.xRot = part.xRot * 0.5F - Mth.PI / 10.0F;
+        part.yRot = 0.0F;
+    }
+
+    private static ItemStack held(HumanoidRenderState state, HumanoidArm arm) {
+        return arm == HumanoidArm.RIGHT ? state.rightHandItemStack : state.leftHandItemStack;
+    }
+
+    private static boolean full(ItemStack stack) {
+        if (stack.getItem() instanceof com.mechanical.WaterJugItem) return com.mechanical.WaterJugItem.water(stack) > 0;
+        return !stack.is(Mechanical.CLAY_BUCKET.get()) && !stack.is(BronzeTools.BRONZE_BUCKET.get());
+    }
+
+    /** Hanging at the side on a straight arm, swinging with the steps; full, it swings less, drags the shoulder down and the head leans away. */
+    static void poseBucket(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        ModelPart part = arm(model, arm);
+        boolean full = full(held(state, arm));
+        part.xRot = (full ? 0.25F : 0.45F) * Mth.cos(phase(state, arm)) * speed(state);
+        part.yRot = 0.0F;
+        part.zRot = 0.0F;
+        if (full) {
+            part.y += 1.0F;
+            model.head.zRot = -side(arm) * 0.08F;
+        }
+    }
+
+    /** Both arms forward round a load in front of the chest (firewood, a rough log; heavy: the kettle, lower), bobbing with the steps. */
+    static void poseCarry(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm, boolean heavy) {
+        float bob = 0.05F * Mth.cos(state.walkAnimationPos * 0.6662F * 2.0F) * speed(state);
+        for (HumanoidArm a : HumanoidArm.values()) {
+            ModelPart part = arm(model, a);
+            part.xRot = (heavy ? -1.0F : -0.9F) + bob;
+            part.yRot = side(a) * (heavy ? -0.45F : -0.4F);
+            part.zRot = 0.0F;
+            if (heavy) part.y += 0.7F;
+        }
+    }
+
+    /** Seated: both hands on the paddle at the holder's side, stroking faster the faster the boat goes. */
+    static void posePaddle(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        Float boat = state.getRenderData(BOAT_SPEED);
+        float k = boat == null ? 0.3F : Math.min(1.0F, boat * 6.0F); // tribespeople: a slow stroke
+        float stroke = Mth.sin(state.ageInTicks * (0.15F + 0.25F * k)) * (0.15F + 0.25F * k);
+        ModelPart low = arm(model, arm), high = arm(model, arm.getOpposite());
+        low.xRot = -0.7F + stroke;
+        low.yRot = side(arm) * -0.2F;
+        high.xRot = -1.15F + stroke;
+        high.yRot = side(arm.getOpposite()) * -0.7F; // across the body to the top of the shaft
+        low.zRot = high.zRot = 0.0F;
+    }
+
+    /** Walking: the hammer or axe rests on the shoulder, standing it is held as usual (vanilla's swing plays over both). */
+    static void poseShoulder(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        ModelPart part = arm(model, arm);
+        float w = Math.min(1.0F, speed(state) * 2.5F);
+        rest(part);
+        part.xRot = Mth.lerp(w, part.xRot, -1.0F);
+        part.yRot = Mth.lerp(w, 0.0F, side(arm) * -0.45F);
+    }
+
+    /** Sneaking with a spear: held low in both hands, point forward (the hunting stance). */
+    static void poseSpearLow(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        ModelPart front = arm(model, arm), back = arm(model, arm.getOpposite());
+        front.xRot = -0.5F;
+        front.yRot = side(arm) * -0.2F;
+        back.xRot = -0.7F;
+        back.yRot = side(arm.getOpposite()) * -0.6F;
+    }
+
+    /** The rod held out forward, line over the water. */
+    static void poseRod(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        ModelPart part = arm(model, arm);
+        part.xRot = -0.75F + 0.1F * Mth.cos(phase(state, arm)) * speed(state);
+        part.yRot = side(arm) * -0.1F;
+    }
+
+    /** Panning: the pan held flat in front in both hands, swirled round in circles. */
+    static void posePan(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        float t = state.ticksUsingItem * 0.6F;
+        for (HumanoidArm a : HumanoidArm.values()) {
+            ModelPart part = arm(model, a);
+            part.xRot = -0.95F + 0.1F * Mth.sin(t);
+            part.yRot = side(a) * -0.4F + 0.1F * Mth.cos(t);
+            part.zRot = 0.0F;
+        }
+    }
+
+    private static float stroke(HumanoidRenderState state) {
+        Float p = state.getRenderData(STROKE);
+        return p == null ? -1.0F : p;
+    }
+
+    /** Between strokes held as usual; a stroke: hands together low in front spinning the drill between the palms, head bent down to the tinder. */
+    static void poseFireDrill(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        float p = stroke(state);
+        if (p < 0.0F) {
+            rest(arm(model, arm));
+            return;
+        }
+        for (HumanoidArm a : HumanoidArm.values()) {
+            ModelPart part = arm(model, a);
+            part.xRot = -0.55F + side(a) * 0.25F * Mth.sin(p * 4.0F * Mth.PI); // palms rubbing past each other
+            part.yRot = side(a) * -0.5F;
+            part.zRot = 0.0F;
+        }
+        model.head.xRot += 0.35F * Mth.sin(p * Mth.PI);
+    }
+
+    /** Both hands low on the handle; a stroke sweeps it across and back. */
+    static void poseBroom(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        float p = stroke(state), sweep = p < 0.0F ? 0.0F : 0.45F * Mth.sin(p * 2.0F * Mth.PI);
+        ModelPart low = arm(model, arm), high = arm(model, arm.getOpposite());
+        low.xRot = -0.55F;
+        low.yRot = side(arm) * -0.3F + sweep;
+        high.xRot = -0.75F;
+        high.yRot = side(arm.getOpposite()) * -0.5F + sweep;
+        low.zRot = high.zRot = 0.0F;
+    }
+
+    /** A stroke: both hands swing the flail up over the shoulder and down to the ground. */
+    static void poseFlail(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        float p = stroke(state);
+        if (p < 0.0F) {
+            rest(arm(model, arm));
+            return;
+        }
+        float x = p < 0.35F ? Mth.lerp(p / 0.35F, -0.3F, -2.8F)
+                : p < 0.7F ? Mth.lerp((p - 0.35F) / 0.35F, -2.8F, -0.5F) : Mth.lerp((p - 0.7F) / 0.3F, -0.5F, -0.3F);
+        for (HumanoidArm a : HumanoidArm.values()) {
+            ModelPart part = arm(model, a);
+            part.xRot = x;
+            part.yRot = side(a) * -0.3F;
+            part.zRot = 0.0F;
+        }
+    }
+
+    /** A stroke: small brush strokes forward at the block. */
+    static void posePaint(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        ModelPart part = arm(model, arm);
+        float p = stroke(state);
+        if (p < 0.0F) {
+            rest(part);
+            return;
+        }
+        part.xRot = -1.1F + 0.2F * Mth.sin(p * 4.0F * Mth.PI);
+        part.yRot = side(arm) * -0.1F + 0.1F * Mth.cos(p * 4.0F * Mth.PI);
+    }
+
+    /** The chisel held to the stone; a stroke: the other hand (with a hammer if it holds one) strikes it. */
+    static void poseChisel(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        ModelPart chisel = arm(model, arm);
+        chisel.xRot = -1.15F;
+        chisel.yRot = side(arm) * -0.3F;
+        float p = stroke(state);
+        if (p < 0.0F) return;
+        ModelPart striker = arm(model, arm.getOpposite());
+        striker.xRot = -1.25F - 1.2F * Mth.sin(p * Mth.PI); // up and down onto the chisel's head
+        striker.yRot = side(arm.getOpposite()) * -0.5F;
+        striker.zRot = 0.0F;
+    }
+
+    /** A stroke (playing it): raised to the mouth in both hands, like vanilla's goat horn. */
+    static void poseFlute(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        if (stroke(state) < 0.0F) {
+            rest(arm(model, arm));
+            return;
+        }
+        ModelPart near = arm(model, arm), far = arm(model, arm.getOpposite());
+        near.xRot = far.xRot = -1.45F + model.head.xRot * 0.5F;
+        near.yRot = side(arm) * -0.55F;
+        far.yRot = side(arm.getOpposite()) * -0.4F;
+        near.zRot = far.zRot = 0.0F;
     }
 
     // ---------------------------------------------------------------- the gripped piece
