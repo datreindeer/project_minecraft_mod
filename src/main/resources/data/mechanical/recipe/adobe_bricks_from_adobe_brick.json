@@ -1,0 +1,15 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:adobe_brick"
+  },
+  "result": {
+    "id": "mechanical:adobe_bricks",
+    "count": 4
+  }
+}

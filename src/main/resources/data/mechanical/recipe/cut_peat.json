@@ -1,0 +1,11 @@
+{
+  "category": "misc",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "mechanical:peat"
+  ],
+  "result": {
+    "id": "mechanical:cut_peat",
+    "count": 4
+  }
+}

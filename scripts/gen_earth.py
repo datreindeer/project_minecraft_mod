@@ -6,6 +6,9 @@ textures (recoloured vanilla), axe stripping, and worldgen for these and the ear
 Loess Bricks, Rammed Earth, Kaolin Tiles, Ochre blocks) are rows in gen_stone_families.py; this script only replaces the
 Rammed Earth texture with rammed layers. Loess tills into rich farmland: gen_farming.py.
 
+Drying Rack goods (DryingRackBlockEntity.TABLE): Wet Adobe Brick -> Adobe Brick (4 make 4 Adobe Bricks), Peat -> 4 Cut Peat
+-> Dried Peat (fuel), Reed -> Dried Reed (what Reed Thatch is made of); their item textures also go into drying_preview.png.
+
 Generator order: ... gen_data.py ... gen_stone_families.py, gen_earth.py, ... gen_block_items.py, gen_unlocks.py,
 gen_advancements.py, gen_loot_format.py. Run: python scripts/gen_earth.py (writes earth_preview.png in the repo root, not committed)
 """
@@ -105,6 +108,32 @@ save(recolour(vanilla("dirt"), LOESS), "loess")
 save(recolour(vanilla("clay"), KAOLIN), "kaolin")
 save(recolour(vanilla("clay_ball", "item"), KAOLIN), "kaolin_clay", "item")
 save(recolour(vanilla("sugar_cane"), REED), "reed")
+# Drying Rack goods: wet = dark and saturated, dried = paler, greyer, with cracks or straw
+drying_preview = []
+
+
+def dried_item(img, name, specks=(), seed=0):
+    rng = random.Random(seed)
+    opaque = [(x, y) for y in range(16) for x in range(16) if img.getpixel((x, y))[3]]
+    for colour, n in specks:
+        for x, y in rng.sample(opaque, n):
+            img.putpixel((x, y), colour + (255,))
+    save(img, name, "item")
+    drying_preview.append(img)
+
+
+WET_ADOBE = [(58, 40, 26), (78, 55, 36), (98, 70, 46), (118, 86, 58), (136, 102, 70)]
+ADOBE = [(138, 106, 74), (164, 128, 92), (186, 150, 110), (204, 170, 130), (220, 190, 152)]
+DRIED_PEAT = [(52, 44, 37), (72, 61, 51), (92, 79, 66), (112, 97, 81), (132, 115, 96)]
+DRIED_REED = [(104, 88, 56), (134, 114, 74), (162, 142, 96), (188, 168, 118), (212, 194, 144)]
+dried_item(recolour(vanilla("brick", "item"), WET_ADOBE), "wet_adobe_brick", [((62, 44, 30), 4)], 1)
+dried_item(recolour(vanilla("brick", "item"), ADOBE), "adobe_brick", [((206, 182, 112), 6)], 2)  # straw in the clay
+dried_item(recolour(vanilla("brick", "item"), PEAT), "cut_peat", [((44, 52, 26), 3)], 3)  # a few roots
+dried_item(recolour(vanilla("brick", "item"), DRIED_PEAT), "dried_peat", [((46, 39, 33), 6)], 4)  # cracks
+dried_item(recolour(vanilla("sugar_cane", "item"), DRIED_REED), "dried_reed")
+for name in ("wet_adobe_brick", "adobe_brick", "cut_peat", "dried_peat", "dried_reed"):
+    w(A / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/" + name}})
+    w(A / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": M + "item/" + name}})
 save(recolour(vanilla("hay_block_top"), THATCH), "reed_thatch_top")
 save(recolour(vanilla("hay_block_side"), THATCH), "reed_thatch_side")
 grass = (98, 142, 62)
@@ -190,12 +219,14 @@ def recipe(name, obj):
     w(D / f"mechanical/recipe/{name}.json", {"category": "building", **obj})
 
 
-def shaped(name, pattern, key, result, count=1):
-    recipe(name, {"type": "minecraft:crafting_shaped", "pattern": pattern, "key": key, "result": {"id": M + result, "count": count}})
+def shaped(name, pattern, key, result, count=1, category="building"):
+    recipe(name, {"type": "minecraft:crafting_shaped", "category": category, "pattern": pattern, "key": key,
+                  "result": {"id": M + result, "count": count}})
 
 
-def shapeless(name, ingredients, result, count=1):
-    recipe(name, {"type": "minecraft:crafting_shapeless", "ingredients": ingredients, "result": {"id": M + result, "count": count}})
+def shapeless(name, ingredients, result, count=1, category="building"):
+    recipe(name, {"type": "minecraft:crafting_shapeless", "category": category, "ingredients": ingredients,
+                  "result": {"id": M + result, "count": count}})
 
 
 def slab_stairs(name, tex):
@@ -218,6 +249,7 @@ def slab_stairs(name, tex):
 # Peat: dug with a shovel, drops itself; a long-burning fuel (KilnBlockEntity.FUELS, Campfires)
 block("peat", cube("peat"))
 shaped("peat_bricks", ["##", "##"], {"#": M + "peat"}, "peat_bricks", 4)
+shapeless("cut_peat", [M + "peat"], "cut_peat", 4, "misc")  # dried on the Drying Rack into Dried Peat
 # Loess (its bricks are a family row) and Kaolin (crumbles into 4 Kaolin Clay like clay; fired into Kaolin Tiles in the kiln)
 block("loess", cube("loess"))
 block("kaolin", cube("kaolin"), ("kaolin_clay", 4))
@@ -234,7 +266,7 @@ slab_stairs("turf", turf)
 block("reed", {"parent": "minecraft:block/cross", "textures": {"cross": M + "block/reed"}})
 thatch = bottom_top(M + "block/reed_thatch_top", M + "block/reed_thatch_side", M + "block/reed_thatch_top")
 block("reed_thatch", {"parent": "minecraft:block/cube_bottom_top", "textures": thatch})
-shaped("reed_thatch", ["##", "##"], {"#": M + "reed"}, "reed_thatch")
+shaped("reed_thatch", ["##", "##"], {"#": M + "dried_reed"}, "reed_thatch")  # fresh reed dries on the Drying Rack first
 slab_stairs("reed_thatch", thatch)
 blocks.append("reed_thatch_roof")
 for shape in ("straight", "inner", "outer", "flat"):
@@ -256,7 +288,7 @@ w(A / "blockstates/reed_thatch_roof.json", {"variants": variants})
 w(D / "mechanical/loot_table/blocks/reed_thatch_roof.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
     {"type": "minecraft:item", "name": M + "reed_thatch_roof"}], "condition": {"type": "minecraft:survives_explosion"}}],
     "random_sequence": "mechanical:blocks/reed_thatch_roof"})
-shaped("reed_thatch_roof", ["# ", "##"], {"#": M + "reed"}, "reed_thatch_roof", 4)
+shaped("reed_thatch_roof", ["# ", "##"], {"#": M + "dried_reed"}, "reed_thatch_roof", 4)
 lang["block.mechanical.reed_thatch_roof"] = "Reed Thatch Roof"
 # Wattle (a pane of woven sticks) and Wattle & Daub
 blocks.append("wattle")
@@ -279,7 +311,11 @@ block("framed_wattle_and_daub", cube("framed_wattle_and_daub"))
 shapeless("framed_wattle_and_daub", [M + "wattle_and_daub", "minecraft:stick", "minecraft:stick"], "framed_wattle_and_daub")
 # family recipes beyond vanilla's: Rammed Earth, Adobe from clay
 shapeless("rammed_earth", [["minecraft:dirt", "minecraft:coarse_dirt", M + "loess"], "minecraft:gravel", "minecraft:clay_ball"], "rammed_earth", 2)
-shapeless("adobe_bricks_from_clay", ["minecraft:clay_ball", "#minecraft:sand", M + "straw"], "adobe_bricks", 2)
+# adobe from clay: 2 Wet Adobe Bricks dry on the Drying Rack, 4 Adobe Bricks (items) make 4 blocks (as many as before)
+shapeless("wet_adobe_brick", ["minecraft:clay_ball", "#minecraft:sand", M + "straw"], "wet_adobe_brick", 2, "misc")
+shaped("adobe_bricks_from_adobe_brick", ["##", "##"], {"#": M + "adobe_brick"}, "adobe_bricks", 4)
+lang.update({"item.mechanical.wet_adobe_brick": "Wet Adobe Brick", "item.mechanical.adobe_brick": "Adobe Brick",
+             "item.mechanical.cut_peat": "Cut Peat", "item.mechanical.dried_peat": "Dried Peat", "item.mechanical.dried_reed": "Dried Reed"})
 shapeless("red_ochre_from_block", [M + "red_ochre_block"], "red_ochre", 4)
 shapeless("yellow_ochre_from_block", [M + "yellow_ochre_block"], "yellow_ochre", 4)
 
@@ -404,3 +440,7 @@ for i, img in enumerate(preview):
     sheet.alpha_composite(img, (i % per_row * 16, i // per_row * 16))
 sheet.resize((sheet.width * 8, sheet.height * 8), Image.NEAREST).save(ROOT / "earth_preview.png")
 print(f"earth: {len(blocks)} blocks, {len(preview)} textures")
+strip = Image.new("RGBA", (len(drying_preview) * 18, 18), (40, 40, 40, 255))
+for i, img in enumerate(drying_preview):
+    strip.alpha_composite(img, (i * 18 + 1, 1))
+strip.resize((strip.width * 8, strip.height * 8), Image.NEAREST).save(ROOT / "drying_preview.png")

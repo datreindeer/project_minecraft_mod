@@ -394,6 +394,9 @@ Stone.of("peat_brick", "peat_bricks", Template.BRICKS, false, MapColor.COLOR_BRO
 kräver rätt verktyg (Loess) och kollar Ochre-blockens 4 ockra; nya kontroller för spade, Peat som bränsle, Kaolin → Kaolin
 Tiles och Turf-receptet.
 
-**Inte gjort:** Turf som isolering (modden har ingen byggnadsisolering), Adobe på torkställningen (den torkar bara sina
-egna hudar/mat-lägen), dynga är ett krav i Wattle and Daub (Manure finns). Worldgen är inte provad i en riktig värld än.
+**Inte gjort:** Turf som isolering (modden har ingen byggnadsisolering), dynga är ett krav i Wattle and Daub (Manure
+finns). Worldgen är inte provad i en riktig värld än.
+
+**Efteråt:** Drying Rack torkar nu också Wet Adobe Brick → Adobe Brick, Cut Peat → Dried Peat och Reed → Dried Reed
+(som Reed Thatch görs av), se `DryingRackBlockEntity.TABLE` och stenålderns dokument under Drying Rack.
 

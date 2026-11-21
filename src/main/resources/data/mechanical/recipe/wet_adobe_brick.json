@@ -1,5 +1,5 @@
 {
-  "category": "building",
+  "category": "misc",
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     "minecraft:clay_ball",
@@ -7,7 +7,7 @@
     "mechanical:straw"
   ],
   "result": {
-    "id": "mechanical:adobe_bricks",
+    "id": "mechanical:wet_adobe_brick",
     "count": 2
   }
 }
