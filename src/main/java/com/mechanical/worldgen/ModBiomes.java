@@ -46,7 +46,7 @@ public final class ModBiomes {
      * reaches past its own box and how thick its depth band is. Measured in a real world, depth is about
      * 0.5 + (30 - y) / 128 on land, with wide spread (less under the sea, more under hills); measured peaks: 0.3..0.45 at
      * y ~20..45, 0.5..0.75 at y ~-20..10, 0.8..0.92 and the bottom at y ~-40;
-     * around depth 1 (y ~-30) the surface biomes always win, and below 1.06 (y < -40) only the Deep Dark (low erosion) is left.
+     * around depth 1 (y ~-30) the surface biomes always win, and below 1.06 (y < -40) the bottom rows share with the Deep Dark.
      */
     private static final Climate.Parameter ALL = span(-1.0F, 1.0F), LAND = span(-0.11F, 0.45F), INLAND = span(0.03F, 0.45F),
             NOT_LUSH = span(-1.0F, 0.35F), NOT_DEEP_DARK = span(-0.3F, 1.0F);
