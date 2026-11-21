@@ -1,6 +1,7 @@
 {
   "values": [
     "minecraft:desert",
-    "#minecraft:is_badlands"
+    "#minecraft:is_badlands",
+    "mechanical:salt_caves"
   ]
 }

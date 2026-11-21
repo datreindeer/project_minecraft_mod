@@ -1,0 +1,66 @@
+{
+  "feature": {
+    "type": "minecraft:block_column",
+    "allowed_placement": {
+      "type": "minecraft:matching_block_tag",
+      "tag": "minecraft:air"
+    },
+    "direction": "down",
+    "prioritize_tip": false,
+    "layers": [
+      {
+        "height": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 3
+        },
+        "provider": {
+          "id": "mechanical:bog_oak_log"
+        }
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 25
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": 0
+        },
+        "max_inclusive": {
+          "absolute": 80
+        }
+      }
+    },
+    {
+      "type": "minecraft:environment_scan",
+      "direction_of_search": "up",
+      "max_steps": 12,
+      "target_condition": {
+        "type": "minecraft:has_sturdy_face",
+        "direction": "down"
+      },
+      "allowed_search_condition": {
+        "type": "minecraft:matching_block_tag",
+        "tag": "minecraft:air"
+      }
+    },
+    {
+      "type": "minecraft:offset",
+      "x": 0,
+      "y": -1,
+      "z": 0
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

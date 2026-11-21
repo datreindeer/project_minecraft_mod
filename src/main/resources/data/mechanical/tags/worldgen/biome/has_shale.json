@@ -5,6 +5,7 @@
     "minecraft:swamp",
     "minecraft:mangrove_swamp",
     "#minecraft:is_river",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:galena_seams"
   ]
 }

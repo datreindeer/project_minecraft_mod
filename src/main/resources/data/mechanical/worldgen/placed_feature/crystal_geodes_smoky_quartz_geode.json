@@ -1,0 +1,64 @@
+{
+  "feature": {
+    "type": "minecraft:geode",
+    "blocks": {
+      "alternate_inner_layer_provider": {
+        "id": "minecraft:calcite"
+      },
+      "cannot_replace": "#minecraft:features_cannot_replace",
+      "filling_provider": {
+        "id": "minecraft:air"
+      },
+      "inner_layer_provider": {
+        "id": "minecraft:calcite"
+      },
+      "inner_placements": [
+        "mechanical:small_smoky_quartz_crystal",
+        "mechanical:medium_smoky_quartz_crystal",
+        "mechanical:large_smoky_quartz_crystal"
+      ],
+      "invalid_blocks": "#minecraft:geode_invalid_blocks",
+      "middle_layer_provider": {
+        "id": "mechanical:polished_quartzite"
+      },
+      "outer_layer_provider": {
+        "id": "mechanical:quartzite"
+      }
+    },
+    "crack": {
+      "generate_crack_chance": 0.95
+    },
+    "invalid_blocks_threshold": 1,
+    "layers": {},
+    "outer_wall_distance": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 4,
+      "max_inclusive": 6
+    },
+    "use_alternate_layer0_chance": 0.0
+  },
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 4
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": -60
+        },
+        "max_inclusive": {
+          "absolute": -10
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

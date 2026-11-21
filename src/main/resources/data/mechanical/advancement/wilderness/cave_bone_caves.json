@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/cave_limestone_caverns",
+  "criteria": {
+    "in_biome": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "mechanical:bone_caves"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "in_biome"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bone_pile"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.cave_bone_caves.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.cave_bone_caves.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

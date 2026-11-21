@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "#minecraft:dirt",
+    "#minecraft:ice",
+    "minecraft:gravel",
+    "minecraft:clay",
+    "minecraft:sand",
+    "mechanical:peat",
+    "mechanical:rock_salt",
+    "mechanical:red_ochre_block",
+    "minecraft:snow_block"
+  ]
+}

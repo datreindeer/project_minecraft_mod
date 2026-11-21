@@ -84,7 +84,31 @@
       },
       "modifier": "overlay"
     },
-    "minecraft:visual/sky_color": "#78a7ff"
+    "minecraft:visual/sky_color": "#78a7ff",
+    "minecraft:visual/fog_color": "#b9b4a4",
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000
+      },
+      "additions": {
+        "sound": "minecraft:block.pointed_dripstone.drip_water",
+        "tick_chance": 0.01
+      }
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:dripping_dripstone_water"
+          },
+          "probability": 0.002
+        }
+      ],
+      "modifier": "append"
+    }
   },
   "carvers": [
     "minecraft:cave",
@@ -139,7 +163,8 @@
       "minecraft:underwater_magma",
       "minecraft:disk_sand",
       "minecraft:disk_clay",
-      "minecraft:disk_gravel"
+      "minecraft:disk_gravel",
+      "mechanical:limestone_caverns_travertine"
     ],
     [],
     [
@@ -154,7 +179,10 @@
       "minecraft:patch_grass_plain",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:patch_pumpkin"
+      "minecraft:patch_pumpkin",
+      "mechanical:limestone_caverns_travertine_pools",
+      "mechanical:limestone_caverns_stalactites",
+      "mechanical:limestone_caverns_stalagmites"
     ],
     [
       "minecraft:freeze_top_layer"

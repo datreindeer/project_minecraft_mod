@@ -36,6 +36,8 @@ public final class Structures {
         FEATURE_TYPES.register("shrine_statue", () -> ShrineStatue.CODEC);
         FEATURE_TYPES.register("trail", () -> Trails.CODEC);
         FEATURE_TYPES.register("bog_oak_logs", () -> BogOakLogs.CODEC); // scripts/gen_earth.py
+        FEATURE_TYPES.register("cave_paintings", CaveFinds.PAINTINGS::codec); // scripts/gen_caves.py
+        FEATURE_TYPES.register("tool_cache", CaveFinds.TOOL_CACHE::codec);
     }
 
     public static void init() {}

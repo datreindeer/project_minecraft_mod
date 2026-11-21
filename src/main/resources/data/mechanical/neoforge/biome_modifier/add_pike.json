@@ -4,7 +4,8 @@
     "minecraft:river",
     "minecraft:frozen_river",
     "minecraft:swamp",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:flooded_caves"
   ],
   "spawners": [
     {

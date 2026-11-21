@@ -105,7 +105,7 @@
                 "if_true": "minecraft:on_floor",
                 "then_run": {
                   "type": "minecraft:block",
-                  "result_state": "mechanical:limestone"
+                  "result_state": "mechanical:travertine"
                 }
               },
               {
@@ -119,6 +119,346 @@
               {
                 "type": "minecraft:block",
                 "result_state": "mechanical:limestone"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:salt_caves"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:rock_salt"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:rock_salt"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:gypsum"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:ochre_caves"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:red_ochre_block"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:chalk_block"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:chalk_block"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:soapstone_grottos"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:slate"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:soapstone"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:soapstone"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:glowworm_caves"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:moss_block"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:rooted_dirt"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:ice_caves"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:packed_ice"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:packed_ice"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:slate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:peat_hollows"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:peat"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:peat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:bone_caves"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:coarse_dirt"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:limestone"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:limestone"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:galena_seams"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:shale"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:alum_shale"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:shale"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:magma_vents"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:scoria"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:coastal_basalt"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:coastal_basalt"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:crystal_geodes"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:quartzite"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "mechanical:quartzite"
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": "mechanical:quartzite"
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:biome",
+            "biome_is": "mechanical:flooded_caves"
+          },
+          "then_run": {
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_floor",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:gravel"
+                }
+              },
+              {
+                "type": "minecraft:condition",
+                "if_true": "minecraft:on_ceiling",
+                "then_run": {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:clay"
+                }
               }
             ]
           }

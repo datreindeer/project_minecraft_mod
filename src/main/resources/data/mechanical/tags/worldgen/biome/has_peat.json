@@ -1,6 +1,7 @@
 {
   "values": [
     "minecraft:swamp",
-    "#minecraft:is_taiga"
+    "#minecraft:is_taiga",
+    "mechanical:peat_hollows"
   ]
 }

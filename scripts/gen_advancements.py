@@ -125,6 +125,12 @@ def below_y(y):
         "predicate": {"minecraft:location": {"position": {"y": {"max": y}}}}}}}}
 
 
+def in_biome(biome):
+    """The player inside the biome (checked about once a second)."""
+    return {"in_biome": {"trigger": "minecraft:location", "conditions": {"player": {
+        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"biomes": mid(biome)}}}}}}
+
+
 def killed(predicate):
     """The player kills an entity matching the predicate."""
     return {"killed": {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
@@ -876,6 +882,33 @@ TABS["wilderness"][1].extend([
      "Walk into a Tribe Village in each climate: turf and bone huts in the snow, bark-roofed halls in the woods, "
      "mud brick on the savanna and in the desert, stilt houses in the jungle and swamps",
      AllOf({z: {"trigger": "minecraft:impossible"} for z in ("cold", "temperate", "warm", "jungle")})),
+])
+# cave biomes (docs/caves.md; gen_world_biomes.py, gen_caves.py): one per biome, the deep ones after The Cold Deep
+TABS["wilderness"][1].extend([
+    ("cave_limestone_caverns", "root", "limestone", T, "Limestone Caverns",
+     "Find Limestone Caverns at middle depth under temperate land: limestone walls, travertine pools and thin stalactites", in_biome("limestone_caverns")),
+    ("cave_salt_caves", "cave_limestone_caverns", "rock_salt", T, "Salt Caves",
+     "Find the Salt Caves under hot, dry land: white gypsum walls hung with Rock Salt", in_biome("salt_caves")),
+    ("cave_ochre_caves", "cave_limestone_caverns", "red_ochre_block", T, "Ochre Caves",
+     "Find the Ochre Caves just below warm, dry land: red and yellow ochre in chalk, and paintings older than any tribe", in_biome("ochre_caves")),
+    ("cave_soapstone_grottos", "cave_limestone_caverns", "soapstone", T, "Soapstone Grottos",
+     "Find the Soapstone Grottos under cold land. Someone hid tools here once: look for their chests", in_biome("soapstone_grottos")),
+    ("cave_glowworm_caves", "cave_limestone_caverns", "glowworm", T, "Glowworm Caves",
+     "Find the Glowworm Caves under humid woods, lit faint blue by Glowworms on the ceiling", in_biome("glowworm_caves")),
+    ("cave_ice_caves", "cave_limestone_caverns", "minecraft:packed_ice", T, "Ice Caves",
+     "Find the Ice Caves under the frozen lands: packed and blue ice in slate", in_biome("ice_caves")),
+    ("cave_peat_hollows", "cave_limestone_caverns", "peat", T, "Peat Hollows",
+     "Find the Peat Hollows just below cool, wet land, where Bog Oak roots hang from the peat", in_biome("peat_hollows")),
+    ("cave_bone_caves", "cave_limestone_caverns", "bone_pile", G, "Bone Caves",
+     "Find the Bone Caves, the dens of cave bears and hyenas, littered with bones. Bring a spear", in_biome("bone_caves")),
+    ("cave_flooded_caves", "cave_limestone_caverns", "minecraft:clay_ball", T, "Flooded Caves",
+     "Find the Flooded Caves under the coasts: clay, gravel and water everywhere", in_biome("flooded_caves")),
+    ("cave_galena_seams", "deep_cold", "raw_galena", T, "Galena Seams",
+     "Find the Galena Seams deep down: shale and black alum shale, rich in galena", in_biome("galena_seams")),
+    ("cave_magma_vents", "deep_cold", "scoria", G, "Magma Vents",
+     "Find the Magma Vents near the bottom of the world under hot lands: basalt, scoria, magma and lava", in_biome("magma_vents")),
+    ("cave_crystal_geodes", "deep_cold", "rough_rose_quartz", C, "Crystal Geodes",
+     "Find the rare Crystal Geodes deep in the rock: quartzite caves full of gem crystals", in_biome("crystal_geodes")),
 ])
 # NPC villages rebuilt as their tribe goes up an age (people/AgeRebuild.java; granted from Java)
 TABS["bronze_age"][1].extend([
