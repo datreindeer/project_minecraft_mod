@@ -37,13 +37,14 @@ takreglerna fungerar utan `wall`.
 **Hittar du:** **Glowworm** i taket: mörka trådar med blåa lysande pärlor. De ger svagt ljus (nivå 6), man går rakt
 igenom dem och de ger inget när de går sönder. Dessutom Hanging Roots, mossa, gräs och azalea på golvet, och små lerpölar.
 Det är det enda naturliga ljuset under jord i Stone Age.
-**Faror:** få; ljuset räcker inte för att hålla monster borta.
+**Faror:** få; ljuset räcker inte för att hålla monster borta (Glowworm räknas inte som upplyst för nattens faror).
 
 ### Ice Caves
 **Under:** de frusna biomerna (snötäckt land, isslätter).
 **Väggar:** Slate, golv och tak av Packed Ice. Blue Ice i klumpar i berget.
 **Hittar du:** istappar (Ice) i taket, frusna pölar och snödrivor på golvet. Snöflingor i luften.
-**Faror:** golvet är halt. Kylan djupt ned gäller som vanligt (fryst kött och kylrum kommer i fas 9).
+**Faror:** golvet är halt, och luften är **nära fryspunkten (2) på alla djup**: utan päls fryser man.
+**Kylrum:** mat i en kista, tunna, Storage Jar eller Root Cellar här åldras med **en fjärdedel** av normal takt (advancement Cold Store).
 
 ### Peat Hollows
 **Under:** svalt och blött land (myrar, kalla träsk, taiga).
@@ -103,7 +104,9 @@ stenverktyg, Bone Needle) och flinta, stenbitar och Soapstone som någon lämnat
 **Väggar:** Coastal Basalt, golv av Scoria.
 **Hittar du:** Scoria, Pumice och Obsidian i väggarna, basaltpelare, Magma Block i golvet och lavasjöar. Aska i luften och
 basaltdeltats ljud.
-**Faror:** Magma Block bränner fötterna och lavan är överallt. (Värmeskada utan skydd kommer i fas 9.)
+**Faror:** Magma Block bränner fötterna och lavan är överallt. **Luften är 30**: kroppen värms upp, över 17 tröttnar man och
+över 19 brinner man (1 skada varannan sekund). Vatten kyler (stå i en källa eller sjö), Fire Resistance skyddar mot skadan
+(advancement Hot Spring).
 
 ### Crystal Geodes
 **Under:** tempererat land, sällsynt, djupt och ned till botten.

@@ -41,6 +41,8 @@ public abstract class CampfireBlockEntityMixin implements CampfireAccess {
     /** Burn ticks left while lit; -1 = not started (set on the first lit tick). */
     @Unique private int mechanical$burnLeft = -1;
     @Unique private int mechanical$embersLeft;
+    /** Burn ticks of peat smoke left (counts down with the fire, gone when it sinks to embers). */
+    @Unique private int mechanical$peatLeft;
     /** Slot holds food that is already cooked (it burns next). */
     @Unique private final boolean[] mechanical$cooked = new boolean[4];
 
@@ -62,8 +64,11 @@ public abstract class CampfireBlockEntityMixin implements CampfireAccess {
         RandomSource random = level.getRandom();
         com.mechanical.NightDangers.markLit(level, pos);
         if (mechanical$burnLeft < 0) mechanical$burnLeft = Campfires.MIN_BURN + random.nextInt(Campfires.MAX_BURN - Campfires.MIN_BURN);
-        if ((mechanical$burnLeft -= com.mechanical.Temperature.fireDrain(level, pos, random)) <= 0) {
+        int drain = com.mechanical.Temperature.fireDrain(level, pos, random);
+        if (mechanical$peatLeft > 0) mechanical$peatLeft -= drain;
+        if ((mechanical$burnLeft -= drain) <= 0) {
             mechanical$burnLeft = -1;
+            mechanical$peatLeft = 0;
             mechanical$embersLeft = Campfires.EMBER_TICKS;
             Campfires.toEmbers(level, pos, state);
             return;
@@ -109,9 +114,21 @@ public abstract class CampfireBlockEntityMixin implements CampfireAccess {
     public void mechanical$blowOut() {
         CampfireBlockEntity self = (CampfireBlockEntity) (Object) this;
         mechanical$burnLeft = -1;
+        mechanical$peatLeft = 0;
         mechanical$embersLeft = Campfires.EMBER_TICKS;
         if (self.getLevel() != null) Campfires.toEmbers(self.getLevel(), self.getBlockPos(), self.getBlockState());
         self.setChanged();
+    }
+
+    @Override
+    public void mechanical$addPeat(int ticks) {
+        mechanical$peatLeft = Math.min(Campfires.MAX_FUEL, Math.max(mechanical$peatLeft, 0) + ticks);
+        ((CampfireBlockEntity) (Object) this).setChanged();
+    }
+
+    @Override
+    public boolean mechanical$peatSmoke() {
+        return mechanical$peatLeft > 0;
     }
 
     @Override
@@ -143,6 +160,7 @@ public abstract class CampfireBlockEntityMixin implements CampfireAccess {
     private void mechanical$load(ValueInput input, CallbackInfo ci) {
         mechanical$burnLeft = input.getIntOr("mechanical_burn", -1);
         mechanical$embersLeft = input.getIntOr("mechanical_embers", 0);
+        mechanical$peatLeft = input.getIntOr("mechanical_peat", 0);
         input.getIntArray("mechanical_cooked").ifPresent(a -> {
             for (int i = 0; i < Math.min(a.length, 4); i++) mechanical$cooked[i] = a[i] != 0;
         });
@@ -152,6 +170,7 @@ public abstract class CampfireBlockEntityMixin implements CampfireAccess {
     private void mechanical$save(ValueOutput output, CallbackInfo ci) {
         output.putInt("mechanical_burn", mechanical$burnLeft);
         output.putInt("mechanical_embers", mechanical$embersLeft);
+        output.putInt("mechanical_peat", mechanical$peatLeft);
         int[] cooked = new int[4];
         for (int i = 0; i < 4; i++) cooked[i] = mechanical$cooked[i] ? 1 : 0;
         output.putIntArray("mechanical_cooked", cooked);

@@ -259,6 +259,16 @@ En eld inne i ett tätt hus värmer upp till hälften så mycket till. Exempel: 
 tillsammans med en päls (25 %) är vinternatten uthärdlig. Ett stenhus ger 24 %. Tooltippen på block säger "Keeps warmth in:
 well / fairly / poorly". Kod: `Temperature.shelter`, taggarna från `scripts/gen_insulation.py`.
 
+**Grottornas luft och hetta (byggt, fas 9C):** under y 50 utan himmel räknas grottluften efter djupet (`Temperature.cave`),
+men två grottbiomer har egen luft: **Ice Caves** 2 (nära fryspunkten, på alla djup: utan päls fryser man) och **Magma
+Vents** 30, långt över MAX 20. Kroppen kan nu bli **för varm**: över **17** tröttnar man (food exhaustion, upp till 0,5 per
+sekund vid 20, som kylans hunger), över **19** brinner man (1 skada varannan sekund, typ `on_fire`, så Fire Resistance
+skyddar). Bara Magma Vents kan värma kroppen över 17: sol (öken), Nether och eldar stannar vid 17, så inget som fanns förut
+blir farligt. **Skydd:** att stå i vatten (eller regn) håller kroppen vid 17 även i Magma Vents. Kläder varken hjälper eller
+stjälper i hettan (isoleringen gäller bara kyla), för att hålla det enkelt. Från 12 till 19 tar det knappt 30 s, så man hinner
+in och ut. HUD:en visar röda termometrar över 17. Kylrum: kall luft bromsar förskämningen (`Preserving.coldRate`, se
+01-stone-age.md "Förskämd mat"). Kod: `Temperature.cave(biom, y)`, `heatCap`, `OVERHEAT`/`SCORCHING`; gametest `environment`.
+
 ### Upptining (eget arbete)
 - Vanilla smälter aldrig snö eller is. En egen tick tar bort snölager och is i laddade chunks när det blir varmt.
 - **Chunks som inte är laddade:** chunken sparar sin senaste säsong och kommer ikapp när den laddas. Samma lösning

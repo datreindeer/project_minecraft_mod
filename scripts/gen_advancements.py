@@ -965,6 +965,20 @@ TABS["wilderness"][1].extend([
     ("cave_crystal_geodes", "deep_cold", "rough_rose_quartz", C, "Crystal Geodes",
      "Find the rare Crystal Geodes deep in the rock: quartzite caves full of gem crystals", in_biome("crystal_geodes")),
 ])
+# cave environment (phase 9C; Temperature.java heat, Preserving.coldRate, SmokingRackBlock.peatSmoke): granted from Java
+TABS["wilderness"][1].extend([
+    ("cold_store", "cave_ice_caves", "minecraft:blue_ice", G, "Cold Store",
+     "Leave food in a chest or barrel in the Ice Caves (or with ice right beside it) and open it again: in near-freezing air food spoils at a quarter of the speed, in cool air at half",
+     by_code()),
+    ("magma_vents_cool_off", "cave_magma_vents", "minecraft:water_bucket", G, "Hot Spring",
+     "The Magma Vents' air overheats you: you tire, and above 19 on the thermometer you burn. Cool off in water there",
+     by_code()),
+])
+TABS["food"][1].extend([
+    ("peat_smoke", "smoked", "dried_peat", T, "Peat Smoke",
+     "Feed a burning Campfire Peat or Dried Peat and smoke meat or fish over it: the thick peat smoke cures twice as fast as wood",
+     by_code()),
+])
 # NPC villages rebuilt as their tribe goes up an age (people/AgeRebuild.java; granted from Java)
 TABS["bronze_age"][1].extend([
     ("tribe_village_bronze", "root", "kiln", T, "Bronze Age Neighbours",

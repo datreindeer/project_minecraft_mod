@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **alla faser 0–8 byggda** (material och 24 biomer, se "Fas N: resultat"); kvar: fas 9 (användningar) och 10 (åldrande). Skriven 2026-11-21.
+Status: **alla faser 0–8 byggda** (material och 24 biomer, se "Fas N: resultat"); fas 9C (miljöeffekter: kylrum, hetta, torvrök) byggd; kvar: resten av fas 9 (användningar) och 10 (åldrande). Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -566,3 +566,34 @@ spawnregel kräver ljus, så lejon dyker i praktiken inte upp i mörka grottor. 
 (vattendjurens regel). Cave Bear finns i alla grottbiomer, eftersom mallen dripstone_caves står i `add_cave_bear`. Beach
 Pebbles i Flooded Caves (ytagenten gör blocket parallellt; Gravel och Clay används nu). Dev-servern fick OutOfMemory eller
 watchdog när 1 089 tvångsladdade chunks lastades ur efter täckningsmätningen (mätverktyget, inte modden).
+
+## Fas 9C: resultat (byggt)
+
+Miljöeffekterna från grottbiomerna, plus torvrök. Gametest **`environment`** (`EnvironmentTest.java`) testar varje regel.
+
+**Grottluft** (`Temperature.cave(biom, y)`, används av `ambient`): under y 50 utan himmel gäller djupet som förut, men
+**Ice Caves = 2** (nära fryspunkten, på alla djup) och **Magma Vents = 30** (MAX är 20). Eftersom `ambient` också styr
+grödor, Fertility-torka, ugnarnas omgivningsvärme och kylrummen följer de med.
+
+**Hetta** (`Temperature`): `OVERHEAT = 17`, `SCORCHING = 19`. Över 17 food exhaustion (0,5 × (kropp − 17) / 3 per sekund,
+som kylans hunger), över 19 en skada varannan sekund (`onFire`, så Fire Resistance skyddar). `heatCap`: bara luft på minst
+30 (Magma Vents) kan värma kroppen över 17; sol, Nether och eldar stannar vid 17, så öknar och lägereldar blir inte farliga
+(förut kunde kroppen nå 20 där utan effekt). **Skydd: vatten eller regn** håller kroppen vid 17. Kläder spelar ingen roll i
+hettan (isoleringen gäller bara kyla), för att hålla det enkelt. HUD: röda termometrar (`hot_full`/`hot_half`) över 17.
+
+**Kylrum** (`Preserving.coldRate`): luft under 8 → mat åldras i halv fart, under 3 eller med is (`#minecraft:ice`) direkt
+bredvid behållaren → en fjärdedel. Gäller stängda **kistor och tunnor** (stämplas med `BASKET_SINCE` när de stängs i kylan och
+räknas om när de öppnas, som Bark Basket), **Storage Jar** och **Root Cellar** (deras egen takt × kylan, `sealedRate`) och
+**Bark Basket** (kylan där den öppnas). Kylan bedöms när behållaren öppnas (samma genväg som Root Cellar). En stämpel som en
+hopper drar ut ur en kall kista tas bort i spelarens inventory utan kylbonus.
+
+**Torvrök** (`SmokingRackBlock.peatSmoke`): Peat eller Dried Peat som matas till en brinnande Campfire ger den torvrök så
+länge torven brinner (`mechanical$addPeat`, nytt fält `mechanical_peat` i campfire-mixinen, räknas ned med elden, nollas vid
+glöd). En Smoking Rack ovanför (1–2) eller bredvid röker då **dubbelt så fort** (`PEAT_SPEED = 2`: 2 min i stället för 4).
+
+**Advancements** (från Java): **Cold Store** (Wilderness, efter Ice Caves: öppna en kista/tunna vars mat hållits i
+fjärdedelsfart), **Hot Spring** (Wilderness, efter Magma Vents: stå i vatten i Magma Vents), **Peat Smoke** (Food, efter
+Smoked).
+
+**Inte gjort:** Glowworm Caves som "upplyst" för nattens faror: NightDangers räknar bara eldar (inget ljusvärde), så det var
+inte trivialt. Ingen egen skadetyp för värmeslag (vanilla `on_fire`, dödsmeddelandet "burned to death").

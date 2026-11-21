@@ -63,7 +63,9 @@ public class BarkBasketMenu extends AbstractContainerMenu {
         };
         NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(items);
-        for (int i = 0; i < SIZE; i++) contents.setItem(i, cool ? Preserving.outOfBasket(items.get(i), now) : items.get(i));
+        // shortcut: the cold is judged where the basket is opened (Preserving.coldRate), for its whole closed time; track it per close if abused
+        float rate = cool ? Preserving.BASKET_RATE * Preserving.coldRate(inventory.player.level(), inventory.player.blockPosition()) : 1;
+        for (int i = 0; i < SIZE; i++) contents.setItem(i, cool ? Preserving.outOfBasket(items.get(i), now, rate) : items.get(i));
         return new BarkBasketMenu(type, allowed, containerId, inventory, contents, slot, stack);
     }
 

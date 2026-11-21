@@ -9,7 +9,15 @@ import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
@@ -52,6 +60,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <p>
  * Smoking ({@link SmokingRackBlock}) and drying ({@link DryingRackBlock}) turn raw meat, fish, berries and mushrooms into foods that
  * keep for 30 days. Data: scripts/gen_preserving.py, textures: scripts/gen_preserving_textures.py.
+ * <p>
+ * Cold storage ({@link #coldRate}): a closed chest or barrel, Storage Jar, Root Cellar or Bark Basket in cold air ages its
+ * food slower: below {@link #COOL_STORE} on the Temperature scale at half speed, below {@link #COLD_STORE} (near freezing:
+ * the Ice Caves, deep caves, a snowy night) or with ice (any vanilla ice block) right next to it at a quarter. It multiplies
+ * the store's own rate. A chest or barrel left in the cold has its food stamped when closed and settled when opened, like a basket.
  */
 @EventBusSubscriber(modid = MODID)
 public final class Preserving {
@@ -68,6 +81,10 @@ public final class Preserving {
             "basket_since", b -> b.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
     /** In a closed Bark Basket (cool, dry, airy bark) food ages at this share of the normal rate. */
     public static final float BASKET_RATE = 1 / 3F;
+    /** Cold storage: air below COOL_STORE ages food at COOL_RATE, below COLD_STORE (or with ice beside the store) at COLD_RATE. */
+    public static final float COOL_STORE = 8, COLD_STORE = 3, COOL_RATE = 0.5F, COLD_RATE = 0.25F;
+    /** Granted from code: opening a chest or barrel whose food kept at the cold rate. */
+    public static final Identifier COLD_STORE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "wilderness/cold_store");
 
     public static final TagKey<Item> PERISHES_1_DAY = tag("perishes_1_day"), PERISHES_2_DAYS = tag("perishes_2_days"),
             PERISHES_3_DAYS = tag("perishes_3_days"), PERISHES_10_DAYS = tag("perishes_10_days"),
@@ -200,6 +217,25 @@ public final class Preserving {
         return out;
     }
 
+    /** Share of the normal rate food ages at in air this cold (Temperature scale). */
+    public static float coldRate(float air) {
+        return air < COLD_STORE ? COLD_RATE : air < COOL_STORE ? COOL_RATE : 1;
+    }
+
+    /** Share of the normal rate food ages at in a store here: ice right next to it is a cold cellar, else the air decides. */
+    public static float coldRate(net.minecraft.world.level.Level level, BlockPos pos) {
+        for (Direction d : Direction.values()) if (level.getBlockState(pos.relative(d)).is(BlockTags.ICE)) return COLD_RATE;
+        return coldRate(Temperature.ambient(level, pos));
+    }
+
+    /** Where a chest or barrel menu's store stands (a double chest: at the player, who is beside it); null for any other menu. */
+    static BlockPos storePos(AbstractContainerMenu menu, Player player) {
+        if (menu.slots.isEmpty()) return null;
+        Container c = menu.slots.get(0).container;
+        if (c instanceof ChestBlockEntity || c instanceof BarrelBlockEntity) return ((BlockEntity) c).getBlockPos();
+        return c instanceof CompoundContainer ? player.blockPosition() : null;
+    }
+
     /** Rotting food can't go on a rack: tells the player so (overlay) and returns true. */
     public static boolean tooFarGone(ItemStack stack, net.minecraft.world.level.Level level, Player player) {
         float fresh = freshness(stack, level.getGameTime());
@@ -242,6 +278,8 @@ public final class Preserving {
     /** The player's inventory and whatever container they have open. */
     public static void checkPlayer(Player player) {
         long now = player.level().getGameTime();
+        // a hopper may pull food out of a cold chest still stamped: drop the stamp (no cold credit)
+        for (Slot slot : player.inventoryMenu.slots) if (slot.getItem().has(BASKET_SINCE.get())) slot.set(outOfBasket(slot.getItem(), now, 1));
         checkSlots(player.inventoryMenu.slots, now);
         mergeAged(player.inventoryMenu.slots, player);
         AbstractContainerMenu open = player.containerMenu;
@@ -289,10 +327,35 @@ public final class Preserving {
         if (event.getEntity() instanceof ServerPlayer player && player.tickCount % 20 == 0) checkPlayer(player);
     }
 
-    /** Food that sat unseen in a chest spoils (or is stamped) the moment the chest is opened. */
+    /** Food that sat unseen in a chest spoils (or is stamped) the moment the chest is opened; a cold chest's stamp is settled first. */
     @SubscribeEvent
     static void onContainerOpen(PlayerContainerEvent.Open event) {
-        if (event.getEntity() instanceof ServerPlayer player) checkSlots(event.getContainer().slots, player.level().getGameTime());
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        long now = player.level().getGameTime();
+        AbstractContainerMenu menu = event.getContainer();
+        BlockPos pos = storePos(menu, player);
+        if (pos != null) {
+            // shortcut: the rate is judged when the chest is opened (as the Root Cellar), not tracked over the whole time it stood
+            float rate = coldRate(player.level(), pos);
+            for (Slot slot : menu.slots) {
+                if (slot.container == player.getInventory() || !slot.getItem().has(BASKET_SINCE.get())) continue;
+                slot.set(outOfBasket(slot.getItem(), now, rate));
+                if (rate <= COLD_RATE) Kettle.award(player, COLD_STORE_ADVANCEMENT);
+            }
+        }
+        checkSlots(menu.slots, now);
+    }
+
+    /** A chest or barrel shut in the cold: its food is stamped, so the cold counts when it is next opened. */
+    @SubscribeEvent
+    static void onContainerClose(PlayerContainerEvent.Close event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        AbstractContainerMenu menu = event.getContainer();
+        BlockPos pos = storePos(menu, player);
+        if (pos == null || coldRate(player.level(), pos) >= 1) return;
+        long now = player.level().getGameTime();
+        // shortcut: a second player still looking in sees stamped food; it settles at the next open (or in their inventory, without credit)
+        for (Slot slot : menu.slots) if (slot.container != player.getInventory() && !slot.getItem().isEmpty()) slot.set(intoBasket(slot.getItem(), now));
     }
 
     /** Rotting food: 1 in 2 chance of Hunger for 30 s. */
