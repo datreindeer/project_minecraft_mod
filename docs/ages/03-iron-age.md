@@ -355,3 +355,10 @@ spelarläger är desamma som i bronsåldern. Advancement **Iron Age Neighbours**
 
 Jaspis slår gnistor mot stål som flinta: **Rough Jasper eller Polished Jasper + Steel Plate** (formlöst) ger en
 Flint and Steel, precis som Flint + Steel Plate. Advancement *Red Spark* under *Strike a Light*.
+
+## Omfogning med kalkbruk (byggt, fas 10 av världsmaterialplanen)
+
+Tegel som spruckit av frost (Cracked Bricks av alla bergarter, se bronsålderns "Åldrande tegel") lagas med **Lime Mortar**:
+högerklicka det spruckna blocket, så blir det helt igen och ett murbruk går åt (inget i creative). Gäller också vanillas
+Cracked Stone Bricks, Cracked Deepslate Bricks/Tiles och de andra spruckna vanilla-blocken. Advancement *Repointed* (efter
+*Lime Mortar*).

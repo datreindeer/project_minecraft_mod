@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "##"
+  ],
+  "key": {
+    "#": "minecraft:clay_ball"
+  },
+  "result": {
+    "id": "mechanical:unfired_roof_tile"
+  }
+}

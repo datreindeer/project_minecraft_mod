@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/mossy_green_porphyry_brick_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/mossy_green_porphyry_bricks"
+    },
+    "type=top": {
+      "model": "mechanical:block/mossy_green_porphyry_brick_slab_top"
+    }
+  }
+}

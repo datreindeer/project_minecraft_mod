@@ -1426,6 +1426,24 @@ TABS["bronze_age"][1].extend([
      has("slate_tablet")),
 ])
 
+# weathering, mosaics and roof tiles (world-materials-plan phase 10; Masonry.java, gen_masonry.py)
+TABS["bronze_age"][1].extend([
+    ("weathered", "rubble", "mossy_limestone_bricks", T, "Weathered",
+     "Bricks left out in the weather age: wet with rain or water they grow Mossy, through frosty winters they turn Cracked. "
+     "Scrub the moss off with a Pumice Chunk", by_code()),
+    ("mosaic", "marble", "warm_mosaic_tiles", T, "Mosaic",
+     "Set four different polished stones together: 4 Mosaic Tiles. Warm (Jasper, Quartzite, Travertine, Yellow Ochre), cool "
+     "(Slate, Serpentine, Marble, Soapstone) or checkered (Marble, Alabaster, Alum Shale, Coastal Basalt)",
+     has("warm_mosaic_tiles", "cool_mosaic_tiles", "checkered_mosaic_tiles")),
+    ("tiled_roof", "kaolin_tiles", "tiled_roof", T, "Tiled Roof",
+     "Shape 2 Clay Balls into an Unfired Roof Tile and fire it in the Clay Kiln at 800°. 3 Fired Roof Tiles lay 4 Tiled Roof, "
+     "a roof that never burns; pigment colours it", has(*[f"{c}tiled_roof" for c in ("", "red_", "black_", "yellow_", "white_")])),
+])
+TABS["iron_age"][1].extend([
+    ("repointed", "lime_mortar", "cracked_limestone_bricks", T, "Repointed",
+     "Right-click cracked bricks with Lime Mortar: the cracks are filled and the bricks are whole again", by_code()),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

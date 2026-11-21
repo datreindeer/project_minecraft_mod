@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:bronze_age/rubble",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:mossy_limestone_bricks"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.weathered.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.weathered.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

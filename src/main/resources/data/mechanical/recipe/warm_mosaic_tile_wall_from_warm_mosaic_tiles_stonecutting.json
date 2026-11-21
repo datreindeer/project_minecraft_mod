@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:warm_mosaic_tiles",
+  "result": {
+    "id": "mechanical:warm_mosaic_tile_wall"
+  }
+}

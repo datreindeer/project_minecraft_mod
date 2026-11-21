@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:mossy_alabaster_bricks",
+  "result": {
+    "id": "mechanical:mossy_alabaster_brick_stairs"
+  }
+}

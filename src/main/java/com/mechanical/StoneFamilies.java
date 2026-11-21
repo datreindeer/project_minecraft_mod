@@ -127,7 +127,31 @@ public final class StoneFamilies {
             Stone.of("rammed_earth", "rammed_earth", Template.BRICKS, false, MapColor.DIRT, 1.5F, SoundType.PACKED_MUD, List.of()),
             Stone.of("kaolin_tile", "kaolin_tiles", Template.BRICKS, false, MapColor.SNOW, 2.0F, SoundType.STONE, List.of()),
             Stone.of("red_ochre", "red_ochre_block", Template.MUD, false, MapColor.TERRACOTTA_RED, 1.0F, SoundType.PACKED_MUD, List.of()),
-            Stone.of("yellow_ochre", "yellow_ochre_block", Template.MUD, false, MapColor.TERRACOTTA_YELLOW, 1.0F, SoundType.PACKED_MUD, List.of()));
+            Stone.of("yellow_ochre", "yellow_ochre_block", Template.MUD, false, MapColor.TERRACOTTA_YELLOW, 1.0F, SoundType.PACKED_MUD, List.of()),
+            // phase 10 (Masonry): Mosaic Tiles of four stones and Fired Roof Tiles, plain and coloured with pigment
+            Stone.of("warm_mosaic_tile", "warm_mosaic_tiles", Template.BRICKS, false, MapColor.TERRACOTTA_ORANGE, 1.5F, SoundType.STONE, List.of()),
+            Stone.of("cool_mosaic_tile", "cool_mosaic_tiles", Template.BRICKS, false, MapColor.WARPED_NYLIUM, 1.5F, SoundType.STONE, List.of()),
+            Stone.of("checkered_mosaic_tile", "checkered_mosaic_tiles", Template.BRICKS, false, MapColor.QUARTZ, 1.5F, SoundType.STONE, List.of()),
+            Stone.of("roof_tile", "roof_tiles", Template.BRICKS, false, MapColor.TERRACOTTA_RED, 2.0F, SoundType.DECORATED_POT, List.of()),
+            Stone.of("red_roof_tile", "red_roof_tiles", Template.BRICKS, false, MapColor.COLOR_RED, 2.0F, SoundType.DECORATED_POT, List.of()),
+            Stone.of("black_roof_tile", "black_roof_tiles", Template.BRICKS, false, MapColor.COLOR_BLACK, 2.0F, SoundType.DECORATED_POT, List.of()),
+            Stone.of("yellow_roof_tile", "yellow_roof_tiles", Template.BRICKS, false, MapColor.TERRACOTTA_YELLOW, 2.0F, SoundType.DECORATED_POT, List.of()),
+            Stone.of("white_roof_tile", "white_roof_tiles", Template.BRICKS, false, MapColor.TERRACOTTA_WHITE, 2.0F, SoundType.DECORATED_POT, List.of()));
+
+    /**
+     * Phase 10 (weathering, {@link Masonry}): every rock family with bricks also gets these where its template lacks them
+     * (scripts/gen_stone_families.py WEATHERED), and its bricks block random-ticks to age into them.
+     */
+    public static final List<String> WEATHERED = List.of("cracked_{}_bricks", "mossy_{}_bricks", "mossy_{}_brick_slab", "mossy_{}_brick_stairs", "mossy_{}_brick_wall");
+    private static final java.util.Set<Template> WEATHERS = java.util.EnumSet.of(Template.TUFF, Template.DEEPSLATE, Template.STONE, Template.QUARTZ);
+
+    /** The template's patterns, plus the weathered ones it lacks for a rock family with bricks. */
+    static List<String> patterns(Stone s) {
+        if (!WEATHERS.contains(s.template())) return s.template().patterns;
+        List<String> all = new java.util.ArrayList<>(s.template().patterns);
+        WEATHERED.stream().filter(p -> !all.contains(p)).forEach(all::add);
+        return all;
+    }
 
     /** Every stone family block by id path, base blocks included. */
     public static final Map<String, DeferredBlock<? extends Block>> BLOCKS_BY_NAME = new LinkedHashMap<>();
@@ -141,9 +165,13 @@ public final class StoneFamilies {
             }
             BLOCKS_BY_NAME.put(s.base(), base);
             DeferredBlock<Block> props = base;
-            for (String pattern : s.template().patterns) {
+            for (String pattern : patterns(s)) {
                 String name = pattern.replace("{}", s.name());
                 Function<BlockBehaviour.Properties, ? extends Block> factory;
+                if (pattern.equals("{}_bricks") && WEATHERS.contains(s.template())) {
+                    register(name, Masonry.BricksBlock::new, () -> BlockBehaviour.Properties.ofLegacyCopy(props.get()).randomTicks());
+                    continue;
+                }
                 if (name.endsWith("_slab")) factory = SlabBlock::new;
                 else if (name.endsWith("_wall")) factory = p -> new WallBlock(p.forceSolidOn());
                 else if (name.endsWith("_pillar") || s.template() == Template.BASALT && name.startsWith("polished_")) factory = RotatedPillarBlock::new;

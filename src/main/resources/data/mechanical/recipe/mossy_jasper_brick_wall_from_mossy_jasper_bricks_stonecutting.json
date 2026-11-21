@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:mossy_jasper_bricks",
+  "result": {
+    "id": "mechanical:mossy_jasper_brick_wall"
+  }
+}

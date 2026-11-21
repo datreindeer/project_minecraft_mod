@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:checkered_mosaic_tiles",
+  "result": {
+    "count": 2,
+    "id": "mechanical:checkered_mosaic_tile_slab"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": "mechanical:pumice_bricks",
+  "result": {
+    "id": "mechanical:cracked_pumice_bricks"
+  }
+}

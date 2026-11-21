@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/warm_mosaic_tiles",
+    "side": "mechanical:block/warm_mosaic_tiles",
+    "top": "mechanical:block/warm_mosaic_tiles"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:mossy_conglomerate_bricks",
+  "result": {
+    "id": "mechanical:mossy_conglomerate_brick_wall"
+  }
+}

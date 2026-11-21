@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:mossy_red_porphyry_bricks",
+  "result": {
+    "id": "mechanical:mossy_red_porphyry_brick_stairs"
+  }
+}

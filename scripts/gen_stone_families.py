@@ -160,7 +160,32 @@ STONES = [
           base="red_ochre_block", drop=("red_ochre", 4)),
     Stone("yellow_ochre", "mud", [(132, 96, 30), (160, 120, 40), (186, 144, 54), (206, 166, 72), (222, 186, 96)], False, [], None,
           base="yellow_ochre_block", drop=("yellow_ochre", 4)),
-]
+    # phase 10 (Masonry.java, gen_masonry.py paints their textures): Mosaic Tiles of four stones, Fired Roof Tiles (+ pigments)
+    Stone("warm_mosaic_tile", "bricks", [(120, 50, 34), (160, 84, 52), (196, 132, 86), (220, 178, 128), (236, 214, 170)], False, [], None,
+          base="warm_mosaic_tiles"),
+    Stone("cool_mosaic_tile", "bricks", [(40, 52, 62), (60, 86, 80), (100, 124, 116), (160, 170, 166), (226, 228, 230)], False, [], None,
+          base="cool_mosaic_tiles"),
+    Stone("checkered_mosaic_tile", "bricks", [(24, 24, 26), (52, 52, 56), (120, 120, 122), (214, 214, 216), (246, 246, 246)], False, [], None,
+          base="checkered_mosaic_tiles"),
+] + [Stone(f"{c}roof_tile", "bricks", pal, False, [], None, base=f"{c}roof_tiles") for c, pal in (
+    ("", [(110, 44, 26), (146, 62, 36), (174, 82, 48), (196, 104, 64), (214, 128, 84)]),
+    ("red_", [(78, 18, 16), (108, 28, 24), (136, 40, 32), (160, 54, 42), (182, 72, 56)]),
+    ("black_", [(18, 18, 20), (30, 30, 34), (44, 44, 48), (60, 60, 64), (80, 80, 84)]),
+    ("yellow_", [(126, 90, 28), (156, 116, 38), (184, 142, 52), (206, 166, 70), (224, 190, 96)]),
+    ("white_", [(150, 146, 136), (184, 180, 170), (210, 206, 198), (230, 228, 222), (246, 244, 240)]))]
+
+# phase 10 (weathering, Masonry.java): every rock family with bricks gets Cracked and Mossy Bricks (+ mossy slab/stairs/wall),
+# copied from vanilla's stone bricks where its own template lacks them; textures = the family's bricks + vanilla's cracks/moss.
+# One extra row per family (template "weather"), so a new stone with bricks gets them by itself. Java: StoneFamilies.WEATHERED.
+WEATHERS = ("tuff", "deepslate", "stone", "quartz")
+WEATHERED = "cracked_stone_bricks mossy_stone_bricks mossy_stone_brick_slab mossy_stone_brick_stairs mossy_stone_brick_wall".split()
+for _s in list(STONES):
+    if _s.template in WEATHERS:
+        _have = set(TEMPLATES[_s.template][1].values())
+        _names = " ".join(n for n in WEATHERED if n.replace("stone", "{}") not in _have)
+        if _names:
+            TEMPLATES["weather_" + _s.template] = family("stone_bricks", _names, word="stone")
+            STONES.append(Stone(_s.name, "weather_" + _s.template, _s.palette, _s.hard, [], None, base=_s.name + "_bricks", own_base=False))
 
 
 def _dots(colour, n, r, rim=None):
@@ -308,6 +333,24 @@ for s in STONES:
     lang.update({f"block.mechanical.{i[11:]}": i[11:].replace("_", " ").title() for i in ids})
 
     # ---- textures: recoloured by brightness onto the palette (one shared range so the family matches) ----
+    if s.template.startswith("weather_"):  # the family's bricks with vanilla's cracks and moss laid over
+        plain = vanilla_png("stone_bricks")
+        for t in textures - {base_vanilla}:
+            out, aged = Image.open(A / f"textures/block/{base_id}.png").convert("RGBA"), vanilla_png(t)
+            for y in range(16):
+                for x in range(16):
+                    r, g, b, a = aged.getpixel((x, y))
+                    r0, g0, b0, _ = plain.getpixel((x, y))
+                    if (r, g, b) == (r0, g0, b0):
+                        continue
+                    if g > r + 8 and g > b:  # moss: vanilla's green as it is
+                        out.putpixel((x, y), (r, g, b, a))
+                    else:  # a crack or a chip: darken/lighten the family's pixel by the same ratio
+                        f = (r + g + b + 1) / (r0 + g0 + b0 + 1)
+                        out.putpixel((x, y), tuple(min(255, int(c * f)) for c in out.getpixel((x, y))[:3]) + (a,))
+            out.save(A / f"textures/block/{sub(t)}.png")
+        print(f"{s.name}: {len(ids)} weathered blocks")
+        continue
     rng = vanilla_png(RANGE_TEXTURE[s.template])
     base = [sum(rng.getpixel((x, y))[:3]) / 3 for y in range(16) for x in range(16)]
     lo, hi = min(base), max(base)

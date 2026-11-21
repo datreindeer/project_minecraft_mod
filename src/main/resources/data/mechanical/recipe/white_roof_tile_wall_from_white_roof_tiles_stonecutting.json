@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:white_roof_tiles",
+  "result": {
+    "id": "mechanical:white_roof_tile_wall"
+  }
+}

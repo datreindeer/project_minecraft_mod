@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:fired_roof_tile"
+  },
+  "result": {
+    "id": "mechanical:roof_tiles"
+  }
+}

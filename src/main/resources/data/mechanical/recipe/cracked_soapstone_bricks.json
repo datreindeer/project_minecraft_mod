@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": "mechanical:soapstone_bricks",
+  "result": {
+    "id": "mechanical:cracked_soapstone_bricks"
+  }
+}

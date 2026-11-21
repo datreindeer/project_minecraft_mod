@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_outer",
+  "textures": {
+    "top": "mechanical:block/black_roof_tiles",
+    "under": "mechanical:block/black_roof_tiles"
+  }
+}

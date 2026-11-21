@@ -13,7 +13,8 @@ def family(base, *parts):
     return [M + base] + [M + base.removesuffix("s") + p for p in parts]
 
 
-bark_roofs = sorted(M + p.stem for p in (ROOT / "assets/mechanical/blockstates").glob("*_roof.json"))
+bark_roofs = sorted(M + p.stem for p in (ROOT / "assets/mechanical/blockstates").glob("*_roof.json")
+                    if not p.stem.endswith("tiled_roof"))  # fired roof tiles (gen_masonry.py) count as stone
 HIGH = (
     # earth, turf and thatch: the old ways of keeping a house warm
     [M + b for b in ("turf", "turf_slab", "turf_stairs", "peat", "mudstone", "wattle_and_daub", "framed_wattle_and_daub",

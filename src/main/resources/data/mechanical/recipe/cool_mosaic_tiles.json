@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_slate",
+    "mechanical:polished_serpentine",
+    "mechanical:smooth_marble",
+    "mechanical:polished_soapstone"
+  ],
+  "result": {
+    "id": "mechanical:cool_mosaic_tiles",
+    "count": 4
+  }
+}

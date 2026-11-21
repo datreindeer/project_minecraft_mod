@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/mossy_quartzite_bricks",
+    "side": "mechanical:block/mossy_quartzite_bricks",
+    "top": "mechanical:block/mossy_quartzite_bricks"
+  }
+}

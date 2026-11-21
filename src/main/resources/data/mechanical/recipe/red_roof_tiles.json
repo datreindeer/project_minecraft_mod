@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#P#",
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:roof_tiles",
+    "P": "mechanical:red_pigment"
+  },
+  "result": {
+    "id": "mechanical:red_roof_tiles",
+    "count": 8
+  }
+}

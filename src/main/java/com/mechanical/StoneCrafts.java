@@ -131,13 +131,16 @@ public final class StoneCrafts {
             BlockPos pos = context.getClickedPos();
             BlockState state = level.getBlockState(pos);
             Block to = polished(state.getBlock());
+            boolean scrub = to == null;
+            if (scrub) to = Masonry.scrubbed(state.getBlock()); // moss scrubbed off weathered bricks (phase 10)
             if (to == null) return InteractionResult.PASS;
             if (level instanceof ServerLevel server) {
                 server.levelEvent(2001, pos, Block.getId(state)); // stone dust
                 server.setBlock(pos, to.withPropertiesOf(state), Block.UPDATE_ALL);
                 server.playSound(null, pos, SoundEvents.SAND_HIT, SoundSource.BLOCKS, 1.0F, 0.8F);
                 if (context.getPlayer() != null) context.getItemInHand().hurtAndBreak(1, context.getPlayer(), context.getHand());
-                if (context.getPlayer() instanceof ServerPlayer player) Kettle.award(player, Identifier.fromNamespaceAndPath(MODID, "stone_age/pumice_polish"));
+                if (scrub) Masonry.scrubbedBy(context.getPlayer());
+                else if (context.getPlayer() instanceof ServerPlayer player) Kettle.award(player, Identifier.fromNamespaceAndPath(MODID, "stone_age/pumice_polish"));
             }
             return InteractionResult.SUCCESS;
         }

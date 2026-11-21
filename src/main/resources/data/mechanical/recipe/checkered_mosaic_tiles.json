@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:smooth_marble",
+    "mechanical:smooth_alabaster",
+    "mechanical:polished_alum_shale",
+    "mechanical:polished_coastal_basalt"
+  ],
+  "result": {
+    "id": "mechanical:checkered_mosaic_tiles",
+    "count": 4
+  }
+}

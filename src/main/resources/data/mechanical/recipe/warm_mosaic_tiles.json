@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_jasper",
+    "mechanical:polished_quartzite",
+    "mechanical:cut_travertine",
+    "mechanical:yellow_ochre_bricks"
+  ],
+  "result": {
+    "id": "mechanical:warm_mosaic_tiles",
+    "count": 4
+  }
+}

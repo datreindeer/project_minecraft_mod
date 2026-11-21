@@ -1605,3 +1605,37 @@ Advancements i Bronze Age-fliken: *Stone That Remembers* (under Mold Maker), *He
 Inte gjort: vind- och vattenkvarn (modden har ingen, så Rapakivi blev handkvarnens stenar), statyer och piedestaler av
 marmor (kräver egna modeller), inläggningar av Porphyry och Serpentine (ring- och charm-platserna i utrustningen har inga
 smycken än att lägga in dem i).
+
+## Åldrande tegel, mosaik och tegeltak (byggt, fas 10 av världsmaterialplanen)
+
+Java i `Masonry.java`, data i `scripts/gen_masonry.py` och de vittrade raderna i `scripts/gen_stone_families.py`.
+
+**Åldrande.** Alla bergarters Bricks (Limestone, Slate, Gneiss, Soapstone, Shale, Conglomerate, Dolomite, Marble, Quartzite,
+Red/Green Porphyry, Rapakivi Granite, Pumice, Serpentine, Jasper, Alabaster, Alum Shale) har nu **Cracked** och **Mossy**
+Bricks (+ Mossy slab, stairs, wall), och tegelblocket åldras av sig självt när det står ute:
+
+- **Mossy:** toppen eller en sida mot bar himmel, och vatten, mossa, Vine, mossigt tegel eller regn intill. I snitt efter ett år
+  (360 dagar). Mossan sprider sig alltså längs en mur.
+- **Cracked:** samma öppna läge och minusgrader där (luften under 3, vinternätter i tempererat klimat, nästan alltid i kalla
+  biomer). Ungefär två årstider med frost, alltså några vintrar i tempererat klimat.
+- **Inomhus**, under tak, händer ingenting. Bara de hela Bricks-blocken åldras, inte slab, stairs eller wall, och inte puts
+  (Lime Plaster), Adobe, Peat Bricks eller vanillas Stone Bricks.
+
+En **Pumice Chunk** skrubbar bort mossan (1 slitage): Mossy blir vanligt tegel igen, också vanillas Mossy Stone Bricks och
+Mossy Cobblestone. Det går också att göra varianterna som i vanilla: Bricks + Vine eller Moss Block → Mossy, Bricks i ugnen →
+Cracked. Advancement *Weathered* (efter *Rubble*).
+
+**Mosaic Tiles.** Fyra olika polerade stenar (formlöst) → **4 Mosaic Tiles**, + slab, stairs och wall:
+
+| Mosaik | Stenar |
+|---|---|
+| **Warm Mosaic Tiles** | Polished Jasper, Polished Quartzite, Cut Travertine, Yellow Ochre Bricks |
+| **Cool Mosaic Tiles** | Polished Slate, Polished Serpentine, Smooth Marble, Polished Soapstone |
+| **Checkered Mosaic Tiles** | Smooth Marble, Smooth Alabaster, Polished Alum Shale, Polished Coastal Basalt |
+
+Ingen mejsel i receptet: de polerade stenarna kräver redan Bronze Chisel eller Pumice. Advancement *Mosaic* (efter *Marble*).
+
+**Fired Roof Tiles.** 2 Clay Ball i rad → **Unfired Roof Tile**, bränd i Clay Kiln vid **800°** (Charcoal eller bellows) →
+**Fired Roof Tile**. 2×2 → **Roof Tiles** (block + slab, stairs, wall); 3 i trappform → **4 Tiled Roof**, ett tak som sluttar
+som barktaket. **8 Roof Tiles eller Tiled Roof runt ett pigment → 8** i färg: Red, Black, Yellow, White. Tegeltak brinner inte
+och räknas som sten för husets värme (inte som torv- och halmtaken). Advancement *Tiled Roof* (efter *White Tiles*).

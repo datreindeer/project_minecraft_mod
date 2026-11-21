@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **faser 0–9 byggda** (material, 24 biomer och användningarna 9A–9C, se "Fas N: resultat"); kvar: fas 10 (åldrande). Skriven 2026-11-21.
+Status: **alla faser byggda (0–10)**: material, 24 biomer, användningarna 9A–9C och åldrandet i fas 10, se "Fas N: resultat". Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -653,3 +653,49 @@ mekanik att haka i utan att hitta på reparation). Marble-statyer och piedestale
 Serpentine som inläggningar (ring- och charm-platserna har inga smycken än). Täljstensgrytor och -oljelampor. Täljstensformarna
 syns inte i registrets receptlista (gen_registry.py läser bara `StationRecipe.of`-anrop rad för rad; formarna görs i en loop),
 men registry notes beskriver dem under `soapstone_ingot_mold`.
+
+---
+
+## Fas 10: resultat (byggt)
+
+Åldrande, Mosaic Tiles och Fired Roof Tiles. Java: **`Masonry.java`** (åldrandet, Pumice/Lime Mortar, takpannorna, Tiled
+Roofs, gametest `masonry`), `StoneFamilies.WEATHERED`/`patterns()`, en rad i `KilnBlockEntity.RECIPES`. Data: de vittrade
+raderna i `gen_stone_families.py` och nya **`scripts/gen_masonry.py`** (körs efter `gen_earth.py`, före `gen_insulation.py`).
+Spelartext: `docs/ages/02-bronze-age.md` "Åldrande tegel, mosaik och tegeltak", `03-iron-age.md` "Omfogning med kalkbruk".
+
+**Vittrade block, automatiskt per sten:** varje rad med mallen tuff, deepslate, stone eller quartz (alla bergarter med Bricks)
+får en extra rad med mallen `weather_<mall>`: vanillas `cracked_stone_bricks`, `mossy_stone_bricks` och mossy slab/stairs/wall
+kopierade med namnen utbytta, utom de som mallen redan har (Gneiss och Rapakivi har alla, Slate har Cracked). Texturen är
+familjens Bricks med skillnaden mellan vanillas Stone Bricks och Cracked/Mossy pålagd (mossa i vanillas grönt, sprickor som
+samma ljushetskvot). Java gör samma sak i `StoneFamilies.patterns(s)`. En ny sten med Bricks får alltså allt av sig själv.
+74 nya block i 15 familjer (Gneiss och Rapakivi hade dem redan).
+
+**Åldrandet** (`Masonry.BricksBlock.randomTick` → `Masonry.age`): de 17 bergarternas Bricks-block random-tickar.
+`TICKS_PER_DAY` = 72000 × 3 / 4096 ≈ 53 random ticks per block och moddag.
+
+| Övergång | Villkor | Chans per random tick | Ungefär |
+|---|---|---|---|
+| Bricks → Mossy | öppen (`exposed`: toppen eller en sida mot luft utan något ovanför, heightmap) och våt (`wet`: regn, eller vatten, Moss Block/Carpet, Vine, mossigt block i 3×3×3) | `MOSS_CHANCE` = 1 / (53 × 360) ≈ 1/19 000 | ett år i snitt |
+| Bricks → Cracked | öppen och frost (`Temperature.ambient` < `FREEZING_BELOW` = 3, bara i Overworld) | `CRACK_CHANCE` = 1 / (53 × 180) ≈ 1/9 500 | två årstider med frost; tempererat: frost på vinternätter, alltså några vintrar |
+
+Inomhus (ingen öppen sida) händer inget. Prestanda: nästan varje tick slutar på en slumptalsjämförelse (rullen ≥ 1/9 500)
+innan något i världen läses; bara var 9 500:e tick kollar fem grannar mot heightmapen och räknar ut temperaturen.
+
+**Spelaren:** Pumice Chunk skrubbar Mossy → vanligt (1 slitage, `StoneCrafts.PumiceItem` → `Masonry.scrubbed`), Lime Mortar
+fogar om Cracked → helt (1 går åt, `Masonry.repoint`). Båda gäller varje `mossy_x`/`cracked_x` som har ett `x`, också vanillas.
+Varianterna kan craftas som i vanilla (Vine/Moss Block, ugn).
+
+**Mosaic Tiles:** tre rader med bricks-mallen (`warm/cool/checkered_mosaic_tiles` + slab/stairs/wall), formlöst recept av fyra
+olika polerade stenar → 4, egna texturer (3×3-tesserae i fogar, från familjernas paletter). Ingen mejsel i receptet.
+
+**Fired Roof Tiles:** `unfired_roof_tile` (2 Clay Ball) → Clay Kiln 800° → `fired_roof_tile`; fem rader med bricks-mallen
+(`roof_tiles`, `red_/black_/yellow_/white_roof_tiles` + slab/stairs/wall) och fem `BarkRoofBlock` (`tiled_roof`, `red_tiled_roof`
+...). 8 + pigment → 8 färgade. Brinner inte; `gen_insulation.py` hoppar över `*tiled_roof` (de räknas som sten).
+
+**Advancements:** Bronze Age *Weathered* (Pumice skrubbar mossa, från Java), *Mosaic*, *Tiled Roof*; Iron Age *Repointed* (från Java).
+
+**Inte gjort:** vanillas Stone Bricks åldras inte (blocket random-tickar inte; det skulle kräva en mixin i vanillas
+blockegenskaper), men vanillas mossiga och spruckna block kan skrubbas och fogas. Slab, stairs och wall åldras inte (bara hela
+block random-tickar, och Cracked finns bara som helt block, som i vanilla). Quartz-familjernas (Marble, Alabaster) Mossy
+slab/stairs/wall kan inte skrubbas, eftersom familjen saknar vanlig brick slab/stairs/wall. Tegel av jord (Adobe, Peat Bricks,
+Loess, Kaolin Tiles, Ochre) vittrar inte. Mosaikerna och takpannorna får en wall som mallen ger (oanvänd men ofarlig).

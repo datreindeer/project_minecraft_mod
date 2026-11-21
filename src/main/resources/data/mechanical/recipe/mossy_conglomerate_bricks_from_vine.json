@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "mossy_stone_bricks",
+  "ingredients": [
+    "mechanical:conglomerate_bricks",
+    "minecraft:vine"
+  ],
+  "result": {
+    "id": "mechanical:mossy_conglomerate_bricks"
+  }
+}

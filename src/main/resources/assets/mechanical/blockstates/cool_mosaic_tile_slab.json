@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/cool_mosaic_tile_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/cool_mosaic_tiles"
+    },
+    "type=top": {
+      "model": "mechanical:block/cool_mosaic_tile_slab_top"
+    }
+  }
+}

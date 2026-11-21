@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_straight",
+  "textures": {
+    "top": "mechanical:block/red_roof_tiles",
+    "under": "mechanical:block/red_roof_tiles"
+  }
+}

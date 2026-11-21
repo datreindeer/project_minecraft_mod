@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/roof_tile_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/roof_tiles"
+    },
+    "type=top": {
+      "model": "mechanical:block/roof_tile_slab_top"
+    }
+  }
+}

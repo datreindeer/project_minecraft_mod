@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:red_roof_tiles",
+  "result": {
+    "id": "mechanical:red_roof_tile_stairs"
+  }
+}

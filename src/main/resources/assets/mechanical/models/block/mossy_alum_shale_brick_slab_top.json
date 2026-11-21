@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/mossy_alum_shale_bricks",
+    "side": "mechanical:block/mossy_alum_shale_bricks",
+    "top": "mechanical:block/mossy_alum_shale_bricks"
+  }
+}
