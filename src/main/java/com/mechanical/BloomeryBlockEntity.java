@@ -38,12 +38,8 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
     /** Raw Bog Iron per bloom: a poorer ore than Raw Iron. */
     public static final int BOG_ORE_PER_BLOOM = 6;
 
-    /** {@code count} input items make one result; only at {@code temp}° or hotter (hotter goes faster, {@link KilnBlockEntity#speed}). */
-    public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp, int yield) {
-        Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp) {
-            this(input, count, result, ticks, temp, 0);
-        }
-    }
+    /** {@code count} input items make one result; only at {@code temp}° or hotter (hotter goes faster, {@link KilnBlockEntity#speed}); an ore bloom gives {@code yield} ingots (0: not an ore). */
+    public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp, int yield) {}
     /** Burns {@code ticks}; heats to {@code maxTemp}° by itself, {@code bellowsTemp}° with bellows. */
     public record Fuel(Predicate<ItemStack> item, int ticks, int maxTemp, int bellowsTemp) {}
 
@@ -53,11 +49,11 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Ironworking.ROASTED_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.ROASTED_YIELD),
             new Recipe(s -> s.is(Items.RAW_IRON), ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.RAW_YIELD),
             new Recipe(s -> s.is(Ironworking.RAW_BOG_IRON.get()), BOG_ORE_PER_BLOOM, () -> Ironworking.HOT_IRON_BLOOM.get(), SMELT_TICKS, SMELT_TEMP, Ironworking.RAW_YIELD),
-            new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, FORGE_TEMP),
+            new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, FORGE_TEMP, 0),
             // iron and steel to forging heat for the anvil (Smithing)
-            new Recipe(s -> s.is(Ironworking.WROUGHT_IRON_INGOT.get()), 1, () -> Smithing.HOT_WROUGHT_IRON_INGOT.get(), 200, FORGE_TEMP),
-            new Recipe(s -> s.is(Smithing.BLISTER_STEEL.get()), 1, () -> Smithing.HOT_BLISTER_STEEL.get(), 200, FORGE_TEMP),
-            new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, FORGE_TEMP));
+            new Recipe(s -> s.is(Ironworking.WROUGHT_IRON_INGOT.get()), 1, () -> Smithing.HOT_WROUGHT_IRON_INGOT.get(), 200, FORGE_TEMP, 0),
+            new Recipe(s -> s.is(Smithing.BLISTER_STEEL.get()), 1, () -> Smithing.HOT_BLISTER_STEEL.get(), 200, FORGE_TEMP, 0),
+            new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, FORGE_TEMP, 0));
     // a bloomery eats charcoal: half as long a burn as in the kiln
     public static final List<Fuel> FUELS = List.of(
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 2400, NATURAL_MAX, CEILING));
