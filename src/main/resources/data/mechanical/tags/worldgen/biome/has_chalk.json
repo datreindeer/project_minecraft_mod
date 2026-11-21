@@ -4,6 +4,7 @@
     "minecraft:stony_shore",
     "minecraft:plains",
     "minecraft:sunflower_plains",
-    "minecraft:meadow"
+    "minecraft:meadow",
+    "mechanical:chalk_downs"
   ]
 }

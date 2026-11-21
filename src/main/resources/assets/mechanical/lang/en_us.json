@@ -1997,6 +1997,8 @@
   "message.mechanical.hearth.no_fuel": "No Charcoal in the hearth: right-click it with Charcoal first",
   "message.mechanical.hearth.no_room": "The hearth's coals are full: four pieces at most",
   "message.mechanical.hearth.state": "Smithing Hearth: %s/%s Charcoal. Lay blooms or ingots of iron or steel in it",
+  "biome.mechanical.chalk_downs": "Chalk Downs",
+  "biome.mechanical.limestone_caverns": "Limestone Caverns",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -2968,7 +2970,5 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
-  "biome.mechanical.chalk_downs": "Chalk Downs",
-  "biome.mechanical.limestone_caverns": "Limestone Caverns"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
 }
