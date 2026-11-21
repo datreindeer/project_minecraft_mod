@@ -31,19 +31,20 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 /**
  * First-person counterparts of the {@link HoldPoses} poses, for the local player (the kind is the {@code fp} column of
  * HoldPoses' mapping table). One-handed holds move the held item ({@link #transform}, from
- * IClientItemExtensions#applyForgeHandTransform: vanilla's item position, then the hold); holds that need both arms are
- * drawn from RenderHandEvent ({@link #onRenderHand}): the load (firewood, a rough log, the kettle) and the fire drill's stroke
- * between both palms, the tongs gripping the hot piece at their jaws with the other hand empty, and the chisel struck by
- * the other hand. Walking motion comes from the player's walk animation (in step with the third-person poses), strokes from
+ * IClientItemExtensions#applyForgeHandTransform: vanilla's item position, then the hold); holds that need arms are drawn
+ * from RenderHandEvent ({@link #onRenderHand}): loads on both forearms (firewood, rough logs, the kettle) or on both hands
+ * (buckets, crucibles), the basket hanging from the forearm, the fire drill spun between both palms for as long as the
+ * drilling goes on, the tongs gripping the hot piece at their jaws with the other hand empty, and the chisel struck by the
+ * other hand. Walking motion comes from the player's walk animation (in step with the third-person poses), strokes from
  * the attack swing the click makes. The fishing rod keeps vanilla's (the cast line is tied to vanilla's hand position);
  * rummaging in a bag shows in third person only.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class FirstPersonHolds {
-    public enum Fp { STAFF, BASKET, BUCKET, CARRY, HEAVY, SHOULDER, SPEAR_LOW, PADDLE, PAN, FIRE_DRILL, BROOM, FLAIL, PAINT, CHISEL, FLUTE }
+    public enum Fp { STAFF, BASKET, BUCKET, CARRY, HEAVY, UNDER, SHOULDER, SPEAR_LOW, PADDLE, PAN, FIRE_DRILL, BROOM, FLAIL, PAINT, CHISEL, FLUTE }
 
-    /** bronze_tongs_held's first-person display (vanilla handheld's; ItemTransform mirrors the left hand's back to these angles) and its jaws (model px). */
-    private static final float[] TONGS_ROT = {0.0F, -90.0F, 25.0F}, TONGS_AT = {1.13F, 3.2F, 1.13F}, JAWS = {13.4F, 13.6F, 8.0F};
+    /** bronze_tongs' first-person display (vanilla handheld's; ItemTransform mirrors the left hand's back to these angles) and its jaws (sprite px, y up). */
+    private static final float[] TONGS_ROT = {0.0F, -90.0F, 25.0F}, TONGS_AT = {1.13F, 3.2F, 1.13F}, JAWS = {12.8F, 13.8F, 8.0F};
     private static final float TONGS_SCALE = 0.68F;
 
     /** The first-person kind of a held item, or null. */
@@ -86,10 +87,6 @@ public final class FirstPersonHolds {
                 ps.translate(0.0F, 0.07F * Math.max(0.0F, Mth.sin(phase)) * speed + 0.006F * Mth.sin(age * 0.08F), -0.07F * Mth.cos(phase) * speed);
                 ps.rotateDegrees(Axis.XP, -7.0F * Mth.cos(phase) * speed);
             }
-            case BASKET -> { // low at the side of the screen, swaying with the steps, breathing when still
-                ps.translate(s * 0.5F, -0.38F - 0.03F * step + 0.008F * Mth.sin(age * 0.08F) - 0.6F * equip, -0.75F);
-                ps.rotateDegrees(Axis.ZP, s * 3.0F * Mth.sin(phase) * speed);
-            }
             case BUCKET -> { // hanging low, swinging from the handle with the steps; full: lower, less and later
                 boolean full = HoldPoses.full(stack);
                 ps.translate(s * 0.56F, (full ? -0.5F : -0.44F) - 0.02F * step - 0.6F * equip, -0.8F);
@@ -98,13 +95,13 @@ public final class FirstPersonHolds {
                 ps.rotateDegrees(Axis.ZP, s * (full ? 2.0F : 4.0F) * Mth.cos(phase) * speed);
                 ps.translate(0.0F, -0.22F, 0.0F);
             }
-            case SHOULDER -> { // walking: the head tipped back over towards the shoulder
+            case SHOULDER -> { // walking: the head back over the shoulder, the handle coming down in front
                 if (swing > 0.0F) return false;
                 float w = Math.min(1.0F, speed * 2.5F);
                 itemPos(ps, s, equip);
-                ps.translate(0.0F, 0.05F * w, 0.0F);
-                ps.rotateDegrees(Axis.XP, 15.0F * w);
-                ps.rotateDegrees(Axis.ZP, s * -20.0F * w);
+                ps.translate(s * -0.08F * w, 0.0F, 0.04F * w);
+                ps.rotateDegrees(Axis.XP, 20.0F * w);
+                ps.rotateDegrees(Axis.ZP, s * -25.0F * w);
             }
             case SPEAR_LOW -> { // sneaking: lower, point forward
                 if (swing > 0.0F) return false;
@@ -186,13 +183,6 @@ public final class FirstPersonHolds {
         ItemStack mainItem = player.getMainHandItem(), offItem = player.getOffhandItem();
         Fp mainKind = kind(mainItem);
 
-        // a load in both arms, or the fire drill spun between both palms: drawn with the main hand, the off hand's item hidden
-        if (mainKind == Fp.CARRY || mainKind == Fp.HEAVY || mainKind == Fp.FIRE_DRILL && mainSwing > 0.0F) {
-            event.setCanceled(true);
-            if (main) bothArms(event, player, avatar, mainKind, mainItem, hands.mainHandRenderState, mainSwing);
-            return;
-        }
-
         // tongs in one hand, something hot in the other: the piece at the jaws, its hand empty
         boolean tongsMain = mainItem.is(BronzeTools.BRONZE_TONGS.get()), tongsOff = offItem.is(BronzeTools.BRONZE_TONGS.get());
         ItemStack hot = tongsMain ? offItem : mainItem;
@@ -203,6 +193,22 @@ public final class FirstPersonHolds {
             } else if (main && !avatar.isInvisible) {
                 playerArm(event, avatar, arm, event.getEquipProgress(), event.getSwingProgress());
             }
+            return;
+        }
+
+        // a load in both arms, or the fire drill spun between both palms: drawn with the main hand, the off hand's item hidden
+        boolean drilling = mainKind == Fp.FIRE_DRILL && HoldPoses.drilling(player, mainSwing > 0.0F || usingOnBlock(player));
+        Fp offKind = kind(offItem);
+        ItemStack load = drilling || twoArmed(mainKind) ? mainItem : twoArmed(offKind) ? offItem : null;
+        if (load != null) {
+            event.setCanceled(true);
+            if (main) bothArms(event, player, avatar, load == mainItem ? mainKind : offKind, load);
+            return;
+        }
+        // the basket hanging from the forearm, whichever hand holds it
+        if (kind(main ? mainItem : offItem) == Fp.BASKET) {
+            event.setCanceled(true);
+            basket(event, player, avatar, arm, main ? mainItem : offItem);
             return;
         }
 
@@ -227,33 +233,81 @@ public final class FirstPersonHolds {
         }
     }
 
-    /** Both hands up in front holding the load on them (vanilla's two-handed map hands, the map upright), bobbing with the steps. */
-    private static void bothArms(RenderHandEvent event, Player player, AvatarRenderState avatar, Fp fp, ItemStack stack,
-            ItemStackRenderState held, float swing) {
+    /** The local player holding right-click on a block (the fire drill's repeated use, before its swings come back). */
+    static boolean usingOnBlock(net.minecraft.world.entity.Entity entity) {
+        Minecraft mc = Minecraft.getInstance();
+        return entity == mc.player && mc.options.keyUse.isDown() && mc.hitResult instanceof net.minecraft.world.phys.BlockHitResult hit
+                && hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK;
+    }
+
+    private static boolean twoArmed(@Nullable Fp fp) {
+        return fp == Fp.CARRY || fp == Fp.HEAVY || fp == Fp.UNDER;
+    }
+
+    /** The held item unturned (ItemDisplayContext.NONE: centred, item x across, y up, face towards us). */
+    private static ItemStackRenderState unturned(ItemStack stack, Player player) {
+        ItemStackRenderState state = new ItemStackRenderState();
+        Minecraft.getInstance().getItemModelResolver().updateForLiving(state, stack, ItemDisplayContext.NONE, player);
+        return state;
+    }
+
+    /** Both hands up in front (vanilla's two-handed map hands), the load lying on the forearms or standing on the hands, bobbing with the steps. */
+    private static void bothArms(RenderHandEvent event, Player player, AvatarRenderState avatar, Fp fp, ItemStack stack) {
         PoseStack ps = event.getPoseStack();
         float pt = event.getPartialTick(), speed = Math.min(1.0F, player.walkAnimation.speed(pt));
         boolean drill = fp == Fp.FIRE_DRILL;
-        float bob = drill ? 0.03F * Mth.sin(swing * Mth.PI) : -0.025F * Mth.abs(Mth.sin(player.walkAnimation.position(pt) * 0.6662F)) * speed;
+        float p = ((player.tickCount + pt) / 10.0F) % 1.0F; // the drill's spin, continuous while drilling
+        float bob = drill ? 0.0F : -0.025F * Mth.abs(Mth.sin(player.walkAnimation.position(pt) * 0.6662F)) * speed;
         ps.pushPose();
-        ps.translate(0.0F, 0.04F - 1.2F * event.getEquipProgress() + bob - (fp == Fp.HEAVY ? 0.06F : 0.0F), -0.72F);
+        ps.translate(0.0F, 0.04F - 1.2F * event.getEquipProgress() + bob + (fp == Fp.CARRY || fp == Fp.HEAVY ? 0.1F : 0.0F), -0.72F);
         if (!avatar.isInvisible) {
-            float rub = drill ? 0.06F * Mth.sin(swing * 4.0F * Mth.PI) : 0.0F; // palms rubbing past each other
+            float rub = drill ? 0.06F * Mth.sin(p * 4.0F * Mth.PI) : 0.0F; // palms rubbing past each other
             ps.pushPose();
             ps.rotateDegrees(Axis.YP, 90.0F);
             mapHand(event, avatar, HumanoidArm.RIGHT, -rub);
             mapHand(event, avatar, HumanoidArm.LEFT, rub);
             ps.popPose();
         }
-        if (drill) { // upright between the palms, point down, spinning
-            ps.translate(0.0F, -0.15F, -0.05F);
-            ps.rotateDegrees(Axis.YP, swing * 720.0F);
-            ps.scale(0.55F, 0.55F, 0.55F);
-            held = new ItemStackRenderState();
-            Minecraft.getInstance().getItemModelResolver().updateForLiving(held, stack, ItemDisplayContext.FIXED, player);
-        } else {
-            ps.translate(0.0F, -0.17F, -0.06F); // resting on the hands (gen_held_models FIRST_PERSON turns it across)
+        switch (fp) {
+            case FIRE_DRILL -> { // upright between the palms, point down, spinning
+                ps.translate(0.0F, -0.15F, -0.05F);
+                ps.rotateDegrees(Axis.YP, p * 720.0F);
+                ps.scale(0.55F, 0.55F, 0.55F);
+            }
+            case CARRY -> { // lying across both forearms, close and low
+                ps.translate(0.0F, -0.2F, 0.1F);
+                ps.rotateDegrees(Axis.XP, 15.0F);
+                ps.scale(0.5F, 0.5F, 0.5F);
+            }
+            case HEAVY -> {
+                ps.translate(0.0F, -0.36F, 0.12F);
+                ps.rotateDegrees(Axis.YP, 20.0F);
+                ps.scale(0.6F, 0.6F, 0.6F);
+            }
+            default -> { // UNDER: standing on both hands
+                ps.translate(0.0F, -0.3F, 0.08F);
+                ps.scale(0.5F, 0.5F, 0.5F);
+            }
         }
-        held.submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+        unturned(stack, player).submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+        ps.popPose();
+    }
+
+    /** The bare forearm low at the side with the basket hanging from it by the handle, swaying with the steps. */
+    private static void basket(RenderHandEvent event, Player player, AvatarRenderState avatar, HumanoidArm arm, ItemStack stack) {
+        PoseStack ps = event.getPoseStack();
+        int s = side(arm);
+        float pt = event.getPartialTick(), speed = Math.min(1.0F, player.walkAnimation.speed(pt));
+        float phase = player.walkAnimation.position(pt) * 0.6662F, age = player.tickCount + pt;
+        float lift = 0.03F * Mth.abs(Mth.sin(phase)) * speed - 0.008F * Mth.sin(age * 0.08F);
+        ps.pushPose();
+        ps.translate(0.0F, -lift, 0.0F);
+        if (!avatar.isInvisible) playerArm(event, avatar, arm, event.getEquipProgress() + 0.1F, 0.0F);
+        ps.translate(s * 0.36F, -0.4F - 0.6F * event.getEquipProgress(), -0.85F); // the handle round the forearm
+        ps.rotateDegrees(Axis.ZP, s * 3.0F * Mth.sin(phase) * speed);
+        ps.rotateDegrees(Axis.YP, s * -25.0F);
+        ps.scale(0.6F, 0.6F, 0.6F);
+        unturned(stack, player).submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
         ps.popPose();
     }
 
@@ -262,11 +316,13 @@ public final class FirstPersonHolds {
         PoseStack ps = event.getPoseStack();
         SubmitNodeCollector collector = event.getSubmitNodeCollector();
         int s = side(arm), light = event.getPackedLight();
+        PoseStack.Pose view = ps.last().copy(); // the hand space's own turn (GameRenderer starts it from the camera's)
         ps.pushPose();
         itemPos(ps, s, event.getEquipProgress());
         if (event.getSwingProgress() > 0.0F) swingArm(ps, s, event.getSwingProgress());
-        ps.translate(s * -0.12F, 0.04F, 0.0F);
-        ps.rotateDegrees(Axis.ZP, s * 20.0F);
+        ps.translate(s * -0.2F, -0.05F, 0.0F); // in and down, so the jaws and the piece are in view
+        ps.rotateDegrees(Axis.ZP, s * 35.0F);
+        ps.rotateDegrees(Axis.YP, s * 60.0F); // turned so the arms and jaws face us, not edge-on
         tongs.submit(ps, collector, light, OverlayTexture.NO_OVERLAY, 0);
         // to the jaws: the tongs' display transform, then the model point
         ps.translate(s * TONGS_AT[0] / 16.0F, TONGS_AT[1] / 16.0F, TONGS_AT[2] / 16.0F);
@@ -274,8 +330,8 @@ public final class FirstPersonHolds {
         ps.scale(TONGS_SCALE, TONGS_SCALE, TONGS_SCALE);
         ps.translate(JAWS[0] / 16.0F - 0.5F, JAWS[1] / 16.0F - 0.5F, JAWS[2] / 16.0F - 0.5F);
         Vector3f at = ps.last().pose().getTranslation(new Vector3f());
-        ps.last().pose().translation(at); // upright in view, whatever way the tongs point
-        ps.last().normal().identity();
+        ps.last().set(view); // upright in view, whatever way the tongs point
+        ps.last().pose().setTranslation(at);
         ps.rotateDegrees(Axis.YP, s * -30.0F);
         ps.translate(0.0F, -0.05F, 0.0F); // hanging from the jaws
         ps.scale(0.4F, 0.4F, 0.4F);

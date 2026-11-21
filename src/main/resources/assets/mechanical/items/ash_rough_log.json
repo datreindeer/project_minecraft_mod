@@ -14,8 +14,29 @@
       }
     ],
     "fallback": {
-      "type": "minecraft:model",
-      "model": "mechanical:item/ash_rough_log_held"
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:count",
+      "normalize": false,
+      "entries": [
+        {
+          "threshold": 2,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/ash_rough_log_held_2"
+          }
+        },
+        {
+          "threshold": 5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/ash_rough_log_held_3"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "mechanical:item/ash_rough_log_held"
+      }
     }
   }
 }

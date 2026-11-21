@@ -74,6 +74,15 @@
     },
     {
       "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "MECHANICAL_UNDER",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/mechanical/client/HoldPoses",
+        "field": "UNDER_POSE"
+      }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
       "name": "MECHANICAL_PADDLE",
       "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
       "parameters": {

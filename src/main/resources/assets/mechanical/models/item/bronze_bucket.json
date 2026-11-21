@@ -2,41 +2,5 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "mechanical:item/bronze_bucket"
-  },
-  "display": {
-    "thirdperson_righthand": {
-      "rotation": [
-        -90.0,
-        0.0,
-        -180.0
-      ],
-      "translation": [
-        0.0,
-        -2.0,
-        -3.5
-      ],
-      "scale": [
-        0.55,
-        0.55,
-        0.55
-      ]
-    },
-    "thirdperson_lefthand": {
-      "rotation": [
-        -90.0,
-        -0.0,
-        180.0
-      ],
-      "translation": [
-        -0.0,
-        -2.0,
-        -3.5
-      ],
-      "scale": [
-        0.55,
-        0.55,
-        0.55
-      ]
-    }
   }
 }

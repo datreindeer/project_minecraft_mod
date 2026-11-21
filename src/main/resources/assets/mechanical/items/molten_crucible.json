@@ -1,37 +1,14 @@
 {
   "model": {
-    "type": "minecraft:select",
-    "property": "minecraft:display_context",
-    "cases": [
-      {
-        "when": [
-          "gui"
-        ],
-        "model": {
-          "type": "minecraft:condition",
-          "property": "mechanical:bronze_crucible",
-          "on_true": {
-            "type": "minecraft:model",
-            "model": "mechanical:item/molten_crucible_bronze"
-          },
-          "on_false": {
-            "type": "minecraft:model",
-            "model": "mechanical:item/molten_crucible"
-          }
-        }
-      }
-    ],
-    "fallback": {
-      "type": "minecraft:condition",
-      "property": "mechanical:bronze_crucible",
-      "on_true": {
-        "type": "minecraft:model",
-        "model": "mechanical:item/molten_crucible_bronze_held"
-      },
-      "on_false": {
-        "type": "minecraft:model",
-        "model": "mechanical:item/molten_crucible_held"
-      }
+    "type": "minecraft:condition",
+    "property": "mechanical:bronze_crucible",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "mechanical:item/molten_crucible_bronze"
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "mechanical:item/molten_crucible"
     }
   }
 }
