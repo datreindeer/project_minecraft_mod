@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/forged",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:iron_saw"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:steel_saw"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:iron_saw"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.iron_saw.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.iron_saw.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

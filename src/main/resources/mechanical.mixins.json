@@ -33,6 +33,7 @@
     "AbstractBedBlockMixin",
     "CampfireBlockEntityMixin",
     "CampfireBlockMixin",
+    "CrossbowItemMixin",
     "FarmlandBlockMixin",
     "FireBlockInvoker",
     "MultiNoiseBiomeSourceParameterListsMixin",

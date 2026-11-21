@@ -116,7 +116,7 @@ public final class ArrowWounds {
         if (arrow == Mechanical.BONE_ARROW.get()) return 0.5F;
         if (arrow == Mechanical.FIRE_ARROW.get()) return 0.7F;
         if (arrow == Mechanical.BARBED_ARROW.get()) return 0.15F;
-        if (arrow == Bronze.BRONZE_ARROW.get()) return 0.1F; // a cast head: the shaft goes before it does
+        if (arrow == Bronze.BRONZE_ARROW.get() || arrow == Smithing.IRON_BOLT.get()) return 0.1F; // a metal head: the shaft goes before it does
         return 0.3F;
     }
 

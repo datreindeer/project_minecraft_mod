@@ -11,8 +11,8 @@ D = Path(__file__).resolve().parent.parent / "src/main/resources/data"
 OUT = D / "mechanical/advancement/recipes/auto"
 COMMON = {"#minecraft:planks", "minecraft:stick", "#minecraft:logs", "#minecraft:logs_that_burn", "mechanical:twine",
           "mechanical:plant_fibre", "mechanical:cordage", "minecraft:clay_ball"}
-# vanilla recipes the mod changed whose vanilla unlock no longer fits (it waits for string / hay)
-VANILLA = {"minecraft:lead", "minecraft:straw_bed"}
+# vanilla recipes the mod changed whose vanilla unlock no longer fits (it waits for string / hay / an Iron Ingot)
+VANILLA = {"minecraft:lead", "minecraft:straw_bed", "minecraft:crossbow"}
 
 
 def ingredients(recipe):

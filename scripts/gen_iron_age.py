@@ -9,6 +9,7 @@ python scripts/gen_iron_age.py
 """
 import colorsys
 import glob
+import math
 import json
 import zipfile
 from io import BytesIO
@@ -345,6 +346,67 @@ lang |= {
     "message.mechanical.hearth.no_room": "The hearth's coals are full: four pieces at most",
     "message.mechanical.hearth.state": "Smithing Hearth: %s/%s Charcoal. Lay blooms or ingots of iron or steel in it",
 }
+
+# ---------------------------------------------------------------- forged saws, crossbow, Iron Bolts (Smithing)
+# Saw blades and saws: the bronze ones with the metal recoloured (the saw's wooden grip kept: masked by the blade).
+for kind, tone in (("iron", IRON), ("steel", STEEL)):
+    item(f"{kind}_saw_blade", metal(bronze("saw_blade"), tone), f"{kind.title()} Saw Blade")
+    handheld(f"{kind}_saw", metal(mod_texture("item/bronze_saw"), tone, mask=bronze("saw_blade")), f"{kind.title()} Saw")
+    tag_add(T / "enchantable/durability.json", M + f"{kind}_saw")
+BOLT_IRON = {"l": (222, 226, 230), "m": (170, 175, 182), "d": (112, 117, 124), "o": (50, 52, 57)}
+
+
+def bolt_head():
+    """A socketed bodkin point lying along the diagonal (tip upper right): a kite, rimmed, lit upper left, shaded lower right."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    tx, ty, length, width, socket = 15, 1, 9.0, 3.0, 5.0
+    r2 = math.sqrt(2)
+
+    def inside(x, y):  # b: across the axis, + to the lower right
+        cx, cy = x + 0.5, y + 0.5
+        a, b = ((tx - cx) + (cy - ty)) / r2, ((cx - tx) + (cy - ty)) / r2
+        if 0 <= a <= length:
+            return b, abs(b) <= width * min(a / (length * 0.65), (length - a) / (length * 0.35) + 0.25)
+        return b, length < a <= length + socket and abs(b) <= 0.8
+
+    for y in range(16):
+        for x in range(16):
+            b, ok = inside(x, y)
+            if not ok:
+                continue
+            lower = not inside(x + 1, y)[1] or not inside(x, y + 1)[1]
+            upper = not inside(x - 1, y)[1] or not inside(x, y - 1)[1]
+            px[x, y] = BOLT_IRON["o" if lower and b > 0 else "m" if upper and b < -0.7 else "l" if b < -0.7 else "m" if b <= 0.3 else "d"]
+    return img
+
+
+def bolt():
+    """Shorter and stouter than an arrow: a thick shaft, a small bodkin point, the arrow's fletching."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    arrow = mod_texture("item/bronze_arrow").load()
+    for y in range(11, 15):
+        for x in range(2, 6):
+            if arrow[x, y][3] and arrow[x, y][0] == arrow[x, y][1]:  # the grey/white feathers
+                px[x, y] = arrow[x, y]
+    for x in range(5, 11):
+        px[x, 16 - x] = (137, 103, 39, 255)
+        px[x, 17 - x] = (76, 49, 18, 255)
+    for (x, y), c in {(14, 2): "l", (13, 2): "l", (12, 3): "l", (11, 4): "l", (13, 3): "m", (12, 4): "m", (11, 5): "m",
+                      (14, 3): "o", (13, 4): "d", (12, 5): "d", (13, 5): "o", (12, 6): "o", (11, 6): "d"}.items():
+        px[x, y] = BOLT_IRON[c]
+    return img
+
+
+item("iron_bolt_head", bolt_head(), "Iron Bolt Head")
+item("iron_bolt", bolt(), "Iron Bolt")
+w(D / "mechanical/tags/item/bolts.json", {"values": [M + "iron_bolt"]})
+# vanilla's crossbow from forged parts: an Iron Plate prod either side of an Iron Tool Rod trigger and stirrup, a Sinew
+# string, a wooden Tool Rod stock (its Iron Ingot / Tripwire Hook recipe can't be made in the mod)
+w(D / "minecraft/recipe/crossbow.json", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["PRP", "STS", " T "],
+    "key": {"P": M + "iron_plate", "R": M + "iron_tool_rod", "S": M + "sinew", "T": M + "tool_rod"}, "result": {"id": "minecraft:crossbow", "count": 1}})
+lang |= {"pattern.mechanical.saw_blade": "Saw Blade", "pattern.mechanical.bolt_heads": "Bolt Heads"}
 
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

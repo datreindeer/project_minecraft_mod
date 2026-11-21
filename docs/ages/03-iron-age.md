@@ -94,6 +94,8 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Sword Blade | 2 | 7 | Iron Sword Blade | Steel Sword Blade |
 | Spear Head | 1 | 6 | Iron Spear Head | Steel Spear Head |
 | Hammer Head | 2 | 6 | Iron Hammer Head | Steel Hammer Head |
+| Saw Blade | 1 | 6 | Iron Saw Blade | Steel Saw Blade |
+| Bolt Heads | 1 | 4 | 4 Iron Bolt Head | – |
 
 - **Fler tackor:** stora delar kräver flera heta tackor av samma metall. Lägg den första på städet och högerklicka med
   fler heta tackor (högst 3); högen ritas tacka för tacka. Den första håller hettan och slagen. För få tackor: inga slag,
@@ -114,6 +116,9 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Iron Helmet / Chestplate / Leggings / Boots | Armor Station: 3 / 6 / 5 / 2 Iron Plate + 2 / 4 / 3 / 2 Leather + hammare |
 | Bucket | 3 Iron Plate (V) |
 | Shears | 2 Iron Plate (diagonalt) |
+| Iron Saw / Steel Saw | Tool Station: Iron / Steel Saw Blade + Leather + Stick |
+| Crossbow | `[Iron Plate][Iron Tool Rod][Iron Plate]` / `[Sinew][Tool Rod][Sinew]` / `[ ][Tool Rod][ ]` |
+| Iron Bolt ×4 | Fletching Table: 4 Iron Bolt Head + Stick + Feather |
 
 - Smitt järn håller längre än brons: järnverktygen har **600** i hållbarhet (vanilla 250, brons 460) och Iron Pickaxe
   bryter guld, redstone, diamant och smaragd. Full järnrustning, bröstplåten som bronsåldern saknade.
@@ -121,6 +126,30 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
   → 3), **Cauldron** (7 Iron Plate), **Iron Door** (6 Iron Plate → 3), **Iron Trapdoor** (4 Iron Plate). Rail, Hopper,
   Anvil och andra redstone- och järnvägssaker kräver fortfarande Iron Ingot (ångåldern).
 - Advancements: **Forged**, **Iron Hammer**, **Ironsmith**, **Iron Clad** (Iron Age-fliken).
+
+**Smidda sågar (byggda, v0.129.0).** Bladet smids på städet (mönstret Saw Blade, 1 tacka, 6 slag) och sätts ihop i Tool
+Station som andra verktyg. De gör allt Bronze Saw gör (Log + Saw → 4 Planks, såga fallna stockar, Wooden Wheel, Potter's
+Wheel), bara längre och fortare:
+
+| Såg | Hållbarhet | Ett drag | En stock (8 drag) |
+|---|---|---|---|
+| Bronze Saw | 480 | 10 ticks | 4 s |
+| Iron Saw | 900 | 8 ticks | 3,2 s |
+| Steel Saw | 1600 | 6 ticks | 2,4 s |
+
+Recepten som ville ha Bronze Saw tar nu vilken såg som helst (taggen `mechanical:saws`: Sawn Planks, Wooden Wheel,
+Potter's Wheel). Advancement **Sharper Teeth** (efter *Forged*).
+
+**Armborst och Iron Bolts (byggda, v0.129.0).** Vanillas **Crossbow** görs av smidda delar i crafting grid: två Iron
+Plate till bågen, en Iron Tool Rod som avtryckare och stigbygel, två Sinew som sträng och två Tool Rod som stock (vanillas
+recept med Iron Ingot och Tripwire Hook går inte att göra). Det skjuter vanliga pilar och **Iron Bolts**: korta pilar med
+fyrkantig bodkinspets. En het tacka smids till **4 Iron Bolt Head** (mönstret Bolt Heads, 4 slag), och 4 spetsar + Stick +
+Feather blir 4 Iron Bolts på Fletching Table. En bolt gör **4** i grundskada (Bronze Arrow 3, vanlig pil 2) och går igenom
+**40 %** av rustningens skydd. Bara armborst kan skjuta dem (de är inte `#minecraft:arrows` utan `mechanical:bolts`; bågar
+tar dem inte), de går i Quiver och plockas upp dit, och de går sällan sönder i ett byte (10 %). I luften ritas de som en
+vanlig pil. Monster med armborst (plundrare) tappar det först när världen nått järnåldern (`LaterAgeGear`). Kod:
+`Smithing` (items, mönster, rustningsgenomslaget), `mixin/CrossbowItemMixin` (armborstet laddar bolts),
+`FletchingRecipes`. Advancements **Crossbowman** (mål, efter *Forged*) och **Bodkin** (efter *Crossbowman*).
 
 ### 3. Kolmila (charcoal clamp) (byggd)
 
@@ -329,6 +358,9 @@ Inga öppna beslut just nu: rostning (sämre, inte oanvändbar), malmerna (alla 
 | Charcoal Pile (kolmila) | Struktur/block | Ved + jord → mycket Charcoal |
 | Hot Wrought Iron Ingot | Item | Tackan vid smideshetta, hamras på Bronze Anvil |
 | Iron Plate, Iron Tool Rod, järnhuvuden | Items | Smidda delar till verktyg, rustning och vanillas järnsaker |
+| Iron Saw Blade, Steel Saw Blade, Iron Saw, Steel Saw | Items | **Byggd.** Smitt blad, Tool Station |
+| Iron Bolt Head, Iron Bolt | Items | **Byggd.** 4 spetsar per tacka, armborstets ammunition |
+| Crossbow (vanilla) | Item | **Byggd.** Iron Plate, Iron Tool Rod, Sinew, Tool Rod |
 | Steel Ingot | Item | Wrought Iron + Charcoal, cementering |
 | Galena Ore, Deepslate Galena Ore | Block | **Byggd.** Bronze Pickaxe, ger Raw Galena |
 | Raw Galena, Lead Ingot | Items | **Byggd.** Kiln 800° |

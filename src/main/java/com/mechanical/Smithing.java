@@ -71,6 +71,21 @@ public final class Smithing {
     public static final DeferredItem<Item> STEEL_SWORD_BLADE = ITEMS.registerSimpleItem("steel_sword_blade");
     public static final DeferredItem<Item> STEEL_SPEAR_HEAD = ITEMS.registerSimpleItem("steel_spear_head");
     public static final DeferredItem<Item> STEEL_HAMMER_HEAD = ITEMS.registerSimpleItem("steel_hammer_head");
+    public static final DeferredItem<Item> IRON_SAW_BLADE = ITEMS.registerSimpleItem("iron_saw_blade");
+    public static final DeferredItem<Item> STEEL_SAW_BLADE = ITEMS.registerSimpleItem("steel_saw_blade");
+    public static final DeferredItem<Item> IRON_BOLT_HEAD = ITEMS.registerSimpleItem("iron_bolt_head");
+
+    // ---- forged saws: longer-lived and quicker through a fallen log than the Bronze Saw (480, a stroke every 10 ticks)
+    public static final DeferredItem<SawItem> IRON_SAW = ITEMS.registerItem("iron_saw", p -> new SawItem(p, 8), p -> p.durability(900));
+    public static final DeferredItem<SawItem> STEEL_SAW = ITEMS.registerItem("steel_saw", p -> new SawItem(p, 6), p -> p.durability(1600));
+
+    // ---- the crossbow (vanilla's, made from forged parts: data/minecraft/recipe/crossbow.json) and its Iron Bolts
+    /** Crossbow-only ammunition (CrossbowItemMixin; not #minecraft:arrows, so bows can't shoot it). */
+    public static final TagKey<Item> BOLTS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "bolts"));
+    public static final double BOLT_DAMAGE = 4.0;
+    /** Share of the target's armour protection an Iron Bolt's square head punches through. */
+    public static final float BOLT_ARMOR_PIERCE = 0.4F;
+    public static final DeferredItem<SpecialArrowItem> IRON_BOLT = ITEMS.registerItem("iron_bolt", p -> new SpecialArrowItem(p, BOLT_DAMAGE, false));
 
     /** Iron wears less than bronze: 1 a blow instead of {@link Ironworking#HAMMER_WEAR}. */
     public static final DeferredItem<Item> IRON_SMITHING_HAMMER = ITEMS.registerSimpleItem("iron_smithing_hammer", p -> p.durability(500));
@@ -132,18 +147,27 @@ public final class Smithing {
         KNIFE_BLADE("knife_blade", 1, 5, () -> IRON_KNIFE_BLADE.get(), () -> STEEL_KNIFE_BLADE.get()),
         SWORD_BLADE("sword_blade", 2, 7, () -> IRON_SWORD_BLADE.get(), () -> STEEL_SWORD_BLADE.get()),
         SPEAR_HEAD("spear_head", 1, 6, () -> IRON_SPEAR_HEAD.get(), () -> STEEL_SPEAR_HEAD.get()),
-        HAMMER_HEAD("hammer_head", 2, 6, () -> IRON_HAMMER_HEAD.get(), () -> STEEL_HAMMER_HEAD.get());
+        HAMMER_HEAD("hammer_head", 2, 6, () -> IRON_HAMMER_HEAD.get(), () -> STEEL_HAMMER_HEAD.get()),
+        SAW_BLADE("saw_blade", 1, 6, () -> IRON_SAW_BLADE.get(), () -> STEEL_SAW_BLADE.get()),
+        BOLT_HEADS("bolt_heads", 1, 4, BOLT_HEADS_PER_INGOT, () -> IRON_BOLT_HEAD.get(), null);
 
         public final String id;
         /** Hot ingots stacked on the anvil and welded into the part (like vanilla's ingot counts: a pickaxe 3). */
         public final int ingots;
         public final int hits;
+        /** Parts one forging gives (bolt heads: several from one ingot). */
+        public final int count;
         private final Supplier<Item> iron, steel;
 
         Pattern(String id, int ingots, int hits, Supplier<Item> iron, Supplier<Item> steel) {
+            this(id, ingots, hits, 1, iron, steel);
+        }
+
+        Pattern(String id, int ingots, int hits, int count, Supplier<Item> iron, Supplier<Item> steel) {
             this.id = id;
             this.ingots = ingots;
             this.hits = hits;
+            this.count = count;
             this.iron = iron;
             this.steel = steel;
         }
@@ -151,12 +175,24 @@ public final class Smithing {
         /** The part this pattern makes from {@code metal} (a hot ingot), or empty. */
         public ItemStack result(ItemStack metal) {
             Supplier<Item> part = metal.is(HOT_STEEL_INGOT.get()) ? steel : metal.is(HOT_WROUGHT_IRON_INGOT.get()) ? iron : null;
-            return part == null ? ItemStack.EMPTY : new ItemStack(part.get());
+            return part == null ? ItemStack.EMPTY : new ItemStack(part.get(), count);
         }
 
         public Pattern next() {
             return values()[(ordinal() + 1) % values().length];
         }
+    }
+
+    /** Iron Bolt Heads one hot Wrought Iron Ingot is drawn and cut into. */
+    public static final int BOLT_HEADS_PER_INGOT = 4;
+
+    /** An Iron Bolt ignores {@link #BOLT_ARMOR_PIERCE} of the armour it hits. */
+    @SubscribeEvent
+    static void boltPiercesArmour(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
+        if (event.getSource().getDirectEntity() instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow
+                && arrow.getPickupItemStackOrigin().is(BOLTS))
+            event.addReductionModifier(net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction.ARMOR,
+                    (container, reduction) -> reduction * (1 - BOLT_ARMOR_PIERCE));
     }
 
     private static DeferredItem<HotMetalItem> hot(String name, Supplier<? extends Item> cold) {

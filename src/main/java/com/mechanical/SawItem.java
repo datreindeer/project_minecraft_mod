@@ -18,7 +18,8 @@ import net.minecraft.world.phys.HitResult;
 /**
  * The Bronze Saw: a crafting tool like the flint pickaxe (Log + Saw → planks, losing 1 durability), and it cuts fallen
  * logs across while right-click is held on one: started by {@link TreeChopping}, it goes on while the player keeps looking
- * at that same log, one stroke (push or pull) every {@link #STROKE_TICKS}. The arms' push-pull is drawn from the use
+ * at that same log, one stroke (push or pull) every {@link #strokeTicks} (Bronze {@link #STROKE_TICKS}; the forged Iron and
+ * Steel Saws cut faster, Smithing). The arms' push-pull is drawn from the use
  * time (client: SawClient), so everyone sees it in step with the strokes.
  */
 public class SawItem extends FlintPickaxeItem {
@@ -26,8 +27,16 @@ public class SawItem extends FlintPickaxeItem {
     /** The fallen log each player is sawing. Kept on both sides: the client stops its own player's sawing too. */
     private static final Map<Player, BlockPos> SAWING = new WeakHashMap<>();
 
+    /** Ticks a stroke takes with this saw. */
+    public final int strokeTicks;
+
     public SawItem(Properties properties) {
+        this(properties, STROKE_TICKS);
+    }
+
+    public SawItem(Properties properties, int strokeTicks) {
         super(properties);
+        this.strokeTicks = strokeTicks;
     }
 
     static void startSawing(Player player, InteractionHand hand, BlockPos log) {
@@ -36,8 +45,8 @@ public class SawItem extends FlintPickaxeItem {
     }
 
     /** 0 → 1 → 0 over one push and pull, the push ending on a stroke. */
-    public static float push(float ticksUsing) {
-        return (1 - (float) Math.cos(ticksUsing * Math.PI / STROKE_TICKS)) / 2;
+    public static float push(float ticksUsing, int strokeTicks) {
+        return (1 - (float) Math.cos(ticksUsing * Math.PI / strokeTicks)) / 2;
     }
 
     @Override
@@ -63,7 +72,7 @@ public class SawItem extends FlintPickaxeItem {
             return;
         }
         int ticks = getUseDuration(stack, user) - ticksRemaining;
-        if (level instanceof ServerLevel server && ticks > 0 && ticks % STROKE_TICKS == 0)
-            TreeChopping.sawStroke(server, player, player.getUsedItemHand(), log, state, stack, ticks / STROKE_TICKS % 2 == 1);
+        if (level instanceof ServerLevel server && ticks > 0 && ticks % strokeTicks == 0)
+            TreeChopping.sawStroke(server, player, player.getUsedItemHand(), log, state, stack, ticks / strokeTicks % 2 == 1);
     }
 }

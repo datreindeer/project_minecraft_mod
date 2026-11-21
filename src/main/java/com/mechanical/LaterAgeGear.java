@@ -12,8 +12,8 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 /**
  * Monsters spawn without gear from ages the world hasn't reached (WorldAge; copper from the Bronze Age, iron and
- * chainmail from the Iron Age): iron/gold/chainmail/diamond armour is taken off, and weapons they need
- * to fight (skeleton bows, iron swords, crossbows, tridents) stay in hand but are never dropped.
+ * chainmail and crossbows from the Iron Age): iron/gold/chainmail/diamond armour is taken off, and weapons they need
+ * to fight (skeleton bows, iron swords, crossbows before the Iron Age, tridents) stay in hand but are never dropped.
  * Items a monster picked up itself are guaranteed drops and are left alone.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -23,7 +23,8 @@ public final class LaterAgeGear {
     /** Is this gear from an age the world hasn't reached? Copper from the Bronze Age, iron and chainmail from the Iron Age. */
     static boolean isLaterAge(ItemStack stack, int worldAge) {
         if (stack.isEmpty()) return false;
-        if (stack.is(Items.BOW) || stack.is(Items.CROSSBOW) || stack.is(Items.TRIDENT) || stack.isEnchanted()) return true;
+        if (stack.is(Items.BOW) || stack.is(Items.TRIDENT) || stack.isEnchanted()) return true;
+        if (stack.is(Items.CROSSBOW)) return worldAge < WorldAge.IRON; // forged from iron parts in the Iron Age (Smithing)
         String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
         for (String metal : METALS) {
             if (!id.contains(metal)) continue;

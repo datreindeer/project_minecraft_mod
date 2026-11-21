@@ -1462,6 +1462,19 @@ TABS["iron_age"][1].extend([
      by_code()),
 ])
 
+# forged saws, the crossbow and Iron Bolts (Smithing.java, gen_iron_age.py)
+TABS["iron_age"][1].extend([
+    ("iron_saw", "forged", "iron_saw", T, "Sharper Teeth",
+     "Forge a Saw Blade on the anvil (1 hot ingot) and assemble an Iron Saw (Leather, Stick): 900 uses and it saws a log faster. "
+     "In steel, the Steel Saw: 1600 uses, faster still", has("iron_saw", "steel_saw")),
+    ("crossbow", "forged", "minecraft:crossbow", G, "Crossbowman",
+     "Craft a Crossbow: 2 Iron Plates for the prod, an Iron Tool Rod for the trigger, 2 Sinew for the string and 2 Tool Rods for the stock",
+     has("minecraft:crossbow")),
+    ("iron_bolt", "crossbow", "iron_bolt", T, "Bodkin",
+     "Forge Bolt Heads on the anvil (1 hot ingot gives 4) and fletch Iron Bolts: 4 damage, they punch through 40% of armour. Crossbow only",
+     has("iron_bolt")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

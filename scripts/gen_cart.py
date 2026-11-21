@@ -52,13 +52,13 @@ for item in ITEMS:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
 
-# rim of planks, spokes of Tool Rods, a bronze hub and axle pin; the saw cuts the felloes and stays (FlintPickaxeItem rule)
+# rim of planks, spokes of Tool Rods, a bronze hub and axle pin; a saw (#mechanical:saws) cuts the felloes and stays (FlintPickaxeItem rule)
 shaped("wooden_wheel", ["PRP", "RBR", "PSP"],
-       {"P": "#minecraft:planks", "R": M + "tool_rod", "B": M + "bronze_ingot", "S": M + "bronze_saw"}, "misc")
+       {"P": "#minecraft:planks", "R": M + "tool_rod", "B": M + "bronze_ingot", "S": "#mechanical:saws"}, "misc")
 shaped("cart", ["R R", "PPP", "WPW"], {"R": M + "tool_rod", "P": "#minecraft:planks", "W": M + "wooden_wheel"}, "misc")
 shaped("rope_halter", ["C C", " C "], {"C": M + "cordage"}, "equipment")
 shaped("hide_saddle_blanket", ["LLL", "C C"], {"L": "minecraft:leather", "C": M + "cordage"}, "equipment")
-unlock("wooden_wheel", M + "bronze_saw", ["wooden_wheel"])
+unlock("wooden_wheel", "#mechanical:saws", ["wooden_wheel"])
 unlock("cart", M + "wooden_wheel", ["cart"])
 unlock("rope_halter", M + "bronze_ingot", ["rope_halter"])
 unlock("hide_saddle_blanket", M + "rope_halter", ["hide_saddle_blanket"])

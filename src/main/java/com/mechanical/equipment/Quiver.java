@@ -32,8 +32,8 @@ import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Quiver {
     public static final int SIZE = 4;
-    /** What fits: anything tagged #minecraft:arrows (vanilla and the mod's arrows). */
-    public static final Predicate<ItemStack> ARROWS = s -> s.is(ItemTags.ARROWS);
+    /** What fits: anything tagged #minecraft:arrows (vanilla and the mod's arrows), and crossbow bolts. */
+    public static final Predicate<ItemStack> ARROWS = s -> s.is(ItemTags.ARROWS) || s.is(com.mechanical.Smithing.BOLTS);
 
     /** Arrow stacks handed to a weapon from a quiver, with where they came from and their size at the time. */
     private static final Map<ItemStack, Drawn> DRAWN = Collections.synchronizedMap(new WeakHashMap<>());

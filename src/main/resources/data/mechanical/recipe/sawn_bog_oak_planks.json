@@ -4,7 +4,7 @@
   "group": "sawn_planks",
   "ingredients": [
     "#mechanical:bog_oak_logs",
-    "mechanical:bronze_saw"
+    "#mechanical:saws"
   ],
   "result": {
     "id": "mechanical:bog_oak_planks",
