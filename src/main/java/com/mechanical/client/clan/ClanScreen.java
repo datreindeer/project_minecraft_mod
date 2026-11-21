@@ -83,6 +83,9 @@ public class ClanScreen extends Screen {
             return;
         }
         boolean leader = view.myRank() == Clans.LEADER, elder = view.myRank() == Clans.ELDER;
+        // the tribe's colour (its pennant on the Tab list): the leader clicks through the 16 dye colours
+        if (leader) addRenderableWidget(Button.builder(Component.empty(), b -> send(ClanNetwork.COLOUR, ClanNetwork.NONE, String.valueOf((view.colour() + 1) % 16)))
+                .bounds(x + inner - 16, top + 3, 16, 16).tooltip(Tooltip.create(Component.translatable("gui.mechanical.clan.colour", colourName()))).build());
         int pages = Math.max(1, (view.members().size() + ROWS - 1) / ROWS);
         page = Math.min(page, pages - 1);
         int y = top + PAD + 14;
@@ -137,6 +140,10 @@ public class ClanScreen extends Screen {
         }
     }
 
+    private Component colourName() {
+        return Component.translatable("color.minecraft." + net.minecraft.world.item.DyeColor.byId(view.colour()).getName());
+    }
+
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractBackground(graphics, mouseX, mouseY, a);
@@ -182,6 +189,7 @@ public class ClanScreen extends Screen {
             graphics.text(font, status, x, y, TEXT);
         }
         super.extractRenderState(graphics, mouseX, mouseY, a);
+        if (view.inClan()) TribeTabList.pennant(graphics, x + inner - 12, top + 5, TribeTabList.dye(view.colour()));
     }
 
     @Override

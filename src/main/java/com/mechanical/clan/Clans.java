@@ -51,6 +51,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * as no), or, when the leader hasn't been seen for {@link #ABSENT_DAYS}, a new leader (only votes cast count). The
  * tribe shares all mod advancements (and so their recipes): one member's advancement is every member's, offline ones
  * get them when they log in, and joining merges both ways. Its age is the latest age it has reached (WorldAge), and the world's age follows the tribes'. No friendly fire.
+ * The leader picks the tribe's colour (a dye colour); the Tab list (client.clan.TribeTabList) groups players by tribe.
  * The locator bar shows only tribe mates (mixin.LivingEntityWaypointMixin). Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -112,14 +113,18 @@ public final class Clans extends SavedData {
         final List<Member> members;
         final Set<Identifier> advancements;
         Optional<Vote> vote;
+        /** A DyeColor id, picked by the leader on the tribe page; tribes from before it had one get one from their id. */
+        int colour;
 
-        Clan(UUID id, String name, Optional<GlobalPos> pit, List<Member> members, List<Identifier> advancements, Optional<Vote> vote) {
+        Clan(UUID id, String name, Optional<GlobalPos> pit, List<Member> members, List<Identifier> advancements, Optional<Vote> vote,
+             Optional<Integer> colour) {
             this.id = id;
             this.name = name;
             this.pit = pit;
             this.members = new ArrayList<>(members);
             this.advancements = new HashSet<>(advancements);
             this.vote = vote;
+            this.colour = colour.filter(c -> c >= 0 && c < 16).orElse(Math.floorMod(id.hashCode(), 16));
         }
 
         static final Codec<Clan> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -127,7 +132,8 @@ public final class Clans extends SavedData {
                 GlobalPos.CODEC.optionalFieldOf("pit").forGetter(c -> c.pit),
                 Member.CODEC.listOf().fieldOf("members").forGetter(c -> c.members),
                 Identifier.CODEC.listOf().fieldOf("advancements").forGetter(c -> List.copyOf(c.advancements)),
-                Vote.CODEC.optionalFieldOf("vote").forGetter(c -> c.vote)).apply(i, Clan::new));
+                Vote.CODEC.optionalFieldOf("vote").forGetter(c -> c.vote),
+                Codec.INT.optionalFieldOf("colour").forGetter(c -> Optional.of(c.colour))).apply(i, Clan::new));
 
         public String name() {
             return name;
@@ -150,6 +156,10 @@ public final class Clans extends SavedData {
         /** Index into {@link #AGES}: the latest age the tribe has reached (WorldAge). */
         public int age() {
             return com.mechanical.WorldAge.of(advancements);
+        }
+
+        public int colour() {
+            return colour;
         }
     }
 
@@ -230,7 +240,7 @@ public final class Clans extends SavedData {
         if (pit == null) return false;
         long today = today(player.level().getServer());
         Clan clan = new Clan(UUID.randomUUID(), name, Optional.of(pit),
-                List.of(new Member(player.getUUID(), player.getGameProfile().name(), LEADER, today, today)), List.of(), Optional.empty());
+                List.of(new Member(player.getUUID(), player.getGameProfile().name(), LEADER, today, today)), List.of(), Optional.empty(), Optional.empty());
         clans.add(clan);
         invites.remove(player.getUUID());
         mergeIn(player, clan);
@@ -251,6 +261,15 @@ public final class Clans extends SavedData {
         if (pit == null) return false;
         clan.pit = Optional.of(pit);
         tell(player.level().getServer(), clan, Component.translatable("message.mechanical.clan.new_centre", player.getName()));
+        setDirty();
+        return true;
+    }
+
+    /** The leader picks the tribe's colour (a DyeColor id), shown on the Tab list. */
+    boolean colour(ServerPlayer player, int colour) {
+        Clan clan = clanOf(player.getUUID());
+        if (clan == null || clan.member(player.getUUID()).rank != LEADER || colour < 0 || colour >= 16 || colour == clan.colour) return false;
+        clan.colour = colour;
         setDirty();
         return true;
     }
@@ -345,6 +364,7 @@ public final class Clans extends SavedData {
     private void rankChanged(MinecraftServer server, Clan clan, Member m) {
         tell(server, clan, Component.translatable("message.mechanical.clan.rank", m.name, Component.translatable("gui.mechanical.clan.rank." + RANKS[m.rank])));
         setDirty();
+        ClanNetwork.sendRoster(server);
     }
 
     boolean canCallLeaderVote(MinecraftServer server, Clan clan) {
@@ -417,6 +437,7 @@ public final class Clans extends SavedData {
         Component what = Component.translatable("gui.mechanical.clan.vote." + VOTES[v.kind], candidate == null ? "?" : candidate.name);
         tell(server, clan, Component.translatable(pass ? "message.mechanical.clan.vote_passed" : "message.mechanical.clan.vote_failed", what).withStyle(ChatFormatting.GOLD));
         if (!pass) return;
+        ClanNetwork.sendRoster(server);
         switch (v.kind) {
             case VOTE_DISBAND -> {
                 tell(server, clan, Component.translatable("message.mechanical.clan.disbanded", clan.name));
@@ -428,6 +449,7 @@ public final class Clans extends SavedData {
                 if (candidate == null) return;
                 clan.leader().rank = ELDER;
                 candidate.rank = LEADER;
+                ClanNetwork.sendRoster(server);
             }
             default -> {}
         }
@@ -469,9 +491,12 @@ public final class Clans extends SavedData {
         Clans data = get(player.level().getServer());
         Clan clan = data.clanOf(player.getUUID());
         // already the tribe's: this is the share reaching another member, not a new one
-        if (clan == null || !clan.advancements.add(event.getAdvancement().id())) return;
-        data.setDirty();
-        for (ServerPlayer sp : online(player.level().getServer(), clan)) if (sp != player) catchUp(sp, clan);
+        if (clan != null && clan.advancements.add(event.getAdvancement().id())) {
+            data.setDirty();
+            for (ServerPlayer sp : online(player.level().getServer(), clan)) if (sp != player) catchUp(sp, clan);
+        }
+        for (int a = 1; a < AGES.length; a++)
+            if (com.mechanical.WorldAge.MARKERS[a].equals(event.getAdvancement().id())) ClanNetwork.sendRoster(player.level().getServer());
     }
 
     // ---------------------------------------------------------------- events
@@ -481,6 +506,7 @@ public final class Clans extends SavedData {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         Clans data = get(player.level().getServer());
         Clan clan = data.clanOf(player.getUUID());
+        ClanNetwork.sendRoster(player.level().getServer());
         if (clan == null) return;
         Member m = clan.member(player.getUUID());
         m.name = player.getGameProfile().name();
@@ -488,6 +514,12 @@ public final class Clans extends SavedData {
         data.setDirty();
         catchUp(player, clan);
         clan.vote.ifPresent(v -> player.sendSystemMessage(Component.translatable("message.mechanical.clan.vote_open").withStyle(ChatFormatting.GOLD)));
+    }
+
+    /** The Tab list's online counts and the Wanderers group. */
+    @SubscribeEvent
+    static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) ClanNetwork.sendRoster(player.level().getServer(), player);
     }
 
     /** Daily chores, checked every 5 s: who was seen today, Newcomers growing into Members, votes running out. */

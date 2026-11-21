@@ -2699,5 +2699,14 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
+  "gui.mechanical.clan.colour": "Tribe colour: %s. Click for the next",
+  "gui.mechanical.tab.title": "Players",
+  "gui.mechanical.tab.wanderers": "Wanderers",
+  "gui.mechanical.tab.online": "%s online",
+  "gui.mechanical.tab.age.stone": "Stone",
+  "gui.mechanical.tab.age.bronze": "Bronze",
+  "gui.mechanical.tab.age.iron": "Iron",
+  "gui.mechanical.tab.age.steam": "Steam",
+  "gui.mechanical.tab.age.electric": "Electric"
 }

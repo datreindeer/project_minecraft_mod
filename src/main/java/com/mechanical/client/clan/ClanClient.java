@@ -8,12 +8,13 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
-/** G opens the tribe screen: ask the server, which answers with a view ({@link ClanScreen}). */
+/** G opens the tribe screen: ask the server, which answers with a view ({@link ClanScreen}). The roster feeds the Tab list ({@link TribeTabList}). */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class ClanClient {
     public static final KeyMapping OPEN = new KeyMapping("key.mechanical.tribe", com.mojang.blaze3d.platform.InputConstants.KEY_G, KeyMapping.Category.MULTIPLAYER);
@@ -30,6 +31,13 @@ public final class ClanClient {
             if (view.open()) mc.gui.setScreen(new ClanScreen(view));
             else if (mc.gui.screen() instanceof ClanScreen screen) screen.update(view);
         });
+        event.register(ClanNetwork.Roster.TYPE, (roster, context) -> TribeTabList.roster = roster);
+    }
+
+    /** A new server may not send a roster: until it does, Tab shows vanilla's list. */
+    @SubscribeEvent
+    static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        TribeTabList.roster = null;
     }
 
     @SubscribeEvent

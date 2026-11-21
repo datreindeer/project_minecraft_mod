@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import com.mojang.serialization.JsonOps;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +28,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's. */
+/** Game test for tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour and the Tab list roster. */
 @EventBusSubscriber(modid = MODID)
 public final class ClanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -55,7 +57,7 @@ public final class ClanTest {
     private static Clans.Clan tribe(Clans data, UUID[] ids) {
         List<Clans.Member> members = new ArrayList<>();
         for (int i = 0; i < ids.length; i++) members.add(new Clans.Member(ids[i], "p" + i, i == 0 ? Clans.LEADER : Clans.MEMBER, 0, 0));
-        Clans.Clan c = new Clans.Clan(UUID.randomUUID(), "t", Optional.of(GlobalPos.of(Level.OVERWORLD, BlockPos.ZERO)), members, List.of(), Optional.empty());
+        Clans.Clan c = new Clans.Clan(UUID.randomUUID(), "t", Optional.of(GlobalPos.of(Level.OVERWORLD, BlockPos.ZERO)), members, List.of(), Optional.empty(), Optional.empty());
         data.clans.add(c);
         return c;
     }
@@ -112,6 +114,23 @@ public final class ClanTest {
         check(h, c.age() == 0, "stone age by default");
         c.advancements.add(com.mechanical.WorldAge.MARKERS[1]);
         check(h, c.age() == 1, "making bronze starts the bronze age");
+
+        // colour: saved, and a tribe saved before tribes had colours gets one from its id
+        Clans.Clan k = tribe(data, three());
+        k.colour = 5;
+        var json = Clans.Clan.CODEC.encodeStart(JsonOps.INSTANCE, k).getOrThrow();
+        check(h, Clans.Clan.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow().colour == 5, "colour saved");
+        json.getAsJsonObject().remove("colour");
+        check(h, Clans.Clan.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow().colour == Math.floorMod(k.id.hashCode(), 16), "old tribes get a colour");
+
+        // the Tab list roster: members by rank then name, and it survives the trip to the client
+        k.member(k.members.get(2).id).rank = Clans.ELDER;
+        List<ClanNetwork.Row> rows = ClanNetwork.rows(server, k, null);
+        check(h, rows.get(0).name().equals("p0") && rows.get(1).name().equals("p2") && !rows.get(0).online(), "roster rows by rank");
+        ClanNetwork.Roster roster = new ClanNetwork.Roster(1, List.of(new ClanNetwork.Group(k.id, k.name, k.colour, k.age(), rows)), Map.of(UUID.randomUUID(), 2));
+        var buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), server.registryAccess());
+        ClanNetwork.Roster.CODEC.encode(buf, roster);
+        check(h, ClanNetwork.Roster.CODEC.decode(buf).equals(roster), "roster round trip");
 
         // world age: a high-water mark; NPC tribes lag 0 or 1 behind
         int before = com.mechanical.WorldAge.of(server);

@@ -11,6 +11,8 @@
 | Flytta eller upplösa | Görs med en **röstning** i stammen: flytta Fire Pit:en eller upplösa stammen. |
 | Ledaren lämnar | Ledaren måste först ge ledarrollen till någon annan. |
 | Stam-GUI | En egen sida som öppnas med `G`: medlemmar, ranker, inbjudningar och röstningar. |
+| Stamfärg | Ledaren väljer en av de 16 dye-färgerna på stamsidan (vimpelknappen uppe till höger). Syns på Tab-listan. |
+| Tab-listan | Grupperad per stam: en vimpelrad i stammens färg med namn, online/alla och ålder, sedan medlemmarna med rank, ålder och ping. Spelare utan stam hamnar sist som **Wanderers**. |
 | Ranker | Leader, Elder (högre rank), Member (vanlig) och Newcomer (ny medlem). Ledare och Elder kan bjuda in. |
 | Advancements | Delas av hela stammen. Vid inträde slås spelarens och stammens advancements ihop **åt båda hållen**. Den som lämnar behåller allt. |
 | Stammens ålder | Samma för alla medlemmar: den högsta ålder stammen nått. |
@@ -54,7 +56,18 @@
 - **Ledaren frånvarande:** har ledaren inte loggat in på **10 speldygn** kan vilken medlem som helst starta en
   röstning om ny ledare.
 - **Stam-GUI** som öppnas med `G`. Sidan visar stammens namn och ålder, medlemmar med rank och om de är online,
-  knappar för att bjuda in, befordra, degradera och kicka, samt pågående röstningar.
+  knappar för att bjuda in, befordra, degradera och kicka, samt pågående röstningar. Ledaren väljer stammens
+  **färg** (en av de 16 dye-färgerna) med vimpelknappen uppe till höger; klick ger nästa färg. Gamla stammar får
+  en färg utifrån sitt id.
+- **Tab-listan** (spelarlistan) ersätter vanilla: en ram i stamsidans barkstil med serverns namn, världsåldern och
+  datumet överst. Varje stam med någon online har en vimpelrad i sin färg (namn, online/alla medlemmar, åldern som
+  en liten färgad etikett), och under den medlemmarna efter rank och namn: ansikte, rankmärke (★ Leader, ✦ Elder,
+  • Member, ◦ Newcomer), namn, ålder och ping. Den egna stammen står först, sedan efter storlek och namn. Spelare
+  utan stam står sist som **Wanderers** med sin egen ålder. Långa listor delas i jämna kolumner (en stam som delas
+  upprepar sin vimpelrad) och ramen krymper om den inte får plats. Serverns egen header/footer visas i ramen.
+  Servern skickar listan (`ClanNetwork.Roster`) vid inloggning, utloggning, stamändringar, färgbyte och när någon
+  når en ny ålder. Utan den (eller när servern visar en scoreboard i listan) visas vanillas lista. Till skillnad
+  från vanilla syns den även i singleplayer.
 - **Ranker:** **Leader** (en), **Elder** (högre rank, kan bjuda in), **Member** (vanlig) och **Newcomer** (ny medlem).
   Ledaren får göra allt: bjuda in, kicka, befordra och degradera. En Elder får bjuda in och kicka en Newcomer. En
   Newcomer blir Member automatiskt efter **7 speldygn**. Speldygn räknas bara när servern är igång, eftersom tiden

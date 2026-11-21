@@ -1,4 +1,4 @@
-"""Player tribes and the world age: lang lines for the tribe page (G) and its chat messages (clan/Clans.java, client/clan/ClanScreen.java).
+"""Player tribes and the world age: lang lines for the tribe page (G), its chat messages and the Tab list (clan/Clans.java, client/clan/ClanScreen.java, client/clan/TribeTabList.java).
 Generator order: ... gen_equipment.py, gen_calendar.py, gen_clans.py, gen_block_items.py, ... gen_registry.py.
 Run: python scripts/gen_clans.py"""
 import json
@@ -72,7 +72,15 @@ LANG = {
     "message.mechanical.world_age.entered": "The world has entered the %s",
     "message.mechanical.world_age.is": "The world is in the %s",
 }
+LANG.update({
+    G + "colour": "Tribe colour: %s. Click for the next",
+    # the Tab player list (client/clan/TribeTabList.java)
+    "gui.mechanical.tab.title": "Players",
+    "gui.mechanical.tab.wanderers": "Wanderers",
+    "gui.mechanical.tab.online": "%s online",
+})
 for age in ("stone", "bronze", "iron", "steam", "electric"):
     LANG[G + "age." + age] = age.capitalize() + " Age"
+    LANG["gui.mechanical.tab.age." + age] = age.capitalize()
 merge(A / "lang/en_us.json", LANG)
 print("clans ok")

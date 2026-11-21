@@ -382,6 +382,9 @@ till sig större räder.
   Efter en flytt väljer ledaren en ny Fire Pit från stamsidan.
 - **Delat:** alla advancements i modden (och därmed recepten de låser upp) delas av hela stammen; den som går med ger
   och får allt. Stammens ålder är den senaste åldern den nått. Medlemmar kan inte skada varandra, och bara stammedlemmar syns för varandra i locator bar (prickarna ovanför snabbfältet).
+- **Stamfärg och Tab-listan:** ledaren väljer stammens färg (16 dye-färger) med vimpelknappen på stamsidan. Tab-listan
+  visar varje stam under en vimpelrad i dess färg (namn, online/alla, ålder) med medlemmarna efter rank: ansikte,
+  rankmärke, namn, ålder och ping. Spelare utan stam står sist som Wanderers. Överst serverns namn, världsåldern och datumet.
 - **Advancements:** Hearth of the Tribe (grunda en stam), Kin (bjud in någon).
 
 ### Mold Bench
