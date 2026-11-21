@@ -19,7 +19,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
  * (SoaringBird). Spawns only on open ground at y {@link #MIN_Y}+ in clear weather by day. Only players with sight
  * {@link Faith#WATCHER_SIGHT}+ see it (client.folklore.MountainWatcherRenderer); it cannot be hurt, hit or pushed, makes
  * no sound (that would give it away) and leaves no carcass. Once a calendar year a player who can see it and comes within
- * {@link #FEATHER_RANGE} blocks gets a Watcher Feather dropped from above, and it flies off.
+ * {@link #FEATHER_RANGE} blocks gets a Watcher Feather floating down onto them (not from the bird: it could land anywhere on a peak), and it flies off.
  */
 public class MountainWatcher extends SoaringBird {
     static final Kind KIND = new Kind("mountain_watcher", 0.45, 18, 36, 1200, 2400, 200, 600, false, false, false, 1.1, () -> null, 1.0F);
@@ -66,7 +66,7 @@ public class MountainWatcher extends SoaringBird {
         for (ServerPlayer p : level.getPlayers(p -> p.distanceToSqr(this) < SEEN_RANGE * SEEN_RANGE && Faith.canSee(p, Faith.WATCHER_SIGHT))) {
             Faith.seen(p, "mountain_watcher", "folklore/above_the_clouds");
             if (distanceTo(p) < FEATHER_RANGE && Faith.takeFeather(p, Calendar.year(level.getOverworldClockTime()))) {
-                level.addFreshEntity(new ItemEntity(level, getX(), getY(), getZ(), Folklore.WATCHER_FEATHER.toStack(), 0, -0.05, 0));
+                level.addFreshEntity(new ItemEntity(level, p.getX(), p.getY() + 3, p.getZ(), Folklore.WATCHER_FEATHER.toStack(), 0, -0.05, 0));
                 takeOff(true, p.position());
             }
         }
