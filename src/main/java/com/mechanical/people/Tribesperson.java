@@ -37,6 +37,8 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -403,8 +405,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         });
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, (t, l) -> isAngryAt((Player) t) && (raid == null || RaidGoal.fights(this, t))));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Animal.class, 10, true, false, (t, l) -> raid != null && RaidGoal.campAnimal(this, t)));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
-                (t, l) -> isArmed() && (!(t instanceof com.mechanical.wildlife.night.MushroomMan) || isHolding(s -> s.getItem() instanceof BowItem)) && t.distanceToSqr(this) < 12 * 12));
+        // armed folk take on monsters near camp, and anything that goes for one of their own
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false,
+                (t, l) -> isArmed() && t.distanceToSqr(this) < 12 * 12 && (!(t instanceof com.mechanical.wildlife.night.MushroomMan) || isHolding(s -> s.getItem() instanceof BowItem))
+                        && (t instanceof Monster && !(t instanceof NeutralMob) || MonstersHuntPeople.huntsPeople(t) || !(t instanceof Tribesperson) && ((Mob) t).getTarget() instanceof Tribesperson)));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
                 (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && visit == null && errand == null && Settlements.wantsGame(this) && isPrey(t) && !FleeThreatGoal.dreads(this, t)));
     }

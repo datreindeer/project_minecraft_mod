@@ -30,7 +30,7 @@ class FleeThreatGoal extends Goal {
     /** A hostile monster, or any non-player mob that is after this person. */
     static boolean isThreat(Tribesperson mob, LivingEntity e) {
         if (!e.isAlive() || e instanceof Player || e instanceof Tribesperson) return false;
-        return e instanceof Enemy && !(e instanceof NeutralMob) || e instanceof Mob m && m.getTarget() == mob;
+        return e instanceof Enemy && !(e instanceof NeutralMob) || MonstersHuntPeople.huntsPeople(e) || e instanceof Mob m && m.getTarget() == mob;
     }
 
     /** Even hunters break off from a fighting Giant Deer once it has hurt them badly (below half health). */

@@ -191,6 +191,9 @@ public final class CalendarTest {
                 && level.getBlockState(ground).getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) == Thaw.UNDER_TREES, "storm snow piles to its limit");
         check(h, !Thaw.pile(level, ground.above(), Thaw.STORM_DEPTH), "no snow in mid-air");
         check(h, !Thaw.storm(level) || Calendar.season(level.getOverworldClockTime()) == 3, "storms only in winter");
+        // walking packs snow down a layer at a time until the ground shows
+        for (int i = 0; i < 200 && level.getBlockState(ground).is(net.minecraft.world.level.block.Blocks.SNOW); i++) TrampledPaths.packSnow(level, ground, level.getRandom());
+        check(h, level.getBlockState(ground).isAir(), "trodden snow wears away");
         level.setBlockAndUpdate(ground, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
         level.setBlockAndUpdate(ground.above(3), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
     }

@@ -20,7 +20,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -57,7 +56,7 @@ public class Gloson extends Predator {
 
     @Override
     protected boolean isPrey(LivingEntity e) {
-        return false; // only people
+        return e instanceof com.mechanical.people.Tribesperson; // only people
     }
 
     @Override
@@ -117,13 +116,13 @@ public class Gloson extends Predator {
     }
 
     /** Someone it may go for now: a player it can hunt, not sheltering by a fire. */
-    boolean quarry(Player p) {
+    boolean quarry(LivingEntity p) {
         return canHunt(p) && (fearless() || !NightDangers.nearFire(level(), p.position(), 8));
     }
 
     /** In the dark, keeps a ring 10-16 blocks round its quarry, watching; when the time is up, or he comes close, it charges. */
     class CircleGoal extends Goal {
-        private Player prey;
+        private LivingEntity prey;
         private long chargeAt;
         private int repath;
 
@@ -135,6 +134,9 @@ public class Gloson extends Predator {
         public boolean canUse() {
             if (random.nextInt(10) != 0 || !huntingTime() || retreating() || isDozing() || getTarget() != null) return false;
             prey = level().getNearestPlayer(Gloson.this, SIGHT);
+            if (prey == null || !quarry(prey)) // no player about: tribespeople out after dark will do
+                prey = level().getEntitiesOfClass(com.mechanical.people.Tribesperson.class, getBoundingBox().inflate(SIGHT), Gloson.this::quarry)
+                        .stream().min(java.util.Comparator.comparingDouble(Gloson.this::distanceToSqr)).orElse(null);
             return prey != null && quarry(prey);
         }
 
@@ -211,7 +213,7 @@ public class Gloson extends Predator {
             if (t == null) return;
             getLookControl().setLookAt(t, 30, 30);
             if (cooldown > 0) cooldown--;
-            if (!(t instanceof Player p ? quarry(p) : true) || torchKeepsOff(t)) {
+            if (!quarry(t) || torchKeepsOff(t)) {
                 setTarget(null); // back to circling
                 return;
             }

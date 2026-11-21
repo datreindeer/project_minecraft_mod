@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,6 +30,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 /**
  * Trampled paths: grass that players (and the horses they ride, and harnessed carts and travois) walk over again and
  * again wears to Worn Grass and then to a Trodden Path, which are faster to walk on. Left alone they grow back.
+ * Snow on the way is trodden down a layer at a time first, until the ground shows.
  * Data: scripts/gen_paths.py, textures scripts/gen_paths_textures.py.
  *
  * <p>Speed uses vanilla's block speed factor. Entity.move multiplies the horizontal velocity by it every tick, before
@@ -41,6 +43,8 @@ public final class TrampledPaths {
     static final float WORN_SPEED = 1.075F, PATH_SPEED = 1.14F;
     /** Chance per step onto a block: grass to Worn Grass, Worn Grass (or bare dirt) to Trodden Path. ~30 walks in all. */
     static final float GRASS_WEAR = 1 / 20F, PATH_WEAR = 1 / 10F;
+    /** Chance per step into snow that it packs down one layer: a storm's 3 layers take ~24 walks. */
+    static final float SNOW_WEAR = 1 / 8F;
 
     /** Ground the earth of a path runs out toward (everything else frays into grass). */
     public static final TagKey<Block> CONNECTS = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "path_connects"));
@@ -78,8 +82,23 @@ public final class TrampledPaths {
         if (!e.onGround()) return;
         BlockPos on = e.getOnPos();
         if (isCover(e.level().getBlockState(on), e.level(), on)) on = on.below(); // standing on a carpet: the ground under it wears
+        // snow is trodden down first (thick snow is what we stand on, thin snow lies on the ground above)
+        BlockPos snow = e.level().getBlockState(on).is(Blocks.SNOW) ? on : e.level().getBlockState(on.above()).is(Blocks.SNOW) ? on.above() : null;
         Long last = LAST.put(e, on.asLong());
-        if (last != null && last != on.asLong()) for (int i = 0; i < times; i++) wear((ServerLevel) e.level(), on, e.getRandom());
+        if (last != null && last != on.asLong()) for (int i = 0; i < times; i++) {
+            if (snow != null && !e.level().getBlockState(snow).is(Blocks.SNOW)) snow = null; // trodden away this step
+            if (snow != null) packSnow((ServerLevel) e.level(), snow, e.getRandom());
+            else wear((ServerLevel) e.level(), on, e.getRandom());
+        }
+    }
+
+    /** One step into snow: maybe one layer less; the last layer goes, baring the ground for the path. */
+    static void packSnow(ServerLevel level, BlockPos pos, RandomSource random) {
+        if (random.nextFloat() >= SNOW_WEAR) return;
+        BlockState s = level.getBlockState(pos);
+        int layers = s.getValue(SnowLayerBlock.LAYERS);
+        if (layers == 1) level.removeBlock(pos, false);
+        else level.setBlockAndUpdate(pos, s.setValue(SnowLayerBlock.LAYERS, layers - 1));
     }
 
     /** One step onto {@code pos}: maybe one stage more worn; a path stepped on is RECENT and won't grow back for now. */
