@@ -34,6 +34,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
         // EquipmentClient only adds this layer to the player renderers; the Miner's sack needs it here too
         addLayer(new com.mechanical.client.EquipmentLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
+        addLayer(new com.mechanical.client.HoldPoses.GripLayer(this)); // a hot piece held in tongs
     }
 
     @Override
@@ -47,6 +48,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         HumanoidMobRenderer.extractHumanoidRenderState(entity, state, partialTicks, itemModelResolver);
         state.leftArmPose = armPose(entity, HumanoidArm.LEFT);
         state.rightArmPose = armPose(entity, HumanoidArm.RIGHT);
+        com.mechanical.client.HoldPoses.grip(entity, state);
         state.arrowCount = entity.getArrowCount();
         boolean slim = entity.isWoman();
         state.skin = SKINS.computeIfAbsent(TintedSkin.of(entity.texture(), entity.colour()), t -> PlayerSkin.insecure(

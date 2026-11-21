@@ -23,7 +23,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 
 /**
  * The Leather Satchel's 3x3 and the 2x2 of what hangs at the hip (the Quiver: arrows only; or the Leather Pouch: what a
@@ -35,10 +39,31 @@ public class PackMenu extends AbstractContainerMenu {
     public static final int SATCHEL_SIZE = BarkBasketMenu.SIZE;
     public static final Supplier<MenuType<PackMenu>> TYPE = Mechanical.MENUS.register("pack", () -> IMenuTypeExtension.create(PackMenu::client));
 
-    static void init() {}
+    /**
+     * What the player is rummaging in while a bag's menu is open, synced so everyone sees it (client/HoldPoses): 0 nothing,
+     * {@link #WORN} the satchel or pouch they wear (B), {@link #HELD} a bag or Bark Basket in hand. Not saved.
+     */
+    public static final Supplier<AttachmentType<Byte>> RUMMAGING = Mechanical.ATTACHMENTS.register("rummaging",
+            () -> AttachmentType.builder(() -> (byte) 0).sync(ByteBufCodecs.BYTE).build());
+    public static final byte WORN = 1, HELD = 2;
+
+    static void init() {
+        NeoForge.EVENT_BUS.addListener((PlayerContainerEvent.Open e) -> {
+            byte how = e.getContainer() instanceof PackMenu pack ? (pack.worn() ? WORN : HELD) : e.getContainer() instanceof BarkBasketMenu ? HELD : 0;
+            if (how != 0) e.getEntity().setData(RUMMAGING, how);
+        });
+        NeoForge.EVENT_BUS.addListener((PlayerContainerEvent.Close e) -> {
+            if (e.getEntity().getData(RUMMAGING) != 0) e.getEntity().setData(RUMMAGING, (byte) 0);
+        });
+    }
+
+    /** Server: opened from what is worn (B) rather than from a hand. */
+    private boolean worn() {
+        return satchel != null && satchel.worn() != null || hip != null && hip.worn() != null;
+    }
 
     /** Where a bag comes from: worn in an accessory slot, or at an inventory index (40 = off hand). */
-    private record Source(ItemStack stack, @Nullable Accessory worn, int inventorySlot) {}
+    record Source(ItemStack stack, @Nullable Accessory worn, int inventorySlot) {}
 
     public final boolean hasSatchel, hasHip;
     public final Component satchelName, hipName;
@@ -57,7 +82,7 @@ public class PackMenu extends AbstractContainerMenu {
                 null, null, satchelName, hipName, pouch);
     }
 
-    private PackMenu(int id, Inventory inventory, @Nullable Container satchelContents, @Nullable Container hipContents,
+    PackMenu(int id, Inventory inventory, @Nullable Container satchelContents, @Nullable Container hipContents,
             @Nullable Source satchel, @Nullable Source hip, Component satchelName, Component hipName, boolean pouch) {
         super(TYPE.get(), id);
         this.hasSatchel = satchelContents != null;

@@ -345,7 +345,7 @@ public final class BronzeTools {
         return player.getMainHandItem().is(BRONZE_TONGS.get()) || player.getOffhandItem().is(BRONZE_TONGS.get());
     }
 
-    private static boolean hot(ItemStack stack, long now) {
+    public static boolean hot(ItemStack stack, long now) {
         return stack.is(Casting.MOLTEN_CRUCIBLE.get()) && !CrucibleItem.isCold(stack, now) || Ironworking.isHot(stack, now);
     }
 

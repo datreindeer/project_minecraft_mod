@@ -61,5 +61,10 @@ public class WornPouchModel extends HumanoidModel<AvatarRenderState> {
         pouch.z = POUCH_Z - (armored ? 1.0F : 0.0F);
         belt.visible = !armored;
         beltArmored.visible = armored;
+        if (HoldPoses.rummagingWorn(state)) { // lifted off the belt towards the hands, its neck tipped open
+            pouch.z -= 2.0F;
+            pouch.y -= 1.5F;
+            pouch.xRot = -0.5F;
+        }
     }
 }

@@ -85,6 +85,11 @@ for name in FLAT:
 for name in ("bronze_sickle", "bronze_tongs", "bronze_chisel", "bronze_quarry_hammer"):
     item_model(name, "minecraft:item/handheld")
     item_def(name)
+# third person: held out along the arm, jaws first, upright (client/HoldPoses.poseTongs; the jaws end up 21 px down the arm)
+tongs = json.loads((A / "models/item/bronze_tongs.json").read_text(encoding="utf-8"))
+tongs["display"] = {"thirdperson_righthand": {"rotation": [-90, 90, 45], "translation": [-1, -2, -5], "scale": [0.85, 0.85, 0.85]},
+                    "thirdperson_lefthand": {"rotation": [-90, -90, -45], "translation": [1, -2, -5], "scale": [0.85, 0.85, 0.85]}}
+w(A / "models/item/bronze_tongs.json", tongs)
 rod = "bronze_hook_fishing_rod"
 item_model(rod, "minecraft:item/handheld_rod")
 item_model(rod + "_cast", "minecraft:item/handheld_rod")

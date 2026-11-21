@@ -109,6 +109,24 @@ public final class EquipmentTest {
         h.assertTrue(Quiver.worn(p).isEmpty() && !Quiver.insert(p, loose) && loose.getCount() == 5, "a worn pouch is not a quiver: arrows aren't picked into it");
         Equipment.of(p).set(Accessory.HIP, ItemStack.EMPTY);
 
+        // rummaging (synced, drawn by client/HoldPoses): set while a worn bag (B) or a basket in hand is open, cleared on close
+        // (the events straight away: a FakePlayer opens no menus, and its packets go nowhere)
+        net.minecraft.server.level.ServerPlayer sp = net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(),
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "rummager"));
+        ItemStack worn = new ItemStack(Mechanical.LEATHER_SATCHEL.get());
+        var bus = net.neoforged.neoforge.common.NeoForge.EVENT_BUS;
+        PackMenu pack = new PackMenu(0, sp.getInventory(), null, null, new PackMenu.Source(worn, Accessory.BACK, -1), null,
+                net.minecraft.network.chat.Component.empty(), net.minecraft.network.chat.Component.empty(), false);
+        bus.post(new net.neoforged.neoforge.event.entity.player.PlayerContainerEvent.Open(sp, pack));
+        h.assertTrue(sp.getData(PackMenu.RUMMAGING) == PackMenu.WORN, "B: rummaging in the worn satchel");
+        bus.post(new net.neoforged.neoforge.event.entity.player.PlayerContainerEvent.Close(sp, pack));
+        h.assertTrue(sp.getData(PackMenu.RUMMAGING) == 0, "closing the satchel stops the rummaging");
+        var basket = com.mechanical.BarkBasketMenu.open(1, sp.getInventory(), 0, new ItemStack(Mechanical.BARK_BASKET.get()));
+        bus.post(new net.neoforged.neoforge.event.entity.player.PlayerContainerEvent.Open(sp, basket));
+        h.assertTrue(sp.getData(PackMenu.RUMMAGING) == PackMenu.HELD, "opening a basket in hand: rummaging in it");
+        bus.post(new net.neoforged.neoforge.event.entity.player.PlayerContainerEvent.Close(sp, basket));
+        h.assertTrue(sp.getData(PackMenu.RUMMAGING) == 0, "closing the basket stops the rummaging");
+
         // a vanilla Bundle in the inventory turns into a Leather Pouch: 4 stacks inside, the rest given back loose
         ItemStack bundle = new ItemStack(Items.BUNDLE);
         List<net.minecraft.world.item.Item> kinds = List.of(Items.STICK, Items.FLINT, Items.DIRT, Items.SAND, Items.GRAVEL, Items.CLAY_BALL);

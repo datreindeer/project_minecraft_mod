@@ -78,5 +78,10 @@ public class WornSatchelModel extends HumanoidModel<AvatarRenderState> {
         back.visible = !cloak;
         shoulder.y = -out;
         shoulder.zScale = armored ? 1.5F : 1.0F;
+        if (HoldPoses.rummagingWorn(state)) { // pulled round in front and up to look into it, flap lifted
+            front.z -= 2.5F;
+            front.y -= 1.5F;
+            front.xRot = -0.25F;
+        }
     }
 }

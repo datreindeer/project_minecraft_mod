@@ -17,6 +17,33 @@
         "class": "com/mechanical/client/HoldPoses",
         "field": "STAFF_POSE"
       }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "MECHANICAL_BASKET",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/mechanical/client/HoldPoses",
+        "field": "BASKET_POSE"
+      }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "MECHANICAL_TONGS",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/mechanical/client/HoldPoses",
+        "field": "TONGS_POSE"
+      }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "MECHANICAL_RUMMAGE",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/mechanical/client/HoldPoses",
+        "field": "RUMMAGE_POSE"
+      }
     }
   ]
 }
