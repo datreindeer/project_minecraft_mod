@@ -11,6 +11,9 @@
     "mechanical:deepslate_ruby_ore",
     "mechanical:sapphire_ore",
     "mechanical:deepslate_sapphire_ore",
-    "mechanical:deepslate_peridot_ore"
+    "mechanical:deepslate_peridot_ore",
+    "mechanical:galena_ore",
+    "mechanical:deepslate_galena_ore",
+    "mechanical:rock_salt"
   ]
 }

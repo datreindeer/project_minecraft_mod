@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/gold",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:gold_coin"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:gold_coin"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.gold_coin.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.gold_coin.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

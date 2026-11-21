@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * The bloom lying on a Bronze Anvil. A hot one takes {@link Ironworking#HITS} blows of the Bronze Smithing Hammer
  * (counted on the bloom, so a cooled one keeps them), then it is wrought iron and slag; a cold one takes none.
- * A Copper Ingot is struck cold: {@link Coins#MINT_HITS} blows mint {@link Coins#COINS_PER_INGOT} Copper Coins.
+ * A Copper, Silver or Gold Ingot is struck cold: {@link Coins#MINT_HITS} blows mint {@link Coins#COINS_PER_INGOT} coins of its metal.
  * Three Bronze Ingots, also cold, become a Bronze Fire Grate ({@link FirePit#FIRE_GRATE}).
  */
 public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
@@ -77,9 +77,10 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
             setChanged();
             return;
         }
+        ItemStack coins = Coins.minted(item);
         item = ItemStack.EMPTY;
         hits = 0;
-        Block.popResource(level, worldPosition.above(), new ItemStack(Coins.COPPER_COIN.get(), Coins.COINS_PER_INGOT));
+        Block.popResource(level, worldPosition.above(), coins);
         sync();
     }
 

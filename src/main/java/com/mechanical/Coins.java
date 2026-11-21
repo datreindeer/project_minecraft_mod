@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
  */
 public final class Coins {
     public static final int SILVER_IN_COPPER = 10, GOLD_IN_SILVER = 10;
-    /** A Copper Ingot struck cold on the Bronze Anvil ({@link BronzeAnvilBlockEntity}) with the Bronze Smithing Hammer. */
+    /** A Copper, Silver or Gold Ingot struck cold on the Bronze Anvil ({@link BronzeAnvilBlockEntity}) with the Bronze Smithing Hammer. */
     public static final int MINT_HITS = 4, COINS_PER_INGOT = 4;
     public static final DeferredItem<Item> COPPER_COIN = ITEMS.registerSimpleItem("copper_coin");
     public static final DeferredItem<Item> SILVER_COIN = ITEMS.registerSimpleItem("silver_coin");
@@ -21,9 +21,16 @@ public final class Coins {
 
     public static void init() {}
 
-    /** What the Bronze Anvil mints into Copper Coins (Silver and Gold Coins wait for the Iron Age). */
+    /** What the Bronze Anvil mints into coins: Copper, Silver (Iron Age, {@link IronOres}) and Gold Ingots. */
     public static boolean mintable(ItemStack stack) {
-        return stack.is(Items.COPPER_INGOT);
+        return !minted(stack).isEmpty();
+    }
+
+    /** The coins one ingot mints into, or empty if it isn't a coin metal. */
+    public static ItemStack minted(ItemStack ingot) {
+        Item coin = ingot.is(Items.COPPER_INGOT) ? COPPER_COIN.get() : ingot.is(IronOres.SILVER_INGOT.get()) ? SILVER_COIN.get()
+                : ingot.is(Items.GOLD_INGOT) ? GOLD_COIN.get() : null;
+        return coin == null ? ItemStack.EMPTY : new ItemStack(coin, COINS_PER_INGOT);
     }
 
     private Coins() {}

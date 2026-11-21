@@ -69,6 +69,8 @@ public final class BronzeOres {
         if (ore.is(MALACHITE.get())) return new ItemStack(CRUSHED_COPPER_ORE.get());
         if (ore.is(CASSITERITE.get())) return new ItemStack(CRUSHED_TIN_ORE.get());
         if (ore.is(Items.BRICK)) return new ItemStack(Ironworking.GROG.get(), 2); // grog for Fire Clay
+        ItemStack flux = IronOres.crushed(ore); // Limestone -> Flux
+        if (!flux.isEmpty()) return flux;
         ItemStack grit = Gemstones.grit(ore); // Flint Grit, Garnet Grit, Corundum Grit for the Lapidary Wheel
         if (!grit.isEmpty()) return grit;
         return Pigments.ground(ore); // ochre, chalk, calcite, charcoal

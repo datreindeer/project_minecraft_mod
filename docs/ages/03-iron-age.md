@@ -1,6 +1,7 @@
 # Järnåldern
 
-> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**. Resten är förslag.
+> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**,
+> **de nya malmerna** Galena, guld, Limestone och Rock Salt. Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
 **Bronze Smithing Hammer**, **Wrought Iron Ingot**, Bronze Pickaxe (bryter Iron, Coal och Lapis Ore) och Charcoal.
@@ -115,14 +116,61 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 - Texturer finns redan i texturbiblioteket: `crude_steel_ingot`, `crude_steel_ingot_hot`, `steel_ingot`,
   `steel_bloom`, `steel_plate`, `steel_dust`.
 
-## Nya malmer att överväga
+## Nya malmer (byggda, 2026-11-21)
 
-| Malm | Ger | Varför |
-|---|---|---|
-| **Galena** (blyglans) | Lead + lite Silver | Silver till ringar och halsband (utrustningsplatserna). Bly till rör och batterier i ång- och elåldern. Texturer: `raw_silver_ore`, `silver_bloom`, `silver_ingot`, `silver_plate`, `silver_dust`. |
-| **Gold**: vaskat guld och Gold Ore | Gold Nugget | Redan spärrat bakom järnhacka. Vaskning finns (`PanItem`), så det räcker med en ny drop-pool. Smycken och offergåvor. Texturer: `gold_bloom`, `gold_plate`, `gold_dust`. |
-| **Limestone** | Flux | Kalksten i Bloomery ger mer järn och mindre slagg. Behövs senare till masugnen i ångåldern. |
-| **Salt** (saltsjöar eller strandbäddar) | Salt | Saltar kött och garvar skinn: kopplar till Butchery och läder. |
+Alla fyra hör till järnåldern. Kod: `IronOres` (block, items, gametest `iron_ores`), kilnrecepten i
+`KilnBlockEntity.RECIPES`, prägling i `Coins.minted`, krossning av kalksten via `BronzeOres.crushed`. Data:
+`scripts/gen_iron_ores.py` (efter gen_gemstones.py, före gen_block_items.py), texturer:
+`scripts/gen_iron_ores_textures.py` (Galena-, bly- och silvertexturerna är silvret ur texturbiblioteket, omfärgat).
+
+**Advancements** (Iron Age-fliken, under *Iron Age*): *Galena* → *Lead* → *Cupellation* → *Sterling* (Silver Coin);
+*Gold* → *Treasury* (Gold Coin); *Flux*; *Salt of the Earth* → *Salt Cured*.
+
+### 5. Galena (blyglans): bly och silver
+
+| Vad | Hur |
+|---|---|
+| **Galena Ore**, **Deepslate Galena Ore** | Ådror (storlek 8) i sten och deepslate i hela Overworld: 8 försök per chunk, y −48 till 80 (trapets, flest kring y 16). Lite ovanligare än järn. **Kräver Bronze Pickaxe** (`mechanical:needs_bronze_tool`, som Iron Ore). Hårdhet 3 / 4,5. |
+| **Raw Galena** | 1 per block (Fortune hjälper), blocket med Silk Touch. |
+| **Lead Ingot** | Raw Galena i **Clay Kiln vid 800°**, 20 s. 800° är Charcoals naturliga max, så bly går **utan Bellows**. |
+| **Leaded Cupel** | Lead Ingot + Bone Meal (formlöst): en kupell av benaska med blyet i. |
+| **Silver Nugget** | Leaded Cupel i **Clay Kiln vid 1000°** (Charcoal + Bellows), 30 s → 1 Silver Nugget. **Kupellering**: blyet sugs upp av benaskan och går åt. |
+| **Silver Ingot** | 9 Silver Nugget (3×3), och tillbaka till 9. |
+
+Ett block Galena ger alltså ett bly *eller* en niondels silvertacka: blyet sparas till ång- och elåldern eller offras
+för silver. Inte i Bloomery (den kod-delen lämnades orörd).
+
+### 6. Guld
+
+| Vad | Hur |
+|---|---|
+| **Gold Ore** | Oförändrad: kräver fortfarande järnhacka (`#minecraft:needs_iron_tool`). Ger vanillas Raw Gold. |
+| **Vaskning** | Gold Nugget i Pan-tabellerna (`gameplay/panning/gravel` och `sand`): vikt 1 i grundpoolen (ungefär 1 på 85 vaskningar i grus, 1 på 75 i sand) och vikt 1 i extrapoolen vid River, Beach, Stony Shore m.fl. (ungefär 1 på 13 där). |
+| **Gold Ingot** | **Raw Gold** eller **9 Gold Nugget** i **Clay Kiln vid 1100°** (Charcoal + Bellows), 20 s. |
+| **Avstängt** | Vanillas guldsmältning i ugn och masugn (Raw Gold, Gold Ore, Deepslate och Nether Gold Ore) och receptet 9 Gold Nugget → Gold Ingot. Gold Ingot → 9 Nugget finns kvar. |
+
+### 7. Limestone (kalksten) och Flux
+
+| Vad | Hur |
+|---|---|
+| **Limestone** | Stenblock, krämvit. Stora klumpar (storlek 64) som granit: 2 per chunk på y 0–60, en i var 6:e chunk på y 64–128 (syns i sluttningar), och 2 extra per chunk på y 56–160 i Stony Shore, Windswept Hills/Gravelly Hills/Forest, Meadow och Savanna Plateau (`mechanical:has_limestone_cliffs`). **Vilken hacka som helst**, ger sig själv. Ligger i `base_stone_overworld` och `stone_ore_replaceables`, så grottor skär igenom den och malm (även Galena) kan ligga i den. |
+| **Flux** | Limestone krossad på **Stone Anvil** → **2 Flux**. Item-taggen **`mechanical:flux`**. |
+
+**I Bloomery:** högerklicka på Bloomery Hearth med Flux (högst 4 laddningar): nästa lupp ger en Wrought Iron mer och en
+Slag mindre (se *Rostning*).
+
+### 8. Salt
+
+| Vad | Hur |
+|---|---|
+| **Rock Salt** | Block, rosavitt. Linser (storlek 24) i berget under torra biomer: Desert, Badlands, Eroded och Wooded Badlands, Savanna, Savanna Plateau och Windswept Savanna (`mechanical:has_rock_salt`), 4 per chunk, y 0–72. **Kräver Bronze Pickaxe** (mjuk sten, men så hamnar saltet i järnåldern). Ger **2–3 Salt** (Fortune hjälper), blocket med Silk Touch. |
+| **Salted Meat** | Rått kött (taggen `mechanical:smokable_meat`) + Salt, formlöst → 1. **Ruttnar aldrig** (ingen `perishes_*`-tagg). 3 mat, mättnad 0,6 (rökt kött 3 / 0,8 men 30 dagar). |
+| **Salted Fish** | Rå fisk (`mechanical:smokable_fish`) + Salt → 1. Ruttnar aldrig. 2 mat, mättnad 0,6. |
+| **Saltad hud** | Scraped Hide + Salt, formlöst → **Leather** direkt, utan Drying Rack eller Bronze Kettle. |
+
+Valt så: saltet är en snabbväg som kostar en resurs (ett salt per kött eller hud), medan rökning och torkning är
+gratis men tar tid och plats. Stora styckningsdelar ger bara 1 Salted Meat; skär dem till strimlor först. Saltsjöar
+och saltskorpa vid stränder byggdes inte (bara bergsalt).
 
 ## Vänta med
 
@@ -134,8 +182,10 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 Pengarna finns redan (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold Coin**, 1 Silver = 10 Copper,
 1 Gold = 10 Silver. I bronsåldern går bara Copper Coin att prägla (Copper Ingot, 4 slag på Bronze Anvil → 4 Copper Coin).
 
-- **Silver Coin:** präglas när silver finns. Silvret kommer ur **Galena** (blyglans), som järnåldern låser upp.
-- **Gold Coin:** präglas när guld är upplåst (guldmalm kräver järn; guld är inte upplåst än).
+- **Silver Coin (byggd):** en kall **Silver Ingot**, 4 slag på Bronze Anvil → 4 Silver Coin.
+- **Gold Coin (byggd):** en kall **Gold Ingot**, 4 slag → 4 Gold Coin.
+- Samma regler som kopparmyntet (`Coins.MINT_HITS`, `Coins.COINS_PER_INGOT`); vilket mynt en tacka ger avgör
+  `Coins.minted`. `BronzeAnvilBlockEntity.mint` släpper nu `Coins.minted(item)` i stället för fasta Copper Coin.
 - Handelsnivå 5 (tom nu) kan använda Silver Coin.
 
 ## Beslut (2026-11-20)
@@ -154,7 +204,7 @@ Pengarna finns redan (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold
 
 ## Öppna beslut
 
-2. Vilka av de nya malmerna (Galena, Gold, Limestone, Salt) hör till järnåldern, och vilka väntar?
+Inga öppna beslut just nu: rostning (sämre, inte oanvändbar), malmerna (alla fyra) och smidet (kallnar, få slag) beslutades 2026-11-21.
 
 ## Items och block (planerade)
 
@@ -167,13 +217,17 @@ Pengarna finns redan (`Coins.java`): **Copper Coin**, **Silver Coin** och **Gold
 | Hot Wrought Iron Ingot | Item | Tackan vid smideshetta, hamras på Bronze Anvil |
 | Iron Plate, Iron Tool Rod, järnhuvuden | Items | Smidda delar till verktyg, rustning och vanillas järnsaker |
 | Steel Ingot | Item | Wrought Iron + Charcoal, cementering |
-| Galena, Lead Ingot, Silver Ingot | Items | Om Galena kommer med |
-| Limestone, Flux | Block/Item | Om Limestone kommer med |
-| Salt | Item | Om Salt kommer med |
+| Galena Ore, Deepslate Galena Ore | Block | **Byggd.** Bronze Pickaxe, ger Raw Galena |
+| Raw Galena, Lead Ingot | Items | **Byggd.** Kiln 800° |
+| Leaded Cupel, Silver Nugget, Silver Ingot | Items | **Byggd.** Kupellering vid 1000°, 9 nuggets = 1 tacka |
+| Limestone, Flux | Block/Item | **Byggd.** Stone Anvil: 1 → 2 Flux, taggen `mechanical:flux` |
+| Rock Salt, Salt | Block/Item | **Byggd.** Bronze Pickaxe, 2–3 Salt |
+| Salted Meat, Salted Fish | Items | **Byggd.** Ruttnar aldrig |
 
 ## Borttaget eller spärrat från vanilla
 
-Inget nytt i järnåldern ännu. Spärrat sedan tidigare: järnverktyg, järnrustning, vanillas järnugnsrecept (Raw Iron smälts bara i
+Vanillas guldsmältning i ugn och masugn och receptet 9 Gold Nugget → Gold Ingot (guld smälts i Clay Kiln vid 1100°).
+Spärrat sedan tidigare: järnverktyg, järnrustning, vanillas järnugnsrecept (Raw Iron smälts bara i
 Bloomery), Gold/Redstone/Diamond/Emerald Ore (kräver järnhacka).
 
 ## NPC-byar i järnåldern (byggd)
