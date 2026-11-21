@@ -106,8 +106,9 @@ public final class StatTooltips {
         } else if (stack.is(Items.ARROW)) {
             lines.add(stat("Damage", value("2.0")));
         }
-        if (stack.getItem() instanceof BoneHookRodItem) {
-            lines.add(stat("Bites", Component.literal(BoneHookRodItem.LURE_TICKS / 20 + " s sooner").withStyle(GOOD)));
+        if (stack.getItem() instanceof BoneHookRodItem rod) {
+            lines.add(stat("Bites", Component.literal(rod.lureTicks / 20 + " s sooner").withStyle(GOOD)));
+            if (rod.luck > 0) lines.add(stat("Luck of the Sea", Component.literal("+" + rod.luck).withStyle(GOOD)));
         } else if (stack.getItem() instanceof FishingRodItem && stack.is(Mechanical.CRUDE_FISHING_ROD.get())) {
             lines.add(stat("Bites", value("normal")));
         }
@@ -150,13 +151,13 @@ public final class StatTooltips {
             lines.add(stat("Wear per piece", value("1")));
             use(lines, "Sews hides and pelts at the Leatherworking Bench");
         }
-        if (stack.is(BronzeTools.BRONZE_TONGS.get())) {
+        if (stack.is(BronzeTools.TONGS)) {
             lines.add(stat("Burns prevented", Component.literal(String.format("%.1f", BronzeTools.BURN_DAMAGE / 2) + " heart each").withStyle(GOOD)));
             lines.add(stat("Wear per casting", value("1")));
             use(lines, "In either hand: carry molten crucibles and hot metal");
         }
-        if (stack.is(BronzeTools.BRONZE_CHISEL.get())) {
-            lines.add(stat("Whetstone strokes", Component.literal("2 per stroke (instead of 1)").withStyle(GOOD)));
+        if (stack.getItem() instanceof BronzeTools.ChiselItem chisel) {
+            lines.add(stat("Whetstone strokes", Component.literal(chisel.whetStrokes + " per stroke (instead of 1)").withStyle(GOOD)));
             use(lines, "Right-click stone: smooth → bricks → chiseled");
             use(lines, "In the off hand at a Whetstone it knocks the flash off");
         }
@@ -165,10 +166,12 @@ public final class StatTooltips {
             lines.add(stat("Wear per ore", Component.literal("+" + BronzeTools.ORE_WEAR + " (ore crumbles to rock)").withStyle(BAD)));
             lines.add(stat("Ore too hard", Component.literal(BronzeTools.TOO_HARD_WEAR + " wear, nothing breaks").withStyle(BAD)));
         }
-        if (stack.is(Ironworking.BRONZE_SMITHING_HAMMER.get())) {
+        if (com.mechanical.Smithing.isHammer(stack)) {
             lines.add(stat("Blows per bloom", value(String.valueOf(Ironworking.HITS))));
             lines.add(stat("Blows per " + Coins.COINS_PER_INGOT + " coins", value(String.valueOf(Coins.MINT_HITS))));
-            lines.add(stat("Blow every", value(Ironworking.HAMMER_COOLDOWN / 20.0 + " s")));
+            lines.add(stat("Blow every", value(com.mechanical.Smithing.cooldown(stack) / 20.0 + " s")));
+            lines.add(stat("Wear per blow on iron", value(String.valueOf(com.mechanical.Smithing.wear(stack)))));
+            if (com.mechanical.Smithing.worksSteel(stack)) use(lines, "Hard enough to work steel");
             use(lines, "Strike a hot Iron Bloom or a Copper Ingot on a Bronze Anvil");
         }
         if (stack.is(Mechanical.FIRE_DRILL.get())) {

@@ -21,7 +21,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
  */
 public class BoneHookRodItem extends FishingRodItem {
     public static final int LURE_TICKS = 100;
-    private final int lureTicks, luck;
+    public final int lureTicks, luck;
 
     public BoneHookRodItem(Properties properties) {
         this(properties, LURE_TICKS, 0);

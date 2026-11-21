@@ -408,5 +408,54 @@ w(D / "minecraft/recipe/crossbow.json", {"type": "minecraft:crafting_shaped", "c
     "key": {"P": M + "iron_plate", "R": M + "iron_tool_rod", "S": M + "sinew", "T": M + "tool_rod"}, "result": {"id": "minecraft:crossbow", "count": 1}})
 lang |= {"pattern.mechanical.saw_blade": "Saw Blade", "pattern.mechanical.bolt_heads": "Bolt Heads"}
 
+# ---------------------------------------------------------------- forged versions of the bronze tools (Smithing.java)
+# Sickles, chisels, tongs, needle, fish hook rod, Iron Quarry Hammer, Steel Smithing Hammer: the bronze sprites with the
+# metal recoloured (the part's own texture as the mask keeps the wooden handle).
+for kind, tone in (("iron", IRON), ("steel", STEEL)):
+    K = kind.title()
+    item(f"{kind}_sickle_blade", metal(bronze("sickle_blade"), tone), f"{K} Sickle Blade")
+    handheld(f"{kind}_sickle", metal(bronze("sickle"), tone, mask=bronze("sickle_blade")), f"{K} Sickle")
+    item(f"{kind}_chisel_blade", metal(bronze("chisel_blade"), tone), f"{K} Chisel Blade")
+    handheld(f"{kind}_chisel", metal(bronze("chisel"), tone, mask=bronze("chisel_blade")), f"{K} Chisel")
+    tag_add(D / "mechanical/tags/item/sickles.json", M + f"{kind}_sickle")
+    tag_add(T / "enchantable/durability.json", M + f"{kind}_sickle", M + f"{kind}_chisel")
+item("iron_tong_arms", metal(bronze("tong_arms"), IRON), "Iron Tong Arms")
+handheld("iron_tongs", metal(bronze("tongs"), IRON, mask=bronze("tong_arms")), "Iron Tongs")
+tongs_model = json.loads((A / "models/item/bronze_tongs.json").read_text(encoding="utf-8"))  # its held-out display
+w(A / "models/item/iron_tongs.json", tongs_model | {"textures": {"layer0": M + "item/iron_tongs"}})
+w(D / "mechanical/tags/item/tongs.json", {"values": [M + "bronze_tongs", M + "iron_tongs"]})
+item("iron_needle", metal(bronze("needle"), IRON), "Iron Needle")
+tag_add(D / "mechanical/tags/item/needles.json", M + "iron_needle")
+item("iron_fish_hook", metal(bronze("fish_hook"), IRON), "Iron Fish Hook")
+# the rod: only the hook recoloured, found as the bright metal pixels the cast sprite lacks
+rod, cast = mod_texture("item/bronze_hook_fishing_rod"), mod_texture("item/bronze_hook_fishing_rod_cast")
+hook = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+for y in range(16):
+    for x in range(16):
+        r, g, b, al = rod.getpixel((x, y))
+        if al and rod.getpixel((x, y)) != cast.getpixel((x, y)) and colorsys.rgb_to_hls(r / 255, g / 255, b / 255)[2] > 0.35:
+            hook.putpixel((x, y), (255, 255, 255, 255))
+item("iron_hook_fishing_rod", metal(rod, IRON, mask=hook), "Iron Hook Fishing Rod")
+cast.save(A / "textures/item/iron_hook_fishing_rod_cast.png")  # cast: the hook is in the water
+for n in ("iron_hook_fishing_rod", "iron_hook_fishing_rod_cast"):
+    w(A / f"models/item/{n}.json", {"parent": "minecraft:item/handheld_rod", "textures": {"layer0": M + "item/" + n}})
+w(A / "items/iron_hook_fishing_rod.json", {"model": {"type": "minecraft:condition", "property": "minecraft:fishing_rod/cast",
+    "on_false": {"type": "minecraft:model", "model": M + "item/iron_hook_fishing_rod"},
+    "on_true": {"type": "minecraft:model", "model": M + "item/iron_hook_fishing_rod_cast"}}})
+tag_add(D / "c/tags/item/tools/fishing_rod.json", M + "iron_hook_fishing_rod")
+tag_add(T / "enchantable/fishing.json", M + "iron_hook_fishing_rod")
+tag_add(T / "enchantable/durability.json", M + "iron_hook_fishing_rod", M + "iron_tongs", M + "iron_needle")
+handheld("iron_quarry_hammer", metal(mod_texture("item/bronze_quarry_hammer"), (0.62, 0.06, 2.0), mask=quarry_mask), "Iron Quarry Hammer")
+tag_add(T / "enchantable/durability.json", M + "iron_quarry_hammer")
+tag_add(T / "enchantable/mining.json", M + "iron_quarry_hammer")
+handheld("steel_smithing_hammer", metal(bronze("smithing_hammer"), STEEL, mask=bronze("hammer_head")), "Steel Smithing Hammer")
+tag_add(D / "mechanical/tags/item/hammerstones.json", M + "steel_smithing_hammer")
+tag_add(T / "enchantable/durability.json", M + "steel_smithing_hammer")
+lang |= {"pattern.mechanical.sickle_blade": "Sickle Blade", "pattern.mechanical.chisel_blade": "Chisel Blade",
+         "pattern.mechanical.tong_arms": "Tong Arms", "pattern.mechanical.needles": "Needles", "pattern.mechanical.fish_hooks": "Fish Hooks",
+         "message.mechanical.forge.steel_hammer": "Steel is too hard for bronze: work it with an Iron or Steel Smithing Hammer",
+         "message.mechanical.hot_metal.crucible": "The crucible burns your hand: hold tongs",
+         "message.mechanical.hot_metal.casting": "The casting is hot: take it out with tongs"}
+
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

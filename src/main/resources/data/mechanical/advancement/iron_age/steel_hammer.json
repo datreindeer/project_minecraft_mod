@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/steel",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:steel_smithing_hammer"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:steel_smithing_hammer"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.steel_hammer.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.steel_hammer.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

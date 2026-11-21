@@ -117,7 +117,18 @@ public final class ToolStationRecipes {
             new Recipe(Smithing.STEEL_QUARRY_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.STEEL_PLATE, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())),
             // forged saws: the blade riveted into a wooden back, a leather-wrapped grip
             new Recipe(() -> Smithing.IRON_SAW.get(), Smithing.IRON_SAW_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.IRON_SAW_BLADE.get())),
-            new Recipe(() -> Smithing.STEEL_SAW.get(), Smithing.STEEL_SAW_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_SAW_BLADE.get())));
+            new Recipe(() -> Smithing.STEEL_SAW.get(), Smithing.STEEL_SAW_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_SAW_BLADE.get())),
+            // forged versions of the bronze tools: small blades on a leather-wrapped wooden handle, as the forged knives
+            new Recipe(Smithing.IRON_SICKLE, Smithing.IRON_SICKLE_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.IRON_SICKLE_BLADE.get())),
+            new Recipe(Smithing.STEEL_SICKLE, Smithing.STEEL_SICKLE_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_SICKLE_BLADE.get())),
+            new Recipe(() -> Smithing.IRON_CHISEL.get(), Smithing.IRON_CHISEL_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.IRON_CHISEL_BLADE.get())),
+            new Recipe(() -> Smithing.STEEL_CHISEL.get(), Smithing.STEEL_CHISEL_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_CHISEL_BLADE.get())),
+            // the tongs: forged arms riveted with an Iron Tool Rod pin, a leather grip against the heat
+            new Recipe(Smithing.IRON_TONGS, Smithing.IRON_TONG_ARMS, Smithing.IRON_TOOL_ROD, () -> Items.LEATHER, s -> s.is(Smithing.IRON_TONG_ARMS.get())),
+            new Recipe(() -> Smithing.IRON_HOOK_FISHING_ROD.get(), Smithing.IRON_FISH_HOOK, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_FISH_HOOK.get())),
+            // hammers: the iron quarry hammer as the bronze one (an Iron Plate round the haft), the steel smithing hammer as the steel tools
+            new Recipe(Smithing.IRON_QUARRY_HAMMER, Smithing.IRON_HAMMER_HEAD, Smithing.IRON_PLATE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_HAMMER_HEAD.get())),
+            new Recipe(Smithing.STEEL_SMITHING_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

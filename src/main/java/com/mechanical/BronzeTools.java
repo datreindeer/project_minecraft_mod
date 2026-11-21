@@ -82,6 +82,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class BronzeTools {
     /** Bone Needle, Bronze Needle: what the Armor Station sews with. */
     public static final TagKey<Item> NEEDLES = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "needles"));
+    /** Bronze Tongs, Iron Tongs: what keeps molten and hot metal from burning the hand ({@link #holdsTongs}). */
+    public static final TagKey<Item> TONGS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "tongs"));
     /** Burns from molten metal handled without Bronze Tongs. */
     public static final ResourceKey<DamageType> HOT_METAL = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(MODID, "hot_metal"));
     public static final float BURN_DAMAGE = 1.0F;
@@ -156,7 +158,7 @@ public final class BronzeTools {
     public static final DeferredItem<Item> BRONZE_NEEDLE = ITEMS.registerSimpleItem("bronze_needle", p -> p.durability(250));
     /** Held in either hand: molten crucibles and fresh castings don't burn ({@link #scald}, {@link #takeHotCasting}). */
     public static final DeferredItem<Item> BRONZE_TONGS = ITEMS.registerSimpleItem("bronze_tongs", p -> p.durability(250));
-    public static final DeferredItem<ChiselItem> BRONZE_CHISEL = ITEMS.registerItem("bronze_chisel", ChiselItem::new, p -> p.durability(320));
+    public static final DeferredItem<ChiselItem> BRONZE_CHISEL = ITEMS.registerItem("bronze_chisel", p -> new ChiselItem(p, 2), p -> p.durability(320));
     /** Breaks the 3x3 face of stone it hits ({@link #quarry}); on anything else it is a bare hand. */
     public static final DeferredItem<Item> BRONZE_QUARRY_HAMMER = ITEMS.registerSimpleItem("bronze_quarry_hammer",
             p -> p.tool(QUARRY_BRONZE, QUARRY_MINEABLE, 6.0F, -3.4F, 0.0F));
@@ -250,12 +252,18 @@ public final class BronzeTools {
         return state.is(Farming.SICKLE_MINEABLE);
     }
 
-    /** The other 8 blocks around {@code center} (same level) the Bronze Sickle takes along: the same kind (crop or not) and reapable. */
-    static List<BlockPos> swath(Level level, BlockPos center, BlockState cut) {
+    /** How far round the cut block a sickle reaps: 1 (3x3) for bronze and iron, 2 (5x5) for steel, 0 for flint. */
+    public static int sweepRadius(ItemStack tool) {
+        if (tool.is(Smithing.STEEL_SICKLE.get())) return 2;
+        return tool.is(BRONZE_SICKLE.get()) || tool.is(Smithing.IRON_SICKLE.get()) ? 1 : 0;
+    }
+
+    /** The other blocks within {@code radius} of {@code center} (same level) a sickle takes along: the same kind (crop or not) and reapable. */
+    static List<BlockPos> swath(Level level, BlockPos center, BlockState cut, int radius) {
         List<BlockPos> out = new ArrayList<>();
         if (!reapable(cut)) return out;
         boolean crop = cut.getBlock() instanceof CropBlock;
-        for (BlockPos p : BlockPos.betweenClosed(center.offset(-1, 0, -1), center.offset(1, 0, 1))) {
+        for (BlockPos p : BlockPos.betweenClosed(center.offset(-radius, 0, -radius), center.offset(radius, 0, radius))) {
             if (p.equals(center)) continue;
             BlockState s = level.getBlockState(p);
             if (reapable(s) && (s.getBlock() instanceof CropBlock) == crop) out.add(p.immutable());
@@ -263,15 +271,18 @@ public final class BronzeTools {
         return out;
     }
 
-    /** Cutting with the Bronze Sickle (not sneaking) reaps the swath around the block too; each ripe crop wears it as usual. */
+    /** Cutting with a metal sickle (not sneaking) reaps the swath around the block too; each ripe crop wears it as usual. */
     @SubscribeEvent
     static void onBreak(BreakBlockEvent event) {
         if (reaping || !(event.getPlayer() instanceof ServerPlayer player) || !(event.getLevel() instanceof ServerLevel level)
-                || player.isShiftKeyDown() || !player.getMainHandItem().is(BRONZE_SICKLE.get())) return;
+                || player.isShiftKeyDown()) return;
+        Item sickle = player.getMainHandItem().getItem();
+        int radius = sweepRadius(player.getMainHandItem());
+        if (radius == 0) return;
         reaping = true;
         try {
-            for (BlockPos p : swath(level, event.getPos(), event.getState())) {
-                if (!player.getMainHandItem().is(BRONZE_SICKLE.get())) break; // worn out mid-swath
+            for (BlockPos p : swath(level, event.getPos(), event.getState(), radius)) {
+                if (!player.getMainHandItem().is(sickle)) break; // worn out mid-swath
                 player.gameMode.destroyBlock(p);
             }
         } finally {
@@ -281,9 +292,9 @@ public final class BronzeTools {
 
     // ---------------------------------------------------------------- quarry hammer: a 3x3 face of stone
 
-    /** The Bronze Quarry Hammer or the Steel one (Smithing): steel's reach takes every ore a steel pickaxe mines. */
+    /** The Bronze, Iron or Steel Quarry Hammer (Smithing): each takes the ores a pickaxe of its metal mines. */
     public static boolean isQuarryHammer(ItemStack stack) {
-        return stack.is(BRONZE_QUARRY_HAMMER.get()) || stack.is(Smithing.STEEL_QUARRY_HAMMER.get());
+        return stack.is(BRONZE_QUARRY_HAMMER.get()) || stack.is(Smithing.IRON_QUARRY_HAMMER.get()) || stack.is(Smithing.STEEL_QUARRY_HAMMER.get());
     }
 
     private static boolean quarrying;
@@ -321,9 +332,9 @@ public final class BronzeTools {
      */
     static boolean quarry(ServerLevel level, ServerPlayer player, BlockPos center, Direction.Axis axis) {
         List<BlockPos> face = face(center, axis);
-        var tooHard = player.getMainHandItem().is(Smithing.STEEL_QUARRY_HAMMER.get()) ? Smithing.QUARRY_STEEL.incorrectBlocksForDrops()
-                : QUARRY_BRONZE.incorrectBlocksForDrops();
-        if (face.stream().map(level::getBlockState).anyMatch(s -> s.is(QUARRY_ORES) && s.is(tooHard))) {
+        ItemStack hammer = player.getMainHandItem();
+        // the tool's own rules: an ore its tier can't take isn't "correct for drops"
+        if (face.stream().map(level::getBlockState).anyMatch(s -> s.is(QUARRY_ORES) && !hammer.isCorrectToolForDrops(s))) {
             player.getMainHandItem().hurtAndBreak(TOO_HARD_WEAR, player, InteractionHand.MAIN_HAND);
             player.sendOverlayMessage(Component.translatable("message.mechanical.quarry_hammer.too_hard"));
             return false;
@@ -351,7 +362,7 @@ public final class BronzeTools {
     // ---------------------------------------------------------------- tongs and burns
 
     public static boolean holdsTongs(Player player) {
-        return player.getMainHandItem().is(BRONZE_TONGS.get()) || player.getOffhandItem().is(BRONZE_TONGS.get());
+        return player.getMainHandItem().is(TONGS) || player.getOffhandItem().is(TONGS);
     }
 
     public static boolean hot(ItemStack stack, long now) {
@@ -376,7 +387,7 @@ public final class BronzeTools {
     static void takeHotCasting(ServerLevel level, Player player) {
         if (player.isCreative()) return;
         if (holdsTongs(player)) {
-            InteractionHand hand = player.getMainHandItem().is(BRONZE_TONGS.get()) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            InteractionHand hand = player.getMainHandItem().is(TONGS) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             player.getItemInHand(hand).hurtAndBreak(1, player, hand);
             return;
         }
@@ -389,9 +400,12 @@ public final class BronzeTools {
     /** Right-click stone with it: one step more worked (stone -> smooth -> bricks -> chiseled ...), 1 durability each. */
     public static class ChiselItem extends Item {
         private static Map<Block, Block> carved;
+        /** Grinding strokes one Whetstone stroke counts for with this chisel in the other hand (1 without). */
+        public final int whetStrokes;
 
-        public ChiselItem(Properties properties) {
+        public ChiselItem(Properties properties, int whetStrokes) {
             super(properties);
+            this.whetStrokes = whetStrokes;
         }
 
         /** What the chisel turns this block into, or null. */
@@ -481,7 +495,7 @@ public final class BronzeTools {
         ServerPlayer reaper = FakePlayerFactory.getMinecraft(level);
         reaper.setGameMode(GameType.SURVIVAL);
         reaper.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BRONZE_SICKLE.get()));
-        h.assertTrue(swath(level, h.absolutePos(new BlockPos(4, 1, 1)), ripe).size() == 8, "the swath is the 8 around");
+        h.assertTrue(swath(level, h.absolutePos(new BlockPos(4, 1, 1)), ripe, sweepRadius(new ItemStack(BRONZE_SICKLE.get()))).size() == 8, "the swath is the 8 around");
         reaper.gameMode.destroyBlock(h.absolutePos(new BlockPos(4, 1, 1)));
         for (int x = 3; x <= 5; x++) for (int z = 0; z <= 2; z++) h.assertBlockNotPresent(Blocks.WHEAT, new BlockPos(x, 1, z));
         h.assertBlockPresent(Blocks.WHEAT, new BlockPos(6, 1, 1));

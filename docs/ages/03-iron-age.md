@@ -96,6 +96,11 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Hammer Head | 2 | 6 | Iron Hammer Head | Steel Hammer Head |
 | Saw Blade | 1 | 6 | Iron Saw Blade | Steel Saw Blade |
 | Bolt Heads | 1 | 4 | 4 Iron Bolt Head | – |
+| Sickle Blade | 1 | 5 | Iron Sickle Blade | Steel Sickle Blade |
+| Chisel Blade | 1 | 4 | Iron Chisel Blade | Steel Chisel Blade |
+| Tong Arms | 1 | 5 | Iron Tong Arms | – |
+| Needles | 1 | 3 | 4 Iron Needle | – |
+| Fish Hooks | 1 | 3 | 4 Iron Fish Hook | – |
 
 - **Fler tackor:** stora delar kräver flera heta tackor av samma metall. Lägg den första på städet och högerklicka med
   fler heta tackor (högst 3); högen ritas tacka för tacka. Den första håller hettan och slagen. För få tackor: inga slag,
@@ -150,6 +155,28 @@ tar dem inte), de går i Quiver och plockas upp dit, och de går sällan sönder
 vanlig pil. Monster med armborst (plundrare) tappar det först när världen nått järnåldern (`LaterAgeGear`). Kod:
 `Smithing` (items, mönster, rustningsgenomslaget), `mixin/CrossbowItemMixin` (armborstet laddar bolts),
 `FletchingRecipes`. Advancements **Crossbowman** (mål, efter *Forged*) och **Bodkin** (efter *Crossbowman*).
+
+**Smidda versioner av bronsverktygen (byggda, v0.130.0).** Varje bronsverktyg har nu sin järn- (och ofta stål-)version.
+Delarna smids på städet (mönstren ovan) och sätts ihop i Tool Station; de gör allt bronsverktyget gör, och lite till:
+
+| Verktyg | Tool Station | Hållbarhet | Vad det gör |
+|---|---|---|---|
+| Iron Sickle | Iron Sickle Blade + Leather + Stick | 900 | Skär **3×3** mogna grödor eller gräs (smyg: ett), **90 %** chans på extra kärve |
+| Steel Sickle | Steel Sickle Blade + Leather + Stick | 1600 | Skär **5×5** (smyg: ett), **100 %**: alltid en extra kärve |
+| Iron Chisel | Iron Chisel Blade + Leather + Stick | 700 | Som Bronze Chisel (sten → slät → tegel → mönstrad; på Whetstone 2 slipdrag per drag) |
+| Steel Chisel | Steel Chisel Blade + Leather + Stick | 1400 | Som ovan, men **3** slipdrag per drag på Whetstone |
+| Iron Tongs | Iron Tong Arms + Iron Tool Rod + Leather | 700 | Som Bronze Tongs: het metall och smälta degler bränner inte |
+| Iron Needle | direkt från städet (4 per tacka) | 600 | Syr som Bone/Bronze Needle (`mechanical:needles`) |
+| Iron Hook Fishing Rod | Iron Fish Hook + Twine + Tool Rod | 256 | Napp 15 s tidigare (som Lure III) och Luck of the Sea II (brons: 10 s, I) |
+| Iron Quarry Hammer | Iron Hammer Head + Iron Plate + Tool Rod | 900 | 3×3 sten; malmer en järnhacka bryter smulas (guld, redstone, diamant) |
+| Steel Smithing Hammer | Steel Hammer Head + Iron Tool Rod + Tool Rod | 1200 | Smider stål, nöts 1 per slag, slår var 7:e tick (andra hamrar var 10:e) |
+
+Verktygen känns igen via taggar och klasser i stället för bronsitemet: `mechanical:tongs` (håller het metall, båda tängerna),
+`mechanical:sickles`, `mechanical:needles`, alla `ChiselItem` på Whetstone och quarry hammers på sin egen nivå
+(`isCorrectToolForDrops`). Fiskespöet är ett eget mod-item som bronsspöet (vanillas Fishing Rod förblir avstängt).
+Kod: `Smithing` (items, mönster), `BronzeTools.sweepRadius` (skärans svep), `Farming.sickleBonus`.
+Advancements **Iron Harvest**, **Firm Grip**, **Fine Ironwork**, **Iron Breaker** (efter *Forged*), **Reaper** (mål) och
+**Steel Hammer** (efter *Steel*).
 
 ### 3. Kolmila (charcoal clamp) (byggd)
 

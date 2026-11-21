@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:bronze_quarry_hammer",
-    "mechanical:steel_quarry_hammer"
+    "mechanical:steel_quarry_hammer",
+    "mechanical:iron_quarry_hammer"
   ]
 }

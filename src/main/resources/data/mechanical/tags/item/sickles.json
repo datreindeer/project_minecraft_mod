@@ -1,6 +1,8 @@
 {
   "values": [
     "mechanical:flint_sickle",
-    "mechanical:bronze_sickle"
+    "mechanical:bronze_sickle",
+    "mechanical:iron_sickle",
+    "mechanical:steel_sickle"
   ]
 }

@@ -153,7 +153,7 @@ public final class HoldPoses {
     private static @Nullable Held extensionsFor(Item item) {
         if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get()) return extensions(STAFF_POSE, Fp.STAFF);
         if (item == Mechanical.BARK_BASKET.get()) return extensions(BASKET_POSE, Fp.BASKET);
-        if (item == BronzeTools.BRONZE_TONGS.get()) return extensions(TONGS_POSE, null);
+        if (item == BronzeTools.BRONZE_TONGS.get() || item == com.mechanical.Smithing.IRON_TONGS.get()) return extensions(TONGS_POSE, null); // tags aren't bound yet here
         if (item instanceof com.mechanical.WaterJugItem) return extensions(BUCKET_POSE, Fp.BUCKET);
         if (item instanceof com.mechanical.ClayBucketItem || item instanceof com.mechanical.BronzeBucketItem || item == BronzeTools.BRONZE_MILK_BUCKET.get()
                 || item instanceof com.mechanical.CrucibleItem) return extensions(UNDER_POSE, Fp.UNDER);
@@ -161,6 +161,7 @@ public final class HoldPoses {
         if (item == com.mechanical.Bronze.BRONZE_KETTLE.get()) return extensions(HEAVY_POSE, Fp.HEAVY);
         if (item == com.mechanical.Watercraft.PADDLE.get()) return extensions(PADDLE_POSE, Entity::isPassenger, Fp.PADDLE);
         if (item == com.mechanical.Ironworking.BRONZE_SMITHING_HAMMER.get() || item == com.mechanical.Smithing.IRON_SMITHING_HAMMER.get()
+                || item == com.mechanical.Smithing.STEEL_SMITHING_HAMMER.get() || item == com.mechanical.Smithing.IRON_QUARRY_HAMMER.get()
                 || item == BronzeTools.BRONZE_QUARRY_HAMMER.get() || item == com.mechanical.Smithing.STEEL_QUARRY_HAMMER.get()
                 || item == Mechanical.FLINT_AXE.get() || item == Mechanical.CRUDE_STONE_AXE.get() || item == com.mechanical.Bronze.BRONZE_AXE.get())
             return extensions(SHOULDER_POSE, Fp.SHOULDER);
@@ -172,7 +173,7 @@ public final class HoldPoses {
         if (item instanceof com.mechanical.BroomItem) return extensions(BROOM_POSE, Fp.BROOM);
         if (item instanceof com.mechanical.FlailItem) return extensions(FLAIL_POSE, Fp.FLAIL);
         if (item instanceof com.mechanical.PaintbrushItem || item instanceof com.mechanical.PaintItem) return extensions(PAINT_POSE, Fp.PAINT);
-        if (item == BronzeTools.BRONZE_CHISEL.get()) return extensions(CHISEL_POSE, Fp.CHISEL);
+        if (item instanceof BronzeTools.ChiselItem) return extensions(CHISEL_POSE, Fp.CHISEL);
         if (item instanceof com.mechanical.wildlife.waterfowl.BoneFluteItem) return extensions(FLUTE_POSE, Fp.FLUTE);
         return null;
     }
@@ -264,8 +265,8 @@ public final class HoldPoses {
 
     /** Tongs in one hand and something hot (or a crucible) in the other: it moves to the tongs' jaws, its hand goes empty. */
     private static void grip(LivingEntity entity, HumanoidRenderState state) {
-        HumanoidArm tongs = state.rightHandItemStack.is(BronzeTools.BRONZE_TONGS.get()) ? HumanoidArm.RIGHT
-                : state.leftHandItemStack.is(BronzeTools.BRONZE_TONGS.get()) ? HumanoidArm.LEFT : null;
+        HumanoidArm tongs = state.rightHandItemStack.is(BronzeTools.TONGS) ? HumanoidArm.RIGHT
+                : state.leftHandItemStack.is(BronzeTools.TONGS) ? HumanoidArm.LEFT : null;
         if (tongs == null) return;
         boolean right = tongs == HumanoidArm.LEFT;
         ItemStack hot = right ? state.rightHandItemStack : state.leftHandItemStack;

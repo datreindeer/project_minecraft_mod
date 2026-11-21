@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/steel",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:steel_sickle"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:steel_sickle"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.steel_sickle.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.steel_sickle.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

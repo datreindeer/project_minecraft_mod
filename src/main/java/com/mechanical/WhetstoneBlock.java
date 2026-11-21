@@ -77,11 +77,11 @@ public class WhetstoneBlock extends Block {
         server.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 6, 0.2, 0.05, 0.2, 0.15);
         server.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), x, y, z, 3, 0.15, 0.05, 0.15, 0.05);
         server.playSound(null, pos, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 0.7F, 1.1F + server.getRandom().nextFloat() * 0.3F);
-        // a Bronze Chisel in the other hand knocks the casting flash off first: half the strokes
+        // a chisel in the other hand knocks the casting flash off first: half the strokes (a third with steel)
         InteractionHand other = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-        boolean chisel = player.getItemInHand(other).is(BronzeTools.BRONZE_CHISEL.get());
-        if (chisel) player.getItemInHand(other).hurtAndBreak(1, player, other);
-        int grind = state.getValue(GRIND) + (chisel ? 2 : 1) * bite;
+        int chisel = player.getItemInHand(other).getItem() instanceof BronzeTools.ChiselItem c ? c.whetStrokes : 1;
+        if (chisel > 1) player.getItemInHand(other).hurtAndBreak(1, player, other);
+        int grind = state.getValue(GRIND) + chisel * bite;
         if (grind < STROKES) {
             server.setBlock(pos, state.setValue(GRIND, grind), Block.UPDATE_ALL);
             return InteractionResult.SUCCESS;
