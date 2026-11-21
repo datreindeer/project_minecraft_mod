@@ -31,9 +31,7 @@ RECIPES = [
     ("copper_ingot_from_waxed_copper_block", "misc", "as above, waxed copper blocks", "Bronze"),
     # decided with the user (borderline cases)
     ("bundle", "tools", "replaced by the mod's Leather Pouch (Cordage over Leather, 2x2, worn at the hip)", "never"),
-    ("paper", "misc", "writing comes with papyrus", "Bronze"),
-    ("book", "misc", "needs paper", "Bronze"),
-    ("writable_book", "misc", "needs paper", "Bronze"),
+    # paper, book and writable_book are back in the Bronze Age: scripts/gen_writing.py
     ("bookshelf", "building_blocks", "needs books", "Bronze"),
     ("chiseled_bookshelf", "building_blocks", "needs books", "Bronze"),
     ("lectern", "redstone", "needs books", "Bronze"),

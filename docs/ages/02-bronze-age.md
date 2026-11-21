@@ -1496,6 +1496,24 @@ Wrought Iron Ingot och Slag efter 8 slag och hammaren slits 16; kilnen värmer o
 - **Inte gjort (valfritt):** att beskicka genom toppen (allt läggs i GUI:t), slaggtappning ur valvet medan den brinner,
   att städet krossar malm, en Poor Bronze-variant av städet.
 
+### Planerat: härdning och stål (inte byggt)
+Wrought Iron Ingot leder inte vidare ännu. Två steg med sot och kol är bestämda till senare (2026-11-21):
+- **Cementation → Blister Steel:** Wrought Iron Ingot packas med Charcoal och Soot i en lerlåda och bränns länge vid hög
+  värme; kolet vandrar in i järnet och det blir Blister Steel, materialet för senare stålverktyg.
+- **Ythärdning av järnverktyg:** när järnverktyg finns packas ett verktyg i kol och sot och glödgas, så att ytan blir
+  hårdare: mer hållbarhet och snabbare brytning ("Case-Hardened" på verktyget).
+
+## Skrift (byggd, v0.98.1)
+Skriften kommer tillbaka i bronsåldern, med bläck av sot (`scripts/gen_writing.py`).
+- **Soot Ink:** 2 Soot + Tallow eller Lard (bindemedlet) → 2 Soot Ink (formlöst). En svart bläckkaka som rivs med vatten.
+- **Paper:** 3 Sugar Cane + **Bronze Knife** (eller Iron Knife) → 3 Paper (formlöst; kniven stannar i rutnätet och nöts
+  som vid andra kniv-recept). Vanillas recept (3 Sugar Cane) är ersatt; kniven är det som gör det till bronsålder.
+- **Book:** vanillas recept igen (3 Paper + Leather).
+- **Book and Quill:** Book + **Soot Ink** + Feather (formlöst), i stället för Ink Sac.
+- Bookshelf, Chiseled Bookshelf och Lectern är fortfarande avstängda (gen_age_recipes.py).
+- Advancement **The Written Word** (Bronze Age, efter Bronzesmith). Test: FertilizerTest (Paper kräver kniven, kniven
+  stannar, Book and Quill med Soot Ink).
+
 ## NPC-byar i bronsåldern (byggd)
 
 När en NPC-stam når bronsåldern (`WorldAge.npcAge`) river den sina gamla byggnader och bygger nya (`people/AgeRebuild.java`,

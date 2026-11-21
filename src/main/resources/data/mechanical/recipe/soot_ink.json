@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:soot",
+    "mechanical:soot",
+    [
+      "mechanical:tallow",
+      "mechanical:lard"
+    ]
+  ],
+  "result": {
+    "id": "mechanical:soot_ink",
+    "count": 2
+  }
+}

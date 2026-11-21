@@ -370,7 +370,10 @@ public class Mechanical {
     public static final DeferredBlock<SootBlock> SOOT = BLOCKS.registerBlock("soot", SootBlock::new, p -> p
             .mapColor(MapColor.COLOR_BLACK).replaceable().noCollision().noOcclusion().strength(0.5F)
             .sound(SoundType.SAND).pushReaction(PushReaction.POPPED));
-    public static final DeferredItem<Item> SOOT_ITEM = ITEMS.registerSimpleItem("soot");
+    /** Scraped-off soot: black dye and paint, Night-Eye Salve, Soot Ink, and a light fertiliser (+1 on farmland, like Compost). */
+    public static final DeferredItem<FertilizerItem> SOOT_ITEM = ITEMS.registerItem("soot", p -> new FertilizerItem(1, p));
+    /** Soot bound with Tallow into a cake of ink, ground with water to write: Book and Quill takes it instead of an Ink Sac. */
+    public static final DeferredItem<Item> SOOT_INK = ITEMS.registerSimpleItem("soot_ink");
     /** Sweeps soot and leaf litter in a 3x3, a stage at a time (Tool Station: Straw + Twine + Tool Rod). */
     public static final DeferredItem<BroomItem> BROOM = ITEMS.registerItem("broom", BroomItem::new, p -> p.durability(96));
     // Torches blown out by the wind on windy nights (Wind); relit with a torch, fire drill or flint and steel.

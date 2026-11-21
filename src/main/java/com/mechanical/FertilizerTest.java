@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -78,6 +79,30 @@ public final class FertilizerTest {
         int got = Fertility.get(h.getBlockState(new BlockPos(1, 1, 1)));
         if (got != 1) throw h.assertionException("compost on a crop: farmland fertility " + got + ", expected 1");
         if (compost.getCount() != 3) throw h.assertionException("compost not used up: " + compost.getCount());
+
+        // soot on bare farmland: +1 as well
+        h.setBlock(new BlockPos(6, 1, 1), farmland);
+        ItemStack soot = new ItemStack(Mechanical.SOOT_ITEM.get(), 2);
+        click(h, p, new BlockPos(6, 1, 1), soot);
+        int sooted = Fertility.get(h.getBlockState(new BlockPos(6, 1, 1)));
+        if (sooted != 1 || soot.getCount() != 1) throw h.assertionException("soot on farmland: fertility " + sooted + ", soot left " + soot.getCount());
+
+        // writing (gen_writing.py): Paper needs a metal knife, which stays; Book and Quill takes Soot Ink
+        var level = h.getLevel();
+        var cane = new ItemStack(Items.SUGAR_CANE);
+        var paperIn = net.minecraft.world.item.crafting.CraftingInput.of(2, 2, java.util.List.of(cane, cane.copy(), cane.copy(), new ItemStack(Bronze.BRONZE_KNIFE.get())));
+        var paper = level.recipeAccess().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, paperIn, level)
+                .orElseThrow(() -> h.assertionException("no Paper from Sugar Cane and a Bronze Knife"));
+        if (!paper.value().assemble(paperIn).is(Items.PAPER) || !paper.value().getRemainingItems(paperIn).get(3).is(Bronze.BRONZE_KNIFE.get()))
+            throw h.assertionException("Paper, and the knife stays in the grid");
+        var noKnife = net.minecraft.world.item.crafting.CraftingInput.of(3, 1, java.util.List.of(cane, cane.copy(), cane.copy()));
+        if (level.recipeAccess().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, noKnife, level).isPresent())
+            throw h.assertionException("Paper without a knife");
+        var bookIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 1, java.util.List.of(new ItemStack(Items.BOOK),
+                new ItemStack(Mechanical.SOOT_INK.get()), new ItemStack(Items.FEATHER)));
+        if (level.recipeAccess().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, bookIn, level)
+                .map(r -> r.value().assemble(bookIn)).filter(s -> s.is(Items.WRITABLE_BOOK)).isEmpty())
+            throw h.assertionException("no Book and Quill from Book + Soot Ink + Feather");
 
         // rich soil (3/3): the compost stays in hand
         h.setBlock(new BlockPos(2, 1, 1), farmland.setValue(Fertility.FERTILITY, Fertility.MAX));

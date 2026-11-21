@@ -675,6 +675,9 @@ TABS = {
         ("bronze_tools", "bronze", "bronze_axe", T, "Bronzesmith",
          "Assemble a Bronze Axe, Shovel, Hoe or Knife (the knife can butcher bears)",
          has("bronze_axe", "bronze_shovel", "bronze_hoe", "bronze_knife")),
+        ("written_word", "bronze_tools", "minecraft:writable_book", G, "The Written Word",
+         "Cut Sugar Cane into Paper with a Bronze Knife, bind a Book with Leather, and make a Book and Quill with Soot Ink "
+         "(2 Soot + Tallow or Lard) and a Feather", has("minecraft:writable_book")),
         ("bronze_weapons", "bronze", "bronze_sword", G, "Bronze Blade",
          "Fire spear or sword molds, cast and sharpen, then assemble a Bronze Spear or Bronze Sword",
          has("bronze_spear", "bronze_sword")),
@@ -881,6 +884,9 @@ TABS["wilderness"][1].extend([
 TABS["food"][1].extend([
     ("guano", "manure", "guano", T, "Bat Droppings",
      "Scrape Guano from under a bat roost in a cave. Right-click farmland with it: poor soil turns rich at once", has("guano")),
+    ("soot_fertiliser", "manure", "soot", T, "Black Gold",
+     "Scrape Soot off a sooty ceiling and right-click farmland with it: fertility +1, like Compost",
+     used_on("soot", "minecraft:farmland")),
 ])
 
 # thread sources (Spinning.java; gen_thread.py)
