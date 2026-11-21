@@ -16,7 +16,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 /**
@@ -195,6 +197,12 @@ public final class Smithing {
 
     public static boolean isHammer(ItemStack stack) {
         return stack.is(Ironworking.BRONZE_SMITHING_HAMMER.get()) || stack.is(IRON_SMITHING_HAMMER.get());
+    }
+
+    /** Vanilla skips the block when sneaking with an item in hand; the anvil's sneak-use (pick the pattern) needs it. */
+    @SubscribeEvent
+    static void sneakHammerOnAnvil(PlayerInteractEvent.RightClickBlock event) {
+        if (isHammer(event.getItemStack()) && event.getLevel().getBlockState(event.getPos()).is(Ironworking.BRONZE_ANVIL.get())) event.setUseBlock(TriState.TRUE);
     }
 
     /** Durability a blow on hot iron or steel costs this hammer. */
