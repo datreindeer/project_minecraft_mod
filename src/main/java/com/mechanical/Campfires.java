@@ -54,10 +54,10 @@ public final class Campfires {
         ItemStack stack = event.getItemStack();
         boolean lit = state.getValue(CampfireBlock.LIT);
 
-        if (stack.is(Mechanical.FIREWOOD_TAG) && (lit || isEmbers(state))) {
+        if ((stack.is(Mechanical.FIREWOOD_TAG) || EarthBlocks.isPeat(stack)) && (lit || isEmbers(state))) {
             if (!level.isClientSide()) {
                 if (lit) {
-                    fire.mechanical$addFuel(FIREWOOD_TICKS);
+                    fire.mechanical$addFuel(EarthBlocks.isPeat(stack) ? EarthBlocks.PEAT_CAMPFIRE_TICKS : FIREWOOD_TICKS);
                 } else {
                     level.setBlock(pos, state.setValue(CampfireBlock.LIT, true).setValue(EMBERS, false), Block.UPDATE_ALL);
                     fire.mechanical$relight();

@@ -307,6 +307,9 @@ rules = hoe[0]["block_state_provider"]["rules"]
 air_above = {"type": "minecraft:matching_block_tag", "offset": [0, 1, 0], "tag": "minecraft:air"}
 rules.insert(0, {"if_true": {"type": "minecraft:all_of", "predicates": [{"type": "minecraft:matching_blocks", "blocks": "minecraft:podzol"}, air_above]},
                  "then": {"id": "minecraft:farmland", "properties": {"moisture": "0", "fertility": "3"}}})
+# loess (EarthBlocks, gen_earth.py): wind-blown silt, rich farmland too
+rules.insert(0, {"if_true": {"type": "minecraft:all_of", "predicates": [{"type": "minecraft:matching_blocks", "blocks": "mechanical:loess"}, air_above]},
+                 "then": {"id": "minecraft:farmland", "properties": {"moisture": "0", "fertility": "3"}}})
 w(D / "minecraft/block_transformer/hoe.json", hoe)
 
 # ---------------------------------------------------------------- lang

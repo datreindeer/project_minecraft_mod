@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **fas 1 byggd** (stengeneratorn + sex Stone Age-bergarter, se "Fas 1: resultat" sist), resten plan. Skriven 2026-11-21.
+Status: **fas 1 byggd** (stengeneratorn + sex Stone Age-bergarter, se "Fas 1: resultat" sist), **fas 3 byggd** (myr och jord + Kaolin och Ochre-block, se "Fas 3: resultat"), resten plan. Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -264,3 +264,43 @@ kollar att varje block Java registrerar har en loot table, rätt verktyg, rätt 
 behöver `_pillar`/axel-hantering (Java gör `RotatedPillarBlock` för namn som slutar på `_pillar`; basalts polished/smooth
 måste läggas till när den mallen används). Efter skriptet: `gen_block_items.py`, `gen_unlocks.py`, `gen_advancements.py`,
 `gen_loot_format.py`, och lägg till lang (skriptet gör blocknamnen), advancement, `docs/ages/` och registry notes.
+
+---
+
+## Fas 3: resultat (byggt)
+
+Java: `EarthBlocks.java` (block utan familj), `worldgen/BogOakLogs.java` (feature `mechanical:bog_oak_logs`), sju nya rader
+i `StoneFamilies.java`. Data: `scripts/gen_earth.py` (körs direkt efter `gen_stone_families.py`) och raderna i
+`gen_stone_families.py`. Loess plöjs i `gen_farming.py`. Spelardokumentation: `docs/ages/01-stone-age.md` "Myr och jord",
+Kaolin Tiles i `02-bronze-age.md`.
+
+**Nytt:** Peat (bränsle: Campfire 2 min, Clay Kiln 3 min 600°/850°) + Peat Bricks, Turf + slab/stairs,
+Bog Oak (hel träfamilj utan träd, begravda stammar y 55–62), Reed (växer som sugar cane) + Reed Thatch + slab/stairs +
+Reed Thatch Roof (BarkRoofBlock), Mudstone + Adobe Bricks, Loess (plöjs till bördighet 3) + Loess Bricks, Rammed Earth,
+Wattle (panel), Wattle and Daub + Framed, Kaolin + Kaolin Clay + Kaolin Tiles (kiln 1000°), Red/Yellow Ochre Block +
+Bricks. Biomtaggar: `has_peat` (Swamp, taiga; Peat Bog läggs till i fas 4), `has_reed`, `has_mudstone`, `has_loess`,
+`has_kaolin`, `has_ochre` (Badlands med, för Ochre Badlands).
+
+**De två nya mallarna** (en rad i `STONES` på varje sida, som förut):
+
+```python
+# mud: basblocket = vanilla packed mud, plus "{}_bricks" och "{}_brick_slab/_stairs/_wall" (mud bricks)
+Stone("adobe", "mud", palette, False, [], None, base="mudstone")              # mudstone, adobe_bricks, adobe_brick_slab ...
+# bricks: basblocket = vanilla bricks med namnet i base, plus "{}_slab/_stairs/_wall"; name = stammen utan "s"
+Stone("peat_brick", "bricks", palette, False, [], None, base="peat_bricks")   # peat_bricks, peat_brick_slab ...
+Stone("rammed_earth", "bricks", palette, False, [], None)                     # rammed_earth, rammed_earth_slab ...
+```
+
+```java
+Stone.of("adobe", "mudstone", Template.MUD, false, MapColor.TERRACOTTA_ORANGE, 1.0F, SoundType.PACKED_MUD, List.of()),
+Stone.of("peat_brick", "peat_bricks", Template.BRICKS, false, MapColor.COLOR_BROWN, 1.5F, SoundType.MUD_BRICKS, List.of()),
+```
+
+Ändring i generatorn: basblocket läggs bara i `base_stone_overworld`/`stone_ore_replaceables` när raden har `ore`
+(tegel och mjuka block ska inte vara berggrund). Gametesten `iron_ores` hoppar över hackkontrollen för baser som inte
+kräver rätt verktyg (Loess) och kollar Ochre-blockens 4 ockra; nya kontroller för spade, Peat som bränsle, Kaolin → Kaolin
+Tiles och Turf-receptet.
+
+**Inte gjort:** Turf som isolering (modden har ingen byggnadsisolering), Adobe på torkställningen (den torkar bara sina
+egna hudar/mat-lägen), dynga är ett krav i Wattle and Daub (Manure finns). Worldgen är inte provad i en riktig värld än.
+

@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:stone_age/ochre",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:red_ochre_block"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:yellow_ochre_block"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:red_ochre_block"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.ochre_block.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.ochre_block.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

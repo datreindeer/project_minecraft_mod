@@ -42,7 +42,10 @@ public final class StoneFamilies {
                 "{}_tile_slab", "{}_tile_stairs", "{}_tile_wall", "cracked_{}_bricks", "cracked_{}_tiles", "chiseled_{}"),
         STONE(false, "{}_slab", "{}_stairs", "smooth_{}", "smooth_{}_slab", "{}_bricks", "{}_brick_slab", "{}_brick_stairs", "{}_brick_wall",
                 "cracked_{}_bricks", "chiseled_{}_bricks", "mossy_{}_bricks", "mossy_{}_brick_slab", "mossy_{}_brick_stairs", "mossy_{}_brick_wall"),
-        SANDSTONE(false, "{}_slab", "{}_stairs", "{}_wall", "cut_{}", "cut_{}_slab", "smooth_{}", "smooth_{}_slab", "smooth_{}_stairs", "chiseled_{}");
+        SANDSTONE(false, "{}_slab", "{}_stairs", "{}_wall", "cut_{}", "cut_{}_slab", "smooth_{}", "smooth_{}_slab", "smooth_{}_stairs", "chiseled_{}"),
+        // phase 3 (earth): packed mud's family (base + mud bricks), and plain bricks (base = the row's "<name>s" + slab/stairs/wall)
+        MUD(false, "{}_bricks", "{}_brick_slab", "{}_brick_stairs", "{}_brick_wall"),
+        BRICKS(false, "{}_slab", "{}_stairs", "{}_wall");
 
         /** The base block turns like a log (deepslate's axis). */
         final boolean pillarBase;
@@ -79,7 +82,15 @@ public final class StoneFamilies {
             Stone.of("shale", "shale", Template.TUFF, false, MapColor.COLOR_BROWN, 1.2F, SoundType.TUFF,
                     List.of(List.of("shale", "polished_shale", "shale_bricks", "chiseled_shale_bricks"))),
             Stone.of("conglomerate", "conglomerate", Template.TUFF, false, MapColor.DIRT, 1.5F, SoundType.STONE,
-                    List.of(List.of("conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"))));
+                    List.of(List.of("conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"))),
+            // phase 3 (earth; EarthBlocks): no chisel chains
+            Stone.of("peat_brick", "peat_bricks", Template.BRICKS, false, MapColor.COLOR_BROWN, 1.5F, SoundType.MUD_BRICKS, List.of()),
+            Stone.of("adobe", "mudstone", Template.MUD, false, MapColor.TERRACOTTA_ORANGE, 1.0F, SoundType.PACKED_MUD, List.of()),
+            new Stone("loess", "loess", Template.MUD, false, null, 0, null, EarthBlocks.LOESS, List.of()),
+            Stone.of("rammed_earth", "rammed_earth", Template.BRICKS, false, MapColor.DIRT, 1.5F, SoundType.PACKED_MUD, List.of()),
+            Stone.of("kaolin_tile", "kaolin_tiles", Template.BRICKS, false, MapColor.SNOW, 2.0F, SoundType.STONE, List.of()),
+            Stone.of("red_ochre", "red_ochre_block", Template.MUD, false, MapColor.TERRACOTTA_RED, 1.0F, SoundType.PACKED_MUD, List.of()),
+            Stone.of("yellow_ochre", "yellow_ochre_block", Template.MUD, false, MapColor.TERRACOTTA_YELLOW, 1.0F, SoundType.PACKED_MUD, List.of()));
 
     /** Every stone family block by id path, base blocks included. */
     public static final Map<String, DeferredBlock<? extends Block>> BLOCKS_BY_NAME = new LinkedHashMap<>();
@@ -136,14 +147,17 @@ public final class StoneFamilies {
     }
 
     public static boolean isFamilyItem(Identifier id) {
-        return id.getNamespace().equals(MODID) && BLOCKS_BY_NAME.containsKey(id.getPath());
+        return id.getNamespace().equals(MODID) && (BLOCKS_BY_NAME.containsKey(id.getPath()) || EarthBlocks.isBuilding(id.getPath()));
     }
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BUILDING_BLOCKS_TAB = CREATIVE_MODE_TABS.register("building_blocks_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.mechanical.building_blocks"))
             .withTabsBefore(Mechanical.MECHANICAL_TAB.getKey())
             .icon(() -> block("slate_tiles").asItem().getDefaultInstance())
-            .displayItems((parameters, output) -> BLOCKS_BY_NAME.values().forEach(b -> output.accept(b.get())))
+            .displayItems((parameters, output) -> {
+                BLOCKS_BY_NAME.values().forEach(b -> output.accept(b.get()));
+                EarthBlocks.BUILDING.forEach(b -> output.accept(b.get()));
+            })
             .build());
 
     /** Loads the class (and so registers everything) from the Mechanical constructor. */

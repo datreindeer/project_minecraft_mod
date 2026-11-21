@@ -78,6 +78,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     // shortcut: hardcoded like the Tool Station recipes; move to datapack recipes when modpacks need to edit them.
     public static final List<Recipe> RECIPES = List.of(
             new Recipe(s -> s.is(Items.CLAY_BALL), 1, () -> Items.BRICK, 400, 600),
+            new Recipe(s -> s.is(EarthBlocks.KAOLIN.get().asItem()), 1, () -> StoneFamilies.block("kaolin_tiles").asItem(), 400, EarthBlocks.KAOLIN_TEMP),
             new Recipe(s -> s.is(ItemTags.LOGS_THAT_BURN), 1, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(Mechanical.FIREWOOD_TAG), 2, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(Mechanical.UNFIRED_CRUCIBLE.get()), 1, () -> Mechanical.CRUCIBLE.get(), 800, 800),
@@ -133,6 +134,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Fuel(s -> s.is(Mechanical.FIREWOOD_TAG), 1200, 650, 900),                       // 1 min
             new Fuel(s -> s.is(ItemTags.PLANKS), 600, 500, 700),                                // 30 s
             new Fuel(s -> s.is(ItemTags.LOGS_THAT_BURN), 2400, 650, 900),                       // 2 min, as its 2 firewood
+            new Fuel(EarthBlocks::isPeat, 3600, 600, 850),                                     // 3 min, slow and low (Peat)
             new Fuel(s -> s.is(Items.CHARCOAL) || s.is(Items.COAL), 4800, 800, 1300));          // 4 min
 
     private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);

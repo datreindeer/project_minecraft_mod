@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:ore",
+  "size": 48,
+  "discard_chance_on_air_exposure": 0.0,
+  "targets": [
+    {
+      "state": "mechanical:peat",
+      "target": {
+        "predicate_type": "minecraft:block_match",
+        "block": "minecraft:dirt"
+      }
+    },
+    {
+      "state": "mechanical:peat",
+      "target": {
+        "predicate_type": "minecraft:block_match",
+        "block": "minecraft:mud"
+      }
+    },
+    {
+      "state": "mechanical:peat",
+      "target": {
+        "predicate_type": "minecraft:block_match",
+        "block": "minecraft:clay"
+      }
+    }
+  ]
+}

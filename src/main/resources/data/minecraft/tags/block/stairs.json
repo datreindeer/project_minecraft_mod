@@ -20,6 +20,15 @@
     "mechanical:shale_stairs",
     "mechanical:conglomerate_brick_stairs",
     "mechanical:conglomerate_stairs",
-    "mechanical:polished_conglomerate_stairs"
+    "mechanical:polished_conglomerate_stairs",
+    "mechanical:peat_brick_stairs",
+    "mechanical:adobe_brick_stairs",
+    "mechanical:loess_brick_stairs",
+    "mechanical:rammed_earth_stairs",
+    "mechanical:kaolin_tile_stairs",
+    "mechanical:red_ochre_brick_stairs",
+    "mechanical:yellow_ochre_brick_stairs",
+    "mechanical:turf_stairs",
+    "mechanical:reed_thatch_stairs"
   ]
 }

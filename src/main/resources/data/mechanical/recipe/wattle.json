@@ -1,0 +1,15 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:wattle",
+    "count": 4
+  }
+}

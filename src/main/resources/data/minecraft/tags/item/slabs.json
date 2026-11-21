@@ -22,6 +22,15 @@
     "mechanical:shale_slab",
     "mechanical:conglomerate_brick_slab",
     "mechanical:conglomerate_slab",
-    "mechanical:polished_conglomerate_slab"
+    "mechanical:polished_conglomerate_slab",
+    "mechanical:peat_brick_slab",
+    "mechanical:adobe_brick_slab",
+    "mechanical:loess_brick_slab",
+    "mechanical:rammed_earth_slab",
+    "mechanical:kaolin_tile_slab",
+    "mechanical:red_ochre_brick_slab",
+    "mechanical:yellow_ochre_brick_slab",
+    "mechanical:turf_slab",
+    "mechanical:reed_thatch_slab"
   ]
 }

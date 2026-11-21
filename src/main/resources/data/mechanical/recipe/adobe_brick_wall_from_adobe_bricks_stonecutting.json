@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:adobe_bricks",
+  "result": {
+    "id": "mechanical:adobe_brick_wall"
+  }
+}

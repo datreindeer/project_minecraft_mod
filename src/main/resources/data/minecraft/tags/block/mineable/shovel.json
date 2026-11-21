@@ -4,6 +4,14 @@
     "mechanical:trodden_path",
     "mechanical:beaver_dam",
     "mechanical:bog_iron_ore",
-    "mechanical:charcoal_heap"
+    "mechanical:charcoal_heap",
+    "mechanical:peat",
+    "mechanical:loess",
+    "mechanical:kaolin",
+    "mechanical:turf",
+    "mechanical:turf_slab",
+    "mechanical:turf_stairs",
+    "mechanical:wattle_and_daub",
+    "mechanical:framed_wattle_and_daub"
   ]
 }

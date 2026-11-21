@@ -8,6 +8,7 @@
     "mechanical:ash_fence",
     "mechanical:hazel_fence",
     "mechanical:pine_fence",
-    "mechanical:yew_fence"
+    "mechanical:yew_fence",
+    "mechanical:bog_oak_fence"
   ]
 }

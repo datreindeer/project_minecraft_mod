@@ -8,6 +8,10 @@
     "mechanical:ash_leaves",
     "mechanical:hazel_leaves",
     "mechanical:pine_leaves",
-    "mechanical:yew_leaves"
+    "mechanical:yew_leaves",
+    "mechanical:reed_thatch",
+    "mechanical:reed_thatch_slab",
+    "mechanical:reed_thatch_stairs",
+    "mechanical:reed_thatch_roof"
   ]
 }

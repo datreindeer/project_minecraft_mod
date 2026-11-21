@@ -8,6 +8,7 @@
     "mechanical:ash_button",
     "mechanical:hazel_button",
     "mechanical:pine_button",
-    "mechanical:yew_button"
+    "mechanical:yew_button",
+    "mechanical:bog_oak_button"
   ]
 }

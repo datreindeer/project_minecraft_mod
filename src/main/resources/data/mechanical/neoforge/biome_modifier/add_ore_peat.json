@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_peat",
+  "features": [
+    "mechanical:ore_peat"
+  ],
+  "step": "underground_ores"
+}

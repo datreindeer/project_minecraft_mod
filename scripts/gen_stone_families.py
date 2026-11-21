@@ -94,6 +94,18 @@ STONES = [
     Stone("conglomerate", "tuff", [(80, 74, 68), (106, 96, 86), (134, 120, 104), (160, 144, 122), (186, 168, 144)], False,
           [["conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"]],
           Ore(40, 6, 30, 80, 2, 40, 70, ["#minecraft:is_river"])),
+    # phase 3 (earth): worldgen, Peat/Loess/Kaolin and the texture of Rammed Earth are in gen_earth.py (runs after this)
+    # mud: base = packed mud, "{}_bricks" + brick slab/stairs/wall; bricks: base (given) + "{}_slab/_stairs/_wall"
+    Stone("peat_brick", "bricks", [(30, 22, 16), (44, 33, 24), (58, 44, 32), (74, 57, 42), (92, 72, 54)], False, [], None, base="peat_bricks"),
+    Stone("adobe", "mud", [(120, 88, 60), (146, 110, 76), (170, 132, 94), (192, 154, 112), (212, 176, 134)], False, [], None, base="mudstone"),
+    Stone("loess", "mud", [(150, 128, 92), (174, 150, 110), (196, 172, 130), (214, 192, 150), (230, 210, 170)], False, [], None, own_base=False),
+    Stone("rammed_earth", "bricks", [(104, 74, 52), (128, 94, 66), (150, 112, 80), (172, 132, 96), (192, 152, 114)], False, [], None),
+    Stone("kaolin_tile", "bricks", [(186, 184, 178), (206, 204, 198), (222, 220, 215), (236, 235, 231), (248, 247, 244)], False, [], None,
+          base="kaolin_tiles"),
+    Stone("red_ochre", "mud", [(98, 36, 24), (126, 50, 32), (152, 64, 40), (176, 82, 52), (198, 104, 70)], False, [], None,
+          base="red_ochre_block", drop=("red_ochre", 4)),
+    Stone("yellow_ochre", "mud", [(132, 96, 30), (160, 120, 40), (186, 144, 54), (206, 166, 72), (222, 186, 96)], False, [], None,
+          base="yellow_ochre_block", drop=("yellow_ochre", 4)),
 ]
 
 
@@ -187,8 +199,9 @@ for s in STONES:
                   "pattern": ["##", "##"], "key": {"#": "mechanical:" + s.drop[0]}, "result": {"id": "mechanical:" + base_id}}))
         loot["random_sequence"] = f"mechanical:blocks/{base_id}"
         write(D / f"mechanical/loot_table/blocks/{base_id}.json", json.dumps(loot))
-        tag_add("minecraft/tags/block/base_stone_overworld.json", ["mechanical:" + base_id])
-        tag_add("minecraft/tags/block/stone_ore_replaceables.json", ["mechanical:" + base_id])
+        if s.ore:  # rock in the rock; crafted and soft bases (Peat Bricks, Ochre ...) stay out
+            tag_add("minecraft/tags/block/base_stone_overworld.json", ["mechanical:" + base_id])
+            tag_add("minecraft/tags/block/stone_ore_replaceables.json", ["mechanical:" + base_id])
 
     # ---- tags ----
     tag_add("minecraft/tags/block/mineable/pickaxe.json", ids)

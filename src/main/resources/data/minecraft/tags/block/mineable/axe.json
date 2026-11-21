@@ -213,6 +213,20 @@
     "mechanical:pine_firewood_pile",
     "mechanical:yew_firewood_pile",
     "mechanical:rough_log_pile",
-    "mechanical:lapidary_wheel"
+    "mechanical:lapidary_wheel",
+    "mechanical:bog_oak_log",
+    "mechanical:bog_oak_wood",
+    "mechanical:bog_oak_planks",
+    "mechanical:bog_oak_slab",
+    "mechanical:bog_oak_stairs",
+    "mechanical:bog_oak_fence",
+    "mechanical:bog_oak_fence_gate",
+    "mechanical:bog_oak_door",
+    "mechanical:bog_oak_trapdoor",
+    "mechanical:bog_oak_button",
+    "mechanical:bog_oak_pressure_plate",
+    "mechanical:stripped_bog_oak_log",
+    "mechanical:stripped_bog_oak_wood",
+    "mechanical:wattle"
   ]
 }

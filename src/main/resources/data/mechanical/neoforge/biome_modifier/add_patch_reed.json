@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_reed",
+  "features": [
+    "mechanical:patch_reed"
+  ],
+  "step": "vegetal_decoration"
+}

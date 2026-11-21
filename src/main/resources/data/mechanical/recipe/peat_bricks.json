@@ -1,0 +1,15 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:peat"
+  },
+  "result": {
+    "id": "mechanical:peat_bricks",
+    "count": 4
+  }
+}

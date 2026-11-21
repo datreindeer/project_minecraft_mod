@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/turf_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/turf"
+    },
+    "type=top": {
+      "model": "mechanical:block/turf_slab_top"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:yellow_ochre"
+  },
+  "result": {
+    "id": "mechanical:yellow_ochre_block"
+  }
+}

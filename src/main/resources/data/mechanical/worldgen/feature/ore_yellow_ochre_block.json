@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:ore",
+  "size": 28,
+  "discard_chance_on_air_exposure": 0.0,
+  "targets": [
+    {
+      "state": "mechanical:yellow_ochre_block",
+      "target": {
+        "predicate_type": "minecraft:block_match",
+        "block": "minecraft:clay"
+      }
+    },
+    {
+      "state": "mechanical:yellow_ochre_block",
+      "target": {
+        "predicate_type": "minecraft:block_match",
+        "block": "minecraft:dirt"
+      }
+    },
+    {
+      "state": "mechanical:yellow_ochre_block",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:terracotta"
+      }
+    }
+  ]
+}

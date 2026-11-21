@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:red_ochre_bricks",
+  "result": {
+    "id": "mechanical:red_ochre_brick_stairs"
+  }
+}

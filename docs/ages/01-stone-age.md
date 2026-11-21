@@ -2382,6 +2382,91 @@ Smältrecepten är vanillas ugnsrecept, Stonecutter-recepten finns men Stonecutt
 Advancements i Stone Age-fliken: *Slate Roof*, *Old Rock* (Gneiss), *White Cliffs* (Chalk), *Soapstone*, *Shale*,
 *Pudding Stone* (Conglomerate). Senare användning (planen fas 9): Soapstone-formar, Shale till lera, Conglomerate till grus.
 
+## Myr och jord (byggt, fas 3 av världsmaterialplanen)
+
+Byggmaterial ur marken för stenålderns läger och byar. Allt ligger i creative-fliken **Building Blocks**.
+Java: `EarthBlocks.java` (block) och raderna i `StoneFamilies.java` (familjerna), data: `scripts/gen_earth.py` och
+`scripts/gen_stone_families.py`.
+
+### Var det finns
+
+| Material | Var | Verktyg | Ger |
+|---|---|---|---|
+| **Peat** | Skivor (radie 2–5) på botten av dammar och bäckar, 3 försök per chunk, och klumpar i jorden y 54–70, i Swamp och taiga (`#mechanical:has_peat`) | Spade | sig själv |
+| **Bog Oak Log** | Begravda liggande stammar, 1–3 st à 3–6 block, y 55–62, varannan chunk i `#mechanical:has_peat` | Yxa | sig själv |
+| **Reed** | Vid vatten längs floder, Swamp och Mangrove Swamp (`#mechanical:has_reed`), som sugar cane | Hand | sig själv |
+| **Mudstone** | Skivor på botten och kanterna av vatten i Desert, savann och Badlands (`#mechanical:has_mudstone`) | Vilken hacka som helst | sig själv |
+| **Loess** | Stora klumpar i jorden under gräset, y 58–85, på Plains, Sunflower Plains och savann (`#mechanical:has_loess`) | Spade | sig själv |
+| **Red / Yellow Ochre Block** | Klumpar i lera, jord och terrakotta y 50–110 i Badlands, savann och vid floder (`#mechanical:has_ochre`) | Hacka | **4 Red/Yellow Ochre** (Silk Touch: blocket) |
+| **Kaolin** (bronsåldern) | Sällsynta klumpar i jord och grus y 50–75 i skog, Plains, Meadow och djungel (`#mechanical:has_kaolin`) | Spade | **4 Kaolin Clay** (Silk Touch: blocket) |
+
+### Recept
+
+**Peat Bricks** (2×2 Peat → 4), **Adobe Bricks** (2×2 Mudstone → 4), **Loess Bricks** (2×2 Loess → 4),
+**Red/Yellow Ochre Bricks** (2×2 Ochre Block → 4):
+```
+[X][X]
+[X][X]
+```
+
+**Red/Yellow Ochre Block**: 2×2 Red/Yellow Ochre → 1. Formlöst: Ochre Block → 4 Ochre.
+
+**Adobe Bricks** av lera (formlöst) → 2: `Clay Ball + Sand + Straw`. (Torkställningen torkar bara hudar och mat i sina
+egna lägen, så Adobe craftas i stället för att soltorkas.)
+
+**Rammed Earth** (formlöst) → 2: `Dirt / Coarse Dirt / Loess + Gravel + Clay Ball`
+
+**Turf** (formlöst) → 1: `Dirt + Plant Fibre`
+
+**Reed Thatch** → 1, **Reed Thatch Roof** → 4:
+```
+[Reed][Reed]        [Reed][    ]
+[Reed][Reed]        [Reed][Reed]
+```
+
+**Wattle** → 4:
+```
+[Stick][Stick][Stick]
+[Stick][Stick][Stick]
+```
+
+**Wattle and Daub** (formlöst) → 2: `Wattle + Clay Ball + Clay Ball + Straw eller Plant Fibre + Manure`
+
+**Framed Wattle and Daub** (formlöst) → 1: `Wattle and Daub + Stick + Stick`
+
+**Bog Oak Planks** (formlöst) → 2: `Bog Oak Log/Wood/Stripped` (som alla träslag i stenåldern). Resten som vanilla-ek:
+Wood, Slab, Stairs, Fence, Fence Gate, Door, Trapdoor, Button, Pressure Plate. Yxan barkar Log och Wood.
+
+Slabs och stairs: 3 i rad → 6 slabs, trappmönster av 6 → 4 stairs, och för familjerna 2×3 → 6 walls.
+
+### Familjerna
+
+| Familj | Mall | Block |
+|---|---|---|
+| Peat Bricks | bricks | Peat Bricks + slab/stairs/wall |
+| Adobe | mud | **Mudstone** (packed mud), Adobe Bricks + slab/stairs/wall |
+| Loess | mud | Loess (eget mjukt block), Loess Bricks + slab/stairs/wall |
+| Rammed Earth | bricks | Rammed Earth + slab/stairs/wall (egen textur i lager) |
+| Red / Yellow Ochre | mud | Red/Yellow Ochre Block, Red/Yellow Ochre Bricks + slab/stairs/wall |
+| Kaolin Tiles (bronsåldern) | bricks | Kaolin Tiles + slab/stairs/wall, se bronsålderns dokument |
+| Turf, Reed Thatch | egna | block + slab + stairs (Reed Thatch också **Reed Thatch Roof**, sluttningar som Bark Roof) |
+
+Ingen av familjerna har Bronze Chisel-kedjor.
+
+### Egenskaper
+
+- **Peat är bränsle:** på en Campfire 2 minuter (dubbelt så länge som en Firewood), i Clay Kiln 3 minuter med max
+  600° (850° med bälg). Inte i Fire Pit (och vanilla-ugnen är borttagen).
+- **Loess plöjs** med en hacka till farmland med **bördighet 3**, som Podzol (`block_transformer/hoe.json`, gen_farming.py).
+- **Reed** växer som sugar cane: på jord eller sand bredvid vatten, upp till 3 högt. Reed och allt Reed Thatch brinner
+  som hö; Bog Oak och Wattle som trä.
+- **Wattle** är ett panelblock som kopplar ihop sig som glasrutor.
+- **Turf värmer inte:** modden har ingen isolering i byggnader (temperaturen räknar bara kläder, eld och väder).
+
+Advancements i Stone Age-fliken: *Peat Cutter*, *Bog Oak*, *Sod Roof* (Turf), *Thatcher* (Reed Thatch), *Adobe*,
+*Yellow Earth* (Loess), *Rammed Earth*, *Wattle and Daub*, *Red Earth, Yellow Earth* (Ochre Block). *White Tiles* (Kaolin
+Tiles) ligger i Bronze Age-fliken. Senare (planen fas 4): Peat Bog och Reed Delta läggs till i biomtaggarna.
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

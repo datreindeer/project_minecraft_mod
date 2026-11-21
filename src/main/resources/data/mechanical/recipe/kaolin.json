@@ -1,0 +1,15 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:kaolin_clay"
+  },
+  "result": {
+    "id": "mechanical:kaolin",
+    "count": 1
+  }
+}

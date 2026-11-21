@@ -1070,6 +1070,39 @@ TABS["stone_age"][1].extend([
      has("conglomerate", "conglomerate_bricks")),
 ])
 
+# bog and earth (EarthBlocks.java; gen_earth.py, gen_stone_families.py): one per material family
+TABS["stone_age"][1].extend([
+    ("peat", "light_fire", "peat", T, "Peat Cutter",
+     "Dig Peat with a shovel at the bottom of ponds and streams in swamps and taigas. It burns twice as long as firewood on a campfire "
+     "and three minutes in the Clay Kiln; 4 Peat make 4 Peat Bricks", has("peat", "peat_bricks")),
+    ("bog_oak", "peat", "bog_oak_log", T, "Bog Oak",
+     "Dig out a black Bog Oak trunk buried in the ground of swamps and taigas (y 55-62): a whole wood set without a tree", has("#bog_oak_logs")),
+    ("turf", "root", "turf", T, "Sod Roof",
+     "Bind Dirt with Plant Fibre into Turf, and cut it into slabs and stairs for a turf roof", has("turf", "turf_slab", "turf_stairs")),
+    ("reed_thatch", "root", "reed_thatch_roof", T, "Thatcher",
+     "Cut Reed by rivers and swamps (it grows like sugar cane) and lay it as Reed Thatch or a sloped Reed Thatch Roof. It burns easily",
+     has("reed_thatch", "reed_thatch_roof", "reed_thatch_slab", "reed_thatch_stairs")),
+    ("adobe", "root", "adobe_bricks", T, "Adobe",
+     "Find Mudstone on river banks in deserts, savannas and badlands and craft it into Adobe Bricks, or mix Clay, Sand and Straw",
+     has("mudstone", "adobe_bricks")),
+    ("loess", "root", "loess", T, "Yellow Earth",
+     "Dig pale Loess under the grass of plains and savannas. Tilled with a hoe it is the richest farmland; 4 make Loess Bricks",
+     has("loess", "loess_bricks")),
+    ("rammed_earth", "root", "rammed_earth", T, "Rammed Earth",
+     "Ram Dirt or Loess, Gravel and a Clay Ball into 2 Rammed Earth: cheap, thick walls", has("rammed_earth")),
+    ("wattle_and_daub", "rammed_earth", "framed_wattle_and_daub", T, "Wattle and Daub",
+     "Weave sticks into Wattle, then daub it with 2 Clay Balls, Straw or Plant Fibre and Manure. Two sticks frame it as timber",
+     has("wattle_and_daub", "framed_wattle_and_daub")),
+    ("ochre_block", "ochre", "red_ochre_block", T, "Red Earth, Yellow Earth",
+     "Press 4 Red or Yellow Ochre into a block, or dig ochre beds in clay banks, rivers, savannas and badlands. Broken, it gives the 4 back",
+     has("red_ochre_block", "yellow_ochre_block")),
+])
+TABS["bronze_age"][1].extend([
+    ("kaolin_tiles", "bellows", "kaolin_tiles", T, "White Tiles",
+     "Dig rare white Kaolin with a shovel in forests, plains and jungles (it crumbles into 4 Kaolin Clay) and fire the block in the Clay Kiln "
+     "at 1000°: Charcoal and a bellows. Kaolin Tiles", has("kaolin_tiles")),
+])
+
 # the Iron Age's new ores (IronOres.java; gen_iron_ores.py)
 TABS["iron_age"][1].extend([
     ("galena", "root", "raw_galena", T, "Galena",
