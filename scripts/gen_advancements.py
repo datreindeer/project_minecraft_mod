@@ -1408,6 +1408,21 @@ def gemstone_rows():
 TABS["gemstones"] = ("minecraft:gui/advancements/backgrounds/stone", gemstone_rows())
 
 
+# ---------------------------------------------------------------- Folklore tab (docs/folklore-plan.md): Faith, Second Sight and
+# the beings only believers see. Small Folk and Above the Clouds are granted from Java (folklore.Faith).
+TABS["folklore"] = ("minecraft:block/moss_block", [
+    ("root", None, "fly_agaric", T, "Folklore",
+     "Eat a Fly Agaric, raw or boiled on a Campfire (Boiled Fly Agaric, no poison): Second Sight shows what is hidden",
+     ate("fly_agaric", "boiled_fly_agaric")),
+    ("small_folk", "root", "glimmering_stump", T, "Small Folk",
+     "Find a Glimmering Stump in an old or dark forest and right-click it with berries or nuts. Come back the next morning", by_code()),
+    ("above_the_clouds", "root", "mountain_watcher_spawn_egg", G, "Above the Clouds",
+     "See a Mountain Watcher circling the peaks above height 150 on a clear day. Only believers (or Second Sight) see it", by_code()),
+    ("gift_of_the_peaks", "above_the_clouds", "watcher_feather", C, "Gift of the Peaks",
+     "Come close to a Mountain Watcher you can see: once a year it lets a Watcher Feather fall", has("watcher_feather")),
+])
+
+
 def build():
     out_root = D / "mechanical/advancement"
     lang = {}

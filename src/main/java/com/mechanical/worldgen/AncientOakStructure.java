@@ -695,6 +695,14 @@ public final class AncientOakStructure extends Structure {
                     } else decor.put(top, plant);
                 }
 
+            // folklore: a Glimmering Stump somewhere out in the clearing, apart from the trunk (not where a tall plant stands)
+            spots.stream().filter(s -> Math.hypot(s.getX() - x0, s.getZ() - z0) > 10 && !decor.containsKey(s.above()))
+                    .min((a, b) -> Double.compare(hash(a, 41), hash(b, 41)))
+                    .ifPresent(s -> {
+                        decor.put(s, com.mechanical.folklore.Folklore.GLIMMERING_STUMP.get().defaultBlockState());
+                        spots.remove(s); // no Spirit Bloom over it: nothing spawns on a stump anyway
+                    });
+
             // light: every free spot must be within reach of a light source; where none reaches, a Spirit Bloom grows
             List<BlockPos> lights = new ArrayList<>();
             List<Integer> levels = new ArrayList<>();

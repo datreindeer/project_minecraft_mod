@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:folklore/root",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:glimmering_stump"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.small_folk.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.small_folk.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

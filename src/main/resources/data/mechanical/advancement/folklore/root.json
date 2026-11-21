@@ -1,0 +1,42 @@
+{
+  "criteria": {
+    "ate_0": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:fly_agaric"
+        }
+      }
+    },
+    "ate_1": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:boiled_fly_agaric"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ate_0",
+      "ate_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fly_agaric"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.root.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:block/moss_block"
+  }
+}

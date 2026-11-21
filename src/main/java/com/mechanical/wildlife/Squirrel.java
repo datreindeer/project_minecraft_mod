@@ -69,6 +69,7 @@ public class Squirrel extends WildAnimal {
         goalSelector.removeAllGoals(g -> g instanceof FollowHerdGoal); // loners
         // above AnimalFear's flee goal (priority 0), so a squirrel with a tree in reach climbs instead of running off
         goalSelector.addGoal(-1, new ClimbTreeGoal(this));
+        goalSelector.addGoal(2, new GatherAtStumpGoal(this)); // before dozing off for the night
     }
 
     @Override
@@ -275,6 +276,59 @@ public class Squirrel extends WildAnimal {
                     if (mob.onGround() || --timer <= 0) phase = null;
                 }
             }
+        }
+    }
+
+    /** Folklore: at dusk a squirrel with a Glimmering Stump within {@link #RANGE} blocks goes and sits by it until dark. */
+    static class GatherAtStumpGoal extends Goal {
+        static final int RANGE = 16;
+        private final Squirrel mob;
+        private BlockPos stump;
+        private Vec3 seat;
+
+        GatherAtStumpGoal(Squirrel mob) {
+            this.mob = mob;
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        /** Dusk by the overworld clock (0 = 06:00): 17:00 to 19:30. */
+        static boolean dusk(Level level) {
+            long t = level.getOverworldClockTime() % 24000;
+            return t >= 11000 && t < 13500;
+        }
+
+        @Override
+        public boolean canUse() {
+            if ((mob.tickCount + mob.getId()) % 100 != 0 || mob.isClimbing() || !dusk(mob.level()) || AnimalFear.isPanicking(mob)) return false;
+            BlockPos at = mob.blockPosition();
+            stump = null;
+            for (BlockPos p : BlockPos.betweenClosed(at.offset(-RANGE, -4, -RANGE), at.offset(RANGE, 4, RANGE))) {
+                if (mob.level().getBlockState(p).is(com.mechanical.folklore.Folklore.GLIMMERING_STUMP.get())) {
+                    stump = p.immutable();
+                    break;
+                }
+            }
+            if (stump == null) return false;
+            double a = mob.getRandom().nextDouble() * Math.PI * 2, r = 1.3 + mob.getRandom().nextDouble() * 1.2;
+            seat = new Vec3(stump.getX() + 0.5 + Math.cos(a) * r, stump.getY(), stump.getZ() + 0.5 + Math.sin(a) * r);
+            return mob.getNavigation().moveTo(seat.x, seat.y, seat.z, 1.0);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return dusk(mob.level()) && !AnimalFear.isPanicking(mob) && mob.level().getBlockState(stump).is(com.mechanical.folklore.Folklore.GLIMMERING_STUMP.get());
+        }
+
+        @Override
+        public void tick() {
+            if (mob.position().distanceToSqr(seat) < 0.6) mob.getNavigation().stop(); // sits there, facing the stump
+            else if (mob.getNavigation().isDone()) mob.getNavigation().moveTo(seat.x, seat.y, seat.z, 1.0);
+            mob.getLookControl().setLookAt(stump.getX() + 0.5, stump.getY() + 0.5, stump.getZ() + 0.5);
+        }
+
+        @Override
+        public void stop() {
+            mob.getNavigation().stop();
         }
     }
 }

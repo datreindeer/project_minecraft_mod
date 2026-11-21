@@ -12,13 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
@@ -54,10 +49,6 @@ public final class Foraging {
 
     private static final FoodProperties BERRY = new FoodProperties.Builder().nutrition(1).saturationModifier(0.3F).build();
     private static final FoodProperties RAW_MUSHROOM = new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build();
-    /** Fly agaric: poisonous, and makes you sick. */
-    private static final Consumable FLY_AGARIC = Consumables.defaultFood()
-            .onConsume(new ApplyStatusEffectsConsumeEffect(List.of(new MobEffectInstance(MobEffects.POISON, 200, 0),
-                    new MobEffectInstance(MobEffects.NAUSEA, 300, 0)))).build();
 
     static {
         BUSHES.forEach((bush, berries) -> {
@@ -69,7 +60,7 @@ public final class Foraging {
         });
         for (String name : MUSHROOMS) {
             DeferredItem<Item> item = name.equals("fly_agaric")
-                    ? ITEMS.registerSimpleItem(name, p -> p.food(RAW_MUSHROOM, FLY_AGARIC))
+                    ? ITEMS.registerSimpleItem(name, p -> p.food(RAW_MUSHROOM, com.mechanical.folklore.Folklore.rawFlyAgaric())) // poisonous, makes you sick, opens the eyes (folklore)
                     : ITEMS.registerSimpleItem(name, p -> p.food(RAW_MUSHROOM));
             MUSHROOM_ITEMS.put(name, item);
             MUSHROOM_BLOCKS.put(name, BLOCKS.registerBlock(name, p -> new WildMushroomBlock(item, p), p -> p
