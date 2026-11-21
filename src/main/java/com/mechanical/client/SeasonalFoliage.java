@@ -60,6 +60,14 @@ public final class SeasonalFoliage {
     static final List<String> DECIDUOUS = List.of("minecraft:oak", "minecraft:dark_oak", "minecraft:birch", "minecraft:cherry",
             "minecraft:red_poplar", "minecraft:orange_poplar", "minecraft:yellow_poplar", "mechanical:aspen", "mechanical:alder",
             "mechanical:beech", "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel");
+    /** Shrubs, bushes and flowers that go grey in winter (models tinted by scripts/gen_winter_plants.py, same list). */
+    static final List<String> WINTER_PLANTS = List.of("mechanical:hazel_shrub", "mechanical:juniper", "mechanical:bramble",
+            "mechanical:undergrowth", "mechanical:sapling_thicket", "mechanical:wild_carrot_plant", "mechanical:sea_beet",
+            "mechanical:stinging_nettle", "mechanical:blackberry_bush", "mechanical:blueberry_bush", "mechanical:cloudberry_bush",
+            "mechanical:elderberry_bush", "mechanical:lingonberry_bush", "mechanical:raspberry_bush", "mechanical:wild_strawberry_bush",
+            "minecraft:sweet_berry_bush", "minecraft:dandelion", "minecraft:poppy", "minecraft:blue_orchid", "minecraft:allium",
+            "minecraft:azure_bluet", "minecraft:red_tulip", "minecraft:orange_tulip", "minecraft:white_tulip", "minecraft:pink_tulip",
+            "minecraft:oxeye_daisy", "minecraft:cornflower", "minecraft:lily_of_the_valley");
     /** Untinted leaves that get a grey, tinted autumn model (poplars are autumn-coloured already). */
     static final Set<String> AUTUMN_MODEL = Set.of("minecraft:cherry", "mechanical:aspen", "mechanical:alder", "mechanical:beech",
             "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel");
@@ -84,6 +92,7 @@ public final class SeasonalFoliage {
     static final ColorResolver GRASS = (biome, x, z) -> SeasonLook.grass(biome.getGrassColor(x, z), biome.getBaseTemperature(), month);
     static final ColorResolver FOLIAGE = (biome, x, z) -> SeasonLook.foliage(biome.getFoliageColor(), biome.getBaseTemperature(), month, false);
     static final ColorResolver REED = (biome, x, z) -> SeasonLook.reed(biome.getBaseTemperature(), month);
+    static final ColorResolver FROST = (biome, x, z) -> SeasonLook.frost(biome.getBaseTemperature(), month);
     static final ColorResolver HEATHER = (biome, x, z) -> SeasonLook.heather(biome.getBaseTemperature(), month);
     static final ColorResolver BIRCH =(biome, x, z) -> SeasonLook.foliage(FoliageColor.FOLIAGE_BIRCH, biome.getBaseTemperature(), month, true);
 
@@ -143,6 +152,7 @@ public final class SeasonalFoliage {
         event.register(BIRCH);
         event.register(REED);
         event.register(HEATHER);
+        event.register(FROST);
     }
 
     /** Vanilla's grass and foliage tints with our resolvers (also Worn Grass and Trodden Path, like a Grass Block). */
@@ -155,6 +165,8 @@ public final class SeasonalFoliage {
                 EarthBlocks.TURF.get(), EarthBlocks.TURF_SLAB.get(), EarthBlocks.TURF_STAIRS.get());
         event.register(List.of(tint(SeasonLook.REED_SUMMER, REED, false)), EarthBlocks.REED.get());
         event.register(List.of(tint(-1, HEATHER, false)), ForestUndergrowth.HEATHER.get());
+        event.register(List.of(tint(-1, FROST, false)), WINTER_PLANTS.stream()
+                .map(id -> BuiltInRegistries.BLOCK.getValue(Identifier.parse(id))).toArray(Block[]::new));
         event.register(List.of(BlockTintSources.constant(-1), grass), Blocks.PINK_PETALS, Blocks.WILDFLOWERS);
         event.register(List.of(tint(FoliageColor.FOLIAGE_DEFAULT, FOLIAGE, false)), Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE);
         event.register(List.of(tint(FoliageColor.FOLIAGE_BIRCH, BIRCH, false)), Blocks.BIRCH_LEAVES);

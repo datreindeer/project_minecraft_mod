@@ -271,6 +271,11 @@ well / fairly / poorly". Kod: `Temperature.shelter`, taggarna från `scripts/gen
 ### Lövträd
 - Sent på hösten tappar lövträden gradvis löven och blir kala grenar. På våren kommer knoppar och sedan löv igen.
   Barrträd (gran, tall, en) ändras inte.
+- **Vinterväxter:** gräset frostas på vintern (blekt gråvitt, nästan inget grönt mitt i vintern). Buskar, bärbuskar som
+  inte fryser och blommor (Hazel Shrub, Juniper, Bramble, Undergrowth, Sapling Thicket, Wild Carrot, Sea Beet,
+  Stinging Nettle, bärbuskarna, Sweet Berry Bush och vanillas blommor) blir gråare och mattare från sen höst till tidig
+  vår: ett filter över deras egna färger (`SeasonLook.frost`, `SeasonalFoliage.WINTER_PLANTS`, modellerna tintas av
+  `scripts/gen_winter_plants.py`). Bärbuskar som fryser visar sin frusna modell som förut.
 - **Snöstorm:** ett åskväder på vintern blir en snöstorm där det är kallt nog för snö. Snön driver in på fyra
   kolumner till per snötick och chunk, upp till 3 lager på öppen mark och 2 under träd (på marken under löven, som
   vanilla aldrig snöar på), men inte under tak (`Thaw.storm/drift`). Advancement: Whiteout.

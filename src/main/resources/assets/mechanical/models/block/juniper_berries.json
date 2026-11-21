@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:block/shrub",
+  "parent": "mechanical:block/tinted_shrub",
   "textures": {
     "cross": "mechanical:block/juniper_berries"
   }

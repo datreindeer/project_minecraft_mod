@@ -18,9 +18,14 @@ public final class SeasonLook {
 
     // per month (thaw .. snowmelt): the colour grass and leaves move toward, and how far (0 = the biome's own colour)
     private static final int FRESH = 0xFF8CD048, DRY = 0xFFC0B050, TAN = 0xFFB09A58, BROWN = 0xFFA08A5C, PALE = 0xFFA09A80,
-            DEAD = 0xFF8A6A40;
-    private static final int[] GRASS_TO = {PALE, FRESH, FRESH, FRESH, FRESH, DRY, DRY, TAN, BROWN, PALE, PALE, PALE};
-    private static final float[] GRASS_BY = {0.45F, 0.3F, 0.12F, 0, 0, 0.18F, 0.3F, 0.42F, 0.5F, 0.55F, 0.55F, 0.5F};
+            DEAD = 0xFF8A6A40, FROST = 0xFFC8CCC8;
+    // winter grass is frosted: pale grey-white, the green almost gone at midwinter
+    private static final int[] GRASS_TO = {PALE, FRESH, FRESH, FRESH, FRESH, DRY, DRY, TAN, BROWN, FROST, FROST, FROST};
+    private static final float[] GRASS_BY = {0.5F, 0.3F, 0.12F, 0, 0, 0.18F, 0.3F, 0.42F, 0.55F, 0.7F, 0.78F, 0.72F};
+    // per month: a filter over the own colours of shrubs, bushes and flowers (white = unchanged): greyer and duller in
+    // winter (a filter can only darken, so frost shows as grey, not white)
+    private static final int[] FROST_FILTER = {0xFFD4CCD0, 0xFFECE8EA, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+            0xFFFFFFFF, 0xFFF4F0EE, 0xFFE0D8D8, 0xFFC8C0C8, 0xFFBEB6C0, 0xFFC4BCC4};
     private static final int[] RED_TO = {FRESH, FRESH, FRESH, FRESH, FRESH, DRY, 0xFFD8B030, 0xFFE07020, 0xFFB83418, DEAD, DEAD, DEAD};
     private static final int[] YELLOW_TO = {FRESH, FRESH, FRESH, FRESH, FRESH, DRY, 0xFFD0C840, 0xFFF0C030, 0xFFC89030, DEAD, DEAD, DEAD};
     private static final float[] LEAVES_BY = {0.45F, 0.3F, 0.12F, 0, 0, 0.12F, 0.6F, 0.8F, 0.85F, 0.8F, 0.8F, 0.8F};
@@ -55,6 +60,11 @@ public final class SeasonLook {
 
     public static int reed(float baseTemperature, int month) {
         return month < 0 || !coloured(baseTemperature) ? REED_SUMMER : REED[month];
+    }
+
+    /** Filter for winter plants (client.SeasonalFoliage.WINTER_PLANTS); -1 = unchanged. */
+    public static int frost(float baseTemperature, int month) {
+        return month < 0 || !coloured(baseTemperature) || FROST_FILTER[month] == 0xFFFFFFFF ? -1 : FROST_FILTER[month];
     }
 
     public static int heather(float baseTemperature, int month) {

@@ -109,6 +109,10 @@ public final class CalendarTest {
                 && SeasonLook.reed(2.0F, 9) == SeasonLook.REED_SUMMER, "reed green in summer, gold in autumn, unchanged in deserts");
         check(h, SeasonLook.heather(0.8F, 4) == -1 && SeasonLook.heather(0.8F, 10) != -1 && SeasonLook.heather(0.8F, -1) == -1,
                 "heather unchanged in summer and other dimensions, duller in winter");
+        check(h, SeasonLook.frost(0.8F, 4) == -1 && SeasonLook.frost(0.8F, 10) != -1 && SeasonLook.frost(2.0F, 10) == -1,
+                "shrubs grey in winter, unchanged in summer and in the tropics");
+        int frosted = SeasonLook.grass(green, 0.8F, 10);
+        check(h, (frosted >> 16 & 0xFF) > 150 && (frosted & 0xFF) > 150, "midwinter grass is frosted pale, got " + Integer.toHexString(frosted));
         int bare = 0, leafy = 0;
         for (int t = 0; t < 100; t++) {
             check(h, SeasonLook.stage(summer, t) == SeasonLook.LEAVES && SeasonLook.stage(winter, t) == SeasonLook.BARE
