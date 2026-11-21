@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "TPT",
+    "T T",
+    "TLT"
+  ],
+  "key": {
+    "T": "mechanical:linen_thread",
+    "P": "mechanical:iron_plate",
+    "L": "minecraft:leather"
+  },
+  "result": {
+    "id": "mechanical:linen_seed_bag"
+  }
+}

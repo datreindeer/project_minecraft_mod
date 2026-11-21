@@ -756,6 +756,22 @@
      "sv": "Med en Copper eller Bronze Ingot låses bronsålderns jordbruk upp. [[quern]]: högerklicka med Grain → [[flour]]. 2 Flour + Clay Water Bucket → [[dough]]. Baka på en [[baking_stone]] bredvid en Campfire eller i kilnen vid 200° → [[minecraft:bread]].\n\n[[compost_heap]]: 7 växtrester eller förskämd mat → 2 [[compost]] (bördighet +1). Tama djur släpper [[manure]] (bördighet +2). [[scarecrow]] håller kråkorna borta inom 12 block.\n\n**Lin:** byns Farmer (nivå 3) säljer [[flax_seeds]]. Flax Stalks + vatten + kniv → [[flax_fiber]], och på Drop Spindle blir det [[linen_thread]].",
      "en": "With a Copper or Bronze Ingot, Bronze Age farming unlocks. The [[quern]]: right-click with Grain → [[flour]]. 2 Flour + Clay Water Bucket → [[dough]]. Bake it on a [[baking_stone]] next to a Campfire or in the kiln at 200° → [[minecraft:bread]].\n\nThe [[compost_heap]]: 7 plant scraps or spoiled food → 2 [[compost]] (fertility +1). Tame animals drop [[manure]] (fertility +2). The [[scarecrow]] keeps crows away within 12 blocks.\n\n**Flax:** the village Farmer (level 3) sells [[flax_seeds]]. Flax Stalks + water + knife → [[flax_fiber]], and on the Drop Spindle it becomes [[linen_thread]]."
     }
+   },
+   {
+    "title": {
+     "sv": "Snabbare åker: Seed Bag och Bronze Ard",
+     "en": "Faster fields: Seed Bag and Bronze Ard"
+    },
+    "items": [
+     "seed_bag",
+     "bronze_ard",
+     "manure",
+     "compost"
+    ],
+    "text": {
+     "sv": "Grödor växer dubbelt så fort som i vanilla på ny åker, och **1,5× till på bördighet 3**: lägg [[manure]] (+2) eller [[compost]] (+1) på åkern så mognar vetet på två tredjedelar av tiden.\n\nSy en [[seed_bag]] (Cordage, 3 Leather och en Copper eller Bronze Ingot som ring), fyll den med utsäde och högerklicka farmland: den sår **3×3** med ett frö per block. Sätt ihop en [[bronze_ard]] vid Tool Station (Bronze Hoe Head + Bronze Plate + Tool Rod): den plöjer **3×3** per klick (smyg för ett). I järnåldern sår en [[linen_seed_bag]] 5×5.",
+     "en": "Crops grow twice vanilla's speed on a new field, and **1.5x more on fertility 3**: put [[manure]] (+2) or [[compost]] (+1) on the field and wheat ripens in two thirds of the time.\n\nSew a [[seed_bag]] (Cordage, 3 Leather and a Copper or Bronze Ingot as its ring), fill it with seed and right-click farmland: it sows a **3×3** with one seed per block. Assemble a [[bronze_ard]] at the Tool Station (Bronze Hoe Head + Bronze Plate + Tool Rod): it tills a **3×3** per click (sneak for one). In the Iron Age a [[linen_seed_bag]] sows 5×5."
+    }
    }
   ]
  },
@@ -930,11 +946,12 @@
      "iron_plate",
      "iron_tool_rod",
      "iron_pickaxe_head",
-     "iron_smithing_hammer"
+     "iron_smithing_hammer",
+     "linen_seed_bag"
     ],
     "text": {
-     "sv": "Värm en Wrought Iron Ingot till **1100°** i Bloomery eller Clay Kiln: en [[hot_wrought_iron_ingot]] som håller hettan i 30 s. Smyg och högerklicka [[bronze_anvil]] med hammaren för att välja **mönster** (Plate, Tool Rod, huvuden, blad, Hammer Head) och hamra tackan innan den svalnar: [[iron_plate]] 4 slag, huvuden 5–7. Stora delar kräver flera heta tackor på varandra (Pickaxe och Axe Head 3, Sword Blade och Hoe Head 2): högerklicka städet med fler. Slagen sitter kvar om den kallnar.\n\nSmid ett Iron Hammer Head och gör en [[iron_smithing_hammer]]: den nöts bara hälften så fort. Bygg en [[smithing_hearth]] vid städet: med Charcoal i värmer den tackor och håller dem heta, och en [[iron_bellows]] pumpar dubbelt så hårt och håller värmen.",
-     "en": "Heat a Wrought Iron Ingot to **1100°** in a Bloomery or Clay Kiln: a [[hot_wrought_iron_ingot]] that stays hot for 30 s. Sneak-use the [[bronze_anvil]] with the hammer to choose a **pattern** (Plate, Tool Rod, heads, blades, Hammer Head) and hammer the ingot before it cools: [[iron_plate]] 4 blows, heads 5–7. Big parts take several hot ingots stacked (Pickaxe and Axe Head 3, Sword Blade and Hoe Head 2): right-click the anvil with more. Its blows stay if it cools.\n\nForge an Iron Hammer Head and make an [[iron_smithing_hammer]]: it wears half as fast. Build a [[smithing_hearth]] by the anvil: stocked with Charcoal it heats ingots and keeps them hot, and an [[iron_bellows]] pumps twice as hard and holds the heat."
+     "sv": "Värm en Wrought Iron Ingot till **1100°** i Bloomery eller Clay Kiln: en [[hot_wrought_iron_ingot]] som håller hettan i 30 s. Smyg och högerklicka [[bronze_anvil]] med hammaren för att välja **mönster** (Plate, Tool Rod, huvuden, blad, Hammer Head) och hamra tackan innan den svalnar: [[iron_plate]] 4 slag, huvuden 5–7. Stora delar kräver flera heta tackor på varandra (Pickaxe och Axe Head 3, Sword Blade och Hoe Head 2): högerklicka städet med fler. Slagen sitter kvar om den kallnar.\n\nSmid ett Iron Hammer Head och gör en [[iron_smithing_hammer]]: den nöts bara hälften så fort. Bygg en [[smithing_hearth]] vid städet: med Charcoal i värmer den tackor och håller dem heta, och en [[iron_bellows]] pumpar dubbelt så hårt och håller värmen.\n\nEn Iron Plate som kant, 6 [[linen_thread]] och en Leather blir en [[linen_seed_bag]] som sår 5×5 farmland per högerklick.",
+     "en": "Heat a Wrought Iron Ingot to **1100°** in a Bloomery or Clay Kiln: a [[hot_wrought_iron_ingot]] that stays hot for 30 s. Sneak-use the [[bronze_anvil]] with the hammer to choose a **pattern** (Plate, Tool Rod, heads, blades, Hammer Head) and hammer the ingot before it cools: [[iron_plate]] 4 blows, heads 5–7. Big parts take several hot ingots stacked (Pickaxe and Axe Head 3, Sword Blade and Hoe Head 2): right-click the anvil with more. Its blows stay if it cools.\n\nForge an Iron Hammer Head and make an [[iron_smithing_hammer]]: it wears half as fast. Build a [[smithing_hearth]] by the anvil: stocked with Charcoal it heats ingots and keeps them hot, and an [[iron_bellows]] pumps twice as hard and holds the heat.\n\nAn Iron Plate as its rim, 6 [[linen_thread]] and a Leather make a [[linen_seed_bag]] that sows 5×5 farmland per right-click."
     }
    },
    {

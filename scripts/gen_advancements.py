@@ -1069,6 +1069,16 @@ TABS["bronze_age"][1].extend([
      has("linen_thread")),
 ])
 
+# field tools (FarmTools.java; gen_farm_tools.py)
+TABS["bronze_age"][1].extend([
+    ("seed_bag", "bronze", "seed_bag", T, "Broadcast Sowing",
+     "Sew a Seed Bag (Leather, Cordage, a copper or bronze ingot ring), fill it with seed and right-click farmland: it sows 3x3",
+     has("seed_bag")),
+    ("bronze_ard", "bronze", "bronze_ard", T, "Breaking Ground",
+     "Assemble a Bronze Ard at the Tool Station (Bronze Hoe Head, Bronze Plate, Tool Rod): it tills 3x3 at a time (sneak: one)",
+     has("bronze_ard")),
+])
+
 # more bronze tools (BronzeTools.java; gen_bronzetools.py)
 TABS["bronze_age"][1].extend([
     ("bronze_bucket", "bronze", "bronze_bucket", T, "Bronze Bucket",
@@ -1257,6 +1267,11 @@ TABS["bronze_age"][1].extend([
     ("alabaster_lamp", "alabaster", "alabaster_lamp", T, "Glowing Stone",
      "Carve an Alabaster Lamp (5 Alabaster, Plant Fibre), fill it with Tallow or Blubber and light it: the flame shines through the "
      "stone, light 15", placed("alabaster_lamp")),
+])
+# the Iron Age seed bag (FarmTools.java; gen_farm_tools.py)
+TABS["iron_age"][1].extend([
+    ("linen_seed_bag", "forged", "linen_seed_bag", T, "Wide Sower",
+     "Sew a Linen Seed Bag (Linen Thread, an Iron Plate rim, Leather): it sows 5x5 in one throw", has("linen_seed_bag")),
 ])
 TABS["iron_age"][1].extend([
     ("jasper_striker", "flint_and_steel", "rough_jasper", T, "Red Spark",

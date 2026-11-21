@@ -42,6 +42,11 @@ public class BarkBasketMenu extends AbstractContainerMenu {
         this(Mechanical.BARK_BASKET_MENU.get(), BASKET, containerId, inventory, new SimpleContainer(SIZE), -1, ItemStack.EMPTY);
     }
 
+    /** Client side of a seed bag (FarmTools): the same 3x3, seed only. */
+    public static BarkBasketMenu seedBag(int containerId, Inventory inventory) {
+        return new BarkBasketMenu(FarmTools.SEED_BAG_MENU.get(), FarmTools.SEEDS, containerId, inventory, new SimpleContainer(SIZE), -1, ItemStack.EMPTY);
+    }
+
     /** Server side: {@code stack} is the basket being held, at inventory index {@code slot}. */
     public static BarkBasketMenu open(int containerId, Inventory inventory, int slot, ItemStack stack) {
         return open(Mechanical.BARK_BASKET_MENU.get(), BASKET, containerId, inventory, slot, stack);

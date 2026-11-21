@@ -196,7 +196,15 @@ public final class Farming {
 
     /** Per random tick that reaches the growth check (sky light >= 9 by vanilla), when the conditions hold. */
     public static final float FROST_KILL = 0.1F, DROUGHT_KILL = 0.05F, ROOT_ROT = 0.01F;
-    /** Extra growth on the best soil: chance of a second stage after a growth step (~1.3x speed). */
+    /**
+     * Growth speed, all in one place (docs/farming.md "Växtvillkor"): a crop grows at vanilla's per-tick chance x
+     * GROWTH_SPEED x temperature factor x season factor x {@link #FERTILITY_GROWTH}. Above 1 the extra becomes extra
+     * stages after a vanilla growth step ({@link #onCropGrown}), so the rate is kept exactly, not capped at vanilla's.
+     */
+    public static final float GROWTH_SPEED = 2.0F;
+    /** Growth factor per fertility 0..3: poor soil halves it, composted or manured soil (3) grows 1.5x. */
+    public static final float[] FERTILITY_GROWTH = {0.5F, 0.75F, 1.0F, 1.5F};
+    /** The best soil's chance of one extra item at harvest. */
     public static final float RICH_SOIL_BONUS = 0.3F;
     public static final int DAYLIGHT = 9;
     static final Identifier FALLOW = Identifier.fromNamespaceAndPath(MODID, "food/fallow_season");
@@ -206,8 +214,23 @@ public final class Farming {
         return state.getBlock() instanceof StemBlock && state.getValue(StemBlock.AGE) < StemBlock.MAX_AGE;
     }
 
-    private static float fertilityFactor(int fertility) {
-        return switch (fertility) { case 0 -> 0.5F; case 1 -> 0.75F; default -> 1.0F; };
+    /** Growth rate relative to vanilla's chance when nothing blocks it ({@link #blocker}): 1 = vanilla speed. */
+    public static float growthRate(Climate c, float temp, int season, int fertility) {
+        return GROWTH_SPEED * c.factor(temp) * c.season(season) * FERTILITY_GROWTH[Math.clamp(fertility, 0, Fertility.MAX)];
+    }
+
+    /** This crop's growth rate where it stands, 0 when something blocks it. */
+    public static float growthRate(Level level, BlockPos pos, Climate c) {
+        BlockState soil = level.getBlockState(pos.below());
+        float temp = Temperature.ambient(level, pos);
+        return blocker(level, pos, c, temp, soil) != null ? 0
+                : growthRate(c, temp, Calendar.season(level.getOverworldClockTime()), Fertility.get(soil));
+    }
+
+    /** Stages a crop gains for one vanilla growth step at this rate (> 1: the rest as extra stages, the fraction by chance). */
+    public static int stagesFor(float rate, RandomSource random) {
+        int stages = (int) rate;
+        return stages + (random.nextFloat() < rate - stages ? 1 : 0);
     }
 
     /** Why a crop isn't growing right now, or null when it can. Shared by the growth check and the field info. */
@@ -243,19 +266,24 @@ public final class Farming {
                 return;
             }
         }
-        // vanilla speed per real minute, not per (3x longer) day: divided by Calendar.SLOWDOWN a field took ~5 hours of play
-        float chance = blocker(level, pos, c, temp, soil) != null ? 0 : c.factor(temp) * c.season(Calendar.season(level.getOverworldClockTime()))
-                * fertilityFactor(Fertility.get(soil));
-        if (random.nextFloat() >= chance) event.setResult(CropGrowEvent.Pre.Result.DO_NOT_GROW);
+        // per real minute, not per (3x longer) day: divided by Calendar.SLOWDOWN a field took ~5 hours of play
+        if (random.nextFloat() >= growthRate(level, pos, c)) event.setResult(CropGrowEvent.Pre.Result.DO_NOT_GROW);
     }
 
+    /** After a growth step: a rate above 1 ({@link #growthRate}) adds its extra stages. */
     @SubscribeEvent
     static void onCropGrown(CropGrowEvent.Post event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || !(event.getState().getBlock() instanceof CropBlock crop) || climate(crop) == null) return;
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        BlockState state = event.getState();
+        Climate c = climate(state.getBlock());
+        if (c == null || !isYoungCrop(state)) return;
         BlockPos pos = event.getPos();
-        if (Fertility.get(level.getBlockState(pos.below())) == Fertility.MAX && !crop.isMaxAge(event.getState())
-                && level.getRandom().nextFloat() < RICH_SOIL_BONUS) {
-            level.setBlock(pos, crop.getStateForAge(crop.getAge(event.getState()) + 1), Block.UPDATE_CLIENTS);
+        int extra = stagesFor(growthRate(level, pos, c), level.getRandom()) - 1;
+        if (extra <= 0) return;
+        if (state.getBlock() instanceof CropBlock crop) {
+            level.setBlock(pos, crop.getStateForAge(Math.min(crop.getMaxAge(), crop.getAge(state) + extra)), Block.UPDATE_CLIENTS);
+        } else {
+            level.setBlock(pos, state.setValue(StemBlock.AGE, Math.min(StemBlock.MAX_AGE, state.getValue(StemBlock.AGE) + extra)), Block.UPDATE_CLIENTS);
         }
     }
 

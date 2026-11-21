@@ -92,6 +92,8 @@ public final class ToolStationRecipes {
             new Recipe(Ironworking.BRONZE_SMITHING_HAMMER, Ironworking.BRONZE_HAMMER_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Ironworking.BRONZE_HAMMER_HEAD.get())),
             // the quarry hammer: the same head, a Bronze Plate wrapped round the haft as its binding for the heavy blows
             new Recipe(BronzeTools.BRONZE_QUARRY_HAMMER, Ironworking.BRONZE_HAMMER_HEAD, Bronze.BRONZE_PLATE, Mechanical.TOOL_ROD, s -> s.is(Ironworking.BRONZE_HAMMER_HEAD.get())),
+            // the Bronze Ard: a hoe head as its share, a Bronze Plate shoe under it, on a Tool Rod beam
+            new Recipe(() -> FarmTools.BRONZE_ARD.get(), Bronze.BRONZE_HOE_HEAD, Bronze.BRONZE_PLATE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_HOE_HEAD.get())),
             // the Yew Longbow: "head" = a Sinew bowstring, "binding" = the leather grip, "rod" = the Yew Stave (unlocked by holding one)
             new Recipe(() -> BronzeTools.YEW_LONGBOW.get(), () -> com.mechanical.wildlife.Wildlife.SINEW.get(), () -> Items.LEATHER, BronzeTools.YEW_STAVE,
                     s -> s.is(BronzeTools.YEW_STAVE.get())),
