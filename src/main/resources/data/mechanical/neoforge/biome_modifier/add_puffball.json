@@ -4,7 +4,8 @@
     "minecraft:plains",
     "minecraft:meadow",
     "minecraft:sunflower_plains",
-    "mechanical:hazel_meadow"
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:puffball",
   "step": "vegetal_decoration"

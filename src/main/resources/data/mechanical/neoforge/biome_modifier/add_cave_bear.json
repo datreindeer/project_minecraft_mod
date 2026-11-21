@@ -10,7 +10,8 @@
     "minecraft:snowy_slopes",
     "minecraft:grove",
     "minecraft:meadow",
-    "minecraft:dripstone_caves"
+    "minecraft:dripstone_caves",
+    "mechanical:limestone_caverns"
   ],
   "spawners": [
     {

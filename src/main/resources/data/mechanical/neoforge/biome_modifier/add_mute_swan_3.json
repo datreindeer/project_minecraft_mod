@@ -1,7 +1,8 @@
 {
   "type": "neoforge:add_spawns",
   "biomes": [
-    "minecraft:plains"
+    "minecraft:plains",
+    "mechanical:chalk_downs"
   ],
   "spawners": [
     {

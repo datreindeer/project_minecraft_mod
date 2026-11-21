@@ -2968,5 +2968,7 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
+  "biome.mechanical.chalk_downs": "Chalk Downs",
+  "biome.mechanical.limestone_caverns": "Limestone Caverns"
 }

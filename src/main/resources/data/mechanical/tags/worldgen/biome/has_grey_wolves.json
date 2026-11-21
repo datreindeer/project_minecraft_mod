@@ -10,6 +10,7 @@
     "minecraft:plains",
     "minecraft:snowy_plains",
     "minecraft:grove",
-    "minecraft:snowy_slopes"
+    "minecraft:snowy_slopes",
+    "mechanical:chalk_downs"
   ]
 }

@@ -26,16 +26,20 @@ import net.minecraft.world.level.biome.OverworldBiomeBuilder;
  * comes from the same noises as before. Data: scripts/gen_biomes.py.
  * <ul>
  * <li>Forest, temperate, humidity 2 (-0.1..0.1): the wetter half (0..0.1) becomes Deciduous Forest.</li>
- * <li>Plains, cool and temperate, humidity 1 (-0.35..-0.1): the wetter part (-0.2..-0.1, next to the forests) becomes Hazel Meadow.</li>
+ * <li>Plains, cool and temperate, humidity 1 (-0.35..-0.1): the wetter part (-0.2..-0.1, next to the forests) becomes Hazel Meadow;
+ * in the temperate slot the drier part's coastal band (continentalness below mid-inland, 0.03) becomes Chalk Downs.</li>
  * <li>Plains, cool, humidity 0 (driest): becomes Pine Heath (cool dappled forest, its weird-side variant, stays).</li>
  * <li>Swamp (cool + temperate): the cool half, and the humid part (humidity above 0.1) of the temperate half, becomes
  * Willow Fen; Swamp keeps the drier temperate part.</li>
  * </ul>
+ * Cave biomes: {@link ModBiomes#CAVES} rows are added after vanilla's underground biomes.
  */
 @Mixin(OverworldBiomeBuilder.class)
 public abstract class OverworldBiomeBuilderMixin {
     @Shadow @Final private Climate.Parameter[] temperatures;
     @Shadow @Final private Climate.Parameter[] humidities;
+
+    private static final float MID_INLAND = OverworldBiomeBuilder.MID_INLAND_START;
 
     @Shadow
     private void addSurfaceBiome(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> biomes, Climate.Parameter temperature,
@@ -53,7 +57,19 @@ public abstract class OverworldBiomeBuilderMixin {
             addSurfaceBiome(biomes, temperature, Climate.Parameter.span(0.0F, 0.1F), continentalness, erosion, weirdness, offset, DECIDUOUS_FOREST);
         } else if (biome == Biomes.PLAINS && (temperature.equals(temperatures[1]) || temperature.equals(temperatures[2]))
                 && humidity.equals(humidities[1])) {
-            addSurfaceBiome(biomes, temperature, Climate.Parameter.span(-0.35F, -0.2F), continentalness, erosion, weirdness, offset, biome);
+            Climate.Parameter dry = Climate.Parameter.span(-0.35F, -0.2F);
+            Climate.Parameter inland = Climate.Parameter.point(MID_INLAND);
+            if (temperature.equals(temperatures[2]) && continentalness.min() < inland.min()) {
+                // the coastal part (below mid-inland) of the drier half becomes Chalk Downs
+                if (continentalness.max() > inland.min()) {
+                    addSurfaceBiome(biomes, temperature, dry, Climate.Parameter.span(continentalness, inland), erosion, weirdness, offset, CHALK_DOWNS);
+                    addSurfaceBiome(biomes, temperature, dry, Climate.Parameter.span(inland, continentalness), erosion, weirdness, offset, biome);
+                } else {
+                    addSurfaceBiome(biomes, temperature, dry, continentalness, erosion, weirdness, offset, CHALK_DOWNS);
+                }
+            } else {
+                addSurfaceBiome(biomes, temperature, dry, continentalness, erosion, weirdness, offset, biome);
+            }
             addSurfaceBiome(biomes, temperature, Climate.Parameter.span(-0.2F, -0.1F), continentalness, erosion, weirdness, offset, HAZEL_MEADOW);
         } else if (biome == Biomes.PLAINS && temperature.equals(temperatures[1]) && humidity.equals(humidities[0])) {
             addSurfaceBiome(biomes, temperature, humidity, continentalness, erosion, weirdness, offset, PINE_HEATH);
@@ -65,5 +81,12 @@ public abstract class OverworldBiomeBuilderMixin {
             return;
         }
         ci.cancel();
+    }
+
+    @Inject(method = "addUndergroundBiomes", at = @At("TAIL"))
+    private void mechanical$addCaveBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> biomes, CallbackInfo ci) {
+        if (ModBiomes.vanillaOnly) return;
+        for (ModBiomes.CaveSlot c : ModBiomes.CAVES)
+            biomes.accept(Pair.of(Climate.parameters(c.temperature(), c.humidity(), c.continentalness(), c.erosion(), c.depth(), c.weirdness(), c.offset()), c.biome()));
     }
 }

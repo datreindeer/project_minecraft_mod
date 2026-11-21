@@ -3,7 +3,8 @@
   "biomes": [
     "minecraft:plains",
     "minecraft:sunflower_plains",
-    "mechanical:hazel_meadow"
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:bustard_nest",
   "step": "vegetal_decoration"

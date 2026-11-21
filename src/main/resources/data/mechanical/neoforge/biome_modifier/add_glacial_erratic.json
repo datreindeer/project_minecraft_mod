@@ -11,7 +11,8 @@
     "minecraft:windswept_gravelly_hills",
     "minecraft:stony_shore",
     "mechanical:hazel_meadow",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:glacial_erratic",
   "step": "surface_structures"
