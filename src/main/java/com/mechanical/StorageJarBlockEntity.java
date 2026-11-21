@@ -36,7 +36,7 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
         @Override
         protected void onOpen(Level level, BlockPos pos, BlockState state) {
             long now = level.getGameTime();
-            items.replaceAll(s -> Preserving.outOfBasket(s, now, rate(s)));
+            items.replaceAll(s -> Preserving.outOfBasket(s, now, sealedRate(s)));
             lid(level, pos, state, true);
         }
 
@@ -70,6 +70,11 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
         return Pottery.JAR_RATE;
     }
 
+    /** {@link #rate} times the cold where the store stands (Preserving.coldRate). */
+    private float sealedRate(ItemStack stack) {
+        return rate(stack) * (level == null ? 1 : Preserving.coldRate(level, worldPosition));
+    }
+
     protected void lidSound(Level level, BlockPos pos, boolean open) {
         level.playSound(null, pos, open ? SoundEvents.DECORATED_POT_INSERT : SoundEvents.DECORATED_POT_HIT, SoundSource.BLOCKS, 0.6F,
                 open ? 1.3F : 0.9F + level.getRandom().nextFloat() * 0.1F);
@@ -87,13 +92,13 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
     @Override
     public ItemStack removeItem(int slot, int count) {
         ItemStack out = super.removeItem(slot, count);
-        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), rate(out)) : out;
+        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), sealedRate(out)) : out;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int slot) {
         ItemStack out = super.removeItemNoUpdate(slot);
-        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), rate(out)) : out;
+        return sealed() ? Preserving.outOfBasket(out, level.getGameTime(), sealedRate(out)) : out;
     }
 
     @Override
@@ -104,7 +109,7 @@ public class StorageJarBlockEntity extends BaseContainerBlockEntity {
     /** Broken: the food comes out settled, as if the lid had been lifted. */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        if (sealed()) items.replaceAll(s -> Preserving.outOfBasket(s, level.getGameTime(), rate(s)));
+        if (sealed()) items.replaceAll(s -> Preserving.outOfBasket(s, level.getGameTime(), sealedRate(s)));
         super.preRemoveSideEffects(pos, state);
     }
 

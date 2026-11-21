@@ -16,4 +16,10 @@ public interface CampfireAccess {
     boolean mechanical$takeItem(Player player);
 
     boolean mechanical$hasItems();
+
+    /** Peat (or Dried Peat) was fed to the fire: for this many burn ticks it gives peat smoke (Smoking Rack twice as fast). */
+    void mechanical$addPeat(int ticks);
+
+    /** Burning on peat right now. */
+    boolean mechanical$peatSmoke();
 }

@@ -11,7 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 
-/** Ten thermometers above the hunger bar, filled right to left like food: warm, cold or freezing. */
+/** Ten thermometers above the hunger bar, filled right to left like food: hot (overheating), warm, cold or freezing. */
 public class TemperatureHud implements GuiLayer {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(Mechanical.MODID, "temperature");
     private static final Identifier BACKGROUND = sprite("background");
@@ -27,7 +27,7 @@ public class TemperatureHud implements GuiLayer {
         if (player == null || mc.gameMode == null || !mc.gameMode.canHurtPlayer()) return;
         var hud = mc.gui.hud;
         float body = Temperature.of(player);
-        String kind = body >= 10 ? "warm" : body >= Temperature.FREEZING_BELOW ? "cold" : "freezing";
+        String kind = body > Temperature.OVERHEAT ? "hot" : body >= 10 ? "warm" : body >= Temperature.FREEZING_BELOW ? "cold" : "freezing";
         int points = Math.round(body); // 0..20, two per icon
         int xRight = graphics.guiWidth() / 2 + 91;
         int y = graphics.guiHeight() - hud.rightHeight;

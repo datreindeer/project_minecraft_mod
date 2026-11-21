@@ -32,7 +32,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A wooden frame to hang up to {@link #MAX} strips of raw meat or fish on (right-click), over or next to a fire. In smoke
  * (a lit or glowing campfire up to 2 blocks below or right beside it, or a smoky room, see {@link Smoke}) they turn into
- * Smoked Meat / Smoked Fish (not Rotting ones: {@link Preserving#tooFarGone}) after {@link SmokingRackBlockEntity#SMOKE_SECONDS}; without smoke they spoil as usual. Empty
+ * Smoked Meat / Smoked Fish (not Rotting ones: {@link Preserving#tooFarGone}) after {@link SmokingRackBlockEntity#SMOKE_SECONDS}, half that over a peat fire
+ * ({@link #peatSmoke}); without smoke they spoil as usual. Empty
  * hand takes everything off. The blockstate only shows what hangs there; the items themselves live in the block entity.
  */
 public class SmokingRackBlock extends Block implements EntityBlock {
@@ -101,6 +102,13 @@ public class SmokingRackBlock extends Block implements EntityBlock {
         if (smoulders(level.getBlockState(pos.below())) || smoulders(level.getBlockState(pos.below(2)))) return true;
         for (Direction d : Direction.Plane.HORIZONTAL) if (smoulders(level.getBlockState(pos.relative(d)))) return true;
         return Smoke.smokeAt(level, pos) >= 0.3F;
+    }
+
+    /** A burning Campfire fed with Peat or Dried Peat right below (1-2) or beside the rack: thick peat smoke cures twice as fast. */
+    public static boolean peatSmoke(Level level, BlockPos pos) {
+        for (BlockPos p : new BlockPos[] {pos.below(), pos.below(2), pos.north(), pos.south(), pos.east(), pos.west()})
+            if (level.getBlockEntity(p) instanceof CampfireAccess fire && CampfireBlock.isLitCampfire(level.getBlockState(p)) && fire.mechanical$peatSmoke()) return true;
+        return false;
     }
 
     private static boolean smoulders(BlockState state) {

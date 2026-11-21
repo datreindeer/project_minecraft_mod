@@ -10,6 +10,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.Biome;
+import com.mechanical.worldgen.ModBiomes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -30,10 +34,21 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * of day, rain/water, altitude and nearby burning fires; leather armour and fur (also a worn cloak) insulate against the cold,
  * and so does a house: walls and roof round you ({@link #shelter}; turf, thatch and daub best, wood next, stone least), which also keeps a fire's heat in. Cold makes you
  * hungry; very cold freezes you (vanilla frost overlay and freeze damage). Shown by a bar above the hunger bar.
+ * <p>
+ * Heat: two cave biomes set their own air ({@link #cave(Holder, int)}): the Ice Caves near freezing, the Magma Vents far
+ * above {@link #MAX}. Only the vents' air can push the body above {@link #OVERHEAT} (sun, the Nether and fires stop there,
+ * and so does being in water or rain). Above it you tire (food exhaustion), above {@link #SCORCHING} you burn
+ * (fire damage, so Fire Resistance protects). Clothes neither help nor hurt in the heat.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Temperature {
     public static final float MAX = 20, COMFORT = 12, HUNGRY_BELOW = 8, FREEZING_BELOW = 3;
+    /** Overheating: hungry above OVERHEAT, burning above SCORCHING (one heart every 2 s). */
+    public static final float OVERHEAT = 17, SCORCHING = 19;
+    /** The air of the Ice Caves (any depth) and of the Magma Vents. */
+    public static final float ICE_CAVE_AIR = 2, MAGMA_VENT_AIR = 30;
+    /** Granted from code: cooling off in water in the Magma Vents. */
+    public static final Identifier HOT_SPRING_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "wilderness/magma_vents_cool_off");
     private static final float DRIFT_PER_SECOND = 0.25F;
     private static final float NIGHT = 5, RAIN = 2, WATER = 5;
     private static final double FIRE_RANGE = 6;
@@ -109,10 +124,17 @@ public final class Temperature {
         return 10F * (y + 64) / (CAVE_TOP + 64);
     }
 
+    /** A cave's air in this biome: the Ice Caves and Magma Vents set their own, any other cave goes by depth. */
+    public static float cave(Holder<Biome> biome, int y) {
+        if (biome.is(ModBiomes.ICE_CAVES)) return ICE_CAVE_AIR;
+        if (biome.is(ModBiomes.MAGMA_VENTS)) return MAGMA_VENT_AIR;
+        return cave(y);
+    }
+
     /** Air temperature at a spot (same scale as the body): biome (shifted by the season, Seasons), night, rain and altitude; in caves the depth. */
     public static float ambient(Level level, BlockPos pos) {
         if (level.dimension() == Level.NETHER) return MAX;
-        if (level.dimension() == Level.OVERWORLD && pos.getY() < CAVE_TOP && !level.canSeeSky(pos)) return cave(pos.getY());
+        if (level.dimension() == Level.OVERWORLD && pos.getY() < CAVE_TOP && !level.canSeeSky(pos)) return cave(level.getBiome(pos), pos.getY());
         // biome: plains ~0.8 -> 12.4, taiga 0.25 -> 8, snowy -0.5..0 -> 2..6, desert 2.0 -> hot
         float base = level.getBiome(pos).value().getBaseTemperature();
         float t = 6 + (base + Seasons.offset(base, Seasons.curve(level.getOverworldClockTime()))) * 8;
@@ -183,7 +205,7 @@ public final class Temperature {
     static float target(Player player) {
         Level level = player.level();
         BlockPos pos = player.blockPosition();
-        float t = ambient(level, pos);
+        float air = ambient(level, pos), t = air;
         // waterproof sealskin and fur (beaver, otter) keep the wet's chill off
         float furDry = com.mechanical.wildlife.river.RiverFauna.waterproofing(player);
         if (player.isInWater()) t -= WATER * (1 - Math.min(1, waterproofing(player) + furDry));
@@ -205,13 +227,18 @@ public final class Temperature {
             insulation = Math.min(insulation, 1);
             t = COMFORT - (COMFORT - t) * (1 - insulation);
         }
-        return Math.clamp(t, 0, MAX);
+        return Math.clamp(heatCap(t, air, player.isInWaterOrRain()), 0, MAX);
+    }
+
+    /** Only the Magma Vents' air heats you past OVERHEAT; anything else (sun, Nether, fires) and being wet stop there. */
+    public static float heatCap(float t, float air, boolean wet) {
+        return air < MAGMA_VENT_AIR || wet ? Math.min(t, OVERHEAT) : t;
     }
 
     @SubscribeEvent
     static void onTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if (!(player.level() instanceof ServerLevel) || player.isCreative() || player.isSpectator()) return;
+        if (!(player.level() instanceof ServerLevel level) || player.isCreative() || player.isSpectator()) return;
         float body = of(player);
         if (player.tickCount % 20 == 0) {
             float target = target(player);
@@ -219,6 +246,10 @@ public final class Temperature {
             body += Math.signum(target - body) * step;
             player.setData(BODY, body);
             if (body < HUNGRY_BELOW) player.causeFoodExhaustion(0.5F * (HUNGRY_BELOW - body) / HUNGRY_BELOW);
+            if (body > OVERHEAT) player.causeFoodExhaustion(0.5F * (body - OVERHEAT) / (MAX - OVERHEAT));
+            if (body > SCORCHING && player.tickCount % 40 == 0) player.hurtServer(level, level.damageSources().onFire(), 1);
+            if (player.isInWater() && player instanceof ServerPlayer sp && ambient(level, player.blockPosition()) >= MAGMA_VENT_AIR)
+                Kettle.award(sp, HOT_SPRING_ADVANCEMENT);
         }
         // freezing: keep the vanilla frozen state topped up -> frost overlay, slowness and freeze damage
         if (body < FREEZING_BELOW) player.setTicksFrozen(Math.min(player.getTicksFrozen() + 3, player.getTicksRequiredToFreeze() + 20));

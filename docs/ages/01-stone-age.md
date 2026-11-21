@@ -527,6 +527,9 @@ Recept: `[Stick][Cordage][Stick]` / `[Stick][ ][Stick]` / `[Stick][ ][Stick]` (l
   (rökhalt ≥ 0,3, se "Rök inomhus"). Efter **4 minuter i rök** blir alla remsor **Smoked Meat** / **Smoked Fish**; en hel
   Raw Haunch / Ribs / Loin röks hel till **Smoked Haunch / Ribs / Loin** (kniv i craftingrutan skär den till 3 / 2 / 2 Smoked Meat). Hänger man
   upp en ny remsa börjar röktiden om. En lägereld brinner 3–5 min och glöder 2 min till, så en eld räcker oftast; lägg på Firewood för säkerhets skull.
+- **Torvrök:** mata den brinnande Campfiren med **Peat** eller **Dried Peat** (som bränsle, högerklick). Så länge torven
+  brinner (2 min per Peat, 1 min per Dried Peat, räknat med elden) ger elden tjock torvrök och ramen ovanför eller bredvid
+  röker **dubbelt så fort** (2 min). Glöd och ett rökigt rum räknas som vanlig rök. Advancement **Peat Smoke**.
 - **Utan rök händer ingenting**, och remsorna förskäms på sin vanliga tid (1 dag). Den första remsan som ruttnar tar alla med sig → Rotten Flesh.
 - Tom hand tar ner allt (råa remsor behåller sin färskhet). Bryts den släpps ramen och det som hängde på.
 
@@ -1472,7 +1475,12 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 - Mat som stämplas inom samma 1/16 av sin hållbarhet staplas ihop (rått kött: inom 75 s); annars blir det två högar.
 - **Äta Rotting-mat:** 50 % chans på Hunger i 30 s. Stale går bra att äta.
 - Porridge-skålen försvinner om gröten förskäms.
-- Kyla bromsar inte förskämningen (än).
+- **Kylrum:** en stängd kista eller tunna, Storage Jar, Root Cellar eller Bark Basket i kall luft åldrar maten långsammare.
+  Under 8 på termometerns skala (samma som kroppstemperaturen; sval grotta runt y 0, en vinternatt) **halv fart**, under 3
+  (nära fryspunkten: **Ice Caves** på alla djup, djupa grottor under y −30, snöland på natten) eller med **is bredvid**
+  behållaren (Ice, Packed Ice, Blue Ice: en enkel iskällare var som helst) **en fjärdedel**. Det multipliceras med
+  behållarens egen takt: en Storage Jar i Ice Caves åldras med 1/16. Kistor och tunnor stämplas när de stängs i kylan och
+  räknas om när de öppnas; kylan bedöms när de öppnas (som Root Cellar). Advancement **Cold Store**.
 
 **Konserverad mat** (görs på Smoking Rack och Drying Rack, se Block):
 

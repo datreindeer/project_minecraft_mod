@@ -63,6 +63,7 @@ public final class Campfires {
                     level.setBlock(pos, state.setValue(CampfireBlock.LIT, true).setValue(EMBERS, false), Block.UPDATE_ALL);
                     fire.mechanical$relight();
                 }
+                if (peat > 0) fire.mechanical$addPeat(peat); // peat smoke: SmokingRackBlock.peatSmoke
                 stack.consume(1, event.getEntity());
                 level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.6F, 1.4F);
             }

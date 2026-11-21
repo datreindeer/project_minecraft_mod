@@ -21,6 +21,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 public class SmokingRackBlockEntity extends BlockEntity {
     /** Seconds of smoke until the strips are smoked: 4 minutes. */
     public static final int SMOKE_SECONDS = 240;
+    /** Seconds of smoking each second over a peat fire (SmokingRackBlock.peatSmoke). */
+    public static final int PEAT_SPEED = 2;
+    /** Granted from code to players nearby when strips finish over a peat fire. */
+    public static final net.minecraft.resources.Identifier PEAT_SMOKE_ADVANCEMENT = net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "food/peat_smoke");
 
     private List<ItemStack> items = new ArrayList<>();
     private int smoked;
@@ -52,11 +56,13 @@ public class SmokingRackBlockEntity extends BlockEntity {
         if (SmokingRackBlock.inSmoke(level, pos)) {
             if (level.getRandom().nextInt(4) == 0)
                 level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 2, 0.25, 0.2, 0.25, 0.005);
-            if (++smoked < SMOKE_SECONDS) {
+            smoked += SmokingRackBlock.peatSmoke(level, pos) ? PEAT_SPEED : 1;
+            if (smoked < SMOKE_SECONDS) {
                 setChanged();
                 return;
             }
             boolean meat = content == Content.RAW_MEAT;
+            if (SmokingRackBlock.peatSmoke(level, pos)) Smelting.award(level, pos, PEAT_SMOKE_ADVANCEMENT, 8);
             // a whole cut (Haunch, Ribs, Loin) smokes whole; a knife slices it into Smoked Meat later
             items.replaceAll(s -> new ItemStack(meat ? Preserving.smoked(s) : Preserving.SMOKED_FISH.get(), s.getCount()));
             finish(level, pos, state, meat ? Content.SMOKED_MEAT : Content.SMOKED_FISH);
