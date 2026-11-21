@@ -244,6 +244,21 @@ bli hängande i luften.
 - **Spelarens temperatur** (`Temperature`) följer med. Kalla biomes på vintern skadar den som saknar skydd, och päls,
   eld och furred bed blir viktiga.
 
+**Hus håller värmen (byggt):** väggar och tak runt spelaren isolerar som kläder, upp till 60 %. Från huvudet går
+nio strålar, en uppåt och åtta åt sidorna (också snett), högst 8 block långt. Utan tak ger huset inget skydd. Annars
+blir skyddet medelvärdet av vad strålarna träffar (en öppning eller öppen dörr räknas som 0):
+
+| Värme | Block (taggar `mechanical:insulation/high`, `/medium`, `/poor`) |
+|---|---|
+| **Bra** (1.0) | Turf, Peat, Peat Bricks, Adobe Bricks, Mudstone, Rammed Earth, Wattle & Daub, Reed Thatch, alla Bark Roofs, Snow Block, Packed Mud, Mud Bricks, Hay Bale, Wool |
+| **Ganska bra** (0.7) | stockar, plankor, trä-slabs, trä-stairs, trädörrar och trä-trapdoors, Loess och Loess Bricks |
+| **Sten** (0.4) | alla andra solida block (sten, tegel, alla stenfamiljer) |
+| **Dålig** (0.1) | glas, löv, is, Iron Bars, Wattle utan lera |
+
+En eld inne i ett tätt hus värmer upp till hälften så mycket till. Exempel: en hydda helt av Turf ger 60 % isolering och
+tillsammans med en päls (25 %) är vinternatten uthärdlig. Ett stenhus ger 24 %. Tooltippen på block säger "Keeps warmth in:
+well / fairly / poorly". Kod: `Temperature.shelter`, taggarna från `scripts/gen_insulation.py`.
+
 ### Upptining (eget arbete)
 - Vanilla smälter aldrig snö eller is. En egen tick tar bort snölager och is i laddade chunks när det blir varmt.
 - **Chunks som inte är laddade:** chunken sparar sin senaste säsong och kommer ikapp när den laddas. Samma lösning

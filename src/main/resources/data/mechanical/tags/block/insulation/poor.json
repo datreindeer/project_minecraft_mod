@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#minecraft:impermeable",
+    "#minecraft:leaves",
+    "minecraft:ice",
+    "minecraft:packed_ice",
+    "minecraft:blue_ice",
+    "minecraft:iron_bars",
+    "mechanical:wattle"
+  ]
+}

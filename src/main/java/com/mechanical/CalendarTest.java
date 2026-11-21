@@ -69,12 +69,32 @@ public final class CalendarTest {
         // caves: colder the deeper, freezing near the bottom of the world
         check(h, Temperature.cave(Temperature.CAVE_TOP) == 10 && Temperature.cave(0) > Temperature.FREEZING_BELOW && Temperature.cave(-50) < Temperature.FREEZING_BELOW, "caves colder with depth");
         thaw(h);
+        shelter(h);
         cropsAndBerries(h);
         seasonLook(h);
         h.succeed();
     }
 
     /** Colours step once a month; deciduous leaves fall late in autumn, stay bare in winter, bud then leaf out in spring. */
+    /** Walls and roof keep warmth in: a turf hut is full shelter, stone less, no roof none. */
+    private static void shelter(GameTestHelper h) {
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos head = h.absolutePos(new net.minecraft.core.BlockPos(2, 2, 2));
+        java.util.function.Consumer<net.minecraft.world.level.block.Block> hut = b -> {
+            for (int x = 0; x <= 4; x++) for (int y = 1; y <= 4; y++) for (int z = 0; z <= 4; z++)
+                if (x == 0 || x == 4 || z == 0 || z == 4 || y == 4) h.setBlock(x, y, z, b);
+        };
+        hut.accept(EarthBlocks.TURF.get());
+        check(h, Temperature.shelter(level, head) == 1, "turf hut is full shelter, got " + Temperature.shelter(level, head));
+        hut.accept(net.minecraft.world.level.block.Blocks.STONE);
+        check(h, Math.abs(Temperature.shelter(level, head) - Temperature.STONE_WARMTH) < 1e-4, "stone hut");
+        h.setBlock(2, 2, 0, net.minecraft.world.level.block.Blocks.AIR); // a door gap lets warmth out
+        check(h, Temperature.shelter(level, head) < Temperature.STONE_WARMTH, "a gap in the wall");
+        for (int x = 0; x <= 4; x++) for (int z = 0; z <= 4; z++) h.setBlock(x, 4, z, net.minecraft.world.level.block.Blocks.AIR);
+        check(h, Temperature.shelter(level, head) == 0, "no roof, no shelter");
+        for (int x = 0; x <= 4; x++) for (int y = 1; y <= 4; y++) for (int z = 0; z <= 4; z++) h.setBlock(x, y, z, net.minecraft.world.level.block.Blocks.AIR);
+    }
+
     private static void seasonLook(GameTestHelper h) {
         int green = 0xFF48B518, summer = 3 * Calendar.MONTH_DAYS + 5, winter = 3 * Calendar.SEASON_DAYS + 10;
         check(h, SeasonLook.grass(green, 0.8F, summer / Calendar.MONTH_DAYS) == green && SeasonLook.grass(green, 0.8F, 9) != green, "grass green in summer, not in winter");

@@ -103,6 +103,14 @@ public final class StatTooltips {
 
         float insulation = Temperature.insulation(stack);
         if (insulation > 0) lines.add(stat("Cold insulation", Component.literal("+" + Math.round(insulation * 100) + "%").withStyle(ChatFormatting.AQUA)));
+        if (stack.getItem() instanceof net.minecraft.world.item.BlockItem block) {
+            var state = block.getBlock().defaultBlockState();
+            float warmth = Temperature.warmth(state);
+            // only blocks that are better or worse than plain stone get a line
+            if (warmth != Temperature.STONE_WARMTH && (warmth > 0 || state.is(Temperature.INSULATION_POOR)))
+                lines.add(stat("Keeps warmth in", Component.literal(warmth >= Temperature.HIGH_WARMTH ? "well" : warmth >= Temperature.MEDIUM_WARMTH ? "fairly" : "poorly")
+                        .withStyle(warmth >= Temperature.MEDIUM_WARMTH ? ChatFormatting.AQUA : ChatFormatting.GRAY)));
+        }
         if (stack.is(Mechanical.WOLF_HOOD.get())) lines.add(Component.literal(" Grey Wolves take you for one of the pack").withStyle(ChatFormatting.GRAY));
 
         uses(lines, stack);

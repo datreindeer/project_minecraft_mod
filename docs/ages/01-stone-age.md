@@ -2431,6 +2431,9 @@ Senare användning (planen fas 9): Pumice som slipmedel, Scoria som filter, Gyps
 
 ## Myr och jord (byggt, fas 3 av världsmaterialplanen)
 
+**Värme:** Turf, Peat, Adobe, Rammed Earth, Wattle & Daub och Reed Thatch håller värmen bäst i ett hus, bättre än trä och
+mycket bättre än sten (se *Hus håller värmen* i `docs/seasons-and-tribes.md`). En hydda helt av dem ger 60 % isolering mot kylan.
+
 Byggmaterial ur marken för stenålderns läger och byar. Allt ligger i creative-fliken **Building Blocks**.
 Java: `EarthBlocks.java` (block) och raderna i `StoneFamilies.java` (familjerna), data: `scripts/gen_earth.py` och
 `scripts/gen_stone_families.py`.

@@ -5,6 +5,9 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -13,6 +16,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,7 +27,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * Body temperature, 0 (freezing) .. 20 (warm), 12 is comfortable. It drifts towards a target set by the biome, the time
- * of day, rain/water, altitude and nearby burning fires; leather armour and fur (also a worn cloak) insulate against the cold. Cold makes you
+ * of day, rain/water, altitude and nearby burning fires; leather armour and fur (also a worn cloak) insulate against the cold,
+ * and so does a house: walls and roof round you ({@link #shelter}; turf, thatch and daub best, wood next, stone least), which also keeps a fire's heat in. Cold makes you
  * hungry; very cold freezes you (vanilla frost overlay and freeze damage). Shown by a bar above the hunger bar.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -127,6 +133,52 @@ public final class Temperature {
         return whole + (random.nextFloat() < rate - whole ? 1 : 0);
     }
 
+    /** A house at its best (every ray hits warm walls and roof) counts as this much insulation, like clothes. */
+    public static final float SHELTER_MAX = 0.6F;
+    /** How far the walls and roof may be from your head. */
+    public static final int SHELTER_RANGE = 8;
+    /** Block tags for how well a wall or roof keeps the warmth in; any other solid block (stone) counts as {@link #STONE_WARMTH}. */
+    public static final TagKey<Block> INSULATION_HIGH = blockTag("insulation/high"), INSULATION_MEDIUM = blockTag("insulation/medium"),
+            INSULATION_POOR = blockTag("insulation/poor");
+    public static final float HIGH_WARMTH = 1, MEDIUM_WARMTH = 0.7F, STONE_WARMTH = 0.4F, POOR_WARMTH = 0.1F;
+    private static final int[][] WALLS = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+
+    private static TagKey<Block> blockTag(String path) {
+        return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Mechanical.MODID, path));
+    }
+
+    /** How well one block keeps warmth in: by tag, else stone for anything solid, else 0 (open). */
+    public static float warmth(BlockState state) {
+        if (state.is(INSULATION_HIGH)) return HIGH_WARMTH;
+        if (state.is(INSULATION_MEDIUM)) return MEDIUM_WARMTH;
+        if (state.is(INSULATION_POOR)) return POOR_WARMTH;
+        return state.isSolid() ? STONE_WARMTH : 0;
+    }
+
+    /** The first wall or roof along a ray from head, or 0 when it reaches open air. */
+    private static float ray(Level level, BlockPos from, int dx, int dy, int dz) {
+        BlockPos.MutableBlockPos p = from.mutable();
+        for (int i = 0; i < SHELTER_RANGE; i++) {
+            BlockState state = level.getBlockState(p.move(dx, dy, dz));
+            if (state.isAir()) continue;
+            float w = warmth(state);
+            if (w > 0) return w;
+        }
+        return 0;
+    }
+
+    /**
+     * 0..1: how sheltered the spot is. Rays go up and to 8 sides from the head; without a roof it is 0, otherwise the
+     * mean warmth of what the rays hit (a gap or open door counts 0). A turf or thatch house is 1, stone walls 0.4.
+     */
+    public static float shelter(Level level, BlockPos head) {
+        float roof = ray(level, head, 0, 1, 0);
+        if (roof == 0) return 0;
+        float sum = roof;
+        for (int[] d : WALLS) sum += ray(level, head, d[0], 0, d[1]);
+        return sum / (WALLS.length + 1);
+    }
+
     /** Where the body temperature is heading, given the surroundings. */
     static float target(Player player) {
         Level level = player.level();
@@ -143,8 +195,11 @@ public final class Temperature {
             double reach = NightDangers.reach(level, fire); // a Fire Pit warms half as much again, half as far again
             t += FIRE_WARMTH * (float) (reach * Math.max(0, 1 - d / (FIRE_RANGE * reach)));
         }
+        float shelter = shelter(level, BlockPos.containing(player.getEyePosition()));
+        // walls round a fire keep its heat in: up to half as much again in a tight house
+        if (fire != null) t += FIRE_WARMTH * 0.5F * shelter * (float) Math.max(0, 1 - Math.sqrt(Vec3.atCenterOf(fire).distanceToSqr(player.position())) / FIRE_RANGE);
         if (t < COMFORT) {
-            float insulation = 0;
+            float insulation = shelter * SHELTER_MAX;
             for (ItemStack worn : wornForWarmth(player)) insulation += insulation(worn);
             if (warmBedrollUntil(player) > level.getGameTime()) insulation += FURRED_BED_WARMTH;
             insulation = Math.min(insulation, 1);
