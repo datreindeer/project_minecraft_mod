@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_gypsum",
+  "result": {
+    "count": 2,
+    "id": "mechanical:smooth_gypsum_slab"
+  }
+}

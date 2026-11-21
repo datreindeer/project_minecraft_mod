@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "mechanical:block/gypsum_bottom",
+    "side": "mechanical:block/gypsum",
+    "top": "mechanical:block/gypsum_top"
+  }
+}

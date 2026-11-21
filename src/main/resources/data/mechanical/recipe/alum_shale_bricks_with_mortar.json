@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_alum_shale",
+    "mechanical:polished_alum_shale",
+    "mechanical:polished_alum_shale",
+    "mechanical:polished_alum_shale",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:alum_shale_bricks",
+    "count": 8
+  }
+}

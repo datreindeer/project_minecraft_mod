@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_red_porphyry",
+  "features": [
+    "mechanical:ore_red_porphyry_biome"
+  ],
+  "step": "underground_ores"
+}

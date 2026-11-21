@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:mossy_rapakivi_granite_bricks",
+  "result": {
+    "id": "mechanical:mossy_rapakivi_granite_brick_wall"
+  }
+}

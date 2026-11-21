@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_red_porphyry",
+    "mechanical:polished_red_porphyry",
+    "mechanical:polished_red_porphyry",
+    "mechanical:polished_red_porphyry",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:red_porphyry_bricks",
+    "count": 8
+  }
+}

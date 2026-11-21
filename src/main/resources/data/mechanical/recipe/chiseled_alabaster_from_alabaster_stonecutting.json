@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:alabaster",
+  "result": {
+    "id": "mechanical:chiseled_alabaster"
+  }
+}

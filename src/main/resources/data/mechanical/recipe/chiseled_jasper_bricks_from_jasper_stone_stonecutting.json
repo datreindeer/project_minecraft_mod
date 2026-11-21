@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:jasper_stone",
+  "result": {
+    "id": "mechanical:chiseled_jasper_bricks"
+  }
+}

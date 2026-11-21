@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_gypsum",
+  "result": {
+    "id": "mechanical:smooth_gypsum_stairs"
+  }
+}

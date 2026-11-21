@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:ore",
+  "size": 40,
+  "discard_chance_on_air_exposure": 0.0,
+  "targets": [
+    {
+      "state": "mechanical:jasper_stone",
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:base_stone_overworld"
+      }
+    }
+  ]
+}

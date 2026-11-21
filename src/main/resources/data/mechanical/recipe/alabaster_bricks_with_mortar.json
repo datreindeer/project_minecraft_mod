@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:alabaster",
+    "mechanical:alabaster",
+    "mechanical:alabaster",
+    "mechanical:alabaster",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:alabaster_bricks",
+    "count": 8
+  }
+}

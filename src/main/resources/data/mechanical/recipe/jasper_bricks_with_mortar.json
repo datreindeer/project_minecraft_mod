@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_jasper",
+    "mechanical:polished_jasper",
+    "mechanical:polished_jasper",
+    "mechanical:polished_jasper",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:jasper_bricks",
+    "count": 8
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:scoria",
+  "result": {
+    "id": "mechanical:polished_scoria"
+  }
+}

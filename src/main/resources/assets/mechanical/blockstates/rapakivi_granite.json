@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/rapakivi_granite"
+      },
+      {
+        "model": "mechanical:block/rapakivi_granite_mirrored"
+      },
+      {
+        "model": "mechanical:block/rapakivi_granite",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/rapakivi_granite_mirrored",
+        "y": 180
+      }
+    ]
+  }
+}

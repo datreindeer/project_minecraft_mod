@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:gypsum",
+  "result": {
+    "id": "mechanical:cut_gypsum"
+  }
+}

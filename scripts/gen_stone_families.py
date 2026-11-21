@@ -17,6 +17,7 @@ gen_loot_format.py. Run: python scripts/gen_stone_families.py (writes stone_prev
 import glob
 import io
 import json
+import random
 import re
 import zipfile
 from collections import namedtuple
@@ -50,10 +51,11 @@ TEMPLATES = {
                     "mossy_stone_brick_stairs mossy_stone_brick_wall"),
     "sandstone": family("sandstone", "sandstone_slab sandstone_stairs sandstone_wall cut_sandstone cut_sandstone_slab smooth_sandstone "
                         "smooth_sandstone_slab smooth_sandstone_stairs chiseled_sandstone"),
-    # not used yet (phase 2/3/6): checked against the jar the first time a row uses them
+    # quartz: Java makes {}_pillar a RotatedPillarBlock; basalt: the base and polished_{} turn like logs
     "quartz": family("quartz_block", "quartz_slab quartz_stairs quartz_bricks quartz_pillar chiseled_quartz_block smooth_quartz "
-                     "smooth_quartz_slab smooth_quartz_stairs", word="quartz"),
+                     "smooth_quartz_slab smooth_quartz_stairs", word="quartz", chiseled_quartz_block="chiseled_{}"),
     "basalt": family("basalt", "polished_basalt smooth_basalt"),
+    # not used yet (phase 3): checked against the jar the first time a row uses them
     "mud": family("packed_mud", "mud_bricks mud_brick_slab mud_brick_stairs mud_brick_wall", word="mud"),
     "bricks": family("bricks", "brick_slab brick_stairs brick_wall", word="brick", bricks="{}_bricks"),
 }
@@ -106,7 +108,85 @@ STONES = [
           [["shell_bank", "cut_shell_bank", "chiseled_shell_bank"]],
           Ore(40, 8, 40, 70, 2, 40, 70, ["#minecraft:is_beach", "stony_shore", "ocean", "lukewarm_ocean", "warm_ocean"]),
           bands=[(150, 116, 100), (180, 144, 124), (204, 170, 150), (222, 192, 172), (238, 214, 196)]),  # pink shell layers
+    # phase 6: the remaining rock types (hard ones need a Bronze Pickaxe); ACCENTS below adds veins, spots and pores
+    Stone("marble", "quartz", [(150, 150, 155), (188, 188, 192), (214, 214, 216), (232, 232, 233), (246, 246, 246)], True,
+          [["marble", "marble_bricks", "chiseled_marble"], ["smooth_marble", "marble_pillar"]],
+          Ore(48, 8, -20, 40, 1, -20, 40, ["#minecraft:is_mountain", "savanna_plateau", "windswept_savanna", "#minecraft:is_badlands"])),
+    Stone("quartzite", "tuff", [(140, 122, 120), (166, 148, 146), (190, 174, 170), (210, 196, 192), (228, 218, 214)], True,
+          [["quartzite", "polished_quartzite", "quartzite_bricks", "chiseled_quartzite_bricks"]],
+          Ore(48, 8, 0, 120, 1, 0, 120, ["#minecraft:is_mountain"])),
+    Stone("red_porphyry", "tuff", [(72, 22, 22), (98, 32, 30), (122, 42, 38), (144, 54, 48), (166, 70, 60)], True,
+          [["red_porphyry", "polished_red_porphyry", "red_porphyry_bricks", "chiseled_red_porphyry_bricks"]],
+          Ore(24, 12, -16, 80, 1, -16, 80, ["#minecraft:is_badlands", "windswept_savanna"])),
+    Stone("green_porphyry", "tuff", [(22, 44, 30), (32, 60, 40), (44, 76, 52), (56, 92, 64), (72, 110, 78)], True,
+          [["green_porphyry", "polished_green_porphyry", "green_porphyry_bricks", "chiseled_green_porphyry_bricks"]],
+          Ore(24, 12, -16, 80, 1, -16, 80, ["windswept_hills", "windswept_gravelly_hills", "windswept_forest"])),
+    Stone("rapakivi_granite", "stone", [(130, 70, 52), (166, 96, 70), (196, 124, 92), (218, 148, 112), (236, 172, 136)], True,
+          [["rapakivi_granite", "smooth_rapakivi_granite", "rapakivi_granite_bricks", "chiseled_rapakivi_granite_bricks"]],
+          Ore(56, 8, 0, 80, 1, 0, 80, ["#minecraft:is_taiga", "forest", "birch_forest", "old_growth_birch_forest", "snowy_plains"])),
+    Stone("coastal_basalt", "basalt", [(26, 26, 30), (38, 38, 42), (52, 52, 56), (66, 66, 70), (82, 82, 86)], True,
+          [["coastal_basalt", "polished_coastal_basalt"]],  # + columns on Stony Shore: worldgen/feature/coastal_basalt_columns.json
+          Ore(48, 10, 30, 80, 2, 40, 80, ["stony_shore", "#minecraft:is_beach"])),
+    Stone("pumice", "tuff", [(150, 148, 140), (172, 170, 162), (192, 190, 182), (210, 208, 200), (226, 224, 218)], False,
+          [["pumice", "polished_pumice", "pumice_bricks", "chiseled_pumice_bricks"]],
+          Ore(40, 10, -30, 20, 1, 30, 80, ["#minecraft:is_badlands"])),
+    Stone("scoria", "basalt", [(30, 14, 12), (54, 22, 18), (80, 32, 24), (104, 44, 32), (128, 58, 42)], False,
+          [["scoria", "polished_scoria"]],
+          Ore(40, 10, -30, 20, 1, 30, 80, ["#minecraft:is_badlands"])),
+    Stone("serpentine", "tuff", [(30, 58, 40), (46, 82, 56), (66, 106, 72), (90, 130, 88), (120, 156, 110)], True,
+          [["serpentine", "polished_serpentine", "serpentine_bricks", "chiseled_serpentine_bricks"]],
+          Ore(32, 12, -16, 64, 1, 0, 100, ["windswept_hills", "windswept_gravelly_hills", "stony_peaks"])),
+    Stone("jasper", "tuff", [(80, 30, 22), (106, 42, 30), (130, 56, 38), (152, 72, 48), (172, 90, 60)], False,
+          [["jasper_stone", "polished_jasper", "jasper_bricks", "chiseled_jasper_bricks"]],
+          Ore(40, 10, 40, 100, 1, 50, 100, ["#minecraft:is_badlands", "desert"]), base="jasper_stone"),  # mechanical:jasper is the gem
+    Stone("gypsum", "sandstone", [(196, 186, 166), (212, 204, 186), (226, 220, 204), (238, 233, 220), (248, 245, 236)], False,
+          [["gypsum", "cut_gypsum", "chiseled_gypsum"]],
+          Ore(56, 8, 40, 90, 2, 40, 90, ["desert", "#minecraft:is_badlands"])),
+    Stone("alabaster", "quartz", [(200, 188, 160), (216, 206, 182), (230, 222, 202), (240, 234, 218), (250, 246, 236)], True,
+          [["alabaster", "alabaster_bricks", "chiseled_alabaster"], ["smooth_alabaster", "alabaster_pillar"]],
+          Ore(24, 16, 40, 90, 1, 40, 90, ["desert", "#minecraft:is_badlands"])),
+    Stone("alum_shale", "tuff", [(20, 20, 22), (30, 30, 33), (42, 42, 46), (54, 54, 58), (68, 68, 72)], False,
+          [["alum_shale", "polished_alum_shale", "alum_shale_bricks", "chiseled_alum_shale_bricks"]],
+          Ore(48, 8, -30, 40, 1, -30, 40, ["#minecraft:is_taiga", "snowy_plains", "ice_spikes", "grove", "snowy_slopes", "frozen_river"])),
 ]
+
+
+def _dots(colour, n, r, rim=None):
+    """Accent: n round spots of radius r (rim: a darker ring), seeded per texture name."""
+    def paint(img, rnd):
+        for _ in range(n):
+            cx, cy = rnd.uniform(0, 16), rnd.uniform(0, 16)
+            for y in range(16):
+                for x in range(16):
+                    d = ((x + .5 - cx) ** 2 + (y + .5 - cy) ** 2) ** .5
+                    if img.getpixel((x, y))[3] and d <= r + (0.8 if rim else 0):
+                        img.putpixel((x, y), (rim if rim and d > r else colour) + (img.getpixel((x, y))[3],))
+    return paint
+
+
+def _veins(colour, n):
+    """Accent: n thin wandering veins (marble)."""
+    def paint(img, rnd):
+        for _ in range(n):
+            x, y, dx = rnd.uniform(0, 16), 0.0, rnd.uniform(-0.8, 0.8)
+            while y < 16:
+                if img.getpixel((int(x) % 16, int(y)))[3]:
+                    img.putpixel((int(x) % 16, int(y)), colour + (img.getpixel((int(x) % 16, int(y)))[3],))
+                x, y, dx = x + dx, y + 1, max(-1.2, min(1.2, dx + rnd.uniform(-0.6, 0.6)))
+    return paint
+
+
+# per stone, painted over the recoloured textures (seeded by texture name, so it is stable between runs)
+ACCENTS = {
+    "marble": _veins((122, 124, 130), 2),
+    "alabaster": _veins((214, 198, 168), 2),
+    "red_porphyry": _dots((214, 170, 160), 6, 0.5),
+    "green_porphyry": _dots((180, 200, 170), 6, 0.5),
+    "rapakivi_granite": _dots((244, 184, 122), 3, 1.6, rim=(96, 84, 80)),
+    "pumice": _dots((118, 116, 110), 9, 0.5),
+    "scoria": _dots((14, 8, 8), 9, 0.6),
+    "serpentine": _dots((150, 182, 122), 4, 1.2),
+}
 
 
 def write(path, text):
@@ -230,6 +310,8 @@ for s in STONES:
                 pal = s.bands if s.bands and ((y + x // 5) // 3) % 2 else s.palette
                 out.putpixel((x, y), ramp(pal, ((r + g + b) / 3 - lo) / (hi - lo)) + (a,))
         name = sub(t)
+        if s.name in ACCENTS:
+            ACCENTS[s.name](out, random.Random(name))
         out.save(A / f"textures/block/{name}.png")
         if s.own_base:
             preview[-1].append(out)

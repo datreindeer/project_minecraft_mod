@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_serpentine",
+    "mechanical:polished_serpentine",
+    "mechanical:polished_serpentine",
+    "mechanical:polished_serpentine",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:serpentine_bricks",
+    "count": 8
+  }
+}

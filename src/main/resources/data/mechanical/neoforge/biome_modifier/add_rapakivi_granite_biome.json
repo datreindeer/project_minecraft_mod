@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_rapakivi_granite",
+  "features": [
+    "mechanical:ore_rapakivi_granite_biome"
+  ],
+  "step": "underground_ores"
+}

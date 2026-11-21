@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:red_porphyry_bricks",
+  "result": {
+    "id": "mechanical:red_porphyry_brick_stairs"
+  }
+}

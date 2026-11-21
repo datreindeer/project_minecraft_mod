@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_jasper",
+  "result": {
+    "id": "mechanical:polished_jasper_stairs"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:coastal_basalt"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/coastal_basalt"
+}

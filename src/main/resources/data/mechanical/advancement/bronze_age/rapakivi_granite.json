@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:bronze_age/bronze_pickaxe",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rapakivi_granite"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rapakivi_granite_bricks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rapakivi_granite_bricks"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.rapakivi_granite.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.rapakivi_granite.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

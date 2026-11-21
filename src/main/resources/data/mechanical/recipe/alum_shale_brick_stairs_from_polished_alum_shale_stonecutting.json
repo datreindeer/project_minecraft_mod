@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_alum_shale",
+  "result": {
+    "id": "mechanical:alum_shale_brick_stairs"
+  }
+}

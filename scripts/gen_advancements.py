@@ -1083,6 +1083,48 @@ TABS["stone_age"][1].extend([
      has("conglomerate", "conglomerate_bricks")),
 ])
 
+# stone families, phase 6: soft stones in the Stone Age tab, hard ones (Bronze Pickaxe) in the Bronze Age tab
+TABS["stone_age"][1].extend([
+    ("pumice", "flint_pickaxe", "pumice", T, "Pumice",
+     "Mine light, porous Pumice with a Flint Pickaxe: deep down near lava (y -30 to 20), and higher up under the badlands",
+     has("pumice", "pumice_bricks")),
+    ("scoria", "flint_pickaxe", "scoria", T, "Scoria",
+     "Mine red-black Scoria with a Flint Pickaxe: deep down near lava (y -30 to 20), and higher up under the badlands",
+     has("scoria", "polished_scoria")),
+    ("jasper_stone", "flint_pickaxe", "jasper_bricks", T, "Red Rock",
+     "Mine red-brown Jasper Stone with a Flint Pickaxe, mostly under badlands and deserts (y 50 to 100), and craft Jasper Bricks",
+     has("jasper_stone", "jasper_bricks")),
+    ("gypsum", "flint_pickaxe", "cut_gypsum", T, "Gypsum",
+     "Mine chalky Gypsum with a Flint Pickaxe under deserts and badlands (y 40 to 90), and cut it into Cut Gypsum",
+     has("gypsum", "cut_gypsum")),
+    ("alum_shale", "flint_pickaxe", "alum_shale_bricks", T, "Black Layers",
+     "Mine near-black Alum Shale with a Flint Pickaxe, deep under cold taiga and snowy lands (y -30 to 40)",
+     has("alum_shale", "alum_shale_bricks")),
+])
+TABS["bronze_age"][1].extend([
+    ("marble", "bronze_pickaxe", "marble_pillar", T, "Marble",
+     "Mine white Marble with a Bronze Pickaxe, deep under mountains and warm plateaus (y -20 to 40). The Bronze Chisel carves it into Chiseled Marble and Marble Pillars",
+     has("marble", "marble_pillar", "chiseled_marble")),
+    ("quartzite", "bronze_pickaxe", "quartzite_bricks", T, "Quartzite",
+     "Mine pale, hard Quartzite with a Bronze Pickaxe under mountains (y 0 to 120)",
+     has("quartzite", "quartzite_bricks")),
+    ("porphyry", "bronze_pickaxe", "polished_red_porphyry", T, "Porphyry",
+     "Mine Red or Green Porphyry with a Bronze Pickaxe: rare small blobs everywhere, red more often under badlands, green under windswept hills",
+     has("red_porphyry", "green_porphyry")),
+    ("rapakivi_granite", "bronze_pickaxe", "rapakivi_granite_bricks", T, "Rapakivi",
+     "Mine spotted Rapakivi Granite with a Bronze Pickaxe, mostly under taiga, birch forests and snowy plains (y 0 to 80)",
+     has("rapakivi_granite", "rapakivi_granite_bricks")),
+    ("coastal_basalt", "bronze_pickaxe", "polished_coastal_basalt", T, "Basalt Columns",
+     "Mine Coastal Basalt with a Bronze Pickaxe: dark columns stand on Stony Shores, and blobs lie under beaches",
+     has("coastal_basalt", "polished_coastal_basalt")),
+    ("serpentine", "bronze_pickaxe", "serpentine_bricks", T, "Serpentine",
+     "Mine rare, mottled green Serpentine with a Bronze Pickaxe, mostly under windswept hills and stony peaks",
+     has("serpentine", "serpentine_bricks")),
+    ("alabaster", "bronze_pickaxe", "alabaster_pillar", T, "Alabaster",
+     "Mine creamy Alabaster with a Bronze Pickaxe: small blobs in the gypsum under deserts and badlands (y 40 to 90)",
+     has("alabaster", "alabaster_bricks", "alabaster_pillar")),
+])
+
 # the Iron Age's new ores (IronOres.java; gen_iron_ores.py)
 TABS["iron_age"][1].extend([
     ("galena", "root", "raw_galena", T, "Galena",

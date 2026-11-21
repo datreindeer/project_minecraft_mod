@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_pumice",
+  "features": [
+    "mechanical:ore_pumice_biome"
+  ],
+  "step": "underground_ores"
+}

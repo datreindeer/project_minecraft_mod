@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mechanical:block/smooth_rapakivi_granite",
+    "side": "mechanical:block/smooth_rapakivi_granite_slab_side"
+  }
+}

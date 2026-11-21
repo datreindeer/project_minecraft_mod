@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_pumice",
+  "result": {
+    "id": "mechanical:pumice_bricks"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/polished_jasper",
+    "side": "mechanical:block/polished_jasper",
+    "top": "mechanical:block/polished_jasper"
+  }
+}

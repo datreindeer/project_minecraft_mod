@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:coastal_basalt",
+  "result": {
+    "id": "mechanical:polished_coastal_basalt"
+  }
+}

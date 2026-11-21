@@ -234,6 +234,12 @@ public final class IronOres {
             h.assertTrue(level.getServer().reloadableRegistries().getLootTable(key) != net.minecraft.world.level.storage.loot.LootTable.EMPTY,
                     block.getId() + " has a loot table (gen_stone_families.py and StoneFamilies.java agree)");
         }
+        // pillars turn like logs: quartz-template {}_pillar, basalt-template base and polished_{}
+        for (String pillar : List.of("marble_pillar", "alabaster_pillar", "coastal_basalt", "polished_coastal_basalt", "scoria", "polished_scoria"))
+            h.assertTrue(StoneFamilies.block(pillar).defaultBlockState().hasProperty(net.minecraft.world.level.block.RotatedPillarBlock.AXIS),
+                    pillar + " has an axis");
+        h.assertFalse(StoneFamilies.block("smooth_coastal_basalt").defaultBlockState().hasProperty(net.minecraft.world.level.block.RotatedPillarBlock.AXIS),
+                "Smooth Coastal Basalt has no axis (like vanilla)");
 
         // lime: the lime stones (and 4 Chalk) burn to Quicklime at 900° (bellows), slaked with water, mortar doubles bricks
         h.assertTrue(BronzeOres.crushed(new ItemStack(StoneFamilies.block("dolomite"))).is(FLUX.get()), "Dolomite crushes into Flux");

@@ -1525,3 +1525,28 @@ Djungel: plankväggar i pålhusen. Lägren stammarna bygger vid spelarläger byt
 Kiln och Quern. Ingen spelare nära: byn byts på en gång. Spelare nära: en stammedlem bygger om block för block.
 Spelarblock rörs inte. Advancement **Bronze Age Neighbours**.
 
+## Hårda bergarter (byggt, fas 6 av världsmaterialplanen)
+
+Sju hårda bergarter i berget. Flinta biter inte på dem: de kräver **Bronze Pickaxe** och ger sig själva. Varje sten har en
+hel familj byggblock från en vanilla-familj och ligger i creative-fliken **Building Blocks**. Klumparna finns i hela världen
+men är vanligare i "sin" biom (mängderna ligger under vanillas granit och diorit). De mjuka stenarna från samma fas
+(Pumice, Scoria, Jasper Stone, Gypsum, Alum Shale) står i stenålderns dokument.
+
+| Sten | Mall | Var | Familj | Bronze Chisel |
+|---|---|---|---|---|
+| **Marble** | quartz | Djupt, y −20–40 (1 klump i var 8:e chunk), 1 extra per chunk under berg, Savanna Plateau, Windswept Savanna och badlands | Marble Bricks (2×2), **Marble Pillar** (2 på varandra, vrids som en stock), Chiseled Marble, Smooth Marble (smält), slab/stairs av Marble och Smooth | Marble → Bricks → Chiseled, Smooth → Pillar |
+| **Quartzite** | tuff | y 0–120 (var 8:e chunk), 1 extra under berg | Polished, Bricks, Chiseled, Chiseled Bricks + slab/stairs/wall | Quartzite → Polished → Bricks → Chiseled Bricks |
+| **Red Porphyry** | tuff | Sällsynta små klumpar y −16–80 (var 12:e chunk), 1 extra under badlands och Windswept Savanna | Som Quartzite | Som Quartzite |
+| **Green Porphyry** | tuff | Som Red Porphyry, extra under Windswept Hills, Gravelly Hills och Forest | Som Quartzite | Som Quartzite |
+| **Rapakivi Granite** | stone | y 0–80 (var 8:e chunk), 1 extra under taiga, Forest, Birch Forest, Old Growth Birch Forest och Snowy Plains (ersätter granit där) | Som Gneiss: Smooth, Bricks, Cracked, Mossy, Chiseled Bricks + slab/stairs/wall | Rapakivi Granite → Smooth → Bricks → Chiseled Bricks |
+| **Coastal Basalt** | basalt | **Pelare** på 2–6 block på Stony Shore (även ute i vattnet), klumpar y 30–80 (var 10:e chunk), 2 extra under Stony Shore och stränder | Polished Coastal Basalt (2×2, vrids), Smooth Coastal Basalt (smält) | Coastal Basalt → Polished |
+| **Serpentine** | tuff | Sällsynt, y −16–64 (var 12:e chunk), 1 extra på y 0–100 under Windswept Hills, Gravelly Hills och Stony Peaks | Som Quartzite | Som Quartzite |
+| **Alabaster** | quartz | Små klumpar y 40–90 (var 16:e chunk), 1 extra under öken och badlands, där Gypsum ligger | Som Marble | Alabaster → Bricks → Chiseled, Smooth → Pillar |
+
+Namnet **Coastal Basalt** valdes för att inte krocka med vanillas Basalt, Polished Basalt och Smooth Basalt (Nether), som
+annars skulle ha samma namn i creative-fliken och JEI. Det passar också den planerade biomen Basalt Coast. Pelarna kommer
+från `worldgen/feature/coastal_basalt_columns.json` (vanilla `block_column`).
+
+Advancements i Bronze Age-fliken (under Bronze Pickaxe): *Marble*, *Quartzite*, *Porphyry*, *Rapakivi*, *Basalt Columns*,
+*Serpentine*, *Alabaster*. Senare användning (planen fas 9): statyer, slipstenar, kvarnstenar av Rapakivi, lyxsten,
+inläggningar, lampor av Alabaster.

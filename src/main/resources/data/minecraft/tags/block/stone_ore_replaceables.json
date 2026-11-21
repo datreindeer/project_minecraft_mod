@@ -9,6 +9,19 @@
     "mechanical:conglomerate",
     "mechanical:dolomite",
     "mechanical:travertine",
-    "mechanical:shell_bank"
+    "mechanical:shell_bank",
+    "mechanical:marble",
+    "mechanical:quartzite",
+    "mechanical:red_porphyry",
+    "mechanical:green_porphyry",
+    "mechanical:rapakivi_granite",
+    "mechanical:coastal_basalt",
+    "mechanical:pumice",
+    "mechanical:scoria",
+    "mechanical:serpentine",
+    "mechanical:jasper_stone",
+    "mechanical:gypsum",
+    "mechanical:alabaster",
+    "mechanical:alum_shale"
   ]
 }

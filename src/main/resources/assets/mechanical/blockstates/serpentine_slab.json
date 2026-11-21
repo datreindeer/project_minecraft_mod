@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/serpentine_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/serpentine"
+    },
+    "type=top": {
+      "model": "mechanical:block/serpentine_slab_top"
+    }
+  }
+}

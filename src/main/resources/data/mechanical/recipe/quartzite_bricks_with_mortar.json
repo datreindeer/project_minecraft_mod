@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_quartzite",
+    "mechanical:polished_quartzite",
+    "mechanical:polished_quartzite",
+    "mechanical:polished_quartzite",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:quartzite_bricks",
+    "count": 8
+  }
+}

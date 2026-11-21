@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/mossy_rapakivi_granite_brick_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/mossy_rapakivi_granite_bricks"
+    },
+    "type=top": {
+      "model": "mechanical:block/mossy_rapakivi_granite_brick_slab_top"
+    }
+  }
+}

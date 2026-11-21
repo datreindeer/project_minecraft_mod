@@ -1,7 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **fas 1 byggd** (stengeneratorn + sex Stone Age-bergarter, se "Fas 1: resultat" sist), **fas 2 byggd** (kalk och
-murbruk, se "Fas 2: resultat"), resten plan. Skriven 2026-11-21.
+Status: **fas 0, 1, 2 och 6 byggda** (se "Fas N: resultat" sist), resten plan. Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -313,3 +312,48 @@ också en Scraped Hide till Leather. Murbruket krävs inte (standardval 3): `gen
 `<bricks>_with_mortar` (4 + 1 Lime Mortar → dubbelt) för varje familjs 2×2-Bricks-recept och för vanillas Stone,
 Deepslate, Mud Bricks och Bricks, så nya stenar får det av sig själva. Inte byggt: slab/stairs/wall för putsen, murbruk
 för sandstone-familjernas Cut-block (de har inga Bricks), att Quicklime fräter i regn.
+---
+
+## Fas 6: resultat (byggt)
+
+Tolv nya stenfamiljer (147 block), alla som en rad i `STONES` på varje sida. Mjuka (Flint Pickaxe, Stone Age-fliken):
+**Pumice**, **Scoria**, **Jasper Stone**, **Gypsum**, **Alum Shale**. Hårda (Bronze Pickaxe, Bronze Age-fliken): **Marble**,
+**Quartzite**, **Red Porphyry**, **Green Porphyry**, **Rapakivi Granite**, **Coastal Basalt**, **Serpentine**, **Alabaster**.
+Kaolin och Ochre-blocken flyttades till fas 3 (mud/bricks-mallarna). Var de ligger och vad de ger: `docs/ages/01-stone-age.md`
+och `02-bronze-age.md`.
+
+**Namn:** `coastal_basalt` (inte `basalt`, som skulle få samma namn som vanillas Nether-basalt i creative och JEI), och
+`jasper_stone` som basblock med familjen `jasper_slab`, `polished_jasper`, `jasper_bricks` ... (som Chalk: raden heter
+`jasper`, `base="jasper_stone"`), eftersom `mechanical:jasper` är ädelstenen.
+
+**Två nya mallar:**
+
+```python
+# TEMPLATES (gen_stone_families.py)
+"quartz": family("quartz_block", "quartz_slab quartz_stairs quartz_bricks quartz_pillar chiseled_quartz_block smooth_quartz "
+                 "smooth_quartz_slab smooth_quartz_stairs", word="quartz", chiseled_quartz_block="chiseled_{}"),
+"basalt": family("basalt", "polished_basalt smooth_basalt"),
+Stone("marble", "quartz", [...], True, [["marble", "marble_bricks", "chiseled_marble"], ["smooth_marble", "marble_pillar"]], Ore(...)),
+Stone("coastal_basalt", "basalt", [...], True, [["coastal_basalt", "polished_coastal_basalt"]], Ore(...)),
+```
+
+```java
+// StoneFamilies.Template
+QUARTZ(false, "{}_slab", "{}_stairs", "{}_bricks", "{}_pillar", "chiseled_{}", "smooth_{}", "smooth_{}_slab", "smooth_{}_stairs"),
+BASALT(true, "polished_{}", "smooth_{}");   // basen och polished_{} blir RotatedPillarBlock, smooth_{} ett vanligt block
+```
+
+Quartz-mallens `{}_pillar` blir `RotatedPillarBlock` (fanns redan), basalt-mallens bas (`pillarBase`) och `polished_{}` också.
+Gametesten `iron_ores` kollar nu även att pelarna har `axis`.
+
+**Texturer:** `ACCENTS` i skriptet målar mönster ovanpå omfärgningen, en rad per sten: ådror (Marble, Alabaster), korn
+(Porphyry), runda fläckar med mörk kant (Rapakivi), porer (Pumice, Scoria), fläckar (Serpentine). Frö = texturens namn,
+så filerna blir likadana vid varje körning.
+
+**Worldgen:** samma `Ore`-rader som fas 1, men färre och mindre klumpar (storlek 24–56, 1 extra per chunk i biomen, Gypsum
+och Coastal Basalt 2), under vanillas granit/diorit. Biomtaggarna `mechanical:has_<sten>` (t.ex. `has_marble` med varma berg,
+`has_gypsum`/`has_alabaster` med öken och badlands) är tänkta att återanvändas av fas 7–8 (Marble Gorge, Gypsum Flats, Salt
+Caves). Coastal Basalt har dessutom pelare på 2–6 block på Stony Shore: `worldgen/feature/coastal_basalt_columns.json`
+(vanilla `block_column`, luft eller vatten), placerad i `local_modifications` via `add_coastal_basalt_columns.json`.
+Alabaster och Gypsum ligger båda i `base_stone_overworld`, så den som placeras sist kan skriva över den andra; Alabaster
+finns därför också utanför gipsen.
