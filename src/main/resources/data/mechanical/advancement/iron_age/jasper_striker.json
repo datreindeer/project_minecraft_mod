@@ -1,0 +1,31 @@
+{
+  "parent": "mechanical:iron_age/flint_and_steel",
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": {
+        "recipes": "mechanical:flint_and_steel_from_jasper"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rough_jasper"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.jasper_striker.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.jasper_striker.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

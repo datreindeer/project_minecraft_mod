@@ -1563,3 +1563,25 @@ Ett Kaolin-block bränt i **Clay Kiln vid 1000°** (Charcoal + Bellows) blir **K
 wall (vanilla-bricks-mönster: 3 i rad → 6 slabs, trappmönster av 6 → 4 stairs, 2×3 → 6 walls). Advancement *White Tiles*
 i Bronze Age-fliken (under Bellows). Senare: vit glasyr och porslin.
 
+## Stenhantverk (byggt, fas 9A av världsmaterialplanen)
+
+Bergarterna från fas 1 och 6 har fått riktiga användningar. Allt finns i `StoneCrafts.java`, data i `scripts/gen_stone_crafts.py`.
+
+| Block | Recept | Vad det gör |
+|---|---|---|
+| **Soapstone ... Mold** (en för varje lerform) | Mold Bench: Polished Soapstone, en halv per metallenhet (minst 1) | Som lerformen, men behöver ingen bränning och **spricker aldrig** |
+| **Quartzite Whetstone** | `[ ][Quartzite][ ]` / `[Stick][Planks][Stick]` | Slipar på **2 drag** i stället för 4 (1 med Bronze Chisel i andra handen) |
+| **Rapakivi Quern** | `[ ][C][ ]` / `[R][Stick][R]` / `[R]×3` (C = Copper/Bronze Ingot, R = Rapakivi Granite) | Ett halvt varv per klick: **2 klick** per Flour i stället för 4 |
+| **Basalt Anvil** | `[ ][Stone Anvil][ ]` / `[Coastal Basalt]×3` | Tungt städ: krossar på **2 slag** i stället för 4 |
+| **Alabaster Lamp** | `[A][Plant Fibre][A]` / `[A][A][A]` (A = Alabaster) | En Oil Lamp av alabaster: samma bränsle och tändning, men **ljus 15** (Oil Lamp 14) |
+
+Kostnaden för täljstensformar: Ingot, Shovel Head, Knife Blade, Arrowheads, Fish Hooks, Needles och Chisel Blade 1 Polished
+Soapstone; Hoe Head, Saw Blade, Plate, Spear Head, Sickle Blade, Shears, Tongs och Hammer Head 2; Pickaxe Head, Axe Head,
+Sword Blade och Bucket 3; Kettle 4; Anvil 5. De fungerar överallt där lerformar gör (degel, Smelting Furnace-tappen, rännor).
+
+Advancements i Bronze Age-fliken: *Stone That Remembers* (under Mold Maker), *Heavy Stone* (Coastal Basalt), *Hard Grit*
+(Quartzite), *Millstone* (Rapakivi) och *Glowing Stone* (Alabaster).
+
+Inte gjort: vind- och vattenkvarn (modden har ingen, så Rapakivi blev handkvarnens stenar), statyer och piedestaler av
+marmor (kräver egna modeller), inläggningar av Porphyry och Serpentine (ring- och charm-platserna i utrustningen har inga
+smycken än att lägga in dem i).

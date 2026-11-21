@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "#S#",
+    "###"
+  ],
+  "key": {
+    "C": [
+      "minecraft:copper_ingot",
+      "mechanical:bronze_ingot"
+    ],
+    "#": "mechanical:rapakivi_granite",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:rapakivi_quern"
+  }
+}

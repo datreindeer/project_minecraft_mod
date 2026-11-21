@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,grind=0": {
+      "model": "mechanical:block/quartzite_whetstone"
+    },
+    "facing=north,grind=1": {
+      "model": "mechanical:block/quartzite_whetstone"
+    },
+    "facing=north,grind=2": {
+      "model": "mechanical:block/quartzite_whetstone"
+    },
+    "facing=north,grind=3": {
+      "model": "mechanical:block/quartzite_whetstone"
+    },
+    "facing=east,grind=0": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 90
+    },
+    "facing=east,grind=1": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 90
+    },
+    "facing=east,grind=2": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 90
+    },
+    "facing=east,grind=3": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 90
+    },
+    "facing=south,grind=0": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 180
+    },
+    "facing=south,grind=1": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 180
+    },
+    "facing=south,grind=2": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 180
+    },
+    "facing=south,grind=3": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 180
+    },
+    "facing=west,grind=0": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 270
+    },
+    "facing=west,grind=1": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 270
+    },
+    "facing=west,grind=2": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 270
+    },
+    "facing=west,grind=3": {
+      "model": "mechanical:block/quartzite_whetstone",
+      "y": 270
+    }
+  }
+}

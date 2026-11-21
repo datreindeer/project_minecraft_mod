@@ -23,14 +23,22 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Hand quern: right-click with Grain to turn the upper stone a quarter (the model turns with TURN); a full turn grinds
- * one Grain into one Flour.
+ * one Grain into one Flour. The Rapakivi Quern ({@link StoneCrafts#RAPAKIVI_QUERN}) turns half a turn per click ({@link #step} 2).
  */
 public class QuernBlock extends Block {
     public static final IntegerProperty TURN = IntegerProperty.create("turn", 0, 3);
     private static final VoxelShape SHAPE = Shapes.or(box(2, 0, 2, 14, 9, 14), box(10, 9, 7, 13, 14, 10));
 
+    /** Quarter turns per click. */
+    public final int step;
+
     public QuernBlock(Properties properties) {
+        this(properties, 1);
+    }
+
+    public QuernBlock(Properties properties, int step) {
         super(properties);
+        this.step = step;
         registerDefaultState(defaultBlockState().setValue(TURN, 0));
     }
 
@@ -48,7 +56,7 @@ public class QuernBlock extends Block {
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!stack.is(Farming.GRAINS)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
-        int turn = (state.getValue(TURN) + 1) % 4;
+        int turn = (state.getValue(TURN) + step) % 4;
         server.setBlock(pos, state.setValue(TURN, turn), Block.UPDATE_CLIENTS);
         server.playSound(null, pos, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 0.5F, 0.6F + server.getRandom().nextFloat() * 0.2F);
         server.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 3, 0.25, 0.05, 0.25, 0.02);

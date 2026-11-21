@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:soapstone_shears_mold"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/soapstone_shears_mold"
+}

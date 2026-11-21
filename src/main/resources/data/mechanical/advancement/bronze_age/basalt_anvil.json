@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/coastal_basalt",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:basalt_anvil"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:basalt_anvil"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.basalt_anvil.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.basalt_anvil.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

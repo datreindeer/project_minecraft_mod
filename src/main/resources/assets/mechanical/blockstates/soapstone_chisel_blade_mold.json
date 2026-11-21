@@ -1,0 +1,139 @@
+{
+  "variants": {
+    "fill=empty,metal=copper,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=copper,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=copper,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=copper,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=copper,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=bronze,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=bronze,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=bronze,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=bronze,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=bronze,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=empty,metal=poor_bronze,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold"
+    },
+    "fill=molten,metal=copper,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=copper,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=copper,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=copper,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=copper,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=bronze,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=molten,metal=poor_bronze,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_molten_bronze"
+    },
+    "fill=solid,metal=copper,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=copper,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=copper,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=copper,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=copper,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=bronze,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=0": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=1": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=2": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=3": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    },
+    "fill=solid,metal=poor_bronze,uses=4": {
+      "model": "mechanical:block/soapstone_chisel_blade_mold_solid_bronze"
+    }
+  }
+}
