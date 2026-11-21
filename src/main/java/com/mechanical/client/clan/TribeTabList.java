@@ -53,6 +53,9 @@ public final class TribeTabList {
     private static final String[] RANK_GLYPHS = {"★", "✦", "•", "◦"};
     private static final int[] RANK_COLOURS = {0xFFFFD34A, 0xFFBFD4E8, 0xFFB0A088, 0xFF8FBF6A};
     private static final int[] AGE_COLOURS = {0xFF9A968C, 0xFFC8843E, 0xFFB4C0CA, 0xFF8A6E58, 0xFF6AAEE0};
+    private static final int ICON = 9;
+    private static final Identifier[] AGE_ICONS = java.util.Arrays.stream(Clans.AGES)
+            .map(a -> Identifier.fromNamespaceAndPath(com.mechanical.Mechanical.MODID, "tab/age_" + a)).toArray(Identifier[]::new);
     private static final Identifier[] PING = {Identifier.withDefaultNamespace("icon/ping_unknown"), Identifier.withDefaultNamespace("icon/ping_1"),
             Identifier.withDefaultNamespace("icon/ping_2"), Identifier.withDefaultNamespace("icon/ping_3"),
             Identifier.withDefaultNamespace("icon/ping_4"), Identifier.withDefaultNamespace("icon/ping_5")};
@@ -119,8 +122,7 @@ public final class TribeTabList {
         for (Group gr : groups) players += gr.members.size();
 
         // column width: the widest row or banner bar
-        int tagW = 0, nameW = 0, barW = 0;
-        for (int a = 0; a < Clans.AGES.length; a++) tagW = Math.max(tagW, font.width(ageShort(a)) + 6);
+        int tagW = ICON, nameW = 0, barW = 0;
         for (Group gr : groups) {
             barW = Math.max(barW, 14 + font.width(groupName(gr)) + 6 + font.width(count(gr)) + 4);
             for (Entry e : gr.members) nameW = Math.max(nameW, font.width(e.name));
@@ -132,7 +134,7 @@ public final class TribeTabList {
         Component title = title(mc);
         Component date = Calendar.describe(mc.level.getOverworldClockTime());
         Component worldAge = ageLong(roster.worldAge());
-        int worldTagW = font.width(worldAge) + 6;
+        int worldTagW = ICON + 3 + font.width(worldAge);
         Component legend = legend(players);
         List<FormattedCharSequence> header = lines(font, read(HEADER, tab), screenW - 50), footer = lines(font, read(FOOTER, tab), screenW - 50);
         int chromeTop = PAD + 10 + 10 + 5 + (header.isEmpty() ? 0 : header.size() * 9 + 3);
@@ -161,7 +163,8 @@ public final class TribeTabList {
         g.text(font, title, mid - font.width(title) / 2, y, TITLE, true);
         y += 10;
         int lineX = mid - (worldTagW + 6 + font.width(date)) / 2;
-        tag(g, font, worldAge, lineX, y, worldTagW, roster.worldAge());
+        ageIcon(g, lineX, y, roster.worldAge());
+        g.text(font, worldAge, lineX + ICON + 3, y + 1, AGE_COLOURS[Math.clamp(roster.worldAge(), 0, AGE_COLOURS.length - 1)], true);
         g.text(font, date, lineX + worldTagW + 6, y + 1, DIM, false);
         y += 10 + 2;
         g.fill(x, y, x + inner, y + 1, BORDER);
@@ -271,7 +274,7 @@ public final class TribeTabList {
             g.fill(x, y + HEAD - 1, x + w, y + HEAD, 0x60000000);
             pennant(g, x + 2, y, dye);
             g.text(font, groupName(gr), x + 14, y + 2, BANNER_TEXT, true);
-            tag(g, font, ageShort(gr.tribe.age()), tagX, y + 1, tagW, gr.tribe.age());
+            ageIcon(g, tagX, y + 1, gr.tribe.age());
         }
         g.text(font, count, tagX - 4 - font.width(count), y + 2, 0xFFE0D0B8, true);
     }
@@ -302,18 +305,14 @@ public final class TribeTabList {
         boolean spectator = e.info.getGameMode() == GameType.SPECTATOR;
         g.text(font, e.name, cx, y + 1, spectator ? 0x90FFFFFF : wanderer ? WANDER : TEXT, true);
         int pingX = x + w - 2 - 10;
-        if (e.age >= 0) tag(g, font, ageShort(e.age), pingX - 3 - tagW, y, tagW, e.age);
+        if (e.age >= 0) ageIcon(g, pingX - 3 - tagW, y, e.age);
         int ms = e.info.getLatency();
         g.blitSprite(RenderPipelines.GUI_TEXTURED, PING[ms < 0 ? 0 : ms < 150 ? 5 : ms < 300 ? 4 : ms < 600 ? 3 : ms < 1000 ? 2 : 1], pingX, y + 1, 10, 8);
     }
 
-    /** A small rounded tag in the age's colour. */
-    private static void tag(GuiGraphicsExtractor g, Font font, Component text, int x, int y, int w, int age) {
-        int c = AGE_COLOURS[Math.clamp(age, 0, AGE_COLOURS.length - 1)];
-        g.fill(x + 1, y, x + w - 1, y + 9, c);
-        g.fill(x, y + 1, x + w, y + 8, c);
-        g.fill(x + 1, y + 8, x + w - 1, y + 9, mix(c, 0x000000, 0.7F) | 0xFF000000);
-        g.text(font, text, x + (w - font.width(text) + 1) / 2, y + 1, 0xFF1E1610, false);
+    /** The age's 9x9 icon (gui/sprites/tab/age_<age>, scripts/gen_tab_age_textures.py): flint, bronze axe, iron axe, cog, bolt. */
+    private static void ageIcon(GuiGraphicsExtractor g, int x, int y, int age) {
+        g.blitSprite(RenderPipelines.GUI_TEXTURED, AGE_ICONS[Math.clamp(age, 0, AGE_ICONS.length - 1)], x, y, ICON, ICON);
     }
 
     private static Component groupName(Group gr) {
@@ -325,9 +324,6 @@ public final class TribeTabList {
         return Component.literal(gr.tribe == null ? String.valueOf(gr.members.size()) : gr.members.size() + "/" + gr.tribe.members().size());
     }
 
-    private static Component ageShort(int age) {
-        return Component.translatable("gui.mechanical.tab.age." + Clans.AGES[Math.clamp(age, 0, Clans.AGES.length - 1)]);
-    }
 
     private static Component ageLong(int age) {
         return Component.translatable("gui.mechanical.clan.age." + Clans.AGES[Math.clamp(age, 0, Clans.AGES.length - 1)]);

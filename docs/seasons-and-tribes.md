@@ -61,8 +61,9 @@
   en färg utifrån sitt id.
 - **Tab-listan** (spelarlistan) ersätter vanilla: en ram i stamsidans barkstil med serverns namn, världsåldern och
   datumet överst. Varje stam med någon online har en vimpelrad i sin färg (namn, online/alla medlemmar, åldern som
-  en liten färgad etikett), och under den medlemmarna efter rank och namn: ansikte, rankmärke (★ Leader, ✦ Elder,
-  • Member, ◦ Newcomer), namn, ålder och ping. Den egna stammen står först, sedan efter storlek och namn. Spelare
+  en ikon), och under den medlemmarna efter rank och namn: ansikte, rankmärke (★ Leader, ✦ Elder,
+  • Member, ◦ Newcomer), namn, åldersikon och ping. Ikonerna (9x9, `scripts/gen_tab_age_textures.py`): Stone en
+  knackad flinta, Bronze en bronsyxa, Iron en järnyxa (Steam ett kugghjul och Electric en blixt, för senare). Den egna stammen står först, sedan efter storlek och namn. Spelare
   utan stam står sist som **Wanderers** med sin egen ålder. Långa listor delas i jämna kolumner (en stam som delas
   upprepar sin vimpelrad) och ramen krymper om den inte får plats. Serverns egen header/footer visas i ramen.
   Servern skickar listan (`ClanNetwork.Roster`) vid inloggning, utloggning, stamändringar, färgbyte och när någon
