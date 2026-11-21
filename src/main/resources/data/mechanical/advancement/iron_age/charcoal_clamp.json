@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:iron_age/root",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:charcoal"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.charcoal_clamp.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.charcoal_clamp.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

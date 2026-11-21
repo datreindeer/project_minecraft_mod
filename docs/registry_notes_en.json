@@ -1391,5 +1391,6 @@
   "minecraft:iron_leggings": {"vanilla": true, "category": "tools", "text": "Armor Station: 5 [[iron_plate]] + 3 Leather + a hammer."},
   "minecraft:iron_boots": {"vanilla": true, "category": "tools", "text": "Armor Station: 2 [[iron_plate]] + 2 Leather + a hammer."},
   "minecraft:bucket": {"vanilla": true, "category": "tools", "text": "3 [[iron_plate]] in a V."},
-  "minecraft:shears": {"vanilla": true, "category": "tools", "text": "2 [[iron_plate]] diagonally."}
+  "minecraft:shears": {"vanilla": true, "category": "tools", "text": "2 [[iron_plate]] diagonally."},
+  "charcoal_heap": {"category": "blocks", "text": "What a charcoal clamp leaves of a wood pile: charred billets, 1 Charcoal per Firewood and 2 per Rough Log (8 at most). A shovel breaks it, an empty hand takes one at a time.\n**Clamp:** stack wood piles, cover them with earth on every side and on top, leave one side open and light it with the [[fire_drill]]. 5 minutes; opened, a pile burns away."}
 }

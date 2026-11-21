@@ -118,7 +118,12 @@ public class FirewoodPileBlock extends Block implements EntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return (state.getValue(AXIS) == Direction.Axis.X ? SHAPES_X : SHAPES_Z)[state.getValue(LAYERS)];
+        return shape(state.getValue(AXIS), state.getValue(LAYERS));
+    }
+
+    /** The pile's shape at {@code layers} (also the Charcoal Heap's, which keeps the billets' shape). */
+    static VoxelShape shape(Direction.Axis axis, int layers) {
+        return (axis == Direction.Axis.X ? SHAPES_X : SHAPES_Z)[layers];
     }
 
     @Override

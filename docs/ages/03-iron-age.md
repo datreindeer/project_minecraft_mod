@@ -1,6 +1,6 @@
 # Järnåldern
 
-> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**,
+> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**,
 > **de nya malmerna** Galena, guld, Limestone och Rock Salt. Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
@@ -101,12 +101,22 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
   inte att göra än.
 - Advancements: **Forged**, **Iron Hammer**, **Ironsmith**, **Iron Clad** (Iron Age-fliken).
 
-### 3. Kolmila (charcoal pile)
+### 3. Kolmila (charcoal clamp) (byggd)
 
-- Bloomery bränner 2 minuter per Charcoal och slukar kol, så kilnens kol räcker inte.
-- **Kolmila:** staplad ved (vedtravarna finns redan) täckt med jord eller torv, tänds och pyr i flera minuter → mycket
-  Charcoal. Går den sönder eller får för mycket luft brinner veden upp till aska.
-- Passar ihop med trädfällningen och vedtravarna.
+Bloomery slukar kol, och Clay Kiln ger bara 1 Charcoal per 2 Firewood. Kolmilan ger dubbelt så mycket. Kod:
+`CharcoalClamp` (milan, sparas i världsdata), `CharcoalHeapBlock`, `FireDrillItem`. Data: `scripts/gen_iron_age.py`.
+
+- **Bygg:** stapla vedtravar ([[Firewood Pile]] och/eller [[Rough Log Pile]], högst 64 block som rör varandra) och
+  **täck dem** på alla sidor och ovanpå med jord (taggen `mechanical:clamp_cover`: all dirt, gräs och lera, sand,
+  grus, Clay, Packed Mud) eller fast block som inte brinner (sten). Underlaget ska vara fast. **En sida lämnas öppen:
+  rökhålet.**
+- **Tänd:** högerklicka rökhålet (den öppna sidan av en trave) med **Fire Drill**. Den tar som en Campfire utan tinder
+  (en gång på tre) och nöts 1 per försök. Är milan inte täckt säger den hur många sidor som är öppna.
+- **Pyr i 5 minuter**, med rök ur rökhålet. Öppnas en sida (jorden grävs bort) brinner den traven upp på några
+  sekunder och är borta. Milan väntar om chunken laddas ur, och den finns kvar efter omstart.
+- **Kolhögar:** varje trave blir en **Charcoal Heap** i travens form (förkolnade vedträn): **1 Charcoal per Firewood,
+  2 per Rough Log** (en full trave = 8). Bryt den med spade (släpper allt) eller ta en i taget med tom hand.
+- Advancement **Charcoal Burner** (Iron Age-fliken). Test: `IronAgeTest`.
 
 ### 4. Steel (åldersslutet)
 

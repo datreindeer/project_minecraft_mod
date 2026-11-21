@@ -3,6 +3,7 @@
     "mechanical:worn_grass",
     "mechanical:trodden_path",
     "mechanical:beaver_dam",
-    "mechanical:bog_iron_ore"
+    "mechanical:bog_iron_ore",
+    "mechanical:charcoal_heap"
   ]
 }

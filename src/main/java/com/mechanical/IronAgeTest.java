@@ -158,6 +158,40 @@ public final class IronAgeTest {
                 new ItemStack(Smithing.IRON_PLATE.get()), ItemStack.EMPTY, new ItemStack(Smithing.IRON_PLATE.get()), ItemStack.EMPTY));
         h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, plates, level).map(r -> r.value().assemble(plates).is(Items.BUCKET)).orElse(false),
                 "3 Iron Plates make a Bucket");
+
+        // ---- charcoal clamp: a firewood pile and a rough log pile, covered with dirt but for the vent on top of the first
+        for (int x = 7; x <= 13; x++) for (int z = 3; z <= 9; z++) {
+            h.setBlock(new BlockPos(x, 0, z), net.minecraft.world.level.block.Blocks.STONE);
+            for (int y = 1; y <= 3; y++) h.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+        }
+        BlockPos fw = new BlockPos(10, 1, 6), logs = new BlockPos(10, 1, 7);
+        h.setBlock(fw, Mechanical.FIREWOOD_PILES.get("oak").get().defaultBlockState().setValue(FirewoodPileBlock.LAYERS, FirewoodPileBlock.MAX));
+        h.setBlock(logs, Mechanical.ROUGH_LOG_PILE.get().defaultBlockState().setValue(RoughLogPileBlock.LOGS, RoughLogPileBlock.PER_BLOCK));
+        BlockPos fwAbs = h.absolutePos(fw);
+        h.assertFalse(CharcoalClamp.tryLight(level, fwAbs, net.minecraft.core.Direction.UP, null, true), "an uncovered pile won't light");
+        for (BlockPos p : List.of(fw, logs)) for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+            BlockPos n = p.relative(d);
+            if (!n.equals(fw) && !n.equals(logs)) h.setBlock(n, net.minecraft.world.level.block.Blocks.DIRT);
+        }
+        h.setBlock(logs.above(), net.minecraft.world.level.block.Blocks.COARSE_DIRT);
+        h.assertTrue(CharcoalClamp.tryLight(level, fwAbs, net.minecraft.core.Direction.UP, null, true), "covered but for the vent, it lights");
+        h.assertFalse(CharcoalClamp.tryLight(level, fwAbs, net.minecraft.core.Direction.UP, null, true), "not twice");
+        CharcoalClamp.get(level).finishAll(level);
+        var heap = level.getBlockState(fwAbs);
+        h.assertTrue(heap.is(CharcoalClamp.CHARCOAL_HEAP.get()) && heap.getValue(FirewoodPileBlock.LAYERS) == FirewoodPileBlock.MAX, "8 firewood: 8 Charcoal");
+        var heap2 = level.getBlockState(h.absolutePos(logs));
+        h.assertTrue(heap2.is(CharcoalClamp.CHARCOAL_HEAP.get()) && heap2.getValue(FirewoodPileBlock.LAYERS) == RoughLogPileBlock.PER_BLOCK * CharcoalClamp.CHARCOAL_PER_LOG,
+                "4 rough logs: 8 Charcoal");
+        h.assertTrue(net.minecraft.world.level.block.Block.getDrops(heap, level, fwAbs, null).stream().mapToInt(ItemStack::getCount).sum() == FirewoodPileBlock.MAX,
+                "the heap drops its Charcoal");
+        // opened while it smoulders, a pile flares up
+        h.setBlock(fw, Mechanical.FIREWOOD_PILES.get("birch").get().defaultBlockState().setValue(FirewoodPileBlock.LAYERS, 4));
+        h.setBlock(logs, net.minecraft.world.level.block.Blocks.DIRT);
+        h.assertTrue(CharcoalClamp.tryLight(level, fwAbs, net.minecraft.core.Direction.UP, null, true), "a one-pile clamp");
+        h.setBlock(fw.east(), net.minecraft.world.level.block.Blocks.AIR);
+        CharcoalClamp.get(level).checkNow(level);
+        h.assertTrue(level.getBlockState(fwAbs).isAir(), "opened, it burns away");
+        CharcoalClamp.get(level).finishAll(level);
         h.succeed();
     }
 

@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/firewood_pile_4",
+  "textures": {
+    "end": "mechanical:block/charcoal_heap_end",
+    "side": "mechanical:block/charcoal_heap_side"
+  }
+}

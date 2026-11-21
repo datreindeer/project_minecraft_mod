@@ -190,5 +190,34 @@ lang |= {
     **{f"pattern.mechanical.{p}": t for p, t in [("plate", "Plate"), ("tool_rod", "Tool Rod"), *PARTS.items(), ("hammer_head", "Hammer Head")]},
 }
 
+# ---------------------------------------------------------------- charcoal clamp (CharcoalClamp.java, CharcoalHeapBlock)
+# The heap keeps the firewood pile's billets (models firewood_pile_<n>), charred: oak's end and side sheets near black
+# with a sparse silver-grey sheen.
+for sheet in ("end", "side"):
+    charred = recolor(mod_texture(f"block/oak_firewood_pile_{sheet}"), hue=0.07, sat=0.15, light=0.32)
+    px = charred.load()
+    for y in range(charred.height):
+        for x in range(charred.width):
+            r, g, b, a = px[x, y]
+            if a and (x * 7 + y * 13) % 23 == 0:
+                px[x, y] = (min(255, r + 38), min(255, g + 38), min(255, b + 40), a)
+    charred.save(A / f"textures/block/charcoal_heap_{sheet}.png")
+for n in range(1, 9):
+    w(A / f"models/block/charcoal_heap_{n}.json", {"parent": f"mechanical:block/firewood_pile_{n}", "textures": {
+        "end": M + "block/charcoal_heap_end", "side": M + "block/charcoal_heap_side"}})
+w(A / "blockstates/charcoal_heap.json", {"variants": {
+    f"axis={a},layers={n}": {"model": f"mechanical:block/charcoal_heap_{n}", **({"y": 90} if a == "x" else {})}
+    for a in ("x", "z") for n in range(1, 9)}})
+tag_add(D / "minecraft/tags/block/mineable/shovel.json", M + "charcoal_heap")
+tag_add(D / "mechanical/tags/block/clamp_cover.json", "#minecraft:dirt", "#minecraft:sand", "minecraft:gravel", "minecraft:clay",
+        "minecraft:packed_mud", "minecraft:mud_bricks")
+lang |= {
+    "block.mechanical.charcoal_heap": "Charcoal Heap",
+    "message.mechanical.clamp.open": "Cover the pile first: %s open sides. Earth on every side and on top, one side left open to light",
+    "message.mechanical.clamp.lit": "The clamp catches. Keep it covered while it smoulders (%s min)",
+    "message.mechanical.clamp.burning": "The clamp is smouldering already",
+    "message.mechanical.clamp.too_big": "Too big for one clamp: %s wood piles at most",
+}
+
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

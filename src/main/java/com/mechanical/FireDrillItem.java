@@ -25,6 +25,16 @@ public class FireDrillItem extends Item {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
+        // a covered wood pile: the vent of a charcoal clamp
+        if (CharcoalClamp.isPile(state)) {
+            if (level instanceof ServerLevel server && context.getPlayer() != null) {
+                boolean catches = server.getRandom().nextFloat() < Tinder.CHANCE_WITHOUT;
+                if (!CharcoalClamp.tryLight(server, pos, context.getClickedFace(), context.getPlayer(), catches))
+                    server.playSound(null, pos, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.6F, 1.6F);
+                context.getItemInHand().hurtAndBreak(1, context.getPlayer(), EquipmentSlot.MAINHAND);
+            }
+            return InteractionResult.SUCCESS;
+        }
         // candles catch easily from a fire drill
         if (state.getBlock() instanceof net.minecraft.world.level.block.AbstractCandleBlock && net.minecraft.world.level.block.CandleBlock.canLight(state)) {
             if (level instanceof ServerLevel server) {

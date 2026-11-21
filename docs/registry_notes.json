@@ -1391,5 +1391,6 @@
   "minecraft:iron_leggings": {"vanilla": true, "category": "tools", "text": "Armor Station: 5 [[iron_plate]] + 3 Leather + hammare."},
   "minecraft:iron_boots": {"vanilla": true, "category": "tools", "text": "Armor Station: 2 [[iron_plate]] + 2 Leather + hammare."},
   "minecraft:bucket": {"vanilla": true, "category": "tools", "text": "3 [[iron_plate]] i V-form."},
-  "minecraft:shears": {"vanilla": true, "category": "tools", "text": "2 [[iron_plate]] diagonalt."}
+  "minecraft:shears": {"vanilla": true, "category": "tools", "text": "2 [[iron_plate]] diagonalt."},
+  "charcoal_heap": {"category": "blocks", "text": "Det en kolmila lämnar av en vedtrave: förkolnade vedträn, 1 Charcoal per Firewood och 2 per Rough Log (högst 8). Spade bryter, tom hand tar en i taget.\n**Kolmila:** stapla vedtravar, täck med jord på alla sidor och ovanpå, lämna en sida öppen och tänd den med [[fire_drill]]. 5 minuter; öppnas den brinner traven upp."}
 }

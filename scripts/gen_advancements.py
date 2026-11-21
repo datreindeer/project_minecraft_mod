@@ -1019,6 +1019,9 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
     ("iron_armor", "forged", "minecraft:iron_chestplate", G, "Iron Clad",
      "Rivet Iron Plates onto leather at the Armor Station: the full iron armour, chestplate included",
      has("minecraft:iron_helmet", "minecraft:iron_chestplate", "minecraft:iron_leggings", "minecraft:iron_boots")),
+    ("charcoal_clamp", "root", "minecraft:charcoal", G, "Charcoal Burner",
+     "Stack wood piles, cover them with earth on every side and on top, leave one side open and light it with the Fire Drill. "
+     "After 5 minutes every piece of firewood is a Charcoal (a rough log two)", by_code()),
 ])
 
 # the Iron Age's new ores (IronOres.java; gen_iron_ores.py)
