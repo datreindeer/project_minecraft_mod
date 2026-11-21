@@ -216,3 +216,9 @@ Delar av fas 1, 3 och 6 kan agenter göra parallellt i worktrees när generatorn
 3. **Kalkbruk som krav:** ska stenbricks av *alla* sorter kräva Lime Mortar för att craftas i Iron Age, eller ska murbruket bara ge starkare och billigare recept?
 4. **Creative-fliken:** en egen flik "Building Blocks" för alla stenfamiljer, eller ha kvar allt i den vanliga fliken?
 5. **Nya djur och fåglar** till biomerna: egen plan senare, eller med redan här?
+
+**Standardval tills du säger annat (2026-11-21):** 1) ja, som de fyra nuvarande. 2) ja: mjuka stenar (Slate,
+Soapstone, Chalk, Shale, Gypsum, Peat, Pumice, Conglomerate, Mudstone) med Flint Pickaxe, hårda (Quartzite, Porphyry,
+Marble, Basalt, Rapakivi, Gneiss, Serpentine, Alabaster) kräver Bronze Pickaxe. 3) murbruk krävs inte; Lime Mortar ger
+billigare recept (8 bricks i stället för 4). 4) egen creative-flik "Building Blocks" för stenfamiljer och byggblock.
+5) egen plan senare.
