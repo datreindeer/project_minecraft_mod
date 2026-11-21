@@ -2,7 +2,9 @@
 firewood and rough logs lie across both arms in front of the chest, the kettle is carried in front, the pan lies flat
 in both hands, the paddle stands upright at the side. Each transform is solved for its pose's arm angle (see the pose
 methods in HoldPoses), so changing one means changing the other. Patches the "display" of models other generators
-write, so it runs after them: after gen_block_items.py, before gen_unlocks.py. Run: python scripts/gen_hold_displays.py
+write, so it runs after them: after gen_block_items.py and gen_held_models.py, before gen_unlocks.py. Items with a 3D
+model in hand (gen_held_models.py: "<name>_held", built on the sprite's footprint) get it there, the flat one is GUI-only.
+Run: python scripts/gen_hold_displays.py
 """
 import json
 from pathlib import Path
@@ -37,7 +39,9 @@ def display(kind):
 patched = 0
 for kind, names in ITEMS.items():
     for name in names:
-        path = MODELS / f"{name}.json"
+        path = MODELS / f"{name}_held.json"
+        if not path.exists():
+            path = MODELS / f"{name}.json"
         assert path.exists(), path
         model = json.loads(path.read_text(encoding="utf-8"))
         model["display"] = {**model.get("display", {}), **display(kind)}
