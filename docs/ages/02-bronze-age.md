@@ -1503,7 +1503,7 @@ Wrought Iron Ingot leder inte vidare ännu. Två steg med sot och kol är bestä
 - **Ythärdning av järnverktyg:** när järnverktyg finns packas ett verktyg i kol och sot och glödgas, så att ytan blir
   hårdare: mer hållbarhet och snabbare brytning ("Case-Hardened" på verktyget).
 
-## Skrift (byggd, v0.98.0)
+## Skrift (byggd, v0.98.1)
 Skriften kommer tillbaka i bronsåldern, med bläck av sot (`scripts/gen_writing.py`).
 - **Soot Ink:** 2 Soot + Tallow eller Lard (bindemedlet) → 2 Soot Ink (formlöst). En svart bläckkaka som rivs med vatten.
 - **Paper:** 3 Sugar Cane + **Bronze Knife** (eller Iron Knife) → 3 Paper (formlöst; kniven stannar i rutnätet och nöts
