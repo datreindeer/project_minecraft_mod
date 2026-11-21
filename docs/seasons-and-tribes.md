@@ -271,6 +271,9 @@ well / fairly / poorly". Kod: `Temperature.shelter`, taggarna från `scripts/gen
 ### Lövträd
 - Sent på hösten tappar lövträden gradvis löven och blir kala grenar. På våren kommer knoppar och sedan löv igen.
   Barrträd (gran, tall, en) ändras inte.
+- **Snöstorm:** ett åskväder på vintern blir en snöstorm där det är kallt nog för snö. Snön driver in på fyra
+  kolumner till per snötick och chunk, upp till 3 lager på öppen mark och 2 under träd (på marken under löven, som
+  vanilla aldrig snöar på), men inte under tak (`Thaw.storm/drift`). Advancement: Whiteout.
 - Gräs och löv byter färg efter säsong: grönt, sedan gult, orange och rött, och blekt på vintern. Färgerna ändras i
   ungefär 3 steg per säsong så att chunkarna bara behöver renderas om vid stegen.
 - **Byggt (fas 7):** bara på klienten och bara i utseendet. Inga block byts och inget sparas, så det behövs ingen

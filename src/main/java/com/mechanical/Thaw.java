@@ -33,12 +33,21 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * cover, so a forest visited first in midwinter is white already. Each chunk remembers the calendar day it was last brought
  * up to date ({@link #UPDATED}). Seas only freeze where they are frozen-cold all year (no seasonal sea ice); rivers and
  * lakes do freeze.
+ * <p>
+ * Snowstorms: a thunderstorm in winter ({@link #storm}) snows hard. Each snow tick also drifts snow onto
+ * {@link #STORM_COLUMNS} more columns of the chunk, piling it up to {@link #STORM_DEPTH} layers on open ground and
+ * {@link #UNDER_TREES} under trees (on the ground below the leaves, which vanilla never snows on), wherever it is cold
+ * enough to snow. Not under roofs. Advancement: Whiteout (Seasons).
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Thaw {
     /** Melting starts a little above the snow line (0.15), so snow doesn't flicker at the turn of a day. */
     static final float MELT_AT = 0.2F;
     private static final int PER_TICK = 4;
+    /** Snow falls where a column's temperature (season included) is below this, as in vanilla. */
+    static final float SNOW_BELOW = 0.15F;
+    /** Extra columns per snow tick in a snowstorm, and how deep it piles snow in the open and under trees. */
+    static final int STORM_COLUMNS = 4, STORM_DEPTH = 3, UNDER_TREES = 2;
 
     public static final Supplier<AttachmentType<Long>> UPDATED = Mechanical.ATTACHMENTS.register("season_day", () -> AttachmentType
             .builder(() -> -1L)
@@ -56,6 +65,39 @@ public final class Thaw {
     /** Vanilla's snow-and-ice tick at a random column: melt one step there if it's warm. */
     public static void tick(ServerLevel level, BlockPos pos) {
         melt(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, pos), false);
+        if (!storm(level)) return;
+        drift(level, pos);
+        int x0 = pos.getX() & ~15, z0 = pos.getZ() & ~15;
+        for (int i = 1; i < STORM_COLUMNS; i++) drift(level, new BlockPos(x0 + level.getRandom().nextInt(16), 0, z0 + level.getRandom().nextInt(16)));
+    }
+
+    /** A thunderstorm in winter is a snowstorm (where it is cold enough to snow). */
+    public static boolean storm(ServerLevel level) {
+        return level.isThundering() && Calendar.season(level.getOverworldClockTime()) == 3;
+    }
+
+    /** Snowstorm on one column: a layer more on the ground, under the leaves too, up to the open or under-tree depth. */
+    static boolean drift(ServerLevel level, BlockPos column) {
+        BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
+        boolean open = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, column).getY() == ground.getY();
+        if (level.getBlockState(ground.below()).is(Blocks.SNOW)) ground = ground.below(); // 2+ layers block the heightmap
+        if (temperature(level, level.getBiome(ground).value(), ground) >= SNOW_BELOW) return false;
+        return pile(level, ground, open ? STORM_DEPTH : UNDER_TREES);
+    }
+
+    /** One more snow layer at p (a new layer on air where snow can lie), up to max; false when nothing changed. */
+    static boolean pile(ServerLevel level, BlockPos p, int max) {
+        BlockState s = level.getBlockState(p);
+        if (s.is(Blocks.SNOW)) {
+            int layers = s.getValue(SnowLayerBlock.LAYERS);
+            if (layers >= max) return false;
+            level.setBlockAndUpdate(p, s.setValue(SnowLayerBlock.LAYERS, layers + 1));
+            return true;
+        }
+        BlockState snow = Blocks.SNOW.defaultBlockState();
+        if (!s.isAir() || !snow.canSurvive(level, p)) return false;
+        level.setBlockAndUpdate(p, snow);
+        return true;
     }
 
     /**

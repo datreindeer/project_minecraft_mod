@@ -980,6 +980,9 @@ TABS["wilderness"][1].extend([
      by_code()),
     ("full_year", "through_winter", "minecraft:clock", C, "A Full Year",
      "Be there when a new year begins (1 Thaw)", by_code()),
+    ("whiteout", "first_frost", "minecraft:powder_snow_bucket", G, "Whiteout",
+     "Stand out in a snowstorm: a thunderstorm in winter snows hard and drifts snow deep, even under the trees",
+     by_code()),
     # animals in winter (WinterAnimals.java)
     ("rude_awakening", "first_frost", "bear_claw", G, "Rude Awakening",
      "Wake a bear from its winter sleep. Bears hibernate in a den all winter, and a woken bear is an angry one",

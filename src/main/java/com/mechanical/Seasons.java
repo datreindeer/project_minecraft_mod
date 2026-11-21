@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +22,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * hardly at all in deserts ({@link #offset}). Every biome's temperature is shifted by it (mixin.BiomeSeasonMixin), so
  * vanilla brings snow instead of rain, snow cover and frozen lakes; the body temperature (Temperature.ambient) and with
  * it crops follow too. Rain comes more often and lasts longer in autumn and winter, less in summer: each new rain or dry
- * spell vanilla rolls is stretched or shortened by season. Advancements: First Frost, Through the Winter, A Full Year.
+ * spell vanilla rolls is stretched or shortened by season. A thunderstorm in winter is a snowstorm (Thaw.storm).
+ * Advancements: First Frost, Through the Winter, A Full Year, Whiteout.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Seasons {
@@ -32,7 +34,7 @@ public final class Seasons {
     /** How long vanilla's rain and dry spells last, per season (spring, summer, autumn, winter). */
     static final float[] RAIN = {1.0F, 0.7F, 1.3F, 1.2F}, DRY = {0.9F, 1.4F, 0.6F, 0.8F};
     static final Identifier FIRST_FROST = id("wilderness/first_frost"), THROUGH_WINTER = id("wilderness/through_winter"),
-            FULL_YEAR = id("wilderness/full_year");
+            FULL_YEAR = id("wilderness/full_year"), WHITEOUT = id("wilderness/whiteout");
 
     /** The curve now, kept up to date on each side for the biome mixin, which has no level at hand. */
     private static volatile float current = 0;
@@ -96,6 +98,9 @@ public final class Seasons {
             if (season == 3) Kettle.award(player, FIRST_FROST);
             if (lastSeason == 3 && season == 0) Kettle.award(player, THROUGH_WINTER);
             if (lastYear > 0 && year > lastYear) Kettle.award(player, FULL_YEAR);
+            BlockPos at = player.blockPosition();
+            if (Thaw.storm(level) && level.canSeeSky(at) && Thaw.temperature(level, level.getBiome(at).value(), at) < Thaw.SNOW_BELOW)
+                Kettle.award(player, WHITEOUT);
         }
         lastSeason = season;
         lastYear = year;

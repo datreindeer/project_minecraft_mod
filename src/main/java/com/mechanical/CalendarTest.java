@@ -159,5 +159,17 @@ public final class CalendarTest {
         Thaw.melt(level, snow, false);
         check(h, level.getBlockState(ice).is(net.minecraft.world.level.block.Blocks.WATER), "ice turns back to water");
         level.setBlockAndUpdate(ice, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+        // snowstorm: piles layers up to the limit, also on the ground under leaves; nothing on leaves or in mid-air
+        net.minecraft.core.BlockPos ground = h.absolutePos(new net.minecraft.core.BlockPos(3, 1, 3));
+        level.setBlockAndUpdate(ground.below(), net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState());
+        level.setBlockAndUpdate(ground.above(3), net.minecraft.world.level.block.Blocks.OAK_LEAVES.defaultBlockState()
+                .setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true));
+        for (int i = 0; i < 5; i++) Thaw.pile(level, ground, Thaw.UNDER_TREES);
+        check(h, level.getBlockState(ground).is(net.minecraft.world.level.block.Blocks.SNOW)
+                && level.getBlockState(ground).getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) == Thaw.UNDER_TREES, "storm snow piles to its limit");
+        check(h, !Thaw.pile(level, ground.above(), Thaw.STORM_DEPTH), "no snow in mid-air");
+        check(h, !Thaw.storm(level) || Calendar.season(level.getOverworldClockTime()) == 3, "storms only in winter");
+        level.setBlockAndUpdate(ground, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(ground.above(3), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
     }
 }
