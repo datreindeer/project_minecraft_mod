@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S S",
+    "LLL",
+    "RPP"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "L": "#minecraft:logs",
+    "R": "mechanical:iron_tool_rod",
+    "P": "mechanical:iron_plate"
+  },
+  "result": {
+    "id": "mechanical:mouldboard_plough"
+  }
+}

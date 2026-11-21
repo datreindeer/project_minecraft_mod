@@ -45,6 +45,10 @@ public final class Carting {
     public static final DeferredHolder<EntityType<?>, EntityType<WagonEntity>> WAGON = ENTITY_TYPES.registerEntityType("wagon",
             WagonEntity::new, MobCategory.MISC, b -> b.noLootTable().sized(2.0F, 1.2F).clientTrackingRange(10));
     public static final DeferredItem<TravoisEntity.Placer> WAGON_ITEM = ITEMS.registerItem("wagon", p -> new TravoisEntity.Placer(p, WAGON), p -> p.stacksTo(1));
+    /** Iron Age: the horse-drawn {@link PloughEntity}, tilling a 5-wide strip into rich farmland. */
+    public static final DeferredHolder<EntityType<?>, EntityType<PloughEntity>> PLOUGH = ENTITY_TYPES.registerEntityType("mouldboard_plough",
+            PloughEntity::new, MobCategory.MISC, b -> b.noLootTable().sized(1.0F, 0.9F).clientTrackingRange(10));
+    public static final DeferredItem<TravoisEntity.Placer> PLOUGH_ITEM = ITEMS.registerItem("mouldboard_plough", p -> new TravoisEntity.Placer(p, PLOUGH), p -> p.stacksTo(1));
     public static final DeferredItem<Item> IRON_RIMMED_WHEEL = ITEMS.registerSimpleItem("iron_rimmed_wheel", p -> p.stacksTo(16));
     public static final DeferredItem<Item> WOODEN_WHEEL = ITEMS.registerSimpleItem("wooden_wheel", p -> p.stacksTo(16));
     public static final DeferredItem<RopeHalterItem> ROPE_HALTER = ITEMS.registerItem("rope_halter", RopeHalterItem::new, p -> p.stacksTo(16));
