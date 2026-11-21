@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "waterlogged=false": {
+      "model": "mechanical:block/glowworm"
+    },
+    "waterlogged=true": {
+      "model": "mechanical:block/glowworm"
+    }
+  }
+}

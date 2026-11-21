@@ -1816,5 +1816,7 @@
   "fieldstone_slab": {"text": "Halvblock av [[fieldstone]] (3 i rad → 6). Hacka.", "category": "blocks"},
   "fieldstone_stairs": {"text": "Trappa av [[fieldstone]] (trappmönster av 6 → 4). Hacka.", "category": "blocks"},
   "dry_stone_wall": {"text": "Kallmur (stenåldern): mur av [[fieldstone]] utan murbruk, 2×3 Fieldstone → 6. Kopplar ihop sig som andra murar. Gränsmurar för gårdar och klanmark.", "category": "blocks"},
-  "structure:glacial_boulder": {"text": "Stort flyttblock (radie 2–4) av Gneiss, Granite eller Rapakivi Granite, halvt nedsjunket, med lösa stenar runt. I Glacial Moraine (varannan chunk) och Shingle Beach (var femte chunk).", "icon": "mechanical:gneiss"}
+  "structure:glacial_boulder": {"text": "Stort flyttblock (radie 2–4) av Gneiss, Granite eller Rapakivi Granite, halvt nedsjunket, med lösa stenar runt. I Glacial Moraine (varannan chunk) och Shingle Beach (var femte chunk).", "icon": "mechanical:gneiss"},
+  "glowworm": {"text": "Lysmaskar. Hänger i taket i **Glowworm Caves** (se `docs/caves.md`): mörka trådar med blåa lysande pärlor. Ger svagt ljus (nivå 6), man går igenom dem och de **ger inget** när de går sönder. Måste sitta under ett fast block. Det enda naturliga ljuset under jord i stenåldern.", "category": "blocks"},
+  "tool_cache": {"text": "Verktygsgömsle (loot table `chests/tool_cache`): en kista på grottgolvet i **Soapstone Grottos**, sällsynt. 2–4 Stone Age-verktyg ([[flint_knife]], [[flint_pickaxe]], [[flint_axe]], [[flint_spear]], [[crude_stone_pickaxe]] …) och lite [[minecraft:flint]], [[stone_chunk]], [[soapstone]] och pinnar.", "category": "blocks", "name": "Tool Cache"}
 }

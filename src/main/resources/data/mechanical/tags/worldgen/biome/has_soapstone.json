@@ -1,6 +1,7 @@
 {
   "values": [
     "#minecraft:is_mountain",
-    "mechanical:soapstone_valley"
+    "mechanical:soapstone_valley",
+    "mechanical:soapstone_grottos"
   ]
 }

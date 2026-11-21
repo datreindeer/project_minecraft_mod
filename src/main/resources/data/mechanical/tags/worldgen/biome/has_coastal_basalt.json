@@ -2,6 +2,7 @@
   "values": [
     "minecraft:stony_shore",
     "#minecraft:is_beach",
-    "mechanical:basalt_coast"
+    "mechanical:basalt_coast",
+    "mechanical:magma_vents"
   ]
 }

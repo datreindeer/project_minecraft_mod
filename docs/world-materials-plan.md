@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **fas 0, 1, 2, 3, 4, 6 och 7 byggda** (alla 12 ytbiomer) (se "Fas N: resultat" sist), resten plan. Skriven 2026-11-21.
+Status: **alla faser 0–8 byggda** (material och 24 biomer, se "Fas N: resultat"); kvar: fas 9 (användningar) och 10 (åldrande). Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -475,3 +475,94 @@ schakt ned till grottorna). Peat Bog har Reed bara där vassen överlever (inte 
 huggspår i Soapstone Valley och inga övergivna stenbrott i Marble Gorge (strukturer). Inga nya djur (tranor, måsar,
 gamar finns redan som mobs och används). Alla nya biomer ärver sin malls biomtaggar, så vanilla-strukturer (byar,
 utposter, swamp huts) kan hamna i dem.
+
+---
+
+## Fas 5+8: resultat (byggt)
+
+Alla tolv grottbiomer. Spelartext per biom: **`docs/caves.md`**. Java: `CaveSlot`-rader i `ModBiomes.CAVES` (Magma Vents
+och Crystal Geodes har två rader var), blocket **Glowworm** (`EarthBlocks.GLOWWORM`, en `HangingRootsBlock` med ljus 6,
+ingen kollision, ingen drop; gametest i `iron_ores`) och featuren `worldgen/CaveFinds` (`mechanical:cave_paintings` i Ochre
+Caves, `mechanical:tool_cache` i Soapstone Grottos, loot `chests/tool_cache`). Data: `BIOMES`/`MATERIALS`-rader i
+`gen_world_biomes.py` och nya **`scripts/gen_caves.py`** (körs direkt efter `gen_world_biomes.py`), som skriver biomernas
+placed features (namn `<biom>_<sak>`, konfigurerad feature inline), Glowworm-blocket och biomtaggarna (`has_<material>`,
+`has_cave_hyenas`/`has_cave_lions` för Bone Caves, Pike i Flooded Caves). En advancement per biom i Wilderness-fliken
+(`cave_<biom>`; de djupa efter The Cold Deep).
+
+**Ny grottbiom nu** (tillägg till fas 0-receptet): `BIOMES`-raden använder `cave(temperatur, fuktighet, dimfärg,
+feats=..., sound=..., particle=..., water=...)`, som slår ihop attributen med mallens (spawns och musik blir kvar) och
+lägger till biomens features (`gen_caves.FEATURES[biom]`, `{steg: [...]}`). Glowworm Caves, Peat Hollows och Flooded Caves
+saknar `wall`: där ändras bara golv och tak, och det fungerar (räknat nedan).
+
+**Lärdomar om features i grottor:**
+- Prydnader läggs som `vegetation_patch` (som vanillas Lush Caves): en lyckad träff klär en hel fläck golv eller tak.
+  Enstaka block med `environment_scan` från en slumpad höjd träffar sällan (de flesta försök börjar i berget eller utanför
+  biomen), därför `SCAN = 12` gånger fler försök.
+- Växtdelen i en patch är en `block_column` med höjd 1, inte `simple_block`. En kolumn under ett tak måste peka **nedåt**:
+  kolumnen kollar blocket efter startpunkten, så en uppåtriktad placerar inget.
+- Geodernas kristaller kräver `placements_require_layer0_alternate: false` när det inte finns något budding-block.
+- Räkna prydnader **före** golvet och taket med `fill ... replace`: annars ramlar de av när underlaget tas bort.
+
+### Klimatplatser
+
+Djup = `depth`-parametern. Uppmätt i en riktig värld är den ungefär 0.5 + (30 − y) / 128 på land (lägre under havet, högre
+under berg): 0.3–0.45 ≈ y 35–55, 0.5–0.75 ≈ y 0–30, 0.8–0.92 ≈ y −20 till −5, 1.06+ ≈ under y −40. Runt depth 1 (y ≈ −30)
+vinner alltid ytbiomen (den har en punkt på depth 1), och vid botten finns bara Deep Dark (låg erosion) kvar. Ingen rad går in
+i Dripstones zon (kontinentalitet över 0.45 lämnas), Lush (fuktighet över 0.35) eller Deep Dark (erosion under −0.3 längst ned).
+Offset är raritetsratten; lika offset betyder att lådorna ensamma delar upp utrymmet.
+
+| Biom | Temperatur | Fuktighet | Kontinentalitet | Erosion | Weirdness | Djup | Offset |
+|---|---|---|---|---|---|---|---|
+| Ice Caves | −1 – −0.5 | −1 – 0.3 | −0.11 – 0.45 | alla | alla | 0.3–0.45 | 0.12 |
+| Peat Hollows | −0.45 – −0.15 | 0.1 – 0.35 | −0.11 – 0.45 | alla | alla | 0.3–0.45 | 0.1 |
+| Glowworm Caves | −0.1 – 0.5 | 0.1 – 0.35 | 0.03 – 0.45 | alla | alla | 0.3–0.45 | 0.1 |
+| Bone Caves | −0.4 – 0.15 | −0.6 – 0 | 0.03 – 0.45 | −0.2 – 0.6 | alla | 0.3–0.45 | 0.12 |
+| Ochre Caves | 0.3 – 1 | −1 – −0.1 | 0.03 – 0.45 | alla | alla | 0.3–0.45 | 0.1 |
+| Flooded Caves | −0.45 – 0.55 | −0.35 – 0.3 | −0.4 – −0.11 | −0.375 – 0.45 | −0.3 – 0.3 | 0.35–0.55 | 0.3 |
+| Limestone Caverns | −0.1 – 0.3 | −0.2 – 0.2 | 0.03 – 0.45 | alla | alla | 0.5–0.75 | 0.13 |
+| Salt Caves | 0.35 – 1 | −1 – −0.3 | −0.11 – 0.45 | alla | alla | 0.5–0.75 | 0.1 |
+| Soapstone Grottos | −1 – −0.3 | −1 – 0.3 | 0 – 0.45 | −1 – 0 | alla | 0.5–0.75 | 0.1 |
+| Galena Seams | −0.45 – 0.1 | −0.35 – 0.3 | −0.11 – 0.45 | −0.3 – 0.45 | −0.45 – 0.45 | 0.8–0.92 | 0.1 |
+| Magma Vents | 0.35 – 1 | −0.6 – 0.3 | −0.11 – 0.45 | −0.3 – 1 | alla | 0.8–0.92 och 1.06–1.5 | 0.1 |
+| Crystal Geodes | −0.2 – 0.35 | −1 – 0.35 | 0.03 – 0.45 | −0.3 – 1 | 0.6 – 1 | 0.8–0.92 och 1.06–1.5 | 0.12 |
+
+### Täckning (riktig värld, seed 12345)
+
+Rutnät 33×33 punkter med 256 blocks mellanrum (8192×8192 block), biomen på sju höjder (`execute if biome`), andel av
+punkterna i procent. "Övrigt" = ytbiomen under jord (som i vanilla). Vanilla = samma värld utan våra rader.
+
+| y | Vanilla: Dripstone / Lush / Deep Dark / övrigt | Med grottbiomerna |
+|---|---|---|
+| 55 | 5.6 / 1.7 / 0 / 92.7 | övrigt 77.9, Glowworm 5.5, Dripstone 3.7, Ice 3.1, Ochre 2.6, Bone 2.4, Soapstone 1.6, Peat 1.5 |
+| 40 | 10.0 / 3.3 / 0.1 / 86.6 | övrigt 44.4, Glowworm 11.7, Ice 10.5, Bone 10.0, Dripstone 6.5, Ochre 5.5, Peat 4.2, Soapstone 2.8, Limestone 2.7, Lush 1.5 |
+| 20 | 12.9 / 6.2 / 0.5 / 80.5 | övrigt 27.7, Ice 13.9, Bone 12.2, Glowworm 12.0, Peat 6.7, Dripstone 6.1, Limestone 6.0, Ochre 5.4, Soapstone 5.1, Lush 2.4 |
+| 0 | 14.5 / 10.4 / 1.6 / 73.6 | Limestone 13.8, Soapstone 12.3, övrigt 11.0, Ice 10.8, Glowworm 10.5, Flooded 8.4, Peat 8.2, Bone 5.9, Dripstone 5.3, Salt 3.7, Lush 3.0, Ochre 2.8 |
+| −20 | 8.7 / 8.3 / 3.0 / 80.0 | Limestone 14.8, Soapstone 13.3, Flooded 12.9, övrigt 12.5, Galena 10.0, Ice 7.4, Magma 5.6, Dripstone 4.8, Salt 4.4, Peat 4.0, Lush 3.5, Deep Dark 3.0, Geodes 1.3 |
+| −40 | 3.6 / 3.0 / 7.0 / 86.4 | övrigt 38.0, Galena 25.9, Magma 9.6, Soapstone 6.5, Deep Dark 6.3, Flooded 3.6, Dripstone 3.1, Lush 2.5 |
+| −55 | 1.1 / 1.2 / 11.3 / 86.4 | övrigt 74.9, Deep Dark 9.4, Galena 6.5, Magma 4.7, Geodes 1.2, Lush 1.2, Dripstone 1.1 |
+
+Medel över de sju höjderna: Dripstone i vanilla 8.1 %. Våra: Ice 6.6, Galena 6.3, Soapstone 6.0, Glowworm 5.9, Limestone 5.7,
+Bone 4.4, Flooded 3.6, Peat 3.5, Magma 3.1, Ochre 2.4, Salt 1.6, Crystal Geodes 0.5: alla mindre än Dripstone. Topparna på en
+höjd ligger kring Dripstones topp (14.5 %), utom **Galena Seams på y −40 (26 %)**, där den delar botten bara med Magma Vents och
+ytbiomerna. Dripstone, Lush och Deep Dark har kvar sina kärnzoner, men **Dripstone och Lush tappar mycket yta** (y 0: 14.5 → 5.3
+och 10.4 → 3.0), eftersom deras läckage utanför zonerna nu går till våra biomer; Deep Dark är nästan oförändrad. Ytbiomernas
+grottor (övrigt) går från 74–93 % till 11–78 %. Vill man ha kvar mer vanilla: höj offset på raderna.
+
+`locate biome` från 0,0 (alla hittas): Limestone 426, Salt 2831, Ochre 636, Soapstone 559, Glowworm 321, Ice 891, Peat 300,
+Bone 730, Galena 540, Magma 740, Crystal Geodes 214, Flooded 2130; Dripstone 602, Lush 64, Deep Dark 192.
+
+**Block i en biom** (48×48 block, ±40 höjd runt en punkt i biomen, `fill ... air replace`): Limestone Caverns 66 145
+Limestone, 2 474 Travertine, 457 Limestone Wall (droppsten), 5 390 vatten; Salt Caves 35 134 Gypsum, 1 827 Rock Salt, 24
+Alabaster; Ochre Caves 56 159 Chalk Block, 1 884 Red och 794 Yellow Ochre Block, 105 Loose Ochre, 8 Cave Painting; Soapstone
+Grottos 79 485 Soapstone, 16 522 Slate, 2 kistor; Glowworm Caves 1 452 Moss Block, 162 Rooted Dirt, 39 Glowworm, 50 532 vanlig
+sten (ingen `wall`); Ice Caves 41 783 Slate, 1 030 Packed Ice, 544 Blue Ice, 805 Ice, 399 Snow Block; Peat Hollows 5 238 Peat,
+970 Bog Oak Log, 713 Hanging Roots (81×81 block); Bone Caves 77 101 Limestone, 441 Coarse Dirt, 119 Bone Pile, 88 Bone Block;
+Galena Seams 46 526 Shale, 4 279 Alum Shale, 594 Galena Ore; Magma Vents 26 543 Coastal Basalt, 889 Scoria, 283 Pumice, 69
+Obsidian, 358 Magma Block, 194 lava; Crystal Geodes 19 306 Quartzite, 342 Calcite, 127 Polished Quartzite, 171 Amethyst Block,
+68 kristaller av fem ädelstenar; Flooded Caves 1 895 Gravel, 4 510 Clay, 14 139 vatten.
+
+**Inte gjort:** fas 9-effekterna (kyla i Ice Caves, hetta i Magma Vents). Cave Lion står i Bone Caves taggar men dess
+spawnregel kräver ljus, så lejon dyker i praktiken inte upp i mörka grottor. Pike i Flooded Caves bara nära havsytan
+(vattendjurens regel). Cave Bear finns i alla grottbiomer, eftersom mallen dripstone_caves står i `add_cave_bear`. Beach
+Pebbles i Flooded Caves (ytagenten gör blocket parallellt; Gravel och Clay används nu). Dev-servern fick OutOfMemory eller
+watchdog när 1 089 tvångsladdade chunks lastades ur efter täckningsmätningen (mätverktyget, inte modden).

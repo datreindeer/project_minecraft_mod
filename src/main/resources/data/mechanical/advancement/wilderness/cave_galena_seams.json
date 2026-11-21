@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/deep_cold",
+  "criteria": {
+    "in_biome": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "mechanical:galena_seams"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "in_biome"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:raw_galena"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.cave_galena_seams.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.cave_galena_seams.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

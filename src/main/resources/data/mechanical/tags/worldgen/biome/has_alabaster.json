@@ -2,6 +2,7 @@
   "values": [
     "minecraft:desert",
     "#minecraft:is_badlands",
-    "mechanical:gypsum_flats"
+    "mechanical:gypsum_flats",
+    "mechanical:salt_caves"
   ]
 }

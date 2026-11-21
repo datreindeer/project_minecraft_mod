@@ -9,6 +9,8 @@
     "minecraft:jagged_peaks",
     "minecraft:stony_peaks",
     "mechanical:slate_highlands",
-    "mechanical:soapstone_valley"
+    "mechanical:soapstone_valley",
+    "mechanical:soapstone_grottos",
+    "mechanical:ice_caves"
   ]
 }

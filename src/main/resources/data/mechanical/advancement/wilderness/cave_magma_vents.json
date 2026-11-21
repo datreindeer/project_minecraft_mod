@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/deep_cold",
+  "criteria": {
+    "in_biome": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "mechanical:magma_vents"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "in_biome"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:scoria"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.cave_magma_vents.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.cave_magma_vents.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

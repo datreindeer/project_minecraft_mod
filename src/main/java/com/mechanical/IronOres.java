@@ -294,6 +294,20 @@ public final class IronOres {
                 "Dirt + Plant Fibre make Turf");
         h.assertTrue(new ItemStack(Items.STONE_AXE).getDestroySpeed(EarthBlocks.BOG_OAK_LOG.get().defaultBlockState()) > 1, "an axe chops Bog Oak");
 
+        // Glowworm (Glowworm Caves): hangs from a ceiling, faint light, walk-through, drops nothing
+        BlockPos roof = new BlockPos(1, 3, 1), worm = roof.below();
+        h.setBlock(roof, Blocks.STONE);
+        h.setBlock(worm, EarthBlocks.GLOWWORM.get());
+        BlockState glow = h.getBlockState(worm);
+        h.assertTrue(glow.is(EarthBlocks.GLOWWORM.get()) && glow.canSurvive(h.getLevel(), h.absolutePos(worm)), "a Glowworm hangs under stone");
+        h.assertTrue(glow.getLightEmission() == EarthBlocks.GLOWWORM_LIGHT && glow.getLightEmission() >= 5 && glow.getLightEmission() <= 7,
+                "a Glowworm gives light 5-7 (got " + glow.getLightEmission() + ")");
+        h.assertTrue(glow.getCollisionShape(h.getLevel(), h.absolutePos(worm)).isEmpty(), "a Glowworm has no collision");
+        h.assertTrue(drops(h, glow, miner, ItemStack.EMPTY).isEmpty(), "a Glowworm drops nothing");
+        h.setBlock(roof, Blocks.AIR);
+        h.assertTrue(!glow.canSurvive(h.getLevel(), h.absolutePos(worm)), "a Glowworm needs a ceiling");
+        h.setBlock(worm, Blocks.AIR);
+
         // the kiln: lead at 800°, cupellation at 1000°, gold at 1100° (9 nuggets per ingot)
         KilnBlockEntity.Bake lead = KilnBlockEntity.bakeFor(new ItemStack(RAW_GALENA.get()));
         h.assertTrue(lead != null && lead.result.is(LEAD_INGOT.get()) && lead.temp == LEAD_TEMP && lead.count == 1, "Raw Galena -> Lead Ingot at 800°");

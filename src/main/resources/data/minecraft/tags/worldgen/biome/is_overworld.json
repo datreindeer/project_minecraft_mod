@@ -16,6 +16,17 @@
     "mechanical:shingle_beach",
     "mechanical:reed_delta",
     "mechanical:glacial_moraine",
-    "mechanical:gypsum_flats"
+    "mechanical:gypsum_flats",
+    "mechanical:salt_caves",
+    "mechanical:ochre_caves",
+    "mechanical:soapstone_grottos",
+    "mechanical:glowworm_caves",
+    "mechanical:ice_caves",
+    "mechanical:peat_hollows",
+    "mechanical:bone_caves",
+    "mechanical:galena_seams",
+    "mechanical:magma_vents",
+    "mechanical:crystal_geodes",
+    "mechanical:flooded_caves"
   ]
 }

@@ -1,0 +1,68 @@
+{
+  "feature": {
+    "type": "minecraft:waterlogged_vegetation_patch",
+    "depth": 2,
+    "extra_bottom_block_chance": 0.6,
+    "extra_edge_column_chance": 0.7,
+    "ground_state": {
+      "id": "mechanical:peat"
+    },
+    "replaceable": "#mechanical:cave_floor_replaceable",
+    "surface": "floor",
+    "vegetation_chance": 0.0,
+    "vegetation_feature": {
+      "feature": {
+        "type": "minecraft:no_op"
+      },
+      "placement": []
+    },
+    "vertical_range": 5,
+    "xz_radius": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 2,
+      "max_inclusive": 4
+    }
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 300
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": 0
+        },
+        "max_inclusive": {
+          "absolute": 80
+        }
+      }
+    },
+    {
+      "type": "minecraft:environment_scan",
+      "direction_of_search": "down",
+      "max_steps": 12,
+      "target_condition": {
+        "type": "minecraft:solid"
+      },
+      "allowed_search_condition": {
+        "type": "minecraft:matching_block_tag",
+        "tag": "minecraft:air"
+      }
+    },
+    {
+      "type": "minecraft:offset",
+      "x": 0,
+      "y": 1,
+      "z": 0
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

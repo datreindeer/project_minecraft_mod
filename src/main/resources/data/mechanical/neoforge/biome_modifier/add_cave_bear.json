@@ -14,7 +14,18 @@
     "mechanical:limestone_caverns",
     "mechanical:slate_highlands",
     "mechanical:soapstone_valley",
-    "mechanical:limestone_karst"
+    "mechanical:limestone_karst",
+    "mechanical:salt_caves",
+    "mechanical:ochre_caves",
+    "mechanical:soapstone_grottos",
+    "mechanical:glowworm_caves",
+    "mechanical:ice_caves",
+    "mechanical:peat_hollows",
+    "mechanical:bone_caves",
+    "mechanical:galena_seams",
+    "mechanical:magma_vents",
+    "mechanical:crystal_geodes",
+    "mechanical:flooded_caves"
   ],
   "spawners": [
     {

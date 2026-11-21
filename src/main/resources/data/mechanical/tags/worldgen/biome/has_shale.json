@@ -7,6 +7,7 @@
     "#minecraft:is_river",
     "mechanical:chalk_downs",
     "mechanical:peat_bog",
-    "mechanical:reed_delta"
+    "mechanical:reed_delta",
+    "mechanical:galena_seams"
   ]
 }

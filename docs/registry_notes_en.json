@@ -1816,5 +1816,7 @@
   "fieldstone_slab": {"text": "Slab of [[fieldstone]] (3 in a row → 6). Pickaxe.", "category": "blocks"},
   "fieldstone_stairs": {"text": "Stairs of [[fieldstone]] (stair pattern of 6 → 4). Pickaxe.", "category": "blocks"},
   "dry_stone_wall": {"text": "Dry Stone Wall (Stone Age): a wall of [[fieldstone]] laid without mortar, 2×3 Fieldstone → 6. Connects like other walls. Boundary walls for farms and clan land.", "category": "blocks"},
-  "structure:glacial_boulder": {"text": "A big glacial boulder (radius 2–4) of Gneiss, Granite or Rapakivi Granite, half sunk into the ground with loose stones around it. In Glacial Moraine (every other chunk) and Shingle Beach (one chunk in five).", "icon": "mechanical:gneiss"}
+  "structure:glacial_boulder": {"text": "A big glacial boulder (radius 2–4) of Gneiss, Granite or Rapakivi Granite, half sunk into the ground with loose stones around it. In Glacial Moraine (every other chunk) and Shingle Beach (one chunk in five).", "icon": "mechanical:gneiss"},
+  "glowworm": {"text": "Glowworms. Hang from the ceiling in the **Glowworm Caves** (see `docs/caves.md`): dark threads with blue glowing beads. Faint light (level 6), you walk through them and they **drop nothing** when broken. Must hang under a solid block. The only natural light under ground in the Stone Age.", "category": "blocks"},
+  "tool_cache": {"text": "Tool Cache (loot table `chests/tool_cache`): a chest on the cave floor in the **Soapstone Grottos**, rare. 2-4 Stone Age tools ([[flint_knife]], [[flint_pickaxe]], [[flint_axe]], [[flint_spear]], [[crude_stone_pickaxe]] ...) and some [[minecraft:flint]], [[stone_chunk]], [[soapstone]] and sticks.", "category": "blocks", "name": "Tool Cache"}
 }

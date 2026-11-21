@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.HangingRootsBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -40,7 +41,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * Bog and earth (docs/world-materials-plan.md phase 3), the blocks that aren't stone families: Peat (fuel), Turf, Bog Oak
  * (a wood set without tree: buried logs, worldgen/BogOakLogs), Reed (grows like sugar cane) and Reed Thatch, Loess, Wattle,
  * Wattle & Daub, Kaolin; Beach Pebbles and Fieldstone + Dry Stone Wall (phases 4 and 7). The families built on them (Peat Bricks, Adobe/Mudstone, Loess Bricks, Rammed Earth, Kaolin Tiles,
- * Ochre blocks) are {@link StoneFamilies} rows. Data, textures and worldgen: scripts/gen_earth.py.
+ * Ochre blocks) are {@link StoneFamilies} rows. Also the Glowworm of the Glowworm Caves (scripts/gen_caves.py). Data, textures and worldgen: scripts/gen_earth.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class EarthBlocks {
@@ -97,6 +98,11 @@ public final class EarthBlocks {
     public static final DeferredBlock<StairBlock> FIELDSTONE_STAIRS = block("fieldstone_stairs", p -> new StairBlock(FIELDSTONE.get().defaultBlockState(), p), FIELDSTONE_LIKE);
     /** Laid without mortar from Fieldstone. */
     public static final DeferredBlock<WallBlock> DRY_STONE_WALL = block("dry_stone_wall", WallBlock::new, () -> FIELDSTONE_LIKE.get().forceSolidOn());
+    /** Glowworm Caves (docs/caves.md): threads hanging from a cave ceiling, dotted with faint blue light. Drops nothing. */
+    public static final int GLOWWORM_LIGHT = 6;
+    public static final DeferredBlock<HangingRootsBlock> GLOWWORM = Mechanical.BLOCKS.registerBlock("glowworm", HangingRootsBlock::new,
+            () -> Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).noCollision().instabreak().sound(SoundType.HANGING_ROOTS)
+                    .lightLevel(s -> GLOWWORM_LIGHT).pushReaction(PushReaction.POPPED));
 
     // Bog Oak: a wood set like Trees' but with no leaves, sapling or tree; black oak preserved in peat
     private static final MapColor BOG_PLANKS = MapColor.TERRACOTTA_BLACK, BOG_BARK = MapColor.COLOR_BLACK;

@@ -5,6 +5,7 @@
     "minecraft:ice_spikes",
     "minecraft:grove",
     "minecraft:snowy_slopes",
-    "minecraft:frozen_river"
+    "minecraft:frozen_river",
+    "mechanical:galena_seams"
   ]
 }
