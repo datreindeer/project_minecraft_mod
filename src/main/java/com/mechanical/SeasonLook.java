@@ -24,8 +24,8 @@ public final class SeasonLook {
     private static final float[] GRASS_BY = {0.5F, 0.3F, 0.12F, 0, 0, 0.18F, 0.3F, 0.42F, 0.55F, 0.7F, 0.78F, 0.72F};
     // per month: a filter over the own colours of shrubs, bushes and flowers (white = unchanged): greyer and duller in
     // winter (a filter can only darken, so frost shows as grey, not white)
-    private static final int[] FROST_FILTER = {0xFFD4CCD0, 0xFFECE8EA, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
-            0xFFFFFFFF, 0xFFF4F0EE, 0xFFE0D8D8, 0xFFC8C0C8, 0xFFBEB6C0, 0xFFC4BCC4};
+    private static final int[] FROST_FILTER = {0xFFC8B8BE, 0xFFE6DEE0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+            0xFFFFFFFF, 0xFFF0E8E6, 0xFFD2C4C4, 0xFFB4A0AA, 0xFFAA96A2, 0xFFB4A2AC};
     private static final int[] RED_TO = {FRESH, FRESH, FRESH, FRESH, FRESH, DRY, 0xFFD8B030, 0xFFE07020, 0xFFB83418, DEAD, DEAD, DEAD};
     private static final int[] YELLOW_TO = {FRESH, FRESH, FRESH, FRESH, FRESH, DRY, 0xFFD0C840, 0xFFF0C030, 0xFFC89030, DEAD, DEAD, DEAD};
     private static final float[] LEAVES_BY = {0.45F, 0.3F, 0.12F, 0, 0, 0.12F, 0.6F, 0.8F, 0.85F, 0.8F, 0.8F, 0.8F};
