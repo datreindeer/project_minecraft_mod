@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:stick",
+    "mechanical:gloson_bristles"
+  ],
+  "result": {
+    "id": "mechanical:paintbrush",
+    "count": 1
+  }
+}

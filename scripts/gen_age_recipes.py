@@ -13,7 +13,7 @@ NEVER = {"neoforge:conditions": [{"type": "neoforge:never"}]}
 
 # name, advancement category (None = special recipe without one), why, age it returns in
 RECIPES = [
-    ("tnt", "redstone", "gunpowder (creepers) + sand: explosives", "Steam"),
+    ("tnt", "redstone", "gunpowder (witches; no creepers) + sand: explosives", "Steam"),
     ("firework_rocket_simple", "misc", "gunpowder + paper: rockets", "Steam"),
     ("firework_rocket", None, "rockets with stars", "Steam"),
     ("firework_star", None, "gunpowder + dye", "Steam"),

@@ -172,6 +172,8 @@
     "mechanical:troll_meat",
     "mechanical:cooked_troll_meat",
     "mechanical:lindworm_meat",
-    "mechanical:cooked_lindworm_meat"
+    "mechanical:cooked_lindworm_meat",
+    "mechanical:raw_gloson",
+    "mechanical:cooked_gloson"
   ]
 }

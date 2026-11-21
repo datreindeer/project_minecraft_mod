@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:razor_ridge",
+    "minecraft:stick",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:razor_knife",
+    "count": 1
+  }
+}

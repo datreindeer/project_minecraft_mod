@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/spore_sac",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mushroom_flesh"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:mushroom_flesh"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.fungal_tinder.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.fungal_tinder.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

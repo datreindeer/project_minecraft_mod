@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/spore_sac",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:spore_bomb"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:spore_bomb"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.spore_bomb.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.spore_bomb.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

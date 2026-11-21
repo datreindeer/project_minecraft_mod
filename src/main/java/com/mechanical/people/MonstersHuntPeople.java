@@ -9,7 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
-/** Hostile monsters go after tribespeople like zombies go after villagers. Neutral mobs (endermen, piglins) leave them be; creepers stalk them too. */
+/** Hostile monsters go after tribespeople like zombies go after villagers. Neutral mobs (endermen, piglins) leave them be; Mushroom Men creep up on them too. */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class MonstersHuntPeople {
     @SubscribeEvent
