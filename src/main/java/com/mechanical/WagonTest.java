@@ -40,8 +40,11 @@ public final class WagonTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
     private static final ResourceKey<Consumer<GameTestHelper>> TEST = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "wagon"));
 
+    private static final ResourceKey<Consumer<GameTestHelper>> LIVESTOCK = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "livestock_cart"));
+
     static {
         TEST_FUNCTIONS.register("wagon", () -> WagonTest::test);
+        TEST_FUNCTIONS.register("livestock_cart", () -> WagonTest::livestock);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -53,6 +56,58 @@ public final class WagonTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "wagon"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "wagon"),
                 new FunctionGameTestInstance(TEST, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "livestock_cart"),
+                new FunctionGameTestInstance(LIVESTOCK, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+    }
+
+    /** Led farm animals climb onto a cart, tied to it; a full cart refuses more; a cut lead lets one off; untying leads it off. */
+    private static void livestock(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (int x = 0; x < 5; x++) for (int z = 0; z < 5; z++) h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+        Vec3 at = h.absoluteVec(new Vec3(2.5, 1, 2.5));
+        CartEntity cart = Carting.CART.get().create(level, EntitySpawnReason.EVENT);
+        cart.setPos(at);
+        level.addFreshEntity(cart);
+        var cow = net.minecraft.world.entity.EntityTypes.COW.create(level, EntitySpawnReason.EVENT);
+        var sheep = net.minecraft.world.entity.EntityTypes.SHEEP.create(level, EntitySpawnReason.EVENT);
+        var chicken = net.minecraft.world.entity.EntityTypes.CHICKEN.create(level, EntitySpawnReason.EVENT);
+        for (var a : List.of(cow, sheep, chicken)) {
+            a.setPos(at.add(1.5, 0, 0));
+            level.addFreshEntity(a);
+        }
+        h.assertTrue(TravoisEntity.room(cow) == 3 && TravoisEntity.room(sheep) == 2 && TravoisEntity.room(chicken) == 1, "a cow takes 3 room, a sheep 2, a hen 1");
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.setPos(at.add(-1.5, 0, 0));
+        cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO); // nothing led: this harnesses the player instead
+        h.assertTrue(cow.getVehicle() == null, "a loose cow stays off");
+        cart.setHarness(null);
+        TravoisEntity travois = CarcassHauling.TRAVOIS.get().create(level, EntitySpawnReason.EVENT);
+        h.assertTrue(!travois.canAddPassenger(cow), "the travois takes no livestock");
+        cow.setLeashedTo(player, true);
+        sheep.setLeashedTo(player, true);
+        h.assertTrue(cow.getLeashHolder() == player, "the cow is led (holder " + cow.getLeashHolder() + ")");
+        cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+        h.assertTrue(cow.getVehicle() == cart && sheep.getVehicle() == cart && cart.load() == 5, "led cow and sheep climb on: 5 room");
+        h.assertTrue(cow.getLeashHolder() == cart && sheep.getLeashHolder() == cart, "their leads are tied to the cart");
+        chicken.setLeashedTo(player, true);
+        cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+        h.assertTrue(chicken.getVehicle() == cart && cart.load() == 6, "a hen fills the last room");
+        var hen = net.minecraft.world.entity.EntityTypes.CHICKEN.create(level, EntitySpawnReason.EVENT);
+        hen.setPos(at.add(1.5, 0, 0));
+        level.addFreshEntity(hen);
+        hen.setLeashedTo(player, true);
+        cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+        h.assertTrue(hen.getVehicle() == null && hen.getLeashHolder() == player, "a full cart takes no more: the hen stays on the lead");
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(cow.getVehicle() == cart && cow.getLeashHolder() == cart, "the tied cow still rides after 2 s");
+            sheep.dropLeash();
+            h.runAfterDelay(2, () -> {
+                h.assertTrue(sheep.getVehicle() == null, "a cut lead lets the sheep off");
+                h.assertTrue(TravoisEntity.untie(cow, player) && cow.getVehicle() == null && cow.getLeashHolder() == player,
+                        "untying the cow leads it off on the player's lead");
+                h.succeed();
+            });
+        });
     }
 
     private static void test(GameTestHelper h) {

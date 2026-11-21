@@ -762,6 +762,8 @@ TABS = {
          has("cart")),
         ("full_cart", "cart", "raw_haunch", T, "Two for the Road",
          "Load two carcasses onto a Wheeled Cart. It holds 6 room: a light body takes 1, a medium 2, a large 3", by_code()),
+        ("livestock_cart", "cart", "minecraft:lead", T, "Market Day",
+         "Lead a cow, sheep, pig or hen to a Wheeled Cart or Wagon and right-click it: it climbs on, tied by its lead", by_code()),
         ("storage_cart", "cart", "minecraft:chest", T, "Storage Cart",
          "Right-click an empty Wheeled Cart with a Chest to mount it: 54 slots on wheels (sneak + right-click)", by_code()),
         ("rope_halter", "bronze", "rope_halter", T, "Rope Halter",

@@ -63,6 +63,17 @@ public final class Carting {
                     .build()));
 
     public static void init() {
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(Carting::untieLivestock);
+    }
+
+    /** Sneak + right-click a farm animal on a cart or wagon with an empty hand: untie it and lead it off. */
+    private static void untieLivestock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        if (event.getHand() == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && player.getMainHandItem().isEmpty()
+                && event.getTarget() instanceof net.minecraft.world.entity.animal.Animal animal && TravoisEntity.untie(animal, player)) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+        }
     }
 
     /** Rope Halter: put it on a Wild Horse that trusts you enough ({@link WildHorse#HALTER_TRUST}) to lead it. */

@@ -1278,6 +1278,11 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
   kroppen du bär eller släpar; det går också att klicka på en kropp som redan ligger på vagnen, den täcker nästan hela
   flaket). Kropparna ligger på längden **sida vid sida** över flaket, var och en så bred som sina platser (0,22 block per
   plats), gruppen centrerad. **Ta av en kropp:** smyg + högerklicka på kroppen (som på travoisen).
+- **Tama djur:** led kor, får, grisar eller höns i koppel (entitetstaggen `mechanical:domestic`, inom 10 block) och
+  högerklicka vagnen med tom hand: de kliver upp så länge det finns plats. **Höna eller unge 1 plats, gris eller får 2,
+  ko 3**, i samma 6 platser som kropparna. Kopplet knyts fast i vagnen och håller dem kvar; klipps eller brister det
+  hoppar djuret av. **Ta av ett djur:** smyg + högerklicka på det med tom hand, så leder du det i kopplet igen.
+  Travoisen tar inga levande djur. Advancement **Market Day**. Test: `mechanical:livestock_cart` (WagonTest).
 - **Förråd:** **smyg + högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
   vagnen.
 - **Kärra med kista (storage cart):** högerklicka en **tom** vagn med en vanlig **Chest** så monteras kistan på flaket

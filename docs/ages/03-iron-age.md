@@ -477,6 +477,9 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 | **Hay Bale** | **9 tuggor**. En skadad häst i spannet äter en tugga var 5:e sekund och läker 2 hälsa. Uppäten försvinner balen. |
 | **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider eller leder en tam häst som kan spännas för). Kommer tillbaka som en Oak Slab. |
 
+- **Tama djur:** som på kärran. Led kor, får, grisar eller höns i koppel och högerklicka vagnen med tom hand. De står
+  på de tomma platserna (höna/unge 1 rum, gris/får 2, ko 3; ett helt tomt flak tar till exempel fyra kor), och kopplet
+  knyts i vagnen. Smyg + högerklicka ett djur för att leda av det.
 - **Sätt i en modul:** högerklicka en plats med blocket (Chest, Hay Bale eller trä-slab). Platsen måste vara ledig ("That
   place on the bed is taken"), och lasten måste få plats på de tomma platser som blir kvar ("Unload a carcass first").
 - **Ta ur en modul:** slå på den. Kistan och allt innehåll faller ut; en påbörjad Hay Bale ger tillbaka sin återstående

@@ -447,6 +447,11 @@ public class WagonEntity extends TravoisEntity {
     }
 
     @Override
+    protected boolean carriesLivestock() {
+        return true;
+    }
+
+    @Override
     protected void onLoaded(ServerPlayer player) {
         if (load() >= CAPACITY) Kettle.award(player, LOADED_ADVANCEMENT);
     }
@@ -476,7 +481,7 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
-        if (passenger instanceof CarcassEntity) {
+        if (!(passenger instanceof Player)) { // bodies and livestock
             List<Integer> empty = slotsWith(EMPTY);
             if (empty.isEmpty()) return;
             double room = rowOffset(passenger, 1.0) + load() / 2.0; // the body's middle, in rooms from the front
@@ -484,6 +489,10 @@ public class WagonEntity extends TravoisEntity {
             double along = slotAlong(empty.get(i)) - (room - i * ROOM_PER_SLOT - ROOM_PER_SLOT / 2.0) * SLOT_DEPTH / ROOM_PER_SLOT;
             moveFunction.accept(passenger, getX() + dir.x * along, getY() + BED, getZ() + dir.z * along);
             passenger.setYRot(getYRot() + 90.0F);
+            if (passenger instanceof LivingEntity animal) {
+                animal.setYBodyRot(getYRot() + 90.0F);
+                animal.setYHeadRot(getYRot() + 90.0F);
+            }
             return;
         }
         List<Integer> seats = slotsWith(SEAT);

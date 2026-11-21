@@ -141,8 +141,55 @@ public class TravoisEntity extends Entity {
     /** Load units on it. */
     public int load() {
         int units = 0;
-        for (Entity e : getPassengers()) if (e instanceof CarcassEntity c) units += c.loadUnits();
+        for (Entity e : getPassengers()) units += room(e);
         return units;
+    }
+
+    /** Tame farm animals (entity tag mechanical:domestic): they ride carts and wagons, not the travois. */
+    static final net.minecraft.tags.TagKey<EntityType<?>> LIVESTOCK = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ENTITY_TYPE, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "domestic"));
+    /** Advancement for loading an animal, granted from code (scripts/gen_advancements.py). */
+    static final net.minecraft.resources.Identifier LIVESTOCK_ADVANCEMENT = net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "bronze_age/livestock_cart");
+    /** How far a led animal may be to climb on. */
+    static final double LEASH_RANGE = 10;
+
+    /** Room a passenger takes: a body its load units; livestock by size (a hen or a young one 1, a pig or sheep 2, a cow 3). */
+    public static int room(Entity e) {
+        if (e instanceof CarcassEntity c) return c.loadUnits();
+        if (isLivestock(e)) {
+            net.minecraft.world.entity.animal.Animal a = (net.minecraft.world.entity.animal.Animal) e;
+            return a.isBaby() || a.getBbWidth() < 0.6F ? 1 : a.getBbHeight() >= 1.35F ? 3 : 2;
+        }
+        return 0;
+    }
+
+    public static boolean isLivestock(Entity e) {
+        return e instanceof net.minecraft.world.entity.animal.Animal && e.getType().builtInRegistryHolder().is(LIVESTOCK);
+    }
+
+    /** Carts and wagons take living farm animals too. */
+    protected boolean carriesLivestock() {
+        return false;
+    }
+
+    /** Server: the farm animals {@code player} leads climb on while there is room; their leads are tied to it. */
+    private void loadLivestock(java.util.List<net.minecraft.world.entity.animal.Animal> led, Player player) {
+        int loaded = 0;
+        for (net.minecraft.world.entity.animal.Animal animal : led) {
+            if (capacity() == 0) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".no_room"));
+                break;
+            }
+            if (load() + room(animal) > capacity()) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".full"));
+                break;
+            }
+            if (tieOn(animal)) loaded++;
+        }
+        if (loaded > 0) {
+            playSound(SoundEvents.LEAD_UNTIED, 1.0F, 1.0F);
+            if (player instanceof ServerPlayer sp) Kettle.award(sp, LIVESTOCK_ADVANCEMENT);
+        }
     }
 
     @Override
@@ -173,6 +220,11 @@ public class TravoisEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        if (!level().isClientSide()) { // livestock ride only while tied on: a cut or broken lead lets them jump off
+            for (Entity e : java.util.List.copyOf(getPassengers()))
+                if (isLivestock(e) && ((net.minecraft.world.entity.animal.Animal) e).getLeashHolder() != this) dismount(e);
+            if (carriesLivestock() && tickCount % 20 == 0) retie();
+        }
         LivingEntity p = harness();
         if (!level().isClientSide() && harnessId() >= 0) {
             if (p == null || !p.isAlive()) p = letGo(null, null); // dead or gone
@@ -289,6 +341,14 @@ public class TravoisEntity extends Entity {
             return InteractionResult.SUCCESS;
         }
         if (!player.getMainHandItem().isEmpty()) return InteractionResult.PASS;
+        if (carriesLivestock() && !player.isShiftKeyDown()) {
+            var led = level().getEntitiesOfClass(net.minecraft.world.entity.animal.Animal.class, player.getBoundingBox().inflate(LEASH_RANGE),
+                    a -> isLivestock(a) && a.getLeashHolder() == player && !a.isPassenger());
+            if (!led.isEmpty()) {
+                if (!level().isClientSide()) loadLivestock(led, player);
+                return InteractionResult.SUCCESS;
+            }
+        }
         if (player.isShiftKeyDown()) return sneakUse(player);
         if (!level().isClientSide()) toggleHarness(player);
         return InteractionResult.SUCCESS;
@@ -326,10 +386,57 @@ public class TravoisEntity extends Entity {
     protected void onLoaded(ServerPlayer player) {
     }
 
+    /**
+     * Server: {@code animal} climbs on, its lead moved over to this. Vanilla drops a lead when a mob mounts and dismounts a
+     * leashed passenger, so the lead's data is taken off for the mount and handed back with this as the holder.
+     */
+    private boolean tieOn(net.minecraft.world.entity.animal.Animal animal) {
+        net.minecraft.world.entity.Leashable.LeashData lead = animal.getLeashData();
+        if (lead == null) return false;
+        animal.setLeashData(null);
+        if (!animal.startRiding(this, true, true)) {
+            animal.setLeashData(lead);
+            return false;
+        }
+        lead.setLeashHolder(this);
+        animal.setLeashData(lead);
+        if (level() instanceof ServerLevel server)
+            server.getChunkSource().sendToTrackingPlayers(animal, new net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket(animal, this));
+        return true;
+    }
+
+    /** Server: animals still tied to it but not on it (a reload restores the lead after the ride and vanilla lets them off) climb back. */
+    private void retie() {
+        for (var animal : level().getEntitiesOfClass(net.minecraft.world.entity.animal.Animal.class, getBoundingBox().inflate(4),
+                a -> isLivestock(a) && !a.isPassenger() && a.getLeashHolder() == this))
+            if (load() + room(animal) <= capacity()) tieOn(animal);
+            else animal.dropLeash();
+    }
+
+    /** Server: {@code player} unties an animal riding it and leads it off. */
+    public static boolean untie(net.minecraft.world.entity.animal.Animal animal, Player player) {
+        if (!(animal.getVehicle() instanceof TravoisEntity vehicle) || !isLivestock(animal)) return false;
+        if (!vehicle.level().isClientSide()) {
+            animal.setLeashedTo(player, true);
+            vehicle.dismount(animal);
+            vehicle.playSound(SoundEvents.LEAD_UNTIED, 1.0F, 1.0F);
+        }
+        return true;
+    }
+
+    /** Server: {@code e} gets off, beside it (or where it was if there is no room). */
+    private void dismount(Entity e) {
+        e.stopRiding();
+        Vec3 side = Vec3.directionFromRotation(0, getYRot() + 90).scale(1.3);
+        Vec3 was = e.position();
+        e.setPos(position().add(side).add(0, 0.2, 0));
+        if (!level().noCollision(e)) e.setPos(was);
+    }
+
     /** Server: unloads the last loaded body (seated players stay). */
     protected void unloadLast() {
         Entity last = null;
-        for (Entity e : getPassengers()) if (e instanceof CarcassEntity) last = e;
+        for (Entity e : getPassengers()) if (room(e) > 0) last = e;
         if (last == null) return;
         last.stopRiding();
         // beside the travois, or where it lay if there is no room
@@ -348,9 +455,9 @@ public class TravoisEntity extends Entity {
         int before = 0;
         for (Entity e : getPassengers()) {
             if (e == passenger) break;
-            if (e instanceof CarcassEntity c) before += c.loadUnits();
+            before += room(e);
         }
-        int room = passenger instanceof CarcassEntity c ? c.loadUnits() : 0;
+        int room = room(passenger);
         return (before + room / 2.0 - load() / 2.0) * perRoom;
     }
 
@@ -367,7 +474,8 @@ public class TravoisEntity extends Entity {
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
-        return passenger instanceof CarcassEntity c && load() + c.loadUnits() <= capacity();
+        int room = room(passenger);
+        return room > 0 && (passenger instanceof CarcassEntity || carriesLivestock()) && load() + room <= capacity();
     }
 
     @Override

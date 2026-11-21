@@ -163,7 +163,12 @@ public class CartEntity extends TravoisEntity {
 
     @Override
     protected void onLoaded(net.minecraft.server.level.ServerPlayer player) {
-        if (getPassengers().size() >= 2) Kettle.award(player, LOADED_ADVANCEMENT);
+        if (getPassengers().stream().filter(e -> e instanceof CarcassEntity).count() >= 2) Kettle.award(player, LOADED_ADVANCEMENT);
+    }
+
+    @Override
+    protected boolean carriesLivestock() {
+        return true;
     }
 
     @Override
@@ -261,6 +266,10 @@ public class CartEntity extends TravoisEntity {
         double rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch)); // the bed tips about the axle (client only)
         moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED + rise, getZ() + dir.z * along + right.z * side);
         passenger.setYRot(getYRot());
+        if (passenger instanceof LivingEntity animal) { // livestock stand facing ahead
+            animal.setYBodyRot(getYRot());
+            animal.setYHeadRot(getYRot());
+        }
     }
 
     @Override
