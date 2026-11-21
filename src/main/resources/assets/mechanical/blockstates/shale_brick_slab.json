@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/shale_brick_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/shale_bricks"
+    },
+    "type=top": {
+      "model": "mechanical:block/shale_brick_slab_top"
+    }
+  }
+}

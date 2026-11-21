@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_conglomerate",
+  "result": {
+    "id": "mechanical:polished_conglomerate_wall"
+  }
+}

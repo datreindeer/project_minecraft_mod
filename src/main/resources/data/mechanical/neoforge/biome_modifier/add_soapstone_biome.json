@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_soapstone",
+  "features": [
+    "mechanical:ore_soapstone_biome"
+  ],
+  "step": "underground_ores"
+}

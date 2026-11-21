@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": [
+      "mechanical:chalk_block",
+      "mechanical:chiseled_chalk",
+      "mechanical:cut_chalk"
+    ]
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mechanical:chalk_stairs"
+  }
+}

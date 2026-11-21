@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:mossy_gneiss_bricks",
+  "result": {
+    "id": "mechanical:mossy_gneiss_brick_stairs"
+  }
+}

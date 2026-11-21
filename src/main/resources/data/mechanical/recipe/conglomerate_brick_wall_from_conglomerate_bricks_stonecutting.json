@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:conglomerate_bricks",
+  "result": {
+    "id": "mechanical:conglomerate_brick_wall"
+  }
+}

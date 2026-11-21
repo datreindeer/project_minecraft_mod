@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:soapstone_bricks",
+  "result": {
+    "id": "mechanical:soapstone_brick_wall"
+  }
+}

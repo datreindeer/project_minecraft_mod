@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_chalk",
+  "features": [
+    "mechanical:ore_chalk_biome"
+  ],
+  "step": "underground_ores"
+}

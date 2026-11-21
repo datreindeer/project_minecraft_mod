@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "condition": "minecraft:tool/can_silk_touch",
+              "name": "mechanical:chalk_block"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:chalk",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 4
+                },
+                {
+                  "type": "minecraft:explosion_decay"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/chalk_block"
+}

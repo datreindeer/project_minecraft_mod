@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:polished_conglomerate"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipes": "mechanical:chiseled_conglomerate_bricks_from_polished_conglomerate_stonecutting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:chiseled_conglomerate_bricks_from_polished_conglomerate_stonecutting"
+    ]
+  }
+}

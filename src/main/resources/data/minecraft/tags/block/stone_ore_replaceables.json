@@ -1,5 +1,11 @@
 {
   "values": [
-    "mechanical:limestone"
+    "mechanical:limestone",
+    "mechanical:slate",
+    "mechanical:gneiss",
+    "mechanical:chalk_block",
+    "mechanical:soapstone",
+    "mechanical:shale",
+    "mechanical:conglomerate"
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_chalk",
+  "result": {
+    "id": "mechanical:smooth_chalk_stairs"
+  }
+}

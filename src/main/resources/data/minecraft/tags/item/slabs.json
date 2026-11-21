@@ -2,6 +2,26 @@
   "values": [
     "mechanical:limestone_brick_slab",
     "mechanical:limestone_slab",
-    "mechanical:polished_limestone_slab"
+    "mechanical:polished_limestone_slab",
+    "mechanical:cobbled_slate_slab",
+    "mechanical:polished_slate_slab",
+    "mechanical:slate_brick_slab",
+    "mechanical:slate_tile_slab",
+    "mechanical:gneiss_brick_slab",
+    "mechanical:gneiss_slab",
+    "mechanical:mossy_gneiss_brick_slab",
+    "mechanical:smooth_gneiss_slab",
+    "mechanical:chalk_slab",
+    "mechanical:cut_chalk_slab",
+    "mechanical:smooth_chalk_slab",
+    "mechanical:polished_soapstone_slab",
+    "mechanical:soapstone_brick_slab",
+    "mechanical:soapstone_slab",
+    "mechanical:polished_shale_slab",
+    "mechanical:shale_brick_slab",
+    "mechanical:shale_slab",
+    "mechanical:conglomerate_brick_slab",
+    "mechanical:conglomerate_slab",
+    "mechanical:polished_conglomerate_slab"
   ]
 }

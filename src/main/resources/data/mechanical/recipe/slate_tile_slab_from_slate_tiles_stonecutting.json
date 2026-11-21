@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:slate_tiles",
+  "result": {
+    "count": 2,
+    "id": "mechanical:slate_tile_slab"
+  }
+}

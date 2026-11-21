@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#mechanical:has_shale",
+  "features": [
+    "mechanical:ore_shale_biome"
+  ],
+  "step": "underground_ores"
+}

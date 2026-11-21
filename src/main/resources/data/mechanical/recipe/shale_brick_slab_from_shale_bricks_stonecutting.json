@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:shale_bricks",
+  "result": {
+    "count": 2,
+    "id": "mechanical:shale_brick_slab"
+  }
+}

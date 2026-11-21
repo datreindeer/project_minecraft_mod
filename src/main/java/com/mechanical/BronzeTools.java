@@ -380,7 +380,8 @@ public final class BronzeTools {
 
         /** What the chisel turns this block into, or null. */
         public static Block carved(Block block) {
-            if (carved == null) carved = Map.ofEntries(
+            if (carved == null) {
+                var map = new java.util.HashMap<>(Map.ofEntries(
                     Map.entry(Blocks.STONE, Blocks.SMOOTH_STONE), Map.entry(Blocks.SMOOTH_STONE, Blocks.STONE_BRICKS),
                     Map.entry(Blocks.STONE_BRICKS, Blocks.CHISELED_STONE_BRICKS),
                     Map.entry(Blocks.ANDESITE, Blocks.POLISHED_ANDESITE), Map.entry(Blocks.DIORITE, Blocks.POLISHED_DIORITE),
@@ -394,10 +395,10 @@ public final class BronzeTools {
                     Map.entry(Blocks.BLACKSTONE, Blocks.POLISHED_BLACKSTONE), Map.entry(Blocks.POLISHED_BLACKSTONE, Blocks.POLISHED_BLACKSTONE_BRICKS),
                     Map.entry(Blocks.POLISHED_BLACKSTONE_BRICKS, Blocks.CHISELED_POLISHED_BLACKSTONE),
                     Map.entry(Blocks.NETHER_BRICKS, Blocks.CHISELED_NETHER_BRICKS), Map.entry(Blocks.QUARTZ_BLOCK, Blocks.CHISELED_QUARTZ_BLOCK),
-                    Map.entry(Blocks.RESIN_BRICKS, Blocks.CHISELED_RESIN_BRICKS),
-                    Map.entry(IronOres.LIMESTONE.get(), IronOres.POLISHED_LIMESTONE.get()),
-                    Map.entry(IronOres.POLISHED_LIMESTONE.get(), IronOres.LIMESTONE_BRICKS.get()),
-                    Map.entry(IronOres.LIMESTONE_BRICKS.get(), IronOres.CHISELED_LIMESTONE_BRICKS.get()));
+                    Map.entry(Blocks.RESIN_BRICKS, Blocks.CHISELED_RESIN_BRICKS)));
+                map.putAll(StoneFamilies.chisel()); // Limestone, Slate, Gneiss ...
+                carved = map;
+            }
             return carved.get(block);
         }
 

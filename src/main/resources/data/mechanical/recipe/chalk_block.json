@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "mechanical:chalk"
+  },
+  "result": {
+    "id": "mechanical:chalk_block"
+  }
+}

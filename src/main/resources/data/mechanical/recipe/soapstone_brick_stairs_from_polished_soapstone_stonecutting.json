@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_soapstone",
+  "result": {
+    "id": "mechanical:soapstone_brick_stairs"
+  }
+}

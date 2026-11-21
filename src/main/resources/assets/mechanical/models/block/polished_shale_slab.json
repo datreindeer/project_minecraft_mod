@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/polished_shale",
+    "side": "mechanical:block/polished_shale",
+    "top": "mechanical:block/polished_shale"
+  }
+}

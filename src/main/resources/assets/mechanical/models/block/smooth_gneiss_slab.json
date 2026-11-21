@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/smooth_gneiss",
+    "side": "mechanical:block/smooth_gneiss_slab_side",
+    "top": "mechanical:block/smooth_gneiss"
+  }
+}

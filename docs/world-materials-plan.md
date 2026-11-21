@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **plan, inget byggt ännu** (förutom Limestone-familjen, v0.101.0). Skriven 2026-11-21.
+Status: **fas 1 byggd** (stengeneratorn + sex Stone Age-bergarter, se "Fas 1: resultat" sist), resten plan. Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -11,7 +11,7 @@ hitta, ha en tydlig plats i en ålder och synas i guiden, registret och advancem
 ## 1. Hur det byggs (teknik)
 
 ### 1.1 Stenfamiljer: en generator för alla
-`scripts/gen_limestone_blocks.py` blir **`scripts/gen_stone_families.py`**: en tabell med en rad per sten. Varje rad säger
+`scripts/gen_limestone_blocks.py` blev **`scripts/gen_stone_families.py`**: en tabell med en rad per sten. Varje rad säger
 vilken vanilla-familj den kopierar (blockstates, modeller, loot, recept och taggar från jarfilen, med namnet utbytt) och
 vilken palett texturerna färgas om med. Java-sidan får ett `StoneFamilies.java` med samma tabell, så att ett nytt
 material är en rad på varje sida.
@@ -222,3 +222,45 @@ Soapstone, Chalk, Shale, Gypsum, Peat, Pumice, Conglomerate, Mudstone) med Flint
 Marble, Basalt, Rapakivi, Gneiss, Serpentine, Alabaster) kräver Bronze Pickaxe. 3) murbruk krävs inte; Lime Mortar ger
 billigare recept (8 bricks i stället för 4). 4) egen creative-flik "Building Blocks" för stenfamiljer och byggblock.
 5) egen plan senare.
+
+---
+
+## Fas 1: resultat (byggt)
+
+`scripts/gen_stone_families.py` (körs direkt efter `gen_iron_ores.py`) och `StoneFamilies.java`. Limestone-familjen
+flyttades in med samma id och ger exakt samma filer. Nya: **Slate**, **Gneiss**, **Chalk Block** (+ familj med `chalk_`),
+**Soapstone**, **Shale**, **Conglomerate**, alla i creative-fliken **Building Blocks** (`mechanical:building_blocks_tab`).
+
+**En ny sten = en rad på varje sida:**
+
+```python
+# scripts/gen_stone_families.py, STONES
+Stone(name, template, palette, hard, chains, ore, base=None, drop="self", bands=None, own_base=True)
+#  name      "slate": blocknamnen blir mallens mönster med "{}" = name
+#  template  "tuff" | "deepslate" | "stone" | "sandstone" (testade) | "quartz" | "basalt" | "mud" | "bricks" (bara listade)
+#  palette   5 färger mörk -> ljus; mallens texturer färgas om efter ljushet
+#  hard      True = #mechanical:needs_bronze_tool (Bronze Pickaxe), False = vilken hacka som helst (Flint Pickaxe)
+#  chains    [["slate", "polished_slate", "slate_bricks", ...], ...]  Bronze Chisel-stegen
+#  ore       Ore(size, chance, lo, hi, count, blo, bhi, biomes): 1 klump per `chance` chunk på y lo..hi överallt,
+#            `count` extra per chunk på y blo..bhi i biomes (vanilla-id eller #taggar); None = worldgen någon annanstans
+#  base      basblockets id om det inte är name (Chalk: "chalk_block")
+#  drop      "self" eller (item, antal): Silk Touch ger blocket; ett item utanför familjen kan pressas 2x2 tillbaka
+#  bands     andra palett i ränder (Gneiss)
+#  own_base  False = basblocket skrivs av ett annat skript (Limestone: gen_iron_ores.py)
+Stone("soapstone", "tuff", [(74, 88, 80), ..., (160, 170, 156)], False,
+      [["soapstone", "polished_soapstone", "soapstone_bricks", "chiseled_soapstone_bricks"]],
+      Ore(40, 6, 0, 90, 1, 30, 160, ["#minecraft:is_mountain"])),
+```
+
+```java
+// StoneFamilies.java, STONES (samma namn, mall och kedjor; MapColor, hårdhet och ljud för basblocket)
+Stone.of("soapstone", "soapstone", Template.TUFF, false, MapColor.COLOR_LIGHT_GREEN, 1.2F, SoundType.TUFF,
+        List.of(List.of("soapstone", "polished_soapstone", "soapstone_bricks", "chiseled_soapstone_bricks"))),
+```
+
+En ny **mall** = en `TEMPLATES`-rad i skriptet (`family(vanilla_bas, "vanilla-block ...", word=..., oregelbundna="{}_...")`)
+och samma mönster i `StoneFamilies.Template`. Skriptet kollar att Java har alla mönster, och gametesten `iron_ores`
+kollar att varje block Java registrerar har en loot table, rätt verktyg, rätt drop och mejselkedjan. Quartz/basalt
+behöver `_pillar`/axel-hantering (Java gör `RotatedPillarBlock` för namn som slutar på `_pillar`; basalts polished/smooth
+måste läggas till när den mallen används). Efter skriptet: `gen_block_items.py`, `gen_unlocks.py`, `gen_advancements.py`,
+`gen_loot_format.py`, och lägg till lang (skriptet gör blocknamnen), advancement, `docs/ages/` och registry notes.

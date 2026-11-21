@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/slate_tile_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/slate_tiles"
+    },
+    "type=top": {
+      "model": "mechanical:block/slate_tile_slab_top"
+    }
+  }
+}
