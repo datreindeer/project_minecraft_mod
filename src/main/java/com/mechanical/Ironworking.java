@@ -16,7 +16,6 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
@@ -203,7 +202,7 @@ public final class Ironworking {
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "bloomery"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "bloomery"),
-                new FunctionGameTestInstance(TEST, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
+                new FunctionGameTestInstance(TEST, TestArea.of(env, 40, true)));
     }
 
     private static void test(GameTestHelper h) {

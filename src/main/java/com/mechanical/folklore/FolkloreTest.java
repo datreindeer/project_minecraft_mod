@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -45,7 +44,7 @@ public final class FolkloreTest {
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "folklore"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "folklore"),
-                new FunctionGameTestInstance(TEST, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new FunctionGameTestInstance(TEST, com.mechanical.TestArea.of(env, 20, true)));
     }
 
     private static void check(GameTestHelper h, boolean ok, String what) {

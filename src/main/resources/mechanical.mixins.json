@@ -45,6 +45,8 @@
     "InventoryMenuMixin",
     "ItemEntityMixin",
     "ProjectileWeaponItemMixin",
-    "ServerGamePacketListenerImplMixin"
+    "ServerGamePacketListenerImplMixin",
+    "TestInstanceBlockEntityMixin",
+    "GameTestInfoMixin"
   ]
 }

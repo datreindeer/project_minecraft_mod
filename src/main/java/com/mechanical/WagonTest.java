@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -57,12 +56,11 @@ public final class WagonTest {
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "wagon"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "wagon"),
-                new FunctionGameTestInstance(TEST, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
+                new FunctionGameTestInstance(TEST, TestArea.of(env, 40, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "livestock_cart"),
-                new FunctionGameTestInstance(LIVESTOCK, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+                new FunctionGameTestInstance(LIVESTOCK, TestArea.of(env, 100, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "wagon_trailer"),
-                new FunctionGameTestInstance(TRAILER, new TestData<>(env, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"),
-                        100, 0, true, net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 16))); // padding: the team drives 16 blocks of floor
+                new FunctionGameTestInstance(TRAILER, TestArea.of(env, 100, true)));
     }
 
     /**

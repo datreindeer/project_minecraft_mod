@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -59,9 +58,9 @@ public final class RetrogenTest {
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "retrogen"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "retrogen"),
-                new FunctionGameTestInstance(RETROGEN, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new FunctionGameTestInstance(RETROGEN, com.mechanical.TestArea.of(env, 20, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "restock_missing_species"),
-                new FunctionGameTestInstance(RESTOCK, new TestData<>(env, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new FunctionGameTestInstance(RESTOCK, com.mechanical.TestArea.of(env, 20, true)));
     }
 
     /** Generates (or loads) the 3x3 around a chunk and returns its middle. */
