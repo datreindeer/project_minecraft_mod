@@ -1,6 +1,7 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **fas 1 byggd** (stengeneratorn + sex Stone Age-bergarter, se "Fas 1: resultat" sist), resten plan. Skriven 2026-11-21.
+Status: **fas 1 byggd** (stengeneratorn + sex Stone Age-bergarter, se "Fas 1: resultat" sist), **fas 2 byggd** (kalk och
+murbruk, se "Fas 2: resultat"), resten plan. Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -264,3 +265,16 @@ kollar att varje block Java registrerar har en loot table, rätt verktyg, rätt 
 behöver `_pillar`/axel-hantering (Java gör `RotatedPillarBlock` för namn som slutar på `_pillar`; basalts polished/smooth
 måste läggas till när den mallen används). Efter skriptet: `gen_block_items.py`, `gen_unlocks.py`, `gen_advancements.py`,
 `gen_loot_format.py`, och lägg till lang (skriptet gör blocknamnen), advancement, `docs/ages/` och registry notes.
+
+## Fas 2: resultat (byggt)
+
+Tre nya rader i `STONES` (skriptet och `StoneFamilies.java`): **Dolomite** (tuff, med Limestone och mest i dess klippor,
+krossas till Flux), **Travertine** (sandstone, under åar, träsk och slätter, taggen `mechanical:has_travertine` som
+Limestone Karst ska läggas till i) och **Shell Bank** (sandstone med rosa skalränder, under stränder och hav,
+`mechanical:has_shell_bank`). Kalkkedjan (`IronOres`, data `scripts/gen_lime.py` direkt efter `gen_stone_families.py`):
+lime stones eller 4 Chalk i Clay Kiln vid 900° → **Quicklime**, + vattenhink → **Slaked Lime**, + Sand + Gravel → 4
+**Lime Mortar**, + 2 Sand + Straw → 4 **Lime Plaster** (+ White/Black/Red/Yellow med pigment). Slaked Lime kalkar
+också en Scraped Hide till Leather. Murbruket krävs inte (standardval 3): `gen_stone_families.py` skriver
+`<bricks>_with_mortar` (4 + 1 Lime Mortar → dubbelt) för varje familjs 2×2-Bricks-recept och för vanillas Stone,
+Deepslate, Mud Bricks och Bricks, så nya stenar får det av sig själva. Inte byggt: slab/stairs/wall för putsen, murbruk
+för sandstone-familjernas Cut-block (de har inga Bricks), att Quicklime fräter i regn.

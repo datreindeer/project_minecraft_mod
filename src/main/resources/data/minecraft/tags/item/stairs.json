@@ -20,6 +20,13 @@
     "mechanical:shale_stairs",
     "mechanical:conglomerate_brick_stairs",
     "mechanical:conglomerate_stairs",
-    "mechanical:polished_conglomerate_stairs"
+    "mechanical:polished_conglomerate_stairs",
+    "mechanical:dolomite_brick_stairs",
+    "mechanical:dolomite_stairs",
+    "mechanical:polished_dolomite_stairs",
+    "mechanical:smooth_travertine_stairs",
+    "mechanical:travertine_stairs",
+    "mechanical:shell_bank_stairs",
+    "mechanical:smooth_shell_bank_stairs"
   ]
 }

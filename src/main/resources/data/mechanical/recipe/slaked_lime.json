@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:quicklime",
+    [
+      "mechanical:clay_water_bucket",
+      "mechanical:bronze_water_bucket",
+      "minecraft:water_bucket"
+    ]
+  ],
+  "result": {
+    "id": "mechanical:slaked_lime",
+    "count": 1
+  }
+}

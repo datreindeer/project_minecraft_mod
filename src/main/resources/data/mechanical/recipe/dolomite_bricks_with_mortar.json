@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_dolomite",
+    "mechanical:polished_dolomite",
+    "mechanical:polished_dolomite",
+    "mechanical:polished_dolomite",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:dolomite_bricks",
+    "count": 8
+  }
+}

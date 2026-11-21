@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "mechanical:block/shell_bank_bottom",
+    "side": "mechanical:block/shell_bank",
+    "top": "mechanical:block/shell_bank_top"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/shell_bank_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/shell_bank"
+    },
+    "type=top": {
+      "model": "mechanical:block/shell_bank_slab_top"
+    }
+  }
+}

@@ -1009,6 +1009,29 @@
      "sv": "[[limestone]] ligger i stora klumpar i berget, och syns i sluttningar och klippor. Krossa den på [[stone_anvil]] till **2 [[flux]]**, flussmedel till Bloomery.\n\n[[rock_salt]] ligger djupt under öken, badlands och savann (Bronze Pickaxe) och ger 2–3 [[salt]]. Kött + Salt → [[salted_meat]] och fisk + Salt → [[salted_fish]] **ruttnar aldrig**. Scraped Hide + Salt → Leather direkt.",
      "en": "[[limestone]] lies in big blobs in the rock and shows on hillsides and cliffs. Crush it on the [[stone_anvil]] into **2 [[flux]]**, flux for the Bloomery.\n\n[[rock_salt]] lies deep under desert, badlands and savanna (Bronze Pickaxe) and gives 2–3 [[salt]]. Meat + Salt → [[salted_meat]] and fish + Salt → [[salted_fish]] **never spoil**. Scraped Hide + Salt → Leather at once."
     }
+   },
+   {
+    "title": {
+     "sv": "Kalk, murbruk och puts",
+     "en": "Lime, mortar and plaster"
+    },
+    "items": [
+     "dolomite",
+     "travertine",
+     "shell_bank",
+     "quicklime",
+     "slaked_lime",
+     "lime_mortar",
+     "lime_plaster",
+     "white_lime_plaster",
+     "black_lime_plaster",
+     "red_lime_plaster",
+     "yellow_lime_plaster"
+    ],
+    "text": {
+     "sv": "Bränn [[limestone]], [[dolomite]] (ligger ihop med kalkstenen), [[chalk_block]], [[travertine]] (under åar, träsk och slätter) eller [[shell_bank]] (under stränder) i kilnen vid **900°** (Charcoal + Bellows) till [[quicklime]]. Quicklime + en hink vatten → [[slaked_lime]].\n\nSlaked Lime + Sand + Gravel → **4 [[lime_mortar]]**. 4 av det ett tegel görs av + 1 Lime Mortar ger **dubbelt så mycket tegel**, för alla stenars Bricks och vanillas Stone, Deepslate och Mud Bricks. Murbruket krävs aldrig.\n\nSlaked Lime + 2 Sand + Straw → **4 [[lime_plaster]]**, vita putsade väggar. 8 runt ett pigment färgar dem vita, svarta, röda eller gula. Scraped Hide + Slaked Lime → Leather, som med salt.",
+     "en": "Burn [[limestone]], [[dolomite]] (it lies with the limestone), a [[chalk_block]], [[travertine]] (under rivers, swamps and plains) or [[shell_bank]] (under beaches) in the kiln at **900°** (Charcoal + Bellows) into [[quicklime]]. Quicklime + a bucket of water → [[slaked_lime]].\n\nSlaked Lime + Sand + Gravel → **4 [[lime_mortar]]**. 4 of what a bricks block is made from + 1 Lime Mortar gives **twice the bricks**, for every stone's Bricks and vanilla's Stone, Deepslate and Mud Bricks. Mortar is never required.\n\nSlaked Lime + 2 Sand + Straw → **4 [[lime_plaster]]**, white plastered walls. 8 around a pigment dye them white, black, red or yellow. Scraped Hide + Slaked Lime → Leather, like salt."
+    }
    }
   ]
  }

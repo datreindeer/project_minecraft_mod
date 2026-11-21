@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_dolomite",
+  "result": {
+    "id": "mechanical:polished_dolomite_wall"
+  }
+}

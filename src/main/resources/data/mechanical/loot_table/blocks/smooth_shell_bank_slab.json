@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:smooth_shell_bank_slab",
+                "state": {
+                  "type": "double"
+                }
+              },
+              "count": 2
+            },
+            {
+              "type": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "mechanical:smooth_shell_bank_slab"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "mechanical:blocks/smooth_shell_bank_slab"
+}

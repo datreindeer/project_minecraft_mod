@@ -1098,6 +1098,28 @@ TABS["iron_age"][1].extend([
      has("salted_meat", "salted_fish")),
 ])
 
+# lime and mortar (world-materials-plan phase 2; IronOres.java, gen_lime.py, the lime stones in gen_stone_families.py)
+TABS["iron_age"][1].extend([
+    ("dolomite", "limestone_bricks", "dolomite_bricks", T, "Dolomite",
+     "Mine Dolomite, found with Limestone and most in its cliffs, and craft it into Polished Dolomite and Dolomite Bricks. It crushes into Flux too",
+     has("dolomite", "dolomite_bricks")),
+    ("travertine", "limestone_bricks", "cut_travertine", T, "Travertine",
+     "Mine honey-coloured Travertine under rivers, swamps and plains, and cut it into Cut Travertine",
+     has("travertine", "cut_travertine")),
+    ("shell_bank", "limestone_bricks", "cut_shell_bank", T, "Shell Bank",
+     "Mine Shell Bank, stone of old seashells, under beaches and shores, and cut it into Cut Shell Bank",
+     has("shell_bank", "cut_shell_bank")),
+    ("quicklime", "limestone_bricks", "quicklime", T, "Quicklime",
+     "Burn Limestone, Dolomite, a Chalk Block, Travertine or Shell Bank in the Clay Kiln at 900° (bellows): Quicklime",
+     has("quicklime")),
+    ("lime_mortar", "quicklime", "lime_mortar", G, "Lime Mortar",
+     "Slake Quicklime with a bucket of water, mix it with Sand and Gravel: 4 Lime Mortar. 4 bricks' worth of stone and a Mortar lay 8 bricks",
+     has("lime_mortar")),
+    ("lime_plaster", "quicklime", "lime_plaster", T, "Lime Plaster",
+     "Mix Slaked Lime, 2 Sand and Straw into 4 Lime Plaster. 8 around a pigment dye it white, black, red or yellow",
+     has("lime_plaster")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

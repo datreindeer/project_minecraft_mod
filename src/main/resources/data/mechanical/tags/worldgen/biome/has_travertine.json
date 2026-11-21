@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#minecraft:is_river",
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "minecraft:plains",
+    "minecraft:sunflower_plains"
+  ]
+}

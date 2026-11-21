@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": [
+      "mechanical:shell_bank",
+      "mechanical:chiseled_shell_bank",
+      "mechanical:cut_shell_bank"
+    ]
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mechanical:shell_bank_stairs"
+  }
+}

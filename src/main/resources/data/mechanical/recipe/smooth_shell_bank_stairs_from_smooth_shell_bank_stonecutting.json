@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_shell_bank",
+  "result": {
+    "id": "mechanical:smooth_shell_bank_stairs"
+  }
+}

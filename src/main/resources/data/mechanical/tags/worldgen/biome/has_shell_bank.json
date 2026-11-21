@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#minecraft:is_beach",
+    "minecraft:stony_shore",
+    "minecraft:ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:warm_ocean"
+  ]
+}

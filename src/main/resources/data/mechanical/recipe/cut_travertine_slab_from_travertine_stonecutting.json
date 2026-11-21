@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:travertine",
+  "result": {
+    "count": 2,
+    "id": "mechanical:cut_travertine_slab"
+  }
+}

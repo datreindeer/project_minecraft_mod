@@ -18,6 +18,11 @@
     "mechanical:shale_wall",
     "mechanical:conglomerate_brick_wall",
     "mechanical:conglomerate_wall",
-    "mechanical:polished_conglomerate_wall"
+    "mechanical:polished_conglomerate_wall",
+    "mechanical:dolomite_brick_wall",
+    "mechanical:dolomite_wall",
+    "mechanical:polished_dolomite_wall",
+    "mechanical:travertine_wall",
+    "mechanical:shell_bank_wall"
   ]
 }

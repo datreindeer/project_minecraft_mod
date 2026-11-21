@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/quicklime",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:lime_mortar"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:lime_mortar"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.lime_mortar.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.lime_mortar.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:gneiss",
+    "mechanical:gneiss",
+    "mechanical:gneiss",
+    "mechanical:gneiss",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:gneiss_bricks",
+    "count": 8
+  }
+}
