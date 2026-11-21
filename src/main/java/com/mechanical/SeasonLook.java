@@ -44,6 +44,23 @@ public final class SeasonLook {
         return month < AUTUMN || !coloured(baseTemperature) ? -1 : (yellow ? YELLOW_TO : RED_TO)[month];
     }
 
+    // per month: Reed's colour (its texture is grey): fresh green in spring, green in summer, gold in autumn, straw in winter
+    private static final int[] REED = {0xFF8CB450, 0xFF96B454, 0xFFA0AE56, 0xFFA7A956, 0xFFA7A956, 0xFFB4A858, 0xFFD0B05C,
+            0xFFDCB464, 0xFFD2AE6E, 0xFFC8B48C, 0xFFC8B48C, 0xFFBEAA82};
+    /** Reed's summer colour (also in the hand and where the seasons don't show). */
+    public static final int REED_SUMMER = 0xFFA7A956;
+    // per month: a filter over Heather's own colours, white = unchanged; browner and duller from late autumn to early spring
+    private static final int[] HEATHER = {0xFFC8B4A0, 0xFFE6DCD2, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+            0xFFF0E6DC, 0xFFDCC8B4, 0xFFC0AA96, 0xFFB9A38F, 0xFFB9A38F};
+
+    public static int reed(float baseTemperature, int month) {
+        return month < 0 || !coloured(baseTemperature) ? REED_SUMMER : REED[month];
+    }
+
+    public static int heather(float baseTemperature, int month) {
+        return month < 0 || !coloured(baseTemperature) ? -1 : HEATHER[month];
+    }
+
     public static boolean coloured(float baseTemperature) {
         return baseTemperature >= SNOWY_BELOW && baseTemperature < TROPICAL_FROM;
     }

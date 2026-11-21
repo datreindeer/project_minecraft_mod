@@ -1,6 +1,12 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mechanical:item/reed"
+    "model": "mechanical:item/reed",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -5789354
+      }
+    ]
   }
 }

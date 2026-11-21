@@ -104,14 +104,12 @@ save(recolour(vanilla("mud"), PEAT), "peat")
 save(recolour(vanilla("dirt"), LOESS), "loess")
 save(recolour(vanilla("clay"), KAOLIN), "kaolin")
 save(recolour(vanilla("clay_ball", "item"), KAOLIN), "kaolin_clay", "item")
-save(recolour(vanilla("sugar_cane"), REED), "reed")
+# Reed is pale grey, coloured by season in game (SeasonLook.reed: green in summer, gold in autumn, straw in winter)
+save(recolour(vanilla("sugar_cane"), [(104, 104, 104), (146, 146, 146), (186, 186, 186), (222, 222, 222), (255, 255, 255)]), "reed")
 save(recolour(vanilla("hay_block_top"), THATCH), "reed_thatch_top")
 save(recolour(vanilla("hay_block_side"), THATCH), "reed_thatch_side")
-grass = (98, 142, 62)
-save(tint(vanilla("grass_block_top"), grass), "turf_top")
-side = vanilla("dirt")
-side.alpha_composite(tint(vanilla("grass_block_side_overlay"), grass))
-save(side, "turf_side")
+for old in ("turf_top", "turf_side"):  # Turf now uses vanilla's grey grass textures, tinted with the seasonal grass colour
+    (A / f"textures/block/{old}.png").unlink(missing_ok=True)
 daub = recolour(vanilla("packed_mud"), DAUB)
 rng = random.Random(3)
 for _ in range(14):  # straw in the daub
@@ -198,7 +196,7 @@ def shapeless(name, ingredients, result, count=1):
     recipe(name, {"type": "minecraft:crafting_shapeless", "ingredients": ingredients, "result": {"id": M + result, "count": count}})
 
 
-def slab_stairs(name, tex):
+def slab_stairs(name, tex, parents="minecraft:block/"):
     """<name>_slab and <name>_stairs (vanilla sandstone's blockstates; tex: top/side/bottom), 3 in a row -> 6, stairs -> 4."""
     for kind, models in (("slab", {"": "slab", "_top": "slab_top"}), ("stairs", {"": "stairs", "_inner": "inner_stairs", "_outer": "outer_stairs"})):
         b = f"{name}_{kind}"
@@ -207,7 +205,7 @@ def slab_stairs(name, tex):
         state = state.replace(f"minecraft:block/sandstone_{kind}", f"{M}block/{b}").replace('"minecraft:block/sandstone"', f'"{M}block/{name}"')
         w(A / f"blockstates/{b}.json", json.loads(state))
         for suffix, parent in models.items():
-            w(A / f"models/block/{b}{suffix}.json", {"parent": "minecraft:block/" + parent, "textures": tex})
+            w(A / f"models/block/{b}{suffix}.json", {"parent": parents + parent, "textures": tex})
         loot = jar.read(f"data/minecraft/loot_table/blocks/sandstone_{kind}.json").decode().replace(f"minecraft:sandstone_{kind}", M + b)
         w(D / f"mechanical/loot_table/blocks/{b}.json", json.loads(loot.replace(f"minecraft:blocks/sandstone_{kind}", f"mechanical:blocks/{b}")))
         lang[f"block.mechanical.{b}"] = title(b)
@@ -226,12 +224,40 @@ w(A / "models/item/kaolin_clay.json", {"parent": "minecraft:item/generated", "te
 w(A / "items/kaolin_clay.json", {"model": {"type": "minecraft:model", "model": M + "item/kaolin_clay"}})
 lang["item.mechanical.kaolin_clay"] = "Kaolin Clay"
 # Turf: dirt bound with plant fibre (grass roots), for turf roofs and walls
-turf = bottom_top(M + "block/turf_top", M + "block/turf_side", "minecraft:block/dirt")
-block("turf", {"parent": "minecraft:block/cube_bottom_top", "textures": turf})
+# Grass-tinted like a Grass Block (client.SeasonalFoliage), so it follows the seasons: the top and a side fringe overlay.
+turf = {"top": "minecraft:block/grass_block_top", "side": "minecraft:block/dirt", "bottom": "minecraft:block/dirt",
+        "overlay": "minecraft:block/grass_block_side_overlay", "particle": "minecraft:block/dirt"}
+
+
+def grassy(parent):
+    """Vanilla block model {parent} with its top faces grass-tinted and a tinted #overlay copy of its side faces."""
+    m = json.loads(jar.read(f"assets/minecraft/models/block/{parent}.json"))
+    els = []
+    for e in m["elements"]:
+        e = json.loads(json.dumps(e))
+        if "up" in e["faces"]:
+            e["faces"]["up"]["tintindex"] = 0
+        els.append(e)
+        sides = {d: {**f, "texture": "#overlay", "tintindex": 0} for d, f in e["faces"].items() if d in ("north", "south", "west", "east")}
+        if sides:
+            els.append({**{k: v for k, v in e.items() if k != "faces"}, "faces": sides})
+    m["elements"] = els
+    w(A / f"models/block/grassy_{parent}.json", m)
+
+
+for p in ("slab", "slab_top", "stairs", "inner_stairs", "outer_stairs"):
+    grassy(p)
+block("turf", {"parent": "minecraft:block/grass_block", "textures": turf})
 shapeless("turf", ["minecraft:dirt", M + "plant_fibre"], "turf")
-slab_stairs("turf", turf)
-# Reed: grows like sugar cane by water; Reed Thatch block, slab, stairs and a sloped roof like the Bark Roof
-block("reed", {"parent": "minecraft:block/cross", "textures": {"cross": M + "block/reed"}})
+slab_stairs("turf", turf, M + "block/grassy_")
+GRASS_ITEM_TINT = [{"type": "minecraft:grass", "downfall": 1.0, "temperature": 0.5}]
+for b in ("turf", "turf_slab", "turf_stairs"):
+    w(A / f"items/{b}.json", {"model": {"type": "minecraft:model", "model": M + "block/" + b, "tints": GRASS_ITEM_TINT}})
+# Reed: grows like sugar cane by water; Reed Thatch block, slab, stairs and a sloped roof like the Bark Roof.
+# Tinted by season (SeasonLook.reed); in the hand its summer green.
+block("reed", {"parent": "minecraft:block/tinted_cross", "textures": {"cross": M + "block/reed"}})
+w(A / "items/reed.json", {"model": {"type": "minecraft:model", "model": M + "item/reed",
+                                    "tints": [{"type": "minecraft:constant", "value": -5789354}]}})  # 0xFFA7A956
 thatch = bottom_top(M + "block/reed_thatch_top", M + "block/reed_thatch_side", M + "block/reed_thatch_top")
 block("reed_thatch", {"parent": "minecraft:block/cube_bottom_top", "textures": thatch})
 shaped("reed_thatch", ["##", "##"], {"#": M + "reed"}, "reed_thatch")
