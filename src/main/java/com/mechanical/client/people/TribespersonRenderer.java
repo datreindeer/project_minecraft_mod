@@ -32,6 +32,8 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
 
     public TribespersonRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        // EquipmentClient only adds this layer to the player renderers; the Miner's sack needs it here too
+        addLayer(new com.mechanical.client.EquipmentLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
     }
 
     @Override

@@ -28,7 +28,7 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
  * then a cape like a skin cape (textures/entity/cloak/&lt;id&gt;.png, pushed out over chest armour) or, for the Glider
  * Cloak, its wings layer (folded, spread while gliding);</li>
  * <li>the Leather Satchel ({@link WornSatchelModel}), the Quiver ({@link WornQuiverModel}) and the Leather Pouch ({@link WornPouchModel});</li>
- * <li>the Miner's ore sack ({@link MinerSackModel}, people.TribespersonRenderer; tribespeople are drawn by the player renderers).</li>
+ * <li>the Miner's ore sack ({@link MinerSackModel}, people.TribespersonRenderer adds this layer too).</li>
  * </ul>
  */
 public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
