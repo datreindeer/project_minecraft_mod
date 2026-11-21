@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/limestone_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/limestone"
+    },
+    "type=top": {
+      "model": "mechanical:block/limestone_slab_top"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:polished_limestone",
+  "result": {
+    "id": "mechanical:chiseled_limestone_bricks"
+  }
+}

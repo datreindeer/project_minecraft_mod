@@ -187,6 +187,18 @@ för silver. Inte i Bloomery (den kod-delen lämnades orörd).
 **I Bloomery:** högerklicka på Bloomery Hearth med Flux (högst 4 laddningar): nästa lupp ger en Wrought Iron mer och en
 Slag mindre (se *Rostning*).
 
+**Byggblock av Limestone** (som Tuff i vanilla, samma recept och former):
+
+| Block | Hur |
+|---|---|
+| **Polished Limestone** | 2×2 Limestone → 4. Eller **Bronze Chisel** på Limestone. |
+| **Limestone Bricks** | 2×2 Polished Limestone → 4. Eller Bronze Chisel på Polished Limestone. |
+| **Chiseled Limestone Bricks** | 2 Polished Limestone Slab på varandra. Eller Bronze Chisel på Limestone Bricks. |
+| **Chiseled Limestone** | 2 Limestone Slab på varandra. |
+| **Slab / Stairs / Wall** | Av Limestone, Polished Limestone och Limestone Bricks (Limestone Brick Slab/Stairs/Wall), vanliga vanilla-mönster: 3 i rad → 6 slabs, trappmönster av 6 → 4 stairs, 2×3 → 6 walls. |
+
+Stonecutter-recepten finns också, men Stonecutter är låst tills en senare ålder. Advancement: *Limestone Mason* (efter Flux).
+
 ### 8. Salt
 
 | Vad | Hur |
@@ -249,6 +261,7 @@ Inga öppna beslut just nu: rostning (sämre, inte oanvändbar), malmerna (alla 
 | Raw Galena, Lead Ingot | Items | **Byggd.** Kiln 800° |
 | Leaded Cupel, Silver Nugget, Silver Ingot | Items | **Byggd.** Kupellering vid 1000°, 9 nuggets = 1 tacka |
 | Limestone, Flux | Block/Item | **Byggd.** Stone Anvil: 1 → 2 Flux, taggen `mechanical:flux` |
+| Polished Limestone, Limestone Bricks, Chiseled Limestone (Bricks), slabs/stairs/walls | Block | **Byggd.** Vanilla Tuff-recept, Bronze Chisel |
 | Rock Salt, Salt | Block/Item | **Byggd.** Bronze Pickaxe, 2–3 Salt |
 | Salted Meat, Salted Fish | Items | **Byggd.** Ruttnar aldrig |
 

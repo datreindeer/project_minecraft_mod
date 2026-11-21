@@ -70,6 +70,19 @@
     "mechanical:galena_ore",
     "mechanical:deepslate_galena_ore",
     "mechanical:limestone",
-    "mechanical:rock_salt"
+    "mechanical:rock_salt",
+    "mechanical:chiseled_limestone",
+    "mechanical:chiseled_limestone_bricks",
+    "mechanical:limestone_brick_slab",
+    "mechanical:limestone_brick_stairs",
+    "mechanical:limestone_brick_wall",
+    "mechanical:limestone_bricks",
+    "mechanical:limestone_slab",
+    "mechanical:limestone_stairs",
+    "mechanical:limestone_wall",
+    "mechanical:polished_limestone",
+    "mechanical:polished_limestone_slab",
+    "mechanical:polished_limestone_stairs",
+    "mechanical:polished_limestone_wall"
   ]
 }

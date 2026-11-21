@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/flux",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:polished_limestone"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:limestone_bricks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:limestone_bricks"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.limestone_bricks.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.limestone_bricks.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

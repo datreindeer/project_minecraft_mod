@@ -6,6 +6,7 @@ import static com.mechanical.Mechanical.MODID;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -32,7 +33,11 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -76,6 +81,26 @@ public final class IronOres {
     public static final DeferredItem<BlockItem> DEEPSLATE_GALENA_ORE_ITEM = ITEMS.registerSimpleBlockItem("deepslate_galena_ore", DEEPSLATE_GALENA_ORE);
     public static final DeferredItem<BlockItem> LIMESTONE_ITEM = ITEMS.registerSimpleBlockItem("limestone", LIMESTONE);
     public static final DeferredItem<BlockItem> ROCK_SALT_ITEM = ITEMS.registerSimpleBlockItem("rock_salt", ROCK_SALT);
+
+    // Limestone building blocks, the Tuff family copied block for block (data: scripts/gen_limestone_blocks.py)
+    public static final DeferredBlock<Block> POLISHED_LIMESTONE = stone("polished_limestone", Block::new);
+    public static final DeferredBlock<Block> LIMESTONE_BRICKS = stone("limestone_bricks", Block::new);
+    public static final DeferredBlock<Block> CHISELED_LIMESTONE_BRICKS = stone("chiseled_limestone_bricks", Block::new);
+    static {
+        stone("chiseled_limestone", Block::new);
+        for (var base : List.of(LIMESTONE, POLISHED_LIMESTONE, LIMESTONE_BRICKS)) {
+            String name = base.getId().getPath().replace("bricks", "brick");
+            stone(name + "_slab", SlabBlock::new);
+            stone(name + "_stairs", p -> new StairBlock(base.get().defaultBlockState(), p));
+            stone(name + "_wall", p -> new WallBlock(p.forceSolidOn()));
+        }
+    }
+
+    private static <B extends Block> DeferredBlock<B> stone(String name, Function<BlockBehaviour.Properties, B> factory) {
+        DeferredBlock<B> block = BLOCKS.registerBlock(name, factory, () -> BlockBehaviour.Properties.ofLegacyCopy(LIMESTONE.get()));
+        ITEMS.registerSimpleBlockItem(name, block);
+        return block;
+    }
 
     public static final DeferredItem<Item> RAW_GALENA = ITEMS.registerSimpleItem("raw_galena");
     public static final DeferredItem<Item> LEAD_INGOT = ITEMS.registerSimpleItem("lead_ingot");
@@ -183,6 +208,10 @@ public final class IronOres {
         // limestone crushes into flux
         ItemStack flux = BronzeOres.crushed(new ItemStack(LIMESTONE_ITEM.get()));
         h.assertTrue(flux.is(FLUX.get()) && flux.getCount() == FLUX_PER_LIMESTONE && flux.is(FLUX_TAG), "Limestone crushes into 2 Flux, tagged mechanical:flux");
+        // the Bronze Chisel works limestone like tuff
+        h.assertTrue(BronzeTools.ChiselItem.carved(LIMESTONE.get()) == POLISHED_LIMESTONE.get()
+                && BronzeTools.ChiselItem.carved(POLISHED_LIMESTONE.get()) == LIMESTONE_BRICKS.get()
+                && BronzeTools.ChiselItem.carved(LIMESTONE_BRICKS.get()) == CHISELED_LIMESTONE_BRICKS.get(), "the chisel carves Limestone -> Polished -> Bricks -> Chiseled Bricks");
 
         // the kiln: lead at 800°, cupellation at 1000°, gold at 1100° (9 nuggets per ingot)
         KilnBlockEntity.Bake lead = KilnBlockEntity.bakeFor(new ItemStack(RAW_GALENA.get()));

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:limestone",
+  "result": {
+    "id": "mechanical:polished_limestone"
+  }
+}

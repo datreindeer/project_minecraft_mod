@@ -1406,5 +1406,18 @@
   "minecraft:iron_chain": {"vanilla": true, "category": "blocks", "text": "3 [[iron_tool_rod]] in a column → 3."},
   "minecraft:cauldron": {"vanilla": true, "category": "blocks", "text": "7 [[iron_plate]] (U shape)."},
   "minecraft:iron_door": {"vanilla": true, "category": "blocks", "text": "6 [[iron_plate]] → 3."},
-  "minecraft:iron_trapdoor": {"vanilla": true, "category": "blocks", "text": "4 [[iron_plate]]."}
+  "minecraft:iron_trapdoor": {"vanilla": true, "category": "blocks", "text": "4 [[iron_plate]]."},
+  "polished_limestone": {"text": "2×2 [[limestone]] → 4, or the [[bronze_chisel]] on Limestone. 2×2 makes [[limestone_bricks]]."},
+  "limestone_bricks": {"text": "2×2 [[polished_limestone]] → 4, or the [[bronze_chisel]] on Polished Limestone. The chisel again gives [[chiseled_limestone_bricks]]."},
+  "chiseled_limestone_bricks": {"text": "2 [[polished_limestone_slab]] stacked, or the [[bronze_chisel]] on [[limestone_bricks]]."},
+  "chiseled_limestone": {"text": "2 [[limestone_slab]] stacked."},
+  "limestone_slab": {"text": "Limestone slab. 3 in a row → 6 [[limestone]]."},
+  "limestone_stairs": {"text": "Limestone stairs. stair pattern of 6 → 4 [[limestone]]."},
+  "limestone_wall": {"text": "Limestone wall. 2×3 → 6 [[limestone]]."},
+  "polished_limestone_slab": {"text": "Polished Limestone slab. 3 in a row → 6 [[polished_limestone]]."},
+  "polished_limestone_stairs": {"text": "Polished Limestone stairs. stair pattern of 6 → 4 [[polished_limestone]]."},
+  "polished_limestone_wall": {"text": "Polished Limestone wall. 2×3 → 6 [[polished_limestone]]."},
+  "limestone_brick_slab": {"text": "Limestone Bricks slab. 3 in a row → 6 [[limestone_bricks]]."},
+  "limestone_brick_stairs": {"text": "Limestone Bricks stairs. stair pattern of 6 → 4 [[limestone_bricks]]."},
+  "limestone_brick_wall": {"text": "Limestone Bricks wall. 2×3 → 6 [[limestone_bricks]]."}
 }

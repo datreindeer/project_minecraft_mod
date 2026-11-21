@@ -394,7 +394,10 @@ public final class BronzeTools {
                     Map.entry(Blocks.BLACKSTONE, Blocks.POLISHED_BLACKSTONE), Map.entry(Blocks.POLISHED_BLACKSTONE, Blocks.POLISHED_BLACKSTONE_BRICKS),
                     Map.entry(Blocks.POLISHED_BLACKSTONE_BRICKS, Blocks.CHISELED_POLISHED_BLACKSTONE),
                     Map.entry(Blocks.NETHER_BRICKS, Blocks.CHISELED_NETHER_BRICKS), Map.entry(Blocks.QUARTZ_BLOCK, Blocks.CHISELED_QUARTZ_BLOCK),
-                    Map.entry(Blocks.RESIN_BRICKS, Blocks.CHISELED_RESIN_BRICKS));
+                    Map.entry(Blocks.RESIN_BRICKS, Blocks.CHISELED_RESIN_BRICKS),
+                    Map.entry(IronOres.LIMESTONE.get(), IronOres.POLISHED_LIMESTONE.get()),
+                    Map.entry(IronOres.POLISHED_LIMESTONE.get(), IronOres.LIMESTONE_BRICKS.get()),
+                    Map.entry(IronOres.LIMESTONE_BRICKS.get(), IronOres.CHISELED_LIMESTONE_BRICKS.get()));
             return carved.get(block);
         }
 

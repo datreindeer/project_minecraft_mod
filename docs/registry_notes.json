@@ -1406,5 +1406,18 @@
   "minecraft:iron_chain": {"vanilla": true, "category": "blocks", "text": "3 [[iron_tool_rod]] i rad → 3."},
   "minecraft:cauldron": {"vanilla": true, "category": "blocks", "text": "7 [[iron_plate]] (U-form)."},
   "minecraft:iron_door": {"vanilla": true, "category": "blocks", "text": "6 [[iron_plate]] → 3."},
-  "minecraft:iron_trapdoor": {"vanilla": true, "category": "blocks", "text": "4 [[iron_plate]]."}
+  "minecraft:iron_trapdoor": {"vanilla": true, "category": "blocks", "text": "4 [[iron_plate]]."},
+  "polished_limestone": {"text": "Slipad kalksten. 2×2 [[limestone]] → 4, eller [[bronze_chisel]] på Limestone. 2×2 blir [[limestone_bricks]]."},
+  "limestone_bricks": {"text": "Kalkstenstegel. 2×2 [[polished_limestone]] → 4, eller [[bronze_chisel]] på Polished Limestone. Mejseln igen ger [[chiseled_limestone_bricks]]."},
+  "chiseled_limestone_bricks": {"text": "Huggen kalkstenstegel. 2 [[polished_limestone_slab]] på varandra, eller [[bronze_chisel]] på [[limestone_bricks]]."},
+  "chiseled_limestone": {"text": "Huggen kalksten. 2 [[limestone_slab]] på varandra."},
+  "limestone_slab": {"text": "Kalksten, slab. 3 i rad → 6 [[limestone]]."},
+  "limestone_stairs": {"text": "Kalksten, stairs. trappmönster av 6 → 4 [[limestone]]."},
+  "limestone_wall": {"text": "Kalksten, wall. 2×3 → 6 [[limestone]]."},
+  "polished_limestone_slab": {"text": "Slipad kalksten, slab. 3 i rad → 6 [[polished_limestone]]."},
+  "polished_limestone_stairs": {"text": "Slipad kalksten, stairs. trappmönster av 6 → 4 [[polished_limestone]]."},
+  "polished_limestone_wall": {"text": "Slipad kalksten, wall. 2×3 → 6 [[polished_limestone]]."},
+  "limestone_brick_slab": {"text": "Kalkstenstegel, slab. 3 i rad → 6 [[limestone_bricks]]."},
+  "limestone_brick_stairs": {"text": "Kalkstenstegel, stairs. trappmönster av 6 → 4 [[limestone_bricks]]."},
+  "limestone_brick_wall": {"text": "Kalkstenstegel, wall. 2×3 → 6 [[limestone_bricks]]."}
 }
