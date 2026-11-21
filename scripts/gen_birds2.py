@@ -148,7 +148,7 @@ def egg_entry(bird, n):
 
 
 w(D / "mechanical/loot_table/blocks/bird_nest.json", {"type": "minecraft:block", "pools": [
-    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": M + "bird_nest"}], "conditions": [{"condition": "minecraft:survives_explosion"}]},
+    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": M + "bird_nest"}], "condition": {"type": "minecraft:survives_explosion"}},
     {"rolls": 1, "entries": [egg_entry(b, n) for b in EGG_ITEM for n in range(1, 4)]}],
     "random_sequence": "mechanical:blocks/bird_nest"})
 w(D / "mechanical/recipe/bird_nest.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["S S", "WSW"],

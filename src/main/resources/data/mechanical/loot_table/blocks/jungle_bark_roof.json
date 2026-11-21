@@ -9,11 +9,9 @@
           "name": "mechanical:jungle_bark_roof"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/jungle_bark_roof"

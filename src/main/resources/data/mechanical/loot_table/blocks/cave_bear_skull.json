@@ -9,11 +9,9 @@
           "name": "mechanical:cave_bear_skull"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/cave_bear_skull"

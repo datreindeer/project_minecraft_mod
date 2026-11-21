@@ -119,8 +119,8 @@ w(A / "models/block/molehill.json", {"parent": "minecraft:block/block", "ambient
 w(A / "blockstates/molehill.json", {"variants": {"": [{"model": M + "block/molehill"}, {"model": M + "block/molehill", "y": 90},
                                                        {"model": M + "block/molehill", "y": 180}, {"model": M + "block/molehill", "y": 270}]}})
 w(D / "mechanical/loot_table/blocks/molehill.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-    {"type": "minecraft:item", "name": "minecraft:dirt", "conditions": [{"condition": "minecraft:random_chance", "chance": 0.5}]}],
-    "conditions": [{"condition": "minecraft:survives_explosion"}]}], "random_sequence": "mechanical:blocks/molehill"})
+    {"type": "minecraft:item", "name": "minecraft:dirt", "condition": {"type": "minecraft:random_chance", "chance": 0.5}}],
+    "condition": {"type": "minecraft:survives_explosion"}}], "random_sequence": "mechanical:blocks/molehill"})
 
 # ---- tags ----
 RAW = [M + r for r in MEATS]

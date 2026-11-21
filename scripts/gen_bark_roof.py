@@ -192,7 +192,7 @@ def data():
         w(D / f"mechanical/recipe/{b}.json", {"type": "minecraft:crafting_shaped", "category": "building", "pattern": ["B ", "BB"],
                                                "key": {"B": f"{M}{wood}_bark"}, "result": {"id": M + b, "count": 4}})
         w(D / f"mechanical/loot_table/blocks/{b}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-            {"type": "minecraft:item", "name": M + b}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+            {"type": "minecraft:item", "name": M + b}], "condition": {"type": "minecraft:survives_explosion"}}],
             "random_sequence": f"mechanical:blocks/{b}"})
     w(D / "mechanical/tags/item/barks.json", {"values": [f"{M}{x}_bark" for x in WOODS]})
     for old in (A / "models/item/bark.json", A / "items/bark.json"):

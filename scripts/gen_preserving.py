@@ -113,7 +113,7 @@ parts += [{"when": {"facing": f, "content": c, "strips": "|".join(str(n) for n i
 w(A / "blockstates/smoking_rack.json", {"multipart": parts})
 w(A / "items/smoking_rack.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/smoking_rack_frame"}})
 w(D / "mechanical/loot_table/blocks/smoking_rack.json", {"type": "minecraft:block", "pools": [
-    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:smoking_rack"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+    {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:smoking_rack"}], "condition": {"type": "minecraft:survives_explosion"}}],
     "random_sequence": "mechanical:blocks/smoking_rack"})
 tag_add(D / "minecraft/tags/block/mineable/axe.json", "mechanical:smoking_rack")
 # a taller frame than the Drying Rack, lashed with cordage

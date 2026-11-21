@@ -175,7 +175,7 @@ w(A / "blockstates/leopard_rug.json", {"variants": {f"facing={f}": {"model": "me
                                                     for f, y in ROT}})
 flat_item("leopard_rug")
 w(D / "mechanical/loot_table/blocks/leopard_rug.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
-    {"type": "minecraft:item", "name": M + "leopard_rug"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+    {"type": "minecraft:item", "name": M + "leopard_rug"}], "condition": {"type": "minecraft:survives_explosion"}}],
     "random_sequence": "mechanical:blocks/leopard_rug"})
 
 # ---- world spawns ----

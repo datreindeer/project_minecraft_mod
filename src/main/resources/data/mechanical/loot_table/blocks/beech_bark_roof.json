@@ -9,11 +9,9 @@
           "name": "mechanical:beech_bark_roof"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/beech_bark_roof"

@@ -60,9 +60,9 @@ w(A / "blockstates/guano_pile.json", {"variants": {
     "layers=1": [{"model": M + "block/guano_pile_1", "y": y} for y in (0, 90, 180, 270)],
     **{f"layers={n}": [{"model": M + f"block/guano_pile_{n}", "y": y} for y in (0, 90, 180, 270)] for n in (2, 3, 4)}}})
 w(D / "mechanical/loot_table/blocks/guano_pile.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{
-    "type": "minecraft:item", "name": M + "guano", "functions": [
-        {"function": "minecraft:set_count", "count": n, "conditions": [{"condition": "minecraft:block_state_property",
-                                                                        "block": M + "guano_pile", "properties": {"layers": str(n)}}]}
+    "type": "minecraft:item", "name": M + "guano", "modifier": [
+        {"type": "minecraft:set_count", "count": n, "condition": {"type": "minecraft:match_block",
+                                                                  "blocks": M + "guano_pile", "state": {"layers": str(n)}}}
         for n in (2, 3, 4)]}]}], "random_sequence": "mechanical:blocks/guano_pile"})
 
 # ---- Night-Eye Salve: bat wing ground with soot and fat ----

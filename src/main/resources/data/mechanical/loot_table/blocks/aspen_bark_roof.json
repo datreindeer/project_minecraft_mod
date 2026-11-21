@@ -9,11 +9,9 @@
           "name": "mechanical:aspen_bark_roof"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/aspen_bark_roof"
