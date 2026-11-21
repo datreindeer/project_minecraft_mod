@@ -855,5 +855,70 @@
     }
    }
   ]
+ },
+ {
+  "title": {
+   "sv": "Järnåldern: nya malmer",
+   "en": "Iron Age: new ores"
+  },
+  "intro": {
+   "sv": "Med Bronze Pickaxe och en het kiln öppnar sig fler malmer: bly och silver ur blyglans, guld, kalksten till flussmedel och salt som håller maten.",
+   "en": "With a Bronze Pickaxe and a hot kiln more ores open up: lead and silver from galena, gold, limestone for flux and salt that keeps food."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Bly och silver",
+     "en": "Lead and silver"
+    },
+    "items": [
+     "galena_ore",
+     "raw_galena",
+     "lead_ingot",
+     "leaded_cupel",
+     "silver_nugget",
+     "silver_ingot",
+     "silver_coin"
+    ],
+    "text": {
+     "sv": "Bryt [[galena_ore]] med Bronze Pickaxe (vanlig under jord, mest kring y 16). Smält [[raw_galena]] i kilnen vid **800°** (Charcoal räcker) till [[lead_ingot]].\n\nSilvret tas ut genom **kupellering**: Lead Ingot + Bone Meal → [[leaded_cupel]], som bränns vid **1000°** (Charcoal + Bellows) till 1 [[silver_nugget]]. 9 Silver Nugget → [[silver_ingot]], och på [[bronze_anvil]] blir en Silver Ingot **4 [[silver_coin]]** (4 slag).",
+     "en": "Mine [[galena_ore]] with a Bronze Pickaxe (common underground, most around y 16). Smelt [[raw_galena]] in the kiln at **800°** (Charcoal is enough) into a [[lead_ingot]].\n\nSilver comes out by **cupellation**: Lead Ingot + Bone Meal → [[leaded_cupel]], fired at **1000°** (Charcoal + Bellows) into 1 [[silver_nugget]]. 9 Silver Nuggets → [[silver_ingot]], and on the [[bronze_anvil]] a Silver Ingot becomes **4 [[silver_coin]]s** (4 blows)."
+    }
+   },
+   {
+    "title": {
+     "sv": "Guld",
+     "en": "Gold"
+    },
+    "items": [
+     "minecraft:gold_nugget",
+     "minecraft:raw_gold",
+     "minecraft:gold_ingot",
+     "gold_coin"
+    ],
+    "text": {
+     "sv": "Vaska grus och sand med [[pan]]: ibland ett [[minecraft:gold_nugget]], oftare vid åar och stränder. Gold Ore kräver fortfarande järnhacka. 9 Gold Nugget eller 1 [[minecraft:raw_gold]] smälts i kilnen vid **1100°** till en Gold Ingot (inte i vanillaugnar). På städet blir den **4 [[gold_coin]]**.",
+     "en": "Pan gravel and sand with a [[pan]]: now and then a [[minecraft:gold_nugget]], more often by rivers and shores. Gold Ore still needs an iron pickaxe. 9 Gold Nuggets or 1 [[minecraft:raw_gold]] melt in the kiln at **1100°** into a Gold Ingot (not in vanilla furnaces). On the anvil it becomes **4 [[gold_coin]]s**."
+    }
+   },
+   {
+    "title": {
+     "sv": "Kalksten och salt",
+     "en": "Limestone and salt"
+    },
+    "items": [
+     "limestone",
+     "flux",
+     "rock_salt",
+     "salt",
+     "salted_meat",
+     "salted_fish"
+    ],
+    "text": {
+     "sv": "[[limestone]] ligger i stora klumpar i berget, och syns i sluttningar och klippor. Krossa den på [[stone_anvil]] till **2 [[flux]]**, flussmedel till Bloomery.\n\n[[rock_salt]] ligger djupt under öken, badlands och savann (Bronze Pickaxe) och ger 2–3 [[salt]]. Kött + Salt → [[salted_meat]] och fisk + Salt → [[salted_fish]] **ruttnar aldrig**. Scraped Hide + Salt → Leather direkt.",
+     "en": "[[limestone]] lies in big blobs in the rock and shows on hillsides and cliffs. Crush it on the [[stone_anvil]] into **2 [[flux]]**, flux for the Bloomery.\n\n[[rock_salt]] lies deep under desert, badlands and savanna (Bronze Pickaxe) and gives 2–3 [[salt]]. Meat + Salt → [[salted_meat]] and fish + Salt → [[salted_fish]] **never spoil**. Scraped Hide + Salt → Leather at once."
+    }
+   }
+  ]
  }
 ]
