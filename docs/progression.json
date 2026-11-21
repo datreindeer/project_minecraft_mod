@@ -937,6 +937,20 @@
    },
    {
     "title": {
+     "sv": "Vagnen",
+     "en": "The Wagon"
+    },
+    "items": [
+     "iron_rimmed_wheel",
+     "wagon"
+    ],
+    "text": {
+     "sv": "Krymp två [[iron_plate]] runt en [[wooden_wheel]] (formlöst): en [[iron_rimmed_wheel]]. Fyra sådana, 3 Planks, en Iron Plate och en Iron Tool Rod som dragstång blir en [[wagon]].\n\nVagnen dras av **ett par tama hästar**: rid den ena, led den andra och högerklicka vagnen med tom hand. En häst ensam kryper bara med tom vagn och rubbar den inte lastad. Flaket har **4 platser**: tomma rymmer de kroppar (12 rum, fyra stora), eller så sätter du i en Chest (27 platser), en Hay Bale som läker hästarna eller en trä-slab som säte. Slå på en modul för att ta ur den.",
+     "en": "Shrink two [[iron_plate]] around a [[wooden_wheel]] (shapeless): an [[iron_rimmed_wheel]]. Four of them, 3 Planks, an Iron Plate and an Iron Tool Rod as the pole make a [[wagon]].\n\nThe wagon is drawn by **a pair of tamed horses**: ride one, lead the other and right-click the wagon with an empty hand. One horse alone only crawls with it empty and can't move it loaded. The bed has **4 places**: empty they hold carcasses (12 room, four large), or put in a Chest (27 slots), a Hay Bale that heals the horses or a wooden slab as a seat. Punch a module to take it out."
+    }
+   },
+   {
+    "title": {
      "sv": "Järnverktyg och rustning",
      "en": "Iron tools and armour"
     },

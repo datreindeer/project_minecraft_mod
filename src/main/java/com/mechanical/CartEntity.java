@@ -162,6 +162,11 @@ public class CartEntity extends TravoisEntity {
     }
 
     @Override
+    protected void onLoaded(net.minecraft.server.level.ServerPlayer player) {
+        if (getPassengers().size() >= 2) Kettle.award(player, LOADED_ADVANCEMENT);
+    }
+
+    @Override
     protected double lead(LivingEntity puller) {
         return puller instanceof Player ? LEAD_PLAYER : LEAD_HORSE;
     }

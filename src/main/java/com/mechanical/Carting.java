@@ -41,6 +41,11 @@ public final class Carting {
     public static final DeferredHolder<EntityType<?>, EntityType<CartEntity>> CART = ENTITY_TYPES.registerEntityType("cart",
             CartEntity::new, MobCategory.MISC, b -> b.noLootTable().sized(1.5F, 1.0F).clientTrackingRange(10));
     public static final DeferredItem<TravoisEntity.Placer> CART_ITEM = ITEMS.registerItem("cart", p -> new TravoisEntity.Placer(p, CART), p -> p.stacksTo(1));
+    /** Iron Age: the four-wheeled {@link WagonEntity}, drawn by a pair of horses (docs/wagon-plan.md). */
+    public static final DeferredHolder<EntityType<?>, EntityType<WagonEntity>> WAGON = ENTITY_TYPES.registerEntityType("wagon",
+            WagonEntity::new, MobCategory.MISC, b -> b.noLootTable().sized(2.0F, 1.2F).clientTrackingRange(10));
+    public static final DeferredItem<TravoisEntity.Placer> WAGON_ITEM = ITEMS.registerItem("wagon", p -> new TravoisEntity.Placer(p, WAGON), p -> p.stacksTo(1));
+    public static final DeferredItem<Item> IRON_RIMMED_WHEEL = ITEMS.registerSimpleItem("iron_rimmed_wheel", p -> p.stacksTo(16));
     public static final DeferredItem<Item> WOODEN_WHEEL = ITEMS.registerSimpleItem("wooden_wheel", p -> p.stacksTo(16));
     public static final DeferredItem<RopeHalterItem> ROPE_HALTER = ITEMS.registerItem("rope_halter", RopeHalterItem::new, p -> p.stacksTo(16));
     /** Goes in the horse's saddle slot (vanilla equippable): full speed and full jumps instead of bareback's. */
