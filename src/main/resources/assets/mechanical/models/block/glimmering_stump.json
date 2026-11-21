@@ -1,0 +1,8 @@
+{
+  "parent": "mechanical:block/stump",
+  "textures": {
+    "side": "mechanical:block/glimmering_stump_side",
+    "top": "mechanical:block/glimmering_stump_top",
+    "particle": "mechanical:block/glimmering_stump_side"
+  }
+}

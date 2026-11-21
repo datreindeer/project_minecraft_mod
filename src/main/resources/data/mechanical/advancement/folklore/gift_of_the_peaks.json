@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/above_the_clouds",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:watcher_feather"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:watcher_feather"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.gift_of_the_peaks.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.gift_of_the_peaks.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

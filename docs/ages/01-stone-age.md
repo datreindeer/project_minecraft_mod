@@ -2525,6 +2525,55 @@ Advancements i Stone Age-fliken: *Peat Cutter*, *Bog Oak*, *Sod Roof* (Turf), *T
 *Yellow Earth* (Loess), *Rammed Earth*, *Wattle and Daub*, *Red Earth, Yellow Earth* (Ochre Block). *White Tiles* (Kaolin
 Tiles) ligger i Bronze Age-fliken. Senare (planen fas 4): Peat Bog och Reed Delta läggs till i biomtaggarna.
 
+## Folktro (byggt, steg 0–2 av folktroplanen, v0.110.0)
+
+Små, sällsynta magiska saker som bara syns för den som tror. Plan: `docs/folklore-plan.md`. Java: paketet
+`folklore/` (`Faith.java`, `Folklore.java`, `GlimmeringStumpBlock.java`, `MountainWatcher.java`, test `FolkloreTest.java`),
+`worldgen/GlimmeringStumpFeature.java`, ekorrarnas `Squirrel.GatherAtStumpGoal`, klient `client/folklore/FolkloreClient.java`.
+Data: `scripts/gen_folklore.py` (körs direkt efter `gen_fauna_*`), texturer: `scripts/gen_folklore_textures.py`.
+
+### Tro och syn
+
+- **Faith** (tro): 0–100 per spelare, sparas, synkas och **behålls vid död**. Börjar på 0. `/faith [värde]` (op) visar eller sätter den.
+  - +3: en gåva vid en Glimmering Stump (en per spelare och dag).
+  - +5: första gången man ser ett nytt slags väsen (nu bara Mountain Watcher).
+  - −25: hugga ner en Glimmering Stump (inte i creative).
+- **Second Sight** (egen effekt): +50 syn medan den varar. Man blir lite hög: svag violett vinjett i kanterna och en långsam gungning.
+- **Syn = Faith + 50 under Second Sight.** Trösklar: glimret vid en Glimmering Stump 10, Mountain Watcher 40.
+- Den som inte ser: väsendet ritas inte (ingen modell, skugga eller namn), låter inget och kan inte träffas. Det finns ändå på servern.
+
+### Items
+
+| Item | Hur | Effekt |
+|---|---|---|
+| **Fly Agaric** (rå) | Plockas i skogen som förut | Poison 10 s + Nausea 15 s + **Second Sight 20 s** |
+| **Boiled Fly Agaric** | Fly Agaric på en Campfire (eller Fire Pit), 15 s | Inget gift, Nausea 5 s, **Second Sight 3 min** |
+| **Glimmering Stump** | Worldgen (se nedan); släpper 1–2 Stick när den huggs ner | Tar emot gåvor |
+| **Watcher Feather** | Från en Mountain Watcher, en gång per år och spelare | Trofé |
+
+### Glimmering Stump (vättestubbe)
+
+- Sällsynt mossig stubbe (ungefär 1 på 40 chunks) i Dark Forest, Old Growth Birch Forest, Old Growth Pine/Spruce Taiga,
+  Pale Garden och Deciduous Forest, ofta med mossa och ibland en Fly Agaric bredvid. Varje Ancient Oak har en i gläntan.
+- Alla ser en stubbe. Med syn ≥ 10 glimmar den (partiklar, fler på natten). Inget riktigt ljus: glimret är bara på klienten.
+- **Gåva:** högerklicka med bär eller nötter (taggen `#mechanical:stump_offerings`: alla bär i `#mechanical:dryable_berries`,
+  Hazelnuts, Beechnuts). Ett tas, man får +3 Faith. **Nästa morgon** (en senare dag, inte på natten) ligger en liten
+  present ovanpå: Flax Seeds, Nettle Seeds, Wheat Seeds, Feather, Owl Feather, Rough Agate, Rough Amber eller Amethyst Shard
+  (loot table `gameplay/stump_gift`). En gåva per spelare och dag; presenten väntar om stubbens chunk inte är laddad.
+- **Ekorrar** inom 16 block går dit i skymningen (17:00–19:30) och sitter runt den tills det blir mörkt.
+
+### Mountain Watcher
+
+- Stor ljus rovfågel med svag glans (golden eaglens modell, 1,4 gånger större). Kretsar över bergstoppar som `SoaringBird`.
+- Spawnar bara på öppen mark på **y 150 eller högre**, i klart väder på dagen, i Stony/Jagged/Frozen Peaks, Snowy Slopes,
+  Grove, Meadow, Windswept Hills och Cherry Grove.
+- Syns bara med syn ≥ 40. Går inte att skada, träffa eller knuffa, är helt tyst och lämnar ingen Carcass. Flyger undan om man kommer nära.
+- Ser man den första gången: +5 Faith. **En gång per kalenderår** och spelare tappar den en Watcher Feather när en spelare
+  som ser den kommer inom 24 block, och flyger sedan iväg.
+
+Advancements i fliken **Folklore**: *Folklore* (ät Fly Agaric, rå eller kokt), *Small Folk* (lämna en gåva),
+*Above the Clouds* (se en Mountain Watcher), *Gift of the Peaks* (få en Watcher Feather).
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |
