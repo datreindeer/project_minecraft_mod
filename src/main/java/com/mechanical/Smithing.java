@@ -88,6 +88,22 @@ public final class Smithing {
     /** Granted for the first part forged on the anvil (criterion minecraft:impossible, scripts/gen_advancements.py). */
     public static final Identifier FORGE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "iron_age/forged");
 
+    // ---- steel armour: between iron and diamond, riveted Steel Plates (Armor Station)
+    public static final net.minecraft.world.item.equipment.ArmorMaterial STEEL_ARMOR = new net.minecraft.world.item.equipment.ArmorMaterial(25,
+            java.util.Map.of(net.minecraft.world.item.equipment.ArmorType.HELMET, 3, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE, 7,
+                    net.minecraft.world.item.equipment.ArmorType.LEGGINGS, 6, net.minecraft.world.item.equipment.ArmorType.BOOTS, 2,
+                    net.minecraft.world.item.equipment.ArmorType.BODY, 7),
+            10, net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_IRON, 1.0F, 0.0F, STEEL_TOOL_MATERIALS,
+            net.minecraft.resources.ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, "steel")));
+    public static final DeferredItem<Item> STEEL_HELMET = ITEMS.registerSimpleItem("steel_helmet",
+            p -> p.humanoidArmor(STEEL_ARMOR, net.minecraft.world.item.equipment.ArmorType.HELMET));
+    public static final DeferredItem<Item> STEEL_CHESTPLATE = ITEMS.registerSimpleItem("steel_chestplate",
+            p -> p.humanoidArmor(STEEL_ARMOR, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> STEEL_LEGGINGS = ITEMS.registerSimpleItem("steel_leggings",
+            p -> p.humanoidArmor(STEEL_ARMOR, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> STEEL_BOOTS = ITEMS.registerSimpleItem("steel_boots",
+            p -> p.humanoidArmor(STEEL_ARMOR, net.minecraft.world.item.equipment.ArmorType.BOOTS));
+
     /** Vanilla's iron tools last longer than bronze (460): forged iron, {@value #IRON_TOOL_DURABILITY}. */
     public static final int IRON_TOOL_DURABILITY = 600;
 

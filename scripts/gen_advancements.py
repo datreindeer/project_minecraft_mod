@@ -1033,6 +1033,9 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      has("steel_pickaxe", "steel_axe", "steel_shovel", "steel_hoe", "steel_sword", "steel_spear", "steel_knife")),
     ("flint_and_steel", "steel", "minecraft:flint_and_steel", T, "Strike a Light",
      "Flint + Steel Plate: a Flint and Steel lights a fire every time", has("minecraft:flint_and_steel")),
+    ("steel_armor", "steel", "steel_chestplate", G, "Steel Clad",
+     "Rivet Steel Plates onto leather at the Armor Station: steel armour, between iron and diamond",
+     has("steel_helmet", "steel_chestplate", "steel_leggings", "steel_boots")),
 ])
 
 # the Iron Age's new ores (IronOres.java; gen_iron_ores.py)

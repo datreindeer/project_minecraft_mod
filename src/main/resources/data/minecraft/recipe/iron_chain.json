@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "R",
+    "R",
+    "R"
+  ],
+  "key": {
+    "R": "mechanical:iron_tool_rod"
+  },
+  "result": {
+    "id": "minecraft:iron_chain",
+    "count": 3
+  }
+}

@@ -249,5 +249,31 @@ w(D / "mechanical/recipe/blister_steel_from_cemented_pot.json", {"type": "minecr
 w(D / "minecraft/recipe/flint_and_steel.json", {"type": "minecraft:crafting_shapeless", "category": "equipment",
     "ingredients": ["minecraft:flint", M + "steel_plate"], "result": {"id": "minecraft:flint_and_steel", "count": 1}})
 
+# ---------------------------------------------------------------- steel armour (Smithing.STEEL_ARMOR): vanilla's iron armour recoloured
+STEEL_ARMOUR = (0.6, 0.2, 0.72)  # iron armour is pale already: darker and bluer than the steel parts
+for layer in ("humanoid", "humanoid_leggings"):
+    out = A / f"textures/entity/equipment/{layer}/steel.png"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    metal(vanilla_texture(f"entity/equipment/{layer}/iron"), STEEL_ARMOUR).save(out)
+w(A / "equipment/steel.json", {"layers": {"humanoid": [{"texture": M + "steel"}], "humanoid_leggings": [{"texture": M + "steel"}]}})
+for piece, tag in (("helmet", "head_armor"), ("chestplate", "chest_armor"), ("leggings", "leg_armor"), ("boots", "foot_armor")):
+    item(f"steel_{piece}", metal(vanilla_texture(f"item/iron_{piece}"), STEEL_ARMOUR), f"Steel {piece.title()}")
+    tag_add(T / f"{tag}.json", M + f"steel_{piece}")
+
+# ---------------------------------------------------------------- more of vanilla's iron things from forged parts
+shaped = {
+    "iron_bars": (["RRR", "RRR"], {"R": M + "iron_tool_rod"}, 16),
+    "iron_chain": (["R", "R", "R"], {"R": M + "iron_tool_rod"}, 3),
+    "cauldron": (["P P", "P P", "PPP"], {"P": M + "iron_plate"}, 1),
+    "iron_door": (["PP", "PP", "PP"], {"P": M + "iron_plate"}, 3),
+    "iron_trapdoor": (["PP", "PP"], {"P": M + "iron_plate"}, 1),
+}
+for name, (pattern, key, count) in shaped.items():
+    if f"data/minecraft/recipe/{name}.json" not in JAR.namelist():
+        continue  # a recipe this version doesn't have (chain's id)
+    category = json.loads(JAR.read(f"data/minecraft/recipe/{name}.json")).get("category", "misc")
+    w(D / f"minecraft/recipe/{name}.json", {"type": "minecraft:crafting_shaped", "category": category,
+        "pattern": pattern, "key": key, "result": {"id": "minecraft:" + name, "count": count}})
+
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

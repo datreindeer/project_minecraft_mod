@@ -1397,5 +1397,14 @@
   "cementation_pot": {"category": "materials", "text": "A fire-clay pot. + 2 [[wrought_iron_ingot]] + 2 Charcoal + 1 [[soot]] → [[packed_cementation_pot]]."},
   "packed_cementation_pot": {"category": "materials", "text": "Hold it at 1000° in the Bloomery or Clay Kiln for 3 min → [[cemented_pot]]."},
   "cemented_pot": {"category": "materials", "text": "Break it open (shapeless): 2 [[blister_steel]]."},
-  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanilla's recipe wanted an Iron Ingot). Lights every time, unlike the Fire Drill."}
+  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanilla's recipe wanted an Iron Ingot). Lights every time, unlike the Fire Drill."},
+  "steel_helmet": {"category": "tools", "text": "Armor Station: 3 [[steel_plate]] + 2 Leather + a hammer. Armour 3, toughness 1, between iron and diamond."},
+  "steel_chestplate": {"category": "tools", "text": "Armor Station: 6 [[steel_plate]] + 4 Leather + a hammer. Armour 7, toughness 1, between iron and diamond."},
+  "steel_leggings": {"category": "tools", "text": "Armor Station: 5 [[steel_plate]] + 3 Leather + a hammer. Armour 6, toughness 1, between iron and diamond."},
+  "steel_boots": {"category": "tools", "text": "Armor Station: 2 [[steel_plate]] + 2 Leather + a hammer. Armour 2, toughness 1, between iron and diamond."},
+  "minecraft:iron_bars": {"vanilla": true, "category": "blocks", "text": "6 [[iron_tool_rod]] → 16."},
+  "minecraft:iron_chain": {"vanilla": true, "category": "blocks", "text": "3 [[iron_tool_rod]] in a column → 3."},
+  "minecraft:cauldron": {"vanilla": true, "category": "blocks", "text": "7 [[iron_plate]] (U shape)."},
+  "minecraft:iron_door": {"vanilla": true, "category": "blocks", "text": "6 [[iron_plate]] → 3."},
+  "minecraft:iron_trapdoor": {"vanilla": true, "category": "blocks", "text": "4 [[iron_plate]]."}
 }

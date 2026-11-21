@@ -216,6 +216,12 @@ public final class IronAgeTest {
         var flintIn = net.minecraft.world.item.crafting.CraftingInput.of(2, 1, List.of(new ItemStack(Items.FLINT), new ItemStack(Smithing.STEEL_PLATE.get())));
         h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, flintIn, level)
                 .map(r -> r.value().assemble(flintIn).is(Items.FLINT_AND_STEEL)).orElse(false), "Flint + Steel Plate: Flint and Steel");
+        h.assertTrue(ArmorStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == Smithing.STEEL_CHESTPLATE.get()), "Armor Station: Steel Chestplate");
+        h.assertTrue(new ItemStack(Smithing.STEEL_CHESTPLATE.get()).getMaxDamage() > new ItemStack(Items.IRON_CHESTPLATE).getMaxDamage(), "steel armour outlasts iron");
+        ItemStack rod = new ItemStack(Smithing.IRON_TOOL_ROD.get());
+        var barsIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 2, List.of(rod, rod.copy(), rod.copy(), rod.copy(), rod.copy(), rod.copy()));
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, barsIn, level)
+                .map(r -> r.value().assemble(barsIn).is(Items.IRON_BARS)).orElse(false), "6 Iron Tool Rods: Iron Bars");
         h.succeed();
     }
 

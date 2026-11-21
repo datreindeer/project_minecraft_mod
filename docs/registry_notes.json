@@ -1397,5 +1397,14 @@
   "cementation_pot": {"category": "materials", "text": "Kruka av eldfast lera. + 2 [[wrought_iron_ingot]] + 2 Charcoal + 1 [[soot]] → [[packed_cementation_pot]]."},
   "packed_cementation_pot": {"category": "materials", "text": "Håll den vid 1000° i Bloomery eller Clay Kiln i 3 min → [[cemented_pot]]."},
   "cemented_pot": {"category": "materials", "text": "Knacka upp den (formlöst): 2 [[blister_steel]]."},
-  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanillas recept ville ha Iron Ingot). Tänder varje gång, till skillnad från Fire Drill."}
+  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanillas recept ville ha Iron Ingot). Tänder varje gång, till skillnad från Fire Drill."},
+  "steel_helmet": {"category": "tools", "text": "Armor Station: 3 [[steel_plate]] + 2 Leather + hammare. Skydd 3, seghet 1, mellan järn och diamant."},
+  "steel_chestplate": {"category": "tools", "text": "Armor Station: 6 [[steel_plate]] + 4 Leather + hammare. Skydd 7, seghet 1, mellan järn och diamant."},
+  "steel_leggings": {"category": "tools", "text": "Armor Station: 5 [[steel_plate]] + 3 Leather + hammare. Skydd 6, seghet 1, mellan järn och diamant."},
+  "steel_boots": {"category": "tools", "text": "Armor Station: 2 [[steel_plate]] + 2 Leather + hammare. Skydd 2, seghet 1, mellan järn och diamant."},
+  "minecraft:iron_bars": {"vanilla": true, "category": "blocks", "text": "6 [[iron_tool_rod]] → 16."},
+  "minecraft:iron_chain": {"vanilla": true, "category": "blocks", "text": "3 [[iron_tool_rod]] i rad → 3."},
+  "minecraft:cauldron": {"vanilla": true, "category": "blocks", "text": "7 [[iron_plate]] (U-form)."},
+  "minecraft:iron_door": {"vanilla": true, "category": "blocks", "text": "6 [[iron_plate]] → 3."},
+  "minecraft:iron_trapdoor": {"vanilla": true, "category": "blocks", "text": "4 [[iron_plate]]."}
 }

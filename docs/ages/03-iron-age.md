@@ -97,8 +97,9 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 
 - Smitt järn håller längre än brons: järnverktygen har **600** i hållbarhet (vanilla 250, brons 460) och Iron Pickaxe
   bryter guld, redstone, diamant och smaragd. Full järnrustning, bröstplåten som bronsåldern saknade.
-- Andra vanilla-järnsaker (Iron Bars, Chain, Rail, Hopper, Anvil, Cauldron m.m.) kräver fortfarande Iron Ingot och går
-  inte att göra än.
+- Fler vanilla-järnsaker av smidda delar: **Iron Bars** (6 Iron Tool Rod → 16), **Iron Chain** (3 Iron Tool Rod i rad
+  → 3), **Cauldron** (7 Iron Plate), **Iron Door** (6 Iron Plate → 3), **Iron Trapdoor** (4 Iron Plate). Rail, Hopper,
+  Anvil och andra redstone- och järnvägssaker kräver fortfarande Iron Ingot (ångåldern).
 - Advancements: **Forged**, **Iron Hammer**, **Ironsmith**, **Iron Clad** (Iron Age-fliken).
 
 ### 3. Kolmila (charcoal clamp) (byggd)
@@ -138,8 +139,10 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
   (Sword Blade + Leather + Iron Tool Rod), Steel Spear (Spear Head + Cordage + Iron Tool Rod), Steel Knife (Knife Blade +
   Leather + Stick). Materialet: **1100** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2), bryter som diamant (obsidian).
 - **Flint and Steel:** Flint + Steel Plate (vanillas recept ville ha Iron Ingot). Tänder varje gång.
-- **Inte byggt än:** stålrustning. Texturer finns i biblioteket.
-- Advancements: **Cementation**, **Steel**, **Steelsmith**, **Strike a Light**.
+- **Stålrustning** (Armor Station): 3 / 6 / 5 / 2 Steel Plate + 2 / 4 / 3 / 2 Leather + hammare → Steel Helmet /
+  Chestplate / Leggings / Boots. Skydd 3 / 7 / 6 / 2 och 1 i seghet (järn 2 / 6 / 5 / 2, diamant 3 / 8 / 6 / 3),
+  hållbarhet ×25 (järn 15, diamant 33).
+- Advancements: **Cementation**, **Steel**, **Steelsmith**, **Strike a Light**, **Steel Clad**.
 
 ## Nya malmer (byggda, 2026-11-21)
 

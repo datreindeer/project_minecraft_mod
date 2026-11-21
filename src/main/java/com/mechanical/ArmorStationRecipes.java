@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 public final class ArmorStationRecipes {
     private static final Predicate<ItemStack> BRONZE_PLATE = s -> s.is(Bronze.BRONZE_PLATE.get());
     private static final Predicate<ItemStack> IRON_PLATE = s -> s.is(Smithing.IRON_PLATE.get());
+    private static final Predicate<ItemStack> STEEL_PLATE = s -> s.is(Smithing.STEEL_PLATE.get());
 
     public static final List<StationRecipe> ALL = List.of(
             StationRecipe.of(Bronze.BRONZE_HELMET::get, 1, of(Bronze.BRONZE_PLATE, 2), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 2), BRONZE_PLATE),
@@ -25,7 +26,12 @@ public final class ArmorStationRecipes {
             StationRecipe.of(() -> Items.IRON_HELMET, 1, of(Smithing.IRON_PLATE, 3), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 2), IRON_PLATE),
             StationRecipe.of(() -> Items.IRON_CHESTPLATE, 1, of(Smithing.IRON_PLATE, 6), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 4), IRON_PLATE),
             StationRecipe.of(() -> Items.IRON_LEGGINGS, 1, of(Smithing.IRON_PLATE, 5), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 3), IRON_PLATE),
-            StationRecipe.of(() -> Items.IRON_BOOTS, 1, of(Smithing.IRON_PLATE, 2), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 2), IRON_PLATE));
+            StationRecipe.of(() -> Items.IRON_BOOTS, 1, of(Smithing.IRON_PLATE, 2), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 2), IRON_PLATE),
+            // Steel Plates: steel armour, between iron and diamond
+            StationRecipe.of(Smithing.STEEL_HELMET::get, 1, of(Smithing.STEEL_PLATE, 3), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 2), STEEL_PLATE),
+            StationRecipe.of(Smithing.STEEL_CHESTPLATE::get, 1, of(Smithing.STEEL_PLATE, 6), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 4), STEEL_PLATE),
+            StationRecipe.of(Smithing.STEEL_LEGGINGS::get, 1, of(Smithing.STEEL_PLATE, 5), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 3), STEEL_PLATE),
+            StationRecipe.of(Smithing.STEEL_BOOTS::get, 1, of(Smithing.STEEL_PLATE, 2), tool(BronzeOres.HAMMERSTONES, Bronze.BRONZE_PICKAXE), of(() -> Items.LEATHER, 2), STEEL_PLATE));
 
     private ArmorStationRecipes() {}
 }
