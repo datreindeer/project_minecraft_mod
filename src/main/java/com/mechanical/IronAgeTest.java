@@ -268,6 +268,55 @@ public final class IronAgeTest {
         h.assertTrue(forge.take().is(Smithing.HOT_WROUGHT_IRON_INGOT.get()), "an empty hand takes it out hot");
         h.assertTrue(BronzeTools.isQuarryHammer(new ItemStack(Smithing.STEEL_QUARRY_HAMMER.get())), "the steel quarry hammer is a quarry hammer");
         h.assertTrue(new ItemStack(Smithing.STEEL_PICKAXE.get()).getMaxDamage() == 2200, "steel tools: 2200");
+
+        // ---- forged saws: longer-lived and quicker than bronze; any saw in #mechanical:saws cuts planks
+        h.assertTrue(new ItemStack(Smithing.IRON_SAW.get()).getMaxDamage() == 900 && new ItemStack(Smithing.STEEL_SAW.get()).getMaxDamage() == 1600,
+                "saws: iron 900, steel 1600");
+        h.assertTrue(Smithing.STEEL_SAW.get().strokeTicks < Smithing.IRON_SAW.get().strokeTicks
+                && Smithing.IRON_SAW.get().strokeTicks < Bronze.BRONZE_SAW.get().strokeTicks, "steel saws faster than iron, iron than bronze");
+        var saws = net.minecraft.tags.TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "saws"));
+        for (var saw : List.of(Bronze.BRONZE_SAW.get(), Smithing.IRON_SAW.get(), Smithing.STEEL_SAW.get())) {
+            ItemStack sawStack = new ItemStack(saw);
+            h.assertTrue(sawStack.is(saws), saw + " in #mechanical:saws");
+            var sawIn = net.minecraft.world.item.crafting.CraftingInput.of(2, 1, List.of(new ItemStack(Items.OAK_LOG), sawStack));
+            var planks = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, sawIn, level);
+            h.assertTrue(planks.map(r -> { ItemStack o = r.value().assemble(sawIn); return o.is(Items.OAK_PLANKS) && o.getCount() == 4; }).orElse(false),
+                    "Oak Log + " + saw + ": 4 Oak Planks");
+            var left = planks.get().value().getRemainingItems(sawIn);
+            h.assertTrue(left.get(1).is(saw) && left.get(1).getDamageValue() == 1, saw + " stays, losing 1");
+        }
+        for (var saw : List.of(Smithing.IRON_SAW.get(), Smithing.STEEL_SAW.get()))
+            h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == saw), "Tool Station: " + saw);
+        h.assertTrue(Smithing.Pattern.SAW_BLADE.result(new ItemStack(Smithing.HOT_STEEL_INGOT.get())).is(Smithing.STEEL_SAW_BLADE.get()), "a steel saw blade");
+
+        // ---- the crossbow from forged parts, and Iron Bolts: crossbow-only, harder-hitting than bronze, through armour
+        ItemStack heads = Smithing.Pattern.BOLT_HEADS.result(new ItemStack(Smithing.HOT_WROUGHT_IRON_INGOT.get()));
+        h.assertTrue(heads.is(Smithing.IRON_BOLT_HEAD.get()) && heads.getCount() == Smithing.BOLT_HEADS_PER_INGOT, "one hot ingot: 4 Iron Bolt Heads");
+        h.assertTrue(FletchingRecipes.ALL.stream().anyMatch(r -> r.result().get() == Smithing.IRON_BOLT.get()), "Fletching Table: Iron Bolts");
+        ItemStack plate = new ItemStack(Smithing.IRON_PLATE.get()), sinew = new ItemStack(com.mechanical.wildlife.Wildlife.SINEW.get()),
+                stock = new ItemStack(Mechanical.TOOL_ROD.get());
+        var bowIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, List.of(plate, rod.copy(), plate.copy(), sinew, stock, sinew.copy(),
+                ItemStack.EMPTY, stock.copy(), ItemStack.EMPTY));
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, bowIn, level)
+                .map(r -> r.value().assemble(bowIn).is(Items.CROSSBOW)).orElse(false), "Iron Plates, Iron Tool Rod, Sinew, Tool Rods: a Crossbow");
+        ItemStack bolt = new ItemStack(Smithing.IRON_BOLT.get()), crossbow = new ItemStack(Items.CROSSBOW);
+        h.assertTrue(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(bolt), "the crossbow loads bolts");
+        h.assertTrue(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(new ItemStack(Items.ARROW)), "and arrows");
+        h.assertFalse(((net.minecraft.world.item.ProjectileWeaponItem) Items.BOW).getAllSupportedProjectiles(new ItemStack(Items.BOW)).test(bolt), "a bow can't shoot bolts");
+        h.assertTrue(com.mechanical.equipment.Quiver.ARROWS.test(bolt), "bolts go in the quiver");
+        h.assertTrue(Smithing.IRON_BOLT.get().damage() > Bronze.BRONZE_ARROW.get().damage(), "bolts hit harder than Bronze Arrows");
+        float[] lost = new float[2];
+        for (int i = 0; i < 2; i++) {
+            var zombie = h.spawn(net.minecraft.world.entity.EntityTypes.ZOMBIE, new BlockPos(1 + 3 * i, 2, 5));
+            zombie.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR).setBaseValue(15); // worn armour only counts after a tick
+            ItemStack ammo = i == 0 ? bolt : new ItemStack(Items.ARROW);
+            var arrow = ((net.minecraft.world.item.ArrowItem) ammo.getItem()).createArrow(level, ammo, smith, crossbow);
+            float before = zombie.getHealth();
+            zombie.hurtServer(level, level.damageSources().arrow(arrow, smith), 10.0F);
+            lost[i] = before - zombie.getHealth();
+            zombie.discard();
+        }
+        h.assertTrue(lost[0] > lost[1] + 0.5F, "a bolt goes through armour: " + lost[0] + " vs an arrow's " + lost[1]);
         h.succeed();
     }
 

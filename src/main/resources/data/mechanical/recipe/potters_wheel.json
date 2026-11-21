@@ -8,7 +8,7 @@
   ],
   "key": {
     "P": "#minecraft:planks",
-    "S": "mechanical:bronze_saw",
+    "S": "#mechanical:saws",
     "B": "mechanical:bronze_ingot",
     "C": "minecraft:cobblestone"
   },

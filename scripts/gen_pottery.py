@@ -157,10 +157,10 @@ loot("storage_jar")
 loot("water_jug", {"type": "minecraft:copy_state", "block": M + "water_jug", "properties": ["water"]})
 tag_add(D / "minecraft/tags/block/mineable/axe.json", M + "potters_wheel")
 
-# the Bronze Saw cuts the plank wheel head (it stays, losing 1), a bronze pivot, a cobblestone flywheel
+# a saw (#mechanical:saws) cuts the plank wheel head (it stays, losing 1), a bronze pivot, a cobblestone flywheel
 w(D / "mechanical/recipe/potters_wheel.json", {"type": "minecraft:crafting_shaped", "category": "misc",
     "pattern": ["PSP", " B ", "CCC"],
-    "key": {"P": "#minecraft:planks", "S": M + "bronze_saw", "B": M + "bronze_ingot", "C": "minecraft:cobblestone"},
+    "key": {"P": "#minecraft:planks", "S": "#mechanical:saws", "B": M + "bronze_ingot", "C": "minecraft:cobblestone"},
     "result": {"id": M + "potters_wheel"}})
 
 merge(A / "lang/en_us.json", {

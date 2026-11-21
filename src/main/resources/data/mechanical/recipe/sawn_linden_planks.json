@@ -4,7 +4,7 @@
   "group": "sawn_planks",
   "ingredients": [
     "#mechanical:linden_logs",
-    "mechanical:bronze_saw"
+    "#mechanical:saws"
   ],
   "result": {
     "id": "mechanical:linden_planks",

@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:crude_bow",
+    "mechanical:sinew_bow",
     "mechanical:horn_bow",
     "mechanical:yew_longbow"
   ]

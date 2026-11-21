@@ -114,7 +114,10 @@ public final class ToolStationRecipes {
             new Recipe(Smithing.STEEL_SWORD, Smithing.STEEL_SWORD_BLADE, Smithing.IRON_TOOL_ROD, () -> Items.LEATHER, s -> s.is(Smithing.STEEL_SWORD_BLADE.get())),
             new Recipe(Smithing.STEEL_SPEAR, Smithing.STEEL_SPEAR_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_SPEAR_HEAD.get())),
             // the quarry hammer in steel: a Steel Plate round the haft for the heavy blows, the haft an Iron Tool Rod
-            new Recipe(Smithing.STEEL_QUARRY_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.STEEL_PLATE, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())));
+            new Recipe(Smithing.STEEL_QUARRY_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.STEEL_PLATE, Smithing.IRON_TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())),
+            // forged saws: the blade riveted into a wooden back, a leather-wrapped grip
+            new Recipe(() -> Smithing.IRON_SAW.get(), Smithing.IRON_SAW_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.IRON_SAW_BLADE.get())),
+            new Recipe(() -> Smithing.STEEL_SAW.get(), Smithing.STEEL_SAW_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_SAW_BLADE.get())));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

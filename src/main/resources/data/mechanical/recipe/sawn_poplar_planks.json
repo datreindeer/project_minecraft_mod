@@ -4,7 +4,7 @@
   "group": "sawn_planks",
   "ingredients": [
     "#minecraft:poplar_logs",
-    "mechanical:bronze_saw"
+    "#mechanical:saws"
   ],
   "result": {
     "id": "minecraft:poplar_planks",

@@ -72,7 +72,9 @@ for tag, items in [("pickaxes", ["bronze_pickaxe"]), ("axes", ["bronze_axe"]), (
 patch_tag(D / "mechanical/tags/item/knives.json", [M + "bronze_knife"])
 patch_tag(D / "mechanical/tags/item/hammerstones.json", [M + "bronze_pickaxe"])
 
-# ---- sawn planks: a log and the Bronze Saw (it stays, losing 1) give 4 planks; without a saw a log still gives 2 ----
+# ---- sawn planks: a log and a saw (it stays, losing 1) give 4 planks; without a saw a log still gives 2 ----
+# #mechanical:saws: every SawItem (the Iron and Steel Saws are forged in the Iron Age, Smithing.java)
+w(D / "mechanical/tags/item/saws.json", {"values": [M + "bronze_saw", M + "iron_saw", M + "steel_saw"]})
 made = 0
 for f in sorted(D.glob("*/recipe/*_planks.json")):
     r = json.loads(f.read_text(encoding="utf-8"))
@@ -80,7 +82,7 @@ for f in sorted(D.glob("*/recipe/*_planks.json")):
         continue
     wood = f.stem[: -len("_planks")]
     w(D / f"mechanical/recipe/sawn_{wood}_planks.json", {"type": "minecraft:crafting_shapeless", "category": "building", "group": "sawn_planks",
-        "ingredients": [r["ingredients"][0], M + "bronze_saw"], "result": {"id": r["result"]["id"], "count": 4}})
+        "ingredients": [r["ingredients"][0], "#mechanical:saws"], "result": {"id": r["result"]["id"], "count": 4}})
     made += 1
 assert made >= 20, made
 

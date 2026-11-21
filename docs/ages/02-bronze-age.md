@@ -1174,7 +1174,7 @@ Bronsålderns tunga båge, av idegran. Horn Bow är fortfarande den snabba båge
 
 ### Recept
 
-- **Yew Stave** (crafting, shapeless): 1 **Yew Rough Log** + **Bronze Saw** → 1 Yew Stave. Sågen stannar kvar i
+- **Yew Stave** (crafting, shapeless): 1 **Yew Rough Log** + en såg (**Bronze Saw**, i järnåldern även Iron/Steel Saw) → 1 Yew Stave. Sågen stannar kvar i
   rutnätet och tappar 1 hållbarhet (som Sawn Planks). Staplas till 16.
 - **Yew Longbow** (Tool Station): **Sinew** (bågsträng) + **Leather** (grepp) + **Yew Stave**. Receptet låses upp när
   man bär en Yew Stave.

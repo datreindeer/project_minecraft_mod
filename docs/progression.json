@@ -968,6 +968,21 @@
    },
    {
     "title": {
+     "sv": "Armborst och smidda sågar",
+     "en": "Crossbow and forged saws"
+    },
+    "items": [
+     "minecraft:crossbow",
+     "mechanical:iron_bolt",
+     "mechanical:iron_saw"
+    ],
+    "text": {
+     "sv": "Ett [[minecraft:crossbow]] görs av smidda delar: 2 Iron Plate, en Iron Tool Rod, 2 Sinew och 2 Tool Rod. Det skjuter pilar och [[mechanical:iron_bolt]]: smid en het tacka till 4 Iron Bolt Head (mönstret Bolt Heads) och fjädra dem på Fletching Table med Stick och Feather. En bolt gör 4 i skada och går igenom 40 % av rustningen, men bara armborst kan skjuta den.\n\nMönstret Saw Blade ger ett sågblad av järn eller stål. I Tool Station med Leather och Stick blir det en [[mechanical:iron_saw]] (900 i hållbarhet) eller Steel Saw (1600). De sågar fortare än Bronze Saw och duger till allt bronssågen gör.",
+     "en": "A [[minecraft:crossbow]] is made from forged parts: 2 Iron Plates, an Iron Tool Rod, 2 Sinew and 2 Tool Rods. It shoots arrows and [[mechanical:iron_bolt]]s: forge a hot ingot into 4 Iron Bolt Heads (the Bolt Heads pattern) and fletch them at the Fletching Table with a Stick and a Feather. A bolt does 4 damage and goes through 40% of armour, but only a crossbow can shoot it.\n\nThe Saw Blade pattern gives an iron or steel saw blade. At the Tool Station with Leather and a Stick it becomes an [[mechanical:iron_saw]] (900 durability) or a Steel Saw (1600). They saw faster than the Bronze Saw and do everything it does."
+    }
+   },
+   {
+    "title": {
      "sv": "Kolmila",
      "en": "Charcoal clamp"
     },

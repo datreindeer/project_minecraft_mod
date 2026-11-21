@@ -7,7 +7,7 @@ the kiln, bronze poured in, the Rough Cast piece ground on the Whetstone, then a
   models (as gen_copper.py's), blockstates, item models, loot (keeps uses), lang
 - items: rough casts, ground pieces, Bronze Bucket / Water / Milk Bucket, Bronze Sickle, Bronze Shears, Bronze Hook
   Fishing Rod (cast / uncast models as vanilla), Bronze Needle, Bronze Tongs, Bronze Chisel, Bronze Quarry Hammer (Tool
-  Station: Bronze Hammer Head + Bronze Plate + Tool Rod), Yew Stave (Yew Rough Log + Bronze Saw) and Yew Longbow (Tool
+  Station: Bronze Hammer Head + Bronze Plate + Tool Rod), Yew Stave (Yew Rough Log + any saw) and Yew Longbow (Tool
   Station: Sinew + Leather + Yew Stave; pulling models on a 30-tick draw)
 - quarry hammer tags: mechanical:quarry_hammer_mineable (natural stone of every kind + the ores), mechanical:quarry_ores
   (#c:ores + the gemstone ores from gem_table.py)
@@ -197,7 +197,7 @@ w(A / "items/yew_longbow.json", {"model": {"type": "minecraft:condition", "prope
                 "entries": [{"threshold": 0.65, "model": pull(1)}, {"threshold": 0.9, "model": pull(2)}]}}})
 # the saw cuts a stave out of the log and stays, losing 1 (FlintPickaxeItem rule)
 w(D / "mechanical/recipe/yew_stave.json", {"type": "minecraft:crafting_shapeless", "category": "equipment",
-    "ingredients": [M + "yew_rough_log", M + "bronze_saw"], "result": {"id": M + "yew_stave"}})
+    "ingredients": [M + "yew_rough_log", "#mechanical:saws"], "result": {"id": M + "yew_stave"}})
 for tag in ("bow", "durability"):
     patch_tag(D / f"minecraft/tags/item/enchantable/{tag}.json", [M + "yew_longbow"])
 

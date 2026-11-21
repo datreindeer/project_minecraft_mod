@@ -99,6 +99,10 @@ public final class StatTooltips {
         if (stack.getItem() instanceof SpecialArrowItem arrow) {
             lines.add(stat("Damage", value(String.format("%.1f", arrow.damage()) + " (arrow: 2.0)")));
             if (arrow.fire()) lines.add(Component.literal(" Sets the target on fire").withStyle(ChatFormatting.GOLD));
+            if (stack.is(com.mechanical.Smithing.BOLTS)) {
+                lines.add(stat("Armor ignored", value(Math.round(com.mechanical.Smithing.BOLT_ARMOR_PIERCE * 100) + "%")));
+                use(lines, "Crossbow only");
+            }
         } else if (stack.is(Items.ARROW)) {
             lines.add(stat("Damage", value("2.0")));
         }
@@ -129,8 +133,8 @@ public final class StatTooltips {
 
     /** Numbers and what the tool is for, for the mod's own tools. */
     private static void uses(List<Component> lines, ItemStack stack) {
-        if (stack.getItem() instanceof SawItem) {
-            lines.add(stat("Strokes per log", value(FallenLogBlock.SAW_STROKES + " (" + FallenLogBlock.SAW_STROKES * SawItem.STROKE_TICKS / 20 + " s)")));
+        if (stack.getItem() instanceof SawItem saw) {
+            lines.add(stat("Strokes per log", value(FallenLogBlock.SAW_STROKES + " (" + String.format("%.1f", FallenLogBlock.SAW_STROKES * saw.strokeTicks / 20.0F) + " s)")));
             lines.add(stat("Rough Logs per log", value(String.valueOf(TreeChopping.SAWN_LOGS))));
             use(lines, "Hold right-click on a fallen log to saw it across");
             use(lines, "Log + Saw in the crafting grid: planks (1 durability)");

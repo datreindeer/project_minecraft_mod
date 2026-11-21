@@ -728,8 +728,6 @@ w(A / "items/crude_fishing_rod.json", {"model": {"type": "minecraft:condition", 
     "on_false": {"type": "minecraft:model", "model": "mechanical:item/crude_fishing_rod"},
     "on_true": {"type": "minecraft:model", "model": "mechanical:item/crude_fishing_rod_cast"}}})
 lang.update({"item.mechanical.crude_bow": "Crude Bow", "item.mechanical.crude_fishing_rod": "Crude Fishing Rod"})
-w(D / "minecraft/tags/item/enchantable/bow.json", {"values": ["mechanical:crude_bow"]})
-w(D / "minecraft/tags/item/enchantable/fishing.json", {"values": ["mechanical:crude_fishing_rod"]})
 
 # ---- fish: dead fish (and catches) are whole fish that must be gutted with the flint knife -> fillet (vanilla raw fish) ----
 import zipfile

@@ -4,7 +4,7 @@
   "group": "sawn_planks",
   "ingredients": [
     "#minecraft:pale_oak_logs",
-    "mechanical:bronze_saw"
+    "#mechanical:saws"
   ],
   "result": {
     "id": "minecraft:pale_oak_planks",

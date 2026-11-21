@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:crude_fishing_rod",
+    "mechanical:bone_hook_fishing_rod",
     "mechanical:bronze_hook_fishing_rod"
   ]
 }

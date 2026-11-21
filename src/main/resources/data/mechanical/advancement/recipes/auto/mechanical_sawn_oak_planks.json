@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bronze_saw"
+            "items": "#mechanical:saws"
           }
         ]
       }

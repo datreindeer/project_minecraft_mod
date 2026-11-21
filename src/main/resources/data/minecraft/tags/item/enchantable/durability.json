@@ -16,6 +16,8 @@
     "mechanical:bronze_smithing_hammer",
     "mechanical:iron_smithing_hammer",
     "mechanical:steel_quarry_hammer",
-    "mechanical:yew_longbow"
+    "mechanical:yew_longbow",
+    "mechanical:iron_saw",
+    "mechanical:steel_saw"
   ]
 }

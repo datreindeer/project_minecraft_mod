@@ -3,7 +3,7 @@
   "category": "equipment",
   "ingredients": [
     "mechanical:yew_rough_log",
-    "mechanical:bronze_saw"
+    "#mechanical:saws"
   ],
   "result": {
     "id": "mechanical:yew_stave"
