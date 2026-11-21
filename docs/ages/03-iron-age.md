@@ -239,6 +239,38 @@ Valt så: saltet är en snabbväg som kostar en resurs (ett salt per kött eller
 gratis men tar tid och plats. Stora styckningsdelar ger bara 1 Salted Meat; skär dem till strimlor först. Saltsjöar
 och saltskorpa vid stränder byggdes inte (bara bergsalt).
 
+### 9. Kalk och murbruk (byggd, world-materials-plan fas 2)
+
+Kalksten får en riktig användning: bränd i kilnen blir den bränd kalk, släckt med vatten blir den släckt kalk, och av
+den blir murbruk och puts. Kod: `IronOres` (items, putsblocken, gametest `iron_ores`), kilnrecepten i
+`KilnBlockEntity.RECIPES`. Data: `scripts/gen_lime.py` (direkt efter `gen_stone_families.py`); de tre nya bergarterna är
+rader i `gen_stone_families.py` / `StoneFamilies.java`, och murbruksrecepten för tegel skrivs av `gen_stone_families.py`.
+
+**Nya bergarter** (vilken hacka som helst, ger sig själva, familjerna i creative-fliken Building Blocks):
+
+| Block | Var | Familj |
+|---|---|---|
+| **Dolomite** | Klumpar (storlek 48) i hela världen på y 0–60, och 2 extra per chunk på y 56–160 där Limestone har sina klippor (`mechanical:has_dolomite` = `#mechanical:has_limestone_cliffs`). Krossas på **Stone Anvil** till **2 Flux** som Limestone. | Tuff: Polished Dolomite, Dolomite Bricks, Chiseled Dolomite (Bricks) + slab/stairs/wall |
+| **Travertine** | Honungsfärgad källkalk, y 40–90 under River, Swamp, Mangrove Swamp, Plains och Sunflower Plains (`mechanical:has_travertine`; Limestone Karst läggs till senare). | Sandstone: Cut, Smooth, Chiseled Travertine + slab/stairs/wall |
+| **Shell Bank** | Snäckskalssten (coquina) med rosa skalränder, y 40–70 under stränder, Stony Shore, Ocean, Lukewarm och Warm Ocean (`mechanical:has_shell_bank`). | Sandstone: Cut, Smooth, Chiseled Shell Bank + slab/stairs/wall |
+
+**Kalkkedjan:**
+
+| Vad | Hur |
+|---|---|
+| **Quicklime** | **Limestone, Dolomite, Chalk Block, Travertine eller Shell Bank** (1 block) eller **4 Chalk** i **Clay Kiln vid 900°**, 20 s → 1 Quicklime. 900° är över Charcoals 800°, så det krävs **Bellows**. |
+| **Slaked Lime** | Quicklime + Water Bucket (eller Clay/Bronze Water Bucket), formlöst → 1. Hinken kommer tillbaka. |
+| **Lime Mortar** | Slaked Lime + Sand + Gravel, formlöst → **4**. |
+| **Tegel med murbruk** | 4 av det teglet läggs av + 1 Lime Mortar, formlöst → **dubbelt så många**: 4 Polished Limestone + Mortar → **8** Limestone Bricks, likadant för varje stenfamiljs Bricks (Dolomite, Slate, Gneiss, Soapstone, Shale, Conglomerate ...) och vanillas Stone Bricks, Deepslate Bricks och Mud Bricks; 4 Brick + Mortar → 2 Bricks. Murbruket **krävs inte**, de vanliga recepten finns kvar. |
+| **Lime Plaster** | Slaked Lime + 2 Sand + Straw, formlöst → **4** (block, gräddvitt). |
+| **Färgad puts** | 8 Lime Plaster runt ett pigment (3×3) → 8: **White** (White Pigment), **Black**, **Red**, **Yellow Lime Plaster**. |
+| **Kalkad hud** | Scraped Hide + Slaked Lime, formlöst → **Leather**, som saltad hud. |
+
+Putsen bryts snabbast med hacka men vad som helst ger blocket. Bara block, inga slab/stairs/wall för putsen.
+
+**Advancements** (Iron Age-fliken, under *Limestone Mason*): *Dolomite*, *Travertine*, *Shell Bank*, *Quicklime* →
+*Lime Mortar* och *Lime Plaster*.
+
 ## Vänta med
 
 - **Zinc** (mässing), **Nickel**, **Redstone**, **Sulfur**: ång- och elåldern.

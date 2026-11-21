@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/limestone_bricks",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:quicklime"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:quicklime"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.quicklime.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.quicklime.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

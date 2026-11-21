@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mechanical:block/shell_bank_top",
+    "side": "mechanical:block/chiseled_shell_bank"
+  }
+}

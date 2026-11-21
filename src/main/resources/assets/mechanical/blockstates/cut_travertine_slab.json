@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/cut_travertine_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/cut_travertine"
+    },
+    "type=top": {
+      "model": "mechanical:block/cut_travertine_slab_top"
+    }
+  }
+}

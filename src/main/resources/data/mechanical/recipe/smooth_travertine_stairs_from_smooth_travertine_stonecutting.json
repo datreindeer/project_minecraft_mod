@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:smooth_travertine",
+  "result": {
+    "id": "mechanical:smooth_travertine_stairs"
+  }
+}

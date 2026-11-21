@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "mechanical:ore_shell_bank"
+  ],
+  "step": "underground_ores"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:slaked_lime",
+    "#minecraft:sand",
+    "#minecraft:sand",
+    "mechanical:straw"
+  ],
+  "result": {
+    "id": "mechanical:lime_plaster",
+    "count": 4
+  }
+}

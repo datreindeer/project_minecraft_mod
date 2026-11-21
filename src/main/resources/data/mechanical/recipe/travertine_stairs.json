@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": [
+      "mechanical:travertine",
+      "mechanical:chiseled_travertine",
+      "mechanical:cut_travertine"
+    ]
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mechanical:travertine_stairs"
+  }
+}

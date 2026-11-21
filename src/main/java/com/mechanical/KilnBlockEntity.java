@@ -129,7 +129,10 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Smithing.STEEL_INGOT.get()), 1, () -> Smithing.HOT_STEEL_INGOT.get(), 200, 1100),
             // cementation (Smithing): the fire-clay pot fired, then a packed pot held at 1000°
             new Recipe(s -> s.is(Smithing.UNFIRED_CEMENTATION_POT.get()), 1, () -> Smithing.CEMENTATION_POT.get(), 400, 1100),
-            new Recipe(s -> s.is(Smithing.PACKED_CEMENTATION_POT.get()), 1, () -> Smithing.CEMENTED_POT.get(), 3600, 1000));
+            new Recipe(s -> s.is(Smithing.PACKED_CEMENTATION_POT.get()), 1, () -> Smithing.CEMENTED_POT.get(), 3600, 1000),
+            // lime burning (IronOres): a lime stone block, or 4 Chalk, -> Quicklime
+            new Recipe(IronOres::limeStone, 1, () -> IronOres.QUICKLIME.get(), 400, IronOres.LIME_TEMP),
+            new Recipe(s -> s.is(Pigments.CHALK.get()), 4, () -> IronOres.QUICKLIME.get(), 400, IronOres.LIME_TEMP));
 
     // Our own fuel list (vanilla's fuel component needs a loot context); controls what burns in the stone age.
     public static final List<Fuel> FUELS = List.of(

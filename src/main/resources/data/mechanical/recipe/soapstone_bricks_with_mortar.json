@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_soapstone",
+    "mechanical:polished_soapstone",
+    "mechanical:polished_soapstone",
+    "mechanical:polished_soapstone",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:soapstone_bricks",
+    "count": 8
+  }
+}

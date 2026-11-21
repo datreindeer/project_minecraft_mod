@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "mechanical:shell_bank",
+  "result": {
+    "id": "mechanical:shell_bank_wall"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_slate",
+    "mechanical:polished_slate",
+    "mechanical:polished_slate",
+    "mechanical:polished_slate",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:slate_bricks",
+    "count": 8
+  }
+}

@@ -6,6 +6,9 @@
     "mechanical:chalk_block",
     "mechanical:soapstone",
     "mechanical:shale",
-    "mechanical:conglomerate"
+    "mechanical:conglomerate",
+    "mechanical:dolomite",
+    "mechanical:travertine",
+    "mechanical:shell_bank"
   ]
 }

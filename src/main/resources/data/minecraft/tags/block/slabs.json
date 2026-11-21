@@ -22,6 +22,15 @@
     "mechanical:shale_slab",
     "mechanical:conglomerate_brick_slab",
     "mechanical:conglomerate_slab",
-    "mechanical:polished_conglomerate_slab"
+    "mechanical:polished_conglomerate_slab",
+    "mechanical:dolomite_brick_slab",
+    "mechanical:dolomite_slab",
+    "mechanical:polished_dolomite_slab",
+    "mechanical:cut_travertine_slab",
+    "mechanical:smooth_travertine_slab",
+    "mechanical:travertine_slab",
+    "mechanical:cut_shell_bank_slab",
+    "mechanical:shell_bank_slab",
+    "mechanical:smooth_shell_bank_slab"
   ]
 }

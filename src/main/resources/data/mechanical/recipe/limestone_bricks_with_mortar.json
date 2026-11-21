@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polished_limestone",
+    "mechanical:polished_limestone",
+    "mechanical:polished_limestone",
+    "mechanical:polished_limestone",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "mechanical:limestone_bricks",
+    "count": 8
+  }
+}

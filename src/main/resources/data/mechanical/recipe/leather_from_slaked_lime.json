@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:scraped_hide",
+    "mechanical:slaked_lime"
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 1
+  }
+}

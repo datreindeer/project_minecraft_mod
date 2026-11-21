@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:stone",
+    "minecraft:stone",
+    "minecraft:stone",
+    "minecraft:stone",
+    "mechanical:lime_mortar"
+  ],
+  "result": {
+    "id": "minecraft:stone_bricks",
+    "count": 8
+  }
+}

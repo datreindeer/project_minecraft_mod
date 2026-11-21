@@ -79,7 +79,14 @@ public final class StoneFamilies {
             Stone.of("shale", "shale", Template.TUFF, false, MapColor.COLOR_BROWN, 1.2F, SoundType.TUFF,
                     List.of(List.of("shale", "polished_shale", "shale_bricks", "chiseled_shale_bricks"))),
             Stone.of("conglomerate", "conglomerate", Template.TUFF, false, MapColor.DIRT, 1.5F, SoundType.STONE,
-                    List.of(List.of("conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"))));
+                    List.of(List.of("conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"))),
+            // phase 2: lime stones (they burn to Quicklime in the Clay Kiln)
+            Stone.of("dolomite", "dolomite", Template.TUFF, false, MapColor.TERRACOTTA_WHITE, 1.5F, SoundType.TUFF,
+                    List.of(List.of("dolomite", "polished_dolomite", "dolomite_bricks", "chiseled_dolomite_bricks"))),
+            Stone.of("travertine", "travertine", Template.SANDSTONE, false, MapColor.SAND, 1.2F, SoundType.STONE,
+                    List.of(List.of("travertine", "cut_travertine", "chiseled_travertine"))),
+            Stone.of("shell_bank", "shell_bank", Template.SANDSTONE, false, MapColor.SAND, 0.8F, SoundType.CALCITE,
+                    List.of(List.of("shell_bank", "cut_shell_bank", "chiseled_shell_bank"))));
 
     /** Every stone family block by id path, base blocks included. */
     public static final Map<String, DeferredBlock<? extends Block>> BLOCKS_BY_NAME = new LinkedHashMap<>();

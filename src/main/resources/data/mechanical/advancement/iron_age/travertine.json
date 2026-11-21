@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/limestone_bricks",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:travertine"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cut_travertine"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cut_travertine"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.travertine.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.travertine.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

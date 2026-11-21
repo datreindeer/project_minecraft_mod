@@ -94,6 +94,18 @@ STONES = [
     Stone("conglomerate", "tuff", [(80, 74, 68), (106, 96, 86), (134, 120, 104), (160, 144, 122), (186, 168, 144)], False,
           [["conglomerate", "polished_conglomerate", "conglomerate_bricks", "chiseled_conglomerate_bricks"]],
           Ore(40, 6, 30, 80, 2, 40, 70, ["#minecraft:is_river"])),
+    # phase 2 (lime, Iron Age): Dolomite sits with Limestone (more where its cliffs are), Travertine by springs and water,
+    # Shell Bank (coquina) under beaches and shores; all three burn to Quicklime in the Clay Kiln (KilnBlockEntity)
+    Stone("dolomite", "tuff", [(118, 110, 108), (148, 138, 134), (176, 166, 160), (202, 193, 186), (226, 219, 212)], False,
+          [["dolomite", "polished_dolomite", "dolomite_bricks", "chiseled_dolomite_bricks"]],
+          Ore(48, 5, 0, 60, 2, 56, 160, ["#mechanical:has_limestone_cliffs"])),
+    Stone("travertine", "sandstone", [(156, 120, 78), (184, 146, 100), (206, 170, 124), (222, 190, 146), (236, 210, 170)], False,
+          [["travertine", "cut_travertine", "chiseled_travertine"]],
+          Ore(40, 8, 40, 90, 2, 40, 90, ["#minecraft:is_river", "swamp", "mangrove_swamp", "plains", "sunflower_plains"])),
+    Stone("shell_bank", "sandstone", [(130, 122, 108), (162, 154, 138), (190, 182, 166), (212, 206, 190), (232, 228, 214)], False,
+          [["shell_bank", "cut_shell_bank", "chiseled_shell_bank"]],
+          Ore(40, 8, 40, 70, 2, 40, 70, ["#minecraft:is_beach", "stony_shore", "ocean", "lukewarm_ocean", "warm_ocean"]),
+          bands=[(150, 116, 100), (180, 144, 124), (204, 170, 150), (222, 192, 172), (238, 214, 196)]),  # pink shell layers
 ]
 
 
@@ -239,6 +251,26 @@ for s in STONES:
             write(D / f"mechanical/neoforge/biome_modifier/add_{s.name}{suffix}.json", json.dumps({"type": "neoforge:add_features",
                   "biomes": biomes, "features": [f"mechanical:ore_{s.name}{suffix}"], "step": "underground_ores"}))
     print(f"{s.name}: {len(ids)} blocks, {len(textures)} textures")
+
+# ---- Lime Mortar (phase 2): 4 of what a bricks block is laid from + 1 Lime Mortar -> twice the bricks, for every
+# family's 2x2 bricks recipe and vanilla's. Cheaper, never required (world-materials-plan, default answer 3).
+def mortar(result, recipe_json):
+    r = json.loads(recipe_json)
+    if r.get("type") != "minecraft:crafting_shaped" or r.get("pattern") != ["##", "##"]:
+        return
+    res = r["result"]
+    write(D / f"mechanical/recipe/{result.split(':')[1]}_with_mortar.json", json.dumps({"type": "minecraft:crafting_shapeless",
+          "category": "building", "ingredients": [r["key"]["#"]] * 4 + ["mechanical:lime_mortar"],
+          "result": {"id": res["id"], "count": 2 * res.get("count", 1)}}))
+
+
+for s in STONES:
+    for p in TEMPLATES[s.template][1].values():
+        f = D / f"mechanical/recipe/{p.format(s.name)}.json"
+        if p == "{}_bricks" and f.exists():
+            mortar("mechanical:" + p.format(s.name), f.read_text(encoding="utf-8"))
+for v in ("stone_bricks", "deepslate_bricks", "bricks", "mud_bricks"):
+    mortar("minecraft:" + v, jar.read(f"data/minecraft/recipe/{v}.json").decode())
 
 lang["itemGroup.mechanical.building_blocks"] = "Building Blocks"
 lang_path.write_text(json.dumps(lang, indent=2) + "\n", encoding="utf-8")

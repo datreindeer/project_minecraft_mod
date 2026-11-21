@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -66,6 +67,8 @@ public final class IronOres {
     public static final int LEAD_TEMP = 800, CUPEL_TEMP = 1000, GOLD_TEMP = 1100;
     /** Limestone on the Stone Anvil. */
     public static final int FLUX_PER_LIMESTONE = 2;
+    /** Lime burning (docs/ages/03-iron-age.md "Kalk och murbruk"): over Charcoal's 800°, so it needs the bellows. */
+    public static final int LIME_TEMP = 900;
 
     public static final DeferredBlock<Block> GALENA_ORE = BLOCKS.registerSimpleBlock("galena_ore", p -> p
             .mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 3.0F));
@@ -93,6 +96,20 @@ public final class IronOres {
     /** Salt-cured: no perishes_* tag, so they keep; a little less food than smoked. */
     public static final DeferredItem<Item> SALTED_MEAT = food("salted_meat", 3, 0.6F);
     public static final DeferredItem<Item> SALTED_FISH = food("salted_fish", 2, 0.6F);
+    /** Lime: a lime stone burnt in the kiln, slaked with water, then mortar (cheaper bricks) or plaster (scripts/gen_lime.py). */
+    public static final DeferredItem<Item> QUICKLIME = ITEMS.registerSimpleItem("quicklime");
+    public static final DeferredItem<Item> SLAKED_LIME = ITEMS.registerSimpleItem("slaked_lime");
+    public static final DeferredItem<Item> LIME_MORTAR = ITEMS.registerSimpleItem("lime_mortar");
+    public static final List<String> PLASTERS = List.of("lime_plaster", "white_lime_plaster", "black_lime_plaster", "red_lime_plaster", "yellow_lime_plaster");
+    private static final List<MapColor> PLASTER_COLORS = List.of(MapColor.TERRACOTTA_WHITE, MapColor.SNOW, MapColor.COLOR_BLACK, MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_YELLOW);
+
+    static {
+        for (int i = 0; i < PLASTERS.size(); i++) {
+            MapColor color = PLASTER_COLORS.get(i);
+            ITEMS.registerSimpleBlockItem(PLASTERS.get(i), BLOCKS.registerSimpleBlock(PLASTERS.get(i), p -> p
+                    .mapColor(color).instrument(NoteBlockInstrument.BASEDRUM).strength(1.0F, 3.0F).sound(SoundType.CALCITE)));
+        }
+    }
 
     /** What the Bloomery can take as flux (the Bloomery side is wired up separately). */
     public static final TagKey<Item> FLUX_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "flux"));
@@ -103,7 +120,14 @@ public final class IronOres {
 
     /** Stone Anvil crushing (called from {@link BronzeOres#crushed}). */
     static ItemStack crushed(ItemStack stack) {
-        return stack.is(LIMESTONE_ITEM.get()) ? new ItemStack(FLUX.get(), FLUX_PER_LIMESTONE) : ItemStack.EMPTY;
+        return stack.is(LIMESTONE_ITEM.get()) || stack.is(StoneFamilies.block("dolomite").asItem())
+                ? new ItemStack(FLUX.get(), FLUX_PER_LIMESTONE) : ItemStack.EMPTY;
+    }
+
+    /** What burns to Quicklime in the kiln as a whole block (4 Chalk items do too, see KilnBlockEntity.RECIPES). */
+    static boolean limeStone(ItemStack stack) {
+        return stack.is(LIMESTONE_ITEM.get()) || List.of("dolomite", "chalk_block", "travertine", "shell_bank").stream()
+                .anyMatch(n -> stack.is(StoneFamilies.block(n).asItem()));
     }
 
     // ---------------------------------------------------------------- game test
@@ -210,6 +234,34 @@ public final class IronOres {
             h.assertTrue(level.getServer().reloadableRegistries().getLootTable(key) != net.minecraft.world.level.storage.loot.LootTable.EMPTY,
                     block.getId() + " has a loot table (gen_stone_families.py and StoneFamilies.java agree)");
         }
+
+        // lime: the lime stones (and 4 Chalk) burn to Quicklime at 900° (bellows), slaked with water, mortar doubles bricks
+        h.assertTrue(BronzeOres.crushed(new ItemStack(StoneFamilies.block("dolomite"))).is(FLUX.get()), "Dolomite crushes into Flux");
+        for (ItemStack lime : List.of(new ItemStack(LIMESTONE_ITEM.get()), new ItemStack(StoneFamilies.block("dolomite")),
+                new ItemStack(StoneFamilies.block("chalk_block")), new ItemStack(StoneFamilies.block("travertine")),
+                new ItemStack(StoneFamilies.block("shell_bank")), new ItemStack(Pigments.CHALK.get(), 4))) {
+            KilnBlockEntity.Bake bake = KilnBlockEntity.bakeFor(lime);
+            h.assertTrue(bake != null && bake.result.is(QUICKLIME.get()) && bake.temp == LIME_TEMP && bake.count == lime.getCount(),
+                    lime + " burns to Quicklime at " + LIME_TEMP + "°");
+        }
+        h.assertTrue(LIME_TEMP > KilnBlockEntity.FUELS.getLast().maxTemp(), "lime burning needs the bellows");
+        var slakeGrid = grid(new ItemStack(QUICKLIME.get()), new ItemStack(Items.WATER_BUCKET)).asCraftInput();
+        var slake = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, slakeGrid, level).orElseThrow(() -> h.assertionException("no slaking recipe"));
+        h.assertTrue(slake.value().assemble(slakeGrid).is(SLAKED_LIME.get()), "Quicklime + Water Bucket = Slaked Lime");
+        h.assertTrue(slake.value().getRemainingItems(slakeGrid).stream().anyMatch(s -> s.is(Items.BUCKET)), "the bucket comes back");
+        ItemStack mortar = craft(h, "Slaked Lime + Sand + Gravel", new ItemStack(SLAKED_LIME.get()), new ItemStack(Items.SAND), new ItemStack(Items.GRAVEL));
+        h.assertTrue(mortar.is(LIME_MORTAR.get()) && mortar.getCount() == 4, "Slaked Lime + Sand + Gravel = 4 Lime Mortar");
+        ItemStack polished = new ItemStack(StoneFamilies.block("polished_limestone"));
+        ItemStack bricks = craft(h, "4 Polished Limestone + Lime Mortar", polished.copy(), polished.copy(), polished.copy(), polished.copy(), new ItemStack(LIME_MORTAR.get()));
+        h.assertTrue(bricks.is(StoneFamilies.block("limestone_bricks").asItem()) && bricks.getCount() == 8, "4 Polished Limestone + Lime Mortar = 8 Limestone Bricks (got " + bricks + ")");
+        ItemStack stone = new ItemStack(Items.STONE);
+        h.assertTrue(craft(h, "4 Stone + Lime Mortar", stone.copy(), stone.copy(), stone.copy(), stone.copy(), new ItemStack(LIME_MORTAR.get())).getCount() == 8,
+                "4 Stone + Lime Mortar = 8 Stone Bricks");
+        ItemStack plaster = craft(h, "Lime Plaster", new ItemStack(SLAKED_LIME.get()), new ItemStack(Items.SAND), new ItemStack(Items.SAND), new ItemStack(Farming.STRAW.get()));
+        h.assertTrue(plaster.is(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, "lime_plaster"))) && plaster.getCount() == 4,
+                "Slaked Lime + 2 Sand + Straw = 4 Lime Plaster");
+        h.assertTrue(craft(h, "Scraped Hide + Slaked Lime", new ItemStack(Mechanical.SCRAPED_HIDE.get()), new ItemStack(SLAKED_LIME.get())).is(Items.LEATHER),
+                "a Scraped Hide limed is Leather");
 
         // the kiln: lead at 800°, cupellation at 1000°, gold at 1100° (9 nuggets per ingot)
         KilnBlockEntity.Bake lead = KilnBlockEntity.bakeFor(new ItemStack(RAW_GALENA.get()));

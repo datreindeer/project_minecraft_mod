@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "PPP",
+    "PDP",
+    "PPP"
+  ],
+  "key": {
+    "P": "mechanical:lime_plaster",
+    "D": "mechanical:red_pigment"
+  },
+  "result": {
+    "id": "mechanical:red_lime_plaster",
+    "count": 8
+  }
+}

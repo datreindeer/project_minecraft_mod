@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:slaked_lime",
+    "#minecraft:sand",
+    "minecraft:gravel"
+  ],
+  "result": {
+    "id": "mechanical:lime_mortar",
+    "count": 4
+  }
+}
