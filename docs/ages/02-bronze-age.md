@@ -4,7 +4,7 @@
 > (legering, bronsverktyg med spjut, svärd och skära, Bronze Saw, Bronze Helmet + Greaves, byhandel nivå 3–4 med Copper Coin), Smelting
 > Furnace, odlingens fas 3 (Quern, bröd, kompost, Manure, Scarecrow, Barley), keramik, Bronze Kettle, fler bronsverktyg,
 > vagn och häst, och till sist **Bloomery** (järnlupp, Bronze Anvil, smidesjärn), se avsnitten sist. Kvar (valfritt):
-> bronslykta, plog. Beslut står under Beslut.
+> bronslykta. Beslut står under Beslut. Fältredskapen (Seed Bag, Bronze Ard) och den snabbare växttiden: se *Fältredskap*.
 
 Andra åldern. Målet är att gå från sten till metall: hitta koppar och tenn, få fram tillräcklig värme, smälta och gjuta,
 legera brons och smida verktyg och rustning. Åldern slutar när spelaren kan bygga det som behövs för järn
@@ -1203,6 +1203,43 @@ Bronsålderns tunga båge, av idegran. Horn Bow är fortfarande den snabba båge
 Gametest `mechanical:bronze_tools`: Yew Rough Log + Bronze Saw ger Yew Stave och sågen stannar kvar, Tool Station-receptet
 (Sinew + Leather + Yew Stave) finns, full kraft först efter 30 ticks (20 ticks ger under 0.9), fartfaktorn är större än
 Horn Bows, 450 hållbarhet.
+
+## Fältredskap (byggda, v0.131.0)
+
+Odlingen gick för långsamt. Grödor växer nu **dubbelt så fort per tick** och gödslad jord (bördighet 3) 1,5× till
+(docs/farming.md "Växtvillkor" och "Bördighet": vete ~35–65 min spel, gödslat ~25–50 min, förut 1–2 h), och bronsåldern
+får två redskap som gör en hel ruta åt gången (docs/farming.md "Fältredskap").
+
+### Seed Bag
+
+```
+[        ][Cordage ][        ]
+[Leather ][   C    ][Leather ]
+[        ][Leather ][        ]
+```
+C = Copper eller Bronze Ingot (ringen som håller öppningen öppen). Högerklicka i luften eller smyg-högerklicka: en 3×3-meny
+(som Bark Basket) som bara tar utsäde, allt som sätts som item och blir en gröda eller stjälk: Grain, Wheat Grain, Peas,
+Flax Seeds, Wild Carrot, Carrot, Potato, Beetroot Seeds, Melon- och Pumpkin Seeds. Högerklicka farmland eller en gröda
+på den: varje tom farmland i **3×3** får ett frö, det första i påsen som kan växa där. Receptboken visar den när man bär
+en ingot.
+
+### Bronze Ard
+
+Tool Station: **Bronze Hoe Head + Bronze Plate + Tool Rod** (en årder: hackhuvudet som bill, plåten som sko under den,
+bommen). Låses upp när man bär ett Bronze Hoe Head. Plöjer det klickade blocket och de 8 runt omkring på samma höjd,
+med hackans regler (gräs, dirt, Podzol, Loess blir farmland bara med luft ovanför, Coarse Dirt blir Dirt); smyg: bara
+ett. **Hållbarhet 300**, 1 per plöjt block. Tung: attackfart −3,2. Räknas som hacka (`#minecraft:hoes`, förtrollas som en).
+Den dragna plogen kommer i järnåldern.
+
+### Advancements (Bronze Age-fliken, efter *Bronze!*)
+
+- **Broadcast Sowing**: ha en Seed Bag. **Breaking Ground**: ha en Bronze Ard.
+
+### Test
+
+`FarmToolsTest`: faktorerna (2× på ny åker, 1,5× till på bördighet 3, inget på vintern), mognadstiden mätt genom
+`randomTick` (11,8 / 9,0 random ticks mot vanillas 21), påsen sår 3×3 och drar ett frö per block, årdern plöjer 3×3 men inte
+under ett block och slits 8, smygande ett.
 
 ## Vagn och häst (byggd)
 

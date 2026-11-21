@@ -395,6 +395,19 @@ högerklicka det spruckna blocket, så blir det helt igen och ett murbruk går �
 Cracked Stone Bricks, Cracked Deepslate Bricks/Tiles och de andra spruckna vanilla-blocken. Advancement *Repointed* (efter
 *Lime Mortar*).
 
+## Linen Seed Bag (byggd, v0.131.0)
+
+Bronsålderns Seed Bag i större format (docs/farming.md "Fältredskap"): sår **5×5** tom farmland per högerklick, ett frö
+per block, samma 3×3-meny för utsäde.
+
+```
+[Linen Thread][Iron Plate  ][Linen Thread]
+[Linen Thread][            ][Linen Thread]
+[Linen Thread][  Leather   ][Linen Thread]
+```
+Görs från grunden och inte av en Seed Bag (fröna i den hade annars försvunnit i receptet). Advancement **Wide Sower**
+(Iron Age-fliken, efter *Forged*). Den dragna plogen är ett eget bygge.
+
 ## Vagnen (Wagon) (byggd)
 
 Järnålderns transport: kärrans storebror, logistik på väg. Fyra hjul med järnringar, en lång plankbädd och en dragstång

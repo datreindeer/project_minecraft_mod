@@ -4,7 +4,7 @@
 > kompost, gödsel, fågelskrämma) är **byggd i bronsåldern fas 3**: recepten kräver en Copper eller Bronze Ingot, och
 > boskap släpper Manure (se "Bronsåldern fas 3 (byggd)").
 > Spelarens beskrivning av stenålderns del finns i `docs/ages/01-stone-age.md` (Odling). Senare åldrar ger bättre
-> verktyg (bronsskära, plog).
+> verktyg (bronsskära, Bronze Ard, Seed Bag; se "Fältredskap").
 
 ## Beslut
 
@@ -78,10 +78,17 @@ Barley har ingen vild källa än (bara creative); kommer med handel/byar senare.
 ## Växtvillkor (byggt)
 
 Alla grödor (även vanilla) går genom NeoForges `CropGrowEvent`. Vanillas egen tillväxtchans gäller fortfarande; vår
-faktor multipliceras på: **temperaturfaktor × säsongsfaktor × fukt × bördighet × dagsljus**. Temperaturen är `Temperature.ambient`
+faktor multipliceras på: **GROWTH_SPEED (2) × temperaturfaktor × säsongsfaktor × bördighet**, och fukt 0 eller mörker
+stoppar allt. Alla fartfaktorer står samlade i `Farming` (`GROWTH_SPEED`, `FERTILITY_GROWTH`, `growthRate`). Blir
+faktorn över 1 ger varje vanilla-tillväxtsteg extra steg (2,4 → 2 steg och 40 % chans på ett tredje), så farten är
+exakt faktorn gånger vanillas och inte kapad vid vanillas takt. Temperaturen är `Temperature.ambient`
 (0–20; slätt ~12,4, taiga 8, snö 2–6, savann/öken 22, natt −5 under bar himmel, regn −2).
 Ingen delning med dagens längd (dagarna är 3× vanillas): tidigare delades chansen med 3 och ett vetefält tog ~5 timmars
-spel att mogna. Nu växer det i vanilla-takt per riktig minut, men bara på dagen: runt 1–2 timmar för vete på fuktig jord.
+spel att mogna. Sedan växte det i vanilla-takt per riktig minut, men bara på dagen: runt 1–2 timmar för vete på fuktig jord.
+**v0.131.0: dubbelt så fort** (spelarna tyckte odlingen var för långsam): vete på ny åker (bördighet 2) mognar på
+**~35–65 min spel** (förut 1–2 h), på gödslad åker (bördighet 3) **~25–50 min**, på våren i bästa temperatur (sommar
+×1,2: lite fortare).
+Fortfarande bara på dagen, och frost, säsonger och torka gäller som förut.
 
 | Gröda | Växer (temp) | Bäst | Frost dödar under | Övrigt |
 |---|---|---|---|---|
@@ -122,6 +129,12 @@ spel att mogna. Nu växer det i vanilla-takt per riktig minut, men bara på dage
   dess temperatur, spann och varför den inte växer (too cold / too hot / too dry / needs daylight / resting till
   spring / ripe).
 
+Uppmätt v0.131.0 (`FarmToolsTest`, vete på 3×3 fuktig farmland där vanilla växer ett steg var 3:e random tick, alltså
+21 random ticks till mogen; 200 omgångar genom den riktiga `randomTick`, vår, 12°): bördighet 2 (faktor 2,0) **11,8**
+random ticks, bördighet 3 (faktor 3,0) **9,0**. Förut: 21 respektive ~16. Vete har 7 steg, så faktor 2 blir 1,8× kortare
+mognadstid (4 tillväxtsteg i stället för 7) och gödslad jord 2,3×. Med vanillas random tick (i snitt var 68:e sekund per
+block), ett vanligt fält (1 på 6 per tick) och dag ungefär halva dygnet ger det tiderna ovan.
+
 Uppmätt (random_tick_speed 100, 1200 ticks): slätt vete växer på dagen, inte alls på natten; snöslätt på dagen: vete
 står still, korn och morötter växer långsamt; snöslätt på natten: allt vete fryser ihjäl, korn och morötter klarar sig;
 savann: vete och morötter står still (för varmt), melonstjälkar växer.
@@ -140,7 +153,8 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
   **Podzol** kan nu plöjas och blir farmland med bördighet 3 (`block_transformer/hoe.json`).
 - **Skörd** av en mogen gröda: −1 (Peas: +1).
 - Bördighet 0: halv tillväxt och halv skörd (varje stack halveras, udda avrundas slumpvis). 1: 75 % tillväxt.
-  2: normal. 3: efter varje tillväxtsteg 30 % chans på ett steg till (~1,3× fart), och 30 % chans på en extra vid skörd.
+  2: normal. 3: **1,5× tillväxt** (`Farming.FERTILITY_GROWTH`; var ~1,3× före v0.131.0) och 30 % chans på en extra vid
+  skörd. Så Compost och Manure lönar sig: en gödslad åker mognar på två tredjedelar av tiden.
   Uppmätt: 24 mogna vete gav 11 / 24 / 29 kärvar på bördighet 0 / 2 / 3.
 - **Syns på blocket:** 0 = blek och gråaktig, 1 = lite blekare, 2 = som vanilla, 3 = mörk mylla med fläckar av
   kompost (torr och fuktig variant). Texturer + blockstate-override: `scripts/gen_farmland_textures.py`.
@@ -167,6 +181,9 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 |---|---|---|
 | Flint Hoe (finns) | | Gör farmland |
 | Flint Sickle | Tool Station: Flint + Twine + Stick (låses upp av Flint) | Extra kärve + Straw, skär gräs/grödor/vild säd snabbt. Hållbarhet 48 |
+| Bronze Ard (bronsåldern) | Tool Station: Bronze Hoe Head + Bronze Plate + Tool Rod | Plöjer **3×3** per klick (smyg: ett). Hållbarhet 300, 1 per plöjt block. Se "Fältredskap" |
+| Seed Bag (bronsåldern) | `[ ][Cordage][ ]` / `[Leather][C][Leather]` / `[ ][Leather][ ]` (C = Copper/Bronze Ingot) | Sår **3×3**. Se "Fältredskap" |
+| Linen Seed Bag (järnåldern) | `[Linen Thread][Iron Plate][Linen Thread]` / `[Linen Thread][ ][Linen Thread]` / `[Linen Thread][Leather][Linen Thread]` | Sår **5×5** |
 | Bronze Sickle (bronsåldern) | Tool Station: Bronze Sickle Blade (gjuten i Clay Sickle Blade Mold, slipad) + Twine + Stick | Samma bonusar som flintskäran men 80 % chans på extra kärve (flint 50 %), och skär **3×3** mogna grödor eller gräs med ett drag (smyg: ett). Hållbarhet 460. Se docs/ages/02-bronze-age.md "Fler bronsverktyg" |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska. Hållbarhet 64 |
 | Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
@@ -176,6 +193,31 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 | Compost Heap | `[Stick][ ][Stick]` / `[Stick][Leaf Litter][Stick]` / `[Stick][C][Stick]` | Kompostera |
 | Scarecrow | `[C][Carved Pumpkin][ ]` / `[Straw][Raw Hide][Straw]` / `[ ][Stick][ ]` | Håller kråkor borta |
 | Straw | tröskning, skära | Kompost, fågelskrämma |
+
+## Fältredskap (byggt, v0.131.0)
+
+Odlingen kändes för långsam: växttiden halverades (se "Växtvillkor"), och sådd och plöjning går nu en hel ruta i taget.
+
+- **Seed Bag** (bronsåldern): en läderpåse med en metallring som håller öppningen öppen. Crafting:
+  `[ ][Cordage][ ]` / `[Leather][C][Leather]` / `[ ][Leather][ ]`, C = Copper eller Bronze Ingot (som odlingens fas 3).
+  Högerklicka i luften (eller smyg-högerklicka) för att öppna den: **9 platser (3×3)** som Bark Basket, bara för utsäde:
+  allt som sätts som item och blir en gröda eller stjälk (Grain, Wheat Grain, Peas, Flax Seeds, Wild Carrot, Carrot,
+  Potato, Beetroot Seeds, Melon/Pumpkin Seeds ...). Högerklicka farmland (eller en gröda på den): varje tom farmland i
+  **3×3** runt den får **ett frö** var, i påsens ordning (första frö som kan växa där). Inget frö eller ingen tom åker:
+  "Nothing to sow". Planerat var 4 stackar; det blev Bark Basketens 3×3 (samma meny, ingen ny GUI).
+- **Linen Seed Bag** (järnåldern): samma påse i linne med en järnkant, sår **5×5**. Crafting:
+  `[Linen Thread][Iron Plate][Linen Thread]` / `[Linen Thread][ ][Linen Thread]` / `[Linen Thread][Leather][Linen Thread]`.
+  Görs från grunden, inte av en Seed Bag (då hade fröna i påsen försvunnit i receptet).
+- **Bronze Ard** (bronsåldern): en årder, en tung hacka med brons-bill på en lång bom. Tool Station: **Bronze Hoe Head +
+  Bronze Plate + Tool Rod** (låses upp när man bär ett Bronze Hoe Head). Plöjer det klickade blocket som en hacka och
+  sedan de 8 runt omkring på samma höjd (**3×3**); smyg: bara ett. Går genom hackans egen `block_transformer` (samma
+  regler: dirt, grass, path, Podzol → bördighet 3, Loess, Coarse Dirt → Dirt, inget block eller gröda ovanpå). Hållbarhet
+  **300**, 1 per plöjt block. Långsam att svinga (attackfart −3,2). Den dragna plogen för järnåldern är ett eget bygge.
+- Advancements: **Broadcast Sowing** och **Breaking Ground** (Bronze Age-fliken, efter *Bronze!*), **Wide Sower**
+  (Iron Age-fliken, efter *Forged*).
+- Kod: `FarmTools.java` (påsarna, årdern), menyn är `BarkBasketMenu.seedBag`; data `scripts/gen_farm_tools.py` (efter
+  gen_bronzetools), texturer `scripts/gen_farm_tools_textures.py`. Test: `FarmToolsTest` (faktorerna, mognadstid,
+  påsarna sår 3×3 / 5×5 och drar ett frö per block, årdern plöjer 3×3 och slits 1 per block).
 
 ## Bronsåldern fas 3 (byggd)
 
@@ -255,7 +297,7 @@ Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de i
 ## Att bestämma senare
 
 - Marktyper som ändrar säsongsprofilen (växthus, kompost).
-- Bronsålderns bronsskära och plog (snabbare åker, större skörd).
+- Järnålderns dragna plog (bronsskäran, Bronze Ard och såpåsarna är byggda).
 - Källa för Barley (handel, byar).
 - Manure bara från djur i fållor eller tamdjur (nu släpper alla vuxna i taggen, även vilda).
 - Halmtak och halmbädd av Straw. Scarecrow som bär en Leather Helmet (bara utseende).
