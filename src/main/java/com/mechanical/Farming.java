@@ -290,6 +290,8 @@ public final class Farming {
 
     /** Chance of one extra sheaf from a ripe grain crop cut with this sickle (Straw comes from the loot tables): better metal, better yield. */
     public static float sickleBonus(ItemStack tool) {
+        if (tool.is(Smithing.STEEL_SICKLE.get())) return 1.0F;
+        if (tool.is(Smithing.IRON_SICKLE.get())) return 0.9F;
         if (tool.is(BronzeTools.BRONZE_SICKLE.get())) return 0.8F;
         if (tool.is(FLINT_SICKLE.get())) return 0.5F;
         return 0;
@@ -310,7 +312,8 @@ public final class Farming {
             if (bonus == 0 || event.getToolTip().isEmpty()) return;
             List<Component> tip = event.getToolTip();
             tip.add(1, Component.translatable("tooltip.mechanical.sickle_yield", Math.round(bonus * 100)).withStyle(net.minecraft.ChatFormatting.GRAY));
-            if (stack.is(BronzeTools.BRONZE_SICKLE.get())) tip.add(2, Component.translatable("tooltip.mechanical.sickle_swath").withStyle(net.minecraft.ChatFormatting.GRAY));
+            int side = 2 * BronzeTools.sweepRadius(stack) + 1;
+            if (side > 1) tip.add(2, Component.translatable("tooltip.mechanical.sickle_swath", side).withStyle(net.minecraft.ChatFormatting.GRAY));
         }
 
         private SickleTooltip() {}

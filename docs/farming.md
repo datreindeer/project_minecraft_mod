@@ -38,7 +38,7 @@
 ## Skörd och utsäde (byggt)
 
 - **Omogen** gröda ger ingenting när den bryts. Undantag: odlat Einkorn och Emmer (fortfarande vild typ) ger 0–1 Grain.
-- **Mogen Wheat/Barley/Einkorn/Emmer** → 1 Sheaf av sorten. Med en skära: 1 Straw och chans på en kärve till, bättre skära ger mer: **Flint Sickle** 50 %, **Bronze Sickle** 80 % (`Farming.sickleBonus`, visas i tooltipen).
+- **Mogen Wheat/Barley/Einkorn/Emmer** → 1 Sheaf av sorten. Med en skära: 1 Straw och chans på en kärve till, bättre skära ger mer: **Flint Sickle** 50 %, **Bronze Sickle** 80 %, **Iron Sickle** 90 %, **Steel Sickle** 100 % (`Farming.sickleBonus`, visas i tooltipen).
   Skäran slits 1 per mogen gröda (grödor bryts direkt, så verktyg slits annars inte).
 - **Tröskning:** Flail i handen, kärvar i andra handen, högerklicka på en hård yta (taggen `mechanical:threshing_floors`:
   sten, kullersten, mossig kullersten, smooth stone, stenkross, cobbled deepslate, granit/diorit/andesit och polerade,
@@ -168,8 +168,10 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 | Flint Hoe (finns) | | Gör farmland |
 | Flint Sickle | Tool Station: Flint + Twine + Stick (låses upp av Flint) | Extra kärve + Straw, skär gräs/grödor/vild säd snabbt. Hållbarhet 48 |
 | Bronze Sickle (bronsåldern) | Tool Station: Bronze Sickle Blade (gjuten i Clay Sickle Blade Mold, slipad) + Twine + Stick | Samma bonusar som flintskäran men 80 % chans på extra kärve (flint 50 %), och skär **3×3** mogna grödor eller gräs med ett drag (smyg: ett). Hållbarhet 460. Se docs/ages/02-bronze-age.md "Fler bronsverktyg" |
+| Iron Sickle (järnåldern) | Tool Station: Iron Sickle Blade (smidd på städet) + Leather + Stick | 90 % chans på extra kärve, skär **3×3**. Hållbarhet 900. Se docs/ages/03-iron-age.md |
+| Steel Sickle (järnåldern) | Tool Station: Steel Sickle Blade + Leather + Stick | Alltid en extra kärve (100 %), skär **5×5** (smyg: ett). Hållbarhet 1600 |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska. Hållbarhet 64 |
-| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %, järn 90 %, stål 100 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Raw Porridge | 2 Grain + Clay Water Bucket + Bowl | Kokas till Porridge |
 | Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` | Mal Grain → Flour |
 | Baking Stone | `[R][C][R]` | Baka Dough → Bread |

@@ -62,7 +62,7 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
 
     private static void strike(ServerLevel level, BlockPos pos, Player player, ItemStack hammer, InteractionHand hand) {
         if (player.getCooldowns().isOnCooldown(hammer) || !(level.getBlockEntity(pos) instanceof BronzeAnvilBlockEntity anvil)) return;
-        player.getCooldowns().addCooldown(hammer, Ironworking.HAMMER_COOLDOWN);
+        player.getCooldowns().addCooldown(hammer, Smithing.cooldown(hammer));
         anvil.strike(level, player, hammer, hand);
     }
 

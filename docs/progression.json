@@ -983,6 +983,22 @@
    },
    {
     "title": {
+     "sv": "Smidda versioner av bronsverktygen",
+     "en": "Forged versions of the bronze tools"
+    },
+    "items": [
+     "mechanical:iron_sickle",
+     "mechanical:steel_sickle",
+     "mechanical:iron_tongs",
+     "mechanical:iron_chisel"
+    ],
+    "text": {
+     "sv": "Städet har mönster för bronsverktygens delar också: Sickle Blade, Chisel Blade, Tong Arms, Needles (4 Iron Needle per tacka) och Fish Hooks (4 per tacka). Med Leather och Stick i Tool Station blir bladen en [[mechanical:iron_sickle]] (skär 3×3, extra kärve 90 %) eller [[mechanical:steel_sickle]] (5×5, alltid en extra kärve), och Iron eller Steel Chisel. [[mechanical:iron_tongs]] nitas med en Iron Tool Rod, och krokarna blir ett Iron Hook Fishing Rod. Iron Hammer Head + Iron Plate + Tool Rod ger en Iron Quarry Hammer; Steel Hammer Head + Iron Tool Rod + Tool Rod en Steel Smithing Hammer som slår fortare.",
+     "en": "The anvil has patterns for the bronze tools' parts too: Sickle Blade, Chisel Blade, Tong Arms, Needles (4 Iron Needles per ingot) and Fish Hooks (4 per ingot). With Leather and a Stick at the Tool Station the blades become an [[mechanical:iron_sickle]] (cuts 3×3, extra sheaf 90%) or a [[mechanical:steel_sickle]] (5×5, always an extra sheaf), and an Iron or Steel Chisel. [[mechanical:iron_tongs]] are riveted with an Iron Tool Rod, and the hooks make an Iron Hook Fishing Rod. Iron Hammer Head + Iron Plate + Tool Rod give an Iron Quarry Hammer; Steel Hammer Head + Iron Tool Rod + Tool Rod a Steel Smithing Hammer that strikes faster."
+    }
+   },
+   {
+    "title": {
      "sv": "Kolmila",
      "en": "Charcoal clamp"
     },

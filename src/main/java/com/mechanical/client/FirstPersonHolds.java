@@ -184,7 +184,7 @@ public final class FirstPersonHolds {
         Fp mainKind = kind(mainItem);
 
         // tongs in one hand, something hot in the other: the piece at the jaws, its hand empty
-        boolean tongsMain = mainItem.is(BronzeTools.BRONZE_TONGS.get()), tongsOff = offItem.is(BronzeTools.BRONZE_TONGS.get());
+        boolean tongsMain = mainItem.is(BronzeTools.TONGS), tongsOff = offItem.is(BronzeTools.TONGS);
         ItemStack hot = tongsMain ? offItem : mainItem;
         if (tongsMain != tongsOff && HoldPoses.grippable(hot, player.level().getGameTime())) {
             event.setCanceled(true);

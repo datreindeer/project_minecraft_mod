@@ -74,6 +74,34 @@ public final class Smithing {
     public static final DeferredItem<Item> IRON_SAW_BLADE = ITEMS.registerSimpleItem("iron_saw_blade");
     public static final DeferredItem<Item> STEEL_SAW_BLADE = ITEMS.registerSimpleItem("steel_saw_blade");
     public static final DeferredItem<Item> IRON_BOLT_HEAD = ITEMS.registerSimpleItem("iron_bolt_head");
+    public static final DeferredItem<Item> IRON_SICKLE_BLADE = ITEMS.registerSimpleItem("iron_sickle_blade");
+    public static final DeferredItem<Item> STEEL_SICKLE_BLADE = ITEMS.registerSimpleItem("steel_sickle_blade");
+    public static final DeferredItem<Item> IRON_CHISEL_BLADE = ITEMS.registerSimpleItem("iron_chisel_blade");
+    public static final DeferredItem<Item> STEEL_CHISEL_BLADE = ITEMS.registerSimpleItem("steel_chisel_blade");
+    public static final DeferredItem<Item> IRON_TONG_ARMS = ITEMS.registerSimpleItem("iron_tong_arms");
+    public static final DeferredItem<Item> IRON_FISH_HOOK = ITEMS.registerSimpleItem("iron_fish_hook");
+
+    // ---- forged versions of the bronze tools (BronzeTools): sickles, chisels, tongs, needle, fish hook rod, hammers
+    /** Iron's tier, {@value #IRON_SICKLE_USES} uses; reaps 3x3 (BronzeTools#sweepRadius), 90 % extra sheaf (Farming#sickleBonus). */
+    public static final int IRON_SICKLE_USES = 900, STEEL_SICKLE_USES = 1600;
+    public static final DeferredItem<Item> IRON_SICKLE = ITEMS.registerSimpleItem("iron_sickle", p -> p.tool(
+            new ToolMaterial(BlockTags.INCORRECT_FOR_IRON_TOOL, IRON_SICKLE_USES, 6.0F, 2.0F, 14, net.minecraft.tags.ItemTags.IRON_TOOL_MATERIALS),
+            Farming.SICKLE_MINEABLE, 2.0F, -2.2F, 0.0F));
+    /** Reaps 5x5, an extra sheaf from every ripe grain crop. */
+    public static final DeferredItem<Item> STEEL_SICKLE = ITEMS.registerSimpleItem("steel_sickle", p -> p.tool(
+            new ToolMaterial(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, STEEL_SICKLE_USES, 7.5F, 2.5F, 12, Smithing.STEEL_TOOL_MATERIALS),
+            Farming.SICKLE_MINEABLE, 2.5F, -2.2F, 0.0F));
+    /** Carve stone like the Bronze Chisel; at the Whetstone the steel one knocks the flash off faster (3 strokes in one). */
+    public static final DeferredItem<BronzeTools.ChiselItem> IRON_CHISEL = ITEMS.registerItem("iron_chisel", p -> new BronzeTools.ChiselItem(p, 2),
+            p -> p.durability(700));
+    public static final DeferredItem<BronzeTools.ChiselItem> STEEL_CHISEL = ITEMS.registerItem("steel_chisel", p -> new BronzeTools.ChiselItem(p, 3),
+            p -> p.durability(1400));
+    public static final DeferredItem<Item> IRON_TONGS = ITEMS.registerSimpleItem("iron_tongs", p -> p.durability(700));
+    /** Off the anvil ready, {@link #NEEDLES_PER_INGOT} from one hot ingot (#mechanical:needles). */
+    public static final DeferredItem<Item> IRON_NEEDLE = ITEMS.registerSimpleItem("iron_needle", p -> p.durability(600));
+    /** Bites as with Lure III (15 s sooner) plus Luck of the Sea II. */
+    public static final DeferredItem<BoneHookRodItem> IRON_HOOK_FISHING_ROD = ITEMS.registerItem("iron_hook_fishing_rod",
+            p -> new BoneHookRodItem(p, 300, 2), p -> p.durability(256).enchantable(1));
 
     // ---- forged saws: longer-lived and quicker through a fallen log than the Bronze Saw (480, a stroke every 10 ticks)
     public static final DeferredItem<SawItem> IRON_SAW = ITEMS.registerItem("iron_saw", p -> new SawItem(p, 8), p -> p.durability(900));
@@ -89,6 +117,9 @@ public final class Smithing {
 
     /** Iron wears less than bronze: 1 a blow instead of {@link Ironworking#HAMMER_WEAR}. */
     public static final DeferredItem<Item> IRON_SMITHING_HAMMER = ITEMS.registerSimpleItem("iron_smithing_hammer", p -> p.durability(500));
+    /** Wears 1 a blow like iron, lasts longer and strikes quicker: a blow every {@value #STEEL_HAMMER_COOLDOWN} ticks. */
+    public static final DeferredItem<Item> STEEL_SMITHING_HAMMER = ITEMS.registerSimpleItem("steel_smithing_hammer", p -> p.durability(1200));
+    public static final int STEEL_HAMMER_COOLDOWN = 7;
 
     // ---- steel tools: diamond's reach (obsidian), more durable, faster and harder-hitting than iron
     public static final TagKey<Item> STEEL_TOOL_MATERIALS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "steel_tool_materials"));
@@ -126,6 +157,10 @@ public final class Smithing {
     public static final ToolMaterial QUARRY_STEEL = new ToolMaterial(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1800, 4.5F, 2.5F, 12, STEEL_TOOL_MATERIALS);
     public static final DeferredItem<Item> STEEL_QUARRY_HAMMER = ITEMS.registerSimpleItem("steel_quarry_hammer",
             p -> p.tool(QUARRY_STEEL, BronzeTools.QUARRY_MINEABLE, 7.0F, -3.4F, 0.0F));
+    /** Between the two: iron's reach (gold, redstone, diamond ores crumble), 900 uses. */
+    public static final ToolMaterial QUARRY_IRON = new ToolMaterial(BlockTags.INCORRECT_FOR_IRON_TOOL, 900, 3.75F, 2.0F, 14, net.minecraft.tags.ItemTags.IRON_TOOL_MATERIALS);
+    public static final DeferredItem<Item> IRON_QUARRY_HAMMER = ITEMS.registerSimpleItem("iron_quarry_hammer",
+            p -> p.tool(QUARRY_IRON, BronzeTools.QUARRY_MINEABLE, 6.5F, -3.4F, 0.0F));
 
     /** Pumps twice as hard as the wooden Bellows and holds the heat for 60 s after a pump (KilnBlockEntity#IRON_HOLD_TICKS). */
     public static final net.neoforged.neoforge.registries.DeferredBlock<BellowsBlock> IRON_BELLOWS = Mechanical.BLOCKS.registerBlock("iron_bellows",
@@ -149,7 +184,12 @@ public final class Smithing {
         SPEAR_HEAD("spear_head", 1, 6, () -> IRON_SPEAR_HEAD.get(), () -> STEEL_SPEAR_HEAD.get()),
         HAMMER_HEAD("hammer_head", 2, 6, () -> IRON_HAMMER_HEAD.get(), () -> STEEL_HAMMER_HEAD.get()),
         SAW_BLADE("saw_blade", 1, 6, () -> IRON_SAW_BLADE.get(), () -> STEEL_SAW_BLADE.get()),
-        BOLT_HEADS("bolt_heads", 1, 4, BOLT_HEADS_PER_INGOT, () -> IRON_BOLT_HEAD.get(), null);
+        BOLT_HEADS("bolt_heads", 1, 4, BOLT_HEADS_PER_INGOT, () -> IRON_BOLT_HEAD.get(), null),
+        SICKLE_BLADE("sickle_blade", 1, 5, () -> IRON_SICKLE_BLADE.get(), () -> STEEL_SICKLE_BLADE.get()),
+        CHISEL_BLADE("chisel_blade", 1, 4, () -> IRON_CHISEL_BLADE.get(), () -> STEEL_CHISEL_BLADE.get()),
+        TONG_ARMS("tong_arms", 1, 5, () -> IRON_TONG_ARMS.get(), null),
+        NEEDLES("needles", 1, 3, NEEDLES_PER_INGOT, () -> IRON_NEEDLE.get(), null),
+        FISH_HOOKS("fish_hooks", 1, 3, FISH_HOOKS_PER_INGOT, () -> IRON_FISH_HOOK.get(), null);
 
         public final String id;
         /** Hot ingots stacked on the anvil and welded into the part (like vanilla's ingot counts: a pickaxe 3). */
@@ -185,6 +225,8 @@ public final class Smithing {
 
     /** Iron Bolt Heads one hot Wrought Iron Ingot is drawn and cut into. */
     public static final int BOLT_HEADS_PER_INGOT = 4;
+    /** Iron Needles and Iron Fish Hooks one hot Wrought Iron Ingot is drawn into (the bronze gang molds cast 4 too). */
+    public static final int NEEDLES_PER_INGOT = 4, FISH_HOOKS_PER_INGOT = 4;
 
     /** An Iron Bolt ignores {@link #BOLT_ARMOR_PIERCE} of the armour it hits. */
     @SubscribeEvent
@@ -232,7 +274,17 @@ public final class Smithing {
                     SmithingHearthBlockEntity::new, SMITHING_HEARTH.get()));
 
     public static boolean isHammer(ItemStack stack) {
-        return stack.is(Ironworking.BRONZE_SMITHING_HAMMER.get()) || stack.is(IRON_SMITHING_HAMMER.get());
+        return stack.is(Ironworking.BRONZE_SMITHING_HAMMER.get()) || worksSteel(stack);
+    }
+
+    /** The Iron and Steel Smithing Hammers: hard enough for steel, and they wear 1 a blow. */
+    public static boolean worksSteel(ItemStack hammer) {
+        return hammer.is(IRON_SMITHING_HAMMER.get()) || hammer.is(STEEL_SMITHING_HAMMER.get());
+    }
+
+    /** Ticks between blows of this hammer on the anvil. */
+    public static int cooldown(ItemStack hammer) {
+        return hammer.is(STEEL_SMITHING_HAMMER.get()) ? STEEL_HAMMER_COOLDOWN : Ironworking.HAMMER_COOLDOWN;
     }
 
     /** Vanilla skips the block when sneaking with an item in hand; the anvil's sneak-use (pick the pattern) needs it. */
@@ -243,7 +295,7 @@ public final class Smithing {
 
     /** Durability a blow on hot iron or steel costs this hammer. */
     public static int wear(ItemStack hammer) {
-        return hammer.is(IRON_SMITHING_HAMMER.get()) ? 1 : Ironworking.HAMMER_WEAR;
+        return worksSteel(hammer) ? 1 : Ironworking.HAMMER_WEAR;
     }
 
     /** Iron and steel that go on the anvil to be forged (hot, or cold to be told it must be heated). */

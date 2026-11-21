@@ -18,6 +18,15 @@
     "mechanical:steel_quarry_hammer",
     "mechanical:yew_longbow",
     "mechanical:iron_saw",
-    "mechanical:steel_saw"
+    "mechanical:steel_saw",
+    "mechanical:iron_sickle",
+    "mechanical:iron_chisel",
+    "mechanical:steel_sickle",
+    "mechanical:steel_chisel",
+    "mechanical:iron_hook_fishing_rod",
+    "mechanical:iron_tongs",
+    "mechanical:iron_needle",
+    "mechanical:iron_quarry_hammer",
+    "mechanical:steel_smithing_hammer"
   ]
 }

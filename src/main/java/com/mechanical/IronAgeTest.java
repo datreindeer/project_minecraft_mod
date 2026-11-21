@@ -317,6 +317,53 @@ public final class IronAgeTest {
             zombie.discard();
         }
         h.assertTrue(lost[0] > lost[1] + 0.5F, "a bolt goes through armour: " + lost[0] + " vs an arrow's " + lost[1]);
+
+        // ---- forged versions of the bronze tools: every one at the Tool Station, its part from the anvil, in the right tags
+        for (var tool : List.of(Smithing.IRON_SICKLE.get(), Smithing.STEEL_SICKLE.get(), Smithing.IRON_CHISEL.get(), Smithing.STEEL_CHISEL.get(),
+                Smithing.IRON_TONGS.get(), Smithing.IRON_HOOK_FISHING_ROD.get(), Smithing.IRON_QUARRY_HAMMER.get(), Smithing.STEEL_SMITHING_HAMMER.get()))
+            h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == tool), "Tool Station: " + tool);
+        ItemStack hotIron = new ItemStack(Smithing.HOT_WROUGHT_IRON_INGOT.get()), hotSteel = new ItemStack(Smithing.HOT_STEEL_INGOT.get());
+        h.assertTrue(Smithing.Pattern.SICKLE_BLADE.result(hotSteel).is(Smithing.STEEL_SICKLE_BLADE.get())
+                && Smithing.Pattern.CHISEL_BLADE.result(hotIron).is(Smithing.IRON_CHISEL_BLADE.get())
+                && Smithing.Pattern.TONG_ARMS.result(hotIron).is(Smithing.IRON_TONG_ARMS.get()), "sickle, chisel and tong patterns");
+        ItemStack needles = Smithing.Pattern.NEEDLES.result(hotIron), hooks = Smithing.Pattern.FISH_HOOKS.result(hotIron);
+        h.assertTrue(needles.is(Smithing.IRON_NEEDLE.get()) && needles.getCount() == 4 && hooks.is(Smithing.IRON_FISH_HOOK.get()) && hooks.getCount() == 4,
+                "one hot ingot: 4 Iron Needles, 4 Iron Fish Hooks");
+        h.assertTrue(Smithing.Pattern.TONG_ARMS.result(hotSteel).isEmpty(), "no steel tongs");
+        var sickles = net.minecraft.tags.TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "sickles"));
+        ItemStack ironSickle = new ItemStack(Smithing.IRON_SICKLE.get()), steelSickle = new ItemStack(Smithing.STEEL_SICKLE.get());
+        h.assertTrue(ironSickle.is(sickles) && steelSickle.is(sickles), "both in #mechanical:sickles");
+        h.assertTrue(ironSickle.getMaxDamage() == 900 && steelSickle.getMaxDamage() == 1600, "sickles: iron 900, steel 1600");
+        h.assertTrue(Farming.sickleBonus(ironSickle) == 0.9F && Farming.sickleBonus(steelSickle) == 1.0F
+                && Farming.sickleBonus(new ItemStack(BronzeTools.BRONZE_SICKLE.get())) == 0.8F, "extra sheaf: iron 90 %, steel 100 %");
+        h.assertTrue(BronzeTools.sweepRadius(ironSickle) == 1 && BronzeTools.sweepRadius(steelSickle) == 2
+                && BronzeTools.sweepRadius(new ItemStack(Farming.FLINT_SICKLE.get())) == 0, "sweep: iron 3x3, steel 5x5, flint none");
+        h.assertTrue(new ItemStack(Smithing.IRON_TONGS.get()).is(BronzeTools.TONGS) && new ItemStack(BronzeTools.BRONZE_TONGS.get()).is(BronzeTools.TONGS), "#mechanical:tongs");
+        h.assertTrue(new ItemStack(Smithing.IRON_NEEDLE.get()).is(BronzeTools.NEEDLES), "the Iron Needle sews");
+        h.assertTrue(Smithing.STEEL_CHISEL.get().whetStrokes > Smithing.IRON_CHISEL.get().whetStrokes
+                && new ItemStack(Smithing.STEEL_CHISEL.get()).getMaxDamage() > new ItemStack(Smithing.IRON_CHISEL.get()).getMaxDamage()
+                && new ItemStack(Smithing.IRON_CHISEL.get()).getMaxDamage() > new ItemStack(BronzeTools.BRONZE_CHISEL.get()).getMaxDamage(), "chisels: steel > iron > bronze");
+        h.assertTrue(BronzeTools.isQuarryHammer(new ItemStack(Smithing.IRON_QUARRY_HAMMER.get()))
+                && new ItemStack(Smithing.IRON_QUARRY_HAMMER.get()).isCorrectToolForDrops(net.minecraft.world.level.block.Blocks.GOLD_ORE.defaultBlockState())
+                && !new ItemStack(BronzeTools.BRONZE_QUARRY_HAMMER.get()).isCorrectToolForDrops(net.minecraft.world.level.block.Blocks.GOLD_ORE.defaultBlockState()),
+                "the iron quarry hammer takes gold ore, the bronze one doesn't");
+        ItemStack steelHammer2 = new ItemStack(Smithing.STEEL_SMITHING_HAMMER.get());
+        h.assertTrue(Smithing.isHammer(steelHammer2) && Smithing.worksSteel(steelHammer2) && Smithing.wear(steelHammer2) == 1
+                && Smithing.cooldown(steelHammer2) < Ironworking.HAMMER_COOLDOWN, "the steel smithing hammer works steel, wears 1, strikes quicker");
+        h.assertTrue(Smithing.IRON_HOOK_FISHING_ROD.get().lureTicks > BronzeTools.BRONZE_HOOK_FISHING_ROD.get().lureTicks
+                && Smithing.IRON_HOOK_FISHING_ROD.get().luck > BronzeTools.BRONZE_HOOK_FISHING_ROD.get().luck, "the iron hook rod beats the bronze one");
+        // a steel sickle reaps a 5x5 of ripe wheat in one cut (x 12..16, z 0..4)
+        var wheat = (net.minecraft.world.level.block.CropBlock) net.minecraft.world.level.block.Blocks.WHEAT;
+        for (int x = 12; x <= 16; x++) for (int z = 0; z <= 4; z++) {
+            h.setBlock(new BlockPos(x, 0, z), net.minecraft.world.level.block.Blocks.FARMLAND);
+            h.setBlock(new BlockPos(x, 1, z), wheat.getStateForAge(wheat.getMaxAge()));
+        }
+        var reaper = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(level);
+        reaper.setGameMode(GameType.SURVIVAL);
+        reaper.setItemInHand(InteractionHand.MAIN_HAND, steelSickle);
+        reaper.gameMode.destroyBlock(h.absolutePos(new BlockPos(14, 1, 2)));
+        for (int x = 12; x <= 16; x++) for (int z = 0; z <= 4; z++) h.assertBlockNotPresent(net.minecraft.world.level.block.Blocks.WHEAT, new BlockPos(x, 1, z));
+        reaper.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         h.succeed();
     }
 

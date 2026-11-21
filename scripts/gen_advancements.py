@@ -1478,6 +1478,29 @@ TABS["iron_age"][1].extend([
      has("iron_bolt")),
 ])
 
+# forged versions of the bronze tools (Smithing.java, gen_iron_age.py)
+TABS["iron_age"][1].extend([
+    ("iron_sickle", "forged", "iron_sickle", T, "Iron Harvest",
+     "Forge a Sickle Blade on the anvil (1 hot ingot) and assemble an Iron Sickle (Leather, Stick): 900 uses, it reaps 3x3 "
+     "and ripe grain gives an extra Sheaf 90% of the time", has("iron_sickle")),
+    ("steel_sickle", "steel", "steel_sickle", G, "Reaper",
+     "Forge a Steel Sickle Blade and assemble a Steel Sickle (Leather, Stick): 1600 uses, it reaps a 5x5 swath "
+     "and every ripe grain crop gives an extra Sheaf", has("steel_sickle")),
+    ("iron_tongs", "forged", "iron_tongs", T, "Firm Grip",
+     "Forge Tong Arms and rivet them with an Iron Tool Rod and a leather grip: Iron Tongs, 700 uses, hold hot metal as the bronze ones do",
+     has("iron_tongs")),
+    ("iron_small_tools", "forged", "iron_chisel", T, "Fine Ironwork",
+     "Forge the small tools: a Chisel Blade for an Iron Chisel (or Steel Chisel), 4 Iron Needles from one ingot, "
+     "or 4 Iron Fish Hooks for an Iron Hook Fishing Rod (bites 15 s sooner, Luck of the Sea II)",
+     has("iron_chisel", "steel_chisel", "iron_needle", "iron_hook_fishing_rod")),
+    ("iron_quarry_hammer", "forged", "iron_quarry_hammer", T, "Iron Breaker",
+     "Assemble an Iron Quarry Hammer from an Iron Hammer Head, an Iron Plate and a Tool Rod: its 3x3 face takes the ores an iron pickaxe mines",
+     has("iron_quarry_hammer")),
+    ("steel_hammer", "steel", "steel_smithing_hammer", T, "Steel Hammer",
+     "Forge a Steel Hammer Head and assemble a Steel Smithing Hammer (Iron Tool Rod, Tool Rod): 1200 uses, a quicker blow",
+     has("steel_smithing_hammer")),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

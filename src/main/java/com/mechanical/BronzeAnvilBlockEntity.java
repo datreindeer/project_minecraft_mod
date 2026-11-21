@@ -204,7 +204,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
             player.sendOverlayMessage(Component.translatable("message.mechanical.forge.cold", BloomeryBlockEntity.FORGE_TEMP));
             return;
         }
-        if (Smithing.needsIronHammer(item) && !hammer.is(Smithing.IRON_SMITHING_HAMMER.get())) {
+        if (Smithing.needsIronHammer(item) && !Smithing.worksSteel(hammer)) {
             level.playSound(null, worldPosition, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.4F, 1.6F);
             player.sendOverlayMessage(Component.translatable("message.mechanical.forge.steel_hammer"));
             return;
