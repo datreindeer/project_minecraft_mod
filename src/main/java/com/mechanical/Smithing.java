@@ -109,23 +109,26 @@ public final class Smithing {
 
     /** What the anvil makes of a hot ingot, and in how many blows; null where that metal has no such part. */
     public enum Pattern {
-        PLATE("plate", 4, () -> IRON_PLATE.get(), () -> STEEL_PLATE.get()),
-        TOOL_ROD("tool_rod", 3, () -> IRON_TOOL_ROD.get(), null),
-        PICKAXE_HEAD("pickaxe_head", 6, () -> IRON_PICKAXE_HEAD.get(), () -> STEEL_PICKAXE_HEAD.get()),
-        AXE_HEAD("axe_head", 6, () -> IRON_AXE_HEAD.get(), () -> STEEL_AXE_HEAD.get()),
-        SHOVEL_HEAD("shovel_head", 5, () -> IRON_SHOVEL_HEAD.get(), () -> STEEL_SHOVEL_HEAD.get()),
-        HOE_HEAD("hoe_head", 5, () -> IRON_HOE_HEAD.get(), () -> STEEL_HOE_HEAD.get()),
-        KNIFE_BLADE("knife_blade", 5, () -> IRON_KNIFE_BLADE.get(), () -> STEEL_KNIFE_BLADE.get()),
-        SWORD_BLADE("sword_blade", 7, () -> IRON_SWORD_BLADE.get(), () -> STEEL_SWORD_BLADE.get()),
-        SPEAR_HEAD("spear_head", 6, () -> IRON_SPEAR_HEAD.get(), () -> STEEL_SPEAR_HEAD.get()),
-        HAMMER_HEAD("hammer_head", 6, () -> IRON_HAMMER_HEAD.get(), null);
+        PLATE("plate", 1, 4, () -> IRON_PLATE.get(), () -> STEEL_PLATE.get()),
+        TOOL_ROD("tool_rod", 1, 3, () -> IRON_TOOL_ROD.get(), null),
+        PICKAXE_HEAD("pickaxe_head", 3, 6, () -> IRON_PICKAXE_HEAD.get(), () -> STEEL_PICKAXE_HEAD.get()),
+        AXE_HEAD("axe_head", 3, 6, () -> IRON_AXE_HEAD.get(), () -> STEEL_AXE_HEAD.get()),
+        SHOVEL_HEAD("shovel_head", 1, 5, () -> IRON_SHOVEL_HEAD.get(), () -> STEEL_SHOVEL_HEAD.get()),
+        HOE_HEAD("hoe_head", 2, 5, () -> IRON_HOE_HEAD.get(), () -> STEEL_HOE_HEAD.get()),
+        KNIFE_BLADE("knife_blade", 1, 5, () -> IRON_KNIFE_BLADE.get(), () -> STEEL_KNIFE_BLADE.get()),
+        SWORD_BLADE("sword_blade", 2, 7, () -> IRON_SWORD_BLADE.get(), () -> STEEL_SWORD_BLADE.get()),
+        SPEAR_HEAD("spear_head", 1, 6, () -> IRON_SPEAR_HEAD.get(), () -> STEEL_SPEAR_HEAD.get()),
+        HAMMER_HEAD("hammer_head", 2, 6, () -> IRON_HAMMER_HEAD.get(), null);
 
         public final String id;
+        /** Hot ingots stacked on the anvil and welded into the part (like vanilla's ingot counts: a pickaxe 3). */
+        public final int ingots;
         public final int hits;
         private final Supplier<Item> iron, steel;
 
-        Pattern(String id, int hits, Supplier<Item> iron, Supplier<Item> steel) {
+        Pattern(String id, int ingots, int hits, Supplier<Item> iron, Supplier<Item> steel) {
             this.id = id;
+            this.ingots = ingots;
             this.hits = hits;
             this.iron = iron;
             this.steel = steel;
@@ -144,6 +147,14 @@ public final class Smithing {
 
     private static DeferredItem<HotMetalItem> hot(String name, Supplier<? extends Item> cold) {
         return ITEMS.registerItem(name, p -> new HotMetalItem(p, cold), p -> p.durability(Ironworking.HOT_SECONDS));
+    }
+
+    /** Hot ingots stacked on an anvil at most (the most a pattern takes). */
+    public static final int MAX_PILE = 3;
+
+    /** Does hot {@code added} go onto hot {@code onAnvil} to be welded with it: the same metal, iron or steel (not blister)? */
+    public static boolean stacksOn(ItemStack onAnvil, ItemStack added) {
+        return (onAnvil.is(HOT_WROUGHT_IRON_INGOT.get()) || onAnvil.is(HOT_STEEL_INGOT.get())) && added.is(onAnvil.getItem());
     }
 
     public static boolean isHammer(ItemStack stack) {

@@ -894,8 +894,8 @@
      "iron_smithing_hammer"
     ],
     "text": {
-     "sv": "Värm en Wrought Iron Ingot till **1100°** i Bloomery eller Clay Kiln: en [[hot_wrought_iron_ingot]] som håller hettan i 30 s. Smyg och högerklicka [[bronze_anvil]] med hammaren för att välja **mönster** (Plate, Tool Rod, huvuden, blad, Hammer Head) och hamra tackan innan den svalnar: [[iron_plate]] 4 slag, huvuden 5–7. Slagen sitter kvar om den kallnar.\n\nSmid ett Iron Hammer Head och gör en [[iron_smithing_hammer]]: den nöts bara hälften så fort.",
-     "en": "Heat a Wrought Iron Ingot to **1100°** in a Bloomery or Clay Kiln: a [[hot_wrought_iron_ingot]] that stays hot for 30 s. Sneak-use the [[bronze_anvil]] with the hammer to choose a **pattern** (Plate, Tool Rod, heads, blades, Hammer Head) and hammer the ingot before it cools: [[iron_plate]] 4 blows, heads 5–7. Its blows stay if it cools.\n\nForge an Iron Hammer Head and make an [[iron_smithing_hammer]]: it wears half as fast."
+     "sv": "Värm en Wrought Iron Ingot till **1100°** i Bloomery eller Clay Kiln: en [[hot_wrought_iron_ingot]] som håller hettan i 30 s. Smyg och högerklicka [[bronze_anvil]] med hammaren för att välja **mönster** (Plate, Tool Rod, huvuden, blad, Hammer Head) och hamra tackan innan den svalnar: [[iron_plate]] 4 slag, huvuden 5–7. Stora delar kräver flera heta tackor på varandra (Pickaxe och Axe Head 3, Sword Blade och Hoe Head 2): högerklicka städet med fler. Slagen sitter kvar om den kallnar.\n\nSmid ett Iron Hammer Head och gör en [[iron_smithing_hammer]]: den nöts bara hälften så fort.",
+     "en": "Heat a Wrought Iron Ingot to **1100°** in a Bloomery or Clay Kiln: a [[hot_wrought_iron_ingot]] that stays hot for 30 s. Sneak-use the [[bronze_anvil]] with the hammer to choose a **pattern** (Plate, Tool Rod, heads, blades, Hammer Head) and hammer the ingot before it cools: [[iron_plate]] 4 blows, heads 5–7. Big parts take several hot ingots stacked (Pickaxe and Axe Head 3, Sword Blade and Hoe Head 2): right-click the anvil with more. Its blows stay if it cools.\n\nForge an Iron Hammer Head and make an [[iron_smithing_hammer]]: it wears half as fast."
     }
    },
    {

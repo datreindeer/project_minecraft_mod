@@ -33,6 +33,13 @@ public class StoneAnvilBlock extends Block implements EntityBlock {
         return SHAPE;
     }
 
+    /** Passes the anvil's block events (a blow landed) to its block entity, on the clients too. */
+    @Override
+    protected boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        BlockEntity anvil = level.getBlockEntity(pos);
+        return anvil != null && anvil.triggerEvent(id, param);
+    }
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new StoneAnvilBlockEntity(pos, state);

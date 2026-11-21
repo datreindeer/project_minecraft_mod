@@ -31,6 +31,10 @@ public class StoneAnvilBlockEntity extends BlockEntity {
 
     protected ItemStack item = ItemStack.EMPTY;
     protected int hits;
+    /** Block event id: a blow landed (client/AnvilRenderer bounces the piece). */
+    public static final int STRUCK = 1;
+    /** Game time of the last blow, client side only. */
+    private long struckAt = Long.MIN_VALUE;
 
     public StoneAnvilBlockEntity(BlockPos pos, BlockState state) {
         this(BronzeOres.STONE_ANVIL_ENTITY.get(), pos, state);
@@ -48,6 +52,32 @@ public class StoneAnvilBlockEntity extends BlockEntity {
 
     public ItemStack item() {
         return item;
+    }
+
+    /** How far the work on the piece has come, 0 to 1 (client/AnvilRenderer flattens and spreads it as it goes). */
+    public float progress() {
+        return hits / (float) HITS;
+    }
+
+    /** How many pieces lie on the face, for the renderer. */
+    public int pile() {
+        return item.isEmpty() ? 0 : 1;
+    }
+
+    public long struckAt() {
+        return struckAt;
+    }
+
+    /** A blow landed: every client nearby bounces the piece. */
+    protected void struck() {
+        if (level != null) level.blockEvent(worldPosition, getBlockState().getBlock(), STRUCK, 0);
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int param) {
+        if (id != STRUCK) return super.triggerEvent(id, param);
+        if (level != null) struckAt = level.getGameTime();
+        return true;
     }
 
     public void place(ServerLevel level, ItemStack one) {
@@ -72,8 +102,9 @@ public class StoneAnvilBlockEntity extends BlockEntity {
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, getBlockState()), x, y, z, 8, 0.2, 0.02, 0.2, 0.0);
         level.playSound(null, worldPosition, SoundEvents.STONE_HIT, SoundSource.BLOCKS, 1.0F, 0.7F + level.getRandom().nextFloat() * 0.3F);
         tool.hurtAndBreak(1, player, hand);
+        struck();
         if (++hits < HITS) {
-            setChanged();
+            sync();
             return;
         }
         ItemStack out = BronzeOres.crushed(item);

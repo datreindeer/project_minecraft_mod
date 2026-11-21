@@ -69,18 +69,24 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 - **Välj mönster:** smyg och högerklicka städet med hammaren. Mönstret står kvar på städet och visas när en tacka läggs på.
 - **Smid:** hamra den heta tackan på **Bronze Anvil** (vänster- eller högerklick med Bronze eller Iron Smithing Hammer):
 
-| Mönster | Slag | Av järn | Av stål |
-|---|---|---|---|
-| Plate | 4 | Iron Plate | Steel Plate |
-| Tool Rod | 3 | Iron Tool Rod | – |
-| Pickaxe / Axe Head | 6 | Iron Pickaxe / Axe Head | Steel Pickaxe / Axe Head |
-| Shovel / Hoe Head | 5 | Iron Shovel / Hoe Head | Steel Shovel / Hoe Head |
-| Knife Blade | 5 | Iron Knife Blade | Steel Knife Blade |
-| Sword Blade | 7 | Iron Sword Blade | Steel Sword Blade |
-| Spear Head | 6 | Iron Spear Head | Steel Spear Head |
-| Hammer Head | 6 | Iron Hammer Head | – |
+| Mönster | Tackor | Slag | Av järn | Av stål |
+|---|---|---|---|---|
+| Plate | 1 | 4 | Iron Plate | Steel Plate |
+| Tool Rod | 1 | 3 | Iron Tool Rod | – |
+| Pickaxe / Axe Head | 3 | 6 | Iron Pickaxe / Axe Head | Steel Pickaxe / Axe Head |
+| Shovel Head | 1 | 5 | Iron Shovel Head | Steel Shovel Head |
+| Hoe Head | 2 | 5 | Iron Hoe Head | Steel Hoe Head |
+| Knife Blade | 1 | 5 | Iron Knife Blade | Steel Knife Blade |
+| Sword Blade | 2 | 7 | Iron Sword Blade | Steel Sword Blade |
+| Spear Head | 1 | 6 | Iron Spear Head | Steel Spear Head |
+| Hammer Head | 2 | 6 | Iron Hammer Head | – |
 
-- En tacka ger en del. Bronze Smithing Hammer nöts 2 per slag på het metall, **Iron Smithing Hammer** (Iron Hammer Head +
+- **Fler tackor:** stora delar kräver flera heta tackor av samma metall. Lägg den första på städet och högerklicka med
+  fler heta tackor (högst 3); högen ritas tacka för tacka. Den första håller hettan och slagen. För få tackor: inga slag,
+  meddelandet säger hur många som behövs. Blir det tackor över ligger de kvar på städet, heta och obearbetade; tom hand
+  tar en i taget. (En järnhacka kostar därmed 3 tackor = 6 rostad Raw Iron, mot bronshackans 6 enheter ≈ 3 Raw Copper.)
+- **Det syns på städet** (allt som görs där, även krossning, lupp, mynt och galler): varje slag trycker ihop biten som
+  sedan fjädrar tillbaka, och ju längre arbetet kommit desto plattare och bredare ligger den. Bronze Smithing Hammer nöts 2 per slag på het metall, **Iron Smithing Hammer** (Iron Hammer Head +
   Leather + Tool Rod, 500 i hållbarhet) bara 1.
 
 **Järnverktyg och rustning** (vanillas items, deras Iron Ingot-recept går inte att göra):

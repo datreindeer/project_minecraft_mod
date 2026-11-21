@@ -78,6 +78,11 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
             if (level instanceof ServerLevel server) strike(server, pos, player, stack, hand);
             return InteractionResult.SUCCESS;
         }
+        // hot iron or steel stacks on hot iron or steel, to be welded into a bigger part (Smithing.Pattern#ingots)
+        if (Smithing.stacksOn(anvil.item(), stack)) {
+            if (level instanceof ServerLevel server && anvil.addIngot(server, player)) stack.consume(1, player);
+            return InteractionResult.SUCCESS;
+        }
         // Bronze Ingots pile up (FirePit.GRATE_INGOTS) for a Bronze Fire Grate
         if (stack.is(Bronze.BRONZE_INGOT.get()) && anvil.item().is(Bronze.BRONZE_INGOT.get()) && anvil.item().getCount() < FirePit.GRATE_INGOTS) {
             if (level instanceof ServerLevel server) anvil.add(server, stack.consumeAndReturn(1, player));
@@ -121,6 +126,13 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
     @Override
     protected BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    /** Passes the anvil's block events (a blow landed) to its block entity, on the clients too. */
+    @Override
+    protected boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        BlockEntity anvil = level.getBlockEntity(pos);
+        return anvil != null && anvil.triggerEvent(id, param);
     }
 
     @Override
