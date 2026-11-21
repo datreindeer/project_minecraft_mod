@@ -10,7 +10,8 @@
     "minecraft:savanna",
     "minecraft:windswept_forest",
     "mechanical:deciduous_forest",
-    "mechanical:hazel_meadow"
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
   ],
   "spawners": [
     {

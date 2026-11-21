@@ -11,7 +11,8 @@
     "minecraft:snowy_taiga",
     "minecraft:snowy_plains",
     "minecraft:plains",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:cairn",
   "step": "surface_structures"

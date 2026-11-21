@@ -195,11 +195,46 @@ Varje fas är en egen version och ska fungera för sig.
 
 Delar av fas 1, 3 och 6 kan agenter göra parallellt i worktrees när generatorn från fas 1 finns.
 
+### Fas 0: resultat
+
+Spiken fungerar, och **ingen mixin behövs för ytblocken**. I 26.3 är surface rules data: registret
+`worldgen/material_rule`, med `minecraft:overworld` som rot (vanillas `SurfaceRuleData` finns inte längre). Vi skriver
+egna regler i `mechanical:overworld` och ersätter vanillas rotfil med samma sekvens plus en rad `"mechanical:overworld"`
+direkt efter malmådrorna. Våra regler vinner då över vanillas yta och deepslate, men bara inne i våra biomer
+(villkoret `minecraft:biome`). Allt genereras av **`scripts/gen_world_biomes.py`**, som läser vanillas rotfil ur jarfilen.
+
+Testbiomer: **Chalk Downs** (torra halvan av tempererade Plains i kustbandet, kontinentalitet under 0.03) med
+grass_block, ett lager dirt och sedan `CHALK_STONE` (tills vidare `minecraft:calcite`, byts mot Chalk i fas 4), calcite
+i branta sluttningar. **Limestone Caverns** (tempererat, mitt inne i landet, mellandjup) med golv, tak och väggar av
+Limestone.
+
+**Ny ytbiom** (tre ställen):
+1. `gen_world_biomes.py`, `BIOMES`: `"namn": ("vanilla-mall", "English Name", [features att ta bort], {fält att ändra})`.
+   Biomen kopierar mallen och går med i alla biomtaggar och biome modifiers som listar mallen.
+2. `gen_world_biomes.py`, `MATERIALS`: `"namn": {"top": ..., "under": ..., "stone": ..., "slope": ...}` (alla valfria).
+3. Klimatplats i `OverworldBiomeBuilderMixin.mechanical$shareSlot`: dela en vanilla-zon som de andra biomerna.
+
+**Ny grottbiom** (tre ställen):
+1. `BIOMES` som ovan (mallen är oftast `dripstone_caves` utan dess droppstens-features).
+2. `MATERIALS`: `"namn": {"floor": ..., "ceiling": ..., "wall": ...}`. `wall` gör all sten i biomen till det blocket
+   (väggar och berget runt grottan, som vanillas Sulfur Caves); utan `wall` får bara golv och tak blocket.
+3. En rad i `ModBiomes.CAVES`: `new CaveSlot(NYCKEL, temperatur, fuktighet, kontinentalitet, erosion, weirdness, djup, offset)`.
+   Mixinen lägger till raderna efter vanillas grottbiomer.
+
+**Lärdom om grottbiomernas storlek:** biomvalet tar den närmaste klimatpunkten, och ytbiomerna ligger på djup 0 och 1.
+En grottbiom "läcker" därför långt utanför sina intervall: utan offset tog Limestone Caverns över halva grottvärlden på
+y 0–30. `offset` (straff) styr det: 0.35 ger ungefär en tredjedel av rutnätspunkterna på y 0 och en tiondel på y ±20,
+0.4 nästan bara ett band kring y 0. När fler grottbiomer kommer delar de på samma utrymme, så offset blir en
+sällsynthetsratt per rad. Dripstone och Lush Caves behåller sina zoner (där vinner de alltid).
+
+Generatorkedjan: `gen_world_biomes.py` körs efter `gen_limestone_blocks.py` (och efter `gen_biomes.py`), före
+`gen_block_items.py`. Den är idempotent.
+
 ---
 
 ## 6. Risker
 
-- **Surface rules:** vanilla har inget API för att lägga till regler. Mixin på `SurfaceRuleData` kan krocka med andra moddar. Fas 0 visar om det fungerar.
+- **Surface rules:** löst i fas 0 med data, men vi ersätter vanillas `material_rule/overworld.json`. En annan mod eller ett datapack som ersätter samma fil vinner eller förlorar mot oss beroende på laddordning.
 - **Biomer blir sällsynta:** 12 nya ytbiomer delar på vanillas klimatzoner. Både nya och gamla blir ovanligare. Testa i en riktig värld efter fas 4 och fas 7.
 - **Feature-ordning:** `FeatureSorter` kraschar om biomer har features i olika ordning. `gen_biomes.py` löser det med unika feature-namn. Samma regel gäller här.
 - **Grottbiomer mot vanilla:** de får inte ta Dripstone/Lush Caves zoner. Grotta under ytbiomen och ovan Deep Dark måste ses över.

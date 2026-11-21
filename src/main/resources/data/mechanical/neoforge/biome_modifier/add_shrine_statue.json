@@ -11,7 +11,8 @@
     "minecraft:taiga",
     "minecraft:snowy_taiga",
     "mechanical:deciduous_forest",
-    "mechanical:hazel_meadow"
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:shrine_statue",
   "step": "surface_structures"

@@ -12,7 +12,8 @@
     "minecraft:taiga",
     "minecraft:snowy_taiga",
     "mechanical:deciduous_forest",
-    "mechanical:hazel_meadow"
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:animal_carving",
   "step": "surface_structures"

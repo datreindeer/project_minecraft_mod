@@ -12,7 +12,8 @@
     "minecraft:snowy_taiga",
     "mechanical:deciduous_forest",
     "mechanical:hazel_meadow",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:chalk_downs"
   ],
   "features": "mechanical:rune_stone",
   "step": "surface_structures"
