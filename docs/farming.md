@@ -138,6 +138,9 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 
 - Farmland har **bördighet 0–3** (blockstate `fertility`, lagt på vanilla-farmland med en mixin). Ny åker = 2;
   **Podzol** kan nu plöjas och blir farmland med bördighet 3 (`block_transformer/hoe.json`).
+- **Mouldboard Plough** (järnåldern, `PloughEntity`): en hästdragen plog som plöjer en 5 block bred remsa till farmland
+  med **bördighet 3** (en över handplöjd åker, taket är 3). Bara Grass Block, Dirt, Dirt Path, Podzol och Loess med luft
+  ovanför; befintlig åker och grödor lämnas i fred. Se "Plogen" i [ages/03-iron-age.md](ages/03-iron-age.md).
 - **Skörd** av en mogen gröda: −1 (Peas: +1).
 - Bördighet 0: halv tillväxt och halv skörd (varje stack halveras, udda avrundas slumpvis). 1: 75 % tillväxt.
   2: normal. 3: efter varje tillväxtsteg 30 % chans på ett steg till (~1,3× fart), och 30 % chans på en extra vid skörd.

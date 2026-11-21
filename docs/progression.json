@@ -953,6 +953,19 @@
    },
    {
     "title": {
+     "sv": "Hästplogen",
+     "en": "The horse plough"
+    },
+    "items": [
+     "mouldboard_plough"
+    ],
+    "text": {
+     "sv": "Smid två [[iron_plate]] och en [[iron_tool_rod]] och bygg en [[mouldboard_plough]] med 2 Sticks och 3 Logs.\n\nStäll ut plogen, rid eller led en **tam häst** och högerklicka plogen med tom hand för att spänna för. Högerklicka igen för att **sänka billen**: medan hästen drar plöjer den en **5 block bred** remsa gräs och jord till åker med **bördighet 3**, en mer än med hackan. Högerklicka igen för att höja billen och köra utan att plöja; smyg + högerklicka till fots spänner från. Grödor och befintlig åker lämnas i fred.",
+     "en": "Forge two [[iron_plate]] and an [[iron_tool_rod]] and build a [[mouldboard_plough]] with 2 Sticks and 3 Logs.\n\nSet the plough down, ride or lead a **tamed horse** and right-click the plough with an empty hand to hitch it. Right-click again to **lower the share**: as the horse pulls, it ploughs a **5-wide** strip of grass and dirt into farmland at **fertility 3**, one more than the hoe gives. Right-click again to raise the share and drive without ploughing; sneak + right-click on foot unhitches. Crops and existing farmland are left alone."
+    }
+   },
+   {
+    "title": {
      "sv": "Järnverktyg och rustning",
      "en": "Iron tools and armour"
     },

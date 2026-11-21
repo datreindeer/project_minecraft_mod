@@ -58,6 +58,7 @@ public class MechanicalClient {
         event.registerEntityRenderer(com.mechanical.CarcassHauling.TRAVOIS.get(), TravoisRenderer::new);
         event.registerEntityRenderer(com.mechanical.Carting.CART.get(), CartRenderer::new);
         event.registerEntityRenderer(com.mechanical.Carting.WAGON.get(), WagonRenderer::new);
+        event.registerEntityRenderer(com.mechanical.Carting.PLOUGH.get(), PloughRenderer::new);
         event.registerEntityRenderer(Wildlife.TAME_HORSE.get(), com.mechanical.client.wildlife.TameHorseRenderer::new);
         event.registerEntityRenderer(com.mechanical.Watercraft.LOG_RAFT.get(), WatercraftRenderer::raft);
         event.registerEntityRenderer(com.mechanical.Watercraft.DUGOUT_CANOE.get(), WatercraftRenderer::canoe);
@@ -144,6 +145,7 @@ public class MechanicalClient {
         event.registerLayerDefinition(TravoisModel.LAYER, TravoisModel::create);
         event.registerLayerDefinition(CartModel.LAYER, CartModel::create);
         event.registerLayerDefinition(WagonModel.LAYER, WagonModel::create);
+        event.registerLayerDefinition(PloughModel.LAYER, PloughModel::create);
         event.registerLayerDefinition(CartModel.Canopy.LAYER, CartModel.Canopy::create);
         event.registerLayerDefinition(CarcassRenderer.Lashing.LAYER, CarcassRenderer.Lashing::create);
         event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.BLANKET,

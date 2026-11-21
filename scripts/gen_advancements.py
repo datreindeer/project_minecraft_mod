@@ -1465,6 +1465,15 @@ TABS["iron_age"][1].extend([
      by_code()),
 ])
 
+# the Mouldboard Plough (PloughEntity.java, gen_plough.py)
+TABS["iron_age"][1].extend([
+    ("mouldboard_plough", "forged", "mouldboard_plough", T, "Iron in the Soil",
+     "Build a Mouldboard Plough: 2 Sticks for the handles, 3 Logs for the beam, an Iron Tool Rod and 2 Iron Plates", has("mouldboard_plough")),
+    ("first_furrow", "mouldboard_plough", "minecraft:wheat", G, "Furrow by Horse",
+     "Hitch a tamed horse to the Mouldboard Plough, right-click it to lower the share and drive on: a 5-wide strip of rich farmland",
+     by_code()),
+])
+
 # forged saws, the crossbow and Iron Bolts (Smithing.java, gen_iron_age.py)
 TABS["iron_age"][1].extend([
     ("iron_saw", "forged", "iron_saw", T, "Sharper Teeth",

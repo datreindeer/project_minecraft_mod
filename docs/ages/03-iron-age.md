@@ -1,7 +1,7 @@
 # Järnåldern
 
 > Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**, **stål**,
-> **de nya malmerna** Galena, guld, Limestone och Rock Salt, **vagnen** (Wagon). Resten är förslag.
+> **de nya malmerna** Galena, guld, Limestone och Rock Salt, **vagnen** (Wagon), **hästplogen** (Mouldboard Plough). Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
 **Bronze Smithing Hammer**, **Wrought Iron Ingot**, Bronze Pickaxe (bryter Iron, Coal och Lapis Ore) och Charcoal.
@@ -453,3 +453,38 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 - **A Pair in the Yoke**: spänn för två hästar.
 - **Heavy Haul** (mål): 12 rum kroppar på en vagn med alla fyra platser tomma.
 - **Freight**: en Chest på alla fyra platserna.
+
+## Plogen (Mouldboard Plough) (byggd, v0.132.0)
+
+Järnålderns hästplog: en lång bom av hugget trä som vilar på ett litet framhjul, ett svängel framtill för hästens
+draglinor, och under bommen en kniv (coulter), en järnbill (share), en landsida och ett vridet järnplogblad (mouldboard)
+som vänder tiltan. Två handtag med en pinne emellan. Plogen dras av **en tam häst** och plöjer en **5 block bred** remsa
+till åker med högre bördighet. Kod: `PloughEntity` (bygger på `TravoisEntity`, som kärran och vagnen), `Carting`
+(registrering), klient: `client/PloughModel`, `client/PloughRenderer`. Data: `scripts/gen_plough.py` (efter
+gen_wagon.py), texturer: `scripts/gen_plough_textures.py`. Test: `PloughTest`.
+
+### Recept
+
+| Sak | Recept | Låses upp av |
+|---|---|---|
+| **Mouldboard Plough** | `[Stick][ ][Stick]` / `[Log][Log][Log]` / `[Iron Tool Rod][Iron Plate][Iron Plate]` (valfria stockar, `#minecraft:logs`) | Iron Plate |
+
+### Så plöjer man
+
+- **Ställ ut plogen:** högerklicka marken med den. Billen är uppe när den ställs ut.
+- **Spänn för:** rid en tam, vuxen häst eller led en i koppel (inom 10 block) och högerklicka plogen med tom hand.
+  Spelare kan inte dra den. Plogen följer 3 block bakom hästen, som kärran.
+- **Sänk/höj billen:** högerklicka plogen med tom hand när en häst är förspänd (går från hästryggen). Billen nere: plogen
+  tippar framåt och billen går ner i jorden. Billen uppe: den lyfts fri och plogen kan köras utan att plöja.
+- **Spänn från:** smyg + högerklicka plogen med tom hand (till fots). Billen åker upp.
+- **Plöjningen:** varje tick plogen rör sig med billen nere blir en **5 block bred** remsa tvärs över billen (2 block åt var
+  sida) åker: Grass Block, Dirt, Dirt Path, Podzol och Loess. Åkern får **bördighet 3** (för hand: 2, se "Bördighet" i
+  [farming.md](../farming.md)). Bara block med luft ovanför plöjs: grödor, snö, block ovanpå och allt som inte går att
+  plöja lämnas i fred. Befintlig åker ändras inte (en sådd eller utarmad åker får ingen bördighet av att plöjas om).
+- Fastnar plogen lossnar hästen ("The plough is stuck. The horse came loose"), som på kärran. Selen sparas inte när
+  världen laddas om: spänn för igen. Slå på plogen för att plocka upp den.
+
+### Advancements (Iron Age-fliken, efter *Forged*)
+
+- **Iron in the Soil**: bygg en Mouldboard Plough.
+- **Furrow by Horse** (mål): plöj med plogen efter en häst.

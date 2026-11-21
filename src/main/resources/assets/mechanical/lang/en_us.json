@@ -3734,5 +3734,21 @@
   "advancements.mechanical.folklore.above_the_clouds.title": "Above the Clouds",
   "advancements.mechanical.folklore.above_the_clouds.description": "See a Mountain Watcher circling the peaks above height 150 on a clear day. Only believers (or Second Sight) see it",
   "advancements.mechanical.folklore.gift_of_the_peaks.title": "Gift of the Peaks",
-  "advancements.mechanical.folklore.gift_of_the_peaks.description": "Come close to a Mountain Watcher you can see: once a year it lets a Watcher Feather fall"
+  "advancements.mechanical.folklore.gift_of_the_peaks.description": "Come close to a Mountain Watcher you can see: once a year it lets a Watcher Feather fall",
+  "item.mechanical.mouldboard_plough": "Mouldboard Plough",
+  "entity.mechanical.mouldboard_plough": "Mouldboard Plough",
+  "message.mechanical.plough.needs_horse": "A plough needs a tamed horse: ride or lead one, then right-click it",
+  "message.mechanical.plough.hitched": "Hitched. Right-click the plough to lower the share",
+  "message.mechanical.plough.unhitched": "Unhitched",
+  "message.mechanical.plough.share_down": "Share down: it ploughs a 5-wide strip as it moves",
+  "message.mechanical.plough.share_up": "Share up: it moves without ploughing",
+  "message.mechanical.plough.stuck": "The plough is stuck. The horse came loose",
+  "message.mechanical.plough.torn_loose": "The plough came loose from the horse",
+  "message.mechanical.plough.no_room": "A plough carries nothing",
+  "message.mechanical.plough.full": "A plough carries nothing",
+  "message.mechanical.plough.too_big": "A plough carries nothing",
+  "advancements.mechanical.iron_age.mouldboard_plough.title": "Iron in the Soil",
+  "advancements.mechanical.iron_age.mouldboard_plough.description": "Build a Mouldboard Plough: 2 Sticks for the handles, 3 Logs for the beam, an Iron Tool Rod and 2 Iron Plates",
+  "advancements.mechanical.iron_age.first_furrow.title": "Furrow by Horse",
+  "advancements.mechanical.iron_age.first_furrow.description": "Hitch a tamed horse to the Mouldboard Plough, right-click it to lower the share and drive on: a 5-wide strip of rich farmland"
 }
