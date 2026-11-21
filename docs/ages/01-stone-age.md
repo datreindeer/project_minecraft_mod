@@ -1238,6 +1238,8 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
 - **Grottor:** under y 50 utan himmel räknas bara djupet (inte biom, årstid, natt eller regn): 10 vid y 50, ~6 vid y 0,
   fryser under ungefär y −30, 0 vid y −64. En grund grotta är alltså ett varmt skydd en vinternatt, djupa gruvor kräver
   päls och eld (elden drar också mer bränsle där nere). Advancement **The Cold Deep** (Wilderness, efter Winter Furs): gå under y 0.
+- **Mörkrets djur:** i grottorna spawnar Cave Hyena, Cave Bear (y 40 till 0) och Giant Centipede (y 0 till −30) bara vid
+  ljusnivå 0. Facklor och lägereldar håller dem borta ([fauna/underground.md](../fauna/underground.md)).
 - **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla). **Wolf Fur** och Wolf Hood 20 % per del. En vila i en Furred Straw Bed ger +30 % i 5 minuter (högst 100 % totalt).
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
@@ -2250,6 +2252,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
 - [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane
+- [Under jord](../fauna/underground.md): Cave Hyena och Cave Bear i grottorna (y 40 till 0), Giant Centipede (y 0 till −30, i grottaket; Chitin Vest, giftpilar). Spawnar bara i totalt mörker: ljus är försvaret
 
 ### Vanilla-djur som vilt
 Vilda vanilla-djur som fortfarande spawnar lämnar kadaver som moddens egna djur (styckas med kniv, hängs på Hanging

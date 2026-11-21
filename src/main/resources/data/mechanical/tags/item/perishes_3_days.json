@@ -66,6 +66,7 @@
     "mechanical:cooked_mallard",
     "mechanical:cooked_swan",
     "mechanical:cooked_heron",
-    "mechanical:cooked_crane"
+    "mechanical:cooked_crane",
+    "mechanical:cooked_centipede"
   ]
 }

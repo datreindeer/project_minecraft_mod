@@ -127,9 +127,9 @@ public abstract class Predator extends WildAnimal {
         return BloodMoon.isActive(level()) || starving();
     }
 
-    /** Night (or a blood moon, or hunger): time to hunt. */
+    /** Night (or a blood moon, or hunger, or down in a cave where it is always night): time to hunt. */
     protected boolean huntingTime() {
-        return level().isDarkOutside() || BloodMoon.isActive(level()) || starving();
+        return level().isDarkOutside() || BloodMoon.isActive(level()) || starving() || com.mechanical.wildlife.underground.Underground.inCave(level(), blockPosition());
     }
 
     protected boolean retreating() {
@@ -151,7 +151,7 @@ public abstract class Predator extends WildAnimal {
 
     @Override
     protected boolean sleepTime() {
-        return level().isBrightOutside() && !BloodMoon.isActive(level()) && !starving();
+        return level().isBrightOutside() && !BloodMoon.isActive(level()) && !starving() && !com.mechanical.wildlife.underground.Underground.inCave(level(), blockPosition());
     }
 
     @Override

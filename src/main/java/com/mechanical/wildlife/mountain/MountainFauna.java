@@ -205,7 +205,7 @@ public final class MountainFauna {
                 List.of(x(MountainFauna.SAIGA_HORN, 0.35F, 2, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
         Butchery.register(() -> MountainFauna.CAVE_BEAR.get(), new Yield(MountainFauna.CAVE_BEAR_MEAT, 5, 8, List.of(x(MountainFauna.RAW_CAVE_BEAR_PELT, 1.0F, 1, 1), x(Mechanical.RAW_HIDE, 0.4F, 1, 1)),
                 List.of(x(() -> MountainFauna.CAVE_BEAR_SKULL.get().asItem(), 1.0F, 1, 1), x(Wildlife.BEAR_FAT, 0.9F, 2, 3), x(Wildlife.BEAR_CLAW, 0.6F, 1, 3),
-                        x(Wildlife.SINEW, 0.7F, 1, 2))));
+                        x(Wildlife.SINEW, 0.7F, 1, 2), x(() -> Items.BONE, 0.7F, 2, 4))));
         Butchery.register(() -> MountainFauna.CAVE_HYENA.get(), new Yield(MountainFauna.HYENA_MEAT, 1, 2, List.of(x(MountainFauna.RAW_HYENA_PELT, 0.8F, 1, 1)),
                 List.of(x(MountainFauna.HYENA_FANG, 0.6F, 1, 2), x(() -> Items.BONE, 0.6F, 1, 2), x(Wildlife.SINEW, 0.4F, 1, 1))));
         Butchery.toughHide(() -> MountainFauna.CAVE_BEAR.get());

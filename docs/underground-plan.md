@@ -20,10 +20,15 @@ Grottor ska kännas farligare och kallare ju djupare man går. Byggs i steg, ett
 ## 3. Mörkrets väsen (nordisk folktro)
 Kommer bara vid ljusnivå 0, och farligare ju djupare. Ljus är försvaret.
 
+**Första halvan klar (djuren):** mörkerregeln och spawnern (`Underground.canSpawn` / `Underground.addBand`), Cave Hyena och
+Cave Bear spawnar nu i grottorna (y 40 till 0, samma arter som i bergsfaunan), ny **Giant Centipede** (y 0 till −30) med
+eget kadaver och egna produkter (Centipede Chitin → Chitin Vest, Centipede Fang, Centipede Venom Sac, kött). Rovdjur räknar
+grottan som natt. Se [fauna/underground.md](fauna/underground.md). **Kvar:** Vittra, Troll, Lindworm.
+
 | Djup | Väsen |
 |---|---|
-| y 40 till 0 | Cave Hyena-flockar, Cave Bear (Cave Lion finns redan) |
-| y 0 till −30 | Giant Centipede i taket; **Vittra/underjordiska** som jagar efter ljud (springa och hacka lockar dem) |
+| y 40 till 0 | Cave Hyena-flockar, Cave Bear (Cave Lion finns redan) – **klart** |
+| y 0 till −30 | Giant Centipede i taket (**klart**); **Vittra/underjordiska** som jagar efter ljud (springa och hacka lockar dem) |
 | under −30 | **Troll**: starka, skyr ljus, blir sten i dagsljus. Sällsynt **Lindworm** riktigt djupt (boss) |
 
 **Alla** djur och väsen här nere lämnar ett eget **Carcass** som styckas (Butchery) och har egna produkter: hud/päls,

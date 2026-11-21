@@ -1,0 +1,80 @@
+{
+  "parent": "mechanical:hunting/underground",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_centipede"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:centipede_chitin"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:centipede_fang"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:centipede_venom_sac"
+          }
+        ]
+      }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ],
+    [
+      "has_3"
+    ],
+    [
+      "butchered"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:giant_centipede_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.giant_centipede.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.giant_centipede.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

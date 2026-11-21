@@ -71,6 +71,16 @@
         ]
       }
     },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:bone"
+          }
+        ]
+      }
+    },
     "butchered": {
       "trigger": "minecraft:impossible"
     }
@@ -96,6 +106,9 @@
     ],
     [
       "has_6"
+    ],
+    [
+      "has_7"
     ],
     [
       "butchered"

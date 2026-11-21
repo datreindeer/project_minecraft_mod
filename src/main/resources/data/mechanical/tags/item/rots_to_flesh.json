@@ -164,6 +164,8 @@
     "mechanical:smoked_loin",
     "mechanical:dried_pork",
     "mechanical:dried_seal_meat",
-    "mechanical:raw_meat_strips"
+    "mechanical:raw_meat_strips",
+    "mechanical:raw_centipede",
+    "mechanical:cooked_centipede"
   ]
 }

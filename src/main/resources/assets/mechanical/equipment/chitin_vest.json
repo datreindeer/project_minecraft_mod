@@ -1,0 +1,9 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:chitin_vest"
+      }
+    ]
+  }
+}

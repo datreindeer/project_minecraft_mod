@@ -91,7 +91,7 @@ Kod: `wildlife/mountain/` (MountainFauna, Ibex, Chamois, Saiga, MountainBovid, M
 
 | | |
 |---|---|
-| Var | under bergen: windswept hills/forest, stony/jagged/frozen peaks, snowy slopes, grove, meadow, dripstone caves (vikt 2, 1–2: hona med unge). **Spawnar bara i mörker under sten utan himmel** (en lya), aldrig två inom 48 block, inte vid världsgenerering. |
+| Var | under bergen: windswept hills/forest, stony/jagged/frozen peaks, snowy slopes, grove, meadow, dripstone caves (vikt 2, 1–2: hona med unge). **Spawnar bara i mörker under sten utan himmel** (en lya), aldrig två inom 48 block, inte vid världsgenerering. Spawnar också djupt i grottorna, y 40 till 0, i totalt mörker ([underground.md](underground.md)). |
 | Liv / skada | 90 / 11, rustningsmotstånd 0,85, fart 0,28 – större och farligare än Brown Bear |
 | Beteende | allt brunbjörnens (reser sig och slår, rusar i korta sprintar, flyr aldrig, honan försvarar ungarna). **Ligger i dvala** i lyan dag och natt (utomhus sover den på natten) tills någon kommer nära – väcks den, ryter den och anfaller. Smygande kommer man närmare. En grottbjörn ute i det fria på vintern letar upp en mörk plats under sten och går i ide som Brown Bear (väcker man den på vintern: **Rude Awakening**). |
 | Modell | brunbjörnens kropp 20 % större, med grottbjörnens höga välvda panna |
@@ -105,6 +105,7 @@ Kod: `wildlife/mountain/` (MountainFauna, Ibex, Chamois, Saiga, MountainBovid, M
 | Bear Fat | 2–3 | 90 % |
 | Bear Claw | 1–3 | 60 % |
 | Sinew | 1–2 | 70 % |
+| Bone | 2–4 | 70 % |
 
 - **Raw Cave Bear Pelt** torkas på en **hög Drying Rack**, tar hela ställningen (som björnpälsen, värde 22/23) → **Cave Bear Pelt**: Armor Station 2 → Fur Coat, 1 → Fur Leggings; + Bear Claw → **Cave Bear Rug**.
 - **Cave Bear Skull**: trofé, ställs på marken med nosen mot den som placerar den.
@@ -114,7 +115,7 @@ Kod: `wildlife/mountain/` (MountainFauna, Ibex, Chamois, Saiga, MountainBovid, M
 
 | | |
 |---|---|
-| Var | taggen `has_cave_hyenas`: savanna, savanna plateau, windswept savanna, plains, sunflower plains, badlands (alla tre), Hazel Meadow. Flockar 3–5 (vikt 2) vid världsgenerering; på natten var 30:e s 3,5 % chans per spelare (dubbelt vid blodmåne eller med ett kadaver inom 16 block) att en flock kommer 48–64 block bort |
+| Var | taggen `has_cave_hyenas`: savanna, savanna plateau, windswept savanna, plains, sunflower plains, badlands (alla tre), Hazel Meadow. Flockar 3–5 (vikt 2) vid världsgenerering; på natten var 30:e s 3,5 % chans per spelare (dubbelt vid blodmåne eller med ett kadaver inom 16 block) att en flock kommer 48–64 block bort. Flockar spawnar också i grottorna, y 40 till 0, i totalt mörker, där det alltid är natt för dem ([underground.md](underground.md)) |
 | Liv / skada | 20 / 4, fart 0,32 |
 | Beteende | nattrovdjur (Predator): sover på dagen, rädd för eld och facklor (utom blodmåne/svält), följer lukten av kadaver. **Asätare, dag som natt**: springer till varje obevakat kadaver inom 24 block (inte hängt, buret eller på travois, ingen eld intill, ingen spelare inom 3 block) – även medan du styckar något annat – och **släpar bort det 20 block** från närmaste spelare; sedan **vaktar flocken** det (spelare inom 7 block jagas bort) och äter det på natten. **Trakasserar** på natten: en flock på minst 3 tar sig an en spelare, cirklar på 5–6 block och fnissar, och en i taget **rusar in och biter** (oftare när du tittar bort), backar sedan ut. Ensam eller två ger de sig inte på människor. Stora flockar (3+) ger sig på ett **ensamt Cave Lion** (gammal rivalitet). Svårt skadad (< 30 %) eller flocken under två → flyr. |
 | Ljud | fnissande skratt (häxans kackel, ljusare) |

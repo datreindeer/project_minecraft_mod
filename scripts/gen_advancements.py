@@ -815,6 +815,22 @@ TABS["food"][1].extend([
 ])
 
 
+# fauna: underground (Cave Hyena and Cave Bear are the mountain fauna's; underground they come only in total darkness)
+TABS["wilderness"][1].extend([
+    ("giant_centipede", "deep_cold", "centipede_fang", T, "Look Up",
+     "Kill a Giant Centipede in the dark below Y 0 - it clings to cave ceilings and drops on you - and butcher it for chitin, fangs and venom",
+     has("centipede_chitin", "centipede_fang")),
+    ("chitin_vest", "giant_centipede", "chitin_vest", T, "Plated",
+     "Sew 7 Centipede Chitin and Sinew into a Chitin Vest: a chestplate long before bronze", has("chitin_vest")),
+    ("centipede_venom", "giant_centipede", "centipede_venom_sac", T, "Venom of the Deep",
+     "Ring a Centipede Venom Sac with 8 Arrows for 8 Arrows of Poison, or bind it with Lard and Plant Fibre into Snakebite Poultice",
+     has("centipede_venom_sac")),
+])
+TABS["food"][1].extend([
+    ("cooked_centipede", "cooked", "cooked_centipede", T, "Crunchy", "Cook a Raw Centipede on a Campfire", has("cooked_centipede")),
+])
+
+
 # fauna: warm
 TABS["bronze_age"][1].extend([
     ("tame_onager", "rope_halter", "pack_baskets", G, "Beast of Burden",
@@ -1096,6 +1112,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
     "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "cave_bear", "cave_hyena", "leopard",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
+    "underground": ["giant_centipede"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)
     "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),
@@ -1104,6 +1121,7 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "predators": ("bear_claw", "Predators", "Butcher the hunters that hunt you"),
     "ice_age": ("mammoth_ivory", "Ice Age Giants", "Bring down the mammoth and the woolly rhinoceros"),
     "waters": ("blubber", "Shore and River", "Butcher seals, walruses and the great river fish"),
+    "underground": ("centipede_chitin", "The Deep", "Butcher the creatures that breed in the dark under the earth"),
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
