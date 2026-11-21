@@ -34,6 +34,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         super(context, new PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
         // EquipmentClient only adds this layer to the player renderers; the Miner's sack needs it here too
         addLayer(new com.mechanical.client.EquipmentLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
+        addLayer(new com.mechanical.client.HoldPoses.GripLayer(this)); // a hot piece held in tongs
     }
 
     @Override
@@ -47,6 +48,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         HumanoidMobRenderer.extractHumanoidRenderState(entity, state, partialTicks, itemModelResolver);
         state.leftArmPose = armPose(entity, HumanoidArm.LEFT);
         state.rightArmPose = armPose(entity, HumanoidArm.RIGHT);
+        com.mechanical.client.HoldPoses.extract(entity, state);
         state.arrowCount = entity.getArrowCount();
         boolean slim = entity.isWoman();
         state.skin = SKINS.computeIfAbsent(TintedSkin.of(entity.texture(), entity.colour()), t -> PlayerSkin.insecure(
@@ -60,6 +62,10 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
     private static HumanoidModel.ArmPose armPose(Tribesperson mob, HumanoidArm arm) {
         ItemStack held = mob.getItemHeldByArm(arm);
         if (held.isEmpty()) return HumanoidModel.ArmPose.EMPTY;
+        // item poses from IClientItemExtensions (client/HoldPoses: staffs ...), as vanilla does for players
+        HumanoidModel.ArmPose custom = net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.of(held).getArmPose(mob,
+                arm == mob.getMainArm() ? net.minecraft.world.InteractionHand.MAIN_HAND : net.minecraft.world.InteractionHand.OFF_HAND, held);
+        if (custom != null) return custom;
         if (held.getItem() instanceof BowItem && mob.isAggressive() && mob.getMainArm() == arm) return HumanoidModel.ArmPose.BOW_AND_ARROW;
         if (HumanoidMobRenderer.usesSpearPose(held, arm, mob)) return HumanoidModel.ArmPose.SPEAR;
         return HumanoidModel.ArmPose.ITEM;

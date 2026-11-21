@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "R",
+    "T",
+    "R"
+  ],
+  "key": {
+    "R": "mechanical:tool_rod",
+    "T": "mechanical:twine"
+  },
+  "result": {
+    "id": "mechanical:walking_staff",
+    "count": 1
+  }
+}

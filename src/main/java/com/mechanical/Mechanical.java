@@ -289,6 +289,9 @@ public class Mechanical {
             net.minecraft.world.level.block.StrawBedBlock::new, p -> p.mapColor(MapColor.COLOR_GRAY).sound(SoundType.STRAW_BED).strength(0.2F)
                     .noOcclusion().ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
 
+    /** Walking Staff (traders carry one) and Elder's Staff (elders): held upright, planted in step (client/HoldPoses). */
+    public static final DeferredItem<Item> WALKING_STAFF = ITEMS.registerSimpleItem("walking_staff", p -> p.stacksTo(1));
+    public static final DeferredItem<Item> ELDERS_STAFF = ITEMS.registerSimpleItem("elders_staff", p -> p.stacksTo(1));
     public static final DeferredItem<BarkBasketItem> BARK_BASKET = ITEMS.registerItem("bark_basket", BarkBasketItem::new, p -> p.stacksTo(1));
     public static final Supplier<MenuType<BarkBasketMenu>> BARK_BASKET_MENU = MENUS.register("bark_basket",
             () -> new MenuType<>(BarkBasketMenu::new, FeatureFlags.VANILLA_SET));

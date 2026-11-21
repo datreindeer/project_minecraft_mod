@@ -309,7 +309,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             case GATHERER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_KNIFE.get() : Mechanical.FLINT_KNIFE.get());
             case FISHER -> new ItemStack(Mechanical.CRUDE_FISHING_ROD.get());
             case WOODCUTTER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_AXE.get() : Mechanical.FLINT_AXE.get());
-            case ELDER, TRADER -> new ItemStack(Items.STICK);
+            case ELDER -> new ItemStack(Mechanical.ELDERS_STAFF.get());
+            case TRADER -> new ItemStack(Mechanical.WALKING_STAFF.get());
             case GUARD -> new ItemStack(spear()); // Caravans arms them for their tribe's age
             case MINER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_PICKAXE.get() : Mechanical.FLINT_PICKAXE.get());
         };

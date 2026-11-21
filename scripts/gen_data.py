@@ -287,7 +287,10 @@ for wood in WOODS:
 shapeless("plant_fibre_from_bark", ["#mechanical:barks", "#mechanical:knives"], "mechanical:plant_fibre", count=2)
 # bark basket: a small 3x3 store for fruit, berries and hides
 shaped("bark_basket", [" C ", "B B", "BBB"], {"C": "mechanical:cordage", "B": "#mechanical:barks"}, "mechanical:bark_basket")
-w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"}})
+# third person: hanging in the crook of the arm in front of the hip, upright at client/HoldPoses' basket arm angle
+w(A / "models/item/bark_basket.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/bark_basket"},
+    "display": {"thirdperson_righthand": {"rotation": [58.5, 0, 0], "translation": [-0.1, -3.78, -1.35], "scale": [0.6, 0.6, 0.6]},
+                "thirdperson_lefthand": {"rotation": [58.5, 0, 0], "translation": [0.1, -3.78, -1.35], "scale": [0.6, 0.6, 0.6]}}})
 w(A / "items/bark_basket.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/bark_basket"}})
 lang["item.mechanical.bark_basket"] = "Bark Basket"
 # leather satchel: 3x3 for anything but other containers, sewn at the Leatherworking Bench (LeatherworkingRecipes)
