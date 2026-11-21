@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "black_dye",
+  "ingredients": [
+    "mechanical:black_pigment",
+    "mechanical:black_pigment",
+    "mechanical:alum"
+  ],
+  "result": {
+    "id": "minecraft:black_dye",
+    "count": 4
+  }
+}

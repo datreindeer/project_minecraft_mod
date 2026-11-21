@@ -1381,6 +1381,7 @@ Data och alla texturer: `scripts/gen_pigments.py`.
 | Chalk | White Pigment | 1 | 2 |
 | Calcite (block) | White Pigment | – | 4 |
 | Charcoal | Black Pigment | 1 | 2 |
+| Chalk Block, Red/Yellow Ochre Block | samma färg | – | 8 |
 
   **Soot** fungerar direkt som svart pigment (behöver inte malas).
 - **Färg (formlöst):** 2 pigment (svart: Black Pigment eller Soot) + bindemedel (**Tallow**, Clay Water Bucket eller

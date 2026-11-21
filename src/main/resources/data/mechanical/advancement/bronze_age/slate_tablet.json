@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/bronze_tools",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:slate_tablet"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:slate_tablet"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.slate_tablet.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.slate_tablet.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

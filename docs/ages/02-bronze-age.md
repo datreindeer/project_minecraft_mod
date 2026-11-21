@@ -194,6 +194,7 @@ Recept (crafting table, R = rock chunk, K = Flint Pickaxe som blir kvar och slit
   - Malachite → 1 Crushed Copper Ore
   - Cassiterite → 1 **Crushed Tin Ore**
   - Red/Yellow Ochre, Chalk, Charcoal → 2 pigment, Calcite → 4 White Pigment (se *Pigment och grottmålningar* i stenåldern)
+  - Chalk Block, Red/Yellow Ochre Block → 8 pigment; Gypsum → 2 **Gypsum Powder** (se *Gips och Slate Tablet* nedan)
 - Bryts städet ramlar malmen som ligger på det ut.
 
 ## Fas 2: värme (byggd)
@@ -1515,6 +1516,25 @@ Skriften kommer tillbaka i bronsåldern, med bläck av sot (`scripts/gen_writing
 - Bookshelf, Chiseled Bookshelf och Lectern är fortfarande avstängda (gen_age_recipes.py).
 - Advancement **The Written Word** (Bronze Age, efter Bronzesmith). Test: FertilizerTest (Paper kräver kniven, kniven
   stannar, Book and Quill med Soot Ink).
+
+## Gips och Slate Tablet (byggd, world-materials-plan fas 9B)
+Kod: `Chemistry` (items, Slate Tablet, gametest `chemistry`), kilnrecepten i `KilnBlockEntity.RECIPES`, mixin
+`ServerGamePacketListenerImplMixin`. Data och texturer: `scripts/gen_chemistry.py` (efter `gen_lime.py` och `gen_pigments.py`).
+
+| Vad | Hur |
+|---|---|
+| **Gypsum Powder** | 1 **Gypsum** krossas på **Stone Anvil** → 2. |
+| **Plaster of Paris** | 1 Gypsum Powder i **Clay Kiln vid 300°** (vilket bränsle som helst), 15 s → 1. |
+| **Lime Plaster av gips** | Plaster of Paris + 2 Sand + Straw, formlöst → **4 Lime Plaster**, samma block som med Slaked Lime. Gipsen gör att puts (och de fyra färgade putsblocken) går att göra redan i bronsåldern, utan Bellows och 900°. |
+| **Slate Tablet** | 1 **Polished Slate** + 2 Stick, formlöst → 1 (stackas inte). |
+
+**Slate Tablet:** en skrivtavla av skiffer i träram. Håll **Chalk** i andra handen och använd tavlan: den öppnar
+bokskärmen (som Book and Quill) och kostar **1 Chalk** per gång. Tavlan har **en sida**; fler sidor sparas inte, och
+**Sign** sparar bara sidan (den blir aldrig en Written Book). Texten syns i tooltipen, så den går att läsa utan krita.
+**Sneak-use** torkar av tavlan (gratis). Tänkt för anteckningar, räkning och skyltar man bär med sig; Paper och böcker är
+fortfarande det som håller.
+
+**Advancements** (Bronze Age): *Plaster of Paris* (efter Stone Anvil), *Slate and Chalk* (efter Bronzesmith).
 
 ## NPC-byar i bronsåldern (byggd)
 

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:polished_slate",
+    "minecraft:stick",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mechanical:slate_tablet",
+    "count": 1
+  }
+}

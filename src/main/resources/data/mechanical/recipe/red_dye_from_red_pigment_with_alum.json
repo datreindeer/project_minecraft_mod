@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "red_dye",
+  "ingredients": [
+    "mechanical:red_pigment",
+    "mechanical:red_pigment",
+    "mechanical:alum"
+  ],
+  "result": {
+    "id": "minecraft:red_dye",
+    "count": 4
+  }
+}

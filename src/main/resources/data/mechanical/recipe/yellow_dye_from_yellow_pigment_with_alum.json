@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "yellow_dye",
+  "ingredients": [
+    "mechanical:yellow_pigment",
+    "mechanical:yellow_pigment",
+    "mechanical:alum"
+  ],
+  "result": {
+    "id": "minecraft:yellow_dye",
+    "count": 4
+  }
+}

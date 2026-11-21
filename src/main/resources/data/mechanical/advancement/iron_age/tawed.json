@@ -1,0 +1,33 @@
+{
+  "parent": "mechanical:iron_age/alum",
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": {
+        "recipes": [
+          "mechanical:leather_from_alum"
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:leather"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.tawed.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.tawed.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
