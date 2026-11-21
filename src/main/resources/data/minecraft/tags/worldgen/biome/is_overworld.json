@@ -5,6 +5,17 @@
     "mechanical:willow_fen",
     "mechanical:pine_heath",
     "mechanical:chalk_downs",
-    "mechanical:limestone_caverns"
+    "mechanical:limestone_caverns",
+    "mechanical:peat_bog",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands",
+    "mechanical:basalt_coast",
+    "mechanical:shingle_beach",
+    "mechanical:reed_delta",
+    "mechanical:glacial_moraine",
+    "mechanical:gypsum_flats"
   ]
 }

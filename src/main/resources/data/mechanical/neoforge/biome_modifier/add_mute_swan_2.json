@@ -1,7 +1,9 @@
 {
   "type": "neoforge:add_spawns",
   "biomes": [
-    "minecraft:swamp"
+    "minecraft:swamp",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ],
   "spawners": [
     {

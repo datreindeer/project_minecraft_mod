@@ -6,7 +6,8 @@
     "minecraft:birch_forest",
     "minecraft:meadow",
     "mechanical:deciduous_forest",
-    "mechanical:hazel_meadow"
+    "mechanical:hazel_meadow",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

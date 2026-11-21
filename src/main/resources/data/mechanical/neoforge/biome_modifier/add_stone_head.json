@@ -9,7 +9,10 @@
     "minecraft:stony_shore",
     "minecraft:snowy_plains",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst",
+    "mechanical:basalt_coast"
   ],
   "features": "mechanical:stone_head",
   "step": "surface_structures"

@@ -49,6 +49,15 @@
                 "min_inclusive": 1
               },
               "weight": 1
+            },
+            {
+              "type": "mechanical:hare",
+              "weight": 8,
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              }
             }
           ],
           "monster": [
@@ -117,7 +126,7 @@
       },
       "modifier": "overlay"
     },
-    "minecraft:visual/sky_color": "#78a7ff"
+    "minecraft:visual/sky_color": "#82acff"
   },
   "carvers": [
     "minecraft:cave",
@@ -181,6 +190,7 @@
       "minecraft:spring_lava"
     ],
     [
+      "mechanical:chalk_downs_flint",
       "minecraft:glow_lichen",
       "minecraft:patch_tall_grass_2",
       "minecraft:patch_bush",

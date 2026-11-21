@@ -4,6 +4,13 @@
     "mechanical:hazel_meadow",
     "mechanical:pine_heath",
     "mechanical:chalk_downs",
-    "mechanical:limestone_caverns"
+    "mechanical:limestone_caverns",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands",
+    "mechanical:glacial_moraine",
+    "mechanical:gypsum_flats"
   ]
 }

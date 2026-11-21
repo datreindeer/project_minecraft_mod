@@ -5,6 +5,8 @@
     "minecraft:plains",
     "minecraft:sunflower_plains",
     "minecraft:meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:basalt_coast"
   ]
 }

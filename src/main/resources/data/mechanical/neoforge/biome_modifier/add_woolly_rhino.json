@@ -5,7 +5,8 @@
     "minecraft:windswept_hills",
     "minecraft:windswept_gravelly_hills",
     "minecraft:snowy_taiga",
-    "minecraft:snowy_slopes"
+    "minecraft:snowy_slopes",
+    "mechanical:slate_highlands"
   ],
   "spawners": [
     {

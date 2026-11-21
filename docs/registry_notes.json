@@ -1809,5 +1809,12 @@
   "watcher_feather": {"text": "Släpps av en [[entity:mountain_watcher]] en gång per år och spelare, när man kommer inom 24 block och kan se den. En trofé.", "category": "materials"},
   "mountain_watcher_spawn_egg": {"text": "Spawn egg för [[entity:mountain_watcher]]."},
   "entity:mountain_watcher": {"text": "Stor ljus rovfågel med svag glans som kretsar över bergstopparna. Spawnar bara på öppen mark över **y 150**, i klart väder på dagen. Syns bara med **syn ≥ 40** (Faith, eller Faith + 50 under Second Sight); går inte att skada, låter inget och lämnar ingen Carcass. Första gången man ser den: +5 Faith. En gång per år tappar den en [[watcher_feather]] när man kommer nära, och flyger sedan iväg."},
-  "structure:glimmering_stump": {"text": "En ensam [[glimmering_stump]] med mossa runt foten, ibland en Fly Agaric bredvid.", "icon": "mechanical:glimmering_stump"}
+  "structure:glimmering_stump": {"text": "En ensam [[glimmering_stump]] med mossa runt foten, ibland en Fly Agaric bredvid.", "icon": "mechanical:glimmering_stump"},
+  "beach_pebbles": {"text": "Strandsten (stenåldern). Översta lagret på stenstränder: Shingle Beach, Basalt Coast och i fläckar på vanillas Stony Shore. Spade, ger sig själv. Formlöst: 2 Gravel + 2 [[loose_stone]] → 2. 3 i rad → 6 [[beach_pebble_slab]] för kullerstensgolv.", "category": "blocks"},
+  "beach_pebble_slab": {"text": "Halvblock av [[beach_pebbles]] (3 i rad → 6). Spade.", "category": "blocks"},
+  "fieldstone": {"text": "Fältsten (stenåldern): runda stenar som isen lämnat. Ligger lösa på marken i Glacial Moraine och på Shingle Beach. Vilken hacka som helst, ger sig själv. Formlöst: 4 [[loose_stone]] → 1 (röjsten från åkern). Slab, stairs och 2×3 → 6 [[dry_stone_wall]].", "category": "blocks"},
+  "fieldstone_slab": {"text": "Halvblock av [[fieldstone]] (3 i rad → 6). Hacka.", "category": "blocks"},
+  "fieldstone_stairs": {"text": "Trappa av [[fieldstone]] (trappmönster av 6 → 4). Hacka.", "category": "blocks"},
+  "dry_stone_wall": {"text": "Kallmur (stenåldern): mur av [[fieldstone]] utan murbruk, 2×3 Fieldstone → 6. Kopplar ihop sig som andra murar. Gränsmurar för gårdar och klanmark.", "category": "blocks"},
+  "structure:glacial_boulder": {"text": "Stort flyttblock (radie 2–4) av Gneiss, Granite eller Rapakivi Granite, halvt nedsjunket, med lösa stenar runt. I Glacial Moraine (varannan chunk) och Shingle Beach (var femte chunk).", "icon": "mechanical:gneiss"}
 }

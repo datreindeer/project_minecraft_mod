@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/beach_pebble_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/beach_pebbles"
+    },
+    "type=top": {
+      "model": "mechanical:block/beach_pebble_slab_top"
+    }
+  }
+}

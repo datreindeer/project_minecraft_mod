@@ -8,7 +8,9 @@
     "minecraft:grove",
     "minecraft:meadow",
     "minecraft:windswept_hills",
-    "minecraft:cherry_grove"
+    "minecraft:cherry_grove",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

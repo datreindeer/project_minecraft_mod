@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -38,7 +39,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 /**
  * Bog and earth (docs/world-materials-plan.md phase 3), the blocks that aren't stone families: Peat (fuel), Turf, Bog Oak
  * (a wood set without tree: buried logs, worldgen/BogOakLogs), Reed (grows like sugar cane) and Reed Thatch, Loess, Wattle,
- * Wattle & Daub, Kaolin. The families built on them (Peat Bricks, Adobe/Mudstone, Loess Bricks, Rammed Earth, Kaolin Tiles,
+ * Wattle & Daub, Kaolin; Beach Pebbles and Fieldstone + Dry Stone Wall (phases 4 and 7). The families built on them (Peat Bricks, Adobe/Mudstone, Loess Bricks, Rammed Earth, Kaolin Tiles,
  * Ochre blocks) are {@link StoneFamilies} rows. Data, textures and worldgen: scripts/gen_earth.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -85,6 +86,17 @@ public final class EarthBlocks {
             .strength(1.0F).sound(SoundType.WOOD).ignitedByLava().noOcclusion());
     public static final DeferredBlock<Block> WATTLE_AND_DAUB = block("wattle_and_daub", Block::new, soil(MapColor.TERRACOTTA_WHITE, 1.5F, SoundType.PACKED_MUD));
     public static final DeferredBlock<Block> FRAMED_WATTLE_AND_DAUB = block("framed_wattle_and_daub", Block::new, soil(MapColor.TERRACOTTA_WHITE, 1.5F, SoundType.PACKED_MUD));
+
+    // phases 4 and 7 (surface biomes): Beach Pebbles on stony beaches, Fieldstone lying loose on moraines and shingle
+    public static final DeferredBlock<Block> BEACH_PEBBLES = block("beach_pebbles", Block::new, soil(MapColor.STONE, 0.6F, SoundType.GRAVEL));
+    public static final DeferredBlock<SlabBlock> BEACH_PEBBLE_SLAB = block("beach_pebble_slab", SlabBlock::new, () -> Properties.ofLegacyCopy(BEACH_PEBBLES.get()));
+    private static final Supplier<Properties> FIELDSTONE_LIKE = () -> Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)
+            .requiresCorrectToolForDrops().strength(1.5F, 6.0F).sound(SoundType.STONE);
+    public static final DeferredBlock<Block> FIELDSTONE = block("fieldstone", Block::new, FIELDSTONE_LIKE);
+    public static final DeferredBlock<SlabBlock> FIELDSTONE_SLAB = block("fieldstone_slab", SlabBlock::new, FIELDSTONE_LIKE);
+    public static final DeferredBlock<StairBlock> FIELDSTONE_STAIRS = block("fieldstone_stairs", p -> new StairBlock(FIELDSTONE.get().defaultBlockState(), p), FIELDSTONE_LIKE);
+    /** Laid without mortar from Fieldstone. */
+    public static final DeferredBlock<WallBlock> DRY_STONE_WALL = block("dry_stone_wall", WallBlock::new, () -> FIELDSTONE_LIKE.get().forceSolidOn());
 
     // Bog Oak: a wood set like Trees' but with no leaves, sapling or tree; black oak preserved in peat
     private static final MapColor BOG_PLANKS = MapColor.TERRACOTTA_BLACK, BOG_BARK = MapColor.COLOR_BLACK;

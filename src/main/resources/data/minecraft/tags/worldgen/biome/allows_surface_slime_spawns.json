@@ -1,5 +1,7 @@
 {
   "values": [
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ]
 }

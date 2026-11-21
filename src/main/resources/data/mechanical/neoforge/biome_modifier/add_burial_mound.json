@@ -8,7 +8,9 @@
     "minecraft:snowy_taiga",
     "mechanical:hazel_meadow",
     "mechanical:pine_heath",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:burial_mound",
   "step": "surface_structures"

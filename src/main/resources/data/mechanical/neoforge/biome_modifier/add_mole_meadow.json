@@ -8,7 +8,8 @@
     "minecraft:forest",
     "minecraft:flower_forest",
     "mechanical:deciduous_forest",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

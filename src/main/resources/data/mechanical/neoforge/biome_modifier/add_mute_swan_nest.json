@@ -3,7 +3,9 @@
   "biomes": [
     "minecraft:river",
     "minecraft:swamp",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ],
   "features": "mechanical:mute_swan_nest",
   "step": "vegetal_decoration"

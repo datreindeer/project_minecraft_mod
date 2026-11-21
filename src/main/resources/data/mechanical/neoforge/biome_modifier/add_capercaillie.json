@@ -6,7 +6,9 @@
     "minecraft:old_growth_spruce_taiga",
     "minecraft:snowy_taiga",
     "minecraft:windswept_forest",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:soapstone_valley",
+    "mechanical:glacial_moraine"
   ],
   "spawners": [
     {

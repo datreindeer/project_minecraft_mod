@@ -5,6 +5,11 @@
     "minecraft:windswept_gravelly_hills",
     "minecraft:windswept_forest",
     "minecraft:meadow",
-    "minecraft:savanna_plateau"
+    "minecraft:savanna_plateau",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:basalt_coast"
   ]
 }

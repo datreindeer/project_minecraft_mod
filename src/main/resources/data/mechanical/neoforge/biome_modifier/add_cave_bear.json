@@ -11,7 +11,10 @@
     "minecraft:grove",
     "minecraft:meadow",
     "minecraft:dripstone_caves",
-    "mechanical:limestone_caverns"
+    "mechanical:limestone_caverns",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

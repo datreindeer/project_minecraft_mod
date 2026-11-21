@@ -9,6 +9,8 @@
     "minecraft:wooded_badlands",
     "minecraft:eroded_badlands",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands"
   ]
 }

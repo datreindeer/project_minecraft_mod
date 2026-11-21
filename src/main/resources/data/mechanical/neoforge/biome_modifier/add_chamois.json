@@ -4,7 +4,9 @@
     "minecraft:meadow",
     "minecraft:cherry_grove",
     "minecraft:grove",
-    "minecraft:windswept_forest"
+    "minecraft:windswept_forest",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

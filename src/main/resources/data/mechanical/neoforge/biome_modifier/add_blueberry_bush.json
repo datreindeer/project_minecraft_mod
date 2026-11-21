@@ -5,7 +5,8 @@
     "minecraft:dark_forest",
     "minecraft:taiga",
     "minecraft:old_growth_pine_taiga",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:blueberry_bush",
   "step": "vegetal_decoration"

@@ -11,7 +11,8 @@
     "minecraft:windswept_forest",
     "mechanical:deciduous_forest",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:soapstone_valley"
   ],
   "spawners": [
     {

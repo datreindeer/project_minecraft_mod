@@ -7,7 +7,10 @@
     "minecraft:stony_peaks",
     "minecraft:meadow",
     "minecraft:grove",
-    "minecraft:snowy_slopes"
+    "minecraft:snowy_slopes",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst"
   ],
   "spawners": [
     {

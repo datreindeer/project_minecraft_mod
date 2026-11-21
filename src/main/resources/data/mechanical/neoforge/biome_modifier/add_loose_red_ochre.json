@@ -6,7 +6,9 @@
     "minecraft:wooded_badlands",
     "minecraft:savanna",
     "minecraft:savanna_plateau",
-    "minecraft:windswept_savanna"
+    "minecraft:windswept_savanna",
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands"
   ],
   "features": "mechanical:loose_red_ochre",
   "step": "vegetal_decoration"

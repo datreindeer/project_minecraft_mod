@@ -6,7 +6,12 @@
     "minecraft:meadow",
     "minecraft:windswept_hills",
     "minecraft:windswept_gravelly_hills",
-    "minecraft:stony_peaks"
+    "minecraft:stony_peaks",
+    "mechanical:chalk_downs",
+    "mechanical:slate_highlands",
+    "mechanical:limestone_karst",
+    "mechanical:basalt_coast",
+    "mechanical:shingle_beach"
   ],
   "features": "mechanical:loose_chalk",
   "step": "vegetal_decoration"

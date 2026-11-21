@@ -7,7 +7,8 @@
     "minecraft:old_growth_birch_forest",
     "minecraft:old_growth_pine_taiga",
     "mechanical:deciduous_forest",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:chanterelle",
   "step": "vegetal_decoration"

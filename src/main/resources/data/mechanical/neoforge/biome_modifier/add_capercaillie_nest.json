@@ -5,7 +5,8 @@
     "minecraft:old_growth_pine_taiga",
     "minecraft:old_growth_spruce_taiga",
     "minecraft:snowy_taiga",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:capercaillie_nest",
   "step": "vegetal_decoration"

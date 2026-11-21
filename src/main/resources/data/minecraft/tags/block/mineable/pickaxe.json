@@ -390,6 +390,10 @@
     "mechanical:yellow_ochre_brick_stairs",
     "mechanical:yellow_ochre_brick_wall",
     "mechanical:yellow_ochre_bricks",
-    "mechanical:troll_stone"
+    "mechanical:troll_stone",
+    "mechanical:fieldstone",
+    "mechanical:fieldstone_slab",
+    "mechanical:fieldstone_stairs",
+    "mechanical:dry_stone_wall"
   ]
 }

@@ -2557,7 +2557,36 @@ Ingen av familjerna har Bronze Chisel-kedjor.
 
 Advancements i Stone Age-fliken: *Peat Cutter*, *Turf Stack* (Dried Peat), *Bog Oak*, *Sod Roof* (Turf), *Thatcher* (Reed Thatch), *Adobe*,
 *Yellow Earth* (Loess), *Rammed Earth*, *Wattle and Daub*, *Red Earth, Yellow Earth* (Ochre Block). *White Tiles* (Kaolin
-Tiles) ligger i Bronze Age-fliken. Senare (planen fas 4): Peat Bog och Reed Delta läggs till i biomtaggarna.
+Tiles) ligger i Bronze Age-fliken. Peat Bog och Reed Delta (fas 4) ligger i biomtaggarna: där finns mest Peat, Bog Oak,
+Bog Iron, Reed, Loess och Mudstone.
+
+## Strand och morän: Beach Pebbles och Fieldstone (byggt, fas 4 och 7 av världsmaterialplanen)
+
+Två byggmaterial som ligger öppet på marken i de nya ytbiomerna (alla biomer: `docs/biomes.md`). Creative-fliken
+**Building Blocks**. Java: `EarthBlocks.java`, data: `scripts/gen_earth.py`, worldgen: `scripts/gen_world_biomes.py`.
+
+| Block | Var | Verktyg | Ger |
+|---|---|---|---|
+| **Beach Pebbles** | Översta lagret på **Shingle Beach** och mellan basalten på **Basalt Coast**; fläckar (radie 2–4, 3 per chunk) på vanillas Stony Shore | Spade | sig själv |
+| **Fieldstone** | Lösa block på marken i **Glacial Moraine** och på **Shingle Beach** | Vilken hacka som helst | sig själv |
+| **Glacial Boulder** (feature) | Stora flyttblock, radie 2–4, av Gneiss, Granite eller Rapakivi Granite: varannan chunk i Glacial Moraine, var femte på Shingle Beach | – | stenen den är gjord av |
+
+### Recept
+
+**Beach Pebbles** (formlöst) → 2: `Gravel + Gravel + Loose Stone + Loose Stone`
+
+**Fieldstone** (formlöst) → 1: `4 Loose Stone` (röjsten: stenar som plockats från en åker)
+
+**Dry Stone Wall** → 6, kallmur utan murbruk:
+```
+[Fieldstone][Fieldstone][Fieldstone]
+[Fieldstone][Fieldstone][Fieldstone]
+```
+
+**Beach Pebble Slab**, **Fieldstone Slab**: 3 i rad → 6. **Fieldstone Stairs**: trappmönster av 6 → 4.
+
+Advancements i Stone Age-fliken: *Shingle Floor* (Beach Pebbles) och *Dry Stone Wall* (Fieldstone). Varje ny biom har en
+upptäckar-advancement i Wilderness-fliken (*White Downs*, *Into the Bog*, *Slate Highlands* ...), som säger vad som finns där.
 
 ## Folktro (byggt, steg 0–2 av folktroplanen, v0.110.0)
 

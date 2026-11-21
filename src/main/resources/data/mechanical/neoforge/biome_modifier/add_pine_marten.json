@@ -10,7 +10,8 @@
     "minecraft:old_growth_spruce_taiga",
     "minecraft:old_growth_pine_taiga",
     "mechanical:pine_heath",
-    "minecraft:snowy_taiga"
+    "minecraft:snowy_taiga",
+    "mechanical:glacial_moraine"
   ],
   "spawners": [
     {

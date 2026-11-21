@@ -3,8 +3,7 @@
   "biomes": [
     "minecraft:plains",
     "minecraft:savanna",
-    "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:hazel_meadow"
   ],
   "spawners": [
     {

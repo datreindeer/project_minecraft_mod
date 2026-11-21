@@ -2,6 +2,9 @@
   "values": [
     "minecraft:desert",
     "#minecraft:is_savanna",
-    "#minecraft:is_badlands"
+    "#minecraft:is_badlands",
+    "mechanical:ochre_badlands",
+    "mechanical:reed_delta",
+    "mechanical:gypsum_flats"
   ]
 }

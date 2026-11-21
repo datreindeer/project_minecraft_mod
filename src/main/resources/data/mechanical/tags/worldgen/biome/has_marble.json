@@ -3,6 +3,7 @@
     "#minecraft:is_mountain",
     "minecraft:savanna_plateau",
     "minecraft:windswept_savanna",
-    "#minecraft:is_badlands"
+    "#minecraft:is_badlands",
+    "mechanical:marble_gorge"
   ]
 }

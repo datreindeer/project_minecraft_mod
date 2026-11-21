@@ -3,7 +3,9 @@
   "biomes": [
     "minecraft:beach",
     "minecraft:snowy_beach",
-    "minecraft:stony_shore"
+    "minecraft:stony_shore",
+    "mechanical:basalt_coast",
+    "mechanical:shingle_beach"
   ],
   "spawners": [
     {

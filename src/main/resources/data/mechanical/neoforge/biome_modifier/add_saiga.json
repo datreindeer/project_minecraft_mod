@@ -2,7 +2,8 @@
   "type": "neoforge:add_spawns",
   "biomes": [
     "minecraft:savanna",
-    "minecraft:savanna_plateau"
+    "minecraft:savanna_plateau",
+    "mechanical:marble_gorge"
   ],
   "spawners": [
     {

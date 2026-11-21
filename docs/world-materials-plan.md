@@ -1,6 +1,6 @@
 # Plan: byggmaterial och nya biomer (ovan och under jord)
 
-Status: **fas 0, 1, 2, 3 och 6 byggda** (se "Fas N: resultat" sist), resten plan. Skriven 2026-11-21.
+Status: **fas 0, 1, 2, 3, 4, 6 och 7 byggda** (alla 12 ytbiomer) (se "Fas N: resultat" sist), resten plan. Skriven 2026-11-21.
 
 Målet: ett 40-tal nya material i världen som först och främst är till för att bygga med, men som alla också har minst
 en annan användning. Plus 12 nya biomer på ytan och 12 under jord, byggda kring materialen. Varje material ska gå att
@@ -400,3 +400,78 @@ finns). Worldgen är inte provad i en riktig värld än.
 **Efteråt:** Drying Rack torkar nu också Wet Adobe Brick → Adobe Brick, Cut Peat → Dried Peat och Reed → Dried Reed
 (som Reed Thatch görs av), se `DryingRackBlockEntity.TABLE` och stenålderns dokument under Drying Rack.
 
+---
+
+## Fas 4+7: resultat (byggt)
+
+Alla 12 ytbiomer finns: **Chalk Downs** (nu på riktig Chalk Block), **Peat Bog**, **Slate Highlands**, **Soapstone
+Valley**, **Limestone Karst**, **Marble Gorge**, **Ochre Badlands**, **Basalt Coast**, **Shingle Beach**, **Reed Delta**,
+**Glacial Moraine**, **Gypsum Flats**. Spelarbeskrivning av alla biomer (också de fyra gamla): `docs/biomes.md`. Nya block:
+**Beach Pebbles** + slab, **Fieldstone** + slab, stairs och **Dry Stone Wall** (`EarthBlocks.java`, `gen_earth.py`), och
+featuren **Glacial Boulder** (`Boulder.Kind.GLACIAL`, radie 2–4, Gneiss/Granite/Rapakivi Granite).
+
+**En ny ytbiom är nu fyra rader** (ingen ny kod):
+1. `ModBiomes.SURFACE` (Java): `new SurfaceShare(vanilla-biom, key("namn"), temperatur, fuktighet, kontinentalitet, erosion, weirdness)`,
+   null = hela axeln. Mixinen (`mechanical$share`) skär ut överlappet ur varje klimatruta som vanilla ger den biomen
+   (låda minus låda); resten går tillbaka till vanilla-biomen och kan skäras igen av en senare rad.
+2. `gen_world_biomes.py`, `BIOMES` (mall, namn, features att ta bort, fält som effects).
+3. `MATERIALS`: blocknamn eller hela regler. Nya nycklar: `wet` (botten under vatten), `all` (allt ovanför den
+   preliminära ytan, som badlands-ränderna). `pick((tröskel, block), ..., default=)` ger fläckar efter ytbruset
+   (`minecraft:surface`), `bands(block)` ger lager efter höjd.
+4. `EXTRA`: egna features per steg (unika namn), djur (`creatures`), `attributes` (himmel, dimma, musik), `join`/`skip`
+   (moddens biome modifiers att gå med i eller lämna, utan "add_"; skip tar bort det som ärvts från mallen) och `has`
+   (`mechanical:has_<material>`-taggarna, så att materialets klumpar blir vanligare där).
+
+### Klimatplatser
+
+Ingen biom tar en hel vanilla-zon. Rutorna är vanillas (temperatur 0 frusen .. 4 het, fuktighet 0 torrast .. 4 våtast).
+Avstånd: `locate biome` från spawn i en testvärld (frö 12345), testserver i worktreen.
+
+| Biom | Mall | Tar från | Del | Närmast från spawn |
+|---|---|---|---|---|
+| Chalk Downs | plains | Plains, tempererad | torra fuktighetshalvan (-0.35..-0.2), kustbandet (kontinentalitet under 0.03) | 566 |
+| Peat Bog | swamp | Taiga, sval (temp 1) | fuktighet 0.2..0.3 (den våtare halvan), flack mark (erosion över 0.05) | 2547 |
+| Slate Highlands | windswept_hills | Windswept Hills, sval (temp 1) | weirdness under 0 (halva) | 2572 |
+| Soapstone Valley | windswept_forest | Windswept Forest, tempererad | fuktighet 0.1..0.3 och weirdness över 0 | 2670 |
+| Limestone Karst | meadow | Meadow, tempererad | fuktighet -0.1..0.3 (den torrare tempererade och all sval Meadow kvar) | 1092 |
+| Marble Gorge | savanna_plateau | Savanna Plateau, varm (temp 3) | fuktighet -0.35..-0.1 (en av två) | 960 |
+| Ochre Badlands | badlands | Badlands | fuktighet -0.35..-0.1 (torraste och mellersta bandet kvar; Eroded/Wooded orörda) | 5747 |
+| Basalt Coast | stony_shore | Stony Shore | fuktighet över 0.1 | 115 |
+| Shingle Beach | beach | Beach, sval (temp 1) | fuktighet under 0.1 | 1718 |
+| Reed Delta | swamp | Swamp, tempererad (det Willow Fen lämnat) | nära kusten (kontinentalitet -0.11..0.03) | 3958 |
+| Glacial Moraine | taiga | Taiga, frusen (temp 0) | kuperad mark (erosion under 0.05) | 607 |
+| Gypsum Flats | desert | Desert | torraste fuktighetsbandet (under -0.35) på flack mark (erosion över 0.05) | 6449 |
+
+Vanilla i samma värld: plains 611, forest 497, taiga 595, meadow 692, stony_shore 430, windswept_hills 1825,
+beach 1984, desert 2400, swamp 2905, badlands 3345, savanna_plateau 4724. De varma biomerna (Ochre Badlands, Gypsum
+Flats, Marble Gorge) ligger långt bort för att fröets spawn är kall; de ligger ungefär lika långt bort som sina
+vanilla-mallar. Willow Fen, Hazel Meadow, Pine Heath och Deciduous Forest har kvar sina rutor (raderna ovan rör dem inte).
+
+**Hur sällsynta:** Basalt Coast, Chalk Downs och Glacial Moraine är vanliga (inom 600 block); Limestone Karst och Marble
+Gorge medel; Peat Bog, Slate Highlands, Soapstone Valley, Shingle Beach och Reed Delta är ovanliga (2–4 km); Ochre
+Badlands och Gypsum Flats finns bara där det är hett och torrt, som Badlands och Desert.
+
+### Ytblocken (räknade i en riktig värld)
+
+Block räknade i en 48×48-ruta (y 40–200) i varje biom med `fill ... air replace` över RCON:
+
+| Biom | Block |
+|---|---|
+| Chalk Downs | Chalk Block 3385–7563, Grass Block ~1000, Loose Flint 61 |
+| Peat Bog | Peat 2948–3938, Moss Block 621, vatten 1259, Pine Log 58 |
+| Slate Highlands | Slate 4642–8105, Gneiss 3901–10528, Heather 4–13 |
+| Soapstone Valley | Soapstone 12019 |
+| Limestone Karst | Limestone 13948, Travertine 219, Grass Block 1063 |
+| Marble Gorge | Marble 3014, Limestone 7303, Coarse Dirt 423 |
+| Ochre Badlands | Red Ochre Block 12012, Yellow Ochre Block 3147, Gypsum 3878, Mudstone 1130 |
+| Basalt Coast | Coastal Basalt 5476, Beach Pebbles 1157 |
+| Shingle Beach | Beach Pebbles 427–865 (smal strand), Gravel 1637–9390, Fieldstone 38 och flyttblock (Granite, Gneiss) i 96×96 |
+| Reed Delta | Mud 3274, Clay 266, Loess 2679, Mudstone 2090, Reed 45 (96×96) |
+| Glacial Moraine | Gravel 3961, Conglomerate 8923, Fieldstone 62, Spruce Log 162, Gneiss/Granite/Rapakivi (flyttblock) |
+| Gypsum Flats | Gypsum 8539, Rock Salt 284, Alabaster 494, Sand 1233 |
+
+**Inte gjort / begränsningar:** slukhålen i Limestone Karst är vanillas lake-feature med luft (gropar ca 4 djupa, inga
+schakt ned till grottorna). Peat Bog har Reed bara där vassen överlever (inte på torvkanter). Inga drivved, inga gamla
+huggspår i Soapstone Valley och inga övergivna stenbrott i Marble Gorge (strukturer). Inga nya djur (tranor, måsar,
+gamar finns redan som mobs och används). Alla nya biomer ärver sin malls biomtaggar, så vanilla-strukturer (byar,
+utposter, swamp huts) kan hamna i dem.

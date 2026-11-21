@@ -1,0 +1,14 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:beach_pebbles"
+  },
+  "result": {
+    "id": "mechanical:beach_pebble_slab",
+    "count": 6
+  }
+}

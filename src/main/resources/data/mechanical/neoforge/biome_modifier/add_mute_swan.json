@@ -2,7 +2,8 @@
   "type": "neoforge:add_spawns",
   "biomes": [
     "minecraft:river",
-    "mechanical:willow_fen"
+    "mechanical:willow_fen",
+    "mechanical:reed_delta"
   ],
   "spawners": [
     {

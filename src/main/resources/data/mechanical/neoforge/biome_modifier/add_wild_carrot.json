@@ -6,7 +6,8 @@
     "minecraft:meadow",
     "minecraft:flower_forest",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst"
   ],
   "features": "mechanical:wild_carrot",
   "step": "vegetal_decoration"

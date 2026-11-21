@@ -7,7 +7,9 @@
     "minecraft:stony_shore",
     "minecraft:windswept_hills",
     "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:slate_highlands",
+    "mechanical:basalt_coast"
   ],
   "features": "mechanical:flint_quarry",
   "step": "surface_structures"

@@ -28,6 +28,7 @@ public final class Structures {
         FEATURE_TYPES.register("glacial_erratic", Boulder.ERRATIC::codec);
         FEATURE_TYPES.register("mossy_boulder", Boulder.MOSSY::codec);
         FEATURE_TYPES.register("sandstone_boulder", Boulder.SANDSTONE::codec);
+        FEATURE_TYPES.register("glacial_boulder", Boulder.GLACIAL::codec); // scripts/gen_world_biomes.py
         FEATURE_TYPES.register("cairn", () -> Cairn.CODEC);
         FEATURE_TYPES.register("balanced_rock", () -> BalancedRock.CODEC);
         FEATURE_TYPES.register("rune_stone", () -> RuneStone.CODEC);

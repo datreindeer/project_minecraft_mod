@@ -1,0 +1,14 @@
+{
+  "category": "building",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:gravel",
+    "minecraft:gravel",
+    "mechanical:loose_stone",
+    "mechanical:loose_stone"
+  ],
+  "result": {
+    "id": "mechanical:beach_pebbles",
+    "count": 2
+  }
+}

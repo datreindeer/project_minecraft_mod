@@ -3,7 +3,7 @@
   "biomes": [
     "minecraft:plains",
     "minecraft:meadow",
-    "mechanical:chalk_downs"
+    "mechanical:limestone_karst"
   ],
   "features": "mechanical:ash_plains",
   "step": "vegetal_decoration"

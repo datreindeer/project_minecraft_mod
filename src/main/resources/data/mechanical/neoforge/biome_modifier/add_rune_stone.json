@@ -13,7 +13,9 @@
     "mechanical:deciduous_forest",
     "mechanical:hazel_meadow",
     "mechanical:pine_heath",
-    "mechanical:chalk_downs"
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:rune_stone",
   "step": "surface_structures"
