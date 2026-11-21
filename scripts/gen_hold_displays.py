@@ -22,7 +22,7 @@ RIGHT = {
     "paddle": ([49.9, 78.5, 45.0], [1.17, -4.1, -1.31], 1.2),       # arm -0.7 forward, -0.2 in; blade down at the side
 }
 ITEMS = {
-    "bucket": ["clay_bucket", "clay_water_bucket", "bronze_bucket", "bronze_water_bucket", "bronze_lava_bucket", "bronze_milk_bucket"],
+    "bucket": ["clay_bucket", "clay_water_bucket", "bronze_bucket", "bronze_water_bucket", "bronze_milk_bucket"],
     "log": [f"{w}_rough_log" for w in WOODS] + [f"{w}_firewood_{n}" for w in WOODS for n in (1, 2, 3)],
     "kettle": ["bronze_kettle"],
     "pan": ["pan", "pan_with_gravel", "pan_with_sand"],

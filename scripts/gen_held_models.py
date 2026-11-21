@@ -214,7 +214,6 @@ HELD = {
     "bronze_bucket": bucket(**BRONZE_BUCKET),
     "bronze_water_bucket": bucket(**BRONZE_BUCKET, fill=[5, 3, 11, 6]),
     "bronze_milk_bucket": bucket(**BRONZE_BUCKET, fill=[5, 3, 11, 6]),
-    "bronze_lava_bucket": bucket(**BRONZE_BUCKET, fill=[5, 3, 11, 6], light=15),
     "clay_bucket": bucket(**CLAY_BUCKET),
     "clay_water_bucket": bucket(**CLAY_BUCKET, fill=[5, 3, 11, 5]),
     "bronze_kettle": kettle(),

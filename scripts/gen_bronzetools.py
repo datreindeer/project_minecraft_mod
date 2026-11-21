@@ -5,7 +5,7 @@ the kiln, bronze poured in, the Rough Cast piece ground on the Whetstone, then a
 (ToolStationRecipes) except the Bronze Shears and Bronze Needles, which come off the Whetstone ready.
 - molds (bronze only): bucket, sickle blade, shears, fish hooks (gang: 4), needles (gang: 4), tongs, chisel blade: block
   models (as gen_copper.py's), blockstates, item models, loot (keeps uses), lang
-- items: rough casts, ground pieces, Bronze Bucket / Water / Lava / Milk Bucket, Bronze Sickle, Bronze Shears, Bronze Hook
+- items: rough casts, ground pieces, Bronze Bucket / Water / Milk Bucket, Bronze Sickle, Bronze Shears, Bronze Hook
   Fishing Rod (cast / uncast models as vanilla), Bronze Needle, Bronze Tongs, Bronze Chisel, Bronze Quarry Hammer (Tool
   Station: Bronze Hammer Head + Bronze Plate + Tool Rod)
 - quarry hammer tags: mechanical:quarry_hammer_mineable (natural stone of every kind + the ores), mechanical:quarry_ores
@@ -78,7 +78,7 @@ for s in SHAPES:
 
 GROUND = ["bucket_body", "sickle_blade", "fish_hook", "tong_arms", "chisel_blade"]
 FLAT = ([f"unfired_clay_{s}_mold" for s in SHAPES] + [f"rough_cast_bronze_{s}" for s in SHAPES] + [f"bronze_{g}" for g in GROUND]
-        + ["bronze_bucket", "bronze_water_bucket", "bronze_lava_bucket", "bronze_milk_bucket", "bronze_needle", "bronze_shears"])
+        + ["bronze_bucket", "bronze_water_bucket", "bronze_milk_bucket", "bronze_needle", "bronze_shears"])
 for name in FLAT:
     item_model(name)
     item_def(name)
@@ -192,15 +192,14 @@ lang.update({f"item.mechanical.rough_cast_bronze_{s}": f"Rough Cast Bronze {titl
 lang.update({f"item.mechanical.bronze_{g}": f"Bronze {title(g)}" for g in GROUND})
 lang.update({
     "item.mechanical.bronze_bucket": "Bronze Bucket", "item.mechanical.bronze_water_bucket": "Bronze Water Bucket",
-    "item.mechanical.bronze_lava_bucket": "Bronze Lava Bucket", "item.mechanical.bronze_milk_bucket": "Bronze Milk Bucket",
+    "item.mechanical.bronze_milk_bucket": "Bronze Milk Bucket",
     "item.mechanical.bronze_sickle": "Bronze Sickle", "item.mechanical.bronze_shears": "Bronze Shears",
     "item.mechanical.bronze_hook_fishing_rod": "Bronze Hook Fishing Rod", "item.mechanical.bronze_needle": "Bronze Needle",
     "item.mechanical.bronze_tongs": "Bronze Tongs", "item.mechanical.bronze_chisel": "Bronze Chisel",
     "item.mechanical.bronze_quarry_hammer": "Bronze Quarry Hammer",
     "message.mechanical.quarry_hammer.ore": "You need more precision to break ores: they crumble to stone",
     "message.mechanical.quarry_hammer.too_hard": "This ore is too hard for the hammer: the blow rings off",
-    "tooltip.mechanical.poor_bronze_bucket": "Poor Bronze: too brittle to carry lava",
-    "message.mechanical.bronze_bucket.poor_lava": "Poor Bronze is too brittle to carry lava",
+    "tooltip.mechanical.poor_bronze_bucket": "Poor Bronze: still holds water and milk",
     "message.mechanical.hot_metal.crucible": "The crucible burns your hand: hold Bronze Tongs",
     "message.mechanical.hot_metal.casting": "The casting is hot: take it out with Bronze Tongs",
     "death.attack.mechanical.hot_metal": "%1$s was burnt by molten metal",

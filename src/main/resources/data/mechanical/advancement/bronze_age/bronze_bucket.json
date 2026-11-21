@@ -26,16 +26,6 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bronze_lava_bucket"
-          }
-        ]
-      }
-    },
-    "has_3": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:bronze_milk_bucket"
           }
         ]
@@ -46,8 +36,7 @@
     [
       "has_0",
       "has_1",
-      "has_2",
-      "has_3"
+      "has_2"
     ]
   ],
   "display": {

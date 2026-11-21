@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -141,8 +140,6 @@ public final class BronzeTools {
             p -> new BronzeBucketItem(Fluids.EMPTY, p), p -> p.stacksTo(16));
     public static final DeferredItem<BronzeBucketItem> BRONZE_WATER_BUCKET = ITEMS.registerItem("bronze_water_bucket",
             p -> new BronzeBucketItem(Fluids.WATER, p), p -> p.stacksTo(1));
-    public static final DeferredItem<BronzeBucketItem> BRONZE_LAVA_BUCKET = ITEMS.registerItem("bronze_lava_bucket",
-            p -> new BronzeBucketItem(Fluids.LAVA, p), p -> p.stacksTo(1));
     // shortcut: drinking or baking with milk hands back a fresh Bronze Bucket, so a Poor Bronze one comes back sound; track it if that matters
     public static final DeferredItem<Item> BRONZE_MILK_BUCKET = ITEMS.registerSimpleItem("bronze_milk_bucket", p -> p.stacksTo(1)
             .craftRemainder(BRONZE_BUCKET.get()).component(DataComponents.CONSUMABLE, Consumables.MILK_BUCKET).usingConvertsTo(BRONZE_BUCKET.get()));
@@ -184,7 +181,7 @@ public final class BronzeTools {
     }
 
     public static boolean isBucket(ItemStack s) {
-        return s.is(BRONZE_BUCKET.get()) || s.is(BRONZE_WATER_BUCKET.get()) || s.is(BRONZE_LAVA_BUCKET.get()) || s.is(BRONZE_MILK_BUCKET.get())
+        return s.is(BRONZE_BUCKET.get()) || s.is(BRONZE_WATER_BUCKET.get()) || s.is(BRONZE_MILK_BUCKET.get())
                 || s.is(BRONZE_BUCKET_BODY.get()) || s.is(ROUGH_CAST_BRONZE_BUCKET.get());
     }
 
@@ -207,14 +204,23 @@ public final class BronzeTools {
     static void onCauldrons(RegisterCauldronInteractionEvent.Interaction event) {
         event.registerToAll(BRONZE_WATER_BUCKET.get(), (state, level, pos, player, hand, stack) -> cauldron(level, pos, player, hand, stack,
                 BRONZE_BUCKET.get(), Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY));
-        event.registerToAll(BRONZE_LAVA_BUCKET.get(), (state, level, pos, player, hand, stack) -> cauldron(level, pos, player, hand, stack,
-                BRONZE_BUCKET.get(), Blocks.LAVA_CAULDRON.defaultBlockState(), SoundEvents.BUCKET_EMPTY_LAVA));
         CauldronInteractions.WATER.put(BRONZE_BUCKET.get(), (state, level, pos, player, hand, stack) -> state.getValue(LayeredCauldronBlock.LEVEL) < 3
                 ? InteractionResult.TRY_WITH_EMPTY_HAND
                 : cauldron(level, pos, player, hand, stack, BRONZE_WATER_BUCKET.get(), Blocks.CAULDRON.defaultBlockState(), SoundEvents.BUCKET_FILL));
-        CauldronInteraction lava = (state, level, pos, player, hand, stack) -> Bronze.isPoor(stack) ? InteractionResult.TRY_WITH_EMPTY_HAND
-                : cauldron(level, pos, player, hand, stack, BRONZE_LAVA_BUCKET.get(), Blocks.CAULDRON.defaultBlockState(), SoundEvents.BUCKET_FILL_LAVA);
-        CauldronInteractions.LAVA.put(BRONZE_BUCKET.get(), lava);
+        // no bucket of ours carries lava: the iron (vanilla) bucket can't scoop it out of a cauldron either
+        CauldronInteractions.LAVA.put(net.minecraft.world.item.Items.BUCKET, (state, level, pos, player, hand, stack) -> InteractionResult.TRY_WITH_EMPTY_HAND);
+    }
+
+    /** The iron (vanilla) bucket won't scoop lava: aimed at lava, the click does nothing. */
+    @SubscribeEvent
+    static void onBucketUse(PlayerInteractEvent.RightClickItem event) {
+        if (!event.getItemStack().is(net.minecraft.world.item.Items.BUCKET)) return;
+        Player player = event.getEntity();
+        if (player.pick(player.blockInteractionRange(), 1.0F, true) instanceof BlockHitResult hit
+                && player.level().getFluidState(hit.getBlockPos()).is(net.minecraft.tags.FluidTags.LAVA)) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.FAIL);
+        }
     }
 
     /** Pours a bronze bucket into a cauldron or scoops one out: the bucket becomes {@code into}, the cauldron {@code cauldron}. */
@@ -448,16 +454,11 @@ public final class BronzeTools {
 
     private static void test(GameTestHelper h) {
         ServerLevel level = h.getLevel();
-        // bucket: place lava from the bronze lava bucket, scoop it back, likewise water; a poor bucket refuses lava
+        // bucket: lava stays put (no bucket of ours carries it), water scoops up
         BlockPos fluid = h.absolutePos(new BlockPos(1, 1, 1));
-        level.setBlockAndUpdate(fluid, Blocks.AIR.defaultBlockState());
-        h.assertTrue(BRONZE_LAVA_BUCKET.get().emptyContents(null, level, fluid, null), "the Bronze Lava Bucket pours lava");
-        h.assertTrue(level.getFluidState(fluid).is(net.minecraft.tags.FluidTags.LAVA), "lava placed");
-        ItemStack poor = new ItemStack(BRONZE_BUCKET.get());
-        Bronze.markPoor(poor);
-        h.assertTrue(BronzeBucketItem.scoop(level, fluid, null, poor).isEmpty(), "a Poor Bronze bucket can't scoop lava");
-        ItemStack lava = BronzeBucketItem.scoop(level, fluid, null, new ItemStack(BRONZE_BUCKET.get()));
-        h.assertTrue(lava.is(BRONZE_LAVA_BUCKET.get()) && level.getBlockState(fluid).isAir(), "the Bronze Bucket scoops lava up");
+        level.setBlockAndUpdate(fluid, Blocks.LAVA.defaultBlockState());
+        h.assertTrue(BronzeBucketItem.scoop(level, fluid, null, new ItemStack(BRONZE_BUCKET.get())).isEmpty()
+                && level.getFluidState(fluid).is(net.minecraft.tags.FluidTags.LAVA), "the Bronze Bucket leaves lava alone");
         level.setBlockAndUpdate(fluid, Blocks.WATER.defaultBlockState());
         h.assertTrue(BronzeBucketItem.scoop(level, fluid, null, new ItemStack(BRONZE_BUCKET.get())).is(BRONZE_WATER_BUCKET.get()), "and water");
         level.setBlockAndUpdate(fluid, Blocks.AIR.defaultBlockState());

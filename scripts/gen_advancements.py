@@ -1070,9 +1070,7 @@ TABS["bronze_age"][1].extend([
 TABS["bronze_age"][1].extend([
     ("bronze_bucket", "bronze", "bronze_bucket", T, "Bronze Bucket",
      "Cast a bucket in a Clay Bucket Mold, grind it and fit a Cordage bail at the Tool Station. It never cracks",
-     has("bronze_bucket", "bronze_water_bucket", "bronze_lava_bucket", "bronze_milk_bucket")),
-    ("bronze_lava", "bronze_bucket", "bronze_lava_bucket", G, "Hot Stuff",
-     "Scoop up lava with a Bronze Bucket (Poor Bronze is too brittle for it)", has("bronze_lava_bucket")),
+     has("bronze_bucket", "bronze_water_bucket", "bronze_milk_bucket")),
     ("bronze_sickle", "bronze", "bronze_sickle", T, "Reaper",
      "Assemble a Bronze Sickle: it cuts a 3x3 swath of ripe crops or grass in one stroke (sneak to cut one)", has("bronze_sickle")),
     ("bronze_shears", "bronze", "bronze_shears", T, "Shearer",

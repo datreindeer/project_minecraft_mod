@@ -2,7 +2,6 @@ package com.mechanical;
 
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -31,10 +30,10 @@ import net.minecraft.world.phys.HitResult;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The Bronze Bucket: carries water or lava like the vanilla bucket and never wears out (the Clay Bucket cracks). Pouring
+ * The Bronze Bucket: carries water (never lava) like the vanilla bucket and never wears out (the Clay Bucket cracks). Pouring
  * is vanilla's logic with the vanilla bucket it hands back swapped for the bronze one; scooping is done here so a stack of
  * empty buckets fills one at a time into the right bronze bucket. Every swap keeps the stack's components, so a Poor
- * Bronze bucket stays poor; a poor one is too brittle for lava. Milk: {@link BronzeTools#onEntityInteract}.
+ * Bronze bucket stays poor. Milk: {@link BronzeTools#onEntityInteract}.
  */
 public class BronzeBucketItem extends BucketItem {
     public BronzeBucketItem(Fluid content, Properties properties) {
@@ -42,18 +41,14 @@ public class BronzeBucketItem extends BucketItem {
     }
 
     /**
-     * Scoops the water or lava source at {@code pos} (also water out of a waterlogged block): the filled bronze bucket
+     * Scoops the water source at {@code pos} (also water out of a waterlogged block): the filled bronze bucket
      * (keeping {@code held}'s components), or empty if there is nothing to scoop.
      */
     static ItemStack scoop(Level level, BlockPos pos, @Nullable Player player, ItemStack held) {
         FluidState fluid = level.getFluidState(pos);
         if (!fluid.isSource()) return ItemStack.EMPTY;
-        Item filled = fluid.is(FluidTags.WATER) ? BronzeTools.BRONZE_WATER_BUCKET.get() : fluid.is(FluidTags.LAVA) ? BronzeTools.BRONZE_LAVA_BUCKET.get() : null;
-        if (filled == null) return ItemStack.EMPTY;
-        if (filled == BronzeTools.BRONZE_LAVA_BUCKET.get() && Bronze.isPoor(held)) {
-            if (player != null && !level.isClientSide()) player.sendOverlayMessage(Component.translatable("message.mechanical.bronze_bucket.poor_lava"));
-            return ItemStack.EMPTY;
-        }
+        if (!fluid.is(FluidTags.WATER)) return ItemStack.EMPTY;
+        Item filled = BronzeTools.BRONZE_WATER_BUCKET.get();
         BlockState state = level.getBlockState(pos);
         if (!(state.getBlock() instanceof BucketPickup pickup) || pickup.pickupBlock(player, level, pos, state).isEmpty()) return ItemStack.EMPTY;
         if (player != null) pickup.getPickupSound(state).ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));

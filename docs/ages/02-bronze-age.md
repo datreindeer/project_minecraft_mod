@@ -1087,17 +1087,16 @@ texturer: `scripts/gen_bronzetools_textures.py`.
 | Clay Tongs Mold | 6 | 4 | Rough Cast Bronze Tongs → **Bronze Tong Arms** | Arms + Twine + Leather (grepp mot värmen) → **Bronze Tongs** |
 | Clay Chisel Blade Mold | 4 | 2 | Rough Cast Bronze Chisel Blade → **Bronze Chisel Blade** | Blade + Twine + Stick → **Bronze Chisel** |
 
-- **Poor Bronze** följer med som vanligt: verktygen får 70 % hållbarhet. En Poor Bronze-hink (tooltip) är för spröd för
-  lava men bär vatten och mjölk.
+- **Poor Bronze** följer med som vanligt: verktygen får 70 % hållbarhet. En Poor Bronze-hink bär vatten och mjölk lika bra.
 - Hinkens bindning är Cordage, så Hide Glue duger i stället (som för andra verktyg med Cordage).
 
 ### Bronze Bucket
 
 - **Spricker aldrig** (Clay Bucket spricker efter 16 hällningar). Staplas till 16 tomma.
-- Öser upp **vatten och lava** (källblock, även vatten ur vattenfyllda block) och häller ut dem som vanilla-hinken:
-  **Bronze Water Bucket** och **Bronze Lava Bucket**. Lava går att hälla ut och ösa upp igen i världen.
+- Öser upp **vatten** (källblock, även ur vattenfyllda block) och häller ut det som vanilla-hinken: **Bronze Water
+  Bucket**. **Lava tar den inte** (brons håller inte för det), och inte järnhinken (vanilla-hinken) heller.
 - **Mjölkar** kor, mooshrooms och getter → **Bronze Milk Bucket** (drick: tar bort alla effekter, hinken blir kvar).
-- **Cauldrons:** häll i vatten eller lava, ös upp en full vattencauldron eller en lavacauldron.
+- **Cauldrons:** häll i vatten, ös upp en full vattencauldron (ingen hink öser ur en lavacauldron).
 - Bronze Water Bucket fungerar överallt där Clay Water Bucket gör: **kitteln** (Tripod), **Water Jug** (fyll och töm),
   **recept** (Dough, Raw Porridge, färgernas bindemedel, rötning av lin till Flax Fiber; hinken blir kvar i rutnätet)
   och **farmland** (blöter 3×3). Bronze Milk Bucket går i **Cake** i stället för Milk Bucket.
@@ -1159,12 +1158,12 @@ texturer: `scripts/gen_bronzetools_textures.py`.
 
 ### Advancements (Bronze Age-fliken, efter Bronze!)
 
-*Bronze Bucket*, *Hot Stuff* (ös lava med bronshinken), *Reaper* (Bronze Sickle), *Shearer* (Bronze Shears), *Bronze
+*Bronze Bucket*, *Reaper* (Bronze Sickle), *Shearer* (Bronze Shears), *Bronze
 Hook* (Bronze Hook Fishing Rod), *Fine Needlework* (Bronze Needle), *Tongs* (Bronze Tongs), *Stonemason* (Bronze Chisel).
 
 ### Test
 
-Gametest `mechanical:bronze_tools`: lava hälls ut och öses upp med bronshinken (en Poor Bronze-hink vägrar), vatten öses
+Gametest `mechanical:bronze_tools`: bronshinken lämnar lava orörd, vatten öses
 upp, Dough med Bronze Water Bucket lämnar hinken kvar, Bronze Sickle skär 3×3 mogen vete med ett drag (omogen utanför
 står kvar), degeln i handen bränner utan tång men inte med tång i andra handen, mejseln gör Stone Bricks till Chiseled
 Stone Bricks och slits 1, nålgjutningen ger 4 nålar.
