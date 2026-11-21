@@ -90,8 +90,9 @@ public final class CalendarTest {
         check(h, Temperature.shelter(level, head) == 1, "turf hut is full shelter, got " + Temperature.shelter(level, head));
         hut.accept(net.minecraft.world.level.block.Blocks.STONE);
         check(h, Math.abs(Temperature.shelter(level, head) - Temperature.STONE_WARMTH) < 1e-4, "stone hut");
-        h.setBlock(2, 2, 0, net.minecraft.world.level.block.Blocks.AIR); // a door gap lets warmth out
-        check(h, Temperature.shelter(level, head) < Temperature.STONE_WARMTH, "a gap in the wall");
+        // a glass pane in the wall lets warmth out (a glass block, not a gap: a ray through a gap would run into other tests' blocks)
+        h.setBlock(2, 2, 0, net.minecraft.world.level.block.Blocks.GLASS);
+        check(h, Temperature.shelter(level, head) < Temperature.STONE_WARMTH, "a glass window in the wall");
         for (int x = 0; x <= 4; x++) for (int z = 0; z <= 4; z++) h.setBlock(x, 4, z, net.minecraft.world.level.block.Blocks.AIR);
         check(h, Temperature.shelter(level, head) == 0, "no roof, no shelter");
         for (int x = 0; x <= 4; x++) for (int y = 1; y <= 4; y++) for (int z = 0; z <= 4; z++) h.setBlock(x, y, z, net.minecraft.world.level.block.Blocks.AIR);
