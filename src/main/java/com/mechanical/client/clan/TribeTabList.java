@@ -38,7 +38,8 @@ import net.neoforged.fml.util.ObfuscationReflectionHelper;
  * age and the date; then each tribe under a banner bar in its colour (name, members online of all, age), its online
  * members by rank (★ Leader, ✦ Elder, • Member, ◦ Newcomer) with face, name, age and ping; your tribe first, then the
  * bigger ones; players without a tribe last as the Wanderers. Long lists flow into balanced columns (a tribe split over
- * two columns repeats its bar) and the panel shrinks to fit the screen. Built from the server's
+ * two columns repeats its bar). It is only up while Tab is held, so it spans most of the screen (WIDTH_SHARE) with roomy
+ * rows (face, rank word, age icon and name, ping in ms), shrinking only if it would not fit. Built from the server's
  * {@link ClanNetwork.Roster} plus the client's player info (faces, names, ping). Wraps vanilla's layer
  * (MechanicalClient) and leaves the list to vanilla until a roster has come, or when the server shows a scoreboard
  * objective in the list (scores and hearts are vanilla's). Unlike vanilla it also shows in singleplayer alone.
@@ -49,7 +50,11 @@ public final class TribeTabList {
 
     private static final int PANEL = 0xE8302418, BORDER = 0xFF8A6A44, CORNER = 0xFFC49A62, SHINE = 0x30FFE0B0, POLE = 0xFF6B4A2A;
     private static final int TITLE = 0xFFF0D8A8, TEXT = 0xFFE8E0D0, DIM = 0xFF9A8A70, WANDER = 0xFFC4B8A4, BANNER_TEXT = 0xFFFFF4E0;
-    private static final int ROW = 10, HEAD = 12, GAP = 4, PAD = 6, COL_GAP = 8, TOP = 6, MAX_PLAYERS = 80;
+    private static final int ROW = 14, HEAD = 18, GAP = 6, PAD = 10, COL_GAP = 12, TOP = 8, FACE = 12, MAX_PLAYERS = 80;
+    /** The panel spans this share of the screen width (it is only up while Tab is held). */
+    private static final float WIDTH_SHARE = 0.88F;
+    /** The widest a lone column gets (few players): wider only spreads the row thin. */
+    private static final int SINGLE_COL = 420;
     private static final String[] RANK_GLYPHS = {"★", "✦", "•", "◦"};
     private static final int[] RANK_COLOURS = {0xFFFFD34A, 0xFFBFD4E8, 0xFFB0A088, 0xFF8FBF6A};
     private static final int[] AGE_COLOURS = {0xFF9A968C, 0xFFC8843E, 0xFFB4C0CA, 0xFF8A6E58, 0xFF6AAEE0};
@@ -121,14 +126,13 @@ public final class TribeTabList {
         int players = 0;
         for (Group gr : groups) players += gr.members.size();
 
-        // column width: the widest row or banner bar
-        int tagW = ICON, nameW = 0, barW = 0;
+        // the narrowest a column may be: the widest row or banner bar
+        int nameW = 0, barW = 0;
         for (Group gr : groups) {
-            barW = Math.max(barW, 14 + font.width(groupName(gr)) + 6 + font.width(count(gr)) + 4);
-            for (Entry e : gr.members) nameW = Math.max(nameW, font.width(e.name));
+            barW = Math.max(barW, 16 + font.width(groupName(gr)) + 10 + font.width(count(gr)) + 6 + rightW(font));
+            for (Entry e : gr.members) nameW = Math.max(nameW, font.width(e.name) + (e.rank >= 0 ? 6 + font.width(rankName(e.rank)) : 0));
         }
-        int right = 4 + tagW + 3 + 10 + 2;
-        int colW = Math.max((heads ? 14 : 4) + 9 + nameW + 6, barW) + right;
+        int minColW = Math.max((heads ? 5 + FACE + 4 : 6) + 11 + nameW + 10 + rightW(font), barW);
 
         // the chrome around the columns
         Component title = title(mc);
@@ -136,19 +140,22 @@ public final class TribeTabList {
         Component worldAge = ageLong(roster.worldAge());
         int worldTagW = ICON + 3 + font.width(worldAge);
         Component legend = legend(players);
-        List<FormattedCharSequence> header = lines(font, read(HEADER, tab), screenW - 50), footer = lines(font, read(FOOTER, tab), screenW - 50);
-        int chromeTop = PAD + 10 + 10 + 5 + (header.isEmpty() ? 0 : header.size() * 9 + 3);
-        int chromeBottom = 4 + (footer.isEmpty() ? 0 : footer.size() * 9 + 3) + 5 + 10 + PAD - 1;
+        int wide = (int) (screenW * WIDTH_SHARE);
+        List<FormattedCharSequence> header = lines(font, read(HEADER, tab), wide - 2 * PAD), footer = lines(font, read(FOOTER, tab), wide - 2 * PAD);
+        int chromeTop = PAD + 12 + 12 + 7 + (header.isEmpty() ? 0 : header.size() * 9 + 4);
+        int chromeBottom = 6 + (footer.isEmpty() ? 0 : footer.size() * 9 + 4) + 6 + 10 + PAD - 2;
         int maxH = Math.max(HEAD + 3 * ROW, screenH - 2 * TOP - chromeTop - chromeBottom);
 
         List<List<Line>> cols = columns(groups, maxH);
         int colsH = 0;
         for (List<Line> col : cols) colsH = Math.max(colsH, height(col));
-        int inner = cols.size() * colW + (cols.size() - 1) * COL_GAP;
-        inner = Math.max(inner, Math.max(font.width(title), worldTagW + 6 + font.width(date)));
+        int n = cols.size();
+        // fill the wide panel: columns share its width, but never narrower than their content
+        // several columns share the wide panel; a single column is up to SINGLE_COL wide and the panel fits round it
+        int inner = n == 1 ? Math.max(minColW, Math.min(wide - 2 * PAD, SINGLE_COL)) : Math.max(wide - 2 * PAD, n * minColW + (n - 1) * COL_GAP);
+        inner = Math.max(inner, Math.max(font.width(title), worldTagW + 8 + font.width(date)));
         inner = Math.max(inner, font.width(legend));
-        for (FormattedCharSequence l : header) inner = Math.max(inner, font.width(l));
-        for (FormattedCharSequence l : footer) inner = Math.max(inner, font.width(l));
+        int colW = (inner - (n - 1) * COL_GAP) / n;
         int panelW = inner + 2 * PAD, panelH = chromeTop + colsH + chromeBottom;
         float scale = Math.min(1F, Math.min((screenW - 8F) / panelW, (screenH - 2F * TOP) / panelH));
 
@@ -160,47 +167,54 @@ public final class TribeTabList {
         frame(g, left, 0, left + panelW, panelH);
 
         int y = PAD;
-        g.text(font, title, mid - font.width(title) / 2, y, TITLE, true);
-        y += 10;
-        int lineX = mid - (worldTagW + 6 + font.width(date)) / 2;
+        g.text(font, title, mid - font.width(title) / 2, y + 1, TITLE, true);
+        y += 12;
+        int lineX = mid - (worldTagW + 8 + font.width(date)) / 2;
         ageIcon(g, lineX, y, roster.worldAge());
         g.text(font, worldAge, lineX + ICON + 3, y + 1, AGE_COLOURS[Math.clamp(roster.worldAge(), 0, AGE_COLOURS.length - 1)], true);
-        g.text(font, date, lineX + worldTagW + 6, y + 1, DIM, false);
-        y += 10 + 2;
+        g.text(font, date, lineX + worldTagW + 8, y + 1, DIM, false);
+        y += 12 + 3;
         g.fill(x, y, x + inner, y + 1, BORDER);
-        y += 3;
+        y += 4;
         for (FormattedCharSequence l : header) {
             g.text(font, l, mid - font.width(l) / 2, y, -1, true);
             y += 9;
         }
-        if (!header.isEmpty()) y += 3;
+        if (!header.isEmpty()) y += 4;
 
-        int colX = mid - (cols.size() * colW + (cols.size() - 1) * COL_GAP) / 2;
+        int colX = mid - (n * colW + (n - 1) * COL_GAP) / 2;
         UUID me = mc.player.getUUID();
         for (List<Line> col : cols) {
             int ly = y;
             for (int i = 0; i < col.size(); i++) {
                 Line line = col.get(i);
                 if (line.entry == null && i > 0) ly += GAP;
-                if (line.entry == null) bar(g, font, line.group, colX, ly, colW, tagW);
-                else row(g, mc, font, line, colX, ly, colW, tagW, heads, line.entry.info.getProfile().id().equals(me));
+                if (line.entry == null) bar(g, font, line.group, colX, ly, colW);
+                else row(g, mc, font, line, colX, ly, colW, heads, line.entry.info.getProfile().id().equals(me));
                 ly += line.height();
             }
             colX += colW + COL_GAP;
         }
-        y += colsH + 4;
+        y += colsH + 6;
 
         if (!footer.isEmpty()) {
-            y += 3;
+            y += 4;
             for (FormattedCharSequence l : footer) {
                 g.text(font, l, mid - font.width(l) / 2, y, -1, true);
                 y += 9;
             }
         }
         g.fill(x, y, x + inner, y + 1, BORDER);
-        y += 4;
+        y += 5;
         g.text(font, legend, mid - font.width(legend) / 2, y, DIM, false);
         pose.popMatrix();
+    }
+
+    /** Width of a row's right side: age icon and name, ping in ms and the bars. */
+    private static int rightW(Font font) {
+        int ageW = 0;
+        for (int a = 0; a < Clans.AGES.length; a++) ageW = Math.max(ageW, font.width(ageShort(a)));
+        return ICON + 3 + ageW + 10 + font.width("9999ms") + 4 + 10 + 3;
     }
 
     /** Pack the lines into as few balanced columns as fit {@code maxH}; a tribe going on in the next column repeats its bar. */
@@ -259,24 +273,30 @@ public final class TribeTabList {
         for (int[] c : new int[][] {{x0 - 1, y0 - 1}, {x1 - 2, y0 - 1}, {x0 - 1, y1 - 2}, {x1 - 2, y1 - 2}}) g.fill(c[0], c[1], c[0] + 3, c[1] + 3, CORNER);
     }
 
-    /** A tribe's banner bar: a pennant in its colour on a pole, the name, members online of all, and its age. */
-    private static void bar(GuiGraphicsExtractor g, Font font, Group gr, int x, int y, int w, int tagW) {
-        int tagX = x + w - 2 - 10 - 3 - tagW;
+    /** A tribe's banner bar: a pennant in its colour on a pole, the name, members online of all, and its age (icon and name). */
+    private static void bar(GuiGraphicsExtractor g, Font font, Group gr, int x, int y, int w) {
+        int ty = y + (HEAD - 8) / 2;
         Component count = count(gr);
+        int ageRight = x + w - 6;
         if (gr.tribe == null) {
             g.fill(x, y, x + w, y + HEAD, 0xB0403830);
             g.fill(x, y + HEAD - 1, x + w, y + HEAD, 0x60000000);
-            g.text(font, groupName(gr), x + 5, y + 2, WANDER, true);
-        } else {
-            int dye = dye(gr.tribe.colour());
-            g.fill(x, y, x + w, y + HEAD, 0xD0000000 | mix(dye, 0x201810, 0.55F));
-            g.fill(x, y, x + w, y + 1, 0x70000000 | dye & 0xFFFFFF);
-            g.fill(x, y + HEAD - 1, x + w, y + HEAD, 0x60000000);
-            pennant(g, x + 2, y, dye);
-            g.text(font, groupName(gr), x + 14, y + 2, BANNER_TEXT, true);
-            ageIcon(g, tagX, y + 1, gr.tribe.age());
+            g.text(font, groupName(gr), x + 6, ty, WANDER, true);
+            g.text(font, count, ageRight - font.width(count), ty, 0xFFE0D0B8, true);
+            return;
         }
-        g.text(font, count, tagX - 4 - font.width(count), y + 2, 0xFFE0D0B8, true);
+        int dye = dye(gr.tribe.colour());
+        g.fill(x, y, x + w, y + HEAD, 0xD8000000 | mix(dye, 0x201810, 0.5F));
+        g.fill(x, y, x + w, y + 1, 0x90000000 | dye & 0xFFFFFF);
+        g.fill(x, y + HEAD - 1, x + w, y + HEAD, 0x60000000);
+        pennant(g, x + 3, y + (HEAD - 12) / 2, dye);
+        g.text(font, groupName(gr), x + 16, ty, BANNER_TEXT, true);
+        int age = gr.tribe.age();
+        Component ageName = ageShort(age);
+        int ageX = ageRight - font.width(ageName);
+        g.text(font, ageName, ageX, ty, AGE_COLOURS[Math.clamp(age, 0, AGE_COLOURS.length - 1)], true);
+        ageIcon(g, ageX - 3 - ICON, y + (HEAD - ICON) / 2, age);
+        g.text(font, count, ageX - 3 - ICON - 10 - font.width(count), ty, 0xFFE0D0B8, true);
     }
 
     /** A pennant on a pole, 9 by 12 from (x, y): used on the Tab list and the tribe page. */
@@ -288,26 +308,39 @@ public final class TribeTabList {
         g.fill(x + 1, y + 1, x + 9, y + 2, 0x40FFFFFF);
     }
 
-    private static void row(GuiGraphicsExtractor g, Minecraft mc, Font font, Line line, int x, int y, int w, int tagW, boolean heads, boolean mine) {
+    /** A member: tribe stripe, face, rank mark, name and rank word; on the right the age (icon, name), ping in ms and bars. */
+    private static void row(GuiGraphicsExtractor g, Minecraft mc, Font font, Line line, int x, int y, int w, boolean heads, boolean mine) {
         Entry e = line.entry;
         boolean wanderer = line.group.tribe == null;
+        int ty = y + (ROW - 8) / 2;
         g.fill(x, y, x + w, y + ROW, mine ? 0x34FFE8A0 : line.index % 2 == 0 ? 0x22FFFFFF : 0x0CFFFFFF);
-        g.fill(x + 2, y, x + 3, y + ROW, wanderer ? 0x60FFFFFF & DIM : 0xA0000000 | dye(line.group.tribe.colour()) & 0xFFFFFF);
-        int cx = x + 5;
+        g.fill(x + 2, y, x + 4, y + ROW, wanderer ? 0x60FFFFFF & DIM : 0xA0000000 | dye(line.group.tribe.colour()) & 0xFFFFFF);
+        int cx = x + 6;
         if (heads) {
             Player player = mc.level.getPlayerByUUID(e.info.getProfile().id());
             boolean flip = player != null && AvatarRenderer.isPlayerUpsideDown(player);
-            PlayerFaceExtractor.extractRenderState(g, e.info.getSkin().body().texturePath(), cx, y + 1, 8, e.info.showHat(), flip, -1);
-            cx += 10;
+            PlayerFaceExtractor.extractRenderState(g, e.info.getSkin().body().texturePath(), cx, y + (ROW - FACE) / 2, FACE, e.info.showHat(), flip, -1);
+            cx += FACE + 4;
         }
-        if (e.rank >= 0) g.text(font, RANK_GLYPHS[e.rank], cx + 4 - font.width(RANK_GLYPHS[e.rank]) / 2, y + 1, RANK_COLOURS[e.rank], true);
-        cx += 9;
+        if (e.rank >= 0) g.text(font, RANK_GLYPHS[e.rank], cx + 4 - font.width(RANK_GLYPHS[e.rank]) / 2, ty, RANK_COLOURS[e.rank], true);
+        cx += 11;
         boolean spectator = e.info.getGameMode() == GameType.SPECTATOR;
-        g.text(font, e.name, cx, y + 1, spectator ? 0x90FFFFFF : wanderer ? WANDER : TEXT, true);
-        int pingX = x + w - 2 - 10;
-        if (e.age >= 0) ageIcon(g, pingX - 3 - tagW, y, e.age);
+        g.text(font, e.name, cx, ty, spectator ? 0x90FFFFFF : wanderer ? WANDER : TEXT, true);
+        if (e.rank >= 0) g.text(font, rankName(e.rank), cx + font.width(e.name) + 6, ty, DIM, false);
+
+        int barsX = x + w - 3 - 10;
         int ms = e.info.getLatency();
-        g.blitSprite(RenderPipelines.GUI_TEXTURED, PING[ms < 0 ? 0 : ms < 150 ? 5 : ms < 300 ? 4 : ms < 600 ? 3 : ms < 1000 ? 2 : 1], pingX, y + 1, 10, 8);
+        g.blitSprite(RenderPipelines.GUI_TEXTURED, PING[ms < 0 ? 0 : ms < 150 ? 5 : ms < 300 ? 4 : ms < 600 ? 3 : ms < 1000 ? 2 : 1], barsX, y + (ROW - 8) / 2, 10, 8);
+        String msText = ms < 0 ? "?" : ms + "ms";
+        int msX = barsX - 4 - font.width(msText);
+        g.text(font, msText, msX, ty, ms < 0 ? DIM : ms < 150 ? 0xFF8FCB6A : ms < 300 ? 0xFFD6C25A : ms < 600 ? 0xFFD8924A : 0xFFD0604A, false);
+        if (e.age >= 0) {
+            int ageRight = barsX - 4 - font.width("9999ms") - 10;
+            Component ageName = ageShort(e.age);
+            int ageX = ageRight - font.width(ageName);
+            g.text(font, ageName, ageX, ty, AGE_COLOURS[Math.clamp(e.age, 0, AGE_COLOURS.length - 1)], false);
+            ageIcon(g, ageX - 3 - ICON, y + (ROW - ICON) / 2, e.age);
+        }
     }
 
     /** The age's 9x9 icon (gui/sprites/tab/age_<age>, scripts/gen_tab_age_textures.py): flint, bronze axe, iron axe, cog, bolt. */
@@ -324,6 +357,14 @@ public final class TribeTabList {
         return Component.literal(gr.tribe == null ? String.valueOf(gr.members.size()) : gr.members.size() + "/" + gr.tribe.members().size());
     }
 
+
+    private static Component ageShort(int age) {
+        return Component.translatable("gui.mechanical.tab.age." + Clans.AGES[Math.clamp(age, 0, Clans.AGES.length - 1)]);
+    }
+
+    private static Component rankName(int rank) {
+        return Component.translatable("gui.mechanical.clan.rank." + Clans.RANKS[rank]);
+    }
 
     private static Component ageLong(int age) {
         return Component.translatable("gui.mechanical.clan.age." + Clans.AGES[Math.clamp(age, 0, Clans.AGES.length - 1)]);
