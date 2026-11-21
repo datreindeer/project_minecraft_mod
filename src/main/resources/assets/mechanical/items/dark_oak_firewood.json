@@ -1,27 +1,63 @@
 {
   "model": {
-    "type": "minecraft:range_dispatch",
-    "property": "minecraft:count",
-    "normalize": false,
-    "entries": [
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
       {
-        "threshold": 2,
+        "when": [
+          "gui"
+        ],
         "model": {
-          "type": "minecraft:model",
-          "model": "mechanical:item/dark_oak_firewood_2"
-        }
-      },
-      {
-        "threshold": 16,
-        "model": {
-          "type": "minecraft:model",
-          "model": "mechanical:item/dark_oak_firewood_3"
+          "type": "minecraft:range_dispatch",
+          "property": "minecraft:count",
+          "normalize": false,
+          "entries": [
+            {
+              "threshold": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/dark_oak_firewood_2"
+              }
+            },
+            {
+              "threshold": 16,
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/dark_oak_firewood_3"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/dark_oak_firewood_1"
+          }
         }
       }
     ],
     "fallback": {
-      "type": "minecraft:model",
-      "model": "mechanical:item/dark_oak_firewood_1"
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:count",
+      "normalize": false,
+      "entries": [
+        {
+          "threshold": 2,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/dark_oak_firewood_2_held"
+          }
+        },
+        {
+          "threshold": 16,
+          "model": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/dark_oak_firewood_3_held"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "mechanical:item/dark_oak_firewood_1_held"
+      }
     }
   }
 }
