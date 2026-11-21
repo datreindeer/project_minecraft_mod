@@ -1033,16 +1033,25 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "Stack wood piles, cover them with earth on every side and on top, leave one side open and light it with the Fire Drill. "
      "After 5 minutes every piece of firewood is a Charcoal (a rough log two)", by_code()),
     ("cementation", "forged", "cemented_pot", G, "Cementation",
-     "Shape a Cementation Pot from Fire Clay and fire it, pack it with 2 Wrought Iron, 2 Charcoal and Soot, and hold it at 1000° "
-     "in the Bloomery or Clay Kiln for 3 minutes. Break it open: 2 Blister Steel", has("cemented_pot", "blister_steel")),
+     "Shape a Cementation Pot from Fire Clay and fire it, pack it with 3 Wrought Iron, 2 Charcoal and Soot, and hold it at 1000° "
+     "in the Bloomery or Clay Kiln for 3 minutes. Break it open: 3 Blister Steel", has("cemented_pot", "blister_steel")),
     ("steel", "cementation", "steel_ingot", C, "Steel",
-     "Heat Blister Steel to forging heat and fold it with 6 blows on the anvil into a Steel Ingot: the end of the Iron Age",
+     "Heat Blister Steel to forging heat and fold it with 6 blows of an Iron Smithing Hammer into a Steel Ingot: the end of the Iron Age",
      has("steel_ingot")),
     ("steel_tools", "steel", "steel_pickaxe", G, "Steelsmith",
      "Forge a steel head from hot Steel Ingots and fit it on a Tool Rod, wedged with an Iron Tool Rod. Steel mines obsidian",
      has("steel_pickaxe", "steel_axe", "steel_shovel", "steel_hoe", "steel_sword", "steel_spear", "steel_knife")),
     ("flint_and_steel", "steel", "minecraft:flint_and_steel", T, "Strike a Light",
      "Flint + Steel Plate: a Flint and Steel lights a fire every time", has("minecraft:flint_and_steel")),
+    ("iron_bellows", "forged", "iron_bellows", T, "Iron Lungs",
+     "Plate a Bellows with 2 Iron Plates and an Iron Tool Rod: it pumps twice as hard and the heat holds for 30 s after each pump",
+     has("iron_bellows")),
+    ("smithing_hearth", "forged", "smithing_hearth", G, "Smithing Hearth",
+     "Build a Smithing Hearth (7 Fire Brick, an Iron Plate), stock it with Charcoal and light it: iron and steel in its coals heat up "
+     "and stay hot as long as it burns", by_code()),
+    ("steel_quarry_hammer", "steel", "steel_quarry_hammer", T, "Mountain Breaker",
+     "Forge a Steel Hammer Head and assemble a Steel Quarry Hammer (Steel Plate, Iron Tool Rod): every ore a steel pickaxe mines crumbles in its 3x3 face",
+     has("steel_quarry_hammer")),
     ("steel_armor", "steel", "steel_chestplate", G, "Steel Clad",
      "Rivet Steel Plates onto leather at the Armor Station: steel armour, between iron and diamond",
      has("steel_helmet", "steel_chestplate", "steel_leggings", "steel_boots")),

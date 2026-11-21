@@ -130,20 +130,24 @@ public final class IronAgeTest {
         ItemStack cold = HotMetalItem.cooled(half);
         h.assertTrue(cold.is(Ironworking.WROUGHT_IRON_INGOT.get()) && Ironworking.hits(cold) == 3, "cooled, it keeps 3 blows");
         h.assertTrue(Ironworking.hits(Ironworking.heated(cold, Smithing.HOT_WROUGHT_IRON_INGOT.get(), level.getGameTime())) == 3, "and reheated too");
-        // steel: blister folds into a Steel Ingot; a hot Steel Ingot has no Tool Rod pattern but a pickaxe head
+        // steel: too hard for the bronze hammer; with the iron one blister folds into a Steel Ingot; a hot Steel Ingot has no
+        // Tool Rod pattern but a pickaxe head
+        ItemStack steelHammer = new ItemStack(Smithing.IRON_SMITHING_HAMMER.get());
         anvil.place(level, Ironworking.heated(new ItemStack(Smithing.BLISTER_STEEL.get()), Smithing.HOT_BLISTER_STEEL.get(), level.getGameTime()));
-        for (int i = 0; i < Smithing.BLISTER_HITS; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(Ironworking.hits(anvil.item()) == 0, "the bronze hammer can't work steel");
+        for (int i = 0; i < Smithing.BLISTER_HITS; i++) anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
         h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_INGOT.get()) == 1, "Blister Steel folds into a Steel Ingot");
         anvil.setPattern(Smithing.Pattern.TOOL_ROD);
         anvil.place(level, Ironworking.heated(new ItemStack(Smithing.STEEL_INGOT.get()), Smithing.HOT_STEEL_INGOT.get(), level.getGameTime()));
-        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
         h.assertTrue(Ironworking.hits(anvil.item()) == 0, "no steel tool rod");
         anvil.setPattern(Smithing.Pattern.PICKAXE_HEAD);
-        anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
         h.assertTrue(Ironworking.hits(anvil.item()) == 0, "a pickaxe head takes 3 ingots: one alone takes no blows");
         h.assertTrue(anvil.addIngot(level, null) && anvil.addIngot(level, null) && !anvil.addIngot(level, null), "two more stack on, then it is full");
         h.assertTrue(anvil.pile() == 3, "3 ingots lie on the anvil");
-        for (int i = 0; i < Smithing.Pattern.PICKAXE_HEAD.hits; i++) anvil.strike(level, smith, hammer, InteractionHand.MAIN_HAND);
+        for (int i = 0; i < Smithing.Pattern.PICKAXE_HEAD.hits; i++) anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
         h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_PICKAXE_HEAD.get()) == 1 && anvil.item().isEmpty(), "3 ingots: a Steel Pickaxe Head");
         // an ingot the part doesn't need stays on the anvil
         anvil.setPattern(Smithing.Pattern.PLATE);
@@ -207,11 +211,11 @@ public final class IronAgeTest {
 
         // ---- cementation: pot fired, packed, held at 1000° in the bloomery, opened to Blister Steel
         h.assertTrue(KilnBlockEntity.canBake(new ItemStack(Smithing.UNFIRED_CEMENTATION_POT.get())), "the kiln fires the pot");
-        var packIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 2, List.of(new ItemStack(Smithing.CEMENTATION_POT.get()),
-                new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()),
-                new ItemStack(Items.CHARCOAL), new ItemStack(Items.CHARCOAL), new ItemStack(Mechanical.SOOT_ITEM.get())));
+        var packIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, List.of(new ItemStack(Smithing.CEMENTATION_POT.get()),
+                new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()), new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()),
+                new ItemStack(Items.CHARCOAL), new ItemStack(Items.CHARCOAL), new ItemStack(Mechanical.SOOT_ITEM.get()), ItemStack.EMPTY, ItemStack.EMPTY));
         h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, packIn, level)
-                .map(r -> r.value().assemble(packIn).is(Smithing.PACKED_CEMENTATION_POT.get())).orElse(false), "pot + 2 Wrought Iron + 2 Charcoal + Soot: packed");
+                .map(r -> r.value().assemble(packIn).is(Smithing.PACKED_CEMENTATION_POT.get())).orElse(false), "pot + 3 Wrought Iron + 2 Charcoal + Soot: packed");
         bloomery.setItem(BloomeryBlockEntity.INPUT, new ItemStack(Smithing.PACKED_CEMENTATION_POT.get()));
         bloomery.setItem(BloomeryBlockEntity.FUEL, new ItemStack(Items.CHARCOAL, 16));
         bloomery.tryLight(level);
@@ -224,7 +228,7 @@ public final class IronAgeTest {
         var openIn = net.minecraft.world.item.crafting.CraftingInput.of(1, 1, List.of(cemented));
         h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, openIn, level)
                 .map(r -> { ItemStack o = r.value().assemble(openIn); return o.is(Smithing.BLISTER_STEEL.get()) && o.getCount() == Smithing.BLISTER_PER_POT; }).orElse(false),
-                "opened: 2 Blister Steel");
+                "opened: 3 Blister Steel");
         var flintIn = net.minecraft.world.item.crafting.CraftingInput.of(2, 1, List.of(new ItemStack(Items.FLINT), new ItemStack(Smithing.STEEL_PLATE.get())));
         h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, flintIn, level)
                 .map(r -> r.value().assemble(flintIn).is(Items.FLINT_AND_STEEL)).orElse(false), "Flint + Steel Plate: Flint and Steel");
@@ -234,6 +238,34 @@ public final class IronAgeTest {
         var barsIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 2, List.of(rod, rod.copy(), rod.copy(), rod.copy(), rod.copy(), rod.copy()));
         h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, barsIn, level)
                 .map(r -> r.value().assemble(barsIn).is(Items.IRON_BARS)).orElse(false), "6 Iron Tool Rods: Iron Bars");
+
+        // ---- Iron Bellows: twice the pump, and the heat holds after it (the wooden one's sinks back)
+        bloomery.setItem(BloomeryBlockEntity.FUEL, new ItemStack(Items.CHARCOAL, 8));
+        bloomery.tryLight(level);
+        bloomery.forceTemperature(1000);
+        bloomery.pump(true);
+        h.assertTrue(Math.abs(bloomery.temperature() - (1000 + KilnBlockEntity.PUMP * KilnBlockEntity.IRON_PUMP_FACTOR)) < 1, "an iron pump: +80°");
+        for (int i = 0; i < 200; i++) BloomeryBlockEntity.serverTick(level, bloomery);
+        h.assertTrue(bloomery.temperature() > 1079, "held for 10 s: " + bloomery.temperature());
+        bloomery.forceTemperature(1000);
+        bloomery.pump(false);
+        h.assertTrue(Math.abs(bloomery.temperature() - (1000 + KilnBlockEntity.PUMP)) < 1, "a wooden pump: +40°");
+
+        // ---- Smithing Hearth: stocked and lit, it heats an ingot and keeps it hot
+        BlockPos hearthAt = new BlockPos(6, 1, 1);
+        h.setBlock(hearthAt, Smithing.SMITHING_HEARTH.get());
+        SmithingHearthBlockEntity forge = (SmithingHearthBlockEntity) level.getBlockEntity(h.absolutePos(hearthAt));
+        h.assertFalse(forge.light(level), "no charcoal: it won't light");
+        h.assertTrue(forge.addFuel() && forge.light(level) && forge.lit(), "with charcoal it lights");
+        h.assertTrue(forge.put(new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get())), "an ingot in the coals");
+        for (int i = 0; i < SmithingHearthBlockEntity.HEAT_TICKS / 20; i++) forge.second(level);
+        h.assertTrue(forge.item(0).is(Smithing.HOT_WROUGHT_IRON_INGOT.get()), "10 s in the coals: forging heat, got " + forge.item(0));
+        forge.item(0).set(Casting.COOLS_AT.get(), level.getGameTime() - 1); // its time is up...
+        forge.second(level);
+        h.assertTrue(Ironworking.isHot(forge.item(0), level.getGameTime()), "...but in the burning hearth it stays hot");
+        h.assertTrue(forge.take().is(Smithing.HOT_WROUGHT_IRON_INGOT.get()), "an empty hand takes it out hot");
+        h.assertTrue(BronzeTools.isQuarryHammer(new ItemStack(Smithing.STEEL_QUARRY_HAMMER.get())), "the steel quarry hammer is a quarry hammer");
+        h.assertTrue(new ItemStack(Smithing.STEEL_PICKAXE.get()).getMaxDamage() == 2200, "steel tools: 2200");
         h.succeed();
     }
 

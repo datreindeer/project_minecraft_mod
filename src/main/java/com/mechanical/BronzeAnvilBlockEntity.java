@@ -204,6 +204,11 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
             player.sendOverlayMessage(Component.translatable("message.mechanical.forge.cold", BloomeryBlockEntity.FORGE_TEMP));
             return;
         }
+        if (Smithing.needsIronHammer(item) && !hammer.is(Smithing.IRON_SMITHING_HAMMER.get())) {
+            level.playSound(null, worldPosition, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 0.4F, 1.6F);
+            player.sendOverlayMessage(Component.translatable("message.mechanical.forge.steel_hammer"));
+            return;
+        }
         boolean blister = item.is(Smithing.HOT_BLISTER_STEEL.get());
         ItemStack result = blister ? new ItemStack(Smithing.STEEL_INGOT.get()) : pattern.result(item);
         if (result.isEmpty()) {

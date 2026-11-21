@@ -83,6 +83,8 @@
     "mechanical:polished_limestone",
     "mechanical:polished_limestone_slab",
     "mechanical:polished_limestone_stairs",
-    "mechanical:polished_limestone_wall"
+    "mechanical:polished_limestone_wall",
+    "mechanical:iron_bellows",
+    "mechanical:smithing_hearth"
   ]
 }

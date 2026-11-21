@@ -246,10 +246,10 @@ item("cemented_pot", recolor(mouth_black(pot), hue=0.07, sat=0.25, light=0.55), 
 w(D / "mechanical/recipe/unfired_cementation_pot.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["F F", "FFF"],
                                                           "key": {"F": M + "fire_clay"}, "result": {"id": M + "unfired_cementation_pot", "count": 1}})
 w(D / "mechanical/recipe/packed_cementation_pot.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
-    "ingredients": [M + "cementation_pot", M + "wrought_iron_ingot", M + "wrought_iron_ingot", "minecraft:charcoal", "minecraft:charcoal", M + "soot"],
+    "ingredients": [M + "cementation_pot", M + "wrought_iron_ingot", M + "wrought_iron_ingot", M + "wrought_iron_ingot", "minecraft:charcoal", "minecraft:charcoal", M + "soot"],
     "result": {"id": M + "packed_cementation_pot", "count": 1}})
 w(D / "mechanical/recipe/blister_steel_from_cemented_pot.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
-    "ingredients": [M + "cemented_pot"], "result": {"id": M + "blister_steel", "count": 2}})
+    "ingredients": [M + "cemented_pot"], "result": {"id": M + "blister_steel", "count": 3}})
 # vanilla's Flint and Steel wants an Iron Ingot (none in the mod): a struck Steel Plate instead
 w(D / "minecraft/recipe/flint_and_steel.json", {"type": "minecraft:crafting_shapeless", "category": "equipment",
     "ingredients": ["minecraft:flint", M + "steel_plate"], "result": {"id": "minecraft:flint_and_steel", "count": 1}})
@@ -279,6 +279,72 @@ for name, (pattern, key, count) in shaped.items():
     category = json.loads(JAR.read(f"data/minecraft/recipe/{name}.json")).get("category", "misc")
     w(D / f"minecraft/recipe/{name}.json", {"type": "minecraft:crafting_shaped", "category": category,
         "pattern": pattern, "key": key, "result": {"id": "minecraft:" + name, "count": count}})
+
+# ---------------------------------------------------------------- Iron Bellows, Smithing Hearth, steel quarry hammer
+# Iron Bellows: the wooden Bellows' models with the boards plated in iron (oak planks gone iron-grey)
+plate = A / "textures/block/iron_bellows_plate.png"
+metal(vanilla_texture("block/oak_planks"), (0.6, 0.06, 0.85)).save(plate)
+for name in ("bellows", "bellows_pressed"):
+    model = json.loads((A / f"models/block/{name}.json").read_text(encoding="utf-8"))
+    model["textures"] |= {"particle": M + "block/iron_bellows_plate", "planks": M + "block/iron_bellows_plate", "log": "minecraft:block/iron_block"}
+    w(A / f"models/block/iron_{name}.json", model)
+w(A / "blockstates/iron_bellows.json", json.loads((A / "blockstates/bellows.json").read_text(encoding="utf-8").replace("block/bellows", "block/iron_bellows")))
+w(A / "items/iron_bellows.json", {"model": {"type": "minecraft:model", "model": M + "block/iron_bellows"}})
+lang["block.mechanical.iron_bellows"] = "Iron Bellows"
+w(D / "mechanical/recipe/iron_bellows.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [M + "bellows", M + "iron_plate", M + "iron_plate", M + "iron_tool_rod"], "result": {"id": M + "iron_bellows", "count": 1}})
+
+# Smithing Hearth: fire-brick sides, a bed of coals on top (dark when out, glowing when lit)
+def coals(lit):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 255))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            n = (x * 37 + y * 61 + x * y * 7) % 23
+            if x in (0, 15) or y in (0, 15):
+                px[x, y] = (96, 52, 36, 255)  # the brick rim
+            elif lit:
+                px[x, y] = (255, 170, 60, 255) if n < 3 else (232, 96, 30, 255) if n < 9 else (120, 36, 18, 255) if n < 16 else (40, 22, 18, 255)
+            else:
+                px[x, y] = (70, 66, 62, 255) if n < 4 else (36, 34, 32, 255) if n < 12 else (22, 21, 20, 255)
+    return img
+
+
+for lit in (False, True):
+    sfx = "_lit" if lit else ""
+    coals(lit).save(A / f"textures/block/smithing_hearth_top{sfx}.png")
+    w(A / f"models/block/smithing_hearth{sfx}.json", {"parent": "minecraft:block/cube_bottom_top", "textures": {
+        "side": M + "block/bloomery_bricks", "bottom": M + "block/bloomery_bricks", "top": M + f"block/smithing_hearth_top{sfx}"}})
+w(A / "blockstates/smithing_hearth.json", {"variants": {"lit=false": {"model": M + "block/smithing_hearth"},
+                                                         "lit=true": {"model": M + "block/smithing_hearth_lit"}}})
+w(A / "items/smithing_hearth.json", {"model": {"type": "minecraft:model", "model": M + "block/smithing_hearth"}})
+w(D / "mechanical/recipe/smithing_hearth.json", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["B B", "BPB", "BBB"],
+                                                  "key": {"B": M + "fire_brick", "P": M + "iron_plate"}, "result": {"id": M + "smithing_hearth", "count": 1}})
+for block in ("iron_bellows", "smithing_hearth"):
+    w(D / f"mechanical/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
+        "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": M + block}]}],
+        "random_sequence": f"mechanical:blocks/{block}"})
+    tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + block)
+lang["block.mechanical.smithing_hearth"] = "Smithing Hearth"
+
+item("steel_hammer_head", metal(bronze("hammer_head"), STEEL), "Steel Hammer Head")
+# the bronze quarry hammer's head is as dark as its haft: pick the head by place (upper right, the haft runs down to the left)
+quarry_mask = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+for y in range(16):
+    for x in range(16):
+        if y <= 7 or (y == 8 and x >= 9) or (y == 9 and x >= 11) or (y == 10 and x >= 12):
+            quarry_mask.putpixel((x, y), (255, 255, 255, 255))
+handheld("steel_quarry_hammer", metal(mod_texture("item/bronze_quarry_hammer"), (0.6, 0.2, 2.0), mask=quarry_mask), "Steel Quarry Hammer")
+tag_add(T / "enchantable/durability.json", M + "steel_quarry_hammer")
+tag_add(T / "enchantable/mining.json", M + "steel_quarry_hammer")
+lang |= {
+    "message.mechanical.forge.steel_hammer": "Steel is too hard for bronze: work it with an Iron Smithing Hammer",
+    "message.mechanical.hearth.fuel": "Charcoal in the hearth: %s/%s",
+    "message.mechanical.hearth.full": "The hearth holds %s Charcoal",
+    "message.mechanical.hearth.no_fuel": "No Charcoal in the hearth: right-click it with Charcoal first",
+    "message.mechanical.hearth.no_room": "The hearth's coals are full: four pieces at most",
+    "message.mechanical.hearth.state": "Smithing Hearth: %s/%s Charcoal. Lay blooms or ingots of iron or steel in it",
+}
 
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

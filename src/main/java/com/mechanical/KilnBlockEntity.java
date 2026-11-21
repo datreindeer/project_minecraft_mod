@@ -56,6 +56,10 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
     public static final int MELT_TICKS = 300, REMELT_TICKS = 200;
     /** Baking speeds up with heat: one extra speed per this many degrees over what the recipe needs, up to {@link #MAX_SPEED}. */
     public static final float DEGREES_PER_SPEED = 200, MAX_SPEED = 4;
+    /** An Iron Bellows pumps {@link #PUMP} times this, and holds the heat over the natural max this long after a pump. */
+    public static final int IRON_PUMP_FACTOR = 2, IRON_HOLD_TICKS = 600;
+    /** Game time until which an Iron Bellows holds the heat. */
+    private long heldUntil;
 
     /** {@code count} input items are used up per result; bakes only at {@code temp}° or hotter. */
     public record Recipe(Predicate<ItemStack> input, int count, Supplier<Item> result, int ticks, int temp) {}
@@ -268,7 +272,13 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
      * {@link #CEILING} strains the clay, and full strain cracks it. False if the fire is out (nothing happens).
      */
     public boolean pump(ServerLevel level) {
+        return pump(level, false);
+    }
+
+    /** One pump of a bellows; an Iron Bellows ({@code iron}) pumps twice as hard and holds the heat. */
+    public boolean pump(ServerLevel level, boolean iron) {
         if (!isLit()) return false;
+        if (iron) heldUntil = level.getGameTime() + IRON_HOLD_TICKS;
         float t = temperature();
         if (t + PUMP / 2.0F >= CEILING) {
             strain = Math.min(STRAIN_MAX, strain + STRAIN_PER_PUMP);
@@ -280,7 +290,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             }
         }
         float max = Math.min(bellowsTemp, isCracked() ? CRACKED_MAX : CEILING);
-        if (t < max) temp = Math.min(max, t + PUMP);
+        if (t < max) temp = Math.min(max, t + PUMP * (iron ? IRON_PUMP_FACTOR : 1));
         updateBlock();
         setChanged();
         return true;
@@ -341,7 +351,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
 
     /** One tick of heating or cooling. */
     private void heat(Level level) {
-        temp = Math.min(heatStep(temperature(), isLit(), maxTemp, ambient, level.isRainingAt(worldPosition.above(2))), isCracked() ? CRACKED_MAX : CEILING);
+        temp = Math.min(heatStep(temperature(), isLit(), maxTemp, ambient, level.isRainingAt(worldPosition.above(2)), level.getGameTime() < heldUntil), isCracked() ? CRACKED_MAX : CEILING);
     }
 
     /**
@@ -349,11 +359,16 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
      * {@link #OVER_FALL_PER_SEC} down from above it); out, {@link #COOL_PER_SEC} toward the air (x2 in rain, x1.5 when cold).
      */
     static float heatStep(float t, boolean lit, int maxTemp, float ambient, boolean rain) {
+        return heatStep(t, lit, maxTemp, ambient, rain, false);
+    }
+
+    /** As above; {@code held} (an Iron Bellows pumped lately, {@link #IRON_HOLD_TICKS}): heat over the natural max doesn't sink. */
+    static float heatStep(float t, boolean lit, int maxTemp, float ambient, boolean rain, boolean held) {
         float sec = 1 / 20.0F;
         if (lit) {
             float natural = Math.max(ambient, maxTemp);
             if (t < natural) return Math.min(natural, t + RISE_PER_SEC * sec);
-            return t > natural ? Math.max(natural, t - OVER_FALL_PER_SEC * sec) : t;
+            return t > natural && !held ? Math.max(natural, t - OVER_FALL_PER_SEC * sec) : t;
         }
         if (t > ambient) {
             float rate = COOL_PER_SEC;

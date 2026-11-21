@@ -64,6 +64,7 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
     private int progress, total, burn, burnTotal, needTemp;
     /** Charges of flux laid in the hearth: each makes the next bloom one ingot richer. */
     private int flux;
+    private long heldUntil;
     private float partial, temp = Float.NaN, ambient = 20;
     /** Why it isn't a bloomery (null when whole); refreshed every second. */
     private Component problem;
@@ -167,9 +168,15 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
 
     /** One pump of the bellows into the hearth: +{@link KilnBlockEntity#PUMP}° up to {@link #CEILING}. False if the fire is out. */
     public boolean pump() {
+        return pump(false);
+    }
+
+    /** One pump; an Iron Bellows ({@code iron}) pumps twice as hard and holds the heat ({@link KilnBlockEntity#IRON_HOLD_TICKS}). */
+    public boolean pump(boolean iron) {
         if (!isLit()) return false;
+        if (iron && level != null) heldUntil = level.getGameTime() + KilnBlockEntity.IRON_HOLD_TICKS;
         float t = temperature();
-        if (t < CEILING) temp = Math.min(CEILING, t + KilnBlockEntity.PUMP);
+        if (t < CEILING) temp = Math.min(CEILING, t + KilnBlockEntity.PUMP * (iron ? KilnBlockEntity.IRON_PUMP_FACTOR : 1));
         setChanged();
         return true;
     }
@@ -215,7 +222,8 @@ public class BloomeryBlockEntity extends BaseContainerBlockEntity {
             if (b.burn > 0) b.burn = Math.max(0, b.burn - Temperature.fireDrain(level, pos, level.getRandom()));
         }
         // natural max from Charcoal; over it (after pumping) it sinks back, out it cools to the air
-        b.temp = Math.min(KilnBlockEntity.heatStep(b.temperature(), lit, NATURAL_MAX, b.ambient, level.isRainingAt(pos.above(3))), CEILING);
+        b.temp = Math.min(KilnBlockEntity.heatStep(b.temperature(), lit, NATURAL_MAX, b.ambient, level.isRainingAt(pos.above(3)),
+                level.getGameTime() < b.heldUntil), CEILING);
         b.setLit(level, lit);
 
         // the bloom waiting in the output stays hot while the bloomery has forging heat

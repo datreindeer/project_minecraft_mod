@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "mechanical:block/bloomery_bricks",
+    "bottom": "mechanical:block/bloomery_bricks",
+    "top": "mechanical:block/smithing_hearth_top_lit"
+  }
+}

@@ -35,8 +35,16 @@ public class BellowsBlock extends Block {
     public static final int PUMP_TICKS = 10;
     private static final VoxelShape SHAPE = box(1, 0, 1, 15, 9, 15);
 
+    /** An Iron Bellows (Smithing): pumps twice as hard and holds the heat after a pump. */
+    private final boolean iron;
+
     public BellowsBlock(Properties properties) {
+        this(properties, false);
+    }
+
+    public BellowsBlock(Properties properties, boolean iron) {
         super(properties);
+        this.iron = iron;
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PRESSED, false));
     }
 
@@ -68,7 +76,7 @@ public class BellowsBlock extends Block {
         server.sendParticles(ParticleTypes.POOF, nx, pos.getY() + 0.25, nz, 2, 0.02, 0.02, 0.02, 0.02);
         BlockPos target = pos.relative(facing);
         if (level.getBlockEntity(target) instanceof BloomeryBlockEntity bloomery) {
-            if (!bloomery.pump()) player.sendOverlayMessage(Component.translatable("message.mechanical.bloomery.unlit"));
+            if (!bloomery.pump(iron)) player.sendOverlayMessage(Component.translatable("message.mechanical.bloomery.unlit"));
             else { // the charge roars at the top of the shaft
                 BlockPos top = target.above(3);
                 server.sendParticles(ParticleTypes.FLAME, top.getX() + 0.5, top.getY() + 0.05, top.getZ() + 0.5, 8, 0.12, 0.1, 0.12, 0.04);
@@ -81,7 +89,7 @@ public class BellowsBlock extends Block {
             FurnaceTapBlockEntity furnace = FurnaceTapBlockEntity.find(server, target);
             if (furnace == null) player.sendOverlayMessage(Component.translatable("message.mechanical.bellows.no_kiln"));
             else if (furnace.problem() != null) player.sendOverlayMessage(furnace.problem());
-            else if (!furnace.pump()) player.sendOverlayMessage(Component.translatable("message.mechanical.furnace.unlit"));
+            else if (!furnace.pump(iron)) player.sendOverlayMessage(Component.translatable("message.mechanical.furnace.unlit"));
             else { // the fire roars up the shaft
                 BlockPos top = furnace.shaft().above(3);
                 server.sendParticles(ParticleTypes.FLAME, top.getX() + 0.5, top.getY() + 0.1, top.getZ() + 0.5, 8, 0.15, 0.1, 0.15, 0.04);
@@ -90,7 +98,7 @@ public class BellowsBlock extends Block {
             }
             return InteractionResult.SUCCESS;
         }
-        if (!kiln.pump(server)) {
+        if (!kiln.pump(server, iron)) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.bellows.unlit"));
             return InteractionResult.SUCCESS;
         }
