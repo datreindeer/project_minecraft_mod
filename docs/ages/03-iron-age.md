@@ -1,7 +1,7 @@
 # Järnåldern
 
 > Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**, **stål**,
-> **de nya malmerna** Galena, guld, Limestone och Rock Salt. Resten är förslag.
+> **de nya malmerna** Galena, guld, Limestone och Rock Salt, **vagnen** (Wagon). Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
 **Bronze Smithing Hammer**, **Wrought Iron Ingot**, Bronze Pickaxe (bryter Iron, Coal och Lapis Ore) och Charcoal.
@@ -362,3 +362,62 @@ Tegel som spruckit av frost (Cracked Bricks av alla bergarter, se bronsålderns 
 högerklicka det spruckna blocket, så blir det helt igen och ett murbruk går åt (inget i creative). Gäller också vanillas
 Cracked Stone Bricks, Cracked Deepslate Bricks/Tiles och de andra spruckna vanilla-blocken. Advancement *Repointed* (efter
 *Lime Mortar*).
+
+## Vagnen (Wagon) (byggd)
+
+Järnålderns transport: kärrans storebror, logistik på väg. Fyra hjul med järnringar, en lång plankbädd och en dragstång
+för **ett par tama hästar**. Bronsålderns Wheeled Cart finns kvar oförändrad. Kod: `WagonEntity` (bygger på
+`TravoisEntity`), `Carting` (registrering), klient: `client/WagonModel`, `client/WagonRenderer`. Data:
+`scripts/gen_wagon.py` (efter gen_iron_age.py, före gen_block_items.py), texturer: `scripts/gen_wagon_textures.py`. Test: `WagonTest`.
+Plan: [wagon-plan.md](../wagon-plan.md).
+
+### Items och recept
+
+| Sak | Recept | Låses upp av |
+|---|---|---|
+| **Iron-Rimmed Wheel** | formlöst: Wooden Wheel + 2 Iron Plate (ringen krymps på het runt fälgen) | Iron Plate |
+| **Wagon** | `[Iron-Rimmed Wheel][Iron Tool Rod][Iron-Rimmed Wheel]` / `[Planks][Iron Plate][Planks]` / `[Iron-Rimmed Wheel][Planks][Iron-Rimmed Wheel]` | Iron-Rimmed Wheel |
+
+### Spannet
+
+- **Spelare kan inte dra vagnen.** Den dras av tama, vuxna hästar (inte föl).
+- **Spänn för:** rid en tam häst och led en annan i koppel (inom 10 block), och högerklicka vagnen med tom hand: båda
+  hamnar i oket. Eller spänn för en häst (rid eller led den) och högerklicka igen med en andra. Högerklicka igen för att
+  spänna från ("Unhitched").
+- **Andra hästen** hålls vid sidan om den första (paret 1,45 block isär, mitten 2,8 block framför vagnen) och följer med i
+  svängar. Hålls den kvar mer än **4 block** från den första släpper den ur oket ("The second horse was held back and came
+  out of the yoke") och vagnen går över till enhästläge.
+- **En häst:** med tom vagn kryper den fram (vagnen sluter 30 % av avståndet, hästen går 75 % långsammare). Lastad (kroppar
+  eller något i kistorna) rör den sig inte alls.
+- **Ett par:** drar vagnen i full fart, upp till **15 %** långsammare när den är full (efter hur full den är).
+- Framaxeln svänger mot dragstången och hjulen rullar med farten. Fastnar vagnen lossnar spannet ("The wagon is stuck. The
+  team came loose"), som på kärran. Vagnen fastnar i tät skog: det är meningen.
+- Spannet sparas inte när världen laddas om (som kärrans sele): spänn för igen.
+
+### Flaket: fyra platser
+
+Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har en modul:
+
+| Plats | Vad den gör |
+|---|---|
+| tom | **3 rum** kroppar. Helt tomt flak = **12 rum**: 4 stora, 6 mellanstora eller 12 lätta (kärran 6). Jättar går aldrig. |
+| **Chest** | **27 platser**. Smyg + högerklicka den platsen för att öppna just den kistan. Fyra kistor = 108 platser. |
+| **Hay Bale** | **9 tuggor**. En skadad häst i spannet äter en tugga var 5:e sekund och läker 2 hälsa. Uppäten försvinner balen. |
+| **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider eller leder en tam häst som kan spännas för). Kommer tillbaka som en Oak Slab. |
+
+- **Sätt i en modul:** högerklicka en plats med blocket (Chest, Hay Bale eller trä-slab). Platsen måste vara ledig ("That
+  place on the bed is taken"), och lasten måste få plats på de tomma platser som blir kvar ("Unload a carcass first").
+- **Ta ur en modul:** slå på den. Kistan och allt innehåll faller ut; en påbörjad Hay Bale ger tillbaka sin återstående
+  Wheat (en orörd ger en Hay Bale).
+- **Plocka upp vagnen:** slå på vagnen där det inte sitter någon modul. Allt faller ut: kroppar, moduler och kistornas innehåll.
+- **Last:** som på kärran: högerklicka vagnen med kroppen du bär eller släpar. **Ta av** den sista kroppen: smyg +
+  högerklicka en tom plats.
+- Säte för spelare än så länge; stamfolk åker inte med.
+
+### Advancements (Iron Age-fliken, efter *Forged*)
+
+- **Iron Shod**: gör en Iron-Rimmed Wheel.
+- **Wagoner** (mål): bygg en Wagon.
+- **A Pair in the Yoke**: spänn för två hästar.
+- **Heavy Haul** (mål): 12 rum kroppar på en vagn med alla fyra platser tomma.
+- **Freight**: en Chest på alla fyra platserna.

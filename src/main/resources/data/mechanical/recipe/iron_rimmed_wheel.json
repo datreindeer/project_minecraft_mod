@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:wooden_wheel",
+    "mechanical:iron_plate",
+    "mechanical:iron_plate"
+  ],
+  "result": {
+    "id": "mechanical:iron_rimmed_wheel"
+  }
+}

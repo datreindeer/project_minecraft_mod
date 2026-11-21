@@ -1446,6 +1446,22 @@ TABS["iron_age"][1].extend([
      "Right-click cracked bricks with Lime Mortar: the cracks are filled and the bricks are whole again", by_code()),
 ])
 
+# the Wagon (WagonEntity.java, gen_wagon.py; docs/wagon-plan.md)
+TABS["iron_age"][1].extend([
+    ("iron_rimmed_wheel", "forged", "iron_rimmed_wheel", T, "Iron Shod",
+     "Craft a Wooden Wheel with 2 Iron Plates: an Iron-Rimmed Wheel", has("iron_rimmed_wheel")),
+    ("wagon", "iron_rimmed_wheel", "wagon", G, "Wagoner",
+     "Build a Wagon: 4 Iron-Rimmed Wheels, 3 Planks, an Iron Plate and an Iron Tool Rod for the pole", has("wagon")),
+    ("wagon_team", "wagon", "minecraft:lead", T, "A Pair in the Yoke",
+     "Ride one tamed horse and lead another, then right-click the Wagon with an empty hand: both go in the yoke. One horse alone barely moves it",
+     by_code()),
+    ("full_wagon", "wagon_team", "raw_haunch", G, "Heavy Haul",
+     "Load 12 room of carcasses on a Wagon with all four places empty: four large bodies, six medium or twelve light", by_code()),
+    ("wagon_chests", "wagon", "minecraft:chest", T, "Freight",
+     "Right-click each of a Wagon's four places with a Chest: 108 slots on wheels. Hay Bales feed the team, wooden slabs make seats",
+     by_code()),
+])
+
 # ---------------------------------------------------------------- Hunting tab: built from the butchering yields in the Java
 # code (Butchery's table and every Butchery.register(...) call), so new animals show up by themselves. One advancement per
 # animal that needs every product its carcass gives (meat, hide/pelt/feathers, special parts), grouped under a few nodes.

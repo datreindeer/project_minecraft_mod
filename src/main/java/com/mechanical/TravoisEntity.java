@@ -1,6 +1,5 @@
 package com.mechanical;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
@@ -93,6 +92,16 @@ public class TravoisEntity extends Entity {
         return CAPACITY;
     }
 
+    /** Where the tow line pulls from: the puller (the Wagon: between its pair of horses). */
+    protected Vec3 pullPoint(LivingEntity puller) {
+        return puller.position();
+    }
+
+    /** Share of the gap it closes each tick: 1 follows rigidly, less crawls behind, 0 holds fast (the Wagon on one horse). */
+    protected double pullFactor() {
+        return 1.0;
+    }
+
     /** How far behind {@code puller} it follows. */
     protected double lead(LivingEntity puller) {
         return LEAD;
@@ -173,12 +182,12 @@ public class TravoisEntity extends Entity {
         double glide = onGround() ? GROUND_GLIDE : AIR_GLIDE;
         double vx = v.x * glide, vy = Math.max(-MAX_FALL, v.y - GRAVITY), vz = v.z * glide;
         if (p != null) {
-            Vec3 off = position().subtract(p.position()).multiply(1, 0, 1);
+            Vec3 off = position().subtract(pullPoint(p)).multiply(1, 0, 1);
             double d = off.length(), lead = lead(p);
             if (d > lead) {
                 // a rigid tow line: this tick it closes the gap the puller opened
-                vx = off.x * (lead - d) / d;
-                vz = off.z * (lead - d) / d;
+                vx = off.x * (lead - d) / d * pullFactor();
+                vz = off.z * (lead - d) / d * pullFactor();
             }
             if (d > 0.3) setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z))); // the poles point at the one pulling
         }
@@ -187,7 +196,7 @@ public class TravoisEntity extends Entity {
         Vec3 moved = position().subtract(from);
         setDeltaMovement(moved.x, verticalCollision ? 0 : vy, moved.z);
         if (p != null) {
-            double d = position().subtract(p.position()).horizontalDistance();
+            double d = position().subtract(pullPoint(p)).horizontalDistance();
             stuckTicks = d > lead(p) + 0.3 ? stuckTicks + 1 : 0;
             if (!(p instanceof Player) && p.isLocalInstanceAuthoritative()) tether(p, this); // a horse; players: CarcassHauling.onPlayerTick
             if (!level().isClientSide()) {
@@ -287,7 +296,7 @@ public class TravoisEntity extends Entity {
 
     /** Sneak + right-click with an empty hand: unloads the last body. */
     protected InteractionResult sneakUse(Player player) {
-        if (getPassengers().isEmpty()) return InteractionResult.PASS;
+        if (load() == 0) return InteractionResult.PASS;
         if (!level().isClientSide()) unloadLast();
         return InteractionResult.SUCCESS;
     }
@@ -309,13 +318,19 @@ public class TravoisEntity extends Entity {
             carcass.setHauler(null);
             carcass.startRiding(this, true, true);
             playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1.0F, 0.6F);
-            if (this instanceof CartEntity && getPassengers().size() >= 2 && player instanceof ServerPlayer sp) Kettle.award(sp, CartEntity.LOADED_ADVANCEMENT);
+            if (player instanceof ServerPlayer sp) onLoaded(sp);
         }
     }
 
-    private void unloadLast() {
-        List<Entity> on = getPassengers();
-        Entity last = on.get(on.size() - 1);
+    /** Server: a body was just loaded by {@code player} (advancements). */
+    protected void onLoaded(ServerPlayer player) {
+    }
+
+    /** Server: unloads the last loaded body (seated players stay). */
+    protected void unloadLast() {
+        Entity last = null;
+        for (Entity e : getPassengers()) if (e instanceof CarcassEntity) last = e;
+        if (last == null) return;
         last.stopRiding();
         // beside the travois, or where it lay if there is no room
         Vec3 side = Vec3.directionFromRotation(0, getYRot() + 90).scale(1.3);

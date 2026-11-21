@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WRW",
+    "PIP",
+    "WPW"
+  ],
+  "key": {
+    "W": "mechanical:iron_rimmed_wheel",
+    "R": "mechanical:iron_tool_rod",
+    "P": "#minecraft:planks",
+    "I": "mechanical:iron_plate"
+  },
+  "result": {
+    "id": "mechanical:wagon"
+  }
+}
