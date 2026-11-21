@@ -24,7 +24,8 @@ import net.minecraft.world.item.ItemStack;
  * Tribespeople use the player model and 64x64 player-format skins: wide arms for men, slim for women.
  * Vanilla draws every AvatarRenderState with the player renderer picked by state.skin, so this renderer only
  * fills the state; the skin (texture + arm width) goes into state.skin. The skin is the person's climate outfit, dyed in
- * their tribe's colour (TintedSkin).
+ * their tribe's colour (TintedSkin). The Miner walks hunched (the sneaking pose) under his ore sack (MinerSackModel, drawn
+ * by EquipmentLayer).
  */
 public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRenderState, PlayerModel> {
     private static final Map<Identifier, PlayerSkin> SKINS = new HashMap<>();
@@ -48,6 +49,10 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
         boolean slim = entity.isWoman();
         state.skin = SKINS.computeIfAbsent(TintedSkin.of(entity.texture(), entity.colour()), t -> PlayerSkin.insecure(
                 new ClientAsset.ResourceTexture(t, t), null, null, slim ? PlayerModelType.SLIM : PlayerModelType.WIDE));
+        if (entity.role() == com.mechanical.people.TribeRole.MINER && entity.getPose() == net.minecraft.world.entity.Pose.STANDING) {
+            state.isCrouching = true; // hunched under his sack (the sneaking pose)
+            com.mechanical.client.EquipmentClient.wearMinerSack(state);
+        }
     }
 
     private static HumanoidModel.ArmPose armPose(Tribesperson mob, HumanoidArm arm) {

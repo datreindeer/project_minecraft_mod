@@ -5,7 +5,9 @@ cold: fur hoods, long hide coats with fur trim, fur trousers and mittens; temper
 warm: light linen wraps and kilts, head cloths, sandals; jungle: loincloths and grass skirts, feather headdresses, paint.
 Temperate skins go in tribesperson/, the others in tribesperson/<climate>/. Next to every skin a "_tint" mask marks the
 dyed parts (headbands, sashes, coat bands, loincloths) in grey; client/people/TintedSkin multiplies them by the tribe's
-colour. Trader Caravans (trader, guard) get one temperate set: fine gem-set robes and clean linen under armour.
+colour. Trader Caravans (trader, guard) get one temperate set: fine gem-set robes and clean linen under armour. The Miner
+(people/Miners.java) too, men only (miner_0, miner_2): soot-smudged face, worn leather, a leather apron, the tribe's colour
+on the headband.
 Run: python scripts/gen_tribe_skins.py [preview_dir]"""
 import random
 import sys
@@ -896,6 +898,28 @@ def caravan_person(role, i):
     return L
 
 
+MINER_SKINS = [0, 2]
+
+
+def miner_person(i):
+    """The Miner: a sooty, bearded man in worn smoked hide and a leather apron, the tribe's colour on his headband."""
+    r = random.Random(f"miner-{i}")
+    L = Look(r, False, "miner")
+    L.skin = SKIN[["light", "olive", "tan", "brown"][i]]
+    L.eyes = EYES[pick(r, ["brown", "dark", "grey", "blue"])]
+    L.hair = HAIR[pick(r, ["darkbrown", "black", "grey", "auburn"])]
+    L.hair_style = pick(r, ["shaggy", "short"])
+    L.beard = pick(r, ["full", "long"])
+    L.paint = (CHARCOAL, "dots")  # soot
+    L.top, L.top_kind, L.sleeves = HIDE_GREY, "tunic", 4
+    L.apron = LEATHER
+    L.belt, L.pouch = LEATHER, LEATHER
+    L.legs, L.boots, L.bracers = HIDE_DARK, LEATHER, LEATHER
+    L.headband = DYE
+    L.skin = shade(L.skin, 0.92)  # grimy
+    return L
+
+
 def flat_view(img, slim, back=False):
     """Front (or back) of the body laid out flat, 16x32, for previews."""
     out = Image.new("RGBA", (16, 32), (0, 0, 0, 0))
@@ -947,6 +971,14 @@ def build():
             img.save(OUT / f"{role}_{i}.png")
             sk.mask.save(OUT / f"{role}_{i}_tint.png")
             made[("caravan", role, i)] = (img, sk.mask, L.woman)
+    for i in MINER_SKINS:
+        L = miner_person(i)
+        sk = Skin(f"miner{i}", L.woman)
+        img = sk.build(L)
+        assert sk.mask.getbbox() is not None, f"miner_{i}: nothing in the tribe's colour"
+        img.save(OUT / f"miner_{i}.png")
+        sk.mask.save(OUT / f"miner_{i}_tint.png")
+        made[("miner", "miner", i)] = (img, sk.mask, L.woman)
     return made
 
 
@@ -989,6 +1021,14 @@ def preview(made, out_dir):
                 v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
                 sheet.alpha_composite(v, (((i * 2 + k) * 18 + 1) * scale, (row * 34 + 1) * scale))
     sheet.save(out_dir / "tribe_sheet_caravan.png")
+    sheet = Image.new("RGBA", (len(MINER_SKINS) * 2 * 18 * scale, 34 * scale), (70, 90, 70, 255))
+    for n, i in enumerate(MINER_SKINS):
+        img, mask, slim = made[("miner", "miner", i)]
+        img = dyed(img, mask, PREVIEW_DYES[n])
+        for k, back in enumerate((False, True)):
+            v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
+            sheet.alpha_composite(v, (((n * 2 + k) * 18 + 1) * scale, scale))
+    sheet.save(out_dir / "tribe_sheet_miner.png")
 
 
 if __name__ == "__main__":

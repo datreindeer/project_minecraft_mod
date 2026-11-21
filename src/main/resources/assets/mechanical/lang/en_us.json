@@ -2970,5 +2970,14 @@
   "advancements.mechanical.gemstones.diamond_dust.title": "Diamond Cuts Diamond",
   "advancements.mechanical.gemstones.diamond_dust.description": "Crush a Rough Diamond into Diamond Dust: nothing else is hard enough to cut a diamond",
   "advancements.mechanical.gemstones.all_gems.title": "Treasure Hoard",
-  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone"
+  "advancements.mechanical.gemstones.all_gems.description": "Cut every kind of gemstone",
+  "entity.mechanical.miner": "Miner",
+  "entity.mechanical.tribesperson.role.miner": "Miner",
+  "item.mechanical.miner_spawn_egg": "Miner Spawn Egg",
+  "filled_map.mechanical.ore_vein": "Ore Vein Map",
+  "chat.mechanical.tribesperson.greet.miner.0": "Mind your head. And your light.",
+  "chat.mechanical.tribesperson.greet.miner.1": "Ore for torches, stranger? The dark eats torches.",
+  "chat.mechanical.tribesperson.greet.miner.2": "Down here, listen more than you look.",
+  "advancements.mechanical.wilderness.miner_trade.title": "Deep Trade",
+  "advancements.mechanical.wilderness.miner_trade.description": "Trade with a Miner, a rare wanderer of the caves below Y 30, hunched under his ore sack. He sells the ores missing nearby"
 }

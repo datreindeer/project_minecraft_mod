@@ -1921,6 +1921,35 @@ från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan**
 - **Avancemang** (Wilderness & Hunting): *The Caravan Has Come* (prata med en karavans handlare) och *Treasures for Coin*
   (sälj en ädelsten till karavanen).
 
+### Gruvarbetaren (Miner)
+En sällsynt ensam vandrare i grottorna **under y 30** (`people/Miners.java`, worldgen `worldgen/MinerCamp.java`, data
+`scripts/gen_people.py`, skins `scripts/gen_tribe_skins.py`, säcken `client/MinerSackModel.java` och
+`scripts/gen_equipment_textures.py`). Steg 2 i [underground-plan.md](../underground-plan.md).
+- **Utseende:** går **framåtlutad** (smygposen) under en stor **säck full av malm** på ryggen, med remmar över axlarna och
+  malmklumpar i öppningen. Sotigt ansikte, skägg, slitet rökt läder och läderförkläde, pannband i stammens färg. Bara män
+  (skins `miner_0`, `miner_2`). Håller en **pickaxe** (Flint, Bronze Pickaxe från bronsåldern) och en **fackla** i andra
+  handen som **lyser upp omgivningen** (DynamicLights).
+- **Var:** worldgen-feature `miner_camp` i alla överjordiska biom (1 av 40 chunks prövas, letar ett grottgolv ±16 block från
+  en slumpad höjd mellan y −54 och 24, utan himmel, med plats runt om; ger ofta upp, så de är sällsynta). **3 av 4** gånger
+  vid ett litet **läger**: tänd Campfire (hans hem), en **Straw Bed** och en **kista** (`chests/miner_camp`: facklor, kol,
+  Raw Copper, Cassiterite, Malachite, Raw Iron, mat, Cordage, Flint, ibland Flint Pickaxe eller Raw Gold). Annars vandrar han ensam.
+  Han håller elden tänd och stannar nära den. Miner Spawn Egg finns.
+- **Handel** (högerklicka, som hos en Elder; erbjudandena görs första gången någon handlar, från världen som den är då):
+  han är en Tribesperson av en egen handelsstam (*Traders*, som karavaner: handlar med främlingar, rykte och priser som hos
+  andra stammar). **Stenåldern: byteshandel. Från bronsåldern (stammens ålder, `WorldAge.npcAge`): mynt.**
+  - **Säljer malm som saknas i trakten** (han letar 16 block åt sidorna och 8 upp och ner): 6 Coal (2 Cordage / 3 koppar),
+    **3 Cassiterite** (2 Leather / 8 koppar; tenn till brons), 3 Raw Copper (2 Leather / 6 koppar), från bronsåldern 2 Raw
+    Iron (3 silver). Malm upp till en ålder över stammens.
+  - Alltid: 8 Torch (1 Raw Hide / 2 koppar), 4 Cooked Venison Scraps (8 Plant Fibre / 4 koppar).
+  - **Ibland (1 av 3) en Ore Vein Map:** en karta med rött kryss över närmaste koppar-, tenn- eller järnådra 24–64 block bort
+    (i laddade chunks), för 4 Leather / 1 silver, en gång.
+  - **Köper** (för facklor i stenåldern, kopparmynt senare): 4 Raw Copper (4 facklor / 3 koppar), 3 Raw Iron (6 / 4),
+    2 Raw Gold (8 / 6), 4 Malachite (3 / 3), 3 Cassiterite (4 / 4), 8 Coal (4 / 2), 32 Cobblestone (2 / 1), 32 Cobbled
+    Deepslate (3 / 2), 8 Limestone (3 / 2) och 16 av en sten (Granite, Diorite, Andesite eller Tuff; 2 / 1).
+- **Flyr från monster** (en pickaxe är inget vapen, se FleeThreatGoal): mot elden om det leder bort, annars bara bort. Trängd
+  slår han tillbaka en stund.
+- **Avancemang** (Wilderness, efter *The Cold Deep*): *Deep Trade*, handla med en gruvarbetare.
+
 ### Strukturernas loot (vanilla)
 Alla vanilla-kistor och liknande (Mineshaft, Ruined Portal, Shipwreck, Buried Treasure, Desert/Jungle Temple, Dungeon,
 Stronghold, Outpost, Mansion, Igloo, Ancient City, Trial Chambers, Nether- och End-strukturer), arkeologi, krukor,

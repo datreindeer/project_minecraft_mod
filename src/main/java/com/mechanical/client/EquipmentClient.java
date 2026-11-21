@@ -60,6 +60,7 @@ public final class EquipmentClient {
     private static final ContextKey<Boolean> SATCHEL = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_satchel"));
     private static final ContextKey<Boolean> POUCH = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pouch"));
     private static final ContextKey<Integer> QUIVER =new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver"));
+    private static final ContextKey<Boolean> MINER_SACK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "miner_sack"));
     private static final ContextKey<Boolean> ARMORED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "chest_armored"));
 
     // ---------------------------------------------------------------- B
@@ -77,6 +78,7 @@ public final class EquipmentClient {
             event.registerLayerDefinition(WornSatchelModel.LAYER, WornSatchelModel::createLayer);
             event.registerLayerDefinition(WornQuiverModel.LAYER, WornQuiverModel::createLayer);
             event.registerLayerDefinition(WornPouchModel.LAYER, WornPouchModel::createLayer);
+            event.registerLayerDefinition(MinerSackModel.LAYER, MinerSackModel::createLayer);
         }
 
         @SubscribeEvent
@@ -159,6 +161,15 @@ public final class EquipmentClient {
     static int quiverArrows(AvatarRenderState state) {
         Integer n = state.getRenderData(QUIVER);
         return n == null ? -1 : n;
+    }
+
+    /** The Miner's big ore sack on his back (people.TribespersonRenderer sets it). */
+    public static void wearMinerSack(AvatarRenderState state) {
+        state.setRenderData(MINER_SACK, true);
+    }
+
+    static boolean minerSack(AvatarRenderState state) {
+        return state.getRenderData(MINER_SACK) != null;
     }
 
     static boolean chestArmored(AvatarRenderState state) {

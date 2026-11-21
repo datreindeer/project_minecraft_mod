@@ -16,6 +16,7 @@ public final class PeopleClient {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(People.TRIBESPERSON.get(), TribespersonRenderer::new);
+        event.registerEntityRenderer(People.MINER.get(), TribespersonRenderer::new);
     }
 
     /** An envoy speaks: show the talk screen (payload handlers run on the main thread). */

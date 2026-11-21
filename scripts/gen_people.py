@@ -1,5 +1,5 @@
-"""Data for the Stone Age people (com.mechanical.people): camp and hunting band worldgen placement, the spawn egg
-(model + texture) and lang. Skins: scripts/gen_tribe_skins.py. Run: python scripts/gen_people.py"""
+"""Data for the Stone Age people (com.mechanical.people): camp and hunting band worldgen placement, the Miner's cave camp
+(placement + chest loot), the spawn eggs (model + texture) and lang. Skins: scripts/gen_tribe_skins.py. Run: python scripts/gen_people.py"""
 import json
 import sys
 from pathlib import Path
@@ -39,6 +39,33 @@ for name, (biomes, rarity) in FEATURES.items():
     w(D / f"neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
         "features": f"mechanical:{name}", "step": "surface_structures"})
 
+# the Miner (people/Miners.java, worldgen/MinerCamp.java): rare, on a cave floor below y 30; the feature looks 16 up and
+# down from a random height and bails out often, so the real rate is well under 1 in 40 chunks
+w(D / "worldgen/feature/miner_camp.json", {"type": "mechanical:miner_camp"})
+w(D / "worldgen/placed_feature/miner_camp.json", {"feature": "mechanical:miner_camp", "placement": [
+    {"type": "minecraft:rarity_filter", "chance": 40}, {"type": "minecraft:in_square"},
+    {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": -54},
+                                                  "max_inclusive": {"absolute": 24}}},
+    {"type": "minecraft:biome"}]})
+w(D / "neoforge/biome_modifier/add_miner_camp.json", {"type": "neoforge:add_features", "biomes": "#minecraft:is_overworld",
+    "features": "mechanical:miner_camp", "step": "underground_decoration"})
+
+
+def entry(item, weight, lo, hi):
+    e = {"type": "minecraft:item", "name": item, "weight": weight}
+    if hi > 1:
+        e["modifier"] = [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]
+    return e
+
+
+# the camp chest: his stores and spare finds (3-5 rolls)
+w(D / "loot_table/chests/miner_camp.json", {"type": "minecraft:chest", "random_sequence": "mechanical:chests/miner_camp", "pools": [
+    {"rolls": {"type": "minecraft:uniform", "min": 3, "max": 5}, "entries": [
+        entry("minecraft:torch", 10, 4, 12), entry("minecraft:coal", 8, 2, 8), entry("minecraft:raw_copper", 6, 2, 5),
+        entry("mechanical:cassiterite", 5, 1, 4), entry("mechanical:malachite", 4, 1, 3), entry("minecraft:raw_iron", 3, 1, 3),
+        entry("mechanical:cooked_venison_scraps", 6, 2, 5), entry("mechanical:cordage", 4, 1, 3), entry("minecraft:flint", 5, 2, 5),
+        entry("mechanical:flint_pickaxe", 1, 1, 1), entry("minecraft:raw_gold", 1, 1, 2)]}]})
+
 # spawn egg: a weathered face in a fur hood
 w(A / "models/item/tribesperson_spawn_egg.json", {"parent": "minecraft:item/generated",
     "textures": {"layer0": "mechanical:item/tribesperson_spawn_egg"}})
@@ -49,6 +76,16 @@ paint += [(x, 5, HR) for x in range(5, 11)] + [(6, 7, EY), (9, 7, EY), (6, 6, HR
 paint += [(7, 8, SKD), (8, 8, SKD), (7, 9, "#6a3a2a"), (8, 9, "#6a3a2a"), (5, 8, "#9c3420"), (10, 8, "#9c3420")]
 paint += [(x, 11, BN if x % 2 else "#8e7550") for x in range(5, 11)]
 egg(["#b0a596", "#8f8578", "#726a60", "#5a3822", "#4a3020", "#2e1e14"], (), (), paint).save(ITEM_TEX / "tribesperson_spawn_egg.png")
+
+# the Miner's egg: a sooty bearded face under a tribe-coloured headband, sack-brown shell with ore specks
+w(A / "models/item/miner_spawn_egg.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/miner_spawn_egg"}})
+w(A / "items/miner_spawn_egg.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/miner_spawn_egg"}})
+MSK, BEARD = "#a87c58", "#2e2018"
+paint = [(x, y, MSK) for x in range(5, 11) for y in range(6, 10)]
+paint += [(x, 5, "#3c44aa") for x in range(5, 11)] + [(6, 7, EY), (9, 7, EY), (7, 6, "#4a3a30"), (10, 8, "#4a3a30")]
+paint += [(x, y, BEARD) for x in range(5, 11) for y in (10, 11)] + [(6, 9, BEARD), (9, 9, BEARD), (7, 12, BEARD), (8, 12, BEARD)]
+specks = [(4, 4, "#c4703a"), (11, 5, "#3c9a6a"), (3, 10, "#9a9a9a"), (12, 11, "#c4703a")]
+egg(["#9a8664", "#8a7656", "#6a573c", "#5a4a32", "#4a3c28", "#2e2418"], specks, (), paint).save(ITEM_TEX / "miner_spawn_egg.png")
 
 lang = json.loads(LANG.read_text(encoding="utf-8"))
 lang.update({
@@ -80,6 +117,13 @@ lang.update({
     "chat.mechanical.tribesperson.angry": "You will regret that!",
     "chat.mechanical.tribesperson.killer": "Murderer! You will never be welcome here!",
     "chat.mechanical.tribesperson.no_trade": "We do not trade with you.",
+    "entity.mechanical.miner": "Miner",
+    "entity.mechanical.tribesperson.role.miner": "Miner",
+    "item.mechanical.miner_spawn_egg": "Miner Spawn Egg",
+    "filled_map.mechanical.ore_vein": "Ore Vein Map",
+    "chat.mechanical.tribesperson.greet.miner.0": "Mind your head. And your light.",
+    "chat.mechanical.tribesperson.greet.miner.1": "Ore for torches, stranger? The dark eats torches.",
+    "chat.mechanical.tribesperson.greet.miner.2": "Down here, listen more than you look.",
 })
 w(LANG, lang)
 print(f"{len(FEATURES)} features, lang ok")

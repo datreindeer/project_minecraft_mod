@@ -10,12 +10,17 @@ Grottor ska kännas farligare och kallare ju djupare man går. Byggs i steg, ett
 - Senare: Ember Pot (glöd i lerkruka, värmer lite i handen), arbetsvärme när man hackar, Ice Caves kallare och Magma Vents varmare
   (grottbiomerna i [world-materials-plan.md](world-materials-plan.md)).
 
-## 2. Gruvarbetaren (sällsynt NPC)
-- Framåtlutad av en stor säck med malm på ryggen (uppskalad `WornSatchelModel`), pickaxe och en fackla som lyser (DynamicLights).
-- Sällsynt under y 30, ofta vid ett litet läger: campfire, Straw Bed och kista.
-- Byteshandel i stenåldern, mynt senare (`WorldAge.npcAge` som Caravans). Köper raw ores och sten, säljer malm som saknas
-  i trakten (tin), facklor, mat och ibland en karta till en ådra i närheten.
-- Flyr från monster.
+## 2. Gruvarbetaren (klart)
+- `TribeRole.MINER`, egen entitetstyp `mechanical:miner` (samma klass `Tribesperson`, för spawn egg och renderer). Allt
+  annat ärvs: handel (merchant-skärmen som hos Elder), rykte, flykt från monster (pickaxe = obeväpnad), elden han håller tänd.
+- Framåtlutad (smygposen i `TribespersonRenderer`) under en stor säck med malm (`client/MinerSackModel`, ritas av
+  `EquipmentLayer`), pickaxe och en fackla i andra handen som lyser (DynamicLights läser handen).
+- Worldgen `miner_camp` (`worldgen/MinerCamp`, data i `gen_people.py`): grottgolv under y 30, 3 av 4 vid ett läger med tänd
+  campfire, Straw Bed och kista (`chests/miner_camp`), annars ensam.
+- Egen handelsstam (*Traders*, som karavaner). Stenålder byteshandel, senare mynt (`WorldAge.npcAge`). Säljer malm som saknas
+  inom 16 block (kol, tenn, koppar, järn från bronsåldern), facklor, mat och ibland (1 av 3) en Ore Vein Map till en ådra
+  24–64 block bort. Köper raw ores och sten. Detaljer i [ages/01-stone-age.md](ages/01-stone-age.md).
+- Advancement *Deep Trade* (efter The Cold Deep). Gametest `tribe_miner`.
 
 ## 3. Mörkrets väsen (nordisk folktro)
 Kommer bara vid ljusnivå 0, och farligare ju djupare. Ljus är försvaret.

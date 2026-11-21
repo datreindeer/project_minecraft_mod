@@ -513,6 +513,22 @@
      "sv": "Den vandrande handlaren finns inte. I stället kommer ibland en **handelskaravan** nära dig (lika ofta som han skulle ha kommit): en gammal handlare i fin rock med ädelstenar, 2–3 vakter i rustning och hästar som drar [[cart]] med tygkapell och kistor. Högerklicka handlaren: varor upp till en ålder över din för Copper, Silver och Gold Coin, växling (10 koppar = 1 silver, 10 silver = 1 guld), och de **köper ädelstenar** dyrt: slipade stenar 4 silver, [[minecraft:diamond]] 2 guld, Emerald 1 guld. Karavanen stannar 2 dagar.",
      "en": "There is no Wandering Trader. Instead a **Trader Caravan** now and then comes near you (as often as he would have): an old trader in a fine gem-set robe, 2-3 armoured guards and horses pulling covered [[cart]]s with chests. Right-click the trader: goods up to one age ahead of yours for Copper, Silver and Gold Coins, coin changing (10 copper = 1 silver, 10 silver = 1 gold), and they **buy gemstones** dearly: cut stones 4 silver, [[minecraft:diamond]] 2 gold, Emerald 1 gold. The caravan stays 2 days."
     }
+   },
+   {
+    "title": {
+     "sv": "Gruvarbetaren",
+     "en": "The Miner"
+    },
+    "items": [
+     "entity:miner",
+     "structure:miner_camp",
+     "cassiterite",
+     "minecraft:torch"
+    ],
+    "text": {
+     "sv": "Djupt nere, **under y 30**, vandrar ibland en ensam [[entity:miner]], framåtlutad under en säck full av malm och med en fackla som lyser. Oftast vid ett litet [[structure:miner_camp]] med eld, Straw Bed och kista. Högerklicka för att handla (byteshandel i stenåldern, mynt senare): han **säljer malm som saknas i trakten**, viktigast [[cassiterite]] (tenn till brons) om ingen tennmalm finns nära, [[minecraft:torch]] och mat, ibland en **Ore Vein Map** med kryss över en ådra längre bort. Han köper raw ores och sten. Han flyr från monster.",
+     "en": "Deep down, **below Y 30**, a lone [[entity:miner]] sometimes wanders, hunched under a sack full of ore, with a torch that gives light. Usually at a small [[structure:miner_camp]] with a fire, a Straw Bed and a chest. Right-click to trade (barter in the Stone Age, coins later): he **sells the ores missing nearby**, above all [[cassiterite]] (tin for bronze) when no tin ore is close, [[minecraft:torch]]es and food, and sometimes an **Ore Vein Map** marking a vein further off. He buys raw ores and stone. He flees from monsters."
+    }
    }
   ]
  },

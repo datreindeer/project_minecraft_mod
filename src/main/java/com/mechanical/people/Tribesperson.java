@@ -84,8 +84,8 @@ import net.minecraft.world.phys.Vec3;
  * (surface swimming in the swimming pose, across water where the way round is much longer).
  * <p>
  * Friendly by default and greets players now and then. Hitting one angers its whole group (same {@link #group}) at
- * that player for a day; killing one makes the group hostile to that player for good. Elders barter (vanilla merchant
- * screen, item-for-item offers).
+ * that player for a day; killing one makes the group hostile to that player for good. Elders and the Miner (Miners) barter
+ * (vanilla merchant screen, item-for-item offers).
  */
 public class Tribesperson extends PathfinderMob implements Merchant, RangedAttackMob, Npc {
     private static final EntityDataAccessor<Integer> ROLE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
@@ -184,7 +184,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     /** The skin: temperate people in tribesperson/, the other climates in a folder of their own; its "_tint" mask marks the dyed parts. */
     public Identifier texture() {
-        ClimateZone zone = role().caravan() ? ClimateZone.TEMPERATE : climate();
+        ClimateZone zone = role().travels() ? ClimateZone.TEMPERATE : climate();
         String dir = zone == ClimateZone.TEMPERATE ? "" : zone.id() + "/";
         return Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/tribesperson/" + dir + role().id() + "_" + skin() + ".png");
     }
@@ -293,7 +293,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     public void setup(TribeRole role, BlockPos home, UUID group, boolean leader, ClimateZone climate) {
         RandomSource r = getRandom();
         entityData.set(ROLE, role.ordinal());
-        entityData.set(SKIN, r.nextInt(TribeRole.SKINS));
+        entityData.set(SKIN, role == TribeRole.MINER ? 2 * r.nextInt(2) : r.nextInt(TribeRole.SKINS));
         entityData.set(CLIMATE, climate.ordinal());
         entityData.set(COLOUR, group == null ? -1 : Tribe.of(group).baseColour().getId());
         this.home = home;
@@ -312,11 +312,13 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             case WOODCUTTER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_AXE.get() : Mechanical.FLINT_AXE.get());
             case ELDER, TRADER -> new ItemStack(Items.STICK);
             case GUARD -> new ItemStack(spear()); // Caravans arms them for their tribe's age
+            case MINER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_PICKAXE.get() : Mechanical.FLINT_PICKAXE.get());
         };
         setItemSlot(EquipmentSlot.MAINHAND, tool);
-        setItemSlot(EquipmentSlot.OFFHAND, role == TribeRole.GATHERER ? new ItemStack(Mechanical.BARK_BASKET.get()) : ItemStack.EMPTY);
+        setItemSlot(EquipmentSlot.OFFHAND, role == TribeRole.GATHERER ? new ItemStack(Mechanical.BARK_BASKET.get())
+                : role == TribeRole.MINER ? new ItemStack(Items.TORCH) : ItemStack.EMPTY); // the miner's torch lights his way (DynamicLights)
         // the tribe's flag: worn by the band leader and the elder, like a raid captain's banner
-        setItemSlot(EquipmentSlot.HEAD, leader || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY);
+        setItemSlot(EquipmentSlot.HEAD, leader && role != TribeRole.MINER || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY);
         offers = null;
     }
 
@@ -330,8 +332,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             for (BlockPos p : BlockPos.betweenClosed(blockPosition().offset(-12, -4, -12), blockPosition().offset(12, 4, 12))) {
                 if (level.getBlockState(p).is(Blocks.CAMPFIRE)) { fire = p.immutable(); break; }
             }
-            TribeRole role = TribeRole.byId(getRandom().nextInt(TribeRole.ELDER.ordinal() + 1)); // caravans come only whole (Caravans)
-            setup(role, role == TribeRole.HUNTER ? null : fire, UUID.randomUUID(), true);
+            if (getType() == People.MINER.get()) setup(TribeRole.MINER, fire, Miners.tribe(getRandom()), true);
+            else {
+                TribeRole role = TribeRole.byId(getRandom().nextInt(TribeRole.ELDER.ordinal() + 1)); // caravans come only whole (Caravans)
+                setup(role, role == TribeRole.HUNTER ? null : fire, UUID.randomUUID(), true);
+            }
         }
         return data;
     }
@@ -505,7 +510,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (tickCount % 20 == 0 && raid != null) RaidGoal.update(this, level);
         if (tickCount % 20 == 0 && raid == null && visit == null && errand == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
-        if (tickCount % 100 == 0 && raid == null && leaveAt < 0) SetUpCampGoal.check(this, level, now);
+        if (tickCount % 100 == 0 && raid == null && leaveAt < 0 && role() != TribeRole.MINER) SetUpCampGoal.check(this, level, now);
         if (leaveAt >= 0 && now > leaveAt && tradingPlayer == null && tickCount % 20 == 0) Caravans.leave(this);
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
@@ -714,7 +719,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (!isAlive() || player.getItemInHand(hand).is(People.TRIBESPERSON_SPAWN_EGG.get())) return super.mobInteract(player, hand);
+        if (!isAlive() || player.getItemInHand(hand).is(People.TRIBESPERSON_SPAWN_EGG.get()) || player.getItemInHand(hand).is(People.MINER_SPAWN_EGG.get()))
+            return super.mobInteract(player, hand);
         if (level().isClientSide()) return InteractionResult.SUCCESS;
         if (isAngryAt(player) || anger.getOrDefault(player.getUUID(), 0L) > level().getGameTime()) {
             say(player, Component.translatable("chat.mechanical.tribesperson.no_trade"));
@@ -722,7 +728,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         }
         // food is a gift (to an elder: while sneaking, else it is trade); gifts raise the standing with the tribe
         ItemStack held = player.getItemInHand(hand);
-        if (held.has(net.minecraft.core.component.DataComponents.FOOD) && (role() != TribeRole.ELDER || player.isShiftKeyDown()) && tribe() != null) {
+        if (held.has(net.minecraft.core.component.DataComponents.FOOD) && (!barters() || player.isShiftKeyDown()) && tribe() != null) {
             if (level().getGameTime() < nextGift) return InteractionResult.CONSUME;
             nextGift = level().getGameTime() + 20;
             held.consume(1, player);
@@ -736,16 +742,21 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             TribeVisits.openDialog(sp, this);
             return InteractionResult.SUCCESS_SERVER;
         }
-        if (role() == TribeRole.ELDER && tribe() != null && !tribe().trades(player)) {
+        if (barters() && tribe() != null && !tribe().trades(player)) {
             say(player, Component.translatable("chat.mechanical.tribesperson.no_trade_stranger"));
             return InteractionResult.CONSUME;
         }
-        if (role() != TribeRole.ELDER || tradingPlayer != null || getTarget() != null) {
+        if (!barters() || tradingPlayer != null || getTarget() != null) {
             if (hand == InteractionHand.MAIN_HAND) say(player, Component.translatable("chat.mechanical.tribesperson.greet." + role().id() + "." + getRandom().nextInt(TribeRole.GREETINGS)));
             return InteractionResult.CONSUME;
         }
         openTrade(player);
         return InteractionResult.SUCCESS_SERVER;
+    }
+
+    /** Elders and the Miner trade when right-clicked (the others greet). */
+    boolean barters() {
+        return role() == TribeRole.ELDER || role() == TribeRole.MINER;
     }
 
     /** A visiting band's leader, or a camp's trader on the way to a player camp: they talk through TribeDialog. */
@@ -788,6 +799,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     @Override
     public MerchantOffers getOffers() {
         if (offers == null && role() == TribeRole.TRADER) offers = Caravans.offers(0, getRandom()); // offers are made at spawn; a fallback
+        if (offers == null && role() == TribeRole.MINER) {
+            if (!(level() instanceof ServerLevel)) return new MerchantOffers();
+            offers = Miners.offers(this); // from the world round him when first asked
+        }
         if (offers == null) {
             offers = new MerchantOffers();
             List<MerchantOffer> all = new java.util.ArrayList<>(allOffers());
@@ -828,6 +843,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         offer.increaseUses();
         if (tradingPlayer != null && tribe() != null) tribe().addReputation(tradingPlayer, Tribe.TRADE);
         if (tradingPlayer instanceof net.minecraft.server.level.ServerPlayer sp && Caravans.isGem(offer.getBaseCostA())) TribeVisits.award(sp, "caravan_gem");
+        if (tradingPlayer instanceof net.minecraft.server.level.ServerPlayer sp && role() == TribeRole.MINER) TribeVisits.award(sp, "miner_trade");
     }
 
     @Override

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "mechanical:miner_camp",
+  "step": "underground_decoration"
+}
