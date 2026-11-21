@@ -1760,5 +1760,7 @@
   "bog_oak_button": {"text": "Myrek: av [[bog_oak_log]] / [[bog_oak_planks]], som vanilla-ek.", "category": "blocks"},
   "bog_oak_pressure_plate": {"text": "Myrek: av [[bog_oak_log]] / [[bog_oak_planks]], som vanilla-ek.", "category": "blocks"},
   "stripped_bog_oak_log": {"text": "Myrek: yxa på [[bog_oak_log]]/Wood.", "category": "blocks"},
-  "stripped_bog_oak_wood": {"text": "Myrek: yxa på [[bog_oak_log]]/Wood.", "category": "blocks"}
+  "stripped_bog_oak_wood": {"text": "Myrek: yxa på [[bog_oak_log]]/Wood.", "category": "blocks"},
+  "glowworm": {"text": "Lysmaskar. Hänger i taket i **Glowworm Caves** (se `docs/caves.md`): mörka trådar med blåa lysande pärlor. Ger svagt ljus (nivå 6), man går igenom dem och de **ger inget** när de går sönder. Måste sitta under ett fast block. Det enda naturliga ljuset under jord i stenåldern.", "category": "blocks"},
+  "tool_cache": {"text": "Verktygsgömsle (loot table `chests/tool_cache`): en kista på grottgolvet i **Soapstone Grottos**, sällsynt. 2–4 Stone Age-verktyg ([[flint_knife]], [[flint_pickaxe]], [[flint_axe]], [[flint_spear]], [[crude_stone_pickaxe]] …) och lite [[minecraft:flint]], [[stone_chunk]], [[soapstone]] och pinnar.", "category": "blocks", "name": "Tool Cache"}
 }

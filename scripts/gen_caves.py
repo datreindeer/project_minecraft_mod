@@ -34,15 +34,20 @@ uniform = lambda lo, hi: {"type": M + "height_range", "height": {"type": M + "un
 air = {"type": M + "matching_block_tag", "tag": M + "air"}
 
 
+# shortcut: most tries start in rock or outside the biome and are dropped, so the scans try SCAN times the count asked
+# for (vanilla's cave vines need 188 a chunk over the whole height); a cave-aware placement would waste less.
+SCAN = 12
+
+
 def on_floor(count, lo=-60, hi=80):
-    return [{"type": M + "count", "count": count}, {"type": M + "in_square"}, uniform(lo, hi),
+    return [{"type": M + "count", "count": count * SCAN}, {"type": M + "in_square"}, uniform(lo, hi),
             {"type": M + "environment_scan", "direction_of_search": "down", "max_steps": 12, "target_condition": {"type": M + "solid"},
              "allowed_search_condition": air},
             {"type": M + "offset", "x": 0, "y": 1, "z": 0}, {"type": M + "biome"}]
 
 
 def on_ceiling(count, lo=-60, hi=80):
-    return [{"type": M + "count", "count": count}, {"type": M + "in_square"}, uniform(lo, hi),
+    return [{"type": M + "count", "count": count * SCAN}, {"type": M + "in_square"}, uniform(lo, hi),
             {"type": M + "environment_scan", "direction_of_search": "up", "max_steps": 12,
              "target_condition": {"type": M + "has_sturdy_face", "direction": "down"}, "allowed_search_condition": air},
             {"type": M + "offset", "x": 0, "y": -1, "z": 0}, {"type": M + "biome"}]
@@ -72,8 +77,23 @@ def column(block, lo, hi, direction):
             "layers": [{"height": {"type": M + "uniform", "min_inclusive": lo, "max_inclusive": hi}, "provider": state(block)}]}
 
 
-def single(block, **props):
-    return {"type": M + "simple_block", "to_place": state(block, **props)}
+def single(block, down=False, **props):
+    """One block (a state, or a provider dict) as a one-high block_column. shortcut: simple_block placed nothing as patch
+    vegetation in real worldgen (its canSurvive check; one-off /place worked), so this skips the check; only patch
+    surfaces call it, which are sturdy anyway. Upgrade if a plant ever needs the check. down=True under a ceiling: a
+    column checks the block past its start, so an upward one-high column under a ceiling places nothing."""
+    provider = block if isinstance(block, dict) else state(block, **props)
+    return {"type": M + "block_column", "allowed_placement": air, "direction": "down" if down else "up", "prioritize_tip": False,
+            "layers": [{"height": 1, "provider": provider}]}
+
+
+def provider_of(feature):
+    """The block provider of one of the mod's simple_block features (loose ochre, gem crystals)."""
+    return json.loads((D / f"worldgen/feature/{feature}.json").read_text(encoding="utf-8"))["to_place"]
+
+
+MOSS_PLANTS = {"type": M + "weighted", "entries": [{"data": M + "moss_carpet", "weight": 25}, {"data": M + "short_grass", "weight": 50},
+                                                   {"data": M + "azalea", "weight": 7}]}
 
 
 NO_OP = {"feature": {"type": M + "no_op"}, "placement": []}
@@ -93,6 +113,15 @@ def patch(ground, lo, hi, surface="floor"):
             "vegetation_feature": NO_OP, "vertical_range": 4, "xz_radius": {"type": M + "uniform", "min_inclusive": lo, "max_inclusive": hi}}
 
 
+def decor(surface, ground, plant, chance, lo=2, hi=4):
+    """A patch of the cave's own floor or ceiling block with `plant` (a configured feature or id) on some of it: the
+    way vanilla dresses the Lush Caves, one successful try covers a whole patch instead of one block."""
+    return {"type": M + "vegetation_patch", "depth": 1, "extra_bottom_block_chance": 0.0, "extra_edge_column_chance": 0.0,
+            "ground_state": state(ground), "replaceable": FLOOR_TAG, "surface": surface, "vegetation_chance": chance,
+            "vegetation_feature": {"feature": plant, "placement": []}, "vertical_range": 4,
+            "xz_radius": {"type": M + "uniform", "min_inclusive": lo, "max_inclusive": hi}}
+
+
 def lake(fluid, barrier):
     return {"type": M + "lake", "barrier": state(barrier), "can_place_feature": {"type": M + "true"},
             "can_replace_with_air_or_fluid": {"type": M + "not", "predicate": {"type": M + "matching_block_tag", "tag": M + "features_cannot_replace"}},
@@ -109,10 +138,11 @@ def geode(gem):
         "invalid_blocks": "#minecraft:geode_invalid_blocks", "middle_layer_provider": state(MOD + "polished_quartzite"),
         "outer_layer_provider": state(MOD + "quartzite")},
         "crack": {"generate_crack_chance": 0.95}, "invalid_blocks_threshold": 1, "layers": {},
-        "outer_wall_distance": {"type": M + "uniform", "min_inclusive": 4, "max_inclusive": 6}, "use_alternate_layer0_chance": 0.0}
+        "outer_wall_distance": {"type": M + "uniform", "min_inclusive": 4, "max_inclusive": 6}, "use_alternate_layer0_chance": 0.0,
+        "placements_require_layer0_alternate": False}  # crystals on any inner block (vanilla: only on budding amethyst)
 
 
-LIMESTONE_WALL = MOD + "limestone_wall"
+LIMESTONE, LIMESTONE_WALL = MOD + "limestone", MOD + "limestone_wall"
 LAVA_LAKE = [{"type": M + "rarity_filter", "chance": 3}, {"type": M + "in_square"}, uniform(-60, 0),
              {"type": M + "environment_scan", "direction_of_search": "down", "max_steps": 32, "target_condition": {"type": M + "all_of", "predicates": [
                  {"type": M + "not", "predicate": air}, {"type": M + "inside_world_bounds", "offset": [0, -5, 0]}]}},
@@ -124,23 +154,23 @@ GEMS = ["clear_quartz", "rose_quartz", "smoky_quartz", "citrine", "fluorite"]
 FEATURES = {
     "limestone_caverns": {
         "travertine_pools": (9, pool(MOD + "travertine"), on_floor(40, -20, 60)),
-        "stalactites": (9, column(LIMESTONE_WALL, 1, 4, "down"), on_ceiling(60, -20, 60)),
-        "stalagmites": (9, column(LIMESTONE_WALL, 1, 3, "up"), on_floor(30, -20, 60)),
+        "stalactites": (9, decor("ceiling", LIMESTONE, column(LIMESTONE_WALL, 1, 4, "down"), 0.2), on_ceiling(20, -20, 60)),
+        "stalagmites": (9, decor("floor", MOD + "travertine", column(LIMESTONE_WALL, 1, 3, "up"), 0.1), on_floor(15, -20, 60)),
         "travertine": (6, ore(MOD + "travertine", 32), in_rock(4, -20, 60)),
     },
     "salt_caves": {
         "rock_salt": (6, ore(MOD + "rock_salt", 32), in_rock(6, -20, 60)),
         "alabaster": (6, ore(MOD + "alabaster", 20), in_rock(2, -20, 60)),
-        "salt_stalactites": (9, column(MOD + "rock_salt", 1, 3, "down"), on_ceiling(50, -20, 60)),
-        "salt_stalagmites": (9, column(MOD + "rock_salt", 1, 2, "up"), on_floor(40, -20, 60)),
-        "gypsum_needles": (9, column(MOD + "gypsum_wall", 1, 3, "down"), on_ceiling(30, -20, 60)),
+        "salt_stalactites": (9, decor("ceiling", MOD + "rock_salt", column(MOD + "rock_salt", 1, 3, "down"), 0.2), on_ceiling(20, -20, 60)),
+        "salt_stalagmites": (9, decor("floor", MOD + "rock_salt", column(MOD + "rock_salt", 1, 2, "up"), 0.12), on_floor(15, -20, 60)),
+        "gypsum_needles": (9, decor("ceiling", MOD + "rock_salt", column(MOD + "gypsum_wall", 1, 3, "down"), 0.15), on_ceiling(10, -20, 60)),
     },
     "ochre_caves": {
         "red_ochre": (6, ore(MOD + "red_ochre_block", 20), in_rock(6, 0, 80)),
         "yellow_ochre": (6, ore(MOD + "yellow_ochre_block", 20), in_rock(6, 0, 80)),
-        "loose_red_ochre": (9, MOD + "loose_red_ochre", on_floor(8, 0, 80)),
-        "loose_yellow_ochre": (9, MOD + "loose_yellow_ochre", on_floor(8, 0, 80)),
-        "paintings": (9, {"type": MOD + "cave_paintings"}, in_rock(3, 10, 70)),
+        "loose_red_ochre": (9, decor("floor", MOD + "red_ochre_block", single(provider_of("loose_red_ochre")), 0.1), on_floor(8, 0, 80)),
+        "loose_yellow_ochre": (9, decor("floor", MOD + "red_ochre_block", single(provider_of("loose_yellow_ochre")), 0.1), on_floor(8, 0, 80)),
+        "paintings": (9, {"type": MOD + "cave_paintings"}, in_rock(8, 10, 70)),
     },
     "soapstone_grottos": {
         "slate": (6, ore(MOD + "slate", 32), in_rock(4, -30, 40)),
@@ -148,27 +178,27 @@ FEATURES = {
         "tool_cache": (9, {"type": MOD + "tool_cache"}, rare(5, -20, 30)),
     },
     "glowworm_caves": {
-        "glowworms": (9, single(MOD + "glowworm"), on_ceiling(160, 0, 80)),
-        "hanging_roots": (9, single(M + "hanging_roots"), on_ceiling(60, 0, 80)),
+        "glowworms": (9, decor("ceiling", M + "rooted_dirt", single(MOD + "glowworm", down=True), 0.5, 3, 6), on_ceiling(40, 0, 80)),
+        "hanging_roots": (9, decor("ceiling", M + "rooted_dirt", single(M + "hanging_roots", down=True), 0.25), on_ceiling(15, 0, 80)),
         "clay_pools": (9, pool(M + "clay"), on_floor(25, 0, 80)),
-        "moss_vegetation": (9, M + "moss_vegetation", on_floor(50, 0, 80)),
+        "moss_vegetation": (9, decor("floor", M + "moss_block", single(MOSS_PLANTS), 0.5, 3, 6), on_floor(25, 0, 80)),
     },
     "ice_caves": {
         "blue_ice": (6, ore(M + "blue_ice", 20), in_rock(6, 0, 80)),
-        "icicles": (9, column(M + "ice", 1, 3, "down"), on_ceiling(50, 0, 80)),
+        "icicles": (9, decor("ceiling", M + "packed_ice", column(M + "ice", 1, 3, "down"), 0.2), on_ceiling(20, 0, 80)),
         "frozen_pools": (9, patch(M + "ice", 2, 4), on_floor(25, 0, 80)),
         "snow": (9, patch(M + "snow_block", 1, 3), on_floor(15, 0, 80)),
     },
     "peat_hollows": {
         "clay": (6, ore(M + "clay", 24), in_rock(6, 0, 80)),
-        "bog_oak_roots": (9, column(MOD + "bog_oak_log", 1, 3, "down"), on_ceiling(25, 0, 80)),
-        "hanging_roots": (9, single(M + "hanging_roots"), on_ceiling(50, 0, 80)),
+        "bog_oak_roots": (9, decor("ceiling", MOD + "peat", column(MOD + "bog_oak_log", 1, 3, "down"), 0.15), on_ceiling(15, 0, 80)),
+        "hanging_roots": (9, decor("ceiling", MOD + "peat", single(M + "hanging_roots", down=True), 0.35), on_ceiling(20, 0, 80)),
         "puddles": (9, pool(MOD + "peat", 2, 4), on_floor(25, 0, 80)),
     },
     "bone_caves": {
         "bone_blocks": (6, ore(M + "bone_block", 6), in_rock(6, 0, 80)),
-        "bone_piles": (9, single(MOD + "bone_pile"), on_floor(30, 0, 80)),
-        "stalactites": (9, column(LIMESTONE_WALL, 1, 3, "down"), on_ceiling(20, 0, 80)),
+        "bone_piles": (9, decor("floor", M + "coarse_dirt", single(MOD + "bone_pile"), 0.25, 2, 5), on_floor(20, 0, 80)),
+        "stalactites": (9, decor("ceiling", LIMESTONE, column(LIMESTONE_WALL, 1, 3, "down"), 0.12), on_ceiling(10, 0, 80)),
     },
     "galena_seams": {
         "alum_shale": (6, ore(MOD + "alum_shale", 40), in_rock(4, -64, 0)),
@@ -180,12 +210,12 @@ FEATURES = {
         "pumice": (6, ore(MOD + "pumice", 24), in_rock(3, -64, -10)),
         "obsidian": (6, ore(M + "obsidian", 8), in_rock(4, -64, -10)),
         "magma": (9, patch(M + "magma_block", 1, 3), on_floor(30, -64, -10)),
-        "basalt_columns": (9, column(MOD + "coastal_basalt", 2, 5, "up"), on_floor(20, -64, -10)),
+        "basalt_columns": (9, decor("floor", MOD + "scoria", column(MOD + "coastal_basalt", 2, 5, "up"), 0.08), on_floor(15, -64, -10)),
     },
     "crystal_geodes": {
         **{f"{g}_geode": (2, geode(g), rare(4, -60, -10)) for g in GEMS[:3]},
         "amethyst_geode": (2, M + "amethyst_geode", rare(6, -60, -10)),
-        **{f"{g}_{side}": (9, f"{MOD}gem_{g}_{side}", (on_floor if side == "floor" else on_ceiling)(4, -60, -10))
+        **{f"{g}_{side}": (9, decor(side, MOD + "quartzite", single(provider_of(f"gem_{g}_{side}"), down=side == "ceiling"), 0.12), (on_floor if side == "floor" else on_ceiling)(3, -60, -10))
            for g in GEMS for side in ("floor", "ceiling")},
     },
     "flooded_caves": {

@@ -35,7 +35,8 @@
       "min_inclusive": 4,
       "max_inclusive": 6
     },
-    "use_alternate_layer0_chance": 0.0
+    "use_alternate_layer0_chance": 0.0,
+    "placements_require_layer0_alternate": false
   },
   "placement": [
     {
