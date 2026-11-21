@@ -79,6 +79,8 @@ public final class WagonTest {
         level.addFreshEntity(wagon);
         AbstractHorse lead = horse(level, at.add(-WagonEntity.PAIR / 2, 0, WagonEntity.LEAD)), second = horse(level, at.add(WagonEntity.PAIR / 2, 0, WagonEntity.LEAD));
         lead.setYRot(0);
+        lead.setNoAi(true); // moved by hand below: wandering horses would leave the test's floor and disturb other tests
+        second.setNoAi(true);
         wagon.setHarness(lead);
         wagon.setPartner(second);
         CartEntity cart = cart(level, wagon.towPoint().add(0, 0, -CartEntity.LEAD_TOWED));
@@ -92,7 +94,10 @@ public final class WagonTest {
         h.assertTrue(other.puller() == null, "a wagon takes one trailer only (the second cart: " + other.puller() + ")");
         other.discard();
         double startZ = wagon.getZ();
-        for (int t = 1; t <= 6; t++) h.runAfterDelay(t, () -> lead.setPos(lead.position().add(0, 0, 0.5))); // the team walks on, 3 blocks
+        for (int t = 1; t <= 6; t++) h.runAfterDelay(t, () -> { // the team walks on, 3 blocks
+            lead.setPos(lead.position().add(0, 0, 0.5));
+            second.setPos(second.position().add(0, 0, 0.5));
+        });
         h.runAfterDelay(12, () -> {
             h.assertTrue(wagon.getZ() > startZ + 2, "the pair drew the wagon on (" + (wagon.getZ() - startZ) + "; wagon " + wagon.position() + " lead " + lead.position()
                     + " harness " + wagon.harness() + " partner " + wagon.partner() + ")");
@@ -122,6 +127,7 @@ public final class WagonTest {
             h.assertTrue(wagon.pullFactor() == 1.0, "the pair pulls it");
             cart.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
             h.assertTrue(cart.puller() == null && wagon.loadFraction() == 0, "unhitched: the trailer's load is off the team");
+            for (var e : List.of(cow, cart, wagon, lead, second)) e.discard(); // nothing left to stray into later tests
             h.succeed();
         });
     }
@@ -178,6 +184,7 @@ public final class WagonTest {
                 h.assertTrue(sheep.getVehicle() == null, "a cut lead lets the sheep off");
                 h.assertTrue(TravoisEntity.untie(cow, player) && cow.getVehicle() == null && cow.getLeashHolder() == player,
                         "untying the cow leads it off on the player's lead");
+                for (var e : List.of(cow, sheep, chicken, hen, cart, travois)) e.discard();
                 h.succeed();
             });
         });
