@@ -152,6 +152,7 @@ public final class CarcassHauling {
             }
             if (!joining) {
                 carcass.stopRiding();
+                carcass.unsling(); // off a horse's side
                 if (carcass.hungAt() != null) carcass.unhang();
                 carcass.addHauler(player);
             }
@@ -300,12 +301,19 @@ public final class CarcassHauling {
         event.setCancellationResult(InteractionResult.FAIL);
     }
 
-    /** Nor shearing, leashing or feeding: only the Travois (loads it) and the hauled body (lets go) take a hauler's click. */
+    /**
+     * Nor shearing, leashing or feeding: only the Travois (loads it), the hauled body (lets go) and a tamed horse (a body
+     * from the shoulders hangs on its side, HorseWork#sling) take a hauler's click.
+     */
     @SubscribeEvent
     static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof TravoisEntity || event.getTarget() instanceof CarcassEntity || hauled(event.getEntity()) == null) return;
+        if (event.getTarget() instanceof TravoisEntity || event.getTarget() instanceof CarcassEntity) return;
+        CarcassEntity c = hauled(event.getEntity());
+        if (c == null) return;
+        boolean slung = event.getHand() == InteractionHand.MAIN_HAND && event.getTarget() instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse
+                && HorseWork.sling(event.getEntity(), c, horse);
         event.setCanceled(true);
-        event.setCancellationResult(InteractionResult.FAIL);
+        event.setCancellationResult(slung ? InteractionResult.SUCCESS : InteractionResult.FAIL);
     }
 
     /** Whatever other way an item gets used (a knife on another body ...): not with full hands. */

@@ -241,8 +241,13 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         return !skinnedTexture(texture).equals(texture);
     }
 
-    /** SLUNG: an edible bird carried by its feet over the shoulder, hanging down the back (drawn like HUNG). */
-    public enum Pose { LYING, CARRIED, HUNG, SLUNG }
+    /**
+     * SLUNG: an edible bird carried by its feet over the shoulder, hanging down the back (drawn like HUNG). HORSE: hanging
+     * head down on a horse's flank (CarcassEntity#slungHorse), drawn like HUNG from the horse's own position, a little smaller.
+     */
+    public enum Pose { LYING, CARRIED, HUNG, SLUNG, HORSE }
+    /** On a horse: the rump this high above the hanging point (CarcassEntity#SIDE_UP: about the horse's back), and the scale. */
+    private static final float HORSE_HOOK = 0.6F, HORSE_SCALE = 0.75F;
 
     public static class State extends EntityRenderState {
         EntityRenderState animal;
@@ -318,7 +323,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             living.setYRot(180.0F);
         }
         Entity hauler = carcass.isLarge() ? null : carcass.hauler();
-        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (carcass.isSlung() ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
+        LivingEntity horse = carcass.slungHorse();
+        state.pose = horse != null ? Pose.HORSE : carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (carcass.isSlung() ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
         boolean skinned = carcass.stage() > 0;
         if (dummy instanceof Sheep sheep) sheep.setSheared(skinned);
         state.renderer = (EntityRenderer<Entity, EntityRenderState>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dummy);
@@ -331,7 +337,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) if (carcass.haulerId(i) >= 0) held |= 1 << i;
             state.animal.setRenderData(GRIP, held);
         }
-        if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) state.animal.setRenderData(HUNG, true);
+        if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG || state.pose == Pose.HORSE) state.animal.setRenderData(HUNG, true);
         if (state.animal instanceof LivingEntityRenderState living) {
             // models use yRot as head yaw; lying on the side that points the head at the ground
             living.yRot = state.pose == Pose.LYING ? HEAD_SAG : 0.0F;
@@ -354,7 +360,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
         // slung: as long as it would hang on the rack (its own hitbox is the lying one)
-        state.hangLength = state.pose == Pose.SLUNG ? Math.max(state.width, state.height) : carcass.getBbHeight();
+        state.hangLength = state.pose == Pose.SLUNG || state.pose == Pose.HORSE ? Math.max(state.width, state.height) : carcass.getBbHeight();
         state.tilt = carcass.getVehicle() instanceof TravoisEntity bed ? bed.pitch(partialTicks) : 0.0F;
         state.prepared = carcass.isPrepared() && state.pose == Pose.LYING && !state.flat && !state.upright;
         // the legs lie across the bed, the body along it (a hitbox is about two thirds of the body's length)
@@ -367,6 +373,16 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             state.shoulder = hauler.isCrouching() ? 1.15F : 1.45F;
             if (hauler instanceof LivingEntity living) state.bodyYaw = Mth.rotLerp(partialTicks, living.yBodyRotO, living.yBodyRot);
         }
+        if (state.pose == Pose.HORSE) {
+            // from the horse's position at the frame, so it never lags behind a galloping horse; belly out from the flank
+            float yaw = Mth.rotLerp(partialTicks, horse.yBodyRotO, horse.yBodyRot), out = carcass.slungSide() == 0 ? -90.0F : 90.0F;
+            Vec3 at = horse.getPosition(partialTicks).add(Vec3.directionFromRotation(0, yaw + out).scale(CarcassEntity.SIDE_OUT))
+                    .add(0, CarcassEntity.SIDE_UP, 0).subtract(carcass.getPosition(partialTicks));
+            state.dx = at.x;
+            state.dy = at.y;
+            state.dz = at.z;
+            state.bodyYaw = yaw - out;
+        }
     }
 
     @Override
@@ -374,6 +390,10 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         if (state.animal == null) return;
         poseStack.pushPose();
         if (state.pose == Pose.CARRIED || state.pose == Pose.SLUNG) poseStack.translate(state.dx, state.dy + state.shoulder, state.dz);
+        if (state.pose == Pose.HORSE) {
+            poseStack.translate(state.dx, state.dy + HORSE_HOOK - state.hangLength * HORSE_SCALE, state.dz);
+            poseStack.scale(HORSE_SCALE, HORSE_SCALE, HORSE_SCALE);
+        }
         poseStack.rotate(Axis.YP.rotationDegrees(180.0F - state.bodyYaw));
         // in this frame the animal's head points to -z, its feet to -y (the copy is rendered facing yaw 180)
         if (state.pose == Pose.CARRIED) {
@@ -391,14 +411,14 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // (+x is the hauler's right, +z behind him here; HaulingClient raises the arm)
             poseStack.translate(0.3F, 0.55F - state.hangLength, 0.3F);
         }
-        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && state.mantle) {
+        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG || state.pose == Pose.HORSE) && state.mantle) {
             // as it stands: the mantle tip (SQUID_TOP above the origin) at the hook, the tentacles hanging straight down
             poseStack.translate(0.0F, state.hangLength - SQUID_TOP, 0.0F);
             state.renderer.submit(state.animal, poseStack, collector, camera);
             poseStack.popPose();
             return;
         }
-        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && (state.upright || state.onBack)) {
+        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG || state.pose == Pose.HORSE) && (state.upright || state.onBack)) {
             // a bat hangs by its feet as at roost: just upside down, the feet at the hook
             poseStack.translate(0.0F, state.hangLength, 0.0F);
             poseStack.rotate(Axis.ZP.rotationDegrees(180.0F));
@@ -406,11 +426,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             poseStack.popPose();
             return;
         }
-        if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG) {
+        if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG || state.pose == Pose.HORSE) {
             // head down from the hook: the rump (z = +rear) goes up to the top of the hitbox, the body centred under it.
             // The hind legs point up past the rump (hangLegs), so drop the body until the hook is at about the hocks,
             // less when a tall animal leaves little room under the hitbox (a moose's head already nears the ground)
-            float drop = state.pose == Pose.SLUNG ? 0.0F : Math.min(state.height * 0.15F, (com.mechanical.HangingRackBlock.HOOK - state.hangLength) * 0.3F);
+            float drop = state.pose != Pose.HUNG ? 0.0F : Math.min(state.height * 0.15F, (com.mechanical.HangingRackBlock.HOOK - state.hangLength) * 0.3F);
             float rear = state.width * 0.6F + Math.max(0.0F, drop);
             poseStack.translate(0.0F, state.hangLength - rear, state.height * 0.55F);
             poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));

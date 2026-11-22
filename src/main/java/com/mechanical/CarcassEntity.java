@@ -90,6 +90,13 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Boolean> TURNING_LOOK = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
     /** Dressed and lashed as a caravan's trade goods. Synced for the renderer and the property check on both sides. */
     private static final EntityDataAccessor<Boolean> PREPARED = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Hanging on a horse's side (HorseWork, living-world-plan D4): the horse's entity id * 2 + side (0 left, 1 right), -1 if not. Synced (renderer). */
+    private static final EntityDataAccessor<Integer> SLUNG_ON = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.INT);
+    /** Server: the horse it hangs on (saved, found again after a reload), its side, and ticks the horse has been missing. */
+    private java.util.UUID slungHorse;
+    private int slungSide, slungMissing;
+    /** Out from the horse's middle and up from its feet, where a body hangs on its side (blocks). */
+    public static final double SIDE_OUT = 0.75, SIDE_UP = 0.55;
     /** Colour of the flies around an aged carcass. */
     private static final int FLY = 0x1A1712;
     /** Each of the two passes takes this share of the work for the body size. */
@@ -259,6 +266,54 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         setPos(hangPosition(pos));
     }
 
+    /** The horse it hangs on, or null. Both sides. */
+    public net.minecraft.world.entity.animal.equine.AbstractHorse slungHorse() {
+        int v = entityData.get(SLUNG_ON);
+        return v >= 0 && level().getEntity(v >> 1) instanceof net.minecraft.world.entity.animal.equine.AbstractHorse h ? h : null;
+    }
+
+    /** The side it hangs on: 0 left, 1 right. Both sides. */
+    public int slungSide() {
+        return Math.max(0, entityData.get(SLUNG_ON)) & 1;
+    }
+
+    /** Hangs it on {@code horse}'s side {@code side} (0 left, 1 right), out of everyone's hands. */
+    void slingOn(net.minecraft.world.entity.animal.equine.AbstractHorse horse, int side) {
+        setHauler(null);
+        stopRiding();
+        slungHorse = horse.getUUID();
+        slungSide = side;
+        slungMissing = 0;
+        entityData.set(SLUNG_ON, horse.getId() * 2 + side);
+        setPos(sidePoint(horse, side));
+    }
+
+    void unsling() {
+        slungHorse = null;
+        entityData.set(SLUNG_ON, -1);
+    }
+
+    /** Where a body hangs on {@code horse}'s side {@code side}, its flank. */
+    public static Vec3 sidePoint(Entity horse, int side) {
+        float yaw = horse instanceof LivingEntity l ? l.yBodyRot : horse.getYRot();
+        return horse.position().add(Vec3.directionFromRotation(0, yaw + (side == 0 ? -90 : 90)).scale(SIDE_OUT)).add(0, SIDE_UP, 0);
+    }
+
+    /** Server: keeps it on its horse's flank; it falls off when the horse dies or is gone for 5 s. False: it isn't slung. */
+    private boolean keepSlung(ServerLevel level) {
+        if (slungHorse == null) return false;
+        if (level.getEntity(slungHorse) instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse && horse.isAlive()) {
+            slungMissing = 0;
+            if (entityData.get(SLUNG_ON) != horse.getId() * 2 + slungSide) entityData.set(SLUNG_ON, horse.getId() * 2 + slungSide);
+            setPos(sidePoint(horse, slungSide));
+            setDeltaMovement(Vec3.ZERO);
+            return true;
+        }
+        if (++slungMissing < 100) return true; // not loaded yet after a reload: wait for it
+        unsling();
+        return false;
+    }
+
     void unhang() {
         entityData.set(HUNG_AT, java.util.Optional.empty());
         refreshDimensions();
@@ -371,6 +426,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
                 return;
             }
         }
+        if (keepSlung((ServerLevel) level())) return;
         if (haulerId() >= 0) {
             for (int i = 0; i < MAX_HAULERS; i++) {
                 Player hauler = hauler(i);
@@ -518,6 +574,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         builder.define(AGED_LOOK, false);
         builder.define(TURNING_LOOK, false);
         builder.define(PREPARED, false);
+        builder.define(SLUNG_ON, -1);
     }
 
     @Override
@@ -534,6 +591,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         trophy = input.getBooleanOr("trophy", false);
         entityData.set(PREPARED, input.getBooleanOr("prepared", false));
         looks = input.read("looks", CompoundTag.CODEC).orElseGet(CompoundTag::new);
+        slungHorse = input.read("slung_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+        slungSide = input.getIntOr("slung_side", 0);
         refreshDimensions();
     }
 
@@ -550,6 +609,10 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         output.putBoolean("trophy", trophy);
         output.putBoolean("prepared", isPrepared());
         output.store("looks", CompoundTag.CODEC, looks);
+        if (slungHorse != null) {
+            output.store("slung_horse", net.minecraft.core.UUIDUtil.CODEC, slungHorse);
+            output.putInt("slung_side", slungSide);
+        }
     }
 
     @Override

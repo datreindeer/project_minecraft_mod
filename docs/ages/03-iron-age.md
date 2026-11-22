@@ -459,18 +459,25 @@ Plan: [wagon-plan.md](../wagon-plan.md).
 ### Spannet
 
 - **Spelare kan inte dra vagnen.** Den dras av tama, vuxna hästar (inte föl).
-- **Spänn för:** rid en tam häst och led en annan i koppel (inom 10 block), och högerklicka vagnen med tom hand: båda
-  hamnar i oket. Eller spänn för en häst (rid eller led den) och högerklicka igen med en andra. Högerklicka igen för att
-  spänna från ("Unhitched").
-- **Andra hästen** hålls vid sidan om den första (paret 1,45 block isär, mitten 2,8 block framför vagnen) och följer med i
-  svängar. Hålls den kvar mer än **4 block** från den första släpper den ur oket ("The second horse was held back and came
-  out of the yoke") och vagnen går över till enhästläge.
+- **Spänn för:** rid en tam häst eller led den i koppel (inom 10 block) till vagnen och högerklicka vagnen med tom hand:
+  den låses i spannets **första plats**. Gör likadant med en andra häst: den hamnar bredvid. Rider och leder du båda på en
+  gång går båda in med ett klick. Den häst du rider tar alltid första platsen, så att du styr spannet. Kopplet tas av:
+  hästarna sitter **fast** i dragstången och inget kan slitas loss.
+- **Spänna från:** **smyg + högerklicka en spänd häst**. Tar du från den första hästen flyttar den andra upp till första
+  platsen. Ett vanligt högerklick på vagnen spänner inte längre från.
+- **Spannet är en enhet:** andra hästen står exakt bredvid den första (paret 1,45 block isär, mitten 2,8 block framför
+  vagnen) och svänger med den, vagnen följer stelt efter, och hästarna och vagnen knuffar inte varandra. Kommer vagnen för
+  långt efter dras den upp bakom spannet. Ett spann utan ryttare står stilla i skaklarna. Sätter du dig på den andra
+  hästen byter de plats, så att den du rider leder.
+- **Ork:** varje häst i spannet har sin ork (se *Den tama hästen* i bronsåldern). Vagnen och lasten tynger, delat på
+  paret, och spannet går i den tröttare hästens takt. Är en av dem helt slut står spannet still tills den har vilat.
 - **En häst:** med tom vagn kryper den fram (vagnen sluter 30 % av avståndet, hästen går 75 % långsammare). Lastad (kroppar
   eller något i kistorna) rör den sig inte alls.
-- **Ett par:** drar vagnen i full fart, upp till **15 %** långsammare när den är full (efter hur full den är).
-- Framaxeln svänger mot dragstången och hjulen rullar med farten. Fastnar vagnen lossnar spannet ("The wagon is stuck. The
-  team came loose"), som på kärran. Vagnen fastnar i tät skog: det är meningen.
-- Spannet sparas inte när världen laddas om (som kärrans sele): spänn för igen.
+- **Ett par:** drar vagnen; lasten tar lite fart och tömmer orken fortare (HorseWork, upp till 10 % långsammare).
+- Framaxeln svänger mot dragstången och hjulen rullar med farten. Fastnar vagnen håller den hästarna kvar, men spannet
+  lossnar inte. Vagnen fastnar i tät skog: det är meningen.
+- **Spannet sparas** när världen laddas om (hästarna med UUID). Vagnar sparade före den här ändringen laddas utan spann,
+  som förut: spänn för igen.
 
 ### Flaket: fyra platser
 

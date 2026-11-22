@@ -83,6 +83,11 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 | D2 | Spänna fast | Rid häst 1 eller led den med lead till vagnen och klicka på vagnen → låst i första spannet. Samma för häst 2. Shift+högerklick på en spänd häst släpper den. |
 | D3 | Tyngd och trötthet | Hästen får en "ork"-mätare. Last (vagn, carcasses, trä, ryttare) sänker farten lite och tömmer orken snabbare. Trött häst går långsammare; helt slut stannar den, kastar av ryttaren och lägger sig. Vatten (hink eller att den går ner till vatten, utan att simma) och vila fyller på. |
 | D4 | Små carcasses på hästen | De man bär på axlarna kan hängas på hästens sidor (en per sida). |
+
+**D1–D4 byggt** (`WagonEntity`, `HorseWork`, gametester `HorseWorkTest`). Detaljer i [ages/02-bronze-age.md](ages/02-bronze-age.md)
+(*Den tama hästen*: ork, kroppar på sidorna) och [ages/03-iron-age.md](ages/03-iron-age.md) (*Spannet*). Avvikelser: "lägger
+sig" ritas bara på den tama hästen (andra hästar stannar men står kvar); andra hästen placeras av servern, så på klienten
+kan den släpa en bråkdel efter i full galopp.
 | D5 | Tama djur trampar marken | Där många tama djur går: gräs → jord → coarse dirt → mud (när det regnar) → packed mud (när det torkar). Byggs på `TrampledPaths`. |
 | D6 | Feeding Trough | Tama djur och hästar behöver mat och vatten. Utan det dör de inte, men går långsamt (ny trött-animation) och vill inte para sig. **Feeding Trough** som man fyller med hink (vatten) eller mat (rätt mat per djur). Flera tråg bredvid varandra blir ett större. Vattnet räcker länge. Ät-/drick-animationer. |
 
