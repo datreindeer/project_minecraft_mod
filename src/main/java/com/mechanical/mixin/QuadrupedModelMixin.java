@@ -20,10 +20,12 @@ public abstract class QuadrupedModelMixin {
     @Shadow @Final protected ModelPart leftHindLeg;
     @Shadow @Final protected ModelPart rightFrontLeg;
     @Shadow @Final protected ModelPart leftFrontLeg;
+    @Shadow @Final protected ModelPart head;
 
     @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;)V", at = @At("TAIL"))
     private void mechanical$sagLegs(LivingEntityRenderState state, CallbackInfo ci) {
         // hung by the hind legs: the head already hangs in line with the body
+        com.mechanical.client.LivestockPose.head(state, head); // eating at the trough or tired (D6)
         if (CarcassRenderer.isHung(state)) CarcassRenderer.hangLegs(new ModelPart[] {rightFrontLeg, leftFrontLeg}, new ModelPart[] {rightHindLeg, leftHindLeg});
         if (!CarcassRenderer.isCarcass(state)) return;
         for (ModelPart leg : new ModelPart[] {rightHindLeg, leftHindLeg, rightFrontLeg, leftFrontLeg}) leg.zRot = CarcassRenderer.LIMB_SAG;

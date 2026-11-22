@@ -263,6 +263,9 @@ TABS = {
         ("beaten_path", "root", "trodden_path", T, "Beaten Path",
          "Walk the same way over grass a few dozen times until it wears into a Trodden Path. Paths are faster to walk on",
          stood_on("trodden_path", {"persistent": "false"})),
+        ("feeding_trough", "root", "feeding_trough", T, "Fed and Watered",
+         "Craft a Feeding Trough (5 Planks) and fill it with a water bucket or fodder. Penned animals with no grass to graze "
+         "or no water get tired and won't breed. Troughs side by side join into one", by_code()),
     ]),
     "wilderness": ("minecraft:gui/advancements/backgrounds/adventure", [
         ("root", None, "flint_knife", T, "Wilderness & Hunting",

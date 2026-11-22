@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/spruce_planks",
+    "hay": "minecraft:block/hay_block_top"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        2,
+        2
+      ],
+      "to": [
+        14,
+        5,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#hay"
+        },
+        "south": {
+          "texture": "#hay"
+        },
+        "east": {
+          "texture": "#hay"
+        },
+        "west": {
+          "texture": "#hay"
+        },
+        "up": {
+          "texture": "#hay"
+        }
+      }
+    }
+  ]
+}

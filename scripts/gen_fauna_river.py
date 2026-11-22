@@ -102,13 +102,16 @@ item_tag("basket_storable", *(M + p for p in ("raw_beaver_pelt", "beaver_pelt", 
 for asset in ("beaver_fur", "otter_fur"):
     w(A / f"equipment/{asset}.json", {"layers": {"humanoid": [{"texture": f"mechanical:{asset}"}]}})
 
-# ---- Beaver Dam: sticks and mud; drops 1-3 sticks ----
+# ---- Beaver Dam: sticks and mud; drops 1-3 sticks and 0-2 clay balls (the mud) ----
 w(A / "models/block/beaver_dam.json", {"parent": "minecraft:block/cube_all", "textures": {"all": "mechanical:block/beaver_dam"}})
 w(A / "blockstates/beaver_dam.json", {"variants": {"": {"model": "mechanical:block/beaver_dam"}}})
 w(A / "items/beaver_dam.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/beaver_dam"}})
 w(D / "mechanical/loot_table/blocks/beaver_dam.json", {"type": "minecraft:block", "random_sequence": "mechanical:blocks/beaver_dam",
     "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:stick",
                                         "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}}],
+               "condition": {"type": "minecraft:survives_explosion"}},
+              {"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:clay_ball",
+                                        "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 0, "max": 2}}}],
                "condition": {"type": "minecraft:survives_explosion"}}]})
 tag_add(D / "minecraft/tags/block/mineable/axe.json", M + "beaver_dam", M + "pelt_hoop")
 tag_add(D / "minecraft/tags/block/mineable/shovel.json", M + "beaver_dam")

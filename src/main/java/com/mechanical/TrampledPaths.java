@@ -30,7 +30,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 /**
  * Trampled paths: grass that players (and the horses they ride, and harnessed carts and travois) walk over again and
  * again wears to Worn Grass and then to a Trodden Path, which are faster to walk on. Left alone they grow back.
- * Snow on the way is trodden down a layer at a time first, until the ground shows.
+ * Snow on the way is trodden down a layer at a time first, until the ground shows. Crowded livestock churn the ground
+ * instead: grass, dirt, coarse dirt, mud in the rain, packed mud when it dries ({@link #hoofStep}).
  * Data: scripts/gen_paths.py, textures scripts/gen_paths_textures.py.
  *
  * <p>Speed uses vanilla's block speed factor. Entity.move multiplies the horizontal velocity by it every tick, before
@@ -45,6 +46,10 @@ public final class TrampledPaths {
     static final float GRASS_WEAR = 1 / 20F, PATH_WEAR = 1 / 10F;
     /** Chance per step into snow that it packs down one layer: a storm's 3 layers take ~24 walks. */
     static final float SNOW_WEAR = 1 / 8F;
+    /** Livestock (D5): chance per hoof step onto a new block to churn it, if {@link #CROWD} animals are within {@link #CROWD_RANGE}. */
+    static final float HOOF_WEAR = 1 / 40F;
+    static final int CROWD = 4;
+    static final double CROWD_RANGE = 5;
 
     /** Ground the earth of a path runs out toward (everything else frays into grass). */
     public static final TagKey<Block> CONNECTS = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "path_connects"));
@@ -70,6 +75,34 @@ public final class TrampledPaths {
         Entity e = event.getEntity();
         if (e.level().isClientSide() || e.isPassenger()) return;
         if (e instanceof Player p ? !p.isShiftKeyDown() && !p.isSpectator() : e.getControllingPassenger() instanceof Player) step(e);
+        else if (Husbandry.livestock(e)) hoofStep(e);
+    }
+
+    /**
+     * Living-world plan D5: where livestock crowd (at least {@link #CROWD} within {@link #CROWD_RANGE} blocks, a pen) a new block
+     * a hoof steps onto may churn one stage ({@link #churn}). The crowd is counted only when the chance hits, so it stays cheap.
+     */
+    static void hoofStep(Entity e) {
+        if (!e.onGround()) return;
+        BlockPos on = e.getOnPos();
+        Long last = LAST.put(e, on.asLong());
+        if (last == null || last == on.asLong() || e.getRandom().nextFloat() >= HOOF_WEAR) return;
+        if (e.level().getEntitiesOfClass(net.minecraft.world.entity.animal.Animal.class, e.getBoundingBox().inflate(CROWD_RANGE), Husbandry::livestock).size() < CROWD) return;
+        ServerLevel level = (ServerLevel) e.level();
+        churn(level, on, level.isRainingAt(on.above()));
+    }
+
+    /** One hoof stage: grass (or a worn path) to dirt, to coarse dirt, to mud in the rain; mud dries to packed mud, which rain softens again. */
+    static boolean churn(ServerLevel level, BlockPos pos, boolean wet) {
+        BlockState s = level.getBlockState(pos);
+        Block next = s.is(Blocks.GRASS_BLOCK) || s.is(WORN_GRASS) ? Blocks.DIRT
+                : s.is(Blocks.DIRT) || s.is(TRODDEN_PATH) ? Blocks.COARSE_DIRT
+                : s.is(Blocks.COARSE_DIRT) && wet ? Blocks.MUD
+                : s.is(Blocks.MUD) && !wet ? Blocks.PACKED_MUD
+                : s.is(Blocks.PACKED_MUD) && wet ? Blocks.MUD : null;
+        if (next == null) return false;
+        level.setBlockAndUpdate(pos, next.defaultBlockState());
+        return true;
     }
 
     /** Server: {@code e} moved this tick; if it stepped onto a new block on the ground, that block may wear. */

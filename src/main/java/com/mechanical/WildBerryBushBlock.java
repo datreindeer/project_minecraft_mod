@@ -41,6 +41,8 @@ public class WildBerryBushBlock extends VegetationBlock {
     static final Identifier WINTER_BERRIES = Identifier.fromNamespaceAndPath(Mechanical.MODID, "food/winter_berries");
     /** Chance per random tick to grow a stage: ~6 min per stage on average, so ~12 min to ripen again after picking. */
     private static final int GROW_ONE_IN = 6;
+    /** Chance per random tick of a bush with berries that a bird nearby sows a new bush (WildNature#sowBerries). */
+    private static final int SOW_ONE_IN = 200;
     private static final VoxelShape SMALL = column(10, 0, 8), BIG = column(14, 0, 13);
 
     private final Supplier<Item> berries;
@@ -93,6 +95,8 @@ public class WildBerryBushBlock extends VegetationBlock {
         if (!state.getValue(FROZEN) && state.getValue(AGE) < RIPE && random.nextInt(GROW_ONE_IN) == 0 && level.getRawBrightness(pos.above(), 0) >= 9) {
             level.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), Block.UPDATE_CLIENTS);
         }
+        // birds eat the berries and drop the seeds some way off (A10)
+        else if (!state.getValue(FROZEN) && state.getValue(AGE) >= 2 && random.nextInt(SOW_ONE_IN) == 0) com.mechanical.wildlife.WildNature.sowBerries(level, pos, state, random);
     }
 
     public static boolean isRipe(BlockState state) {

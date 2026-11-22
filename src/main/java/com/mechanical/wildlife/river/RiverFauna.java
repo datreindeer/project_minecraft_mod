@@ -109,7 +109,7 @@ public final class RiverFauna {
             p -> new com.mechanical.equipment.CloakItem(p, OTTER_FUR, true), p -> com.mechanical.equipment.CloakItem.properties(p, OTTER_FUR));
 
     // ---- blocks ----
-    /** Sticks, logs and mud packed by beavers: the dam across a stream and the lodge. Drops sticks. */
+    /** Sticks, logs and mud packed by beavers: the dam across a stream and the lodge. Drops sticks and clay balls. */
     public static final DeferredBlock<Block> BEAVER_DAM = BLOCKS.registerBlock("beaver_dam", Block::new, p -> p
             .mapColor(MapColor.DIRT).strength(1.2F).sound(SoundType.ROOTED_DIRT).ignitedByLava());
     public static final DeferredItem<BlockItem> BEAVER_DAM_ITEM = ITEMS.registerSimpleBlockItem("beaver_dam", BEAVER_DAM);

@@ -397,6 +397,7 @@ public abstract class WildAnimal extends Animal {
         public void start() {
             mob.entityData.set(GRAZE, GRAZE_TICKS);
             mob.getNavigation().stop();
+            WildNature.grazed(mob);
         }
 
         @Override
