@@ -262,9 +262,20 @@ public class TravoisEntity extends Entity {
     /** Server: the last log loaded rolls off the back and lies behind. */
     void unloadLog(FelledLogEntity log) {
         log.stopRiding();
-        Vec3 back = position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(rear() + log.size() / 2.0 + 0.3));
+        Vec3 dir = Vec3.directionFromRotation(0, getYRot()), right = Vec3.directionFromRotation(0, getYRot() + 90);
+        Vec3 back = position().subtract(dir.scale(rear() + log.size() / 2.0 + 0.3));
         log.setYRot(getYRot() + 180);
-        if (log.fits(level(), back, getYRot() + 180)) log.setPos(back);
+        // behind the bed, or beside a log already rolled off there, or further back
+        search:
+        for (int far = 0; far <= 2; far++)
+            for (int side : new int[] {0, 1, -1, 2, -2})
+                for (int up = 0; up <= 1; up++) {
+                    Vec3 at = back.subtract(dir.scale(far * 1.2)).add(right.scale(side * 1.05)).add(0, up, 0);
+                    if (log.fits(level(), at, getYRot() + 180)) {
+                        log.setPos(at);
+                        break search;
+                    }
+                }
         playSound(SoundEvents.WOOD_FALL, 1.0F, 0.7F);
     }
 

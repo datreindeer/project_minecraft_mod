@@ -24,10 +24,11 @@ import net.minecraft.world.phys.Vec3;
 /** Draws a {@link FelledLogEntity}: each log's own block model lying along the body (axis turned to its length), and taut ropes from the root end to its pullers. */
 public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLogRenderer.State> {
     public static class State extends EntityRenderState {
-        final List<MovingBlockRenderState> blocks = new ArrayList<>();
+        /** Each block (uncut, lying along local z), where it is, and its cut: which way (FelledLogEntity#roll) and how deep (0..1). */
+        final List<BlockState> blocks = new ArrayList<>();
         final List<Vec3> offsets = new ArrayList<>();
-        /** Each block's cut opening (FelledLogEntity#roll): the block turned about its length so the kerf faces that way. */
         final List<Integer> rolls = new ArrayList<>();
+        final List<Float> depths = new ArrayList<>();
         float yaw;
         /** The block being hewn or sawn (-1: none) and its crack stage. */
         int cracked = -1, crackStage;
@@ -35,6 +36,8 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         boolean bothUp, oneUp, rootUp;
         /** Smaller on a cart or wagon bed (TravoisEntity#LOG_SCALE). */
         float scale = 1;
+        /** Lying on a slope: rise per block along it. */
+        float tilt;
         int length;
         /** Dev (LogShots): the collision boxes, relative to the entity. */
         net.minecraft.world.phys.shapes.VoxelShape debugShape;
@@ -55,9 +58,9 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         state.yaw = log.getViewYRot(partialTicks);
         state.offsets.clear();
         state.rolls.clear();
+        state.blocks.clear();
+        state.depths.clear();
         int n = log.size();
-        while (state.blocks.size() < n) state.blocks.add(new MovingBlockRenderState());
-        while (state.blocks.size() > n) state.blocks.removeLast();
         ClientLevel level = log.level() instanceof ClientLevel l ? l : null;
         for (int i = 0; i < n; i++) {
             BlockPos c = log.cells().get(i);
@@ -67,21 +70,19 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             // lying along the body: the grain runs along local z
             if (block.hasProperty(BlockStateProperties.AXIS)) block = block.setValue(BlockStateProperties.AXIS, net.minecraft.core.Direction.Axis.Z);
             if (block.hasProperty(BlockStateProperties.HORIZONTAL_AXIS)) block = block.setValue(BlockStateProperties.HORIZONTAL_AXIS, net.minecraft.core.Direction.Axis.Z);
-            MovingBlockRenderState r = state.blocks.get(i);
-            BlockPos pos = log.cellPos(i);
-            r.blockState = block;
-            r.blockPos = pos; // nothing else is reported there, so no faces are culled against the world
-            r.randomSeedPos = pos;
-            if (level != null) {
-                r.biome = level.getBiome(pos);
-                r.cardinalLighting = level.cardinalLighting();
-                r.lightEngine = level.getLightEngine();
+            float depth = 0;
+            if (block.getBlock() instanceof com.mechanical.FallenLogBlock) { // drawn uncut; LogMesh carves the kerf
+                depth = block.getValue(com.mechanical.FallenLogBlock.SAWN) / (float) com.mechanical.FallenLogBlock.SAW_STROKES;
+                block = block.setValue(com.mechanical.FallenLogBlock.SAWN, 0);
             }
+            state.blocks.add(block);
+            state.depths.add(depth);
         }
         state.debugShape = com.mechanical.LogShots.showShapes ? log.collisionShape().move(-state.x, -state.y, -state.z) : null;
         state.bothUp = log.rootLifted() && log.tailLifted();
         state.oneUp = log.rootLifted() != log.tailLifted();
         state.rootUp = log.rootLifted();
+        state.tilt = log.lifterCount() == 0 ? log.tilt() : 0;
         state.scale = log.getVehicle() instanceof com.mechanical.TravoisEntity ? com.mechanical.TravoisEntity.LOG_SCALE : 1;
         state.length = n;
         state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
@@ -130,6 +131,8 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(-state.yaw));
         poseStack.scale(state.scale, state.scale, state.scale);
+        // on a slope: turned about its middle, the crown end (+z) up by tilt per block (the collision boxes step along it)
+        if (state.tilt != 0) poseStack.rotate(Axis.XP.rotation((float) -Math.atan(state.tilt)));
         // one straight log: raised evenly, or tilted about the bottom edge of the end on the ground so the lifted end's
         // underside comes up to LIFT_HEIGHT (the collision boxes step along the same line, FelledLogEntity#liftOffset)
         float h = FelledLogEntity.LIFT_HEIGHT;
@@ -145,13 +148,12 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             Vec3 o = state.offsets.get(i);
             poseStack.pushPose();
             poseStack.translate(o.x, o.y, o.z);
-            int roll = state.rolls.get(i);
-            if (roll != 0) { // turned about its length through its middle: the kerf (cut from the top) opens to a side
-                poseStack.translate(0.5, 0.5, 0);
-                poseStack.rotate(Axis.ZP.rotationDegrees(roll == 1 ? -90 : 90));
-                poseStack.translate(-0.5, -0.5, 0);
-            }
-            collector.submitMovingBlock(poseStack, state.blocks.get(i), state.outlineColor);
+            BlockState block = state.blocks.get(i);
+            int code = state.rolls.get(i);
+            float depth = state.depths.get(i);
+            int light = state.lightCoords;
+            collector.submitCustomGeometry(poseStack, net.minecraft.client.renderer.rendertype.RenderTypes.entityCutout(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS),
+                    (pose, buffer) -> LogMesh.draw(pose, buffer, block, code, depth, light));
             if (i == state.cracked) {
                 // a hair larger than the block: drawn in the same pass as the log, at equal depth it would lose to it
                 poseStack.translate(0.5, 0.5, 0.5);

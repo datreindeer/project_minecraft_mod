@@ -57,7 +57,7 @@ public final class FelledLogTest {
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "felled_log"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log"),
-                new FunctionGameTestInstance(TEST, TestArea.of(env, 260, true)));
+                new FunctionGameTestInstance(TEST, TestArea.of(env, 520, true)));
     }
 
     private static List<FelledLogEntity> logs(GameTestHelper h) {
@@ -146,7 +146,7 @@ public final class FelledLogTest {
             for (FelledLogEntity l : logs(h)) l.discard();
         });
 
-        // B: two players carry an 8-block log between them, one at each end
+        // B: two players carry a 5-block log between them, one at each end
         h.runAfterDelay(b, () -> {
             // collision exactly on the blocks' cells, for a log along z and one along x (and clicks hit the same boxes)
             for (float yaw : new float[] {0, -90}) {
@@ -241,12 +241,12 @@ public final class FelledLogTest {
             bed.ejectPassengers();
             for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(bed.position()) < 6) l.discard();
             bed.discard();
-            FelledLogEntity log = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(2.5, 1, 6.5)), -90, 8, oak); // root at x 2.5, crown at 9.5
+            FelledLogEntity log = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(2.5, 1, 6.5)), -90, 5, oak); // root at x 2.5, crown at 6.5: two carry 5 blocks at full strength
             held[0] = log;
             player.setPos(log.endPoint(true).add(-0.8, 0, 0));
             second.setPos(log.endPoint(false).add(0.8, 0, 0));
             log.lift(level, player, 0);
-            log.lift(level, second, 7);
+            log.lift(level, second, 4);
             h.assertTrue(log.rootLifted() && log.tailLifted() && log.liftLoad() <= 1, "both ends up (load " + log.liftLoad() + ")");
             start[0] = log.getZ();
         });
@@ -290,6 +290,20 @@ public final class FelledLogTest {
         h.runAfterDelay(c + 75, () -> {
             FelledLogEntity log = logs(h).stream().filter(l -> l.pulledBy(player)).findFirst().orElseThrow(() -> h.assertionException("the pulled log"));
             h.assertTrue(start[0] - log.world(0).x > 1.5, "two leads drag it (" + (start[0] - log.world(0).x) + ")");
+            for (FelledLogEntity l : logs(h)) l.discard();
+            // D: a slope (rising 1 block every 2 towards +z): a log laid along it lies tilted and slides down until level ground stops it
+            for (int z = 2; z <= 14; z++) for (int y = 1; y <= (z - 2) / 2; y++) h.setBlock(new BlockPos(3, y, z), Blocks.STONE);
+            FelledLogEntity onSlope = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(3.5, 6, 9.5)), 0, 4, oak);
+            held[0] = onSlope;
+            start[0] = onSlope.getZ();
+        });
+        h.runAfterDelay(c + 95, () -> {
+            FelledLogEntity log = held[0];
+            h.assertTrue(log.isAlive() && log.tilt() > 0.3F, "on the slope it lies tilted (" + log.tilt() + ")");
+        });
+        h.runAfterDelay(c + 200, () -> {
+            FelledLogEntity log = held[0];
+            h.assertTrue(start[0] - log.getZ() > 2, "and slid down it (" + (start[0] - log.getZ()) + " blocks)");
             for (FelledLogEntity l : logs(h)) l.discard();
             h.succeed();
         });

@@ -38,7 +38,7 @@ public final class LogCollision {
 
     private static void addBoxes(FelledLogEntity log, List<Box> out) {
         int n = log.size();
-        if (log.straight() && log.lifterCount() == 0) { // one long box: no seams to snag on along its sides
+        if (log.straight() && log.lifterCount() == 0 && log.tilt() == 0) { // one long box: no seams to snag on along its sides
             Vec3 a = log.localCell(0), b = log.localCell(n - 1);
             out.add(new Box(log, a.x, (a.z + b.z) / 2, 0.5, n / 2.0, log.getY(), log.getY() + 1));
             return;

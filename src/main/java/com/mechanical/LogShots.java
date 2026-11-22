@@ -388,7 +388,33 @@ public final class LogShots {
                     if (ticks < 10) return;
                     next();
                 }
-                case 31 -> { // one chop swing started at a known tick: a picture every 2 ticks, first person then third
+                case 31 -> { // three cuts, one each way: across from the side, across from the top, along from the top; then a log on a slope
+                    if (ticks == 1) server.execute(() -> {
+                        cmd("kill @e[type=mechanical:felled_log]");
+                        ServerLevel sl = player().level();
+                        FelledLogEntity cuts = FelledLogEntity.spawnStraight(sl, base.add(8.5, 0, 9.5), -90, 3, Blocks.OAK_LOG.defaultBlockState()); // along +x
+                        held = cuts;
+                        var stick = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK);
+                        look(cuts.world(0).add(0, 0, -1.8), 0, 5); // beside block 0, looking at it across the log
+                        for (int k = 0; k < 4; k++) cuts.sawStroke(sl, player(), InteractionHand.MAIN_HAND, 0, stick, true);
+                        look(cuts.world(1).add(0, 1.2, -0.9), 0, 70); // over block 1, looking down across it
+                        for (int k = 0; k < 5; k++) cuts.sawStroke(sl, player(), InteractionHand.MAIN_HAND, 1, stick, true);
+                        look(cuts.world(2).add(1.6, 1.2, 0), 90, 60); // at the crown end, looking down along it
+                        for (int k = 0; k < 5; k++) cuts.sawStroke(sl, player(), InteractionHand.MAIN_HAND, 2, stick, true);
+                        result.add("cut codes " + cuts.roll(0) + " " + cuts.roll(1) + " " + cuts.roll(2));
+                        // a slope rising 1 every 2 blocks towards +z, a log laid on it
+                        for (int zz = 0; zz <= 10; zz++) for (int yy = 0; yy < zz / 2; yy++)
+                            sl.setBlockAndUpdate(net.minecraft.core.BlockPos.containing(base.add(-6, yy, 4 + zz)), Blocks.STONE.defaultBlockState());
+                        FelledLogEntity.spawnStraight(sl, base.add(-5.5, 6, 8.5), 0, 4, Blocks.OAK_LOG.defaultBlockState());
+                        look(cuts.world(1).add(-1.2, 1.4, -2.2), -25, 35);
+                    });
+                    if (ticks == 20) shot(mc, "cuts");
+                    if (ticks == 21) server.execute(() -> look(base.add(-1.5, 1.5, 9.5), 90, 20));
+                    if (ticks == 45) shot(mc, "slope");
+                    if (ticks < 50) return;
+                    next();
+                }
+                case 32 -> { // one chop swing started at a known tick: a picture every 2 ticks, first person then third
                     int T = TreeChopping.CHOP_TICKS;
                     if (ticks == 10 || ticks == 10 + T + 12) server.execute(() -> player().swing(InteractionHand.MAIN_HAND,
                             new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.WHACK, TreeChopping.CHOP_TICKS), true));
@@ -399,7 +425,7 @@ public final class LogShots {
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     next();
                 }
-                case 32 -> {
+                case 33 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;
