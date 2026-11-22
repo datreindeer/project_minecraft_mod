@@ -63,6 +63,15 @@ public final class LeatherworkingRecipes {
                     tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), s -> s.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN.get())),
             StationRecipe.of(com.mechanical.wildlife.coast.CoastFauna.WALRUS_HIDE_CUIRASS::get, 1, of(com.mechanical.wildlife.coast.CoastFauna.WALRUS_HIDE, 2),
                     tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 4), s -> s.is(com.mechanical.wildlife.coast.CoastFauna.WALRUS_HIDE.get())),
+            // jungle fauna: hard scaly crocodile hide, sewn with sinew; unlocked by carrying the tanned hide
+            StationRecipe.of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE_HELMET::get, 1, of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE, 2),
+                    tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), s -> s.is(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE.get())),
+            StationRecipe.of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE_CUIRASS::get, 1, of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE, 4),
+                    tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 3), s -> s.is(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE.get())),
+            StationRecipe.of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE_LEGGINGS::get, 1, of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE, 3),
+                    tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 2), s -> s.is(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE.get())),
+            StationRecipe.of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE_BOOTS::get, 1, of(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE, 2),
+                    tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), s -> s.is(com.mechanical.wildlife.jungle.JungleFauna.CROCODILE_HIDE.get())),
             // the membrane is sewn onto a lashed frame of rods and bones (crafted): a late stone age piece
             StationRecipe.of(Mechanical.GLIDER_CLOAK::get, 1, of(Mechanical.PHANTOM_LEATHER, 6), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Mechanical.GLIDER_FRAME, 1),
                     PHANTOM_LEATHER),

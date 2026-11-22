@@ -1,0 +1,80 @@
+{
+  "parent": "mechanical:hunting/predators",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crocodile_meat"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_crocodile_hide"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sinew"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:bone"
+          }
+        ]
+      }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ],
+    [
+      "has_3"
+    ],
+    [
+      "butchered"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:saltwater_crocodile_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.saltwater_crocodile.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.saltwater_crocodile.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

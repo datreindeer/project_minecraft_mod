@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.1,
+  "ingredient": "mechanical:tiger_meat",
+  "result": {
+    "id": "mechanical:cooked_tiger_meat",
+    "count": 1
+  }
+}

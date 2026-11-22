@@ -92,6 +92,14 @@
     "mechanical:vittra_meat",
     "mechanical:troll_meat",
     "mechanical:lindworm_meat",
-    "mechanical:raw_gloson"
+    "mechanical:raw_gloson",
+    "mechanical:tiger_meat",
+    "mechanical:python_meat",
+    "mechanical:orangutan_meat",
+    "mechanical:monitor_meat",
+    "mechanical:crocodile_meat",
+    "mechanical:monkey_meat",
+    "mechanical:mudskipper",
+    "mechanical:raw_crab_meat"
   ]
 }

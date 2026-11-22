@@ -933,6 +933,39 @@ TABS["food"][1].extend([
      "Pick up an egg a Jungle Fowl hen laid. Throw it: it may hatch a chick", has("jungle_fowl_egg")),
 ])
 # end fauna: warm
+# fauna: jungle (wildlife/jungle/JungleFauna.java, docs/fauna/jungle.md)
+TABS["wilderness"][1].extend([
+    ("tiger", "butcher", "raw_tiger_pelt", C, "Stripes in the Bamboo",
+     "Kill a Tiger. Creeping through the thicket it can't be seen until it is almost upon you", has("raw_tiger_pelt")),
+    ("tiger_rug", "tiger", "tiger_rug", T, "Tiger Skin Rug",
+     "Fat-tan 2 Raw Tiger Pelts with a knife and Tallow or Lard, then craft them with a Bone into a Tiger Rug", has("tiger_rug")),
+    ("tiger_mantle", "tiger", "tiger_pelt_mantle", T, "Tiger Mantle",
+     "Sew 2 Tiger Pelts and 2 Sinew into a Tiger Pelt Mantle and wear it in the Cloak slot", has("tiger_pelt_mantle")),
+    ("python_skin", "butcher", "python_skin", T, "Coils",
+     "Butcher a Python. It drops from the branches and squeezes until someone strikes it loose", has("python_skin")),
+    ("orangutan_hair", "butcher", "orangutan_hair", T, "Thief of the Canopy",
+     "Butcher an Orangutan, the ape that pelts you with fruit and steals what you leave lying about", has("orangutan_hair")),
+    ("saltwater_crocodile", "butcher", "raw_crocodile_hide", C, "Death Roll",
+     "Kill a Saltwater Crocodile, the still log in the mangrove water, and butcher it with a Tusk Dagger or better",
+     has("raw_crocodile_hide")),
+    ("crocodile_armor", "saltwater_crocodile", "crocodile_hide_cuirass", T, "Scale Armour",
+     "Fat-tan a Crocodile Hide and sew a piece of Crocodile Hide armour at the Leatherworking Bench",
+     has("crocodile_hide_helmet", "crocodile_hide_cuirass", "crocodile_hide_leggings", "crocodile_hide_boots")),
+    ("blowpipe", "root", "blowpipe", T, "Silent Darts",
+     "Make a Blowpipe from 3 Bamboo and puff Darts (Bamboo and a Feather) at your quarry", has("blowpipe")),
+    ("poison_dart", "blowpipe", "poison_dart", T, "Painted Poison",
+     "Tip Darts with the poison of a Poison Dart Frog (or a Venom Gland). Don't touch the frog with bare hands", has("poison_dart")),
+    ("mud_dwellers", "root", "mudskipper", T, "Mud Dwellers",
+     "Catch a Mudskipper or a Fiddler Crab out on the mangrove mud, before it skips away or ducks into its hole",
+     has("mudskipper", "raw_crab_meat")),
+])
+TABS["food"][1].extend([
+    ("mangrove_fare", "cooked", "cooked_crocodile_meat", T, "Mangrove Fare",
+     "Cook Tiger, Python, Orangutan, Monitor, Crocodile or Monkey meat, a Mudskipper or Crab Meat on a Campfire",
+     has(*[f"cooked_{m}" for m in ("tiger_meat", "python_meat", "orangutan_meat", "monitor_meat", "crocodile_meat", "monkey_meat",
+                                    "mudskipper", "crab_meat")])),
+])
+# end fauna: jungle
 # tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
 TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
@@ -1616,14 +1649,14 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
     "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
-                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise",
+                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "python", "monitor_lizard", "proboscis_monkey",
                    "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
-                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir",
+                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "orangutan",
                  "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard",
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm"],
@@ -1639,7 +1672,7 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
+CHALLENGE = {"tiger", "saltwater_crocodile", "giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
 
 
 def _args(src, start):

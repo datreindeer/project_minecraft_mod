@@ -71,6 +71,14 @@
     "mechanical:cooked_vittra_meat",
     "mechanical:cooked_troll_meat",
     "mechanical:cooked_lindworm_meat",
-    "mechanical:cooked_gloson"
+    "mechanical:cooked_gloson",
+    "mechanical:cooked_tiger_meat",
+    "mechanical:cooked_python_meat",
+    "mechanical:cooked_orangutan_meat",
+    "mechanical:cooked_monitor_meat",
+    "mechanical:cooked_crocodile_meat",
+    "mechanical:cooked_monkey_meat",
+    "mechanical:cooked_mudskipper",
+    "mechanical:cooked_crab_meat"
   ]
 }

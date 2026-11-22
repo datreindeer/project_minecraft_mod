@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:monitor_skin",
+    "mechanical:monitor_skin"
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 1
+  }
+}
