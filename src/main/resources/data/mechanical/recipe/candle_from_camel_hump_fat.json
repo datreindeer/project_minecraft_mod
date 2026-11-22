@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:camel_hump_fat",
+    "mechanical:twine"
+  ],
+  "result": {
+    "id": "minecraft:candle",
+    "count": 1
+  }
+}

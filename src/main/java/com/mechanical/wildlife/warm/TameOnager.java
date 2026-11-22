@@ -119,14 +119,14 @@ public class TameOnager extends Donkey {
 
     @Override
     public boolean canMate(Animal partner) {
-        return partner != this && partner instanceof TameOnager other && canParent() && other.canParent();
+        // only with its own kind: an onager with an onager, a camel with a camel
+        return partner != this && partner.getType() == getType() && partner instanceof TameOnager other && canParent() && other.canParent();
     }
 
-    /** Two tame onagers foal a tame one, owned by whoever fed this one. */
+    /** Two tame onagers foal a tame one (camels a camel), owned by whoever fed this one. */
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-        TameOnager foal = WarmFauna.TAME_ONAGER.get().create(level, EntitySpawnReason.BREEDING);
-        if (foal == null) return null;
+        if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof TameOnager foal)) return null;
         setOffspringAttributes(partner, foal);
         foal.setTamed(true);
         if (getLoveCause() != null) foal.setOwner(getLoveCause());

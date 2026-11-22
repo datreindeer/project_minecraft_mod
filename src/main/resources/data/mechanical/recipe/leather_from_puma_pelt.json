@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:puma_pelt",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 2
+  }
+}

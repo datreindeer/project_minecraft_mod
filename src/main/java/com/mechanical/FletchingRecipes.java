@@ -25,6 +25,11 @@ public final class FletchingRecipes {
             StationRecipe.of(() -> Mechanical.BARBED_ARROW.get(), 4, of(() -> com.mechanical.wildlife.underground.UndergroundFauna.CENTIPEDE_FANG.get(), 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
             StationRecipe.of(() -> com.mechanical.wildlife.mountain.MountainFauna.HORN_BOW.get(), 1, of(() -> Wildlife.SINEW.get(), 2), of(() -> Mechanical.SINEW_BOW.get(), 1),
                     of(() -> com.mechanical.wildlife.mountain.MountainFauna.IBEX_HORN.get(), 2), null),
+            // fauna: desert - sand viper fangs barb arrows; one great Bighorn Horn does for the two ibex horns; a condor feather fletches more eagle arrows
+            StationRecipe.of(() -> Mechanical.BARBED_ARROW.get(), 4, of(() -> com.mechanical.wildlife.desert.DesertFauna.VIPER_FANG.get(), 1), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> com.mechanical.wildlife.mountain.MountainFauna.HORN_BOW.get(), 1, of(() -> Wildlife.SINEW.get(), 2), of(() -> Mechanical.SINEW_BOW.get(), 1),
+                    of(() -> com.mechanical.wildlife.desert.DesertFauna.BIGHORN_HORN.get(), 1), null),
+            StationRecipe.of(() -> ForestBirdsFauna.EAGLE_FLETCHED_ARROW.get(), 6, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> com.mechanical.wildlife.desert.DesertFauna.CONDOR_FEATHER.get(), 1), null),
             // fauna: forestbirds (broad capercaillie tail feathers fletch more arrows; eagle feathers fly hardest; owl feathers fly silent)
             StationRecipe.of(() -> Items.ARROW, 6, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.CAPERCAILLIE_TAIL_FEATHER.get(), 1), null),
             StationRecipe.of(() -> ForestBirdsFauna.EAGLE_FLETCHED_ARROW.get(), 4, of(() -> Items.FLINT, 1), of(() -> Items.STICK, 1), of(() -> ForestBirdsFauna.EAGLE_FEATHER.get(), 1), null),

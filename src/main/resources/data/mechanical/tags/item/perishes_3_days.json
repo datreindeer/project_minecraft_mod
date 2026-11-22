@@ -71,6 +71,11 @@
     "mechanical:cooked_vittra_meat",
     "mechanical:cooked_troll_meat",
     "mechanical:cooked_lindworm_meat",
-    "mechanical:cooked_gloson"
+    "mechanical:cooked_gloson",
+    "mechanical:cooked_scorpion",
+    "mechanical:cooked_fennec",
+    "mechanical:cooked_camel_meat",
+    "mechanical:cooked_puma_meat",
+    "mechanical:cooked_bighorn_mutton"
   ]
 }

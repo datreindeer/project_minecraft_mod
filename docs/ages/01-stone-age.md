@@ -2507,6 +2507,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 
 <!-- fauna-links -->
 - [Varma biomer](../fauna/warm.md): Onager (packdjur), Tortoise, Desert Lizard, Water Buffalo, Tapir, Leopard, Hornbill, Jungle Fowl, Peafowl
+- [Öken och badlands](../fauna/desert.md): Desert Scorpion (giftpilar), Fennec Fox (tämjs, varnar för fiender på natten), Wild Camel (packdjur som klarar sig utan vatten), Sand Viper (nergrävd i sanden), Puma (hoppar från klipphyllor; Puma Rug), Bighorn Sheep (stångar; Bighorn Horn), Rattlesnake (rasslar innan den biter), Condor (cirklar över kadaver)
 - [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
