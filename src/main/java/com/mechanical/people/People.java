@@ -60,6 +60,7 @@ public final class People {
         TribeTest.init(modEventBus);
         RelationsTest.init(modEventBus);
         RoadTest.init(modEventBus);
+        TribeAiTest.init(modEventBus);
     }
 
     @SubscribeEvent

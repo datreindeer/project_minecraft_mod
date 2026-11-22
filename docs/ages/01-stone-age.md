@@ -1963,6 +1963,21 @@ Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och t
     eller döda rädare sänker inte ryktet. Fallna rädare tappar vapen och facklor (50 %) och ledaren sin banderoll (alltid).
   - Op: `/raid` startar en räd mot lägret där du står (trummor, sedan rädare efter 5 s).
 
+### Livet vid elden
+Stenåldersfolket lever runt sin eld (`people/CampLife.java`, `DailyRhythmGoal.java`, `VisitRest.java`; poser i
+`client/people/TribeIdlePoses.java`).
+- **Aldrig i elden:** Campfire (även släckt) och Fire Pit räknas som eld när de letar väg. De går runt och stannar vid kanten.
+- **Dygnsrytm i lägret och byn:** **morgon** (klockan 06–07:30): de samlas vid elden, äter och sträcker på sig. **Dag**:
+  arbete som förut (hugga, samla, fiska, bygga). **Kväll** (16:30–18:30): de sitter runt elden. **Natt**: alla utom
+  krigarna lägger ut en **Straw Bed** på marken nära elden och sover till morgonen, med huvudet bort från elden; krigarna
+  (Hunters och Guards) vaktar sex block ut och byter vaktpost då och då. Sängarna tas bort på morgonen (och om de väcks av
+  ett anfall). Den som dör tar sin säng med sig.
+- **Idle-animationer** när de står eller sitter still: tälja (sittande), kolla vapnet, rota i väskan, äta, prata med
+  varandra (två vänder sig mot varandra och gestikulerar), sträcka på sig och värma händerna vid elden.
+- **Ljud:** stammarna har en egen ljuduppsättning (sorl, skada, död, hälsning, handel) i stället för villager-ljud. Den är
+  **tyst** tills ljudfilerna läggs in, se `docs/tribe-sounds.md`.
+- **Advancement:** *Sleeping Camp* (wilderness): var nära när en stam lägger sig på sina Straw Beds för natten.
+
 ### Besökande stammar och grannläger
 Har ditt läger brunnit länge nog söker stammarna upp dig. De kommer för att handla, ber att få sova vid din eld, och
 ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/TribeVisits.java`, `Settlements.java`,
@@ -1973,12 +1988,14 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
 - **Bandet:** en ledare (en **Elder** med stammens banderoll på huvudet) och 3–6 till (Hunters, Gatherers, Woodcutters),
   med vanliga Tribesperson-skins. De går in från **80–120 block** bort (närmare, minst 40, om det inte är laddat så långt)
   mot lägrets eld. Varannan gång kommer en stam som varit här förut (om ni är på talefot), annars en ny (aldrig *Raiders*).
-- **Vid elden** går de runt i närheten under bar himmel (aldrig in i hus) och ledaren hälsar. **Högerklicka ledaren** för
+- **Vid elden** sätter de sig runt elden (se *Livet vid elden*) och ledaren hälsar. Finns vatten nära går fiskarna dit och
+  fiskar, och några av de andra följer med och sätter sig bredvid. Ledaren reser sig ibland och går fram till en spelare en stund. **Högerklicka ledaren** för
   att prata: en ruta med vad han säger, ditt rykte hos stammen och knapparna **Trade** (vanlig byteshandel, priser efter
   ryktet), **Farewell**, och på kvällen **Yes, stay / No**. Mat som gåva fungerar som vanligt.
 - **"May we stay by your fire tonight?"** Vid dagtid 11000 frågar ledaren i chatten och går fram till närmaste spelare.
-  - **Ja:** de håller sig vid elden, var och en knäböjer på sin plats 2–3 block från elden hela natten (beväpnade slåss mot
-    monster som kommer). **+4 rykte** för den som svarade. Vid gryningen (dagtid 23000) får värden en **gåva** (i
+  - **Ja:** de stannar vid elden. På natten lägger alla utom krigarna (Hunters och Guards) ut en **Straw Bed** på marken
+    runt elden och sover till morgonen; krigarna håller vakt sex block ut och slåss mot monster som kommer. Sängarna tas
+    bort när de vaknar. **+4 rykte** för den som svarade. Vid gryningen (dagtid 23000) får värden en **gåva** (i
     inventoryt om du är nära, annars läggs den vid elden), sedan går de.
   - **Nej:** de går direkt, **-3 rykte**. Svarar ingen före dagtid 13800 går de ändå (utan att ta illa upp).
   - På en server gäller **den som svarar först**; de andra får "Someone has already answered them".

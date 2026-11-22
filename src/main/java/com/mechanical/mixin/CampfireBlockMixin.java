@@ -39,6 +39,11 @@ public abstract class CampfireBlockMixin extends BaseEntityBlock {
         return Campfires.isEmbers(state) ? 1 : state.getLightEmission();
     }
 
+    /** Fire for pathfinding even when unlit: nobody plans a way across a campfire (tribespeople stop at its edge). Overrides NeoForge's IBlockExtension default. */
+    public net.minecraft.world.level.pathfinder.PathType getBlockPathType(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, net.minecraft.world.entity.Mob mob) {
+        return net.minecraft.world.level.pathfinder.PathType.FIRE;
+    }
+
     /** Random ticks drive the wind on windy nights (Wind.campfireTick). */
     @Override
     protected boolean isRandomlyTicking(BlockState state) {

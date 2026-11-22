@@ -959,6 +959,9 @@ TABS["wilderness"][1].extend([
     ("tribe_trade_road", "tribe_road", "minecraft:stone_bricks", C, "The Trade Road",
      "At a standing of 60, have a tribe widen a finished road into a 3-wide stone trade road. Their camp then stays loaded, so their traders walk it even when nobody is near",
      by_code()),
+    ("tribe_sleeping_camp", "tribe_land", "minecraft:hay_block", T, "Sleeping Camp",
+     "Come upon tribespeople at night: they lay out Straw Beds round the fire and sleep while their warriors keep watch. "
+     "By day they sit round the fire whittling, eating and talking", by_code()),
     # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
     ("caravan", "root", "minecraft:chest", T, "The Caravan Has Come",
      "Talk to the old trader of a Trader Caravan: horses, covered carts and armed guards, now and then near you as the Wandering Trader once was",

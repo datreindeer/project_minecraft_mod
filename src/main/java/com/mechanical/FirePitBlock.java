@@ -322,6 +322,12 @@ public class FirePitBlock extends Block implements EntityBlock {
         return false;
     }
 
+    /** Fire for pathfinding, lit or not: mobs keep off it and tribespeople (who can't path through fire) stop at its edge. */
+    @Override
+    public net.minecraft.world.level.pathfinder.PathType getBlockPathType(BlockState state, BlockGetter level, BlockPos pos, net.minecraft.world.entity.Mob mob) {
+        return net.minecraft.world.level.pathfinder.PathType.FIRE;
+    }
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return state.getValue(PART) == 0 ? new FirePitBlockEntity(pos, state) : null;

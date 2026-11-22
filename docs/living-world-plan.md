@@ -3,6 +3,7 @@
 > Status: **fas 1 byggd (v0.136.0):** F1 stockar, B7 multiplayer-sidan, B1 zontitel, B2 relationsflik, B4 anvil-hjul.
 > **Fas 2 byggd (Servern lever):** A1, A2, A3, A9, se *Byggt i fas 2* under tabell A.
 > **Fas 7 byggd (Vägar):** A5–A8, se *Byggt i fas 7* under tabell A.
+> **Stammarnas AI byggd:** C (hela) och B8 (tyst ljuduppsättning, ljudlista i `docs/tribe-sounds.md`), se *Byggt: stammarnas AI* under C.
 > Resten är plan. Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
 > det som byggs förs också in i respektive åldersdokument (`docs/ages/*.md`).
 
@@ -93,6 +94,21 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 - **Dygnsrytm i byn:** morgon (äta, sträcka), dag (arbeta: hugga, samla, fiska, bygga), kväll (samlas vid elden), natt (sova, vakter).
 - **Försvar (byggt):** besökande stammar hjälper till mot monster och raiders vid ens eld (krigarna slåss, de andra flyr till elden).
 - **Carcass som gåva (byggt, en gåva per dag och stam räknas):** lämnar man en carcass hos en stam (Neutral eller högre) ses det som en generös gåva (+relation, mer för större djur). Under Neutral ses det som ett hot (-relation, krigarna blir vaksamma).
+
+### Byggt: stammarnas AI
+
+- **Eld:** Campfire (även släckt) och Fire Pit ger `PathType.FIRE` (CampfireBlockMixin, FirePitBlock), så alla mobs undviker
+  dem och stamfolk (FIRE = -1, granne till eld 16) går runt och stannar vid kanten.
+- **CampLife** (en per person): sittplats runt elden (gyllene vinkeln efter id), idle-handlingar (synkas som ett tal till
+  klienten, poseras i `TribeIdlePoses` efter `HumanoidModel.setupAnim`), Straw Bed på natten (fot 3 block från elden, huvud
+  bort från den; tas bort när de vaknar), krigarnas vakt (Hunter och Guard, sex block ut, byter post var ~30 s).
+- **DailyRhythmGoal** (prioritet 4, lägerfolk med hem): morgon 0–1500 på klockan (äta, sträcka), dag 1500–10500 (arbetsmålen
+  som förut), kväll 10500–12500 (sitter vid elden), natt (sover/vaktar). Inte för räder, besökare, ärenden, karavaner, Miner.
+- **VisitRest** (från VisitGoal, AT_CAMP/STAYING): alla sitter vid elden; fiskare fiskar vid vatten inom ~16 block
+  (FishGoal återanvänds), var tredje icke-krigare sätter sig bredvid en fiskare; ledaren går fram till en spelare ungefär en
+  gång per minut. Beviljad natt (STAYING): sover på Straw Beds, krigarna vaktar.
+- **B8:** `TribeSounds` (ambient, hurt, death, greet, trade) med tomma `sounds`-listor i sounds.json: tyst tills filerna finns.
+- Gametester: `tribe_fire_path`, `tribe_visit_sit`, `tribe_night_camp` (TribeAiTest). Skärmbilder: `docs/shots/tribeai/`.
 
 ## D. Vagn, hästar och djur
 

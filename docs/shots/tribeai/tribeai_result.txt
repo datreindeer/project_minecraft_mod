@@ -1,0 +1,24 @@
+visitor Shur HUNTER idle 20 at (2257.0557787822104, 200.0, -347.17186386843656)
+visitor Oona GATHERER idle 18 at (2258.707680920688, 200.0, -341.93508743238414)
+visitor Kalek ELDER idle 20 at (2253.4198802156734, 200.0, -343.4525508358639)
+visitor Yeli WOODCUTTER idle 19 at (2257.304649176165, 200.0, -346.40576238468657)
+visitor Haddu GATHERER idle 17 at (2255.681072060378, 200.0, -342.3713489860496)
+visitor Oona HUNTER idle 20 at (2255.6623222179965, 200.0, -346.78741773177137)
+idle rows, standing [6, 2, 3, 4, 5, 7], seated [1, 4, 5, 3, 7, 2]
+client idle 6 server 6
+client idle 17 server 17
+client idle 2 server 2
+client idle 20 server 20
+client idle 3 server 3
+client idle 21 server 21
+client idle 4 server 4
+client idle 19 server 19
+client idle 5 server 5
+client idle 23 server 23
+client idle 7 server 7
+client idle 18 server 18
+night Duna GATHERER sleeping true bed BlockPos{x=2253, y=200, z=-346} at (2252.5, 200.3125, -345.5)
+night Sefa ELDER sleeping true bed BlockPos{x=2259, y=200, z=-346} at (2260.5, 200.3125, -345.5)
+night Merru WOODCUTTER sleeping true bed BlockPos{x=2255, y=200, z=-342} at (2255.5, 200.3125, -340.5)
+night Hanna FISHER sleeping true bed BlockPos{x=2255, y=200, z=-348} at (2255.5, 200.3125, -348.5)
+night Gorm HUNTER sleeping false bed null at (2261.3593033221373, 200.0, -342.64127156559323)

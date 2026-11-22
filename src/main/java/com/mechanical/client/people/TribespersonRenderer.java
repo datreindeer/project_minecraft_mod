@@ -55,7 +55,7 @@ public class TribespersonRenderer extends MobRenderer<Tribesperson, AvatarRender
                 new ClientAsset.ResourceTexture(t, t), null, null, slim ? PlayerModelType.SLIM : PlayerModelType.WIDE));
         if (entity.role() == com.mechanical.people.TribeRole.MINER && entity.getPose() == net.minecraft.world.entity.Pose.STANDING) {
             state.isCrouching = true; // hunched under his sack (the sneaking pose)
-            com.mechanical.client.EquipmentClient.wearMinerSack(state);
+            // his sack is render data, set in TribeIdlePoses' modifier (render data set here is cleared after extraction)
         }
     }
 
