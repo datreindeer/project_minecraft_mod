@@ -1190,6 +1190,24 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
     ("steel_armor", "steel", "steel_chestplate", G, "Steel Clad",
      "Rivet Steel Plates onto leather at the Armor Station: steel armour, between iron and diamond",
      has("steel_helmet", "steel_chestplate", "steel_leggings", "steel_boots")),
+    # smithing and fire pit phase (docs/living-world-plan.md F12, F9, F10): all after Steel
+    ("big_fire_pit", "steel", "steel_hearth_ring", G, "Hearth of the Tribe",
+     "Lay a Steel Hearth Ring on a Fire Pit: it grows to 3x3 toward the free side. Burns longer, smokes a tall column, "
+     "and a tribe's big pit keeps 5x5 chunks loaded and lets two bands visit at once", by_code()),
+    ("whole_roast", "big_fire_pit", "minecraft:cooked_beef", T, "Whole Roast",
+     "Haul a skinned carcass to a burning big Fire Pit and hang it over the fire; take the roast when it is done", by_code()),
+    ("tool_loops", "steel", "tool_loops", T, "A Place for Every Tool",
+     "Sew Tool Loops (Leather, Steel Plate) at the Leatherworking Bench and drop them on a Leather Satchel: three slots that hold only tools",
+     by_code()),
+    ("steel_frame_pack", "tool_loops", "steel_frame_pack", G, "Pack Mule",
+     "Sew a Steel-Frame Pack: a 5x5 bag with tool loops, worn on the back", has("steel_frame_pack")),
+    ("gold_casting", "steel", "gold_ring_blank", T, "Goldsmith",
+     "Set a Steel Casting Table beside a Clay Kiln at 1100° and lay Gold Ingots on it: they melt and set as ring blanks or a chain",
+     by_code()),
+    ("jeweler", "gold_casting", "gold_ring", G, "Jeweler",
+     "Lay a blank and a cut gem on a Jeweler's Bench and set the stone with a chisel. Wear it in a ring or neck slot", by_code()),
+    ("flawless_jewel", "jeweler", "gold_necklace", C, "Without Flaw",
+     "Set a Flawless gem: its bonus is about four times a plain stone's", by_code()),
 ])
 
 # stone families (StoneFamilies.java; gen_stone_families.py): one per Stone Age stone

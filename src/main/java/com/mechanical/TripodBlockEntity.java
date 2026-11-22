@@ -44,6 +44,18 @@ public class TripodBlockEntity extends BlockEntity {
     /** Kettle geometry for the renderer and particles, in pixels: over a Fire Pit it hangs {@link #PIT_LIFT} higher (above the spits). */
     public static final float PIT_LIFT = 4, LIQUID_LOW = -3.5F, LIQUID_HIGH = 1.5F, INNER = 4;
 
+    /** The liquid surface's height in pixels over the tripod block for this fill (the big pit's kettle is the pit one scaled up). */
+    public static float liquidY(BlockState state, float fill) {
+        int pit = state.getValue(TripodBlock.PIT);
+        float y = LIQUID_LOW + (LIQUID_HIGH - LIQUID_LOW) * fill + (pit > 0 ? PIT_LIFT : 0);
+        return pit == TripodBlock.BIG_PIT ? y * TripodBlock.BIG_SCALE : y;
+    }
+
+    /** Half the inner width of the pot, in pixels. */
+    public static float inner(BlockState state) {
+        return state.getValue(TripodBlock.PIT) == TripodBlock.BIG_PIT ? INNER * TripodBlock.BIG_SCALE : INNER;
+    }
+
     private ItemStack kettle = ItemStack.EMPTY;
     private boolean water;
     private final List<ItemStack> contents = new ArrayList<>();
@@ -118,9 +130,8 @@ public class TripodBlockEntity extends BlockEntity {
     static void clientTick(Level level, BlockPos pos, BlockState state, TripodBlockEntity tripod) {
         if (!state.getValue(TripodBlock.KETTLE) || !tripod.water) return;
         RandomSource r = level.getRandom();
-        float lift = state.getValue(TripodBlock.PIT) > 0 ? PIT_LIFT : 0;
         double x = pos.getX() + TripodBlock.centreX(state) / 16, z = pos.getZ() + TripodBlock.centreZ(state) / 16;
-        double y = pos.getY() + (LIQUID_LOW + (LIQUID_HIGH - LIQUID_LOW) * tripod.fill() + lift) / 16;
+        double y = pos.getY() + liquidY(state, tripod.fill()) / 16;
         if (state.getValue(TripodBlock.HOT)) {
             if (r.nextInt(3) == 0) level.addParticle(ParticleTypes.BUBBLE_POP, x + (r.nextDouble() - 0.5) * 0.45, y + 0.02, z + (r.nextDouble() - 0.5) * 0.45, 0, 0.02, 0);
             if (r.nextInt(4) == 0) level.addParticle(ParticleTypes.WHITE_SMOKE, x + (r.nextDouble() - 0.5) * 0.4, y + 0.1, z + (r.nextDouble() - 0.5) * 0.4, 0, 0.04, 0);

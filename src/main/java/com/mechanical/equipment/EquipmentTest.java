@@ -115,7 +115,7 @@ public final class EquipmentTest {
         ItemStack worn = new ItemStack(Mechanical.LEATHER_SATCHEL.get());
         var bus = net.neoforged.neoforge.common.NeoForge.EVENT_BUS;
         PackMenu pack = new PackMenu(0, sp.getInventory(), null, null, new PackMenu.Source(worn, Accessory.BACK, -1), null,
-                net.minecraft.network.chat.Component.empty(), net.minecraft.network.chat.Component.empty(), false);
+                net.minecraft.network.chat.Component.empty(), net.minecraft.network.chat.Component.empty(), false, 3, 0);
         bus.post(new net.neoforged.neoforge.event.entity.player.PlayerContainerEvent.Open(sp, pack));
         h.assertTrue(sp.getData(PackMenu.RUMMAGING) == PackMenu.WORN, "B: rummaging in the worn satchel");
         bus.post(new net.neoforged.neoforge.event.entity.player.PlayerContainerEvent.Close(sp, pack));

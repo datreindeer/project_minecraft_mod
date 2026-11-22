@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/tool_loops",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:steel_frame_pack"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:steel_frame_pack"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.steel_frame_pack.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.steel_frame_pack.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/fire_pit_stone",
+    "stone": "mechanical:block/fire_pit_stone",
+    "stone_dark": "mechanical:block/fire_pit_stone_dark",
+    "stone_sooted": "mechanical:block/fire_pit_stone_sooted",
+    "spit": "mechanical:block/fire_pit_spit",
+    "ash": "mechanical:block/fire_pit_ash",
+    "ash_hot": "mechanical:block/fire_pit_ash_hot",
+    "log": "mechanical:block/fire_pit_log",
+    "log_end": "mechanical:block/fire_pit_log_end",
+    "log_lit": "mechanical:block/fire_pit_log_lit",
+    "log_end_lit": "mechanical:block/fire_pit_log_end_lit",
+    "log_charred": "mechanical:block/fire_pit_log_charred",
+    "log_end_charred": "mechanical:block/fire_pit_log_end_charred",
+    "fire": "mechanical:block/fire_pit_fire",
+    "grate": "mechanical:block/bronze_fire_grate"
+  },
+  "elements": [
+    {
+      "from": [
+        -2.5,
+        5.625,
+        -7.0
+      ],
+      "to": [
+        3.5,
+        10.625,
+        23.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            10.0,
+            10.0
+          ],
+          "texture": "#log_end"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            10.0,
+            10.0
+          ],
+          "texture": "#log_end"
+        },
+        "east": {
+          "uv": [
+            0,
+            4,
+            16,
+            8.0
+          ],
+          "texture": "#log"
+        },
+        "west": {
+          "uv": [
+            0,
+            4,
+            16,
+            8.0
+          ],
+          "texture": "#log"
+        },
+        "up": {
+          "uv": [
+            0,
+            4,
+            16,
+            8.0
+          ],
+          "texture": "#log",
+          "rotation": 90
+        },
+        "down": {
+          "uv": [
+            0,
+            4,
+            16,
+            8.0
+          ],
+          "texture": "#log",
+          "rotation": 90
+        }
+      }
+    },
+    {
+      "from": [
+        12.5,
+        5.625,
+        -5.5
+      ],
+      "to": [
+        18.5,
+        10.625,
+        21.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            10.0,
+            10.0
+          ],
+          "texture": "#log_end"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            10.0,
+            10.0
+          ],
+          "texture": "#log_end"
+        },
+        "east": {
+          "uv": [
+            0,
+            8,
+            16,
+            12.0
+          ],
+          "texture": "#log"
+        },
+        "west": {
+          "uv": [
+            0,
+            8,
+            16,
+            12.0
+          ],
+          "texture": "#log"
+        },
+        "up": {
+          "uv": [
+            0,
+            8,
+            16,
+            12.0
+          ],
+          "texture": "#log",
+          "rotation": 90
+        },
+        "down": {
+          "uv": [
+            0,
+            8,
+            16,
+            12.0
+          ],
+          "texture": "#log",
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

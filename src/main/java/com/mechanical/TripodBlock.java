@@ -32,10 +32,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * A Tripod of poles lashed with Cordage, standing in the block over a Campfire or a Fire Pit, its legs reaching down to the
  * ground round the fire. PIT 0: over a campfire, centred on it; 1-4: over a Fire Pit part (part + 1), drawn centred on the
  * whole 2x2 pit (the model's centre is the block corner the pit's middle is at, turned by the blockstate). Only one tripod
- * per pit. KETTLE: a Bronze Kettle hangs in it (Kettle, TripodBlockEntity); HOT: the water in it is boiling.
+ * per pit. PIT 5: over the middle of a big (3x3) Fire Pit, a bigger tripod with a bigger kettle (scale {@link #BIG_SCALE}),
+ * and only there on a big pit. KETTLE: a Bronze Kettle hangs in it (Kettle, TripodBlockEntity); HOT: the water in it is boiling.
  */
 public class TripodBlock extends Block implements EntityBlock {
-    public static final IntegerProperty PIT = IntegerProperty.create("pit", 0, 4);
+    public static final IntegerProperty PIT = IntegerProperty.create("pit", 0, 5);
+    public static final int BIG_PIT = 5;
+    /** The big tripod's kettle is the pit one scaled by this round its middle (scripts/gen_kettle.py). */
+    public static final float BIG_SCALE = 1.5F;
+    private static final VoxelShape BIG_SHAPE = box(0.5, -9, 0.5, 15.5, 16, 15.5);
     public static final BooleanProperty KETTLE = BooleanProperty.create("kettle");
     public static final BooleanProperty HOT = BooleanProperty.create("hot");
     // around the kettle as drawn: over a campfire it hangs down into the fire's block, over a pit it hangs at the 2x2's centre
@@ -56,18 +61,19 @@ public class TripodBlock extends Block implements EntityBlock {
     /** The PIT value for a tripod standing on this block, or -1 if it is no fire to stand over. */
     static int pitFor(BlockState below) {
         if (below.is(BlockTags.CAMPFIRES)) return 0;
+        if (FirePit.isBig(below)) return below.getValue(FirePitBlock.PART) == 4 ? BIG_PIT : -1; // only over the big pit's middle
         return FirePit.isPit(below) ? below.getValue(FirePitBlock.PART) + 1 : -1;
     }
 
     /** The middle of the fire under the kettle, in pixels from this block's corner. */
     public static float centreX(BlockState state) {
         int pit = state.getValue(PIT);
-        return pit == 0 ? 8 : ((pit - 1) & 1) == 0 ? 16 : 0;
+        return pit == 0 || pit == BIG_PIT ? 8 : ((pit - 1) & 1) == 0 ? 16 : 0;
     }
 
     public static float centreZ(BlockState state) {
         int pit = state.getValue(PIT);
-        return pit == 0 ? 8 : ((pit - 1) >> 1) == 0 ? 16 : 0;
+        return pit == 0 || pit == BIG_PIT ? 8 : ((pit - 1) >> 1) == 0 ? 16 : 0;
     }
 
     @Override
@@ -75,7 +81,8 @@ public class TripodBlock extends Block implements EntityBlock {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         int pit = pitFor(level.getBlockState(pos.below()));
-        String problem = pit < 0 ? "message.mechanical.tripod.no_fire" : pit > 0 && otherTripodOnPit(level, pos, pit) ? "message.mechanical.tripod.one_per_pit" : null;
+        String problem = pit < 0 ? (FirePit.isBig(level.getBlockState(pos.below())) ? "message.mechanical.tripod.big_middle" : "message.mechanical.tripod.no_fire")
+                : pit > 0 && pit < BIG_PIT && otherTripodOnPit(level, pos, pit) ? "message.mechanical.tripod.one_per_pit" : null;
         if (problem != null) {
             if (context.getPlayer() != null && level.isClientSide()) context.getPlayer().sendOverlayMessage(Component.translatable(problem));
             return null;
@@ -115,7 +122,7 @@ public class TripodBlock extends Block implements EntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         int pit = state.getValue(PIT);
-        return pit == 0 ? CAMPFIRE_SHAPE : PIT_SHAPES[pit - 1];
+        return pit == 0 ? CAMPFIRE_SHAPE : pit == BIG_PIT ? BIG_SHAPE : PIT_SHAPES[pit - 1];
     }
 
     @Override

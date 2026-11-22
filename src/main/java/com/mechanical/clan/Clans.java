@@ -172,9 +172,19 @@ public final class Clans extends SavedData {
             return colour;
         }
 
-        /** Chunks the Fire Pit keeps loaded each way. shortcut: always LOAD_RADIUS; the big Fire Pit (F12) makes it 2 (5x5). */
-        int loadRadius() {
-            return LOAD_RADIUS;
+        /** Chunks the Fire Pit keeps loaded each way: LOAD_RADIUS (3x3), or 2 (5x5) for a big Fire Pit (F12). */
+        int loadRadius(ServerLevel level) {
+            return isBigPit(level.getServer()) ? FirePit.BIG_LOAD_RADIUS : LOAD_RADIUS;
+        }
+
+        /**
+         * Is the tribe's centre a big (3x3) Fire Pit? Gives 5x5 force-loading, more visiting bands at once (people.TribeVisits),
+         * and later tribe features ask for it. False while the pit's chunk isn't loaded.
+         */
+        public boolean isBigPit(net.minecraft.server.MinecraftServer server) {
+            if (pit.isEmpty()) return false;
+            ServerLevel level = server.getLevel(pit.get().dimension());
+            return level != null && level.isLoaded(pit.get().pos()) && FirePit.isBig(level.getBlockState(pit.get().pos()));
         }
     }
 
@@ -491,7 +501,7 @@ public final class Clans extends SavedData {
                 setDirty();
                 continue;
             }
-            want.put(pit, c.loadRadius());
+            want.put(pit, level.isLoaded(pit.pos()) ? c.loadRadius(level) : loaded.getOrDefault(pit, LOAD_RADIUS));
         }
         for (var e : List.copyOf(loaded.entrySet())) {
             if (e.getValue().equals(want.get(e.getKey()))) continue;
@@ -509,6 +519,26 @@ public final class Clans extends SavedData {
         ChunkPos c = ChunkPos.containing(pit.pos());
         for (int x = -radius; x <= radius; x++)
             for (int z = -radius; z <= radius; z++) PIT_TICKETS.forceChunk(level, pit.pos(), c.x() + x, c.z() + z, add, false);
+    }
+
+    /** A tribe's Fire Pit grew and its corner (the controller) moved: the tribe's centre moves with it (FirePitBlock#upgrade). */
+    public static void pitMoved(ServerLevel level, BlockPos from, BlockPos to) {
+        Clans data = get(level.getServer());
+        GlobalPos old = GlobalPos.of(level.dimension(), from);
+        for (Clan c : data.clans) {
+            if (c.pit.isPresent() && c.pit.get().equals(old)) {
+                c.pit = Optional.of(GlobalPos.of(level.dimension(), to.immutable()));
+                data.setDirty();
+            }
+        }
+    }
+
+    /** Is there a tribe's big Fire Pit in the camp centred on {@code centre} (CampAge#RADIUS)? */
+    public static boolean bigPitAt(ServerLevel level, BlockPos centre) {
+        for (Clan c : get(level.getServer()).clans)
+            if (c.pit.isPresent() && c.pit.get().dimension() == level.dimension() && c.pit.get().pos().closerThan(centre, CampAge.RADIUS)
+                    && c.isBigPit(level.getServer())) return true;
+        return false;
     }
 
     /** On load: keep the tickets of pits that are still a tribe's (and note them), drop the rest. */

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "BCB",
+    "B B"
+  ],
+  "key": {
+    "P": "mechanical:steel_plate",
+    "B": "mechanical:fire_brick",
+    "C": "mechanical:cementation_pot"
+  },
+  "result": {
+    "id": "mechanical:steel_casting_table"
+  }
+}

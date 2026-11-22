@@ -1,0 +1,25 @@
+{
+  "values": [
+    "#mechanical:knives",
+    "#mechanical:saws",
+    "#mechanical:tongs",
+    "#mechanical:needles",
+    "mechanical:bronze_chisel",
+    "mechanical:iron_chisel",
+    "mechanical:steel_chisel",
+    "mechanical:flint_sickle",
+    "mechanical:bronze_sickle",
+    "mechanical:iron_sickle",
+    "mechanical:steel_sickle",
+    "mechanical:bronze_smithing_hammer",
+    "mechanical:iron_smithing_hammer",
+    "mechanical:steel_smithing_hammer",
+    "mechanical:bronze_quarry_hammer",
+    "mechanical:iron_quarry_hammer",
+    "mechanical:steel_quarry_hammer",
+    "mechanical:bronze_shears",
+    "minecraft:shears",
+    "mechanical:fire_drill",
+    "minecraft:flint_and_steel"
+  ]
+}

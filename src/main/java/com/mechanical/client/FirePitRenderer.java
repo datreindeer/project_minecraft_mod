@@ -24,10 +24,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jspecify.annotations.Nullable;
 
-/** Food on the Fire Pit's two spits: skewered upright on the sticks, turned a little each so a full spit looks hand-loaded. */
+/**
+ * Food on the Fire Pit's two spits: skewered upright on the sticks, turned a little each so a full spit looks hand-loaded.
+ * On a big pit the same spits, spread over the 3x3, and a whole roast (three big cuts of its meat) turning on a centre spit.
+ */
 public class FirePitRenderer implements BlockEntityRenderer<FirePitBlockEntity, FirePitRenderer.State> {
     public static class State extends BlockEntityRenderState {
         final ItemStackRenderState[] items = new ItemStackRenderState[FirePit.SLOTS];
+        final ItemStackRenderState roast = new ItemStackRenderState();
+        boolean big;
+        float time;
 
         State() {
             for (int i = 0; i < items.length; i++) items[i] = new ItemStackRenderState();
@@ -52,6 +58,9 @@ public class FirePitRenderer implements BlockEntityRenderer<FirePitBlockEntity, 
         for (int slot = 0; slot < FirePit.SLOTS; slot++) {
             resolver.updateForTopItem(state.items[slot], pit.items().get(slot), ItemDisplayContext.FIXED, pit.getLevel(), null, seed + slot);
         }
+        state.big = pit.big();
+        resolver.updateForTopItem(state.roast, pit.roast(), ItemDisplayContext.FIXED, pit.getLevel(), null, seed + 99);
+        state.time = (pit.getLevel() == null ? 0 : pit.getLevel().getGameTime() % 3600) + partialTicks;
     }
 
     @Override
@@ -60,18 +69,32 @@ public class FirePitRenderer implements BlockEntityRenderer<FirePitBlockEntity, 
             ItemStackRenderState item = state.items[slot];
             if (item.isEmpty()) continue;
             pose.pushPose();
-            pose.translate(FirePitBlockEntity.slotX(slot) / 16, FirePitBlockEntity.SPIT_Y / 16, FirePitBlockEntity.slotZ(slot) / 16);
+            float x = FirePitBlockEntity.slotX(slot), z = FirePitBlockEntity.slotZ(slot);
+            if (state.big) pose.translate(FirePitBlockEntity.bigX(x) / 16, FirePitBlockEntity.BIG_SPIT_Y / 16, FirePitBlockEntity.bigX(z) / 16);
+            else pose.translate(x / 16, FirePitBlockEntity.SPIT_Y / 16, z / 16);
             pose.rotateDegrees(Axis.YP, (slot * 37 % 5 - 2) * 6); // -12..12 degrees round the stick
             pose.scale(0.4F, 0.4F, 0.4F);
             item.submit(pose, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             pose.popPose();
+        }
+        if (!state.roast.isEmpty()) {
+            // the carcass roasts on a spit along x through the middle, a little above the side spits, slowly turned
+            for (int i = -1; i <= 1; i++) {
+                pose.pushPose();
+                pose.translate((24 + i * 9) / 16F, (FirePitBlockEntity.BIG_SPIT_Y + 4) / 16, 24 / 16F);
+                pose.rotateDegrees(Axis.XP, state.time * 0.8F + i * 40);
+                pose.rotateDegrees(Axis.YP, 90);
+                pose.scale(1.1F, 1.1F, 1.1F);
+                state.roast.submit(pose, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+                pose.popPose();
+            }
         }
     }
 
     /** The spits reach over all four blocks of the pit, so it must not be culled by the corner block alone. */
     @Override
     public AABB getRenderBoundingBox(FirePitBlockEntity pit) {
-        return new AABB(pit.getBlockPos()).expandTowards(1, 1, 1);
+        return new AABB(pit.getBlockPos()).expandTowards(pit.big() ? 2 : 1, pit.big() ? 2 : 1, pit.big() ? 2 : 1);
     }
 
     @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)

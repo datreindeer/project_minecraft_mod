@@ -235,6 +235,11 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         return getBlockState().getValue(KilnBlock.CRACKS) >= KilnBlock.CRACKED;
     }
 
+    /** Tests: the kiln's heat right now (it drifts on from there as it ticks). */
+    void setTemperatureForTest(float t) {
+        temp = t;
+    }
+
     public float temperature() {
         return Float.isNaN(temp) ? ambient : temp;
     }

@@ -63,7 +63,34 @@ public final class FirePit {
     public static final Supplier<BlockEntityType<FirePitBlockEntity>> FIRE_PIT_ENTITY = Mechanical.BLOCK_ENTITIES.register("fire_pit",
             () -> new BlockEntityType<>(FirePitBlockEntity::new, FIRE_PIT.get()));
 
+    // ---- the big Fire Pit (Iron Age, Steel; docs/living-world-plan.md F12) ----
+    /**
+     * Steel Hearth Ring: 4 Steel Plates round 4 rock chunks and a Firewood. Used on a Fire Pit it grows it to 3x3 like a
+     * multiblock ({@link FirePitBlock#upgrade}): toward whichever side is free, or it names what is in the way.
+     */
+    public static final DeferredItem<Item> HEARTH_RING = ITEMS.registerSimpleItem("steel_hearth_ring");
+    /** Big pit: firewood it holds; every piece burns this many halves as long (3/2); its embers glow twice as long. */
+    public static final int BIG_STOCK_MAX = 32, BIG_FUEL_HALVES = 3, BIG_EMBER_TICKS = 2 * EMBER_TICKS;
+    /** Big pit: burns at the grate's rate with or without one (DRAIN 1), warms and keeps monsters off this many campfires' reach. */
+    public static final int BIG_DRAIN = 1;
+    public static final double BIG_REACH = 2.0;
+    /** A skinned carcass hung over a big pit roasts in this many lit ticks into {@link #ROAST_MEAT} times its most meat, cooked. */
+    public static final int ROAST_TICKS = 2400, ROAST_MEAT = 2;
+    /** Chunks a big tribe pit force-loads each way (5x5, Clans.Clan#loadRadius) and bands that may visit its camp at once (TribeVisits). */
+    public static final int BIG_LOAD_RADIUS = 2, BIG_VISITS = 2;
+
     public static void init() {}
+
+    /** Grants a mod advancement given from code ("done"). */
+    public static void award(net.minecraft.server.level.ServerPlayer player, String path) {
+        var holder = player.level().getServer().getAdvancements().get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, path));
+        if (holder != null) player.getAdvancements().award(holder, "done");
+    }
+
+    /** A part of a big (3x3) Fire Pit. */
+    public static boolean isBig(BlockState state) {
+        return isPit(state) && state.getValue(FirePitBlock.BIG);
+    }
 
     public static boolean isPit(BlockState state) {
         return state.getBlock() instanceof FirePitBlock;

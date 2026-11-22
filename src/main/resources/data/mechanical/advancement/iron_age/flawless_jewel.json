@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:iron_age/jeweler",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:gold_necklace"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.flawless_jewel.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.flawless_jewel.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

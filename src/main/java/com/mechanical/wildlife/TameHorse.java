@@ -159,7 +159,8 @@ public class TameHorse extends Horse {
         if (caravanLed()) return InteractionResult.PASS;
         ItemStack held = player.getItemInHand(hand);
         if (isTamed() && !isBaby() && !isVehicle() && !player.isSecondaryUseActive()) {
-            if (held.getItem() instanceof LeatherSatchelItem) {
+            // only a plain 3x3 satchel hangs as a saddlebag (a pack or tool loops would lose what the 9 saddlebag slots can't hold)
+            if (held.getItem() instanceof LeatherSatchelItem && held.is(com.mechanical.Mechanical.LEATHER_SATCHEL.get()) && com.mechanical.Satchels.toolSlots(held) == 0) {
                 if (satchelCount() >= MAX_SATCHELS) return InteractionResult.FAIL; // full: don't mount instead
                 if (!level().isClientSide()) attachSatchel(held.copyWithCount(1));
                 if (player instanceof net.minecraft.server.level.ServerPlayer sp) {

@@ -289,6 +289,7 @@ public final class CarcassHauling {
         if (event.getHand() != InteractionHand.MAIN_HAND || !(event.getLevel() instanceof ServerLevel level)) return;
         var state = level.getBlockState(event.getPos());
         if (state.is(HANGING_RACK.get())) HangingRackBlock.tryHang(level, event.getPos(), state, c, player);
+        else if (FirePit.isBig(state) && FirePit.entity(level, event.getPos(), state) instanceof FirePitBlockEntity pit) pit.hangCarcass(level, player, c);
         else letGo(c, player, Vec3.atBottomCenterOf(event.getPos().relative(event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace())));
     }
 

@@ -2,7 +2,16 @@
   "multipart": [
     {
       "when": {
-        "part": "1|2|3"
+        "OR": [
+          {
+            "big": "false",
+            "part": "1|2|3|4|5|6|7|8"
+          },
+          {
+            "big": "true",
+            "part": "0|1|2|3|5|6|7|8"
+          }
+        ]
       },
       "apply": {
         "model": "mechanical:block/fire_pit_part"
@@ -11,6 +20,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "false",
         "embers": "false"
       },
@@ -23,10 +33,12 @@
         "OR": [
           {
             "part": "0",
+            "big": "false",
             "lit": "true"
           },
           {
             "part": "0",
+            "big": "false",
             "embers": "true"
           }
         ]
@@ -40,10 +52,12 @@
         "OR": [
           {
             "part": "0",
+            "big": "false",
             "lit": "true"
           },
           {
             "part": "0",
+            "big": "false",
             "embers": "true"
           }
         ]
@@ -55,6 +69,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "false",
         "embers": "false"
       },
@@ -67,10 +82,12 @@
         "OR": [
           {
             "part": "0",
+            "big": "false",
             "lit": "true"
           },
           {
             "part": "0",
+            "big": "false",
             "embers": "true"
           }
         ]
@@ -82,6 +99,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "false",
         "embers": "false",
         "fuel": "1|2|3"
@@ -95,11 +113,13 @@
         "OR": [
           {
             "part": "0",
+            "big": "false",
             "lit": "true",
             "fuel": "1|2|3"
           },
           {
             "part": "0",
+            "big": "false",
             "embers": "true",
             "fuel": "1|2|3"
           }
@@ -112,6 +132,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "false",
         "embers": "false",
         "fuel": "2|3"
@@ -125,11 +146,13 @@
         "OR": [
           {
             "part": "0",
+            "big": "false",
             "lit": "true",
             "fuel": "2|3"
           },
           {
             "part": "0",
+            "big": "false",
             "embers": "true",
             "fuel": "2|3"
           }
@@ -142,6 +165,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "false",
         "embers": "false",
         "fuel": "3"
@@ -155,11 +179,13 @@
         "OR": [
           {
             "part": "0",
+            "big": "false",
             "lit": "true",
             "fuel": "3"
           },
           {
             "part": "0",
+            "big": "false",
             "embers": "true",
             "fuel": "3"
           }
@@ -172,6 +198,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "grate": "true"
       },
       "apply": {
@@ -181,6 +208,7 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "true",
         "fuel": "0|1"
       },
@@ -191,11 +219,222 @@
     {
       "when": {
         "part": "0",
+        "big": "false",
         "lit": "true",
         "fuel": "2|3"
       },
       "apply": {
         "model": "mechanical:block/fire_pit_fire_tall"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "false",
+        "embers": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_base_cold"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "part": "4",
+            "big": "true",
+            "lit": "true"
+          },
+          {
+            "part": "4",
+            "big": "true",
+            "embers": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_base_hot"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "part": "4",
+            "big": "true",
+            "lit": "true"
+          },
+          {
+            "part": "4",
+            "big": "true",
+            "embers": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_ash_hot"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "false",
+        "embers": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs0_charred"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "part": "4",
+            "big": "true",
+            "lit": "true"
+          },
+          {
+            "part": "4",
+            "big": "true",
+            "embers": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs0_lit"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "false",
+        "embers": "false",
+        "fuel": "1|2|3"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs1_fresh"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "part": "4",
+            "big": "true",
+            "lit": "true",
+            "fuel": "1|2|3"
+          },
+          {
+            "part": "4",
+            "big": "true",
+            "embers": "true",
+            "fuel": "1|2|3"
+          }
+        ]
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs1_lit"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "false",
+        "embers": "false",
+        "fuel": "2|3"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs2_fresh"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "part": "4",
+            "big": "true",
+            "lit": "true",
+            "fuel": "2|3"
+          },
+          {
+            "part": "4",
+            "big": "true",
+            "embers": "true",
+            "fuel": "2|3"
+          }
+        ]
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs2_lit"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "false",
+        "embers": "false",
+        "fuel": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs3_fresh"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "part": "4",
+            "big": "true",
+            "lit": "true",
+            "fuel": "3"
+          },
+          {
+            "part": "4",
+            "big": "true",
+            "embers": "true",
+            "fuel": "3"
+          }
+        ]
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_logs3_lit"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "grate": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_big_grate"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "true",
+        "fuel": "0|1"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_fire_big"
+      }
+    },
+    {
+      "when": {
+        "part": "4",
+        "big": "true",
+        "lit": "true",
+        "fuel": "2|3"
+      },
+      "apply": {
+        "model": "mechanical:block/fire_pit_fire_big_tall"
       }
     }
   ]

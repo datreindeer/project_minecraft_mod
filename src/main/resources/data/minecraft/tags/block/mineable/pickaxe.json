@@ -551,6 +551,7 @@
     "mechanical:loose_serpentine",
     "mechanical:loose_gypsum",
     "mechanical:loose_alabaster",
-    "mechanical:loose_alum_shale"
+    "mechanical:loose_alum_shale",
+    "mechanical:steel_casting_table"
   ]
 }
