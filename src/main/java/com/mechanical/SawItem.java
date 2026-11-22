@@ -26,6 +26,9 @@ public class SawItem extends FlintPickaxeItem {
     public static final int STROKE_TICKS = 10;
     /** The fallen log each player is sawing. Kept on both sides: the client stops its own player's sawing too. */
     private static final Map<Player, BlockPos> SAWING = new WeakHashMap<>();
+    /** The felled log block each player is sawing instead ({@link FelledLogEntity}). */
+    private record LogCut(FelledLogEntity log, int index) {}
+    private static final Map<Player, LogCut> SAWING_LOGS = new WeakHashMap<>();
 
     /** Ticks a stroke takes with this saw. */
     public final int strokeTicks;
@@ -40,7 +43,14 @@ public class SawItem extends FlintPickaxeItem {
     }
 
     static void startSawing(Player player, InteractionHand hand, BlockPos log) {
+        SAWING_LOGS.remove(player);
         SAWING.put(player, log.immutable());
+        player.startUsingItem(hand);
+    }
+
+    static void startSawingLog(Player player, InteractionHand hand, FelledLogEntity log, int index) {
+        SAWING.remove(player);
+        SAWING_LOGS.put(player, new LogCut(log, index));
         player.startUsingItem(hand);
     }
 
@@ -63,6 +73,17 @@ public class SawItem extends FlintPickaxeItem {
     public void onUseTick(Level level, LivingEntity user, ItemStack stack, int ticksRemaining) {
         // other players' clients only draw the sawing; their server decides when it stops
         if (!(user instanceof Player player) || level.isClientSide() && !player.isLocalPlayer()) return;
+        int ticks = getUseDuration(stack, user) - ticksRemaining;
+        LogCut cut = SAWING_LOGS.get(player);
+        if (cut != null) { // a block of a felled log: on while the player looks at that block
+            if (!cut.log().isAlive() || cut.log().pick(player) != cut.index()) {
+                SAWING_LOGS.remove(player);
+                player.stopUsingItem();
+            } else if (level instanceof ServerLevel server && ticks > 0 && ticks % strokeTicks == 0) {
+                cut.log().sawStroke(server, player, player.getUsedItemHand(), cut.index(), stack, ticks / strokeTicks % 2 == 1);
+            }
+            return;
+        }
         BlockPos log = SAWING.get(player);
         BlockState state = log == null ? null : level.getBlockState(log);
         if (state == null || !(state.getBlock() instanceof FallenLogBlock)
@@ -71,7 +92,6 @@ public class SawItem extends FlintPickaxeItem {
             player.stopUsingItem();
             return;
         }
-        int ticks = getUseDuration(stack, user) - ticksRemaining;
         if (level instanceof ServerLevel server && ticks > 0 && ticks % strokeTicks == 0)
             TreeChopping.sawStroke(server, player, player.getUsedItemHand(), log, state, stack, ticks / strokeTicks % 2 == 1);
     }

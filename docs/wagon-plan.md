@@ -61,6 +61,10 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
   Advancements: Iron Shod, Wagoner, A Pair in the Yoke, Heavy Haul, Freight. Docs: 03-iron-age.md, registry_notes,
   progression.json.
 
+## Stockar (byggt, living-world-plan F1)
+- En fälld stock (`FelledLogEntity`) på högst 4 block kan lastas på ett tomt flak: högerklicka vagnen medan du drar
+  stocken med en Lead. Bakgaveln tas bort i modellen, vagnen räknas som full. Smyg + högerklick med tom hand rullar av den.
+
 ## Senare
 - Uroxar som dragdjur (kräver tämjning).
 - Karavaner med vagn.

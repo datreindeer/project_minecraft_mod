@@ -1,0 +1,806 @@
+package com.mechanical;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+
+/**
+ * A felled tree's logs lying on the ground as one body (docs/living-world-plan.md F1). {@link FallingTreeEntity} lands as
+ * one of these; its blocks are kept as cells on a local grid (+z runs from the root end, the foot of the trunk, towards
+ * the crown) turned by the entity's yaw. Cell 0 is always the root end, the rest in order of distance from it.
+ * <ul>
+ * <li>Gravity: it rests on its lowest layer (on solid blocks or water, not leaves), falls when nothing holds it and slides
+ * off a ledge when its middle hangs over it. It sleeps when it lies still: no work per tick but a support check every 2 s.</li>
+ * <li>Cutting: hold right-click with an axe on a block (all four hewing stages at once, same drops as a Fallen Log), or a
+ * saw ({@link SawItem}, a Fallen Log's sawing). A middle block splits it in two, an end block shortens it. A knife scores
+ * a block into a Dugout Blank where it lies.</li>
+ * <li>Dragging: right-click near the root end with a Lead (or riding a horse: the horse pulls). The first pull draws the
+ * logs into one straight log behind the root; then it trails after its pullers. Each player pulls {@link #PER_PULLER}
+ * blocks, a horse {@link #HORSE} times that; too few and it doesn't move ("Too heavy"). Pullers are held at rope length.</li>
+ * <li>Wagon: a straight log up to {@link #WAGON_MAX} blocks rides on an empty Wagon ({@link WagonEntity}).</li>
+ * </ul>
+ */
+public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
+    /** Blocks one player can drag; a horse pulls this many times as much. */
+    public static final int PER_PULLER = 8;
+    public static final double HORSE = 3;
+    public static final int MAX_PULLERS = 10;
+    /** The log is pulled when its root end is farther than ROPE from the pullers; they are held within TETHER; past SNAP the lead breaks. */
+    static final double ROPE = 2.5, TETHER = ROPE + 1.5, SNAP = 10;
+    /** Blocks a tick at full strength; a load at the pullers' limit goes at 40 % of it. */
+    static final double MAX_STEP = 0.3;
+    /** Longest log the Wagon takes (its bed is 3 blocks: one hangs over the open back). */
+    public static final int WAGON_MAX = 4;
+    static final Identifier HAUL_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/haul_log"),
+            WAGON_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "iron_age/log_wagon");
+    /** Entity ids of the pullers, comma separated (client: ropes and holding back its own player or horse). */
+    private static final EntityDataAccessor<String> PULLERS = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
+
+    private final List<BlockPos> cells = new ArrayList<>();
+    private final List<BlockState> states = new ArrayList<>();
+    /** Middle of the cells on the local grid: the entity's position. */
+    private double cx, cz;
+    private boolean awake = true;
+    private int restTicks;
+    private double fallSpeed;
+    /** Leads tied on when it was saved; dropped on load (the pullers aren't saved). */
+    private int leadsToReturn;
+    /** Server: who pulls it. */
+    private final List<Entity> pullers = new ArrayList<>();
+    /** Server: saw strokes so far per block. */
+    private final Map<Integer, Integer> sawn = new HashMap<>();
+    /** Client: puller ids from {@link #PULLERS}. */
+    private int[] pullerIds = new int[0];
+
+    public FelledLogEntity(EntityType<? extends FelledLogEntity> type, Level level) {
+        super(type, level);
+        noPhysics = true;
+    }
+
+    // ---- shape
+
+    public int size() {
+        return cells.size();
+    }
+
+    public List<BlockPos> cells() {
+        return cells;
+    }
+
+    public List<BlockState> states() {
+        return states;
+    }
+
+    public double centreX() {
+        return cx;
+    }
+
+    public double centreZ() {
+        return cz;
+    }
+
+    private void setShape(List<BlockPos> newCells, List<BlockState> newStates) {
+        cells.clear();
+        states.clear();
+        cells.addAll(newCells);
+        states.addAll(newStates);
+        int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE;
+        for (BlockPos c : cells) {
+            minX = Math.min(minX, c.getX());
+            maxX = Math.max(maxX, c.getX());
+            minZ = Math.min(minZ, c.getZ());
+            maxZ = Math.max(maxZ, c.getZ());
+        }
+        cx = (minX + maxX) / 2.0;
+        cz = (minZ + maxZ) / 2.0;
+        setBoundingBox(makeBoundingBox());
+    }
+
+    /** Is it one straight row from the root, as the first pull leaves it? */
+    public boolean straight() {
+        for (int i = 0; i < cells.size(); i++) if (!cells.get(i).equals(cells.get(0).offset(0, 0, i)) || cells.get(i).getY() != 0) return false;
+        return true;
+    }
+
+    private static Vec3 local(BlockPos c, double cx, double cz) {
+        return new Vec3(c.getX() - cx, c.getY(), c.getZ() - cz);
+    }
+
+    /** Bottom centre of block {@code i} in the world, were the entity at {@code pos} turned to {@code yaw}. */
+    private Vec3 world(int i, Vec3 pos, float yaw) {
+        return pos.add(local(cells.get(i), cx, cz).yRot(-yaw * Mth.DEG_TO_RAD));
+    }
+
+    public Vec3 world(int i) {
+        return world(i, position(), getYRot());
+    }
+
+    /** The world block block {@code i} is in. */
+    public BlockPos cellPos(int i) {
+        return BlockPos.containing(world(i).add(0, 0.5, 0));
+    }
+
+    /** The block at world position {@code pos}, or -1. */
+    public int indexAt(BlockPos pos) {
+        for (int i = 0; i < cells.size(); i++) if (cellPos(i).equals(pos)) return i;
+        return -1;
+    }
+
+    /** Where the root end is: its pullers' ropes are tied there. */
+    public Vec3 rootPoint(float partialTicks) {
+        float yaw = getViewYRot(partialTicks);
+        return getPosition(partialTicks).add(local(cells.get(0), cx, cz).add(0, 0.5, -0.5).yRot(-yaw * Mth.DEG_TO_RAD));
+    }
+
+    @Override
+    protected AABB makeBoundingBox(Vec3 pos) {
+        if (cells == null || cells.isEmpty()) return super.makeBoundingBox(pos);
+        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE, minZ = Double.MAX_VALUE, maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
+        for (int i = 0; i < cells.size(); i++) {
+            Vec3 w = world(i, pos, getYRot());
+            minX = Math.min(minX, w.x);
+            maxX = Math.max(maxX, w.x);
+            minY = Math.min(minY, w.y);
+            maxY = Math.max(maxY, w.y);
+            minZ = Math.min(minZ, w.z);
+            maxZ = Math.max(maxZ, w.z);
+        }
+        // 0.71: half the diagonal of a turned block
+        return new AABB(minX - 0.71, minY, minZ - 0.71, maxX + 0.71, maxY + 1, maxZ + 0.71);
+    }
+
+    @Override
+    public void setYRot(float yRot) {
+        super.setYRot(yRot);
+        if (cells != null) setBoundingBox(makeBoundingBox());
+    }
+
+    /** The block {@code player} looks at, or -1: their view ray against each block's box on the log's own grid. */
+    public int pick(Player player) {
+        float r = getYRot() * Mth.DEG_TO_RAD;
+        Vec3 eye = player.getEyePosition();
+        Vec3 a = eye.subtract(position()).yRot(r), b = eye.add(player.getViewVector(1.0F).scale(player.entityInteractionRange() + 1)).subtract(position()).yRot(r);
+        int best = -1;
+        double bestD = Double.MAX_VALUE;
+        for (int i = 0; i < cells.size(); i++) {
+            Vec3 l = local(cells.get(i), cx, cz);
+            var hit = new AABB(l.x - 0.5, l.y, l.z - 0.5, l.x + 0.5, l.y + 1, l.z + 0.5).clip(a, b);
+            if (hit.isPresent() && hit.get().distanceToSqr(a) < bestD) {
+                bestD = hit.get().distanceToSqr(a);
+                best = i;
+            }
+        }
+        return best;
+    }
+
+    /** The wood of block {@code i} ("birch"), or null if the mod has no fallen log of it. */
+    private String wood(int i) {
+        String path = BuiltInRegistries.BLOCK.getKey(states.get(i).getBlock()).getPath().replace("stripped_", "").replace("_log", "").replace("_wood", "");
+        return Mechanical.FALLEN_LOGS.containsKey(path) ? path : null;
+    }
+
+    // ---- making them
+
+    /**
+     * Server: the logs of a felled tree come down here ({@link FallingTreeEntity}). {@code offsets} are from the cut log at
+     * {@code base} (offset 0 must be among them); turned over towards {@code direction}, height becomes length and the root
+     * end lies just past the stump. Logs that land in the same place lie on top of each other.
+     */
+    public static void land(ServerLevel level, BlockPos base, Direction direction, List<BlockPos> offsets, List<BlockState> logStates) {
+        float yaw = direction.toYRot();
+        Vec3 side = new Vec3(1, 0, 0).yRot(-yaw * Mth.DEG_TO_RAD);
+        Integer[] order = new Integer[offsets.size()];
+        for (int i = 0; i < order.length; i++) order[i] = i;
+        // root first, then up the trunk
+        java.util.Arrays.sort(order, Comparator.comparingInt((Integer i) -> offsets.get(i).getY()).thenComparingInt(i -> Math.abs(offsets.get(i).getX()) + Math.abs(offsets.get(i).getZ())));
+        List<BlockPos> cells = new ArrayList<>();
+        List<BlockState> states = new ArrayList<>();
+        java.util.Set<BlockPos> taken = new java.util.HashSet<>();
+        for (int i : order) {
+            BlockPos o = offsets.get(i);
+            BlockPos c = new BlockPos((int) Math.round(o.getX() * side.x + o.getZ() * side.z), 0, o.getY() + 1);
+            while (!taken.add(c)) c = c.above();
+            cells.add(c);
+            states.add(logStates.get(i));
+        }
+        Vec3 origin = Vec3.atBottomCenterOf(base);
+        for (List<Integer> part : components(cells)) {
+            FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
+            log.setShape(part.stream().map(cells::get).toList(), part.stream().map(states::get).toList());
+            log.setYRot(yaw);
+            Vec3 pos = origin.add(new Vec3(log.cx, 0, log.cz).yRot(-yaw * Mth.DEG_TO_RAD));
+            // high enough that no block is in the ground; it settles from there
+            int y = level.getMinY();
+            for (int i = 0; i < log.size(); i++) {
+                Vec3 w = log.world(i, pos, yaw);
+                y = Math.max(y, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(w.x), Mth.floor(w.z)) - log.cells.get(i).getY());
+            }
+            log.setPos(pos.x, y, pos.z);
+            for (int i = 0; i < log.size(); i++) crush(level, log.cellPos(i));
+            level.addFreshEntity(log);
+        }
+    }
+
+    /** Flowers, saplings and bushes where a log comes down are crushed (they drop what they drop). */
+    private static void crush(ServerLevel level, BlockPos pos) {
+        if (level.getBlockState(pos).getBlock() instanceof net.minecraft.world.level.block.VegetationBlock) level.destroyBlock(pos, true);
+    }
+
+    /** Groups of touching cells (corners count), each in breadth-first order from its first cell in list order. */
+    static List<List<Integer>> components(List<BlockPos> cells) {
+        Map<BlockPos, Integer> index = new HashMap<>();
+        for (int i = 0; i < cells.size(); i++) index.put(cells.get(i), i);
+        boolean[] seen = new boolean[cells.size()];
+        List<List<Integer>> out = new ArrayList<>();
+        for (int start = 0; start < cells.size(); start++) {
+            if (seen[start]) continue;
+            List<Integer> part = new ArrayList<>();
+            ArrayDeque<Integer> queue = new ArrayDeque<>(List.of(start));
+            seen[start] = true;
+            while (!queue.isEmpty()) {
+                int i = queue.poll();
+                part.add(i);
+                for (BlockPos n : BlockPos.betweenClosed(cells.get(i).offset(-1, -1, -1), cells.get(i).offset(1, 1, 1))) {
+                    Integer j = index.get(n);
+                    if (j != null && !seen[j]) {
+                        seen[j] = true;
+                        queue.add(j);
+                    }
+                }
+            }
+            out.add(part);
+        }
+        return out;
+    }
+
+    /**
+     * Server: this log becomes the pieces of {@code newCells} (on the same grid, so nothing moves): one log per touching
+     * group. The piece with the root end keeps the pullers if {@code keepPullers}; otherwise their leads drop.
+     */
+    private void rebuild(ServerLevel level, List<BlockPos> newCells, List<BlockState> newStates, boolean keepPullers) {
+        List<Entity> carried = new ArrayList<>(pullers);
+        if (!keepPullers) for (Entity p : carried) untie(level, p, false);
+        pullers.clear();
+        discard();
+        boolean first = true;
+        for (List<Integer> part : components(newCells)) {
+            int minY = part.stream().mapToInt(i -> newCells.get(i).getY()).min().orElse(0);
+            FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
+            log.setYRot(getYRot());
+            log.setShape(part.stream().map(i -> newCells.get(i).below(minY)).toList(), part.stream().map(newStates::get).toList());
+            log.setPos(position().add(new Vec3(log.cx - cx, minY, log.cz - cz).yRot(-getYRot() * Mth.DEG_TO_RAD)));
+            if (first && keepPullers) {
+                log.pullers.addAll(carried);
+                log.syncPullers();
+            }
+            level.addFreshEntity(log);
+            first = false;
+        }
+    }
+
+    /** Server: block {@code i} is cut out (its drops are the caller's). */
+    public void removeBlock(ServerLevel level, int i) {
+        List<BlockPos> c = new ArrayList<>(cells);
+        List<BlockState> s = new ArrayList<>(states);
+        c.remove(i);
+        s.remove(i);
+        rebuild(level, c, s, i != 0);
+    }
+
+    /** Server: takes out the log block at {@code pos} with no drops (woodcutters, beavers). False if no log has a block there. */
+    public static boolean removeAt(ServerLevel level, BlockPos pos) {
+        for (FelledLogEntity log : level.getEntitiesOfClass(FelledLogEntity.class, new AABB(pos).inflate(1), e -> !e.isPassenger())) {
+            int i = log.indexAt(pos);
+            if (i >= 0) {
+                log.removeBlock(level, i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Server: the logs drawn into one straight log from the root end, lying away from it along {@code yaw}: a new entity,
+     * which takes over the pullers. Null (nothing changes) if {@code check} and it doesn't fit there.
+     */
+    FelledLogEntity straighten(ServerLevel level, float yaw, boolean check) {
+        List<BlockPos> line = new ArrayList<>();
+        for (int i = 0; i < cells.size(); i++) line.add(new BlockPos(0, 0, i));
+        FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
+        log.setShape(line, states);
+        log.setYRot(yaw);
+        Vec3 root = world(0);
+        Vec3 pos = root.add(Vec3.directionFromRotation(0, yaw).scale(log.cz));
+        boolean fits = !check;
+        for (int up = 0; up <= 1 && !fits; up++) {
+            if (log.fits(level, pos.add(0, up, 0), yaw)) {
+                pos = pos.add(0, up, 0);
+                fits = true;
+            }
+        }
+        if (!fits) return null;
+        log.setPos(pos);
+        log.pullers.addAll(pullers);
+        log.syncPullers();
+        pullers.clear();
+        discard();
+        level.addFreshEntity(log);
+        return log;
+    }
+
+    // ---- physics
+
+    /** Blocks it can't pass through (leaves give way). */
+    private static boolean blocks(Level level, BlockPos pos) {
+        BlockState s = level.getBlockState(pos);
+        return !s.is(BlockTags.LEAVES) && !s.getCollisionShape(level, pos).isEmpty();
+    }
+
+    /** What it can lie on: solid ground, or water (logs float). */
+    private static boolean holds(Level level, BlockPos pos) {
+        return blocks(level, pos) || level.getFluidState(pos).is(FluidTags.WATER);
+    }
+
+    /** Would it be clear of the ground at {@code pos} turned to {@code yaw}? */
+    boolean fits(Level level, Vec3 pos, float yaw) {
+        for (int i = 0; i < cells.size(); i++) if (blocks(level, BlockPos.containing(world(i, pos, yaw).add(0, 0.5, 0)))) return false;
+        return true;
+    }
+
+    private void wake() {
+        awake = true;
+        restTicks = 0;
+    }
+
+    /** Server: does anything under its lowest layer hold it up? */
+    private boolean supported() {
+        int y = Mth.floor(getY() + 0.01) - 1;
+        for (int i = 0; i < cells.size(); i++) {
+            if (cells.get(i).getY() != 0) continue;
+            Vec3 w = world(i);
+            if (holds(level(), BlockPos.containing(w.x, y, w.z))) return true;
+        }
+        return false;
+    }
+
+    /** Server: one step of falling or sliding off a ledge; true if it moved. */
+    private boolean settle(ServerLevel level) {
+        int baseY = Mth.floor(getY() + 0.01);
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE, minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE, comX = 0, comZ = 0;
+        boolean any = false;
+        for (int i = 0; i < cells.size(); i++) {
+            BlockPos c = cells.get(i);
+            comX += c.getX();
+            comZ += c.getZ();
+            if (c.getY() != 0) continue;
+            Vec3 w = world(i);
+            if (!holds(level, BlockPos.containing(w.x, baseY - 1, w.z))) continue;
+            any = true;
+            minX = Math.min(minX, c.getX());
+            maxX = Math.max(maxX, c.getX());
+            minZ = Math.min(minZ, c.getZ());
+            maxZ = Math.max(maxZ, c.getZ());
+        }
+        if (!any) {
+            fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
+            setPos(getX(), getY() - fallSpeed, getZ());
+            return true;
+        }
+        boolean moved = false;
+        if (fallSpeed > 0 || getY() != baseY) {
+            if (fallSpeed > 0.4) playSound(SoundEvents.WOOD_FALL, 1.0F, 0.6F);
+            fallSpeed = 0;
+            setPos(getX(), baseY, getZ());
+            moved = true;
+        }
+        // its middle hangs past what holds it: it slides that way, off the ledge
+        comX /= cells.size();
+        comZ /= cells.size();
+        double sx = comX < minX - 0.5 ? -1 : comX > maxX + 0.5 ? 1 : 0, sz = comZ < minZ - 0.5 ? -1 : comZ > maxZ + 0.5 ? 1 : 0;
+        if (sx == 0 && sz == 0) return moved;
+        Vec3 step = new Vec3(sx, 0, sz).normalize().scale(0.2).yRot(-getYRot() * Mth.DEG_TO_RAD);
+        if (!fits(level, position().add(step), getYRot())) return moved;
+        setPos(position().add(step));
+        return true;
+    }
+
+    @Override
+    public void tick() {
+        if (level().isClientSide()) {
+            holdBackPullers();
+            return;
+        }
+        if (isPassenger()) return; // on a wagon: it places us
+        ServerLevel level = (ServerLevel) level();
+        if (cells.isEmpty()) {
+            discard();
+            return;
+        }
+        if (!awake) {
+            // asleep: only a look at what holds it now and then (a block dug out from under it)
+            if ((level.getGameTime() + getId()) % 40 == 0 && !supported()) wake();
+            return;
+        }
+        super.tick();
+        if (leadsToReturn > 0) {
+            spawnAtLocation(level, new ItemStack(Items.LEAD, leadsToReturn));
+            leadsToReturn = 0;
+        }
+        checkPullers(level);
+        boolean moved = !pullers.isEmpty() && drag(level);
+        if (isRemoved()) return; // straightened into a new log
+        moved |= settle(level);
+        if (moved || !pullers.isEmpty()) restTicks = 0;
+        else if (++restTicks > 20) awake = false;
+    }
+
+    // ---- pullers
+
+    private static double strength(Entity puller) {
+        return puller instanceof AbstractHorse ? HORSE : 1;
+    }
+
+    /** The player behind a puller: itself, or a horse's rider. */
+    private static Player playerOf(Entity puller) {
+        return puller instanceof Player p ? p : puller.getControllingPassenger() instanceof Player rider ? rider : null;
+    }
+
+    public boolean isPulled() {
+        return level().isClientSide() ? pullerIds.length > 0 : !pullers.isEmpty();
+    }
+
+    /** Is {@code player} (or the horse they ride) pulling it? Both sides. */
+    public boolean pulledBy(Player player) {
+        if (level().isClientSide()) return isPullerClient(player);
+        return pullers.contains(player) || player.getVehicle() != null && pullers.contains(player.getVehicle());
+    }
+
+    /** The log {@code player} (or their horse) pulls, or null. Both sides. */
+    public static FelledLogEntity pulledBy(Player player, double range) {
+        for (FelledLogEntity log : player.level().getEntitiesOfClass(FelledLogEntity.class, player.getBoundingBox().inflate(range), l -> l.pulledBy(player)))
+            return log;
+        return null;
+    }
+
+    private void syncPullers() {
+        StringBuilder s = new StringBuilder();
+        for (Entity p : pullers) s.append(s.isEmpty() ? "" : ",").append(p.getId());
+        entityData.set(PULLERS, s.toString());
+    }
+
+    /** Server: the lead comes off {@code puller}: back to its player (or dropped there if {@code broke} or nobody). */
+    private void untie(ServerLevel level, Entity puller, boolean broke) {
+        Player player = playerOf(puller);
+        ItemStack lead = new ItemStack(Items.LEAD);
+        if (!broke && player != null) {
+            if (!player.hasInfiniteMaterials()) player.getInventory().placeItemBackInInventory(lead, net.minecraft.util.Prediction.SERVER_ONLY);
+        } else {
+            puller.spawnAtLocation(level, lead);
+        }
+        level.playSound(null, puller.getX(), puller.getY(), puller.getZ(), broke ? SoundEvents.LEAD_BREAK : SoundEvents.LEAD_UNTIED, SoundSource.NEUTRAL, 1.0F, 1.0F);
+    }
+
+    /** Server: lets go of everyone (their leads back to them). */
+    void untieAll(ServerLevel level) {
+        for (Entity p : pullers) untie(level, p, false);
+        pullers.clear();
+        syncPullers();
+    }
+
+    /** Server: pullers gone or too far lose their lead. */
+    private void checkPullers(ServerLevel level) {
+        if (pullers.isEmpty()) return;
+        Vec3 root = world(0);
+        boolean changed = pullers.removeIf(p -> {
+            if (p.isAlive() && p.level() == level && p.position().distanceTo(root) <= SNAP) return false;
+            if (p.isAlive()) untie(level, p, true);
+            else spawnAtLocation(level, new ItemStack(Items.LEAD));
+            return true;
+        });
+        if (changed) syncPullers();
+    }
+
+    /** Server: one step of being pulled; true if it moved. */
+    private boolean drag(ServerLevel level) {
+        double force = 0;
+        Vec3 pull = Vec3.ZERO;
+        for (Entity p : pullers) {
+            force += strength(p);
+            pull = pull.add(p.position());
+        }
+        pull = pull.scale(1.0 / pullers.size());
+        double capacity = force * PER_PULLER;
+        if (capacity < size()) {
+            if (tickCount % 40 == 0) {
+                for (Entity p : pullers) {
+                    Player player = playerOf(p);
+                    if (player != null) player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.too_heavy"));
+                }
+            }
+            return false;
+        }
+        Vec3 root = world(0);
+        Vec3 off = new Vec3(pull.x - root.x, 0, pull.z - root.z);
+        double d = off.length();
+        if (d <= ROPE) return false;
+        if (!straight()) {
+            // the first pull draws the logs into one straight log lying away from the pullers
+            Vec3 away = off.reverse();
+            return straighten(level, (float) (Mth.atan2(-away.x, away.z) * Mth.RAD_TO_DEG), true) != null;
+        }
+        double speed = MAX_STEP * (1 - 0.6 * size() / capacity);
+        Vec3 newRoot = root.add(off.scale(Math.min(d - ROPE, speed) / d));
+        // the tail trails behind like a towed cart
+        Vec3 tail = world(size() - 1);
+        Vec3 f = new Vec3(tail.x - newRoot.x, 0, tail.z - newRoot.z);
+        f = f.lengthSqr() < 1.0E-4 ? off.reverse().normalize() : f.normalize();
+        float yaw = (float) (Mth.atan2(-f.x, f.z) * Mth.RAD_TO_DEG);
+        Vec3 centre = new Vec3(newRoot.x, getY(), newRoot.z).add(f.scale(cz - cells.get(0).getZ()));
+        for (int up = 0; up <= 1; up++) {
+            Vec3 at = centre.add(0, up, 0);
+            if (!fits(level, at, yaw)) continue;
+            setYRot(yaw);
+            setPos(at);
+            if (tickCount % 20 == 0) {
+                for (Entity p : pullers) if (playerOf(p) instanceof ServerPlayer sp) Kettle.award(sp, HAUL_ADVANCEMENT);
+                playSound(SoundEvents.WOOD_STEP, 0.6F, 0.6F);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /** Client: its own player (or the horse they ride) can't walk off further than the rope reaches. */
+    private void holdBackPullers() {
+        if (pullerIds.length == 0 || cells.isEmpty()) return;
+        Vec3 root = world(0);
+        for (int id : pullerIds) {
+            Entity mover = level().getEntity(id);
+            if (mover == null || !mover.isLocalInstanceAuthoritative()) continue;
+            Vec3 off = mover.position().subtract(root).multiply(1, 0, 1);
+            double d = off.length();
+            if (d <= TETHER) continue;
+            Vec3 n = off.scale(1 / d);
+            double limit = Math.max(TETHER, new Vec3(mover.xo - root.x, 0, mover.zo - root.z).length());
+            if (d > limit) mover.setPos(root.x + n.x * limit, mover.getY(), root.z + n.z * limit);
+            Vec3 v = mover.getDeltaMovement();
+            double out = v.x * n.x + v.z * n.z;
+            if (out > 0) mover.setDeltaMovement(v.subtract(n.x * out, 0, n.z * out));
+        }
+    }
+
+    /** Client: the entities whose ropes run to the root end. */
+    public int[] pullerIds() {
+        return pullerIds;
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
+        super.onSyncedDataUpdated(accessor);
+        if (PULLERS.equals(accessor)) {
+            String s = entityData.get(PULLERS);
+            pullerIds = s.isEmpty() ? new int[0] : java.util.Arrays.stream(s.split(",")).mapToInt(Integer::parseInt).toArray();
+        }
+    }
+
+    // ---- interaction
+
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
+        if (hand != InteractionHand.MAIN_HAND || isPassenger()) return InteractionResult.PASS;
+        int i = pick(player);
+        if (i < 0) return InteractionResult.PASS;
+        ItemStack held = player.getMainHandItem();
+        boolean server = level() instanceof ServerLevel;
+        if (held.is(Items.LEAD)) {
+            if (server) tie((ServerLevel) level(), player, i, held);
+            return InteractionResult.SUCCESS;
+        }
+        if (held.isEmpty() && pulledBy(player)) {
+            if (server) {
+                Entity p = pullers.contains(player) ? player : player.getVehicle();
+                pullers.remove(p);
+                syncPullers();
+                untie((ServerLevel) level(), p, false);
+                player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.untied"));
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (held.getItem() instanceof SawItem) {
+            SawItem.startSawingLog(player, hand, this, i);
+            return InteractionResult.CONSUME;
+        }
+        if (held.is(ItemTags.AXES)) {
+            if (server) chop((ServerLevel) level(), player, hand, i, held);
+            return InteractionResult.CONSUME;
+        }
+        if (held.is(Watercraft.KNIVES)) {
+            if (server) scoreDugout((ServerLevel) level(), player, hand, i, held);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
+    }
+
+    private boolean isPullerClient(Player player) {
+        for (int id : pullerIds) if (id == player.getId() || player.getVehicle() != null && id == player.getVehicle().getId()) return true;
+        return false;
+    }
+
+    /** Server: a lead tied to the root end; riding a horse, the horse pulls. */
+    void tie(ServerLevel level, Player player, int i, ItemStack lead) {
+        BlockPos c = cells.get(i), root = cells.get(0);
+        if (Math.max(Math.abs(c.getX() - root.getX()), Math.max(Math.abs(c.getY() - root.getY()), Math.abs(c.getZ() - root.getZ()))) > 1) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.root_end"));
+            return;
+        }
+        Entity puller = player.getVehicle() instanceof AbstractHorse horse ? horse : player;
+        if (pullers.contains(puller) || pullers.size() >= MAX_PULLERS) return;
+        pullers.add(puller);
+        syncPullers();
+        lead.consume(1, player);
+        wake();
+        playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);
+        player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.tied"));
+    }
+
+    /** Server: one axe chop at block {@code i} (held right-click); the block comes off after all four hewing stages' chops. */
+    private void chop(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack axe) {
+        if (TreeChopping.chop(level, player, hand, cellPos(i), states.get(i), axe, TreeChopping.chopsNeeded(axe) * (FallenLogBlock.LAST_STAGE + 1))) {
+            BlockPos at = cellPos(i);
+            String wood = wood(i);
+            if (wood != null) TreeChopping.hewWhole(level, at, wood, axe, player);
+            else Block.dropResources(states.get(i), level, at, null, player, axe);
+            removeBlock(level, i);
+        }
+    }
+
+    /** Server: one saw stroke across block {@code i} (SawItem); the last cuts it out with a sawn Fallen Log's drops. */
+    void sawStroke(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack saw, boolean push) {
+        BlockPos at = cellPos(i);
+        Vec3 w = world(i);
+        level.playSound(null, w.x, w.y + 1, w.z, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 0.6F, (push ? 1.35F : 1.1F) + random.nextFloat() * 0.1F);
+        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, states.get(i)), w.x, w.y + 1, w.z, 3, 0.2, 0.02, 0.2, 0.02);
+        int strokes = sawn.merge(i, 1, Integer::sum);
+        if (strokes < FallenLogBlock.SAW_STROKES) return;
+        String wood = wood(i);
+        if (wood != null) TreeChopping.sawDrops(level, at, wood, 0, player);
+        else Block.dropResources(states.get(i), level, at, null, player, saw);
+        level.playSound(null, at, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);
+        saw.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        player.stopUsingItem();
+        removeBlock(level, i);
+    }
+
+    /** Server: a knife scores block {@code i} into a Dugout Blank lying where it is. */
+    private void scoreDugout(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack knife) {
+        BlockPos at = cellPos(i);
+        if (!level.getBlockState(at).canBeReplaced()) return;
+        Direction.Axis axis = Direction.getApproximateNearest(-Mth.sin(getYRot() * Mth.DEG_TO_RAD), 0, Mth.cos(getYRot() * Mth.DEG_TO_RAD)).getAxis();
+        if (axis.isVertical()) axis = Direction.Axis.Z;
+        level.setBlock(at, Watercraft.DUGOUT_BLANK.get().defaultBlockState().setValue(DugoutBlankBlock.AXIS, axis), Block.UPDATE_ALL);
+        level.playSound(null, at, SoundEvents.AXE_STRIP.value(), SoundSource.BLOCKS, 0.7F, 1.4F);
+        knife.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        removeBlock(level, i);
+    }
+
+    @Override
+    public boolean isPickable() {
+        return !isRemoved();
+    }
+
+    @Override
+    public boolean isAttackable() {
+        return false;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        return false;
+    }
+
+    @Override
+    protected boolean canRide(Entity vehicle) {
+        return vehicle instanceof WagonEntity;
+    }
+
+    @Override
+    public void stopRiding() {
+        super.stopRiding();
+        wake();
+    }
+
+    // ---- sync and save
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(PULLERS, "");
+    }
+
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buf) {
+        buf.writeVarInt(cells.size());
+        for (int i = 0; i < cells.size(); i++) {
+            buf.writeBlockPos(cells.get(i));
+            buf.writeVarInt(Block.getId(states.get(i)));
+        }
+    }
+
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf buf) {
+        int n = buf.readVarInt();
+        List<BlockPos> c = new ArrayList<>();
+        List<BlockState> s = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            c.add(buf.readBlockPos());
+            s.add(Block.stateById(buf.readVarInt()));
+        }
+        setShape(c, s);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        int[] flat = input.getIntArray("cells").orElse(new int[0]);
+        List<BlockState> s = input.read("states", BlockState.CODEC.listOf()).orElse(List.of());
+        List<BlockPos> c = new ArrayList<>();
+        for (int i = 0; i + 2 < flat.length; i += 3) c.add(new BlockPos(flat[i], flat[i + 1], flat[i + 2]));
+        if (c.size() == s.size()) setShape(c, s);
+        leadsToReturn = input.getIntOr("leads", 0);
+        wake();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        int[] flat = new int[cells.size() * 3];
+        for (int i = 0; i < cells.size(); i++) {
+            flat[i * 3] = cells.get(i).getX();
+            flat[i * 3 + 1] = cells.get(i).getY();
+            flat[i * 3 + 2] = cells.get(i).getZ();
+        }
+        output.putIntArray("cells", flat);
+        output.store("states", BlockState.CODEC.listOf(), states);
+        output.putInt("leads", pullers.size() + leadsToReturn);
+    }
+}

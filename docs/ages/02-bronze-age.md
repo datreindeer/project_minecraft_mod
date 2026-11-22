@@ -535,6 +535,9 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
   släpper avbryts sågningen, men snittet står kvar i stocken (blockstate `sawn` 0–7) och man fortsätter där man slutade.
   Snittet syns som ett mörkt sågspår tvärs över stockens mitt som blir djupare uppifrån och ner, med sågspån vid kanterna.
   Alla ser armarna dra sågen fram och tillbaka (egen ArmPose) och hör raspet; sågspån (blockpartiklar) yr vid varje tag.
+- **Felled Log** (fällt träd, entity): samma sak på ett block av stocken: 8 sågtag kapar just det blocket till 3 Rough Logs
+  plus barken, och stocken delas eller blir kortare (snittet syns inte, sågtagen räknas tills stocken flyttas eller servern
+  startar om).
 
 ### Bronze Helmet och Bronze Greaves
 

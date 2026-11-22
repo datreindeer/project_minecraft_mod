@@ -23,7 +23,7 @@ BABY = {"calf", "cub", "lamb", "fawn", "piglet", "foal", "chick", "leveret"}
 OVERLAY = re.compile(r"_(eyes|runes|overlay|glow|emissive)$")
 VANILLA_FIELDS = {"ModelLayers.PLAYER": "minecraft:player#main", "ModelLayers.PLAYER_SLIM": "minecraft:player_slim#main",
                   "ModelLayers.ZOMBIE": "minecraft:zombie#main", "ModelLayers.SKELETON": "minecraft:skeleton#main"}
-SKIP_ENTITIES = {"carcass", "falling_tree"}  # draw other mobs' models / blocks, nothing of their own to show
+SKIP_ENTITIES = {"carcass", "falling_tree", "felled_log"}  # draw other mobs' models / blocks, nothing of their own to show
 
 
 class Models:

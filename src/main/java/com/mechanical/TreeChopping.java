@@ -29,6 +29,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 /**
  * Working felled wood by hand, holding right-click with an axe: one heavy chop every {@link #CHOP_TICKS}.
  * - Fallen log: bark comes off (Bark), it is hewn thinner twice, then it becomes a Rough Log (or only sticks if it fails).
+ *   A block of a felled tree ({@link FelledLogEntity}) goes through all four stages in one go, with the same drops.
  *   A Bronze Saw (held right-click, see {@link SawItem}) instead cuts the whole log across into 3 Rough Logs (fewer if an
  *   axe already hewed it) plus its bark, in {@link FallenLogBlock#SAW_STROKES} strokes.
  * - Rough Log stood on a stump (right-click the stump with it): split into 2-3 Firewood (or 1 Firewood + sticks if it fails).
@@ -161,23 +162,32 @@ public final class TreeChopping {
     }
 
     static void finishFallenLog(ServerLevel level, BlockPos pos, BlockState state, ItemStack axe, Player player) {
-        int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
         int stage = state.getValue(FallenLogBlock.STAGE);
-        RandomSource random = level.getRandom();
-        String wood = ((FallenLogBlock) state.getBlock()).wood();
-        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + random.nextInt(2)));
-        else if (stage < FallenLogBlock.LAST_STAGE) {
-            // hewn thinner: chips of sticks, and sometimes a usable piece of rough log
-            Block.popResource(level, pos, new ItemStack(Items.STICK, 1 + random.nextInt(2)));
-            if (random.nextFloat() < successChance(axe) * 0.5F) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
-        }
+        hewDrops(level, pos, ((FallenLogBlock) state.getBlock()).wood(), stage, axe, player);
         if (stage < FallenLogBlock.LAST_STAGE) {
             level.setBlock(pos, state.setValue(FallenLogBlock.STAGE, stage + 1), Block.UPDATE_ALL);
             return;
         }
         level.removeBlock(pos, false);
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
-        if (random.nextFloat() < successChance(axe)) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
+    }
+
+    /** All four hewing stages of a log at once (a block cut off a {@link FelledLogEntity}): what a Fallen Log gives, stage by stage. */
+    static void hewWhole(ServerLevel level, BlockPos pos, String wood, ItemStack axe, Player player) {
+        for (int stage = 0; stage <= FallenLogBlock.LAST_STAGE; stage++) hewDrops(level, pos, wood, stage, axe, player);
+        level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
+    }
+
+    /** What finishing hewing stage {@code stage} of a {@code wood} log drops: bark, then sticks and maybe a Rough Log, last a Rough Log (or sticks). */
+    private static void hewDrops(ServerLevel level, BlockPos pos, String wood, int stage, ItemStack axe, Player player) {
+        int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
+        RandomSource random = level.getRandom();
+        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + random.nextInt(2)));
+        else if (stage < FallenLogBlock.LAST_STAGE) {
+            // hewn thinner: chips of sticks, and sometimes a usable piece of rough log
+            Block.popResource(level, pos, new ItemStack(Items.STICK, 1 + random.nextInt(2)));
+            if (random.nextFloat() < successChance(axe) * 0.5F) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
+        } else if (random.nextFloat() < successChance(axe)) Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), wood2));
         else Block.popResource(level, pos, new ItemStack(Items.STICK, 2 + random.nextInt(2)));
     }
 
@@ -206,13 +216,15 @@ public final class TreeChopping {
 
     /** A saw cuts the whole fallen log at once, with no failures: its bark, and a Rough Log for every piece not yet hewn away. */
     private static void sawFallenLog(ServerLevel level, BlockPos pos, BlockState state, Player player) {
-        int stage = state.getValue(FallenLogBlock.STAGE);
-        RandomSource random = level.getRandom();
-        String wood = ((FallenLogBlock) state.getBlock()).wood();
-        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + random.nextInt(2)));
-        int logs = Math.max(1, SAWN_LOGS - Math.max(0, stage - 1));
         level.removeBlock(pos, false);
         level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);
+        sawDrops(level, pos, ((FallenLogBlock) state.getBlock()).wood(), state.getValue(FallenLogBlock.STAGE), player);
+    }
+
+    /** What sawing up a {@code wood} log hewn to {@code stage} drops (also a block sawn off a {@link FelledLogEntity}, stage 0). */
+    static void sawDrops(ServerLevel level, BlockPos pos, String wood, int stage, Player player) {
+        if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + level.getRandom().nextInt(2)));
+        int logs = Math.max(1, SAWN_LOGS - Math.max(0, stage - 1));
         Block.popResource(level, pos, new ItemStack(Mechanical.ROUGH_LOGS.get(wood).get(), logs * AncientOak.woodMultiplier(player)));
     }
 

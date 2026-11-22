@@ -47,7 +47,8 @@ import net.minecraft.world.phys.Vec3;
  * <p>
  * Right-click a place with a Chest, Hay Bale or wooden slab to put the module there; punch a module to take it out (a
  * chest spills, a half-eaten bale gives back its wheat); punch the wagon where there is none to pick it up. Sneak +
- * right-click a chest place to open it, anywhere else to unload the last body. Right-click with an empty hand while riding
+ * right-click a chest place to open it, anywhere else to unload the last body (or the log). Right-click it while dragging a
+ * felled log ({@link FelledLogEntity}, up to {@link FelledLogEntity#WAGON_MAX} blocks) to load it on an empty bed. Right-click with an empty hand while riding
  * or leading tamed horses to hitch them (the second one is yoked beside the first and kept there), again to unhitch; on a
  * seat place, with no horses about, you sit down.
  */
@@ -148,13 +149,58 @@ public class WagonEntity extends TravoisEntity {
 
     @Override
     public int capacity() {
-        return ROOM_PER_SLOT * count(EMPTY);
+        return carriedLog() != null ? 0 : ROOM_PER_SLOT * count(EMPTY);
+    }
+
+    // ---- a felled log (FelledLogEntity) on the bed
+
+    /** The log riding on the bed, or null. */
+    public FelledLogEntity carriedLog() {
+        for (Entity e : getPassengers()) if (e instanceof FelledLogEntity log) return log;
+        return null;
+    }
+
+    /** Server: the log {@code player} drags goes on the bed: up to {@link FelledLogEntity#WAGON_MAX} blocks, on an empty bed. */
+    private void loadLog(ServerLevel level, FelledLogEntity log, Player player) {
+        boolean empty = count(EMPTY) == SLOTS && getPassengers().stream().noneMatch(e -> !(e instanceof Player));
+        if (!empty) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_no_room"));
+            return;
+        }
+        if (log.size() > FelledLogEntity.WAGON_MAX) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_too_long", FelledLogEntity.WAGON_MAX));
+            return;
+        }
+        log.untieAll(level);
+        FelledLogEntity onBed = log.straight() ? log : log.straighten(level, getYRot() + 180, false);
+        onBed.startRiding(this, true, true);
+        playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.6F);
+        player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_loaded"));
+        if (player instanceof ServerPlayer sp) Kettle.award(sp, FelledLogEntity.WAGON_ADVANCEMENT);
+    }
+
+    /** Server: the log rolls off the open back and lies behind the wagon. */
+    private void unloadLog(FelledLogEntity log) {
+        log.stopRiding();
+        Vec3 back = position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(REAR + log.size() / 2.0 + 0.3));
+        log.setYRot(getYRot() + 180);
+        if (log.fits(level(), back, getYRot() + 180)) log.setPos(back);
+        playSound(SoundEvents.WOOD_FALL, 1.0F, 0.7F);
+    }
+
+    @Override
+    protected InteractionResult sneakUse(Player player) {
+        FelledLogEntity log = carriedLog();
+        if (log == null) return super.sneakUse(player);
+        if (!level().isClientSide()) unloadLog(log);
+        return InteractionResult.SUCCESS;
     }
 
     /** As heavy as its bodies, or its chests, whichever is fuller, plus a towed cart's share ({@link #TRAILER_WEIGHT}), at most 1. */
     @Override
     public double loadFraction() {
         if (level().isClientSide()) return entityData.get(FULLNESS);
+        if (carriedLog() != null) return 1; // a whole log: a full load
         TravoisEntity trailer = pulling(this);
         double towed = trailer == null ? 0 : trailer.loadFraction() * TRAILER_WEIGHT;
         int filled = 0, slots = 0;
@@ -167,6 +213,10 @@ public class WagonEntity extends TravoisEntity {
     }
 
     private void placeModule(Player player, int slot, int module, ItemStack held) {
+        if (carriedLog() != null) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_first"));
+            return;
+        }
         if (module(slot) != EMPTY) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.place_taken"));
             return;
@@ -427,6 +477,11 @@ public class WagonEntity extends TravoisEntity {
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         ItemStack held = player.getMainHandItem();
+        FelledLogEntity dragged = FelledLogEntity.pulledBy(player, FelledLogEntity.SNAP);
+        if (dragged != null) {
+            if (level() instanceof ServerLevel server) loadLog(server, dragged, player);
+            return InteractionResult.SUCCESS;
+        }
         int slot = slotAt(location), module = moduleFor(held);
         if (module != EMPTY && CarcassHauling.hauled(player) == null) {
             if (!level().isClientSide()) placeModule(player, slot, module, held);
@@ -450,6 +505,7 @@ public class WagonEntity extends TravoisEntity {
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
+        if (passenger instanceof FelledLogEntity) return carriedLog() == null;
         if (passenger instanceof Player) {
             int seated = 0;
             for (Entity e : getPassengers()) if (e instanceof Player) seated++;
@@ -493,6 +549,12 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
+        if (passenger instanceof FelledLogEntity log) { // its root end against the front board, the rest out over the open back
+            double along = SLOTS * SLOT_DEPTH / 2 - log.size() / 2.0;
+            moveFunction.accept(passenger, getX() + dir.x * along, getY() + BED, getZ() + dir.z * along);
+            log.setYRot(getYRot() + 180);
+            return;
+        }
         if (!(passenger instanceof Player)) { // bodies and livestock
             List<Integer> empty = slotsWith(EMPTY);
             if (empty.isEmpty()) return;

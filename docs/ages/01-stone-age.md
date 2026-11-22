@@ -572,9 +572,9 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 - Hugger man en log i ett **naturligt träd** (logs med naturliga löv) med yxa fälls hela trädet ovanför huggstället:
   - Hugg-tiden delas med antalet logs (stort träd = lång tid).
   - Yxan slits 1 per log. Räcker den inte går den sönder, men trädet faller ändå.
-  - Trädet faller som en animation bort från spelaren och **blir liggande där det landar** (gravitation, staplas):
-    stammen blir **Fallen Logs** som ligger längs fallriktningen. Gräs, blommor, plantor, buskar och svamp där trädet
-    landar krossas (och släpper sina vanliga drops). Löven släpper saplings, sticks och äpplen som innan och
+  - Trädet faller som en animation bort från spelaren och **blir liggande där det landar**: stockarna blir en
+    **Felled Log** (entity `felled_log`, se *Fällda träd* nedan) som ligger längs fallriktningen med rotänden precis
+    bakom stubben. Gräs, blommor, plantor, buskar och svamp där stockarna landar krossas (och släpper sina vanliga drops). Löven släpper saplings, sticks och äpplen som innan och
     blir **Leaf Litter** på marken där de landar (flera löv på samma ställe ger tjockare lager). Varje lövsort har sin
     egen **färska leaf litter** i lövens färg (18 sorter, även poppelns gula/orange/röda och azalea); den **torkar** med
     tiden till vanlig brun Leaf Litter. Bryter man den får man vanlig Leaf Litter (tändmaterial).
@@ -583,6 +583,29 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 - **Planks och Crafting Table kräver också yxa:** bryts de utan yxa splittras de till 1–2 Sticks (ingen genväg via
   byarnas hus).
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
+
+### Fällda träd (Felled Log) och att dra hem stockar
+Ett fällt träd (av spelare, woodcutters, bävrar eller Giant Deer) blir **en enda kropp** av sina stockar (löven blir leaf
+litter som förut). Kroppen ritas med stockarnas egna blockmodeller.
+- **Gravitation:** den vilar på sitt nedersta lager, på fast mark eller **vatten** (stockar flyter), inte på löv. Gräver
+  man bort det den ligger på faller den, och hänger mitten ut över en kant glider den av. Ligger den still sover den
+  (ingen kostnad per tick, bara en koll av underlaget varannan sekund).
+- **Kapa:** håll in högerklick med yxa på ett block av stocken. Blocket går igenom alla fyra stegen på en gång (lika många
+  hugg som en Fallen Log, 8–12) och ger **samma drops som en Fallen Log**: 1–2 Bark, Sticks, och Rough Logs med yxans
+  lyckochans. **Bronze Saw** sågar ett block med 8 sågtag: Bark + 3 Rough Logs, utan slump. Kapar man ett block i mitten
+  delas stocken i två, kapar man en ände blir den kortare. Woodcutters hugger fällda träd från toppänden först (ett block
+  per tur, de bär hem veden), och bävrar gnager dem.
+- **Dra:** högerklicka **rotänden** (änden som stod på stubben) med en **Lead** (Lead förbrukas, kommer tillbaka när man
+  knyter loss). Gå iväg: första draget **suger ihop** stockarna till en lång rak stock bakom dig (grenar läggs på rad),
+  sedan släpar den efter dig som en kärra. **Tyngden** är antalet block: en spelare drar **8 block**, varje spelare som
+  knyter fast sin egen lead lägger till 8 (upp till 10 som drar). En **häst** drar 3 gånger så mycket: rid den och
+  högerklicka rotänden med en Lead. För tung: den rör sig inte och det står *"Too heavy – more people needed"*. Repet
+  håller dig inom ~4 block från rotänden, ju tyngre stock desto långsammare går det. Tom hand + högerklick knyter loss;
+  mer än 10 block bort brister repet (Lead faller där du står).
+- Med kniv på ett block av stocken ristar man in en **Dugout Blank** där blocket ligger (se *Dugout Canoe*).
+- Stocken går att lasta på en **Wagon** i järnåldern (upp till 4 block, se 03-iron-age.md).
+- Avancemang: *Hauling Timber* (dra ett fällt träd med en Lead), under *Firewood*.
+- Gamla Fallen Log-block i världen finns kvar och bearbetas som förut.
 
 ### Skogen (ändrad)
 - **Oak är stora träd**: grenade ekar med 9–15 block hög stam, kronan börjar högt upp så man ser under den. Gäller alla
@@ -675,7 +698,8 @@ värld kan bli tvär.
 Ett tungt hugg var 0,45:e sekund (långsam svingning, sprickor i blocket). Varje steg kräver ett antal hugg beroende på yxan
 (Flint Axe / Crude Stone Axe 3, Stone Axe 2, Iron Axe 2) och sliter yxan 1.
 
-1. **Fallen Log:** barken av (ger **1–2 Bark** av stockens träslag) → hugget smalare → ännu smalare → klar. Varje gång den blir smalare
+1. **Fallen Log** (block, finns kvar i gamla världar och i övergivna läger; ett block av en Felled Log går igenom alla
+   stegen på en gång): barken av (ger **1–2 Bark** av stockens träslag) → hugget smalare → ännu smalare → klar. Varje gång den blir smalare
    faller **1–2 Sticks** av och ibland en **Rough Log** (halva lyckochansen). Sista steget ger en **Rough Log** om det
    lyckas, annars bara 2–3 Sticks. En stock kan alltså ge upp till 3 Rough Logs.
 2. **Högerklicka en Rough Log på en Stump:** den står upp på stubben (tom hand tar tillbaka den).
@@ -692,7 +716,7 @@ Nya items: **Rough Log** (14 träslag, stackar 16), **Bark** (tändmaterial, bas
 
 **Bark, en per träslag:** Oak Bark, Spruce Bark, Birch Bark, Jungle Bark, Acacia Bark, Dark Oak Bark, Mangrove Bark,
 Cherry Bark, Pale Oak Bark, Poplar Bark, Aspen Bark, Alder Bark, Beech Bark, Linden Bark, Willow Bark, Ash Bark, Hazel Bark,
-Pine Bark och Yew Bark (`mechanical:<träslag>_bark`). En Fallen Log ger barken av sitt eget träslag (Birch Bark från björk), och att barka en stående stock eller ett Wood-block med yxa (högerklick) ger 1 bark av samma träslag.
+Pine Bark och Yew Bark (`mechanical:<träslag>_bark`). En Fallen Log (eller ett block av en Felled Log) ger barken av sitt eget träslag (Birch Bark från björk), och att barka en stående stock eller ett Wood-block med yxa (högerklick) ger 1 bark av samma träslag.
 Texturen är tre böjda barkremsor i träslagets egna barkfärger (gen_rough_log_textures.py). Alla sorter ligger i item-taggen
 `mechanical:barks`, och **varje användning tar taggen**: bast, Bark Basket, Castoreum Salve, tändmaterial, garvning i Bronze
 Kettle, kompost. Undantag är byten som bara kan be om ett bestämt item (bybornas och stammarnas byten, kistor): där är det
@@ -731,8 +755,8 @@ två skalade tvärslanor surrade med rep, enkla paddlar.
 sitter i kanoten; då syns paddlarna och kanoten går nästan dubbelt så fort.
 
 **Dugout Canoe** (urholkad stock), görs i världen:
-1. **Högerklicka med en kniv** på en **Fallen Log** (med eller utan bark, inte hugget smalare) eller en **Log som ligger
-   ned** (placerad på sidan, alla stockar som brinner: `#mechanical:dugout_logs`). Kanotens kontur ritsas in i ovansidan och
+1. **Högerklicka med en kniv** på ett block av en **Felled Log** (blocket blir liggande där det var och stocken delas),
+   en **Fallen Log** (med eller utan bark, inte hugget smalare) eller en **Log som ligger ned** (placerad på sidan, alla stockar som brinner: `#mechanical:dugout_logs`). Kanotens kontur ritsas in i ovansidan och
    blocket blir en **Dugout Blank** (kniven slits 1).
 2. **Hugg ur** med yxa (håll högerklick, som Fallen Logs men dubbelt så många hugg: Flint Axe 6 hugg ≈ 2,7 s, Stone Axe 4).
    Spånen flyger (1–2 Sticks), yxan slits 1.

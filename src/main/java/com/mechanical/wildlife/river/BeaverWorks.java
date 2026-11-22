@@ -93,9 +93,13 @@ final class BeaverWorks {
         return tree != null && tree.logs().size() <= MAX_TREE_LOGS ? tree : null;
     }
 
-    /** A fallen log near where the beaver felled its last tree (so it doesn't eat a player's logs elsewhere). */
+    /** A fallen log (or a felled log's block) near where the beaver felled its last tree (so it doesn't eat a player's logs elsewhere). */
     static BlockPos findFallenLog(ServerLevel level, BlockPos felled) {
         int r = 7;
+        // the felled tree lies as a log entity: its crown end first
+        for (com.mechanical.FelledLogEntity log : level.getEntitiesOfClass(com.mechanical.FelledLogEntity.class,
+                new net.minecraft.world.phys.AABB(felled).inflate(r, 6, r), l -> !l.isPassenger() && !l.isPulled() && l.size() > 0))
+            return log.cellPos(log.size() - 1);
         for (int dx = -r; dx <= r; dx++) {
             for (int dz = -r; dz <= r; dz++) {
                 int x = felled.getX() + dx, z = felled.getZ() + dz;

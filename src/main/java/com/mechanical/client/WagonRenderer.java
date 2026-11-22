@@ -35,6 +35,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
 
     public static class State extends EntityRenderState {
         float yaw, spin, steer;
+        boolean open; // a log on the bed: no back board
         final ItemStackRenderState[] modules = new ItemStackRenderState[WagonEntity.SLOTS];
 
         State() {
@@ -60,6 +61,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
         state.yaw = wagon.getViewYRot(partialTicks);
         state.spin = Mth.lerp(partialTicks, wagon.wheelSpinO, wagon.wheelSpin);
         state.steer = Mth.lerp(partialTicks, wagon.steerO, wagon.steer);
+        state.open = wagon.carriedLog() != null;
         if (moduleStacks == null)
             moduleStacks = new ItemStack[] {ItemStack.EMPTY, new ItemStack(Items.CHEST), new ItemStack(Items.HAY_BLOCK), new ItemStack(Items.OAK_SLAB)};
         for (int i = 0; i < WagonEntity.SLOTS; i++) {
@@ -85,7 +87,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
         }
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         // model x and y both flipped (a half turn about z): + yRot still swings the pole to the wagon's right, as + steer means
-        collector.submitModel(model, new WagonModel.Pose(state.spin, state.steer * Mth.DEG_TO_RAD), poseStack, TEXTURE,
+        collector.submitModel(model, new WagonModel.Pose(state.spin, state.steer * Mth.DEG_TO_RAD, state.open), poseStack, TEXTURE,
                 state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
         super.submit(state, poseStack, collector, camera);
