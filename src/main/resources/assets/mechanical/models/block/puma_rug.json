@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bear_rug",
+  "textures": {
+    "particle": "mechanical:block/puma_rug",
+    "top": "mechanical:block/puma_rug"
+  }
+}

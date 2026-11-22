@@ -1042,6 +1042,36 @@ TABS["food"][1].extend([
      ate("cooked_ostrich_egg")),
 ])
 # end fauna: savanna
+# fauna: desert (wildlife/desert)
+TABS["bronze_age"][1].extend([
+    ("tame_camel", "rope_halter", "camel_hump_fat", G, "Ship of the Desert",
+     "Tame a Wild Camel like an onager: feed, halter, feed. It carries Pack Baskets and goes twice as far without water", tamed("tame_camel")),
+])
+TABS["wilderness"][1].extend([
+    ("scorpion_venom", "butcher", "scorpion_venom", T, "Sting in the Tail",
+     "Butcher a Desert Scorpion for its venom. It hides by day and stings at night; 8 arrows round the venom make Arrows of Poison",
+     has("scorpion_venom")),
+    ("tame_fennec", "root", "fennec_pelt", G, "Big Ears",
+     "Crouch with raw meat and win over a Fennec Fox at night. Tamed, it yips and marks whatever creeps up in the dark", tamed("tame_fennec")),
+    ("viper_fang", "butcher", "viper_fang", T, "Under the Sand",
+     "Butcher a Sand Viper. It lies buried in the sand and bites whoever steps near it", has("viper_fang")),
+    ("rattlesnake_rattle", "butcher", "rattlesnake_rattle", T, "Fair Warning",
+     "Butcher a Rattlesnake for its rattle. It always rattles before it strikes: back off", has("rattlesnake_rattle")),
+    ("puma", "butcher", "raw_puma_pelt", C, "Cliff Cat",
+     "Kill a Puma. It lies up on the badland ledges by day and leaps down on whatever passes below", has("raw_puma_pelt")),
+    ("puma_rug", "puma", "puma_rug", T, "Mountain Lion",
+     "Fat-tan 2 Raw Puma Pelts with a knife and a tanning fat, then craft them with a Bone into a Puma Rug", has("puma_rug")),
+    ("bighorn_horn", "butcher", "bighorn_horn", T, "Full Curl",
+     "Butcher a Bighorn ram for its great horn (careful: hurt, it charges). One horn makes a Horn Bow", has("bighorn_horn")),
+    ("condor_feather", "root", "condor_feather", T, "Giant of the Sky",
+     "Bring down a Condor, the great carrion bird circling high over the badlands, for its flight feathers", has("condor_feather")),
+])
+TABS["food"][1].extend([
+    ("desert_fare", "cooked", "cooked_camel_meat", T, "Desert Fare",
+     "Cook Camel Meat, Bighorn Mutton, Puma Meat, a Fennec or a Scorpion on a Campfire",
+     has(*[f"cooked_{m}" for m in ("camel_meat", "bighorn_mutton", "puma_meat", "fennec", "scorpion")])),
+])
+# end fauna: desert
 # tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
 TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
@@ -1760,8 +1790,17 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
                  "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
     "predators": ["elkwight", "grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile", "cheetah", "spotted_hyena",
+                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise",
+                   "desert_scorpion", "fennec_fox", "sand_viper", "rattlesnake",
+                   "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
+    "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
+    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
+                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "wild_camel", "bighorn_sheep",
+                 "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
+    "ice_age": ["woolly_mammoth", "woolly_rhino"],
+    "predators": ["elkwight", "grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "puma",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile",
+    "predators": ["elkwight", "grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile",
                    "polar_bear", "snow_leopard", "siberian_tiger", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm"],

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_puma_pelt",
+    "#mechanical:knives",
+    "#mechanical:tanning_fats"
+  ],
+  "result": {
+    "id": "mechanical:puma_pelt",
+    "count": 1
+  }
+}

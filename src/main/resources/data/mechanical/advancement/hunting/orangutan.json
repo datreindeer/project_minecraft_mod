@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:hunting/big_game",
+  "parent": "mechanical:hunting/more_game",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",
