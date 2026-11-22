@@ -2761,6 +2761,7 @@ Netherite-verktyg går inte heller att nå, eftersom diamantverktygen är bortta
 ### Recept från senare åldrar (avstängda)
 Vanilla-recept som går att göra av saker man hittar i stenåldern (häxor, fiske, strukturer) men som hör till
 en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säger också varför); de kommer tillbaka i sin ålder.
+Hela genomgången av vanilla-recepten (spärrat, lämnat med flit, osäkert) finns i `docs/vanilla-recipe-review.md`.
 
 | Recept | Varför det gick | Tillbaka i |
 |---|---|---|
@@ -2780,6 +2781,8 @@ en senare ålder. Avstängda i `scripts/gen_age_recipes.py` (tabellen där säge
 | Concrete Powder (alla färger) | Betong hör till en senare ålder | Järnåldern |
 | Lever | En redstone-del | Järnåldern |
 | Alla Boat och Chest Boat (10 träslag), Bamboo Raft, Bamboo Chest Raft | Planks; ersatta av Log Raft och Dugout Canoe | Bronsåldern |
+| White Wool av 4 String | String från spindlar → Wool → 3 Wool Thread hoppar över klippningen (beslutat, F8) | Aldrig |
+| Golden Pickaxe/Axe/Shovel/Hoe/Sword/Spear | Alla andra vanilla-verktyg är borttagna; en Golden Pickaxe bryter dessutom Coal Ore utan Bronze Pickaxe. Guld finns tidigt i Lindworm-skatten (Block of Gold → 9 Gold Ingot) (F8) | Aldrig |
 
 Ändrat: **Lead** görs av 5 Cordage (i stället för String). **Redstone-tråd** i tempel, Trial Chambers och herrgårdar ger
 ingenting. Loot-filtret tar också bort **Saddle**, **Fire Charge**, vanillas sten- och träverktyg (de görs i Tool Station)
