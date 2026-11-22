@@ -741,12 +741,6 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return LIFT_HEIGHT * (r ? size() - along : along) / size();
     }
 
-    /** The tilt of a log lifted at one end (radians about its local x; + raises the root end). */
-    public float liftTilt() {
-        if (rootLifted() == tailLifted()) return 0;
-        return (float) Math.atan(LIFT_HEIGHT / size()) * (rootLifted() ? 1 : -1);
-    }
-
     /** Weight over lifting strength: above 1 the lifters strain (it only jerks along). Both sides. */
     public double liftLoad() {
         int n = lifterCount();

@@ -81,6 +81,7 @@ public final class LogShots {
                 case 3 -> {
                     if (ticks < 30) return;
                     shot(mc, "layout");
+                    showShapes = false; // the rest as in normal play
                     server.execute(() -> look(base.add(-0.5, 0, 2.5), -90, 30)); // beside the z log's west face
                     next();
                 }
@@ -167,7 +168,7 @@ public final class LogShots {
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     server.execute(() -> {
                         logX.crack(1, 6);
-                        look(logX.world(1).add(0, 0, -1.8), 0, 45);
+                        look(logX.world(1).add(0, 0, -1.3), 0, 40);
                     });
                     next();
                 }

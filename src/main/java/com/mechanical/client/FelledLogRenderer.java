@@ -29,9 +29,9 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         float yaw;
         /** The block being hewn or sawn (-1: none) and its crack stage. */
         int cracked = -1, crackStage;
-        /** Each block's rise and the tilt from lifting by hand (FelledLogEntity#liftOffset). */
-        final List<Float> lifts = new ArrayList<>();
-        float tilt;
+        /** Lifted by hand: both ends up (raised evenly), or one end (the root end if rootUp) tilting the log about the other. */
+        boolean bothUp, oneUp, rootUp;
+        int length;
         /** Dev (LogShots): the collision boxes, relative to the entity. */
         net.minecraft.world.phys.shapes.VoxelShape debugShape;
     }
@@ -75,9 +75,10 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         // the local player's own lifted log, seen from their eyes, stays low and out of the view (the hands show it held)
         net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
         boolean ownView = mc.player != null && mc.options.getCameraType().isFirstPerson() && log.lifts(mc.player);
-        state.lifts.clear();
-        for (int i = 0; i < n; i++) state.lifts.add(ownView ? 0.0F : (float) log.liftOffset(i));
-        state.tilt = ownView ? 0 : log.liftTilt();
+        state.bothUp = !ownView && log.rootLifted() && log.tailLifted();
+        state.oneUp = !ownView && log.rootLifted() != log.tailLifted();
+        state.rootUp = log.rootLifted();
+        state.length = n;
         state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
         state.crackStage = log.crackStage();
         int[] ids = log.pullerIds();
@@ -123,20 +124,32 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             collector.submitShapeOutline(poseStack, state.debugShape, net.minecraft.client.renderer.rendertype.RenderTypes.lines(), 0xFFFF0000, 3.0F, false);
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(-state.yaw));
+        // one straight log: raised evenly, or tilted about the bottom edge of the end on the ground so the lifted end's
+        // underside comes up to LIFT_HEIGHT (the collision boxes step along the same line, FelledLogEntity#liftOffset)
+        float h = FelledLogEntity.LIFT_HEIGHT;
+        if (state.bothUp) {
+            poseStack.translate(0, h, 0);
+        } else if (state.oneUp && state.length > 0) {
+            float pivot = (state.rootUp ? 1 : -1) * state.length / 2.0F; // the root end is at local -z
+            poseStack.translate(0, 0, pivot);
+            poseStack.rotate(Axis.XP.rotation((float) Math.asin(Math.min(1.0F, h / state.length)) * (state.rootUp ? 1 : -1)));
+            poseStack.translate(0, 0, -pivot);
+        }
         for (int i = 0; i < state.blocks.size(); i++) {
             Vec3 o = state.offsets.get(i);
             poseStack.pushPose();
-            // each block raised by its lift (where its collision box is) and tilted about its own middle
-            poseStack.translate(o.x + 0.5, o.y + state.lifts.get(i) + 0.5, o.z + 0.5);
-            if (state.tilt != 0) poseStack.rotate(Axis.XP.rotation(state.tilt));
-            poseStack.translate(-0.5, -0.5, -0.5);
+            poseStack.translate(o.x, o.y, o.z);
             collector.submitMovingBlock(poseStack, state.blocks.get(i), state.outlineColor);
             if (i == state.cracked) {
                 // a hair larger than the block: drawn in the same pass as the log, at equal depth it would lose to it
                 poseStack.translate(0.5, 0.5, 0.5);
                 poseStack.scale(1.004F, 1.004F, 1.004F);
                 poseStack.translate(-0.5, -0.5, -0.5);
-                collector.submitCustomGeometry(poseStack, net.minecraft.client.resources.model.ModelBakery.DESTROY_TYPES.get(state.crackStage), FelledLogRenderer::crackCube);
+                // vanilla's crumbling type multiplies the colour below by twice the texture (grey leaves it, the cracks darken);
+                // twice over, the cracks read on dark bark while the rest still keeps its colour
+                var crumbling = net.minecraft.client.resources.model.ModelBakery.DESTROY_TYPES.get(state.crackStage);
+                collector.submitCustomGeometry(poseStack, crumbling, FelledLogRenderer::crackCube);
+                collector.submitCustomGeometry(poseStack, crumbling, FelledLogRenderer::crackCube);
             }
             poseStack.popPose();
         }
