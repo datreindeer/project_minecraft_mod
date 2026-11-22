@@ -184,6 +184,24 @@ public final class StoneFamilies {
         }
     }
 
+    /**
+     * Loose rocks of the natural stones (living-world plan F6), like Loose Granite: {@code loose_<stone>} lies on the ground
+     * where the stone comes up (scripts/gen_stone_rocks.py) and drops {@code <stone>_chunk} (#mechanical:rock_chunks, 4 make
+     * the block). Pumice drops its Pumice Chunk instead. Chalk, Jasper and the ochres already had theirs.
+     */
+    public static final List<String> ROCK_STONES = List.of("limestone", "slate", "gneiss", "soapstone", "shale", "conglomerate", "dolomite",
+            "travertine", "shell_bank", "marble", "quartzite", "red_porphyry", "green_porphyry", "rapakivi_granite", "coastal_basalt", "pumice",
+            "scoria", "serpentine", "gypsum", "alabaster", "alum_shale");
+    public static final Map<String, DeferredBlock<RockBlock>> LOOSE_ROCKS = new LinkedHashMap<>();
+
+    static {
+        for (String stone : ROCK_STONES) {
+            MapColor color = STONES.stream().filter(s -> s.name().equals(stone) && s.color() != null).map(Stone::color).findFirst().orElse(MapColor.STONE);
+            LOOSE_ROCKS.put(stone, Mechanical.rock("loose_" + stone, color));
+            if (!stone.equals("pumice")) ITEMS.registerSimpleItem(stone + "_chunk");
+        }
+    }
+
     /** "tuff_brick" -> tuff_bricks, "polished_tuff" -> itself, "chalk" -> the base (chalk_block). */
     private static String stairsOf(Stone s, String block) {
         if (block.equals(s.name())) return s.base();

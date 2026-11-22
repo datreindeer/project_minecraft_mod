@@ -85,13 +85,13 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 | F2 | Sawmill (ångåldern) | Multiblock (lång bädd med sågblad) driven av vattenhjul. Man drar in hela stockar. Snabbare och ger mer plankor och bark än handsågning. |
 | F3 | Kolsvarta grottor | Bara lava, kristaller och ljuskällor man själv sätter lyser. Se fråga 7. |
 | F4 | Ancient Oak-dyrkare | Ny folkgrupp vid Ancient Oaks, i gröna naturfärgade kläder. Tre sorter: **samlare** (kniv + korg, plockar bär och svamp, planterar nya buskar och svampar i tomrum runt trädet, flera sorter), **bedjare** (sitter och ber till trädet), **ljusbärare** (går runt med tända ljus, ny animation). **Ledaren** har en krona av giant deer-horn, speciella kläder och en magisk stav med gröna partiklar och sken. Högerklick öppnar en ny GUI med en **questlinje** som delas av hela stammen. Uppdrag: samla items m.m., allt svårare. Högre uppdrag ger unika items, bl.a. **Ancient Ritual Knife** (bästa kniven, högsta slaktgraden). Se fråga 9. |
-| F5 | Crop Stakes | Grödor med crop stakes växer snabbare (förslag +25 %). |
-| F6 | Rock-items | En Rock för varje ny stensort (från world-materials-plan) som saknar en. |
-| F7 | Mold Chest | En kista som bara tar emot clay molds. |
+| F5 | Crop Stakes | Grödor med crop stakes växer snabbare (förslag +25 %). Byggt: +25 % tillväxt (`Farming.STAKED_GROWTH`). |
+| F6 | Rock-items | En Rock för varje ny stensort (från world-materials-plan) som saknar en. Byggt: 21 nya Loose rocks + Rock-items (gen_stone_rocks.py). |
+| F7 | Mold Chest | En kista som bara tar emot clay molds. Byggt: Mold Chest, 27 platser, tagg `#mechanical:molds`. |
 | F8 | Spärra fler vanilla-recept | String → Wool tas bort. Gör en genomgång av alla vanilla-recept som kringgår moddets progression och spärrar dem (listan förs in i åldersdokumenten). |
 | F9 | Satchel-uppgradering | Se fråga 10. |
 | F10 | Guld och smycken | Ett nytt multiblock för **guldgjutning** som byggs med stål. En **Jeweler's Bench** som gör smycken av guld + gemstones, till ring-/halsband-slotsen. Vanliga stenar ger små fördelar (skydd mot kyla osv.), **flawless** ger riktiga fördelar. Se fråga 10. |
-| F11 | Dirt Slab | Kan bli grass/path/snötäckt som ett vanligt dirt block. (Mjukare worldgen med slabs väntar, tveksamt.) |
+| F11 | Dirt Slab | Kan bli grass/path/snötäckt som ett vanligt dirt block. (Mjukare worldgen med slabs väntar, tveksamt.) Byggt: Dirt Slab, Grass Slab, Dirt Path Slab. |
 | F12 | Stor Fire Pit (Iron/Steel) | Uppgradering till 3x3. Brinner längre och effektivare, mycket större rökpelare. Uppgraderingen fungerar som ett multiblock: den säger vad som står i vägen och växer åt det håll som är ledigt. Fire Grate, Tripod och Kettle får nya större modeller. Man kan hänga ett helt flått djur över elden → mycket cooked food. Ger också fördelar framåt (se fråga 12). |
 
 ---

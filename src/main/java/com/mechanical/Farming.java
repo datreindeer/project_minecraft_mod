@@ -204,6 +204,8 @@ public final class Farming {
     public static final float GROWTH_SPEED = 2.0F;
     /** Growth factor per fertility 0..3: poor soil halves it, composted or manured soil (3) grows 1.5x. */
     public static final float[] FERTILITY_GROWTH = {0.5F, 0.75F, 1.0F, 1.5F};
+    /** Crop Stakes hold the plant up: it grows this much faster. */
+    public static final float STAKED_GROWTH = 1.25F;
     /** The best soil's chance of one extra item at harvest. */
     public static final float RICH_SOIL_BONUS = 0.3F;
     public static final int DAYLIGHT = 9;
@@ -224,7 +226,12 @@ public final class Farming {
         BlockState soil = level.getBlockState(pos.below());
         float temp = Temperature.ambient(level, pos);
         return blocker(level, pos, c, temp, soil) != null ? 0
-                : growthRate(c, temp, Calendar.season(level.getOverworldClockTime()), Fertility.get(soil));
+                : growthRate(c, temp, Calendar.season(level.getOverworldClockTime()), Fertility.get(soil)) * stakeFactor(soil);
+    }
+
+    /** {@link #STAKED_GROWTH} on staked farmland, else 1. */
+    public static float stakeFactor(BlockState soil) {
+        return soil.hasProperty(Fertility.STAKED) && soil.getValue(Fertility.STAKED) ? STAKED_GROWTH : 1;
     }
 
     /** Stages a crop gains for one vanilla growth step at this rate (> 1: the rest as extra stages, the fraction by chance). */

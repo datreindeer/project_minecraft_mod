@@ -75,7 +75,12 @@ public final class Retrogen {
             "gem_citrine_ceiling", "gem_smoky_quartz_floor", "gem_smoky_quartz_ceiling", "gem_aquamarine_floor", "gem_aquamarine_ceiling",
             "gem_fluorite_floor", "gem_fluorite_ceiling", "gem_celestine_floor", "gem_celestine_ceiling", "gem_moonstone_floor",
             "gem_moonstone_ceiling", "gem_tourmaline_floor", "gem_tourmaline_ceiling", "gem_agate", "gem_jasper", "gem_carnelian",
-            "gem_chalcedony", "gem_bloodstone");
+            "gem_chalcedony", "gem_bloodstone",
+            // loose rocks of the stone families (gen_stone_rocks.py)
+            "loose_limestone", "loose_slate", "loose_gneiss", "loose_soapstone", "loose_shale", "loose_conglomerate", "loose_dolomite",
+            "loose_travertine", "loose_shell_bank", "loose_marble", "loose_quartzite", "loose_red_porphyry", "loose_green_porphyry",
+            "loose_rapakivi_granite", "loose_coastal_basalt", "loose_pumice", "loose_scoria", "loose_serpentine", "loose_gypsum",
+            "loose_alabaster", "loose_alum_shale");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
     static final long MAX_INHABITED = 1200;
     /** How far below the ground of its column a player-made block still counts. */

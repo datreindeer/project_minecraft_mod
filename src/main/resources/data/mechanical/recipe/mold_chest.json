@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "C C",
+    "PCP"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "C": "minecraft:clay_ball"
+  },
+  "result": {
+    "id": "mechanical:mold_chest"
+  }
+}

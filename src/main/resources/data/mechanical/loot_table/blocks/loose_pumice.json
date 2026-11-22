@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pumice_chunk"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/loose_pumice"
+}

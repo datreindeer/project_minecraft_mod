@@ -31,6 +31,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Stick | Vanilla, plus löv släpper Stick oftare (+8 %, totalt ~10 %) | Skaft, flintverktyg, Campfire, Fire Drill |
 | Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station, Mold Bench |
 | Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
+| Limestone / Slate / Gneiss / Marble ... Rock (20 sorter) | Loose rocks av modens bergarter där berget går i dagen (se Block) | Som Stone Rock: räknas som `#mechanical:rock_chunks`; 4 → stenens block (Slate Rock → Cobbled Slate) |
 | Firewood (19 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log, **Firewood Pile** (vedhög, se Block) |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Mold Bench (Unfired Crucible, lerformar) |
@@ -312,6 +313,12 @@ Ligger på marken i 5 varianter (Stone, Granite, Diorite, Andesite, Flint) och 3
 - Liten och mellan: plockas med ett slag → 1 / 2 chunks. Stor: kräver pickaxe → 3–4 chunks.
 - Loose Flint ger Flint i stället för chunks.
 - Har inget item, finns bara i världen.
+- **Modens bergarter** har egna: Loose Limestone, Slate, Gneiss, Soapstone, Shale, Conglomerate, Dolomite, Travertine,
+  Shell Bank, Marble, Quartzite, Red/Green Porphyry, Rapakivi Granite, Coastal Basalt, Pumice, Scoria, Serpentine, Gypsum,
+  Alabaster och Alum Shale (Chalk, Jasper och ockran hade redan sina). De ligger där berget går i dagen: på berget självt,
+  eller på gräs, jord, sand eller grus med berget 1–3 block under. Texturen är stenens egen. De ger **<Sten> Rock**
+  (1 / 2 / 3–4), som räknas som `#mechanical:rock_chunks` (stenhuvuden, Clay Kiln, Fire Pit ...); 4 → stenens block.
+  Loose Pumice ger en **Pumice Chunk** (slipmedlet) oavsett storlek. Advancement: *Rock Hound*.
 
 ### Tool Station
 Recept: `[Flint Axe][Twine][Flint Pickaxe]` / `[Planks][Crafting Table][Planks]` (flintverktygen går åt).
@@ -405,6 +412,12 @@ Recept: `[Flint][Clay][Flint]` / `[Planks][Planks][Planks]` (Clay = lerblocket a
 Clay Ball. En låg träbänk med lerkladdad skiva; här formas **Unfired Crucible** (7 Clay Balls) och alla bronsålderns
 lerformar av Clay Balls. Fungerar som Leatherworking Bench: välj i listan, leran hämtas ur inventoryt, ta resultatet. Se
 02-bronze-age.md (Mold Bench).
+
+### Mold Chest
+Recept: `[Planks][Clay Ball][Planks]` / `[Clay Ball][ ][Clay Ball]` / `[Planks][Clay Ball][Planks]` (valfria Planks).
+En lerkladdad plankkista med **27 platser som bara tar formar** (tagg `#mechanical:molds`: obrända och brända lerformar och
+soapstone-formar). Annat går inte att lägga i, varken för hand, med shift-klick eller med hopper. Bryts med yxa, tappar
+innehållet. Advancement: *Mold Store*.
 
 ### Clay Kiln
 Recept: `[Clay Ball][Chunk][Clay Ball]` / `[Clay Ball][ ][Clay Ball]` / `[Chunk][Chunk][Chunk]`.
@@ -2248,8 +2261,8 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 - **Bördighet 0–3:** ny åker 2. Varje skörd tar 1 (ärtor ger 1 tillbaka). 0 = halv fart och halv skörd, 3 = snabbare
   och ibland extra. Lämnas jorden i **träda** (tom) återhämtar den sig ~1 per dag. **Syns på jorden:** 0 blek och grå,
   1 lite blekare, 2 vanlig, 3 mörk mylla med kompostfläckar.
-- **Crop Stakes** på farmland (4 stolpar med snöre runt grödan): högerklicka en mogen gröda med tom hand eller skära → skörd +
-  omsådd, men bara 60 % av skörden. Skäran ger sin extra kärve och Straw ovanpå.
+- **Crop Stakes** på farmland (4 stolpar med snöre runt grödan): grödan **växer 25 % fortare**, och högerklicka en mogen gröda
+  med tom hand eller skära → skörd + omsådd, men bara 60 % av skörden. Skäran ger sin extra kärve och Straw ovanpå.
 - **Kråkor:** Hooded Crow-flockar landar på åkrar med unga grödor och äter dem steg för steg. Skrämma bort dem eller
   vakta; Scarecrow kommer i bronsåldern.
 - **Smyg + högerklicka med tom hand** på farmland/en gröda: bördighet, fukt, temperatur och varför den inte växer.
@@ -2258,7 +2271,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 |---|---|---|
 | Flint Sickle | Tool Station: Flint + Twine + Stick | Skörd: extra kärve + Straw, vild säd alltid. 48 i hållbarhet |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska kärvar. 64 i hållbarhet |
-| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: grödan växer 25 % fortare. Högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Straw | Tröskning, skära | Kompost (bronsåldern) |
 | Raw Porridge → Porridge | 2 Grain + Clay Water Bucket + Bowl, sedan Campfire | Mat |
 | Root Cellar | `[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks][Planks][Planks]` | Nedgrävd: rotfrukter 4× längre |
@@ -2584,6 +2597,12 @@ Bricks direkt.
 **Rammed Earth** (formlöst) → 2: `Dirt / Coarse Dirt / Loess + Gravel + Clay Ball`
 
 **Turf** (formlöst) → 1: `Dirt + Plant Fibre`
+
+**Dirt Slab** → 6: `[Dirt][Dirt][Dirt]`. Beter sig som jord: gräs från ett Grass Block eller en **Grass Slab** intill kryper
+över på den (som på Dirt) så den blir en Grass Slab, och en Grass Slab sprider gräs till Dirt. Under ett tätt block (eller i
+vatten) dör gräset tillbaka till Dirt Slab. Shovel → **Dirt Path Slab** (behåller halv/hel). Grass Slab har gräsets
+årstidsfärg och blir **snötäckt** med snö ovanpå, och en nedre slab (som snö inte kan ligga på) när det snöar på den; den
+tinar när det är varmt nog att smälta snö. Alla tre släpper Dirt Slab (2 för en dubbel). Advancement: *Half a Field*.
 
 **Reed Thatch** → 1, **Reed Thatch Roof** → 4, av **Dried Reed** (Reed torkad på en Drying Rack, 4 min):
 ```

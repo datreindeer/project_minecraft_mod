@@ -72,6 +72,11 @@ public final class EarthBlocks {
     public static final DeferredBlock<SlabBlock> TURF_SLAB = block("turf_slab", SlabBlock::new, () -> Properties.ofLegacyCopy(TURF.get()));
     public static final DeferredBlock<StairBlock> TURF_STAIRS = block("turf_stairs", p -> new StairBlock(TURF.get().defaultBlockState(), p),
             () -> Properties.ofLegacyCopy(TURF.get()));
+    // Dirt Slab (living-world plan F11): grows grass, flattens to a path, gets snow like dirt and a Grass Block (DirtSlabBlock)
+    public static final DeferredBlock<DirtSlabBlock> DIRT_SLAB = block("dirt_slab", DirtSlabBlock::new, () -> Properties.ofLegacyCopy(Blocks.DIRT).randomTicks());
+    public static final DeferredBlock<DirtSlabBlock.Grass> GRASS_SLAB = block("grass_slab", DirtSlabBlock.Grass::new,
+            () -> Properties.ofLegacyCopy(Blocks.GRASS_BLOCK).randomTicks());
+    public static final DeferredBlock<SlabBlock> DIRT_PATH_SLAB = block("dirt_path_slab", SlabBlock::new, () -> Properties.ofLegacyCopy(Blocks.DIRT_PATH));
 
     public static final DeferredBlock<SugarCaneBlock> REED = block("reed", SugarCaneBlock::new, () -> Properties.of().mapColor(MapColor.PLANT)
             .noCollision().randomTicks().instabreak().sound(SoundType.GRASS).ignitedByLava().pushReaction(PushReaction.POPPED));

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RR",
+    "RR"
+  ],
+  "key": {
+    "R": "mechanical:shell_bank_chunk"
+  },
+  "result": {
+    "id": "mechanical:shell_bank"
+  }
+}

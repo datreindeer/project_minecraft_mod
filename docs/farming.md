@@ -78,7 +78,7 @@ Barley har ingen vild källa än (bara creative); kommer med handel/byar senare.
 ## Växtvillkor (byggt)
 
 Alla grödor (även vanilla) går genom NeoForges `CropGrowEvent`. Vanillas egen tillväxtchans gäller fortfarande; vår
-faktor multipliceras på: **GROWTH_SPEED (2) × temperaturfaktor × säsongsfaktor × bördighet**, och fukt 0 eller mörker
+faktor multipliceras på: **GROWTH_SPEED (2) × temperaturfaktor × säsongsfaktor × bördighet** (× 1,25 med Crop Stakes), och fukt 0 eller mörker
 stoppar allt. Alla fartfaktorer står samlade i `Farming` (`GROWTH_SPEED`, `FERTILITY_GROWTH`, `growthRate`). Blir
 faktorn över 1 ger varje vanilla-tillväxtsteg extra steg (2,4 → 2 steg och 40 % chans på ett tredje), så farten är
 exakt faktorn gånger vanillas och inte kapad vid vanillas takt. Temperaturen är `Temperature.ambient`
@@ -191,7 +191,7 @@ savann: vete och morötter står still (för varmt), melonstjälkar växer.
 | Iron Sickle (järnåldern) | Tool Station: Iron Sickle Blade (smidd på städet) + Leather + Stick | 90 % chans på extra kärve, skär **3×3**. Hållbarhet 900. Se docs/ages/03-iron-age.md |
 | Steel Sickle (järnåldern) | Tool Station: Steel Sickle Blade + Leather + Stick | Alltid en extra kärve (100 %), skär **5×5** (smyg: ett). Hållbarhet 1600 |
 | Flail | `[ ][Stick]` / `[Twine][Stick]` / `[Stick][ ]` | Tröska. Hållbarhet 64 |
-| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %, järn 90 %, stål 100 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
+| Crop Stakes | `[Stick][ ][Stick]` / `[Stick][Twine][Stick]` → 2 | På farmland: grödan växer 25 % fortare (`STAKED_GROWTH`). Högerklicka en mogen gröda med tom hand eller skära → skördas och sås om, men varje item i skörden bara 60 % chans. Med skära: dess Straw och chans på extra kärve (flinta 50 %, brons 80 %, järn 90 %, stål 100 %) efter avdraget, och skäran slits 1. Går sönder och tappas igen när farmlanden bryts, trampas eller torkar |
 | Raw Porridge | 2 Grain + Clay Water Bucket + Bowl | Kokas till Porridge |
 | Quern | `[ ][C][ ]` / `[Cobblestone][Stick][Cobblestone]` / `[Cobblestone]×3` | Mal Grain → Flour |
 | Baking Stone | `[R][C][R]` | Baka Dough → Bread |
