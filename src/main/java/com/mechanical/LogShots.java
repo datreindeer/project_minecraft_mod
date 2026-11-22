@@ -316,6 +316,20 @@ public final class LogShots {
                     if (ticks < 13) return;
                     mc.options.keyUp.setDown(false);
                     result.add("  walk yaw " + yaws[dirIndex] + ": moved " + String.format(java.util.Locale.ROOT, "%.2f", mc.player.position().distanceTo(start)) + " to " + fmt(mc.player.position()) + " onGround " + mc.player.onGround());
+                    if (dirIndex == 0) {
+                        Vec3 m = new Vec3(0.1, -0.08, 0.1);
+                        Vec3 got = null;
+                        String err = "";
+                        try { got = LogCollision.collide(mc.player, m, m); } catch (Throwable t) { err = t.toString(); }
+                        var sp = player();
+                        result.add("  frozen? passenger " + mc.player.isPassenger() + " noPhysics " + mc.player.noPhysics + " flying " + mc.player.getAbilities().flying
+                                + " delta " + mc.player.getDeltaMovement() + " LogCollision " + got + " " + err + " | server pos " + fmt(sp.position()) + " onGround " + sp.onGround()
+                                + " server lifting " + (FelledLogEntity.liftedBy(sp) != null) + " client lifting " + (FelledLogEntity.liftedBy(mc.player) != null)
+                                + " tether? " + (FelledLogEntity.handled(mc.player) != null));
+                        Vec3 before = mc.player.position();
+                        try { mc.player.move(net.minecraft.world.entity.MoverType.SELF, m); } catch (Throwable t) { result.add("  move threw " + t); }
+                        result.add("  direct move " + fmt(before) + " -> " + fmt(mc.player.position()));
+                    }
                     if (++dirIndex < 4) ticks = 0;
                     else next();
                 }
