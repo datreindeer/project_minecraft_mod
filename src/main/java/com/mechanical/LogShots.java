@@ -273,23 +273,23 @@ public final class LogShots {
                     shot(mc, "bigtree");
                     next();
                 }
-                case 24 -> { // real keys: lift a 3-block log, walk with it, sneak to put it down, walk on, jump
-                    if (mc.gui.screen() != null) mc.gui.setScreen(null);
-                    result.add("paused " + mc.isPaused() + ", screen " + mc.gui.screen());
+                case 24 -> { // real keys: lift a 3-block log in open ground, walk, turn (the log swings round), put it down
                     if (ticks == 1) server.execute(() -> {
-                        held = FelledLogEntity.spawnStraight(player().level(), base.add(6.5, 0, 8.5), 0, 3, Blocks.OAK_LOG.defaultBlockState()); // root at z 8.5, crown south
-                        look(held.endPoint(true).add(0, 0, -0.7), 0, 10); // north of the root end, facing it (south)
+                        cmd("kill @e[type=mechanical:felled_log]");
+                        held = FelledLogEntity.spawnStraight(player().level(), base.add(0.5, 0, -6.5), 0, 3, Blocks.OAK_LOG.defaultBlockState()); // root north, crown south
+                        look(held.endPoint(true).add(0, 0, -0.7), 0, 10);
                     });
-                    if (ticks == 20) server.execute(() -> held.lift(player().level(), player(), 0));
-                    if (ticks < 30) return;
-                    result.add("keys: lifting " + (FelledLogEntity.liftedBy(mc.player) != null) + " at " + mc.player.position());
-                    mc.player.setYRot(180); // turn north, walk away with the log trailing
+                    if (ticks == 15) server.execute(() -> held.lift(player().level(), player(), 0));
+                    if (ticks < 25) return;
+                    result.add("keys: lifting " + (FelledLogEntity.liftedBy(mc.player) != null) + " at " + fmt(mc.player.position()));
+                    mc.player.setYRot(180); // walk north, the log trailing
                     mc.options.keyUp.setDown(true);
                     next();
                 }
                 case 25 -> {
-                    if (ticks % 5 == 0) result.add("  walk t" + ticks + ": player " + fmt(mc.player.position()) + " log root " + fmt(held.endPoint(true)));
-                    if (ticks < 40) return;
+                    if (ticks == 12) mc.player.setYRot(-90); // turn east: the log swings round behind
+                    if (ticks % 4 == 0) result.add("  carry t" + ticks + ": player " + fmt(mc.player.position()) + " log " + fmt(held.position()) + " yaw " + held.getYRot());
+                    if (ticks < 30) return;
                     mc.options.keyUp.setDown(false);
                     mc.options.keyShift.setDown(true);
                     next();
@@ -298,50 +298,37 @@ public final class LogShots {
                     if (ticks < 6) return;
                     mc.options.keyShift.setDown(false);
                     FelledLogEntity c = (FelledLogEntity) mc.level.getEntity(held.getId());
-                    result.add("keys: put down (client lifting " + (FelledLogEntity.liftedBy(mc.player) != null) + ", log lifters " + (c == null ? "?" : c.lifterCount()) + ") player " + fmt(mc.player.position()) + " log root " + fmt(held.endPoint(true)));
-                    start = mc.player.position();
-                    mc.options.keyUp.setDown(true);
+                    result.add("keys: put down: player " + fmt(mc.player.position()) + " box " + mc.player.getBoundingBox() + "; client log " + fmt(c.position()) + " yaw " + c.getYRot()
+                            + " lifters " + c.lifterCount() + "; server log " + fmt(held.position()) + " yaw " + held.getYRot());
+                    shot(mc, "putdown");
+                    dirIndex = 0;
                     next();
                 }
-                case 27 -> {
-                    if (ticks < 20) return;
-                    mc.options.keyUp.setDown(false);
-                    result.add("keys: walked on 20 ticks after putting it down: " + mc.player.position().distanceTo(start) + " blocks");
-                    shot(mc, "stuck");
-                    {   // what holds the player back (north = -z)?
-                        Vec3 north = new Vec3(0, 0, -0.1);
-                        AABB pb = mc.player.getBoundingBox();
-                        result.add("  stuck: player box " + pb + " onGround " + mc.player.onGround() + " input " + mc.player.input.keyPresses + " delta " + mc.player.getDeltaMovement());
-                        for (FelledLogEntity l : mc.level.getEntitiesOfClass(FelledLogEntity.class, pb.inflate(4)))
-                            result.add("  near log id " + l.getId() + " size " + l.size() + " pos " + fmt(l.position()) + " yaw " + l.getYRot() + " grid " + l.onGrid() + " box " + l.getBoundingBox()
-                                    + " handledBy " + l.handledBy(mc.player) + " collides " + l.canBeCollidedWith(mc.player));
-                        for (net.minecraft.world.entity.Entity e : mc.level.getEntities(mc.player, pb.inflate(2)))
-                            result.add("  near entity " + e.getType() + " at " + fmt(e.position()) + " box " + e.getBoundingBox() + " collidable " + e.canBeCollidedWith(mc.player));
-                        result.add("  entity shapes north: " + mc.level.getEntityCollisions(mc.player, pb.expandTowards(north)).size()
-                                + ", block shapes north: " + com.google.common.collect.Iterables.size(mc.level.getBlockCollisions(mc.player, pb.expandTowards(north))));
-                        result.add("  LogCollision north: " + LogCollision.collide(mc.player, north, north));
-                        Vec3 before = mc.player.position();
-                        mc.player.move(net.minecraft.world.entity.MoverType.SELF, north);
-                        result.add("  direct move north 0.1: " + fmt(before) + " -> " + fmt(mc.player.position()));
+                case 27 -> { // walk 12 ticks each way: north, east, south, west (yaw 180, -90, 0, 90), then jump
+                    float[] yaws = {180, -90, 0, 90};
+                    if (ticks == 1) {
+                        start = mc.player.position();
+                        mc.player.setYRot(yaws[dirIndex]);
+                        mc.options.keyUp.setDown(true);
                     }
-                    // back to the log: walk at its side and jump there
-                    mc.player.setYRot(0);
-                    mc.options.keyUp.setDown(true);
-                    next();
+                    if (ticks < 13) return;
+                    mc.options.keyUp.setDown(false);
+                    result.add("  walk yaw " + yaws[dirIndex] + ": moved " + String.format(java.util.Locale.ROOT, "%.2f", mc.player.position().distanceTo(start)) + " to " + fmt(mc.player.position()) + " onGround " + mc.player.onGround());
+                    if (++dirIndex < 4) ticks = 0;
+                    else next();
                 }
                 case 28 -> {
-                    if (ticks % 5 == 0) result.add("  back t" + ticks + ": player " + fmt(mc.player.position()) + " onGround " + mc.player.onGround());
-                    if (ticks < 30) return;
-                    mc.options.keyJump.setDown(true);
-                    jumpTop3 = mc.player.getY();
+                    if (ticks == 2) {
+                        jumpTop3 = mc.player.getY();
+                        mc.options.keyJump.setDown(true);
+                    }
+                    if (ticks > 2) jumpTop3 = Math.max(jumpTop3, mc.player.getY());
+                    if (ticks == 5) mc.options.keyJump.setDown(false);
+                    if (ticks < 20) return;
+                    result.add("keys: jump: rose " + String.format(java.util.Locale.ROOT, "%.2f", jumpTop3 - mc.player.getY()) + " (from y " + mc.player.getY() + ")");
                     next();
                 }
                 case 29 -> {
-                    jumpTop3 = Math.max(jumpTop3, mc.player.getY());
-                    if (ticks == 3) mc.options.keyJump.setDown(false);
-                    if (ticks < 20) return;
-                    mc.options.keyUp.setDown(false);
-                    result.add("keys: jump at the log: top " + (jumpTop3 - 200) + " player " + fmt(mc.player.position()));
                     next();
                 }
                 case 30 -> {
@@ -388,6 +375,10 @@ public final class LogShots {
         int x = (int) Math.floor(p.getX()), z = (int) Math.floor(p.getZ());
         base = new Vec3(x, 200, z);
         cmd("gamemode survival @a");
+        cmd("kill @e[type=mechanical:felled_log]");
+        cmd("kill @e[type=mechanical:wagon]");
+        cmd("kill @e[type=mechanical:cart]");
+        cmd("kill @e[type=item]");
         cmd("time set noon");
         cmd("weather clear");
         cmd("fill " + (x - 12) + " 199 " + (z - 10) + " " + (x + 14) + " 199 " + (z + 26) + " stone");
@@ -413,6 +404,7 @@ public final class LogShots {
 
     private static double jumpFrom, jumpTop = -1000, jumpTop2 = -1000, jumpTop3;
     private static FelledLogEntity held;
+    private static int dirIndex;
     private static Vec3 start;
 
     private static String fmt(Vec3 v) {
