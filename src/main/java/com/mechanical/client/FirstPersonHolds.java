@@ -188,6 +188,12 @@ public final class FirstPersonHolds {
             return;
         }
         ItemStack mainItem = player.getMainHandItem(), offItem = player.getOffhandItem();
+        // an overhead chop at a fallen tree: both hands on the axe, high and down (AxeChopClient)
+        if (AxeChopClient.chopping(avatar)) {
+            event.setCanceled(true);
+            if (main) chopHands(event, player, avatar, mainItem, AxeChopClient.raise(avatar.swingAnimation));
+            return;
+        }
         Fp mainKind = kind(mainItem);
 
         // tongs in one hand, something hot in the other: the piece at the jaws, its hand empty
@@ -374,6 +380,31 @@ public final class FirstPersonHolds {
         var texture = avatar.skin.body().texturePath();
         if (arm == HumanoidArm.RIGHT) renderer(avatar).renderRightHand(event.getPoseStack(), event.getSubmitNodeCollector(), event.getPackedLight(), texture, avatar.showRightSleeve);
         else renderer(avatar).renderLeftHand(event.getPoseStack(), event.getSubmitNodeCollector(), event.getPackedLight(), texture, avatar.showLeftSleeve);
+    }
+
+    /**
+     * The overhead chop in first person: the axe upright in both hands, raised ({@code raise} 1) up out of the top of the
+     * view and tipped back, struck (0) down before you, head forward onto the log.
+     */
+    private static void chopHands(RenderHandEvent event, Player player, AvatarRenderState avatar, ItemStack axe, float raise) {
+        PoseStack ps = event.getPoseStack();
+        ps.pushPose();
+        // pivot low at the hands: up off the top of the view when raised, tipped head-forward when struck
+        ps.translate(0.0F, -0.62F + 1.15F * raise, -0.7F + 0.15F * raise);
+        ps.rotateDegrees(Axis.XP, Mth.lerp(raise, -55.0F, 25.0F));
+        if (!avatar.isInvisible) {
+            ps.pushPose();
+            ps.translate(0.0F, 0.06F, 0.0F);
+            ps.rotateDegrees(Axis.YP, 90.0F);
+            mapHand(event, avatar, HumanoidArm.RIGHT, -0.03F);
+            mapHand(event, avatar, HumanoidArm.LEFT, 0.03F);
+            ps.popPose();
+        }
+        ps.translate(0.0F, 0.32F, 0.0F); // the handle up from the hands, the head on top
+        ps.rotateDegrees(Axis.ZP, -45.0F); // the sprite's handle runs corner to corner: stand it upright
+        ps.scale(0.75F, 0.75F, 0.75F);
+        unturned(axe, player).submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+        ps.popPose();
     }
 
     /** Vanilla's two-handed map hand (FirstPersonHandsAndItemsRenderer#renderMapHand), shifted dx. */

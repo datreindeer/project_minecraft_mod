@@ -37,7 +37,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class TreeChopping {
-    private static final int CHOP_TICKS = 9;
+    /** Ticks between chops: a slow two-handed overhead blow (client/AxeChopClient draws it from this swing's length). */
+    public static final int CHOP_TICKS = 14;
     private static final Map<Player, Long> LAST_CHOP = new WeakHashMap<>();
     /** Chops done on a block towards its next stage. Lost if the server restarts, which only costs a few chops. */
     private static final Map<Level, Map<BlockPos, Integer>> PROGRESS = new WeakHashMap<>();
@@ -100,6 +101,14 @@ public final class TreeChopping {
                 }
             }
         }
+    }
+
+    /** The left button on a Fallen Log with an axe or saw doesn't break it: it chops or saws like the right one (client/AxeChopClient holds the use key). */
+    @SubscribeEvent
+    static void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        ItemStack held = event.getEntity().getMainHandItem();
+        if ((held.is(ItemTags.AXES) || held.getItem() instanceof SawItem) && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof FallenLogBlock)
+            event.setCanceled(true);
     }
 
     private static void take(PlayerInteractEvent.RightClickBlock event, InteractionResult result) {

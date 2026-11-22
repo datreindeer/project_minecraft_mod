@@ -17,5 +17,6 @@ public abstract class HumanoidModelMixin {
     private void mechanical$haulingArms(HumanoidRenderState state, CallbackInfo ci) {
         HaulingClient.poseArms((HumanoidModel<?>) (Object) this, state);
         com.mechanical.client.LogLiftClient.poseArms((HumanoidModel<?>) (Object) this, state);
+        com.mechanical.client.AxeChopClient.poseArms((HumanoidModel<?>) (Object) this, state);
     }
 }

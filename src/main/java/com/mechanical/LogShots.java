@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -344,7 +345,31 @@ public final class LogShots {
                     result.add("keys: jump: rose " + String.format(java.util.Locale.ROOT, "%.2f", jumpTop3 - mc.player.getY()) + " (from y " + mc.player.getY() + ")");
                     next();
                 }
-                case 29 -> {
+                case 29 -> { // the overhead chop: an axe in hand facing a log, the left button held (it must chop, not break)
+                    if (ticks == 1) server.execute(() -> {
+                        cmd("kill @e[type=mechanical:felled_log]");
+                        held = FelledLogEntity.spawnStraight(player().level(), base.add(8.5, 0, 9.5), -90, 3, Blocks.OAK_LOG.defaultBlockState()); // along x
+                        player().setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(Mechanical.FLINT_AXE.get()));
+                        look(held.world(1).add(0, 0, -1.6), 0, 38);
+                    });
+                    if (ticks == 20) {
+                        mc.options.setCameraType(CameraType.FIRST_PERSON);
+                        mc.options.keyAttack.setDown(true);
+                    }
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 2 + 1) shot(mc, "chop_fp_strike");
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 2 + 5) shot(mc, "chop_fp_rise");
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 2 + 11) shot(mc, "chop_fp_high");
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 3) mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 4 + 1) shot(mc, "chop_tp_strike");
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 4 + 5) shot(mc, "chop_tp_rise");
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 4 + 11) shot(mc, "chop_tp_high");
+                    if (ticks < 20 + TreeChopping.CHOP_TICKS * 9) return;
+                    mc.options.keyAttack.setDown(false);
+                    mc.options.setCameraType(CameraType.FIRST_PERSON);
+                    String stages = "";
+                    for (BlockState st : held.states()) stages += st.getBlock() instanceof FallenLogBlock ? st.getValue(FallenLogBlock.STAGE) + "/" + st.getValue(FallenLogBlock.SAWN) + " " : "? ";
+                    result.add("left button held 9 chops with an axe: log alive " + held.isAlive() + " size " + held.size() + " stages " + stages
+                            + " logs now " + mc.level.getEntitiesOfClass(FelledLogEntity.class, new AABB(base.add(4, -1, 5), base.add(13, 3, 14))).size());
                     next();
                 }
                 case 30 -> {
