@@ -362,7 +362,10 @@ public class TravoisEntity extends Entity {
         Entity p = puller();
         if (!level().isClientSide() && harnessId() >= 0) {
             if (p == null || !p.isAlive()) p = letGo(null, null); // dead or gone
-            else if (p.distanceTo(this) > BREAK + (p instanceof WagonEntity ? WagonEntity.REAR : 0)) p = letGo(p, "torn_loose");
+            else if (p.distanceTo(this) > BREAK + (p instanceof WagonEntity ? WagonEntity.REAR : 0)) {
+                if (fixedHitch()) snapBehind(p); // nothing to tear: it is pulled up behind the team
+                else p = letGo(p, "torn_loose");
+            }
         }
         Vec3 v = getDeltaMovement();
         double glide = onGround() ? GROUND_GLIDE : AIR_GLIDE;
@@ -388,7 +391,7 @@ public class TravoisEntity extends Entity {
             if (!level().isClientSide()) {
                 TrampledPaths.step(this); // runners and wheels wear paths too
                 strainTicks = isStuck() && d > lead(p) + SLACK - 0.2 && pullsAway(p) ? strainTicks + 1 : 0;
-                if (strainTicks >= STRAIN_TICKS) letGo(p, "stuck");
+                if (strainTicks >= STRAIN_TICKS && !fixedHitch()) letGo(p, "stuck");
             }
         } else stuckTicks = strainTicks = 0;
         if (level().isClientSide()) {
@@ -397,6 +400,18 @@ public class TravoisEntity extends Entity {
             pitchO = pitch;
             pitch += (target - pitch) * 0.4F;
         }
+    }
+
+    /** Fixed to its puller (the Wagon's team, D1): never torn loose or let go when stuck, only unhitched by hand. */
+    protected boolean fixedHitch() {
+        return false;
+    }
+
+    /** Server: puts it straight back behind {@code puller}, at its lead, facing it. */
+    private void snapBehind(Entity puller) {
+        Vec3 back = pullPoint(puller).subtract(Vec3.directionFromRotation(0, puller.getYRot()).scale(lead(puller)));
+        setPos(back.x, puller.getY(), back.z);
+        setYRot(puller.getYRot());
     }
 
     /** Server: takes {@code puller} out of the harness, telling them why ({@code why}: lang key part; null: silently). */

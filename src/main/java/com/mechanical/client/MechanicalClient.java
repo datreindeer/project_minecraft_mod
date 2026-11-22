@@ -44,6 +44,7 @@ public class MechanicalClient {
             RidingFoodHud.render(graphics);
         });
         event.registerAbove(VanillaGuiLayers.FOOD_LEVEL, TemperatureHud.ID, new TemperatureHud());
+        event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, HorseStaminaHud.ID, HorseStaminaHud::render);
         event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, CalendarHud.ID, new CalendarHud());
         event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, SanityClient.ID, SanityClient::render);
         event.wrapLayer(VanillaGuiLayers.TAB_LIST, vanilla -> (graphics, delta) -> {

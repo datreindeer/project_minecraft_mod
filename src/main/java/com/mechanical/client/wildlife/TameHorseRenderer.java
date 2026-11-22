@@ -59,6 +59,7 @@ public class TameHorseRenderer extends MobRenderer<TameHorse, WildAnimalRenderSt
         state.stand = horse.getStandAnim(partialTicks);
         state.saddled = horse.isSaddled();
         state.satchels = horse.satchelCount();
+        state.dozing = com.mechanical.HorseWork.exhausted(horse); // all in: lies down until rested (HorseWork)
         ItemStack armor = horse.getBodyArmorItem();
         // shortcut: every horse armour is drawn with the leather texture (only leather is reachable yet); give the metal ones their own when they come back
         state.armorColor = armor.isEmpty() ? 0 : armor.is(Items.LEATHER_HORSE_ARMOR) ? ARGB.opaque(DyedItemColor.getOrDefault(armor, DyedItemColor.LEATHER_COLOR)) : -1;

@@ -5,8 +5,9 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
 [underground-plan.md](underground-plan.md).
 
 > Status: **faserna 1–3 byggda** (2026-11-21). Se *Vagnen (Wagon)* i [ages/03-iron-age.md](ages/03-iron-age.md).
-> Avvikelser från planen: sätet är bara för spelare än så länge (inget stamfolk), moduler tas ur genom att slå på dem
-> (inte sneak + högerklick), och spannet sparas inte över en omladdning (som kärrans sele).
+> Avvikelser från planen: sätet är bara för spelare än så länge (inget stamfolk) och moduler tas ur genom att slå på dem
+> (inte sneak + högerklick). **Uppdaterat 2026-11-22 (living-world-plan D1–D4):** spannet sitter fast, sparas med UUID,
+> spänns från med smyg + högerklick på hästen, och hästarna har ork (`HorseWork`).
 
 ## Beslutat
 - **Fyra hjul med järnringar** (`iron_rimmed_wheel`) och en framaxel som svänger. Entity-id `wagon`.
@@ -36,6 +37,11 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
   ur oket om den hålls kvar mer än 4 block. En häst: vagnen sluter 30 % av avståndet tom och hästen går 75 % långsammare;
   lastad rör den sig inte. Ett par: upp till 15 % långsammare full. **Avvikelse:** spannet sparas inte med UUID, utan
   försvinner vid omladdning som kärrans sele.
+
+- **Ändrat (D1–D2):** inget ok som släpper. Andra hästen sätts exakt bredvid den första varje tick, vagnen dras upp bakom
+  spannet om den kommer för långt efter, och den släpper aldrig när den fastnar. Högerklick på vagnen spänner bara för (den
+  ridna hästen leder alltid); smyg + högerklick på en spänd häst spänner från den. Spannet sparas med UUID (`lead_horse`,
+  `partner_horse`). Ett par har ingen egen fartsänkning längre: lasten sänker farten och tömmer orken genom `HorseWork` (D3).
 
 ## 2. Modulerna (byggt)
 - 4 platser som synkas till klienten (renderaren ritar Chest, Hay Bale och säte på rätt plats).

@@ -1349,6 +1349,20 @@ sig på bakbenen.
   andra på **höger** sida. Högst 2. Varje satchel ger 3×3 platser i hästens skärm, och det som låg i satcheln flyttas in.
   Där går det in samma saker som i en satchel (inga andra väskor eller korgar). **Shears** tar av den senast fastsatta
   satcheln, med innehållet kvar i den. Om hästen dör släpper den satchlarna packade. Advancement **Saddlebags**.
+- **Ork (stamina):** varje häst har en ork-mätare, 0–100, som sparas på hästen (gäller alla hästar, även vanillas). Den
+  töms per block hästen går: ungefär 1300 block med en ryttare. **Last** tömmer den fortare (×(1 + 3 × last)) och tar
+  lite fart (upp till 10 %): ryttare 0,25, kroppar på sidorna 0,15 per rum, en Wheeled Cart 0,2 tom och 0,7 full, en
+  Wagon 0,4 + hur full den är (delat på två i ett par), annat som hästen drar 0,3. Under **25** är hästen trött och går
+  30 % långsammare. På **0** är den helt slut: den stannar, **kastar av ryttaren** och **lägger sig**, och går inte att
+  rida förrän den har vilat upp sig till **30**. Står den still vilar den (0 till full på 50 s). **Vatten** fyller på
+  fort: högerklicka hästen med en **Water Bucket** (järn eller brons, +40, hinken blir tom), eller låt den stå i grunt
+  vatten där den når botten utan att simma (+5 var halv sekund). Mätaren syns som en stapel ovanför rustningsraden
+  medan du rider en häst eller sitter på en vagn (ett hästhjärta före varje stapel; grön, gul under hälften, röd när
+  hästen är trött och blinkande mörkröd när den ligger). Advancement **Water Stop**: ge en trött häst vatten ur hink.
+- **Kroppar på sidorna:** bär du en kropp på axlarna (inte en stor som släpas) och högerklickar en tam, vuxen häst
+  hänger den på hästens **vänstra** sida, nästa på den **högra**. Högst en per sida. Den hänger med huvudet nedåt mot
+  flanken och följer med hästen (sparas över omladdning). Smyg + högerklicka kroppen med tom hand för att ta den på
+  axlarna igen. Dör hästen faller kropparna av. De räknas som last för orken. Advancement **Pack Horse**: en på varje sida.
 
 ### Beslut
 
