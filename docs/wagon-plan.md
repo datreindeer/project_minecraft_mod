@@ -62,8 +62,8 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
   progression.json.
 
 ## Stockar (byggt, living-world-plan F1)
-- En fälld stock (`FelledLogEntity`) på högst 4 block kan lastas på ett tomt flak: högerklicka vagnen medan du drar
-  stocken med en Lead. Bakgaveln tas bort i modellen, vagnen räknas som full. Smyg + högerklick med tom hand rullar av den.
+- En fälld stock (`FelledLogEntity`) på högst 4 block kan lastas på ett tomt flak: högerklicka vagnen medan du lyfter
+  stocken (det klicket går före att spänna för). Bakgaveln tas bort i modellen, vagnen räknas som full. Smyg + högerklick med tom hand rullar av den.
 
 ## Senare
 - Uroxar som dragdjur (kräver tämjning).

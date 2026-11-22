@@ -27,6 +27,12 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         final List<MovingBlockRenderState> blocks = new ArrayList<>();
         final List<Vec3> offsets = new ArrayList<>();
         float yaw;
+        /** The block being hewn or sawn (-1: none), its crack stage, and its model parts for the overlay. */
+        int cracked = -1, crackStage;
+        /** Lifted ends (by hand) and the log's length: one end up tilts it, both up raise it. */
+        boolean rootUp, tailUp;
+        int length;
+        final List<net.minecraft.client.renderer.block.dispatch.BlockStateModelPart> crackParts = new ArrayList<>();
     }
 
     public FelledLogRenderer(EntityRendererProvider.Context context) {
@@ -64,6 +70,19 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
                 r.lightEngine = level.getLightEngine();
             }
         }
+        state.rootUp = log.rootLifted();
+        state.tailUp = log.tailLifted();
+        state.length = n;
+        state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
+        state.crackParts.clear();
+        if (state.cracked >= 0) {
+            // as LevelRenderer draws a block being mined: the block's model parts under the destroy-stage texture
+            MovingBlockRenderState r = state.blocks.get(state.cracked);
+            state.crackStage = log.crackStage();
+            var model = net.minecraft.client.Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(r.blockState);
+            net.minecraft.util.RandomSource random = net.minecraft.util.RandomSource.create(r.blockState.getSeed(r.blockPos));
+            model.collectParts(net.minecraft.client.renderer.block.BlockAndTintGetter.EMPTY, BlockPos.ZERO, r.blockState, random, state.crackParts);
+        }
         int[] ids = log.pullerIds();
         if (ids.length == 0 || n == 0 || level == null) {
             state.leashStates = null;
@@ -93,11 +112,24 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(-state.yaw));
+        float h = FelledLogEntity.LIFT_HEIGHT;
+        if (state.rootUp && state.tailUp) {
+            poseStack.translate(0, h, 0);
+        } else if ((state.rootUp || state.tailUp) && state.length > 0) {
+            // tilted about the end still on the ground: the root end is at local -z, the crown end at +z
+            float pivot = (state.rootUp ? 1 : -1) * state.length / 2.0F;
+            float angle = (float) Math.asin(Math.min(1.0F, h / state.length)) * (state.rootUp ? 1 : -1);
+            poseStack.translate(0, 0, pivot);
+            poseStack.rotate(Axis.XP.rotation(angle));
+            poseStack.translate(0, 0, -pivot);
+        }
         for (int i = 0; i < state.blocks.size(); i++) {
             Vec3 o = state.offsets.get(i);
             poseStack.pushPose();
             poseStack.translate(o.x, o.y, o.z);
             collector.submitMovingBlock(poseStack, state.blocks.get(i), state.outlineColor);
+            if (i == state.cracked && !state.crackParts.isEmpty())
+                collector.submitBreakingBlockModel(poseStack, List.copyOf(state.crackParts), state.crackStage, false);
             poseStack.popPose();
         }
         poseStack.popPose();

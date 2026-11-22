@@ -511,10 +511,10 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 
 ### Stockar på vagnen (Felled Log)
 
-- Dra en fälld stock (Felled Log, se 01-stone-age.md *Fällda träd*) med en Lead fram till vagnen och **högerklicka
-  vagnen**: stocken läggs på flaket med rotänden mot framgaveln. Den får vara högst **4 block** lång (flaket är 3: ett
-  block hänger ut bak) och **bakgaveln tas bort** i modellen så länge en stock ligger där. Ditt rep knyts loss och
-  Lead kommer tillbaka.
+- Bär en fälld stock (Felled Log, se 01-stone-age.md *Fällda träd*) fram till vagnen och **högerklicka vagnen**
+  medan du lyfter den (det klicket går före allt annat på vagnen, som att spänna för): stocken läggs på flaket med rotänden mot framgaveln. Den får vara högst **4 block** lång (flaket är 3: ett
+  block hänger ut bak) och **bakgaveln tas bort** i modellen så länge en stock ligger där. Ni som bar den
+  släpper den.
 - Flaket måste vara **helt tomt** (inga moduler, kroppar eller djur): annars *"A log needs the whole bed"*. För lång:
   *"Too long for the wagon: cut it to 4 blocks or less"* (kapa med yxa eller såg). En grenig stock rätas ut när den lastas.
 - Med en stock på flaket går inga moduler eller kroppar att lägga i, och vagnen räknas som **fullt lastad** (en ensam

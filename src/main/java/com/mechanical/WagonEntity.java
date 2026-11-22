@@ -477,7 +477,8 @@ public class WagonEntity extends TravoisEntity {
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         ItemStack held = player.getMainHandItem();
-        FelledLogEntity dragged = FelledLogEntity.pulledBy(player, FelledLogEntity.SNAP);
+        // a log you lift or pull goes on the bed: before any other use of the click (hitching, modules, seats)
+        FelledLogEntity dragged = FelledLogEntity.handled(player);
         if (dragged != null) {
             if (level() instanceof ServerLevel server) loadLog(server, dragged, player);
             return InteractionResult.SUCCESS;

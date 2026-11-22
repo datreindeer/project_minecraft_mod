@@ -586,25 +586,38 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 
 ### Fällda träd (Felled Log) och att dra hem stockar
 Ett fällt träd (av spelare, woodcutters, bävrar eller Giant Deer) blir **en enda kropp** av sina stockar (löven blir leaf
-litter som förut). Kroppen ritas med stockarnas egna blockmodeller.
+litter som förut). Kroppen ritas med stockarnas egna blockmodeller och är **fast block för block**: man går inte igenom
+den, kan stå på den och det finns inga osynliga väggar i luckorna mellan grenarna. Den som lyfter eller drar stocken
+krockar inte med den.
 - **Gravitation:** den vilar på sitt nedersta lager, på fast mark eller **vatten** (stockar flyter), inte på löv. Gräver
   man bort det den ligger på faller den, och hänger mitten ut över en kant glider den av. Ligger den still sover den
   (ingen kostnad per tick, bara en koll av underlaget varannan sekund).
 - **Kapa:** håll in högerklick med yxa på ett block av stocken. Blocket går igenom alla fyra stegen på en gång (lika många
   hugg som en Fallen Log, 8–12) och ger **samma drops som en Fallen Log**: 1–2 Bark, Sticks, och Rough Logs med yxans
-  lyckochans. **Bronze Saw** sågar ett block med 8 sågtag: Bark + 3 Rough Logs, utan slump. Kapar man ett block i mitten
+  lyckochans. **Bronze Saw** sågar ett block med 8 sågtag: Bark + 3 Rough Logs, utan slump. Blocket man hugger eller
+  sågar får vanliga **sprickor** (som när man bryter ett block) som växer för varje hugg eller sågtag; de bleknar efter
+  5 s utan hugg. Kapar man ett block i mitten
   delas stocken i två, kapar man en ände blir den kortare. Woodcutters hugger fällda träd från toppänden först (ett block
   per tur, de bär hem veden), och bävrar gnager dem.
-- **Dra:** högerklicka **rotänden** (änden som stod på stubben) med en **Lead** (Lead förbrukas, kommer tillbaka när man
-  knyter loss). Gå iväg: första draget **suger ihop** stockarna till en lång rak stock bakom dig (grenar läggs på rad),
-  sedan släpar den efter dig som en kärra. **Tyngden** är antalet block: en spelare drar **8 block**, varje spelare som
-  knyter fast sin egen lead lägger till 8 (upp till 10 som drar). En **häst** drar 3 gånger så mycket: rid den och
+- **Lyfta för hand (upp till 12 block):** högerklicka **en ände** (rotänden eller toppänden) med tom hand. Stocken rätas
+  ut och du bär den änden i händerna medan den andra släpar i marken bakom (stocken lutar). En andra spelare kan lyfta
+  den andra änden: då bär ni den mellan er, var och en drar sin ände och stocken följer er båda (ni hålls inom ~2 block
+  från era ändar). **Tyngd:** en lyft ände bär halva stocken och änden i marken släpar en fjärdedel, så en spelare bär
+  4–5 block i full fart och två bär 8 block; ju tyngre desto långsammare. Orkar ni inte går det ändå, men bara i ryck
+  (en knuff varannan sekund, armarna darrar). Högerklicka stocken igen eller smyg för att släppa. Med en stock i händerna
+  kan man inte använda items, slå eller springa; man ser händerna på stocken (framåt-nedåt mot stocken framför, eller
+  bakåt-nedåt när den släpar bakom), även i första person.
+- **Dra med Lead (bara över 12 block):** högerklicka **rotänden** (änden som stod på stubben) med en **Lead** (Lead
+  förbrukas, kommer tillbaka när man knyter loss). Små stockar tar inte rep ("lift it by hand"). Gå iväg: första draget
+  **suger ihop** stockarna till en lång rak stock bakom dig (grenar läggs på rad), sedan släpar den efter dig som en
+  kärra. **Tyngden** är antalet block: en spelare drar **8 block**, varje spelare som knyter fast sin egen lead lägger
+  till 8 (upp till 10 som drar), så en stock på 13–16 block kräver två. En **häst** drar 3 gånger så mycket: rid den och
   högerklicka rotänden med en Lead. För tung: den rör sig inte och det står *"Too heavy – more people needed"*. Repet
   håller dig inom ~4 block från rotänden, ju tyngre stock desto långsammare går det. Tom hand + högerklick knyter loss;
   mer än 10 block bort brister repet (Lead faller där du står).
 - Med kniv på ett block av stocken ristar man in en **Dugout Blank** där blocket ligger (se *Dugout Canoe*).
-- Stocken går att lasta på en **Wagon** i järnåldern (upp till 4 block, se 03-iron-age.md).
-- Avancemang: *Hauling Timber* (dra ett fällt träd med en Lead), under *Firewood*.
+- Stocken går att lasta på en **Wagon** i järnåldern (upp till 4 block, lyft den och högerklicka vagnen, se 03-iron-age.md).
+- Avancemang: *Hauling Timber* (bär eller dra ett fällt träd), under *Firewood*.
 - Gamla Fallen Log-block i världen finns kvar och bearbetas som förut.
 
 ### Skogen (ändrad)

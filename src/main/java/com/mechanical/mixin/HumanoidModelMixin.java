@@ -16,5 +16,6 @@ public abstract class HumanoidModelMixin {
     @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V", at = @At("TAIL"))
     private void mechanical$haulingArms(HumanoidRenderState state, CallbackInfo ci) {
         HaulingClient.poseArms((HumanoidModel<?>) (Object) this, state);
+        com.mechanical.client.LogLiftClient.poseArms((HumanoidModel<?>) (Object) this, state);
     }
 }

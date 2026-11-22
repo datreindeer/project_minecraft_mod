@@ -112,6 +112,12 @@ public final class TreeChopping {
         return null;
     }
 
+    /** Chops done so far on the stage at {@code at}. */
+    static int progress(Level level, BlockPos at) {
+        Map<BlockPos, Integer> progress = PROGRESS.get(level);
+        return progress == null ? 0 : progress.getOrDefault(at, 0);
+    }
+
     /** One chop (if the cooldown allows). Returns true when this chop completes the stage. {@code at} is where the chopping shows. */
     private static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, ItemStack axe) {
         return chop(level, player, hand, at, state, axe, chopsNeeded(axe));

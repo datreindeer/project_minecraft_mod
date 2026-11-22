@@ -30,6 +30,7 @@
   },
   "mixins": [
     "LivingEntityWaypointMixin",
+    "EntityGetterMixin",
     "BiomeSeasonMixin",
     "BiomeTemperatureInvoker",
     "ServerLevelThawMixin",

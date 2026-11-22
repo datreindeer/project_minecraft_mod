@@ -129,6 +129,7 @@ public final class CarcassHauling {
 
     /** Hands full of something heavy: no sprinting (see PlayerMixin). */
     public static boolean blocksSprint(Player player) {
+        if (FelledLogEntity.liftedBy(player) != null) return true;
         CarcassEntity c = hauled(player);
         if (c != null && !c.isLight()) return true;
         TravoisEntity t = TravoisEntity.harnessedTo(player);

@@ -57,7 +57,12 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  * <li>Cutting: hold right-click with an axe on a block (all four hewing stages at once, same drops as a Fallen Log), or a
  * saw ({@link SawItem}, a Fallen Log's sawing). A middle block splits it in two, an end block shortens it. A knife scores
  * a block into a Dugout Blank where it lies.</li>
- * <li>Dragging: right-click near the root end with a Lead (or riding a horse: the horse pulls). The first pull draws the
+ * <li>Solid block by block for walking (EntityGetterMixin: {@link #collisionShape}); not for who lifts or pulls it. A
+ * block being hewn or sawn shows the crack overlay (synced CRACK).</li>
+ * <li>Lifting (up to {@link #HAND_MAX} blocks): an empty-hand right-click on an end lifts it; one lifter drags the other
+ * end along, two carry it between them. Speed falls with {@link #liftLoad}; above 1 it only heaves along now and then.
+ * Restrictions while lifting: {@link LogLifting}; poses: client/LogLiftClient.</li>
+ * <li>Dragging (longer logs only): right-click near the root end with a Lead (or riding a horse: the horse pulls). The first pull draws the
  * logs into one straight log behind the root; then it trails after its pullers. Each player pulls {@link #PER_PULLER}
  * blocks, a horse {@link #HORSE} times that; too few and it doesn't move ("Too heavy"). Pullers are held at rope length.</li>
  * <li>Wagon: a straight log up to {@link #WAGON_MAX} blocks rides on an empty Wagon ({@link WagonEntity}).</li>
@@ -72,12 +77,31 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     static final double ROPE = 2.5, TETHER = ROPE + 1.5, SNAP = 10;
     /** Blocks a tick at full strength; a load at the pullers' limit goes at 40 % of it. */
     static final double MAX_STEP = 0.3;
+    /** Logs up to this many blocks are lifted by hand (an end each); longer ones need Leads, which only they take. */
+    public static final int HAND_MAX = 12;
+    /** Weight one player lifts at full pace: a lifted end carries half the log, the end still on the ground drags a quarter. */
+    public static final double LIFT = 4;
+    /** A lifted end is held this far from the player; the player stays within HOLD + LIFT_SLACK of it. */
+    static final double HOLD = 0.8, LIFT_SLACK = 1.2;
+    /** Blocks a tick carried light. */
+    static final double CARRY_STEP = 0.25;
+    /** How high a lifted end is held (render). */
+    public static final float LIFT_HEIGHT = 1.0F;
     /** Longest log the Wagon takes (its bed is 3 blocks: one hangs over the open back). */
     public static final int WAGON_MAX = 4;
     static final Identifier HAUL_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/haul_log"),
             WAGON_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "iron_age/log_wagon");
     /** Entity ids of the pullers, comma separated (client: ropes and holding back its own player or horse). */
     private static final EntityDataAccessor<String> PULLERS = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
+    /** The block being hewn or sawn and how far (index * 16 + crack stage 0-9), -1 if none (client: the crack overlay). */
+    private static final EntityDataAccessor<Integer> CRACK = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
+    /** Entity ids of the players lifting the root end and the crown end, -1 for none. */
+    private static final EntityDataAccessor<Integer> LIFT_ROOT = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT),
+            LIFT_TAIL = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
+    /** Who lifts which log, per side (lifting restrictions, poses). */
+    private static final Map<Player, FelledLogEntity> LIFTING_SERVER = new java.util.WeakHashMap<>(), LIFTING_CLIENT = new java.util.WeakHashMap<>();
+    /** Ticks without a chop or stroke before the crack fades. */
+    private static final int CRACK_FADE = 100;
 
     private final List<BlockPos> cells = new ArrayList<>();
     private final List<BlockState> states = new ArrayList<>();
@@ -92,6 +116,13 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     private final List<Entity> pullers = new ArrayList<>();
     /** Server: saw strokes so far per block. */
     private final Map<Integer, Integer> sawn = new HashMap<>();
+    /** The lifters as set here (root, crown end), so a lookup by id isn't needed. */
+    private final Entity[] lifterRefs = new Entity[2];
+    /** Server: game time of the last chop or stroke (the crack fades {@link #CRACK_FADE} after it). */
+    private long lastCrack;
+    /** {@link #collisionShape} and the bounding box it was made for. */
+    private net.minecraft.world.phys.shapes.VoxelShape shape;
+    private AABB shapeFor;
     /** Client: puller ids from {@link #PULLERS}. */
     private int[] pullerIds = new int[0];
 
@@ -264,6 +295,18 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         }
     }
 
+    /** Server: a straight log of {@code n} blocks of {@code state}, its root block standing on {@code root} (bottom centre), lying along {@code yaw} (tests). */
+    static FelledLogEntity spawnStraight(ServerLevel level, Vec3 root, float yaw, int n, BlockState state) {
+        FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
+        List<BlockPos> line = new ArrayList<>();
+        for (int i = 0; i < n; i++) line.add(new BlockPos(0, 0, i));
+        log.setShape(line, java.util.Collections.nCopies(n, state));
+        log.setYRot(yaw);
+        log.setPos(root.add(Vec3.directionFromRotation(0, yaw).scale((n - 1) / 2.0)));
+        level.addFreshEntity(log);
+        return log;
+    }
+
     /** Flowers, saplings and bushes where a log comes down are crushed (they drop what they drop). */
     private static void crush(ServerLevel level, BlockPos pos) {
         if (level.getBlockState(pos).getBlock() instanceof net.minecraft.world.level.block.VegetationBlock) level.destroyBlock(pos, true);
@@ -301,6 +344,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
      * group. The piece with the root end keeps the pullers if {@code keepPullers}; otherwise their leads drop.
      */
     private void rebuild(ServerLevel level, List<BlockPos> newCells, List<BlockState> newStates, boolean keepPullers) {
+        putDownAll(); // cut: whoever lifted it lets go
         List<Entity> carried = new ArrayList<>(pullers);
         if (!keepPullers) for (Entity p : carried) untie(level, p, false);
         pullers.clear();
@@ -465,15 +509,18 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             return;
         }
         super.tick();
+        if (entityData.get(CRACK) >= 0 && level.getGameTime() - lastCrack > CRACK_FADE) entityData.set(CRACK, -1);
         if (leadsToReturn > 0) {
             spawnAtLocation(level, new ItemStack(Items.LEAD, leadsToReturn));
             leadsToReturn = 0;
         }
         checkPullers(level);
+        checkLifters();
         boolean moved = !pullers.isEmpty() && drag(level);
+        if (lifterCount() > 0 && !isRemoved()) moved |= carry(level);
         if (isRemoved()) return; // straightened into a new log
         moved |= settle(level);
-        if (moved || !pullers.isEmpty()) restTicks = 0;
+        if (moved || !pullers.isEmpty() || lifterCount() > 0 || entityData.get(CRACK) >= 0) restTicks = 0;
         else if (++restTicks > 20) awake = false;
     }
 
@@ -525,6 +572,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Server: lets go of everyone (their leads back to them). */
     void untieAll(ServerLevel level) {
+        putDownAll();
         for (Entity p : pullers) untie(level, p, false);
         pullers.clear();
         syncPullers();
@@ -595,21 +643,33 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Client: its own player (or the horse they ride) can't walk off further than the rope reaches. */
     private void holdBackPullers() {
-        if (pullerIds.length == 0 || cells.isEmpty()) return;
+        if (cells.isEmpty()) return;
+        for (boolean root : new boolean[] {true, false}) {
+            Entity mover = lifter(root);
+            if (mover == null || !mover.isLocalInstanceAuthoritative()) continue;
+            if (mover instanceof Player p && LIFTING_CLIENT.get(p) != this) LIFTING_CLIENT.put(p, this); // synced before the player was known
+            tether(mover, endPoint(root), HOLD + LIFT_SLACK);
+            mover.setSprinting(false);
+        }
+        if (pullerIds.length == 0) return;
         Vec3 root = world(0);
         for (int id : pullerIds) {
             Entity mover = level().getEntity(id);
-            if (mover == null || !mover.isLocalInstanceAuthoritative()) continue;
-            Vec3 off = mover.position().subtract(root).multiply(1, 0, 1);
-            double d = off.length();
-            if (d <= TETHER) continue;
-            Vec3 n = off.scale(1 / d);
-            double limit = Math.max(TETHER, new Vec3(mover.xo - root.x, 0, mover.zo - root.z).length());
-            if (d > limit) mover.setPos(root.x + n.x * limit, mover.getY(), root.z + n.z * limit);
-            Vec3 v = mover.getDeltaMovement();
-            double out = v.x * n.x + v.z * n.z;
-            if (out > 0) mover.setDeltaMovement(v.subtract(n.x * out, 0, n.z * out));
+            if (mover != null && mover.isLocalInstanceAuthoritative()) tether(mover, root, TETHER);
         }
+    }
+
+    /** Client: holds {@code mover} within {@code reach} of {@code grip} (horizontally): no further out, no speed outwards. */
+    private static void tether(Entity mover, Vec3 grip, double reach) {
+        Vec3 off = mover.position().subtract(grip).multiply(1, 0, 1);
+        double d = off.length();
+        if (d <= reach) return;
+        Vec3 n = off.scale(1 / d);
+        double limit = Math.max(reach, new Vec3(mover.xo - grip.x, 0, mover.zo - grip.z).length());
+        if (d > limit) mover.setPos(grip.x + n.x * limit, mover.getY(), grip.z + n.z * limit);
+        Vec3 v = mover.getDeltaMovement();
+        double out = v.x * n.x + v.z * n.z;
+        if (out > 0) mover.setDeltaMovement(v.subtract(n.x * out, 0, n.z * out));
     }
 
     /** Client: the entities whose ropes run to the root end. */
@@ -620,10 +680,231 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
         super.onSyncedDataUpdated(accessor);
+        if (level().isClientSide() && (LIFT_ROOT.equals(accessor) || LIFT_TAIL.equals(accessor))) {
+            LIFTING_CLIENT.values().removeIf(l -> l == this);
+            for (EntityDataAccessor<Integer> a : List.of(LIFT_ROOT, LIFT_TAIL))
+                if (level().getEntity(entityData.get(a)) instanceof Player p) LIFTING_CLIENT.put(p, this);
+        }
         if (PULLERS.equals(accessor)) {
             String s = entityData.get(PULLERS);
             pullerIds = s.isEmpty() ? new int[0] : java.util.Arrays.stream(s.split(",")).mapToInt(Integer::parseInt).toArray();
         }
+    }
+
+    // ---- lifting by hand
+
+    private static Map<Player, FelledLogEntity> lifting(Level level) {
+        return level.isClientSide() ? LIFTING_CLIENT : LIFTING_SERVER;
+    }
+
+    /** The log {@code player} lifts an end of, or null. Both sides. */
+    public static FelledLogEntity liftedBy(Player player) {
+        FelledLogEntity log = lifting(player.level()).get(player);
+        return log != null && log.isAlive() && log.lifts(player) ? log : null;
+    }
+
+    /** Is {@code player} lifting the root end (true), the crown end (false), or neither (null)? */
+    public Boolean liftEnd(Entity player) {
+        if (entityData.get(LIFT_ROOT) == player.getId()) return true;
+        if (entityData.get(LIFT_TAIL) == player.getId()) return false;
+        return null;
+    }
+
+    public boolean lifts(Entity player) {
+        return liftEnd(player) != null;
+    }
+
+    /** Players lifting it (0, 1 or 2). */
+    public int lifterCount() {
+        return (rootLifted() ? 1 : 0) + (tailLifted() ? 1 : 0);
+    }
+
+    public boolean rootLifted() {
+        return entityData.get(LIFT_ROOT) >= 0;
+    }
+
+    public boolean tailLifted() {
+        return entityData.get(LIFT_TAIL) >= 0;
+    }
+
+    /** Weight over lifting strength: above 1 the lifters strain (it only jerks along). Both sides. */
+    public double liftLoad() {
+        int n = lifterCount();
+        if (n == 0) return 0;
+        double weight = n == 2 ? size() : size() * 0.75; // one end on the ground: half lifted, a quarter dragged
+        return weight / (n * LIFT);
+    }
+
+    /** The middle of the root end's face (true) or the crown end's, on the ground. Straight logs. */
+    public Vec3 endPoint(boolean root) {
+        Vec3 f = Vec3.directionFromRotation(0, getYRot());
+        return position().add(f.scale((root ? -1 : 1) * size() / 2.0));
+    }
+
+    private Entity lifter(boolean root) {
+        int id = entityData.get(root ? LIFT_ROOT : LIFT_TAIL);
+        Entity ref = lifterRefs[root ? 0 : 1];
+        return id < 0 ? null : ref != null && ref.getId() == id ? ref : level().getEntity(id);
+    }
+
+    private void setLifter(boolean root, Player player) {
+        if (lifter(root) instanceof Player old) lifting(level()).remove(old);
+        lifterRefs[root ? 0 : 1] = player;
+        entityData.set(root ? LIFT_ROOT : LIFT_TAIL, player == null ? -1 : player.getId());
+        if (player != null) lifting(level()).put(player, this);
+        wake();
+    }
+
+    /** Server: {@code player} grabs the end nearest block {@code i}; the log is straightened first. */
+    void lift(ServerLevel level, Player player, int i) {
+        if (size() > HAND_MAX) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.too_big_to_lift"));
+            return;
+        }
+        if (liftedBy(player) != null || !pullers.isEmpty()) return;
+        BlockPos c = cells.get(i);
+        int toRoot = chebyshev(c, cells.get(0)), toTail = chebyshev(c, cells.get(size() - 1));
+        if (Math.min(toRoot, toTail) > 1) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.grab_end"));
+            return;
+        }
+        boolean root = toRoot < toTail || toRoot == toTail && player.distanceToSqr(world(0)) <= player.distanceToSqr(world(size() - 1));
+        if (entityData.get(root ? LIFT_ROOT : LIFT_TAIL) >= 0) root = !root; // the other end, if it is free and near
+        if (entityData.get(root ? LIFT_ROOT : LIFT_TAIL) >= 0 || chebyshev(c, cells.get(root ? 0 : size() - 1)) > 1) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.end_taken"));
+            return;
+        }
+        FelledLogEntity log = this;
+        if (!straight()) {
+            log = straighten(level, getYRot(), true);
+            if (log == null) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.no_room"));
+                return;
+            }
+        }
+        log.setLifter(root, player);
+        log.playSound(SoundEvents.WOOD_HIT, 1.0F, 0.7F);
+        player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.lifted"));
+    }
+
+    private static int chebyshev(BlockPos a, BlockPos b) {
+        return Math.max(Math.abs(a.getX() - b.getX()), Math.max(Math.abs(a.getY() - b.getY()), Math.abs(a.getZ() - b.getZ())));
+    }
+
+    /** Server: {@code player} puts their end down. */
+    void putDown(Player player) {
+        Boolean root = liftEnd(player);
+        if (root == null) return;
+        setLifter(root, null);
+        lifting(level()).remove(player);
+        playSound(SoundEvents.WOOD_FALL, 0.8F, 0.8F);
+    }
+
+    /** Server: both ends down. */
+    void putDownAll() {
+        for (boolean root : new boolean[] {true, false}) {
+            if (lifter(root) instanceof Player p) putDown(p);
+            else if (entityData.get(root ? LIFT_ROOT : LIFT_TAIL) >= 0) setLifter(root, null);
+        }
+    }
+
+    /** Server: lifters gone, far off, riding or sneaking put their end down. */
+    private void checkLifters() {
+        for (boolean root : new boolean[] {true, false}) {
+            if (entityData.get(root ? LIFT_ROOT : LIFT_TAIL) < 0) continue;
+            Entity p = lifter(root);
+            if (!(p instanceof Player player)) {
+                setLifter(root, null);
+            } else if (!p.isAlive() || p.isShiftKeyDown() || p.isPassenger() || p.position().distanceTo(endPoint(root)) > HOLD + LIFT_SLACK + 3) {
+                putDown(player);
+            }
+        }
+    }
+
+    /**
+     * Server: one step of being carried. Each lifted end goes towards its lifter (held {@link #HOLD} from them); an end on
+     * the ground trails. Heavier is slower; past the lifters' strength it only heaves along now and then.
+     */
+    private boolean carry(ServerLevel level) {
+        double load = liftLoad();
+        if (load > 1 && tickCount % 20 >= 6) return false; // straining: heaves, then rests
+        double speed = CARRY_STEP * (load <= 1 ? 1 - 0.4 * load : 0.6 / (load * load));
+        Entity rl = rootLifted() ? lifter(true) : null, tl = tailLifted() ? lifter(false) : null;
+        Vec3 root = endPoint(true), tail = endPoint(false);
+        double len = size();
+        Vec3 centre, f;
+        if (rl != null && tl != null) {
+            Vec3 tr = holdPoint(rl, root), tt = holdPoint(tl, tail);
+            f = flat(tt.subtract(tr));
+            if (f.lengthSqr() < 1.0E-4) return false;
+            f = f.normalize();
+            Vec3 want = tr.add(tt).scale(0.5);
+            centre = position().add(clamp(flat(want.subtract(position())), speed));
+        } else if (rl != null) {
+            Vec3 newRoot = root.add(clamp(flat(holdPoint(rl, root).subtract(root)), speed));
+            f = flat(tail.subtract(newRoot));
+            if (f.lengthSqr() < 1.0E-4) return false;
+            f = f.normalize();
+            centre = newRoot.add(f.scale(len / 2));
+        } else if (tl != null) {
+            Vec3 newTail = tail.add(clamp(flat(holdPoint(tl, tail).subtract(tail)), speed));
+            Vec3 back = flat(root.subtract(newTail));
+            if (back.lengthSqr() < 1.0E-4) return false;
+            back = back.normalize();
+            f = back.reverse();
+            centre = newTail.add(back.scale(len / 2));
+        } else {
+            return false;
+        }
+        centre = new Vec3(centre.x, getY(), centre.z);
+        float yaw = (float) (Mth.atan2(-f.x, f.z) * Mth.RAD_TO_DEG);
+        if (centre.distanceToSqr(position()) < 1.0E-5 && Math.abs(Mth.wrapDegrees(yaw - getYRot())) < 0.5F) return false;
+        for (int up = 0; up <= 1; up++) {
+            Vec3 at = centre.add(0, up, 0);
+            if (!fits(level, at, yaw)) continue;
+            setYRot(yaw);
+            setPos(at);
+            if (tickCount % 20 == 0) {
+                for (Entity e : new Entity[] {rl, tl}) if (e instanceof ServerPlayer sp) Kettle.award(sp, HAUL_ADVANCEMENT);
+                if (rl == null || tl == null) playSound(SoundEvents.WOOD_STEP, 0.5F, 0.6F); // the end on the ground scrapes along
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /** Where a lifter wants the end now at {@code end}: {@link #HOLD} from them, towards it. */
+    private static Vec3 holdPoint(Entity lifter, Vec3 end) {
+        Vec3 d = flat(end.subtract(lifter.position()));
+        return lifter.position().add(d.lengthSqr() < 1.0E-4 ? Vec3.ZERO : d.normalize().scale(HOLD));
+    }
+
+    private static Vec3 flat(Vec3 v) {
+        return new Vec3(v.x, 0, v.z);
+    }
+
+    private static Vec3 clamp(Vec3 v, double max) {
+        double l = v.length();
+        return l > max ? v.scale(max / l) : v;
+    }
+
+    /** Does {@code e} handle this log (lifts or pulls it)? It doesn't bump into it then. Both sides. */
+    public boolean handledBy(Entity e) {
+        if (lifts(e)) return true;
+        for (int id : pullerIds) if (id == e.getId()) return true;
+        return !level().isClientSide() && pullers.contains(e);
+    }
+
+    /** The log {@code player} lifts or pulls (or their horse pulls), or null. Both sides: the Wagon loads it. */
+    public static FelledLogEntity handled(Player player) {
+        FelledLogEntity lifted = liftedBy(player);
+        return lifted != null ? lifted : pulledBy(player, SNAP);
+    }
+
+    @Override
+    public void remove(Entity.RemovalReason reason) {
+        lifting(level()).values().removeIf(l -> l == this);
+        super.remove(reason);
     }
 
     // ---- interaction
@@ -649,6 +930,14 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             }
             return InteractionResult.SUCCESS;
         }
+        if (held.isEmpty() && lifts(player)) {
+            if (server) putDown(player);
+            return InteractionResult.SUCCESS;
+        }
+        if (held.isEmpty()) {
+            if (server) lift((ServerLevel) level(), player, i);
+            return InteractionResult.SUCCESS;
+        }
         if (held.getItem() instanceof SawItem) {
             SawItem.startSawingLog(player, hand, this, i);
             return InteractionResult.CONSUME;
@@ -671,6 +960,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Server: a lead tied to the root end; riding a horse, the horse pulls. */
     void tie(ServerLevel level, Player player, int i, ItemStack lead) {
+        if (size() <= HAND_MAX) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.lift_by_hand"));
+            return;
+        }
         BlockPos c = cells.get(i), root = cells.get(0);
         if (Math.max(Math.abs(c.getX() - root.getX()), Math.max(Math.abs(c.getY() - root.getY()), Math.abs(c.getZ() - root.getZ()))) > 1) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.root_end"));
@@ -688,13 +981,17 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Server: one axe chop at block {@code i} (held right-click); the block comes off after all four hewing stages' chops. */
     private void chop(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack axe) {
-        if (TreeChopping.chop(level, player, hand, cellPos(i), states.get(i), axe, TreeChopping.chopsNeeded(axe) * (FallenLogBlock.LAST_STAGE + 1))) {
-            BlockPos at = cellPos(i);
-            String wood = wood(i);
-            if (wood != null) TreeChopping.hewWhole(level, at, wood, axe, player);
-            else Block.dropResources(states.get(i), level, at, null, player, axe);
-            removeBlock(level, i);
+        int needed = TreeChopping.chopsNeeded(axe) * (FallenLogBlock.LAST_STAGE + 1);
+        boolean done = TreeChopping.chop(level, player, hand, cellPos(i), states.get(i), axe, needed);
+        if (!done) {
+            crack(i, TreeChopping.progress(level, cellPos(i)) * 10 / needed);
+            return;
         }
+        BlockPos at = cellPos(i);
+        String wood = wood(i);
+        if (wood != null) TreeChopping.hewWhole(level, at, wood, axe, player);
+        else Block.dropResources(states.get(i), level, at, null, player, axe);
+        removeBlock(level, i);
     }
 
     /** Server: one saw stroke across block {@code i} (SawItem); the last cuts it out with a sawn Fallen Log's drops. */
@@ -704,7 +1001,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         level.playSound(null, w.x, w.y + 1, w.z, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 0.6F, (push ? 1.35F : 1.1F) + random.nextFloat() * 0.1F);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, states.get(i)), w.x, w.y + 1, w.z, 3, 0.2, 0.02, 0.2, 0.02);
         int strokes = sawn.merge(i, 1, Integer::sum);
-        if (strokes < FallenLogBlock.SAW_STROKES) return;
+        if (strokes < FallenLogBlock.SAW_STROKES) {
+            crack(i, strokes * 10 / FallenLogBlock.SAW_STROKES);
+            return;
+        }
         String wood = wood(i);
         if (wood != null) TreeChopping.sawDrops(level, at, wood, 0, player);
         else Block.dropResources(states.get(i), level, at, null, player, saw);
@@ -724,6 +1024,45 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         level.playSound(null, at, SoundEvents.AXE_STRIP.value(), SoundSource.BLOCKS, 0.7F, 1.4F);
         knife.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         removeBlock(level, i);
+    }
+
+    /** Each block's box, upright in the world (a log turned off the grid steps a little): what players and mobs walk on and against. */
+    public net.minecraft.world.phys.shapes.VoxelShape collisionShape() {
+        if (shape == null || shapeFor != getBoundingBox()) {
+            net.minecraft.world.phys.shapes.VoxelShape out = net.minecraft.world.phys.shapes.Shapes.empty();
+            for (int i = 0; i < cells.size(); i++) {
+                Vec3 w = world(i);
+                out = net.minecraft.world.phys.shapes.Shapes.joinUnoptimized(out, net.minecraft.world.phys.shapes.Shapes.create(w.x - 0.5, w.y, w.z - 0.5, w.x + 0.5, w.y + 1, w.z + 0.5),
+                        net.minecraft.world.phys.shapes.BooleanOp.OR);
+            }
+            shape = out.optimize();
+            shapeFor = getBoundingBox();
+        }
+        return shape;
+    }
+
+    @Override
+    public boolean canBeCollidedWith(Entity other) {
+        // on a wagon it would block the wagon's own team and riders; whoever lifts or pulls it doesn't bump into it
+        return !isPassenger() && (other == null || !handledBy(other));
+    }
+
+    /** The crack overlay: block {@code i} at stage {@code stage} (0-9), or none. Server. */
+    private void crack(int i, int stage) {
+        entityData.set(CRACK, i < 0 ? -1 : i * 16 + Math.min(9, stage));
+        lastCrack = level().getGameTime();
+        wake(); // so the crack can fade
+    }
+
+    /** Client: the cracked block's index, or -1. */
+    public int crackedBlock() {
+        int c = entityData.get(CRACK);
+        return c < 0 ? -1 : c / 16;
+    }
+
+    /** Client: the crack stage 0-9. */
+    public int crackStage() {
+        return Math.max(0, entityData.get(CRACK)) % 16;
     }
 
     @Override
@@ -757,6 +1096,9 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(PULLERS, "");
+        builder.define(CRACK, -1);
+        builder.define(LIFT_ROOT, -1);
+        builder.define(LIFT_TAIL, -1);
     }
 
     @Override

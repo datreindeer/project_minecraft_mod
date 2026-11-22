@@ -180,6 +180,13 @@ public final class FirstPersonHolds {
         boolean main = event.getHand() == InteractionHand.MAIN_HAND;
         HumanoidArm arm = main ? avatar.mainArm : avatar.mainArm.getOpposite();
         float mainSwing = hands.attackHand == InteractionHand.MAIN_HAND ? avatar.swingAnimation : 0.0F;
+        // lifting an end of a felled log: both hands on it, no items
+        com.mechanical.FelledLogEntity log = com.mechanical.FelledLogEntity.liftedBy(player);
+        if (log != null) {
+            event.setCanceled(true);
+            if (main && !avatar.isInvisible) liftHands(event, player, avatar, LogLiftClient.facing(player, log), log.liftLoad() > 1);
+            return;
+        }
         ItemStack mainItem = player.getMainHandItem(), offItem = player.getOffhandItem();
         Fp mainKind = kind(mainItem);
 
@@ -290,6 +297,24 @@ public final class FirstPersonHolds {
             }
         }
         unturned(stack, player).submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+        ps.popPose();
+    }
+
+    /**
+     * Lifting a felled log's end (LogLiftClient's first-person side): facing it, both hands low in front where the log
+     * end is; walking ahead of it, the hands low at the bottom of the view, pulled back. Strain: lower, trembling.
+     */
+    static void liftHands(RenderHandEvent event, Player player, AvatarRenderState avatar, boolean facing, boolean strain) {
+        PoseStack ps = event.getPoseStack();
+        float pt = event.getPartialTick(), speed = Math.min(1.0F, player.walkAnimation.speed(pt));
+        float bob = -0.03F * Mth.abs(Mth.sin(player.walkAnimation.position(pt) * 0.6662F)) * speed;
+        float tremble = strain ? 0.012F * Mth.sin((player.tickCount + pt) * 2.6F) : 0.0F;
+        ps.pushPose();
+        if (facing) ps.translate(0.0F, -0.32F - 1.2F * event.getEquipProgress() + bob + tremble - (strain ? 0.08F : 0.0F), -0.66F);
+        else ps.translate(0.0F, -0.62F - 1.2F * event.getEquipProgress() + bob + tremble, -0.5F);
+        ps.rotateDegrees(Axis.YP, 90.0F);
+        mapHand(event, avatar, HumanoidArm.RIGHT, facing ? 0.0F : -0.12F);
+        mapHand(event, avatar, HumanoidArm.LEFT, facing ? 0.0F : 0.12F);
         ps.popPose();
     }
 
