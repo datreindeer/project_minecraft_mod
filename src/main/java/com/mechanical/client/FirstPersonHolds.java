@@ -390,7 +390,7 @@ public final class FirstPersonHolds {
         PoseStack ps = event.getPoseStack();
         ps.pushPose();
         // pivot low at the hands: up off the top of the view when raised, tipped head-forward when struck
-        ps.translate(0.0F, -0.62F + 1.15F * raise, -0.7F + 0.15F * raise);
+        ps.translate(0.0F, -0.42F + 1.7F * raise, -0.7F + 0.15F * raise);
         ps.rotateDegrees(Axis.XP, Mth.lerp(raise, -55.0F, 25.0F));
         if (!avatar.isInvisible) {
             ps.pushPose();
@@ -401,7 +401,7 @@ public final class FirstPersonHolds {
             ps.popPose();
         }
         ps.translate(0.0F, 0.32F, 0.0F); // the handle up from the hands, the head on top
-        ps.rotateDegrees(Axis.ZP, -45.0F); // the sprite's handle runs corner to corner: stand it upright
+        ps.rotateDegrees(Axis.ZP, 45.0F); // the sprite's handle runs corner to corner: stand it upright
         ps.scale(0.75F, 0.75F, 0.75F);
         unturned(axe, player).submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
         ps.popPose();
