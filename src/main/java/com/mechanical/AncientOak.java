@@ -211,7 +211,7 @@ public final class AncientOak {
 
     /** DynamicLights: the amber glows when held. */
     public static int lightOf(ItemStack stack) {
-        return stack.is(ANCIENT_AMBER.get()) ? 10 : 0;
+        return stack.is(ANCIENT_AMBER.get()) ? 10 : stack.is(com.mechanical.people.OakFolk.VERDANT_STAFF.get()) ? 9 : 0;
     }
 
     private static boolean holding(Player player, Item item) {

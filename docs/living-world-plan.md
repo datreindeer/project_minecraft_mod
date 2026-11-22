@@ -3,6 +3,7 @@
 > Status: **fas 1 byggd (v0.136.0):** F1 stockar, B7 multiplayer-sidan, B1 zontitel, B2 relationsflik, B4 anvil-hjul.
 > **Fas 2 byggd (Servern lever):** A1, A2, A3, A9, se *Byggt i fas 2* under tabell A.
 > **Fas 7 byggd (Vägar):** A5–A8, se *Byggt i fas 7* under tabell A.
+> **F4 byggd (Ekens folk):** grupp vid varje Ancient Oak, Keeper med questlinje (12 uppdrag), relation, Ancient Ritual Knife (knivnivå 4) med fina delar; se *Ekens folk* i `docs/ages/01-stone-age.md`. Skärmbilder: `docs/shots/oak/` (oak_group, oak_keeper, oak_worshipper, oak_gatherer, oak_lightbearer_night, oak_quest_gui).
 > **Stammarnas AI byggd:** C (hela) och B8 (tyst ljuduppsättning, ljudlista i `docs/tribe-sounds.md`), se *Byggt: stammarnas AI* under C.
 > Resten är plan. Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
 > det som byggs förs också in i respektive åldersdokument (`docs/ages/*.md`).
@@ -193,7 +194,7 @@ Gäller före tabellerna ovan där de skiljer sig.
 | Dra träd (F1) | **Allt på en gång:** alla fällda träd blir stock-entiteter med gravitation som kan dras och yxas/sågas av (delas). Man drar med **lead i rotänden**; flera spelare kan sätta var sin lead och dragkraften läggs ihop. |
 | Grottor (F3) | Spelarens Brightness (gamma) ignoreras under jord. Glow Lichen m.m. lyser som idag. |
 | Nedslagen (E) | Dör efter ~1 minut utan hjälp. Mobs ignorerar nedslagna (spelare och raiders kan avsluta). Ingen stammedlem online eller singleplayer → dör direkt. |
-| Dyrkarna (F4) | 10–15 uppdrag. Har en relation till stammen som andra NPC-stammar och kan bli fientliga (skada trädet/dem); dålig relation stänger questlinjen. Belöningar: Claude föreslår en lista för godkännande. **Ancient Ritual Knife** ger en **ny slaktnivå**: finare delar (t.ex. sener, organ, troféer) som bara den kniven kan ta. |
+| Dyrkarna (F4) | 10–15 uppdrag. Har en relation till stammen som andra NPC-stammar och kan bli fientliga (skada trädet/dem); dålig relation stänger questlinjen. Belöningar: Claude föreslår en lista för godkännande. **Ancient Ritual Knife** ger en **ny slaktnivå**: finare delar (t.ex. sener, organ, troféer) som bara den kniven kan ta. **Bestämt (fas 10):** 12 uppdrag, belöningarna i tabellen *Ekens folk* i `01-stone-age.md` (unika: Verdant Staff, Mistletoe Charm, Ancient Ritual Knife); kniven är knivnivå 4 (`KnifeItem.RITUAL`), fina delar Animal Heart, Fine Sinew, Trophy Skull. Questlinjen stängs för gott vid fientlig (−40). |
 | Satchel (F9) | Satchel kan uppgraderas med **fack för verktyg** (de nya, som Saw, Tongs osv.). Sedan en ny större väska, **5x5**, av läder + stål (Steel, slutet av järnåldern). |
 | Guld (F10) | Clay Kiln smälter guld som idag. Det nya multiblocket (byggs med stål) behövs för att **gjuta** smyckesämnen och andra guldföremål. |
 | Smycken (F10) | Claude föreslår en bonus per gemsort i vanlig och flawless, för godkännande innan bygget. **Bestämt (nattkörningen):** en egenskap per sten (t.ex. Ruby +1/+4 Max Health, Sapphire +0,5/+2 Armor, Garnet/Amber/Citrine värme 5 %/15 %), Flawless ungefär 4× vanlig; hela tabellen i `03-iron-age.md` 4b och `Jewelry.BONUSES`. |

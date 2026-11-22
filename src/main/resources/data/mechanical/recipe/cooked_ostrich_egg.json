@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 900,
+  "experience": 0.1,
+  "ingredient": "mechanical:ostrich_egg",
+  "result": {
+    "id": "mechanical:cooked_ostrich_egg",
+    "count": 1
+  }
+}

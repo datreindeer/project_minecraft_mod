@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:termites"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:termites"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.termites.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.termites.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -45,13 +45,13 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * The Elkwight (docs/elkwight-plan.md, phases 3-5): the elk-headed boss of the Scorched Barrens ruins ({@link Elkwight}),
  * his thrown axe ({@link ThrownElkAxe}), the axe he leaves (a heavy load, {@link ElkwightAxeEntity}, and its trophy
  * block {@link ElkwightAxeBlock}), and what his colossal carcass gives: Elkwight Hide (the Elkwight Cloak), Elkwight
- * Bones (the Bone Charm) and the Antler Crown, a wall trophy ({@link AntlerCrownBlock}). Data: scripts/gen_elkwight.py,
- * textures: scripts/gen_elkwight_textures.py.
+ * Bones (the Bone Charm) and the Antler Crown, a wall trophy ({@link AntlerCrownBlock}). Data: scripts/gen_elkwight_boss.py,
+ * textures: scripts/gen_elkwight_boss_textures.py.
  */
 @EventBusSubscriber(modid = MODID)
 public final class Elkwights {
-    /** Knife tier needed to skin him: above iron and steel (3), the top tier (the Ancient Ritual Knife). */
-    public static final int KNIFE_TIER = 4;
+    /** Knife tier needed to skin him: above iron and steel, the top tier (the Ancient Ritual Knife). */
+    public static final int KNIFE_TIER = com.mechanical.KnifeItem.RITUAL;
 
     public static final DeferredHolder<EntityType<?>, EntityType<Elkwight>> ELKWIGHT = ENTITY_TYPES.registerEntityType("elkwight",
             Elkwight::new, MobCategory.MONSTER, b -> b.sized(1.2F, 3.6F).eyeHeight(3.2F).fireImmune().clientTrackingRange(12));
@@ -107,6 +107,9 @@ public final class Elkwights {
                 List.of(extra(() -> ANTLER_CROWN_ITEM.get(), 1.0F, 1, 1), extra(BONE, 1.0F, 3, 4), extra(com.mechanical.wildlife.Wildlife.SINEW, 1.0F, 2, 3))));
         Butchery.colossal(ELKWIGHT::get);
         Butchery.requireKnife(ELKWIGHT::get, KNIFE_TIER);
+        // the ritual knife's fine parts: his heart and fine sinew (no trophy skull: the Antler Crown is his trophy)
+        Butchery.registerRitual(ELKWIGHT::get, List.of(extra(com.mechanical.people.OakFolk.ANIMAL_HEART, 1.0F, 1, 1),
+                extra(com.mechanical.people.OakFolk.FINE_SINEW, 1.0F, 2, 3)));
         ElkwightTest.init(modEventBus);
     }
 

@@ -691,7 +691,7 @@ Plan och beslut: [elkwight-plan.md](../elkwight-plan.md). En jätte med älghuvu
 sovande i en nedbrunnen ruin, minst 2500 block från 0,0. Han är tänkt för slutet av järnåldern och framåt: huden kräver en
 kniv över stål.
 
-- **Striden**: vaknar när en spelare kommer inom 20 block i synhåll (eller slår honom). Boss-mätare. 400 liv, +60 % liv
+- **Striden**: vaknar när en spelare kommer inom 20 block i synhåll, kliver in i ruinen eller slår honom. Boss-mätare. 400 liv, +60 % liv
   och +10 % skada för varje extra spelare inom 32 block när han vaknar. Rustning 12, immun mot knockback och fallskada.
   Försvinner aldrig och behåller skadan om man flyr och kommer tillbaka.
 - **Attackerna förvarnas alltid** med pose och ljud:
@@ -720,6 +720,6 @@ kniv över stål.
 | **Elkwight Antler Crown** | Från slakten. Väggtrofé: sätts mot sidan av ett block, 3 block bred. |
 | **Elkwight's Axe** (trofé) | Dra yxan och högerklicka ovansidan av ett block. Inget föremål. |
 
-**Advancements (Wilderness-fliken, efter *Wyrmslayer*):** **The Smoke Clears** (döda honom, utmaning) → **Heavy Burden**
+**Advancements (Wilderness-fliken, efter *Into the Ashes*):** **The Smoke Clears** (döda honom, utmaning) → **Heavy Burden**
 (ställ upp yxan), **All Hands** (dra kroppen med tre andra), **Mantle of the Wight**, **Bone Charm** och **Crowned** (häng
 upp hornkronan). I Hunting-fliken: Elkwight under Predators.

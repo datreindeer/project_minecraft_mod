@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:wilderness/lindworm",
+  "parent": "mechanical:wilderness/into_the_ashes",
   "criteria": {
     "killed": {
       "trigger": "minecraft:player_killed_entity",

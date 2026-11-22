@@ -1,0 +1,9 @@
+shot spotted_hyena
+shot cheetah
+shot gazelle
+shot gazelle_fawn
+shot ostrich_male
+shot ostrich_female
+shot ostrich_chick
+shot aardvark
+lion at 4.897870072415312, 0.8721851097970621 shaded true dozing true

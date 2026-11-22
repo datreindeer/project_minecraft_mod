@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:termites",
+    "mechanical:termites",
+    "mechanical:termites",
+    "mechanical:termites"
+  ],
+  "result": {
+    "id": "mechanical:chitin_paste",
+    "count": 1
+  }
+}

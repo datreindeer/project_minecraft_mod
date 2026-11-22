@@ -225,7 +225,7 @@ har tooltipraden "Worn in the X slot".
 
 | Plats | Saker |
 |---|---|
-| Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak |
+| Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak, Tiger Pelt Mantle |
 | Back | Leather Satchel |
 | Hip | Quiver, Leather Pouch |
 | Neck / Ring / Charm | inga än (kommer i senare åldrar) |
@@ -1084,7 +1084,7 @@ Greylag Goose, Mute Swan) är borta från Frostfall till våren. Bunkra mat inf�
 
 ### Djur i vatten
 Varje vilt djur hör till en av tre grupper (`WildAnimal.WaterHabit`):
-- **Simmar gärna:** Otter, Beaver, Seal, Walrus, Water Buffalo, Tapir och Moose. Går i vattnet av sig själva (vägar
+- **Simmar gärna:** Otter, Beaver, Seal, Walrus, Polar Bear, Water Buffalo, Tapir och Moose. Går i vattnet av sig själva (vägar
   genom vatten kostar inget, och de strövar ut i det ibland), simmar fort och har egen simrörelse: älgen sträcker
   halsen platt på vattnet med mulen i luften och tar långa simtag, buffeln ligger djupt med bara huvud och horn över
   ytan, tapiren håller snabeln uppe som en snorkel. Otter, bäver och säl dyker.
@@ -1267,6 +1267,9 @@ sömn), kroppar, flådda texturer, styckning och blod.
 - Jagar också Roe Deer, Red Deer, Reindeer, Wild Horse, Aurochs (kor), Mouflon, Wild Boar och stenåldersmänniskor.
   **Släpar bort bytet:** en färsk, orörd Carcass inom 4 block bärs i käftarna upp till ~20 block bort från spelare.
 - Rädd för eld och facklor som vargen (morrar och backar undan till ~7 block), utom under blodmåne eller vid svält.
+- **Vilar i skuggan på dagen:** lejonet går till närmaste plats under en trädkrona (akacior på savannen) inom 16 block och
+  sover där i stället för mitt i solen. **Jagar redan från skymningen** (klockan 11 500–13 500) och hela natten. På savannen
+  finns också **lejonflockar** om 3–4. Se [Savannen](../fauna/savanna.md).
 
 **Båda dras till blodiga kroppar** inom 40 block (se *Bära hem bytet*): den som bär eller drar en kropp blir jagad, och
 obevakade eller upphängda kroppar äts upp om ingen eld brinner inom 8 block.
@@ -1598,9 +1601,9 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,8 |
 | Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,8 |
 | Dried Mutton | Raw Mutton, Mutton Scraps, Ibex Meat, Chamois Meat | 3 | 0,8 |
-| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat | 2 | 0,8 |
-| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
-| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
+| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat, Raw Polar Bear, Raw Snow Leopard | 2 | 0,8 |
+| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Arctic Fox/Pika/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
+| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Black Grouse, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
 | Dried Seal Meat | Raw Seal Meat | 3 | 0,8 |
 | Stockfish | Raw Cod, Raw Pike, Raw Sturgeon | 2 | 0,8 |
 | Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,8 |
@@ -1674,6 +1677,7 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
+| Elkwight Ruin | Scorched Barrens (bortom 2500 block) | mycket sällsynt | Stor raserad arena av Blackstone med **Rune Blackstone**, pelare, läktare, själveldar och tre kistor (lite guld och brons). Tät mörk dimma inne i ruinen så länge Elkwighten lever. Se *Scorched Barrens och Elkwight-ruinen* längre ned |
 
 ### Småsaker i landskapet (dekorationer)
 Små, vanliga saker som gör världen roligare att vandra i, byggs i nya chunks och läggs in i gamla orörda chunks (retrogen, nedan) (`scripts/gen_decorations.py`).
@@ -1809,6 +1813,52 @@ virvlar in, marken pulserar och klockspel ljuder, sedan löses hornet upp i ett 
 | **Antler Crown** | Hjälm: mörkerseende utan flimmer, djur märker dig först på 3 blocks håll |
 
 De mytiska föremålens namn är **feta och tonar från skogsgrönt till guld**, och tonen skimrar i tooltipen.
+
+### Ekens folk (Oak Folk, Children of the Oak, F4)
+Vid varje Ancient Oak bor ett litet folk i gröna, mossfärgade kläder (egna skins, ingen stamfärg). Altaret sätter ut
+gruppen **en gång** när trädets omgivning först laddas (sparas i altaret, även i gamla världar): en **Keeper**, tre
+**Gatherers**, tre **Worshippers** och två **Light-Bearers**. De håller sig i gläntan (ca 25 block från stammen).
+- **Gatherers** (Flint Knife + Bark Basket): går till mogna bärbuskar och svampar, knäböjer och plockar, och planterar
+  nya (Raspberry, Blueberry, Wild Strawberry, Elderberry, Chanterelle, Porcini, Morel, Puffball eller Glowcap) på bar
+  mark i gläntan där det inte redan växer tätt.
+- **Worshippers**: har var sin plats runt stammen, sitter och ber med händerna lyfta mot trädet.
+- **Light-Bearers**: går långsamt runt eken med ett tänt ljus i varje hand (lågor, och de lyser upp omgivningen med
+  dynamiskt ljus).
+- **Keeper** (ledaren): krona av giant deer-horn (Antler Crown), guldkantad mörkgrön dräkt med vit pälscape och
+  **Verdant Staff** med gröna partiklar och sken. Högerklick öppnar **questlinjen**.
+
+**Relation:** de är en stam som andra NPC-stammar (*Children of the Oak*, fridsamma, start 15) och syns på
+relationssidan; spelarstammen delar relationen. Slå på trädet (Ancient Oak-block): −4 (högst var 2:a sekund), bryt
+Glowcap/Spirit Bloom/Glow Moss i gläntan: −2, slå en av dem: −8, döda en: fientliga direkt. Det räknas bara när någon
+av dem är i närheten. Vid **fientlig** (−40) går de till anfall och Keeperns stav slår ut (Slowness II, Weakness, lite
+magisk skada var 3:e sekund) och **questlinjen stängs för gott** för hela spelarstammen. Mat som gåva höjer relationen
+som hos andra stammar; varje klart uppdrag ger +4. De gör aldrig räder.
+
+**Questlinjen** (delas av hela spelarstammen, eller per spelare utan stam; lämna in i flera omgångar, även olika
+medlemmar; belöningen går till den som lämnar in det sista):
+
+| # | Uppdrag | Lämna in | Belöning (bestämd av Claude, kan ändras) |
+|---|---|---|---|
+| 1 | Berries for the Roots | 16 Raspberries | 4 Glowcap |
+| 2 | Gifts of the Moss | 8 Chanterelle | 2 Spirit Bloom |
+| 3 | Threads for the Wreaths | 32 Plant Fibre | Bark Basket |
+| 4 | Shed Bark | 16 Oak Bark | 8 Glow Moss |
+| 5 | Warm Hides for Winter | 6 Raw Hide | Tusk Dagger |
+| 6 | Sinew for Bowstrings | 8 Sinew | 2 Silver Coin |
+| 7 | Crowns of the Deer | 4 Antler | **Verdant Staff** (unik) |
+| 8 | Bright Metal | 6 Bronze Ingot | 4 Silver Coin + 4 Spirit Bloom |
+| 9 | The Bear's Coat | 1 Raw Bear Pelt | **Mistletoe Charm** (mytisk) |
+| 10 | Iron from the Bog | 8 Wrought Iron Ingot | 1 Gold Coin |
+| 11 | The Great Stag's Crown | 1 Giant Antler | 3 Gold Coin |
+| 12 | Steel for the Ritual Blade | 4 Steel Ingot | **Ancient Ritual Knife** (unik) |
+
+- **Verdant Staff**: högerklicka en planta/gröda/sapling så växer den som med bone meal (5 s nedkylning), gröna
+  partiklar. Lyser (ljus 9) i handen. Hålls upprätt som Elder's Staff.
+- **Ancient Ritual Knife**: den bästa kniven, **knivnivå 4** (`KnifeItem.RITUAL`, över järn/stål 3): snabbast (3,0),
+  dubbla utbytet (×2,0, även hud), 3000 hållbarhet. Bara den tar de **fina delarna** efter andra passet:
+  **Animal Heart** (90 % från djur större än en hare; mat 5), **Fine Sinew** (80 %, 1–2, från hjortstora och större) och
+  **Trophy Skull** (alltid från stora djur och tjockhudade, 35 % från medelstora). Giant Deer och Brown Bear ger alltid
+  alla tre (Fine Sinew 2–3). Aldrig från fåglar, fisk, odöda eller en förstörd kropp.
 
 ### Stenåldersmänniskor (Tribesperson)
 Folk som lever i läger eller strövar i jaktlag. De **despawnar aldrig**, men nya kommer heller aldrig: dör de är de borta.
@@ -2397,7 +2447,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
   (bort från skytten om han är inom 32 block, annars bort från nedslaget) och får fågelflockar att lyfta. Djur som
   redan anfaller något bryr sig inte. En träffad eller skjuten fågel får hela flocken att lyfta.
 - Tama djur och djur i koppel flyr inte. Mat i handen lugnar inte.
-- Gäller djur med vanilla-"goals" (Cow, Pig, Sheep, Chicken, Rabbit, Horse, Llama, Fox, Wolf, Polar Bear, Panda, Parrot …).
+- Gäller djur med vanilla-"goals" (Cow, Pig, Sheep, Chicken, Rabbit, Horse, Llama, Fox, Wolf, Panda, Parrot …).
   Goat, Camel, Frog, Axolotl, Armadillo och Sniffer (vanilla "brain"-AI) påverkas inte än.
 
 ### Bone Pile
@@ -2507,10 +2557,13 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 
 <!-- fauna-links -->
 - [Varma biomer](../fauna/warm.md): Onager (packdjur), Tortoise, Desert Lizard, Water Buffalo, Tapir, Leopard, Hornbill, Jungle Fowl, Peafowl
+- [Djungel och mangrove](../fauna/jungle.md): Tiger (Tiger Rug, Tiger Pelt Mantle), Python (håller fast tills någon slår loss den), Orangutan (kastar frukt, stjäl), Monitor Lizard (giftbett, äter kadaver), Poison Dart Frog (Frog Poison till Blowpipe och Poison Darts), Saltwater Crocodile (dödsrullen; Crocodile Hide-rustning vid Leatherworking Bench), Mudskipper (bete), Fiddler Crab (krabbkött), Proboscis Monkey (larmtut som skrämmer viltet)
 - [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
+- [Savannen](../fauna/savanna.md): Spotted Hyena (stjäl byten på dagen), Cheetah (rusar 5 s), Gazelle (Signal Horn), Ostrich (sparkar, stora ägg), Aardvark, Termite Mound (Chitin Paste); lejon vilar i skuggan på dagen
 - [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
+- [Kyla](../fauna/cold.md): Polar Bear (ersätter vanilla-isbjörnen, jagar sälar och spelare; Polar Bear Cloak, giftig Polar Bear Liver), Arctic Fox (följer isbjörnen och äter rester, vit på vintern; Arctic Fox Hat), Snow Leopard (sällsynt på topparna, jagar stenbock; Snow Leopard Boots), Siberian Tiger (snöig taiga; djungeltigerns kött och päls), Snowy Owl (jagar lämlar på dagen), Black Grouse (spelar på myren om våren), Lammergeier (släpper ben från höjden: Bone Marrow), Pika (gör höhögar: Pika Hay), och brunbjörnshonor med ungar som är extra farliga på våren
 - [Istidsjättar](../fauna/giants.md): Woolly Mammoth, Woolly Rhinoceros, Steppe Bison, Musk Ox (Pegged Hide, Ivory)
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
@@ -2533,7 +2586,6 @@ Rack). Kadaver flyter i vatten och driver med strömmen. Hud och kött som för 
 
 Squid hänger i manteltoppen med armarna rakt ned på en Hanging Rack, och bärs i manteln över axeln med kroppen nedför
 ryggen (som fåglar).
-| Polar Bear (tjock hud: Tusk Dagger) | Raw Bear Pelt, Raw Hide 40 % | 4–6 Game Meat Scraps, 2–3 Bear Fat, Bear Claw 60 %, Sinew 60 % |
 | Panda (tjock hud: Tusk Dagger) | Raw Bear Pelt | 3–5 Game Meat Scraps, Bear Fat 70 %, Sinew 50 % |
 | Wolf (vanilla, otämjd) | Raw Wolf Pelt | 1–2 Game Meat Scraps, Sinew 50 %, Bone 60 % |
 | Camel | Raw Hide 70 % + 30 % | 4–6 Game Meat Scraps, Sinew 60 % |
@@ -2970,3 +3022,30 @@ polerade form, och vanillas Andesite, Diorite, Granite, Tuff, Blackstone, Cobble
 Den polerar bara: Bricks och Chiseled kräver fortfarande Bronze Chisel. En bit tål 16 block.
 
 Advancements: *Rubbed Smooth* (Stone Age-fliken, under Pumice) och *Rubble* (Bronze Age-fliken, under Stone Anvil).
+
+## Scorched Barrens och Elkwight-ruinen (byggt, fas 1 och 2 av Elkwight-planen)
+
+**Scorched Barrens** är en nedbrunnen skog som bara finns **längre än 2500 block från 0,0**, och då sällan (ungefär som
+Mushroom Fields). Svarta stammar står kvar, ligger omkullfallna eller är bara stubbar, marken är aska, grov jord och grus
+med hällar av Blackstone och Basalt, och inget gräs växer. Himlen och dimman är grå och kalla och aska svävar i luften.
+Det enda djuret är korpen; monster kommer på natten som annars. På vintern snöar det och vattnet fryser som i andra svala
+biomer. Advancement *Into the Ashes* (Wilderness-fliken).
+
+- **Charred Log**: en bränd stam. Bryts med yxa och ger **1–2 Charcoal**; med Silk Touch blocket självt. Står som en
+  stock (kan läggas åt alla håll).
+- **Wood Ash**: grå träaska som täcker marken. Bryts med spade och ger sig själv. Faller som sand.
+
+**Elkwight Ruin**: inne i biomet står ibland en stor raserad arena av Blackstone (aldrig närmare 0,0 än 2500 block).
+Fyra höga portar (7 block breda, 10 höga) leder in till ett runt golv med en upphöjd dais i mitten omgiven av runor,
+åtta pelare, läktare med trappor längs murarna och på sina ställen ett tak 15 block upp. Själveldar brinner i skålar och
+lägereldar runt daisen, och utanför står fyra runstenar. Tre kistor på läktarna har lite guld, Bronze Ingot, Bronze Arrows
+och ibland ett bronsverktyg. Så länge ruinens väktare, **Elkwighten**, lever ligger en tät mörk dimma inne i ruinen (man
+ser ungefär 10 block); när han är död tunnas den ut till en lätt dis. Advancement *The Burnt Hall*.
+
+- **Rune Blackstone**: polerad blackstone med inristade runor (Tiwaz, Algiz, Fehu) som lyser grönt i mörkret och ger
+  svagt ljus (4). Finns i ruinens murar, pelare, daisen och runstenarna. Bryts med hacka och ger sig själv.
+
+Teknik: `worldgen/ScorchedBarrens.java` (block, brända träd), `mixin/MultiNoiseBiomeSourceMixin` (gränsen på 2500 block),
+`worldgen/ElkwightRuinStructure.java` (arenan), `worldgen/ElkwightRuins.java` (ruinens API, död boss i SavedData, dimman
+till klienten), `client/RuinFogClient.java`; data `scripts/gen_world_biomes.py`, `scripts/gen_elkwight.py`, texturer
+`scripts/gen_elkwight_textures.py`. Test: `elkwight_world`.

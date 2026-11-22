@@ -43,6 +43,16 @@ public class Capercaillie extends FlockBird {
         super(type, level, KIND);
     }
 
+    /** For other grouse (the black grouse, wildlife.cold): the same lek and the same hen, their own kind and look. */
+    protected Capercaillie(EntityType<? extends Capercaillie> type, Level level, Kind kind) {
+        super(type, level, kind);
+    }
+
+    /** When a cock may start his lek song: at dawn. */
+    protected boolean lekTime() {
+        return ForestBirdsFauna.dawn(level());
+    }
+
     public boolean isHen() {
         return entityData.get(HEN);
     }
@@ -105,7 +115,7 @@ public class Capercaillie extends FlockBird {
             if (phase < 40 && phase % (phase < 20 ? 8 : 4) == 0) playSound(SoundEvents.NOTE_BLOCK_HAT.value(), 0.7F, 1.5F + phase * 0.01F);
             else if (phase == GRIND_START) playSound(SoundEvents.NOTE_BLOCK_BASEDRUM.value(), 0.9F, 1.8F);
             else if (phase > GRIND_START && phase < GRIND_END && phase % 3 == 0) playSound(SoundEvents.NOTE_BLOCK_SNARE.value(), 0.25F, 1.9F + random.nextFloat() * 0.2F);
-        } else if (!isHen() && onGround() && !isFlying() && !isDozing() && !isInWater() && ForestBirdsFauna.dawn(level())
+        } else if (!isHen() && onGround() && !isFlying() && !isDozing() && !isInWater() && lekTime()
                 && (tickCount + getId()) % 20 == 0 && random.nextInt(15) == 0) {
             entityData.set(DISPLAY, DISPLAY_TICKS);
         }

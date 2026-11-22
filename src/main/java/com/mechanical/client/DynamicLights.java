@@ -48,7 +48,7 @@ public final class DynamicLights {
 
     private static int emission(Entity entity) {
         if (entity instanceof com.mechanical.wildlife.GiantDeer) return 7; // a soft glow around the giant
-        if (entity instanceof LivingEntity living) return Math.max(emission(living.getMainHandItem()), emission(living.getOffhandItem()));
+        if (entity instanceof LivingEntity living) return Math.max(com.mechanical.people.OakFolk.lightOf(entity), Math.max(emission(living.getMainHandItem()), emission(living.getOffhandItem())));
         if (entity instanceof ItemEntity item) return emission(item.getItem());
         return 0;
     }

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:tiger_pelt",
+    "mechanical:tiger_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:tiger_rug",
+    "count": 1
+  }
+}

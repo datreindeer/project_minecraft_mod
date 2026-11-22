@@ -199,6 +199,17 @@ MATERIALS.update({
                      "stone": pick((0.35, S("alabaster")), default=S("gypsum")), "slope": S("gypsum")},
 })
 
+# ---------------------------------------------------------------- Elkwight phase 1: Scorched Barrens (docs/elkwight-plan.md)
+# A burnt forest beyond 2500 blocks (ModBiomes.SURFACE row, MultiNoiseBiomeSourceMixin): charred trunks, Wood Ash, coarse
+# dirt and gravel, Blackstone and Basalt outcrops, no grass, no animals but ravens. Cold and dark; snow in winter (Seasons).
+BIOMES["scorched_barrens"] = ("windswept_gravelly_hills", "Scorched Barrens",
+                              [M + f for f in ("trees_windswept_hills", "patch_bush", "flower_default", "patch_grass_badlands", "brown_mushroom_normal",
+                                               "red_mushroom_normal", "patch_pumpkin", "patch_sugar_cane", "patch_firefly_bush_near_water")],
+                              {"temperature": 0.3, "downfall": 0.4,
+                               "effects": {"grass_color": "#5e584c", "foliage_color": "#4c463c", "dry_foliage_color": "#4c463c", "water_color": "#3a4048"}})
+MATERIALS["scorched_barrens"] = {"top": pick((0.45, M + "gravel"), (0.3, M + "coarse_dirt"), default=S("wood_ash")), "wet": M + "gravel",
+                                 "under": M + "coarse_dirt", "slope": pick((0.0, M + "basalt"), default=M + "blackstone")}
+
 # ---- features (each placed feature belongs to one biome, so FeatureSorter never sees two orders)
 LAKES, SURFACE_STRUCTURES, ORES, VEG = 1, 4, 6, 9
 tri = lambda m: {"type": "minecraft:trapezoid", "min": -m, "max": m, "plateau": 0}
@@ -343,6 +354,18 @@ EXTRA = {
     "gypsum_flats": dict(
         attributes={"minecraft:visual/sky_color": "#9cc8ff", "minecraft:visual/fog_color": "#f0ecdc"},
         has=["gypsum", "alabaster", "rock_salt"]),
+    # inherit=False: none of the template's tags (but is_overworld), mod biome modifiers or creatures; only ravens join
+    "scorched_barrens": dict(
+        features={VEG: [feature("scorched_barrens_charred_trees", {"type": "mechanical:charred_tree"}, [
+                            {"type": "minecraft:count", "count": {"type": "minecraft:uniform", "min_inclusive": 5, "max_inclusive": 9}},
+                            {"type": "minecraft:in_square"}, {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"}]),
+                        outcrops("scorched_barrens_blackstone", M + "blackstone", 1, 2),
+                        outcrops("scorched_barrens_basalt", M + "basalt", 1, 3)]},
+        attributes={"minecraft:visual/sky_color": "#5f6670", "minecraft:visual/fog_color": "#55585a", "minecraft:visual/water_fog_color": "#1e2226",
+                    "minecraft:visual/fog_end_distance": {"argument": 0.8, "modifier": "multiply"},
+                    "minecraft:visual/ambient_particles": {"argument": [{"particle": {"type": M + "white_ash"}, "probability": 0.004}], "modifier": "append"}},
+        join=["raven"],
+        inherit=False),
 }
 
 # Beach Pebbles on vanilla's stony shores too: patches swapped into the top layer of stone and gravel
@@ -408,13 +431,17 @@ for name, (base, title, drop, fields) in BIOMES.items():
     for step, ids in x.get("features", {}).items():
         b["features"][step] = ids + b["features"][step]
     b["attributes"].update(x.get("attributes", {}))
+    if not x.get("inherit", True):
+        b["attributes"]["minecraft:gameplay/natural_mob_spawns"]["argument"]["spawns_by_category"]["creature"] = []
     if x.get("creatures"):
         b["attributes"]["minecraft:gameplay/natural_mob_spawns"]["argument"]["spawns_by_category"].setdefault("creature", []).extend(x["creatures"])
     w(D / f"mechanical/worldgen/biome/{name}.json", b)
     lang[f"biome.mechanical.{name}"] = title
     # tags: vanilla's (written as additions in our data/minecraft) and the mod's own
-    tag_files = {D / n.removeprefix("data/") for n, v in vanilla_tags.items() if template in v}
-    tag_files |= {p for p in D.glob("*/tags/worldgen/biome/**/*.json") if template in read(p, {}).get("values", [])}
+    inherit = x.get("inherit", True)
+    tag_files = {D / n.removeprefix("data/") for n, v in vanilla_tags.items() if template in v and (inherit or n.endswith("/is_overworld.json"))}
+    if inherit:
+        tag_files |= {p for p in D.glob("*/tags/worldgen/biome/**/*.json") if template in read(p, {}).get("values", [])}
     tag_files |= {D / f"mechanical/tags/worldgen/biome/has_{t}.json" for t in x.get("has", [])}
     for p in tag_files:
         t = read(p, {"values": []})
@@ -427,11 +454,11 @@ for name, (base, title, drop, fields) in BIOMES.items():
         if not isinstance(m.get("biomes"), list):
             assert stem not in join, f"{p.name}: biomes is a tag, join it through the tag"
             continue
-        want = (template in m["biomes"] or stem in join) and stem not in skip
+        want = (template in m["biomes"] and inherit or stem in join) and stem not in skip
         if want and key not in m["biomes"]:
             m["biomes"].append(key)
             w(p, m)
-        elif not want and key in m["biomes"] and stem in skip:  # inherited from the template but doesn't fit
+        elif not want and key in m["biomes"] and (stem in skip or not inherit):  # inherited from the template but doesn't fit
             m["biomes"].remove(key)
             w(p, m)
     missing = (join | skip) - {p.stem.removeprefix("add_") for p in (D / "mechanical/neoforge/biome_modifier").glob("*.json")}

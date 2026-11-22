@@ -49,7 +49,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 /**
  * The Elkwight (docs/elkwight-plan.md): a giant with an elk's head and a huge palmate antler crown (visual only; the
  * hitbox is the body, 1.2 x 3.6), a double-bladed rune axe in both hands. He waits asleep until a player comes within
- * {@link #WAKE_RANGE} blocks in sight (or hurts him, or {@link #wake()} is called by his ruin), and is then fought with a
+ * {@link #WAKE_RANGE} blocks in sight, steps into his ruin (worldgen.ElkwightRuins#ruinAt), hurts him or calls {@link #wake()}; then he is fought with a
  * boss bar. Persistent: he never despawns and keeps his damage.
  * <ul>
  * <li><b>Scaling</b>: woken, his health ({@link #BASE_HEALTH}) grows by {@link #HEALTH_PER_PLAYER} and his damage by
@@ -243,7 +243,7 @@ public class Elkwight extends WildAnimal implements com.mechanical.wildlife.unde
         if (!isAwake()) {
             if (tickCount % 10 == 0) {
                 Player near = level.getNearestPlayer(this, WAKE_RANGE);
-                if (near != null && fair(near) && hasLineOfSight(near)) wake();
+                if (near != null && fair(near) && hasLineOfSight(near) || someoneInRuin(level)) wake();
                 else if (home != null && distanceToSqr(Vec3.atBottomCenterOf(home)) > 4) getNavigation().moveTo(home.getX() + 0.5, home.getY(), home.getZ() + 0.5, 0.8);
             }
             return;
@@ -318,6 +318,15 @@ public class Elkwight extends WildAnimal implements com.mechanical.wildlife.unde
             if (throwCd <= 0 && sees) start(THROW_WIND, SoundEvents.RAVAGER_ROAR, 0.9F);
             else if (waveCd <= 0 && d < 26) start(WAVE_WIND, SoundEvents.WARDEN_SONIC_CHARGE, 0.7F);
         }
+    }
+
+    /** A fair player has stepped into the ruin he guards (worldgen.ElkwightRuins: the bounds of his ruin, if he stands in one). */
+    private boolean someoneInRuin(ServerLevel level) {
+        if (tickCount % 20 != 0) return false;
+        var ruin = com.mechanical.worldgen.ElkwightRuins.ruinAt(level, blockPosition());
+        if (ruin.isEmpty()) return false;
+        for (Player p : level.players()) if (fair(p) && ruin.get().isInside(p.blockPosition())) return true;
+        return false;
     }
 
     /** The player he fights: the current one while fair and near, else the nearest fair one in range. */

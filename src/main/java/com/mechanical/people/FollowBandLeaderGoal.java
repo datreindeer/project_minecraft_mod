@@ -21,7 +21,7 @@ class FollowBandLeaderGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.home() != null || mob.isLeader() || mob.getTarget() != null || mob.getRandom().nextInt(20) != 0) return false;
+        if (mob.home() != null || mob.role().oak() || mob.isLeader() || mob.getTarget() != null || mob.getRandom().nextInt(20) != 0) return false;
         List<Tribesperson> band = mob.groupNearby(SEARCH);
         leader = band.stream().filter(Tribesperson::isLeader).findFirst().orElse(null);
         if (leader == null) {

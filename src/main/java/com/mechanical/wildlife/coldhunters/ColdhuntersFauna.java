@@ -91,9 +91,9 @@ public final class ColdhuntersFauna {
     public static final DeferredItem<Item> LEMMING_PELT = ITEMS.registerSimpleItem("lemming_pelt");
     public static final DeferredItem<Item> WOLVERINE_CLAW = ITEMS.registerSimpleItem("wolverine_claw");
 
-    /** Raw pelt -> what it cures into on the Drying Rack. */
-    static final Map<Supplier<Item>, Supplier<Item>> CURES = Map.of(RAW_WOLVERINE_PELT, WOLVERINE_FUR, RAW_LYNX_PELT, LYNX_PELT,
-            RAW_ERMINE_PELT, ERMINE_FUR, RAW_MARTEN_PELT, MARTEN_FUR);
+    /** Raw pelt -> what it cures into on the Drying Rack (other fauna packages add theirs: wildlife.cold.ColdFauna). */
+    public static final Map<Supplier<Item>, Supplier<Item>> CURES = new java.util.concurrent.ConcurrentHashMap<>(Map.of(RAW_WOLVERINE_PELT, WOLVERINE_FUR,
+            RAW_LYNX_PELT, LYNX_PELT, RAW_ERMINE_PELT, ERMINE_FUR, RAW_MARTEN_PELT, MARTEN_FUR));
 
     // ---- goods ----
     /** Two wolverine claws lashed into a short hooked blade: a skinning knife (more pelt and hide) for the flint age. */

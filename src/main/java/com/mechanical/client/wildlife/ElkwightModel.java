@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
  * right hand ({@code axe}, hidden while thrown and on the carcass), the left hand on the haft too. Every attack has its
  * pose ({@link Elkwight#action}, 0..1 progress): the telegraph wind-ups read from afar. Texture 128x128
  * (textures/entity/wildlife/elkwight.png, glow layer elkwight_glow.png: eyes and axe runes), painted by
- * scripts/gen_elkwight_textures.py whose box table mirrors the texOffs here.
+ * scripts/gen_elkwight_boss_textures.py whose box table mirrors the texOffs here.
  */
 public class ElkwightModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "elkwight"), "main");

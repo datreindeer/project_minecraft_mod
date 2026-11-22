@@ -141,6 +141,11 @@ public abstract class WildAnimal extends Animal {
         return entityData.get(DOZING);
     }
 
+    /** Lowers the head as for grazing (digging, rooting), unless it is already down. */
+    protected void startGrazing() {
+        if (entityData.get(GRAZE) <= 0) entityData.set(GRAZE, GRAZE_TICKS);
+    }
+
     /** Wakes it up (birds taking off with their flock). */
     protected void wake() {
         entityData.set(DOZING, false);

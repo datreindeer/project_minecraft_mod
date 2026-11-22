@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 300,
+  "experience": 0.1,
+  "ingredient": "mechanical:mudskipper",
+  "result": {
+    "id": "mechanical:cooked_mudskipper",
+    "count": 1
+  }
+}

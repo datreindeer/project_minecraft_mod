@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pika_hay"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pika_hay"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.pika_hay.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.pika_hay.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "mechanical:food/cooked",
+  "criteria": {
+    "ate_0": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:cooked_ostrich_egg"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ate_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cooked_ostrich_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.ostrich_egg_meal.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.ostrich_egg_meal.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

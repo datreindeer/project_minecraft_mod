@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:raw_polar_bear"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:game_meat_scraps"
+            "items": "mechanical:raw_polar_bear_pelt"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_bear_pelt"
+            "items": "mechanical:bear_fat"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bear_fat"
+            "items": "mechanical:bear_claw"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:bear_claw"
+            "items": "mechanical:polar_bear_liver"
           }
         ]
       }
@@ -90,7 +90,7 @@
   ],
   "display": {
     "icon": {
-      "id": "minecraft:polar_bear_spawn_egg"
+      "id": "mechanical:polar_bear_spawn_egg"
     },
     "title": {
       "translate": "advancements.mechanical.hunting.polar_bear.title"
@@ -98,7 +98,7 @@
     "description": {
       "translate": "advancements.mechanical.hunting.polar_bear.description"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false

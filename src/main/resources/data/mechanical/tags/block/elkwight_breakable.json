@@ -10,8 +10,7 @@
     "minecraft:powder_snow",
     "minecraft:clay",
     "minecraft:mud",
-    "minecraft:basalt",
-    "minecraft:blackstone",
-    "minecraft:magma_block"
+    "mechanical:charred_log",
+    "mechanical:wood_ash"
   ]
 }

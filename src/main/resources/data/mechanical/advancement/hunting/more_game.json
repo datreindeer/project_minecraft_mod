@@ -6,7 +6,27 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:cheetah_meat"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "mechanical:game_meat_scraps"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hyena_meat"
           }
         ]
       }
@@ -14,7 +34,9 @@
   },
   "requirements": [
     [
-      "has_0"
+      "has_0",
+      "has_1",
+      "has_2"
     ]
   ],
   "display": {

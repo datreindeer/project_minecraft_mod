@@ -43,7 +43,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * natural stone (smashing down); his health scales with the players; he eats a dead player for a quarter of his health,
  * and a hard hit mid-meal leaves him only part of it; the Ground Wave cracks natural stone and fells a natural tree but
  * leaves built blocks and a player's tree; his colossal carcass doesn't budge for one player, creeps for two and goes for
- * three, and needs a knife past steel; his axe needs two pullers.
+ * three, and needs a knife past steel (the ritual knife cuts it); the ruin's spawner makes him; his axe needs two pullers.
  */
 @EventBusSubscriber(modid = MODID)
 public final class ElkwightTest {
@@ -167,7 +167,20 @@ public final class ElkwightTest {
         butcher.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(com.mechanical.Smithing.STEEL_KNIFE.get()));
         InteractionResult r = body.interact(butcher, InteractionHand.MAIN_HAND, Vec3.ZERO);
         h.assertTrue(r == InteractionResult.FAIL && !butcher.isUsingItem(), "a steel knife is refused: " + r);
+        Player priest = h.makeMockPlayer(GameType.SURVIVAL);
+        priest.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(com.mechanical.people.OakFolk.ANCIENT_RITUAL_KNIFE.get()));
+        InteractionResult ok = body.interact(priest, InteractionHand.MAIN_HAND, Vec3.ZERO);
+        h.assertTrue(ok == InteractionResult.CONSUME, "the Ancient Ritual Knife cuts it: " + ok);
         body.discard();
+        // the ruin's spawner (worldgen.ElkwightRuins) makes him: persistent, tagged with his ruin, asleep until someone comes
+        BlockPos at = h.absolutePos(new BlockPos(12, 1, 12));
+        com.mechanical.worldgen.ElkwightRuins.spawnBoss(h.getLevel(), at);
+        var spawned = h.getLevel().getEntitiesOfClass(Elkwight.class, new AABB(at).inflate(1));
+        h.assertTrue(spawned.size() == 1, "the ruin spawns one Elkwight: " + spawned.size());
+        Elkwight ruinBoss = spawned.getFirst();
+        h.assertTrue(ruinBoss.isPersistenceRequired() && !ruinBoss.isAwake() && ruinBoss.getPersistentData().contains("mechanical_ruin"),
+                "persistent, asleep and tagged with his ruin");
+        ruinBoss.discard();
         e.discard();
         h.succeed();
     }
