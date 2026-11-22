@@ -56,7 +56,7 @@ class ButcherCarcassGoal extends Goal {
             return false;
         }
         carcass = mob.level().getEntitiesOfClass(CarcassEntity.class, new AABB(mob.killPos, mob.killPos).inflate(4), c -> c.hungAt() == null).stream().findFirst().orElse(null);
-        if (carcass != null && campRack != null && !carcass.isHuge() && !HangingRackBlock.occupied((ServerLevel) mob.level(), campRack)
+        if (carcass != null && campRack != null && !carcass.isHuge() && !carcass.isColossal() && !HangingRackBlock.occupied((ServerLevel) mob.level(), campRack)
                 && carcass.distanceToSqr(Vec3.atCenterOf(campRack)) < 48 * 48) rack = campRack;
         return carcass != null;
     }

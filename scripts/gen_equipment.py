@@ -2,7 +2,7 @@
 docs/ages/01-stone-age.md "Utrustning").
 
 - item tags mechanical:equipment/<slot> = what each slot takes: cloak (Otter Fur Cape, Ermine Mantle, Glider Cloak),
-  back (Leather Satchel, Steel-Frame Pack), hip (Quiver, Leather Pouch), neck (Gold Necklace), ring (Gold Ring), charm (empty for now)
+  back (Leather Satchel, Steel-Frame Pack), hip (Quiver, Leather Pouch), neck (Gold Necklace), ring (Gold Ring), charm (Bone Charm)
 - the cloaks stay in #minecraft:chest_armor: that tag is what makes them enchantable like a chest piece (Protection,
   Thorns, Unbreaking, Mending), and Equipment applies those enchantments from the Cloak slot
 - Quiver: item model + definition, lang. Sewn at the Leatherworking Bench (LeatherworkingRecipes, Java)
@@ -33,12 +33,12 @@ def tag_add(path, *values):
 
 
 SLOTS = {
-    "cloak": [M + "otter_fur_cape", M + "ermine_mantle", M + "glider_cloak"],
+    "cloak": [M + "otter_fur_cape", M + "ermine_mantle", M + "glider_cloak", M + "elkwight_cloak"],  # Elkwight Cloak: gen_elkwight.py
     "neck": [M + "gold_necklace"],  # Jewelry (gen_p8smith.py)
     "back": [M + "leather_satchel", M + "steel_frame_pack"],
     "ring": [M + "gold_ring"],
     "hip": [M + "quiver", M + "leather_pouch"],
-    "charm": [],
+    "charm": [M + "bone_charm"],  # the Elkwight's Bone Charm (gen_elkwight.py)
 }
 for slot, items in SLOTS.items():
     w(D / f"mechanical/tags/item/equipment/{slot}.json", {"values": items})

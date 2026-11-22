@@ -899,6 +899,27 @@ TABS["wilderness"][1].extend([
      ate("lindworm_heart")),
 ])
 
+# the Elkwight (wildlife/elkwight, gen_elkwight.py): parent "lindworm" until the Scorched Barrens' "Into the Ashes" exists
+TABS["wilderness"][1].extend([
+    ("elkwight", "lindworm", "elkwight_antler_crown", C, "The Smoke Clears",
+     "Far out in the Scorched Barrens, kill the Elkwight waiting in a burnt ruin. Every attack is shown first: learn the signs",
+     killed({"minecraft:entity_type": "mechanical:elkwight"})),
+    ("elkwight_axe_trophy", "elkwight", "minecraft:iron_axe", G, "Heavy Burden",
+     "Drag the Elkwight's axe home - it takes two - and stand it up as a trophy: right-click the top of a block while you hold it",
+     by_code()),
+    ("elkwight_all_hands", "elkwight", "elkwight_hide", C, "All Hands",
+     "Drag the Elkwight's colossal body with three others. One can't move it, two barely can",
+     by_code()),
+    ("elkwight_cloak", "elkwight", "elkwight_cloak", T, "Mantle of the Wight",
+     "Skin the Elkwight - only a knife past steel cuts that hide - and sew 2 Elkwight Hide, 2 Sinew and Cordage into an Elkwight Cloak",
+     has("elkwight_cloak")),
+    ("bone_charm", "elkwight", "bone_charm", T, "Bone Charm",
+     "Carve a Bone Charm from 3 Elkwight Bones, Cordage and a Gold Nugget. Worn in the Charm slot: two more hearts",
+     has("bone_charm")),
+    ("elkwight_antler_crown", "elkwight", "elkwight_antler_crown", T, "Crowned",
+     "Hang the Elkwight Antler Crown on a wall", placed("elkwight_antler_crown")),
+])
+
 
 # fauna: warm
 TABS["bronze_age"][1].extend([
@@ -1623,7 +1644,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
                  "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir",
                  "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard",
+    "predators": ["elkwight", "grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm"],
@@ -1639,7 +1660,7 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
+CHALLENGE = {"elkwight", "giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
 
 
 def _args(src, start):

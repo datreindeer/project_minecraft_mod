@@ -1,0 +1,518 @@
+{
+  "textures": {
+    "particle": "mechanical:block/elkwight_axe_blade",
+    "haft": "mechanical:block/elkwight_axe_haft",
+    "blade": "mechanical:block/elkwight_axe_blade",
+    "runes": "mechanical:block/elkwight_axe_runes"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        0,
+        7
+      ],
+      "to": [
+        9,
+        28,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#haft"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#haft"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#haft"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#haft"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#haft"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#haft"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        21,
+        6.5
+      ],
+      "to": [
+        9.5,
+        29,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            3.0,
+            8
+          ],
+          "texture": "#blade"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            3.0,
+            8
+          ],
+          "texture": "#blade"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            3.0,
+            8
+          ],
+          "texture": "#blade"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            3.0,
+            8
+          ],
+          "texture": "#blade"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            3.0,
+            3.0
+          ],
+          "texture": "#blade"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            3.0,
+            3.0
+          ],
+          "texture": "#blade"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        22,
+        7.5
+      ],
+      "to": [
+        6.5,
+        28,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            1.0
+          ],
+          "texture": "#blade"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            1.0
+          ],
+          "texture": "#blade"
+        }
+      }
+    },
+    {
+      "from": [
+        -5,
+        19,
+        7.5
+      ],
+      "to": [
+        0,
+        31,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            5,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            5,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            5,
+            1.0
+          ],
+          "texture": "#blade"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            5,
+            1.0
+          ],
+          "texture": "#blade"
+        }
+      }
+    },
+    {
+      "from": [
+        9.5,
+        22,
+        7.5
+      ],
+      "to": [
+        16,
+        28,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            6
+          ],
+          "texture": "#blade"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            1.0
+          ],
+          "texture": "#blade"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            6.5,
+            1.0
+          ],
+          "texture": "#blade"
+        }
+      }
+    },
+    {
+      "from": [
+        16,
+        19,
+        7.5
+      ],
+      "to": [
+        21,
+        31,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            5,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            5,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            12
+          ],
+          "texture": "#blade"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            5,
+            1.0
+          ],
+          "texture": "#blade"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            5,
+            1.0
+          ],
+          "texture": "#blade"
+        }
+      }
+    },
+    {
+      "from": [
+        -5,
+        19,
+        7.48
+      ],
+      "to": [
+        6.5,
+        31,
+        7.48
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            11.5,
+            12
+          ],
+          "texture": "#runes"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        -5,
+        19,
+        8.52
+      ],
+      "to": [
+        6.5,
+        31,
+        8.52
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            0,
+            0,
+            11.5,
+            12
+          ],
+          "texture": "#runes"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        9.5,
+        19,
+        7.48
+      ],
+      "to": [
+        21,
+        31,
+        7.48
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            11.5,
+            12
+          ],
+          "texture": "#runes"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    },
+    {
+      "from": [
+        9.5,
+        19,
+        8.52
+      ],
+      "to": [
+        21,
+        31,
+        8.52
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            0,
+            0,
+            11.5,
+            12
+          ],
+          "texture": "#runes"
+        }
+      },
+      "light_emission": 15,
+      "shade": false
+    }
+  ]
+}

@@ -129,7 +129,8 @@ public final class Butchery {
     private record Registered(Supplier<? extends EntityType<?>> type, Yield yield) {}
     private static final List<Registered> REGISTERED = new ArrayList<>();
     private static final List<Supplier<? extends EntityType<?>>> ALWAYS_CARCASS = new ArrayList<>(), NEVER_CARCASS = new ArrayList<>(),
-            TOUGH_HIDE = new ArrayList<>(), WHOLE_MEAT = new ArrayList<>();
+            TOUGH_HIDE = new ArrayList<>(), WHOLE_MEAT = new ArrayList<>(), COLOSSAL = new ArrayList<>();
+    private static final List<Map.Entry<Supplier<? extends EntityType<?>>, Integer>> KNIFE_TIERS = new ArrayList<>();
 
     /**
      * Adds an animal's yield from its own feature class (call during mod construction, e.g. from an init()), so new animal
@@ -152,6 +153,20 @@ public final class Butchery {
     /** A thick hide (like the bear's) that needs a tusk-grade knife or better to butcher at all. */
     public static void toughHide(Supplier<? extends EntityType<?>> type) {
         TOUGH_HIDE.add(type);
+    }
+
+    /** A body heavier than the huge animals (the Elkwight): it takes 2 players to budge it and 3 to drag it (CarcassEntity#isColossal). */
+    public static void colossal(Supplier<? extends EntityType<?>> type) {
+        COLOSSAL.add(type);
+    }
+
+    public static boolean isColossal(EntityType<?> type) {
+        return listed(COLOSSAL, type);
+    }
+
+    /** A hide only a knife of at least {@code tier} cuts (KnifeItem#tier; the Elkwight's needs the top tier, past iron and steel). */
+    public static void requireKnife(Supplier<? extends EntityType<?>> type, int tier) {
+        KNIFE_TIERS.add(Map.entry(type, tier));
     }
 
     /** Meat that never comes as Haunch, Ribs and Loin on the Hanging Rack (fish): only its own meat, one more piece once aged. */
@@ -212,6 +227,7 @@ public final class Butchery {
      * with the body's bulk (CarcassEntity#workNeeded).
      */
     public static int requiredKnifeTier(EntityType<?> animal) {
+        for (var e : KNIFE_TIERS) if (e.getKey().get() == animal) return e.getValue();
         return animal == Wildlife.BROWN_BEAR.get() || animal.getWidth() >= 2.0F || listed(TOUGH_HIDE, animal) ? KnifeItem.TUSK : KnifeItem.FLINT;
     }
 

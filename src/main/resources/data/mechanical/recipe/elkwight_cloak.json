@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:elkwight_hide",
+    "mechanical:elkwight_hide",
+    "mechanical:sinew",
+    "mechanical:sinew",
+    "mechanical:cordage"
+  ],
+  "result": {
+    "id": "mechanical:elkwight_cloak"
+  }
+}

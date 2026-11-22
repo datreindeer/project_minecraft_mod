@@ -44,13 +44,13 @@ public final class HaulingClient {
         event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
             @Override
             public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
-                CarcassEntity c = avatar instanceof Player player ? CarcassHauling.hauled(player) : null;
+                com.mechanical.HeavyLoad c = avatar instanceof Player player ? CarcassHauling.heavy(player) : null;
                 // a downed tribe mate on the shoulders is held like a carcass (clan.Downed)
                 boolean mate = avatar instanceof Player player && com.mechanical.clan.Downed.carrying(player) != null;
                 if (c == null && !mate) return;
                 if (c == null) state.setRenderData(DRAGGING, false);
-                else if (c.isSlung() && !c.isLarge()) state.setRenderData(SLUNG, true);
-                else state.setRenderData(DRAGGING, c.isLarge());
+                else if (c instanceof CarcassEntity body && body.isSlung() && !body.isLarge()) state.setRenderData(SLUNG, true);
+                else state.setRenderData(DRAGGING, c.isDragged());
                 if (c != null && CarcassHauling.straining(c)) state.setRenderData(STRAIN, true);
                 state.rightHandItemState.clear();
                 state.leftHandItemState.clear();
@@ -63,7 +63,7 @@ public final class HaulingClient {
     @SubscribeEvent
     static void onRenderHand(RenderHandEvent event) {
         Player player = Minecraft.getInstance().player;
-        if (player != null && (CarcassHauling.hauled(player) != null || com.mechanical.clan.Downed.carrying(player) != null)) event.setCanceled(true);
+        if (player != null && (CarcassHauling.heavy(player) != null || com.mechanical.clan.Downed.carrying(player) != null)) event.setCanceled(true);
     }
 
     /** End of HumanoidModel#setupAnim (players and their armour): arms up holding the body, or back gripping the dragged one. */
