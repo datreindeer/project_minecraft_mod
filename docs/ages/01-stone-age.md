@@ -591,9 +591,11 @@ ner och lägger sig längs den, och inget håller ihop sida mot sida eller hörn
 litter som förut). Kroppen ritas med stockarnas egna blockmodeller och är **fast block för block**: man går inte igenom
 den, kan stå på den och det finns inga osynliga väggar i luckorna mellan grenarna. Den som lyfter eller drar stocken
 krockar inte med den.
-- **Gravitation:** den vilar på sitt nedersta lager, på fast mark eller **vatten** (stockar flyter), inte på löv. Gräver
-  man bort det den ligger på faller den, och hänger mitten ut över en kant glider den av. Ligger den still sover den
-  (ingen kostnad per tick, bara en koll av underlaget varannan sekund).
+- **Gravitation:** den vilar på fast mark, **vatten** (stockar flyter) eller **andra stockar** (stockar krockar med varandra
+  och staplas när de landar eller rullas av en vagn), inte på löv. En rak stock i en **backe** lutar längs marken under
+  sina ändar och glider nerför om det är brantare än ~17° (0,3 block per block), tills marken planar ut; en ände ut över
+  en kant tippar ner. Gräver man bort det den ligger på faller den. Ligger den still sover den (ingen kostnad per tick,
+  bara en koll av underlaget varannan sekund).
 - **Hugga:** håll in höger- eller vänsterklick med yxa på stocken (vänsterklick slår inte sönder fällda träd eller
   Fallen Logs med yxa eller såg, det gör samma sak som högerklick). Hugget är ett långsamt tvåhandshugg: yxan upp över
   huvudet och ner (ett hugg var 16:e tick). Ett block som har bark kvar **barkas först** (1–2 Bark). Sedan hugger yxan, som
@@ -606,9 +608,9 @@ krockar inte med den.
 - **Lyfta för hand (upp till 12 block):** högerklicka **en ände** (rotänden eller toppänden) med tom hand. Stocken rätas
   ut och du bär den änden i händerna medan den andra släpar i marken bakom (stocken lutar). En andra spelare kan lyfta
   den andra änden: då bär ni den mellan er, var och en drar sin ände och stocken följer er båda (ni hålls inom ~2 block
-  från era ändar). **Tyngd:** en lyft ände bär halva stocken och änden i marken släpar en fjärdedel, så en spelare bär
-  4–5 block i full fart och två bär 8 block; ju tyngre desto långsammare. Orkar ni inte går det ändå, men bara i ryck
-  (en knuff varannan sekund, armarna darrar). Högerklicka stocken igen eller smyg för att släppa. Med en stock i händerna
+  från era ändar). **Tyngd:** en lyft ände bär halva stocken och änden i marken släpar en fjärdedel, mot 2,5 block styrka
+  per spelare. Den som bär **saktas ner** av tyngden (farten / (1 + 0,8 × last)): 3 block bär man lätt, 5 är tungt (ungefär
+  halva farten), längre kryper man med armarna darrande; två spelare delar på tyngden. Högerklicka stocken igen eller smyg för att släppa. Med en stock i händerna
   kan man inte använda items, slå eller springa; man ser händerna på stocken (framåt-nedåt mot stocken framför, eller
   bakåt-nedåt när den släpar bakom), även i första person.
 - **Dra med Lead (bara över 12 block):** högerklicka **rotänden** (änden som stod på stubben) med en **Lead** (Lead
