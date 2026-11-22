@@ -68,6 +68,12 @@ public class ClanScreen extends Screen {
         (relations ? rel : tribe).active = false;
     }
 
+    /** A bright bar under the open tab, so it reads as the selected one (its greyed button alone looks like the closed one). */
+    private void openTab(GuiGraphicsExtractor graphics, int left) {
+        int x = left + (relations ? 92 : 0);
+        graphics.fill(x + 2, top - 4, x + 88, top - 2, TITLE);
+    }
+
     private void initRelations(int left) {
         panelH = PAD + 14 + ROWS * ROW + PAD;
         top = (this.height - panelH) / 2;
@@ -212,6 +218,7 @@ public class ClanScreen extends Screen {
         if (relations) {
             extractRelations(graphics, x);
             super.extractRenderState(graphics, mouseX, mouseY, a);
+            openTab(graphics, left);
             return;
         }
         if (!view.inClan()) {
@@ -248,6 +255,7 @@ public class ClanScreen extends Screen {
             graphics.text(font, status, x, y, TEXT);
         }
         super.extractRenderState(graphics, mouseX, mouseY, a);
+        openTab(graphics, left);
         if (view.inClan()) TribeTabList.pennant(graphics, x + inner - 12, top + 5, TribeTabList.dye(view.colour()));
     }
 
