@@ -2,6 +2,7 @@
 
 > Status: **fas 1 byggd (v0.136.0):** F1 stockar, B7 multiplayer-sidan, B1 zontitel, B2 relationsflik, B4 anvil-hjul.
 > **Fas 2 byggd (Servern lever):** A1, A2, A3, A9, se *Byggt i fas 2* under tabell A.
+> **Fas 7 byggd (Vägar):** A5–A8, se *Byggt i fas 7* under tabell A.
 > Resten är plan. Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
 > det som byggs förs också in i respektive åldersdokument (`docs/ages/*.md`).
 
@@ -47,6 +48,24 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 - **A9:** bara stammarnas Fire Pits forceladdar än så länge. Mätt 2026-11-22 på en tom dedikerad testserver (ny värld,
   10 TPS, `/tick query`, 3x3 chunks per läger med vanlig terräng och djur, utan byggen eller gårdar): inga läger
   0,2 ms/tick, 4 läger 0,4 ms, 10 läger 0,8 ms (P99 1,5 ms) av 100 ms budget. Speltiden gick 300 ticks på 30 s (halv takt).
+### Byggt i fas 7 (Vägar)
+
+- **A5** (`people/RoadBuilding.java`, `RoadMarkerItem`, `RoadBuildGoal`): vid Friendly får grannlägrets ledare och handlare
+  knappen *Build a road*; man får en **Road Marker** och sätter den där vägen ska sluta (högst 1000 block från lägret).
+  Två av lägrets folk bygger en 2 block bred stig ruta för ruta. Rutten planeras en bit i taget med A* (32x32 block runt
+  fronten, bara laddad mark): lutning och vatten kostar mer, spelarbyggen, träd och allt som inte är naturlig mark är
+  förbjudet, och vid själva bygget lämnas en körfil som går in i något byggt. Vatten korsas på en plankbana bara när det
+  inte går runt. Vägjobben sparas (SavedData `mechanical:roads`).
+- **Pris (bestämt av Claude, kan ändras):** gratis upp till 500 block, sedan **1 Silver Coin per påbörjade 50 block**
+  (max 10), handelsvägen **dubbelt**. Gold Coin räknas som 10 Silver, växel i silver. Längden är fågelvägen läger → markör.
+- **A6:** vid rykte 60 och en färdig stig (din eller din spelarstams) knappen *Trade road*: samma rutt byggs om 3 block
+  bred i sten. Förenkling: stenen tas inte ur lägrets förråd (byggarna "hämtar" den).
+- **A7:** vägen ändras högst 1 block per ruta (skär in i backar, fyller över gropar) och varje steg får en trappa, en
+  puckel en slab. `Trails`: där marken längs stigen stiger 2+ block läggs en kullerstenstrappa på den lägre rutan.
+- **A8/A9:** fönster av 3x3 chunks runt varje byggare och fronten (`mechanical:road_window`, följer med varje sekund);
+  en stam med färdig handelsväg forceladdar sitt läger 3x3 (`mechanical:road_base`) och dess handlare följs av fönstret
+  tills de är hemma. Byggarna arbetar dag och natt. MSPT inte mätt för vägar ännu.
+
 - Obs: lägerålder (`CampAge`) räknas för brinnande eldar i laddade chunks, så en eld i en stams forceladdade läger åldrar
   lägret även när ingen är där.
 
@@ -146,7 +165,7 @@ Gäller före tabellerna ovan där de skiljer sig.
 | Tom server (A1) | Tiden går vidare i **halv hastighet** när ingen är online (ett speldygn = 2 h). Ersätter beslutet i `seasons-and-tribes.md` om att tiden står still. |
 | Fire Pit forceload (A2) | 3x3 chunks. Stor Fire Pit: 5x5. |
 | Relation per stam (A4) | Vid sammanslagning får stammen **medelvärdet** av medlemmarnas relationer. |
-| Vägar (A5–A6) | Max **1000 block**. Gratis under 500 block, längre än så vill de ha betalt i silver/guld (Silver Coin/Gold Coin). |
+| Vägar (A5–A6) | Max **1000 block**. Gratis under 500 block, längre än så vill de ha betalt i silver/guld (Silver Coin/Gold Coin). **Pris (Claude, fas 7):** 1 Silver Coin per påbörjade 50 block över 500, handelsväg dubbelt. |
 | Relationssidan (B2) | Bara er relation till varje NPC-stam. Inga nya NPC↔NPC- eller spelarstam↔spelarstam-relationer. |
 | Dra träd (F1) | **Allt på en gång:** alla fällda träd blir stock-entiteter med gravitation som kan dras och yxas/sågas av (delas). Man drar med **lead i rotänden**; flera spelare kan sätta var sin lead och dragkraften läggs ihop. |
 | Grottor (F3) | Spelarens Brightness (gamma) ignoreras under jord. Glow Lichen m.m. lyser som idag. |

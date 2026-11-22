@@ -31,6 +31,9 @@ public final class People {
     public static final DeferredItem<SpawnEggItem> MINER_SPAWN_EGG = ITEMS.registerItem("miner_spawn_egg", SpawnEggItem::new,
             p -> p.spawnEgg(MINER.get()));
 
+    /** Road Marker: a tribe's banner on a stick, set down where their road should end (RoadBuilding, A5). */
+    public static final DeferredItem<RoadMarkerItem> ROAD_MARKER = ITEMS.registerItem("road_marker", RoadMarkerItem::new, p -> p.stacksTo(1));
+
     /** Palisade stake tops for tribe villages (items come from Mechanical.registerMissingBlockItems). */
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_OAK_LOG = sharpened("sharpened_oak_log", MapColor.WOOD);
     public static final DeferredBlock<SharpenedLogBlock> SHARPENED_SPRUCE_LOG = sharpened("sharpened_spruce_log", MapColor.PODZOL);
@@ -56,6 +59,7 @@ public final class People {
         Tribe.init();
         TribeTest.init(modEventBus);
         RelationsTest.init(modEventBus);
+        RoadTest.init(modEventBus);
     }
 
     @SubscribeEvent

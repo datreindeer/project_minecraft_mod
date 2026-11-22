@@ -29,6 +29,7 @@ import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -253,6 +254,23 @@ final class Trails extends StoneAgeFeature {
                 : m < 0.8 ? Blocks.COARSE_DIRT.defaultBlockState() : m < 0.9 ? Blocks.GRAVEL.defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
         set(level, g, soil);
         soilPlaced.add(g);
+        step(level, g, r);
+    }
+
+    /**
+     * No cliffs on a trail (docs/living-world-plan.md A7, as RoadBuilding does for tribe roads): where the ground ahead or
+     * behind along the trail rises 2 blocks or more, a stone stair on this column makes it a walk up and one step. Decided from the
+     * neighbours' ground alone, like every trail column.
+     */
+    static void step(WorldGenLevel level, BlockPos g, Route r) {
+        for (Direction d : r.alongX ? new Direction[] {Direction.EAST, Direction.WEST} : new Direction[] {Direction.NORTH, Direction.SOUTH}) {
+            BlockPos n = top(level, g.getX() + d.getStepX(), g.getZ() + d.getStepZ());
+            if (n.getY() - g.getY() < 2 || !natural(level.getBlockState(n)) || !level.getFluidState(n).isEmpty()) continue;
+            if (!level.getBlockState(g.above()).isAir()) return;
+            BlockState stair = (hash(g.getX(), g.getZ(), 7) < 0.5 ? Blocks.MOSSY_COBBLESTONE_STAIRS : Blocks.COBBLESTONE_STAIRS).defaultBlockState();
+            set(level, g.above(), stair.setValue(StairBlock.FACING, d));
+            return;
+        }
     }
 
     private static BlockState path(DeferredBlock<TrampledPathBlock> block) {

@@ -1,0 +1,2 @@
+kind 0: 45 cells, from BlockPos{x=74, y=199, z=80} to BlockPos{x=110, y=202, z=80}
+kind 1: 37 cells, from BlockPos{x=74, y=199, z=87} to BlockPos{x=110, y=202, z=87}

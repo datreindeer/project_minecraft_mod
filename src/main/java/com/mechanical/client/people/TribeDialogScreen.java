@@ -35,6 +35,8 @@ public class TribeDialogScreen extends Screen {
             buttons.add(button("gui.mechanical.tribe_dialog.yes", TribeDialog.CHOOSE_YES));
             buttons.add(button("gui.mechanical.tribe_dialog.no", TribeDialog.CHOOSE_NO));
         }
+        if ((open.buttons() & TribeDialog.ROAD) != 0) buttons.add(button("gui.mechanical.tribe_dialog.road", TribeDialog.CHOOSE_ROAD));
+        if ((open.buttons() & TribeDialog.UPGRADE) != 0) buttons.add(button("gui.mechanical.tribe_dialog.upgrade", TribeDialog.CHOOSE_UPGRADE));
         buttons.add(Button.builder(Component.translatable("gui.mechanical.tribe_dialog.farewell"), b -> onClose()).build());
         int bw = Math.min(80, (W - PAD * 2 - 4 * (buttons.size() - 1)) / buttons.size());
         int x = (this.width - (bw * buttons.size() + 4 * (buttons.size() - 1))) / 2;

@@ -25,9 +25,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class TribeDialog {
     /** Button bits. Farewell is always there. */
-    public static final int TRADE = 1, YES_NO = 2;
+    public static final int TRADE = 1, YES_NO = 2, ROAD = 4, UPGRADE = 8;
     /** Answers. */
-    public static final int CHOOSE_TRADE = 0, CHOOSE_YES = 1, CHOOSE_NO = 2;
+    public static final int CHOOSE_TRADE = 0, CHOOSE_YES = 1, CHOOSE_NO = 2, CHOOSE_ROAD = 3, CHOOSE_UPGRADE = 4;
     static final double REACH = 10;
 
     public record Open(int entity, Component name, Component text, int buttons) implements CustomPacketPayload {
@@ -74,6 +74,8 @@ public final class TribeDialog {
         return switch (choice) {
             case CHOOSE_TRADE -> (o.buttons() & TRADE) != 0;
             case CHOOSE_YES, CHOOSE_NO -> (o.buttons() & YES_NO) != 0;
+            case CHOOSE_ROAD -> (o.buttons() & ROAD) != 0;
+            case CHOOSE_UPGRADE -> (o.buttons() & UPGRADE) != 0;
             default -> false;
         };
     }
@@ -92,6 +94,8 @@ public final class TribeDialog {
         switch (choice) {
             case CHOOSE_TRADE -> envoy.openTrade(player);
             case CHOOSE_YES, CHOOSE_NO -> TribeVisits.answerStay(player, envoy, choice == CHOOSE_YES);
+            case CHOOSE_ROAD -> RoadBuilding.askRoad(player, envoy);
+            case CHOOSE_UPGRADE -> RoadBuilding.askUpgrade(player, envoy);
             default -> {}
         }
     }

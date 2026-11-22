@@ -1682,6 +1682,8 @@ väg in till elden börjar.
   stockstolpar ner till botten i par på båda sidor var fjärde block, med staket ovanpå (ek eller gran). I grunt vatten (1–2 block) **trampstenar** av kullersten och mossig
   kullersten, i nivå med ytan.
 - **Rösen:** ungefär var 96:e block står ett litet stenröse (kullersten med en kullerstensmur ovanpå) bredvid stigen.
+- **Inga stup:** där marken framåt eller bakåt längs stigen stiger 2 block eller mer läggs en trappa av kullersten eller
+  mossig kullersten (Cobblestone Stairs / Mossy Cobblestone Stairs) på den lägre rutan, så att man kan gå upp.
 
 Vilka strukturer som får stigar styrs av taggen `mechanical:trail_connected` (bara strukturer med random_spread-placering).
 Byggs bara i nya chunks.
@@ -2010,6 +2012,35 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
   tempererat, varmt och djungel; efter *Palisade*).
 - Op: `/tribes visit` skickar ett band mot lägret där du står, `/tribes info` visar besök, lägrens nästa besök och
   grannlägrens steg, förråd och vad nästa steg kräver.
+
+### Vägar från grannlägret (Road Marker)
+En stam som slagit sig ner nära dig kan bygga en **väg** åt dig (koden: `people/RoadBuilding.java`, `RoadMarkerItem.java`,
+`RoadBuildGoal.java`; data `scripts/gen_roads.py`).
+- **Be om en väg:** är ryktet **Friendly** (30+) får deras ledare och deras handlare (som går till ditt läger) en knapp
+  **Build a road** i samtalsrutan. Du får en **Road Marker** (en påle med en hudvimpel, märkt med stammens namn).
+  Sätt den på fast mark där vägen ska sluta: den blir stammens banér på platsen och bygget börjar. Bara en väg i taget per stam.
+- **Längd och pris:** högst **1000 block** från deras läger (fågelvägen). Upp till **500 block** är vägen gratis; längre
+  kostar **1 Silver Coin per påbörjade 50 block** över 500 (alltså 1–10 Silver Coins). En Gold Coin räknas som 10 Silver
+  och växel ges tillbaka i silver. Priset tas när markören sätts ner. (Bestämt av Claude 2026-11-22, kan ändras.)
+- **Bygget:** två av lägrets folk (inte äldste eller handlare) går ut och bygger stigen ruta för ruta, ungefär en ruta i
+  sekunden var, dag och natt tills den är klar, och går sedan hem längs den. Stigen är **2 block bred**: Trodden Path
+  (växer aldrig igen) med fläckar av Gravel och Coarse Dirt. Vägen planeras en bit i taget (32x32 block runt fronten) med
+  A* över marken: branta sluttningar och vatten kostar mer, och **spelarbyggen, träd och allt som inte är naturlig mark är
+  förbjudet**. Byggarna gräver och fyller bara naturlig mark (jord, gräs, sand, grus, sten, snö), växter och vatten, så
+  inget du byggt rivs; går en körfil in i något byggt lämnas just den rutan. Vatten korsas på en **plankbana** (Spruce
+  Planks i vattenytan) bara när det inte går runt. Kommer de inte vidare slutar vägen där de är, och du får ett meddelande.
+- **Inga stup:** vägen ändras högst 1 block mellan två rutor. Den skär in i backar och fylls upp (Dirt) över gropar, och
+  varje steg på 1 block får en trappa (Mossy Cobblestone Stairs på stigen) som stiger åt rätt håll; en puckel på en ruta
+  får en slab.
+- **Handelsväg:** vid rykte **60+** och en färdig stig byggd åt dig (eller någon i din spelarstam) visas knappen
+  **Trade road**. Den kostar samma pris som stigen gånger två (gratis upp till 500 block) och betalas direkt. Samma folk
+  bygger om vägen **3 block bred i sten**: Stone Bricks i mitten, Cobblestone och Mossy Cobblestone i kanterna, Stone
+  Brick Stairs/Slab i stegen, Cobblestone som fyllning och Stone Bricks över vatten.
+- **Laddade chunks:** medan någon är ute på vägen hålls bara ett **fönster** laddat: 3x3 chunks runt varje byggare (och
+  runt fronten), som följer med när de går. En stam med en **färdig handelsväg** håller dessutom sitt läger (3x3 chunks)
+  laddat, och dess handlare följs av ett eget fönster när de går mellan lägren, så handel och liv rullar på även när ingen
+  är där.
+- **Avancemang** (Wilderness): *Paths Between Us* (sätt ner en Road Marker) och *The Trade Road* (låt dem bygga en handelsväg).
 
 ### Handelskaravaner (Trader Caravan)
 Vanillas **Wandering Trader** och hans **Trader Llamas** finns inte längre: ingen av dem kommer in i världen (inte heller

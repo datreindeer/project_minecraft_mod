@@ -37,13 +37,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class RetrogenTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final ResourceKey<Consumer<GameTestHelper>> RETROGEN = key("retrogen"), RESTOCK = key("restock_missing_species");
+    private static final ResourceKey<Consumer<GameTestHelper>> RETROGEN = key("retrogen"), RESTOCK = key("restock_missing_species"), TRAIL_STEPS = key("trail_steps");
     /** Far from the test grid, so features placed here can't land in another test. */
     private static final int FAR = 400;
 
     static {
         TEST_FUNCTIONS.register("retrogen", () -> RetrogenTest::retrogen);
         TEST_FUNCTIONS.register("restock_missing_species", () -> RetrogenTest::restock);
+        TEST_FUNCTIONS.register("trail_steps", () -> RetrogenTest::trailSteps);
     }
 
     private static ResourceKey<Consumer<GameTestHelper>> key(String name) {
@@ -61,6 +62,30 @@ public final class RetrogenTest {
                 new FunctionGameTestInstance(RETROGEN, com.mechanical.TestArea.of(env, 20, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "restock_missing_species"),
                 new FunctionGameTestInstance(RESTOCK, com.mechanical.TestArea.of(env, 20, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "trail_steps"),
+                new FunctionGameTestInstance(TRAIL_STEPS, com.mechanical.TestArea.of(env, 20, true)));
+    }
+
+    /** A7 on worldgen trails (Trails.step): a stair on the column below a 2-block rise along the trail, none on flat ground. */
+    private static void trailSteps(GameTestHelper h) {
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++) {
+                h.setBlock(new BlockPos(x, 0, z), Blocks.GRASS_BLOCK.defaultBlockState());
+                if (x >= 8) {
+                    h.setBlock(new BlockPos(x, 1, z), Blocks.DIRT.defaultBlockState());
+                    h.setBlock(new BlockPos(x, 2, z), Blocks.GRASS_BLOCK.defaultBlockState());
+                }
+            }
+        BlockPos a = h.absolutePos(new BlockPos(0, 0, 8));
+        Trails.Route r = new Trails.Route(new Trails.Node(1, a.getX(), a.getZ()), new Trails.Node(2, a.getX() + 40, a.getZ()));
+        ServerLevel level = h.getLevel();
+        Trails.step(level, h.absolutePos(new BlockPos(3, 0, 8)), r);
+        h.assertBlockPresent(Blocks.AIR, new BlockPos(3, 1, 8));
+        Trails.step(level, h.absolutePos(new BlockPos(7, 0, 8)), r);
+        var s = level.getBlockState(h.absolutePos(new BlockPos(7, 1, 8)));
+        h.assertTrue(s.getBlock() instanceof net.minecraft.world.level.block.StairBlock
+                && s.getValue(net.minecraft.world.level.block.StairBlock.FACING) == net.minecraft.core.Direction.EAST, "stair facing up the rise, got " + s);
+        h.succeed();
     }
 
     /** Generates (or loads) the 3x3 around a chunk and returns its middle. */

@@ -378,6 +378,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(3, new RaidGoal(this));
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
         goalSelector.addGoal(3, new VisitGoal(this));
+        goalSelector.addGoal(3, new RoadBuildGoal(this));
         goalSelector.addGoal(4, new ErrandGoal(this));
         goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
@@ -801,7 +802,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     /** A visiting band's leader, or a camp's trader on the way to a player camp: they talk through TribeDialog. */
     public boolean isEnvoy() {
-        return visit != null && leader || errand != null && errand.trade() || role() == TribeRole.TRADER;
+        return visit != null && leader || errand != null && errand.trade() || role() == TribeRole.TRADER
+                || leader && visit == null && Settlements.of(this) != null; // a settled camp's leader talks roads (RoadBuilding)
     }
 
     /** Opens the barter screen, prices following the player's standing (not while angry or busy, nor for strangers they won't trade with). */
