@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:aardvark_meat"
+            "items": "mechanical:bighorn_mutton"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:chamois_meat"
+            "items": "mechanical:camel_meat"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:gazelle_meat"
+            "items": "mechanical:chamois_meat"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:orangutan_meat"
+            "items": "mechanical:raw_bison"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:ostrich_meat"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_bison"
+            "items": "mechanical:raw_musk_ox"
           }
         ]
       }
@@ -96,32 +96,12 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
-          }
-        ]
-      }
-    },
-    "has_10": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_musk_ox"
-          }
-        ]
-      }
-    },
-    "has_11": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:saiga_meat"
           }
         ]
       }
     },
-    "has_12": {
+    "has_10": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -144,9 +124,7 @@
       "has_7",
       "has_8",
       "has_9",
-      "has_10",
-      "has_11",
-      "has_12"
+      "has_10"
     ]
   ],
   "display": {

@@ -66,6 +66,8 @@ import net.neoforged.neoforge.registries.DeferredItem;
 public final class Husbandry {
     /** A meal lasts a day, a drink two; below half of that the animal looks for more. */
     public static final long FOOD_TICKS = 24000, WATER_TICKS = 48000;
+    /** A camel's drink lasts this many times longer (HorseWork.hardy). */
+    public static final int CAMEL_WATER = 4;
     /** Head down at the grass or the trough. */
     public static final int EAT_TICKS = 40;
     /** Hungry grazers on grass: chance per check (every {@link #CHECK} ticks) to graze; chance a graze bares the ground. */
@@ -139,10 +141,15 @@ public final class Husbandry {
         Needs n = a.getData(NEEDS);
         if (n.fed() < 0 && !a.level().isClientSide()) {
             long now = a.level().getGameTime();
-            n = new Needs(now + FOOD_TICKS, now + WATER_TICKS, 0);
+            n = new Needs(now + FOOD_TICKS, now + waterTicks(a), 0);
             a.setData(NEEDS, n);
         }
         return n;
+    }
+
+    /** How long a drink lasts this animal: camels go four times as long. */
+    public static long waterTicks(Animal a) {
+        return HorseWork.hardy(a) ? WATER_TICKS * CAMEL_WATER : WATER_TICKS;
     }
 
     public static boolean tired(Animal a) {
@@ -153,7 +160,7 @@ public final class Husbandry {
     public static void feed(Animal a, boolean food) {
         long now = a.level().getGameTime();
         Needs n = needs(a);
-        a.setData(NEEDS, food ? new Needs(now + FOOD_TICKS, n.watered(), now + EAT_TICKS) : new Needs(n.fed(), now + WATER_TICKS, now + EAT_TICKS));
+        a.setData(NEEDS, food ? new Needs(now + FOOD_TICKS, n.watered(), now + EAT_TICKS) : new Needs(n.fed(), now + waterTicks(a), now + EAT_TICKS));
         a.getNavigation().stop();
         a.level().playSound(null, a.blockPosition(), food ? SoundEvents.GENERIC_EAT.value() : SoundEvents.GENERIC_DRINK.value(), SoundSource.NEUTRAL, 0.6F, 0.8F);
     }

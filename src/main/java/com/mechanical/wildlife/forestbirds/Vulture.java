@@ -36,7 +36,17 @@ public class Vulture extends SoaringBird {
     private int circling;
 
     public Vulture(EntityType<? extends Vulture> type, Level level) {
-        super(type, level, KIND);
+        this(type, level, KIND);
+    }
+
+    /** For bigger carrion birds with their own flight (the condor, wildlife/desert). */
+    protected Vulture(EntityType<? extends Vulture> type, Level level, Kind kind) {
+        super(type, level, kind);
+    }
+
+    /** How far it sees a carcass from. */
+    protected double sight() {
+        return SIGHT;
     }
 
     /** Circling over a carcass: the sign of meat. */
@@ -59,7 +69,7 @@ public class Vulture extends SoaringBird {
         super.customServerAiStep(level);
         if ((tickCount + getId()) % 40 == 0) {
             if (carrion == null || !carrion.isAlive() || carrion.hauler() != null || carrion.isPassenger()) {
-                carrion = level.getEntitiesOfClass(CarcassEntity.class, getBoundingBox().inflate(SIGHT, 64, SIGHT),
+                carrion = level.getEntitiesOfClass(CarcassEntity.class, getBoundingBox().inflate(sight(), 64, sight()),
                         c -> c.hauler() == null && c.hungAt() == null && !c.isPassenger())
                         .stream().min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
                 circling = 0;

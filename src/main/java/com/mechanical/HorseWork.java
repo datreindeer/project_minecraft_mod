@@ -60,6 +60,8 @@ public final class HorseWork {
     static final int INTERVAL = 10;
     /** Below this many blocks per {@link #INTERVAL} the horse is standing (resting). */
     static final double STILL = 0.3;
+    /** Camels (the tame camel of wildlife/desert, vanilla's camel) go twice as far on their stamina: drain at this share. */
+    static final float CAMEL_DRAIN = 0.5F;
     private static final Identifier SLOW = Identifier.fromNamespaceAndPath(MODID, "horse_work");
     static final Identifier WATER_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "bronze_age/water_the_horse"),
             PACK_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "bronze_age/pack_horse");
@@ -72,6 +74,16 @@ public final class HorseWork {
     private static final java.util.Map<Entity, Vec3> LAST_POS = new java.util.WeakHashMap<>();
 
     public static void init() {
+    }
+
+    /** A camel: made for the desert, it goes far without water (here and in Husbandry). */
+    public static boolean hardy(Entity e) {
+        return e instanceof net.minecraft.world.entity.animal.camel.Camel || e instanceof com.mechanical.wildlife.desert.TameCamel;
+    }
+
+    /** Stamina per block walked at {@code load}. */
+    public static float drain(AbstractHorse horse, double load) {
+        return (float) (DRAIN_PER_BLOCK * (1 + LOAD_DRAIN * load)) * (hardy(horse) ? CAMEL_DRAIN : 1);
     }
 
     public static float stamina(AbstractHorse horse) {
@@ -128,7 +140,7 @@ public final class HorseWork {
             if (stamina < MAX && horse.getRandom().nextInt(4) == 0) horse.playSound(SoundEvents.GENERIC_DRINK.value(), 0.6F, 0.8F);
             stamina += DRINK;
         }
-        if (walked >= STILL) stamina -= (float) (walked * DRAIN_PER_BLOCK * (1 + LOAD_DRAIN * load));
+        if (walked >= STILL) stamina -= (float) walked * drain(horse, load);
         else stamina += REST;
         setStamina(horse, stamina);
         stamina = stamina(horse);
