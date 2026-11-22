@@ -155,7 +155,7 @@ Gäller före tabellerna ovan där de skiljer sig.
 | Återuppliva (E) | Säker plats = inga fientliga mobs eller raiders inom ~16 block, och bäraren har inte tagit skada de senaste 10 sekunderna. Gäller var som helst. |
 | Bete (D6, A10) | Betande djur (kor, får, hästar, getter) som går på gräs blir mätta av det. Feeding Trough behövs i hagar utan gräs och för vatten. |
 | Natur i zoner (A10) | Bävrar, bökande vildsvin och bete sker **överallt**, även i spelarstammars zoner. Man får stängsla eller jaga bort djuren. |
-| Vanilla-recept (F8) | Claude går igenom alla vanilla-recept och visar en lista med vad som spärras och varför. Inget tas bort före godkännande. |
+| Vanilla-recept (F8) | Claude går igenom alla vanilla-recept och visar en lista med vad som spärras och varför. Inget tas bort före godkännande. **Gjort (nattkörningen):** String → Wool och guldverktygen spärrade, resten lämnat eller listat som osäkert i `docs/vanilla-recipe-review.md`. |
 | Nattkörning (2026-11-22) | Claude går igenom faserna i ordning utan att vänta mellan dem. Det som skulle godkännas (smyckesbonusar, dyrkarnas belöningar, vägpris, receptlistan) **bestämmer Claude och dokumenterar** så att det kan ändras efteråt. Varje fas får en commit och en ny version, men pushas inte. Varje fas testas med gametester och skärmbilder. En fas som inte går igenom läggs på en egen gren, och arbetet fortsätter med nästa. |
 | Ljud (B8), natt | Claude väljer CC0-ljud på freesound och listar länkarna. Stammarna är tysta i stället för att låta som villagers tills filerna är nedladdade. |
 | Nedslagen-tangent (E) | En egen tangent, **R** som standard. Den används för att ge upp och för att återuppliva. |

@@ -40,7 +40,13 @@ RECIPES = [
     ("spyglass", "tools", "lenses (amethyst) come later", "Iron"),
     ("lightning_rod", "redstone", "electricity comes much later", "Electric"),
     ("copper_chest", "decorations", "a metal chest doesn't fit the bronze age", "Iron"),
+    # F8 vanilla recipe review (docs/vanilla-recipe-review.md)
+    ("white_wool_from_string", "building_blocks", "4 String -> Wool -> 3 Wool Thread skips shearing (decided with the user)", "never"),
 ]
+# every other vanilla tool is disabled (gen_data.py); gold was missed, and a golden pickaxe also skips the bronze
+# mining tier (incorrect_for_gold_tool lacks needs_bronze_tool, so it mines Coal Ore)
+RECIPES += [(f"golden_{t}", "combat" if t in ("sword", "spear") else "tools", "vanilla golden tool", "never")
+            for t in ("pickaxe", "axe", "shovel", "hoe", "sword", "spear")]
 COLORS = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue",
           "brown", "green", "red", "black"]
 RECIPES += [(f"{c}_bundle", "tools", "dyed bundle (replaced by the Leather Pouch)", "never") for c in COLORS]

@@ -404,6 +404,8 @@ Inga öppna beslut just nu: rostning (sämre, inte oanvändbar), malmerna (alla 
 ## Borttaget eller spärrat från vanilla
 
 Vanillas guldsmältning i ugn och masugn och receptet 9 Gold Nugget → Gold Ingot (guld smälts i Clay Kiln vid 1100°).
+Vanillas guldverktyg (Golden Pickaxe, Axe, Shovel, Hoe, Sword, Spear) är spärrade för alltid, som alla andra vanilla-verktyg
+(F8, se `docs/vanilla-recipe-review.md`).
 Spärrat sedan tidigare: järnverktyg, järnrustning, vanillas järnugnsrecept (Raw Iron smälts bara i
 Bloomery), Gold/Redstone/Diamond/Emerald Ore (kräver järnhacka).
 
