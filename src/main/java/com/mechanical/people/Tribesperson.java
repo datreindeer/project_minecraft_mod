@@ -144,6 +144,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** A carcass left as a threat (CarcassGifts): the player armed folk keep an eye on, and until when. Not saved. */
     private Player watching;
     private long watchUntil;
+    /** One of the Oak Folk (OakFolk): the Ancient Oak's altar they live round, saved; null for everyone else. */
+    BlockPos oakFoot;
     /** Sitting, idle actions, sleeping and watch round a fire (not saved). */
     final CampLife life = new CampLife(this);
 
@@ -312,7 +314,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         entityData.set(ROLE, role.ordinal());
         entityData.set(SKIN, role == TribeRole.MINER ? 2 * r.nextInt(2) : r.nextInt(TribeRole.SKINS));
         entityData.set(CLIMATE, climate.ordinal());
-        entityData.set(COLOUR, group == null ? -1 : Tribe.of(group).baseColour().getId());
+        entityData.set(COLOUR, group == null || role.oak() ? -1 : Tribe.of(group).baseColour().getId());
         this.home = home;
         this.group = group;
         this.leader = leader;
@@ -331,12 +333,20 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             case TRADER -> new ItemStack(Mechanical.WALKING_STAFF.get());
             case GUARD -> new ItemStack(spear()); // Caravans arms them for their tribe's age
             case MINER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_PICKAXE.get() : Mechanical.FLINT_PICKAXE.get());
+            case OAK_GATHERER -> new ItemStack(Mechanical.FLINT_KNIFE.get());
+            case OAK_LIGHTBEARER -> new ItemStack(Items.CANDLE);
+            case OAK_KEEPER -> new ItemStack(OakFolk.VERDANT_STAFF.get());
+            case OAK_WORSHIPPER -> ItemStack.EMPTY;
         };
         setItemSlot(EquipmentSlot.MAINHAND, tool);
-        setItemSlot(EquipmentSlot.OFFHAND, role == TribeRole.GATHERER ? new ItemStack(Mechanical.BARK_BASKET.get())
+        if (role.oak()) setDropChance(EquipmentSlot.MAINHAND, 0.0F); // the keeper's staff is a quest reward, not loot
+        setItemSlot(EquipmentSlot.OFFHAND, role == TribeRole.GATHERER || role == TribeRole.OAK_GATHERER ? new ItemStack(Mechanical.BARK_BASKET.get())
+                : role == TribeRole.OAK_LIGHTBEARER ? new ItemStack(Items.CANDLE)
                 : role == TribeRole.MINER ? new ItemStack(Items.TORCH) : ItemStack.EMPTY); // the miner's torch lights his way (DynamicLights)
         // the tribe's flag: worn by the band leader and the elder, like a raid captain's banner
-        setItemSlot(EquipmentSlot.HEAD, leader && role != TribeRole.MINER || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY);
+        setItemSlot(EquipmentSlot.HEAD, role == TribeRole.OAK_KEEPER ? new ItemStack(com.mechanical.AncientOak.ANTLER_CROWN.get()) // giant deer antlers
+                : role.oak() ? ItemStack.EMPTY
+                : leader && role != TribeRole.MINER || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY);
         offers = null;
     }
 
@@ -393,6 +403,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(3, new VisitGoal(this));
         goalSelector.addGoal(3, new RoadBuildGoal(this));
         goalSelector.addGoal(4, new DailyRhythmGoal(this));
+        goalSelector.addGoal(4, new OakFolkGoal(this));
         goalSelector.addGoal(4, new ErrandGoal(this));
         goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
@@ -541,6 +552,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         boolean night = level.isDarkOutside();
         // keep near home: wide by day, close to the fire at night, further while fighting
         if (home != null && errand == null) setHomeTo(home, getTarget() != null ? 32 : night ? 5 : Math.max(role().roam, 4));
+        else if (oakFoot != null) setHomeTo(oakFoot, getTarget() != null ? 32 : role().roam + 4); // the Oak Folk keep to the clearing
         else clearHome();
         if (travelling) com.mechanical.TrampledPaths.step(this, TRAVEL_WEAR);
 
@@ -566,7 +578,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (tickCount % 20 == 0 && raid != null) RaidGoal.update(this, level);
         if (tickCount % 20 == 0 && raid == null && visit == null && errand == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
-        if (tickCount % 100 == 0 && raid == null && leaveAt < 0 && role() != TribeRole.MINER) SetUpCampGoal.check(this, level, now);
+        if (tickCount % 100 == 0 && raid == null && leaveAt < 0 && role() != TribeRole.MINER && !role().oak()) SetUpCampGoal.check(this, level, now);
         if (leaveAt >= 0 && now > leaveAt && tradingPlayer == null && tickCount % 20 == 0) Caravans.leave(this);
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
@@ -575,7 +587,20 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         // the player's swimming pose while swimming somewhere (FloatGoal keeps the head above water, so nobody drowns)
         boolean swimming = isInWater() && !onGround() && getNavigation().isInProgress();
         if (swimming != (getPose() == Pose.SWIMMING)) setPose(swimming ? Pose.SWIMMING : Pose.STANDING);
-        life.tick();
+        if (role().oak()) OakFolk.tick(this, level); // poses and the keeper's staff (OakFolkGoal does their day)
+        else life.tick();
+    }
+
+    /** Client: the light-bearers' candle flames. */
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (level().isClientSide() && role() == TribeRole.OAK_LIGHTBEARER && getRandom().nextInt(3) == 0) {
+            float yaw = yBodyRot * ((float) Math.PI / 180F);
+            double fx = -Math.sin(yaw) * 0.55, fz = Math.cos(yaw) * 0.55, side = getRandom().nextBoolean() ? 0.3 : -0.3;
+            level().addParticle(net.minecraft.core.particles.ParticleTypes.SMALL_FLAME, getX() + fx + Math.cos(yaw) * side, getY() + 1.45,
+                    getZ() + fz + Math.sin(yaw) * side, 0, 0.005, 0);
+        }
     }
 
     /** A mob's walking input is small (speed 0.3 times the goal's modifier), which in water crawls along: scaled up it swims about as fast as a player. */
@@ -792,6 +817,12 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             held.consume(1, player);
             tribe().addReputation(player, Tribe.GIFT);
             say(player, Component.translatable("chat.mechanical.tribesperson.gift"));
+            return InteractionResult.SUCCESS_SERVER;
+        }
+        if (role() == TribeRole.OAK_KEEPER && hand == InteractionHand.MAIN_HAND && player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            getNavigation().stop();
+            getLookControl().setLookAt(player);
+            OakQuests.open(sp, this);
             return InteractionResult.SUCCESS_SERVER;
         }
         if (isEnvoy() && hand == InteractionHand.MAIN_HAND && tradingPlayer == null && getTarget() == null && player instanceof net.minecraft.server.level.ServerPlayer sp) {
@@ -1011,6 +1042,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (raid != null) raid.save(output);
         if (visit != null) output.store("visit", UUIDUtil.CODEC, visit);
         if (leaveAt >= 0) output.putLong("leave_at", leaveAt);
+        if (oakFoot != null) output.store("oak", BlockPos.CODEC, oakFoot);
     }
 
     @Override
@@ -1032,6 +1064,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         raid = RaidGoal.State.load(input);
         visit = input.read("visit", UUIDUtil.CODEC).orElse(null);
         leaveAt = input.getLongOr("leave_at", -1);
+        oakFoot = input.read("oak", BlockPos.CODEC).orElse(null);
+        if (role().oak()) entityData.set(COLOUR, -1);
         if (raid != null) raiderNavigation();
     }
 }

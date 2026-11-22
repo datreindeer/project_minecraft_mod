@@ -151,7 +151,7 @@ public final class HoldPoses {
      * {@link FirstPersonHolds}; null: vanilla's - the tongs' grip is drawn there by item), or null for vanilla's.
      */
     private static @Nullable Held extensionsFor(Item item) {
-        if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get()) return extensions(STAFF_POSE, Fp.STAFF);
+        if (item == Mechanical.WALKING_STAFF.get() || item == Mechanical.ELDERS_STAFF.get() || item == com.mechanical.people.OakFolk.VERDANT_STAFF.get()) return extensions(STAFF_POSE, Fp.STAFF);
         if (item == Mechanical.BARK_BASKET.get()) return extensions(BASKET_POSE, Fp.BASKET);
         if (item == BronzeTools.BRONZE_TONGS.get() || item == com.mechanical.Smithing.IRON_TONGS.get()) return extensions(TONGS_POSE, null); // tags aren't bound yet here
         if (item instanceof com.mechanical.WaterJugItem) return extensions(BUCKET_POSE, Fp.BUCKET);

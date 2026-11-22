@@ -1810,6 +1810,52 @@ virvlar in, marken pulserar och klockspel ljuder, sedan löses hornet upp i ett 
 
 De mytiska föremålens namn är **feta och tonar från skogsgrönt till guld**, och tonen skimrar i tooltipen.
 
+### Ekens folk (Oak Folk, Children of the Oak, F4)
+Vid varje Ancient Oak bor ett litet folk i gröna, mossfärgade kläder (egna skins, ingen stamfärg). Altaret sätter ut
+gruppen **en gång** när trädets omgivning först laddas (sparas i altaret, även i gamla världar): en **Keeper**, tre
+**Gatherers**, tre **Worshippers** och två **Light-Bearers**. De håller sig i gläntan (ca 25 block från stammen).
+- **Gatherers** (Flint Knife + Bark Basket): går till mogna bärbuskar och svampar, knäböjer och plockar, och planterar
+  nya (Raspberry, Blueberry, Wild Strawberry, Elderberry, Chanterelle, Porcini, Morel, Puffball eller Glowcap) på bar
+  mark i gläntan där det inte redan växer tätt.
+- **Worshippers**: har var sin plats runt stammen, sitter och ber med händerna lyfta mot trädet.
+- **Light-Bearers**: går långsamt runt eken med ett tänt ljus i varje hand (lågor, och de lyser upp omgivningen med
+  dynamiskt ljus).
+- **Keeper** (ledaren): krona av giant deer-horn (Antler Crown), guldkantad mörkgrön dräkt med vit pälscape och
+  **Verdant Staff** med gröna partiklar och sken. Högerklick öppnar **questlinjen**.
+
+**Relation:** de är en stam som andra NPC-stammar (*Children of the Oak*, fridsamma, start 15) och syns på
+relationssidan; spelarstammen delar relationen. Slå på trädet (Ancient Oak-block): −4 (högst var 2:a sekund), bryt
+Glowcap/Spirit Bloom/Glow Moss i gläntan: −2, slå en av dem: −8, döda en: fientliga direkt. Det räknas bara när någon
+av dem är i närheten. Vid **fientlig** (−40) går de till anfall och Keeperns stav slår ut (Slowness II, Weakness, lite
+magisk skada var 3:e sekund) och **questlinjen stängs för gott** för hela spelarstammen. Mat som gåva höjer relationen
+som hos andra stammar; varje klart uppdrag ger +4. De gör aldrig räder.
+
+**Questlinjen** (delas av hela spelarstammen, eller per spelare utan stam; lämna in i flera omgångar, även olika
+medlemmar; belöningen går till den som lämnar in det sista):
+
+| # | Uppdrag | Lämna in | Belöning (bestämd av Claude, kan ändras) |
+|---|---|---|---|
+| 1 | Berries for the Roots | 16 Raspberries | 4 Glowcap |
+| 2 | Gifts of the Moss | 8 Chanterelle | 2 Spirit Bloom |
+| 3 | Threads for the Wreaths | 32 Plant Fibre | Bark Basket |
+| 4 | Shed Bark | 16 Oak Bark | 8 Glow Moss |
+| 5 | Warm Hides for Winter | 6 Raw Hide | Tusk Dagger |
+| 6 | Sinew for Bowstrings | 8 Sinew | 2 Silver Coin |
+| 7 | Crowns of the Deer | 4 Antler | **Verdant Staff** (unik) |
+| 8 | Bright Metal | 6 Bronze Ingot | 4 Silver Coin + 4 Spirit Bloom |
+| 9 | The Bear's Coat | 1 Raw Bear Pelt | **Mistletoe Charm** (mytisk) |
+| 10 | Iron from the Bog | 8 Wrought Iron Ingot | 1 Gold Coin |
+| 11 | The Great Stag's Crown | 1 Giant Antler | 3 Gold Coin |
+| 12 | Steel for the Ritual Blade | 4 Steel Ingot | **Ancient Ritual Knife** (unik) |
+
+- **Verdant Staff**: högerklicka en planta/gröda/sapling så växer den som med bone meal (5 s nedkylning), gröna
+  partiklar. Lyser (ljus 9) i handen. Hålls upprätt som Elder's Staff.
+- **Ancient Ritual Knife**: den bästa kniven, **knivnivå 4** (`KnifeItem.RITUAL`, över järn/stål 3): snabbast (3,0),
+  dubbla utbytet (×2,0, även hud), 3000 hållbarhet. Bara den tar de **fina delarna** efter andra passet:
+  **Animal Heart** (90 % från djur större än en hare; mat 5), **Fine Sinew** (80 %, 1–2, från hjortstora och större) och
+  **Trophy Skull** (alltid från stora djur och tjockhudade, 35 % från medelstora). Giant Deer och Brown Bear ger alltid
+  alla tre (Fine Sinew 2–3). Aldrig från fåglar, fisk, odöda eller en förstörd kropp.
+
 ### Stenåldersmänniskor (Tribesperson)
 Folk som lever i läger eller strövar i jaktlag. De **despawnar aldrig**, men nya kommer heller aldrig: dör de är de borta.
 Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor, 4 varianter per roll och klimat).
