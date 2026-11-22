@@ -71,7 +71,7 @@ public final class LogShots {
             switch (stage) {
                 case 1 -> {
                     mc.options.pauseOnLostFocus = false; // the window is in the background: the game must not pause
-                    if (mc.screen != null) mc.setScreen(null);
+                    if (mc.gui.screen() != null) mc.gui.setScreen(null);
                     if (ticks < 100) return;
                     server.execute(LogShots::setup);
                     next();
@@ -274,8 +274,8 @@ public final class LogShots {
                     next();
                 }
                 case 24 -> { // real keys: lift a 3-block log, walk with it, sneak to put it down, walk on, jump
-                    if (mc.screen != null) mc.setScreen(null);
-                    result.add("paused " + mc.isPaused() + ", screen " + mc.screen);
+                    if (mc.gui.screen() != null) mc.gui.setScreen(null);
+                    result.add("paused " + mc.isPaused() + ", screen " + mc.gui.screen());
                     if (ticks == 1) server.execute(() -> {
                         held = FelledLogEntity.spawnStraight(player().level(), base.add(6.5, 0, 8.5), 0, 3, Blocks.OAK_LOG.defaultBlockState()); // root at z 8.5, crown south
                         look(held.endPoint(true).add(0, 0, -0.7), 0, 10); // north of the root end, facing it (south)
