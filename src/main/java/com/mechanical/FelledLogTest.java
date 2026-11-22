@@ -177,6 +177,9 @@ public final class FelledLogTest {
             for (int k = 0; k < 12; k++) pig.move(net.minecraft.world.entity.MoverType.SELF, perp.scale(-0.25));
             double apart = pig.position().subtract(dm).dot(perp), want = 0.5 + pig.getBbWidth() / 2;
             h.assertTrue(Math.abs(apart - want) < 0.02, "a mob stops at a turned log's side (" + apart + " from its line, want " + want + ")");
+            // the server's move check counts every listed shape as a collision: none may be listed for a log that doesn't reach
+            h.assertTrue(pig.getBoundingBox().intersects(diag.getBoundingBox()) && level.getEntityCollisions(pig, pig.getBoundingBox()).isEmpty(),
+                    "no collision shapes listed next to a turned log (inside its box)");
             pig.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(-perp.z, 0, perp.x).scale(0.8)); // along it: slides freely
             double stillApart = pig.position().subtract(dm).dot(perp);
             h.assertTrue(Math.abs(stillApart - want) < 0.02, "and slides along it (" + stillApart + ")");
