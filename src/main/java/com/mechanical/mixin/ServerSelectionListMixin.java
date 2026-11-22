@@ -17,7 +17,7 @@ import net.minecraft.client.gui.screens.multiplayer.ServerSelectionList;
 
 /**
  * The Multiplayer screen's list (ServerSelectionList inherits its drawing from here): entries of servers running the mod
- * grow tall enough for their detail panel, which is drawn under vanilla's entry (client.clan.ServerListDetails).
+ * grow tall enough for their bark card (client.clan.ServerListDetails, drawn by OnlineServerEntryMixin).
  * Every other list, and servers without the mod, are left alone.
  */
 @Mixin(AbstractSelectionList.class)
@@ -40,12 +40,5 @@ public abstract class ServerSelectionListMixin {
             }
         }
         if (moved) repositionEntries();
-    }
-
-    @Inject(method = "extractListItems", at = @At("TAIL"))
-    private void mechanical$serverDetails(GuiGraphicsExtractor g, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        if (!((Object) this instanceof ServerSelectionList list)) return;
-        for (Object child : children) if (child instanceof ServerSelectionList.OnlineServerEntry entry
-                && entry.getY() + entry.getHeight() >= list.getY() && entry.getY() <= list.getBottom()) ServerListDetails.draw(g, entry);
     }
 }

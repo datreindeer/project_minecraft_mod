@@ -22,6 +22,7 @@
     "CreativeModeInventoryScreenMixin",
     "InventoryScreenMixin",
     "ServerSelectionListMixin",
+    "OnlineServerEntryMixin",
     "ClientboundStatusResponsePacketMixin"
   ],
   "injectors": {

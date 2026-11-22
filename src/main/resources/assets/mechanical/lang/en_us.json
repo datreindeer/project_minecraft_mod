@@ -1808,6 +1808,7 @@
   "gui.mechanical.servers.tribes": "%s tribes",
   "gui.mechanical.servers.no_tribes": "No tribes yet",
   "gui.mechanical.servers.more": "+%s more",
+  "gui.mechanical.servers.not_modded": "Not running %s",
   "item.mechanical.soot_ink": "Soot Ink",
   "item.mechanical.roasted_iron_ore": "Roasted Iron Ore",
   "item.mechanical.roasted_bog_iron": "Roasted Bog Iron",

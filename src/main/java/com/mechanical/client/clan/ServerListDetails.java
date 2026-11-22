@@ -1,6 +1,7 @@
 package com.mechanical.client.clan;
 
 import com.mechanical.Calendar;
+import com.mechanical.Mechanical;
 import com.mechanical.clan.ServerListInfo;
 import com.mechanical.client.CalendarHud;
 
@@ -10,21 +11,38 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.multiplayer.ServerSelectionList;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.chat.Component;
+import net.neoforged.fml.ModList;
 
 /**
- * A server running the mod on the Multiplayer screen (docs/seasons-and-tribes.md): under vanilla's entry (icon, name, MOTD,
- * players, ping) a panel in the Tab list's style (TribeTabList): the world's age with its icon and the server's date in the
+ * Servers on the Multiplayer screen (docs/seasons-and-tribes.md). One running the mod becomes a single card in the Tab
+ * list's bark style (TribeTabList): vanilla's icon, name, MOTD, players and ping sit inside the frame, inset by INSET
+ * (mixin.OnlineServerEntryMixin moves the entry's content box, so drawing and clicks move together), the title is the
+ * server's own name when it sends one, and under a divider: the world's age with its icon and the server's date in the
  * season's colour, the number of tribes, then a chip per tribe (pennant in its colour, name, online/all, age icon), the
- * Wanderers and "+N more". The data comes with the server's status (ServerListInfo); servers without it stay vanilla.
+ * Wanderers and "+N more". The data comes with the server's status (ServerListInfo). A server that answered without it
+ * keeps vanilla's row, dimmed and marked "Not running <mod>"; one that has not answered (or is offline) stays vanilla.
  */
 public final class ServerListDetails {
-    /** The panel starts under vanilla's 32 px icon; chips are CHIP high on a ROW pitch, two columns GAP apart. */
-    static final int TOP = 35, PAD = 4, LINE = 12, LABEL = 11, ROW = 14, CHIP = 13, GAP = 4;
+    /** The card's frame to content; the body starts under vanilla's 32 px icon; chips are CHIP high on a ROW pitch, two columns GAP apart. */
+    static final int INSET = 5, TOP = 34, LINE = 12, LABEL = 11, ROW = 14, CHIP = 13, GAP = 4;
+    private static final int NOT_MOD = 0xFFB07060;
+    private static String modName;
 
-    /** The entry height for this server: taller with a panel, else vanilla's. */
+    /** The entry height for this server: a taller card, else vanilla's. */
     public static int height(ServerData data, int vanilla) {
         ServerListInfo info = info(data);
-        return info == null ? vanilla : 4 + TOP + panelHeight(info) + 2;
+        return info == null ? vanilla : 4 + 2 * INSET + TOP + body(info);
+    }
+
+    /** How far the entry's content sits inside its frame (0 for vanilla rows). */
+    public static int inset(ServerData data) {
+        return info(data) == null ? 0 : INSET;
+    }
+
+    /** The entry's title: the server's own name if it sends one, else the one typed in when adding it. */
+    public static String title(ServerData data, String typed) {
+        ServerListInfo info = info(data);
+        return info == null || info.name().isBlank() ? typed : info.name();
     }
 
     private static ServerListInfo info(ServerData data) {
@@ -35,18 +53,21 @@ public final class ServerListDetails {
         return info.shown().size() + (info.wanderers() > 0 ? 1 : 0) + (info.tribes() > info.shown().size() ? 1 : 0);
     }
 
-    private static int panelHeight(ServerListInfo info) {
+    /** The divider, the age and date line, the tribe count and the chip rows. */
+    private static int body(ServerListInfo info) {
         int rows = (chips(info) + 1) / 2;
-        return 2 * PAD + LINE + (rows == 0 ? 9 : LABEL + rows * ROW - 1);
+        return 4 + LINE + (rows == 0 ? 9 : LABEL + rows * ROW - 1);
     }
 
-    public static void draw(GuiGraphicsExtractor g, ServerSelectionList.OnlineServerEntry entry) {
+    /** Before vanilla's content: the card's frame and body (nothing for other servers). */
+    public static void drawCard(GuiGraphicsExtractor g, ServerSelectionList.OnlineServerEntry entry) {
         ServerListInfo info = info(entry.getServerData());
         if (info == null) return;
         Font font = Minecraft.getInstance().font;
-        int x0 = entry.getContentX() + 1, x1 = entry.getContentRight() - 1, y0 = entry.getContentY() + TOP;
-        TribeTabList.frame(g, x0, y0, x1, y0 + panelHeight(info));
-        int x = x0 + PAD, inner = x1 - x0 - 2 * PAD, y = y0 + PAD;
+        TribeTabList.frame(g, entry.getX() + 2, entry.getY() + 2, entry.getX() + entry.getWidth() - 2, entry.getY() + entry.getHeight() - 2);
+        int x = entry.getContentX(), inner = entry.getContentWidth(), y = entry.getContentY() + TOP;
+        g.fill(x, y, x + inner, y + 1, TribeTabList.BORDER);
+        y += 4;
 
         // the world's age on the left, the date on the right
         int age = info.age();
@@ -57,7 +78,7 @@ public final class ServerListDetails {
         g.text(font, date, x + inner - font.width(date), y + 1, CalendarHud.SEASON_COLOURS[Calendar.season(info.clock())], true);
         y += LINE;
 
-        // "3 tribes" on the divider
+        // "3 tribes" on a divider
         int n = info.tribes();
         Component label = n == 0 ? Component.translatable("gui.mechanical.servers.no_tribes")
                 : Component.translatable(n == 1 ? "gui.mechanical.servers.tribe" : "gui.mechanical.servers.tribes", n);
@@ -83,6 +104,19 @@ public final class ServerListDetails {
             g.fill(cx, cy, cx + colW, cy + CHIP, 0x40000000);
             g.text(font, more, cx + (colW - font.width(more)) / 2, cy + 3, TribeTabList.DIM, false);
         }
+    }
+
+    /** After vanilla's content: a server that answered without the mod is dimmed and marked at the bottom right. */
+    public static void markVanilla(GuiGraphicsExtractor g, ServerSelectionList.OnlineServerEntry entry) {
+        ServerData data = entry.getServerData();
+        if (data.state() != ServerData.State.SUCCESSFUL || info(data) != null) return;
+        Font font = Minecraft.getInstance().font;
+        g.fill(entry.getContentX(), entry.getContentY(), entry.getContentRight(), entry.getContentBottom(), 0x80000000);
+        if (modName == null) modName = ModList.get().getModContainerById(Mechanical.MODID).map(c -> c.getModInfo().getDisplayName()).orElse(Mechanical.MODID);
+        Component label = Component.translatable("gui.mechanical.servers.not_modded", modName);
+        int w = font.width(label), lx = entry.getContentRight() - 2 - w, ly = entry.getContentBottom() - 9;
+        g.fill(lx - 3, ly - 2, entry.getContentRight(), entry.getContentBottom(), 0xC0201010);
+        g.text(font, label, lx, ly, NOT_MOD, false);
     }
 
     /** A tribe's chip: like its banner bar on the Tab list, with members online of all and the age icon on the right. */
