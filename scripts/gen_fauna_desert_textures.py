@@ -75,11 +75,11 @@ def scorpion():
             parts.append(part(f"{s}leg{k}", "body", (2.5 * side, 0.4, z), (0, (0.5 - k * 0.33) * side, 0.7 * side),
                               [cube("sc_leg", *box, sc_mat("leg"), side > 0)]))
     prev = "body"
-    for k, (w, rot) in enumerate(((2, -0.75), (2, -0.75), (2, -0.75), (2, -0.7))):
+    for k, (w, rot) in enumerate(((2, 0.75), (2, 0.75), (2, 0.75), (2, 0.7))):
         name = f"tail{k + 1}"
         parts.append(part(name, prev, (0, -0.3, 3.5 if k == 0 else 2.5), (rot, 0, 0), [cube(f"sc_tail{k + 1}", -w / 2, -1, 0, w, 2, 3, sc_mat("tail"))]))
         prev = name
-    parts.append(part("sting", prev, (0, 0, 2.5), (-0.9, 0, 0), [cube("sc_sting", -0.5, -0.5, 0, 1, 1, 2, sc_mat("sting"))]))
+    parts.append(part("sting", prev, (0, 0, 2.5), (0.9, 0, 0), [cube("sc_sting", -0.5, -0.5, 0, 1, 1, 2, sc_mat("sting"))]))
     return parts
 
 
@@ -131,7 +131,7 @@ def fennec():
                                                         cube("fx_muzzle", -1, -0.5, -5, 2, 2, 2, fx_mat("muzzle"))]),
         part("right_ear", "head", (-1.2, -2, -1.5), (0, 0, -0.35), [cube("fx_ear", -1, -5, -0.5, 2, 5, 1, fx_mat("ear"))]),
         part("left_ear", "head", (1.2, -2, -1.5), (0, 0, 0.35), [cube("fx_ear", -1, -5, -0.5, 2, 5, 1, fx_mat("ear"), True)]),
-        part("tail", "body", (0, -1, 4.5), (0.6, 0, 0), [cube("fx_tail1", -1.5, -1.5, 0, 3, 3, 4, fx_mat("tail"))]),
+        part("tail", "body", (0, -1, 4.5), (-0.5, 0, 0), [cube("fx_tail1", -1.5, -1.5, 0, 3, 3, 4, fx_mat("tail"))]),
         part("tail_tip", "tail", (0, 0, 4), (0.2, 0, 0), [cube("fx_tail2", -1.5, -1.5, 0, 3, 3, 4, fx_mat("tail"))]),
         part("right_front_leg", None, (-1.0, 19, -3.5), (0, 0, 0), [cube("fx_fleg", -0.5, 0, -0.5, 1, 5, 1, fx_mat("leg"))]),
         part("left_front_leg", None, (1.0, 19, -3.5), (0, 0, 0), [cube("fx_fleg", -0.5, 0, -0.5, 1, 5, 1, fx_mat("leg"), True)]),

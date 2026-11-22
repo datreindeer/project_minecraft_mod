@@ -23,7 +23,7 @@ import net.minecraft.util.Mth;
  */
 public class FennecModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "fennec_fox"), "main");
-    private static final float EAR_Z = 0.35F, TAIL_X = 0.6F;
+    private static final float EAR_Z = 0.35F, TAIL_X = -0.5F;
     private final ModelPart body, head, rightEar, leftEar, tail, tailTip;
     private final ModelPart rightFrontLeg, leftFrontLeg, rightHindLeg, leftHindLeg;
 
@@ -88,7 +88,7 @@ public class FennecModel extends EntityModel<WildAnimalRenderState> {
             head.xRot = 0.3F;
             head.y += 0.8F;
             rightEar.xRot = leftEar.xRot = 0.9F;
-            tail.xRot = 0.1F;
+            tail.xRot = -0.1F;
             tail.yRot = 1.4F;
             tailTip.yRot = 1.3F;
             tailTip.xRot = 0.0F;
@@ -117,7 +117,7 @@ public class FennecModel extends EntityModel<WildAnimalRenderState> {
         rightEar.yRot = r;
         leftEar.xRot = rightEar.xRot = -0.1F + speed * 0.3F;
         tail.yRot = Mth.sin(t * 0.07F) * 0.2F + Mth.cos(phase) * 0.15F * speed;
-        tail.xRot = TAIL_X - speed * 0.4F; // held out behind at a run
+        tail.xRot = TAIL_X + speed * 0.4F; // held out behind at a run
         tailTip.yRot = Mth.sin(t * 0.07F - 0.8F) * 0.15F;
         // nosing about (grazing = sniffing the sand)
         head.xRot += state.grazeAmount * 0.8F;

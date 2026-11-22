@@ -24,8 +24,8 @@ import net.minecraft.util.Mth;
  */
 public class ScorpionModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "desert_scorpion"), "main");
-    private static final float[] TAIL_X = {-0.75F, -0.75F, -0.75F, -0.7F};
-    private static final float STING_X = -0.9F, ARM_Y = 0.6F, CLAW_Y = -0.9F, LEG_Z = 0.7F;
+    private static final float[] TAIL_X = {0.75F, 0.75F, 0.75F, 0.7F};
+    private static final float STING_X = 0.9F, ARM_Y = 0.6F, CLAW_Y = -0.9F, LEG_Z = 0.7F;
     private static final float[] LEG_Y = {0.5F, 0.17F, -0.16F, -0.49F};
 
     private final ModelPart body, head, leftArm, rightArm, leftClaw, rightClaw, sting;
@@ -87,7 +87,7 @@ public class ScorpionModel extends EntityModel<WildAnimalRenderState> {
             for (int i = 0; i < 4; i++) {
                 leftLegs[i].zRot = -0.9F;
                 rightLegs[i].zRot = 0.9F;
-                tail[i].xRot = -0.25F;
+                tail[i].xRot = 0.25F;
             }
             return;
         }
@@ -99,7 +99,7 @@ public class ScorpionModel extends EntityModel<WildAnimalRenderState> {
                 rightLegs[i].zRot = -0.25F;
                 leftLegs[i].yRot *= 1.6F;
                 rightLegs[i].yRot *= 1.6F;
-                tail[i].xRot = i == 0 ? -0.3F : -0.45F;
+                tail[i].xRot = i == 0 ? 0.3F : 0.45F;
             }
             leftArm.yRot = ARM_Y + 0.5F;
             rightArm.yRot = -ARM_Y - 0.5F;
@@ -130,8 +130,8 @@ public class ScorpionModel extends EntityModel<WildAnimalRenderState> {
         }
         if (state.charging) {
             float jab = Math.max(0.0F, Mth.sin(t * 0.5F));
-            for (int i = 1; i < 4; i++) tail[i].xRot = TAIL_X[i] - 0.15F - jab * 0.2F;
-            sting.xRot = STING_X - 0.4F - jab * 0.6F;
+            for (int i = 1; i < 4; i++) tail[i].xRot = TAIL_X[i] + 0.15F + jab * 0.2F;
+            sting.xRot = STING_X + 0.4F + jab * 0.6F;
             leftArm.yRot = ARM_Y - 0.3F;
             rightArm.yRot = -ARM_Y + 0.3F;
             leftClaw.yRot = CLAW_Y + 0.5F;
