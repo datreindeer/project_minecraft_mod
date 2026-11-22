@@ -99,7 +99,7 @@ public final class LivingWorldBlocksTest {
         h.setBlock(new BlockPos(5, 1, 4), Blocks.GRASS_BLOCK);
         h.setBlock(new BlockPos(6, 2, 6), Blocks.GLOWSTONE);
         h.setBlock(slab, EarthBlocks.DIRT_SLAB.get());
-        h.runAfterDelay(20, () -> { // the light from the glowstone is worked out a few ticks later
+        h.succeedWhen(() -> { // retried until the light from the glowstone has been worked out
             BlockPos abs = h.absolutePos(slab);
             for (int i = 0; i < 400 && level.getBlockState(abs).is(EarthBlocks.DIRT_SLAB); i++) level.getBlockState(abs).randomTick(level, abs, level.getRandom());
             h.assertTrue(level.getBlockState(abs).is(EarthBlocks.GRASS_SLAB), "grass spreads to the dirt slab: " + level.getBlockState(abs));
@@ -124,7 +124,6 @@ public final class LivingWorldBlocksTest {
             shovel.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false)));
             h.assertTrue(level.getBlockState(abs).is(EarthBlocks.DIRT_PATH_SLAB) && level.getBlockState(abs).getValue(SlabBlock.TYPE) == SlabType.BOTTOM,
                     "the shovel makes a dirt path slab: " + level.getBlockState(abs));
-            h.succeed();
         });
     }
 
