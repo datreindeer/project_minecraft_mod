@@ -276,7 +276,7 @@ public final class LogShots {
                 case 24 -> { // real keys: lift a 3-block log in open ground, walk, turn (the log swings round), put it down
                     if (ticks == 1) server.execute(() -> {
                         cmd("kill @e[type=mechanical:felled_log]");
-                        held = FelledLogEntity.spawnStraight(player().level(), base.add(0.5, 0, -6.5), 0, 3, Blocks.OAK_LOG.defaultBlockState()); // root north, crown south
+                        held = FelledLogEntity.spawnStraight(player().level(), base.add(8.5, 0, 9.5), 0, 3, Blocks.OAK_LOG.defaultBlockState()); // root north, crown south
                         look(held.endPoint(true).add(0, 0, -0.7), 0, 10);
                     });
                     if (ticks == 15) server.execute(() -> held.lift(player().level(), player(), 0));
@@ -288,7 +288,7 @@ public final class LogShots {
                 }
                 case 25 -> {
                     if (ticks == 12) mc.player.setYRot(-90); // turn east: the log swings round behind
-                    if (ticks == 22) mc.player.setYRot(140); // turn back over the log (a lifter doesn't bump into it): end up standing in it
+                    if (ticks == 22) mc.player.setYRot(90); // turn back over the log (a lifter doesn't bump into it): end up standing in it
                     if (ticks % 4 == 0) result.add("  carry t" + ticks + ": player " + fmt(mc.player.position()) + " log " + fmt(held.position()) + " yaw " + held.getYRot());
                     if (ticks < 30) return;
                     mc.options.keyUp.setDown(false);
