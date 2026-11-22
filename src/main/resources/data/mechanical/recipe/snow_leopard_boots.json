@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_boots",
+    "mechanical:snow_leopard_pelt",
+    "mechanical:snow_leopard_pelt",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:snow_leopard_boots",
+    "count": 1
+  }
+}

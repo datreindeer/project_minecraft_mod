@@ -92,9 +92,7 @@ public final class VanillaGame {
         Butchery.wholeMeat(() -> EntityTypes.GLOW_SQUID);
         Butchery.register(() -> EntityTypes.GLOW_SQUID, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 2, List.of(x(() -> Items.GLOW_INK_SAC, 1.0F, 1, 3)), List.of()));
         // bears and wolves: like the brown bear and the grey wolf
-        Butchery.register(() -> EntityTypes.POLAR_BEAR, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 4, 6, List.of(x(Wildlife.RAW_BEAR_PELT, 1.0F, 1, 1), hide(0.4F)),
-                List.of(x(Wildlife.BEAR_FAT, 0.9F, 2, 3), x(Wildlife.BEAR_CLAW, 0.6F, 1, 3), x(Wildlife.SINEW, 0.6F, 1, 2))));
-        Butchery.toughHide(() -> EntityTypes.POLAR_BEAR);
+        // (vanilla's polar bear never enters the world: wildlife.cold.PolarBear takes its place)
         Butchery.register(() -> EntityTypes.PANDA, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 3, 5, List.of(x(Wildlife.RAW_BEAR_PELT, 1.0F, 1, 1)),
                 List.of(x(Wildlife.BEAR_FAT, 0.7F, 1, 2), x(Wildlife.SINEW, 0.5F, 1, 1))));
         Butchery.toughHide(() -> EntityTypes.PANDA);

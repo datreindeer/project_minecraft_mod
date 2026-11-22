@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:arctic_fox_fur",
+    "mechanical:arctic_fox_fur",
+    "mechanical:arctic_fox_fur",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:arctic_fox_hat",
+    "count": 1
+  }
+}

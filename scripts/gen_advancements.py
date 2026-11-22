@@ -522,6 +522,26 @@ TABS = {
          "Kill a Lynx. It stalks lone wanderers at night: company, fire and torches keep it off", has("raw_lynx_pelt")),
         ("lynx_rug", "lynx", "lynx_rug", T, "Spotted Rug",
          "Cure 2 Lynx Pelts on a Drying Rack and craft them with a Bone into a Lynx Rug", has("lynx_rug")),
+        # fauna: cold
+        ("polar_bear_pelt", "drying_rack", "polar_bear_pelt", C, "White Bear",
+         "Kill a Polar Bear (it stalks seals at the ice edge, and people too) and cure its pelt on a Drying Rack",
+         has("polar_bear_pelt")),
+        ("polar_bear_cloak", "polar_bear_pelt", "polar_bear_cloak", G, "Ice Walker",
+         "Sew 2 Polar Bear Pelts, Leather and Sinew into a Polar Bear Cloak, the warmest thing you can wear", has("polar_bear_cloak")),
+        ("polar_bear_rug", "polar_bear_pelt", "polar_bear_rug", T, "White Rug",
+         "Craft a Polar Bear Pelt and a Bone into a Polar Bear Rug", has("polar_bear_rug")),
+        ("polar_bear_liver", "butcher", "polar_bear_liver", T, "Too Much of a Good Thing",
+         "Butcher a Polar Bear and keep its liver. The old hunters never ate it: it poisons", has("polar_bear_liver")),
+        ("arctic_fox_fur", "drying_rack", "arctic_fox_fur", T, "Camp Follower",
+         "Hunt an Arctic Fox (it trails polar bears for their leftovers) and cure its pelt on a Drying Rack", has("arctic_fox_fur")),
+        ("arctic_fox_hat", "arctic_fox_fur", "arctic_fox_hat", T, "Snow-White Hat",
+         "Sew 3 Arctic Fox Fur and Sinew into a warm Arctic Fox Hat", has("arctic_fox_hat")),
+        ("snow_leopard_pelt", "drying_rack", "snow_leopard_pelt", C, "Grey Ghost",
+         "Find the rare Snow Leopard on the highest peaks, bring it down and cure its pelt on a Drying Rack", has("snow_leopard_pelt")),
+        ("snow_leopard_boots", "snow_leopard_pelt", "snow_leopard_boots", T, "Soft Landing",
+         "Sew 2 Snow Leopard Pelts and Sinew onto Leather Boots: a fall of a few blocks no longer hurts", has("snow_leopard_boots")),
+        ("snow_leopard_rug", "snow_leopard_pelt", "snow_leopard_rug", T, "Grey Rosettes",
+         "Craft 2 Snow Leopard Pelts and a Bone into a Snow Leopard Rug", has("snow_leopard_rug")),
         # fauna: meadow
         ("wild_cat", "butcher", "raw_wildcat_pelt", T, "Wildcat",
          "Hunt the shy, night-prowling Wild Cat of forest edges and meadows and skin it for its pelt", has("raw_wildcat_pelt")),
@@ -652,6 +672,10 @@ TABS = {
         ("taiga_fare", "cooked", "cooked_lynx", T, "Taiga Fare",
          "Cook the meat of a Lynx, Wolverine, Pine Marten, Ermine or Lemming on a Campfire",
          has("cooked_lynx", "cooked_wolverine", "cooked_marten", "cooked_ermine", "cooked_lemming")),
+        # fauna: cold
+        ("arctic_fare", "cooked", "cooked_polar_bear", T, "Arctic Fare",
+         "Cook Polar Bear, Arctic Fox or Snow Leopard meat on a Campfire",
+         has("cooked_polar_bear", "cooked_arctic_fox", "cooked_snow_leopard")),
         # fauna: meadow
         ("small_game", "cooked", "cooked_wildcat", T, "Small Game",
          "Roast Wildcat Meat, a Mole, a Vole or Snake Meat on the Campfire",
@@ -1616,7 +1640,7 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
     "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
-                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise",
+                   "pine_marten", "arctic_fox", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise",
                    "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
@@ -1624,7 +1648,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
                  "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
     "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard",
-                   "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
+                   "polar_bear", "snow_leopard", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm"],
 }
@@ -1639,7 +1663,7 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
+CHALLENGE = {"giant_deer", "cave_lion", "brown_bear", "polar_bear", "snow_leopard", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
 
 
 def _args(src, start):

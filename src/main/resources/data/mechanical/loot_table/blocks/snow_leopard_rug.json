@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:snow_leopard_rug"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/snow_leopard_rug"
+}

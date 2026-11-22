@@ -76,12 +76,32 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wolverine"
+            "items": "mechanical:raw_polar_bear"
           }
         ]
       }
     },
     "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_snow_leopard"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wolverine"
+          }
+        ]
+      }
+    },
+    "has_10": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -102,7 +122,9 @@
       "has_5",
       "has_6",
       "has_7",
-      "has_8"
+      "has_8",
+      "has_9",
+      "has_10"
     ]
   ],
   "display": {

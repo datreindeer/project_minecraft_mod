@@ -92,6 +92,10 @@
     "mechanical:vittra_meat",
     "mechanical:troll_meat",
     "mechanical:lindworm_meat",
-    "mechanical:raw_gloson"
+    "mechanical:raw_gloson",
+    "mechanical:raw_polar_bear",
+    "mechanical:raw_arctic_fox",
+    "mechanical:raw_snow_leopard",
+    "mechanical:polar_bear_liver"
   ]
 }
