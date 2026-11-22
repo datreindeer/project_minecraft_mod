@@ -60,13 +60,16 @@ public final class ClanNetwork {
 
     public record Entry(UUID id, String name) {}
 
+    /** The player's standing with one NPC tribe they know (people.Tribe#REPUTATION), for the Relations tab. */
+    public record Relation(UUID tribe, int rep) {}
+
     /**
      * What one player sees. {@code voteKind} -1 when no vote runs; {@code myBallot} -1 not voted, 0 no, 1 yes.
      * {@code open}: open the screen (an answer to the G key) rather than only refresh it.
      */
     public record View(boolean open, boolean inClan, String name, int age, int colour, int myRank, boolean hasPit, boolean canPit,
                        List<Row> members, int voteKind, String voteWho, int yes, int no, int voters, long daysLeft, int myBallot,
-                       boolean canLeaderVote, List<Entry> invites, List<Entry> invitable) implements CustomPacketPayload {
+                       boolean canLeaderVote, List<Entry> invites, List<Entry> invitable, List<Relation> relations) implements CustomPacketPayload {
         public static final Type<View> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "clan_view"));
         public static final StreamCodec<RegistryFriendlyByteBuf, View> CODEC = StreamCodec.of(View::write, View::read);
 
@@ -90,13 +93,24 @@ public final class ClanNetwork {
             b.writeBoolean(v.canLeaderVote);
             writeEntries(b, v.invites);
             writeEntries(b, v.invitable);
+            b.writeVarInt(v.relations.size());
+            for (Relation r : v.relations) {
+                b.writeUUID(r.tribe);
+                b.writeVarInt(r.rep);
+            }
         }
 
         private static View read(RegistryFriendlyByteBuf b) {
             return new View(b.readBoolean(), b.readBoolean(), b.readUtf(), b.readVarInt(), b.readVarInt(), b.readVarInt(), b.readBoolean(), b.readBoolean(),
                     readRows(b),
                     b.readVarInt(), b.readUtf(), b.readVarInt(), b.readVarInt(), b.readVarInt(), b.readVarLong(), b.readVarInt(),
-                    b.readBoolean(), readEntries(b), readEntries(b));
+                    b.readBoolean(), readEntries(b), readEntries(b), readRelations(b));
+        }
+
+        private static List<Relation> readRelations(RegistryFriendlyByteBuf b) {
+            List<Relation> out = new ArrayList<>();
+            for (int n = b.readVarInt(); n > 0; n--) out.add(new Relation(b.readUUID(), b.readVarInt()));
+            return out;
         }
 
         private static void writeEntries(RegistryFriendlyByteBuf b, List<Entry> entries) {
@@ -183,7 +197,8 @@ public final class ClanNetwork {
                 })
                 .playToServer(Action.TYPE, Action.CODEC, ClanNetwork::onAction)
                 .playToClient(View.TYPE, View.CODEC)
-                .playToClient(Roster.TYPE, Roster.CODEC);
+                .playToClient(Roster.TYPE, Roster.CODEC)
+                .playToClient(Lands.Entered.TYPE, Lands.Entered.CODEC);
     }
 
     private static void onAction(Action a, IPayloadContext ctx) {
@@ -266,7 +281,7 @@ public final class ClanNetwork {
         data.invitesFor(player.getUUID()).forEach((id, name) -> invites.add(new Entry(id, name)));
         if (clan == null) {
             return new View(open, false, "", 0, 0, -1, false, data.freePitNear(player) != null, List.of(), -1, "", 0, 0, 0, 0, -1,
-                    false, invites, List.of());
+                    false, invites, List.of(), relations(player));
         }
         List<Row> rows = rows(server, clan, null);
         int myRank = clan.member(player.getUUID()).rank;
@@ -290,7 +305,21 @@ public final class ClanNetwork {
         }
         boolean canPit = clan.pit.isEmpty() && myRank == Clans.LEADER && data.freePitNear(player) != null;
         return new View(open, true, clan.name, clan.age(), clan.colour, myRank, clan.pit.isPresent(), canPit, rows, kind, who, yes, no, voters, left,
-                ballot, data.canCallLeaderVote(server, clan), invites, invitable);
+                ballot, data.canCallLeaderVote(server, clan), invites, invitable, relations(player));
+    }
+
+    /** Every NPC tribe the player has a standing with, best first. */
+    static List<Relation> relations(ServerPlayer player) {
+        List<Relation> out = new ArrayList<>();
+        player.getData(com.mechanical.people.Tribe.REPUTATION).forEach((id, rep) -> {
+            try {
+                out.add(new Relation(UUID.fromString(id), rep));
+            } catch (IllegalArgumentException ignored) {
+                // not a tribe id: skip
+            }
+        });
+        out.sort((x, y) -> Integer.compare(y.rep(), x.rep()));
+        return out;
     }
 
     private ClanNetwork() {}

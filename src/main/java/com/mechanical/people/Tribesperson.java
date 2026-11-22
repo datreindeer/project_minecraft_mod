@@ -589,7 +589,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     }
 
     /** How far round home the camp itself reaches (its buildings, its wall): nothing in it is felled, work is looked for beyond it. */
-    int campRadius() {
+    public int campRadius() {
         if (home == null) return 0;
         Wall w = wall();
         return w != null ? (int) Math.ceil(w.radius()) + 2 : 5;

@@ -69,11 +69,8 @@ public class BronzeAnvilBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof BronzeAnvilBlockEntity anvil)) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        // sneak-use with a hammer: what hot iron or steel is forged into (Smithing.Pattern)
-        if (player.isSecondaryUseActive() && Smithing.isHammer(stack)) {
-            if (level instanceof ServerLevel) anvil.nextPattern(player);
-            return InteractionResult.SUCCESS;
-        }
+        // sneak-use with a hammer: the client opens the pattern wheel (client.AnvilWheel) and sends the pick (Smithing.ChoosePattern)
+        if (player.isSecondaryUseActive() && Smithing.isHammer(stack)) return InteractionResult.SUCCESS;
         if (striking(level, pos, stack)) {
             if (level instanceof ServerLevel server) strike(server, pos, player, stack, hand);
             return InteractionResult.SUCCESS;

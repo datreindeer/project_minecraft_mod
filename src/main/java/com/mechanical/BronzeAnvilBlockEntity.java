@@ -131,10 +131,13 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         setChanged();
     }
 
-    /** Sneak-use with a hammer: the next pattern. */
-    void nextPattern(Player player) {
-        setPattern(pattern.next());
+    /** The anvil wheel's pick (Smithing.ChoosePattern): only with a smithing hammer in hand and a pattern the metal on it has. */
+    public boolean choosePattern(Player player, Smithing.Pattern choice) {
+        if (!Smithing.isHammer(player.getMainHandItem()) && !Smithing.isHammer(player.getOffhandItem()) || !choice.allowedFor(item)) return false;
+        setPattern(choice);
         tellPattern(player);
+        sync(); // the wheel shows the current pattern
+        return true;
     }
 
     void tellPattern(Player player) {

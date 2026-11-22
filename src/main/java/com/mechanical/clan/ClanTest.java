@@ -27,7 +27,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour and the Tab list roster. */
+/** Game test for tribe lands (Lands.landAt), tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour and the Tab list roster. */
 @EventBusSubscriber(modid = MODID)
 public final class ClanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -144,6 +144,27 @@ public final class ClanTest {
         }
         check(h, com.mechanical.WorldAge.npcAge(server, lagging) == 0 && com.mechanical.WorldAge.npcAge(server, keeping) == 1, "NPC tribes 0-1 behind");
         com.mechanical.WorldAge.set(server, before);
+
+        // lands: an NPC camp round its fire, a player tribe's 3x3 chunks round its pit (home for members), nothing far off
+        Clans lands = new Clans(List.of());
+        BlockPos fire = h.absolutePos(new BlockPos(8, 1, 8));
+        UUID group = UUID.randomUUID(), me = UUID.randomUUID();
+        var t = h.spawn(com.mechanical.people.People.TRIBESPERSON.get(), new BlockPos(8, 2, 8));
+        t.setup(com.mechanical.people.TribeRole.GATHERER, fire, group, false);
+        var level = h.getLevel();
+        net.minecraft.world.phys.Vec3 near = net.minecraft.world.phys.Vec3.atCenterOf(fire.offset(0, 0, 4)), far = near.add(64, 0, 0);
+        Lands.Land land = Lands.landAt(lands, level, me, near);
+        check(h, land != null && land.kind() == Lands.TRIBE && group.equals(land.tribe()), "a camp's land round its fire");
+        check(h, Lands.landAt(lands, level, me, far) == null, "the wild beyond it");
+        Clans.Clan mine = new Clans.Clan(UUID.randomUUID(), "Hearth", Optional.of(GlobalPos.of(level.dimension(), fire)),
+                List.of(new Clans.Member(me, "me", Clans.LEADER, 0, 0)), List.of(), Optional.empty(), Optional.of(3));
+        lands.clans.add(mine);
+        land = Lands.landAt(lands, level, me, near);
+        check(h, land != null && land.kind() == Lands.HOME && land.colour() == 3, "your own tribe's land is home, before any camp");
+        land = Lands.landAt(lands, level, UUID.randomUUID(), near.add(16, 0, 0));
+        check(h, land != null && land.kind() == Lands.CLAN && land.name().equals("Hearth"), "another player tribe's land, a chunk out");
+        check(h, Lands.landAt(lands, level, me, far) == null, "3x3 chunks only");
+        t.discard();
         h.succeed();
     }
 }

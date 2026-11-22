@@ -24,7 +24,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 /**
  * Iron Age smithing (docs/ages/03-iron-age.md): iron is forged, not cast. A Wrought Iron Ingot heated to forging heat
  * (1100°, Bloomery or Clay Kiln) is a Hot Wrought Iron Ingot; on the Bronze Anvil the smithing hammer works it into the
- * part the anvil is set to ({@link Pattern}, sneak-use the anvil with a hammer to choose), {@link Pattern#hits} blows,
+ * part the anvil is set to ({@link Pattern}, hold sneak-use on the anvil with a hammer and pick on the wheel, client.AnvilWheel), {@link Pattern#hits} blows,
  * before it cools (it keeps its blows). The parts make vanilla's iron tools and armour at the Tool Station and Armor
  * Station; vanilla's Iron Ingot recipes stay off.
  * <p>
@@ -218,9 +218,34 @@ public final class Smithing {
             return part == null ? ItemStack.EMPTY : new ItemStack(part.get(), count);
         }
 
-        public Pattern next() {
-            return values()[(ordinal() + 1) % values().length];
+        /** May an anvil holding {@code metal} be set to this pattern? Steel (hot or cold ingot) has no part where there is no steel one. */
+        public boolean allowedFor(ItemStack metal) {
+            return steel != null || !(metal.is(HOT_STEEL_INGOT.get()) || metal.is(STEEL_INGOT.get()));
         }
+    }
+
+    /** The anvil wheel's pick (client.AnvilWheel): set the Bronze Anvil at {@code pos} to pattern {@code pattern} (an ordinal). */
+    public record ChoosePattern(net.minecraft.core.BlockPos pos, int pattern) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<ChoosePattern> TYPE = new Type<>(Identifier.fromNamespaceAndPath(MODID, "choose_pattern"));
+        public static final net.minecraft.network.codec.StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, ChoosePattern> CODEC =
+                net.minecraft.network.codec.StreamCodec.composite(net.minecraft.core.BlockPos.STREAM_CODEC, ChoosePattern::pos,
+                        net.minecraft.network.codec.ByteBufCodecs.VAR_INT, ChoosePattern::pattern, ChoosePattern::new);
+
+        @Override
+        public Type<ChoosePattern> type() {
+            return TYPE;
+        }
+    }
+
+    @SubscribeEvent
+    static void registerPayloads(net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent event) {
+        event.registrar("1").optional().playToServer(ChoosePattern.TYPE, ChoosePattern.CODEC, (choice, ctx) -> {
+            // a trust boundary: in reach of a Bronze Anvil, a real pattern; the anvil checks hammer and metal
+            if (!(ctx.player() instanceof net.minecraft.server.level.ServerPlayer player) || player.isSpectator()
+                    || choice.pattern() < 0 || choice.pattern() >= Pattern.values().length || !player.isWithinBlockInteractionRange(choice.pos(), 1.0)
+                    || !(player.level().getBlockEntity(choice.pos()) instanceof BronzeAnvilBlockEntity anvil)) return;
+            anvil.choosePattern(player, Pattern.values()[choice.pattern()]);
+        });
     }
 
     /** Iron Bolt Heads one hot Wrought Iron Ingot is drawn and cut into. */

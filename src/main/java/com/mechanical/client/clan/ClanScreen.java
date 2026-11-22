@@ -25,7 +25,9 @@ public class ClanScreen extends Screen {
     private static final int W = 320, PAD = 10, ROW = 20, ROWS = 7, BTN = 20;
     private static final int PANEL = 0xE0302418, BORDER = 0xFF8A6A44, TITLE = 0xFFF0D8A8, TEXT = 0xFFE8E0D0, DIM = 0xFF9A8A70, ONLINE = 0xFFB8E08A;
     private View view;
-    private int top, panelH, page, invitePick;
+    private int top, panelH, page, invitePick, relPage;
+    /** The Relations tab: your standing with every NPC tribe you know. */
+    private boolean relations;
     private String typedName = "";
     private EditBox nameBox;
 
@@ -59,11 +61,35 @@ public class ClanScreen extends Screen {
                 .tooltip(Tooltip.create(Component.translatable(tip))).build());
     }
 
+    /** Tribe | Relations, above the panel; the open tab's button is greyed. */
+    private void tabs(int left) {
+        Button tribe = button("gui.mechanical.clan.tab.tribe", left, top - BTN - 2, 90, b -> { relations = false; rebuildWidgets(); });
+        Button rel = button("gui.mechanical.clan.tab.relations", left + 92, top - BTN - 2, 90, b -> { relations = true; rebuildWidgets(); });
+        (relations ? rel : tribe).active = false;
+    }
+
+    private void initRelations(int left) {
+        panelH = PAD + 14 + ROWS * ROW + PAD;
+        top = (this.height - panelH) / 2;
+        tabs(left);
+        int pages = Math.max(1, (view.relations().size() + ROWS - 1) / ROWS);
+        relPage = Math.min(relPage, pages - 1);
+        if (pages > 1) {
+            icon("▲", "gui.mechanical.clan.page_up", left - BTN - 2, top + PAD + 14, b -> { relPage = Math.max(0, relPage - 1); rebuildWidgets(); });
+            icon("▼", "gui.mechanical.clan.page_down", left - BTN - 2, top + PAD + 14 + BTN + 2, b -> { relPage = Math.min(pages - 1, relPage + 1); rebuildWidgets(); });
+        }
+    }
+
     @Override
     protected void init() {
+        if (relations) {
+            initRelations((width - W) / 2);
+            return;
+        }
         panelH = view.inClan() ? PAD + 14 + ROWS * ROW + 4 + BTN + 4 + 12 + BTN + 4 + BTN + PAD : PAD + 14 + 24 + BTN + 8 + Math.max(1, view.invites().size()) * ROW + 12 + PAD;
         top = (this.height - panelH) / 2;
         int left = (width - W) / 2, x = left + PAD, inner = W - 2 * PAD;
+        tabs(left);
         if (!view.inClan()) {
             int y = top + PAD + 14 + 12;
             if (view.canPit()) {
@@ -152,9 +178,42 @@ public class ClanScreen extends Screen {
         graphics.fill(left, top, left + W, top + panelH, PANEL);
     }
 
+    /** Bar from -100 to 100 with a mark at 0, filled from 0 to {@code rep} in the standing's colour. */
+    static final int BAR_W = 100, BAR_X = 120, WORD_X = 228;
+
+    private void extractRelations(GuiGraphicsExtractor graphics, int x) {
+        graphics.text(font, Component.translatable("gui.mechanical.clan.relations"), x, top + PAD, TITLE);
+        if (view.relations().isEmpty()) {
+            graphics.text(font, Component.translatable("gui.mechanical.clan.no_relations"), x, top + PAD + 14 + 6, DIM);
+            return;
+        }
+        int y = top + PAD + 14;
+        for (int i = relPage * ROWS; i < Math.min(view.relations().size(), (relPage + 1) * ROWS); i++) {
+            ClanNetwork.Relation r = view.relations().get(i);
+            com.mechanical.people.Tribe tribe = com.mechanical.people.Tribe.of(r.tribe());
+            int colour = 0xFF000000 | TribeTabList.dye(tribe.baseColour().getId()), standing = LandTitle.STANDING[LandTitle.tier(r.rep())];
+            TribeTabList.pennant(graphics, x, y + 3, colour);
+            graphics.text(font, tribe.name(), x + 14, y + 1, TITLE);
+            graphics.text(font, Component.translatable("tribe.mechanical.temperament." + tribe.temperament.id()), x + 14, y + 11, DIM);
+            int bx = x + BAR_X, mid = bx + BAR_W / 2, fillTo = mid + Math.round(Math.clamp(r.rep(), -100, 100) * BAR_W / 200.0F);
+            graphics.fill(bx - 1, y + 6, bx + BAR_W + 1, y + 13, BORDER);
+            graphics.fill(bx, y + 7, bx + BAR_W, y + 12, 0xFF1E160E);
+            graphics.fill(Math.min(mid, fillTo), y + 7, Math.max(mid, fillTo), y + 12, standing);
+            graphics.fill(mid, y + 5, mid + 1, y + 14, TITLE);
+            graphics.text(font, Component.translatable("gui.mechanical.land.standing", com.mechanical.people.Tribe.standing(r.rep()), r.rep()),
+                    x + WORD_X, y + 6, standing);
+            y += ROW;
+        }
+    }
+
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         int left = (width - W) / 2, x = left + PAD, inner = W - 2 * PAD;
+        if (relations) {
+            extractRelations(graphics, x);
+            super.extractRenderState(graphics, mouseX, mouseY, a);
+            return;
+        }
         if (!view.inClan()) {
             graphics.text(font, Component.translatable("gui.mechanical.clan.none"), x, top + PAD, TITLE);
             graphics.text(font, Component.translatable(view.canPit() ? "gui.mechanical.clan.name" : "gui.mechanical.clan.need_pit"), x, top + PAD + 14, TEXT);

@@ -923,6 +923,9 @@ TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
      "Keep your camp fire burning for 3 days and a tribe comes to see who you are. Right-click their leader to talk and trade",
      by_code()),
+    ("tribe_land", "tribe_visit", "minecraft:red_banner", T, "Their Land",
+     "Walk into the land of another tribe: a village, a camp or another player tribe's Fire Pit. Their name and your standing show on screen",
+     by_code()),
     ("tribe_guests", "tribe_visit", "minecraft:campfire", T, "A Night by the Fire",
      "When the leader asks at dusk, let the band stay the night. At dawn they leave you a gift", by_code()),
     ("tribe_neighbours", "tribe_guests", "hide_tent_slope", G, "Neighbours",
@@ -1143,7 +1146,7 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "Roast Raw Iron or Raw Bog Iron on a Campfire or Fire Pit: roasted ore blooms twice as rich (2 Wrought Iron instead of 1)",
      has("roasted_iron_ore", "roasted_bog_iron")),
     ("forged", "root", "iron_plate", G, "Forged",
-     "Heat a Wrought Iron Ingot to 1100° in a Bloomery or Clay Kiln, choose a pattern (sneak-use the anvil with the hammer) "
+     "Heat a Wrought Iron Ingot to 1100° in a Bloomery or Clay Kiln, choose a pattern (hold sneak-use on the anvil with the hammer and pick on the wheel) "
      "and hammer it on a Bronze Anvil before it cools: Iron Plate, Tool Rod or a tool head", by_code()),
     ("iron_hammer", "forged", "iron_smithing_hammer", T, "Iron Hammer",
      "Forge an Iron Hammer Head and assemble an Iron Smithing Hammer (Leather, Tool Rod): it wears half as fast on hot metal",
