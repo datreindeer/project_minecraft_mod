@@ -271,7 +271,59 @@ public final class LogShots {
                     shot(mc, "bigtree");
                     next();
                 }
-                case 24 -> {
+                case 24 -> { // real keys: lift a 3-block log, walk with it, sneak to put it down, walk on, jump
+                    if (ticks == 1) server.execute(() -> {
+                        held = FelledLogEntity.spawnStraight(player().level(), base.add(6.5, 0, 8.5), 0, 3, Blocks.OAK_LOG.defaultBlockState()); // root at z 8.5, crown south
+                        look(held.endPoint(true).add(0, 0, -0.7), 0, 10); // north of the root end, facing it (south)
+                    });
+                    if (ticks == 20) server.execute(() -> held.lift(player().level(), player(), 0));
+                    if (ticks < 30) return;
+                    result.add("keys: lifting " + (FelledLogEntity.liftedBy(mc.player) != null) + " at " + mc.player.position());
+                    mc.player.setYRot(180); // turn north, walk away with the log trailing
+                    mc.options.keyUp.setDown(true);
+                    next();
+                }
+                case 25 -> {
+                    if (ticks % 5 == 0) result.add("  walk t" + ticks + ": player " + fmt(mc.player.position()) + " log root " + fmt(held.endPoint(true)));
+                    if (ticks < 40) return;
+                    mc.options.keyUp.setDown(false);
+                    mc.options.keyShift.setDown(true);
+                    next();
+                }
+                case 26 -> {
+                    if (ticks < 6) return;
+                    mc.options.keyShift.setDown(false);
+                    FelledLogEntity c = (FelledLogEntity) mc.level.getEntity(held.getId());
+                    result.add("keys: put down (client lifting " + (FelledLogEntity.liftedBy(mc.player) != null) + ", log lifters " + (c == null ? "?" : c.lifterCount()) + ") player " + fmt(mc.player.position()) + " log root " + fmt(held.endPoint(true)));
+                    start = mc.player.position();
+                    mc.options.keyUp.setDown(true);
+                    next();
+                }
+                case 27 -> {
+                    if (ticks < 20) return;
+                    mc.options.keyUp.setDown(false);
+                    result.add("keys: walked on 20 ticks after putting it down: " + mc.player.position().distanceTo(start) + " blocks");
+                    // back to the log: walk at its side and jump there
+                    mc.player.setYRot(0);
+                    mc.options.keyUp.setDown(true);
+                    next();
+                }
+                case 28 -> {
+                    if (ticks % 5 == 0) result.add("  back t" + ticks + ": player " + fmt(mc.player.position()) + " onGround " + mc.player.onGround());
+                    if (ticks < 30) return;
+                    mc.options.keyJump.setDown(true);
+                    jumpTop3 = mc.player.getY();
+                    next();
+                }
+                case 29 -> {
+                    jumpTop3 = Math.max(jumpTop3, mc.player.getY());
+                    if (ticks == 3) mc.options.keyJump.setDown(false);
+                    if (ticks < 20) return;
+                    mc.options.keyUp.setDown(false);
+                    result.add("keys: jump at the log: top " + (jumpTop3 - 200) + " player " + fmt(mc.player.position()));
+                    next();
+                }
+                case 30 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;
@@ -338,7 +390,13 @@ public final class LogShots {
         look(base.add(0.5, 0, -2.5), 0, 30);
     }
 
-    private static double jumpFrom, jumpTop = -1000, jumpTop2 = -1000;
+    private static double jumpFrom, jumpTop = -1000, jumpTop2 = -1000, jumpTop3;
+    private static FelledLogEntity held;
+    private static Vec3 start;
+
+    private static String fmt(Vec3 v) {
+        return String.format(java.util.Locale.ROOT, "(%.2f, %.2f, %.2f)", v.x, v.y, v.z);
+    }
 
     /** Server: an oak with a 7-log trunk and branches out all four ways at two heights, felled east. */
     private static void bigTree() {
