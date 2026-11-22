@@ -36,7 +36,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 
 /**
  * Night raids on old camps (CampAge). At dusk each camp that has burned for {@link #RAID_AGE} or more, with a player
- * by it, may be picked (one raid a night, never on a blood moon). The raiders are the worst-disposed tribe the players
+ * by it (a member of the tribe whose Fire Pit it is, in the camp zone: Clans#someoneHome), may be picked (one raid a night, never on a blood moon). The raiders are the worst-disposed tribe the players
  * there know of (or that lives within {@link #TRIBE_RANGE}): hostile tribes come often, unfriendly ones less, neutral
  * wary/raider tribes rarely, friendly tribes never; with no such tribe a wandering band may still come, rarely.
  * Drums are heard from their direction for a while, then 3-7 armed raiders with torches come out of the dark (RaidGoal).
@@ -124,7 +124,7 @@ public final class Raids {
         if (BloodMoon.isBloodNight(level, night)) return; // the dead walk tonight; the tribes stay home
         RandomSource random = level.getRandom();
         for (CampAge.Camp camp : CampAge.get(level).camps()) {
-            if (camp.ticks < RAID_AGE || camp.raidedNight == night) continue;
+            if (camp.ticks < RAID_AGE || camp.raidedNight == night || !com.mechanical.clan.Clans.someoneHome(level, camp.centre)) continue;
             List<ServerPlayer> players = playersAt(level, camp.centre);
             if (players.isEmpty()) continue;
             Choice c = chooseTribe(level, camp.centre, players);

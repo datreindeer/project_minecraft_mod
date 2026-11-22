@@ -387,6 +387,10 @@ till sig större räder.
 ### Stam (spelarstammar, G)
 - **Grunda:** tryck **G** nära (inom 4 block) en Fire Pit som ingen stam har, skriv ett namn och tryck Found. Fire Pit:en
   blir stammens centrum och kan inte brytas eller sprängas så länge stammen finns. Du blir ledare.
+- **Lägret lever vidare:** stammens Fire Pit håller sin chunk och de 8 runt om laddade (3x3, täcker lägrets 24 block),
+  så grödor, djur och ugnar fortsätter även när ingen är där. Släpps när stammen upplöses eller Fire Pit:en flyttas.
+  När ingen alls är online går en dedikerad server i halv takt (10 TPS): klockan, kalendern och allt i lägret går
+  vidare i halv hastighet, ett speldygn tar 2 h.
 - **Ranker:** Leader, Elder, Member, Newcomer. Ledare och Elder bjuder in (spelare utan stam, online). Ledaren kickar,
   befordrar, degraderar och kan göra någon annan till ledare (blir själv Elder). En Elder kan kicka Newcomers. En
   Newcomer blir Member efter 7 speldygn. Ledaren kan inte lämna förrän någon annan är ledare.
@@ -1866,12 +1870,13 @@ Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och t
 - **Lägerålder ("hearth time"):** ett läger är området inom **24 block** från platsen där dess första eld brann. All tid som
   en **brinnande Campfire, Fire Pit eller tänd Kiln** står inom området räknas till samma läger (tiden räknas, inte antalet eldar: två
   eldar går inte dubbelt så fort, men en brinnande **Fire Pit räknas dubbelt**). En ny eld bredvid den gamla fortsätter alltså räkningen, och en eld långt bort startar ett
-  nytt läger. Bara medan elden brinner (inte glöd) och bara i laddade chunks (där du är). En stams egen lägereld räknas inte.
+  nytt läger. Bara medan elden brinner (inte glöd) och bara i laddade chunks (där du är, eller runt en spelarstams Fire Pit). En stams egen lägereld räknas inte.
   Sparas i världen.
 - **Se den:** **smyg och högerklicka en Campfire eller Kiln med tom hand**: "This camp has burned for 3 days 4 h" i action bar.
   Från 5 dagar står det också "Its smoke is seen far and wide..." (då kan räder komma). Op: `/camp` visar lägret där du står.
 - **Räder:** när ett läger har brunnit i **5 speldagar** (120 000 ticks) kan det plundras. Vid skymningen (dagtid 12500–13500)
-  slås det en gång per natt för varje sådant läger med en spelare inom 48 block. Högst en räd per natt, **aldrig en blodmånenatt**.
+  slås det en gång per natt för varje sådant läger med en spelare inom 48 block och någon hemma: är lägret en spelarstams
+  (dess Fire Pit inom 24 block) måste en stammedlem stå inom 24 block, annars räcker vilken spelare som helst inom 24 block. Högst en räd per natt, **aldrig en blodmånenatt**.
   - **Vilken stam:** den sämst inställda stam som spelarna vid lägret har rykte hos eller som bor inom 160 block. Friendly
     (30+) kommer aldrig, neutrala bara om de är *Wary* eller *Raiders*, och *Peaceful*/*Traders* bara om ryktet är under 0.
     Finns ingen sådan stam kan ett **vandrande band** (Wandering Band, en egen Raiders-stam) komma, men sällan.
@@ -1901,8 +1906,8 @@ Har ditt läger brunnit länge nog söker stammarna upp dig. De kommer för att 
 ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/TribeVisits.java`, `Settlements.java`,
 `Neighbours.java`, `TribeDialog.java`; data `scripts/gen_tribes2.py`, texturer `scripts/gen_tribes2_textures.py`.)
 - **Första besöket** kommer när ett spelarläger (Lägerålder, se nedan) har brunnit i **3 speldagar**, sedan ett ungefär
-  **var 5:e dag** (4–6, slumpat). Bara på dagen (de ger sig av mellan dagtid 3000 och 8000) och bara när en spelare är
-  inom 48 block från lägret. "People are coming toward your camp from the east..."
+  **var 5:e dag** (4–6, slumpat). Bara på dagen (de ger sig av mellan dagtid 3000 och 8000) och bara när någon är hemma:
+  en medlem av stammen vars Fire Pit står i lägret inom 24 block (ett läger utan stam: vilken spelare som helst inom 24 block). "People are coming toward your camp from the east..."
 - **Bandet:** en ledare (en **Elder** med stammens banderoll på huvudet) och 3–6 till (Hunters, Gatherers, Woodcutters),
   med vanliga Tribesperson-skins. De går in från **80–120 block** bort (närmare, minst 40, om det inte är laddat så långt)
   mot lägrets eld. Varannan gång kommer en stam som varit här förut (om ni är på talefot), annars en ny (aldrig *Raiders*).

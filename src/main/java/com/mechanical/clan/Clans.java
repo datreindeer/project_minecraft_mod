@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.mechanical.Calendar;
+import com.mechanical.CampAge;
 import com.mechanical.FirePit;
 import com.mechanical.FirePitBlock;
 import com.mechanical.Mechanical;
@@ -23,6 +24,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,6 +35,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.ChunkPos;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import net.neoforged.neoforge.common.world.chunk.TicketController;
+import net.neoforged.neoforge.common.world.chunk.TicketHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -52,7 +58,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * tribe shares all mod advancements (and so their recipes): one member's advancement is every member's, offline ones
  * get them when they log in, and joining merges both ways. Its age is the latest age it has reached (WorldAge), and the world's age follows the tribes'. No friendly fire.
  * The leader picks the tribe's colour (a dye colour); the Tab list (client.clan.TribeTabList) groups players by tribe.
- * The locator bar shows only tribe mates (mixin.LivingEntityWaypointMixin). Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
+ * The locator bar shows only tribe mates (mixin.LivingEntityWaypointMixin). The Fire Pit keeps the chunks round it loaded
+ * ({@link #keepPitsLoaded}), and visits and raids only come while a member is in the camp ({@link #someoneHome}). Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Clans extends SavedData {
@@ -66,6 +73,9 @@ public final class Clans extends SavedData {
     public static final String[] AGES = com.mechanical.WorldAge.AGES;
     static final Identifier FOUNDED = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/found_tribe");
     static final Identifier GREW = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/grow_tribe");
+    /** Chunks a tribe's Fire Pit keeps loaded each way from its own: 1 is 3x3, which covers the camp zone (CampAge.RADIUS). */
+    public static final int LOAD_RADIUS = 1;
+    static final TicketController PIT_TICKETS = new TicketController(Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_pit"), Clans::validateTickets);
 
     public static final class Member {
         final UUID id;
@@ -161,6 +171,11 @@ public final class Clans extends SavedData {
         public int colour() {
             return colour;
         }
+
+        /** Chunks the Fire Pit keeps loaded each way. shortcut: always LOAD_RADIUS; the big Fire Pit (F12) makes it 2 (5x5). */
+        int loadRadius() {
+            return LOAD_RADIUS;
+        }
     }
 
     private static final Codec<Clans> CODEC = Clan.CODEC.listOf().xmap(Clans::new, d -> d.clans);
@@ -168,6 +183,8 @@ public final class Clans extends SavedData {
             () -> new Clans(List.of()), CODEC);
 
     final List<Clan> clans;
+    /** Fire Pits this keeps loaded -> radius. Not saved: NeoForge saves the tickets, validateTickets refills this on load. */
+    final Map<GlobalPos, Integer> loaded = new HashMap<>();
     /** Open invitations: invited player -> tribe ids. Not saved: they lapse on a restart. */
     final Map<UUID, Set<UUID>> invites = new HashMap<>();
 
@@ -455,6 +472,83 @@ public final class Clans extends SavedData {
         }
     }
 
+    // ---------------------------------------------------------------- the camp lives on (docs/living-world-plan.md A2, A3)
+
+    /**
+     * Each tribe's Fire Pit force-loads its chunk and the ones round it ({@link Clan#loadRadius}), so crops, animals and
+     * furnaces carry on with nobody there; pits no tribe has any more (disbanded, moved, broken) are let go. A pit that is
+     * gone (only commands can do that) leaves the tribe without a centre, as a move vote does.
+     */
+    void keepPitsLoaded(MinecraftServer server) {
+        Map<GlobalPos, Integer> want = new HashMap<>();
+        for (Clan c : clans) {
+            if (c.pit.isEmpty()) continue;
+            GlobalPos pit = c.pit.get();
+            ServerLevel level = server.getLevel(pit.dimension());
+            if (level == null) continue;
+            if (level.isLoaded(pit.pos()) && !FirePit.isPit(level.getBlockState(pit.pos()))) {
+                c.pit = Optional.empty();
+                setDirty();
+                continue;
+            }
+            want.put(pit, c.loadRadius());
+        }
+        for (var e : List.copyOf(loaded.entrySet())) {
+            if (e.getValue().equals(want.get(e.getKey()))) continue;
+            force(server, e.getKey(), e.getValue(), false);
+            loaded.remove(e.getKey());
+        }
+        want.forEach((pit, r) -> {
+            if (loaded.putIfAbsent(pit, r) == null) force(server, pit, r, true);
+        });
+    }
+
+    private static void force(MinecraftServer server, GlobalPos pit, int radius, boolean add) {
+        ServerLevel level = server.getLevel(pit.dimension());
+        if (level == null) return;
+        ChunkPos c = ChunkPos.containing(pit.pos());
+        for (int x = -radius; x <= radius; x++)
+            for (int z = -radius; z <= radius; z++) PIT_TICKETS.forceChunk(level, pit.pos(), c.x() + x, c.z() + z, add, false);
+    }
+
+    /** On load: keep the tickets of pits that are still a tribe's (and note them), drop the rest. */
+    static void validateTickets(ServerLevel level, TicketHelper tickets) {
+        Clans data = get(level.getServer());
+        tickets.getBlockTickets().forEach((pos, set) -> {
+            GlobalPos pit = GlobalPos.of(level.dimension(), pos);
+            if (!data.isClaimed(pit)) {
+                tickets.removeAllTickets(pos);
+                return;
+            }
+            ChunkPos c = ChunkPos.containing(pos);
+            int r = 0;
+            for (long chunk : set.normal()) r = Math.max(r, Math.max(Math.abs(ChunkPos.getX(chunk) - c.x()), Math.abs(ChunkPos.getZ(chunk) - c.z())));
+            data.loaded.put(pit, r);
+        });
+    }
+
+    @SubscribeEvent
+    static void registerTickets(RegisterTicketControllersEvent event) {
+        event.register(PIT_TICKETS);
+    }
+
+    /**
+     * Is someone home at the camp centred on {@code centre} (A3: tribe visits and raids only come then)? A member of the
+     * tribe whose Fire Pit is in the camp zone ({@link CampAge#RADIUS}) standing in it; at a camp that is no tribe's, anyone.
+     */
+    public static boolean someoneHome(ServerLevel level, BlockPos centre) {
+        return get(level.getServer()).homeAt(level.dimension(), centre, level.players());
+    }
+
+    boolean homeAt(ResourceKey<Level> dimension, BlockPos centre, List<? extends Player> players) {
+        Clan owner = null;
+        for (Clan c : clans)
+            if (c.pit.isPresent() && c.pit.get().dimension() == dimension && c.pit.get().pos().closerThan(centre, CampAge.RADIUS)) owner = c;
+        for (Player p : players)
+            if (!p.isSpectator() && p.blockPosition().closerThan(centre, CampAge.RADIUS) && (owner == null || owner.member(p.getUUID()) != null)) return true;
+        return false;
+    }
+
     // ---------------------------------------------------------------- shared advancements
 
     static boolean shared(Identifier id) {
@@ -528,6 +622,7 @@ public final class Clans extends SavedData {
         if (!(event.getLevel() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD || level.getGameTime() % 100 != 0) return;
         MinecraftServer server = level.getServer();
         Clans data = get(server);
+        data.keepPitsLoaded(server);
         long today = today(server);
         for (Clan clan : List.copyOf(data.clans)) {
             for (Member m : clan.members) {

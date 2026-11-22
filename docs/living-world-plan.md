@@ -1,6 +1,7 @@
 # En levande värld: stora önskelistan (2026-11-22)
 
 > Status: **fas 1 byggd (v0.136.0):** F1 stockar, B7 multiplayer-sidan, B1 zontitel, B2 relationsflik, B4 anvil-hjul.
+> **Fas 2 byggd (Servern lever):** A1, A2, A3, A9, se *Byggt i fas 2* under tabell A.
 > Resten är plan. Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
 > det som byggs förs också in i respektive åldersdokument (`docs/ages/*.md`).
 
@@ -28,6 +29,26 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 | A8 | Forceladdad handelsväg | En NPC-stam med handelsväg till en spelarstam forceladdar sin bas (3x3) och chunksen vägen går över, så bygge och handlare rör sig även när ingen är där. |
 | A9 | Prestanda | Max ~10 spelare. Forceladdning bara för: spelarstammars Fire Pits, NPC-stammar med handelsväg, och vägchunks **bara medan någon rör sig/bygger på vägen** (handlare eller byggare). Vägchunks laddas i ett "fönster" runt de NPC:er som är ute, inte hela vägen hela tiden. Tickhastighet för slumpticks/entiteter i tomma forceladdade chunks behålls som vanilla. Mäts med `/tick query`/MSPT innan vi släpper det. |
 | A10 | Levande natur | Djur betar gräs (gräs → jord, växer tillbaka), hjortar/älgar äter av unga träd och buskar, **bävrar** (ny djurart) fäller träd vid vatten och bygger dammar, vildsvin bökar upp jord, fåglar sprider bärbuskar. Fler förslag läggs till efter hand. |
+
+### Byggt i fas 2 (Servern lever)
+
+- **A1** (`EmptyServer`): en tom dedikerad server pausar inte (`pause-when-empty-seconds` sätts till 0 vid start) och kör
+  på **10 TPS** tills någon loggar in. Hela världen går i halv takt, så ett speldygn = 2 h. Valt framför att bara halvera
+  klockan: då hade grödor, ugnar och förskämning (räknas i game ticks) gått dubbelt så fort mot kalendern, och en tom
+  server gör nu halva jobbet. Forceladdade chunks tickar som vanligt, bara mer sällan. Gäller inte singleplayer eller
+  gametestservern. En op:s egen `/tick rate` lämnas i fred.
+- **A2** (`Clans.keepPitsLoaded`, var 5:e s): varje stams Fire Pit forceladdar 3x3 chunks med NeoForges `TicketController`
+  (`mechanical:tribe_pit`, ägare = pit-positionen). Biljetterna sparas av NeoForge; vid start släpps de som inte hör till
+  någon stams pit (`Clans.validateTickets`). Släpps när stammen upplöses, Fire Pit:en flyttas eller försvinner (då står
+  stammen utan centrum, som efter en flytt-röstning). Radien är `Clan.loadRadius()` (1 nu, 2 för stor Fire Pit, F12).
+  Ingen naturlig mob-spawn i chunksen.
+- **A3** (`Clans.someoneHome`): besök och räder hoppar över ett läger där ingen medlem av stammen vars Fire Pit ligger i
+  lägret står inom 24 block. Ett läger som ingen stam har kräver någon spelare inom 24 block.
+- **A9:** bara stammarnas Fire Pits forceladdar än så länge. Mätt 2026-11-22 på en tom dedikerad testserver (ny värld,
+  10 TPS, `/tick query`, 3x3 chunks per läger med vanlig terräng och djur, utan byggen eller gårdar): inga läger
+  0,2 ms/tick, 4 läger 0,4 ms, 10 läger 0,8 ms (P99 1,5 ms) av 100 ms budget. Speltiden gick 300 ticks på 30 s (halv takt).
+- Obs: lägerålder (`CampAge`) räknas för brinnande eldar i laddade chunks, så en eld i en stams forceladdade läger åldrar
+  lägret även när ingen är där.
 
 ## B. Klienten: visa världen
 

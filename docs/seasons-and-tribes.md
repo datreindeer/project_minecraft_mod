@@ -26,7 +26,7 @@
 | Start | Mitt i våren (dag 15 i vårens andra månad). |
 | Sova bort natten | **Byggd.** När **alla** spelare ligger i en Straw Bed spolas natten fram. Himlen snurrar synligt, och natten är över på cirka 23 s. |
 | Hunger | **Byggd.** Bättre och större mat ger mer mättnad som räcker längre (`FoodValues`). |
-| Tid när servern är tom | **Ändrat 2026-11-22 (planerat):** går vidare i halv hastighet, se `living-world-plan.md`. Tidigare: står still. |
+| Tid när servern är tom | **Byggt (ändrat 2026-11-22):** går vidare i **halv hastighet** (ett speldygn = 2 h), se `living-world-plan.md` A1. Tidigare: står still. |
 | Temperatur | Sänks globalt på vintern. Kalla biomes kan skada spelare som saknar skydd. |
 | Väder | Följer säsongen. |
 | Lövträd | Blir kala på vintern (bara grenar). Barrträd behåller barren. |
@@ -100,8 +100,8 @@
     skulle kunna tappa en rad som lagts till under körning, så lägg in den för hand.
 - **Ranker:** **Leader** (en), **Elder** (högre rank, kan bjuda in), **Member** (vanlig) och **Newcomer** (ny medlem).
   Ledaren får göra allt: bjuda in, kicka, befordra och degradera. En Elder får bjuda in och kicka en Newcomer. En
-  Newcomer blir Member automatiskt efter **7 speldygn**. Speldygn räknas bara när servern är igång, eftersom tiden
-  står still när den är tom.
+  Newcomer blir Member automatiskt efter **7 speldygn**. Speldygnen räknas även när servern är tom, för då går tiden
+  vidare i halv hastighet (se *Tom server* nedan).
 - **Inbjudan** skickas från GUI:t av ledaren eller en Elder. Den inbjudna får ett meddelande och accepterar, antingen
   i sitt eget GUI eller genom att klicka i chatten.
 - **Data:** en `SavedData` per värld, likt `CampAge`. Varje stam sparar namn, ledare, medlemmar (UUID), Fire Pit:ens
@@ -234,7 +234,12 @@ bli hängande i luften.
   cirka 23 s) i stället för dygnets vanliga takt. Vanillas nattskip är fortfarande avstängt för halmsängar
   (`mixin/PlayerMixin`). Advancement **Night Spins By**. Matförstörelse och annat som räknas i speltid går som vanligt
   under en framspolad natt (bara ~23 s), så maten åldras knappt över natten.
-- **Tom server:** tiden står still.
+- **Tom server:** **byggt (ändrat 2026-11-22, `living-world-plan.md` A1).** En dedikerad server pausar inte när den är tom
+  (vanillas `pause-when-empty-seconds` sätts till 0 när servern startar, och raden i server.properties skrivs om), utan kör
+  på **10 TPS i stället för 20** så länge ingen är online (`EmptyServer`). Hela världen går då i halv hastighet: klockan och
+  därmed kalendern, säsongerna och världsåldern, och allt i de chunks som stammarnas Fire Pits håller laddade (grödor,
+  ugnar, förskämning). Ett speldygn tar 2 h. Så fort någon loggar in går servern i 20 TPS igen. En takt som en op själv
+  satt med `/tick rate` lämnas i fred (utom att 20 halveras när servern är tom). Singleplayer pausar som vanligt.
 
 ### Kalender
 - 30 dagar per månad, 3 månader per säsong, 12 månader per år.

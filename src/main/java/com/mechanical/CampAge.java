@@ -30,7 +30,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * Camp age ("hearth time"): how long fires have burned at a camp. A camp is the area within {@link #RADIUS} blocks of
  * where its first fire burned; any burning campfire or lit kiln inside it adds to the same count (time, not fires: two
  * fires burn no faster, except that a burning Fire Pit counts {@link FirePit#CAMP_AGE} times), so a new fire next to the old one carries on and a fire far away starts a new camp. Only fires
- * that are no tribe's home count (fires only burn in loaded chunks, i.e. near players). Old camps draw raids (people.Raids).
+ * that are no tribe's home count (fires only burn in loaded chunks: near players, or round a tribe's Fire Pit, Clans#keepPitsLoaded). Old camps draw raids (people.Raids).
  * Sneak and right-click a campfire or kiln with an empty hand to see it; /camp for ops.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)

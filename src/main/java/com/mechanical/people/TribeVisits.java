@@ -40,7 +40,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 /**
  * Tribes that seek out a player camp (CampAge) that has burned long enough. The first band comes once the camp is
  * {@link #FIRST_VISIT} old, then one about every {@link #INTERVAL} (randomised), by day and only while a player is at the
- * camp: a leader (an Elder with the tribe's banner) and 3-6 others walk in from 80-120 blocks away toward the camp's fire.
+ * camp (a member of the tribe whose Fire Pit it is, in the camp zone: Clans#someoneHome): a leader (an Elder with the tribe's banner) and 3-6 others walk in from 80-120 blocks away toward the camp's fire.
  * They mill about the fire and trade; right-click the leader to talk (TribeDialog). In the evening the leader asks to stay
  * the night: yes and they keep to the fire until dawn, then leave a gift (better the higher the standing) and go; no and
  * they leave at once. After a good night they may settle nearby ({@link Settlements}): by chance (better the higher the
@@ -99,7 +99,7 @@ public final class TribeVisits {
             }
             if (now < info.nextVisit || dayTime < SET_OUT || dayTime >= SET_OUT_END || data.visitAt(camp.centre) != null) continue;
             List<ServerPlayer> players = playersNear(level, camp.centre, PLAYER_RANGE);
-            if (players.isEmpty()) continue; // they come when someone is home
+            if (players.isEmpty() || !com.mechanical.clan.Clans.someoneHome(level, camp.centre)) continue; // they come when someone is home
             UUID tribe = chooseTribe(level, data, info, players);
             boolean started = tribe != null && start(level, data, info, tribe) != null;
             info.nextVisit = started ? now + INTERVAL - CampAge.DAY + level.getRandom().nextInt(2 * CampAge.DAY) : now + 1200;

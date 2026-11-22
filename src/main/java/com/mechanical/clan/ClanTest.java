@@ -27,7 +27,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for tribe lands (Lands.landAt), tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour and the Tab list roster. */
+/** Game test for tribe lands (Lands.landAt), tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour, the Tab list roster, the Fire Pit's force-loading (A2), someone home at a camp (A3) and the empty server's tick rate (A1). */
 @EventBusSubscriber(modid = MODID)
 public final class ClanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -173,6 +173,55 @@ public final class ClanTest {
                 .parse(JsonOps.INSTANCE, com.google.gson.JsonParser.parseString(statusJson)).result();
         var info = status.flatMap(net.minecraft.network.protocol.status.ServerStatus::players).map(ServerListInfo::of);
         check(h, info.isPresent() && info.get().shown().size() <= info.get().tribes(), "server list field read back");
+
+        // the Fire Pit force-loads 3x3 chunks while the tribe has it, and lets them go when it hasn't (no leaked tickets)
+        Clans camp = new Clans(List.of());
+        BlockPos pitPos = h.absolutePos(new BlockPos(2, 1, 2));
+        level.setBlock(pitPos, com.mechanical.FirePit.FIRE_PIT.get().defaultBlockState(), 3);
+        Clans.Clan home = new Clans.Clan(UUID.randomUUID(), "Camp", Optional.of(GlobalPos.of(level.dimension(), pitPos)),
+                List.of(new Clans.Member(me, "me", Clans.LEADER, 0, 0)), List.of(), Optional.empty(), Optional.empty());
+        GlobalPos homePit = home.pit.get();
+        camp.clans.add(home);
+        camp.keepPitsLoaded(server);
+        net.minecraft.world.level.ChunkPos pc = net.minecraft.world.level.ChunkPos.containing(pitPos);
+        check(h, Integer.valueOf(1).equals(camp.loaded.get(homePit)), "pit noted as loaded, radius 1");
+        // adding a ticket that is already there changes nothing (returns false): all 9 are there
+        for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++)
+            check(h, !Clans.PIT_TICKETS.forceChunk(level, pitPos, pc.x() + x, pc.z() + z, true, false), "ticket on chunk " + x + "," + z);
+        // A3: a member in the zone is home; a stranger in it or a member outside isn't; a camp that is no tribe's takes anyone
+        var member = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        member.setUUID(me);
+        member.setPos(net.minecraft.world.phys.Vec3.atCenterOf(pitPos.offset(10, 0, 0)));
+        var stranger = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        stranger.setPos(member.position());
+        check(h, camp.homeAt(level.dimension(), pitPos, List.of(member)), "member in the zone is home");
+        check(h, !camp.homeAt(level.dimension(), pitPos, List.of(stranger)), "a stranger is nobody home");
+        member.setPos(net.minecraft.world.phys.Vec3.atCenterOf(pitPos.offset(30, 0, 0)));
+        check(h, !camp.homeAt(level.dimension(), pitPos, List.of(member)), "a member outside the zone is nobody home");
+        stranger.setPos(net.minecraft.world.phys.Vec3.atCenterOf(pitPos.offset(205, 0, 0)));
+        check(h, camp.homeAt(level.dimension(), pitPos.offset(200, 0, 0), List.of(stranger)), "anyone at a camp that is no tribe's");
+        // disbanding lets the chunks go
+        camp.clans.remove(home);
+        camp.keepPitsLoaded(server);
+        check(h, camp.loaded.isEmpty(), "disbanded pit no longer loaded");
+        for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++)
+            check(h, !Clans.PIT_TICKETS.forceChunk(level, pitPos, pc.x() + x, pc.z() + z, false, false), "ticket released on chunk " + x + "," + z);
+        // a broken pit lets them go too, and leaves the tribe without a centre
+        camp.clans.add(home);
+        camp.keepPitsLoaded(server);
+        check(h, camp.loaded.containsKey(homePit), "loaded again");
+        level.removeBlock(pitPos, false);
+        camp.keepPitsLoaded(server);
+        check(h, camp.loaded.isEmpty() && home.pit.isEmpty(), "broken pit let go");
+        check(h, !Clans.PIT_TICKETS.forceChunk(level, pitPos, pc.x(), pc.z(), false, false), "broken pit's ticket released");
+
+        // A1: half the tick rate while empty, back when someone logs in; an op's own rate is left alone
+        float n = com.mechanical.EmptyServer.NORMAL, half = com.mechanical.EmptyServer.EMPTY;
+        check(h, half == n / 2 && com.mechanical.EmptyServer.target(n, true, false) == half, "empty halves");
+        check(h, com.mechanical.EmptyServer.target(half, false, true) == n, "someone on restores");
+        check(h, com.mechanical.EmptyServer.target(half, false, false) == half, "an op's 10 TPS stays");
+        check(h, com.mechanical.EmptyServer.target(5, true, false) == 5 && com.mechanical.EmptyServer.target(5, false, true) == 5, "an op's other rate stays");
+        check(h, com.mechanical.EmptyServer.target(half, true, true) == half, "stays half while empty");
         h.succeed();
     }
 }
