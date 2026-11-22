@@ -1267,6 +1267,9 @@ sömn), kroppar, flådda texturer, styckning och blod.
 - Jagar också Roe Deer, Red Deer, Reindeer, Wild Horse, Aurochs (kor), Mouflon, Wild Boar och stenåldersmänniskor.
   **Släpar bort bytet:** en färsk, orörd Carcass inom 4 block bärs i käftarna upp till ~20 block bort från spelare.
 - Rädd för eld och facklor som vargen (morrar och backar undan till ~7 block), utom under blodmåne eller vid svält.
+- **Vilar i skuggan på dagen:** lejonet går till närmaste plats under en trädkrona (akacior på savannen) inom 16 block och
+  sover där i stället för mitt i solen. **Jagar redan från skymningen** (klockan 11 500–13 500) och hela natten. På savannen
+  finns också **lejonflockar** om 3–4. Se [Savannen](../fauna/savanna.md).
 
 **Båda dras till blodiga kroppar** inom 40 block (se *Bära hem bytet*): den som bär eller drar en kropp blir jagad, och
 obevakade eller upphängda kroppar äts upp om ingen eld brinner inom 8 block.
@@ -2557,6 +2560,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
+- [Savannen](../fauna/savanna.md): Spotted Hyena (stjäl byten på dagen), Cheetah (rusar 5 s), Gazelle (Signal Horn), Ostrich (sparkar, stora ägg), Aardvark, Termite Mound (Chitin Paste); lejon vilar i skuggan på dagen
 - [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
 - [Istidsjättar](../fauna/giants.md): Woolly Mammoth, Woolly Rhinoceros, Steppe Bison, Musk Ox (Pegged Hide, Ivory)
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)

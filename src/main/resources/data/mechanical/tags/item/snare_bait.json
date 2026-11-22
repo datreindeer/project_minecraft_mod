@@ -20,7 +20,7 @@
     "mechanical:einkorn_grain",
     "mechanical:emmer_grain",
     "mechanical:peas",
-    "mechanical:castoreum",
-    "mechanical:mudskipper"
+    "mechanical:mudskipper",
+    "mechanical:castoreum"
   ]
 }
