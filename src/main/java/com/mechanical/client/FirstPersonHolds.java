@@ -389,21 +389,14 @@ public final class FirstPersonHolds {
     private static void chopHands(RenderHandEvent event, Player player, AvatarRenderState avatar, ItemStack axe, float raise) {
         PoseStack ps = event.getPoseStack();
         ps.pushPose();
-        // pivot low at the hands: up off the top of the view when raised, tipped head-forward when struck
-        ps.translate(0.0F, -0.42F + 1.7F * raise, -0.7F + 0.15F * raise);
-        ps.rotateDegrees(Axis.XP, Mth.lerp(raise, -55.0F, 25.0F));
-        if (!avatar.isInvisible) {
-            ps.pushPose();
-            ps.translate(0.0F, 0.06F, 0.0F);
-            ps.rotateDegrees(Axis.YP, 90.0F);
-            mapHand(event, avatar, HumanoidArm.RIGHT, -0.03F);
-            mapHand(event, avatar, HumanoidArm.LEFT, 0.03F);
-            ps.popPose();
-        }
-        ps.translate(0.0F, 0.32F, 0.0F); // the handle up from the hands, the head on top
-        ps.rotateDegrees(Axis.ZP, 45.0F); // the sprite's handle runs corner to corner: stand it upright
-        ps.scale(0.75F, 0.75F, 0.75F);
-        unturned(axe, player).submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+        // vanilla's place for a held tool (applyItemArmTransform), drawn in towards the middle (both hands on it); raised:
+        // up out of the top of the view, head tipped back; struck: down before you, head forward onto the log
+        ps.translate(Mth.lerp(raise, 0.3F, 0.2F), -0.52F + 1.25F * raise, -0.72F);
+        ps.rotateDegrees(Axis.XP, Mth.lerp(raise, -35.0F, 40.0F));
+        ps.rotateDegrees(Axis.YP, -12.0F);
+        ItemStackRenderState state = new ItemStackRenderState();
+        Minecraft.getInstance().getItemModelResolver().updateForLiving(state, axe, ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, player);
+        state.submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
         ps.popPose();
     }
 

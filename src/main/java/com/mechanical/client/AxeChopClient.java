@@ -64,11 +64,13 @@ public final class AxeChopClient {
         model.rightArm.z = 0;
         model.leftArm.x = 5;
         model.leftArm.z = 0;
-        float x = Mth.lerp(r, -0.6F, -2.9F), in = Mth.lerp(r, 0.4F, 0.15F);
+        // both hands together on the handle: turned in when low and forward, tilted in when straight up
+        float x = Mth.lerp(r, -0.7F, -2.9F), turn = 0.45F * (1 - r), tilt = 0.45F * r;
         model.rightArm.xRot = model.leftArm.xRot = x;
-        model.rightArm.yRot = -in;
-        model.leftArm.yRot = in;
-        model.rightArm.zRot = model.leftArm.zRot = 0;
+        model.rightArm.yRot = -turn;
+        model.leftArm.yRot = turn;
+        model.rightArm.zRot = tilt;
+        model.leftArm.zRot = -tilt;
         model.body.xRot = 0.12F * (1 - r); // a little bend into the blow
     }
 
