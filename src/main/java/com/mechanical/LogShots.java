@@ -376,10 +376,6 @@ public final class LogShots {
         int x = (int) Math.floor(p.getX()), z = (int) Math.floor(p.getZ());
         base = new Vec3(x, 200, z);
         cmd("gamemode survival @a");
-        cmd("kill @e[type=mechanical:felled_log]");
-        cmd("kill @e[type=mechanical:wagon]");
-        cmd("kill @e[type=mechanical:cart]");
-        cmd("kill @e[type=item]");
         cmd("time set noon");
         cmd("weather clear");
         cmd("fill " + (x - 12) + " 199 " + (z - 10) + " " + (x + 14) + " 199 " + (z + 26) + " stone");
