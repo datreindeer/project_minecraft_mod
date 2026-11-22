@@ -45,8 +45,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class ColdTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
     private static final String[] TESTS = {"cold_spawns", "cold_bear_hunts_seal", "cold_fox_follows_bear", "cold_fox_eats_leftovers",
-            "cold_fox_coat", "cold_leopard_hunts_ibex"};
-    private static final int[] TICKS = {100, 300, 600, 900, 150, 300};
+            "cold_fox_coat", "cold_leopard_hunts_ibex", "cold_pika_hay", "cold_lammergeier_bone", "cold_spring_mother"};
+    private static final int[] TICKS = {100, 300, 600, 900, 150, 300, 40, 40, 40};
 
     static {
         TEST_FUNCTIONS.register(TESTS[0], () -> ColdTest::spawns);
@@ -55,6 +55,9 @@ public final class ColdTest {
         TEST_FUNCTIONS.register(TESTS[3], () -> ColdTest::foxEatsLeftovers);
         TEST_FUNCTIONS.register(TESTS[4], () -> ColdTest::foxCoat);
         TEST_FUNCTIONS.register(TESTS[5], () -> ColdTest::leopardHuntsIbex);
+        TEST_FUNCTIONS.register(TESTS[6], () -> ColdTest::pikaHay);
+        TEST_FUNCTIONS.register(TESTS[7], () -> ColdTest::lammergeierBone);
+        TEST_FUNCTIONS.register(TESTS[8], () -> ColdTest::springMother);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -104,8 +107,13 @@ public final class ColdTest {
         }
         for (var b : List.of(Biomes.PLAINS, Biomes.DESERT, Biomes.FOREST, Biomes.TAIGA)) {
             Set<String> c = creatures(h, b);
-            h.assertTrue(!c.contains(bear) && !c.contains(fox) && !c.contains(leopard), b.identifier() + ": " + c);
+            h.assertTrue(!c.contains(bear) && !c.contains(fox) && !c.contains(leopard) && !c.contains("mechanical:siberian_tiger"), b.identifier() + ": " + c);
         }
+        h.assertTrue(creatures(h, Biomes.SNOWY_TAIGA).contains("mechanical:siberian_tiger"), "tiger in snowy taiga");
+        h.assertTrue(creatures(h, Biomes.SNOWY_PLAINS).contains("mechanical:snowy_owl") && !creatures(h, Biomes.FOREST).contains("mechanical:snowy_owl"), "snowy owl");
+        h.assertTrue(creatures(h, Biomes.TAIGA).contains("mechanical:black_grouse") && !creatures(h, Biomes.DESERT).contains("mechanical:black_grouse"), "black grouse");
+        h.assertTrue(creatures(h, Biomes.JAGGED_PEAKS).contains("mechanical:lammergeier") && !creatures(h, Biomes.PLAINS).contains("mechanical:lammergeier"), "lammergeier");
+        h.assertTrue(creatures(h, Biomes.STONY_PEAKS).contains("mechanical:pika") && !creatures(h, Biomes.PLAINS).contains("mechanical:pika"), "pika");
         // a vanilla polar bear that joins the world is swapped for ours
         floor(h, Blocks.SNOW_BLOCK);
         h.spawn(EntityTypes.POLAR_BEAR, 8, 1, 8);
@@ -155,6 +163,66 @@ public final class ColdTest {
         ArcticFox fox = h.spawn(ColdFauna.ARCTIC_FOX.get(), 8, 1, 8);
         boolean expected = ArcticFox.whiteCoat(com.mechanical.Calendar.dayOfYear(h.getLevel().getOverworldClockTime()));
         h.succeedWhen(() -> h.assertTrue(fox.isWhite() == expected, "the live fox wears today's coat"));
+    }
+
+    /** Hay-making season; a pile grows layer by layer to 4; the next mouthful goes to a pile not yet full; no more than 3 piles. */
+    private static void pikaHay(GameTestHelper h) {
+        int season = com.mechanical.Calendar.SEASON_DAYS;
+        long day = com.mechanical.Calendar.CLOCK_DAY;
+        long spring = (0 - com.mechanical.Calendar.START_DAY + 10L + 3L * com.mechanical.Calendar.YEAR_DAYS) * day;
+        h.assertTrue(!Pika.haySeason(spring) && Pika.haySeason(spring + season * day) && Pika.haySeason(spring + 2L * season * day)
+                && !Pika.haySeason(spring + 3L * season * day), "hay in summer and autumn only");
+        floor(h, Blocks.STONE);
+        var level = h.getLevel();
+        BlockPos at = h.absolutePos(new BlockPos(8, 1, 8));
+        h.assertTrue(at.equals(Pika.nextPile(level, at)), "a new pile where it stands");
+        for (int i = 0; i < 4; i++) Pika.stack(level, at);
+        h.assertTrue(level.getBlockState(at).getValue(com.mechanical.wildlife.GuanoPileBlock.LAYERS) == 4, "four layers");
+        BlockPos near = at.east(2);
+        h.assertTrue(near.equals(Pika.nextPile(level, near)), "a full pile: a new one beside it");
+        Pika.stack(level, near);
+        h.assertTrue(near.equals(Pika.nextPile(level, at.west(3))), "the next mouthful goes to the pile not yet full");
+        Pika.stack(level, at.south(2));
+        for (int i = 0; i < 4; i++) {
+            Pika.stack(level, near);
+            Pika.stack(level, at.south(2));
+        }
+        h.assertTrue(Pika.nextPile(level, at.north(3)) == null, "three full piles: no more");
+        h.succeed();
+    }
+
+    /** A Bone Pile taken whole (two bones), each dropped from high up cracking into Bone Marrow. */
+    private static void lammergeierBone(GameTestHelper h) {
+        floor(h, Blocks.STONE);
+        var level = h.getLevel();
+        BlockPos pile = h.absolutePos(new BlockPos(8, 1, 8));
+        level.setBlockAndUpdate(pile, com.mechanical.Mechanical.BONE_PILE.get().defaultBlockState());
+        Lammergeier bird = h.spawn(ColdFauna.LAMMERGEIER.get(), 8, 3, 8);
+        bird.setNoAi(true);
+        bird.bone = bird.findBone();
+        h.assertTrue(bird.bone != null && net.minecraft.core.BlockPos.containing(bird.bone).equals(pile), "it spots the bone pile (" + bird.bone + ")");
+        bird.take();
+        h.assertTrue(bird.bones() == 2 && level.getBlockState(pile).isAir(), "took the pile: two bones");
+        bird.dropBone(level, pile.getY());
+        bird.dropBone(level, pile.getY());
+        h.assertTrue(bird.bones() == 0, "both dropped");
+        h.runAfterDelay(20, () -> {
+            int marrow = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, area(h), e -> e.getItem().is(ColdFauna.BONE_MARROW.get()))
+                    .stream().mapToInt(e -> e.getItem().getCount()).sum();
+            h.assertTrue(marrow == 2, "two Bone Marrow on the ground (" + marrow + ")");
+            h.succeed();
+        });
+    }
+
+    /** A grown bear with a cub near is a guarding mother - in spring only; a lone bear never. */
+    private static void springMother(GameTestHelper h) {
+        floor(h, Blocks.GRASS_BLOCK);
+        var mother = h.spawn(com.mechanical.wildlife.Wildlife.BROWN_BEAR.get(), 4, 1, 4);
+        var cub = h.spawn(com.mechanical.wildlife.Wildlife.BROWN_BEAR.get(), 6, 1, 4);
+        cub.setBaby(true);
+        h.assertTrue(mother.guardsCubs(0) && !mother.guardsCubs(1) && !mother.guardsCubs(3), "mother guards in spring only");
+        h.assertTrue(!cub.guardsCubs(0), "a cub guards nothing");
+        h.succeed();
     }
 
     private static void leopardHuntsIbex(GameTestHelper h) {

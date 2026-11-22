@@ -67,11 +67,11 @@ Kod: `com.mechanical.wildlife.forestbirds` (`ForestBirdsFauna`), klient: `client
 | Raw Capercaillie / Raw Bustard | styckning, eller plockad fågel + kniv (2 / 3) | Campfire 20 s / rökare → Cooked (7 / 8 hunger). Förskäms 1 dag, kan torkas och rökas, Kettle |
 | Plucked Capercaillie / Bustard | plocka kadavret, tom hand | kniv i griden → kött, hel på Campfire → 2 / 3 Cooked |
 | Capercaillie Egg / Bustard Egg | ur bon | Campfire → 1 / 2 Boiled Egg |
-| Capercaillie Tail Feather | tjäderkadaver | Fletching Table: Flint + Stick + Tail Feather → **6** Arrow |
-| Owl Feather | uggla | Fletching Table: Flint + Stick + Owl Feather → 4 **Silent Arrow** (2 skada; en miss skrämmer inga djur) |
+| Capercaillie Tail Feather | tjäderkadaver | Fletching Table: Flint + Stick + Tail Feather (eller Black Grouse Lyre Feather) → **6** Arrow |
+| Owl Feather | uggla | Fletching Table: Flint + Stick + Owl Feather (eller Snowy Owl Feather, se cold.md) → 4 **Silent Arrow** (2 skada; en miss skrämmer inga djur) |
 | Owl Pellet | under ugglans dagkvist | griden → 2 Bone Meal |
 | Raven Feather | korp | 3 st + Twine + Bone → **Raven Talisman**: i inventoryt kommer 40 % av den Sanity mörkret tar tillbaka |
-| Eagle Feather | örn | Fletching Table: Flint + Stick + Eagle Feather → 4 **Eagle-Fletched Arrow** (2,75 skada) |
+| Eagle Feather | örn | Fletching Table: Flint + Stick + Eagle Feather (eller Lammergeier Feather) → 4 **Eagle-Fletched Arrow** (2,75 skada) |
 | Eagle Talon | örn | ersätter Bear Claw i Barbed Arrow |
 | Vulture Wing Bone | gam | + kniv → **Bone Flute**: spelar en melodi, +4 Sanity för alla spelare inom 12 block, 10 s cooldown |
 

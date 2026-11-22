@@ -1598,9 +1598,9 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,8 |
 | Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,8 |
 | Dried Mutton | Raw Mutton, Mutton Scraps, Ibex Meat, Chamois Meat | 3 | 0,8 |
-| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat, Raw Polar Bear, Raw Snow Leopard | 2 | 0,8 |
-| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Arctic Fox/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
-| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
+| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat, Raw Polar Bear, Raw Snow Leopard, Raw Tiger | 2 | 0,8 |
+| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Arctic Fox/Pika/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
+| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Black Grouse, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
 | Dried Seal Meat | Raw Seal Meat | 3 | 0,8 |
 | Stockfish | Raw Cod, Raw Pike, Raw Sturgeon | 2 | 0,8 |
 | Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,8 |
@@ -2511,7 +2511,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
 - [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
-- [Kyla](../fauna/cold.md): Polar Bear (ersätter vanilla-isbjörnen, jagar sälar och spelare; Polar Bear Cloak, giftig Polar Bear Liver), Arctic Fox (följer isbjörnen och äter rester, vit på vintern; Arctic Fox Hat), Snow Leopard (sällsynt på topparna, jagar stenbock; Snow Leopard Boots)
+- [Kyla](../fauna/cold.md): Polar Bear (ersätter vanilla-isbjörnen, jagar sälar och spelare; Polar Bear Cloak, giftig Polar Bear Liver), Arctic Fox (följer isbjörnen och äter rester, vit på vintern; Arctic Fox Hat), Snow Leopard (sällsynt på topparna, jagar stenbock; Snow Leopard Boots), Siberian Tiger (snöig taiga; Tiger Pelt Cloak), Snowy Owl (jagar lämlar på dagen), Black Grouse (spelar på myren om våren), Lammergeier (släpper ben från höjden: Bone Marrow), Pika (gör höhögar: Pika Hay), och brunbjörnshonor med ungar som är extra farliga på våren
 - [Istidsjättar](../fauna/giants.md): Woolly Mammoth, Woolly Rhinoceros, Steppe Bison, Musk Ox (Pegged Hide, Ivory)
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture

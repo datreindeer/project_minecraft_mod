@@ -15,6 +15,7 @@ import com.mechanical.equipment.CloakItem;
 import com.mechanical.wildlife.Wildlife;
 import com.mechanical.wildlife.coldhunters.ColdhuntersFauna;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -56,7 +58,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 /**
- * The cold: Polar Bear (in place of vanilla's), Arctic Fox and Snow Leopard. Entity types, meat, pelts (cured on the
+ * The cold: Polar Bear (in place of vanilla's), Arctic Fox, Snow Leopard, Siberian Tiger, Snowy Owl, Black Grouse,
+ * Lammergeier and Pika. Entity types, meat, pelts (cured on the
  * Drying Rack through {@link ColdhuntersFauna#CURES}), the goods made from them (Polar Bear Cloak, Polar Bear Rug, Arctic
  * Fox Hat, Snow Leopard Rug, Snow Leopard Boots), the poisonous Polar Bear Liver, spawn eggs, attributes, spawn rules
  * (spawns are data: scripts/gen_fauna_cold.py) and butchering yields. Every vanilla polar bear is replaced by ours.
@@ -70,6 +73,16 @@ public final class ColdFauna {
             "arctic_fox", ArcticFox::new, MobCategory.CREATURE, b -> b.sized(0.55F, 0.6F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<SnowLeopard>> SNOW_LEOPARD = ENTITY_TYPES.registerEntityType(
             "snow_leopard", SnowLeopard::new, MobCategory.CREATURE, b -> b.sized(0.9F, 0.95F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<SiberianTiger>> SIBERIAN_TIGER = ENTITY_TYPES.registerEntityType(
+            "siberian_tiger", SiberianTiger::new, MobCategory.CREATURE, b -> b.sized(1.2F, 1.25F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<SnowyOwl>> SNOWY_OWL = ENTITY_TYPES.registerEntityType(
+            "snowy_owl", SnowyOwl::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.8F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<BlackGrouse>> BLACK_GROUSE = ENTITY_TYPES.registerEntityType(
+            "black_grouse", BlackGrouse::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.6F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Lammergeier>> LAMMERGEIER = ENTITY_TYPES.registerEntityType(
+            "lammergeier", Lammergeier::new, MobCategory.CREATURE, b -> b.sized(0.8F, 0.9F).clientTrackingRange(16));
+    public static final DeferredHolder<EntityType<?>, EntityType<Pika>> PIKA = ENTITY_TYPES.registerEntityType(
+            "pika", Pika::new, MobCategory.CREATURE, b -> b.sized(0.35F, 0.3F).clientTrackingRange(8));
 
     // ---- meat (raw perishes in a day, cooked in three; smokable: gen_fauna_cold.py) ----
     public static final DeferredItem<Item> RAW_POLAR_BEAR = food("raw_polar_bear", 3, 0.3F);
@@ -84,6 +97,28 @@ public final class ColdFauna {
             Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(List.of(new MobEffectInstance(MobEffects.NAUSEA, 400, 0),
                     new MobEffectInstance(MobEffects.POISON, 300, 1), new MobEffectInstance(MobEffects.HUNGER, 600, 1)))).build()));
 
+    public static final DeferredItem<Item> RAW_TIGER = food("raw_tiger", 3, 0.3F);
+    public static final DeferredItem<Item> COOKED_TIGER = food("cooked_tiger", 7, 0.7F);
+    public static final DeferredItem<Item> RAW_PIKA = food("raw_pika", 1, 0.1F);
+    public static final DeferredItem<Item> COOKED_PIKA = food("cooked_pika", 2, 0.4F);
+    public static final DeferredItem<Item> RAW_BLACK_GROUSE = ITEMS.registerSimpleItem("raw_black_grouse", p -> p.food(
+            new FoodProperties.Builder().nutrition(2).saturationModifier(0.3F).build(), Consumables.CHICKEN));
+    public static final DeferredItem<Item> COOKED_BLACK_GROUSE = food("cooked_black_grouse", 6, 0.8F);
+    public static final DeferredItem<Item> PLUCKED_BLACK_GROUSE = ITEMS.registerSimpleItem("plucked_black_grouse", p -> p.stacksTo(16));
+    /** Cracked out of a bone a lammergeier dropped on the rocks: rich and filling. */
+    public static final DeferredItem<Item> BONE_MARROW = food("bone_marrow", 4, 1.0F);
+
+    // ---- feathers and hay ----
+    public static final DeferredItem<Item> SNOWY_OWL_FEATHER = ITEMS.registerSimpleItem("snowy_owl_feather");
+    public static final DeferredItem<Item> BLACK_GROUSE_TAIL_FEATHER = ITEMS.registerSimpleItem("black_grouse_tail_feather");
+    public static final DeferredItem<Item> LAMMERGEIER_FEATHER = ITEMS.registerSimpleItem("lammergeier_feather");
+    /** A pika's winter store: fodder for livestock (a trough takes it), 9 make a Hay Bale. */
+    public static final DeferredItem<Item> PIKA_HAY = ITEMS.registerSimpleItem("pika_hay");
+    public static final DeferredBlock<com.mechanical.wildlife.GuanoPileBlock> PIKA_HAY_PILE = BLOCKS.registerBlock("pika_hay_pile",
+            com.mechanical.wildlife.GuanoPileBlock::new, p -> p.mapColor(MapColor.COLOR_YELLOW).strength(0.1F).sound(SoundType.GRASS).noOcclusion()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+    public static final DeferredItem<BlockItem> PIKA_HAY_PILE_ITEM = ITEMS.registerSimpleBlockItem("pika_hay_pile", PIKA_HAY_PILE);
+
     // ---- pelts: raw off the carcass, cured on a Drying Rack ----
     public static final DeferredItem<Item> RAW_POLAR_BEAR_PELT = ITEMS.registerSimpleItem("raw_polar_bear_pelt");
     public static final DeferredItem<Item> POLAR_BEAR_PELT = ITEMS.registerSimpleItem("polar_bear_pelt");
@@ -91,6 +126,8 @@ public final class ColdFauna {
     public static final DeferredItem<Item> ARCTIC_FOX_FUR = ITEMS.registerSimpleItem("arctic_fox_fur");
     public static final DeferredItem<Item> RAW_SNOW_LEOPARD_PELT = ITEMS.registerSimpleItem("raw_snow_leopard_pelt");
     public static final DeferredItem<Item> SNOW_LEOPARD_PELT = ITEMS.registerSimpleItem("snow_leopard_pelt");
+    public static final DeferredItem<Item> RAW_TIGER_PELT = ITEMS.registerSimpleItem("raw_tiger_pelt");
+    public static final DeferredItem<Item> TIGER_PELT = ITEMS.registerSimpleItem("tiger_pelt");
 
     // ---- goods ----
     /** A whole polar bear hide over the shoulders (Cloak slot): the warmest thing a hunter can wear. */
@@ -108,12 +145,25 @@ public final class ColdFauna {
     public static final DeferredBlock<BearRugBlock> SNOW_LEOPARD_RUG = rug("snow_leopard_rug", MapColor.COLOR_LIGHT_GRAY);
     public static final DeferredItem<BlockItem> SNOW_LEOPARD_RUG_ITEM = ITEMS.registerSimpleBlockItem("snow_leopard_rug", SNOW_LEOPARD_RUG);
 
+    /** A striped tiger skin over the shoulders (Cloak slot): warm, and the mark of a great hunter. */
+    private static final ArmorMaterial TIGER_CLOAK_MATERIAL = fur(9, 3, 18, "tiger_pelt", "tiger_pelt_cloak");
+    public static final DeferredItem<CloakItem> TIGER_PELT_CLOAK = ITEMS.registerItem("tiger_pelt_cloak",
+            p -> new CloakItem(p, TIGER_CLOAK_MATERIAL, true), p -> CloakItem.properties(p, TIGER_CLOAK_MATERIAL));
+    public static final DeferredBlock<BearRugBlock> TIGER_RUG = rug("tiger_rug", MapColor.COLOR_ORANGE);
+    public static final DeferredItem<BlockItem> TIGER_RUG_ITEM = ITEMS.registerSimpleBlockItem("tiger_rug", TIGER_RUG);
+
     public static final DeferredItem<SpawnEggItem> POLAR_BEAR_SPAWN_EGG = egg("polar_bear_spawn_egg", POLAR_BEAR);
     public static final DeferredItem<SpawnEggItem> ARCTIC_FOX_SPAWN_EGG = egg("arctic_fox_spawn_egg", ARCTIC_FOX);
     public static final DeferredItem<SpawnEggItem> SNOW_LEOPARD_SPAWN_EGG = egg("snow_leopard_spawn_egg", SNOW_LEOPARD);
+    public static final DeferredItem<SpawnEggItem> SIBERIAN_TIGER_SPAWN_EGG = egg("siberian_tiger_spawn_egg", SIBERIAN_TIGER);
+    public static final DeferredItem<SpawnEggItem> SNOWY_OWL_SPAWN_EGG = egg("snowy_owl_spawn_egg", SNOWY_OWL);
+    public static final DeferredItem<SpawnEggItem> BLACK_GROUSE_SPAWN_EGG = egg("black_grouse_spawn_egg", BLACK_GROUSE);
+    public static final DeferredItem<SpawnEggItem> LAMMERGEIER_SPAWN_EGG = egg("lammergeier_spawn_egg", LAMMERGEIER);
+    public static final DeferredItem<SpawnEggItem> PIKA_SPAWN_EGG = egg("pika_spawn_egg", PIKA);
 
     static {
-        ColdhuntersFauna.CURES.putAll(Map.of(RAW_POLAR_BEAR_PELT, POLAR_BEAR_PELT, RAW_ARCTIC_FOX_PELT, ARCTIC_FOX_FUR, RAW_SNOW_LEOPARD_PELT, SNOW_LEOPARD_PELT));
+        ColdhuntersFauna.CURES.putAll(Map.of(RAW_POLAR_BEAR_PELT, POLAR_BEAR_PELT, RAW_ARCTIC_FOX_PELT, ARCTIC_FOX_FUR, RAW_SNOW_LEOPARD_PELT, SNOW_LEOPARD_PELT,
+                RAW_TIGER_PELT, TIGER_PELT));
     }
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
@@ -151,6 +201,13 @@ public final class ColdFauna {
         Butchery.register(ARCTIC_FOX::get, new Butchery.Yield(RAW_ARCTIC_FOX, 1, 1, List.of(extra(RAW_ARCTIC_FOX_PELT, 0.9F, 1, 1)), List.of()));
         Butchery.register(SNOW_LEOPARD::get, new Butchery.Yield(RAW_SNOW_LEOPARD, 1, 3, List.of(extra(RAW_SNOW_LEOPARD_PELT, 1.0F, 1, 1)),
                 List.of(extra(Wildlife.SINEW, 0.5F, 1, 2), extra(bone, 0.5F, 1, 2))));
+        Butchery.register(SIBERIAN_TIGER::get, new Butchery.Yield(RAW_TIGER, 3, 5, List.of(extra(RAW_TIGER_PELT, 1.0F, 1, 1)),
+                List.of(extra(Wildlife.SINEW, 0.6F, 1, 2), extra(bone, 0.6F, 1, 3))));
+        Butchery.register(PIKA::get, new Butchery.Yield(RAW_PIKA, 1, 1, List.of(), List.of()));
+        // the black grouse: like the capercaillie, plucked whole (Birds) or cut up for meat, feathers and the lyre feathers
+        com.mechanical.Birds.registerEdible(BLACK_GROUSE::get, PLUCKED_BLACK_GROUSE);
+        Butchery.register(BLACK_GROUSE::get, new Butchery.Yield(RAW_BLACK_GROUSE, 1, 2,
+                List.of(extra(() -> Items.FEATHER, 1.0F, 1, 3), extra(BLACK_GROUSE_TAIL_FEATHER, 0.6F, 1, 2)), List.of()));
     }
 
     @SubscribeEvent
@@ -158,6 +215,11 @@ public final class ColdFauna {
         event.put(POLAR_BEAR.get(), PolarBear.createAttributes().build());
         event.put(ARCTIC_FOX.get(), ArcticFox.createAttributes().build());
         event.put(SNOW_LEOPARD.get(), SnowLeopard.createAttributes().build());
+        event.put(SIBERIAN_TIGER.get(), SiberianTiger.createAttributes().build());
+        event.put(SNOWY_OWL.get(), com.mechanical.wildlife.FlockBird.createAttributes(8.0).build());
+        event.put(BLACK_GROUSE.get(), com.mechanical.wildlife.FlockBird.createAttributes(6.0).build());
+        event.put(LAMMERGEIER.get(), com.mechanical.wildlife.FlockBird.createAttributes(12.0).build());
+        event.put(PIKA.get(), Pika.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -172,6 +234,19 @@ public final class ColdFauna {
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(SNOW_LEOPARD.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Goat::checkGoatSpawnRules,
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(PIKA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Goat::checkGoatSpawnRules,
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // tiger and grouse on the forest floor; the owl and the lammergeier on open ground under the sky
+        for (EntityType<? extends Animal> type : List.<EntityType<? extends Animal>>of(SIBERIAN_TIGER.get(), BLACK_GROUSE.get())) {
+            event.register(type, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules,
+                    RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        }
+        for (EntityType<? extends Animal> type : List.<EntityType<? extends Animal>>of(SNOWY_OWL.get(), LAMMERGEIER.get())) {
+            event.register(type, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    (t, level, reason, pos, random) -> level.canSeeSky(pos) && level.getRawBrightness(pos, 0) > 8
+                            && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
+                            && !level.getBlockState(pos.below()).is(BlockTags.LEAVES), RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        }
     }
 
     /** Vanilla's polar bear never enters the world (old saves too): ours takes its place, a cub as a cub. */

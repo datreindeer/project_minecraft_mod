@@ -106,7 +106,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_snake"
+            "items": "mechanical:raw_pika"
           }
         ]
       }
@@ -116,7 +116,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_vole"
+            "items": "mechanical:raw_snake"
           }
         ]
       }
@@ -126,12 +126,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wildcat"
+            "items": "mechanical:raw_vole"
           }
         ]
       }
     },
     "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wildcat"
+          }
+        ]
+      }
+    },
+    "has_14": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -157,7 +167,8 @@
       "has_10",
       "has_11",
       "has_12",
-      "has_13"
+      "has_13",
+      "has_14"
     ]
   ],
   "display": {

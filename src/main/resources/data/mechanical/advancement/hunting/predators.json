@@ -96,12 +96,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wolverine"
+            "items": "mechanical:raw_tiger"
           }
         ]
       }
     },
     "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wolverine"
+          }
+        ]
+      }
+    },
+    "has_11": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -124,7 +134,8 @@
       "has_7",
       "has_8",
       "has_9",
-      "has_10"
+      "has_10",
+      "has_11"
     ]
   ],
   "display": {

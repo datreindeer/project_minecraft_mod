@@ -67,6 +67,9 @@
     "mechanical:raw_gloson",
     "mechanical:raw_polar_bear",
     "mechanical:raw_arctic_fox",
-    "mechanical:raw_snow_leopard"
+    "mechanical:raw_snow_leopard",
+    "mechanical:raw_tiger",
+    "mechanical:raw_pika",
+    "mechanical:raw_black_grouse"
   ]
 }

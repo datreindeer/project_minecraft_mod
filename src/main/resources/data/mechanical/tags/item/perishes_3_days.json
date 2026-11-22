@@ -74,6 +74,9 @@
     "mechanical:cooked_gloson",
     "mechanical:cooked_polar_bear",
     "mechanical:cooked_arctic_fox",
-    "mechanical:cooked_snow_leopard"
+    "mechanical:cooked_snow_leopard",
+    "mechanical:cooked_tiger",
+    "mechanical:cooked_pika",
+    "mechanical:cooked_black_grouse"
   ]
 }

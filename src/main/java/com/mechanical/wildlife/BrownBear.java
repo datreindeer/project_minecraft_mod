@@ -54,8 +54,11 @@ public class BrownBear extends WildAnimal {
     /** Failed den searches before it gives up and hibernates where it is (not saved). */
     private static final int DEN_TRIES = 15;
 
+    /** A mother with her cubs in spring: notices players this much further off and never tires of the chase. */
+    private static final double GUARD_FACTOR = 2.0;
     private float standAnimO, standAnim;
     private int warningTicks, chaseTicks, denTries;
+    private boolean guarding;
 
     public BrownBear(EntityType<? extends BrownBear> type, Level level) {
         super(type, level);
@@ -124,14 +127,25 @@ public class BrownBear extends WildAnimal {
             standAnim = Mth.clamp(standAnim + (isStanding() ? 1.0F : -1.0F), 0.0F, STAND_TICKS);
         } else {
             if (warningTicks > 0) warningTicks--;
+            if ((tickCount + getId()) % 20 == 0) guarding = guardsCubs(com.mechanical.Calendar.season(level().getOverworldClockTime()));
             chaseTicks = getTarget() != null ? chaseTicks + 1 : 0;
             AttributeInstance speed = getAttribute(Attributes.MOVEMENT_SPEED);
-            boolean tired = chaseTicks > BURST_TICKS;
+            boolean tired = chaseTicks > BURST_TICKS && !guarding;
             if (speed != null && tired != speed.hasModifier(TIRED_ID)) {
                 if (tired) speed.addTransientModifier(TIRED);
                 else speed.removeModifier(TIRED_ID);
             }
         }
+    }
+
+    /** A grown bear with a cub of its kind within 16 blocks, in spring (season 0): the dangerous mother. */
+    public boolean guardsCubs(int season) {
+        return season == 0 && !isBaby() && !level().getEntitiesOfClass(getClass(), getBoundingBox().inflate(16), BrownBear::isBaby).isEmpty();
+    }
+
+    /** How much further than usual it notices and goes for players right now. */
+    double aggroFactor() {
+        return guarding ? GUARD_FACTOR : 1.0;
     }
 
     public boolean isStanding() {
@@ -260,9 +274,9 @@ public class BrownBear extends WildAnimal {
                 return true;
             }
             if (bear.getRandom().nextInt(10) != 0) return false;
-            Player player = bear.level().getNearestPlayer(bear, AGGRO_RANGE);
+            Player player = bear.level().getNearestPlayer(bear, AGGRO_RANGE * bear.aggroFactor());
             if (player == null || player.isCreative() || player.isSpectator()) return false;
-            double range = player.isShiftKeyDown() ? AGGRO_RANGE_SNEAKING : AGGRO_RANGE;
+            double range = (player.isShiftKeyDown() ? AGGRO_RANGE_SNEAKING : AGGRO_RANGE) * bear.aggroFactor();
             if (bear.distanceTo(player) > range || !bear.hasLineOfSight(player)) return false;
             targetMob = player;
             return true;

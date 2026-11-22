@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_bustard"
+            "items": "mechanical:raw_black_grouse"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_capercaillie"
+            "items": "mechanical:raw_bustard"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hornbill"
+            "items": "mechanical:raw_capercaillie"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_jungle_fowl"
+            "items": "mechanical:raw_hornbill"
           }
         ]
       }
@@ -46,12 +46,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_peafowl"
+            "items": "mechanical:raw_jungle_fowl"
           }
         ]
       }
     },
     "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_peafowl"
+          }
+        ]
+      }
+    },
+    "has_6": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -69,7 +79,8 @@
       "has_2",
       "has_3",
       "has_4",
-      "has_5"
+      "has_5",
+      "has_6"
     ]
   ],
   "display": {

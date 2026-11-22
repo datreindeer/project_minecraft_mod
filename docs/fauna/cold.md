@@ -1,7 +1,8 @@
 # Kyla (cold)
 
-Djur för snölandet, isen och de högsta topparna: **Polar Bear** (ersätter vanilla-isbjörnen), **Arctic Fox** och
-**Snow Leopard**.
+Djur för snölandet, isen, taigan och de högsta topparna: **Polar Bear** (ersätter vanilla-isbjörnen), **Arctic Fox**,
+**Snow Leopard**, **Siberian Tiger**, **Snowy Owl**, **Black Grouse**, **Lammergeier** och **Pika** – och brunbjörnens
+**honor med ungar på våren**, som är extra farliga.
 Kod: `wildlife/cold/` (ColdFauna, ett djur per klass, ColdTest), klient: `client/wildlife/cold/`.
 Data: `scripts/gen_fauna_cold.py`, texturer: `scripts/gen_fauna_cold_textures.py`.
 
@@ -88,12 +89,82 @@ tar man ner den torra pälsen med tom hand får man den färdiga pälsen, slås 
   första **4 blocken** av ett fall gör inte ont.
 - **Snow Leopard Rug:** 2 Snow Leopard Pelt + Bone.
 
+## Siberian Tiger (sibirisk tiger)
+
+- **Var:** bara snowy taiga. Vikt 1, ensam – taigans sällsynta spetsrovdjur.
+- **Beteende:** jagar som Cave Lion (smyger hukande, fryser när bytet tittar, kastar sig fram och släpar bort bytet)
+  i skymningen och på natten och sover på dagen: Red Deer, Reindeer, Wild Boar, Roe Deer, älgkalvar, stamfolk – och
+  spelare. Rädd för eld och facklor (Predator). Leopardens kropp, en tredjedel större, orange med svarta ränder.
+- **Stats:** 50 liv, 8 skada (språnget 8), fart 0,31, knockback-motstånd 0,6.
+
+| Omgång | Vad | Chans | Antal |
+|---|---|---|---|
+| 1 | Raw Tiger Pelt | 100 % | 1 |
+| 2 | Raw Tiger | – | 3–5 |
+| 2 | Sinew | 60 % | 1–2 |
+| 2 | Bone | 60 % | 1–3 |
+
+**Produkter:** Raw Tiger (3) → **Cooked Tiger** (7 / 0,7); torkas till Game Jerky. Raw Tiger Pelt → torkställning →
+**Tiger Pelt**. **Tiger Pelt Cloak:** 2 Tiger Pelt + Leather + Sinew – Cloak-slotten, rustning 3, isolerar 25 %,
+förtrollbarhet 18, en randig tigerfäll som cape. **Tiger Rug:** Tiger Pelt + Bone.
+
+## Snowy Owl (fjälluggla)
+
+- **Var:** snowy plains, ice spikes och Glacial Moraine. Vikt 2, ensam.
+- **Beteende:** berguvens sätt (ljudlös flykt, hoande, sitter vid bytet en stund efteråt, se forestbirds.md) men den
+  **jagar på dagen** – den arktiska sommaren har ingen natt – lågt över snön, och slår **lämlar** framför allt, ripor
+  och harungar. Natten sitter den ute på marken eller en sten, inte i träd.
+- **Drop (inget kadaver):** Feather 0–1, **Snowy Owl Feather** 1–3. Snowy Owl Feather fungerar som Owl Feather på
+  Fletching Table: Flint + Stick + fjädern → 4 **Silent Arrow**.
+
+## Black Grouse (orre)
+
+- **Var:** taiga, old growth pine/spruce taiga, Pine Heath och Willow Fen (myrarna). Vikt 5, 2–4.
+- **Beteende:** tjäderns sätt (Capercaillie: korta flygturer, deaf medan han "slipar"), men tuppen **spelar bara på
+  våren**, i gryningen på den öppna myren, och oftare. Tuppen är blåsvart med vitt vingband, röda ögonbryn och
+  lyrformad stjärt; hönan är brunspräcklig. Mindre än tjädern.
+- **Kadaver:** plockas hel (Plucked Black Grouse: Campfire → 2 Cooked Black Grouse, eller kniv → 2 Raw Black Grouse)
+  eller styckas: Raw Black Grouse 1–2; första omgången Feather 1–3 och **Black Grouse Lyre Feather** 60 % (1–2).
+  Lyre Feather fungerar som Capercaillie Tail Feather: Flint + Stick + fjädern → **6 Arrow**.
+- Raw Black Grouse (2) → **Cooked Black Grouse** (6 / 0,8); torkas till Dried Fowl.
+
+## Lammergeier (lammgam)
+
+- **Var:** frozen, jagged och stony peaks, windswept hills och Slate Highlands. Vikt 1, ensam.
+- **Beteende:** kretsar högt (SoaringBird). Ser den ett **Bone** på marken eller en **Bone Pile** (det rovdjuren lämnar
+  av ett kadaver) inom 24 block dyker den ner och tar det i klorna – en Bone Pile ger två ben och försvinner. Sedan
+  stiger den minst 12 block över marken och **släpper benet**: det spricker mot marken och lämnar **Bone Marrow** och
+  1–2 Bone Meal (ett ben per släpp).
+- **Drop (inget kadaver):** Feather 1–2, **Lammergeier Feather** 1–3. Lammergeier Feather fungerar som Eagle Feather:
+  Flint + Stick + fjädern → 4 **Eagle-Fletched Arrow**.
+- **Bone Marrow:** hunger 4, mättnad 1,0 – fet och mättande. Förskäms på 1 dag.
+
+## Pika (piphare)
+
+- **Var:** stony peaks, meadow, windswept hills och Slate Highlands. Vikt 5, 2–3. Lämmelns kropp, gråbrun.
+- **Beteende:** liten och rund, piper skarpt när någon kommer nära, skygg. **Gör hö** på sommaren och hösten: då och då
+  bär den en tugga gräs till sin **Pika Hay Pile** som växer ett lager (högst 4), eller börjar en ny bredvid – aldrig
+  fler än 3 högar inom 8 block.
+- **Pika Hay Pile:** slås sönder och ger 1 **Pika Hay** per lager. Pika Hay är foder (Feeding Trough tar det: det är
+  ko-, får-, get- och hästfoder) och 9 st → Hay Bale.
+- Styckas: Raw Pika (1) → **Cooked Pika** (2 / 0,4); torkas till Small Game Jerky. 3 liv.
+
+## Brown Bear: honor med ungar på våren
+
+En vuxen brunbjörn (och Cave Bear, Polar Bear) med en unge av sitt slag inom 16 block är på **våren** en vaktande hona:
+den märker och anfaller spelare på **dubbla avståndet** (24 block, 10 om man smyger) och **tröttnar aldrig** på jakten
+(annars saktar en björn in efter 5 s). Resten av året är hon som vanligt.
+
 ## Gemensamt
 
 - Rått kött förskäms på 1 dag, tillagat på 3; allt ruttnar till Rotten Flesh; rått kött kan rökas och torkas.
 - Prestationer: Wilderness – White Bear, Ice Walker, White Rug, Too Much of a Good Thing, Camp Follower, Snow-White Hat,
-  Grey Ghost, Soft Landing, Grey Rosettes; Food – Arctic Fare; Hunting – Polar Bear och Snow Leopard (Predators),
-  Arctic Fox (Small Game).
+  Grey Ghost, Soft Landing, Grey Rosettes, Lord of the Taiga, Striped Mantle, Tiger Skin Rug, White Wings, Lyre Tail,
+  Bone Breaker, Bearded Vulture, Haymaker; Food – Arctic Fare, Marrow Feast; Hunting – Polar Bear, Snow Leopard och
+  Siberian Tiger (Predators), Arctic Fox och Pika (Small Game), Black Grouse (Fowl).
 - Test (`ColdTest`): spawnlistor per biom och att vanilla-isbjörnen byts ut; isbjörnen väljer en säl vid iskanten som
   byte; fjällräven tar sig fram till en isbjörn och äter dess rester; pälsens färg efter kalendern; snöleoparden väljer
-  en stenbock som byte.
+  en stenbock som byte; pikans höhögar (säsong, lager, högst tre); lammgamen tar en Bone Pile och släpper två ben som
+  blir Bone Marrow; björnhonan vaktar bara på våren.
+- Bilder: `docs/shots/fauna/cold_*.png` (ColdShots, en klientharness som bara körs med `coldshots.flag` i run/).
+  [polar_bear](../shots/fauna/cold_polar_bear.png), [polar_bear_cub](../shots/fauna/cold_polar_bear_cub.png), [arctic_fox_winter](../shots/fauna/cold_arctic_fox_winter.png), [arctic_fox_summer](../shots/fauna/cold_arctic_fox_summer.png), [snow_leopard](../shots/fauna/cold_snow_leopard.png), [siberian_tiger](../shots/fauna/cold_siberian_tiger.png), [snowy_owl](../shots/fauna/cold_snowy_owl.png), [black_grouse](../shots/fauna/cold_black_grouse.png), [lammergeier](../shots/fauna/cold_lammergeier.png), [pika](../shots/fauna/cold_pika.png).

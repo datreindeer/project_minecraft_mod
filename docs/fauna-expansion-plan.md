@@ -3,6 +3,8 @@
 > **Beslut 2026-11-22:** grupperna Savannens rovdjur, Kyla, Varmt och Folktro (ordning 1, 2, 3 och 5) byggs i natt,
 > som de står beskrivna. Tempererat och säsongshändelser väntar.
 >
+> **Byggt:** Kyla och alla djur under Taiga, Snowy Plains och Mountains (utom folktron) – se `docs/fauna/cold.md`.
+>
 > Status: **förslag**. Inget är beslutat eller byggt. Du väljer vad som ska med, sedan byggs det fas för fas som de
 > tidigare faunapaketen (`docs/fauna/*.md`): modell, texturer, spawn, slakt, Hunting-advancement och produkter.
 
