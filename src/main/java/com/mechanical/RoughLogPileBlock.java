@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -64,8 +65,12 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
     static final int WALL = Integer.MAX_VALUE / 2;
     public static final IntegerProperty LOGS = IntegerProperty.create("logs", 1, PER_BLOCK);
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
+    /** The top row's lone log lies on the east half (south once turned), not the usual west: it rolled in from that side. */
+    public static final BooleanProperty FLIPPED = BooleanProperty.create("flipped");
     static final net.minecraft.resources.Identifier ADVANCEMENT = net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/log_pile");
     private static final VoxelShape[] SHAPES_Z = new VoxelShape[PER_BLOCK + 1], SHAPES_X = new VoxelShape[PER_BLOCK + 1];
+    /** {@link #FLIPPED}, an odd count: the last log in the other half. */
+    private static final VoxelShape[] FLIPPED_Z = new VoxelShape[PER_BLOCK + 1], FLIPPED_X = new VoxelShape[PER_BLOCK + 1];
 
     static {
         // log i: column i % 2 across (the model's west half first, north once turned y:90), row i / 2 up
@@ -74,17 +79,19 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
             int c = i % 2 * 8, r = i / 2 * 8;
             SHAPES_Z[i + 1] = Shapes.or(SHAPES_Z[i], box(c, r, 0, c + 8, r + 8, 16));
             SHAPES_X[i + 1] = Shapes.or(SHAPES_X[i], box(0, r, c, 16, r + 8, c + 8));
+            FLIPPED_Z[i + 1] = c == 0 ? Shapes.or(SHAPES_Z[i], box(8, r, 0, 16, r + 8, 16)) : SHAPES_Z[i + 1];
+            FLIPPED_X[i + 1] = c == 0 ? Shapes.or(SHAPES_X[i], box(0, r, 8, 16, r + 8, 16)) : SHAPES_X[i + 1];
         }
     }
 
     public RoughLogPileBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(LOGS, 1).setValue(AXIS, Direction.Axis.Z));
+        registerDefaultState(defaultBlockState().setValue(LOGS, 1).setValue(AXIS, Direction.Axis.Z).setValue(FLIPPED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LOGS, AXIS);
+        builder.add(LOGS, AXIS, FLIPPED);
     }
 
     @Override
@@ -94,7 +101,8 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return (state.getValue(AXIS) == Direction.Axis.X ? SHAPES_X : SHAPES_Z)[state.getValue(LOGS)];
+        boolean x = state.getValue(AXIS) == Direction.Axis.X;
+        return (state.getValue(FLIPPED) ? x ? FLIPPED_X : FLIPPED_Z : x ? SHAPES_X : SHAPES_Z)[state.getValue(LOGS)];
     }
 
     @Override
@@ -248,8 +256,10 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
             return rolling == null ? null : drop(level, at, wood);
 
         int rows = (logs + 2) / 2; // the column's rows with this log
+        Direction left = lying == Direction.Axis.Z ? Direction.WEST : Direction.NORTH;
+        // rolled in heading west (north): it came from the east and stops on the east half, by the pile it came off
+        boolean fromEast = rolling == left;
         if (logs % 2 == 0 && rows > 1) { // a new row, on other logs
-            Direction left = lying == Direction.Axis.Z ? Direction.WEST : Direction.NORTH;
             int height = bottom.getY() * 2 + rows;
             int a = surface(level, at.relative(left)), b = surface(level, at.relative(left.getOpposite()));
             if (!allowed(rows, height, a, b)) {
@@ -265,14 +275,19 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
         }
 
         if (newBlock) {
-            BlockState fresh = Mechanical.ROUGH_LOG_PILE.get().defaultBlockState().setValue(AXIS, lying);
+            BlockState fresh = Mechanical.ROUGH_LOG_PILE.get().defaultBlockState().setValue(AXIS, lying).setValue(FLIPPED, fromEast);
             level.setBlock(at, fresh, Block.UPDATE_ALL);
             if (level.getBlockEntity(at) instanceof WoodPileEntity e) e.setWoods(new int[] {wood});
         } else {
             int[] woods = woods(level, at, topState);
             int[] more = Arrays.copyOf(woods, woods.length + 1);
             more[woods.length] = wood;
-            level.setBlock(at, topState.setValue(LOGS, more.length), Block.UPDATE_ALL);
+            boolean flipped = woods.length % 2 == 0 && fromEast;
+            if (topState.getValue(FLIPPED)) { // the row's first log lies east: this one goes west, before it (woods are west first)
+                more[woods.length] = woods[woods.length - 1];
+                more[woods.length - 1] = wood;
+            }
+            level.setBlock(at, topState.setValue(LOGS, more.length).setValue(FLIPPED, flipped), Block.UPDATE_ALL);
             if (level.getBlockEntity(at) instanceof WoodPileEntity e) e.setWoods(more);
         }
         level.playSound(null, at, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 0.7F + level.getRandom().nextFloat() * 0.15F);
@@ -377,7 +392,7 @@ public class RoughLogPileBlock extends Block implements EntityBlock {
         int[] woods = woods(level, top, state);
         int n = woods.length;
         if (n > 1) {
-            level.setBlock(top, state.setValue(LOGS, n - 1), Block.UPDATE_ALL);
+            level.setBlock(top, state.setValue(LOGS, n - 1).setValue(FLIPPED, false), Block.UPDATE_ALL);
             if (level.getBlockEntity(top) instanceof WoodPileEntity e) e.setWoods(Arrays.copyOf(woods, n - 1));
         } else {
             level.setBlock(top, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);

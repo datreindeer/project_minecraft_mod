@@ -306,6 +306,16 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return isPrepared() && getVehicle() instanceof CartEntity cart && cart.isCaravan();
     }
 
+    /** Carried by the feet (birds, the bat) or the mantle (squid) over the shoulder, hanging down the back, not across the shoulders. */
+    public boolean isSlung() {
+        return Birds.isBird(animal) || animal == EntityTypes.BAT || hangsByMantle();
+    }
+
+    /** Squid hang by the mantle tip, the tentacles straight down (their model already stands that way). */
+    public boolean hangsByMantle() {
+        return animal == EntityTypes.SQUID || animal == EntityTypes.GLOW_SQUID;
+    }
+
     /** Flat fliers (the phantom) rest on their belly instead of lying on the side. */
     public boolean liesFlat() {
         return animal == EntityTypes.PHANTOM;

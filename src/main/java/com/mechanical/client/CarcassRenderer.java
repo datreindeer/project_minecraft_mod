@@ -62,6 +62,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     public static final float LIMB_SAG = -0.7F;
     /** Head yaw (degrees) that turns the head down to the ground. */
     private static final float HEAD_SAG = -50.0F;
+    /** SquidRenderer draws the mantle's top this far above the entity (0.5 - 1.2 + 1.501), the tentacles below it. */
+    private static final float SQUID_TOP = 0.8F;
     /** PhantomModel flap time where the wings droop a little (cos ~0.35 of the 16 degree flap). */
     private static final float LIMP_FLAP = 9.3F;
 
@@ -253,6 +255,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         boolean upright;
         /** Two-legged ({@link #ON_BACK}): standing tall along +y, its face to -z. */
         boolean onBack;
+        /** A squid: hangs by the mantle tip, tentacles down, as its model already stands. */
+        boolean mantle;
         Pose pose = Pose.LYING;
         /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
         double dx, dy, dz;
@@ -314,7 +318,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             living.setYRot(180.0F);
         }
         Entity hauler = carcass.isLarge() ? null : carcass.hauler();
-        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (com.mechanical.Birds.isBird(carcass.animal()) || carcass.animal() == net.minecraft.world.entity.EntityTypes.BAT ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
+        state.pose = carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (carcass.isSlung() ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
         boolean skinned = carcass.stage() > 0;
         if (dummy instanceof Sheep sheep) sheep.setSheared(skinned);
         state.renderer = (EntityRenderer<Entity, EntityRenderState>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dummy);
@@ -345,6 +349,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         state.flat = carcass.liesFlat();
         state.upright = state.animal instanceof BatRenderState;
         state.onBack = ON_BACK.contains(carcass.animal());
+        state.mantle = carcass.hangsByMantle();
         state.bodyYaw = carcass.getViewYRot(partialTicks);
         state.width = carcass.animal().getWidth();
         state.height = carcass.animal().getHeight();
@@ -385,6 +390,13 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // the feet in the raised right hand above the shoulder (where the hook would be), the body down the back
             // (+x is the hauler's right, +z behind him here; HaulingClient raises the arm)
             poseStack.translate(0.3F, 0.55F - state.hangLength, 0.3F);
+        }
+        if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && state.mantle) {
+            // as it stands: the mantle tip (SQUID_TOP above the origin) at the hook, the tentacles hanging straight down
+            poseStack.translate(0.0F, state.hangLength - SQUID_TOP, 0.0F);
+            state.renderer.submit(state.animal, poseStack, collector, camera);
+            poseStack.popPose();
+            return;
         }
         if ((state.pose == Pose.HUNG || state.pose == Pose.SLUNG) && (state.upright || state.onBack)) {
             // a bat hangs by its feet as at roost: just upside down, the feet at the hook

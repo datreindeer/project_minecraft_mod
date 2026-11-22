@@ -26,7 +26,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
  * Animals and monsters (not skeletons, slimes and the like) bleed: blood sprays when hit, and below half health they drip, leave a trail of blood on the ground and
- * slowly lose health (never below one heart, so the last blow is still yours).
+ * slowly lose health (never below one heart, so the last blow is still yours). Only real wounds bleed ({@link #wounds}: hits,
+ * bites, arrows): an animal hurt by cramming, hunger, a wall, a fall or fire neither sprays nor bleeds, however low it gets.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Blood {
@@ -43,12 +44,22 @@ public final class Blood {
         return (entity instanceof Animal || entity instanceof Enemy || entity instanceof com.mechanical.people.Tribesperson) && !entity.getType().builtInRegistryHolder().is(BLOODLESS);
     }
 
+    /** A real wound: struck, bitten or shot by something; not crammed, starved, suffocated, fallen, burnt or pricked. */
+    public static boolean wounds(net.minecraft.world.damagesource.DamageSource source) {
+        return source.getEntity() != null || source.getDirectEntity() != null;
+    }
+
+    private static float bleedBelow(LivingEntity entity) {
+        return entity instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
+    }
+
+    private static boolean lowFromWounds(LivingEntity entity) {
+        return entity.getHealth() < entity.getMaxHealth() * bleedBelow(entity) && entity.getData(ArrowWounds.WOUNDED);
+    }
+
     public static boolean isBleeding(LivingEntity entity) {
-        if (entity instanceof com.mechanical.wildlife.WildAnimal wild && wild.bloodOnlyWhenBleeding()) {
-            return entity.isAlive() && entity.getHealth() < entity.getMaxHealth() * wild.bleedThreshold();
-        }
-        float below = entity instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
-        return entity.isAlive() && (entity.getHealth() < entity.getMaxHealth() * below || ArrowWounds.count(entity) > 0);
+        if (entity instanceof com.mechanical.wildlife.WildAnimal wild && wild.bloodOnlyWhenBleeding()) return entity.isAlive() && lowFromWounds(entity);
+        return entity.isAlive() && (lowFromWounds(entity) || ArrowWounds.count(entity) > 0);
     }
 
     /** Feeding a bleeding animal its food calms it and stops the bleeding: arrows come out and it heals to just above the bleed line. */
@@ -68,14 +79,17 @@ public final class Blood {
     /** Stops the bleeding: arrows come out and it heals to just above the bleed line. */
     public static void stanch(LivingEntity animal, ServerLevel level) {
         ArrowWounds.pullOut(animal, level);
-        float below = animal instanceof com.mechanical.wildlife.WildAnimal wild ? wild.bleedThreshold() : BLEED_BELOW;
-        animal.setHealth(Math.max(animal.getHealth(), (float) Math.ceil(animal.getMaxHealth() * below)));
+        animal.removeData(ArrowWounds.WOUNDED);
+        animal.setHealth(Math.max(animal.getHealth(), (float) Math.ceil(animal.getMaxHealth() * bleedBelow(animal))));
     }
 
     @SubscribeEvent
     static void onHurt(LivingDamageEvent.Post event) {
         LivingEntity entity = event.getEntity();
         if (!bleeds(entity) || !(entity.level() instanceof ServerLevel level)) return;
+        // cramming, hunger, a wall, a fall, fire, thorns and the bleeding itself (generic) draw no blood (B6)
+        if (!wounds(event.getSource())) return;
+        entity.setData(ArrowWounds.WOUNDED, true);
         if (entity instanceof com.mechanical.wildlife.WildAnimal wild && wild.bloodOnlyWhenBleeding() && !isBleeding(entity)) return;
         int amount = Math.min(20, 3 + Math.round(event.getOriginalDamage() * 3));
         spray(level, entity.getX(), entity.getY() + entity.getBbHeight() * 0.6, entity.getZ(), amount);
@@ -83,7 +97,10 @@ public final class Blood {
 
     @SubscribeEvent
     static void onTick(EntityTickEvent.Post event) {
-        if (!(event.getEntity() instanceof LivingEntity animal) || !bleeds(animal) || !(animal.level() instanceof ServerLevel level) || !isBleeding(animal)) return;
+        if (!(event.getEntity() instanceof LivingEntity animal) || !bleeds(animal) || !(animal.level() instanceof ServerLevel level)) return;
+        // healed back over the line: the wound has closed
+        if (animal.tickCount % 20 == 0 && animal.hasData(ArrowWounds.WOUNDED) && animal.getHealth() >= animal.getMaxHealth() * bleedBelow(animal)) animal.removeData(ArrowWounds.WOUNDED);
+        if (!isBleeding(animal)) return;
         if (animal.tickCount % 5 == 0) {
             drip(level, animal.getX() + (level.getRandom().nextDouble() - 0.5) * 0.4, animal.getY() + animal.getBbHeight() * 0.4,
                     animal.getZ() + (level.getRandom().nextDouble() - 0.5) * 0.4);

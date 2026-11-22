@@ -74,7 +74,8 @@ Texturen för Firewood visar 1 vedträ (1 st), 2 vedträn (2–15 st) eller 3 ve
 - **Runda stockar rullar** (tvärs över stockarna, åt sidorna): en ny rad som ligger på andra stockar får vara högst **1 block
   högre än grannkolumnerna** på båda sidor. Är den högre rullar stocken åt den lägre sidan och vidare så länge det går nedåt,
   tills den hamnar på en lägre kolumn eller på marken ("The log rolls off the pile"). Hittar den ingen plats (vatten, kant,
-  för långt ned) faller den av som föremål. Första raden på marken rullar aldrig.
+  för långt ned) faller den av som föremål. Första raden på marken rullar aldrig. En stock som rullar in och börjar en ny
+  rad stannar på den **halva som ligger närmast högen den kom ifrån**, nästa stock fyller den bortre halvan.
   - Ensam kolumn: **1 block** (4 stockar). Tre i bredd: mitten **2 block**. Fem i bredd: **3 block**, osv. – som en riktig
     stockhög med sluttande sidor.
   - Ett **fast block bredvid** den nya stocken räknas som **vägg** och håller den kvar. Mellan två väggar går högen rakt upp,
@@ -968,6 +969,9 @@ Har en spelare en kropp inom 16 block är chansen **dubbelt så stor** att en fl
   Cube, Blaze, Breeze, Mushroom Man, Vex, Ghast, Shulker, Wither, golems, Creaking, Endermite och Silverfish.
 - **Under 50 % hälsa blöder de:** droppar blod, lämnar **bloddroppar på marken** när de rör sig (går att spåra) och
   tar en halv hjärta var 5:e sekund. Blödningen slutar på 1 hjärta, den dödar aldrig.
+- **Bara riktiga sår blöder:** slag, bett och pilar. Skada från trängsel, svält, kvävning i en vägg, fall, eld eller
+  taggbuskar ger inget blod, och ett djur som kommit under 50 % på det sättet blöder inte heller (djur i en trång hage
+  smetar alltså inte ned marken). Läker djuret över 50 % eller matas det är såret stängt.
 - Styckning sprutar blod och lämnar blodfläckar runt kroppen (en pöl runt Bone Pile).
 - **Pilar fastnar** i djur och syns i kroppen (på våra vilda djurs modeller). Varje pil får djuret att **blöda tills
   det dör**: det springer i panik, sprutar mer och mer blod och tappar liv allt snabbare (1 hp per pil, var 3:e sekund
@@ -2412,6 +2416,9 @@ Rack). Kadaver flyter i vatten och driver med strömmen. Hud och kött som för 
 | Frog | – | 1 Game Meat Scraps |
 | Turtle | 1–2 Turtle Scute | 2–3 Game Meat Scraps, Bone 40 % |
 | Squid / Glow Squid | 1–3 Ink Sac / Glow Ink Sac | 1–2 Game Meat Scraps |
+
+Squid hänger i manteltoppen med armarna rakt ned på en Hanging Rack, och bärs i manteln över axeln med kroppen nedför
+ryggen (som fåglar).
 | Polar Bear (tjock hud: Tusk Dagger) | Raw Bear Pelt, Raw Hide 40 % | 4–6 Game Meat Scraps, 2–3 Bear Fat, Bear Claw 60 %, Sinew 60 % |
 | Panda (tjock hud: Tusk Dagger) | Raw Bear Pelt | 3–5 Game Meat Scraps, Bear Fat 70 %, Sinew 50 % |
 | Wolf (vanilla, otämjd) | Raw Wolf Pelt | 1–2 Game Meat Scraps, Sinew 50 %, Bone 60 % |
