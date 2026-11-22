@@ -34,6 +34,11 @@ public final class ArrowWounds {
             .<List<ItemStack>>builder(() -> List.of())
             .serialize(ItemStack.CODEC.listOf().fieldOf("arrows"))
             .build());
+    /** Set by a real wound (Blood#wounds), cleared when stanched or healed: low health from anything else doesn't bleed (Blood#isBleeding). */
+    public static final Supplier<AttachmentType<Boolean>> WOUNDED = Mechanical.ATTACHMENTS.register("wounded", () -> AttachmentType
+            .builder(() -> false)
+            .serialize(com.mojang.serialization.Codec.BOOL.fieldOf("wounded"))
+            .build());
 
     private static final float BLEED_PER_ARROW = 1.0F;
     /** Ticks between bleed hits: starts slow, gets faster the longer the wound bleeds. */

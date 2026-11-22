@@ -98,6 +98,14 @@ public final class WoodPileTest {
         h.assertTrue(rolled.pos().getY() == lone.getY() && rolled.pos().getZ() == lone.getZ() && Math.abs(rolled.pos().getX() - lone.getX()) == 1,
                 "onto the ground right beside, across the logs: " + rolled.pos());
         h.assertTrue(level.getBlockState(lone.above()).isAir(), "the lone column is still one block");
+        // it stops on the half next to the column it rolled off, not the far one (B5); the next log fills the other half
+        boolean west = rolled.pos().getX() < lone.getX();
+        h.assertTrue(level.getBlockState(rolled.pos()).getValue(RoughLogPileBlock.FLIPPED) == west,
+                "the rolled log lies on the half by the pile (" + (west ? "east" : "west") + ")");
+        RoughLogPileBlock.add(level, rolled.pos(), OAK, Direction.Axis.Z, null, 0);
+        int[] row = RoughLogPileBlock.woods(level, rolled.pos(), level.getBlockState(rolled.pos()));
+        h.assertTrue(!level.getBlockState(rolled.pos()).getValue(RoughLogPileBlock.FLIPPED) && row.length == 2 && row[west ? 1 : 0] == PINE,
+                "the second log fills the far half, the pine stays by the pile");
 
         // ---- three columns side by side: the middle one stands two blocks
         BlockPos mid = h.absolutePos(new BlockPos(9, 1, 1));

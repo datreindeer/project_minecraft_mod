@@ -46,7 +46,7 @@ public final class HaulingClient {
             public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
                 CarcassEntity c = avatar instanceof Player player ? CarcassHauling.hauled(player) : null;
                 if (c == null) return;
-                if (com.mechanical.Birds.isBird(c.animal()) && !c.isLarge()) state.setRenderData(SLUNG, true);
+                if (c.isSlung() && !c.isLarge()) state.setRenderData(SLUNG, true);
                 else state.setRenderData(DRAGGING, c.isLarge());
                 if (CarcassHauling.straining(c)) state.setRenderData(STRAIN, true);
                 state.rightHandItemState.clear();

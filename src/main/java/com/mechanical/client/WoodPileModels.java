@@ -120,9 +120,12 @@ public final class WoodPileModels {
                 return;
             }
             int axis = state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_AXIS) == Direction.Axis.X ? 1 : 0;
-            for (int k = 0; k < state.getValue(count); k++) {
+            int n = state.getValue(count);
+            // a rough log that rolled in from the east lies alone on the east half: drawn as the row's second piece
+            boolean flipped = state.hasProperty(RoughLogPileBlock.FLIPPED) && state.getValue(RoughLogPileBlock.FLIPPED) && n % 2 == 1;
+            for (int k = 0; k < n; k++) {
                 int w = k < woods.length && woods[k] >= 0 && woods[k] < pieces.length ? woods[k] : fallback;
-                BlockStateModelPart part = pieces[w][k][axis];
+                BlockStateModelPart part = pieces[w][flipped && k == n - 1 ? k + 1 : k][axis];
                 if (part != null) parts.add(part);
             }
         }
