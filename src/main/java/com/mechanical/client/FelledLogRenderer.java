@@ -26,6 +26,8 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
     public static class State extends EntityRenderState {
         final List<MovingBlockRenderState> blocks = new ArrayList<>();
         final List<Vec3> offsets = new ArrayList<>();
+        /** Each block's cut opening (FelledLogEntity#roll): the block turned about its length so the kerf faces that way. */
+        final List<Integer> rolls = new ArrayList<>();
         float yaw;
         /** The block being hewn or sawn (-1: none) and its crack stage. */
         int cracked = -1, crackStage;
@@ -52,6 +54,7 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         super.extractRenderState(log, state, partialTicks);
         state.yaw = log.getViewYRot(partialTicks);
         state.offsets.clear();
+        state.rolls.clear();
         int n = log.size();
         while (state.blocks.size() < n) state.blocks.add(new MovingBlockRenderState());
         while (state.blocks.size() > n) state.blocks.removeLast();
@@ -59,6 +62,7 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         for (int i = 0; i < n; i++) {
             BlockPos c = log.cells().get(i);
             state.offsets.add(new Vec3(c.getX() - log.centreX() - 0.5, c.getY(), c.getZ() - log.centreZ() - 0.5));
+            state.rolls.add(log.roll(i));
             BlockState block = log.states().get(i);
             // lying along the body: the grain runs along local z
             if (block.hasProperty(BlockStateProperties.AXIS)) block = block.setValue(BlockStateProperties.AXIS, net.minecraft.core.Direction.Axis.Z);
@@ -141,6 +145,12 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             Vec3 o = state.offsets.get(i);
             poseStack.pushPose();
             poseStack.translate(o.x, o.y, o.z);
+            int roll = state.rolls.get(i);
+            if (roll != 0) { // turned about its length through its middle: the kerf (cut from the top) opens to a side
+                poseStack.translate(0.5, 0.5, 0);
+                poseStack.rotate(Axis.ZP.rotationDegrees(roll == 1 ? -90 : 90));
+                poseStack.translate(-0.5, -0.5, 0);
+            }
             collector.submitMovingBlock(poseStack, state.blocks.get(i), state.outlineColor);
             if (i == state.cracked) {
                 // a hair larger than the block: drawn in the same pass as the log, at equal depth it would lose to it

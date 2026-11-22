@@ -134,6 +134,21 @@ public final class TreeChopping {
 
     /** As above with a given number of chops for the stage (the Dugout Blank's stages are longer; see {@link DugoutBlankBlock}). */
     static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, ItemStack axe, int needed) {
+        if (!swing(level, player, hand, at, state)) return false;
+        Map<BlockPos, Integer> progress = PROGRESS.computeIfAbsent(level, l -> new HashMap<>());
+        int done = progress.merge(at.immutable(), 1, Integer::sum);
+        if (done < needed) {
+            level.destroyBlockProgress(player.getId(), at, Math.min(9, done * 10 / needed));
+            return false;
+        }
+        progress.remove(at);
+        level.destroyBlockProgress(player.getId(), at, -1);
+        axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        return true;
+    }
+
+    /** One chop's blow if the cooldown allows: the heavy swing, the sound and chips at {@code at}. No progress is kept; true if it struck. */
+    static boolean swing(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state) {
         long now = level.getGameTime();
         Long last = LAST_CHOP.get(player);
         if (last != null && now - last < CHOP_TICKS) return false;
@@ -145,16 +160,6 @@ public final class TreeChopping {
         level.playSound(null, at, SoundEvents.AXE_STRIP.value(), SoundSource.BLOCKS, 0.9F, 0.6F + random.nextFloat() * 0.2F);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state.getBlock() instanceof StumpBlock ? Blocks.OAK_LOG.defaultBlockState() : state),
                 at.getX() + 0.5, at.getY() + 0.6, at.getZ() + 0.5, 6, 0.25, 0.2, 0.25, 0.05);
-
-        Map<BlockPos, Integer> progress = PROGRESS.computeIfAbsent(level, l -> new HashMap<>());
-        int done = progress.merge(at.immutable(), 1, Integer::sum);
-        if (done < needed) {
-            level.destroyBlockProgress(player.getId(), at, Math.min(9, done * 10 / needed));
-            return false;
-        }
-        progress.remove(at);
-        level.destroyBlockProgress(player.getId(), at, -1);
-        axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         return true;
     }
 

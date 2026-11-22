@@ -76,12 +76,13 @@ public final class FelledLogTest {
         for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
         // a small natural oak: 5 logs and a few leaves round the top
         for (int y = 1; y <= 5; y++) h.setBlock(new BlockPos(3, y, 3), Blocks.OAK_LOG);
+        h.setBlock(new BlockPos(4, 3, 3), Blocks.OAK_LOG.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X)); // a branch out east
         var leaf = Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.DISTANCE, 1).setValue(LeavesBlock.PERSISTENT, false);
         for (BlockPos p : List.of(new BlockPos(2, 5, 3), new BlockPos(4, 5, 3), new BlockPos(3, 5, 2), new BlockPos(3, 5, 4), new BlockPos(3, 6, 3)))
             h.setBlock(p, leaf);
         BlockPos cut = h.absolutePos(new BlockPos(3, 1, 3));
         TreeFelling.Tree tree = TreeFelling.find(level, cut);
-        h.assertTrue(tree != null && tree.logs().size() == 5, "a natural 5-log tree (" + tree + ")");
+        h.assertTrue(tree != null && tree.logs().size() == 6, "a natural 5-log tree with a branch (" + tree + ")");
         Player player = h.makeMockPlayer(GameType.SURVIVAL), second = h.makeMockPlayer(GameType.SURVIVAL);
         TreeFelling.fell(level, cut, tree, Direction.SOUTH, player, new ItemStack(Mechanical.FLINT_AXE.get()));
 
@@ -95,8 +96,10 @@ public final class FelledLogTest {
         // walks off with it; a real right-click loads it on a wagon, sneak + right-click unloads it
         h.runAfterDelay(a, () -> {
             List<FelledLogEntity> landed = logs(h).stream().filter(l -> l.tickCount < 40).toList();
-            h.assertTrue(landed.size() == 1 && landed.get(0).size() == 5, "the tree lies as one log of 5 (" + landed.stream().map(FelledLogEntity::size).toList() + ")");
-            FelledLogEntity log = landed.get(0);
+            List<Integer> landedSizes = landed.stream().map(FelledLogEntity::size).sorted().toList();
+            h.assertTrue(landedSizes.equals(List.of(1, 5)), "trunk and branch land as two logs, 5 and 1: blocks hold only end to end (" + landedSizes + ")");
+            FelledLogEntity log = landed.stream().filter(l -> l.size() == 5).findFirst().orElseThrow();
+            for (FelledLogEntity l : landed) if (l != log) l.discard();
             h.assertTrue(log.straight(), "a trunk with no branches lies straight");
             BlockPos root = log.cellPos(0);
             h.assertTrue(root.equals(cut.south()) && log.cellPos(4).equals(cut.south(5)), "it lies south of the stump, root end first (" + root + " .. " + log.cellPos(4) + ")");
@@ -230,6 +233,11 @@ public final class FelledLogTest {
             h.assertTrue(bed.carriedLogs().size() == 3, "a wagon takes three 4-block logs (" + bed.carriedLogs().size() + ")");
             bed.positionRider(bed.carriedLogs().get(2));
             h.assertTrue(bed.carriedLogs().get(2).getY() > bed.carriedLogs().get(0).getY() + 0.5, "the third lies on top");
+            FelledLogEntity topLog = bed.carriedLogs().get(2);
+            player.setPos(bed.position().add(1.5, 0, 0));
+            topLog.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(!topLog.isPassenger() && bed.carriedLogs().size() == 2, "an empty-hand click on a log on the bed rolls it off");
+            topLog.discard();
             bed.ejectPassengers();
             for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(bed.position()) < 6) l.discard();
             bed.discard();

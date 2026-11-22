@@ -374,9 +374,21 @@ public final class LogShots {
                     for (BlockState st : held.states()) stages += st.getBlock() instanceof FallenLogBlock ? st.getValue(FallenLogBlock.STAGE) + "/" + st.getValue(FallenLogBlock.SAWN) + " " : "? ";
                     result.add("left button held 9 chops with an axe: log alive " + held.isAlive() + " size " + held.size() + " stages " + stages
                             + " logs now " + mc.level.getEntitiesOfClass(FelledLogEntity.class, new AABB(base.add(4, -1, 5), base.add(13, 3, 14))).size());
+                    int before = held.states().get(1).getValue(FallenLogBlock.SAWN);
+                    server.execute(() -> held.sawStroke(player().level(), player(), InteractionHand.MAIN_HAND, 1, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), true));
+                    result.add("  cut depth after the axe " + before + ", roll " + held.roll(1));
+                    sawCheck = true;
                     next();
                 }
-                case 30 -> { // one chop swing started at a known tick: a picture every 2 ticks, first person then third
+                case 30 -> {
+                    if (sawCheck && ticks == 5) {
+                        result.add("  after one saw stroke: depth " + held.states().get(1).getValue(FallenLogBlock.SAWN) + " (must not drop)");
+                        shot(mc, "notch_saw");
+                    }
+                    if (ticks < 10) return;
+                    next();
+                }
+                case 31 -> { // one chop swing started at a known tick: a picture every 2 ticks, first person then third
                     int T = TreeChopping.CHOP_TICKS;
                     if (ticks == 10 || ticks == 10 + T + 12) server.execute(() -> player().swing(InteractionHand.MAIN_HAND,
                             new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.WHACK, TreeChopping.CHOP_TICKS), true));
@@ -387,7 +399,7 @@ public final class LogShots {
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     next();
                 }
-                case 31 -> {
+                case 32 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;
@@ -459,6 +471,7 @@ public final class LogShots {
     private static double jumpFrom, jumpTop = -1000, jumpTop2 = -1000, jumpTop3;
     private static FelledLogEntity held;
     private static int dirIndex, jumpTo;
+    private static boolean sawCheck;
     private static Vec3 start;
 
     private static String fmt(Vec3 v) {

@@ -260,7 +260,7 @@ public class TravoisEntity extends Entity {
     }
 
     /** Server: the last log loaded rolls off the back and lies behind. */
-    protected void unloadLog(FelledLogEntity log) {
+    void unloadLog(FelledLogEntity log) {
         log.stopRiding();
         Vec3 back = position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(rear() + log.size() / 2.0 + 0.3));
         log.setYRot(getYRot() + 180);
