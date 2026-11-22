@@ -391,8 +391,8 @@ public final class FirstPersonHolds {
         ps.pushPose();
         // vanilla's place for a held tool (applyItemArmTransform), drawn in towards the middle (both hands on it); raised:
         // up out of the top of the view, head tipped back; struck: down before you, head forward onto the log
-        ps.translate(Mth.lerp(raise, 0.3F, 0.2F), -0.52F + 1.25F * raise, -0.72F);
-        ps.rotateDegrees(Axis.XP, Mth.lerp(raise, -35.0F, 40.0F));
+        ps.translate(Mth.lerp(raise, 0.16F, 0.22F), -0.4F + 1.3F * raise, -0.8F);
+        ps.rotateDegrees(Axis.XP, Mth.lerp(raise, -80.0F, 30.0F));
         ps.rotateDegrees(Axis.YP, -12.0F);
         ItemStackRenderState state = new ItemStackRenderState();
         Minecraft.getInstance().getItemModelResolver().updateForLiving(state, axe, ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, player);

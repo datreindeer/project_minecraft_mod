@@ -379,9 +379,9 @@ public final class LogShots {
                     int T = TreeChopping.CHOP_TICKS;
                     if (ticks == 10 || ticks == 10 + T + 12) server.execute(() -> player().swing(InteractionHand.MAIN_HAND,
                             new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.WHACK, TreeChopping.CHOP_TICKS), true));
-                    if (ticks > 10 && ticks <= 10 + T && (ticks - 10) % 2 == 0) shot(mc, "swing_fp_" + (ticks - 10));
+                    if (ticks > 11 && ticks <= 11 + T && (ticks - 11) % 2 == 0) shot(mc, "swing_fp_" + (ticks - 11)); // a tick for the swing to arrive
                     if (ticks == 10 + T + 4) mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
-                    if (ticks > 10 + T + 12 && ticks <= 10 + 2 * T + 12 && (ticks - 10 - T - 12) % 2 == 0) shot(mc, "swing_tp_" + (ticks - 10 - T - 12));
+                    if (ticks > 11 + T + 12 && ticks <= 11 + 2 * T + 12 && (ticks - 11 - T - 12) % 2 == 0) shot(mc, "swing_tp_" + (ticks - 11 - T - 12));
                     if (ticks < 10 + 2 * T + 16) return;
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     next();
