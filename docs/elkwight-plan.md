@@ -18,6 +18,16 @@ undersöka senare. Byggs fas för fas, som
   sken är ristade både på yxan och i ruinens stenar runt om.
 - **Despawnar aldrig** (persistent), inte heller när ingen är i närheten eller när chunken laddas ur.
 - **Läker bara genom att äta**: ingen egen återhämtning. Dör en spelare nära honom äter han av den döda och får tillbaka liv.
+- **Svårighet (2026-11-22)**: ungefär som en Warden, med omkring 400 liv och hårda slag. Det är tänkt för 2–3 spelare, men en ensam
+  spelare med stål klarar det med rätt taktik. Skalningen per spelare läggs ovanpå.
+- **Biomet är sällsynt** bortom 2500 block, ungefär lika vanligt som en svampö. Ruinerna är sällsynta inne i biomet.
+- **Ljud**: vanilla-ljud (Ravager, Warden och Hoglin) med ändrad tonhöjd används som platshållare, så att förvarningarna hörs.
+  CC0-länkar från freesound listas så att ljuden kan bytas ut senare.
+- **Slaktprodukter**:
+  - Hornkronan blir en väggtrofé.
+  - Huden blir en **Elkwight Cloak** för mantelplatsen, med värme och lite skydd.
+  - Benen blir en **Bone Charm** för charm-platsen.
+  - Claude bestämmer detaljerna och dokumenterar dem.
 
 ## 1. Biomet: Scorched Barrens (nedbrunnen skog)
 - Nytt ytbiom, bara längre än 2500 block från 0,0. En skog som brunnit: svartbrända stammar (stående, fallna, stubbar),
