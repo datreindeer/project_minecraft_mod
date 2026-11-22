@@ -592,11 +592,14 @@ krockar inte med den.
 - **Gravitation:** den vilar på sitt nedersta lager, på fast mark eller **vatten** (stockar flyter), inte på löv. Gräver
   man bort det den ligger på faller den, och hänger mitten ut över en kant glider den av. Ligger den still sover den
   (ingen kostnad per tick, bara en koll av underlaget varannan sekund).
-- **Kapa:** håll in högerklick med yxa på ett block av stocken. Blocket går igenom alla fyra stegen på en gång (lika många
-  hugg som en Fallen Log, 8–12) och ger **samma drops som en Fallen Log**: 1–2 Bark, Sticks, och Rough Logs med yxans
-  lyckochans. **Bronze Saw** sågar ett block med 8 sågtag: Bark + 3 Rough Logs, utan slump. Blocket man hugger eller
-  sågar får vanliga **sprickor** (som när man bryter ett block) som växer för varje hugg eller sågtag; de bleknar efter
-  5 s utan hugg. Kapar man ett block i mitten
+- **Hugga:** håll in högerklick med yxa på ett block av stocken. Blocket går igenom **Fallen Logs fyra steg ett i taget**
+  och syns ändra sig: första steget tar barken (1–2 Bark), sedan blir det tunnare (Sticks, ibland en Rough Log) och sista
+  steget ger en Rough Log med yxans lyckochans, sedan är blocket borta. Inom ett steg visar blocket vanliga **sprickor**
+  som växer för varje hugg (bleknar efter 5 s utan hugg).
+- **Såga (Bronze Saw):** på en lång stock sågar man **i fogen mellan två block**, på den sida av blocket man tittar mot.
+  Sågskåran syns som en mörk linje över toppen och ner längs sidorna, djupare för varje sågtag; efter 8 sågtag går stocken
+  isär där, utan att något block försvinner. En **bit på ett block** (eller en grenig stock som inte rätats ut) sågas som
+  en Fallen Log: skåran syns mitt i blocket, och efter 8 sågtag blir det Bark + 3 Rough Logs. Huggs ett block bort i mitten
   delas stocken i två, kapar man en ände blir den kortare. Woodcutters hugger fällda träd från toppänden först (ett block
   per tur, de bär hem veden), och bävrar gnager dem.
 - **Lyfta för hand (upp till 12 block):** högerklicka **en ände** (rotänden eller toppänden) med tom hand. Stocken rätas
