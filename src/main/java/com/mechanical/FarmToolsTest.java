@@ -82,6 +82,8 @@ public final class FarmToolsTest {
         h.assertTrue(Math.abs(Farming.growthRate(wheat, 12, 0, 3) - Farming.GROWTH_SPEED * 1.5F) < 1e-4, "rich soil 1.5x: " + Farming.growthRate(wheat, 12, 0, 3));
         h.assertTrue(Math.abs(Farming.growthRate(wheat, 12, 0, 0) - Farming.GROWTH_SPEED * 0.5F) < 1e-4, "poor soil half: " + Farming.growthRate(wheat, 12, 0, 0));
         h.assertTrue(Farming.growthRate(wheat, 12, 3, 3) == 0, "winter rests");
+        h.assertTrue(Farming.stakeFactor(Blocks.FARMLAND.defaultBlockState().setValue(Fertility.STAKED, true)) == 1.25F
+                && Farming.stakeFactor(Blocks.FARMLAND.defaultBlockState()) == 1, "crop stakes grow 25% faster");
         RandomSource r = RandomSource.create(42);
         int sum = 0;
         for (int i = 0; i < 20000; i++) sum += Farming.stagesFor(2.5F, r);

@@ -530,6 +530,27 @@
     "mechanical:red_tiled_roof",
     "mechanical:black_tiled_roof",
     "mechanical:yellow_tiled_roof",
-    "mechanical:white_tiled_roof"
+    "mechanical:white_tiled_roof",
+    "mechanical:loose_limestone",
+    "mechanical:loose_slate",
+    "mechanical:loose_gneiss",
+    "mechanical:loose_soapstone",
+    "mechanical:loose_shale",
+    "mechanical:loose_conglomerate",
+    "mechanical:loose_dolomite",
+    "mechanical:loose_travertine",
+    "mechanical:loose_shell_bank",
+    "mechanical:loose_marble",
+    "mechanical:loose_quartzite",
+    "mechanical:loose_red_porphyry",
+    "mechanical:loose_green_porphyry",
+    "mechanical:loose_rapakivi_granite",
+    "mechanical:loose_coastal_basalt",
+    "mechanical:loose_pumice",
+    "mechanical:loose_scoria",
+    "mechanical:loose_serpentine",
+    "mechanical:loose_gypsum",
+    "mechanical:loose_alabaster",
+    "mechanical:loose_alum_shale"
   ]
 }

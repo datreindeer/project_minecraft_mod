@@ -229,6 +229,7 @@
     "mechanical:stripped_bog_oak_log",
     "mechanical:stripped_bog_oak_wood",
     "mechanical:wattle",
-    "mechanical:warp_weighted_loom"
+    "mechanical:warp_weighted_loom",
+    "mechanical:mold_chest"
   ]
 }

@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -30,6 +31,14 @@ public final class MoldBench {
     public static final DeferredItem<BlockItem> MOLD_BENCH_ITEM = ITEMS.registerSimpleBlockItem("mold_bench", MOLD_BENCH);
     public static final Supplier<MenuType<Menu>> MENU = Mechanical.MENUS.register("mold_bench",
             () -> new MenuType<>(Menu::new, FeatureFlags.VANILLA_SET));
+    /** Mold Chest: storage for molds only ({@link MoldChestBlock}). */
+    public static final DeferredBlock<MoldChestBlock> MOLD_CHEST = BLOCKS.registerBlock("mold_chest", MoldChestBlock::new, p -> p
+            .mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).ignitedByLava());
+    public static final DeferredItem<BlockItem> MOLD_CHEST_ITEM = ITEMS.registerSimpleBlockItem("mold_chest", MOLD_CHEST);
+    public static final Supplier<BlockEntityType<MoldChestBlock.Entity>> MOLD_CHEST_ENTITY = Mechanical.BLOCK_ENTITIES.register("mold_chest",
+            () -> new BlockEntityType<>(MoldChestBlock.Entity::new, MOLD_CHEST.get()));
+    public static final Supplier<MenuType<MoldChestBlock.Menu>> MOLD_CHEST_MENU = Mechanical.MENUS.register("mold_chest",
+            () -> new MenuType<>(MoldChestBlock.Menu::new, FeatureFlags.VANILLA_SET));
 
     /** Clay Balls, costs as the old crafting recipes (gen_registry.py reads these calls); the kettle mold took 7 Clay blocks, so 28 balls.
      *  Then one soapstone mold per shape from Polished Soapstone (StoneCrafts.moldRecipes). */

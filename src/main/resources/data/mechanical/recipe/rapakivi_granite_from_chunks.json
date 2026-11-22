@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RR",
+    "RR"
+  ],
+  "key": {
+    "R": "mechanical:rapakivi_granite_chunk"
+  },
+  "result": {
+    "id": "mechanical:rapakivi_granite"
+  }
+}

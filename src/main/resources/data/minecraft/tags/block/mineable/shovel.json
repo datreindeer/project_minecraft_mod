@@ -14,6 +14,9 @@
     "mechanical:wattle_and_daub",
     "mechanical:framed_wattle_and_daub",
     "mechanical:beach_pebbles",
-    "mechanical:beach_pebble_slab"
+    "mechanical:beach_pebble_slab",
+    "mechanical:dirt_slab",
+    "mechanical:grass_slab",
+    "mechanical:dirt_path_slab"
   ]
 }

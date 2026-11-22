@@ -3,6 +3,26 @@
     "mechanical:stone_chunk",
     "mechanical:granite_chunk",
     "mechanical:diorite_chunk",
-    "mechanical:andesite_chunk"
+    "mechanical:andesite_chunk",
+    "mechanical:limestone_chunk",
+    "mechanical:slate_chunk",
+    "mechanical:gneiss_chunk",
+    "mechanical:soapstone_chunk",
+    "mechanical:shale_chunk",
+    "mechanical:conglomerate_chunk",
+    "mechanical:dolomite_chunk",
+    "mechanical:travertine_chunk",
+    "mechanical:shell_bank_chunk",
+    "mechanical:marble_chunk",
+    "mechanical:quartzite_chunk",
+    "mechanical:red_porphyry_chunk",
+    "mechanical:green_porphyry_chunk",
+    "mechanical:rapakivi_granite_chunk",
+    "mechanical:coastal_basalt_chunk",
+    "mechanical:scoria_chunk",
+    "mechanical:serpentine_chunk",
+    "mechanical:gypsum_chunk",
+    "mechanical:alabaster_chunk",
+    "mechanical:alum_shale_chunk"
   ]
 }

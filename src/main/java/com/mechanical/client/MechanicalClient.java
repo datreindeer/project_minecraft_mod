@@ -22,6 +22,7 @@ public class MechanicalClient {
         event.register(com.mechanical.Ironworking.BLOOMERY_MENU.get(), KilnScreen::new);
         event.register(com.mechanical.Smelting.FURNACE_MENU.get(), FurnaceScreen::new);
         event.register(Mechanical.BARK_BASKET_MENU.get(), BarkBasketScreen::new);
+        event.register(com.mechanical.MoldBench.MOLD_CHEST_MENU.get(), net.minecraft.client.gui.screens.inventory.ContainerScreen::new);
         event.register(com.mechanical.FarmTools.SEED_BAG_MENU.get(), BarkBasketScreen::new);
         event.register(com.mechanical.equipment.PackMenu.TYPE.get(), PackScreen::new);
         event.register(com.mechanical.wildlife.SaddlebagMenu.TYPE.get(), SaddlebagScreen::new);

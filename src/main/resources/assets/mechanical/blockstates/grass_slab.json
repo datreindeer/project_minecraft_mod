@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=bottom,snowy=false": {
+      "model": "mechanical:block/grass_slab"
+    },
+    "type=top,snowy=false": {
+      "model": "mechanical:block/grass_slab_top"
+    },
+    "type=double,snowy=false": {
+      "model": "minecraft:block/grass_block"
+    },
+    "type=bottom,snowy=true": {
+      "model": "mechanical:block/grass_slab_snowy"
+    },
+    "type=top,snowy=true": {
+      "model": "mechanical:block/grass_slab_snowy_top"
+    },
+    "type=double,snowy=true": {
+      "model": "minecraft:block/grass_block_snow"
+    }
+  }
+}
