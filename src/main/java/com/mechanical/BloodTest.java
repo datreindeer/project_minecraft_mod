@@ -67,7 +67,7 @@ public final class BloodTest {
 
         h.runAfterDelay(100, () -> {
             for (Animal a : herd) h.assertFalse(a.isAlive() && Blood.isBleeding(a), "a penned " + a.getType().getDescriptionId() + " bleeds without a wound");
-            for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 1, 0)), h.absolutePos(new BlockPos(5, 2, 5))))
+            for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(2, 1, 2)), h.absolutePos(new BlockPos(3, 2, 3)))) // inside the fence: the bitten cow outside may drip beside it
                 h.assertFalse(level.getBlockState(p).is(Mechanical.BLOOD.get()), "blood on the ground of the pen at " + p);
             h.succeed();
         });

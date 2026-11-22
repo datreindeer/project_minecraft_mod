@@ -187,7 +187,7 @@ w(D / "minecraft/recipe/shears.json", {"type": "minecraft:crafting_shaped", "cat
 lang |= {
     "tooltip.mechanical.forge.hot": "At forging heat: work it on a Bronze Anvil before it cools",
     "tooltip.mechanical.forge.hits": "%s blows struck",
-    "message.mechanical.forge.pattern": "Forging: %s (%s hot ingots, %s blows; %s on the anvil). Sneak-use with the hammer to change",
+    "message.mechanical.forge.pattern": "Forging: %s (%s hot ingots, %s blows; %s on the anvil). Hold sneak-use with the hammer to choose",
     "message.mechanical.forge.ingots": "That takes %s hot ingots stacked on the anvil, %s there: right-click it with more",
     "message.mechanical.forge.pile_full": "The anvil holds %s ingots at most",
     "message.mechanical.forge.blister": "Hot Blister Steel: %s blows fold it into a Steel Ingot",
