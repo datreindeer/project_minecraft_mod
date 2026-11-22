@@ -32,6 +32,12 @@ public final class ClanClient {
             else if (mc.gui.screen() instanceof ClanScreen screen) screen.update(view);
         });
         event.register(ClanNetwork.Roster.TYPE, (roster, context) -> TribeTabList.roster = roster);
+        event.register(com.mechanical.clan.Lands.Entered.TYPE, (land, context) -> LandTitle.show(land));
+    }
+
+    @SubscribeEvent
+    static void registerHud(net.neoforged.neoforge.client.event.RegisterGuiLayersEvent event) {
+        event.registerBelow(net.neoforged.neoforge.client.gui.VanillaGuiLayers.TITLE, LandTitle.ID, LandTitle::render);
     }
 
     /** A new server may not send a roster: until it does, Tab shows vanilla's list. */

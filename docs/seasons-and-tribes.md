@@ -59,6 +59,20 @@
   knappar för att bjuda in, befordra, degradera och kicka, samt pågående röstningar. Ledaren väljer stammens
   **färg** (en av de 16 dye-färgerna) med vimpelknappen uppe till höger; klick ger nästa färg. Gamla stammar får
   en färg utifrån sitt id.
+- **Relationsfliken** (byggd): flikknapparna **Tribe | Relations** ovanför stamsidan. Relations listar varje NPC-stam
+  spelaren har en relation med (`Tribe.REPUTATION`), bäst först: vimpel i stammens färg, namn, temperament (Peaceful,
+  Wary, Raiders, Traders), en stapel från -100 till 100 med streck vid 0 fylld i nivåns färg, och nivåord + tal
+  ("Friendly 45"; nivåer som `Tribe.standing`: Hostile ≤ -40, Unfriendly < 0, Neutral < 30, Friendly < 70, Honoured).
+  Sju rader per sida med ▲▼. Bara spelarens relation till NPC-stammar (inga NPC↔NPC- eller stam↔stam-relationer).
+  Fungerar även utan egen stam. Data: `ClanNetwork.View.relations`. Relationen är per spelare tills den blir delad per stam.
+- **Zontitel** (byggd): när man går in på en stams mark visas en barkpanel en fjärdedel ned på skärmen i 5 s (tonar in
+  och ut): "You are now entering X's land" med vimpel och namn i stammens färg, och under det relationen ("Friendly 45")
+  för NPC-stammar, "Home" på den egna stammens mark och inget mer på en annan spelarstams. Mark: en spelarstams 3x3
+  chunks runt Fire Pit:en (samma som den planerade forceloaden), en NPC-by innanför palissaden (radie 23 från mitten),
+  och ett NPC-läger runt elden dess folk kallar hem (palissadens radie + 2, minst 10 block; gäller även bosättningar).
+  Servern kollar var 10:e tick och skickar `Lands.Entered` en gång per inträde (inte igen förrän man gått ut eller in på
+  annan mark). Första gången på en annan stams mark ger framsteget **Their Land** (wilderness). Kod: `clan/Lands`,
+  `client/clan/LandTitle`.
 - **Tab-listan** (spelarlistan) ersätter vanilla och syns bara medan Tab hålls nere, så den tar stor plats: upp till 88 %
   av skärmbredden (en ensam kolumn högst 420 GUI-pixlar), rader på 14 px med 12 px ansikten, rankord bredvid namnet,
   ålder som ikon och namn och ping i ms bredvid staplarna. En ram i stamsidans barkstil med serverns namn, världsåldern och

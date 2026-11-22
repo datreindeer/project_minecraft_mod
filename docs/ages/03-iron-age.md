@@ -80,7 +80,11 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
   Den håller hettan **30 s** (stapeln visar hur mycket som är kvar; den hålls varm så länge den ligger kvar i en het
   ugn), bränner en bar hand som en het lupp (Bronze Tongs i andra handen) och blir sedan en kall tacka igen. Slagen som
   hunnits sitter kvar, så den kan värmas igen och smidas klart.
-- **Välj mönster:** smyg och högerklicka städet med hammaren. Mönstret står kvar på städet och visas när en tacka läggs på.
+- **Välj mönster:** håll smyg + högerklick på städet med en smideshammare. Ett **hjul** öppnas runt hårkorset med en ikon
+  för varje del metallen på städet kan bli (stål visar bara delarna som finns av stål). Peka på en och släpp (eller klicka);
+  släpp i mitten för att behålla den nuvarande (grön ram). Servern kontrollerar valet (hammare i handen, nära städet, delen
+  finns för metallen). Mönstret står kvar på städet och visas när en tacka läggs på. Kod: `client/AnvilWheel`,
+  `Smithing.ChoosePattern`, `BronzeAnvilBlockEntity.choosePattern`.
 - **Smid:** hamra den heta tackan på **Bronze Anvil** (vänster- eller högerklick med Bronze eller Iron Smithing Hammer):
 
 | Mönster | Tackor | Slag | Av järn | Av stål |

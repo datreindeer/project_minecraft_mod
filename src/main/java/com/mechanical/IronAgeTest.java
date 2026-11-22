@@ -141,7 +141,13 @@ public final class IronAgeTest {
         anvil.place(level, Ironworking.heated(new ItemStack(Smithing.STEEL_INGOT.get()), Smithing.HOT_STEEL_INGOT.get(), level.getGameTime()));
         anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
         h.assertTrue(Ironworking.hits(anvil.item()) == 0, "no steel tool rod");
-        anvil.setPattern(Smithing.Pattern.PICKAXE_HEAD);
+        // the pattern wheel's pick (Smithing.ChoosePattern) is checked: a hammer in hand, a part the metal has
+        h.assertTrue(!anvil.choosePattern(smith, Smithing.Pattern.TONG_ARMS) && anvil.pattern() == Smithing.Pattern.TOOL_ROD,
+                "no steel tong arms: the wheel's pick is refused");
+        Player bare = h.makeMockPlayer(GameType.SURVIVAL);
+        h.assertTrue(!anvil.choosePattern(bare, Smithing.Pattern.PLATE), "no hammer in hand: refused");
+        h.assertTrue(anvil.choosePattern(smith, Smithing.Pattern.PICKAXE_HEAD) && anvil.pattern() == Smithing.Pattern.PICKAXE_HEAD,
+                "a steel pickaxe head: accepted");
         anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
         h.assertTrue(Ironworking.hits(anvil.item()) == 0, "a pickaxe head takes 3 ingots: one alone takes no blows");
         h.assertTrue(anvil.addIngot(level, null) && anvil.addIngot(level, null) && !anvil.addIngot(level, null), "two more stack on, then it is full");
