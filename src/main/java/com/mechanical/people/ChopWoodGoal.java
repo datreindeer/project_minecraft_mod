@@ -23,13 +23,16 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Woodcutters walk out to a natural tree, stump or fallen log beyond the camp (through the gate of a walled one) and chop at it for a while (swings, wood sounds and
- * chips). A standing tree is felled for real (it falls and lies as fallen logs), a fallen log is hewn up and taken; then
+ * chips). A standing tree is felled for real (it falls and lies as a felled log, FelledLogEntity), a fallen log or a block of
+ * a felled one is hewn up and taken; then
  * they carry the wood home to feed the fire ({@link Tribesperson#carryingWood}).
  */
 class ChopWoodGoal extends Goal {
     private static final int RANGE = 14, SWINGS = 14;
     private final Tribesperson mob;
     private BlockPos target;
+    /** A felled tree being hewn up ({@code target} is its last block), or null. */
+    private com.mechanical.FelledLogEntity log;
     private int ticks, swings;
 
     ChopWoodGoal(Tribesperson mob) {
@@ -66,6 +69,15 @@ class ChopWoodGoal extends Goal {
         ServerLevel level = (ServerLevel) mob.level();
         BlockPos c = mob.workCenter();
         int camp = mob.campRadius(), r = camp + RANGE;
+        // felled trees lying about are hewn up first, from the crown end; never one someone is dragging or that lies in the camp
+        log = null;
+        var logs = level.getEntitiesOfClass(com.mechanical.FelledLogEntity.class, new net.minecraft.world.phys.AABB(c).inflate(r, 12, r),
+                l -> !l.isPassenger() && !l.isPulled() && l.size() > 0 && mob.outsideCamp(l.blockPosition()));
+        if (!logs.isEmpty()) {
+            log = logs.get(mob.getRandom().nextInt(logs.size()));
+            target = log.cellPos(log.size() - 1);
+            return true;
+        }
         for (int i = 0; i < 60; i++) {
             int dx = mob.getRandom().nextInt(r * 2 + 1) - r, dz = mob.getRandom().nextInt(r * 2 + 1) - r;
             if (dx * dx + dz * dz <= camp * camp) continue;
@@ -93,7 +105,8 @@ class ChopWoodGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return ticks < 900 && swings < SWINGS && mob.getTarget() == null && choppable(mob, (ServerLevel) mob.level(), target);
+        return ticks < 900 && swings < SWINGS && mob.getTarget() == null
+                && (log != null ? log.isAlive() && !log.isPulled() && log.indexAt(target) >= 0 : choppable(mob, (ServerLevel) mob.level(), target));
     }
 
     @Override
@@ -109,13 +122,15 @@ class ChopWoodGoal extends Goal {
         mob.getNavigation().stop();
         if (ticks % 14 != 0) return;
         ServerLevel level = (ServerLevel) mob.level();
-        BlockState s = level.getBlockState(target);
+        BlockState s = log != null ? log.states().get(Math.max(0, log.indexAt(target))) : level.getBlockState(target);
         mob.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
         var sound = s.getSoundType();
         level.playSound(null, target, sound.getHitSound(), SoundSource.NEUTRAL, 1.0F, sound.getPitch() * 0.8F);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, s), c.x, c.y, c.z, 8, 0.3, 0.3, 0.3, 0.05);
         if (++swings >= SWINGS) {
-            if (s.is(BlockTags.LOGS)) {
+            if (log != null) {
+                com.mechanical.FelledLogEntity.removeAt(level, target); // hewn up and carried off
+            } else if (s.is(BlockTags.LOGS)) {
                 // a real tree: it comes down like when a player fells it, falling away from the woodcutter
                 var tree = com.mechanical.TreeFelling.find(level, target);
                 if (tree != null && tree.logs().stream().allMatch(mob::outsideCamp)) { // never a tree grown into the camp's wall
@@ -135,5 +150,6 @@ class ChopWoodGoal extends Goal {
     @Override
     public void stop() {
         target = null;
+        log = null;
     }
 }

@@ -25,7 +25,7 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 /**
  * A felled tree tipping over. Sits at the bottom-centre of the cut log; blocks are stored as offsets from it.
- * After FALL_TICKS each block drops its normal loot where it lands.
+ * After FALL_TICKS the logs lie down as a FelledLogEntity and the leaves drop their loot and litter.
  * shortcut: not saved (noSave), so a tree mid-fall when the server stops loses its drops; persist offsets if that ever matters.
  */
 public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn {
@@ -75,39 +75,28 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
     }
 
     /**
-     * Logs come to rest as fallen logs lying along the fall direction, stacking where they land on each other; leaves drop
-     * their loot (saplings, sticks, apples) and settle on the ground as leaf litter.
+     * The logs come to rest as one {@link FelledLogEntity} (or several, if the crown breaks apart) lying along the fall
+     * direction; leaves drop their loot (saplings, sticks, apples) and settle on the ground as leaf litter.
      */
     private void land(ServerLevel level) {
         BlockPos base = blockPosition();
-        // logs first, so leaves settle on top of them
-        for (int pass = 0; pass < 2; pass++) {
-            for (int i = 0; i < offsets.size(); i++) {
-                BlockState state = states.get(i);
-                boolean log = state.is(net.minecraft.tags.BlockTags.LOGS);
-                if (log != (pass == 0)) continue;
-                BlockPos o = offsets.get(i);
-                // rotating 90 degrees away from the feller turns height into distance along the fall direction
-                BlockPos column = base.offset(o.getX() + direction.getStepX() * o.getY(), 0, o.getZ() + direction.getStepZ() * o.getY());
-                BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
-                if (log) landLog(level, ground, state);
-                else landLeaves(level, ground, state);
+        List<BlockPos> logOffsets = new ArrayList<>();
+        List<BlockState> logStates = new ArrayList<>();
+        for (int i = 0; i < offsets.size(); i++) {
+            BlockState state = states.get(i);
+            BlockPos o = offsets.get(i);
+            if (state.is(net.minecraft.tags.BlockTags.LOGS)) {
+                logOffsets.add(o);
+                logStates.add(state);
+                continue;
             }
+            // rotating 90 degrees away from the feller turns height into distance along the fall direction
+            BlockPos column = base.offset(o.getX() + direction.getStepX() * o.getY(), 0, o.getZ() + direction.getStepZ() * o.getY());
+            landLeaves(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column), state);
         }
+        if (!logOffsets.isEmpty()) FelledLogEntity.land(level, base, direction, logOffsets, logStates);
         level.playSound(null, base.relative(direction, 3), SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 2.0F, 0.5F);
         discard();
-    }
-
-    private void landLog(ServerLevel level, BlockPos ground, BlockState log) {
-        String wood = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(log.getBlock()).getPath()
-                .replace("stripped_", "").replace("_log", "").replace("_wood", "");
-        var fallen = Mechanical.FALLEN_LOGS.get(wood);
-        BlockState there = level.getBlockState(ground);
-        if (fallen != null && (crush(level, ground, there) || there.is(net.minecraft.tags.BlockTags.LEAVES))) {
-            level.setBlock(ground, fallen.get().defaultBlockState().setValue(FallenLogBlock.AXIS, direction.getAxis()), Block.UPDATE_ALL);
-        } else {
-            Block.dropResources(log, level, ground, null, feller, tool); // nowhere to lie: firewood
-        }
     }
 
     private void landLeaves(ServerLevel level, BlockPos ground, BlockState leaves) {

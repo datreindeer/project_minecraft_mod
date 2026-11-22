@@ -505,6 +505,19 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
   Kroppar, tama djur och kistans varor ligger kvar på kärran.
 - Kopplingen sparas inte när världen laddas om (som spannet): koppla på igen.
 
+### Stockar på vagnen (Felled Log)
+
+- Dra en fälld stock (Felled Log, se 01-stone-age.md *Fällda träd*) med en Lead fram till vagnen och **högerklicka
+  vagnen**: stocken läggs på flaket med rotänden mot framgaveln. Den får vara högst **4 block** lång (flaket är 3: ett
+  block hänger ut bak) och **bakgaveln tas bort** i modellen så länge en stock ligger där. Ditt rep knyts loss och
+  Lead kommer tillbaka.
+- Flaket måste vara **helt tomt** (inga moduler, kroppar eller djur): annars *"A log needs the whole bed"*. För lång:
+  *"Too long for the wagon: cut it to 4 blocks or less"* (kapa med yxa eller såg). En grenig stock rätas ut när den lastas.
+- Med en stock på flaket går inga moduler eller kroppar att lägga i, och vagnen räknas som **fullt lastad** (en ensam
+  häst rör den inte, paret går 15 % långsammare).
+- **Lasta av:** smyg + högerklicka vagnen med tom hand: stocken rullar av bakåt och blir liggande bakom vagnen.
+- Stocken sparas med vagnen (den åker som passagerare).
+
 ### Advancements (Iron Age-fliken, efter *Forged*)
 
 - **Iron Shod**: gör en Iron-Rimmed Wheel.
@@ -513,6 +526,7 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 - **Heavy Haul** (mål): 12 rum kroppar på en vagn med alla fyra platser tomma.
 - **Freight**: en Chest på alla fyra platserna.
 - **Road Train**: koppla en Wheeled Cart efter vagnen.
+- **Timber Wagon** (mål): lasta en fälld stock på vagnen (efter *A Pair in the Yoke*).
 
 ## Plogen (Mouldboard Plough) (byggd, v0.132.0)
 

@@ -59,6 +59,7 @@ public class MechanicalClient {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Mechanical.FALLING_TREE.get(), FallingTreeRenderer::new);
+        event.registerEntityRenderer(Mechanical.FELLED_LOG.get(), FelledLogRenderer::new);
         event.registerEntityRenderer(Mechanical.CARCASS.get(), CarcassRenderer::new);
         event.registerEntityRenderer(com.mechanical.CarcassHauling.TRAVOIS.get(), TravoisRenderer::new);
         event.registerEntityRenderer(com.mechanical.Carting.CART.get(), CartRenderer::new);

@@ -286,6 +286,7 @@ public class Beaver extends SemiAquatic {
             beaver.entityData.set(GNAWING, true);
             gnawed++;
             BlockState state = level.getBlockState(target);
+            if (state.isAir()) state = net.minecraft.world.level.block.Blocks.OAK_LOG.defaultBlockState(); // a felled log's block (an entity)
             if (gnawed % 8 == 0) {
                 level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), centre.x, target.getY() + 0.4, centre.z, 5, 0.3, 0.2, 0.3, 0.05);
                 level.playSound(null, target, SoundEvents.AXE_STRIP.value(), SoundSource.NEUTRAL, 0.45F, 1.5F + beaver.getRandom().nextFloat() * 0.3F);
@@ -306,6 +307,8 @@ public class Beaver extends SemiAquatic {
             } else if (task == Task.LOG && gnawed >= LOG_TICKS) {
                 if (state.getBlock() instanceof FallenLogBlock) {
                     level.destroyBlock(target, false, beaver);
+                    beaver.material = Math.min(MAX_MATERIAL, beaver.material + MATERIAL_PER_LOG);
+                } else if (com.mechanical.FelledLogEntity.removeAt(level, target)) {
                     beaver.material = Math.min(MAX_MATERIAL, beaver.material + MATERIAL_PER_LOG);
                 }
                 done = true;
