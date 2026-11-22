@@ -1,0 +1,41 @@
+{
+  "parent": "mechanical:hunting/predators",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sinew"
+          }
+        ]
+      }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "butchered"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:siberian_tiger_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.siberian_tiger.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.siberian_tiger.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

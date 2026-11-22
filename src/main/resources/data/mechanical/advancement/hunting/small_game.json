@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_ermine"
+            "items": "mechanical:raw_arctic_fox"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:raw_ermine"
           }
         ]
       }
@@ -96,7 +96,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_lemming"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -106,7 +106,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_marten"
+            "items": "mechanical:raw_lemming"
           }
         ]
       }
@@ -116,7 +116,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_mole"
+            "items": "mechanical:raw_marten"
           }
         ]
       }
@@ -126,7 +126,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_snake"
+            "items": "mechanical:raw_mole"
           }
         ]
       }
@@ -136,7 +136,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_vole"
+            "items": "mechanical:raw_pika"
           }
         ]
       }
@@ -146,12 +146,32 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wildcat"
+            "items": "mechanical:raw_snake"
           }
         ]
       }
     },
     "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_vole"
+          }
+        ]
+      }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wildcat"
+          }
+        ]
+      }
+    },
+    "has_17": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -179,7 +199,9 @@
       "has_12",
       "has_13",
       "has_14",
-      "has_15"
+      "has_15",
+      "has_16",
+      "has_17"
     ]
   ],
   "display": {

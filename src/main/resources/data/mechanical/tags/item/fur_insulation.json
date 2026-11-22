@@ -2,6 +2,10 @@
   "values": [
     "mechanical:wolverine_trimmed_hood",
     "mechanical:ermine_mantle",
-    "mechanical:marten_fur_cap"
+    "mechanical:marten_fur_cap",
+    "mechanical:polar_bear_cloak",
+    "mechanical:arctic_fox_hat",
+    "mechanical:snow_leopard_boots",
+    "mechanical:tiger_pelt_cloak"
   ]
 }

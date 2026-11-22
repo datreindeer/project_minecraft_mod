@@ -4,6 +4,8 @@
 > verktyg, rustning eller mat där syftet anger det. Det gäller alla biomer, under jord, folktron, säsongshändelserna och den nya
 > biomen Mammoth Steppe. Claude bestämmer detaljerna och dokumenterar dem.
 >
+> **Byggt:** Kyla och alla djur under Taiga, Snowy Plains och Mountains (utom folktron) – se `docs/fauna/cold.md`.
+>
 > Status: **förslag**. Inget är beslutat eller byggt. Du väljer vad som ska med, sedan byggs det fas för fas som de
 > tidigare faunapaketen (`docs/fauna/*.md`): modell, texturer, spawn, slakt, Hunting-advancement och produkter.
 

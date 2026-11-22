@@ -1084,7 +1084,7 @@ Greylag Goose, Mute Swan) är borta från Frostfall till våren. Bunkra mat inf�
 
 ### Djur i vatten
 Varje vilt djur hör till en av tre grupper (`WildAnimal.WaterHabit`):
-- **Simmar gärna:** Otter, Beaver, Seal, Walrus, Water Buffalo, Tapir och Moose. Går i vattnet av sig själva (vägar
+- **Simmar gärna:** Otter, Beaver, Seal, Walrus, Polar Bear, Water Buffalo, Tapir och Moose. Går i vattnet av sig själva (vägar
   genom vatten kostar inget, och de strövar ut i det ibland), simmar fort och har egen simrörelse: älgen sträcker
   halsen platt på vattnet med mulen i luften och tar långa simtag, buffeln ligger djupt med bara huvud och horn över
   ytan, tapiren håller snabeln uppe som en snorkel. Otter, bäver och säl dyker.
@@ -1601,9 +1601,9 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,8 |
 | Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,8 |
 | Dried Mutton | Raw Mutton, Mutton Scraps, Ibex Meat, Chamois Meat | 3 | 0,8 |
-| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat | 2 | 0,8 |
-| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
-| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
+| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat, Raw Polar Bear, Raw Snow Leopard | 2 | 0,8 |
+| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Arctic Fox/Pika/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
+| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Black Grouse, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
 | Dried Seal Meat | Raw Seal Meat | 3 | 0,8 |
 | Stockfish | Raw Cod, Raw Pike, Raw Sturgeon | 2 | 0,8 |
 | Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,8 |
@@ -2447,7 +2447,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
   (bort från skytten om han är inom 32 block, annars bort från nedslaget) och får fågelflockar att lyfta. Djur som
   redan anfaller något bryr sig inte. En träffad eller skjuten fågel får hela flocken att lyfta.
 - Tama djur och djur i koppel flyr inte. Mat i handen lugnar inte.
-- Gäller djur med vanilla-"goals" (Cow, Pig, Sheep, Chicken, Rabbit, Horse, Llama, Fox, Wolf, Polar Bear, Panda, Parrot …).
+- Gäller djur med vanilla-"goals" (Cow, Pig, Sheep, Chicken, Rabbit, Horse, Llama, Fox, Wolf, Panda, Parrot …).
   Goat, Camel, Frog, Axolotl, Armadillo och Sniffer (vanilla "brain"-AI) påverkas inte än.
 
 ### Bone Pile
@@ -2563,6 +2563,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
 - [Savannen](../fauna/savanna.md): Spotted Hyena (stjäl byten på dagen), Cheetah (rusar 5 s), Gazelle (Signal Horn), Ostrich (sparkar, stora ägg), Aardvark, Termite Mound (Chitin Paste); lejon vilar i skuggan på dagen
 - [Smådjur och jägare i kyla](../fauna/coldhunters.md): Wolverine, Lynx, Ermine, Lemming, Pine Marten
+- [Kyla](../fauna/cold.md): Polar Bear (ersätter vanilla-isbjörnen, jagar sälar och spelare; Polar Bear Cloak, giftig Polar Bear Liver), Arctic Fox (följer isbjörnen och äter rester, vit på vintern; Arctic Fox Hat), Snow Leopard (sällsynt på topparna, jagar stenbock; Snow Leopard Boots), Siberian Tiger (snöig taiga; djungeltigerns kött och päls), Snowy Owl (jagar lämlar på dagen), Black Grouse (spelar på myren om våren), Lammergeier (släpper ben från höjden: Bone Marrow), Pika (gör höhögar: Pika Hay), och brunbjörnshonor med ungar som är extra farliga på våren
 - [Istidsjättar](../fauna/giants.md): Woolly Mammoth, Woolly Rhinoceros, Steppe Bison, Musk Ox (Pegged Hide, Ivory)
 - [Kust, is och stor fisk](../fauna/coast.md): Seal, Walrus, Pike, Sturgeon (Oil Lamp, Sealskin, Walrus Ivory)
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
@@ -2585,7 +2586,6 @@ Rack). Kadaver flyter i vatten och driver med strömmen. Hud och kött som för 
 
 Squid hänger i manteltoppen med armarna rakt ned på en Hanging Rack, och bärs i manteln över axeln med kroppen nedför
 ryggen (som fåglar).
-| Polar Bear (tjock hud: Tusk Dagger) | Raw Bear Pelt, Raw Hide 40 % | 4–6 Game Meat Scraps, 2–3 Bear Fat, Bear Claw 60 %, Sinew 60 % |
 | Panda (tjock hud: Tusk Dagger) | Raw Bear Pelt | 3–5 Game Meat Scraps, Bear Fat 70 %, Sinew 50 % |
 | Wolf (vanilla, otämjd) | Raw Wolf Pelt | 1–2 Game Meat Scraps, Sinew 50 %, Bone 60 % |
 | Camel | Raw Hide 70 % + 30 % | 4–6 Game Meat Scraps, Sinew 60 % |

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/butcher",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:polar_bear_liver"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:polar_bear_liver"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.polar_bear_liver.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.polar_bear_liver.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

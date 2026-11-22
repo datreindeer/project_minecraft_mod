@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:polar_bear_pelt",
+    "mechanical:polar_bear_pelt",
+    "minecraft:leather",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:polar_bear_cloak",
+    "count": 1
+  }
+}

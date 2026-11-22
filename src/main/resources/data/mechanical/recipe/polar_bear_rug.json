@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:polar_bear_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:polar_bear_rug",
+    "count": 1
+  }
+}
