@@ -307,6 +307,23 @@ public final class LogShots {
                     if (ticks < 20) return;
                     mc.options.keyUp.setDown(false);
                     result.add("keys: walked on 20 ticks after putting it down: " + mc.player.position().distanceTo(start) + " blocks");
+                    shot(mc, "stuck");
+                    {   // what holds the player back (north = -z)?
+                        Vec3 north = new Vec3(0, 0, -0.1);
+                        AABB pb = mc.player.getBoundingBox();
+                        result.add("  stuck: player box " + pb + " onGround " + mc.player.onGround() + " input " + mc.player.input.keyPresses + " delta " + mc.player.getDeltaMovement());
+                        for (FelledLogEntity l : mc.level.getEntitiesOfClass(FelledLogEntity.class, pb.inflate(4)))
+                            result.add("  near log id " + l.getId() + " size " + l.size() + " pos " + fmt(l.position()) + " yaw " + l.getYRot() + " grid " + l.onGrid() + " box " + l.getBoundingBox()
+                                    + " handledBy " + l.handledBy(mc.player) + " collides " + l.canBeCollidedWith(mc.player));
+                        for (net.minecraft.world.entity.Entity e : mc.level.getEntities(mc.player, pb.inflate(2)))
+                            result.add("  near entity " + e.getType() + " at " + fmt(e.position()) + " box " + e.getBoundingBox() + " collidable " + e.canBeCollidedWith(mc.player));
+                        result.add("  entity shapes north: " + mc.level.getEntityCollisions(mc.player, pb.expandTowards(north)).size()
+                                + ", block shapes north: " + com.google.common.collect.Iterables.size(mc.level.getBlockCollisions(mc.player, pb.expandTowards(north))));
+                        result.add("  LogCollision north: " + LogCollision.collide(mc.player, north, north));
+                        Vec3 before = mc.player.position();
+                        mc.player.move(net.minecraft.world.entity.MoverType.SELF, north);
+                        result.add("  direct move north 0.1: " + fmt(before) + " -> " + fmt(mc.player.position()));
+                    }
                     // back to the log: walk at its side and jump there
                     mc.player.setYRot(0);
                     mc.options.keyUp.setDown(true);
