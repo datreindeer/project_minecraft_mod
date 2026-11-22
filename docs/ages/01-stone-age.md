@@ -592,10 +592,11 @@ krockar inte med den.
 - **Gravitation:** den vilar på sitt nedersta lager, på fast mark eller **vatten** (stockar flyter), inte på löv. Gräver
   man bort det den ligger på faller den, och hänger mitten ut över en kant glider den av. Ligger den still sover den
   (ingen kostnad per tick, bara en koll av underlaget varannan sekund).
-- **Hugga:** håll in högerklick med yxa på ett block av stocken. Blocket går igenom **Fallen Logs fyra steg ett i taget**
-  och syns ändra sig: första steget tar barken (1–2 Bark), sedan blir det tunnare (Sticks, ibland en Rough Log) och sista
-  steget ger en Rough Log med yxans lyckochans, sedan är blocket borta. Inom ett steg visar blocket vanliga **sprickor**
-  som växer för varje hugg (bleknar efter 5 s utan hugg).
+- **Hugga:** håll in höger- eller vänsterklick med yxa på stocken (vänsterklick slår inte sönder fällda träd eller
+  Fallen Logs med yxa eller såg, det gör samma sak som högerklick). Hugget är ett långsamt tvåhandshugg: yxan upp över
+  huvudet och ner (ett hugg var 16:e tick). Ett block som har bark kvar **barkas först** (1–2 Bark). Sedan hugger yxan, som
+  sågen, ett **jack i fogen** på den sida du tittar mot, bredare och djupare för varje hugg, tills stocken delas där
+  (några Sticks av spånen). En bit på ett block huggs vidare genom Fallen Logs steg (Sticks, sist en Rough Log).
 - **Såga (Bronze Saw):** på en lång stock sågar man **i fogen mellan två block**, på den sida av blocket man tittar mot.
   Sågskåran syns som en mörk linje över toppen och ner längs sidorna, djupare för varje sågtag; efter 8 sågtag går stocken
   isär där, utan att något block försvinner. En **bit på ett block** (eller en grenig stock som inte rätats ut) sågas som
