@@ -1984,5 +1984,11 @@
   "iron_fish_hook": {"text": "Forged on the Bronze Anvil: the Fish Hooks pattern, 1 hot Wrought Iron Ingot, 3 blows give **4**. Becomes an [[iron_hook_fishing_rod]].", "category": "tools"},
   "iron_hook_fishing_rod": {"text": "Tool Station: [[iron_fish_hook]] + [[twine]] + [[tool_rod]]. Bites come **15 s** sooner (as Lure III) plus **Luck of the Sea II** on top of enchantments ([[bronze_hook_fishing_rod]]: 10 s, I). 256 durability.", "category": "tools"},
   "iron_quarry_hammer": {"text": "Tool Station: [[iron_hammer_head]] + [[iron_plate]] + [[tool_rod]]. Breaks a **3×3 face** of stone like the [[bronze_quarry_hammer]]; ores an iron pickaxe mines (gold, redstone, diamond) crumble to stone. **900** durability.", "category": "tools"},
-  "steel_smithing_hammer": {"text": "Tool Station: [[steel_hammer_head]] + [[iron_tool_rod]] + [[tool_rod]]. Works steel, wears 1 a blow and strikes **every 7 ticks** (other hammers every 10). **1200** durability. A hammer at the Armor Station.", "category": "tools"}
+  "steel_smithing_hammer": {"text": "Tool Station: [[steel_hammer_head]] + [[iron_tool_rod]] + [[tool_rod]]. Works steel, wears 1 a blow and strikes **every 7 ticks** (other hammers every 10). **1200** durability. A hammer at the Armor Station.", "category": "tools"},
+  "warp_weighted_loom": {"text": "The Iron Age loom: 4 Logs + [[iron_tool_rod]] + 3 Clay Balls (`LRL`/`L L`/`BBB`). Right-click with **3 thread** for 1 cloth: Wool Thread → [[wool_cloth]], [[linen_thread]] → [[linen_cloth]], [[silk_thread]] → [[silk_cloth]]. An empty hand shows how.", "category": "blocks"},
+  "wool_cloth": {"text": "Woven from 3 Wool Thread on the [[warp_weighted_loom]]. Cloth for the [[cloth_bed]].", "category": "materials"},
+  "linen_cloth": {"text": "Woven from 3 [[linen_thread]] on the [[warp_weighted_loom]]. Cloth for the [[cloth_bed]].", "category": "materials"},
+  "silk_cloth": {"text": "Woven from 3 [[silk_thread]] on the [[warp_weighted_loom]]. Cloth for the [[cloth_bed]].", "category": "materials"},
+  "silk_thread": {"text": "An import: sold **only by Trader Caravans** (4 for 3 Silver Coins). Woven into [[silk_cloth]]; counts as thread at the Armor Station.", "category": "materials"},
+  "cloth_bed": {"text": "3 cloth ([[wool_cloth]], [[linen_cloth]] or [[silk_cloth]]) + 3 Straw + 3 Planks. Rests like a Furred Straw Bed (respawn, +35 sanity, a little healing, warmth, a fast night) but **doesn't break** when you get out of it, as straw beds do.", "category": "blocks"}
 }

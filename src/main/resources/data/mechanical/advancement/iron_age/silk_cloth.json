@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/woven_cloth",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:silk_cloth"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:silk_cloth"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.silk_cloth.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.silk_cloth.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

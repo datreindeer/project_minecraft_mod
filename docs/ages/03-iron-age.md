@@ -548,3 +548,33 @@ gen_wagon.py), texturer: `scripts/gen_plough_textures.py`. Test: `PloughTest`.
 
 - **Iron in the Soil**: bygg en Mouldboard Plough.
 - **Furrow by Horse** (mål): plöj med plogen efter en häst.
+
+## Vävstol och Cloth Bed (byggd, v0.135.0)
+
+Järnålderns textil: en **Warp-weighted Loom** (vävstol med vikter) väver tråd till tyg, och tyget blir en säng som håller.
+Kod: `Weaving.java` (block, items, gametest `weaving`), vilan i `StrawBedRest.java`, silket i `people/Caravans.java`.
+Data: `scripts/gen_weaving.py` (efter gen_plough.py), texturer: `scripts/gen_weaving_textures.py`.
+
+| Vad | Hur |
+|---|---|
+| **Warp-weighted Loom** | Block. `[Log][Iron Tool Rod][Log]` / `[Log][ ][Log]` / `[Clay Ball][Clay Ball][Clay Ball]` (valfria logs). Två stolpar och en tygbom, varpen hänger ner och hålls sträckt av lerviktor. Yxa. Receptet låses upp av en Iron Tool Rod. |
+| **Wool Cloth** | Högerklicka vävstolen med **3 Wool Thread**. |
+| **Linen Cloth** | Högerklicka vävstolen med **3 Linen Thread**. |
+| **Silk Cloth** | Högerklicka vävstolen med **3 Silk Thread**. |
+| **Silk Thread** | Säljs **bara av Trader Caravans**: 4 st för 3 Silver Coin (järnålderns varor, tier 2, så karavaner för bronsålders- och järnåldersspelare kan ha det). Räknas som tråd (`mechanical:threads`). |
+| **Cloth Bed** | `[Cloth][Cloth][Cloth]` / `[Straw][Straw][Straw]` / `[Planks][Planks][Planks]`. Cloth = valfritt tyg (taggen `mechanical:cloth`: Wool, Linen eller Silk Cloth). Låses upp av valfritt tyg. Staplas 1. |
+
+- **Vävningen:** vävstolen tar 3 tråd ur handen och ger 1 tyg (till inventoryt, annars ploppar det upp ur blocket). Med
+  färre än 3 tråd händer inget ("Weaving takes 3 thread"). Tom hand visar hur man gör.
+- **Cloth Bed** vilar som en **Furred Straw Bed**: respawnpunkt, mer sanity (+35), lite läkning, värme en stund efteråt och
+  natten spolas fram på ~23 s när alla ligger (se *Straw Bed (vila)* i [01-stone-age.md](01-stone-age.md)). Skillnaden:
+  **den går inte sönder** när man kliver ur den. Straw Bed (och Furred Straw Bed) följer vanillas halmsängsregel
+  (`straw_bed_rule`: förstörs när man går ur); Cloth Bed använder vanlig sängs regel (`bed_rule`). Bryts den ger den sig
+  själv tillbaka. Utseende: halmsängens form med en madrass av linne och en rödbrun ullfilt.
+
+**Advancements (Iron Age-fliken, efter *Forged*):** **Warp and Weft** (bygg vävstolen) → **Off the Loom** (väv ett tyg) →
+**A Proper Bed** (mål: Cloth Bed) och **Silk from Afar** (utmaning: Silk Cloth av karavanens silke).
+
+**Beslut (2026-11-22):** sängen vilar som Straw Bed (framspolad natt, inte vanillas svarta skärm), bara att den håller.
+Ett block (vävstolen), ingen spinnrock: Drop Spindle spinner fortfarande. Silke är en importvara och kommer bara från
+karavaner. Alla tre tygerna duger i sängen; tyg har inga andra användningar än.

@@ -983,6 +983,22 @@
    },
    {
     "title": {
+     "sv": "Vävstol och en säng som håller",
+     "en": "A loom and a bed that lasts"
+    },
+    "items": [
+     "warp_weighted_loom",
+     "wool_cloth",
+     "cloth_bed",
+     "silk_thread"
+    ],
+    "text": {
+     "sv": "Bygg en [[warp_weighted_loom]] av 4 Logs, en [[iron_tool_rod]] och 3 Clay Balls. Högerklicka den med **3 tråd** för ett tyg: Wool Thread blir [[wool_cloth]], [[linen_thread]] blir [[linen_cloth]]. [[silk_thread]] köper du av **Trader Caravans** och väver till [[silk_cloth]].\n\n3 tyg över 3 Straw och 3 Planks blir en [[cloth_bed]]. Den vilar som en Furred Straw Bed (respawn, sanity, värme, natten spolas fram) men **går inte sönder** när du kliver ur den.",
+     "en": "Build a [[warp_weighted_loom]] from 4 Logs, an [[iron_tool_rod]] and 3 Clay Balls. Right-click it with **3 thread** for a cloth: Wool Thread makes [[wool_cloth]], [[linen_thread]] makes [[linen_cloth]]. Buy [[silk_thread]] from **Trader Caravans** and weave it into [[silk_cloth]].\n\n3 cloth over 3 Straw and 3 Planks make a [[cloth_bed]]. It rests like a Furred Straw Bed (respawn, sanity, warmth, a fast night) but **doesn't break** when you get out of it."
+    }
+   },
+   {
+    "title": {
      "sv": "Järnverktyg och rustning",
      "en": "Iron tools and armour"
     },

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:cloth_bed",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:cloth_bed",
+            "state": {
+              "part": "head"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/cloth_bed"
+}

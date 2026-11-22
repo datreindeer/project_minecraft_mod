@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/straw_bed_foot",
+  "textures": {
+    "all": "mechanical:block/cloth_bed",
+    "particle": "mechanical:block/cloth_bed_particle"
+  }
+}

@@ -18,6 +18,7 @@ import com.mechanical.Coins;
 import com.mechanical.Ironworking;
 import com.mechanical.Mechanical;
 import com.mechanical.Spinning;
+import com.mechanical.Weaving;
 import com.mechanical.wildlife.TameHorse;
 import com.mechanical.wildlife.Wildlife;
 
@@ -204,6 +205,7 @@ public final class Caravans {
                 new Sale(1, () -> of(Spinning.LINEN_THREAD, 4), cu, 10),
                 new Sale(1, () -> of(Bronze.BRONZE_GREAVES, 1), ag, 5),
                 new Sale(2, () -> new ItemStack(Items.RAW_IRON, 4), ag, 6),
+                new Sale(2, () -> of(Weaving.SILK_THREAD, 4), ag, 3), // silk: from far away, only by caravan
                 new Sale(2, () -> of(Mechanical.IRON_KNIFE, 1), ag, 8),
                 new Sale(2, () -> of(Ironworking.WROUGHT_IRON_INGOT, 1), au, 1));
     }

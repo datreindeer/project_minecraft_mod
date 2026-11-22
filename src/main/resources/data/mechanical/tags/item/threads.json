@@ -4,6 +4,7 @@
     "mechanical:nettle_thread",
     "mechanical:linen_thread",
     "mechanical:sinew_thread",
-    "minecraft:string"
+    "minecraft:string",
+    "mechanical:silk_thread"
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "SSS",
+    "PPP"
+  ],
+  "key": {
+    "C": "#mechanical:cloth",
+    "S": "mechanical:straw",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:cloth_bed"
+  }
+}

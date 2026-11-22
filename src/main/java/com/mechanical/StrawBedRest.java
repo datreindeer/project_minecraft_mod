@@ -36,6 +36,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
  * lying down the night runs fast ({@link #nightRunsFast}); there is no vanilla night skip.
  * Right-click one holding a Wolf Pelt to spread it over the bed: a Furred Straw Bed, which rests better (more sanity, a
  * little healing, and warmth for a while afterwards). Broken, it gives the pelt back.
+ * The Iron Age Cloth Bed ({@link Weaving}) rests like the furred one and, unlike straw, isn't used up when you get out.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class StrawBedRest {
@@ -46,7 +47,8 @@ public final class StrawBedRest {
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
-        boolean furred = state.is(Mechanical.FURRED_STRAW_BED.get());
+        boolean cloth = state.is(Weaving.CLOTH_BED.get());
+        boolean furred = cloth || state.is(Mechanical.FURRED_STRAW_BED.get()); // the Cloth Bed rests as well as a pelt
         if (!furred && !state.is(Blocks.STRAW_BED)) return;
         ItemStack held = event.getItemStack();
         if (event.getEntity().isSecondaryUseActive() && !held.isEmpty()) return; // sneak-place against it
@@ -63,7 +65,7 @@ public final class StrawBedRest {
         if (Sanity.rest(player, furred) && furred) player.heal(FURRED_HEAL);
         if (furred) Temperature.warmFromBedroll(player);
         player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
-        player.sendOverlayMessage(Component.translatable(furred ? "message.mechanical.furred_straw_bed_rest" : "message.mechanical.straw_bed_rest")
+        player.sendOverlayMessage(Component.translatable(cloth ? "message.mechanical.cloth_bed_rest" : furred ? "message.mechanical.furred_straw_bed_rest" : "message.mechanical.straw_bed_rest")
                 .withStyle(ChatFormatting.GRAY));
         if (level.isDarkOutside() && level.dimensionType().defaultClock().isPresent()) lieDown(player, pos, state);
     }

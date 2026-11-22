@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LRL",
+    "L L",
+    "BBB"
+  ],
+  "key": {
+    "L": "#minecraft:logs",
+    "R": "mechanical:iron_tool_rod",
+    "B": "minecraft:clay_ball"
+  },
+  "result": {
+    "id": "mechanical:warp_weighted_loom"
+  }
+}

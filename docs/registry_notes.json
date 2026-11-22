@@ -1984,5 +1984,11 @@
   "iron_fish_hook": {"text": "Smids på Bronze Anvil: mönstret Fish Hooks, 1 het Wrought Iron Ingot, 3 slag ger **4**. Blir [[iron_hook_fishing_rod]].", "category": "tools"},
   "iron_hook_fishing_rod": {"text": "Tool Station: [[iron_fish_hook]] + [[twine]] + [[tool_rod]]. Napp **15 s** tidigare (som Lure III) och **Luck of the Sea II** utöver förtrollningar ([[bronze_hook_fishing_rod]]: 10 s, I). 256 hållbarhet.", "category": "tools"},
   "iron_quarry_hammer": {"text": "Tool Station: [[iron_hammer_head]] + [[iron_plate]] + [[tool_rod]]. Bryter en **3×3-yta** sten som [[bronze_quarry_hammer]]; malmer en järnhacka bryter (guld, redstone, diamant) smulas till sten. **900** hållbarhet.", "category": "tools"},
-  "steel_smithing_hammer": {"text": "Tool Station: [[steel_hammer_head]] + [[iron_tool_rod]] + [[tool_rod]]. Smider stål, nöts 1 per slag och slår **var 7:e tick** (andra hamrar var 10:e). **1200** hållbarhet. Hammare i Armor Station.", "category": "tools"}
+  "steel_smithing_hammer": {"text": "Tool Station: [[steel_hammer_head]] + [[iron_tool_rod]] + [[tool_rod]]. Smider stål, nöts 1 per slag och slår **var 7:e tick** (andra hamrar var 10:e). **1200** hållbarhet. Hammare i Armor Station.", "category": "tools"},
+  "warp_weighted_loom": {"text": "Järnålderns vävstol: 4 Logs + [[iron_tool_rod]] + 3 Clay Ball (`LRL`/`L L`/`BBB`). Högerklicka med **3 tråd** för 1 tyg: Wool Thread → [[wool_cloth]], [[linen_thread]] → [[linen_cloth]], [[silk_thread]] → [[silk_cloth]]. Tom hand visar hur.", "category": "blocks"},
+  "wool_cloth": {"text": "Vävs av 3 Wool Thread på [[warp_weighted_loom]]. Tyg till [[cloth_bed]].", "category": "materials"},
+  "linen_cloth": {"text": "Vävs av 3 [[linen_thread]] på [[warp_weighted_loom]]. Tyg till [[cloth_bed]].", "category": "materials"},
+  "silk_cloth": {"text": "Vävs av 3 [[silk_thread]] på [[warp_weighted_loom]]. Tyg till [[cloth_bed]].", "category": "materials"},
+  "silk_thread": {"text": "Importvara: säljs **bara av Trader Caravans** (4 st för 3 Silver Coin). Vävs till [[silk_cloth]]; räknas som tråd i Armor Station.", "category": "materials"},
+  "cloth_bed": {"text": "3 tyg ([[wool_cloth]], [[linen_cloth]] eller [[silk_cloth]]) + 3 Straw + 3 Planks. Vilar som en Furred Straw Bed (respawn, +35 sanity, lite läkning, värme, framspolad natt) men **går inte sönder** när man kliver ur den, som halmsängar gör.", "category": "blocks"}
 }

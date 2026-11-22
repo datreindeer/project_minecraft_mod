@@ -1494,6 +1494,19 @@ TABS["iron_age"][1].extend([
      by_code()),
 ])
 
+# weaving and the Cloth Bed (Weaving.java, gen_weaving.py)
+TABS["iron_age"][1].extend([
+    ("warp_weighted_loom", "forged", "warp_weighted_loom", T, "Warp and Weft",
+     "Build a Warp-weighted Loom: 4 Logs for the frame, an Iron Tool Rod for the heddle and 3 Clay Balls for the weights",
+     has("warp_weighted_loom")),
+    ("woven_cloth", "warp_weighted_loom", "wool_cloth", T, "Off the Loom",
+     "Right-click the loom with 3 Wool, Linen or Silk Thread: a Cloth", has("#cloth")),
+    ("cloth_bed", "woven_cloth", "cloth_bed", G, "A Proper Bed",
+     "Make a Cloth Bed: 3 Cloth over 3 Straw and 3 Planks. It rests like a furred bed and, unlike straw, lasts", has("cloth_bed")),
+    ("silk_cloth", "woven_cloth", "silk_cloth", C, "Silk from Afar",
+     "Buy Silk Thread from a Trader Caravan and weave it into Silk Cloth", has("silk_cloth")),
+])
+
 # forged saws, the crossbow and Iron Bolts (Smithing.java, gen_iron_age.py)
 TABS["iron_age"][1].extend([
     ("iron_saw", "forged", "iron_saw", T, "Sharper Teeth",

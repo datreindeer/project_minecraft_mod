@@ -228,6 +228,7 @@
     "mechanical:bog_oak_pressure_plate",
     "mechanical:stripped_bog_oak_log",
     "mechanical:stripped_bog_oak_wood",
-    "mechanical:wattle"
+    "mechanical:wattle",
+    "mechanical:warp_weighted_loom"
   ]
 }
