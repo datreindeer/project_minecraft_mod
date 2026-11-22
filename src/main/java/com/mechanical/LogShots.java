@@ -167,7 +167,7 @@ public final class LogShots {
                         }
                         FelledLogEntity small = FelledLogEntity.spawnStraight(sl, base.add(3.5, 0, -6.5), 0, 2, Blocks.BIRCH_LOG.defaultBlockState());
                         ((CartEntity) cart).loadLog(sl, small, player());
-                        look(wagon.position().add(3.2, 1.5, 1.5), 125, 25);
+                        look(wagon.position().add(4.5, 2.6, 3.5), 128, 32);
                     });
                     next();
                 }
