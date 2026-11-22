@@ -2137,5 +2137,9 @@
   "cheetah_spawn_egg": {"text": "Creative: spawnar en [[entity:cheetah]]."},
   "gazelle_spawn_egg": {"text": "Creative: spawnar en [[entity:gazelle]]."},
   "ostrich_spawn_egg": {"text": "Creative: spawnar en [[entity:ostrich]]."},
-  "aardvark_spawn_egg": {"text": "Creative: spawnar ett [[entity:aardvark]]."}
+  "aardvark_spawn_egg": {"text": "Creative: spawnar ett [[entity:aardvark]]."},
+  "charred_log": {"text": "Bränd stam från biomet Scorched Barrens (bortom 2500 block). Bryts med yxa och ger **1–2 Charcoal**; med Silk Touch blocket självt.", "category": "blocks"},
+  "wood_ash": {"text": "Grå träaska som täcker marken i Scorched Barrens. Spade; faller som sand.", "category": "blocks"},
+  "rune_blackstone": {"text": "Polerad blackstone med gröna, lysande runor (ljus 4). Finns bara i **Elkwight-ruinerna** i Scorched Barrens. Hacka.", "category": "blocks"},
+  "structure:elkwight_ruin": {"text": "Elkwight-ruinen: stor raserad arena av Blackstone med Rune Blackstone, pelare, läktare, själveldar och tre kistor (lite guld och brons). Bara i Scorched Barrens, aldrig närmare 0,0 än 2500 block. Tät mörk dimma inne i ruinen så länge Elkwighten lever.", "icon": "mechanical:rune_blackstone"}
 }

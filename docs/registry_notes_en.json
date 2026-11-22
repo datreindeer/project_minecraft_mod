@@ -2137,5 +2137,9 @@
   "cheetah_spawn_egg": {"text": "Creative: spawns a [[entity:cheetah]]."},
   "gazelle_spawn_egg": {"text": "Creative: spawns a [[entity:gazelle]]."},
   "ostrich_spawn_egg": {"text": "Creative: spawns an [[entity:ostrich]]."},
-  "aardvark_spawn_egg": {"text": "Creative: spawns an [[entity:aardvark]]."}
+  "aardvark_spawn_egg": {"text": "Creative: spawns an [[entity:aardvark]]."},
+  "charred_log": {"text": "A burnt trunk from the Scorched Barrens biome (beyond 2500 blocks). Mined with an axe it gives **1–2 Charcoal**; with Silk Touch the block itself.", "category": "blocks"},
+  "wood_ash": {"text": "Grey wood ash covering the ground in the Scorched Barrens. Shovel; falls like sand.", "category": "blocks"},
+  "rune_blackstone": {"text": "Polished blackstone carved with glowing green runes (light 4). Only found in the **Elkwight ruins** in the Scorched Barrens. Pickaxe.", "category": "blocks"},
+  "structure:elkwight_ruin": {"text": "The Elkwight ruin: a large ruined Blackstone arena with Rune Blackstone, pillars, stands, soul fires and three chests (a little gold and bronze). Only in the Scorched Barrens, never closer to 0,0 than 2500 blocks. Dense dark fog inside while the Elkwight lives.", "icon": "mechanical:rune_blackstone"}
 }

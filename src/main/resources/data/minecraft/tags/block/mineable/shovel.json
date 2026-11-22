@@ -18,6 +18,7 @@
     "mechanical:dirt_slab",
     "mechanical:grass_slab",
     "mechanical:dirt_path_slab",
-    "mechanical:termite_mound"
+    "mechanical:termite_mound",
+    "mechanical:wood_ash"
   ]
 }

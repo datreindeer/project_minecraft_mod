@@ -1,0 +1,4 @@
+biome at 1440, 2464: mechanical:scorched_barrens
+ruin at -688, 2656: BoundingBox{minX=-705, minY=56, minZ=2639, maxX=-655, maxY=88, maxZ=2689}
+state in the arena (1 = fog): 1
+state after the boss died (2 = cleared): 2

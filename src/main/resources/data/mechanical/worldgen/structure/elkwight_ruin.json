@@ -1,0 +1,6 @@
+{
+  "type": "mechanical:elkwight_ruin",
+  "biomes": "#mechanical:has_structure/elkwight_ruin",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
