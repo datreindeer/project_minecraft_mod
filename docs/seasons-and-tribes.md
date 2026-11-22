@@ -26,7 +26,7 @@
 | Start | Mitt i våren (dag 15 i vårens andra månad). |
 | Sova bort natten | **Byggd.** När **alla** spelare ligger i en Straw Bed spolas natten fram. Himlen snurrar synligt, och natten är över på cirka 23 s. |
 | Hunger | **Byggd.** Bättre och större mat ger mer mättnad som räcker längre (`FoodValues`). |
-| Tid när servern är tom | Står still (vanilla-standard). Ingen missar vintern, och mat ruttnar inte medan man är borta. |
+| Tid när servern är tom | **Ändrat 2026-11-22 (planerat):** går vidare i halv hastighet, se `living-world-plan.md`. Tidigare: står still. |
 | Temperatur | Sänks globalt på vintern. Kalla biomes kan skada spelare som saknar skydd. |
 | Väder | Följer säsongen. |
 | Lövträd | Blir kala på vintern (bara grenar). Barrträd behåller barren. |
