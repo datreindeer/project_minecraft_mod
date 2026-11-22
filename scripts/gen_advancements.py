@@ -952,6 +952,13 @@ TABS["wilderness"][1].extend([
     ("tribe_carcass_gift", "tribe_land", "minecraft:rabbit", T, "Meat for the Pot",
      "Put a carcass down at the camp of a tribe that likes you (Neutral or better): a generous gift. Bigger game pleases them more. "
      "Below Neutral they take it as a threat", by_code()),
+    # tribe roads (people/RoadBuilding.java, RoadMarkerItem.java)
+    ("tribe_road", "tribe_neighbours", "road_marker", G, "Paths Between Us",
+     "At Friendly or better, ask a neighbouring camp's leader or trader for a road and set the Road Marker down where it should end. "
+     "Their folk walk out and build it, with steps where the ground climbs", by_code()),
+    ("tribe_trade_road", "tribe_road", "minecraft:stone_bricks", C, "The Trade Road",
+     "At a standing of 60, have a tribe widen a finished road into a 3-wide stone trade road. Their camp then stays loaded, so their traders walk it even when nobody is near",
+     by_code()),
     # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
     ("caravan", "root", "minecraft:chest", T, "The Caravan Has Come",
      "Talk to the old trader of a Trader Caravan: horses, covered carts and armed guards, now and then near you as the Wandering Trader once was",

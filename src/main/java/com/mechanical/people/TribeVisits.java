@@ -416,6 +416,9 @@ public final class TribeVisits {
             buttons = 0;
         } else if (v != null) {
             key = "greet." + tribe.temperament.id();
+        } else if (t.errand == null && t.isLeader()) { // a settled camp's leader at home: roads (RoadBuilding), no barter
+            key = "leader";
+            buttons = 0;
         } else if (t.role() == TribeRole.TRADER) {
             key = "caravan";
             award(player, "caravan");
@@ -424,6 +427,7 @@ public final class TribeVisits {
             Neighbours.Settlement s = Neighbours.get(level).settlement(t.group());
             arg = s != null ? direction(player.blockPosition(), s.centre) : Component.empty();
         }
+        if (!key.equals("leaving")) buttons |= RoadBuilding.dialogButtons(player, tribe, level);
         Component text = Component.translatable("dialog.mechanical.tribe." + key, arg)
                 .append("\n\n").append(Component.translatable("dialog.mechanical.tribe.standing", tribe.name(), Tribe.standing(tribe.reputation(player))));
         if (!trades) text = text.copy().append("\n").append(Component.translatable("dialog.mechanical.tribe.no_trade"));

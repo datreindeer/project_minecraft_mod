@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/tribe_road",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.tribe_trade_road.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.tribe_trade_road.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
