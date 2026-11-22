@@ -131,4 +131,8 @@ Gäller före tabellerna ovan där de skiljer sig.
 | Smycken (F10) | Claude föreslår en bonus per gemsort i vanlig och flawless, för godkännande innan bygget. |
 | Ljud (B8) | CC0-ljud från freesound.org (.ogg), med källa och licens noterade. |
 | Stor Fire Pit (F12) | Kommer vid **Steel**. Ger forceload 5x5, fler besökande band kan stanna samtidigt, och krävs för senare stamfunktioner. |
+| Återuppliva (E) | Säker plats = inga fientliga mobs eller raiders inom ~16 block, och bäraren har inte tagit skada de senaste 10 sekunderna. Gäller var som helst. |
+| Bete (D6, A10) | Betande djur (kor, får, hästar, getter) som går på gräs blir mätta av det. Feeding Trough behövs i hagar utan gräs och för vatten. |
+| Natur i zoner (A10) | Bävrar, bökande vildsvin och bete sker **överallt**, även i spelarstammars zoner. Man får stängsla eller jaga bort djuren. |
+| Vanilla-recept (F8) | Claude går igenom alla vanilla-recept och visar en lista med vad som spärras och varför. Inget tas bort före godkännande. |
 | Ordning | **Ändrat 2026-11-22:** ny fas 1 = F1 stockar, B7 multiplayer-sidan och GUI-ändringarna (B1 zontitel, B2 relationsflik, B4 anvil-hjul). Sedan faserna ovan i ordning. |
