@@ -48,6 +48,20 @@ public final class LogLiftClient {
         });
     }
 
+    /**
+     * Lifting: a click only reaches the log itself (put it down) or a Wagon (load it); anything else is stopped here,
+     * before the client acts or sends anything (LogLifting stops it on the server too).
+     */
+    @SubscribeEvent
+    static void onClick(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+        if (mc.player == null || FelledLogEntity.liftedBy(mc.player) == null) return;
+        if (event.isUseItem() && mc.hitResult instanceof net.minecraft.world.phys.EntityHitResult hit
+                && (hit.getEntity() instanceof FelledLogEntity || hit.getEntity() instanceof com.mechanical.WagonEntity)) return;
+        event.setCanceled(true);
+        event.setSwingHand(false);
+    }
+
     /** Does the log lie ahead of {@code player} (they face it)? */
     static boolean facing(Player player, FelledLogEntity log) {
         Vec3 look = Vec3.directionFromRotation(0, player.getYRot());

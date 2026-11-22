@@ -82,11 +82,11 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     /** Weight one player lifts at full pace: a lifted end carries half the log, the end still on the ground drags a quarter. */
     public static final double LIFT = 4;
     /** A lifted end is held this far from the player; the player stays within HOLD + LIFT_SLACK of it. */
-    static final double HOLD = 0.8, LIFT_SLACK = 1.2;
+    static final double HOLD = 0.4, LIFT_SLACK = 1.2;
     /** Blocks a tick carried light. */
     static final double CARRY_STEP = 0.25;
-    /** How high a lifted end is held (render). */
-    public static final float LIFT_HEIGHT = 1.0F;
+    /** How high the underside of a lifted end is held: at the hands, about hip height. */
+    public static final float LIFT_HEIGHT = 0.65F;
     /** Longest log the Wagon takes (its bed is 3 blocks: one hangs over the open back). */
     public static final int WAGON_MAX = 4;
     static final Identifier HAUL_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/haul_log"),
@@ -123,6 +123,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     /** {@link #collisionShape} and the bounding box it was made for. */
     private net.minecraft.world.phys.shapes.VoxelShape shape;
     private AABB shapeFor;
+    private int shapeLift;
     /** Client: puller ids from {@link #PULLERS}. */
     private int[] pullerIds = new int[0];
 
@@ -238,7 +239,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         double bestD = Double.MAX_VALUE;
         for (int i = 0; i < cells.size(); i++) {
             Vec3 l = local(cells.get(i), cx, cz);
-            var hit = new AABB(l.x - 0.5, l.y, l.z - 0.5, l.x + 0.5, l.y + 1, l.z + 0.5).clip(a, b);
+            double up = liftOffset(i);
+            var hit = new AABB(l.x - 0.5, l.y + up, l.z - 0.5, l.x + 0.5, l.y + 1 + up, l.z + 0.5).clip(a, b);
             if (hit.isPresent() && hit.get().distanceToSqr(a) < bestD) {
                 bestD = hit.get().distanceToSqr(a);
                 best = i;
@@ -727,6 +729,24 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return entityData.get(LIFT_TAIL) >= 0;
     }
 
+    /**
+     * How far block {@code i} is raised by the lifters: both ends up, {@link #LIFT_HEIGHT}; one end up, in proportion to
+     * its middle's distance from the end on the ground (the log tilts). Collision, clicks and the render all use it.
+     */
+    public double liftOffset(int i) {
+        boolean r = rootLifted(), t = tailLifted();
+        if (r && t) return LIFT_HEIGHT;
+        if (!r && !t) return 0;
+        double along = i + 0.5; // from the root end (lifted logs are straight)
+        return LIFT_HEIGHT * (r ? size() - along : along) / size();
+    }
+
+    /** The tilt of a log lifted at one end (radians about its local x; + raises the root end). */
+    public float liftTilt() {
+        if (rootLifted() == tailLifted()) return 0;
+        return (float) Math.atan(LIFT_HEIGHT / size()) * (rootLifted() ? 1 : -1);
+    }
+
     /** Weight over lifting strength: above 1 the lifters strain (it only jerks along). Both sides. */
     public double liftLoad() {
         int n = lifterCount();
@@ -1028,10 +1048,12 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Each block's box, upright in the world (a log turned off the grid steps a little): what players and mobs walk on and against. */
     public net.minecraft.world.phys.shapes.VoxelShape collisionShape() {
-        if (shape == null || shapeFor != getBoundingBox()) {
+        int liftKey = (rootLifted() ? 1 : 0) + (tailLifted() ? 2 : 0);
+        if (shape == null || shapeFor != getBoundingBox() || shapeLift != liftKey) {
+            shapeLift = liftKey;
             net.minecraft.world.phys.shapes.VoxelShape out = net.minecraft.world.phys.shapes.Shapes.empty();
             for (int i = 0; i < cells.size(); i++) {
-                Vec3 w = world(i);
+                Vec3 w = world(i).add(0, liftOffset(i), 0);
                 out = net.minecraft.world.phys.shapes.Shapes.joinUnoptimized(out, net.minecraft.world.phys.shapes.Shapes.create(w.x - 0.5, w.y, w.z - 0.5, w.x + 0.5, w.y + 1, w.z + 0.5),
                         net.minecraft.world.phys.shapes.BooleanOp.OR);
             }
@@ -1048,7 +1070,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** The crack overlay: block {@code i} at stage {@code stage} (0-9), or none. Server. */
-    private void crack(int i, int stage) {
+    void crack(int i, int stage) {
         entityData.set(CRACK, i < 0 ? -1 : i * 16 + Math.min(9, stage));
         lastCrack = level().getGameTime();
         wake(); // so the crack can fade

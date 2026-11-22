@@ -27,12 +27,13 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         final List<MovingBlockRenderState> blocks = new ArrayList<>();
         final List<Vec3> offsets = new ArrayList<>();
         float yaw;
-        /** The block being hewn or sawn (-1: none), its crack stage, and its model parts for the overlay. */
+        /** The block being hewn or sawn (-1: none) and its crack stage. */
         int cracked = -1, crackStage;
-        /** Lifted ends (by hand) and the log's length: one end up tilts it, both up raise it. */
-        boolean rootUp, tailUp;
-        int length;
-        final List<net.minecraft.client.renderer.block.dispatch.BlockStateModelPart> crackParts = new ArrayList<>();
+        /** Each block's rise and the tilt from lifting by hand (FelledLogEntity#liftOffset). */
+        final List<Float> lifts = new ArrayList<>();
+        float tilt;
+        /** Dev (LogShots): the collision boxes, relative to the entity. */
+        net.minecraft.world.phys.shapes.VoxelShape debugShape;
     }
 
     public FelledLogRenderer(EntityRendererProvider.Context context) {
@@ -70,19 +71,15 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
                 r.lightEngine = level.getLightEngine();
             }
         }
-        state.rootUp = log.rootLifted();
-        state.tailUp = log.tailLifted();
-        state.length = n;
+        state.debugShape = com.mechanical.LogShots.showShapes ? log.collisionShape().move(-state.x, -state.y, -state.z) : null;
+        // the local player's own lifted log, seen from their eyes, stays low and out of the view (the hands show it held)
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+        boolean ownView = mc.player != null && mc.options.getCameraType().isFirstPerson() && log.lifts(mc.player);
+        state.lifts.clear();
+        for (int i = 0; i < n; i++) state.lifts.add(ownView ? 0.0F : (float) log.liftOffset(i));
+        state.tilt = ownView ? 0 : log.liftTilt();
         state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
-        state.crackParts.clear();
-        if (state.cracked >= 0) {
-            // as LevelRenderer draws a block being mined: the block's model parts under the destroy-stage texture
-            MovingBlockRenderState r = state.blocks.get(state.cracked);
-            state.crackStage = log.crackStage();
-            var model = net.minecraft.client.Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(r.blockState);
-            net.minecraft.util.RandomSource random = net.minecraft.util.RandomSource.create(r.blockState.getSeed(r.blockPos));
-            model.collectParts(net.minecraft.client.renderer.block.BlockAndTintGetter.EMPTY, BlockPos.ZERO, r.blockState, random, state.crackParts);
-        }
+        state.crackStage = log.crackStage();
         int[] ids = log.pullerIds();
         if (ids.length == 0 || n == 0 || level == null) {
             state.leashStates = null;
@@ -108,28 +105,39 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         }
     }
 
+    /** The destroy-stage texture on all six faces of the unit block (the crack overlay). */
+    private static void crackCube(PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer) {
+        float[][] faces = { // four corners each, counter-clockwise seen from outside
+            {0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1}, {0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0}, // down, up
+            {0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0}, {0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1}, // north, south
+            {0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0}, {1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1}}; // west, east
+        float[][] uv = {{0, 1}, {1, 1}, {1, 0}, {0, 0}};
+        for (float[] f : faces)
+            for (int k = 0; k < 4; k++)
+                buffer.addVertex(pose, f[k * 3], f[k * 3 + 1], f[k * 3 + 2]).setColor(-1).setUv(uv[k][0], uv[k][1]).setLight(0xF000F0);
+    }
+
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.debugShape != null)
+            collector.submitShapeOutline(poseStack, state.debugShape, net.minecraft.client.renderer.rendertype.RenderTypes.lines(), 0xFFFF0000, 3.0F, false);
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(-state.yaw));
-        float h = FelledLogEntity.LIFT_HEIGHT;
-        if (state.rootUp && state.tailUp) {
-            poseStack.translate(0, h, 0);
-        } else if ((state.rootUp || state.tailUp) && state.length > 0) {
-            // tilted about the end still on the ground: the root end is at local -z, the crown end at +z
-            float pivot = (state.rootUp ? 1 : -1) * state.length / 2.0F;
-            float angle = (float) Math.asin(Math.min(1.0F, h / state.length)) * (state.rootUp ? 1 : -1);
-            poseStack.translate(0, 0, pivot);
-            poseStack.rotate(Axis.XP.rotation(angle));
-            poseStack.translate(0, 0, -pivot);
-        }
         for (int i = 0; i < state.blocks.size(); i++) {
             Vec3 o = state.offsets.get(i);
             poseStack.pushPose();
-            poseStack.translate(o.x, o.y, o.z);
+            // each block raised by its lift (where its collision box is) and tilted about its own middle
+            poseStack.translate(o.x + 0.5, o.y + state.lifts.get(i) + 0.5, o.z + 0.5);
+            if (state.tilt != 0) poseStack.rotate(Axis.XP.rotation(state.tilt));
+            poseStack.translate(-0.5, -0.5, -0.5);
             collector.submitMovingBlock(poseStack, state.blocks.get(i), state.outlineColor);
-            if (i == state.cracked && !state.crackParts.isEmpty())
-                collector.submitBreakingBlockModel(poseStack, List.copyOf(state.crackParts), state.crackStage, false);
+            if (i == state.cracked) {
+                // a hair larger than the block: drawn in the same pass as the log, at equal depth it would lose to it
+                poseStack.translate(0.5, 0.5, 0.5);
+                poseStack.scale(1.004F, 1.004F, 1.004F);
+                poseStack.translate(-0.5, -0.5, -0.5);
+                collector.submitCustomGeometry(poseStack, net.minecraft.client.resources.model.ModelBakery.DESTROY_TYPES.get(state.crackStage), FelledLogRenderer::crackCube);
+            }
             poseStack.popPose();
         }
         poseStack.popPose();

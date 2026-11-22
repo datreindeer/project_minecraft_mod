@@ -154,6 +154,15 @@ public class WagonEntity extends TravoisEntity {
 
     // ---- a felled log (FelledLogEntity) on the bed
 
+    /** When each player last loaded or unloaded a log by clicking (both sides), and how long further clicks are ignored. */
+    private static final java.util.Map<Player, Long> LOG_CLICK = new java.util.WeakHashMap<>(), LOG_CLICK_CLIENT = new java.util.WeakHashMap<>();
+
+    /** Per side: in singleplayer the client's and the server's player are equal (same entity id). */
+    private java.util.Map<Player, Long> logClicks() {
+        return level().isClientSide() ? LOG_CLICK_CLIENT : LOG_CLICK;
+    }
+    private static final int LOG_CLICK_TICKS = 10;
+
     /** The log riding on the bed, or null. */
     public FelledLogEntity carriedLog() {
         for (Entity e : getPassengers()) if (e instanceof FelledLogEntity log) return log;
@@ -192,6 +201,7 @@ public class WagonEntity extends TravoisEntity {
     protected InteractionResult sneakUse(Player player) {
         FelledLogEntity log = carriedLog();
         if (log == null) return super.sneakUse(player);
+        logClicks().put(player, level().getGameTime());
         if (!level().isClientSide()) unloadLog(log);
         return InteractionResult.SUCCESS;
     }
@@ -477,9 +487,13 @@ public class WagonEntity extends TravoisEntity {
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         ItemStack held = player.getMainHandItem();
+        // a held right-click repeats: right after a log went on or off, the next clicks don't hitch or open anything
+        Long last = logClicks().get(player);
+        if (last != null && !player.isShiftKeyDown() && level().getGameTime() - last < LOG_CLICK_TICKS) return InteractionResult.SUCCESS;
         // a log you lift or pull goes on the bed: before any other use of the click (hitching, modules, seats)
         FelledLogEntity dragged = FelledLogEntity.handled(player);
         if (dragged != null) {
+            logClicks().put(player, level().getGameTime());
             if (level() instanceof ServerLevel server) loadLog(server, dragged, player);
             return InteractionResult.SUCCESS;
         }

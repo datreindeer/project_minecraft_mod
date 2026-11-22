@@ -28,7 +28,12 @@ public class SawItem extends FlintPickaxeItem {
     private static final Map<Player, BlockPos> SAWING = new WeakHashMap<>();
     /** The felled log block each player is sawing instead ({@link FelledLogEntity}). */
     private record LogCut(FelledLogEntity log, int index) {}
-    private static final Map<Player, LogCut> SAWING_LOGS = new WeakHashMap<>();
+    private static final Map<Player, LogCut> SAWING_LOGS = new WeakHashMap<>(), SAWING_LOGS_CLIENT = new WeakHashMap<>();
+
+    /** Per side: in singleplayer the client's and the server's player are equal (same entity id), and each side has its own log entity. */
+    private static Map<Player, LogCut> sawingLogs(Player player) {
+        return player.level().isClientSide() ? SAWING_LOGS_CLIENT : SAWING_LOGS;
+    }
 
     /** Ticks a stroke takes with this saw. */
     public final int strokeTicks;
@@ -43,14 +48,14 @@ public class SawItem extends FlintPickaxeItem {
     }
 
     static void startSawing(Player player, InteractionHand hand, BlockPos log) {
-        SAWING_LOGS.remove(player);
+        sawingLogs(player).remove(player);
         SAWING.put(player, log.immutable());
         player.startUsingItem(hand);
     }
 
     static void startSawingLog(Player player, InteractionHand hand, FelledLogEntity log, int index) {
         SAWING.remove(player);
-        SAWING_LOGS.put(player, new LogCut(log, index));
+        sawingLogs(player).put(player, new LogCut(log, index));
         player.startUsingItem(hand);
     }
 
@@ -74,10 +79,10 @@ public class SawItem extends FlintPickaxeItem {
         // other players' clients only draw the sawing; their server decides when it stops
         if (!(user instanceof Player player) || level.isClientSide() && !player.isLocalPlayer()) return;
         int ticks = getUseDuration(stack, user) - ticksRemaining;
-        LogCut cut = SAWING_LOGS.get(player);
+        LogCut cut = sawingLogs(player).get(player);
         if (cut != null) { // a block of a felled log: on while the player looks at that block
             if (!cut.log().isAlive() || cut.log().pick(player) != cut.index()) {
-                SAWING_LOGS.remove(player);
+                sawingLogs(player).remove(player);
                 player.stopUsingItem();
             } else if (level instanceof ServerLevel server && ticks > 0 && ticks % strokeTicks == 0) {
                 cut.log().sawStroke(server, player, player.getUsedItemHand(), cut.index(), stack, ticks / strokeTicks % 2 == 1);

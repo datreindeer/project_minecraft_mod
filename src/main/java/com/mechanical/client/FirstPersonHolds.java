@@ -310,8 +310,8 @@ public final class FirstPersonHolds {
         float bob = -0.03F * Mth.abs(Mth.sin(player.walkAnimation.position(pt) * 0.6662F)) * speed;
         float tremble = strain ? 0.012F * Mth.sin((player.tickCount + pt) * 2.6F) : 0.0F;
         ps.pushPose();
-        if (facing) ps.translate(0.0F, -0.32F - 1.2F * event.getEquipProgress() + bob + tremble - (strain ? 0.08F : 0.0F), -0.66F);
-        else ps.translate(0.0F, -0.62F - 1.2F * event.getEquipProgress() + bob + tremble, -0.5F);
+        if (facing) ps.translate(0.0F, 0.14F + bob + tremble - (strain ? 0.06F : 0.0F), -0.62F);
+        else ps.translate(0.0F, 0.04F + bob + tremble, -0.56F);
         ps.rotateDegrees(Axis.YP, 90.0F);
         mapHand(event, avatar, HumanoidArm.RIGHT, facing ? 0.0F : -0.12F);
         mapHand(event, avatar, HumanoidArm.LEFT, facing ? 0.0F : 0.12F);

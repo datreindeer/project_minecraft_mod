@@ -145,6 +145,21 @@ public final class FelledLogTest {
 
         // B: two players carry an 8-block log between them, one at each end
         h.runAfterDelay(b, () -> {
+            // collision exactly on the blocks' cells, for a log along z and one along x (and clicks hit the same boxes)
+            for (float yaw : new float[] {0, -90}) {
+                BlockPos rootCell = h.absolutePos(new BlockPos(12, 1, 3));
+                FelledLogEntity probe = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(rootCell), yaw, 3, oak);
+                BlockPos far = yaw == 0 ? rootCell.south(2) : rootCell.east(2);
+                AABB want = new AABB(Vec3.atLowerCornerOf(rootCell), Vec3.atLowerCornerOf(far).add(1, 1, 1));
+                AABB got = probe.collisionShape().bounds();
+                h.assertTrue(got.minX == want.minX && got.maxX == want.maxX && got.minZ == want.minZ && got.maxZ == want.maxZ && got.minY == want.minY && got.maxY == want.maxY,
+                        "collision on the cells (yaw " + yaw + "): " + got + " vs " + want);
+                for (int i = 0; i < 3; i++) {
+                    BlockPos cell = yaw == 0 ? rootCell.south(i) : rootCell.east(i);
+                    h.assertTrue(probe.cellPos(i).equals(cell), "block " + i + " in its cell (yaw " + yaw + ")");
+                }
+                probe.discard();
+            }
             FelledLogEntity log = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(2.5, 1, 6.5)), -90, 8, oak); // root at x 2.5, crown at 9.5
             held[0] = log;
             player.setPos(log.endPoint(true).add(-0.8, 0, 0));

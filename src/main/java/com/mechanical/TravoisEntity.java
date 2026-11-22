@@ -365,6 +365,8 @@ public class TravoisEntity extends Entity {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+        // hands on a felled log: no hitching, loading or picking up (a Wagon takes the log first, in its own interact)
+        if (FelledLogEntity.handled(player) != null) return InteractionResult.FAIL;
         CarcassEntity hauled = CarcassHauling.hauled(player);
         if (hauled != null) {
             if (!level().isClientSide()) loadOn(hauled, player);
