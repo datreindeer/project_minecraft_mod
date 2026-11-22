@@ -127,7 +127,7 @@ public final class LogShots {
                     if (ticks < 10) return;
                     shot(mc, "lift_first_ahead");
                     mc.player.setYRot(0); // facing the log
-                    mc.player.setXRot(35);
+                    mc.player.setXRot(12);
                     next();
                 }
                 case 9 -> {
@@ -172,7 +172,7 @@ public final class LogShots {
                         ServerLevel sl = (ServerLevel) logX.level();
                         for (int k = 0; k < 4; k++) logX.sawStroke(sl, player(), InteractionHand.MAIN_HAND, -4, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), k % 2 == 0); // seam behind block 2
                         for (int k = 0; k < 4; k++) logX.sawStroke(sl, player(), InteractionHand.MAIN_HAND, 3, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), k % 2 == 0); // block 3 itself
-                        look(logX.world(1).add(0, 0, -1.3), 0, 40);
+                        look(logX.world(2).add(0, 0.6, -2.2), 0, 38);
                     });
                     next();
                 }
