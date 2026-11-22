@@ -1,6 +1,7 @@
 # En levande värld: stora önskelistan (2026-11-22)
 
-> Status: **plan, inget byggt.** Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
+> Status: **fas 1 byggd (v0.136.0):** F1 stockar, B7 multiplayer-sidan, B1 zontitel, B2 relationsflik, B4 anvil-hjul.
+> Resten är plan. Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
 > det som byggs förs också in i respektive åldersdokument (`docs/ages/*.md`).
 
 Målet: världen ska kännas levande och dynamisk även när ingen är där. Stammar bygger, handlar och lever sina liv,
