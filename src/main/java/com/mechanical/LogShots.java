@@ -53,7 +53,9 @@ public final class LogShots {
                     stage = -2;
                     return;
                 }
-                out = new File(Files.readAllLines(flag.toPath()).get(0).trim());
+                var lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                jumpTo = lines.size() > 1 ? Integer.parseInt(lines.get(1).trim()) : 0; // a second line: go straight to that stage after setup
                 showShapes = true;
                 stage = 0;
             }
@@ -77,6 +79,7 @@ public final class LogShots {
                     if (ticks < 100) return;
                     server.execute(LogShots::setup);
                     next();
+                    if (jumpTo > 0) stage = jumpTo;
                 }
                 case 2 -> { // the layout from above, collision boxes drawn
                     if (ticks < 60) return;
@@ -372,7 +375,18 @@ public final class LogShots {
                             + " logs now " + mc.level.getEntitiesOfClass(FelledLogEntity.class, new AABB(base.add(4, -1, 5), base.add(13, 3, 14))).size());
                     next();
                 }
-                case 30 -> {
+                case 30 -> { // one chop swing started at a known tick: a picture every 2 ticks, first person then third
+                    int T = TreeChopping.CHOP_TICKS;
+                    if (ticks == 10 || ticks == 10 + T + 12) server.execute(() -> player().swing(InteractionHand.MAIN_HAND,
+                            new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.WHACK, TreeChopping.CHOP_TICKS), true));
+                    if (ticks > 10 && ticks <= 10 + T && (ticks - 10) % 2 == 0) shot(mc, "swing_fp_" + (ticks - 10));
+                    if (ticks == 10 + T + 4) mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+                    if (ticks > 10 + T + 12 && ticks <= 10 + 2 * T + 12 && (ticks - 10 - T - 12) % 2 == 0) shot(mc, "swing_tp_" + (ticks - 10 - T - 12));
+                    if (ticks < 10 + 2 * T + 16) return;
+                    mc.options.setCameraType(CameraType.FIRST_PERSON);
+                    next();
+                }
+                case 31 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;
@@ -443,7 +457,7 @@ public final class LogShots {
 
     private static double jumpFrom, jumpTop = -1000, jumpTop2 = -1000, jumpTop3;
     private static FelledLogEntity held;
-    private static int dirIndex;
+    private static int dirIndex, jumpTo;
     private static Vec3 start;
 
     private static String fmt(Vec3 v) {

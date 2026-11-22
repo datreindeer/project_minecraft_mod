@@ -38,7 +38,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class TreeChopping {
     /** Ticks between chops: a slow two-handed overhead blow (client/AxeChopClient draws it from this swing's length). */
-    public static final int CHOP_TICKS = 14;
+    public static final int CHOP_TICKS = 16; // a multiple of 4: a held use key repeats every 4 ticks, so the blows come evenly
     private static final Map<Player, Long> LAST_CHOP = new WeakHashMap<>();
     /** Chops done on a block towards its next stage. Lost if the server restarts, which only costs a few chops. */
     private static final Map<Level, Map<BlockPos, Integer>> PROGRESS = new WeakHashMap<>();
