@@ -71,6 +71,7 @@ public final class LogShots {
             switch (stage) {
                 case 1 -> {
                     mc.options.pauseOnLostFocus = false; // the window is in the background: the game must not pause
+                    if (mc.player.isDeadOrDying()) mc.player.respawn(); // a fall in an earlier run is saved with the world
                     if (mc.gui.screen() != null) mc.gui.setScreen(null);
                     if (ticks < 100) return;
                     server.execute(LogShots::setup);
@@ -373,6 +374,8 @@ public final class LogShots {
     private static void setup() {
         ServerPlayer p = player();
         ServerLevel level = p.level();
+        p.setHealth(p.getMaxHealth());
+        p.fallDistance = 0;
         int x = (int) Math.floor(p.getX()), z = (int) Math.floor(p.getZ());
         base = new Vec3(x, 200, z);
         cmd("gamemode survival @a");
