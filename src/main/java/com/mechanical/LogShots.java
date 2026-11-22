@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -223,7 +224,54 @@ public final class LogShots {
                     result.add("diag log yaw after lying still: " + diag.getYRot() + " (stays turned)");
                     next();
                 }
-                case 19 -> {
+                case 19 -> { // a big branched tree felled east: then probe where the player is blocked with no log block there
+                    if (ticks < 5) return;
+                    server.execute(LogShots::bigTree);
+                    next();
+                }
+                case 20 -> {
+                    if (ticks < 120) return;
+                    probe(mc);
+                    // jump beside the z log (west face at base.x): stand touching it, jump, watch the height
+                    jumpFrom = mc.player.getY();
+                    mc.player.setPos(base.x - 0.31, 200, base.z + 3.5);
+                    mc.player.setDeltaMovement(Vec3.ZERO);
+                    next();
+                }
+                case 21 -> {
+                    if (ticks == 5) {
+                        result.add("before jump: onGround " + mc.player.onGround() + " y " + mc.player.getY());
+                        mc.player.jumpFromGround();
+                    }
+                    if (ticks > 5) jumpTop = Math.max(jumpTop, mc.player.getY());
+                    if (ticks < 25) return;
+                    result.add("jump beside the z log: rose " + (jumpTop - 200) + " (want ~1.25)");
+                    // half inside the z log: walk out west
+                    mc.player.setPos(base.x + 0.1, 200, base.z + 3.5);
+                    double x0 = mc.player.getX();
+                    for (int k = 0; k < 5; k++) mc.player.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(-0.2, 0, 0));
+                    result.add("inside the z log, walking out west: x " + x0 + " -> " + mc.player.getX());
+                    mc.player.setPos(base.x + 0.1, 200, base.z + 3.5);
+                    for (int k = 0; k < 5; k++) mc.player.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(0, 0, 0.2));
+                    result.add("inside the z log, walking along it south: z " + (base.z + 3.5) + " -> " + mc.player.getZ());
+                    mc.player.setPos(base.x + 0.1, 200, base.z + 3.5);
+                    mc.player.setDeltaMovement(Vec3.ZERO);
+                    next();
+                }
+                case 22 -> {
+                    if (ticks == 3) mc.player.jumpFromGround();
+                    if (ticks > 3) jumpTop2 = Math.max(jumpTop2, mc.player.getY());
+                    if (ticks < 20) return;
+                    result.add("jump while half inside the z log: rose " + (jumpTop2 - 200));
+                    server.execute(() -> look(base.add(0, 9, 8), 0, 60));
+                    next();
+                }
+                case 23 -> {
+                    if (ticks < 15) return;
+                    shot(mc, "bigtree");
+                    next();
+                }
+                case 24 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;
@@ -269,8 +317,8 @@ public final class LogShots {
         cmd("gamemode survival @a");
         cmd("time set noon");
         cmd("weather clear");
-        cmd("fill " + (x - 10) + " 199 " + (z - 10) + " " + (x + 10) + " 199 " + (z + 12) + " stone");
-        cmd("fill " + (x - 10) + " 200 " + (z - 10) + " " + (x + 10) + " 206 " + (z + 12) + " air");
+        cmd("fill " + (x - 12) + " 199 " + (z - 10) + " " + (x + 14) + " 199 " + (z + 26) + " stone");
+        cmd("fill " + (x - 12) + " 200 " + (z - 10) + " " + (x + 14) + " 210 " + (z + 26) + " air");
         p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 20000, 0, false, false));
         var oak = Blocks.OAK_LOG.defaultBlockState();
         // z log: root block at (x, 200, z+1) .. crown (x, 200, z+5); stone right after its crown end at z+6
@@ -288,6 +336,59 @@ public final class LogShots {
         cart.setPos(x + 1.5, 200, z - 3.5);
         level.addFreshEntity(cart);
         look(base.add(0.5, 0, -2.5), 0, 30);
+    }
+
+    private static double jumpFrom, jumpTop = -1000, jumpTop2 = -1000;
+
+    /** Server: an oak with a 7-log trunk and branches out all four ways at two heights, felled east. */
+    private static void bigTree() {
+        ServerLevel level = player().level();
+        net.minecraft.core.BlockPos foot = net.minecraft.core.BlockPos.containing(base.add(0, 0, 16));
+        var log = Blocks.OAK_LOG.defaultBlockState();
+        for (int y = 0; y < 7; y++) level.setBlockAndUpdate(foot.above(y), log);
+        for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL)
+            for (int k = 1; k <= 2; k++) {
+                level.setBlockAndUpdate(foot.above(4).relative(d, k), log.setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, d.getAxis()));
+                if (k == 1) level.setBlockAndUpdate(foot.above(6).relative(d, k), log.setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, d.getAxis()));
+            }
+        var leaf = Blocks.OAK_LEAVES.defaultBlockState().setValue(net.minecraft.world.level.block.LeavesBlock.DISTANCE, 1).setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, false);
+        for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) level.setBlockAndUpdate(foot.above(4).relative(d, 3), leaf);
+        level.setBlockAndUpdate(foot.above(7), leaf);
+        TreeFelling.Tree tree = TreeFelling.find(level, foot);
+        result.add("big tree: " + (tree == null ? "not found" : tree.logs().size() + " logs"));
+        if (tree != null) TreeFelling.fell(level, foot, tree, net.minecraft.core.Direction.EAST, player(), new net.minecraft.world.item.ItemStack(Mechanical.FLINT_AXE.get()));
+    }
+
+    /** Client: every half block over each big-tree log's box, is the player blocked there (vanilla, or LogCollision) with no log block in the way? */
+    private static void probe(Minecraft mc) {
+        var level = mc.level;
+        for (FelledLogEntity log : level.getEntitiesOfClass(FelledLogEntity.class, new AABB(base.add(-12, -2, 10), base.add(16, 8, 26)))) {
+            AABB bb = log.getBoundingBox();
+            result.add("tree log: " + log.size() + " blocks, yaw " + log.getYRot() + ", on grid " + log.onGrid() + ", straight " + log.straight() + ", box " + bb);
+            java.util.List<AABB> cellBoxes = new java.util.ArrayList<>();
+            for (int i = 0; i < log.size(); i++) {
+                Vec3 w = log.world(i);
+                cellBoxes.add(new AABB(w.x - 0.5, w.y, w.z - 0.5, w.x + 0.5, w.y + 1, w.z + 0.5));
+            }
+            int free = 0, falseVanilla = 0, falseMine = 0;
+            String example = "";
+            for (double x = bb.minX - 0.5; x <= bb.maxX + 0.5; x += 0.5)
+                for (double z = bb.minZ - 0.5; z <= bb.maxZ + 0.5; z += 0.5) {
+                    AABB pb = new AABB(x - 0.3, log.getY() + 0.01, z - 0.3, x + 0.3, log.getY() + 1.81, z + 0.3);
+                    if (cellBoxes.stream().anyMatch(c -> c.intersects(pb))) continue;
+                    free++;
+                    boolean vanilla = !level.getEntityCollisions(mc.player, pb).stream().allMatch(v -> v.isEmpty()
+                            || !net.minecraft.world.phys.shapes.Shapes.joinIsNotEmpty(v, net.minecraft.world.phys.shapes.Shapes.create(pb), net.minecraft.world.phys.shapes.BooleanOp.AND));
+                    mc.player.setPos(x, log.getY() + 0.01, z);
+                    Vec3 step = new Vec3(0.05, 0, 0.05);
+                    Vec3 got = LogCollision.collide(mc.player, step, step);
+                    boolean mine = got.distanceTo(step) > 1.0E-6;
+                    if (vanilla) falseVanilla++;
+                    if (mine) falseMine++;
+                    if ((vanilla || mine) && example.isEmpty()) example = " e.g. at " + x + ", " + z + (vanilla ? " (vanilla)" : " (mine)");
+                }
+            result.add("  free spots " + free + ": blocked by vanilla " + falseVanilla + ", by LogCollision " + falseMine + example);
+        }
     }
 
     private static void shot(Minecraft mc, String name) {
