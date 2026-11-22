@@ -85,6 +85,19 @@
   Servern skickar listan (`ClanNetwork.Roster`) vid inloggning, utloggning, stamändringar, färgbyte och när någon
   når en ny ålder. Utan den (eller när servern visar en scoreboard i listan) visas vanillas lista. Till skillnad
   från vanilla syns den även i singleplayer.
+- **Multiplayer-sidan:** en server med moddet blir ett enda kort i Tab-listans barkstil i serverlistan. Hela raden
+  (ikon, namn, MOTD, spelare, ping) ligger inne i ramen, och under en avdelare: världsåldern med ikon till vänster och
+  serverns datum i årstidens färg till höger, antalet stammar, och sedan en ruta per stam i två kolumner (vimpel i
+  stammens färg, namn, online/alla och åldersikon), **Wanderers** med antal och "+N more" om det finns fler än 6.
+  Servern lägger datan som ett extra fält `"mechanical"` i sitt status-svar (`ServerListInfo`, uppdateras var 5:e
+  sekund); vanilla-klienter hoppar över fältet, och MOTD:n är orörd. En server som svarat utan fältet behåller
+  vanillas rad, men dämpad och märkt "Not running <modnamn>". En server som inte svarat än eller är offline ser ut som
+  vanligt.
+  - **Servernamn:** raden `server-name=AmandaTest` i `server.properties` (ingen vanilla-nyckel; vanilla behåller den när
+    filen sparas om) blir kortets titel i stället för namnet spelaren skrev in när servern lades till. Saknas raden
+    visas det inskrivna namnet. Läses en gång när servern startat (ändring kräver omstart), bara på dedikerade
+    servrar, högst 64 tecken. Moddet skriver inte in raden själv: vanilla sparar om filen från sin egen kopia och
+    skulle kunna tappa en rad som lagts till under körning, så lägg in den för hand.
 - **Ranker:** **Leader** (en), **Elder** (högre rank, kan bjuda in), **Member** (vanlig) och **Newcomer** (ny medlem).
   Ledaren får göra allt: bjuda in, kicka, befordra och degradera. En Elder får bjuda in och kicka en Newcomer. En
   Newcomer blir Member automatiskt efter **7 speldygn**. Speldygn räknas bara när servern är igång, eftersom tiden

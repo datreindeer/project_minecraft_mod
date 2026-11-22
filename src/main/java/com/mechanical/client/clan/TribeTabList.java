@@ -48,8 +48,8 @@ public final class TribeTabList {
     /** The latest roster from the server (ClanClient); null on a server without it. */
     static ClanNetwork.Roster roster;
 
-    private static final int PANEL = 0xE8302418, BORDER = 0xFF8A6A44, CORNER = 0xFFC49A62, SHINE = 0x30FFE0B0, POLE = 0xFF6B4A2A;
-    private static final int TITLE = 0xFFF0D8A8, TEXT = 0xFFE8E0D0, DIM = 0xFF9A8A70, WANDER = 0xFFC4B8A4, BANNER_TEXT = 0xFFFFF4E0;
+    static final int PANEL = 0xE8302418, BORDER = 0xFF8A6A44, CORNER = 0xFFC49A62, SHINE = 0x30FFE0B0, POLE = 0xFF6B4A2A;
+    static final int TITLE = 0xFFF0D8A8, TEXT = 0xFFE8E0D0, DIM = 0xFF9A8A70, WANDER = 0xFFC4B8A4, BANNER_TEXT = 0xFFFFF4E0;
     private static final int ROW = 14, HEAD = 18, GAP = 6, PAD = 10, COL_GAP = 12, TOP = 8, FACE = 12, MAX_PLAYERS = 80;
     /** The panel spans this share of the screen width (it is only up while Tab is held). */
     private static final float WIDTH_SHARE = 0.88F;
@@ -57,8 +57,8 @@ public final class TribeTabList {
     private static final int SINGLE_COL = 420;
     private static final String[] RANK_GLYPHS = {"★", "✦", "•", "◦"};
     private static final int[] RANK_COLOURS = {0xFFFFD34A, 0xFFBFD4E8, 0xFFB0A088, 0xFF8FBF6A};
-    private static final int[] AGE_COLOURS = {0xFF9A968C, 0xFFC8843E, 0xFFB4C0CA, 0xFF8A6E58, 0xFF6AAEE0};
-    private static final int ICON = 9;
+    static final int[] AGE_COLOURS = {0xFF9A968C, 0xFFC8843E, 0xFFB4C0CA, 0xFF8A6E58, 0xFF6AAEE0};
+    static final int ICON = 9;
     private static final Identifier[] AGE_ICONS = java.util.Arrays.stream(Clans.AGES)
             .map(a -> Identifier.fromNamespaceAndPath(com.mechanical.Mechanical.MODID, "tab/age_" + a)).toArray(Identifier[]::new);
     private static final Identifier[] PING = {Identifier.withDefaultNamespace("icon/ping_unknown"), Identifier.withDefaultNamespace("icon/ping_1"),
@@ -266,7 +266,7 @@ public final class TribeTabList {
     }
 
     /** The panel: a bark-brown border with brighter corner pegs and a faint inner shine, like the tribe page. */
-    private static void frame(GuiGraphicsExtractor g, int x0, int y0, int x1, int y1) {
+    static void frame(GuiGraphicsExtractor g, int x0, int y0, int x1, int y1) {
         g.fill(x0 - 1, y0 - 1, x1 + 1, y1 + 1, BORDER);
         g.fill(x0, y0, x1, y1, PANEL);
         g.outline(x0 + 1, y0 + 1, x1 - x0 - 2, y1 - y0 - 2, SHINE);
@@ -344,7 +344,7 @@ public final class TribeTabList {
     }
 
     /** The age's 9x9 icon (gui/sprites/tab/age_<age>, scripts/gen_tab_age_textures.py): flint, bronze axe, iron axe, cog, bolt. */
-    private static void ageIcon(GuiGraphicsExtractor g, int x, int y, int age) {
+    static void ageIcon(GuiGraphicsExtractor g, int x, int y, int age) {
         g.blitSprite(RenderPipelines.GUI_TEXTURED, AGE_ICONS[Math.clamp(age, 0, AGE_ICONS.length - 1)], x, y, ICON, ICON);
     }
 
@@ -358,7 +358,7 @@ public final class TribeTabList {
     }
 
 
-    private static Component ageShort(int age) {
+    static Component ageShort(int age) {
         return Component.translatable("gui.mechanical.tab.age." + Clans.AGES[Math.clamp(age, 0, Clans.AGES.length - 1)]);
     }
 
@@ -366,7 +366,7 @@ public final class TribeTabList {
         return Component.translatable("gui.mechanical.clan.rank." + Clans.RANKS[rank]);
     }
 
-    private static Component ageLong(int age) {
+    static Component ageLong(int age) {
         return Component.translatable("gui.mechanical.clan.age." + Clans.AGES[Math.clamp(age, 0, Clans.AGES.length - 1)]);
     }
 
@@ -393,7 +393,7 @@ public final class TribeTabList {
     }
 
     /** {@code a} blended toward {@code b} by {@code t} (0 = a, 1 = b), RGB only. */
-    private static int mix(int a, int b, float t) {
+    static int mix(int a, int b, float t) {
         int r = (int) (((a >> 16) & 255) * (1 - t) + ((b >> 16) & 255) * t);
         int gr = (int) (((a >> 8) & 255) * (1 - t) + ((b >> 8) & 255) * t);
         int bl = (int) ((a & 255) * (1 - t) + (b & 255) * t);

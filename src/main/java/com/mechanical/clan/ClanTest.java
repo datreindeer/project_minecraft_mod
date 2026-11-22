@@ -165,6 +165,14 @@ public final class ClanTest {
         check(h, land != null && land.kind() == Lands.CLAN && land.name().equals("Hearth"), "another player tribe's land, a chunk out");
         check(h, Lands.landAt(lands, level, me, far) == null, "3x3 chunks only");
         t.discard();
+
+        // the server list: the cached status JSON carries our field (MinecraftServerStatusMixin) and the client's codec reads it back
+        String statusJson = server.getStatusJson();
+        check(h, statusJson != null && statusJson.contains("\"" + ServerListInfo.KEY + "\""), "status JSON has the server list field");
+        var status = ServerListInfo.reading(net.minecraft.network.protocol.status.ServerStatus.CODEC)
+                .parse(JsonOps.INSTANCE, com.google.gson.JsonParser.parseString(statusJson)).result();
+        var info = status.flatMap(net.minecraft.network.protocol.status.ServerStatus::players).map(ServerListInfo::of);
+        check(h, info.isPresent() && info.get().shown().size() <= info.get().tribes(), "server list field read back");
         h.succeed();
     }
 }
