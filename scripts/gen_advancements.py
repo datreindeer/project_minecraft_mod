@@ -1362,6 +1362,13 @@ TABS["wilderness"][1].extend([
      in_biome("glacial_moraine")),
     ("gypsum_flats", "chalk_downs", "gypsum", T, "White Flats",
      "Find the Gypsum Flats in the driest desert: a white crust of Gypsum and Rock Salt, Alabaster below", in_biome("gypsum_flats")),
+    # Elkwight phases 1-2 (docs/elkwight-plan.md; gen_world_biomes.py, gen_elkwight.py)
+    ("into_the_ashes", "chalk_downs", "charred_log", G, "Into the Ashes",
+     "Travel more than 2500 blocks from the world's centre and find the rare Scorched Barrens: a burnt forest of Charred Logs and Wood Ash, ravens overhead",
+     in_biome("scorched_barrens")),
+    ("burnt_hall", "into_the_ashes", "rune_blackstone", C, "The Burnt Hall",
+     "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
+     visit("elkwight_ruin")),
 ])
 TABS["stone_age"][1].extend([
     ("beach_pebbles", "root", "beach_pebbles", T, "Shingle Floor",

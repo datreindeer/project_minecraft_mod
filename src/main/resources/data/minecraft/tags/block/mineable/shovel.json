@@ -17,6 +17,7 @@
     "mechanical:beach_pebble_slab",
     "mechanical:dirt_slab",
     "mechanical:grass_slab",
-    "mechanical:dirt_path_slab"
+    "mechanical:dirt_path_slab",
+    "mechanical:wood_ash"
   ]
 }

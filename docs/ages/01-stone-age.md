@@ -1674,6 +1674,7 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
 | Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
+| Elkwight Ruin | Scorched Barrens (bortom 2500 block) | mycket sällsynt | Stor raserad arena av Blackstone med **Rune Blackstone**, pelare, läktare, själveldar och tre kistor (lite guld och brons). Tät mörk dimma inne i ruinen så länge Elkwighten lever. Se *Scorched Barrens och Elkwight-ruinen* längre ned |
 
 ### Småsaker i landskapet (dekorationer)
 Små, vanliga saker som gör världen roligare att vandra i, byggs i nya chunks och läggs in i gamla orörda chunks (retrogen, nedan) (`scripts/gen_decorations.py`).
@@ -2970,3 +2971,30 @@ polerade form, och vanillas Andesite, Diorite, Granite, Tuff, Blackstone, Cobble
 Den polerar bara: Bricks och Chiseled kräver fortfarande Bronze Chisel. En bit tål 16 block.
 
 Advancements: *Rubbed Smooth* (Stone Age-fliken, under Pumice) och *Rubble* (Bronze Age-fliken, under Stone Anvil).
+
+## Scorched Barrens och Elkwight-ruinen (byggt, fas 1 och 2 av Elkwight-planen)
+
+**Scorched Barrens** är en nedbrunnen skog som bara finns **längre än 2500 block från 0,0**, och då sällan (ungefär som
+Mushroom Fields). Svarta stammar står kvar, ligger omkullfallna eller är bara stubbar, marken är aska, grov jord och grus
+med hällar av Blackstone och Basalt, och inget gräs växer. Himlen och dimman är grå och kalla och aska svävar i luften.
+Det enda djuret är korpen; monster kommer på natten som annars. På vintern snöar det och vattnet fryser som i andra svala
+biomer. Advancement *Into the Ashes* (Wilderness-fliken).
+
+- **Charred Log**: en bränd stam. Bryts med yxa och ger **1–2 Charcoal**; med Silk Touch blocket självt. Står som en
+  stock (kan läggas åt alla håll).
+- **Wood Ash**: grå träaska som täcker marken. Bryts med spade och ger sig själv. Faller som sand.
+
+**Elkwight Ruin**: inne i biomet står ibland en stor raserad arena av Blackstone (aldrig närmare 0,0 än 2500 block).
+Fyra höga portar (7 block breda, 10 höga) leder in till ett runt golv med en upphöjd dais i mitten omgiven av runor,
+åtta pelare, läktare med trappor längs murarna och på sina ställen ett tak 15 block upp. Själveldar brinner i skålar och
+lägereldar runt daisen, och utanför står fyra runstenar. Tre kistor på läktarna har lite guld, Bronze Ingot, Bronze Arrows
+och ibland ett bronsverktyg. Så länge ruinens väktare, **Elkwighten**, lever ligger en tät mörk dimma inne i ruinen (man
+ser ungefär 10 block); när han är död tunnas den ut till en lätt dis. Advancement *The Burnt Hall*.
+
+- **Rune Blackstone**: polerad blackstone med inristade runor (Tiwaz, Algiz, Fehu) som lyser grönt i mörkret och ger
+  svagt ljus (4). Finns i ruinens murar, pelare, daisen och runstenarna. Bryts med hacka och ger sig själv.
+
+Teknik: `worldgen/ScorchedBarrens.java` (block, brända träd), `mixin/MultiNoiseBiomeSourceMixin` (gränsen på 2500 block),
+`worldgen/ElkwightRuinStructure.java` (arenan), `worldgen/ElkwightRuins.java` (ruinens API, död boss i SavedData, dimman
+till klienten), `client/RuinFogClient.java`; data `scripts/gen_world_biomes.py`, `scripts/gen_elkwight.py`, texturer
+`scripts/gen_elkwight_textures.py`. Test: `elkwight_world`.

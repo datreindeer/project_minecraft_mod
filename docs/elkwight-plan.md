@@ -29,7 +29,18 @@ undersöka senare. Byggs fas för fas, som
   - Benen blir en **Bone Charm** för charm-platsen.
   - Claude bestämmer detaljerna och dokumenterar dem.
 
-## 1. Biomet: Scorched Barrens (nedbrunnen skog)
+## 1. Biomet: Scorched Barrens (nedbrunnen skog) (byggt)
+**Byggt (2026-11-23):** biomet är ett hörn av sval Forest (temperatur −0,21..−0,15, fuktighet −0,1..−0,06: två band
+av de storskaliga bruset korsas i fläckar i stället för smala band) och tas bort inom 2500 block (+12 block marginal för
+biomzoomen) av `mixin/MultiNoiseBiomeSourceMixin`. Ungefär 0,18 % av proven bortom 2500 block, Mushroom Fields 0,05 %
+(`ElkwightWorldTest` loggar båda); fläckarna är ofta 50–150 block. Nya block: **Charred Log** (ger 1–2
+Charcoal, sig själv med Silk Touch), **Wood Ash** (faller som sand). Brända träd: featuren `mechanical:charred_tree`.
+Korpar via `add_raven`, inga andra djur (`inherit=False` i `gen_world_biomes.py`). Klimat: temperatur 0,3, så det snöar
+och fryser på vintern (Seasons). Advancement *Into the Ashes*. Bilder i `docs/shots/elkwight/` (från `worldgen/ElkShots`, flaggfil `run/elkshots.flag`):
+`elk_biome_overview.png`, `elk_biome_ground.png` (biomet), `elk_ruin_outside.png`, `elk_ruin_above.png` (ruinen utifrån
+och ovanifrån), `elk_ruin_fog.png` (inne i ruinen med dimma), `elk_ruin_cleared.png` (samma plats när bossen är död),
+`elk_result.txt`.
+
 - Nytt ytbiom, bara längre än 2500 block från 0,0. En skog som brunnit: svartbrända stammar (stående, fallna, stubbar),
   aska (eget askblock, Coarse Dirt, Gravel), hällar av Blackstone och Basalt, inget gräs. Kalla, mörka färger på himmel
   och dimma.
@@ -37,7 +48,21 @@ undersöka senare. Byggs fas för fas, som
 - Block reagerar på klimatet som övriga block (frost och snö på vintern).
 - Gametest: biomet finns inte inom 2500 block.
 
-## 2. Ruinen
+## 2. Ruinen (byggt)
+**Byggt (2026-11-23):** `worldgen/ElkwightRuinStructure` (Java-struktur, en bit, ritas chunk för chunk). Rund arena:
+golv radie 17, murar till 20 (polished/cracked/gilded Blackstone, Basalt-sockel, Magma), fyra portar 7 breda och 10
+höga, läktare med trappsteg, åtta pelare, ett trasigt tak 15 block upp över läktarna där muren står hel, en dais med
+runring i mitten, Soul Campfires och eldskålar (Soul Soil + Soul Fire), fyra runmonoliter utanför, tre kistor
+(`chests/elkwight_ruin`: guldklimpar, guld- och bronstackor, Bronze Arrows, ibland en bronskniv/yxa/spjut/hjälm). Nytt
+block **Rune Blackstone** (gröna runor, emissivt lager, ljus 4). Placering: structure set spacing 16 / separation 6,
+bara i Scorched Barrens på någorlunda plan mark, och aldrig närmare 0,0 än 2525 block (`allowedAt`).
+Bossen: strukturen anropar `ElkwightRuins.spawner` en gång (mitt på daisen) som skapar en persistent
+`mechanical:elkwight` om entitytypen finns. API för bossfasen: `ElkwightRuins.ruinAt(level, pos)`,
+`bossAlive(level, ruin)`, `markDead`. När en `mechanical:elkwight` dör markeras dess ruin död (SavedData). Dimman:
+servern skickar varje spelares läge (utanför / i ruin med levande boss / i ruin med död boss) när det ändras;
+`client/RuinFogClient` ger tät mörk dimma (~10 block sikt) som tunnas ut till en lätt dis när bossen är död.
+Advancement *The Burnt Hall*.
+
 - Struktur (jigsaw eller NBT): stor raserad arena **med breda öppningar och högt i tak** (hornkronan är ~4 block bred), med pelare, trappor och murar av **Blackstone av olika slag** (polished,
   bricks, cracked bricks, chiseled, gilded), Basalt och Magma. **Runstenar och ristade block med lysande gröna runor** (eget block, emissiv textur, svagt ljus) i murar, pelare
   och kring arenan. Eldar som brinner (Soul Campfire, brinnande block i skålar).

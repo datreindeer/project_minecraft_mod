@@ -231,6 +231,7 @@
     "mechanical:mold_chest",
     "mechanical:feeding_trough",
     "mechanical:warp_weighted_loom",
-    "mechanical:jewelers_bench"
+    "mechanical:jewelers_bench",
+    "mechanical:charred_log"
   ]
 }
