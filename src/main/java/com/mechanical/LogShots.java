@@ -288,6 +288,7 @@ public final class LogShots {
                 }
                 case 25 -> {
                     if (ticks == 12) mc.player.setYRot(-90); // turn east: the log swings round behind
+                    if (ticks == 22) mc.player.setYRot(140); // turn back over the log (a lifter doesn't bump into it): end up standing in it
                     if (ticks % 4 == 0) result.add("  carry t" + ticks + ": player " + fmt(mc.player.position()) + " log " + fmt(held.position()) + " yaw " + held.getYRot());
                     if (ticks < 30) return;
                     mc.options.keyUp.setDown(false);
