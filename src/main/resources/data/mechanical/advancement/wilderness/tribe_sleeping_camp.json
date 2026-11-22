@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/tribe_land",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:hay_block"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.tribe_sleeping_camp.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.tribe_sleeping_camp.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -108,5 +108,25 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "entity.tribesperson.ambient": {
+    "subtitle": "subtitles.mechanical.entity.tribesperson.ambient",
+    "sounds": []
+  },
+  "entity.tribesperson.hurt": {
+    "subtitle": "subtitles.mechanical.entity.tribesperson.hurt",
+    "sounds": []
+  },
+  "entity.tribesperson.death": {
+    "subtitle": "subtitles.mechanical.entity.tribesperson.death",
+    "sounds": []
+  },
+  "entity.tribesperson.greet": {
+    "subtitle": "subtitles.mechanical.entity.tribesperson.greet",
+    "sounds": []
+  },
+  "entity.tribesperson.trade": {
+    "subtitle": "subtitles.mechanical.entity.tribesperson.trade",
+    "sounds": []
   }
 }

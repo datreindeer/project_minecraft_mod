@@ -93,6 +93,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     private static final EntityDataAccessor<Integer> SKIN = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> CLIMATE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COLOUR = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
+    /** The idle action and whether seated (CampLife), for the model. */
+    private static final EntityDataAccessor<Integer> IDLE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
 
     static final long ANGER_TICKS = Calendar.DAY, FOREVER = Long.MAX_VALUE;
     private static final double GROUP_RANGE = 48, GREET_RANGE = 6;
@@ -142,6 +144,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** A carcass left as a threat (CarcassGifts): the player armed folk keep an eye on, and until when. Not saved. */
     private Player watching;
     private long watchUntil;
+    /** Sitting, idle actions, sleeping and watch round a fire (not saved). */
+    final CampLife life = new CampLife(this);
 
     public Tribesperson(EntityType<? extends Tribesperson> type, Level level) {
         super(type, level);
@@ -166,6 +170,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     public TribeRole role() {
         return TribeRole.byId(entityData.get(ROLE));
+    }
+
+    /** CampLife's idle action, plus CampLife.SITTING while seated on the ground. */
+    public int idle() {
+        return entityData.get(IDLE);
+    }
+
+    void setIdle(int idle) {
+        if (idle != idle()) entityData.set(IDLE, idle);
     }
 
     public int skin() {
@@ -378,6 +391,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(3, new RaidGoal(this));
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
         goalSelector.addGoal(3, new VisitGoal(this));
+        goalSelector.addGoal(4, new DailyRhythmGoal(this));
         goalSelector.addGoal(4, new ErrandGoal(this));
         goalSelector.addGoal(4, new SetUpCampGoal(this));
         goalSelector.addGoal(4, new ReturnHomeGoal(this));
@@ -513,6 +527,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             raid.loot.clear();
         }
         if (tradingPlayer != null) tradingPlayer.closeContainer();
+        if (level() instanceof ServerLevel) life.wake(); // the bed they lay in goes with them
         super.die(source);
     }
 
@@ -555,9 +570,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
+        if (getPose() == Pose.SLEEPING && !isSleeping()) setPose(Pose.STANDING);
         // the player's swimming pose while swimming somewhere (FloatGoal keeps the head above water, so nobody drowns)
         boolean swimming = isInWater() && !onGround() && getNavigation().isInProgress();
         if (swimming != (getPose() == Pose.SWIMMING)) setPose(swimming ? Pose.SWIMMING : Pose.STANDING);
+        life.tick();
     }
 
     /** A mob's walking input is small (speed 0.3 times the goal's modifier), which in water crawls along: scaled up it swims about as fast as a player. */
@@ -729,7 +746,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** A line in chat from this person: "&lt;Name&gt; text". */
     void say(Player player, Component line) {
         player.sendSystemMessage(Component.translatable("chat.mechanical.tribesperson.says", tribeName, line));
-        playSound(SoundEvents.VILLAGER_AMBIENT, 0.6F, 0.7F + getRandom().nextFloat() * 0.2F);
+        playSound(TribeSounds.GREET, 0.6F, 0.9F + getRandom().nextFloat() * 0.2F);
     }
 
     /** Camp folk keep their fire going: wood from the woodcutter, and someone tops it up every minute or relights it. */
@@ -904,7 +921,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundEvents.VILLAGER_YES;
+        return TribeSounds.TRADE;
     }
 
     @Override
@@ -937,11 +954,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return weapon.getItem() instanceof BowItem ? new ItemStack(Items.ARROW) : ItemStack.EMPTY;
     }
 
-    // ---- sounds: human, so mostly quiet ----
+    // ---- sounds: their own set (TribeSounds), silent until its .ogg files are added (docs/tribe-sounds.md) ----
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return isSleeping() ? null : SoundEvents.VILLAGER_AMBIENT; // a low mumble, pitched down by getVoicePitch
+        return isSleeping() ? null : TribeSounds.AMBIENT;
     }
 
     @Override
@@ -951,17 +968,17 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     @Override
     public float getVoicePitch() {
-        return 0.7F + getRandom().nextFloat() * 0.2F; // same range as say()
+        return 0.9F + getRandom().nextFloat() * 0.2F; // same range as say()
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.PLAYER_HURT;
+        return TribeSounds.HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.PLAYER_DEATH;
+        return TribeSounds.DEATH;
     }
 
     // ---- data ----
@@ -973,6 +990,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         builder.define(SKIN, 0);
         builder.define(CLIMATE, ClimateZone.TEMPERATE.ordinal());
         builder.define(COLOUR, -1);
+        builder.define(IDLE, 0);
     }
 
     @Override

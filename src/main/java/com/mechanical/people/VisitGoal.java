@@ -13,8 +13,9 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * A visiting band member (Tribesperson#visit) does what the visit's state says (TribeVisits): walks in to the player's
- * fire, then mills about it in the open (never into buildings: only spots under open sky), the leader coming up to a
- * player when they have asked to stay; through a granted night each kneels at their own spot round the fire; leaving,
+ * fire, then sits round it (VisitRest: fishers fish by water, the leader walks over to a player now and then), the leader
+ * coming up to a player when they have asked to stay; through a granted night they sleep on Straw Beds while the warriors
+ * keep watch; leaving,
  * they walk back the way they came and are gone once out of sight; looking for land, they walk round the player camp
  * from spot to spot. With the visit forgotten they just walk off.
  */
@@ -53,6 +54,7 @@ class VisitGoal extends Goal {
             return;
         }
         BlockPos fire = visit.fire;
+        if (visit.state != Visit.AT_CAMP && visit.state != Visit.STAYING) mob.life.reset(); // up, beds taken up, off
         switch (visit.state) {
             case Visit.ARRIVING -> {
                 mob.travelling = true;
@@ -62,10 +64,6 @@ class VisitGoal extends Goal {
                 mob.travelling = false;
                 if (mob.getTradingPlayer() != null) {
                     mob.getNavigation().stop();
-                    return;
-                }
-                if (visit.state == Visit.STAYING && level.isDarkOutside()) {
-                    sit(fire);
                     return;
                 }
                 if (mob.isWorking()) mob.setWorking(false);
@@ -80,8 +78,10 @@ class VisitGoal extends Goal {
                         return;
                     }
                 }
-                if (mob.distanceToSqr(Vec3.atBottomCenterOf(fire)) > 14 * 14) ErrandGoal.walk(mob, fire, 0.8);
-                else if (mob.getNavigation().isDone() && (ticks + mob.getId()) % 160 == 0) mill(mob, fire, 3, 9);
+                if (mob.distanceToSqr(Vec3.atBottomCenterOf(fire)) > 14 * 14) {
+                    mob.life.stand();
+                    ErrandGoal.walk(mob, fire, 0.8);
+                } else VisitRest.tick(mob, level, fire, visit.state == Visit.STAYING);
             }
             case Visit.SEEKING -> {
                 // looking for land: all walk to the band's next spot round the player camp (TribeVisits.seek)
@@ -96,21 +96,6 @@ class VisitGoal extends Goal {
                 else ErrandGoal.walk(mob, visit.from, 0.8);
             }
         }
-    }
-
-    /** Through the night: to a spot of their own two or three blocks from the fire, then kneel facing it. */
-    private void sit(BlockPos fire) {
-        double a = (mob.getId() * 2.399) % (Math.PI * 2); // golden angle: members spread round the fire
-        Vec3 seat = new Vec3(fire.getX() + 0.5 + Math.cos(a) * 2.6, fire.getY(), fire.getZ() + 0.5 + Math.sin(a) * 2.6);
-        double dx = mob.getX() - seat.x, dz = mob.getZ() - seat.z;
-        if (dx * dx + dz * dz > 1.0) {
-            if (mob.isWorking()) mob.setWorking(false);
-            if (mob.getNavigation().isDone() || ticks % 60 == 0) mob.getNavigation().moveTo(seat.x, seat.y, seat.z, 0.6);
-            return;
-        }
-        mob.getNavigation().stop();
-        mob.getLookControl().setLookAt(Vec3.atCenterOf(fire));
-        if (!mob.isWorking()) mob.setWorking(true);
     }
 
     /** No player within 40 blocks, or one far off with them well away from the fire. */
@@ -149,6 +134,7 @@ class VisitGoal extends Goal {
 
     @Override
     public void stop() {
+        mob.life.reset();
         mob.travelling = false;
         if (mob.isWorking()) mob.setWorking(false);
         mob.getNavigation().stop();
