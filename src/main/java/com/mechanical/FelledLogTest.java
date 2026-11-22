@@ -88,7 +88,7 @@ public final class FelledLogTest {
         // all callbacks are registered here: adding them from inside one makes the test runner run that one twice
         int a = FallingTreeEntity.FALL_TICKS + 15, b = a + 60, c = b + 60;
         double[] start = new double[1];
-        FelledLogEntity[] held = new FelledLogEntity[1];
+        FelledLogEntity[] held = new FelledLogEntity[2];
         BlockState oak = Blocks.OAK_LOG.defaultBlockState();
 
         // A: the tree lands as one solid log; hewing the middle splits it; one player lifts the root piece by its end and
@@ -160,6 +160,20 @@ public final class FelledLogTest {
                 }
                 probe.discard();
             }
+            // log blocks lie as Fallen Logs (hewing stages and the saw kerf show); a saw across a seam parts it there, no block lost
+            FelledLogEntity sawLog = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(12, 1, 3))), 0, 3, oak);
+            h.assertTrue(sawLog.states().get(0).getBlock() instanceof FallenLogBlock, "log blocks lie as Fallen Logs");
+            for (int k = 0; k < FallenLogBlock.SAW_STROKES; k++) sawLog.sawStroke(level, player, InteractionHand.MAIN_HAND, -2, new ItemStack(Items.STICK), k % 2 == 0);
+            List<Integer> sawnSizes = logs(h).stream().filter(l -> l != sawLog && l.position().distanceTo(sawLog.position()) < 3).map(FelledLogEntity::size).sorted().toList();
+            h.assertTrue(!sawLog.isAlive() && sawnSizes.equals(List.of(1, 2)), "sawn at the seam behind the root block into 1 + 2 (" + sawnSizes + ")");
+            for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(sawLog.position()) < 3) l.discard();
+            // turned 45° (as when carried) it collides inside its line and not beside it; lying still it lines up with the grid
+            FelledLogEntity diag = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(13.5, 1, 10.5)), 45, 3, oak);
+            held[1] = diag;
+            Vec3 dm = diag.world(1), perp = new Vec3(1, 0, 0).yRot(-45 * Mth.DEG_TO_RAD);
+            h.assertTrue(collides(level, new AABB(dm.x - 0.1, dm.y + 0.4, dm.z - 0.1, dm.x + 0.1, dm.y + 0.6, dm.z + 0.1)), "a turned log is solid on its line");
+            Vec3 beside = dm.add(perp.scale(0.62));
+            h.assertTrue(!collides(level, new AABB(beside.x - 0.05, beside.y + 0.4, beside.z - 0.05, beside.x + 0.05, beside.y + 0.6, beside.z + 0.05)), "no box sticks out beside a turned log");
             FelledLogEntity log = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(2.5, 1, 6.5)), -90, 8, oak); // root at x 2.5, crown at 9.5
             held[0] = log;
             player.setPos(log.endPoint(true).add(-0.8, 0, 0));
@@ -181,6 +195,10 @@ public final class FelledLogTest {
             log.putDown(player);
             log.putDown(second);
             h.assertTrue(log.lifterCount() == 0 && FelledLogEntity.liftedBy(second) == null, "both put it down");
+            FelledLogEntity diag = held[1];
+            h.assertTrue(diag.onGrid() && diag.collisionShape().bounds().getXsize() == 1.0 || diag.onGrid() && diag.collisionShape().bounds().getZsize() == 1.0,
+                    "a turned log lying still lines up with the grid (yaw " + diag.getYRot() + ", " + diag.collisionShape().bounds() + ")");
+            diag.discard();
             log.discard();
         });
 

@@ -86,7 +86,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     /** Blocks a tick carried light. */
     static final double CARRY_STEP = 0.25;
     /** How high the underside of a lifted end is held: at the hands, about hip height. */
-    public static final float LIFT_HEIGHT = 0.65F;
+    public static final float LIFT_HEIGHT = 0.45F; // its top stays under the eyes, so in first person it lies low in view
     /** Longest log the Wagon takes (its bed is 3 blocks: one hangs over the open back). */
     public static final int WAGON_MAX = 4;
     static final Identifier HAUL_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/haul_log"),
@@ -95,6 +95,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<String> PULLERS = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
     /** The block being hewn or sawn and how far (index * 16 + crack stage 0-9), -1 if none (client: the crack overlay). */
     private static final EntityDataAccessor<Integer> CRACK = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
+    /** A saw cut across the seam behind block k: k * 16 + strokes so far, -1 if none (client: the kerf). */
+    private static final EntityDataAccessor<Integer> KERF = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
+    /** Each block's hewing stage and saw strokes as chars ('0' + stage * 8 + sawn): they change after spawning (client: the models). */
+    private static final EntityDataAccessor<String> STAGES = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
     /** Entity ids of the players lifting the root end and the crown end, -1 for none. */
     private static final EntityDataAccessor<Integer> LIFT_ROOT = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT),
             LIFT_TAIL = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
@@ -158,7 +162,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         cells.clear();
         states.clear();
         cells.addAll(newCells);
-        states.addAll(newStates);
+        for (BlockState st : newStates) states.add(lying(st));
+        if (!level().isClientSide()) syncStages();
         int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE;
         for (BlockPos c : cells) {
             minX = Math.min(minX, c.getX());
@@ -169,6 +174,38 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         cx = (minX + maxX) / 2.0;
         cz = (minZ + maxZ) / 2.0;
         setBoundingBox(makeBoundingBox());
+    }
+
+    /** A log block as the mod's Fallen Log of its wood (lying along local z, unhewn), which shows hewing and sawing; other blocks as they are. */
+    static BlockState lying(BlockState s) {
+        if (s.getBlock() instanceof FallenLogBlock) return s;
+        String path = BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath().replace("stripped_", "").replace("_log", "").replace("_wood", "");
+        var fallen = Mechanical.FALLEN_LOGS.get(path);
+        return fallen == null ? s : fallen.get().defaultBlockState();
+    }
+
+    private void syncStages() {
+        StringBuilder b = new StringBuilder();
+        for (BlockState st : states)
+            b.append((char) ('0' + (st.getBlock() instanceof FallenLogBlock ? st.getValue(FallenLogBlock.STAGE) * 8 + st.getValue(FallenLogBlock.SAWN) : 0)));
+        entityData.set(STAGES, b.toString());
+    }
+
+    /** Client: the synced stages onto the blocks. */
+    private void applyStages() {
+        String b = entityData.get(STAGES);
+        if (b.length() != states.size()) return;
+        for (int i = 0; i < states.size(); i++) {
+            if (!(states.get(i).getBlock() instanceof FallenLogBlock)) continue;
+            int v = b.charAt(i) - '0';
+            states.set(i, states.get(i).setValue(FallenLogBlock.STAGE, Math.min(FallenLogBlock.LAST_STAGE, v / 8)).setValue(FallenLogBlock.SAWN, v % 8));
+        }
+    }
+
+    /** Server: block {@code i} becomes {@code state} (a hewing stage, a saw stroke). */
+    private void setState(int i, BlockState state) {
+        states.set(i, state);
+        syncStages();
     }
 
     /** Is it one straight row from the root, as the first pull leaves it? */
@@ -220,8 +257,9 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             minZ = Math.min(minZ, w.z);
             maxZ = Math.max(maxZ, w.z);
         }
-        // 0.71: half the diagonal of a turned block
-        return new AABB(minX - 0.71, minY, minZ - 0.71, maxX + 0.71, maxY + 1, maxZ + 0.71);
+        // half a block turned to the yaw: 0.5 on the grid, up to 0.71 at 45°
+        double r = getYRot() * Mth.DEG_TO_RAD, m = onGrid() ? 0.5 : 0.5 * (Math.abs(Math.sin(r)) + Math.abs(Math.cos(r)));
+        return new AABB(minX - m, minY, minZ - m, maxX + m, maxY + 1, maxZ + m);
     }
 
     @Override
@@ -251,6 +289,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** The wood of block {@code i} ("birch"), or null if the mod has no fallen log of it. */
     private String wood(int i) {
+        if (states.get(i).getBlock() instanceof FallenLogBlock f) return f.wood();
         String path = BuiltInRegistries.BLOCK.getKey(states.get(i).getBlock()).getPath().replace("stripped_", "").replace("_log", "").replace("_wood", "");
         return Mechanical.FALLEN_LOGS.containsKey(path) ? path : null;
     }
@@ -346,13 +385,18 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
      * group. The piece with the root end keeps the pullers if {@code keepPullers}; otherwise their leads drop.
      */
     private void rebuild(ServerLevel level, List<BlockPos> newCells, List<BlockState> newStates, boolean keepPullers) {
+        rebuild(level, newCells, newStates, keepPullers, components(newCells));
+    }
+
+    /** As above, in the given groups of indices into {@code newCells} (a saw cut parts blocks that still touch). */
+    private void rebuild(ServerLevel level, List<BlockPos> newCells, List<BlockState> newStates, boolean keepPullers, List<List<Integer>> parts) {
         putDownAll(); // cut: whoever lifted it lets go
         List<Entity> carried = new ArrayList<>(pullers);
         if (!keepPullers) for (Entity p : carried) untie(level, p, false);
         pullers.clear();
         discard();
         boolean first = true;
-        for (List<Integer> part : components(newCells)) {
+        for (List<Integer> part : parts) {
             int minY = part.stream().mapToInt(i -> newCells.get(i).getY()).min().orElse(0);
             FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
             log.setYRot(getYRot());
@@ -512,6 +556,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         }
         super.tick();
         if (entityData.get(CRACK) >= 0 && level.getGameTime() - lastCrack > CRACK_FADE) entityData.set(CRACK, -1);
+        if (entityData.get(KERF) >= 0 && level.getGameTime() - lastCrack > CRACK_FADE * 6) {
+            entityData.set(KERF, -1); // left half-sawn a long while: the cut is forgotten
+            sawn.keySet().removeIf(key -> key < 0);
+        }
         if (leadsToReturn > 0) {
             spawnAtLocation(level, new ItemStack(Items.LEAD, leadsToReturn));
             leadsToReturn = 0;
@@ -522,8 +570,30 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         if (lifterCount() > 0 && !isRemoved()) moved |= carry(level);
         if (isRemoved()) return; // straightened into a new log
         moved |= settle(level);
-        if (moved || !pullers.isEmpty() || lifterCount() > 0 || entityData.get(CRACK) >= 0) restTicks = 0;
-        else if (++restTicks > 20) awake = false;
+        if (moved || !pullers.isEmpty() || lifterCount() > 0 || entityData.get(CRACK) >= 0 || entityData.get(KERF) >= 0) restTicks = 0;
+        else if (++restTicks > 20) {
+            snap(level);
+            awake = false;
+        }
+    }
+
+    /**
+     * Server: put down and lying still, it lines up with the block grid (turned to a multiple of 90°, each block in a whole
+     * cell), so its collision boxes are exactly its blocks. Stays as it is if that spot is taken.
+     */
+    private void snap(ServerLevel level) {
+        float yaw = Math.round(getYRot() / 90.0F) * 90.0F;
+        Vec3 r = world(0, position(), yaw);
+        Vec3 pos = position().add(Math.floor(r.x) + 0.5 - r.x, 0, Math.floor(r.z) + 0.5 - r.z);
+        if (Math.abs(Mth.wrapDegrees(yaw - getYRot())) < 0.01F && pos.distanceToSqr(position()) < 1.0E-6) return;
+        if (!fits(level, pos, yaw)) return;
+        setYRot(yaw);
+        setPos(pos);
+    }
+
+    /** Is it lined up with the block grid? */
+    public boolean onGrid() {
+        return Math.abs(Mth.wrapDegrees(getYRot() - Math.round(getYRot() / 90.0F) * 90.0F)) < 0.01F;
     }
 
     // ---- pullers
@@ -687,6 +757,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             for (EntityDataAccessor<Integer> a : List.of(LIFT_ROOT, LIFT_TAIL))
                 if (level().getEntity(entityData.get(a)) instanceof Player p) LIFTING_CLIENT.put(p, this);
         }
+        if (STAGES.equals(accessor) && level().isClientSide()) applyStages();
         if (PULLERS.equals(accessor)) {
             String s = entityData.get(PULLERS);
             pullerIds = s.isEmpty() ? new int[0] : java.util.Arrays.stream(s.split(",")).mapToInt(Integer::parseInt).toArray();
@@ -953,7 +1024,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             return InteractionResult.SUCCESS;
         }
         if (held.getItem() instanceof SawItem) {
-            SawItem.startSawingLog(player, hand, this, i);
+            SawItem.startSawingLog(player, hand, this, sawTarget(player, i));
             return InteractionResult.CONSUME;
         }
         if (held.is(ItemTags.AXES)) {
@@ -993,35 +1064,107 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.tied"));
     }
 
-    /** Server: one axe chop at block {@code i} (held right-click); the block comes off after all four hewing stages' chops. */
+    /**
+     * Server: one axe chop at block {@code i} (held right-click). A Fallen Log block goes through the hewing stages one by
+     * one as a Fallen Log does (bark first, then thinner, last it is gone), with the same drops; other logs at once.
+     */
     private void chop(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack axe) {
-        int needed = TreeChopping.chopsNeeded(axe) * (FallenLogBlock.LAST_STAGE + 1);
-        boolean done = TreeChopping.chop(level, player, hand, cellPos(i), states.get(i), axe, needed);
-        if (!done) {
-            crack(i, TreeChopping.progress(level, cellPos(i)) * 10 / needed);
+        BlockState state = states.get(i);
+        boolean fallen = state.getBlock() instanceof FallenLogBlock;
+        int needed = TreeChopping.chopsNeeded(axe) * (fallen ? 1 : FallenLogBlock.LAST_STAGE + 1);
+        BlockPos at = cellPos(i);
+        if (!TreeChopping.chop(level, player, hand, at, state, axe, needed)) {
+            crack(i, TreeChopping.progress(level, at) * 10 / needed);
             return;
         }
-        BlockPos at = cellPos(i);
-        String wood = wood(i);
-        if (wood != null) TreeChopping.hewWhole(level, at, wood, axe, player);
-        else Block.dropResources(states.get(i), level, at, null, player, axe);
-        removeBlock(level, i);
+        crack(-1, 0);
+        if (!fallen) {
+            Block.dropResources(state, level, at, null, player, axe);
+            removeBlock(level, i);
+            return;
+        }
+        int stage = state.getValue(FallenLogBlock.STAGE);
+        TreeChopping.hewDrops(level, at, ((FallenLogBlock) state.getBlock()).wood(), stage, axe, player);
+        if (stage < FallenLogBlock.LAST_STAGE) setState(i, state.setValue(FallenLogBlock.STAGE, stage + 1).setValue(FallenLogBlock.SAWN, 0));
+        else removeBlock(level, i);
     }
 
-    /** Server: one saw stroke across block {@code i} (SawItem); the last cuts it out with a sawn Fallen Log's drops. */
-    void sawStroke(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack saw, boolean push) {
-        BlockPos at = cellPos(i);
-        Vec3 w = world(i);
-        level.playSound(null, w.x, w.y + 1, w.z, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 0.6F, (push ? 1.35F : 1.1F) + random.nextFloat() * 0.1F);
-        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, states.get(i)), w.x, w.y + 1, w.z, 3, 0.2, 0.02, 0.2, 0.02);
-        int strokes = sawn.merge(i, 1, Integer::sum);
-        if (strokes < FallenLogBlock.SAW_STROKES) {
-            crack(i, strokes * 10 / FallenLogBlock.SAW_STROKES);
+    /**
+     * Where a saw at block {@code i} cuts: the seam to the neighbour on the side the player looks at (as {@code -(k + 2)},
+     * the seam behind block k), or the block itself ({@code i}) when it has no neighbour along the log (a one-block piece,
+     * or a log not yet drawn straight).
+     */
+    public int sawTarget(Player player, int i) {
+        if (!straight() || size() < 2) return i;
+        float r = getYRot() * Mth.DEG_TO_RAD;
+        Vec3 eye = player.getEyePosition();
+        Vec3 a = eye.subtract(position()).yRot(r), b = eye.add(player.getViewVector(1.0F).scale(player.entityInteractionRange() + 1)).subtract(position()).yRot(r);
+        Vec3 l = local(cells.get(i), cx, cz);
+        double up = liftOffset(i);
+        var hit = new AABB(l.x - 0.5, l.y + up, l.z - 0.5, l.x + 0.5, l.y + 1 + up, l.z + 0.5).clip(a, b);
+        boolean ahead = hit.isEmpty() || hit.get().z >= l.z;
+        if (ahead && i + 1 < size()) return -(i + 2);
+        if (i > 0) return -(i + 1);
+        return -(i + 2);
+    }
+
+    /** Server: one saw stroke ({@link SawItem}) at {@code target} from {@link #sawTarget}: a seam (the log comes apart there) or a block. */
+    void sawStroke(ServerLevel level, Player player, InteractionHand hand, int target, ItemStack saw, boolean push) {
+        if (target >= 0) {
+            sawBlock(level, player, hand, target, saw, push);
             return;
         }
+        int k = -target - 2;
+        if (k < 0 || k + 1 >= size()) return;
+        Vec3 w = world(k).add(world(k + 1)).scale(0.5).add(0, liftOffset(k) + 1, 0);
+        level.playSound(null, w.x, w.y, w.z, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 0.6F, (push ? 1.35F : 1.1F) + random.nextFloat() * 0.1F);
+        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, states.get(k)), w.x, w.y, w.z, 3, 0.2, 0.02, 0.2, 0.02);
+        int strokes = sawn.merge(-1 - k, 1, Integer::sum);
+        if (strokes < FallenLogBlock.SAW_STROKES) {
+            entityData.set(KERF, k * 16 + strokes);
+            lastCrack = level.getGameTime();
+            wake();
+            return;
+        }
+        sawn.remove(-1 - k);
+        entityData.set(KERF, -1);
+        level.playSound(null, w.x, w.y, w.z, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);
+        saw.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        player.stopUsingItem();
+        List<Integer> front = new ArrayList<>(), back = new ArrayList<>();
+        for (int j = 0; j < size(); j++) (j <= k ? front : back).add(j);
+        rebuild(level, new ArrayList<>(cells), new ArrayList<>(states), true, List.of(front, back));
+    }
+
+    /** Client: the seam being sawn (behind block k), or -1. */
+    public int kerfSeam() {
+        int v = entityData.get(KERF);
+        return v < 0 ? -1 : v / 16;
+    }
+
+    /** Client: how deep the kerf is, 0..1. */
+    public float kerfDepth() {
+        return Math.max(0, entityData.get(KERF)) % 16 / (float) FallenLogBlock.SAW_STROKES;
+    }
+
+    /** Server: one saw stroke across block {@code i} itself: the kerf one stroke deeper (a Fallen Log shows it); the last cuts it up as a sawn Fallen Log. */
+    private void sawBlock(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack saw, boolean push) {
+        BlockPos at = cellPos(i);
+        Vec3 w = world(i);
+        BlockState state = states.get(i);
+        level.playSound(null, w.x, w.y + 1, w.z, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 0.6F, (push ? 1.35F : 1.1F) + random.nextFloat() * 0.1F);
+        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), w.x, w.y + 1, w.z, 3, 0.2, 0.02, 0.2, 0.02);
+        int strokes = sawn.merge(i, 1, Integer::sum);
+        if (strokes < FallenLogBlock.SAW_STROKES) {
+            if (state.getBlock() instanceof FallenLogBlock) setState(i, state.setValue(FallenLogBlock.SAWN, strokes));
+            else crack(i, strokes * 10 / FallenLogBlock.SAW_STROKES);
+            wake();
+            return;
+        }
+        sawn.remove(i);
         String wood = wood(i);
-        if (wood != null) TreeChopping.sawDrops(level, at, wood, 0, player);
-        else Block.dropResources(states.get(i), level, at, null, player, saw);
+        if (wood != null) TreeChopping.sawDrops(level, at, wood, state.getBlock() instanceof FallenLogBlock ? state.getValue(FallenLogBlock.STAGE) : 0, player);
+        else Block.dropResources(state, level, at, null, player, saw);
         level.playSound(null, at, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);
         saw.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         player.stopUsingItem();
@@ -1046,10 +1189,18 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         if (shape == null || shapeFor != getBoundingBox() || shapeLift != liftKey) {
             shapeLift = liftKey;
             net.minecraft.world.phys.shapes.VoxelShape out = net.minecraft.world.phys.shapes.Shapes.empty();
+            // on the grid one box per block, exactly the block; turned off it (being carried) the biggest upright squares
+            // that fit inside the turned log, every quarter block along it, so nothing sticks out beside it
+            double r = getYRot() * Mth.DEG_TO_RAD, side = onGrid() ? 1 : 1 / (Math.abs(Math.sin(r)) + Math.abs(Math.cos(r))), h = side / 2;
+            int steps = side == 1 ? 1 : 4;
             for (int i = 0; i < cells.size(); i++) {
-                Vec3 w = world(i).add(0, liftOffset(i), 0);
-                out = net.minecraft.world.phys.shapes.Shapes.joinUnoptimized(out, net.minecraft.world.phys.shapes.Shapes.create(w.x - 0.5, w.y, w.z - 0.5, w.x + 0.5, w.y + 1, w.z + 0.5),
-                        net.minecraft.world.phys.shapes.BooleanOp.OR);
+                Vec3 l = local(cells.get(i), cx, cz);
+                for (int k = 0; k < steps; k++) {
+                    double along = steps == 1 ? 0 : -0.5 + h + k * (1 - side) / (steps - 1);
+                    Vec3 w = position().add(new Vec3(l.x, l.y, l.z + along).yRot(-getYRot() * Mth.DEG_TO_RAD)).add(0, liftOffset(i), 0);
+                    out = net.minecraft.world.phys.shapes.Shapes.joinUnoptimized(out, net.minecraft.world.phys.shapes.Shapes.create(w.x - h, w.y, w.z - h, w.x + h, w.y + 1, w.z + h),
+                            net.minecraft.world.phys.shapes.BooleanOp.OR);
+                }
             }
             shape = out.optimize();
             shapeFor = getBoundingBox();
@@ -1113,6 +1264,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(PULLERS, "");
         builder.define(CRACK, -1);
+        builder.define(KERF, -1);
+        builder.define(STAGES, "");
         builder.define(LIFT_ROOT, -1);
         builder.define(LIFT_TAIL, -1);
     }
@@ -1136,6 +1289,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             s.add(Block.stateById(buf.readVarInt()));
         }
         setShape(c, s);
+        applyStages();
     }
 
     @Override

@@ -33,6 +33,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 public final class LogShots {
     /** Draw each felled log's collision boxes (FelledLogRenderer) while shots are taken. */
     public static boolean showShapes;
+    private static FelledLogEntity diag;
     private static int stage = -1, ticks;
     private static File out;
     private static final List<String> result = new ArrayList<>();
@@ -168,6 +169,9 @@ public final class LogShots {
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     server.execute(() -> {
                         logX.crack(1, 6);
+                        ServerLevel sl = (ServerLevel) logX.level();
+                        for (int k = 0; k < 4; k++) logX.sawStroke(sl, player(), InteractionHand.MAIN_HAND, -4, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), k % 2 == 0); // seam behind block 2
+                        for (int k = 0; k < 4; k++) logX.sawStroke(sl, player(), InteractionHand.MAIN_HAND, 3, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), k % 2 == 0); // block 3 itself
                         look(logX.world(1).add(0, 0, -1.3), 0, 40);
                     });
                     next();
@@ -179,7 +183,27 @@ public final class LogShots {
                     shot(mc, "crack");
                     next();
                 }
-                case 15 -> {
+                case 15 -> { // a log turned off the grid (as when carried): its collision boxes, then lined up once it lies still
+                    if (ticks < 5) return;
+                    showShapes = true;
+                    server.execute(() -> {
+                        diag = FelledLogEntity.spawnStraight((ServerLevel) logX.level(), base.add(-3.5, 0, 8.5), 30, 4, Blocks.OAK_LOG.defaultBlockState());
+                        look(base.add(-3.5, 2.5, 4.5), 0, 35);
+                    });
+                    next();
+                }
+                case 16 -> {
+                    if (ticks < 8) return;
+                    shot(mc, "diag");
+                    next();
+                }
+                case 17 -> {
+                    if (ticks < 50) return;
+                    shot(mc, "diag_still");
+                    result.add("diag log yaw after lying still: " + diag.getYRot() + " on grid " + diag.onGrid());
+                    next();
+                }
+                case 18 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;

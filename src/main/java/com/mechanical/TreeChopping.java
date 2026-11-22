@@ -185,7 +185,7 @@ public final class TreeChopping {
     }
 
     /** What finishing hewing stage {@code stage} of a {@code wood} log drops: bark, then sticks and maybe a Rough Log, last a Rough Log (or sticks). */
-    private static void hewDrops(ServerLevel level, BlockPos pos, String wood, int stage, ItemStack axe, Player player) {
+    static void hewDrops(ServerLevel level, BlockPos pos, String wood, int stage, ItemStack axe, Player player) {
         int wood2 = AncientOak.woodMultiplier(player); // Heart of the Oak doubles the wood
         RandomSource random = level.getRandom();
         if (stage == 0) Block.popResource(level, pos, new ItemStack(Mechanical.BARKS.get(wood).get(), 1 + random.nextInt(2)));
