@@ -14,6 +14,8 @@ import net.minecraft.util.Mth;
 /**
  * Darker nights: at night the Brightness option is ignored and sky light and ambient light are cut to a tenth, so
  * unlit places are close to black. Block light (torches, fires) is untouched. Storms count as partly night.
+ * Underground (CaveDark, faded by client.CaveDarkness) the Brightness option and the ambient floor go entirely, day or night,
+ * so only block light (lava, glow lichen, torches, DynamicLights) shows. Night vision is separate in the shader and still works.
  */
 @Mixin(LightmapRenderStateExtractor.class)
 public abstract class DarkNightsMixin {
@@ -23,6 +25,12 @@ public abstract class DarkNightsMixin {
     private void mechanical$darkNights(LightmapRenderState state, float partialTicks, CallbackInfo ci) {
         var level = Minecraft.getInstance().level;
         if (!state.needsUpdate || level == null || !level.dimensionType().hasSkyLight()) return;
+        float cave = com.mechanical.client.CaveDarkness.strength();
+        if (cave > 0) {
+            state.brightness *= 1 - cave;
+            // keep a trace above zero: the shader's gamma curve divides by the brightest channel
+            state.ambientColor = new Vector3f(state.ambientColor).mul(1 - 0.99F * cave);
+        }
         float night = Mth.clamp((DAY_SKY - state.skyFactor) / (DAY_SKY - NIGHT_SKY), 0.0F, 1.0F);
         if (night <= 0) return;
         // a blood moon lights the night a little (tinted red by BloodMoonClient's sky light colour)

@@ -67,6 +67,12 @@ public final class CalendarTest {
         check(h, 2.0F + Seasons.offset(2.0F, -1) > 1.5F && 0.95F + Seasons.offset(0.95F, 1) < 1.1F, "deserts stay hot, summer only a little warmer");
         // caves: colder the deeper, freezing near the bottom of the world
         check(h, Temperature.cave(Temperature.CAVE_TOP) == 10 && Temperature.cave(0) > Temperature.FREEZING_BELOW && Temperature.cave(-50) < Temperature.FREEZING_BELOW, "caves colder with depth");
+        // pitch-black caves: enter deep with no sky light, a cave mouth's middle ground keeps whichever state you had, fade takes 2 s
+        check(h, CaveDark.underground(false, 0, 20) && !CaveDark.underground(false, 0, 3) && !CaveDark.underground(false, 5, 20), "cave entry rule");
+        check(h, CaveDark.underground(true, 5, 20) && !CaveDark.underground(false, 5, 20) && !CaveDark.underground(true, 9, 20), "cave mouth hysteresis");
+        float f = 0;
+        for (int i = 0; i < CaveDark.FADE_TICKS; i++) f = CaveDark.step(f, true);
+        check(h, f > 0.999F && CaveDark.step(1, true) == 1 && CaveDark.strength(0) == 0 && CaveDark.strength(0.5F) == 0.5F && CaveDark.step(0, false) == 0, "cave fade");
         thaw(h);
         shelter(h);
         cropsAndBerries(h);

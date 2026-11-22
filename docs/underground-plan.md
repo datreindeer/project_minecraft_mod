@@ -49,4 +49,21 @@ ben, kött och övrigt (klor, tänder, gift, horn osv.), med användningar, som 
 **Lindworm:** snabb och svår, en riktig boss. Bär på värdefulla saker: utöver eget Carcass (fjäll, ben, kött) har den
 skatter på sig (guld, ädelstenar, sällsynta saker) och fjällen blir till något värdefullt.
 
+## 4. Kolsvarta grottor (klart, living-world-plan F3)
+Under jord lyser bara blockljus: lava, glow lichen, kristaller (Amethyst Cluster m.m.), facklor och annat man sätter ut,
+och ljus man håller i handen (`DynamicLights`). Spelarens **Brightness** (gamma) och den lilla ljusgolvsnivån (dimensionens
+ambient light) stängs av, så mörka delar blir helt svarta, dag som natt. Night Vision fungerar som vanligt.
+- **Regeln** (`CaveDark.underground`, ren funktion, testas i gametest `calendar`): man räknas som under jord när himmelsljuset
+  vid ögonen är högst 2 **och** världsytan (heightmap `WORLD_SURFACE`) i ens kolumn ligger minst 8 block över ögonen. Man
+  lämnar först när himmelsljuset är 7+ eller taket är under 4 block, så det fladdrar inte i grottmynningar. En hydda med tak
+  räknas inte (för tunt tak), och huvudet under vatten räknas aldrig (annars blir djupa havsbottnar svarta).
+- **Övergången** tonas in och ut på 2 s (`CaveDark.step`/`strength`, smoothstep).
+- Bara i dimensioner med himmelsljus (Overworld). Ytan på natten påverkas inte (där gäller mörka nätter, `DarkNightsMixin`).
+- Kod: `client/CaveDarkness` (spårar läget varje tick), `mixin/DarkNightsMixin` (sätter lightmapens brightness och ambient color).
+- Bilder i [shots/caves/](shots/caves/) (från `CaveShots`, körs med `run/caveshots.flag` och världen `CaveShots`), alla med
+  Brightness på max: `caves_cave_vanilla_gamma_max` (effekten av, som förut), `caves_cave_dark_gamma_max` (på: bara facklan,
+  lavan och Amethyst Cluster lyser, resten svart), `caves_cave_fade_half` (1 s in i tonen), `caves_cave_held_torch`
+  (DynamicLights), `caves_cave_night_vision`, `caves_cave_glow_lichen`, och ytan vid midnatt med effekten på/av
+  (`caves_surface_night`, `caves_surface_night_off`: identiska utom 0,02 % av pixlarna, partiklar).
+
 Öppet: brinner facklor ut? Om inte är mörkret lätt att hålla borta.
