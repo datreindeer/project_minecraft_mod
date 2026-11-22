@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mechanical:item/ancient_ritual_knife"
+  }
+}

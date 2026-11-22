@@ -24,6 +24,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class CampLife {
     public static final int NONE = 0, WHITTLE = 1, CHECK_WEAPON = 2, RUMMAGE = 3, EAT = 4, TALK = 5, STRETCH = 6, WARM_HANDS = 7;
+    /** The Oak Folk's own (OakFolk): praying to the tree, carrying lit candles, raising the keeper's staff, picking and planting. */
+    public static final int PRAY = 8, CANDLES = 9, STAFF = 10, TEND = 11;
     /** Added to the synced idle value while seated on the ground. */
     public static final int SITTING = 16;
     static final int MORNING = 0, DAY = 1, EVENING = 2, NIGHT = 3;

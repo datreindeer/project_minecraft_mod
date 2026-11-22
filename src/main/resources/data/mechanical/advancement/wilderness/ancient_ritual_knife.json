@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/verdant_staff",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:ancient_ritual_knife"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:ancient_ritual_knife"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.ancient_ritual_knife.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.ancient_ritual_knife.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

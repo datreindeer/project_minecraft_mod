@@ -57,6 +57,8 @@ public final class People {
     public static void init(IEventBus modEventBus) {
         com.mechanical.worldgen.PeopleFeatures.FEATURE_TYPES.register(modEventBus);
         Tribe.init();
+        OakFolk.init();
+        OakFolkTest.init(modEventBus);
         TribeTest.init(modEventBus);
         RelationsTest.init(modEventBus);
         RoadTest.init(modEventBus);

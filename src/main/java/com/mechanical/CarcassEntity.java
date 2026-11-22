@@ -522,7 +522,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** One tick of butchering by {@code player} with a knife of the given speed. Server side. Players cutting at once all add to the same work: two finish in half the time. */
-    void butcher(ServerLevel level, Player player, KnifeItem knife) {
+    public void butcher(ServerLevel level, Player player, KnifeItem knife) { // public for people.OakFolkTest
         if (isCaravanProperty()) {
             player.stopUsingItem();
             return;
@@ -549,6 +549,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         boolean hung = hungAt() != null;
         if (spoiled()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.carcass.spoiled"));
         Butchery.dropInner(level, this, animal, knife.yieldMultiplier(), trophy, hung, aged(), spoiled());
+        if (knife.tier() >= KnifeItem.RITUAL && !spoiled()) Butchery.dropRitual(level, this, animal); // the fine parts (F4)
         Blood.splatter(level, blockPosition(), 2, 10); // a pool around the remains
         player.stopUsingItem();
         if (hung) {

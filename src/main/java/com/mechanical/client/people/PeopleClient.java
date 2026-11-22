@@ -23,6 +23,7 @@ public final class PeopleClient {
     @SubscribeEvent
     static void registerHandlers(RegisterClientPayloadHandlersEvent event) {
         event.register(TribeDialog.Open.TYPE, (payload, context) -> Minecraft.getInstance().gui.setScreen(new TribeDialogScreen(payload)));
+        event.register(com.mechanical.people.OakQuests.Open.TYPE, (payload, context) -> Minecraft.getInstance().gui.setScreen(new OakQuestScreen(payload)));
     }
 
     private PeopleClient() {}

@@ -263,6 +263,16 @@ public final class Clans extends SavedData {
         }
     }
 
+    /** For game tests outside this package: a tribe of these players (the first leads); run the result to remove it again. */
+    public static Runnable testTribe(MinecraftServer server, UUID... players) {
+        Clans data = get(server);
+        List<Member> members = new ArrayList<>();
+        for (int i = 0; i < players.length; i++) members.add(new Member(players[i], "p" + i, i == 0 ? LEADER : MEMBER, 0, 0));
+        Clan c = new Clan(UUID.randomUUID(), "test", Optional.empty(), members, List.of(), Optional.empty(), Optional.empty());
+        data.clans.add(c);
+        return () -> data.clans.remove(c);
+    }
+
     public Clan clanOf(UUID player) {
         for (Clan c : clans) if (c.member(player) != null) return c;
         return null;
