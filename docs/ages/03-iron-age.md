@@ -521,6 +521,7 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 - Med stockar på flaket går inga moduler eller kroppar att lägga i. Tre stockar är **full last** (en ensam häst rör den
   inte, paret går 15 % långsammare); en eller två räknas som en tredjedel eller två tredjedelar.
 - **Lasta av:** smyg + högerklicka vagnen med tom hand: den sista stocken rullar av bakåt och blir liggande bakom vagnen.
+  Eller högerklicka en stock på flaket med tom hand: just den rullar av.
 - En **Cart** (bronsåldern) tar på samma sätt **en stock på högst 2 block** (inte med en kista monterad).
 - Stocken sparas med vagnen (den åker som passagerare).
 

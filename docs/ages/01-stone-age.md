@@ -585,7 +585,9 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
 
 ### Fällda träd (Felled Log) och att dra hem stockar
-Ett fällt träd (av spelare, woodcutters, bävrar eller Giant Deer) blir **en enda kropp** av sina stockar (löven blir leaf
+Ett fällt träd (av spelare, woodcutters, bävrar eller Giant Deer) landar som stockar där block bara sitter ihop **ände mot
+ände** längs fibrerna: stammen blir en stock, varje gren tvärs fallriktningen en egen, en gren längs fallriktningen svänger
+ner och lägger sig längs den, och inget håller ihop sida mot sida eller hörn mot hörn. Varje rak stock blir **en enda kropp** (löven blir leaf
 litter som förut). Kroppen ritas med stockarnas egna blockmodeller och är **fast block för block**: man går inte igenom
 den, kan stå på den och det finns inga osynliga väggar i luckorna mellan grenarna. Den som lyfter eller drar stocken
 krockar inte med den.
@@ -597,7 +599,8 @@ krockar inte med den.
   huvudet och ner (ett hugg var 16:e tick). Ett block som har bark kvar **barkas först** (1–2 Bark). Sedan hugger yxan, som
   sågen, ett **jack mitt i blocket** (samma skåra som på en Fallen Log), djupare för varje hugg, tills blocket är avhugget:
   en Rough Log med yxans lyckochans, annars Sticks, och stocken delas där.
-- **Såga (Bronze Saw):** en skåra mitt i blocket, djupare för varje sågtag; efter 8 sågtag är blocket avsågat (Bark om det
+- **Såga (Bronze Saw):** en skåra mitt i blocket, från den sida du står på (eller ovanifrån om du står över stocken),
+  djupare för varje sågtag (såg och yxa fördjupar samma snitt, man kan byta mitt i); efter 8 sågtag är blocket avsågat (Bark om det
   hade bark kvar, + 3 Rough Logs) och stocken delas där. Ett block i mitten delar stocken i två, en ände gör den kortare.
   Woodcutters hugger fällda träd från toppänden först (ett block per tur, de bär hem veden), och bävrar gnager dem.
 - **Lyfta för hand (upp till 12 block):** högerklicka **en ände** (rotänden eller toppänden) med tom hand. Stocken rätas
