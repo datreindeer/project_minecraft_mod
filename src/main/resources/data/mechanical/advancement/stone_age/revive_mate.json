@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:stone_age/grow_tribe",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:red_bed"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.revive_mate.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.revive_mate.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 public abstract class PlayerMixin {
     @Inject(method = "isMobilityRestricted", at = @At("HEAD"), cancellable = true)
     private void mechanical$hauling(CallbackInfoReturnable<Boolean> cir) {
-        if (CarcassHauling.blocksSprint((Player) (Object) this)) cir.setReturnValue(true);
+        if (CarcassHauling.blocksSprint((Player) (Object) this) || com.mechanical.clan.Downed.carrying((Player) (Object) this) != null) cir.setReturnValue(true);
     }
 
     @Inject(method = "dropEquipment", at = @At("TAIL"))

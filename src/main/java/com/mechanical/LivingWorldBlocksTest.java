@@ -99,31 +99,33 @@ public final class LivingWorldBlocksTest {
         h.setBlock(new BlockPos(5, 1, 4), Blocks.GRASS_BLOCK);
         h.setBlock(new BlockPos(6, 2, 6), Blocks.GLOWSTONE);
         h.setBlock(slab, EarthBlocks.DIRT_SLAB.get());
-        BlockPos abs = h.absolutePos(slab);
-        for (int i = 0; i < 400 && level.getBlockState(abs).is(EarthBlocks.DIRT_SLAB); i++) level.getBlockState(abs).randomTick(level, abs, level.getRandom());
-        h.assertTrue(level.getBlockState(abs).is(EarthBlocks.GRASS_SLAB), "grass spreads to the dirt slab: " + level.getBlockState(abs));
-        h.assertTrue(drops(h, slab, level.getBlockState(abs)).stream().allMatch(s -> s.is(EarthBlocks.DIRT_SLAB.asItem())), "a grass slab drops a dirt slab");
+        h.runAfterDelay(20, () -> { // the light from the glowstone is worked out a few ticks later
+            BlockPos abs = h.absolutePos(slab);
+            for (int i = 0; i < 400 && level.getBlockState(abs).is(EarthBlocks.DIRT_SLAB); i++) level.getBlockState(abs).randomTick(level, abs, level.getRandom());
+            h.assertTrue(level.getBlockState(abs).is(EarthBlocks.GRASS_SLAB), "grass spreads to the dirt slab: " + level.getBlockState(abs));
+            h.assertTrue(drops(h, slab, level.getBlockState(abs)).stream().allMatch(s -> s.is(EarthBlocks.DIRT_SLAB.asItem())), "a grass slab drops a dirt slab");
 
-        // snow on a top slab makes it snowy; under stone it dies back to a dirt slab
-        BlockPos top = new BlockPos(2, 1, 4);
-        h.setBlock(top, EarthBlocks.GRASS_SLAB.get().defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE));
-        h.setBlock(top.above(), Blocks.SNOW);
-        h.assertTrue(h.getBlockState(top).getValue(DirtSlabBlock.Grass.SNOWY), "snow on it makes the grass slab snowy");
-        h.setBlock(top.above(), Blocks.STONE);
-        BlockPos topAbs = h.absolutePos(top);
-        level.getBlockState(topAbs).randomTick(level, topAbs, level.getRandom());
-        h.assertTrue(level.getBlockState(topAbs).is(EarthBlocks.DIRT_SLAB) && level.getBlockState(topAbs).getValue(SlabBlock.TYPE) == SlabType.DOUBLE,
-                "under stone the grass slab turns back to a (double) dirt slab: " + level.getBlockState(topAbs));
-        List<ItemStack> two = drops(h, top, level.getBlockState(topAbs));
-        h.assertTrue(two.size() == 1 && two.get(0).getCount() == 2, "a double dirt slab drops 2: " + two);
+            // snow on a top slab makes it snowy; under stone it dies back to a dirt slab
+            BlockPos top = new BlockPos(2, 1, 4);
+            h.setBlock(top, EarthBlocks.GRASS_SLAB.get().defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE));
+            h.setBlock(top.above(), Blocks.SNOW);
+            h.assertTrue(h.getBlockState(top).getValue(DirtSlabBlock.Grass.SNOWY), "snow on it makes the grass slab snowy");
+            h.setBlock(top.above(), Blocks.STONE);
+            BlockPos topAbs = h.absolutePos(top);
+            level.getBlockState(topAbs).randomTick(level, topAbs, level.getRandom());
+            h.assertTrue(level.getBlockState(topAbs).is(EarthBlocks.DIRT_SLAB) && level.getBlockState(topAbs).getValue(SlabBlock.TYPE) == SlabType.DOUBLE,
+                    "under stone the grass slab turns back to a (double) dirt slab: " + level.getBlockState(topAbs));
+            List<ItemStack> two = drops(h, top, level.getBlockState(topAbs));
+            h.assertTrue(two.size() == 1 && two.get(0).getCount() == 2, "a double dirt slab drops 2: " + two);
 
-        // a shovel flattens the grass slab into a path slab, keeping its type
-        ItemStack shovel = new ItemStack(Items.STONE_SHOVEL);
-        p.setItemInHand(InteractionHand.MAIN_HAND, shovel);
-        shovel.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false)));
-        h.assertTrue(level.getBlockState(abs).is(EarthBlocks.DIRT_PATH_SLAB) && level.getBlockState(abs).getValue(SlabBlock.TYPE) == SlabType.BOTTOM,
-                "the shovel makes a dirt path slab: " + level.getBlockState(abs));
-        h.succeed();
+            // a shovel flattens the grass slab into a path slab, keeping its type
+            ItemStack shovel = new ItemStack(Items.STONE_SHOVEL);
+            p.setItemInHand(InteractionHand.MAIN_HAND, shovel);
+            shovel.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false)));
+            h.assertTrue(level.getBlockState(abs).is(EarthBlocks.DIRT_PATH_SLAB) && level.getBlockState(abs).getValue(SlabBlock.TYPE) == SlabType.BOTTOM,
+                    "the shovel makes a dirt path slab: " + level.getBlockState(abs));
+            h.succeed();
+        });
     }
 
     private LivingWorldBlocksTest() {}

@@ -412,6 +412,23 @@ till sig större räder.
   rankmärke, namn, ålder och ping. Spelare utan stam står sist som Wanderers. Överst serverns namn, världsåldern och datumet.
 - **Advancements:** Hearth of the Tribe (grunda en stam), Kin (bjud in någon).
 
+### Nedslagen, hjälpt upp och att vakna (`clan/Downed`)
+- **Nedslagen:** på en server (eller en värld öppnad för LAN) där någon annan i din stam är online dör du inte vid 0 liv,
+  du blir **nedslagen**: du ligger på marken med ett halvt hjärta, kan vrida kameran men inte gå, och har inga items,
+  ingen hotbar och inget inventory. Synen blir rödare och mörkare och hjärtat slår långsammare. På skärmen: "A tribe
+  member can help you up" och "Hold [R] to give up". Efter **60 s** dör du som vanligt (allt tappas). Håll **R** i 1,5 s
+  för att ge upp. Mobs ignorerar dig; spelare och rädare dödar dig med ett slag, annan skada (mobs, eld, fall) gör inget.
+  Singleplayer, ingen stam eller ingen stammedlem online: du dör direkt som vanligt. Stammedlemmarna får ett chattmeddelande.
+- **Hjälpa upp:** en stammedlem smyger och håller högerklick på den nedslagna i 3 s (ett slag avbryter). Sedan bär hen den
+  nedslagna på axlarna som en carcass (händerna fulla, 25 % långsammare, ingen sprint) och klockan står still. Smyg +
+  högerklick lägger ner hen. **Återuppliva:** håll **R** i 3 s på en säker plats (inga fientliga mobs eller rädare inom
+  16 block, och bäraren har inte tagit skada på 10 s). Den nedslagna vaknar med **2 hjärtan** och behåller allt.
+- **Att vakna:** efter varje respawn ligger du kvar en stund i tredjeperson medan ögonen öppnas i blinkningar, reser dig
+  och får förstaperson och styrning igen (4 s). Vaknar du utan säng (world spawn) är du en **ande** i 2 minuter eller tills
+  du slår eller rör något: inga mobs ser dig. Vaknar du i en säng ligger du i den, utan andlig form.
+- Tangenten R heter "Give Up / Revive (downed)" i Controls. Ligger du nedslagen och loggar ut dör du.
+- **Advancements:** Not Today (återuppliva en stammedlem), Second Chance (bli återupplivad).
+
 ### Mold Bench
 Recept: `[Flint][Clay][Flint]` / `[Planks][Planks][Planks]` (Clay = lerblocket av 4 Clay Balls). Låses upp när man bär
 Clay Ball. En låg träbänk med lerkladdad skiva; här formas **Unfired Crucible** (7 Clay Balls) och alla bronsålderns

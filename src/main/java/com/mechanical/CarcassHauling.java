@@ -343,7 +343,8 @@ public final class CarcassHauling {
         if (event.getEntity() instanceof Player player && event.getInflictedDamage() >= DROP_DAMAGE) dropHauled(player);
     }
 
-    private static void dropHauled(Player player) {
+    /** Server: puts down or lets go of whatever {@code player} hauls (also when he goes down: clan.Downed). */
+    public static void dropHauled(Player player) {
         if (player.level().isClientSide()) return;
         CarcassEntity c = hauled(player);
         if (c != null) letGo(c, player, null);
