@@ -45,7 +45,7 @@ public class KettleRenderer implements BlockEntityRenderer<TripodBlockEntity, Ke
 
     public static class State extends BlockEntityRenderState {
         boolean show, hot;
-        float cx, cz, y, time;
+        float cx, cz, y, time, inner;
         int colour;
         final ItemStackRenderState[] chunks = new ItemStackRenderState[CHUNKS];
 
@@ -73,8 +73,8 @@ public class KettleRenderer implements BlockEntityRenderer<TripodBlockEntity, Ke
         state.hot = block.getValue(TripodBlock.HOT);
         state.cx = TripodBlock.centreX(block) / 16;
         state.cz = TripodBlock.centreZ(block) / 16;
-        float lift = block.getValue(TripodBlock.PIT) > 0 ? TripodBlockEntity.PIT_LIFT : 0;
-        state.y = (TripodBlockEntity.LIQUID_LOW + (TripodBlockEntity.LIQUID_HIGH - TripodBlockEntity.LIQUID_LOW) * tripod.fill() + lift) / 16;
+        state.y = TripodBlockEntity.liquidY(block, tripod.fill()) / 16;
+        state.inner = TripodBlockEntity.inner(block) / 16;
         state.colour = tripod.colour();
         long now = tripod.getLevel() == null ? 0 : tripod.getLevel().getGameTime();
         state.time = (now % 2400) + partialTicks;
@@ -90,7 +90,7 @@ public class KettleRenderer implements BlockEntityRenderer<TripodBlockEntity, Ke
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         if (!state.show) return;
         // the texture is a 16 px tile repeated 2x2, so wrapping the drift at half its size is seamless
-        float h = TripodBlockEntity.INNER / 16, speed = state.time * (state.hot ? 0.004F : 0.0008F), du = speed % 0.5F, dv = speed * 0.6F % 0.5F;
+        float h = state.inner, speed = state.time * (state.hot ? 0.004F : 0.0008F), du = speed % 0.5F, dv = speed * 0.6F % 0.5F;
         int argb = 0xE0000000 | state.colour;
         float x0 = state.cx - h, x1 = state.cx + h, z0 = state.cz - h, z1 = state.cz + h, y = state.y;
         int light = state.lightCoords;

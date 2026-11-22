@@ -252,6 +252,11 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return getPosition(partialTicks).add(head.scale(forward)).add(belly.scale(out));
     }
 
+    /** Tests: as if the first butchering pass (hide, wool, feathers) were done. */
+    void setSkinned() {
+        entityData.set(STAGE, 1);
+    }
+
     public BlockPos hungAt() {
         return entityData.get(HUNG_AT).orElse(null);
     }

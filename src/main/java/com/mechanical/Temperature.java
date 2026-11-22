@@ -82,14 +82,17 @@ public final class Temperature {
         if (item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PARKA.get()) || item.is(com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_BOOTS.get()))
             return com.mechanical.wildlife.coast.CoastFauna.SEALSKIN_PER_PIECE;
         if (item.is(com.mechanical.wildlife.river.RiverFauna.WATERPROOF_FUR)) return com.mechanical.wildlife.river.RiverFauna.FUR_INSULATION;
-        return 0;
+        return Jewelry.warmth(item); // a ring or necklace set with a warm gem
     }
 
-    /** What is worn that can keep the cold out: the four armour pieces and the cloak (equipment.Accessory.CLOAK). */
+    /** What is worn that can keep the cold out: the four armour pieces, the cloak and the jewellery (equipment.Accessory). */
     public static java.util.List<ItemStack> wornForWarmth(Player player) {
         return java.util.List.of(player.getItemBySlot(EquipmentSlot.HEAD), player.getItemBySlot(EquipmentSlot.CHEST),
                 player.getItemBySlot(EquipmentSlot.LEGS), player.getItemBySlot(EquipmentSlot.FEET),
-                com.mechanical.equipment.Equipment.get(player, com.mechanical.equipment.Accessory.CLOAK));
+                com.mechanical.equipment.Equipment.get(player, com.mechanical.equipment.Accessory.CLOAK),
+                com.mechanical.equipment.Equipment.get(player, com.mechanical.equipment.Accessory.NECK),
+                com.mechanical.equipment.Equipment.get(player, com.mechanical.equipment.Accessory.RING_1),
+                com.mechanical.equipment.Equipment.get(player, com.mechanical.equipment.Accessory.RING_2));
     }
 
     /** Share of the water's chill kept out: each Sealskin piece worn. */

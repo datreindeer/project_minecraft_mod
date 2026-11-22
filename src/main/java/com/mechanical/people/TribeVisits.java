@@ -97,7 +97,7 @@ public final class TribeVisits {
                 data.setDirty();
                 continue;
             }
-            if (now < info.nextVisit || dayTime < SET_OUT || dayTime >= SET_OUT_END || data.visitAt(camp.centre) != null) continue;
+            if (now < info.nextVisit || dayTime < SET_OUT || dayTime >= SET_OUT_END || data.visitsAt(camp.centre) >= visitCap(level, camp.centre)) continue;
             List<ServerPlayer> players = playersNear(level, camp.centre, PLAYER_RANGE);
             if (players.isEmpty() || !com.mechanical.clan.Clans.someoneHome(level, camp.centre)) continue; // they come when someone is home
             UUID tribe = chooseTribe(level, data, info, players);
@@ -107,10 +107,15 @@ public final class TribeVisits {
         }
     }
 
+    /** Bands that may visit a camp at the same time: one, or FirePit.BIG_VISITS at a tribe's big Fire Pit (F12). */
+    static int visitCap(ServerLevel level, BlockPos centre) {
+        return com.mechanical.clan.Clans.bigPitAt(level, centre) ? com.mechanical.FirePit.BIG_VISITS : 1;
+    }
+
     /** Half the time a tribe that came before (if still on speaking terms and not settled), else a new one (not raiders). */
     private static UUID chooseTribe(ServerLevel level, Neighbours data, CampInfo info, List<ServerPlayer> players) {
         RandomSource r = level.getRandom();
-        List<UUID> back = info.known.stream().filter(t -> data.settlement(t) == null
+        List<UUID> back = info.known.stream().filter(t -> data.settlement(t) == null && data.visits.stream().noneMatch(v -> v.tribe.equals(t)) // not one already here
                 && players.stream().mapToInt(Tribe.of(t)::reputation).min().orElse(0) > Tribe.HOSTILE + 20).toList();
         if (!back.isEmpty() && r.nextBoolean()) return back.get(r.nextInt(back.size()));
         UUID id;

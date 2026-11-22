@@ -21,8 +21,11 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
     private final Identifier background;
 
     public PackScreen(PackMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, 176, 166 + menu.extraHeight);
         String layout = menu.hasSatchel && menu.hasHip ? "both" : menu.hasSatchel ? "satchel" : "quiver";
+        // the Steel-Frame Pack's 5x5 (pack, pack_both) and a satchel with tool loops (satchel_tools, both_tools) have their own
+        if (menu.columns > 3) layout = menu.hasHip ? "pack_both" : "pack";
+        else if (menu.tools > 0) layout += "_tools";
         background = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/pack_" + layout + ".png");
     }
 
@@ -37,7 +40,7 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
         if (menu.hasSatchel && menu.hasHip) {
             // the hip bag's name, right-aligned, may use whatever room the satchel's name leaves ("Leather Pouch" doesn't fit over its 2x2)
             int satchelWidth = Math.min(font.width(menu.satchelName), 104);
-            label(graphics, menu.satchelName, 8, 104);
+            label(graphics, menu.satchelName, 8, menu.tools > 0 ? 100 : 104);
             int room = imageWidth - 8 - (8 + satchelWidth + 8);
             label(graphics, menu.hipName, imageWidth - 8 - Math.min(font.width(menu.hipName), room), room);
         } else {

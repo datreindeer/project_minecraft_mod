@@ -1074,6 +1074,24 @@
      "sv": "Forma en [[unfired_cementation_pot]] av 5 Fire Clay och bränn den vid 1100°. Packa [[cementation_pot]] med **3 Wrought Iron, 2 Charcoal och 1 Soot** och håll den vid **1000°** i en Bloomery i 6 minuter. Knacka upp [[cemented_pot]]: **3 [[blister_steel]]**.\n\nVärm Blister Steel och slå den **6 gånger** på städet med [[iron_smithing_hammer]] (brons biter inte på stål): en [[steel_ingot]]. Heta Steel Ingots smids till stålets delar, och huvud + [[iron_tool_rod]] (kil och beslag) + Tool Rod blir stålverktyg: 2200 i hållbarhet, snabbare och hårdare, och de bryter obsidian. Flint + Steel Plate blir [[minecraft:flint_and_steel]].",
      "en": "Shape an [[unfired_cementation_pot]] from 5 Fire Clay and fire it at 1100°. Pack the [[cementation_pot]] with **3 Wrought Iron, 2 Charcoal and 1 Soot** and hold it at **1000°** in a Bloomery for 6 minutes. Break open the [[cemented_pot]]: **3 [[blister_steel]]**.\n\nHeat Blister Steel and strike it **6 times** on the anvil with an [[iron_smithing_hammer]] (bronze won't bite steel): a [[steel_ingot]]. Hot Steel Ingots are forged into steel parts, and head + [[iron_tool_rod]] (wedge and ferrule) + Tool Rod make steel tools: 2200 durability, faster and harder-hitting, and they mine obsidian. Flint + Steel Plate make a [[minecraft:flint_and_steel]]."
     }
+   },
+   {
+    "title": {
+     "sv": "Stor Fire Pit, väskor och guld",
+     "en": "The big Fire Pit, bags and gold"
+    },
+    "items": [
+     "steel_hearth_ring",
+     "tool_loops",
+     "steel_frame_pack",
+     "steel_casting_table",
+     "jewelers_bench",
+     "gold_ring"
+    ],
+    "text": {
+     "sv": "Med stål kommer tre saker. En [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, en Firewood) på en Fire Pit gör den **3×3**: den växer åt det håll som är ledigt och säger vad som står i vägen. Den brinner längre, ryker en hög pelare, rymmer 32 Firewood och kan steka ett helt **flått djur** (bär dit kroppen och högerklicka): dubbelt så mycket kött som det mest djuret ger, stekt. En stams stora Fire Pit håller 5×5 chunks laddade och tar emot två band åt gången.\n\nPå Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) som släpps på en Leather Satchel ger **3 platser för verktyg**, och [[steel_frame_pack]] (10 Leather, 3 Steel Plate) är en **5×5**-väska med verktygsöglor.\n\nGuld smälts i Clay Kiln som förut. Ställ en [[steel_casting_table]] intill en Clay Kiln på **1100°** och lägg Gold Ingots på bordet: varje tacka blir 2 [[gold_ring_blank]] eller en [[gold_chain]] (tom hand byter form). På en [[jewelers_bench]] fattas en slipad gemsten i ämnet med en mejsel: [[gold_ring]] (ringplatserna) eller [[gold_necklace]] (halsplatsen). Varje gemsort ger en liten bonus, en **Flawless** ungefär fyra gånger så mycket.",
+     "en": "Steel brings three things. A [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, a Firewood) on a Fire Pit makes it **3×3**: it grows toward the free side and names what is in the way. It burns longer, smokes a tall column, holds 32 Firewood and can roast a whole **skinned animal** (haul the body there and right-click): twice the most meat the animal gives, cooked. A tribe's big Fire Pit keeps 5×5 chunks loaded and takes two visiting bands at a time.\n\nAt the Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) dropped on a Leather Satchel give it **3 slots for tools**, and the [[steel_frame_pack]] (10 Leather, 3 Steel Plate) is a **5×5** bag with tool loops.\n\nGold still melts in the Clay Kiln. Set a [[steel_casting_table]] beside a Clay Kiln at **1100°** and lay Gold Ingots on it: each becomes 2 [[gold_ring_blank]]s or a [[gold_chain]] (empty hand switches the mould). On a [[jewelers_bench]] a cut gem is set in the blank with a chisel: [[gold_ring]] (ring slots) or [[gold_necklace]] (neck slot). Each kind of gem gives a small bonus, a **Flawless** one about four times as much."
+    }
    }
   ]
  },

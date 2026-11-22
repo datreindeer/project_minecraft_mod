@@ -1,5 +1,8 @@
 package com.mechanical;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 import net.minecraft.core.BlockPos;
@@ -41,9 +44,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * whole 2x2 model; 1 is east of it, 2 south, 3 south-east (x offset = part & 1, z offset = part >> 1). LIT, EMBERS and FUEL
  * (firewood stacked on it: 0 none .. 3 a full stack) are kept the same on all four, so light and smoke checks work on any
  * of them. Placed from the item onto a flat 2x2 of solid ground in front of the player; the four live and die together.
+ * <p>
+ * BIG: grown to 3x3 with a Steel Hearth Ring ({@link #upgrade}); PART is then 0..8 (x = part % 3, z = part / 3), the
+ * north-west corner still holds the block entity and the centre (part 4) draws the whole big model.
  */
 public class FirePitBlock extends Block implements EntityBlock {
-    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 3);
+    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 8);
+    /** Grown to 3x3 (FirePit F12); kept on all nine parts. */
+    public static final BooleanProperty BIG = BooleanProperty.create("big");
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final BooleanProperty EMBERS = Campfires.EMBERS;
     public static final IntegerProperty FUEL = IntegerProperty.create("fuel", 0, 3);
@@ -53,31 +61,38 @@ public class FirePitBlock extends Block implements EntityBlock {
 
     public FirePitBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(PART, 0).setValue(LIT, false).setValue(EMBERS, false).setValue(FUEL, 0).setValue(GRATE, false));
+        registerDefaultState(stateDefinition.any().setValue(PART, 0).setValue(LIT, false).setValue(EMBERS, false).setValue(FUEL, 0).setValue(GRATE, false).setValue(BIG, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(PART, LIT, EMBERS, FUEL, GRATE);
+        builder.add(PART, LIT, EMBERS, FUEL, GRATE, BIG);
+    }
+
+    /** Blocks along each side: 2, or 3 for a big pit. */
+    public static int size(BlockState state) {
+        return state.getValue(BIG) ? 3 : 2;
     }
 
     public static BlockPos controller(BlockState state, BlockPos pos) {
-        int part = state.getValue(PART);
-        return pos.offset(-(part & 1), 0, -(part >> 1));
+        int part = state.getValue(PART), n = size(state);
+        return pos.offset(-(part % n), 0, -(part / n));
     }
 
-    private static BlockPos partPos(BlockPos controller, int part) {
-        return controller.offset(part & 1, 0, part >> 1);
+    private static BlockPos partPos(BlockPos controller, int part, int n) {
+        return controller.offset(part % n, 0, part / n);
     }
 
-    /** Changes all four blocks of the pit at {@code controller} the same way (LIT, EMBERS, FUEL). */
+    /** Changes all blocks of the pit at {@code controller} the same way (LIT, EMBERS, FUEL). */
     public static void setAll(Level level, BlockPos controller, UnaryOperator<BlockState> change) {
-        for (int part = 0; part < 4; part++) {
-            BlockPos p = partPos(controller, part);
+        BlockState c = level.getBlockState(controller);
+        int n = c.getBlock() instanceof FirePitBlock ? size(c) : 2;
+        for (int part = 0; part < n * n; part++) {
+            BlockPos p = partPos(controller, part, n);
             BlockState s = level.getBlockState(p);
             if (s.getBlock() instanceof FirePitBlock) {
-                BlockState n = change.apply(s);
-                if (n != s) level.setBlock(p, n, UPDATE_ALL);
+                BlockState next = change.apply(s);
+                if (next != s) level.setBlock(p, next, UPDATE_ALL);
             }
         }
     }
@@ -107,7 +122,7 @@ public class FirePitBlock extends Block implements EntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity by, ItemStack stack) {
         BlockPos controller = controller(state, pos);
         for (int part = 0; part < 4; part++) {
-            BlockPos p = partPos(controller, part);
+            BlockPos p = partPos(controller, part, 2);
             if (!p.equals(pos)) level.setBlock(p, state.setValue(PART, part), UPDATE_ALL);
         }
     }
@@ -117,10 +132,16 @@ public class FirePitBlock extends Block implements EntityBlock {
     @Override
     protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
             Direction direction, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-        int part = state.getValue(PART);
-        Direction xPartner = (part & 1) == 0 ? Direction.EAST : Direction.WEST, zPartner = (part >> 1) == 0 ? Direction.SOUTH : Direction.NORTH;
-        int expected = direction == xPartner ? part ^ 1 : direction == zPartner ? part ^ 2 : -1;
-        if (expected >= 0 && !(neighbourState.getBlock() instanceof FirePitBlock && neighbourState.getValue(PART) == expected)) return Blocks.AIR.defaultBlockState();
+        int part = state.getValue(PART), n = size(state), x = part % n, z = part / n;
+        int expected = switch (direction) {
+            case EAST -> x < n - 1 ? part + 1 : -1;
+            case WEST -> x > 0 ? part - 1 : -1;
+            case SOUTH -> z < n - 1 ? part + n : -1;
+            case NORTH -> z > 0 ? part - n : -1;
+            default -> -1;
+        };
+        if (expected >= 0 && !(neighbourState.getBlock() instanceof FirePitBlock && neighbourState.getValue(PART) == expected
+                && neighbourState.getValue(BIG) == state.getValue(BIG))) return Blocks.AIR.defaultBlockState();
         return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
     }
 
@@ -153,6 +174,13 @@ public class FirePitBlock extends Block implements EntityBlock {
                 stack.consume(1, player);
             }
             return InteractionResult.SUCCESS;
+        }
+        if (stack.is(FirePit.HEARTH_RING.get())) {
+            if (state.getValue(BIG)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+            if (!upgrade(server, pit.getBlockPos(), player)) return InteractionResult.FAIL;
+            stack.consume(1, player);
+            return InteractionResult.SUCCESS_SERVER;
         }
         if (stack.is(net.minecraft.world.item.Items.CHARCOAL)) {
             if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
@@ -192,9 +220,79 @@ public class FirePitBlock extends Block implements EntityBlock {
         FirePitBlockEntity pit = FirePit.entity(level, pos, state);
         if (pit == null || !player.getMainHandItem().isEmpty()) return InteractionResult.PASS;
         if (!level.isClientSide()) {
-            if (!pit.takeItem(player)) player.sendOverlayMessage(Component.translatable("message.mechanical.fire_pit.fuel", pit.stock(), FirePit.STOCK_MAX));
+            if (!pit.takeRoast(player) && !pit.takeItem(player))
+                player.sendOverlayMessage(Component.translatable("message.mechanical.fire_pit.fuel", pit.stock(), pit.stockMax()));
         }
         return InteractionResult.SUCCESS;
+    }
+
+    // ---- the big pit: a Steel Hearth Ring grows a 2x2 to 3x3 ----
+
+    /**
+     * Grows the pit at {@code controller} to 3x3: of the four 3x3s that hold it, the first (farthest from the player first,
+     * so it grows away from you) whose five new blocks are free (replaceable, no fluid, solid ground under them) is taken.
+     * None free: tells what stands in the way of the one closest to fitting. The block entity (food, firewood, fire) moves
+     * to the new north-west corner, a tribe's centre moves with it (Clans.pitMoved), tripods that no longer stand right fall.
+     */
+    public static boolean upgrade(ServerLevel level, BlockPos controller, Player player) {
+        List<BlockPos> corners = new ArrayList<>(List.of(controller.offset(-1, 0, -1), controller.offset(0, 0, -1), controller.offset(-1, 0, 0), controller));
+        corners.sort(Comparator.comparingDouble(c -> -player.position().distanceToSqr(c.getX() + 1.5, c.getY(), c.getZ() + 1.5)));
+        List<BlockPos> best = null;
+        for (BlockPos corner : corners) {
+            List<BlockPos> blocked = blockers(level, corner, controller);
+            if (blocked.isEmpty()) {
+                grow(level, controller, corner);
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) FirePit.award(sp, "iron_age/big_fire_pit");
+                return true;
+            }
+            if (best == null || blocked.size() < best.size()) best = blocked;
+        }
+        net.minecraft.network.chat.MutableComponent list = Component.empty();
+        for (int i = 0; i < Math.min(3, best.size()); i++) {
+            BlockPos p = best.get(i);
+            if (i > 0) list.append(", ");
+            list.append(Component.translatable("message.mechanical.fire_pit.big_blocker", level.getBlockState(p).getBlock().getName(), p.getX(), p.getY(), p.getZ()));
+        }
+        if (best.size() > 3) list.append(Component.translatable("message.mechanical.fire_pit.big_more", best.size() - 3));
+        player.sendSystemMessage(Component.translatable("message.mechanical.fire_pit.big_blocked", list));
+        return false;
+    }
+
+    /** What keeps the 3x3 at {@code corner} from being built round the 2x2 at {@code small}: blocks in the way, or the air under a new block. */
+    static List<BlockPos> blockers(Level level, BlockPos corner, BlockPos small) {
+        List<BlockPos> out = new ArrayList<>();
+        for (int part = 0; part < 9; part++) {
+            BlockPos p = partPos(corner, part, 3);
+            int dx = p.getX() - small.getX(), dz = p.getZ() - small.getZ();
+            if (dx >= 0 && dx <= 1 && dz >= 0 && dz <= 1) continue; // the pit itself
+            BlockState s = level.getBlockState(p);
+            if (!s.canBeReplaced() || !level.getFluidState(p).isEmpty() || !level.getWorldBorder().isWithinBounds(p)) out.add(p);
+            else if (!level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) out.add(p.below());
+        }
+        return out;
+    }
+
+    private static void grow(ServerLevel level, BlockPos oldController, BlockPos corner) {
+        BlockState old = level.getBlockState(oldController);
+        FirePitBlockEntity held = null;
+        if (level.getBlockEntity(oldController) instanceof FirePitBlockEntity pit) {
+            held = new FirePitBlockEntity(oldController, old);
+            pit.moveTo(held); // out first, so nothing can drop while the blocks change
+        }
+        BlockState big = old.setValue(BIG, true).setValue(FUEL, 0);
+        for (int part = 0; part < 9; part++) level.setBlock(partPos(corner, part, 3), big.setValue(PART, part), UPDATE_CLIENTS | UPDATE_KNOWN_SHAPE);
+        if (!corner.equals(oldController) && level.getBlockEntity(oldController) != null) level.removeBlockEntity(oldController);
+        if (held != null && level.getBlockEntity(corner) instanceof FirePitBlockEntity pit) {
+            held.moveTo(pit);
+            pit.refresh();
+        }
+        for (int part = 0; part < 9; part++) {
+            BlockPos up = partPos(corner, part, 3).above();
+            BlockState t = level.getBlockState(up);
+            if (t.getBlock() instanceof TripodBlock && !t.canSurvive(level, up)) level.destroyBlock(up, true);
+        }
+        com.mechanical.clan.Clans.pitMoved(level, oldController, corner);
+        level.playSound(null, corner.offset(1, 0, 1), net.minecraft.sounds.SoundEvents.ANVIL_PLACE, net.minecraft.sounds.SoundSource.BLOCKS, 0.6F, 0.7F);
     }
 
     @Override

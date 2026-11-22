@@ -177,7 +177,7 @@ public final class Equipment {
     }
 
     /** Each server tick: a slot whose item changed swaps its attribute modifiers, grants its advancement and is synced. */
-    static void update(Player player) {
+    public static void update(Player player) {
         EquipmentInventory inventory = of(player);
         boolean changed = false;
         for (Accessory slot : Accessory.values()) {

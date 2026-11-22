@@ -174,7 +174,6 @@
     "mechanical:horn_window",
     "mechanical:beaver_dam",
     "mechanical:pelt_hoop",
-    "mechanical:glimmering_stump",
     "mechanical:oak_bark_roof",
     "mechanical:spruce_bark_roof",
     "mechanical:birch_bark_roof",
@@ -229,8 +228,9 @@
     "mechanical:stripped_bog_oak_log",
     "mechanical:stripped_bog_oak_wood",
     "mechanical:wattle",
-    "mechanical:warp_weighted_loom",
     "mechanical:mold_chest",
-    "mechanical:feeding_trough"
+    "mechanical:feeding_trough",
+    "mechanical:warp_weighted_loom",
+    "mechanical:jewelers_bench"
   ]
 }

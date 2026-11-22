@@ -229,6 +229,13 @@ public final class Neighbours extends SavedData {
         return null;
     }
 
+    /** How many bands visit this camp now (not counting ones looking for land). */
+    public int visitsAt(BlockPos camp) {
+        int n = 0;
+        for (Visit v : visits) if (v.camp.equals(camp) && v.state != Visit.SEEKING) n++;
+        return n;
+    }
+
     public Settlement settlement(UUID tribe) {
         if (tribe == null) return null;
         for (Settlement s : settlements) if (s.tribe.equals(tribe)) return s;

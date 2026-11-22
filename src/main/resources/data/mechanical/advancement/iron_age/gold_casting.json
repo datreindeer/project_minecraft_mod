@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:iron_age/steel",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:gold_ring_blank"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.gold_casting.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.gold_casting.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

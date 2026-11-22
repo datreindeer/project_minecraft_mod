@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PRP",
+    "RFR",
+    "PRP"
+  ],
+  "key": {
+    "P": "mechanical:steel_plate",
+    "R": "#mechanical:rock_chunks",
+    "F": "#mechanical:firewood"
+  },
+  "result": {
+    "id": "mechanical:steel_hearth_ring"
+  }
+}

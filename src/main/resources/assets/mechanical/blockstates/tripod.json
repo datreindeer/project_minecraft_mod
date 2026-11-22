@@ -90,6 +90,23 @@
         "model": "mechanical:block/kettle_pit",
         "y": 180
       }
+    },
+    {
+      "when": {
+        "pit": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/tripod_big"
+      }
+    },
+    {
+      "when": {
+        "pit": "5",
+        "kettle": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/kettle_big"
+      }
     }
   ]
 }

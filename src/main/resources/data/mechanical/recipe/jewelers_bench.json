@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SC ",
+    "WWW",
+    "W W"
+  ],
+  "key": {
+    "S": "mechanical:steel_plate",
+    "C": "#mechanical:needles",
+    "W": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:jewelers_bench"
+  }
+}

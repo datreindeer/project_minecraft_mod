@@ -31,6 +31,11 @@ public final class LeatherworkingRecipes {
             StationRecipe.of(() -> Items.LEATHER_LEGGINGS, 1, of(() -> Items.LEATHER, 7), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Spinning.THREADS, Mechanical.WOOL_THREAD, 3), LEATHER),
             StationRecipe.of(() -> Items.LEATHER_BOOTS, 1, of(() -> Items.LEATHER, 4), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Spinning.THREADS, Mechanical.WOOL_THREAD, 2), LEATHER),
             StationRecipe.of(Mechanical.LEATHER_SATCHEL::get, 1, of(() -> Items.LEATHER, 4), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Spinning.THREADS, Mechanical.WOOL_THREAD, 2), LEATHER),
+            // end of the Iron Age (Satchels): loops for tools with steel buckles, and the 5x5 pack on a steel frame; unlock with Steel Plate
+            StationRecipe.of(Satchels.TOOL_LOOPS::get, 1, of(() -> Items.LEATHER, 2), of(Smithing.STEEL_PLATE, 1), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE),
+                    s -> s.is(Smithing.STEEL_PLATE.get())),
+            StationRecipe.of(Satchels.STEEL_FRAME_PACK::get, 1, of(() -> Items.LEATHER, 10), of(Smithing.STEEL_PLATE, 3), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE),
+                    s -> s.is(Smithing.STEEL_PLATE.get())),
             StationRecipe.of(Mechanical.FUR_HOOD::get, 1, of(Wildlife.BEAR_PELT, 1), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 1), PELT),
             StationRecipe.of(Mechanical.FUR_COAT::get, 1, of(Wildlife.BEAR_PELT, 3), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 3), PELT),
             StationRecipe.of(Mechanical.FUR_LEGGINGS::get, 1, of(Wildlife.BEAR_PELT, 2), tool(BronzeTools.NEEDLES, Mechanical.BONE_NEEDLE), of(Wildlife.SINEW, 2), PELT),

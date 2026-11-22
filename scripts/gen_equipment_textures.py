@@ -454,27 +454,39 @@ def slot(img, x, y):
         img.putpixel((x + 16, y + i), grey(LIGHT))
 
 
-def pack(satchel_left, quiver_left, name):
-    img = panel()
+def pack(satchel_left, quiver_left, name, cols=3, tools=0):
+    """cols: the bag's grid (3, or 5 for the Steel-Frame Pack, two rows taller); tools: tool-loop slots right of the grid
+    (Satchels.TOOL_SLOTS), each with a faint outline of a hammer so they read as tool slots. As PackMenu lays them out."""
+    extra = (cols - 3) * 18
+    img = panel(176, 166 + extra)
     if satchel_left is not None:
-        for r in range(3):
-            for c in range(3):
+        for r in range(cols):
+            for c in range(cols):
                 slot(img, satchel_left + c * 18, 17 + r * 18)
+        for i in range(tools):
+            x, y = satchel_left + cols * 18 + 4, 17 + i * 18
+            slot(img, x, y)
+            for px, py in [(5, 3), (6, 3), (7, 3), (8, 3), (9, 3), (10, 3), (5, 4), (6, 4), (7, 4), (8, 4), (9, 4), (10, 4)] + [(7, k) for k in range(5, 13)] + [(8, k) for k in range(5, 13)]:
+                img.putpixel((x + px, y + py), grey(SLOT_FILL - 14))  # hammer silhouette
     if quiver_left is not None:
         for r in range(2):
             for c in range(2):
                 slot(img, quiver_left + c * 18, 26 + r * 18)
     for r in range(3):
         for c in range(9):
-            slot(img, 8 + c * 18, 84 + r * 18)
+            slot(img, 8 + c * 18, 84 + extra + r * 18)
     for c in range(9):
-        slot(img, 8 + c * 18, 142)
+        slot(img, 8 + c * 18, 142 + extra)
     save(img, f"gui/container/{name}.png")
 
 
 pack(30, 116, "pack_both")
 pack(62, None, "pack_satchel")
 pack(None, 71, "pack_quiver")
+pack(30, 116, "pack_both_tools", tools=3)
+pack(62, None, "pack_satchel_tools", tools=3)
+pack(8, 134, "pack_pack_both", cols=5, tools=3)
+pack((176 - 90 - 22) // 2, None, "pack_pack", cols=5, tools=3)
 
 
 def saddlebags(satchels):

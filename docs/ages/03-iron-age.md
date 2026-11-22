@@ -229,6 +229,82 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
   hållbarhet ×25 (järn 15, diamant 33).
 - Advancements: **Cementation**, **Steel**, **Steelsmith**, **Strike a Light**, **Steel Clad**.
 
+### 4b. Efter stålet: stor Fire Pit, väskor och smycken (byggd, living-world-plan F12, F9, F10)
+
+Allt tre låses upp med Steel (recepten med Steel Plate). Kod: `FirePit`, `FirePitBlock#upgrade`, `FirePitBlockEntity`
+(steken), `Satchels`, `LeatherSatchelItem`, `equipment.PackMenu`, `Jewelry`, `JewelryTableBlock(Entity)`.
+Data: `scripts/gen_firepit.py`, `scripts/gen_kettle.py`, `scripts/gen_equipment.py`, `scripts/gen_p8smith.py`; texturer
+`scripts/gen_p8_textures.py`, `scripts/gen_equipment_textures.py`. Test: `P8SmithTest` (p8_big_fire_pit, p8_roast,
+p8_satchel, p8_jewelry).
+
+**Stor Fire Pit (3×3)**
+
+| Vad | Hur |
+|---|---|
+| **Steel Hearth Ring** | 4 Steel Plate i hörnen, 4 rock chunks, en Firewood i mitten (`PRP`/`RFR`/`PRP`) |
+| **Uppgradering** | Högerklicka med ringen på en Fire Pit. Av de fyra 3×3 som rymmer gropen väljs den första vars fem nya block är lediga (ersättbara, inget vatten, fast mark under), helst bort från spelaren. Är alla blockerade säger den vad som står i vägen och var (block, eller luften under). Maten, veden, elden och en stek flyttar med; stammens centrum följer med (`Clans.pitMoved`); en Tripod som inte längre står rätt faller |
+| **Elden** | Brinner som med galler (takt 1) **med eller utan galler**, varje vedträ räcker 1,5× så länge, rymmer **32** Firewood, glöden räcker 6 min. Ljus, värme och avstånd för monster 2× en Campfires (liten grop 1,5×). Rökpelaren är ungefär dubbelt så tät och bred och stiger fortare. Vedhög intill matar den upp till 3 block bort |
+| **Modeller** | Hela gropen, gallret, Tripod och Bronze Kettle har större modeller (1,5×). Tripoden ställs bara över mittblocket |
+| **Hel stek** | Bär (haul) en **flådd** kropp till en stor grop och högerklicka på den. Den hänger över elden och steks på **2 min** brinnande eld till **2 × djurets mesta kött**, stekt (ett ruttet kadaver blir Rotten Flesh). Tom hand tar steken. Rivs gropen under tiden släpps köttet rått |
+| **Stamfördelar** | En stams stora Fire Pit forceladdar **5×5** chunks (`Clan.loadRadius`), **två band** kan besöka lägret samtidigt (`TribeVisits.visitCap`, aldrig samma stam två gånger), och `Clan.isBigPit()` finns för senare stamfunktioner |
+| **Rivs** | Fire Pit + Steel Hearth Ring (+ galler) tillbaka |
+
+**Väskor**
+
+| Vad | Hur |
+|---|---|
+| **Tool Loops** | Leatherworking Bench: 2 Leather + 1 Steel Plate + nål. Släpp den på en Leather Satchel i inventariet: **3 platser som bara tar verktyg** (taggen `mechanical:satchel_tools`: knivar, sågar, tänger, nålar, mejslar, skäror, smides- och stenhammare, Fire Drill, Shears, Flint and Steel). Shift-klick lägger verktyg där först |
+| **Steel-Frame Pack** | Leatherworking Bench: 10 Leather + 3 Steel Plate + nål. **5×5** med 3 verktygsöglor inbyggda, bärs i Back-platsen (B). Skärmen blir två rader högre |
+| **Häst** | Bara en vanlig Leather Satchel utan öglor kan hängas som sadelväska (de nio sadelplatserna skulle tappa resten) |
+
+**Guld och smycken**
+
+| Vad | Hur |
+|---|---|
+| **Smälta** | Som förut: Raw Gold eller 9 Gold Nugget i Clay Kiln vid 1100° → Gold Ingot |
+| **Steel Casting Table** | 3 Steel Plate över Fire Brick och en Cementation Pot (`PPP`/`BCB`/`B B`). Gjut-multiblocket: bordet **intill en Clay Kiln** (någon halva) på **minst 1100°**. Lägg Gold Ingots på bordet (högst 8). En i taget smälter av ugnens hetta och stelnar på 10 s: **2 Gold Ring Blank** eller **1 Gold Chain**. Tom hand tar det gjutna, annars byter den form; smyg + tom hand tar tillbaka tackorna. Utan het ugn: inget händer (meddelande när man lägger på guld) |
+| **Jeweler's Bench** | Steel Plate + nål över plankor (`SC `/`WWW`/`W W`). Lägg ett ämne och en **slipad eller Flawless** gemsten på bänken (inte Rough eller Flawed), högerklicka med en mejsel (Bronze/Iron/Steel Chisel, slits 1) |
+| **Gold Ring** | Ring Blank + sten. Bärs i de två ringplatserna |
+| **Gold Necklace** | Gold Chain + sten. Bärs i halsplatsen |
+
+Bonusar per sten (Claude bestämde 2026-11-22, nattkörningen; kan ändras i `Jewelry.BONUSES`). Vanlig sten = liten,
+Flawless = ungefär fyra gånger så mycket, glänser och har aqua namn. Två ringar och ett halsband staplas. "Värme" är
+kylskydd som en rustningsdel (Temperature#insulation, läder 15 %).
+
+| Sten | Bonus | Vanlig | Flawless |
+|---|---|---|---|
+| Diamond | Armor Toughness | +0,5 | +2 |
+| Emerald | Luck | +0,5 | +2 |
+| Amethyst | Bryter block fortare | +5 % | +20 % |
+| Garnet | Värme | 5 % | 15 % |
+| Ruby | Max Health | +1 (½ hjärta) | +4 (2 hjärtan) |
+| Sapphire | Armor | +0,5 | +2 |
+| Topaz | Mining Efficiency | +1 | +4 |
+| Jade | Knockback Resistance | +2 % | +10 % |
+| Opal | Räckvidd mot entiteter | +0,25 | +1 block |
+| Turquoise | Säker fallhöjd | +0,5 | +2 block |
+| Peridot | Andas under vatten (Oxygen Bonus) | +0,5 | +2 |
+| Amber | Värme | 5 % | 15 % |
+| Clear Quartz | Räckvidd mot block | +0,25 | +1 block |
+| Rose Quartz | Smygfart | +0,05 | +0,2 |
+| Citrine | Värme | 5 % | 15 % |
+| Smoky Quartz | Brinner kortare | −10 % | −40 % |
+| Aquamarine | Fart i vatten | +0,1 | +0,4 |
+| Fluorite | Bryter fortare under vatten | +0,2 | +0,8 |
+| Celestine | Hopp | +0,02 | +0,08 |
+| Moonstone | Stegar upp | +0,1 | +0,5 block |
+| Tourmaline | Attack Speed | +0,1 | +0,4 |
+| Agate | Tål tryckvåg från explosioner | +5 % | +25 % |
+| Jasper | Attack Damage | +0,25 | +1 |
+| Carnelian | Gångfart | +2 % | +10 % |
+| Chalcedony | Går bättre i lera och snö (Movement Efficiency) | +0,05 | +0,25 |
+| Bloodstone | Max Health | +0,5 | +2 |
+
+- Advancements (Iron Age-fliken, under *Steel*): **Hearth of the Tribe** → **Whole Roast**; **A Place for Every Tool** →
+  **Pack Mule**; **Goldsmith** → **Jeweler** → **Without Flaw**.
+- Inte gjort än: fler guldföremål att gjuta (bara ringämne och kedja), egen modell för packen på kroppen (den visas som satcheln),
+  egen modell för den hängande steken (tre stora köttbitar som vänds på ett spett).
+
 ## Nya malmer (byggda, 2026-11-21)
 
 Alla fyra hör till järnåldern. Kod: `IronOres` (block, items, gametest `iron_ores`), kilnrecepten i

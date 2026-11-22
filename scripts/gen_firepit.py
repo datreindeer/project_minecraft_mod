@@ -8,7 +8,10 @@
   when cold, glowing when burning), stacked log-cabin style: x, z, x, then two crossed diagonals on top
 - fire: four crossed planes of the animated fire texture, taller with FUEL 2-3; only while LIT
 - Bronze Fire Grate (bars over the ash when GRATE) and its item, the grate drops with the pit; messages
-- multipart blockstate over part / lit / embers / fuel / grate; item: a flat picture (item/fire_pit)
+- multipart blockstate over part / lit / embers / fuel / grate / big; item: a flat picture (item/fire_pit)
+- big Fire Pit (FirePitBlock.BIG, 3x3, F12): every model above scaled by 1.5 across and 1.25 up round the 3x3's middle,
+  drawn by the centre part (4) as fire_pit_big_*; its own taller fire planes; the Steel Hearth Ring item, recipe (4 Steel
+  Plate, 4 rock chunks, a Firewood), the ring drops with a broken big pit; messages
 - recipe: 8 rock chunks round a Firewood (misc); loot: the Fire Pit from part 0 (FirePitBlock drops it when a side part
   is broken); lang
 Textures: scripts/gen_firepit_textures.py.
@@ -195,12 +198,34 @@ TEX = {
 }
 
 
+BIG_XZ, BIG_Y = 1.5, 1.25  # FirePitBlockEntity.BIG_SCALE, BIG_SPIT_Y / SPIT_Y
+
+
+def scaled(elements):
+    """The 2x2 model's elements for the big pit: x/z scaled round the footprint's middle (16) onto the centre block's middle (8),
+    y scaled up; a 32 px footprint becomes 48 (-16..32 from the centre block, the most a block model may reach)."""
+    out = []
+    for e in json.loads(json.dumps(elements)):
+        sx = lambda v: r2(8 + (v - C) * BIG_XZ)
+        sy = lambda v: r2(v * BIG_Y)
+        e["from"] = [sx(e["from"][0]), sy(e["from"][1]), sx(e["from"][2])]
+        e["to"] = [sx(e["to"][0]), sy(e["to"][1]), sx(e["to"][2])]
+        if "rotation" in e:
+            o = e["rotation"]["origin"]
+            e["rotation"]["origin"] = [sx(o[0]), sy(o[1]), sx(o[2])]
+        out.append(e)
+    return out
+
+
 def model(name, elements, glow=False):
     m = {"ambientocclusion": False, "textures": TEX, "elements": elements}
     if glow:  # glowing logs and coals: lit from inside
         for e in m["elements"]:
             e.setdefault("light_emission", 10)
     w(A / f"models/block/{name}.json", m)
+    if not name.startswith("fire_pit_fire"):
+        big = {"ambientocclusion": False, "textures": TEX, "elements": scaled(m["elements"])}
+        w(A / f"models/block/{name.replace('fire_pit_', 'fire_pit_big_', 1)}.json", big)
 
 
 B = "mechanical:block/"
@@ -219,26 +244,36 @@ GRATE = [box([7, 1, 6.5], [25, 2, 7.5], "#grate", seed=1), box([7, 1, 24.5], [25
 model("fire_pit_grate", GRATE)
 model("fire_pit_fire", fire(20))
 model("fire_pit_fire_tall", fire(27))
+# the big pit's fire: the same planes spread over the scaled ash, as tall as a block model allows
+model("fire_pit_fire_big", scaled(fire(20)))
+model("fire_pit_fire_big_tall", [e | {"to": [e["to"][0], 31.5, e["to"][2]]} for e in scaled(fire(27))])
 
-P0 = {"part": "0"}
-HOT = [P0 | {"lit": "true"}, P0 | {"embers": "true"}]
-COLD = P0 | {"lit": "false", "embers": "false"}
-parts = [
-    {"when": {"part": "1|2|3"}, "apply": {"model": B + "fire_pit_part"}},
-    {"when": COLD, "apply": {"model": B + "fire_pit_base_cold"}},
-    {"when": {"OR": HOT}, "apply": {"model": B + "fire_pit_base_hot"}},
-    {"when": {"OR": HOT}, "apply": {"model": B + "fire_pit_ash_hot"}},
-    {"when": COLD, "apply": {"model": B + "fire_pit_logs0_charred"}},
-    {"when": {"OR": HOT}, "apply": {"model": B + "fire_pit_logs0_lit"}},
-]
-for layer in (1, 2, 3):
-    fuel = "|".join(str(f) for f in range(layer, 4))
-    parts.append({"when": COLD | {"fuel": fuel}, "apply": {"model": B + f"fire_pit_logs{layer}_fresh"}})
-    parts.append({"when": {"OR": [h | {"fuel": fuel} for h in HOT]}, "apply": {"model": B + f"fire_pit_logs{layer}_lit"}})
-parts.append({"when": P0 | {"grate": "true"}, "apply": {"model": B + "fire_pit_grate"}})
-parts.append({"when": P0 | {"lit": "true", "fuel": "0|1"}, "apply": {"model": B + "fire_pit_fire"}})
-parts.append({"when": P0 | {"lit": "true", "fuel": "2|3"}, "apply": {"model": B + "fire_pit_fire_tall"}})
+parts = [{"when": {"OR": [{"big": "false", "part": "1|2|3|4|5|6|7|8"}, {"big": "true", "part": "0|1|2|3|5|6|7|8"}]},
+          "apply": {"model": B + "fire_pit_part"}}]
+for big, P0, pre in ((False, {"part": "0", "big": "false"}, "fire_pit_"), (True, {"part": "4", "big": "true"}, "fire_pit_big_")):
+    HOT = [P0 | {"lit": "true"}, P0 | {"embers": "true"}]
+    COLD = P0 | {"lit": "false", "embers": "false"}
+    parts += [
+        {"when": COLD, "apply": {"model": B + pre + "base_cold"}},
+        {"when": {"OR": HOT}, "apply": {"model": B + pre + "base_hot"}},
+        {"when": {"OR": HOT}, "apply": {"model": B + pre + "ash_hot"}},
+        {"when": COLD, "apply": {"model": B + pre + "logs0_charred"}},
+        {"when": {"OR": HOT}, "apply": {"model": B + pre + "logs0_lit"}},
+    ]
+    for layer in (1, 2, 3):
+        fuel = "|".join(str(f) for f in range(layer, 4))
+        parts.append({"when": COLD | {"fuel": fuel}, "apply": {"model": B + pre + f"logs{layer}_fresh"}})
+        parts.append({"when": {"OR": [h | {"fuel": fuel} for h in HOT]}, "apply": {"model": B + pre + f"logs{layer}_lit"}})
+    parts.append({"when": P0 | {"grate": "true"}, "apply": {"model": B + pre + "grate"}})
+    parts.append({"when": P0 | {"lit": "true", "fuel": "0|1"}, "apply": {"model": B + ("fire_pit_fire_big" if big else "fire_pit_fire")}})
+    parts.append({"when": P0 | {"lit": "true", "fuel": "2|3"}, "apply": {"model": B + ("fire_pit_fire_big_tall" if big else "fire_pit_fire_tall")}})
 w(A / "blockstates/fire_pit.json", {"multipart": parts})
+
+w(A / "models/item/steel_hearth_ring.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/steel_hearth_ring"}})
+w(A / "items/steel_hearth_ring.json", {"model": {"type": "minecraft:model", "model": M + "item/steel_hearth_ring"}})
+w(D / "mechanical/recipe/steel_hearth_ring.json", {"type": "minecraft:crafting_shaped", "category": "misc",
+    "pattern": ["PRP", "RFR", "PRP"], "key": {"P": "mechanical:steel_plate", "R": "#mechanical:rock_chunks", "F": "#mechanical:firewood"},
+    "result": {"id": M + "steel_hearth_ring"}})
 
 w(A / "models/item/fire_pit.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/fire_pit"}})
 w(A / "items/fire_pit.json", {"model": {"type": "minecraft:model", "model": M + "item/fire_pit"}})
@@ -255,7 +290,9 @@ w(D / "mechanical/loot_table/blocks/fire_pit.json", {"type": "minecraft:block", 
     "entries": [{"type": "minecraft:item", "name": M + "fire_pit",
                  "condition": {"type": "minecraft:match_block", "blocks": M + "fire_pit", "state": {"part": "0"}}}]}, {
     "rolls": 1, "condition": {"type": "minecraft:match_block", "blocks": M + "fire_pit", "state": {"part": "0", "grate": "true"}},
-    "entries": [{"type": "minecraft:item", "name": M + "bronze_fire_grate"}]}],
+    "entries": [{"type": "minecraft:item", "name": M + "bronze_fire_grate"}]}, {
+    "rolls": 1, "condition": {"type": "minecraft:match_block", "blocks": M + "fire_pit", "state": {"part": "0", "big": "true"}},
+    "entries": [{"type": "minecraft:item", "name": M + "steel_hearth_ring"}]}],
     "random_sequence": "mechanical:blocks/fire_pit"})
 
 merge(A / "lang/en_us.json", {
@@ -266,5 +303,14 @@ merge(A / "lang/en_us.json", {
     "item.mechanical.bronze_fire_grate": "Bronze Fire Grate",
     "message.mechanical.fire_pit.needs_grate": "Charcoal needs a grate to draw air: lay a Bronze Fire Grate in the pit",
     "message.mechanical.fire_grate.ingots": "A Bronze Fire Grate needs 3 Bronze Ingots (%s/%s)",
+    "item.mechanical.steel_hearth_ring": "Steel Hearth Ring",
+    "message.mechanical.fire_pit.big_blocked": "The Fire Pit can't grow to 3×3: %s in the way",
+    "message.mechanical.fire_pit.big_blocker": "%s at %s %s %s",
+    "message.mechanical.fire_pit.big_more": " and %s more",
+    "message.mechanical.fire_pit.roast_big": "Only a big Fire Pit (3×3) can roast a whole animal",
+    "message.mechanical.fire_pit.roast_busy": "Something is already roasting over this fire",
+    "message.mechanical.fire_pit.roast_skin": "Skin it first: hide, wool or feathers would burn",
+    "message.mechanical.fire_pit.roast_cannot": "That meat can't be roasted",
+    "message.mechanical.tripod.big_middle": "On a big Fire Pit the Tripod stands over the middle",
 })
 print("firepit ok")

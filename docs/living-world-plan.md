@@ -40,7 +40,7 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 - **A2** (`Clans.keepPitsLoaded`, var 5:e s): varje stams Fire Pit forceladdar 3x3 chunks med NeoForges `TicketController`
   (`mechanical:tribe_pit`, ägare = pit-positionen). Biljetterna sparas av NeoForge; vid start släpps de som inte hör till
   någon stams pit (`Clans.validateTickets`). Släpps när stammen upplöses, Fire Pit:en flyttas eller försvinner (då står
-  stammen utan centrum, som efter en flytt-röstning). Radien är `Clan.loadRadius()` (1 nu, 2 för stor Fire Pit, F12).
+  stammen utan centrum, som efter en flytt-röstning). Radien är `Clan.loadRadius()` (1, eller 2 = 5x5 för en stor Fire Pit, F12).
   Ingen naturlig mob-spawn i chunksen.
 - **A3** (`Clans.someoneHome`): besök och räder hoppar över ett läger där ingen medlem av stammen vars Fire Pit ligger i
   lägret står inom 24 block. Ett läger som ingen stam har kräver någon spelare inom 24 block.
@@ -122,10 +122,10 @@ simning), och Q (släppa item) spärras bara på klienten.
 | F6 | Rock-items | En Rock för varje ny stensort (från world-materials-plan) som saknar en. Byggt: 21 nya Loose rocks + Rock-items (gen_stone_rocks.py). |
 | F7 | Mold Chest | En kista som bara tar emot clay molds. Byggt: Mold Chest, 27 platser, tagg `#mechanical:molds`. |
 | F8 | Spärra fler vanilla-recept | String → Wool tas bort. Gör en genomgång av alla vanilla-recept som kringgår moddets progression och spärrar dem (listan förs in i åldersdokumenten). |
-| F9 | Satchel-uppgradering | Se fråga 10. |
-| F10 | Guld och smycken | Ett nytt multiblock för **guldgjutning** som byggs med stål. En **Jeweler's Bench** som gör smycken av guld + gemstones, till ring-/halsband-slotsen. Vanliga stenar ger små fördelar (skydd mot kyla osv.), **flawless** ger riktiga fördelar. Se fråga 10. |
+| F9 | Satchel-uppgradering | Se fråga 10. Byggt: Tool Loops ger en Leather Satchel 3 verktygsplatser (`mechanical:satchel_tools`), Steel-Frame Pack 5x5 med öglor (03-iron-age.md 4b). |
+| F10 | Guld och smycken | Ett nytt multiblock för **guldgjutning** som byggs med stål. En **Jeweler's Bench** som gör smycken av guld + gemstones, till ring-/halsband-slotsen. Vanliga stenar ger små fördelar (skydd mot kyla osv.), **flawless** ger riktiga fördelar. Se fråga 10. Byggt: Steel Casting Table intill en Clay Kiln på 1100° gjuter Gold Ring Blank / Gold Chain, Jeweler's Bench fattar stenen med mejsel; bonustabell i 03-iron-age.md 4b. |
 | F11 | Dirt Slab | Kan bli grass/path/snötäckt som ett vanligt dirt block. (Mjukare worldgen med slabs väntar, tveksamt.) Byggt: Dirt Slab, Grass Slab, Dirt Path Slab. |
-| F12 | Stor Fire Pit (Iron/Steel) | Uppgradering till 3x3. Brinner längre och effektivare, mycket större rökpelare. Uppgraderingen fungerar som ett multiblock: den säger vad som står i vägen och växer åt det håll som är ledigt. Fire Grate, Tripod och Kettle får nya större modeller. Man kan hänga ett helt flått djur över elden → mycket cooked food. Ger också fördelar framåt (se fråga 12). |
+| F12 | Stor Fire Pit (Iron/Steel) | Uppgradering till 3x3. Brinner längre och effektivare, mycket större rökpelare. Uppgraderingen fungerar som ett multiblock: den säger vad som står i vägen och växer åt det håll som är ledigt. Fire Grate, Tripod och Kettle får nya större modeller. Man kan hänga ett helt flått djur över elden → mycket cooked food. Ger också fördelar framåt (se fråga 12). Byggt: Steel Hearth Ring, växer åt fritt håll, hel stek, större Tripod/Kettle, 5x5 forceload, 2 band åt gången, `Clan.isBigPit()` (03-iron-age.md 4b). |
 
 ---
 
@@ -161,7 +161,7 @@ Gäller före tabellerna ovan där de skiljer sig.
 | Dyrkarna (F4) | 10–15 uppdrag. Har en relation till stammen som andra NPC-stammar och kan bli fientliga (skada trädet/dem); dålig relation stänger questlinjen. Belöningar: Claude föreslår en lista för godkännande. **Ancient Ritual Knife** ger en **ny slaktnivå**: finare delar (t.ex. sener, organ, troféer) som bara den kniven kan ta. |
 | Satchel (F9) | Satchel kan uppgraderas med **fack för verktyg** (de nya, som Saw, Tongs osv.). Sedan en ny större väska, **5x5**, av läder + stål (Steel, slutet av järnåldern). |
 | Guld (F10) | Clay Kiln smälter guld som idag. Det nya multiblocket (byggs med stål) behövs för att **gjuta** smyckesämnen och andra guldföremål. |
-| Smycken (F10) | Claude föreslår en bonus per gemsort i vanlig och flawless, för godkännande innan bygget. |
+| Smycken (F10) | Claude föreslår en bonus per gemsort i vanlig och flawless, för godkännande innan bygget. **Bestämt (nattkörningen):** en egenskap per sten (t.ex. Ruby +1/+4 Max Health, Sapphire +0,5/+2 Armor, Garnet/Amber/Citrine värme 5 %/15 %), Flawless ungefär 4× vanlig; hela tabellen i `03-iron-age.md` 4b och `Jewelry.BONUSES`. |
 | Ljud (B8) | CC0-ljud från freesound.org (.ogg), med källa och licens noterade. |
 | Stor Fire Pit (F12) | Kommer vid **Steel**. Ger forceload 5x5, fler besökande band kan stanna samtidigt, och krävs för senare stamfunktioner. |
 | Återuppliva (E) | Säker plats = inga fientliga mobs eller raiders inom ~16 block, och bäraren har inte tagit skada de senaste 10 sekunderna. Gäller var som helst. |

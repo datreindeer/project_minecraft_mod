@@ -9,6 +9,7 @@ import com.mechanical.BarkBasketMenu;
 import com.mechanical.LeatherPouchItem;
 import com.mechanical.LeatherSatchelItem;
 import com.mechanical.Mechanical;
+import com.mechanical.Satchels;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
  * satchel takes) side by side, or whichever of them is there, over the player inventory. Opened with B for what is worn in the Back and Hip slots ({@link #openWorn}), or by right-clicking one in
  * hand ({@link #openHeld}; that inventory slot is locked while open). The contents are read from and written to the
  * items themselves ({@link ItemContents}). Layout shared with client.PackScreen.
+ * <p>
+ * A bag with tool loops (com.mechanical.Satchels) gets a column of {@link Satchels#TOOL_SLOTS} tool-only slots right of its
+ * grid (stored after the grid in the item); the Steel-Frame Pack is a 5x5 grid, which makes the screen two rows taller.
  */
 public class PackMenu extends AbstractContainerMenu {
     public static final int SATCHEL_SIZE = BarkBasketMenu.SIZE;
@@ -67,7 +71,9 @@ public class PackMenu extends AbstractContainerMenu {
 
     public final boolean hasSatchel, hasHip;
     public final Component satchelName, hipName;
-    private final int hipStart, invStart, invEnd;
+    /** The bag's grid width (= height), its tool loops, and how much taller than the 3x3 screen the menu is. */
+    public final int columns, tools, extraHeight;
+    private final int toolStart, hipStart, invStart, invEnd;
     private final @Nullable Source satchel, hip;
     /** What the hip slots take: arrows (quiver) or a satchel's things (pouch). */
     private final Predicate<ItemStack> hipAllowed;
@@ -76,15 +82,19 @@ public class PackMenu extends AbstractContainerMenu {
     /** Client side: the layout comes in the open packet. */
     private static PackMenu client(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
         boolean hasSatchel = buf.readBoolean(), hasHip = buf.readBoolean(), pouch = buf.readBoolean();
+        int columns = buf.readVarInt(), tools = buf.readVarInt();
         Component satchelName = ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buf);
         Component hipName = ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buf);
-        return new PackMenu(id, inventory, hasSatchel ? new SimpleContainer(SATCHEL_SIZE) : null, hasHip ? new SimpleContainer(Quiver.SIZE) : null,
-                null, null, satchelName, hipName, pouch);
+        return new PackMenu(id, inventory, hasSatchel ? new SimpleContainer(columns * columns + tools) : null, hasHip ? new SimpleContainer(Quiver.SIZE) : null,
+                null, null, satchelName, hipName, pouch, columns, tools);
     }
 
     PackMenu(int id, Inventory inventory, @Nullable Container satchelContents, @Nullable Container hipContents,
-            @Nullable Source satchel, @Nullable Source hip, Component satchelName, Component hipName, boolean pouch) {
+            @Nullable Source satchel, @Nullable Source hip, Component satchelName, Component hipName, boolean pouch, int columns, int tools) {
         super(TYPE.get(), id);
+        this.columns = satchelContents != null ? columns : 3;
+        this.tools = satchelContents != null ? tools : 0;
+        this.extraHeight = (this.columns - 3) * 18;
         this.hasSatchel = satchelContents != null;
         this.hasHip = hipContents != null;
         this.satchel = satchel;
@@ -97,25 +107,33 @@ public class PackMenu extends AbstractContainerMenu {
         if (hip != null && hip.worn() == null) locked = hip.inventorySlot();
         this.lockedSlot = locked;
 
+        int left = satchelLeft(hasHip, this.columns, this.tools);
         if (satchelContents != null) {
-            int left = hasHip ? 30 : 62;
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++) addSlot(bagSlot(satchelContents, col + row * 3, left + col * 18, 17 + row * 18, BarkBasketMenu.SATCHEL));
+            for (int row = 0; row < columns; row++) {
+                for (int col = 0; col < columns; col++) addSlot(bagSlot(satchelContents, col + row * columns, left + col * 18, 17 + row * 18, BarkBasketMenu.SATCHEL));
             }
         }
+        toolStart = slots.size();
+        for (int i = 0; i < this.tools; i++) addSlot(bagSlot(satchelContents, this.columns * this.columns + i, left + this.columns * 18 + 4, 17 + i * 18, Satchels::isTool));
         hipStart = slots.size();
         if (hipContents != null) {
-            int left = hasSatchel ? 116 : 71;
+            int hipLeft = hasSatchel ? (this.columns == 3 ? 116 : 134) : 71;
             for (int row = 0; row < 2; row++) {
-                for (int col = 0; col < 2; col++) addSlot(bagSlot(hipContents, col + row * 2, left + col * 18, 26 + row * 18, hipAllowed));
+                for (int col = 0; col < 2; col++) addSlot(bagSlot(hipContents, col + row * 2, hipLeft + col * 18, 26 + row * 18, hipAllowed));
             }
         }
         invStart = slots.size();
         for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) addSlot(playerSlot(inventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+            for (int col = 0; col < 9; col++) addSlot(playerSlot(inventory, col + row * 9 + 9, 8 + col * 18, 84 + extraHeight + row * 18));
         }
-        for (int col = 0; col < 9; col++) addSlot(playerSlot(inventory, col, 8 + col * 18, 142));
+        for (int col = 0; col < 9; col++) addSlot(playerSlot(inventory, col, 8 + col * 18, 142 + extraHeight));
         invEnd = slots.size();
+    }
+
+    /** Left edge of the bag's grid: centred, or at the left with the hip bag beside it (the 3x3 as it always was). */
+    public static int satchelLeft(boolean hasHip, int columns, int tools) {
+        if (columns == 3) return hasHip ? 30 : 62;
+        return hasHip ? 8 : (176 - columns * 18 - (tools > 0 ? 22 : 0)) / 2;
     }
 
     private static Slot bagSlot(Container container, int index, int x, int y, Predicate<ItemStack> allowed) {
@@ -151,7 +169,7 @@ public class PackMenu extends AbstractContainerMenu {
     /** B: the satchel worn on the back and the quiver or pouch at the hip. Says so if neither is worn. */
     public static void openWorn(Player player) {
         ItemStack back = Equipment.get(player, Accessory.BACK), hip = Equipment.get(player, Accessory.HIP);
-        Source satchel = back.getItem() instanceof LeatherSatchelItem ? new Source(back, Accessory.BACK, -1) : null;
+        Source satchel = back.getItem() instanceof LeatherSatchelItem ? new Source(back, Accessory.BACK, -1) : null; // the Steel-Frame Pack too
         Source hipBag = isHipBag(hip) ? new Source(hip, Accessory.HIP, -1) : null;
         if (satchel == null && hipBag == null) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.nothing_to_open"));
@@ -175,16 +193,34 @@ public class PackMenu extends AbstractContainerMenu {
         Component title = satchel != null ? satchelName : hipName;
         boolean pouch = hip != null && hip.stack().getItem() instanceof LeatherPouchItem;
         Predicate<ItemStack> hipAllowed = pouch ? BarkBasketMenu.SATCHEL : Quiver.ARROWS;
+        int columns = satchel != null ? Satchels.columns(satchel.stack()) : 3, tools = satchel != null ? Satchels.toolSlots(satchel.stack()) : 0;
         player.openMenu(new SimpleMenuProvider((id, inventory, p) -> new PackMenu(id, inventory,
-                satchel != null ? new ItemContents(satchel.stack(), SATCHEL_SIZE, BarkBasketMenu.SATCHEL) : null,
+                satchel != null ? new ItemContents(satchel.stack(), columns * columns + tools, BarkBasketMenu.SATCHEL) : null,
                 hip != null ? new ItemContents(hip.stack(), Quiver.SIZE, hipAllowed) : null,
-                satchel, hip, satchelName, hipName, pouch), title), buf -> {
+                satchel, hip, satchelName, hipName, pouch, columns, tools), title), buf -> {
                     buf.writeBoolean(satchel != null);
                     buf.writeBoolean(hip != null);
                     buf.writeBoolean(pouch);
+                    buf.writeVarInt(columns);
+                    buf.writeVarInt(tools);
                     ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buf, satchelName);
                     ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buf, hipName);
                 });
+    }
+
+    /** Tests: the menu as B would open it for {@code bag} worn on the back (server side, nothing sent). */
+    public static PackMenu forTest(Inventory inventory, ItemStack bag) {
+        int columns = Satchels.columns(bag), tools = Satchels.toolSlots(bag);
+        return new PackMenu(0, inventory, new ItemContents(bag, columns * columns + tools, BarkBasketMenu.SATCHEL), null,
+                new Source(bag, null, -1), null, Component.empty(), Component.empty(), false, columns, tools);
+    }
+
+    public int toolStart() {
+        return toolStart;
+    }
+
+    public int invStart() {
+        return invStart;
     }
 
     // ---------------------------------------------------------------- menu
@@ -201,7 +237,9 @@ public class PackMenu extends AbstractContainerMenu {
             // arrows into the quiver first, the rest (and arrows that don't fit) into the satchel, then the pouch
             boolean quiver = hasHip && hipAllowed == Quiver.ARROWS;
             boolean moved = quiver && Quiver.ARROWS.test(stack) && moveItemStackTo(stack, hipStart, invStart, false);
-            if (!stack.isEmpty() && hasSatchel && BarkBasketMenu.SATCHEL.test(stack)) moved |= moveItemStackTo(stack, 0, hipStart, false);
+            // tools into the tool loops first, then the bag
+            if (!stack.isEmpty() && tools > 0 && Satchels.isTool(stack)) moved |= moveItemStackTo(stack, toolStart, hipStart, false);
+            if (!stack.isEmpty() && hasSatchel && BarkBasketMenu.SATCHEL.test(stack)) moved |= moveItemStackTo(stack, 0, toolStart, false);
             if (!stack.isEmpty() && hasHip && !quiver && hipAllowed.test(stack)) moved |= moveItemStackTo(stack, hipStart, invStart, false);
             if (!moved) return ItemStack.EMPTY;
         }

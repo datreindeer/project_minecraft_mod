@@ -9,7 +9,9 @@
   (two tilted uprights and a bar) and a bronze chain of alternating links up to the hook. kettle_campfire hangs with its
   base in the flames; kettle_pit 4 px higher (above the Fire Pit's spits, TripodBlockEntity.PIT_LIFT). The liquid
   surface and floating chunks are drawn by client/KettleRenderer (inner square +-4 px, surface y -3.5..1.5).
-- multipart blockstate over pit (0 campfire, 1-4 pit part + 1) and kettle; items: flat pictures
+- multipart blockstate over pit (0 campfire, 1-4 pit part + 1, 5 the middle of a big 3x3 Fire Pit) and kettle; items: flat pictures
+- big pit (F12): tripod_big, legs spread wider to the 3x3's edge round a higher lashing (y 24), and kettle_big, the pit kettle
+  scaled by 1.5 round its middle (TripodBlock.BIG_SCALE; TripodBlockEntity.liquidY follows it)
 - Clay Kettle Mold (bronze only, 8 units): slab with the kettle's cavity, molten / solid bronze looks, blockstate, loot
   (keeps uses), item; Unfired Clay Kettle Mold shaped at the Mold Bench (28 Clay Balls); fired in the kiln (KilnBlockEntity)
 - items: Bronze Kettle, Rough Cast Bronze Kettle (ground on the Whetstone), Stew, Broth, Hide Glue
@@ -78,13 +80,12 @@ def box(frm, to, tex, rot=None, skip=(), uv=None):
 
 # ---------------------------------------------------------------- tripod
 
-def tripod(cx, cz):
+def tripod(cx, cz, apex=16, top=24, lean=LEAN, t=0.9):
     els = []
-    apex = 16
     for i, az in enumerate((0, 120, 240)):
         # a pole from the ground (y -16 after the rescaled tilt) through the lashing to 8 px above it
-        pole = box([cx - 0.9, -16, cz - 0.9], [cx + 0.9, 24, cz + 0.9], "#pole",
-                   rot={"origin": [cx, apex, cz], "x": LEAN, "y": az, "rescale": True},
+        pole = box([cx - t, -16, cz - t], [cx + t, top, cz + t], "#pole",
+                   rot={"origin": [cx, apex, cz], "x": lean, "y": az, "rescale": True},
                    uv={"up": [7, 7, 9, 9], "down": [7, 7, 9, 9], **{f: [4 + 3 * i, 0, 6 + 3 * i, 16] for f in ("north", "south", "east", "west")}})
         pole["faces"]["up"]["texture"] = pole["faces"]["down"]["texture"] = "#pole_end"
         els.append(pole)
@@ -152,6 +153,21 @@ w(A / "models/block/tripod_pit.json", {"textures": TRIPOD_TEX, "elements": tripo
 hook = lambda cx, cz: box([cx - 0.35, 13.6, cz - 0.35], [cx + 0.35, 15.2, cz + 0.35], "#bronze")
 w(A / "models/block/kettle_campfire.json", {"textures": KETTLE_TEX, "elements": kettle(8, 8, 0) + [hook(8, 8)]})
 w(A / "models/block/kettle_pit.json", {"textures": KETTLE_TEX, "elements": kettle(16, 16, PIT_LIFT) + [hook(16, 16)]})
+BIG = 1.5  # TripodBlock.BIG_SCALE
+
+
+def scaled(els):
+    out = json.loads(json.dumps(els))
+    s = lambda p: [r2(8 + (p[0] - 8) * BIG), r2(p[1] * BIG), r2(8 + (p[2] - 8) * BIG)]
+    for e in out:
+        e["from"], e["to"] = s(e["from"]), s(e["to"])
+        if "rotation" in e:
+            e["rotation"]["origin"] = s(e["rotation"]["origin"])
+    return out
+
+
+w(A / "models/block/tripod_big.json", {"textures": TRIPOD_TEX, "elements": tripod(8, 8, apex=24, top=31.5, lean=31, t=1.2)})
+w(A / "models/block/kettle_big.json", {"textures": KETTLE_TEX, "elements": scaled(kettle(8, 8, PIT_LIFT) + [hook(8, 8)])})
 
 # part 0's pit middle is its south-east corner; turned clockwise: 90 -> south-west (part 1), 180 -> north-west (part 3), 270 -> north-east (part 2)
 PIT_Y = {1: 0, 2: 90, 3: 270, 4: 180}
@@ -161,6 +177,8 @@ for pit, y in PIT_Y.items():
     rot = {"y": y} if y else {}
     parts.append({"when": {"pit": str(pit)}, "apply": {"model": B + "tripod_pit", **rot}})
     parts.append({"when": {"pit": str(pit), "kettle": "true"}, "apply": {"model": B + "kettle_pit", **rot}})
+parts.append({"when": {"pit": "5"}, "apply": {"model": B + "tripod_big"}})
+parts.append({"when": {"pit": "5", "kettle": "true"}, "apply": {"model": B + "kettle_big"}})
 w(A / "blockstates/tripod.json", {"multipart": parts})
 
 w(D / "mechanical/loot_table/blocks/tripod.json", {"type": "minecraft:block", "pools": [{
