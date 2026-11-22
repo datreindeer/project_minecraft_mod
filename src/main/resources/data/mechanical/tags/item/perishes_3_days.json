@@ -71,6 +71,11 @@
     "mechanical:cooked_vittra_meat",
     "mechanical:cooked_troll_meat",
     "mechanical:cooked_lindworm_meat",
-    "mechanical:cooked_gloson"
+    "mechanical:cooked_gloson",
+    "mechanical:cooked_cheetah_meat",
+    "mechanical:cooked_gazelle_meat",
+    "mechanical:cooked_ostrich_meat",
+    "mechanical:cooked_aardvark_meat",
+    "mechanical:cooked_ostrich_egg"
   ]
 }

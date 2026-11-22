@@ -933,6 +933,28 @@ TABS["food"][1].extend([
      "Pick up an egg a Jungle Fowl hen laid. Throw it: it may hatch a chick", has("jungle_fowl_egg")),
 ])
 # end fauna: warm
+# fauna: savanna
+TABS["wilderness"][1].extend([
+    ("hyena_hide", "butcher", "hyena_hide", T, "Laughing Thieves",
+     "Butcher a Spotted Hyena. By day the packs drag off any kill you leave lying and trail wounded animals", has("hyena_hide")),
+    ("cheetah", "butcher", "raw_cheetah_pelt", C, "Five Seconds",
+     "Bring down a Cheetah: the fastest sprinter of all, but it gives up after five seconds, and it shies from people", has("raw_cheetah_pelt")),
+    ("cheetah_cloak", "cheetah", "cheetah_cloak", T, "Spotted Cloak",
+     "Fat-tan 2 Raw Cheetah Pelts and sew them with Sinew and Leather into a Cheetah Cloak for the Cloak slot", has("cheetah_cloak")),
+    ("signal_horn", "butcher", "signal_horn", T, "Sound the Horn",
+     "Hollow a Gazelle Horn with a knife and bind it with Sinew: a Signal Horn heard 256 blocks away", has("signal_horn")),
+    ("ostrich", "butcher", "ostrich_feather", T, "Big Bird",
+     "Pluck an Ostrich, or pick up the egg an ostrich hen laid. Corner one and it kicks", has("ostrich_feather", "ostrich_egg")),
+    ("termites", "root", "termites", T, "Termite Fishing", "Poke a Stick into a Termite Mound on the savanna until it comes out covered in Termites",
+     has("termites")),
+    ("chitin_paste", "termites", "chitin_paste", T, "Glue from Grubs", "Pound 4 Termites into Chitin Paste: a glue that does what Hide Glue does",
+     has("chitin_paste")),
+])
+TABS["food"][1].extend([
+    ("ostrich_egg_meal", "cooked", "cooked_ostrich_egg", T, "Breakfast for Six", "Roast an Ostrich Egg whole on a Campfire and eat it",
+     ate("cooked_ostrich_egg")),
+])
+# end fauna: savanna
 # tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
 TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
@@ -1620,10 +1642,10 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
                    "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
     "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
-                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir",
+                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "gazelle", "ostrich", "aardvark",
                  "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard",
+    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "cheetah", "spotted_hyena",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm"],

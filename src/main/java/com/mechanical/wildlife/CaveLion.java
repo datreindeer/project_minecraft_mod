@@ -32,6 +32,8 @@ import net.minecraft.world.phys.Vec3;
  * creeps up crouched (slow, quiet), freezes while its quarry looks its way, works round behind it, and from 3-7 blocks
  * pounces - a leap that hits hard (8). Then fights with swipes. Spotted up close for a while, it roars and charges openly.
  * Drags a fresh kill (an animal's carcass) away into the dark. Afraid of fire like the wolves (see {@link Predator}).
+ * By day it rests in the shade: it walks to the nearest spot under a tree's crown (acacias on the savanna) within
+ * {@link #SHADE_RANGE} blocks and sleeps there ({@link ShadeGoal}); the hunt starts at dusk ({@link #dusk}).
  */
 public class CaveLion extends Predator {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("mechanical", "textures/entity/wildlife/cave_lion.png");
@@ -41,7 +43,13 @@ public class CaveLion extends Predator {
     private static final double POUNCE_MIN = 2.5, POUNCE_MAX = 7;
     private static final int POUNCE_COOLDOWN = 100, ROAR_TICKS = 40;
 
+    /** How far it looks for shade to rest in by day. */
+    static final int SHADE_RANGE = 16;
+    /** Dusk on the overworld clock: the last light before night, when the lions set out. */
+    private static final long DUSK_START = 11500, DUSK_END = 13500;
+
     private int roarCooldown;
+    private long noShadeUntil;
 
     public CaveLion(EntityType<? extends CaveLion> type, Level level) {
         super(type, level);
@@ -59,6 +67,7 @@ public class CaveLion extends Predator {
         goalSelector.removeAllGoals(g -> g instanceof FollowHerdGoal);
         goalSelector.addGoal(2, new AmbushGoal());
         goalSelector.addGoal(4, new DragKillGoal());
+        if (restsInShade()) goalSelector.addGoal(2, new ShadeGoal());
         targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
         targetSelector.addGoal(2, new StalkTargetGoal());
     }
@@ -68,6 +77,56 @@ public class CaveLion extends Predator {
         return !e.isBaby() && (e instanceof RoeDeer || e instanceof RedDeer || e instanceof Reindeer || e instanceof WildHorse
                 || e instanceof Aurochs && !((Aurochs) e).showsHorns() || e instanceof Mouflon || e instanceof WildBoar
                 || e instanceof com.mechanical.people.Tribesperson);
+    }
+
+    /** Day rest: under a tree's crown (the leopard goes up the tree instead). Called from registerGoals. */
+    protected boolean restsInShade() {
+        return true;
+    }
+
+    /** The overworld clock time {@code dayTime} is dusk. */
+    public static boolean dusk(long dayTime) {
+        long t = Math.floorMod(dayTime, 24000L);
+        return t >= DUSK_START && t < DUSK_END;
+    }
+
+    @Override
+    protected boolean huntingTime() {
+        return super.huntingTime() || dusk(level().getOverworldClockTime());
+    }
+
+    @Override
+    protected boolean sleepTime() {
+        return super.sleepTime() && !dusk(level().getOverworldClockTime());
+    }
+
+    /** Leaves overhead (within 8 blocks) at {@code pos}: out of the sun. */
+    public boolean shaded(BlockPos pos) {
+        for (int dy = 1; dy <= 8; dy++) if (level().getBlockState(pos.above(dy)).is(net.minecraft.tags.BlockTags.LEAVES)) return true;
+        return false;
+    }
+
+    /**
+     * The nearest spot to stand in shade within SHADE_RANGE: a column whose top is leaves above open ground (from the two
+     * heightmaps, with and without leaves), or null.
+     */
+    public BlockPos findShade() {
+        BlockPos me = blockPosition(), best = null, bestEdge = null;
+        for (int dx = -SHADE_RANGE; dx <= SHADE_RANGE; dx++) for (int dz = -SHADE_RANGE; dz <= SHADE_RANGE; dz++) {
+            int x = me.getX() + dx, z = me.getZ() + dz;
+            int ground = level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            int top = level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, x, z);
+            if (top - ground < 2 || top - ground > 9 || Math.abs(ground - me.getY()) > 4) continue;
+            BlockPos p = new BlockPos(x, ground, z);
+            if (!level().getBlockState(p.above()).isAir() || !level().getFluidState(p.below()).isEmpty()) continue;
+            // well under the crown: its neighbours are shaded too (a big cat at the very edge is half in the sun)
+            boolean edge = false;
+            for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) edge |= !shaded(p.relative(d));
+            if (edge) {
+                if (bestEdge == null || p.distSqr(me) < bestEdge.distSqr(me)) bestEdge = p;
+            } else if (best == null || p.distSqr(me) < best.distSqr(me)) best = p;
+        }
+        return best != null ? best : bestEdge;
     }
 
     /** Woken up close by: goes for whoever woke it. */
@@ -311,6 +370,49 @@ public class CaveLion extends Predator {
             dir = dir.normalize().scale(reach);
             setDeltaMovement(dir.x, 0.45, dir.z);
             playSound(SoundEvents.RAVAGER_ROAR, 1.2F, 1.1F);
+        }
+    }
+
+    /**
+     * By day, out in the sun: walks to the nearest shade (findShade) and lies down there (DozeGoal does the sleeping,
+     * this only gets it under the tree first; it may get up from a nap in the sun to do so). Gives up for 30 s when
+     * there is no shade near.
+     */
+    class ShadeGoal extends Goal {
+        private BlockPos spot;
+        private int ticks;
+
+        ShadeGoal() {
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
+        }
+
+        @Override
+        public boolean canUse() {
+            // canUse is polled every other tick only: roll, don't test tickCount
+            if (!sleepTime() || getTarget() != null || retreating() || random.nextInt(40) != 0 || level().getGameTime() < noShadeUntil
+                    || shaded(blockPosition()) || level().getNearestPlayer(CaveLion.this, 14) != null) return false;
+            spot = findShade();
+            if (spot == null) {
+                noShadeUntil = level().getGameTime() + 600;
+                return false;
+            }
+            return getNavigation().moveTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0.8);
+        }
+
+        @Override
+        public void start() {
+            ticks = 300;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return --ticks > 0 && sleepTime() && getTarget() == null && !shaded(blockPosition());
+        }
+
+        @Override
+        public void tick() {
+            // the path may end short of the spot: walk the last steps straight to it
+            if (getNavigation().isDone()) getMoveControl().setWantedPosition(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0.8);
         }
     }
 

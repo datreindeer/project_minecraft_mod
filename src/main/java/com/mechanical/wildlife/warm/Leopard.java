@@ -56,6 +56,12 @@ public class Leopard extends CaveLion {
         goalSelector.addGoal(5, new PerchGoal());
     }
 
+    /** It spends the day up a tree (TreeGoal), not in the lion's shade. */
+    @Override
+    protected boolean restsInShade() {
+        return false;
+    }
+
     @Override
     protected boolean isPrey(LivingEntity e) {
         return !e.isBaby() && (e instanceof Tapir || e instanceof Onager || e instanceof JungleFowl || e instanceof Peafowl || e instanceof RoeDeer

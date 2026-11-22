@@ -74,7 +74,7 @@ public class CaveHyena extends Predator {
     }
 
     /** Hyenas within PACK_RANGE, itself included. */
-    int pack() {
+    protected int pack() {
         return level().getEntitiesOfClass(CaveHyena.class, getBoundingBox().inflate(PACK_RANGE), CaveHyena::isAlive).size();
     }
 
@@ -114,7 +114,7 @@ public class CaveHyena extends Predator {
     }
 
     /** The carcass this hyena or a pack mate is guarding, or null. */
-    CarcassEntity packKill() {
+    protected CarcassEntity packKill() {
         if (guarded != null) return guarded;
         for (CaveHyena mate : level().getEntitiesOfClass(CaveHyena.class, getBoundingBox().inflate(PACK_RANGE), h -> h != this && h.guarded != null))
             return mate.guarded;

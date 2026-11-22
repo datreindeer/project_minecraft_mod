@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PSP",
+    " L "
+  ],
+  "key": {
+    "P": "mechanical:cheetah_pelt",
+    "S": "mechanical:sinew",
+    "L": "minecraft:leather"
+  },
+  "result": {
+    "id": "mechanical:cheetah_cloak",
+    "count": 1
+  }
+}

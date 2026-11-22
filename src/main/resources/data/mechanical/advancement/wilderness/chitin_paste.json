@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/termites",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:chitin_paste"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:chitin_paste"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.chitin_paste.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.chitin_paste.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

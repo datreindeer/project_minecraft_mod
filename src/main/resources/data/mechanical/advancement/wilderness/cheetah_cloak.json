@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/cheetah",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cheetah_cloak"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cheetah_cloak"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.cheetah_cloak.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.cheetah_cloak.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

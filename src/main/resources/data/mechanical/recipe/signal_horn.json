@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:gazelle_horn",
+    "#mechanical:knives",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:signal_horn",
+    "count": 1
+  }
+}
