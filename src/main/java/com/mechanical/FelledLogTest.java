@@ -88,7 +88,8 @@ public final class FelledLogTest {
 
         // all callbacks are registered here: adding them from inside one makes the test runner run that one twice
         int a = FallingTreeEntity.FALL_TICKS + 15, b = a + 60, c = b + 60;
-        double[] start = new double[1];
+        double[] start = new double[2];
+        FelledLogEntity[] overLedge = new FelledLogEntity[1];
         FelledLogEntity[] held = new FelledLogEntity[2];
         BlockState oak = Blocks.OAK_LOG.defaultBlockState();
 
@@ -296,14 +297,26 @@ public final class FelledLogTest {
             FelledLogEntity onSlope = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(3.5, 6, 9.5)), 0, 4, oak);
             held[0] = onSlope;
             start[0] = onSlope.getZ();
+            // and a gap 1 block wide and 2 deep in a raised floor: a 3-block log across it bridges it, level and still
+            for (int z = 2; z <= 8; z++) for (int y = 1; y <= 2; y++) if (z != 5) h.setBlock(new BlockPos(9, y, z), Blocks.STONE);
+            held[1] = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(9.5, 4, 4.5)), 0, 3, oak); // blocks at z 4, 5, 6
+            // a ledge (2 high, ending at z 5) with a 4-block log reaching past it, its middle over the drop: it goes over and lies on the floor
+            for (int z = 2; z <= 5; z++) for (int y = 1; y <= 2; y++) h.setBlock(new BlockPos(12, y, z), Blocks.STONE);
+            overLedge[0] = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(12.5, 3, 4.5)), 0, 4, oak); // blocks at z 4..7
         });
         h.runAfterDelay(c + 95, () -> {
             FelledLogEntity log = held[0];
             h.assertTrue(log.isAlive() && log.tilt() > 0.3F, "on the slope it lies tilted (" + log.tilt() + ")");
+            FelledLogEntity bridge = held[1];
+            start[1] = bridge.getY();
+            h.assertTrue(bridge.tilt() == 0 && Math.abs(bridge.getY() - h.absoluteVec(new Vec3(0, 3, 0)).y) < 0.01, "a log bridges a narrow gap, level on its edges (y " + bridge.getY() + ", tilt " + bridge.tilt() + ")");
         });
         h.runAfterDelay(c + 200, () -> {
             FelledLogEntity log = held[0];
             h.assertTrue(start[0] - log.getZ() > 2, "and slid down it (" + (start[0] - log.getZ()) + " blocks)");
+            FelledLogEntity fell = overLedge[0];
+            h.assertTrue(fell.isAlive() && fell.getY() < h.absoluteVec(new Vec3(0, 2.6, 0)).y, "a log with its middle past a ledge doesn't hang there: it went over (y " + fell.getY() + ", tilt " + fell.tilt() + ")");
+            h.assertTrue(Math.abs(held[1].getY() - start[1]) < 0.01 && Math.abs(held[1].getZ() - h.absoluteVec(new Vec3(0, 0, 5.5)).z) < 0.01, "and stays put over it (" + held[1].position() + ")");
             for (FelledLogEntity l : logs(h)) l.discard();
             h.succeed();
         });

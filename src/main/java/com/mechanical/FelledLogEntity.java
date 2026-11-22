@@ -653,41 +653,78 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return true;
     }
 
+    /** How far below a block the ground may be and still hold it up: deeper, the block is over a gap (a log bridges it). */
+    static final double SUPPORT_DEPTH = 1.5;
+
     /**
-     * Server, a straight log: it comes to rest along the ground under it, a straight line from what holds its root end to
-     * what holds its crown end, raised over any hump between (an end over nothing tips down, as steep as MAX_TILT);
-     * steeper than SLIDE_TILT it slides down along its length, until the ground stops it. True if it moved.
+     * Server, a straight log: it rests like a stiff pole on what lies under its blocks (ground, water, other logs within
+     * {@link #SUPPORT_DEPTH}; deeper is a gap it bridges): along the lowest line over those supports that has support on
+     * both sides of its middle, so it tilts along a slope or over a bump but never hangs in the air. With support on one
+     * side of its middle only, it slides off level that way, over the edge, and falls. Steeper than SLIDE_TILT it slides
+     * down along its length until the ground stops it. True if it moved.
      */
     private boolean settleOnSlope(ServerLevel level) {
         int n = size();
-        double[] ground = new double[n];
-        boolean any = false;
         double k0 = tilt();
+        List<double[]> supports = new ArrayList<>(); // (t from the middle, ground top)
         for (int i = 0; i < n; i++) {
             Vec3 w = world(i);
-            ground[i] = groundTop(level, w.x, w.z, getY() + k0 * (i + 0.5 - n / 2.0) + 0.99, 6);
-            any |= ground[i] > -1.0E9;
+            double t = i + 0.5 - n / 2.0, bottom = getY() + k0 * t;
+            double g = groundTop(level, w.x, w.z, bottom + 0.99, 3);
+            if (g > bottom - SUPPORT_DEPTH) supports.add(new double[] {t, g});
         }
-        if (!any) { // nothing under it: it falls
+        if (supports.isEmpty()) { // nothing under it: it falls, level
             fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
             setPos(getX(), getY() - fallSpeed, getZ());
+            if (k0 != 0) entityData.set(TILT, 0.0F);
             return true;
         }
-        double g0 = ground[0], g1 = ground[n - 1];
-        if (g0 < -1.0E9) g0 = g1 - MAX_TILT * (n - 1); // the root end over nothing tips down
-        if (g1 < -1.0E9) g1 = g0 - MAX_TILT * (n - 1);
-        double k = Mth.clamp((g1 - g0) / (n - 1), -MAX_TILT, MAX_TILT);
-        double mid = -Double.MAX_VALUE; // the lowest line that clears every block's ground
-        for (int i = 0; i < n; i++) if (ground[i] > -1.0E9) mid = Math.max(mid, ground[i] - k * (i + 0.5 - n / 2.0));
+        boolean left = false, right = false;
+        for (double[] p : supports) {
+            left |= p[0] < 0.45; // the block reaches past the middle on that side (exactly on an edge is not enough)
+            right |= p[0] > -0.45;
+        }
+        if (!left || !right) { // its middle is past its supports: it slides off level that way and drops
+            if (k0 != 0) entityData.set(TILT, 0.0F);
+            Vec3 off = Vec3.directionFromRotation(0, getYRot()).scale(left ? 0.2 : -0.2); // towards the unsupported end
+            double top = -Double.MAX_VALUE;
+            for (double[] p : supports) top = Math.max(top, p[1]);
+            Vec3 at = new Vec3(getX(), Math.max(top, getY() - 0.2), getZ()).add(off);
+            if (fits(level, at, getYRot())) {
+                setPos(at);
+                return true;
+            }
+            setPos(getX(), top, getZ());
+            return false;
+        }
+        // the lowest line over the supports with one on each side of the middle (the bridge of their lower hull)
+        double bestK = 0, bestMid = Double.MAX_VALUE;
+        for (double[] l : supports) {
+            if (l[0] >= 0.45) continue;
+            for (double[] r : supports) {
+                if (r[0] <= -0.45) continue;
+                double k = r[0] - l[0] < 1.0E-6 ? 0 : (r[1] - l[1]) / (r[0] - l[0]);
+                k = Mth.clamp(k, -MAX_TILT, MAX_TILT);
+                double mid = -Double.MAX_VALUE;
+                for (double[] p : supports) mid = Math.max(mid, p[1] - k * p[0]);
+                if (mid < bestMid - 1.0E-6) {
+                    bestMid = mid;
+                    bestK = k;
+                }
+            }
+        }
+        double k = bestK, mid = bestMid;
         boolean moved = false;
         if (mid < getY() - 0.01) { // coming down onto it
             fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
             double y = Math.max(mid, getY() - fallSpeed);
-            if (y <= mid + 1.0E-6 && fallSpeed > 0.4) playSound(SoundEvents.WOOD_FALL, 1.0F, 0.6F);
-            if (y <= mid + 1.0E-6) fallSpeed = 0;
+            if (y <= mid + 1.0E-6) {
+                if (fallSpeed > 0.4) playSound(SoundEvents.WOOD_FALL, 1.0F, 0.6F);
+                fallSpeed = 0;
+            }
             setPos(getX(), y, getZ());
             moved = true;
-        } else if (mid > getY() + 1.0E-4 || Math.abs(k - k0) > 1.0E-4) {
+        } else if (mid > getY() + 1.0E-4) {
             setPos(getX(), mid, getZ());
             fallSpeed = 0;
             moved = true;

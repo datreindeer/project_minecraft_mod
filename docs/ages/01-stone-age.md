@@ -592,9 +592,10 @@ litter som förut). Kroppen ritas med stockarnas egna blockmodeller och är **fa
 den, kan stå på den och det finns inga osynliga väggar i luckorna mellan grenarna. Den som lyfter eller drar stocken
 krockar inte med den.
 - **Gravitation:** den vilar på fast mark, **vatten** (stockar flyter) eller **andra stockar** (stockar krockar med varandra
-  och staplas när de landar eller rullas av en vagn), inte på löv. En rak stock i en **backe** lutar längs marken under
-  sina ändar och glider nerför om det är brantare än ~17° (0,3 block per block), tills marken planar ut; en ände ut över
-  en kant tippar ner. Gräver man bort det den ligger på faller den. Ligger den still sover den (ingen kostnad per tick,
+  och staplas när de landar eller rullas av en vagn), inte på löv. En rak stock vilar som en stel stång på stöden under
+  sina block (mark högst 1,5 block under; djupare är ett hål): längs den lägsta linje som har stöd på båda sidor om
+  mitten. Den **lutar** längs en backe och glider nerför om det är brantare än ~17° (0,3 block per block), lägger sig som
+  en **bro** över hål smalare än stocken, och hänger mitten ut över en **kant** glider den över och faller. Gräver man bort det den ligger på faller den. Ligger den still sover den (ingen kostnad per tick,
   bara en koll av underlaget varannan sekund).
 - **Hugga:** håll in höger- eller vänsterklick med yxa på stocken (vänsterklick slår inte sönder fällda träd eller
   Fallen Logs med yxa eller såg, det gör samma sak som högerklick). Hugget är ett långsamt tvåhandshugg: yxan upp över
