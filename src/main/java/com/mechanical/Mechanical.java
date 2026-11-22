@@ -285,8 +285,8 @@ public class Mechanical {
             .mapColor(MapColor.COLOR_GRAY).strength(0.2F).sound(SoundType.WOOL).noOcclusion());
     public static final DeferredItem<BlockItem> WOLF_RUG_ITEM = ITEMS.registerSimpleBlockItem("wolf_rug", WOLF_RUG);
     /** A Straw Bed with a Wolf Pelt spread over it (StrawBedRest): rests better. Made in place, so it has no item. */
-    public static final DeferredBlock<net.minecraft.world.level.block.StrawBedBlock> FURRED_STRAW_BED = BLOCKS.registerBlock("furred_straw_bed",
-            net.minecraft.world.level.block.StrawBedBlock::new, p -> p.mapColor(MapColor.COLOR_GRAY).sound(SoundType.STRAW_BED).strength(0.2F)
+    public static final DeferredBlock<StrawBedRest.FurredStrawBedBlock> FURRED_STRAW_BED = BLOCKS.registerBlock("furred_straw_bed",
+            StrawBedRest.FurredStrawBedBlock::new, p -> p.mapColor(MapColor.COLOR_GRAY).sound(SoundType.STRAW_BED).strength(0.2F)
                     .noOcclusion().ignitedByLava().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
 
     /** Walking Staff (traders carry one) and Elder's Staff (elders): held upright, planted in step (client/HoldPoses). */

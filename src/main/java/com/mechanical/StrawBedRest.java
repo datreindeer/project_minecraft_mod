@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractBedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelData;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -128,6 +129,19 @@ public final class StrawBedRest {
         level.setBlock(pos, fur.withPropertiesOf(state), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
         if (otherState.is(Blocks.STRAW_BED)) level.setBlock(other, fur.withPropertiesOf(otherState), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
         level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
+    }
+
+    /** Falls apart like straw when you get up, but the Wolf Pelt drops instead of vanishing with it. */
+    public static class FurredStrawBedBlock extends StrawBedBlock {
+        public FurredStrawBedBlock(BlockBehaviour.Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        protected void destroyOnLeave(Level level, BlockPos pos) {
+            Block.popResource(level, pos, new ItemStack(Wildlife.WOLF_PELT.get()));
+            super.destroyOnLeave(level, pos);
+        }
     }
 
     private StrawBedRest() {}

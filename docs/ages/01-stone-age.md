@@ -2096,7 +2096,7 @@ så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw
 - **Furred Straw Bed (fäll):** högerklicka på en Straw Bed med en **Wolf Pelt** i handen så breds pälsen ut över sängen
   (pälsen går åt; vargens huvud ligger på kudden och svansen hänger över fotänden). Vilan där ger **+35 sanity** i stället för
   +20, **läker 2 hjärtan** och håller dig **varm i 5 minuter** (+30 % isolering mot kyla). Respawn och phantoms som en vanlig
-  Straw Bed. Bryts den ger den 2–4 Plant Fibre + Wolf Pelt tillbaka. Har inget item (görs bara på plats).
+  Straw Bed. Som halmen faller den isär när man kliver ur, men då ramlar Wolf Pelt ut. Bryts den ger den 2–4 Plant Fibre + Wolf Pelt tillbaka. Har inget item (görs bara på plats).
 - **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
   senare åldrar låser upp dem. **Inga pengar:** stenåldern har ingen Emerald-handel, bara **byteshandel**, varor mot varor
   (Copper Coin präglas först i bronsåldern, se 02-bronze-age.md). Wandering Trader säljer inget av metall (inga hinkar
