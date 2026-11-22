@@ -1616,6 +1616,32 @@ Rökning går fortare och ger lite mer mat; torkning kräver ingen eld men bara 
 - **Det kommer inga fler.** Djuren despawnar aldrig, men vill man ha mer får man föda upp dem själv. Byarnas egna djur
   (vanilla-hagar, hästar) finns kvar.
 
+### Mat och vatten åt tamdjuren (Feeding Trough)
+- **Vilka:** Cow (och Mooshroom), Sheep, Pig, Chicken, Goat och tämjda hästar (Horse, Donkey, Mule, Llama, Tame Horse).
+  Viltet räknas inte.
+- **Behov:** ett mål mat räcker **en dag** (24 000 ticks), en klunk vatten **två dagar**. När något tar slut dör djuret
+  inte, men det blir **trött**: går i halv fart, hänger med huvudet och **parar sig inte** (inget kärleksläge, ingen unge).
+  Under halva tiden kvar letar det själv efter mat eller vatten.
+- **Bete:** betande djur (Cow, Sheep, Goat, hästar) som står på ett Grass Block äter gräset när de är hungriga, med huvudet
+  nere en stund. Var tredje gång blir gräset bar **Dirt**, som gräset sedan växer tillbaka över. Pig och Chicken betar inte.
+- **Hand:** ett hungrigt djur äter sin mat ur handen (vete, morötter, frön …) i stället för att bli kärt. Mätt djur blir
+  kära som vanligt.
+- **Feeding Trough:** recept `[Planks][ ][Planks]` / `[Planks][Planks][Planks]` → 1. Ett lågt planktråg (10 px, så får,
+  kor och grisar kliver inte upp i det). **Water Bucket** (även Clay och Bronze) fyller det med **16 klunkar** och hinken
+  blir tom. **Foder** (det någon tamdjursart äter: Wheat, Carrot, Potato, Beetroot, frön, Hay Bale, Apple …) läggs i med
+  högerklick, hela högen; tom hand tar ut fodret. Ett tråg har en hög foder av en sort.
+- **Flera tråg bredvid varandra blir ett:** kanterna mellan dem försvinner, vatten och foder fyller nästa tråg när det
+  första är fullt, och djuren äter och dricker ur hela raden (upp till 16 tråg).
+- **Djuren vid tråget:** inom 12 block går ett hungrigt eller törstigt djur till tråget, sänker huvudet en stund och tar en
+  klunk vatten och/eller ett foder som just den arten äter. Vattnet räcker länge: 16 klunkar är 32 djurdagar.
+- Ett trött djur som fått mat och vatten blir piggt igen inom en sekund.
+
+### Hagar trampas sönder
+Där minst **4 tamdjur** går inom 5 block (en hage) kan varje nytt block en hov kliver på (1 på 40) slitas ett steg:
+Grass Block (eller Worn Grass) → **Dirt** → **Coarse Dirt** → **Mud** (bara när det regnar på blocket) → **Packed Mud**
+(när det trampas i torrt väder). Regn gör Packed Mud till Mud igen. Gräs växer in på Dirt från gräset bredvid, men inte på
+Coarse Dirt eller lera; en hage med för många djur blir en lerig fålla.
+
 ### Strukturer i världen
 Små, sällsynta platser som gör världen levande. Byggs i **nya chunks**; de minsta läggs också in i gamla (se *retrogen* nedan). Behållarna är **Decorated Pots** med
 stenålders-loot (inget järn). Krossa krukan för att få innehållet.

@@ -59,7 +59,7 @@ På Hanging Rack: köttet blir Haunch/Ribs/Loin som vanligt, Sinew och ben komme
 | Castoreum | – | Bete i Snare (`#mechanical:snare_bait`), Castoreum Salve |
 | Castoreum Salve | Castoreum + Tallow + Bark → 2 | Smörjs in: Regeneration I 10 s, tar bort Poison |
 | Beaver Tooth Knife | `[B][ ]` / `[T][S]`: Beaver Tooth, Twine, Stick | Kniv (alla knivrecept, styckning): 1,2× fart, 96 hållbarhet |
-| Beaver Dam (block) | Bara från bävrar | Ger 1–3 Stick |
+| Beaver Dam (block) | Bara från bävrar | Fast block som håller undan vatten. Ger 1–3 Stick och 0–2 Clay Ball (leran) |
 
 ## Otter
 

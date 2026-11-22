@@ -1,0 +1,79 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/feeding_trough_floor"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_wall"
+      }
+    },
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_wall",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_wall",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_wall",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "water": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_water1"
+      }
+    },
+    {
+      "when": {
+        "water": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_water2"
+      }
+    },
+    {
+      "when": {
+        "water": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_water3"
+      }
+    },
+    {
+      "when": {
+        "food": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/feeding_trough_food"
+      }
+    }
+  ]
+}

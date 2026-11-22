@@ -130,7 +130,7 @@ public class TripodBlockEntity extends BlockEntity {
 
     // ---- use ----
 
-    private static boolean isWater(ItemStack s) {
+    static boolean isWater(ItemStack s) {
         return s.is(Items.WATER_BUCKET) || s.is(Mechanical.CLAY_WATER_BUCKET.get()) || s.is(BronzeTools.BRONZE_WATER_BUCKET.get());
     }
 

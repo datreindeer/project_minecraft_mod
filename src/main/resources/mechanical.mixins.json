@@ -19,6 +19,8 @@
     "LivingEntityRendererMixin",
     "ModelFeatureRendererMixin",
     "QuadrupedModelMixin",
+    "SheepModelMixin",
+    "AbstractEquineModelMixin",
     "CreativeModeInventoryScreenMixin",
     "InventoryScreenMixin",
     "ServerSelectionListMixin",

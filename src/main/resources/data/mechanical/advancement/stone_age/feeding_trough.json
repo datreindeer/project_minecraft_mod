@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:stone_age/root",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:feeding_trough"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.feeding_trough.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.feeding_trough.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
