@@ -1,0 +1,15 @@
+stage 2: cave strength 0.0
+stage 3: cave strength 0.0
+block 6 -41 -6: Block{minecraft:lava}[level=0]
+block 9 -38 3: Block{minecraft:glow_lichen}[down=false,east=true,north=false,south=false,up=false,waterlogged=false,west=false]
+block 0 -37 -9: Block{minecraft:glow_lichen}[down=false,east=false,north=true,south=false,up=false,waterlogged=false,west=false]
+block 3 -40 -8: Block{minecraft:amethyst_cluster}[facing=up,waterlogged=false]
+stage 4: cave strength 1.0
+stage 5: cave strength 1.0
+stage 6: cave strength 1.0
+stage 7: cave strength 1.0
+block light by the lichen: 6
+stage 8: cave strength 1.0
+surface: cave strength 0.0
+stage 9: cave strength 0.0
+stage 10: cave strength 0.0
