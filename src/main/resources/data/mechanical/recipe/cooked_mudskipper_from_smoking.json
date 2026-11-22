@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 75,
+  "experience": 0.1,
+  "ingredient": "mechanical:mudskipper",
+  "result": {
+    "id": "mechanical:cooked_mudskipper",
+    "count": 1
+  }
+}

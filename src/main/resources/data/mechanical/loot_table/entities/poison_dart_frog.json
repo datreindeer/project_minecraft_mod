@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:frog_poison"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:entities/poison_dart_frog"
+}

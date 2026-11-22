@@ -225,7 +225,7 @@ har tooltipraden "Worn in the X slot".
 
 | Plats | Saker |
 |---|---|
-| Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak |
+| Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak, Tiger Pelt Mantle |
 | Back | Leather Satchel |
 | Hip | Quiver, Leather Pouch |
 | Neck / Ring / Charm | inga än (kommer i senare åldrar) |
@@ -2553,6 +2553,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 
 <!-- fauna-links -->
 - [Varma biomer](../fauna/warm.md): Onager (packdjur), Tortoise, Desert Lizard, Water Buffalo, Tapir, Leopard, Hornbill, Jungle Fowl, Peafowl
+- [Djungel och mangrove](../fauna/jungle.md): Tiger (Tiger Rug, Tiger Pelt Mantle), Python (håller fast tills någon slår loss den), Orangutan (kastar frukt, stjäl), Monitor Lizard (giftbett, äter kadaver), Poison Dart Frog (Frog Poison till Blowpipe och Poison Darts), Saltwater Crocodile (dödsrullen; Crocodile Hide-rustning vid Leatherworking Bench), Mudskipper (bete), Fiddler Crab (krabbkött), Proboscis Monkey (larmtut som skrämmer viltet)
 - [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena

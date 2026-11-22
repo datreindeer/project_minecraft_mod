@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:bamboo",
+    "minecraft:feather"
+  ],
+  "result": {
+    "id": "mechanical:dart",
+    "count": 4
+  }
+}

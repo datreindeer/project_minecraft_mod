@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:tiger_pelt",
+    "mechanical:tiger_pelt",
+    "mechanical:sinew",
+    "mechanical:sinew"
+  ],
+  "result": {
+    "id": "mechanical:tiger_pelt_mantle",
+    "count": 1
+  }
+}

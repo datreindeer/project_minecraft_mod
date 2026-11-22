@@ -1,0 +1,204 @@
+# Djungel och mangrove (jungle)
+
+Nio djur från djungeln och mangroveträsket. **Djungel / bamboo jungle:** **Tiger**, **Python**, **Orangutan**,
+**Monitor Lizard** och **Poison Dart Frog**. **Mangrove swamp:** **Saltwater Crocodile**, **Mudskipper**, **Fiddler Crab**
+och **Proboscis Monkey**. De stora lämnar ett kadaver som styckas med kniv (Butchery); groda, slamkrypare och krabba är för
+små och tappar sina saker direkt. Leopard och Tapir finns redan i [varma marker](warm.md).
+Kod: `wildlife/jungle/` (JungleFauna, Tiger, Python, Orangutan, MonitorLizard, DartFrog, Crocodile, Mudskipper, FiddlerCrab,
+ProboscisMonkey, Grip, BlowpipeItem, JungleTest), klient `client/wildlife/jungle/` (JungleFaunaClient, JungleRenderer,
+PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/gen_fauna_jungle.py`, texturer:
+`scripts/gen_fauna_jungle_textures.py` (kör `gen_fauna_jungle_tex_items.py`).
+
+## Gemensamt
+
+- Allt kött: Campfire 20 s eller smoker 5 s (slamkrypare och krabba 15 s); rått förskäms på 1 dag, stekt på 3 dagar,
+  ruttnar till Rotten Flesh. Däggdjurs- och reptilköttet kan torkas och rökas (`smokable_meat`).
+- Tigerpälsen och krokodilhuden **fettgarvas** i crafting som leopardpälsen: rå + kniv + fett (Tallow, Lard eller Bear Fat,
+  `mechanical:tanning_fats`). De passar inte på Drying Rack (fjällig hud och tjock päls garvas med fett här, som i
+  [warm](warm.md)).
+- Spawnar i data (biome modifiers `add_<djur>.json`); WildlifeRestock fyller på av sig själv.
+- **Grepp** (`Grip`, python och krokodil): offret hålls fast vid en punkt. En spelare som går iväg sätts tillbaka, får
+  Slowness och kan inte hoppa bort. Offret tar skada varje sekund. **Ett slag från någon annan** slår loss djuret direkt.
+  Offrets egna slag räknas som att det kämpar: efter tillräckligt många kommer det loss. Greppet släpper också när offret
+  dör, kommer längre bort än 6 block eller när tiden är ute.
+
+## Tiger
+
+| | |
+|---|---|
+| Var | jungle, bamboo jungle (vikt 2, 1) |
+| Liv / fart | 36 / 0,31, skada 6 (språng som grottlejonet), knuffmotstånd 0,5, steg 1, inga ungar |
+| Utseende | leopardens modell, 1,3 gånger större; orange med svarta ränder, vit buk och vitt ansikte |
+| Beteende | jagar som grottlejonet: kryper hukad, fryser när bytet tittar, **gör språng**, ryter när den blir upptäckt, rädd för eld och facklor. **Osynlig i snåret:** när den kryper genom bambu, ormbunkar, högt gräs, löv, rankor eller plantor (minst 3 sådana block runt fötter och axlar) **syns den inte alls** förrän den är inom 6 block från sitt byte eller gör språnget. I snår jagar den **även på dagen**. **Simmar** gärna och bra. Byten: tapir, vattenbuffel, djungelhöna, påfågel, orangutang, näsapa, varan, vildsvin, rådjur, människor. |
+| Ljud | grottlejonets (rytande, morrande), något ljusare |
+
+| Styckning | Antal | Chans |
+|---|---|---|
+| Tiger Meat | 2–4 | – |
+| Raw Tiger Pelt | 1 | alltid (yttre) |
+| Sinew | 1–2 | 60 % |
+| Bone | 1–2 | 70 % |
+
+- Tjock päls: kräver Tusk Dagger eller bättre för att styckas.
+- **Raw Tiger Pelt** + kniv + fett → **Tiger Pelt**.
+- 2 Tiger Pelt + Bone → **Tiger Rug** (platt matta, Bear Rug-modellen): troféen.
+- 2 Tiger Pelt + 2 Sinew → **Tiger Pelt Mantle**: en mantel för Cloak-platsen (3 rustning som bröstdel, som Otter Fur Cape),
+  randig cape över ryggen. Lagas med Tiger Pelt.
+
+## Python (pytonorm)
+
+| | |
+|---|---|
+| Var | jungle, sparse jungle, bamboo jungle, mangrove swamp (3, 1). Spawnar också **uppe på trädkronorna** (löv räknas som mark för den). |
+| Liv / fart | 20 / 0,16, knuffmotstånd 0,6, inga ungar |
+| Utseende | ormens modell, 2,2 gånger större (ungefär 3 block lång); guldbrun med ett mörkt nätmönster, ljus buk |
+| Beteende | ligger stilla och hoprullad länge, på en gren eller vid vattenkanten. Kommer en spelare eller ett mindre djur (inte rovdjur) inom 1,8 block **slår den till och lindar sig runt offret** (Grip). Från en gren **släpper den sig ner** på byten upp till 6 block under och 3 block åt sidan. Håller fast och **kramar**: ½ hjärta i sekunden. **Någon annan slår loss den med ett slag**; offret kommer loss på egen hand efter **5 egna slag**; den ger upp efter 15 s. Smyger man förbi utanför 1,2 block märker den en inte. Sedan glider den undan och vilar 30 s innan den kan slå till igen. Inget gift. |
+| Ljud | väser när den kramar |
+
+| Styckning | Antal | Chans |
+|---|---|---|
+| Python Meat | 2–3 | – |
+| Python Skin | 1 | alltid (yttre) |
+
+- **Python Skin** + kniv → 3 Snakeskin (till Snakeskin Boots, se [meadow](meadow.md)).
+- **Python Meat** steks till Cooked Python Meat (4 mat).
+
+## Orangutan
+
+| | |
+|---|---|
+| Var | jungle (4, 1–2) |
+| Liv / fart | 30 / 0,22, steg 1; ungar (30 %) |
+| Utseende | en stor lurvig röd apa som går framåtlutad på knogarna, långa armar, mörkt ansikte med kindvalkar |
+| Beteende | inte skygg (0,4) men vill inte bli trängd: den som kommer inom **7 block** får **frukt och pinnar kastade på sig** (äpplen, söta bär, pinnar; ingen skada, en knuff), var 2,5–4 s. Den är en **tjuv**: saker som ligger på marken inom 10 block **går den och tar** och bär i handen. Slår man den **tappar den bytet**; dör den faller bytet ut. |
+| Ljud | pandans, mörkare |
+
+| Styckning | Antal | Chans |
+|---|---|---|
+| Orangutan Meat | 1–3 | – |
+| Orangutan Hair | 1–3 | 90 % (yttre) |
+| Raw Hide | 1 | 30 % (yttre) |
+| Sinew | 1 | 40 % |
+
+- 2 **Orangutan Hair** → String.
+
+## Monitor Lizard (varan)
+
+| | |
+|---|---|
+| Var | jungle, sparse jungle, mangrove swamp (4, 1–2) |
+| Liv / fart | 18 / 0,24, skada 3, steg 1; ungar (20 %) |
+| Utseende | ödlans modell, 2,2 gånger större; mörkt olivgrå med gula pärlprickar |
+| Beteende | **asätare**: känner lukten av ett kadaver inom 24 block, går dit och **äter upp det på 10 s** (ett Bone Pile blir kvar). Ett byte man lämnar liggande kan alltså gå förlorat. Lämnar människor ifred tills de skadar den; då **biter den med gift** (Poison I och Hunger i 8 s). **Simmar** bra. |
+| Ljud | silverfiskens, mycket mörkare; väser när den biter |
+
+| Styckning | Antal | Chans |
+|---|---|---|
+| Monitor Meat | 1–2 | – |
+| Monitor Skin | 1 | 80 % (yttre) |
+| Venom Gland | 1 | 50 % |
+
+- 2 **Monitor Skin** → Leather. **Venom Gland** som från huggormen (giftpilar, Snakebite Poultice, Poison Darts).
+
+## Poison Dart Frog (pilgiftsgroda)
+
+| | |
+|---|---|
+| Var | jungle, bamboo jungle (6, 2–4) |
+| Liv / fart | 3 / 0,2; blå-svart eller gul-svart (efter UUID); inga ungar |
+| Beteende | gömmer sig inte: färgerna varnar. **Huden är giftig:** den som slår grodan med handen eller ett handvapen blir **förgiftad** (Poison I, 5 s); pilar och dart går bra. Hoppar undan när den blir skrämd. För liten för kadaver. |
+| Ljud | grodans, mycket ljusare |
+
+| Tappar | Antal |
+|---|---|
+| Frog Poison | 1 |
+
+### Blåsrör och pilar
+
+- **Blowpipe**: 3 Bamboo i en rad. Högerklick blåser iväg en pil från förrådet (Poison Dart först, annars Dart). Tyst,
+  snabb (0,75 s mellan skotten), svag (1 skada) och kort räckvidd. 160 i hållbarhet.
+- **Dart**: Bamboo + Feather → 4.
+- **Poison Dart**: 4 Dart + Frog Poison → 4, eller 4 Dart + Venom Gland → 4. Förgiftar det den träffar (Poison II, 10 s).
+- En pil kan plockas upp igen som vanlig Dart (giftet är förbrukat).
+
+## Saltwater Crocodile (saltvattenskrokodil)
+
+| | |
+|---|---|
+| Var | mangrove swamp (4, 1–2) |
+| Liv / fart | 40 / 0,18 på land, snabb i vatten, rustning 6, skada 6, knuffmotstånd 0,8, steg 1, inga ungar |
+| Utseende | lång och låg, 1,25 gånger modellstorlek (ungefär 3 block); olivgrå bepansrad rygg med upphöjda sköldar, mörka band på svansen, ljus buk, lång nos med en tandrad |
+| Beteende | **ligger stilla i vattnet** med bara ögon och näsborrar över ytan (lurar). Kommer något inom **5 block** (dricker vid kanten, vadar, simmar) **gör den ett utfall** och **griper det** i käftarna (inom 1,9 block). Sedan **drar den ner bytet under vattnet och rullar** (dödsrullen): 3 skada i sekunden, under vatten. **Någon annan slår loss den med ett slag**; offret sliter sig loss efter **6 egna slag**; den släpper efter 20 s. På land är den långsam och går tillbaka till vatten (2 block djupt) inom 16 block. Andas under vatten. Byten: alla djur som inte är rovdjur (bredd under 2), och människor. |
+| Ljud | ravagerns, mycket mörkare; tyst när den lurar; plask vid utfallet |
+
+| Styckning | Antal | Chans |
+|---|---|---|
+| Crocodile Meat | 3–5 | – |
+| Raw Crocodile Hide | 1 | alltid (yttre) |
+| Sinew | 1–2 | 50 % |
+| Bone | 1–2 | 60 % |
+
+- Tjock hud: kräver Tusk Dagger eller bättre.
+- **Raw Crocodile Hide** + kniv + fett → **Crocodile Hide**: hårt fjälligt läder.
+- **Crocodile Hide-rustning** sys på Leatherworking Bench med nål och Sinew (låses upp av att bära Crocodile Hide):
+  Helmet (2 hud, 1 Sinew), Cuirass (4, 3), Leggings (3, 2), Boots (2, 1). Skydd 2/5/4/2, seghet 1, knuffmotstånd 0,05 per
+  del, hållbarhet som ett material på 16. Ingen värme. Lagas med Crocodile Hide.
+
+## Mudskipper (slamkrypare)
+
+| | |
+|---|---|
+| Var | mangrove swamp (8, 2–5) |
+| Liv / fart | 3 / 0,18; inga ungar |
+| Beteende | en liten fisk med utstående ögon som **går på leran** på fenorna och andas både i och ur vatten. Skrämd **hoppar den undan** i långa kast över leran. För liten för kadaver. |
+| Ljud | torskens; små klafs på leran |
+
+| Tappar | Antal |
+|---|---|
+| Mudskipper | 1 |
+
+- **Mudskipper**: äts rå som en liten fisk (1 mat) eller steks till Cooked Mudskipper (3). Är **bete** (`mechanical:snare_bait`) i snaror.
+
+## Fiddler Crab (vinkarkrabba)
+
+| | |
+|---|---|
+| Var | mangrove swamp (8, 2–4) |
+| Liv / fart | 4 / 0,2; inga ungar |
+| Beteende | en liten lerkrabba med en jättelik orange klo som den vinkar med. Bor vid sitt hål i leran: kommer en spelare inom **5 block** (smygande 2) eller skadas den **dyker den ner i hålet** (bara ögonen syns) och stannar nere 10 s, så länge någon står nära. Nere i hålet **kan den inte skadas**. Hål finns bara i lera (Mud, mangroverötter i lera, Clay): ute på annan mark kan man fånga den. För liten för kadaver. |
+
+| Tappar | Antal |
+|---|---|
+| Raw Crab Meat | 1 |
+
+- **Raw Crab Meat** steks till Cooked Crab Meat (4 mat). Rå ger risk för Hunger.
+
+## Proboscis Monkey (näsapa)
+
+| | |
+|---|---|
+| Var | mangrove swamp (5, 2–4) |
+| Liv / fart | 14 / 0,27, steg 1; ungar (30 %) |
+| Utseende | apmodellen, mindre (0,7); orangebrun med grå armar och ben, vit rumpa, lång grå svans; **hanarna har en stor hängande näsa** |
+| Beteende | lever i flock och är **aldrig tyst**: tutar och grymtar hela dagen. Ser den en jägare komma (en spelare inom 14 block som inte smyger, eller närmare än 5) ger den **larmtutet**, och **alla vilda djur inom 20 block blir rädda och springer** (flockfåglar flyger upp). En dålig granne för den som smyger på byte. Larmar högst var 15:e sekund. **Simmar** över kanalerna. |
+| Ljud | getens skrik och pandans grymtningar, högt |
+
+| Styckning | Antal | Chans |
+|---|---|---|
+| Monkey Meat | 1–2 | – |
+| Raw Hide | 1 | 30 % (yttre) |
+
+## Avancemang
+
+- Vildmark: **Stripes in the Bamboo** (utmaning: Raw Tiger Pelt), **Tiger Skin Rug** (Tiger Rug), **Tiger Mantle** (Tiger Pelt
+  Mantle), **Coils** (Python Skin), **Thief of the Canopy** (Orangutan Hair), **Death Roll** (utmaning: Raw Crocodile Hide),
+  **Scale Armour** (en Crocodile Hide-rustningsdel), **Silent Darts** (Blowpipe), **Painted Poison** (Poison Dart),
+  **Mud Dwellers** (Mudskipper eller Raw Crab Meat).
+- Mat: **Mangrove Fare** (stekt kött från de nya djuren).
+- Jaktfliken: tiger, krokodil under Predators; python, varan, orangutang, näsapa under More Game/Small Game (se HUNT_GROUPS).
+
+## Kända begränsningar
+
+- Orangutangens byte syns inte i handen (inget hand-lager på modellen).
+- Tigerns osynlighet använder spelets vanliga osynlighetsflagga (som en dryck): den syns inte heller för andra djur.
+- Pythonen klättrar inte själv upp i träd; den spawnar där och stannar.

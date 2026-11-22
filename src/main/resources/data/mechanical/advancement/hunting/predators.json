@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:game_meat_scraps"
+            "items": "mechanical:crocodile_meat"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:hyena_meat"
+            "items": "mechanical:game_meat_scraps"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:leopard_meat"
+            "items": "mechanical:hyena_meat"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_gloson"
+            "items": "mechanical:leopard_meat"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:raw_gloson"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_lynx"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -76,12 +76,32 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wolverine"
+            "items": "mechanical:raw_lynx"
           }
         ]
       }
     },
     "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wolverine"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:tiger_meat"
+          }
+        ]
+      }
+    },
+    "has_10": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -102,7 +122,9 @@
       "has_5",
       "has_6",
       "has_7",
-      "has_8"
+      "has_8",
+      "has_9",
+      "has_10"
     ]
   ],
   "display": {

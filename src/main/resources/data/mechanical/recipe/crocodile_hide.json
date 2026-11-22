@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_crocodile_hide",
+    "#mechanical:knives",
+    "#mechanical:tanning_fats"
+  ],
+  "result": {
+    "id": "mechanical:crocodile_hide",
+    "count": 1
+  }
+}

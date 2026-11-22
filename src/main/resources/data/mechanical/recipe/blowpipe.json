@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "BBB"
+  ],
+  "key": {
+    "B": "minecraft:bamboo"
+  },
+  "result": {
+    "id": "mechanical:blowpipe",
+    "count": 1
+  }
+}
