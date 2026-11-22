@@ -12,7 +12,7 @@ import net.neoforged.neoforge.client.gui.GuiLayer;
 /** Top left: season, date, year and time of day, in the overworld (the only world with a sky clock). */
 public class CalendarHud implements GuiLayer {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(Mechanical.MODID, "calendar");
-    private static final int[] SEASON_COLOURS = {0xFF9BE07A, 0xFFF2D35B, 0xFFE0894A, 0xFFBFE3F5};
+    public static final int[] SEASON_COLOURS = {0xFF9BE07A, 0xFFF2D35B, 0xFFE0894A, 0xFFBFE3F5};
 
     @Override
     public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {

@@ -71,6 +71,12 @@
   Servern skickar listan (`ClanNetwork.Roster`) vid inloggning, utloggning, stamändringar, färgbyte och när någon
   når en ny ålder. Utan den (eller när servern visar en scoreboard i listan) visas vanillas lista. Till skillnad
   från vanilla syns den även i singleplayer.
+- **Multiplayer-sidan:** servrar med moddet får en högre rad i serverlistan. Under vanillas rad (ikon, namn, MOTD,
+  spelare, ping) ligger en ram i Tab-listans barkstil: världsåldern med ikon till vänster och serverns datum i
+  årstidens färg till höger, antalet stammar på avdelaren, och sedan en ruta per stam i två kolumner (vimpel i
+  stammens färg, namn, online/alla och åldersikon), **Wanderers** med antal och "+N more" om det finns fler än 6.
+  Servern lägger datan som ett extra fält `"mechanical"` i sitt status-svar (`ServerListInfo`, uppdateras var 5:e
+  sekund); vanilla-klienter hoppar över fältet, och MOTD:n är orörd. Servrar utan fältet ser ut som vanligt.
 - **Ranker:** **Leader** (en), **Elder** (högre rank, kan bjuda in), **Member** (vanlig) och **Newcomer** (ny medlem).
   Ledaren får göra allt: bjuda in, kicka, befordra och degradera. En Elder får bjuda in och kicka en Newcomer. En
   Newcomer blir Member automatiskt efter **7 speldygn**. Speldygn räknas bara när servern är igång, eftersom tiden

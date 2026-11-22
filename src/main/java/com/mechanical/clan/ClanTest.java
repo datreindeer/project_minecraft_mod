@@ -144,6 +144,14 @@ public final class ClanTest {
         }
         check(h, com.mechanical.WorldAge.npcAge(server, lagging) == 0 && com.mechanical.WorldAge.npcAge(server, keeping) == 1, "NPC tribes 0-1 behind");
         com.mechanical.WorldAge.set(server, before);
+
+        // the server list: the cached status JSON carries our field (MinecraftServerStatusMixin) and the client's codec reads it back
+        String statusJson = server.getStatusJson();
+        check(h, statusJson != null && statusJson.contains("\"" + ServerListInfo.KEY + "\""), "status JSON has the server list field");
+        var status = ServerListInfo.reading(net.minecraft.network.protocol.status.ServerStatus.CODEC)
+                .parse(JsonOps.INSTANCE, com.google.gson.JsonParser.parseString(statusJson)).result();
+        var info = status.flatMap(net.minecraft.network.protocol.status.ServerStatus::players).map(ServerListInfo::of);
+        check(h, info.isPresent() && info.get().shown().size() <= info.get().tribes(), "server list field read back");
         h.succeed();
     }
 }

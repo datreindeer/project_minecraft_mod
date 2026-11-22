@@ -20,7 +20,9 @@
     "ModelFeatureRendererMixin",
     "QuadrupedModelMixin",
     "CreativeModeInventoryScreenMixin",
-    "InventoryScreenMixin"
+    "InventoryScreenMixin",
+    "ServerSelectionListMixin",
+    "ClientboundStatusResponsePacketMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -47,6 +49,7 @@
     "ProjectileWeaponItemMixin",
     "ServerGamePacketListenerImplMixin",
     "TestInstanceBlockEntityMixin",
-    "GameTestInfoMixin"
+    "GameTestInfoMixin",
+    "MinecraftServerStatusMixin"
   ]
 }
