@@ -72,10 +72,17 @@
     "mechanical:cooked_troll_meat",
     "mechanical:cooked_lindworm_meat",
     "mechanical:cooked_gloson",
+    "mechanical:cooked_tiger_meat",
+    "mechanical:cooked_python_meat",
+    "mechanical:cooked_orangutan_meat",
+    "mechanical:cooked_monitor_meat",
+    "mechanical:cooked_crocodile_meat",
+    "mechanical:cooked_monkey_meat",
+    "mechanical:cooked_mudskipper",
+    "mechanical:cooked_crab_meat",
     "mechanical:cooked_polar_bear",
     "mechanical:cooked_arctic_fox",
     "mechanical:cooked_snow_leopard",
-    "mechanical:cooked_tiger",
     "mechanical:cooked_pika",
     "mechanical:cooked_black_grouse"
   ]

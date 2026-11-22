@@ -1,7 +1,8 @@
 # Fler djur och varelser: förslag per biom (2026-11-22)
 
-> **Beslut 2026-11-22:** grupperna Savannens rovdjur, Kyla, Varmt och Folktro (ordning 1, 2, 3 och 5) byggs i natt,
-> som de står beskrivna. Tempererat och säsongshändelser väntar.
+> **Beslut 2026-11-22 (ändrat):** **allt** på listan byggs, med egna items för varje art: produkter från slakt, och
+> verktyg, rustning eller mat där syftet anger det. Det gäller alla biomer, under jord, folktron, säsongshändelserna och den nya
+> biomen Mammoth Steppe. Claude bestämmer detaljerna och dokumenterar dem.
 >
 > **Byggt:** Kyla och alla djur under Taiga, Snowy Plains och Mountains (utom folktron) – se `docs/fauna/cold.md`.
 >

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mechanical:crocodile_hide"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mechanical:crocodile_hide"
+      }
+    ]
+  }
+}

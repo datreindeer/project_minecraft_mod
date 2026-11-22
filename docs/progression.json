@@ -433,6 +433,23 @@
    },
    {
     "title": {
+     "sv": "Ekens folk och Ancient Ritual Knife",
+     "en": "The Oak Folk and the Ancient Ritual Knife"
+    },
+    "items": [
+     "verdant_staff",
+     "ancient_ritual_knife",
+     "animal_heart",
+     "fine_sinew",
+     "trophy_skull"
+    ],
+    "text": {
+     "sv": "Vid varje [[structure:ancient_oak]] bor ekens folk: samlare, bedjare, ljusbärare och en Keeper med hornkrona. Högerklicka Keepern för en questlinje på 12 uppdrag som hela din stam delar, från bär och svamp till brons, en björnfäll, järn, en Giant Antler och stål. Uppdrag 7 ger [[verdant_staff]], det sista [[ancient_ritual_knife]].\n\nSkada inte trädet eller dem: vid fientlig relation stängs questlinjen för gott.\n\nRitualkniven är knivnivå 4 och den enda som tar de fina delarna: [[animal_heart]], [[fine_sinew]] och [[trophy_skull]].",
+     "en": "At every [[structure:ancient_oak]] live the Oak Folk: gatherers, worshippers, light-bearers and a Keeper with an antler crown. Right-click the Keeper for a line of 12 quests your whole tribe shares, from berries and mushrooms to bronze, a bear pelt, iron, a Giant Antler and steel. Quest 7 gives the [[verdant_staff]], the last one the [[ancient_ritual_knife]].\n\nDo not harm the tree or them: at a hostile standing the quest line closes for good.\n\nThe ritual knife is knife tier 4 and the only one that takes the fine parts: [[animal_heart]], [[fine_sinew]] and [[trophy_skull]]."
+    }
+   },
+   {
+    "title": {
      "sv": "Ädelstenar och slipning",
      "en": "Gemstones and cutting"
     },

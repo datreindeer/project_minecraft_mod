@@ -8,7 +8,10 @@
           "type": "minecraft:item",
           "name": "mechanical:tiger_rug"
         }
-      ]
+      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "mechanical:blocks/tiger_rug"

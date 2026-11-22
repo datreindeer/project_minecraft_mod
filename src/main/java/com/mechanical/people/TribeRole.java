@@ -9,7 +9,9 @@ public enum TribeRole {
     /** A Trader Caravan's old trader and its guards (Caravans): one temperate skin set, whatever the climate. */
     TRADER(8), GUARD(16),
     /** The lone Miner under ground (Miners, entity mechanical:miner): one temperate skin set, men only (skins 0 and 2). */
-    MINER(10);
+    MINER(10),
+    /** The Oak Folk at an Ancient Oak (OakFolk, F4): gatherers, worshippers, light-bearers and their keeper (leader). One skin set. */
+    OAK_GATHERER(22), OAK_WORSHIPPER(14), OAK_LIGHTBEARER(20), OAK_KEEPER(10);
 
     public static final int SKINS = 4, GREETINGS = 3;
 
@@ -29,7 +31,12 @@ public enum TribeRole {
 
     /** Dresses the same in every climate (one temperate skin set). */
     public boolean travels() {
-        return caravan() || this == MINER;
+        return caravan() || this == MINER || oak();
+    }
+
+    /** One of the Oak Folk (OakFolk): they live round an Ancient Oak, not at a camp. */
+    public boolean oak() {
+        return this == OAK_GATHERER || this == OAK_WORSHIPPER || this == OAK_LIGHTBEARER || this == OAK_KEEPER;
     }
 
     public static TribeRole byId(int i) {

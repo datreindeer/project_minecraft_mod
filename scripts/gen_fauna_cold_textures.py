@@ -11,7 +11,8 @@ ForestBirdModel, LemmingModel).
 - Equipment layers (hat, boots, the cloak's shoulders) and the cloak's cape (entity/cloak/polar_bear_cloak.png).
 - Blocks: Polar Bear Rug and Snow Leopard Rug (the Bear Rug's and Leopard Rug's textures recoloured).
 - Siberian Tiger (128x64): painted from 3D on the leopard's box table (LEOPARD in gen_fauna_warm_tex_dry.py): deep
-  orange, white belly, cheeks and brows, black stripes running round the body; Tiger Pelt, Tiger Rug, Tiger Pelt Cloak.
+  orange, white belly, cheeks and brows, black stripes running round the body (its meat, pelt, rug and mantle are the
+  jungle tiger's: gen_fauna_jungle*.py).
 - Snowy Owl, Black Grouse (cock and hen), Lammergeier: the eagle-owl's, capercaillie's and golden eagle's textures
   recoloured by lightness; Pika: the lemming's, recoloured. Their feathers, meat, Bone Marrow, Pika Hay and its pile.
 The FOX table mirrors the cubes in ArcticFoxModel: keep them in sync.
@@ -30,8 +31,6 @@ from gen_bronze_prep_textures import lum, vanilla  # noqa: E402
 from gen_fauna_coldhunters_textures import (COOKED, LONG_PELT, RAW_MEAT, RAW_PALE, SMALL_ROUND, grid, pelt_shape, recolour_layer, rgba,  # noqa: E402
                                              small_meat)
 from gen_fauna_warm_tex_dry import LEOPARD  # noqa: E402
-from gen_predator_textures import PELT_MASK  # noqa: E402
-from gen_wolf_pelt_textures import RUG_MASK  # noqa: E402
 
 TEX = Path(__file__).resolve().parent.parent / "src/main/resources/assets/mechanical/textures"
 BLOCK, EQUIP, ENTITY = TEX / "block", TEX / "entity/equipment", TEX / "entity"
@@ -455,37 +454,6 @@ TIGER_MATS = {"chest": t_body(-4, 4), "loin": t_body(-3.5, 3.5), "shoulders": t_
 TIGER = {name: (*box[:8], TIGER_MATS[name]) for name, box in LEOPARD.items()}
 
 
-def tiger_pelt_col(x, y):
-    d = abs(x - 7.5)
-    if y >= 14:
-        return T_STRIPE if y == 15 or (y % 2 == 0) else T_ORANGE
-    if d > 4.5:
-        return fur(T_WHITE, x, y, 1591, 0.03)
-    if stripe(y * 1.0, d, 1592, 2.6, 0.9) and d > 0.6:
-        return T_STRIPE
-    return fur(t_coat(d / 6), x, y, 1593, 0.06)
-
-
-def tiger_rug():
-    def col(ch, x, y):
-        if ch == "N":
-            return T_NOSE
-        if ch == "E":
-            return T_EYE
-        if ch in "sS":
-            return T_WHITE
-        if ch == "e":
-            return T_STRIPE
-        if ch == "w":
-            return (214, 204, 178)
-        if ch == "o":
-            return shade(T_BACK, 0.7)
-        if ch in "tT":
-            return T_STRIPE if ch == "T" else T_ORANGE
-        return tiger_pelt_col(x, min(13, max(2, y)))
-    return grid(RUG_MASK, col)
-
-
 # =============================================================== birds and pika (recoloured)
 def snowy_owl_tone(c, l, x, y):
     if c[0] > 220 and c[2] < 60:
@@ -571,8 +539,6 @@ TUFT = [
 
 def items2():
     out = {}
-    out["raw_tiger"] = recolour_item(ITEM / "beef_scraps.png", RAW_MEAT)
-    out["cooked_tiger"] = recolour_item(ITEM / "cooked_beef_scraps.png", COOKED)
     out["raw_pika"] = small_meat(SMALL_ROUND, RAW_PALE, 1631)
     out["cooked_pika"] = small_meat(SMALL_ROUND, COOKED, 1632)
     out["raw_black_grouse"] = by_lightness(load("item/raw_capercaillie"), lambda c, l, x, y: shade(c[:3], 0.95))
@@ -583,11 +549,6 @@ def items2():
     out["black_grouse_tail_feather"] = by_lightness(load("item/capercaillie_tail_feather"), grouse_tone)
     out["lammergeier_feather"] = by_lightness(load("item/eagle_feather"), lammergeier_tone)
     out["pika_hay"] = grid(TUFT, lambda ch, x, y: {"o": (110, 104, 60), "g": HAY[3], "G": HAY[int(h(x, y, 1641) * 3)]}[ch])
-    out["raw_tiger_pelt"] = pelt_shape(PELT_MASK, tiger_pelt_col, True, 1651)
-    out["tiger_pelt"] = pelt_shape(PELT_MASK, tiger_pelt_col, False, 1652)
-    out["tiger_pelt_cloak"] = grid(CLOAK, lambda ch, x, y: {"o": (70, 40, 22), "L": (196, 162, 118)}.get(ch)
-                                   or (T_STRIPE if (x + y // 2) % 4 == 0 else fur(T_ORANGE, x, y, 1661, 0.05)))
-    out["tiger_rug"] = tiger_rug()
     K = "#141010"
     out["siberian_tiger_spawn_egg"] = egg(["#f0a050", "#de8a34", "#c47024", "#9a5418", "#5e3410", "#3a200a"],
                                           [(x, y, K) for x, y in ((4, 5), (4, 6), (11, 6), (11, 7), (5, 10), (5, 11), (10, 11), (10, 12), (7, 13), (8, 13))],
@@ -647,18 +608,7 @@ def build():
         assert im.size == (16, 16) and im.getbbox(), name
         im.save(ITEM / f"{name}.png")
         print("wrote item", name)
-    tiger_rug().save(BLOCK / "tiger_rug.png")
     hay_texture().save(BLOCK / "pika_hay_pile.png")
-    recolour_layer("entity/equipment/humanoid/leather", lambda x, y, s: T_STRIPE if (x + y) % 5 == 0 else fur(lerp(T_BACK, T_ORANGE, s), x, y, 1671, 0.05),
-                   lambda x, y: y >= 16 and x >= 16).save(EQUIP / "humanoid/tiger_pelt_cloak.png")
-    tcape = cape()
-    px = tcape.load()
-    for x in range(tcape.width):
-        for y in range(tcape.height):
-            c = px[x, y]
-            if c[3] and not (x >= 12 and y >= 1 and x < 22):  # the fur faces (the lining stays tanned hide)
-                px[x, y] = rgba(T_STRIPE if (y + h(x // 3, 0, 1681) * 4) % 4.2 < 1.1 else shade(T_ORANGE, 0.9 + 0.2 * h(x, y, 1682)))
-    tcape.save(ENTITY / "cloak/tiger_pelt_cloak.png")
 
 
 if __name__ == "__main__":

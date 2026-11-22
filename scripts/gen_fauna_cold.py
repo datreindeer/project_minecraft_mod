@@ -2,8 +2,8 @@
 Siberian Tiger, Snowy Owl, Black Grouse, Lammergeier, Pika.
 
 - items: raw/cooked meat of each (and the plucked black grouse), Polar Bear Liver, Bone Marrow, raw pelts and cured
-  pelts/fur, the feathers, Pika Hay, Polar Bear Cloak, Tiger Pelt Cloak, Arctic Fox Hat, Snow Leopard Boots, the three
-  rugs, the Pika Hay Pile, spawn eggs (models, lang)
+  pelts/fur, the feathers, Pika Hay, Polar Bear Cloak, Arctic Fox Hat, Snow Leopard Boots, the two rugs, the Pika Hay
+  Pile, spawn eggs (models, lang). The Siberian tiger's meat, pelt, rug and mantle belong to gen_fauna_jungle.py.
 - loot tables: the snowy owl and the lammergeier drop feathers (no carcass); the black grouse's fallback
 - recipes: raw meat on the Campfire (20 s) or in the smoker; the plucked grouse whole on the fire or cut with a knife;
   the goods in the crafting grid; 9 Pika Hay into a Hay Bale
@@ -56,24 +56,22 @@ def shapeless(name, ingredients, result, count=1, category="misc"):
 
 ANIMALS = {"polar_bear": "Polar Bear", "arctic_fox": "Arctic Fox", "snow_leopard": "Snow Leopard", "siberian_tiger": "Siberian Tiger",
            "snowy_owl": "Snowy Owl", "black_grouse": "Black Grouse", "lammergeier": "Lammergeier", "pika": "Pika"}
-MEATS = {"polar_bear": "Polar Bear", "arctic_fox": "Arctic Fox", "snow_leopard": "Snow Leopard", "tiger": "Tiger",
-         "pika": "Pika", "black_grouse": "Black Grouse"}  # raw_<x> / cooked_<x>
+MEATS = {"polar_bear": "Polar Bear", "arctic_fox": "Arctic Fox", "snow_leopard": "Snow Leopard",
+         "pika": "Pika", "black_grouse": "Black Grouse"}  # the Siberian tiger's meat and pelt are the jungle tiger's (gen_fauna_jungle.py)  # raw_<x> / cooked_<x>
 ITEMS = {  # id -> English name
     "polar_bear_liver": "Polar Bear Liver",
     "raw_polar_bear_pelt": "Raw Polar Bear Pelt", "polar_bear_pelt": "Polar Bear Pelt",
     "raw_arctic_fox_pelt": "Raw Arctic Fox Pelt", "arctic_fox_fur": "Arctic Fox Fur",
     "raw_snow_leopard_pelt": "Raw Snow Leopard Pelt", "snow_leopard_pelt": "Snow Leopard Pelt",
     "polar_bear_cloak": "Polar Bear Cloak", "arctic_fox_hat": "Arctic Fox Hat", "snow_leopard_boots": "Snow Leopard Boots",
-    "raw_tiger_pelt": "Raw Tiger Pelt", "tiger_pelt": "Tiger Pelt", "tiger_pelt_cloak": "Tiger Pelt Cloak",
     "bone_marrow": "Bone Marrow", "plucked_black_grouse": "Plucked Black Grouse",
     "snowy_owl_feather": "Snowy Owl Feather", "black_grouse_tail_feather": "Black Grouse Lyre Feather",
     "lammergeier_feather": "Lammergeier Feather", "pika_hay": "Pika Hay",
 }
-ARMOR = {"polar_bear_cloak": ("chest_armor", "polar_bear_pelt"), "tiger_pelt_cloak": ("chest_armor", "tiger_pelt"),
+ARMOR = {"polar_bear_cloak": ("chest_armor", "polar_bear_pelt"),
          "arctic_fox_hat": ("head_armor", "arctic_fox_fur"),
          "snow_leopard_boots": ("foot_armor", "snow_leopard_pelt")}
-RUGS = {"polar_bear_rug": ("Polar Bear Rug", "polar_bear_pelt", 1), "snow_leopard_rug": ("Snow Leopard Rug", "snow_leopard_pelt", 2),
-        "tiger_rug": ("Tiger Rug", "tiger_pelt", 1)}
+RUGS = {"polar_bear_rug": ("Polar Bear Rug", "polar_bear_pelt", 1), "snow_leopard_rug": ("Snow Leopard Rug", "snow_leopard_pelt", 2)}
 
 lang = {}
 
@@ -150,8 +148,6 @@ for item, (slot, repair) in ARMOR.items():
 shapeless("polar_bear_cloak", [M + "polar_bear_pelt", M + "polar_bear_pelt", MC + "leather", M + "sinew"], M + "polar_bear_cloak",
           category="equipment")
 shapeless("arctic_fox_hat", [M + "arctic_fox_fur"] * 3 + [M + "sinew"], M + "arctic_fox_hat", category="equipment")
-shapeless("tiger_pelt_cloak", [M + "tiger_pelt", M + "tiger_pelt", MC + "leather", M + "sinew"], M + "tiger_pelt_cloak",
-          category="equipment")
 shapeless("snow_leopard_boots", [MC + "leather_boots", M + "snow_leopard_pelt", M + "snow_leopard_pelt", M + "sinew"],
           M + "snow_leopard_boots", category="equipment")
 

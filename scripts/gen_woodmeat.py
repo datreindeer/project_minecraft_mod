@@ -162,7 +162,7 @@ FAMILIES = {
     "dried_pork": ["minecraft:porkchop", "porkchop_scraps", "tapir_meat"],
     "dried_mutton": ["minecraft:mutton", "mutton_scraps", "ibex_meat", "chamois_meat"],
     "game_jerky": ["game_meat_scraps", "raw_mammoth", "raw_rhino", "onager_meat", "hyena_meat", "leopard_meat", "raw_lynx",
-                   "raw_wolverine", "raw_wildcat", "raw_polar_bear", "raw_snow_leopard", "raw_tiger"],
+                   "raw_wolverine", "raw_wildcat", "raw_polar_bear", "raw_snow_leopard"],
     "small_game_jerky": ["minecraft:rabbit", "rabbit_scraps", "raw_ermine", "raw_arctic_fox", "raw_pika", "raw_lemming", "raw_marten", "raw_mole", "raw_vole",
                          "marmot_meat", "raw_otter", "raw_snake", "lizard_tail", "tortoise_meat"],
     "dried_fowl": ["minecraft:chicken", "chicken_scraps", "raw_goose", "raw_pheasant", "raw_ptarmigan", "raw_pigeon",

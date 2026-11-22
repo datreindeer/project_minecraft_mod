@@ -90,6 +90,30 @@ public final class TribeIdlePoses {
                 arm(model.rightArm, -1.25F, -0.25F + rub, 0);
                 arm(model.leftArm, -1.25F, 0.25F - rub, 0);
             }
+            case CampLife.PRAY -> { // Oak Folk worshipper: hands raised to the tree, palms up, swaying slowly, face lifted
+                float sway = 0.12F * Mth.sin(t * 0.06F);
+                head(model, -0.45F + sway * 0.5F);
+                model.body.xRot = -0.05F + sway * 0.3F;
+                arm(model.rightArm, -2.3F + sway, -0.25F, 0.3F);
+                arm(model.leftArm, -2.3F + sway, 0.25F, -0.3F);
+            }
+            case CampLife.CANDLES -> { // Oak Folk light-bearer: a lit candle carried before them in each hand, elbows in
+                float bob = 0.04F * Mth.sin(t * 0.15F);
+                arm(model.rightArm, -1.05F + bob, -0.2F, 0.05F);
+                arm(model.leftArm, -1.05F - bob, 0.2F, -0.05F);
+                head(model, 0.25F);
+            }
+            case CampLife.STAFF -> { // the keeper raises the Verdant Staff high
+                head(model, -0.3F);
+                arm(model.rightArm, -2.6F, -0.1F, 0.15F);
+                arm(model.leftArm, -0.9F + 0.1F * Mth.sin(t * 0.2F), 0.4F, 0);
+            }
+            case CampLife.TEND -> { // Oak Folk gatherer: both hands down in the plants, picking or planting
+                head(model, 0.75F);
+                model.body.xRot = 0.35F;
+                arm(model.rightArm, -0.9F + 0.2F * Mth.sin(t * 0.5F), -0.15F, 0);
+                arm(model.leftArm, -0.9F + 0.2F * Mth.cos(t * 0.5F), 0.15F, 0);
+            }
             default -> {}
         }
     }

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 400,
+  "experience": 0.1,
+  "ingredient": "mechanical:monitor_meat",
+  "result": {
+    "id": "mechanical:cooked_monitor_meat",
+    "count": 1
+  }
+}

@@ -78,6 +78,9 @@ public final class Tribe {
                     .copyOnDeath()
                     .build());
 
+    /** The Oak Folk (OakFolk, F4): one people for every Ancient Oak, peaceful, with their own name. */
+    public static final UUID OAK = UUID.fromString("0a4c0a4c-0000-4000-8000-0000000a4c01");
+
     public final UUID id;
     public final Temperament temperament;
     public final String totem;
@@ -89,7 +92,7 @@ public final class Tribe {
         this.id = id;
         java.util.SplittableRandom r = new java.util.SplittableRandom(id.getMostSignificantBits() ^ Long.rotateLeft(id.getLeastSignificantBits(), 32));
         int t = r.nextInt(10);
-        temperament = t < 3 ? Temperament.PEACEFUL : t < 6 ? Temperament.WARY : t < 8 ? Temperament.TRADERS : Temperament.RAIDERS;
+        temperament = OAK.equals(id) ? Temperament.PEACEFUL : t < 3 ? Temperament.PEACEFUL : t < 6 ? Temperament.WARY : t < 8 ? Temperament.TRADERS : Temperament.RAIDERS;
         totem = TOTEMS[r.nextInt(TOTEMS.length)];
         DyeColor[] palette = COLOURS[temperament.ordinal()];
         base = palette[r.nextInt(palette.length)];
@@ -113,8 +116,13 @@ public final class Tribe {
         return new Tribe(id);
     }
 
-    /** "Raven Tribe". */
+    public boolean oak() {
+        return OAK.equals(id);
+    }
+
+    /** "Raven Tribe" ("Children of the Oak" for the Oak Folk). */
     public Component name() {
+        if (oak()) return Component.translatable("tribe.mechanical.oak_folk");
         return Component.translatable("tribe.mechanical.name", Component.translatable("tribe.mechanical.totem." + totem));
     }
 
@@ -158,6 +166,7 @@ public final class Tribe {
             map.put(id.toString(), now);
             player.setData(REPUTATION, Map.copyOf(map));
         }
+        if (oak() && now <= HOSTILE) OakQuests.close(player); // F4: a bad standing closes the Oak Folk's quest line for good
         if (player instanceof ServerPlayer sp) {
             sp.sendOverlayMessage(Component.translatable("message.mechanical.tribe.standing", name(), standing(now)));
             if (now >= BEST_FRIENDS) TribeVisits.award(sp, "tribe_friends");

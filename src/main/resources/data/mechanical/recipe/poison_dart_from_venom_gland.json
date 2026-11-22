@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "mechanical:dart",
+    "mechanical:dart",
+    "mechanical:dart",
+    "mechanical:dart",
+    "mechanical:venom_gland"
+  ],
+  "result": {
+    "id": "mechanical:poison_dart",
+    "count": 4
+  }
+}

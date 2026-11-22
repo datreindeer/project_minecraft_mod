@@ -20,6 +20,8 @@ import net.minecraft.world.phys.EntityHitResult;
  */
 public class KnifeItem extends Item {
     public static final int FLINT = 1, TUSK = 2, BRONZE = 2, IRON = 3;
+    /** The Ancient Ritual Knife (people.OakFolk, F4) only: takes the fine parts too (Butchery#dropRitual). Code may require tier >= RITUAL. */
+    public static final int RITUAL = 4;
     private final float speed, yieldMultiplier, hideMultiplier;
     private final int tier;
 

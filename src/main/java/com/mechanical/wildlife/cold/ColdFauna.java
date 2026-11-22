@@ -97,8 +97,6 @@ public final class ColdFauna {
             Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(List.of(new MobEffectInstance(MobEffects.NAUSEA, 400, 0),
                     new MobEffectInstance(MobEffects.POISON, 300, 1), new MobEffectInstance(MobEffects.HUNGER, 600, 1)))).build()));
 
-    public static final DeferredItem<Item> RAW_TIGER = food("raw_tiger", 3, 0.3F);
-    public static final DeferredItem<Item> COOKED_TIGER = food("cooked_tiger", 7, 0.7F);
     public static final DeferredItem<Item> RAW_PIKA = food("raw_pika", 1, 0.1F);
     public static final DeferredItem<Item> COOKED_PIKA = food("cooked_pika", 2, 0.4F);
     public static final DeferredItem<Item> RAW_BLACK_GROUSE = ITEMS.registerSimpleItem("raw_black_grouse", p -> p.food(
@@ -126,8 +124,6 @@ public final class ColdFauna {
     public static final DeferredItem<Item> ARCTIC_FOX_FUR = ITEMS.registerSimpleItem("arctic_fox_fur");
     public static final DeferredItem<Item> RAW_SNOW_LEOPARD_PELT = ITEMS.registerSimpleItem("raw_snow_leopard_pelt");
     public static final DeferredItem<Item> SNOW_LEOPARD_PELT = ITEMS.registerSimpleItem("snow_leopard_pelt");
-    public static final DeferredItem<Item> RAW_TIGER_PELT = ITEMS.registerSimpleItem("raw_tiger_pelt");
-    public static final DeferredItem<Item> TIGER_PELT = ITEMS.registerSimpleItem("tiger_pelt");
 
     // ---- goods ----
     /** A whole polar bear hide over the shoulders (Cloak slot): the warmest thing a hunter can wear. */
@@ -145,13 +141,6 @@ public final class ColdFauna {
     public static final DeferredBlock<BearRugBlock> SNOW_LEOPARD_RUG = rug("snow_leopard_rug", MapColor.COLOR_LIGHT_GRAY);
     public static final DeferredItem<BlockItem> SNOW_LEOPARD_RUG_ITEM = ITEMS.registerSimpleBlockItem("snow_leopard_rug", SNOW_LEOPARD_RUG);
 
-    /** A striped tiger skin over the shoulders (Cloak slot): warm, and the mark of a great hunter. */
-    private static final ArmorMaterial TIGER_CLOAK_MATERIAL = fur(9, 3, 18, "tiger_pelt", "tiger_pelt_cloak");
-    public static final DeferredItem<CloakItem> TIGER_PELT_CLOAK = ITEMS.registerItem("tiger_pelt_cloak",
-            p -> new CloakItem(p, TIGER_CLOAK_MATERIAL, true), p -> CloakItem.properties(p, TIGER_CLOAK_MATERIAL));
-    public static final DeferredBlock<BearRugBlock> TIGER_RUG = rug("tiger_rug", MapColor.COLOR_ORANGE);
-    public static final DeferredItem<BlockItem> TIGER_RUG_ITEM = ITEMS.registerSimpleBlockItem("tiger_rug", TIGER_RUG);
-
     public static final DeferredItem<SpawnEggItem> POLAR_BEAR_SPAWN_EGG = egg("polar_bear_spawn_egg", POLAR_BEAR);
     public static final DeferredItem<SpawnEggItem> ARCTIC_FOX_SPAWN_EGG = egg("arctic_fox_spawn_egg", ARCTIC_FOX);
     public static final DeferredItem<SpawnEggItem> SNOW_LEOPARD_SPAWN_EGG = egg("snow_leopard_spawn_egg", SNOW_LEOPARD);
@@ -162,8 +151,7 @@ public final class ColdFauna {
     public static final DeferredItem<SpawnEggItem> PIKA_SPAWN_EGG = egg("pika_spawn_egg", PIKA);
 
     static {
-        ColdhuntersFauna.CURES.putAll(Map.of(RAW_POLAR_BEAR_PELT, POLAR_BEAR_PELT, RAW_ARCTIC_FOX_PELT, ARCTIC_FOX_FUR, RAW_SNOW_LEOPARD_PELT, SNOW_LEOPARD_PELT,
-                RAW_TIGER_PELT, TIGER_PELT));
+        ColdhuntersFauna.CURES.putAll(Map.of(RAW_POLAR_BEAR_PELT, POLAR_BEAR_PELT, RAW_ARCTIC_FOX_PELT, ARCTIC_FOX_FUR, RAW_SNOW_LEOPARD_PELT, SNOW_LEOPARD_PELT));
     }
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
@@ -201,8 +189,11 @@ public final class ColdFauna {
         Butchery.register(ARCTIC_FOX::get, new Butchery.Yield(RAW_ARCTIC_FOX, 1, 1, List.of(extra(RAW_ARCTIC_FOX_PELT, 0.9F, 1, 1)), List.of()));
         Butchery.register(SNOW_LEOPARD::get, new Butchery.Yield(RAW_SNOW_LEOPARD, 1, 3, List.of(extra(RAW_SNOW_LEOPARD_PELT, 1.0F, 1, 1)),
                 List.of(extra(Wildlife.SINEW, 0.5F, 1, 2), extra(bone, 0.5F, 1, 2))));
-        Butchery.register(SIBERIAN_TIGER::get, new Butchery.Yield(RAW_TIGER, 3, 5, List.of(extra(RAW_TIGER_PELT, 1.0F, 1, 1)),
+        // the Siberian tiger gives the jungle tiger's meat and pelt (wildlife.jungle: the pelt is fat-tanned, mantle and rug there)
+        Butchery.register(SIBERIAN_TIGER::get, new Butchery.Yield(com.mechanical.wildlife.jungle.JungleFauna.TIGER_MEAT, 3, 5,
+                List.of(extra(com.mechanical.wildlife.jungle.JungleFauna.RAW_TIGER_PELT, 1.0F, 1, 1)),
                 List.of(extra(Wildlife.SINEW, 0.6F, 1, 2), extra(bone, 0.6F, 1, 3))));
+        Butchery.toughHide(SIBERIAN_TIGER::get);
         Butchery.register(PIKA::get, new Butchery.Yield(RAW_PIKA, 1, 1, List.of(), List.of()));
         // the black grouse: like the capercaillie, plucked whole (Birds) or cut up for meat, feathers and the lyre feathers
         com.mechanical.Birds.registerEdible(BLACK_GROUSE::get, PLUCKED_BLACK_GROUSE);

@@ -89,6 +89,7 @@ public final class Raids {
         int bestScore = Integer.MAX_VALUE;
         for (UUID id : ids) {
             Tribe tribe = Tribe.of(id);
+            if (tribe.oak()) continue; // the Oak Folk never leave their tree
             int rep = players.stream().mapToInt(tribe::reputation).min().orElse(tribe.temperament.start);
             boolean keen = tribe.temperament == Tribe.Temperament.WARY || tribe.temperament == Tribe.Temperament.RAIDERS;
             if (rep >= Tribe.FRIENDLY || rep >= 0 && !keen) continue;

@@ -36,22 +36,12 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:cooked_tiger"
-          }
-        ]
-      }
-    },
-    "has_4": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:cooked_pika"
           }
         ]
       }
     },
-    "has_5": {
+    "has_4": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -68,8 +58,7 @@
       "has_1",
       "has_2",
       "has_3",
-      "has_4",
-      "has_5"
+      "has_4"
     ]
   ],
   "display": {

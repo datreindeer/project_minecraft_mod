@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:wilderness/tiger_pelt",
+  "parent": "mechanical:wilderness/tiger",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",

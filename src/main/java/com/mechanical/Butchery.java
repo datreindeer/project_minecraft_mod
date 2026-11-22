@@ -275,6 +275,39 @@ public final class Butchery {
         if (y.inner().stream().noneMatch(e -> e.item().get() == Items.BONE)) drop(level, at, Items.BONE, 1 + Math.round(type.getWidth()) + random.nextInt(2));
     }
 
+    /**
+     * The fine parts only the Ancient Ritual Knife ({@link KnifeItem#RITUAL}) takes, after the second pass: its own
+     * entries ({@link #registerRitual}) or by body size: the heart from anything bigger than a hare, fine sinew from
+     * deer-sized and bigger, and a trophy skull from the big ones (always from giant deer, bears and the like). Never
+     * from birds, fish (whole meat), undead or a spoiled body.
+     */
+    public static List<Extra> ritualParts(EntityType<?> type) {
+        for (var e : RITUAL) if (e.type().get() == type) return e.yield();
+        if (Birds.isBird(type) || listed(WHOLE_MEAT, type) || yieldFor(type).meat().get() == Items.ROTTEN_FLESH) return List.of();
+        float size = Math.max(type.getWidth(), type.getHeight());
+        List<Extra> out = new ArrayList<>();
+        if (size >= 0.7F) out.add(new Extra(com.mechanical.people.OakFolk.ANIMAL_HEART, 0.9F, 1, 1));
+        if (size >= 1.2F) out.add(new Extra(com.mechanical.people.OakFolk.FINE_SINEW, 0.8F, 1, 2));
+        if (size >= 2.0F || requiredKnifeTier(type) >= KnifeItem.TUSK) out.add(new Extra(com.mechanical.people.OakFolk.TROPHY_SKULL, 1.0F, 1, 1));
+        else if (size >= 1.4F) out.add(new Extra(com.mechanical.people.OakFolk.TROPHY_SKULL, 0.35F, 1, 1));
+        return out;
+    }
+
+    private record Ritual(Supplier<? extends EntityType<?>> type, List<Extra> yield) {}
+    private static final List<Ritual> RITUAL = new ArrayList<>();
+
+    /** An animal's own fine parts for the ritual knife (overrides the by-size default of {@link #ritualParts}). */
+    public static void registerRitual(Supplier<? extends EntityType<?>> type, List<Extra> parts) {
+        RITUAL.add(new Ritual(type, parts));
+    }
+
+    /** Drops the fine parts (chances not scaled: they are the knife's alone). */
+    static void dropRitual(ServerLevel level, Entity at, EntityType<?> type) {
+        RandomSource random = level.getRandom();
+        for (Extra e : ritualParts(type))
+            if (random.nextFloat() < e.chance()) drop(level, at, e.item().get(), e.min() + random.nextInt(e.max() - e.min() + 1));
+    }
+
     /** Cost in meat units (1 unit = 1 scrap = 1 Smoked Meat) of a Haunch, Ribs and Loin, and how many of each one body has. */
     static final int[] CUT_UNITS = {3, 2, 2}, CUT_MAX = {4, 2, 2};
 

@@ -6,26 +6,6 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_tiger"
-          }
-        ]
-      }
-    },
-    "has_1": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_tiger_pelt"
-          }
-        ]
-      }
-    },
-    "has_2": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:sinew"
           }
         ]
@@ -38,12 +18,6 @@
   "requirements": [
     [
       "has_0"
-    ],
-    [
-      "has_1"
-    ],
-    [
-      "has_2"
     ],
     [
       "butchered"

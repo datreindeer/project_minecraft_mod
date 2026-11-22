@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:python_skin",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:snakeskin",
+    "count": 3
+  }
+}

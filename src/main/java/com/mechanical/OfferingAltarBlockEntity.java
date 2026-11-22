@@ -53,6 +53,8 @@ public class OfferingAltarBlockEntity extends BlockEntity {
     /** Where animals gather: just outside the hollow's opening (set by worldgen; defaults to the altar). */
     private BlockPos entrance;
     private long herdUntil;
+    /** The Oak Folk (people.OakFolk) have been settled round this oak. Only a worldgen altar (entrance set) gets them. */
+    private boolean folk;
     private final List<Mob> herd = new ArrayList<>();
 
     public OfferingAltarBlockEntity(BlockPos pos, BlockState state) {
@@ -114,6 +116,12 @@ public class OfferingAltarBlockEntity extends BlockEntity {
             if (t >= RITUAL_TICKS) altar.finish(level);
         }
         if (level.getGameTime() % 20 == 0 && !altar.herd.isEmpty()) altar.herd(level);
+        if (!altar.folk && altar.entrance != null && level.getGameTime() % 100 == 0
+                && level.hasChunksAt(pos.offset(-20, 0, -20), pos.offset(20, 0, 20))) {
+            altar.folk = true;
+            altar.setChanged();
+            com.mechanical.people.OakFolk.spawnGroup(level, pos, altar.entrance);
+        }
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, OfferingAltarBlockEntity altar) {
@@ -248,6 +256,7 @@ public class OfferingAltarBlockEntity extends BlockEntity {
         if (!item.isEmpty()) output.store("item", ItemStack.CODEC, item);
         output.putInt("ritual", ritual);
         if (entrance != null) output.putLong("entrance", entrance.asLong());
+        output.putBoolean("folk", folk);
     }
 
     @Override
@@ -257,6 +266,7 @@ public class OfferingAltarBlockEntity extends BlockEntity {
         ritual = input.getIntOr("ritual", 0);
         long e = input.getLongOr("entrance", Long.MIN_VALUE);
         entrance = e == Long.MIN_VALUE ? null : BlockPos.of(e);
+        folk = input.getBooleanOr("folk", false);
     }
 
     @Override

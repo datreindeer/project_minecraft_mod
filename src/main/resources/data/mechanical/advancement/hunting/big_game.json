@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_bison"
+            "items": "mechanical:orangutan_meat"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:raw_bison"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_musk_ox"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -76,12 +76,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:saiga_meat"
+            "items": "mechanical:raw_musk_ox"
           }
         ]
       }
     },
     "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:saiga_meat"
+          }
+        ]
+      }
+    },
+    "has_9": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -102,7 +112,8 @@
       "has_5",
       "has_6",
       "has_7",
-      "has_8"
+      "has_8",
+      "has_9"
     ]
   ],
   "display": {

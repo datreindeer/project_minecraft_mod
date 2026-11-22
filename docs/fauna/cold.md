@@ -100,13 +100,12 @@ tar man ner den torra pälsen med tom hand får man den färdiga pälsen, slås 
 | Omgång | Vad | Chans | Antal |
 |---|---|---|---|
 | 1 | Raw Tiger Pelt | 100 % | 1 |
-| 2 | Raw Tiger | – | 3–5 |
+| 2 | Tiger Meat | – | 3–5 |
 | 2 | Sinew | 60 % | 1–2 |
 | 2 | Bone | 60 % | 1–3 |
 
-**Produkter:** Raw Tiger (3) → **Cooked Tiger** (7 / 0,7); torkas till Game Jerky. Raw Tiger Pelt → torkställning →
-**Tiger Pelt**. **Tiger Pelt Cloak:** 2 Tiger Pelt + Leather + Sinew – Cloak-slotten, rustning 3, isolerar 25 %,
-förtrollbarhet 18, en randig tigerfäll som cape. **Tiger Rug:** Tiger Pelt + Bone.
+Tjock hud (Tusk Dagger eller bättre). **Produkterna är djungeltigerns** ([jungle.md](jungle.md)): samma Tiger Meat och
+Raw Tiger Pelt, som fettgarvas till Tiger Pelt och blir Tiger Pelt Mantle och Tiger Rug där.
 
 ## Snowy Owl (fjälluggla)
 
@@ -159,7 +158,7 @@ den märker och anfaller spelare på **dubbla avståndet** (24 block, 10 om man 
 
 - Rått kött förskäms på 1 dag, tillagat på 3; allt ruttnar till Rotten Flesh; rått kött kan rökas och torkas.
 - Prestationer: Wilderness – White Bear, Ice Walker, White Rug, Too Much of a Good Thing, Camp Follower, Snow-White Hat,
-  Grey Ghost, Soft Landing, Grey Rosettes, Lord of the Taiga, Striped Mantle, Tiger Skin Rug, White Wings, Lyre Tail,
+  Grey Ghost, Soft Landing, Grey Rosettes, White Wings, Lyre Tail,
   Bone Breaker, Bearded Vulture, Haymaker; Food – Arctic Fare, Marrow Feast; Hunting – Polar Bear, Snow Leopard och
   Siberian Tiger (Predators), Arctic Fox och Pika (Small Game), Black Grouse (Fowl).
 - Test (`ColdTest`): spawnlistor per biom och att vanilla-isbjörnen byts ut; isbjörnen väljer en säl vid iskanten som
