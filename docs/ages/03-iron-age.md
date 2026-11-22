@@ -512,14 +512,16 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 ### Stockar på vagnen (Felled Log)
 
 - Bär en fälld stock (Felled Log, se 01-stone-age.md *Fällda träd*) fram till vagnen och **högerklicka vagnen**
-  medan du lyfter den (det klicket går före allt annat på vagnen, som att spänna för): stocken läggs på flaket med rotänden mot framgaveln. Den får vara högst **4 block** lång (flaket är 3: ett
-  block hänger ut bak) och **bakgaveln tas bort** i modellen så länge en stock ligger där. Ni som bar den
-  släpper den.
-- Flaket måste vara **helt tomt** (inga moduler, kroppar eller djur): annars *"A log needs the whole bed"*. För lång:
-  *"Too long for the wagon: cut it to 4 blocks or less"* (kapa med yxa eller såg). En grenig stock rätas ut när den lastas.
-- Med en stock på flaket går inga moduler eller kroppar att lägga i, och vagnen räknas som **fullt lastad** (en ensam
-  häst rör den inte, paret går 15 % långsammare).
-- **Lasta av:** smyg + högerklicka vagnen med tom hand: stocken rullar av bakåt och blir liggande bakom vagnen.
+  medan du lyfter den (det klicket går före allt annat på vagnen, som att spänna för): stocken läggs på flaket med rotänden
+  mot framgaveln. Vagnen tar **upp till 3 stockar på högst 4 block**: två bredvid varandra i botten och den tredje ovanpå
+  mellan dem. På flaket ritas stockarna i 70 % storlek så att de får plats, och **bakgaveln tas bort** i modellen. Ni som
+  bar stocken släpper den.
+- Flaket måste vara utan moduler, kroppar och djur: annars *"Logs need an empty bed"*. För lång: *"Too long for this bed:
+  cut it to 4 blocks or less"*; en fjärde stock: *"No room for another log"*. En grenig stock rätas ut när den lastas.
+- Med stockar på flaket går inga moduler eller kroppar att lägga i. Tre stockar är **full last** (en ensam häst rör den
+  inte, paret går 15 % långsammare); en eller två räknas som en tredjedel eller två tredjedelar.
+- **Lasta av:** smyg + högerklicka vagnen med tom hand: den sista stocken rullar av bakåt och blir liggande bakom vagnen.
+- En **Cart** (bronsåldern) tar på samma sätt **en stock på högst 2 block** (inte med en kista monterad).
 - Stocken sparas med vagnen (den åker som passagerare).
 
 ### Advancements (Iron Age-fliken, efter *Forged*)

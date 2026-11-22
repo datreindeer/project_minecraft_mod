@@ -619,7 +619,9 @@ krockar inte med den.
   håller dig inom ~4 block från rotänden, ju tyngre stock desto långsammare går det. Tom hand + högerklick knyter loss;
   mer än 10 block bort brister repet (Lead faller där du står).
 - Med kniv på ett block av stocken ristar man in en **Dugout Blank** där blocket ligger (se *Dugout Canoe*).
-- Stocken går att lasta på en **Wagon** i järnåldern (upp till 4 block, lyft den och högerklicka vagnen, se 03-iron-age.md).
+- **Kollision:** stocken är fast för alla entities även när den ligger snett (egen kollision mot vridna lådor: man stannar mot
+  sidan och glider längs den, står på den; hästar kliver upp på den, djur och monster hoppar upp på den).
+- En **Cart** (bronsåldern) tar en stock på upp till 2 block. Stocken går att lasta på en **Wagon** i järnåldern (upp till 3 stockar på 4 block, lyft den och högerklicka vagnen, se 03-iron-age.md).
 - Avancemang: *Hauling Timber* (bär eller dra ett fällt träd), under *Firewood*.
 - Gamla Fallen Log-block i världen finns kvar och bearbetas som förut.
 
