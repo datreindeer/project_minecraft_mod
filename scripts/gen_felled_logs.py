@@ -20,9 +20,10 @@ old.update({
     "message.mechanical.felled_log.end_taken": "Someone already holds that end",
     "message.mechanical.felled_log.no_room": "No room to straighten the log here",
     "message.mechanical.felled_log.lifted": "End lifted. Walk to carry it; right-click it again or sneak to put it down",
-    "message.mechanical.wagon.log_no_room": "A log needs the whole bed: take out the modules and unload it first",
-    "message.mechanical.wagon.log_too_long": "Too long for the wagon: cut it to %s blocks or less",
-    "message.mechanical.wagon.log_loaded": "The log is on the wagon. Sneak + right-click the wagon with an empty hand to roll it off",
+    "message.mechanical.wagon.log_no_room": "Logs need an empty bed: take out the modules, chest and loads first",
+    "message.mechanical.wagon.log_too_long": "Too long for this bed: cut it to %s blocks or less",
+    "message.mechanical.wagon.log_loaded": "The log is loaded. Sneak + right-click with an empty hand to roll the last one off",
+    "message.mechanical.wagon.log_full": "No room for another log",
     "message.mechanical.wagon.log_first": "Unload the log first: sneak + right-click with an empty hand",
 })
 LANG.write_text(json.dumps(old, indent=2) + "\n", encoding="utf-8")

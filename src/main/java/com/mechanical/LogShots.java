@@ -159,13 +159,28 @@ public final class LogShots {
                     WagonEntity wg = (WagonEntity) wagon;
                     result.add("after right-clicking the wagon while lifting a 4-block log: harness " + wg.harness() + ", log on bed " + (wg.carriedLog() != null)
                             + ", lifting " + (FelledLogEntity.liftedBy(player()) != null) + ", player harnessed to " + TravoisEntity.harnessedTo(player()));
-                    mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-                    mc.player.setYRot(160);
+                    server.execute(() -> { // two more 4-block logs on the wagon (two below, one on top), a 2-block log on the cart
+                        ServerLevel sl = (ServerLevel) wagon.level();
+                        for (int k = 0; k < 2; k++) {
+                            FelledLogEntity extra = FelledLogEntity.spawnStraight(sl, base.add(-7.5, 0, 5.5 + k * 2), 0, 4, Blocks.OAK_LOG.defaultBlockState());
+                            ((WagonEntity) wagon).loadLog(sl, extra, player());
+                        }
+                        FelledLogEntity small = FelledLogEntity.spawnStraight(sl, base.add(3.5, 0, -6.5), 0, 2, Blocks.BIRCH_LOG.defaultBlockState());
+                        ((CartEntity) cart).loadLog(sl, small, player());
+                        look(wagon.position().add(3.2, 1.5, 1.5), 125, 25);
+                    });
                     next();
                 }
                 case 13 -> {
                     if (ticks < 15) return;
                     shot(mc, "wagon");
+                    result.add("wagon logs " + ((WagonEntity) wagon).carriedLogs().size() + ", cart log " + (((CartEntity) cart).carriedLog() != null));
+                    server.execute(() -> look(cart.position().add(2.2, 1.2, -1.0), 65, 25));
+                    next();
+                }
+                case 14 -> {
+                    if (ticks < 15) return;
+                    shot(mc, "cart");
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     server.execute(() -> {
                         logX.crack(1, 6);
@@ -176,14 +191,14 @@ public final class LogShots {
                     });
                     next();
                 }
-                case 14 -> {
+                case 15 -> {
                     if (ticks < 20) return;
                     FelledLogEntity cx = (FelledLogEntity) mc.level.getEntity(logX.getId());
                     result.add("crack on the client: block " + cx.crackedBlock() + " stage " + cx.crackStage());
                     shot(mc, "crack");
                     next();
                 }
-                case 15 -> { // a log turned off the grid (as when carried): its collision boxes, then lined up once it lies still
+                case 16 -> { // a log turned off the grid (as when carried): its collision boxes, then lined up once it lies still
                     if (ticks < 5) return;
                     showShapes = true;
                     server.execute(() -> {
@@ -192,18 +207,23 @@ public final class LogShots {
                     });
                     next();
                 }
-                case 16 -> {
+                case 17 -> {
                     if (ticks < 8) return;
                     shot(mc, "diag");
-                    next();
-                }
-                case 17 -> {
-                    if (ticks < 50) return;
-                    shot(mc, "diag_still");
-                    result.add("diag log yaw after lying still: " + diag.getYRot() + " on grid " + diag.onGrid());
+                    // walk straight at its side (real client movement): it must stop the player at the turned face
+                    Vec3 dm = diag.world(1), perp = new Vec3(1, 0, 0).yRot(-30 * net.minecraft.util.Mth.DEG_TO_RAD);
+                    mc.player.setPos(dm.add(perp.scale(2.5)));
+                    for (int k = 0; k < 16; k++) mc.player.move(net.minecraft.world.entity.MoverType.SELF, perp.scale(-0.2));
+                    result.add("walked at the 30-degree log: " + mc.player.position().subtract(dm).dot(perp) + " from its line (want 0.8)");
                     next();
                 }
                 case 18 -> {
+                    if (ticks < 50) return;
+                    shot(mc, "diag_still");
+                    result.add("diag log yaw after lying still: " + diag.getYRot() + " (stays turned)");
+                    next();
+                }
+                case 19 -> {
                     if (ticks < 20) return;
                     Files.write(new File(out, "logs_result.txt").toPath(), result);
                     stage = -2;

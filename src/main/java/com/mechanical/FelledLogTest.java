@@ -167,13 +167,65 @@ public final class FelledLogTest {
             List<Integer> sawnSizes = logs(h).stream().filter(l -> l != sawLog && l.position().distanceTo(sawLog.position()) < 3).map(FelledLogEntity::size).sorted().toList();
             h.assertTrue(!sawLog.isAlive() && sawnSizes.equals(List.of(1, 2)), "sawn at the seam behind the root block into 1 + 2 (" + sawnSizes + ")");
             for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(sawLog.position()) < 3) l.discard();
-            // turned 45° (as when carried) it collides inside its line and not beside it; lying still it lines up with the grid
+            // turned 45° (LogCollision): a mob walking at it stops at its side, exactly; one dropped on it stands on its top
             FelledLogEntity diag = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(13.5, 1, 10.5)), 45, 3, oak);
-            held[1] = diag;
             Vec3 dm = diag.world(1), perp = new Vec3(1, 0, 0).yRot(-45 * Mth.DEG_TO_RAD);
-            h.assertTrue(collides(level, new AABB(dm.x - 0.1, dm.y + 0.4, dm.z - 0.1, dm.x + 0.1, dm.y + 0.6, dm.z + 0.1)), "a turned log is solid on its line");
-            Vec3 beside = dm.add(perp.scale(0.62));
-            h.assertTrue(!collides(level, new AABB(beside.x - 0.05, beside.y + 0.4, beside.z - 0.05, beside.x + 0.05, beside.y + 0.6, beside.z + 0.05)), "no box sticks out beside a turned log");
+            var pig = net.minecraft.world.entity.EntityTypes.PIG.create(level, EntitySpawnReason.EVENT);
+            pig.setNoAi(true);
+            pig.setPos(dm.add(perp.scale(2.0)));
+            level.addFreshEntity(pig);
+            for (int k = 0; k < 12; k++) pig.move(net.minecraft.world.entity.MoverType.SELF, perp.scale(-0.25));
+            double apart = pig.position().subtract(dm).dot(perp), want = 0.5 + pig.getBbWidth() / 2;
+            h.assertTrue(Math.abs(apart - want) < 0.02, "a mob stops at a turned log's side (" + apart + " from its line, want " + want + ")");
+            pig.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(-perp.z, 0, perp.x).scale(0.8)); // along it: slides freely
+            double stillApart = pig.position().subtract(dm).dot(perp);
+            h.assertTrue(Math.abs(stillApart - want) < 0.02, "and slides along it (" + stillApart + ")");
+            pig.setPos(dm.add(0, 2.5, 0));
+            for (int k = 0; k < 10; k++) pig.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(0, -0.4, 0));
+            h.assertTrue(Math.abs(pig.getY() - (dm.y + 1)) < 0.01, "a mob stands on a turned log's top (y " + pig.getY() + ", top " + (dm.y + 1) + ")");
+            pig.discard();
+            h.assertTrue(!diag.onGrid(), "a turned log stays turned");
+            diag.discard();
+            // a Cart takes one log of up to 2 blocks; a Wagon three of up to 4 (two below, one on top), not a fourth
+            BlockPos bedAt = h.absolutePos(new BlockPos(13, 1, 3));
+            CartEntity cart = Carting.CART.get().create(level, EntitySpawnReason.EVENT);
+            cart.setPos(Vec3.atBottomCenterOf(bedAt));
+            level.addFreshEntity(cart);
+            FelledLogEntity three = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(bedAt.east(2)), 0, 3, oak);
+            player.setPos(three.endPoint(true).add(0, 0, -0.6));
+            three.lift(level, player, 0);
+            player.interactOn(cart, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cart.carriedLog() == null && FelledLogEntity.liftedBy(player) == three, "a cart refuses a 3-block log");
+            three.putDown(player);
+            three.discard();
+            FelledLogEntity two = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(bedAt.east(2)), 0, 2, oak);
+            player.setPos(two.endPoint(true).add(0, 0, -0.6));
+            two.lift(level, player, 0);
+            player.interactOn(cart, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cart.carriedLog() == two && cart.harness() == null, "a cart takes a 2-block log");
+            cart.ejectPassengers();
+            two.discard();
+            cart.discard();
+            WagonEntity bed = Carting.WAGON.get().create(level, EntitySpawnReason.EVENT);
+            bed.setPos(Vec3.atBottomCenterOf(bedAt));
+            level.addFreshEntity(bed);
+            for (int k = 0; k < 4; k++) {
+                FelledLogEntity four = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(bedAt.east(3)), 0, 4, oak);
+                player.setPos(four.endPoint(true).add(0, 0, -0.6));
+                four.lift(level, player, 0);
+                bed.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+                if (k == 3) {
+                    h.assertTrue(four.getVehicle() == null, "a wagon takes no fourth log");
+                    four.putDown(player);
+                    four.discard();
+                }
+            }
+            h.assertTrue(bed.carriedLogs().size() == 3, "a wagon takes three 4-block logs (" + bed.carriedLogs().size() + ")");
+            bed.positionRider(bed.carriedLogs().get(2));
+            h.assertTrue(bed.carriedLogs().get(2).getY() > bed.carriedLogs().get(0).getY() + 0.5, "the third lies on top");
+            bed.ejectPassengers();
+            for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(bed.position()) < 6) l.discard();
+            bed.discard();
             FelledLogEntity log = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(2.5, 1, 6.5)), -90, 8, oak); // root at x 2.5, crown at 9.5
             held[0] = log;
             player.setPos(log.endPoint(true).add(-0.8, 0, 0));
@@ -195,10 +247,6 @@ public final class FelledLogTest {
             log.putDown(player);
             log.putDown(second);
             h.assertTrue(log.lifterCount() == 0 && FelledLogEntity.liftedBy(second) == null, "both put it down");
-            FelledLogEntity diag = held[1];
-            h.assertTrue(diag.onGrid() && diag.collisionShape().bounds().getXsize() == 1.0 || diag.onGrid() && diag.collisionShape().bounds().getZsize() == 1.0,
-                    "a turned log lying still lines up with the grid (yaw " + diag.getYRot() + ", " + diag.collisionShape().bounds() + ")");
-            diag.discard();
             log.discard();
         });
 

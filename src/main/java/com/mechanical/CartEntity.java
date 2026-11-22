@@ -148,6 +148,24 @@ public class CartEntity extends TravoisEntity {
         return filled / (double) CHEST_SLOTS;
     }
 
+    /** One log of up to {@link #LOG_MAX} blocks on the bed. */
+    public static final int LOG_MAX = 2;
+
+    @Override
+    public int logSlots() {
+        return 1;
+    }
+
+    @Override
+    public int logMax() {
+        return LOG_MAX;
+    }
+
+    @Override
+    protected boolean logRoom() {
+        return !hasChest() && super.logRoom();
+    }
+
     /** Right-click an empty cart with a Chest: mounts it. */
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
@@ -241,6 +259,8 @@ public class CartEntity extends TravoisEntity {
     /** Sneak + right-click with an empty hand: the goods box, or the whole mounted chest. */
     @Override
     protected InteractionResult sneakUse(Player player) {
+        InteractionResult logs = unloadLogUse(player);
+        if (logs != null) return logs;
         if (!level().isClientSide()) {
             boolean chest = hasChest();
             player.openMenu(new SimpleMenuProvider((id, inventory, p) -> chest ? ChestMenu.sixRows(id, inventory, goods)
@@ -308,8 +328,14 @@ public class CartEntity extends TravoisEntity {
     /** Bodies lie side by side across the bed, lengthwise, each as wide as its room ({@link #rowOffset}). */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
-        double along = 0, side = rowOffset(passenger, 0.22);
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
+        if (passenger instanceof FelledLogEntity log) { // drawn at LOG_SCALE, lengthwise, its root end at the front board
+            double along = 0.75 - log.size() * LOG_SCALE / 2.0, rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch));
+            moveFunction.accept(passenger, getX() + dir.x * along, getY() + BED + rise, getZ() + dir.z * along);
+            log.setYRot(getYRot() + 180);
+            return;
+        }
+        double along = 0, side = rowOffset(passenger, 0.22);
         Vec3 right = Vec3.directionFromRotation(0, getYRot() + 90);
         double rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch)); // the bed tips about the axle (client only)
         moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED + rise, getZ() + dir.z * along + right.z * side);

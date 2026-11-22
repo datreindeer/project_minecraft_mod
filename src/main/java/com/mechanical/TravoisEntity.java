@@ -185,6 +185,98 @@ public class TravoisEntity extends Entity {
     static final double LEASH_RANGE = 10;
 
     /** Room a passenger takes: a body its load units; livestock by size (a hen or a young one 1, a pig or sheep 2, a cow 3). */
+    // ---- felled logs (FelledLogEntity) on the bed: none on a travois; a Cart and a Wagon take some (logSlots, logMax)
+
+    /** Logs drawn at this scale on a bed, so they fit (a 4-block log is 2.8 blocks on the wagon). */
+    public static final float LOG_SCALE = 0.7F;
+
+    /** How many logs fit on the bed (0: none). */
+    public int logSlots() {
+        return 0;
+    }
+
+    /** The longest log it takes, in blocks. */
+    public int logMax() {
+        return 0;
+    }
+
+    /** May logs go on now (no bodies, livestock, chests or modules on the bed)? */
+    protected boolean logRoom() {
+        return getPassengers().stream().allMatch(e -> e instanceof FelledLogEntity || e instanceof Player);
+    }
+
+    /** Distance from the middle to the back of the bed, where unloaded logs roll off. */
+    protected double rear() {
+        return 1.0;
+    }
+
+    /** The logs riding on the bed, in loading order. */
+    public java.util.List<FelledLogEntity> carriedLogs() {
+        java.util.List<FelledLogEntity> out = new java.util.ArrayList<>();
+        for (Entity e : getPassengers()) if (e instanceof FelledLogEntity log) out.add(log);
+        return out;
+    }
+
+    /** The first log on the bed, or null. */
+    public FelledLogEntity carriedLog() {
+        for (Entity e : getPassengers()) if (e instanceof FelledLogEntity log) return log;
+        return null;
+    }
+
+    /** When each player last loaded or unloaded a log by clicking (per side), so a held click doesn't go on to hitch or open anything. */
+    private static final java.util.Map<Player, Long> LOG_CLICK = new java.util.WeakHashMap<>(), LOG_CLICK_CLIENT = new java.util.WeakHashMap<>();
+    private static final int LOG_CLICK_TICKS = 10;
+
+    protected java.util.Map<Player, Long> logClicks() {
+        return level().isClientSide() ? LOG_CLICK_CLIENT : LOG_CLICK;
+    }
+
+    /** Was a log loaded or unloaded by {@code player} just now (the click is still held)? */
+    protected boolean justClickedLog(Player player) {
+        Long last = logClicks().get(player);
+        return last != null && !player.isShiftKeyDown() && level().getGameTime() - last < LOG_CLICK_TICKS;
+    }
+
+    /** Server: the log {@code player} lifts or pulls goes on the bed. */
+    protected void loadLog(ServerLevel level, FelledLogEntity log, Player player) {
+        if (!logRoom()) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_no_room"));
+            return;
+        }
+        if (carriedLogs().size() >= logSlots()) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_full"));
+            return;
+        }
+        if (log.size() > logMax()) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_too_long", logMax()));
+            return;
+        }
+        log.untieAll(level);
+        FelledLogEntity onBed = log.straight() ? log : log.straighten(level, getYRot() + 180, false);
+        onBed.startRiding(this, true, true);
+        playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.6F);
+        player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_loaded"));
+        if (player instanceof ServerPlayer sp && this instanceof WagonEntity) Kettle.award(sp, FelledLogEntity.WAGON_ADVANCEMENT);
+    }
+
+    /** Server: the last log loaded rolls off the back and lies behind. */
+    protected void unloadLog(FelledLogEntity log) {
+        log.stopRiding();
+        Vec3 back = position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(rear() + log.size() / 2.0 + 0.3));
+        log.setYRot(getYRot() + 180);
+        if (log.fits(level(), back, getYRot() + 180)) log.setPos(back);
+        playSound(SoundEvents.WOOD_FALL, 1.0F, 0.7F);
+    }
+
+    /** Sneak + right-click: unloads the last log, if any. Null if there is none. */
+    protected InteractionResult unloadLogUse(Player player) {
+        java.util.List<FelledLogEntity> logs = carriedLogs();
+        if (logs.isEmpty()) return null;
+        logClicks().put(player, level().getGameTime());
+        if (!level().isClientSide()) unloadLog(logs.getLast());
+        return InteractionResult.SUCCESS;
+    }
+
     public static int room(Entity e) {
         if (e instanceof CarcassEntity c) return c.loadUnits();
         if (isLivestock(e)) {
@@ -365,8 +457,16 @@ public class TravoisEntity extends Entity {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
-        // hands on a felled log: no hitching, loading or picking up (a Wagon takes the log first, in its own interact)
-        if (FelledLogEntity.handled(player) != null) return InteractionResult.FAIL;
+        // hands on a felled log: it goes on the bed if this takes logs; never hitching, loading or picking up
+        FelledLogEntity dragged = FelledLogEntity.handled(player);
+        if (dragged != null) {
+            if (logSlots() == 0) return InteractionResult.FAIL;
+            logClicks().put(player, level().getGameTime());
+            if (level() instanceof ServerLevel server) loadLog(server, dragged, player);
+            return InteractionResult.SUCCESS;
+        }
+        // the click that loaded a log, still held: it doesn't go on to hitch or open anything
+        if (justClickedLog(player)) return InteractionResult.SUCCESS;
         CarcassEntity hauled = CarcassHauling.hauled(player);
         if (hauled != null) {
             if (!level().isClientSide()) loadOn(hauled, player);
@@ -388,6 +488,8 @@ public class TravoisEntity extends Entity {
 
     /** Sneak + right-click with an empty hand: unloads the last body. */
     protected InteractionResult sneakUse(Player player) {
+        InteractionResult logs = unloadLogUse(player);
+        if (logs != null) return logs;
         if (load() == 0) return InteractionResult.PASS;
         if (!level().isClientSide()) unloadLast();
         return InteractionResult.SUCCESS;
@@ -510,6 +612,8 @@ public class TravoisEntity extends Entity {
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
+        if (passenger instanceof FelledLogEntity) return carriedLogs().size() < logSlots();
+        if (carriedLog() != null && !(passenger instanceof Player)) return false; // logs fill the bed
         int room = room(passenger);
         return room > 0 && (passenger instanceof CarcassEntity || carriesLivestock()) && load() + room <= capacity();
     }

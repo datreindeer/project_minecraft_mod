@@ -57,7 +57,7 @@ public final class LogLiftClient {
         net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
         if (mc.player == null || FelledLogEntity.liftedBy(mc.player) == null) return;
         if (event.isUseItem() && mc.hitResult instanceof net.minecraft.world.phys.EntityHitResult hit
-                && (hit.getEntity() instanceof FelledLogEntity || hit.getEntity() instanceof com.mechanical.WagonEntity)) return;
+                && (hit.getEntity() instanceof FelledLogEntity || hit.getEntity() instanceof com.mechanical.WagonEntity || hit.getEntity() instanceof com.mechanical.CartEntity)) return;
         event.setCanceled(true);
         event.setSwingHand(false);
     }

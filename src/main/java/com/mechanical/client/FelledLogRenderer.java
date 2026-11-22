@@ -34,6 +34,8 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         float kerfDepth;
         /** Lifted by hand: both ends up (raised evenly), or one end (the root end if rootUp) tilting the log about the other. */
         boolean bothUp, oneUp, rootUp;
+        /** Smaller on a cart or wagon bed (TravoisEntity#LOG_SCALE). */
+        float scale = 1;
         int length;
         /** Dev (LogShots): the collision boxes, relative to the entity. */
         net.minecraft.world.phys.shapes.VoxelShape debugShape;
@@ -79,6 +81,7 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         state.bothUp = log.rootLifted() && log.tailLifted();
         state.oneUp = log.rootLifted() != log.tailLifted();
         state.rootUp = log.rootLifted();
+        state.scale = log.getVehicle() instanceof com.mechanical.TravoisEntity ? com.mechanical.TravoisEntity.LOG_SCALE : 1;
         state.length = n;
         state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
         state.crackStage = log.crackStage();
@@ -147,6 +150,7 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             collector.submitShapeOutline(poseStack, state.debugShape, net.minecraft.client.renderer.rendertype.RenderTypes.lines(), 0xFFFF0000, 3.0F, false);
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(-state.yaw));
+        poseStack.scale(state.scale, state.scale, state.scale);
         // one straight log: raised evenly, or tilted about the bottom edge of the end on the ground so the lifted end's
         // underside comes up to LIFT_HEIGHT (the collision boxes step along the same line, FelledLogEntity#liftOffset)
         float h = FelledLogEntity.LIFT_HEIGHT;

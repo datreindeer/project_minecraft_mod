@@ -223,6 +223,20 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return pos.add(local(cells.get(i), cx, cz).yRot(-yaw * Mth.DEG_TO_RAD));
     }
 
+    /** Block {@code i}'s bottom middle on the log's own grid (x across, z along from the middle; y its layer). */
+    public Vec3 localCell(int i) {
+        return local(cells.get(i), cx, cz);
+    }
+
+    /** A world point on the log's own grid (only x and z turned), and back. */
+    public Vec3 toLocal(Vec3 world) {
+        return world.subtract(position()).yRot(getYRot() * Mth.DEG_TO_RAD);
+    }
+
+    public Vec3 toWorld(Vec3 local) {
+        return position().add(local.yRot(-getYRot() * Mth.DEG_TO_RAD));
+    }
+
     public Vec3 world(int i) {
         return world(i, position(), getYRot());
     }
@@ -571,24 +585,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         if (isRemoved()) return; // straightened into a new log
         moved |= settle(level);
         if (moved || !pullers.isEmpty() || lifterCount() > 0 || entityData.get(CRACK) >= 0 || entityData.get(KERF) >= 0) restTicks = 0;
-        else if (++restTicks > 20) {
-            snap(level);
-            awake = false;
-        }
-    }
-
-    /**
-     * Server: put down and lying still, it lines up with the block grid (turned to a multiple of 90°, each block in a whole
-     * cell), so its collision boxes are exactly its blocks. Stays as it is if that spot is taken.
-     */
-    private void snap(ServerLevel level) {
-        float yaw = Math.round(getYRot() / 90.0F) * 90.0F;
-        Vec3 r = world(0, position(), yaw);
-        Vec3 pos = position().add(Math.floor(r.x) + 0.5 - r.x, 0, Math.floor(r.z) + 0.5 - r.z);
-        if (Math.abs(Mth.wrapDegrees(yaw - getYRot())) < 0.01F && pos.distanceToSqr(position()) < 1.0E-6) return;
-        if (!fits(level, pos, yaw)) return;
-        setYRot(yaw);
-        setPos(pos);
+        else if (++restTicks > 20) awake = false;
     }
 
     /** Is it lined up with the block grid? */
@@ -1183,22 +1180,18 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         removeBlock(level, i);
     }
 
-    /** Each block's box, upright in the world (a log turned off the grid steps a little): what players and mobs walk on and against. */
+    /** Each block's box when the log lies on the block grid (vanilla collision); empty off it (LogCollision handles that). */
     public net.minecraft.world.phys.shapes.VoxelShape collisionShape() {
         int liftKey = (rootLifted() ? 1 : 0) + (tailLifted() ? 2 : 0);
         if (shape == null || shapeFor != getBoundingBox() || shapeLift != liftKey) {
             shapeLift = liftKey;
             net.minecraft.world.phys.shapes.VoxelShape out = net.minecraft.world.phys.shapes.Shapes.empty();
-            // on the grid one box per block, exactly the block; turned off it (being carried) the biggest upright squares
-            // that fit inside the turned log, every quarter block along it, so nothing sticks out beside it
-            double r = getYRot() * Mth.DEG_TO_RAD, side = onGrid() ? 1 : 1 / (Math.abs(Math.sin(r)) + Math.abs(Math.cos(r))), h = side / 2;
-            int steps = side == 1 ? 1 : 4;
-            for (int i = 0; i < cells.size(); i++) {
-                Vec3 l = local(cells.get(i), cx, cz);
-                for (int k = 0; k < steps; k++) {
-                    double along = steps == 1 ? 0 : -0.5 + h + k * (1 - side) / (steps - 1);
-                    Vec3 w = position().add(new Vec3(l.x, l.y, l.z + along).yRot(-getYRot() * Mth.DEG_TO_RAD)).add(0, liftOffset(i), 0);
-                    out = net.minecraft.world.phys.shapes.Shapes.joinUnoptimized(out, net.minecraft.world.phys.shapes.Shapes.create(w.x - h, w.y, w.z - h, w.x + h, w.y + 1, w.z + h),
+            // on the grid one box per block, exactly the block; turned off it vanilla gets nothing (it only knows upright
+            // boxes): LogCollision clips movement against the turned blocks instead
+            if (onGrid()) {
+                for (int i = 0; i < cells.size(); i++) {
+                    Vec3 w = world(i).add(0, liftOffset(i), 0);
+                    out = net.minecraft.world.phys.shapes.Shapes.joinUnoptimized(out, net.minecraft.world.phys.shapes.Shapes.create(w.x - 0.5, w.y, w.z - 0.5, w.x + 0.5, w.y + 1, w.z + 0.5),
                             net.minecraft.world.phys.shapes.BooleanOp.OR);
                 }
             }
@@ -1249,7 +1242,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     protected boolean canRide(Entity vehicle) {
-        return vehicle instanceof WagonEntity;
+        return vehicle instanceof TravoisEntity bed && bed.logSlots() > 0;
     }
 
     @Override

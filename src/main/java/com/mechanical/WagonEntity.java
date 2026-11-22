@@ -154,63 +154,32 @@ public class WagonEntity extends TravoisEntity {
 
     // ---- a felled log (FelledLogEntity) on the bed
 
-    /** When each player last loaded or unloaded a log by clicking (both sides), and how long further clicks are ignored. */
-    private static final java.util.Map<Player, Long> LOG_CLICK = new java.util.WeakHashMap<>(), LOG_CLICK_CLIENT = new java.util.WeakHashMap<>();
-
-    /** Per side: in singleplayer the client's and the server's player are equal (same entity id). */
-    private java.util.Map<Player, Long> logClicks() {
-        return level().isClientSide() ? LOG_CLICK_CLIENT : LOG_CLICK;
-    }
-    private static final int LOG_CLICK_TICKS = 10;
-
-    /** The log riding on the bed, or null. */
-    public FelledLogEntity carriedLog() {
-        for (Entity e : getPassengers()) if (e instanceof FelledLogEntity log) return log;
-        return null;
-    }
-
-    /** Server: the log {@code player} drags goes on the bed: up to {@link FelledLogEntity#WAGON_MAX} blocks, on an empty bed. */
-    private void loadLog(ServerLevel level, FelledLogEntity log, Player player) {
-        boolean empty = count(EMPTY) == SLOTS && getPassengers().stream().noneMatch(e -> !(e instanceof Player));
-        if (!empty) {
-            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_no_room"));
-            return;
-        }
-        if (log.size() > FelledLogEntity.WAGON_MAX) {
-            player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_too_long", FelledLogEntity.WAGON_MAX));
-            return;
-        }
-        log.untieAll(level);
-        FelledLogEntity onBed = log.straight() ? log : log.straighten(level, getYRot() + 180, false);
-        onBed.startRiding(this, true, true);
-        playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.6F);
-        player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_loaded"));
-        if (player instanceof ServerPlayer sp) Kettle.award(sp, FelledLogEntity.WAGON_ADVANCEMENT);
-    }
-
-    /** Server: the log rolls off the open back and lies behind the wagon. */
-    private void unloadLog(FelledLogEntity log) {
-        log.stopRiding();
-        Vec3 back = position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(REAR + log.size() / 2.0 + 0.3));
-        log.setYRot(getYRot() + 180);
-        if (log.fits(level(), back, getYRot() + 180)) log.setPos(back);
-        playSound(SoundEvents.WOOD_FALL, 1.0F, 0.7F);
+    @Override
+    public int logSlots() {
+        return 3;
     }
 
     @Override
-    protected InteractionResult sneakUse(Player player) {
-        FelledLogEntity log = carriedLog();
-        if (log == null) return super.sneakUse(player);
-        logClicks().put(player, level().getGameTime());
-        if (!level().isClientSide()) unloadLog(log);
-        return InteractionResult.SUCCESS;
+    public int logMax() {
+        return FelledLogEntity.WAGON_MAX;
+    }
+
+    /** Logs need the whole bed: no modules, bodies or livestock. */
+    @Override
+    protected boolean logRoom() {
+        return count(EMPTY) == SLOTS && super.logRoom();
+    }
+
+    @Override
+    protected double rear() {
+        return REAR;
     }
 
     /** As heavy as its bodies, or its chests, whichever is fuller, plus a towed cart's share ({@link #TRAILER_WEIGHT}), at most 1. */
     @Override
     public double loadFraction() {
         if (level().isClientSide()) return entityData.get(FULLNESS);
-        if (carriedLog() != null) return 1; // a whole log: a full load
+        if (carriedLog() != null) return carriedLogs().size() / 3.0; // three logs: a full load
         TravoisEntity trailer = pulling(this);
         double towed = trailer == null ? 0 : trailer.loadFraction() * TRAILER_WEIGHT;
         int filled = 0, slots = 0;
@@ -487,9 +456,6 @@ public class WagonEntity extends TravoisEntity {
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         ItemStack held = player.getMainHandItem();
-        // a held right-click repeats: right after a log went on or off, the next clicks don't hitch or open anything
-        Long last = logClicks().get(player);
-        if (last != null && !player.isShiftKeyDown() && level().getGameTime() - last < LOG_CLICK_TICKS) return InteractionResult.SUCCESS;
         // a log you lift or pull goes on the bed: before any other use of the click (hitching, modules, seats)
         FelledLogEntity dragged = FelledLogEntity.handled(player);
         if (dragged != null) {
@@ -497,6 +463,8 @@ public class WagonEntity extends TravoisEntity {
             if (level() instanceof ServerLevel server) loadLog(server, dragged, player);
             return InteractionResult.SUCCESS;
         }
+        // a held right-click repeats: right after a log went on or off, the next clicks don't hitch or open anything
+        if (justClickedLog(player)) return InteractionResult.SUCCESS;
         int slot = slotAt(location), module = moduleFor(held);
         if (module != EMPTY && CarcassHauling.hauled(player) == null) {
             if (!level().isClientSide()) placeModule(player, slot, module, held);
@@ -520,7 +488,7 @@ public class WagonEntity extends TravoisEntity {
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
-        if (passenger instanceof FelledLogEntity) return carriedLog() == null;
+        if (passenger instanceof FelledLogEntity) return super.canAddPassenger(passenger);
         if (passenger instanceof Player) {
             int seated = 0;
             for (Entity e : getPassengers()) if (e instanceof Player) seated++;
@@ -564,9 +532,13 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
         Vec3 dir = Vec3.directionFromRotation(0, getYRot());
-        if (passenger instanceof FelledLogEntity log) { // its root end against the front board, the rest out over the open back
-            double along = SLOTS * SLOT_DEPTH / 2 - log.size() / 2.0;
-            moveFunction.accept(passenger, getX() + dir.x * along, getY() + BED, getZ() + dir.z * along);
+        if (passenger instanceof FelledLogEntity log) {
+            // drawn at LOG_SCALE: two side by side on the floor, the third on top between them; root ends at the front board
+            int n = carriedLogs().indexOf(log);
+            double s = LOG_SCALE, along = SLOTS * SLOT_DEPTH / 2 - 0.125 - log.size() * s / 2.0;
+            double side = n == 0 ? -s / 2 : n == 1 ? s / 2 : 0, up = n >= 2 ? s : 0;
+            Vec3 right = Vec3.directionFromRotation(0, getYRot() + 90);
+            moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED + up, getZ() + dir.z * along + right.z * side);
             log.setYRot(getYRot() + 180);
             return;
         }

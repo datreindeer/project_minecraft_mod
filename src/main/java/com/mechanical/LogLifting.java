@@ -34,7 +34,7 @@ public final class LogLifting {
 
     @SubscribeEvent
     static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof FelledLogEntity || event.getTarget() instanceof WagonEntity || !lifting(event.getEntity())) return;
+        if (event.getTarget() instanceof FelledLogEntity || event.getTarget() instanceof WagonEntity || event.getTarget() instanceof CartEntity || !lifting(event.getEntity())) return;
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.FAIL);
     }
