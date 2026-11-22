@@ -946,6 +946,9 @@ TABS["wilderness"][1].extend([
      "A neighbouring camp gathers enough wood, stone and hides to grow, and raises a palisade", by_code()),
     ("tribe_friends", "tribe_visit", "hide_canvas", C, "Best of Friends",
      "Reach a standing of 80 with a tribe: trade with them, bring them food, let them stay by your fire", by_code()),
+    ("tribe_carcass_gift", "tribe_land", "minecraft:rabbit", T, "Meat for the Pot",
+     "Put a carcass down at the camp of a tribe that likes you (Neutral or better): a generous gift. Bigger game pleases them more. "
+     "Below Neutral they take it as a threat", by_code()),
     # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
     ("caravan", "root", "minecraft:chest", T, "The Caravan Has Come",
      "Talk to the old trader of a Trader Caravan: horses, covered carts and armed guards, now and then near you as the Wandering Trader once was",

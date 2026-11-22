@@ -60,7 +60,7 @@ public final class ClanNetwork {
 
     public record Entry(UUID id, String name) {}
 
-    /** The player's standing with one NPC tribe they know (people.Tribe#REPUTATION), for the Relations tab. */
+    /** The standing (their player tribe's, A4: people.Tribe#standings) with one NPC tribe, for the Relations tab. */
     public record Relation(UUID tribe, int rep) {}
 
     /**
@@ -311,7 +311,7 @@ public final class ClanNetwork {
     /** Every NPC tribe the player has a standing with, best first. */
     static List<Relation> relations(ServerPlayer player) {
         List<Relation> out = new ArrayList<>();
-        player.getData(com.mechanical.people.Tribe.REPUTATION).forEach((id, rep) -> {
+        com.mechanical.people.Tribe.standings(player).forEach((id, rep) -> {
             try {
                 out.add(new Relation(UUID.fromString(id), rep));
             } catch (IllegalArgumentException ignored) {

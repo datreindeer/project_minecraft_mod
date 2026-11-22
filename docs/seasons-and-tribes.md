@@ -60,11 +60,17 @@
   **färg** (en av de 16 dye-färgerna) med vimpelknappen uppe till höger; klick ger nästa färg. Gamla stammar får
   en färg utifrån sitt id.
 - **Relationsfliken** (byggd): flikknapparna **Tribe | Relations** ovanför stamsidan. Relations listar varje NPC-stam
-  spelaren har en relation med (`Tribe.REPUTATION`), bäst först: vimpel i stammens färg, namn, temperament (Peaceful,
+  spelaren (eller hens stam) har en relation med (`Tribe.standings`), bäst först: vimpel i stammens färg, namn, temperament (Peaceful,
   Wary, Raiders, Traders), en stapel från -100 till 100 med streck vid 0 fylld i nivåns färg, och nivåord + tal
   ("Friendly 45"; nivåer som `Tribe.standing`: Hostile ≤ -40, Unfriendly < 0, Neutral < 30, Friendly < 70, Honoured).
   Sju rader per sida med ▲▼. Bara spelarens relation till NPC-stammar (inga NPC↔NPC- eller stam↔stam-relationer).
-  Fungerar även utan egen stam. Data: `ClanNetwork.View.relations`. Relationen är per spelare tills den blir delad per stam.
+  Fungerar även utan egen stam. Data: `ClanNetwork.View.relations`.
+- **Relation per stam** (byggd, A4): alla i en spelarstam delar relationen med varje NPC-stam (sparas i stammen,
+  `Clans.Clan.reputation`). Spelare utan stam har sin egen (`Tribe.REPUTATION`). När man grundar eller går med läggs ens
+  egen relation in i stammens som ett **medelvärde** över medlemmarna (en NPC-stam som saknas räknas som dess startvärde);
+  gamla stammar slås ihop när varje medlem loggar in. Den som lämnar, kickas eller är med när stammen upplöses **behåller
+  stammens värde** som sitt eget (offline: vid nästa inloggning). Alla läsningar och ändringar går via `Tribe.standings`
+  och `Tribe.addReputation` (handel, dialog, besök, räder, gåvor, zontiteln, relationsfliken).
 - **Zontitel** (byggd): när man går in på en stams mark visas en barkpanel en fjärdedel ned på skärmen i 5 s (tonar in
   och ut): "You are now entering X's land" med vimpel och namn i stammens färg, och under det relationen ("Friendly 45")
   för NPC-stammar, "Home" på den egna stammens mark och inget mer på en annan spelarstams. Mark: en spelarstams 3x3

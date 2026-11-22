@@ -157,6 +157,9 @@ lang.update({
     "chat.mechanical.tribesperson.warn": "This is our land. Turn back, stranger, or bleed.",
     "chat.mechanical.tribesperson.thief": "Thief! Those are our stores!",
     "chat.mechanical.tribesperson.gift": "A gift? You are kind. We will remember.",
+    "chat.mechanical.tribesperson.carcass_gift": "Meat for the whole camp! A fine gift, friend. We will not forget it.",
+    "chat.mechanical.tribesperson.carcass_gift_again": "More meat? You are generous. Our pots are full today.",
+    "chat.mechanical.tribesperson.carcass_threat": "You throw a dead beast at our fire? Is that a warning? We are watching you.",
     "chat.mechanical.tribesperson.no_trade_stranger": "We do not trade with strangers. Earn our trust first.",
 })
 w(LANG, lang)

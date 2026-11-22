@@ -27,7 +27,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for tribe lands (Lands.landAt), tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour, the Tab list roster, the Fire Pit's force-loading (A2), someone home at a camp (A3) and the empty server's tick rate (A1). */
+/** Game test for tribe lands (Lands.landAt), tribe votes (2/3 rule, offline counts as no, leadership vote by votes cast), the tribe's age and the world's, its colour, the Tab list roster, the Fire Pit's force-loading (A2), someone home at a camp (A3), standings with NPC tribes shared by the tribe (A4: average on joining, kept on leaving) and the empty server's tick rate (A1). */
 @EventBusSubscriber(modid = MODID)
 public final class ClanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -214,6 +214,41 @@ public final class ClanTest {
         camp.keepPitsLoaded(server);
         check(h, camp.loaded.isEmpty() && home.pit.isEmpty(), "broken pit let go");
         check(h, !Clans.PIT_TICKETS.forceChunk(level, pitPos, pc.x(), pc.z(), false, false), "broken pit's ticket released");
+
+        // A4: a player tribe shares one standing with each NPC tribe; joining folds yours into the average, leaving keeps it
+        Clans real = Clans.get(server);
+        UUID npc = UUID.randomUUID();
+        com.mechanical.people.Tribe tribe = com.mechanical.people.Tribe.of(npc);
+        String key = npc.toString();
+        var pa = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        var pb = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        var pc2 = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        pa.setData(com.mechanical.people.Tribe.REPUTATION, Map.of(key, 40));
+        pb.setData(com.mechanical.people.Tribe.REPUTATION, Map.of(key, 0));
+        Clans.Clan shared = new Clans.Clan(UUID.randomUUID(), "Shared", Optional.empty(),
+                List.of(new Clans.Member(pa.getUUID(), "a", Clans.LEADER, 0, 0)), List.of(), Optional.empty(), Optional.empty());
+        real.clans.add(shared);
+        try {
+            check(h, tribe.reputation(pa) == 40, "a lone founder keeps their standing");
+            shared.members.add(new Clans.Member(pb.getUUID(), "b", Clans.NEWCOMER, 0, 0));
+            check(h, tribe.reputation(pb) == 20 && tribe.reputation(pa) == 20, "joining: the average of the members (40, 0 -> 20)");
+            tribe.addReputation(pa, 6);
+            check(h, tribe.reputation(pb) == 26, "one member's deeds count for all");
+            check(h, pb.getData(com.mechanical.people.Tribe.REPUTATION).get(key) == 0, "own standing untouched while in the tribe");
+            shared.members.add(new Clans.Member(pc2.getUUID(), "c", Clans.NEWCOMER, 0, 0));
+            int expect = Math.round((26 * 2 + tribe.temperament.start) / 3F);
+            check(h, tribe.reputation(pc2) == expect, "a newcomer who never met them counts at the tribe's start");
+            check(h, com.mechanical.people.Tribe.standings(pa).get(key) == expect, "the Relations tab reads the shared map");
+            real.remove(server, shared, pb.getUUID(), "message.mechanical.clan.left");
+            check(h, Integer.valueOf(expect).equals(real.leftWith.get(pb.getUUID()).get(key)), "a leaver (offline) keeps the tribe's standing at login");
+            check(h, tribe.reputation(pa) == expect, "the others keep the shared standing");
+            var saved = Clans.Clan.CODEC.encodeStart(JsonOps.INSTANCE, shared).getOrThrow();
+            var back = Clans.Clan.CODEC.parse(JsonOps.INSTANCE, saved).getOrThrow();
+            check(h, back.reputation.get(key) == expect && back.pooled.contains(pa.getUUID()) && !back.pooled.contains(pb.getUUID()), "shared standings saved");
+        } finally {
+            real.clans.remove(shared);
+            real.leftWith.remove(pb.getUUID());
+        }
 
         // A1: half the tick rate while empty, back when someone logs in; an op's own rate is left alone
         float n = com.mechanical.EmptyServer.NORMAL, half = com.mechanical.EmptyServer.EMPTY;

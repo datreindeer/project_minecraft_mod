@@ -28,8 +28,8 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 /**
  * A tribe ("lag"): every camp, hunting band and village is one, identified by its group id. Name (a totem animal), banner
  * and temperament all follow from that id, so nothing about the tribe itself needs saving. What players did to a tribe is
- * saved per player ({@link #REPUTATION}, -100..100, starting at the temperament's default); every member reacts to it,
- * also members the player never met.
+ * saved per player ({@link #REPUTATION}, -100..100, starting at the temperament's default), or shared by a player tribe's
+ * members ({@link #standings}); every member reacts to it, also members the player never met.
  */
 public final class Tribe {
     /** How a tribe meets strangers: default standing, whether they guard their land, and how keen they are to trade. */
@@ -136,17 +136,28 @@ public final class Tribe {
 
     // ---- reputation ----
 
-    public int reputation(Player player) {
-        return player.getData(REPUTATION).getOrDefault(id.toString(), temperament.start);
+    /**
+     * The standings a player goes by (tribe id -> -100..100): their player tribe's, shared by all its members (A4,
+     * clan.Clans#sharedStandings), or their own outside one. Every read of a standing goes through here.
+     */
+    public static Map<String, Integer> standings(Player player) {
+        Map<String, Integer> shared = com.mechanical.clan.Clans.sharedStandings(player);
+        return shared != null ? shared : player.getData(REPUTATION);
     }
 
-    /** Changes the player's standing (clamped) and tells them in the action bar when it changes. */
+    public int reputation(Player player) {
+        return standings(player).getOrDefault(id.toString(), temperament.start);
+    }
+
+    /** Changes the player's standing (their player tribe's if they have one; clamped) and tells them in the action bar. */
     public void addReputation(Player player, int delta) {
         int old = reputation(player), now = Mth.clamp(old + delta, MIN, MAX);
         if (now == old) return;
-        Map<String, Integer> map = new java.util.HashMap<>(player.getData(REPUTATION));
-        map.put(id.toString(), now);
-        player.setData(REPUTATION, Map.copyOf(map));
+        if (!com.mechanical.clan.Clans.setShared(player, id.toString(), now)) {
+            Map<String, Integer> map = new java.util.HashMap<>(player.getData(REPUTATION));
+            map.put(id.toString(), now);
+            player.setData(REPUTATION, Map.copyOf(map));
+        }
         if (player instanceof ServerPlayer sp) {
             sp.sendOverlayMessage(Component.translatable("message.mechanical.tribe.standing", name(), standing(now)));
             if (now >= BEST_FRIENDS) TribeVisits.award(sp, "tribe_friends");
