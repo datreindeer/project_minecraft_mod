@@ -595,14 +595,11 @@ krockar inte med den.
 - **Hugga:** håll in höger- eller vänsterklick med yxa på stocken (vänsterklick slår inte sönder fällda träd eller
   Fallen Logs med yxa eller såg, det gör samma sak som högerklick). Hugget är ett långsamt tvåhandshugg: yxan upp över
   huvudet och ner (ett hugg var 16:e tick). Ett block som har bark kvar **barkas först** (1–2 Bark). Sedan hugger yxan, som
-  sågen, ett **jack i fogen** på den sida du tittar mot, bredare och djupare för varje hugg, tills stocken delas där
-  (några Sticks av spånen). En bit på ett block huggs vidare genom Fallen Logs steg (Sticks, sist en Rough Log).
-- **Såga (Bronze Saw):** på en lång stock sågar man **i fogen mellan två block**, på den sida av blocket man tittar mot.
-  Sågskåran syns som en mörk linje över toppen och ner längs sidorna, djupare för varje sågtag; efter 8 sågtag går stocken
-  isär där, utan att något block försvinner. En **bit på ett block** (eller en grenig stock som inte rätats ut) sågas som
-  en Fallen Log: skåran syns mitt i blocket, och efter 8 sågtag blir det Bark + 3 Rough Logs. Huggs ett block bort i mitten
-  delas stocken i två, kapar man en ände blir den kortare. Woodcutters hugger fällda träd från toppänden först (ett block
-  per tur, de bär hem veden), och bävrar gnager dem.
+  sågen, ett **jack mitt i blocket** (samma skåra som på en Fallen Log), djupare för varje hugg, tills blocket är avhugget:
+  en Rough Log med yxans lyckochans, annars Sticks, och stocken delas där.
+- **Såga (Bronze Saw):** en skåra mitt i blocket, djupare för varje sågtag; efter 8 sågtag är blocket avsågat (Bark om det
+  hade bark kvar, + 3 Rough Logs) och stocken delas där. Ett block i mitten delar stocken i två, en ände gör den kortare.
+  Woodcutters hugger fällda träd från toppänden först (ett block per tur, de bär hem veden), och bävrar gnager dem.
 - **Lyfta för hand (upp till 12 block):** högerklicka **en ände** (rotänden eller toppänden) med tom hand. Stocken rätas
   ut och du bär den änden i händerna medan den andra släpar i marken bakom (stocken lutar). En andra spelare kan lyfta
   den andra änden: då bär ni den mellan er, var och en drar sin ände och stocken följer er båda (ni hålls inom ~2 block
