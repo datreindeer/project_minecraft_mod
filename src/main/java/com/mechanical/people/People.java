@@ -55,6 +55,7 @@ public final class People {
         com.mechanical.worldgen.PeopleFeatures.FEATURE_TYPES.register(modEventBus);
         Tribe.init();
         TribeTest.init(modEventBus);
+        RelationsTest.init(modEventBus);
     }
 
     @SubscribeEvent

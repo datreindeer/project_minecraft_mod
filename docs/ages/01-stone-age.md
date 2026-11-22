@@ -1972,6 +1972,16 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
   byggt** (tält, rack, palissad) medan någon av dem ser det. Ryktet styr priser, gåvornas kvalitet och om de slår sig ner.
   Vid **-40 (Hostile)** handlar de inte, skickar inga handlare, anfaller dig vid sitt läger och kan **plundra ditt läger**
   (de räknas av Räder även när deras läger inte är laddat).
+  **Är du med i en spelarstam delar ni ryktet:** det ni gör räknas för hela stammen. Går du med får stammen medelvärdet av
+  medlemmarnas rykte; lämnar du behåller du stammens värde.
+- **Carcass som gåva:** lägg ner en carcass (bär den och släpp, eller lägg den på ett block) inom 12 block från ett
+  NPC-lägers eld. Är ryktet **Neutral eller bättre** (0+) är det en generös gåva: ryktet stiger med djurets kött (1 för en
+  hare, upp till 10 för de största djuren), de tackar, gröna gnistor syns, och någon av dem kommer och styckar den eller
+  hänger den på lägrets Hanging Rack. Bara **den första gåvan per dag** till varje stam räknas (per spelarstam); fler tas
+  emot men ger inget. Under Neutral ses det som ett **hot**: -5 rykte, och deras beväpnade håller ögonen på dig en minut.
+  Ger framsteget *Meat for the Pot* (Wilderness).
+- **Försvar:** ett band som besöker ditt läger hjälper till. Deras beväpnade (jägare och alla med vapen) slåss mot monster
+  och mot andra stammars räder inom lägrets zon (24 block från elden), de andra flyr till din eld.
 - **Hudtält (block):** **Hide Canvas** (2 Scraped Hide + Cordage, formlöst) är ett helt block av sydda hudar.
   **Hide Tent Slope** (2 Hide Canvas + Stick → 2) är en sluttande hudvägg i 45° som reser sig bort från dig, och
   **Hide Tent Ridge** (2 Hide Canvas + Stick → 2) är tältets topp med två sluttningar mot en åsstång (öppna änden mot dig).
@@ -1979,7 +1989,7 @@ ibland slår de sig ner i närheten och bygger egna läger som växer. (`people/
   stänga åsens bakre ände. Ett tält: sluttningar längs båda sidorna, åsar ovanpå i mitten, en Hide Canvas längst in.
 - **Avancemang** (Wilderness & Hunting): *Guests at the Fire* (första besöket), *A Night by the Fire* (låta dem sova
   över), *Neighbours* (en stam slår sig ner), *Walls of Their Own* (ett grannläger bygger palissad), *Best of Friends*
-  (rykte 80 hos en stam), *Peoples of the World* (gå in i en Tribe Village i vart och ett av de fyra klimaten: kallt,
+  (rykte 80 hos en stam), *Meat for the Pot* (en carcass som gåva till ett läger), *Peoples of the World* (gå in i en Tribe Village i vart och ett av de fyra klimaten: kallt,
   tempererat, varmt och djungel; efter *Palisade*).
 - Op: `/tribes visit` skickar ett band mot lägret där du står, `/tribes info` visar besök, lägrens nästa besök och
   grannlägrens steg, förråd och vad nästa steg kräver.

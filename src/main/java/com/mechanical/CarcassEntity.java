@@ -101,6 +101,8 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     /** Had antlers (a stag): they come off in the second pass. Server only. */
     private boolean trophy;
     private float work;
+    /** Given to an NPC tribe (people.CarcassGifts): it counts only once. Server only, not saved. */
+    public boolean gifted;
     /** Where the hauled body last left blood (CarcassHauling#bleed). Server only, not saved. */
     Vec3 lastStain;
     /** The dead animal's saved data (coat colour, variant ...), so the body looks like the animal did. */

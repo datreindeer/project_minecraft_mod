@@ -59,7 +59,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * get them when they log in, and joining merges both ways. Its age is the latest age it has reached (WorldAge), and the world's age follows the tribes'. No friendly fire.
  * The leader picks the tribe's colour (a dye colour); the Tab list (client.clan.TribeTabList) groups players by tribe.
  * The locator bar shows only tribe mates (mixin.LivingEntityWaypointMixin). The Fire Pit keeps the chunks round it loaded
- * ({@link #keepPitsLoaded}), and visits and raids only come while a member is in the camp ({@link #someoneHome}). Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
+ * ({@link #keepPitsLoaded}), and visits and raids only come while a member is in the camp ({@link #someoneHome}). Members share
+ * one standing with each NPC tribe (A4, {@link #sharedStandings}): joining folds yours into the average, leaving keeps it. Screen: client.clan.ClanScreen (G), network: {@link ClanNetwork}, lang: scripts/gen_clans.py.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Clans extends SavedData {
@@ -125,9 +126,20 @@ public final class Clans extends SavedData {
         Optional<Vote> vote;
         /** A DyeColor id, picked by the leader on the tribe page; tribes from before it had one get one from their id. */
         int colour;
+        /** A4: the standing with each NPC tribe (tribe id -> -100..100) that all members share (people.Tribe#standings). */
+        final Map<String, Integer> reputation;
+        /** Members whose own standings are folded into {@link #reputation} ({@link #pool}); older saves fold members in as they show up. */
+        final Set<UUID> pooled;
 
         Clan(UUID id, String name, Optional<GlobalPos> pit, List<Member> members, List<Identifier> advancements, Optional<Vote> vote,
              Optional<Integer> colour) {
+            this(id, name, pit, members, advancements, vote, colour, Map.of(), List.of());
+        }
+
+        Clan(UUID id, String name, Optional<GlobalPos> pit, List<Member> members, List<Identifier> advancements, Optional<Vote> vote,
+             Optional<Integer> colour, Map<String, Integer> reputation, List<UUID> pooled) {
+            this.reputation = new HashMap<>(reputation);
+            this.pooled = new HashSet<>(pooled);
             this.id = id;
             this.name = name;
             this.pit = pit;
@@ -143,7 +155,9 @@ public final class Clans extends SavedData {
                 Member.CODEC.listOf().fieldOf("members").forGetter(c -> c.members),
                 Identifier.CODEC.listOf().fieldOf("advancements").forGetter(c -> List.copyOf(c.advancements)),
                 Vote.CODEC.optionalFieldOf("vote").forGetter(c -> c.vote),
-                Codec.INT.optionalFieldOf("colour").forGetter(c -> Optional.of(c.colour))).apply(i, Clan::new));
+                Codec.INT.optionalFieldOf("colour").forGetter(c -> Optional.of(c.colour)),
+                Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("reputation", Map.of()).forGetter(c -> c.reputation),
+                UUIDUtil.CODEC.listOf().optionalFieldOf("pooled", List.of()).forGetter(c -> List.copyOf(c.pooled))).apply(i, Clan::new));
 
         public String name() {
             return name;
@@ -172,6 +186,28 @@ public final class Clans extends SavedData {
             return colour;
         }
 
+        /**
+         * A4: folds a member's own standings into the tribe's, which become the average over all members folded in so far
+         * (decided: merging takes the average). A tribe missing on either side counts at that tribe's starting standing.
+         */
+        boolean pool(UUID player, Map<String, Integer> own) {
+            if (!pooled.add(player)) return false;
+            int n = pooled.size();
+            Set<String> keys = new HashSet<>(reputation.keySet());
+            keys.addAll(own.keySet());
+            for (String key : keys) {
+                int start;
+                try {
+                    start = com.mechanical.people.Tribe.of(UUID.fromString(key)).temperament.start;
+                } catch (IllegalArgumentException e) {
+                    continue; // not a tribe id
+                }
+                int shared = reputation.getOrDefault(key, start), mine = own.getOrDefault(key, start);
+                reputation.put(key, Math.round((shared * (n - 1) + mine) / (float) n));
+            }
+            return true;
+        }
+
         /** Chunks the Fire Pit keeps loaded each way. shortcut: always LOAD_RADIUS; the big Fire Pit (F12) makes it 2 (5x5). */
         int loadRadius() {
             return LOAD_RADIUS;
@@ -187,6 +223,8 @@ public final class Clans extends SavedData {
     final Map<GlobalPos, Integer> loaded = new HashMap<>();
     /** Open invitations: invited player -> tribe ids. Not saved: they lapse on a restart. */
     final Map<UUID, Set<UUID>> invites = new HashMap<>();
+    /** A4: standings an offline player left with (left, kicked, disbanded), given to them at login. shortcut: not saved, lost on a restart; save it if that bites. */
+    final Map<UUID, Map<String, Integer>> leftWith = new HashMap<>();
 
     Clans(List<Clan> clans) {
         this.clans = new ArrayList<>(clans);
@@ -335,10 +373,12 @@ public final class Clans extends SavedData {
         return true;
     }
 
-    private void remove(MinecraftServer server, Clan clan, UUID player, String message) {
+    void remove(MinecraftServer server, Clan clan, UUID player, String message) {
         Member m = clan.member(player);
         tell(server, clan, Component.translatable(message, m.name, clan.name));
+        keepStandings(server, clan, player);
         clan.members.remove(m);
+        clan.pooled.remove(player);
         clan.vote.ifPresent(v -> v.ballots.remove(player));
         setDirty();
     }
@@ -458,6 +498,7 @@ public final class Clans extends SavedData {
         switch (v.kind) {
             case VOTE_DISBAND -> {
                 tell(server, clan, Component.translatable("message.mechanical.clan.disbanded", clan.name));
+                for (Member m : clan.members) keepStandings(server, clan, m.id);
                 clans.remove(clan);
                 refreshLocator(server);
             }
@@ -557,6 +598,7 @@ public final class Clans extends SavedData {
 
     /** A player joins or founds: the tribe gets what they have, then everyone gets what the tribe has. */
     private void mergeIn(ServerPlayer player, Clan clan) {
+        clan.pool(player.getUUID(), player.getData(com.mechanical.people.Tribe.REPUTATION));
         for (var holder : player.level().getServer().getAdvancements().getAllAdvancements())
             if (shared(holder.id()) && player.getAdvancements().getOrStartProgress(holder).isDone()) clan.advancements.add(holder.id());
         for (ServerPlayer sp : online(player.level().getServer(), clan)) catchUp(sp, clan);
@@ -601,7 +643,10 @@ public final class Clans extends SavedData {
         Clans data = get(player.level().getServer());
         Clan clan = data.clanOf(player.getUUID());
         ClanNetwork.sendRoster(player.level().getServer());
+        Map<String, Integer> kept = data.leftWith.remove(player.getUUID());
+        if (kept != null && clan == null) player.setData(com.mechanical.people.Tribe.REPUTATION, kept);
         if (clan == null) return;
+        if (clan.pool(player.getUUID(), player.getData(com.mechanical.people.Tribe.REPUTATION))) data.setDirty();
         Member m = clan.member(player.getUUID());
         m.name = player.getGameProfile().name();
         m.lastSeenDay = today(player.level().getServer());
@@ -669,6 +714,46 @@ public final class Clans extends SavedData {
         if (!(attacker instanceof Player hitter) || hitter == victim) return;
         Clan clan = get(victim.level().getServer()).clanOf(victim.getUUID());
         if (clan != null && clan.member(hitter.getUUID()) != null) event.setCanceled(true);
+    }
+
+    // ---------------------------------------------------------------- standings with NPC tribes, shared by the tribe (A4)
+
+    /** A member leaving keeps the tribe's standings as their own (now, or at their next login). */
+    private void keepStandings(MinecraftServer server, Clan clan, UUID player) {
+        Map<String, Integer> kept = Map.copyOf(clan.reputation);
+        ServerPlayer sp = server.getPlayerList().getPlayer(player);
+        if (sp != null) sp.setData(com.mechanical.people.Tribe.REPUTATION, kept);
+        else leftWith.put(player, kept);
+    }
+
+    /**
+     * The NPC-tribe standings a player shares with their tribe (read only; write with {@link #setShared}), or null outside
+     * a tribe (their own count then). A member not folded in yet (saves from before A4) is folded in here.
+     */
+    public static Map<String, Integer> sharedStandings(Player player) {
+        if (!(player.level() instanceof ServerLevel level)) return null;
+        Clans data = get(level.getServer());
+        Clan clan = data.clanOf(player.getUUID());
+        if (clan == null) return null;
+        if (clan.pool(player.getUUID(), player.getData(com.mechanical.people.Tribe.REPUTATION))) data.setDirty();
+        return java.util.Collections.unmodifiableMap(clan.reputation);
+    }
+
+    /** Sets the tribe's shared standing with one NPC tribe; false when the player is in no tribe. */
+    public static boolean setShared(Player player, String tribe, int value) {
+        if (!(player.level() instanceof ServerLevel level)) return false;
+        Clans data = get(level.getServer());
+        Clan clan = data.clanOf(player.getUUID());
+        if (clan == null) return false;
+        clan.reputation.put(tribe, value);
+        data.setDirty();
+        return true;
+    }
+
+    /** Whose standing it is: the player's tribe's, or the player's own (for rate limits, and one reward per tribe). */
+    public static UUID sharerOf(Player player) {
+        Clan clan = player.level() instanceof ServerLevel level ? get(level.getServer()).clanOf(player.getUUID()) : null;
+        return clan != null ? clan.id : player.getUUID();
     }
 
     // ---------------------------------------------------------------- helpers

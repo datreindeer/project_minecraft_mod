@@ -77,7 +77,7 @@ public final class Raids {
     static Choice chooseTribe(ServerLevel level, BlockPos camp, List<ServerPlayer> players) {
         Set<UUID> ids = new HashSet<>();
         for (ServerPlayer p : players) {
-            for (String key : p.getData(Tribe.REPUTATION).keySet()) {
+            for (String key : Tribe.standings(p).keySet()) {
                 try { ids.add(UUID.fromString(key)); } catch (IllegalArgumentException ignored) {}
             }
         }
@@ -197,8 +197,9 @@ public final class Raids {
     /** Half the party fell: the players at the camp beat them off. The tribe respects that a little. */
     static void defended(ServerLevel level, RaidGoal.State r, Tribe tribe) {
         if (!DEFENDED.add(r.id)) return;
+        Set<UUID> rewarded = new HashSet<>(); // a player tribe shares one standing (A4): rewarded once
         for (ServerPlayer player : playersAt(level, r.camp)) {
-            if (tribe != null) tribe.addReputation(player, DEFENCE_REWARD);
+            if (tribe != null && rewarded.add(com.mechanical.clan.Clans.sharerOf(player))) tribe.addReputation(player, DEFENCE_REWARD);
             player.sendSystemMessage(Component.translatable("message.mechanical.raid.defended").withStyle(ChatFormatting.GREEN));
         }
     }

@@ -139,7 +139,10 @@ public final class CarcassHauling {
     /** Sneak + right-click with an empty hand: shoulder it or start dragging it; right-click what you drag to let go. */
     static InteractionResult pickUpOrLetGo(Player player, CarcassEntity carcass) {
         if (carcass.slotOf(player) >= 0) {
-            if (!player.level().isClientSide()) letGo(carcass, player, null);
+            if (!player.level().isClientSide()) {
+                letGo(carcass, player, null);
+                com.mechanical.people.CarcassGifts.left(carcass, player); // put down at an NPC camp: a gift (or a threat)
+            }
             return InteractionResult.SUCCESS;
         }
         if (hauled(player) != null) return InteractionResult.PASS;
@@ -289,7 +292,10 @@ public final class CarcassHauling {
         if (event.getHand() != InteractionHand.MAIN_HAND || !(event.getLevel() instanceof ServerLevel level)) return;
         var state = level.getBlockState(event.getPos());
         if (state.is(HANGING_RACK.get())) HangingRackBlock.tryHang(level, event.getPos(), state, c, player);
-        else letGo(c, player, Vec3.atBottomCenterOf(event.getPos().relative(event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace())));
+        else {
+            letGo(c, player, Vec3.atBottomCenterOf(event.getPos().relative(event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace())));
+            com.mechanical.people.CarcassGifts.left(c, player);
+        }
     }
 
     /** No eating, drinking, shields, bows or throwing with a deer on your back (both sides, so the client doesn't predict it). */

@@ -3,6 +3,7 @@ package com.mechanical.people;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
@@ -13,7 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Unarmed people (and anyone near a swelling Mushroom Man) keep away from monsters: they run toward the camp fire or an armed
+ * Unarmed people (and anyone near a swelling Mushroom Man) keep away from monsters: they run toward the camp fire (a visiting
+ * band's: the player's fire it came to) or an armed
  * member of their group if that leads away from the threat, else just away. With nowhere to run they are cornered and
  * may hit back (see {@link Tribesperson#isCornered()}). Anyone badly hurt runs from a Giant Deer too ({@link #dreads}).
  */
@@ -27,9 +29,10 @@ class FleeThreatGoal extends Goal {
         setFlags(EnumSet.of(Flag.MOVE));
     }
 
-    /** A hostile monster, or any non-player mob that is after this person. */
+    /** A hostile monster, any non-player mob that is after this person, or (for visitors) another tribe's raider. */
     static boolean isThreat(Tribesperson mob, LivingEntity e) {
-        if (!e.isAlive() || e instanceof Player || e instanceof Tribesperson) return false;
+        if (!e.isAlive() || e instanceof Player) return false;
+        if (e instanceof Tribesperson t) return mob.visit != null && t.raid != null && !t.inGroup(mob); // visitors run from raiders at the camp
         return e instanceof Enemy && !(e instanceof NeutralMob) || MonstersHuntPeople.huntsPeople(e) || e instanceof Mob m && m.getTarget() == mob;
     }
 
@@ -62,8 +65,9 @@ class FleeThreatGoal extends Goal {
     /** The fire or an armed group member, if that is farther from the threat than we are; else a random spot away. */
     private Vec3 refuge() {
         double now = mob.distanceToSqr(threat);
-        if (mob.home() != null) {
-            Vec3 fire = Vec3.atBottomCenterOf(mob.home()).add(1.5, 0, 1.5);
+        BlockPos hearth = mob.home() != null ? mob.home() : mob.visitFire(); // visitors run to the player's fire
+        if (hearth != null) {
+            Vec3 fire = Vec3.atBottomCenterOf(hearth).add(1.5, 0, 1.5);
             if (fire.distanceToSqr(threat.position()) > now + 9 && fire.distanceToSqr(mob.position()) > 4) return fire;
         }
         for (Tribesperson t : mob.groupNearby(16)) {

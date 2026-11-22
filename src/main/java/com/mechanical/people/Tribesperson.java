@@ -139,6 +139,9 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** A walk to another camp and back (ErrandGoal), not saved; walking it wears paths. */
     ErrandGoal.Errand errand;
     boolean travelling;
+    /** A carcass left as a threat (CarcassGifts): the player armed folk keep an eye on, and until when. Not saved. */
+    private Player watching;
+    private long watchUntil;
 
     public Tribesperson(EntityType<? extends Tribesperson> type, Level level) {
         super(type, level);
@@ -406,11 +409,35 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, (t, l) -> isAngryAt((Player) t) && (raid == null || RaidGoal.fights(this, t))));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Animal.class, 10, true, false, (t, l) -> raid != null && RaidGoal.campAnimal(this, t)));
         // armed folk take on monsters near camp, and anything that goes for one of their own
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false,
-                (t, l) -> isArmed() && t.distanceToSqr(this) < 12 * 12 && (!(t instanceof com.mechanical.wildlife.night.MushroomMan) || isHolding(s -> s.getItem() instanceof BowItem))
-                        && (t instanceof Monster && !(t instanceof NeutralMob) || MonstersHuntPeople.huntsPeople(t) || !(t instanceof Tribesperson) && ((Mob) t).getTarget() instanceof Tribesperson)));
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false, (t, l) -> defends(t)));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, 20, true, false,
                 (t, l) -> role() == TribeRole.HUNTER && !level().isDarkOutside() && visit == null && errand == null && Settlements.wantsGame(this) && isPrey(t) && !FleeThreatGoal.dreads(this, t)));
+    }
+
+    /**
+     * Armed folk take on monsters near camp, and anything that goes for one of their own. A visiting band's warriors guard
+     * the whole camp zone round the player's fire (CampAge.RADIUS), raiders of other tribes too (docs/living-world-plan.md C).
+     */
+    boolean defends(LivingEntity t) {
+        if (!isArmed() || t instanceof com.mechanical.wildlife.night.MushroomMan && !isHolding(s -> s.getItem() instanceof BowItem)) return false;
+        BlockPos fire = visitFire();
+        boolean guarding = fire != null && t.distanceToSqr(Vec3.atCenterOf(fire)) < com.mechanical.CampAge.RADIUS * com.mechanical.CampAge.RADIUS;
+        if (!guarding && t.distanceToSqr(this) >= 12 * 12) return false;
+        if (guarding && t instanceof Tribesperson other && other.raid != null && !inGroup(other)) return true;
+        return t instanceof Monster && !(t instanceof NeutralMob) || MonstersHuntPeople.huntsPeople(t) || !(t instanceof Tribesperson) && t instanceof Mob m && m.getTarget() instanceof Tribesperson;
+    }
+
+    /** The player camp fire a visiting band gathered at (Neighbours.Visit#fire), or null when not visiting. */
+    BlockPos visitFire() {
+        if (visit == null || !(level() instanceof ServerLevel level)) return null;
+        Neighbours.Visit v = Neighbours.get(level).visit(visit);
+        return v == null ? null : v.fire;
+    }
+
+    /** Keep a wary eye on {@code player} until {@code until} (game time): face them, weapon ready (CarcassGifts). */
+    void watch(Player player, long until) {
+        watching = player;
+        watchUntil = until;
     }
 
     /** Wild game a hunter may take: the mod's wild animals (not bears) and wild rabbits; never pets, leashed or village animals. */
@@ -510,6 +537,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             prey = null;
         }
         if (tickCount % 100 == 0) shareAnger();
+        if (watching != null) {
+            boolean over = now > watchUntil || !watching.isAlive() || watching.level() != level;
+            if (over && getTarget() == null) setAggressive(false);
+            if (over) watching = null;
+            else if (getTarget() == null && distanceToSqr(watching) < 24 * 24) {
+                getLookControl().setLookAt(watching);
+                setAggressive(true);
+            }
+        }
         if (tickCount % 20 == 0) greetNearby(level, now);
         if (tickCount % 20 == 0 && raid != null) RaidGoal.update(this, level);
         if (tickCount % 20 == 0 && raid == null && visit == null && errand == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);

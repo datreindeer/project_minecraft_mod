@@ -22,7 +22,7 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 | A1 | Tiden går när servern är tom | Kalendern och dygnet fortsätter. Vanillas `pause-when-empty-seconds` sätts till 0 (eller kringgås), så forceladdade chunks tickar. **Ändrar ett tidigare beslut** (se fråga 1). |
 | A2 | Fire Pit forceladdar | En stams Fire Pit forceladdar chunken den står i + de 8 runt om (3x3, täcker zonen på radie 24). Grödor, djur, ugnar osv. rullar på. Släpps när stammen upplöses/flyttar. |
 | A3 | Inga besök/raider utan spelare | `TribeVisits` och `Raids` hoppar över ett läger där ingen stammedlem står inom zonen. |
-| A4 | Relation per stam | `REPUTATION` flyttas från spelare till spelarstam: alla i stammen delar relationen. Spelare utan stam har sin egen som idag. Gamla värden slås ihop vid uppgradering (se fråga 3). |
+| A4 | Relation per stam (byggd) | `REPUTATION` flyttas från spelare till spelarstam: alla i stammen delar relationen. Spelare utan stam har sin egen som idag. Gamla värden slås ihop vid uppgradering (se fråga 3). |
 | A5 | Vägbygge | Vid **Friendly** eller högre kan man be NPC-stammens ledare (dialog) bygga en väg. Man får en **Road Marker** (banner) och sätter den där vägen ska sluta. Stammens folk går ut, hugger/gräver material, och bygger en stig (1–2 block bred, grus/trampad jord). Undviker att förstöra spelarbyggen (inga block som spelare satt rivs; vägen går runt). Broar bara när det inte går runt. |
 | A6 | Handelsväg | Vid högre relation (t.ex. 60+) kan stigen uppgraderas till en bred handelsväg (3 block, sten). Samma process: de hämtar sten och bygger. |
 | A7 | Inga stup | Vägbyggaren lägger trappor/slabs där höjden ändras mer än 1 block. Samma regel läggs in i `Trails` (förgenererade stigar). |
@@ -72,8 +72,8 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
   sträcka på sig, värma händerna vid elden.
 - **Natt:** alla utom krigarna lägger ut en Straw Bed på marken nära elden och sover till morgonen. Krigarna vaktar.
 - **Dygnsrytm i byn:** morgon (äta, sträcka), dag (arbeta: hugga, samla, fiska, bygga), kväll (samlas vid elden), natt (sova, vakter).
-- **Försvar:** besökande stammar hjälper till mot monster och raiders vid ens eld (krigarna slåss, de andra flyr till elden).
-- **Carcass som gåva:** lämnar man en carcass hos en stam (Neutral eller högre) ses det som en generös gåva (+relation, mer för större djur). Under Neutral ses det som ett hot (-relation, krigarna blir vaksamma).
+- **Försvar (byggt):** besökande stammar hjälper till mot monster och raiders vid ens eld (krigarna slåss, de andra flyr till elden).
+- **Carcass som gåva (byggt, en gåva per dag och stam räknas):** lämnar man en carcass hos en stam (Neutral eller högre) ses det som en generös gåva (+relation, mer för större djur). Under Neutral ses det som ett hot (-relation, krigarna blir vaksamma).
 
 ## D. Vagn, hästar och djur
 
