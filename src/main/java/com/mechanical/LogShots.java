@@ -193,7 +193,6 @@ public final class LogShots {
                     server.execute(() -> {
                         logX.crack(1, 6);
                         ServerLevel sl = (ServerLevel) logX.level();
-                        for (int k = 0; k < 4; k++) logX.sawStroke(sl, player(), InteractionHand.MAIN_HAND, -4, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), k % 2 == 0); // seam behind block 2
                         for (int k = 0; k < 4; k++) logX.sawStroke(sl, player(), InteractionHand.MAIN_HAND, 3, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK), k % 2 == 0); // block 3 itself
                         look(logX.world(2).add(0, 0.6, -2.2), 0, 38);
                     });
@@ -366,6 +365,8 @@ public final class LogShots {
                     if (ticks == 20 + TreeChopping.CHOP_TICKS * 4 + 1) shot(mc, "chop_tp_strike");
                     if (ticks == 20 + TreeChopping.CHOP_TICKS * 4 + 5) shot(mc, "chop_tp_rise");
                     if (ticks == 20 + TreeChopping.CHOP_TICKS * 4 + 11) shot(mc, "chop_tp_high");
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 5) mc.options.setCameraType(CameraType.FIRST_PERSON);
+                    if (ticks == 20 + TreeChopping.CHOP_TICKS * 9 - 3) shot(mc, "notch");
                     if (ticks < 20 + TreeChopping.CHOP_TICKS * 9) return;
                     mc.options.keyAttack.setDown(false);
                     mc.options.setCameraType(CameraType.FIRST_PERSON);

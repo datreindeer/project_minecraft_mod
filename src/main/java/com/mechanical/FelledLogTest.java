@@ -160,13 +160,17 @@ public final class FelledLogTest {
                 }
                 probe.discard();
             }
-            // log blocks lie as Fallen Logs (hewing stages and the saw kerf show); a saw across a seam parts it there, no block lost
-            FelledLogEntity sawLog = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(12, 1, 3))), 0, 3, oak);
+            // log blocks lie as Fallen Logs (hewing stages and the kerf show); a saw through the middle block cuts it out and parts the log
+            BlockPos sawAt = h.absolutePos(new BlockPos(12, 1, 3));
+            FelledLogEntity sawLog = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(sawAt), 0, 3, oak);
             h.assertTrue(sawLog.states().get(0).getBlock() instanceof FallenLogBlock, "log blocks lie as Fallen Logs");
-            for (int k = 0; k < FallenLogBlock.SAW_STROKES; k++) sawLog.sawStroke(level, player, InteractionHand.MAIN_HAND, -2, new ItemStack(Items.STICK), k % 2 == 0);
-            List<Integer> sawnSizes = logs(h).stream().filter(l -> l != sawLog && l.position().distanceTo(sawLog.position()) < 3).map(FelledLogEntity::size).sorted().toList();
-            h.assertTrue(!sawLog.isAlive() && sawnSizes.equals(List.of(1, 2)), "sawn at the seam behind the root block into 1 + 2 (" + sawnSizes + ")");
-            for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(sawLog.position()) < 3) l.discard();
+            for (int k = 0; k < FallenLogBlock.SAW_STROKES - 1; k++) sawLog.sawStroke(level, player, InteractionHand.MAIN_HAND, 1, new ItemStack(Items.STICK), k % 2 == 0);
+            h.assertTrue(sawLog.isAlive() && sawLog.states().get(1).getValue(FallenLogBlock.SAWN) == FallenLogBlock.SAW_STROKES - 1, "the kerf deepens in the middle block");
+            sawLog.sawStroke(level, player, InteractionHand.MAIN_HAND, 1, new ItemStack(Items.STICK), true);
+            List<Integer> sawnSizes = logs(h).stream().filter(l -> l.position().distanceTo(Vec3.atBottomCenterOf(sawAt.south())) < 2.5).map(FelledLogEntity::size).sorted().toList();
+            h.assertTrue(!sawLog.isAlive() && sawnSizes.equals(List.of(1, 1)), "sawn through, the log parts into 1 + 1 (" + sawnSizes + ")");
+            h.assertItemEntityPresent(Mechanical.ROUGH_LOGS.get("oak").get(), h.relativePos(sawAt.south()), 2);
+            for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(Vec3.atBottomCenterOf(sawAt.south())) < 2.5) l.discard();
             // turned 45° (LogCollision): a mob walking at it stops at its side, exactly; one dropped on it stands on its top
             FelledLogEntity diag = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(13.5, 1, 10.5)), 45, 3, oak);
             Vec3 dm = diag.world(1), perp = new Vec3(1, 0, 0).yRot(-45 * Mth.DEG_TO_RAD);

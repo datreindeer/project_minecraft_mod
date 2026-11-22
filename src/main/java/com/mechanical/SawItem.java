@@ -81,9 +81,7 @@ public class SawItem extends FlintPickaxeItem {
         int ticks = getUseDuration(stack, user) - ticksRemaining;
         LogCut cut = sawingLogs(player).get(player);
         if (cut != null) { // a block of a felled log: on while the player looks at that block
-            int look = cut.log().pick(player), t = cut.index();
-            // a block: still on it; a seam (-(k + 2)): still on one of its two blocks
-            if (!cut.log().isAlive() || (t >= 0 ? look != t : look != -t - 2 && look != -t - 1)) {
+            if (!cut.log().isAlive() || cut.log().pick(player) != cut.index()) {
                 sawingLogs(player).remove(player);
                 player.stopUsingItem();
             } else if (level instanceof ServerLevel server && ticks > 0 && ticks % strokeTicks == 0) {

@@ -29,10 +29,6 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         float yaw;
         /** The block being hewn or sawn (-1: none) and its crack stage. */
         int cracked = -1, crackStage;
-        /** The seam being sawn (behind block kerf, -1: none) and how deep the cut is (0..1). */
-        int kerf = -1;
-        float kerfDepth;
-        boolean notch;
         /** Lifted by hand: both ends up (raised evenly), or one end (the root end if rootUp) tilting the log about the other. */
         boolean bothUp, oneUp, rootUp;
         /** Smaller on a cart or wagon bed (TravoisEntity#LOG_SCALE). */
@@ -86,9 +82,6 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         state.length = n;
         state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
         state.crackStage = log.crackStage();
-        state.kerf = log.kerfSeam() + 1 < n ? log.kerfSeam() : -1;
-        state.kerfDepth = log.kerfDepth();
-        state.notch = log.kerfIsNotch();
         int[] ids = log.pullerIds();
         if (ids.length == 0 || n == 0 || level == null) {
             state.leashStates = null;
@@ -112,26 +105,6 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             leash.slack = false;
             state.leashStates.add(leash);
         }
-    }
-
-    private static final net.minecraft.resources.Identifier KERF = net.minecraft.resources.Identifier.fromNamespaceAndPath(com.mechanical.Mechanical.MODID, "textures/block/saw_kerf.png");
-
-    /** A cut {@code half} * 2 wide at z = 1 (the seam), a hair proud of the faces: across the top, and from the top down {@code depth} on both sides. */
-    private static void kerf(PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, float depth, float half, int light) {
-        float z0 = 1 - half, z1 = 1 + half, e = 0.003F, y0 = 1 - depth;
-        quad(pose, buffer, light, 0, 1, 0, 0, 1 + e, z0, 0, 1 + e, z1, 1, 1 + e, z1, 1, 1 + e, z0); // up
-        quad(pose, buffer, light, -1, 0, 0, -e, y0, z0, -e, y0, z1, -e, 1, z1, -e, 1, z0); // west
-        quad(pose, buffer, light, 1, 0, 0, 1 + e, y0, z1, 1 + e, y0, z0, 1 + e, 1, z0, 1 + e, 1, z1); // east
-    }
-
-    private static void quad(PoseStack.Pose pose, com.mojang.blaze3d.vertex.VertexConsumer buffer, int light, float nx, float ny, float nz, float... v) {
-        float[][] uv = {{0, 1}, {1, 1}, {1, 0}, {0, 0}};
-        for (int side = 0; side < 2; side++) // both windings: whichever way it faces, culling keeps one
-            for (int j = 0; j < 4; j++) {
-                int k = side == 0 ? j : 3 - j;
-                buffer.addVertex(pose, v[k * 3], v[k * 3 + 1], v[k * 3 + 2]).setColor(-1).setUv(uv[k][0], uv[k][1])
-                        .setOverlay(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, nx, ny, nz);
-            }
     }
 
     /** The destroy-stage texture on all six faces of the unit block (the crack overlay). */
@@ -179,14 +152,6 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
                 var crumbling = net.minecraft.client.resources.model.ModelBakery.DESTROY_TYPES.get(state.crackStage);
                 collector.submitCustomGeometry(poseStack, crumbling, FelledLogRenderer::crackCube);
                 collector.submitCustomGeometry(poseStack, crumbling, FelledLogRenderer::crackCube);
-            }
-            if (i == state.kerf) {
-                // the saw cut across the seam at the far face of this block: a dark line over the top and down both sides
-                float depth = Math.max(0.08F, state.kerfDepth);
-                // a saw's kerf stays thin; an axe's notch opens wider the deeper it goes (a V across the log)
-                float half = state.notch ? 0.06F + 0.2F * depth : 0.0625F;
-                collector.submitCustomGeometry(poseStack, net.minecraft.client.renderer.rendertype.RenderTypes.entityCutout(KERF),
-                        (pose, buffer) -> kerf(pose, buffer, depth, half, state.lightCoords));
             }
             poseStack.popPose();
         }

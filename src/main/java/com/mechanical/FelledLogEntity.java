@@ -95,8 +95,6 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<String> PULLERS = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
     /** The block being hewn or sawn and how far (index * 16 + crack stage 0-9), -1 if none (client: the crack overlay). */
     private static final EntityDataAccessor<Integer> CRACK = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
-    /** A saw cut across the seam behind block k: k * 16 + strokes so far, -1 if none (client: the kerf). */
-    private static final EntityDataAccessor<Integer> KERF = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
     /** Each block's hewing stage and saw strokes as chars ('0' + stage * 8 + sawn): they change after spawning (client: the models). */
     private static final EntityDataAccessor<String> STAGES = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
     /** Entity ids of the players lifting the root end and the crown end, -1 for none. */
@@ -572,10 +570,6 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         }
         super.tick();
         if (entityData.get(CRACK) >= 0 && level.getGameTime() - lastCrack > CRACK_FADE) entityData.set(CRACK, -1);
-        if (entityData.get(KERF) >= 0 && level.getGameTime() - lastCrack > CRACK_FADE * 6) {
-            entityData.set(KERF, -1); // left half-sawn a long while: the cut is forgotten
-            sawn.keySet().removeIf(key -> key < 0);
-        }
         if (leadsToReturn > 0) {
             spawnAtLocation(level, new ItemStack(Items.LEAD, leadsToReturn));
             leadsToReturn = 0;
@@ -586,7 +580,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         if (lifterCount() > 0 && !isRemoved()) moved |= carry(level);
         if (isRemoved()) return; // straightened into a new log
         moved |= settle(level);
-        if (moved || !pullers.isEmpty() || lifterCount() > 0 || entityData.get(CRACK) >= 0 || entityData.get(KERF) >= 0) restTicks = 0;
+        if (moved || !pullers.isEmpty() || lifterCount() > 0 || entityData.get(CRACK) >= 0) restTicks = 0;
         else if (++restTicks > 20) awake = false;
     }
 
@@ -1022,7 +1016,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             return InteractionResult.SUCCESS;
         }
         if (held.getItem() instanceof SawItem) {
-            SawItem.startSawingLog(player, hand, this, sawTarget(player, i));
+            SawItem.startSawingLog(player, hand, this, i);
             return InteractionResult.CONSUME;
         }
         if (held.is(ItemTags.AXES)) {
@@ -1062,120 +1056,51 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         player.sendOverlayMessage(Component.translatable("message.mechanical.felled_log.tied"));
     }
 
-    /** Axe chops for the notch across a seam, per chop a stage of a Fallen Log takes ({@link TreeChopping#chopsNeeded}). */
+    /** Axe chops for the notch through a block, per chop a stage of a Fallen Log takes ({@link TreeChopping#chopsNeeded}). */
     static final int NOTCH_STAGES = 3;
 
     /**
-     * Server: one axe chop at block {@code i} (held right-click). Bark first: a block still in its bark is barked (the
-     * chops of a Fallen Log's first stage, 1-2 Bark). Then, like the saw, a notch across the seam on the side the player
-     * looks at, deeper with each chop until the log parts there (a few Sticks of chips). A one-block piece (or a log not
-     * drawn straight) is hewn on through a Fallen Log's later stages instead, with their drops, until it is gone.
+     * Server: one axe chop at block {@code i} (held right- or left-click). Bark first: a block still in its bark is barked
+     * (the chops of a Fallen Log's first stage, 1-2 Bark). Then, like the saw, a notch into the middle of the block, deeper
+     * with each chop (the Fallen Log's kerf), until the block is cut through: it comes out as a hewn-through log (a Rough
+     * Log at the axe's success chance, else Sticks) and the log parts there.
      */
     private void chop(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack axe) {
         BlockState state = states.get(i);
-        boolean fallen = state.getBlock() instanceof FallenLogBlock;
         BlockPos at = cellPos(i);
         int perStage = TreeChopping.chopsNeeded(axe);
-        int target = fallen && state.getValue(FallenLogBlock.STAGE) == 0 ? i : sawTarget(player, i);
-        if (target < 0) { // a notch across the seam behind block k
-            int k = -target - 2, needed = perStage * NOTCH_STAGES;
+        if (!(state.getBlock() instanceof FallenLogBlock fallen)) { // no Fallen Log of this wood: all at once
+            int needed = perStage * (FallenLogBlock.LAST_STAGE + 1);
             if (!TreeChopping.chop(level, player, hand, at, state, axe, needed)) {
-                int done = TreeChopping.progress(level, at);
-                entityData.set(KERF, NOTCH + k * 16 + Math.max(1, done * FallenLogBlock.SAW_STROKES / needed));
-                lastCrack = level.getGameTime();
-                wake();
+                crack(i, TreeChopping.progress(level, at) * 10 / needed);
                 return;
             }
-            entityData.set(KERF, -1);
-            Vec3 w = world(k).add(world(k + 1)).scale(0.5).add(0, 1, 0);
-            Block.popResource(level, BlockPos.containing(w), new ItemStack(Items.STICK, 1 + random.nextInt(2)));
-            level.playSound(null, w.x, w.y, w.z, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.9F);
-            List<Integer> front = new ArrayList<>(), back = new ArrayList<>();
-            for (int j = 0; j < size(); j++) (j <= k ? front : back).add(j);
-            rebuild(level, new ArrayList<>(cells), new ArrayList<>(states), true, List.of(front, back));
-            return;
-        }
-        int needed = perStage * (fallen ? 1 : FallenLogBlock.LAST_STAGE + 1);
-        if (!TreeChopping.chop(level, player, hand, at, state, axe, needed)) {
-            crack(i, TreeChopping.progress(level, at) * 10 / needed);
-            return;
-        }
-        crack(-1, 0);
-        if (!fallen) {
+            crack(-1, 0);
             Block.dropResources(state, level, at, null, player, axe);
             removeBlock(level, i);
             return;
         }
-        int stage = state.getValue(FallenLogBlock.STAGE);
-        TreeChopping.hewDrops(level, at, ((FallenLogBlock) state.getBlock()).wood(), stage, axe, player);
-        if (stage < FallenLogBlock.LAST_STAGE) setState(i, state.setValue(FallenLogBlock.STAGE, stage + 1).setValue(FallenLogBlock.SAWN, 0));
-        else removeBlock(level, i);
-    }
-
-    /**
-     * Where a saw at block {@code i} cuts: the seam to the neighbour on the side the player looks at (as {@code -(k + 2)},
-     * the seam behind block k), or the block itself ({@code i}) when it has no neighbour along the log (a one-block piece,
-     * or a log not yet drawn straight).
-     */
-    public int sawTarget(Player player, int i) {
-        if (!straight() || size() < 2) return i;
-        float r = getYRot() * Mth.DEG_TO_RAD;
-        Vec3 eye = player.getEyePosition();
-        Vec3 a = eye.subtract(position()).yRot(r), b = eye.add(player.getViewVector(1.0F).scale(player.entityInteractionRange() + 1)).subtract(position()).yRot(r);
-        Vec3 l = local(cells.get(i), cx, cz);
-        double up = liftOffset(i);
-        var hit = new AABB(l.x - 0.5, l.y + up, l.z - 0.5, l.x + 0.5, l.y + 1 + up, l.z + 0.5).clip(a, b);
-        boolean ahead = hit.isEmpty() || hit.get().z >= l.z;
-        if (ahead && i + 1 < size()) return -(i + 2);
-        if (i > 0) return -(i + 1);
-        return -(i + 2);
-    }
-
-    /** Server: one saw stroke ({@link SawItem}) at {@code target} from {@link #sawTarget}: a seam (the log comes apart there) or a block. */
-    void sawStroke(ServerLevel level, Player player, InteractionHand hand, int target, ItemStack saw, boolean push) {
-        if (target >= 0) {
-            sawBlock(level, player, hand, target, saw, push);
+        if (state.getValue(FallenLogBlock.STAGE) == 0) { // the bark
+            if (!TreeChopping.chop(level, player, hand, at, state, axe, perStage)) return;
+            TreeChopping.hewDrops(level, at, fallen.wood(), 0, axe, player);
+            setState(i, state.setValue(FallenLogBlock.STAGE, 1).setValue(FallenLogBlock.SAWN, 0));
             return;
         }
-        int k = -target - 2;
-        if (k < 0 || k + 1 >= size()) return;
-        Vec3 w = world(k).add(world(k + 1)).scale(0.5).add(0, liftOffset(k) + 1, 0);
-        level.playSound(null, w.x, w.y, w.z, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 0.6F, (push ? 1.35F : 1.1F) + random.nextFloat() * 0.1F);
-        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, states.get(k)), w.x, w.y, w.z, 3, 0.2, 0.02, 0.2, 0.02);
-        int strokes = sawn.merge(-1 - k, 1, Integer::sum);
-        if (strokes < FallenLogBlock.SAW_STROKES) {
-            entityData.set(KERF, k * 16 + strokes);
-            lastCrack = level.getGameTime();
+        int needed = perStage * NOTCH_STAGES;
+        if (!TreeChopping.chop(level, player, hand, at, state, axe, needed)) {
+            int deep = Mth.clamp(TreeChopping.progress(level, at) * FallenLogBlock.SAW_STROKES / needed, 1, FallenLogBlock.SAW_STROKES - 1);
+            setState(i, state.setValue(FallenLogBlock.SAWN, deep));
             wake();
             return;
         }
-        sawn.remove(-1 - k);
-        entityData.set(KERF, -1);
-        level.playSound(null, w.x, w.y, w.z, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.1F);
-        saw.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-        player.stopUsingItem();
-        List<Integer> front = new ArrayList<>(), back = new ArrayList<>();
-        for (int j = 0; j < size(); j++) (j <= k ? front : back).add(j);
-        rebuild(level, new ArrayList<>(cells), new ArrayList<>(states), true, List.of(front, back));
+        TreeChopping.hewDrops(level, at, fallen.wood(), FallenLogBlock.LAST_STAGE, axe, player);
+        level.playSound(null, at, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.9F);
+        removeBlock(level, i);
     }
 
-    /** Added to {@link #KERF} for an axe's notch (wide, a V) rather than a saw's kerf (thin). */
-    static final int NOTCH = 1 << 16;
-
-    /** Client: the seam being cut (behind block k), or -1. */
-    public int kerfSeam() {
-        int v = entityData.get(KERF);
-        return v < 0 ? -1 : (v % NOTCH) / 16;
-    }
-
-    /** Client: how deep the cut is, 0..1. */
-    public float kerfDepth() {
-        return Math.max(0, entityData.get(KERF)) % 16 / (float) FallenLogBlock.SAW_STROKES;
-    }
-
-    /** Client: is the cut an axe's notch (not a saw's kerf)? */
-    public boolean kerfIsNotch() {
-        return entityData.get(KERF) >= NOTCH;
+    /** Server: one saw stroke ({@link SawItem}) across block {@code i}. */
+    void sawStroke(ServerLevel level, Player player, InteractionHand hand, int i, ItemStack saw, boolean push) {
+        sawBlock(level, player, hand, i, saw, push);
     }
 
     /** Server: one saw stroke across block {@code i} itself: the kerf one stroke deeper (a Fallen Log shows it); the last cuts it up as a sawn Fallen Log. */
@@ -1291,7 +1216,6 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(PULLERS, "");
         builder.define(CRACK, -1);
-        builder.define(KERF, -1);
         builder.define(STAGES, "");
         builder.define(LIFT_ROOT, -1);
         builder.define(LIFT_TAIL, -1);
