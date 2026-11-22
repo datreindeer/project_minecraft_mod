@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:stone_age/grow_tribe",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:totem_of_undying"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.second_chance.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.second_chance.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

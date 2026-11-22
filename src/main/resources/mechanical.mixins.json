@@ -31,6 +31,7 @@
   "mixins": [
     "LivingEntityWaypointMixin",
     "EntityGetterMixin",
+    "EntityRideMixin",
     "EntityLogCollisionMixin",
     "BiomeSeasonMixin",
     "BiomeTemperatureInvoker",

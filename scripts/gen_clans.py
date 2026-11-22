@@ -1,4 +1,4 @@
-"""Player tribes and the world age: lang lines for the tribe page (G), its chat messages and the Tab list (clan/Clans.java, client/clan/ClanScreen.java, client/clan/TribeTabList.java).
+"""Player tribes and the world age: lang lines for the tribe page (G), its chat messages and the Tab list (clan/Clans.java, client/clan/ClanScreen.java, client/clan/TribeTabList.java), and being downed (clan/Downed.java).
 Generator order: ... gen_equipment.py, gen_calendar.py, gen_clans.py, gen_block_items.py, ... gen_registry.py.
 Run: python scripts/gen_clans.py"""
 import json
@@ -78,6 +78,28 @@ LANG.update({
     "gui.mechanical.tab.title": "Players",
     "gui.mechanical.tab.wanderers": "Wanderers",
     "gui.mechanical.tab.online": "%s online",
+})
+# downed, helped up, waking (clan/Downed.java, client/DownedClient.java)
+D = "message.mechanical.downed."
+LANG.update({
+    "key.mechanical.downed": "Give Up / Revive (downed)",
+    "gui.mechanical.downed.title": "You are down",
+    "gui.mechanical.downed.help": "A tribe member can help you up",
+    "gui.mechanical.downed.helped": "%s is helping you up",
+    "gui.mechanical.downed.carried": "%s carries you",
+    "gui.mechanical.downed.give_up": "Hold [%s] to give up",
+    "gui.mechanical.downed.time": "%s s",
+    D + "mate_down": "%s is down! Sneak and hold right-click on them to help them up",
+    D + "helping": "Helping %s up [%s]",
+    D + "help_interrupted": "The hit made you let go",
+    D + "carrying": "You carry %s. Sneak + right-click to put them down; in a safe place hold [%s] to revive them",
+    D + "carried": "%s carries you",
+    D + "not_safe": "Not safe here: no hostile creature may be near, and you must not have been hurt in the last 10 seconds",
+    D + "reviving": "Reviving %s [%s]",
+    D + "revived_other": "%s is back on their feet",
+    D + "revived": "%s brought you back",
+    D + "spirit": "You wake as a spirit: creatures don't see you until you strike or touch something",
+    D + "spirit_end": "You feel solid again",
 })
 for age in ("stone", "bronze", "iron", "steam", "electric"):
     LANG[G + "age." + age] = age.capitalize() + " Age"

@@ -88,6 +88,13 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 
 ## E. Döden, att bli nedslagen och att vakna
 
+**Byggt (fas 7, `clan/Downed`, `client/DownedClient`):** som nedan och i besluten. Detaljer: nedslagen ligger i vanilla-posen
+SLEEPING (kroppen utsträckt, egna arm- och benställningar), med ett halvt hjärta som inte läker; klockan står still medan man
+bärs; bäraren bär med samma armställning som en carcass på axlarna och den nedslagna rider på hen (spelare kan annars inte
+ridas, `EntityRideMixin`). Ge upp = håll R 1,5 s, hjälpa upp 3 s, återuppliva 3 s, vakna 4 s. Att logga ut nedslagen är att
+dö. Andlig form slutar också vid död. Kvar: i vatten kan en nedslagen fortfarande simma lite (fart-attributet styr inte
+simning), och Q (släppa item) spärras bara på klienten.
+
 - **Nedslagen (downed):** vid 0 liv lägger sig spelaren på marken (egen modell/pose). Man ser och kan vrida kameran, men synen blir
   sämre och blodigare med tiden. Inga items, ingen hotbar eller inventory. På skärmen: "En stammedlem kan hjälpa dig upp" och
   "Håll [tangent] för att ge upp" (respawn). Efter ~1 minut dör man (se fråga 8).

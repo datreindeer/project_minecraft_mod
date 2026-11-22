@@ -1068,6 +1068,11 @@ TABS["stone_age"][1].extend([
      by_code()),
     ("grow_tribe", "found_tribe", "fire_pit", G, "Kin",
      "Invite another player into your tribe from the tribe page (G)", by_code()),
+    # downed, helped up, revived (clan/Downed.java)
+    ("revive_mate", "grow_tribe", "minecraft:red_bed", G, "Not Today",
+     "A tribe mate is down: sneak and hold right-click on them, carry them to a safe place and hold R to bring them back", by_code()),
+    ("second_chance", "grow_tribe", "minecraft:totem_of_undying", T, "Second Chance",
+     "Go down and be brought back by a tribe mate, with two hearts and everything you carried", by_code()),
 ])
 TABS["bronze_age"][1].extend([
     ("flax", "root", "flax_seeds", T, "Flax",

@@ -1,0 +1,6 @@
+downed: kind 1, pose SLEEPING, eye 0.2
+after finish: dead true, screen net.minecraft.client.gui.screens.DeathScreen@7181f2ac
+respawned: kind 2, camera FIRST_PERSON
+woken: kind 0, camera FIRST_PERSON, pose STANDING, spirit true
+bed respawn: kind 2 at BlockPos{x=93, y=200, z=82}
+bed woken: kind 0, spirit false, at BlockPos{x=92, y=200, z=82}
