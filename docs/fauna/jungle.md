@@ -6,8 +6,12 @@ och **Proboscis Monkey**. De stora lämnar ett kadaver som styckas med kniv (But
 små och tappar sina saker direkt. Leopard och Tapir finns redan i [varma marker](warm.md).
 Kod: `wildlife/jungle/` (JungleFauna, Tiger, Python, Orangutan, MonitorLizard, DartFrog, Crocodile, Mudskipper, FiddlerCrab,
 ProboscisMonkey, Grip, BlowpipeItem, JungleTest), klient `client/wildlife/jungle/` (JungleFaunaClient, JungleRenderer,
-PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/gen_fauna_jungle.py`, texturer:
-`scripts/gen_fauna_jungle_textures.py` (kör `gen_fauna_jungle_tex_items.py`).
+TigerModel, PythonModel, MonitorModel, CrocodileModel, PrimateModel, SmallJungleModels, JungleGeometry, JungleShots).
+Data: `scripts/gen_fauna_jungle.py`. Modeller och skinn: `scripts/gen_jungle_models.py` skriver varje djurs delar och
+lådor (`JungleGeometry.java`, genererad) och målar texturen och den flådda kadavertexturen ur samma tabell. Övriga
+texturer: `scripts/gen_fauna_jungle_textures.py` (kör `gen_jungle_models.py` och `gen_fauna_jungle_tex_items.py`).
+Bilder: `JungleShots` (flaggfilen `run/jungleshots.flag`) tar `docs/shots/fauna/jungle_<djur>.png` och närbilder
+framifrån, från sidan och snett framifrån (`_front`, `_side`, `_q`) samt kadavret (`_carcass`).
 
 ## Gemensamt
 
@@ -28,7 +32,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | jungle, bamboo jungle (vikt 2, 1) |
 | Liv / fart | 36 / 0,31, skada 6 (språng som grottlejonet), knuffmotstånd 0,5, steg 1, inga ungar |
-| Utseende | leopardens modell, 1,3 gånger större; orange med svarta ränder, vit buk och vitt ansikte |
+| Utseende | egen modell: en tung kattkropp med djup bröstkorg och utstickande skulderblad, brett runt huvud med vita polisonger och kort bred nos, små runda öron (svarta baktill med en vit fläck), grova ben på stora tassar, lång ringad svans. Orange över, krämvit lägre ner, vit buk och vita insidor på benen; smala svarta ränder ner längs sidorna och som vinklar över ryggen. Sover liggande på magen med framtassarna framför sig. |
 | Beteende | jagar som grottlejonet: kryper hukad, fryser när bytet tittar, **gör språng**, ryter när den blir upptäckt, rädd för eld och facklor. **Osynlig i snåret:** när den kryper genom bambu, ormbunkar, högt gräs, löv, rankor eller plantor (minst 3 sådana block runt fötter och axlar) **syns den inte alls** förrän den är inom 6 block från sitt byte eller gör språnget. I snår jagar den **även på dagen**. **Simmar** gärna och bra. Byten: tapir, vattenbuffel, djungelhöna, påfågel, orangutang, näsapa, varan, vildsvin, rådjur, människor. |
 | Ljud | grottlejonets (rytande, morrande), något ljusare |
 
@@ -51,7 +55,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | jungle, sparse jungle, bamboo jungle, mangrove swamp (3, 1). Spawnar också **uppe på trädkronorna** (löv räknas som mark för den). |
 | Liv / fart | 20 / 0,16, knuffmotstånd 0,6, inga ungar |
-| Utseende | ormens modell, 2,2 gånger större (ungefär 3 block lång); guldbrun med ett mörkt nätmönster, ljus buk |
+| Utseende | egen modell, knappt 4 block lång: brett fyrkantigt huvud med underkäke som kan gapa, värmegropar längs läppen, kluven tunga, tio kroppsled som är tjockast på mitten och en smal svans. Guldbrun med ett svart nät som bildar sadlar över ryggen och ljusa ögonfläckar längs sidorna, svart linje över hjässan, mörkt streck bakåt från ögat, krämfärgad buk. Hoprullad ligger den i en hög spiral med huvudet överst. |
 | Beteende | ligger stilla och hoprullad länge, på en gren eller vid vattenkanten. Kommer en spelare eller ett mindre djur (inte rovdjur) inom 1,8 block **slår den till och lindar sig runt offret** (Grip). Från en gren **släpper den sig ner** på byten upp till 6 block under och 3 block åt sidan. Håller fast och **kramar**: ½ hjärta i sekunden. **Någon annan slår loss den med ett slag**; offret kommer loss på egen hand efter **5 egna slag**; den ger upp efter 15 s. Smyger man förbi utanför 1,2 block märker den en inte. Sedan glider den undan och vilar 30 s innan den kan slå till igen. Inget gift. |
 | Ljud | väser när den kramar |
 
@@ -69,7 +73,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | jungle (4, 1–2) |
 | Liv / fart | 30 / 0,22, steg 1; ungar (30 %) |
-| Utseende | en stor lurvig röd apa som går framåtlutad på knogarna, långa armar, mörkt ansikte med kindvalkar |
+| Utseende | egen modell: en stor lurvig roströd hane som går framåtlutad på knytnävarna, mycket långa armar, korta ben, en kjol av långt hår under buken. Litet ansikte med mörka ögon och bred mun inne i stora runda kindvalkar, hängande strupsäck. |
 | Beteende | inte skygg (0,4) men vill inte bli trängd: den som kommer inom **7 block** får **frukt och pinnar kastade på sig** (äpplen, söta bär, pinnar; ingen skada, en knuff), var 2,5–4 s. Den är en **tjuv**: saker som ligger på marken inom 10 block **går den och tar** och bär i handen. Slår man den **tappar den bytet**; dör den faller bytet ut. |
 | Ljud | pandans, mörkare |
 
@@ -88,7 +92,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | jungle, sparse jungle, mangrove swamp (4, 1–2) |
 | Liv / fart | 18 / 0,24, skada 3, steg 1; ungar (20 %) |
-| Utseende | ödlans modell, 2,2 gånger större; mörkt olivgrå med gula pärlprickar |
+| Utseende | egen modell (vattenvaran): lång låg kropp på utåtställda ben med krökta klor, lång hals, smalt huvud med lång nos och näsborrar nära spetsen, rosa kluven tunga som slickar ut, lång sidoplattad svans. Mörkt olivgrå med band av ljusgula ögonfläckar, krämfärgade läppar och strupe med mörka streck, ljusgul buk. |
 | Beteende | **asätare**: känner lukten av ett kadaver inom 24 block, går dit och **äter upp det på 10 s** (ett Bone Pile blir kvar). Ett byte man lämnar liggande kan alltså gå förlorat. Lämnar människor ifred tills de skadar den; då **biter den med gift** (Poison I och Hunger i 8 s). **Simmar** bra. |
 | Ljud | silverfiskens, mycket mörkare; väser när den biter |
 
@@ -105,7 +109,8 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 | | |
 |---|---|
 | Var | jungle, bamboo jungle (6, 2–4) |
-| Liv / fart | 3 / 0,2; blå-svart eller gul-svart (efter UUID); inga ungar |
+| Liv / fart | 3 / 0,2; inga ungar |
+| Utseende | sitter upp på raka framben med bakbenen vikta, puckelrygg, brett huvud med stora svarta utstående ögon, tår med runda fästdynor. Två sorter efter UUID: **blå** (azurblå med svarta prickar) och **gul** (gul med svarta band över ögonen, mitt på ryggen och baktill). Halsen pulserar; när den hoppar sparkar bakbenen ut. |
 | Beteende | gömmer sig inte: färgerna varnar. **Huden är giftig:** den som slår grodan med handen eller ett handvapen blir **förgiftad** (Poison I, 5 s); pilar och dart går bra. Hoppar undan när den blir skrämd. För liten för kadaver. |
 | Ljud | grodans, mycket ljusare |
 
@@ -127,7 +132,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | mangrove swamp (4, 1–2) |
 | Liv / fart | 40 / 0,18 på land, snabb i vatten, rustning 6, skada 6, knuffmotstånd 0,8, steg 1, inga ungar |
-| Utseende | lång och låg, 1,25 gånger modellstorlek (ungefär 3 block); olivgrå bepansrad rygg med upphöjda sköldar, mörka band på svansen, ljus buk, lång nos med en tandrad |
+| Utseende | egen modell, ungefär 5 block lång och låg: bred kropp med rader av upphöjda ryggsköldar, brett skalltak med ögonknölar, lång tung nos med näsknopp, ojämna tänder synliga ovanför och under den stängda munnen, underkäke som gapar, utåtställda ben med simhud och klor, lång svans med dubbel kam av sköldar som blir enkel. Mörkt oliv över med svarta band på svansen, ljusare fläckiga sidor, krämvit buk. |
 | Beteende | **ligger stilla i vattnet** med bara ögon och näsborrar över ytan (lurar). Kommer något inom **5 block** (dricker vid kanten, vadar, simmar) **gör den ett utfall** och **griper det** i käftarna (inom 1,9 block). Sedan **drar den ner bytet under vattnet och rullar** (dödsrullen): 3 skada i sekunden, under vatten. **Någon annan slår loss den med ett slag**; offret sliter sig loss efter **6 egna slag**; den släpper efter 20 s. På land är den långsam och går tillbaka till vatten (2 block djupt) inom 16 block. Andas under vatten. Byten: alla djur som inte är rovdjur (bredd under 2), och människor. |
 | Ljud | ravagerns, mycket mörkare; tyst när den lurar; plask vid utfallet |
 
@@ -150,6 +155,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | mangrove swamp (8, 2–5) |
 | Liv / fart | 3 / 0,18; inga ungar |
+| Utseende | står uppstöttad på bröstfenorna: trubbigt huvud med bred mun, guldringade ögon tätt ihop uppe på huvudet, en hög rundad ryggfena med blå kant och vita prickar och en lång andra ryggfena, rund stjärtfena. Olivbrun med mörka sadlar och ljusblå prickar, ljus buk. |
 | Beteende | en liten fisk med utstående ögon som **går på leran** på fenorna och andas både i och ur vatten. Skrämd **hoppar den undan** i långa kast över leran. För liten för kadaver. |
 | Ljud | torskens; små klafs på leran |
 
@@ -165,7 +171,8 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | mangrove swamp (8, 2–4) |
 | Liv / fart | 4 / 0,2; inga ungar |
-| Beteende | en liten lerkrabba med en jättelik orange klo som den vinkar med. Bor vid sitt hål i leran: kommer en spelare inom **5 block** (smygande 2) eller skadas den **dyker den ner i hålet** (bara ögonen syns) och stannar nere 10 s, så länge någon står nära. Nere i hålet **kan den inte skadas**. Hål finns bara i lera (Mud, mangroverötter i lera, Clay): ute på annan mark kan man fånga den. För liten för kadaver. |
+| Utseende | platt fyrkantigt turkost skal, bredare framtill, med ljusa fläckar; ögon på långa stjälkar; fyra par ledade gångben. **Hanen** (efter UUID) har en jättelik orange klo som den håller framför sig: en tung handflata med ett fast finger under och ett rörligt över, vita spetsar. **Honan** har två små klor. |
+| Beteende | en liten lerkrabba; hanen vinkar med den stora klon och smäller med fingret. Bor vid sitt hål i leran: kommer en spelare inom **5 block** (smygande 2) eller skadas den **dyker den ner i hålet** (bara ögonen syns) och stannar nere 10 s, så länge någon står nära. Nere i hålet **kan den inte skadas**. Hål finns bara i lera (Mud, mangroverötter i lera, Clay): ute på annan mark kan man fånga den. För liten för kadaver. |
 
 | Tappar | Antal |
 |---|---|
@@ -179,7 +186,7 @@ PrimateModel, CrocodileModel, SmallJungleModels, JungleShots). Data: `scripts/ge
 |---|---|
 | Var | mangrove swamp (5, 2–4) |
 | Liv / fart | 14 / 0,27, steg 1; ungar (30 %) |
-| Utseende | apmodellen, mindre (0,7); orangebrun med grå armar och ben, vit rumpa, lång grå svans; **hanarna har en stor hängande näsa** |
+| Utseende | egen modell: en markattsapa på alla fyra med stor rund kalasmage, rödbrun kalott och rygg, orange sidor, gråvita armar och ben, vit rumpa och lång tjock vit svans som hänger ner. Litet rosa ansikte; **hanarna har en stor hängande näsa**, honor och ungar en liten uppnäsa. |
 | Beteende | lever i flock och är **aldrig tyst**: tutar och grymtar hela dagen. Ser den en jägare komma (en spelare inom 14 block som inte smyger, eller närmare än 5) ger den **larmtutet**, och **alla vilda djur inom 20 block blir rädda och springer** (flockfåglar flyger upp). En dålig granne för den som smyger på byte. Larmar högst var 15:e sekund. **Simmar** över kanalerna. |
 | Ljud | getens skrik och pandans grymtningar, högt |
 

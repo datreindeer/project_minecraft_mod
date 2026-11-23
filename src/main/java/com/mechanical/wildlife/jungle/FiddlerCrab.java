@@ -60,6 +60,12 @@ public class FiddlerCrab extends WildAnimal {
         return TEXTURE;
     }
 
+    /** Males wave the one huge claw (females have two small ones); from the UUID so it never changes. */
+    @Override
+    public boolean showsHorns() {
+        return (getUUID().getLeastSignificantBits() & 1) == 0;
+    }
+
     @Override
     protected float babyChance() {
         return 0.0F;
