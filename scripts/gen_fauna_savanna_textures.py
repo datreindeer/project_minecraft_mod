@@ -1,19 +1,9 @@
 """All textures for the savanna fauna (wildlife/savanna/SavannaFauna.java).
 
-Entities (textures/entity/wildlife/, their skinned carcass versions in textures/entity/skinned/wildlife/):
-- spotted_hyena: the cave hyena's texture (CaveHyenaModel, gen_fauna_mountain_textures.HYENA) repainted warmer and
-  sandier with bolder spots.
-- cheetah (64x64, CheetahModel): golden tan, small solid black spots all over, white belly and throat, black tear marks
-  from the eyes to the mouth, tail spots turning to black rings before the white tip.
-- gazelle (64x32, GazelleModel): cinnamon back, a bold black flank stripe over the white belly, white rump with a black
-  tail, white eye-ring and a dark stripe down the face, black ringed horns.
-- ostrich_male / ostrich_female / ostrich_chick (64x64, OstrichModel): black cock with white wing plumes and tail and a
-  pink bare neck and legs; grey-brown hen with dull pale plumes; buff, dark-streaked chick.
-- aardvark (64x32, AardvarkModel): sparse grey-pink hide, darker legs, pale head, pink ears, dark claws.
+The animals' own skins (and their models) are painted by gen_savanna_models.py.
 Items (16x16): meats, hides, the cheetah pelt and cloak, Gazelle Horn, Signal Horn, Ostrich Feather and Egg, Aardvark
 Claw, Termites, Chitin Paste, spawn eggs. Blocks: termite_mound (side) and termite_mound_top. Equipment: the Cheetah
 Cloak's humanoid layer and cape (entity/cloak/cheetah_cloak.png).
-The CHEETAH / GAZELLE / OSTRICH / AARDVARK tables mirror the cubes in client/wildlife/savanna/*Model.java.
 Deterministic. Run: python scripts/gen_fauna_savanna_textures.py"""
 import math
 import sys
@@ -51,400 +41,10 @@ def spot(p, cell, radius, salt, chance=0.8):
     return False
 
 
-# ====================================================================== spotted hyena (cave hyena repainted)
-def spotted_hyena():
-    mt.Y_COAT, mt.Y_LIGHT, mt.Y_BELLY = (184, 150, 98), (206, 176, 126), (222, 204, 166)
-    mt.Y_SPOT, mt.Y_DARK, mt.Y_MUZZLE = (52, 36, 26), (42, 32, 26), (46, 36, 30)
-    return paint(mt.HYENA, "spotted_hyena", (64, 64))
-
-
-# ====================================================================== cheetah
+# the cheetah's colours, for its pelt, cloak and cape (the animals' own skins: gen_savanna_models.py)
 C_BACK, C_GOLD, C_PALE, C_WHITE = (196, 150, 78), (216, 172, 96), (232, 206, 156), (240, 234, 220)
 C_SPOT, C_EYE, C_NOSE = (26, 22, 18), (196, 150, 52), (40, 30, 28)
 TONGUE, TOOTH = (176, 82, 86), (232, 226, 208)
-
-
-def c_coat(t):
-    if t < 0.5:
-        return lerp(C_BACK, C_GOLD, t / 0.5)
-    if t < 0.78:
-        return lerp(C_GOLD, C_PALE, (t - 0.5) / 0.28)
-    return lerp(C_PALE, C_WHITE, smooth((t - 0.78) / 0.15))
-
-
-def c_body(top, bottom):
-    def mat(v, face, x, y, z, i, j):
-        t = 0.1 if face == "top" else 1.0 if face == "bottom" else (y - top) / (bottom - top)
-        if face == "front" and z < -10.5:
-            t = 0.4 + t * 0.6  # pale throat
-        base = c_coat(t)
-        if t < 0.95 and spot((x * 1.3, y * 1.2, z), 1.9, 0.62, 301, 0.85):
-            return fur(C_SPOT, i, j, 302, 0.08)
-        return fur(base, i, j, 303, 0.06)
-    return mat
-
-
-def c_tail(v, face, x, y, z, i, j):
-    if y > 14.5:
-        return fur(C_WHITE, i, j, 311, 0.04)  # white tip
-    if y > 9:
-        return fur(C_SPOT, i, j, 312, 0.08) if (y - 9) % 2.0 < 1.0 else fur(C_PALE, i, j, 313, 0.05)
-    if spot((x * 1.4, y, z * 1.4), 1.7, 0.55, 314):
-        return fur(C_SPOT, i, j, 315, 0.08)
-    return fur(C_GOLD if face not in ("front", "top") else C_PALE, i, j, 316, 0.05)
-
-
-def c_skull(v, face, x, y, z, i, j):
-    if face == "front":
-        if abs(abs(x) - 1) < 0.1 and abs(y + 1.5) < 0.1:
-            return C_EYE
-        if abs(abs(x) - 1) < 0.1 and y > -1:
-            return C_SPOT  # the tear marks run down from the inner corner of each eye
-        if y < -2:
-            return fur(C_BACK, i, j, 321, 0.05)
-        return fur(C_PALE if abs(x) < 0.5 else C_GOLD, i, j, 322, 0.05)
-    if face == "top":
-        return C_SPOT if spot((x, y, z), 1.3, 0.4, 323, 0.7) else fur(C_BACK, i, j, 324, 0.05)
-    if face == "bottom":
-        return fur(C_WHITE, i, j, 325, 0.03)
-    if face in ("left", "right") and z < -3 and y > -1:
-        return C_SPOT  # the tear line at the side of the face
-    return C_SPOT if y < -1 and spot((x, y, z), 1.4, 0.45, 326, 0.7) else fur(lerp(C_GOLD, C_PALE, 0.4 if y > -1 else 0.0), i, j, 327, 0.05)
-
-
-def c_muzzle(v, face, x, y, z, i, j):
-    if face == "front":
-        return C_NOSE if y < 0 and abs(x) < 1 else C_SPOT if abs(abs(x) - 1) < 0.1 else fur(C_WHITE, i, j, 331, 0.03)
-    if face in ("left", "right"):
-        return C_SPOT if y < 0 else fur(C_WHITE, i, j, 332, 0.03)  # the tear mark ends at the lip
-    if face == "bottom":
-        return shade(TONGUE, 0.8)
-    return fur(lerp(C_GOLD, C_PALE, 0.4), i, j, 333, 0.05)
-
-
-def c_jaw(v, face, x, y, z, i, j):
-    if face == "top":
-        return TOOTH if z < -1 else TONGUE
-    return fur(C_WHITE, i, j, 341, 0.03)
-
-
-def c_ear(v, face, x, y, z, i, j):
-    if y < -1 and abs(x) > 0.5 and face != "bottom":
-        return TRANSPARENT  # rounded
-    if face == "front":
-        return fur(C_WHITE, i, j, 351, 0.04)
-    return fur(C_SPOT, i, j, 352, 0.08)
-
-
-def c_leg(top, bottom):
-    def mat(v, face, x, y, z, i, j):
-        t = (y - top) / (bottom - top)
-        if face == "top":
-            return C_GOLD
-        base = lerp(C_PALE, C_WHITE, 0.5) if face == "left" else lerp(C_GOLD, C_PALE, t * 0.6)
-        if spot((x * 1.4, y, z * 1.4), 1.8, 0.55, 361 + int(top), 0.8):
-            return fur(C_SPOT, i, j, 362, 0.08)
-        return fur(base, i, j, 363, 0.05)
-    return mat
-
-
-def c_lower(v, face, x, y, z, i, j):
-    if y >= 6:
-        return (44, 34, 30) if face == "bottom" else fur(C_PALE, i, j, 371, 0.04)
-    if face != "left" and spot((x * 1.5, y, z * 1.5), 1.5, 0.45, 372, 0.7):
-        return C_SPOT
-    return fur(lerp(C_GOLD, C_PALE, y / 6), i, j, 373, 0.05)
-
-
-CHEETAH = {
-    "chest": (0, 0, -3, -3.5, -8, 6, 7, 9, c_body(-3.5, 3.5)),
-    "waist": (0, 16, -2.5, -3, 1, 5, 6, 9, c_body(-3, 3)),
-    "neck": (30, 0, -2, -3, -11, 4, 5, 4, c_body(-3, 2)),
-    "tail": (56, 16, -1, 0, -1, 2, 16, 2, c_tail),
-    "skull": (46, 0, -2.5, -3, -4, 5, 4, 4, c_skull),
-    "muzzle": (46, 8, -1.5, -1, -6, 3, 2, 2, c_muzzle),
-    "jaw": (46, 12, -1.5, 0, -2, 3, 1, 2, c_jaw),
-    "ear": (56, 8, -1, -2, -0.5, 2, 2, 1, c_ear),
-    "fore_upper": (0, 31, -1, -1, -1.5, 2, 6, 3, c_leg(-1, 5)),
-    "lower": (10, 31, -1, 0, -1, 2, 6, 2, c_lower),
-    "paw": (18, 31, -1, 6, -2, 2, 1, 3, c_lower),
-    "thigh": (28, 31, -1.5, -1, -2, 3, 7, 4, c_leg(-1, 6)),
-}
-
-# ====================================================================== gazelle
-G_BACK, G_COAT, G_LIGHT = (170, 116, 64), (192, 138, 80), (210, 162, 106)
-G_STRIPE, G_WHITE, G_FACE = (40, 30, 24), (238, 232, 220), (178, 126, 72)
-G_HORN, G_HORN_L, HOOF = (40, 36, 32), (78, 70, 62), (34, 30, 28)
-
-
-def g_body(v, face, x, y, z, i, j):
-    t = (y + 3) / 6  # 0 at the back .. 1 at the belly
-    if face == "bottom":
-        return fur(G_WHITE, i, j, 401, 0.03)
-    if face == "top":
-        return fur(G_BACK, i, j, 402, 0.06)
-    if face == "back":
-        return fur(G_WHITE if abs(x) < 2.5 and t > 0.15 else G_COAT, i, j, 403, 0.04)  # white rump patch
-    if face == "front":
-        return fur(lerp(G_COAT, G_LIGHT, t), i, j, 404, 0.05)
-    if t > 0.75:
-        return fur(G_WHITE, i, j, 405, 0.03)
-    if t > 0.55:
-        return fur(G_STRIPE, i, j, 406, 0.07)  # the bold black flank band
-    if t > 0.45:
-        return fur(G_LIGHT, i, j, 407, 0.05)  # a pale line above it
-    if z > 4.5 and t > 0.1:
-        return fur(G_WHITE, i, j, 408, 0.03)  # the white of the rump wraps round the haunch
-    return fur(lerp(G_BACK, G_COAT, t / 0.45), i, j, 409, 0.06)
-
-
-def g_neck(v, face, x, y, z, i, j):
-    if face == "front":
-        return fur(G_WHITE if y > -3 else G_LIGHT, i, j, 411, 0.03)  # white throat
-    return fur(lerp(G_COAT, G_BACK, 0.3 if face == "back" else 0.0), i, j, 412, 0.06)
-
-
-def g_head(v, face, x, y, z, i, j):
-    if face in ("left", "right"):
-        if abs(y + 1.5) < 0.6 and abs(z + 1.5) < 0.6:
-            return EYE
-        if abs(y + 2.5) < 0.6 or abs(y + 0.5) < 0.6 and z > -2:
-            return fur(G_WHITE, i, j, 421, 0.03)  # white ring round the eye, on to the brow
-        return fur(G_FACE, i, j, 422, 0.05)
-    if face == "front":
-        return fur(G_STRIPE if abs(x) < 0.5 and y < -1 else G_FACE, i, j, 423, 0.05)  # dark blaze down the forehead
-    if face == "bottom":
-        return fur(G_WHITE, i, j, 424, 0.03)
-    return fur(G_BACK, i, j, 425, 0.06)
-
-
-def g_snout(v, face, x, y, z, i, j):
-    if face == "front":
-        return BLACK if y < 0 else fur(G_WHITE, i, j, 431, 0.03)
-    if face in ("left", "right"):
-        return fur(G_STRIPE if y < 0 else G_WHITE, i, j, 432, 0.05)  # the dark face stripe runs to the nose
-    if face == "bottom":
-        return fur(G_WHITE, i, j, 433, 0.03)
-    return fur(G_FACE, i, j, 434, 0.05)
-
-
-def g_ear(v, face, x, y, z, i, j):
-    if y < -3 and abs(x) > 0.6 and face != "bottom":
-        return TRANSPARENT  # pointed
-    if face == "front":
-        return fur((226, 206, 188), i, j, 441, 0.04)
-    return fur(G_STRIPE if y < -3 else G_COAT, i, j, 442, 0.05)
-
-
-def g_tail(v, face, x, y, z, i, j):
-    return fur(G_STRIPE, i, j, 451, 0.07)
-
-
-def g_leg(top, bottom):
-    def mat(v, face, x, y, z, i, j):
-        if face == "top":
-            return G_COAT
-        t = (y - top) / (bottom - top)
-        return fur(lerp(G_WHITE, G_LIGHT, 0.4) if face == "left" or face == "back" else lerp(G_COAT, G_LIGHT, t), i, j, 461, 0.05)
-    return mat
-
-
-def g_cannon(top):
-    def mat(v, face, x, y, z, i, j):
-        if face == "bottom" or y > top + 5:
-            return HOOF
-        return fur(lerp(G_LIGHT, G_WHITE, 0.3) if face != "front" else G_COAT, i, j, 471, 0.05)
-    return mat
-
-
-def g_horn(v, face, x, y, z, i, j):
-    if face in ("top", "bottom"):
-        return G_HORN
-    return G_HORN_L if j % 2 == 0 else G_HORN  # ringed
-
-
-GAZELLE = {
-    "body": (0, 0, -3, -3, -7, 6, 6, 13, g_body),
-    "neck": (50, 9, -1.5, -6, -2, 3, 6, 4, g_neck),
-    "head": (38, 0, -2, -3, -3, 4, 4, 5, g_head),
-    "snout": (38, 9, -1.5, -1.5, -6, 3, 3, 3, g_snout),
-    "ear": (56, 0, -1.5, -4, -0.5, 3, 4, 1, g_ear),
-    "tail": (56, 5, -1, 0, 0, 2, 2, 1, g_tail),
-    "front_upper": (0, 19, -1.5, -1, -1.5, 3, 5, 3, g_leg(-1, 4)),
-    "cannon": (12, 19, -1, 4, -1, 2, 6, 2, g_cannon(4)),
-    "hind_upper": (20, 19, -1.5, -1, -2, 3, 6, 4, g_leg(-1, 5)),
-    "shank": (34, 19, -1, 5, -0.5, 2, 6, 2, g_cannon(5)),
-    "horn": (42, 19, -0.5, -4, -0.5, 1, 4, 1, g_horn),
-    "horn_tip": (46, 19, -0.5, -3, -0.5, 1, 3, 1, g_horn),
-}
-
-# ====================================================================== ostrich
-O_PAL = {
-    "male": dict(body=(30, 28, 28), body2=(46, 42, 42), plume=(240, 238, 230), plume2=(214, 210, 200), skin=(206, 148, 138),
-                 leg=(200, 120, 108), head=(190, 160, 150), streak=None),
-    "female": dict(body=(118, 102, 82), body2=(138, 120, 98), plume=(196, 186, 168), plume2=(170, 160, 142), skin=(184, 160, 140),
-                   leg=(170, 150, 132), head=(176, 158, 140), streak=None),
-    "chick": dict(body=(186, 156, 108), body2=(206, 178, 130), plume=(196, 168, 120), plume2=(176, 146, 100), skin=(196, 170, 128),
-                  leg=(190, 164, 124), head=(200, 176, 136), streak=(92, 70, 46)),
-}
-O_BEAK, O_NAIL = (214, 196, 166), (60, 52, 46)
-
-
-def o_feathers(c1, c2, i, j, salt):
-    """Loose, shaggy plumage: soft rows of feathers with ragged lighter tips."""
-    c = c1 if (j + (i // 2) % 2) % 3 else c2
-    return fur(c, i, j, salt, 0.09)
-
-
-def o_body(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if p["streak"] and (int(x + 8) % 3 == 0 or face == "top" and int(x + 8) % 3 == 0):
-        return fur(p["streak"], i, j, 501, 0.08)  # the chick's dark streaks along the back
-    if face == "bottom" and v == "male":
-        return fur(p["body2"], i, j, 502, 0.06)
-    return o_feathers(p["body"], p["body2"], i, j, 503)
-
-
-def o_plume(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    c = o_feathers(p["plume"], p["plume2"], i, j, 511)
-    if v == "male" and face in ("top", "right", "left") and y < 1:
-        return o_feathers(p["body"], p["body2"], i, j, 512)  # the wing's black coverts over the white plumes
-    return c
-
-
-def o_neck(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if p["streak"] and (j + i) % 4 == 0:
-        return fur(p["streak"], i, j, 521, 0.06)
-    if v == "female" and y > -2 and face != "front":
-        return o_feathers(p["body"], p["body2"], i, j, 522)  # feathers creep up the hen's neck base
-    return fur(p["skin"], i, j, 523, 0.05)
-
-
-def o_upper_neck(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if p["streak"] and (j + i) % 4 == 0:
-        return fur(p["streak"], i, j, 531, 0.06)
-    return fur(lerp(p["skin"], p["head"], 0.3), i, j, 532, 0.05)
-
-
-def o_head(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if face in ("left", "right") and abs(y + 1) < 0.6 and abs(z + 0.5) < 0.6:
-        return EYE  # the huge eye
-    if face in ("left", "right") and abs(y + 2) < 0.6 and abs(z + 0.5) < 0.6:
-        return shade(p["head"], 0.6)  # lashes over it
-    if face == "top":
-        return fur(shade(p["head"], 0.85), i, j, 541, 0.07)  # bristly crown
-    return fur(p["head"], i, j, 542, 0.05)
-
-
-def o_beak(v, face, x, y, z, i, j):
-    if face == "front" or face == "bottom":
-        return shade(O_BEAK, 0.85)
-    if face in ("left", "right") and y > -0.5:
-        return shade(O_BEAK, 0.7)  # the gape line
-    return O_BEAK
-
-
-def o_thigh(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if y < 1.5:
-        return o_feathers(p["body"], p["body2"], i, j, 551)  # feathered top
-    return fur(p["skin"], i, j, 552, 0.05)
-
-
-def o_shank(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if face == "front" and j % 2 == 0:
-        return shade(p["leg"], 0.85)  # scaled front
-    return fur(p["leg"], i, j, 561, 0.04)
-
-
-def o_foot(v, face, x, y, z, i, j):
-    p = O_PAL[v]
-    if z < -2.5 and face in ("front", "top"):
-        return O_NAIL  # the big toenail
-    if face == "top" and abs(x) < 0.5:
-        return shade(p["leg"], 0.8)  # the gap between the two toes
-    return fur(shade(p["leg"], 0.92), i, j, 571, 0.04)
-
-
-OSTRICH = {
-    "body": (0, 0, -4, -4, -6, 8, 8, 11, o_body),
-    "tail": (38, 0, -3, -2, 0, 6, 4, 3, o_plume),
-    "wing": (38, 7, 0, 0, -4, 1, 5, 8, o_plume),
-    "neck": (0, 19, -1, -6, -1, 2, 6, 2, o_neck),
-    "upper_neck": (8, 19, -1, -6, -1, 2, 6, 2, o_upper_neck),
-    "head": (16, 19, -1.5, -2.5, -2.5, 3, 3, 4, o_head),
-    "beak": (40, 20, -1, -1, -5.5, 2, 1, 3, o_beak),
-    "thigh": (0, 27, -1.5, -1, -1.5, 3, 5, 3, o_thigh),
-    "shank": (12, 27, -0.5, 0, -0.5, 1, 8, 1, o_shank),
-    "foot": (16, 27, -1, 8, -3, 2, 1, 4, o_foot),
-}
-
-# ====================================================================== aardvark
-A_SKIN, A_SKIN_D, A_HEAD, A_LEG = (160, 128, 112), (130, 102, 90), (184, 154, 138), (92, 74, 66)
-A_EAR_IN, A_CLAW, A_NOSE = (212, 160, 150), (60, 50, 42), (120, 88, 84)
-
-
-def a_hide(c, i, j, salt):
-    """Sparse coarse hair over bare skin: a few darker bristle flecks."""
-    c = fur(c, i, j, salt, 0.05, streak=False)
-    return shade(c, 0.78) if h(i, j, salt + 1) < 0.12 else c
-
-
-def a_body(v, face, x, y, z, i, j):
-    t = (y + 3.5) / 7
-    if face == "bottom":
-        return a_hide(lerp(A_SKIN, A_EAR_IN, 0.3), i, j, 601)
-    return a_hide(lerp(A_SKIN_D, A_SKIN, t) if face != "top" else A_SKIN_D, i, j, 602)
-
-
-def a_skull(v, face, x, y, z, i, j):
-    if face in ("left", "right") and abs(y + 0.5) < 0.6 and abs(z + 2.5) < 0.6:
-        return EYE
-    return a_hide(A_HEAD, i, j, 611)
-
-
-def a_snout(v, face, x, y, z, i, j):
-    if face == "front":
-        return A_NOSE if abs(x) < 0.6 or y < 0.5 else shade(A_NOSE, 0.7)  # the pig-like disc with nostrils
-    return a_hide(lerp(A_HEAD, A_EAR_IN, 0.25), i, j, 621)
-
-
-def a_ear(v, face, x, y, z, i, j):
-    if y < -4 and abs(z) > 0.5 and face != "bottom":
-        return TRANSPARENT  # pointed tip
-    if face == "front":
-        return fur(A_EAR_IN, i, j, 631, 0.04)
-    return a_hide(A_HEAD, i, j, 632)
-
-
-def a_tail(v, face, x, y, z, i, j):
-    return a_hide(lerp(A_SKIN, A_HEAD, z / 8), i, j, 641)  # pales towards the tip
-
-
-def a_leg(length):
-    def mat(v, face, x, y, z, i, j):
-        if face == "bottom":
-            return A_CLAW
-        if y > length - 1.5:
-            return A_CLAW if face == "front" or (i % 2 == 0 and face != "back") else shade(A_LEG, 0.8)  # the digging claws
-        return a_hide(lerp(A_SKIN_D, A_LEG, y / length), i, j, 651)
-    return mat
-
-
-AARDVARK = {
-    "body": (0, 0, -3.5, -3.5, -6, 7, 7, 13, a_body),
-    "skull": (40, 0, -2, -2, -4, 4, 4, 4, a_skull),
-    "snout": (40, 8, -1, -0.5, -9, 2, 2, 5, a_snout),
-    "ear": (56, 0, -0.5, -5, -1, 1, 5, 2, a_ear),
-    "tail": (0, 20, -1.5, -1.5, 0, 3, 3, 8, a_tail),
-    "front": (22, 20, -1.5, 0, -1.5, 3, 6, 3, a_leg(6)),
-    "hind": (34, 20, -1.5, 0, -2, 3, 7, 4, a_leg(7)),
-}
 
 
 # ====================================================================== items
@@ -610,18 +210,38 @@ def items():
 
 # ====================================================================== blocks, equipment
 def mound(x, y, salt, top=False):
-    """Baked red-brown earth with tunnel openings and vertical runnels from the rain."""
-    c = lerp((176, 98, 52), (146, 78, 42), h(x, y // 3, salt))
+    """Baked red earth: vertical flutes washed out by the rain (lit ridges, shadowed grooves), a paler crust, grit, and
+    tunnel openings with a lit lip above and a shadow inside. The top: rough crust round the central shaft."""
+    lo, mid, hi = (120, 58, 32), (168, 92, 50), (206, 136, 84)
     if top:
         d = math.hypot(x - 7.5, y - 7.5)
-        if d < 1.6:
-            return (40, 22, 14)  # the shaft at the top
-        c = lerp(c, (196, 120, 70), 0.3 * (1 - d / 11))
-    elif (x * 5 + salt) % 7 == 0:
-        c = shade(c, 0.86)  # runnels
-    if h(x // 2, y // 2, salt + 1) < 0.1 and h(x, y, salt + 2) < 0.7:
-        return (48, 26, 16)  # tunnel holes
-    return fur(c, x, y, salt + 3, 0.06)
+        if d < 1.7:
+            return (34, 18, 12)  # the shaft
+        if d < 2.6:
+            return (92, 48, 28)
+        ring = 0.5 + 0.5 * math.sin(d * 1.9 + h(x, y, salt) * 1.2)
+        c = lerp(mid, hi, 0.25 + 0.4 * ring * (1 - d / 12))
+    else:
+        ridge = 0.5 + 0.5 * math.sin((x + 0.6 * math.sin(y * 0.7 + salt)) * math.pi / 2.5)  # flutes ~5 px apart
+        c = lerp(lo, mid, 0.35 + 0.5 * ridge)
+        if ridge > 0.85:
+            c = lerp(c, hi, 0.45)  # sun on the ridge crest
+        if h(x, y // 4, salt + 4) < 0.12:
+            c = lerp(c, lo, 0.4)  # a runnel streak
+    # tunnel holes: a dark mouth, a lit lip above it
+    for hx, hy in ((3, 5), (11, 11)) if not top else ((4, 12), (12, 4)):
+        if y == hy and hx <= x <= hx + 1:
+            return (30, 16, 10)  # a tunnel mouth, two texels wide
+        if y == hy + 1 and x == hx:
+            return (66, 34, 20)  # its shadowed lower lip
+        if y == hy - 1 and hx <= x <= hx + 1:
+            c = lerp(c, hi, 0.5)
+    n = h(x, y, salt + 3)
+    if n < 0.06:
+        return lerp(c, (230, 190, 140), 0.5)  # a grain of pale grit
+    if n > 0.95:
+        return lerp(c, lo, 0.5)
+    return fur(c, x, y, salt + 3, 0.05)
 
 
 def blocks():
@@ -652,22 +272,6 @@ def cape_mat(v, face, x, y, z, i, j):
 
 
 def main():
-    hyena = spotted_hyena()
-    save(hyena, "wildlife/spotted_hyena.png")
-    save(skinned(hyena, mt.HYENA), "skinned/wildlife/spotted_hyena.png")
-    cheetah = paint(CHEETAH, "cheetah", (64, 64))
-    save(cheetah, "wildlife/cheetah.png")
-    save(skinned(cheetah, CHEETAH, keep=("paw",)), "skinned/wildlife/cheetah.png")
-    gazelle = paint(GAZELLE, "gazelle", (64, 32))
-    save(gazelle, "wildlife/gazelle.png")
-    save(skinned(gazelle, GAZELLE, keep=("horn", "horn_tip")), "skinned/wildlife/gazelle.png")
-    for v in O_PAL:
-        ostrich = paint(OSTRICH, v, (64, 64))
-        save(ostrich, f"wildlife/ostrich_{v}.png")
-        save(skinned(ostrich, OSTRICH, keep=("beak", "foot")), f"skinned/wildlife/ostrich_{v}.png")
-    aardvark = paint(AARDVARK, "aardvark", (64, 32))
-    save(aardvark, "wildlife/aardvark.png")
-    save(skinned(aardvark, AARDVARK), "skinned/wildlife/aardvark.png")
     for folder, made in ((ITEM, items()), (BLOCK, blocks())):
         for name, im in made.items():
             assert im.size == (16, 16) and im.getbbox(), name

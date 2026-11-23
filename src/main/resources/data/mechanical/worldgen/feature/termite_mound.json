@@ -9,13 +9,25 @@
     {
       "height": {
         "type": "minecraft:uniform",
-        "min_inclusive": 2,
-        "max_inclusive": 4
+        "min_inclusive": 1,
+        "max_inclusive": 3
       },
       "provider": {
-        "id": "mechanical:termite_mound"
+        "id": "mechanical:termite_mound",
+        "properties": {
+          "tip": "false"
+        }
+      }
+    },
+    {
+      "height": 1,
+      "provider": {
+        "id": "mechanical:termite_mound",
+        "properties": {
+          "tip": "true"
+        }
       }
     }
   ],
-  "prioritize_tip": false
+  "prioritize_tip": true
 }

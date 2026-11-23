@@ -2149,7 +2149,7 @@
   "aardvark_claw": {"text": "Jordsvinets grävklo. + kniv → 2 Bone Needle.", "category": "materials"},
   "signal_horn": {"text": "[[gazelle_horn]] + kniv + Sinew. Blås i det (högerklick): hörs **256 block** bort och alla andra spelare inom räckhåll får veta åt vilket håll och hur långt; stamfränder får också veta vem som blåste. 5 s mellan signalerna, 120 användningar.", "category": "tools"},
   "cheetah_cloak": {"text": "2 [[cheetah_pelt]] + Sinew + Leather (`PSP`/` L `). En jägartrofé i Cloak-platsen, med svansen ner längs ryggen. Rustning 1.", "category": "armor"},
-  "termite_mound": {"text": "Termitstack av bränd röd jord; står som spiror 2–4 block höga på savannen. **Peta i den med en Stick** för [[termites]]. Jordsvin gräver vid foten på natten. Bryts med spade.", "category": "blocks"},
+  "termite_mound": {"text": "Termitstack av bränd röd jord; står som spiror 2–4 block höga på savannen; det översta blocket smalnar av till en knölig topp. **Peta i den med en Stick** för [[termites]]. Jordsvin gräver vid foten på natten. Bryts med spade.", "category": "blocks"},
   "spotted_hyena_spawn_egg": {"text": "Creative: spawnar en [[entity:spotted_hyena]]."},
   "cheetah_spawn_egg": {"text": "Creative: spawnar en [[entity:cheetah]]."},
   "gazelle_spawn_egg": {"text": "Creative: spawnar en [[entity:gazelle]]."},

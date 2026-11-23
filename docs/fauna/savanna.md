@@ -4,9 +4,11 @@ Savannen fick rovdjur som syns på dagen, och bytesdjur och grävare till dem: *
 **Ostrich**, **Aardvark** och blocket **Termite Mound**. Dessutom vilar **Cave Lion** nu i skuggan på dagen och jagar i
 skymningen. Alla djur lämnar ett kadaver som styckas med kniv (Butchery) och har egna produkter.
 Kod: `wildlife/savanna/` (SavannaFauna, SpottedHyena, Cheetah, Gazelle, Ostrich, Aardvark, TermiteMoundBlock,
-SignalHornItem, SavannaTest), klient `client/wildlife/savanna/` (SavannaFaunaClient, CheetahModel, GazelleModel,
-OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans modell). Lejonets dag finns i
-`wildlife/CaveLion.java`. Data: `scripts/gen_fauna_savanna.py`, texturer: `scripts/gen_fauna_savanna_textures.py`.
+SignalHornItem, SavannaTest), klient `client/wildlife/savanna/` (SavannaFaunaClient, SpottedHyenaModel, CheetahModel,
+GazelleModel, OstrichModel, AardvarkModel, SavannaAnimalRenderer och den genererade SavannaGeometry). Lejonets dag finns i
+`wildlife/CaveLion.java`. Data: `scripts/gen_fauna_savanna.py`, föremål och block: `scripts/gen_fauna_savanna_textures.py`.
+**Modeller och skinn** (även Cave Lion): `scripts/gen_savanna_models.py`, som bygger varje djur ur en tabell (delar,
+lådor, hudens färger) och skriver både `SavannaGeometry.java` och texturerna, så att modell och textur alltid stämmer.
 
 ## Gemensamt
 
@@ -23,7 +25,7 @@ OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans mode
 |---|---|
 | Var | savann (vikt 3, flock 3–5) |
 | Liv / fart | 20 / 0,32, skada 4 |
-| Utseende | grotthyenans modell (sluttande rygg, stort huvud, runda öron), varmare sandfärg med kraftigare fläckar |
+| Utseende | egen modell: höga, tunga framkroppar och en rygg som sluttar ned mot en låg bakdel, en mörk borstig kam över nacke och skuldror, kraftig hals, stort huvud med breda käkmuskler och en trubbig mörk nos, runda öron med mörk kant, kort svans med svart tofs; sandfärgad med runda mörkbruna fläckar på sidor och ben |
 | Beteende | grotthyenan på dagen: vaken när det är ljust och sover på natten. **Stjäl byten:** en kropp som ligger obevakad inom 24 block (ingen spelare inom 3 block) springer den fram till, tar i käftarna och **släpar 20 block bort** från närmaste spelare; sedan vaktar flocken den och äter upp den. **Följer sårade djur:** allt som är under 40 % hälsa eller blöder är byte (och gaseller, jordsvin, strutsungar, onagerföl). En frisk spelare lämnar den ifred, utom om han slår en hyena, kommer nära flockens byte (14 block) eller själv är svårt skadad: då cirklar flocken och biter bakifrån som grotthyenan. Fnittrar. Rädd för eld och facklor. |
 
 | Styckning | Antal | Chans |
@@ -86,7 +88,7 @@ OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans mode
 |---|---|
 | Var | savann (4, flock 2–4) |
 | Liv / fart | 24 / 0,36, steg 1; ungar (30 %), 40 % tuppar |
-| Utseende | 2 block hög; stor rund kropp, hängande vingplymer och svansplym, lång bar hals i två delar, litet platt huvud med stora ögon och bred näbb, långa ben med fjäderklädda lår och tvåtåiga fötter. Tuppen svart med vita plymer och skär hals och ben, hönan gråbrun, ungen gulbrun med mörka strimmor. |
+| Utseende | drygt 2 block hög; äggformad fjäderkropp (lager av lådor), hopfällda vingar med vita plymer som hänger över bakre flanken, svansplym, en fluffig krage där den bara halsen börjar, lång hals i två delar, platt huvud med stora ögon, ögonfransar och bred näbb, kala lår, fjällade skenben och tvåtåiga fötter med klo på stortån. Tuppen svart med vita plymer och skär hals och ben (röda fjäll fram på skenbenen), hönan gråbrun, ungen har en egen modell: en dunig boll med kort tjock hals, stort huvud och långa ben, gulbrun med mörka strimmor. |
 | Beteende | springer mycket fort och är skygg (1,5). **Sparkar när den blir trängd:** om en spelare är inom 2,5 block när den är i panik eller skadas vänder den sig och sparkar framåt med ena benet (6 skada och en stor knuff, var 1,5 s). Hönor värper ett **Ostrich Egg** på marken på dagen (var 10–20:e minut). Tuppen bölar dovt ibland. |
 | Ljud | papegojans, mycket mörkare |
 
@@ -109,7 +111,7 @@ OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans mode
 |---|---|
 | Var | savann (2, 1) |
 | Liv / fart | 18 / 0,24, steg 1; ungar (20 %) |
-| Utseende | grisstor, välvd rygg, gles gråskär hud, korta tjocka ben med stora grävklor, lång rörformad nos, höga smala öron och tjock avsmalnande svans |
+| Utseende | grisstor, rygg som välver sig högst över länden, gles gulgrå hud med strån, mörkbruna korta tjocka ben med ljusa grävklor, lång rörformad nos med rynkor och en skär grisnos-skiva, höga rörformade öron (skära inuti), tjock avsmalnande svans som hänger ned mot marken |
 | Beteende | **nattaktiv**: sover på dagen. På natten går den till en Termite Mound inom 24 block, **gräver vid foten** i 4 s (huvudet nere, jord sprutar) och **lämnar ett hål** i marken bredvid stacken (ett block jord eller sand blir luft). Skygg (1,4). |
 | Ljud | minigrisens, mörkare; tyst annars |
 
@@ -125,8 +127,10 @@ OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans mode
 
 ## Termite Mound (termitstack)
 
-- Block av bränd röd jord full av gångar. Världen bygger **spiror 2–4 block höga** på savannen (feature
-  `mechanical:termite_mound`, ungefär var tredje chunk, på jord eller gräs). Bryts med spade och ger sig själv.
+- Block av bränd röd jord full av gångar, med regnfårade räfflor. Världen bygger **spiror 2–4 block höga** på savannen
+  (feature `mechanical:termite_mound`, ungefär var tredje chunk, på jord eller gräs). Det översta blocket i en spira
+  (`tip=true`, inget termitstacksblock ovanpå) smalnar av till en trappstegsformad, knölig topp; staplar man ett nytt block
+  ovanpå blir det under helt igen. Bryts med spade och ger sig själv.
 - **Peta i den med en Stick** (högerklick): 35 % chans att pinnen kommer ut full av **Termites** (½ s mellan försöken).
 - **Termites**: kan ätas (1 hunger). 4 Termites → **Chitin Paste**.
 - **Chitin Paste** är ett lim som gör samma jobb som Hide Glue: Bellows (`PHP / PHP / GUG` med Chitin Paste i stället för Hide Glue).
@@ -134,6 +138,9 @@ OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans mode
 
 ## Cave Lion på dagen (lejonflockar)
 
+- **Utseende** (ny modell, samma beteende): djup bröstkorg och tunga skuldror, en svag krage ned längs strupen, lös bukhud,
+  brett huvud med kraftig panna, breda käkar och vit nos, små runda öron med mörka baksidor, tjocka ben på breda tassar,
+  svaga spökränder på sidorna och en lång svans med mörk tofs.
 - **Vilar i skuggan:** på dagen går lejonet till närmaste plats under en trädkrona (akacior på savannen) inom 16 block och
   lägger sig där (en kolumn där löven ligger 2–9 block över marken). Finns ingen skugga söker det igen efter 30 s. Det går
   inte iväg om en spelare är inom 14 block.
@@ -159,8 +166,9 @@ OstrichModel, AardvarkModel, SavannaAnimalRenderer; hyenan har grotthyenans mode
 
 ## Bilder
 
-Tagna med `SavannaShots` (klienten, bara med `run/savannashots.flag`), i `docs/shots/fauna/`:
-`savanna_spotted_hyena.png`, `savanna_cheetah.png`, `savanna_gazelle.png`, `savanna_gazelle_fawn.png`,
-`savanna_ostrich_male.png`, `savanna_ostrich_female.png`, `savanna_ostrich_chick.png`, `savanna_aardvark.png`,
-`savanna_termite_mound.png` (spira, jordsvin och Termites) och `savanna_lion_in_shade.png` (ett lejon som släpptes i
-solen 6 block bort har gått in under akaciakronan och sover där).
+Tagna med `SavannaShots` (klienten, bara med `run/savannashots.flag`), i `docs/shots/fauna/`. Varje djur fotograferas
+snett framifrån (`savanna_<djur>.png`), rakt framifrån (`_front`), från sidan (`_side`) och huvudet på nära håll (`_face`),
+med kameran i djurets ögonhöjd: `spotted_hyena`, `cheetah`, `gazelle`, `gazelle_fawn`, `ostrich_male`, `ostrich_female`,
+`ostrich_chick`, `aardvark` och `cave_lion`. Dessutom `savanna_termite_mound.png` (spira med topp, jordsvin och Termites),
+`savanna_lion_in_shade.png` (ett lejon som släpptes i solen 6 block bort har gått in under akaciakronan och sover där) och
+`savanna_carcasses.png` (alla fem savanndjuren dödade i rad: kadaverställning och hud).

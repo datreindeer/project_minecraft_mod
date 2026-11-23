@@ -7,11 +7,7 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -62,59 +58,7 @@ public class GazelleModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // back at y=10 (shoulder height ~0.87 block), belly at y=16
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -3.0F, -7.0F, 6.0F, 6.0F, 13.0F),
-                PartPose.offset(0.0F, 13.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(50, 9).addBox(-1.5F, -6.0F, -2.0F, 3.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -1.0F, -5.0F, NECK_REST, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(38, 0).addBox(-2.0F, -3.0F, -3.0F, 4.0F, 4.0F, 5.0F)
-                        .texOffs(38, 9).addBox(-1.5F, -1.5F, -6.0F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -5.0F, 0.0F, HEAD_REST, 0.0F, 0.0F));
-        // ears splay outwards and turn their inner side partly sideways
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(56, 0).addBox(-1.5F, -4.0F, -0.5F, 3.0F, 4.0F, 1.0F),
-                PartPose.offsetAndRotation(-1.5F, -2.5F, 1.0F, -0.2F, 0.5F, -EAR_SPREAD));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(56, 0).mirror().addBox(-1.5F, -4.0F, -0.5F, 3.0F, 4.0F, 1.0F),
-                PartPose.offsetAndRotation(1.5F, -2.5F, 1.0F, -0.2F, -0.5F, EAR_SPREAD));
-        // lyre horns: base swept back and out, tip curving forward
-        for (float x : new float[] {-1.0F, 1.0F}) {
-            boolean left = x > 0;
-            PartDefinition horn = head.addOrReplaceChild(left ? "left_horn" : "right_horn",
-                    CubeListBuilder.create().texOffs(42, 19).mirror(left).addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F),
-                    PartPose.offsetAndRotation(x, -2.5F, -0.5F, -0.45F, 0.0F, left ? 0.2F : -0.2F));
-            horn.addOrReplaceChild("tip", CubeListBuilder.create().texOffs(46, 19).mirror(left).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                    PartPose.offsetAndRotation(0.0F, -3.8F, 0.0F, 0.6F, 0.0F, left ? -0.3F : 0.3F));
-        }
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(56, 5).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -2.0F, 6.0F, 0.3F, 0.0F, 0.0F));
-
-        // front leg: forearm + thin cannon bone, hoof at y=24
-        CubeListBuilder rightFront = CubeListBuilder.create()
-                .texOffs(0, 19).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F)
-                .texOffs(12, 19).addBox(-1.0F, 4.0F, -1.0F, 2.0F, 6.0F, 2.0F);
-        CubeListBuilder leftFront = CubeListBuilder.create().mirror()
-                .texOffs(0, 19).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F)
-                .texOffs(12, 19).addBox(-1.0F, 4.0F, -1.0F, 2.0F, 6.0F, 2.0F);
-        // hind leg: muscular ham + shank set slightly back (hock)
-        CubeListBuilder rightHind = CubeListBuilder.create()
-                .texOffs(20, 19).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 6.0F, 4.0F)
-                .texOffs(34, 19).addBox(-1.0F, 5.0F, -0.5F, 2.0F, 6.0F, 2.0F);
-        CubeListBuilder leftHind = CubeListBuilder.create().mirror()
-                .texOffs(20, 19).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 6.0F, 4.0F)
-                .texOffs(34, 19).addBox(-1.0F, 5.0F, -0.5F, 2.0F, 6.0F, 2.0F);
-        root.addOrReplaceChild("right_front_leg", rightFront, PartPose.offset(-1.8F, 14.0F, -4.5F));
-        root.addOrReplaceChild("left_front_leg", leftFront, PartPose.offset(1.8F, 14.0F, -4.5F));
-        root.addOrReplaceChild("right_hind_leg", rightHind, PartPose.offset(-1.8F, 13.0F, 4.0F));
-        root.addOrReplaceChild("left_hind_leg", leftHind, PartPose.offset(1.8F, 13.0F, 4.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return SavannaGeometry.gazelle();
     }
 
     @Override

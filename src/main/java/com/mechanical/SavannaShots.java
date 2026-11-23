@@ -23,20 +23,28 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class SavannaShots {
-    /** name, summon command arguments (entity + NBT), camera distance, height of the body's middle above the ground. */
+    /**
+     * name, summon command arguments (entity + NBT), camera distance, camera (eye) height above the ground, height of the
+     * point to aim at, the head's distance ahead of the feet and its height. Each is shot three-quarter
+     * (savanna_NAME.png), from the front (_front), from the side (_side) and its head close up (_face).
+     */
     private static final String[][] SUBJECTS = {
-            {"spotted_hyena", "mechanical:spotted_hyena {NoAI:1b}", "2.6", "0.6"},
-            {"cheetah", "mechanical:cheetah {NoAI:1b}", "2.5", "0.6"},
-            {"gazelle", "mechanical:gazelle {NoAI:1b}", "2.5", "0.7"},
-            {"gazelle_fawn", "mechanical:gazelle {NoAI:1b,Age:-24000}", "1.8", "0.4"},
-            {"ostrich_male", "mechanical:ostrich {NoAI:1b,male:1b}", "3.8", "1.1"},
-            {"ostrich_female", "mechanical:ostrich {NoAI:1b,male:0b}", "3.8", "1.1"},
-            {"ostrich_chick", "mechanical:ostrich {NoAI:1b,Age:-24000}", "1.8", "0.4"},
-            {"aardvark", "mechanical:aardvark {NoAI:1b}", "2.2", "0.4"},
+            {"spotted_hyena", "mechanical:spotted_hyena {NoAI:1b}", "2.4", "0.75", "0.6", "0.9", "0.8"},
+            {"cheetah", "mechanical:cheetah {NoAI:1b}", "2.4", "0.8", "0.6", "0.9", "0.85"},
+            {"gazelle", "mechanical:gazelle {NoAI:1b}", "2.4", "1.0", "0.7", "0.62", "1.2"},
+            {"gazelle_fawn", "mechanical:gazelle {NoAI:1b,Age:-24000}", "1.4", "0.6", "0.4", "0.35", "0.65"},
+            {"ostrich_male", "mechanical:ostrich {NoAI:1b,male:1b}", "3.6", "1.9", "1.15", "0.65", "2.1"},
+            {"ostrich_female", "mechanical:ostrich {NoAI:1b,male:0b}", "3.6", "1.9", "1.15", "0.65", "2.1"},
+            {"ostrich_chick", "mechanical:ostrich {NoAI:1b,Age:-24000}", "1.3", "0.5", "0.35", "0.2", "0.7"},
+            {"aardvark", "mechanical:aardvark {NoAI:1b}", "2.0", "0.55", "0.4", "0.65", "0.5"},
+            {"cave_lion", "mechanical:cave_lion {NoAI:1b}", "3.0", "1.0", "0.75", "1.0", "1.0"},
     };
-    private static int stage = -1, ticks, x, z, subject;
+    /** view suffix, camera direction from the animal (x, z; the animal faces +z). */
+    private static final Object[][] VIEWS = {{"", -0.7071, 0.7071}, {"_front", 0.0, 1.0}, {"_side", -1.0, 0.0}, {"_face", -0.6, 0.8}};
+    private static int stage = -1, ticks, x, z, subject, view;
     private static final int Y = 200;
     private static File out;
+    private static boolean carcassesDone;
     private static final List<String> result = new ArrayList<>();
 
     @SubscribeEvent
@@ -77,7 +85,7 @@ public final class SavannaShots {
                         ServerPlayer p = player();
                         x = (int) Math.floor(p.getX());
                         z = (int) Math.floor(p.getZ());
-                        cmd("gamemode creative @a");
+                        cmd("gamemode spectator @a"); // no physics, no in-wall overlay: the eye can sit low
                         cmd("time set noon");
                         cmd("gamerule advance_time false");
                         cmd("gamerule spawn_mobs false");
@@ -88,24 +96,56 @@ public final class SavannaShots {
                     });
                     next();
                 }
-                case 2 -> { // one subject at a time: clear the platform, summon, frame it side-on from the south-west
+                case 2 -> { // one subject at a time, three views each, the camera at the animal's eye height
                     if (ticks == 1) {
                         String[] s = SUBJECTS[subject];
-                        double d = Double.parseDouble(s[2]), centre = Double.parseDouble(s[3]);
-                        double dist = Math.hypot(d * 0.35, d);
-                        float pitch = (float) Math.toDegrees(Math.atan2(1.62 - centre, dist)); // eyes down to the body's middle
+                        Object[] v = VIEWS[view];
+                        double d = Double.parseDouble(s[2]), eye = Double.parseDouble(s[3]), aim = Double.parseDouble(s[4]);
+                        double vx = (double) v[1], vz = (double) v[2];
+                        float yaw = (float) Math.toDegrees(Math.atan2(vx, -vz)); // looking back at the animal
+                        float pitch = (float) Math.toDegrees(Math.atan2(eye - aim, d));
+                        double tz = 0.0;
+                        if (VIEWS[view][0].equals("_face")) { // close to the head, level with it
+                            tz = Double.parseDouble(s[5]);
+                            eye = Double.parseDouble(s[6]);
+                            d = Math.max(0.6, d * 0.42);
+                            pitch = 0.0F;
+                        }
+                        double headZ = tz, camEye = eye, camD = d;
+                        float camPitch = pitch;
                         server.execute(() -> {
-                            clear();
-                            cmd("summon " + s[1].replace(" {", " " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " {"));
-                            cmd("tp @e[type=!player,x=" + x + ",y=" + Y + ",z=" + z + ",distance=..3] " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " 90 0");
-                            look(0.5 - d * 0.35, Y, 0.5 + d, 199.3F, pitch); // from the south-south-west, facing its flank
+                            if (view == 0) {
+                                clear();
+                                cmd("summon " + s[1].replace(" {", " " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " {Rotation:[0f,0f],"));
+                            }
+                            cmd("tp @e[type=!player,x=" + x + ",y=" + Y + ",z=" + z + ",distance=..3] " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " 0 0");
+                            look(0.5 + vx * camD, Y + camEye - 1.62, 0.5 + headZ + vz * camD, yaw, camPitch);
                         });
                     }
-                    if (ticks < 40) return;
-                    shot(mc, SUBJECTS[subject][0]);
-                    result.add("shot " + SUBJECTS[subject][0]);
-                    if (++subject < SUBJECTS.length) ticks = 0;
-                    else next();
+                    if (ticks < (view == 0 ? 40 : 15)) return;
+                    String name = SUBJECTS[subject][0] + VIEWS[view][0];
+                    shot(mc, name);
+                    result.add("shot " + name);
+                    ticks = 0;
+                    if (++view < VIEWS.length) return;
+                    view = 0;
+                    if (++subject >= SUBJECTS.length) next();
+                }
+                case 7 -> { // every savanna animal killed in a row: the carcasses (pose and skinned texture checked by hand)
+                    if (ticks == 1) server.execute(() -> {
+                        clear();
+                        cmd(fill(-1, Y, -2, 4, Y + 4, 2, "air"));
+                        String[] ids = {"spotted_hyena", "cheetah", "gazelle", "ostrich", "aardvark"};
+                        for (int i = 0; i < ids.length; i++)
+                            cmd("summon mechanical:" + ids[i] + " " + (x - 4 + i * 2.0) + " " + Y + " " + (z + 0.5) + " {NoAI:1b,Rotation:[90f,0f]}");
+                        cmd("kill @e[type=!player,type=!item,x=" + x + ",y=" + Y + ",z=" + z + ",distance=..8]");
+                        look(0.5, Y + 0.5, 5.0, 180, 25);
+                    });
+                    if (ticks < 60) return;
+                    shot(mc, "carcasses");
+                    stage = 6;
+                    ticks = 0;
+                    carcassesDone = true;
                 }
                 case 3 -> { // a termite mound spire, and a lion asleep in the shade of an acacia crown
                     if (ticks == 1) server.execute(() -> {
@@ -144,6 +184,11 @@ public final class SavannaShots {
                     next();
                 }
                 case 6 -> {
+                    if (!carcassesDone) {
+                        stage = 7;
+                        ticks = 0;
+                        return;
+                    }
                     if (ticks < 20) return;
                     Files.write(new File(out, "savanna_result.txt").toPath(), result);
                     stage = -2;

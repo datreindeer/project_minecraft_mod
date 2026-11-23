@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "tip=false": {
       "model": "mechanical:block/termite_mound"
+    },
+    "tip=true": {
+      "model": "mechanical:block/termite_mound_tip"
     }
   }
 }

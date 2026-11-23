@@ -6,11 +6,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -24,6 +20,8 @@ import net.minecraft.util.Mth;
  */
 public class OstrichModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "ostrich"), "main");
+    /** The chick: a downy ball on long legs with a short thick neck and a big head, same parts and animation. */
+    public static final ModelLayerLocation CHICK_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "ostrich"), "chick");
     private static final float NECK_REST = 0.15F, UPPER_REST = -0.1F, HEAD_REST = -0.05F;
 
     private final ModelPart body, neck, upperNeck, head, rightWing, leftWing, tail, rightLeg, leftLeg;
@@ -42,37 +40,11 @@ public class OstrichModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -6.0F, 8.0F, 8.0F, 11.0F),
-                PartPose.offset(0.0F, 8.0F, 1.0F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(38, 0).addBox(-3.0F, -2.0F, 0.0F, 6.0F, 4.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -1.5F, 4.5F, 0.35F, 0.0F, 0.0F));
-        for (float x : new float[] {-4.0F, 4.0F}) {
-            boolean left = x > 0;
-            body.addOrReplaceChild(left ? "left_wing" : "right_wing",
-                    CubeListBuilder.create().texOffs(38, 7).mirror(left).addBox(left ? 0.0F : -1.0F, 0.0F, -4.0F, 1.0F, 5.0F, 8.0F),
-                    PartPose.offset(x, -3.0F, 0.5F));
-        }
-        PartDefinition neck = body.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(0, 19).addBox(-1.0F, -6.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, -5.0F, NECK_REST, 0.0F, 0.0F));
-        PartDefinition upper = neck.addOrReplaceChild("upper_neck", CubeListBuilder.create().texOffs(8, 19).addBox(-1.0F, -6.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -5.8F, 0.0F, UPPER_REST, 0.0F, 0.0F));
-        upper.addOrReplaceChild("head", CubeListBuilder.create()
-                        .texOffs(16, 19).addBox(-1.5F, -2.5F, -2.5F, 3.0F, 3.0F, 4.0F)
-                        .texOffs(40, 20).addBox(-1.0F, -1.0F, -5.5F, 2.0F, 1.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -6.0F, 0.0F, HEAD_REST, 0.0F, 0.0F));
-        for (float x : new float[] {-2.0F, 2.0F}) {
-            boolean left = x > 0;
-            PartDefinition leg = root.addOrReplaceChild(left ? "left_leg" : "right_leg",
-                    CubeListBuilder.create().texOffs(0, 27).mirror(left).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F),
-                    PartPose.offset(x, 11.0F, 1.0F));
-            leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left)
-                            .texOffs(12, 27).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 8.0F, 1.0F)
-                            .texOffs(16, 27).addBox(-1.0F, 8.0F, -3.0F, 2.0F, 1.0F, 4.0F),
-                    PartPose.offset(0.0F, 4.0F, 0.0F));
-        }
-        return LayerDefinition.create(mesh, 64, 64);
+        return SavannaGeometry.ostrich();
+    }
+
+    public static LayerDefinition createChickLayer() {
+        return SavannaGeometry.ostrichChick();
     }
 
     @Override

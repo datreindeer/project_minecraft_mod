@@ -2149,7 +2149,7 @@
   "aardvark_claw": {"text": "The aardvark's digging claw. + knife → 2 Bone Needle.", "category": "materials"},
   "signal_horn": {"text": "[[gazelle_horn]] + knife + Sinew. Blow it (right-click): heard **256 blocks** away, and every other player in range is told which way and how far; tribe mates are also told who blew it. 5 s between calls, 120 uses.", "category": "tools"},
   "cheetah_cloak": {"text": "2 [[cheetah_pelt]] + Sinew + Leather (`PSP`/` L `). A hunter's trophy for the Cloak slot, the tail hanging down the back. Armour 1.", "category": "armor"},
-  "termite_mound": {"text": "A termite mound of baked red earth; stands in spires 2–4 blocks tall on the savanna. **Poke it with a Stick** for [[termites]]. Aardvarks dig at its foot at night. Mined with a shovel.", "category": "blocks"},
+  "termite_mound": {"text": "A termite mound of baked red earth; stands in spires 2–4 blocks tall on the savanna; the top block narrows to a knobbly point. **Poke it with a Stick** for [[termites]]. Aardvarks dig at its foot at night. Mined with a shovel.", "category": "blocks"},
   "spotted_hyena_spawn_egg": {"text": "Creative: spawns a [[entity:spotted_hyena]]."},
   "cheetah_spawn_egg": {"text": "Creative: spawns a [[entity:cheetah]]."},
   "gazelle_spawn_egg": {"text": "Creative: spawns a [[entity:gazelle]]."},

@@ -145,7 +145,15 @@ merge(A / "sounds.json", {"item.signal_horn.blow": {"subtitle": "subtitles.mecha
 # ---- Termite Mound block ----
 w(A / "models/block/termite_mound.json", {"parent": "minecraft:block/cube_column",
     "textures": {"side": "mechanical:block/termite_mound", "end": "mechanical:block/termite_mound_top"}})
-w(A / "blockstates/termite_mound.json", {"variants": {"": {"model": "mechanical:block/termite_mound"}}})
+# the top block of a spire narrows to a knobbly point (TermiteMoundBlock.TIP; the shape there matches these boxes)
+w(A / "models/block/termite_mound_tip.json", {"parent": "minecraft:block/block", "ambientocclusion": True,
+    "textures": {"particle": "mechanical:block/termite_mound", "side": "mechanical:block/termite_mound", "end": "mechanical:block/termite_mound_top"},
+    "elements": [{"from": f, "to": t, "faces": {d: {"texture": "#end" if d in ("up", "down") else "#side"}
+                                                for d in ("north", "south", "east", "west", "up", "down")}}
+                 for f, t in (([1, 0, 1], [15, 6, 15]), ([3, 6, 3], [13, 11, 13]), ([5, 11, 5], [11, 14, 11]),
+                              ([6.5, 14, 6.5], [9.5, 16, 9.5]), ([10, 6, 2], [14, 10, 6]), ([2, 6, 10], [5, 9, 13]))]})
+w(A / "blockstates/termite_mound.json", {"variants": {"tip=false": {"model": "mechanical:block/termite_mound"},
+                                                      "tip=true": {"model": "mechanical:block/termite_mound_tip"}}})
 w(A / "items/termite_mound.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/termite_mound"}})
 w(D / "mechanical/loot_table/blocks/termite_mound.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
     {"type": "minecraft:item", "name": M + "termite_mound"}], "condition": {"type": "minecraft:survives_explosion"}}],
@@ -166,7 +174,8 @@ w(D / "mechanical/neoforge/biome_modifier/add_cave_lion_prides.json", {"type": "
     "spawners": [{"type": M + "cave_lion", "weight": 1, "count": U(3, 4)}]})
 w(D / "mechanical/worldgen/feature/termite_mound.json", {"type": "minecraft:block_column",
     "allowed_placement": {"type": "minecraft:matching_block_tag", "tag": "minecraft:air"}, "direction": "up",
-    "layers": [{"height": U(2, 4), "provider": {"id": M + "termite_mound"}}], "prioritize_tip": False})
+    "layers": [{"height": U(1, 3), "provider": {"id": M + "termite_mound", "properties": {"tip": "false"}}},
+               {"height": 1, "provider": {"id": M + "termite_mound", "properties": {"tip": "true"}}}], "prioritize_tip": True})
 w(D / "mechanical/worldgen/placed_feature/termite_mound.json", {"feature": M + "termite_mound", "placement": [
     {"type": "minecraft:rarity_filter", "chance": 3},
     {"type": "minecraft:in_square"},
