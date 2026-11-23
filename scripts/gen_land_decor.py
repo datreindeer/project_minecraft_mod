@@ -58,7 +58,9 @@ def count(n):
 # placed feature: (feature type, biomes, tries per chunk). OFF: switched off until they look right in close-up shots
 # (code kept, feature types registered, no placed feature or biome modifier): see docs/biomes.md for why.
 OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "rock_outcrop", "farm_walls", "frost_split", "anthill",
-       "anthill_open", "juniper_in_plains"]
+       "anthill_open", "juniper_in_plains",
+       # lead review 2026-11-23: not at the quality bar yet (blocky arch, fence-post dead trees, ditch-like creek, unreadable bird cliff)
+       "rock_arch", "dead_tree", "dry_creek", "bird_cliff"]
 PLACED = {
     # mountains
     "talus": ("talus", MOUNTAINS + VALLEYS, count(3)),

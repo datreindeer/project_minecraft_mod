@@ -1622,9 +1622,6 @@ TABS["wilderness"][1].extend([
     ("roof_of_the_world", "chalk_downs", "minecraft:snow_block", G, "Roof of the World",
      "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290", above_y(250)),
     # small things in the landscape (docs/terrain-plan.md phase 4, gen_land_decor.py)
-    ("under_the_arch", "roof_of_the_world", "minecraft:stone", T, "Under the Arch",
-     "Stand beneath a natural rock arch. Wind and frost wear them out of the rock in the hills, the karst and the badlands; they are rare",
-     under_arch()),
     ("old_bones", "chalk_downs", "minecraft:bone_block", T, "Old Bones",
      "Find the bones of a long-dead animal and stand among them: on the plains and the steppe, half buried in the desert sand, or mammoth tusks in the Loess",
      by_bones()),

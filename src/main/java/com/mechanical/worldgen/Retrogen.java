@@ -86,7 +86,7 @@ public final class Retrogen {
             "log_bridge", "driftwood", "gravel_bar", "reed_belt",
             // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left
             // out, and so is everything switched off there)
-            "rock_arch", "bird_cliff", "bone_remains", "fire_ring", "dead_tree", "sand_skeleton", "dry_creek", "mammoth_tusks",
+            "bone_remains", "fire_ring", "sand_skeleton", "mammoth_tusks",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */

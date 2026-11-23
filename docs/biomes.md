@@ -211,6 +211,10 @@ så att den ser rund ut; roten ger en Tusk).
 
 ### Avstängt (byggt men inte på, väntar på en bättre form eller bild)
 
+- **Rock arch**, **Dead tree**, **Dry creek** och **Bird cliff** (beskrivna ovan): avstängda vid granskningen 2026-11-23.
+  Valvet blev ett lapptäcke av klossar, de döda trädens grenar av staket såg ut som byggnadsställningar, fåran som ett
+  grävt dike och fågelklippan syns inte mot berget. Advancementen *Under the Arch* togs bort med valvet.
+
 - **Talus** och **Fallen rock:** sten mot sten syns inte i bergen, och SmoothGround lägger trappor på dem så att de ser
   ut som rasmassor i trappsteg. Fallen rock har nu en lutande topp av slabs i stället för en förskjuten översta rad.
 - **Snow patch:** snöblocken blir små vita kuber i branta sluttningar.
@@ -219,8 +223,7 @@ så att den ser rund ut; roten ger en Tusk).
 - **Rock outcrop**, **Frost split** och **Farm walls:** ingen bra bild än (under snö syns de inte; gårdsmurarna kom inte
   med i provvärlden). **Juniper in plains:** ingen bild.
 
-**Advancements** (Wilderness): *Under the Arch* (stå under ett naturligt valv: sten 3–5 block över huvudet, sten på båda
-sidor 2–4 block bort och fri himmel 3 block framför och bakom; under *Roof of the World*) och *Old Bones* (stå på, i
+**Advancement** (Wilderness): *Old Bones* (stå på, i
 eller bredvid ett Bone Block, Rib Cage eller Mammoth Tusk; under *White Downs*).
 
 **Gametests:** `valley_waterfall` och `rock_arch` i `worldgen/NatureDecorTest`.
