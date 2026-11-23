@@ -459,6 +459,12 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         return InteractionResult.CONSUME;
     }
 
+    /** Blood let while butchering: into the kettle under the rack while it has room, the rest onto the ground around the body. */
+    private void spill(ServerLevel level, int radius, int count) {
+        if (hungAt() != null) count = HangingRackBlock.catchBlood(level, hungAt(), count);
+        if (count > 0) Blood.splatter(level, blockPosition(), radius, count);
+    }
+
     /** One tick of butchering by {@code player} with a knife of the given speed. Server side. Players cutting at once all add to the same work: two finish in half the time. */
     public void butcher(ServerLevel level, Player player, KnifeItem knife) { // public for people.OakFolkTest
         if (isCaravanProperty()) {
@@ -470,7 +476,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
             Vec3 c = getBoundingBox().getCenter();
             level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Butchery.yieldFor(animal).meat().get()), c.x, c.y, c.z, 3, 0.2, 0.1, 0.2, 0.05);
             Blood.spray(level, c.x, c.y, c.z, 4);
-            if (tickCount % 20 == 0) Blood.splatter(level, blockPosition(), 1, 1); // fills up around the body while you work
+            if (tickCount % 20 == 0) spill(level, 1, 1); // fills up around the body while you work
             level.playSound(null, getX(), getY(), getZ(), SoundEvents.SLIME_SQUISH_SMALL, SoundSource.PLAYERS, 0.6F, 0.7F + random.nextFloat() * 0.3F);
         }
         if (work < workNeeded()) return;
@@ -480,7 +486,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         if (stage() == 0 && !Butchery.yieldFor(animal).outer().isEmpty()) {
             // first pass: wool sheared / hide skinned / feathers plucked; keep holding to go on with the meat
             Butchery.dropOuter(level, this, animal, knife.hideMultiplier(), hungAt() != null);
-            Blood.splatter(level, blockPosition(), 1, 5);
+            spill(level, 1, 5);
             entityData.set(STAGE, 1);
             return;
         }
@@ -488,7 +494,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         if (spoiled()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.carcass.spoiled"));
         Butchery.dropInner(level, this, animal, knife.yieldMultiplier(), trophy, hung, aged(), spoiled());
         if (knife.tier() >= KnifeItem.RITUAL && !spoiled()) Butchery.dropRitual(level, this, animal); // the fine parts (F4)
-        Blood.splatter(level, blockPosition(), 2, 10); // a pool around the remains
+        spill(level, 2, 10); // a pool around the remains
         player.stopUsingItem();
         if (hung) {
             discard(); // the bones came off with the cuts; nothing is left on the hook

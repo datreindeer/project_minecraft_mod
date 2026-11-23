@@ -963,6 +963,8 @@ Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppe
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Blodkittel:** i bronsåldern kan en Bronze Kettle (eller Cauldron) ställas under kroken och fånga blodet, så att det inte
+  blir någon pöl förrän den är full (se 02-bronze-age.md, *Blodkittel under Hanging Rack*).
 - **Blodpöl under ställningen:** en **flådd** kropp (efter första knivomgången) droppar dubbelt så ofta, och var 10:e
   sekund (chans 1 på 2) rinner blod ner på marken under ställningen: en pöl i ställningens nedre block som växer i 4
   steg (samma texturer som blocket Blood). När den är full rinner det över till marken bredvid ställningen (vanliga

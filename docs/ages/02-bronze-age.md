@@ -1048,6 +1048,30 @@ Bark och **Scraped Hide** i vattnet: varje hud som får en Bark garvas, och **2 
 utan bark kommer tillbaka som Scraped Hide. Till skillnad från Drying Rack behövs varken sol eller torrt väder, och
 upp till 4 hudar (med 4 Bark) garvas på en gång.
 
+### Blodkittel under Hanging Rack
+
+En **Bronze Kettle** (eller en järn-**Cauldron** i järnåldern) kan också ställas under en Hanging Rack: högerklicka
+ställningen med kitteln. Den står på marken under kroken (vriden så att öronen går fria från stolparna) och fångar blodet
+från kroppen som hänger där: dropparna från en flådd kropp och blodet när den styckas. Så länge kitteln har plats blir det
+**ingen blodpöl** runt ställningen; först när den är full (**1000 mB**, en hink) rinner det över på marken som förut.
+Blodytan syns i kitteln och stiger i 20 steg (50 mB styck). Kod: `HangingRackBlock` (`KETTLE`, `KETTLE_BLOOD`,
+`catchBlood`), `CarcassEntity.spill`; modeller `rack_kettle_*` i gen_kettle.py, blockstate i gen_carcass_hauling.py.
+
+| Kontroll | Vad som händer |
+|---|---|
+| Bronze Kettle / Cauldron på ställningen | Ställer kitteln under kroken (Poor Bronze kommer tillbaka som Poor Bronze) |
+| Tom hand | Visar hur mycket blod kitteln har (x / 1000 mB) |
+| Bucket / Bronze Bucket | Öser upp en **full** kittel: **Blood Bucket** / **Bronze Blood Bucket** (inte full: visar mängden) |
+| Smyg + tom hand | Tar ner kitteln; blodet i den spills ut på marken |
+| Riva ställningen | Kitteln släpps som item, blodet går förlorat |
+
+En kropp av hjortstorlek som flås och styckas på ställningen ger ungefär en full kittel (fler droppar om den får hänga
+flådd en stund innan den styckas).
+
+**Blood Sausage (blodkorv):** Blood Bucket eller Bronze Blood Bucket + 2 Flour + Lard (formlöst) → **4 Raw Blood
+Sausage** (hinken kommer tillbaka). Stekt på Campfire (20 s) eller i Smoker → **Blood Sausage**: 6 hunger, mättnad 0,8.
+Rå förskäms på 2 dagar, stekt på 10. Går också i soppan som annan mat.
+
 ### Säkert mot dubblering
 
 Ingredienserna försvinner när de läggs i och räknas om till resultat **en gång**, när kitteln är klar. Varje skål tar
@@ -1057,8 +1081,9 @@ läder och soppa går inte att lägga i igen.
 ### Advancements
 
 - **Bronze Age:** *Kettle* (efter Bronze!: ha en Bronze Kettle), *Sticky Business* (Hide Glue), *Tanner* (ta ut garvat
-  läder, ges från koden).
-- **Food & Farming:** *Hearty Stew* (efter Cooked Meal: ös upp en soppa med 4 eller fler ingredienser, ges från koden).
+  läder, ges från koden), *Not a Drop Wasted* (efter Kettle: ha en Blood Bucket eller Bronze Blood Bucket).
+- **Food & Farming:** *Hearty Stew* (efter Cooked Meal: ös upp en soppa med 4 eller fler ingredienser, ges från koden),
+  *Black Pudding* (efter Cooked Meal: ha en Blood Sausage).
 
 ### Beslut
 

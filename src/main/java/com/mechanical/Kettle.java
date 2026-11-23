@@ -79,6 +79,12 @@ public final class Kettle {
             .food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build()).usingConvertsTo(Items.BOWL));
     /** Boiled from hides and fish bones; binds like Cordage at the Tool Station, on the Sinew Bow and in Bellows. */
     public static final DeferredItem<Item> HIDE_GLUE = ITEMS.registerSimpleItem("hide_glue");
+    /** A kettle-full of blood caught under a Hanging Rack ({@link HangingRackBlock#KETTLE}), scooped up with a Bucket (a Bronze Bucket: BronzeTools.BRONZE_BLOOD_BUCKET). */
+    public static final DeferredItem<Item> BLOOD_BUCKET = ITEMS.registerSimpleItem("blood_bucket", p -> p.stacksTo(1).craftRemainder(Items.BUCKET));
+    /** Blood, flour and lard stuffed into a casing (crafted from a blood bucket); cooked on a campfire or in a smoker into Blood Sausage. */
+    public static final DeferredItem<Item> RAW_BLOOD_SAUSAGE = ITEMS.registerSimpleItem("raw_blood_sausage");
+    public static final DeferredItem<Item> BLOOD_SAUSAGE = ITEMS.registerSimpleItem("blood_sausage",
+            p -> p.food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.8F).build()));
 
     /** What went into a stew, one entry per ingredient (shown in its tooltip). */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Item>>> INGREDIENTS = Casting.COMPONENTS.registerComponentType(

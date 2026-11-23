@@ -99,8 +99,8 @@ def tripod(cx, cz, apex=16, top=24, lean=LEAN, t=0.9):
 LINK = {f: [6, 4, 10, 12] for f in ("north", "south", "east", "west")}  # the one oval link drawn in kettle_chain.png
 
 
-def kettle(cx, cz, lift):
-    """The pot, bail and chain, its middle at (cx, cz), lifted by lift."""
+def kettle(cx, cz, lift, hanging=True):
+    """The pot, bail and chain, its middle at (cx, cz), lifted by lift; standing (not hanging), just the pot and lugs."""
     ox, oy, oz = cx - 8, lift, cz - 8
     T = lambda x, y, z: [x + ox, y + oy, z + oz]
     els = []
@@ -129,6 +129,8 @@ def kettle(cx, cz, lift):
     # lugs and the bail: two uprights leaning in, a bar across
     els.append(box(T(1.5, 0.5, 7.2), T(2.6, 3.5, 8.8), out))
     els.append(box(T(13.4, 0.5, 7.2), T(14.5, 3.5, 8.8), out))
+    if not hanging:
+        return els
     els.append(box(T(1.7, 3, 7.6), T(2.5, 8.2, 8.4), out, rot={"origin": T(2.1, 3, 8), "axis": "z", "angle": -22.5}))
     els.append(box(T(13.5, 3, 7.6), T(14.3, 8.2, 8.4), out, rot={"origin": T(13.9, 3, 8), "axis": "z", "angle": 22.5}))
     bar_y = 3 + 5.2 * math.cos(math.radians(22.5))
@@ -185,9 +187,23 @@ w(D / "mechanical/loot_table/blocks/tripod.json", {"type": "minecraft:block", "p
     "rolls": 1, "condition": {"type": "minecraft:survives_explosion"}, "entries": [{"type": "minecraft:item", "name": M + "tripod"}]}],
     "random_sequence": "mechanical:blocks/tripod"})
 
+# ---------------------------------------------------------------- the kettle standing under a Hanging Rack (HangingRackBlock.KETTLE)
+# rack_kettle_bronze / _iron: the pot on the ground (base at y 0, floor 2, rim 8), no bail (the carcass hangs just above);
+# the rack's blockstate (gen_carcass_hauling.py) turns it so the lugs clear the posts. rack_kettle_blood_1..20: the blood
+# surface rising from just over the floor to just under the rim (HangingRackBlock.KETTLE_BLOOD, 50 mB a step)
+RACK_LIFT, RACK_FULL = 6, 20
+w(A / "models/block/rack_kettle_bronze.json", {"textures": KETTLE_TEX, "elements": kettle(8, 8, RACK_LIFT, hanging=False)})
+w(A / "models/block/rack_kettle_iron.json", {"textures": {"particle": B + "kettle_iron", "bronze": B + "kettle_iron", "inside": B + "kettle_iron_inside"},
+                                              "elements": kettle(8, 8, RACK_LIFT, hanging=False)})
+for n in range(1, RACK_FULL + 1):
+    y = 2.3 + (7.6 - 2.3) * n / RACK_FULL
+    w(A / f"models/block/rack_kettle_blood_{n}.json", {"textures": {"particle": B + "kettle_blood", "blood": B + "kettle_blood"},
+        "elements": [{"from": [4, r2(y), 4], "to": [12, r2(y), 12], "faces": {"up": {"uv": [4, 4, 12, 12], "texture": "#blood"}}}]})
+
 # ---------------------------------------------------------------- items
 
-for item in ("tripod", "bronze_kettle", "rough_cast_bronze_kettle", "stew", "broth", "hide_glue", "unfired_clay_kettle_mold"):
+for item in ("tripod", "bronze_kettle", "rough_cast_bronze_kettle", "stew", "broth", "hide_glue", "unfired_clay_kettle_mold",
+             "blood_bucket", "bronze_blood_bucket", "raw_blood_sausage", "blood_sausage"):
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": M + f"item/{item}"}})
 
@@ -228,7 +244,17 @@ shaped("tripod", [" C ", " R ", "R R"], {"C": M + "cordage", "R": M + "tool_rod"
 shaped("bellows_with_hide_glue", ["PHP", "PHP", "GUG"], {"P": "#minecraft:planks", "H": M + "scraped_hide", "G": M + "hide_glue",
        "U": M + "clay_tuyere"}, M + "bellows", "equipment")
 
+# Blood Sausage: a blood bucket (the bucket comes back), 2 Flour and Lard make 4; cooked on a campfire or in a smoker
+w(D / "mechanical/recipe/raw_blood_sausage.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [[M + "blood_bucket", M + "bronze_blood_bucket"], M + "flour", M + "flour", M + "lard"],
+    "result": {"id": M + "raw_blood_sausage", "count": 4}})
+for kind, time in (("campfire_cooking", 400), ("smoking", 100)):
+    w(D / f"mechanical/recipe/blood_sausage_from_{kind}.json", {"type": f"minecraft:{kind}", "category": "food", "cookingtime": time,
+        "experience": 0.1, "ingredient": M + "raw_blood_sausage", "result": {"id": M + "blood_sausage"}})
+
 patch_tag(D / "mechanical/tags/item/perishes_1_day.json", [M + "stew", M + "broth"])
+patch_tag(D / "mechanical/tags/item/perishes_2_days.json", [M + "raw_blood_sausage"])
+patch_tag(D / "mechanical/tags/item/perishes_10_days.json", [M + "blood_sausage"])
 patch_tag(D / "minecraft/tags/block/mineable/axe.json", [M + "tripod"])
 
 # ---------------------------------------------------------------- lang
@@ -261,5 +287,9 @@ merge(A / "lang/en_us.json", {
     "message.mechanical.kettle.status.warm": "only warm over embers (%s°): feed the fire",
     "message.mechanical.kettle.status.cold": "cold (%s°): light a fire under it",
     "message.mechanical.kettle.status.left": "%s:%s left",
+    "item.mechanical.blood_bucket": "Blood Bucket", "item.mechanical.bronze_blood_bucket": "Bronze Blood Bucket",
+    "item.mechanical.raw_blood_sausage": "Raw Blood Sausage", "item.mechanical.blood_sausage": "Blood Sausage",
+    "message.mechanical.blood_kettle.status": "Blood in the kettle: %s / %s mB",
+    "message.mechanical.blood_kettle.not_full": "Not full yet: %s / %s mB. A bucket takes a full kettle",
 })
 print("kettle ok")

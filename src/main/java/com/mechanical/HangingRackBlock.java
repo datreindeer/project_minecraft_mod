@@ -4,6 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -32,8 +37,21 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * hangs head down by the hind legs from the bottom block's position ({@link CarcassEntity#hang}), its belly to the front
  * ({@code FACING}, towards whoever placed it). Needs the two blocks above free. Breaking any part removes the whole rack
  * (only the broken part drops the item) and drops the carcass.
+ * <p>A Bronze Kettle or an iron Cauldron right-clicked onto the rack stands under the hook ({@link #KETTLE}) and catches
+ * the blood ({@link #catchBlood}): no pool on the ground until it is full ({@link #FULL} steps of {@link #MB_PER_STEP} mB,
+ * one bucket). A Bucket or Bronze Bucket scoops a full kettle into a Blood Bucket; sneaking with an empty hand takes it off.
  */
 public class HangingRackBlock extends Block {
+    /** What stands under the hook: a Bronze Kettle (Poor Bronze kept apart, so it comes back poor) or an iron Cauldron. */
+    public enum Pot implements StringRepresentable {
+        NONE, BRONZE, POOR_BRONZE, IRON;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(java.util.Locale.ROOT);
+        }
+    }
+
     public enum Part implements StringRepresentable {
         LOWER, MIDDLE, UPPER;
 
@@ -49,6 +67,11 @@ public class HangingRackBlock extends Block {
     public static final int MAX_BLOOD = 4;
     public static final net.minecraft.world.level.block.state.properties.IntegerProperty BLOOD =
             net.minecraft.world.level.block.state.properties.IntegerProperty.create("blood", 0, MAX_BLOOD);
+    public static final EnumProperty<Pot> KETTLE = EnumProperty.create("kettle", Pot.class);
+    /** Blood in the kettle, in steps of {@link #MB_PER_STEP} mB: {@link #FULL} is a bucket. */
+    public static final int FULL = 20, MB_PER_STEP = 50;
+    public static final net.minecraft.world.level.block.state.properties.IntegerProperty KETTLE_BLOOD =
+            net.minecraft.world.level.block.state.properties.IntegerProperty.create("kettle_blood", 0, FULL);
     /** Chance per random tick that the pool dries a step (as {@link BloodBlock}). */
     private static final float DRY_CHANCE = 0.25F;
     /** Height of the gambrel hook above the rack's base, in blocks (the model's gambrel at y = 41 px). */
@@ -61,12 +84,13 @@ public class HangingRackBlock extends Block {
 
     public HangingRackBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, Part.LOWER).setValue(BLOOD, 0));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, Part.LOWER).setValue(BLOOD, 0)
+                .setValue(KETTLE, Pot.NONE).setValue(KETTLE_BLOOD, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART, BLOOD);
+        builder.add(FACING, PART, BLOOD, KETTLE, KETTLE_BLOOD);
     }
 
     @Override
@@ -118,12 +142,88 @@ public class HangingRackBlock extends Block {
         if (random.nextFloat() < DRY_CHANCE) level.setBlock(pos, state.setValue(BLOOD, state.getValue(BLOOD) - 1), UPDATE_ALL);
     }
 
-    /** A drop of blood from the carcass hanging on the rack at {@code base}: the pool under it grows, a full one runs over beside the rack. */
+    /** A drop of blood from the carcass hanging on the rack at {@code base}: into the kettle under it, else the pool under it grows, a full one runs over beside the rack. */
     static void bleedOnto(ServerLevel level, BlockPos base) {
         BlockState state = level.getBlockState(base);
-        if (!state.is(CarcassHauling.HANGING_RACK.get())) return;
+        if (!state.is(CarcassHauling.HANGING_RACK.get()) || catchBlood(level, base, 1) == 0) return;
         if (state.getValue(BLOOD) < MAX_BLOOD) level.setBlock(base, state.setValue(BLOOD, state.getValue(BLOOD) + 1), UPDATE_ALL);
         else Blood.splatter(level, base, 1, 1);
+    }
+
+    /** Pours up to {@code drops} steps of blood into the kettle under the rack at {@code base}; returns what didn't fit (all of it with no kettle). */
+    static int catchBlood(ServerLevel level, BlockPos base, int drops) {
+        BlockState state = level.getBlockState(base);
+        if (!state.is(CarcassHauling.HANGING_RACK.get()) || state.getValue(KETTLE) == Pot.NONE) return drops;
+        int fill = state.getValue(KETTLE_BLOOD), caught = Math.min(drops, FULL - fill);
+        if (caught > 0) level.setBlock(base, state.setValue(KETTLE_BLOOD, fill + caught), UPDATE_CLIENTS);
+        return drops - caught;
+    }
+
+    /** The kettle as an item again. */
+    private static ItemStack potItem(Pot pot) {
+        if (pot == Pot.IRON) return new ItemStack(Items.CAULDRON);
+        ItemStack kettle = new ItemStack(Bronze.BRONZE_KETTLE.get());
+        if (pot == Pot.POOR_BRONZE) Bronze.markPoor(kettle);
+        return kettle;
+    }
+
+    /** A Bronze Kettle or Cauldron goes under the hook; a Bucket or Bronze Bucket scoops a full kettle of blood. */
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState clicked, Level level, BlockPos clickedPos, Player player,
+            InteractionHand hand, BlockHitResult hit) {
+        BlockPos pos = base(clickedPos, clicked);
+        BlockState state = level.getBlockState(pos);
+        if (!state.is(this)) return InteractionResult.PASS;
+        Pot pot = state.getValue(KETTLE);
+        boolean kettle = stack.is(Bronze.BRONZE_KETTLE.get()), cauldron = stack.is(Items.CAULDRON);
+        boolean bucket = stack.is(Items.BUCKET), bronzeBucket = stack.is(BronzeTools.BRONZE_BUCKET.get());
+        if (pot == Pot.NONE && (kettle || cauldron)) {
+            if (level instanceof ServerLevel server) {
+                server.setBlock(pos, state.setValue(KETTLE, cauldron ? Pot.IRON : Bronze.isPoor(stack) ? Pot.POOR_BRONZE : Pot.BRONZE).setValue(KETTLE_BLOOD, 0), UPDATE_ALL);
+                stack.consume(1, player);
+                server.playSound(null, pos, cauldron ? SoundEvents.ANVIL_PLACE : SoundEvents.LANTERN_PLACE, SoundSource.BLOCKS, 0.5F, 1.2F);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (pot == Pot.NONE || !(bucket || bronzeBucket)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (level instanceof ServerLevel server) {
+            int fill = state.getValue(KETTLE_BLOOD);
+            if (fill < FULL) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.blood_kettle.not_full", fill * MB_PER_STEP, FULL * MB_PER_STEP));
+                return InteractionResult.SUCCESS;
+            }
+            server.setBlock(pos, state.setValue(KETTLE_BLOOD, 0), UPDATE_ALL);
+            ItemStack filled = bucket ? new ItemStack(Kettle.BLOOD_BUCKET.get()) : stack.transmuteCopy(BronzeTools.BRONZE_BLOOD_BUCKET.get(), 1);
+            player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, filled));
+            server.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 0.8F);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** Empty hand: how much blood the kettle holds; sneaking takes the kettle off (spilling what's in it). */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState clicked, Level level, BlockPos clickedPos, Player player, BlockHitResult hit) {
+        BlockPos pos = base(clickedPos, clicked);
+        BlockState state = level.getBlockState(pos);
+        if (!state.is(this) || state.getValue(KETTLE) == Pot.NONE || !player.getMainHandItem().isEmpty()) return InteractionResult.PASS;
+        if (level instanceof ServerLevel server) {
+            int fill = state.getValue(KETTLE_BLOOD);
+            if (!player.isSecondaryUseActive()) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.blood_kettle.status", fill * MB_PER_STEP, FULL * MB_PER_STEP));
+                return InteractionResult.SUCCESS;
+            }
+            server.setBlock(pos, state.setValue(KETTLE, Pot.NONE).setValue(KETTLE_BLOOD, 0), UPDATE_ALL);
+            if (fill > 0) Blood.splatter(server, pos, 1, (fill + 3) / 4);
+            player.getInventory().placeItemBackInInventory(potItem(state.getValue(KETTLE)), net.minecraft.util.Prediction.SERVER_ONLY);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** The kettle comes off with the rack. */
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        if (state.getValue(KETTLE) != Pot.NONE) popResource(level, pos, potItem(state.getValue(KETTLE)));
     }
 
     public static boolean occupied(ServerLevel level, BlockPos pos) {
