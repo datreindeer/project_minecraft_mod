@@ -520,7 +520,7 @@ def squirrel():
     for s, n in ((-1, "right_ear"), (1, "left_ear")):
         m.part(n, "head", (s * 1.0, -2.25, -0.5), (0, 0, s * 0.15))
         m.box(n, "ear", -0.5, -1.75, -0.25, 1, 1.75, 0.5)
-        m.box(n, "tuft", -0.5, -3.0, -0.125, 1, 1.5, 0.25)   # the long ear tufts
+        m.box(n, "tuft", -0.25, -3.0, -0.125, 0.5, 1.5, 0.25)   # the long ear tufts
     for s, side in ((-1, "right"), (1, "left")):
         fl = side + "_front_leg"
         m.part(fl, "body", (s * 1.0, 1.0, -4))
@@ -562,7 +562,7 @@ def squirrel_colour(P):
         if mat == "belly":
             return P["belly"]
         if mat in ("skull", "cheek"):
-            if mat == "skull" and (e := eye(t, 0.45, 0.32, 0.55, iris=(18, 12, 10), ring=P["ring"])):
+            if mat == "skull" and (e := eye(t, 0.34, 0.3, 0.4, iris=(14, 10, 8), ring=lerp(P["ring"], P["light"], 0.7))):
                 return e
             c = fur(t, P["fur"], P["dark"], P["light"], streak=2, rough=0.6)
             if mat == "cheek" and (t.face == "bottom" or t.gv > 0.65):
@@ -632,7 +632,7 @@ VOLE = dict(fur=hexc("#7a5e40"), dark=hexc("#3e2c1c"), light=hexc("#a6865e"), be
 def vole_colour(P):
     def col(mat, t):
         if mat in ("body", "rump", "skull", "snout"):
-            if mat == "skull" and (e := eye(t, 0.32, 0.25, 0.45, iris=(10, 8, 8))):
+            if mat == "skull" and (e := eye(t, 0.36, 0.25, 0.4, iris=(10, 8, 8))):
                 return e
             c = fur(t, P["fur"], P["dark"], P["light"], streak=3, rough=0.8)
             if t.face == "bottom" or (t.vert and t.Y > 22.6):
@@ -727,7 +727,7 @@ def wild_cat():
     m.blob("body", "chest", 0, 0.75, -3.75, 5.5, 6.5, 5, 1.25)
     m.blob("body", "belly", 0, 0.75, 0, 5, 6, 4, 1.0)
     m.blob("body", "haunch", 0, 0.5, 3.75, 5.5, 6.5, 5, 1.25)
-    m.box("body", "back", -2, -2.75, -5.5, 4, 0.5, 11)
+    m.box("body", "back", -2, -2.6, -5.5, 4, 1.5, 11)  # fills the dips between the three body blobs
     m.box("body", "belly_fur", -2, 3.75, -4, 4, 0.5, 8)
     m.part("head", "body", (0, -1.5, -6))
     m.blob("head", "skull", 0, -1.0, -2.0, 4.5, 4, 4, 0.75)
@@ -738,9 +738,9 @@ def wild_cat():
     m.box("head", "chin", -0.75, 1.25, -4.5, 1.5, 0.5, 1)
     m.box("head", "whiskers", -3.5, 0.5, -4.75, 7, 0, 1)
     for s, n in ((-1, "right_ear"), (1, "left_ear")):
-        m.part(n, "head", (s * 1.75, -2.75, -1.75), (0, 0, s * 0.25))
-        m.box(n, "ear", -1.0, -2.0, -0.25, 2, 2, 0.5)
-        m.box(n, "ear", -0.5, -2.5, -0.25, 1, 0.5, 0.5)
+        m.part(n, "head", (s * 2.0, -2.5, -1.75), (0, 0, s * 0.45))
+        m.box(n, "ear", -1.25, -1.25, -0.25, 2.5, 1.25, 0.5)
+        m.box(n, "ear", -0.75, -1.75, -0.25, 1.5, 0.5, 0.5)
     m.part("tail", "body", (0, -1.5, 6), (-0.9, 0, 0))
     m.blob("tail", "tail", 0, 0, 2.5, 3.5, 3.5, 5, 0.75)
     m.part("tail_tip", "tail", (0, 0, 5), (0.35, 0, 0))
@@ -805,6 +805,8 @@ def wild_cat_colour(P):
         if mat == "whiskers":
             return (236, 232, 222) if (abs(t.x) > 2.3 and h(t.gx, t.gy, 2) < 0.35) else None
         if mat == "ear":
+            if t.box[4] < 1 and t.vert and t.v < 0.5 and (t.u < 0.17 or t.u > 0.83):
+                return None  # the rounded tip
             if t.face == "front":
                 return lerp(P["light"], P["nose"], 0.25) if 0.25 < t.u < 0.75 and t.v > 0.25 else P["light"]
             return lerp(P["warm"], P["dark"], 0.3 * t.n)
@@ -1492,7 +1494,11 @@ def eagle_owl():
     m.box("head", "bill", -0.5, -2.75, -3.75, 1, 1.5, 0.75)
     m.box("head", "bill_tip", -0.375, -1.5, -3.5, 0.75, 0.5, 0.5)
     for s in (-1, 1):
-        m.box("head", "tuft", (1.5 if s > 0 else -2.75), -7.25, -1.5, 1.25, 2.25, 1.0)   # the ear tufts
+        n = "left_tuft" if s > 0 else "right_tuft"
+        m.part(n, "head", (s * 2.0, -5.0, -1.0), (0.15, 0, s * 0.4))           # the ear tufts, splayed outward
+        m.box(n, "tuft", -0.75, -1.5, -0.5, 1.5, 1.75, 1.0)
+        m.box(n, "tuft", -0.5, -2.5, -0.375, 1.0, 1.0, 0.75)
+        m.box(n, "tuft", -0.25, -3.0, -0.25, 0.5, 0.5, 0.5)
     m.boxes = [b for b in m.boxes if b[1] != "breast"]  # upright, the breast bulge would jut out under the face
     seat(m, 0.75)
     return m
@@ -1547,7 +1553,7 @@ def owl_colour(P):
         return lerp(c, P["dark"], 0.6) if int(t.z * 2) % 3 == 0 else c
     return bird_colour(P, {"body": body, "breast": streaked, "belly": streaked, "back": lambda t: mott(t, P["back"]),
                            "rump": lambda t: mott(t, P["back"]), "disc": disc,
-                           "tuft": lambda t: None if (t.vert and t.v < 0.4 and ragged(t, 0.4)) else mott(t, P["dark"] if t.face == "front" else P["head"]),
+                           "tuft": lambda t: lerp(P["dark"], P["edge"], 0.45 * (int(t.x * 4 + 8) % 2) + 0.2 * t.n) if t.vert else mott(t, P["head"]),
                            "head": lambda t: mott(t, P["head"]) if t.face != "front" else P["rim"],
                            "neck": lambda t: streaked(t) if t.face == "front" else mott(t, P["head"]),
                            "covert": lambda t: mott(t, P["covert"]), "tail": tail,

@@ -21,7 +21,7 @@ import net.minecraft.util.Mth;
 public class HareModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "hare"), "main");
     /** Body pitch (radians, nose up) when sitting up. */
-    private static final float SIT_PITCH = 0.25F;
+    private static final float SIT_PITCH = 0.12F;
 
     private final ModelPart body;
     private final ModelPart head;
@@ -110,8 +110,8 @@ public class HareModel extends EntityModel<WildAnimalRenderState> {
         this.rightHaunch.xRot += SIT_PITCH * sit;
         this.leftFrontLeg.xRot += SIT_PITCH * sit;
         this.rightFrontLeg.xRot += SIT_PITCH * sit;
-        this.leftFrontLeg.yScale = 1.0F + 0.26F * sit;
-        this.rightFrontLeg.yScale = 1.0F + 0.26F * sit;
+        this.leftFrontLeg.yScale = 1.0F + 0.13F * sit; // keeps the forepaws on the ground at SIT_PITCH
+        this.rightFrontLeg.yScale = 1.0F + 0.13F * sit;
         this.head.xRot += 0.15F * sit;
 
         // Bounding: hind legs push off together, the body flies with the forelegs reaching forward, lands on the
