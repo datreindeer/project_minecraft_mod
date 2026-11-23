@@ -57,6 +57,13 @@ handskriven JSON. Biomernas klimatplatser rörs inte.
 - **Spelservern:** den gamla världen får sin nya terräng bara i nya chunks, och vid gränsen blir det en vägg eller ett
   stup. Se fråga 1.
 
+**Byggt (fas 0 och 1, v0.176.0):** `gen_terrain.py` skriver om `offset`, `factor`, `jaggedness`, `final_density` och
+`preliminary_surface_level` och en egen `mechanical:flatness`. Toppar till y 280–295 (taket flyttat till 272–296),
+3–20 gånger mer land över y 150, floder i dalar (median 6–7 → 11–12 block, dalar mellan berg 30–60), torra, heta och
+kalla slätter med lugn höjdkurva och dämpat brus. Mätverktyget är `BiomeMap`s terrängläge (`TerrainMap`), bilderna tas
+med `TerrainShots`. Siffror och bilder: `docs/biomes.md` *Terrängens form*, `docs/shots/terrain/fas1_*.png`.
+Kvar att avgöra: fråga 1 (spelserverns värld får den nya terrängen bara i nya chunks).
+
 ## 2. Mjuk mark med slabs och trappor
 
 Ett worldgen-steg körs efter att ytan är lagd (`top_layer_modification`, en feature per chunk). Det läser höjdkartan och

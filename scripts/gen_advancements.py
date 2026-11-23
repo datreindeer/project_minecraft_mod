@@ -137,6 +137,13 @@ def in_biome(biome):
         "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"biomes": mid(biome)}}}}}}
 
 
+def above_y(y):
+    """The player at or above height y (checked about once a second)."""
+    return {"above": {"trigger": "minecraft:location", "conditions": {"player": {
+        "type": "minecraft:entity_properties", "entity": "this",
+        "predicate": {"minecraft:location": {"position": {"y": {"min": y}}}}}}}}
+
+
 def killed(predicate):
     """The player kills an entity matching the predicate."""
     return {"killed": {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
@@ -1570,6 +1577,9 @@ TABS["wilderness"][1].extend([
     ("into_the_ashes", "chalk_downs", "charred_log", G, "Into the Ashes",
      "Travel more than 2500 blocks from the world's centre and find the rare Scorched Barrens: a burnt forest of Charred Logs and Wood Ash, ravens overhead",
      in_biome("scorched_barrens")),
+    # terrain (docs/terrain-plan.md phase 1, gen_terrain.py): the high ranges
+    ("roof_of_the_world", "chalk_downs", "minecraft:snow_block", G, "Roof of the World",
+     "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290", above_y(250)),
     ("burnt_hall", "into_the_ashes", "rune_blackstone", C, "The Burnt Hall",
      "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
      visit("elkwight_ruin")),

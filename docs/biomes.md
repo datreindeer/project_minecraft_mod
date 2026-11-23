@@ -1,6 +1,7 @@
 # Moddens biomer
 
-Alla biomer som modden lägger till i Overworld. Terrängen formas som i vanilla; modden ändrar bara vilken biom som
+Alla biomer som modden lägger till i Overworld. Terrängens form är moddens egen sedan terrängplanens fas 1 (se
+*Terrängens form* nedan: högre berg, djupa dalar, plattare slätter). Biomerna placeras som förut; modden ändrar bara vilken biom som
 hamnar var (varje biom tar en del av en vanilla-biomens klimatzon, se `docs/world-materials-plan.md` "Fas 4+7"),
 och i de nya ytbiomerna också vilka block marken består av. Varje biom ärver sin vanilla-malls djur, strukturer och
 moddens tillägg (foder, vilt, landmärken) utom det som inte passar. Att hitta en ny ytbiom ger en advancement i
@@ -113,6 +114,71 @@ en varm är röd.
 utmapp, rad 2 seeds, rad 3 kartans sida i block, rad 4 filnamnsprefix, och starta gametest-servern. Den ritar ytbiomerna
 (efter moddens regler) runt 0,0 för varje seed, med färgförklaring, plus en närbild av den första Scorched Barrens, och
 loggar mätningen ovan och andelen Scorched Barrens bortom 2600 block. Utan filen gör den ingenting.
+
+## Terrängens form (gen_terrain.py)
+
+Terrängplanens fas 1 (`docs/terrain-plan.md`). Modden skriver över vanillas density functions för Overworld:
+`data/minecraft/worldgen/density_function/overworld/` `offset.json` (höjden), `factor.json` (hur kuperat),
+`jaggedness.json` (taggiga toppar), `final_density.json` och `preliminary_surface_level.json` (taket), plus en egen
+`mechanical:flatness`. Allt skrivs av `scripts/gen_terrain.py`, som läser vanillas filer ur jarren och byter ut
+punkterna från en tabell (`OFFSET`), så ändringarna står som tal. Klimatbruset är detsamma, så **varje biom ligger kvar
+där den låg**: kartorna över kallt och varmt ovan är oförändrade. Kuster (kontinentalitet upp till -0,1) och träsk
+(erosion 0,7) har vanillas höjder kvar, och grottor, akviferer och malmhöjder är orörda.
+
+- **Bergskedjor:** långt inne i landet (kontinentalitet 0,25 och 1) ligger bergen högre och oftare. Där erosionen är
+  låg reser sig kammarna till y 220–260, och de högsta topparna med sina taggiga spiror når y 280–295 (vanilla stannade
+  på 255, där taket plattade till dem). Taket som pressar bort terrängen flyttades från y 240–256 till y 272–296, så det
+  finns över 20 block kvar att bygga på även på den högsta toppen. Platåerna (Savanna Plateau, Marble Gorge) ligger
+  lite högre, och kullarna i det kuperade låglandet blir bergsryggar som löper genom landskapet.
+- **Djupa dalar:** floden ligger alltid i botten av en dal. Låglandet ligger högre än förut (y 75–90 i stället för
+  64–67), och flodbankarna stiger brant från vattnet och planar ut en bit upp, så floder i låglandet går i dalar 15–25
+  block djupa. Mellan bergen är dalarna 30–60 block och mer, med floden längst ned. Vattnet ligger kvar i havets nivå.
+- **Platta biomer:** `mechanical:flatness` (0..1) är 1 där marken ska vara platt: torrt (fuktighet under -0,15:
+  Plains, Savanna, Chalk Downs, Pine Heath, Mammoth Steppe), hett (temperatur över 0,6: Desert, Gypsum Flats) och kallt
+  och torrt (Snowy Plains, Ice Spikes), och 0,4 på jämn mark i övrigt (Peat Bog). Den tonas bort mot bergen (erosion
+  -0,3 .. -0,45), så toppar och bergssidor behåller sin form. Där väger höjden över till en lugn kopia av höjdkurvan,
+  där låglandets kullar bara har 12 % kvar av sin höjd och flodbankarna är mjukare, och 3D-bruset dämpas fem gånger
+  (`factor`). Resultatet är långa jämna sluttningar i stället för småkullar. Skogar, taiga och ängar är i stället lite
+  mer kuperade än förut.
+
+**Mätt** med kartverktyget (nedan) på tre seeds, 6144 × 6144 block runt 0,0, före (vanilla) → efter:
+
+| | seed 1 | seed 2 | seed 4242 |
+|---|---|---|---|
+| Land över y 150 | 1,6 % → 8,5 % | 2,7 % → 10,1 % | 0,1 % → 3,6 % |
+| Land över y 200 | 0,06 % → 1,4 % | 0,20 % → 1,9 % | 0 → 0,21 % |
+| Högsta topp | y 255 → 287 | y 255 → 295 | y 181 → 240 |
+| Floddalens djup, median / 90:e percentil (alla floder) | 6 / 35 → 12 / 49 | 7 / 31 → 12 / 42 | 7 / 26 → 11 / 39 |
+| Floder med mark över y 130 inom 96 block: antal pixlar, djup median | 2393, 38 → 6228, 45 | 3212, 23 → 7656, 30 | 1418, 35 → 8558, 33 |
+| Höjdskillnad i rutor om 128 block, median | 53 → 66 | 58 → 74 | 49 → 60 |
+| Strukturer: byar / Tribe Village / Ancient Oak / Elkwight-ruin (12 288 × 12 288 block) | 105 / 41 / 87 / 3 → 103 / 39 / 78 / 3 | 104 / 37 / 49 / 1 → 104 / 27 / 46 / 1 | 120 / 34 / 53 / 1 → 118 / 35 / 49 / 2 |
+
+Platt mark (lutning högst 1 block på 4), alla tre seeds: Mammoth Steppe 57 → 69 %, Desert 72 → 80 %, Sunflower Plains
+72 → 78 %, Chalk Downs 75 → 79 %, Pine Heath 76 → 79 %, Ice Spikes 68 → 70 %, Savanna 71 → 71 %, Plains 70 → 66 %,
+Snowy Plains 65 → 62 %, Peat Bog 73 → 71 %; skogarna 65–70 → 54–61 %, Taiga 63 → 52 %, Meadow 51 → 38 %. Plains och
+Snowy Plains ligger ofta i kuperade erosionsband vid bergen och vid flodbankar, där höjdkurvan och inte bruset ger
+lutningen, så andelen ändras lite; småkullarna mitt på slätten är borta (höjdprofiler i 1-blockssteg följer nu höjdkurvan
+nästan exakt). Strukturerna: Tribe Village och Ancient Oak placeras 10 % och 8 % mer sällan, eftersom skogarna och
+dalsidorna har fått mer lutning; byarna och Elkwight-ruinerna lika ofta. På en riktig dev-server (seed 2) nådde toppen
+vid 2128, 488 y 295 och den vid -1468, -1576 y 284, och floderna (bland annat i en bergsdal vid 2418, -368) har vatten.
+
+Bilder, före till vänster och efter till höger: `docs/shots/terrain/fas1_relief_seed1.png`, `_seed2`, `_seed4242`
+(skuggad relief), `fas1_slope_seed2.png` (lutning: grönt platt, gult, orange, rött, lila brant) och skärmbilder från
+seed 2: `fas1_range_air.png`, `fas1_highland_air.png`, `fas1_range_ground.png`, `fas1_valley_air.png`,
+`fas1_valley_ground.png`, `fas1_plains_air.png`, `fas1_plains_ground.png`.
+
+**Advancement:** *Roof of the World* (Wilderness, under *White Downs*): klättra upp över y 250.
+
+**Verktygen** (bara för utveckling):
+- `BiomeMap` med rad 5 `terrain` i `biomemap.flag` (eller `terrain-only`, utan biomkartor; rad 6 `exit` stänger
+  servern efteråt i stället för att köra testerna) kör `worldgen/TerrainMap`: höjden direkt ur chunk-generatorn (inga
+  chunks genereras), 8 block per pixel, som skuggad reliefkarta (`<prefix>_seed<seed>_relief.png`), lutningskarta
+  (`_slope.png`), statistik (`_terrain.txt`: tabellen ovan, platt mark per biom och per erosionsband, flatness per biom,
+  strukturer som klarar sina egna placeringskrav, bra platser att fotografera) och råa höjder (`_heights.bin`).
+- `TerrainShots` (klienten): `terrainshots.flag` med rad 1 utmapp, rad 2 seed (plus `fresh` för att skapa världen på
+  nytt, `world=Namn` för en annan värld), rad 3 filprefix och sedan en kameraplats per rad:
+  `namn kameraX kameraZ målX målZ höjd [lutning]` (höjd över marken, eller `=Y`). Den skapar världen, väntar tills
+  terrängen har ritats, tar bilderna mitt på dagen utan moln och HUD och avslutar spelet.
 
 ## Grottbiomer
 

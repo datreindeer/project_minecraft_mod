@@ -17,7 +17,7 @@ public class CalendarHud implements GuiLayer {
     @Override
     public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.getDebugOverlay().showDebugScreen() || !mc.level.dimensionType().hasSkyLight()) return;
+        if (mc.level == null || mc.gui.hud.isHidden() || mc.getDebugOverlay().showDebugScreen() || !mc.level.dimensionType().hasSkyLight()) return;
         long clock = mc.level.getOverworldClockTime();
         graphics.text(mc.font, Calendar.describe(clock), 4, 4, SEASON_COLOURS[Calendar.season(clock)], true);
     }
