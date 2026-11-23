@@ -30,7 +30,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 /**
  * The pieces of a snag, a dead standing tree (worldgen ForestDecor.snag, docs/biomes.md): Deadwood, the silver-grey,
  * cracked wood left when the bark has fallen off (a log, any axis; burns like one); Broken Deadwood, the jagged top where
- * the trunk snapped; Deadwood Branch, a short dead stub that joins up like a chorus plant; Shelf Fungus, brackets on dead
+ * the trunk snapped; Deadwood Branch, a short dead stub that joins up like a chorus plant, and the thinner Deadwood
+ * Twig (the dry land's dead trees); Shelf Fungus, brackets on dead
  * wood; and Fallen Bark, flakes of one wood's bark at the foot (gives that wood's Bark). Data, models and textures:
  * scripts/gen_deadwood.py.
  */
@@ -41,6 +42,9 @@ public final class Deadwood {
             p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.5F).sound(SoundType.WOOD).ignitedByLava().noOcclusion());
     public static final DeferredBlock<AncientOak.Branch> DEADWOOD_BRANCH = BLOCKS.registerBlock("deadwood_branch", p -> new AncientOak.Branch(6, p),
             p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(0.8F).sound(SoundType.WOOD).ignitedByLava().noOcclusion());
+    /** The thin, 4 px ends of a dead tree's limbs (worldgen DryColdDecor.deadTree), joining like Deadwood Branch. */
+    public static final DeferredBlock<AncientOak.Branch> DEADWOOD_TWIG = BLOCKS.registerBlock("deadwood_twig", p -> new AncientOak.Branch(4, p),
+            p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(0.5F).sound(SoundType.WOOD).ignitedByLava().noOcclusion());
     public static final DeferredBlock<ShelfFungus> SHELF_FUNGUS = BLOCKS.registerBlock("shelf_fungus", ShelfFungus::new,
             p -> p.mapColor(MapColor.TERRACOTTA_BROWN).strength(0.4F).sound(SoundType.FUNGUS).noCollision().noOcclusion().pushReaction(PushReaction.POPPED));
     /** Fallen Bark, one per wood (Mechanical.WOODS): a flat litter of bark flakes like Twigs. */

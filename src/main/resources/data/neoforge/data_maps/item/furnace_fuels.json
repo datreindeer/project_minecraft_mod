@@ -8,6 +8,9 @@
     },
     "mechanical:deadwood_branch": {
       "burn_time": 100
+    },
+    "mechanical:deadwood_twig": {
+      "burn_time": 50
     }
   }
 }

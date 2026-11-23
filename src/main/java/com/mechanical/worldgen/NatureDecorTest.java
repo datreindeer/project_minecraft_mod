@@ -39,7 +39,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class NatureDecorTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final List<String> TESTS = List.of("log_bridge", "worldgen_beaver_dam", "hillside_spring", "valley_waterfall", "rock_arch", "snag");
+    private static final List<String> TESTS = List.of("log_bridge", "worldgen_beaver_dam", "hillside_spring", "valley_waterfall", "rock_arch", "snag", "dead_tree");
 
     static {
         TEST_FUNCTIONS.register("log_bridge", () -> NatureDecorTest::logBridge);
@@ -47,6 +47,7 @@ public final class NatureDecorTest {
         TEST_FUNCTIONS.register("hillside_spring", () -> NatureDecorTest::spring);
         TEST_FUNCTIONS.register("valley_waterfall", () -> NatureDecorTest::waterfall);
         TEST_FUNCTIONS.register("rock_arch", () -> NatureDecorTest::arch);
+        TEST_FUNCTIONS.register("dead_tree", () -> NatureDecorTest::deadTree);
         TEST_FUNCTIONS.register("snag", () -> NatureDecorTest::snag);
     }
 
@@ -172,23 +173,69 @@ public final class NatureDecorTest {
         });
     }
 
-    /** Stone under a grass top at y 3: an arch stands over y 4 with rock 3-5 above the feet and on both sides. */
+    /**
+     * Stone under a grass top at y 3: an arch stands over y 4 with rock 3-8 above the feet and on both sides 2-6 off, its
+     * way through open; and the half-block shapes it is laid with come out right (Shaper.shape).
+     */
     private static void arch(GameTestHelper h) {
-        for (int x = 0; x <= 16; x++)
-            for (int z = 0; z <= 16; z++)
+        var stone = Blocks.STONE;
+        h.assertTrue(Shaper.shape(0xFF, stone, null).is(stone) && Shaper.shape(0x01, stone, null) == null, "all octants a full block, one octant nothing");
+        h.assertTrue(Shaper.shape(0x0F, stone, null).getValue(net.minecraft.world.level.block.SlabBlock.TYPE) == net.minecraft.world.level.block.state.properties.SlabType.BOTTOM
+                && Shaper.shape(0xF0, stone, null).getValue(net.minecraft.world.level.block.SlabBlock.TYPE) == net.minecraft.world.level.block.state.properties.SlabType.TOP, "lower half a bottom slab, upper half a top slab");
+        var north = Shaper.shape(0x3F, stone, null); // lower half and the two north upper quarters
+        h.assertTrue(north.getBlock() instanceof net.minecraft.world.level.block.StairBlock && north.getValue(net.minecraft.world.level.block.StairBlock.FACING) == Direction.NORTH
+                && north.getValue(net.minecraft.world.level.block.StairBlock.HALF) == net.minecraft.world.level.block.state.properties.Half.BOTTOM, "a stair facing the side its upper quarters are on");
+        var under = Shaper.shape(0xF0 | 0b1010, stone, null); // upper half and the two east lower quarters
+        h.assertTrue(under.getBlock() instanceof net.minecraft.world.level.block.StairBlock && under.getValue(net.minecraft.world.level.block.StairBlock.FACING) == Direction.EAST
+                && under.getValue(net.minecraft.world.level.block.StairBlock.HALF) == net.minecraft.world.level.block.state.properties.Half.TOP, "upside down under an overhang");
+        var corner = Shaper.shape(0x0F | 0x10, stone, null); // lower half and the north-west upper quarter
+        h.assertTrue(corner.getValue(net.minecraft.world.level.block.StairBlock.SHAPE) == net.minecraft.world.level.block.state.properties.StairsShape.OUTER_LEFT
+                && corner.getValue(net.minecraft.world.level.block.StairBlock.FACING) == Direction.NORTH, "one upper quarter an outer corner there");
+        for (int x = -8; x <= 24; x++)
+            for (int z = -8; z <= 24; z++)
                 for (int y = 0; y <= 3; y++) h.setBlock(new BlockPos(x, y, z), y == 3 ? Blocks.GRASS_BLOCK : Blocks.STONE);
         prime(h);
         h.assertTrue(MountainDecor.ROCK_ARCH.place(h.getLevel(), null, RandomSource.create(2), h.absolutePos(new BlockPos(8, 4, 8))), "an arch is built");
         h.assertTrue(h.getBlockState(new BlockPos(8, 4, 8)).isAir() && h.getBlockState(new BlockPos(8, 5, 8)).isAir(), "the way through is open");
+        java.util.function.Predicate<BlockPos> rock = p -> {
+            var st = h.getBlockState(p);
+            return st.is(Blocks.STONE) || st.is(Blocks.ANDESITE) || st.is(Blocks.STONE_SLAB) || st.is(Blocks.STONE_STAIRS) || st.is(Blocks.ANDESITE_SLAB) || st.is(Blocks.ANDESITE_STAIRS);
+        };
         boolean ok = false;
         for (Direction across : new Direction[] {Direction.EAST, Direction.SOUTH}) {
             BlockPos c = new BlockPos(8, 4, 8);
-            boolean over = java.util.stream.IntStream.of(3, 4, 5).anyMatch(y -> h.getBlockState(c.above(y)).is(Blocks.STONE));
-            boolean a = java.util.stream.IntStream.of(2, 3, 4).anyMatch(d -> h.getBlockState(c.relative(across, d).above()).is(Blocks.STONE));
-            boolean b = java.util.stream.IntStream.of(2, 3, 4).anyMatch(d -> h.getBlockState(c.relative(across, -d).above()).is(Blocks.STONE));
+            boolean over = java.util.stream.IntStream.rangeClosed(3, 8).anyMatch(y -> rock.test(c.above(y)));
+            boolean a = java.util.stream.IntStream.rangeClosed(2, 6).anyMatch(d -> rock.test(c.relative(across, d).above()));
+            boolean b = java.util.stream.IntStream.rangeClosed(2, 6).anyMatch(d -> rock.test(c.relative(across, -d).above()));
             ok |= over && a && b;
         }
         h.assertTrue(ok, "rock over the way through and a foot on each side");
+        h.succeed();
+    }
+
+    /** Dead trees on dry sand, one seed after another: a Deadwood trunk, and no arm of a Deadwood Branch or Twig reaching into the air. */
+    private static void deadTree(GameTestHelper h) {
+        int trees = 0;
+        for (int seed = 0; seed < 12; seed++) {
+            for (int x = 0; x <= 16; x++)
+                for (int z = 0; z <= 16; z++)
+                    for (int y = 0; y <= 14; y++) h.setBlock(new BlockPos(x, y, z), y < 3 ? Blocks.STONE : y == 3 ? Blocks.SAND : Blocks.AIR);
+            prime(h);
+            if (!DryColdDecor.DEAD_TREE.place(h.getLevel(), null, RandomSource.create(seed), h.absolutePos(new BlockPos(8, 4, 8)))) continue;
+            h.assertTrue(h.getBlockState(new BlockPos(8, 4, 8)).is(com.mechanical.Deadwood.DEADWOOD.get()), "seed " + seed + ": a Deadwood trunk");
+            for (BlockPos p : BlockPos.betweenClosed(new BlockPos(0, 3, 0), new BlockPos(16, 14, 16))) {
+                var st = h.getBlockState(p);
+                if (!st.is(com.mechanical.Deadwood.DEADWOOD_BRANCH.get()) && !st.is(com.mechanical.Deadwood.DEADWOOD_TWIG.get())) continue;
+                for (Direction d : Direction.values()) {
+                    if (!st.getValue(net.minecraft.world.level.block.PipeBlock.PROPERTY_BY_DIRECTION.get(d))) continue;
+                    var n = h.getBlockState(p.relative(d));
+                    h.assertTrue(n.is(com.mechanical.Deadwood.DEADWOOD.get()) || n.is(com.mechanical.Deadwood.DEADWOOD_BRANCH.get()) || n.is(com.mechanical.Deadwood.DEADWOOD_TWIG.get())
+                            || d == Direction.DOWN && n.isSolid(), "seed " + seed + ": the thin piece at " + p + " reaches " + d + " into wood or the ground, not the air");
+                }
+            }
+            trees++;
+        }
+        h.assertTrue(trees >= 8, "most seeds give a tree (" + trees + ")");
         h.succeed();
     }
 

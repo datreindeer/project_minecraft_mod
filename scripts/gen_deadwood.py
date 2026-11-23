@@ -282,26 +282,27 @@ model("broken_deadwood_2", shards([(0, 0, 16, 6, 12), (10, 6, 16, 16, 15), (0, 1
 w(A / "blockstates/broken_deadwood.json", {"variants": {"": [{"model": M + f"block/broken_deadwood{v}", **({"y": y} if y else {})}
                                                               for v in ("", "_2") for y in (0, 90, 180, 270)]}})
 
-# Deadwood Branch: a 6 px stub joining like a chorus plant. The core's faces are separate parts: a free end (nothing that
-# way, joined the other way) shows the grey end grain of a snapped twig, any other free face the branch's skin.
-B0, B1 = 5, 11
+# Deadwood Branch (6 px) and Deadwood Twig (4 px, the thin ends of a dead tree's limbs): stubs joining like a chorus plant.
+# The core's faces are separate parts: a free end (nothing that way, joined the other way) shows the grey end grain of a
+# snapped twig, any other free face the branch's skin.
 BR_TEX = {"side": M + "block/deadwood_branch", "end": M + "block/deadwood_top", "particle": M + "block/deadwood_branch"}
 OPP = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "down", "down": "up"}
-for d in OPP:
-    for kind, tex in (("side", "#side"), ("end", "#end")):
-        model(f"deadwood_branch_{kind}_{d}", [box([B0] * 3, [B1] * 3, {d: face(tex, side_uv([B0] * 3, [B1] * 3, d))})], BR_TEX)
-model("deadwood_branch_arm", [box([B0, B0, 0], [B1, B1, B0], {d: face("#side", side_uv([B0, B0, 0], [B1, B1, B0], d))
-                                                               for d in ("east", "west", "up", "down")} | {"north": face("#side", cull="north")})], BR_TEX)
 ARM_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
-parts = [{"when": {d: "true"}, "apply": {"model": M + "block/deadwood_branch_arm", **ARM_ROT[d]}} for d in OPP]
-for d, o in OPP.items():
-    parts.append({"when": {d: "false", o: "true"}, "apply": {"model": M + f"block/deadwood_branch_end_{d}"}})
-    parts.append({"when": {d: "false", o: "false"}, "apply": {"model": M + f"block/deadwood_branch_side_{d}"}})
-w(A / "blockstates/deadwood_branch.json", {"multipart": parts})
-model("deadwood_branch_inventory", [box([B0] * 3, [B1] * 3, {d: face("#end" if d == "south" else "#side", side_uv([B0] * 3, [B1] * 3, d))
-                                                              for d in OPP if d != "north"}),
-                                    box([B0, B0, 0], [B1, B1, B0], {d: face("#side", side_uv([B0, B0, 0], [B1, B1, B0], d))
-                                                                    for d in ("east", "west", "up", "down", "north")})], BR_TEX)
+for name, B0, B1 in (("deadwood_branch", 5, 11), ("deadwood_twig", 6, 10)):
+    for d in OPP:
+        for kind, tex in (("side", "#side"), ("end", "#end")):
+            model(f"{name}_{kind}_{d}", [box([B0] * 3, [B1] * 3, {d: face(tex, side_uv([B0] * 3, [B1] * 3, d))})], BR_TEX)
+    model(f"{name}_arm", [box([B0, B0, 0], [B1, B1, B0], {d: face("#side", side_uv([B0, B0, 0], [B1, B1, B0], d))
+                                                          for d in ("east", "west", "up", "down")} | {"north": face("#side", cull="north")})], BR_TEX)
+    parts = [{"when": {d: "true"}, "apply": {"model": M + f"block/{name}_arm", **ARM_ROT[d]}} for d in OPP]
+    for d, o in OPP.items():
+        parts.append({"when": {d: "false", o: "true"}, "apply": {"model": M + f"block/{name}_end_{d}"}})
+        parts.append({"when": {d: "false", o: "false"}, "apply": {"model": M + f"block/{name}_side_{d}"}})
+    w(A / f"blockstates/{name}.json", {"multipart": parts})
+    model(f"{name}_inventory", [box([B0] * 3, [B1] * 3, {d: face("#end" if d == "south" else "#side", side_uv([B0] * 3, [B1] * 3, d))
+                                                         for d in OPP if d != "north"}),
+                                box([B0, B0, 0], [B1, B1, B0], {d: face("#side", side_uv([B0, B0, 0], [B1, B1, B0], d))
+                                                                for d in ("east", "west", "up", "down", "north")})], BR_TEX)
 
 
 def bracket(tiers):
@@ -337,7 +338,7 @@ for wood in WOODS:
     w(A / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": M + f"item/{wood}_bark"}})
 
 for block, mdl in (("deadwood", "deadwood"), ("broken_deadwood", "broken_deadwood"), ("deadwood_branch", "deadwood_branch_inventory"),
-                   ("shelf_fungus", "shelf_fungus")):
+                   ("deadwood_twig", "deadwood_twig_inventory"), ("shelf_fungus", "shelf_fungus")):
     w(A / f"items/{block}.json", {"model": {"type": "minecraft:model", "model": M + "block/" + mdl}})
 
 # ------------------------------------------------------------------------------------------------ loot, tags, fuel, lang
@@ -357,6 +358,7 @@ loot("deadwood", {"type": "minecraft:item", "name": M + "deadwood"})
 loot("shelf_fungus", {"type": "minecraft:item", "name": M + "shelf_fungus"})
 loot("broken_deadwood", sticks(1, 2))
 loot("deadwood_branch", sticks(1, 1))
+loot("deadwood_twig", sticks(0, 1))
 for wood in WOODS:
     loot(f"{wood}_fallen_bark", {"type": "minecraft:item", "name": M + f"{wood}_bark"})
 
@@ -368,16 +370,17 @@ def tag_add(rel, values):
     w(path, tag)
 
 
-tag_add("minecraft/tags/block/mineable/axe.json", [M + b for b in ("deadwood", "broken_deadwood", "deadwood_branch", "shelf_fungus")])
+tag_add("minecraft/tags/block/mineable/axe.json", [M + b for b in ("deadwood", "broken_deadwood", "deadwood_branch", "deadwood_twig", "shelf_fungus")])
 fuel = D / "neoforge/data_maps/item/furnace_fuels.json"
 fmap = json.loads(fuel.read_text(encoding="utf-8")) if fuel.exists() else {"values": {}}
-fmap["values"].update({M + "deadwood": {"burn_time": 300}, M + "broken_deadwood": {"burn_time": 150}, M + "deadwood_branch": {"burn_time": 100}})
+fmap["values"].update({M + "deadwood": {"burn_time": 300}, M + "broken_deadwood": {"burn_time": 150}, M + "deadwood_branch": {"burn_time": 100}, M + "deadwood_twig": {"burn_time": 50}})
 w(fuel, fmap)
 
 lang_path = A / "lang/en_us.json"
 lang = json.loads(lang_path.read_text(encoding="utf-8"))
 lang.update({"block.mechanical.deadwood": "Deadwood", "block.mechanical.broken_deadwood": "Broken Deadwood",
-             "block.mechanical.deadwood_branch": "Deadwood Branch", "block.mechanical.shelf_fungus": "Shelf Fungus"})
+             "block.mechanical.deadwood_branch": "Deadwood Branch", "block.mechanical.deadwood_twig": "Deadwood Twig",
+             "block.mechanical.shelf_fungus": "Shelf Fungus"})
 lang.update({f"block.mechanical.{wood}_fallen_bark": f"Fallen {wood.replace('_', ' ').title()} Bark" for wood in WOODS})
 lang_path.write_text(json.dumps(lang, indent=2) + "\n", encoding="utf-8")
 

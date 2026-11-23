@@ -133,7 +133,7 @@ def log_bridge():
 
 
 def under_arch():
-    """The player under a natural rock arch: rock 3-5 blocks over the head, rock on both sides 2-4 blocks off, and open sky
+    """The player under a natural rock arch: rock 3-7 blocks over the feet, rock on both sides 2-6 blocks off, and open sky
     3 blocks ahead and behind (so not in a cave or under an overhang), the way through running east-west or north-south."""
     def rock_at(x, y, z):
         return {"type": "minecraft:any_of", "terms": [
@@ -147,9 +147,9 @@ def under_arch():
         at = (lambda a, y, b: rock_at(a, y, b)) if ax == "x" else (lambda a, y, b: rock_at(b, y, a))
         out = (lambda d: sky(d, 0)) if ax == "x" else (lambda d: sky(0, d))
         return {"type": "minecraft:all_of", "terms": [
-            {"type": "minecraft:any_of", "terms": [at(0, y, 0) for y in (3, 4, 5)]},
-            {"type": "minecraft:any_of", "terms": [at(0, 1, d) for d in (2, 3, 4)]},
-            {"type": "minecraft:any_of", "terms": [at(0, 1, -d) for d in (2, 3, 4)]},
+            {"type": "minecraft:any_of", "terms": [at(0, y, 0) for y in (3, 4, 5, 6, 7)]},
+            {"type": "minecraft:any_of", "terms": [at(0, 1, d) for d in (2, 3, 4, 5, 6)]},
+            {"type": "minecraft:any_of", "terms": [at(0, 1, -d) for d in (2, 3, 4, 5, 6)]},
             out(3), out(-3)]}
     return {"under_arch": {"trigger": "minecraft:location", "conditions": {"player": {"type": "minecraft:any_of", "terms": [way("x"), way("z")]}}}}
 
@@ -1659,6 +1659,9 @@ TABS["wilderness"][1].extend([
     ("roof_of_the_world", "chalk_downs", "minecraft:snow_block", G, "Roof of the World",
      "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290", above_y(250)),
     # small things in the landscape (docs/terrain-plan.md phase 4, gen_land_decor.py)
+    ("under_the_arch", "roof_of_the_world", "minecraft:red_sandstone", T, "Under the Arch",
+     "Stand beneath a natural rock arch. Wind and frost wear them out of the rock in the hills, the karst and the badlands; they are rare",
+     under_arch()),
     ("old_bones", "chalk_downs", "minecraft:bone_block", T, "Old Bones",
      "Find the bones of a long-dead animal and stand among them: on the plains and the steppe, half buried in the desert sand, or mammoth tusks in the Loess",
      by_bones()),
