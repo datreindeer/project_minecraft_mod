@@ -1,13 +1,12 @@
 {
   "wants": {
-    "id": "minecraft:stick",
-    "count": 16
+    "id": "mechanical:copper_coin",
+    "count": 4
   },
   "gives": {
-    "id": "mechanical:tool_rod",
-    "count": 2
+    "id": "mechanical:flint_axe"
   },
-  "max_uses": 16,
+  "max_uses": 12,
   "xp": 1,
   "reputation_discount": 0.05
 }

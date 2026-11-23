@@ -15,6 +15,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -38,6 +39,9 @@ public final class OakShots {
     private static File out;
     private static final List<String> result = new ArrayList<>();
     private static BlockPos oak;
+    /** Second line of the flag "quest": only the quest screen, in each of its states (oak_quest_*.png). */
+    private static boolean questOnly;
+    private static final String[] QUEST_SHOTS = {"current", "focus_done", "first", "two_rewards", "finished", "closed"};
 
     @SubscribeEvent
     static void onTick(ClientTickEvent.Post event) {
@@ -49,7 +53,9 @@ public final class OakShots {
                     stage = -2;
                     return;
                 }
-                out = new File(Files.readAllLines(flag.toPath()).get(0).trim());
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                questOnly = lines.size() > 1 && lines.get(1).trim().equals("quest");
                 out.mkdirs();
                 stage = 0;
             }
@@ -87,6 +93,7 @@ public final class OakShots {
                         look(Vec3.atCenterOf(oak).add(0, 60, 0), 0, 90);
                     });
                     next();
+                    if (questOnly) stage = 20;
                 }
                 case 2 -> { // the oak's chunks generate, the altar ticks and settles its people
                     if (ticks < 300) return;
@@ -156,7 +163,33 @@ public final class OakShots {
                     stage = -2;
                     mc.stop();
                 }
-                default -> {}
+                default -> { // quest screen states: 20 + 2n opens one, 21 + 2n photographs it
+                    int n = (stage - 20) / 2;
+                    if (n >= QUEST_SHOTS.length) {
+                        stage = 10;
+                        return;
+                    }
+                    if (ticks < 40) return;
+                    if ((stage - 20) % 2 == 0) {
+                        Component name = Component.literal("Ealdwyn, Keeper of the Oak");
+                        int id = mc.player.getId();
+                        mc.gui.setScreen(new com.mechanical.client.people.OakQuestScreen(switch (QUEST_SHOTS[n]) {
+                            case "first" -> new OakQuests.Open(id, name, 0, 5, false, 6);
+                            case "two_rewards" -> new OakQuests.Open(id, name, 7, 2, false, 41);
+                            case "finished" -> new OakQuests.Open(id, name, 12, 0, false, 80);
+                            case "closed" -> new OakQuests.Open(id, name, 4, 0, true, -45);
+                            default -> new OakQuests.Open(id, name, 6, 1, false, 34);
+                        }));
+                        if (QUEST_SHOTS[n].equals("focus_done")) { // click the third token (the screen's layout: 12 tokens 18 wide, 4 apart)
+                            int left = (mc.getWindow().getGuiScaledWidth() - 340) / 2 + 40, top = Math.max(2, (mc.getWindow().getGuiScaledHeight() - 208) / 2);
+                            mc.gui.screen().mouseClicked(new net.minecraft.client.input.MouseButtonEvent(left + 2 * 22 + 9, top + 158 + 9,
+                                    new net.minecraft.client.input.MouseButtonInfo(0, 0)), false);
+                        }
+                    } else {
+                        shot(mc, "quest_" + QUEST_SHOTS[n]);
+                    }
+                    next();
+                }
             }
         } catch (Exception e) {
             result.add("error: " + e);

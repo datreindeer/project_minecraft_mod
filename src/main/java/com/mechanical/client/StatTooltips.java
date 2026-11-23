@@ -6,7 +6,6 @@ import java.util.List;
 import com.mechanical.BoneHookRodItem;
 import com.mechanical.BronzeTools;
 import com.mechanical.Coins;
-import com.mechanical.CrudeBowItem;
 import com.mechanical.FallenLogBlock;
 import com.mechanical.Farming;
 import com.mechanical.FlailItem;
@@ -86,15 +85,13 @@ public final class StatTooltips {
                     ? Component.literal("Yes").withStyle(GOOD) : Component.literal("No").withStyle(BAD)));
         }
 
-        if (stack.getItem() instanceof BowItem) {
-            float damage = stack.getItem() instanceof CrudeBowItem ? (float) CrudeBowItem.DAMAGE_FACTOR
-                    : stack.getItem() instanceof com.mechanical.wildlife.mountain.HornBowItem ? com.mechanical.wildlife.mountain.HornBowItem.SPEED_FACTOR
-                    : stack.getItem() instanceof com.mechanical.YewLongbowItem ? com.mechanical.YewLongbowItem.SPEED_FACTOR : 1.0F;
-            lines.add(stat("Arrow damage", percent(damage)));
-            if (stack.getItem() instanceof com.mechanical.YewLongbowItem) {
-                lines.add(stat("Arrow speed", times(com.mechanical.YewLongbowItem.SPEED_FACTOR)));
-                lines.add(stat("Full draw", Component.literal(String.format("%.1f s (bow: 1.0 s)", com.mechanical.YewLongbowItem.DRAW_TICKS / 20.0F)).withStyle(BAD)));
-            }
+        // bows and the crossbow: what a fully drawn shot deals per point of the arrow's damage, and how long the draw takes
+        if (stack.getItem() instanceof BowItem || stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) {
+            lines.add(Component.translatable("tooltip.mechanical.bow.damage_multiplier", value(multiplier(damageMultiplier(stack)))).withStyle(LABEL));
+            int draw = stack.getItem() instanceof net.minecraft.world.item.CrossbowItem && event.getEntity() != null
+                    ? net.minecraft.world.item.CrossbowItem.getChargeDuration(stack, event.getEntity()) : drawTicks(stack);
+            lines.add(Component.translatable("tooltip.mechanical.bow.draw_time", value(String.format(java.util.Locale.ROOT, "%.2f", draw / 20.0F).replaceAll("0$", "") + " s")).withStyle(LABEL));
+            if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) use(lines, Component.translatable("tooltip.mechanical.crossbow.bolts_only").getString());
         }
         if (stack.getItem() instanceof SpecialArrowItem arrow) {
             lines.add(stat("Damage", value(String.format("%.1f", arrow.damage()) + " (arrow: 2.0)")));
@@ -217,6 +214,30 @@ public final class StatTooltips {
 
     private static Component percent(float f) {
         return Component.literal(Math.round(f * 100) + "%").withStyle(f >= 0.75F ? GOOD : f >= 0.6F ? ChatFormatting.YELLOW : BAD);
+    }
+
+    /**
+     * Arrow damage is its base damage times its speed, so a full draw's speed is the multiplier: vanilla bow 3.0
+     * (BowItem: power 1 × 3), crossbow 3.15 (CrossbowItem.ARROW_POWER, private); the mod's bows scale the bow's.
+     */
+    private static float damageMultiplier(ItemStack stack) {
+        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 3.15F;
+        float bow = 3.0F;
+        if (stack.getItem() instanceof com.mechanical.CrudeBowItem) return bow * (float) com.mechanical.CrudeBowItem.DAMAGE_FACTOR;
+        if (stack.getItem() instanceof com.mechanical.wildlife.mountain.HornBowItem) return bow * com.mechanical.wildlife.mountain.HornBowItem.SPEED_FACTOR;
+        if (stack.getItem() instanceof com.mechanical.YewLongbowItem) return bow * com.mechanical.YewLongbowItem.SPEED_FACTOR;
+        return bow;
+    }
+
+    /** Ticks to a full draw (the crossbow's 1.25 s without a holder to ask about Quick Charge). */
+    private static int drawTicks(ItemStack stack) {
+        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 25;
+        return stack.getItem() instanceof com.mechanical.YewLongbowItem ? com.mechanical.YewLongbowItem.DRAW_TICKS : BowItem.MAX_DRAW_DURATION;
+    }
+
+    /** ×3.0, ×3.15: one decimal, two when it needs them. */
+    private static String multiplier(float f) {
+        return "×" + String.format(java.util.Locale.ROOT, "%.2f", f).replaceAll("0$", "");
     }
 
     private static Component times(float f) {

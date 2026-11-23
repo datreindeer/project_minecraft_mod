@@ -60,6 +60,7 @@ public final class People {
         OakFolk.init();
         OakFolkTest.init(modEventBus);
         TribeTest.init(modEventBus);
+        CaravanTest.init(modEventBus);
         RelationsTest.init(modEventBus);
         RoadTest.init(modEventBus);
         TribeAiTest.init(modEventBus);

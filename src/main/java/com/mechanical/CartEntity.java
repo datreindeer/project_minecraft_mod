@@ -151,6 +151,7 @@ public class CartEntity extends TravoisEntity {
 
     @Override
     public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float damage) {
+        if (caravanHorse != null && source.getEntity() instanceof Player player) com.mechanical.people.Caravans.offended(this, player); // its guards notice
         return caravanHorse == null && super.hurtServer(level, source, damage);
     }
 
@@ -383,6 +384,7 @@ public class CartEntity extends TravoisEntity {
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         goods.clearContent();
         ContainerHelper.loadAllItems(input, goods.getItems());
         entityData.set(CHEST, input.getBooleanOr("chest", false));
@@ -393,6 +395,7 @@ public class CartEntity extends TravoisEntity {
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         ContainerHelper.saveAllItems(output, goods.getItems());
         output.putBoolean("chest", hasChest());
         if (caravanHorse != null) output.store("caravan_horse", net.minecraft.core.UUIDUtil.CODEC, caravanHorse);

@@ -1,8 +1,8 @@
 """Folklore textures (gen_folklore.py, com.mechanical.folklore). Deterministic: hashes only, no randomness.
 
-- entity/wildlife/mountain_watcher.png: the golden eagle's 64x64 skin (same model, client.folklore.FolkloreClient) turned
-  pale: luminance mapped onto bone-white to silver-grey, with a faint pearly shimmer (scattered pale cyan/violet texels).
-- item/mountain_watcher_spawn_egg.png, item/watcher_feather.png: the golden eagle egg and Eagle Feather recoloured the same way.
+- item/mountain_watcher_spawn_egg.png, item/watcher_feather.png: the golden eagle egg and Eagle Feather recoloured to
+  the Watcher (gen_small_models.py paints its model): silver head and glowing eye on a slate egg with a teal-violet
+  shimmer; the feather slate, lighter at the base, shimmering teal to violet towards the tip on a silver shaft.
 - item/boiled_fly_agaric.png: the Fly Agaric item, the red cooked down to a dull orange-brown, the spots greyed.
 - block/glimmering_stump_side/_top.png: vanilla oak log bark and rings (from the merged jar) overgrown with moss.
 - mob_effect/second_sight.png: an 18x18 violet eye.
@@ -13,6 +13,7 @@ Run: python scripts/gen_folklore_textures.py (needs a gradle build for the merge
 """
 import glob
 import io
+import math
 import zipfile
 from pathlib import Path
 
@@ -38,8 +39,9 @@ def luma(c):
     return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255
 
 
-def pale(src, salt):
-    """Golden-brown plumage to pale: dark parts silver-grey, light parts bone-white, a pearly glint here and there."""
+def watcher_feather(src):
+    """The Eagle Feather in the Watcher's primaries: the vane slate, lighter at the base and shimmering teal to violet
+    towards the tip, a silver shaft, a dark slate outline."""
     im = src.copy()
     px = im.load()
     for y in range(im.height):
@@ -47,11 +49,43 @@ def pale(src, salt):
             r, g, b, a = px[x, y]
             if a == 0:
                 continue
-            l = min(1.0, luma((r, g, b)) * 1.6 + 0.15)
-            c = lerp((118, 124, 138), (246, 243, 232), l)
-            k = hsh(x, y, salt)
-            if k > 0.93:
-                c = lerp(c, (200, 236, 250) if k > 0.965 else (224, 206, 250), 0.6)  # the shimmer
+            t = (x + (im.height - 1 - y)) / (im.width + im.height - 2)  # base (lower left) 0 .. tip (upper right) 1
+            l = luma((r, g, b))
+            shimmer = lerp((60, 198, 192), (134, 112, 230), 0.5 + 0.5 * math.sin(t * 9.0))
+            if l > 0.6:  # the shaft
+                c = lerp((223, 230, 238), shimmer, max(0.0, t - 0.75) * 2.4)
+            elif l < 0.17:  # the outline
+                c = (20, 26, 40)
+            else:
+                c = lerp((96, 112, 138), (46, 56, 80), min(1.0, t * 1.4 + (0.45 - l) * 0.6))
+                c = lerp(c, shimmer, max(0.0, (t - 0.45) / 0.55) * 0.75)
+            px[x, y] = (*c, a)
+    return im
+
+
+def watcher_egg(src):
+    """The golden eagle egg as the Watcher: a silver-white head with a glowing eye, a slate body with a shimmer."""
+    im = src.copy()
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+            l = luma((r, g, b))
+            if r > 200 and g > 170 and b < 80:  # the bill stays gold
+                c = (230, 199, 110)
+            elif r > 170 and g > 120:  # the golden head turns silver-white
+                c = lerp((206, 214, 224), (244, 244, 238), (l - 0.5) * 2.5)
+            elif (x, y) == (8, 6):  # the eye beside the bill
+                c = (150, 232, 250)
+            elif l < 0.1:
+                c = (20, 26, 40)
+            else:
+                c = lerp((40, 50, 72), (128, 142, 164), min(1.0, l * 2.6))
+                band = abs((x - y) - 0) <= 1 or abs((x - y) - 5) == 0
+                if band and y > 6:
+                    c = lerp(c, (60, 198, 192) if (x + y) % 3 else (134, 112, 230), 0.45)  # the shimmer across the wing
             px[x, y] = (*c, a)
     return im
 
@@ -333,9 +367,8 @@ def main():
     jar = zipfile.ZipFile(JAR[0])
     vanilla = lambda p: Image.open(io.BytesIO(jar.read(f"assets/minecraft/textures/{p}")))
     out = {
-        "entity/wildlife/mountain_watcher.png": pale(Image.open(TEX / "entity/wildlife/golden_eagle.png").convert("RGBA"), 11),
-        "item/mountain_watcher_spawn_egg.png": pale(Image.open(TEX / "item/golden_eagle_spawn_egg.png").convert("RGBA"), 12),
-        "item/watcher_feather.png": pale(Image.open(TEX / "item/eagle_feather.png").convert("RGBA"), 13),
+        "item/mountain_watcher_spawn_egg.png": watcher_egg(Image.open(TEX / "item/golden_eagle_spawn_egg.png").convert("RGBA")),
+        "item/watcher_feather.png": watcher_feather(Image.open(TEX / "item/eagle_feather.png").convert("RGBA")),
         "item/boiled_fly_agaric.png": boiled(Image.open(TEX / "item/fly_agaric.png").convert("RGBA")),
         "block/glimmering_stump_side.png": mossy(vanilla("block/oak_log.png"), 1, 0.45),
         "block/glimmering_stump_top.png": mossy(vanilla("block/oak_log_top.png"), 2, 0.4),

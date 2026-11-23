@@ -13,7 +13,10 @@ jar = zipfile.ZipFile(sorted(glob.glob(str(ROOT / "build/moddev/artifacts/minecr
 
 MOD = ["hazel_shrub", "juniper", "bramble", "undergrowth", "sapling_thicket", "wild_carrot_plant", "sea_beet", "stinging_nettle",
        "blackberry_bush", "blueberry_bush", "cloudberry_bush", "elderberry_bush", "lingonberry_bush", "raspberry_bush",
-       "wild_strawberry_bush"]
+       "wild_strawberry_bush",
+       # Flora (gen_flora.py): flowers' bloom and leaves models; the thicket bushes have their own tinted models
+       "pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
+       "great_mullein", "desert_candle"]
 VANILLA = ["sweet_berry_bush", "dandelion", "poppy", "blue_orchid", "allium", "azure_bluet", "red_tulip", "orange_tulip",
            "white_tulip", "pink_tulip", "oxeye_daisy", "cornflower", "lily_of_the_valley"]
 TINTED = {"minecraft:block/cross": "minecraft:block/tinted_cross", "mechanical:block/shrub": "mechanical:block/tinted_shrub",

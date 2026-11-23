@@ -629,7 +629,10 @@ krockar inte med den.
 - **Gravitation:** den vilar på fast mark, **vatten** (stockar flyter) eller **andra stockar** (stockar krockar med varandra
   och staplas när de landar eller rullas av en vagn), inte på löv. En rak stock vilar som en stel stång på stöden under
   sina block (mark högst 1,5 block under; djupare är ett hål): längs den lägsta linje som har stöd på båda sidor om
-  mitten. Den **lutar** längs en backe och glider nerför om det är brantare än ~17° (0,3 block per block), lägger sig som
+  mitten. Den **lutar** längs en backe men är tung med grov bark: den ligger kvar över ett steg på ett block och på
+  måttliga backar, och glider bara nerför där det är riktigt brant (brantare än ~31°, 0,6 block per block, och mer än ett
+  block mellan stöden), långsamt (högst 0,1 block/tick, 2 block/s) och med fart som byggs upp sakta; när den väl glider
+  fortsätter den tills det är flackare än 0,45 per block. Den lägger sig som
   en **bro** över hål smalare än stocken, och hänger mitten ut över en **kant** glider den över och faller. Gräver man bort det den ligger på faller den. Ligger den still sover den (ingen kostnad per tick,
   bara en koll av underlaget varannan sekund).
 - **Hugga:** håll in höger- eller vänsterklick med yxa på stocken (vänsterklick slår inte sönder fällda träd eller
@@ -963,6 +966,8 @@ Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppe
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Blodkittel:** i bronsåldern kan en Bronze Kettle (eller Cauldron) ställas under kroken och fånga blodet, så att det inte
+  blir någon pöl förrän den är full (se 02-bronze-age.md, *Blodkittel under Hanging Rack*).
 - **Blodpöl under ställningen:** en **flådd** kropp (efter första knivomgången) droppar dubbelt så ofta, och var 10:e
   sekund (chans 1 på 2) rinner blod ner på marken under ställningen: en pöl i ställningens nedre block som växer i 4
   steg (samma texturer som blocket Blood). När den är full rinner det över till marken bredvid ställningen (vanliga
@@ -2186,57 +2191,57 @@ En stam som slagit sig ner nära dig kan bygga en **väg** åt dig (koden: `peop
 ### Handelskaravaner (Trader Caravan)
 Vanillas **Wandering Trader** och hans **Trader Llamas** finns inte längre: ingen av dem kommer in i världen (inte heller
 från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan** från en rik handelsstam (temperament
-*Traders*). (`people/Caravans.java`; språk `scripts/gen_tribes2.py`, skins `scripts/gen_tribe_skins.py`, kapell
-`scripts/gen_cart_canopy_textures.py`.)
+*Traders*). Planen och alla beslut: [traders-plan.md](../traders-plan.md). (`people/Caravans.java`, sorterna
+`people/TraderKinds.java` + `scripts/gen_traders.py`, beteendet `people/CaravanGoal.java`, handelsrutan
+`people/CaravanTrade.java` + `client/people/CaravanTradeScreen.java`, skins `scripts/gen_tribe_skins.py`, lasten på flaket
+`client/CargoRender.java`, kapell `scripts/gen_cart_canopy_textures.py`.)
 - **När:** lika ofta som vandrande handlaren skulle ha kommit. Vanillas egen räknare används: ett försök var 20:e minut
   (24000 ticks), 25 % chans första gången, +25 % per miss upp till 75 %, nära en slumpad spelare (inom 48 block, helst vid
-  byns klocka). Där handlaren skulle ha dykt upp kommer karavanen i stället. Gamerule `spawn_wandering_traders` stänger av
-  den. Den stannar **48000 ticks (2 speldagar)** som vanillas handlare, sedan försvinner allt (folk, hästar, vagnar).
-  Ett Wandering Trader Spawn Egg ger också en karavan.
-- **Folket:** **3–4 personer**. En **äldre man eller kvinna, handlaren (Trader)**, i fina kläder: en lång rock i stammens
-  färg med guldband och guldkant, **ädelstenar** i bandet, ett halsband av guld och stenar och en sten i pannbandet, och
-  en **Walking Staff** i handen. De
-  andra är **vakter (Caravan Guard)** i rena linne- och läderkläder med **rustning men ingen hjälm** (och ingen banderoll
-  på huvudet), stammens färg på pannbandet. Inga trasiga stamkläder och inga klimatvarianter: karavaner kommer långväga.
-- **Hästar och vagnar:** **1–2 tama hästar** (Tame Horse) i rep som handlaren håller, var och en drar en **Wheeled Cart**
-  med ett **tygkapell** (välvt tak av linnekanvas över vagnen, bara på karavanens vagnar). Vagnen bär en **kista**, men
-  var fjärde gång ligger ett **storvilt** på den i stället (se nedan). Karavanens vagnar **lossnar aldrig** från hästen (de
-  hittar tillbaka till den efter omladdning och hänger med i stället för att slitas loss), och spelare kan inte koppla
-  loss, öppna eller slå sönder dem ("The caravan's cart: its guards would not like that"). **Dör hästen** blir vagnen en
-  vanlig vagn.
-- **Storvilt till salu:** kadavret på var fjärde vagn är ett troféjaktbyte, slumpat bland **Cave Lion**, **Aurochs** och
-  **Brown Bear** (Giant Deer är för stor för vagnen). Det är **handelsvara**: rensat, insvept mitt på i en **saltad hud** med snören och surrat
-  under en **bärstång**, krympt så att det ryms under kapellet (textur från `scripts/gen_carcass_lashing_textures.py`).
-  Så länge det ligger på karavanens vagn är det **karavanens egendom**: det kan inte styckas med kniv eller lyftas, dras,
-  läggas på travois eller hängas, och det **ruttnar inte och försvinner inte**. Den som försöker får "The caravan's goods:
-  buy from the trader, or answer to its guards" och gör karavanen arg som vid **stöld**. Lämnar karavanen följer kadavret
-  med vagnen; dör hästen blir det ett vanligt kadaver. **Handlaren säljer djurets produkter** (efter dess styckningsutbyte:
-  köttet, och varje bi-produkt med högsta antal) för **Copper Coin**, en gång var: köttet 1 mynt per 2 bitar, Raw Hide och
-  Horn 3, Bear Claw 2, Raw Bear Pelt 16, Sinew, Bear Fat och Bone 1 per styck (minst 2).
-- **Rörelse:** handlaren strövar som ledaren för ett jaktlag och vakterna följer efter (de slår aldrig läger). Hästarna
-  följer handlarens rep, vagnarna hästarna.
-- **Vakternas vapen** följer **spelarnas ålder** i närheten (inom 64 block när karavanen kommer; den mest avancerade
-  spelaren räknas): **stenåldern** som grund, **bronsåldern** när någon har avancemanget *Bronze*, **järnåldern** när
-  någon har *Wrought Iron*. Varje vakt får samma ålder eller **en ålder över** (slumpat), men högst bronsålder eftersom
-  inga järnvapen eller järnrustningar finns än:
-  - Sten: Flint Spear, Crude Bow eller Flint Axe; Leather Chestplate, Leather Leggings och Leather Boots i stammens färg.
-  - Brons: Bronze Spear, Bronze Sword, Bronze Axe eller Crude Bow; Leather Chestplate, **Bronze Greaves**, Leather Boots.
-- **Handel** (högerklicka handlaren: samma ruta som besökande stammar, "Trade"; priser efter ditt rykte som hos andra
-  stammar, *Traders* ger störst rabatt). Priserna följer bybornas skala (ett Bronze Sword kostar 36 koppar hos dem).
-  Handlaren säljer **8 varor** slumpade ur allt upp till **en ålder över** din:
-  - Sten (Copper Coin): 3 Potato 8, Flint Knife 4, Crude Bow 8, 8 Bone Arrow 6, 2 Leather 6, 4 Cordage 4, 3 Sinew 4,
-    Tusk Dagger 10, 6 Cooked Venison Scraps 4, Bone Needle 3.
-  - Brons: 3 Malachite 6 koppar, 2 Cassiterite 8 koppar, Copper Knife 16 koppar, Bronze Knife 24 koppar, 8 Bronze Arrow
-    2 silver, 2 Bronze Ingot 3 silver, Tin Ingot 2 silver, Rope Halter 12 koppar, Hide Saddle Blanket 2 silver,
-    4 Linen Thread 10 koppar, Bronze Greaves 5 silver.
-  - Järn: 4 Raw Iron 6 silver, Iron Knife 8 silver, Wrought Iron Ingot 1 guld.
-  - **Växling** (alltid utan rabatt): 10 Copper Coin ↔ 1 Silver Coin, 10 Silver Coin ↔ 1 Gold Coin.
-  - **Ädelstenar:** de **älskar ädelstenar** och köper varje slipad sten i taggen `#mechanical:gemstones` för
-    **4 Silver Coin**, Diamond för **2 Gold Coin**, Emerald för **1 Gold Coin** och Amethyst Shard för **2 Silver Coin**.
-- **Som en fredlig stam:** rykte, matgåvor, ilska och vakter som försvarar gruppen fungerar som hos andra stammar; slår du
-  någon i karavanen vänder sig vakterna mot dig, dödar du någon blir stammen fientlig för alltid.
-- **Avancemang** (Wilderness & Hunting): *The Caravan Has Come* (prata med en karavans handlare) och *Treasures for Coin*
-  (sälj en ädelsten till karavanen).
+  byns klocka). Karavanen startar 32 block bort (helst på en stig) och **går in som en kolonn** till där handlaren skulle ha
+  kommit, eller till **lägrets kant** (16 block från elden) om ett **spelarläger** (`CampAge`) finns inom 80 block. När
+  tiden är ute går den därifrån och försvinner utom synhåll. Gamerule `spawn_wandering_traders` stänger av den.
+  Den stannar **48000 ticks (2 speldagar)**, sedan försvinner allt (folk, djur, vagnar). Ett Wandering Trader Spawn Egg ger
+  också en karavan.
+- **Sorter** (datadrivna, en JSON per sort i `data/mechanical/trader_kind/`): **Timber & Tools** (plantor, yxor, sågar,
+  kåda, bark), **Mining Equipment** (hackor, facklor, kol, malakit, kassiterit, tenn, järnmalm; köper råmalm),
+  **Jewelry & Gemstones** (guldringar, kedjor, halsband, slipade stenar, siden; köper alla ädelstenar; **kameler**),
+  **Hunting Gear & Furs** (bågar, pilar, spjut, snaror, skinn; köper råa skinn, horn, klor, senor; ibland ett storvilt på
+  kärran), **Herbs & Remedies** (salvor, omslag, enbär, honung, frö; köper svamp, bävergäll, fläder) och
+  **Forager's Goods** (barkkorgar, fröpåsar, nötter, torkade bär, rep; köper bär och nötter). Varor visas upp till **en
+  ålder över** stammens.
+- **Folket:** **4–5 personer**, klädda för sorten (egna skins och utrustning per sort och roll, ingen stamfärg: rutigt ylle
+  och yxa på ryggen, sotigt förkläde, vadderad mössa och lykta, färgade rockar med guld och turban, pälshuva och koger,
+  grön eller ockra rock med örtväska och knippen, lapptäcke och korg på ryggen):
+  - **Caravan Leader** (rollen Trader): gammal man eller kvinna, går **långsamt och framåtböjd** (`TribeIdlePoses.stoop`,
+    halva steglängden) med en **Walking Staff** och en **Coin Purse** i handen. Strövar runt djurhållaren inom 6 block
+    och står still när en spelare är nära. Dödas han faller det som är kvar i kassan ut som mynt.
+  - **Caravan Handler** (ny roll): håller alla djurens rep och **står still**; djuren står kvar och **betar** då och då.
+  - **2–3 Caravan Guards**: **metallrustning** målad på skinnet (brons- eller järnfjäll / lameller, axelskydd och
+    lårskydd), aldrig läder, ingen hjälm; 12 i rustning och 30 hälsa. Vapen efter stammens ålder (eller en över, högst
+    brons). Går långsamt i en **ring 8–11 block** runt ledaren, stannar och spanar utåt.
+- **Djur och vagnar:** en **liten** karavan (3 av 4) har **ett** djur (Tame Horse, eller Tame Camel för ökensorter) och en
+  **Wheeled Cart**; en **stor** (1 av 4) har en **Wagon** med **två** djur i spann, de **sällsynta** varorna,
+  **25 % högre** priser och större kassa och lager. Båda har ett **välvt kanvaskapell** randigt i sortens färger. Flaket bär sortens **last** (stockar, kol- och malmblock, kistor,
+  krukor, skinn, korgar, blommor ...). Vagnar och djur går inte att ta: spelare kan inte rida, mata, koppla loss eller
+  öppna dem ("The caravan's animal / cart: its guards would not like that"). **Dör djuren** blir vagnen vanlig.
+- **Storvilt till salu:** hälften av jägarkaravanernas kärror bär ett troféjaktbyte, slumpat bland **Cave Lion**,
+  **Aurochs** och **Brown Bear**: rensat, insvept i en saltad hud med snören och surrat under en bärstång (textur från
+  `scripts/gen_carcass_lashing_textures.py`). Så länge det ligger på karavanens kärra är det **karavanens egendom**: det
+  kan inte styckas med kniv eller lyftas, dras, läggas på travois eller hängas, och det ruttnar inte. Den som försöker
+  får "The caravan's goods: buy from the trader, or answer to its guards" och gör karavanen arg som vid **stöld**.
+  **Ledaren säljer djurets produkter** (kött, hud, horn, pälsar, klor, en gång var) för koppar.
+- **Försvar:** slår du någon i karavanen, **ett av djuren eller en vagn** blir hela gruppen arg och vakterna anfaller;
+  dödar du någon blir stammen fientlig för alltid.
+- **Handel:** högerklicka ledaren: pratrutan med **Trade** öppnar karavanens **egen handelsruta**: ledarens namn och stam,
+  vad de handlar med (och om det är en stor karavan), **deras kassa** i guld/silver/koppar, två kolumner **Till salu**
+  (antal kvar, pris) och **De köper** (hur många till, hur många du har, pris), och dina mynt. Ett klick köper eller säljer
+  en gång; det som inte går är grått med skälet i tooltipen. Du betalar med **vilka mynt som helst och får växel**.
+  **Lagret tar slut** och fylls inte på; de köper bara **så länge kassan räcker**, och det du köper fyller kassan. Varje
+  affär höjer ryktet hos stammen. Juvelerarna köper slipade stenar (`#mechanical:gemstones`) för **4 Silver Coin**,
+  Diamond **2 Gold Coin**, Emerald **1 Gold Coin**, Amethyst Shard **2 Silver Coin**.
+- **Avancemang** (Wilderness & Hunting): *The Caravan Has Come* (prata med en karavans ledare), *Treasures for Coin* (sälj
+  en ädelsten), *Every Road Leads Here* (träffa alla sorter), *The Rich Caravan* (träffa en stor karavan) och
+  *Bought Out* (köp slut på en vara).
 
 ### Gruvarbetaren (Miner)
 En sällsynt ensam vandrare i grottorna **under y 30** (`people/Miners.java`, worldgen `worldgen/MinerCamp.java`, data
@@ -2347,39 +2352,40 @@ så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw
   (pälsen går åt; vargens huvud ligger på kudden och svansen hänger över fotänden). Vilan där ger **+35 sanity** i stället för
   +20, **läker 2 hjärtan** och håller dig **varm i 5 minuter** (+30 % isolering mot kyla). Respawn och phantoms som en vanlig
   Straw Bed. Som halmen faller den isär när man kliver ur, men då ramlar Wolf Pelt ut. Bryts den ger den 2–4 Plant Fibre + Wolf Pelt tillbaka. Har inget item (görs bara på plats).
-- **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
-  senare åldrar låser upp dem. **Inga pengar:** stenåldern har ingen Emerald-handel, bara **byteshandel**, varor mot varor
-  (Copper Coin präglas först i bronsåldern, se 02-bronze-age.md). Wandering Trader säljer inget av metall (inga hinkar
-  eller järnhackor). Max 12–16 gånger per byte, 6–8 för verktyg och rustning (`gen_data.py`, `TRADES`):
+- **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är bronsålderns
+  och järnålderns. **Bara mynt** (sedan v0.187.0, [traders-plan.md](../traders-plan.md) A): varje byte är **vara mot
+  Copper Coin**, aldrig vara mot vara och aldrig Emerald. Stenålderns bybor köper råvaror för några koppar och säljer
+  enkla saker för några koppar, så man kan tjäna sina första mynt hos byn innan man präglar själv (Copper Coin präglas
+  på Bronze Anvil, se 02-bronze-age.md). Max 12–16 gånger per byte, 6–8 för verktyg och rustning (`gen_data.py`, `TRADES`):
 
-| Yrke | Nivå | Byte 1 | Byte 2 |
+| Yrke | Nivå | Köper (bybon betalar) | Säljer (du betalar) |
 |---|---|---|---|
-| Armorer | 1 | 8 Leather → Leather Cap (max 8) | 8 Cooked Venison Scraps → 2 Leather |
-|  | 2 | 6 Sinew → 2 Leather | 12 Leather → Leather Tunic (max 6) |
-| Butcher | 1 | 10 Game Meat Scraps → 4 Cooked Venison Scraps | 24 Stick → 3 Cooked Venison Scraps |
-|  | 2 | 6 Lard → 4 Cooked Beef Scraps | 16 Raspberries → 3 Cooked Beef Scraps |
-| Cartographer | 1 | 16 Oak Bark → 4 Cordage | 12 Paper → Map (max 8) |
-|  | 2 | 12 Feather → 4 Paper | 3 Ink Sac → Map (max 8) |
-| Cleric | 1 | 16 Rotten Flesh → 2 Candle | 8 Eggshell → 6 Bone Meal |
-|  | 2 | 4 Tallow → 3 Candle | 24 Rotten Flesh → 8 Bone Meal |
-| Farmer | 1 | 16 Raspberries → 8 Wheat Grain | 6 Twine → 6 Wheat Grain |
-|  | 2 | 16 Blueberries → 3 Carrot (max 8) | 6 Cordage → 2 Carrot (max 8) |
-| Fisherman | 1 | 6 Bone → Bone Fish Hook | 8 Cordage → 4 Whole Cod |
-|  | 2 | 12 Cordage → Crude Fishing Rod (max 6) | 16 Raspberries → 3 Whole Salmon |
-| Fletcher | 1 | 32 Stick → 4 Flint | 12 Feather → 8 Arrow |
-|  | 2 | 16 Flint → 8 Arrow | 8 Cordage → Crude Bow (max 6) |
-| Leatherworker | 1 | 3 Raw Hide → Leather | 4 Rabbit Hide → Leather |
-|  | 2 | 6 Lard → 2 Leather | 12 Oak Bark → Bark Basket (max 6) |
-| Librarian | 1 | 12 Paper → Book | 6 Cooked Mutton Scraps → 4 Paper |
-|  | 2 | 4 Ink Sac → Book | 4 Tallow → 3 Candle |
-| Mason | 1 | 16 Rock → 6 Clay Ball | 16 Raspberries → 12 Rock |
-|  | 2 | 20 Granite Rock → 8 Packed Mud | 16 Plant Fibre → 6 Packed Mud |
-| Shepherd | 1 | 2 White Wool → 4 Wool Thread | 12 Raspberries → White Wool |
-|  | 2 | 24 Plant Fibre → 4 Wool Thread | 4 White Wool → 6 White Carpet |
-| Toolsmith | 1 | 8 Flint → Flint Axe | 16 Stick → 2 Tool Rod |
-|  | 2 | 16 Rock → Stone Axe Head | 6 Cordage → Crude Stone Axe (max 6) |
-| Weaponsmith | 1 | 8 Cordage → Flint Spear | 12 Flint → Flint Knife |
-|  | 2 | 2 Tusk → Tusk Dagger (max 6) | 6 Sinew → Flint Spear |
+| Armorer | 1 | 6 Leather → 2 Copper | 5 Copper → Leather Cap (max 8) |
+|  | 2 | 6 Sinew → 2 Copper | 9 Copper → Leather Tunic (max 6) |
+| Butcher | 1 | 10 Game Meat Scraps → 2 Copper | 2 Copper → 4 Cooked Venison Scraps |
+|  | 2 | 6 Lard → 3 Copper | 3 Copper → 4 Cooked Beef Scraps |
+| Cartographer | 1 | 16 Oak Bark → 2 Copper | 6 Copper → Map (max 8) |
+|  | 2 | 12 Feather → 2 Copper | 3 Copper → 4 Paper |
+| Cleric | 1 | 16 Rotten Flesh → 2 Copper | 3 Copper → 2 Candle |
+|  | 2 | 4 Tallow → 2 Copper | 2 Copper → 6 Bone Meal |
+| Farmer | 1 | 16 Raspberries → 2 Copper | 2 Copper → 8 Wheat Grain |
+|  | 2 | 16 Blueberries → 2 Copper | 3 Copper → 3 Carrot (max 8) |
+| Fisherman | 1 | 6 Whole Cod → 2 Copper | 2 Copper → Bone Fish Hook |
+|  | 2 | 8 Cordage → 2 Copper | 6 Copper → Crude Fishing Rod (max 6) |
+| Fletcher | 1 | 32 Stick → 1 Copper | 3 Copper → 8 Arrow |
+|  | 2 | 12 Feather → 2 Copper | 6 Copper → Crude Bow (max 6) |
+| Leatherworker | 1 | 3 Raw Hide → 2 Copper | 3 Copper → Leather |
+|  | 2 | 4 Rabbit Hide → 2 Copper | 4 Copper → Bark Basket (max 6) |
+| Librarian | 1 | 12 Paper → 2 Copper | 5 Copper → Book |
+|  | 2 | 4 Ink Sac → 2 Copper | 3 Copper → 3 Candle |
+| Mason | 1 | 16 Rock → 1 Copper | 2 Copper → 6 Clay Ball |
+|  | 2 | 20 Granite Rock → 2 Copper | 3 Copper → 8 Packed Mud |
+| Shepherd | 1 | 2 White Wool → 2 Copper | 2 Copper → 4 Wool Thread |
+|  | 2 | 24 Plant Fibre → 1 Copper | 3 Copper → 6 White Carpet |
+| Toolsmith | 1 | 8 Flint → 2 Copper | 4 Copper → Flint Axe |
+|  | 2 | 16 Stick → 1 Copper | 7 Copper → Crude Stone Axe (max 6) |
+| Weaponsmith | 1 | 12 Flint → 2 Copper | 5 Copper → Flint Spear |
+|  | 2 | 2 Tusk → 4 Copper (max 6) | 9 Copper → Tusk Dagger (max 6) |
 
 ### Bär och svamp (plocka)
 Växer i **fläckar**: en bärbuske kommer sällan ensam (upp till ~7 buskar ihop), svamp växer i **svampfält** (upp
@@ -2402,7 +2408,7 @@ Farming): plocka Lingonberries eller Juniper Berries på vintern.
 | Blueberry Bush | Forest, Dark Forest, Taiga, Old Growth Pine Taiga | Blueberries |
 | Lingonberry Bush | Taiga, Snowy Taiga, Old Growth Pine/Spruce Taiga | Lingonberries (fryser inte på vintern) |
 | Wild Strawberry Bush | Plains, Sunflower Plains, Meadow, Flower Forest | Wild Strawberries |
-| Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries |
+| Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries (**giftiga råa**: Poison 4 s + Nausea 10 s; koka dem till Cooked Elderberries eller torka dem) |
 | Cloudberry Bush | Swamp, Snowy Plains, Snowy Taiga, Grove | Cloudberries |
 | Blackberry Bush | Snowy Taiga, Snowy Plains, Grove, Taiga, Old Growth Spruce Taiga, Windswept Forest | Blackberries |
 
@@ -2419,6 +2425,55 @@ om det finns färre än 4 av samma sort runt omkring.
 | Puffball (röksvamp) | Plains, Meadow, Sunflower Plains | 1 hunger |
 
 **Roasted Mushrooms:** valfri ätlig svamp (även vanilla Brown Mushroom) på Campfire (20 s) → 4 hunger.
+**Cooked Elderberries:** Elderberries på Campfire (15 s) → 2 hunger, ofarliga. Advancement **Cook Them First** (Food & Farming).
+
+### Snårbuskar: Blackthorn, Sea Buckthorn, Jujube (flora fas 1, `docs/flora-and-food-plan.md`)
+Taggiga bärbuskar som **växer ihop till snår**. En **ung** buske är liten och bär inget; fullvuxen följer den säsongen
+(ett steg i taget, ~6 min per steg): blad → blommor → omogna → mogna. Fullvuxna buskar av samma sort bredvid varandra
+**växer ihop** (bladverket fyller glappet), en buske med minst två grannar kan **växa ett block till på höjden**, och
+snåret sätter då och då en ung buske på ledig mark bredvid sig (högst 9 av sorten inom 2 block). Allt detta bara där
+biomens temperatur passar sorten. **Högerklicka en mogen buske → 1–3 bär**; plockad under mognadssäsongen blir den omogen
+och mognar igen, plockad på vintern står den kal till våren. Där snön ligger på vintern fäller buskarna löven.
+**Taggar:** att gå genom snåret bromsar och sticker ibland (smyg så gör det inte ont). Bruten: 1–2 Sticks + 1–2 Plant Fibre.
+Björnar, fåglar och stammar plockar dem som de andra bärbuskarna. Advancement **Thorny Harvest** (Food & Farming).
+
+| Buske | Klimat (biomtemp) | Biomer | Vår / sommar / höst / vinter | Bär |
+|---|---|---|---|---|
+| Blackthorn | 0,5–0,9, fukt 0,3–0,8 | slätter, ängar, Chalk Downs, Hazel Meadow, Limestone Karst, Reed Delta, lövskog och blandskog | vita blommor / omogna / mogna / kala grenar med bär kvar | Sloes (1 hunger) |
+| Sea Buckthorn | 0–0,5, fukt 0–0,6 (även sand, grus, Beach Pebbles) | Mammoth Steppe, Glacial Moraine, Shingle Beach, Basalt Coast, Slate Highlands, Pine Heath, snöslätt, klippstrand, Windswept Hills | blad / omogna / mogna / kala grenar täta av orange bär | Sea Buckthorn Berries (1 hunger) |
+| Jujube | 1,0–2,0, fukt 0–0,5 (även sand) | savann, badlands, Ochre Badlands, Gypsum Flats, Marble Gorge, öken | blad / blommor → omogna / mogna / bären faller | Jujubes (2 hunger) |
+
+Alla tre bärsorterna kan torkas på Drying Rack, får plats i Bark Basket och håller 2 dagar.
+
+### Blommor (flora fas 1)
+Varje blomma **blommar bara i sin säsong**; resten av året är den gröna blad (backsippan silverfjuniga frökolvar,
+strandtriften halmfärgade huvuden), och på vintern grå och frostig. Plockas och planteras som vanillas blommor.
+Advancement **Wildflowers** (Food & Farming): plocka en av dem.
+**Plantera på halva steg:** högerklickar man ovansidan av en jordslab (Grass Slab, Dirt Slab, Coarse Dirt, Podzol, Moss,
+Mud, Peat, Loess, Turf, Sand, Red Sand, Gravel, Beach Pebble eller Burnt Soil Slab) med en växt (blomma, buske, sapling,
+svamp, vanilla eller modd) blir slabben först det hela block den är halva av, och växten står sedan på det. Bara om
+växten kan växa där; annars är slabben kvar. Fungerar också på vanligt gräs som förut.
+
+| Blomma | Biomer | Blommar |
+|---|---|---|
+| Pasque Flower | Chalk Downs, Limestone Karst, Mammoth Steppe, Pine Heath, slätter | vår |
+| Harebell | Chalk Downs, Slate Highlands, Glacial Moraine, Pine Heath, björkskog, Windswept Hills, kust | sommar, höst |
+| Lady's Slipper | Limestone Karst, Chalk Downs (kalk) | vår, sommar |
+| Sea Thrift | Shingle Beach, Basalt Coast, klippstrand, strand (även grus och Beach Pebbles) | vår, sommar |
+| Mountain Avens | Glacial Moraine, Slate Highlands, snöslätt, snötaiga, Windswept Hills, kust | sommar |
+| Edelweiss | Slate Highlands, Mammoth Steppe, Windswept Hills | sommar |
+| Sand Verbena | Desert, Gypsum Flats, Badlands, Ochre Badlands (på sand) | vår, sommar |
+| Desert Marigold | savann, badlands, Ochre Badlands, Gypsum Flats, Marble Gorge, öken | vår–höst |
+| Great Mullein (2 block) | Chalk Downs, Mammoth Steppe, Pine Heath, Limestone Karst, Marble Gorge, slätter | sommar |
+| Desert Candle (2 block) | Mammoth Steppe, Marble Gorge, Gypsum Flats, Ochre Badlands, öken, savann, badlands | vår, sommar |
+
+**Magiska blommor:**
+- **Fern Flower** (ultrasällsynt, ~1 per 400 chunks i gammal skog, lövskog, björkskog, mörk skog): en ormbunke som
+  **bara blommar på sommarnätter**, en glödande gyllene blomma (ljus 9) med gnistor. Plockad i blom: Fern Flower och
+  **Luck i 10 minuter**; annars bara Plant Fibre. Advancement **Midsummer Night** (Folklore).
+- **Frost Lily** (~1 per 250 chunks i Slate Highlands, Glacial Moraine, snöslätt, snötaiga, Grove, Snowy Slopes):
+  blekblå, halvgenomskinlig, **blommar bara på vintern** och lyser svagt (ljus 6). Plockad i blom: Frost Lily, annars
+  ingenting. Advancement **Winter Bloom** (Folklore).
 
 ### Odling
 Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farming.md`.
@@ -2927,7 +2982,14 @@ Data: `scripts/gen_folklore.py` (körs direkt efter `gen_fauna_*`), texturer: `s
 
 ### Mountain Watcher
 
-- Stor ljus rovfågel med svag glans (golden eaglens modell, 1,4 gånger större). Kretsar över bergstoppar som `SoaringBird`.
+- Stor silverglänsande rovfågel med egen modell (`MountainWatcherModel`, geometri och skinn från `gen_small_models.py`), ritad 1,5×:
+  vingbredd runt 6,5 block, vingar byggda av överlappande fjäderrader (täckare, armpennor, handpennor) med egna
+  fjäderspetsar, sex avsmalnande fingerpennor per vinge med blågrönt/violett skimmer, bröstkorg som smalnar mot stjärten,
+  krage och axelfjädrar, svagt glödande runor längs
+  vingarna (glödlager `mountain_watcher_glow.png`), nacktofs, gyllene näbb, glödande isblå ögon och två långa stjärtband
+  med skimrande spadar. Glider länge och slår bara ibland några långsamma, djupa vingslag (och när den stiger); ur
+  vingspetsarna faller ibland ett ljusstoft (END_ROD, bara för den som ser den). Sittande upprätt som en rovfågel: vingarna korsas bakom stjärten och stjärtbanden ligger på marken.
+  Hitbox 1,2 × 1,4. Watcher Feather och spawn egg i samma skiffer/silver med skimmer. Kretsar över bergstoppar som `SoaringBird`.
 - Spawnar bara på öppen mark på **y 150 eller högre**, i klart väder på dagen, i Stony/Jagged/Frozen Peaks, Snowy Slopes,
   Grove, Meadow, Windswept Hills och Cherry Grove.
 - Syns bara med syn ≥ 40. Går inte att skada, träffa eller knuffa, är helt tyst och lämnar ingen Carcass. Flyger undan om man kommer nära.

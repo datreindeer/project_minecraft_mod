@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:glacial_moraine",
+    "mechanical:hazel_meadow",
+    "mechanical:pine_heath",
+    "mechanical:slate_highlands",
+    "minecraft:meadow",
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:taiga",
+    "minecraft:windswept_hills"
+  ],
+  "features": "mechanical:rock_outcrop",
+  "step": "vegetal_decoration"
+}

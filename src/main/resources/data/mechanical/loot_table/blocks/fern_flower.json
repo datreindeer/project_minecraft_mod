@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:fern_flower",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:fern_flower",
+                "state": {
+                  "blooming": "true"
+                }
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:plant_fibre"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/fern_flower"
+}

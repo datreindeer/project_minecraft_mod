@@ -1,12 +1,13 @@
 {
   "wants": {
-    "id": "minecraft:bone",
+    "id": "mechanical:whole_cod",
     "count": 6
   },
   "gives": {
-    "id": "mechanical:bone_fish_hook"
+    "id": "mechanical:copper_coin",
+    "count": 2
   },
-  "max_uses": 12,
+  "max_uses": 16,
   "xp": 2,
   "reputation_discount": 0.05
 }

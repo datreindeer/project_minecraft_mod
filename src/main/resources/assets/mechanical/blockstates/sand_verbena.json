@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/sand_verbena"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/sand_verbena_leaves"
+    }
+  }
+}

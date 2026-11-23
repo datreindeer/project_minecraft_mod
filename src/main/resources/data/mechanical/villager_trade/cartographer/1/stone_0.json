@@ -4,8 +4,8 @@
     "count": 16
   },
   "gives": {
-    "id": "mechanical:cordage",
-    "count": 4
+    "id": "mechanical:copper_coin",
+    "count": 2
   },
   "max_uses": 16,
   "xp": 2,

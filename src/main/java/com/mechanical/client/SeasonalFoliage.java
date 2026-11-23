@@ -67,7 +67,11 @@ public final class SeasonalFoliage {
             "mechanical:elderberry_bush", "mechanical:lingonberry_bush", "mechanical:raspberry_bush", "mechanical:wild_strawberry_bush",
             "minecraft:sweet_berry_bush", "minecraft:dandelion", "minecraft:poppy", "minecraft:blue_orchid", "minecraft:allium",
             "minecraft:azure_bluet", "minecraft:red_tulip", "minecraft:orange_tulip", "minecraft:white_tulip", "minecraft:pink_tulip",
-            "minecraft:oxeye_daisy", "minecraft:cornflower", "minecraft:lily_of_the_valley");
+            "minecraft:oxeye_daisy", "minecraft:cornflower", "minecraft:lily_of_the_valley",
+            // Flora (gen_flora.py): the flowers' leaves and the thicket bushes; not the magic flowers (the Frost Lily blooms in winter)
+            "mechanical:pasque_flower", "mechanical:harebell", "mechanical:lady_slipper", "mechanical:sea_thrift", "mechanical:mountain_avens",
+            "mechanical:edelweiss", "mechanical:sand_verbena", "mechanical:desert_marigold", "mechanical:great_mullein", "mechanical:desert_candle",
+            "mechanical:blackthorn", "mechanical:sea_buckthorn", "mechanical:jujube");
     /** Untinted leaves that get a grey, tinted autumn model (poplars are autumn-coloured already). */
     static final Set<String> AUTUMN_MODEL = Set.of("minecraft:cherry", "mechanical:aspen", "mechanical:alder", "mechanical:beech",
             "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel");

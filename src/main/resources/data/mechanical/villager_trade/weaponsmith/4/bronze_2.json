@@ -1,7 +1,7 @@
 {
   "wants": {
-    "id": "mechanical:copper_coin",
-    "count": 36
+    "id": "mechanical:silver_coin",
+    "count": 4
   },
   "gives": {
     "id": "mechanical:bronze_sword"

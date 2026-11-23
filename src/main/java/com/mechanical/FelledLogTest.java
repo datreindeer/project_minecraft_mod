@@ -48,6 +48,7 @@ public final class FelledLogTest {
     static {
         TEST_FUNCTIONS.register("felled_log", () -> FelledLogTest::test);
         TEST_FUNCTIONS.register("felled_log_rest", () -> FelledLogTest::rest);
+        TEST_FUNCTIONS.register("felled_log_slide", () -> FelledLogTest::slide);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -61,6 +62,8 @@ public final class FelledLogTest {
                 new FunctionGameTestInstance(TEST, TestArea.of(env, 520, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_rest"),
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_rest")), TestArea.of(env, 160, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_slide"),
+                new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_slide")), TestArea.of(env, 220, true)));
     }
 
     private static List<FelledLogEntity> logs(GameTestHelper h) {
@@ -92,6 +95,46 @@ public final class FelledLogTest {
                     }
         }
         return null;
+    }
+
+    /**
+     * Heavy logs and friction: a 5-block log lying over a one-block step stays put, and so does a 2-block one tipped over
+     * it; on a staircase rising a block every block a 4-block log slides down, but slowly (never faster than MAX_SLIDE a
+     * tick, gathering speed from rest), until level ground stops it.
+     */
+    private static void slide(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        BlockState oak = Blocks.OAK_LOG.defaultBlockState();
+        for (int x = 0; x <= 15; x++) for (int z = 0; z <= 15; z++) {
+            h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+            for (int y = 1; y <= 12; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+        }
+        for (int z = 3; z <= 14; z++) for (int y = 1; y <= Math.min(z - 2, 8); y++) h.setBlock(new BlockPos(3, y, z), Blocks.STONE); // the staircase
+        for (int z = 6; z <= 14; z++) {
+            h.setBlock(new BlockPos(8, 1, z), Blocks.STONE); // the steps
+            h.setBlock(new BlockPos(12, 1, z), Blocks.STONE);
+        }
+        FelledLogEntity steep = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(3.5, 10, 7.5)), 0, 4, oak);
+        FelledLogEntity step = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(8.5, 2, 4.5)), 0, 5, oak); // root at z 4: blocks 4, 5 over the floor, 6..8 on the step
+        FelledLogEntity tipped = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(12.5, 2, 5.5)), 0, 2, oak); // blocks 5 (over the floor) and 6 (on the step)
+        double[] at = new double[4];
+        h.runAfterDelay(40, () -> { // landed
+            at[0] = step.getZ();
+            at[1] = step.getY();
+            at[2] = tipped.getZ();
+        });
+        for (int t = 41; t <= 200; t++) h.runAfterDelay(t, () -> {
+            double moved = at[3] == 0 ? 0 : Math.abs(steep.getZ() - at[3]);
+            h.assertTrue(moved <= FelledLogEntity.MAX_SLIDE + 1.0E-6, "it slides no faster than " + FelledLogEntity.MAX_SLIDE + " a tick (" + moved + ")");
+            at[3] = steep.getZ();
+        });
+        h.runAfterDelay(200, () -> {
+            h.assertTrue(Math.abs(step.getZ() - at[0]) < 0.01 && Math.abs(step.getY() - at[1]) < 0.01, "a log over a one-block step stays put (" + (step.getZ() - at[0]) + ", tilt " + step.tilt() + ")");
+            h.assertTrue(Math.abs(tipped.getZ() - at[2]) < 0.01, "a short one tipped over the step too (" + (tipped.getZ() - at[2]) + ", tilt " + tipped.tilt() + ")");
+            h.assertTrue(7.5 - h.relativeVec(steep.position()).z > 2, "the log on the staircase slid down it (" + h.relativeVec(steep.position()) + ", tilt " + steep.tilt() + ")");
+            for (FelledLogEntity l : logs(h)) l.discard();
+            h.succeed();
+        });
     }
 
     /**
@@ -370,7 +413,7 @@ public final class FelledLogTest {
             FelledLogEntity log = logs(h).stream().filter(l -> l.pulledBy(player)).findFirst().orElseThrow(() -> h.assertionException("the pulled log"));
             h.assertTrue(start[0] - log.world(0).x > 1.5, "two leads drag it (" + (start[0] - log.world(0).x) + ")");
             for (FelledLogEntity l : logs(h)) l.discard();
-            // D: a slope (rising 1 block every 2 towards +z): a log laid along it lies tilted and slides down until level ground stops it
+            // D: a slope (rising 1 block every 2 towards +z): a log laid along it lies tilted and stays put (heavy, rough bark; felled_log_slide has the steep one)
             for (int z = 2; z <= 14; z++) for (int y = 1; y <= (z - 2) / 2; y++) h.setBlock(new BlockPos(3, y, z), Blocks.STONE);
             FelledLogEntity onSlope = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(3.5, 6, 9.5)), 0, 4, oak);
             held[0] = onSlope;
@@ -391,7 +434,7 @@ public final class FelledLogTest {
         });
         h.runAfterDelay(c + 200, () -> {
             FelledLogEntity log = held[0];
-            h.assertTrue(start[0] - log.getZ() > 2, "and slid down it (" + (start[0] - log.getZ()) + " blocks)");
+            h.assertTrue(Math.abs(start[0] - log.getZ()) < 0.6, "and doesn't slide down a 1 in 2 slope (" + (start[0] - log.getZ()) + " blocks)");
             FelledLogEntity fell = overLedge[0];
             h.assertTrue(fell.isAlive() && fell.getY() < h.absoluteVec(new Vec3(0, 2.6, 0)).y, "a log with its middle past a ledge doesn't hang there: it went over (y " + fell.getY() + ", tilt " + fell.tilt() + ")");
             h.assertTrue(Math.abs(held[1].getY() - start[1]) < 0.01 && Math.abs(held[1].getZ() - h.absoluteVec(new Vec3(0, 0, 5.5)).z) < 0.01, "and stays put over it (" + held[1].position() + ")");

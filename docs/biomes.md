@@ -220,66 +220,174 @@ ut eller inte gick att få en bra bild av är avstängt (koden finns kvar och fe
 (en böjd bete i två delar, roten och den framåtböjda övre delen, byggd av korsade smala bitar som smalnar av mot spetsen
 så att den ser rund ut; roten ger en Tusk).
 
+**Formade av en täthet i halvblock (`worldgen/Shaper`, v0.187.0).** Valvet, hällen, det frostsprängda blocket,
+talus, det nedfallna blocket och jordkällarens kulle byggs inte block för block utan som en mjuk form (en täthet som är positiv inuti, styrd av jämnt brus):
+varje cell provar sina åtta åttondelar, nästan allt inuti blir ett helt block, en halva en slab och en halva plus en
+eller två fjärdedelar en trappa (rak eller yttre hörn, rättvänd eller uppochned). Slabs och trappor är stenens egna
+(`SmoothGround.variant`: Stone Slab, Granite Stairs, Grass Slab ...). En halvbit sätts aldrig i stället för mark (den
+skulle göra en grop), och det som hänger fritt fylls ner till marken (`Shaper.seat`). Så blir silhuetten rund och
+oregelbunden i stället för kantig.
+
 ### På
 
-- **Rock arch:** naturligt valv, resten av en klippvägg som nötts igenom: ett lågt brett spann (5–7 brett och 3–4 högt
-  inuti), tjockt krön, tunnare mitt i djupet, benen bredare och djupare ner i marken. Ovansidan och undersidan rundas
-  av med halvblock (stenens slab), ytan böljar (jämnt brus). Av stenen under marken; i badlands randig Terracotta i
-  band som går runt på samma höjd som i klipporna, Red Sandstone Slab för halvstegen. Raserade bitar, slabs, lösa
-  stenar och grus vid fötterna. Sällsynt (1 på 40 chunks försök, på plan mark): Stony Peaks, Windswept Hills, Savanna
-  Plateau, Slate Highlands, Limestone Karst, Marble Gorge, Badlands, Ochre Badlands. Bilder `fas4_rock_arch*.png`.
-- **Bird cliff:** lodrät klippvägg minst 6 hög med små avsatser: Bird Nest (Rock Dove, ibland ägg) eller Guano Pile på
-  varje, vita strimmor av Calcite nedför väggen under dem, guano vid foten. Berg, Stony Shore, Basalt Coast.
-  Bild `fas4_bird_cliff.png`.
-- **Valley waterfall:** en eller två vattenkällor i en skåra 3+ block upp i en lodrät klippvägg, vattnet faller rakt ner
-  i en göl nedsänkt ett block i marken. Bara där skåran är stängd åt alla håll utom framåt och gölens alla sidor är fast
-  mark, så vattnet sprids aldrig. Fallet läggs direkt i worldgen, så gölen aldrig fryser till under det. Moss Block runt
-  skåran. Läggs inte i gamla chunks. Bilder `fas4_waterfall*.png`.
-- **Bone remains:** ett djurskelett: ryggrad av Bone Block nedsjunken i marken, Rib Cage över den, en Skeleton Skull vid
-  huvudänden, ett lårben och Bone Pile en bit bort. Slätter, savann, snöslätt, Mammoth Steppe. Bild `fas4_bone_remains.png`.
-- **Sand skeleton:** samma skelett halvt begravt i sanden, bara revbenens toppar och skallen syns. Desert, Gypsum Flats.
-  Bild `fas4_sand_skeleton.png`.
-- **Mammoth tusks:** två Mammoth Tusk som reser sig ur marken och böjer sig framåt, skallen en halvt begravd benklump
-  mellan rötterna, revbenen (Rib Cage, nedsjunken) i en rad bakom, ibland en bete avbruten; runt om stänk av Loess och
-  Coarse Dirt i grässvålen (ingen bar fläck). Bara Mammoth Steppe. Bild `fas4_mammoth_tusks.png`.
-- **Lone tree (vårdträd):** en stor Linden, Ash eller Fancy Oak där inget annat träd står inom 14 block, blommor och en
-  sten vid foten. Slätter och ängar. Läggs inte i gamla chunks. Bild `fas4_lone_tree.png`.
-- **Fire ring:** gammal eldstad: stenring nedsjunken i grässvålen runt Wood Ash och en förkolnad stock nedsjunken i askan,
-  gräs på väg tillbaka, ibland en stock att sitta på. Bild `fas4_fire_ring.png`.
-- **Dead tree:** torrt träd utan bark, stam 3–6 med rötter som syns i marken, två till fyra krokiga grenar av tunt trä
-  (staket) som trappar ut och upp i sicksack, den avbrutna toppen en kvist, Coarse Dirt vid foten, Dead Bush och Short
-  Dry Grass runt. Stripped Acacia på savannen, blekt Pale Oak eller grå Oak annars. Desert, Badlands, Gypsum Flats,
-  Ochre Badlands, savann. Bild `fas4_dead_tree.png`.
-- **Dry creek:** uttorkad bäckfåra som slingrar sig 14–28 block, 2–3 bred, två block djup i mitten och ett vid kanterna
-  (SmoothGround rundar kanterna), botten av Gravel, Packed Mud och några kullerstenar, kanterna Coarse Dirt och lera.
-  Bild `fas4_dry_creek.png`.
+- **Rock arch:** naturligt valv, resten av en klippfena som nötts igenom: öppningen en båge bredare än den är hög (8–11
+  bred, 4–5 hög) med rundad undersida, berget ett band runt den, tunt över krönet (ungefär 2 tjockt, 2–3 djupt) och
+  tjockt i benen som vidgar sig ner i marken. Ovankanten en jämn kurva; det ena benet grövre och fortsätter som en låg rygg
+  som sluttar ner i marken. Under spannet fylls inget ner till marken (det var det som gjorde förra versionerna till en
+  port med pelare). Av stenen under marken med fläckar av en andra sten och mossa i milt land; i badlands Red Sandstone
+  med vågräta band av Terracotta genom båda benen och spannet. Grus- eller sandslabs och nedfallna stenar vid fötterna.
+  Sällsynt (1 på 40 chunks försök, på plan mark): Stony Peaks, Windswept Hills, Savanna Plateau, Slate Highlands,
+  Limestone Karst, Marble Gorge, Badlands, Ochre Badlands. Bilder `fas4b_rock_arch*.png`.
+- **Dead tree:** dött, silvergrått träd av **Deadwood** utan bark: stam 3–6 som ibland lutar ett block, rötter av
+  Deadwood Branch som löper ut över marken och ner i den. Två eller tre ledare grenar sig ur toppen (första biten
+  Deadwood), sprider sig i grenar som går lågt och brett, klättrar ett steg bara efter två ut, gaffrar sig och slutar i
+  **Deadwood Twig** (nytt, 4 px); ibland en låg gren ur stammen och en taggig avbruten topp. På savannen flatare krona.
+  Coarse Dirt i en trasig fläck vid foten, Dead Bush, torrt gräs och kvistar, ibland en nedfallen gren. Desert, Badlands,
+  Gypsum Flats, Ochre Badlands, savann. Bilder `fas4b_dead_tree*.png`.
+- **Rock outcrop (häll):** låg ryggformad häll 6–13 lång och 1–2,5 hög, flack åt ena hållet och brantare på läsidan,
+  rundad i halvblock och nedsjunken i grässvålen vid kanterna; berget under marken (Granite eller Stone om inget finns
+  nära) med ådror av en andra sten, mossa i fläckar, gräs, ormbunkar och blommor vid foten. Inte i snöland (där syns den
+  inte). Bild `fas4b_rock_outcrop.png`.
+- **Valley waterfall**, **Bone remains**, **Sand skeleton**, **Mammoth tusks**, **Lone tree** och **Fire ring**: som
+  förut (bilder `fas4_*.png`).
 
-### Avstängt (byggt men inte på, väntar på en bättre form eller bild)
+### Avstängt (byggt men håller inte måttet)
 
-- **Rock arch**, **Dead tree**, **Dry creek** och **Bird cliff** (beskrivna ovan): avstängda vid granskningen 2026-11-23.
-  Valvet blev ett lapptäcke av klossar, de döda trädens grenar av staket såg ut som byggnadsställningar, fåran som ett
-  grävt dike och fågelklippan syns inte mot berget. Advancementen *Under the Arch* togs bort med valvet.
+Prövat igen i v0.187.0 med naturligt genererade provvärldar (allt på och tätare, `DECOR_TEST=1 python
+scripts/gen_land_decor.py`), men fortfarande inte bra nog:
 
-- **Talus** och **Fallen rock:** sten mot sten syns inte i bergen, och SmoothGround lägger trappor på dem så att de ser
-  ut som rasmassor i trappsteg. Fallen rock har nu en lutande topp av slabs i stället för en förskjuten översta rad.
-- **Snow patch:** snöblocken blir små vita kuber i branta sluttningar.
-- **Anthill:** blir fortfarande en trappad hög i halvblock, hur rund profilen än görs.
-- **Ice blocks** (isflak) och **Rock overhang:** ser ut som staplade kuber och en lös hylla.
-- **Rock outcrop**, **Frost split** och **Farm walls:** ingen bra bild än (under snö syns de inte; gårdsmurarna kom inte
-  med i provvärlden). **Juniper in plains:** ingen bild.
+- **Dry creek:** gjord om till en lång (38–48 steg), slingrande, grund fåra med grus längs mitten, Packed Mud där den är
+  djupast, sidor av Gravel Slab, småsten och torrt högt gräs vid kanterna, aldrig inom 8 block från vatten och bara där
+  hela sträckan ligger plant. Men i världen blir den för kort och ser ut som en grop med grått grus; av (granskning
+  2026-11-24).
+- **Frost split:** nu ett rundat block kluvet av en enda rak spricka ett halvt block bred med snö i, halvorna matchar.
+  Men blocket blir för kantigt (raka sidor) och läses fortfarande som två klumpar; av.
+- **Anthill:** nytt block Anthill (kupol i fina, ojämna skikt, knölar, ospräcklig textur av barr och smulor, oskuggade
+  ytor) med en ring av lösa barr runt. Men de stora läses fortfarande som en randig limpa eller bikupa; av. Blocket finns kvar.
+- **Talus** och **Fallen rock:** nu formade i halvblock (grusslabs, en lutande rundad sten), och de kräver öppen, flack,
+  snöfri mark framför väggen. Men bergen i världen har sällan en fri vägg med plan fot: de hamnade i trånga raviner, under
+  snö eller i skog, och syns inte på någon bild.
+- **Bird cliff:** längre vita strimmor av Calcite under varje avsats, slab-avsatser med bon, duvor runt klippan. Syns nu
+  på håll som vita streck, men är för liten och sällsynt mot de stora bergväggarna för att vara värd att slå på.
+- **Rock overhang:** nu en urgröpt hålighet med rundat tak (uppochnedvända trappor) i stället för en lös hylla, men de
+  torra landens klippor är mest Terracotta (inte berg för klippsökningen); bara en enda hittades och den gick inte att
+  fotografera.
+- **Root cellar (jordkällare, ny):** byggd: en gräskulle 9–12 bred och 3–4 hög över ett rum två block ner, framsida
+  av Fieldstone med låg dörr (Spruce Door) och överliggare, två trappsteg ner mellan vingmurar, inne valv av Fieldstone,
+  plankhylla, krukor (en med `chests/root_cellar`), spindelväv, nässlor vid dörren; även vid var tredje gård med stor
+  åker. Men framsidan reser sig som en fristående stenmur och kullen bakom läses som trappade jordterrasser, inte som en
+  kulle. Feature-typen `root_cellar` är registrerad, men av.
+- **Farm walls:** murarna buktar nu, hörnen är inte räta, träd och buskar på åkern stoppar den inte längre (förut föll
+  nästan varje försök på en ene), grindstolpar, rasade sträckor av slabs. Men den enda gården i provvärlden blev några
+  murstumpar i en sluttning vid en å; inte bra nog.
+- **Juniper in plains:** ingen bild hann tas (enen loggas inte); av tills den är sedd.
+- **Snow patch:** nu ett flackt snöfält i ytan i svackor i stället för kuber, men bergen över y 200 har redan snö
+  (Thaw och SmoothGround), så fältet syns inte.
+- **Ice blocks:** lutande isbitar i en snödriva som vinden format, men Packed Ice har inga slabs eller trappor och bitarna
+  ser fortfarande ut som staplade kuber.
 
-**Advancement** (Wilderness): *Old Bones* (stå på, i
-eller bredvid ett Bone Block, Rib Cage eller Mammoth Tusk; under *White Downs*).
+**Advancement** (Wilderness): *Under the Arch* (stå under ett valv: berg 3–7 över fötterna och 2–6 åt båda sidorna,
+fri himmel framför och bakom; under *Roof of the World*, tillbaka med valvet) och *Old Bones* (stå på, i eller bredvid
+ett Bone Block, Rib Cage eller Mammoth Tusk; under *White Downs*).
 
-**Gametests:** `valley_waterfall` och `rock_arch` i `worldgen/NatureDecorTest`.
+**Gametests:** `valley_waterfall`, `rock_arch` (prövar också `Shaper`:s former) och `dead_tree` (ingen tunn gren pekar
+ut i luften) i `worldgen/NatureDecorTest`.
 
-**Täthet** (seed 20261123, antal per 256 × 256 block kring där biomen hittades; grannbiomer blandas in):
-Badlands: Rock Arch 2–3, Dead Tree 26, Dry Creek 7. Desert: Dead Tree 13, Dry Creek 5, Sand Skeleton 1. Savanna: Dead
-Tree 6, Dry Creek 4, Bones 2, Lone Tree 1. Plains: Lone Tree 1, Fire Ring 1, Bones 1. Jagged Peaks: Bird Cliff 2,
-Waterfall 1. Stony Peaks: Bird Cliff 1. Mammoth Steppe: Mammoth Tusks 8, Bones 5. Snowy Plains: Bones 2.
+**Täthet** (seed 20261123, antal per 256 × 256 block kring där biomen hittades; grannbiomer blandas in; mätt före
+v0.187.0): Badlands: Rock Arch 2–3, Dead Tree 26, Dry Creek 7. Desert: Dead Tree 13, Dry Creek 5, Sand Skeleton 1.
+Savanna: Dead Tree 6, Dry Creek 4, Bones 2, Lone Tree 1. Plains: Lone Tree 1, Fire Ring 1, Bones 1. Mammoth Steppe:
+Mammoth Tusks 8, Bones 5. Snowy Plains: Bones 2. Dry creek kräver nu plan mark längs hela sträckan och blir färre.
 
 **Mätverktyg:** samma `decorlog.flag` som i fas 3; berg- och klippsakerna loggar också `<sort>_dir_<vinkel>` (sidan att
-titta från). `DecorShots` kan nu också köra kommandon (`@ x y z place feature ...`) före en bild.
+titta från). `DecorShots` kan köra kommandon före en bild (`@ x y z cmd`, flera med ` ; `), prova nästa plats bara om
+inget placerats (`@@`) och sikta på det senast placerade (`namn last avstånd vinkel`, vinkel `dN` = loggad vinkel + N).
+Ett kommando i en levande chunk läser nu `OCEAN_FLOOR` i stället för den inaktuella `_WG`-höjdkartan (`StoneAgeFeature.surface`).
+
+## En natur som förändras med tiden (terrängplanen fas 5–7)
+
+**Naturens klocka** (`worldgen/NatureClock`): varje chunk i överjorden sparar kalenderdagen den senast levde. När den
+laddas, och varje ny dag medan den är laddad, lever den ikapp dag för dag (högst ett år bakåt), med högst 48 ändrade block
+och 8 dagar per svep, och varje chunk högst ett svep i sekunden, högst 2 chunks och 2 ms per tick. Inte på gametest-servern (testerna kör dagar för hand). Varje dags tärningar sås med världens
+seed, chunken och dagen, så det blir samma resultat när man än kommer tillbaka.
+
+Regler:
+- Varje chunk minns var spelare har satt block (`placed`, upp till 512; fler och chunken räknas som byggd). En chunk som
+  fanns innan klockan och där någon har byggt (Retrogens kontroll av spelarblock nära ytan) eller vistats mer än 20 minuter
+  räknas också som byggd. Byggda chunks och deras grannar lämnas helt i fred.
+- Inget nära ett läger, en Fire Pit eller en väg (samma kontroll som `SmoothGround`), inget i chunks med en ytstruktur.
+- Inget sker i en chunk som någon spelare kan se (en synkon på 128° ut till 192 block, eller man står i den). Chunken
+  väntar tills man tittar bort. Bara stormfällning får synas.
+- `/nature status | pause | run <dagar> [radie] [process] | demo log | fell | burn | strike | do flood|recede|drift|rockfall <radie> | height` (op): läget i chunken, stoppa klockan, köra
+  dagar för hand runt sig (regler av, bara inom radien), lägga en färsk stock, fälla ett träd framför sig.
+
+**Stockar som ruttnar** (`worldgen/NatureRot`, fas 5): en fallen stock (se ovan, "Hitta fallna stockar"; också Deadwood
+och Charred Log) tar ett steg de flesta dagar (95 %): färsk → Moss Carpet på toppen → ormbunkar, mossa och svamp längs
+sidorna → en planta av samma träd gror bredvid → barken faller av → den sjunker ner i två steg från ändarna och blir Moss
+Block och Podzol. Ungefär en vecka (speldagar, en speldag är en timme). Nya stockar: i biomer med fallna stockar kommer en
+ny i en chunk var 12:e dag (var 5:e i gammelskog), ForestDecors egen stock, så skogen behåller sina lågor.
+
+**Stormfällning** (`worldgen/StormFelling`, fas 5): i åska fäller vinden ett högt träd (stam 6+, högst 48 stockar) 12–48
+block från en spelare, ungefär en gång på 50 sekunder per spelare. Ett träd som någon ser hoppas över två gånger av tre, så
+de flesta faller utom synhåll. Trädet knakar och faller med vinden (`FallingTreeEntity`), kronan blir lövströ, en stubbe
+blir kvar och stammen läggs som en fallen stock av stockblock (högst 12 långa) som sedan ruttnar. Advancement
+*Windthrow* (Wilderness) för den som ser ett falla.
+
+**Brand och återväxt** (`worldgen/Wildfire`, fas 6): en torr sommardag (sommar, inget regn) slår torr blixt ned ungefär
+en gång på 40 minuter per spelare, 48–110 block bort, utom synhåll, i träd eller gräs (inte i öken, hav, flod, kallt land
+eller Scorched Barrens) där alla chunks två chunks runt är fria. Vanillas eld tar (den sprids bara inom 128 block från en
+spelare och slocknar i regn). Elden bevakas: när den har slocknat står stammarna som brann upp igen som Charred Log och
+marken där elden gick blir Burnt Soil och Wood Ash (mjuka marksteg blir Burnt Soil Slab och Wood Ash Slab). Där ingen är kan
+en skogschunk brinna en torr sommardag (1 på 20 000 per chunk och dag, en fläck med radien 7). Sedan växer det tillbaka
+(per dag): Wood Ash och Burnt Soil blir Coarse Dirt (1/30), Fireweed kommer upp ur Burnt Soil (1/60), Coarse Dirt blir gräs
+(1/40), på bart gräs kommer gräs, Fireweed, blommor eller en planta (1/50; plantor med 3 blocks avstånd, mest björk,
+pionjären, annars närmaste levande träds trä), de brända stammarna vittrar ett block i taget (1/40) ned till stubbar. Efter
+ungefär en till två årstider står ung skog. När ingen bränd mark är kvar och unga träd står har chunken vuxit igen:
+advancement *From the Ashes* för att stå i den. Aldrig i Scorched Barrens. `/nature burn <radie>` bränner en fläck runt
+en, `/nature strike` slår ned en torr blixt framför en.
+
+**Skogen vandrar** (`worldgen/ForestCreep`, fas 6): plantor växer upp till träd även på klockan (1/40 per dag), så en chunk
+ingen besöker får också sina träd. I skogsbrynet kommer då och då en planta av brynets trä upp ute på ängen, 3–7 block
+från en stam och inte under en krona (en ruta per chunk och dag med chansen 1/6). Står betande djur inom 16 block
+(boskap, eller vilda gräsätare som hjortar och visenter) håller ängen sig öppen, och hjortar äter plantor ändå
+(`WildNature`). I skogar med snags dör ett gammalt träd ibland (1/300 per chunk och dag): kronan försvinner och stammen står
+som ForestDecors snag av sitt eget trä. En snag faller med tiden (1/90 per dag): barkfoten blir stubbe och resten ligger som
+en fallen stock av Deadwood, som ruttnar som andra stockar.
+
+**Ras** (`worldgen/Rockfall`, fas 7): i tövädret (månaderna Snowmelt och Thaw, chansen 1/6 per bergschunk och dag) och
+regniga vår- och höstdagar (1/20) lossnar ett block berg högt i en brant (30+ över havet, ett fall på 4+ inom två block). Det
+rullar alltid till den lägsta grannen tills sluttningen planar ut, studsar vidare några block över den plana marken
+nedanför (längre ju högre det föll) och blir liggande som sitt eget berg eller Cobblestone, med Gravel och lösa stenar
+runt foten. Så växer talus under klipporna med åren. Den som är nära samma dag hör raset.
+
+**Vårflod** (`worldgen/SpringFlood`, fas 7): sent i Snowmelt (dag 335–346, ny start varje år) stiger åar och bäckar ett
+block i 3–5 dagar: en vattenkälla läggs ovanpå varje yta av flodvatten och på de plana bankarna (marken i höjd med vattnet)
+upp till 5 block ut, i chunkens huvudnivå. Varje vattenblock sparas i chunken och tas bort exakt när floden sjunker, och
+rinnande vatten på flodnivån får inte bli nya källor medan floden står. Efteråt ligger Clay och Gravel här och var på
+bankarna (12 %) och ibland en drivvedsstock (35 % per chunk). Inte i hav, på stränder eller i träsk. Advancement *High
+Water* för att vada i floden.
+
+**Snödrivor** (`worldgen/SnowDrift`, fas 7): en blåsig snödag på vintern (var tredje vinterdag, vinden mest från väster) där
+det är kallt nog att snöa lägger sig snön i lä bakom allt som sticker upp: stenblock, stammar, stubbar och liggande stockar.
+Drivan är djupast vid foten (två lager per block hindret står upp, högst 6), tunnar ut över fem block i vindens riktning
+och breder ut sig lite lägre åt sidorna, ett lager till per blåsig dag. Vårens töväder (`Thaw`) smälter drivorna som all annan snö; de djupa ligger längst.
+
+**Prestanda** (dedikerad testserver, inga spelare, 256 forceladdade chunks plus kanten, 400 i klockan; `/tick query`):
+när 400 chunks låg 120–190 dagar efter och levde ikapp samtidigt, mätt växelvis med klockan pausad och igång (12 s
+var): P50 6,7–10,4 ms pausad mot 9,4–11,0 ms igång, alltså 0,6–2,8 ms mer per tick. Klockans egen tid var 1,2 ms per svep
+(8 dagar i en chunk), och den slutar svepa för tiken när den har använt 2 ms. Ikapp-levandet tog några minuter för alla 400.
+När chunkarna är i fas kostar klockan nästan inget: ett svep per laddad chunk och speldag (en timme). Stormfällning,
+torr blixt och brandvakten körs en gång i sekunden och är billiga utom själva elden (vanillas).
+
+**Höjdkartor:** i 26.x räknar höjdkartorna bara block i taggen `#minecraft:blocks_motion_in_heightmap`. Burnt Soil, Wood
+Ash, Charred Log, Deadwood, Broken Deadwood och Grub Log läggs till (`scripts/gen_nature_clock.py`), annars läser klockan
+(och regn, snö och spawning) marken under dem.
+
+**Gametests** (`worldgen/NatureClockTest`): `nature_rot` (en stock som lämnas 10 dagar har ruttnat bort i Moss Block och
+Podzol, med en ekplanta bredvid), `storm_felling`, `nature_regrowth` (ett brandfält är ung skog efter 300 dagar),
+`forest_creep`, `forest_creep_grazed` (inga plantor där kor betar), `old_tree_snag`, `rockfall`, `spring_flood` (vattnet
+stiger över bäck och bank och allt är borta efteråt), `snow_drift`.
+
+Bilder: `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`, `nature_fire*.png` (brandfältet dag 0, 30, 70, 120, 200, 320), `nature_flood*.png`, `nature_drift*.png`, `nature_talus*.png`.
 
 ## Övergångar mellan kallt och varmt
 

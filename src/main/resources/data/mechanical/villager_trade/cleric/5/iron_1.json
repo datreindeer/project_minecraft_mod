@@ -1,0 +1,11 @@
+{
+  "wants": {
+    "id": "mechanical:gold_coin"
+  },
+  "gives": {
+    "id": "minecraft:ender_pearl"
+  },
+  "max_uses": 4,
+  "xp": 30,
+  "reputation_discount": 0.05
+}

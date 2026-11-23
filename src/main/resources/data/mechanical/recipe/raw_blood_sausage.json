@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    [
+      "mechanical:blood_bucket",
+      "mechanical:bronze_blood_bucket"
+    ],
+    "mechanical:flour",
+    "mechanical:flour",
+    "mechanical:lard"
+  ],
+  "result": {
+    "id": "mechanical:raw_blood_sausage",
+    "count": 4
+  }
+}

@@ -33,7 +33,9 @@ abstract class StoneAgeFeature implements Feature {
 
     /** First free block above solid ground at x,z (water counts as free, so a column under water has fluid here). */
     static BlockPos surface(WorldGenLevel level, int x, int z) {
-        return new BlockPos(x, level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z), z);
+        // a live chunk (a command, Retrogen) keeps OCEAN_FLOOR up to date as blocks change, its _WG map goes stale
+        var type = level.getChunk(x >> 4, z >> 4) instanceof net.minecraft.world.level.chunk.LevelChunk ? Heightmap.Types.OCEAN_FLOOR : Heightmap.Types.OCEAN_FLOOR_WG;
+        return new BlockPos(x, level.getHeight(type, x, z), z);
     }
 
     static boolean natural(BlockState s) {

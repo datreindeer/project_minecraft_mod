@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/mountain_avens"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/mountain_avens_leaves"
+    }
+  }
+}

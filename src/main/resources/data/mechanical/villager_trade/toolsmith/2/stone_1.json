@@ -1,7 +1,7 @@
 {
   "wants": {
-    "id": "mechanical:cordage",
-    "count": 6
+    "id": "mechanical:copper_coin",
+    "count": 7
   },
   "gives": {
     "id": "mechanical:crude_stone_axe"

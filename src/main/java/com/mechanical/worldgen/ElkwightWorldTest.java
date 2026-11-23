@@ -168,17 +168,39 @@ public final class ElkwightWorldTest {
                             "a ruin at " + x + ", " + z + " would reach out of the barrens (seed " + seed + ")");
     }
 
-    /** Charred trees stand on Wood Ash (not in the substrate tags). Drawn at the far corner, then cleared for the arena. */
+    /**
+     * Charred trees stand on Wood Ash (not in the substrate tags): every kind (stump, short and tall snag, leaning snag, big
+     * tree, fallen trunk) grown once, each alone on fresh ash with its own seed, so one tree's limbs, roots or fallen trunk
+     * never lie in the next one's spot (they used to stand 2 blocks apart on the level's random, and now and then one
+     * didn't fit), plus one through the feature's own place(). Drawn in the test area, then cleared for the arena.
+     */
     private static void trees(GameTestHelper h) {
-        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) h.setBlock(x, 1, z, ScorchedBarrens.WOOD_ASH.get());
-        int placed = 0;
-        var gen = h.getLevel().getChunkSource().getGenerator();
-        for (int i = 0; i < 6; i++) if (new ScorchedBarrens.CharredTree().place(h.getLevel(), gen, h.getLevel().getRandom(), h.absolutePos(new BlockPos(2 + i * 2, 2, 3)))) placed++;
-        int logs = 0;
-        for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 2, 0)), h.absolutePos(new BlockPos(16, 14, 16))))
-            if (h.getLevel().getBlockState(p).is(ScorchedBarrens.CHARRED_LOG.get())) logs++;
-        Mechanical.LOGGER.info("elkwight_world: {} of 6 charred trees placed, {} logs", placed, logs);
-        check(h, placed == 6 && logs >= 6, "charred trees on Wood Ash: " + placed + " placed, " + logs + " logs");
+        var level = h.getLevel();
+        int[] rolls = {0, 30, 55, 65, 72, 90}; // CharredTree.grow: stump, snag, tall snag, leaning snag, big tree, fallen
+        for (int i = 0; i <= rolls.length; i++) {
+            for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) {
+                h.setBlock(x, 1, z, ScorchedBarrens.WOOD_ASH.get());
+                for (int y = 2; y <= 16; y++) h.setBlock(x, y, z, net.minecraft.world.level.block.Blocks.AIR);
+            }
+            BlockPos origin = h.absolutePos(new BlockPos(8, 2, 8));
+            var random = net.minecraft.util.RandomSource.create(1000L + i);
+            boolean placed;
+            String what;
+            if (i < rolls.length) {
+                BlockPos c = ScorchedBarrens.CharredTree.ground(level, origin);
+                check(h, c != null, "Wood Ash is ground a charred tree stands on");
+                placed = ScorchedBarrens.CharredTree.grow(level, random, c, rolls[i]);
+                what = "kind " + rolls[i];
+            } else {
+                placed = new ScorchedBarrens.CharredTree().place(level, level.getChunkSource().getGenerator(), random, origin);
+                what = "place()";
+            }
+            int logs = 0;
+            for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 2, 0)), h.absolutePos(new BlockPos(16, 16, 16))))
+                if (level.getBlockState(p).is(ScorchedBarrens.CHARRED_LOG.get())) logs++;
+            check(h, placed && logs >= 1, "charred tree (" + what + ") on Wood Ash: placed " + placed + ", " + logs + " logs");
+        }
+        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) for (int y = 2; y <= 16; y++) h.setBlock(x, y, z, net.minecraft.world.level.block.Blocks.AIR);
     }
 
     private static void placement(GameTestHelper h) {

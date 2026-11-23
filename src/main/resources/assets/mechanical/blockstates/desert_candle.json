@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "blooming=true,half=lower": {
+      "model": "mechanical:block/desert_candle_bottom"
+    },
+    "blooming=true,half=upper": {
+      "model": "mechanical:block/desert_candle_top"
+    },
+    "blooming=false,half=lower": {
+      "model": "mechanical:block/desert_candle_bottom_leaves"
+    },
+    "blooming=false,half=upper": {
+      "model": "mechanical:block/desert_candle_top_leaves"
+    }
+  }
+}

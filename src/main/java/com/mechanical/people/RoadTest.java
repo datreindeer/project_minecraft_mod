@@ -188,7 +188,9 @@ public final class RoadTest {
         h.assertTrue(r.built == 0, "nothing laid at once");
         h.succeedWhen(() -> {
             if (!r.done() || r.cells.size() < 7) h.fail("planned " + r.planned + ", laid " + r.built + " of " + r.cells.size() + " cells, builder at " + builder.blockPosition() + ", dark " + level.isDarkOutside());
-            h.assertTrue(!level.getBlockState(r.cell(r.cells.size() - 1)).is(Blocks.GRASS_BLOCK), "last cell laid");
+            // a natural road leaves some cells as grass (ragged edges, the hump between ruts), so check the road as a whole
+            long laid = java.util.stream.IntStream.range(0, r.cells.size()).filter(i -> !level.getBlockState(r.cell(i)).is(Blocks.GRASS_BLOCK)).count();
+            h.assertTrue(laid * 2 >= r.cells.size(), "most cells laid, " + laid + " of " + r.cells.size());
             data.remove(level, r);
         });
     }

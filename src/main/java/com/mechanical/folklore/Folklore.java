@@ -71,7 +71,7 @@ public final class Folklore {
     public static final TagKey<Item> OFFERINGS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Mechanical.MODID, "stump_offerings"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<MountainWatcher>> MOUNTAIN_WATCHER = ENTITY_TYPES.registerEntityType(
-            "mountain_watcher", MountainWatcher::new, MobCategory.CREATURE, b -> b.sized(0.9F, 1.1F).clientTrackingRange(16));
+            "mountain_watcher", MountainWatcher::new, MobCategory.CREATURE, b -> b.sized(1.2F, 1.4F).clientTrackingRange(16));
     public static final DeferredItem<SpawnEggItem> MOUNTAIN_WATCHER_SPAWN_EGG = ITEMS.registerItem("mountain_watcher_spawn_egg", SpawnEggItem::new,
             p -> p.spawnEgg(MOUNTAIN_WATCHER.get()));
     /** Dropped once a year per player by a Mountain Watcher: a trophy. */

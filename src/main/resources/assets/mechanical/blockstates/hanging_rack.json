@@ -152,6 +152,294 @@
       "apply": {
         "model": "mechanical:block/blood_pool_4"
       }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "north",
+        "kettle": "bronze|poor_bronze"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_bronze",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "north",
+        "kettle": "iron"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_iron",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "east",
+        "kettle": "bronze|poor_bronze"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_bronze",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "east",
+        "kettle": "iron"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_iron",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "south",
+        "kettle": "bronze|poor_bronze"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_bronze",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "south",
+        "kettle": "iron"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_iron",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "west",
+        "kettle": "bronze|poor_bronze"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_bronze",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "facing": "west",
+        "kettle": "iron"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_iron",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_1"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_2"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_3"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_4"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_5"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_6"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_7"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_8"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_9"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_10"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_11"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_12"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_13"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_14"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_15"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_16"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_17"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "18"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_18"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "19"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_19"
+      }
+    },
+    {
+      "when": {
+        "part": "lower",
+        "kettle": "bronze|poor_bronze|iron",
+        "kettle_blood": "20"
+      },
+      "apply": {
+        "model": "mechanical:block/rack_kettle_blood_20"
+      }
     }
   ]
 }

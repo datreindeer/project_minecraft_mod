@@ -1,12 +1,13 @@
 {
   "wants": {
-    "id": "minecraft:ink_sac",
+    "id": "mechanical:copper_coin",
     "count": 3
   },
   "gives": {
-    "id": "minecraft:map"
+    "id": "minecraft:paper",
+    "count": 4
   },
-  "max_uses": 8,
+  "max_uses": 16,
   "xp": 5,
   "reputation_discount": 0.05
 }

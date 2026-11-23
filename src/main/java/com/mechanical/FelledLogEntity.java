@@ -104,8 +104,14 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Integer> CRACK = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.INT);
     /** Lying on a slope: how much higher each next block from the root end lies (blocks per block; straight logs). */
     private static final EntityDataAccessor<Float> TILT = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.FLOAT);
-    /** Steeper than this (per block, ~17 degrees) it slides down along its length; never steeper than MAX_TILT. */
-    static final double SLIDE_TILT = 0.3, MAX_TILT = 0.75;
+    /**
+     * Heavy, rough bark: it starts sliding down along its length only steeper than SLIDE_TILT (per block, ~31 degrees) and
+     * when its supports lie more than STEP_RISE apart in height (a log over a one-block step stays put), and once sliding keeps on
+     * while steeper than KINETIC_TILT. Never steeper than MAX_TILT.
+     */
+    static final double SLIDE_TILT = 0.6, KINETIC_TILT = 0.45, STEP_RISE = 1.05, MAX_TILT = 0.75;
+    /** Sliding speed (blocks per tick): it gathers SLIDE_ACCEL a tick up to SLIDE_SPEED per unit of tilt past KINETIC_TILT, within MIN..MAX. */
+    static final double SLIDE_ACCEL = 0.004, SLIDE_SPEED = 0.3, MIN_SLIDE = 0.02, MAX_SLIDE = 0.1;
     /** Each block's hewing stage and saw strokes as chars ('0' + stage * 8 + sawn): they change after spawning (client: the models). */
     private static final EntityDataAccessor<String> STAGES = SynchedEntityData.defineId(FelledLogEntity.class, EntityDataSerializers.STRING);
     /** Entity ids of the players lifting the root end and the crown end, -1 for none. */
@@ -122,7 +128,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     private double cx, cz;
     private boolean awake = true;
     private int restTicks;
-    private double fallSpeed;
+    private double fallSpeed, slideSpeed;
     /** Leads tied on when it was saved; dropped on load (the pullers aren't saved). */
     private int leadsToReturn;
     /** Server: who pulls it. */
@@ -867,8 +873,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
      * Server, a straight log: it rests like a stiff pole on what lies under its blocks (ground, water, other logs within
      * {@link #SUPPORT_DEPTH}; deeper is a gap it bridges): along the lowest line over those supports that has support on
      * both sides of its middle, so it tilts along a slope or over a bump but never hangs in the air. With support on one
-     * side of its middle only, it slides off level that way, over the edge, and falls. Steeper than SLIDE_TILT it slides
-     * down along its length until the ground stops it. True if it moved.
+     * side of its middle only, it slides off level that way, over the edge, and falls. Steeper than SLIDE_TILT (and more than
+     * a step from end to end) it slides slowly down along its length until the ground stops it. True if it moved.
      */
     private boolean settleOnSlope(Level level) {
         int n = size();
@@ -932,20 +938,28 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             fallSpeed = 0;
             moved = true;
         }
+        if (mid >= getY() - 0.01) fallSpeed = 0; // resting on it (a drop that ended within the margin left the fall running, and no slide)
         if (Math.abs(k - k0) > 1.0E-4) {
             entityData.set(TILT, (float) k);
             setBoundingBox(makeBoundingBox());
             moved = true;
         }
-        if (Math.abs(k) > SLIDE_TILT && fallSpeed == 0) { // too steep: it slides towards its lower end
+        double lo = Double.MAX_VALUE, hi = -Double.MAX_VALUE;
+        for (double[] p : supports) {
+            lo = Math.min(lo, p[0]);
+            hi = Math.max(hi, p[0]);
+        }
+        boolean slides = fallSpeed == 0 && (slideSpeed > 0 ? Math.abs(k) > KINETIC_TILT : Math.abs(k) > SLIDE_TILT && Math.abs(k) * (hi - lo) > STEP_RISE);
+        if (!slides) slideSpeed = 0;
+        else { // too steep: it slides towards its lower end, slowly gathering speed
+            slideSpeed = Math.min(slideSpeed + SLIDE_ACCEL, Mth.clamp(SLIDE_SPEED * (Math.abs(k) - KINETIC_TILT), MIN_SLIDE, MAX_SLIDE));
             Vec3 down = Vec3.directionFromRotation(0, getYRot()).scale(k > 0 ? -1 : 1);
-            double speed = Math.min(0.35, 0.5 * (Math.abs(k) - SLIDE_TILT) + 0.08);
-            Vec3 at = position().add(down.scale(speed)).add(0, -speed * Math.abs(k), 0);
+            Vec3 at = position().add(down.scale(slideSpeed)).add(0, -slideSpeed * Math.abs(k), 0);
             if (fits(level, at, getYRot())) {
                 setPos(at);
-                if (tickCount % 6 == 0 && !level.isClientSide()) playSound(SoundEvents.WOOD_STEP, 0.7F, 0.5F);
+                if (tickCount % 10 == 0 && !level.isClientSide()) playSound(SoundEvents.WOOD_STEP, 0.7F, 0.5F);
                 moved = true;
-            }
+            } else slideSpeed = 0;
         }
         return moved;
     }

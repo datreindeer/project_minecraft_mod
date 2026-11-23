@@ -422,6 +422,11 @@ public final class TribeVisits {
         } else if (t.role() == TribeRole.TRADER) {
             key = "caravan";
             award(player, "caravan");
+            if (t.stock != null) { // each kind it meets (a criterion per kind), and a big caravan
+                key = "caravan." + t.stock.kind.getPath();
+                award(player, "caravan_kinds", t.stock.kind.getPath());
+                if (t.stock.big) award(player, "caravan_wagon");
+            }
         } else {
             key = "trader";
             Neighbours.Settlement s = Neighbours.get(level).settlement(t.group());

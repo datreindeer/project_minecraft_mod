@@ -52,7 +52,9 @@ public final class Foraging {
 
     static {
         BUSHES.forEach((bush, berries) -> {
-            DeferredItem<Item> item = ITEMS.registerSimpleItem(berries, p -> p.food(BERRY));
+            DeferredItem<Item> item = berries.equals("elderberries") // poisonous raw: cook or dry them (Flora)
+                    ? ITEMS.registerSimpleItem(berries, p -> p.food(BERRY, Flora.rawElderberries()))
+                    : ITEMS.registerSimpleItem(berries, p -> p.food(BERRY));
             BERRIES.put(bush, item);
             BUSH_BLOCKS.put(bush, BLOCKS.registerBlock(bush + "_bush", p -> new WildBerryBushBlock(item, WINTER_HARDY.contains(bush), p), p -> p
                     .mapColor(MapColor.PLANT).noCollision().randomTicks().strength(0.3F).sound(SoundType.SWEET_BERRY_BUSH)

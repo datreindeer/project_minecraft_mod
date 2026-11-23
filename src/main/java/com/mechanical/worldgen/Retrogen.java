@@ -86,7 +86,10 @@ public final class Retrogen {
             "log_bridge", "driftwood", "gravel_bar", "reed_belt",
             // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left
             // out, and so is everything switched off there)
-            "bone_remains", "fire_ring", "sand_skeleton", "mammoth_tusks",
+            "bone_remains", "fire_ring", "sand_skeleton", "mammoth_tusks", "rock_arch", "dead_tree", "rock_outcrop",
+            // flowers and berry thickets (gen_flora.py)
+            "pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
+            "great_mullein", "desert_candle", "fern_flower", "frost_lily", "blackthorn_thicket", "sea_buckthorn_thicket", "jujube_thicket",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
@@ -215,18 +218,21 @@ public final class Retrogen {
      * ground of their column, so mineshafts and dungeons don't count). Sections whose palette can't hold such a block are skipped.
      */
     static boolean untouched(LevelChunk[] around) {
-        for (LevelChunk c : around) {
-            if (c.getInhabitedTime() > MAX_INHABITED) return false;
-            int[] ground = new int[256];
-            int floor = Integer.MAX_VALUE;
-            for (int i = 0; i < 256; i++) floor = Math.min(floor, ground[i] = c.getHeight(Heightmap.Types.OCEAN_FLOOR, i & 15, i >> 4) - DEPTH);
-            LevelChunkSection[] sections = c.getSections();
-            for (int i = 0; i < sections.length; i++) {
-                int y0 = SectionPos.sectionToBlockCoord(c.getSectionYFromSectionIndex(i));
-                if (y0 + 15 < floor || sections[i].hasOnlyAir() || !sections[i].maybeHas(Retrogen::playerMade)) continue;
-                for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) for (int y = Math.max(0, ground[x | z << 4] - y0); y < 16; y++)
-                    if (playerMade(sections[i].getBlockState(x, y, z))) return false;
-            }
+        for (LevelChunk c : around) if (c.getInhabitedTime() > MAX_INHABITED || !noPlayerBlocks(c)) return false;
+        return true;
+    }
+
+    /** No player-made blocks near the surface of the chunk (see {@link #untouched}); NatureClock asks this too. */
+    static boolean noPlayerBlocks(LevelChunk c) {
+        int[] ground = new int[256];
+        int floor = Integer.MAX_VALUE;
+        for (int i = 0; i < 256; i++) floor = Math.min(floor, ground[i] = c.getHeight(Heightmap.Types.OCEAN_FLOOR, i & 15, i >> 4) - DEPTH);
+        LevelChunkSection[] sections = c.getSections();
+        for (int i = 0; i < sections.length; i++) {
+            int y0 = SectionPos.sectionToBlockCoord(c.getSectionYFromSectionIndex(i));
+            if (y0 + 15 < floor || sections[i].hasOnlyAir() || !sections[i].maybeHas(Retrogen::playerMade)) continue;
+            for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) for (int y = Math.max(0, ground[x | z << 4] - y0); y < 16; y++)
+                if (playerMade(sections[i].getBlockState(x, y, z))) return false;
         }
         return true;
     }

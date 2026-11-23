@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:desert",
+    "mechanical:gypsum_flats",
+    "minecraft:badlands",
+    "minecraft:eroded_badlands",
+    "mechanical:ochre_badlands"
+  ],
+  "features": "mechanical:sand_verbena",
+  "step": "vegetal_decoration"
+}

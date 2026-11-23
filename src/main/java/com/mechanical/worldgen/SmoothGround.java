@@ -289,6 +289,11 @@ public final class SmoothGround extends StoneAgeFeature {
         return variant(base, SLABS, "slab");
     }
 
+    /** The stairs of {@code base} (AIR when there is none), for the shaped decorations (Shaper). */
+    static Block stairs(Block base) {
+        return variant(base, STAIRS, "stairs");
+    }
+
     /**
      * The slab (kind "slab") or stairs of a ground block: the mod's ground slabs first (mechanical:sand_slab), then the
      * block's own family (minecraft:stone_slab, granite_stairs), without a _block/_stone suffix (chalk_block -> chalk_slab),

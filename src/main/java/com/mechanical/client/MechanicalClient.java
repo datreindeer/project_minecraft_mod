@@ -154,7 +154,8 @@ public class MechanicalClient {
         event.registerLayerDefinition(CartModel.LAYER, CartModel::create);
         event.registerLayerDefinition(WagonModel.LAYER, WagonModel::create);
         event.registerLayerDefinition(PloughModel.LAYER, PloughModel::create);
-        event.registerLayerDefinition(CartModel.Canopy.LAYER, CartModel.Canopy::create);
+        event.registerLayerDefinition(TiltModel.CART, TiltModel::cart);
+        event.registerLayerDefinition(TiltModel.WAGON, TiltModel::wagon);
         event.registerLayerDefinition(CarcassRenderer.Lashing.LAYER, CarcassRenderer.Lashing::create);
         event.registerLayerDefinition(com.mechanical.client.wildlife.TameHorseRenderer.BLANKET,
                 () -> WildHorseModel.createBodyLayer(new net.minecraft.client.model.geom.builders.CubeDeformation(0.4F)));

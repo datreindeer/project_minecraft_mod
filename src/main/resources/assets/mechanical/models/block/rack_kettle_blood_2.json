@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "particle": "mechanical:block/kettle_blood",
+    "blood": "mechanical:block/kettle_blood"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        2.83,
+        4
+      ],
+      "to": [
+        12,
+        2.83,
+        12
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ],
+          "texture": "#blood"
+        }
+      }
+    }
+  ]
+}

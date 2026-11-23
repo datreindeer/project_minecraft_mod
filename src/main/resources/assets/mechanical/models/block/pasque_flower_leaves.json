@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/tinted_cross",
+  "textures": {
+    "cross": "mechanical:block/pasque_flower_leaves"
+  }
+}

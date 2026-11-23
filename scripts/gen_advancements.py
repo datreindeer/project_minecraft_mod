@@ -133,7 +133,7 @@ def log_bridge():
 
 
 def under_arch():
-    """The player under a natural rock arch: rock 3-5 blocks over the head, rock on both sides 2-4 blocks off, and open sky
+    """The player under a natural rock arch: rock 3-7 blocks over the feet, rock on both sides 2-6 blocks off, and open sky
     3 blocks ahead and behind (so not in a cave or under an overhang), the way through running east-west or north-south."""
     def rock_at(x, y, z):
         return {"type": "minecraft:any_of", "terms": [
@@ -147,9 +147,9 @@ def under_arch():
         at = (lambda a, y, b: rock_at(a, y, b)) if ax == "x" else (lambda a, y, b: rock_at(b, y, a))
         out = (lambda d: sky(d, 0)) if ax == "x" else (lambda d: sky(0, d))
         return {"type": "minecraft:all_of", "terms": [
-            {"type": "minecraft:any_of", "terms": [at(0, y, 0) for y in (3, 4, 5)]},
-            {"type": "minecraft:any_of", "terms": [at(0, 1, d) for d in (2, 3, 4)]},
-            {"type": "minecraft:any_of", "terms": [at(0, 1, -d) for d in (2, 3, 4)]},
+            {"type": "minecraft:any_of", "terms": [at(0, y, 0) for y in (3, 4, 5, 6, 7)]},
+            {"type": "minecraft:any_of", "terms": [at(0, 1, d) for d in (2, 3, 4, 5, 6)]},
+            {"type": "minecraft:any_of", "terms": [at(0, 1, -d) for d in (2, 3, 4, 5, 6)]},
             out(3), out(-3)]}
     return {"under_arch": {"trigger": "minecraft:location", "conditions": {"player": {"type": "minecraft:any_of", "terms": [way("x"), way("z")]}}}}
 
@@ -725,6 +725,8 @@ TABS = {
          "Bake Dough on a Baking Stone beside a Campfire, or in the kiln at 200°", has("minecraft:bread")),
         ("hearty_stew", "cooked", "stew", G, "Hearty Stew",
          "Simmer 4 or more ingredients in a Bronze Kettle of water over a fire, then ladle the stew out with a Bowl", by_code()),
+        ("blood_sausage", "cooked", "blood_sausage", T, "Black Pudding",
+         "Mix a Blood Bucket with 2 Flour and Lard into Raw Blood Sausage, then cook it on a Campfire", has("blood_sausage")),
         # fauna: giants
         ("giant_meat", "cooked", "cooked_mammoth", T, "Ice Age Feast",
          "Cook Mammoth, Rhino, Bison or Musk Ox meat on a Campfire", has("cooked_mammoth", "cooked_rhino", "cooked_bison", "cooked_musk_ox")),
@@ -848,6 +850,9 @@ TABS = {
          "Boil Raw Hide, Rabbit Hide or Fish Bones in the kettle. Hide Glue hafts tools in place of Cordage", has("hide_glue")),
         ("tanned", "kettle", "minecraft:leather", T, "Tanner",
          "Boil Bark with Scraped Hides in the kettle: 3 Leather from every 2 hides, rain or shine", by_code()),
+        ("blood_kettle", "kettle", "bronze_blood_bucket", T, "Not a Drop Wasted",
+         "Stand a Bronze Kettle under a Hanging Rack and skin the carcass on it. Scoop the full kettle with a Bronze Bucket",
+         has("blood_bucket", "bronze_blood_bucket")),
         ("bronze_saw", "bronze", "bronze_saw", T, "Saw",
          "Cast a saw blade and assemble a Bronze Saw. Log + Saw makes 4 Planks", has("bronze_saw")),
         ("yew_longbow", "bronze_saw", "yew_longbow", G, "Longbowman",
@@ -1216,11 +1221,21 @@ TABS["wilderness"][1].extend([
      "Come upon tribespeople at night: they lay out Straw Beds round the fire and sleep while their warriors keep watch. "
      "By day they sit round the fire whittling, eating and talking", by_code()),
     # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
-    ("caravan", "root", "minecraft:chest", T, "The Caravan Has Come",
-     "Talk to the old trader of a Trader Caravan: horses, covered carts and armed guards, now and then near you as the Wandering Trader once was",
+    ("caravan", "root", "coin_purse", T, "The Caravan Has Come",
+     "Talk to the old leader of a Trader Caravan: a handler with the animals, a laden cart and guards in armour, now and then near "
+     "your camp as the Wandering Trader once was. Each caravan deals in one kind of goods, for coin",
      by_code()),
     ("caravan_gem", "caravan", "minecraft:diamond", G, "Treasures for Coin",
-     "Sell a gemstone to a caravan's trader: they love gems and pay in silver and gold", by_code()),
+     "Sell a gemstone to a jewelry caravan: they love gems and pay in silver and gold", by_code()),
+    # granted per kind from Java (people/TribeVisits.java), criteria named after the kinds (scripts/gen_traders.py)
+    ("caravan_kinds", "caravan", "minecraft:map", G, "Every Road Leads Here",
+     "Meet a caravan of every kind: Timber & Tools, Mining Equipment, Jewelry & Gemstones, Hunting Gear & Furs, Herbs & Remedies and Forager's Goods",
+     AllOf({k: {"trigger": "minecraft:impossible"} for k in ("woodsman", "mining", "jewelry", "hunting", "herbs", "foraging")})),
+    ("caravan_wagon", "caravan", "wagon", G, "The Rich Caravan",
+     "Meet a big caravan: a Wagon drawn by a pair, rarer goods at dearer prices and a fuller purse", by_code()),
+    ("caravan_sold_out", "caravan", "minecraft:gold_nugget", T, "Bought Out",
+     "Buy the last of something from a caravan. Their goods run out and are not restocked, and they only buy while their purse lasts",
+     by_code()),
     # the Miner under ground (people/Miners.java)
     ("miner_trade", "deep_cold", "minecraft:torch", T, "Deep Trade",
      "Trade with a Miner, a rare wanderer of the caves below Y 30, hunched under his ore sack. He sells the ores missing nearby",
@@ -1335,6 +1350,16 @@ TABS["wilderness"][1].extend([
 TABS["food"][1].extend([
     ("winter_berries", "root", "lingonberries", G, "Winter Larder",
      "Pick Lingonberries or Juniper Berries in winter. Other berry bushes freeze and give nothing until spring", by_code()),
+    # flora phase 1 (Flora.java, gen_flora.py): thicket berries, poisonous raw elderberries, wild flowers of the open lands
+    ("thicket_berries", "root", "sloes", T, "Thorny Harvest",
+     "Pick Sloes, Sea Buckthorn Berries or Jujubes from a thorny thicket. Each grows in its own climate, and ripens in autumn",
+     has("sloes", "sea_buckthorn_berries", "jujubes")),
+    ("cooked_elderberries", "roasted", "cooked_elderberries", T, "Cook Them First",
+     "Raw Elderberries make you sick. Cook them on a Campfire into Cooked Elderberries", has("cooked_elderberries")),
+    ("wildflowers", "root", "pasque_flower", T, "Wildflowers",
+     "Pick a wild flower of the open lands: they bloom only in their season, and are plain leaves the rest of the year",
+     has("pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
+         "great_mullein", "desert_candle")),
     ("fallow_season", "root", "minecraft:wheat_seeds", T, "Out of Season",
      "Sneak-click a crop with an empty hand in winter: nothing grows in the fields until spring, so harvest and store before",
      by_code()),
@@ -1634,12 +1659,27 @@ TABS["wilderness"][1].extend([
     ("roof_of_the_world", "chalk_downs", "minecraft:snow_block", G, "Roof of the World",
      "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290", above_y(250)),
     # small things in the landscape (docs/terrain-plan.md phase 4, gen_land_decor.py)
+    ("under_the_arch", "roof_of_the_world", "minecraft:red_sandstone", T, "Under the Arch",
+     "Stand beneath a natural rock arch. Wind and frost wear them out of the rock in the hills, the karst and the badlands; they are rare",
+     under_arch()),
     ("old_bones", "chalk_downs", "minecraft:bone_block", T, "Old Bones",
      "Find the bones of a long-dead animal and stand among them: on the plains and the steppe, half buried in the desert sand, or mammoth tusks in the Loess",
      by_bones()),
     ("burnt_hall", "into_the_ashes", "rune_blackstone", C, "The Burnt Hall",
      "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
      visit("elkwight_ruin")),
+])
+# nature that changes with time (docs/terrain-plan.md phases 5-7, worldgen/NatureClock and friends)
+TABS["wilderness"][1].extend([
+    ("windthrow", "log_bridge", "minecraft:oak_log", T, "Windthrow",
+     "See a thunderstorm bring down a tall tree. Its trunk is left lying as a fallen log, and within a week or so it has rotted "
+     "into moss and podzol with a sapling beside it", by_code()),
+    ("from_the_ashes", "after_the_fire", "minecraft:birch_sapling", G, "From the Ashes",
+     "Stand in a young forest that grew back where a wildfire burned. Dry summer lightning lights the woods; the ash turns to "
+     "soil, Fireweed comes first, then grass, flowers and birch saplings, and after a few seasons young trees stand", by_code()),
+    ("high_water", "log_bridge", "minecraft:clay_ball", T, "High Water",
+     "Wade into a spring flood. When the snow melts, late in Snowmelt, creeks and rivers rise a block over their flat banks for a "
+     "few days, and leave clay, gravel and driftwood behind when they go down", by_code()),
 ])
 # the Elkwight boss (wildlife/elkwight, gen_elkwight_boss.py), under the Scorched Barrens' "Into the Ashes"
 TABS["wilderness"][1].extend([
@@ -2157,6 +2197,16 @@ TABS["folklore"] = ("minecraft:block/moss_block", [
      "See a Dune Wraith in a desert sandstorm. It is after your water", by_code()),
     ("dune_glass", "dune_wraith", "dune_glass", G, "Glass from the Storm",
      "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass", has("dune_glass")),
+])
+
+
+# the magic flowers (Flora.java): only picked in bloom do they give themselves
+TABS["folklore"][1].extend([
+    ("fern_flower", "root", "fern_flower", C, "Midsummer Night",
+     "Pick a Fern Flower in bloom. The fern opens its golden flower only on summer nights, deep in old forests, and brings luck",
+     has("fern_flower")),
+    ("frost_lily", "root", "frost_lily", C, "Winter Bloom",
+     "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly", has("frost_lily")),
 ])
 
 

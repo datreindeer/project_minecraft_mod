@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fern_flower"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fern_flower"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.fern_flower.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.fern_flower.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

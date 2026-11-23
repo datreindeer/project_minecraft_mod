@@ -144,6 +144,9 @@ public final class BronzeTools {
     // shortcut: drinking or baking with milk hands back a fresh Bronze Bucket, so a Poor Bronze one comes back sound; track it if that matters
     public static final DeferredItem<Item> BRONZE_MILK_BUCKET = ITEMS.registerSimpleItem("bronze_milk_bucket", p -> p.stacksTo(1)
             .craftRemainder(BRONZE_BUCKET.get()).component(DataComponents.CONSUMABLE, Consumables.MILK_BUCKET).usingConvertsTo(BRONZE_BUCKET.get()));
+    /** A kettle-full of blood under a Hanging Rack scooped with a Bronze Bucket ({@link HangingRackBlock}); goes into Blood Sausage. */
+    // shortcut: crafting with it hands back a fresh Bronze Bucket, so a Poor Bronze one comes back sound (as the milk bucket); track it if that matters
+    public static final DeferredItem<Item> BRONZE_BLOOD_BUCKET = ITEMS.registerSimpleItem("bronze_blood_bucket", p -> p.stacksTo(1).craftRemainder(BRONZE_BUCKET.get()));
     /** Flint Sickle's tool on bronze (460 uses, iron speed), and it reaps a 3x3 swath of ripe crops or grass ({@link #onBreak}). */
     public static final DeferredItem<Item> BRONZE_SICKLE = ITEMS.registerSimpleItem("bronze_sickle",
             p -> p.tool(Bronze.BRONZE, Farming.SICKLE_MINEABLE, 1.5F, -2.2F, 0.0F));
