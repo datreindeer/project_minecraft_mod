@@ -565,7 +565,8 @@ def data():
     w(D / "mechanical/worldgen/structure/ancient_oak.json", {"type": "mechanical:ancient_oak",
         "biomes": "#mechanical:has_structure/ancient_oak", "spawn_overrides": {}, "step": "top_layer_modification"})
     w(D / "mechanical/worldgen/structure_set/ancient_oak.json", {"structures": [{"structure": "mechanical:ancient_oak", "weight": 1}],
-        "placement": {"type": "minecraft:random_spread", "salt": 717450131, "spacing": 24, "separation": 12}})
+        "placement": {"type": "minecraft:random_spread", "salt": 717450131, "spacing": 24, "separation": 12,
+                      "frequency": 0.82}})  # 0.82: as many oaks as on vanilla terrain since gen_terrain.py flattened the lowland
 
     lang_path = A / "lang/en_us.json"
     lang = json.loads(lang_path.read_text(encoding="utf-8"))

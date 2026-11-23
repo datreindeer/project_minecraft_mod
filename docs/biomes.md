@@ -125,47 +125,55 @@ punkterna från en tabell (`OFFSET`), så ändringarna står som tal. Klimatbrus
 där den låg**: kartorna över kallt och varmt ovan är oförändrade. Kuster (kontinentalitet upp till -0,1) och träsk
 (erosion 0,7) har vanillas höjder kvar, och grottor, akviferer och malmhöjder är orörda.
 
+Landskapet bygger på kontrast: lugnt lågland mellan bergskedjorna, och berg och platåer som reser sig brant ur det.
+
 - **Bergskedjor:** långt inne i landet (kontinentalitet 0,25 och 1) ligger bergen högre och oftare. Där erosionen är
   låg reser sig kammarna till y 220–260, och de högsta topparna med sina taggiga spiror når y 280–295 (vanilla stannade
   på 255, där taket plattade till dem). Taket som pressar bort terrängen flyttades från y 240–256 till y 272–296, så det
-  finns över 20 block kvar att bygga på även på den högsta toppen. Platåerna (Savanna Plateau, Marble Gorge) ligger
-  lite högre, och kullarna i det kuperade låglandet blir bergsryggar som löper genom landskapet.
-- **Djupa dalar:** floden ligger alltid i botten av en dal. Låglandet ligger högre än förut (y 75–90 i stället för
-  64–67), och flodbankarna stiger brant från vattnet och planar ut en bit upp, så floder i låglandet går i dalar 15–25
-  block djupa. Mellan bergen är dalarna 30–60 block och mer, med floden längst ned. Vattnet ligger kvar i havets nivå.
-- **Platta biomer:** `mechanical:flatness` (0..1) är 1 där marken ska vara platt: torrt (fuktighet under -0,15:
-  Plains, Savanna, Chalk Downs, Pine Heath, Mammoth Steppe), hett (temperatur över 0,6: Desert, Gypsum Flats) och kallt
-  och torrt (Snowy Plains, Ice Spikes), och 0,4 på jämn mark i övrigt (Peat Bog). Den tonas bort mot bergen (erosion
-  -0,3 .. -0,45), så toppar och bergssidor behåller sin form. Där väger höjden över till en lugn kopia av höjdkurvan,
-  där låglandets kullar bara har 12 % kvar av sin höjd och flodbankarna är mjukare, och 3D-bruset dämpas fem gånger
-  (`factor`). Resultatet är långa jämna sluttningar i stället för småkullar. Skogar, taiga och ängar är i stället lite
-  mer kuperade än förut.
+  finns över 20 block kvar att bygga på även på den högsta toppen. Mellan kammarna har dalarna plana bottnar
+  (y 90–100), och bergssidorna stiger brant ur dem.
+- **Platåer:** Savanna Plateau, Marble Gorge och de andra platåbiomerna står på platta platåer (y 125–145) som slutar i
+  en enda brant kant ned mot låglandet, i stället för att luta över hela erosionsbandet som i vanilla.
+- **Lågland och floder:** låglandet ligger lite högre än förut (y 70–85 i stället för 64–67) och är plant upp till de
+  högsta åsarna. Floden ligger alltid i en dal med branta bankar som tar lite mark: 15–20 block djup i skogarna, grundare
+  (6–10) på slätterna, och 30–60 och mer mellan bergen. Vattnet ligger kvar i havets nivå.
+- **Platta biomer:** `mechanical:flatness` (0..1) är 1 där klimatet säger att marken ska vara platt: torrt (fuktighet
+  under -0,15: Plains, Chalk Downs, Pine Heath, Mammoth Steppe), varmt och torrt (Savanna), hett (Desert, Gypsum
+  Flats) och kallt och inte fuktigt (Snowy Plains, Ice Spikes). Den gäller bara på låglandet och platåerna och på
+  dalbottnarna mellan bergen, så toppar och bergssidor behåller sin form. Där går höjden över i en lugn kopia av
+  höjdkurvan (kullar med 12 % av sin höjd kvar, lägre land och mjukare flodbankar) och 3D-bruset dämpas fem gånger
+  (`factor`). På övrigt lågland (skog, taiga, Peat Bog) gäller den lugna kopian till 35 % och brusdämpningen till 60 %.
+  Windswept Hills behåller sin vilda form.
 
 **Mätt** med kartverktyget (nedan) på tre seeds, 6144 × 6144 block runt 0,0, före (vanilla) → efter:
 
 | | seed 1 | seed 2 | seed 4242 |
 |---|---|---|---|
-| Land över y 150 | 1,6 % → 8,5 % | 2,7 % → 10,1 % | 0,1 % → 3,6 % |
-| Land över y 200 | 0,06 % → 1,4 % | 0,20 % → 1,9 % | 0 → 0,21 % |
-| Högsta topp | y 255 → 287 | y 255 → 295 | y 181 → 240 |
-| Floddalens djup, median / 90:e percentil (alla floder) | 6 / 35 → 12 / 49 | 7 / 31 → 12 / 42 | 7 / 26 → 11 / 39 |
-| Floder med mark över y 130 inom 96 block: antal pixlar, djup median | 2393, 38 → 6228, 45 | 3212, 23 → 7656, 30 | 1418, 35 → 8558, 33 |
-| Höjdskillnad i rutor om 128 block, median | 53 → 66 | 58 → 74 | 49 → 60 |
-| Strukturer: byar / Tribe Village / Ancient Oak / Elkwight-ruin (12 288 × 12 288 block) | 105 / 41 / 87 / 3 → 103 / 39 / 78 / 3 | 104 / 37 / 49 / 1 → 104 / 27 / 46 / 1 | 120 / 34 / 53 / 1 → 118 / 35 / 49 / 2 |
+| Land över y 150 | 1,6 % → 4,6 % | 2,7 % → 6,5 % | 0,1 % → 1,1 % |
+| Land över y 200 | 0,06 % → 1,6 % | 0,20 % → 2,1 % | 0 → 0,26 % |
+| Högsta topp | y 255 → 292 | y 255 → 291 | y 181 → 248 |
+| Floddalens djup, median / 90:e percentil (alla floder) | 6 / 35 → 7 / 37 | 7 / 31 → 6 / 29 | 7 / 26 → 7 / 21 |
+| Floder med mark över y 130 inom 96 block: antal pixlar, djup median / 75:e percentil | 2393, 38 / 54 → 4890, 39 / 66 | 3212, 23 / 46 → 5304, 23 / 54 | 1418, 35 / 48 → 4957, 36 / 59 |
+| Platt mark i de platta biomerna | 67 % → 75 % | 66 % → 75 % | 72 % → 82 % |
+| Strukturer: byar / Tribe Village / Ancient Oak / Elkwight-ruin (12 288 × 12 288 block) | 105 / 41 / 87 / 3 → 105 / 46 / 85 / 3 | 104 / 37 / 49 / 1 → 103 / 29 / 52 / 0 | 120 / 34 / 53 / 1 → 118 / 34 / 57 / 2 |
 
-Platt mark (lutning högst 1 block på 4), alla tre seeds: Mammoth Steppe 57 → 69 %, Desert 72 → 80 %, Sunflower Plains
-72 → 78 %, Chalk Downs 75 → 79 %, Pine Heath 76 → 79 %, Ice Spikes 68 → 70 %, Savanna 71 → 71 %, Plains 70 → 66 %,
-Snowy Plains 65 → 62 %, Peat Bog 73 → 71 %; skogarna 65–70 → 54–61 %, Taiga 63 → 52 %, Meadow 51 → 38 %. Plains och
-Snowy Plains ligger ofta i kuperade erosionsband vid bergen och vid flodbankar, där höjdkurvan och inte bruset ger
-lutningen, så andelen ändras lite; småkullarna mitt på slätten är borta (höjdprofiler i 1-blockssteg följer nu höjdkurvan
-nästan exakt). Strukturerna: Tribe Village och Ancient Oak placeras 10 % och 8 % mer sällan, eftersom skogarna och
-dalsidorna har fått mer lutning; byarna och Elkwight-ruinerna lika ofta. På en riktig dev-server (seed 2) nådde toppen
-vid 2128, 488 y 295 och den vid -1468, -1576 y 284, och floderna (bland annat i en bergsdal vid 2418, -368) har vatten.
+Platt mark (lutning högst 1 block på 4), alla tre seeds: Plains 70 → 78 %, Snowy Plains 65 → 74 %, Sunflower Plains
+73 → 84 %, Savanna 71 → 79 %, Desert 72 → 86 %, Mammoth Steppe 57 → 71 %, Pine Heath 76 → 86 %, Hazel Meadow 67 → 76 %,
+Chalk Downs 75 → 79 %, Peat Bog 73 → 76 %; Forest 65 → 68 %, Birch Forest 67 → 72 %, Taiga 63 → 69 %, Deciduous Forest
+70 → 74 %, Dark Forest 68 → 71 %, Meadow 51 → 52 %, Windswept Hills 44 → 42 %. Marble Gorge 58 → 43 %: platåns topp är
+platt, men den branta kanten och flodkanjonerna ligger inom biomen. Låglandet (erosionsband E3 och E4) är 84–87 % platt
+mot 65–79 % i vanilla; kuperat är det nu nästan bara vid bergen. Eftersom låglandet är plattare klarar fler platser
+Tribe Villages och Ancient Oaks krav på plan mark, så deras `frequency` i structure_set sänktes (0,77 och 0,82) för att
+de ska bli lika många som förut (summa 112 → 109 och 189 → 194). På en riktig dev-server (seed 2) nådde toppen vid
+2132, 484 y 295, och floderna, också i en bergsdal vid 2418, -368 och vid slätten vid 2240, 928, hade vatten.
 
 Bilder, före till vänster och efter till höger: `docs/shots/terrain/fas1_relief_seed1.png`, `_seed2`, `_seed4242`
 (skuggad relief), `fas1_slope_seed2.png` (lutning: grönt platt, gult, orange, rött, lila brant) och skärmbilder från
 seed 2: `fas1_range_air.png`, `fas1_highland_air.png`, `fas1_range_ground.png`, `fas1_valley_air.png`,
-`fas1_valley_ground.png`, `fas1_plains_air.png`, `fas1_plains_ground.png`.
+`fas1_valley_ground.png`, `fas1_plains_air.png`, `fas1_plains_low.png` och `fas1_plains_ground.png` (slätten vid
+foten av massivet vid 2128, 488), `fas1_forest_air.png`, `fas1_forest_low.png` och `fas1_forest_ground.png` (skog under
+ett berg vid 2816, -240) och `fas1_deciduous_ground.png`. Lutningskartan visar kontrasten tydligast: grönt lågland,
+rött och lila i bergen.
 
 **Advancement:** *Roof of the World* (Wilderness, under *White Downs*): klättra upp över y 250.
 

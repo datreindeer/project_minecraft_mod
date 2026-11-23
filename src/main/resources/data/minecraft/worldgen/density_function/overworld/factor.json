@@ -1758,7 +1758,53 @@
           "right": {
             "type": "minecraft:mul",
             "left": 4.0,
-            "right": "mechanical:flatness"
+            "right": {
+              "type": "minecraft:max",
+              "left": "mechanical:flatness",
+              "right": {
+                "type": "minecraft:mul",
+                "left": 0.6,
+                "right": {
+                  "type": "minecraft:max",
+                  "left": {
+                    "type": "minecraft:spline",
+                    "spline": {
+                      "coordinate": "minecraft:overworld/erosion",
+                      "points": [
+                        {
+                          "derivative": 0,
+                          "location": -0.42,
+                          "value": 0.0
+                        },
+                        {
+                          "derivative": 0,
+                          "location": -0.36,
+                          "value": 1.0
+                        }
+                      ]
+                    }
+                  },
+                  "right": {
+                    "type": "minecraft:spline",
+                    "spline": {
+                      "coordinate": "minecraft:overworld/ridges_folded",
+                      "points": [
+                        {
+                          "derivative": 0,
+                          "location": -0.4,
+                          "value": 1.0
+                        },
+                        {
+                          "derivative": 0,
+                          "location": -0.15,
+                          "value": 0.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },

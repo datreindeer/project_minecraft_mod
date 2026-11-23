@@ -58,10 +58,12 @@ handskriven JSON. Biomernas klimatplatser rörs inte.
   stup. Se fråga 1.
 
 **Byggt (fas 0 och 1, v0.176.0):** `gen_terrain.py` skriver om `offset`, `factor`, `jaggedness`, `final_density` och
-`preliminary_surface_level` och en egen `mechanical:flatness`. Toppar till y 280–295 (taket flyttat till 272–296),
-3–20 gånger mer land över y 150, floder i dalar (median 6–7 → 11–12 block, dalar mellan berg 30–60), torra, heta och
-kalla slätter med lugn höjdkurva och dämpat brus. Mätverktyget är `BiomeMap`s terrängläge (`TerrainMap`), bilderna tas
-med `TerrainShots`. Siffror och bilder: `docs/biomes.md` *Terrängens form*, `docs/shots/terrain/fas1_*.png`.
+`preliminary_surface_level` och en egen `mechanical:flatness`. Ett kontrastlandskap: toppar till y 280–295 (taket
+flyttat till 272–296), 3–8 gånger mer land över y 150 och 8–25 gånger mer över y 200, dalar med plana bottnar och
+branta sidor mellan bergen, platta platåer med en brant kant, och ett lugnt lågland där slätterna är 8–15 procentenheter
+plattare och skogarna 3–6 plattare än i vanilla. Tribe Village och Ancient Oak har fått lägre `frequency` så att de
+blir lika många som förut. Mätverktyget är `BiomeMap`s terrängläge (`TerrainMap`), bilderna tas med `TerrainShots`.
+Siffror och bilder: `docs/biomes.md` *Terrängens form*, `docs/shots/terrain/fas1_*.png`.
 Kvar att avgöra: fråga 1 (spelserverns värld får den nya terrängen bara i nya chunks).
 
 ## 2. Mjuk mark med slabs och trappor
