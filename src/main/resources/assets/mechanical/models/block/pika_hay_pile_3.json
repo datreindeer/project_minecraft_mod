@@ -1,74 +1,334 @@
 {
   "textures": {
     "particle": "mechanical:block/pika_hay_pile",
-    "hay": "mechanical:block/pika_hay_pile"
+    "hay": "mechanical:block/pika_hay_pile",
+    "stalks": "mechanical:block/pika_hay_pile_stalks"
   },
   "elements": [
     {
       "from": [
         2,
         0,
-        2
+        3
       ],
       "to": [
         14,
-        6,
+        2,
         14
       ],
       "faces": {
         "north": {
           "uv": [
-            3,
-            10,
-            13,
+            2,
+            14,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "south": {
           "uv": [
-            3,
-            10,
-            13,
+            2,
+            14,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "east": {
           "uv": [
-            3,
-            10,
-            13,
+            2,
+            14,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "west": {
           "uv": [
-            3,
-            10,
-            13,
+            2,
+            14,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "up": {
           "uv": [
-            3,
-            3,
-            13,
-            13
+            2,
+            2,
+            14,
+            14
           ],
           "texture": "#hay"
         },
         "down": {
           "uv": [
-            3,
-            3,
-            13,
-            13
+            2,
+            2,
+            14,
+            14
           ],
           "texture": "#hay"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        2,
+        3
+      ],
+      "to": [
+        14,
+        4,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            12,
+            13,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "south": {
+          "uv": [
+            3,
+            12,
+            13,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "east": {
+          "uv": [
+            3,
+            12,
+            13,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "west": {
+          "uv": [
+            3,
+            12,
+            13,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "up": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "down": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#hay"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        4,
+        5
+      ],
+      "to": [
+        12,
+        6,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ],
+          "texture": "#hay"
+        },
+        "south": {
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ],
+          "texture": "#hay"
+        },
+        "east": {
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ],
+          "texture": "#hay"
+        },
+        "west": {
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ],
+          "texture": "#hay"
+        },
+        "up": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "down": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#hay"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        5,
+        5
+      ],
+      "to": [
+        6,
+        8,
+        5
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "y",
+        "origin": [
+          4,
+          6,
+          5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        5,
+        10
+      ],
+      "to": [
+        13,
+        8,
+        10
+      ],
+      "rotation": {
+        "angle": -22.5,
+        "axis": "y",
+        "origin": [
+          11,
+          6,
+          10
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        5,
+        4
+      ],
+      "to": [
+        11,
+        7,
+        4
+      ],
+      "rotation": {
+        "angle": 45,
+        "axis": "y",
+        "origin": [
+          9,
+          6,
+          4
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "texture": "#stalks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "texture": "#stalks"
         }
       }
     }

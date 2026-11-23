@@ -4,7 +4,11 @@ Djur för snölandet, isen, taigan och de högsta topparna: **Polar Bear** (ers�
 **Snow Leopard**, **Siberian Tiger**, **Snowy Owl**, **Black Grouse**, **Lammergeier** och **Pika** – och brunbjörnens
 **honor med ungar på våren**, som är extra farliga.
 Kod: `wildlife/cold/` (ColdFauna, ett djur per klass, ColdTest), klient: `client/wildlife/cold/`.
-Data: `scripts/gen_fauna_cold.py`, texturer: `scripts/gen_fauna_cold_textures.py`.
+Data: `scripts/gen_fauna_cold.py`, texturer: `scripts/gen_fauna_cold_textures.py` (föremål, block), som till sist kör
+`scripts/gen_cold_models.py`: varje djurs egen modell (`ColdGeometry.java`, genererad) och dess hud målade ur samma
+tabell, plus höstackens texturer. Rörelserna är kroppstypens: björnens (BrownBearModel/BearCubModel), hunddjurens
+(PredatorModel), leopardens (LeopardModel) och skogsfåglarnas (ForestBirdModel); pikan har en egen PikaModel, byggd
+dubbelt så stor och ritad i halv storlek så att detaljerna syns.
 
 Alla lämnar ett Carcass som styckas med kniv (Butchery) och kan hängas på en Hanging Rack. Mängder nedan gäller
 flintkniv; på Hanging Rack faller allt i första omgången utan slumpslag och köttet blir Haunch/Ribs/Loin.
@@ -73,6 +77,8 @@ tar man ner den torra pälsen med tom hand får man den färdiga pälsen, slås 
   dygnet**: Ibex framför allt, Chamois, Mouflon, Marmot och harar. En spelare är byte bara **på natten**; på dagen håller
   den sig undan folk på dubbelt så långt avstånd som annat vilt. Rädd för eld och facklor (Predator). Landar på fötterna:
   de första 12 blocken av ett fall gör inte ont. Släpar bort ett färskt byte.
+- **Utseende:** mindre och lägre än leoparden (ca 0,7 block i manken), tjock rökgrå päls med öppna mörka rosetter,
+  små runda öron, kraftiga tassar och en lång, tjock svans med mörk spets.
 - **Stats:** 26 liv, 5 skada, fart 0,32.
 - **Ljud:** ozelotens läten, låga.
 
@@ -94,7 +100,8 @@ tar man ner den torra pälsen med tom hand får man den färdiga pälsen, slås 
 - **Var:** bara snowy taiga. Vikt 1, ensam – taigans sällsynta spetsrovdjur.
 - **Beteende:** jagar som Cave Lion (smyger hukande, fryser när bytet tittar, kastar sig fram och släpar bort bytet)
   i skymningen och på natten och sover på dagen: Red Deer, Reindeer, Wild Boar, Roe Deer, älgkalvar, stamfolk – och
-  spelare. Rädd för eld och facklor (Predator). Leopardens kropp, en tredjedel större, orange med svarta ränder.
+  spelare. Rädd för eld och facklor (Predator). Egen modell: tung framdel, stort huvud med vita kinder och vita fläckar över ögonen, ljusare orange än
+  djungeltigern, svarta ränder som löper runt kroppen, ringad svans med svart spets.
 - **Stats:** 50 liv, 8 skada (språnget 8), fart 0,31, knockback-motstånd 0,6.
 
 | Omgång | Vad | Chans | Antal |
@@ -144,7 +151,8 @@ Raw Tiger Pelt, som fettgarvas till Tiger Pelt och blir Tiger Pelt Mantle och Ti
 - **Beteende:** liten och rund, piper skarpt när någon kommer nära, skygg. **Gör hö** på sommaren och hösten: då och då
   bär den en tugga gräs till sin **Pika Hay Pile** som växer ett lager (högst 4), eller börjar en ny bredvid – aldrig
   fler än 3 högar inom 8 block.
-- **Pika Hay Pile:** slås sönder och ger 1 **Pika Hay** per lager. Pika Hay är foder (Feeding Trough tar det: det är
+- **Pika Hay Pile:** en liten hög av slaget gräs och torkade blommor, i avsatser med strån som sticker upp, högre för
+  varje lager. Slås sönder och ger 1 **Pika Hay** per lager. Pika Hay är foder (Feeding Trough tar det: det är
   ko-, får-, get- och hästfoder) och 9 st → Hay Bale.
 - Styckas: Raw Pika (1) → **Cooked Pika** (2 / 0,4); torkas till Small Game Jerky. 3 liv.
 
@@ -165,5 +173,7 @@ den märker och anfaller spelare på **dubbla avståndet** (24 block, 10 om man 
   byte; fjällräven tar sig fram till en isbjörn och äter dess rester; pälsens färg efter kalendern; snöleoparden väljer
   en stenbock som byte; pikans höhögar (säsong, lager, högst tre); lammgamen tar en Bone Pile och släpper två ben som
   blir Bone Marrow; björnhonan vaktar bara på våren.
-- Bilder: `docs/shots/fauna/cold_*.png` (ColdShots, en klientharness som bara körs med `coldshots.flag` i run/).
-  [polar_bear](../shots/fauna/cold_polar_bear.png), [polar_bear_cub](../shots/fauna/cold_polar_bear_cub.png), [arctic_fox_winter](../shots/fauna/cold_arctic_fox_winter.png), [arctic_fox_summer](../shots/fauna/cold_arctic_fox_summer.png), [snow_leopard](../shots/fauna/cold_snow_leopard.png), [siberian_tiger](../shots/fauna/cold_siberian_tiger.png), [snowy_owl](../shots/fauna/cold_snowy_owl.png), [black_grouse](../shots/fauna/cold_black_grouse.png), [lammergeier](../shots/fauna/cold_lammergeier.png), [pika](../shots/fauna/cold_pika.png).
+- Bilder: `docs/shots/fauna/cold_*.png` (ColdShots, en klientharness som bara körs med `coldshots.flag` i run/), med
+  närbilder i ögonhöjd `cold_<namn>_q.png` (tre kvart) och `cold_<namn>_front.png`, och styckade kroppar
+  (`cold_polar_bear_carcass.png`, `cold_siberian_tiger_carcass.png`).
+  [polar_bear](../shots/fauna/cold_polar_bear.png), [polar_bear_cub](../shots/fauna/cold_polar_bear_cub.png), [arctic_fox_winter](../shots/fauna/cold_arctic_fox_winter.png), [arctic_fox_summer](../shots/fauna/cold_arctic_fox_summer.png), [snow_leopard](../shots/fauna/cold_snow_leopard.png), [siberian_tiger](../shots/fauna/cold_siberian_tiger.png), [snowy_owl](../shots/fauna/cold_snowy_owl.png), [black_grouse](../shots/fauna/cold_black_grouse.png), [black_grouse_hen](../shots/fauna/cold_black_grouse_hen.png), [lammergeier](../shots/fauna/cold_lammergeier.png), [pika](../shots/fauna/cold_pika.png).

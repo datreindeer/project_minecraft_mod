@@ -27,29 +27,34 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /**
  * Dev only (like {@link LogShots}): with a file {@code coldshots.flag} in the game directory (its first line: an output
  * folder), the client opens the world "ColdShots", builds a snow platform at y 200 and photographs each cold animal
- * (wildlife.cold) standing still in a three-quarter view (the pika beside its hay pile): cold_&lt;name&gt;.png, then writes
- * cold_result.txt and quits.
+ * (wildlife.cold) standing still in a three-quarter view (the pika beside its hay pile): cold_&lt;name&gt;.png, then close up
+ * at its eye height from the front, the side and three-quarter (cold_&lt;name&gt;_front/_side/_q.png) and as a skinned carcass
+ * (_carcass.png); then writes cold_result.txt and quits.
  * The arctic fox is shot twice, on a winter day and a summer day of the calendar (its coat follows it). Does nothing
  * without the flag file.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class ColdShots {
-    /** name, type, baby, camera distance, day of the year (-1: leave the calendar). */
-    private record Subject(String name, Supplier<? extends EntityType<?>> type, boolean baby, double distance, int dayOfYear) {}
+    /** name, type, baby, camera distance, day of the year (-1: leave the calendar), close-up distance. */
+    private record Subject(String name, Supplier<? extends EntityType<?>> type, boolean baby, double distance, int dayOfYear, double close) {}
+
+    /** The close-ups after the overview: from the front, the left side and three-quarter front, the camera at eye height. */
+    private static final String[] VIEWS = {"front", "side", "q", "carcass"};
 
     private static final List<Subject> SUBJECTS = List.of(
-            new Subject("polar_bear", com.mechanical.wildlife.cold.ColdFauna.POLAR_BEAR, false, 5.5, -1),
-            new Subject("polar_bear_cub", com.mechanical.wildlife.cold.ColdFauna.POLAR_BEAR, true, 3.0, -1),
-            new Subject("arctic_fox_winter", com.mechanical.wildlife.cold.ColdFauna.ARCTIC_FOX, false, 1.9, 300),
-            new Subject("arctic_fox_summer", com.mechanical.wildlife.cold.ColdFauna.ARCTIC_FOX, false, 1.9, 120),
-            new Subject("snow_leopard", com.mechanical.wildlife.cold.ColdFauna.SNOW_LEOPARD, false, 4.0, -1),
-            new Subject("siberian_tiger", com.mechanical.wildlife.cold.ColdFauna.SIBERIAN_TIGER, false, 5.5, -1),
-            new Subject("snowy_owl", com.mechanical.wildlife.cold.ColdFauna.SNOWY_OWL, false, 2.2, -1),
-            new Subject("black_grouse", com.mechanical.wildlife.cold.ColdFauna.BLACK_GROUSE, false, 2.0, -1),
-            new Subject("lammergeier", com.mechanical.wildlife.cold.ColdFauna.LAMMERGEIER, false, 3.2, -1),
-            new Subject("pika", com.mechanical.wildlife.cold.ColdFauna.PIKA, false, 1.6, 150));
+            new Subject("polar_bear", com.mechanical.wildlife.cold.ColdFauna.POLAR_BEAR, false, 5.5, -1, 4.0),
+            new Subject("polar_bear_cub", com.mechanical.wildlife.cold.ColdFauna.POLAR_BEAR, true, 3.0, -1, 1.8),
+            new Subject("arctic_fox_winter", com.mechanical.wildlife.cold.ColdFauna.ARCTIC_FOX, false, 1.9, 300, 1.3),
+            new Subject("arctic_fox_summer", com.mechanical.wildlife.cold.ColdFauna.ARCTIC_FOX, false, 1.9, 120, 1.3),
+            new Subject("snow_leopard", com.mechanical.wildlife.cold.ColdFauna.SNOW_LEOPARD, false, 3.2, -1, 1.8),
+            new Subject("siberian_tiger", com.mechanical.wildlife.cold.ColdFauna.SIBERIAN_TIGER, false, 5.0, -1, 2.8),
+            new Subject("snowy_owl", com.mechanical.wildlife.cold.ColdFauna.SNOWY_OWL, false, 2.2, -1, 1.2),
+            new Subject("black_grouse", com.mechanical.wildlife.cold.ColdFauna.BLACK_GROUSE, false, 2.0, -1, 1.2),
+            new Subject("black_grouse_hen", com.mechanical.wildlife.cold.ColdFauna.BLACK_GROUSE, false, 2.0, -1, 1.1),
+            new Subject("lammergeier", com.mechanical.wildlife.cold.ColdFauna.LAMMERGEIER, false, 3.2, -1, 1.8),
+            new Subject("pika", com.mechanical.wildlife.cold.ColdFauna.PIKA, false, 1.6, 150, 0.9));
 
-    private static int stage = -1, ticks, index;
+    private static int stage = -1, ticks, index, view;
     private static File out;
     private static final List<String> result = new ArrayList<>();
     private static Vec3 base;
@@ -113,9 +118,23 @@ public final class ColdShots {
                     Subject s = SUBJECTS.get(index);
                     shot(mc, s.name());
                     result.add(s.name() + ": " + current + (current instanceof com.mechanical.wildlife.cold.ArcticFox f ? " white=" + f.isWhite() : ""));
+                    view = 0;
+                    server.execute(() -> closeUp(s, VIEWS[0]));
+                    stage = 6;
+                    ticks = 0;
+                }
+                case 6 -> { // the close-ups, one view at a time
+                    if (ticks < 20) return;
+                    Subject s = SUBJECTS.get(index);
+                    shot(mc, s.name() + "_" + VIEWS[view]);
+                    ticks = 0;
+                    if (++view < VIEWS.length) {
+                        String v = VIEWS[view];
+                        server.execute(() -> closeUp(s, v));
+                        return;
+                    }
                     index++;
                     stage = 2;
-                    ticks = 0;
                 }
                 case 5 -> { // build once the chunks over there are loaded
                     if (ticks < 80) return;
@@ -177,6 +196,11 @@ public final class ColdShots {
                 server.clockManager().setTotalTicks(c, Calendar.clockOn(level.getOverworldClockTime(), s.dayOfYear()) / Calendar.CLOCK_DAY * Calendar.CLOCK_DAY + 6000));
         Entity e = s.type().get().create(level, EntitySpawnReason.COMMAND);
         if (e == null) return;
+        if (s.name().endsWith("_hen")) { // the hen flag is only read from saved data
+            net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+            tag.putBoolean("hen", true);
+            e.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), tag));
+        }
         float yaw = 225; // head to the north-east: from the camera (north-west of it) a three-quarter view of its left side
         e.snapTo(base.x, base.y, base.z, yaw, 0);
         if (e instanceof Mob m) {
@@ -196,6 +220,36 @@ public final class ColdShots {
         float camPitch = (float) Math.toDegrees(-Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
         ServerPlayer p = player();
         p.teleportTo(level, eye.x, eye.y - p.getEyeHeight(), eye.z, java.util.Set.of(), camYaw, camPitch, true);
+    }
+
+    /** The camera at the subject's eye height, {@code close} blocks away: in front, at its left side, or three-quarter front-left. */
+    private static void closeUp(Subject s, String v) {
+        if (current == null) return;
+        if (v.equals("carcass")) { // skinned, as after the first butchering pass (the carcass texture)
+            if (current instanceof net.minecraft.world.entity.LivingEntity living) {
+                CarcassEntity body = CarcassEntity.of(current.level(), living);
+                body.setSkinned();
+                current.discard();
+                current.level().addFreshEntity(body);
+                current = body;
+            }
+            v = "q";
+        }
+        double yaw = Math.toRadians(225);
+        Vec3 fwd = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw)), left = new Vec3(fwd.z, 0, -fwd.x);
+        Vec3 dir = switch (v) {
+            case "front" -> fwd;
+            case "side" -> left;
+            default -> fwd.add(left).normalize();
+        };
+        double eyeY = base.y + Math.max(current.getEyeHeight(), 0.15);
+        Vec3 look = new Vec3(base.x, eyeY - current.getBbHeight() * 0.15, base.z);
+        Vec3 eye = new Vec3(base.x, eyeY, base.z).add(dir.scale(s.close()));
+        Vec3 d = look.subtract(eye);
+        float camYaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
+        float camPitch = (float) Math.toDegrees(-Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+        ServerPlayer p = player();
+        p.teleportTo(p.level(), eye.x, eye.y - p.getEyeHeight(), eye.z, java.util.Set.of(), camYaw, camPitch, true);
     }
 
     private static void cmd(String c) {
