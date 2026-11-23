@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "honey=0": {
+      "model": "mechanical:block/bumblebee_nest_0"
+    },
+    "honey=1": {
+      "model": "mechanical:block/bumblebee_nest_1"
+    },
+    "honey=2": {
+      "model": "mechanical:block/bumblebee_nest_2"
+    },
+    "honey=3": {
+      "model": "mechanical:block/bumblebee_nest_3"
+    }
+  }
+}

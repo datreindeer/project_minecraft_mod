@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_black_grouse"
+            "items": "mechanical:raw_bittern"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_bustard"
+            "items": "mechanical:raw_black_grouse"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_capercaillie"
+            "items": "mechanical:raw_bustard"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hornbill"
+            "items": "mechanical:raw_capercaillie"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_jungle_fowl"
+            "items": "mechanical:raw_hornbill"
           }
         ]
       }
@@ -56,12 +56,42 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_peafowl"
+            "items": "mechanical:raw_jungle_fowl"
           }
         ]
       }
     },
     "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_lapwing"
+          }
+        ]
+      }
+    },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_peafowl"
+          }
+        ]
+      }
+    },
+    "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_skylark"
+          }
+        ]
+      }
+    },
+    "has_9": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -80,7 +110,10 @@
       "has_3",
       "has_4",
       "has_5",
-      "has_6"
+      "has_6",
+      "has_7",
+      "has_8",
+      "has_9"
     ]
   ],
   "display": {

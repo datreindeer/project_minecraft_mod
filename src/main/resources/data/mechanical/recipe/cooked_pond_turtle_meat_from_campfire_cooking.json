@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 400,
+  "experience": 0.1,
+  "ingredient": "mechanical:pond_turtle_meat",
+  "result": {
+    "id": "mechanical:cooked_pond_turtle_meat",
+    "count": 1
+  }
+}

@@ -171,6 +171,11 @@ FAMILIES = {
     "dried_seal_meat": ["raw_seal_meat"],
     "stockfish": ["minecraft:cod", "raw_pike", "raw_sturgeon"],
 }
+# fauna: temperate (wildlife/temperate)
+FAMILIES["beef_jerky"] += ["raw_wisent"]
+FAMILIES["small_game_jerky"] += ["raw_water_vole", "pond_turtle_meat"]
+FAMILIES["dried_fowl"] += ["raw_skylark", "raw_lapwing", "raw_bittern"]
+FAMILIES["stockfish"] += ["raw_eel"]
 BIG_CUTS = ["raw_haunch", "raw_ribs", "raw_loin"]
 FATTY = ["cave_bear_meat", "raw_beaver", "beaver_tail", "raw_walrus_meat"]
 mid = lambda i: i if ":" in i else M + i

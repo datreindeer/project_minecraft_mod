@@ -1072,6 +1072,45 @@ TABS["food"][1].extend([
      has(*[f"cooked_{m}" for m in ("camel_meat", "bighorn_mutton", "puma_meat", "fennec", "scorpion")])),
 ])
 # end fauna: desert
+# fauna: temperate
+TABS["wilderness"][1].extend([
+    ("fox_den", "root", "fox_den", T, "Follow the Tracks",
+     "At night red foxes raid farms for eggs and hens. Follow the paw prints to the Fox Den: your eggs lie there", has("fox_den")),
+    ("fox_fur", "drying_rack", "fox_fur", T, "Henhouse Thief",
+     "Hunt a red fox and cure its pelt on a Drying Rack", has("fox_fur")),
+    ("fox_fur_hat", "fox_fur", "fox_fur_hat", T, "Red Hat", "Sew 5 Fox Fur and Sinew into a warm Fox Fur Hat", has("fox_fur_hat")),
+    ("wisent", "butcher", "raw_wisent_hide", C, "Forest Giant",
+     "Bring down a Wisent, the giant of the broadleaf woods: peaceful, but any grown one fights back, and it charges if you crowd it",
+     has("raw_wisent_hide")),
+    ("wisent_rug", "wisent", "wisent_rug", T, "Shaggy Rug",
+     "Fat-tan a Raw Wisent Hide with a knife and Tallow or Lard, with a Bone, into a Wisent Rug", has("wisent_rug")),
+    ("pond_turtle_shell", "butcher", "pond_turtle_shell", T, "Basking",
+     "Catch a Pond Turtle sunning itself on a log in the fen before it slips into the water. Its shell makes bowls",
+     has("pond_turtle_shell")),
+    ("beetle_shell", "root", "beetle_shell", T, "Antlers of a Beetle",
+     "Find a Giant Stag Beetle in the dark forest. Its glossy shell grinds into brown dye and black pigment", has("beetle_shell")),
+    ("grub", "root", "grub", T, "Follow the Drumming",
+     "Follow a woodpecker's drumming to a rotten Grub Log and dig out the Grubs: bait for snares", has("grub")),
+    ("woodpecker_feather", "grub", "woodpecker_feather", T, "Red Cap", "Get a Woodpecker's red feather", has("woodpecker_feather")),
+    ("wild_honey", "root", "wild_honey", T, "Bumblebee Honey",
+     "Take Wild Honey from a Bumblebee Nest in the meadow in spring or summer. Sneak, or they may sting", has("wild_honey")),
+    ("leech", "root", "leech", T, "Bloodsucker",
+     "Wade in a fen until a leech latches on. When it drops off sated keep it: laid on the skin it draws out poison", has("leech")),
+    ("whole_eel", "fish_trap", "whole_eel", T, "Slippery",
+     "Leave a Fish Trap in a river or fen overnight: eels come out in the dark", has("whole_eel")),
+    ("crayfish", "fish_trap", "crayfish", T, "Crayfish Party",
+     "Set a Fish Trap in a river or fen in Reaping, the last month of summer, and it fills with crayfish", has("crayfish")),
+])
+TABS["food"][1].extend([
+    ("temperate_fare", "cooked", "cooked_wisent", T, "Woodland Fare",
+     "Cook Wisent, Pond Turtle, Water Vole, Eel or Crayfish on a Campfire",
+     has("cooked_wisent", "cooked_pond_turtle_meat", "cooked_water_vole", "cooked_eel", "cooked_crayfish")),
+    ("meadow_birds", "cooked_bird", "cooked_lapwing", T, "Larks' Tongues",
+     "Cook a Skylark, a Lapwing or a Bittern on a Campfire, or roast one whole", has("cooked_skylark", "cooked_lapwing", "cooked_bittern")),
+    ("meadow_nest", "nest_egg", "lapwing_egg", T, "Eggs in the Grass",
+     "Take an egg from a Skylark or Lapwing nest hidden in the grass of the plains", has("skylark_egg", "lapwing_egg")),
+])
+# end fauna: temperate
 # tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
 TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
@@ -1781,9 +1820,9 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
     if "assets/minecraft/lang/en_us.json" in JAR_NAMES else {}
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
-    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming", "pine_marten", "arctic_fox", "pika", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "python", "monitor_lizard", "proboscis_monkey", "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
+    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming", "pine_marten", "arctic_fox", "pika", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "python", "monitor_lizard", "proboscis_monkey", "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog", "water_vole", "pond_turtle"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
-    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig", "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "orangutan", "gazelle", "ostrich", "aardvark", "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin", "wild_camel", "bighorn_sheep"],
+    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig", "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "orangutan", "gazelle", "ostrich", "aardvark", "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin", "wild_camel", "bighorn_sheep", "wisent"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
     "predators": ["elkwight", "grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile", "cheetah", "spotted_hyena", "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "desert_scorpion", "fennec_fox", "sand_viper", "rattlesnake", "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog", "puma", "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf", "polar_bear", "snow_leopard", "siberian_tiger"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
@@ -1800,7 +1839,7 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"elkwight", "tiger", "saltwater_crocodile", "giant_deer", "cave_lion", "brown_bear", "polar_bear", "snow_leopard", "siberian_tiger", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
+CHALLENGE = {"elkwight", "tiger", "saltwater_crocodile", "giant_deer", "cave_lion", "brown_bear", "polar_bear", "snow_leopard", "siberian_tiger", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm", "wisent"}
 
 
 def _args(src, start):

@@ -1541,6 +1541,9 @@ En flätad korg av pinnar med en tratt i mynningen, som läggs i vatten (stilla 
   ligger bredvid; högst 60 %. Ungefär en fisk per 5,7 min i en sjö, 2,8 min i en flod.
 - Art efter biom (bestäms när man tömmer): flod 70 % Whole Salmon / 30 % Whole Cod; varmt och ljummet hav 50 % Whole
   Tropical Fish, 10 % Whole Pufferfish, 40 % Whole Cod; annars 70 % Whole Cod / 30 % Whole Salmon.
+- **Ål och kräftor** (flod och kärr, biomtaggen `has_eels`): en fångst **på natten** är till 60 % en **ål** (räknas i fällan
+  och kommer ut som Whole Eel), och i **Reaping** (sommarens sista månad) är 60 % av fångsterna där **Crayfish**. Se
+  [temperate](../fauna/temperate.md).
 - Testat: två fällor i en flod fylldes till 3 med random_tick_speed 30; en fälla i en vattenpöl på 2 block fick inget.
 
 ### Mättnad (`FoodValues`)
@@ -1598,14 +1601,17 @@ eller **Spoiled Food** (allt annat). Spoiled Food duger bara till Compost Heap. 
 | Smoked Fish | Raw Cod/Salmon, 4 min rök | 3 | 0,8 |
 | Smoked Haunch / Ribs / Loin | en hel Raw Haunch / Ribs / Loin, 4 min rök | 9 / 6 / 6 | 0,8 |
 | Venison Jerky | Venison Scraps, Saiga Meat | 3 | 0,8 |
-| Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox | 3 | 0,8 |
+| Beef Jerky | Raw Beef, Beef Scraps, Raw Bison, Bison Tongue, Buffalo Meat, Raw Musk Ox, Raw Wisent | 3 | 0,8 |
 | Dried Pork | Raw Porkchop, Porkchop Scraps, Tapir Meat | 3 | 0,8 |
 | Dried Mutton | Raw Mutton, Mutton Scraps, Ibex Meat, Chamois Meat | 3 | 0,8 |
 | Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat, Raw Polar Bear, Raw Snow Leopard | 2 | 0,8 |
 | Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Arctic Fox/Pika/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat | 2 | 0,8 |
 | Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Black Grouse, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane) | 2 | 0,8 |
+| Game Jerky | Game Meat Scraps, Raw Mammoth, Raw Rhino, Onager/Hyena/Leopard Meat, Raw Lynx, Raw Wolverine, Raw Wildcat | 2 | 0,8 |
+| Small Game Jerky | Raw Rabbit, Rabbit Scraps, Raw Ermine/Lemming/Marten/Mole/Vole/Otter/Snake, Marmot Meat, Lizard Tail, Tortoise Meat, Raw Water Vole, Pond Turtle Meat | 2 | 0,8 |
+| Dried Fowl | Raw Chicken, Chicken Scraps, alla fåglar (Goose, Pheasant, Ptarmigan, Pigeon, Capercaillie, Bustard, Hornbill, Jungle Fowl, Peafowl, Mallard, Swan, Heron, Crane, Skylark, Lapwing, Bittern) | 2 | 0,8 |
 | Dried Seal Meat | Raw Seal Meat | 3 | 0,8 |
-| Stockfish | Raw Cod, Raw Pike, Raw Sturgeon | 2 | 0,8 |
+| Stockfish | Raw Cod, Raw Pike, Raw Sturgeon, Raw Eel | 2 | 0,8 |
 | Dried Fish | Raw Salmon (och fisk utan egen sort) | 2 | 0,8 |
 | Jerky | Raw Meat Strips (och kött utan egen sort) | 2 | 0,8 |
 | Dried Berries | 4 bär → 4, torkade i solen | 1 | 0,8 |
@@ -2559,6 +2565,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Varma biomer](../fauna/warm.md): Onager (packdjur), Tortoise, Desert Lizard, Water Buffalo, Tapir, Leopard, Hornbill, Jungle Fowl, Peafowl
 - [Djungel och mangrove](../fauna/jungle.md): Tiger (Tiger Rug, Tiger Pelt Mantle), Python (håller fast tills någon slår loss den), Orangutan (kastar frukt, stjäl), Monitor Lizard (giftbett, äter kadaver), Poison Dart Frog (Frog Poison till Blowpipe och Poison Darts), Saltwater Crocodile (dödsrullen; Crocodile Hide-rustning vid Leatherworking Bench), Mudskipper (bete), Fiddler Crab (krabbkött), Proboscis Monkey (larmtut som skrämmer viltet)
 - [Öken och badlands](../fauna/desert.md): Desert Scorpion (giftpilar), Fennec Fox (tämjs, varnar för fiender på natten), Wild Camel (packdjur som klarar sig utan vatten), Sand Viper (nergrävd i sanden), Puma (hoppar från klipphyllor; Puma Rug), Bighorn Sheep (stångar; Bighorn Horn), Rattlesnake (rasslar innan den biter), Condor (cirklar över kadaver)
+- [Tempererade marker](../fauna/temperate.md): Wisent, European Pond Turtle, Water Vole, Giant Stag Beetle, Woodpecker, Tawny Owl, Skylark, Lapwing, Bittern, White-tailed Sea Eagle, Eel; rödrävens nattliga räder (Fox Den, Fox Tracks, Fox Fur Hat), hermelinens dans, vildsvinsflockar med tusker, gråsälskolonier, laxvandringen; Grub Log, Bumblebee Nest (Wild Honey), blodiglar (Leech), ål och kräftor i Fish Trap
 - [Flod och träsk](../fauna/river.md): Beaver (fäller träd, bygger dammar), Otter, Mosquito Swarm
 - [Äng och hed](../fauna/meadow.md): Wild Cat, Mole, Field Vole, Adder, Grass Snake
 - [Berg och stäpp](../fauna/mountain.md): Ibex, Chamois, Marmot, Saiga, Cave Bear, Cave Hyena
@@ -2578,7 +2585,7 @@ Rack). Kadaver flyter i vatten och driver med strömmen. Hud och kött som för 
 | Djur | Omgång 1 | Omgång 2 |
 |---|---|---|
 | Bat (fladdermus) | Bat Wing 85 % (1–2) | 0–1 Game Meat Scraps |
-| Fox | Raw Hide 45 % | 1 Game Meat Scraps, Sinew 30 % |
+| Fox (rödräv, se [temperate](../fauna/temperate.md)) | Raw Fox Pelt 90 % | 1 Game Meat Scraps, Sinew 30 % |
 | Ocelot | Raw Hide 40 % | 1–2 Game Meat Scraps, Sinew 30 % |
 | Armadillo | 1–2 Armadillo Scute | 1 Game Meat Scraps |
 | Frog | – | 1 Game Meat Scraps |

@@ -21,6 +21,7 @@
     "mechanical:emmer_grain",
     "mechanical:peas",
     "mechanical:mudskipper",
-    "mechanical:castoreum"
+    "mechanical:castoreum",
+    "mechanical:grub"
   ]
 }

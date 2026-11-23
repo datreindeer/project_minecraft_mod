@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:whole_eel",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_eel",
+    "count": 2
+  }
+}

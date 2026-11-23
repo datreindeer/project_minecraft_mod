@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "mechanical:bumblebee_nest",
+    "properties": {
+      "honey": "1"
+    }
+  }
+}

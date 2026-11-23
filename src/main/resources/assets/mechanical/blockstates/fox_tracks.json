@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/fox_tracks",
+        "y": 0
+      },
+      {
+        "model": "mechanical:block/fox_tracks",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/fox_tracks",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/fox_tracks",
+        "y": 270
+      }
+    ]
+  }
+}
