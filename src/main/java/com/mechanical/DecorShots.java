@@ -22,11 +22,12 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  * "DecorShots" (a copy of a dev server world) and photographs spots in it, then quits. Flag file: first line the output
  * folder, then one shot per line: {@code name x y z distance angle [height]}. The camera stands distance blocks from
  * x,y,z toward angle (degrees, 0 = south, 90 = west), at eye height over the ground there (or height blocks above y when
- * given), looking at the spot. Does nothing without the flag file.
+ * given), looking at the spot. A line {@code @ x y z command} goes to x,y,z and runs the command there (to place a feature
+ * on a chosen spot before shooting it). Does nothing without the flag file.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class DecorShots {
-    private record Shot(String name, double x, double y, double z, double distance, double angle, Double height) {}
+    private record Shot(String name, double x, double y, double z, double distance, double angle, Double height, String cmd) {}
 
     private static final List<Shot> shots = new ArrayList<>();
     private static final List<String> result = new ArrayList<>();
@@ -48,9 +49,14 @@ public final class DecorShots {
                 out.mkdirs();
                 for (String l : lines.subList(1, lines.size())) {
                     String[] p = l.trim().split("\\s+");
+                    if (p.length >= 5 && p[0].equals("@")) { // "@ x y z command": go there, then run the command (e.g. place feature)
+                        shots.add(new Shot("@", Double.parseDouble(p[1]), Double.parseDouble(p[2]), Double.parseDouble(p[3]), 0, 0, null,
+                                String.join(" ", java.util.Arrays.copyOfRange(p, 4, p.length))));
+                        continue;
+                    }
                     if (p.length < 6) continue;
                     shots.add(new Shot(p[0], Double.parseDouble(p[1]), Double.parseDouble(p[2]), Double.parseDouble(p[3]), Double.parseDouble(p[4]),
-                            Double.parseDouble(p[5]), p.length > 6 ? Double.parseDouble(p[6]) : null));
+                            Double.parseDouble(p[5]), p.length > 6 ? Double.parseDouble(p[6]) : null, null));
                 }
                 stage = 0;
             }
@@ -100,6 +106,17 @@ public final class DecorShots {
                 case 3 -> { // stand at the camera spot
                     if (ticks < 60) return;
                     Shot s = shots.get(index);
+                    if (s.cmd() != null) { // a command line: run it where we are, then on to the next line
+                        server.execute(() -> {
+                            ServerPlayer pl = player();
+                            pl.level().getServer().getCommands().performPrefixedCommand(pl.createCommandSourceStack(), s.cmd());
+                        });
+                        result.add("@ " + s.cmd());
+                        index++;
+                        stage = 2;
+                        ticks = 0;
+                        return;
+                    }
                     server.execute(() -> aim(s));
                     stage = 4;
                     ticks = 0;

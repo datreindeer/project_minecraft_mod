@@ -132,6 +132,36 @@ def log_bridge():
         {"type": "minecraft:any_of", "terms": [water(-2), water(-3)]}]}}}}
 
 
+def under_arch():
+    """The player under a natural rock arch: rock 3-5 blocks over the head, rock on both sides 2-4 blocks off, and open sky
+    3 blocks ahead and behind (so not in a cave or under an overhang), the way through running east-west or north-south."""
+    def rock_at(x, y, z):
+        return {"type": "minecraft:any_of", "terms": [
+            {"type": "minecraft:location_check", "offsetX": x, "offsetY": y, "offsetZ": z, "predicate": {"block": {"blocks": b}}}
+            for b in ("#minecraft:base_stone_overworld", ["minecraft:sandstone", "minecraft:red_sandstone"], "#minecraft:terracotta")]}
+
+    def sky(x, z):
+        return {"type": "minecraft:location_check", "offsetX": x, "offsetZ": z, "predicate": {"can_see_sky": True}}
+
+    def way(ax):  # ax: the axis the way through runs along; the legs stand across it
+        at = (lambda a, y, b: rock_at(a, y, b)) if ax == "x" else (lambda a, y, b: rock_at(b, y, a))
+        out = (lambda d: sky(d, 0)) if ax == "x" else (lambda d: sky(0, d))
+        return {"type": "minecraft:all_of", "terms": [
+            {"type": "minecraft:any_of", "terms": [at(0, y, 0) for y in (3, 4, 5)]},
+            {"type": "minecraft:any_of", "terms": [at(0, 1, d) for d in (2, 3, 4)]},
+            {"type": "minecraft:any_of", "terms": [at(0, 1, -d) for d in (2, 3, 4)]},
+            out(3), out(-3)]}
+    return {"under_arch": {"trigger": "minecraft:location", "conditions": {"player": {"type": "minecraft:any_of", "terms": [way("x"), way("z")]}}}}
+
+
+def by_bones():
+    """The player standing on or among old bones in the open: a Bone Block, Rib Cage or Mammoth Tusk at or beside their feet."""
+    at = lambda x, y, z: {"type": "minecraft:location_check", "offsetX": x, "offsetY": y, "offsetZ": z,
+                          "predicate": {"block": {"blocks": ["minecraft:bone_block", "mechanical:rib_cage", "mechanical:mammoth_tusk"]}}}
+    return {"by_bones": {"trigger": "minecraft:location", "conditions": {"player": {"type": "minecraft:any_of", "terms": [
+        at(0, -1, 0), at(0, 0, 0), at(1, 0, 0), at(-1, 0, 0), at(0, 0, 1), at(0, 0, -1)]}}}}
+
+
 def below_y(y):
     """The player at or below height y (checked about once a second)."""
     return {"below": {"trigger": "minecraft:location", "conditions": {"player": {
@@ -1591,6 +1621,10 @@ TABS["wilderness"][1].extend([
     # terrain (docs/terrain-plan.md phase 1, gen_terrain.py): the high ranges
     ("roof_of_the_world", "chalk_downs", "minecraft:snow_block", G, "Roof of the World",
      "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290", above_y(250)),
+    # small things in the landscape (docs/terrain-plan.md phase 4, gen_land_decor.py)
+    ("old_bones", "chalk_downs", "minecraft:bone_block", T, "Old Bones",
+     "Find the bones of a long-dead animal and stand among them: on the plains and the steppe, half buried in the desert sand, or mammoth tusks in the Loess",
+     by_bones()),
     ("burnt_hall", "into_the_ashes", "rune_blackstone", C, "The Burnt Hall",
      "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
      visit("elkwight_ruin")),

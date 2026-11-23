@@ -1,0 +1,125 @@
+{
+  "parent": "mechanical:wilderness/chalk_downs",
+  "criteria": {
+    "by_bones": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:any_of",
+          "terms": [
+            {
+              "type": "minecraft:location_check",
+              "offsetX": 0,
+              "offsetY": -1,
+              "offsetZ": 0,
+              "predicate": {
+                "block": {
+                  "blocks": [
+                    "minecraft:bone_block",
+                    "mechanical:rib_cage",
+                    "mechanical:mammoth_tusk"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "minecraft:location_check",
+              "offsetX": 0,
+              "offsetY": 0,
+              "offsetZ": 0,
+              "predicate": {
+                "block": {
+                  "blocks": [
+                    "minecraft:bone_block",
+                    "mechanical:rib_cage",
+                    "mechanical:mammoth_tusk"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "minecraft:location_check",
+              "offsetX": 1,
+              "offsetY": 0,
+              "offsetZ": 0,
+              "predicate": {
+                "block": {
+                  "blocks": [
+                    "minecraft:bone_block",
+                    "mechanical:rib_cage",
+                    "mechanical:mammoth_tusk"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "minecraft:location_check",
+              "offsetX": -1,
+              "offsetY": 0,
+              "offsetZ": 0,
+              "predicate": {
+                "block": {
+                  "blocks": [
+                    "minecraft:bone_block",
+                    "mechanical:rib_cage",
+                    "mechanical:mammoth_tusk"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "minecraft:location_check",
+              "offsetX": 0,
+              "offsetY": 0,
+              "offsetZ": 1,
+              "predicate": {
+                "block": {
+                  "blocks": [
+                    "minecraft:bone_block",
+                    "mechanical:rib_cage",
+                    "mechanical:mammoth_tusk"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "minecraft:location_check",
+              "offsetX": 0,
+              "offsetY": 0,
+              "offsetZ": -1,
+              "predicate": {
+                "block": {
+                  "blocks": [
+                    "minecraft:bone_block",
+                    "mechanical:rib_cage",
+                    "mechanical:mammoth_tusk"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "by_bones"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:bone_block"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.old_bones.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.old_bones.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

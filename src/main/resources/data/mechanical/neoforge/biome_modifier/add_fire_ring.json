@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:hazel_meadow",
+    "mechanical:pine_heath",
+    "minecraft:meadow",
+    "minecraft:plains",
+    "minecraft:savanna",
+    "minecraft:snowy_plains",
+    "minecraft:sunflower_plains",
+    "minecraft:taiga"
+  ],
+  "features": "mechanical:fire_ring",
+  "step": "vegetal_decoration"
+}

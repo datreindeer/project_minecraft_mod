@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:gypsum_flats",
+    "minecraft:desert"
+  ],
+  "features": "mechanical:sand_skeleton",
+  "step": "vegetal_decoration"
+}

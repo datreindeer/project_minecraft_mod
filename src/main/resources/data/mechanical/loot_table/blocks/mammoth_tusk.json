@@ -1,0 +1,52 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:tusk",
+          "condition": {
+            "type": "minecraft:match_block",
+            "predicate": {
+              "blocks": "mechanical:mammoth_tusk",
+              "state": {
+                "low": "true"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bone",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ],
+          "condition": {
+            "type": "minecraft:match_block",
+            "predicate": {
+              "blocks": "mechanical:mammoth_tusk",
+              "state": {
+                "low": "false"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/mammoth_tusk"
+}

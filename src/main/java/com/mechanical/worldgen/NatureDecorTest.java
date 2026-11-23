@@ -33,17 +33,20 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * Terrain-plan phase 3 (ForestDecor, WaterDecor) on hand-built terrain: a log bridge rests across a creek next to a tree,
  * a beaver dam crosses a closed creek and raises the water behind it only inside the creek, and a hillside spring's water
- * stays in its runnel.
+ * stays in its runnel. Phase 4 (MountainDecor): a waterfall's water stays in its fall and plunge pool, and a rock arch
+ * stands over open ground with rock on both sides, as the Under the Arch advancement expects.
  */
 @EventBusSubscriber(modid = MODID)
 public final class NatureDecorTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final List<String> TESTS = List.of("log_bridge", "worldgen_beaver_dam", "hillside_spring");
+    private static final List<String> TESTS = List.of("log_bridge", "worldgen_beaver_dam", "hillside_spring", "valley_waterfall", "rock_arch");
 
     static {
         TEST_FUNCTIONS.register("log_bridge", () -> NatureDecorTest::logBridge);
         TEST_FUNCTIONS.register("worldgen_beaver_dam", () -> NatureDecorTest::beaverDam);
         TEST_FUNCTIONS.register("hillside_spring", () -> NatureDecorTest::spring);
+        TEST_FUNCTIONS.register("valley_waterfall", () -> NatureDecorTest::waterfall);
+        TEST_FUNCTIONS.register("rock_arch", () -> NatureDecorTest::arch);
     }
 
     static void init(IEventBus modEventBus) {
@@ -144,6 +147,48 @@ public final class NatureDecorTest {
                             h.fail("spring water got out of its runnel at " + x + " " + y + " " + z);
             h.succeed();
         });
+    }
+
+    /** Grass at y 2 west of x 8, a stone wall up to y 12 from x 8 east: the waterfall comes out of the wall's face. */
+    private static void waterfall(GameTestHelper h) {
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++)
+                for (int y = 0; y <= (x >= 8 ? 12 : 2); y++) h.setBlock(new BlockPos(x, y, z), x >= 8 || y < 2 ? Blocks.STONE : Blocks.GRASS_BLOCK);
+        prime(h);
+        h.assertTrue(MountainDecor.WATERFALL.place(h.getLevel(), null, RandomSource.create(4), h.absolutePos(new BlockPos(4, 3, 8))), "a waterfall is placed");
+        h.runAfterDelay(100, () -> {
+            boolean fall = false, pool = false;
+            for (int x = 0; x <= 16; x++)
+                for (int z = 0; z <= 16; z++)
+                    for (int y = 1; y <= 13; y++) {
+                        if (h.getBlockState(new BlockPos(x, y, z)).getFluidState().isEmpty()) continue;
+                        if (y == 2 && (x == 6 || x == 7)) pool = true;
+                        else if (y >= 3 && x == 7) fall = fall || y == 4;
+                        else if (!(y >= 6 && x == 8)) h.fail("waterfall water outside its fall and pool at " + x + " " + y + " " + z);
+                    }
+            h.assertTrue(fall && pool, "water falls down the face (x 7) into the plunge pool (y 2)");
+            h.succeed();
+        });
+    }
+
+    /** Stone under a grass top at y 3: an arch stands over y 4 with rock 3-5 above the feet and on both sides. */
+    private static void arch(GameTestHelper h) {
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++)
+                for (int y = 0; y <= 3; y++) h.setBlock(new BlockPos(x, y, z), y == 3 ? Blocks.GRASS_BLOCK : Blocks.STONE);
+        prime(h);
+        h.assertTrue(MountainDecor.ROCK_ARCH.place(h.getLevel(), null, RandomSource.create(2), h.absolutePos(new BlockPos(8, 4, 8))), "an arch is built");
+        h.assertTrue(h.getBlockState(new BlockPos(8, 4, 8)).isAir() && h.getBlockState(new BlockPos(8, 5, 8)).isAir(), "the way through is open");
+        boolean ok = false;
+        for (Direction across : new Direction[] {Direction.EAST, Direction.SOUTH}) {
+            BlockPos c = new BlockPos(8, 4, 8);
+            boolean over = java.util.stream.IntStream.of(3, 4, 5).anyMatch(y -> h.getBlockState(c.above(y)).is(Blocks.STONE));
+            boolean a = java.util.stream.IntStream.of(2, 3, 4).anyMatch(d -> h.getBlockState(c.relative(across, d).above()).is(Blocks.STONE));
+            boolean b = java.util.stream.IntStream.of(2, 3, 4).anyMatch(d -> h.getBlockState(c.relative(across, -d).above()).is(Blocks.STONE));
+            ok |= over && a && b;
+        }
+        h.assertTrue(ok, "rock over the way through and a foot on each side");
+        h.succeed();
     }
 
     private NatureDecorTest() {}

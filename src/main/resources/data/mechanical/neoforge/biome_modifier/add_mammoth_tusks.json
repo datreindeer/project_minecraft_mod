@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:mammoth_steppe"
+  ],
+  "features": "mechanical:mammoth_tusks",
+  "step": "vegetal_decoration"
+}
