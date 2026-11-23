@@ -171,15 +171,15 @@ final class OpenDecor extends StoneAgeFeature {
         // the mound's skirt: the ground under and around it worn to podzol, its plants gone (the big dome overhangs a block round)
         int r = big ? 2 : 1;
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
-        for (int dx = -r - 1; dx <= r + 1; dx++)
-            for (int dz = -r - 1; dz <= r + 1; dz++) {
+        for (int dx = -r - 2; dx <= r + 2; dx++)
+            for (int dz = -r - 2; dz <= r + 2; dz++) {
                 BlockPos t = top(level, c.getX() + dx, c.getZ() + dz);
                 if (Math.abs(t.getY() - c.getY()) > 1 || !dryNatural(level, t.below())) continue;
                 double d = Math.sqrt(dx * dx + dz * dz) + 0.6 * noise.get(dx * 0.6, dz * 0.6);
                 if (d <= r + 0.5) {
                     for (int y = 0; y < 2; y++) if (!level.getBlockState(t.above(y)).isAir() && level.getBlockState(t.above(y)).canBeReplaced()) set(level, t.above(y), AIR);
                     if (level.getBlockState(t.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) set(level, t.below(), Blocks.PODZOL.defaultBlockState());
-                } else if (d <= r + 1.8 && random.nextInt(3) > 0) {
+                } else if (d <= r + 2.2 && random.nextInt(5) > 0) { // the ring of loose needles the ants drag in
                     clear(level, t);
                     if (random.nextInt(4) == 0) onGround(level, t, Mechanical.TWIGS.get().defaultBlockState());
                     else litter(level, random, t);

@@ -177,11 +177,11 @@ avstängda tills de håller måttet i närbild: Rock Arch, Dead Tree, Dry Creek,
 Outcrop, Frost Split, Farm Walls och enar på slätten. Jordkällare är inte byggda. Detaljer:
 `docs/biomes.md`, "Små saker i berg, på öppen mark, i torrt och kallt land". Bilder: `docs/shots/terrain/fas4_*.png`.
 **Byggt (fas 4 omgjord, v0.187.0):** de avstängda sakerna gjordes om med rundade, oregelbundna former (`worldgen/Shaper`:
-en brusstyrd täthet läggs i halvblock med stenens egna slabs och trappor). Nu på: **Rock Arch** (advancement *Under the
-Arch* tillbaka), **Dead Tree** (av Deadwood, nytt block Deadwood Twig), **Dry Creek** (grund fåra med grusslab-sidor),
-**Rock Outcrop**, **Frost Split** och **Anthill** (nytt block Anthill, en kupol i 1 px-steg). Jordkällare byggdes
-(feature `root_cellar`) men är av. Fortfarande av, med skäl i `docs/biomes.md`: Talus, Fallen Rock, Bird Cliff, Rock
-Overhang, Snow Patch, Ice Blocks, Farm Walls, jordkällaren och enar på slätten. Bilder:
+en brusstyrd täthet läggs i halvblock med stenens egna slabs och trappor). Nu på: **Rock Arch** (en båge bredare än hög med
+tunt krön; advancement *Under the Arch* tillbaka), **Dead Tree** (av Deadwood, nytt block Deadwood Twig) och **Rock
+Outcrop**. Byggda men av efter granskningen 2026-11-24: Dry Creek, Frost Split, Anthill (nytt block Anthill finns) och
+jordkällare (feature `root_cellar`). Fortfarande av, med skäl i `docs/biomes.md`: Talus, Fallen Rock, Bird Cliff, Rock
+Overhang, Snow Patch, Ice Blocks, Farm Walls och enar på slätten. Bilder:
 `docs/shots/terrain/fas4b_*.png`.
 
 **Byggt (Scorched Barrens omgjord, v0.183.0):** marken mörkgrå Wood Ash och Burnt Soil (nytt, med slab) i stället för

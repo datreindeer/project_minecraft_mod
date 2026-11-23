@@ -324,24 +324,30 @@ final class DryColdDecor extends StoneAgeFeature {
         if (!flat(level, c, 3, 1)) return null;
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
         // the line: a meandering path in small steps, its width swelling and narrowing, tapering at both ends
-        int n = 28 + random.nextInt(10);
+        int n = 38 + random.nextInt(10);
         double[] px = new double[n], pz = new double[n], pw = new double[n];
         double a = random.nextDouble() * Math.PI * 2, x = c.getX() + 0.5, z = c.getZ() + 0.5;
-        x -= Math.cos(a) * n * 0.35;
-        z -= Math.sin(a) * n * 0.35;
+        x -= Math.cos(a) * n * 0.3;
+        z -= Math.sin(a) * n * 0.3;
         for (int i = 0; i < n; i++) {
-            double ang = a + 1.1 * noise.get(i * 0.06, 3.7);
-            x += Math.cos(ang) * 0.7;
-            z += Math.sin(ang) * 0.7;
+            double ang = a + 1.3 * noise.get(i * 0.07, 3.7);
+            x += Math.cos(ang) * 0.6;
+            z += Math.sin(ang) * 0.6;
             px[i] = x;
             pz[i] = z;
             double taper = Math.min(1, Math.min(i, n - 1 - i) / 7.0);
             pw[i] = (1.5 + 1.3 * (noise.get(i * 0.09, 11.3) + 1) / 2) * taper;
         }
-        // the whole line on open, level, dry ground, or none at all (a creek cut off short is a pit)
+        // the whole line on open, level, dry ground, or none at all (a creek cut off short is a pit), and no water within 8
+        // of it: a dry bed by a pond reads as a puddle
         for (int i = 0; i < n; i += 2) {
             BlockPos t = top(level, (int) Math.floor(px[i]), (int) Math.floor(pz[i]));
             if (Math.abs(t.getY() - c.getY()) > 1 || !creekGround(level, t.below(), 2)) return null;
+            for (int dx = -8; dx <= 8; dx += 4)
+                for (int dz = -8; dz <= 8; dz += 4) {
+                    BlockPos q = top(level, t.getX() + dx, t.getZ() + dz);
+                    if (!level.getFluidState(q).isEmpty() || !level.getFluidState(q.below()).isEmpty()) return null;
+                }
         }
         BlockState ground = level.getBlockState(c.below());
         Block slab = SmoothGround.slab(ground.getBlock());
@@ -373,15 +379,20 @@ final class DryColdDecor extends StoneAgeFeature {
                     banks.add(g);
                 } else banks.add(g.above()); // the bank: only its dry tufts
             }
-        if (bed.size() < 12) return null;
-        for (BlockPos g : bed) if (random.nextInt(6) == 0) rock(level, random, g, Mechanical.LOOSE_STONE.get());
+        if (bed.size() < 30) return null; // short, it reads as a pit
+        for (BlockPos g : bed) if (random.nextInt(4) == 0) rock(level, random, g, Mechanical.LOOSE_STONE.get()); // the pebbles the water rolled
         for (BlockPos g : banks) {
             BlockPos on = g.above();
-            int k = random.nextInt(14);
-            BlockState plant = (k == 0 ? Blocks.DEAD_BUSH : Blocks.SHORT_DRY_GRASS).defaultBlockState();
-            // plants can't stand on a slab: the bank's dry tufts grow just beyond it
+            int k = random.nextInt(12);
+            // plants can't stand on a slab: the bank's dry tufts, dead bushes and tall dry grass (old reeds) grow just beyond it
             BlockPos beyond = top(level, on.getX() + random.nextInt(3) - 1, on.getZ() + random.nextInt(3) - 1);
-            if (k < 3 && level.getBlockState(beyond).isAir() && plant.canSurvive(level, beyond)) set(level, beyond, plant);
+            if (k >= 4 || !level.getBlockState(beyond).isAir()) continue;
+            if (k < 2 && level.getBlockState(beyond.above()).isAir() && Blocks.TALL_DRY_GRASS.defaultBlockState().canSurvive(level, beyond))
+                set(level, beyond, Blocks.TALL_DRY_GRASS.defaultBlockState());
+            else {
+                BlockState plant = (k == 2 ? Blocks.DEAD_BUSH : Blocks.SHORT_DRY_GRASS).defaultBlockState();
+                if (plant.canSurvive(level, beyond)) set(level, beyond, plant);
+            }
         }
         if (random.nextInt(3) == 0) { // a bleached branch the last flood left
             BlockPos g = bed.get(bed.size() / 2);
@@ -404,8 +415,9 @@ final class DryColdDecor extends StoneAgeFeature {
     private static BlockState creekBed(RandomSource random, net.minecraft.world.level.levelgen.synth.SimplexNoise noise, BlockPos p, BlockState ground, double deep) {
         double v = noise.get(p.getX() * 0.25, p.getZ() * 0.25);
         if (random.nextInt(40) == 0) return Blocks.COBBLESTONE.defaultBlockState();
-        if (deep > 1.2 && v < -0.35) return Blocks.PACKED_MUD.defaultBlockState();
-        if (deep > 0.9 || v > 0.3) return Blocks.GRAVEL.defaultBlockState(); // the gravel runs down the middle
+        if (deep > 1.1 && v < -0.25) return Blocks.PACKED_MUD.defaultBlockState(); // cracked mud where the last pools dried
+        boolean red = ground.is(Blocks.RED_SAND) || ground.is(BlockTags.TERRACOTTA);
+        if (red ? v > 0.35 : deep > 0.9 || v > 0.3) return Blocks.GRAVEL.defaultBlockState(); // the gravel runs down the middle (in streaks in red sand)
         if (ground.is(BlockTags.SAND) || ground.is(BlockTags.TERRACOTTA)) return (ground.is(Blocks.RED_SAND) || ground.is(BlockTags.TERRACOTTA) ? Blocks.RED_SAND : Blocks.SAND).defaultBlockState();
         return (random.nextBoolean() ? Blocks.COARSE_DIRT : Blocks.GRAVEL).defaultBlockState();
     }
@@ -477,31 +489,25 @@ final class DryColdDecor extends StoneAgeFeature {
     }
 
     /**
-     * A boulder split by frost: a rounded block 5-7 across and 3-4 high (smooth in half blocks, the stone's slabs and stairs) cleft
-     * through by a crack that runs a little askew, one half shoved a block away from the other and tipped, the crack's
-     * floor full of grit and snow; flakes of the stone shed about it. The stone is the rock under the ground, or Granite,
-     * Stone, Andesite or Diorite carried there by the ice.
+     * A boulder split by frost: one rounded block 5-7 across and 3-4 high (half blocks of the stone's slabs and stairs)
+     * cleft right through by a single straight crack half a block wide, a little off its middle, the two halves still
+     * matching; grit and drifted snow in the crack, flakes of the stone shed about it. The stone is the rock under the
+     * ground, or Granite, Stone, Andesite or Diorite carried there by the ice.
      */
     private static BlockPos frostSplit(WorldGenLevel level, RandomSource random, BlockPos c) {
         if (!flat(level, c, 2, 1)) return null;
         BlockState found = MountainDecor.rockUnder(level, c);
         Block stone = (found != null && found.is(BlockTags.BASE_STONE_OVERWORLD) ? found : SPLIT_STONES[random.nextInt(SPLIT_STONES.length)].defaultBlockState()).getBlock();
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
-        double r = 2.6 + random.nextDouble() * 0.8, ry = r * (0.75 + random.nextDouble() * 0.15), rz = r * (0.8 + random.nextDouble() * 0.25);
-        double crack = random.nextDouble() * Math.PI, nx = Math.cos(crack), nz = Math.sin(crack); // the crack's normal
-        double ox = c.getX() + 0.5, oz = c.getZ() + 0.5, oy = c.getY() + ry * 0.2;
-        double tip = 0.25 + random.nextDouble() * 0.2; // the shoved half leans out
+        double r = 2.8 + random.nextDouble() * 0.8, ry = r * (0.78 + random.nextDouble() * 0.12), rz = r * (0.8 + random.nextDouble() * 0.25);
+        double ox = c.getX() + 0.5, oz = c.getZ() + 0.5, oy = c.getY() + ry * 0.25;
+        // the crack: one clean, straight cleft a block wide right through it, a little off its middle; the halves match
+        boolean alongX = random.nextBoolean();
+        int crack = (alongX ? c.getZ() : c.getX()) + random.nextInt(3) - 1;
         Shaper.Density split = (x, y, z) -> {
-            double side = (x - ox) * nx + (z - oz) * nz;
-            double sx = x, sz = z, sy = y;
-            if (side > 0) { // the far half: a block further out, tipped away from the crack
-                sx -= nx * 1.6;
-                sz -= nz * 1.6;
-                sy += (side - 1.6) * tip;
-            }
-            double e = Math.sqrt(sq((sx - ox) / r) + sq((sy - oy) / ry) + sq((sz - oz) / rz));
-            double body = (1 - e) * ry + 0.2 * noise.get(sx * 0.5, sy * 0.5, sz * 0.5);
-            return side > 0 ? Math.min(body, side - 1.25) : Math.min(body, -side - 0.15);
+            double e = Math.sqrt(sq((x - ox) / r) + sq((y - oy) / ry) + sq((z - oz) / rz));
+            double body = (1 - e) * ry + 0.1 * noise.get(x * 0.4, y * 0.4, z * 0.4);
+            return Math.min(body, Math.abs((alongX ? z : x) - crack - 0.5) - 0.25); // a half-block cleft
         };
         int ir = (int) Math.ceil(r) + 3;
         for (int dx = -ir; dx <= ir; dx++) for (int dz = -ir; dz <= ir; dz++) clear(level, top(level, c.getX() + dx, c.getZ() + dz));
@@ -509,13 +515,13 @@ final class DryColdDecor extends StoneAgeFeature {
                 p -> random.nextInt(10) == 0 ? Blocks.COBBLESTONE : stone, null);
         if (cells.size() < 15) return null;
         Shaper.seat(level, cells, p -> stone, 3);
-        // grit and snow along the crack's floor
+        // grit along the crack's floor, frost and snow drifted into it
         for (int t = -ir; t <= ir; t++) {
-            int x = (int) Math.floor(ox + nx * 0.5 - nz * t), z = (int) Math.floor(oz + nz * 0.5 + nx * t);
-            BlockPos g = top(level, x, z);
+            BlockPos g = top(level, alongX ? c.getX() + t : crack, alongX ? crack : c.getZ() + t);
             if (Math.abs(g.getY() - c.getY()) > 1 || !level.getBlockState(g).canBeReplaced()) continue;
             if (dryNatural(level, g.below()) && !SmoothGround.rock(level.getBlockState(g.below()))) set(level, g.below(), Blocks.GRAVEL.defaultBlockState());
-            if (MountainDecor.cold(level, g) && level.getBlockState(g).isAir()) set(level, g, Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 2 + random.nextInt(3)));
+            if (MountainDecor.cold(level, g) && level.getBlockState(g).isAir())
+                set(level, g, Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 3 + random.nextInt(4)));
         }
         // flakes and splinters shed about it
         for (int i = 0; i < 8; i++) {

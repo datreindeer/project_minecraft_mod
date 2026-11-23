@@ -57,7 +57,8 @@ def count(n):
 
 # placed feature: (feature type, biomes, tries per chunk). OFF: switched off until they look right in close-up shots
 # (code kept, feature type registered, no configured or placed feature or biome modifier): see docs/biomes.md for why.
-OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "farm_walls", "juniper_in_plains", "bird_cliff", "root_cellar"]
+OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "farm_walls", "juniper_in_plains", "bird_cliff", "root_cellar",
+       "dry_creek", "frost_split", "anthill", "anthill_open"]  # lead review 2026-11-24: a pit, two lumps, a striped loaf
 PLACED = {
     # mountains
     "talus": ("talus", MOUNTAINS + VALLEYS, count(3)),
@@ -232,21 +233,25 @@ from PIL import Image
 
 
 def needles_tex(seed):
-    """Spruce needles and bits of twig heaped by wood ants: warm browns, short strokes every way, dark holes, a few ants."""
+    """Spruce needles, bits of twig and crumbs heaped by wood ants: a speckle of warm browns with no grain or rows, short
+    needles lying every way, dark holes and a few ants."""
     rnd = _random.Random(seed)
-    img = Image.new("RGB", (16, 16), (96, 68, 42))
+    pal = [(92, 64, 40), (104, 74, 46), (118, 84, 50), (134, 98, 58), (80, 56, 36), (148, 110, 66), (110, 80, 52)]
+    img = Image.new("RGB", (16, 16))
     px = img.load()
-    for _ in range(170):  # needles: 2-3 px strokes, horizontal, vertical or diagonal
+    for y in range(16):
+        for x in range(16):
+            px[x, y] = rnd.choice(pal)
+    for _ in range(40):  # needles and twig bits: 2 px, any way
         x, y = rnd.randrange(16), rnd.randrange(16)
         dx, dy = rnd.choice([(1, 0), (0, 1), (1, 1), (1, -1)])
-        col = rnd.choice([(128, 92, 54), (146, 106, 60), (112, 78, 46), (164, 124, 72), (84, 58, 36), (138, 100, 52)])
-        for k in range(rnd.choice([2, 2, 3])):
-            px[(x + dx * k) % 16, (y + dy * k) % 16] = col
-    for _ in range(9):  # the ants' holes
-        x, y = rnd.randrange(16), rnd.randrange(16)
-        px[x, y] = (46, 31, 21)
-    for _ in range(3):  # ants
-        px[rnd.randrange(16), rnd.randrange(16)] = (24, 14, 10)
+        col = rnd.choice([(160, 122, 72), (70, 48, 30), (140, 104, 60)])
+        px[x, y] = col
+        px[(x + dx) % 16, (y + dy) % 16] = col
+    for _ in range(8):
+        px[rnd.randrange(16), rnd.randrange(16)] = (44, 30, 20)
+    for _ in range(3):
+        px[rnd.randrange(16), rnd.randrange(16)] = (22, 13, 9)
     return img
 
 
@@ -254,41 +259,67 @@ TEXB = A / "textures/block"
 needles_tex(20261123).save(TEXB / "anthill.png")
 
 
-def dome(layers):
-    """Stacked boxes (y0, y1, half width) round the block's middle, each face cut from the texture by its size."""
+def dome(layers, lumps):
+    """Stacked courses (y0, y1, half width) round the block's middle, each course pushed off centre at random so the
+    steps don't run round in rings, plus lumps (x, z, y1, half width) bulging out of its flanks. The texture runs on
+    unbroken from course to course."""
     els = []
-    rnd = _random.Random(len(layers))
-    for i, (y0, y1, h) in enumerate(layers):
-        jx, jz = rnd.uniform(-0.5, 0.5), rnd.uniform(-0.5, 0.5)  # each course a little off centre: lumpy, not turned
-        x0, x1, z0, z1 = 8 - h + jx, 8 + h + jx, 8 - h + jz, 8 + h + jz
-        v = (y0 * 5) % 14  # each course its own row of the texture, or every course shows the same stripe
-        side = [rnd.uniform(0, max(0, 16 - min(16, 2 * h))), v, 0, v + min(2, y1 - y0)]
-        side[2] = side[0] + min(16, 2 * h)
-        faces = {f: {"uv": [round(a, 2) for a in side], "texture": "#n"} for f in ("north", "south", "east", "west")}
-        faces["up"] = {"uv": [max(0, x0), max(0, z0), min(16, x1), min(16, z1)], "texture": "#n"}
-        els.append({"from": [round(x0, 2), y0, round(z0, 2)], "to": [round(x1, 2), y1, round(z1, 2)], "faces": faces})
-    return {"parent": "minecraft:block/block", "ambientocclusion": True, "textures": {"particle": "mechanical:block/anthill", "n": "mechanical:block/anthill"},
+    rnd = _random.Random(len(layers) * 7 + len(lumps))
+    cx = cz = 8.0
+    for y0, y1, h in layers:
+        cx += rnd.uniform(-0.6, 0.6)  # a drift, so the dome leans and bulges
+        cz += rnd.uniform(-0.6, 0.6)
+        cx, cz = max(7, min(9, cx)), max(7, min(9, cz))
+        els.append(box_el(cx - h, y0, cz - h, cx + h, y1, cz + h, rnd))
+    for x, z, y1, h in lumps:
+        els.append(box_el(x - h, 0, z - h, x + h, y1, z + h, rnd))
+    return {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": {"particle": "mechanical:block/anthill", "n": "mechanical:block/anthill"},
             "elements": els}
 
 
-def profile(r0, height, y_from=0, y_to=None, step=1.0):
-    """A rounded dome r0 wide at its foot and height high, cut in steps of step px: the half width at each step's middle."""
+def box_el(x0, y0, z0, x1, y1, z1, rnd):
+    v0, v1 = max(0, 16 - y1), min(16, 16 - y0)  # the texture runs on down the courses
+    u0 = rnd.uniform(0, 4)
+    side = [round(u0, 2), round(v0, 2), round(min(16, u0 + 12), 2), round(v1, 2)]
+    # unshaded: the ledges of the courses would otherwise show as light rings round the dome
+    faces = {f: {"uv": side, "texture": "#n"} for f in ("north", "south", "east", "west")}
+    faces["up"] = {"uv": [round(max(0, x0), 2), round(max(0, z0), 2), round(min(16, x1), 2), round(min(16, z1), 2)], "texture": "#n"}
+    return {"shade": False, "from": [round(x0, 2), y0, round(z0, 2)], "to": [round(x1, 2), y1, round(z1, 2)], "faces": faces}
+
+
+def profile(r0, height, seed):
+    """A rounded dome r0 wide at its foot and height high, in courses of uneven height (1-2.5 px): the half width at each."""
+    rnd = _random.Random(seed)
     out, y = [], 0.0
     while y < height - 0.01:
-        y1 = min(height, y + step)
-        h = r0 * math.sqrt(max(0.0, 1 - ((y + y1) / 2 / height) ** 2)) ** 0.8
-        if h >= 0.6:
+        y1 = min(height, y + rnd.choice([1, 1.5, 2, 2.5]))
+        h = r0 * math.sqrt(max(0.0, 1 - ((y + y1) / 2 / height) ** 2)) ** 0.75 * rnd.uniform(0.94, 1.04)
+        if h >= 0.8:
             out.append((round(y, 2), round(y1, 2), round(h, 2)))
         y = y1
     return out
 
 
-BIG = profile(20, 28, step=1.0)  # one dome over two blocks: the lower 16 px are the base, the rest the top
-ANTHILL = {"small": profile(10, 12, step=1.0),
-           "base": [(a, b, h) for a, b, h in BIG if b <= 16],
-           "top": [(a - 16, b - 16, h) for a, b, h in BIG if a >= 16]}
-for part, layers in ANTHILL.items():
-    w(A / f"models/block/anthill_{part}.json", dome(layers))
+def split(layers, at):
+    """Courses cut at y at, the upper part shifted down by at."""
+    lo, hi = [], []
+    for a, b, h in layers:
+        if b <= at:
+            lo.append((a, b, h))
+        elif a >= at:
+            hi.append((a - at, b - at, h))
+        else:
+            lo.append((a, at, h))
+            hi.append((0, b - at, h))
+    return lo, hi
+
+
+BIG_LO, BIG_HI = split(profile(20, 28, 5), 16)  # one dome over two blocks: the base, and the top that rounds it off
+ANTHILL = {"small": (profile(10, 11, 3), [(3.5, 10, 5, 3.5), (12, 6.5, 4, 3)]),
+           "base": (BIG_LO, [(-5, 8, 8, 6), (14, 17, 10, 7), (9, -4, 6, 6), (4, 21, 5, 5)]),
+           "top": (BIG_HI, [])}
+for part, (layers, lumps) in ANTHILL.items():
+    w(A / f"models/block/anthill_{part}.json", dome(layers, lumps))
 w(A / "blockstates/anthill.json", {"variants": {f"part={p}": [{"model": f"mechanical:block/anthill_{p}", **({"y": y} if y else {})} for y in (0, 90, 180, 270)]
                                                 for p in ANTHILL}})
 w(A / "items/anthill.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/anthill_small"}})

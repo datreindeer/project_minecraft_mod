@@ -184,13 +184,13 @@ final class MountainDecor extends StoneAgeFeature {
     }
 
     /**
-     * A natural arch: what is left of a rock fin worn through. A fin 13-20 across and 7-10 high, flat-topped with steep
-     * flanks, bowed a little in plan, thin over the crown (about three deep) and thick at its feet where it flares into
-     * the ground; through it an opening 7-10 wide and 5-7 high, rounder at the top than at its sides. Every surface is laid at half-block resolution
-     * (Shaper: the rock's slabs and stairs), its outline and faces wavering with smooth noise, one leg heavier than the
-     * other. Of the rock under the ground, in big patches of a second stone and moss on the tops in mild land; in the
-     * badlands Red Sandstone with level bands of Terracotta through it as in the cliffs. Fallen pieces, loose stones and
-     * grit at its feet. Rare. Advancement Under the Arch (stand beneath one).
+     * A natural arch: what is left of a rock fin worn through. Its opening an arc wider than it is tall (8-11 across,
+     * 4-5 high) with a curved underside; the rock a band round it, thin over the crown (about 2 thick and 2-3 deep) and
+     * thick in its legs, which flare into the ground; its top one smooth curve; one leg heavier, running on as a low
+     * ridge that slopes into the ground. Laid in half blocks (Shaper: the rock's slabs and stairs). Of the rock under the
+     * ground, in big patches of a second stone and moss on the tops in mild land; in the badlands Red Sandstone with
+     * level bands of Terracotta through both legs and the span. Scree and fallen pieces at its feet. Rare. Advancement
+     * Under the Arch (stand beneath one).
      */
     private static BlockPos arch(WorldGenLevel level, RandomSource random, BlockPos c) {
         if (!flat(level, c, 3, 1)) return null;
@@ -201,38 +201,39 @@ final class MountainDecor extends StoneAgeFeature {
         Block rock = found.getBlock(), second = secondStone(rock);
         Direction along = random.nextBoolean() ? Direction.EAST : Direction.SOUTH, across = along.getClockWise();
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
-        double ai = 3.4 + random.nextDouble() * 1.4, hi = 4.6 + random.nextDouble() * 2; // the opening's half width and height
-        double hc = hi + 2 + random.nextDouble() * 1.2, hs = hc + 0.4 + random.nextDouble() * 0.9; // the crown, the shoulders over the legs
-        double heavy = random.nextBoolean() ? 1 : -1, wHeavy = 3.4 + random.nextDouble() * 1.2, wLight = 2.3 + random.nextDouble() * 0.9; // the legs
-        double h = hs + 1, w = ai + wHeavy;
-        double lean = (random.nextDouble() - 0.5) * 0.25, bow = 0.5 + random.nextDouble() * 0.6;
+        // the opening: an arc wider than it is tall; the rock a band round it, thin over the crown and thick in the legs
+        double ai = 4 + random.nextDouble() * 1.5, hi = 3.6 + random.nextDouble() * 1.4, shift = (random.nextDouble() - 0.5) * 1.2;
+        double heavy = random.nextBoolean() ? 1 : -1, legH = 2.5 + random.nextDouble() * 1.1, legL = 1.8 + random.nextDouble() * 0.8;
+        double crown = 1.6 + random.nextDouble() * 0.8, ho = hi + crown, ridge = Math.min(3 + random.nextDouble() * 3, 11.5 - ai - legH); // the heavy leg runs on as a low ridge
+        double h = ho + 1, w = ai + legH + ridge;
+        double bow = 0.4 + random.nextDouble() * 0.5;
         int ox = c.getX(), oz = c.getZ(), oy = c.getY();
         int au = across.getStepX(), aw = across.getStepZ(), vu = along.getStepX(), vw = along.getStepZ();
         Shaper.Density fin = (x, y, z) -> {
-            double dx = x - ox - 0.5, dz = z - oz - 0.5, u = dx * au + dz * aw, v = dx * vu + dz * vw, t = y - oy;
-            double au2 = Math.abs(u), legW = u * heavy > 0 ? wHeavy : wLight;
-            // the upper edge: sagging a little over the span, rounded shoulders, then the legs' flanks falling to the ground
-            double top = au2 < ai ? hc + (hs - hc) * sq(au2 / ai)
-                    : hs * Math.sqrt(Math.max(0, 1 - sq(Math.min(1, (au2 - ai) / legW)))) - (au2 - ai > legW ? 9 : 0);
-            top += 0.75 * noise.get(u * 0.18, v * 0.25 + 7);
-            // thin over the crown, thick in the legs and flared at the feet
-            double depth = 1.2 + 0.9 * Math.min(1, au2 / ai) + 1.1 * Math.max(0, 1 - t / 3) + 0.45 * noise.get(u * 0.3, t * 0.3);
-            // its faces bulge and hollow (no flat walls)
-            double side = depth - Math.abs(v - bow * Math.cos(u / w * 1.6) - lean * t - 0.8 * noise.get(u * 0.17 + 20, t * 0.17));
-            // the opening: a rounded-top hole through it, its sides near upright
-            double hu = (u - 0.4 * heavy) / ai, ht = (t + 0.4) / hi;
-            double hole = (Math.pow(Math.pow(Math.abs(hu), 2.8) + Math.pow(Math.max(ht, 0), 2), 1 / 2.4) - 1) * ai + 0.3 * noise.get(u * 0.4 + 3, t * 0.4);
-            if (t < 0) hole = Math.abs(hu) < 1 ? -1 : hole; // the floor under the opening stays ground
-            return Math.min(Math.min(top - t, side), hole) + 0.08 * noise.get(x * 0.3, y * 0.3, z * 0.3);
+            double dx = x - ox - 0.5, dz = z - oz - 0.5, u = dx * au + dz * aw - shift, v = dx * vu + dz * vw, t = y - oy;
+            boolean heavySide = u * heavy > 0;
+            double ao = ai + (heavySide ? legH : legL), hoN = ho * (1 + 0.05 * noise.get(u * 0.15, 3));
+            // the arch's outer curve: one smooth line over the top, falling to the ground beyond each leg
+            double outer = (1 - Math.sqrt(sq(u / ao) + sq(Math.max(t, 0) / hoN))) * hoN;
+            // the heavy leg's shoulder: a low ridge sloping away into the ground
+            double past = Math.abs(u) - ao + 1.5;
+            double shoulder = heavySide && past > 0 ? 2.2 * (1 - past / (ridge + 1.5)) - t : -9;
+            double body = Math.max(outer, shoulder);
+            // thin over the crown, thick in the legs, flared at the very foot; the faces gently bowed, not stepped
+            double depth = 1.05 + 0.9 * Math.min(1, Math.pow(Math.abs(u) / ao, 1.5)) + 0.7 * Math.max(0, 1 - t / 1.3) + 0.2 * noise.get(u * 0.2, 11);
+            double side = depth - Math.abs(v - bow * Math.cos(u / ao * 1.4));
+            // the opening's curved underside; under it the ground stays
+            double hole = t < 0 ? (Math.abs(u) < ai ? -1 : 1) : (Math.sqrt(sq(u / ai) + sq(t / hi)) - 1) * hi;
+            return Math.min(Math.min(body, side), hole);
         };
         Shaper.Stone stone = p -> {
             if (banded) return band(p.getY());
             return noise.get(p.getX() * 0.13, p.getY() * 0.2, p.getZ() * 0.13) > 0.35 ? second : rock;
         };
-        int r = (int) Math.ceil(w) + 3;
+        int r = Math.min(14, (int) Math.ceil(w) + 2);
         var cells = Shaper.build(level, ox - r, oy - 3, oz - r, ox + r, oy + (int) Math.ceil(h) + 2, oz + r, fin, stone, banded ? Blocks.RED_SANDSTONE : null);
         if (cells.size() < 60) return null;
-        Shaper.seat(level, cells, stone, 6);
+        // no seat(): the legs reach into the ground already, and filling under the span would wall up the opening
         // a skirt of scree round the feet: half steps of sand or gravel against the rock
         Block grit = banded ? Blocks.RED_SAND : ground.is(Blocks.SAND) ? Blocks.SAND : Blocks.GRAVEL;
         BlockState skirt = SmoothGround.slab(grit).defaultBlockState();
@@ -255,7 +256,7 @@ final class MountainDecor extends StoneAgeFeature {
             if (noise.get(p.getX() * 0.3, p.getZ() * 0.3) > 0.1 && level.getBlockState(p.above()).isAir()) set(level, p.above(), Blocks.MOSS_CARPET.defaultBlockState());
         // at its feet: fallen pieces half sunk, loose stones and grit
         for (int sgn : new int[] {-1, 1}) {
-            BlockPos foot = c.relative(across, sgn * (int) Math.round((ai + w) / 2));
+            BlockPos foot = c.relative(across, sgn * (int) Math.round(ai + 2));
             for (int i = 0; i < 10; i++) {
                 double an = random.nextDouble() * Math.PI * 2, dist = 3 + random.nextDouble() * 3.5;
                 BlockPos t = top(level, foot.getX() + (int) Math.round(Math.cos(an) * dist), foot.getZ() + (int) Math.round(Math.sin(an) * dist));

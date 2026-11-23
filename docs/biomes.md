@@ -230,35 +230,24 @@ oregelbunden i stället för kantig.
 
 ### På
 
-- **Rock arch:** naturligt valv, resten av en klippfena som nötts igenom: 13–20 brett och 7–10 högt, krönet tunt
-  (ungefär 3 djupt) och lite svackat mellan rundade axlar, benen vidgar sig ner i marken och det ena är grövre, öppningen
-  7–10 bred och 5–7 hög med rundad topp. Ytorna böljar (brus på ovankant, djup och sidornas läge), så fenan har inga
-  plana väggar. Av stenen under marken med fläckar av en andra sten (Andesite i Stone, Tuff i Andesite ...) och mossa
-  på krönet i milt land; i badlands Red Sandstone med vågräta band av Orange Terracotta och Terracotta som går runt på
-  samma höjd. En kjol av grus- eller sandslabs och nedfallna stenar vid fötterna. Sällsynt (1 på 40 chunks försök, på
-  plan mark): Stony Peaks, Windswept Hills, Savanna Plateau, Slate Highlands, Limestone Karst, Marble Gorge, Badlands,
-  Ochre Badlands. Bilder `fas4b_rock_arch*.png`.
+- **Rock arch:** naturligt valv, resten av en klippfena som nötts igenom: öppningen en båge bredare än den är hög (8–11
+  bred, 4–5 hög) med rundad undersida, berget ett band runt den, tunt över krönet (ungefär 2 tjockt, 2–3 djupt) och
+  tjockt i benen som vidgar sig ner i marken. Ovankanten en jämn kurva; det ena benet grövre och fortsätter som en låg rygg
+  som sluttar ner i marken. Under spannet fylls inget ner till marken (det var det som gjorde förra versionerna till en
+  port med pelare). Av stenen under marken med fläckar av en andra sten och mossa i milt land; i badlands Red Sandstone
+  med vågräta band av Terracotta genom båda benen och spannet. Grus- eller sandslabs och nedfallna stenar vid fötterna.
+  Sällsynt (1 på 40 chunks försök, på plan mark): Stony Peaks, Windswept Hills, Savanna Plateau, Slate Highlands,
+  Limestone Karst, Marble Gorge, Badlands, Ochre Badlands. Bilder `fas4b_rock_arch*.png`.
 - **Dead tree:** dött, silvergrått träd av **Deadwood** utan bark: stam 3–6 som ibland lutar ett block, rötter av
   Deadwood Branch som löper ut över marken och ner i den. Två eller tre ledare grenar sig ur toppen (första biten
   Deadwood), sprider sig i grenar som går lågt och brett, klättrar ett steg bara efter två ut, gaffrar sig och slutar i
   **Deadwood Twig** (nytt, 4 px); ibland en låg gren ur stammen och en taggig avbruten topp. På savannen flatare krona.
   Coarse Dirt i en trasig fläck vid foten, Dead Bush, torrt gräs och kvistar, ibland en nedfallen gren. Desert, Badlands,
   Gypsum Flats, Ochre Badlands, savann. Bilder `fas4b_dead_tree*.png`.
-- **Dry creek:** uttorkad bäckfåra, en grund slingrande sänka 20–26 block: fåran ett block ner och 2–4 bred med grus
-  längs mitten och Packed Mud där den är djupast, sidorna ett halvsteg ner (Gravel Slab, ibland markens egen slab),
-  smalnar av till inget i båda ändar. Bara där hela sträckan ligger plant och torrt (en avkortad fåra blev en grop).
-  Småsten i fåran, torra tuvor längs kanterna, ibland en blekt gren. Desert, Badlands, savann. Bilder `fas4b_dry_creek*.png`.
 - **Rock outcrop (häll):** låg ryggformad häll 6–13 lång och 1–2,5 hög, flack åt ena hållet och brantare på läsidan,
   rundad i halvblock och nedsjunken i grässvålen vid kanterna; berget under marken (Granite eller Stone om inget finns
   nära) med ådror av en andra sten, mossa i fläckar, gräs, ormbunkar och blommor vid foten. Inte i snöland (där syns den
   inte). Bild `fas4b_rock_outcrop.png`.
-- **Frost split:** rundat block 5–7 brett och 3–4 högt, kluvet av en spricka som går lite snett; ena halvan har knuffats
-  ut och lutar, så sprickan står öppen. Grus och snö i sprickans botten, flagor och slabs av stenen omkring. Kalla
-  slätter, snötaiga, Grove, Glacial Moraine, Mammoth Steppe. Bild `fas4b_frost_split.png`.
-- **Anthill (myrstack):** nytt block **Anthill**, en kupol av granbarr byggd i 1 px-steg (varje skikt lite förskjutet så
-  den blir knölig, inte svarvad): liten (ett och ett kvarts block bred) eller stor (två block, basen två och ett halvt
-  block bred). Runt den en trasig kjol av Podzol, Leaf Litter och kvistar. Barrskog (1 på 5 chunks), slätter och ängar
-  intill (1 på 10). Bild `fas4b_anthill.png`.
 - **Valley waterfall**, **Bone remains**, **Sand skeleton**, **Mammoth tusks**, **Lone tree** och **Fire ring**: som
   förut (bilder `fas4_*.png`).
 
@@ -267,6 +256,14 @@ oregelbunden i stället för kantig.
 Prövat igen i v0.187.0 med naturligt genererade provvärldar (allt på och tätare, `DECOR_TEST=1 python
 scripts/gen_land_decor.py`), men fortfarande inte bra nog:
 
+- **Dry creek:** gjord om till en lång (38–48 steg), slingrande, grund fåra med grus längs mitten, Packed Mud där den är
+  djupast, sidor av Gravel Slab, småsten och torrt högt gräs vid kanterna, aldrig inom 8 block från vatten och bara där
+  hela sträckan ligger plant. Men i världen blir den för kort och ser ut som en grop med grått grus; av (granskning
+  2026-11-24).
+- **Frost split:** nu ett rundat block kluvet av en enda rak spricka ett halvt block bred med snö i, halvorna matchar.
+  Men blocket blir för kantigt (raka sidor) och läses fortfarande som två klumpar; av.
+- **Anthill:** nytt block Anthill (kupol i fina, ojämna skikt, knölar, ospräcklig textur av barr och smulor, oskuggade
+  ytor) med en ring av lösa barr runt. Men de stora läses fortfarande som en randig limpa eller bikupa; av. Blocket finns kvar.
 - **Talus** och **Fallen rock:** nu formade i halvblock (grusslabs, en lutande rundad sten), och de kräver öppen, flack,
   snöfri mark framför väggen. Men bergen i världen har sällan en fri vägg med plan fot: de hamnade i trånga raviner, under
   snö eller i skog, och syns inte på någon bild.
