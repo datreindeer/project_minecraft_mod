@@ -1,7 +1,9 @@
 # Flodfauna: Beaver, Otter, Mosquito Swarm
 
 Kod: `wildlife/river/` (`RiverFauna`, `Beaver`, `BeaverWorks`, `Otter`, `MosquitoSwarm`, `PeltHoopBlock`, `SemiAquatic`),
-klient: `client/wildlife/river/`. Data: `scripts/gen_fauna_river.py`, texturer: `scripts/gen_fauna_river_textures.py`.
+klient: `client/wildlife/river/`. Data: `scripts/gen_fauna_river.py`, texturer: `scripts/gen_fauna_river_textures.py`;
+Beaver- och Otter-modellerna och deras skinn (även flådda kroppen) genereras av `scripts/gen_owarm_river_models.py`
+(`RiverGeometry.java`, körs efter texturskriptet).
 
 Beaver och Otter är halvakvatiska: de går i land och simmar under ytan (axolotlns navigering), håller andan i 4 minuter
 och kliver upp på strandbanken när vägen leder dit.
@@ -96,6 +98,16 @@ och dansar runt huvudet: var 3:e sekund ett stick som tar 1 sanity (äter upp en
 och var tredje gång ½ hjärta. **Rök och eld driver bort den:** en brinnande Campfire/Fire Pit inom 6 block från
 svärmen eller spelaren, eller ett rökigt rum (Smoke): den drar sig undan och skingras efter några sekunder. Den dör
 av ett slag (2 hälsa) eller eld och skingras när solen går upp. Ingen kropp (`Butchery.neverCarcass`), inget byte.
+
+## Utseende
+
+Bävern är rund och hopkurad: smala axlar, en stor rund bakdel som är kroppens högsta punkt, ett trubbigt brett huvud
+med puffiga ljusare kinder, små runda öron och små svarta ögon med en glimt, mörk nos och de stora orange framtänderna.
+Små klohänder fram, stora simhudsfötter bak, och den breda platta svansen som ligger på marken, mörk och fjällig i ett
+rutnät. Pälsen är rikt brun, mörkare längs ryggen och ljusare på kinder och buk. Uttern är lång, låg och smidig, med
+ett platt brett huvud, små öron, morrhårsdynor med mörka prickar, mörk nos, ljust gräddvit haka, strupe och bröst,
+korta ben med simhudsfötter och en tjock avsmalnande svans; pälsen är blankt mörkbrun med en glansstrimma längs ryggen
+och ljusare undersida. Bilder: `docs/shots/fauna/old_warm_beaver*.png` och `old_warm_otter*.png`.
 
 ## I vattnet
 

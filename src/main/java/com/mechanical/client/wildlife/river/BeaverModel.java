@@ -6,12 +6,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -20,11 +15,12 @@ import net.minecraft.util.Mth;
  * incisors showing, short front legs with clawed hands, big webbed hind feet, and the flat scaly tail trailing on the
  * ground. Waddles on land; swimming it lies flat with the hind feet kicking, hands tucked, tail sculling. Gnawing,
  * it cocks its head and chews; carrying, a stick sits crosswise in its mouth.
- * Texture: textures/entity/wildlife/beaver.png (64x64), painted by scripts/gen_fauna_river_textures.py (same boxes).
+ * Geometry: {@link RiverGeometry#beaver}; texture textures/entity/wildlife/beaver.png (64x64) and its skinned carcass skin,
+ * both generated with the boxes by scripts/gen_owarm_river_models.py.
  */
 public class BeaverModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "beaver"), "main");
-    private static final float TAIL_X = -0.35F;
+    private static final float TAIL_X = -0.3F;
 
     private final ModelPart body, tail, head, stick;
     private final ModelPart rightFrontLeg, leftFrontLeg, rightHindLeg, leftHindLeg;
@@ -44,36 +40,7 @@ public class BeaverModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        CubeDeformation plane = new CubeDeformation(0.001F);
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(28, 0).addBox(-3.0F, -2.5F, -5.0F, 6.0F, 5.0F, 6.0F)
-                .texOffs(0, 0).addBox(-4.0F, -3.5F, 0.0F, 8.0F, 7.0F, 6.0F), PartPose.offset(0.0F, 18.5F, 0.0F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create()
-                .texOffs(20, 21).addBox(-1.5F, -1.5F, -1.0F, 3.0F, 2.0F, 2.0F)
-                .texOffs(0, 13).addBox(-2.0F, -0.5F, 0.0F, 4.0F, 1.0F, 7.0F), PartPose.offsetAndRotation(0.0F, 2.0F, 6.0F, TAIL_X, 0.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(22, 13).addBox(-2.5F, -2.5F, -4.0F, 5.0F, 4.0F, 4.0F)
-                .texOffs(52, 13).addBox(-2.0F, -1.0F, -6.0F, 4.0F, 3.0F, 2.0F)
-                .texOffs(58, 21).addBox(-1.0F, -1.2F, -6.4F, 2.0F, 1.0F, 1.0F)
-                .texOffs(4, 26).addBox(-1.0F, 1.5F, -5.9F, 2.0F, 2.0F, 0.0F, plane)
-                .texOffs(0, 26).addBox(-2.8F, -2.8F, -1.5F, 1.0F, 1.0F, 1.0F)
-                .texOffs(0, 26).mirror().addBox(1.8F, -2.8F, -1.5F, 1.0F, 1.0F, 1.0F), PartPose.offset(0.0F, -0.5F, -5.0F));
-        head.addOrReplaceChild("stick", CubeListBuilder.create().texOffs(30, 21).addBox(-5.0F, 1.5F, -7.0F, 10.0F, 1.0F, 1.0F), PartPose.ZERO);
-        root.addOrReplaceChild("right_front_leg", CubeListBuilder.create()
-                .texOffs(0, 21).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 3.0F, 2.0F)
-                .texOffs(52, 21).addBox(-1.0F, 2.0F, -2.0F, 2.0F, 1.0F, 1.0F), PartPose.offset(-2.0F, 21.0F, -3.0F));
-        root.addOrReplaceChild("left_front_leg", CubeListBuilder.create().mirror()
-                .texOffs(0, 21).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 3.0F, 2.0F)
-                .texOffs(52, 21).addBox(-1.0F, 2.0F, -2.0F, 2.0F, 1.0F, 1.0F), PartPose.offset(2.0F, 21.0F, -3.0F));
-        root.addOrReplaceChild("right_hind_leg", CubeListBuilder.create()
-                .texOffs(40, 13).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 4.0F, 3.0F)
-                .texOffs(8, 21).addBox(-1.5F, 3.0F, -3.5F, 3.0F, 1.0F, 3.0F), PartPose.offset(-3.0F, 20.0F, 3.5F));
-        root.addOrReplaceChild("left_hind_leg", CubeListBuilder.create().mirror()
-                .texOffs(40, 13).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 4.0F, 3.0F)
-                .texOffs(8, 21).addBox(-1.5F, 3.0F, -3.5F, 3.0F, 1.0F, 3.0F), PartPose.offset(3.0F, 20.0F, 3.5F));
-        return LayerDefinition.create(mesh, 64, 64);
+        return RiverGeometry.beaver();
     }
 
     @Override
