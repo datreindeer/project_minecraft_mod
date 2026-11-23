@@ -32,8 +32,9 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 /**
  * Dev only: with a file {@code deepshots.flag} in the game directory (its first line: an output folder), the client opens
- * the world "DeepShots", builds a grass platform at y 200 and photographs each deep creature (deep_<name>.png; the olm and
- * the fish in a pool, the spider beside its web in a passage), then finds a Mammoth Steppe and photographs it
+ * the world "DeepShots", builds a grass platform at y 200 and photographs each deep creature from three quarters, the front
+ * and the side (deep_<name>[_front|_side].png; the olm and the fish in a pool, the front and side views under water; the
+ * spider beside its web in a passage), then finds a Mammoth Steppe and photographs it
  * (steppe_mammoth_steppe.png), then quits. Does nothing without the flag file. Same pattern as JungleShots.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
@@ -45,15 +46,22 @@ public final class DeepShots {
     private static final List<String> result = new ArrayList<>();
     private static Vec3 steppeCam;
 
-    /** name, scene builder (server thread), camera distance, camera height. */
-    private record Shot(String name, Runnable scene, double dist, double height) {}
+    /**
+     * name, scene builder (server thread), camera distance, camera height over the creature (eye level), how much higher
+     * the three-quarter view is, views (0: only the scene's own camera).
+     */
+    private record Shot(String name, Runnable scene, double dist, double height, double lift, int views) {}
+
+    /** Three quarters from a little above (deep_<name>.png), then the front and the side at eye level. */
+    private static final String[] VIEWS = {"", "_front", "_side"};
+    private static final double[] ANGLES = {35, 0, 90};
 
     private static final List<Shot> SHOTS = List.of(
-            new Shot("cave_salamander", () -> pool(DeepFauna.CAVE_SALAMANDER.get(), 1), 1.2, 0.5),
-            new Shot("blind_cave_fish", () -> pool(DeepFauna.BLIND_CAVE_FISH.get(), 4), 1.6, 0.6),
-            new Shot("bat_swarm", () -> spawn(DeepFauna.BAT_SWARM.get(), base.add(0, 1.0, 0)), 3.0, 1.6),
-            new Shot("cavern_spider", () -> spawn(DeepFauna.CAVERN_SPIDER.get(), base), 2.4, 1.2),
-            new Shot("cave_web", DeepShots::webScene, 3.4, 1.4));
+            new Shot("cave_salamander", () -> pool(DeepFauna.CAVE_SALAMANDER.get(), 1), 0.8, 0.05, 1.6, 3),
+            new Shot("blind_cave_fish", () -> pool(DeepFauna.BLIND_CAVE_FISH.get(), 3), 0.9, 0.05, 1.6, 3),
+            new Shot("bat_swarm", () -> spawn(DeepFauna.BAT_SWARM.get(), base.add(0, 1.0, 0)), 2.2, 1.5, 0.3, 3),
+            new Shot("cavern_spider", () -> spawn(DeepFauna.CAVERN_SPIDER.get(), base), 1.4, 0.35, 0.6, 3),
+            new Shot("cave_web", DeepShots::webScene, 3.4, 1.4, 0, 0));
 
     @SubscribeEvent
     static void onTick(ClientTickEvent.Post event) {
@@ -102,13 +110,14 @@ public final class DeepShots {
                     return;
                 }
                 Shot s = SHOTS.get(index);
-                if (ticks == 20) server.execute(() -> {
-                    aimed = false;
-                    s.scene().run();
-                    if (!aimed) aim(s.dist(), s.height());
-                });
-                if (ticks == 60) shot(mc, "deep_" + s.name());
-                if (ticks == 65) {
+                if (ticks == 20) server.execute(s.scene());
+                int views = Math.max(1, s.views());
+                for (int v = 0; v < views; v++) {
+                    int view = v;
+                    if (ticks == 40 + v * 25 && s.views() > 0) server.execute(() -> view(s, view));
+                    if (ticks == 60 + v * 25) shot(mc, "deep_" + s.name() + VIEWS[view]);
+                }
+                if (ticks == 65 + (views - 1) * 25) {
                     server.execute(DeepShots::clear);
                     index++;
                     ticks = 0;
@@ -157,15 +166,23 @@ public final class DeepShots {
         return mob;
     }
 
+    /** The camera {@code ANGLES[view]} degrees round from the first creature's front, looking at it. */
+    private static void view(Shot s, int view) {
+        Mob mob = current.get(0);
+        Vec3 at = mob.position().add(0, mob.getBbHeight() * 0.5, 0);
+        double a = Math.toRadians(ANGLES[view]), lift = view == 0 ? s.lift() : 0;
+        Vec3 cam = new Vec3(at.x + Math.sin(a) * s.dist(), mob.getY() + s.height() + lift, at.z + Math.cos(a) * s.dist());
+        look(cam, at);
+        result.add(s.name() + VIEWS[view] + " camera " + cam);
+    }
+
     /** A 5x5 pool, 2 deep, sunk into the platform, with {@code n} of the creature in it. */
     private static void pool(EntityType<? extends Mob> type, int n) {
         int x = (int) Math.floor(base.x), z = (int) Math.floor(base.z);
         cmd("fill " + (x - 2) + " 198 " + (z - 2) + " " + (x + 2) + " 199 " + (z + 2) + " water");
         cmd("fill " + (x - 2) + " 197 " + (z - 2) + " " + (x + 2) + " 197 " + (z + 2) + " stone");
-        for (int i = 0; i < n; i++) spawn(type, new Vec3(base.x + (i % 2) * 0.7 - 0.35 * (n > 1 ? 1 : 0), 198.6, base.z + (i / 2) * 0.6 - 0.3));
-        Vec3 cam = base.add(-0.9 - n * 0.15, 0.2, 0.9 + n * 0.15);
-        look(cam, new Vec3(base.x, 198.7, base.z));
-        aimed = true;
+        // the first in the middle, the rest behind it (off the front and side cameras' line)
+        for (int i = 0; i < n; i++) spawn(type, new Vec3(base.x - (i == 0 ? 0 : 0.5 + 0.4 * i), 198.6, base.z - (i == 0 ? 0 : 0.9 - 0.7 * (i - 1))));
     }
 
     /** A narrow stone passage (one wide, two high, running away from the camera) webbed across, the spider at its mouth. */
@@ -181,17 +198,6 @@ public final class DeepShots {
         Mob spider = spawn(DeepFauna.CAVERN_SPIDER.get(), base.add(0.9, 0, 1.6));
         spider.snapTo(spider.getX(), spider.getY(), spider.getZ(), 150, 0);
         look(base.add(-1.2, 1.5, 4.2), base.add(0, 0.6, -2.5));
-        aimed = true;
-    }
-
-    private static boolean aimed;
-
-    /** Camera off the front left quarter of the platform's centre. */
-    private static void aim(double dist, double height) {
-        Vec3 target = base.add(0, 0.4, 0);
-        Vec3 cam = base.add(-dist * 0.8, height, dist * 0.6);
-        look(cam, target);
-        result.add("camera " + cam);
     }
 
     private static void look(Vec3 cam, Vec3 target) {

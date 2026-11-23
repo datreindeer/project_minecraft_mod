@@ -98,8 +98,9 @@ public class Wisp extends Spirit {
     public void tick() {
         super.tick();
         if (level().isClientSide()) {
-            if (seenBy(Faith.localPlayer.get()) && random.nextInt(mask() ? 4 : 2) == 0)
-                level().addParticle(mask() ? ParticleTypes.SPORE_BLOSSOM_AIR : ParticleTypes.SOUL_FIRE_FLAME, getX() + (random.nextDouble() - 0.5) * 0.3,
+            // the wisp's light is its orb (BeingsClient); a few pale motes drift off it
+            if (seenBy(Faith.localPlayer.get()) && random.nextInt(mask() ? 4 : 5) == 0)
+                level().addParticle(mask() ? ParticleTypes.SPORE_BLOSSOM_AIR : ParticleTypes.GLOW, getX() + (random.nextDouble() - 0.5) * 0.3,
                         getY() + 0.2 + random.nextDouble() * 0.2, getZ() + (random.nextDouble() - 0.5) * 0.3, 0, 0.01, 0);
             return;
         }

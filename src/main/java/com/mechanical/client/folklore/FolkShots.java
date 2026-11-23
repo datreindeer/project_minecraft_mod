@@ -28,8 +28,8 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /**
  * Dev only: with a file {@code folkshots.flag} in the game directory (its first line: an output folder), the client opens
  * the world "FolkShots", builds a grass platform at y 200 at night (night vision on, Faith 100, creative flying so the
- * spirits are seen) and photographs each folklore being in turn (folklore_&lt;name&gt;.png); the Dune Wraith and Frost
- * Giant last, in a winter thunderstorm. Then it quits. Does nothing without the flag file. Same pattern as JungleShots.
+ * spirits are seen) and photographs each folklore being at eye level from three quarters, the front, the side and the
+ * back (folklore_&lt;name&gt;[_front|_side|_back].png); the Dune Wraith and Frost Giant last, in a winter thunderstorm. Then it quits. Does nothing without the flag file. Same pattern as JungleShots.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class FolkShots {
@@ -39,20 +39,23 @@ public final class FolkShots {
     private static Mob current;
     private static final List<String> result = new ArrayList<>();
 
-    /** name, type (null: the Mossy Troll Stone blocks), camera distance, camera height, storm. */
+    /** name, type (null: the Mossy Troll Stone blocks), camera distance, camera height (eye level), storm. */
     private record Shot(String name, Supplier<? extends EntityType<? extends Mob>> type, double dist, double height, boolean storm) {}
 
+    /** Each being from three quarters (folklore_<name>.png), the front, the side and the back; the giant from further off too. */
+    private static final String[] VIEWS = {"", "_front", "_side", "_back"};
+    private static final double[] ANGLES = {35, 0, 90, 180};
+
     private static final List<Shot> SHOTS = List.of(
-            new Shot("huldra", Beings.HULDRA::get, 3.2, 1.4, false),
-            new Shot("huldra_back", Beings.HULDRA::get, -3.2, 1.4, false),
-            new Shot("will_o_wisp", Beings.WILL_O_WISP::get, 2.2, 1.2, false),
-            new Shot("jungle_spirit_mask", Beings.JUNGLE_SPIRIT_MASK::get, 1.8, 0.7, false),
-            new Shot("tomte", Beings.TOMTE::get, 1.8, 0.8, false),
-            new Shot("nacken", Beings.NACKEN::get, 3.2, 1.4, false),
-            new Shot("bog_body", Beings.BOG_BODY::get, 3.2, 1.4, false),
+            new Shot("huldra", Beings.HULDRA::get, 2.0, 1.6, false),
+            new Shot("will_o_wisp", Beings.WILL_O_WISP::get, 1.6, 1.3, false),
+            new Shot("jungle_spirit_mask", Beings.JUNGLE_SPIRIT_MASK::get, 1.9, 1.65, false),
+            new Shot("tomte", Beings.TOMTE::get, 1.3, 0.8, false),
+            new Shot("nacken", Beings.NACKEN::get, 2.0, 1.6, false),
+            new Shot("bog_body", Beings.BOG_BODY::get, 2.0, 1.5, false),
             new Shot("mossy_troll_stone", null, 3.0, 1.6, false),
-            new Shot("dune_wraith", Beings.DUNE_WRAITH::get, 3.2, 1.4, true),
-            new Shot("frost_giant", Beings.FROST_GIANT::get, 7.5, 3.5, true));
+            new Shot("dune_wraith", Beings.DUNE_WRAITH::get, 2.1, 1.6, true),
+            new Shot("frost_giant", Beings.FROST_GIANT::get, 6.5, 3.4, true));
 
     @SubscribeEvent
     static void onTick(ClientTickEvent.Post event) {
@@ -104,13 +107,23 @@ public final class FolkShots {
                 Shot s = SHOTS.get(index);
                 int wait = s.storm() ? 140 : 0; // thunder builds up over a few seconds
                 if (ticks == 5 && s.storm()) server.execute(() -> {
-                    if (s.name().equals("frost_giant")) cmd("calendar set season winter");
                     cmd("time set midnight");
                     cmd("weather thunder");
                 });
+                if (ticks == 5 && s.name().equals("frost_giant")) server.execute(() -> cmd("calendar set season winter"));
+                // he walks back into the snow when the storm ends: keep it on the server, but stop the snowfall on screen
+                if (s.name().equals("frost_giant") && mc.level != null) {
+                    mc.level.setRainLevel(0);
+                    mc.level.setThunderLevel(0);
+                }
                 if (ticks == 40 + wait) server.execute(() -> place(s));
-                if (ticks == 75 + wait) shot(mc, s.name());
-                if (ticks == 80 + wait) {
+                int views = s.type() == null ? 1 : VIEWS.length;
+                for (int v = 0; v < views; v++) {
+                    int view = v;
+                    if (ticks == 50 + wait + v * 25) server.execute(() -> aim(s, ANGLES[view]));
+                    if (ticks == 70 + wait + v * 25) shot(mc, s.name() + VIEWS[view]);
+                }
+                if (ticks == 75 + wait + views * 25) {
                     server.execute(() -> {
                         if (current != null) current.discard();
                         if (s.type() == null) cmd("fill " + (int) Math.floor(base.x) + " 200 " + (int) Math.floor(base.z) + " "
@@ -139,10 +152,9 @@ public final class FolkShots {
         p.level().getServer().getCommands().performPrefixedCommand(p.level().getServer().createCommandSourceStack().withSuppressedOutput(), c);
     }
 
-    /** The being at the platform's centre facing south, still; the camera off its front left (negative dist: from behind). */
+    /** The being at the platform's centre facing south (+z), still. */
     private static void place(Shot s) {
         ServerLevel level = player().level();
-        double height = 2.0;
         current = null;
         if (s.type() == null) {
             int x = (int) Math.floor(base.x), z = (int) Math.floor(base.z);
@@ -157,17 +169,24 @@ public final class FolkShots {
             mob.setPersistenceRequired();
             level.addFreshEntity(mob);
             current = mob;
-            height = mob.getBbHeight();
         }
-        Vec3 target = (current != null ? current.position() : base).add(0, height * 0.5, 0);
-        double d = Math.abs(s.dist()), side = Math.signum(s.dist());
-        Vec3 cam = base.add(-d * 0.8 * side, s.height(), d * 0.6 * side);
+        aim(s, ANGLES[0]);
+    }
+
+    /** The camera {@code angle} degrees round from the being's front (towards its left), at eye level, looking at its middle. */
+    private static void aim(Shot s, double angle) {
+        ServerLevel level = player().level();
+        double height = current != null ? current.getBbHeight() : 2.0;
+        Vec3 at = current != null ? current.position() : base;
+        Vec3 target = at.add(0, Math.min(height * 0.55, s.height() - (current != null ? at.y - base.y : 0)), 0);
+        double a = Math.toRadians(angle);
+        Vec3 cam = new Vec3(at.x + Math.sin(a) * s.dist(), base.y + s.height(), at.z + Math.cos(a) * s.dist());
         Vec3 v = target.subtract(cam);
         float yaw = (float) (Math.atan2(-v.x, v.z) * 180 / Math.PI);
         float pitch = (float) (-Math.atan2(v.y, Math.sqrt(v.x * v.x + v.z * v.z)) * 180 / Math.PI);
         ServerPlayer p = player();
         p.teleportTo(level, cam.x, cam.y - p.getEyeHeight(), cam.z, java.util.Set.of(), yaw, pitch, true);
-        result.add(s.name() + " at " + (current != null ? current.position() : base) + " camera " + cam + " thunder " + level.isThundering());
+        result.add(s.name() + " " + angle + " at " + at + " camera " + cam + " thunder " + level.isThundering());
     }
 
     private static void setup() {
