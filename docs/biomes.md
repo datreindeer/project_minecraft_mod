@@ -281,6 +281,40 @@ Waterfall 1. Stony Peaks: Bird Cliff 1. Mammoth Steppe: Mammoth Tusks 8, Bones 5
 **Mätverktyg:** samma `decorlog.flag` som i fas 3; berg- och klippsakerna loggar också `<sort>_dir_<vinkel>` (sidan att
 titta från). `DecorShots` kan nu också köra kommandon (`@ x y z place feature ...`) före en bild.
 
+## En natur som förändras med tiden (terrängplanen fas 5–7)
+
+**Naturens klocka** (`worldgen/NatureClock`): varje chunk i överjorden sparar kalenderdagen den senast levde. När den
+laddas, och varje ny dag medan den är laddad, lever den ikapp dag för dag (högst ett år bakåt), med högst 48 ändrade block
+och 8 dagar per svep, och varje chunk högst ett svep i sekunden, 2 chunks per tick. Varje dags tärningar sås med världens
+seed, chunken och dagen, så det blir samma resultat när man än kommer tillbaka.
+
+Regler:
+- Varje chunk minns var spelare har satt block (`placed`, upp till 512; fler och chunken räknas som byggd). En chunk som
+  fanns innan klockan och där någon har byggt (Retrogens kontroll av spelarblock nära ytan) eller vistats mer än 20 minuter
+  räknas också som byggd. Byggda chunks och deras grannar lämnas helt i fred.
+- Inget nära ett läger, en Fire Pit eller en väg (samma kontroll som `SmoothGround`), inget i chunks med en ytstruktur.
+- Inget sker i en chunk som någon spelare kan se (en synkon på 128° ut till 192 block, eller man står i den). Chunken
+  väntar tills man tittar bort. Bara stormfällning får synas.
+- `/nature status | pause | run <dagar> [radie] [process] | demo log | fell` (op): läget i chunken, stoppa klockan, köra
+  dagar för hand runt sig (regler av, bara inom radien), lägga en färsk stock, fälla ett träd framför sig.
+
+**Stockar som ruttnar** (`worldgen/NatureRot`, fas 5): en fallen stock (se ovan, "Hitta fallna stockar"; också Deadwood
+och Charred Log) tar ett steg de flesta dagar (85 %): färsk → Moss Carpet på toppen → ormbunkar, mossa och svamp längs
+sidorna → en planta av samma träd gror bredvid → barken faller av → den sjunker ner i två steg från ändarna och blir Moss
+Block och Podzol. Ungefär en vecka (speldagar, en speldag är en timme). Nya stockar: i biomer med fallna stockar kommer en
+ny i en chunk var 12:e dag (var 5:e i gammelskog), ForestDecors egen stock, så skogen behåller sina lågor.
+
+**Stormfällning** (`worldgen/StormFelling`, fas 5): i åska fäller vinden ett högt träd (stam 6+, högst 48 stockar) 12–48
+block från en spelare, ungefär en gång på 50 sekunder per spelare. Ett träd som någon ser hoppas över två gånger av tre, så
+de flesta faller utom synhåll. Trädet knakar och faller med vinden (`FallingTreeEntity`), kronan blir lövströ, en stubbe
+blir kvar och stammen läggs som en fallen stock av stockblock (högst 12 långa) som sedan ruttnar. Advancement
+*Windthrow* (Wilderness) för den som ser ett falla.
+
+**Gametests** (`worldgen/NatureClockTest`): `nature_rot` (en stock som lämnas 10 dagar har ruttnat bort i Moss Block och
+Podzol, med en ekplanta bredvid), `storm_felling`.
+
+Bilder: `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`.
+
 ## Övergångar mellan kallt och varmt
 
 Vanilla ger tempererade berg snöiga sluttningar och toppar (Snowy Slopes, Grove, Frozen Peaks, Jagged Peaks) ända fram

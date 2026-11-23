@@ -34,7 +34,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  * creates) a world and runs a script. Line 1: output folder; line 2: {@code flat|normal [seed=N] [world=Name] [fresh]};
  * line 3: file prefix; then one step per line: {@code cmd <command>}, {@code blend on|off} (rebuilds the chunks),
  * {@code road x1 z1 x2 z2 path|trade} (plans and lays a tribe road over the terrain, like RoadShots),
- * {@code rset dx dz block} (the ground block there), {@code tp x y z yaw pitch}, {@code tpg x dy z yaw pitch} (dy above the ground), {@code wait ticks}, {@code shot name} (waits for every chunk to render), {@code bench name}
+ * {@code rset dx dz block} (the ground block there), {@code tp x y z yaw pitch}, {@code tpg x dy z yaw pitch} (dy above the ground), {@code wait ticks}, {@code shot name} (waits for every chunk to render), {@code snap name} (at once), {@code bench name}
  * (rebuilds all chunks three times and logs how long each took), {@code surface x z}, {@code origin <biome>} (x z of later steps count from the nearest spot inside that biome). Noon, clear, no HUD; writes
  * {@code <prefix>_result.txt} and quits. Does nothing without the flag file.
  */
@@ -191,6 +191,18 @@ public final class BlendShots {
                         result.add("surface " + x + " " + z + ": y " + (level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1) + " "
                                 + level.getBlockState(new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z)));
                     });
+                    next();
+                }
+                case "snap" -> { // right away, without waiting for chunks (something moving)
+                    String name = prefix + "_" + arg;
+                    Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
+                        try (image) {
+                            image.writeToFile(new File(out, name + ".png"));
+                        } catch (Exception e) {
+                            result.add("screenshot " + name + " failed: " + e);
+                        }
+                    });
+                    result.add("snap " + name);
                     next();
                 }
                 case "shot" -> {

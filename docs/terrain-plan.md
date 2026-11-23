@@ -226,6 +226,11 @@ sedan dess, och det görs i ett svep, högst ett visst antal ändringar per chun
 | **Snödrivor** | På vintern lägger blåst snö i drivor bakom stenar och träd. De smälter på våren. Detta bygger vidare på blocken som redan reagerar på klimatet. |
 | **Bävrar** | Bävern (finns som djur) fäller träd vid vatten och bygger dammar som höjer en bäck (living-world A10). |
 
+**Byggt (fas 5, v0.187.0):** naturens klocka (`worldgen/NatureClock`, chunk-data med senaste dag och spelarnas block),
+stockar som ruttnar på ungefär en vecka (`NatureRot`) och nya lågor där ingen är, och stormfällning (`StormFelling`,
+advancement *Windthrow*). Regler, siffror och kommandon: `docs/biomes.md`, "En natur som förändras med tiden". Bilder:
+`docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`.
+
 **Prestanda:** samma budget som living-world A9. Det mäts med `/tick query` och MSPT innan något släpps, och det finns ett
 tak för antalet ändringar per chunk och sekund.
 

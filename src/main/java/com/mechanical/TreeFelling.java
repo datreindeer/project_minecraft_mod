@@ -120,15 +120,17 @@ public final class TreeFelling {
     }
 
     /** Fells {@code tree} cut at {@code cut}: it falls towards {@code direction} as a FallingTreeEntity, a stump is left. Also used by woodcutter NPCs. */
-    public static void fell(ServerLevel level, BlockPos cut, Tree tree, net.minecraft.core.Direction direction, net.minecraft.world.entity.Entity feller, ItemStack tool) {
+    public static FallingTreeEntity fell(ServerLevel level, BlockPos cut, Tree tree, net.minecraft.core.Direction direction, net.minecraft.world.entity.Entity feller, ItemStack tool) {
         BlockState cutState = level.getBlockState(cut);
         List<BlockPos> falling = new ArrayList<>(tree.logs());
         falling.addAll(tree.leaves());
-        level.addFreshEntity(FallingTreeEntity.create(level, cut, direction, falling, feller, tool));
+        FallingTreeEntity entity = FallingTreeEntity.create(level, cut, direction, falling, feller, tool);
+        level.addFreshEntity(entity);
         for (BlockPos pos : falling) level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         String log = BuiltInRegistries.BLOCK.getKey(cutState.getBlock()).getPath();
         var stump = Mechanical.STUMPS.get(log.replace("_log", ""));
         if (stump != null) level.setBlock(cut, stump.get().defaultBlockState(), Block.UPDATE_ALL);
+        return entity;
     }
 
     private TreeFelling() {}

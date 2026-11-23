@@ -252,7 +252,7 @@ public final class Kettle {
     }
 
     /** Grants a code-driven advancement to this player. */
-    static void award(ServerPlayer player, Identifier id) {
+    public static void award(ServerPlayer player, Identifier id) {
         var holder = player.level().getServer().getAdvancements().get(id);
         if (holder != null) player.getAdvancements().award(holder, "done");
     }

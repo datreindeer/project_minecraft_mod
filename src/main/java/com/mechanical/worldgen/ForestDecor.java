@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
@@ -266,11 +267,16 @@ final class ForestDecor extends StoneAgeFeature {
      * anything else (water, trees, cliffs); a hanging end is cut off, so both ends rest.
      */
     static List<BlockPos> logCells(WorldGenLevel level, BlockPos start, Direction dir, int len, boolean hangFirst) {
+        return logCells(level, start, dir, len, hangFirst, Heightmap.Types.OCEAN_FLOOR_WG);
+    }
+
+    /** As above with the ground read off {@code ground} (a live world: MOTION_BLOCKING_NO_LEAVES, so a canopy overhead doesn't count). */
+    static List<BlockPos> logCells(WorldGenLevel level, BlockPos start, Direction dir, int len, boolean hangFirst, Heightmap.Types ground) {
         List<BlockPos> cells = new ArrayList<>();
         int hanging = 0;
         for (int i = 0; i < len; i++) {
             BlockPos p = start.relative(dir, i);
-            int g = surface(level, p.getX(), p.getZ()).getY(), y = p.getY();
+            int g = level.getHeight(ground, p.getX(), p.getZ()), y = p.getY();
             BlockState s = level.getBlockState(p);
             boolean fits;
             if (g == y + 1) fits = natural(s);
@@ -282,7 +288,7 @@ final class ForestDecor extends StoneAgeFeature {
             if (!fits || !s.getFluidState().isEmpty() || g <= y && !level.getFluidState(p.below()).isEmpty()) break;
             cells.add(p);
         }
-        while (!cells.isEmpty() && surface(level, cells.getLast().getX(), cells.getLast().getZ()).getY() < cells.getLast().getY()) cells.removeLast();
+        while (!cells.isEmpty() && level.getHeight(ground, cells.getLast().getX(), cells.getLast().getZ()) < cells.getLast().getY()) cells.removeLast();
         return cells;
     }
 

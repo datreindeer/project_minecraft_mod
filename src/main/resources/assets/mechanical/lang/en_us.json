@@ -3149,6 +3149,8 @@
   "block.mechanical.hazel_fallen_bark": "Fallen Hazel Bark",
   "block.mechanical.pine_fallen_bark": "Fallen Pine Bark",
   "block.mechanical.yew_fallen_bark": "Fallen Yew Bark",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -3847,6 +3849,8 @@
   "advancements.mechanical.wilderness.old_bones.description": "Find the bones of a long-dead animal and stand among them: on the plains and the steppe, half buried in the desert sand, or mammoth tusks in the Loess",
   "advancements.mechanical.wilderness.burnt_hall.title": "The Burnt Hall",
   "advancements.mechanical.wilderness.burnt_hall.description": "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
+  "advancements.mechanical.wilderness.windthrow.title": "Windthrow",
+  "advancements.mechanical.wilderness.windthrow.description": "See a thunderstorm bring down a tall tree. Its trunk is left lying as a fallen log, and within a week or so it has rotted into moss and podzol with a sapling beside it",
   "advancements.mechanical.wilderness.elkwight.title": "The Smoke Clears",
   "advancements.mechanical.wilderness.elkwight.description": "Far out in the Scorched Barrens, kill the Elkwight waiting in a burnt ruin. Every attack is shown first: learn the signs",
   "advancements.mechanical.wilderness.elkwight_axe_trophy.title": "Heavy Burden",
@@ -4718,7 +4722,5 @@
   "advancements.mechanical.folklore.dune_wraith.title": "Shape in the Sand",
   "advancements.mechanical.folklore.dune_wraith.description": "See a Dune Wraith in a desert sandstorm. It is after your water",
   "advancements.mechanical.folklore.dune_glass.title": "Glass from the Storm",
-  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
+  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass"
 }
