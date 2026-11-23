@@ -69,6 +69,8 @@ public final class AncientOakStructure extends Structure {
     public static final StructureType<AncientOakStructure> TYPE = () -> CODEC;
     public static final StructurePieceType.ContextlessType PIECE = Piece::new;
     private static final int RADIUS = 30, HEIGHT = 64;
+    /** Trunk and buttresses at the foot reach about this far from its centre (radius()); trails go round outside it. */
+    public static final int TRUNK_R = 9;
 
     public AncientOakStructure(StructureSettings settings) {
         super(settings);
@@ -126,6 +128,17 @@ public final class AncientOakStructure extends Structure {
             super(PIECE, tag);
             seed = tag.getLongOr("seed", 0);
             foot = BlockPos.of(tag.getLongOr("foot", 0));
+        }
+
+        public BlockPos foot() {
+            return foot;
+        }
+
+        /** Where a trail from outside should end: out from the hollow's opening, {@code beyond} blocks past the end of its path between the buttresses. */
+        public BlockPos trailEnd(int beyond) {
+            double[] roots = Shape.rootAngles(RandomSource.create(seed));
+            double a = (roots[0] + roots[1]) / 2, r = 12 + beyond;
+            return BlockPos.containing(foot.getX() + 0.5 + Math.cos(a) * r, foot.getY(), foot.getZ() + 0.5 + Math.sin(a) * r);
         }
 
         @Override
@@ -204,6 +217,15 @@ public final class AncientOakStructure extends Structure {
             return s;
         }
 
+        /** The 7 buttress directions: the shape random's first draws (the door opens between the first two). */
+        static double[] rootAngles(RandomSource rnd) {
+            int n = 7;
+            double[] roots = new double[n];
+            double base = rnd.nextDouble() * Math.PI * 2;
+            for (int i = 0; i < n; i++) roots[i] = base + i * Math.PI * 2 / n + (rnd.nextDouble() - 0.5) * 0.3;
+            return roots;
+        }
+
         final List<Map<BlockPos, BlockState>> layers = new ArrayList<>();
         BlockPos entrance;
         private final RandomSource rnd;
@@ -226,10 +248,7 @@ public final class AncientOakStructure extends Structure {
             z0 = foot.getZ();
             g = foot.getY();
             groundFn = ground;
-            int n = 7;
-            roots = new double[n];
-            double base = rnd.nextDouble() * Math.PI * 2;
-            for (int i = 0; i < n; i++) roots[i] = base + i * Math.PI * 2 / n + (rnd.nextDouble() - 0.5) * 0.3;
+            roots = rootAngles(rnd);
             door = (roots[0] + roots[1]) / 2;
             ph1 = rnd.nextDouble() * 6.3;
             ph2 = rnd.nextDouble() * 6.3;

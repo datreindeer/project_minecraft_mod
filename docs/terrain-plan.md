@@ -109,6 +109,10 @@ Slab/Stairs, Podzol Slab, Sand och Red Sand Slab/Stairs (faller inte), Gravel, M
 (`gen_dirt_slab.py`). Grass Slab hade redan sitt snöiga läge, och Grass Stairs fick samma. Nedre slabs visar nu gräs- och
 snökanten överst, och marken under en gräsig slab blir Dirt (annars syns gräskanten dubbelt). Snöskikt bara där snön ligger året runt, annars snöig slab. Mätning och bilder i `docs/biomes.md`.
 
+**Byggt (stigarna, v0.182.0):** `worldgen/Trails` bygger höga gångbroar i strändernas höjd där en å ligger i en
+skärning (i stället för två stup ner till en bro vid vattnet), och stigar till en Tribe Village eller Ancient Oak går runt
+palissaden eller stammen till porten. Se `docs/biomes.md`, "Stigarnas broar och vägen in".
+
 ## 3. Små saker i landskapet
 
 Detta är enkla features och mallar som läggs ofta och varieras slumpvis. Varje sak listar de biomer den hör till. Det
