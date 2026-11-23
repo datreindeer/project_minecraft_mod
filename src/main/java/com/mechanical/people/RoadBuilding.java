@@ -445,7 +445,7 @@ public final class RoadBuilding extends SavedData {
         boolean trade = r.kind == TRADE;
         int lo = trade ? -1 : 0, hi = 1;
         double wobble = smooth(c.getX(), c.getZ(), 1, 7);
-        boolean ruts = trade && smooth(c.getX(), c.getZ(), 2, 8) > 0.5;
+        boolean ruts = pal.dashes.length > 0 || pal.cold || trade && smooth(c.getX(), c.getZ(), 2, 8) > 0.5; // where the tracks are what shows, always
         int left = lo, right = hi; // the lanes actually laid
         for (int lane = lo - 1; lane <= hi + 1; lane++) {
             boolean extra = lane < lo || lane > hi;
@@ -458,6 +458,18 @@ public final class RoadBuilding extends SavedData {
         }
         soften(level, c.relative(side, left - 1), side.getOpposite(), c.getY());
         soften(level, c.relative(side, right + 1), side, c.getY());
+        trimTall(level, c.relative(side, left - 1));
+        trimTall(level, c.relative(side, right + 1));
+    }
+
+    /** No tall grass or large fern right beside the track (it would hide it): short grass or a fern instead. */
+    private static void trimTall(ServerLevel level, BlockPos at) {
+        if (!level.hasChunkAt(at)) return;
+        BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at);
+        BlockState s = level.getBlockState(p);
+        if (!s.is(Blocks.TALL_GRASS) && !s.is(Blocks.LARGE_FERN)) return;
+        set(level, p.above(), Blocks.AIR.defaultBlockState());
+        set(level, p, (s.is(Blocks.TALL_GRASS) ? Blocks.SHORT_GRASS : Blocks.FERN).defaultBlockState());
     }
 
     /** Ground slabs and stairs (EarthBlocks, laid by roads and by worldgen.SmoothGround on 1-block steps): natural ground too. */
@@ -528,8 +540,10 @@ public final class RoadBuilding extends SavedData {
         if (!step && !surface.is(pal.planks) && !surface.is(pal.log)) {
             double h = hash01(x, z, 9);
             BlockState cover = null;
-            // snowy land: snow lies on the edges in long drifts and on any grass, the middle stays trodden open
-            if (pal.cold) cover = grassy || wear == 2 || wear == 1 && smooth(x, z, 13, 5) > 0.62 ? Blocks.SNOW.defaultBlockState() : null;
+            // snowy land: trodden snow, a thin layer over the track, the earth showing through in broken wheel tracks
+            // (a footpath: down its middle) and a few worn patches
+            boolean bare = wear == 1 && ruts && hash01(x, z, 14) < 0.55 || wear == 0 && !ruts && hash01(x, z, 14) < 0.4 || smooth(x, z, 13, 4) > 0.72;
+            if (pal.cold) cover = bare ? null : Blocks.SNOW.defaultBlockState();
             else if (grassy) cover = h < 0.03 ? Blocks.DANDELION.defaultBlockState() : h < 0.05 ? Blocks.POPPY.defaultBlockState()
                     : h < 0.32 ? Blocks.SHORT_GRASS.defaultBlockState() : null;
             if (cover != null && cover.canSurvive(level, surfacePos.above())) set(level, surfacePos.above(), cover);
@@ -550,7 +564,8 @@ public final class RoadBuilding extends SavedData {
         if (local != null && (wear == 1 && grass && fray > 0.56 || wear == 2 && fray > 0.3)) return grass && fray < (wear == 2 ? 0.6 : 0.78) ? worn : local;
         if (ruts && wear == 0 && local != null) return grass && roll < 0.65 ? worn : local; // the hump between two wheel tracks
         if (grass && smooth(x, z, 12, 4) > 0.66) return roll < 0.6 ? worn : local;
-        if (hash01(x, z, 4) < 0.045) return p.speck;
+        if (ruts && wear == 1 && p.dashes.length > 0 && hash01(x, z, 14) < 0.5) return p.dashes[(int) (hash01(x, z, 15) * p.dashes.length)];
+        if (hash01(x, z, 4) < p.speckRate) return p.specks[(int) (hash01(x, z, 16) * p.specks.length)];
         double v = Math.clamp((smooth(x, z, 6, 3.5) - 0.5) * 2.8 + (hash01(x, z, 10) - 0.5) * 0.45 + 0.5, 0, 0.999);
         return p.earth[(int) (v * p.earth.length)];
     }
@@ -570,7 +585,7 @@ public final class RoadBuilding extends SavedData {
         int x = at.getX(), z = at.getZ();
         if (!level.hasChunkAt(at)) return false;
         BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
-        while (level.getBlockState(top).is(Blocks.SNOW) && top.getY() > level.getMinY()) top = top.below();
+        if (level.getBlockState(top).is(Blocks.SNOW) || level.getBlockState(top.above()).is(Blocks.SNOW)) return false; // snow stays as it lies
         BlockState t = level.getBlockState(top);
         if (!soil(t, level, top) || !clearable(level.getBlockState(top.above())) || !level.getFluidState(top.above()).isEmpty()) return false;
         int h = top.getY() - y;
@@ -596,9 +611,9 @@ public final class RoadBuilding extends SavedData {
     /**
      * A road's ground in one place, so it blends with the land round it: {@code earth}, the full-height earth blocks the
      * track is mottled with by smooth noise (no Dirt Path: a lower block among full ones gets dark shading at every edge),
-     * {@code speck} for single specks, {@code fill} under it, the local wood for crossings, and whether snow lies.
+     * {@code specks} scattered singly at {@code speckRate}, {@code dashes} for broken wheel tracks (or none), {@code fill} under it, the local wood for crossings, and whether snow lies.
      */
-    record Palette(BlockState[] earth, BlockState speck, BlockState fill, Block planks, Block log, boolean cold) {}
+    record Palette(BlockState[] earth, BlockState[] specks, double speckRate, BlockState[] dashes, BlockState fill, Block planks, Block log, boolean cold) {}
 
     private static final int PLAIN = 0, RED = 1, SAND = 2, WET = 3, PODZOL = 4, SNOW = 5;
     private static final ResourceKey<Biome> PEAT_BOG = ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(Mechanical.MODID, "peat_bog"));
@@ -637,30 +652,38 @@ public final class RoadBuilding extends SavedData {
             }
         Holder<Biome> b = level.getBiome(c);
         if (b.is(ModBiomes.MAMMOTH_STEPPE)) extra = EarthBlocks.LOESS.get();
-        else if (b.is(ModBiomes.CHALK_DOWNS)) extra = chalk();
+        else if (b.is(ModBiomes.CHALK_DOWNS)) extra = chalk(); // white: only as specks
         else if (b.is(PEAT_BOG)) extra = EarthBlocks.PEAT.get();
         // grass all round: the biome tells a swamp, snowy land or taiga (not sand: grassy ground is no desert track)
         if (ground == PLAIN) ground = b.is(Tags.Biomes.IS_SWAMP) || b.is(PEAT_BOG) ? WET : b.value().coldEnoughToSnow(c, level.getSeaLevel()) ? SNOW
                 : b.is(BiomeTags.IS_TAIGA) ? PODZOL : PLAIN;
         BlockState coarse = Blocks.COARSE_DIRT.defaultBlockState(), gravel = Blocks.GRAVEL.defaultBlockState(), packed = Blocks.PACKED_MUD.defaultBlockState(),
                 rooted = Blocks.ROOTED_DIRT.defaultBlockState();
-        BlockState speck = gravel, fill = Blocks.DIRT.defaultBlockState();
-        BlockState[] earth;
+        BlockState fill = Blocks.DIRT.defaultBlockState();
+        BlockState[] earth, specks = {gravel}, dashes = {};
+        double speckRate = 0.025;
         boolean conifer = false;
         if (ground == RED) {
             BlockState rs = Blocks.RED_SAND.defaultBlockState();
-            earth = new BlockState[] {rs, coarse, coarse, packed, rs};
+            earth = new BlockState[] {rs};
+            specks = new BlockState[] {coarse, coarse, gravel, packed};
+            speckRate = 0.14;
+            dashes = new BlockState[] {coarse, coarse, packed};
             fill = rs;
         } else if (ground == SAND) {
+            // compacted sand: scattered coarse dirt, gravel and a little packed mud, darker in the two broken wheel tracks
             BlockState sd = Blocks.SAND.defaultBlockState();
-            earth = new BlockState[] {packed, coarse, packed, sd, packed};
-            speck = sd;
+            earth = new BlockState[] {sd};
+            specks = new BlockState[] {coarse, coarse, gravel, packed};
+            speckRate = 0.14;
+            dashes = new BlockState[] {coarse, coarse, gravel, packed};
             fill = sd;
         } else if (ground == WET) {
             earth = new BlockState[] {packed, rooted, coarse, packed, rooted}; // no mud: it is near black
-            speck = rooted;
+            specks = new BlockState[] {rooted};
         } else if (ground == SNOW) {
             earth = new BlockState[] {rooted, coarse, coarse, coarse, rooted};
+            specks = new BlockState[] {coarse};
             conifer = true;
         } else if (ground == PODZOL) {
             earth = new BlockState[] {Blocks.PODZOL.defaultBlockState(), coarse, rooted, coarse, packed};
@@ -668,9 +691,12 @@ public final class RoadBuilding extends SavedData {
         } else {
             earth = new BlockState[] {packed, rooted, coarse, coarse, rooted};
         }
-        if (extra != null) earth = java.util.stream.Stream.concat(java.util.Arrays.stream(earth), java.util.stream.Stream.of(extra.defaultBlockState()))
+        if (extra == chalk()) {
+            specks = new BlockState[] {gravel, extra.defaultBlockState()};
+            speckRate = 0.04;
+        } else if (extra != null) earth = java.util.stream.Stream.concat(java.util.Arrays.stream(earth), java.util.stream.Stream.of(extra.defaultBlockState()))
                 .toArray(BlockState[]::new);
-        return new Palette(earth, speck, fill, conifer ? Blocks.SPRUCE_PLANKS : Blocks.OAK_PLANKS, conifer ? Blocks.SPRUCE_LOG : Blocks.OAK_LOG, ground == SNOW);
+        return new Palette(earth, specks, speckRate, dashes, fill, conifer ? Blocks.SPRUCE_PLANKS : Blocks.OAK_PLANKS, conifer ? Blocks.SPRUCE_LOG : Blocks.OAK_LOG, ground == SNOW);
     }
 
     /** 0..1 from a position. */

@@ -243,11 +243,11 @@ public final class RoadShots {
         BlockPos tradeStart = road(level, s[0], bestX, bestZ + 4, RoadBuilding.TRADE);
         if (tradeStart == null) return;
         int gy = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bestX, bestZ + 4);
-        cams.add(new double[] {tradeStart.getX() + 0.5, tradeStart.getY() + 1.1, tradeStart.getZ() + 0.5, -90, 12}); // eye, looking east along it
-        cams.add(new double[] {bestX - 10.5, gy + 15, bestZ + 16.5, -140, 40}); // 15 up, from the south-west
-        if (pathEnd != null) cams.add(new double[] {pathEnd.getX() + 0.5, pathEnd.getY() + 1.1, pathEnd.getZ() + 0.5, 90, 12}); // on the path, looking west
+        cams.add(new double[] {tradeStart.getX() + 0.5, open(level, tradeStart.getX(), tradeStart.getY() + 1.1, tradeStart.getZ()), tradeStart.getZ() + 0.5, -90, 12}); // eye, looking east along it
+        cams.add(new double[] {bestX - 10.5, Math.max(gy + 15, level.getHeight(Heightmap.Types.MOTION_BLOCKING, bestX - 11, bestZ + 16) + 3), bestZ + 16.5, -140, 40}); // 15 up, from the south-west
+        if (pathEnd != null) cams.add(new double[] {pathEnd.getX() + 0.5, open(level, pathEnd.getX(), pathEnd.getY() + 1.1, pathEnd.getZ()), pathEnd.getZ() + 0.5, 90, 12}); // on the path, looking west
         int cy = Math.max(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bestX - 8, bestZ + 4), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bestX - 12, bestZ + 4));
-        cams.add(new double[] {bestX - 11.5, cy + 2.2, bestZ + 4.5, -90, 38}); // close up, looking down the trade road
+        cams.add(new double[] {bestX - 11.5, open(level, bestX - 12, cy + 2.2, bestZ + 4), bestZ + 4.5, -90, 38}); // close up, looking down the trade road
         result.add(s[0] + ": " + s[1] + " at " + bestX + " " + bestZ + " (height range + bad " + bestRange + ")");
     }
 
@@ -264,6 +264,17 @@ public final class RoadShots {
         for (int i = 0; i < r.cells.size(); i++) RoadBuilding.buildCell(level, r, i);
         result.add(name + " kind " + kind + ": " + r.cells.size() + " cells, from " + r.cell(0) + " to " + r.cell(r.cells.size() - 1));
         return kind == RoadBuilding.TRADE ? r.cell(0) : r.cell(r.cells.size() - 1);
+    }
+
+    /** The lowest camera height from {@code y} up where the camera and the block below its eye are not inside a block (a log, leaves). */
+    private static double open(ServerLevel level, int x, double y, int z) {
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, (int) Math.floor(y), z);
+        for (int i = 0; i < 12; i++) {
+            if (level.getBlockState(p).getCollisionShape(level, p).isEmpty() && level.getBlockState(p.above()).getCollisionShape(level, p.above()).isEmpty()) break;
+            p.move(0, 1, 0);
+            y += 1;
+        }
+        return y;
     }
 
     private static void cmd(String c) {
