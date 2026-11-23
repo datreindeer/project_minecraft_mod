@@ -1,7 +1,21 @@
 {
   "variants": {
-    "": {
-      "model": "mechanical:block/packed_sand"
-    }
+    "": [
+      {
+        "model": "mechanical:block/packed_sand"
+      },
+      {
+        "model": "mechanical:block/packed_sand",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/packed_sand",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/packed_sand",
+        "y": 270
+      }
+    ]
   }
 }

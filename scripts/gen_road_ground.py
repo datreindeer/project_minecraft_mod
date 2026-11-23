@@ -35,10 +35,15 @@ def tag_add(rel, values):
 
 
 BLOCKS = ["packed_sand", "packed_red_sand", "packed_snow"]
+def turned(model):
+    return [{"model": model}, {"model": model, "y": 90}, {"model": model, "y": 180}, {"model": model, "y": 270}]
+
+
 for b in BLOCKS:
     tex = M + "block/" + b
     w(A / f"models/block/{b}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex}})
-    w(A / f"blockstates/{b}.json", {"variants": {"": {"model": M + "block/" + b}}})
+    # turned at random like vanilla sand, so the 16 px tile never shows as a grid
+    w(A / f"blockstates/{b}.json", {"variants": {"": turned(M + "block/" + b)}})
     w(A / f"items/{b}.json", {"model": {"type": "minecraft:model", "model": M + "block/" + b}})
     w(D / f"mechanical/loot_table/blocks/{b}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "condition": {"type": "minecraft:survives_explosion"},
                                                      "entries": [{"type": "minecraft:item", "name": M + b}]}], "random_sequence": f"mechanical:blocks/{b}"})
@@ -46,8 +51,8 @@ for b in BLOCKS:
     cube = {"top": tex, "side": tex, "bottom": tex, "particle": tex}
     w(A / f"models/block/{s}.json", {"parent": M + "block/ground_slab", "textures": cube})
     w(A / f"models/block/{s}_top.json", {"parent": "minecraft:block/slab_top", "textures": cube})
-    w(A / f"blockstates/{s}.json", {"variants": {"type=bottom": {"model": M + f"block/{s}"}, "type=top": {"model": M + f"block/{s}_top"},
-                                                 "type=double": {"model": M + "block/" + b}}})
+    w(A / f"blockstates/{s}.json", {"variants": {"type=bottom": turned(M + f"block/{s}"), "type=top": turned(M + f"block/{s}_top"),
+                                                 "type=double": turned(M + "block/" + b)}})
     w(A / f"items/{s}.json", {"model": {"type": "minecraft:model", "model": M + f"block/{s}"}})
     w(D / f"mechanical/loot_table/blocks/{s}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
         {"type": "minecraft:item", "name": M + s, "modifier": [

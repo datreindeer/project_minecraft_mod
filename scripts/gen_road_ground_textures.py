@@ -55,14 +55,13 @@ def packed(src, warm, seed, pebbles):
             l = lum(c)
             if l > mean:
                 c = mix(c, tuple(int(v * mean / max(l, 1)) for v in c[:3]), 0.45)
-            k = 0.96 - 0.05 * damp[y][x]
+            k = 0.97 - 0.02 * damp[y][x]
             px[x, y] = mix(tuple(int(v * k) for v in c[:3]) + (255,), warm, 0.2)  # warm, so darkening never turns it olive
     # a few small pebbles, low contrast, never in a row
     for _ in range(pebbles):
         x, y = rnd.randrange(16), rnd.randrange(16)
         c = px[x, y]
-        px[x, y] = mix(c, (120, 112, 100), 0.55)
-        px[x, (y - 1) % 16] = mix(px[x, (y - 1) % 16], (230, 222, 205), 0.3)
+        px[x, y] = mix(c, (120, 112, 100), 0.3)
     return img
 
 
@@ -76,18 +75,17 @@ def packed_snow(seed):
             c = px[x, y]
             t = trod[y][x]
             # compressed: greyer and bluer, darker where it was trodden most, a pixel of grain here and there
-            c = mix(c, (186, 196, 208), 0.22 + 0.18 * t)
-            if rnd.random() < 0.12:
-                c = mix(c, (160, 170, 184), 0.4)
+            c = mix(c, (190, 200, 212), 0.18 + 0.1 * t)
+            if rnd.random() < 0.04:
+                c = mix(c, (170, 180, 192), 0.25)
             px[x, y] = c
     # two specks of kicked-up dirt, soft
-    for _ in range(2):
-        x, y = rnd.randrange(16), rnd.randrange(16)
-        px[x, y] = mix(px[x, y], (120, 100, 80), 0.55)
+    x, y = rnd.randrange(16), rnd.randrange(16)
+    px[x, y] = mix(px[x, y], (120, 100, 80), 0.35)
     return img
 
 
-packed(vanilla("sand"), (200, 168, 120), 11, 3).save(OUT / "packed_sand.png")
-packed(vanilla("red_sand"), (160, 96, 60), 12, 3).save(OUT / "packed_red_sand.png")
+packed(vanilla("sand"), (200, 168, 120), 11, 2).save(OUT / "packed_sand.png")
+packed(vanilla("red_sand"), (160, 96, 60), 12, 2).save(OUT / "packed_red_sand.png")
 packed_snow(13).save(OUT / "packed_snow.png")
 print("ok")
