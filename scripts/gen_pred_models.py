@@ -781,25 +781,33 @@ def wolf_colour(m, q):
     if m in ("snout", "muzzle"):
         if q.face == "top":
             return lit(lerp(WO["tawny"], WO["saddle"], 0.5 if m == "snout" else 0.35), q, 6, 24)  # the dark bridge
-        if q.face == "bottom" or (q.y > 0 and q.face != "front") or (m == "muzzle" and q.y > 0):
+        if q.face == "bottom" or q.y > 0:
             return lit(WO["cream"], q, 6, 24)  # pale lips and chin
         return lit(lerp(WO["buff"], WO["tawny"], 0.45), q, 6, 24)
     if m == "nose":
-        return WO["nose"] if not (q.face == "front" and q.j == 0) else lerp(WO["nose"], (80, 76, 74), 0.35)
+        if q.face == "top":
+            return lit(lerp(WO["tawny"], WO["saddle"], 0.55), q, 6, 24)  # the bridge runs on to the tip; the black shows in front
+        return WO["nose"]
     if m == "jaw":
         if q.face == "top":
             return WO["mouth"] if abs(q.x) < 1 else WO["tooth"]
         return lit(WO["cream"], q, 6, 24)
-    if m == "ear":
-        # pointed: the top corners and the top face cut away; grey-brown with dark rims, pale fur inside
-        if q.face == "top" or (q.j == 0 and (q.fw < 3 or q.i in (0, q.fw - 1))):
-            return None
-        rim = q.fw >= 3 and q.i in (0, q.fw - 1) and q.j < q.fh - 1
-        rim_c = lerp(WO["saddle"], WO["grizzle"], 0.3)
+    if m.startswith("ear_"):
+        # grey-brown, the outer edges and the tip dark, pale fur inside the base
+        rim_c = lerp(WO["saddle"], WO["grizzle"], 0.25)
+        if m == "ear_tip":
+            return lit(rim_c, q, 6, 24)
         if q.face == "front":
-            return rim_c if rim else lerp(WO["buff"], WO["tawny"], 0.2 + 0.3 * q.j / max(1, q.fh - 1))
-        c = lerp(WO["grizzle"], WO["tawny"], 0.2 + 0.4 * q.j / max(1, q.fh - 1))
-        return lit(rim_c if rim else c, q, 6, 24)
+            edge = q.i in (0, q.fw - 1)
+            if m == "ear_base":
+                return rim_c if edge else lerp(WO["cream"], WO["buff"], 0.5)
+            return lerp(WO["buff"], WO["tawny"], 0.5) if not edge or q.fw < 2 else lerp(rim_c, WO["tawny"], 0.4)
+        return lit(lerp(WO["grizzle"], WO["tawny"], 0.35 if m == "ear_base" else 0.1), q, 6, 24)
+    if m == "ruff":
+        if ragged(q, 1.5, 102):
+            return None
+        c = lerp(WO["cream"], WO["buff"], 0.3 * h(q.tx, 0, 103)) if q.face == "front" and abs(q.x) < 1.5 else lerp(WO["buff"], WO["grizzle"], 0.45)
+        return lit(agouti(locks(c, q, 104, 0.12, 3), q, 105), q, 6, 24)
     if m.startswith("tail"):
         tip = m == "tail3"
         c = WO["dark"] if tip and q.j >= 1 else (lerp(WO["saddle"], WO["grizzle"], 0.4) if q.n[1] < 0.3 and q.face != "bottom"
@@ -833,17 +841,19 @@ def grey_wolf():
     M.box("body", "hips", -2.5, -3.5, 5, 5, 6, 4)
     M.part("neck", "body", (0, -1.5, -7.5), (-0.55, 0, 0))
     M.box("neck", "neck", -2.5, -3, -3, 5, 6, 3)
+    M.box("neck", "ruff", -3.5, -2, -3.5, 7, 7, 4)
     M.part("head", "body", (0, -3, -9.5))
     M.box("head", "skull", -2.5, -3, -3.5, 5, 4, 4)
     M.box("head", "cheeks", -3, -1, -2, 6, 3, 2)
-    M.box("head", "snout", -1.5, -2, -5.5, 3, 3, 2)  # the muzzle tapers: skull 5, snout 3, muzzle 2 wide
+    M.box("head", "snout", -1.5, -1.5, -5.5, 3, 3, 2)  # the muzzle tapers: skull 5, snout 3, muzzle 2 wide
     M.box("head", "muzzle", -1, -1, -8.5, 2, 2, 3)
-    M.box("head", "nose", -1, -1.5, -9, 2, 1, 1)
+    M.box("head", "nose", -1, -1.75, -8.5, 2, 1, 1)  # flush with the muzzle tip, sitting on top of it
     M.part("jaw", "head", (0, 1, -5.5))
     M.box("jaw", "jaw", -1, 0, -3, 2, 1, 3)
     for s, sign in (("right", -1), ("left", 1)):
-        M.part(f"{s}_ear", "head", (sign * 1.8, -2.8, -1), (0, 0, 0.15 * sign))
-        M.limb(f"{s}_ear", sign, (-1.5, -3, -0.5, 3, 3, 1), mat="ear")
+        M.part(f"{s}_ear", "head", (sign * 1.6, -2.8, -1.5), (0.15, 0, 0.25 * sign))
+        M.limb(f"{s}_ear", sign, (-1.5, -1, -0.5, 3, 1, 1), (-1, -2, -0.5, 2, 1, 1), (-0.5, -3, -0.5, 1, 1, 1),
+               mat=["ear_base", "ear_mid", "ear_tip"])
     M.part("tail", "body", (0, -2.5, 8.5), (0.75, 0, 0))
     M.box("tail", "tail1", -1, 0, -1, 2, 3, 2)
     M.part("tail_mid", "tail", (0, 2.5, 0), (0.12, 0, 0))
