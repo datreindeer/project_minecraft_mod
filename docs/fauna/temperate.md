@@ -10,9 +10,10 @@ och **laxvandringen**. Nya block och mekaniker: **Grub Log**, **Bumblebee Nest**
 Kod: `wildlife/temperate/` (TemperateFauna, Wisent, PondTurtle, WaterVole, StagBeetle, Woodpecker, TawnyOwl, Skylark (även
 lärkan och viporna), Bittern, SeaEagle, Eel, RedFox, StoatDance, SoundersAndColonies, SalmonRun, Leeches, GrubLogBlock,
 BumblebeeNestBlock, FoxDenBlock, FoxTracksBlock, TemperateTest), klient `client/wildlife/temperate/` (TemperateClient,
-StagBeetleModel, EelModel). Ändrat utanför paketet: `FishTrapBlock` (ål och kräftor), `BirdNestBlock` (SKYLARK, LAPWING),
+TemperateGeometry, StagBeetleModel, EelModel). Ändrat utanför paketet: `FishTrapBlock` (ål och kräftor), `BirdNestBlock` (SKYLARK, LAPWING),
 `VanillaGame` (rävens slakt flyttad hit), `Owl` (kan ha andra sorter), `ColdhuntersFauna.CURES` (öppen för andra paket).
-Data: `scripts/gen_fauna_temperate.py`, texturer: `scripts/gen_fauna_temperate_textures.py`.
+Data: `scripts/gen_fauna_temperate.py`, texturer: `scripts/gen_fauna_temperate_textures.py` (föremål och block) och
+`scripts/gen_temperate_models.py` (djurens modeller och hudar).
 
 ## Gemensamt
 
@@ -21,10 +22,14 @@ Data: `scripts/gen_fauna_temperate.py`, texturer: `scripts/gen_fauna_temperate_t
 - Plockade fåglar (Plucked Skylark/Lapwing/Bittern): ta det plockade kadavret med tom hand; grillas hela på Campfire (30 s)
   eller skärs med kniv till rått kött.
 - Spawn i data (biome modifiers); WildlifeRestock fyller på av sig själv.
-- De flesta nya djur lånar modell av ett släktdjur med egen textur: wisenten stäppbisonens, kärrsköldpaddan landsköldpaddans
-  (mindre och plattare), vattensorken åkersorkens (större), kattugglan berguvens (mindre, utan örontofsar), havsörnen
-  kungsörnens (större), rördrommen hägerns (lägre och kraftigare), och hackspetten, sånglärkan och tofsvipan klippduvans
-  (mindre). Ekoxen och ålen har egna modeller.
+- Alla nya djur har egna modeller och texturer (`scripts/gen_temperate_models.py` skriver `TemperateGeometry.java`, hudarna
+  och de flådda/plockade kadaverhudarna). Modellerna behåller delnamnen i den modellklass som animerar dem, så gångarten och
+  poserna är släktdjurets: wisenten (hög puckel, ullig framdel, skägg, korta horn) rörs av stäppbisonens BisonModel,
+  kärrsköldpaddan (låg, rundad sköld, utspärrade simfötter) av landsköldpaddans, vattensorken av åkersorkens, kattugglan
+  och havsörnen av skogsfåglarnas, rördrommen av hägerns och hackspetten, sånglärkan och tofsvipan (med sin långa tofs) av
+  flockfåglarnas. Ekoxen (stora käkar, täckvingar, sex leder ben) och ålen har egna modellklasser.
+- Bilder: `TemperateShots` (flaggfil `run/temperateshots.flag`: rad 1 en utmapp, rad 2 valfritt vilka djur), tre vinklar per
+  djur; sparade i `docs/shots/fauna/temperate_*.png`.
 
 ## Slätt, solrosslätt, hasseläng
 

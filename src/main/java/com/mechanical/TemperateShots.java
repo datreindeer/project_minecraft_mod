@@ -35,9 +35,11 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 /**
  * Dev only (like {@link LogShots}): with a file {@code temperateshots.flag} in the game directory (its first line: an
- * output folder), the client opens the world "TemperateShots", builds a grass platform at y 200 and photographs each
- * temperate animal (wildlife.temperate) standing still in a three-quarter view: temperate_&lt;name&gt;.png, then writes
- * temperate_result.txt and quits. The eel is shot in a pool. Does nothing without the flag file.
+ * output folder; an optional second line: a comma list of subject names to shoot, else all), the client opens the world
+ * "TemperateShots", builds a grass platform at y 200 and photographs each temperate animal (wildlife.temperate)
+ * standing still, the camera at its eye height: three-quarter (temperate_&lt;name&gt;.png), side (_side) and front
+ * (_front), then writes temperate_result.txt and quits. The eel is shot in a pool and on land. Does nothing without the
+ * flag file.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class TemperateShots {
@@ -45,24 +47,30 @@ public final class TemperateShots {
     private record Subject(String name, Supplier<? extends EntityType<?>> type, boolean baby, double distance, Consumer<Entity> setup, boolean water) {}
 
     private static final List<Subject> SUBJECTS = List.of(
-            new Subject("wisent", TemperateFauna.WISENT, false, 5.5, e -> bull(e), false),
-            new Subject("wisent_calf", TemperateFauna.WISENT, true, 3.0, null, false),
-            new Subject("pond_turtle", TemperateFauna.POND_TURTLE, false, 1.6, null, false),
-            new Subject("water_vole", TemperateFauna.WATER_VOLE, false, 1.3, null, false),
-            new Subject("stag_beetle", TemperateFauna.STAG_BEETLE, false, 1.1, null, false),
-            new Subject("woodpecker", TemperateFauna.WOODPECKER, false, 1.4, null, false),
-            new Subject("tawny_owl", TemperateFauna.TAWNY_OWL, false, 1.8, null, false),
-            new Subject("skylark", TemperateFauna.SKYLARK, false, 1.2, null, false),
-            new Subject("lapwing", TemperateFauna.LAPWING, false, 1.4, null, false),
-            new Subject("bittern", TemperateFauna.BITTERN, false, 2.2, null, false),
-            new Subject("sea_eagle", TemperateFauna.SEA_EAGLE, false, 3.0, null, false),
-            new Subject("eel", TemperateFauna.EEL, false, 1.8, null, true),
+            new Subject("wisent", TemperateFauna.WISENT, false, 4.2, e -> bull(e), false),
+            new Subject("wisent_cow", TemperateFauna.WISENT, false, 4.0, null, false),
+            new Subject("wisent_calf", TemperateFauna.WISENT, true, 2.6, null, false),
+            new Subject("pond_turtle", TemperateFauna.POND_TURTLE, false, 1.1, null, false),
+            new Subject("water_vole", TemperateFauna.WATER_VOLE, false, 1.0, null, false),
+            new Subject("stag_beetle", TemperateFauna.STAG_BEETLE, false, 1.0, null, false),
+            new Subject("woodpecker", TemperateFauna.WOODPECKER, false, 1.0, null, false),
+            new Subject("tawny_owl", TemperateFauna.TAWNY_OWL, false, 1.5, null, false),
+            new Subject("skylark", TemperateFauna.SKYLARK, false, 0.9, null, false),
+            new Subject("lapwing", TemperateFauna.LAPWING, false, 1.0, null, false),
+            new Subject("bittern", TemperateFauna.BITTERN, false, 2.0, null, false),
+            new Subject("sea_eagle", TemperateFauna.SEA_EAGLE, false, 2.4, null, false),
+            new Subject("eel", TemperateFauna.EEL, false, 1.5, null, true),
+            new Subject("eel_land", TemperateFauna.EEL, false, 1.4, null, false),
             new Subject("red_fox_with_egg", () -> EntityTypes.FOX, false, 2.2,
                     e -> ((Mob) e).setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.EGG)), false),
             new Subject("stoat", com.mechanical.wildlife.coldhunters.ColdhuntersFauna.ERMINE, false, 1.5, null, false),
             new Subject("boar_tusker", Wildlife.WILD_BOAR, false, 3.5, e -> SoundersAndColonies.makeTusker((com.mechanical.wildlife.WildBoar) e), false));
 
-    private static int stage = -1, ticks, index;
+    private static int stage = -1, ticks, index, view;
+    /** Camera angles from the animal's heading (degrees) and their file suffixes: three-quarter, side, front. */
+    private static final int[] VIEW_ANGLE = {50, 90, 0};
+    private static final String[] VIEW_NAME = {"", "_side", "_front"};
+    private static java.util.Set<String> only;
     private static File out;
     private static final List<String> result = new ArrayList<>();
     private static Vec3 base;
@@ -87,7 +95,9 @@ public final class TemperateShots {
                     stage = -2;
                     return;
                 }
-                out = new File(Files.readAllLines(flag.toPath()).get(0).trim());
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                if (lines.size() > 1 && !lines.get(1).isBlank()) only = java.util.Set.of(lines.get(1).trim().split("\s*,\s*"));
                 out.mkdirs();
                 stage = 0;
             }
@@ -120,6 +130,7 @@ public final class TemperateShots {
                 }
                 case 2 -> { // place the next subject
                     if (ticks < 40) return;
+                    while (index < SUBJECTS.size() && only != null && !only.contains(SUBJECTS.get(index).name())) index++;
                     if (index >= SUBJECTS.size()) {
                         stage = 4;
                         ticks = 0;
@@ -130,14 +141,20 @@ public final class TemperateShots {
                     stage = 3;
                     ticks = 0;
                 }
-                case 3 -> { // let the chunk render, then shoot
-                    if (ticks < 100) return;
+                case 3 -> { // let the chunk render, then shoot each view
+                    if (ticks < (view == 0 ? 100 : 25)) return;
                     Subject s = SUBJECTS.get(index);
-                    shot(mc, s.name());
-                    result.add(s.name() + ": " + current);
+                    shot(mc, s.name() + VIEW_NAME[view]);
+                    if (view == 0) result.add(s.name() + ": " + current);
+                    ticks = 0;
+                    if (++view < VIEW_ANGLE.length) {
+                        int v = view;
+                        server.execute(() -> aim(s, v));
+                        return;
+                    }
+                    view = 0;
                     index++;
                     stage = 2;
-                    ticks = 0;
                 }
                 case 5 -> { // build once the chunks over there are loaded
                     if (ticks < 80) return;
@@ -210,8 +227,16 @@ public final class TemperateShots {
         if (s.setup() != null) s.setup().accept(e);
         level.addFreshEntity(e);
         current = e;
-        Vec3 mid = e.position().add(0, e.getBbHeight() * 0.5, 0);
-        Vec3 eye = mid.add(new Vec3(-0.55, 0.35, -0.75).normalize().scale(s.distance()));
+        aim(s, 0);
+    }
+
+    /** The camera {@code distance} from the animal at its eye height, VIEW_ANGLE[view] degrees off its heading. */
+    private static void aim(Subject s, int view) {
+        ServerLevel level = player().level();
+        Entity e = current;
+        Vec3 mid = e.position().add(0, Math.max(e.getEyeHeight() * 0.9, e.getBbHeight() * 0.45), 0);
+        double a = Math.toRadians(e.getYRot() + VIEW_ANGLE[view]);
+        Vec3 eye = mid.add(new Vec3(-Math.sin(a), 0.12, Math.cos(a)).normalize().scale(s.distance()));
         Vec3 d = mid.subtract(eye);
         float camYaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
         float camPitch = (float) Math.toDegrees(-Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));

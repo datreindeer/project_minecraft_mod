@@ -1,10 +1,6 @@
 """Textures for the temperate fauna (wildlife/temperate, scripts/gen_fauna_temperate.py).
 
-Most temperate animals borrow the model of a related animal (TemperateClient), so their skins are that animal's texture
-repainted: every pixel keeps its shading but takes its colour from a new palette (dark -> light ramp by brightness),
-with per-species touches painted on top (the woodpecker's red, the lapwing's white belly, the turtle's yellow
-speckles, the tawny owl's missing ear tufts...). The stag beetle and the eel have their own small models and are
-painted from scratch. Items and blocks: repainted mod textures where a close one exists (meats, pelts, rug, eggs, the
+The animals have their own models; their skins come from scripts/gen_temperate_models.py. Items and blocks: repainted mod textures where a close one exists (meats, pelts, rug, eggs, the
 marten cap), else drawn here.
 Run: python scripts/gen_fauna_temperate_textures.py (after the textures it reads exist)."""
 import random
@@ -69,117 +65,7 @@ def save(im, path):
     im.save(path)
 
 
-# ---------------------------------------------------------------- animals on borrowed models
-
-# wisent: darker, richer brown than the steppe bison, almost black on the head and legs
-WISENT = ["#1c120c", "#2e1d12", "#4a2f1b", "#6b4527", "#8a6038"]
-for part in ("bull", "cow", "calf"):
-    stops = WISENT if part != "calf" else ["#3a2414", "#5c3b21", "#86592f", "#a87a46"]
-    save(recolor(ENT / f"giants/steppe_bison_{part}.png", stops, 1.1), OUT / f"wisent_{part}.png")
-
-# pond turtle: near-black shell and skin with fine yellow speckles
-turtle = recolor(ENT / "tortoise.png", ["#101410", "#1d241b", "#2c3527", "#3f4a36", "#56604a"], 1.0)
-save(speckle(turtle, "#d8c24a", 0.07, seed=3), OUT / "pond_turtle.png")
-
-# water vole: a deep chestnut brown, a shade paler below
-save(recolor(ENT / "field_vole.png", ["#1f130b", "#3a2414", "#55361f", "#73502f", "#94704a"], 1.0), OUT / "water_vole.png")
-
-# tawny owl: warm russet with dark streaks; the ear tufts (eagle-owl) left blank
-owl = recolor(ENT / "owl.png", ["#2a160b", "#4f2a14", "#7a4421", "#a3683a", "#c99a68"], 1.1)
-for x in range(56, 60):  # the eagle-owl's ear tufts (texOffs 56,12, a 1x2x1 box): blank, so they are not drawn
-    for y in range(12, 15):
-        owl.putpixel((x, y), (0, 0, 0, 0))
-save(speckle(owl, "#2a140a", 0.08, seed=4), ENT / "tawny_owl.png")
-
-# sea eagle: dark brown body, a pale head and neck (top rows of the head boxes) and white tail
-eagle = recolor(ENT / "golden_eagle.png", ["#1f150e", "#35261a", "#4d3a28", "#6b553d", "#8a7356"], 1.0)
-PALE, WHITE = ["#9c907a", "#bdb29a", "#d8cfb8", "#ebe4d0"], ["#d8d6cc", "#ecebe4", "#fbfaf6"]
-eagle = recolor(eagle, PALE, 1.0, lambda x, y: (x < 18 and 16 <= y < 25) or (42 <= x < 54 and 16 <= y < 22))  # head and neck
-eagle = recolor(eagle, WHITE, 1.0, lambda x, y: 18 <= x < 42 and 16 <= y < 24)  # tail
-for x in range(12, 26):  # the big yellow bill
-    for y in range(25, 29):
-        if eagle.getpixel((x, y))[3]:
-            eagle.putpixel((x, y), (214, 176, 52, 255))
-save(eagle, ENT / "sea_eagle.png")
-
-# bittern: buff-brown, heavily streaked dark
-bittern = recolor(ENT / "grey_heron.png", ["#2b1d0f", "#5a4022", "#8a6a3c", "#b49460", "#d8bf8c"], 1.0)
-save(speckle(bittern, "#2b1a0c", 0.12, seed=5), ENT / "bittern.png")
-
-# small birds on the rock dove's model
-# woodpecker: black and white, with red speckled in (crown and under the tail)
-pecker = recolor(ENT / "rock_dove.png", ["#0d0d0f", "#1d1d22", "#3a3a40", "#d9d9d4", "#f4f4ef"], 1.6)
-for x in range(51, 53):  # red nape patch: the head box's top face (texOffs 48,0; 2x2x3)
-    for y in range(0, 3):
-        pecker.putpixel((x, y), (196, 35, 30, 255))
-for x in range(40, 42):  # red under the tail: the tail box's underside (texOffs 36,0; 2x1x4)
-    for y in range(0, 4):
-        pecker.putpixel((x, y), (196, 35, 30, 255))
-for y in range(1, 6):  # white shoulder patches on the wings (texOffs 18,0)
-    pecker.putpixel((24, y), (240, 240, 236, 255))
-save(pecker, ENT / "woodpecker.png")
-# skylark: streaky sandy brown
-lark = recolor(ENT / "rock_dove.png", ["#3a2a18", "#5e4529", "#86683f", "#ab8d5e", "#cdb487"], 1.2)
-save(speckle(lark, "#3a2814", 0.15, seed=9), ENT / "skylark.png")
-# lapwing: glossy dark green above, white below
-save(recolor(ENT / "rock_dove.png", ["#0c1a14", "#1c3326", "#2f4a39", "#e6e6e0", "#ffffff"], 1.5), ENT / "lapwing.png")
-
-
-# ---------------------------------------------------------------- stag beetle (32x32, StagBeetleModel)
-
-def stag_beetle(male):
-    im = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
-    px = im.load()
-
-    def fill(x0, y0, x1, y1, stops, seed):
-        r = random.Random(seed)
-        for x in range(x0, x1):
-            for y in range(y0, y1):
-                px[x, y] = ramp(stops, 0.35 + r.random() * 0.4) + (255,)
-
-    elytra = ["#2a1208", "#4e2410", "#6e3518", "#8f4a22"] if male else ["#1c0f08", "#33190c", "#4a2512", "#5f331a"]
-    black = ["#0c0807", "#18100c", "#241811", "#332218"]
-    fill(0, 0, 18, 8, elytra, 1)          # body / wing cases
-    for x in range(5, 9):                 # the seam down the middle of the wing cases (top face)
-        px[x, 2] = hexc("#1a0c06") + (255,)
-    fill(0, 8, 10, 13, black, 2)          # thorax
-    fill(10, 8, 19, 12, black, 3)         # head
-    fill(0, 14, 10, 19, ["#3a1608", "#62280f", "#86391a", "#a8502a"], 4)  # jaws
-    fill(10, 18, 13, 19, ["#3a1608", "#62280f"], 5)
-    fill(10, 14, 17, 17, black, 6)        # small jaws
-    fill(20, 0, 26, 1, black, 7)          # legs
-    for x, y in ((2, 1), (12, 1), (3, 5)):  # gloss
-        px[x, y] = hexc("#c07a48" if male else "#7a4a2c") + (255,)
-    return im
-
-
-save(stag_beetle(True), OUT / "stag_beetle.png")
-save(stag_beetle(False), OUT / "stag_beetle_female.png")
-
-
-# ---------------------------------------------------------------- eel (64x32, EelModel)
-
-def eel():
-    im = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-    px = im.load()
-    r = random.Random(11)
-    back, belly = ["#1b1a0c", "#2c2b14", "#3c3a1d"], ["#8d8442", "#b0a557", "#c9bd6b"]
-    boxes = [(0, 0, 16, 8), (16, 8, 23, 12), (16, 0, 32, 8), (32, 0, 47, 8), (48, 0, 60, 7)]
-    for x0, y0, x1, y1 in boxes:
-        for x in range(x0, x1):
-            for y in range(y0, y1):
-                lower = (y - y0) > (y1 - y0) * 0.6
-                px[x, y] = ramp(belly if lower else back, r.random()) + (255,)
-    for x0, y0, x1, y1 in [(0, 16, 10, 22), (10, 16, 22, 23), (22, 16, 32, 22), (32, 16, 44, 26)]:  # fins: dark, ragged edge
-        for x in range(x0, x1):
-            for y in range(y0, y1):
-                if r.random() < 0.85:
-                    px[x, y] = ramp(["#2a2814", "#45421f"], r.random()) + (230,)
-    px[17, 9] = px[21, 9] = (10, 10, 6, 255)  # eyes
-    return im
-
-
-save(eel(), OUT / "eel.png")
+# the animals' skins (and their models) are painted by scripts/gen_temperate_models.py
 
 
 # ---------------------------------------------------------------- items
