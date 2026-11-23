@@ -80,6 +80,7 @@ public final class Folklore {
     public static void init(IEventBus modEventBus) {
         MOB_EFFECTS.register(modEventBus);
         Faith.selfCheck();
+        Beings.init(modEventBus);
     }
 
     @SubscribeEvent

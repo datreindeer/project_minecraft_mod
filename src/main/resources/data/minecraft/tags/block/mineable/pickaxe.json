@@ -552,6 +552,8 @@
     "mechanical:loose_gypsum",
     "mechanical:loose_alabaster",
     "mechanical:loose_alum_shale",
-    "mechanical:steel_casting_table"
+    "mechanical:steel_casting_table",
+    "mechanical:frost_heart",
+    "mechanical:mossy_troll_stone"
   ]
 }

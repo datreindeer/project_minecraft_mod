@@ -47,6 +47,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public final class Faith {
     public static final float MAX = 100, SECOND_SIGHT_BONUS = 50, GIFT = 3, NEW_KIND = 5, FELL_STUMP = -25;
     public static final float STUMP_SIGHT = 10, WATCHER_SIGHT = 40;
+    /** The folklore beings (Beings): what sight each needs, and what a worn Spirit Mask adds. */
+    public static final float WISP_SIGHT = 10, TOMTE_SIGHT = 20, WRAITH_SIGHT = 20, HULDRA_SIGHT = 25, MASK_SIGHT = 15, NACKEN_SIGHT = 30;
     static final ResourceKey<LootTable> GIFT_LOOT = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "gameplay/stump_gift"));
 
     public static final Supplier<AttachmentType<Float>> FAITH = Mechanical.ATTACHMENTS.register("faith", () -> AttachmentType
@@ -93,7 +95,8 @@ public final class Faith {
     }
 
     public static float sight(Player player) {
-        return sight(of(player), player.hasEffect(Folklore.SECOND_SIGHT));
+        return sight(of(player), player.hasEffect(Folklore.SECOND_SIGHT))
+                + (player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(Beings.SPIRIT_MASK.get()) ? MASK_SIGHT : 0);
     }
 
     public static boolean canSee(Player player, float threshold) {

@@ -34,6 +34,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public class Troll extends WildAnimal implements Underground.Fearless {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/troll.png");
     static final double SIGHT = 16, SIGHT_SNEAKING = 6;
+    /** Woken from Mossy Troll Stone in the taiga (folklore.TrollStone): sleeps again as that stone instead of dying in the sun. */
+    public static final String FOREST_TAG = "mechanical_forest_troll";
+    /** A forest troll sleeps again after this many ticks with nobody to chase, or in daylight once awake this long. */
+    static final int FOREST_IDLE = 600, FOREST_DAY = 1200;
+    private int idle;
 
     public Troll(EntityType<? extends Troll> type, Level level) {
         super(type, level);
@@ -59,8 +64,14 @@ public class Troll extends WildAnimal implements Underground.Fearless {
     public void aiStep() {
         super.aiStep();
         if (level().isClientSide() || (tickCount + getId()) % 10 != 0) return;
-        if (inDaylight()) {
-            petrify();
+        if (entityTags().contains(FOREST_TAG)) {
+            idle = getTarget() == null ? idle + 10 : 0;
+            if (idle > FOREST_IDLE || inDaylight() && tickCount > FOREST_DAY) {
+                petrify(com.mechanical.folklore.Beings.MOSSY_TROLL_STONE.get().defaultBlockState());
+                return;
+            }
+        } else if (inDaylight()) {
+            petrify(UndergroundFauna.TROLL_STONE.get().defaultBlockState());
             return;
         }
         LivingEntity t = getTarget();
@@ -76,10 +87,9 @@ public class Troll extends WildAnimal implements Underground.Fearless {
         return level().isBrightOutside() && level().canSeeSky(BlockPos.containing(getX(), getEyeY(), getZ()));
     }
 
-    /** Turns to two blocks of Troll Stone where it stands (only into air or plants), and is gone. */
-    void petrify() {
+    /** Turns to two blocks of stone (Troll Stone; a forest troll Mossy Troll Stone) where it stands (only into air or plants), and is gone. */
+    public void petrify(BlockState stone) {
         if (!(level() instanceof ServerLevel level)) return;
-        BlockState stone = UndergroundFauna.TROLL_STONE.get().defaultBlockState();
         BlockPos feet = blockPosition();
         for (BlockPos p : new BlockPos[] {feet, feet.above()}) {
             if (level.getBlockState(p).canBeReplaced()) level.setBlockAndUpdate(p, stone);

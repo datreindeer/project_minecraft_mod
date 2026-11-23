@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:folklore/root",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:mossy_troll_stone"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.troll_in_the_woods.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.troll_in_the_woods.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

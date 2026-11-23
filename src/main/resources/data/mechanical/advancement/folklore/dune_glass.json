@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/dune_wraith",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dune_glass"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:dune_glass"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.dune_glass.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.dune_glass.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

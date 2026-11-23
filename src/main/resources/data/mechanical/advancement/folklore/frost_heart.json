@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/frost_giant",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:frost_heart"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:frost_heart"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.frost_heart.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.frost_heart.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
