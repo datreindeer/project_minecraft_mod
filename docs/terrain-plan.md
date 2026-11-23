@@ -226,6 +226,23 @@ sedan dess, och det görs i ett svep, högst ett visst antal ändringar per chun
 | **Snödrivor** | På vintern lägger blåst snö i drivor bakom stenar och träd. De smälter på våren. Detta bygger vidare på blocken som redan reagerar på klimatet. |
 | **Bävrar** | Bävern (finns som djur) fäller träd vid vatten och bygger dammar som höjer en bäck (living-world A10). |
 
+**Byggt (fas 5, v0.187.0):** naturens klocka (`worldgen/NatureClock`, chunk-data med senaste dag och spelarnas block),
+stockar som ruttnar på ungefär en vecka (`NatureRot`) och nya lågor där ingen är, och stormfällning (`StormFelling`,
+advancement *Windthrow*). Regler, siffror och kommandon: `docs/biomes.md`, "En natur som förändras med tiden". Bilder:
+`docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`.
+
+**Byggt (fas 6, v0.188.0):** brand och återväxt (`Wildfire`: torr blixt på sommaren, vanillas eld, bevakad och efteråt Charred
+Log och Burnt Soil, sällsynta bränder där ingen är, återväxt via Coarse Dirt, Fireweed och björkplantor till ung skog på en
+till två årstider, advancement *From the Ashes*), skogen som vandrar ut på ängen men inte där djur betar, gamla träd som
+dör till snags och snags som faller (`ForestCreep`). Bilder: `docs/shots/terrain/nature_fire*.png`.
+
+**Byggt (fas 7, v0.189.0):** ras i tövädret och regn (`Rockfall`: ett block högt i en brant rullar ned och blir talus vid foten),
+vårflod vid snösmältningen (`SpringFlood`: åar och bäckar stiger ett block över plana bankar i 3–5 dagar, vattnet sparas och
+tas bort exakt, Clay, Gravel och drivved blir kvar, advancement *High Water*) och snödrivor i lä bakom stenar och träd
+(`SnowDrift`, smälter med `Thaw`). Prestanda mätt med `/tick query`: 0,6–2,8 ms mer per tick när 400 chunks lever ikapp
+samtidigt, tak 2 ms klocktid per tick; se `docs/biomes.md`. Bilder: `docs/shots/terrain/nature_flood*.png`,
+`nature_drift*.png`, `nature_talus*.png`.
+
 **Prestanda:** samma budget som living-world A9. Det mäts med `/tick query` och MSPT innan något släpps, och det finns ett
 tak för antalet ändringar per chunk och sekund.
 

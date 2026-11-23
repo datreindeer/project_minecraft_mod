@@ -45,7 +45,7 @@ public final class Thaw {
     static final float MELT_AT = 0.2F;
     private static final int PER_TICK = 4;
     /** Snow falls where a column's temperature (season included) is below this, as in vanilla. */
-    static final float SNOW_BELOW = 0.15F;
+    public static final float SNOW_BELOW = 0.15F;
     /** Extra columns per snow tick in a snowstorm, and how deep it piles snow in the open and under trees. */
     static final int STORM_COLUMNS = 4, STORM_DEPTH = 3, UNDER_TREES = 2;
 
@@ -58,7 +58,7 @@ public final class Thaw {
 
     private Thaw() {}
 
-    static float temperature(ServerLevel level, Biome biome, BlockPos pos) {
+    public static float temperature(ServerLevel level, Biome biome, BlockPos pos) {
         return ((BiomeTemperatureInvoker) (Object) biome).mechanical$temperature(pos, level.getSeaLevel());
     }
 

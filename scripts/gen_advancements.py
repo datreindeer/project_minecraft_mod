@@ -1666,6 +1666,18 @@ TABS["wilderness"][1].extend([
      "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
      visit("elkwight_ruin")),
 ])
+# nature that changes with time (docs/terrain-plan.md phases 5-7, worldgen/NatureClock and friends)
+TABS["wilderness"][1].extend([
+    ("windthrow", "log_bridge", "minecraft:oak_log", T, "Windthrow",
+     "See a thunderstorm bring down a tall tree. Its trunk is left lying as a fallen log, and within a week or so it has rotted "
+     "into moss and podzol with a sapling beside it", by_code()),
+    ("from_the_ashes", "after_the_fire", "minecraft:birch_sapling", G, "From the Ashes",
+     "Stand in a young forest that grew back where a wildfire burned. Dry summer lightning lights the woods; the ash turns to "
+     "soil, Fireweed comes first, then grass, flowers and birch saplings, and after a few seasons young trees stand", by_code()),
+    ("high_water", "log_bridge", "minecraft:clay_ball", T, "High Water",
+     "Wade into a spring flood. When the snow melts, late in Snowmelt, creeks and rivers rise a block over their flat banks for a "
+     "few days, and leave clay, gravel and driftwood behind when they go down", by_code()),
+])
 # the Elkwight boss (wildlife/elkwight, gen_elkwight_boss.py), under the Scorched Barrens' "Into the Ashes"
 TABS["wilderness"][1].extend([
     ("elkwight", "into_the_ashes", "elkwight_antler_crown", C, "The Smoke Clears",

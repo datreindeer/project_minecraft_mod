@@ -37,6 +37,8 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
     // server only: who felled it, with what (for loot conditions like fortune)
     private net.minecraft.world.entity.Entity feller;
     private ItemStack tool = ItemStack.EMPTY;
+    /** Server: blown down by a storm (worldgen.StormFelling): the trunk comes to rest as log blocks, a fallen log that rots. */
+    public boolean windfall;
 
     public FallingTreeEntity(EntityType<? extends FallingTreeEntity> type, Level level) {
         super(type, level);
@@ -94,7 +96,8 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
             BlockPos column = base.offset(o.getX() + direction.getStepX() * o.getY(), 0, o.getZ() + direction.getStepZ() * o.getY());
             landLeaves(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column), state);
         }
-        if (!logOffsets.isEmpty()) FelledLogEntity.land(level, base, direction, logOffsets, logStates);
+        if (!logOffsets.isEmpty() && !(windfall && com.mechanical.worldgen.StormFelling.lie(level, base, direction, logOffsets, logStates)))
+            FelledLogEntity.land(level, base, direction, logOffsets, logStates);
         level.playSound(null, base.relative(direction, 3), SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 2.0F, 0.5F);
         discard();
     }
