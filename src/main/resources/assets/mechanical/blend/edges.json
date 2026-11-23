@@ -1891,12 +1891,15 @@
   {
    "block": "mechanical:marble",
    "keys": [
-    "mechanical:block/marble_top"
+    "mechanical:block/marble_side",
+    "mechanical:block/marble_side_2",
+    "mechanical:block/marble_side_3",
+    "mechanical:block/marble_side_4"
    ],
    "strength": 89,
    "groups": 2,
    "style": "chunk",
-   "sheet": "mechanical:block/blend/mechanical_marble_top",
+   "sheet": "mechanical:block/blend/mechanical_marble_side",
    "cols": 16,
    "rows": 3,
    "k": 2,

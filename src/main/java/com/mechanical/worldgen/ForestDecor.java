@@ -3,7 +3,9 @@ package com.mechanical.worldgen;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mechanical.Deadwood;
 import com.mechanical.Foraging;
+import com.mechanical.Mechanical;
 import com.mechanical.wildlife.temperate.GrubLogBlock;
 import com.mechanical.wildlife.temperate.TemperateFauna;
 import com.mojang.serialization.MapCodec;
@@ -17,6 +19,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -87,31 +90,82 @@ final class ForestDecor extends StoneAgeFeature {
         return true;
     }
 
-    /** A dead standing tree (bark mostly gone, stubby branches, bored holes), or now and then just a stump. */
+    /**
+     * A dead standing tree, a snag, 4-9 high: its own wood's bark only at the foot (one block, two on a tall one), above it
+     * silver-grey Deadwood with now and then a Grub Log (bored by beetles, a woodpecker's hole), a jagged Broken Deadwood
+     * top, one or two short dead branch stubs, sometimes Shelf Fungus. The trunk stands straight: a block stepping aside
+     * (tried as a lean) reads as a 7 from a distance. At the foot: flakes of its bark, twigs, now and then the snapped-off
+     * top lying in the grass. One in four is only a stump.
+     */
     private static boolean snag(WorldGenLevel level, RandomSource random, BlockPos c) {
         Wood w = woodNear(level, c, 10);
         if (w == null) return false;
-        if (random.nextInt(3) == 0) {
+        if (random.nextInt(4) == 0) {
             if (!stump(level, random, c, c.getY(), w.log())) return false;
-            groundCover(level, random, c, 2, 3);
+            foot(level, random, c, w, List.of(c));
             return true;
         }
-        int h = 0, want = 4 + random.nextInt(5);
-        while (h < want && level.getBlockState(c.above(h)).isAir()) h++;
-        if (h < 4) return false;
-        for (int y = 0; y < h; y++)
-            set(level, c.above(y), pillar(y == 0 || random.nextInt(5) == 0 ? w.log() : w.stripped(), Direction.Axis.Y));
-        // woodpecker and beetle holes: a bored, grub-eaten block or two up the trunk
-        for (int i = random.nextInt(3); i > 0; i--)
-            set(level, c.above(2 + random.nextInt(h - 2)), TemperateFauna.GRUB_LOG.get().defaultBlockState().setValue(GrubLogBlock.GRUBS, random.nextInt(2)));
-        for (int i = 1 + random.nextInt(3); i > 0; i--) {
-            Direction d = randomSide(random);
-            BlockPos p = c.above(2 + random.nextInt(h - 2)).relative(d);
-            for (int k = random.nextInt(3) == 0 ? 2 : 1; k > 0 && level.getBlockState(p).isAir(); k--, p = p.relative(d))
-                set(level, p, pillar(w.stripped(), d.getAxis()));
+        int want = 4 + random.nextInt(6);
+        List<BlockPos> trunk = new ArrayList<>();
+        for (int y = 0; y < want; y++) {
+            BlockPos q = c.above(y);
+            if (!level.getBlockState(q).canBeReplaced() || !level.getFluidState(q).isEmpty()) break;
+            trunk.add(q);
         }
-        groundCover(level, random, c, 2, 4);
+        if (trunk.size() < 4) return false;
+        int top = trunk.size() - 1, bark = top >= 6 && random.nextBoolean() ? 2 : 1;
+        BlockState grub = TemperateFauna.GRUB_LOG.get().defaultBlockState().setValue(GrubLogBlock.GRUBS, random.nextInt(GrubLogBlock.MAX_GRUBS + 1));
+        int grubAt = top >= 4 && random.nextInt(3) > 0 ? bark + 1 + random.nextInt(top - bark - 1) : -1;
+        for (int i = 0; i < top; i++) {
+            set(level, trunk.get(i), i < bark ? pillar(w.log(), Direction.Axis.Y) : i == grubAt ? grub : pillar(Deadwood.DEADWOOD.get(), Direction.Axis.Y));
+        }
+        set(level, trunk.get(top), Deadwood.BROKEN_DEADWOOD.get().defaultBlockState());
+        for (int i = 1 + (random.nextInt(3) == 0 ? 1 : 0), tries = 0; i > 0 && tries < 8; tries++) // branch stubs on the upper half
+            if (branch(level, random, trunk.get(Math.max(bark, top / 2) + random.nextInt(Math.max(1, top - Math.max(bark, top / 2)))), randomSide(random))) i--;
+        if (random.nextInt(3) == 0) // shelf fungus, low on the trunk where it stays damp
+            for (int i = 1 + random.nextInt(3); i > 0; i--) {
+                Direction d = randomSide(random);
+                BlockPos f = trunk.get(random.nextInt(Math.min(top, 4))).relative(d);
+                if (level.getBlockState(f).isAir()) set(level, f, Deadwood.SHELF_FUNGUS.get().defaultBlockState().setValue(Deadwood.ShelfFungus.FACING, d));
+            }
+        foot(level, random, c, w, trunk);
+        if (random.nextInt(3) == 0) { // the snapped-off top lies in the grass nearby
+            Direction d = randomSide(random);
+            List<BlockPos> cells = logCells(level, c.relative(d, 2), d, 2 + random.nextInt(2), false);
+            if (cells.size() >= 2) {
+                lay(level, cells, Deadwood.DEADWOOD.get(), d.getAxis());
+                dressLog(level, random, cells, d.getAxis(), 0.35F);
+            }
+        }
         return true;
+    }
+
+    /** A dead branch stub sticking out of the trunk at t towards d (a block, or a crooked two: out and on, or out and up). */
+    private static boolean branch(WorldGenLevel level, RandomSource random, BlockPos t, Direction d) {
+        BlockPos q = t.relative(d);
+        if (!level.getBlockState(q).isAir() || !level.getBlockState(t).is(Deadwood.DEADWOOD.get())) return false;
+        for (Direction n : Direction.values()) // never two stubs side by side
+            if (level.getBlockState(q.relative(n)).is(Deadwood.DEADWOOD_BRANCH.get())) return false;
+        BlockState stub = Deadwood.DEADWOOD_BRANCH.get().defaultBlockState().setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(d.getOpposite()), true);
+        Direction on = random.nextInt(3) > 0 ? null : random.nextBoolean() ? d : Direction.UP;
+        if (on != null && level.getBlockState(q.relative(on)).isAir()) {
+            set(level, q, stub.setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(on), true));
+            set(level, q.relative(on), Deadwood.DEADWOOD_BRANCH.get().defaultBlockState().setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(on.getOpposite()), true));
+        } else set(level, q, stub);
+        return true;
+    }
+
+    /** Round a dead tree's foot: flakes of its bark (when the wood has Fallen Bark), a twig or two, ferns and moss. */
+    private static void foot(WorldGenLevel level, RandomSource random, BlockPos c, Wood w, List<BlockPos> trunk) {
+        String path = BuiltInRegistries.BLOCK.getKey(w.log()).getPath();
+        var bark = Deadwood.FALLEN_BARKS.get(path.substring(0, path.length() - "_log".length()));
+        for (int i = 0; i < 6; i++) {
+            BlockPos p = surface(level, c.getX() + random.nextInt(5) - 2, c.getZ() + random.nextInt(5) - 2);
+            if (trunk.contains(p) || !level.getBlockState(p).isAir() || !level.getBlockState(p.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) continue;
+            if (bark != null && i < 4) set(level, p, bark.get().defaultBlockState());
+            else set(level, p, Mechanical.TWIGS.get().defaultBlockState());
+        }
+        groundCover(level, random, c, 2, 3);
     }
 
     /**

@@ -45,6 +45,10 @@ slukhål, ängsblommor (orkidé, blåklint, allium). **Travertine** på botten a
 ### Marble Gorge
 Varma Savanna Plateau (den fuktigare halvan). Vita klippor av **Marble** med **Limestone** i väggarna, grov jord och
 torrt gräs, nästan inga träd. Marble kräver en Bronze Pickaxe. Mufflon, onager.
+Sedan v0.184.0 ser Marble ut som naturligt berg: vitgrå och molnig med mjuka grå ådror som slingrar och tonar ut inne i
+blocket. Fyra varianter som vrids åt alla håll slumpvis, så en klippvägg aldrig visar samma ruta i ett gitter (samma
+block-id som förut). Smooth Marble är nästan vit med svaga ådror, Marble Bricks har skarpa fogar, Pillar är räfflad och
+Chiseled har en ram med en upphöjd romb (sidan) och en rosett (ovansidan). Texturerna: `scripts/gen_marble_textures.py`.
 
 ### Ochre Badlands
 En del av Badlands. Randiga klippor av **Red Ochre Block**, **Yellow Ochre Block**, **Gypsum**, **Mudstone** och
@@ -139,8 +143,14 @@ allt utom bäverdammar och källor läggs även i gamla chunks av `Retrogen`.
 Birch/Pine/Spruce, Dark Forest, Pale Garden, Deciduous Forest):
 - **Fallen Log:** 3–9 block lång, ibland halvt nedsjunken (i nivå med marken där den är plan) eller utan bark. Moss Carpet
   och svamp på, ormbunkar, mossa, Porcini och Chanterelle längs sidorna, ibland en stubbe en bit från rotänden.
-- **Snag** (avstängd 2026-11-23: den barklösa stammen såg ut som plankor med ett barkblock mitt på; görs om): dött stående träd av samma slag som skogen runt, en barklös stam (Stripped Log, bark kvar vid foten och i fläckar), 4–8 högt,
-  korta grenstumpar och borrhål (Grub Log). Var tredje är bara en stubbe med mossa eller svamp.
+- **Snag** (omgjord v0.184.0): dött stående träd, 4–9 högt. Bark (skogens eget träslag, Log) bara vid foten, ett block,
+  två på ett högt träd. Ovanför silvergrå, sprucken **Deadwood** (eget stockblock utan bark) med ibland en **Grub Log**
+  (samma gråa trä, borrhål av skalbaggar och ett hackspettshål). Toppen är **Broken Deadwood**: en avbruten, taggig topp med
+  en spjälkad flisa som sticker upp. En eller två korta, tunna grenstumpar (**Deadwood Branch**, 6 px tjocka, ibland två
+  block: ut och vidare eller ut och upp). Var tredje har **Shelf Fungus** (tickor) lågt på stammen. Stammen står rak (en
+  lutning med ett block åt sidan provades men såg ut som en 7:a på håll). Vid foten flagor av trädets bark (**Fallen Bark**, en per
+  träslag, ger trädslagets Bark), en kvist eller två (Twigs), ormbunkar och mossa, och ibland ligger den avbrutna toppen
+  (2–3 Deadwood) i gräset bredvid. Var fjärde är bara en stubbe.
 - **Root plate:** upprycket träd. Rotkakan står på högkant: en ojämn oval, ungefär 5 bred och 4–5 hög, av Rooted Dirt,
   Dirt och Coarse Dirt med några stenar i, tjockare i mitten och med toppen lutad bakåt över stammen. Rotändar (Mangrove
   Roots) sticker ut runt kanten och bakåt, Hanging Roots under. Stammens rotände sitter i mitten av skivan och ligger ett

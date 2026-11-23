@@ -1,7 +1,6 @@
 {
-  "parent": "minecraft:block/cube_column",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "end": "mechanical:block/marble_top",
-    "side": "mechanical:block/marble_side"
+    "all": "mechanical:block/marble_side"
   }
 }

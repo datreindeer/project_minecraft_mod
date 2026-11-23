@@ -1,0 +1,165 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_arm"
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_arm",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_arm",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_arm",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_arm",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "down": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_arm",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_end_north"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "south": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_side_north"
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_end_south"
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "north": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_side_south"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_end_east"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_side_east"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_end_west"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_side_west"
+      }
+    },
+    {
+      "when": {
+        "up": "false",
+        "down": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_end_up"
+      }
+    },
+    {
+      "when": {
+        "up": "false",
+        "down": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_side_up"
+      }
+    },
+    {
+      "when": {
+        "down": "false",
+        "up": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_end_down"
+      }
+    },
+    {
+      "when": {
+        "down": "false",
+        "up": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/deadwood_branch_side_down"
+      }
+    }
+  ]
+}

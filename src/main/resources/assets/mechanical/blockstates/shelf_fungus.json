@@ -1,0 +1,42 @@
+{
+  "variants": {
+    "facing=north": [
+      {
+        "model": "mechanical:block/shelf_fungus"
+      },
+      {
+        "model": "mechanical:block/shelf_fungus_single"
+      }
+    ],
+    "facing=east": [
+      {
+        "model": "mechanical:block/shelf_fungus",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/shelf_fungus_single",
+        "y": 90
+      }
+    ],
+    "facing=south": [
+      {
+        "model": "mechanical:block/shelf_fungus",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/shelf_fungus_single",
+        "y": 180
+      }
+    ],
+    "facing=west": [
+      {
+        "model": "mechanical:block/shelf_fungus",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/shelf_fungus_single",
+        "y": 270
+      }
+    ]
+  }
+}

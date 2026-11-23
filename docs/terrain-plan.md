@@ -182,6 +182,11 @@ nästan vit aska, grus och orange Coarse Dirt; brända träd i många former med
 stammar för sig själva, gläntor; en kant mot skogen (sveden mark, träd som klarat sig, halvbrända träd) och lite återväxt
 med Fireweed (ny). `worldgen/BurntForest`, `ScorchedBarrens.CharredTree`. Detaljer: `docs/biomes.md`, "Scorched Barrens".
 Bilder: `docs/shots/terrain/barrens_*.png`.
+**Byggt (putsning efter speltest, v0.184.0):** Snag är omgjord och på igen: stam av nytt block **Deadwood** (silvergrått,
+sprucket, utan bark) med bark bara vid foten, taggig topp (**Broken Deadwood**), tunna grenstumpar (**Deadwood Branch**),
+**Shelf Fungus**, Grub Log ommålad som Deadwood med hackspettshål, och **Fallen Bark** (en per träslag) vid foten. Marble har fått egna texturer (`scripts/gen_marble_textures.py`): naturligt berg med mjuka ådror och fyra
+slumpvis vridna varianter i stället för kvartsens kantade rutor; bricks, pillar, chiseled och smooth är nymålade. Bilder:
+`docs/shots/terrain/polish_*.png`.
 
 ## 3b. Kanter som flyter ihop (önskemål från användaren)
 
