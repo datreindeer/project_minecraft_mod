@@ -224,6 +224,11 @@ ACCENTS = {
     "scoria": _dots((14, 8, 8), 9, 0.6),
     "serpentine": _dots((150, 182, 122), 4, 1.2),
 }
+# painted by their own script instead of recoloured from the template (the weathered bricks are still made here)
+PAINTED = {"marble": "gen_marble_textures.py"}
+# blocks shown with a random texture variant turned every way (x and y), like natural rock, so a wall never repeats one
+# tile in a lattice: block -> its textures (cube_all models; the first is the block's own model). Same block ids.
+TURNED = {"marble": ["marble_side", "marble_side_2", "marble_side_3", "marble_side_4"], "smooth_marble": ["marble_bottom"]}
 
 
 def write(path, text):
@@ -301,6 +306,15 @@ for s in STONES:
         if rid in {"minecraft:" + n for n in names} and any(f'"minecraft:{n}"' in others for n in names):
             write(D / "mechanical/recipe" / f"{sub(m[1])}.json", rename(jar.read(src).decode()))
 
+    for block in sorted(set(TURNED) & set(names.values())):
+        variants = []
+        for i, tex in enumerate(TURNED[block]):
+            model = block + (f"_{i + 1}" if i else "")
+            write(A / f"models/block/{model}.json", json.dumps({"parent": "minecraft:block/cube_all", "textures": {"all": "mechanical:block/" + tex}}))
+            variants += [{"model": "mechanical:block/" + model, **({"x": x} if x else {}), **({"y": y} if y else {})}
+                         for x in (0, 90, 180, 270) for y in (0, 90, 180, 270)]
+        write(A / f"blockstates/{block}.json", json.dumps({"variants": {"": variants}}))
+
     ids = sorted("mechanical:" + names[n] for n in copy)
     if s.own_base:  # base block loot: itself, or chalk like clay
         if s.drop == "self":
@@ -354,7 +368,7 @@ for s in STONES:
     rng = vanilla_png(RANGE_TEXTURE[s.template])
     base = [sum(rng.getpixel((x, y))[:3]) / 3 for y in range(16) for x in range(16)]
     lo, hi = min(base), max(base)
-    for t in sorted(textures, key=lambda t: (t != base_vanilla, t)):
+    for t in sorted(textures, key=lambda t: (t != base_vanilla, t)) if s.name not in PAINTED else []:
         if not s.own_base and t == base_vanilla:
             continue
         out = vanilla_png(t)

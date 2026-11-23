@@ -47,7 +47,8 @@ def count(n):
 PLACED = {
     "fallen_log": ("fallen_log", FORESTS, count(1)),
     "fallen_log_old": ("fallen_log", OLD, count(2)),
-    # snag switched off 2026-11-23 (user: barkless trunk read as planks with a bark block in the middle): redo before re-enabling
+    "snag": ("snag", FORESTS, rarity(3)),  # redone 2026-11-23 (v0.184.0): Deadwood trunk, bark only at the foot, broken top
+    "snag_old": ("snag", OLD, count(1)),
     "root_plate": ("root_plate", FORESTS, rarity(10)),
     "root_plate_old": ("root_plate", OLD, rarity(4)),
     "mossy_stones": ("mossy_stones", WOODED + RIVERS, rarity(4)),

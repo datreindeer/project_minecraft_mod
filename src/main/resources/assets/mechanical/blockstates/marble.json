@@ -1,7 +1,294 @@
 {
   "variants": {
-    "": {
-      "model": "mechanical:block/marble"
-    }
+    "": [
+      {
+        "model": "mechanical:block/marble"
+      },
+      {
+        "model": "mechanical:block/marble",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 90
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 90,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 90,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 180
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 270
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 270,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 270,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble",
+        "x": 270,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_2"
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 90
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 90,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 90,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 180
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 270
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 270,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 270,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_2",
+        "x": 270,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_3"
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 90
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 90,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 90,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 180
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 270
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 270,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 270,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_3",
+        "x": 270,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_4"
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 90
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 90,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 90,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 180
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 270
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 270,
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 270,
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/marble_4",
+        "x": 270,
+        "y": 270
+      }
+    ]
   }
 }

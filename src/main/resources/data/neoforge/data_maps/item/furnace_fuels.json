@@ -1,0 +1,13 @@
+{
+  "values": {
+    "mechanical:deadwood": {
+      "burn_time": 300
+    },
+    "mechanical:broken_deadwood": {
+      "burn_time": 150
+    },
+    "mechanical:deadwood_branch": {
+      "burn_time": 100
+    }
+  }
+}

@@ -39,7 +39,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class NatureDecorTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final List<String> TESTS = List.of("log_bridge", "worldgen_beaver_dam", "hillside_spring", "valley_waterfall", "rock_arch");
+    private static final List<String> TESTS = List.of("log_bridge", "worldgen_beaver_dam", "hillside_spring", "valley_waterfall", "rock_arch", "snag");
 
     static {
         TEST_FUNCTIONS.register("log_bridge", () -> NatureDecorTest::logBridge);
@@ -47,6 +47,7 @@ public final class NatureDecorTest {
         TEST_FUNCTIONS.register("hillside_spring", () -> NatureDecorTest::spring);
         TEST_FUNCTIONS.register("valley_waterfall", () -> NatureDecorTest::waterfall);
         TEST_FUNCTIONS.register("rock_arch", () -> NatureDecorTest::arch);
+        TEST_FUNCTIONS.register("snag", () -> NatureDecorTest::snag);
     }
 
     static void init(IEventBus modEventBus) {
@@ -188,6 +189,55 @@ public final class NatureDecorTest {
             ok |= over && a && b;
         }
         h.assertTrue(ok, "rock over the way through and a foot on each side");
+        h.succeed();
+    }
+
+    /**
+     * Snags next to an oak, one seed after another: bark (Oak Log) only at the foot, Deadwood above, one Broken Deadwood
+     * as the top, every branch stub joined to the trunk or to another stub, Shelf Fungus only on wood.
+     */
+    private static void snag(GameTestHelper h) {
+        ground(h, 2, x -> false, z -> false);
+        for (int y = 3; y <= 7; y++) h.setBlock(new BlockPos(2, y, 2), Blocks.OAK_LOG);
+        for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) h.setBlock(new BlockPos(2 + dx, 8, 2 + dz), Blocks.OAK_LEAVES);
+        int snags = 0;
+        for (int seed = 0; seed < 24; seed++) {
+            for (int x = 5; x <= 15; x++)
+                for (int z = 5; z <= 15; z++)
+                    for (int y = 3; y <= 13; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+            prime(h);
+            if (!ForestDecor.SNAG.place(h.getLevel(), null, RandomSource.create(seed), h.absolutePos(new BlockPos(10, 3, 10)))) continue;
+            int tops = 0, wood = 0, topY = 0, brokenY = -1;
+            for (BlockPos p : BlockPos.betweenClosed(new BlockPos(5, 3, 5), new BlockPos(15, 13, 15))) {
+                var st = h.getBlockState(p);
+                if (st.is(Blocks.OAK_LOG) && p.getY() > 4 && Math.abs(p.getX() - 10) + Math.abs(p.getZ() - 10) <= 1)
+                    h.fail("seed " + seed + ": bark (Oak Log) up the trunk at " + p);
+                if (st.is(com.mechanical.Deadwood.DEADWOOD.get())) wood++;
+                if (st.is(com.mechanical.Deadwood.DEADWOOD.get()) || st.is(com.mechanical.Deadwood.BROKEN_DEADWOOD.get())) topY = Math.max(topY, p.getY());
+                if (st.is(com.mechanical.Deadwood.BROKEN_DEADWOOD.get())) {
+                    tops++;
+                    brokenY = p.getY();
+                }
+                if (st.is(com.mechanical.Deadwood.DEADWOOD_BRANCH.get())) {
+                    boolean joined = false;
+                    for (Direction d : Direction.values()) {
+                        if (!st.getValue(net.minecraft.world.level.block.PipeBlock.PROPERTY_BY_DIRECTION.get(d))) continue;
+                        var n = h.getBlockState(p.relative(d));
+                        joined |= n.is(com.mechanical.Deadwood.DEADWOOD.get()) || n.is(com.mechanical.Deadwood.DEADWOOD_BRANCH.get());
+                    }
+                    h.assertTrue(joined, "seed " + seed + ": branch stub at " + p + " is joined to the trunk");
+                }
+                if (st.is(com.mechanical.Deadwood.SHELF_FUNGUS.get()))
+                    h.assertTrue(st.canSurvive(h.getLevel(), h.absolutePos(p)), "seed " + seed + ": shelf fungus at " + p + " grows on wood");
+            }
+            if (tops == 0 && wood == 0) continue; // a stump
+            h.assertTrue(tops == 1 && brokenY == topY, "seed " + seed + ": one Broken Deadwood, at the top of the trunk (" + tops + " at y " + brokenY + ", top " + topY + ")");
+            h.assertTrue(wood >= 2, "seed " + seed + ": a Deadwood trunk (" + wood + ")");
+            h.assertTrue(h.getBlockState(new BlockPos(10, 3, 10)).is(Blocks.OAK_LOG), "seed " + seed + ": oak bark at the foot");
+            h.assertTrue(h.getBlockState(new BlockPos(10, topY, 10)).is(com.mechanical.Deadwood.BROKEN_DEADWOOD.get()), "seed " + seed + ": a straight trunk");
+            snags++;
+        }
+        h.assertTrue(snags >= 8, "most seeds give a whole snag (" + snags + ")");
         h.succeed();
     }
 

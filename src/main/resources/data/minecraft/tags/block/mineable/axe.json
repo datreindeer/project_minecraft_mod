@@ -232,6 +232,10 @@
     "mechanical:feeding_trough",
     "mechanical:warp_weighted_loom",
     "mechanical:charred_log",
-    "mechanical:jewelers_bench"
+    "mechanical:jewelers_bench",
+    "mechanical:deadwood",
+    "mechanical:broken_deadwood",
+    "mechanical:deadwood_branch",
+    "mechanical:shelf_fungus"
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/oak_fallen_bark"
+      },
+      {
+        "model": "mechanical:block/oak_fallen_bark",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/oak_fallen_bark",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/oak_fallen_bark",
+        "y": 270
+      }
+    ]
+  }
+}

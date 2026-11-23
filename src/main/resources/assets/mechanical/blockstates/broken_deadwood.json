@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/broken_deadwood"
+      },
+      {
+        "model": "mechanical:block/broken_deadwood",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/broken_deadwood",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/broken_deadwood",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/broken_deadwood_2"
+      },
+      {
+        "model": "mechanical:block/broken_deadwood_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/broken_deadwood_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/broken_deadwood_2",
+        "y": 270
+      }
+    ]
+  }
+}

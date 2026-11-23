@@ -173,6 +173,12 @@ avstängda tills de håller måttet i närbild: Rock Arch, Dead Tree, Dry Creek,
 Outcrop, Frost Split, Farm Walls och enar på slätten. Jordkällare är inte byggda. Detaljer:
 `docs/biomes.md`, "Små saker i berg, på öppen mark, i torrt och kallt land". Bilder: `docs/shots/terrain/fas4_*.png`.
 
+**Byggt (putsning efter speltest, v0.184.0):** Snag är omgjord och på igen: stam av nytt block **Deadwood** (silvergrått,
+sprucket, utan bark) med bark bara vid foten, taggig topp (**Broken Deadwood**), tunna grenstumpar (**Deadwood Branch**),
+**Shelf Fungus**, Grub Log ommålad som Deadwood med hackspettshål, och **Fallen Bark** (en per träslag) vid foten. Marble har fått egna texturer (`scripts/gen_marble_textures.py`): naturligt berg med mjuka ådror och fyra
+slumpvis vridna varianter i stället för kvartsens kantade rutor; bricks, pillar, chiseled och smooth är nymålade. Bilder:
+`docs/shots/terrain/polish_*.png`.
+
 ## 3b. Kanter som flyter ihop (önskemål från användaren)
 
 Vägar och mark ska se mjukare ut: där två besläktade block möts på ovansidan lägger sig det starkare några pixlar in

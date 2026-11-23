@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "side": "mechanical:block/deadwood",
+    "end": "mechanical:block/deadwood_top"
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "t": "mechanical:block/shelf_fungus",
+    "particle": "mechanical:block/shelf_fungus"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        6,
+        12
+      ],
+      "to": [
+        13,
+        9,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#t",
+          "uv": [
+            3,
+            3.429,
+            13,
+            8.0
+          ]
+        },
+        "down": {
+          "texture": "#t",
+          "uv": [
+            3,
+            8,
+            13,
+            12
+          ]
+        },
+        "north": {
+          "texture": "#t",
+          "uv": [
+            3,
+            12,
+            13,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#t",
+          "uv": [
+            0,
+            12,
+            4,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#t",
+          "uv": [
+            0,
+            12,
+            4,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        6.5,
+        10
+      ],
+      "to": [
+        12,
+        8.5,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#t",
+          "uv": [
+            4,
+            1.143,
+            12,
+            8.0
+          ]
+        },
+        "down": {
+          "texture": "#t",
+          "uv": [
+            4,
+            8,
+            12,
+            12
+          ]
+        },
+        "north": {
+          "texture": "#t",
+          "uv": [
+            4,
+            12,
+            12,
+            14.667
+          ]
+        },
+        "east": {
+          "texture": "#t",
+          "uv": [
+            0,
+            12,
+            6,
+            14.667
+          ]
+        },
+        "west": {
+          "texture": "#t",
+          "uv": [
+            0,
+            12,
+            6,
+            14.667
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        7,
+        9
+      ],
+      "to": [
+        10,
+        8,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#t",
+          "uv": [
+            6,
+            0.0,
+            10,
+            8.0
+          ]
+        },
+        "down": {
+          "texture": "#t",
+          "uv": [
+            6,
+            8,
+            10,
+            12
+          ]
+        },
+        "north": {
+          "texture": "#t",
+          "uv": [
+            6,
+            12,
+            10,
+            13.333
+          ]
+        },
+        "east": {
+          "texture": "#t",
+          "uv": [
+            0,
+            12,
+            7,
+            13.333
+          ]
+        },
+        "west": {
+          "texture": "#t",
+          "uv": [
+            0,
+            12,
+            7,
+            13.333
+          ]
+        }
+      }
+    }
+  ]
+}

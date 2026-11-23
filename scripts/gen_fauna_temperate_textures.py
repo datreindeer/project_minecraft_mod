@@ -259,15 +259,7 @@ def noise(w, h, stops, seed, lo=0.2, hi=0.8):
     return im
 
 
-# Grub Log: a beech log gone grey and punky, bored full of dark holes
-log = recolor(BLOCK / "beech_log.png", ["#2a241c", "#4a4034", "#6a5e4c", "#8a7e68", "#a89c84"], 0.9)
-r = random.Random(23)
-for _ in range(9):
-    x, y = r.randrange(1, 15), r.randrange(1, 15)
-    log.putpixel((x, y), (18, 12, 8, 255))
-    log.putpixel((x, y + 1), (40, 30, 20, 255))
-save(log, BLOCK / "grub_log.png")
-save(recolor(BLOCK / "beech_log_top.png", ["#3a3024", "#5a4c3a", "#7c6a52", "#9c8a6c", "#b8a888"], 0.9), BLOCK / "grub_log_top.png")
+# Grub Log: painted by gen_deadwood.py (Deadwood bored by beetles, a woodpecker's hole), so it sits in a snag's trunk
 
 save(noise(16, 16, ["#2e4a1e", "#3f6328", "#557d34", "#6c9441"], 29), BLOCK / "bumblebee_nest.png")
 save(noise(16, 16, ["#0c0a06", "#1a140c"], 31), BLOCK / "bumblebee_nest_hole.png")
