@@ -716,6 +716,38 @@ CATS = [
     ("vanilla", "Vanilla i recept", "Vanilla in recipes"), ("creatures", "Varelser", "Creatures"),
     ("vehicles", "Fordon", "Vehicles"), ("structures", "Strukturer", "Structures"),
 ]
+# creature sub-tabs: (id, sv, en); every creature lands in exactly one (see creature_sub)
+SUBS = {"creatures": [("friendly", "Snälla", "Friendly"), ("neutral", "Försvarar sig", "Neutral"),
+                      ("dangerous", "Farliga", "Dangerous"), ("spirits", "Andar", "Spirits"), ("people", "Folk", "People")]}
+SPIRITS = set("huldra will_o_wisp jungle_spirit_mask tomte nacken dune_wraith mountain_watcher".split())
+PEOPLE = {"tribesperson", "miner"}
+# hunt or poison you (all Predator subclasses are listed here too)
+DANGEROUS = set("""grey_wolf cave_lion lynx cave_hyena gloson cheetah spotted_hyena leopard tiger puma snow_leopard siberian_tiger
+brown_bear cave_bear polar_bear wolverine giant_centipede troll lindworm cavern_spider mushroom_man bog_body frost_giant elkwight
+adder sand_viper rattlesnake python saltwater_crocodile desert_scorpion monitor_lizard vittra mosquito_swarm""".split())
+# fight back when hurt or provoked
+NEUTRAL = set("""red_deer wild_boar aurochs moose badger woolly_rhino steppe_bison wisent musk_ox water_buffalo walrus mute_swan
+giant_deer wild_horse mouflon ibex bighorn_sheep chamois saiga woolly_mammoth reindeer pike""".split())
+
+
+# guide steps (English titles) on the straight track from nothing to a Steel Ingot
+STEEL_PATH = {"Fibre and twine", "Flint, rocks and sticks", "The flint tools", "Felling trees and getting firewood",
+              "Shafts and stone heads", "Tool Station and stone tools", "Fire", "Clay Kiln", "Mold Bench and Crucible",
+              "Finding ore", "Crushing and washing", "Heat: Bellows", "Melting and casting", "Copper tools",
+              "Tin and alloying", "Bronze tools and weapons", "Bog iron", "Bloomery and wrought iron",
+              "Roasting and flux", "Forging", "Charcoal clamp", "Steel"}
+
+
+def creature_sub(eid):
+    if eid in PEOPLE:
+        return "people"
+    if eid in SPIRITS:
+        return "spirits"
+    if eid in DANGEROUS:
+        return "dangerous"
+    return "neutral" if eid in NEUTRAL else "friendly"
+
+
 TOOL_TAGS = ("axes", "pickaxes", "shovels", "hoes", "swords", "spears")
 
 
@@ -1030,6 +1062,9 @@ def main():
         entries[e["id"]] = e
     add_models(entries, ids, notes)
     for e in entries.values():
+        if e.get("kind") == "entity" and "creatures" in e["cats"]:
+            e["sub"] = creature_sub(e["id"].split(":")[1])
+    for e in entries.values():
         if e.get("kind"):
             n, en = notes.get(e["id"], {}), notes_en.get(e["id"], {})
             if n.get("text"):
@@ -1054,6 +1089,7 @@ def main():
         warn(f"docs/progression.json är trasig: {e}")
     for ch in guide:
         for st in ch.get("steps", []):
+            st["path"] = st["title"]["en"] in STEEL_PATH
             st["items"] = [r if ":" in r else f"{MOD}:{r}" for r in st.get("items", [])]
             refs = list(st["items"])
             for txt in (st.get("text") or {}).values():
@@ -1069,6 +1105,7 @@ def main():
         "recipes": RECIPES,
         "fuels": fuels,
         "cats": CATS,
+        "subs": SUBS,
         "images": IMAGES,
         "geo": MODELS.geo if MODELS else {},
     }
@@ -1184,7 +1221,7 @@ td img{width:24px;height:24px}
 .step h3{margin:0 0 10px;font-size:16px;text-transform:none;letter-spacing:0;color:var(--ink)}
 .step h3 span{color:var(--accent);margin-right:8px}
 .step .uses{margin-bottom:10px}
-body.g .chips,body.g #q,body.g main,body.g #sum{display:none}
+body.g .chips,body.g #subs,body.g #q,body.g main,body.g #sum{display:none}
 body:not(.g) #guide{display:none}
 footer{margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
 @media (max-width:600px){.top{flex-wrap:wrap}h1{order:1}.lang{order:2;margin-left:auto}#q{order:3;flex-basis:100%}}
@@ -1195,6 +1232,7 @@ footer{margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
   <div id="tabs" role="tablist"><button role="tab" data-t="reg"></button><button role="tab" data-t="guide"></button></div>
   <div class="top"><h1>Mechanical <span id="h1s">register</span></h1><input id="q" type="search" autocomplete="off"><div class="lang" role="group" aria-label="Språk / Language"><button data-l="sv">Svenska</button><button data-l="en">English</button></div></div>
   <div class="chips" id="chips"></div>
+  <div class="chips" id="subs" hidden></div>
 </header>
 <main id="main"><section id="grid" aria-live="polite"></section><aside id="detail"></aside></main>
 <footer id="sum"></footer>
@@ -1202,8 +1240,8 @@ footer{margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
 <script>
 const D=/*DATA*/null;
 const L={
-sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",tabReg:"Register",tabGuide:"Spelguide",guideIntro:"Så tar du dig framåt i spelet, steg för steg. Klicka på ett item för recept och detaljer i registret.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
-en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",tabReg:"Registry",tabGuide:"Guide",guideIntro:"How to progress through the game, step by step. Click an item for its recipes and details in the registry.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
+sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",allSteps:"Alla steg",steelPath:"Spåret till Steel Ingot",tabReg:"Register",tabGuide:"Spelguide",guideIntro:"Så tar du dig framåt i spelet, steg för steg. Klicka på ett item för recept och detaljer i registret.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
+en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",allSteps:"All steps",steelPath:"Path to Steel Ingot",tabReg:"Registry",tabGuide:"Guide",guideIntro:"How to progress through the game, step by step. Click an item for its recipes and details in the registry.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
 let lang="sv";try{const s=new URLSearchParams(location.search).get("lang")||localStorage.getItem("mreg-lang");if(s==="en"||s==="sv")lang=s}catch(e){}
 const t=k=>L[lang][k]??L.sv[k];
 const T=x=>x&&typeof x==="object"?(x[lang]??x.sv):(x||"");
@@ -1216,15 +1254,23 @@ const pic=(id,cls="")=>{const k=(byId[id]&&byId[id].img)||(D.images[id]?id:null)
 const allIngs=r=>(r.ings||[]).concat((r.grid||[]).flat().filter(Boolean));
 const makes={},uses={};
 D.recipes.forEach((r,i)=>{(makes[r.result.id]??=[]).push(i);new Set(allIngs(r).flatMap(g=>g.opts)).forEach(id=>(uses[id]??=[]).push(i))});
-let cat="all",sel=null;
+let cat="all",sub="",sel=null;
 const chips=document.getElementById("chips"),grid=document.getElementById("grid"),q=document.getElementById("q"),det=document.getElementById("detail"),main=document.getElementById("main");
 const inAll=i=>!i.cats.every(x=>x==="vanilla"||x==="removed");
 const count=c=>D.items.filter(i=>c==="all"?inAll(i):i.cats.includes(c)).length;
 function drawChips(){chips.innerHTML=[["all"],...D.cats].filter(([c])=>count(c)).map(([c])=>`<button class="chip" data-c="${c}" aria-pressed="${c===cat}">${esc(c==="all"?t("all"):catName(c))}<small>${count(c)}</small></button>`).join("")}
-chips.onclick=e=>{const b=e.target.closest(".chip");if(b){cat=b.dataset.c;drawChips();drawGrid()}};
+chips.onclick=e=>{const b=e.target.closest(".chip");if(b){cat=b.dataset.c;sub="";drawChips();drawGrid()}};
+const subs=document.getElementById("subs");
+const subName=x=>lang==="en"?x[2]:x[1];
+function drawSubs(){
+  const L=D.subs[cat]||[];subs.hidden=!L.length;
+  subs.innerHTML=L.length?[["","",t("all")],...L].map(x=>{const n=D.items.filter(i=>i.cats.includes(cat)&&(!x[0]||i.sub===x[0])).length;return n?`<button class="chip" data-s="${x[0]}" aria-pressed="${x[0]===sub}">${esc(x[0]?subName(x):x[2])}<small>${n}</small></button>`:""}).join(""):"";
+}
+subs.onclick=e=>{const b=e.target.closest(".chip");if(b){sub=b.dataset.s;drawSubs();drawGrid()}};
 function drawGrid(){
   const s=q.value.trim().toLowerCase();
-  const list=D.items.filter(i=>(cat==="all"?(s||inAll(i)):i.cats.includes(cat))&&(!s||iname(i).toLowerCase().includes(s)||i.name.toLowerCase().includes(s)||i.id.includes(s)));
+  drawSubs();
+  const list=D.items.filter(i=>(cat==="all"?(s||inAll(i)):i.cats.includes(cat)&&(!sub||i.sub===sub))&&(!s||iname(i).toLowerCase().includes(s)||i.name.toLowerCase().includes(s)||i.id.includes(s)));
   grid.innerHTML=list.length?list.map(i=>`<a class="card${i.id===sel?" sel":""}" href="#${i.id}">${pic(i.id)}<span>${esc(iname(i))}</span></a>`).join(""):`<p class="empty">${t("none")}</p>`;
 }
 q.oninput=drawGrid;
@@ -1319,9 +1365,11 @@ function makeView(THREE,cv,geoKey){
 }
 // ---- guide tab
 const G=document.getElementById("guide");
+let pathOnly=false;
 function drawGuide(){
   let n=0;
-  G.innerHTML=`<p class="intro">${t("guideIntro")}</p><nav>${(D.guide||[]).map((c,i)=>`<a class="chip" href="#guide-${i}">${esc(T(c.title))}</a>`).join("")}</nav>`+(D.guide||[]).map((c,i)=>`<h2 id="guide-${i}">${esc(T(c.title))}</h2>${c.intro?`<div class="note intro">${noteHtml(T(c.intro))}</div>`:""}`+(c.steps||[]).map(s=>`<div class="step"><h3><span>${++n}</span>${esc(T(s.title))}</h3>${(s.items||[]).length?`<div class="uses">${s.items.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`:""}<div class="note">${noteHtml(T(s.text))}</div></div>`).join("")).join("");
+  G.innerHTML=`<p class="intro">${t("guideIntro")}</p><div id="gmode" style="display:flex;gap:6px;margin:10px 0"><button class="chip" data-p="" aria-pressed="${!pathOnly}">${t("allSteps")}</button><button class="chip" data-p="1" aria-pressed="${pathOnly}">${t("steelPath")}</button></div><nav>${(D.guide||[]).map((c,i)=>`<a class="chip" href="#guide-${i}">${esc(T(c.title))}</a>`).join("")}</nav>`+(D.guide||[]).map((c,i)=>!pathOnly||(c.steps||[]).some(s=>s.path)?`<h2 id="guide-${i}">${esc(T(c.title))}</h2>${c.intro?`<div class="note intro">${noteHtml(T(c.intro))}</div>`:""}`+(c.steps||[]).filter(s=>!pathOnly||s.path).map(s=>`<div class="step"><h3><span>${++n}</span>${esc(T(s.title))}</h3>${(s.items||[]).length?`<div class="uses">${s.items.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`:""}<div class="note">${noteHtml(T(s.text))}</div></div>`).join(""):"").join("");
+  document.getElementById("gmode").onclick=e=>{const b=e.target.closest(".chip");if(b){pathOnly=!!b.dataset.p;drawGuide()}};
 }
 function setTab(g){
   document.body.classList.toggle("g",g);
@@ -1335,7 +1383,7 @@ function applyLang(){
   document.querySelectorAll("#tabs button").forEach(b=>b.textContent=t(b.dataset.t==="guide"?"tabGuide":"tabReg"));drawGuide();
   const items=D.items.filter(i=>!i.kind&&inAll(i)).length,cre=D.items.filter(i=>i.kind==="entity").length,mods=D.items.filter(i=>i.m3d).length;
   document.getElementById("sum").textContent=t("summary").replace("{i}",items).replace("{r}",D.recipes.length).replace("{c}",cre).replace("{m}",mods);
-  drawChips();if(sel)show(sel);else drawGrid();
+  drawChips();drawSubs();if(sel)show(sel);else drawGrid();
 }
 document.querySelector(".lang").onclick=e=>{const b=e.target.closest("button");if(!b||b.dataset.l===lang)return;lang=b.dataset.l;try{localStorage.setItem("mreg-lang",lang)}catch(err){}applyLang()};
 function route(){
