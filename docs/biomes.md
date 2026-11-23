@@ -104,7 +104,7 @@ allt utom bäverdammar och källor läggs även i gamla chunks av `Retrogen`.
 Birch/Pine/Spruce, Dark Forest, Pale Garden, Deciduous Forest):
 - **Fallen Log:** 3–9 block lång, ibland halvt nedsjunken (i nivå med marken där den är plan) eller utan bark. Moss Carpet
   och svamp på, ormbunkar, mossa, Porcini och Chanterelle längs sidorna, ibland en stubbe en bit från rotänden.
-- **Snag:** dött stående träd av samma slag som skogen runt, en barklös stam (Stripped Log, bark kvar vid foten och i fläckar), 4–8 högt,
+- **Snag** (avstängd 2026-11-23: den barklösa stammen såg ut som plankor med ett barkblock mitt på; görs om): dött stående träd av samma slag som skogen runt, en barklös stam (Stripped Log, bark kvar vid foten och i fläckar), 4–8 högt,
   korta grenstumpar och borrhål (Grub Log). Var tredje är bara en stubbe med mossa eller svamp.
 - **Root plate:** upprycket träd. Rotkakan står på högkant: en ojämn oval, ungefär 5 bred och 4–5 hög, av Rooted Dirt,
   Dirt och Coarse Dirt med några stenar i, tjockare i mitten och med toppen lutad bakåt över stammen. Rotändar (Mangrove

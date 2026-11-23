@@ -82,7 +82,7 @@ public final class Retrogen {
             "loose_rapakivi_granite", "loose_coastal_basalt", "loose_pumice", "loose_scoria", "loose_serpentine", "loose_gypsum",
             "loose_alabaster", "loose_alum_shale",
             // forest floor and waterside (gen_nature_decor.py; beaver dams and springs add water and are left out)
-            "fallen_log", "fallen_log_old", "snag", "snag_old", "root_plate", "root_plate_old", "mossy_stones", "mossy_stones_heath",
+            "fallen_log", "fallen_log_old", "root_plate", "root_plate_old", "mossy_stones", "mossy_stones_heath",
             "log_bridge", "driftwood", "gravel_bar", "reed_belt",
             // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left
             // out, and so is everything switched off there)

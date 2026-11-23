@@ -69,7 +69,11 @@ def coloured(img):
 silver_ore = lib("workshop/silver/silver_ore_1.png")
 veins = coloured(silver_ore)
 galena = recolour(silver_ore, GALENA, veins)
-galena.save(TEX / "block/galena_ore.png")
+# the library ore has a half-transparent stone ground: lay the veins on vanilla stone, else the block renders see-through
+ore = vanilla("block/stone")
+for p in veins:
+    ore.putpixel(p, galena.getpixel(p))
+ore.save(TEX / "block/galena_ore.png")
 deep = vanilla("block/deepslate")
 for p in veins:
     deep.putpixel(p, galena.getpixel(p))
