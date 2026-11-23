@@ -1,12 +1,13 @@
 {
   "wants": {
-    "id": "mechanical:cordage",
-    "count": 8
+    "id": "minecraft:flint",
+    "count": 12
   },
   "gives": {
-    "id": "mechanical:flint_spear"
+    "id": "mechanical:copper_coin",
+    "count": 2
   },
-  "max_uses": 12,
+  "max_uses": 16,
   "xp": 2,
   "reputation_discount": 0.05
 }

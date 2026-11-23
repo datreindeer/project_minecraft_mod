@@ -4,8 +4,7 @@
     "count": 16
   },
   "gives": {
-    "id": "minecraft:clay_ball",
-    "count": 6
+    "id": "mechanical:copper_coin"
   },
   "max_uses": 16,
   "xp": 2,

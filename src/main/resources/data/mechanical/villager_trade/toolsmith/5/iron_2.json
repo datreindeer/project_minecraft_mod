@@ -1,0 +1,11 @@
+{
+  "wants": {
+    "id": "mechanical:gold_coin"
+  },
+  "gives": {
+    "id": "mechanical:steel_saw"
+  },
+  "max_uses": 3,
+  "xp": 30,
+  "reputation_discount": 0.05
+}

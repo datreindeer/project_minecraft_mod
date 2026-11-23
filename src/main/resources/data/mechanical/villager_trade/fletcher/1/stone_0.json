@@ -4,8 +4,7 @@
     "count": 32
   },
   "gives": {
-    "id": "minecraft:flint",
-    "count": 4
+    "id": "mechanical:copper_coin"
   },
   "max_uses": 16,
   "xp": 2,

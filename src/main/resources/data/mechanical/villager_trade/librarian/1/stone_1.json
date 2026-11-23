@@ -1,13 +1,12 @@
 {
   "wants": {
-    "id": "mechanical:cooked_mutton_scraps",
-    "count": 6
+    "id": "mechanical:copper_coin",
+    "count": 5
   },
   "gives": {
-    "id": "minecraft:paper",
-    "count": 4
+    "id": "minecraft:book"
   },
-  "max_uses": 16,
+  "max_uses": 12,
   "xp": 1,
   "reputation_discount": 0.05
 }

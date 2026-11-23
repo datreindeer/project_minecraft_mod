@@ -911,39 +911,44 @@ _jar = _zf.ZipFile(JAR)
 def _vanilla(path):
     return _json.loads(_jar.read(path).decode())
 
-# Trades: each profession's level 1-2 get stone age trades; levels 3-5 are empty here (gen_bronze.py fills 3-4).
-# The Stone Age has no money (Copper Coins come with the Bronze Anvil, Coins.java): pure barter, goods for goods.
+# Trades: each profession's level 1-2 get stone age trades; levels 3-5 are empty here (gen_bronze.py fills 3-5).
+# Every trade is goods for coins (docs/traders-plan.md A): the villager buys something for Copper Coins, or sells something
+# for them. Stone Age goods are cheap: a few copper each. (A player without the Bronze Anvil earns their first coins here.)
 # (wants, wants_count, gives, gives_count, max_uses, xp)
 M = "mechanical:"
 V = "minecraft:"
+C = M + "copper_coin"
 TRADES = {
-    "armorer":       [[(V + "leather", 8, V + "leather_helmet", 1, 8, 2), (M + "cooked_venison_scraps", 8, V + "leather", 2, 16, 1)],
-                      [(M + "sinew", 6, V + "leather", 2, 16, 10), (V + "leather", 12, V + "leather_chestplate", 1, 6, 5)]],
-    "butcher":       [[(M + "game_meat_scraps", 10, M + "cooked_venison_scraps", 4, 16, 2), (V + "stick", 24, M + "cooked_venison_scraps", 3, 16, 1)],
-                      [(M + "lard", 6, M + "cooked_beef_scraps", 4, 16, 10), (M + "raspberries", 16, M + "cooked_beef_scraps", 3, 16, 5)]],
-    "cartographer":  [[(M + "oak_bark", 16, M + "cordage", 4, 16, 2), (V + "paper", 12, V + "map", 1, 8, 1)],
-                      [(V + "feather", 12, V + "paper", 4, 16, 10), (V + "ink_sac", 3, V + "map", 1, 8, 5)]],
-    "cleric":        [[(V + "rotten_flesh", 16, V + "candle", 2, 12, 2), (M + "eggshell", 8, V + "bone_meal", 6, 12, 1)],
-                      [(M + "tallow", 4, V + "candle", 3, 12, 10), (V + "rotten_flesh", 24, V + "bone_meal", 8, 12, 5)]],
-    "farmer":        [[(M + "raspberries", 16, V + "wheat_seeds", 8, 12, 2), (M + "twine", 6, V + "wheat_seeds", 6, 12, 1)],
-                      [(M + "blueberries", 16, V + "carrot", 3, 8, 10), (M + "cordage", 6, V + "carrot", 2, 8, 5)]],
-    "fisherman":     [[(V + "bone", 6, M + "bone_fish_hook", 1, 12, 2), (M + "cordage", 8, M + "whole_cod", 4, 16, 1)],
-                      [(M + "cordage", 12, M + "crude_fishing_rod", 1, 6, 10), (M + "raspberries", 16, M + "whole_salmon", 3, 16, 5)]],
-    "fletcher":      [[(V + "stick", 32, V + "flint", 4, 16, 2), (V + "feather", 12, V + "arrow", 8, 12, 1)],
-                      [(V + "flint", 16, V + "arrow", 8, 12, 10), (M + "cordage", 8, M + "crude_bow", 1, 6, 5)]],
-    "leatherworker": [[(M + "raw_hide", 3, V + "leather", 1, 16, 2), (V + "rabbit_hide", 4, V + "leather", 1, 16, 1)],
-                      [(M + "lard", 6, V + "leather", 2, 16, 10), (M + "oak_bark", 12, M + "bark_basket", 1, 6, 5)]],
-    "librarian":     [[(V + "paper", 12, V + "book", 1, 12, 2), (M + "cooked_mutton_scraps", 6, V + "paper", 4, 16, 1)],
-                      [(V + "ink_sac", 4, V + "book", 1, 12, 10), (M + "tallow", 4, V + "candle", 3, 12, 5)]],
-    "mason":         [[(M + "stone_chunk", 16, V + "clay_ball", 6, 16, 2), (M + "raspberries", 16, M + "stone_chunk", 12, 16, 1)],
-                      [(M + "granite_chunk", 20, V + "packed_mud", 8, 12, 10), (M + "plant_fibre", 16, V + "packed_mud", 6, 12, 5)]],
-    "shepherd":      [[(V + "white_wool", 2, M + "wool_thread", 4, 16, 2), (M + "raspberries", 12, V + "white_wool", 1, 12, 1)],
-                      [(M + "plant_fibre", 24, M + "wool_thread", 4, 16, 10), (V + "white_wool", 4, V + "white_carpet", 6, 12, 5)]],
-    "toolsmith":     [[(V + "flint", 8, M + "flint_axe", 1, 12, 2), (V + "stick", 16, M + "tool_rod", 2, 16, 1)],
-                      [(M + "stone_chunk", 16, M + "stone_axe_head", 1, 12, 10), (M + "cordage", 6, M + "crude_stone_axe", 1, 6, 5)]],
-    "weaponsmith":   [[(M + "cordage", 8, M + "flint_spear", 1, 12, 2), (V + "flint", 12, M + "flint_knife", 1, 12, 1)],
-                      [(M + "tusk", 2, M + "tusk_dagger", 1, 6, 10), (M + "sinew", 6, M + "flint_spear", 1, 12, 5)]],
+    "armorer":       [[(V + "leather", 6, C, 2, 12, 2), (C, 5, V + "leather_helmet", 1, 8, 1)],
+                      [(M + "sinew", 6, C, 2, 16, 10), (C, 9, V + "leather_chestplate", 1, 6, 5)]],
+    "butcher":       [[(M + "game_meat_scraps", 10, C, 2, 16, 2), (C, 2, M + "cooked_venison_scraps", 4, 16, 1)],
+                      [(M + "lard", 6, C, 3, 16, 10), (C, 3, M + "cooked_beef_scraps", 4, 16, 5)]],
+    "cartographer":  [[(M + "oak_bark", 16, C, 2, 16, 2), (C, 6, V + "map", 1, 8, 1)],
+                      [(V + "feather", 12, C, 2, 16, 10), (C, 3, V + "paper", 4, 16, 5)]],
+    "cleric":        [[(V + "rotten_flesh", 16, C, 2, 12, 2), (C, 3, V + "candle", 2, 12, 1)],
+                      [(M + "tallow", 4, C, 2, 12, 10), (C, 2, V + "bone_meal", 6, 12, 5)]],
+    "farmer":        [[(M + "raspberries", 16, C, 2, 12, 2), (C, 2, V + "wheat_seeds", 8, 12, 1)],
+                      [(M + "blueberries", 16, C, 2, 12, 10), (C, 3, V + "carrot", 3, 8, 5)]],
+    "fisherman":     [[(M + "whole_cod", 6, C, 2, 16, 2), (C, 2, M + "bone_fish_hook", 1, 12, 1)],
+                      [(M + "cordage", 8, C, 2, 16, 10), (C, 6, M + "crude_fishing_rod", 1, 6, 5)]],
+    "fletcher":      [[(V + "stick", 32, C, 1, 16, 2), (C, 3, V + "arrow", 8, 12, 1)],
+                      [(V + "feather", 12, C, 2, 16, 10), (C, 6, M + "crude_bow", 1, 6, 5)]],
+    "leatherworker": [[(M + "raw_hide", 3, C, 2, 16, 2), (C, 3, V + "leather", 1, 16, 1)],
+                      [(V + "rabbit_hide", 4, C, 2, 16, 10), (C, 4, M + "bark_basket", 1, 6, 5)]],
+    "librarian":     [[(V + "paper", 12, C, 2, 12, 2), (C, 5, V + "book", 1, 12, 1)],
+                      [(V + "ink_sac", 4, C, 2, 12, 10), (C, 3, V + "candle", 3, 12, 5)]],
+    "mason":         [[(M + "stone_chunk", 16, C, 1, 16, 2), (C, 2, V + "clay_ball", 6, 16, 1)],
+                      [(M + "granite_chunk", 20, C, 2, 12, 10), (C, 3, V + "packed_mud", 8, 12, 5)]],
+    "shepherd":      [[(V + "white_wool", 2, C, 2, 16, 2), (C, 2, M + "wool_thread", 4, 16, 1)],
+                      [(M + "plant_fibre", 24, C, 1, 16, 10), (C, 3, V + "white_carpet", 6, 12, 5)]],
+    "toolsmith":     [[(V + "flint", 8, C, 2, 16, 2), (C, 4, M + "flint_axe", 1, 12, 1)],
+                      [(V + "stick", 16, C, 1, 16, 10), (C, 7, M + "crude_stone_axe", 1, 6, 5)]],
+    "weaponsmith":   [[(V + "flint", 12, C, 2, 16, 2), (C, 5, M + "flint_spear", 1, 12, 1)],
+                      [(M + "tusk", 2, C, 4, 6, 10), (C, 9, M + "tusk_dagger", 1, 6, 5)]],
 }
+for prof, levels in TRADES.items():  # goods for coins, never goods for goods
+    for t in sum(levels, []):
+        assert (t[0] == C) != (t[2] == C), (prof, t)
 def _stack(i, n):
     return {"id": i, "count": n} if n > 1 else {"id": i}
 for prof, levels in TRADES.items():
@@ -951,7 +956,7 @@ for prof, levels in TRADES.items():
         ids = []
         for i, (wi, wn, gi, gn, uses, xp) in enumerate(levels[lvl - 1] if lvl <= len(levels) else []):
             for item in (wi, gi):  # every traded item must exist (a typo makes the trade fail to load silently)
-                assert item.startswith(V) or f"item.{item.replace(':', '.')}" in lang, item
+                assert item.startswith(V) or item == C or f"item.{item.replace(':', '.')}" in lang, item
             name = f"{prof}/{lvl}/stone_{i}"
             w(D / f"mechanical/villager_trade/{name}.json", {"wants": _stack(wi, wn), "gives": _stack(gi, gn),
                 "max_uses": uses, "xp": xp, "reputation_discount": 0.05})

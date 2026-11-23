@@ -2347,39 +2347,40 @@ så `mixin/AbstractBedBlockMixin` sätter `can_set_spawn` till always för Straw
   (pälsen går åt; vargens huvud ligger på kudden och svansen hänger över fotänden). Vilan där ger **+35 sanity** i stället för
   +20, **läker 2 hjärtan** och håller dig **varm i 5 minuter** (+30 % isolering mot kyla). Respawn och phantoms som en vanlig
   Straw Bed. Som halmen faller den isär när man kliver ur, men då ramlar Wolf Pelt ut. Bryts den ger den 2–4 Plant Fibre + Wolf Pelt tillbaka. Har inget item (görs bara på plats).
-- **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är tomma tills
-  senare åldrar låser upp dem. **Inga pengar:** stenåldern har ingen Emerald-handel, bara **byteshandel**, varor mot varor
-  (Copper Coin präglas först i bronsåldern, se 02-bronze-age.md). Wandering Trader säljer inget av metall (inga hinkar
-  eller järnhackor). Max 12–16 gånger per byte, 6–8 för verktyg och rustning (`gen_data.py`, `TRADES`):
+- **Handel växer med åldrarna.** Bybor har bara stenålderssaker på nivå 1–2 (Novice/Apprentice); nivå 3–5 är bronsålderns
+  och järnålderns. **Bara mynt** (sedan v0.187.0, [traders-plan.md](../traders-plan.md) A): varje byte är **vara mot
+  Copper Coin**, aldrig vara mot vara och aldrig Emerald. Stenålderns bybor köper råvaror för några koppar och säljer
+  enkla saker för några koppar, så man kan tjäna sina första mynt hos byn innan man präglar själv (Copper Coin präglas
+  på Bronze Anvil, se 02-bronze-age.md). Max 12–16 gånger per byte, 6–8 för verktyg och rustning (`gen_data.py`, `TRADES`):
 
-| Yrke | Nivå | Byte 1 | Byte 2 |
+| Yrke | Nivå | Köper (bybon betalar) | Säljer (du betalar) |
 |---|---|---|---|
-| Armorer | 1 | 8 Leather → Leather Cap (max 8) | 8 Cooked Venison Scraps → 2 Leather |
-|  | 2 | 6 Sinew → 2 Leather | 12 Leather → Leather Tunic (max 6) |
-| Butcher | 1 | 10 Game Meat Scraps → 4 Cooked Venison Scraps | 24 Stick → 3 Cooked Venison Scraps |
-|  | 2 | 6 Lard → 4 Cooked Beef Scraps | 16 Raspberries → 3 Cooked Beef Scraps |
-| Cartographer | 1 | 16 Oak Bark → 4 Cordage | 12 Paper → Map (max 8) |
-|  | 2 | 12 Feather → 4 Paper | 3 Ink Sac → Map (max 8) |
-| Cleric | 1 | 16 Rotten Flesh → 2 Candle | 8 Eggshell → 6 Bone Meal |
-|  | 2 | 4 Tallow → 3 Candle | 24 Rotten Flesh → 8 Bone Meal |
-| Farmer | 1 | 16 Raspberries → 8 Wheat Grain | 6 Twine → 6 Wheat Grain |
-|  | 2 | 16 Blueberries → 3 Carrot (max 8) | 6 Cordage → 2 Carrot (max 8) |
-| Fisherman | 1 | 6 Bone → Bone Fish Hook | 8 Cordage → 4 Whole Cod |
-|  | 2 | 12 Cordage → Crude Fishing Rod (max 6) | 16 Raspberries → 3 Whole Salmon |
-| Fletcher | 1 | 32 Stick → 4 Flint | 12 Feather → 8 Arrow |
-|  | 2 | 16 Flint → 8 Arrow | 8 Cordage → Crude Bow (max 6) |
-| Leatherworker | 1 | 3 Raw Hide → Leather | 4 Rabbit Hide → Leather |
-|  | 2 | 6 Lard → 2 Leather | 12 Oak Bark → Bark Basket (max 6) |
-| Librarian | 1 | 12 Paper → Book | 6 Cooked Mutton Scraps → 4 Paper |
-|  | 2 | 4 Ink Sac → Book | 4 Tallow → 3 Candle |
-| Mason | 1 | 16 Rock → 6 Clay Ball | 16 Raspberries → 12 Rock |
-|  | 2 | 20 Granite Rock → 8 Packed Mud | 16 Plant Fibre → 6 Packed Mud |
-| Shepherd | 1 | 2 White Wool → 4 Wool Thread | 12 Raspberries → White Wool |
-|  | 2 | 24 Plant Fibre → 4 Wool Thread | 4 White Wool → 6 White Carpet |
-| Toolsmith | 1 | 8 Flint → Flint Axe | 16 Stick → 2 Tool Rod |
-|  | 2 | 16 Rock → Stone Axe Head | 6 Cordage → Crude Stone Axe (max 6) |
-| Weaponsmith | 1 | 8 Cordage → Flint Spear | 12 Flint → Flint Knife |
-|  | 2 | 2 Tusk → Tusk Dagger (max 6) | 6 Sinew → Flint Spear |
+| Armorer | 1 | 6 Leather → 2 Copper | 5 Copper → Leather Cap (max 8) |
+|  | 2 | 6 Sinew → 2 Copper | 9 Copper → Leather Tunic (max 6) |
+| Butcher | 1 | 10 Game Meat Scraps → 2 Copper | 2 Copper → 4 Cooked Venison Scraps |
+|  | 2 | 6 Lard → 3 Copper | 3 Copper → 4 Cooked Beef Scraps |
+| Cartographer | 1 | 16 Oak Bark → 2 Copper | 6 Copper → Map (max 8) |
+|  | 2 | 12 Feather → 2 Copper | 3 Copper → 4 Paper |
+| Cleric | 1 | 16 Rotten Flesh → 2 Copper | 3 Copper → 2 Candle |
+|  | 2 | 4 Tallow → 2 Copper | 2 Copper → 6 Bone Meal |
+| Farmer | 1 | 16 Raspberries → 2 Copper | 2 Copper → 8 Wheat Grain |
+|  | 2 | 16 Blueberries → 2 Copper | 3 Copper → 3 Carrot (max 8) |
+| Fisherman | 1 | 6 Whole Cod → 2 Copper | 2 Copper → Bone Fish Hook |
+|  | 2 | 8 Cordage → 2 Copper | 6 Copper → Crude Fishing Rod (max 6) |
+| Fletcher | 1 | 32 Stick → 1 Copper | 3 Copper → 8 Arrow |
+|  | 2 | 12 Feather → 2 Copper | 6 Copper → Crude Bow (max 6) |
+| Leatherworker | 1 | 3 Raw Hide → 2 Copper | 3 Copper → Leather |
+|  | 2 | 4 Rabbit Hide → 2 Copper | 4 Copper → Bark Basket (max 6) |
+| Librarian | 1 | 12 Paper → 2 Copper | 5 Copper → Book |
+|  | 2 | 4 Ink Sac → 2 Copper | 3 Copper → 3 Candle |
+| Mason | 1 | 16 Rock → 1 Copper | 2 Copper → 6 Clay Ball |
+|  | 2 | 20 Granite Rock → 2 Copper | 3 Copper → 8 Packed Mud |
+| Shepherd | 1 | 2 White Wool → 2 Copper | 2 Copper → 4 Wool Thread |
+|  | 2 | 24 Plant Fibre → 1 Copper | 3 Copper → 6 White Carpet |
+| Toolsmith | 1 | 8 Flint → 2 Copper | 4 Copper → Flint Axe |
+|  | 2 | 16 Stick → 1 Copper | 7 Copper → Crude Stone Axe (max 6) |
+| Weaponsmith | 1 | 12 Flint → 2 Copper | 5 Copper → Flint Spear |
+|  | 2 | 2 Tusk → 4 Copper (max 6) | 9 Copper → Tusk Dagger (max 6) |
 
 ### Bär och svamp (plocka)
 Växer i **fläckar**: en bärbuske kommer sällan ensam (upp till ~7 buskar ihop), svamp växer i **svampfält** (upp
