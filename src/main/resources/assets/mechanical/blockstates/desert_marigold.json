@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/desert_marigold"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/desert_marigold_leaves"
+    }
+  }
+}

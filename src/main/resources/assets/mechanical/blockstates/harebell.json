@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/harebell"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/harebell_leaves"
+    }
+  }
+}

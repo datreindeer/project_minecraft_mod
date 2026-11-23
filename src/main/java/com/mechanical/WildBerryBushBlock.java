@@ -107,10 +107,15 @@ public class WildBerryBushBlock extends VegetationBlock {
     public ItemStack pick(ServerLevel level, BlockPos pos, BlockState state) {
         state = updateFrost(level, pos, state);
         if (!isRipe(state)) return ItemStack.EMPTY;
-        level.setBlock(pos, state.setValue(AGE, 1), Block.UPDATE_CLIENTS);
+        level.setBlock(pos, state.setValue(AGE, ageAfterPicking(level)), Block.UPDATE_CLIENTS);
         level.playSound(null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(state));
         return new ItemStack(berries.get(), 1 + level.getRandom().nextInt(3));
+    }
+
+    /** The stage a bush goes back to when picked: flowers, so it ripens again in ~12 min. */
+    protected int ageAfterPicking(ServerLevel level) {
+        return 1;
     }
 
     @Override

@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:gypsum_flats",
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands",
+    "minecraft:badlands",
+    "minecraft:desert",
+    "minecraft:eroded_badlands",
+    "minecraft:savanna",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:wooded_badlands"
+  ],
+  "features": "mechanical:jujube_thicket",
+  "step": "vegetal_decoration"
+}

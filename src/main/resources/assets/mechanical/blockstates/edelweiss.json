@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/edelweiss"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/edelweiss_leaves"
+    }
+  }
+}

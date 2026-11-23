@@ -41,6 +41,10 @@
     "mechanical:raw_beaver_pelt",
     "mechanical:beaver_pelt",
     "mechanical:raw_otter_pelt",
-    "mechanical:otter_pelt"
+    "mechanical:otter_pelt",
+    "mechanical:sloes",
+    "mechanical:sea_buckthorn_berries",
+    "mechanical:jujubes",
+    "mechanical:cooked_elderberries"
   ]
 }

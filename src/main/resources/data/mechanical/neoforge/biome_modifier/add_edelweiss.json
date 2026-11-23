@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:slate_highlands",
+    "mechanical:mammoth_steppe",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills"
+  ],
+  "features": "mechanical:edelweiss",
+  "step": "vegetal_decoration"
+}

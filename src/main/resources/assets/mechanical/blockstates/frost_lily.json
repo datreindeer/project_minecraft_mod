@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/frost_lily"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/frost_lily_leaves"
+    }
+  }
+}

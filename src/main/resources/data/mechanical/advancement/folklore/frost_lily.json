@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:frost_lily"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:frost_lily"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.frost_lily.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.frost_lily.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

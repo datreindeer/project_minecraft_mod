@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:shingle_beach",
+    "mechanical:basalt_coast",
+    "minecraft:stony_shore",
+    "minecraft:beach"
+  ],
+  "features": "mechanical:sea_thrift",
+  "step": "vegetal_decoration"
+}

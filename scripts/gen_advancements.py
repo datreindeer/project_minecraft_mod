@@ -1335,6 +1335,16 @@ TABS["wilderness"][1].extend([
 TABS["food"][1].extend([
     ("winter_berries", "root", "lingonberries", G, "Winter Larder",
      "Pick Lingonberries or Juniper Berries in winter. Other berry bushes freeze and give nothing until spring", by_code()),
+    # flora phase 1 (Flora.java, gen_flora.py): thicket berries, poisonous raw elderberries, wild flowers of the open lands
+    ("thicket_berries", "root", "sloes", T, "Thorny Harvest",
+     "Pick Sloes, Sea Buckthorn Berries or Jujubes from a thorny thicket. Each grows in its own climate, and ripens in autumn",
+     has("sloes", "sea_buckthorn_berries", "jujubes")),
+    ("cooked_elderberries", "roasted", "cooked_elderberries", T, "Cook Them First",
+     "Raw Elderberries make you sick. Cook them on a Campfire into Cooked Elderberries", has("cooked_elderberries")),
+    ("wildflowers", "root", "pasque_flower", T, "Wildflowers",
+     "Pick a wild flower of the open lands: they bloom only in their season, and are plain leaves the rest of the year",
+     has("pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
+         "great_mullein", "desert_candle")),
     ("fallow_season", "root", "minecraft:wheat_seeds", T, "Out of Season",
      "Sneak-click a crop with an empty hand in winter: nothing grows in the fields until spring, so harvest and store before",
      by_code()),
@@ -2157,6 +2167,16 @@ TABS["folklore"] = ("minecraft:block/moss_block", [
      "See a Dune Wraith in a desert sandstorm. It is after your water", by_code()),
     ("dune_glass", "dune_wraith", "dune_glass", G, "Glass from the Storm",
      "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass", has("dune_glass")),
+])
+
+
+# the magic flowers (Flora.java): only picked in bloom do they give themselves
+TABS["folklore"][1].extend([
+    ("fern_flower", "root", "fern_flower", C, "Midsummer Night",
+     "Pick a Fern Flower in bloom. The fern opens its golden flower only on summer nights, deep in old forests, and brings luck",
+     has("fern_flower")),
+    ("frost_lily", "root", "frost_lily", C, "Winter Bloom",
+     "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly", has("frost_lily")),
 ])
 
 

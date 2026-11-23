@@ -87,6 +87,9 @@ public final class Retrogen {
             // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left
             // out, and so is everything switched off there)
             "bone_remains", "fire_ring", "sand_skeleton", "mammoth_tusks",
+            // flowers and berry thickets (gen_flora.py)
+            "pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
+            "great_mullein", "desert_candle", "fern_flower", "frost_lily", "blackthorn_thicket", "sea_buckthorn_thicket", "jujube_thicket",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
