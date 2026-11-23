@@ -2927,7 +2927,11 @@ Data: `scripts/gen_folklore.py` (körs direkt efter `gen_fauna_*`), texturer: `s
 
 ### Mountain Watcher
 
-- Stor ljus rovfågel med svag glans (golden eaglens modell, 1,4 gånger större). Kretsar över bergstoppar som `SoaringBird`.
+- Stor silverglänsande rovfågel med egen modell (`MountainWatcherModel`, geometri och skinn från `gen_small_models.py`), ritad 1,5×:
+  vingbredd runt 6,5 block, sex utspärrade handpennor per vinge med blågrönt/violett skimmer, svagt glödande runor längs
+  vingarna (glödlager `mountain_watcher_glow.png`), nacktofs, gyllene näbb, glödande isblå ögon och två långa stjärtband
+  med skimrande spadar. Glider länge och slår bara ibland några långsamma, djupa vingslag (och när den stiger); ur
+  vingspetsarna faller ibland ett ljusstoft (END_ROD, bara för den som ser den). Hitbox 1,2 × 1,4. Kretsar över bergstoppar som `SoaringBird`.
 - Spawnar bara på öppen mark på **y 150 eller högre**, i klart väder på dagen, i Stony/Jagged/Frozen Peaks, Snowy Slopes,
   Grove, Meadow, Windswept Hills och Cherry Grove.
 - Syns bara med syn ≥ 40. Går inte att skada, träffa eller knuffa, är helt tyst och lämnar ingen Carcass. Flyger undan om man kommer nära.

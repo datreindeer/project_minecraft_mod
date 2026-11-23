@@ -1,8 +1,8 @@
 """Folklore textures (gen_folklore.py, com.mechanical.folklore). Deterministic: hashes only, no randomness.
 
-- entity/wildlife/mountain_watcher.png: the golden eagle's 64x64 skin (same model, client.folklore.FolkloreClient) turned
-  pale: luminance mapped onto bone-white to silver-grey, with a faint pearly shimmer (scattered pale cyan/violet texels).
-- item/mountain_watcher_spawn_egg.png, item/watcher_feather.png: the golden eagle egg and Eagle Feather recoloured the same way.
+- item/mountain_watcher_spawn_egg.png, item/watcher_feather.png: the golden eagle egg and Eagle Feather turned pale:
+  luminance mapped onto bone-white to silver-grey, with a faint pearly shimmer (scattered pale cyan/violet texels).
+  (The Watcher's own model and skins are painted by gen_small_models.py.)
 - item/boiled_fly_agaric.png: the Fly Agaric item, the red cooked down to a dull orange-brown, the spots greyed.
 - block/glimmering_stump_side/_top.png: vanilla oak log bark and rings (from the merged jar) overgrown with moss.
 - mob_effect/second_sight.png: an 18x18 violet eye.
@@ -333,7 +333,6 @@ def main():
     jar = zipfile.ZipFile(JAR[0])
     vanilla = lambda p: Image.open(io.BytesIO(jar.read(f"assets/minecraft/textures/{p}")))
     out = {
-        "entity/wildlife/mountain_watcher.png": pale(Image.open(TEX / "entity/wildlife/golden_eagle.png").convert("RGBA"), 11),
         "item/mountain_watcher_spawn_egg.png": pale(Image.open(TEX / "item/golden_eagle_spawn_egg.png").convert("RGBA"), 12),
         "item/watcher_feather.png": pale(Image.open(TEX / "item/eagle_feather.png").convert("RGBA"), 13),
         "item/boiled_fly_agaric.png": boiled(Image.open(TEX / "item/fly_agaric.png").convert("RGBA")),

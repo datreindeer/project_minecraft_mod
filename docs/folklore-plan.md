@@ -35,8 +35,9 @@ Bara den som **tror** ser väsendena. Allt magiskt syns bara för spelare med ti
 - Advancement *Small Folk* (lämna en gåva).
 
 ## 2. Mountain Watcher (fågel) — klart (v0.110.0)
-> Byggt: `folklore/MountainWatcher.java` (ärver `SoaringBird`, tyst, osårbar, ej träffbar), golden eaglens modell 1,4× i
-> `FolkloreClient`, spawn y ≥ 150 / klart / dag i bergsbiomer (vikt 2). Fjädern: inom 24 block, en per kalenderår och spelare.
+> Byggt: `folklore/MountainWatcher.java` (ärver `SoaringBird`, tyst, osårbar, ej träffbar), egen modell sedan v0.187.0
+> (`client/folklore/MountainWatcherModel` 1,5×, ~6,5 block vingbredd, runor, skimrande handpennor, nacktofs, stjärtband,
+> glödande ögon, långa glid och ljusstoft från vingspetsarna; skinn från `gen_small_models.py`) i `FolkloreClient`, spawn y ≥ 150 / klart / dag i bergsbiomer (vikt 2). Fjädern: inom 24 block, en per kalenderår och spelare.
 > Den flyger fortfarande undan som andra fåglar (FlockBird, ~7–12 block), oavsett om man ser den.
 - **Entity `mountain_watcher`**: stor, ljus rovfågel med svag glans. Spawnar bara över **y 150**, i klart väder, dagtid.
   Kretsar kring bergstoppar (ärver `SoaringBird` som `GoldenEagle`). Flyger iväg om spelaren kommer inom ~12 block.
