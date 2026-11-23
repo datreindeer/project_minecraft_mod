@@ -84,8 +84,12 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     /** Movement speed lost under a log: a lifter or puller moves at 1 / (1 + BURDEN * load) of their speed. */
     static final double BURDEN = 0.8;
     private static final Identifier WEIGHT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "log_weight");
-    /** A lifted end is held this far from the player; the player stays within HOLD + LIFT_SLACK of it. */
-    static final double HOLD = 0.4, LIFT_SLACK = 1.2;
+    /** A lifted end is held this far from the player; the player stays within HOLD + LIFT_SLACK of it (drawn in if further). */
+    static final double HOLD = 0.4, LIFT_SLACK = 0.25;
+    /** Blocks a tick a lifter standing off the end is drawn in to it. */
+    static final double DRAW_IN = 0.12;
+    /** A dragged log this long (blocks) or shorter swings round freely; longer ones resist being swung sideways (share 3 / length). */
+    static final double NIMBLE = 3;
     /** Blocks a tick carried light. */
     static final double CARRY_STEP = 0.25;
     /** How high the underside of a lifted end is held: at the hands, about hip height. */
@@ -302,10 +306,24 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return new AABB(minX - m, minY, minZ - m, maxX + m, maxY + 1, maxZ + m);
     }
 
+    /** Client: this client's player lifts an end: it carries it here too and ignores the server's (older) places for it. */
+    @Override
+    protected boolean isLocalClientAuthoritative() {
+        for (boolean root : new boolean[] {true, false}) if (lifter(root) instanceof Player p && p.isLocalPlayer()) return true;
+        return false;
+    }
+
+    /** Others' clients: moved smoothly between the server's places (every 2 ticks). */
+    @Override
+    protected net.minecraft.world.entity.InterpolationHandler createInterpolationHandler() {
+        return net.minecraft.world.entity.LinearInterpolationHandler.create(this, 2);
+    }
+
     @Override
     public void setYRot(float yRot) {
-        // the server keeps only the angle clients get (a byte: 1/256 turn), so both sides collide alike
-        if (level() != null && !level().isClientSide()) yRot = Mth.unpackDegrees(Mth.packDegrees(yRot));
+        // only the angle clients get (a byte: 1/256 turn), so both sides collide alike, and a lifter's client carrying it
+        // turns it in the same steps as the server
+        if (level() != null) yRot = Mth.unpackDegrees(Mth.packDegrees(yRot));
         super.setYRot(yRot);
         if (cells != null) setBoundingBox(makeBoundingBox());
     }
@@ -544,32 +562,183 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     // ---- physics
 
-    /** Blocks it can't pass through (leaves give way). */
-    private static boolean blocks(Level level, BlockPos pos) {
-        BlockState s = level.getBlockState(pos);
-        return !s.is(BlockTags.LEAVES) && !s.getCollisionShape(level, pos).isEmpty();
-    }
-
-    /** What it can lie on: solid ground, or water (logs float). */
-    private static boolean holds(Level level, BlockPos pos) {
-        return blocks(level, pos) || level.getFluidState(pos).is(FluidTags.WATER);
+    /** What it can lie on besides blocks: water (logs float). */
+    private static boolean water(Level level, BlockPos pos) {
+        return level.getFluidState(pos).is(FluidTags.WATER);
     }
 
     /** Another log it may overlap while it is being replaced by this one (straighten). */
     private FelledLogEntity ignore;
 
-    /** Would it be clear of the ground and of other felled logs at {@code pos} turned to {@code yaw}? */
+    // ---- the real block shapes (slabs, stairs, paths, snow layers...) along the log's whole footprint
+
+    /** The log's sides are drawn in this much when tested against blocks: it may touch them, not overlap them. */
+    private static final double SKIN = 0.02;
+
+    /**
+     * A row of blocks on the log's own grid as one strip: local x in x0 ± 0.5, local z (along the log) z0..z1; its bottom in
+     * the world at local z is y + c0 + c1 * z (tilted on a slope, or by one lifted end).
+     */
+    record Strip(double x0, double z0, double z1, double c0, double c1) {
+        double bottom(double y, double z) {
+            return y + c0 + c1 * z;
+        }
+    }
+
+    /** The log as strips with tilt {@code k}: a straight log is one (raised or tilted by its lifters), any other one per block. */
+    List<Strip> strips(double k) {
+        int n = size();
+        if (!straight()) {
+            List<Strip> out = new ArrayList<>();
+            for (BlockPos c : cells) out.add(new Strip(c.getX() - cx, c.getZ() - cz - 0.5, c.getZ() - cz + 0.5, c.getY(), 0));
+            return out;
+        }
+        boolean r = rootLifted(), t = tailLifted();
+        if (r && t) return List.of(new Strip(0, -n / 2.0, n / 2.0, LIFT_HEIGHT, 0));
+        if (r || t) return List.of(new Strip(0, -n / 2.0, n / 2.0, LIFT_HEIGHT / 2, (r ? -1 : 1) * LIFT_HEIGHT / n)); // as liftOffset
+        return List.of(new Strip(0, -n / 2.0, n / 2.0, 0, k));
+    }
+
+    /** The world blocks' collision boxes (leaves excluded; water as a box to its surface if {@code withWater}) near strip {@code s} between two heights. */
+    private static List<AABB> boxes(Level level, Strip s, Vec3 pos, float yaw, double yLo, double yHi, boolean withWater) {
+        double r = -yaw * Mth.DEG_TO_RAD, cos = Math.cos(r), sin = Math.sin(r);
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE, minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
+        for (int k = 0; k < 4; k++) { // the strip's corners in the world (as Vec3#yRot(-yaw))
+            double lx = s.x0 + (k % 2 == 0 ? -0.5 : 0.5), lz = k < 2 ? s.z0 : s.z1;
+            double wx = pos.x + lx * cos + lz * sin, wz = pos.z + lz * cos - lx * sin;
+            minX = Math.min(minX, wx);
+            maxX = Math.max(maxX, wx);
+            minZ = Math.min(minZ, wz);
+            maxZ = Math.max(maxZ, wz);
+        }
+        List<AABB> out = new ArrayList<>();
+        for (BlockPos p : BlockPos.betweenClosed(Mth.floor(minX), Mth.floor(yLo), Mth.floor(minZ), Mth.floor(maxX), Mth.floor(yHi), Mth.floor(maxZ))) {
+            BlockState st = level.getBlockState(p);
+            if (!st.isAir() && !st.is(BlockTags.LEAVES)) for (AABB b : st.getCollisionShape(level, p).toAabbs()) out.add(b.move(p));
+            if (withWater && water(level, p) && !water(level, p.above()))
+                out.add(new AABB(p.getX(), p.getY(), p.getZ(), p.getX() + 1, p.getY() + level.getFluidState(p).getHeight(level, p), p.getZ() + 1));
+        }
+        return out;
+    }
+
+    /**
+     * The stretch of local z over which world box {@code b}'s footprint overlaps strip {@code s} of a log at {@code pos}
+     * turned to {@code yaw}, its sides drawn in by {@link #SKIN}; null if they don't overlap. The box's footprint is turned
+     * onto the log's grid and clipped to the strip.
+     */
+    static double[] span(Strip s, Vec3 pos, float yaw, AABB b) {
+        double r = yaw * Mth.DEG_TO_RAD, cos = Math.cos(r), sin = Math.sin(r);
+        double[] xs = new double[12], zs = new double[12];
+        double[][] corners = {{b.minX, b.minZ}, {b.maxX, b.minZ}, {b.maxX, b.maxZ}, {b.minX, b.maxZ}};
+        for (int k = 0; k < 4; k++) { // as toLocal: Vec3#yRot(yaw)
+            double x = corners[k][0] - pos.x, z = corners[k][1] - pos.z;
+            xs[k] = x * cos + z * sin;
+            zs[k] = z * cos - x * sin;
+        }
+        int n = clip(xs, zs, 4, true, s.x0 - 0.5 + SKIN, true);
+        n = clip(xs, zs, n, true, s.x0 + 0.5 - SKIN, false);
+        n = clip(xs, zs, n, false, s.z0 + SKIN, true);
+        n = clip(xs, zs, n, false, s.z1 - SKIN, false);
+        if (n < 3) return null;
+        double lo = Double.MAX_VALUE, hi = -Double.MAX_VALUE;
+        for (int k = 0; k < n; k++) {
+            lo = Math.min(lo, zs[k]);
+            hi = Math.max(hi, zs[k]);
+        }
+        return new double[] {lo, hi};
+    }
+
+    /** The convex polygon (xs, zs; n corners) cut to x (or z) above (or below) {@code bound}; returns its new corner count. */
+    private static int clip(double[] xs, double[] zs, int n, boolean onX, double bound, boolean above) {
+        double[] ox = java.util.Arrays.copyOf(xs, n), oz = java.util.Arrays.copyOf(zs, n);
+        int m = 0;
+        for (int i = 0; i < n; i++) {
+            int j = (i + 1) % n;
+            double vi = onX ? ox[i] : oz[i], vj = onX ? ox[j] : oz[j];
+            boolean inI = above ? vi >= bound : vi <= bound, inJ = above ? vj >= bound : vj <= bound;
+            if (inI) {
+                xs[m] = ox[i];
+                zs[m++] = oz[i];
+            }
+            if (inI != inJ) {
+                double f = (bound - vi) / (vj - vi);
+                xs[m] = ox[i] + f * (ox[j] - ox[i]);
+                zs[m++] = oz[i] + f * (oz[j] - oz[i]);
+            }
+        }
+        return m;
+    }
+
+    /** Would it be clear of every block shape and of other felled logs at {@code pos} turned to {@code yaw}? */
     boolean fits(Level level, Vec3 pos, float yaw) {
+        return fits(level, pos, yaw, tilt());
+    }
+
+    /** As {@link #fits(Level, Vec3, float)}, lying with tilt {@code k}. */
+    boolean fits(Level level, Vec3 pos, float yaw, double k) {
+        for (Strip s : strips(k)) {
+            double b0 = s.bottom(pos.y, s.z0), b1 = s.bottom(pos.y, s.z1);
+            for (AABB b : boxes(level, s, pos, yaw, Math.min(b0, b1), Math.max(b0, b1) + 1, false)) {
+                double[] sp = span(s, pos, yaw, b);
+                if (sp == null) continue;
+                double lo = s.bottom(pos.y, sp[0]), hi = s.bottom(pos.y, sp[1]);
+                if (b.maxY > Math.min(lo, hi) + SKIN && b.minY < Math.max(lo, hi) + 1 - SKIN) return false;
+            }
+        }
         for (int i = 0; i < cells.size(); i++) {
-            Vec3 w = world(i, pos, yaw).add(0, 0.5 + tiltOffset(i), 0);
-            if (blocks(level, BlockPos.containing(w))) return false;
+            Vec3 w = world(i, pos, yaw).add(0, 0.5 + (straight() && lifterCount() == 0 ? k * localCell(i).z : liftOffset(i)), 0);
             // the middle and near the four corners of the block, on its own grid
-            for (int k = 0; k < 5; k++) {
-                Vec3 off = k == 0 ? Vec3.ZERO : new Vec3(k % 2 == 0 ? 0.35 : -0.35, 0, k < 3 ? 0.35 : -0.35).yRot(-yaw * Mth.DEG_TO_RAD);
+            for (int c = 0; c < 5; c++) {
+                Vec3 off = c == 0 ? Vec3.ZERO : new Vec3(c % 2 == 0 ? 0.35 : -0.35, 0, c < 3 ? 0.35 : -0.35).yRot(-yaw * Mth.DEG_TO_RAD);
                 if (inOtherLog(level, w.add(off), this)) return false;
             }
         }
         return true;
+    }
+
+    /**
+     * What would hold strip {@code s} up (lying at height {@code y} with its own tilt): the tops of the block shapes, water
+     * and other felled logs under its footprint, from {@code above} over its bottom down to {@code depth} under it, as
+     * (local z, top) points: the two ends of each one's stretch under it. A full block's top a whole block up is not under
+     * it but a wall beside it (it never climbs walls); a slab's top half a block up is, so a log sunk into one rises onto it.
+     */
+    private List<double[]> supports(Level level, Strip s, double y, double above, double depth) {
+        List<double[]> out = new ArrayList<>();
+        double b0 = s.bottom(y, s.z0), b1 = s.bottom(y, s.z1);
+        Vec3 pos = new Vec3(getX(), y, getZ());
+        for (AABB b : boxes(level, s, pos, getYRot(), Math.min(b0, b1) - depth - 1, Math.max(b0, b1) + above, true)) {
+            double[] sp = span(s, pos, getYRot(), b);
+            if (sp == null) continue;
+            for (double z : sp) {
+                double bottom = s.bottom(y, z);
+                if (b.maxY <= bottom + above && b.maxY > bottom - depth) out.add(new double[] {z, b.maxY});
+            }
+        }
+        // other logs: their blocks' tops, sampled along the strip and across it
+        double step = 0.5;
+        for (double z = s.z0 + 0.05; z <= s.z1 - 0.05 + 1.0E-6; z += step) {
+            for (double x : new double[] {s.x0 - 0.35, s.x0, s.x0 + 0.35}) {
+                double bottom = s.bottom(y, z);
+                double top = otherLogTop(level, toWorld(new Vec3(x, 0, z)), bottom - depth, bottom + above);
+                if (top > -Double.MAX_VALUE) out.add(new double[] {z, top});
+            }
+        }
+        return out;
+    }
+
+    /** The highest top of another felled log's block over the world point (x, z) between {@code lo} and {@code hi}, or -MAX_VALUE. */
+    private double otherLogTop(Level level, Vec3 p, double lo, double hi) {
+        double best = -Double.MAX_VALUE;
+        for (FelledLogEntity o : level.getEntitiesOfClass(FelledLogEntity.class, new AABB(p.x, lo - 1, p.z, p.x, hi + 1, p.z).inflate(0.05),
+                l -> l != this && l != ignore && !l.isPassenger() && l.isAlive())) {
+            Vec3 l = o.toLocal(p);
+            for (int i = 0; i < o.size(); i++) {
+                Vec3 c = o.localCell(i);
+                double top = o.getY() + c.y + o.liftOffset(i) + 1;
+                if (Math.abs(l.x - c.x) < 0.5 && Math.abs(l.z - c.z) < 0.5 && top > lo && top <= hi) best = Math.max(best, top);
+            }
+        }
+        return best;
     }
 
     /** Is the world point {@code p} inside a block of a felled log other than {@code except} (and not one riding a bed)? */
@@ -593,26 +762,34 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** Server: does anything under its lowest layer hold it up? */
     private boolean supported() {
-        if (straight() && size() > 1) {
-            for (int i = 0; i < size(); i++) {
-                Vec3 w = world(i);
-                double bottom = getY() + tiltOffset(i);
-                if (groundTop(level(), w.x, w.z, bottom + 0.3, 1) > bottom - 0.05) return true;
-            }
+        if (straight()) {
+            Strip s = strips(tilt()).get(0);
+            for (double[] p : supports(level(), s, getY(), 0.3, 0.05)) if (p[1] > s.bottom(getY(), p[0]) - 0.05) return true;
             return false;
         }
         int y = Mth.floor(getY() + 0.01) - 1;
         for (int i = 0; i < cells.size(); i++) {
             if (cells.get(i).getY() != 0) continue;
             Vec3 w = world(i);
-            if (holds(level(), BlockPos.containing(w.x, y, w.z)) || inOtherLog(level(), new Vec3(w.x, y + 0.5, w.z), this)) return true;
+            BlockPos under = BlockPos.containing(w.x, y, w.z);
+            if (blocks(level(), under) || water(level(), under) || inOtherLog(level(), new Vec3(w.x, y + 0.5, w.z), this)) return true;
         }
         return false;
     }
 
-    /** Server: one step of falling or sliding off a ledge; true if it moved. */
-    private boolean settle(ServerLevel level) {
-        if (straight() && size() > 1 && lifterCount() == 0 && pullers.isEmpty()) return settleOnSlope(level);
+    /** Blocks it can't pass through (leaves give way): the old block-centre test, for logs that never were straightened. */
+    private static boolean blocks(Level level, BlockPos pos) {
+        BlockState s = level.getBlockState(pos);
+        return !s.is(BlockTags.LEAVES) && !s.getCollisionShape(level, pos).isEmpty();
+    }
+
+    private static boolean holds(Level level, BlockPos pos) {
+        return blocks(level, pos) || water(level, pos);
+    }
+
+    /** One step of falling or sliding off a ledge; true if it moved. Server, and the client of its lifter (carry). */
+    private boolean settle(Level level) {
+        if (straight()) return lifterCount() == 0 && !isPulled() ? settleOnSlope(level) : settleHandled(level);
         if (tilt() != 0) entityData.set(TILT, 0.0F);
         int baseY = Mth.floor(getY() + 0.01);
         double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE, minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE, comX = 0, comZ = 0;
@@ -623,7 +800,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             comZ += c.getZ();
             if (c.getY() != 0) continue;
             Vec3 w = world(i);
-            if (!holds(level, BlockPos.containing(w.x, baseY - 1, w.z)) && !inOtherLog(level, new Vec3(w.x, baseY - 0.5, w.z), this)) continue; // ground, water or a log under it
+            if (!holds(level, BlockPos.containing(w.x, baseY - 1, w.z)) && !inOtherLog(level, new Vec3(w.x, baseY - 0.5, w.z), this)) continue; // ground, water or a log under it (legacy shapes only)
             any = true;
             minX = Math.min(minX, c.getX());
             maxX = Math.max(maxX, c.getX());
@@ -655,6 +832,36 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
 
     /** How far below a block the ground may be and still hold it up: deeper, the block is over a gap (a log bridges it). */
     static final double SUPPORT_DEPTH = 1.5;
+    /** How far above its bottom a block's top still counts as under it: a slab it sank into, not a full block (a wall). */
+    static final double SUPPORT_ABOVE = 0.99;
+
+    /**
+     * A straight log someone lifts or pulls: held at their tilt (or level), it rests on the highest thing under its footprint
+     * (stepping up onto slabs and paths, down off them), or falls.
+     */
+    private boolean settleHandled(Level level) {
+        if (tilt() != 0) entityData.set(TILT, 0.0F);
+        Strip s = strips(0).get(0);
+        double rest = -Double.MAX_VALUE;
+        for (double[] p : supports(level, s, getY(), SUPPORT_ABOVE, SUPPORT_DEPTH)) rest = Math.max(rest, p[1] - s.bottom(0, p[0]));
+        if (rest == -Double.MAX_VALUE) { // nothing under it
+            fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
+            setPos(getX(), getY() - fallSpeed, getZ());
+            return true;
+        }
+        if (Math.abs(rest - getY()) < 1.0E-4) {
+            fallSpeed = 0;
+            return false;
+        }
+        if (rest < getY()) {
+            fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
+            setPos(getX(), Math.max(rest, getY() - fallSpeed), getZ());
+        } else if (fits(level, new Vec3(getX(), rest, getZ()), getYRot())) {
+            fallSpeed = 0;
+            setPos(getX(), rest, getZ());
+        } else return false;
+        return true;
+    }
 
     /**
      * Server, a straight log: it rests like a stiff pole on what lies under its blocks (ground, water, other logs within
@@ -663,16 +870,11 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
      * side of its middle only, it slides off level that way, over the edge, and falls. Steeper than SLIDE_TILT it slides
      * down along its length until the ground stops it. True if it moved.
      */
-    private boolean settleOnSlope(ServerLevel level) {
+    private boolean settleOnSlope(Level level) {
         int n = size();
         double k0 = tilt();
-        List<double[]> supports = new ArrayList<>(); // (t from the middle, ground top)
-        for (int i = 0; i < n; i++) {
-            Vec3 w = world(i);
-            double t = i + 0.5 - n / 2.0, bottom = getY() + k0 * t;
-            double g = groundTop(level, w.x, w.z, bottom + 0.99, 3);
-            if (g > bottom - SUPPORT_DEPTH) supports.add(new double[] {t, g});
-        }
+        // (t along it from the middle, top) under its whole footprint: the real shapes, so it lies on slabs, not in them
+        List<double[]> supports = supports(level, strips(k0).get(0), getY(), SUPPORT_ABOVE, SUPPORT_DEPTH);
         if (supports.isEmpty()) { // nothing under it: it falls, level
             fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
             setPos(getX(), getY() - fallSpeed, getZ());
@@ -681,8 +883,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         }
         boolean left = false, right = false;
         for (double[] p : supports) {
-            left |= p[0] < 0.45; // the block reaches past the middle on that side (exactly on an edge is not enough)
-            right |= p[0] > -0.45;
+            left |= p[0] < -0.02; // something under it on that side of its middle (exactly at the middle is not enough)
+            right |= p[0] > 0.02;
         }
         if (!left || !right) { // its middle is past its supports: it slides off level that way and drops
             if (k0 != 0) entityData.set(TILT, 0.0F);
@@ -690,20 +892,20 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             double top = -Double.MAX_VALUE;
             for (double[] p : supports) top = Math.max(top, p[1]);
             Vec3 at = new Vec3(getX(), Math.max(top, getY() - 0.2), getZ()).add(off);
-            if (fits(level, at, getYRot())) {
+            if (fits(level, at, getYRot(), 0)) {
                 setPos(at);
                 return true;
             }
-            setPos(getX(), top, getZ());
+            if (top > getY() && fits(level, new Vec3(getX(), top, getZ()), getYRot(), 0)) setPos(getX(), top, getZ());
             return false;
         }
         // the lowest line over the supports with one on each side of the middle (the bridge of their lower hull)
         double bestK = 0, bestMid = Double.MAX_VALUE;
         for (double[] l : supports) {
-            if (l[0] >= 0.45) continue;
+            if (l[0] >= -0.02) continue;
             for (double[] r : supports) {
-                if (r[0] <= -0.45) continue;
-                double k = r[0] - l[0] < 1.0E-6 ? 0 : (r[1] - l[1]) / (r[0] - l[0]);
+                if (r[0] <= 0.02) continue;
+                double k = n == 1 || r[0] - l[0] < 1.0E-6 ? 0 : (r[1] - l[1]) / (r[0] - l[0]); // a single block lies level
                 k = Mth.clamp(k, -MAX_TILT, MAX_TILT);
                 double mid = -Double.MAX_VALUE;
                 for (double[] p : supports) mid = Math.max(mid, p[1] - k * p[0]);
@@ -715,16 +917,17 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         }
         double k = bestK, mid = bestMid;
         boolean moved = false;
+        if (Math.abs(k - k0) > 1.0E-4 && !fits(level, new Vec3(getX(), Math.max(mid, getY() - fallSpeed), getZ()), getYRot(), k)) k = k0; // it can't turn that way (something over it)
         if (mid < getY() - 0.01) { // coming down onto it
             fallSpeed = Math.min(fallSpeed + 0.08, 1.0);
             double y = Math.max(mid, getY() - fallSpeed);
             if (y <= mid + 1.0E-6) {
-                if (fallSpeed > 0.4) playSound(SoundEvents.WOOD_FALL, 1.0F, 0.6F);
+                if (fallSpeed > 0.4 && !level.isClientSide()) playSound(SoundEvents.WOOD_FALL, 1.0F, 0.6F);
                 fallSpeed = 0;
             }
             setPos(getX(), y, getZ());
             moved = true;
-        } else if (mid > getY() + 1.0E-4) {
+        } else if (mid > getY() + 1.0E-4 && fits(level, new Vec3(getX(), mid, getZ()), getYRot(), k)) { // sunk into a slab: up onto it
             setPos(getX(), mid, getZ());
             fallSpeed = 0;
             moved = true;
@@ -740,30 +943,23 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             Vec3 at = position().add(down.scale(speed)).add(0, -speed * Math.abs(k), 0);
             if (fits(level, at, getYRot())) {
                 setPos(at);
-                if (tickCount % 6 == 0) playSound(SoundEvents.WOOD_STEP, 0.7F, 0.5F);
+                if (tickCount % 6 == 0 && !level.isClientSide()) playSound(SoundEvents.WOOD_STEP, 0.7F, 0.5F);
                 moved = true;
             }
         }
         return moved;
     }
 
-    /** The top of what would hold a block at (x, z) (ground, water or another log), searching down from {@code from} through {@code depth} blocks; very low if none. */
-    private double groundTop(Level level, double x, double z, double from, int depth) {
-        int top = Mth.floor(from);
-        for (int y = top; y >= top - depth; y--) {
-            BlockPos p = BlockPos.containing(x, y, z);
-            if (holds(level, p)) {
-                var shape = level.getBlockState(p).getCollisionShape(level, p);
-                return y + (shape.isEmpty() ? 1 : shape.max(Direction.Axis.Y));
-            }
-            if (inOtherLog(level, new Vec3(x, y + 0.5, z), this)) return y + 1;
-        }
-        return -1.0E10;
-    }
-
     @Override
     public void tick() {
         if (level().isClientSide()) {
+            if (!isPassenger() && !cells.isEmpty() && lifterCount() > 0 && isLocalInstanceAuthoritative()) {
+                // this client's player lifts it: carried here as on the server, so the end stays at their hands
+                Vec3 server = getPositionCodec().getBase();
+                if (server.distanceToSqr(position()) > 4) snapTo(server.x, server.y, server.z, getYRot(), getXRot());
+                carry(level());
+                settle(level());
+            }
             holdBackPullers();
             return;
         }
@@ -930,7 +1126,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         f = f.lengthSqr() < 1.0E-4 ? off.reverse().normalize() : f.normalize();
         float yaw = (float) (Mth.atan2(-f.x, f.z) * Mth.RAD_TO_DEG);
         Vec3 centre = new Vec3(newRoot.x, getY(), newRoot.z).add(f.scale(cz - cells.get(0).getZ()));
-        for (int up = 0; up <= 1; up++) {
+        for (double up : new double[] {0, 0.5, 1}) {
             Vec3 at = centre.add(0, up, 0);
             if (!fits(level, at, yaw)) continue;
             setYRot(yaw);
@@ -951,28 +1147,50 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             Entity mover = lifter(root);
             if (mover == null || !mover.isLocalInstanceAuthoritative()) continue;
             if (mover instanceof Player p && LIFTING_CLIENT.get(p) != this) LIFTING_CLIENT.put(p, this); // synced before the player was known
-            tether(mover, endPoint(root), HOLD + LIFT_SLACK);
+            tether(mover, endPoint(root), HOLD + LIFT_SLACK, DRAW_IN); // hands at the end: drawn in if they stand off it
+            keepOut(mover, root);
             mover.setSprinting(false);
         }
         if (pullerIds.length == 0) return;
         Vec3 root = world(0);
         for (int id : pullerIds) {
             Entity mover = level().getEntity(id);
-            if (mover != null && mover.isLocalInstanceAuthoritative()) tether(mover, root, TETHER);
+            if (mover != null && mover.isLocalInstanceAuthoritative()) tether(mover, root, TETHER, 0);
         }
     }
 
-    /** Client: holds {@code mover} within {@code reach} of {@code grip} (horizontally): no further out, no speed outwards. */
-    private static void tether(Entity mover, Vec3 grip, double reach) {
+    /**
+     * Client: holds {@code mover} within {@code reach} of {@code grip} (horizontally): no further out than it was, no
+     * speed outwards; standing further off, it is drawn in by {@code drawIn} a tick.
+     */
+    private static void tether(Entity mover, Vec3 grip, double reach, double drawIn) {
         Vec3 off = mover.position().subtract(grip).multiply(1, 0, 1);
         double d = off.length();
         if (d <= reach) return;
         Vec3 n = off.scale(1 / d);
-        double limit = Math.max(reach, new Vec3(mover.xo - grip.x, 0, mover.zo - grip.z).length());
+        double limit = Math.max(reach, Math.min(d, new Vec3(mover.xo - grip.x, 0, mover.zo - grip.z).length()) - drawIn);
         if (d > limit) mover.setPos(grip.x + n.x * limit, mover.getY(), grip.z + n.z * limit);
         Vec3 v = mover.getDeltaMovement();
         double out = v.x * n.x + v.z * n.z;
         if (out > 0) mover.setDeltaMovement(v.subtract(n.x * out, 0, n.z * out));
+    }
+
+    /**
+     * Client: a lifter walking into the log they hold stays at its end ({@link #HOLD} off the end face, in line with it):
+     * they push it along as fast as it goes, never stepping into it. Beside the end (holding it from the side) is free.
+     */
+    private void keepOut(Entity mover, boolean root) {
+        Vec3 l = toLocal(mover.position());
+        double s = root ? -1 : 1, face = s * size() / 2.0, reach = 0.5 + mover.getBbWidth() / 2;
+        double out = (l.z - face) * s; // past the end face: positive
+        // a little inside HOLD, so the hold point lies past the end face and the push goes on (carry)
+        double keep = HOLD - 0.12;
+        if (out >= keep || Math.abs(l.x) >= reach) return;
+        Vec3 w = toWorld(new Vec3(l.x, 0, face + s * keep));
+        mover.setPos(w.x, mover.getY(), w.z);
+        Vec3 v = mover.getDeltaMovement(), n = Vec3.directionFromRotation(0, getYRot()).scale(s); // outwards along the log
+        double in = v.x * n.x + v.z * n.z;
+        if (in < 0) mover.setDeltaMovement(v.subtract(n.x * in, 0, n.z * in));
     }
 
     /** Client: the entities whose ropes run to the root end. */
@@ -1144,55 +1362,60 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             Entity p = lifter(root);
             if (!(p instanceof Player player)) {
                 setLifter(root, null);
-            } else if (!p.isAlive() || p.isShiftKeyDown() || p.isPassenger() || p.position().distanceTo(endPoint(root)) > HOLD + LIFT_SLACK + 3) {
+            } else if (!p.isAlive() || p.isShiftKeyDown() || p.isPassenger() || p.position().distanceTo(endPoint(root)) > HOLD + LIFT_SLACK + 4) {
                 putDown(player);
             }
         }
     }
 
     /**
-     * Server: one step of being carried. Each lifted end goes towards its lifter (held {@link #HOLD} from them); an end on
-     * the ground trails. Heavier is slower; past the lifters' strength it only heaves along now and then.
+     * One step of being carried (server, and the client of a lifter). Each lifted end goes to its lifter's hands
+     * ({@link #HOLD} from them); an end on the ground trails behind, along the path the held end took. Heavier is slower,
+     * past the lifters' strength it only heaves along; and a long log resists being swung sideways (shares
+     * {@link #NIMBLE} / length of its pace across itself), so it turns slowly about the held end.
      */
-    private boolean carry(ServerLevel level) {
+    private boolean carry(Level level) {
         double load = liftLoad();
         double speed = CARRY_STEP * (load <= 1 ? 1 - 0.4 * load : 0.2 / (load * load)); // overloaded: a slow, even crawl
+        double across = speed * Math.min(1, NIMBLE / size());
         Entity rl = rootLifted() ? lifter(true) : null, tl = tailLifted() ? lifter(false) : null;
-        Vec3 root = endPoint(true), tail = endPoint(false);
+        Vec3 root = endPoint(true), tail = endPoint(false), axis = Vec3.directionFromRotation(0, getYRot()); // root to crown
         double len = size();
         Vec3 centre, f;
         if (rl != null && tl != null) {
             Vec3 tr = holdPoint(rl, root), tt = holdPoint(tl, tail);
-            f = flat(tt.subtract(tr));
-            if (f.lengthSqr() < 1.0E-4) return false;
-            f = f.normalize();
-            Vec3 want = tr.add(tt).scale(0.5);
-            centre = position().add(clamp(flat(want.subtract(position())), speed));
-        } else if (rl != null) {
-            Vec3 newRoot = root.add(clamp(flat(holdPoint(rl, root).subtract(root)), speed));
-            f = flat(tail.subtract(newRoot));
-            if (f.lengthSqr() < 1.0E-4) return false;
-            f = f.normalize();
-            centre = newRoot.add(f.scale(len / 2));
-        } else if (tl != null) {
-            Vec3 newTail = tail.add(clamp(flat(holdPoint(tl, tail).subtract(tail)), speed));
-            Vec3 back = flat(root.subtract(newTail));
+            Vec3 want = flat(tt.subtract(tr));
+            if (want.lengthSqr() < 1.0E-4) return false;
+            // the turn the two pairs of hands ask for, at most as far as an end may swing across this tick
+            float wantYaw = (float) (Mth.atan2(-want.x, want.z) * Mth.RAD_TO_DEG), maxTurn = (float) Math.toDegrees(across / (len / 2));
+            f = Vec3.directionFromRotation(0, getYRot() + Mth.clamp(Mth.wrapDegrees(wantYaw - getYRot()), -maxTurn, maxTurn));
+            centre = position().add(clamp(flat(tr.add(tt).scale(0.5).subtract(position())), speed));
+        } else if (rl != null || tl != null) {
+            Entity lifter = rl != null ? rl : tl;
+            Vec3 end = rl != null ? root : tail, other = rl != null ? tail : root, out = rl != null ? axis : axis.reverse(); // from the held end along the log
+            Vec3 step = flat(holdPoint(lifter, end).subtract(end));
+            double along = step.dot(out);
+            Vec3 side = step.subtract(out.scale(along));
+            Vec3 l = toLocal(lifter.position());
+            if (along > 0 && Math.abs(l.x) < 0.5 + lifter.getBbWidth() / 2) side = Vec3.ZERO; // pushed end-on (keepOut): it goes along its length
+            Vec3 newEnd = end.add(out.scale(Mth.clamp(along, -speed, speed))).add(clamp(side, across));
+            Vec3 back = flat(other.subtract(newEnd)); // the far end trails after it
             if (back.lengthSqr() < 1.0E-4) return false;
             back = back.normalize();
-            f = back.reverse();
-            centre = newTail.add(back.scale(len / 2));
+            f = rl != null ? back : back.reverse();
+            centre = newEnd.add(back.scale(len / 2));
         } else {
             return false;
         }
         centre = new Vec3(centre.x, getY(), centre.z);
         float yaw = (float) (Mth.atan2(-f.x, f.z) * Mth.RAD_TO_DEG);
-        if (centre.distanceToSqr(position()) < 1.0E-5 && Math.abs(Mth.wrapDegrees(yaw - getYRot())) < 0.5F) return false;
-        for (int up = 0; up <= 1; up++) {
+        if (centre.distanceToSqr(position()) < 1.0E-6 && Math.abs(Mth.wrapDegrees(yaw - getYRot())) < 0.05F) return false;
+        for (double up : new double[] {0, 0.5, 1}) { // up onto a slab or a step
             Vec3 at = centre.add(0, up, 0);
             if (!fits(level, at, yaw)) continue;
             setYRot(yaw);
             setPos(at);
-            if (tickCount % 20 == 0) {
+            if (tickCount % 20 == 0 && !level.isClientSide()) {
                 for (Entity e : new Entity[] {rl, tl}) if (e instanceof ServerPlayer sp) Kettle.award(sp, HAUL_ADVANCEMENT);
                 if (rl == null || tl == null) playSound(SoundEvents.WOOD_STEP, 0.5F, 0.6F); // the end on the ground scrapes along
             }
@@ -1244,10 +1467,12 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
-        if (isPassenger()) { // on a cart or wagon: an empty hand rolls this log off behind it
-            if (!player.getMainHandItem().isEmpty() || !(getVehicle() instanceof TravoisEntity bed)) return InteractionResult.PASS;
-            if (level() instanceof ServerLevel) bed.unloadLog(this);
-            return InteractionResult.SUCCESS;
+        if (isPassenger()) {
+            // on a cart or wagon: sneak + right-click with an empty hand rolls this log off behind it; any other click is the
+            // bed's (a log in your hands goes on next to this one)
+            if (!(getVehicle() instanceof TravoisEntity bed)) return InteractionResult.PASS;
+            if (player.isShiftKeyDown() && player.getMainHandItem().isEmpty() && handled(player) == null) return bed.unloadLogUse(player, this);
+            return bed.interact(player, hand, location.add(position()).subtract(bed.position()));
         }
         int i = pick(player);
         if (i < 0) return InteractionResult.PASS;

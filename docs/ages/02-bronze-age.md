@@ -1274,8 +1274,10 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
   hur många av kistans platser som är fyllda). 300 block med full vagn kostar ~24, ungefär tre klubbor. Drar en häst
   eller onager betalar du inget.
 - **Häst:** högerklicka på vagnen när du **rider** en tam häst, eller när du **leder** en tam häst i koppel (inom 10
-  block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Högerklicka igen för att
-  spänna från. Föl kan inte dra. En tämjd onager (Tame Onager) drar på samma sätt.
+  block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Högerklicka igen, eller
+  **smyg + högerklicka hästen**, för att spänna från. Skaklarna är fasta: backar hästen skjuts vagnen bakåt. En spänd häst
+  som ingen rider eller leder **står still** (den strövar inte iväg med vagnen). Hästen (eller vagnen den dras efter)
+  **sparas** med kärran och hittas igen när världen laddas om. Föl kan inte dra. En tämjd onager (Tame Onager) drar på samma sätt.
 - **Ett fordon åt gången:** en häst eller spelare som redan drar en travois, kärra, vagn eller plog kan inte spännas för
   ett till ("That one already pulls something: unhitch it first").
 - **Last:** **6 platser** (lätt kropp 1, mellanstor 2, stor 3, jättar går inte; se tabellen i 01-stone-age.md):

@@ -642,7 +642,12 @@ krockar inte med den.
   hade bark kvar, + 3 Rough Logs) och stocken delas där. Ett block i mitten delar stocken i två, en ände gör den kortare.
   Woodcutters hugger fällda träd från toppänden först (ett block per tur, de bär hem veden), och bävrar gnager dem.
 - **Lyfta för hand (upp till 12 block):** högerklicka **en ände** (rotänden eller toppänden) med tom hand. Stocken rätas
-  ut och du bär den änden i händerna medan den andra släpar i marken bakom (stocken lutar). En andra spelare kan lyfta
+  ut och du bär den änden i händerna medan den andra släpar i marken bakom (stocken lutar). **Du håller alltid änden:**
+  den ligger vid händerna (0,4 block från dig, högst ~0,65), står du längre bort när du lyfter dras du fram till den, och
+  går du in i stocken skjuter du den framför dig i dess längdriktning i stället för att kliva in i den. Änden i marken
+  släpar efter längs vägen du gått. En **lång stock svänger trögt**: över 3 block går den bara 3/längd så fort åt sidan
+  som framåt (en 6-blocksstock hälften så fort), så den vrider sig långsamt runt änden du håller. Stocken flyttas på
+  bärarens egen klient också, så änden släpar inte efter med pingen. En andra spelare kan lyfta
   den andra änden: då bär ni den mellan er, var och en drar sin ände och stocken följer er båda (ni hålls inom ~2 block
   från era ändar). **Tyngd:** en lyft ände bär halva stocken och änden i marken släpar en fjärdedel, mot 2,5 block styrka
   per spelare. Den som bär **saktas ner** av tyngden (farten / (1 + 0,8 × last)): 3 block bär man lätt, 5 är tungt (ungefär
@@ -658,6 +663,11 @@ krockar inte med den.
   håller dig inom ~4 block från rotänden, ju tyngre stock desto långsammare går det. Tom hand + högerklick knyter loss;
   mer än 10 block bort brister repet (Lead faller där du står).
 - Med kniv på ett block av stocken ristar man in en **Dugout Blank** där blocket ligger (se *Dugout Canoe*).
+- **Vilar på riktiga blockformer:** stocken ligger på det som finns under hela dess längd och bredd (slabs, trappor,
+  stigar, snölager med kollision), aldrig i det: över en slab ligger den på slabens ovansida, och den kan inte dras, bäras
+  eller glida in i en vägg, inte ens med ett hörn när den ligger snett. Ett helt block en hel höjd upp räknas som vägg,
+  inte underlag (stocken klättrar inte), en slab som stocken sjunkit ner i lyfter den upp på. Bärs den över en slab kliver
+  den upp på den.
 - **Kollision:** stocken är fast för alla entities även när den ligger snett (egen kollision mot vridna lådor: man stannar mot
   sidan och glider längs den, står på den; hästar kliver upp på den, djur och monster hoppar upp på den).
 - En **Cart** (bronsåldern) tar en stock på upp till 2 block. Stocken går att lasta på en **Wagon** i järnåldern (upp till 3 stockar på 4 block, lyft den och högerklicka vagnen, se 03-iron-age.md).

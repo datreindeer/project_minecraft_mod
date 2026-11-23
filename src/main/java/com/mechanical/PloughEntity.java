@@ -165,6 +165,13 @@ public class PloughEntity extends TravoisEntity {
         return led.isEmpty() ? null : led.get(0);
     }
 
+    /** Sneak + right-click on its horse (HorseWork): the share comes up too. */
+    @Override
+    public void release(AbstractHorse horse, Player player) {
+        super.release(horse, player);
+        if (harness() == null) setShareDown(false);
+    }
+
     /** Sneak + right-click (on foot): unhitches, the share coming up. */
     @Override
     protected InteractionResult sneakUse(Player player) {

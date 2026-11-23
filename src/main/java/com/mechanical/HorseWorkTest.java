@@ -40,7 +40,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HorseWorkTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] NAMES = {"horse_hitch", "horse_team_rigid", "horse_stamina", "horse_exhaustion", "horse_side_carcass"};
+    private static final String[] NAMES = {"horse_hitch", "horse_team_rigid", "horse_stamina", "horse_exhaustion", "horse_side_carcass", "horse_hitched_stand", "wagon_slabs_reverse"};
 
     static {
         TEST_FUNCTIONS.register("horse_hitch", () -> HorseWorkTest::hitch);
@@ -48,6 +48,8 @@ public final class HorseWorkTest {
         TEST_FUNCTIONS.register("horse_stamina", () -> HorseWorkTest::stamina);
         TEST_FUNCTIONS.register("horse_exhaustion", () -> HorseWorkTest::exhaustion);
         TEST_FUNCTIONS.register("horse_side_carcass", () -> HorseWorkTest::sideCarcass);
+        TEST_FUNCTIONS.register("horse_hitched_stand", () -> HorseWorkTest::hitchedStand);
+        TEST_FUNCTIONS.register("wagon_slabs_reverse", () -> HorseWorkTest::slabsAndReverse);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -148,6 +150,115 @@ public final class HorseWorkTest {
             discard(List.of(wagon, a, b));
             h.succeed();
         });
+    }
+
+    /**
+     * Hitched horses nobody rides stand still, with their AI on and told to walk off: a wagon's pair and a cart's horse, and
+     * the vehicles stay. A wagon saved and loaded finds its pair again, the second horse on the side it was yoked. Let out of
+     * the traces, the same horse does walk off (the test is fair).
+     */
+    private static void hitchedStand(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        floor(h);
+        Vec3 at = h.absoluteVec(new Vec3(5.5, 1, 3.5));
+        WagonEntity wagon = wagon(level, at);
+        AbstractHorse a = horse(level, at.add(WagonEntity.PAIR / 2, 0, WagonEntity.LEAD)), b = horse(level, at.add(-WagonEntity.PAIR / 2, 0, WagonEntity.LEAD));
+        CartEntity cart = Carting.CART.get().create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+        Vec3 cartAt = h.absoluteVec(new Vec3(11.5, 1, 3.5));
+        cart.setPos(cartAt);
+        level.addFreshEntity(cart);
+        AbstractHorse c = horse(level, cartAt.add(0, 0, CartEntity.LEAD_HORSE));
+        for (AbstractHorse horse : List.of(a, b, c)) {
+            horse.setNoAi(false); // a real horse's wandering and walking
+            horse.setYRot(0);
+        }
+        wagon.setHarness(a);
+        wagon.setPartner(b); // b stands on a's right (facing +z, -x is right)
+        cart.setHarness(c);
+        Vec3 a0 = a.position(), b0 = b.position(), c0 = c.position(), w0 = wagon.position(), k0 = cart.position();
+        for (int t = 2; t <= 40; t += 2) h.runAfterDelay(t, () -> { // something keeps telling them to walk off
+            for (AbstractHorse horse : List.of(a, b, c)) horse.getNavigation().moveTo(horse.getX(), horse.getY(), horse.getZ() + 8, 1.5);
+        });
+        h.runAfterDelay(45, () -> {
+            for (Vec3[] p : List.of(new Vec3[] {a0, a.position()}, new Vec3[] {b0, b.position()}, new Vec3[] {c0, c.position()},
+                    new Vec3[] {w0, wagon.position()}, new Vec3[] {k0, cart.position()}))
+                h.assertTrue(p[0].distanceTo(p[1]) < 0.3, "hitched and unridden, nothing walks off (" + p[0] + " -> " + p[1] + ")");
+            h.assertTrue(wagon.harness() == a && wagon.partner() == b && cart.harness() == c, "still hitched");
+            // saved and loaded: the team comes back by UUID, the second horse on the right still
+            net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithoutContext(net.minecraft.util.ProblemReporter.DISCARDING);
+            wagon.saveWithoutId(out);
+            WagonEntity copy = Carting.WAGON.get().create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+            copy.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), out.buildResult()));
+            wagon.discard();
+            level.addFreshEntity(copy);
+            held[0] = copy;
+            // out of the traces (sneak + right-click on it), the cart's horse may go where it is told
+            Player player = h.makeMockPlayer(GameType.SURVIVAL);
+            player.setShiftKeyDown(true);
+            player.interactOn(c, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            h.assertTrue(cart.harness() == null, "sneak + right-click on the horse unhitched it from the cart");
+        });
+        for (int t = 46; t <= 70; t += 2) h.runAfterDelay(t, () -> c.getNavigation().moveTo(c.getX(), c.getY(), c.getZ() + 8, 1.5));
+        h.runAfterDelay(72, () -> {
+            WagonEntity copy = (WagonEntity) held[0];
+            h.assertTrue(copy.harness() == a && copy.partner() == b, "the loaded wagon found its pair (" + copy.harness() + ", " + copy.partner() + ")");
+            h.assertTrue(gap(a, b, true) < 0.05, "the second horse is still on the right (off by " + gap(a, b, true) + ")");
+            h.assertTrue(c.position().distanceTo(c0) > 1, "unhitched, the horse walks where it is told (" + c.position().distanceTo(c0) + ")");
+            discard(List.of(copy, cart, a, b, c));
+            h.succeed();
+        });
+    }
+
+    private static final Entity[] held = new Entity[1];
+
+    /**
+     * The pair walks up a slab step and a full block onto a raised floor: the wagon follows up both, still at its lead; then
+     * the horses back up and push it back (the pole is rigid), and a turn swings the bed after them, never past MAX_STEER.
+     */
+    private static void slabsAndReverse(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        floor(h);
+        for (int x = 3; x <= 13; x++) {
+            for (int z = 8; z <= 9; z++) h.setBlock(new BlockPos(x, 1, z), Blocks.SMOOTH_STONE_SLAB);
+            for (int z = 10; z <= 15; z++) h.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+        }
+        Vec3 at = h.absoluteVec(new Vec3(8.5, 1, 2.5));
+        WagonEntity wagon = wagon(level, at);
+        AbstractHorse a = horse(level, at.add(-WagonEntity.PAIR / 2, 0, WagonEntity.LEAD)), b = horse(level, at.add(WagonEntity.PAIR / 2, 0, WagonEntity.LEAD));
+        a.setYRot(0);
+        wagon.setHarness(a);
+        wagon.setPartner(b);
+        double floorY = at.y;
+        for (int t = 1; t <= 20; t++) { // 10 blocks on: z 5.3 -> 15.3, stepping up 0.5 at z 8 and 1 at z 10
+            h.runAfterDelay(t, () -> {
+                Vec3 p = a.position().add(0, 0, 0.5);
+                double y = floorY + (p.z - h.absoluteVec(Vec3.ZERO).z >= 10 ? 1 : p.z - h.absoluteVec(Vec3.ZERO).z >= 8 ? 0.5 : 0);
+                a.setPos(p.x, y, p.z);
+            });
+        }
+        double[] onTop = new double[1];
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(Math.abs(wagon.getY() - (floorY + 1)) < 0.01, "the wagon came up the slab and the block (y " + wagon.getY() + ", want " + (floorY + 1) + ")");
+            double d = wagon.position().subtract(a.position().add(b.position()).scale(0.5)).horizontalDistance();
+            h.assertTrue(Math.abs(d - WagonEntity.LEAD) < 0.15 && wagon.harness() == a, "and is at its lead behind the pair (" + d + ")");
+            onTop[0] = wagon.getZ();
+        });
+        for (int t = 41; t <= 44; t++) h.runAfterDelay(t, () -> a.setPos(a.position().add(0, 0, -0.25))); // backing up a block
+        h.runAfterDelay(48, () -> {
+            h.assertTrue(onTop[0] - wagon.getZ() > 0.9, "backing the horses pushes the wagon back (" + (onTop[0] - wagon.getZ()) + ")");
+            a.setYRot(90); // a sharp turn on the spot
+        });
+        h.runAfterDelay(52, () -> {
+            float steer = net.minecraft.util.Mth.wrapDegrees(a.getYRot() - wagon.getYRot());
+            h.assertTrue(Math.abs(steer) <= WagonEntity.MAX_STEER + 0.5F, "the front axle turns at most " + WagonEntity.MAX_STEER + " degrees, the bed is dragged round (" + steer + ")");
+            h.assertTrue(gap(a, b) < 0.02, "the second horse turned with the first");
+            discard(List.of(wagon, a, b));
+            h.succeed();
+        });
+    }
+
+    private static double gap(AbstractHorse a, AbstractHorse b, boolean right) {
+        return b.position().distanceTo(a.position().add(Vec3.directionFromRotation(0, a.getYRot() + (right ? 90 : -90)).scale(WagonEntity.PAIR)));
     }
 
     private static double gap(AbstractHorse a, AbstractHorse b) {

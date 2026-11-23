@@ -66,6 +66,8 @@ public class WagonEntity extends TravoisEntity {
     private static final EntityDataAccessor<Integer> PARTNER = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
     /** {@link #loadFraction}, synced: the client doesn't see the chests but moves the wagon too ({@link #pullFactor}). */
     private static final EntityDataAccessor<Float> FULLNESS = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.FLOAT);
+    /** The second horse goes on the lead horse's right (else its left): the side it stood on when yoked. Synced (both sides place it). */
+    private static final EntityDataAccessor<Boolean> PARTNER_RIGHT = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.BOOLEAN);
     static final Identifier TEAM_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "iron_age/wagon_team"),
             LOADED_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "iron_age/full_wagon"),
             CHESTS_ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "iron_age/wagon_chests");
@@ -73,6 +75,13 @@ public class WagonEntity extends TravoisEntity {
     private static final Identifier TEAM_SLOW = Identifier.fromNamespaceAndPath(Mechanical.MODID, "wagon_team");
     /** Centre of the pair to the wagon centre; the pair's spacing (horse width 1.3 + a gap). */
     public static final double LEAD = 2.8, PAIR = 1.45;
+    /**
+     * The pole (WagonModel): fixed to the front axle {@link #FRONT_AXLE} ahead of the centre, it runs along the horses to
+     * the pair's middle {@link #POLE} further on (the yoke a little ahead of that, at their chests). The front axle turns
+     * up to {@link #MAX_STEER} degrees from the bed; past that the horses drag the bed round.
+     */
+    static final double FRONT_AXLE = 1.0, POLE = LEAD - FRONT_AXLE;
+    static final float MAX_STEER = 55.0F;
     /** The bed's rear end behind the centre: a towed cart's shafts rest there ({@link #towPoint}). */
     public static final double REAR = SLOTS * 0.75 / 2;
     /** A trailer (Wheeled Cart) weighs on the team by its fullness times this (its 6 room against the wagon's 12). */
@@ -111,6 +120,7 @@ public class WagonEntity extends TravoisEntity {
         builder.define(MODULES, 0);
         builder.define(PARTNER, -1);
         builder.define(FULLNESS, 0.0F);
+        builder.define(PARTNER_RIGHT, false);
     }
 
     // ---- modules
@@ -259,9 +269,18 @@ public class WagonEntity extends TravoisEntity {
         return id >= 0 && level().getEntity(id) instanceof AbstractHorse h ? h : null;
     }
 
+    /** {@code horse} goes in beside the lead horse, on the side it stands on now. */
     void setPartner(AbstractHorse horse) {
+        LivingEntity lead = harness();
+        if (horse != null && lead != null)
+            entityData.set(PARTNER_RIGHT, horse.position().subtract(lead.position()).dot(Vec3.directionFromRotation(0, lead.getYRot() + 90)) > 0);
         entityData.set(PARTNER, horse == null ? -1 : horse.getId());
         partnerId = horse == null ? null : horse.getUUID();
+    }
+
+    /** From the lead horse towards the second horse's place, one block. */
+    private Vec3 pairSide(Entity lead) {
+        return Vec3.directionFromRotation(0, lead.getYRot() + (entityData.get(PARTNER_RIGHT) ? 90 : -90));
     }
 
     /** Remembers the lead horse's UUID; dropped only when it is unhitched or dies ({@link #setLead}), not when it is out of reach (unloaded). */
@@ -288,6 +307,7 @@ public class WagonEntity extends TravoisEntity {
     }
 
     /** Server: takes {@code horse} out of the team (the second horse, if any, moves up to the lead place). */
+    @Override
     public void release(AbstractHorse horse, Player player) {
         if (horse == harness()) {
             AbstractHorse partner = partner();
@@ -300,11 +320,34 @@ public class WagonEntity extends TravoisEntity {
         playSound(SoundEvents.LEAD_UNTIED, 1.0F, 0.8F);
     }
 
-    /** Between the two horses (or the lead horse alone). */
+    /** Between the two horses (or the lead horse alone); from the lead horse only, so it is the same on both sides. */
     @Override
     protected Vec3 pullPoint(Entity puller) {
-        AbstractHorse partner = partner();
-        return partner == null ? puller.position() : puller.position().add(partner.position()).scale(0.5);
+        return partner() == null ? puller.position() : puller.position().add(pairSide(puller).scale(PAIR / 2));
+    }
+
+    /**
+     * The team is rigid (D1): the pole runs straight back from the pair along the horses to the front axle, and the bed
+     * trails behind the front axle the way a trailer does, swung round by the horses past {@link #MAX_STEER}. Backing the
+     * horses pushes it back. (A player can't pull it: the plain tow line then.)
+     */
+    @Override
+    protected Vec3 towTarget(Entity puller) {
+        if (!(puller instanceof AbstractHorse)) return super.towTarget(puller);
+        float horseYaw = puller.getYRot();
+        Vec3 front = pullPoint(puller).subtract(Vec3.directionFromRotation(0, horseYaw).scale(POLE));
+        Vec3 u = front.subtract(position()).multiply(1, 0, 1);
+        float yaw = u.lengthSqr() < 1.0E-4 ? getYRot() : (float) Math.toDegrees(Math.atan2(-u.x, u.z));
+        float steer = Mth.wrapDegrees(horseYaw - yaw);
+        if (Math.abs(steer) > MAX_STEER) yaw = horseYaw - Math.signum(steer) * MAX_STEER;
+        setYRot(yaw);
+        return front.subtract(Vec3.directionFromRotation(0, yaw).scale(FRONT_AXLE));
+    }
+
+    /** Before the last tow step each tick (both sides): the second horse exactly beside the first. */
+    @Override
+    protected void beforeFollow(Entity puller) {
+        if (puller instanceof LivingEntity lead) keepPair(lead);
     }
 
     private boolean team() {
@@ -404,25 +447,42 @@ public class WagonEntity extends TravoisEntity {
             setPartner(null);
             setLead(partner);
         } else if (lead != null && partner != null && partner.getControllingPassenger() != null && lead.getControllingPassenger() == null) {
+            setHarness(partner); // the ridden horse leads; the other keeps its side of the pole
             setPartner((AbstractHorse) lead);
-            setHarness(partner);
         }
-        // an unridden team stands in the traces instead of wandering off with the wagon
-        if (harness() instanceof AbstractHorse h && h.getControllingPassenger() == null) h.getNavigation().stop();
+        // an unridden team stands in the traces (HorseWork#standInTraces) instead of wandering off with the wagon
+        if (partner() != null) hitch(partner());
     }
 
-    /** Server: keeps the second horse exactly beside the first, turning with it (D1: horse 2 follows horse 1 exactly). */
+    /**
+     * Keeps the second horse exactly beside the first, turning with it (D1: horse 2 follows horse 1 exactly). Both sides,
+     * after everything moved: on the rider's client the lead horse is ahead of what the server sends, so the second one
+     * is placed there too, its stride in step with the lead's.
+     */
     private void keepPair(LivingEntity lead) {
         AbstractHorse partner = partner();
         if (partner == null || lead == null) return;
-        Vec3 to = lead.position().add(Vec3.directionFromRotation(0, lead.getYRot() - 90).scale(PAIR));
-        partner.getNavigation().stop();
-        partner.setPos(to); // exactly, even into a bush: the team is one unit
-        // its own tick moves it on as far as the lead horse goes
+        partner.setPos(lead.position().add(pairSide(lead).scale(PAIR))); // exactly, even into a bush: the team is one unit
         partner.setDeltaMovement(lead.getDeltaMovement());
+        // each turn as the lead horse's own (its body can lag its heading when it stands): the pair looks one way
         partner.setYRot(lead.getYRot());
-        partner.setYBodyRot(lead.getYRot());
-        partner.setYHeadRot(lead.getYRot());
+        partner.setYBodyRot(lead.yBodyRot);
+        partner.setYHeadRot(lead.yHeadRot);
+        partner.setXRot(lead.getXRot());
+        if (level().isClientSide()) {
+            partner.getInterpolation().cancel(); // the server's (older) places for it would pull it back
+            partner.yRotO = lead.yRotO;
+            partner.yBodyRotO = lead.yBodyRotO;
+            partner.yHeadRotO = lead.yHeadRotO;
+            partner.xRotO = lead.xRotO;
+            partner.setOnGround(lead.onGround());
+            // the same stride as the lead horse
+            var from = (com.mechanical.mixin.WalkAnimationStateAccessor) lead.walkAnimation;
+            var to = (com.mechanical.mixin.WalkAnimationStateAccessor) partner.walkAnimation;
+            partner.walkAnimation.setSpeed(lead.walkAnimation.speed());
+            to.mechanical$setSpeedOld(from.mechanical$speedOld());
+            to.mechanical$setPosition(from.mechanical$position());
+        } else partner.getNavigation().stop();
     }
 
     /** Server: one horse crawls with it empty and can't move it loaded; a pair goes a little slower when it is full. */
@@ -472,15 +532,13 @@ public class WagonEntity extends TravoisEntity {
             wheelSpinO = wheelSpin;
             wheelSpin += (float) (along / WHEEL_RADIUS);
             steerO = steer;
-            LivingEntity lead = harness();
-            float target = 0;
-            if (lead != null) {
-                // the bed already faces the team; the front axle and pole turn on with the horses
-                target = Mth.clamp(Mth.wrapDegrees(lead.getYRot() - getYRot()), -40.0F, 40.0F);
-            }
-            steer += (target - steer) * 0.3F;
         }
         super.tick();
+        if (level().isClientSide()) {
+            // the front axle and pole lie along the horses, exactly (the bed trails them, towTarget)
+            LivingEntity lead = harness();
+            steer = lead == null ? steer * 0.7F : Mth.clamp(Mth.wrapDegrees(lead.getYRot() - getYRot()), -MAX_STEER, MAX_STEER);
+        }
         if (!level().isClientSide()) {
             entityData.set(FULLNESS, (float) loadFraction());
             keepTeam((ServerLevel) level());
@@ -544,6 +602,22 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected boolean carriesLivestock() {
         return true;
+    }
+
+    /** A seated player gets off beside the bed, next to the seat (right side first), not on top of the wagon. */
+    @Override
+    public Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
+        Vec3 dir = Vec3.directionFromRotation(0, getYRot()), right = Vec3.directionFromRotation(0, getYRot() + 90);
+        List<Integer> seats = slotsWith(SEAT);
+        double along = seats.isEmpty() ? 0 : slotAlong(seats.getFirst());
+        for (double side : new double[] {1.5, -1.5}) {
+            Vec3 at = position().add(dir.scale(along)).add(right.scale(side));
+            for (double up : new double[] {0, 1}) {
+                Vec3 p = at.add(0, up, 0);
+                if (level().noCollision(passenger, passenger.getDimensions(passenger.getPose()).makeBoundingBox(p))) return p;
+            }
+        }
+        return super.getDismountLocationForPassenger(passenger);
     }
 
     @Override
@@ -621,6 +695,7 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         entityData.set(MODULES, input.getIntOr("modules", 0));
+        entityData.set(PARTNER_RIGHT, input.getBooleanOr("partner_right", false));
         // wagons saved before D2 have no team keys: they load unhitched, as their team was never saved then
         leadId = input.read("lead_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         partnerId = input.read("partner_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
@@ -635,6 +710,7 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         output.putInt("modules", entityData.get(MODULES));
+        output.putBoolean("partner_right", entityData.get(PARTNER_RIGHT));
         if (leadId != null) output.store("lead_horse", net.minecraft.core.UUIDUtil.CODEC, leadId);
         if (partnerId != null) output.store("partner_horse", net.minecraft.core.UUIDUtil.CODEC, partnerId);
         output.putIntArray("hay", hay.clone());

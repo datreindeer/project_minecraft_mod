@@ -1,0 +1,37 @@
+ground -60
+slab log: y -59.500 (slab top -59.5) tilt 0.000 yaw -63.281
+shot log_on_slabs
+shot log_on_slabs_low
+wall log lifted (client): true
+pushed at the wall: client tip (11.89, -60.00, 7.77) server tip (11.89, -60.00, 7.74) (wall face x 12) fits(server) true
+  hands to end (client) 0.406
+shot log_wall_held
+  pushing it (walking into it): hands to end min 0.280
+shot log_wall_push_third
+shot log_wall_push_first
+put down at the wall: tip (11.00, -60.00, 7.14) y -60.000 tilt 0.000 fits true
+shot log_wall_down
+  gap 0.415 at tick 0 player (1.55, -60.00, 40.50) end (1.14, -60.00, 40.46)
+drag east: player (5.92, -60.00, 40.53) log yaw 88.594
+shot drag_turn
+drag north: player (5.62, -60.00, 33.01) log yaw 0.000 root end (5.62, -60.00, 33.66)
+  hands to held end while dragging: min 0.415 max 0.650 mean 0.648 (301 ticks; held at 0.4, slack 0.25)
+shot drag_after_corner
+shot drag_hands
+shot drag_hands_front
+shot drag_first_person
+  facing it: hands to end 0.400
+riding: true; team true true
+gallop: speed 5.628 blocks/s
+shot wagon_gallop_front
+shot wagon_gallop_back
+shot wagon_turn
+shot wagon_after_turn
+team while galloping and turning, 186 ticks on the rider's client: second horse off its place max 0.000, wagon off the rigid pole's place max 0.000
+dismounted: true
+standing (player beside them, 5 s): second horse's largest change per tick (degrees of body + head turn + 50 x blocks moved): 0.002
+shot wagon_dismounted_near
+20 s after getting off: lead moved 0.000, second 0.000, wagon 0.000; still hitched true
+shot wagon_left_standing
+logs on the wagon after clicking the first loaded log with the second: 2
+shot wagon_two_logs

@@ -540,11 +540,16 @@ Plan: [wagon-plan.md](../wagon-plan.md).
   gång går båda in med ett klick. Den häst du rider tar alltid första platsen, så att du styr spannet. Kopplet tas av:
   hästarna sitter **fast** i dragstången och inget kan slitas loss.
 - **Spänna från:** **smyg + högerklicka en spänd häst**. Tar du från den första hästen flyttar den andra upp till första
-  platsen. Ett vanligt högerklick på vagnen spänner inte längre från.
+  platsen. Ett vanligt högerklick på vagnen spänner inte längre från. Den andra hästen går i på den sida den stod på när
+  den spändes för, och byter inte sida om ryttaren byter häst.
 - **Spannet är en enhet:** andra hästen står exakt bredvid den första (paret 1,45 block isär, mitten 2,8 block framför
-  vagnen) och svänger med den, vagnen följer stelt efter, och hästarna och vagnen knuffar inte varandra. Kommer vagnen för
-  långt efter dras den upp bakom spannet. Ett spann utan ryttare står stilla i skaklarna. Sätter du dig på den andra
-  hästen byter de plats, så att den du rider leder.
+  vagnen) och svänger med den, i samma steg. Dragstången sitter fast i framaxeln och går rakt bakåt längs hästarna;
+  flaket följer framaxeln som ett släp och dras runt av hästarna om de svänger mer än 55° mot det. Backar hästarna skjuts
+  vagnen bakåt. Hästarna, oket och dragstången sitter ihop i alla farter, även i galopp och svängar (på ryttarens klient
+  flyttas den andra hästen och vagnen med den ridna hästen varje tick, efter att allt annat rört sig). Kommer vagnen för
+  långt efter dras den upp bakom spannet. Ett spann utan ryttare **står stilla** i skaklarna: ingen strövande, inget
+  betande eller tittande runt, båda hästarna lugna. Sätter du dig på den andra hästen byter de plats, så att den du rider
+  leder; men den andra hästen går inte att sitta upp på medan någon kör den första.
 - **Ork:** varje häst i spannet har sin ork (se *Den tama hästen* i bronsåldern). Vagnen och lasten tynger, delat på
   paret, och spannet går i den tröttare hästens takt. Är en av dem helt slut står spannet still tills den har vilat.
 - **En häst:** med tom vagn kryper den fram (vagnen sluter 30 % av avståndet, hästen går 75 % långsammare). Lastad (kroppar
@@ -564,7 +569,7 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 | tom | **3 rum** kroppar. Helt tomt flak = **12 rum**: 4 stora, 6 mellanstora eller 12 lätta (kärran 6). Jättar går aldrig. |
 | **Chest** | **27 platser**. Smyg + högerklicka den platsen för att öppna just den kistan. Fyra kistor = 108 platser. |
 | **Hay Bale** | **9 tuggor**. En skadad häst i spannet äter en tugga var 5:e sekund och läker 2 hälsa. Uppäten försvinner balen. |
-| **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider eller leder en tam häst som kan spännas för). Kommer tillbaka som en Oak Slab. |
+| **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider eller leder en tam häst som kan spännas för). Du kliver av vid sidan av flaket, bredvid sätet. Kommer tillbaka som en Oak Slab. |
 
 - **Tama djur:** som på kärran. Led kor, får, grisar eller höns i koppel och högerklicka vagnen med tom hand. De står
   på de tomma platserna (höna/unge 1 rum, gris/får 2, ko 3; ett helt tomt flak tar till exempel fyra kor), och kopplet
@@ -605,8 +610,10 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
   cut it to 4 blocks or less"*; en fjärde stock: *"No room for another log"*. En grenig stock rätas ut när den lastas.
 - Med stockar på flaket går inga moduler eller kroppar att lägga i. Tre stockar är **full last** (en ensam häst rör den
   inte, paret går 15 % långsammare); en eller två räknas som en tredjedel eller två tredjedelar.
+- **Fler stockar:** högerklicka vagnen, eller en stock som redan ligger på flaket, medan du lyfter nästa stock: den läggs
+  bredvid (upp till 3). Ett klick på en lastad stock räknas som ett klick på vagnen.
 - **Lasta av:** smyg + högerklicka vagnen med tom hand: den sista stocken rullar av bakåt och blir liggande bakom vagnen.
-  Eller högerklicka en stock på flaket med tom hand: just den rullar av.
+  Eller smyg + högerklicka en stock på flaket med tom hand: just den rullar av. (Ett vanligt klick lastar aldrig av.)
 - En **Cart** (bronsåldern) tar på samma sätt **en stock på högst 2 block** (inte med en kista monterad).
 - Stocken sparas med vagnen (den åker som passagerare).
 
