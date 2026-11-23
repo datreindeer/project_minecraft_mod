@@ -903,3 +903,5 @@ def items():
 if __name__ == "__main__":
     entities()
     items()
+    import gen_small_models  # these animals now have their own models and skins, which this would overwrite
+    gen_small_models.main()

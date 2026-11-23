@@ -19,7 +19,7 @@ import net.minecraft.util.Mth;
  * the thick blunt tail in two pieces, carried low. Walks with the cat's pacing gait and a gently swinging tail; stalking
  * it creeps with the belly near the ground, head low and level, tail straight out; it springs with legs stretched; asleep
  * it lies curled with the tail round its feet. The kitten is this model scaled down with its own texture.
- * Texture: textures/entity/wildlife/wild_cat.png (64x32), scripts/gen_fauna_meadow_textures.py (same part tree).
+ * Texture: textures/entity/wildlife/wild_cat.png, scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class WildCatModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "wild_cat"), "main");
@@ -42,19 +42,7 @@ public class WildCatModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-2.5F, -2.5F, -6.0F, 5.0F, 5.0F, 12.0F), PartPose.offset(0.0F, 15.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 17).addBox(-2.5F, -2.5F, -4.0F, 5.0F, 4.0F, 4.0F).texOffs(48, 17).addBox(-1.5F, -0.5F, -5.0F, 3.0F, 2.0F, 1.0F), PartPose.offset(0.0F, -1.5F, -6.0F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(56, 17).addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F), PartPose.offsetAndRotation(-1.5F, -2.5F, -2.0F, 0.0F, 0.0F, -0.25F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(56, 17).mirror().addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F).mirror(false), PartPose.offsetAndRotation(1.5F, -2.5F, -2.0F, 0.0F, 0.0F, 0.25F));
-        PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(18, 17).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F), PartPose.offsetAndRotation(0.0F, -1.5F, 6.0F, -0.9F, 0.0F, 0.0F));
-        tail.addOrReplaceChild("tail_tip", CubeListBuilder.create().texOffs(34, 17).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 5.0F, 0.35F, 0.0F, 0.0F));
-        root.addOrReplaceChild("right_front_leg", CubeListBuilder.create().texOffs(44, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 7.0F, 2.0F), PartPose.offset(-1.5F, 17.0F, -4.5F));
-        root.addOrReplaceChild("left_front_leg", CubeListBuilder.create().texOffs(44, 0).mirror().addBox(-1.0F, 0.0F, -1.0F, 2.0F, 7.0F, 2.0F).mirror(false), PartPose.offset(1.5F, 17.0F, -4.5F));
-        root.addOrReplaceChild("right_hind_leg", CubeListBuilder.create().texOffs(34, 0).addBox(-1.0F, 0.0F, -1.5F, 2.0F, 8.0F, 3.0F), PartPose.offset(-1.5F, 16.0F, 4.5F));
-        root.addOrReplaceChild("left_hind_leg", CubeListBuilder.create().texOffs(34, 0).mirror().addBox(-1.0F, 0.0F, -1.5F, 2.0F, 8.0F, 3.0F).mirror(false), PartPose.offset(1.5F, 16.0F, 4.5F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return com.mechanical.client.wildlife.SmallGeometry.wildCat(); // scripts/gen_small_models.py
     }
 
     @Override

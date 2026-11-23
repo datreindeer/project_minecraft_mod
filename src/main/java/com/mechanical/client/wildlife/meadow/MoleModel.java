@@ -19,7 +19,7 @@ import net.minecraft.util.context.ContextKey;
  * Mole: a velvet cylinder of a body low on the ground, a pointed pink snout, the big spade forepaws turned out at the
  * sides like oars, tiny hind feet and a short tail. It shuffles along rowing with the forepaws, snout always working;
  * digging in, it noses down and scoops the ground away with both paws while it sinks. (Burrowed it isn't drawn: the
- * entity is invisible.) Texture: textures/entity/wildlife/mole.png (64x32), scripts/gen_fauna_meadow_textures.py.
+ * entity is invisible.) Texture: textures/entity/wildlife/mole.png, scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class MoleModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "mole"), "main");
@@ -40,16 +40,7 @@ public class MoleModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.0F, -3.5F, 4.0F, 4.0F, 7.0F), PartPose.offset(0.0F, 21.5F, 0.0F));
-        body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(30, 0).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 2.0F).texOffs(46, 0).addBox(-0.5F, -0.5F, -4.0F, 1.0F, 1.0F, 2.0F), PartPose.offset(0.0F, 0.5F, -3.5F));
-        body.addOrReplaceChild("right_hand", CubeListBuilder.create().texOffs(22, 0).addBox(-1.0F, -1.0F, -1.5F, 1.0F, 3.0F, 3.0F), PartPose.offsetAndRotation(-2.0F, 1.0F, -2.0F, 0.0F, 0.0F, 0.4F));
-        body.addOrReplaceChild("left_hand", CubeListBuilder.create().texOffs(22, 0).mirror().addBox(0.0F, -1.0F, -1.5F, 1.0F, 3.0F, 3.0F).mirror(false), PartPose.offsetAndRotation(2.0F, 1.0F, -2.0F, 0.0F, 0.0F, -0.4F));
-        root.addOrReplaceChild("right_foot", CubeListBuilder.create().texOffs(40, 0).addBox(-0.5F, 0.0F, -1.0F, 1.0F, 1.0F, 2.0F), PartPose.offset(-1.5F, 23.0F, 2.5F));
-        root.addOrReplaceChild("left_foot", CubeListBuilder.create().texOffs(40, 0).mirror().addBox(-0.5F, 0.0F, -1.0F, 1.0F, 1.0F, 2.0F).mirror(false), PartPose.offset(1.5F, 23.0F, 2.5F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(52, 0).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 2.0F), PartPose.offsetAndRotation(0.0F, -1.0F, 3.5F, 0.6F, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return com.mechanical.client.wildlife.SmallGeometry.mole(); // scripts/gen_small_models.py
     }
 
     @Override
