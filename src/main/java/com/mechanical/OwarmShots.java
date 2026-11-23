@@ -55,6 +55,21 @@ public final class OwarmShots {
         };
     }
 
+    /** Sets one of the entity's private synced boolean flags (a pose the AI would set: gnawing, eating...). */
+    private static Consumer<Entity> synced(Class<?> owner, String field) {
+        return e -> {
+            try {
+                var f = owner.getDeclaredField(field);
+                f.setAccessible(true);
+                @SuppressWarnings("unchecked")
+                var key = (net.minecraft.network.syncher.EntityDataAccessor<Boolean>) f.get(null);
+                e.getEntityData().set(key, true);
+            } catch (ReflectiveOperationException ex) {
+                throw new IllegalStateException(ex);
+            }
+        };
+    }
+
     /** The peacock's fan held half-way through a display (the counter is private and runs down by itself). */
     private static final Consumer<Entity> FAN = e -> {
         try {
@@ -97,6 +112,10 @@ public final class OwarmShots {
             new Subject("beaver_swim", RiverFauna.BEAVER, false, 2.4, 1.4, true, null),
             new Subject("otter", RiverFauna.OTTER, false, 2.4, 1.3, false, null),
             new Subject("otter_swim", RiverFauna.OTTER, false, 2.4, 1.4, true, null),
+            new Subject("beaver_carry", RiverFauna.BEAVER, false, 2.4, 1.3, false, synced(com.mechanical.wildlife.river.Beaver.class, "CARRYING")),
+            new Subject("beaver_gnaw", RiverFauna.BEAVER, false, 2.4, 1.3, false, synced(com.mechanical.wildlife.river.Beaver.class, "GNAWING")),
+            new Subject("otter_eat", RiverFauna.OTTER, false, 2.4, 1.3, false,
+                    synced(com.mechanical.wildlife.river.Otter.class, "HOLDING_FISH").andThen(synced(com.mechanical.wildlife.river.Otter.class, "EATING"))),
             new Subject("mosquito_swarm", RiverFauna.MOSQUITO_SWARM, false, 2.4, 1.6, false, null));
 
     private static List<Subject> subjects = ALL;
