@@ -581,7 +581,8 @@ def centipede():
         for s, side in ((-1, "right"), (1, "left")):
             leg = m.part(f"{side}_leg{i}", seg, (s * 2, 0.5, 1), (0, 0, s * 0.85))
             B(leg, "femur", -2 if s < 0 else 0, -0.5, -0.5, 2, 1, 1)
-            foot = m.part(f"{side}_foot{i}", leg, (s * 2, 0, 0), (0, 0, s * 0.55))
+            spread = 0.55 * (3.5 - i) / 3.5
+            foot = m.part(f"{side}_foot{i}", leg, (s * 2, 0, 0), (0, s * spread, s * 0.55))
             B(foot, "tarsus", -2 if s < 0 else 0, -0.5, -0.5, 2, 1, 1)
         parent = seg
     m.part("tail", parent, (0, 0, 2))
@@ -765,32 +766,50 @@ def troll():
     return m
 
 
-TR = dict(skin=(108, 112, 84), skin_dk=(70, 76, 56), skin_lt=(146, 146, 110), wart=(132, 120, 96), lichen=(176, 178, 120),
-          moss=(72, 104, 40), moss_lt=(116, 146, 58), moss_dk=(42, 62, 26), hair=(54, 48, 34), hair_lt=(92, 82, 58),
+TR = dict(skin=(116, 118, 106), skin_dk=(60, 63, 56), skin_lt=(156, 156, 142), lichen=(178, 176, 140),
+          moss=(70, 104, 38), moss_lt=(124, 156, 62), moss_dk=(38, 60, 24), hair=(52, 50, 38), hair_lt=(86, 84, 62),
           hide=(116, 86, 56), hide_dk=(76, 54, 36), eye=(226, 186, 52), pupil=(20, 16, 10), tusk=(226, 214, 180),
-          nail=(40, 34, 28), mouth=(40, 24, 20))
+          nail=(36, 34, 30), mouth=(40, 26, 22))
+
+
+def troll_moss(T, x, y, z):
+    """Big patches of moss: over everything facing up, and creeping a little way down the sides from the top edges."""
+    if T.mat not in ("skin", "chest", "belly", "brow", "hand"):
+        return 0.0
+    blob = h3(math.floor(x / 3), math.floor(y / 3), math.floor(z / 3), 41)
+    from_top = T.lp[1] - T.b["y"]
+    if T.face == "top" and y < 4:
+        return 1.0 if blob > 0.2 else 0.0
+    if T.side and y < 2 and from_top < 1.0 + 1.5 * blob and blob > 0.35:
+        return 1.0
+    return 0.0
 
 
 def troll_colour(T):
     P, mat, (x, y, z) = TR, T.mat, T.p
-    n = T.noise()
     if mat in ("skin", "belly", "chest", "jaw", "nose", "ear", "foot", "hand", "brow"):
-        c = lerp(P["skin"], P["skin_dk"], 0.15 + 0.15 * n + 0.15 * h3(math.floor(x / 2), math.floor(y / 2), math.floor(z / 2), 30))
-        c = belly_shade(c, T, -4, 24, P["skin_dk"], 0.3)
-        if h3(math.floor(x * 1.3), math.floor(y * 1.3), math.floor(z * 1.3), 31) > 0.94:
-            c = lerp(c, P["wart"], 0.7)  # warts
-        if h3(math.floor(x * 0.5), math.floor(y * 0.5), math.floor(z * 0.5), 32) > 0.93 and h(T.i, T.j, T.k) > 0.3:
-            c = lerp(c, P["lichen"], 0.55)  # pale lichen in patches, as on old stone
-        if mat == "chest" and T.face == "front" and T.j in (1, 2, 3) and 0.5 < abs(x) < 4 and h(T.i, T.j, 4) > 0.45:
-            c = lerp(c, P["hair"], 0.5)  # chest hair
+        if troll_moss(T, x, y, z):
+            c = lerp(P["moss_dk"], P["moss_lt"], 0.25 + 0.6 * h3(math.floor(x * 1.5), math.floor(y * 1.5), math.floor(z * 1.5), 42))
+            return c if h(T.i, T.j, T.k + 7) < 0.96 else (222, 204, 96)  # a tiny flower now and then
+        # weathered stone: each box lit from above and shadowed below, a darker underside, broad slow variation
+        r = T.rel()
+        c = lerp(P["skin_lt"], P["skin"], 0.35 + 0.65 * r[1]) if T.side else (P["skin_lt"] if T.face == "top" else P["skin_dk"])
+        c = belly_shade(c, T, -6, 24, P["skin_dk"], 0.5)
+        c = lerp(c, P["skin_dk"], 0.14 * h3(math.floor(x / 4), math.floor(y / 4), math.floor(z / 4), 30) + 0.04 * T.noise())
+        if T.side and (T.i == 0 or T.i == T.fw - 1):
+            c = shade(c, 0.9)  # the edges turning away
+        if h3(math.floor(x / 2), math.floor(y / 2), math.floor(z / 2), 32) > 0.95:
+            c = lerp(c, P["lichen"], 0.45)  # a rare crust of lichen, as on old stone
+        if mat == "chest" and T.face == "front" and T.j in (1, 2, 3) and 0.5 < abs(x) < 4 and h(T.i, T.j, 4) > 0.5:
+            c = lerp(c, P["hair"], 0.55)  # chest hair
         if mat == "hand" and T.side and T.j == T.fh - 1:
             return P["nail"] if T.i % 2 == 0 else c
         if mat == "foot" and T.face == "front" and T.i % 2 == 0:
             return P["nail"]
         if mat == "brow":
-            c = lerp(c, P["hair"], 0.35)
+            c = lerp(c, P["hair"], 0.3)
         if mat == "nose":
-            c = lerp(c, P["skin_lt"], 0.2)
+            c = lerp(c, P["skin_lt"], 0.15)
             if T.face == "bottom" and T.i in (0, 2):
                 return P["mouth"]  # nostrils
         if mat == "jaw" and T.face == "front" and T.j == 0:
@@ -799,13 +818,15 @@ def troll_colour(T):
             # small yellow eyes deep under the brow (head pivot y -1, z -2: the face front at z -6)
             if -5.0 < y < -4.0 and 1.5 < abs(x) < 3.5:
                 return P["eye"] if abs(x) < 2.5 else P["pupil"]
+            if -4.0 < y < -3.0 and 1.5 < abs(x) < 3.5:
+                return shade(c, 0.75)  # the bags under them
         return c
     if mat == "moss":
         c = lerp(P["moss_dk"], P["moss_lt"], 0.2 + 0.7 * h3(math.floor(x * 1.5), math.floor(y * 1.5), math.floor(z * 1.5), 33))
         if T.side and ragged(T, 0.5, 6):
             return None
-        if h(T.i, T.j, T.k + 7) > 0.93:
-            c = (220, 200, 90)  # a tiny flower in the moss
+        if h(T.i, T.j, T.k + 7) > 0.95:
+            c = (222, 204, 96)
         return c
     if mat in ("tuft", "hair"):
         col = h(T.i + T.k * 5, 0, 12)
@@ -814,7 +835,7 @@ def troll_colour(T):
             return None
         return c
     if mat in ("hide", "kilt"):
-        c = lerp(P["hide"], P["hide_dk"], 0.3 * n + 0.2 * smooth((y - 12) / 4))
+        c = lerp(P["hide"], P["hide_dk"], 0.3 * T.noise() + 0.2 * smooth((y - 12) / 4))
         if mat == "kilt" and T.side and ragged(T, 0.55, 8):
             return None
         if mat == "kilt" and T.side and T.j == 0:

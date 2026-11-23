@@ -33,7 +33,20 @@ public final class TribeIdlePoses {
             state.setRenderData(IDLE, t.idle());
             // the Miner's sack (EquipmentLayer) is render data too: set here, where it survives
             if (t.role() == com.mechanical.people.TribeRole.MINER && t.getPose() == Pose.STANDING) com.mechanical.client.EquipmentClient.wearMinerSack(state);
+            Identifier gear = gear(t.texture());
+            if (gear != null) com.mechanical.client.EquipmentClient.wearTribeGear(state, gear);
         });
+    }
+
+    // shortcut: looked up once per skin; a resource pack adding or removing gear needs a restart (clear on reload if that matters)
+    private static final java.util.Map<Identifier, java.util.Optional<Identifier>> GEAR = new java.util.HashMap<>();
+
+    /** The gear texture next to a skin (skin_gear.png), if that person has one (scripts/gen_tribe_skins.py). */
+    private static Identifier gear(Identifier skin) {
+        return GEAR.computeIfAbsent(skin, s -> {
+            Identifier g = s.withPath(p -> p.replace(".png", "_gear.png"));
+            return net.minecraft.client.Minecraft.getInstance().getResourceManager().getResource(g).map(r -> g);
+        }).orElse(null);
     }
 
     public static void pose(HumanoidModel<?> model, HumanoidRenderState state) {

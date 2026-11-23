@@ -345,12 +345,12 @@ public final class HuntShots {
         int n = r.skins().length;
         Vec3 mid = base.add(0, eye - 0.25, 0);
         switch (v) {
-            case "back" -> look(base.add(0, eye, 4.3), mid);
+            case "back" -> look(base.add(0, eye, 5.0), mid);
             case "close" -> {
                 Vec3 m2 = base.add((-(n - 1) / 2.0 + 0.55) * 1.1, 1.25, 0);
                 look(m2.add(0, 0.2, -2.0), m2);
             }
-            default -> look(base.add(0, eye, -4.3), mid);
+            default -> look(base.add(0, eye, -5.0), mid);
         }
     }
 

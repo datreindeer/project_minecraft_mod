@@ -21,13 +21,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot0 = rightLeg0.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(26, 21).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, -0.55F, -0.55F));
         PartDefinition leftLeg0 = seg0.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(32, 21).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot0 = leftLeg0.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(38, 21).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.55F, 0.55F));
         PartDefinition seg1 = seg0.addOrReplaceChild("seg1", CubeListBuilder.create()
                 .texOffs(14, 15).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(12, 7).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -37,13 +37,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot1 = rightLeg1.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(50, 21).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, -0.3929F, -0.55F));
         PartDefinition leftLeg1 = seg1.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(56, 21).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot1 = leftLeg1.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(0, 24).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.3929F, 0.55F));
         PartDefinition seg2 = seg1.addOrReplaceChild("seg2", CubeListBuilder.create()
                 .texOffs(28, 15).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(24, 7).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -53,13 +53,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot2 = rightLeg2.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(12, 24).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, -0.2357F, -0.55F));
         PartDefinition leftLeg2 = seg2.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(18, 24).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot2 = leftLeg2.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(24, 24).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.2357F, 0.55F));
         PartDefinition seg3 = seg2.addOrReplaceChild("seg3", CubeListBuilder.create()
                 .texOffs(42, 15).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(36, 7).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -69,13 +69,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot3 = rightLeg3.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(36, 24).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, -0.0786F, -0.55F));
         PartDefinition leftLeg3 = seg3.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(42, 24).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot3 = leftLeg3.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(48, 24).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0786F, 0.55F));
         PartDefinition seg4 = seg3.addOrReplaceChild("seg4", CubeListBuilder.create()
                 .texOffs(0, 18).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(48, 7).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -85,13 +85,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot4 = rightLeg4.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(0, 26).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0786F, -0.55F));
         PartDefinition leftLeg4 = seg4.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(6, 26).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot4 = leftLeg4.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(12, 26).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, -0.0786F, 0.55F));
         PartDefinition seg5 = seg4.addOrReplaceChild("seg5", CubeListBuilder.create()
                 .texOffs(14, 18).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(0, 11).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -101,13 +101,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot5 = rightLeg5.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(24, 26).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.2357F, -0.55F));
         PartDefinition leftLeg5 = seg5.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(30, 26).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot5 = leftLeg5.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(36, 26).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, -0.2357F, 0.55F));
         PartDefinition seg6 = seg5.addOrReplaceChild("seg6", CubeListBuilder.create()
                 .texOffs(28, 18).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(12, 11).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -117,13 +117,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot6 = rightLeg6.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(48, 26).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.3929F, -0.55F));
         PartDefinition leftLeg6 = seg6.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(54, 26).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot6 = leftLeg6.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(0, 28).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, -0.3929F, 0.55F));
         PartDefinition seg7 = seg6.addOrReplaceChild("seg7", CubeListBuilder.create()
                 .texOffs(42, 18).addBox(-2.5F, -1.6F, 0.0F, 5.0F, 1.0F, 2.0F)
                 .texOffs(24, 11).addBox(-2.0F, -0.6F, 0.0F, 4.0F, 2.0F, 2.0F),
@@ -133,13 +133,13 @@ public final class UndergroundGeometry {
                 PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
         PartDefinition rightFoot7 = rightLeg7.addOrReplaceChild("right_foot", CubeListBuilder.create()
                 .texOffs(12, 28).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.55F));
+                PartPose.offsetAndRotation(-2.0F, 0.0F, 0.0F, 0.0F, 0.55F, -0.55F));
         PartDefinition leftLeg7 = seg7.addOrReplaceChild("left_leg", CubeListBuilder.create()
                 .texOffs(18, 28).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
                 PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
         PartDefinition leftFoot7 = leftLeg7.addOrReplaceChild("left_foot", CubeListBuilder.create()
                 .texOffs(24, 28).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.55F));
+                PartPose.offsetAndRotation(2.0F, 0.0F, 0.0F, 0.0F, -0.55F, 0.55F));
         PartDefinition tail = seg7.addOrReplaceChild("tail", CubeListBuilder.create()
                 .texOffs(0, 21).addBox(-1.5F, -1.3F, 0.0F, 3.0F, 1.0F, 2.0F)
                 .texOffs(10, 21).addBox(-1.5F, -0.3F, 0.0F, 3.0F, 1.0F, 2.0F),

@@ -8,6 +8,9 @@ dyed parts (headbands, sashes, coat bands, loincloths) in grey; client/people/Ti
 colour. Trader Caravans (trader, guard) get one temperate set: fine gem-set robes and clean linen under armour. The Miner
 (people/Miners.java) too, men only (miner_0, miner_2): soot-smudged face, worn leather, a leather apron, the tribe's colour
 on the headband.
+Next to most skins a "_gear" texture paints the parts that stand out from the body (client/TribeGearModel, drawn by
+EquipmentLayer): fur hoods with a ruff round the face and fur mantles in the cold, hide cloaks, big necklaces standing off
+the chest, top-knots, braids, beards down the chest, feather crests.
 Run: python scripts/gen_tribe_skins.py [preview_dir]"""
 import random
 import sys
@@ -818,7 +821,11 @@ def dress(L, zone, i):
     r = random.Random(f"{L.role}-{i}-{zone}")
     role, woman = L.role, L.woman
     if zone == "temperate":
-        # as before; the headband, the gatherer women's hem and the elder's trim take the tribe's colour
+        # the headband, the gatherer women's hem and the elder's trim take the tribe's colour; two of every four wear a
+        # tunic dyed in it, against hide leggings and a dark belt
+        if i in (1, 2) and role != "hunter":
+            L.top = DYE
+            L.belt = LEATHER if L.belt != CORD else CORD
         if L.headband is not None:
             L.headband = DYE
         if L.trim is not None:
@@ -832,7 +839,7 @@ def dress(L, zone, i):
         coat = {"hunter": [HIDE_DARK, HIDE_GREY, HIDE_RED, HIDE_DARK], "gatherer": [HIDE_GREY, HIDE_LIGHT, HIDE, HIDE_LIGHT],
                 "fisher": [HIDE_GREY, HIDE, HIDE_DARK, HIDE_GREY], "woodcutter": [LEATHER, HIDE_DARK, HIDE_RED, LEATHER],
                 "elder": [FUR_BROWN, FUR_GREY, FUR_WHITE, FUR_BROWN]}[role][i]
-        L.top, L.top_mat = coat, "fur" if role == "elder" else "hide"
+        L.top, L.top_mat = (DYE if i == 2 and role != "elder" else coat), "fur" if role == "elder" else "hide"
         L.top_kind = "robe" if role == "elder" else "tunic"
         L.sleeves = 12
         L.skirt_to = 21 if role == "elder" else 15
@@ -1012,6 +1019,199 @@ def flat_view(img, slim, back=False):
     return out
 
 
+# ---------------- gear: the parts that stand out from the body (client/TribeGearModel, drawn by EquipmentLayer) ----------
+# name: (u, v, w, h, d) -- mirrors the texOffs and box sizes in client/TribeGearModel.java: keep them in sync.
+GEAR_BOXES = {
+    "hood": (0, 0, 8, 8, 8), "ruff": (32, 0, 10, 10, 1),
+    "topknot": (0, 16, 3, 3, 3), "beard": (12, 16, 6, 5, 1), "braid_r": (26, 16, 1, 9, 1), "braid_l": (30, 16, 1, 9, 1),
+    "crest_l": (34, 16, 1, 6, 1), "crest_m": (38, 16, 1, 8, 1), "crest_r": (42, 16, 1, 6, 1), "feather": (46, 16, 1, 5, 1),
+    "mantle": (0, 32, 12, 4, 6), "cloak": (36, 32, 9, 13, 1), "neck": (0, 48, 8, 5, 1),
+}
+
+
+class Gear:
+    """One person's gear texture (64x64), painted from their Look; empty parts stay see-through (not drawn)."""
+
+    def __init__(self, L, seed):
+        self.L = L
+        self.r = random.Random(seed)
+        self.img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+        self.used = False
+
+    def fill(self, name, paint):
+        u, v, w, h, d = GEAR_BOXES[name]
+        for face, (x0, y0, fw, fh) in faces(u, v, w, h, d).items():
+            for y in range(fh):
+                for x in range(fw):
+                    c = paint(face, x, y, fw, fh)
+                    if c is not None:
+                        self.img.putpixel((x0 + x, y0 + y), clamp(c) + (255,))
+                        self.used = True
+
+    def fur(self, col, face, x, y, salt=0):
+        """Long fur: vertical locks, dark roots, light tips, darker on the shaded faces."""
+        lock = h_(x * 7 + salt, 3) * 0.22 - 0.11
+        tip = 1.12 if (y + (x * 5 + salt) % 3) % 4 == 3 else 1.0
+        return shade(col, side_shade(face) * (1 + lock) * tip * (0.9 + 0.1 * h_(x * 13 + y * 7 + salt, 5)))
+
+    def hair(self, face, x, y, salt=0):
+        k = 1.0 + (0.16 if (x * 3 + y + salt) % 5 == 0 else 0) - (0.12 if (x + y * 2 + salt) % 7 == 0 else 0)
+        return shade(self.L.hair, side_shade(face) * k)
+
+
+def h_(n, salt):
+    n = (n * 374761393 + salt * 668265263) & 0xFFFFFFFF
+    n = ((n ^ (n >> 13)) * 1274126177) & 0xFFFFFFFF
+    return ((n ^ (n >> 16)) % 1000) / 1000.0
+
+
+def gear(L, zone, seed):
+    """The gear image for a person, or None when they wear nothing that stands out."""
+    g = Gear(L, seed)
+    cold, warm, jungle = zone == "cold", zone == "warm", zone == "jungle"
+    # ---- a fur hood: over the head with an open face, and a thick ruff of fur round the face
+    if L.hood:
+        def hood(face, x, y, fw, fh):
+            if face == "bottom":
+                return None
+            if face == "front":
+                return g.fur(L.hood, face, x, y) if y == 0 or x in (0, fw - 1) else None
+            return g.fur(L.hood, face, x, y, 3)
+        g.fill("hood", hood)
+        trim = L.hood_trim or FUR_WHITE
+
+        def ruff(face, x, y, fw, fh):
+            if face == "front" or face == "back":
+                inside = 2 <= x <= fw - 3 and 2 <= y <= fh - 2
+                if inside:
+                    return None
+                if y == fh - 1 and (x + g.r.randrange(2)) % 2:
+                    return None  # a shaggy lower edge
+                return g.fur(trim, face, x, y, 7)
+            return g.fur(trim, face, x, y, 7) if face != "bottom" else None
+        g.fill("ruff", ruff)
+    # ---- hair with volume: a top-knot, braids hanging over the shoulders, a beard down the chest
+    if L.hair_style == "bun" and not L.hood and not L.headwrap:
+        band = L.headband if L.headband is not None and not isinstance(L.headband, Dye) else CORD
+        g.fill("topknot", lambda face, x, y, fw, fh: shade(band, side_shade(face)) if face != "top" and y == fh - 1
+               else g.hair(face, x, y, 1))
+    if L.hair_style == "braids" and not L.hood:
+        for name in ("braid_r", "braid_l"):
+            def braid(face, x, y, fw, fh):
+                if face == "top":
+                    return None
+                if y >= fh - 2:
+                    tie = BONE if L.role in ("elder", "hunter") else (FEATHERS[2] if jungle else CORD)
+                    return shade(tie, side_shade(face)) if y == fh - 2 else g.hair(face, x, y, 2)
+                return g.hair(face, x, y, 4) if (y + (face in ("left", "right"))) % 2 == 0 else shade(g.hair(face, x, y, 4), 0.72)
+            g.fill(name, braid)
+    if L.beard in ("full", "long"):
+        long_ = L.beard == "long"
+
+        def beard(face, x, y, fw, fh):
+            if face in ("top",):
+                return None
+            if y >= fh - (1 if long_ else 3):
+                return None if not long_ or (x in (0, fw - 1)) or (x + y) % 2 else g.hair(face, x, y, 6)
+            if y >= fh - 2 - (0 if long_ else 1) and x in (0, fw - 1):
+                return None  # tapering to a point
+            c = g.hair(face, x, y, 6)
+            return shade(c, 1.08) if L.hair in (HAIR["grey"], HAIR["white"]) else c
+        g.fill("beard", beard)
+    # ---- feathers: a crest standing up from the back of the head (jungle), or one eagle feather
+    if L.headdress:
+        cols = L.headdress
+        for k, name in enumerate(("crest_l", "crest_m", "crest_r")):
+            col = cols[k % len(cols)]
+            col = DYE_STAND if isinstance(col, Dye) else col
+
+            def crest(face, x, y, fw, fh, col=col):
+                if y == 0:
+                    return shade(col, 1.15)
+                if y >= fh - 1:
+                    return shade(BONE, 0.9)  # the quill
+                return shade(col, side_shade(face) * (1.0 if y % 3 else 0.82))
+            g.fill(name, crest)
+    elif L.feather:
+        g.fill("feather", lambda face, x, y, fw, fh: hexc("3a3030") if y == 0 else (hexc("f0ece2") if y < fh - 1 else BONE))
+    # ---- a fur mantle round the shoulders: everyone in the cold, the elders everywhere but the hot lands
+    mantle = None
+    if cold:
+        mantle = L.fur if L.fur and L.fur not in FEATHERS else pick(g.r, [FUR_WHITE, FUR_GREY, FUR_BROWN, FUR_RED])
+    elif L.role == "elder" and not warm and not jungle:
+        mantle = L.fur or FUR_GREY
+    elif L.role == "woodcutter" and zone == "temperate":
+        mantle = FUR_BROWN if L.top != FUR_BROWN else FUR_GREY
+    if mantle is not None:
+        def mant(face, x, y, fw, fh):
+            if face == "bottom":
+                return shade(mantle, 0.6)
+            if face != "top" and y == fh - 1 and (x + g.r.randrange(3)) % 3 == 0:
+                return None  # ragged hem
+            return g.fur(mantle, face, x, y, 11)
+        g.fill("mantle", mant)
+    # ---- a hide cloak down the back: hunters (temperate) and guards; a linen one in the warm lands for elders
+    cloak = None
+    if L.role in ("hunter", "guard") and zone == "temperate":
+        cloak = pick(g.r, [HIDE_DARK, HIDE_GREY, LEATHER, HIDE_RED])
+    elif warm and L.role == "elder":
+        cloak = LINEN
+    if cloak is not None and mantle is None and not L.quiver:
+        edge = FUR_GREY if not warm else shade(LINEN, 0.85)
+
+        def clk(face, x, y, fw, fh):
+            if face in ("bottom", "top"):
+                return shade(cloak, 0.7)
+            if y == fh - 1 and (x + g.r.randrange(2)) % 2:
+                return None
+            if y == 0:
+                return g.fur(edge, face, x, y, 13)  # fur along the shoulders
+            c = shade(cloak, side_shade(face) * (1 + 0.06 * (h_(x * 31 + y * 7, 17) - 0.5)) * (0.9 if x % 3 == 0 else 1.0))
+            return shade(c, 0.85) if y == fh - 2 else c
+        g.fill("cloak", clk)
+    # ---- a big necklace standing off the chest: teeth, claws, bone, shells, amber, fishbone or gems
+    kind = L.necklace
+    if kind and mantle is None:
+        bead = {"teeth": TOOTH, "bone": BONE, "fishbone": BONE, "shell": hexc("e9d9c6"), "amber": AMBER, "gems": GOLD}[kind]
+        cord = GOLD if kind == "gems" else hexc("5a4630")
+
+        def neck(face, x, y, fw, fh):
+            if face != "front":
+                return None
+            lo = 3 - abs(x * 2 - 7) // 2  # the V: low in the middle
+            if y == lo - 1 or (y < lo and x in (0, fw - 1) and y == 0):
+                return cord
+            if y == lo + 1 and x % 2 == 1 and kind in ("teeth", "bone", "shell") and lo < 3:
+                return shade(bead, 0.85)  # every other tooth hangs longer
+            if y == lo:
+                if kind == "gems":
+                    return L.gems[x % len(L.gems)]
+                if kind == "shell":
+                    return hexc("e9d9c6") if x % 4 == 0 else hexc("c96a4a")
+                if kind == "amber":
+                    return AMBER if x in (3, 4) else (hexc("8a6a3a") if x % 2 else hexc("c8a060"))
+                return bead if x % 2 == 0 else ([OCHRE, hexc("2e5fa8"), hexc("e8e2d0")][x % 3] if kind != "fishbone" else bead)
+            if kind in ("teeth", "fishbone") and y == lo + 1 and x in (3, 4):
+                return TOOTH if kind == "teeth" else BONE  # the big fang (or a fish spine) at the bottom
+            if kind == "amber" and y == lo + 1 and x in (3, 4):
+                return shade(AMBER, 0.8)
+            return None
+        g.fill("neck", neck)
+    return g.img if g.used else None
+
+
+DYE_STAND = hexc("b04a30")  # a crest feather in the tribe's colour (gear is not dyed in game: a fixed red)
+
+
+def save_gear(L, zone, seed, path):
+    """Writes the person's gear texture next to the skin (or removes a stale one)."""
+    g = gear(L, zone, seed)
+    if g is not None:
+        g.save(path)
+    elif path.exists():
+        path.unlink()
+
+
 def build():
     made = {}
     for zone in ZONES:
@@ -1025,6 +1225,7 @@ def build():
                 assert sk.mask.getbbox() is not None, f"{zone}/{role}_{i}: nothing in the tribe's colour"
                 img.save(out / f"{role}_{i}.png")
                 sk.mask.save(out / f"{role}_{i}_tint.png")
+                save_gear(L, zone, f"gear{role}{i}{zone}", out / f"{role}_{i}_gear.png")
                 made[(zone, role, i)] = (img, sk.mask, L.woman)
     for role in CARAVAN_ROLES:
         for i in range(4):
@@ -1034,6 +1235,7 @@ def build():
             assert sk.mask.getbbox() is not None, f"{role}_{i}: nothing in the tribe's colour"
             img.save(OUT / f"{role}_{i}.png")
             sk.mask.save(OUT / f"{role}_{i}_tint.png")
+            save_gear(L, "temperate", f"gear{role}{i}", OUT / f"{role}_{i}_gear.png")
             made[("caravan", role, i)] = (img, sk.mask, L.woman)
     for i in MINER_SKINS:
         L = miner_person(i)
@@ -1042,6 +1244,7 @@ def build():
         assert sk.mask.getbbox() is not None, f"miner_{i}: nothing in the tribe's colour"
         img.save(OUT / f"miner_{i}.png")
         sk.mask.save(OUT / f"miner_{i}_tint.png")
+        save_gear(L, "temperate", f"gearminer{i}", OUT / f"miner_{i}_gear.png")
         made[("miner", "miner", i)] = (img, sk.mask, L.woman)
     return made
 
