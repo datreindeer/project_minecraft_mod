@@ -2,7 +2,9 @@
   "type": "neoforge:add_features",
   "biomes": [
     "minecraft:desert",
-    "minecraft:beach"
+    "minecraft:beach",
+    "mechanical:shingle_beach",
+    "mechanical:gypsum_flats"
   ],
   "features": [
     "mechanical:packed_sand_flats"
