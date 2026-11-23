@@ -74,7 +74,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 |---|---|
 | Var | jungle, sparse jungle, swamp, mangrove swamp, Willow Fen (6, 3–5) |
 | Liv / fart | 48 / 0,23, skada 8, knuffmotstånd 0,7, steg 1; kalvar (30 %) |
-| Utseende | skiffergrå, väldiga breda bakåtsvepta horn hos alla vuxna |
+| Utseende | en massiv, djup kropp (omkring 1,6 m i manken) med en puckel över manken och hängande buk, en tjock rynkig hals, det långa huvudet buret lågt och framåt med bred våt mule, hängande öron under hornen och hos alla vuxna de väldiga platta, räfflade hornen som sveper ut och bakåt i en bred halvmåne. Skiffergrå till svartaktig gles hud, ljusgrå strumpor, två ljusa vinklar på strupen, lera på benen, tunn svans med tofs. Kalven är brunare och luddigare med stora öron, hornknoppar och långa ben. Modell och skinn: `scripts/gen_owarm_hoofed_models.py` (WarmHoofGeometry). |
 | Beteende | inte skygg (0,6). Skadar du en **anfaller alla vuxna buffler inom 16 block**. På dagen går den till grunt vatten eller lera inom 12 block och **vältrar** sig där 20–40 s. Vadar gärna och **simmar gärna** över djupt vatten: lågt som en flodhäst, bara huvud och horn över ytan, nosen högt så att hornen ligger bakåt. **Tjock hud**: kräver Tusk Dagger eller bättre för att styckas. |
 | Ljud | kons (moody), mycket mörkare |
 
@@ -95,6 +95,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 |---|---|
 | Var | jungle, sparse jungle, bamboo jungle (6, 1–2) |
 | Liv / fart | 26 / 0,26, steg 1; randiga ungar (40 %) |
+| Utseende | malajisk tapir: en tung, rund päronformad kropp som är högst över länden, en kort rörlig snabel över överläppen, små ögon, runda öron med vit kant, korta kraftiga ben med utspärrade tår och en stump till svans. Svart med en mjukt kantad gräddvit sadel över bakre halvan och buken. Ungen är kastanjebrun med gräddvita ränder och prickar ("vattenmelon"). Modell och skinn: `scripts/gen_owarm_hoofed_models.py` (WarmHoofGeometry). |
 | Beteende | skygg (1,6). Skrämd **springer den till närmaste djupa vatten** (2 block) inom 16 block och stannar i vattnet tills paniken är över; annars flyr den som andra. **Simmar gärna** och fort: kroppen nästan under ytan, snabeln uppåt som en snorkel, snabba hundsimtag. |
 | Ljud | grisens (stora), mörkare; tyst annars |
 

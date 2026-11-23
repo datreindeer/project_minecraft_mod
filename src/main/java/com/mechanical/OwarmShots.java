@@ -90,6 +90,8 @@ public final class OwarmShots {
             new Subject("tame_onager", WarmFauna.TAME_ONAGER, false, 4.5, 2.6, false, null),
             new Subject("water_buffalo", WarmFauna.WATER_BUFFALO, false, 5.5, 3.4, false, null),
             new Subject("water_buffalo_calf", WarmFauna.WATER_BUFFALO, true, 3.2, 2.0, false, null),
+            new Subject("water_buffalo_wallow", WarmFauna.WATER_BUFFALO, false, 5.5, 3.4, false,
+                    synced(com.mechanical.wildlife.warm.WaterBuffalo.class, "WALLOWING")),
             new Subject("tapir", WarmFauna.TAPIR, false, 4.2, 2.4, false, null),
             new Subject("tapir_calf", WarmFauna.TAPIR, true, 2.6, 1.5, false, null),
             new Subject("tortoise", WarmFauna.TORTOISE, false, 2.0, 1.5, false, null),

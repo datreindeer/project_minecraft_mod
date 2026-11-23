@@ -6,18 +6,15 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Water buffalo calf, built at baby size: a stout body on comparatively long legs, a big head with floppy ears and no
- * horns yet, a thin tail. Back ~14 px. Texture textures/entity/wildlife/water_buffalo_calf.png (64x32), painted by
- * scripts/gen_fauna_warm_tex_mammals.py (BUFFALO_CALF_BOXES mirrors the cubes below).
+ * Water buffalo calf, built at baby size: a stout, hairier brownish-grey body on comparatively long legs, a big head with
+ * big floppy ears and horn buds, a thin tasselled tail. Back ~14 px. Parts, boxes and the skin
+ * textures/entity/wildlife/water_buffalo_calf.png (128x64) come from scripts/gen_owarm_hoofed_models.py
+ * ({@link WarmHoofGeometry}).
  */
 public class WaterBuffaloCalfModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "water_buffalo_calf"), "main");
@@ -27,7 +24,7 @@ public class WaterBuffaloCalfModel extends EntityModel<WildAnimalRenderState> {
     private static final float GRAZE_NECK_X = 1.0F;
     private static final float GRAZE_HEAD_X = 0.7F;
     private static final float EAR_Z = 0.55F;
-    private static final float LIE_DROP = 6.0F, LIE_LEG_Y = 22.5F;
+    private static final float LIE_DROP = 6.5F, LIE_LEG_Y = 22.5F;
 
     private final ModelPart body;
     private final ModelPart neck;
@@ -55,44 +52,7 @@ public class WaterBuffaloCalfModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, -3.5F, -6.0F, 7.0F, 7.0F, 12.0F),
-                PartPose.offset(0.0F, 13.5F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(38, 0).addBox(-2.0F, -2.5F, -4.0F, 4.0F, 5.0F, 5.0F),
-                PartPose.offsetAndRotation(0.0F, -1.0F, -5.5F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(38, 10).addBox(-2.5F, -2.5F, -3.5F, 5.0F, 5.0F, 4.0F)
-                        .texOffs(34, 19).addBox(-1.5F, -1.0F, -6.5F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -3.5F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(46, 19).mirror().addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(3.2F, -1.0F, -1.0F, 0.0F, 0.0F, EAR_Z));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(46, 19).addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(-3.2F, -1.0F, -1.0F, 0.0F, 0.0F, -EAR_Z));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(56, 10).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 7.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -3.0F, 6.0F, 0.15F, 0.0F, 0.0F));
-
-        addLeg(root, "left_front_leg", 2.0F, -4.0F, false);
-        addLeg(root, "right_front_leg", -2.0F, -4.0F, false);
-        addLeg(root, "left_hind_leg", 2.0F, 4.0F, true);
-        addLeg(root, "right_hind_leg", -2.0F, 4.0F, true);
-        return LayerDefinition.create(mesh, 64, 32);
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(12, 19).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 4.0F, 4.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 19).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 4.0F, 3.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 16.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(26, 19).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F),
-                PartPose.offset(0.0F, 3.0F, hind ? 0.3F : 0.0F));
+        return WarmHoofGeometry.waterBuffaloCalf();
     }
 
     @Override
@@ -125,9 +85,9 @@ public class WaterBuffaloCalfModel extends EntityModel<WildAnimalRenderState> {
         if (state.dozing || wallowing) {
             MammalPose.lie(this.body, LIE_DROP, LIE_LEG_Y, age, new ModelPart[] {leftFrontLeg, rightFrontLeg},
                     new ModelPart[] {leftHindLeg, rightHindLeg});
-            this.neck.xRot = 0.45F;
+            this.neck.xRot = 0.2F; // chin on the ground
             this.neck.yRot = wallowing ? 0.0F : 0.45F;
-            this.head.xRot = wallowing ? 0.05F : 0.35F;
+            this.head.xRot = wallowing ? 0.0F : 0.15F;
             this.head.yRot = wallowing ? 0.0F : 0.25F;
             this.head.zRot = wallowing ? 0.0F : 0.15F;
             this.leftEar.zRot = 0.9F;
