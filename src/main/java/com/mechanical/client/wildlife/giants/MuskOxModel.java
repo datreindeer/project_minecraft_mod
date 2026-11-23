@@ -8,11 +8,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -21,8 +17,7 @@ import net.minecraft.util.Mth;
  * sides, short pale-stockinged legs below it, and a low head with a shaggy chin. The horns meet in a broad boss across
  * the forehead, sweep down beside the face and hook forward and up at the tips. The calf is the model scaled down with a
  * bigger head, shorter hair and no horns.
- * Texture: textures/entity/wildlife/giants/musk_ox.png (128x64), painted by scripts/gen_fauna_giants_textures.py whose
- * MUSK_OX table mirrors the cubes below.
+ * Geometry and skin: scripts/gen_pred_models.py (GiantsGeometry.muskOx, textures/entity/wildlife/giants/musk_ox(_calf).png).
  */
 public class MuskOxModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "musk_ox"), "main");
@@ -49,50 +44,7 @@ public class MuskOxModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(42, 0).addBox(-6.0F, -5.0F, -10.0F, 12.0F, 10.0F, 20.0F)
-                .texOffs(0, 31).addBox(-5.0F, -8.0F, -10.0F, 10.0F, 4.0F, 8.0F),
-                PartPose.offset(0.0F, 10.0F, 0.0F));
-        // the curtain of guard hair, hanging from mid-flank nearly to the ground on all four sides
-        body.addOrReplaceChild("left_skirt", CubeListBuilder.create().texOffs(0, 0).mirror().addBox(0.0F, 0.0F, -10.0F, 1.0F, 11.0F, 20.0F),
-                PartPose.offset(6.0F, 0.0F, 0.0F));
-        body.addOrReplaceChild("right_skirt", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 0.0F, -10.0F, 1.0F, 11.0F, 20.0F),
-                PartPose.offset(-6.0F, 0.0F, 0.0F));
-        body.addOrReplaceChild("rear_skirt", CubeListBuilder.create().texOffs(36, 31).addBox(-6.0F, 0.0F, 0.0F, 12.0F, 11.0F, 1.0F),
-                PartPose.offset(0.0F, 0.0F, 10.0F));
-        body.addOrReplaceChild("front_skirt", CubeListBuilder.create().texOffs(86, 31).addBox(-5.0F, 0.0F, -1.0F, 10.0F, 9.0F, 1.0F),
-                PartPose.offset(0.0F, 2.0F, -10.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(62, 31).addBox(-3.0F, -3.0F, -6.0F, 6.0F, 6.0F, 6.0F)
-                .texOffs(0, 43).addBox(-2.0F, -1.0F, -9.0F, 4.0F, 4.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -1.0F, -10.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("chin", CubeListBuilder.create().texOffs(108, 31).addBox(-2.5F, 0.0F, -2.0F, 5.0F, 4.0F, 4.0F),
-                PartPose.offset(0.0F, 2.0F, -6.0F));
-        // the horn boss across the forehead; each horn runs down beside the face (+y) and hooks forward and up
-        PartDefinition horns = head.addOrReplaceChild("horns", CubeListBuilder.create().texOffs(38, 43).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 2.0F, 4.0F),
-                PartPose.ZERO);
-        for (float side : new float[] {1.0F, -1.0F}) {
-            String p = side > 0 ? "left_" : "right_";
-            PartDefinition a = horns.addOrReplaceChild(p + "horn", CubeListBuilder.create().texOffs(62, 43).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                    PartPose.offsetAndRotation(3.5F * side, -3.0F, -2.0F, -0.2F, 0.0F, -0.45F * side));
-            a.addOrReplaceChild(p + "horn_tip", CubeListBuilder.create().texOffs(70, 43).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                    PartPose.offsetAndRotation(0.0F, 3.5F, 0.0F, -2.2F, 0.0F, -0.5F * side));
-        }
-        addLeg(root, "left_front_leg", 3.5F, -6.0F);
-        addLeg(root, "right_front_leg", -3.5F, -6.0F);
-        addLeg(root, "left_hind_leg", 3.5F, 6.0F);
-        addLeg(root, "right_hind_leg", -3.5F, 6.0F);
-        return LayerDefinition.create(mesh, 128, 64);
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z) {
-        boolean left = x > 0;
-        PartDefinition leg = root.addOrReplaceChild(name, CubeListBuilder.create().mirror(left).texOffs(14, 43).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 4.0F, 3.0F),
-                PartPose.offset(x, 17.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(26, 43).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 4.0F, 3.0F),
-                PartPose.offset(0.0F, 3.0F, 0.0F));
+        return GiantsGeometry.muskOx();
     }
 
     @Override

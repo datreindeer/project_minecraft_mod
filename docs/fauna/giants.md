@@ -6,8 +6,10 @@ hud och egna delar.
 
 Kod: `com.mechanical.wildlife.giants` (`GiantsFauna` registrerar allt, ett djur per klass, `PeggedHideBlock`,
 `IvoryFigurineBlock`), klient `com.mechanical.client.wildlife.giants` (modeller, `GiantRenderer`, `GiantsClient`).
-Data: `scripts/gen_fauna_giants.py` (körs efter `gen_roots.py`, före `gen_block_items.py`). Texturer:
-`scripts/gen_fauna_giants_textures.py`.
+Data: `scripts/gen_fauna_giants.py` (körs efter `gen_roots.py`, före `gen_block_items.py`). Föremålens
+texturer: `scripts/gen_fauna_giants_textures.py`. Djurens modeller och skinn (vuxna, kalvar, flådda kadaver) görs ur
+en tabell per djur av `scripts/gen_pred_models.py` (`GiantsGeometry.java` skrivs av skriptet; mammuten byggs i halv storlek
+med två texlar per pixel).
 
 ## Stora hudar: spänns ut på marken
 

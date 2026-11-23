@@ -204,7 +204,7 @@ def lion_model():
     return m
 
 
-LI = dict(back=(168, 144, 106), coat=(198, 174, 132), pale=(222, 204, 168), belly=(232, 220, 194), stripe=(150, 124, 90),
+LI = dict(back=(140, 110, 74), coat=(184, 152, 106), pale=(214, 190, 146), belly=(228, 214, 184), stripe=(132, 104, 70),
           white=(238, 232, 218), dark=(54, 42, 34), nose=(160, 102, 92), eye=(204, 150, 52), pupil=(30, 22, 18),
           ear_back=(44, 36, 30), pad=(70, 56, 48))
 
@@ -222,7 +222,7 @@ def lion_colour(v, mat, face, p, P, b):
         c = lerp(coat, LI["stripe"], 0.45) if stripe else coat
         return lerp(c, LI["back"], 0.35 * h(int(P[0] * 2), int(P[2]), 91)) if face == "top" else c
     if mat == "ruff":
-        return lerp(LI["pale"], LI["coat"], 0.4 * h(int(x * 2), int(y), 92) + (0.3 if y < -1 else 0))
+        return lerp(LI["pale"], LI["coat"], 0.5 + 0.3 * h(int(x * 2), int(y), 92) + (0.2 if y < -1 else 0))  # only a faint paler ruff
     if mat in ("skull", "brow"):
         if mat == "brow":
             return lerp(LI["coat"], LI["back"], 0.4) if face != "bottom" else LI["dark"]

@@ -8,11 +8,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -20,13 +16,12 @@ import net.minecraft.util.Mth;
  * Woolly rhinoceros: a long, low, barrel body on short thick legs, a big shoulder hump, a thick neck and a long head
  * carried low. The great front horn sweeps forward and curves up from the snout (three segments), a short second horn
  * stands behind it. Shaggy hair hangs along the flanks. The calf is the model scaled down with a bigger head, no horns.
- * Texture: textures/entity/wildlife/giants/woolly_rhino.png (128x64), painted by scripts/gen_fauna_giants_textures.py
- * whose RHINO table mirrors the cubes below.
+ * Geometry and skin: scripts/gen_pred_models.py (GiantsGeometry.rhino, textures/entity/wildlife/giants/woolly_rhino(_calf).png).
  */
 public class RhinoModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "woolly_rhino"), "main");
     private static final float NECK_X = 0.25F, HEAD_X = 0.55F, GRAZE_NECK_X = 0.75F, GRAZE_HEAD_X = 0.75F, TAIL_X = 0.2F;
-    private static final float LIE_DROP = 6.0F, LIE_LEG_Y = 22.0F;
+    private static final float LIE_DROP = 6.0F, LIE_LEG_Y = 21.0F;
 
     private final ModelPart body, neck, head, horns, tail, leftSkirt, rightSkirt, leftEar, rightEar;
     private final ModelPart leftFrontLeg, rightFrontLeg, leftHindLeg, rightHindLeg;
@@ -49,53 +44,7 @@ public class RhinoModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-7.0F, -5.0F, -12.0F, 14.0F, 13.0F, 24.0F)
-                .texOffs(32, 37).addBox(-6.0F, -9.0F, -13.0F, 12.0F, 5.0F, 11.0F),
-                PartPose.offset(0.0F, 8.0F, 0.0F));
-        body.addOrReplaceChild("left_skirt", CubeListBuilder.create().texOffs(76, 0).mirror().addBox(0.0F, 0.0F, -11.0F, 1.0F, 6.0F, 21.0F),
-                PartPose.offset(7.0F, 4.0F, 0.0F));
-        body.addOrReplaceChild("right_skirt", CubeListBuilder.create().texOffs(76, 0).addBox(-1.0F, 0.0F, -11.0F, 1.0F, 6.0F, 21.0F),
-                PartPose.offset(-7.0F, 4.0F, 0.0F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create()
-                .texOffs(56, 54).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 6.0F, 1.0F)
-                .texOffs(96, 54).addBox(-1.0F, 5.0F, -1.0F, 2.0F, 2.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -3.0F, 12.0F, TAIL_X, 0.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(0, 37).addBox(-4.5F, -4.0F, -6.0F, 9.0F, 10.0F, 7.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -12.0F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(78, 37).addBox(-3.5F, -3.5F, -8.0F, 7.0F, 7.0F, 9.0F)
-                .texOffs(0, 54).addBox(-3.0F, -2.0F, -12.0F, 6.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 2.0F, -5.5F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(90, 54).mirror().addBox(-0.5F, -3.0F, -1.0F, 1.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(3.0F, -3.5F, -1.0F, -0.4F, 0.0F, 0.4F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(90, 54).addBox(-0.5F, -3.0F, -1.0F, 1.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(-3.0F, -3.5F, -1.0F, -0.4F, 0.0F, -0.4F));
-        // horns built along -y (up), each segment bent forward / back at its root
-        PartDefinition horns = head.addOrReplaceChild("horns", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition h1 = horns.addOrReplaceChild("front_horn", CubeListBuilder.create().texOffs(60, 54).addBox(-1.0F, -4.0F, -1.5F, 2.0F, 4.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -1.5F, -10.5F, 0.45F, 0.0F, 0.0F));
-        PartDefinition h2 = h1.addOrReplaceChild("front_horn_mid", CubeListBuilder.create().texOffs(70, 54).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -3.5F, 0.0F, -0.2F, 0.0F, 0.0F));
-        h2.addOrReplaceChild("front_horn_tip", CubeListBuilder.create().texOffs(78, 54).addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -3.5F, 0.0F, -0.25F, 0.0F, 0.0F));
-        horns.addOrReplaceChild("rear_horn", CubeListBuilder.create().texOffs(82, 54).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -3.0F, -6.5F, 0.1F, 0.0F, 0.0F));
-        addLeg(root, "left_front_leg", 4.5F, -8.0F);
-        addLeg(root, "right_front_leg", -4.5F, -8.0F);
-        addLeg(root, "left_hind_leg", 4.5F, 8.0F);
-        addLeg(root, "right_hind_leg", -4.5F, 8.0F);
-        return LayerDefinition.create(mesh, 128, 64);
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z) {
-        boolean left = x > 0;
-        PartDefinition leg = root.addOrReplaceChild(name, CubeListBuilder.create().mirror(left).texOffs(20, 54).addBox(-2.5F, -1.0F, -2.5F, 5.0F, 5.0F, 5.0F),
-                PartPose.offset(x, 16.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(40, 54).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F),
-                PartPose.offset(0.0F, 4.0F, 0.0F));
+        return GiantsGeometry.rhino();
     }
 
     @Override
@@ -136,8 +85,8 @@ public class RhinoModel extends EntityModel<WildAnimalRenderState> {
             neck.xRot = 0.55F;
             neck.yRot = 0.25F;
             head.xRot = 0.6F; // chin and horn resting on the ground
-            leftSkirt.zRot = -1.1F;
-            rightSkirt.zRot = 1.1F;
+            leftSkirt.zRot = -0.5F;
+            rightSkirt.zRot = 0.5F;
             leftEar.zRot = 0.8F;
             rightEar.zRot = -0.8F;
             tail.xRot = 0.5F;

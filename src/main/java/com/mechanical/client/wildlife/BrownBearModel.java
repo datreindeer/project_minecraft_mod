@@ -25,7 +25,8 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
  * with fluffy cheek ruffs, a dished face (forehead stop, dipped bridge, nose pad raised at the tip), small round ears,
  * thick pillar legs with broad paws and long front claws, a stubby tail and a shaggy fringe hanging under the belly.
  * The body pivots at the hips so it can rear up on its hind legs.
- * Texture 128x64: textures/entity/wildlife/brown_bear.png (made by scripts/gen_brown_bear_texture.py).
+ * Texture 128x64: textures/entity/wildlife/brown_bear.png, painted on these UVs by scripts/gen_pred_models.py (brown_bear_skin
+ * mirrors the boxes below: keep them in sync).
  */
 public class BrownBearModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "brown_bear"), "main");

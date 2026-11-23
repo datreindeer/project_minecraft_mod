@@ -14,7 +14,7 @@ public final class GiantsClient {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // model, baby scale, shadow, model scale (the mammoth is built at half size)
-        event.registerEntityRenderer(GiantsFauna.WOOLLY_MAMMOTH.get(), c -> new GiantRenderer<>(c, new MammothModel(c.bakeLayer(MammothModel.LAYER)), 0.42F, 2.0F, 2.0F));
+        event.registerEntityRenderer(GiantsFauna.WOOLLY_MAMMOTH.get(), c -> new GiantRenderer<>(c, new MammothModel(c.bakeLayer(MammothModel.LAYER)), 0.5F, 2.0F, 2.0F));
         event.registerEntityRenderer(GiantsFauna.WOOLLY_RHINO.get(), c -> new GiantRenderer<>(c, new RhinoModel(c.bakeLayer(RhinoModel.LAYER)), 0.5F, 1.1F, 1.0F));
         event.registerEntityRenderer(GiantsFauna.STEPPE_BISON.get(), c -> new GiantRenderer<>(c, new BisonModel(c.bakeLayer(BisonModel.LAYER)), 0.5F, 1.0F, 1.0F));
         event.registerEntityRenderer(GiantsFauna.MUSK_OX.get(), c -> new GiantRenderer<>(c, new MuskOxModel(c.bakeLayer(MuskOxModel.LAYER)), 0.5F, 0.9F, 1.0F));

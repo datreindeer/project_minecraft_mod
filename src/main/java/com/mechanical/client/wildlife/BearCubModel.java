@@ -5,18 +5,15 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Brown bear cub, built at baby size (rendered at scale 1): a round, fluffy 7x6x10 body, a big head with a short muzzle
  * and large round ears, chubby short legs, a stub tail. No hump yet.
- * Texture 64x32: textures/entity/wildlife/brown_bear_cub.png (made by scripts/gen_brown_bear_texture.py).
+ * Geometry and skin: scripts/gen_pred_models.py (PredGeometry.bearCub, textures/entity/wildlife/brown_bear_cub.png; the
+ * cave bear cub shares this layer with a recoloured skin, the polar bear cub has its own geometry).
  */
 public class BearCubModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "bear_cub"), "main");
@@ -49,37 +46,7 @@ public class BearCubModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, -3.0F, -5.0F, 7.0F, 6.0F, 10.0F),
-                PartPose.offset(0.0F, 18.0F, 0.0F));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(54, 3).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -1.5F, 5.0F, 0.4F, 0.0F, 0.0F));
-
-        // big round head, short muzzle with the nose at its tip
-        PartDefinition head = root.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(34, 0).addBox(-3.0F, -3.0F, -4.0F, 6.0F, 5.0F, 4.0F)
-                        .texOffs(34, 9).addBox(-1.5F, -0.5F, -6.0F, 3.0F, 2.0F, 2.0F)
-                        .texOffs(44, 9).addBox(-1.0F, -0.6F, -6.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offset(0.0F, 16.0F, -4.5F));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(54, 0).addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.2F, -2.5F, -1.5F, 0.0F, 0.0F, -0.3F));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().mirror().texOffs(54, 0).addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(2.2F, -2.5F, -1.5F, 0.0F, 0.0F, 0.3F));
-
-        CubeListBuilder leg = CubeListBuilder.create().texOffs(0, 16).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 4.0F, 3.0F);
-        CubeListBuilder legMirror = CubeListBuilder.create().mirror().texOffs(0, 16).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 4.0F, 3.0F);
-        root.addOrReplaceChild("right_front_leg", leg, PartPose.offset(-2.0F, 20.0F, -3.0F));
-        root.addOrReplaceChild("left_front_leg", legMirror, PartPose.offset(2.0F, 20.0F, -3.0F));
-        root.addOrReplaceChild("right_hind_leg", leg, PartPose.offset(-2.0F, 20.0F, 3.5F));
-        root.addOrReplaceChild("left_hind_leg", legMirror, PartPose.offset(2.0F, 20.0F, 3.5F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return PredGeometry.bearCub();
     }
 
     @Override
