@@ -8,11 +8,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -20,8 +16,8 @@ import net.minecraft.util.Mth;
  * Steppe bison: massive woolly forequarters under a tall hump, slim hindquarters, a big shaggy head hung low with a beard,
  * and horns that curve out and up (long and thick on the bull, slim on the cow, whose hump is lower). Shaggy "chaps" on
  * the forelegs, a tufted tail. The calf is the model scaled down with a bigger head and no horns.
- * Textures: textures/entity/wildlife/giants/steppe_bison_{bull,cow,calf}.png (128x64), painted by
- * scripts/gen_fauna_giants_textures.py whose BISON table mirrors the cubes below.
+ * Geometry and skins: scripts/gen_pred_models.py (GiantsGeometry.bison, textures/entity/wildlife/giants/steppe_bison_{bull,cow,calf}.png).
+ * The wisent (TemperateGeometry.wisent) uses this animation too: keep the parts looked up here in both.
  */
 public class BisonModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "steppe_bison"), "main");
@@ -49,59 +45,7 @@ public class BisonModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // big woolly forequarters, slimmer hindquarters behind
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-7.0F, -8.0F, -12.0F, 14.0F, 15.0F, 11.0F)
-                .texOffs(50, 0).addBox(-5.5F, -4.0F, -2.0F, 11.0F, 10.0F, 12.0F),
-                PartPose.offset(0.0F, 8.0F, 0.0F));
-        body.addOrReplaceChild("hump", CubeListBuilder.create().texOffs(0, 26).addBox(-5.0F, -4.0F, -4.0F, 10.0F, 5.0F, 8.0F),
-                PartPose.offset(0.0F, -8.0F, -7.0F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create()
-                .texOffs(74, 26).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 7.0F, 1.0F)
-                .texOffs(120, 26).addBox(-1.0F, 6.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -3.0F, 10.0F, TAIL_X, 0.0F, 0.0F));
-        // the head hangs low in front of the hump: woolly skull, muzzle in front, beard under the chin
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(96, 0).addBox(-4.5F, -4.5F, -6.0F, 9.0F, 9.0F, 7.0F)
-                .texOffs(78, 26).addBox(-2.5F, -1.5F, -9.0F, 5.0F, 5.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 3.0F, -12.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("beard", CubeListBuilder.create().texOffs(106, 26).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 4.0F, 3.0F),
-                PartPose.offset(0.0F, 4.0F, -5.5F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(16, 39).mirror().addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(5.0F, -0.5F, -2.0F, 0.0F, 0.0F, 0.4F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(16, 39).addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(-5.0F, -0.5F, -2.0F, 0.0F, 0.0F, -0.4F));
-        PartDefinition bull = head.addOrReplaceChild("bull_horns", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition cow = head.addOrReplaceChild("cow_horns", CubeListBuilder.create(), PartPose.ZERO);
-        for (float side : new float[] {1.0F, -1.0F}) {
-            String p = side > 0 ? "left_" : "right_";
-            // built along -y and bent at the root: out sideways from the poll, then up and a little forward
-            PartDefinition b = bull.addOrReplaceChild(p + "horn", CubeListBuilder.create().texOffs(0, 39).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                    PartPose.offsetAndRotation(4.0F * side, -3.0F, -3.0F, 0.0F, 0.0F, 1.35F * side));
-            b.addOrReplaceChild(p + "horn_tip", CubeListBuilder.create().texOffs(12, 39).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                    PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, 0.35F, 0.0F, -1.2F * side));
-            PartDefinition c = cow.addOrReplaceChild(p + "horn", CubeListBuilder.create().texOffs(8, 39).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                    PartPose.offsetAndRotation(3.8F * side, -3.0F, -3.0F, 0.0F, 0.0F, 1.2F * side));
-            c.addOrReplaceChild(p + "horn_tip", CubeListBuilder.create().texOffs(12, 39).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                    PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, 0.25F, 0.0F, -1.0F * side));
-        }
-        addLeg(root, "left_front_leg", 3.5F, -7.0F, false);
-        addLeg(root, "right_front_leg", -3.5F, -7.0F, false);
-        addLeg(root, "left_hind_leg", 3.0F, 7.5F, true);
-        addLeg(root, "right_hind_leg", -3.0F, 7.5F, true);
-        return LayerDefinition.create(mesh, 128, 64);
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(56, 26).addBox(-2.0F, -1.0F, -2.5F, 4.0F, 6.0F, 5.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(36, 26).addBox(-2.5F, -1.0F, -2.5F, 5.0F, 6.0F, 5.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 14.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(94, 26).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F),
-                PartPose.offset(0.0F, 5.0F, 0.0F));
+        return GiantsGeometry.bison();
     }
 
     @Override

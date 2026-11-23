@@ -8,11 +8,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -22,14 +18,14 @@ import net.minecraft.util.Mth;
  * and long spiralling tusks (down and forward, then out, up and in at the tips). A shaggy skirt of long hair hangs from
  * the flanks and a bib from the throat (jagged, transparent ends in the texture).
  * The calf is the same model scaled down with a bigger head and no tusks.
- * Texture: textures/entity/wildlife/giants/woolly_mammoth.png (128x128), painted by scripts/gen_fauna_giants_textures.py
- * whose MAMMOTH table mirrors the cubes below (keep them in sync).
+ * Geometry and skin (two texels per model pixel, as it is drawn twice as big): scripts/gen_pred_models.py, which writes
+ * GiantsGeometry.mammoth and textures/entity/wildlife/giants/woolly_mammoth(_calf).png. Part names are what this class looks up.
  */
 public class MammothModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "woolly_mammoth"), "main");
     private static final float HEAD_X = 0.2F, TRUNK_X = -0.2F, TRUNK_TIP_X = -0.4F, TAIL_X = 0.15F;
-    /** Sleeping: body down so the belly rests on the ground, folded legs at y = 21.5. */
-    private static final float LIE_DROP = 7.5F, LIE_LEG_Y = 21.5F;
+    /** Sleeping: body down so the belly rests on the ground, folded legs at y = 21. */
+    private static final float LIE_DROP = 8.5F, LIE_LEG_Y = 21.0F;
 
     private final ModelPart body, head, tusks, tail, leftSkirt, rightSkirt, bib, leftEar, rightEar;
     private final ModelPart[] trunk;
@@ -55,77 +51,7 @@ public class MammothModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // short deep barrel; a taller chest under the shoulder hump, which slopes back to the lower rump
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-7.0F, -4.0F, -10.0F, 14.0F, 12.0F, 21.0F)
-                .texOffs(0, 33).addBox(-7.5F, -7.0F, -12.0F, 15.0F, 14.0F, 9.0F)
-                .texOffs(82, 33).addBox(-5.0F, -10.0F, -11.0F, 10.0F, 4.0F, 9.0F),
-                PartPose.offset(0.0F, 7.0F, 0.0F));
-        // long hair hanging from the flanks and the throat
-        body.addOrReplaceChild("left_skirt", CubeListBuilder.create().texOffs(70, 0).mirror().addBox(0.0F, 0.0F, -11.0F, 1.0F, 7.0F, 20.0F),
-                PartPose.offset(7.0F, 6.0F, 0.0F));
-        body.addOrReplaceChild("right_skirt", CubeListBuilder.create().texOffs(70, 0).addBox(-1.0F, 0.0F, -11.0F, 1.0F, 7.0F, 20.0F),
-                PartPose.offset(-7.0F, 6.0F, 0.0F));
-        body.addOrReplaceChild("bib", CubeListBuilder.create().texOffs(50, 68).addBox(-5.0F, 0.0F, -0.5F, 10.0F, 5.0F, 1.0F),
-                PartPose.offset(0.0F, 7.0F, -12.0F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create()
-                .texOffs(82, 56).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F)
-                .texOffs(72, 68).addBox(-1.5F, 5.0F, -1.5F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -2.0F, 11.0F, TAIL_X, 0.0F, 0.0F));
-
-        // domed skull carried in front of the hump
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(48, 33).addBox(-4.5F, -6.0F, -7.0F, 9.0F, 11.0F, 8.0F)
-                .texOffs(40, 56).addBox(-3.5F, -9.0F, -6.0F, 7.0F, 3.0F, 6.0F),
-                PartPose.offsetAndRotation(0.0F, -5.0F, -12.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(42, 68).mirror().addBox(0.0F, -2.0F, -1.5F, 1.0F, 4.0F, 3.0F),
-                PartPose.offsetAndRotation(4.5F, -2.0F, -1.0F, 0.0F, -0.3F, -0.2F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(42, 68).addBox(-1.0F, -2.0F, -1.5F, 1.0F, 4.0F, 3.0F),
-                PartPose.offsetAndRotation(-4.5F, -2.0F, -1.0F, 0.0F, 0.3F, 0.2F));
-        // the trunk: four segments, each hanging (+y) from the end of the last, so it can sway, curl and swing
-        PartDefinition t1 = head.addOrReplaceChild("trunk1", CubeListBuilder.create().texOffs(66, 56).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 5.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 3.0F, -7.0F, TRUNK_X, 0.0F, 0.0F));
-        PartDefinition t2 = t1.addOrReplaceChild("trunk2", CubeListBuilder.create().texOffs(90, 56).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F),
-                PartPose.offset(0.0F, 4.5F, 0.0F));
-        PartDefinition t3 = t2.addOrReplaceChild("trunk3", CubeListBuilder.create().texOffs(16, 68).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 4.0F, 3.0F),
-                PartPose.offset(0.0F, 4.5F, 0.0F));
-        t3.addOrReplaceChild("trunk4", CubeListBuilder.create().texOffs(84, 68).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 3.5F, 0.0F, TRUNK_TIP_X, 0.0F, 0.0F));
-        PartDefinition tusks = head.addOrReplaceChild("tusks", CubeListBuilder.create(), PartPose.ZERO);
-        addTusk(tusks, "left_", 1.0F);
-        addTusk(tusks, "right_", -1.0F);
-
-        addLeg(root, "left_front_leg", 4.0F, -6.0F);
-        addLeg(root, "right_front_leg", -4.0F, -6.0F);
-        addLeg(root, "left_hind_leg", 4.0F, 7.0F);
-        addLeg(root, "right_hind_leg", -4.0F, 7.0F);
-        return LayerDefinition.create(mesh, 128, 128);
-    }
-
-    /**
-     * A tusk in four segments built along -z (forward), each bent at its root: steeply down and a little out from the
-     * jaw, levelling forward, then up and in, the thin tip curling in towards the other tusk. side = +1 left, -1 right.
-     */
-    private static void addTusk(PartDefinition tusks, String p, float side) {
-        PartDefinition a = tusks.addOrReplaceChild(p + "tusk1", CubeListBuilder.create().texOffs(102, 56).addBox(-1.0F, -1.0F, -5.0F, 2.0F, 2.0F, 5.0F),
-                PartPose.offsetAndRotation(3.0F * side, 3.0F, -6.0F, 1.05F, -0.45F * side, 0.0F));
-        PartDefinition b = a.addOrReplaceChild(p + "tusk2", CubeListBuilder.create().texOffs(0, 68).addBox(-1.0F, -1.0F, -5.0F, 2.0F, 2.0F, 5.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -4.5F, -0.55F, -0.2F * side, 0.0F));
-        PartDefinition c = b.addOrReplaceChild(p + "tusk3", CubeListBuilder.create().texOffs(28, 68).addBox(-1.0F, -1.0F, -4.0F, 2.0F, 2.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -4.5F, -0.7F, 0.5F * side, 0.0F));
-        c.addOrReplaceChild(p + "tusk4", CubeListBuilder.create().texOffs(92, 68).addBox(-0.5F, -0.5F, -3.0F, 1.0F, 1.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -3.5F, -0.6F, 0.6F * side, 0.0F));
-    }
-
-    /** Pillar leg: upper leg with the lower leg and round foot as a child, so the knee can bend for walking and lying. */
-    private static void addLeg(PartDefinition root, String name, float x, float z) {
-        boolean left = x > 0;
-        PartDefinition leg = root.addOrReplaceChild(name, CubeListBuilder.create().mirror(left).texOffs(0, 56).addBox(-2.5F, -1.0F, -2.5F, 5.0F, 7.0F, 5.0F),
-                PartPose.offset(x, 13.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(20, 56).addBox(-2.5F, 0.0F, -2.5F, 5.0F, 5.0F, 5.0F),
-                PartPose.offset(0.0F, 6.0F, 0.0F));
+        return GiantsGeometry.mammoth();
     }
 
     @Override
@@ -171,12 +97,12 @@ public class MammothModel extends EntityModel<WildAnimalRenderState> {
             head.xRot = 0.55F;
             head.yRot = 0.15F;
             // trunk curled up on the ground in front, hair spread over the folded legs
-            trunk[0].xRot = -0.6F;
-            trunk[1].xRot = -0.9F;
-            trunk[2].xRot = -0.8F;
-            trunk[3].xRot = -0.9F;
-            leftSkirt.zRot = -1.0F;
-            rightSkirt.zRot = 1.0F;
+            trunk[0].xRot = -0.5F;
+            trunk[1].xRot = -0.6F;
+            trunk[2].xRot = -0.5F;
+            trunk[3].xRot = -0.6F;
+            leftSkirt.zRot = -0.45F;
+            rightSkirt.zRot = 0.45F;
             bib.xRot = -0.9F;
             tail.xRot = 0.5F;
             tail.zRot = 0.3F;
