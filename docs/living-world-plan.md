@@ -61,7 +61,7 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 - **Pris (bestämt av Claude, kan ändras):** gratis upp till 500 block, sedan **1 Silver Coin per påbörjade 50 block**
   (max 10), handelsvägen **dubbelt**. Gold Coin räknas som 10 Silver, växel i silver. Längden är fågelvägen läger → markör.
 - **A6:** vid rykte 60 och en färdig stig (din eller din spelarstams) knappen *Trade road*: samma rutt byggs om till en
-  bredare, upptrampad väg. Byggt 2026-11-23 (v0.179.1), ersätter stenvägen; gamla stenvägar räknas fortfarande som väg.
+  bredare, upptrampad väg. Byggt 2026-11-23 (v0.181.0), ersätter stenvägen; gamla stenvägar räknas fortfarande som väg.
   Hur vägarna ser ut (båda sorterna, v0.179.1): ett **upptrampat spår, ingen sten**. Rutten slingrar sig
   (A* dras mot en mjukt slingrande linje upp till 4 block åt sidan, så även en väg över slätt mark böjer sig), bredden
   vandrar (stig 2–3, handelsväg 3–4: en extra fil på ena sidan där ett brus säger det, bara där marken redan ligger i
