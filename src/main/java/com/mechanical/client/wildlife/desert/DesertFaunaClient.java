@@ -5,10 +5,8 @@ import com.mechanical.Mechanical;
 import com.mechanical.client.wildlife.StuckArrowLayer;
 import com.mechanical.client.wildlife.WildAnimalRenderState;
 import com.mechanical.client.wildlife.WildAnimalRenderer;
-import com.mechanical.client.wildlife.forestbirds.ForestBirdModel;
 import com.mechanical.client.wildlife.forestbirds.ForestBirdRenderer;
 import com.mechanical.client.wildlife.meadow.SnakeModel;
-import com.mechanical.client.wildlife.warm.LeopardModel;
 import com.mechanical.client.wildlife.warm.TameOnagerRenderer;
 import com.mechanical.wildlife.WildAnimal;
 import com.mechanical.wildlife.desert.DesertFauna;
@@ -19,6 +17,7 @@ import com.mechanical.wildlife.desert.TameCamel;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
@@ -35,8 +34,9 @@ public final class DesertFaunaClient {
     /** Sand viper under the sand: drawn this far (blocks) down, so only the top of the coil and the head show. */
     private static final float BURIED_DEPTH = 0.16F;
     private static final ContextKey<Boolean> BURIED = new ContextKey<>(Identifier.fromNamespaceAndPath("mechanical", "sand_viper_buried"));
-    /** The puma is the leopard's build, drawn a little bigger; the condor the vulture's, much bigger. */
-    private static final float PUMA_SCALE = 1.12F, CONDOR_SCALE = 1.4F, CAMEL_CALF = 0.55F;
+    /** The condor: its own build on the forest birds' part tree (DesertGeometry). */
+    public static final ModelLayerLocation CONDOR = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "condor"), "main");
+    private static final float CAMEL_CALF = 0.55F;
 
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -64,7 +64,7 @@ public final class DesertFaunaClient {
             };
         });
         event.registerEntityRenderer(DesertFauna.SAND_VIPER.get(), c -> {
-            SnakeModel model = new SnakeModel(c.bakeLayer(SnakeModel.LAYER));
+            SnakeModel model = new DesertSnakeModel(c.bakeLayer(DesertSnakeModel.SAND_VIPER));
             return new WildAnimalRenderer<SandViper>(c, model, model, 1.0F, 0.2F) {
                 @Override
                 protected void setupRotations(WildAnimalRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
@@ -79,31 +79,19 @@ public final class DesertFaunaClient {
             };
         });
         event.registerEntityRenderer(DesertFauna.RATTLESNAKE.get(), c -> {
-            SnakeModel model = new SnakeModel(c.bakeLayer(SnakeModel.LAYER));
-            return new WildAnimalRenderer<>(c, model, model, 1.0F, 0.2F);
+            SnakeModel model = new DesertSnakeModel(c.bakeLayer(DesertSnakeModel.RATTLESNAKE));
+            return new WildAnimalRenderer<>(c, model, model, 1.0F, 0.25F);
         });
         event.registerEntityRenderer(DesertFauna.PUMA.get(), c -> {
-            LeopardModel model = new LeopardModel(c.bakeLayer(LeopardModel.LAYER));
-            return new WildAnimalRenderer<WildAnimal>(c, model, model, 0.6F, 0.75F) {
-                @Override
-                protected void scale(WildAnimalRenderState state, PoseStack poseStack) {
-                    super.scale(state, poseStack);
-                    poseStack.scale(PUMA_SCALE, PUMA_SCALE, PUMA_SCALE);
-                }
-            };
+            PumaModel model = new PumaModel(c.bakeLayer(PumaModel.LAYER));
+            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.7F);
         });
         event.registerEntityRenderer(DesertFauna.BIGHORN_SHEEP.get(), c -> {
             BighornModel model = new BighornModel(c.bakeLayer(BighornModel.LAYER));
             return new WildAnimalRenderer<>(c, model, model, 0.55F, 0.6F);
         });
         event.registerEntityRenderer(DesertFauna.CONDOR.get(), c -> new ForestBirdRenderer(c,
-                new ForestBirdModel(c.bakeLayer(ForestBirdModel.VULTURE), 0.7F, 0.45F, 0.5F), 0.7F) {
-            @Override
-            protected void scale(WildAnimalRenderState state, PoseStack poseStack) {
-                super.scale(state, poseStack);
-                poseStack.scale(CONDOR_SCALE, CONDOR_SCALE, CONDOR_SCALE);
-            }
-        });
+                new CondorModel(c.bakeLayer(CONDOR)), 0.9F));
     }
 
     @SubscribeEvent
@@ -112,6 +100,10 @@ public final class DesertFaunaClient {
         event.registerLayerDefinition(FennecModel.LAYER, FennecModel::createBodyLayer);
         event.registerLayerDefinition(CamelModel.LAYER, CamelModel::createBodyLayer);
         event.registerLayerDefinition(BighornModel.LAYER, BighornModel::createBodyLayer);
+        event.registerLayerDefinition(PumaModel.LAYER, PumaModel::createBodyLayer);
+        event.registerLayerDefinition(DesertSnakeModel.RATTLESNAKE, DesertSnakeModel::createRattlesnakeLayer);
+        event.registerLayerDefinition(DesertSnakeModel.SAND_VIPER, DesertSnakeModel::createSandViperLayer);
+        event.registerLayerDefinition(CONDOR, DesertGeometry::condor);
     }
 
     @SubscribeEvent

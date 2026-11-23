@@ -6,11 +6,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -19,13 +15,13 @@ import net.minecraft.util.Mth;
  * and down, and a tail of four segments curling up over the back to the sting. Walking: the legs ripple in alternating
  * groups and the pincers sway; idle the pincers open and close now and then; hunting (charging) the tail arches further and
  * jabs forward; hidden by day (dozing) it lies flat with legs drawn in and the tail laid along the back; a carcass lies on
- * its back, legs curled. Texture 64x32: textures/entity/wildlife/desert_scorpion.png, painted by
- * scripts/gen_fauna_desert_textures.py whose scorpion() part tree mirrors the cubes below (keep them in sync).
+ * its back, legs curled. Each leg is a femur angled up and out and a shin ("shin") down to the ground. Geometry and the
+ * 64x64 skin (textures/entity/wildlife/desert_scorpion.png) come from scripts/gen_desert_models.py (DesertGeometry).
  */
 public class ScorpionModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "desert_scorpion"), "main");
     private static final float[] TAIL_X = {0.75F, 0.75F, 0.75F, 0.7F};
-    private static final float STING_X = 0.9F, ARM_Y = 0.6F, CLAW_Y = -0.9F, LEG_Z = 0.7F;
+    private static final float STING_X = 0.9F, ARM_Y = 0.6F, CLAW_Y = -0.9F, LEG_Z = -0.25F;
     private static final float[] LEG_Y = {0.5F, 0.17F, -0.16F, -0.49F};
 
     private final ModelPart body, head, leftArm, rightArm, leftClaw, rightClaw, sting;
@@ -49,27 +45,7 @@ public class ScorpionModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-2.5F, -1.0F, -3.5F, 5.0F, 2.0F, 7.0F), PartPose.offset(0.0F, 21.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(24, 0).addBox(-2.0F, -1.0F, -2.5F, 4.0F, 2.0F, 3.0F), PartPose.offset(0.0F, 0.0F, -3.5F));
-        PartDefinition leftArm = head.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(30, 9).mirror().addBox(-0.5F, -0.5F, -3.0F, 1.0F, 1.0F, 3.0F).mirror(false), PartPose.offsetAndRotation(1.5F, 0.3F, -2.0F, 0.0F, ARM_Y, 0.0F));
-        leftArm.addOrReplaceChild("left_claw", CubeListBuilder.create().texOffs(20, 9).mirror().addBox(-1.0F, -0.5F, -3.0F, 2.0F, 1.0F, 3.0F).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, -3.0F, 0.0F, CLAW_Y, 0.0F));
-        PartDefinition rightArm = head.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(30, 9).addBox(-0.5F, -0.5F, -3.0F, 1.0F, 1.0F, 3.0F), PartPose.offsetAndRotation(-1.5F, 0.3F, -2.0F, 0.0F, -ARM_Y, 0.0F));
-        rightArm.addOrReplaceChild("right_claw", CubeListBuilder.create().texOffs(20, 9).addBox(-1.0F, -0.5F, -3.0F, 2.0F, 1.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -3.0F, 0.0F, -CLAW_Y, 0.0F));
-        float[] legZ = {-2.5F, -1.0F, 0.5F, 2.0F};
-        for (int i = 0; i < 4; i++) {
-            body.addOrReplaceChild("left_leg" + i, CubeListBuilder.create().texOffs(44, 9).mirror().addBox(0.0F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F).mirror(false),
-                    PartPose.offsetAndRotation(2.5F, 0.4F, legZ[i], 0.0F, LEG_Y[i], LEG_Z));
-            body.addOrReplaceChild("right_leg" + i, CubeListBuilder.create().texOffs(44, 9).addBox(-4.0F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F),
-                    PartPose.offsetAndRotation(-2.5F, 0.4F, legZ[i], 0.0F, -LEG_Y[i], -LEG_Z));
-        }
-        PartDefinition tail1 = body.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(38, 0).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -0.3F, 3.5F, TAIL_X[0], 0.0F, 0.0F));
-        PartDefinition tail2 = tail1.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(48, 0).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -0.3F, 2.5F, TAIL_X[1], 0.0F, 0.0F));
-        PartDefinition tail3 = tail2.addOrReplaceChild("tail3", CubeListBuilder.create().texOffs(0, 9).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -0.3F, 2.5F, TAIL_X[2], 0.0F, 0.0F));
-        PartDefinition tail4 = tail3.addOrReplaceChild("tail4", CubeListBuilder.create().texOffs(10, 9).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -0.3F, 2.5F, TAIL_X[3], 0.0F, 0.0F));
-        tail4.addOrReplaceChild("sting", CubeListBuilder.create().texOffs(38, 9).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 2.5F, STING_X, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return DesertGeometry.scorpion();
     }
 
     @Override

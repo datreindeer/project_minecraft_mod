@@ -59,10 +59,10 @@ public final class DesertFauna {
     public static final DeferredHolder<EntityType<?>, EntityType<TameFennec>> TAME_FENNEC = ENTITY_TYPES.registerEntityType(
             "tame_fennec", TameFennec::new, MobCategory.CREATURE, b -> b.sized(0.45F, 0.5F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<WildCamel>> WILD_CAMEL = ENTITY_TYPES.registerEntityType(
-            "wild_camel", WildCamel::new, MobCategory.CREATURE, b -> b.sized(1.3F, 2.1F).clientTrackingRange(10));
+            "wild_camel", WildCamel::new, MobCategory.CREATURE, b -> b.sized(1.5F, 2.4F).clientTrackingRange(10));
     /** A tamed camel: the tame onager's pack animal (a vanilla donkey underneath), slower, stronger and hardy without water. */
     public static final DeferredHolder<EntityType<?>, EntityType<TameCamel>> TAME_CAMEL = ENTITY_TYPES.registerEntityType(
-            "tame_camel", TameCamel::new, MobCategory.CREATURE, b -> b.sized(1.3F, 2.1F).eyeHeight(1.9F).passengerAttachments(1.95F).clientTrackingRange(10));
+            "tame_camel", TameCamel::new, MobCategory.CREATURE, b -> b.sized(1.5F, 2.4F).eyeHeight(2.3F).passengerAttachments(2.3F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<SandViper>> SAND_VIPER = ENTITY_TYPES.registerEntityType(
             "sand_viper", SandViper::new, MobCategory.CREATURE, b -> b.sized(0.5F, 0.25F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Puma>> PUMA = ENTITY_TYPES.registerEntityType(
