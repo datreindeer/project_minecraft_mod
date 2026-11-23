@@ -105,8 +105,11 @@ Birch/Pine/Spruce, Dark Forest, Pale Garden, Deciduous Forest):
   och svamp på, ormbunkar, mossa, Porcini och Chanterelle längs sidorna, ibland en stubbe en bit från rotänden.
 - **Snag:** dött stående träd av samma slag som skogen runt, en barklös stam (Stripped Log, bark kvar vid foten och i fläckar), 4–8 högt,
   korta grenstumpar och borrhål (Grub Log). Var tredje är bara en stubbe med mossa eller svamp.
-- **Root plate:** upprycket träd. Rotkakan står på högkant (Rooted Dirt, Dirt, Coarse Dirt, Hanging Roots under), stammen
-  ligger ut från den och bakom är gropen, ibland med vatten och Mud i botten. Ibland ligger kronans löv kvar.
+- **Root plate:** upprycket träd. Rotkakan står på högkant: en ojämn oval, ungefär 5 bred och 4–5 hög, av Rooted Dirt,
+  Dirt och Coarse Dirt med några stenar i, tjockare i mitten och med toppen lutad bakåt över stammen. Rotändar (Mangrove
+  Roots) sticker ut runt kanten och bakåt, Hanging Roots under. Stammens rotände sitter i mitten av skivan och ligger ett
+  block över marken de två första blocken. Bakom är kratern, ungefär 3 × 5 och 1–2 djup, ibland med vatten och Mud i
+  botten. Ibland ligger kronans löv kvar.
 - **Mossy stones:** 2–5 små stenar (Mossy Cobblestone, Stone, Andesite, Tuff), halvt nedsjunkna med Moss Block och Moss
   Carpet på, ormbunkar runt. Även vid åar och på heden (Meadow, Plains, Chalk Downs, Slate Highlands). Komplement till de
   större `mossy_boulder`.
@@ -114,8 +117,10 @@ Birch/Pine/Spruce, Dark Forest, Pale Garden, Deciduous Forest):
 **Vatten:**
 - **Log bridge:** ett träd fallet tvärs över en bäck eller smal å (2–6 block vatten mellan två bankar 1–3 block över
   vattnet), vilande på båda bankarna. Ibland rotkakan på ena sidan och kronans löv på den andra. Skog och River.
-- **Beaver dam:** Beaver Dam-block, Mud och någon stock i två lager över en bäck med bankar minst 2 block höga. Är vattnet
-  ovanför instängt (högst 96 block) stiger gölen ett block; finns en 3x3 öppen vattenyta står en bäverhydda där. En eller
+- **Beaver dam:** en sammanhängande vall av Beaver Dam-block (kvistar och lera) och lite Mud tvärs över en bäck med bankar
+  minst 2 block höga: tre lager, det översta över vattenytan och inkilat i bankarna, mitten utbuktande ett block nedströms,
+  någon stock ovanpå. Är vattnet ovanför instängt (högst 96 block) stiger gölen ett block. I gölen en hydda: en låg rundad
+  hög 5 bred och 3 hög (3 bred och 2 hög om det är trångt) med en våt kammare i mitten, ofta lutad mot stranden. En eller
   två bävrar som bor där och lagar dammen (`Beaver.settle`).
 - **Driftwood:** 1–3 blekta barklösa stockar (Stripped Birch, Stripped Pale Oak, Stripped Oak, Stripped Spruce) platt på
   stränder och åbankar, högst 3 block från vattnet.

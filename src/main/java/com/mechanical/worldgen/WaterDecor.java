@@ -108,24 +108,20 @@ final class WaterDecor extends StoneAgeFeature {
     }
 
     /**
-     * Sticks, mud and a log or two packed across a creek in two courses, the pond behind it risen a block where it is closed
-     * in, a lodge in the pond if there is room, and a beaver or two that keep it up.
+     * A beaver dam across a creek: a wall of sticks and mud (Beaver Dam blocks, some Mud) three courses high, keyed into
+     * both banks and bowed a block downstream in the middle, a log or two on top. Where the water above is closed in the
+     * pond rises a block, so it stands fuller behind the dam. In the pond a lodge: a low rounded mound 5 across and 3
+     * high (3 across and 2 high if the pond is small) with a wet chamber inside. A beaver or two keep it all up.
      */
     private static BlockPos beaverDam(WorldGenLevel level, RandomSource random, BlockPos c) {
         Span s = crossing(level, c, 5, 2, 6, 2);
         if (s == null) return null;
         ForestDecor.Wood w = ForestDecor.woodNear(level, new BlockPos(c.getX(), s.start().getY() + 1, c.getZ()), 10);
-        BlockState dam = RiverFauna.BEAVER_DAM.get().defaultBlockState();
-        for (int course = 0; course < 2; course++) {
-            for (int i = 0; i < s.len(); i++) {
-                BlockPos p = s.start().relative(s.dir(), i).above(course);
-                BlockState st = w != null && random.nextInt(6) == 0 ? ForestDecor.pillar(w.log(), s.dir().getAxis())
-                        : course == 0 && random.nextInt(5) == 0 ? Blocks.MUD.defaultBlockState() : dam;
-                set(level, p, st);
-            }
-        }
+        Direction dir = s.dir(), across = dir.getClockWise();
+        int wy = s.start().getY();
+        for (int course = 0; course < 2; course++)
+            for (int i = 0; i < s.len(); i++) set(level, s.start().relative(dir, i).above(course), dam(random, course));
         // the pond: one block up on whichever side is closed in (a river that runs on just gets the dam)
-        Direction across = s.dir().getClockWise();
         int side = 0;
         for (int sd : new int[] {1, -1}) {
             Set<BlockPos> pond = pond(level, s, across, sd, c);
@@ -135,22 +131,64 @@ final class WaterDecor extends StoneAgeFeature {
                 break;
             }
         }
-        int waterY = s.start().getY() + (side != 0 ? 1 : 0);
-        BlockPos mid = s.start().relative(s.dir(), s.len() / 2);
-        BlockPos lodge = lodgeSite(level, mid, across, side != 0 ? side : 1, waterY, c);
-        if (lodge != null) {
-            for (int dx = -1; dx <= 1; dx++)
-                for (int dz = -1; dz <= 1; dz++) {
-                    if (dx != 0 || dz != 0) set(level, lodge.offset(dx, 0, dz), dam); // the ring; the chamber inside stays wet
-                    set(level, lodge.offset(dx, 1, dz), dam);
-                }
-            set(level, lodge.above(2), dam);
+        int up = side != 0 ? side : 1;
+        // the top course, standing above the pond, ends keyed into the banks; the middle bowed out downstream
+        for (int i = -1; i <= s.len(); i++) {
+            BlockPos p = s.start().relative(dir, i).atY(wy + 2);
+            boolean bank = i < 0 || i == s.len();
+            if (level.getBlockState(p).canBeReplaced() && level.getFluidState(p).isEmpty() && (!bank || solid(level, p.below())))
+                set(level, p, w != null && !bank && random.nextInt(5) == 0 ? ForestDecor.pillar(w.log(), dir.getAxis()) : dam(random, 2));
+            if (bank || s.len() < 3 || i == 0 || i == s.len() - 1) continue;
+            for (int course = 0; course < 2; course++) {
+                BlockPos q = s.start().relative(dir, i).relative(across, -up).above(course);
+                if (level.getBlockState(q).canBeReplaced()) set(level, q, dam(random, course));
+            }
         }
-        BlockPos home = lodge != null ? lodge : mid.atY(waterY);
-        BlockPos stand = mid.above(2);
+        int waterY = wy + (side != 0 ? 1 : 0);
+        BlockPos mid = s.start().relative(dir, s.len() / 2);
+        BlockPos lodge = lodgeSite(level, mid, across, up, waterY, c, 2);
+        boolean big = lodge != null;
+        if (lodge == null) lodge = lodgeSite(level, mid, across, up, waterY, c, 1);
+        if (lodge != null) lodge(level, random, lodge, big, w);
+        if (lodge != null) // dev log: the spot between dam and lodge, seen from downstream
+            Decor.logPlaced("beaver_view" + (big ? "_big_" : "_small_") + Decor.viewAngle(up > 0 ? across.getOpposite() : across),
+                    new BlockPos((mid.getX() + lodge.getX()) / 2, waterY, (mid.getZ() + lodge.getZ()) / 2));
+        BlockPos home = lodge != null ? lodge : mid.atY(waterY), lodgeAt = lodge;
+        BlockPos stand = mid.atY(wy + 3);
         for (int i = random.nextInt(3) == 0 ? 2 : 1; i > 0; i--)
-            spawn(level, random, RiverFauna.BEAVER.get(), stand, b -> b.settle(home, s.start(), s.dir(), s.len(), lodge));
+            spawn(level, random, RiverFauna.BEAVER.get(), stand, b -> b.settle(home, s.start(), dir, s.len(), lodgeAt));
         return mid;
+    }
+
+    /** Dam stuff: Beaver Dam blocks (sticks packed with mud), now and then plain Mud low down. */
+    private static BlockState dam(RandomSource random, int course) {
+        return course == 0 && random.nextInt(5) == 0 ? Blocks.MUD.defaultBlockState() : RiverFauna.BEAVER_DAM.get().defaultBlockState();
+    }
+
+    /**
+     * The lodge at the water surface centre: a rounded mound (big: 5 across, 3 high; else 3 across, 2 high), its outer
+     * ring built up from the pond floor, the chamber in the middle at water level left wet.
+     */
+    private static void lodge(WorldGenLevel level, RandomSource random, BlockPos centre, boolean big, ForestDecor.Wood w) {
+        int[] reach = big ? new int[] {5, 4, 1} : new int[] {2, 1}; // squared radius of each layer
+        for (int layer = 0; layer < reach.length; layer++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    int d = dx * dx + dz * dz;
+                    if (d > reach[layer] || layer == 0 && d == 0) continue;
+                    BlockPos p = centre.offset(dx, layer, dz);
+                    if (!level.getBlockState(p).canBeReplaced() && !natural(level.getBlockState(p))) continue; // never into a tree
+                    set(level, p, dam(random, layer));
+                    if (layer == 0 && d >= reach[0] - 1)
+                        for (BlockPos q = p.below(); q.getY() > centre.getY() - 4 && level.getFluidState(q).is(FluidTags.WATER); q = q.below()) set(level, q, dam(random, 0));
+                }
+            }
+        }
+        if (w != null && random.nextBoolean()) { // a peeled stick poking out of the side
+            Direction d = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+            BlockPos p = centre.above().relative(d, big ? 3 : 2);
+            if (level.getBlockState(p).isAir()) set(level, p, ForestDecor.pillar(w.stripped(), d.getAxis()));
+        }
     }
 
     /** One to three bleached, barkless logs lying on a beach or bank within 3 blocks of the water. */
@@ -346,22 +384,36 @@ final class WaterDecor extends StoneAgeFeature {
         return fill;
     }
 
-    /** A 3x3 of open water at waterY on side of the dam, 3 to 7 blocks out, with room above for the roof. */
-    private static BlockPos lodgeSite(WorldGenLevel level, BlockPos mid, Direction across, int side, int waterY, BlockPos c) {
-        for (int out = 3; out <= 7; out++) {
+    /**
+     * Open water at waterY for a lodge of radius r (2: 5x5 without its corners, 1: 3x3) on side of the dam, its centre 3
+     * to 7 blocks out, with room above for the mound.
+     */
+    private static BlockPos lodgeSite(WorldGenLevel level, BlockPos mid, Direction across, int side, int waterY, BlockPos c, int r) {
+        for (int out = r + 2; out <= 7; out++) {
             for (int shift = 0; shift <= 4; shift++) {
                 for (int sign : new int[] {1, -1}) {
                     BlockPos centre = mid.relative(across, side * out).relative(across.getClockWise(), shift * sign).atY(waterY);
-                    if (Math.abs(centre.getX() - c.getX()) > 13 || Math.abs(centre.getZ() - c.getZ()) > 13) continue;
-                    boolean ok = true;
-                    for (int dx = -1; dx <= 1 && ok; dx++)
-                        for (int dz = -1; dz <= 1 && ok; dz++)
-                            ok = surfaceWater(level, centre.offset(dx, 0, dz)) && level.getBlockState(centre.offset(dx, 2, dz)).isAir();
+                    if (Math.abs(centre.getX() - c.getX()) > 15 - r || Math.abs(centre.getZ() - c.getZ()) > 15 - r) continue;
+                    boolean ok = level.getBlockState(centre.above(3)).isAir();
+                    for (int dx = -r; dx <= r && ok; dx++)
+                        for (int dz = -r; dz <= r && ok; dz++) {
+                            int d = dx * dx + dz * dz;
+                            BlockPos p = centre.offset(dx, 0, dz);
+                            // the middle (the chamber) in open water, the rest may lean on the bank (a bank lodge)
+                            ok = d > r * r + 1 || surfaceWater(level, p) || d > 0 && lodgeBank(level, p);
+                        }
                     if (ok) return centre;
                 }
             }
         }
         return null;
+    }
+
+    /** Bank a lodge may be built against: natural ground at the water's height, or open air right above such ground. */
+    private static boolean lodgeBank(WorldGenLevel level, BlockPos p) {
+        BlockState s = level.getBlockState(p);
+        return level.getFluidState(p).isEmpty() && level.getBlockState(p.above()).canBeReplaced()
+                && (natural(s) || s.canBeReplaced() && natural(level.getBlockState(p.below())));
     }
 
     /** Solid, natural ground on both sides of p across dir, and under it. */

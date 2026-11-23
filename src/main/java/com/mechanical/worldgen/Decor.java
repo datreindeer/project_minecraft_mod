@@ -114,6 +114,11 @@ final class Decor {
         if (LOG_PLACED) Mechanical.LOGGER.info("decor {} at {} {} {}", what, p.getX(), p.getY(), p.getZ());
     }
 
+    /** For logPlaced names: the DecorShots angle (degrees, 0 = camera to the south) that puts a camera on the side of d. */
+    static int viewAngle(net.minecraft.core.Direction d) {
+        return Math.floorMod((int) Math.round(Math.toDegrees(Math.atan2(-d.getStepX(), d.getStepZ()))), 360);
+    }
+
     private static double sq(double v) {
         return v * v;
     }

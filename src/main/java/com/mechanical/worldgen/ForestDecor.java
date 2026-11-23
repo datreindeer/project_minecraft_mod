@@ -114,18 +114,25 @@ final class ForestDecor extends StoneAgeFeature {
         return true;
     }
 
-    /** An uprooted tree: the trunk on the ground, the root plate standing on end at its foot and the pit it tore out. */
+    /**
+     * An uprooted tree: the root plate standing on end, the trunk's butt in its middle (lifted a block off the ground for
+     * two blocks, then lying on it) and behind the plate the crater it tore out of the ground.
+     */
     private static boolean rootPlate(WorldGenLevel level, RandomSource random, BlockPos c) {
         Wood w = woodNear(level, c, 10);
-        if (w == null || !flat(level, c, 2, 1)) return false;
         Direction dir = randomSide(random);
-        List<BlockPos> trunk = logCells(level, c.relative(dir), dir, 5 + random.nextInt(4), false);
-        if (trunk.size() < 4) return false;
+        if (w == null || !flat(level, c, 2, 1) || !flat(level, c.relative(dir.getOpposite(), 2), 2, 1)) return false;
+        List<BlockPos> trunk = logCells(level, c.relative(dir, 3), dir, 3 + random.nextInt(4), false);
+        BlockPos butt = c.above();
+        if (trunk.size() < 2 || !level.getBlockState(butt.relative(dir)).isAir() || !level.getBlockState(butt.relative(dir, 2)).isAir()) return false;
+        plate(level, random, c, dir, 2.2 + random.nextDouble() * 0.8);
+        List<BlockPos> lifted = List.of(butt, butt.relative(dir), butt.relative(dir, 2));
+        lay(level, lifted, w.log(), dir.getAxis());
         lay(level, trunk, w.log(), dir.getAxis());
-        plate(level, random, c, dir, 1.8 + random.nextDouble());
-        pit(level, random, c.relative(dir.getOpposite()), dir);
+        pit(level, random, c, dir);
         if (w.leaves() != null && random.nextBoolean()) crown(level, random, trunk.getLast().relative(dir), w.leaves());
         dressLog(level, random, trunk, dir.getAxis(), 0.15F);
+        Decor.logPlaced("root_plate_dir_" + Decor.viewAngle(dir), butt);
         return true;
     }
 
@@ -279,43 +286,71 @@ final class ForestDecor extends StoneAgeFeature {
     }
 
     /**
-     * The root plate: a ragged disc of Rooted Dirt, Dirt and Coarse Dirt standing on end across dir (the way the trunk
-     * fell), its middle a block above c, Hanging Roots under every overhang.
+     * The root plate, standing on end across dir (the way the trunk fell) with its middle a block above c: a ragged oval
+     * about 5 wide and 4-5 high of Rooted Dirt, Dirt and Coarse Dirt with a few stones in it, two thick in the middle,
+     * its top tipped back a block over the trunk. Root ends (Mangrove Roots) poke out at the rim and from the back, and
+     * Hanging Roots hang under it.
      */
     static void plate(WorldGenLevel level, RandomSource random, BlockPos c, Direction dir, double radius) {
-        Direction across = dir.getClockWise();
+        Direction across = dir.getClockWise(), back = dir.getOpposite();
         BlockPos mid = c.above();
-        int ir = (int) Math.ceil(radius);
-        List<BlockPos> placed = new ArrayList<>();
-        for (int a = -ir; a <= ir; a++) {
-            for (int b = -ir; b <= ir; b++) {
-                if (a * a + b * b > radius * radius + (random.nextDouble() - 0.5) * 1.5) continue;
-                BlockPos p = mid.relative(across, a).above(b);
-                if (!level.getBlockState(p).canBeReplaced() || !level.getFluidState(p).isEmpty()) continue;
-                set(level, p, (switch (random.nextInt(6)) {
-                    case 0, 1 -> Blocks.DIRT;
-                    case 2 -> Blocks.COARSE_DIRT;
-                    default -> Blocks.ROOTED_DIRT;
-                }).defaultBlockState());
-                placed.add(p);
+        double rh = radius + 0.3, rv = radius;
+        List<BlockPos> soil = new ArrayList<>(), rim = new ArrayList<>();
+        List<Direction> out = new ArrayList<>();
+        for (int a = -(int) Math.ceil(rh); a <= rh; a++) {
+            for (int b = -(int) Math.ceil(rv); b <= rv; b++) {
+                double d = (a / rh) * (a / rh) + (b / rv) * (b / rv);
+                if (d > 1 + (random.nextDouble() - 0.5) * 0.45) continue;
+                BlockPos p = mid.relative(across, a).above(b).relative(dir, b >= 2 ? 1 : 0);
+                if (soil(level, random, p)) soil.add(p);
+                if (d < 0.3 && soil(level, random, p.relative(back))) soil.add(p.relative(back));
+                if (d > 0.55) {
+                    rim.add(p);
+                    out.add(Math.abs(a / rh) >= Math.abs(b / rv) ? (a > 0 ? across : across.getOpposite()) : Direction.UP);
+                }
             }
         }
-        for (BlockPos p : placed) if (level.getBlockState(p.below()).isAir() && random.nextInt(5) < 3) set(level, p.below(), Blocks.HANGING_ROOTS.defaultBlockState());
+        BlockState roots = Blocks.MANGROVE_ROOTS.defaultBlockState();
+        for (int i = 0; i < rim.size(); i++) {
+            BlockPos q = rim.get(i).relative(out.get(i));
+            if (random.nextBoolean() && level.getBlockState(q).isAir()) set(level, q, roots);
+        }
+        for (BlockPos p : soil) {
+            if (random.nextInt(4) == 0 && level.getBlockState(p.relative(back)).isAir()) set(level, p.relative(back), roots);
+            if (level.getBlockState(p.below()).isAir() && random.nextInt(5) < 3) set(level, p.below(), Blocks.HANGING_ROOTS.defaultBlockState());
+        }
     }
 
-    /** The hole the roots tore out, behind the plate: a block deep, two in the middle, sometimes holding a little rain water. */
-    private static void pit(WorldGenLevel level, RandomSource random, BlockPos back, Direction dir) {
+    /** One block of the plate if the spot is free: mostly dirt of three kinds, now and then a stone it tore up. */
+    private static boolean soil(WorldGenLevel level, RandomSource random, BlockPos p) {
+        if (!level.getBlockState(p).canBeReplaced() || !level.getFluidState(p).isEmpty()) return false;
+        set(level, p, (switch (random.nextInt(12)) {
+            case 0, 1, 2 -> Blocks.DIRT;
+            case 3, 4 -> Blocks.COARSE_DIRT;
+            case 5 -> random.nextBoolean() ? Blocks.COBBLESTONE : Blocks.ANDESITE;
+            default -> Blocks.ROOTED_DIRT;
+        }).defaultBlockState());
+        return true;
+    }
+
+    /**
+     * The crater behind the plate (c is the plate's foot): an oval about 3 long and 5 wide, a block deep, two in the
+     * middle, floored with Coarse Dirt and Rooted Dirt; sometimes rain water stands in the deep part.
+     */
+    private static void pit(WorldGenLevel level, RandomSource random, BlockPos c, Direction dir) {
         Direction across = dir.getClockWise();
         List<BlockPos> deep = new ArrayList<>();
-        for (int k = 0; k < 2; k++) {
-            for (int a = -1; a <= 1; a++) {
-                BlockPos top = back.relative(dir, -k).relative(across, a);
+        for (int k = 1; k <= 3; k++) {
+            for (int a = -2; a <= 2; a++) {
+                double d = (k - 1.8) * (k - 1.8) / 2.0 + a * a / 6.5;
+                if (d > 1 + (random.nextDouble() - 0.5) * 0.3) continue;
+                BlockPos top = c.relative(dir, -k).relative(across, a);
                 BlockPos g = surface(level, top.getX(), top.getZ()).below();
-                if (g.getY() != back.getY() - 1 || !level.getBlockState(g).is(BlockTags.SUBSTRATE_OVERWORLD)) continue;
+                if (g.getY() != c.getY() - 1 || !level.getBlockState(g).is(BlockTags.SUBSTRATE_OVERWORLD)) continue;
                 BlockState up = level.getBlockState(g.above());
                 if (!up.isAir() && up.canBeReplaced()) set(level, g.above(), AIR);
                 set(level, g, AIR);
-                boolean middle = a == 0 && natural(level.getBlockState(g.below()));
+                boolean middle = d < 0.4 && natural(level.getBlockState(g.below()));
                 if (middle) {
                     set(level, g.below(), AIR);
                     deep.add(g.below());
@@ -323,7 +358,7 @@ final class ForestDecor extends StoneAgeFeature {
                 set(level, middle ? g.below(2) : g.below(), (random.nextBoolean() ? Blocks.COARSE_DIRT : Blocks.ROOTED_DIRT).defaultBlockState());
             }
         }
-        // a pool only if every side of the deep cells is solid (or the other deep cell), so it can't run off
+        // a pool only if every side of the deep cells is solid (or another deep cell), so it can't run off
         if (random.nextInt(3) > 0 || deep.isEmpty()) return;
         for (BlockPos p : deep) {
             for (Direction d : Direction.Plane.HORIZONTAL) {

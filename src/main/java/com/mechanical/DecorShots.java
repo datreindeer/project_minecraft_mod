@@ -127,9 +127,10 @@ public final class DecorShots {
         ServerPlayer p = player();
         var level = p.level();
         Vec3 look = new Vec3(s.x() + 0.5, s.y() + 0.5, s.z() + 0.5), eye = null;
+        boolean overview = s.name().startsWith("overview");
         // a lying log is shot from the side: start from the angle across its axis
         double base = s.angle();
-        for (int dy = 0; dy >= -1; dy--) {
+        for (int dy = 0; dy >= -1 && !s.name().contains("plate") && !s.name().contains("dam"); dy--) {
             var st = level.getBlockState(net.minecraft.core.BlockPos.containing(s.x(), s.y() + dy, s.z()));
             if (st.hasProperty(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) && st.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) != net.minecraft.core.Direction.Axis.Y) {
                 base = (st.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) == net.minecraft.core.Direction.Axis.X ? 0 : 90) + (s.angle() % 2 == 0 ? 0 : 180) + 25;
@@ -138,11 +139,13 @@ public final class DecorShots {
         }
         // at eye height over open ground, the first angle (from the given one round) and distance with a clear view
         for (int i = 0; i < 16 && eye == null; i++) {
-            for (double dist : new double[] {s.distance(), s.distance() - 2, s.distance() + 2}) {
+            for (double dist : new double[] {s.distance(), s.distance() - 2, s.distance() + 2, s.distance() + 4}) {
                 double a = Math.toRadians(base + 22.5 * i);
                 double cx = s.x() + 0.5 - Math.sin(a) * dist, cz = s.z() + 0.5 + Math.cos(a) * dist;
-                double y = s.height() != null ? s.y() + s.height()
-                        : level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(cx), (int) Math.floor(cz)) + 2.3;
+                int ix = (int) Math.floor(cx), iz = (int) Math.floor(cz), ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, ix, iz);
+                // overviews stand in the open (no canopy over the camera) and a little higher
+                if (overview && level.getHeight(Heightmap.Types.MOTION_BLOCKING, ix, iz) > ground) continue;
+                double y = s.height() != null ? s.y() + s.height() : ground + (overview ? 4.5 : 2.3);
                 Vec3 e = new Vec3(cx, y, cz);
                 var hit = level.clip(new net.minecraft.world.level.ClipContext(e, look, net.minecraft.world.level.ClipContext.Block.VISUAL,
                         net.minecraft.world.level.ClipContext.Fluid.NONE, p));
