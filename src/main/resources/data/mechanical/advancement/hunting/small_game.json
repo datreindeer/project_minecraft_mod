@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:rabbit_scraps"
+            "items": "mechanical:pond_turtle_meat"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_ermine"
+            "items": "mechanical:rabbit_scraps"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:raw_ermine"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_lemming"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_marten"
+            "items": "mechanical:raw_lemming"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_mole"
+            "items": "mechanical:raw_marten"
           }
         ]
       }
@@ -96,7 +96,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_snake"
+            "items": "mechanical:raw_mole"
           }
         ]
       }
@@ -106,7 +106,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_vole"
+            "items": "mechanical:raw_snake"
           }
         ]
       }
@@ -116,12 +116,32 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wildcat"
+            "items": "mechanical:raw_vole"
           }
         ]
       }
     },
     "has_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_water_vole"
+          }
+        ]
+      }
+    },
+    "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wildcat"
+          }
+        ]
+      }
+    },
+    "has_14": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -146,7 +166,9 @@
       "has_9",
       "has_10",
       "has_11",
-      "has_12"
+      "has_12",
+      "has_13",
+      "has_14"
     ]
   ],
   "display": {

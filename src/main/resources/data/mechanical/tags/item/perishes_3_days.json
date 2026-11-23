@@ -71,6 +71,14 @@
     "mechanical:cooked_vittra_meat",
     "mechanical:cooked_troll_meat",
     "mechanical:cooked_lindworm_meat",
-    "mechanical:cooked_gloson"
+    "mechanical:cooked_gloson",
+    "mechanical:cooked_wisent",
+    "mechanical:cooked_pond_turtle_meat",
+    "mechanical:cooked_water_vole",
+    "mechanical:cooked_skylark",
+    "mechanical:cooked_lapwing",
+    "mechanical:cooked_bittern",
+    "mechanical:cooked_eel",
+    "mechanical:cooked_crayfish"
   ]
 }

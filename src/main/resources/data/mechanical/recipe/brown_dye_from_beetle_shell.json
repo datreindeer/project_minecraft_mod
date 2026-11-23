@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:beetle_shell"
+  ],
+  "result": {
+    "id": "minecraft:brown_dye",
+    "count": 2
+  }
+}

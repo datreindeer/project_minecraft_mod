@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:stony_shore",
+    "mechanical:basalt_coast",
+    "mechanical:shingle_beach"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:seal",
+      "weight": 8,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 4,
+        "max_inclusive": 8
+      }
+    }
+  ]
+}

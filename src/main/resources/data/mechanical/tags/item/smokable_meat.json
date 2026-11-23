@@ -64,6 +64,12 @@
     "mechanical:vittra_meat",
     "mechanical:troll_meat",
     "mechanical:lindworm_meat",
-    "mechanical:raw_gloson"
+    "mechanical:raw_gloson",
+    "mechanical:raw_wisent",
+    "mechanical:pond_turtle_meat",
+    "mechanical:raw_water_vole",
+    "mechanical:raw_skylark",
+    "mechanical:raw_lapwing",
+    "mechanical:raw_bittern"
   ]
 }

@@ -1,0 +1,30 @@
+{
+  "render_type": "minecraft:cutout",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/fox_tracks",
+    "prints": "mechanical:block/fox_tracks"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0.1,
+        0
+      ],
+      "to": [
+        16,
+        0.1,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#prints"
+        },
+        "down": {
+          "texture": "#prints"
+        }
+      }
+    }
+  ]
+}

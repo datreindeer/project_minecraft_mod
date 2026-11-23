@@ -76,7 +76,7 @@ public final class VanillaGame {
         Butchery.wholeMeat(() -> EntityTypes.BAT);
         Butchery.register(() -> EntityTypes.BAT, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 0, 1, List.of(x(BAT_WING, 0.85F, 1, 2)), List.of()));
         // small game and fur animals
-        Butchery.register(() -> EntityTypes.FOX, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 1, List.of(hide(0.45F)), List.of(x(Wildlife.SINEW, 0.3F, 1, 1))));
+        // (the fox: wildlife.temperate.TemperateFauna, with its Raw Fox Pelt)
         Butchery.register(() -> EntityTypes.OCELOT, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 2, List.of(hide(0.4F)), List.of(x(Wildlife.SINEW, 0.3F, 1, 1))));
         Butchery.register(() -> EntityTypes.ARMADILLO, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 1, List.of(x(() -> Items.ARMADILLO_SCUTE, 1.0F, 1, 2)), List.of()));
         Butchery.register(() -> EntityTypes.FROG, new Butchery.Yield(Mechanical.GAME_MEAT_SCRAPS, 1, 1, List.of(), List.of()));

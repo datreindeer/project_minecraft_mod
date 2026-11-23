@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "particle": "mechanical:block/bird_egg_lapwing",
+    "egg": "mechanical:block/bird_egg_lapwing"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        1,
+        5.5
+      ],
+      "to": [
+        8.0,
+        3.5,
+        8.5
+      ],
+      "faces": {
+        "down": {
+          "texture": "#egg"
+        },
+        "up": {
+          "texture": "#egg"
+        },
+        "north": {
+          "texture": "#egg"
+        },
+        "south": {
+          "texture": "#egg"
+        },
+        "east": {
+          "texture": "#egg"
+        },
+        "west": {
+          "texture": "#egg"
+        }
+      },
+      "rotation": {
+        "origin": [
+          6.75,
+          1,
+          7.0
+        ],
+        "axis": "y",
+        "angle": 22.5
+      }
+    }
+  ]
+}

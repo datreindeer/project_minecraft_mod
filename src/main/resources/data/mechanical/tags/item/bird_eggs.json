@@ -10,6 +10,8 @@
     "mechanical:mallard_egg",
     "mechanical:swan_egg",
     "mechanical:heron_egg",
-    "mechanical:crane_egg"
+    "mechanical:crane_egg",
+    "mechanical:skylark_egg",
+    "mechanical:lapwing_egg"
   ]
 }

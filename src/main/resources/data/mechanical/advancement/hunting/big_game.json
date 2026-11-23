@@ -76,12 +76,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:saiga_meat"
+            "items": "mechanical:raw_wisent"
           }
         ]
       }
     },
     "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:saiga_meat"
+          }
+        ]
+      }
+    },
+    "has_9": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -102,7 +112,8 @@
       "has_5",
       "has_6",
       "has_7",
-      "has_8"
+      "has_8",
+      "has_9"
     ]
   ],
   "display": {

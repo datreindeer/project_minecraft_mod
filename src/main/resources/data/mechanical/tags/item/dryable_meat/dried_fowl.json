@@ -14,6 +14,9 @@
     "mechanical:raw_mallard",
     "mechanical:raw_swan",
     "mechanical:raw_heron",
-    "mechanical:raw_crane"
+    "mechanical:raw_crane",
+    "mechanical:raw_skylark",
+    "mechanical:raw_lapwing",
+    "mechanical:raw_bittern"
   ]
 }

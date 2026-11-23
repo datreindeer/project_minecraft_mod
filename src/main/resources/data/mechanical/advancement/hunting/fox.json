@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:game_meat_scraps"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:game_meat_scraps"
+            "items": "mechanical:raw_fox_pelt"
           }
         ]
       }

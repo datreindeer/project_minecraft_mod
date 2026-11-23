@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_skylark",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_skylark",
+    "count": 1
+  }
+}

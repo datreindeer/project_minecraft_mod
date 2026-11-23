@@ -11,6 +11,8 @@
     "mechanical:raw_otter",
     "mechanical:raw_snake",
     "mechanical:lizard_tail",
-    "mechanical:tortoise_meat"
+    "mechanical:tortoise_meat",
+    "mechanical:raw_water_vole",
+    "mechanical:pond_turtle_meat"
   ]
 }

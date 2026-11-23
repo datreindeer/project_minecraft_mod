@@ -591,6 +591,102 @@
               "count": 3
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:skylark_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "skylark",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:skylark_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "skylark",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:skylark_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "skylark",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lapwing_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "lapwing",
+              "eggs": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lapwing_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "lapwing",
+              "eggs": "2"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lapwing_egg",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:bird_nest",
+            "state": {
+              "bird": "lapwing",
+              "eggs": "3"
+            }
+          },
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
         }
       ]
     }
