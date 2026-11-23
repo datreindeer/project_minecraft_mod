@@ -86,7 +86,7 @@ public final class Wildlife {
 
     // night predators (Predator; spawning also in Predators)
     public static final DeferredHolder<EntityType<?>, EntityType<GreyWolf>> GREY_WOLF = ENTITY_TYPES.registerEntityType(
-            "grey_wolf", GreyWolf::new, MobCategory.CREATURE, b -> b.sized(0.6F, 0.85F).clientTrackingRange(10));
+            "grey_wolf", GreyWolf::new, MobCategory.CREATURE, b -> b.sized(0.7F, 1.1F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<CaveLion>> CAVE_LION = ENTITY_TYPES.registerEntityType(
             "cave_lion", CaveLion::new, MobCategory.CREATURE, b -> b.sized(1.1F, 1.3F).clientTrackingRange(10));
 
