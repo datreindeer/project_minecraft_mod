@@ -50,6 +50,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 
 - **Tortoise Shell**: + kniv → 2 Bowl; `PSP / PHP / P` (Planks, skalet, Scraped Hide) → **Shield**; + Twine + Gravel + Stick → **Shell Rattle**.
 - **Shell Rattle**: hållen i någon hand håller den rovdjur borta **som en fackla** (`mechanical:scares_predators`), utan eld.
+- Utseende: ett högt välvt skal som trappas upp från en utsvängd kantrad till en ås av upphöjda ryggsköldar; varje sköld har mörk fog, olivbruna tillväxtringar och ljus mitt, och skalet är gulbrunt till olivbrunt med en ljus bukplåt med mörka fogar. Fjällig rynkig skalle med hornnäbb på en läderartad hals, grova elefantlika framben med stora fjäll och klor, och en stubbsvans. Huvud, ben och svans dras in helt i skalet. Modell och skinn: `scripts/gen_owarm_reptiles_models.py` (WarmDryGeometry).
 
 ## Desert Lizard (ökenödla)
 
@@ -67,6 +68,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 
 - **Lizard Tail** steks till Cooked Lizard Tail (2 mat).
 - **Lizard Skin**: 3 → 1 Leather.
+- Utseende: låg platt kropp, kilformat huvud med käke, öga i en ljus ring och mörk öronöppning, utåtspretande ben med armbågarna ut och fötter med långa tår, och en lång avsmalnande svans i fyra leder. Sandfärgad med mörka tvärband, ljusa fläckar, ringad svans och ljus buk. Modell och skinn: `scripts/gen_owarm_reptiles_models.py`.
 
 ## Water Buffalo (vattenbuffel)
 
@@ -125,6 +127,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Bone | 1–2 | 60 % |
 
 - **Raw Leopard Pelt** + kniv + fett → **Leopard Pelt**. 2 Leopard Pelt + Bone → **Leopard Rug** (platt matta, Bear Rug-modellen); Leopard Pelt + kniv → 2 Leather.
+- Utseende: guldgul rygg som bleknar till gräddvit buk, med riktiga rosetter (mörka ringar brutna i 3–5 fläckar runt en lite mörkare mitt) på rygg och flanker och massiva fläckar på huvud, ben och buk. Runt huvud med kort nos, vita morrhårsdynor med prickar, grönbärnstensgula ögon och små runda öron med svart baksida och vit fläck. Den långa svansens fläckar övergår i ringar och slutar i en mörk spets. Modell och skinn: `scripts/gen_owarm_reptiles_models.py`; mattan och pälsen behåller sina föremålstexturer.
 
 ## Hornbill (hornfågel)
 

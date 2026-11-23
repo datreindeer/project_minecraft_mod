@@ -70,6 +70,28 @@ public final class OwarmShots {
         };
     }
 
+    /** Loads one int into the entity's saved data (e.g. the lizard's tail regrow timer). */
+    private static Consumer<Entity> nbtInt(String key, int value) {
+        return e -> {
+            net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+            tag.putInt(key, value);
+            e.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, e.level().registryAccess(), tag));
+        };
+    }
+
+    /** The tortoise withdrawn into its shell (the private hiding counter runs down by itself, so set it long). */
+    private static final Consumer<Entity> SHELL = e -> {
+        try {
+            var f = com.mechanical.wildlife.warm.Tortoise.class.getDeclaredField("HIDING");
+            f.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            var key = (net.minecraft.network.syncher.EntityDataAccessor<Integer>) f.get(null);
+            e.getEntityData().set(key, 100000);
+        } catch (ReflectiveOperationException ex) {
+            throw new IllegalStateException(ex);
+        }
+    };
+
     /** The peacock's fan held half-way through a display (the counter is private and runs down by itself). */
     private static final Consumer<Entity> FAN = e -> {
         try {
@@ -94,9 +116,16 @@ public final class OwarmShots {
                     synced(com.mechanical.wildlife.warm.WaterBuffalo.class, "WALLOWING")),
             new Subject("tapir", WarmFauna.TAPIR, false, 4.2, 2.4, false, null),
             new Subject("tapir_calf", WarmFauna.TAPIR, true, 2.6, 1.5, false, null),
-            new Subject("tortoise", WarmFauna.TORTOISE, false, 2.0, 1.5, false, null),
-            new Subject("desert_lizard", WarmFauna.DESERT_LIZARD, false, 1.6, 1.1, false, null),
-            new Subject("leopard", WarmFauna.LEOPARD, false, 3.8, 2.2, false, null),
+            new Subject("tortoise", WarmFauna.TORTOISE, false, 1.8, 1.5, false, null),
+            new Subject("tortoise_shell", WarmFauna.TORTOISE, false, 1.8, 1.5, false, SHELL),
+            new Subject("tortoise_baby", WarmFauna.TORTOISE, true, 1.2, 0.8, false, null),
+            new Subject("desert_lizard", WarmFauna.DESERT_LIZARD, false, 1.6, 1.0, false, null),
+            new Subject("desert_lizard_bask", WarmFauna.DESERT_LIZARD, false, 1.6, 1.0, false,
+                    synced(com.mechanical.wildlife.warm.DesertLizard.class, "BASKING")),
+            new Subject("desert_lizard_tailless", WarmFauna.DESERT_LIZARD, false, 1.6, 1.0, false, nbtInt("TailRegrow", 100000)),
+            new Subject("leopard", WarmFauna.LEOPARD, false, 3.8, 2.0, false, null),
+            new Subject("leopard_doze", WarmFauna.LEOPARD, false, 3.8, 2.0, false,
+                    synced(com.mechanical.wildlife.WildAnimal.class, "DOZING")),
             new Subject("hornbill", WarmFauna.HORNBILL, false, 2.2, 1.2, false, null),
             new Subject("jungle_fowl", WarmFauna.JUNGLE_FOWL, false, 1.9, 1.1, false, flag("rooster")),
             new Subject("jungle_fowl_hen", WarmFauna.JUNGLE_FOWL, false, 1.9, 1.1, false, null),

@@ -2,6 +2,8 @@
 (128x64, LeopardModel), plus their skinned (flesh) versions for butchered carcasses.
 
 Usage: python scripts/gen_fauna_warm_tex_dry.py   (also run by gen_fauna_warm_textures.py)
+Superseded for the entity skins: scripts/gen_owarm_reptiles_models.py now builds the three models (WarmDryGeometry) and
+repaints these six files after this script, so the tables below no longer match the game's cubes.
 Deterministic. TORTOISE / LIZARD / LEOPARD must match the cubes in the three models (texOffs, origin, size); every texel
 is painted from the 3D point it covers (wildlife_paint.py), so scutes, bands and rosettes line up across faces.
 Tortoise: gold-ochre carapace, every scute with an olive-brown areola, growth rings and a dark seam, darker blotches;
