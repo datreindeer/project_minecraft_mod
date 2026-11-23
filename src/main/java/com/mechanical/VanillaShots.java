@@ -67,11 +67,54 @@ public final class VanillaShots {
             live("chicken_warm", "chicken", "{variant:\"minecraft:warm\"}", false, 2.0, 1.2, null),
             live("chicken_cold", "chicken", "{variant:\"minecraft:cold\"}", false, 2.0, 1.2, null),
             live("chick", "chicken", "{variant:\"minecraft:temperate\"}", true, 1.4, 0.8, null),
+            live("pig_walk", "pig", "{variant:\"minecraft:temperate\"}", false, 4.0, 2.0, null),
+            s("rabbit_white", "rabbit", "{RabbitType:1}", 2.0, 1.0, null),
+            s("rabbit_black", "rabbit", "{RabbitType:2}", 2.0, 1.0, null),
+            s("rabbit_splotched", "rabbit", "{RabbitType:3}", 2.0, 1.0, null),
+            s("rabbit_gold", "rabbit", "{RabbitType:4}", 2.0, 1.0, null),
+            s("rabbit_salt", "rabbit", "{RabbitType:5}", 2.0, 1.0, null),
+            s("rabbit_killer", "rabbit", "{RabbitType:99}", 2.0, 1.0, null),
+            s("rabbit_toast", "rabbit", "{CustomName:\"Toast\"}", 2.0, 1.0, null),
+            s("rabbit_hop", "rabbit", "{}", 2.4, 1.0, null),
+            s("fox_snow", "fox", "{Type:\"snow\"}", 2.6, 1.4, null),
+            s("fox_walk", "fox", "{}", 2.6, 1.4, null),
+            s("fox_sit", "fox", "{Sitting:1b}", 2.6, 1.4, null),
+            s("fox_sleep", "fox", "{Sleeping:1b}", 2.6, 1.4, null),
+            s("fox_crouch", "fox", "{}", 2.6, 1.4, null),
+            s("fox_pounce", "fox", "{}", 2.6, 1.4, null),
+            s("fox_item", "fox", "{}", 2.6, 1.2, null),
+            s("wolf_black", "wolf", "{variant:\"minecraft:black\"}", 3.0, 2.0, null),
+            s("wolf_spotted", "wolf", "{variant:\"minecraft:spotted\"}", 3.0, 2.0, null),
+            s("wolf_striped", "wolf", "{variant:\"minecraft:striped\"}", 3.0, 2.0, null),
+            s("wolf_rusty", "wolf", "{variant:\"minecraft:rusty\"}", 3.0, 2.0, null),
+            s("wolf_chestnut", "wolf", "{variant:\"minecraft:chestnut\"}", 3.0, 2.0, null),
+            s("wolf_ashen", "wolf", "{variant:\"minecraft:ashen\"}", 3.0, 2.0, null),
+            s("wolf_snowy", "wolf", "{variant:\"minecraft:snowy\"}", 3.0, 2.0, null),
+            s("wolf_angry", "wolf", "{variant:\"minecraft:pale\",AngerTime:100000}", 3.0, 1.8, null),
+            s("wolf_tame", "wolf", "{variant:\"minecraft:pale\",CollarColor:14b}", 3.0, 1.8, null),
+            s("wolf_sit", "wolf", "{variant:\"minecraft:woods\",CollarColor:11b}", 3.0, 1.8, null),
+            s("wolf_walk", "wolf", "{variant:\"minecraft:pale\"}", 3.0, 1.8, null),
+            s("cat_black", "cat", "{variant:\"minecraft:black\"}", 2.2, 1.2, null),
+            s("cat_red", "cat", "{variant:\"minecraft:red\"}", 2.2, 1.2, null),
+            s("cat_siamese", "cat", "{variant:\"minecraft:siamese\"}", 2.2, 1.2, null),
+            s("cat_british", "cat", "{variant:\"minecraft:british_shorthair\"}", 2.2, 1.2, null),
+            s("cat_calico", "cat", "{variant:\"minecraft:calico\"}", 2.2, 1.2, null),
+            s("cat_persian", "cat", "{variant:\"minecraft:persian\"}", 2.2, 1.2, null),
+            s("cat_ragdoll", "cat", "{variant:\"minecraft:ragdoll\"}", 2.2, 1.2, null),
+            s("cat_white", "cat", "{variant:\"minecraft:white\"}", 2.2, 1.2, null),
+            s("cat_jellie", "cat", "{variant:\"minecraft:jellie\"}", 2.2, 1.2, null),
+            s("cat_all_black", "cat", "{variant:\"minecraft:all_black\"}", 2.2, 1.2, null),
+            s("cat_sit", "cat", "{variant:\"minecraft:tabby\",CollarColor:4b}", 2.2, 1.2, null),
+            s("cat_lie", "cat", "{variant:\"minecraft:calico\"}", 2.2, 1.2, null),
+            s("cat_walk", "cat", "{variant:\"minecraft:tabby\"}", 2.2, 1.2, null),
+            s("ocelot_walk", "ocelot", "{}", 2.6, 1.3, null),
+            s("camel_sit", "camel", "{}", 6.0, 3.5, null),
+            s("camel_walk", "camel", "{}", 6.0, 3.5, null),
             s("wolf", "wolf", "{variant:\"minecraft:pale\"}", 4.0, 2.0, "mechanical:grey_wolf"),
             s("wolf_woods", "wolf", "{variant:\"minecraft:woods\"}", 3.0, 2.0, null),
             s("cat", "cat", "{variant:\"minecraft:tabby\"}", 2.6, 1.2, "mechanical:wild_cat"),
             s("rabbit", "rabbit", "{}", 2.4, 1.0, "mechanical:hare"),
-            s("fox", "fox", "{}", 2.6, 1.4, null),
+            s("fox", "fox", "{}", 2.6, 1.4, "mechanical:arctic_fox"),
             s("spider", "spider", "{}", 3.5, 2.0, null),
             s("cave_spider", "cave_spider", "{}", 2.2, 1.2, null),
             s("bat", "bat", "{}", 1.6, 0.9, null),
@@ -85,11 +128,11 @@ public final class VanillaShots {
             s("stray", "stray", "{}", 3.0, 1.8, null),
             s("panda", "panda", "{}", 4.0, 2.2, null),
             s("parrot", "parrot", "{}", 1.6, 0.9, null),
-            s("ocelot", "ocelot", "{}", 2.6, 1.3, null),
+            s("ocelot", "ocelot", "{}", 3.0, 1.3, "mechanical:lynx"),
             s("turtle", "turtle", "{}", 2.6, 1.4, null),
             s("frog", "frog", "{}", 1.6, 0.8, null),
             s("armadillo", "armadillo", "{}", 1.8, 1.0, null),
-            s("camel", "camel", "{}", 6.0, 3.5, null),
+            s("camel", "camel", "{}", 7.0, 3.5, "mechanical:wild_camel"),
             s("goat", "goat", "{}", 3.0, 1.8, null),
             s("bee", "bee", "{}", 1.4, 0.8, null),
             s("squid", "squid", "{}", 3.0, 1.6, null),
@@ -141,6 +184,8 @@ public final class VanillaShots {
             if (mc.player == null || mc.getSingleplayerServer() == null) return;
             ticks++;
             MinecraftServer server = mc.getSingleplayerServer();
+            if (current != null && index < SUBJECTS.size() && SUBJECTS.get(index).name().endsWith("_walk") && mc.level != null
+                    && mc.level.getEntity(current.getId()) instanceof LivingEntity walker) walker.walkAnimation.update(0.9F, 1.0F, 1.0F);
             switch (stage) {
                 case 1 -> {
                     mc.options.pauseOnLostFocus = false;
@@ -180,6 +225,7 @@ public final class VanillaShots {
                     ticks = 0;
                 }
                 case 3 -> { // let it settle and the chunk render, then shoot
+                    if (ticks == 84 && SUBJECTS.get(index).name().endsWith("_hop") && current != null) server.execute(() -> current.level().broadcastEntityEvent(current, (byte) 1));
                     if (ticks < 90) return;
                     Subject s = SUBJECTS.get(index);
                     shot(mc, s.name());
@@ -263,6 +309,25 @@ public final class VanillaShots {
         return e;
     }
 
+    /** The pose a subject is shot in, from its name. */
+    private static void pose(String name, Entity e) {
+        if (e instanceof net.minecraft.world.entity.animal.fox.Fox fox) {
+            if (name.endsWith("_crouch")) fox.setIsCrouching(true);
+            if (name.endsWith("_pounce")) fox.setIsPouncing(true);
+            if (name.endsWith("_item")) fox.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SWEET_BERRIES));
+        }
+        if (e instanceof net.minecraft.world.entity.TamableAnimal pet && (name.endsWith("_tame") || name.endsWith("_sit"))) {
+            pet.setTame(true, false);
+            if (name.endsWith("_sit")) pet.setInSittingPose(true);
+        }
+        if (e instanceof net.minecraft.world.entity.animal.feline.Cat cat && name.endsWith("_lie")) {
+            cat.setTame(true, false);
+            cat.setLying(true);
+        }
+        if (e instanceof net.minecraft.world.entity.animal.camel.Camel camel && name.endsWith("_sit")) camel.sitDown();
+
+    }
+
     private static void place(Subject s) {
         ServerLevel level = player().level();
         if (current != null) current.discard();
@@ -272,6 +337,7 @@ public final class VanillaShots {
         Vec3 view = new Vec3(-0.55, 0, -0.75).normalize(), across = new Vec3(0.75, 0, -0.55).normalize();
         try {
             current = spawn(level, s.id(), s.nbt(), s.baby(), base, yaw);
+            if (current != null) pose(s.name(), current);
             if (s.compare() != null) beside = spawn(level, s.compare(), "{}", false, base.add(across.scale(s.distance() * 0.45)), yaw);
         } catch (Exception ex) {
             result.add(s.name() + " failed: " + ex);
