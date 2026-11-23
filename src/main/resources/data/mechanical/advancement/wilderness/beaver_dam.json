@@ -10,11 +10,28 @@
           }
         ]
       }
+    },
+    "stood_on": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:stepping_on": {
+              "block": {
+                "blocks": "mechanical:beaver_dam"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "requirements": [
     [
-      "has_0"
+      "has_0",
+      "stood_on"
     ]
   ],
   "display": {

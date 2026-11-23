@@ -15,6 +15,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.GenerationStep;
 
 /** Helpers for the small decorations (boulders, carvings, statues). Everything stays within 8 blocks of the origin. */
 final class Decor {
@@ -99,6 +100,18 @@ final class Decor {
         if (stone.is(Blocks.DIORITE) || stone.is(Blocks.CALCITE)) return Mechanical.LOOSE_DIORITE.get();
         if (stone.is(Blocks.ANDESITE) || stone.is(Blocks.TUFF)) return Mechanical.LOOSE_ANDESITE.get();
         return Mechanical.LOOSE_STONE.get();
+    }
+
+    /** No village, tribe village or other surface structure reaches into the chunk at pos (mineshafts and the like don't count). */
+    static boolean noStructure(WorldGenLevel level, BlockPos pos) {
+        return level.getChunk(pos).getAllReferences().keySet().stream().noneMatch(s -> s.step() == GenerationStep.Decoration.SURFACE_STRUCTURES);
+    }
+
+    // dev only: with a file decorlog.flag in the game directory, every placed nature decoration is logged (counting and finding them)
+    private static final boolean LOG_PLACED = java.nio.file.Files.exists(java.nio.file.Path.of("decorlog.flag"));
+
+    static void logPlaced(String what, BlockPos p) {
+        if (LOG_PLACED) Mechanical.LOGGER.info("decor {} at {} {} {}", what, p.getX(), p.getY(), p.getZ());
     }
 
     private static double sq(double v) {

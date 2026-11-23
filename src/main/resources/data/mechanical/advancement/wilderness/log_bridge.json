@@ -1,0 +1,69 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "log_bridge": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:all_of",
+          "terms": [
+            {
+              "type": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "minecraft:stepping_on": {
+                  "block": {
+                    "blocks": "#minecraft:logs"
+                  }
+                }
+              }
+            },
+            {
+              "type": "minecraft:any_of",
+              "terms": [
+                {
+                  "type": "minecraft:location_check",
+                  "offsetY": -2,
+                  "predicate": {
+                    "fluid": {
+                      "fluids": "#minecraft:water"
+                    }
+                  }
+                },
+                {
+                  "type": "minecraft:location_check",
+                  "offsetY": -3,
+                  "predicate": {
+                    "fluid": {
+                      "fluids": "#minecraft:water"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "log_bridge"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:oak_log"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.log_bridge.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.log_bridge.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

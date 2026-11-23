@@ -113,6 +113,16 @@ public class Beaver extends SemiAquatic {
         }
     }
 
+    /** A beaver born at a worldgen dam (worldgen.WaterDecor): its home, dam and lodge are built already, it only keeps them up. */
+    public void settle(BlockPos home, BlockPos damStart, Direction damDir, int damLength, BlockPos lodge) {
+        setHomeTo(home, HOME_RADIUS);
+        this.damStart = damStart;
+        this.damDir = damDir;
+        this.damLength = damLength;
+        this.lodge = lodge;
+        this.raised = true;
+    }
+
     static boolean griefing(ServerLevel level) {
         return level.getGameRules().get(GameRules.MOB_GRIEFING);
     }

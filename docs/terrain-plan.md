@@ -144,6 +144,13 @@ som redan finns får fler varianter och placeras oftare.
 Varje grupp får en advancement i Wilderness-fliken där den passar, till exempel *Gå över en stockbro*, *Stå på en topp
 över y 250* och *Hitta en bäverdamm*.
 
+**Byggt (fas 3, skog och vatten, v0.178.0):** `worldgen/ForestDecor` (Fallen Log i närmaste träds träslag, Snag och
+stubbar, Root Plate med grop, Mossy Stones) och `worldgen/WaterDecor` (Log Bridge, Beaver Dam med göl, hydda och bävrar,
+Driftwood, Gravel Bar, Reed Belt, Hillside Spring), placerade av `scripts/gen_nature_decor.py`, tätare i gammelskog. Allt
+utom bäverdammar och källor läggs även i gamla chunks (`Retrogen`). Advancement *Over the Creek*, och *Dam Builders* räknar
+nu att stå på dammen. Kaveldun saknas (inget block än), vass finns. Detaljer, täthet och hur fas 5 hittar fallna stockar:
+`docs/biomes.md`, "Små saker i skog och vid vatten". Bilder: `docs/shots/terrain/decor_*.png`.
+
 ## 4. En natur som förändras med tiden
 
 **Grundidé, naturens klocka:** världen räknar inte ticks i varje chunk. Varje chunk sparar i stället den dag den senast
