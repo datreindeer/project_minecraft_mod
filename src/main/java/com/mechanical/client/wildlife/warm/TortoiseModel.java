@@ -6,21 +6,18 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Tortoise: a high-domed carapace stepped up from the marginal rim in four tiers, a flat plastron underneath, a scaly head
- * on a long neck that reaches out of the shell, four stumpy elephantine legs and a tiny tail. Plods with one leg lifted at
+ * Tortoise: a high-domed carapace stepped up from a flared marginal rim in tiers to a ridge of raised vertebral scutes, a
+ * flat plastron underneath, a scaly beaked head on a leathery neck that reaches out of the shell, four stumpy elephantine
+ * legs with clawed feet and a stub tail. Plods with one leg lifted at
  * a time and the shell rocking; withdrawn ({@link WarmRenderState#shell}) head, neck, legs and tail slide into the shell
  * and it settles flat on the ground. Babies use this model scaled down.
- * Texture 128x64: textures/entity/wildlife/tortoise.png, painted by scripts/gen_fauna_warm_tex_dry.py whose TORTOISE
- * table mirrors the cubes below (keep them in sync).
+ * Parts, boxes and the 128x64 skin (textures/entity/wildlife/tortoise.png plus the skinned carcass skin) come from one table
+ * in scripts/gen_owarm_reptiles_models.py ({@link WarmDryGeometry}).
  */
 public class TortoiseModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "tortoise"), "main");
@@ -47,38 +44,7 @@ public class TortoiseModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create()
-                        .texOffs(0, 0).addBox(-5.0F, -0.5F, -6.5F, 10.0F, 1.0F, 13.0F)    // plastron
-                        .texOffs(0, 14).addBox(-6.0F, -3.0F, -7.5F, 12.0F, 3.0F, 15.0F)   // marginal rim
-                        .texOffs(0, 32).addBox(-5.5F, -5.0F, -7.0F, 11.0F, 2.0F, 14.0F)   // costal tier
-                        .texOffs(0, 48).addBox(-4.5F, -7.0F, -6.0F, 9.0F, 2.0F, 12.0F)    // upper dome
-                        .texOffs(54, 14).addBox(-3.0F, -8.0F, -4.5F, 6.0F, 1.0F, 9.0F),   // crown (vertebral scutes)
-                PartPose.offset(0.0F, 21.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(46, 0).addBox(-1.5F, -1.5F, -4.0F, 3.0F, 3.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -1.5F, -6.5F, NECK_LIFT, 0.0F, 0.0F));
-        neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(60, 0).addBox(-1.5F, -2.0F, -4.0F, 3.0F, 3.0F, 4.0F)
-                        .texOffs(74, 0).addBox(-1.0F, -1.5F, -5.0F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -0.5F, -4.0F, -NECK_LIFT, 0.0F, 0.0F));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(104, 0).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -1.0F, 6.5F, -0.5F, 0.0F, 0.0F));
-        for (float x : new float[] {-4.0F, 4.0F}) {
-            boolean left = x > 0;
-            // front legs splay out a little, hind legs stand like columns
-            root.addOrReplaceChild(left ? "left_front_leg" : "right_front_leg",
-                    CubeListBuilder.create().mirror(left).texOffs(80, 0).addBox(-1.5F, -0.5F, -1.5F, 3.0F, 4.0F, 3.0F),
-                    PartPose.offsetAndRotation(x, 20.5F, -4.5F, 0.0F, 0.0F, left ? -0.12F : 0.12F));
-            root.addOrReplaceChild(left ? "left_hind_leg" : "right_hind_leg",
-                    CubeListBuilder.create().mirror(left).texOffs(92, 0).addBox(-1.5F, -0.5F, -1.5F, 3.0F, 4.0F, 3.0F),
-                    PartPose.offset(x * 0.95F, 20.5F, 4.5F));
-        }
-        return LayerDefinition.create(mesh, 128, 64);
+        return WarmDryGeometry.tortoise();
     }
 
     @Override

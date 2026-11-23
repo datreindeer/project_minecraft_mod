@@ -70,7 +70,7 @@ public final class WarmFauna {
     public static final DeferredHolder<EntityType<?>, EntityType<TameOnager>> TAME_ONAGER = ENTITY_TYPES.registerEntityType(
             "tame_onager", TameOnager::new, MobCategory.CREATURE, b -> b.sized(1.1F, 1.45F).eyeHeight(1.3F).passengerAttachments(1.2F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<Tortoise>> TORTOISE = ENTITY_TYPES.registerEntityType(
-            "tortoise", Tortoise::new, MobCategory.CREATURE, b -> b.sized(0.8F, 0.55F).clientTrackingRange(8));
+            "tortoise", Tortoise::new, MobCategory.CREATURE, b -> b.sized(0.8F, 0.65F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<DesertLizard>> DESERT_LIZARD = ENTITY_TYPES.registerEntityType(
             "desert_lizard", DesertLizard::new, MobCategory.CREATURE, b -> b.sized(0.45F, 0.3F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<WaterBuffalo>> WATER_BUFFALO = ENTITY_TYPES.registerEntityType(

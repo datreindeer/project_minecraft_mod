@@ -6,22 +6,17 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Desert lizard (an agama): flat body, big blunt head with a throat pouch, sprawled legs (upper leg out to the side,
- * lower leg down to a flat long-toed foot) and a long whip tail in four tapering segments. Scurries with the sprawling
+ * Desert lizard (an agama): low flat body, wedge head with a jaw, ringed eye, ear opening and a throat pouch, sprawled legs
+ * (upper leg out to the side, lower leg down to a flat long-toed foot) and a long whip tail in four tapering segments. Scurries with the sprawling
  * lizard S-wave through body and tail, does push-up head bobs when idle; basking it lies pressed flat with the legs
  * splayed and the throat pulsing; a shed tail ({@link WarmRenderState#tailless}) leaves only the stub.
- * Babies use this model scaled down. Texture 64x32: textures/entity/wildlife/desert_lizard.png, painted by
- * scripts/gen_fauna_warm_tex_dry.py whose LIZARD table mirrors the cubes below (keep them in sync).
+ * Babies use this model scaled down. Parts, boxes and the 64x64 skin (textures/entity/wildlife/desert_lizard.png plus the
+ * skinned carcass skin) come from one table in scripts/gen_owarm_reptiles_models.py ({@link WarmDryGeometry}).
  */
 public class DesertLizardModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "desert_lizard"), "main");
@@ -49,42 +44,7 @@ public class DesertLizardModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -1.0F, -3.5F, 3.0F, 2.0F, 7.0F),
-                PartPose.offset(0.0F, 21.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(20, 0).addBox(-1.5F, -1.5F, -3.0F, 3.0F, 2.0F, 3.0F)
-                        .texOffs(32, 0).addBox(-1.0F, -1.0F, -5.0F, 2.0F, 1.0F, 2.0F),
-                PartPose.offset(0.0F, -0.3F, -3.5F));
-        head.addOrReplaceChild("throat", CubeListBuilder.create().texOffs(40, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 1.0F, 2.0F),
-                PartPose.offset(0.0F, 0.0F, -1.5F));
-        PartDefinition t0 = body.addOrReplaceChild("tail0", CubeListBuilder.create().texOffs(0, 9).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -0.2F, 3.5F, TAIL_REST[0], 0.0F, 0.0F));
-        PartDefinition t1 = t0.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(12, 9).addBox(-1.0F, -0.5F, 0.0F, 2.0F, 1.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 0.3F, 4.0F, TAIL_REST[1], 0.0F, 0.0F));
-        PartDefinition t2 = t1.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(24, 9).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, TAIL_REST[2], 0.0F, 0.0F));
-        t2.addOrReplaceChild("tail3", CubeListBuilder.create().texOffs(34, 9).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, TAIL_REST[3], 0.0F, 0.0F));
-        CubeDeformation plane = new CubeDeformation(0.001F); // flat feet with the toes cut out
-        for (float x : new float[] {-1.4F, 1.4F}) {
-            boolean left = x > 0;
-            for (boolean hind : new boolean[] {false, true}) {
-                int v = hind ? 21 : 15;
-                PartDefinition leg = body.addOrReplaceChild((left ? "left_" : "right_") + (hind ? "hind_leg" : "front_leg"),
-                        CubeListBuilder.create().mirror(left).texOffs(0, v).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                        PartPose.offsetAndRotation(x, 0.3F, hind ? 2.5F : -2.3F, 0.0F, 0.0F, left ? -SPRAWL : SPRAWL));
-                leg.addOrReplaceChild("lower",
-                        CubeListBuilder.create().mirror(left)
-                                .texOffs(4, v).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F)
-                                .texOffs(8, v).addBox(-1.0F, 1.98F, -2.5F, 2.0F, 0.0F, 3.0F, plane),
-                        PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, 0.0F, 0.0F, left ? SPRAWL : -SPRAWL));
-            }
-        }
-        return LayerDefinition.create(mesh, 64, 32);
+        return WarmDryGeometry.desertLizard();
     }
 
     private static ModelPart lower(ModelPart leg) {
