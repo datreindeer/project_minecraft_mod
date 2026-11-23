@@ -1,7 +1,7 @@
 {
   "wants": {
-    "id": "mechanical:oak_bark",
-    "count": 12
+    "id": "mechanical:copper_coin",
+    "count": 4
   },
   "gives": {
     "id": "mechanical:bark_basket"

@@ -23,6 +23,10 @@ public final class PeopleClient {
     @SubscribeEvent
     static void registerHandlers(RegisterClientPayloadHandlersEvent event) {
         event.register(TribeDialog.Open.TYPE, (payload, context) -> Minecraft.getInstance().gui.setScreen(new TribeDialogScreen(payload)));
+        event.register(com.mechanical.people.CaravanTrade.Open.TYPE, (payload, context) -> {
+            if (Minecraft.getInstance().gui.screen() instanceof CaravanTradeScreen s && s.entity() == payload.entity()) s.update(payload);
+            else Minecraft.getInstance().gui.setScreen(new CaravanTradeScreen(payload));
+        });
         event.register(com.mechanical.people.OakQuests.Open.TYPE, (payload, context) -> Minecraft.getInstance().gui.setScreen(new OakQuestScreen(payload)));
     }
 

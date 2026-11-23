@@ -240,6 +240,22 @@ class Look:
         self.barefoot = False
         self.fine = False              # well-made clothes: straight hems, not ragged (caravan traders and guards)
         self.gems = None               # gemstones set along the band, the headband and the necklace (list of colours)
+        self.armour = None             # metal armour over the tunic (caravan guards): see ARMOUR
+        self.cloak = None              # gear: a cloak down the back in this colour (caravan folk), instead of the role's
+        self.mantle = None             # gear: a fur mantle round the shoulders in this colour (caravan folk)
+        self.folds = False             # cloth hangs in folds (caravan folk): darker valleys, lit ridges
+        self.plaid = None              # top_mat "plaid": the two stripe colours (dark, light) over the top's colour
+        self.patches = None            # top_mat "patch": colours of the sewn-on patches
+        self.apron_mat = "weave"       # what the apron is: weave or hide (a leather work apron)
+        self.apron_to = 11             # the apron's hem (global row): past 11 it hangs down over the thighs
+        self.belt_bundles = None       # dried herb bundles tucked in the belt (colour)
+        self.freckles = False
+        self.scar = False
+        self.brow = None               # None, "heavy", "thin"
+        self.back_item = None          # gear: "axe" or "quiver" on the back (painted on the cloak box)
+        self.pack = None               # gear: "basket" carried on the back
+        self.hips = ()                 # gear: things hanging at the hips: "lantern", "satchel", "bundle"
+        self.cap = None                # gear: a padded cap (colour) over the hair
         self.s = None
 
     def contrast(self):
@@ -298,9 +314,31 @@ class Look:
         if kind == "cord":
             k = 1.12 if (x + y) % 2 == 0 else 0.84
             return self.tint(col, f * k)
+        if kind == "plaid":
+            # woven wool in a check: dark bands every 4 px both ways, darkest where they cross, a thin light line between
+            dark, light = self.plaid
+            bx, by = x % 4 == 0, y % 4 == 0
+            c = mix(col, dark, 0.66) if bx and by else mix(col, dark, 0.42) if bx or by else col
+            if x % 8 == 2 and not by:
+                c = mix(c, light, 0.3)  # a thin light thread through the check
+            return self.tint(c, f * (1.04 if (x + y) % 2 == 0 else 0.96) * (1 + s.n(key + ("pl",), 0.03)))
+        if kind == "patch":
+            # patchwork: a different cloth in each 3 x 3 square, stitched round
+            pal = self.patches
+            idx = (x // 3 * 7 + y // 3 * 3 + len(key[1])) % len(pal)
+            c = pal[idx]
+            g = 0.82 if x % 3 == 0 or y % 3 == 0 else 1.0
+            return self.tint(c, f * g * (1.05 if (x + y) % 2 == 0 else 0.95) * (1 + s.n(key + ("pa",), 0.04)))
         # hide/leather: soft mottling and the odd darker patch
         m = s.n(key + ("h",), 0.06) + (s.n(("patch",) + key[:2] + (x // 2, y // 3), 0.05))
         return self.tint(col, f * (1 + m))
+
+    def fold(self, c, face, x, Y):
+        """Cloth hanging in folds: a darker valley every third column below the chest, the column beside it lit."""
+        if not self.folds or face not in ("front", "back") or Y < 3:
+            return c
+        k = (x + (Y > 8)) % 3
+        return self.sh(c, 0.84) if k == 0 else self.sh(c, 1.08) if k == 1 else c
 
     def cloth(self, s, part, face, x, y, fw, fh, Y):
         key = (part, face, x, y)
@@ -370,14 +408,22 @@ class Look:
                 if self.top_kind == "tunic" and face == "front" and 1 <= Y <= 4 and x in (3, 4) and not self.necklace_at(x, Y):
                     # the laced neck opening: a dark slit crossed by a thong
                     c = self.tint(CORD, 1.0) if (x == 3) == (Y % 2 == 1) else self.sh(c, 0.7)
+            if self.armour and Y <= 10 and face != "bottom" and not (face == "front" and Y == 0 and 2 <= x <= 5):
+                c = self.armour_px(s, key, face, x, Y, 10)  # the armour coat over the tunic, the collar open at the neck
+            if c is not None and s.kind != "skin" and not self.armour:
+                c = self.fold(c, face, x, Y)
             if self.band and self.top is not None and Y == 5 and face in ("front", "back", "left", "right"):
                 c = self.material(s, self.band, "weave", key, x, y, face)  # dyed band across the coat
                 if self.gems and x % 3 == 1:
                     c = self.tint(self.gems[(x // 3 + len(face)) % len(self.gems)], side_shade(face))  # set with gemstones
             if self.skirt and Y >= 9:
                 c = self.material(s, self.skirt, self.skirt_mat, key, x, y, face)
-            if self.apron and face == "front" and 8 <= Y <= 11 and 1 <= x <= 6:
-                c = self.material(s, self.apron, "weave", key, x, y, face)
+            if self.apron and face == "front" and (8 if self.apron_to <= 11 else 4) <= Y <= 11 and 1 <= x <= 6:
+                c = self.material(s, self.apron, self.apron_mat, key, x, y, face)
+                if self.apron_to > 11 and Y == 4 and x in (1, 6):
+                    c = self.tint(LEATHER, 0.8)  # the bib's neck strap
+            if self.belt_bundles is not None and face == "front" and Y in (8, 9, 10) and x in (0, 7):
+                c = self.tint(self.belt_bundles, (1.0 if (x + Y) % 2 else 0.8) * (0.85 if Y == 8 else 1.0))  # dried herbs in the belt
             if self.strap and face in ("front", "back") and self.strap_hit(face, x, Y):
                 c = self.material(s, self.strap, "hide", key, x, y, face)
                 if (Y + x) % 3 == 0:
@@ -396,13 +442,27 @@ class Look:
                 c = self.tint(self.trim, side_shade(face))
             return c
         if leg:
+            inner = (x >= 1) if part == "rleg" else (x <= 2)
+            if self.apron and self.apron_to > 11 and face == "front" and Y <= self.apron_to and inner:
+                c = self.material(s, self.apron, self.apron_mat, key, x, y, face)  # a work apron down over the thighs
+                return self.sh(c, 0.8) if Y == self.apron_to else c
+            if self.armour and 12 <= Y <= 15 and face not in ("top", "bottom"):
+                a = self.armour  # tassets: hanging strips of plates, laced at the top, scalloped at the hem
+                if Y == 12:
+                    return self.tint(a["lace"], side_shade(face) * (1.0 if x % 2 else 0.85))
+                if Y == 15 and x % 2:
+                    c = self.material(s, self.top, self.top_mat, key, x, y, face) if self.top is not None else None
+                    if c is not None:
+                        return self.sh(c, 0.85)
+                strip = a["hi"] if x % 2 == 0 and Y == 13 else a["base"] if x % 2 == 0 else a["lo"]
+                return self.tint(strip, side_shade(face) * (1 + s.n(key + ("ar",), 0.05)) * (0.86 if Y == 15 else 1.0))
             if self.skirt and Y < self.skirt_to:
                 c = self.material(s, self.skirt, self.skirt_mat, key, x, y, face)
                 if Y == self.skirt_to - 1:
                     c = self.sh(c, 0.85) if self.fine else self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
                 return c
             if Y < self.skirt_to and self.top is not None and self.top_kind != "vest":
-                c = self.material(s, self.top, tm, key, x, y, face)
+                c = self.fold(self.material(s, self.top, tm, key, x, y, face), face, x, Y)
                 if Y == self.skirt_to - 1:
                     c = self.sh(c, 0.85) if self.fine else self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
                 return c
@@ -432,6 +492,33 @@ class Look:
     def necklace_at(self, x, Y):
         """Whether the necklace covers this front pixel of the body (it goes on the outer layer)."""
         return self.necklace is not None and self.neck_px(x, Y) is not None
+
+    def armour_px(self, s, key, face, x, Y, last):
+        """A pixel of the armour coat (rows 0..last of the body): overlapping scales, or lamellae laced in rows."""
+        a = self.armour
+        f = side_shade(face)
+        if face == "top":
+            return self.tint(a["base"], f * (1.08 if x % 2 else 0.96))
+        if a["style"] == "scale":
+            # rows of round-bottomed scales, each row a scale's width offset: lit at the top left, shadowed at the bottom right
+            # (3 pixels wide, 2 tall): lit along the top left, the lower row in the shade of the row below, dark at the right
+            row = Y // 2
+            pos = (x + row * 2) % 3
+            if Y % 2 == 0:
+                c = a["hi"] if pos == 0 else mix(a["base"], a["hi"], 0.25) if pos == 1 else a["base"]
+            else:
+                c = a["lo"] if pos == 2 else mix(a["base"], a["lo"], 0.4)
+        else:
+            # lamellar: narrow vertical plates in bands of three rows, a row of lacing between the bands
+            if Y % 3 == 2:
+                c = a["lace"] if (x + Y) % 2 else shade(a["lace"], 0.8)
+            else:
+                c = a["hi"] if x % 2 == 0 and Y % 3 == 0 else a["base"] if x % 2 == 0 else mix(a["base"], a["lo"], 0.55)
+        if Y == 0:
+            c = shade(a["lace"], 0.9)  # the leather edging at the shoulders
+        if Y == last:
+            c = shade(c, 0.78)  # the lower edge, in shadow
+        return self.tint(c, f * (1 + s.n(key + ("ar",), 0.06)))
 
     def strap_hit(self, face, x, Y):
         # from the right shoulder down to the left hip (front), mirrored on the back
@@ -511,6 +598,14 @@ class Look:
             if self.gems and x in (3, 4):
                 return self.gems[0] if x == 3 else shade(self.gems[0], 0.8)  # a stone on the brow
             return self.tint(self.headband, 1.0 if x % 3 else 0.82)
+        if self.brow == "heavy" and y == 3 and x in (0, 1, 2, 5, 6, 7):
+            return shade(self.hair, 0.8)
+        if self.brow == "thin" and y == 3 and x in (1, 6):
+            return shade(skin, 0.92)
+        if self.scar and x == 5 and y in (3, 5) or self.scar and x == 6 and y == 6:
+            return mix(skin, hexc("e8b8a8"), 0.55)  # an old scar across the cheek
+        if self.freckles and y in (5, 6) and x in (1, 2, 5, 6) and (x + y) % 2 == 0:
+            return shade(skin, 0.86)
         if y == 3 and x in (1, 2, 5, 6):  # brows
             return shade(self.hair, 1.15 if self.hair in (HAIR["white"], HAIR["grey"]) else 0.9)
         if y == 4:
@@ -605,6 +700,11 @@ class Look:
                 return self.material(s, self.trim, "cord", key, x, y, face) if x % 2 == 1 else None
             return None
         if arm:
+            if self.armour and Y <= 3 and face != "bottom":
+                # pauldrons: scales over the shoulder, a scalloped lower edge
+                if Y == 3 and x % 2:
+                    return None
+                return self.armour_px(s, key, face, x, Y + 1, 4)
             if self.fur_kind in ("cape", "shoulders") and Y <= 1 and face != "bottom":
                 c = self.material(s, self.fur, "fur", key, x, y, face)
                 return c if Y == 0 or face == "top" or x % 2 == 0 else None
@@ -969,6 +1069,150 @@ def caravan_person(role, i):
     return L
 
 
+# ---- Trader Caravan kinds (people/TraderKinds.java, scripts/gen_traders.py): each kind dresses its leader (role "trader",
+# an old man or woman), its animal handler and its guards in its own way; skins go in caravan/<kind>/<role>_<i>.png. The
+# guards wear metal armour painted on the skin (scales or lamellae, pauldrons on the sleeve layer, tassets on the thighs),
+# never leather, never a helmet; the tribe's colour (DYE) is on headbands, sashes and bands as for every tribe.
+ARMOUR = {
+    "bronze_scale": {"style": "scale", "base": hexc("a8743a"), "hi": hexc("e0b46c"), "lo": hexc("664020"), "lace": hexc("4a2e1a")},
+    "bronze_lamellar": {"style": "lamellar", "base": hexc("9c6c36"), "hi": hexc("d4a462"), "lo": hexc("5c3a1c"), "lace": hexc("3e2a1a")},
+    "iron_lamellar": {"style": "lamellar", "base": hexc("7a7e82"), "hi": hexc("b6babe"), "lo": hexc("46494c"), "lace": hexc("5a3822")},
+    "iron_scale": {"style": "scale", "base": hexc("6c7074"), "hi": hexc("aaaeb2"), "lo": hexc("3e4246"), "lace": hexc("4a3020")},
+    "gilded_scale": {"style": "scale", "base": hexc("b88a2c"), "hi": hexc("f4d47a"), "lo": hexc("6e4c14"), "lace": hexc("3a2440")},
+}
+MOSS, BARK_BROWN, SOOT_GREY, ROYAL, PLUM, SAND, SAGE, HERB_GREEN, WHEAT = (hexc("4e6a32"), hexc("6a4e30"), hexc("5c5a56"),
+    hexc("2c3c8a"), hexc("5a2a5e"), hexc("c8b088"), hexc("8a9a6a"), hexc("5a7a3a"), hexc("c8a860"))
+CARAVAN_KINDS = ["woodsman", "mining", "jewelry", "hunting", "herbs", "foraging"]
+CARAVAN_KIND_ROLES = ["trader", "handler", "guard"]
+
+
+def kind_person(kind, role, i):
+    """A caravan member of {kind}: 0, 2 men, 1, 3 women. No tribe colour: each kind has its own colours and its own
+    silhouette, read from afar (docs/traders-plan.md C). The leader is old and robed, the handler dressed for the road,
+    the guards in armour over the kind's cloth with the kind's gear."""
+    r = random.Random(f"{kind}-{role}-{i}")
+    woman = i % 2 == 1
+    L = Look(r, woman, role)
+    L.fine = True
+    L.folds = True
+    L.wraps = None
+    L.headband = None
+    L.eyes = EYES[pick(r, ["brown", "dark", "blue", "green", "grey"])]
+    L.skin = SKIN[pick(r, ["light", "tan", "olive", "pale", "brown", "dark"])]
+    L.freckles = r.random() < 0.3
+    L.scar = role == "guard" and r.random() < 0.5
+    L.brow = pick(r, [None, "heavy", "thin", None])
+    leader, handler, guard = role == "trader", role == "handler", role == "guard"
+    if leader:
+        L.hair = HAIR[pick(r, ["grey", "white", "grey"])]
+        L.wrinkles = True
+        L.hair_style = pick(r, ["long", "bun", "braids"]) if woman else pick(r, ["bald_top", "short", "long"])
+        L.beard = None if woman else pick(r, ["long", "full", "long"])
+        L.top_kind, L.sleeves, L.skirt_to = "robe", 12, 21
+        L.legs, L.boots, L.belt = None, LEATHER, LEATHER
+    else:
+        L.hair = HAIR[pick(r, ["black", "darkbrown", "brown", "auburn", "blond"])]
+        L.hair_style = pick(r, ["braids", "bun", "long"]) if woman else pick(r, ["short", "shaggy", "short", "long"])
+        L.beard = None if woman else pick(r, ["stubble", "short", "full", None])
+        L.top_kind, L.sleeves, L.skirt_to = "tunic", 4 if guard else 12, 14
+        L.legs, L.legs_to, L.boots, L.belt = LEATHER, 22, LEATHER, LEATHER
+        if guard:
+            L.bracers = LEATHER
+    if kind == "woodsman":  # timber folk: red-and-green plaid wool, a leather apron, an axe across the back
+        L.top, L.top_mat = pick(r, [hexc("9a3a2a"), hexc("3e5a2e")]), "plaid"
+        L.plaid = (hexc("1e2a1a"), hexc("c8b890"))
+        L.legs = hexc("5a4630") if L.legs else None
+        if leader:
+            L.top = hexc("6a4a2e")  # a long brown wool coat over the plaid sleeves
+            L.top_mat = "weave"
+            L.fur, L.fur_kind, L.mantle = FUR_BROWN, "collar", None
+            L.apron, L.apron_mat, L.apron_to = LEATHER, "hide", 16
+        elif handler:
+            L.apron, L.apron_mat, L.apron_to = LEATHER, "hide", 17
+            L.bracers = HIDE
+            L.back_item = "axe"
+        else:
+            L.armour, L.cloak = ARMOUR["bronze_scale"], None
+            L.back_item = "axe"
+    elif kind == "mining":  # miners: sooty leather aprons, padded caps, a lantern at the belt, iron lamellae
+        L.top, L.top_mat = SOOT_GREY, "hide"
+        L.paint = (CHARCOAL, "dots")
+        L.skin = shade(L.skin, 0.9)
+        L.cap = pick(r, [hexc("6a5a46"), hexc("4e463c")])
+        L.hips = ("lantern",)
+        if leader:
+            L.apron, L.apron_mat, L.apron_to = hexc("2e2620"), "hide", 18
+            L.necklace = "amber"
+        elif handler:
+            L.apron, L.apron_mat, L.apron_to = hexc("2e2620"), "hide", 17
+            L.pouch = LEATHER
+        else:
+            L.armour, L.cloak = ARMOUR["iron_lamellar"], hexc("3e3a36")
+    elif kind == "jewelry":  # from the desert: fine dyed robes with gold trim and gemstones, turbans, gilded scales
+        L.skin = SKIN[pick(r, ["olive", "brown", "tan", "dark"])]
+        if not leader:
+            L.hair = HAIR[pick(r, ["black", "darkbrown"])]
+        robe = pick(r, [ROYAL, PLUM, hexc("8a1e2e")])
+        L.top, L.top_mat = robe, "weave"
+        L.band, L.trim = GOLD, GOLD
+        L.gems = [GEMS[(i + k) % len(GEMS)] for k in range(3)]
+        L.headwrap = pick(r, [SAND, hexc("e8dcc0"), GOLD])
+        L.belt = GOLD
+        if leader:
+            L.necklace = "gems"  # fine gem-studded clothes
+        elif handler:
+            L.top_kind, L.skirt_to = "robe", 18
+            L.legs, L.boots, L.wraps, L.legs_to = LINEN, None, CORD, 20  # sandals
+            L.necklace = "gems"
+        else:
+            L.armour, L.cloak = ARMOUR["gilded_scale"], hexc("8a1e2e")
+            L.band, L.gems = None, None
+    elif kind == "hunting":  # hunters: fur-trimmed hoods and capes, a quiver, ochre stripes
+        L.top, L.top_mat = HIDE_DARK, "hide"
+        L.paint = (OCHRE, "stripes")
+        L.hood, L.hood_trim = pick(r, [HIDE_DARK, FUR_BROWN]), pick(r, [FUR_WHITE, FUR_GREY])
+        L.mantle = pick(r, [FUR_GREY, FUR_BROWN, FUR_RED])
+        L.cloak = pick(r, [HIDE_DARK, LEATHER, HIDE_RED])
+        L.back_item = "quiver"
+        if leader:
+            L.top, L.top_mat = FUR_BROWN, "fur"
+            L.necklace = "teeth"
+            L.back_item = None  # his staff, not a bow
+        elif handler:
+            L.necklace = "teeth"
+        else:
+            L.armour = ARMOUR["bronze_lamellar"]
+    elif kind == "herbs":  # herb folk: green or ochre robes, satchels with herbs sticking out, dried bundles in the belt
+        L.top, L.top_mat = pick(r, [HERB_GREEN, hexc("b0862e")]), "weave"
+        L.top_kind, L.skirt_to = "robe", 19 if not leader else 21
+        L.trim = pick(r, [STRAW, LINEN])
+        L.belt = BARK
+        L.belt_bundles = hexc("8a8a4a")
+        L.hips = ("satchel", "bundle")
+        L.necklace = "amber" if leader else None
+        L.legs = HIDE_LIGHT if L.legs else None
+        if guard:
+            L.armour, L.cloak = ARMOUR["bronze_scale"], HERB_GREEN
+            L.top_kind, L.skirt_to = "tunic", 14
+            L.belt_bundles = None
+    else:  # foraging (and any kind without a look of its own): earthy patchwork, a woven basket on the back
+        L.top, L.top_mat = hexc("8a6a46"), "patch"
+        L.patches = [hexc("8a6a46"), hexc("6a5a3a"), hexc("a08a5a"), hexc("5e4a32"), hexc("7a7046")]
+        L.belt = CORD
+        L.pouch = BARK
+        if leader:
+            L.pack = "basket"
+            L.necklace = "shell"
+        elif handler:
+            L.pack = "basket"
+        else:
+            L.armour, L.cloak = ARMOUR["iron_scale"], hexc("6a5a3a")
+            L.top_mat = "hide"
+    if guard:
+        L.band = None  # the armour covers the coat
+    return L
+
+
 MINER_SKINS = [0, 2]
 
 
@@ -1026,7 +1270,9 @@ GEAR_BOXES = {
     "topknot": (0, 16, 3, 3, 3), "beard": (12, 16, 6, 5, 1), "braid_r": (26, 16, 1, 9, 1), "braid_l": (30, 16, 1, 9, 1),
     "crest_l": (34, 16, 1, 6, 1), "crest_m": (38, 16, 1, 8, 1), "crest_r": (42, 16, 1, 6, 1), "feather": (46, 16, 1, 5, 1),
     "mantle": (0, 32, 12, 4, 6), "cloak": (36, 32, 9, 13, 1), "neck": (0, 48, 8, 5, 1),
+    "pack": (22, 48, 6, 7, 4), "hip_a": (44, 48, 2, 3, 2), "hip_b": (52, 48, 2, 3, 2),
 }
+IRON, LANTERN_GLOW, HERB_GREENS = hexc("4a4a4e"), hexc("ffd56a"), [hexc("5a8a3a"), hexc("7aa04a"), hexc("8a9a4a")]
 
 
 class Gear:
@@ -1135,8 +1381,10 @@ def gear(L, zone, seed):
     elif L.feather:
         g.fill("feather", lambda face, x, y, fw, fh: hexc("3a3030") if y == 0 else (hexc("f0ece2") if y < fh - 1 else BONE))
     # ---- a fur mantle round the shoulders: everyone in the cold, the elders everywhere but the hot lands
-    mantle = None
-    if cold:
+    mantle = L.mantle
+    if mantle is not None:
+        pass
+    elif cold:
         mantle = L.fur if L.fur and L.fur not in FEATHERS else pick(g.r, [FUR_WHITE, FUR_GREY, FUR_BROWN, FUR_RED])
     elif L.role == "elder" and not warm and not jungle:
         mantle = L.fur or FUR_GREY
@@ -1151,8 +1399,10 @@ def gear(L, zone, seed):
             return g.fur(mantle, face, x, y, 11)
         g.fill("mantle", mant)
     # ---- a hide cloak down the back: hunters (temperate) and guards; a linen one in the warm lands for elders
-    cloak = None
-    if L.role in ("hunter", "guard") and zone == "temperate":
+    cloak = L.cloak
+    if cloak is not None:
+        pass
+    elif L.role in ("hunter", "guard") and zone == "temperate":
         cloak = pick(g.r, [HIDE_DARK, HIDE_GREY, LEATHER, HIDE_RED])
     elif warm and L.role == "elder":
         cloak = LINEN
@@ -1197,7 +1447,84 @@ def gear(L, zone, seed):
                 return shade(AMBER, 0.8)
             return None
         g.fill("neck", neck)
+    caravan_gear(g, L)
     return g.img if g.used else None
+
+
+def caravan_gear(g, L):
+    """What caravan folk carry that shows from afar: an axe or a quiver on the back, a basket on the back, a padded cap,
+    things at the hips (a lantern, a satchel with herbs sticking out, a dried bundle)."""
+    if L.cap is not None:
+        cap = L.cap
+
+        def capf(face, x, y, fw, fh):
+            if face == "bottom":
+                return None
+            if face == "top":
+                return shade(cap, 1.08 if (x + y) % 3 else 0.86)  # quilted: stitched in a diamond
+            if y <= 2:
+                return shade(cap, side_shade(face) * (0.8 if y == 2 else 1.0 if (x + y) % 3 else 0.88))
+            return None
+        g.fill("hood", capf)
+    if L.back_item == "axe":
+        def axe(face, x, y, fw, fh):
+            if face not in ("back", "front"):
+                return None
+            fx = x if face == "back" else fw - 1 - x
+            if fx == fw - 2 - (y * (fw - 3)) // (fh - 1) and y >= 2:
+                return shade(WOOD_HAFT, 1.0 if y % 2 else 0.85)  # the haft, slung across the back
+            if y <= 3 and fw - 4 <= fx <= fw - 1:
+                return hexc("a8acb0") if y in (0, 3) or fx == fw - 1 else hexc("7a7e82")  # the bit, up by the shoulder
+            return None
+        g.fill("cloak", axe)
+    if L.back_item == "quiver":
+        def quiver(face, x, y, fw, fh):
+            if face not in ("back", "front", "right", "left") or face in ("right", "left") and y > 9:
+                return None
+            fx = x if face != "front" else fw - 1 - x
+            if face in ("back", "front") and fx in (1, 2, 3) and y <= 10:
+                if y <= 1:
+                    return [hexc("e8e2d0"), OCHRE, hexc("3a3430")][fx - 1]  # fletching
+                return shade(LEATHER, 0.85 if fx == 3 else 1.0) if y % 4 else shade(BONE, 0.9)  # the case, bone bands
+            return None
+        g.fill("cloak", quiver)
+    if L.pack == "basket":
+        def basket(face, x, y, fw, fh):
+            if face == "top":
+                if x in (0, fw - 1) or y in (0, fh - 1):
+                    return shade(STRAW, 0.9)  # the rim
+                return [hexc("b0302a"), hexc("3a4a8a"), hexc("a07850"), hexc("6a8a3a")][(x * 3 + y) % 4]  # berries, nuts, greens
+            k = 1.12 if (x + y) % 2 == 0 else 0.84
+            if y == 0:
+                k *= 1.1  # the rim
+            return shade(STRAW if face != "front" else BARK, side_shade(face) * k)
+        g.fill("pack", basket)
+    for box, what in zip(("hip_a", "hip_b"), L.hips):
+        if what == "lantern":
+            def lantern(face, x, y, fw, fh):
+                if face in ("top", "bottom"):
+                    return IRON
+                return IRON if y == 0 or y == fh - 1 or x in (0, fw - 1) and fw > 1 and y == 1 else LANTERN_GLOW
+            g.fill(box, lantern)
+        elif what == "satchel":
+            def satchel(face, x, y, fw, fh):
+                if face == "top":
+                    return HERB_GREENS[(x + y) % 3]  # herbs sticking out
+                if y == 0:
+                    return HERB_GREENS[x % 3] if (x + len(face)) % 2 else shade(LEATHER, 1.1)
+                return shade(hexc("7a5434"), side_shade(face) * (0.85 if y == fh - 1 else 1.0))
+            g.fill(box, satchel)
+        elif what == "bundle":
+            def bundle(face, x, y, fw, fh):
+                if face == "bottom":
+                    return None
+                if y == 0 or face == "top":
+                    return CORD
+                return shade(hexc("8a8a4a") if (x + y) % 2 else hexc("6a6a3a"), side_shade(face))  # dried stalks
+            g.fill(box, bundle)
+
+
+WOOD_HAFT = hexc("7a5434")
 
 
 DYE_STAND = hexc("b04a30")  # a crest feather in the tribe's colour (gear is not dyed in game: a fixed red)
@@ -1237,6 +1564,19 @@ def build():
             sk.mask.save(OUT / f"{role}_{i}_tint.png")
             save_gear(L, "temperate", f"gear{role}{i}", OUT / f"{role}_{i}_gear.png")
             made[("caravan", role, i)] = (img, sk.mask, L.woman)
+    for kind in CARAVAN_KINDS:
+        out = OUT / "caravan" / kind
+        out.mkdir(parents=True, exist_ok=True)
+        for role in CARAVAN_KIND_ROLES:
+            for i in range(4):
+                L = kind_person(kind, role, i)
+                sk = Skin(f"{kind}{role}{i}", L.woman)
+                img = sk.build(L)
+                assert sk.mask.getbbox() is None, f"caravan/{kind}/{role}_{i}: caravans wear their kind's colours, not the tribe's"
+                img.save(out / f"{role}_{i}.png")
+                (out / f"{role}_{i}_tint.png").unlink(missing_ok=True)
+                save_gear(L, "temperate", f"gear{kind}{role}{i}", out / f"{role}_{i}_gear.png")
+                made[("caravan_" + kind, role, i)] = (img, sk.mask, L.woman)
     for i in MINER_SKINS:
         L = miner_person(i)
         sk = Skin(f"miner{i}", L.woman)
@@ -1296,6 +1636,16 @@ def preview(made, out_dir):
             v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
             sheet.alpha_composite(v, (((n * 2 + k) * 18 + 1) * scale, scale))
     sheet.save(out_dir / "tribe_sheet_miner.png")
+    for kind in CARAVAN_KINDS:
+        sheet = Image.new("RGBA", (cols * 18 * scale, len(CARAVAN_KIND_ROLES) * 34 * scale), (70, 90, 70, 255))
+        for row, role in enumerate(CARAVAN_KIND_ROLES):
+            for i in range(4):
+                img, mask, slim = made[("caravan_" + kind, role, i)]
+                img = dyed(img, mask, PREVIEW_DYES[(row + i) % len(PREVIEW_DYES)])
+                for k, back in enumerate((False, True)):
+                    v = flat_view(img, slim, back).resize((16 * scale, 32 * scale), Image.NEAREST)
+                    sheet.alpha_composite(v, (((i * 2 + k) * 18 + 1) * scale, (row * 34 + 1) * scale))
+        sheet.save(out_dir / f"tribe_sheet_caravan_{kind}.png")
 
 
 if __name__ == "__main__":

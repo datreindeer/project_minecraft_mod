@@ -562,46 +562,53 @@ använder villkoret `mechanical:bronze_crucible` (`client/BronzeCrucibleProperty
 `RegisterConditionalItemModelPropertyEvent`) som läser degelns innehåll; texturerna `molten_crucible_bronze` och
 `solid_crucible_bronze` ritas av `gen_crucible_textures.py`.
 
-### Byar: handelsnivå 3 och 4
+### Byar: handelsnivå 3, 4 och 5
 
-Nivå 1–2 är stenålderns (`gen_data.py`), nivå 3–4 bronsålderns (`gen_bronze.py`), nivå 5 är tom tills järnet. Inget av
-järn, guld eller diamant. Formatet: köper = vad byborna tar emot, säljer = vad de ger. Max = hur många gånger innan den
-måste fyllas på.
+Nivå 1–2 är stenålderns (`gen_data.py`), nivå 3–4 bronsålderns och nivå 5 (Master) järnålderns (`gen_bronze.py`). Allt
+är **mynt mot vara** ([traders-plan.md](../traders-plan.md) A): **Copper Coin** för billiga saker, **Silver Coin**
+(= 10 koppar) för lite dyrare, **Gold Coin** (= 10 silver) för värdefulla. Formatet: köper = vad byborna tar emot (och
+betalar för), säljer = vad de ger. Max = hur många gånger innan den måste fyllas på.
 
-| Yrke | Nivå | Köper (→ 4 Copper Coin) | Säljer |
+| Yrke | Nivå | Köper | Säljer |
 |---|---|---|---|
-| Armorer | 3 | 3 Bronze Ingot | 36 Coin → Bronze Helmet (max 3) |
-|  | 4 | 6 Copper Ingot | 48 Coin → Bronze Greaves (max 3) |
-| Butcher | 3 | 8 Tallow | 4 Coin → 3 Smoked Meat |
-|  | 4 | 3 Bear Fat | 8 Coin → 4 Jerky |
-| Cartographer | 3 | 8 Black Pigment | 8 Coin → Item Frame |
-|  | 4 | 8 Yellow Pigment | 12 Coin → Painting |
-| Cleric | 3 | 6 White Pigment | 4 Coin → 4 Red Pigment |
-|  | 4 | 6 Honeycomb | 4 Coin → 4 Dried Mushrooms |
-| Farmer | 3 | 20 Barley Grain | 4 Coin → 4 Flour, 8 Coin → 4 Flax Seeds |
-|  | 4 | 20 Emmer Grain | 8 Coin → 6 Dried Berries |
-| Fisherman | 3 | 4 Whole Tropical Fish | 8 Coin → 4 Smoked Fish |
-|  | 4 | 3 Whole Pufferfish | 8 Coin → 4 Dried Fish |
-| Fletcher | 3 | 24 Feather | 8 Coin → 8 Bone Arrow |
-|  | 4 | 8 Sinew | 24 Coin → Sinew Bow |
-| Leatherworker | 3 | 4 Scraped Hide | 24 Coin → Leather Satchel |
-|  | 4 | 2 Wolf Pelt | 20 Coin → Leather Leggings |
-| Librarian | 3 | 4 Book | 24 Coin → Bookshelf |
-|  | 4 | 2 Book and Quill | 32 Coin → Name Tag |
-| Mason | 3 | 20 Andesite Rock | 4 Coin → 4 Bricks |
-|  | 4 | 12 Terracotta | 8 Coin → Clay Bucket |
-| Shepherd | 3 | 12 Red Dye | 12 Coin → White Bed |
-|  | 4 | 12 Yellow Dye | 4 Coin → 3 Red Wool |
-| Toolsmith | 3 | 6 Crushed Tin Ore | 28 Coin → Bronze Pickaxe (max 3), 20 Coin → Bronze Saw (max 3) |
-|  | 4 | 8 Copper Concentrate | 12 Coin → 2 Tin Concentrate, 24 Coin → Bronze Axe (max 3) |
-| Weaponsmith | 3 | 3 Bronze Ingot | 20 Coin → Bronze Knife (max 3) |
-|  | 4 | 12 Crushed Copper Ore | 32 Coin → Bronze Spear (max 3), 36 Coin → Bronze Sword (max 3) |
+| Armorer | 3 | 3 Bronze Ingot → 4 Copper | 4 Silver → Bronze Helmet (max 3) |
+|  | 4 | 6 Copper Ingot → 4 Copper | 5 Silver → Bronze Greaves (max 3) |
+| Butcher | 3 | 8 Tallow → 4 Copper | 4 Copper → 3 Smoked Meat |
+|  | 4 | 3 Bear Fat → 4 Copper | 8 Copper → 4 Jerky |
+| Cartographer | 3 | 8 Black Pigment → 4 Copper | 8 Copper → Item Frame |
+|  | 4 | 8 Yellow Pigment → 4 Copper | 1 Silver → Painting |
+| Cleric | 3 | 6 White Pigment → 4 Copper | 4 Copper → 4 Red Pigment |
+|  | 4 | 6 Honeycomb → 4 Copper | 4 Copper → 4 Dried Mushrooms |
+|  | 5 | 8 Glowstone Dust → 2 Silver | 1 Gold → Ender Pearl (max 4) |
+| Farmer | 3 | 20 Barley Grain → 4 Copper | 4 Copper → 4 Flour, 8 Copper → 4 Flax Seeds |
+|  | 4 | 20 Emmer Grain → 4 Copper | 8 Copper → 6 Dried Berries |
+| Fisherman | 3 | 4 Whole Tropical Fish → 4 Copper | 8 Copper → 4 Smoked Fish |
+|  | 4 | 3 Whole Pufferfish → 4 Copper | 8 Copper → 4 Dried Fish |
+| Fletcher | 3 | 24 Feather → 4 Copper | 8 Copper → 8 Bone Arrow |
+|  | 4 | 8 Sinew → 4 Copper | 2 Silver → Sinew Bow |
+| Leatherworker | 3 | 4 Scraped Hide → 4 Copper | 2 Silver → Leather Satchel |
+|  | 4 | 2 Wolf Pelt → 4 Copper | 2 Silver → Leather Leggings |
+|  | 5 | 4 Wolf Pelt → 3 Silver | 1 Gold → 2 Hide Saddle Blanket |
+| Librarian | 3 | 4 Book → 4 Copper | 2 Silver → Bookshelf |
+|  | 4 | 2 Book and Quill → 4 Copper | 3 Silver → Name Tag |
+|  | 5 | 4 Book and Quill → 3 Silver | 1 Gold → Cloth Bed |
+| Mason | 3 | 20 Andesite Rock → 4 Copper | 4 Copper → 4 Bricks |
+|  | 4 | 12 Terracotta → 4 Copper | 8 Copper → Clay Bucket |
+| Shepherd | 3 | 12 Red Dye → 4 Copper | 1 Silver → White Bed |
+|  | 4 | 12 Yellow Dye → 4 Copper | 4 Copper → 3 Red Wool |
+|  | 5 | 4 Linen Cloth → 2 Silver | 1 Gold → 4 Silk Thread |
+| Toolsmith | 3 | 6 Crushed Tin Ore → 4 Copper | 3 Silver → Bronze Pickaxe (max 3), 2 Silver → Bronze Saw (max 3) |
+|  | 4 | 8 Copper Concentrate → 4 Copper | 1 Silver → 2 Tin Concentrate, 2 Silver → Bronze Axe (max 3) |
+|  | 5 | 4 Wrought Iron Ingot → 3 Silver | 2 Gold → Steel Pickaxe (max 3), 1 Gold → Steel Saw (max 3) |
+| Weaponsmith | 3 | 3 Bronze Ingot → 4 Copper | 2 Silver → Bronze Knife (max 3) |
+|  | 4 | 12 Crushed Copper Ore → 4 Copper | 3 Silver → Bronze Spear (max 3), 4 Silver → Bronze Sword (max 3) |
+|  | 5 | 2 Steel Ingot → 4 Silver | 2 Gold → Steel Spear (max 3) |
 
 - **Myntens ikon växer med stacken** som Firewood: 1–6, 7–16, 17–32, 33–46 och 47–64 mynt ger fem bilder
   (ett mynt upp till tre staplar; texturer från `scripts/gen_coin_textures.py`, modeller från `gen_bronze.py`).
-- **Pengarna är Copper Coin** (ersätter vanillas Emerald, ungefär 1 Emerald = 4 Copper Coin). Byborna betalar med mynt
-  när de köper och tar mynt när de säljer. Mynt präglas på Bronze Anvil (se Prägla mynt nedan).
-- Priser: ett bronsverktyg 20–48 Copper Coin, en Bronze Ingot drygt 1, mat och råvaror 4–12. Köpen ger 20 xp (nivå 3)
+- **Pengarna är mynt** (ersätter vanillas Emerald). Byborna betalar med mynt när de köper och tar mynt när de säljer.
+  Mynt präglas på Bronze Anvil (se Prägla mynt nedan).
+- Priser: ett bronsverktyg 2–5 Silver Coin, en Bronze Ingot drygt 1 Copper, mat och råvaror 4–9 Copper. Köpen ger 20 xp (nivå 3)
   och 30 xp (nivå 4), säljen 10 / 15; max 12–16 för köp, 3 för bronsverktyg och rustning.
 - Toolsmiths Tin Concentrate är en väg till tenn för den som saknar tennådror (dyrt: 12 Copper Coin för 4 enheter).
 - Lerkärl (pottery) läggs till här när det finns.

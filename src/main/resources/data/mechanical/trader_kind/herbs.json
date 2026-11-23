@@ -1,0 +1,120 @@
+{
+  "animal": "horse",
+  "cargo": [
+    "minecraft:decorated_pot",
+    "minecraft:poppy",
+    "minecraft:decorated_pot",
+    "minecraft:cornflower",
+    "minecraft:dandelion",
+    "minecraft:allium",
+    "mechanical:bark_basket",
+    "mechanical:juniper_berries",
+    "mechanical:dried_mushrooms",
+    "mechanical:wild_honey",
+    "mechanical:bark_basket",
+    "mechanical:elderberries"
+  ],
+  "purse": [
+    150,
+    260
+  ],
+  "sells": [
+    {
+      "item": "mechanical:marmot_salve",
+      "price": 10,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:night_eye_salve",
+      "price": 20,
+      "stock": 1
+    },
+    {
+      "item": "mechanical:castoreum_salve",
+      "price": 10,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:snakebite_poultice",
+      "price": 8,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:juniper_berries",
+      "price": 4,
+      "count": 6
+    },
+    {
+      "item": "mechanical:pine_resin",
+      "price": 5,
+      "count": 4,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:dried_mushrooms",
+      "price": 4,
+      "count": 4
+    },
+    {
+      "item": "mechanical:wild_honey",
+      "price": 6,
+      "count": 2,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:nettle_seeds",
+      "price": 4,
+      "count": 4
+    },
+    {
+      "item": "mechanical:flax_seeds",
+      "price": 8,
+      "count": 4,
+      "stock": 3,
+      "age": 1
+    },
+    {
+      "item": "minecraft:potato",
+      "price": 20,
+      "count": 3,
+      "stock": 1,
+      "rare": true
+    },
+    {
+      "item": "mechanical:morel",
+      "price": 10,
+      "count": 4,
+      "stock": 2,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "mechanical:morel",
+      "price": 3,
+      "count": 2,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:oyster_mushroom",
+      "price": 3,
+      "count": 4,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:castoreum",
+      "price": 6,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:wild_honey",
+      "price": 4,
+      "count": 2
+    },
+    {
+      "item": "mechanical:elderberries",
+      "price": 3,
+      "count": 8
+    }
+  ]
+}

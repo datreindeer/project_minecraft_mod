@@ -1,12 +1,12 @@
 {
   "wants": {
-    "id": "mechanical:sinew",
-    "count": 6
+    "id": "mechanical:copper_coin",
+    "count": 9
   },
   "gives": {
-    "id": "mechanical:flint_spear"
+    "id": "mechanical:tusk_dagger"
   },
-  "max_uses": 12,
+  "max_uses": 6,
   "xp": 5,
   "reputation_discount": 0.05
 }

@@ -1,5 +1,6 @@
 # Coin item textures: Copper, Silver and Gold Coin (Coins.java), five per metal (<name>_1.._5) for growing stack sizes
 # like firewood (gen_bronze.py picks them by count): one coin, up to three stacks. Coins seen from slightly above: dark outline, rim, face with a highlight and a stamped mark (a dot, a cross, a ring).
+# Also the Coin Purse a Trader Caravan's leader holds (Coins.COIN_PURSE): a drawstring pouch of dark leather, a gold coin at its mouth.
 # usage: python scripts/gen_coin_textures.py
 from pathlib import Path
 from PIL import Image
@@ -68,7 +69,41 @@ def build(name, stage):
     return img
 
 
+# the Coin Purse, pixel by pixel: o outline, D/M/H/h leather dark to light, s seam, c/C cord, g/G/y gold coin, w/W wrinkle
+PURSE = [
+    "................",
+    "......oooo......",
+    ".....oGGgyo.....",
+    "....ooGggyoo....",
+    "...oMhMHMMDo....",
+    "...oMMHMMDDo....",
+    "....occcCCo.c...",
+    "....oDwMMDo.cC..",
+    "...oMHHMWMDo.c..",
+    "..oMHhHMMMDDoC..",
+    ".oMHhhHMMwMDDo..",
+    ".oMHhHMMMsMDDo..",
+    ".oMHHMMMMsMDDDo.",
+    ".oMMHMMMMsMDDDo.",
+    "..oMMMMMMMDDDo..",
+    "...ooDDDDDDoo...",
+]
+PURSE_PAL = {"o": "24160c", "D": "4e2c1a", "M": "6e4127", "H": "8c5734", "h": "a86e44", "s": "3a2214", "w": "5a3420", "W": "7a4a2c",
+             "c": "cdb37c", "C": "8e7648", "g": "e6bb3a", "G": "fbe58a", "y": "8a6212"}
+
+
+def purse():
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for y, row in enumerate(PURSE):
+        assert len(row) == 16, (y, row)
+        for x, ch in enumerate(row):
+            if ch != ".":
+                img.putpixel((x, y), hexc(PURSE_PAL[ch]))
+    return img
+
+
 if __name__ == "__main__":
+    purse().save(OUT / "coin_purse.png")
     for name in METALS:
         for stage in range(len(STAGES)):
             img = build(name, stage)

@@ -47,9 +47,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>tribe_climate: biomes map to the right climate; village layouts of every climate (16 seeds, so every temperament)
  * keep the gate open and use their climate's materials (no hay outside temperate lands, acacia in warm ones, bamboo
  * in the jungle, spruce and bone in the cold); a settled camp's three stages build in every climate and stay standing.</li>
- * <li>tribe_caravan: a Wandering Trader never joins the world, a Trader Caravan comes instead: 3-4 people of one trading
- * tribe (one trader, guards armed and armoured without helmets), the trader changes coins and buys diamonds, every horse
- * is led by the trader and pulls a covered cart that is still hitched 5 seconds on; when its time is up all of it goes.
+ * <li>tribe_caravan: a Wandering Trader never joins the world, a Trader Caravan comes instead: 4-5 people of one trading
+ * tribe, of a kind (TraderKinds) with goods, the animals led by its handler, pulling a cart or wagon that is still hitched
+ * 5 seconds on; when its time is up all of it goes (more in CaravanTest).
  * A trophy cart's carcass is big game (Cave Lion, Aurochs, Brown Bear), the caravan's property (a player can't
  * take or butcher it, and trying angers them), and the trader sells its products for copper.</li>
  * <li>tribe_rebuild (AgeRebuild): village layouts of every climate in the Bronze and Iron Age keep the gate open and use their
@@ -474,30 +474,30 @@ public final class TribeTest {
             var vanilla = net.minecraft.world.entity.EntityTypes.WANDERING_TRADER.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
             vanilla.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
             h.assertFalse(level.addFreshEntity(vanilla), "the Wandering Trader joined the world");
-            net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(at).inflate(16);
-            List<Tribesperson> people = level.getEntitiesOfClass(Tribesperson.class, box);
-            Tribesperson trader = people.stream().filter(t -> t.role() == TribeRole.TRADER).findFirst().orElse(null);
+            // it sets out Caravans.ARRIVE_DIST away and walks in
+            net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(at).inflate(Caravans.ARRIVE_DIST + 8);
+            Tribesperson trader = level.getEntitiesOfClass(Tribesperson.class, box, t -> t.role() == TribeRole.TRADER && t.stock != null).stream().findFirst().orElse(null);
             h.assertTrue(trader != null, "no caravan came in the trader's place");
-            h.assertTrue(people.size() >= 3 && people.size() <= 4 && people.stream().allMatch(trader::inGroup), "caravan of 3-4 of one tribe, got " + people.size());
+            List<Tribesperson> people = level.getEntitiesOfClass(Tribesperson.class, box, trader::inGroup);
+            h.assertTrue(people.stream().allMatch(t -> t.caravanPhase == Caravans.ARRIVING),
+                    "the caravan walks in");
+            h.assertTrue(people.size() >= 4 && people.size() <= 5 && people.stream().allMatch(trader::inGroup), "caravan of 4-5 of one tribe, got " + people.size());
             h.assertTrue(trader.tribe().temperament == Tribe.Temperament.TRADERS, "a caravan is of a trading tribe");
-            h.assertTrue(trader.getMainHandItem().is(com.mechanical.Mechanical.WALKING_STAFF.get()), "the trader walks with a Walking Staff");
-            for (Tribesperson g : people) {
-                if (g == trader) continue;
-                h.assertTrue(g.role() == TribeRole.GUARD && g.isArmed(), "guards carry weapons");
-                h.assertTrue(g.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).isEmpty()
-                        && !g.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).isEmpty(), "guards wear armour, no helmet or banner");
-            }
-            var offers = trader.getOffers();
-            h.assertTrue(offers.stream().anyMatch(Caravans::isExchange), "the trader changes coins");
-            h.assertTrue(offers.stream().anyMatch(o -> o.getBaseCostA().is(net.minecraft.world.item.Items.DIAMOND)
-                    && o.getResult().is(com.mechanical.Coins.GOLD_COIN.get())), "the trader buys diamonds for gold");
+            h.assertTrue(trader.stock != null && TraderKinds.get(trader.stock.kind) != null, "the caravan is of a kind, with goods");
+            Tribesperson handler = people.stream().filter(t -> t.role() == TribeRole.HANDLER).findFirst().orElse(null);
+            h.assertTrue(handler != null, "a handler holds the animals");
             List<net.minecraft.world.entity.animal.equine.AbstractHorse> horses = level.getEntitiesOfClass(
-                    net.minecraft.world.entity.animal.equine.AbstractHorse.class, box, x -> x.getLeashHolder() == trader);
-            h.assertTrue(!horses.isEmpty() && horses.size() <= 2, "1-2 horses led by the trader, got " + horses.size());
-            // a trophy cart (forced): big game, the caravan's property, its products on sale
+                    net.minecraft.world.entity.animal.equine.AbstractHorse.class, box, x -> x.getLeashHolder() == handler);
+            h.assertTrue(!horses.isEmpty() && horses.size() <= 2, "1-2 animals led by the handler, got " + horses.size());
+            // a trophy cart (forced, behind a horse of its own): big game, the caravan's property, its products on sale
+            var horse = com.mechanical.wildlife.Wildlife.TAME_HORSE.get().create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+            horse.setPos(net.minecraft.world.phys.Vec3.atBottomCenterOf(at).add(0, 0, 6));
+            horse.setTamed(true);
+            level.addFreshEntity(horse);
+            horse.setLeashedTo(handler, true);
             com.mechanical.CartEntity cart = com.mechanical.Carting.CART.get().create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
-            cart.setPos(horses.get(0).position());
-            cart.hitchCaravan(horses.get(0), false);
+            cart.setPos(horse.position().add(0, 0, 2));
+            cart.hitchCaravan(horse, false);
             level.addFreshEntity(cart);
             com.mechanical.CarcassEntity body = Caravans.trophy(level, cart, trader, level.getRandom());
             h.assertTrue(body != null && body.getVehicle() == cart && Caravans.TROPHIES.stream().anyMatch(t -> t.get() == body.animal()),
@@ -514,18 +514,20 @@ public final class TribeTest {
                     && !thief.isUsingItem(), "a player can't butcher the caravan's carcass");
             h.assertTrue(trader.isAngryAt(thief), "trying angers the caravan as theft");
             var meat = com.mechanical.Butchery.yieldFor(body.animal()).meat().get();
-            var goods = trader.getOffers().stream().filter(o -> o.getMaxUses() == 1 && o.getBaseCostA().is(com.mechanical.Coins.COPPER_COIN.get())).toList();
-            h.assertTrue(goods.size() >= 2 && goods.stream().anyMatch(o -> o.getResult().is(meat)), "the trader sells the trophy's products, got " + goods.size());
+            var goods = trader.stock.deals.stream().filter(d -> d.sale() && d.stock() == 1).toList();
+            h.assertTrue(goods.size() >= 2 && goods.stream().anyMatch(d -> d.goods().is(meat)), "the leader sells the trophy's products, got " + goods.size());
             cart.getPassengers().forEach(net.minecraft.world.entity.Entity::discard);
             cart.discard();
+            horse.discard();
             h.runAfterDelay(100, () -> guarded(h, () -> {
-                List<com.mechanical.CartEntity> carts = level.getEntitiesOfClass(com.mechanical.CartEntity.class, box.inflate(16));
-                h.assertTrue(carts.size() == horses.size(), "a cart per horse, got " + carts.size());
-                for (com.mechanical.CartEntity c : carts)
-                    h.assertTrue(c.isCaravan() && horses.contains(c.harness()), "the caravan's cart is still hitched to its horse");
+                List<com.mechanical.TravoisEntity> beds = level.getEntitiesOfClass(com.mechanical.TravoisEntity.class, box.inflate(16), b -> Caravans.owner(b) == handler);
+                h.assertTrue(beds.size() == 1, "one cart or wagon, got " + beds.size());
+                com.mechanical.TravoisEntity bed = beds.get(0);
+                h.assertTrue(bed instanceof com.mechanical.WagonEntity w ? w.isCaravan() && horses.stream().allMatch(w::inTeam)
+                        : ((com.mechanical.CartEntity) bed).isCaravan() && horses.contains(bed.harness()), "the caravan's cart or wagon is still hitched");
                 List<Tribesperson> all = level.getEntitiesOfClass(Tribesperson.class, box.inflate(16), t -> t.inGroup(trader));
                 all.forEach(Caravans::leave);
-                h.assertTrue(level.getEntitiesOfClass(com.mechanical.CartEntity.class, box.inflate(16)).isEmpty()
+                h.assertTrue(beds.stream().allMatch(com.mechanical.TravoisEntity::isRemoved)
                         && horses.stream().allMatch(x -> x.isRemoved()), "carts and horses leave with the caravan");
                 h.succeed();
             }));

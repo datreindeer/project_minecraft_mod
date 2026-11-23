@@ -1,0 +1,58 @@
+{
+  "parent": "mechanical:wilderness/caravan",
+  "criteria": {
+    "woodsman": {
+      "trigger": "minecraft:impossible"
+    },
+    "mining": {
+      "trigger": "minecraft:impossible"
+    },
+    "jewelry": {
+      "trigger": "minecraft:impossible"
+    },
+    "hunting": {
+      "trigger": "minecraft:impossible"
+    },
+    "herbs": {
+      "trigger": "minecraft:impossible"
+    },
+    "foraging": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "woodsman"
+    ],
+    [
+      "mining"
+    ],
+    [
+      "jewelry"
+    ],
+    [
+      "hunting"
+    ],
+    [
+      "herbs"
+    ],
+    [
+      "foraging"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:map"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.caravan_kinds.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.caravan_kinds.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

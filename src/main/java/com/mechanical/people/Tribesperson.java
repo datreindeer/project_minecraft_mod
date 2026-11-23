@@ -95,6 +95,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     private static final EntityDataAccessor<Integer> COLOUR = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
     /** The idle action and whether seated (CampLife), for the model. */
     private static final EntityDataAccessor<Integer> IDLE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
+    /** A Trader Caravan member's kind (TraderKinds id, "" for everyone else), for the skins. */
+    private static final EntityDataAccessor<String> KIND = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.STRING);
 
     static final long ANGER_TICKS = Calendar.DAY, FOREVER = Long.MAX_VALUE;
     private static final double GROUP_RANGE = 48, GREET_RANGE = 6;
@@ -138,6 +140,12 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     UUID visit;
     /** A Trader Caravan member (Caravans): the game time it moves on (despawns), saved; -1 for everyone else. */
     long leaveAt = -1;
+    /** A Trader Caravan's stopping place (the handler's spot, CaravanGoal), saved; null for everyone else. */
+    BlockPos caravanCamp;
+    /** A Trader Caravan member on the road or stopped (Caravans.STOPPED, ARRIVING, LEAVING; CaravanGoal), saved. */
+    int caravanPhase;
+    /** A caravan leader's goods and purse (CaravanTrade), saved; null for everyone else. */
+    CaravanTrade.Stock stock;
     /** A walk to another camp and back (ErrandGoal), not saved; walking it wears paths. */
     ErrandGoal.Errand errand;
     boolean travelling;
@@ -201,8 +209,26 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return entityData.get(COLOUR);
     }
 
-    /** The skin: temperate people in tribesperson/, the other climates in a folder of their own; its "_tint" mask marks the dyed parts. */
+    /** A Trader Caravan member's kind (TraderKinds), or null. */
+    public Identifier caravanKind() {
+        String k = entityData.get(KIND);
+        return k.isEmpty() ? null : Identifier.tryParse(k);
+    }
+
+    /** Caravan folk wear their kind's colours, not their tribe's (no tint). */
+    void setCaravanKind(Identifier kind) {
+        entityData.set(KIND, kind == null ? "" : kind.toString());
+        if (kind != null) entityData.set(COLOUR, -1);
+    }
+
+    /**
+     * The skin: temperate people in tribesperson/, the other climates in a folder of their own, caravan folk by their kind in
+     * caravan/&lt;kind&gt;/; its "_tint" mask marks the dyed parts.
+     */
     public Identifier texture() {
+        Identifier kind = caravanKind();
+        if (kind != null && role().caravan())
+            return Identifier.fromNamespaceAndPath(kind.getNamespace(), "textures/entity/tribesperson/caravan/" + kind.getPath() + "/" + role().id() + "_" + skin() + ".png");
         ClimateZone zone = role().travels() ? ClimateZone.TEMPERATE : climate();
         String dir = zone == ClimateZone.TEMPERATE ? "" : zone.id() + "/";
         return Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/tribesperson/" + dir + role().id() + "_" + skin() + ".png");
@@ -332,6 +358,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             case ELDER -> new ItemStack(Mechanical.ELDERS_STAFF.get());
             case TRADER -> new ItemStack(Mechanical.WALKING_STAFF.get());
             case GUARD -> new ItemStack(spear()); // Caravans arms them for their tribe's age
+            case HANDLER -> new ItemStack(com.mechanical.Carting.ROPE_HALTER.get());
             case MINER -> new ItemStack(bronze ? com.mechanical.Bronze.BRONZE_PICKAXE.get() : Mechanical.FLINT_PICKAXE.get());
             case OAK_GATHERER -> new ItemStack(Mechanical.FLINT_KNIFE.get());
             case OAK_LIGHTBEARER -> new ItemStack(Items.CANDLE);
@@ -346,7 +373,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         // the tribe's flag: worn by the band leader and the elder, like a raid captain's banner
         setItemSlot(EquipmentSlot.HEAD, role == TribeRole.OAK_KEEPER ? new ItemStack(com.mechanical.AncientOak.ANTLER_CROWN.get()) // giant deer antlers
                 : role.oak() ? ItemStack.EMPTY
-                : leader && role != TribeRole.MINER || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY);
+                : leader && role != TribeRole.MINER && !role.caravan() || role == TribeRole.ELDER ? tribe().banner(registryAccess()) : ItemStack.EMPTY); // caravans: no banners
         offers = null;
     }
 
@@ -402,6 +429,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
         goalSelector.addGoal(3, new VisitGoal(this));
         goalSelector.addGoal(3, new RoadBuildGoal(this));
+        goalSelector.addGoal(4, new CaravanGoal(this));
         goalSelector.addGoal(4, new DailyRhythmGoal(this));
         goalSelector.addGoal(4, new OakFolkGoal(this));
         goalSelector.addGoal(4, new ErrandGoal(this));
@@ -418,7 +446,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             @Override
             public boolean canUse() {
                 // bands rest together at night; camp folk stroll only within their (small, at night) home radius
-                return !(home == null && level().isDarkOutside()) && (home != null || leader) && super.canUse();
+                return !(home == null && level().isDarkOutside()) && (home != null || leader) && !role().caravan() && super.canUse();
             }
         });
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -506,6 +534,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (!wasAngry) say(player, Component.translatable(until == FOREVER ? "chat.mechanical.tribesperson.killer" : "chat.mechanical.tribesperson.angry"));
     }
 
+    /** A player hit the group's animal, cart or wagon (Caravans): as angry as if one of them was hit. */
+    void provoked(Player player) {
+        angerGroup(player, level().getGameTime() + ANGER_TICKS, Tribe.HIT);
+    }
+
     /** Someone took the camp's fire away: the group is as angry as if one of them was hit. */
     public void fireTakenBy(Player player) {
         angerGroup(player, level().getGameTime() + ANGER_TICKS, Tribe.FIRE);
@@ -539,6 +572,13 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             raid.loot.clear();
         }
         if (tradingPlayer != null) tradingPlayer.closeContainer();
+        // a caravan leader's purse: what is left in it falls out as coins
+        if (stock != null && stock.purse > 0 && level() instanceof ServerLevel level) {
+            int[] coins = com.mechanical.Coins.split(stock.purse);
+            net.minecraft.world.item.Item[] kinds = {com.mechanical.Coins.GOLD_COIN.get(), com.mechanical.Coins.SILVER_COIN.get(), com.mechanical.Coins.COPPER_COIN.get()};
+            for (int i = 0; i < 3; i++) if (coins[i] > 0) spawnAtLocation(level, new ItemStack(kinds[i], coins[i]));
+            stock.purse = 0;
+        }
         if (level() instanceof ServerLevel) life.wake(); // the bed they lay in goes with them
         super.die(source);
     }
@@ -579,7 +619,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (tickCount % 20 == 0 && raid == null && visit == null && errand == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
         if (tickCount % 100 == 0 && raid == null && leaveAt < 0 && role() != TribeRole.MINER && !role().oak()) SetUpCampGoal.check(this, level, now);
-        if (leaveAt >= 0 && now > leaveAt && tradingPlayer == null && tickCount % 20 == 0) Caravans.leave(this);
+        if (leaveAt >= 0 && now > leaveAt && tradingPlayer == null && tickCount % 20 == 0) {
+            // a caravan walks away (its handler leads it off); one from before roads, or long overdue, just goes
+            if (caravanCamp == null || now > leaveAt + 6000) Caravans.leave(this);
+            else if (role() == TribeRole.HANDLER && caravanPhase == Caravans.STOPPED) Caravans.depart(this);
+        }
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
@@ -856,6 +900,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     /** Opens the barter screen, prices following the player's standing (not while angry or busy, nor for strangers they won't trade with). */
     void openTrade(Player player) {
+        if (stock != null && player instanceof net.minecraft.server.level.ServerPlayer sp) { // a caravan leader: his own screen
+            getNavigation().stop();
+            CaravanTrade.open(sp, this);
+            return;
+        }
         if (tradingPlayer != null || getTarget() != null || isAngryAt(player) || tribe() != null && !tribe().trades(player)) return;
         getNavigation().stop();
         for (MerchantOffer offer : getOffers())
@@ -888,7 +937,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     @Override
     public MerchantOffers getOffers() {
-        if (offers == null && role() == TribeRole.TRADER) offers = Caravans.offers(0, getRandom()); // offers are made at spawn; a fallback
+        if (offers == null && role() == TribeRole.TRADER) offers = new MerchantOffers(); // a caravan leader trades through CaravanTrade
         if (offers == null && role() == TribeRole.MINER) {
             if (!(level() instanceof ServerLevel)) return new MerchantOffers();
             offers = Miners.offers(this); // from the world round him when first asked
@@ -1024,6 +1073,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         builder.define(CLIMATE, ClimateZone.TEMPERATE.ordinal());
         builder.define(COLOUR, -1);
         builder.define(IDLE, 0);
+        builder.define(KIND, "");
     }
 
     @Override
@@ -1042,6 +1092,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (raid != null) raid.save(output);
         if (visit != null) output.store("visit", UUIDUtil.CODEC, visit);
         if (leaveAt >= 0) output.putLong("leave_at", leaveAt);
+        if (caravanCamp != null) output.store("caravan_camp", BlockPos.CODEC, caravanCamp);
+        if (caravanPhase != 0) output.putInt("caravan_phase", caravanPhase);
+        if (stock != null) output.store("caravan_stock", CaravanTrade.Stock.CODEC, stock);
+        if (caravanKind() != null) output.putString("caravan_kind", entityData.get(KIND));
         if (oakFoot != null) output.store("oak", BlockPos.CODEC, oakFoot);
     }
 
@@ -1064,6 +1118,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         raid = RaidGoal.State.load(input);
         visit = input.read("visit", UUIDUtil.CODEC).orElse(null);
         leaveAt = input.getLongOr("leave_at", -1);
+        caravanCamp = input.read("caravan_camp", BlockPos.CODEC).orElse(null);
+        caravanPhase = input.getIntOr("caravan_phase", 0);
+        stock = input.read("caravan_stock", CaravanTrade.Stock.CODEC).orElse(null);
+        entityData.set(KIND, input.getStringOr("caravan_kind", ""));
+        if (caravanKind() != null) entityData.set(COLOUR, -1);
         oakFoot = input.read("oak", BlockPos.CODEC).orElse(null);
         if (role().oak()) entityData.set(COLOUR, -1);
         if (raid != null) raiderNavigation();

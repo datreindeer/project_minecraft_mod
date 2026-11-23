@@ -4,7 +4,8 @@
     "count": 3
   },
   "gives": {
-    "id": "minecraft:leather"
+    "id": "mechanical:copper_coin",
+    "count": 2
   },
   "max_uses": 16,
   "xp": 2,

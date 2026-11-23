@@ -86,10 +86,13 @@ for f in sorted(D.glob("*/recipe/*_planks.json")):
     made += 1
 assert made >= 20, made
 
-# ---- villages: levels 3-4 are the Bronze Age (levels 1-2, stone age: gen_data.py; level 5 stays empty for later ages).
-# No iron, gold or diamond goods. Money is the Copper Coin (Coins.java; vanilla's emerald at about 4 coins): a bronze tool
-# 20-40 coins, a bronze ingot ~1, 6 crushed tin 4. ----
+# ---- villages: levels 3-4 are the Bronze Age, level 5 (Master) the Iron Age (levels 1-2, stone age: gen_data.py).
+# Every trade is goods for coins (docs/traders-plan.md A), priced in copper here: copper for cheap things; 10 copper or more
+# is paid in Silver Coins (rounded, see coin() below), so a bronze tool costs 2-5 silver; level 5's valuable goods cost Gold
+# Coins (G). Coins.java: 1 silver = 10 copper, 1 gold = 10 silver. ----
 C = M + "copper_coin"
+SILVER, GOLD = M + "silver_coin", M + "gold_coin"
+G = "gold"  # a price in gold coins: (G, n)
 V = "minecraft:"
 TRADES = {  # profession: {level: [(wants, wants_count, gives, gives_count, max_uses, xp)]}
     "armorer": {3: [(M + "bronze_ingot", 3, C, 4, 12, 20), (C, 36, M + "bronze_helmet", 1, 3, 10)],
@@ -117,18 +120,43 @@ TRADES = {  # profession: {level: [(wants, wants_count, gives, gives_count, max_
     "toolsmith": {3: [(M + "crushed_tin_ore", 6, C, 4, 12, 20), (C, 28, M + "bronze_pickaxe", 1, 3, 10), (C, 20, M + "bronze_saw", 1, 3, 10)],
                   4: [(M + "copper_concentrate", 8, C, 4, 12, 30), (C, 12, M + "tin_concentrate", 2, 8, 15), (C, 24, M + "bronze_axe", 1, 3, 15)]},
     "weaponsmith": {3: [(M + "bronze_ingot", 3, C, 4, 12, 20), (C, 20, M + "bronze_knife", 1, 3, 10)],
-                    4: [(M + "crushed_copper_ore", 12, C, 4, 16, 30), (C, 32, M + "bronze_spear", 1, 3, 15), (C, 36, M + "bronze_sword", 1, 3, 15)]},
+                    4: [(M + "crushed_copper_ore", 12, C, 4, 16, 30), (C, 32, M + "bronze_spear", 1, 3, 15), (C, 36, M + "bronze_sword", 1, 3, 15)],
+                    5: [(M + "steel_ingot", 2, C, 40, 12, 30), (G, 2, M + "steel_spear", 1, 3, 30)]},
+    # level 5 (Master): Iron Age goods for gold, and they buy iron for silver
+    "toolsmith5": {5: [(M + "wrought_iron_ingot", 4, C, 30, 12, 30), (G, 2, M + "steel_pickaxe", 1, 3, 30), (G, 1, M + "steel_saw", 1, 3, 30)]},
+    "shepherd5": {5: [(M + "linen_cloth", 4, C, 20, 12, 30), (G, 1, M + "silk_thread", 4, 6, 30)]},
+    "cleric5": {5: [(V + "glowstone_dust", 8, C, 20, 12, 30), (G, 1, V + "ender_pearl", 1, 4, 30)]},
+    "librarian5": {5: [(V + "writable_book", 4, C, 30, 12, 30), (G, 1, M + "cloth_bed", 1, 3, 30)]},
+    "leatherworker5": {5: [(M + "wolf_pelt", 4, C, 30, 12, 30), (G, 1, M + "hide_saddle_blanket", 2, 3, 30)]},
 }
+# fold the level-5 rows into their professions
+for key in [k for k in TRADES if k[-1] == "5"]:
+    TRADES[key[:-1]].update(TRADES.pop(key))
+
+
+def coin(item, n):
+    """A coin side of a trade: under 10 copper stays copper, more is silver (rounded); (G, n) is gold."""
+    if item == G:
+        return GOLD, n
+    if item == C and n >= 10:
+        return SILVER, max(1, round(n / 10))
+    return item, n
+
+
+for prof, levels in TRADES.items():  # goods for coins, never goods for goods
+    for t in sum(levels.values(), []):
+        assert (t[0] in (C, G)) != (t[2] in (C, G)), (prof, t)
 stack = lambda i, n: {"id": i, "count": n} if n > 1 else {"id": i}
 lang_now = json.loads((A / "lang/en_us.json").read_text(encoding="utf-8"))
 for prof, levels in TRADES.items():
     for lvl, trades in levels.items():
         ids = []
         for i, (wi, wn, gi, gn, uses, xp) in enumerate(trades):
+            (wi, wn), (gi, gn) = coin(wi, wn), coin(gi, gn)
             for item in (wi, gi):  # every traded item must exist (a typo makes the trade fail to load silently)
                 ns, path = item.split(":")
-                assert ns == "minecraft" or f"item.mechanical.{path}" in lang_now or f"block.mechanical.{path}" in lang_now                     or path in ("copper_concentrate", "tin_concentrate", "bronze_spear", "bronze_sword", "copper_coin"), item
-            name = f"{prof}/{lvl}/bronze_{i}"
+                assert ns == "minecraft" or f"item.mechanical.{path}" in lang_now or f"block.mechanical.{path}" in lang_now                     or path in ("copper_concentrate", "tin_concentrate", "bronze_spear", "bronze_sword", "copper_coin", "silver_coin", "gold_coin"), item
+            name = f"{prof}/{lvl}/{'iron' if lvl == 5 else 'bronze'}_{i}"
             w(D / f"mechanical/villager_trade/{name}.json", {"wants": stack(wi, wn), "gives": stack(gi, gn), "max_uses": uses, "xp": xp,
                                                               "reputation_discount": 0.05})
             ids.append(M + name)

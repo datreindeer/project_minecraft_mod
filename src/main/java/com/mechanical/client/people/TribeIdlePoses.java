@@ -26,11 +26,14 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class TribeIdlePoses {
     static final ContextKey<Integer> IDLE = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_idle"));
+    /** A Trader Caravan's old leader: stooped over his staff. */
+    static final ContextKey<Boolean> OLD = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_old"));
 
     @SubscribeEvent
     static void renderStateModifiers(RegisterRenderStateModifiersEvent event) {
         event.<Tribesperson, AvatarRenderState>registerEntityModifier(TribespersonRenderer.class, (t, state) -> {
             state.setRenderData(IDLE, t.idle());
+            if (t.role() == com.mechanical.people.TribeRole.TRADER && t.caravanKind() != null) state.setRenderData(OLD, true);
             // the Miner's sack (EquipmentLayer) is render data too: set here, where it survives
             if (t.role() == com.mechanical.people.TribeRole.MINER && t.getPose() == Pose.STANDING) com.mechanical.client.EquipmentClient.wearMinerSack(state);
             Identifier gear = gear(t.texture());
@@ -50,6 +53,7 @@ public final class TribeIdlePoses {
     }
 
     public static void pose(HumanoidModel<?> model, HumanoidRenderState state) {
+        if (Boolean.TRUE.equals(state.getRenderData(OLD)) && !state.isPassenger && state.swimAmount == 0) stoop(model, state);
         Integer idle = state.getRenderData(IDLE);
         if (idle == null || idle == 0 || state.isPassenger || state.swimAmount > 0) return;
         float t = state.ageInTicks;
@@ -129,6 +133,38 @@ public final class TribeIdlePoses {
             }
             default -> {}
         }
+    }
+
+    /**
+     * An old man's walk: shoulders bent forward over the staff, head pushed forward and up to see the way; short, slow
+     * steps (a quick cadence for the ground covered, but small: the feet hardly leave the ground), a slight dip of the whole
+     * body on each step, the staff hand reaching ahead and planting the staff in step with the opposite foot, the purse
+     * held out in the other hand with hardly any swing.
+     */
+    private static void stoop(HumanoidModel<?> model, HumanoidRenderState state) {
+        float bend = 0.22F;
+        float s = Math.min(1.0F, state.walkAnimationSpeed * 2.2F); // 0 standing .. 1 at his (slow) walking pace
+        float p = state.walkAnimationPos * 0.9F; // the step cycle: more steps for the way, each short
+        model.body.xRot = bend;
+        model.head.z = -2.0F;
+        model.head.y = 0.6F;
+        model.head.xRot = model.head.xRot * 0.5F - bend * 0.5F + 0.04F * Mth.sin(p * 2) * s; // a little nod with each step
+        model.rightLeg.xRot = Mth.cos(p) * 0.42F * s;
+        model.leftLeg.xRot = -Mth.cos(p) * 0.42F * s;
+        model.rightLeg.z = model.leftLeg.z = 0.6F;
+        for (var arm : new net.minecraft.client.model.geom.ModelPart[] {model.rightArm, model.leftArm}) {
+            arm.z = -1.8F;
+            arm.y = 2.4F;
+            arm.yRot = 0;
+            arm.zRot = 0;
+        }
+        model.rightArm.xRot = -0.55F - Mth.cos(p) * 0.18F * s; // the staff reaches with the left foot
+        model.rightArm.zRot = 0.08F;
+        model.leftArm.xRot = -0.85F + Mth.cos(p) * 0.06F * s; // the purse held out before him
+        model.leftArm.yRot = 0.25F;
+        model.leftArm.zRot = -0.05F;
+        float dip = (1 - Math.abs(Mth.cos(p))) * 0.7F * s; // down a little on each step
+        model.root().y += dip;
     }
 
     private static void head(HumanoidModel<?> model, float xRot) {

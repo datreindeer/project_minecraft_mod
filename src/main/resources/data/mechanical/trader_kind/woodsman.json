@@ -1,0 +1,150 @@
+{
+  "animal": "horse",
+  "cargo": [
+    "minecraft:oak_log",
+    "minecraft:spruce_log",
+    "minecraft:birch_log",
+    "mechanical:pine_log",
+    "minecraft:spruce_log",
+    "mechanical:aspen_log",
+    "mechanical:bronze_saw",
+    "minecraft:oak_sapling",
+    "mechanical:pine_sapling",
+    "mechanical:flint_axe",
+    "mechanical:aspen_sapling",
+    "mechanical:oak_bark"
+  ],
+  "purse": [
+    150,
+    260
+  ],
+  "sells": [
+    {
+      "item": "mechanical:aspen_sapling",
+      "price": 5,
+      "count": 2
+    },
+    {
+      "item": "mechanical:beech_sapling",
+      "price": 5,
+      "count": 2
+    },
+    {
+      "item": "mechanical:linden_sapling",
+      "price": 6,
+      "count": 2
+    },
+    {
+      "item": "mechanical:ash_sapling",
+      "price": 5,
+      "count": 2
+    },
+    {
+      "item": "mechanical:hazel_sapling",
+      "price": 6,
+      "count": 2
+    },
+    {
+      "item": "mechanical:pine_sapling",
+      "price": 4,
+      "count": 2
+    },
+    {
+      "item": "mechanical:yew_sapling",
+      "price": 9,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:willow_sapling",
+      "price": 5,
+      "count": 2
+    },
+    {
+      "item": "minecraft:cherry_sapling",
+      "price": 12,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:flint_axe",
+      "price": 6
+    },
+    {
+      "item": "mechanical:crude_stone_axe",
+      "price": 9,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:pine_resin",
+      "price": 5,
+      "count": 4
+    },
+    {
+      "item": "mechanical:oak_bark",
+      "price": 3,
+      "count": 8,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:hide_glue",
+      "price": 6,
+      "count": 2
+    },
+    {
+      "item": "mechanical:bronze_axe",
+      "price": 30,
+      "stock": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:bronze_saw",
+      "price": 30,
+      "stock": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:bronze_chisel",
+      "price": 20,
+      "stock": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:iron_saw",
+      "price": 100,
+      "stock": 1,
+      "age": 2,
+      "rare": true
+    },
+    {
+      "item": "mechanical:steel_axe",
+      "price": 200,
+      "stock": 1,
+      "age": 2,
+      "rare": true
+    },
+    {
+      "item": "minecraft:dark_oak_sapling",
+      "price": 20,
+      "count": 2,
+      "stock": 2,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "mechanical:cordage",
+      "price": 4,
+      "count": 6,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:hide_glue",
+      "price": 4,
+      "count": 2
+    },
+    {
+      "item": "mechanical:pine_resin",
+      "price": 4,
+      "count": 6
+    }
+  ]
+}

@@ -4,8 +4,8 @@
     "count": 12
   },
   "gives": {
-    "id": "minecraft:paper",
-    "count": 4
+    "id": "mechanical:copper_coin",
+    "count": 2
   },
   "max_uses": 16,
   "xp": 10,
