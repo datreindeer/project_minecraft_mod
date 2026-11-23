@@ -38,6 +38,7 @@ public final class Structures {
         FEATURE_TYPES.register("trail", () -> Trails.CODEC);
         FEATURE_TYPES.register("bog_oak_logs", () -> BogOakLogs.CODEC); // scripts/gen_earth.py
         FEATURE_TYPES.register("glimmering_stump", () -> GlimmeringStumpFeature.CODEC); // scripts/gen_folklore.py
+        FEATURE_TYPES.register("troll_stone_sleeper", () -> TrollStoneSleeperFeature.CODEC); // scripts/gen_folklore.py
         FEATURE_TYPES.register("cave_paintings", CaveFinds.PAINTINGS::codec); // scripts/gen_caves.py
         FEATURE_TYPES.register("tool_cache", CaveFinds.TOOL_CACHE::codec);
         FEATURE_TYPES.register("charred_tree", () -> ScorchedBarrens.CharredTree.CODEC); // scripts/gen_world_biomes.py

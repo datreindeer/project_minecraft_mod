@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:taiga",
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:snowy_taiga",
+    "mechanical:pine_heath",
+    "mechanical:glacial_moraine"
+  ],
+  "features": "mechanical:troll_stone_sleeper",
+  "step": "surface_structures"
+}

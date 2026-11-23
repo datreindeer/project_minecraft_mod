@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:folklore/nacken",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:nacken_string"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.nacken_lesson.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.nacken_lesson.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

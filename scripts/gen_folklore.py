@@ -81,6 +81,77 @@ w(D / "mechanical/neoforge/biome_modifier/add_mountain_watcher.json", {"type": "
                "minecraft:meadow", "minecraft:windswept_hills", "minecraft:cherry_grove"],
     "spawners": [{"type": M + "mountain_watcher", "weight": 2, "count": {"type": "minecraft:uniform", "min_inclusive": 1, "max_inclusive": 1}}]})
 
+# ---------------------------------------------------------------- the folklore beings (folklore.Beings, docs/fauna/folklore.md)
+BEINGS = ["huldra", "will_o_wisp", "jungle_spirit_mask", "tomte", "nacken", "bog_body", "frost_giant", "dune_wraith"]
+for name in [b + "_spawn_egg" for b in BEINGS] + ["huldra_comb", "wisp_ember", "spirit_mask", "straw_yule_goat", "nacken_string",
+                                                    "peat_tanned_hide", "bog_torc", "vittra_silver", "dune_glass"]:
+    flat_item(name)
+for block in ("frost_heart", "mossy_troll_stone"):
+    w(A / f"models/block/{block}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": f"{M}block/{block}"}})
+    w(A / f"blockstates/{block}.json", {"variants": {"": {"model": f"{M}block/{block}"}}})
+    w(A / f"items/{block}.json", {"model": {"type": "minecraft:model", "model": f"{M}block/{block}"}})
+    w(D / f"mechanical/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": M + block}], "condition": {"type": "minecraft:survives_explosion"}}],
+        "random_sequence": f"{M}blocks/{block}"})
+patch_tag(D / "minecraft/tags/block/mineable/pickaxe.json", [M + "frost_heart", M + "mossy_troll_stone"])
+w(D / "mechanical/tags/item/nacken_gifts.json", {"values": [M + "silver_coin", M + "gold_coin", "#minecraft:meat"]})
+w(D / "mechanical/recipe/leather_from_peat_tanned_hide.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [M + "peat_tanned_hide"], "result": {"id": "minecraft:leather", "count": 1}})
+
+
+def entry(item, weight=1, lo=1, hi=1, chance=None):
+    ns, path = item.split(":")
+    assert ns == "minecraft" or (A / f"items/{path}.json").exists(), f"unknown item {item}"
+    e = {"type": "minecraft:item", "name": item, "weight": weight}
+    if hi > 1 or lo != 1:
+        e["modifier"] = count(lo, hi)
+    if chance is not None:
+        e["condition"] = {"type": "minecraft:random_chance", "chance": chance}
+    return e
+
+
+def loot(path, kind, pools):
+    w(D / f"mechanical/loot_table/{path}.json", {"type": kind, "pools": pools, "random_sequence": M + path})
+
+
+def one(*entries, rolls=1):
+    return {"rolls": rolls, "entries": list(entries)}
+
+
+loot("entities/frost_giant", "minecraft:entity", [one(entry(M + "frost_heart")), one(entry("minecraft:snowball", 1, 4, 10)),
+                                                 one(entry("minecraft:packed_ice", 1, 1, 3))])
+loot("entities/bog_body", "minecraft:entity", [one(entry(M + "peat_tanned_hide", 1, 1, 2)), one(entry("minecraft:rotten_flesh", 1, 0, 2)),
+                                              one(entry(M + "bog_torc", chance=0.1))])
+loot("chests/bog_grave", "minecraft:chest", [one(entry(M + "wisp_ember")), one(entry("minecraft:bone", 4, 1, 3), entry(M + "copper_coin", 4, 2, 6),
+    entry(M + "silver_coin", 2, 1, 3), entry(M + "rough_amber", 2, 1, 2), entry(M + "raw_bog_iron", 3, 1, 4), entry(M + "bog_torc", 1), rolls=3)])
+loot("chests/bergtagen", "minecraft:chest", [one(entry(M + "vittra_silver", 1, 1, 3)), one(entry(M + "vittra_hide", 3, 1, 2),
+    entry(M + "cooked_vittra_meat", 3, 1, 3), entry("minecraft:brown_mushroom", 2, 1, 3), entry(M + "silver_coin", 2, 1, 4), rolls=3)])
+
+
+def spawns(name, biomes, weight, lo=1, hi=1):
+    w(D / f"mechanical/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_spawns", "biomes": biomes,
+        "spawners": [{"type": M + name, "weight": weight, "count": {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}}]})
+
+
+spawns("huldra", ["minecraft:forest", "minecraft:birch_forest", "minecraft:dark_forest", "minecraft:old_growth_birch_forest",
+                  "minecraft:flower_forest", M + "deciduous_forest"], 4)
+spawns("will_o_wisp", ["minecraft:swamp", "minecraft:dark_forest", M + "peat_bog", M + "willow_fen", M + "reed_delta"], 5)
+spawns("jungle_spirit_mask", ["minecraft:jungle", "minecraft:bamboo_jungle", "minecraft:sparse_jungle"], 5)
+spawns("nacken", ["minecraft:river"], 6)
+spawns("bog_body", [M + "peat_bog"], 30, 1, 2)
+spawns("frost_giant", ["minecraft:snowy_plains", "minecraft:ice_spikes", "minecraft:snowy_taiga", "minecraft:frozen_peaks",
+                       "minecraft:snowy_slopes", M + "glacial_moraine"], 2)
+spawns("dune_wraith", ["minecraft:desert"], 10)
+
+# the sleeping forest troll: two Mossy Troll Stone in the taiga
+w(D / "mechanical/worldgen/feature/troll_stone_sleeper.json", {"type": M + "troll_stone_sleeper"})
+w(D / "mechanical/worldgen/placed_feature/troll_stone_sleeper.json", {"feature": M + "troll_stone_sleeper", "placement": [
+    {"type": "minecraft:rarity_filter", "chance": 48}, {"type": "minecraft:in_square"},
+    {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"}]})
+w(D / "mechanical/neoforge/biome_modifier/add_troll_stone_sleeper.json", {"type": "neoforge:add_features",
+    "biomes": ["minecraft:taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:snowy_taiga", M + "pine_heath"],
+    "features": M + "troll_stone_sleeper", "step": "surface_structures"})
+
 # ---------------------------------------------------------------- lang (en_us only; the mod has no other language file)
 LANG = A / "lang/en_us.json"
 lang = json.loads(LANG.read_text(encoding="utf-8"))
@@ -93,6 +164,48 @@ lang.update({
     "effect.mechanical.second_sight": "Second Sight",
     "message.mechanical.glimmering_stump.gift": "Something stirs among the roots...",
     "message.mechanical.glimmering_stump.already": "The small folk have had their gift today",
+    "entity.mechanical.huldra": "Huldra",
+    "entity.mechanical.will_o_wisp": "Will-o'-the-wisp",
+    "entity.mechanical.jungle_spirit_mask": "Jungle Spirit Mask",
+    "entity.mechanical.tomte": "Tomte",
+    "entity.mechanical.nacken": "Näcken",
+    "entity.mechanical.bog_body": "Bog Body",
+    "entity.mechanical.frost_giant": "Frost Giant",
+    "entity.mechanical.dune_wraith": "Dune Wraith",
+    "item.mechanical.huldra_spawn_egg": "Huldra Spawn Egg",
+    "item.mechanical.will_o_wisp_spawn_egg": "Will-o'-the-wisp Spawn Egg",
+    "item.mechanical.jungle_spirit_mask_spawn_egg": "Jungle Spirit Mask Spawn Egg",
+    "item.mechanical.tomte_spawn_egg": "Tomte Spawn Egg",
+    "item.mechanical.nacken_spawn_egg": "Näcken Spawn Egg",
+    "item.mechanical.bog_body_spawn_egg": "Bog Body Spawn Egg",
+    "item.mechanical.frost_giant_spawn_egg": "Frost Giant Spawn Egg",
+    "item.mechanical.dune_wraith_spawn_egg": "Dune Wraith Spawn Egg",
+    "item.mechanical.huldra_comb": "Huldra Comb",
+    "item.mechanical.wisp_ember": "Wisp Ember",
+    "item.mechanical.spirit_mask": "Spirit Mask",
+    "item.mechanical.straw_yule_goat": "Straw Yule Goat",
+    "item.mechanical.nacken_string": "Näcken's String",
+    "item.mechanical.peat_tanned_hide": "Peat-Tanned Hide",
+    "item.mechanical.bog_torc": "Bog Torc",
+    "item.mechanical.vittra_silver": "Vittra Silver",
+    "item.mechanical.dune_glass": "Dune Glass",
+    "block.mechanical.frost_heart": "Frost Heart",
+    "block.mechanical.mossy_troll_stone": "Mossy Troll Stone",
+    "effect.mechanical.lost": "Lost",
+    "effect.mechanical.mountain_guest": "Mountain Guest",
+    "effect.mechanical.fiddlers_blessing": "Fiddler's Blessing",
+    "message.mechanical.huldra.accept": "You take her gift. The forest feels kind tonight.",
+    "message.mechanical.huldra.refuse": "You turn away... and the trees all look the same.",
+    "message.mechanical.wisp.astray": "The light goes out. Where is the path?",
+    "message.mechanical.tomte.not_yule": "He does not touch it. It is not Yule.",
+    "message.mechanical.tomte.fed": "The Yule porridge is gone. Someone is pleased.",
+    "message.mechanical.tomte.angry": "Something small and grey glares at you.",
+    "message.mechanical.nacken.fiddle": "A fiddle plays down by the rapids...",
+    "message.mechanical.nacken.again": "He has taught you already this year.",
+    "message.mechanical.nacken.lesson": "Näcken plays for you alone, and you understand.",
+    "message.mechanical.dune_wraith.stole": "A cold breath of sand... and your water is gone.",
+    "message.mechanical.dune_wraith.touch": "Sand brushes past you and is gone.",
+    "message.mechanical.bergtagen": "You wake in the dark, deep inside the mountain. Small grey shapes watch you.",
 })
 LANG.write_text(json.dumps(lang, indent=2) + "\n", encoding="utf-8")
 print("folklore ok")

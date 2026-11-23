@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:folklore/will_o_wisp",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:jungle_spirit_mask_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.jungle_spirit_mask.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.jungle_spirit_mask.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -2912,6 +2912,26 @@ Data: `scripts/gen_folklore.py` (körs direkt efter `gen_fauna_*`), texturer: `s
 Advancements i fliken **Folklore**: *Folklore* (ät Fly Agaric, rå eller kokt), *Small Folk* (lämna en gåva),
 *Above the Clouds* (se en Mountain Watcher), *Gift of the Peaks* (få en Watcher Feather).
 
+### Folktrons väsen (Huldra, Lyktgubbe, Tomte, Näcken, Bog Body, Frost Giant m.fl.)
+
+Allt om väsendena står i [docs/fauna/folklore.md](../fauna/folklore.md). Kort: andarna (Huldra, Will-o'-the-wisp, Jungle
+Spirit Mask, Tomte, Näcken, Dune Wraith) syns bara med tillräcklig syn och går inte att skada; Bog Body och Frost Giant är
+riktiga och går att döda; ett skogstroll sover som Mossy Troll Stone i taigan; Bergtagen tar den som sover ensam i fjället.
+
+| Item | Hur | Vad |
+|---|---|---|
+| **Huldra Comb** | Ta Huldrans gåva (högerklicka när hon stannat) | Trofé; man får Luck i 20 min |
+| **Wisp Ember** | I en Bog Grave dit en lyktgubbe leder | Trofé |
+| **Spirit Mask** | Ibland där en Jungle Spirit Mask stannar | Bärs på huvudet: +15 syn |
+| **Straw Yule Goat** | Ge tomten Porridge i Deepwinter (en gång per år) | Trofé |
+| **Näcken's String** | Ge Näcken ett mynt eller kött (en gång per år) | Trofé; Fiddler's Blessing (+2 Luck, 3 dagar), +30 sanity |
+| **Peat-Tanned Hide** | Bog Body | Formlöst → 1 Leather |
+| **Bog Torc** | Bog Body (10 %), Bog Grave | Trofé |
+| **Vittra Silver** | Vittrornas kista (Bergtagen) | Trofé |
+| **Dune Glass** | Slå en Dune Wraith | Trofé |
+| **Frost Heart** | Frost Giant (alltid) | Block: is inom 8 block töar inte |
+| **Mossy Troll Stone** | Worldgen i taigan | Ett sovande troll; hugg en stock nära så vaknar det |
+
 ## Borttaget och ersatt (vanilla)
 
 | Vanilla | Status |

@@ -118,7 +118,7 @@ public final class Thaw {
             break;
         }
         BlockPos below = top.below();
-        if (level.getBlockState(below).is(Blocks.ICE)) {
+        if (level.getBlockState(below).is(Blocks.ICE) && !com.mechanical.folklore.Beings.frostHeartNear(level, below)) {
             level.setBlockAndUpdate(below, Blocks.WATER.defaultBlockState());
             changed = true;
         }

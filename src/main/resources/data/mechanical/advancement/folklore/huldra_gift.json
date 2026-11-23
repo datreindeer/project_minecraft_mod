@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:folklore/huldra",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:huldra_comb"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.huldra_gift.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.huldra_gift.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

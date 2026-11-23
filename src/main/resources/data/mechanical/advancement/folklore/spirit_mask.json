@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/jungle_spirit_mask",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:spirit_mask"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:spirit_mask"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.spirit_mask.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.spirit_mask.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

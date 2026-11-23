@@ -1,0 +1,11 @@
+setup at (90.5, 200.0, 89.5)
+huldra at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder false
+huldra_back at (90.5, 200.0, 89.5) camera (93.06, 201.4, 87.58) thunder false
+will_o_wisp at (90.5, 201.0, 89.5) camera (88.74, 201.2, 90.82) thunder false
+jungle_spirit_mask at (90.5, 201.0, 89.5) camera (89.06, 200.7, 90.58) thunder false
+tomte at (90.5, 200.0, 89.5) camera (89.06, 200.8, 90.58) thunder false
+nacken at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder false
+bog_body at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder false
+mossy_troll_stone at (90.5, 200.0, 89.5) camera (88.1, 201.6, 91.3) thunder false
+dune_wraith at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder true
+frost_giant at (90.5, 200.0, 89.5) camera (84.5, 203.5, 94.0) thunder true
