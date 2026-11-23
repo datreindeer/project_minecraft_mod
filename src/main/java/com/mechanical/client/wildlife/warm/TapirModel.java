@@ -6,20 +6,16 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Malayan tapir: a heavy, rounded body that rises to a high rump (back ~17 px), short sturdy legs with small hoofed toes
- * (four in front, three behind), a short thick neck, rounded white-rimmed ears, a stubby tail and the short prehensile
- * trunk (three segments) that wiggles while it looks around and curls under while it browses.
- * Texture textures/entity/wildlife/tapir.png (64x64), painted by scripts/gen_fauna_warm_tex_mammals.py whose TAPIR_BOXES
- * table mirrors the cubes below (keep them in sync).
+ * Malayan tapir: a heavy, rounded pear-shaped body that rises to a high rump (back ~17 px), short stout legs with splayed
+ * hoofed toes, a thick neck, rounded white-rimmed ears, a stub tail and the short prehensile trunk (three segments) that
+ * wiggles while it looks around and curls under while it browses. Black with the soft-edged off-white saddle.
+ * Parts, boxes and the skin textures/entity/wildlife/tapir.png (128x64, plus the skinned carcass skin) come from
+ * scripts/gen_owarm_hoofed_models.py ({@link WarmHoofGeometry}).
  */
 public class TapirModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "tapir"), "main");
@@ -32,7 +28,7 @@ public class TapirModel extends EntityModel<WildAnimalRenderState> {
     /** Trunk droops a little at rest, each segment more than the one before. */
     private static final float TRUNK_X = 0.25F, TRUNK2_X = 0.3F, TIP_X = 0.35F;
     private static final float TAIL_X = 0.3F;
-    private static final float LIE_DROP = 7.0F, LIE_LEG_Y = 22.0F;
+    private static final float LIE_DROP = 5.2F, LIE_LEG_Y = 22.0F;
 
     private final ModelPart body;
     private final ModelPart neck;
@@ -68,60 +64,7 @@ public class TapirModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        // Barrel, and the taller, wider rump behind it: the tapir's back rises to the hips.
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create()
-                        .texOffs(0, 0).addBox(-4.5F, -4.5F, -9.0F, 9.0F, 9.0F, 16.0F)
-                        .texOffs(0, 25).addBox(-5.0F, -5.5F, 1.0F, 10.0F, 10.0F, 8.0F),
-                PartPose.offset(0.0F, 12.0F, 0.0F));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(54, 43).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -3.5F, 9.0F, TAIL_X, 0.0F, 0.0F));
-
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(36, 25).addBox(-3.0F, -3.0F, -4.0F, 6.0F, 6.0F, 5.0F),
-                PartPose.offsetAndRotation(0.0F, -1.5F, -8.5F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create().texOffs(0, 43).addBox(-2.5F, -2.5F, -6.0F, 5.0F, 5.0F, 6.0F),
-                PartPose.offsetAndRotation(0.0F, 0.5F, -3.5F, HEAD_X, 0.0F, 0.0F));
-        // Proboscis: nose and upper lip drawn out into a short trunk, three segments so it can curl.
-        PartDefinition trunk = head.addOrReplaceChild("trunk",
-                CubeListBuilder.create().texOffs(22, 43).addBox(-1.5F, -1.5F, -3.0F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -0.5F, -5.5F, TRUNK_X, 0.0F, 0.0F));
-        PartDefinition trunk2 = trunk.addOrReplaceChild("trunk2",
-                CubeListBuilder.create().texOffs(34, 43).addBox(-1.0F, -1.0F, -2.0F, 2.0F, 2.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -2.7F, TRUNK2_X, 0.0F, 0.0F));
-        trunk2.addOrReplaceChild("trunk_tip",
-                CubeListBuilder.create().texOffs(42, 43).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -1.8F, TIP_X, 0.0F, 0.0F));
-        // Rounded ears set high and back, standing up.
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(48, 43).mirror().addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-                PartPose.offsetAndRotation(1.8F, -2.2F, -1.0F, -0.35F, 0.0F, 0.25F));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(48, 43).addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-                PartPose.offsetAndRotation(-1.8F, -2.2F, -1.0F, -0.35F, 0.0F, -0.25F));
-
-        addLeg(root, "left_front_leg", 2.8F, -6.0F, false);
-        addLeg(root, "right_front_leg", -2.8F, -6.0F, false);
-        addLeg(root, "left_hind_leg", 3.0F, 5.5F, true);
-        addLeg(root, "right_hind_leg", -3.0F, 5.5F, true);
-        return LayerDefinition.create(mesh, 64, 64);
-    }
-
-    /** Short thick legs; front and hind feet have their own UVs (four toes in front, three behind). */
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(12, 54).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 5.0F, 4.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 54).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 16.0F, z));
-        leg.addOrReplaceChild("lower",
-                CubeListBuilder.create().mirror(left).texOffs(hind ? 38 : 26, 54).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 4.0F, 3.0F),
-                PartPose.offset(0.0F, 4.0F, hind ? 0.3F : 0.0F));
+        return WarmHoofGeometry.tapir();
     }
 
     @Override
@@ -156,9 +99,9 @@ public class TapirModel extends EntityModel<WildAnimalRenderState> {
         if (state.dozing) {
             MammalPose.lie(this.body, LIE_DROP, LIE_LEG_Y, age, new ModelPart[] {leftFrontLeg, rightFrontLeg},
                     new ModelPart[] {leftHindLeg, rightHindLeg});
-            this.neck.xRot = 0.45F;
+            this.neck.xRot = 0.2F; // chin on the ground
             this.neck.yRot = 0.3F;
-            this.head.xRot = 0.15F;
+            this.head.xRot = 0.05F;
             this.head.yRot = 0.2F;
             this.head.zRot = 0.1F;
             this.trunk.xRot = 0.2F; // trunk resting on the ground, the tip turned up a little

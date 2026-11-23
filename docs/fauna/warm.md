@@ -50,6 +50,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 
 - **Tortoise Shell**: + kniv → 2 Bowl; `PSP / PHP / P` (Planks, skalet, Scraped Hide) → **Shield**; + Twine + Gravel + Stick → **Shell Rattle**.
 - **Shell Rattle**: hållen i någon hand håller den rovdjur borta **som en fackla** (`mechanical:scares_predators`), utan eld.
+- Utseende: ett högt välvt skal som trappas upp från en utsvängd kantrad till en ås av upphöjda ryggsköldar; varje sköld har mörk fog, olivbruna tillväxtringar och ljus mitt, och skalet är gulbrunt till olivbrunt med en ljus bukplåt med mörka fogar. Fjällig rynkig skalle med hornnäbb på en läderartad hals, grova elefantlika framben med stora fjäll och klor, och en stubbsvans. Huvud, ben och svans dras in helt i skalet. Modell och skinn: `scripts/gen_owarm_reptiles_models.py` (WarmDryGeometry).
 
 ## Desert Lizard (ökenödla)
 
@@ -67,6 +68,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 
 - **Lizard Tail** steks till Cooked Lizard Tail (2 mat).
 - **Lizard Skin**: 3 → 1 Leather.
+- Utseende: låg platt kropp, kilformat huvud med käke, öga i en ljus ring och mörk öronöppning, utåtspretande ben med armbågarna ut och fötter med långa tår, och en lång avsmalnande svans i fyra leder. Sandfärgad med mörka tvärband, ljusa fläckar, ringad svans och ljus buk. Modell och skinn: `scripts/gen_owarm_reptiles_models.py`.
 
 ## Water Buffalo (vattenbuffel)
 
@@ -74,7 +76,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 |---|---|
 | Var | jungle, sparse jungle, swamp, mangrove swamp, Willow Fen (6, 3–5) |
 | Liv / fart | 48 / 0,23, skada 8, knuffmotstånd 0,7, steg 1; kalvar (30 %) |
-| Utseende | skiffergrå, väldiga breda bakåtsvepta horn hos alla vuxna |
+| Utseende | en massiv, djup kropp (omkring 1,6 m i manken) med en puckel över manken och hängande buk, en tjock rynkig hals, det långa huvudet buret lågt och framåt med bred våt mule, hängande öron under hornen och hos alla vuxna de väldiga platta, räfflade hornen som sveper ut och bakåt i en bred halvmåne. Skiffergrå till svartaktig gles hud, ljusgrå strumpor, två ljusa vinklar på strupen, lera på benen, tunn svans med tofs. Kalven är brunare och luddigare med stora öron, hornknoppar och långa ben. Modell och skinn: `scripts/gen_owarm_hoofed_models.py` (WarmHoofGeometry). |
 | Beteende | inte skygg (0,6). Skadar du en **anfaller alla vuxna buffler inom 16 block**. På dagen går den till grunt vatten eller lera inom 12 block och **vältrar** sig där 20–40 s. Vadar gärna och **simmar gärna** över djupt vatten: lågt som en flodhäst, bara huvud och horn över ytan, nosen högt så att hornen ligger bakåt. **Tjock hud**: kräver Tusk Dagger eller bättre för att styckas. |
 | Ljud | kons (moody), mycket mörkare |
 
@@ -95,6 +97,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 |---|---|
 | Var | jungle, sparse jungle, bamboo jungle (6, 1–2) |
 | Liv / fart | 26 / 0,26, steg 1; randiga ungar (40 %) |
+| Utseende | malajisk tapir: en tung, rund päronformad kropp som är högst över länden, en kort rörlig snabel över överläppen, små ögon, runda öron med vit kant, korta kraftiga ben med utspärrade tår och en stump till svans. Svart med en mjukt kantad gräddvit sadel över bakre halvan och buken. Ungen är kastanjebrun med gräddvita ränder och prickar ("vattenmelon"). Modell och skinn: `scripts/gen_owarm_hoofed_models.py` (WarmHoofGeometry). |
 | Beteende | skygg (1,6). Skrämd **springer den till närmaste djupa vatten** (2 block) inom 16 block och stannar i vattnet tills paniken är över; annars flyr den som andra. **Simmar gärna** och fort: kroppen nästan under ytan, snabeln uppåt som en snorkel, snabba hundsimtag. |
 | Ljud | grisens (stora), mörkare; tyst annars |
 
@@ -124,6 +127,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Bone | 1–2 | 60 % |
 
 - **Raw Leopard Pelt** + kniv + fett → **Leopard Pelt**. 2 Leopard Pelt + Bone → **Leopard Rug** (platt matta, Bear Rug-modellen); Leopard Pelt + kniv → 2 Leather.
+- Utseende: guldgul rygg som bleknar till gräddvit buk, med riktiga rosetter (mörka ringar brutna i 3–5 fläckar runt en lite mörkare mitt) på rygg och flanker och massiva fläckar på huvud, ben och buk. Runt huvud med kort nos, vita morrhårsdynor med prickar, grönbärnstensgula ögon och små runda öron med svart baksida och vit fläck. Den långa svansens fläckar övergår i ringar och slutar i en mörk spets. Modell och skinn: `scripts/gen_owarm_reptiles_models.py`; mattan och pälsen behåller sina föremålstexturer.
 
 ## Hornbill (hornfågel)
 
@@ -139,6 +143,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Hornbill Casque | 1 | alltid (plockning) |
 | Raw Hornbill | 1 | – |
 
+- Utseende: svart kropp med vit buk och vita lår, raggig gräddvit hals och krage, svart ansikte med rött öga, den långa nedåtböjda gula näbben i tre steg under den stora uppåtböjda hjälmen (casque) med svarta fram- och bakkanter, svarta vingar med gräddvitt band och vita spetsar, och en lång vit stjärt med svart band. Modell och skinn: `scripts/gen_owarm_birds_models.py` (WarmBirdGeometry).
 - **Hornbill Casque** ("rött elfenben"): + kniv → 2 Bone Needle; ensam → 2 Orange Dye.
 
 ## Jungle Fowl (röd djungelhöna)
@@ -155,6 +160,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Feather | 1–3 | alltid |
 | Raw Jungle Fowl | 1 | – |
 
+- Utseende: tuppen har sågtandad röd kam och slör, rött bart ansikte med vit örontofs, gyllene nackfjädrar (hackles) som faller över axlarna, rödbrun sadel, grönsvart bröst, en hög hopfälld stjärt med de glänsande bågformade skärorna (sickle) och grå ben med sporrar. Hönan är spräcklig brun med ljusare bröst och liten kam. Modell och skinn: `scripts/gen_owarm_birds_models.py`; kycklingen behåller PheasantChickModel.
 - **Jungle Fowl Egg**: kokas på Campfire till Boiled Egg. **Kastat** kan det kläcka en kyckling som ett vanligt ägg – hönans vilda förfader.
 
 ## Peafowl (påfågel)
@@ -172,6 +178,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Peacock Feather | 1–3 | 60 % |
 | Raw Peafowl | 1 | – |
 
+- Utseende: påfågeltuppen har blå hals och blått bröst, en krona av nakna fjäderskaft med blå tofsar, vita streck över och under ögat, fjällig grön rygg, bandade vingar med kastanjebruna handpennor och ett släp av sju långa paneler med ögonfläckar som reser sig till ett stort solfjäder. Hönan är brun med grön hals, vit buk och krona. Modell och skinn: `scripts/gen_owarm_birds_models.py`.
 - **Peacock Feather**: + kniv → 3 Feather (fjädring); 2 → Cyan Dye.
 
 ## Avancemang

@@ -6,21 +6,17 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Leopard: a lithe cat, smaller and lower than the cave lion - long body with a deep chest and muscular shoulders, broad
- * head with small round ears, big paws, and a long thick tail in three segments that hangs in a low curve with the tip
+ * Leopard: a lithe cat, smaller and lower than the cave lion - long body with a deep chest and muscular shoulders, round
+ * head with a short muzzle and small round ears, big paws, and a long thick tail in three segments that hangs in a low curve with the tip
  * turned up. Moves and hunts like the cave lion (same states as the shared PredatorModel: trot and bound, nose to the
  * ground, crouched stalk, pounce, the rasping call), but sleeps draped over a branch with all four legs and the tail
- * dangling. Texture 128x64: textures/entity/wildlife/leopard.png, painted by scripts/gen_fauna_warm_tex_dry.py whose
- * LEOPARD table mirrors the cubes below (keep them in sync).
+ * dangling. Parts, boxes and the 128x64 rosetted skin (textures/entity/wildlife/leopard.png plus the skinned carcass skin)
+ * come from one table in scripts/gen_owarm_reptiles_models.py ({@link WarmDryGeometry}).
  */
 public class LeopardModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "leopard"), "main");
@@ -52,50 +48,7 @@ public class LeopardModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create()
-                        .texOffs(0, 0).addBox(-3.5F, -4.0F, -9.0F, 7.0F, 8.0F, 10.0F)    // deep chest
-                        .texOffs(0, 18).addBox(-3.0F, -3.5F, 1.0F, 6.0F, 7.0F, 9.0F)     // loins and rump
-                        .texOffs(34, 0).addBox(-4.0F, -3.0F, -8.0F, 8.0F, 6.0F, 5.0F)    // shoulders
-                        .texOffs(60, 0).addBox(-2.5F, -3.5F, -12.0F, 5.0F, 6.0F, 4.0F),  // neck
-                PartPose.offset(0.0F, 13.0F, 0.0F));
-        PartDefinition t0 = body.addOrReplaceChild("tail0", CubeListBuilder.create().texOffs(34, 11).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 8.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, 9.5F, TAIL_REST[0], 0.0F, 0.0F));
-        PartDefinition t1 = t0.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(42, 11).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 7.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 7.8F, 0.0F, TAIL_REST[1], 0.0F, 0.0F));
-        t1.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(50, 11).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 6.8F, 0.0F, TAIL_REST[2], 0.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(78, 0).addBox(-3.0F, -3.5F, -4.5F, 6.0F, 5.0F, 5.0F)
-                        .texOffs(100, 0).addBox(-2.0F, -1.5F, -7.5F, 4.0F, 2.0F, 3.0F),
-                PartPose.offset(0.0F, -2.5F, -11.5F));
-        head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(100, 5).addBox(-1.5F, 0.0F, -3.0F, 3.0F, 1.0F, 3.0F),
-                PartPose.offset(0.0F, 0.5F, -4.5F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(114, 0).addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.2F, -3.2F, -1.5F, 0.0F, 0.0F, -0.25F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(114, 0).mirror().addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(2.2F, -3.2F, -1.5F, 0.0F, 0.0F, 0.25F));
-        for (float x : new float[] {-2.2F, 2.2F}) {
-            boolean left = x > 0;
-            PartDefinition front = root.addOrReplaceChild(left ? "left_front_leg" : "right_front_leg",
-                    CubeListBuilder.create().mirror(left).texOffs(60, 10).addBox(-1.5F, -2.0F, -2.0F, 3.0F, 6.0F, 4.0F),
-                    PartPose.offset(x, 14.0F, -6.0F));
-            front.addOrReplaceChild("lower", lowerLeg(left), PartPose.offset(0.0F, 4.0F, 0.0F));
-            PartDefinition hind = root.addOrReplaceChild(left ? "left_hind_leg" : "right_hind_leg",
-                    CubeListBuilder.create().mirror(left).texOffs(30, 21).addBox(-1.5F, -2.0F, -2.5F, 3.0F, 7.0F, 5.0F),
-                    PartPose.offset(x, 13.0F, 7.5F));
-            hind.addOrReplaceChild("lower", lowerLeg(left), PartPose.offset(0.0F, 5.0F, 1.0F));
-        }
-        return LayerDefinition.create(mesh, 128, 64);
-    }
-
-    private static CubeListBuilder lowerLeg(boolean mirror) {
-        return CubeListBuilder.create().mirror(mirror)
-                .texOffs(74, 10).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F)
-                .texOffs(82, 10).addBox(-1.5F, 5.0F, -2.5F, 3.0F, 1.0F, 4.0F);
+        return WarmDryGeometry.leopard();
     }
 
     private static ModelPart lower(ModelPart leg) {

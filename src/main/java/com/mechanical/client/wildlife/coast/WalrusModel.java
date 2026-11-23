@@ -6,11 +6,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -18,8 +14,8 @@ import net.minecraft.util.Mth;
  * Walrus: a massive barrel of a body (deep chest, broad hips), a small round head on a thick neck with a broad bristly
  * whisker pad and two ivory tusks hanging from the upper jaw, long fore flippers it walks on, hind flippers trailing
  * flat. Lumbers on land (heavy rolling gait), sculls with the hind flippers in the water, rears its head and tusks when
- * it warns or charges. The calf has no tusks. Rendered at 1.5x (the renderer). Texture: walrus.png / walrus_calf.png
- * (128x64), painted by scripts/gen_fauna_coast_textures.py.
+ * it warns or charges. The calf has no tusks. Rendered at 1.5x (the renderer). Parts, boxes and skins (walrus.png /
+ * walrus_calf.png, 128x128, and the skinned walrus.png): {@link CoastGeometry#walrus()} from scripts/gen_owarm_coast_models.py.
  */
 public class WalrusModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "walrus"), "main");
@@ -41,29 +37,7 @@ public class WalrusModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-8.0F, -7.0F, -6.0F, 16.0F, 14.0F, 13.0F)
-                .texOffs(58, 0).addBox(-7.0F, -6.0F, -12.0F, 14.0F, 12.0F, 6.0F), PartPose.offset(0.0F, 17.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(38, 27).addBox(-4.5F, -4.0F, -6.0F, 9.0F, 8.0F, 6.0F)
-                .texOffs(82, 27).addBox(-4.0F, -0.5F, -9.0F, 8.0F, 5.0F, 3.0F), PartPose.offset(0.0F, -3.0F, -12.0F));
-        head.addOrReplaceChild("right_tusk", CubeListBuilder.create().texOffs(124, 27).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 6.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.5F, 4.5F, -8.0F, TUSK_X, 0.0F, TUSK_Z));
-        head.addOrReplaceChild("left_tusk", CubeListBuilder.create().texOffs(124, 27).mirror().addBox(-0.5F, 0.0F, -0.5F, 1.0F, 6.0F, 1.0F),
-                PartPose.offsetAndRotation(2.5F, 4.5F, -8.0F, TUSK_X, 0.0F, -TUSK_Z));
-        PartDefinition hips = body.addOrReplaceChild("hips", CubeListBuilder.create()
-                .texOffs(0, 27).addBox(-6.0F, -5.0F, 0.0F, 12.0F, 11.0F, 7.0F), PartPose.offset(0.0F, 1.0F, 7.0F));
-        hips.addOrReplaceChild("right_hind", CubeListBuilder.create().texOffs(104, 27).addBox(-2.0F, -0.5F, 0.0F, 4.0F, 1.0F, 6.0F),
-                PartPose.offset(-3.5F, 5.0F, 7.0F));
-        hips.addOrReplaceChild("left_hind", CubeListBuilder.create().texOffs(104, 27).mirror().addBox(-2.0F, -0.5F, 0.0F, 4.0F, 1.0F, 6.0F),
-                PartPose.offset(3.5F, 5.0F, 7.0F));
-        root.addOrReplaceChild("right_front", CubeListBuilder.create().texOffs(68, 27).addBox(-1.5F, 0.0F, -2.0F, 3.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(-6.5F, 18.0F, -9.0F, 0.0F, 0.0F, FRONT_Z));
-        root.addOrReplaceChild("left_front", CubeListBuilder.create().texOffs(68, 27).mirror().addBox(-1.5F, 0.0F, -2.0F, 3.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(6.5F, 18.0F, -9.0F, 0.0F, 0.0F, -FRONT_Z));
-        return LayerDefinition.create(mesh, 128, 64);
+        return CoastGeometry.walrus();
     }
 
     @Override

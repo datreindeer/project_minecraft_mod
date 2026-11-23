@@ -39,17 +39,17 @@ public final class CoastClient {
 
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        // seal: half its 10 px body, at 0.85x; walrus: half its 16 px body, at 1.5x
+        // seal: half its 11 px wide body (flank bulges), at 0.85x; walrus: half its 18 px wide sagging body, at 1.5x
         event.registerEntityRenderer(CoastFauna.SEAL.get(), c -> {
             SealModel model = new SealModel(c.bakeLayer(SealModel.LAYER));
-            return new ScaledRenderer<>(c, model, 0.55F, 0.6F, 0.85F, carcassShift(1.0F, 5 * 0.85F / 16));
+            return new ScaledRenderer<>(c, model, 0.55F, 0.6F, 0.85F, carcassShift(1.0F, 5.5F * 0.85F / 16));
         });
         event.registerEntityRenderer(CoastFauna.WALRUS.get(), c -> {
             WalrusModel model = new WalrusModel(c.bakeLayer(WalrusModel.LAYER));
-            return new ScaledRenderer<>(c, model, 0.5F, 1.3F, 1.5F, carcassShift(2.0F, 8 * 1.5F / 16));
+            return new ScaledRenderer<>(c, model, 0.5F, 1.3F, 1.5F, carcassShift(2.0F, 9 * 1.5F / 16));
         });
         event.registerEntityRenderer(CoastFauna.PIKE.get(), c -> new FishRenderer<>(c, new PikeModel(c.bakeLayer(PikeModel.LAYER)),
-                Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/pike.png"), 0.3F, 1.0F, 0.0F));
+                Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/pike.png"), 0.3F, 0.8F, 0.0F));
         event.registerEntityRenderer(CoastFauna.STURGEON.get(), c -> new FishRenderer<>(c, new SturgeonModel(c.bakeLayer(SturgeonModel.LAYER)),
                 Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/sturgeon.png"), 0.6F, 0.85F, carcassShift(1.3F, 3 * 0.85F / 16)));
     }

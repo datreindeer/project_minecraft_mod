@@ -6,21 +6,18 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Water buffalo: a huge, low-slung barrel (back ~20 px) on short thick legs with big splayed hooves, a short thick neck
- * carrying the long head low and forward, droopy ears, and (grown animals, {@code showsHorns}) the huge horns: broad
- * flat ridged bases sweeping out sideways and back in a wide crescent, the tips turned up and in.
+ * Water buffalo: a massive deep body (about 1.6 m at the withers) with the hump of the withers and a sagging belly, a
+ * thick wrinkled neck carrying the long head low and forward, a broad wet muzzle, droopy ears under the horns, and (grown
+ * animals, {@code showsHorns}) the huge flat ridged horns sweeping out and back from the brow in a wide crescent, four
+ * segments under "horns". Short thick legs on big splayed hooves; a thin tasselled tail.
  * {@link WarmRenderState#wallowing}: lying in shallow water or mud, the head stretched out low with the chin in the water.
- * Texture textures/entity/wildlife/water_buffalo.png (128x64), painted by scripts/gen_fauna_warm_tex_mammals.py whose
- * BUFFALO_BOXES table mirrors the cubes below (keep them in sync).
+ * Parts, boxes and the skin textures/entity/wildlife/water_buffalo.png (128x128, plus the skinned carcass skin) come from
+ * scripts/gen_owarm_hoofed_models.py ({@link WarmHoofGeometry}).
  */
 public class WaterBuffaloModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "water_buffalo"), "main");
@@ -36,8 +33,8 @@ public class WaterBuffaloModel extends EntityModel<WildAnimalRenderState> {
     private static final float CHARGE_HEAD_X = 1.0F;
     private static final float TAIL_X = 0.1F;
     private static final float EAR_Z = 0.6F;
-    /** Lying: body down 8 px (belly on the ground), folded legs at y = 22. */
-    private static final float LIE_DROP = 8.0F, LIE_LEG_Y = 22.0F;
+    /** Lying: body down 10.5 px (belly on the ground), folded legs at y = 21.5. */
+    private static final float LIE_DROP = 10.5F, LIE_LEG_Y = 21.5F;
 
     private final ModelPart body;
     private final ModelPart neck;
@@ -69,78 +66,7 @@ public class WaterBuffaloModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        // One massive barrel, wider than it is tall, low on the legs.
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-7.0F, -6.0F, -11.0F, 14.0F, 12.0F, 22.0F),
-                PartPose.offset(0.0F, 10.0F, 0.0F));
-        // Long thin tail with a small dark switch.
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create()
-                        .texOffs(122, 16).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 11.0F, 1.0F)
-                        .texOffs(100, 26).addBox(-1.0F, 10.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -5.0F, 11.0F, TAIL_X, 0.0F, 0.0F));
-
-        // Short, thick neck running forward (-z) out of the chest.
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(72, 0).addBox(-3.5F, -4.5F, -6.0F, 7.0F, 8.0F, 7.0F),
-                PartPose.offsetAndRotation(0.0F, -2.0F, -10.5F, NECK_X, 0.0F, 0.0F));
-        // Broad skull and a long muzzle in front of it.
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(100, 0).addBox(-3.5F, -3.5F, -5.0F, 7.0F, 7.0F, 5.0F)
-                        .texOffs(72, 16).addBox(-2.5F, -1.0F, -9.0F, 5.0F, 5.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, -5.5F, HEAD_X, 0.0F, 0.0F));
-        // Ears stick out sideways under the horn roots and droop.
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(90, 16).mirror().addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(4.5F, -0.5F, -1.5F, 0.0F, 0.0F, EAR_Z));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(90, 16).addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(-4.5F, -0.5F, -1.5F, 0.0F, 0.0F, -EAR_Z));
-
-        PartDefinition horns = head.addOrReplaceChild("horns", CubeListBuilder.create(), PartPose.ZERO);
-        addHorn(horns, "left_", 1.0F);
-        addHorn(horns, "right_", -1.0F);
-
-        addLeg(root, "left_front_leg", 4.5F, -8.0F, false);
-        addLeg(root, "right_front_leg", -4.5F, -8.0F, false);
-        addLeg(root, "left_hind_leg", 4.5F, 8.0F, true);
-        addLeg(root, "right_hind_leg", -4.5F, 8.0F, true);
-        return LayerDefinition.create(mesh, 128, 64);
-    }
-
-    /**
-     * Horn: three segments, each built along -y and bent at its root. The base is broad front-to-back and flat (a ridged
-     * plate) and points out sideways, just above level; the middle sweeps back; the thin tip turns up and in.
-     * side = +1 left, -1 right.
-     */
-    private static void addHorn(PartDefinition horns, String p, float side) {
-        PartDefinition base = horns.addOrReplaceChild(p + "horn",
-                CubeListBuilder.create().texOffs(100, 16).addBox(-1.0F, -5.0F, -1.5F, 2.0F, 5.0F, 3.0F),
-                PartPose.offsetAndRotation(2.5F * side, -3.0F, -2.5F, -0.15F, 0.0F, 1.5F * side));
-        PartDefinition mid = base.addOrReplaceChild(p + "horn_mid",
-                CubeListBuilder.create().texOffs(110, 16).addBox(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -4.5F, 0.0F, -0.75F, 0.0F, -0.35F * side));
-        mid.addOrReplaceChild(p + "horn_tip",
-                CubeListBuilder.create().texOffs(118, 16).addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -4.5F, 0.0F, -0.45F, 0.0F, -0.85F * side));
-    }
-
-    /** Thick forearm / thigh, the short cannon bone with the big splayed hoof as a child (knee / hock flex, folds for lying). */
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(20, 36).addBox(-2.5F, -1.0F, -3.0F, 5.0F, 5.0F, 6.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 36).addBox(-2.5F, -1.0F, -2.5F, 5.0F, 5.0F, 5.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 15.0F, z));
-        leg.addOrReplaceChild("lower",
-                CubeListBuilder.create().mirror(left)
-                        .texOffs(42, 36).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 4.0F, 4.0F)
-                        .texOffs(58, 36).addBox(-2.5F, 4.0F, -3.0F, 5.0F, 1.0F, 5.0F),
-                PartPose.offset(0.0F, 4.0F, hind ? 0.5F : 0.0F));
+        return WarmHoofGeometry.waterBuffalo();
     }
 
     @Override
@@ -181,9 +107,9 @@ public class WaterBuffaloModel extends EntityModel<WildAnimalRenderState> {
             if (wallowing) {
                 // neck stretched straight out, chin down in the water, now and then a slow ear flick at the flies
                 this.body.y += 0.5F;
-                this.neck.xRot = 0.3F;
+                this.neck.xRot = 0.1F;
                 this.neck.yRot = Mth.sin(age * 0.02F + seed) * 0.12F;
-                this.head.xRot = 0.05F + Mth.sin(age * 0.05F) * 0.03F;
+                this.head.xRot = Mth.sin(age * 0.05F) * 0.03F;
                 this.head.yRot = 0.0F;
                 this.leftEar.zRot = EAR_Z - MammalPose.flick(age + seed * 7.0F, 90.0F, 14.0F) * 0.6F;
                 this.rightEar.zRot = -EAR_Z + MammalPose.flick(age + 40.0F, 110.0F, 14.0F) * 0.6F;
@@ -192,9 +118,9 @@ public class WaterBuffaloModel extends EntityModel<WildAnimalRenderState> {
                 return;
             }
             // asleep: head down on the ground, turned a little to one side
-            this.neck.xRot = 0.55F;
+            this.neck.xRot = 0.1F; // the long head stretched out, chin on the ground
             this.neck.yRot = 0.35F;
-            this.head.xRot = 0.3F;
+            this.head.xRot = 0.1F;
             this.head.yRot = 0.2F;
             this.head.zRot = 0.12F;
             this.leftEar.zRot = 0.9F;

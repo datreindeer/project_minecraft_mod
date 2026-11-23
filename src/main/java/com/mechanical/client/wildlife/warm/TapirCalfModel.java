@@ -6,18 +6,14 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Tapir calf, built at baby size: a round little body in the striped-and-spotted "watermelon" coat, a big head with a
- * stubby two-segment trunk, round ears, short legs. Back ~12 px. Texture textures/entity/wildlife/tapir_calf.png (64x32),
- * painted by scripts/gen_fauna_warm_tex_mammals.py (TAPIR_CALF_BOXES mirrors the cubes below).
+ * Tapir calf, built at baby size: a round little body in the chestnut, cream-striped and spotted "watermelon" coat, a big
+ * head with a stubby two-segment trunk, round white-rimmed ears, short legs. Back ~12 px. Parts, boxes and the skin
+ * textures/entity/wildlife/tapir_calf.png (64x64) come from scripts/gen_owarm_hoofed_models.py ({@link WarmHoofGeometry}).
  */
 public class TapirCalfModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "tapir_calf"), "main");
@@ -27,7 +23,7 @@ public class TapirCalfModel extends EntityModel<WildAnimalRenderState> {
     private static final float GRAZE_NECK_X = 0.7F;
     private static final float GRAZE_HEAD_X = 0.7F;
     private static final float TRUNK_X = 0.3F, TIP_X = 0.35F;
-    private static final float LIE_DROP = 5.0F, LIE_LEG_Y = 22.5F;
+    private static final float LIE_DROP = 3.0F, LIE_LEG_Y = 22.5F;
 
     private final ModelPart body;
     private final ModelPart neck;
@@ -59,48 +55,7 @@ public class TapirCalfModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -3.0F, -5.5F, 6.0F, 6.0F, 11.0F),
-                PartPose.offset(0.0F, 15.0F, 0.0F));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(58, 0).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -2.0F, 5.5F, 0.35F, 0.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(34, 0).addBox(-2.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -0.5F, -5.0F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create().texOffs(34, 8).addBox(-2.0F, -2.0F, -4.0F, 4.0F, 4.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, 0.3F, -2.5F, HEAD_X, 0.0F, 0.0F));
-        PartDefinition trunk = head.addOrReplaceChild("trunk",
-                CubeListBuilder.create().texOffs(50, 0).addBox(-1.0F, -1.0F, -2.0F, 2.0F, 2.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -0.3F, -3.7F, TRUNK_X, 0.0F, 0.0F));
-        trunk.addOrReplaceChild("trunk_tip",
-                CubeListBuilder.create().texOffs(50, 4).addBox(-0.5F, -0.5F, -2.0F, 1.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 0.2F, -1.8F, TIP_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(56, 4).mirror().addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(1.5F, -1.8F, -0.8F, -0.3F, 0.0F, 0.35F));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(56, 4).addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(-1.5F, -1.8F, -0.8F, -0.3F, 0.0F, -0.35F));
-
-        addLeg(root, "left_front_leg", 1.8F, -3.5F, false);
-        addLeg(root, "right_front_leg", -1.8F, -3.5F, false);
-        addLeg(root, "left_hind_leg", 1.8F, 3.5F, true);
-        addLeg(root, "right_hind_leg", -1.8F, 3.5F, true);
-        return LayerDefinition.create(mesh, 64, 32);
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(8, 17).addBox(-1.0F, -1.0F, -1.5F, 2.0F, 4.0F, 3.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 17).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 4.0F, 2.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 17.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(18, 17).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offset(0.0F, 3.0F, hind ? 0.3F : 0.0F));
+        return WarmHoofGeometry.tapirCalf();
     }
 
     @Override
@@ -131,9 +86,9 @@ public class TapirCalfModel extends EntityModel<WildAnimalRenderState> {
         if (state.dozing) {
             MammalPose.lie(this.body, LIE_DROP, LIE_LEG_Y, age, new ModelPart[] {leftFrontLeg, rightFrontLeg},
                     new ModelPart[] {leftHindLeg, rightHindLeg});
-            this.neck.xRot = 0.4F;
+            this.neck.xRot = 0.25F; // chin on the ground
             this.neck.yRot = 0.4F;
-            this.head.xRot = 0.15F;
+            this.head.xRot = 0.1F;
             this.head.yRot = 0.25F;
             this.head.zRot = 0.12F;
             this.trunk.xRot = 0.15F;
