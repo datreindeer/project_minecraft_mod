@@ -30,6 +30,9 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  * the world "FolkShots", builds a grass platform at y 200 at night (night vision on, Faith 100, creative flying so the
  * spirits are seen) and photographs each folklore being at eye level from three quarters, the front, the side and the
  * back (folklore_&lt;name&gt;[_front|_side|_back].png); the Dune Wraith and Frost Giant last, in a winter thunderstorm. Then it quits. Does nothing without the flag file. Same pattern as JungleShots.
+ * With "watcher" on the flag file's second line it photographs only the Mountain Watcher instead, by day: perched and
+ * held in flight from all round (folklore_mountain_watcher_&lt;n&gt;.png), then free and circling, seen from the platform
+ * (folklore_mountain_watcher_sky&lt;n&gt;.png).
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class FolkShots {
@@ -37,6 +40,12 @@ public final class FolkShots {
     private static File out;
     private static Vec3 base;
     private static Mob current;
+    private static boolean watcher;
+    /** The Watcher's views: angle round from its front, camera height over the platform, distance, bird height, flying (1). */
+    private static final double[][] WATCHER_VIEWS = {{35, 1.6, 4.5, 0, 0}, {0, 1.3, 4.5, 0, 0}, {90, 1.3, 4.5, 0, 0}, {180, 1.6, 4.5, 0, 0},
+            {35, 1.8, 2.8, 0, 0}, {35, 5.5, 7.5, 3, 1}, {90, 1.8, 8.0, 3.5, 1}, {0, 3.2, 7.0, 3, 1}, {160, 8.5, 6.0, 3, 1},
+            {210, 0.2, 6.5, 4, 1}, {60, 3.6, 2.8, 3, 1}, {20, 6.2, 4.2, 3, 1}, {0, 9.5, 1.0, 3, 1}, {75, 5.6, 3.0, 3, 1}};
+    private static final int SKY_SHOTS = 2;
     private static final List<String> result = new ArrayList<>();
 
     /** name, type (null: the Mossy Troll Stone blocks), camera distance, camera height (eye level), storm. */
@@ -67,7 +76,9 @@ public final class FolkShots {
                     stage = -2;
                     return;
                 }
-                out = new File(Files.readAllLines(flag.toPath()).get(0).trim());
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                watcher = lines.size() > 1 && lines.get(1).trim().equals("watcher");
                 out.mkdirs();
                 stage = 0;
             }
@@ -94,6 +105,10 @@ public final class FolkShots {
                 mc.options.setCameraType(CameraType.FIRST_PERSON);
                 stage = 2;
                 ticks = 0;
+                return;
+            }
+            if (stage == 2 && watcher) {
+                watcherTick(mc, server);
                 return;
             }
             if (stage == 2) {
@@ -141,6 +156,107 @@ public final class FolkShots {
             stage = -2;
             mc.stop();
         }
+    }
+
+    private static void watcherTick(Minecraft mc, net.minecraft.server.MinecraftServer server) throws Exception {
+        if (index == 0 && ticks == 5) server.execute(() -> {
+            cmd("time set noon");
+            cmd("weather clear");
+            cmd("effect clear @a minecraft:night_vision");
+            // Watchers left in the world by an earlier run (they cannot be killed)
+            for (var e : player().level().getEntities(com.mechanical.folklore.Folklore.MOUNTAIN_WATCHER.get(), x -> true)) e.discard();
+        });
+        if (index < WATCHER_VIEWS.length) {
+            double[] v = WATCHER_VIEWS[index];
+            int n = index;
+            if (ticks == 30) server.execute(() -> holdWatcher(v));
+            if (ticks == 60) shot(mc, "mountain_watcher_" + n);
+            if (ticks == 65) {
+                index++;
+                ticks = 0;
+            }
+            return;
+        }
+        int k = index - WATCHER_VIEWS.length;
+        if (k == 0 && ticks == 1) server.execute(() -> {
+            // free: high over the platform, flying, left to circle
+            if (current != null) current.discard();
+            Mob mob = com.mechanical.folklore.Folklore.MOUNTAIN_WATCHER.get().create(player().level(), EntitySpawnReason.COMMAND);
+            mob.snapTo(base.x + 2, base.y + 14, base.z, 0, 0);
+            mob.setPersistenceRequired();
+            setFlying(mob);
+            player().level().addFreshEntity(mob);
+            current = mob;
+        });
+        if (k >= SKY_SHOTS) {
+            if (ticks > 20) {
+                Files.write(new File(out, "folklore_result.txt").toPath(), result);
+                stage = -2;
+                mc.stop();
+            }
+            return;
+        }
+        int wait = k == 0 ? 200 : 50;
+        if (ticks > wait - 10 && ticks <= wait) server.execute(FolkShots::lookAtWatcher);
+        if (ticks == wait + 2) shot(mc, "mountain_watcher_sky" + k);
+        if (ticks == wait + 5) {
+            index++;
+            ticks = 0;
+        }
+    }
+
+    /** The Watcher held still (no AI) at the given height, perched or in flight, the camera round it. */
+    private static void holdWatcher(double[] v) {
+        ServerLevel level = player().level();
+        if (current == null) {
+            Mob mob = com.mechanical.folklore.Folklore.MOUNTAIN_WATCHER.get().create(level, EntitySpawnReason.COMMAND);
+            mob.setNoAi(true);
+            mob.setPersistenceRequired();
+            mob.snapTo(base.x, base.y, base.z, 0, 0);
+            level.addFreshEntity(mob);
+            current = mob;
+        }
+        if (v[4] > 0 && current instanceof com.mechanical.wildlife.FlockBird b && !b.isFlying()) setFlying(b);
+        current.setNoGravity(v[4] > 0);
+        current.teleportTo(base.x, base.y + v[3], base.z);
+        current.setYRot(0);
+        current.setYHeadRot(0);
+        current.setYBodyRot(0);
+        Vec3 at = current.position().add(0, current.getBbHeight() * 0.5, 0);
+        double a = Math.toRadians(v[0]);
+        Vec3 cam = new Vec3(base.x + Math.sin(a) * v[2], base.y + v[1], base.z + Math.cos(a) * v[2]);
+        look(cam, at);
+        result.add("watcher view " + java.util.Arrays.toString(v) + " flying " + ((com.mechanical.wildlife.FlockBird) current).isFlying());
+    }
+
+    private static void lookAtWatcher() {
+        if (current == null) return;
+        look(base.add(0, 1.6, 0), current.position().add(0, 0.6, 0));
+        result.add("sky: watcher at " + current.position() + " flying " + ((com.mechanical.wildlife.FlockBird) current).isFlying());
+    }
+
+    /** FlockBird's synced FLYING flag (private: its takeOff also sets course and plays a sound). */
+    @SuppressWarnings("unchecked")
+    private static void setFlying(Mob bird) {
+        try {
+            var f = com.mechanical.wildlife.FlockBird.class.getDeclaredField("FLYING");
+            f.setAccessible(true);
+            bird.getEntityData().set((net.minecraft.network.syncher.EntityDataAccessor<Boolean>) f.get(null), true);
+            bird.setNoGravity(true);
+            var timer = com.mechanical.wildlife.FlockBird.class.getDeclaredField("flightTimer");
+            timer.setAccessible(true);
+            timer.setInt(bird, 100000); // stays up for the whole series
+        } catch (ReflectiveOperationException e) {
+            result.add("flying: " + e);
+        }
+    }
+
+    private static void look(Vec3 cam, Vec3 at) {
+        Vec3 v = at.subtract(cam);
+        float yaw = (float) (Math.atan2(-v.x, v.z) * 180 / Math.PI);
+        float pitch = (float) (-Math.atan2(v.y, Math.sqrt(v.x * v.x + v.z * v.z)) * 180 / Math.PI);
+        ServerPlayer p = player();
+        p.teleportTo(p.level(), cam.x, cam.y - p.getEyeHeight(), cam.z, java.util.Set.of(), yaw, pitch, true);
     }
 
     private static ServerPlayer player() {

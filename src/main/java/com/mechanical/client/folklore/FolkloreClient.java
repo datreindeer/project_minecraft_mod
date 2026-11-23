@@ -2,7 +2,8 @@ package com.mechanical.client.folklore;
 
 import com.mechanical.Mechanical;
 import com.mechanical.client.wildlife.WildAnimalRenderState;
-import com.mechanical.client.wildlife.forestbirds.ForestBirdModel;
+import com.mechanical.client.wildlife.BirdRenderState;
+import com.mechanical.client.wildlife.SmallGeometry;
 import com.mechanical.client.wildlife.forestbirds.ForestBirdRenderer;
 import com.mechanical.folklore.Faith;
 import com.mechanical.folklore.Folklore;
@@ -15,6 +16,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.EyesLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -29,15 +33,15 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 /**
- * Folklore on the client: the Mountain Watcher is drawn only for a player whose sight reaches {@link Faith#WATCHER_SIGHT}
- * (no model, shadow or name otherwise), and Second Sight makes you "a little high": a soft violet vignette and a slow sway.
+ * Folklore on the client: the Mountain Watcher ({@link WatcherRenderer}, {@link MountainWatcherModel}) is drawn only for a
+ * player whose sight reaches {@link Faith#WATCHER_SIGHT} (no model, shadow or name otherwise), and Second Sight makes you "a little high": a soft violet vignette and a slow sway.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class FolkloreClient {
     static final Identifier LAYER = Identifier.fromNamespaceAndPath(Mechanical.MODID, "second_sight");
     private static final Identifier VIGNETTE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/misc/sanity_vignette.png");
-    /** The Watcher is the golden eagle's build, this much bigger. */
-    static final float WATCHER_SCALE = 1.4F;
+    /** The Watcher's model is drawn this much bigger. */
+    static final float WATCHER_SCALE = 1.5F;
 
     @SubscribeEvent
     static void setup(FMLClientSetupEvent event) {
@@ -46,19 +50,55 @@ public final class FolkloreClient {
 
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(Folklore.MOUNTAIN_WATCHER.get(), c -> new ForestBirdRenderer(c,
-                new ForestBirdModel(c.bakeLayer(ForestBirdModel.GOLDEN_EAGLE), 0.4F, 0.55F, 0.45F), 0.0F) {
-            @Override
-            public boolean shouldRender(FlockBird bird, Frustum frustum, double camX, double camY, double camZ, float partialTicks) {
-                return Faith.canSee(Minecraft.getInstance().player, Faith.WATCHER_SIGHT) && super.shouldRender(bird, frustum, camX, camY, camZ, partialTicks);
-            }
+        event.registerEntityRenderer(Folklore.MOUNTAIN_WATCHER.get(), WatcherRenderer::new);
+    }
 
-            @Override
-            protected void scale(WildAnimalRenderState state, PoseStack poseStack) {
-                super.scale(state, poseStack);
-                poseStack.scale(WATCHER_SCALE, WATCHER_SCALE, WATCHER_SCALE);
-            }
-        });
+    @SubscribeEvent
+    static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(MountainWatcherModel.LAYER, SmallGeometry::mountainWatcher);
+    }
+
+    /**
+     * The Watcher: its own model, drawn {@link #WATCHER_SCALE} times, its eyes, runes and feather tips glowing faintly
+     * (mountain_watcher_glow.png, full bright). It beats its wings only now and then, slow and deep, and glides on.
+     */
+    static class WatcherRenderer extends ForestBirdRenderer {
+        private static final RenderType GLOW = RenderTypes.eyes(Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wildlife/mountain_watcher_glow.png"));
+        /** Ticks between bursts of wing beats, how long a burst lasts, and the beat speed (radians per tick). */
+        static final float CYCLE = 260, BURST = 60, BEAT = 0.24F;
+
+        WatcherRenderer(EntityRendererProvider.Context c) {
+            super(c, new MountainWatcherModel(c.bakeLayer(MountainWatcherModel.LAYER)), 0.0F);
+            addLayer(new EyesLayer<>(this) {
+                @Override
+                public RenderType renderType() {
+                    return GLOW;
+                }
+            });
+        }
+
+        @Override
+        public boolean shouldRender(FlockBird bird, Frustum frustum, double camX, double camY, double camZ, float partialTicks) {
+            return Faith.canSee(Minecraft.getInstance().player, Faith.WATCHER_SIGHT) && super.shouldRender(bird, frustum, camX, camY, camZ, partialTicks);
+        }
+
+        @Override
+        public void extractRenderState(FlockBird bird, WildAnimalRenderState state, float partialTicks) {
+            super.extractRenderState(bird, state, partialTicks);
+            if (!state.flying) return;
+            BirdRenderState s = (BirdRenderState) state;
+            float t = state.ageInTicks + bird.getId() * 37, cycle = t % CYCLE;
+            float burst = cycle < BURST ? Mth.sin(cycle / BURST * Mth.PI) : 0.0F;
+            float climb = Mth.clamp((float) (bird.getY() - bird.yo - 0.04) * 12.0F, 0.0F, 1.0F); // beats to climb
+            s.glide = 1.0F - Math.max(burst, climb);
+            s.flap = t * BEAT;
+        }
+
+        @Override
+        protected void scale(WildAnimalRenderState state, PoseStack poseStack) {
+            super.scale(state, poseStack);
+            poseStack.scale(WATCHER_SCALE, WATCHER_SCALE, WATCHER_SCALE);
+        }
     }
 
     @SubscribeEvent
