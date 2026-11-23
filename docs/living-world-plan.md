@@ -3,7 +3,7 @@
 > Status: **fas 1 byggd (v0.136.0):** F1 stockar, B7 multiplayer-sidan, B1 zontitel, B2 relationsflik, B4 anvil-hjul.
 > **Fas 2 byggd (Servern lever):** A1, A2, A3, A9, se *Byggt i fas 2* under tabell A.
 > **Fas 7 byggd (Vägar):** A5–A8, se *Byggt i fas 7* under tabell A.
-> **F4 byggd (Ekens folk):** grupp vid varje Ancient Oak, Keeper med questlinje (12 uppdrag), relation, Ancient Ritual Knife (knivnivå 4) med fina delar; se *Ekens folk* i `docs/ages/01-stone-age.md`. Skärmbilder: `docs/shots/oak/` (oak_group, oak_keeper, oak_worshipper, oak_gatherer, oak_lightbearer_night, oak_quest_gui).
+> **F4 byggd (Ekens folk):** grupp vid varje Ancient Oak, Keeper med questlinje (12 uppdrag), relation, Ancient Ritual Knife (knivnivå 4) med fina delar; se *Ekens folk* i `docs/ages/01-stone-age.md`. Skärmbilder: `docs/shots/oak/` (oak_group, oak_keeper, oak_worshipper, oak_gatherer, oak_lightbearer_night, oak_quest_gui; questskärmen i alla lägen: oak_quest_current, _first, _focus_done, _two_rewards, _finished, _closed).
 > **Stammarnas AI byggd:** C (hela) och B8 (tyst ljuduppsättning, ljudlista i `docs/tribe-sounds.md`), se *Byggt: stammarnas AI* under C.
 > Resten är plan. Alla frågor besvarade 2026-11-22 (se *Beslut* längst ned). Byggs fas för fas;
 > det som byggs förs också in i respektive åldersdokument (`docs/ages/*.md`).
