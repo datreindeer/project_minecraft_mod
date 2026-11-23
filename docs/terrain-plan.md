@@ -166,6 +166,19 @@ utom bäverdammar och källor läggs även i gamla chunks (`Retrogen`). Advancem
 nu att stå på dammen. Kaveldun saknas (inget block än), vass finns. Detaljer, täthet och hur fas 5 hittar fallna stockar:
 `docs/biomes.md`, "Små saker i skog och vid vatten". Bilder: `docs/shots/terrain/decor_*.png`.
 
+## 3b. Kanter som flyter ihop (önskemål från användaren)
+
+Vägar och mark ska se mjukare ut: där två besläktade block möts på ovansidan lägger sig det starkare några pixlar in
+över det svagare ("connected textures"/"Blend"), i grupper så att bara rätt block möts (mark med mark och gräs med det
+mesta, sten med sten, plankor med plankor; aldrig stone bricks med plankor).
+
+**Byggt (v0.179.0):** `client/EdgeBlend` (lägger kantbitar på ovansidan när chunken byggs; matchar block på toppens
+textur, så slabs och slumpvridna block följer med) och `scripts/gen_blend_edges.py` (styrketabellen, grupperna och ett ark
+kantbitar per block som kan lägga sig över andra). Fyra kantstilar efter material: trasig prickig kant för mark, hela
+stenar för kullersten och rå sten, tandade bricks som följer fogarna och plankor som går in i varandra bräda för bräda.
+Gräsets färg (årstid, frost) följer med. Av/på: `blendEdges` i `mechanical-client.toml`. Styrketabell och detaljer:
+`docs/biomes.md`, "Kanter som flyter ihop". Bilder: `docs/shots/terrain/blend_*.png`.
+
 ## 4. En natur som förändras med tiden
 
 **Grundidé, naturens klocka:** världen räknar inte ticks i varje chunk. Varje chunk sparar i stället den dag den senast
