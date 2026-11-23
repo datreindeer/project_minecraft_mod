@@ -25,7 +25,6 @@
     "InventoryScreenMixin",
     "ServerSelectionListMixin",
     "OnlineServerEntryMixin",
-    "ClientboundStatusResponsePacketMixin",
     "SectionCompilerTimingMixin"
   ],
   "injectors": {
@@ -59,6 +58,7 @@
     "ServerGamePacketListenerImplMixin",
     "TestInstanceBlockEntityMixin",
     "GameTestInfoMixin",
-    "MinecraftServerStatusMixin"
+    "MinecraftServerStatusMixin",
+    "ClientboundStatusResponsePacketMixin"
   ]
 }

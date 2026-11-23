@@ -86,13 +86,19 @@ public record ServerListInfo(long clock, int age, int tribes, int wanderers, Lis
         return serverName;
     }
 
-    /** Server: add the info to the status JSON about to be cached. Never lets a failure break the status. */
+    /** The latest info, built on the server thread with each status refresh; the network threads that answer pings only copy it. */
+    private static volatile JsonElement latest;
+
+    /** Server: add the info to the status JSON about to be cached and keep it for the pings. Never lets a failure break the status. */
     public static void addTo(MinecraftServer server, JsonElement status) {
         if (!(status instanceof JsonObject json)) return;
         try {
-            CODEC.encodeStart(JsonOps.INSTANCE, build(server)).result().ifPresent(info -> json.add(KEY, info));
+            CODEC.encodeStart(JsonOps.INSTANCE, build(server)).result().ifPresent(info -> {
+                latest = info;
+                json.add(KEY, info);
+            });
         } catch (RuntimeException e) {
-            Mechanical.LOGGER.debug("Server list info skipped", e);
+            Mechanical.LOGGER.warn("Server list info skipped", e);
         }
     }
 
@@ -109,7 +115,11 @@ public record ServerListInfo(long clock, int age, int tribes, int wanderers, Lis
 
             @Override
             public <T> DataResult<T> encode(ServerStatus input, DynamicOps<T> ops, T prefix) {
-                return codec.encode(input, ops, prefix);
+                // the server sends the status through this codec (not the cached JSON), so the field goes in here
+                return codec.encode(input, ops, prefix).map(t -> {
+                    if (t instanceof JsonObject json && latest != null) json.add(KEY, latest);
+                    return t;
+                });
             }
         };
     }
