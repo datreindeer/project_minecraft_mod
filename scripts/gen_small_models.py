@@ -1685,42 +1685,60 @@ def vulture_colour(P):
 
 
 # ================================================================== MOUNTAIN WATCHER (client.folklore.MountainWatcherModel)
+# the crest plumes: (x on the crown, yaw, length, width, lift)
+WATCHER_CREST = ((0, 0.0, 6.5, 2.0, 0.2), (0.9, 0.3, 5.0, 1.5, 0.16), (-0.9, -0.3, 5.0, 1.5, 0.16))
 # the six spread finger feathers at the end of each hand: (z across the hand, length, fan angle: - forward, + back)
-# the crest plumes: (x on the crown, yaw, length, lift)
-WATCHER_CREST = ((0, 0.0, 6.0, 0.32), (0.6, 0.17, 5.0, 0.28), (-0.6, -0.17, 5.0, 0.28), (1.15, 0.36, 3.75, 0.22), (-1.15, -0.36, 3.75, 0.22))
-WATCHER_FINGERS = ((0.75, 6.5, -0.26), (2.25, 8.5, -0.13), (3.75, 9.0, -0.02), (5.25, 8.25, 0.09), (6.75, 7.0, 0.2), (8.25, 5.5, 0.31))
+WATCHER_FINGERS = ((0.5, 6.5, -0.26), (2.0, 8.5, -0.13), (3.5, 9.25, -0.02), (5.0, 8.5, 0.09), (6.5, 7.25, 0.2), (8.0, 5.75, 0.31))
+# the wing's feather layers, top (outermost) first: part, material, x from the outer face down, y0, span, z0, chord.
+# Each layer lies a quarter below the one above, so the rows step down: lesser coverts, greater coverts, secondaries on
+# the arm; primary coverts and primaries on the hand (the arm's rows run 1.5 into the hand so the wrist has no gap; the
+# hand's layers lie below them there, the fingers lower still).
+WATCHER_LAYERS = (("wing", "lcovert", 0.5, 0, 9.5, 0, 4.5), ("wing", "gcovert", 0.25, 0, 10.25, 0, 8.0),
+                  ("wing", "secondaries", 0.0, 0, 10.5, 0, 13.5),
+                  ("wing_tip", "pcovert", 0.0, 1.5, 9.0, -0.75, 5.25), ("wing_tip", "primaries", -0.25, 0, 14.0, -0.75, 10.25))
+WATCHER_TILT = 0.7  # it sits upright, like a raptor
 
 
 def mountain_watcher():
-    """The Mountain Watcher: an eagle's build drawn out into something older. A broad body, very long wings whose hands
-    end in six spread finger feathers over a fringe of secondaries, a crest of three plumes and two long racket-tipped
-    tail streamers. The extra parts hang under the ForestBirdModel part tree, so it flies like the eagle; the finger,
-    crest and streamer parts are moved by MountainWatcherModel."""
+    """The Mountain Watcher: an eagle's build drawn out into something older. A deep chest tapering to the tail, a ruffed
+    neck holding the head high, very long wings built of overlapping feather layers with ragged feather-tip edges, six
+    tapering finger feathers at each wingtip, a swept crest and two long racket-tipped tail streamers. The extra parts
+    hang under the ForestBirdModel part tree, so it flies like the eagle; MountainWatcherModel moves them."""
     m = flier("Mountain Watcher", 4, (128, 128), body=(8, 7, 14), wing=(9, 12), tip=(14, 9), tail=(6, 9),
-              legs=(4.5, 2.0, 0.5, 1.75, 3.0), tilt=0.45, lead=0, tip_z=0.05, feet="raptor", tail_rot=-0.12)
+              legs=(4.75, 2.0, 0.5, 1.75, 3.0), tilt=WATCHER_TILT, lead=0, tip_z=0.05, feet="raptor", tail_rot=-0.12)
+    # flier's own body and wing slabs make way for the shaped ones
+    m.boxes = [b for b in m.boxes if not (b[0] == "body" and b[1] in ("body", "rump")) and b[1] not in ("wing", "primaries")]
+    m.blob("body", "body", 0, 0.4, -3.0, 8.5, 7.5, 8.0, 1.75)      # the deep chest
+    m.blob("body", "body", 0, -0.2, 2.0, 7.5, 6.5, 6.0, 1.5)
+    m.blob("body", "body", 0, -0.9, 5.75, 5.5, 4.75, 4.0, 1.25)    # tapering to the tail
+    m.blob("body", "rump", 0, -1.4, 8.0, 3.75, 3.0, 2.0, 0.75)
+    for s in (1, -1):
+        m.blob("body", "scapular", s * 3.4, -2.9, -1.25, 2.5, 2.0, 7.0, 0.75)  # feathered shoulders over the wing roots
     for s, n in ((1, "left"), (-1, "right")):
-        x0 = 0 if s > 0 else -0.5
-        # the coverts stand a quarter proud of both faces of the arm (no shared faces to flicker)
-        m.box(n + "_wing", "covert", x0 - 0.25, 0, 0, 1.0, 6.5, 6)
-        m.box(n + "_wing", "secondaries", x0, 0.25, 12, 0.5, 8.75, 1.5)     # their rounded tips along the trailing edge
-        m.box(n + "_wing_tip", "secondaries", x0, 0, 9, 0.5, 9.0, 1.25)
+        def x_of(a, w):
+            return a if s > 0 else -a - w
+        for part, mat, x, y0, span, z0, chord in WATCHER_LAYERS:
+            m.box(n + "_" + part, mat, x_of(x, 0.25), y0, z0, 0.25, span, chord)
         for i, (z, ln, a) in enumerate(WATCHER_FINGERS):
-            m.part(f"{n}_finger{i}", n + "_wing_tip", (0, 13.5, z), (a, 0, 0))
-            m.box(f"{n}_finger{i}", "finger", x0, 0, -0.75, 0.5, ln, 1.5)
-    neck(m, 5, 3.5, 5, at_z=2.25)
-    m.box("neck", "hackles", -2.75, -2.5, -1.5, 5.5, 3.25, 4.5)          # a silver mane
-    m.part("head", "neck", (0, -3.25, 0))
+            base, tip = round(ln * 0.55 * 4) / 4, ln - round(ln * 0.55 * 4) / 4
+            m.part(f"{n}_finger{i}", n + "_wing_tip", (0, 13.25, z), (a, 0, 0))
+            m.box(f"{n}_finger{i}", "finger", x_of(-0.5, 0.25), 0, -0.875, 0.25, base, 1.75)
+            m.part(f"{n}_finger{i}_tip", f"{n}_finger{i}", (0, base, 0), (0.07, 0, 0))   # curving back a little
+            m.box(f"{n}_finger{i}_tip", "finger_tip", x_of(-0.5, 0.25), 0, -0.625, 0.25, tip, 1.25)
+    neck(m, 4.5, 5.0, 4.5, at_z=2.5)
+    m.blob("neck", "ruff", 0, -0.6, 0.25, 6.5, 3.0, 6.0, 1.0)            # the ruff round the base of the neck
+    m.box("neck", "hackles", -2.5, -4.75, -1.25, 5.0, 3.5, 4.0)          # hackles down the nape
+    m.part("head", "neck", (0, -4.75, 0))
     m.blob("head", "head", 0, -2.4, -0.75, 5, 5, 6, 1.0)
     m.box("head", "brow", -2.75, -4.5, -4.0, 5.5, 1, 2.5)
     m.box("head", "cere", -1.25, -3.5, -5.0, 2.5, 1.75, 1.0)
     m.box("head", "bill", -0.875, -3.25, -6.75, 1.75, 2.0, 1.75)
     m.box("head", "bill_tip", -0.625, -1.25, -6.75, 1.25, 1.0, 0.75)
     m.box("head", "bill_lower", -0.625, -1.25, -6.0, 1.25, 0.5, 1.25)
-    # the crest: five flat plumes swept back off the crown, fanned, the middle one longest
-    for i, (dx, yr, ln, xr) in enumerate(WATCHER_CREST):
-        m.part(f"crest{i}", "head", (dx, -4.6, 0.0), (xr, yr, 0))
-        m.box(f"crest{i}", "plume", -0.625, -0.125, 0, 1.25, 0.25, ln)
-        m.box(f"crest{i}", "plume", -0.375, -0.125, ln, 0.75, 0.25, 2.5)
+    # the crest: broad plumes lying back off the crown, each tapering to a point
+    for i, (dx, yr, ln, wd, xr) in enumerate(WATCHER_CREST):
+        m.part(f"crest{i}", "head", (dx, -4.6, -0.5), (xr, yr, 0))
+        m.box(f"crest{i}", "plume", -wd / 2, -0.125, 0, wd, 0.25, ln)
     for n in ("left_leg", "right_leg"):
         m.box(n, "trousers", -1.75, -1.0, -1.75, 3.5, 3.5, 3.5)
     # two streamers out of the middle of the tail, each in two lengths so they can ripple, ending in a racket
@@ -1736,9 +1754,9 @@ def mountain_watcher():
 
 WATCHER = dict(back=hexc("#8f9bad"), edge=hexc("#dfe6ee"), dark=hexc("#2c3446"), under=hexc("#e4e8ed"), breast=hexc("#eff0f1"),
                head=hexc("#f3f2ec"), mask=hexc("#242a3a"), wing=hexc("#6c788c"), wing_dark=hexc("#283042"), wing_edge=hexc("#d2dbe6"),
-               covert=hexc("#a9b5c3"), underwing=hexc("#e2e6ec"), prim=hexc("#222a3c"), prim_dark=hexc("#121622"), tail=hexc("#3a4558"),
-               bill=hexc("#e6c76e"), bill_tip=hexc("#383844"), leg=hexc("#d8bc68"), thigh=hexc("#e6e9ee"), claw=hexc("#15171e"),
-               cere=hexc("#c4d0da"), teal=hexc("#3cc6c0"), violet=hexc("#8670e6"), rune=hexc("#c4f2ff"))
+               covert=hexc("#a9b5c3"), underwing=hexc("#e2e6ec"), prim=hexc("#2e3850"), prim_dark=hexc("#1a2032"), prim_light=hexc("#5a6a84"),
+               tail=hexc("#3a4558"), bill=hexc("#e6c76e"), bill_tip=hexc("#383844"), leg=hexc("#d8bc68"), thigh=hexc("#e6e9ee"),
+               claw=hexc("#15171e"), cere=hexc("#c4d0da"), teal=hexc("#3cc6c0"), violet=hexc("#8670e6"), rune=hexc("#c4f2ff"))
 
 # five-by-five rune glyphs painted in rows along the upper wing (rows run front to back across the chord)
 GLYPHS = [g.split() for g in (
@@ -1764,53 +1782,52 @@ def watcher_rune(t, along, across, a0, a1, b0, step=2.25, salt=0):
 
 
 def wing_up(t):
-    """The wing's upper face (outer at rest, on top in flight), judged by which side of the body the box lies on."""
-    left = t.box[0] + t.box[3] / 2 > 0
-    return t.face == ("left" if left else "right")
+    """The wing's upper face (outer at rest, on top in flight): +x on the left wing, -x on the right."""
+    return t.face == ("left" if t.X > 0 else "right")
 
 
-def racket_cut(t):
-    """The racket at the streamer's end: a long leaf, pointed at both ends."""
-    du, dw = abs(t.u - 0.5) * 2, (t.w - 0.5) * 2
-    return not t.vert and du > math.sqrt(max(0.0, 1 - dw * dw)) * (1.0 - 0.35 * max(0.0, dw))
-
-
-def racket_eye(t):
-    du, dw = abs(t.u - 0.5) * 2, (t.w - 0.62) * 2
-    return du * du * 0.8 + dw * dw * 3.0
-
-
-def covert_rune(t):
-    return t.side and wing_up(t) and watcher_rune(t, t.y, t.z, 0.5, 6.25, 3.5, salt=int(t.box[0] > -0.5))
-
-
-def hand_rune(t):
-    return t.side and wing_up(t) and watcher_rune(t, t.y, t.z, 1.0, 12.5, 1.75, salt=7 + int(t.box[0] > -0.5))
-
-
-def watcher_feathers(t, base, edge, dark, cw=1.25, ch=1.0, k=0.18):
-    """Overlapping feathers with rounded ends (model units): staggered rows, each feather a little darker along its
-    shaft and edged pale round its rounded tip."""
-    py = (t.Y if t.vert else t.Z) / ch
-    row = math.floor(py)
-    pxv = (t.Z if t.side else t.X) / cw + (row % 2) * 0.5
-    cell = math.floor(pxv)
-    fx, fy = pxv - cell, py - row
-    c = lerp(base, dark, k * h(cell + 50, row + 50, t.salt))
-    end = 0.72 + 0.28 * math.sqrt(max(0.0, 1 - (2 * fx - 1) ** 2))
-    if fy > end:  # the next row's feathers show below the rounded tip
-        return lerp(base, dark, k * h(cell + 51, row + 51, t.salt) + 0.05)
-    if fy > end - 1.6 / (t.px * ch):
-        return lerp(c, edge, 0.28)
-    if abs(fx - 0.5) < 0.5 / (t.px * cw):
-        return lerp(c, dark, 0.12)
-    return c
+def wing_down(t):
+    return t.face == ("right" if t.X > 0 else "left")
 
 
 def watcher_irid(t, P, phase=0.0):
-    """The feather-tip shimmer: teal sliding into violet across the feathers."""
+    """The feather shimmer: teal sliding into violet across the feathers."""
     k = 0.5 + 0.5 * math.sin(t.Z * 0.55 + t.Y * 0.18 + phase)
     return lerp(P["teal"], P["violet"], k)
+
+
+def row_feather(y, z, width, end, salt, fan=0.0, centre=4.5, jag=0.6):
+    """A row of feathers lying back along the chord (z) side by side across the span (y), fanning out by {fan} per
+    pixel of chord, their rounded tips near z = {end} (each a little shorter or longer). Returns (cut away?, across:
+    -1..1 over the feather, along: 0..1 base to tip, feather index)."""
+    yy = y - z * fan * (y - centre) / 5.0
+    k = math.floor(yy / width)
+    f = yy / width - k
+    e = end - jag * h(k + 30, 7, salt)
+    across = 2 * f - 1
+    tip = e - (1 - math.sqrt(max(0.0, 1 - across * across))) * width * 0.9
+    return z > tip, across, max(0.0, min(1.0, z / max(0.1, e))), k
+
+
+def hand_feather(y, z, salt):
+    """The primaries fanning from the wrist (y -3, z -1) out over the hand: wedges of 0.1 radian, each to its own
+    length so the trailing and outer edges break into separate rounded tips. Returns (cut?, across, along, index)."""
+    dy, dz = y + 3.0, z + 1.0
+    r, a = math.hypot(dy, dz), math.atan2(dz, dy)
+    k = math.floor(a / 0.1)
+    f = a / 0.1 - k
+    ac = (k + 0.5) * 0.1
+    ca, sa = math.cos(ac), math.sin(ac)
+    reach = min((17.0 - 0.0) / ca if ca > 1e-3 else 99, (9.5 + 1.0) / sa if sa > 1e-3 else 99)  # to the plate's far edges
+    ln = reach - 0.4 - 1.0 * h(k + 40, 9, salt)
+    across = 2 * f - 1
+    tip = ln - (1 - math.sqrt(max(0.0, 1 - across * across))) * min(1.4, 0.1 * r * 1.2)
+    return r > tip, across, max(0.0, min(1.0, r / max(0.1, ln))), k
+
+
+def plate_edges(t, keep=("front", "top")):
+    """Thin feather plates: their ragged ends and outer edge have no edge faces (they would float as strips)."""
+    return t.face in keep or t.side
 
 
 def watcher_parts(P):
@@ -1818,11 +1835,15 @@ def watcher_parts(P):
     def body(t):
         cut = 0.5 + 0.12 * h(t.gx // 2, t.gy // 2, t.salt + 4)  # a ragged line where the grey mantle meets the white
         if t.face == "bottom" or (t.vert and t.gv > cut):
-            c = lerp(P["breast"], P["under"], 0.4 * h(t.gx // 2, t.gy // 3, t.salt))
-            # fine slate chevrons on the breast and flanks
-            row = (t.Y * 1.6 + abs(t.X) * 0.5) % 1.0
-            return lerp(c, P["dark"], 0.28) if row < 0.16 and h(math.floor(t.Y * 1.6), math.floor(t.X), 5) < 0.7 else c
+            c = watcher_feathers(t, P["breast"], (255, 255, 255), P["covert"], cw=1.0, ch=0.8, k=0.25)
+            row = (t.Y * 1.6 + abs(t.X) * 0.5) % 1.0  # fine slate chevrons on the breast and flanks
+            return lerp(c, P["dark"], 0.24) if row < 0.16 and h(math.floor(t.Y * 1.6), math.floor(t.X), 5) < 0.6 else c
         return watcher_feathers(t, P["back"], P["edge"], P["dark"])
+
+    def scapular(t):
+        if t.face == "bottom":
+            return P["under"]
+        return watcher_feathers(t, lerp(P["back"], P["covert"], 0.4), P["edge"], P["dark"], cw=1.0, ch=0.9)
 
     def head(t):
         if (e := eye(t, WATCHER_EYE["r"], WATCHER_EYE["ew"], WATCHER_EYE["ev"], iris=(170, 232, 248), ring=(28, 34, 48))):
@@ -1840,71 +1861,131 @@ def watcher_parts(P):
         return lerp(c, P["edge"], 0.3) if t.face == "top" else c
 
     def neck(t):
-        return lerp(lerp(P["head"], P["covert"], 0.25 * h(t.gx // 2, t.gy // 4, t.salt)), P["back"], 0.45 * t.gv)
+        c = lerp(P["head"], P["covert"], 0.2 + 0.35 * t.gv)
+        if t.vert and h(t.gx // 2, t.gy // 5, t.salt) < 0.3:
+            c = lerp(c, P["back"], 0.35)                        # fine grey streaks down the neck
+        return c
 
     def mane(t):
         if t.vert and t.v > 0.55 and ragged(t, 0.5):
             return None
-        return lerp(lerp(P["head"], P["back"], 0.15 + 0.55 * t.v), P["edge"], 0.3 * h(t.gx, 3, t.salt))
+        return lerp(lerp(P["head"], P["back"], 0.1 + 0.4 * t.v), P["edge"], 0.3 * h(t.gx, 3, t.salt))
 
-    def covert(t):
-        up = wing_up(t) if t.side else t.face == "top"
-        if not up:
-            return (*lerp(P["underwing"], P["covert"], 0.3 * t.n), 0)
-        c = watcher_feathers(t, P["covert"], P["wing_edge"], P["dark"], cw=1.0, ch=0.8)
-        if covert_rune(t):
-            return lerp(c, P["rune"], 0.55)
-        return lerp(c, P["wing"], 0.4 * t.gw)  # greying into the flight feathers
+    def ruff(t):
+        if t.face == "bottom" or (t.vert and t.v > 0.6 and h(t.gx, 5, t.salt) < 0.55):
+            return None  # long ragged feather ends hanging over the shoulders
+        return watcher_feathers(t, lerp(P["head"], P["covert"], 0.35 + 0.3 * t.v), P["edge"], P["back"], cw=0.75, ch=0.75, k=0.3)
 
-    def arm(t):
+    def underside(c, along, across, bars=True):
+        """The wing's underside: pale, barred across each feather, not darkened by the baked top-down shading."""
+        if bars and (along * 7.0) % 1.0 < 0.18 and abs(across) < 0.85:
+            c = lerp(c, P["wing"], 0.35)
+        return (*c, 0)
+
+    def coverts(t, base, width, end, rune=None):
+        if not plate_edges(t):
+            return None
+        cut, across, along, k = row_feather(t.y, t.z, width, end, t.salt, fan=0.04)
+        if cut:
+            return None
         if not t.side:
-            return lerp(P["wing_dark"], P["wing"], 0.4)
-        if not wing_up(t):
-            c = lerp(P["underwing"], P["wing"], 0.05 + 0.2 * t.w * t.w + 0.06 * t.n)
-            return (*(lerp(c, P["wing"], 0.4) if (t.z * 1.4) % 1.0 < 0.15 else c), 0)  # finely barred underneath
-        # the secondaries: feathers lying back along the chord, darkening towards their tips
-        k = math.floor(t.y)
-        c = lerp(P["wing"], P["wing_dark"], 0.12 + 0.2 * h(k + 70, 3, t.salt) + 0.3 * t.w)
-        if t.y - k < 1.0 / t.px + 1e-6:
+            return lerp(base, P["dark"], 0.3)
+        if wing_down(t):
+            return None  # lies on the layer below: only its upper face shows
+        c = lerp(base, P["dark"], 0.1 + 0.16 * h(k + 70, 3, t.salt))
+        c = lerp(c, P["wing"], 0.3 * along)
+        if abs(across) < 0.22:
+            c = lerp(c, P["dark"], 0.22)                        # the shaft
+        edge = math.sqrt(max(0.0, 1 - across * across))
+        if along > 0.82 * edge + 0.1 or abs(across) > 0.86:
+            c = lerp(c, P["wing_edge"], 0.45)                   # the pale rim round each tip
+        if rune and rune(t):
+            c = lerp(c, P["rune"], 0.55)
+        return c
+
+    def lcovert(t):
+        return coverts(t, P["covert"], 1.0, 4.5)
+
+    def gcovert(t):
+        return coverts(t, lerp(P["covert"], P["wing"], 0.35), 1.25, 8.0, lambda t: watcher_rune(t, t.y, t.z, 0.5, 9.5, 5.0, salt=int(t.X > 0)))
+
+    def secondaries(t):
+        if not plate_edges(t):
+            return None
+        cut, across, along, k = row_feather(t.y, t.z, 1.25, 13.5, t.salt, fan=0.06, jag=0.9)
+        if cut:
+            return None
+        if not t.side:
+            return P["wing_dark"]
+        if wing_down(t):
+            return underside(lerp(P["underwing"], P["wing"], 0.05 + 0.2 * along * along), along, across)
+        c = lerp(P["wing"], P["wing_dark"], 0.1 + 0.18 * h(k + 70, 3, t.salt) + 0.35 * along)
+        if abs(across) < 0.2:
+            c = lerp(c, P["wing_edge"], 0.3)                    # the shaft, running back along each feather
+        elif across > 0.75:
+            c = lerp(c, P["wing_dark"], 0.35)                   # the next feather's shadow
+        if along > 0.88 * math.sqrt(max(0.0, 1 - across * across)):
+            c = lerp(c, P["wing_edge"], 0.5)
+        return lerp(c, watcher_irid(t, P, 0.4), 0.25 * max(0.0, along - 0.6) / 0.4)
+
+    def pcovert(t):
+        return coverts(t, lerp(P["covert"], P["prim_light"], 0.5), 1.0, 4.5, lambda t: watcher_rune(t, t.y, t.z, 2.0, 10.0, 0.5, salt=7 + int(t.X > 0)))
+
+    def primaries(t):
+        if not plate_edges(t):
+            return None
+        cut, across, along, k = hand_feather(t.y, t.z, t.salt)
+        if cut:
+            return None
+        if not t.side:
+            return P["prim_dark"]
+        if wing_down(t):
+            return underside(lerp(P["underwing"], P["prim_light"], 0.1 + 0.4 * along * along), along, across)
+        c = lerp(P["prim_light"], P["prim"], 0.3 + 0.5 * along)
+        c = lerp(c, P["prim_dark"], 0.18 * h(k + 80, 3, t.salt))
+        if abs(across) < 0.18:
+            c = lerp(c, P["wing_edge"], 0.35 * (1 - along))     # the shaft, fanning out from the wrist
+        elif across > 0.7:
+            c = lerp(c, P["prim_dark"], 0.35)
+        c = lerp(c, watcher_irid(t, P, 0.3 * k), 0.6 * max(0.0, along - 0.5) / 0.5)
+        if along > 0.9 * math.sqrt(max(0.0, 1 - across * across)):
             c = lerp(c, P["wing_edge"], 0.35)
         return c
 
-    def fringe(t):
-        f = (t.y % 1.25) / 1.25
-        if t.side and t.w > 0.35 + 0.65 * math.sqrt(max(0.0, 1 - (2 * f - 1) ** 2)):
+    def finger(t, base_part):
+        # flat tapering feathers: broad at the base, narrowing, the tip rounded to a point
+        v = t.v * 0.55 if base_part else 0.55 + t.v * 0.45
+        span = (1.0 - 0.3 * t.v) if base_part else (1.0 - t.v ** 1.8) ** 0.55
+        across = (t.w - 0.5) * 2 * (1.0 if base_part else 1.25 / 1.75)
+        if not t.side:
+            return None if (t.face != "top" or not base_part) else P["prim"]
+        if abs(across) > span * (1.0 if base_part else 1.25 / 1.75) + 1e-6:
             return None
-        c = lerp(P["wing_dark"], P["prim"], 0.4 * t.n)
-        return lerp(c, P["wing_edge"], 0.45) if t.side and t.w > 0.62 else c
-
-    def hand(t):
-        if not t.side:
-            return P["prim_dark"]
-        if not wing_up(t):
-            c = lerp(P["underwing"], P["prim"], 0.1 + 0.45 * t.gv * t.gv + 0.06 * t.n)
-            return (*(lerp(c, P["wing"], 0.45) if (t.y * 0.9) % 1.0 < 0.14 else c), 0)
-        c = flight_feathers(t, P["prim"], P["prim_dark"], P["wing_edge"], lane=0.75, tipdark=0.2)
-        if hand_rune(t):
-            return lerp(c, P["rune"], 0.5)
-        return lerp(c, watcher_irid(t, P), 0.55 * max(0.0, (t.gv - 0.62) / 0.38))
-
-    def finger(t):
-        if t.side and t.v > 0.8:  # the rounded end of each feather
-            r = (t.v - 0.8) / 0.2
-            if abs(t.w - 0.5) * 2 > math.sqrt(max(0.0, 1 - r * r)):
-                return None
-        if not t.side:
-            return P["prim_dark"]
-        if abs(t.w - 0.5) < 0.09:  # the shaft
-            return lerp(P["wing_edge"], P["prim"], 0.35 + 0.4 * t.v)
-        if not wing_up(t):
-            base = lerp(P["underwing"], P["prim"], 0.3 + 0.6 * t.v)
-            return (*(lerp(base, P["wing"], 0.4) if (t.y * 0.9) % 1.0 < 0.14 and t.v < 0.6 else base), 0)
-        base = lerp(P["prim"], P["prim_dark"], 0.25 + 0.5 * abs(t.w - 0.5))
-        return lerp(base, watcher_irid(t, P, 1.3), 0.8 * max(0.0, (t.v - 0.55) / 0.45))
+        if wing_down(t):
+            return underside(lerp(P["underwing"], P["prim_light"], 0.3 + 0.5 * v), v, across)
+        c = lerp(P["prim_light"], P["prim"], 0.15 + 0.6 * v)
+        if abs(across) < 0.12:
+            return lerp(c, P["wing_edge"], 0.45 * (1 - v))      # the shaft
+        if across > 0.0:
+            c = lerp(c, P["prim_dark"], 0.2)                    # the narrower outer vane darker
+        return lerp(c, watcher_irid(t, P, 1.3), 0.75 * max(0.0, (v - 0.45) / 0.55))
 
     def tail(t):
-        c = flight_feathers(t, P["tail"], P["dark"], P["edge"], along="z")
-        return lerp(c, P["covert"], 0.35) if (t.z * 0.7) % 1.0 < 0.2 else c  # pale bars
+        if t.vert:
+            return P["tail"] if t.face == "front" else None
+        cut, across, along, k = row_feather(t.x + 3.0, t.z, 1.0, 9.0, t.salt, fan=0.1, centre=3.0, jag=0.8)
+        if cut:
+            return None
+        if t.face == "bottom":
+            return underside(lerp(P["underwing"], P["wing"], 0.1 + 0.3 * along), along, across)
+        c = lerp(P["tail"], P["dark"], 0.1 + 0.2 * h(k + 60, 3, t.salt) + 0.25 * along)
+        if (along * 5.0) % 1.0 < 0.16 and abs(across) < 0.8:
+            c = lerp(c, P["covert"], 0.35)                      # pale bars across each feather
+        if abs(across) < 0.2:
+            c = lerp(c, P["wing_edge"], 0.3)                    # the shaft
+        if along > 0.88 * math.sqrt(max(0.0, 1 - across * across)):
+            c = lerp(c, P["wing_edge"], 0.4)
+        return c
 
     def streamer(t):
         if t.face == "bottom":
@@ -1927,24 +2008,58 @@ def watcher_parts(P):
         return lerp(watcher_irid(t, P, 2.0 + 3 * t.w), P["prim"], 0.2 + 0.25 * t.n)
 
     def plume(t):
-        tip = t.box[5] < 1.0
-        g = 0.7 + 0.3 * t.w if tip else 0.7 * t.w
-        if not t.vert:
-            if tip and abs(t.u - 0.5) * 2 > 1.0 - max(0.0, t.w - 0.4) * 1.6:   # tapering to a point
-                return None
-            if abs(t.u - 0.5) < 0.12:
-                return lerp(P["edge"], P["covert"], g)
-        c = lerp(P["head"], P["covert"], 0.2 + 0.6 * g)
-        return lerp(c, watcher_irid(t, P, 0.6), 0.75 * max(0.0, (g - 0.55) / 0.45))
+        across = (t.u - 0.5) * 2
+        if not t.vert and abs(across) > (1 - t.w ** 1.5) ** 0.6:   # tapering to a point
+            return None
+        if t.vert:
+            return None if t.face != "front" else P["covert"]
+        if abs(across) < 0.14:
+            return lerp(P["edge"], P["covert"], t.w)            # the shaft
+        c = lerp(P["head"], P["covert"], 0.15 + 0.55 * t.w)
+        if (t.w * t.box[5] * 2.2 + abs(across) * 1.2) % 1.0 < 0.2:
+            c = lerp(c, P["edge"], 0.4)                         # barbs angled back from the shaft
+        return lerp(c, watcher_irid(t, P, 0.6), 0.8 * max(0.0, (t.w - 0.5) / 0.5))
 
-    return {"body": body, "back": body, "rump": body, "head": head, "neck": neck, "hackles": mane,
-            "brow": lambda t: lerp(P["head"], P["covert"], 0.4), "covert": covert, "wing": arm,
-            "secondaries": fringe, "primaries": hand, "finger": finger, "tail": tail, "streamer": streamer, "racket": racket,
-            "plume": plume, "cere": lambda t: P["cere"], "bill_lower": lambda t: P["bill"],
+    return {"body": body, "back": body, "rump": body, "scapular": scapular, "head": head, "neck": neck, "hackles": mane,
+            "ruff": ruff, "brow": lambda t: lerp(P["head"], P["covert"], 0.4), "lcovert": lcovert, "gcovert": gcovert,
+            "secondaries": secondaries, "pcovert": pcovert, "primaries": primaries,
+            "finger": lambda t: finger(t, True), "finger_tip": lambda t: finger(t, False),
+            "tail": tail, "streamer": streamer, "racket": racket, "plume": plume, "cere": lambda t: P["cere"],
+            "bill_lower": lambda t: P["bill"],
             "bill": lambda t: lerp(P["bill"], P["bill_tip"], 0.75 * (1 - t.gw) ** 2.5),
             "bill_tip": lambda t: lerp(P["bill"], P["bill_tip"], 0.55 + 0.45 * t.v),
             "trousers": lambda t: None if (t.vert and t.v > 0.7 and ragged(t, 0.45)) else lerp(P["thigh"], P["covert"], 0.4 * t.v * h(t.gx, 2, t.salt)),
             "toes": lambda t: lerp(P["leg"], (150, 120, 40), 0.3 * t.n)}
+
+
+def watcher_feathers(t, base, edge, dark, cw=1.25, ch=1.0, k=0.18):
+    """Overlapping body feathers with rounded ends (model units): staggered rows, each a little darker along its shaft
+    and edged pale round its rounded tip."""
+    py = (t.Y if t.vert else t.Z) / ch
+    row = math.floor(py)
+    pxv = (t.Z if t.side else t.X) / cw + (row % 2) * 0.5
+    cell = math.floor(pxv)
+    fx, fy = pxv - cell, py - row
+    c = lerp(base, dark, k * h(cell + 50, row + 50, t.salt))
+    end = 0.72 + 0.28 * math.sqrt(max(0.0, 1 - (2 * fx - 1) ** 2))
+    if fy > end:  # the next row's feathers show below the rounded tip
+        return lerp(base, dark, k * h(cell + 51, row + 51, t.salt) + 0.05)
+    if fy > end - 1.6 / (t.px * ch):
+        return lerp(c, edge, 0.28)
+    if abs(fx - 0.5) < 0.5 / (t.px * cw):
+        return lerp(c, dark, 0.12)
+    return c
+
+
+def racket_cut(t):
+    """The racket at the streamer's end: a long leaf, pointed at both ends."""
+    du, dw = abs(t.u - 0.5) * 2, (t.w - 0.5) * 2
+    return not t.vert and du > math.sqrt(max(0.0, 1 - dw * dw)) * (1.0 - 0.35 * max(0.0, dw))
+
+
+def racket_eye(t):
+    du, dw = abs(t.u - 0.5) * 2, (t.w - 0.62) * 2
+    return du * du * 0.8 + dw * dw * 3.0
 
 
 def watcher_colour(P):
@@ -1958,21 +2073,29 @@ def watcher_glow(P):
     rune = (58, 146, 166)
 
     def col(mat, t):
-        if mat in shape and shape[mat](t) is None:
+        base = shape[mat](t) if mat in shape else False
+        if base is None:
             return None
         if mat == "head" and (e := eye(t, WATCHER_EYE["r"], WATCHER_EYE["ew"], WATCHER_EYE["ev"], iris=(120, 205, 235), glint=False)):
             return e
-        if (mat == "covert" and covert_rune(t)) or (mat == "primaries" and hand_rune(t)):
+        if t.side and wing_up(t) and ((mat == "gcovert" and watcher_rune(t, t.y, t.z, 0.5, 9.5, 5.0, salt=int(t.X > 0)))
+                                      or (mat == "pcovert" and watcher_rune(t, t.y, t.z, 2.0, 10.0, 0.5, salt=7 + int(t.X > 0)))):
             return (*rune, 0)
-        if mat == "finger" and t.side and t.v > 0.72:
-            return (*lerp((0, 0, 0), watcher_irid(t, P, 1.3), (0.4 if wing_up(t) else 0.28) * (t.v - 0.72) / 0.28), 0)
+        if mat == "finger_tip" and t.side and t.v > 0.5:
+            return (*lerp((0, 0, 0), watcher_irid(t, P, 1.3), (0.4 if wing_up(t) else 0.28) * (t.v - 0.5) / 0.5), 0)
+        if mat == "primaries" and t.side:
+            _, _, along, k = hand_feather(t.y, t.z, t.salt)
+            if along > 0.85:
+                return (*lerp((0, 0, 0), watcher_irid(t, P, 0.3 * k), 0.18), 0)
+        if mat == "secondaries" and t.side and wing_down(t):
+            _, across, along, _ = row_feather(t.y, t.z, 1.25, 13.5, t.salt, fan=0.06, jag=0.9)
+            if along > 0.9 * math.sqrt(max(0.0, 1 - across * across)):
+                return (*lerp((0, 0, 0), P["teal"], 0.16), 0)   # a thread of light along the trailing edge
         if mat == "racket" and not t.vert:
             e = racket_eye(t)
             return (70, 170, 185, 0) if e < 0.12 else (*lerp((0, 0, 0), watcher_irid(t, P, 2.0 + 3 * t.w), 0.22), 0) if e > 0.26 else None
-        if mat == "secondaries" and t.side and t.w > 0.62:
-            return (*lerp((0, 0, 0), P["teal"], 0.16), 0)
-        if mat == "plume" and t.box[5] < 1.0 and t.w > 0.5:
-            return (*lerp((0, 0, 0), watcher_irid(t, P, 0.6), 0.3 * (t.w - 0.5) / 0.5), 0)
+        if mat == "plume" and not t.vert and t.w > 0.55:
+            return (*lerp((0, 0, 0), watcher_irid(t, P, 0.6), 0.3 * (t.w - 0.55) / 0.45), 0)
         return None
     return col
 

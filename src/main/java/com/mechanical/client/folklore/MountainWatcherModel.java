@@ -16,20 +16,22 @@ import net.minecraft.util.Mth;
  * The Mountain Watcher: the forest birds' part tree (it flies, glides and perches like the golden eagle) with its own
  * parts on top, from scripts/gen_small_models.py (SmallGeometry.mountainWatcher): six finger feathers at each wing's
  * end that fan wider on still wings and curl up at the tips, a crest that lies back in flight, and two long tail
- * streamers that ripple behind it. Perched, the long wings fold back along the body and the fingers close.
+ * streamers that ripple behind it. Perched it sits upright like a raptor: the long wings fold down the flanks and cross
+ * behind the tail, the fingers close and the streamers trail on the ground.
  */
 public class MountainWatcherModel extends ForestBirdModel {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Mechanical.MODID, "mountain_watcher"), "main");
     static final int FINGERS = 6;
 
-    private final ModelPart body, leftWing, rightWing, leftTip, rightTip;
-    private final ModelPart[] leftFingers = new ModelPart[FINGERS], rightFingers = new ModelPart[FINGERS], crest = new ModelPart[5];
+    private final ModelPart body, tail, leftWing, rightWing, leftTip, rightTip;
+    private final ModelPart[] leftFingers = new ModelPart[FINGERS], rightFingers = new ModelPart[FINGERS], crest = new ModelPart[3];
     private final ModelPart[] streamers, streamerEnds;
 
     public MountainWatcherModel(ModelPart root) {
-        super(root, 0.4F, 0.5F, 0.45F);
+        super(root, 0.4F, 0.5F, 0.7F);
         Function<String, ModelPart> part = root.createPartLookup();
         body = part.apply("body");
+        tail = part.apply("tail");
         leftWing = part.apply("left_wing");
         rightWing = part.apply("right_wing");
         leftTip = part.apply("left_wing_tip");
@@ -70,23 +72,21 @@ public class MountainWatcherModel extends ForestBirdModel {
             }
             return;
         }
-        // perched: the broad arms hang along the flanks, a little back and drawn in (folded, they are shorter); the hands
-        // fold back over them, a quarter proud so the primaries lie on the secondaries, and cross behind the tail
-        for (ModelPart w : new ModelPart[] {leftWing, rightWing}) {
-            w.xRot += 0.2F;
-            w.yScale = 0.75F;
-        }
-        leftTip.xRot = rightTip.xRot = 1.85F;
-        leftTip.x = 0.3F;
-        rightTip.x = -0.3F;
-        leftTip.yScale = rightTip.yScale = 0.8F; // shorter folded (the arm's squash narrows its chord)
-        leftTip.zRot = -0.04F;
-        rightTip.zRot = 0.04F;
-        for (int i = 0; i < FINGERS; i++) leftFingers[i].xRot = rightFingers[i].xRot = 0.04F * i;
+        // perched, upright: the arms hang straight down the flanks (their broad feather rows lying back along the body),
+        // the hands fold back over them a little proud and run on past the tail, crossing behind it
+        leftWing.xRot = rightWing.xRot = 0.75F;
+        tail.xRot += 0.45F; // held out behind, clear of the ground (the upright body would plant it)
+        leftTip.xRot = rightTip.xRot = 1.15F;
+        leftTip.x = 1.05F;
+        rightTip.x = -1.05F;
+        leftTip.yRot = -0.3F;
+        rightTip.yRot = 0.3F;
+        for (int i = 0; i < FINGERS; i++) leftFingers[i].xRot = rightFingers[i].xRot = 0.03F * i;
         for (int i = 0; i < crest.length; i++) crest[i].xRot += Mth.sin(t * 0.05F + i) * 0.04F;
         for (int i = 0; i < 2; i++) {
-            streamers[i].xRot = -0.04F + Mth.sin(t * 0.04F + i) * 0.03F; // hanging from the tail (minus: down)
-            streamerEnds[i].xRot = -0.04F;
+            // from the raised tail down to the ground, then lying along it behind (minus: down)
+            streamers[i].xRot = -0.25F + Mth.sin(t * 0.04F + i) * 0.02F;
+            streamerEnds[i].xRot = 0.62F;
         }
     }
 }

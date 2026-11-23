@@ -43,9 +43,9 @@ public final class FolkShots {
     private static boolean watcher;
     /** The Watcher's views: angle round from its front, camera height over the platform, distance, bird height, flying (1). */
     private static final double[][] WATCHER_VIEWS = {{35, 1.6, 4.5, 0, 0}, {0, 1.3, 4.5, 0, 0}, {90, 1.3, 4.5, 0, 0}, {180, 1.6, 4.5, 0, 0},
-            {35, 1.6, 2.6, 0, 0}, {35, 5.5, 7.5, 3, 1}, {90, 1.8, 8.0, 3.5, 1}, {0, 3.2, 7.0, 3, 1}, {160, 8.5, 6.0, 3, 1},
-            {210, 0.2, 6.5, 4, 1}, {60, 3.6, 2.8, 3, 1}, {20, 6.2, 4.2, 3, 1}};
-    private static final int SKY_SHOTS = 6;
+            {35, 1.8, 2.8, 0, 0}, {35, 5.5, 7.5, 3, 1}, {90, 1.8, 8.0, 3.5, 1}, {0, 3.2, 7.0, 3, 1}, {160, 8.5, 6.0, 3, 1},
+            {210, 0.2, 6.5, 4, 1}, {60, 3.6, 2.8, 3, 1}, {20, 6.2, 4.2, 3, 1}, {0, 9.5, 1.0, 3, 1}, {75, 5.6, 3.0, 3, 1}};
+    private static final int SKY_SHOTS = 2;
     private static final List<String> result = new ArrayList<>();
 
     /** name, type (null: the Mossy Troll Stone blocks), camera distance, camera height (eye level), storm. */
