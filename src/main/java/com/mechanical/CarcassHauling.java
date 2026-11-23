@@ -85,7 +85,8 @@ public final class CarcassHauling {
     /** Most degrees a dragged body turns per tick towards its pullers (smooth, no snapping round). */
     static final float TURN_RATE = 8.0F;
     static final Identifier MANY_HANDS = Identifier.fromNamespaceAndPath(MODID, "wilderness/many_hands"),
-            MOVING_A_MOUNTAIN = Identifier.fromNamespaceAndPath(MODID, "wilderness/moving_a_mountain");
+            MOVING_A_MOUNTAIN = Identifier.fromNamespaceAndPath(MODID, "wilderness/moving_a_mountain"),
+            ALL_HANDS = Identifier.fromNamespaceAndPath(MODID, "wilderness/elkwight_all_hands");
 
     public static final DeferredBlock<HangingRackBlock> HANGING_RACK = BLOCKS.registerBlock("hanging_rack", HangingRackBlock::new, p -> p
             .mapColor(MapColor.WOOD).strength(1.5F).sound(SoundType.WOOD).noOcclusion().ignitedByLava());
@@ -115,37 +116,51 @@ public final class CarcassHauling {
         return raw.is(RAW_HAUNCH.get()) ? 3 : raw.is(RAW_RIBS.get()) || raw.is(RAW_LOIN.get()) ? 2 : 1;
     }
 
-    /** The carcass {@code player} carries or drags (alone or with others), or null. Works on both sides (the haulers are synced). */
-    public static CarcassEntity hauled(Player player) {
-        for (CarcassEntity c : player.level().getEntitiesOfClass(CarcassEntity.class, player.getBoundingBox().inflate(12), c -> c.slotOf(player) >= 0))
+    /** The heavy load (a carcass, the Elkwight's axe ...) {@code player} carries or drags, or null. Both sides (the haulers are synced). */
+    public static HeavyLoad heavy(Player player) {
+        for (HeavyLoad c : player.level().getEntitiesOfClass(HeavyLoad.class, player.getBoundingBox().inflate(12), c -> c.slotOf(player) >= 0))
             return c;
         return null;
     }
 
-    /** Fewer players on it than it takes to move it (both sides: drives the strain pose too). */
-    public static boolean straining(CarcassEntity c) {
-        return c.isLarge() && c.haulerCount() < c.pullersNeeded();
+    /** The carcass {@code player} carries or drags (alone or with others), or null. Works on both sides (the haulers are synced). */
+    public static CarcassEntity hauled(Player player) {
+        return heavy(player) instanceof CarcassEntity c ? c : null;
+    }
+
+    /** Fewer players on it than it takes to move it at full pace (both sides: drives the strain pose too). */
+    public static boolean straining(HeavyLoad c) {
+        return c.isDragged() && c.haulerCount() < c.pullersNeeded();
+    }
+
+    /**
+     * How hard {@code n} pullers move {@code c}: 0 (it doesn't budge) below {@link HeavyLoad#pullersToBudge}, a creep of
+     * {@link #STRAIN_CREEP} * n / needed below {@link HeavyLoad#pullersNeeded}, else 1.
+     */
+    public static double pullStrength(HeavyLoad c, int n) {
+        int need = c.pullersNeeded();
+        return n < c.pullersToBudge() ? 0.0 : n < need ? STRAIN_CREEP * n / need : 1.0;
     }
 
     /** Hands full of something heavy: no sprinting (see PlayerMixin). */
     public static boolean blocksSprint(Player player) {
         if (FelledLogEntity.liftedBy(player) != null) return true;
-        CarcassEntity c = hauled(player);
-        if (c != null && !c.isLight()) return true;
+        HeavyLoad c = heavy(player);
+        if (c != null && c.blocksSprint()) return true;
         TravoisEntity t = TravoisEntity.harnessedTo(player);
         return t != null && t.blocksSprint();
     }
 
     /** Sneak + right-click with an empty hand: shoulder it or start dragging it; right-click what you drag to let go. */
-    static InteractionResult pickUpOrLetGo(Player player, CarcassEntity carcass) {
+    public static InteractionResult pickUpOrLetGo(Player player, HeavyLoad carcass) {
         if (carcass.slotOf(player) >= 0) {
             if (!player.level().isClientSide()) {
                 letGo(carcass, player, null);
-                com.mechanical.people.CarcassGifts.left(carcass, player); // put down at an NPC camp: a gift (or a threat)
+                if (carcass instanceof CarcassEntity c) com.mechanical.people.CarcassGifts.left(c, player); // put down at an NPC camp: a gift (or a threat)
             }
             return InteractionResult.SUCCESS;
         }
-        if (hauled(player) != null) return InteractionResult.PASS;
+        if (heavy(player) != null) return InteractionResult.PASS;
         boolean joining = carcass.haulerId() >= 0;
         if (!player.level().isClientSide()) {
             if (joining && !carcass.addHauler(player)) {
@@ -155,21 +170,24 @@ public final class CarcassHauling {
             }
             if (!joining) {
                 carcass.stopRiding();
-                carcass.unsling(); // off a horse's side
-                if (carcass.hungAt() != null) carcass.unhang();
+                if (carcass instanceof CarcassEntity c) {
+                    c.unsling(); // off a horse's side
+                    if (c.hungAt() != null) c.unhang();
+                }
                 carcass.addHauler(player);
             }
             player.level().playSound(null, carcass.getX(), carcass.getY(), carcass.getZ(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, 0.7F);
-            if (carcass.isLarge()) tellPullers(carcass);
+            if (carcass.isDragged()) tellPullers(carcass);
             else player.sendOverlayMessage(Component.translatable("message.mechanical.carcass.carry"));
         }
         return InteractionResult.SUCCESS;
     }
 
     /** Server: tells everyone dragging {@code c} how it goes: alone, together, or too few to move it. */
-    private static void tellPullers(CarcassEntity c) {
+    private static void tellPullers(HeavyLoad c) {
         int n = c.haulerCount(), need = c.pullersNeeded();
-        Component msg = n < need ? Component.translatable("message.mechanical.carcass.too_heavy", need, n)
+        Component msg = n < c.pullersToBudge() ? Component.translatable("message.mechanical.heavy.wont_budge", c.pullersToBudge(), n)
+                : n < need ? Component.translatable("message.mechanical.carcass.too_heavy", need, n)
                 : Component.translatable(n > 1 ? "message.mechanical.carcass.drag_together" : "message.mechanical.carcass.drag", n);
         for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
             Player p = c.hauler(i);
@@ -182,15 +200,16 @@ public final class CarcassHauling {
      * draws his grip ({@link CarcassEntity#gripPoint}) to within {@link #GRIP_REACH} of himself, the body moving by the
      * average of those pulls (too few pullers: a creep of it) and turning its head end towards them a little each tick.
      */
-    static void follow(CarcassEntity c) {
-        if (!c.isLarge()) {
-            Player p = c.hauler();
+    static void follow(HeavyLoad load) {
+        if (!load.isDragged() && load instanceof CarcassEntity carried) {
+            Player p = carried.hauler();
             // the renderer draws it across the shoulders from the player's own position; this only keeps it tracked and near
-            c.setPos(p.getX(), p.getY() + 1.0, p.getZ());
-            c.setDeltaMovement(Vec3.ZERO);
-            bleed(c, p.position(), false);
+            carried.setPos(p.getX(), p.getY() + 1.0, p.getZ());
+            carried.setDeltaMovement(Vec3.ZERO);
+            bleed(carried, p.position(), false);
             return;
         }
+        HeavyLoad c = load;
         Vec3 pull = Vec3.ZERO, centre = Vec3.ZERO;
         int n = 0, pulling = 0;
         for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
@@ -207,7 +226,7 @@ public final class CarcassHauling {
         }
         if (n == 0) return;
         int need = c.pullersNeeded();
-        double strength = n < need ? STRAIN_CREEP * n / need : 1.0;
+        double strength = pullStrength(c, n);
         if (pulling > 0) pull = pull.scale(strength / pulling);
         // in water it floats half under like a loose body (CarcassEntity#tick) instead of sinking
         boolean afloat = c.getFluidHeight(FluidTags.WATER) > c.getBbHeight() * 0.5;
@@ -221,14 +240,16 @@ public final class CarcassHauling {
             float target = (float) Math.toDegrees(Math.atan2(-to.x, to.z)), turn = (float) (TURN_RATE * strength);
             c.setYRot(c.getYRot() + Mth.clamp(Mth.wrapDegrees(target - c.getYRot()), -turn, turn));
         }
-        bleed(c, c.position(), true);
+        if (c instanceof CarcassEntity body) bleed(body, c.position(), true);
         if (c.tickCount % 40 == 0 && n < need && pulling > 0) tellPullers(c); // keeps telling them while they strain
-        if (c.tickCount % 20 == 0 && n > 1 && n >= need && pulling > 0) {
-            boolean mammoth = c.animal() == com.mechanical.wildlife.giants.GiantsFauna.WOOLLY_MAMMOTH.get();
+        if (c.tickCount % 20 == 0 && n > 1 && n >= need && pulling > 0 && c instanceof CarcassEntity body) {
+            boolean mammoth = body.animal() == com.mechanical.wildlife.giants.GiantsFauna.WOOLLY_MAMMOTH.get();
+            boolean allHands = body.isColossal() && n >= HeavyLoad.MAX_HAULERS; // the Elkwight, with three others
             for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
                 if (!(c.hauler(i) instanceof ServerPlayer sp)) continue;
                 Kettle.award(sp, MANY_HANDS);
                 if (mammoth) Kettle.award(sp, MOVING_A_MOUNTAIN);
+                if (allHands) Kettle.award(sp, ALL_HANDS);
             }
         }
     }
@@ -237,7 +258,7 @@ public final class CarcassHauling {
      * Client, own player, after it moved: a body too heavy for its pullers holds him within {@link #GRIP_REACH} +
      * {@link #TETHER_SLACK} of his grip, like a rope (as TravoisEntity#tether; never pulled in from further than he was).
      */
-    static void tether(Player mover, CarcassEntity c) {
+    static void tether(Player mover, HeavyLoad c) {
         int slot = c.slotOf(mover);
         if (slot < 0 || !straining(c)) return;
         Vec3 grip = c.gripPoint(slot, 1.0F);
@@ -266,11 +287,11 @@ public final class CarcassHauling {
     }
 
     /** {@code p} lets go. A carried one is put down at {@code at} (null: in front of the player); a dragged one stays where it is (or the others pull on). */
-    static void letGo(CarcassEntity c, Player p, Vec3 at) {
+    static void letGo(HeavyLoad c, Player p, Vec3 at) {
         int slot = c.slotOf(p);
         if (slot >= 0) c.removeHauler(slot);
         c.setDeltaMovement(Vec3.ZERO);
-        if (c.isLarge()) {
+        if (c.isDragged()) {
             if (c.haulerId() >= 0) tellPullers(c);
             return;
         }
@@ -286,16 +307,19 @@ public final class CarcassHauling {
     @SubscribeEvent
     static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
-        CarcassEntity c = hauled(player);
-        if (c == null) return;
+        HeavyLoad load = heavy(player);
+        if (load == null) return;
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
         if (event.getHand() != InteractionHand.MAIN_HAND || !(event.getLevel() instanceof ServerLevel level)) return;
         var state = level.getBlockState(event.getPos());
-        if (state.is(HANGING_RACK.get())) HangingRackBlock.tryHang(level, event.getPos(), state, c, player);
+        var face = event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace();
+        if (!(load instanceof CarcassEntity c)) {
+            if (!load.putDownOn(level, event.getPos(), face, player)) letGo(load, player, Vec3.atBottomCenterOf(event.getPos().relative(face)));
+        } else if (state.is(HANGING_RACK.get())) HangingRackBlock.tryHang(level, event.getPos(), state, c, player);
         else if (FirePit.isBig(state) && FirePit.entity(level, event.getPos(), state) instanceof FirePitBlockEntity pit) pit.hangCarcass(level, player, c);
         else {
-            letGo(c, player, Vec3.atBottomCenterOf(event.getPos().relative(event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace())));
+            letGo(c, player, Vec3.atBottomCenterOf(event.getPos().relative(face)));
             com.mechanical.people.CarcassGifts.left(c, player);
         }
     }
@@ -303,7 +327,7 @@ public final class CarcassHauling {
     /** No eating, drinking, shields, bows or throwing with a deer on your back (both sides, so the client doesn't predict it). */
     @SubscribeEvent
     static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (hauled(event.getEntity()) == null) return;
+        if (heavy(event.getEntity()) == null) return;
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.FAIL);
     }
@@ -314,11 +338,11 @@ public final class CarcassHauling {
      */
     @SubscribeEvent
     static void onInteractEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof TravoisEntity || event.getTarget() instanceof CarcassEntity) return;
-        CarcassEntity c = hauled(event.getEntity());
-        if (c == null) return;
+        if (event.getTarget() instanceof TravoisEntity || event.getTarget() instanceof HeavyLoad) return;
+        HeavyLoad load = heavy(event.getEntity());
+        if (load == null) return;
         boolean slung = event.getHand() == InteractionHand.MAIN_HAND && event.getTarget() instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse
-                && HorseWork.sling(event.getEntity(), c, horse);
+                && load instanceof CarcassEntity c && HorseWork.sling(event.getEntity(), c, horse);
         event.setCanceled(true);
         event.setCancellationResult(slung ? InteractionResult.SUCCESS : InteractionResult.FAIL);
     }
@@ -326,7 +350,7 @@ public final class CarcassHauling {
     /** Whatever other way an item gets used (a knife on another body ...): not with full hands. */
     @SubscribeEvent
     static void onUseItem(net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent.Start event) {
-        if (event.getEntity() instanceof Player player && hauled(player) != null) event.setCanceled(true);
+        if (event.getEntity() instanceof Player player && heavy(player) != null) event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -347,7 +371,7 @@ public final class CarcassHauling {
     /** Server: puts down or lets go of whatever {@code player} hauls (also when he goes down: clan.Downed). */
     public static void dropHauled(Player player) {
         if (player.level().isClientSide()) return;
-        CarcassEntity c = hauled(player);
+        HeavyLoad c = heavy(player);
         if (c != null) letGo(c, player, null);
     }
 
@@ -359,20 +383,20 @@ public final class CarcassHauling {
             // client, own player, after it moved: a stuck travois holds it back
             TravoisEntity held = TravoisEntity.harnessedTo(player);
             if (held != null) TravoisEntity.tether(player, held);
-            CarcassEntity dragged = hauled(player);
+            HeavyLoad dragged = heavy(player);
             if (dragged != null) tether(player, dragged);
         }
         if (player.level().isClientSide() || player.tickCount % 5 != 0) return;
         double slow = 0, food = 0;
-        CarcassEntity c = hauled(player);
-        if (c != null && c.isLarge()) {
+        HeavyLoad c = heavy(player);
+        if (c != null && c.isDragged()) {
             // the work is shared: two on a bear go at 75 % speed, four on the mammoth at 50 %; too few on a huge one barely move
             double share = straining(c) ? 1.0 : (double) c.pullersNeeded() / c.haulerCount();
             slow += straining(c) ? SLOW_STRAIN : SLOW_DRAG * share;
             food += FOOD_DRAG * share;
-        } else if (c != null) {
-            slow += c.isLight() ? 0 : SLOW_CARRY;
-            food += c.isLight() ? 0 : FOOD_CARRY;
+        } else if (c instanceof CarcassEntity body) {
+            slow += body.isLight() ? 0 : SLOW_CARRY;
+            food += body.isLight() ? 0 : FOOD_CARRY;
         }
         TravoisEntity t = TravoisEntity.harnessedTo(player);
         if (t != null) {

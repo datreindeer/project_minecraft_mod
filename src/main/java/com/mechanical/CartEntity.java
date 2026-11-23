@@ -174,7 +174,7 @@ public class CartEntity extends TravoisEntity {
             return InteractionResult.CONSUME;
         }
         ItemStack held = player.getItemInHand(hand);
-        if (hand != InteractionHand.MAIN_HAND || !held.is(Items.CHEST) || hasChest() || CarcassHauling.hauled(player) != null)
+        if (hand != InteractionHand.MAIN_HAND || !held.is(Items.CHEST) || hasChest() || CarcassHauling.heavy(player) != null)
             return super.interact(player, hand, location);
         if (!level().isClientSide()) {
             if (!getPassengers().isEmpty()) player.sendOverlayMessage(Component.translatable("message.mechanical.cart.unload_first"));

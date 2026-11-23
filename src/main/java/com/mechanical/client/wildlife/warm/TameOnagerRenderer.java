@@ -25,9 +25,15 @@ public class TameOnagerRenderer extends MobRenderer<TameOnager, WildAnimalRender
     private final EntityModel<WildAnimalRenderState> adult, foal;
 
     public TameOnagerRenderer(EntityRendererProvider.Context context) {
-        super(context, new OnagerModel(context.bakeLayer(OnagerModel.LAYER)), 0.7F);
-        adult = model;
-        foal = new OnagerFoalModel(context.bakeLayer(OnagerFoalModel.LAYER));
+        this(context, new OnagerModel(context.bakeLayer(OnagerModel.LAYER)), new OnagerFoalModel(context.bakeLayer(OnagerFoalModel.LAYER)), 0.7F);
+    }
+
+    /** Another tame pack animal on the onager's base (the tame camel, client/wildlife/desert). */
+    public TameOnagerRenderer(EntityRendererProvider.Context context, EntityModel<WildAnimalRenderState> adult,
+            EntityModel<WildAnimalRenderState> foal, float shadow) {
+        super(context, adult, shadow);
+        this.adult = adult;
+        this.foal = foal;
         addLayer(new StuckArrowLayer(this, context));
     }
 

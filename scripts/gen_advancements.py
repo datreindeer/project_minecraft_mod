@@ -535,6 +535,40 @@ TABS = {
          "Kill a Lynx. It stalks lone wanderers at night: company, fire and torches keep it off", has("raw_lynx_pelt")),
         ("lynx_rug", "lynx", "lynx_rug", T, "Spotted Rug",
          "Cure 2 Lynx Pelts on a Drying Rack and craft them with a Bone into a Lynx Rug", has("lynx_rug")),
+        # fauna: cold
+        ("polar_bear_pelt", "drying_rack", "polar_bear_pelt", C, "White Bear",
+         "Kill a Polar Bear (it stalks seals at the ice edge, and people too) and cure its pelt on a Drying Rack",
+         has("polar_bear_pelt")),
+        ("polar_bear_cloak", "polar_bear_pelt", "polar_bear_cloak", G, "Ice Walker",
+         "Sew 2 Polar Bear Pelts, Leather and Sinew into a Polar Bear Cloak, the warmest thing you can wear", has("polar_bear_cloak")),
+        ("polar_bear_rug", "polar_bear_pelt", "polar_bear_rug", T, "White Rug",
+         "Craft a Polar Bear Pelt and a Bone into a Polar Bear Rug", has("polar_bear_rug")),
+        ("polar_bear_liver", "butcher", "polar_bear_liver", T, "Too Much of a Good Thing",
+         "Butcher a Polar Bear and keep its liver. The old hunters never ate it: it poisons", has("polar_bear_liver")),
+        ("arctic_fox_fur", "drying_rack", "arctic_fox_fur", T, "Camp Follower",
+         "Hunt an Arctic Fox (it trails polar bears for their leftovers) and cure its pelt on a Drying Rack", has("arctic_fox_fur")),
+        ("arctic_fox_hat", "arctic_fox_fur", "arctic_fox_hat", T, "Snow-White Hat",
+         "Sew 3 Arctic Fox Fur and Sinew into a warm Arctic Fox Hat", has("arctic_fox_hat")),
+        ("snow_leopard_pelt", "drying_rack", "snow_leopard_pelt", C, "Grey Ghost",
+         "Find the rare Snow Leopard on the highest peaks, bring it down and cure its pelt on a Drying Rack", has("snow_leopard_pelt")),
+        ("snow_leopard_boots", "snow_leopard_pelt", "snow_leopard_boots", T, "Soft Landing",
+         "Sew 2 Snow Leopard Pelts and Sinew onto Leather Boots: a fall of a few blocks no longer hurts", has("snow_leopard_boots")),
+        ("snow_leopard_rug", "snow_leopard_pelt", "snow_leopard_rug", T, "Grey Rosettes",
+         "Craft 2 Snow Leopard Pelts and a Bone into a Snow Leopard Rug", has("snow_leopard_rug")),
+        ("snowy_owl_feather", "owl_feather", "snowy_owl_feather", T, "White Wings",
+         "Bring down a Snowy Owl, the owl that hunts lemmings by day on the snow, for its feathers: they fletch Silent Arrows too",
+         has("snowy_owl_feather")),
+        ("black_grouse_feather", "lek_hunter", "black_grouse_tail_feather", T, "Lyre Tail",
+         "Hunt a Black Grouse (in spring the cocks lek at dawn on the bog) for its Lyre Feathers: 6 arrows each",
+         has("black_grouse_tail_feather")),
+        ("bone_marrow", "eagle_feather", "bone_marrow", T, "Bone Breaker",
+         "Find Bone Marrow where a Lammergeier dropped a bone on the rocks to crack it (it takes bones and Bone Piles)",
+         has("bone_marrow")),
+        ("lammergeier_feather", "bone_marrow", "lammergeier_feather", T, "Bearded Vulture",
+         "Bring down a Lammergeier for its feathers: they fletch Eagle-Fletched Arrows", has("lammergeier_feather")),
+        ("pika_hay", "root", "pika_hay", T, "Haymaker",
+         "Take Pika Hay from a pika's hay pile on the high slopes (they make hay in summer and autumn): fodder, or 9 for a Hay Bale",
+         has("pika_hay")),
         # fauna: meadow
         ("wild_cat", "butcher", "raw_wildcat_pelt", T, "Wildcat",
          "Hunt the shy, night-prowling Wild Cat of forest edges and meadows and skin it for its pelt", has("raw_wildcat_pelt")),
@@ -665,6 +699,12 @@ TABS = {
         ("taiga_fare", "cooked", "cooked_lynx", T, "Taiga Fare",
          "Cook the meat of a Lynx, Wolverine, Pine Marten, Ermine or Lemming on a Campfire",
          has("cooked_lynx", "cooked_wolverine", "cooked_marten", "cooked_ermine", "cooked_lemming")),
+        # fauna: cold
+        ("arctic_fare", "cooked", "cooked_polar_bear", T, "Arctic Fare",
+         "Cook Polar Bear, Arctic Fox, Snow Leopard, Pika or Black Grouse meat on a Campfire",
+         has("cooked_polar_bear", "cooked_arctic_fox", "cooked_snow_leopard", "cooked_pika", "cooked_black_grouse")),
+        ("bone_marrow_eaten", "arctic_fare", "bone_marrow", T, "Marrow Feast",
+         "Eat Bone Marrow, cracked out of a bone a Lammergeier dropped: rich and filling", ate("bone_marrow")),
         # fauna: meadow
         ("small_game", "cooked", "cooked_wildcat", T, "Small Game",
          "Roast Wildcat Meat, a Mole, a Vole or Snake Meat on the Campfire",
@@ -913,6 +953,7 @@ TABS["wilderness"][1].extend([
 ])
 
 
+
 # fauna: warm
 TABS["bronze_age"][1].extend([
     ("tame_onager", "rope_halter", "pack_baskets", G, "Beast of Burden",
@@ -1002,6 +1043,97 @@ TABS["food"][1].extend([
      "Cook a Blind Cave Fish or roast a Spider Leg on a Campfire", has("cooked_cave_fish", "roasted_spider_leg")),
 ])
 # end fauna: deep
+# fauna: savanna
+TABS["wilderness"][1].extend([
+    ("hyena_hide", "butcher", "hyena_hide", T, "Laughing Thieves",
+     "Butcher a Spotted Hyena. By day the packs drag off any kill you leave lying and trail wounded animals", has("hyena_hide")),
+    ("cheetah", "butcher", "raw_cheetah_pelt", C, "Five Seconds",
+     "Bring down a Cheetah: the fastest sprinter of all, but it gives up after five seconds, and it shies from people", has("raw_cheetah_pelt")),
+    ("cheetah_cloak", "cheetah", "cheetah_cloak", T, "Spotted Cloak",
+     "Fat-tan 2 Raw Cheetah Pelts and sew them with Sinew and Leather into a Cheetah Cloak for the Cloak slot", has("cheetah_cloak")),
+    ("signal_horn", "butcher", "signal_horn", T, "Sound the Horn",
+     "Hollow a Gazelle Horn with a knife and bind it with Sinew: a Signal Horn heard 256 blocks away", has("signal_horn")),
+    ("ostrich", "butcher", "ostrich_feather", T, "Big Bird",
+     "Pluck an Ostrich, or pick up the egg an ostrich hen laid. Corner one and it kicks", has("ostrich_feather", "ostrich_egg")),
+    ("termites", "root", "termites", T, "Termite Fishing", "Poke a Stick into a Termite Mound on the savanna until it comes out covered in Termites",
+     has("termites")),
+    ("chitin_paste", "termites", "chitin_paste", T, "Glue from Grubs", "Pound 4 Termites into Chitin Paste: a glue that does what Hide Glue does",
+     has("chitin_paste")),
+])
+TABS["food"][1].extend([
+    ("ostrich_egg_meal", "cooked", "cooked_ostrich_egg", T, "Breakfast for Six", "Roast an Ostrich Egg whole on a Campfire and eat it",
+     ate("cooked_ostrich_egg")),
+])
+# end fauna: savanna
+# fauna: desert (wildlife/desert)
+TABS["bronze_age"][1].extend([
+    ("tame_camel", "rope_halter", "camel_hump_fat", G, "Ship of the Desert",
+     "Tame a Wild Camel like an onager: feed, halter, feed. It carries Pack Baskets and goes twice as far without water", tamed("tame_camel")),
+])
+TABS["wilderness"][1].extend([
+    ("scorpion_venom", "butcher", "scorpion_venom", T, "Sting in the Tail",
+     "Butcher a Desert Scorpion for its venom. It hides by day and stings at night; 8 arrows round the venom make Arrows of Poison",
+     has("scorpion_venom")),
+    ("tame_fennec", "root", "fennec_pelt", G, "Big Ears",
+     "Crouch with raw meat and win over a Fennec Fox at night. Tamed, it yips and marks whatever creeps up in the dark", tamed("tame_fennec")),
+    ("viper_fang", "butcher", "viper_fang", T, "Under the Sand",
+     "Butcher a Sand Viper. It lies buried in the sand and bites whoever steps near it", has("viper_fang")),
+    ("rattlesnake_rattle", "butcher", "rattlesnake_rattle", T, "Fair Warning",
+     "Butcher a Rattlesnake for its rattle. It always rattles before it strikes: back off", has("rattlesnake_rattle")),
+    ("puma", "butcher", "raw_puma_pelt", C, "Cliff Cat",
+     "Kill a Puma. It lies up on the badland ledges by day and leaps down on whatever passes below", has("raw_puma_pelt")),
+    ("puma_rug", "puma", "puma_rug", T, "Mountain Lion",
+     "Fat-tan 2 Raw Puma Pelts with a knife and a tanning fat, then craft them with a Bone into a Puma Rug", has("puma_rug")),
+    ("bighorn_horn", "butcher", "bighorn_horn", T, "Full Curl",
+     "Butcher a Bighorn ram for its great horn (careful: hurt, it charges). One horn makes a Horn Bow", has("bighorn_horn")),
+    ("condor_feather", "root", "condor_feather", T, "Giant of the Sky",
+     "Bring down a Condor, the great carrion bird circling high over the badlands, for its flight feathers", has("condor_feather")),
+])
+TABS["food"][1].extend([
+    ("desert_fare", "cooked", "cooked_camel_meat", T, "Desert Fare",
+     "Cook Camel Meat, Bighorn Mutton, Puma Meat, a Fennec or a Scorpion on a Campfire",
+     has(*[f"cooked_{m}" for m in ("camel_meat", "bighorn_mutton", "puma_meat", "fennec", "scorpion")])),
+])
+# end fauna: desert
+# fauna: temperate
+TABS["wilderness"][1].extend([
+    ("fox_den", "root", "fox_den", T, "Follow the Tracks",
+     "At night red foxes raid farms for eggs and hens. Follow the paw prints to the Fox Den: your eggs lie there", has("fox_den")),
+    ("fox_fur", "drying_rack", "fox_fur", T, "Henhouse Thief",
+     "Hunt a red fox and cure its pelt on a Drying Rack", has("fox_fur")),
+    ("fox_fur_hat", "fox_fur", "fox_fur_hat", T, "Red Hat", "Sew 5 Fox Fur and Sinew into a warm Fox Fur Hat", has("fox_fur_hat")),
+    ("wisent", "butcher", "raw_wisent_hide", C, "Forest Giant",
+     "Bring down a Wisent, the giant of the broadleaf woods: peaceful, but any grown one fights back, and it charges if you crowd it",
+     has("raw_wisent_hide")),
+    ("wisent_rug", "wisent", "wisent_rug", T, "Shaggy Rug",
+     "Fat-tan a Raw Wisent Hide with a knife and Tallow or Lard, with a Bone, into a Wisent Rug", has("wisent_rug")),
+    ("pond_turtle_shell", "butcher", "pond_turtle_shell", T, "Basking",
+     "Catch a Pond Turtle sunning itself on a log in the fen before it slips into the water. Its shell makes bowls",
+     has("pond_turtle_shell")),
+    ("beetle_shell", "root", "beetle_shell", T, "Antlers of a Beetle",
+     "Find a Giant Stag Beetle in the dark forest. Its glossy shell grinds into brown dye and black pigment", has("beetle_shell")),
+    ("grub", "root", "grub", T, "Follow the Drumming",
+     "Follow a woodpecker's drumming to a rotten Grub Log and dig out the Grubs: bait for snares", has("grub")),
+    ("woodpecker_feather", "grub", "woodpecker_feather", T, "Red Cap", "Get a Woodpecker's red feather", has("woodpecker_feather")),
+    ("wild_honey", "root", "wild_honey", T, "Bumblebee Honey",
+     "Take Wild Honey from a Bumblebee Nest in the meadow in spring or summer. Sneak, or they may sting", has("wild_honey")),
+    ("leech", "root", "leech", T, "Bloodsucker",
+     "Wade in a fen until a leech latches on. When it drops off sated keep it: laid on the skin it draws out poison", has("leech")),
+    ("whole_eel", "fish_trap", "whole_eel", T, "Slippery",
+     "Leave a Fish Trap in a river or fen overnight: eels come out in the dark", has("whole_eel")),
+    ("crayfish", "fish_trap", "crayfish", T, "Crayfish Party",
+     "Set a Fish Trap in a river or fen in Reaping, the last month of summer, and it fills with crayfish", has("crayfish")),
+])
+TABS["food"][1].extend([
+    ("temperate_fare", "cooked", "cooked_wisent", T, "Woodland Fare",
+     "Cook Wisent, Pond Turtle, Water Vole, Eel or Crayfish on a Campfire",
+     has("cooked_wisent", "cooked_pond_turtle_meat", "cooked_water_vole", "cooked_eel", "cooked_crayfish")),
+    ("meadow_birds", "cooked_bird", "cooked_lapwing", T, "Larks' Tongues",
+     "Cook a Skylark, a Lapwing or a Bittern on a Campfire, or roast one whole", has("cooked_skylark", "cooked_lapwing", "cooked_bittern")),
+    ("meadow_nest", "nest_egg", "lapwing_egg", T, "Eggs in the Grass",
+     "Take an egg from a Skylark or Lapwing nest hidden in the grass of the plains", has("skylark_egg", "lapwing_egg")),
+])
+# end fauna: temperate
 # tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
 TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
@@ -1434,6 +1566,33 @@ TABS["wilderness"][1].extend([
     ("mammoth_steppe", "chalk_downs", "mammoth_ivory", G, "Mammoth Steppe",
      "Find the Mammoth Steppe in the cold, dry north: dry grass on Loess, mammoths, rhinos, bison, wild horses and saiga, and the lions that hunt them",
      in_biome("mammoth_steppe")),
+    # Elkwight phases 1-2 (docs/elkwight-plan.md; gen_world_biomes.py, gen_elkwight.py)
+    ("into_the_ashes", "chalk_downs", "charred_log", G, "Into the Ashes",
+     "Travel more than 2500 blocks from the world's centre and find the rare Scorched Barrens: a burnt forest of Charred Logs and Wood Ash, ravens overhead",
+     in_biome("scorched_barrens")),
+    ("burnt_hall", "into_the_ashes", "rune_blackstone", C, "The Burnt Hall",
+     "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
+     visit("elkwight_ruin")),
+])
+# the Elkwight boss (wildlife/elkwight, gen_elkwight_boss.py), under the Scorched Barrens' "Into the Ashes"
+TABS["wilderness"][1].extend([
+    ("elkwight", "into_the_ashes", "elkwight_antler_crown", C, "The Smoke Clears",
+     "Far out in the Scorched Barrens, kill the Elkwight waiting in a burnt ruin. Every attack is shown first: learn the signs",
+     killed({"minecraft:entity_type": "mechanical:elkwight"})),
+    ("elkwight_axe_trophy", "elkwight", "minecraft:iron_axe", G, "Heavy Burden",
+     "Drag the Elkwight's axe home - it takes two - and stand it up as a trophy: right-click the top of a block while you hold it",
+     by_code()),
+    ("elkwight_all_hands", "elkwight", "elkwight_hide", C, "All Hands",
+     "Drag the Elkwight's colossal body with three others. One can't move it, two barely can",
+     by_code()),
+    ("elkwight_cloak", "elkwight", "elkwight_cloak", T, "Mantle of the Wight",
+     "Skin the Elkwight - only a knife past steel cuts that hide - and sew 2 Elkwight Hide, 2 Sinew and Cordage into an Elkwight Cloak",
+     has("elkwight_cloak")),
+    ("bone_charm", "elkwight", "bone_charm", T, "Bone Charm",
+     "Carve a Bone Charm from 3 Elkwight Bones, Cordage and a Gold Nugget. Worn in the Charm slot: two more hearts",
+     has("bone_charm")),
+    ("elkwight_antler_crown", "elkwight", "elkwight_antler_crown", T, "Crowned",
+     "Hang the Elkwight Antler Crown on a wall", placed("elkwight_antler_crown")),
 ])
 TABS["stone_age"][1].extend([
     ("beach_pebbles", "root", "beach_pebbles", T, "Shingle Floor",
@@ -1687,16 +1846,11 @@ VANILLA_LANG = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("u
     if "assets/minecraft/lang/en_us.json" in JAR_NAMES else {}
 HELPERS = {"hide(": "raw_hide", "feathers(": "minecraft:feather", "FEATHERS": "minecraft:feather"}
 HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (birds by their feathers)
-    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming",
-                   "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "python", "monitor_lizard", "proboscis_monkey",
-                   "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog"],
+    "small_game": ["hare", "desert_hare", "squirrel", "hedgehog", "badger", "minecraft:rabbit", "ermine", "lemming", "pine_marten", "arctic_fox", "pika", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "python", "monitor_lizard", "proboscis_monkey", "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog", "water_vole", "pond_turtle"],
     "deer": ["roe_deer", "red_deer", "reindeer", "moose", "giant_deer"],
-    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig",
-                 "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "orangutan",
-                 "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin"],
+    "big_game": ["aurochs", "wild_horse", "mouflon", "wild_boar", "minecraft:cow", "minecraft:mooshroom", "minecraft:pig", "minecraft:sheep", "steppe_bison", "musk_ox", "ibex", "chamois", "saiga", "onager", "water_buffalo", "tapir", "orangutan", "gazelle", "ostrich", "aardvark", "minecraft:camel", "minecraft:llama", "minecraft:trader_llama", "minecraft:goat", "minecraft:hoglin", "wild_camel", "bighorn_sheep", "wisent"],
     "ice_age": ["woolly_mammoth", "woolly_rhino"],
-    "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile",
-                   "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
+    "predators": ["elkwight", "grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile", "cheetah", "spotted_hyena", "pine_marten", "marmot", "wild_cat", "mole", "field_vole", "adder", "grass_snake", "desert_lizard", "tortoise", "desert_scorpion", "fennec_fox", "sand_viper", "rattlesnake", "minecraft:bat", "minecraft:fox", "minecraft:ocelot", "minecraft:armadillo", "minecraft:frog", "puma", "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf", "polar_bear", "snow_leopard", "siberian_tiger"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
     "underground": ["giant_centipede", "vittra", "troll", "lindworm", "cavern_spider"],
 }
@@ -1711,7 +1865,7 @@ GROUP_INFO = {  # id -> (icon, title, description)
     "birds": ("minecraft:feather", "Fowl", "Pluck and butcher game birds"),
     "more_game": ("game_meat_scraps", "More Game", "Butcher the rest of the wild"),
 }
-CHALLENGE = {"tiger", "saltwater_crocodile", "giant_deer", "cave_lion", "brown_bear", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm"}
+CHALLENGE = {"elkwight", "tiger", "saltwater_crocodile", "giant_deer", "cave_lion", "brown_bear", "polar_bear", "snow_leopard", "siberian_tiger", "woolly_mammoth", "woolly_rhino", "walrus", "cave_bear", "troll", "lindworm", "wisent"}
 
 
 def _args(src, start):

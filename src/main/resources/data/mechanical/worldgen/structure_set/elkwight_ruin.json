@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "mechanical:elkwight_ruin",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1618033988,
+    "spacing": 16,
+    "separation": 6
+  }
+}

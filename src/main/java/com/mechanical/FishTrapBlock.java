@@ -40,13 +40,22 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * A woven stick basket with a funnel mouth, set in water. On random ticks (~68 s each) it may catch a fish, up to
  * {@link #CAPACITY}; right-click to take them (whole fish: gut them with a knife). Only in a real body of water
  * ({@link #MIN_WATER}+ water blocks around it); rivers and moving water catch the most. The species follows the biome
- * and is picked when the trap is emptied.
+ * and is picked when the trap is emptied. At night in eel water ({@link #EEL_WATERS}) a catch is often an eel instead
+ * (counted in {@link #EELS}), and in Reaping (late summer) the trap fills with crayfish there (wildlife.temperate).
  */
 public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final int CAPACITY = 3;
     public static final IntegerProperty FISH = IntegerProperty.create("fish", 0, CAPACITY);
+    /** How many of the {@link #FISH} are eels (caught at night). */
+    public static final IntegerProperty EELS = IntegerProperty.create("eels", 0, CAPACITY);
+    /** Rivers, swamps, fens and bogs: eels at night, crayfish in Reaping. */
+    public static final net.minecraft.tags.TagKey<Biome> EEL_WATERS = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.BIOME,
+            net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "has_eels"));
+    /** Share of night catches in eel water that are eels; share of Reaping catches there that are crayfish; Reaping's month index. */
+    static final float EEL_SHARE = 0.6F, CRAYFISH_SHARE = 0.6F;
+    public static final int CRAYFISH_MONTH = 5;
     /** Water blocks needed within 3 blocks sideways and 2 down; a small pond has no fish to catch. */
     static final int MIN_WATER = 12;
     /** Catch chance per random tick: still lake/pond water, then multipliers. Capped at {@link #MAX_CHANCE}. */
@@ -55,12 +64,12 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
 
     public FishTrapBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false).setValue(FISH, 0));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false).setValue(FISH, 0).setValue(EELS, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, WATERLOGGED, FISH);
+        builder.add(FACING, WATERLOGGED, FISH, EELS);
     }
 
     @Override
@@ -94,7 +103,10 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (random.nextFloat() < catchChance(level, pos)) level.setBlock(pos, state.setValue(FISH, state.getValue(FISH) + 1), Block.UPDATE_ALL);
+        if (random.nextFloat() >= catchChance(level, pos)) return;
+        BlockState caught = state.setValue(FISH, state.getValue(FISH) + 1);
+        if (level.isDarkOutside() && level.getBiome(pos).is(EEL_WATERS) && random.nextFloat() < EEL_SHARE) caught = caught.setValue(EELS, state.getValue(EELS) + 1);
+        level.setBlock(pos, caught, Block.UPDATE_ALL);
     }
 
     /** Chance per random tick to catch a fish here, 0 in too little water. */
@@ -126,6 +138,9 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
     static Item fishFor(Level level, BlockPos pos, RandomSource random) {
         Holder<Biome> biome = level.getBiome(pos);
         float r = random.nextFloat();
+        if (biome.is(EEL_WATERS) && Calendar.month(level.getOverworldClockTime()) == CRAYFISH_MONTH && random.nextFloat() < CRAYFISH_SHARE) {
+            return com.mechanical.wildlife.temperate.TemperateFauna.CRAYFISH.get();
+        }
         if (biome.is(BiomeTags.IS_RIVER)) return (r < 0.7F ? Mechanical.WHOLE_SALMON : Mechanical.WHOLE_COD).get();
         if (biome.is(Biomes.WARM_OCEAN) || biome.is(Biomes.LUKEWARM_OCEAN) || biome.is(Biomes.DEEP_LUKEWARM_OCEAN)) {
             return (r < 0.5F ? Mechanical.WHOLE_TROPICAL_FISH : r < 0.6F ? Mechanical.WHOLE_PUFFERFISH : Mechanical.WHOLE_COD).get();
@@ -133,14 +148,19 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
         return (r < 0.7F ? Mechanical.WHOLE_COD : Mechanical.WHOLE_SALMON).get();
     }
 
+    /** The i-th fish in the trap: the eels first, then the rest by biome and season. */
+    public static Item catchAt(Level level, BlockPos pos, BlockState state, int i) {
+        return i < state.getValue(EELS) ? com.mechanical.wildlife.temperate.TemperateFauna.WHOLE_EEL.get() : fishFor(level, pos, level.getRandom());
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (state.getValue(FISH) == 0) return InteractionResult.PASS;
         if (!level.isClientSide()) {
             for (int i = 0; i < state.getValue(FISH); i++) {
-                player.getInventory().placeItemBackInInventory(new ItemStack(fishFor(level, pos, level.getRandom())), Prediction.SERVER_ONLY);
+                player.getInventory().placeItemBackInInventory(new ItemStack(catchAt(level, pos, state, i)), Prediction.SERVER_ONLY);
             }
-            level.setBlock(pos, state.setValue(FISH, 0), Block.UPDATE_ALL);
+            level.setBlock(pos, state.setValue(FISH, 0).setValue(EELS, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.FISHING_BOBBER_SPLASH, SoundSource.BLOCKS, 0.6F, 1.2F);
         }
         return InteractionResult.SUCCESS;
@@ -150,7 +170,7 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         // the catch spills out when the trap is broken
         if (!level.isClientSide() && !player.isCreative()) {
-            for (int i = 0; i < state.getValue(FISH); i++) popResource(level, pos, new ItemStack(fishFor(level, pos, level.getRandom())));
+            for (int i = 0; i < state.getValue(FISH); i++) popResource(level, pos, new ItemStack(catchAt(level, pos, state, i)));
         }
         return super.playerWillDestroy(level, pos, state, player);
     }

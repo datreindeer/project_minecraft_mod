@@ -684,3 +684,42 @@ Data: `scripts/gen_weaving.py` (efter gen_plough.py), texturer: `scripts/gen_wea
 **Beslut (2026-11-22):** sängen vilar som Straw Bed (framspolad natt, inte vanillas svarta skärm), bara att den håller.
 Ett block (vävstolen), ingen spinnrock: Drop Spindle spinner fortfarande. Silke är en importvara och kommer bara från
 karavaner. Alla tre tygerna duger i sängen; tyg har inga andra användningar än.
+
+## Elkwight: bossen i Scorched Barrens (byggd, 2026-11-23)
+
+Plan och beslut: [elkwight-plan.md](../elkwight-plan.md). En jätte med älghuvud och en 4 block bred skovelhornskrona väntar
+sovande i en nedbrunnen ruin, minst 2500 block från 0,0. Han är tänkt för slutet av järnåldern och framåt: huden kräver en
+kniv över stål.
+
+- **Striden**: vaknar när en spelare kommer inom 20 block i synhåll, kliver in i ruinen eller slår honom. Boss-mätare. 400 liv, +60 % liv
+  och +10 % skada för varje extra spelare inom 32 block när han vaknar. Rustning 12, immun mot knockback och fallskada.
+  Försvinner aldrig och behåller skadan om man flyr och kommer tillbaka.
+- **Attackerna förvarnas alltid** med pose och ljud:
+  - **Hugg**: yxan lyfts över huvudet.
+  - **Snurr**: drar yxan bakåt och stampar, sedan två varv som träffar alla inom 4 block.
+  - **Hornsvep**: sänker kronan, skrapar med hoven och rusar. Rusar han in i en vägg vacklar han 1 sekund.
+  - **Yxkast**: yxan snurrar ut och tillbaka. Fastnar den i ett block går han och hämtar den, och då kan man slå till.
+  - **Markvåg**: yxan i marken, en spricklinje mot spelaren som kastar upp och skadar. Naturlig sten blir kullersten
+    eller grus och naturliga träd fälls, men byggda block klarar sig.
+  - Flyr man längre än 24 block rusar och kastar han dubbelt så ofta.
+- **Fastnar aldrig**: hoppar upp på torn och ner i gropar, slår sig igenom naturliga block och löv, annars avståndsattacker.
+- **Äter de döda**: dör en spelare inom 16 block går han dit, knäböjer och äter i 3 sekunder och får tillbaka 25 % liv.
+  Under måltiden tar han 1,5x skada, och en hård träff avbryter den. Föremålen ligger kvar på marken.
+- **Kroppen** är kolossal: 1 spelare kan inte rubba den, 2 drar den extremt långsamt och 3–4 i normal takt (sneak +
+  högerklick med tom hand). Den får plats på Travois, Cart och Wagon (3 platser) men inte på Hanging Rack.
+  **Slaktas bara med kniv av nivå 4** (Ancient Ritual Knife). Med sämre knivar: "This hide is too tough for your knife".
+  Ger 2 Elkwight Hide, 10–14 Game Meat Scraps, 1 Elkwight Antler Crown, 3–4 Elkwight Bone och Sinew.
+- **Yxan** landar bredvid som ett tungt föremål: minst 2 spelare drar den, och den går på Travois, Cart och Wagon (2
+  platser). Högerklicka ovansidan av ett block medan ni drar den, så ställs den upp som trofé (**Elkwight's Axe**, lyser
+  svagt grönt). Bryts trofén ligger yxan på marken igen.
+
+| Item / block | Hur |
+|---|---|
+| **Elkwight Cloak** | Shapeless: 2 Elkwight Hide + 2 Sinew + Cordage. Cloak-platsen: 4 rustning, 1 seghet, varm som päls (25 %). Lagas med Elkwight Hide. |
+| **Bone Charm** | `[ ][Cordage][ ]` / `[Elkwight Bone][Gold Nugget][Elkwight Bone]` / `[ ][Elkwight Bone][ ]`. Charm-platsen: +2 hjärtan, 10 % knockback-motstånd. |
+| **Elkwight Antler Crown** | Från slakten. Väggtrofé: sätts mot sidan av ett block, 3 block bred. |
+| **Elkwight's Axe** (trofé) | Dra yxan och högerklicka ovansidan av ett block. Inget föremål. |
+
+**Advancements (Wilderness-fliken, efter *Into the Ashes*):** **The Smoke Clears** (döda honom, utmaning) → **Heavy Burden**
+(ställ upp yxan), **All Hands** (dra kroppen med tre andra), **Mantle of the Wight**, **Bone Charm** och **Crowned** (häng
+upp hornkronan). I Hunting-fliken: Elkwight under Predators.

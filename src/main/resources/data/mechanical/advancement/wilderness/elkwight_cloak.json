@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/elkwight",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:elkwight_cloak"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:elkwight_cloak"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.elkwight_cloak.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.elkwight_cloak.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

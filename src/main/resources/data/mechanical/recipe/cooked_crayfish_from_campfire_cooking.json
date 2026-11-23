@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 400,
+  "experience": 0.1,
+  "ingredient": "mechanical:crayfish",
+  "result": {
+    "id": "mechanical:cooked_crayfish",
+    "count": 1
+  }
+}

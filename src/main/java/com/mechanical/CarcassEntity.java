@@ -53,7 +53,7 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  * caravan's cart ({@link #isCaravanProperty()}) it can't be butchered or taken (trying angers the caravan as theft), and
  * it neither spoils nor vanishes. Once the cart's horse falls it is an ordinary carcass.
  */
-public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
+public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn {
     public static final int HIDDEN_TICKS = 0, LIFETIME = 6000;
     /**
      * Butchering work per pass, in knife-speed ticks (flint knife: 1 per tick; every player cutting at once adds his own):
@@ -62,17 +62,9 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
      */
     private static final int WORK_PER_SIZE = 60;
     private static final double WORK_EXPONENT = 0.75;
-    /** Players who can drag one large body together, each holding his own limb ({@link #gripPoint}). */
-    public static final int MAX_HAULERS = 4;
 
     /** 0: whole (wool/hide/feathers still on), 1: skinned/sheared/plucked, only the meat left. Synced for the renderer. */
     private static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.INT);
-    /**
-     * Entity ids of the players carrying or dragging it, -1 for a free hold; slot = the limb held (0/1 the forelegs, 2/3
-     * the hind legs). Only a large body takes more than slot 0. Synced for the renderers, the sprint check and hauled().
-     */
-    private static final List<EntityDataAccessor<Integer>> HAULERS = java.util.stream.IntStream.range(0, MAX_HAULERS)
-            .mapToObj(i -> SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.INT)).toList();
     /** The Hanging Rack it hangs on. Synced for the renderer and the hitbox. */
     private static final EntityDataAccessor<java.util.Optional<BlockPos>> HUNG_AT = SynchedEntityData.defineId(CarcassEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     /** Ticks after the kill when a carcass that is hauled, on a travois or hung has spoiled (one day). */
@@ -172,73 +164,48 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return animal.getWidth() >= 2.0F;
     }
 
-    /** Room it takes on a travois (holds 3) or a cart (holds 6): light 1, medium 2, large 3. Huge ones don't go on at all. */
+    /** Room it takes on a travois (holds 3) or a cart (holds 6): light 1, medium 2, large 3 (a colossal one too). */
+    @Override
     public int loadUnits() {
         return isLight() ? 1 : isLarge() ? 3 : 2;
     }
 
+    /** Huge ones (width 2+) don't go on at all; the colossal Elkwight, long but not wide, does. */
+    @Override
+    public boolean fitsOnTravois() {
+        return !isHuge();
+    }
+
+    /** Heavier than the huge animals ({@link Butchery#colossal}: the Elkwight): see {@link #pullersNeeded}. */
+    public boolean isColossal() {
+        return Butchery.isColossal(animal);
+    }
+
+    /** A large body is dragged (by its limbs, one player each); a smaller one goes on one player's shoulders. */
+    @Override
+    public boolean isDragged() {
+        return isLarge();
+    }
+
+    @Override
+    public boolean blocksSprint() {
+        return !isLight();
+    }
+
     /**
-     * Players it takes to drag it at all: 1 for a large body (more just go faster), 3 for a huge one (giant deer, walrus)
-     * and 4 for the very biggest (width 2.3+: the Woolly Mammoth). Fewer can only strain at it (CarcassHauling#follow).
+     * Players it takes to drag it at full pace: 1 for a large body (more just go faster), 3 for a huge one (giant deer,
+     * walrus) or a colossal one (the Elkwight), 4 for the very biggest (width 2.3+: the Woolly Mammoth). Fewer only creep
+     * along (CarcassHauling#follow).
      */
+    @Override
     public int pullersNeeded() {
-        return !isHuge() ? 1 : animal.getWidth() >= 2.3F ? 4 : 3;
+        return isColossal() ? 3 : !isHuge() ? 1 : animal.getWidth() >= 2.3F ? 4 : 3;
     }
 
-    /** Entity id of the first player hauling it, -1 if none. */
-    public int haulerId() {
-        for (var slot : HAULERS) if (entityData.get(slot) >= 0) return entityData.get(slot);
-        return -1;
-    }
-
-    /** Entity id of the player holding limb {@code slot}, -1 if free. */
-    public int haulerId(int slot) {
-        return entityData.get(HAULERS.get(slot));
-    }
-
-    /** The limb {@code player} holds, or -1. */
-    public int slotOf(Player player) {
-        for (int i = 0; i < MAX_HAULERS; i++) if (haulerId(i) == player.getId()) return i;
-        return -1;
-    }
-
-    public int haulerCount() {
-        int n = 0;
-        for (int i = 0; i < MAX_HAULERS; i++) if (haulerId(i) >= 0) n++;
-        return n;
-    }
-
-    /** The player holding limb {@code slot}, or null. */
-    public Player hauler(int slot) {
-        int id = haulerId(slot);
-        return id >= 0 && level().getEntity(id) instanceof Player p ? p : null;
-    }
-
-    /** The (first) player carrying or dragging it, or null. */
-    public Player hauler() {
-        int id = haulerId();
-        return id >= 0 && level().getEntity(id) instanceof Player p ? p : null;
-    }
-
-    /** null: everyone lets go; a player: he alone holds it. */
-    void setHauler(Player player) {
-        for (var slot : HAULERS) entityData.set(slot, -1);
-        if (player != null) entityData.set(HAULERS.get(0), player.getId());
-    }
-
-    /** Takes the first free limb; false when all are held (or a smaller body is already held by someone). */
-    boolean addHauler(Player player) {
-        for (int i = 0; i < (isLarge() ? MAX_HAULERS : 1); i++) {
-            if (haulerId(i) < 0) {
-                entityData.set(HAULERS.get(i), player.getId());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    void removeHauler(int slot) {
-        entityData.set(HAULERS.get(slot), -1);
+    /** A colossal body doesn't budge for one player; two drag it extremely slowly. */
+    @Override
+    public int pullersToBudge() {
+        return isColossal() ? 2 : 1;
     }
 
     /**
@@ -397,12 +364,6 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
         return (int) Math.round(WORK_PER_SIZE * WORK_PER_PASS * Math.pow(Math.max(1.0F, bulk), WORK_EXPONENT));
     }
 
-    /** Client: glides between the server's positions (sent every tick, see Mechanical.CARCASS) instead of jumping, a step up smoothed over 4 ticks. */
-    @Override
-    protected InterpolationHandler createInterpolationHandler() {
-        return LinearInterpolationHandler.create(this, 4);
-    }
-
     @Override
     public void tick() {
         super.tick();
@@ -434,41 +395,15 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
             }
         }
         if (keepSlung((ServerLevel) level())) return;
-        if (haulerId() >= 0) {
-            for (int i = 0; i < MAX_HAULERS; i++) {
-                Player hauler = hauler(i);
-                // dead, gone or left behind: he lets go (with nobody left it drops where it is)
-                if (haulerId(i) >= 0 && (hauler == null || !hauler.isAlive() || hauler.distanceTo(this) >= 12)) removeHauler(i);
-            }
-            if (haulerId() >= 0) {
-                CarcassHauling.follow(this);
-                return;
-            }
-        }
+        if (tickHaulers()) return; // dead, gone or left-behind haulers let go; with nobody left it drops where it is
         if (isPassenger()) return; // on a travois, which places it
-        // fall and settle like a dropped item; in water it rises and floats half under, drifting with the current
-        Vec3 v = getDeltaMovement();
-        if (getFluidHeight(FluidTags.WATER) > getBbHeight() * 0.5) setDeltaMovement(v.x, Math.min(v.y + 0.01, 0.06), v.z);
-        else if (!onGround()) setDeltaMovement(v.add(0, -0.04, 0));
-        move(MoverType.SELF, getDeltaMovement());
-        setDeltaMovement(getDeltaMovement().multiply(0.5, 0.98, 0.5));
+        settle();
         if (++groundTicks > LIFETIME) { // rotted away to the bones
             BlockPos pos = blockPosition();
             BlockState pile = Mechanical.BONE_PILE.get().defaultBlockState();
             if (level().getBlockState(pos).canBeReplaced() && level().getFluidState(pos).isEmpty() && pile.canSurvive(level(), pos)) level().setBlock(pos, pile, Block.UPDATE_ALL);
             discard();
         }
-    }
-
-    /** Dragged, it slides up steps and over roots. */
-    @Override
-    public float maxUpStep() {
-        return haulerId() >= 0 ? 1.0F : 0.0F;
-    }
-
-    /** Moves it by {@code delta} as far as blocks allow (dragging). */
-    void drag(Vec3 delta) {
-        move(MoverType.SELF, delta);
     }
 
     @Override
@@ -490,7 +425,7 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
             return InteractionResult.FAIL;
         }
         // a loaded body covers most of its cart: clicks meant for the cart (load another, harness) go through to it
-        if (hand == InteractionHand.MAIN_HAND && getVehicle() instanceof TravoisEntity bed && (CarcassHauling.hauled(player) != null
+        if (hand == InteractionHand.MAIN_HAND && getVehicle() instanceof TravoisEntity bed && (CarcassHauling.heavy(player) != null
                 || player.getMainHandItem().isEmpty() && !player.isShiftKeyDown() && !(stage() > 0 && Birds.isBird(animal))))
             return bed.interact(player, hand, location);
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && (player.isShiftKeyDown() || slotOf(player) >= 0))
@@ -513,8 +448,11 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
             return InteractionResult.SUCCESS;
         }
         if (!(player.getItemInHand(hand).getItem() instanceof KnifeItem knife)) return InteractionResult.PASS;
-        if (knife.tier() < Butchery.requiredKnifeTier(animal)) {
-            if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.knife_too_weak"));
+        int needed = Butchery.requiredKnifeTier(animal);
+        if (knife.tier() < needed) {
+            // past iron/steel (the Elkwight's hide): only a knife of the top tier cuts it
+            if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(
+                    needed > KnifeItem.IRON ? "message.mechanical.knife_too_weak_hide" : "message.mechanical.knife_too_weak"));
             return InteractionResult.FAIL;
         }
         player.startUsingItem(hand);
@@ -570,14 +508,9 @@ public class CarcassEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-        return false;
-    }
-
-    @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         builder.define(STAGE, 0);
-        for (var slot : HAULERS) builder.define(slot, -1);
         builder.define(HUNG_AT, java.util.Optional.empty());
         builder.define(AGED_LOOK, false);
         builder.define(TURNING_LOOK, false);

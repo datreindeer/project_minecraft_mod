@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
+  ],
+  "features": "mechanical:skylark_nest",
+  "step": "vegetal_decoration"
+}

@@ -54,6 +54,11 @@ public abstract class MountainBovid extends WildAnimal {
         return entityData.get(MALE);
     }
 
+    /** Tests and spawning code: make it a male or a female. */
+    public void setMale(boolean male) {
+        entityData.set(MALE, male);
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

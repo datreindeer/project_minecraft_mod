@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/elkwight",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:elkwight_hide"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.elkwight_all_hands.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.elkwight_all_hands.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -34,13 +34,13 @@
     "mechanical:beechnuts",
     "mechanical:roasted_beechnuts",
     "mechanical:pine_resin",
-    "mechanical:raw_beaver_pelt",
-    "mechanical:beaver_pelt",
-    "mechanical:raw_otter_pelt",
-    "mechanical:otter_pelt",
     "mechanical:raw_tiger_pelt",
     "mechanical:tiger_pelt",
     "mechanical:raw_crocodile_hide",
-    "mechanical:crocodile_hide"
+    "mechanical:crocodile_hide",
+    "mechanical:raw_beaver_pelt",
+    "mechanical:beaver_pelt",
+    "mechanical:raw_otter_pelt",
+    "mechanical:otter_pelt"
   ]
 }

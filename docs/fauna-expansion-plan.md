@@ -4,6 +4,8 @@
 > verktyg, rustning eller mat där syftet anger det. Det gäller alla biomer, under jord, folktron, säsongshändelserna och den nya
 > biomen Mammoth Steppe. Claude bestämmer detaljerna och dokumenterar dem.
 >
+> **Byggt:** Kyla och alla djur under Taiga, Snowy Plains och Mountains (utom folktron) – se `docs/fauna/cold.md`.
+>
 > Status: **förslag**. Inget är beslutat eller byggt. Du väljer vad som ska med, sedan byggs det fas för fas som de
 > tidigare faunapaketen (`docs/fauna/*.md`): modell, texturer, spawn, slakt, Hunting-advancement och produkter.
 
@@ -19,6 +21,8 @@ Förslagen nedan ger savannen rovdjur som syns på dagen.
 ## Varma marker
 
 ### Savanna (savanna, plateau, windswept savanna)
+> **Byggt:** hela savannavsnittet (Spotted Hyena, Cheetah, Gazelle, lejon på dagen, Ostrich, Aardvark, Termite Mound), se `docs/fauna/savanna.md`.
+
 Finns: Cave Lion (natt), Onager, Tortoise, Vulture (fåglar).
 - ★ **Spotted Hyena** (fläckig hyena): flockar om 3–5 som är ute på dagen. De stjäl från ditt byte: de drar iväg med
   carcasses du lämnat och följer sårade djur. Ger Hyena Hide.

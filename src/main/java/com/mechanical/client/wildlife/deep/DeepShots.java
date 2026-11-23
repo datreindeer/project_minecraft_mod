@@ -215,6 +215,7 @@ public final class DeepShots {
         ServerPlayer p = player();
         int x = (int) Math.floor(p.getX()), z = (int) Math.floor(p.getZ());
         base = new Vec3(x + 0.5, 200, z + 0.5);
+        steppeFrom = BlockPos.containing(base);
         cmd("gamemode spectator @a");
         cmd("time set noon");
         cmd("weather clear");
@@ -228,8 +229,9 @@ public final class DeepShots {
     /** The nearest Mammoth Steppe: the camera 14 blocks over its ground, a few of its animals in front. */
     private static void goToSteppe() {
         ServerLevel level = player().level();
-        BlockPos from = BlockPos.containing(base.x, 64, base.z);
+        BlockPos from = new BlockPos(steppeFrom.getX(), 64, steppeFrom.getZ());
         var found = level.findClosestBiome3d(b -> b.is(ModBiomes.MAMMOTH_STEPPE), from, 8000, 48, 64);
+        if (found != null && found.getFirst().closerThan(steppeFrom, 40)) found = null; // the platform sits on it: skip the shot
         if (found == null) {
             result.add("no mammoth steppe found");
             return;
@@ -244,7 +246,7 @@ public final class DeepShots {
         look(steppeCam, ground.add(6, 0, -6));
     }
 
-    private static BlockPos steppeAt;
+    private static BlockPos steppeAt, steppeFrom;
 
     /** A few steppe animals in front of the camera, once the chunks are loaded. */
     private static void herd() {

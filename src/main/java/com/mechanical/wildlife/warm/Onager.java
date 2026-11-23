@@ -83,15 +83,15 @@ public class Onager extends WildAnimal {
     void feed(Player player, ItemStack stack) {
         if (!player.isCrouching() && trust < HALTER_TRUST) {
             AnimalFear.panic(this, player.position());
-            player.sendOverlayMessage(Component.translatable("message.mechanical.onager.shies"));
+            player.sendOverlayMessage(Component.translatable(msg("shies")));
             return;
         }
         if (feedCooldown > 0) {
-            player.sendOverlayMessage(Component.translatable("message.mechanical.onager.chewing"));
+            player.sendOverlayMessage(Component.translatable(msg("chewing")));
             return;
         }
         if (trust >= HALTER_TRUST && !isLeashed()) {
-            player.sendOverlayMessage(Component.translatable("message.mechanical.onager.needs_halter"));
+            player.sendOverlayMessage(Component.translatable(msg("needs_halter")));
             return;
         }
         stack.consume(1, player);
@@ -102,7 +102,7 @@ public class Onager extends WildAnimal {
         ((ServerLevel) level()).sendParticles(ParticleTypes.HEART, getX(), getY() + getBbHeight() + 0.2, getZ(), 2, 0.3, 0.2, 0.3, 0);
         if (trust >= TAME_TRUST) tame(player);
         else player.sendOverlayMessage(Component.translatable(trust >= HALTER_TRUST && !isLeashed()
-                ? "message.mechanical.onager.ready_for_halter" : "message.mechanical.onager.trust", trust, TAME_TRUST));
+                ? msg("ready_for_halter") : msg("trust"), trust, TAME_TRUST));
     }
 
     /** Rope Halter on it: leads it once it trusts you enough. */
@@ -111,28 +111,46 @@ public class Onager extends WildAnimal {
         if (isLeashed()) return InteractionResult.PASS;
         if (trust < HALTER_TRUST) {
             AnimalFear.panic(this, player.position());
-            player.sendOverlayMessage(Component.translatable("message.mechanical.onager.refuses_halter"));
+            player.sendOverlayMessage(Component.translatable(msg("refuses_halter")));
             return InteractionResult.SUCCESS_SERVER;
         }
         setLeashedTo(player, true);
         stack.consume(1, player);
         playSound(SoundEvents.LEAD_TIED, 1.0F, 1.0F);
-        player.sendOverlayMessage(Component.translatable("message.mechanical.onager.haltered", trust, TAME_TRUST));
+        player.sendOverlayMessage(Component.translatable(msg("haltered"), trust, TAME_TRUST));
         return InteractionResult.SUCCESS_SERVER;
+    }
+
+    /** What it turns into when tamed (the wild camel: a tame camel). */
+    protected EntityType<? extends TameOnager> tameType() {
+        return WarmFauna.TAME_ONAGER.get();
+    }
+
+    /** Its taming messages: message.mechanical.&lt;key&gt;.* (the wild camel has its own). */
+    protected String messageKey() {
+        return "onager";
+    }
+
+    private String msg(String key) {
+        return "message.mechanical." + messageKey() + "." + key;
     }
 
     /** Becomes a tame onager owned by {@code player}, keeping its halter rope, name and health. */
     private void tame(Player player) {
-        TameOnager tame = convertTo(WarmFauna.TAME_ONAGER.get(), ConversionParams.single(this, false, false), o -> {
+        TameOnager tame = convert(tameType(), player);
+        if (tame == null) return;
+        level().broadcastEntityEvent(tame, (byte) 7); // vanilla taming hearts
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) net.minecraft.advancements.triggers.CriteriaTriggers.TAME_ANIMAL.trigger(sp, tame);
+        player.sendOverlayMessage(Component.translatable(msg("tamed")));
+    }
+
+    private <T extends TameOnager> T convert(EntityType<T> type, Player player) {
+        return convertTo(type, ConversionParams.single(this, false, false), o -> {
             o.setTamed(true);
             o.setOwner(player);
             o.randomizeAttributes(getRandom());
             o.setHealth(Math.min(getHealth(), o.getMaxHealth()));
         });
-        if (tame == null) return;
-        level().broadcastEntityEvent(tame, (byte) 7); // vanilla taming hearts
-        if (player instanceof net.minecraft.server.level.ServerPlayer sp) net.minecraft.advancements.triggers.CriteriaTriggers.TAME_ANIMAL.trigger(sp, tame);
-        player.sendOverlayMessage(Component.translatable("message.mechanical.onager.tamed"));
     }
 
     @Override

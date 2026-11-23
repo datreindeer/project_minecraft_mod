@@ -1,0 +1,21 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:swamp",
+    "mechanical:willow_fen",
+    "mechanical:reed_delta",
+    "minecraft:river",
+    "mechanical:peat_bog"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:water_vole",
+      "weight": 5,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 3
+      }
+    }
+  ]
+}

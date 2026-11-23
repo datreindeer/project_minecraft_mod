@@ -1,0 +1,67 @@
+{
+  "parent": "mechanical:hunting/predators",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_snow_leopard"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_snow_leopard_pelt"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sinew"
+          }
+        ]
+      }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ],
+    [
+      "butchered"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:snow_leopard_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.snow_leopard.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.snow_leopard.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

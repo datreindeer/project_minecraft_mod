@@ -1,0 +1,33 @@
+{
+  "parent": "mechanical:food/arctic_fare",
+  "criteria": {
+    "ate_0": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mechanical:bone_marrow"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ate_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bone_marrow"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.bone_marrow_eaten.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.bone_marrow_eaten.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

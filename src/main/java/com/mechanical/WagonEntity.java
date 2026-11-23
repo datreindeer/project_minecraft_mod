@@ -510,7 +510,7 @@ public class WagonEntity extends TravoisEntity {
         // a held right-click repeats: right after a log went on or off, the next clicks don't hitch or open anything
         if (justClickedLog(player)) return InteractionResult.SUCCESS;
         int slot = slotAt(location), module = moduleFor(held);
-        if (module != EMPTY && CarcassHauling.hauled(player) == null) {
+        if (module != EMPTY && CarcassHauling.heavy(player) == null) {
             if (!level().isClientSide()) placeModule(player, slot, module, held);
             return InteractionResult.SUCCESS;
         }

@@ -1,0 +1,39 @@
+{
+  "parent": "mechanical:wilderness/into_the_ashes",
+  "criteria": {
+    "visit": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "mechanical:elkwight_ruin"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "visit"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:rune_blackstone"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.burnt_hall.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.burnt_hall.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

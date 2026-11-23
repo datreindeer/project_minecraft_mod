@@ -1,0 +1,37 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "tamed": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:tame_fennec"
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "tamed"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fennec_pelt"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.tame_fennec.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.tame_fennec.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

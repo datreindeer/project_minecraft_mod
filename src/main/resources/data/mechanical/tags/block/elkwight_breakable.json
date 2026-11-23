@@ -1,0 +1,16 @@
+{
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "#minecraft:dirt",
+    "#minecraft:sand",
+    "minecraft:gravel",
+    "#minecraft:leaves",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:powder_snow",
+    "minecraft:clay",
+    "minecraft:mud",
+    "mechanical:charred_log",
+    "mechanical:wood_ash"
+  ]
+}

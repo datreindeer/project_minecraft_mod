@@ -1,0 +1,20 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:snowy_plains",
+    "minecraft:ice_spikes",
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:snowy_owl",
+      "weight": 2,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.15,
+  "ingredient": "mechanical:plucked_black_grouse",
+  "result": {
+    "id": "mechanical:cooked_black_grouse",
+    "count": 2
+  }
+}
