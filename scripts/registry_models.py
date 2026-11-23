@@ -169,7 +169,11 @@ class Models:
 
         rcls = re.search(r"\b(?:new\s+)?([A-Z]\w*Renderer)\b\s*(?:::|<|\()", rend)
         rcode = src(rcls.group(1)) if rcls else ""
-        found = tokens(rend) or [l for l in (f"{ns}:{eid}#main",) if l in layers] or tokens(rcode)
+        if rcls and not rcode:  # inner class of the registering file (TameFennecRenderer)
+            ic = re.search(r"class\s+" + rcls.group(1) + r"\b[^{]*\{", file_code)
+            rcode = file_code[ic.end():].split("\n    }\n", 1)[0] if ic else ""
+        folk = [f"{ns}:folk_{k.lower()}#main" for k in re.findall(r"\bKind\.([A-Z][A-Z0-9_]*)", rend)]  # folklore BeingRenderer
+        found = [l for l in folk if l in layers] or tokens(rend) or [l for l in (f"{ns}:{eid}#main",) if l in layers] or tokens(rcode)
         if not found:
             g.warn(f"ingen 3D-modell hittades för entity {eid}")
             return None
@@ -179,7 +183,9 @@ class Models:
         if war:
             wargs = g.split_top(g.balanced(rend, war.end() - 1) or "")
             if len(wargs) >= 4:
-                baby_scale = float(re.sub(r"[fF]$", "", wargs[3]) or 1)
+                bs = re.sub(r"(?<=\d)[fF]$", "", wargs[3].strip()) or "1"
+                const = re.search(r"float\s+" + re.escape(bs) + r"\s*=\s*([\d.]+)[fF]", file_code)  # CAMEL_CALF -> its value
+                baby_scale = float(const.group(1) if const else bs)
         sc = re.search(r"poseStack\.scale\(\s*([\d.]+)F\s*,\s*([\d.]+)F\s*,\s*([\d.]+)F", rend)
         scale = tuple(float(v) for v in sc.groups()) if sc else (1.0, 1.0, 1.0)
         ecode = src("".join(w.title() for w in eid.split("_")))
@@ -205,6 +211,9 @@ class Models:
                     texes = textures_for(re.sub(r"(?<!^)([A-Z])", r"_\1", other.group(1)).lower())
             if not texes:  # entity field named apart from its layer/texture (BUSTARD -> great_bustard)
                 texes = textures_for(adult.split(":", 1)[1].split("#")[0])
+            if not texes:  # layer bighorn_sheep, skins bighorn_ewe/ram/lamb: drop the last word
+                words = adult.split(":", 1)[1].split("#")[0].split("_")
+                texes = textures_for("_".join(words[:-1])) if len(words) > 1 else []
             if not texes and vanilla:
                 texes = [f"minecraft:textures/entity/{eid}/{eid}.png"]
             hb = re.search(r"boolean\s+showsHorns\s*\(\s*\)\s*\{(.*?)\}", ecode, re.S)
