@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 
 /**
  * Wild horse (tarpan / Przewalski type): stocky barrel, thick neck with a short erect mane and no forelock, a big
- * heavy head with a long face, a dark tail with a short-haired dock. Back ~19 px.
+ * heavy head with a long face and broad jowls, a dark tail with a short-haired dock. Back ~19 px.
  * Texture textures/entity/wildlife/wild_horse.png (128x64), painted by scripts/gen_wild_horse_texture.py whose BOXES
  * table mirrors the cubes below (keep them in sync).
  */
@@ -91,6 +91,15 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
         PartDefinition body = root.addOrReplaceChild("body",
                 CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, -5.0F, -10.0F, 9.0F, 10.0F, 20.0F, g),
                 PartPose.offset(0.0F, 10.0F, 0.0F));
+        // Build: withers, croup, chest, buttocks and belly round off the barrel; only on the bare horse (the inflated
+        // blanket / armour copies leave it empty) and hidden under blanket or armour, which it would poke through.
+        boolean bare = g == CubeDeformation.NONE;
+        body.addOrReplaceChild("build", bare ? CubeListBuilder.create()
+                .texOffs(0, 40).addBox(-3.0F, -6.0F, -9.0F, 6.0F, 1.0F, 6.0F)
+                .texOffs(24, 40).addBox(-4.0F, -6.0F, 3.0F, 8.0F, 1.0F, 6.0F)
+                .texOffs(52, 40).addBox(-3.5F, -3.0F, -11.0F, 7.0F, 8.0F, 1.0F)
+                .texOffs(68, 40).addBox(-3.5F, -4.0F, 10.0F, 7.0F, 8.0F, 1.0F)
+                .texOffs(0, 48).addBox(-3.5F, 5.0F, -6.0F, 7.0F, 1.0F, 11.0F) : CubeListBuilder.create(), PartPose.ZERO);
         // Tail: short-haired dock, then the long dark hair hanging from it.
         body.addOrReplaceChild("tail",
                 CubeListBuilder.create()
@@ -109,6 +118,9 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
                         .texOffs(86, 0).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 6.0F, g)
                         .texOffs(86, 11).addBox(-2.0F, -1.5F, -11.0F, 4.0F, 4.0F, 6.0F, g),
                 PartPose.offsetAndRotation(0.0F, -8.5F, 0.0F, HEAD_X, 0.0F, 0.0F));
+        // the broad jowls under the eyes
+        head.addOrReplaceChild("jowls", bare ? CubeListBuilder.create().texOffs(84, 40).addBox(-3.0F, -0.5F, -4.5F, 6.0F, 3.0F, 4.0F)
+                : CubeListBuilder.create(), PartPose.ZERO);
         // Ears point up against the head's downward tilt.
         head.addOrReplaceChild("left_ear",
                 CubeListBuilder.create().texOffs(108, 0).mirror().addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F, g),
@@ -137,6 +149,9 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
     @Override
     public void setupAnim(WildAnimalRenderState state) {
         super.setupAnim(state);
+        boolean covered = state.saddled || state.armorColor != 0;
+        body.getChild("build").visible = !covered;
+        head.getChild("jowls").visible = !covered;
 
         if (CarcassRenderer.isHung(state)) {
             CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});

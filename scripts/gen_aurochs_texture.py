@@ -291,7 +291,7 @@ def main():
         img = paint(BOXES, variant, (128, 64))
         save(img, f"wildlife/aurochs_{variant}.png")
         save(skinned(img, BOXES, HORNS), f"skinned/wildlife/aurochs_{variant}.png")
-    save(paint(CALF_BOXES, "calf", (64, 32)), "wildlife/aurochs_calf.png")
+    # the young's skin now comes with its model from gen_herd_models.py (the *_BOXES table above is unused)
 
 
 if __name__ == "__main__":

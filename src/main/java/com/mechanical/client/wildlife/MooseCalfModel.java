@@ -5,18 +5,15 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Moose calf, built at baby size and rendered at scale 1: short body perched on very long stick legs, no hump yet,
  * big ears and a long, still slim muzzle. Shoulder ~15.5 px.
- * Texture textures/entity/wildlife/moose_calf.png (64x64), painted by scripts/gen_moose_texture.py (CALF_BOXES).
+ * Geometry and skin: HerdGeometry.mooseCalf and the textures from scripts/gen_herd_models.py, built at TWICE baby size
+ * (drawn at half by the renderer's baby scale), so the pixel offsets below are doubled.
  */
 public class MooseCalfModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "moose_calf"), "main");
@@ -25,7 +22,7 @@ public class MooseCalfModel extends EntityModel<WildAnimalRenderState> {
     private static final float HEAD_X = -0.55F;
     private static final float GRAZE_NECK_X = 2.3F;
     private static final float GRAZE_HEAD_X = -0.9F;
-    private static final float DOZE_DROP = 8.0F;
+    private static final float DOZE_DROP = 16.0F;
     private static final float EAR_Z = 0.9F;
 
     private final ModelPart body;
@@ -56,44 +53,7 @@ public class MooseCalfModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -3.5F, -6.0F, 6.0F, 7.0F, 12.0F),
-            PartPose.offset(0.0F, 12.0F, 0.0F));
-        body.addOrReplaceChild("tail",
-            CubeListBuilder.create().texOffs(58, 0).addBox(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -3.0F, 6.0F, 0.3F, 0.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-            CubeListBuilder.create().texOffs(36, 0).addBox(-1.5F, -5.0F, -2.0F, 3.0F, 6.0F, 4.0F),
-            PartPose.offsetAndRotation(0.0F, -2.0F, -5.5F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-            CubeListBuilder.create()
-                .texOffs(36, 10).addBox(-2.0F, -2.0F, -3.5F, 4.0F, 4.0F, 4.0F)
-                .texOffs(0, 19).addBox(-1.5F, -1.5F, -7.5F, 3.0F, 4.0F, 4.0F),
-            PartPose.offsetAndRotation(0.0F, -4.5F, 0.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear",
-            CubeListBuilder.create().texOffs(52, 0).addBox(-1.0F, -4.0F, -0.5F, 2.0F, 4.0F, 1.0F),
-            PartPose.offsetAndRotation(1.5F, -1.5F, 0.0F, -0.2F, 0.0F, EAR_Z));
-        head.addOrReplaceChild("right_ear",
-            CubeListBuilder.create().texOffs(52, 0).addBox(-1.0F, -4.0F, -0.5F, 2.0F, 4.0F, 1.0F),
-            PartPose.offsetAndRotation(-1.5F, -1.5F, 0.0F, -0.2F, 0.0F, -EAR_Z));
-
-        // long stick legs: upper 2x6, cannon 1x5, hoof at y=24
-        for (float side : new float[] {1.0F, -1.0F}) {
-            String s = side > 0 ? "left_" : "right_";
-            PartDefinition front = root.addOrReplaceChild(s + "front_leg",
-                CubeListBuilder.create().texOffs(0, 27).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offset(1.6F * side, 14.0F, -4.0F));
-            front.addOrReplaceChild("lower", CubeListBuilder.create().texOffs(8, 27).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
-                PartPose.offset(0.0F, 5.0F, 0.0F));
-            PartDefinition hind = root.addOrReplaceChild(s + "hind_leg",
-                CubeListBuilder.create().texOffs(12, 27).addBox(-1.0F, -1.0F, -1.5F, 2.0F, 6.0F, 3.0F),
-                PartPose.offset(1.6F * side, 14.0F, 4.0F));
-            hind.addOrReplaceChild("lower", CubeListBuilder.create().texOffs(22, 27).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
-                PartPose.offset(0.0F, 5.0F, 0.5F));
-        }
-        return LayerDefinition.create(mesh, 64, 64);
+        return HerdGeometry.mooseCalf();
     }
 
     @Override
@@ -124,9 +84,9 @@ public class MooseCalfModel extends EntityModel<WildAnimalRenderState> {
         }
 
         if (state.dozing) {
-            this.body.y += DOZE_DROP + Mth.sin(age * 0.09F) * 0.12F;
-            foldLeg(this.leftFrontLeg, -1.3F, 2.75F, 2.0F, 0.15F);
-            foldLeg(this.rightFrontLeg, -1.3F, 2.75F, 2.0F, -0.15F);
+            this.body.y += DOZE_DROP + Mth.sin(age * 0.09F) * 0.24F;
+            foldLeg(this.leftFrontLeg, -1.3F, 2.75F, 4.0F, 0.15F);
+            foldLeg(this.rightFrontLeg, -1.3F, 2.75F, 4.0F, -0.15F);
             foldLeg(this.leftHindLeg, -1.35F, 2.9F, 0.0F, 0.25F);
             foldLeg(this.rightHindLeg, -1.35F, 2.9F, 0.0F, -0.2F);
             this.neck.xRot = 1.5F;
@@ -154,7 +114,7 @@ public class MooseCalfModel extends EntityModel<WildAnimalRenderState> {
         this.rightHindLeg.xRot = hind * (1.0F - run) - hind * run * 0.8F;
         this.leftFrontLeg.getChild("lower").xRot = Math.max(0.0F, -this.leftFrontLeg.xRot) * 0.8F;
         this.rightFrontLeg.getChild("lower").xRot = Math.max(0.0F, -this.rightFrontLeg.xRot) * 0.8F;
-        this.body.y -= Mth.abs(Mth.sin(phase)) * (0.25F * speed + 0.6F * run);
+        this.body.y -= Mth.abs(Mth.sin(phase)) * (0.5F * speed + 1.2F * run);
 
         float graze = Mth.clamp(state.grazeAmount, 0.0F, 1.0F);
         float bob = Mth.cos(phase * 2.0F) * 0.07F * speed;
