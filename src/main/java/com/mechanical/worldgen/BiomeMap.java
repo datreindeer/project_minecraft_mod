@@ -36,7 +36,8 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
  * side in blocks, line 4: file name prefix), renders the overworld surface biome map (after the mod's rules) of each seed
  * centred on 0,0 to {@code <prefix>_seed<seed>.png}, plus a close-up of the first Scorched Barrens found, and logs how
  * often a cold biome lies within 32 blocks of a warm one ({@link #COLD}, {@link #WARM}; marked red on the map).
- * Does nothing without the flag file.
+ * Optional line 5: {@code terrain} also renders TerrainMap's relief and slope maps and terrain stats, {@code terrain-only}
+ * only those; line 6 {@code exit} stops the server afterwards (no game tests). Does nothing without the flag file.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class BiomeMap {
@@ -74,16 +75,23 @@ public final class BiomeMap {
     static void onStarted(ServerStartedEvent event) {
         File flag = new File("biomemap.flag");
         if (!flag.exists()) return;
+        boolean exit = false;
         try {
             List<String> lines = Files.readAllLines(flag.toPath());
+            exit = lines.size() > 5 && lines.get(5).trim().equals("exit");
             File out = new File(lines.get(0).trim());
             out.mkdirs();
             int side = Integer.parseInt(lines.get(2).trim());
             String prefix = lines.get(3).trim();
-            for (String s : lines.get(1).trim().split("\\s+")) render(event.getServer(), Long.parseLong(s), side, out, prefix);
+            String mode = lines.size() > 4 ? lines.get(4).trim() : "";
+            for (String s : lines.get(1).trim().split("\\s+")) {
+                if (!mode.equals("terrain-only")) render(event.getServer(), Long.parseLong(s), side, out, prefix);
+                if (mode.startsWith("terrain")) TerrainMap.render(event.getServer(), Long.parseLong(s), side, out, prefix);
+            }
         } catch (Exception e) {
             Mechanical.LOGGER.error("biomemap failed", e);
         }
+        if (exit) event.getServer().halt(false);
     }
 
     static String name(Holder<Biome> h) {

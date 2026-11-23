@@ -23,10 +23,11 @@ def w(path, obj):
 w(D / "worldgen/structure/tribe_village.json", {
     "type": "mechanical:tribe_village", "biomes": "#mechanical:has_structure/tribe_village",
     "spawn_overrides": {}, "step": "top_layer_modification", "terrain_adaptation": "beard_box"})
-# rarer than camps: at most one per 36x36 chunks, and many sites fail the flat-and-dry test
+# rarer than camps: at most one per 36x36 chunks, and many sites fail the flat-and-dry test. Frequency 0.77 since the
+# terrain rework (gen_terrain.py) made the lowland flatter: keeps about as many villages as on vanilla terrain
 w(D / "worldgen/structure_set/tribe_village.json", {
     "structures": [{"structure": "mechanical:tribe_village", "weight": 1}],
-    "placement": {"type": "minecraft:random_spread", "salt": 480213977, "spacing": 36, "separation": 14,
+    "placement": {"type": "minecraft:random_spread", "salt": 480213977, "spacing": 36, "separation": 14, "frequency": 0.77,
                   "exclusion_zone": {"other_set": "minecraft:villages", "chunk_count": 6}}})
 w(D / "tags/worldgen/biome/has_structure/tribe_village.json", {"values": [
     "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:forest", "minecraft:birch_forest",

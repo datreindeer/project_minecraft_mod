@@ -1,0 +1,43 @@
+{
+  "parent": "mechanical:wilderness/chalk_downs",
+  "criteria": {
+    "above": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "position": {
+                "y": {
+                  "min": 250
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "above"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:snow_block"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.roof_of_the_world.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.roof_of_the_world.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
