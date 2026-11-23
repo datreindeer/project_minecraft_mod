@@ -33,6 +33,33 @@ Kod: `client/vanilla/FarmAnimalRenderers.java` (egna renderare för vanillas Ent
 Modeller och hudar: `scripts/gen_vanilla_models.py` skriver `client/vanilla/VanillaGeometry.java` (genererad) och
 `textures/entity/vanilla/<djur>/<vanillatexturens namn>.png`, en per vanilla-varianttextur.
 
+## Andra omgången: vilda djur och sällskapsdjur
+
+**Rabbit**, **Fox**, **Wolf**, **Cat**, **Ocelot** och **Camel** har också fått egna modeller och hudar. De behåller
+vanilla-skelettet (samma delnamn, pivotpunkter och rotationer) med egna lådor, så vanillas modellklasser driver dem som
+förut: kaninens hopp och huvudlutning, rävens sittande, sovande, smygande och språng och bäret i munnen, vargens
+sittande, skakning och svans, kattens sittande och liggande, kamelens gång, sittande och rusning. Kroppsdelar som vanilla
+lägger roterade har ett uppvänt barn ("shape") som bär lådorna, så de byggs och målas i vanligt modellrum.
+
+- **Rabbit:** rund bakdel med tjocka lår, kortare öron med skär insida, runda kinder, vit tofs; alla vanilla-varianter
+  (brun agouti, vit och röd-ögd Caerbannog, svart, fläckig, guld, salt och peppar, Toast som holländsk kanin).
+- **Fox:** smal nos med vit underkäke och kinder, svartbaksade spetsiga öron, svarta strumpor, yvig svans med vit spets,
+  bärnstensgula ögon; Snow-räven vit. Sovande hud med slutna ögon.
+- **Wolf:** kraftig manke och nackkrage, smalare midja, buskig svans med mörk spets, mörk sadel över ryggen. Alla nio
+  varianter, och för var och en vild, tam och arg hud (arg: röda ögon, rynkad panna, blottade tänder). Halsbandet är ett
+  band runt den nya halsen i halsbandets färg. **Vargrustningen ritas fortfarande på vanillas vargform.**
+- **Cat och Ocelot:** smal kropp med hög bakdel, kinder, spetsiga öron, tunn svans; alla elva kattvarianter
+  (strimmig tabby med M i pannan, tuxedo, röd, siames och ragdoll med mörka spetsar, british shorthair, kalikå, perser,
+  vit, jellie, helsvart) och ozeloten med rosetter. Katten är som i vanilla 0,8 gånger ozelotens storlek.
+- **Camel:** djupt bröst med knäskydd, en stor rundad puckel, S-formad hals (framåt och upp), långt huvud med hängläpp,
+  långa ben med hårda knäskydd och breda fotsulor, tofs på svansen. **Sadeln ritas på vanillas kamelform.**
+- **Ungarna** (kanin, räv, valp, kattunge, ozelotunge, kamelföl) har kvar vanillas egna ungmodeller och hudar.
+- **Pig:** kroppen har nu djup bog över ett smalare bröst, en bred hängande buk, en rundad skinka och en välvd länd.
+
+Kod: `client/vanilla/WildVanillaRenderers.java`; modellerna är vanillas egna klasser (AdultRabbitModel, AdultFoxModel,
+AdultWolfModel, AdultCatModel, AdultOcelotModel, AdultCamelModel) med `VanillaGeometry` som skelett, så de generiska
+kadaverställningarna fungerar också.
+
 ## Genomgång av resten
 
 Vanilla-djur som inte finns kvar: Creeper (ersatt av Gloson och Mushroom Man), Polar Bear (moddens egen), Wandering
@@ -41,8 +68,7 @@ Zombie och Skeleton har redan egna hudar (UndeadRenderers).
 
 Bedömning av de övriga (bra = får vara kvar, behöver arbete = ser blockig ut bredvid moddens djur):
 
-- **Behöver arbete:** Wolf (savann och badlands; Grey Wolf är bättre), Rabbit (Hare är bättre), Fox (RedFox använder
-  vanillans räv), Cat och Ocelot (Wild Cat är bättre), Camel (ökenbyar; moddens kamel är bättre).
+- **Omgjorda i andra omgången:** Wolf, Rabbit, Fox, Cat, Ocelot, Camel (se ovan).
 - **Bra nog / stiliserade med flit:** Spider och Cave Spider, Bat, Villager och Witch, Iron Golem, Enderman, Slime, Husk,
   Drowned, Stray, Panda, Parrot, Turtle, Frog, Armadillo, Bee, Squid, Dolphin, fiskarna, Mooshroom och Nether-varelserna
   (Piglin, Hoglin, Strider, Ghast, Blaze).
@@ -52,4 +78,7 @@ Bedömning av de övriga (bra = får vara kvar, behöver arbete = ser blockig ut
 Tagna med `VanillaShots` (klienten, bara med `run/vanillashots.flag`; andra raden kan lista vilka djur som ska tas), i
 `docs/shots/fauna/`: `vanilla_<djur>.png` bredvid moddens motsvarighet (kon vid uroxen, grisen vid vildsvinet, fåret
 vid mufflonfåret, hönan vid djungelhönan), närbilder i ögonhöjd `_front`, `_side`, `_q`, och för gårdsdjuren det
-styckade kadavret `_carcass`. Före-bilderna heter `vanilla_before_<djur>.png`.
+styckade kadavret `_carcass`. Före-bilderna heter `vanilla_before_<djur>.png`. Ställningar (andra omgången):
+`_walk` (gång), `rabbit_hop`, `fox_sit`, `fox_sleep`, `fox_crouch`, `fox_pounce`, `fox_item` (bär i munnen),
+`wolf_angry`, `wolf_tame` och `wolf_sit` (halsband), `cat_sit` (halsband), `cat_lie`, `camel_sit`; före-bilder av
+ställningarna som `vanilla_before_<namn>.png`.
