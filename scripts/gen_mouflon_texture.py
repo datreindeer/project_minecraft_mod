@@ -234,7 +234,7 @@ def main():
         img = paint(BOXES, variant, (64, 64))
         save(img, f"wildlife/mouflon_{variant}.png")
         save(skinned(img, BOXES, HORNS), f"skinned/wildlife/mouflon_{variant}.png")
-    save(paint(LAMB_BOXES, "lamb", (64, 32)), "wildlife/mouflon_lamb.png")
+    # the young's skin now comes with its model from gen_herd_models.py (the *_BOXES table above is unused)
 
 
 if __name__ == "__main__":

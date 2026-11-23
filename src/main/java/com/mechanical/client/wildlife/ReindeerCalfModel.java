@@ -5,18 +5,15 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Reindeer calf, built at baby size and rendered at scale 1: round, woolly body, short neck, short blunt muzzle and
  * already oversized hooves. No antlers yet. Shoulder ~11.5 px.
- * Texture textures/entity/wildlife/reindeer_calf.png (64x32), painted by scripts/gen_reindeer_texture.py (CALF_BOXES).
+ * Geometry and skin: HerdGeometry.reindeerCalf and the textures from scripts/gen_herd_models.py, built at TWICE baby size
+ * (drawn at half by the renderer's baby scale), so the pixel offsets below are doubled.
  */
 public class ReindeerCalfModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "reindeer_calf"), "main");
@@ -25,7 +22,7 @@ public class ReindeerCalfModel extends EntityModel<WildAnimalRenderState> {
     private static final float HEAD_X = -0.7F;
     private static final float GRAZE_NECK_X = 2.4F;
     private static final float GRAZE_HEAD_X = -1.0F;
-    private static final float DOZE_DROP = 5.0F;
+    private static final float DOZE_DROP = 10.0F;
     private static final float EAR_Z = 1.0F;
 
     private final ModelPart body;
@@ -56,45 +53,7 @@ public class ReindeerCalfModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-2.5F, -3.0F, -5.0F, 5.0F, 6.0F, 10.0F),
-            PartPose.offset(0.0F, 15.5F, 0.0F));
-        body.addOrReplaceChild("tail",
-            CubeListBuilder.create().texOffs(48, 8).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 2.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -2.5F, 5.0F, 0.3F, 0.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-            CubeListBuilder.create().texOffs(30, 0).addBox(-1.5F, -4.0F, -1.5F, 3.0F, 5.0F, 3.0F),
-            PartPose.offsetAndRotation(0.0F, -1.5F, -4.5F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-            CubeListBuilder.create()
-                .texOffs(42, 0).addBox(-2.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F)
-                .texOffs(30, 8).addBox(-1.5F, -1.0F, -6.0F, 3.0F, 3.0F, 3.0F),
-            PartPose.offsetAndRotation(0.0F, -3.5F, 0.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear",
-            CubeListBuilder.create().texOffs(42, 8).addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-            PartPose.offsetAndRotation(1.5F, -1.5F, 0.5F, 0.0F, 0.0F, EAR_Z));
-        head.addOrReplaceChild("right_ear",
-            CubeListBuilder.create().texOffs(42, 8).addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-            PartPose.offsetAndRotation(-1.5F, -1.5F, 0.5F, 0.0F, 0.0F, -EAR_Z));
-
-        // upper 2x4, cannon 1x3 and a wide 2x2 hoof with the toes reaching forward; hoof sole at y=24
-        CubeListBuilder lower = CubeListBuilder.create()
-            .texOffs(8, 16).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F)
-            .texOffs(12, 16).addBox(-1.0F, 2.5F, -1.5F, 2.0F, 1.0F, 2.0F);
-        for (float side : new float[] {1.0F, -1.0F}) {
-            String s = side > 0 ? "left_" : "right_";
-            PartDefinition front = root.addOrReplaceChild(s + "front_leg",
-                CubeListBuilder.create().texOffs(0, 16).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offset(1.4F * side, 17.5F, -3.5F));
-            front.addOrReplaceChild("lower", lower, PartPose.offset(0.0F, 3.0F, 0.0F));
-            PartDefinition hind = root.addOrReplaceChild(s + "hind_leg",
-                CubeListBuilder.create().texOffs(20, 16).addBox(-1.0F, -1.0F, -1.5F, 2.0F, 4.0F, 3.0F),
-                PartPose.offset(1.4F * side, 17.5F, 3.5F));
-            hind.addOrReplaceChild("lower", lower, PartPose.offset(0.0F, 3.0F, 0.5F));
-        }
-        return LayerDefinition.create(mesh, 64, 32);
+        return HerdGeometry.reindeerCalf();
     }
 
     @Override
@@ -125,9 +84,9 @@ public class ReindeerCalfModel extends EntityModel<WildAnimalRenderState> {
         }
 
         if (state.dozing) {
-            this.body.y += DOZE_DROP + Mth.sin(age * 0.1F) * 0.1F;
-            foldLeg(this.leftFrontLeg, -1.3F, 2.75F, 1.5F, 0.15F);
-            foldLeg(this.rightFrontLeg, -1.3F, 2.75F, 1.5F, -0.15F);
+            this.body.y += DOZE_DROP + Mth.sin(age * 0.1F) * 0.2F;
+            foldLeg(this.leftFrontLeg, -1.3F, 2.75F, 3.0F, 0.15F);
+            foldLeg(this.rightFrontLeg, -1.3F, 2.75F, 3.0F, -0.15F);
             foldLeg(this.leftHindLeg, -1.35F, 2.9F, 0.0F, 0.25F);
             foldLeg(this.rightHindLeg, -1.35F, 2.9F, 0.0F, -0.2F);
             this.neck.xRot = 1.5F;
@@ -150,7 +109,7 @@ public class ReindeerCalfModel extends EntityModel<WildAnimalRenderState> {
         this.leftFrontLeg.xRot = -front * (1.0F - run) + front * run * 0.8F;
         this.leftHindLeg.xRot = -hind;
         this.rightHindLeg.xRot = hind * (1.0F - run) - hind * run * 0.8F;
-        this.body.y -= Mth.abs(Mth.sin(phase)) * (0.2F * speed + 0.5F * run);
+        this.body.y -= Mth.abs(Mth.sin(phase)) * (0.4F * speed + 1.0F * run);
 
         float graze = Mth.clamp(state.grazeAmount, 0.0F, 1.0F);
         float bob = Mth.cos(phase * 2.0F) * 0.07F * speed;

@@ -212,6 +212,13 @@ BOXES = {
     "front_upper": (0, 30, -1.5, -1, -1.5, 3, 6, 3, leg_upper(-1, 5, False)),
     "hind_upper": (12, 30, -1.5, -1, -2, 3, 6, 4, leg_upper(-1, 5, True)),
     "lower": (26, 30, -1, 0, -1, 2, 5, 2, leg_lower(5)),
+    # the "build" part (body space) and the jowls (head space)
+    "withers": (0, 40, -3, -6, -9, 6, 1, 6, body(-6, 5, 0.6)),
+    "croup": (24, 40, -4, -6, 3, 8, 1, 6, body(-6, 5, 0.6)),
+    "chest": (52, 40, -3.5, -3, -11, 7, 8, 1, body(-5, 5, 0.6)),
+    "buttocks": (68, 40, -3.5, -4, 10, 7, 8, 1, body(-5, 5, 0.6)),
+    "belly": (0, 48, -3.5, 5, -6, 7, 1, 11, body(-5, 6, 0.6)),
+    "jowls": (84, 40, -3, -0.5, -4.5, 6, 3, 4, skull(-2.5, 2.5, -5, -99, -99)),
 }
 
 # mirrors WildHorseFoalModel.createBodyLayer
@@ -233,7 +240,7 @@ def main():
     img = paint(BOXES, "adult", (128, 64))
     save(img, "wildlife/wild_horse.png")
     save(skinned(img, BOXES, ("lower",)), "skinned/wildlife/wild_horse.png")   # lower legs and hooves keep their hide
-    save(paint(FOAL_BOXES, "foal", (64, 32)), "wildlife/wild_horse_foal.png")
+    # the young's skin now comes with its model from gen_herd_models.py (the *_BOXES table above is unused)
 
 
 if __name__ == "__main__":

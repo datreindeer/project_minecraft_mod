@@ -326,7 +326,7 @@ def main():
         img = paint(BOXES, palette, (128, 64))
         save(img, TEX / "wildlife" / f"reindeer_{variant}.png")
         save(skinned(img, skinner, BOXES, ANTLER_BOXES), TEX / "skinned" / "wildlife" / f"reindeer_{variant}.png")
-    save(paint(CALF_BOXES, CALF, (64, 32)), TEX / "wildlife" / "reindeer_calf.png")
+    # the young's skin now comes with its model from gen_herd_models.py (the *_BOXES table above is unused)
 
 
 if __name__ == "__main__":

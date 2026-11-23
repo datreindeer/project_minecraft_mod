@@ -5,18 +5,15 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Mouflon lamb, built at baby size: small woolly body on thin legs, a round hornless head with sideways ears.
- * Back ~10 px. Texture textures/entity/wildlife/mouflon_lamb.png (64x32), painted by scripts/gen_mouflon_texture.py
- * (LAMB_BOXES mirrors the cubes below).
+ * Back ~10 px.
+ * Geometry and skin: HerdGeometry.mouflonLamb and the textures from scripts/gen_herd_models.py, built at TWICE baby size
+ * (drawn at half by the renderer's baby scale), so the pixel offsets below are doubled.
  */
 public class MouflonLambModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "mouflon_lamb"), "main");
@@ -25,7 +22,7 @@ public class MouflonLambModel extends EntityModel<WildAnimalRenderState> {
     private static final float HEAD_X = -0.2F;
     private static final float GRAZE_NECK_X = 2.2F;
     private static final float GRAZE_HEAD_X = -0.9F;
-    private static final float LIE_DROP = 5.5F, LIE_LEG_Y = 23.0F;
+    private static final float LIE_DROP = 11.0F, LIE_LEG_Y = 22.0F;
 
     private final ModelPart body;
     private final ModelPart neck;
@@ -53,44 +50,7 @@ public class MouflonLambModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.0F, -4.0F, 4.0F, 4.0F, 8.0F),
-                PartPose.offset(0.0F, 16.0F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(24, 0).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -0.5F, -3.5F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(32, 0).addBox(-1.5F, -1.5F, -3.0F, 3.0F, 3.0F, 4.0F)
-                        .texOffs(46, 0).addBox(-1.0F, -0.5F, -5.0F, 2.0F, 2.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(54, 0).mirror().addBox(-1.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(2.0F, -1.0F, 0.0F, 0.0F, 0.3F, 0.2F));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(54, 0).addBox(-1.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-2.0F, -1.0F, 0.0F, 0.0F, -0.3F, -0.2F));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(54, 2).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -1.7F, 3.8F, 0.3F, 0.0F, 0.0F));
-
-        addLeg(root, "left_front_leg", 1.1F, -2.6F, false);
-        addLeg(root, "right_front_leg", -1.1F, -2.6F, false);
-        addLeg(root, "left_hind_leg", 1.1F, 2.6F, true);
-        addLeg(root, "right_hind_leg", -1.1F, 2.6F, true);
-        return LayerDefinition.create(mesh, 64, 32);
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(12, 12).addBox(-1.0F, -1.0F, -1.5F, 2.0F, 3.0F, 3.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 12).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 3.0F, 2.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 17.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(8, 12).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
-                PartPose.offset(0.0F, 2.0F, hind ? 0.3F : 0.0F));
+        return HerdGeometry.mouflonLamb();
     }
 
     @Override
@@ -139,9 +99,9 @@ public class MouflonLambModel extends EntityModel<WildAnimalRenderState> {
         this.rightHindLeg.xRot = swing;
         this.rightFrontLeg.xRot = -swing;
         this.leftHindLeg.xRot = -swing;
-        this.body.y -= Mth.abs(Mth.sin(phase)) * (0.25F * speed + 1.2F * run);
+        this.body.y -= Mth.abs(Mth.sin(phase)) * (0.5F * speed + 2.4F * run);
         for (ModelPart leg : new ModelPart[] {leftFrontLeg, rightFrontLeg, leftHindLeg, rightHindLeg}) {
-            leg.y -= Mth.abs(Mth.sin(phase)) * 1.2F * run; // the whole lamb leaves the ground
+            leg.y -= Mth.abs(Mth.sin(phase)) * 2.4F * run; // the whole lamb leaves the ground
         }
 
         float graze = state.grazeAmount;
@@ -150,7 +110,7 @@ public class MouflonLambModel extends EntityModel<WildAnimalRenderState> {
         this.neck.yRot = yaw * 0.4F * look;
         this.head.xRot = Mth.lerp(graze, HEAD_X + pitch * 0.7F, GRAZE_HEAD_X + Mth.sin(age * 0.7F) * 0.06F);
         this.head.yRot = yaw * 0.6F * look;
-        this.neck.y += graze * 1.0F;
+        this.neck.y += graze * 2.0F;
 
         float tl = (age + 9.0F) % 47.0F;
         if (tl < 6.0F) this.leftEar.zRot -= Mth.sin(tl / 6.0F * Mth.PI) * 0.5F;

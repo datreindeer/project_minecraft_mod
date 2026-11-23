@@ -77,6 +77,12 @@ public class TameHorseRenderer extends MobRenderer<TameHorse, WildAnimalRenderSt
     }
 
     @Override
+    protected void scale(WildAnimalRenderState state, PoseStack poseStack) {
+        super.scale(state, poseStack);
+        if (state.isBaby) poseStack.scale(0.5F, 0.5F, 0.5F); // the foal model is built at twice its size (HerdGeometry)
+    }
+
+    @Override
     protected void setupRotations(WildAnimalRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
         super.setupRotations(state, poseStack, bodyRot, entityScale);
         WildAnimalRenderer.swimRotations(state, poseStack, entityScale);

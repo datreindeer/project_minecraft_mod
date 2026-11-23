@@ -5,19 +5,16 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Deer fawn (roe deer fawn and red deer calf share it, different textures), built at baby size, rendered at scale 1:
  * short body on long stick legs, big head and ears, short muzzle. Shoulder ~9.5 px, ear tips ~14 px.
- * Texture 64x32, painted by scripts/gen_fawn_textures.py whose CUBES table mirrors the boxes below (keep them in sync).
  * Hierarchy as RoeDeerModel: body -> neck -> head -> ears (snout is a cube of the head), body -> tail; legs hang from the root.
+ * Geometry and skin: HerdGeometry.fawn and the textures from scripts/gen_herd_models.py, built at TWICE baby size
+ * (drawn at half by the renderer's baby scale), so the pixel offsets below are doubled.
  */
 public class FawnModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "fawn"), "main");
@@ -57,50 +54,7 @@ public class FawnModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // back at y=14.5 (shoulder 9.5 px), belly at y=18.5: 5.5 px of leg showing under a 4 px deep body
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.0F, -4.0F, 4.0F, 4.0F, 8.0F),
-                PartPose.offset(0.0F, 16.5F, 0.0F));
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(24, 7).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -0.5F, -3.0F, NECK_REST, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(24, 0).addBox(-1.5F, -2.0F, -3.0F, 3.0F, 3.0F, 4.0F)
-                        .texOffs(38, 0).addBox(-1.0F, -1.5F, -5.0F, 2.0F, 2.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, HEAD_REST, 0.0F, 0.0F));
-        // big ears, splayed out to the sides with the pale inner side turned forwards
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(46, 0).addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-                PartPose.offsetAndRotation(-1.0F, -1.5F, 0.0F, -0.4F, 0.45F, -EAR_SPREAD));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(46, 0).mirror().addBox(-1.0F, -3.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-                PartPose.offsetAndRotation(1.0F, -1.5F, 0.0F, -0.4F, -0.45F, EAR_SPREAD));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(52, 0).addBox(-0.5F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -1.8F, 3.8F, 0.35F, 0.0F, 0.0F));
-
-        // stick legs: a short 2x2 upper part and a 1x1 cannon bone, hoof at y=24
-        CubeListBuilder rightFront = CubeListBuilder.create()
-                .texOffs(0, 12).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 4.0F, 2.0F)
-                .texOffs(8, 12).addBox(-0.5F, 2.5F, -0.5F, 1.0F, 4.0F, 1.0F);
-        CubeListBuilder leftFront = CubeListBuilder.create().mirror()
-                .texOffs(0, 12).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 4.0F, 2.0F)
-                .texOffs(8, 12).addBox(-0.5F, 2.5F, -0.5F, 1.0F, 4.0F, 1.0F);
-        // hind leg: deeper ham, cannon set back (hock)
-        CubeListBuilder rightHind = CubeListBuilder.create()
-                .texOffs(12, 12).addBox(-1.0F, -1.5F, -1.5F, 2.0F, 4.0F, 3.0F)
-                .texOffs(32, 7).addBox(-0.5F, 2.5F, -0.2F, 1.0F, 4.0F, 1.0F);
-        CubeListBuilder leftHind = CubeListBuilder.create().mirror()
-                .texOffs(12, 12).addBox(-1.0F, -1.5F, -1.5F, 2.0F, 4.0F, 3.0F)
-                .texOffs(32, 7).addBox(-0.5F, 2.5F, -0.2F, 1.0F, 4.0F, 1.0F);
-        root.addOrReplaceChild("right_front_leg", rightFront, PartPose.offset(-1.1F, 17.5F, -2.6F));
-        root.addOrReplaceChild("left_front_leg", leftFront, PartPose.offset(1.1F, 17.5F, -2.6F));
-        root.addOrReplaceChild("right_hind_leg", rightHind, PartPose.offset(-1.1F, 17.5F, 2.6F));
-        root.addOrReplaceChild("left_hind_leg", leftHind, PartPose.offset(1.1F, 17.5F, 2.6F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return HerdGeometry.fawn();
     }
 
     @Override
@@ -135,13 +89,13 @@ public class FawnModel extends EntityModel<WildAnimalRenderState> {
         }
 
         if (state.dozing) {
-            // curled up: belly (box bottom 18.5) dropped onto y = 24; front legs folded back under the chest, hind legs
+            // curled up: belly (box bottom 13) dropped onto y = 24; front legs folded back under the chest, hind legs
             // forward along the flanks, pivots lowered so the folded legs just touch the ground
-            this.body.y += 5.5F;
-            this.rightFrontLeg.y += 4.9F;
-            this.leftFrontLeg.y += 4.9F;
-            this.rightHindLeg.y += 4.6F;
-            this.leftHindLeg.y += 4.6F;
+            this.body.y += 11.0F;
+            this.rightFrontLeg.y += 9.8F;
+            this.leftFrontLeg.y += 9.8F;
+            this.rightHindLeg.y += 9.2F;
+            this.leftHindLeg.y += 9.2F;
             this.rightFrontLeg.xRot = 1.4F;
             this.leftFrontLeg.xRot = 1.4F;
             this.rightFrontLeg.yRot = -0.2F;
@@ -174,7 +128,7 @@ public class FawnModel extends EntityModel<WildAnimalRenderState> {
         this.leftFrontLeg.xRot = -front * (1.0F - run) + front * run * 0.8F;
         this.leftHindLeg.xRot = -hind;
         this.rightHindLeg.xRot = hind * (1.0F - run) - hind * run * 0.8F;
-        float hop = Mth.abs(Mth.sin(phase)) * (0.25F * speed + 0.6F * run);
+        float hop = Mth.abs(Mth.sin(phase)) * (0.5F * speed + 1.2F * run);
         this.body.y -= hop;
         this.body.xRot = Mth.sin(phase) * 0.08F * run;
 
