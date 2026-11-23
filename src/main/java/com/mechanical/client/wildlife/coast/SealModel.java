@@ -6,11 +6,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -19,7 +15,8 @@ import net.minecraft.util.Mth;
  * muzzle and big eyes, small fore flippers splayed under the chest and the paired hind flippers trailing behind. On land
  * it humps along (body arching, hips lifting, forefeet pulling); in the water the hips and hind flippers sweep side to
  * side; basking (graze) it lifts head and tail in a banana curve. Pup: same model, scaled, white texture.
- * Texture: textures/entity/wildlife/seal.png / seal_pup.png (64x64), painted by scripts/gen_fauna_coast_textures.py.
+ * Parts, boxes and skins (seal.png / seal_pup.png, 128x64, and the skinned seal.png): {@link CoastGeometry#seal()} from
+ * scripts/gen_owarm_coast_models.py (a spotted harbour-seal coat with pale rings on the back; the pup white).
  */
 public class SealModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "seal"), "main");
@@ -38,24 +35,7 @@ public class SealModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-5.0F, -4.0F, -5.0F, 10.0F, 9.0F, 10.0F)
-                .texOffs(0, 19).addBox(-4.0F, -3.5F, -11.0F, 8.0F, 8.0F, 6.0F), PartPose.offset(0.0F, 19.0F, 0.0F));
-        body.addOrReplaceChild("head", CubeListBuilder.create()
-                .texOffs(0, 33).addBox(-3.0F, -3.5F, -5.0F, 6.0F, 6.0F, 5.0F)
-                .texOffs(38, 33).addBox(-2.0F, -0.5F, -8.0F, 4.0F, 3.0F, 3.0F), PartPose.offset(0.0F, -1.0F, -11.0F));
-        PartDefinition hips = body.addOrReplaceChild("hips", CubeListBuilder.create()
-                .texOffs(28, 19).addBox(-3.5F, -3.0F, 0.0F, 7.0F, 7.0F, 6.0F), PartPose.offset(0.0F, 0.5F, 5.0F));
-        hips.addOrReplaceChild("tail", CubeListBuilder.create()
-                .texOffs(22, 33).addBox(-3.5F, -0.5F, 0.0F, 3.0F, 1.0F, 5.0F)
-                .texOffs(22, 33).mirror().addBox(0.5F, -0.5F, 0.0F, 3.0F, 1.0F, 5.0F), PartPose.offset(0.0F, 2.0F, 6.0F));
-        root.addOrReplaceChild("right_flipper", CubeListBuilder.create().texOffs(52, 33).addBox(-1.0F, 0.0F, -1.5F, 2.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(-4.5F, 21.0F, -8.0F, FLIPPER_X, 0.0F, FLIPPER_Z));
-        root.addOrReplaceChild("left_flipper", CubeListBuilder.create().texOffs(52, 33).mirror().addBox(-1.0F, 0.0F, -1.5F, 2.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(4.5F, 21.0F, -8.0F, FLIPPER_X, 0.0F, -FLIPPER_Z));
-        return LayerDefinition.create(mesh, 64, 64);
+        return CoastGeometry.seal();
     }
 
     @Override

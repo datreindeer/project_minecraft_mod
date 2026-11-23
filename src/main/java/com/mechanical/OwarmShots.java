@@ -87,8 +87,10 @@ public final class OwarmShots {
             new Subject("peahen", WarmFauna.PEAFOWL, false, 2.2, 1.3, false, null),
             new Subject("seal", CoastFauna.SEAL, false, 3.0, 1.8, false, null),
             new Subject("seal_swim", CoastFauna.SEAL, false, 3.0, 2.0, true, null),
+            new Subject("seal_pup", CoastFauna.SEAL, true, 2.0, 1.2, false, null),
             new Subject("walrus", CoastFauna.WALRUS, false, 5.0, 3.0, false, null),
             new Subject("walrus_swim", CoastFauna.WALRUS, false, 5.0, 3.2, true, null),
+            new Subject("walrus_calf", CoastFauna.WALRUS, true, 3.0, 1.8, false, null),
             new Subject("pike", CoastFauna.PIKE, false, 2.0, 1.3, true, null),
             new Subject("sturgeon", CoastFauna.STURGEON, false, 3.0, 2.0, true, null),
             new Subject("beaver", RiverFauna.BEAVER, false, 2.4, 1.3, false, null),
@@ -187,7 +189,7 @@ public final class OwarmShots {
                     if (ticks == 110 && s.name().endsWith("_fan")) server.execute(() -> { if (current != null) FAN.accept(current); });
                     if (ticks < 130) return;
                     shot(mc, s.name());
-                    result.add(s.name() + ": " + current);
+                    result.add(s.name() + ": " + current + (current instanceof AgeableMob a ? " baby=" + a.isBaby() : ""));
                     view = 0;
                     server.execute(() -> closeUp(s, views(s)[0]));
                     stage = 6;
@@ -271,6 +273,7 @@ public final class OwarmShots {
             m.setPersistenceRequired();
         }
         if (e instanceof AgeableMob a) a.setBaby(s.baby());
+        if (s.baby()) e.addTag("mechanical:spring_pup"); // else SoundersAndColonies grows an out-of-season seal pup up
         e.setOnGround(!s.water());
         level.addFreshEntity(e);
         current = e;

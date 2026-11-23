@@ -1,7 +1,7 @@
 # Kust och flod: Seal, Walrus, Pike, Sturgeon
 
 Fyra djur för kalla kuster och floder (paket `com.mechanical.wildlife.coast`, data i `scripts/gen_fauna_coast.py`,
-texturer i `scripts/gen_fauna_coast_textures.py`). Säl och valross ligger uppe på land och is men flyr ut i vattnet;
+texturer i `scripts/gen_fauna_coast_textures.py`; djurens modeller och skinn i `scripts/gen_owarm_coast_models.py`). Säl och valross ligger uppe på land och is men flyr ut i vattnet;
 gädda och stör är fiskar som simmar, kan spjutas och nappar på kroken.
 
 ## Seal (säl)
@@ -15,6 +15,8 @@ natten och går i vattnet då och då för att fiska. På land kryper den långs
 så fort, dyker och håller andan i 5 minuter, och kommer upp för att andas. **När någon kommer nära glider den ut i
 vattnet** (märker dig på 13 block, smygande 5); i vattnet tar den vanliga flykten vid (`AnimalFear`). Smyg för att
 komma nära. Ungarna är vita (25 % av en grupp).
+
+**Utseende:** en knubbig spolformad kropp som smalnar av mot höfterna, ett runt huvud utan öron med stora mörka ögon, kort nos med morrhår och V-formade näsborrar, framfenor med klor och två solfjäderformade bakfenor. Pälsen är en knubbsäls: mörkgrå rygg med ljusa ringar, fläckiga grå sidor och ljus buk; ungen är vit.
 
 | | |
 |---|---|
@@ -39,6 +41,8 @@ komma nära. Ungarna är vita (25 % av en grupp).
 varning: valrossen bölar och kastar upp huvudet med betarna. **Slår tillbaka när den skadas** (8 skada, 80 %
 knockback-motstånd) och hela flocken går på den som skadar en unge. Först när den blöder svårt (under 30 % liv) flyr
 den ut i vattnet. Simmar tre gånger så fort som den lufsar på land. Ungarna (20 %) saknar betar.
+
+**Utseende:** en väldig, hängande säck till kropp med veck längs sidorna, tjocka halsveck, ett litet runt huvud med små ögon, den breda borstiga mustaschdynan och långa elfenbensbetar, stora nakna fenor. Huden är vårtig och rynkig, rosabrun och mörkare på ryggen; ungen är gråbrun.
 
 | | |
 |---|---|
@@ -67,6 +71,8 @@ taiga, Deciduous Forest, Pine Heath: vikt 2). Vattenvarelse (`WATER_AMBIENT`), f
 sedan mot småfisk (torsk, lax, tropisk fisk) och **sväljer den hel**. Mätt vilar den två minuter. Flyr från spelare
 inom 6 block, **utom den som smyger**, så smyg fram och spjuta den. Kan inte tas i hink.
 
+**Utseende:** lång torpedkropp med platt andnäbbsnos och utskjutande underkäke, gyllene öga, rygg- och analfenan långt bak vid den kluvna stjärtfenan, orange bröst- och bukfenor. Olivgrön med rader av ljusa bönformade fläckar och vit buk; fenorna bärnstensfärgade med mörka fläckar.
+
 | | |
 |---|---|
 | Liv | 8 |
@@ -81,6 +87,8 @@ inom 6 block, **utom den som smyger**, så smyg fram och spjuta den. Kan inte ta
 **Beteende:** en jättestor, bepansrad fisk. Simmar långsamt längs botten, är svår att skrämma (flyr först inom
 4 block) och hoppar ibland högt ur vattnet. Lämnar ett **kadaver** (`Butchery.alwaysCarcass`) i stället för ett
 föremål. På Hanging Rack blir köttet inte styckdelar (`Butchery.wholeMeat`), bara en extra bit när den hängt färdigt.
+
+**Utseende:** spetsig, platt skovelnos med fyra skäggtömmar framför den rörformade munnen, rader av benplåtar längs rygg, sidor och buk, ryggfenan långt bak och en hajlik stjärt där den övre loben är mycket längre. Gråbrun ovan, ljus under.
 
 | | |
 |---|---|
