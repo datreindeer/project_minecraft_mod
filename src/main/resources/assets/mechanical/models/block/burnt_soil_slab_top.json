@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "top": "mechanical:block/burnt_soil",
+    "side": "mechanical:block/burnt_soil",
+    "bottom": "mechanical:block/burnt_soil",
+    "particle": "mechanical:block/burnt_soil"
+  }
+}

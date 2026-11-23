@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:burnt_soil"
+  },
+  "result": {
+    "id": "mechanical:burnt_soil_slab",
+    "count": 6
+  }
+}

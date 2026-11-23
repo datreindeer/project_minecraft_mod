@@ -83,6 +83,8 @@ public final class Structures {
         FEATURE_TYPES.register("frost_split", DryColdDecor.FROST_SPLIT::codec);
         FEATURE_TYPES.register("mammoth_tusks", DryColdDecor.MAMMOTH_TUSKS::codec);
         FEATURE_TYPES.register("charred_tree", () -> ScorchedBarrens.CharredTree.CODEC); // scripts/gen_world_biomes.py
+        FEATURE_TYPES.register("burnt_forest", BurntForest.INSIDE::codec);
+        FEATURE_TYPES.register("burnt_forest_edge", BurntForest.OUTSIDE::codec);
     }
 
     public static void init() {}

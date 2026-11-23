@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/ground_slab",
+  "textures": {
+    "top": "mechanical:block/burnt_soil_2",
+    "side": "mechanical:block/burnt_soil_2",
+    "bottom": "mechanical:block/burnt_soil_2",
+    "particle": "mechanical:block/burnt_soil_2"
+  }
+}

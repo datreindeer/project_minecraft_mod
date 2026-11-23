@@ -93,7 +93,8 @@ public final class EarthBlocks {
     public static final DeferredBlock<SlabBlock> MUD_SLAB = slab("mud_slab", () -> Blocks.MUD);
     public static final DeferredBlock<SlabBlock> PEAT_SLAB = slab("peat_slab", PEAT);
     public static final DeferredBlock<SlabBlock> LOESS_SLAB = slab("loess_slab", LOESS);
-    public static final DeferredBlock<SlabBlock> WOOD_ASH_SLAB = block("wood_ash_slab", SlabBlock::new, soil(MapColor.COLOR_LIGHT_GRAY, 0.5F, SoundType.SAND)); // Wood Ash registers after this
+    public static final DeferredBlock<SlabBlock> WOOD_ASH_SLAB = block("wood_ash_slab", SlabBlock::new, soil(MapColor.COLOR_GRAY, 0.5F, SoundType.SAND)); // Wood Ash registers after this
+    public static final DeferredBlock<SlabBlock> BURNT_SOIL_SLAB = block("burnt_soil_slab", SlabBlock::new, soil(MapColor.TERRACOTTA_BLACK, 0.5F, SoundType.ROOTED_DIRT)); // so does Burnt Soil
     // trodden road ground (people.RoadBuilding): sand and red sand packed hard by feet and wheels (not falling), snow trodden
     // hard (melts back to coarse dirt with the thaw)
     public static final DeferredBlock<Block> PACKED_SAND = block("packed_sand", Block::new, soil(MapColor.SAND, 0.6F, SoundType.SAND));

@@ -232,6 +232,8 @@
     "mechanical:feeding_trough",
     "mechanical:warp_weighted_loom",
     "mechanical:charred_log",
-    "mechanical:jewelers_bench"
+    "mechanical:jewelers_bench",
+    "mechanical:charred_branch",
+    "mechanical:charred_twig"
   ]
 }

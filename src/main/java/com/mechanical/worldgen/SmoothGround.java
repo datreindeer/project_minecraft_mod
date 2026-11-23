@@ -261,7 +261,7 @@ public final class SmoothGround extends StoneAgeFeature {
     public static boolean ground(BlockState s) {
         return s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(BlockTags.SAND) || s.is(Blocks.GRAVEL) || rock(s) || s.is(Blocks.SNOW_BLOCK)
                 || s.is(BlockTags.TERRACOTTA) || s.is(Blocks.CLAY) || s.is(EarthBlocks.PEAT) || s.is(EarthBlocks.LOESS)
-                || s.is(ScorchedBarrens.WOOD_ASH)
+                || s.is(ScorchedBarrens.WOOD_ASH) || s.is(ScorchedBarrens.BURNT_SOIL)
                 || s.is(EarthBlocks.PACKED_SAND) || s.is(EarthBlocks.PACKED_RED_SAND) || s.is(EarthBlocks.PACKED_SNOW);
     }
 

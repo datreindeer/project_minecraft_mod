@@ -2795,7 +2795,7 @@ tinar när det är varmt nog att smälta snö. Alla tre släpper Dirt Slab (2 f�
 
 **Markslabs och marktrappor** (terrängplanen fas 2): 3 i rad → 6 slabs, trappform → 4 trappor, av Dirt (**Dirt Stairs**),
 Coarse Dirt (**Coarse Dirt Slab/Stairs**), Podzol (**Podzol Slab**), Sand och Red Sand (**Sand/Red Sand Slab/Stairs**, faller
-inte), Gravel, Moss Block, Mud, Peat, Loess och Wood Ash (**... Slab**). Dirt Stairs växer till **Grass Stairs** som Dirt
+inte), Gravel, Moss Block, Mud, Peat, Loess, Wood Ash och Burnt Soil (**... Slab**). Dirt Stairs växer till **Grass Stairs** som Dirt
 Slab (årstidsfärg, snöig, dör under tätt block, släpper Dirt Stairs); Podzol Slab släpper Dirt Slab utan Silk Touch.
 Worldgen lägger dem på varje 1-blockssteg (`docs/biomes.md`). Advancement: *Soft Slopes*.
 
@@ -3076,14 +3076,22 @@ Advancements: *Rubbed Smooth* (Stone Age-fliken, under Pumice) och *Rubble* (Bro
 ## Scorched Barrens och Elkwight-ruinen (byggt, fas 1 och 2 av Elkwight-planen)
 
 **Scorched Barrens** är en nedbrunnen skog som bara finns **längre än 2500 block från 0,0**, och då sällan (ungefär som
-Mushroom Fields). Svarta stammar står kvar, ligger omkullfallna eller är bara stubbar, marken är aska, grov jord och grus
-med hällar av Blackstone och Basalt, och inget gräs växer. Himlen och dimman är grå och kalla och aska svävar i luften.
+Mushroom Fields). Svarta stammar i alla höjder står kvar med avbrutna toppar och förkolnade grenar, ligger omkullfallna
+för sig själva eller är bara stubbar, och det finns gläntor. Marken är mörkgrå aska med fläckar av bränd jord, hällar av
+Blackstone och Basalt i sluttningarna. Mot den levande skogen runt om finns en kant: sveden mark med torrt gräs och träd som
+klarat sig med förkolnad fot och döda bruna löv, sedan halvbrända träd, sedan den helt brända skogen. Här och där kommer
+Fireweed, ormbunkar och någon björkplanta upp ur askan. Himlen och dimman är grå och kalla och aska svävar i luften.
 Det enda djuret är korpen; monster kommer på natten som annars. På vintern snöar det och vattnet fryser som i andra svala
-biomer. Advancement *Into the Ashes* (Wilderness-fliken).
+biomer. Advancements *Into the Ashes* och *After the Fire* (plocka Fireweed) i Wilderness-fliken.
 
 - **Charred Log**: en bränd stam. Bryts med yxa och ger **1–2 Charcoal**; med Silk Touch blocket självt. Står som en
   stock (kan läggas åt alla håll).
-- **Wood Ash**: grå träaska som täcker marken. Bryts med spade och ger sig själv. Faller som sand.
+- **Charred Branch** och **Charred Twig**: förkolnade grenar (8 px) och kvistar (4 px) på de brända träden; fogar ihop
+  sig åt alla håll. Yxa, släpper sig själva.
+- **Wood Ash**: mörkgrå träaska som täcker marken. Bryts med spade och ger sig själv. Faller som sand. **Wood Ash Slab**.
+- **Burnt Soil**: nästan svart bränd jord med kol och aska i. Spade, ger sig själv. Växter slår rot i den.
+  **Burnt Soil Slab** (3 i rad → 6).
+- **Fireweed**: två block hög rosa blomma, den första som växer upp efter branden. Kan komposteras.
 
 **Elkwight Ruin**: inne i biomet står ibland en stor raserad arena av Blackstone (aldrig närmare 0,0 än 2500 block).
 Fyra höga portar (7 block breda, 10 höga) leder in till ett runt golv med en upphöjd dais i mitten omgiven av runor,

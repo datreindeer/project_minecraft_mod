@@ -6,7 +6,7 @@
    "keys": [
     "minecraft:block/grass_block_top"
    ],
-   "strength": 200,
+   "strength": 201,
    "groups": 3,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_grass_block_top",
@@ -23,7 +23,7 @@
    "keys": [
     "minecraft:block/moss_block"
    ],
-   "strength": 198,
+   "strength": 199,
    "groups": 3,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_moss_block",
@@ -40,7 +40,7 @@
    "keys": [
     "minecraft:block/snow"
    ],
-   "strength": 197,
+   "strength": 198,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_snow",
@@ -57,7 +57,7 @@
    "keys": [
     "mechanical:block/packed_snow"
    ],
-   "strength": 196,
+   "strength": 197,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/mechanical_packed_snow",
@@ -74,7 +74,7 @@
    "keys": [
     "minecraft:block/mycelium_top"
    ],
-   "strength": 195,
+   "strength": 196,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_mycelium_top",
@@ -91,7 +91,7 @@
    "keys": [
     "minecraft:block/podzol_top"
    ],
-   "strength": 194,
+   "strength": 195,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_podzol_top",
@@ -108,7 +108,7 @@
    "keys": [
     "minecraft:block/sand"
    ],
-   "strength": 193,
+   "strength": 194,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_sand",
@@ -125,7 +125,7 @@
    "keys": [
     "mechanical:block/packed_sand"
    ],
-   "strength": 192,
+   "strength": 193,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/mechanical_packed_sand",
@@ -142,7 +142,7 @@
    "keys": [
     "minecraft:block/red_sand"
    ],
-   "strength": 191,
+   "strength": 192,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_red_sand",
@@ -159,7 +159,7 @@
    "keys": [
     "mechanical:block/packed_red_sand"
    ],
-   "strength": 190,
+   "strength": 191,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/mechanical_packed_red_sand",
@@ -176,7 +176,7 @@
    "keys": [
     "minecraft:block/mossy_stone_bricks"
    ],
-   "strength": 189,
+   "strength": 190,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_mossy_stone_bricks",
@@ -193,7 +193,7 @@
    "keys": [
     "mechanical:block/mossy_limestone_bricks"
    ],
-   "strength": 188,
+   "strength": 189,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_limestone_bricks",
@@ -210,7 +210,7 @@
    "keys": [
     "mechanical:block/mossy_slate_bricks"
    ],
-   "strength": 187,
+   "strength": 188,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_slate_bricks",
@@ -227,7 +227,7 @@
    "keys": [
     "mechanical:block/mossy_gneiss_bricks"
    ],
-   "strength": 186,
+   "strength": 187,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_gneiss_bricks",
@@ -244,7 +244,7 @@
    "keys": [
     "mechanical:block/mossy_soapstone_bricks"
    ],
-   "strength": 185,
+   "strength": 186,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_soapstone_bricks",
@@ -261,7 +261,7 @@
    "keys": [
     "mechanical:block/mossy_shale_bricks"
    ],
-   "strength": 184,
+   "strength": 185,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_shale_bricks",
@@ -278,7 +278,7 @@
    "keys": [
     "mechanical:block/mossy_conglomerate_bricks"
    ],
-   "strength": 183,
+   "strength": 184,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_conglomerate_bricks",
@@ -295,7 +295,7 @@
    "keys": [
     "mechanical:block/mossy_dolomite_bricks"
    ],
-   "strength": 182,
+   "strength": 183,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_dolomite_bricks",
@@ -312,7 +312,7 @@
    "keys": [
     "mechanical:block/mossy_marble_bricks"
    ],
-   "strength": 181,
+   "strength": 182,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_marble_bricks",
@@ -329,7 +329,7 @@
    "keys": [
     "mechanical:block/mossy_quartzite_bricks"
    ],
-   "strength": 180,
+   "strength": 181,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_quartzite_bricks",
@@ -346,7 +346,7 @@
    "keys": [
     "mechanical:block/mossy_red_porphyry_bricks"
    ],
-   "strength": 179,
+   "strength": 180,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_red_porphyry_bricks",
@@ -363,7 +363,7 @@
    "keys": [
     "mechanical:block/mossy_green_porphyry_bricks"
    ],
-   "strength": 178,
+   "strength": 179,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_green_porphyry_bricks",
@@ -380,7 +380,7 @@
    "keys": [
     "mechanical:block/mossy_rapakivi_granite_bricks"
    ],
-   "strength": 177,
+   "strength": 178,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_rapakivi_granite_bricks",
@@ -397,7 +397,7 @@
    "keys": [
     "mechanical:block/mossy_pumice_bricks"
    ],
-   "strength": 176,
+   "strength": 177,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_pumice_bricks",
@@ -414,7 +414,7 @@
    "keys": [
     "mechanical:block/mossy_serpentine_bricks"
    ],
-   "strength": 175,
+   "strength": 176,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_serpentine_bricks",
@@ -431,7 +431,7 @@
    "keys": [
     "mechanical:block/mossy_jasper_bricks"
    ],
-   "strength": 174,
+   "strength": 175,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_jasper_bricks",
@@ -448,7 +448,7 @@
    "keys": [
     "mechanical:block/mossy_alabaster_bricks"
    ],
-   "strength": 173,
+   "strength": 174,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_alabaster_bricks",
@@ -465,7 +465,7 @@
    "keys": [
     "mechanical:block/mossy_alum_shale_bricks"
    ],
-   "strength": 172,
+   "strength": 173,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_mossy_alum_shale_bricks",
@@ -482,7 +482,7 @@
    "keys": [
     "minecraft:block/stone_bricks"
    ],
-   "strength": 171,
+   "strength": 172,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_stone_bricks",
@@ -499,7 +499,7 @@
    "keys": [
     "minecraft:block/deepslate_bricks"
    ],
-   "strength": 170,
+   "strength": 171,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_deepslate_bricks",
@@ -516,7 +516,7 @@
    "keys": [
     "minecraft:block/tuff_bricks"
    ],
-   "strength": 169,
+   "strength": 170,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_tuff_bricks",
@@ -533,7 +533,7 @@
    "keys": [
     "minecraft:block/mud_bricks"
    ],
-   "strength": 168,
+   "strength": 169,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_mud_bricks",
@@ -550,7 +550,7 @@
    "keys": [
     "minecraft:block/bricks"
    ],
-   "strength": 167,
+   "strength": 168,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_bricks",
@@ -567,7 +567,7 @@
    "keys": [
     "mechanical:block/limestone_bricks"
    ],
-   "strength": 166,
+   "strength": 167,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_limestone_bricks",
@@ -584,7 +584,7 @@
    "keys": [
     "mechanical:block/slate_bricks"
    ],
-   "strength": 165,
+   "strength": 166,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_slate_bricks",
@@ -601,7 +601,7 @@
    "keys": [
     "mechanical:block/gneiss_bricks"
    ],
-   "strength": 164,
+   "strength": 165,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_gneiss_bricks",
@@ -618,7 +618,7 @@
    "keys": [
     "mechanical:block/soapstone_bricks"
    ],
-   "strength": 163,
+   "strength": 164,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_soapstone_bricks",
@@ -635,7 +635,7 @@
    "keys": [
     "mechanical:block/shale_bricks"
    ],
-   "strength": 162,
+   "strength": 163,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_shale_bricks",
@@ -652,7 +652,7 @@
    "keys": [
     "mechanical:block/conglomerate_bricks"
    ],
-   "strength": 161,
+   "strength": 162,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_conglomerate_bricks",
@@ -669,7 +669,7 @@
    "keys": [
     "mechanical:block/dolomite_bricks"
    ],
-   "strength": 160,
+   "strength": 161,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_dolomite_bricks",
@@ -686,7 +686,7 @@
    "keys": [
     "mechanical:block/marble_bricks"
    ],
-   "strength": 159,
+   "strength": 160,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_marble_bricks",
@@ -703,7 +703,7 @@
    "keys": [
     "mechanical:block/quartzite_bricks"
    ],
-   "strength": 158,
+   "strength": 159,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_quartzite_bricks",
@@ -720,7 +720,7 @@
    "keys": [
     "mechanical:block/red_porphyry_bricks"
    ],
-   "strength": 157,
+   "strength": 158,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_red_porphyry_bricks",
@@ -737,7 +737,7 @@
    "keys": [
     "mechanical:block/green_porphyry_bricks"
    ],
-   "strength": 156,
+   "strength": 157,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_green_porphyry_bricks",
@@ -754,7 +754,7 @@
    "keys": [
     "mechanical:block/rapakivi_granite_bricks"
    ],
-   "strength": 155,
+   "strength": 156,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_rapakivi_granite_bricks",
@@ -771,7 +771,7 @@
    "keys": [
     "mechanical:block/pumice_bricks"
    ],
-   "strength": 154,
+   "strength": 155,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_pumice_bricks",
@@ -788,7 +788,7 @@
    "keys": [
     "mechanical:block/serpentine_bricks"
    ],
-   "strength": 153,
+   "strength": 154,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_serpentine_bricks",
@@ -805,7 +805,7 @@
    "keys": [
     "mechanical:block/jasper_bricks"
    ],
-   "strength": 152,
+   "strength": 153,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_jasper_bricks",
@@ -822,7 +822,7 @@
    "keys": [
     "mechanical:block/alabaster_bricks"
    ],
-   "strength": 151,
+   "strength": 152,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_alabaster_bricks",
@@ -839,7 +839,7 @@
    "keys": [
     "mechanical:block/alum_shale_bricks"
    ],
-   "strength": 150,
+   "strength": 151,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_alum_shale_bricks",
@@ -856,7 +856,7 @@
    "keys": [
     "mechanical:block/peat_bricks"
    ],
-   "strength": 149,
+   "strength": 150,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_peat_bricks",
@@ -873,7 +873,7 @@
    "keys": [
     "mechanical:block/adobe_bricks"
    ],
-   "strength": 148,
+   "strength": 149,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_adobe_bricks",
@@ -890,7 +890,7 @@
    "keys": [
     "mechanical:block/loess_bricks"
    ],
-   "strength": 147,
+   "strength": 148,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_loess_bricks",
@@ -907,7 +907,7 @@
    "keys": [
     "mechanical:block/rammed_earth"
    ],
-   "strength": 146,
+   "strength": 147,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_rammed_earth",
@@ -924,7 +924,7 @@
    "keys": [
     "mechanical:block/red_ochre_bricks"
    ],
-   "strength": 145,
+   "strength": 146,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_red_ochre_bricks",
@@ -941,7 +941,7 @@
    "keys": [
     "mechanical:block/yellow_ochre_bricks"
    ],
-   "strength": 144,
+   "strength": 145,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_yellow_ochre_bricks",
@@ -958,7 +958,7 @@
    "keys": [
     "minecraft:block/deepslate_tiles"
    ],
-   "strength": 143,
+   "strength": 144,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_deepslate_tiles",
@@ -975,7 +975,7 @@
    "keys": [
     "mechanical:block/slate_tiles"
    ],
-   "strength": 142,
+   "strength": 143,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_slate_tiles",
@@ -992,7 +992,7 @@
    "keys": [
     "mechanical:block/kaolin_tiles"
    ],
-   "strength": 141,
+   "strength": 142,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_kaolin_tiles",
@@ -1009,7 +1009,7 @@
    "keys": [
     "mechanical:block/warm_mosaic_tiles"
    ],
-   "strength": 140,
+   "strength": 141,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_warm_mosaic_tiles",
@@ -1026,7 +1026,7 @@
    "keys": [
     "mechanical:block/cool_mosaic_tiles"
    ],
-   "strength": 139,
+   "strength": 140,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cool_mosaic_tiles",
@@ -1043,7 +1043,7 @@
    "keys": [
     "mechanical:block/checkered_mosaic_tiles"
    ],
-   "strength": 138,
+   "strength": 139,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_checkered_mosaic_tiles",
@@ -1060,7 +1060,7 @@
    "keys": [
     "mechanical:block/roof_tiles"
    ],
-   "strength": 137,
+   "strength": 138,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_roof_tiles",
@@ -1077,7 +1077,7 @@
    "keys": [
     "mechanical:block/red_roof_tiles"
    ],
-   "strength": 136,
+   "strength": 137,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_red_roof_tiles",
@@ -1094,7 +1094,7 @@
    "keys": [
     "mechanical:block/black_roof_tiles"
    ],
-   "strength": 135,
+   "strength": 136,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_black_roof_tiles",
@@ -1111,7 +1111,7 @@
    "keys": [
     "mechanical:block/yellow_roof_tiles"
    ],
-   "strength": 134,
+   "strength": 135,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_yellow_roof_tiles",
@@ -1128,7 +1128,7 @@
    "keys": [
     "mechanical:block/white_roof_tiles"
    ],
-   "strength": 133,
+   "strength": 134,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_white_roof_tiles",
@@ -1145,7 +1145,7 @@
    "keys": [
     "minecraft:block/cracked_stone_bricks"
    ],
-   "strength": 132,
+   "strength": 133,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_cracked_stone_bricks",
@@ -1162,7 +1162,7 @@
    "keys": [
     "minecraft:block/cracked_deepslate_bricks"
    ],
-   "strength": 131,
+   "strength": 132,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_cracked_deepslate_bricks",
@@ -1179,7 +1179,7 @@
    "keys": [
     "minecraft:block/cracked_deepslate_tiles"
    ],
-   "strength": 130,
+   "strength": 131,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/minecraft_cracked_deepslate_tiles",
@@ -1196,7 +1196,7 @@
    "keys": [
     "mechanical:block/cracked_limestone_bricks"
    ],
-   "strength": 129,
+   "strength": 130,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_limestone_bricks",
@@ -1213,7 +1213,7 @@
    "keys": [
     "mechanical:block/cracked_slate_bricks"
    ],
-   "strength": 128,
+   "strength": 129,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_slate_bricks",
@@ -1230,7 +1230,7 @@
    "keys": [
     "mechanical:block/cracked_slate_tiles"
    ],
-   "strength": 127,
+   "strength": 128,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_slate_tiles",
@@ -1247,7 +1247,7 @@
    "keys": [
     "mechanical:block/cracked_gneiss_bricks"
    ],
-   "strength": 126,
+   "strength": 127,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_gneiss_bricks",
@@ -1264,7 +1264,7 @@
    "keys": [
     "mechanical:block/cracked_soapstone_bricks"
    ],
-   "strength": 125,
+   "strength": 126,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_soapstone_bricks",
@@ -1281,7 +1281,7 @@
    "keys": [
     "mechanical:block/cracked_shale_bricks"
    ],
-   "strength": 124,
+   "strength": 125,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_shale_bricks",
@@ -1298,7 +1298,7 @@
    "keys": [
     "mechanical:block/cracked_conglomerate_bricks"
    ],
-   "strength": 123,
+   "strength": 124,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_conglomerate_bricks",
@@ -1315,7 +1315,7 @@
    "keys": [
     "mechanical:block/cracked_dolomite_bricks"
    ],
-   "strength": 122,
+   "strength": 123,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_dolomite_bricks",
@@ -1332,7 +1332,7 @@
    "keys": [
     "mechanical:block/cracked_marble_bricks"
    ],
-   "strength": 121,
+   "strength": 122,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_marble_bricks",
@@ -1349,7 +1349,7 @@
    "keys": [
     "mechanical:block/cracked_quartzite_bricks"
    ],
-   "strength": 120,
+   "strength": 121,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_quartzite_bricks",
@@ -1366,7 +1366,7 @@
    "keys": [
     "mechanical:block/cracked_red_porphyry_bricks"
    ],
-   "strength": 119,
+   "strength": 120,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_red_porphyry_bricks",
@@ -1383,7 +1383,7 @@
    "keys": [
     "mechanical:block/cracked_green_porphyry_bricks"
    ],
-   "strength": 118,
+   "strength": 119,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_green_porphyry_bricks",
@@ -1400,7 +1400,7 @@
    "keys": [
     "mechanical:block/cracked_rapakivi_granite_bricks"
    ],
-   "strength": 117,
+   "strength": 118,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_rapakivi_granite_bricks",
@@ -1417,7 +1417,7 @@
    "keys": [
     "mechanical:block/cracked_pumice_bricks"
    ],
-   "strength": 116,
+   "strength": 117,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_pumice_bricks",
@@ -1434,7 +1434,7 @@
    "keys": [
     "mechanical:block/cracked_serpentine_bricks"
    ],
-   "strength": 115,
+   "strength": 116,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_serpentine_bricks",
@@ -1451,7 +1451,7 @@
    "keys": [
     "mechanical:block/cracked_jasper_bricks"
    ],
-   "strength": 114,
+   "strength": 115,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_jasper_bricks",
@@ -1468,7 +1468,7 @@
    "keys": [
     "mechanical:block/cracked_alabaster_bricks"
    ],
-   "strength": 113,
+   "strength": 114,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_alabaster_bricks",
@@ -1485,7 +1485,7 @@
    "keys": [
     "mechanical:block/cracked_alum_shale_bricks"
    ],
-   "strength": 112,
+   "strength": 113,
    "groups": 2,
    "style": "brick",
    "sheet": "mechanical:block/blend/mechanical_cracked_alum_shale_bricks",
@@ -1502,7 +1502,7 @@
    "keys": [
     "minecraft:block/mossy_cobblestone"
    ],
-   "strength": 111,
+   "strength": 112,
    "groups": 3,
    "style": "cobble",
    "sheet": "mechanical:block/blend/minecraft_mossy_cobblestone",
@@ -1519,7 +1519,7 @@
    "keys": [
     "minecraft:block/cobblestone"
    ],
-   "strength": 110,
+   "strength": 111,
    "groups": 3,
    "style": "cobble",
    "sheet": "mechanical:block/blend/minecraft_cobblestone",
@@ -1536,7 +1536,7 @@
    "keys": [
     "minecraft:block/cobbled_deepslate"
    ],
-   "strength": 109,
+   "strength": 110,
    "groups": 2,
    "style": "cobble",
    "sheet": "mechanical:block/blend/minecraft_cobbled_deepslate",
@@ -1553,7 +1553,7 @@
    "keys": [
     "mechanical:block/cobbled_slate"
    ],
-   "strength": 108,
+   "strength": 109,
    "groups": 2,
    "style": "cobble",
    "sheet": "mechanical:block/blend/mechanical_cobbled_slate",
@@ -1570,7 +1570,7 @@
    "keys": [
     "mechanical:block/fieldstone"
    ],
-   "strength": 107,
+   "strength": 108,
    "groups": 2,
    "style": "cobble",
    "sheet": "mechanical:block/blend/mechanical_fieldstone",
@@ -1587,7 +1587,7 @@
    "keys": [
     "minecraft:block/gravel"
    ],
-   "strength": 106,
+   "strength": 107,
    "groups": 3,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_gravel",
@@ -1604,7 +1604,7 @@
    "keys": [
     "mechanical:block/beach_pebbles"
    ],
-   "strength": 105,
+   "strength": 106,
    "groups": 3,
    "style": "noise",
    "sheet": "mechanical:block/blend/mechanical_beach_pebbles",
@@ -1621,7 +1621,7 @@
    "keys": [
     "minecraft:block/stone"
    ],
-   "strength": 104,
+   "strength": 105,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_stone",
@@ -1638,7 +1638,7 @@
    "keys": [
     "minecraft:block/andesite"
    ],
-   "strength": 103,
+   "strength": 104,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_andesite",
@@ -1655,7 +1655,7 @@
    "keys": [
     "minecraft:block/granite"
    ],
-   "strength": 102,
+   "strength": 103,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_granite",
@@ -1672,7 +1672,7 @@
    "keys": [
     "minecraft:block/diorite"
    ],
-   "strength": 101,
+   "strength": 102,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_diorite",
@@ -1689,7 +1689,7 @@
    "keys": [
     "minecraft:block/tuff"
    ],
-   "strength": 100,
+   "strength": 101,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_tuff",
@@ -1706,7 +1706,7 @@
    "keys": [
     "minecraft:block/calcite"
    ],
-   "strength": 99,
+   "strength": 100,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_calcite",
@@ -1723,7 +1723,7 @@
    "keys": [
     "minecraft:block/deepslate_top"
    ],
-   "strength": 98,
+   "strength": 99,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/minecraft_deepslate_top",
@@ -1740,7 +1740,7 @@
    "keys": [
     "mechanical:block/limestone"
    ],
-   "strength": 97,
+   "strength": 98,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_limestone",
@@ -1757,7 +1757,7 @@
    "keys": [
     "mechanical:block/slate_top"
    ],
-   "strength": 96,
+   "strength": 97,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_slate_top",
@@ -1774,7 +1774,7 @@
    "keys": [
     "mechanical:block/gneiss"
    ],
-   "strength": 95,
+   "strength": 96,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_gneiss",
@@ -1791,7 +1791,7 @@
    "keys": [
     "mechanical:block/soapstone"
    ],
-   "strength": 94,
+   "strength": 95,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_soapstone",
@@ -1808,7 +1808,7 @@
    "keys": [
     "mechanical:block/shale"
    ],
-   "strength": 93,
+   "strength": 94,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_shale",
@@ -1825,7 +1825,7 @@
    "keys": [
     "mechanical:block/conglomerate"
    ],
-   "strength": 92,
+   "strength": 93,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_conglomerate",
@@ -1842,7 +1842,7 @@
    "keys": [
     "mechanical:block/dolomite"
    ],
-   "strength": 91,
+   "strength": 92,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_dolomite",
@@ -1859,7 +1859,7 @@
    "keys": [
     "mechanical:block/travertine_top"
    ],
-   "strength": 90,
+   "strength": 91,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_travertine_top",
@@ -1876,7 +1876,7 @@
    "keys": [
     "mechanical:block/shell_bank_top"
    ],
-   "strength": 89,
+   "strength": 90,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_shell_bank_top",
@@ -1893,7 +1893,7 @@
    "keys": [
     "mechanical:block/marble_top"
    ],
-   "strength": 88,
+   "strength": 89,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_marble_top",
@@ -1910,7 +1910,7 @@
    "keys": [
     "mechanical:block/quartzite"
    ],
-   "strength": 87,
+   "strength": 88,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_quartzite",
@@ -1927,7 +1927,7 @@
    "keys": [
     "mechanical:block/red_porphyry"
    ],
-   "strength": 86,
+   "strength": 87,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_red_porphyry",
@@ -1944,7 +1944,7 @@
    "keys": [
     "mechanical:block/green_porphyry"
    ],
-   "strength": 85,
+   "strength": 86,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_green_porphyry",
@@ -1961,7 +1961,7 @@
    "keys": [
     "mechanical:block/rapakivi_granite"
    ],
-   "strength": 84,
+   "strength": 85,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_rapakivi_granite",
@@ -1978,7 +1978,7 @@
    "keys": [
     "mechanical:block/coastal_basalt_top"
    ],
-   "strength": 83,
+   "strength": 84,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_coastal_basalt_top",
@@ -1995,7 +1995,7 @@
    "keys": [
     "mechanical:block/pumice"
    ],
-   "strength": 82,
+   "strength": 83,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_pumice",
@@ -2012,7 +2012,7 @@
    "keys": [
     "mechanical:block/scoria_top"
    ],
-   "strength": 81,
+   "strength": 82,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_scoria_top",
@@ -2029,7 +2029,7 @@
    "keys": [
     "mechanical:block/serpentine"
    ],
-   "strength": 80,
+   "strength": 81,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_serpentine",
@@ -2046,7 +2046,7 @@
    "keys": [
     "mechanical:block/jasper_stone"
    ],
-   "strength": 79,
+   "strength": 80,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_jasper_stone",
@@ -2063,7 +2063,7 @@
    "keys": [
     "mechanical:block/gypsum_top"
    ],
-   "strength": 78,
+   "strength": 79,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_gypsum_top",
@@ -2080,7 +2080,7 @@
    "keys": [
     "mechanical:block/alabaster_top"
    ],
-   "strength": 77,
+   "strength": 78,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_alabaster_top",
@@ -2097,7 +2097,7 @@
    "keys": [
     "mechanical:block/alum_shale"
    ],
-   "strength": 76,
+   "strength": 77,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_alum_shale",
@@ -2114,7 +2114,7 @@
    "keys": [
     "mechanical:block/mudstone"
    ],
-   "strength": 75,
+   "strength": 76,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_mudstone",
@@ -2131,7 +2131,7 @@
    "keys": [
     "mechanical:block/red_ochre_block"
    ],
-   "strength": 74,
+   "strength": 75,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_red_ochre_block",
@@ -2148,7 +2148,7 @@
    "keys": [
     "mechanical:block/yellow_ochre_block"
    ],
-   "strength": 73,
+   "strength": 74,
    "groups": 2,
    "style": "chunk",
    "sheet": "mechanical:block/blend/mechanical_yellow_ochre_block",
@@ -2165,7 +2165,7 @@
    "keys": [
     "minecraft:block/smooth_stone"
    ],
-   "strength": 72,
+   "strength": 73,
    "groups": 2
   },
   {
@@ -2173,7 +2173,7 @@
    "keys": [
     "minecraft:block/polished_andesite"
    ],
-   "strength": 71,
+   "strength": 72,
    "groups": 2
   },
   {
@@ -2181,7 +2181,7 @@
    "keys": [
     "minecraft:block/polished_granite"
    ],
-   "strength": 70,
+   "strength": 71,
    "groups": 2
   },
   {
@@ -2189,7 +2189,7 @@
    "keys": [
     "minecraft:block/polished_diorite"
    ],
-   "strength": 69,
+   "strength": 70,
    "groups": 2
   },
   {
@@ -2197,7 +2197,7 @@
    "keys": [
     "minecraft:block/polished_tuff"
    ],
-   "strength": 68,
+   "strength": 69,
    "groups": 2
   },
   {
@@ -2205,7 +2205,7 @@
    "keys": [
     "minecraft:block/polished_deepslate"
    ],
-   "strength": 67,
+   "strength": 68,
    "groups": 2
   },
   {
@@ -2213,7 +2213,7 @@
    "keys": [
     "mechanical:block/polished_limestone"
    ],
-   "strength": 66,
+   "strength": 67,
    "groups": 2
   },
   {
@@ -2221,7 +2221,7 @@
    "keys": [
     "mechanical:block/polished_slate"
    ],
-   "strength": 65,
+   "strength": 66,
    "groups": 2
   },
   {
@@ -2229,7 +2229,7 @@
    "keys": [
     "mechanical:block/smooth_gneiss"
    ],
-   "strength": 64,
+   "strength": 65,
    "groups": 2
   },
   {
@@ -2237,7 +2237,7 @@
    "keys": [
     "mechanical:block/polished_soapstone"
    ],
-   "strength": 61,
+   "strength": 62,
    "groups": 2
   },
   {
@@ -2245,7 +2245,7 @@
    "keys": [
     "mechanical:block/polished_shale"
    ],
-   "strength": 60,
+   "strength": 61,
    "groups": 2
   },
   {
@@ -2253,7 +2253,7 @@
    "keys": [
     "mechanical:block/polished_conglomerate"
    ],
-   "strength": 59,
+   "strength": 60,
    "groups": 2
   },
   {
@@ -2261,7 +2261,7 @@
    "keys": [
     "mechanical:block/polished_dolomite"
    ],
-   "strength": 58,
+   "strength": 59,
    "groups": 2
   },
   {
@@ -2269,7 +2269,7 @@
    "keys": [
     "mechanical:block/marble_bottom"
    ],
-   "strength": 53,
+   "strength": 54,
    "groups": 2
   },
   {
@@ -2277,7 +2277,7 @@
    "keys": [
     "mechanical:block/polished_quartzite"
    ],
-   "strength": 52,
+   "strength": 53,
    "groups": 2
   },
   {
@@ -2285,7 +2285,7 @@
    "keys": [
     "mechanical:block/polished_red_porphyry"
    ],
-   "strength": 51,
+   "strength": 52,
    "groups": 2
   },
   {
@@ -2293,7 +2293,7 @@
    "keys": [
     "mechanical:block/polished_green_porphyry"
    ],
-   "strength": 50,
+   "strength": 51,
    "groups": 2
   },
   {
@@ -2301,7 +2301,7 @@
    "keys": [
     "mechanical:block/smooth_rapakivi_granite"
    ],
-   "strength": 49,
+   "strength": 50,
    "groups": 2
   },
   {
@@ -2309,7 +2309,7 @@
    "keys": [
     "mechanical:block/polished_coastal_basalt_top"
    ],
-   "strength": 48,
+   "strength": 49,
    "groups": 2
   },
   {
@@ -2317,7 +2317,7 @@
    "keys": [
     "mechanical:block/smooth_coastal_basalt"
    ],
-   "strength": 47,
+   "strength": 48,
    "groups": 2
   },
   {
@@ -2325,7 +2325,7 @@
    "keys": [
     "mechanical:block/polished_pumice"
    ],
-   "strength": 46,
+   "strength": 47,
    "groups": 2
   },
   {
@@ -2333,7 +2333,7 @@
    "keys": [
     "mechanical:block/polished_scoria_top"
    ],
-   "strength": 45,
+   "strength": 46,
    "groups": 2
   },
   {
@@ -2341,7 +2341,7 @@
    "keys": [
     "mechanical:block/smooth_scoria"
    ],
-   "strength": 44,
+   "strength": 45,
    "groups": 2
   },
   {
@@ -2349,7 +2349,7 @@
    "keys": [
     "mechanical:block/polished_serpentine"
    ],
-   "strength": 43,
+   "strength": 44,
    "groups": 2
   },
   {
@@ -2357,7 +2357,7 @@
    "keys": [
     "mechanical:block/polished_jasper"
    ],
-   "strength": 42,
+   "strength": 43,
    "groups": 2
   },
   {
@@ -2365,7 +2365,7 @@
    "keys": [
     "mechanical:block/alabaster_bottom"
    ],
-   "strength": 39,
+   "strength": 40,
    "groups": 2
   },
   {
@@ -2373,7 +2373,7 @@
    "keys": [
     "mechanical:block/polished_alum_shale"
    ],
-   "strength": 38,
+   "strength": 39,
    "groups": 2
   },
   {
@@ -2381,7 +2381,7 @@
    "keys": [
     "mechanical:block/chalk_block_top"
    ],
-   "strength": 37,
+   "strength": 38,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/mechanical_chalk_block_top",
@@ -2396,12 +2396,33 @@
   {
    "block": "mechanical:wood_ash",
    "keys": [
-    "mechanical:block/wood_ash"
+    "mechanical:block/wood_ash",
+    "mechanical:block/wood_ash_2",
+    "mechanical:block/wood_ash_3"
+   ],
+   "strength": 37,
+   "groups": 1,
+   "style": "noise",
+   "sheet": "mechanical:block/blend/mechanical_wood_ash",
+   "cols": 16,
+   "rows": 6,
+   "k": 3,
+   "m": 2,
+   "corners": true,
+   "select": "hash",
+   "join": false
+  },
+  {
+   "block": "mechanical:burnt_soil",
+   "keys": [
+    "mechanical:block/burnt_soil",
+    "mechanical:block/burnt_soil_2",
+    "mechanical:block/burnt_soil_3"
    ],
    "strength": 36,
    "groups": 1,
    "style": "noise",
-   "sheet": "mechanical:block/blend/mechanical_wood_ash",
+   "sheet": "mechanical:block/blend/mechanical_burnt_soil",
    "cols": 16,
    "rows": 6,
    "k": 3,
