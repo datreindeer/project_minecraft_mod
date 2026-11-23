@@ -51,8 +51,11 @@ skatter på sig (guld, ädelstenar, sällsynta saker) och fjällen blir till nå
 
 ## 4. Kolsvarta grottor (klart, living-world-plan F3)
 Under jord lyser bara blockljus: lava, glow lichen, kristaller (Amethyst Cluster m.m.), facklor och annat man sätter ut,
-och ljus man håller i handen (`DynamicLights`). Spelarens **Brightness** (gamma) och den lilla ljusgolvsnivån (dimensionens
-ambient light) stängs av, så mörka delar blir helt svarta, dag som natt. Night Vision fungerar som vanligt.
+och ljus man håller i handen (`DynamicLights`). Den lilla ljusgolvsnivån (dimensionens ambient light) stängs av, så mörka
+delar blir helt svarta, dag som natt. Spelarens **Brightness** ersätts av ett fast värde (0,65, mellan Moody och Bright):
+gamma påverkar bara upplysta ytor (svart förblir svart), så ljuskällor lyser upp omgivningen lika för alla. **Ändrat
+2026-11-23:** först sattes gamma till 0, och då föll ljuset från facklor och Glow Lichen av så snabbt att knappt något
+syntes lysa. Night Vision fungerar som vanligt.
 - **Regeln** (`CaveDark.underground`, ren funktion, testas i gametest `calendar`): man räknas som under jord när himmelsljuset
   vid ögonen är högst 2 **och** världsytan (heightmap `WORLD_SURFACE`) i ens kolumn ligger minst 8 block över ögonen. Man
   lämnar först när himmelsljuset är 7+ eller taket är under 4 block, så det fladdrar inte i grottmynningar. En hydda med tak
