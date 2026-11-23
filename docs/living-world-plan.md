@@ -83,6 +83,8 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
   vägens egen mark (Coarse Dirt Slab, Sand Slab, Grass Slab, Dirt Slab ...), ett halvsteg på var sida. `Trails`: där marken
   längs stigen stiger 2+ block läggs en jordtrappa (Coarse Dirt/Dirt Stairs) på den lägre rutan, och stigarnas mitt är
   fullhög jord (Coarse Dirt, Rooted Dirt, Packed Mud, lite grus) i stället för Trodden Path.
+  Över en å i en skärning spänner `Trails` en hög gångbro i strändernas höjd (räcke, stolpar), och stigar till en Tribe
+  Village eller Ancient Oak går runt palissaden/stammen till porten (v0.182.0, se `docs/biomes.md`).
 - **A8/A9:** fönster av 3x3 chunks runt varje byggare och fronten (`mechanical:road_window`, följer med varje sekund);
   en stam med färdig handelsväg forceladdar sitt läger 3x3 (`mechanical:road_base`) och dess handlare följs av fönstret
   tills de är hemma. Byggarna arbetar dag och natt. MSPT inte mätt för vägar ännu.

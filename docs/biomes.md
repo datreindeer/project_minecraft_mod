@@ -320,6 +320,25 @@ läggs av `SmoothGround` på steg. Advancement **Hard Ground** i Wilderness. Vä
 strödda Coarse Dirt, grus och lite Packed Mud och två brutna hjulspår; i snömark Packed Snow med jord i hjulspåren och
 lös snö tillbaka på kanterna.
 
+## Stigarnas broar och vägen in (worldgen/Trails)
+De förgenererade stigarna mellan byar, Tribe Villages och Ancient Oaks:
+- **Höga gångbroar:** där en å ligger i en skärning med höga stränder går stigen inte längre ner för två stup till en
+  plankbana vid vattnet. Bron spänner i stället över skärningen i strändernas höjd: däcket ligger så högt som den lägre
+  stranden når (högst 12 block över vattnet) och går rakt från strand till strand, också över sluttningarna ner mot
+  vattnet. Däcket är 3 block brett av slabs (Spruce eller Oak, samma som stigens andra broar), med en bjälke av Spruce/Oak
+  Wood (bark runt om) och ett Fence-räcke på var sida, och var fjärde block ett par stockstolpar ner till marken eller
+  åbotten med en tvärbjälke under däcket. Där stranden når upp till däcket skärs en skåra så däcket går in plant, och man
+  går upp på bron med ett halvsteg. Höjden räknas ur brusterrängen längs stigen (inte ur lagda block), så varje chunk
+  bygger samma bro och en bro över en chunkgräns ligger i en nivå. Låga stränder (ett däck högst 2 över vattnet), sjöar
+  bredare än 32 block och flacka dalar (mindre än ungefär 1 blocks stigning på 2) behåller den låga plankbanan eller
+  trampstenarna. Smala bäckar på 1 block kan slinka mellan stickproven och får då den låga bron.
+- **Runt palissaden till porten:** en stig till en Tribe Village går aldrig rakt genom byn. Den böjer av runt utsidan av
+  palissaden, ungefär 4 block utanför stockarna, och slutar vid porten där byns egen stig börjar. Samma sak vid en
+  Ancient Oak: stigen går runt stammen och rotstöttorna till öppningen in i den ihåliga stammen.
+
+Bilder: `docs/shots/terrain/trails2_*.png` (ravin före och efter, bron från sidan och från stranden, byn uppifrån och vid
+porten före och efter, en låg övergång som är oförändrad).
+
 ## Terrängens form (gen_terrain.py)
 
 Terrängplanens fas 1 (`docs/terrain-plan.md`). Modden skriver över vanillas density functions för Overworld:
