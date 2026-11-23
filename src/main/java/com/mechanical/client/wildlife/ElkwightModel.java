@@ -36,64 +36,14 @@ public class ElkwightModel extends EntityModel<WildAnimalRenderState> {
         head = body.getChild("head");
         rightArm = body.getChild("right_arm");
         leftArm = body.getChild("left_arm");
-        axe = rightArm.getChild("axe");
+        axe = rightArm.getChild("right_forearm").getChild("axe");
         rightLeg = root.getChild("right_leg");
         leftLeg = root.getChild("left_leg");
     }
 
+    /** The parts and boxes come from scripts/gen_elkwight_model.py, which paints the 256x256 skin for them. */
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
-                        .texOffs(0, 0).addBox(-5.0F, -13.0F, -3.0F, 10.0F, 13.0F, 6.0F)
-                        .texOffs(0, 20).addBox(-5.5F, -3.0F, -3.5F, 11.0F, 5.0F, 7.0F)            // hide belt and loin flap
-                        .texOffs(90, 0).addBox(-6.0F, -14.0F, -3.5F, 12.0F, 4.0F, 7.0F),          // fur mantle over the shoulders
-                PartPose.offset(0.0F, 12.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
-                        .texOffs(70, 0).addBox(-2.5F, -3.0F, -2.5F, 5.0F, 5.0F, 5.0F)             // neck
-                        .texOffs(40, 0).addBox(-3.0F, -8.0F, -4.0F, 6.0F, 6.0F, 7.0F),            // skull
-                PartPose.offset(0.0F, -13.0F, -1.0F));
-        head.addOrReplaceChild("muzzle", CubeListBuilder.create().texOffs(40, 14).addBox(-2.0F, -2.0F, -7.0F, 4.0F, 5.0F, 7.0F)
-                        .texOffs(64, 14).addBox(-0.5F, 3.0F, -4.0F, 1.0F, 3.0F, 2.0F),            // the dewlap
-                PartPose.offsetAndRotation(0.0F, -6.0F, -4.0F, 0.45F, 0.0F, 0.0F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(72, 14).addBox(-3.0F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(-3.0F, -7.0F, 0.5F, 0.0F, 0.2F, 0.4F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(72, 14).mirror().addBox(0.0F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(3.0F, -7.0F, 0.5F, 0.0F, -0.2F, -0.4F));
-        antler(head, "right_antler", -1);
-        antler(head, "left_antler", 1);
-        PartDefinition rightArm = body.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(24, 34).addBox(-3.0F, -1.0F, -2.0F, 4.0F, 13.0F, 4.0F),
-                PartPose.offset(-6.5F, -11.5F, 0.0F));
-        body.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(24, 34).mirror().addBox(-1.0F, -1.0F, -2.0F, 4.0F, 13.0F, 4.0F),
-                PartPose.offset(6.5F, -11.5F, 0.0F));
-        // the axe in the right hand, the haft along the hand's -z: socket and the two bits at the far end
-        rightArm.addOrReplaceChild("axe", CubeListBuilder.create()
-                        .texOffs(0, 80).addBox(-1.0F, -1.0F, -24.0F, 2.0F, 2.0F, 30.0F)
-                        .texOffs(66, 96).addBox(-1.5F, -2.0F, -25.0F, 3.0F, 4.0F, 4.0F)
-                        .texOffs(66, 80).addBox(-0.5F, -10.0F, -27.0F, 1.0F, 8.0F, 7.0F)
-                        .texOffs(66, 80).addBox(-0.5F, 2.0F, -27.0F, 1.0F, 8.0F, 7.0F),
-                PartPose.offset(-1.0F, 11.0F, 0.0F));
-        root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 34).addBox(-2.5F, 0.0F, -2.5F, 5.0F, 12.0F, 5.0F),
-                PartPose.offset(-2.6F, 12.0F, 0.0F));
-        root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 34).mirror().addBox(-2.5F, 0.0F, -2.5F, 5.0F, 12.0F, 5.0F),
-                PartPose.offset(2.6F, 12.0F, 0.0F));
-        return LayerDefinition.create(mesh, 128, 128);
-    }
-
-    /**
-     * One palmate antler ({@code side} -1 right, +1 left): a beam out of the skull and a broad palm standing up from it,
-     * facing forward like a moose's, five tines along its upper rim.
-     */
-    private static void antler(PartDefinition head, String name, int side) {
-        boolean left = side > 0;
-        CubeListBuilder b = CubeListBuilder.create().mirror(left)
-                .texOffs(0, 60).addBox(left ? 0.0F : -4.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F)
-                .texOffs(0, 64).addBox(left ? 3.0F : -16.0F, -11.0F, -0.5F, 13.0F, 10.0F, 1.0F, new CubeDeformation(0.01F));
-        for (int i = 0; i < 5; i++) { // tines along the upper rim, the outer ones longest
-            float x = left ? 4.5F + i * 2.6F : -5.5F - i * 2.6F;
-            b.texOffs(52, 60).addBox(x, -15.0F - (i > 2 ? 1 : 0), -0.5F, 1.0F, 5.0F, 1.0F);
-        }
-        head.addOrReplaceChild(name, b, PartPose.offsetAndRotation(side * 2.5F, -7.0F, 0.5F, -0.2F, side * 0.15F, side * 0.35F));
+        return ElkwightGeometry.create();
     }
 
     @Override
@@ -124,9 +74,9 @@ public class ElkwightModel extends EntityModel<WildAnimalRenderState> {
         // the ready stance: both hands on the haft, the axe across the body pointing up and forward
         rightArm.xRot = -0.9F + swing * 0.15F;
         rightArm.yRot = 0.2F;
-        leftArm.xRot = -1.1F - swing * 0.15F;
-        leftArm.yRot = -0.55F;
-        leftArm.zRot = 0.1F;
+        leftArm.xRot = -1.0F - swing * 0.15F; // the left hand reaches across to the haft
+        leftArm.yRot = 0.55F;
+        leftArm.zRot = 0.0F;
         axe.yRot = 0.35F;
         float breathe = Mth.sin(state.ageInTicks * 0.06F) * 0.03F;
         body.xRot += breathe;
@@ -154,7 +104,7 @@ public class ElkwightModel extends EntityModel<WildAnimalRenderState> {
                 leftArm.yRot = -0.2F + back * 0.6F;
                 float stomp = p > 0.45F && p < 0.65F ? Mth.sin((p - 0.45F) / 0.2F * Mth.PI) : 0;
                 leftLeg.xRot = -stomp * 1.0F;
-                body.y = 12.0F + stomp * 0.8F;
+                body.y = 8.0F + stomp * 0.8F;
             }
             case Elkwight.SPIN -> { // two turns with the axe out level
                 body.yRot = 0.9F - p * Mth.TWO_PI * 2;
@@ -223,7 +173,7 @@ public class ElkwightModel extends EntityModel<WildAnimalRenderState> {
             }
             case Elkwight.EAT, Elkwight.PICKUP -> { // on his knees, bent over the dead
                 rightLeg.xRot = leftLeg.xRot = -1.45F;
-                root.y = 7.0F;
+                root.y = 5.0F;
                 body.xRot = 0.75F;
                 head.xRot = 0.6F + (action == Elkwight.EAT ? Mth.sin(state.ageInTicks * 0.8F) * 0.15F : 0);
                 rightArm.xRot = leftArm.xRot = -0.6F;

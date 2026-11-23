@@ -116,6 +116,10 @@ public final class BossShots {
     private static void plan() {
         steps.add(new Step(null, 80, () -> look(base.add(0.5, 2.4, -8.5), 0, 6))); // chunks round the platform load
         steps.add(new Step("boss_front", 30, () -> pose(Elkwight.IDLE, 0)));
+        steps.add(new Step("boss_close", 30, () -> look(base.add(0.5, 1.4, -5.5), 0, 0)));
+        steps.add(new Step("boss_close_quarter", 30, () -> look(base.add(-3.4, 1.6, -3.4), -45, 0)));
+        steps.add(new Step("boss_close_head", 30, () -> look(base.add(-1.2, 1.9, -3.2), -22, 2)));
+        steps.add(new Step("boss_close_back", 30, () -> look(base.add(3.0, 2.0, 5.5), 150, 6)));
         steps.add(new Step("boss_side", 30, () -> look(base.add(-9.0, 2.4, 0.5), -90, 6)));
         steps.add(new Step("boss_chop", 30, () -> {
             look(base.add(-6.0, 2.6, -6.0), -45, 8);

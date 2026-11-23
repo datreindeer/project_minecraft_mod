@@ -216,11 +216,11 @@ def items():
 
 
 def main():
-    for rel, pal in (("entity/wildlife/elkwight.png", P), ("entity/skinned/wildlife/elkwight.png", S)):
-        out = RES / rel
-        out.parent.mkdir(parents=True, exist_ok=True)
-        entity(pal).save(out)
-    glow().save(RES / "entity/wildlife/elkwight_glow.png")
+    # the entity skins (and the model they fit) come from gen_elkwight_model.py
+    _m = importlib.util.spec_from_file_location("elkmodel", _HERE / "gen_elkwight_model.py")
+    elkmodel = importlib.util.module_from_spec(_m)
+    _m.loader.exec_module(elkmodel)
+    elkmodel.main()
     blocks()
     items()
     print("elkwight textures ok")

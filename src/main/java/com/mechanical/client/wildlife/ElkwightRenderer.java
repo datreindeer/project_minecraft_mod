@@ -32,7 +32,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public class ElkwightRenderer extends WildAnimalRenderer<Elkwight> {
-    static final float SCALE = 1.8F;
+    static final float SCALE = 1.5F;
     /** Dev (BossShots): every Elkwight drawn at this point of his action, null for the real one. */
     public static Float shotProgress;
     static final ContextKey<Integer> ACTION = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "elkwight_action"));
