@@ -457,5 +457,10 @@ lang |= {"pattern.mechanical.sickle_blade": "Sickle Blade", "pattern.mechanical.
          "message.mechanical.hot_metal.crucible": "The crucible burns your hand: hold tongs",
          "message.mechanical.hot_metal.casting": "The casting is hot: take it out with tongs"}
 
+# bow and crossbow tooltips (client/StatTooltips): damage multiplier at full draw and draw time; the crossbow takes bolts only
+lang |= {"tooltip.mechanical.bow.damage_multiplier": " Damage multiplier: %s (arrow damage × this)",
+         "tooltip.mechanical.bow.draw_time": " Draw time: %s",
+         "tooltip.mechanical.crossbow.bolts_only": "Loads Iron Bolts only"}
+
 merge(A / "lang/en_us.json", lang)
 print("iron age ok")

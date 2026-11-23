@@ -306,7 +306,8 @@ public final class IronAgeTest {
                 .map(r -> r.value().assemble(bowIn).is(Items.CROSSBOW)).orElse(false), "Iron Plates, Iron Tool Rod, Sinew, Tool Rods: a Crossbow");
         ItemStack bolt = new ItemStack(Smithing.IRON_BOLT.get()), crossbow = new ItemStack(Items.CROSSBOW);
         h.assertTrue(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(bolt), "the crossbow loads bolts");
-        h.assertTrue(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(new ItemStack(Items.ARROW)), "and arrows");
+        h.assertFalse(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(new ItemStack(Items.ARROW)), "but no arrows");
+        h.assertFalse(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getSupportedHeldProjectiles(crossbow).test(new ItemStack(Items.FIREWORK_ROCKET)), "nor fireworks from the off hand");
         h.assertFalse(((net.minecraft.world.item.ProjectileWeaponItem) Items.BOW).getAllSupportedProjectiles(new ItemStack(Items.BOW)).test(bolt), "a bow can't shoot bolts");
         h.assertTrue(com.mechanical.equipment.Quiver.ARROWS.test(bolt), "bolts go in the quiver");
         h.assertTrue(Smithing.IRON_BOLT.get().damage() > Bronze.BRONZE_ARROW.get().damage(), "bolts hit harder than Bronze Arrows");

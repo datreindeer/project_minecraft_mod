@@ -18,7 +18,8 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /**
  * Dev only (terrain plan phase 2): with {@code smoothshots.flag} in the game directory the client opens a saved world and
  * photographs fixed views. Flag lines: output folder, world folder name, file prefix, then one view per line:
- * {@code name x y z yaw pitch} (camera position). Spectator at noon, clear weather; writes PREFIX_result.txt and quits.
+ * {@code name x y z yaw pitch} (camera position), or a {@code /command} run as its own step. A world folder that doesn't
+ * exist yet is made as a fresh flat world. Spectator at noon, clear weather; writes PREFIX_result.txt and quits.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class SmoothShots {
@@ -49,7 +50,14 @@ public final class SmoothShots {
             if (stage < 0) return;
             if (stage == 0) {
                 if (mc.gui.screen() instanceof TitleScreen) {
-                    mc.createWorldOpenFlows().openWorld(world, () -> {});
+                    if (new File(mc.gameDirectory, "saves/" + world).exists()) mc.createWorldOpenFlows().openWorld(world, () -> {});
+                    else mc.createWorldOpenFlows().createFreshLevel(world,
+                            new net.minecraft.world.level.LevelSettings(world, net.minecraft.world.level.GameType.CREATIVE,
+                                    net.minecraft.world.level.LevelSettings.DifficultySettings.DEFAULT, true, net.minecraft.world.level.WorldDataConfiguration.DEFAULT),
+                            new net.minecraft.world.level.levelgen.WorldOptions(1234L, false, false),
+                            reg -> reg.lookupOrThrow(net.minecraft.core.registries.Registries.WORLD_PRESET)
+                                    .getOrThrow(net.minecraft.world.level.levelgen.presets.WorldPresets.FLAT).value().createWorldDimensions(),
+                            new TitleScreen());
                     stage = 1;
                     ticks = 0;
                 }
@@ -83,6 +91,14 @@ public final class SmoothShots {
                 return;
             }
             String[] v = VIEWS.get(view);
+            if (v[0].startsWith("/")) {
+                String c = String.join(" ", v).substring(1);
+                server.execute(() -> cmd(c));
+                result.add("cmd " + c);
+                view++;
+                ticks = 0;
+                return;
+            }
             if (ticks == 1) server.execute(() -> {
                 ServerPlayer p = server.getPlayerList().getPlayers().get(0);
                 p.teleportTo(p.level(), Double.parseDouble(v[1]), Double.parseDouble(v[2]), Double.parseDouble(v[3]), java.util.Set.of(),

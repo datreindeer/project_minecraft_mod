@@ -151,7 +151,8 @@ Potter's Wheel). Advancement **Sharper Teeth** (efter *Forged*).
 
 **Armborst och Iron Bolts (byggda, v0.129.0).** Vanillas **Crossbow** görs av smidda delar i crafting grid: två Iron
 Plate till bågen, en Iron Tool Rod som avtryckare och stigbygel, två Sinew som sträng och två Tool Rod som stock (vanillas
-recept med Iron Ingot och Tripwire Hook går inte att göra). Det skjuter vanliga pilar och **Iron Bolts**: korta pilar med
+recept med Iron Ingot och Tripwire Hook går inte att göra). Det skjuter **bara Iron Bolts** (inga pilar, inga fyrverkerier; monster
+med armborst skjuter pilar som förut): korta pilar med
 fyrkantig bodkinspets. En het tacka smids till **4 Iron Bolt Head** (mönstret Bolt Heads, 4 slag), och 4 spetsar + Stick +
 Feather blir 4 Iron Bolts på Fletching Table. En bolt gör **4** i grundskada (Bronze Arrow 3, vanlig pil 2) och går igenom
 **40 %** av rustningens skydd. Bara armborst kan skjuta dem (de är inte `#minecraft:arrows` utan `mechanical:bolts`; bågar
@@ -159,6 +160,10 @@ tar dem inte), de går i Quiver och plockas upp dit, och de går sällan sönder
 vanlig pil. Monster med armborst (plundrare) tappar det först när världen nått järnåldern (`LaterAgeGear`). Kod:
 `Smithing` (items, mönster, rustningsgenomslaget), `mixin/CrossbowItemMixin` (armborstet laddar bolts),
 `FletchingRecipes`. Advancements **Crossbowman** (mål, efter *Forged*) och **Bodkin** (efter *Crossbowman*).
+Tooltip på alla bågar och armborstet: **Damage multiplier** (pilens skada × detta är vad ett fullt draget skott gör:
+pilens fart, vanlig båge ×3.0, Crude Bow ×2.1, Horn Bow ×3.6, Yew Longbow ×3.9, armborst ×3.15) och **Draw time** (båge 1 s,
+Yew Longbow 1,5 s, armborst 1,25 s, kortare med Quick Charge). Crude Bow ger nu 70 % av vilken pils skada som helst (förut
+alltid en vanlig pils).
 
 **Smidda versioner av bronsverktygen (byggda, v0.130.0).** Varje bronsverktyg har nu sin järn- (och ofta stål-)version.
 Delarna smids på städet (mönstren ovan) och sätts ihop i Tool Station; de gör allt bronsverktyget gör, och lite till:

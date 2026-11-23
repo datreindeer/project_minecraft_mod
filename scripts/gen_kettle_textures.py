@@ -338,4 +338,99 @@ for x, y in ((11, 11), (12, 10), (13, 9)):  # the broken edge, glassy
     if glue.getpixel((x, y))[3]:
         glue.putpixel((x, y), ramp(AMBER, 0.9) + (255,))
 save(glue, ITEM / "hide_glue.png")
+
+# ---------------------------------------------------------------- the blood kettle under a Hanging Rack, blood buckets, Blood Sausage
+
+IRON = [(24, 24, 28), (44, 44, 50), (66, 66, 72), (92, 92, 98), (124, 124, 128), (160, 158, 156)]
+RUST = (120, 58, 30)
+BLOOD = [(34, 3, 5), (64, 8, 10), (98, 14, 16), (134, 24, 24), (172, 46, 42), (214, 104, 96)]
+
+# kettle_iron: hammered wrought iron like the bronze pot, a few rust freckles, soot up from the bottom
+rng = random.Random(51)
+ki2 = Image.new("RGBA", (16, 16))
+for y in range(16):
+    for x in range(16):
+        t = 0.42 + rng.uniform(-0.05, 0.05)
+        cx, cy = (x + (y // 4) * 2) % 4, y % 4
+        t += 0.18 if (cx, cy) == (1, 1) else -0.14 if (cx, cy) == (2, 2) else 0
+        ki2.putpixel((x, y), mix(ramp(IRON, t), SOOT, max(0, (y - 10) / 6) * 0.7) + (255,))
+for x, y in ((2, 3), (11, 2), (12, 2), (6, 7), (13, 9), (4, 11)):
+    ki2.putpixel((x, y), mix(ki2.getpixel((x, y))[:3], RUST, 0.55) + (255,))
+save(ki2, BLOCK / "kettle_iron.png")
+ki3 = Image.new("RGBA", (16, 16))
+for y in range(16):
+    for x in range(16):
+        ki3.putpixel((x, y), mix(ramp(IRON, 0.2 + rng.uniform(-0.04, 0.06)), SOOT, 0.4 + 0.03 * ((x * 7 + y * 3) % 5)) + (255,))
+save(ki3, BLOCK / "kettle_iron_inside.png")
+
+# kettle_blood: a dark, still surface, darker towards the walls, a soft sheen across it and a few bright glints
+kbl = Image.new("RGBA", (16, 16))
+for y in range(16):
+    for x in range(16):
+        edge = min(x - 4, 11 - x, y - 4, 11 - y)  # the pot shows 4..12
+        t = 0.3 + 0.05 * min(max(edge, 0), 3) + rng.uniform(-0.03, 0.03)
+        if 0 <= (x - y) + 1 <= 2 and 4 <= x <= 11 and 4 <= y <= 11:
+            t += 0.06  # the sky's sheen in a diagonal band
+        kbl.putpixel((x, y), ramp(BLOOD, t) + (255,))
+for x, y in ((6, 6), (9, 8)):
+    kbl.putpixel((x, y), ramp(BLOOD, 0.75) + (255,))
+save(kbl, BLOCK / "kettle_blood.png")
+
+
+def blood_filled(empty, full):
+    """full with every pixel that differs from empty (the water) redrawn as blood, by the water's own lightness."""
+    img = full.copy()
+    for x, y in px(full):
+        if full.getpixel((x, y)) != empty.getpixel((x, y)):
+            r, g, b, a = full.getpixel((x, y))
+            light = (r + g + b) / (3 * 255)
+            img.putpixel((x, y), ramp(BLOOD, 0.12 + light * 0.95) + (a,))
+    return img
+
+
+save(blood_filled(vanilla("item/bucket"), vanilla("item/water_bucket")), ITEM / "blood_bucket.png")
+save(blood_filled(Image.open(ITEM / "bronze_bucket.png").convert("RGBA"), Image.open(ITEM / "bronze_water_bucket.png").convert("RGBA")),
+     ITEM / "bronze_blood_bucket.png")
+
+
+def sausage(pal, seed, flecks, twine=True):
+    """A ring of blood sausage bent into a horseshoe, lit from the upper left: a round tube (bright along its upper outer
+    side, dark underneath), flecks of barley and fat, the ends tied off with twine."""
+    rng = random.Random(seed)
+    img = Image.new("RGBA", (16, 16))
+    cx, cy, r_in, r_out = 7.5, 9.5, 1.9, 6.9
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - cx, y - cy
+            d = (dx * dx + dy * dy) ** 0.5
+            if not (r_in <= d <= r_out) or y > 12 or (y > 9 and abs(dx) < 2.5):
+                continue
+            s = (d - r_in) / (r_out - r_in)  # across the tube: 0 inner edge .. 1 outer edge
+            up = -dy / max(d, 0.1)            # 1 at the top of the bend
+            left = -dx / max(d, 0.1)
+            t = 0.3 + 0.4 * max(0, 1 - abs(s - 0.62) * 2.4) + 0.1 * up + 0.08 * left + rng.uniform(-0.05, 0.05)
+            if s < 0.1 or s > 0.88:
+                t = 0.04 + 0.05 * up  # the outline
+            img.putpixel((x, y), ramp(pal, t) + (255,))
+    for x, y in flecks:
+        if img.getpixel((x, y))[3]:
+            img.putpixel((x, y), mix(img.getpixel((x, y))[:3], (226, 210, 176), 0.55) + (255,))
+    if twine:
+        for x, y in ((1, 12), (2, 12), (3, 12), (12, 12), (13, 12), (14, 12)):
+            if img.getpixel((x, y))[3]:
+                img.putpixel((x, y), ramp(CORD, 0.8 if x in (2, 13) else 0.45) + (255,))
+        for x, y in ((2, 13), (13, 13), (3, 14), (12, 14)):  # the loose ends of the twine
+            img.putpixel((x, y), ramp(CORD, 0.6 if y == 13 else 0.4) + (255,))
+    return img
+
+
+RAW_SAUSAGE = [(20, 4, 8), (44, 10, 16), (70, 18, 26), (98, 30, 38), (130, 52, 58), (176, 104, 106)]
+COOKED_SAUSAGE = [(12, 6, 6), (26, 12, 10), (42, 20, 16), (62, 32, 22), (92, 52, 34), (150, 104, 74)]
+FLECKS = ((4, 6), (9, 3), (11, 6), (3, 10), (12, 9), (6, 3), (13, 7))
+save(sausage(RAW_SAUSAGE, 71, FLECKS), ITEM / "raw_blood_sausage.png")
+cooked = sausage(COOKED_SAUSAGE, 72, FLECKS[:3])
+for x, y in ((3, 7), (4, 5), (5, 4)):  # fat glistening on the crisped skin
+    if cooked.getpixel((x, y))[3]:
+        cooked.putpixel((x, y), ramp(COOKED_SAUSAGE, 1.0) + (255,))
+save(cooked, ITEM / "blood_sausage.png")
 print("kettle textures ok")

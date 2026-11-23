@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:bronze_age/kettle",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:blood_bucket"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_blood_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_blood_bucket"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.blood_kettle.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.blood_kettle.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

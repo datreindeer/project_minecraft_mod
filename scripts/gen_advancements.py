@@ -725,6 +725,8 @@ TABS = {
          "Bake Dough on a Baking Stone beside a Campfire, or in the kiln at 200°", has("minecraft:bread")),
         ("hearty_stew", "cooked", "stew", G, "Hearty Stew",
          "Simmer 4 or more ingredients in a Bronze Kettle of water over a fire, then ladle the stew out with a Bowl", by_code()),
+        ("blood_sausage", "cooked", "blood_sausage", T, "Black Pudding",
+         "Mix a Blood Bucket with 2 Flour and Lard into Raw Blood Sausage, then cook it on a Campfire", has("blood_sausage")),
         # fauna: giants
         ("giant_meat", "cooked", "cooked_mammoth", T, "Ice Age Feast",
          "Cook Mammoth, Rhino, Bison or Musk Ox meat on a Campfire", has("cooked_mammoth", "cooked_rhino", "cooked_bison", "cooked_musk_ox")),
@@ -848,6 +850,9 @@ TABS = {
          "Boil Raw Hide, Rabbit Hide or Fish Bones in the kettle. Hide Glue hafts tools in place of Cordage", has("hide_glue")),
         ("tanned", "kettle", "minecraft:leather", T, "Tanner",
          "Boil Bark with Scraped Hides in the kettle: 3 Leather from every 2 hides, rain or shine", by_code()),
+        ("blood_kettle", "kettle", "bronze_blood_bucket", T, "Not a Drop Wasted",
+         "Stand a Bronze Kettle under a Hanging Rack and skin the carcass on it. Scoop the full kettle with a Bronze Bucket",
+         has("blood_bucket", "bronze_blood_bucket")),
         ("bronze_saw", "bronze", "bronze_saw", T, "Saw",
          "Cast a saw blade and assemble a Bronze Saw. Log + Saw makes 4 Planks", has("bronze_saw")),
         ("yew_longbow", "bronze_saw", "yew_longbow", G, "Longbowman",

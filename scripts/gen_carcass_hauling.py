@@ -137,7 +137,12 @@ POOL = {1: "blood_0", 2: "blood_pool_2", 3: "blood_pool_3", 4: "blood_pool_4"}
 w(A / "blockstates/hanging_rack.json", {"multipart": [
     {"when": {"facing": f, "part": name}, "apply": {"model": f"mechanical:block/hanging_rack_{name}", **({"y": y} if y else {})}}
     for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)) for name in ("lower", "middle", "upper")] + [
-    {"when": {"part": "lower", "blood": str(n)}, "apply": {"model": f"mechanical:block/{m}"}} for n, m in POOL.items()]})
+    {"when": {"part": "lower", "blood": str(n)}, "apply": {"model": f"mechanical:block/{m}"}} for n, m in POOL.items()] + [
+    # a kettle standing under the hook (HangingRackBlock.KETTLE), turned so its lugs clear the posts, and the blood in it (models: gen_kettle.py)
+    {"when": {"part": "lower", "facing": f, "kettle": k}, "apply": {"model": f"mechanical:block/rack_kettle_{m}", "y": (y + 90) % 360}}
+    for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)) for k, m in (("bronze|poor_bronze", "bronze"), ("iron", "iron"))] + [
+    {"when": {"part": "lower", "kettle": "bronze|poor_bronze|iron", "kettle_blood": str(n)}, "apply": {"model": f"mechanical:block/rack_kettle_blood_{n}"}}
+    for n in range(1, 21)]})
 w(A / "items/hanging_rack.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/hanging_rack"}})
 w(D / "mechanical/loot_table/blocks/hanging_rack.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
     "entries": [{"type": "minecraft:item", "name": "mechanical:hanging_rack"}], "condition": {"type": "minecraft:all_of", "terms": [{"type": "minecraft:survives_explosion"},

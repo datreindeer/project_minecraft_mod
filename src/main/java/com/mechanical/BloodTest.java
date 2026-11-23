@@ -28,16 +28,19 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 @EventBusSubscriber(modid = MODID)
 public final class BloodTest {
     private static final Identifier ID = Identifier.fromNamespaceAndPath(MODID, "blood_only_from_wounds");
+    private static final Identifier KETTLE_ID = Identifier.fromNamespaceAndPath(MODID, "blood_kettle");
 
     @SubscribeEvent
     static void registerFunction(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, ID, () -> (Consumer<GameTestHelper>) BloodTest::test);
+        event.register(Registries.TEST_FUNCTION, KETTLE_ID, () -> (Consumer<GameTestHelper>) BloodTest::kettle);
     }
 
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(ID, new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(ID, new FunctionGameTestInstance(net.minecraft.resources.ResourceKey.create(Registries.TEST_FUNCTION, ID), TestArea.of(env, 200, true)));
+        event.registerTest(KETTLE_ID, new FunctionGameTestInstance(net.minecraft.resources.ResourceKey.create(Registries.TEST_FUNCTION, KETTLE_ID), TestArea.of(env, 100, true)));
     }
 
     private static void test(GameTestHelper h) {
@@ -71,6 +74,33 @@ public final class BloodTest {
                 h.assertFalse(level.getBlockState(p).is(Mechanical.BLOOD.get()), "blood on the ground of the pen at " + p);
             h.succeed();
         });
+    }
+
+    /**
+     * A kettle under a Hanging Rack catches the blood: a bucket's worth (FULL steps) goes in with no pool on the ground or
+     * around the rack; only once it is full does the blood run onto the ground again.
+     */
+    private static void kettle(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (int x = 0; x <= 4; x++) for (int z = 0; z <= 4; z++) {
+            h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+            for (int y = 1; y <= 4; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+        }
+        var rack = CarcassHauling.HANGING_RACK.get().defaultBlockState();
+        for (HangingRackBlock.Part part : HangingRackBlock.Part.values())
+            h.setBlock(new BlockPos(2, 1 + part.ordinal(), 2), rack.setValue(HangingRackBlock.PART, part));
+        BlockPos base = h.absolutePos(new BlockPos(2, 1, 2));
+        h.assertValueEqual(HangingRackBlock.catchBlood(level, base, 3), 3, "no kettle: all the blood is left over");
+        level.setBlock(base, level.getBlockState(base).setValue(HangingRackBlock.KETTLE, HangingRackBlock.Pot.BRONZE), 3);
+        for (int i = 0; i < HangingRackBlock.FULL; i++) HangingRackBlock.bleedOnto(level, base);
+        h.assertValueEqual(level.getBlockState(base).getValue(HangingRackBlock.KETTLE_BLOOD), HangingRackBlock.FULL, "kettle fill");
+        h.assertValueEqual(level.getBlockState(base).getValue(HangingRackBlock.BLOOD), 0, "pool under a rack with a kettle");
+        for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 1, 0)), h.absolutePos(new BlockPos(4, 1, 4))))
+            h.assertFalse(level.getBlockState(p).is(Mechanical.BLOOD.get()), "blood on the ground beside the kettle at " + p);
+        h.assertValueEqual(HangingRackBlock.catchBlood(level, base, 2), 2, "a full kettle takes no more");
+        HangingRackBlock.bleedOnto(level, base);
+        h.assertValueEqual(level.getBlockState(base).getValue(HangingRackBlock.BLOOD), 1, "a full kettle runs over into the pool");
+        h.succeed();
     }
 
     private BloodTest() {}

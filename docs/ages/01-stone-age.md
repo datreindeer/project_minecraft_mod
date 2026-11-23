@@ -629,7 +629,10 @@ krockar inte med den.
 - **Gravitation:** den vilar på fast mark, **vatten** (stockar flyter) eller **andra stockar** (stockar krockar med varandra
   och staplas när de landar eller rullas av en vagn), inte på löv. En rak stock vilar som en stel stång på stöden under
   sina block (mark högst 1,5 block under; djupare är ett hål): längs den lägsta linje som har stöd på båda sidor om
-  mitten. Den **lutar** längs en backe och glider nerför om det är brantare än ~17° (0,3 block per block), lägger sig som
+  mitten. Den **lutar** längs en backe men är tung med grov bark: den ligger kvar över ett steg på ett block och på
+  måttliga backar, och glider bara nerför där det är riktigt brant (brantare än ~31°, 0,6 block per block, och mer än ett
+  block mellan stöden), långsamt (högst 0,1 block/tick, 2 block/s) och med fart som byggs upp sakta; när den väl glider
+  fortsätter den tills det är flackare än 0,45 per block. Den lägger sig som
   en **bro** över hål smalare än stocken, och hänger mitten ut över en **kant** glider den över och faller. Gräver man bort det den ligger på faller den. Ligger den still sover den (ingen kostnad per tick,
   bara en koll av underlaget varannan sekund).
 - **Hugga:** håll in höger- eller vänsterklick med yxa på stocken (vänsterklick slår inte sönder fällda träd eller
@@ -963,6 +966,8 @@ Bryts en del försvinner hela ställningen (den släpps som ett item) och kroppe
 - **Högerklicka på ställningen** med kroppen du bär eller släpar: den hänger med huvudet nedåt i bakbenen, buken mot
   framsidan (mot den som ställde ut ställningen). En kropp per ställning, jättehjorten är för stor. Smyg + tom hand tar ner
   den igen (på axlarna eller för att släpa). Bryts ställningen faller kroppen ner. Det droppar blod under den.
+- **Blodkittel:** i bronsåldern kan en Bronze Kettle (eller Cauldron) ställas under kroken och fånga blodet, så att det inte
+  blir någon pöl förrän den är full (se 02-bronze-age.md, *Blodkittel under Hanging Rack*).
 - **Blodpöl under ställningen:** en **flådd** kropp (efter första knivomgången) droppar dubbelt så ofta, och var 10:e
   sekund (chans 1 på 2) rinner blod ner på marken under ställningen: en pöl i ställningens nedre block som växer i 4
   steg (samma texturer som blocket Blood). När den är full rinner det över till marken bredvid ställningen (vanliga

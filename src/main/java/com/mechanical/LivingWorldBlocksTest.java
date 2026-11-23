@@ -94,37 +94,46 @@ public final class LivingWorldBlocksTest {
         h.assertTrue(menu.slots.size() == 27 + 36 && !menu.getSlot(1).mayPlace(new ItemStack(Items.DIRT))
                 && menu.getSlot(1).mayPlace(new ItemStack(Casting.CLAY_INGOT_MOLD_ITEM.get())), "the chest's slots only take molds");
 
-        // F11: grass creeps onto a dirt slab from a grass block beside it (glowstone keeps it light at night)
-        BlockPos slab = new BlockPos(4, 1, 4);
+        // F11: grass creeps onto a dirt slab from a grass block beside it. It needs light 9 above it: at noon (as the troll test
+        // does; restored after) the sky gives it. Not a glowstone at night: a busy test run leaves the light engine's queue so
+        // far behind that a new block light may not be worked out within the test's ticks.
+        BlockPos slab = new BlockPos(4, 1, 4), abs = h.absolutePos(slab);
         h.setBlock(new BlockPos(5, 1, 4), Blocks.GRASS_BLOCK);
-        h.setBlock(new BlockPos(6, 2, 6), Blocks.GLOWSTONE);
         h.setBlock(slab, EarthBlocks.DIRT_SLAB.get());
-        h.succeedWhen(() -> { // retried until the light from the glowstone has been worked out
-            BlockPos abs = h.absolutePos(slab);
-            for (int i = 0; i < 400 && level.getBlockState(abs).is(EarthBlocks.DIRT_SLAB); i++) level.getBlockState(abs).randomTick(level, abs, level.getRandom());
-            h.assertTrue(level.getBlockState(abs).is(EarthBlocks.GRASS_SLAB), "grass spreads to the dirt slab: " + level.getBlockState(abs));
-            h.assertTrue(drops(h, slab, level.getBlockState(abs)).stream().allMatch(s -> s.is(EarthBlocks.DIRT_SLAB.asItem())), "a grass slab drops a dirt slab");
+        var server = level.getServer();
+        long saved = level.getOverworldClockTime();
+        h.startSequence()
+                .thenExecute(() -> Calendar.overworldClock(server).ifPresent(c -> server.clockManager().setTotalTicks(c, Math.floorDiv(saved, 24000L) * 24000L + 6000L)))
+                .thenWaitUntil(() -> { // retried until the sky has brightened to noon
+                    h.assertTrue(level.getMaxLocalRawBrightness(abs.above()) >= 9, "daylight on the dirt slab: " + level.getMaxLocalRawBrightness(abs.above()));
+                    for (int i = 0; i < 400 && level.getBlockState(abs).is(EarthBlocks.DIRT_SLAB); i++) level.getBlockState(abs).randomTick(level, abs, level.getRandom());
+                    h.assertTrue(level.getBlockState(abs).is(EarthBlocks.GRASS_SLAB), "grass spreads to the dirt slab: " + level.getBlockState(abs));
+                })
+                .thenExecute(() -> {
+                    Calendar.overworldClock(server).ifPresent(c -> server.clockManager().setTotalTicks(c, saved));
+                    h.assertTrue(drops(h, slab, level.getBlockState(abs)).stream().allMatch(s -> s.is(EarthBlocks.DIRT_SLAB.asItem())), "a grass slab drops a dirt slab");
 
-            // snow on a top slab makes it snowy; under stone it dies back to a dirt slab
-            BlockPos top = new BlockPos(2, 1, 4);
-            h.setBlock(top, EarthBlocks.GRASS_SLAB.get().defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE));
-            h.setBlock(top.above(), Blocks.SNOW);
-            h.assertTrue(h.getBlockState(top).getValue(DirtSlabBlock.Grass.SNOWY), "snow on it makes the grass slab snowy");
-            h.setBlock(top.above(), Blocks.STONE);
-            BlockPos topAbs = h.absolutePos(top);
-            level.getBlockState(topAbs).randomTick(level, topAbs, level.getRandom());
-            h.assertTrue(level.getBlockState(topAbs).is(EarthBlocks.DIRT_SLAB) && level.getBlockState(topAbs).getValue(SlabBlock.TYPE) == SlabType.DOUBLE,
-                    "under stone the grass slab turns back to a (double) dirt slab: " + level.getBlockState(topAbs));
-            List<ItemStack> two = drops(h, top, level.getBlockState(topAbs));
-            h.assertTrue(two.size() == 1 && two.get(0).getCount() == 2, "a double dirt slab drops 2: " + two);
+                    // snow on a top slab makes it snowy; under stone it dies back to a dirt slab
+                    BlockPos top = new BlockPos(2, 1, 4);
+                    h.setBlock(top, EarthBlocks.GRASS_SLAB.get().defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE));
+                    h.setBlock(top.above(), Blocks.SNOW);
+                    h.assertTrue(h.getBlockState(top).getValue(DirtSlabBlock.Grass.SNOWY), "snow on it makes the grass slab snowy");
+                    h.setBlock(top.above(), Blocks.STONE);
+                    BlockPos topAbs = h.absolutePos(top);
+                    level.getBlockState(topAbs).randomTick(level, topAbs, level.getRandom());
+                    h.assertTrue(level.getBlockState(topAbs).is(EarthBlocks.DIRT_SLAB) && level.getBlockState(topAbs).getValue(SlabBlock.TYPE) == SlabType.DOUBLE,
+                            "under stone the grass slab turns back to a (double) dirt slab: " + level.getBlockState(topAbs));
+                    List<ItemStack> two = drops(h, top, level.getBlockState(topAbs));
+                    h.assertTrue(two.size() == 1 && two.get(0).getCount() == 2, "a double dirt slab drops 2: " + two);
 
-            // a shovel flattens the grass slab into a path slab, keeping its type
-            ItemStack shovel = new ItemStack(Items.STONE_SHOVEL);
-            p.setItemInHand(InteractionHand.MAIN_HAND, shovel);
-            shovel.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false)));
-            h.assertTrue(level.getBlockState(abs).is(EarthBlocks.DIRT_PATH_SLAB) && level.getBlockState(abs).getValue(SlabBlock.TYPE) == SlabType.BOTTOM,
-                    "the shovel makes a dirt path slab: " + level.getBlockState(abs));
-        });
+                    // a shovel flattens the grass slab into a path slab, keeping its type
+                    ItemStack shovel = new ItemStack(Items.STONE_SHOVEL);
+                    p.setItemInHand(InteractionHand.MAIN_HAND, shovel);
+                    shovel.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false)));
+                    h.assertTrue(level.getBlockState(abs).is(EarthBlocks.DIRT_PATH_SLAB) && level.getBlockState(abs).getValue(SlabBlock.TYPE) == SlabType.BOTTOM,
+                            "the shovel makes a dirt path slab: " + level.getBlockState(abs));
+                })
+                .thenSucceed();
     }
 
     private LivingWorldBlocksTest() {}

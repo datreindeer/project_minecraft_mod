@@ -28,10 +28,16 @@ public class SpecialArrowItem extends ArrowItem {
         return fire;
     }
 
+    /** The base damage an arrow item gives its arrow: vanilla's 2.0, or a special arrow's own (less for Poor Bronze). */
+    public static double baseDamage(ItemStack stack) {
+        if (!(stack.getItem() instanceof SpecialArrowItem arrow)) return 2.0;
+        return Bronze.isPoor(stack) ? arrow.damage - Bronze.POOR_ARROW_DAMAGE : arrow.damage;
+    }
+
     @Override
     public AbstractArrow createArrow(Level level, ItemStack stack, LivingEntity owner, ItemStack weapon) {
         AbstractArrow arrow = super.createArrow(level, stack, owner, weapon);
-        arrow.setBaseDamage(Bronze.isPoor(stack) ? damage - Bronze.POOR_ARROW_DAMAGE : damage);
+        arrow.setBaseDamage(baseDamage(stack));
         if (fire) arrow.igniteForSeconds(100);
         return arrow;
     }
