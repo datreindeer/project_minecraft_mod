@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/log_bridge",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:clay_ball"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.high_water.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.high_water.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

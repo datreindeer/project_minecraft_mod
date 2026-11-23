@@ -34,12 +34,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * inside the test's box): a fallen log left 10 days has rotted away into Moss Block and Podzol with a sapling beside it,
  * and a storm-felled tree comes to rest as a fallen log of log blocks. Phase 6: a burnt field grows back into a young
  * forest in 300 days, a forest edge creeps out into the meadow (not where cows graze), an old tree dies into a snag that
- * later falls as a Deadwood log.
+ * later falls as a Deadwood log. Phase 7: a rock high on a cliff tumbles down and lies at the foot with its talus, a spring
+ * flood rises a block over a creek and its flat banks and goes down leaving nothing of its water, a drift piles up in the
+ * lee of a boulder.
  */
 @EventBusSubscriber(modid = MODID)
 public final class NatureClockTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final List<String> TESTS = List.of("nature_rot", "storm_felling", "nature_regrowth", "forest_creep", "forest_creep_grazed", "old_tree_snag");
+    private static final List<String> TESTS = List.of("nature_rot", "storm_felling", "nature_regrowth", "forest_creep", "forest_creep_grazed", "old_tree_snag", "rockfall", "spring_flood", "snow_drift");
     /** A day in early summer of year 2 (calendar day numbers count from the start of year 1). */
     static final long SUMMER = 360 + 95;
 
@@ -50,6 +52,9 @@ public final class NatureClockTest {
         TEST_FUNCTIONS.register("forest_creep", () -> h -> creep(h, false));
         TEST_FUNCTIONS.register("forest_creep_grazed", () -> h -> creep(h, true));
         TEST_FUNCTIONS.register("old_tree_snag", () -> NatureClockTest::snag);
+        TEST_FUNCTIONS.register("rockfall", () -> NatureClockTest::rockfall);
+        TEST_FUNCTIONS.register("spring_flood", () -> NatureClockTest::flood);
+        TEST_FUNCTIONS.register("snow_drift", () -> NatureClockTest::drift);
     }
 
     static void init(IEventBus modEventBus) {
@@ -204,6 +209,78 @@ public final class NatureClockTest {
         h.assertTrue(ForestCreep.topple(day, h.absolutePos(new BlockPos(8, top, 8)), net.minecraft.util.RandomSource.create(4)), "the snag falls");
         h.assertTrue(!h.getBlockState(new BlockPos(8, 6, 8)).is(com.mechanical.Deadwood.DEADWOOD.get()), "the snag is down");
         h.assertTrue(count(h, 4, s -> s.is(com.mechanical.Deadwood.DEADWOOD.get())) >= 2, "it lies as a Deadwood log");
+        h.succeed();
+    }
+
+    /** A day for each chunk the test's box touches. */
+    private static List<NatureClock.Day> days(GameTestHelper h, long day) {
+        BoundingBox b = box(h);
+        List<NatureClock.Day> out = new java.util.ArrayList<>();
+        for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++)
+            for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) out.add(new NatureClock.Day(h.getLevel(), h.getLevel().getChunk(cx, cz), day, b, true, null));
+        return out;
+    }
+
+    private static NatureClock.Day day(GameTestHelper h, long day) {
+        return new NatureClock.Day(h.getLevel(), h.getLevel().getChunkAt(h.absolutePos(new BlockPos(8, 0, 8))), day, box(h), true, null);
+    }
+
+    private static void rockfall(GameTestHelper h) {
+        ground(h, 3);
+        for (int x = 0; x <= 3; x++) for (int z = 0; z <= 16; z++) for (int y = 4; y <= 16; y++) h.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+        var d = day(h, SUMMER);
+        BlockPos rock = h.absolutePos(new BlockPos(3, 16, 8));
+        h.assertTrue(Rockfall.loose(d, rock), "the cliff's edge rock is loose");
+        h.assertTrue(Rockfall.fall(d, rock, net.minecraft.util.RandomSource.create(2)), "it falls");
+        h.assertTrue(h.getBlockState(new BlockPos(3, 16, 8)).isAir(), "gone from the cliff top");
+        int talus = 0;
+        for (int x = 4; x <= 10; x++)
+            for (int z = 5; z <= 11; z++) {
+                BlockState s = h.getBlockState(new BlockPos(x, 4, z)), g = h.getBlockState(new BlockPos(x, 3, z));
+                if (s.is(Blocks.STONE) || s.is(Blocks.COBBLESTONE) || s.getBlock() instanceof com.mechanical.RockBlock || g.is(Blocks.GRAVEL)) talus++;
+            }
+        h.assertTrue(talus >= 2, "the rock and its talus lie at the foot (" + talus + ")");
+        h.succeed();
+    }
+
+    private static void flood(GameTestHelper h) {
+        ground(h, 3);
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++) {
+                if (x >= 7 && x <= 9) h.setBlock(new BlockPos(x, 3, z), Blocks.WATER); // the creek, level with its banks
+                if (x <= 1 || x >= 15) h.setBlock(new BlockPos(x, 4, z), Blocks.GRASS_BLOCK); // higher ground holds the flood in
+            }
+        var ds = days(h, SUMMER);
+        h.assertTrue(ds.stream().mapToInt(SpringFlood::flood).sum() > 30, "the creek floods");
+        h.assertTrue(h.getBlockState(new BlockPos(8, 4, 8)).is(Blocks.WATER), "the creek rose a block");
+        h.assertTrue(h.getBlockState(new BlockPos(4, 4, 8)).is(Blocks.WATER) && h.getBlockState(new BlockPos(12, 4, 8)).is(Blocks.WATER), "the flat banks are under water");
+        h.assertTrue(!h.getBlockState(new BlockPos(0, 5, 8)).is(Blocks.WATER), "not up on the higher ground");
+        h.runAfterDelay(40, () -> {
+            ds.forEach(d -> SpringFlood.recede(d, net.minecraft.util.RandomSource.create(1)));
+            h.runAfterDelay(90, () -> { // water that spilled past the test's edge drains back first
+                int left = 0;
+                for (int x = 2; x <= 14; x++) for (int z = 0; z <= 16; z++) if (!h.getBlockState(new BlockPos(x, 4, z)).getFluidState().isEmpty()) left++;
+                h.assertTrue(left == 0, "every block of flood water is gone (" + left + " left)");
+                h.assertTrue(h.getBlockState(new BlockPos(8, 3, 8)).is(Blocks.WATER), "the creek itself is still there");
+                h.assertTrue(ds.stream().allMatch(d -> NatureClock.data(d.chunk).flood.isEmpty()), "nothing left on the list");
+                h.succeed();
+            });
+        });
+    }
+
+    private static void drift(GameTestHelper h) {
+        ground(h, 3);
+        h.setBlock(new BlockPos(5, 4, 8), Blocks.MOSSY_COBBLESTONE);
+        h.setBlock(new BlockPos(5, 5, 8), Blocks.STONE);
+        var ds = days(h, SUMMER);
+        for (int i = 0; i < 6; i++) ds.forEach(d -> SnowDrift.drift(d, Direction.EAST));
+        int[] layers = new int[6];
+        for (int k = 1; k <= 5; k++) {
+            BlockState s = h.getBlockState(new BlockPos(5 + k, 4, 8));
+            layers[k] = s.is(Blocks.SNOW) ? s.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) : 0;
+        }
+        h.assertTrue(layers[1] >= 3 && layers[1] >= layers[3] && layers[3] >= layers[5], "a drift deepest at the boulder, thinning downwind: " + java.util.Arrays.toString(layers));
+        h.assertTrue(!h.getBlockState(new BlockPos(4, 4, 8)).is(Blocks.SNOW), "nothing on the windward side");
         h.succeed();
     }
 }

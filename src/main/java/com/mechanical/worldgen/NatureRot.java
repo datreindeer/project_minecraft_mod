@@ -39,7 +39,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
  */
 final class NatureRot {
     /** Chance a log takes its next step on a given day. */
-    static final float STEP = 0.85F;
+    static final float STEP = 0.95F;
     /** Chance a day brings a new fallen log to a chunk of a forest with fallen logs, and of old growth. */
     static final float WINDFALL = 1 / 12F, WINDFALL_OLD = 1 / 5F;
     private static final int MAX_RUN = 16;
@@ -118,25 +118,26 @@ final class NatureRot {
             else if (up.is(Blocks.MOSS_CARPET)) moss++;
         }
         if (open > 0 && moss < 0.6F * (open + moss)) {
-            for (BlockPos p : run)
-                if (level.getBlockState(p.above()).isAir() && d.can(p.above()) && r.nextFloat() < 0.75F)
-                    d.set(p.above(), (r.nextInt(9) == 0 ? Blocks.BROWN_MUSHROOM : Blocks.MOSS_CARPET).defaultBlockState());
+            List<BlockPos> tops = new ArrayList<>(run.stream().filter(p -> level.getBlockState(p.above()).isAir() && d.can(p.above())).toList());
+            for (int n = Math.max(1, Math.round(0.75F * (open + moss)) - moss); n > 0 && !tops.isEmpty(); n--) // most of it in one go
+                d.set(tops.remove(r.nextInt(tops.size())).above(), (r.nextInt(9) == 0 ? Blocks.BROWN_MUSHROOM : Blocks.MOSS_CARPET).defaultBlockState());
             return;
         }
         // 2. ferns, moss and mushrooms along the sides
         List<BlockPos> beside = beside(level, run, axis);
         long plants = beside.stream().filter(b -> plant(level.getBlockState(b))).count();
-        List<BlockPos> bare = beside.stream().filter(b -> level.getBlockState(b).isAir() && d.can(b)).toList();
+        List<BlockPos> bare = new ArrayList<>(beside.stream().filter(b -> level.getBlockState(b).isAir() && d.can(b)).toList());
         if (plants < Math.max(2, run.size() / 2) && !bare.isEmpty()) {
-            for (int i = 0; i < 2 + r.nextInt(2); i++) {
-                BlockPos b = bare.get(r.nextInt(bare.size()));
+            for (int i = 0; i < Math.max(2, run.size() / 2) - plants + r.nextInt(2) && !bare.isEmpty(); i++) {
+                BlockPos b = bare.remove(r.nextInt(bare.size()));
                 BlockState s = switch (r.nextInt(7)) {
                     case 0, 1, 2 -> Blocks.FERN.defaultBlockState();
                     case 3, 4 -> Blocks.MOSS_CARPET.defaultBlockState();
                     case 5 -> Blocks.BROWN_MUSHROOM.defaultBlockState();
                     default -> Foraging.MUSHROOM_BLOCKS.get(r.nextBoolean() ? "porcini" : "chanterelle").get().defaultBlockState();
                 };
-                if (level.getBlockState(b).isAir() && (s.is(Blocks.MOSS_CARPET) || s.canSurvive(level, b))) d.set(b, s);
+                if (!s.is(Blocks.MOSS_CARPET) && !s.canSurvive(level, b)) s = Blocks.MOSS_CARPET.defaultBlockState(); // too bright for mushrooms
+                if (level.getBlockState(b).isAir()) d.set(b, s);
             }
             return;
         }
@@ -162,7 +163,7 @@ final class NatureRot {
         }
         if (stripped) return;
         // 5. it sinks into the ground from both ends, half on a day
-        int n = Math.max(1, (run.size() + 1) / 2);
+        int n = run.size() <= 3 ? run.size() : (run.size() + 1) / 2;
         for (int i = 0; i < n && !run.isEmpty(); i++) sink(d, i % 2 == 0 ? run.removeFirst() : run.removeLast());
     }
 

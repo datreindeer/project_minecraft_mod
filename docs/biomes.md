@@ -285,7 +285,7 @@ titta från). `DecorShots` kan nu också köra kommandon (`@ x y z place feature
 
 **Naturens klocka** (`worldgen/NatureClock`): varje chunk i överjorden sparar kalenderdagen den senast levde. När den
 laddas, och varje ny dag medan den är laddad, lever den ikapp dag för dag (högst ett år bakåt), med högst 48 ändrade block
-och 8 dagar per svep, och varje chunk högst ett svep i sekunden, 2 chunks per tick. Varje dags tärningar sås med världens
+och 8 dagar per svep, och varje chunk högst ett svep i sekunden, högst 2 chunks och 2 ms per tick. Inte på gametest-servern (testerna kör dagar för hand). Varje dags tärningar sås med världens
 seed, chunken och dagen, så det blir samma resultat när man än kommer tillbaka.
 
 Regler:
@@ -295,11 +295,11 @@ Regler:
 - Inget nära ett läger, en Fire Pit eller en väg (samma kontroll som `SmoothGround`), inget i chunks med en ytstruktur.
 - Inget sker i en chunk som någon spelare kan se (en synkon på 128° ut till 192 block, eller man står i den). Chunken
   väntar tills man tittar bort. Bara stormfällning får synas.
-- `/nature status | pause | run <dagar> [radie] [process] | demo log | fell` (op): läget i chunken, stoppa klockan, köra
+- `/nature status | pause | run <dagar> [radie] [process] | demo log | fell | burn | strike | do flood|recede|drift|rockfall <radie> | height` (op): läget i chunken, stoppa klockan, köra
   dagar för hand runt sig (regler av, bara inom radien), lägga en färsk stock, fälla ett träd framför sig.
 
 **Stockar som ruttnar** (`worldgen/NatureRot`, fas 5): en fallen stock (se ovan, "Hitta fallna stockar"; också Deadwood
-och Charred Log) tar ett steg de flesta dagar (85 %): färsk → Moss Carpet på toppen → ormbunkar, mossa och svamp längs
+och Charred Log) tar ett steg de flesta dagar (95 %): färsk → Moss Carpet på toppen → ormbunkar, mossa och svamp längs
 sidorna → en planta av samma träd gror bredvid → barken faller av → den sjunker ner i två steg från ändarna och blir Moss
 Block och Podzol. Ungefär en vecka (speldagar, en speldag är en timme). Nya stockar: i biomer med fallna stockar kommer en
 ny i en chunk var 12:e dag (var 5:e i gammelskog), ForestDecors egen stock, så skogen behåller sina lågor.
@@ -331,15 +331,41 @@ från en stam och inte under en krona (en ruta per chunk och dag med chansen 1/6
 som ForestDecors snag av sitt eget trä. En snag faller med tiden (1/90 per dag): barkfoten blir stubbe och resten ligger som
 en fallen stock av Deadwood, som ruttnar som andra stockar.
 
+**Ras** (`worldgen/Rockfall`, fas 7): i tövädret (månaderna Snowmelt och Thaw, chansen 1/6 per bergschunk och dag) och
+regniga vår- och höstdagar (1/20) lossnar ett block berg högt i en brant (30+ över havet, ett fall på 4+ inom två block). Det
+rullar alltid till den lägsta grannen tills sluttningen planar ut, studsar vidare några block över den plana marken
+nedanför (längre ju högre det föll) och blir liggande som sitt eget berg eller Cobblestone, med Gravel och lösa stenar
+runt foten. Så växer talus under klipporna med åren. Den som är nära samma dag hör raset.
+
+**Vårflod** (`worldgen/SpringFlood`, fas 7): sent i Snowmelt (dag 335–346, ny start varje år) stiger åar och bäckar ett
+block i 3–5 dagar: en vattenkälla läggs ovanpå varje yta av flodvatten och på de plana bankarna (marken i höjd med vattnet)
+upp till 5 block ut, i chunkens huvudnivå. Varje vattenblock sparas i chunken och tas bort exakt när floden sjunker, och
+rinnande vatten på flodnivån får inte bli nya källor medan floden står. Efteråt ligger Clay och Gravel här och var på
+bankarna (12 %) och ibland en drivvedsstock (35 % per chunk). Inte i hav, på stränder eller i träsk. Advancement *High
+Water* för att vada i floden.
+
+**Snödrivor** (`worldgen/SnowDrift`, fas 7): en blåsig snödag på vintern (var tredje vinterdag, vinden mest från väster) där
+det är kallt nog att snöa lägger sig snön i lä bakom allt som sticker upp: stenblock, stammar, stubbar och liggande stockar.
+Drivan är djupast vid foten (två lager per block hindret står upp, högst 6), tunnar ut över fem block i vindens riktning
+och breder ut sig lite lägre åt sidorna, ett lager till per blåsig dag. Vårens töväder (`Thaw`) smälter drivorna som all annan snö; de djupa ligger längst.
+
+**Prestanda** (dedikerad testserver, inga spelare, 256 forceladdade chunks plus kanten, 400 i klockan; `/tick query`):
+när 400 chunks låg 120–190 dagar efter och levde ikapp samtidigt, mätt växelvis med klockan pausad och igång (12 s
+var): P50 6,7–10,4 ms pausad mot 9,4–11,0 ms igång, alltså 0,6–2,8 ms mer per tick. Klockans egen tid var 1,2 ms per svep
+(8 dagar i en chunk), och den slutar svepa för tiken när den har använt 2 ms. Ikapp-levandet tog några minuter för alla 400.
+När chunkarna är i fas kostar klockan nästan inget: ett svep per laddad chunk och speldag (en timme). Stormfällning,
+torr blixt och brandvakten körs en gång i sekunden och är billiga utom själva elden (vanillas).
+
 **Höjdkartor:** i 26.x räknar höjdkartorna bara block i taggen `#minecraft:blocks_motion_in_heightmap`. Burnt Soil, Wood
 Ash, Charred Log, Deadwood, Broken Deadwood och Grub Log läggs till (`scripts/gen_nature_clock.py`), annars läser klockan
 (och regn, snö och spawning) marken under dem.
 
 **Gametests** (`worldgen/NatureClockTest`): `nature_rot` (en stock som lämnas 10 dagar har ruttnat bort i Moss Block och
 Podzol, med en ekplanta bredvid), `storm_felling`, `nature_regrowth` (ett brandfält är ung skog efter 300 dagar),
-`forest_creep`, `forest_creep_grazed` (inga plantor där kor betar), `old_tree_snag`.
+`forest_creep`, `forest_creep_grazed` (inga plantor där kor betar), `old_tree_snag`, `rockfall`, `spring_flood` (vattnet
+stiger över bäck och bank och allt är borta efteråt), `snow_drift`.
 
-Bilder: `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`, `nature_fire*.png` (brandfältet dag 0, 30, 70, 120, 200, 320).
+Bilder: `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`, `nature_fire*.png` (brandfältet dag 0, 30, 70, 120, 200, 320), `nature_flood*.png`, `nature_drift*.png`, `nature_talus*.png`.
 
 ## Övergångar mellan kallt och varmt
 

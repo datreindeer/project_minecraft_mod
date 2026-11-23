@@ -59,6 +59,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 public final class NatureClock {
     /** Block changes per chunk sweep; days per sweep; sweeps per tick; ticks between two sweeps of one chunk. */
     static final int CAP = 48, DAYS_PER_SWEEP = 8, PER_TICK = 2, SWEEP_GAP = 20;
+    /** Time the clock may take in one tick (2 ms): it stops sweeping for this tick once over it. */
+    static final long BUDGET_NANOS = 2_000_000;
     /** A chunk behind by more than this many days catches up only this far (a year). */
     static final int MAX_BEHIND = Calendar.YEAR_DAYS;
     /** Spots of player-placed blocks a chunk keeps; past it the chunk counts as built. */
@@ -115,7 +117,7 @@ public final class NatureClock {
 
     private static final LinkedHashSet<Long> QUEUE = new LinkedHashSet<>();
     private static final Set<Long> LOADED = new HashSet<>();
-    private static final Map<Long, Long> LAST_SWEEP = new HashMap<>();
+    private static final Set<Long> LATER = new HashSet<>();
     private static long lastDay = Long.MIN_VALUE, nextRunDay;
     /** /nature pause: the clock stands still (to measure what it costs). */
     static boolean paused;
@@ -205,6 +207,9 @@ public final class NatureClock {
         NatureRot.day(d);
         Wildfire.day(d);
         ForestCreep.day(d);
+        Rockfall.day(d);
+        SpringFlood.day(d);
+        SnowDrift.day(d);
     }
 
     // ---------------------------------------------------------------- events
@@ -232,7 +237,7 @@ public final class NatureClock {
         ChunkPos pos = event.getChunk().getPos();
         long key = ChunkPos.pack(pos.x(), pos.z());
         LOADED.remove(key);
-        LAST_SWEEP.remove(key);
+        LATER.remove(key);
     }
 
     /** A player set a block: nature never touches that spot. Too many in one chunk and the whole chunk is theirs. */
@@ -261,29 +266,26 @@ public final class NatureClock {
             lastDay = today;
             QUEUE.addAll(LOADED);
         }
-        if (level.getGameTime() % 100 == 0) Wildfire.checkRegrown(level);
-        if (paused || QUEUE.isEmpty()) return;
-        long now = level.getGameTime(), start = System.nanoTime();
-        int done = 0, looked = 0;
-        List<Long> again = new ArrayList<>();
-        for (Iterator<Long> it = QUEUE.iterator(); it.hasNext() && done < PER_TICK && looked++ < 64; ) {
+        if (level.getGameTime() % 100 == 0) {
+            Wildfire.checkRegrown(level);
+            SpringFlood.checkWading(level);
+        }
+        if (level.getGameTime() % SWEEP_GAP == 0) { // chunks that wait (behind, seen, neighbours missing) try again each second
+            QUEUE.addAll(LATER);
+            LATER.clear();
+        }
+        if (paused || QUEUE.isEmpty() || level.getServer() instanceof net.minecraft.gametest.framework.GameTestServer) return; // tests run days by hand
+        long start = System.nanoTime();
+        int done = 0;
+        for (Iterator<Long> it = QUEUE.iterator(); it.hasNext() && done < PER_TICK && System.nanoTime() - start < BUDGET_NANOS; ) {
             long key = it.next();
             it.remove();
-            Long last = LAST_SWEEP.get(key);
-            if (last != null && now - last < SWEEP_GAP) {
-                again.add(key);
-                continue;
-            }
             LevelChunk chunk = level.getChunkSource().getChunkNow(ChunkPos.getX(key), ChunkPos.getZ(key));
             if (chunk == null) continue;
             Sweep result = sweep(level, chunk, today);
             if (result == Sweep.DONE || result == Sweep.MORE) done++;
-            if (result == Sweep.MORE || result == Sweep.WAIT) { // behind, seen, or neighbours not loaded: again in a second
-                LAST_SWEEP.put(key, now);
-                again.add(key);
-            }
+            if (result == Sweep.MORE || result == Sweep.WAIT) LATER.add(key); // so at most one sweep per chunk a second
         }
-        QUEUE.addAll(again);
         nanos += System.nanoTime() - start;
     }
 
@@ -431,6 +433,12 @@ public final class NatureClock {
                     say(ctx.getSource(), ok ? "Dry lightning strikes" : "Nothing to strike");
                     return ok ? 1 : 0;
                 }))
+                .then(Commands.literal("do").then(Commands.argument("what", StringArgumentType.word())
+                        .then(Commands.argument("radius", IntegerArgumentType.integer(1, 64)).executes(ctx -> {
+                            int n = force(ctx.getSource(), StringArgumentType.getString(ctx, "what"), IntegerArgumentType.getInteger(ctx, "radius"));
+                            say(ctx.getSource(), StringArgumentType.getString(ctx, "what") + ": " + n + " blocks changed");
+                            return 1;
+                        }))))
                 .then(Commands.literal("fell").executes(ctx -> {
                     boolean ok = StormFelling.fellInFront(ctx.getSource().getLevel(), ctx.getSource().getPosition(), ctx.getSource().getRotation().y);
                     say(ctx.getSource(), ok ? "A tree falls" : "No tall tree nearby");
@@ -448,6 +456,35 @@ public final class NatureClock {
         int changed = simulate(level, box, first, days, process == null ? null : Set.of(process.split(",")));
         say(source, days + " days of nature: " + changed + " blocks changed");
         return 1;
+    }
+
+    /** /nature do flood|recede|drift|rockfall: that event now in every chunk round the source, out of season, rules off (shots). */
+    private static int force(CommandSourceStack source, String what, int radius) {
+        ServerLevel level = source.getLevel();
+        BlockPos c = BlockPos.containing(source.getPosition());
+        BoundingBox box = new BoundingBox(c.getX() - radius, level.getMinY(), c.getZ() - radius, c.getX() + radius, level.getMaxY(), c.getZ() + radius);
+        int changed = 0;
+        RandomSource r = level.getRandom();
+        for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++)
+            for (int cz = box.minZ() >> 4; cz <= box.maxZ() >> 4; cz++) {
+                LevelChunk chunk = level.getChunkSource().getChunkNow(cx, cz);
+                if (chunk == null) continue;
+                Day d = new Day(level, chunk, today(level), box, true, null);
+                switch (what) {
+                    case "flood" -> { if (data(chunk).flood.isEmpty()) SpringFlood.flood(d); }
+                    case "recede" -> { if (!data(chunk).flood.isEmpty()) SpringFlood.recede(d, r); }
+                    case "drift" -> SnowDrift.drift(d, net.minecraft.core.Direction.EAST);
+                    case "rockfall" -> {
+                        for (int i = 0; i < 64; i++) {
+                            BlockPos top = d.top(chunk.getPos().getMinBlockX() + r.nextInt(16), chunk.getPos().getMinBlockZ() + r.nextInt(16));
+                            if (box.isInside(top) && Rockfall.loose(d, top) && Rockfall.fall(d, top, r)) break;
+                        }
+                    }
+                    default -> {}
+                }
+                changed += d.changes;
+            }
+        return changed;
     }
 
     /** /nature demo log: a fresh log of the nearest tree's wood on the ground 6 blocks in front, lying across the view (shots). */
@@ -482,7 +519,7 @@ public final class NatureClock {
         Data d = data(chunk);
         String s = "chunk " + chunk.getPos() + ": day " + d.day + " (today " + today(level) + "), built " + d.built + ", " + d.placed.size()
                 + " player blocks, free " + free(level, chunk.getPos()) + ", burn " + d.burnDay + (d.regrown ? " (regrown)" : "") + ", flood " + d.flood.size()
-                + "; total " + sweeps + " sweeps, " + days + " days, " + changes + " changes, " + nanos / 1_000_000 + " ms, queue " + QUEUE.size();
+                + "; total " + sweeps + " sweeps, " + days + " days, " + changes + " changes, " + nanos / 1_000_000 + " ms, queue " + QUEUE.size() + ", waiting " + LATER.size();
         source.sendSuccess(() -> Component.literal(s), false);
         return 1;
     }

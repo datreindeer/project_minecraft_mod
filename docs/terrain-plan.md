@@ -236,6 +236,13 @@ Log och Burnt Soil, sällsynta bränder där ingen är, återväxt via Coarse Di
 till två årstider, advancement *From the Ashes*), skogen som vandrar ut på ängen men inte där djur betar, gamla träd som
 dör till snags och snags som faller (`ForestCreep`). Bilder: `docs/shots/terrain/nature_fire*.png`.
 
+**Byggt (fas 7, v0.189.0):** ras i tövädret och regn (`Rockfall`: ett block högt i en brant rullar ned och blir talus vid foten),
+vårflod vid snösmältningen (`SpringFlood`: åar och bäckar stiger ett block över plana bankar i 3–5 dagar, vattnet sparas och
+tas bort exakt, Clay, Gravel och drivved blir kvar, advancement *High Water*) och snödrivor i lä bakom stenar och träd
+(`SnowDrift`, smälter med `Thaw`). Prestanda mätt med `/tick query`: 0,6–2,8 ms mer per tick när 400 chunks lever ikapp
+samtidigt, tak 2 ms klocktid per tick; se `docs/biomes.md`. Bilder: `docs/shots/terrain/nature_flood*.png`,
+`nature_drift*.png`, `nature_talus*.png`.
+
 **Prestanda:** samma budget som living-world A9. Det mäts med `/tick query` och MSPT innan något släpps, och det finns ett
 tak för antalet ändringar per chunk och sekund.
 
