@@ -127,9 +127,7 @@ public final class RetrogenTest {
         BlockState slab = h.getBlockState(new BlockPos(8, 2, 4)), stair = h.getBlockState(new BlockPos(8, 2, 10));
         h.assertTrue(slab.is(com.mechanical.EarthBlocks.GRASS_SLAB) && slab.getValue(net.minecraft.world.level.block.SlabBlock.TYPE)
                 == net.minecraft.world.level.block.state.properties.SlabType.BOTTOM, "grass slab below the grass step, got " + slab);
-        BlockPos under = h.absolutePos(new BlockPos(8, 1, 4));
-        for (int i = 0; i < 20; i++) h.getLevel().getBlockState(under).randomTick(h.getLevel(), under, h.getLevel().getRandom());
-        h.assertTrue(h.getBlockState(new BlockPos(8, 1, 4)).is(Blocks.GRASS_BLOCK), "the grass under the slab stays grass");
+        h.assertTrue(h.getBlockState(new BlockPos(8, 1, 4)).is(Blocks.DIRT), "the grass under the slab turns to dirt (one fringe per step)");
         h.assertTrue(stair.is(Blocks.STONE_STAIRS) && stair.getValue(net.minecraft.world.level.block.StairBlock.FACING) == net.minecraft.core.Direction.EAST
                 && stair.getValue(net.minecraft.world.level.block.StairBlock.SHAPE) == net.minecraft.world.level.block.state.properties.StairsShape.STRAIGHT,
                 "stone stairs facing the stone step, got " + stair);

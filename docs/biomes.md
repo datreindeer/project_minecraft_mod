@@ -191,8 +191,8 @@ Varje naturligt steg på exakt 1 block får ett halvsteg (`worldgen/SmoothGround
 - **Slab:** den lägre rutan får en nedre slab av den högre grannens mark: Grass Slab, Dirt Slab, Coarse Dirt Slab, Podzol
   Slab, Sand Slab, Red Sand Slab, Gravel Slab, Moss Slab, Mud Slab, Peat Slab, Loess Slab, Wood Ash Slab, och för sten
   stenfamiljens slab (Stone Slab, Granite Slab, Chalk Slab, Cobbled Slate Slab och så vidare). Gäller även hörn där bara
-  den diagonala grannen är högre. Gräset under en nedre slab eller trappa förblir gräs (`mixin/SpreadingSnowyBlockMixin`),
-  så sluttningens sidor behåller gräskanten.
+  den diagonala grannen är högre. Gräs och podzol under en slab blir Dirt, så varje
+  halvsteg visar en gräskant (slabens), inte två.
 - **Trappor:** där den högre marken är berg och kanten är rak (rutorna på båda sidor längs kanten ligger på samma höjd)
   blir det en trappa av bergarten mot steget, med inre och yttre hörnformer där två kanter möts. Formen räknas fram ur
   höjderna, så den stämmer över chunkgränser.

@@ -107,7 +107,7 @@ mark. Spelservern får alltså mjuk mark även där terrängen är gammal.
 på orörda gamla chunks, inte nära läger, Fire Pits eller vägar). Nya block: Grass Stairs, Dirt Stairs, Coarse Dirt
 Slab/Stairs, Podzol Slab, Sand och Red Sand Slab/Stairs (faller inte), Gravel, Moss, Mud, Peat, Loess och Wood Ash Slab
 (`gen_dirt_slab.py`). Grass Slab hade redan sitt snöiga läge, och Grass Stairs fick samma. Nedre slabs visar nu gräs- och
-snökanten överst, och gräs under en nedre slab eller trappa dör inte längre (`SpreadingSnowyBlockMixin`). Snöskikt bara där snön ligger året runt, annars snöig slab. Mätning och bilder i `docs/biomes.md`.
+snökanten överst, och marken under en gräsig slab blir Dirt (annars syns gräskanten dubbelt). Snöskikt bara där snön ligger året runt, annars snöig slab. Mätning och bilder i `docs/biomes.md`.
 
 ## 3. Små saker i landskapet
 

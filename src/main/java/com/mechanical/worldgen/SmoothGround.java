@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SnowyBlock;
+import net.minecraft.world.level.block.SpreadingSnowyBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -49,8 +50,8 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
  * last in top_layer_modification (after trails and the snow) and on old chunks through {@link Retrogen}.
  * <ul>
  * <li>A column exactly 1 lower than a neighbour (4 sides, or only a corner) gets, on top, a bottom slab of the higher
- * neighbour's ground (Grass Slab, Sand Slab, Stone Slab ... see {@link #variant}). Steps of 2 or more stay cliffs. The grass under a slab
- * stays grass (mixin.SpreadingSnowyBlockMixin), so the slope's faces keep their fringe.</li>
+ * neighbour's ground (Grass Slab, Sand Slab, Stone Slab ... see {@link #variant}). Steps of 2 or more stay cliffs. The grass (or podzol) under a slab
+ * becomes dirt, so each half step shows one grass fringe (the slab's), not two.</li>
  * <li>Where the higher ground is rock and the edge runs straight (the columns on both sides along the edge are at the same
  * height), a stair of that rock faces the step instead, with inner and outer corner shapes where two edges meet. The shape
  * comes from the heights alone, so it matches across chunk borders.</li>
@@ -116,8 +117,9 @@ final class SmoothGround extends StoneAgeFeature {
                 if (state.is(Blocks.SNOW) && !state.canSurvive(level, at)) continue;
                 if (!movePlant(level, at)) continue;
                 BlockState ground = col.ground;
-                // grass under the slab stays (mixin.SpreadingSnowyBlockMixin): its side shows above the step below
+                // under snow layers the grass stays (snowy); under a slab it turns to dirt, else its fringe shows twice above the step below
                 if (ground.hasProperty(SnowyBlock.SNOWY) && state.is(Blocks.SNOW)) set(level, at.below(), ground.setValue(SnowyBlock.SNOWY, true));
+                else if (ground.getBlock() instanceof SpreadingSnowyBlock || ground.is(Blocks.PODZOL)) set(level, at.below(), Blocks.DIRT.defaultBlockState());
                 if (col.snow && state.hasProperty(SnowyBlock.SNOWY)) state = state.setValue(SnowyBlock.SNOWY, true);
                 set(level, at, state);
                 laid++;
