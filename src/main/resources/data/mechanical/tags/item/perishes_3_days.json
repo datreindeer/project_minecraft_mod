@@ -39,6 +39,8 @@
     "mechanical:cooked_ermine",
     "mechanical:cooked_lemming",
     "mechanical:cooked_marten",
+    "mechanical:cooked_cave_fish",
+    "mechanical:roasted_spider_leg",
     "mechanical:cooked_scorpion",
     "mechanical:cooked_fennec",
     "mechanical:cooked_camel_meat",
@@ -102,8 +104,6 @@
     "mechanical:cooked_mallard",
     "mechanical:cooked_swan",
     "mechanical:cooked_heron",
-    "mechanical:cooked_crane",
-    "mechanical:cooked_cave_fish",
-    "mechanical:roasted_spider_leg"
+    "mechanical:cooked_crane"
   ]
 }

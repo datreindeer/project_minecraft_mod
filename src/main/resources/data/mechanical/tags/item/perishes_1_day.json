@@ -53,6 +53,9 @@
     "mechanical:raw_ermine",
     "mechanical:raw_lemming",
     "mechanical:raw_marten",
+    "mechanical:blind_cave_fish",
+    "mechanical:spider_leg",
+    "mechanical:cave_salamander",
     "mechanical:raw_scorpion",
     "mechanical:raw_fennec",
     "mechanical:camel_meat",
@@ -129,9 +132,6 @@
     "mechanical:plucked_swan",
     "mechanical:plucked_heron",
     "mechanical:plucked_crane",
-    "mechanical:raw_meat_strips",
-    "mechanical:blind_cave_fish",
-    "mechanical:spider_leg",
-    "mechanical:cave_salamander"
+    "mechanical:raw_meat_strips"
   ]
 }

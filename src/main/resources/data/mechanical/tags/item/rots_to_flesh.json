@@ -91,6 +91,11 @@
     "mechanical:cooked_ermine",
     "mechanical:cooked_lemming",
     "mechanical:cooked_marten",
+    "mechanical:blind_cave_fish",
+    "mechanical:spider_leg",
+    "mechanical:cave_salamander",
+    "mechanical:cooked_cave_fish",
+    "mechanical:roasted_spider_leg",
     "mechanical:raw_scorpion",
     "mechanical:raw_fennec",
     "mechanical:camel_meat",
@@ -241,11 +246,6 @@
     "mechanical:smoked_loin",
     "mechanical:dried_pork",
     "mechanical:dried_seal_meat",
-    "mechanical:raw_meat_strips",
-    "mechanical:blind_cave_fish",
-    "mechanical:spider_leg",
-    "mechanical:cave_salamander",
-    "mechanical:cooked_cave_fish",
-    "mechanical:roasted_spider_leg"
+    "mechanical:raw_meat_strips"
   ]
 }

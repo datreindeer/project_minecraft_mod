@@ -31,6 +31,7 @@
     "mechanical:raw_ermine",
     "mechanical:raw_lemming",
     "mechanical:raw_marten",
+    "mechanical:spider_leg",
     "mechanical:raw_scorpion",
     "mechanical:raw_fennec",
     "mechanical:camel_meat",
@@ -90,7 +91,6 @@
     "mechanical:raw_swan",
     "mechanical:raw_heron",
     "mechanical:raw_crane",
-    "mechanical:raw_meat_strips",
-    "mechanical:spider_leg"
+    "mechanical:raw_meat_strips"
   ]
 }

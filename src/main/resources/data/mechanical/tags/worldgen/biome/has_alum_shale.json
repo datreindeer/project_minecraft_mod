@@ -6,7 +6,7 @@
     "minecraft:grove",
     "minecraft:snowy_slopes",
     "minecraft:frozen_river",
-    "mechanical:galena_seams",
-    "mechanical:mammoth_steppe"
+    "mechanical:mammoth_steppe",
+    "mechanical:galena_seams"
   ]
 }
