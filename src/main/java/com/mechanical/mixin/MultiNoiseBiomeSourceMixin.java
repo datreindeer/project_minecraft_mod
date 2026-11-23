@@ -17,8 +17,9 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
 /**
- * Scorched Barrens only beyond {@link ScorchedBarrens#MIN_DISTANCE} from 0,0: closer in, every resolver (chunk biomes,
- * structures, /locate) gives its source biome ({@link ModBiomes#SCORCHED_BARRENS_SOURCE}) instead, so the map stays seamless.
+ * Scorched Barrens only beyond {@link ScorchedBarrens#MIN_DISTANCE} from 0,0, and only where living forest surrounds it
+ * ({@link ScorchedBarrens#stays}): elsewhere every resolver (chunk biomes, structures, /locate) gives its source biome
+ * ({@link ModBiomes#SCORCHED_BARRENS_SOURCE}) instead, so the map stays seamless ({@link ScorchedBarrens#resolver}).
  */
 @Mixin(MultiNoiseBiomeSource.class)
 public abstract class MultiNoiseBiomeSourceMixin {
@@ -27,17 +28,17 @@ public abstract class MultiNoiseBiomeSourceMixin {
 
     @Inject(method = "createResolver", at = @At("RETURN"), cancellable = true)
     private void mechanical$resolver(Climate.Sampler sampler, CallbackInfoReturnable<BiomeResolver> cir) {
-        cir.setReturnValue(mechanical$near(cir.getReturnValue()));
+        cir.setReturnValue(mechanical$near(cir.getReturnValue(), sampler, 0, 0, 0, 0));
     }
 
     @Inject(method = "createResolverForChunk", at = @At("RETURN"), cancellable = true)
     private void mechanical$chunkResolver(Climate.Sampler sampler, int minQuartX, int minQuartY, int minQuartZ, int quartSizeX, int quartSizeY,
             int quartSizeZ, CallbackInfoReturnable<BiomeResolver> cir) {
-        cir.setReturnValue(mechanical$near(cir.getReturnValue()));
+        cir.setReturnValue(mechanical$near(cir.getReturnValue(), sampler, minQuartX, minQuartZ, quartSizeX, quartSizeZ));
     }
 
     @Unique
-    private BiomeResolver mechanical$near(BiomeResolver resolver) {
+    private BiomeResolver mechanical$near(BiomeResolver resolver, Climate.Sampler sampler, int minX, int minZ, int sizeX, int sizeZ) {
         if (!mechanical$looked) {
             for (Holder<Biome> h : ((BiomeSource) (Object) this).possibleBiomes()) {
                 if (h.is(ModBiomes.SCORCHED_BARRENS)) mechanical$barrens = h;
@@ -47,9 +48,6 @@ public abstract class MultiNoiseBiomeSourceMixin {
         }
         Holder<Biome> barrens = mechanical$barrens, source = mechanical$source;
         if (barrens == null || source == null) return resolver; // not the overworld preset
-        return (x, y, z) -> {
-            Holder<Biome> h = resolver.getNoiseBiome(x, y, z);
-            return h == barrens && !ScorchedBarrens.biomeAllowed(x, z) ? source : h;
-        };
+        return ScorchedBarrens.resolver(resolver, (MultiNoiseBiomeSource) (Object) this, sampler, barrens, source, minX, minZ, sizeX, sizeZ);
     }
 }

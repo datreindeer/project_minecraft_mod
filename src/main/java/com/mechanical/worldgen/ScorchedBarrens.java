@@ -1,15 +1,25 @@
 package com.mechanical.worldgen;
 
+import java.util.Set;
+
 import com.mechanical.Mechanical;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -20,8 +30,9 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 /**
- * Scorched Barrens (docs/elkwight-plan.md phase 1): a burnt forest only beyond {@link #MIN_DISTANCE} blocks from 0,0
- * (mixin.MultiNoiseBiomeSourceMixin turns it back into its source biome closer in). Its blocks, and the charred trees.
+ * Scorched Barrens (docs/elkwight-plan.md phase 1): a burnt forest only beyond {@link #MIN_DISTANCE} blocks from 0,0 and
+ * always ringed by living forest (mixin.MultiNoiseBiomeSourceMixin turns it back into its source biome elsewhere, see
+ * {@link #stays}). Its blocks, and the charred trees.
  * Data: scripts/gen_world_biomes.py (biome, ground, features), scripts/gen_elkwight.py (blocks, ruin).
  */
 public final class ScorchedBarrens {
@@ -49,6 +60,65 @@ public final class ScorchedBarrens {
     public static boolean biomeAllowed(int quartX, int quartZ) {
         long x = quartX * 4L + 2, z = quartZ * 4L + 2, r = MIN_DISTANCE + 12;
         return x * x + z * z >= r * r;
+    }
+
+    /** Quarts (24 blocks) of living forest round every Scorched Barrens quart: it never touches plains, water, desert... */
+    public static final int RING = 6;
+    /** What counts as living forest round the barrens (and the barrens itself, so its inside is fine). */
+    private static final Set<ResourceKey<Biome>> LIVING = Set.of(ModBiomes.SCORCHED_BARRENS, ModBiomes.DECIDUOUS_FOREST, Biomes.FOREST,
+            Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST, Biomes.DARK_FOREST, Biomes.DAPPLED_FOREST, Biomes.TAIGA,
+            Biomes.OLD_GROWTH_PINE_TAIGA, Biomes.OLD_GROWTH_SPRUCE_TAIGA);
+
+    /**
+     * Whether a raw Scorched Barrens column stays barrens (MultiNoiseBiomeSourceMixin; else it is Forest): far enough out,
+     * and every raw surface biome within RING quarts is living forest or barrens. So the barrens that stays always has a
+     * ring of at least RING quarts of forest round it. The grid must reach RING quarts past (quartX, quartZ).
+     */
+    public static boolean stays(SurfaceGrid grid, int quartX, int quartZ) {
+        return biomeAllowed(quartX, quartZ) && grid.all(quartX, quartZ, RING, ScorchedBarrens::living);
+    }
+
+    public static boolean living(Holder<Biome> h) {
+        return h instanceof Holder.Reference<Biome> r && LIVING.contains(r.key());
+    }
+
+    /**
+     * The resolver MultiNoiseBiomeSourceMixin returns: raw barrens quarts that may not stay become {@code source}. Only
+     * they pay for the neighbourhood check, with one surface grid per chunk (the chunk and RING quarts round it) and one
+     * decision per column. sizeX 0: a resolver for anywhere (may be shared between threads), so no cache.
+     */
+    public static BiomeResolver resolver(BiomeResolver raw, MultiNoiseBiomeSource biomes, Climate.Sampler sampler, Holder<Biome> barrens,
+            Holder<Biome> source, int minX, int minZ, int sizeX, int sizeZ) {
+        return new BiomeResolver() {
+            private SurfaceGrid grid;
+            private final byte[] stays = new byte[sizeX * sizeZ]; // per column: 0 not yet decided, 1 stays, 2 forest
+
+            @Override
+            public Holder<Biome> getNoiseBiome(int x, int y, int z) {
+                Holder<Biome> h = raw.getNoiseBiome(x, y, z);
+                if (h != barrens) return h;
+                if (!biomeAllowed(x, z)) return source;
+                if (x < minX || z < minZ || x >= minX + sizeX || z >= minZ + sizeZ)
+                    return stays(SurfaceGrid.around(biomes, sampler, x, z, RING), x, z) ? h : source;
+                int i = x - minX + (z - minZ) * sizeX;
+                if (stays[i] == 0) {
+                    if (grid == null) grid = new SurfaceGrid(biomes, sampler, minX - RING, minZ - RING, sizeX + 2 * RING, sizeZ + 2 * RING, 1);
+                    stays[i] = (byte) (stays(grid, x, z) ? 1 : 2);
+                }
+                return stays[i] == 1 ? h : source;
+            }
+        };
+    }
+
+    /** Every quart within radius blocks of (x, z) is Scorched Barrens after the rules (the Elkwight ruin sits well inside). */
+    public static boolean deepInside(MultiNoiseBiomeSource source, Climate.Sampler sampler, int x, int z, int radius) {
+        int qx = QuartPos.fromBlock(x), qz = QuartPos.fromBlock(z), r = (radius + 3) / 4;
+        SurfaceGrid g = SurfaceGrid.around(source, sampler, qx, qz, r + RING);
+        for (int dx = -r; dx <= r; dx++)
+            for (int dz = -r; dz <= r; dz++)
+                if (dx * dx + dz * dz <= r * r && !(g.is(qx + dx, qz + dz, b -> b.is(ModBiomes.SCORCHED_BARRENS)) && stays(g, qx + dx, qz + dz)))
+                    return false;
+        return true;
     }
 
     public static void init() {}

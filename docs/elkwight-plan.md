@@ -49,7 +49,22 @@ undersöka senare. Byggs fas för fas, som
 **Byggt (2026-11-23):** biomet är ett hörn av sval Forest (temperatur −0,21..−0,15, fuktighet −0,1..−0,06: två band
 av de storskaliga bruset korsas i fläckar i stället för smala band) och tas bort inom 2500 block (+12 block marginal för
 biomzoomen) av `mixin/MultiNoiseBiomeSourceMixin`. Ungefär 0,18 % av proven bortom 2500 block, Mushroom Fields 0,05 %
-(`ElkwightWorldTest` loggar båda); fläckarna är ofta 50–150 block. Nya block: **Charred Log** (ger 1–2
+(`ElkwightWorldTest` loggar båda); fläckarna är ofta 50–150 block.
+
+**Alltid skog runt om (2026-11-23):** biomet ligger nu mitt i fuktighetsbandet för sval Forest (temperatur −0,21..−0,15,
+fuktighet −0,035..0,035), så att det har skog åt alla håll i klimatet. Dessutom gäller en grannregel
+(`ScorchedBarrens.stays`): en plats blir bara Scorched Barrens om allt inom **24 block** (6 quarts) är levande skog eller
+barrens. Levande skog är Forest, Flower Forest, Birch Forest, Old Growth Birch Forest, Dark Forest, Dappled Forest,
+Taiga, Old Growth Pine/Spruce Taiga och Deciduous Forest. Annars blir platsen vanlig Forest. Barrens rör därför aldrig
+slätter, vatten, berg, öken eller stränder: det finns alltid minst 24 block skog runt hela fläcken. Regeln läser
+klimatet på ytan (djup 0) i ett rutnät (`worldgen/SurfaceGrid`). Bara chunkar med barrens betalar för den: ett rutnät per
+chunk (chunken plus 6 quarts runt om) och ett beslut per kolumn. Platser precis på gränsen mellan två klimatplatser kan
+i vanilla bli vilken som helst av dem, så rutnätet frågar också klimatet ett steg upp och ett steg ned och kräver skog i
+alla tre. Biomet är lika sällsynt som förut: 0,21 % av proven bortom 2600 block i testet (förut 0,18 %), och
+0,17–0,27 % i kartorna nedan (förut 0,18–0,26 %). Fläckarna är större och rundare än förut, eftersom de smala
+banden längs andra biomer tas bort. Kartor: `docs/shots/biomes/before_seed*_barrens.png` och `after_seed*_barrens.png`
+(närbild 2048 block, 4 block per pixel). Gametestet `elkwight_world` provar alla quarts i 24 block runt 12 funna fläckar
+per seed, genom samma resolver som chunkarna använder. Nya block: **Charred Log** (ger 1–2
 Charcoal, sig själv med Silk Touch), **Wood Ash** (faller som sand). Brända träd: featuren `mechanical:charred_tree`.
 Korpar via `add_raven`, inga andra djur (`inherit=False` i `gen_world_biomes.py`). Klimat: temperatur 0,3, så det snöar
 och fryser på vintern (Seasons). Advancement *Into the Ashes*. Bilder i `docs/shots/elkwight/` (från `worldgen/ElkShots`, flaggfil `run/elkshots.flag`):
@@ -70,8 +85,13 @@ golv radie 17, murar till 20 (polished/cracked/gilded Blackstone, Basalt-sockel,
 höga, läktare med trappsteg, åtta pelare, ett trasigt tak 15 block upp över läktarna där muren står hel, en dais med
 runring i mitten, Soul Campfires och eldskålar (Soul Soil + Soul Fire), fyra runmonoliter utanför, tre kistor
 (`chests/elkwight_ruin`: guldklimpar, guld- och bronstackor, Bronze Arrows, ibland en bronskniv/yxa/spjut/hjälm). Nytt
-block **Rune Blackstone** (gröna runor, emissivt lager, ljus 4). Placering: structure set spacing 16 / separation 6,
-bara i Scorched Barrens på någorlunda plan mark, och aldrig närmare 0,0 än 2525 block (`allowedAt`).
+block **Rune Blackstone** (gröna runor, emissivt lager, ljus 4). Placering: structure set spacing 6 / separation 4 (förut 16 / 6),
+bara i Scorched Barrens på någorlunda plan mark, och aldrig närmare 0,0 än 2525 block (`allowedAt`). **Alltid mitt i
+biomet (2026-11-23):** hela cirkeln med radie 29 block runt mitten (arenan plus 4 block, `CLEAR`) måste vara Scorched
+Barrens efter grannregeln (`ScorchedBarrens.deepInside`), så ruinen har bränd skog runt om och står aldrig i en kant där en
+annan biom syns. Ungefär 5 % av barrensproven klarar det, därför tätare försök (spacing 6 i stället för 16). Separation
+4 chunkar gör att två arenor aldrig överlappar. Ruinerna blir ändå bara ungefär 40 % så vanliga som förut (uppskattning:
+5 % av barrens × 7 gånger fler försök), men de står alltid fint. Vill man ha fler: sänk spacing till 5.
 Bossen: strukturen anropar `ElkwightRuins.spawner` en gång (mitt på daisen) som skapar en persistent
 `mechanical:elkwight` om entitytypen finns. API för bossfasen: `ElkwightRuins.ruinAt(level, pos)`,
 `bossAlive(level, ruin)`, `markDead`. När en `mechanical:elkwight` dör markeras dess ruin död (SavedData). Dimman:
@@ -82,7 +102,7 @@ Advancement *The Burnt Hall*.
 - Struktur (jigsaw eller NBT): stor raserad arena **med breda öppningar och högt i tak** (hornkronan är ~4 block bred), med pelare, trappor och murar av **Blackstone av olika slag** (polished,
   bricks, cracked bricks, chiseled, gilded), Basalt och Magma. **Runstenar och ristade block med lysande gröna runor** (eget block, emissiv textur, svagt ljus) i murar, pelare
   och kring arenan. Eldar som brinner (Soul Campfire, brinnande block i skålar).
-- Sällsynt inne i biomet (stor spacing/separation), alltid minst 2500 block från 0,0.
+- Sällsynt inne i biomet, alltid mitt i det (aldrig i en kant), alltid minst 2500 block från 0,0.
 - **Dimma när man kliver in**: tät och mörk dimma på klienten inom ruinens gränser, som tunnas ut när bossen är död.
 - Elkwighten väntar i mitten och vaknar när en spelare kommer in i arenan. Bossbar.
 - Kistor med lite guld och bronsföremål. Ingen kista med det bästa: belöningen är kroppen och yxan.

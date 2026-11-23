@@ -52,6 +52,8 @@ public final class ModBiomes {
 
     // vanilla's temperature bands (OverworldBiomeBuilder.temperatures): 0 frozen .. 4 hot
     private static final Climate.Parameter T0 = span(-1.0F, -0.45F), T1 = span(-0.45F, -0.15F), T2 = span(-0.15F, 0.2F), T3 = span(0.2F, 0.55F);
+    /** The warm part of the temperate band, next to the warm band: no snowy mountains here (the buffer between cold and warm). */
+    private static final Climate.Parameter WARM_EDGE = span(0.05F, 0.2F);
 
     /** Surface biomes of the world-materials plan (phases 4 and 7); docs/world-materials-plan.md "Fas 4+7" has the table. */
     public static final List<SurfaceShare> SURFACE = List.of(
@@ -79,10 +81,17 @@ public final class ModBiomes {
             new SurfaceShare(Biomes.DESERT, key("gypsum_flats"), null, span(-1.0F, -0.35F), null, span(0.05F, 1.0F), null),
             // the frozen band's driest snowy plains (humidity band 0): cold, dry grassland (docs/biomes.md); Ice Spikes keep their slot
             new SurfaceShare(Biomes.SNOWY_PLAINS, MAMMOTH_STEPPE, T0, span(-1.0F, -0.35F), null, null, null),
-            // a corner of cool forest: its warmest temperatures and driest humidity. Two bands of the large-scale noises cross
-            // in blobs (one thin band alone makes ribbons); ~0.15 % of samples beyond 2500, Mushroom Fields ~0.05 %
-            // (ElkwightWorldTest logs both). Only beyond 2500 blocks
-            new SurfaceShare(SCORCHED_BARRENS_SOURCE, SCORCHED_BARRENS, span(-0.21F, -0.15F), span(-0.1F, -0.06F), null, null, null));
+            // the warm end of cool forest, in the middle of its humidity band, so forest lies round it on every climate side
+            // (plains start at humidity -0.1). Two bands of the large-scale noises cross in blobs; ScorchedBarrens.stays turns
+            // back every part with anything but living forest within 24 blocks. ~0.2 % of samples beyond 2600 stay barrens,
+            // Mushroom Fields ~0.05 % (ElkwightWorldTest logs both). Only beyond 2500 blocks
+            new SurfaceShare(SCORCHED_BARRENS_SOURCE, SCORCHED_BARRENS, span(-0.21F, -0.15F), span(-0.035F, 0.035F), null, null, null),
+            // no snow next to warm land: vanilla gives temperate mountains snowy slopes and peaks right up to the warm band,
+            // where savanna and jungle begin. In the warm part of the temperate band they are snowless instead
+            new SurfaceShare(Biomes.SNOWY_SLOPES, Biomes.MEADOW, WARM_EDGE, null, null, null, null),
+            new SurfaceShare(Biomes.GROVE, Biomes.TAIGA, WARM_EDGE, null, null, null, null),
+            new SurfaceShare(Biomes.FROZEN_PEAKS, Biomes.STONY_PEAKS, WARM_EDGE, null, null, null, null),
+            new SurfaceShare(Biomes.JAGGED_PEAKS, Biomes.STONY_PEAKS, WARM_EDGE, null, null, null, null));
 
     /** A cave biome's share of the climate space at cave depth (vanilla's underground biomes use depth 0.2..0.9). */
     public record CaveSlot(ResourceKey<Biome> biome, Climate.Parameter temperature, Climate.Parameter humidity,
