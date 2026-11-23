@@ -166,7 +166,7 @@ utom bäverdammar och källor läggs även i gamla chunks (`Retrogen`). Advancem
 nu att stå på dammen. Kaveldun saknas (inget block än), vass finns. Detaljer, täthet och hur fas 5 hittar fallna stockar:
 `docs/biomes.md`, "Små saker i skog och vid vatten". Bilder: `docs/shots/terrain/decor_*.png`.
 
-**Byggt (fas 4, berg, öppen mark, torrt och kallt, v0.179.0):** på är Valley Waterfall (`worldgen/MountainDecor`),
+**Byggt (fas 4, berg, öppen mark, torrt och kallt, v0.180.0):** på är Valley Waterfall (`worldgen/MountainDecor`),
 Bone Remains, Lone Tree och Fire Ring (`worldgen/OpenDecor`), Sand Skeleton och Mammoth Tusks (`worldgen/DryColdDecor`), placerade av `scripts/gen_land_decor.py`. Två nya block av tunna ben,
 Rib Cage och Mammoth Tusk (`worldgen/OldBonesBlock`). Advancement *Old Bones*. Byggda men
 avstängda tills de håller måttet i närbild: Rock Arch, Dead Tree, Dry Creek, Bird Cliff (för kantiga eller svåra att se vid granskningen), Talus, Fallen Rock, Snow Patch, Anthill, Ice Blocks, Rock Overhang, Rock
