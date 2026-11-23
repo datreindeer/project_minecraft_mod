@@ -27,10 +27,14 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Seasons {
-    /** Biome temperature change at midsummer, and at midwinter for temperate/cold, warm and arid biomes. */
-    static final float SUMMER = 0.1F, WINTER = 0.8F, WINTER_WARM = 0.3F, WINTER_ARID = 0.2F;
-    /** Base temperatures from which a biome counts as warm, and as arid (desert, badlands, savanna 2.0). */
-    static final float WARM_FROM = 1.0F, ARID_FROM = 1.5F;
+    /**
+     * Biome temperature change at midsummer, and at midwinter for temperate/cold, warm and arid biomes. WINTER 0.95 keeps
+     * every temperate biome up to plains (0.8) under the snow line (0.15) through the whole winter season: winter is the
+     * quarter of the year round midwinter, where the curve is below -0.707, and 0.8 - 0.95 * 0.707 = 0.13.
+     */
+    static final float SUMMER = 0.1F, WINTER = 0.95F, WINTER_WARM = 0.3F, WINTER_ARID = 0.2F;
+    /** Base temperatures from which a biome counts as warm (jungles 0.95, mushroom fields 0.9: no snow), and as arid (desert, badlands, savanna 2.0). */
+    static final float WARM_FROM = 0.9F, ARID_FROM = 1.5F;
     /** How long vanilla's rain and dry spells last, per season (spring, summer, autumn, winter). */
     static final float[] RAIN = {1.0F, 0.7F, 1.3F, 1.2F}, DRY = {0.9F, 1.4F, 0.6F, 0.8F};
     static final Identifier FIRST_FROST = id("wilderness/first_frost"), THROUGH_WINTER = id("wilderness/through_winter"),

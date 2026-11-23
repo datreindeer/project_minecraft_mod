@@ -37,6 +37,7 @@
     "EntityGetterMixin",
     "EntityRideMixin",
     "EntityLogCollisionMixin",
+    "WalkAnimationStateAccessor",
     "BiomeSeasonMixin",
     "BiomeTemperatureInvoker",
     "ServerLevelThawMixin",

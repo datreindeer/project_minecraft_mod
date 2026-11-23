@@ -64,6 +64,9 @@ public final class CalendarTest {
         check(h, Seasons.curve(midsummer) > 0.99F && Seasons.curve(midwinter) < -0.99F, "season curve");
         check(h, 0.7F + Seasons.offset(0.7F, -1) < 0.15F && 0.8F + Seasons.offset(0.8F, -1) < 0.15F, "forest and plains snow at midwinter");
         check(h, 0.7F + Seasons.offset(0.7F, Seasons.curve(Calendar.clockOn(0, 2 * Calendar.SEASON_DAYS))) >= 0.15F, "no snow in the forest at the start of autumn");
+        float winterStart = Seasons.curve(Calendar.clockOn(0, 3 * Calendar.SEASON_DAYS)), winterEnd = Seasons.curve(Calendar.clockOn(Calendar.CLOCK_DAY - 1, Calendar.YEAR_DAYS - 1));
+        check(h, 0.8F + Seasons.offset(0.8F, winterStart) < 0.15F && 0.8F + Seasons.offset(0.8F, winterEnd) < 0.15F, "plains snow from the first to the last day of winter");
+        check(h, 0.95F + Seasons.offset(0.95F, -1) >= 0.15F, "no snow in the jungle even at midwinter");
         check(h, 2.0F + Seasons.offset(2.0F, -1) > 1.5F && 0.95F + Seasons.offset(0.95F, 1) < 1.1F, "deserts stay hot, summer only a little warmer");
         // caves: colder the deeper, freezing near the bottom of the world
         check(h, Temperature.cave(Temperature.CAVE_TOP) == 10 && Temperature.cave(0) > Temperature.FREEZING_BELOW && Temperature.cave(-50) < Temperature.FREEZING_BELOW, "caves colder with depth");

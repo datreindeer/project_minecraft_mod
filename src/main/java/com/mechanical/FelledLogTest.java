@@ -47,6 +47,7 @@ public final class FelledLogTest {
 
     static {
         TEST_FUNCTIONS.register("felled_log", () -> FelledLogTest::test);
+        TEST_FUNCTIONS.register("felled_log_rest", () -> FelledLogTest::rest);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -58,6 +59,8 @@ public final class FelledLogTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "felled_log"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log"),
                 new FunctionGameTestInstance(TEST, TestArea.of(env, 520, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_rest"),
+                new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_rest")), TestArea.of(env, 160, true)));
     }
 
     private static List<FelledLogEntity> logs(GameTestHelper h) {
@@ -68,6 +71,74 @@ public final class FelledLogTest {
     private static boolean collides(ServerLevel level, AABB box) {
         var b = Shapes.create(box);
         return level.getEntityCollisions(null, box).stream().anyMatch(v -> Shapes.joinIsNotEmpty(v, b, BooleanOp.AND));
+    }
+
+    /**
+     * Does any point inside the log (a grid through each block, its skin left out) lie in a block's collision shape? Checked
+     * point by point, apart from the log's own collision code.
+     */
+    private static String pokes(ServerLevel level, FelledLogEntity log) {
+        for (int i = 0; i < log.size(); i++) {
+            Vec3 c = log.localCell(i);
+            double bottom = log.getY() + c.y + log.liftOffset(i);
+            for (double x = -0.42; x <= 0.43; x += 0.21)
+                for (double z = -0.42; z <= 0.43; z += 0.21)
+                    for (double y = 0.06; y < 0.95; y += 0.22) {
+                        double up = log.lifterCount() == 0 ? log.tilt() * z : 0; // tilted: the bottom rises along it
+                        Vec3 w = log.toWorld(new Vec3(c.x + x, 0, c.z + z)).add(0, bottom + up + y, 0);
+                        BlockPos p = BlockPos.containing(w);
+                        for (AABB b : level.getBlockState(p).getCollisionShape(level, p).toAabbs())
+                            if (b.move(p).contains(w)) return "block " + i + " in " + level.getBlockState(p) + " at " + w;
+                    }
+        }
+        return null;
+    }
+
+    /**
+     * Logs rest on the real block shapes: a turned log dropped on slabs lies on their tops, one reaching half over a slab
+     * never sinks into it, and a lifted log carried into a wall at a slant stops at it without a corner going in.
+     */
+    private static void rest(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (FelledLogEntity l : logs(h)) l.discard();
+        for (int x = 0; x <= 15; x++) for (int z = 0; z <= 15; z++) h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+        BlockState slab = Blocks.SMOOTH_STONE_SLAB.defaultBlockState();
+        for (int x = 0; x <= 6; x++) for (int z = 1; z <= 7; z++) h.setBlock(new BlockPos(x, 1, z), slab);
+        for (int x = 8; x <= 11; x++) for (int z = 1; z <= 2; z++) h.setBlock(new BlockPos(x, 1, z), slab);
+        for (int z = 0; z <= 15; z++) for (int y = 1; y <= 2; y++) h.setBlock(new BlockPos(15, y, z), Blocks.DIRT);
+        BlockState oak = Blocks.OAK_LOG.defaultBlockState();
+        FelledLogEntity onSlabs = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(3.0, 3.2, 2.6)), 30, 4, oak);
+        FelledLogEntity half = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(9.7, 3.2, 1.5)), 10, 3, oak); // root end over the slabs, crown on the floor
+        FelledLogEntity carried = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(10.5, 1, 9.5)), -70, 3, oak); // crown towards the wall, slanting
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        h.runAfterDelay(40, () -> {
+            double slabTop = h.absoluteVec(new Vec3(0, 1.5, 0)).y;
+            h.assertTrue(Math.abs(onSlabs.getY() - slabTop) < 0.01 && onSlabs.tilt() == 0, "a turned log on slabs lies on their tops (y " + onSlabs.getY() + ", want " + slabTop + ")");
+            String p = pokes(level, onSlabs);
+            h.assertTrue(p == null, "nothing of it in a slab: " + p);
+            p = pokes(level, half);
+            h.assertTrue(p == null, "a log half over a slab doesn't sink into it: " + p + " (y " + half.getY() + ", tilt " + half.tilt() + ")");
+            h.assertTrue(half.getY() > h.absoluteVec(new Vec3(0, 1.0, 0)).y + 0.01, "it lies on the slab's edge, above the floor (y " + half.getY() + ")");
+            player.setPos(carried.endPoint(true).add(Vec3.directionFromRotation(0, carried.getYRot()).scale(-0.5)));
+            carried.lift(level, player, 0);
+            h.assertTrue(carried.rootLifted(), "lifted by the root end");
+        });
+        // the lifter walks east into the wall, pushing the log's crown end into it at a slant
+        for (int t = 41; t <= 85; t++) h.runAfterDelay(t, () -> player.setPos(player.position().add(0.12, 0, 0.02)));
+        h.runAfterDelay(105, () -> {
+            String p = pokes(level, carried);
+            h.assertTrue(p == null, "carried into a wall at a slant, no corner goes in: " + p);
+            Vec3 tip = carried.endPoint(false);
+            h.assertTrue(tip.x < h.absoluteVec(new Vec3(15, 0, 0)).x + 0.01 && carried.endPoint(true).distanceTo(h.absoluteVec(new Vec3(10.5, 1, 9.5))) > 1,
+                    "it moved and stopped at the wall (crown end at " + tip + ")");
+            carried.putDown(player);
+        });
+        h.runAfterDelay(130, () -> {
+            String p = pokes(level, carried);
+            h.assertTrue(p == null, "put down by the wall, it lies clear of it: " + p);
+            for (FelledLogEntity l : logs(h)) l.discard();
+            h.succeed();
+        });
     }
 
     private static void test(GameTestHelper h) {
@@ -224,7 +295,10 @@ public final class FelledLogTest {
                 FelledLogEntity four = FelledLogEntity.spawnStraight(level, Vec3.atBottomCenterOf(bedAt.east(3)), 0, 4, oak);
                 player.setPos(four.endPoint(true).add(0, 0, -0.6));
                 four.lift(level, player, 0);
-                bed.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+                // the first log is clicked straight on the wagon; the next ones by clicking a log already on it (as the
+                // crosshair often lands on one): that loads the new log, it doesn't roll the old one off
+                if (k == 0) bed.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+                else player.interactOn(bed.carriedLogs().getFirst(), InteractionHand.MAIN_HAND, Vec3.ZERO);
                 if (k == 3) {
                     h.assertTrue(four.getVehicle() == null, "a wagon takes no fourth log");
                     four.putDown(player);
@@ -237,7 +311,11 @@ public final class FelledLogTest {
             FelledLogEntity topLog = bed.carriedLogs().get(2);
             player.setPos(bed.position().add(1.5, 0, 0));
             topLog.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
-            h.assertTrue(!topLog.isPassenger() && bed.carriedLogs().size() == 2, "an empty-hand click on a log on the bed rolls it off");
+            h.assertTrue(topLog.isPassenger() && bed.carriedLogs().size() == 3, "a plain empty-hand click on a log on the bed leaves it there");
+            player.setShiftKeyDown(true);
+            topLog.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
+            player.setShiftKeyDown(false);
+            h.assertTrue(!topLog.isPassenger() && bed.carriedLogs().size() == 2, "sneak + right-click with an empty hand rolls that log off");
             topLog.discard();
             bed.ejectPassengers();
             for (FelledLogEntity l : logs(h)) if (l.position().distanceTo(bed.position()) < 6) l.discard();

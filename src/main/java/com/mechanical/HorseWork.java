@@ -129,6 +129,31 @@ public final class HorseWork {
         tick(horse);
     }
 
+    /**
+     * Server, before a horse's AI runs: hitched to a cart, wagon or plough with nobody riding or leading it, it stands in
+     * the traces, calmly: no wandering, grazing walks, panicking off with the vehicle or looking round (a wagon's second
+     * horse copies the first one's turn, a head turned by its own goals would fight that and shake). Vanilla turns the
+     * goals back on by itself (Mob#updateControlFlags) once it is ridden or free.
+     */
+    @SubscribeEvent
+    static void standInTraces(EntityTickEvent.Pre event) {
+        if (!(event.getEntity() instanceof AbstractHorse horse) || horse.level().isClientSide() || !TravoisEntity.standsHitched(horse)) return;
+        horse.goalSelector.disableControlFlag(net.minecraft.world.entity.ai.goal.Goal.Flag.MOVE);
+        horse.goalSelector.disableControlFlag(net.minecraft.world.entity.ai.goal.Goal.Flag.LOOK);
+        horse.getNavigation().stop();
+        horse.getMoveControl().setWait();
+        horse.setZza(0);
+        horse.setXxa(0);
+    }
+
+    /** Server, after its tick: a horse in the traces doesn't graze or rear (vanilla starts both at random): the pair stays in step. */
+    @SubscribeEvent
+    static void noGrazingInTraces(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof AbstractHorse horse) || horse.level().isClientSide() || !TravoisEntity.standsHitched(horse)) return;
+        if (horse.isEating()) horse.setEating(false);
+        if (horse.isStanding()) horse.clearStanding();
+    }
+
     static void tick(AbstractHorse horse) {
         Vec3 last = LAST_POS.put(horse, horse.position());
         double walked = last == null ? 0 : horse.position().subtract(last).horizontalDistance();
@@ -166,9 +191,17 @@ public final class HorseWork {
         horse.playSound(SoundEvents.HORSE_BREATHE, 1.0F, 0.6F);
     }
 
-    /** An exhausted horse won't take a rider. */
+    /**
+     * An exhausted horse won't take a rider. Nor will a wagon's second horse while someone drives the lead one: the team
+     * has one driver (the second horse is placed beside the first, it can't be steered too).
+     */
     @SubscribeEvent
     static void onMount(EntityMountEvent event) {
+        if (event.isMounting() && event.getEntityBeingMounted() instanceof AbstractHorse horse && TravoisEntity.pulling(horse) instanceof WagonEntity w
+                && w.partner() == horse && w.harness() != null && w.harness().getControllingPassenger() != null) {
+            event.setCanceled(true);
+            return;
+        }
         if (event.isMounting() && event.getEntityBeingMounted() instanceof AbstractHorse horse && exhausted(horse)) {
             event.setCanceled(true);
             if (event.getEntityMounting() instanceof Player p && !p.level().isClientSide())
@@ -181,8 +214,10 @@ public final class HorseWork {
     static void onInteract(PlayerInteractEvent.EntityInteract event) {
         if (!(event.getTarget() instanceof AbstractHorse horse) || event.getHand() != InteractionHand.MAIN_HAND) return;
         Player player = event.getEntity();
-        if (player.isShiftKeyDown() && TravoisEntity.pulling(horse) instanceof WagonEntity wagon && wagon.inTeam(horse)) {
-            if (!player.level().isClientSide()) wagon.release(horse, player);
+        TravoisEntity pulled = TravoisEntity.pulling(horse);
+        if (player.isShiftKeyDown() && pulled != null && (pulled instanceof WagonEntity wagon ? wagon.inTeam(horse) : pulled.harness() == horse)
+                && !(pulled instanceof CartEntity cart && cart.isCaravan())) {
+            if (!player.level().isClientSide()) pulled.release(horse, player);
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
             return;

@@ -49,6 +49,7 @@ import net.minecraft.world.phys.Vec3;
  * {@link #BREAK} blocks away anyway, makes the puller let go. Client: {@link #pitch} tilts the poles (or the cart bed) up
  * to the puller's hip, or down to rest on the ground when nobody pulls it.
  */
+@net.neoforged.fml.common.EventBusSubscriber(modid = Mechanical.MODID)
 public class TravoisEntity extends Entity {
     /** Entity id of the player in the harness, -1 if none. Synced (sprint check, renderer). */
     private static final EntityDataAccessor<Integer> HARNESS = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.INT);
@@ -282,9 +283,13 @@ public class TravoisEntity extends Entity {
     /** Sneak + right-click: unloads the last log, if any. Null if there is none. */
     protected InteractionResult unloadLogUse(Player player) {
         java.util.List<FelledLogEntity> logs = carriedLogs();
-        if (logs.isEmpty()) return null;
+        return logs.isEmpty() ? null : unloadLogUse(player, logs.getLast());
+    }
+
+    /** Sneak + right-click on a log on the bed: that one rolls off. */
+    InteractionResult unloadLogUse(Player player, FelledLogEntity log) {
         logClicks().put(player, level().getGameTime());
-        if (!level().isClientSide()) unloadLog(logs.getLast());
+        if (!level().isClientSide()) unloadLog(log);
         return InteractionResult.SUCCESS;
     }
 
@@ -371,14 +376,17 @@ public class TravoisEntity extends Entity {
         double glide = onGround() ? GROUND_GLIDE : AIR_GLIDE;
         double vx = v.x * glide, vy = Math.max(-MAX_FALL, v.y - GRAVITY), vz = v.z * glide;
         if (p != null) {
-            Vec3 off = position().subtract(pullPoint(p)).multiply(1, 0, 1);
-            double d = off.length(), lead = lead(p);
-            if (d > lead) {
-                // a rigid tow line: this tick it closes the gap the puller opened
-                vx = off.x * (lead - d) / d * pullFactor();
-                vz = off.z * (lead - d) / d * pullFactor();
+            if (level().isClientSide() && isLocalInstanceAuthoritative()) keepNearServer();
+            Vec3 target = towTarget(p);
+            if (target != null) { // a rigid tow line: this tick it closes the gap the puller opened
+                vx = (target.x - getX()) * pullFactor();
+                vz = (target.z - getZ()) * pullFactor();
             }
-            if (d > 0.3) setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z))); // the poles point at the one pulling
+            synchronized (FOLLOW) { // one map for both sides (singleplayer runs them on two threads)
+                FOLLOW.computeIfAbsent(level(), l -> new java.util.ArrayList<>()).add(this);
+            }
+            if (!level().isClientSide() && p instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse && !(this instanceof CartEntity c && c.isCaravan()))
+                hitch(horse);
         }
         Vec3 from = position();
         move(MoverType.SELF, new Vec3(vx, vy, vz));
@@ -402,6 +410,79 @@ public class TravoisEntity extends Entity {
         }
     }
 
+    /**
+     * Where its middle should be behind {@code puller} (y unused), or null if the tow line is slack; turns it to face along
+     * the tow. The travois and cart: {@link #lead} behind the pull point, poles or shafts towards it.
+     */
+    protected Vec3 towTarget(Entity puller) {
+        Vec3 at = pullPoint(puller), off = position().subtract(at).multiply(1, 0, 1);
+        double d = off.length(), lead = lead(puller);
+        if (d > 0.3) setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z))); // the poles point at the one pulling
+        return d > lead ? at.add(off.scale(lead / d)) : null;
+    }
+
+    /** Server: game time each horse was last seen in a player's vehicle (in the harness, or a wagon's second horse). */
+    private static final java.util.Map<Entity, Long> HITCHED = new java.util.WeakHashMap<>();
+
+    /** Server: {@code horse} is in this vehicle's harness or team now. */
+    protected static void hitch(net.minecraft.world.entity.animal.equine.AbstractHorse horse) {
+        HITCHED.put(horse, horse.level().getGameTime());
+    }
+
+    /**
+     * Server: a hitched horse nobody rides or leads: it stands in the traces (HorseWork stops its wandering), so a cart or
+     * wagon left alone stays where it was left.
+     */
+    public static boolean standsHitched(net.minecraft.world.entity.animal.equine.AbstractHorse horse) {
+        Long seen = HITCHED.get(horse);
+        return seen != null && horse.level().getGameTime() - seen <= 2 && horse.getControllingPassenger() == null && !horse.isLeashed();
+    }
+
+    /** Pulled ones this tick, per level: they follow again once everything has moved ({@link #followAll}). */
+    private static final java.util.Map<Level, java.util.List<TravoisEntity>> FOLLOW = new java.util.WeakHashMap<>();
+
+    /**
+     * After every entity has ticked (both sides): each pulled vehicle closes the gap its puller opened after it ticked, so
+     * it never trails a tick behind a horse that ticks later; trailers after what tows them. Rigid hitches only (a lone
+     * wagon horse crawling with it doesn't pull twice).
+     */
+    @net.neoforged.bus.api.SubscribeEvent
+    static void followAll(net.neoforged.neoforge.event.tick.LevelTickEvent.Post event) {
+        java.util.List<TravoisEntity> list;
+        synchronized (FOLLOW) {
+            list = FOLLOW.remove(event.getLevel());
+        }
+        if (list == null) return;
+        list.sort(java.util.Comparator.comparingInt(t -> t.puller() instanceof TravoisEntity ? 1 : 0));
+        for (TravoisEntity t : list) if (!t.isRemoved()) t.follow();
+    }
+
+    /** One more step of the tow line after everything moved (no gravity: the tick did that). */
+    void follow() {
+        Entity p = puller();
+        if (p == null || pullFactor() < 1) return;
+        beforeFollow(p);
+        Vec3 target = towTarget(p);
+        if (target != null && target.subtract(position()).horizontalDistanceSqr() > 1.0E-6) move(MoverType.SELF, new Vec3(target.x - getX(), 0, target.z - getZ()));
+    }
+
+    /** Before the last step: the Wagon places its second horse. */
+    protected void beforeFollow(Entity puller) {
+    }
+
+    /** Client: the one pulling it is this client's player (or the horse they ride): this client moves it, as the player. */
+    @Override
+    protected boolean isLocalClientAuthoritative() {
+        Entity p = puller();
+        return p != null && p.isLocalInstanceAuthoritative();
+    }
+
+    /** Client, moving it ourselves: if the server's place for it (last packet) is far off, go there (it was held where we weren't). */
+    private void keepNearServer() {
+        Vec3 server = getPositionCodec().getBase();
+        if (server.distanceToSqr(position()) > 9) snapTo(server.x, server.y, server.z, getYRot(), getXRot());
+    }
+
     /** Fixed to its puller (the Wagon's team, D1): never torn loose or let go when stuck, only unhitched by hand. */
     protected boolean fixedHitch() {
         return false;
@@ -414,11 +495,28 @@ public class TravoisEntity extends Entity {
         setYRot(puller.getYRot());
     }
 
+    /**
+     * Server: sneak + right-click on the horse in its harness (HorseWork): it comes out. The Wagon takes one horse out of
+     * its pair instead.
+     */
+    public void release(net.minecraft.world.entity.animal.equine.AbstractHorse horse, Player player) {
+        if (harness() != horse) return;
+        setHarness(null);
+        unhitched();
+        player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".unhitched"));
+        playSound(SoundEvents.LEAD_UNTIED, 1.0F, 0.8F);
+    }
+
+    /** Server: its puller was taken out on purpose, or tore loose (not just out of reach): forget it for good. */
+    protected void unhitched() {
+    }
+
     /** Server: takes {@code puller} out of the harness, telling them why ({@code why}: lang key part; null: silently). */
     private Entity letGo(Entity puller, String why) {
         setHarness(null);
         stuckTicks = strainTicks = 0;
         if (why == null) return null;
+        unhitched();
         Player told = driver(puller);
         if (told != null) told.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + "." + why));
         playSound(SoundEvents.LEAD_BREAK, 1.0F, 0.8F);

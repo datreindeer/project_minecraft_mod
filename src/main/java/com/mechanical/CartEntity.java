@@ -44,7 +44,7 @@ import net.minecraft.world.phys.Vec3;
  * A trailer: right-click it with an empty hand while it stands behind a Wagon, within {@link #TOW_RANGE} of the wagon's
  * rear, and it is hitched behind (the wagon then is its {@link #puller}), its shafts resting on the wagon's back board; its
  * load weighs on the wagon's team ({@link WagonEntity#loadFraction}). Right-click again to unhitch. A wagon tows one cart.
- * shortcut: the tow, like every harness, is not saved: a reload leaves the cart standing; save the wagon's UUID if players mind.
+ * A horse in the shafts and a towing wagon are saved by UUID and found again after a reload (a player in the shafts is not).
  */
 public class CartEntity extends TravoisEntity {
     public static final int CAPACITY = 6, SLOTS = 18, CHEST_SLOTS = 54;
@@ -84,6 +84,8 @@ public class CartEntity extends TravoisEntity {
     };
     /** A caravan cart's horse: it stays hitched to it (found again by id after a reload), never torn loose. */
     private java.util.UUID caravanHorse;
+    /** The horse in the shafts or the wagon towing it, saved: found again after a reload or when it comes back into reach. */
+    private java.util.UUID hitchId;
     /** Client: wheel angle (radians), this tick and the last. */
     public float wheelSpin, wheelSpinO;
 
@@ -96,6 +98,28 @@ public class CartEntity extends TravoisEntity {
         super.defineSynchedData(builder);
         builder.define(CHEST, false);
         builder.define(CARAVAN, false);
+    }
+
+    @Override
+    protected void setHarness(Entity puller) {
+        super.setHarness(puller);
+        if (puller != null) hitchId = puller instanceof Player ? null : puller.getUUID(); // null (out of reach): remembered
+    }
+
+    @Override
+    protected void unhitched() {
+        hitchId = null;
+    }
+
+    /** The shafts are fixed to the cart: a horse backing up pushes it back (a player in them only pulls). */
+    @Override
+    protected Vec3 towTarget(Entity puller) {
+        if (!(puller instanceof AbstractHorse)) return super.towTarget(puller);
+        Vec3 at = pullPoint(puller), off = position().subtract(at).multiply(1, 0, 1);
+        double d = off.length();
+        if (d < 0.3) return null;
+        setYRot((float) Math.toDegrees(Math.atan2(off.x, -off.z)));
+        return at.add(off.scale(lead(puller) / d));
     }
 
     public boolean isCaravan() {
@@ -240,6 +264,10 @@ public class CartEntity extends TravoisEntity {
             wheelSpinO = wheelSpin;
             wheelSpin += (float) (along / WHEEL_RADIUS);
         } else if (caravanHorse != null) keepHitched((ServerLevel) level());
+        else if (harnessId() < 0 && hitchId != null && tickCount % 10 == 0) {
+            Entity e = ((ServerLevel) level()).getEntity(hitchId);
+            if (e != null && e.isAlive() && e.distanceTo(this) < BREAK + WagonEntity.REAR) super.setHarness(e); // a saved hitch, or one back in reach
+        }
         super.tick();
     }
 
@@ -276,6 +304,7 @@ public class CartEntity extends TravoisEntity {
         Entity old = puller();
         if (old != null) {
             setHarness(null);
+            unhitched();
             player.sendOverlayMessage(Component.translatable(old instanceof Player ? "message.mechanical.travois.unharnessed"
                     : old instanceof WagonEntity ? "message.mechanical.cart.untowed" : "message.mechanical.cart.unhitched"));
             playSound(SoundEvents.LEAD_UNTIED, 1.0F, 0.8F);
@@ -358,6 +387,7 @@ public class CartEntity extends TravoisEntity {
         ContainerHelper.loadAllItems(input, goods.getItems());
         entityData.set(CHEST, input.getBooleanOr("chest", false));
         caravanHorse = input.read("caravan_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+        hitchId = input.read("hitched", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         entityData.set(CARAVAN, caravanHorse != null);
     }
 
@@ -366,5 +396,6 @@ public class CartEntity extends TravoisEntity {
         ContainerHelper.saveAllItems(output, goods.getItems());
         output.putBoolean("chest", hasChest());
         if (caravanHorse != null) output.store("caravan_horse", net.minecraft.core.UUIDUtil.CODEC, caravanHorse);
+        if (hitchId != null) output.store("hitched", net.minecraft.core.UUIDUtil.CODEC, hitchId);
     }
 }

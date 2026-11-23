@@ -272,11 +272,12 @@ bli hängande i luften.
 
   | Klimat (`ClimateZone`) | Vinter | Sommar |
   |---|---|---|
-  | Kallt / tempererat | −0.7 | +0.1 |
-  | Varmt | −0.3 | +0.1 |
+  | Kallt / tempererat (bas under 0.9) | −0.95 | +0.1 |
+  | Varmt (bas 0.9–1.5: djungel, svampöar) | −0.3 | +0.1 |
   | Torrt (öken) | −0.2 | +0.1 |
 
-  Vanilla snöar under 0.15. Med de här värdena snöar det på vintern i skog och slätt, men inte i varma biomes.
+  Vanilla snöar under 0.15. Med de här värdena (byggda, se fas 4) är skog och slätt vita hela vintern, men varma biomes
+  får ingen snö.
 - **Det här får vi nästan gratis från vanilla:** snö i stället för regn, snölager och isade sjöar (vanilla fryser
   ytvatten när det är tillräckligt kallt).
 - **Spelarens temperatur** (`Temperature`) följer med. Kalla biomes på vintern skadar den som saknar skydd, och päls,
@@ -444,9 +445,16 @@ in och ut. HUD:en visar röda termometrar över 17. Kylrum: kall luft bromsar f�
    NPC-byar och lägren stammarna bygger rivs och byggs om i den nya ålderns stil (byggd, `AgeRebuild`, se *Ombyggnad av
    NPC-byar* under 2. Världsålder). Worldgen-läger och fiskeläger byggs inte om.
 4. **Säsongstemperatur** → snö, isade sjöar, spelarkyla, väder (byggd, v0.87.0). `Seasons.java` + `mixin/BiomeSeasonMixin`
-   förskjuter varje bioms temperatur längs en mjuk kurva över året: +0.1 mitt i sommaren, mitt i vintern −0.8 i
-   tempererade och kalla biomes (bas under 1.0), −0.3 i varma (under 1.5) och −0.2 i torra. Vanilla ger då snö i
-   stället för regn, snötäcke och isade sjöar. Kroppstemperaturen (`Temperature.ambient`) följer samma förskjutning, så
+   förskjuter varje bioms temperatur längs en mjuk kurva över året: +0.1 mitt i sommaren, mitt i vintern −0.95 i
+   tempererade och kalla biomes (bas under 0.9), −0.3 i varma (under 1.5, t.ex. djungel 0.95) och −0.2 i torra. Vanilla
+   ger då snö i stället för regn, snötäcke och isade sjöar. **Ändrat v0.186.0** (var −0.8 och bas under 1.0): med −0.8
+   snöade det på slätten (0.8) bara ~20 % av året och i skogen (0.7) ~26 %, inte hela vintern. Vintern är kvartalet
+   runt midvintern där kurvan är under −0.707, och 0.8 − 0.95 × 0.707 = 0.13 < 0.15: allt tempererat upp till slätten
+   ligger under snögränsen hela vintern (slätten från ungefär två dagar före vintern till två dagar in i våren) och
+   smälter inte (under 0.2). Djungeln räknas nu som varm, annars hade den fått snö mitt i vintern. Kroppstemperaturen
+   blir 1.2 grader kallare mitt i vintern på slätten (dag 4.8 i stället för 6, natt under fryspunkten som förut); vårens
+   första månad blir upp till 0.85 grader kallare, så vete sått före Sådd kan frysa i skogen en natt; i Sådd (dag 30)
+   är det som förut (skog dag 9.6, natt 4.6, över frostgränsen 2). Kroppstemperaturen (`Temperature.ambient`) följer samma förskjutning, så
    vinternätter blir farliga utan päls eller eld, och grödornas temperaturgränser (frost) följer med. Vädret: varje ny
    regn- eller uppehållsperiod som vanilla slumpar skalas efter säsong (regn ×1.0/0.7/1.3/1.2, uppehåll
    ×0.9/1.4/0.6/0.8 för vår/sommar/höst/vinter). Advancements i Wilderness-fliken: First Frost, Through the Winter,

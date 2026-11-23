@@ -71,6 +71,23 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
 - En fälld stock (`FelledLogEntity`) på högst 4 block kan lastas på ett tomt flak: högerklicka vagnen medan du lyfter
   stocken (det klicket går före att spänna för). Bakgaveln tas bort i modellen, vagnen räknas som full. Smyg + högerklick med tom hand rullar av den.
 
+## Buggrunda (v0.186.0)
+- **Andra hästen och vagnen i takt:** dragningen görs en gång till efter att alla entities rört sig (LevelTickEvent.Post,
+  båda sidor), så vagnen aldrig ligger en tick efter en häst som tickar senare. På ryttarens klient styr klienten vagnen
+  (som hästen; serverns äldre positioner används bara om den hamnat mer än 3 block fel) och den andra hästen placeras
+  där, med samma kroppsvridning och samma steg som den första. Mätt i klienten: 0,000 block fel i galopp och sväng.
+- **Stel dragstång:** dragstången går från parets mitt rakt bakåt längs hästarna till framaxeln (1,8 block), flaket följer
+  framaxeln som ett släp, högst 55° styrutslag (sedan dras flaket runt). Backar hästarna skjuts vagnen bakåt.
+  Modellens framaxel visar exakt samma vinkel.
+- **Spänd häst står still:** en häst i en vagns, kärras eller plogs sele som ingen rider eller leder får sina gå- och
+  tittmål avstängda (HorseWork#standInTraces). Den andra hästen vreds tidigare till förstahästens kurs men med en
+  annan kroppsvridning (skakade när ryttaren klev av): nu kopieras varje vridning för sig.
+- **Stockar:** ett klick på en stock som redan ligger på flaket räknas som ett klick på vagnen (lastar nästa stock),
+  avlastning kräver smyg + tom hand.
+- **Övrigt:** sidan för andra hästen sparas och synkas (byter inte sida när ryttaren byter häst), den andra hästen går
+  inte att sitta upp på medan någon kör, sittande kliver av vid sidan av flaket, smyg + högerklick på hästen spänner från
+  kärra och plog också, kärrans häst (och vagnen den dras efter) sparas med UUID, kärrans skaklar skjuts bakåt.
+
 ## Senare
 - Uroxar som dragdjur (kräver tämjning).
 - Karavaner med vagn.
