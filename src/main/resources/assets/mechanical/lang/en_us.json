@@ -2767,7 +2767,7 @@
   "gui.mechanical.oak_quests.number": "QUEST %s OF %s",
   "gui.mechanical.oak_quests.in_progress": "In progress",
   "gui.mechanical.oak_quests.completed": "Completed",
-  "gui.mechanical.oak_quests.received": "✔ Received",
+  "gui.mechanical.oak_quests.received": "\u2714 Received",
   "gui.mechanical.oak_quests.line": "THE KEEPER'S TASKS",
   "gui.mechanical.oak_quests.done_title": "Every Task Done",
   "gui.mechanical.oak_quests.closed_title": "The Oak Turns Away",
@@ -3170,8 +3170,6 @@
   "block.mechanical.hazel_fallen_bark": "Fallen Hazel Bark",
   "block.mechanical.pine_fallen_bark": "Fallen Pine Bark",
   "block.mechanical.yew_fallen_bark": "Fallen Yew Bark",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
   "item.mechanical.blood_bucket": "Blood Bucket",
   "item.mechanical.bronze_blood_bucket": "Bronze Blood Bucket",
   "item.mechanical.raw_blood_sausage": "Raw Blood Sausage",
@@ -4825,5 +4823,7 @@
   "advancements.mechanical.folklore.fern_flower.title": "Midsummer Night",
   "advancements.mechanical.folklore.fern_flower.description": "Pick a Fern Flower in bloom. The fern opens its golden flower only on summer nights, deep in old forests, and brings luck",
   "advancements.mechanical.folklore.frost_lily.title": "Winter Bloom",
-  "advancements.mechanical.folklore.frost_lily.description": "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly"
+  "advancements.mechanical.folklore.frost_lily.description": "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
 }

@@ -290,8 +290,8 @@ LANG = {
     "gui.mechanical.oak_quests.hidden": "A task yet to come",
     "gui.mechanical.oak_quests.closed": "The Keeper turns away. \"You have harmed the Mother and her children. There is nothing more for you here.\"",
     "gui.mechanical.oak_quests.all_done": "\"Every task is done. The Mother remembers your tribe.\"",
-    "gui.mechanical.oak_quests.bring": "Bring:",
-    "gui.mechanical.oak_quests.reward": "Reward:",
+    "gui.mechanical.oak_quests.bring": "Bring",
+    "gui.mechanical.oak_quests.reward": "Reward",
 }
 LANG.update({f"quest.mechanical.oak.{k}": v for k, v in QUESTS.items()})
 
