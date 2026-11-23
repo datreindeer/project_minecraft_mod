@@ -1,0 +1,23 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "mechanical:hazel_meadow",
+    "minecraft:swamp",
+    "mechanical:reed_delta",
+    "mechanical:chalk_downs",
+    "mechanical:peat_bog"
+  ],
+  "spawners": [
+    {
+      "type": "mechanical:lapwing",
+      "weight": 5,
+      "count": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 2,
+        "max_inclusive": 4
+      }
+    }
+  ]
+}

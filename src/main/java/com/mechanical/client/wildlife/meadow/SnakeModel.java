@@ -28,6 +28,8 @@ public class SnakeModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "snake"), "main");
     public static final ContextKey<Boolean> COILED = new ContextKey<>(Identifier.fromNamespaceAndPath("mechanical", "snake_coiled"));
     public static final ContextKey<Boolean> BELLY_UP = new ContextKey<>(Identifier.fromNamespaceAndPath("mechanical", "snake_belly_up"));
+    /** The rattlesnake (wildlife/desert) buzzing its rattle: the tail tip raised and shaking. */
+    public static final ContextKey<Boolean> RATTLING = new ContextKey<>(Identifier.fromNamespaceAndPath("mechanical", "snake_rattling"));
 
     private final ModelPart neck, head, tongue;
     /** neck, seg2..seg6, tail: each a child of the one before. */
@@ -118,6 +120,11 @@ public class SnakeModel extends EntityModel<WildAnimalRenderState> {
             head.xRot = -0.9F; // the neck tips it down: the snout ends up a little raised
             head.z += 0.6F + Mth.sin(t * 0.8F) * 0.3F;
             tongue.visible = true;
+        }
+        if (Boolean.TRUE.equals(state.getRenderData(RATTLING))) {
+            chain[5].xRot = -0.5F; // the tail end held up, the rattle a blur
+            chain[6].xRot = -0.9F;
+            chain[6].yRot = Mth.sin(t * 3.1F) * 0.35F;
         }
     }
 }

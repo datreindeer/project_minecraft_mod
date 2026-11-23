@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " R",
+    "T ",
+    "S "
+  ],
+  "key": {
+    "R": "mechanical:rattlesnake_rattle",
+    "T": "mechanical:twine",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:shell_rattle",
+    "count": 1
+  }
+}

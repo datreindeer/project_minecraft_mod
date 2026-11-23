@@ -1,0 +1,41 @@
+{
+  "parent": "mechanical:hunting/small_game",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_pika"
+          }
+        ]
+      }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "butchered"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pika_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.pika.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.pika.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

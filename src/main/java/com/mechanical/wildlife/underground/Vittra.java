@@ -64,8 +64,11 @@ public class Vittra extends WildAnimal implements Underground.Fearless {
 
     /** Hears {@code p} if it can: not muffled, not in light, not their guest (Bergtagen), alive and in survival. */
     public void hear(Player p) {
-        if (getTarget() == null && !muffled(p) && !p.isCreative() && !p.isSpectator() && !Underground.inLight(p)
-                && !p.hasEffect(com.mechanical.folklore.Beings.MOUNTAIN_GUEST)) setTarget(p);
+        if (getTarget() == null && canHear(p)) setTarget(p);
+    }
+
+    public static boolean canHear(Player p) {
+        return !muffled(p) && !p.isCreative() && !p.isSpectator() && !Underground.inLight(p) && !p.hasEffect(com.mechanical.folklore.Beings.MOUNTAIN_GUEST);
     }
 
     @Override

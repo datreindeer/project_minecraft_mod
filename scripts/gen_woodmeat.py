@@ -162,15 +162,20 @@ FAMILIES = {
     "dried_pork": ["minecraft:porkchop", "porkchop_scraps", "tapir_meat"],
     "dried_mutton": ["minecraft:mutton", "mutton_scraps", "ibex_meat", "chamois_meat"],
     "game_jerky": ["game_meat_scraps", "raw_mammoth", "raw_rhino", "onager_meat", "hyena_meat", "leopard_meat", "raw_lynx",
-                   "raw_wolverine", "raw_wildcat"],
-    "small_game_jerky": ["minecraft:rabbit", "rabbit_scraps", "raw_ermine", "raw_lemming", "raw_marten", "raw_mole", "raw_vole",
+                   "raw_wolverine", "raw_wildcat", "raw_polar_bear", "raw_snow_leopard"],
+    "small_game_jerky": ["minecraft:rabbit", "rabbit_scraps", "raw_ermine", "raw_arctic_fox", "raw_pika", "raw_lemming", "raw_marten", "raw_mole", "raw_vole",
                          "marmot_meat", "raw_otter", "raw_snake", "lizard_tail", "tortoise_meat"],
     "dried_fowl": ["minecraft:chicken", "chicken_scraps", "raw_goose", "raw_pheasant", "raw_ptarmigan", "raw_pigeon",
-                   "raw_capercaillie", "raw_bustard", "raw_hornbill", "raw_jungle_fowl", "raw_peafowl", "raw_mallard",
+                   "raw_capercaillie", "raw_black_grouse", "raw_bustard", "raw_hornbill", "raw_jungle_fowl", "raw_peafowl", "raw_mallard",
                    "raw_swan", "raw_heron", "raw_crane"],
     "dried_seal_meat": ["raw_seal_meat"],
     "stockfish": ["minecraft:cod", "raw_pike", "raw_sturgeon"],
 }
+# fauna: temperate (wildlife/temperate)
+FAMILIES["beef_jerky"] += ["raw_wisent"]
+FAMILIES["small_game_jerky"] += ["raw_water_vole", "pond_turtle_meat"]
+FAMILIES["dried_fowl"] += ["raw_skylark", "raw_lapwing", "raw_bittern"]
+FAMILIES["stockfish"] += ["raw_eel"]
 BIG_CUTS = ["raw_haunch", "raw_ribs", "raw_loin"]
 FATTY = ["cave_bear_meat", "raw_beaver", "beaver_tail", "raw_walrus_meat"]
 mid = lambda i: i if ":" in i else M + i

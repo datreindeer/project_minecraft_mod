@@ -1,0 +1,1169 @@
+{
+  "textures": {
+    "particle": "mechanical:block/elkwight_antler",
+    "antler": "mechanical:block/elkwight_antler",
+    "skull": "mechanical:block/elkwight_skull"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        4,
+        12
+      ],
+      "to": [
+        11,
+        12,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6,
+            8
+          ],
+          "texture": "#skull"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            6,
+            8
+          ],
+          "texture": "#skull"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            4,
+            8
+          ],
+          "texture": "#skull"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            4,
+            8
+          ],
+          "texture": "#skull"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            6,
+            4
+          ],
+          "texture": "#skull"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            6,
+            4
+          ],
+          "texture": "#skull"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        2,
+        7
+      ],
+      "to": [
+        10,
+        7,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            5
+          ],
+          "texture": "#skull"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            5
+          ],
+          "texture": "#skull"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            5,
+            5
+          ],
+          "texture": "#skull"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            5,
+            5
+          ],
+          "texture": "#skull"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            4,
+            5
+          ],
+          "texture": "#skull"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            4,
+            5
+          ],
+          "texture": "#skull"
+        }
+      }
+    },
+    {
+      "from": [
+        11,
+        9,
+        13
+      ],
+      "to": [
+        14,
+        11,
+        15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        9,
+        13
+      ],
+      "to": [
+        5,
+        11,
+        15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        10,
+        13
+      ],
+      "to": [
+        31,
+        21,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            11
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            11
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        -15,
+        10,
+        13
+      ],
+      "to": [
+        3,
+        21,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            11
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            11
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        15.0,
+        21,
+        13
+      ],
+      "to": [
+        16.0,
+        25,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        -14.0,
+        21,
+        13
+      ],
+      "to": [
+        -13.0,
+        26,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        18.5,
+        21,
+        13
+      ],
+      "to": [
+        19.5,
+        26,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        -10.5,
+        21,
+        13
+      ],
+      "to": [
+        -9.5,
+        25,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        22.0,
+        21,
+        13
+      ],
+      "to": [
+        23.0,
+        25,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        -7.0,
+        21,
+        13
+      ],
+      "to": [
+        -6.0,
+        26,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        25.5,
+        21,
+        13
+      ],
+      "to": [
+        26.5,
+        26,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        -3.5,
+        21,
+        13
+      ],
+      "to": [
+        -2.5,
+        25,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        29.0,
+        21,
+        13
+      ],
+      "to": [
+        30.0,
+        25,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            4
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    },
+    {
+      "from": [
+        0.0,
+        21,
+        13
+      ],
+      "to": [
+        1.0,
+        26,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            5
+          ],
+          "texture": "#antler"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.0,
+            1
+          ],
+          "texture": "#antler"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        -2,
+        0
+      ],
+      "scale": [
+        0.36,
+        0.36,
+        0.36
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        135,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    }
+  }
+}

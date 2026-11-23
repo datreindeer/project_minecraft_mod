@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:buffalo_meat"
+            "items": "mechanical:aardvark_meat"
           }
         ]
       }
@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:chamois_meat"
+            "items": "mechanical:bighorn_mutton"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:ibex_meat"
+            "items": "mechanical:buffalo_meat"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:onager_meat"
+            "items": "mechanical:camel_meat"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:orangutan_meat"
+            "items": "mechanical:chamois_meat"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_bison"
+            "items": "mechanical:gazelle_meat"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:ibex_meat"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_musk_ox"
+            "items": "mechanical:onager_meat"
           }
         ]
       }
@@ -86,12 +86,72 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:saiga_meat"
+            "items": "mechanical:orangutan_meat"
           }
         ]
       }
     },
     "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:ostrich_meat"
+          }
+        ]
+      }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_bison"
+          }
+        ]
+      }
+    },
+    "has_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_hide"
+          }
+        ]
+      }
+    },
+    "has_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_musk_ox"
+          }
+        ]
+      }
+    },
+    "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wisent"
+          }
+        ]
+      }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:saiga_meat"
+          }
+        ]
+      }
+    },
+    "has_15": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -113,7 +173,13 @@
       "has_6",
       "has_7",
       "has_8",
-      "has_9"
+      "has_9",
+      "has_10",
+      "has_11",
+      "has_12",
+      "has_13",
+      "has_14",
+      "has_15"
     ]
   ],
   "display": {

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "FFF",
+    "F F",
+    " S "
+  ],
+  "key": {
+    "F": "mechanical:fox_fur",
+    "S": "mechanical:sinew"
+  },
+  "result": {
+    "id": "mechanical:fox_fur_hat",
+    "count": 1
+  }
+}

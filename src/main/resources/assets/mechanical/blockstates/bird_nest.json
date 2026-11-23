@@ -223,6 +223,60 @@
     },
     {
       "when": {
+        "bird": "skylark",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_skylark_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "skylark",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_skylark_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "skylark",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_skylark_3"
+      }
+    },
+    {
+      "when": {
+        "bird": "lapwing",
+        "eggs": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_lapwing_1"
+      }
+    },
+    {
+      "when": {
+        "bird": "lapwing",
+        "eggs": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_lapwing_2"
+      }
+    },
+    {
+      "when": {
+        "bird": "lapwing",
+        "eggs": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_nest_eggs_lapwing_3"
+      }
+    },
+    {
+      "when": {
         "bird": "mallard",
         "eggs": "1"
       },

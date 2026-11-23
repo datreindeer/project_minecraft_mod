@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/drying_rack",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:polar_bear_pelt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:polar_bear_pelt"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.polar_bear_pelt.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.polar_bear_pelt.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

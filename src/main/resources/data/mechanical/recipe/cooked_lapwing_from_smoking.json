@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.1,
+  "ingredient": "mechanical:raw_lapwing",
+  "result": {
+    "id": "mechanical:cooked_lapwing",
+    "count": 1
+  }
+}

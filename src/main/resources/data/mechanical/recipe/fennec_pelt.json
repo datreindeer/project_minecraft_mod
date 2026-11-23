@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:raw_fennec_pelt",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:fennec_pelt",
+    "count": 1
+  }
+}

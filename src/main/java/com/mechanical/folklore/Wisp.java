@@ -118,7 +118,7 @@ public class Wisp extends Spirit {
         double ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(getX()), (int) Math.floor(getZ()));
         double bob = Math.sin((tickCount + getId()) * 0.1) * 0.25;
         Vec3 step = Vec3.ZERO;
-        if (p != null && p.distanceTo(this) < LEAD) step = g.subtract(position()).horizontal().normalize().scale(STEP);
+        if (p != null && !isNoAi() && p.distanceTo(this) < LEAD) step = g.subtract(position()).horizontal().normalize().scale(STEP);
         setPos(getX() + step.x, getY() + (ground + 1.2 + bob - getY()) * 0.2, getZ() + step.z);
         if (position().horizontal().distanceTo(g.horizontal()) < ARRIVED) arrive(level, level.getPlayers(pl -> pl.distanceTo(this) < FOLLOW_RANGE && seenBy(pl)));
     }

@@ -1,0 +1,13 @@
+boss at (16124.5, 200.0, 65.5) health 400.0
+shot boss_front
+shot boss_side
+shot boss_chop
+shot boss_spin
+shot boss_sweep
+shot boss_throw
+shot boss_wave
+shot boss_eat
+shot boss_night
+shot boss_carcass
+shot boss_axe
+shot boss_trophies

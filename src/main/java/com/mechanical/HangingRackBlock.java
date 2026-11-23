@@ -133,7 +133,7 @@ public class HangingRackBlock extends Block {
     /** Hangs {@code carcass} (hauled by {@code player}) on the rack at {@code pos}, if it fits and the hook is free. */
     static void tryHang(ServerLevel level, BlockPos clicked, BlockState state, CarcassEntity carcass, Player player) {
         BlockPos pos = base(clicked, state);
-        if (carcass.isHuge()) player.sendOverlayMessage(Component.translatable("message.mechanical.hanging_rack.too_big"));
+        if (carcass.isHuge() || carcass.isColossal()) player.sendOverlayMessage(Component.translatable("message.mechanical.hanging_rack.too_big"));
         else if (occupied(level, pos)) player.sendOverlayMessage(Component.translatable("message.mechanical.hanging_rack.occupied"));
         else {
             carcass.hang(pos, state.getValue(FACING));

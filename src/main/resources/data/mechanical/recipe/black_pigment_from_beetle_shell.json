@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:beetle_shell",
+    "mechanical:beetle_shell",
+    "#mechanical:rock_chunks"
+  ],
+  "result": {
+    "id": "mechanical:black_pigment",
+    "count": 2
+  }
+}

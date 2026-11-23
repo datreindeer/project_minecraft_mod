@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:plucked_black_grouse",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "mechanical:raw_black_grouse",
+    "count": 2
+  }
+}

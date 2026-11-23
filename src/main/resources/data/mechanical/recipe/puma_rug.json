@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:puma_pelt",
+    "mechanical:puma_pelt",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:puma_rug",
+    "count": 1
+  }
+}

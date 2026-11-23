@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.1,
+  "ingredient": "mechanical:aardvark_meat",
+  "result": {
+    "id": "mechanical:cooked_aardvark_meat",
+    "count": 1
+  }
+}

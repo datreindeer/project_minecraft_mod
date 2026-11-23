@@ -37,15 +37,30 @@ public class Owl extends FlockBird {
         super(type, level, KIND);
     }
 
+    /** For owls of other kinds (the snowy owl, wildlife.cold). */
+    protected Owl(EntityType<? extends Owl> type, Level level, Kind kind) {
+        super(type, level, kind);
+    }
+
+    /** When it is out hunting (and hoots): at night. */
+    protected boolean huntingTime(Level level) {
+        return level.isDarkOutside();
+    }
+
+    /** What it drops on from the air. */
+    protected boolean isPrey(LivingEntity e) {
+        return e.getType().builtInRegistryHolder().is(ForestBirdsFauna.OWL_PREY);
+    }
+
     /** Roosts by day, flies by night. */
     @Override
     protected boolean restTime(Level level) {
-        return !level.isDarkOutside();
+        return !huntingTime(level);
     }
 
     @Override
     protected boolean sleepTime() {
-        return !level().isDarkOutside();
+        return !huntingTime(level());
     }
 
     /** Silent flight: no wing clatter when it takes off. */
@@ -60,13 +75,13 @@ public class Owl extends FlockBird {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return level().isDarkOutside() ? SoundEvents.NOTE_BLOCK_FLUTE.value() : null;
+        return huntingTime(level()) ? SoundEvents.NOTE_BLOCK_FLUTE.value() : null;
     }
 
     @Override
     public void playAmbientSound() {
         super.playAmbientSound();
-        if (level().isClientSide() || !level().isDarkOutside()) return;
+        if (level().isClientSide() || !huntingTime(level())) return;
         echo = 9; // the second "hoo"
         for (Player p : level().getEntitiesOfClass(Player.class, getBoundingBox().inflate(HOOT_RANGE))) {
             if (!p.isCreative() && !p.isSpectator() && Sanity.of(p) < Sanity.UNEASY) Sanity.set(p, Sanity.of(p) - HOOT_DREAD);
@@ -89,7 +104,7 @@ public class Owl extends FlockBird {
 
     @Override
     protected Vec3 cruise() {
-        if (!level().isDarkOutside()) return super.cruise();
+        if (!huntingTime(level())) return super.cruise();
         if (prey != null && (!prey.isAlive() || distanceToSqr(prey) > HUNT_RANGE * HUNT_RANGE * 2.25)) prey = null;
         if (prey == null && (tickCount + getId()) % 40 == 0) prey = findPrey();
         if (prey == null) return super.cruise();
@@ -110,7 +125,7 @@ public class Owl extends FlockBird {
 
     private LivingEntity findPrey() {
         return level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(HUNT_RANGE, 12, HUNT_RANGE),
-                e -> e.isAlive() && e.getType().builtInRegistryHolder().is(ForestBirdsFauna.OWL_PREY) && e.onGround() && e.getY() < getY())
+                e -> e.isAlive() && isPrey(e) && e.onGround() && e.getY() < getY())
                 .stream().min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
     }
 

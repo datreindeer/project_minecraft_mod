@@ -44,13 +44,17 @@ Bara den som **tror** ser väsendena. Allt magiskt syns bara för spelare med ti
 - En gång per år (kalendern) per spelare tappar den en **Watcher Feather** när man kommer nära. Trofé.
 - Advancement *Above the Clouds* (se den), *Gift of the Peaks* (få fjädern).
 
-## 3. Lyktgubbar
+## 3. Lyktgubbar — byggt (fauna/folklore.md)
+> Byggt som `folklore/Wisp`: leder mot en plats 24–48 block bort; oftast blir man Lost, ibland (30 %) en Bog Grave med
+> kista (`chests/bog_grave`). Natt i myr och mörk skog, dubbelt så ofta på hösten. Advancement *Follow the Light*.
 - **Entity `will_o_wisp`**: litet ljus, ingen modell, bara partiklar + ljus. Över myr (Peat, Bog Oak från fas 3) på höstnätter.
 - Flyttar sig bort när man följer, alltid mot en **Bog Grave** (se nedan). Går inte att fånga.
 - **Feature `bog_grave`**: liten sjunken grav i myren: Bog Oak-plankor, ben, en kista (`chests/bog_grave`) med gamla saker.
 - Advancement *Follow the Light*.
 
-## 4. Skogsrået
+## 4. Skogsrået — byggt (fauna/folklore.md)
+> Byggt som `folklore/Huldra` (ihålig rygg, lockar en in bland träden, gåva = Huldra Comb + Luck, nej = Lost). Mer än
+> planens stämningsfigur, efter fauna-expansion-plan.md.
 - **Entity `forest_maiden`**: kvinnofigur i bark och mossa, syns bara på 30–60 blocks håll mellan träden i skymning.
   Tonas bort när spelaren tittar på henne länge eller går närmare (renderer med alfa). Ingen AI utöver att stå still.
 - Mycket sällsynt. Rent stämning. Advancement *Was Someone There?*
@@ -61,7 +65,9 @@ Bara den som **tror** ser väsendena. Allt magiskt syns bara för spelare med ti
 - Sover man i ringen vaknar man en bit bort, eller ett dygn senare. Inget farligt, bara konstigt.
 - Advancement *Taken by the Dance*.
 
-## 6. Näcken
+## 6. Näcken — byggt (fauna/folklore.md)
+> Byggt som `folklore/Nacken`: fiolen hörs av alla, figuren syns med syn 30; lyssnar man för länge dras man mot vattnet;
+> en gåva ger Fiddler's Blessing och Näcken's String. Advancement *Heard the Fiddle*.
 - **Feature/entity `nacken`**: vid forsar och strömmande vatten på natten hörs fiol (eget ljud). Krusningar på vattnet.
   Ingen synlig figur. Går man ut i vattnet där tystnar musiken.
 - Advancement *Heard the Fiddle*.
@@ -71,7 +77,9 @@ Bara den som **tror** ser väsendena. Allt magiskt syns bara för spelare med ti
 - Lägg en gåva (kött, mjöd, bärnstensbit) → mindre risk för Blood Moon den månaden (`BloodMoon`). En gåva per månad.
 - Advancement *An Offering*.
 
-## 8. Tomten (senare)
+## 8. Tomten — byggt (fauna/folklore.md)
+> Byggt som `folklore/Tomte`: flyttar in vid gårdar (8+ Farmland), gröt i Deepwinter gör honom nöjd (grödor växer),
+> glömd gröt eller ett slag gör honom arg (djuren nyps). Sabotage med dörrar/grindar är inte byggt.
 - **Entity `tomte`**: liten gubbe i grå kläder, syns bara på avstånd vid stammens hus/ladugård på vinternätter.
 - Gröt i en Bowl på julafton (kalendern) → djuren i byn mår bra (snabbare växt) vintern ut. Glöms gröten: små sabotage
   (en dörr öppen, ett djur utsläppt).
@@ -100,3 +108,7 @@ Små bevingade väsen som bor runt **Ancient Oak**. Undantag från regeln ovan: 
 - y 150 för Mountain Watcher.
 - Väsen syns per spelare, efter syn (Faith + Second Sight).
 - Textures och ljud görs av oss (genererade).
+
+## Fler väsen (fauna-expansion-plan.md) — byggt
+Myrmannen (Bog Body), Bergatroll i skogen (Mossy Troll Stone), Frostjätte (Frost Heart), Bergtagen, Dune Wraith och Jungle
+Spirit Mask. Allt i [fauna/folklore.md](fauna/folklore.md).

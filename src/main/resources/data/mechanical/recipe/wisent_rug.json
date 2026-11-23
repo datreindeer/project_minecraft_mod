@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:raw_wisent_hide",
+    "#mechanical:knives",
+    "#mechanical:tanning_fats",
+    "minecraft:bone"
+  ],
+  "result": {
+    "id": "mechanical:wisent_rug",
+    "count": 1
+  }
+}

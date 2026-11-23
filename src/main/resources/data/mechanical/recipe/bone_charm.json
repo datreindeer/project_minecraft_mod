@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " C ",
+    "BGB",
+    " B "
+  ],
+  "key": {
+    "C": "mechanical:cordage",
+    "B": "mechanical:elkwight_bone",
+    "G": "minecraft:gold_nugget"
+  },
+  "result": {
+    "id": "mechanical:bone_charm"
+  }
+}

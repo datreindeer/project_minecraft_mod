@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/grub",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:woodpecker_feather"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:woodpecker_feather"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.woodpecker_feather.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.woodpecker_feather.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

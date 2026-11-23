@@ -1,0 +1,41 @@
+{
+  "parent": "mechanical:hunting/small_game",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_water_vole"
+          }
+        ]
+      }
+    },
+    "butchered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "butchered"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:water_vole_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mechanical.hunting.water_vole.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.hunting.water_vole.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

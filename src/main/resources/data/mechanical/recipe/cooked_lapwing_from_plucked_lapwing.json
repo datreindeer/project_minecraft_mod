@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.1,
+  "ingredient": "mechanical:plucked_lapwing",
+  "result": {
+    "id": "mechanical:cooked_lapwing",
+    "count": 1
+  }
+}

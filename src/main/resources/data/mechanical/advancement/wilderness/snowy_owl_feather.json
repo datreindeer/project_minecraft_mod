@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/owl_feather",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:snowy_owl_feather"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:snowy_owl_feather"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.snowy_owl_feather.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.snowy_owl_feather.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

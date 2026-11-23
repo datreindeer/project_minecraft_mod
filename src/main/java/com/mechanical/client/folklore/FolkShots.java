@@ -102,14 +102,15 @@ public final class FolkShots {
                     return;
                 }
                 Shot s = SHOTS.get(index);
-                if (ticks == 5 && s.storm() && (index == 0 || !SHOTS.get(index - 1).storm())) server.execute(() -> {
-                    cmd("calendar set season winter");
+                int wait = s.storm() ? 140 : 0; // thunder builds up over a few seconds
+                if (ticks == 5 && s.storm()) server.execute(() -> {
+                    if (s.name().equals("frost_giant")) cmd("calendar set season winter");
                     cmd("time set midnight");
                     cmd("weather thunder");
                 });
-                if (ticks == 40) server.execute(() -> place(s));
-                if (ticks == 75) shot(mc, s.name());
-                if (ticks == 80) {
+                if (ticks == 40 + wait) server.execute(() -> place(s));
+                if (ticks == 75 + wait) shot(mc, s.name());
+                if (ticks == 80 + wait) {
                     server.execute(() -> {
                         if (current != null) current.discard();
                         if (s.type() == null) cmd("fill " + (int) Math.floor(base.x) + " 200 " + (int) Math.floor(base.z) + " "

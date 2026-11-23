@@ -289,7 +289,7 @@ public class TravoisEntity extends Entity {
     }
 
     public static int room(Entity e) {
-        if (e instanceof CarcassEntity c) return c.loadUnits();
+        if (e instanceof HeavyLoad c) return c.loadUnits();
         if (isLivestock(e)) {
             net.minecraft.world.entity.animal.Animal a = (net.minecraft.world.entity.animal.Animal) e;
             return a.isBaby() || a.getBbWidth() < 0.6F ? 1 : a.getBbHeight() >= 1.35F ? 3 : 2;
@@ -493,7 +493,7 @@ public class TravoisEntity extends Entity {
         }
         // the click that loaded a log, still held: it doesn't go on to hitch or open anything
         if (justClickedLog(player)) return InteractionResult.SUCCESS;
-        CarcassEntity hauled = CarcassHauling.hauled(player);
+        HeavyLoad hauled = CarcassHauling.heavy(player);
         if (hauled != null) {
             if (!level().isClientSide()) loadOn(hauled, player);
             return InteractionResult.SUCCESS;
@@ -534,9 +534,9 @@ public class TravoisEntity extends Entity {
         playSound(SoundEvents.LEAD_TIED, 1.0F, 0.8F);
     }
 
-    private void loadOn(CarcassEntity carcass, Player player) {
+    private void loadOn(HeavyLoad carcass, Player player) {
         if (capacity() == 0) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".no_room"));
-        else if (carcass.isHuge()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".too_big"));
+        else if (!carcass.fitsOnTravois()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".too_big"));
         else if (load() + carcass.loadUnits() > capacity()) player.sendOverlayMessage(Component.translatable("message.mechanical." + messageKey() + ".full"));
         else {
             carcass.setHauler(null);
@@ -641,7 +641,7 @@ public class TravoisEntity extends Entity {
         if (passenger instanceof FelledLogEntity) return carriedLogs().size() < logSlots();
         if (carriedLog() != null && !(passenger instanceof Player)) return false; // logs fill the bed
         int room = room(passenger);
-        return room > 0 && (passenger instanceof CarcassEntity || carriesLivestock()) && load() + room <= capacity();
+        return room > 0 && (passenger instanceof HeavyLoad || carriesLivestock()) && load() + room <= capacity();
     }
 
     @Override

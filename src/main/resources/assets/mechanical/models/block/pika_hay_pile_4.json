@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "particle": "mechanical:block/pika_hay_pile",
+    "hay": "mechanical:block/pika_hay_pile"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        8,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            8,
+            13,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "south": {
+          "uv": [
+            3,
+            8,
+            13,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "east": {
+          "uv": [
+            3,
+            8,
+            13,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "west": {
+          "uv": [
+            3,
+            8,
+            13,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "up": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#hay"
+        },
+        "down": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#hay"
+        }
+      }
+    }
+  ]
+}

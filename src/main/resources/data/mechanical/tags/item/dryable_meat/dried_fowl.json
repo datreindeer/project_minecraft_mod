@@ -7,6 +7,7 @@
     "mechanical:raw_ptarmigan",
     "mechanical:raw_pigeon",
     "mechanical:raw_capercaillie",
+    "mechanical:raw_black_grouse",
     "mechanical:raw_bustard",
     "mechanical:raw_hornbill",
     "mechanical:raw_jungle_fowl",
@@ -14,6 +15,9 @@
     "mechanical:raw_mallard",
     "mechanical:raw_swan",
     "mechanical:raw_heron",
-    "mechanical:raw_crane"
+    "mechanical:raw_crane",
+    "mechanical:raw_skylark",
+    "mechanical:raw_lapwing",
+    "mechanical:raw_bittern"
   ]
 }

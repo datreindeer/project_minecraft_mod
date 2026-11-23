@@ -13,7 +13,8 @@
     "mechanical:slate_highlands",
     "mechanical:soapstone_valley",
     "mechanical:limestone_karst",
-    "mechanical:glacial_moraine"
+    "mechanical:glacial_moraine",
+    "mechanical:scorched_barrens"
   ],
   "spawners": [
     {

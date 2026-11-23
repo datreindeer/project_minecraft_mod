@@ -5,13 +5,15 @@
     "mechanical:wolf_fur_coat",
     "mechanical:sealskin_parka",
     "mechanical:walrus_hide_cuirass",
+    "mechanical:polar_bear_cloak",
     "mechanical:ermine_mantle",
+    "mechanical:tiger_pelt_mantle",
+    "mechanical:crocodile_hide_cuirass",
     "mechanical:otter_fur_cape",
-    "mechanical:steel_chestplate",
     "mechanical:chitin_vest",
     "mechanical:trollhide_coat",
     "mechanical:lindworm_scale_chestplate",
-    "mechanical:tiger_pelt_mantle",
-    "mechanical:crocodile_hide_cuirass"
+    "mechanical:steel_chestplate",
+    "mechanical:elkwight_cloak"
   ]
 }

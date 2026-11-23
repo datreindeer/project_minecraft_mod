@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:wilderness/elkwight",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_axe"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.elkwight_axe_trophy.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.elkwight_axe_trophy.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

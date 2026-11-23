@@ -128,5 +128,20 @@
   "entity.tribesperson.trade": {
     "subtitle": "subtitles.mechanical.entity.tribesperson.trade",
     "sounds": []
+  },
+  "item.signal_horn.blow": {
+    "subtitle": "subtitles.mechanical.item.signal_horn.blow",
+    "sounds": [
+      {
+        "name": "minecraft:item/goat_horn/call3",
+        "pitch": 0.75,
+        "attenuation_distance": 256
+      },
+      {
+        "name": "minecraft:item/goat_horn/call0",
+        "pitch": 0.7,
+        "attenuation_distance": 256
+      }
+    ]
   }
 }

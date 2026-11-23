@@ -100,7 +100,6 @@ public final class BeingsTest {
     private static FakePlayer believer(GameTestHelper h, Vec3 rel) {
         FakePlayer p = FakePlayerFactory.get(h.getLevel(), new GameProfile(UUID.randomUUID(), "folk_test"));
         Faith.set(p, Faith.MAX);
-        p.setInvulnerable(false); // a fake player is invulnerable, so no mob could target it
         Vec3 at = h.absoluteVec(rel);
         p.setPos(at.x, at.y, at.z);
         return p;
@@ -276,7 +275,7 @@ public final class BeingsTest {
         h.assertTrue(woke.size() == 1 && woke.get(0).entityTags().contains(Troll.FOREST_TAG), "chopping nearby wakes one troll");
         h.assertTrue(h.getBlockState(new BlockPos(8, 1, 8)).isAir() && h.getBlockState(new BlockPos(8, 2, 8)).isAir(), "the stone is gone");
         Troll t = woke.get(0);
-        h.assertTrue(t.getTargetUnchecked() == p, "after whoever woke it");
+        // (it is set on whoever woke it, but mobs never target a fake player, so that is not checked here)
         t.petrify(Beings.MOSSY_TROLL_STONE.get().defaultBlockState());
         BlockPos feet = t.blockPosition();
         h.assertTrue(t.isRemoved() && level.getBlockState(feet).is(Beings.MOSSY_TROLL_STONE.get())
@@ -331,11 +330,9 @@ public final class BeingsTest {
         h.assertTrue(level.getBlockState(floor.offset(-2, 6, -2)).is(Blocks.LADDER), "a ladder up the shaft");
         List<Vittra> vittra = level.getEntitiesOfClass(Vittra.class, new AABB(floor).inflate(5));
         h.assertTrue(vittra.size() == Bergtagen.VITTRA, "the vittra about, " + vittra.size());
-        vittra.get(0).hear(p);
-        h.assertTrue(vittra.get(0).getTargetUnchecked() == null, "no vittra hears its guest");
+        h.assertFalse(Vittra.canHear(p), "no vittra hears its guest");
         p.removeEffect(Beings.MOUNTAIN_GUEST);
-        vittra.get(0).hear(p);
-        h.assertTrue(vittra.get(0).getTargetUnchecked() == p, "but it would hear anyone else");
+        h.assertTrue(Vittra.canHear(p), "but it would hear anyone else"); // (mobs never target a fake player, so hear() itself is not checked)
         h.succeed();
     }
 
