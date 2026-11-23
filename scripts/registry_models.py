@@ -20,7 +20,7 @@ from PIL import Image
 
 THUMB = 128  # thumbnail size (rendered at 2x, then downsampled)
 BABY = {"calf", "cub", "lamb", "fawn", "piglet", "foal", "chick", "leveret"}
-OVERLAY = re.compile(r"_(eyes|runes|overlay|glow|emissive)$")
+OVERLAY = re.compile(r"_(eyes|runes|overlay|glow|emissive|collar|wool|wool_baby)$")
 VANILLA_FIELDS = {"ModelLayers.PLAYER": "minecraft:player#main", "ModelLayers.PLAYER_SLIM": "minecraft:player_slim#main",
                   "ModelLayers.ZOMBIE": "minecraft:zombie#main", "ModelLayers.SKELETON": "minecraft:skeleton#main"}
 SKIP_ENTITIES = {"carcass", "falling_tree", "felled_log"}  # draw other mobs' models / blocks, nothing of their own to show
@@ -173,7 +173,8 @@ class Models:
             ic = re.search(r"class\s+" + rcls.group(1) + r"\b[^{]*\{", file_code)
             rcode = file_code[ic.end():].split("\n    }\n", 1)[0] if ic else ""
         folk = [f"{ns}:folk_{k.lower()}#main" for k in re.findall(r"\bKind\.([A-Z][A-Z0-9_]*)", rend)]  # folklore BeingRenderer
-        found = [l for l in folk if l in layers] or tokens(rend) or [l for l in (f"{ns}:{eid}#main",) if l in layers] or tokens(rcode)
+        vl = f"{g.MOD}:vanilla_{eid}#main"  # the mod's re-modelled vanilla mobs (FarmAnimalRenderers.COW ...)
+        found = [l for l in folk if l in layers] or ([vl] if vanilla and vl in layers else []) or tokens(rend) or [l for l in (f"{ns}:{eid}#main",) if l in layers] or tokens(rcode)
         if not found:
             g.warn(f"ingen 3D-modell hittades för entity {eid}")
             return None
@@ -203,6 +204,8 @@ class Models:
                 variants.append((lk.replace("_", " ").title(), ref, adult, True, per_look.get(lk, scale)))
         else:
             texes = textures_for(eid)
+            if vanilla:  # the mod's re-skins of the vanilla mob, not wildlife/ look-alikes (wildlife/camel.png)
+                texes = [t for t in texes if "/vanilla/" in t] or texes
             if not texes:  # e.g. TameHorse: TEXTURE = ...("textures/entity/wildlife/wild_horse.png")
                 texes = [f"{g.MOD}:{t}" for t in dict.fromkeys(re.findall(r'"(textures/entity/[^"]+\.png)"', ecode))]
             if not texes:  # or a constant of another entity class
@@ -225,6 +228,13 @@ class Models:
                 is_baby = suffix in BABY
                 horns = needs is not None and not is_baby and (not needs or suffix in needs)
                 layer = baby if is_baby else adult
+                if vanilla and adult == f"{g.MOD}:vanilla_{eid}#main":  # temperature variants and the young have own layers
+                    kid = {"cow": "calf", "pig": "piglet", "sheep": "lamb", "chicken": "chick"}.get(eid, eid) if is_baby else None
+                    temp = next((t for t in ("cold", "warm") if f"_{t}" in stem), "")
+                    for nm in (f"{temp}_{kid}" if kid and temp else None, kid, f"{temp}_{eid}" if temp else None):
+                        if nm and f"{g.MOD}:vanilla_{nm}#main" in layers:
+                            layer = f"{g.MOD}:vanilla_{nm}#main"
+                            break
                 s = scale
                 if is_baby and baby == adult:
                     s = tuple(v * baby_scale for v in scale)

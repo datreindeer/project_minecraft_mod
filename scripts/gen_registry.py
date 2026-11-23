@@ -876,7 +876,7 @@ def add_models(entries, ids, notes):
         if not ent["variants"]:
             continue
         eid = "entity:" + ent["id"]
-        if eid not in entries:  # field named apart from the lang id (BUSTARD -> great_bustard)
+        if eid not in entries and not ent["vanilla"]:  # field named apart from the lang id (BUSTARD -> great_bustard)
             alt = [k for k in entries if k.startswith("entity:") and k.endswith("_" + ent["id"])]
             if len(alt) == 1:
                 eid = alt[0]
