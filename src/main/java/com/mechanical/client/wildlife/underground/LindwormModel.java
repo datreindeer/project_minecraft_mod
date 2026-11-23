@@ -7,11 +7,7 @@ import com.mechanical.wildlife.underground.Lindworm;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -20,7 +16,8 @@ import net.minecraft.util.Mth;
  * clawed forelegs), {@link #TAIL} thinner tail segments and a whip-thin tip, each hinged on the one before. It slithers
  * with a wave running down the body; hunting it rears its head and gapes; lunging it stretches out straight, jaws wide;
  * coiled round its prey every hinge bends the same way and the body winds into a ring. As a carcass it lies in a loose
- * S. Texture 128x64: textures/entity/wildlife/lindworm.png, painted by scripts/gen_fauna_underground_textures.py.
+ * S. Geometry and texture (128x64: textures/entity/wildlife/lindworm.png) from one table in scripts/gen_hunt_models.py
+ * (UndergroundGeometry).
  */
 public class LindwormModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "lindworm"), "main");
@@ -40,41 +37,7 @@ public class LindwormModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition parent = mesh.getRoot();
-        PartDefinition first = null, second = null;
-        for (int i = 0; i < ALL; i++) {
-            CubeListBuilder box;
-            PartPose pose;
-            if (i < BODY) {
-                box = CubeListBuilder.create().texOffs(0, 20).addBox(-3.0F, -2.5F, 0.0F, 6.0F, 5.0F, 6.0F)
-                        .texOffs(28, 20).addBox(-0.5F, -4.5F, 1.0F, 1.0F, 2.0F, 4.0F);
-                pose = i == 0 ? PartPose.offset(0.0F, 21.5F, -12.0F) : PartPose.offset(0.0F, 0.0F, 6.0F);
-            } else if (i < BODY + TAIL) {
-                box = CubeListBuilder.create().texOffs(0, 34).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 6.0F);
-                pose = PartPose.offset(0.0F, i == BODY ? 0.5F : 0.0F, 6.0F);
-            } else {
-                box = CubeListBuilder.create().texOffs(0, 46).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 6.0F);
-                pose = PartPose.offset(0.0F, 1.0F, 6.0F);
-            }
-            PartDefinition s = parent.addOrReplaceChild("seg" + i, box, pose);
-            if (i == 0) first = s;
-            if (i == 1) second = s;
-            parent = s;
-        }
-        PartDefinition head = first.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -2.5F, -8.0F, 6.0F, 4.0F, 8.0F),
-                PartPose.offset(0.0F, -0.5F, 0.0F));
-        head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(30, 0).addBox(-2.5F, 0.0F, -7.0F, 5.0F, 2.0F, 7.0F),
-                PartPose.offset(0.0F, 1.5F, -1.0F));
-        head.addOrReplaceChild("right_horn", CubeListBuilder.create().texOffs(56, 0).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 5.0F),
-                PartPose.offsetAndRotation(-2.0F, -2.5F, -2.0F, 0.45F, -0.25F, 0.0F));
-        head.addOrReplaceChild("left_horn", CubeListBuilder.create().texOffs(56, 0).mirror().addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 5.0F),
-                PartPose.offsetAndRotation(2.0F, -2.5F, -2.0F, 0.45F, 0.25F, 0.0F));
-        second.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(72, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offsetAndRotation(-3.0F, -1.0F, 2.0F, 0.0F, 0.0F, 0.6F));
-        second.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(72, 0).mirror().addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offsetAndRotation(3.0F, -1.0F, 2.0F, 0.0F, 0.0F, -0.6F));
-        return LayerDefinition.create(mesh, 128, 64);
+        return UndergroundGeometry.lindworm();
     }
 
     @Override

@@ -2,7 +2,10 @@
 
 Fem djur för snölandet, taigan och skogarna: **Wolverine**, **Lynx**, **Ermine**, **Lemming** och **Pine Marten**.
 Kod: `wildlife/coldhunters/` (ColdhuntersFauna, ett djur per klass, PeltCuring), klient: `client/wildlife/coldhunters/`.
-Data: `scripts/gen_fauna_coldhunters.py`, texturer: `scripts/gen_fauna_coldhunters_textures.py`.
+Data: `scripts/gen_fauna_coldhunters.py`, texturer: `scripts/gen_fauna_coldhunters_textures.py` (föremål och lager). Djurens
+modeller och hudar (och styckade hudar) kommer ur en tabell var i `scripts/gen_hunt_models.py` (`HuntGeometry`), som
+texturskriptet kör; hermelinen, mården och lämmeln byggs i dubbel storlek och ritas i halv, för finare detaljer.
+Bilder: `docs/shots/fauna/old_hunt_*.png` (HuntShots, `huntshots.flag` i run/).
 
 Alla lämnar ett Carcass som styckas med kniv (Butchery) och kan hängas på en Hanging Rack. Alla spawnar på rävens mark
 (gräs, snö, podzol, coarse dirt) i dagsljus. Mängder nedan gäller flintkniv; på Hanging Rack faller allt i första omgången

@@ -3,7 +3,9 @@
 Två nattmonster som tar **creeperns plats**: **Gloson** och **Mushroom Man**. Creepern passade inte i stenåldern och
 folktron och förstörde bara bygget; inget av de nya väsendena förstör block.
 Kod: `wildlife/night/` (NightFauna, Gloson, MushroomMan, NightTest), klient: `client/wildlife/night/`.
-Data: `scripts/gen_fauna_night.py`, texturer: `scripts/gen_fauna_night_textures.py`.
+Data: `scripts/gen_fauna_night.py`, texturer: `scripts/gen_fauna_night_textures.py`. Svampmannens modell och hud kommer ur
+`scripts/gen_hunt_models.py` (`MushroomGeometry`): en vårtig hatt i tre våningar med skivor under och en trasig slöja,
+en fot med ring och knöl, rotfötter.
 
 ## Ingen creeper
 

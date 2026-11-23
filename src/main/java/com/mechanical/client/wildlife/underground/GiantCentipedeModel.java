@@ -6,11 +6,7 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -20,8 +16,8 @@ import net.minecraft.util.Mth;
  * trailing cerci. Walking, a gentle wave runs down the body and the legs ripple front to back (each pair a little behind
  * the one before); attacking, the head rears and the claws open. As a carcass it lies curled with the legs folded in; hung
  * it hangs straight. Wall and ceiling poses are whole-body turns in the renderer (UndergroundClient).
- * Texture 64x32: textures/entity/wildlife/giant_centipede.png, painted by scripts/gen_fauna_underground_textures.py
- * (its UV table mirrors the texOffs here).
+ * Geometry and texture (64x64: textures/entity/wildlife/giant_centipede.png) from one table in
+ * scripts/gen_hunt_models.py (UndergroundGeometry): a glossy back plate over each segment, jointed legs.
  */
 public class GiantCentipedeModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "giant_centipede"), "main");
@@ -47,34 +43,7 @@ public class GiantCentipedeModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition parent = mesh.getRoot();
-        PartDefinition first = null;
-        for (int i = 0; i < SEGMENTS; i++) {
-            PartDefinition s = parent.addOrReplaceChild("seg" + i, CubeListBuilder.create().texOffs(0, 6).addBox(-2.0F, -1.0F, 0.0F, 4.0F, 2.0F, 2.0F),
-                    i == 0 ? PartPose.offset(0.0F, 21.0F, -8.0F) : PartPose.offset(0.0F, 0.0F, 2.0F));
-            s.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 0).addBox(0.0F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F),
-                    PartPose.offsetAndRotation(2.0F, 0.5F, 1.0F, 0.0F, 0.0F, 0.85F));
-            s.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(16, 0).mirror().addBox(-3.0F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F),
-                    PartPose.offsetAndRotation(-2.0F, 0.5F, 1.0F, 0.0F, 0.0F, -0.85F));
-            if (i == 0) first = s;
-            parent = s;
-        }
-        parent.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(0, 11).addBox(-1.5F, -0.5F, 0.0F, 3.0F, 1.0F, 2.0F)
-                        .texOffs(40, 0).addBox(-1.5F, -0.5F, 2.0F, 1.0F, 1.0F, 3.0F)
-                        .texOffs(40, 0).mirror().addBox(0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 3.0F),
-                PartPose.offset(0.0F, 0.0F, 2.0F));
-        PartDefinition head = first.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -1.0F, -3.0F, 4.0F, 2.0F, 3.0F),
-                PartPose.ZERO);
-        head.addOrReplaceChild("left_antenna", CubeListBuilder.create().texOffs(28, 0).addBox(-0.5F, -0.5F, -5.0F, 1.0F, 1.0F, 5.0F),
-                PartPose.offsetAndRotation(1.2F, -0.5F, -3.0F, 0.3F, -0.45F, 0.0F));
-        head.addOrReplaceChild("right_antenna", CubeListBuilder.create().texOffs(28, 0).mirror().addBox(-0.5F, -0.5F, -5.0F, 1.0F, 1.0F, 5.0F),
-                PartPose.offsetAndRotation(-1.2F, -0.5F, -3.0F, 0.3F, 0.45F, 0.0F));
-        head.addOrReplaceChild("left_claw", CubeListBuilder.create().texOffs(16, 3).addBox(-0.5F, -0.5F, -2.0F, 1.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(1.2F, 0.5F, -2.5F, 0.0F, 0.5F, 0.0F));
-        head.addOrReplaceChild("right_claw", CubeListBuilder.create().texOffs(16, 3).mirror().addBox(-0.5F, -0.5F, -2.0F, 1.0F, 1.0F, 2.0F),
-                PartPose.offsetAndRotation(-1.2F, 0.5F, -2.5F, 0.0F, -0.5F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return UndergroundGeometry.giantCentipede();
     }
 
     @Override

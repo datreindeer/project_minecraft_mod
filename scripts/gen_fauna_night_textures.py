@@ -4,9 +4,7 @@
   cold charcoal-to-ash-grey ramp, the bristle crest paler, the small eyes amber. entity/wildlife/gloson_eyes.png: only
   those eyes (and a dim rim), drawn full-bright by AngryEyesLayer. entity/skinned/wildlife/gloson.png: the boar's skinned
   carcass skin (flesh is flesh).
-- entity/night/mushroom_man.png (64x64): a brown, pale-speckled cap with cream gills under it and a knob on top, a pale
-  stem of a body with two hollow dark eyes and a mouth slit, stubby feet and thin arms. The box table (BOXES) mirrors the
-  cubes in MushroomManModel: keep them in sync.
+- entity/night/mushroom_man.png: painted with its model by gen_hunt_models.py (called from here).
 - items (16x16): Raw/Cooked Gloson (vanilla porkchops, greyed), Gloson Bristles, Razor Ridge, Razor Knife, Mushroom Flesh,
   Spore Sac, Spore Bomb (the Puffball, tied up), the two spawn eggs; mob_effect/bleeding.png (18x18 blood drop).
 Run: python scripts/gen_fauna_night_textures.py   (deterministic; needs the merged jar from a gradle build)
@@ -66,62 +64,10 @@ def gloson():
 
 
 # =============================================================== MUSHROOM MAN
-CAP_TOP, CAP_DARK, CAP_SPOT = (128, 84, 50), (88, 54, 32), (214, 196, 160)
-GILL, GILL_DARK = (222, 206, 172), (176, 156, 120)
-STEM, STEM_SHADE, HOLLOW, MOSS = (226, 216, 192), (184, 170, 140), (36, 26, 20), (110, 122, 70)
-
-# name: (u, v, w, h, d) as in MushroomManModel's texOffs/addBox
-BOXES = {"cap": (0, 0, 14, 5, 14), "knob": (0, 19, 8, 2, 8), "stem": (0, 29, 6, 10, 5), "leg": (24, 29, 3, 5, 3), "arm": (36, 29, 2, 8, 2)}
-
-
-def faces(u, v, w, hh, d):
-    """Box UV faces -> (x0, y0, width, height)."""
-    return {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, hh), "front": (u + d, v + d, w, hh),
-            "left": (u + d + w, v + d, d, hh), "back": (u + 2 * d + w, v + d, w, hh)}
-
-
-def cap_mat(name, face, i, j, fw, fh, salt):
-    n = (h(i, j, salt) - 0.5) * 0.18
-    if face == "bottom":
-        ci, cj = i - (fw - 1) / 2, j - (fh - 1) / 2
-        if name == "cap" and abs(ci) < 2 and abs(cj) < 2:
-            return STEM_SHADE  # where the stem meets it
-        return GILL_DARK if (i + j) % 2 and abs(ci) != abs(cj) else GILL  # radiating gills
-    c = CAP_TOP if face == "top" else lerp(CAP_TOP, CAP_DARK, j / max(fh - 1, 1))
-    if face != "top" and name == "cap" and j == fh - 1:
-        c = GILL  # the cream rim of the gills shows under the edge
-    if h(i * 3 + 1, j * 5 + 2, salt + 7) < 0.12:
-        c = CAP_SPOT
-    return tuple(max(0, min(255, round(k * (1 + n)))) for k in c)
-
-
-def stem_mat(name, face, i, j, fw, fh, salt):
-    n = (h(i, j, salt) - 0.5) * 0.12
-    c = lerp(STEM, STEM_SHADE, 0.6 if face in ("left", "right", "back") else 0.0)
-    if face == "front" and name == "stem":
-        if j in (2, 3) and i in (1, 4):
-            return HOLLOW  # two hollow eyes
-        if j == 6 and 2 <= i <= 3:
-            return HOLLOW  # a mouth slit
-    if face == "front" and name == "stem" and j == 3 and i in (0, 5):
-        c = STEM_SHADE
-    if j >= fh - 2 and name in ("leg", "stem") and face != "top":
-        c = lerp(c, MOSS, 0.45 if name == "leg" else 0.25)  # earth and moss creeping up from the feet
-    if h(i * 7, j * 3, salt + 3) < 0.08:
-        c = lerp(c, MOSS, 0.5)
-    return tuple(max(0, min(255, round(k * (1 + n)))) for k in c)
-
-
 def mushroom_man():
-    im = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    for n, (name, box) in enumerate(BOXES.items()):
-        mat = cap_mat if name in ("cap", "knob") else stem_mat
-        for face, (x0, y0, fw, fh) in faces(*box).items():
-            for j in range(fh):
-                for i in range(fw):
-                    im.putpixel((x0 + i, y0 + j), (*mat(name, face, i, j, fw, fh, 500 + n * 11), 255))
-    (ENT / "night").mkdir(parents=True, exist_ok=True)
-    im.save(ENT / "night/mushroom_man.png")
+    """Its model and skin come from one table in gen_hunt_models.py (MushroomGeometry)."""
+    import gen_hunt_models
+    gen_hunt_models.main()
 
 
 # =============================================================== ITEMS
