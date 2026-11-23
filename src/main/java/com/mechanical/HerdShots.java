@@ -65,7 +65,9 @@ public final class HerdShots {
             new Subject("piglet", Wildlife.WILD_BOAR, true, null, 2.4, 1.2),
             new Subject("wild_horse", Wildlife.WILD_HORSE, false, null, 5.5, 3.2),
             new Subject("wild_horse_foal", Wildlife.WILD_HORSE, true, null, 3.6, 2.0),
-            new Subject("tame_horse", Wildlife.TAME_HORSE, false, null, 5.5, 3.2));
+            new Subject("tame_horse", Wildlife.TAME_HORSE, false, null, 5.5, 3.2),
+            new Subject("tame_horse_saddled", Wildlife.TAME_HORSE, false, "saddle", 5.5, 3.2),
+            new Subject("tame_horse_armor", Wildlife.TAME_HORSE, false, "armor", 5.5, 3.2));
 
     private static int stage = -1, ticks, index, view;
     private static File out;
@@ -144,7 +146,8 @@ public final class HerdShots {
                     if (ticks < 110) return;
                     Subject s = SUBJECTS.get(index);
                     shot(mc, s.name());
-                    result.add(s.name() + ": " + current + " bb " + current.getBbWidth() + "x" + current.getBbHeight());
+                    result.add(s.name() + ": " + current + " bb " + current.getBbWidth() + "x" + current.getBbHeight()
+                            + (current instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse ? " saddled " + horse.isSaddled() : ""));
                     view = 0;
                     server.execute(() -> closeUp(s, VIEWS[0]));
                     stage = 6;
@@ -222,7 +225,11 @@ public final class HerdShots {
         if (current != null) current.discard();
         Entity e = s.type().get().create(level, EntitySpawnReason.COMMAND);
         if (e == null) return;
-        if (s.flag() != null) { // the sex is only read from saved data
+        if (e instanceof net.minecraft.world.entity.LivingEntity living && "saddle".equals(s.flag())) {
+            living.setItemSlot(net.minecraft.world.entity.EquipmentSlot.SADDLE, new net.minecraft.world.item.ItemStack(Carting.HIDE_SADDLE_BLANKET.get()));
+        } else if (e instanceof net.minecraft.world.entity.LivingEntity living && "armor".equals(s.flag())) {
+            living.setItemSlot(net.minecraft.world.entity.EquipmentSlot.BODY, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.LEATHER_HORSE_ARMOR));
+        } else if (s.flag() != null) { // the sex is only read from saved data
             net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
             tag.putBoolean(s.flag(), true);
             e.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), tag));

@@ -5,19 +5,15 @@ import com.mechanical.client.CarcassRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Mouflon, ram and ewe in one model: a compact short-coated sheep on slim legs (back ~16 px), short tail. The ram shows
  * the heavy horns curling back, down and forward around the ear; the ewe shows two short spikes instead.
- * Textures: textures/entity/wildlife/mouflon_{ram,ewe}.png (64x64), painted by scripts/gen_mouflon_texture.py whose
- * BOXES table mirrors the cubes below (keep them in sync).
+ * Geometry and skins (mouflon_{ram,ewe}.png): HerdGeometry.mouflon from scripts/gen_herd_models.py; the ram has the pale
+ * saddle patch, dark ruff and flank line, both have white muzzle, belly, rump and socks.
  */
 public class MouflonModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "mouflon"), "main");
@@ -62,75 +58,7 @@ public class MouflonModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, -3.5F, -7.0F, 7.0F, 7.0F, 14.0F),
-                PartPose.offset(0.0F, 11.5F, 0.0F));
-        body.addOrReplaceChild("tail",
-                CubeListBuilder.create().texOffs(56, 2).addBox(-1.0F, 0.0F, -0.5F, 2.0F, 3.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -3.0F, 6.8F, 0.3F, 0.0F, 0.0F));
-
-        PartDefinition neck = body.addOrReplaceChild("neck",
-                CubeListBuilder.create().texOffs(42, 0).addBox(-1.5F, -6.0F, -2.0F, 3.0F, 7.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -1.5F, -6.0F, NECK_X, 0.0F, 0.0F));
-        PartDefinition head = neck.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(42, 11).addBox(-2.0F, -2.0F, -4.0F, 4.0F, 4.0F, 5.0F)
-                        .texOffs(0, 21).addBox(-1.5F, -1.0F, -7.0F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -5.5F, 0.0F, HEAD_X, 0.0F, 0.0F));
-        head.addOrReplaceChild("left_ear",
-                CubeListBuilder.create().texOffs(56, 0).mirror().addBox(-1.5F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(3.0F, -1.2F, 0.3F, 0.0F, 0.3F, -EAR_Z));
-        head.addOrReplaceChild("right_ear",
-                CubeListBuilder.create().texOffs(56, 0).addBox(-1.5F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F),
-                PartPose.offsetAndRotation(-3.0F, -1.2F, 0.3F, 0.0F, -0.3F, EAR_Z));
-
-        PartDefinition ramHorns = head.addOrReplaceChild("ram_horns", CubeListBuilder.create(), PartPose.ZERO);
-        addRamHorn(ramHorns, "left_", 1.0F);
-        addRamHorn(ramHorns, "right_", -1.0F);
-        PartDefinition eweHorns = head.addOrReplaceChild("ewe_horns", CubeListBuilder.create(), PartPose.ZERO);
-        for (float side : new float[] {1.0F, -1.0F}) {
-            eweHorns.addOrReplaceChild(side > 0 ? "left_horn" : "right_horn",
-                    CubeListBuilder.create().texOffs(36, 21).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                    PartPose.offsetAndRotation(1.1F * side, -1.8F, -1.0F, -0.6F, 0.0F, 0.35F * side));
-        }
-
-        addLeg(root, "left_front_leg", 2.0F, -5.0F, false);
-        addLeg(root, "right_front_leg", -2.0F, -5.0F, false);
-        addLeg(root, "left_hind_leg", 2.0F, 5.0F, true);
-        addLeg(root, "right_hind_leg", -2.0F, 5.0F, true);
-        return LayerDefinition.create(mesh, 64, 64);
-    }
-
-    /**
-     * Ram horn: four segments built along -y, each bent back at its root so the horn sweeps up and back from the
-     * poll, outwards, down behind the ear and forwards beside the cheek (about 3/4 of a turn). side = +1 left, -1 right.
-     */
-    private static void addRamHorn(PartDefinition horns, String p, float side) {
-        PartDefinition base = horns.addOrReplaceChild(p + "horn",
-                CubeListBuilder.create().texOffs(12, 21).addBox(-1.5F, -3.0F, -1.5F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(1.3F * side, -1.6F, -0.8F, -0.55F, 0.0F, 0.5F * side));
-        PartDefinition second = base.addOrReplaceChild(p + "horn_2",
-                CubeListBuilder.create().texOffs(12, 21).addBox(-1.5F, -3.0F, -1.5F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, -1.15F, 0.0F, 0.3F * side));
-        PartDefinition third = second.addOrReplaceChild(p + "horn_3",
-                CubeListBuilder.create().texOffs(24, 21).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, -1.15F, 0.0F, 0.1F * side));
-        third.addOrReplaceChild(p + "horn_tip",
-                CubeListBuilder.create().texOffs(32, 21).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                PartPose.offsetAndRotation(0.0F, -2.5F, 0.0F, -1.0F, 0.0F, -0.25F * side));
-    }
-
-    private static void addLeg(PartDefinition root, String name, float x, float z, boolean hind) {
-        boolean left = x > 0;
-        CubeListBuilder upper = hind
-                ? CubeListBuilder.create().mirror(left).texOffs(12, 27).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 5.0F, 4.0F)
-                : CubeListBuilder.create().mirror(left).texOffs(0, 27).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F);
-        PartDefinition leg = root.addOrReplaceChild(name, upper, PartPose.offset(x, 14.0F, z));
-        leg.addOrReplaceChild("lower", CubeListBuilder.create().mirror(left).texOffs(26, 27).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offset(0.0F, 4.0F, hind ? 0.5F : 0.0F));
+        return HerdGeometry.mouflon();
     }
 
     @Override

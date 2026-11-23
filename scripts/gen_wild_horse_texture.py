@@ -201,7 +201,7 @@ def leg_lower(length):
 
 # name: (u, v, x0, y0, z0, w, h, d, material) -- mirrors WildHorseModel.createBodyLayer
 BOXES = {
-    "body": (0, 0, -4.5, -5, -10, 9, 10, 20, body(-5, 5, 0.6)),
+    "body": (0, 0, -4.5, -5, -10, 9, 9, 20, body(-5, 5, 0.6)),  # the bare horse's (WildHorseModel: 10 deep inflated)
     "tail_dock": (114, 0, -1, 0, -1, 2, 4, 2, tail_dock),
     "tail_hair": (108, 6, -1.5, 3, -1.5, 3, 9, 3, tail_hair),
     "neck": (58, 0, -2, -9, -3, 4, 10, 6, neck(-9, 1, -3, 3)),
@@ -212,12 +212,14 @@ BOXES = {
     "front_upper": (0, 30, -1.5, -1, -1.5, 3, 6, 3, leg_upper(-1, 5, False)),
     "hind_upper": (12, 30, -1.5, -1, -2, 3, 6, 4, leg_upper(-1, 5, True)),
     "lower": (26, 30, -1, 0, -1, 2, 5, 2, leg_lower(5)),
-    # the "build" part (body space) and the jowls (head space)
+    # the "build_top" / "build" parts (body space), the crest (neck space) and the jowls (head space)
     "withers": (0, 40, -3, -6, -9, 6, 1, 6, body(-6, 5, 0.6)),
     "croup": (24, 40, -4, -6, 3, 8, 1, 6, body(-6, 5, 0.6)),
     "chest": (52, 40, -3.5, -3, -11, 7, 8, 1, body(-5, 5, 0.6)),
     "buttocks": (68, 40, -3.5, -4, 10, 7, 8, 1, body(-5, 5, 0.6)),
-    "belly": (0, 48, -3.5, 5, -6, 7, 1, 11, body(-5, 6, 0.6)),
+    "girth": (0, 48, -4, 4, -9, 8, 2, 10, body(-5, 6, 0.6)),
+    "flank": (40, 50, -3.5, 4, 1, 7, 1, 4, body(-5, 6, 0.6)),
+    "crest": (84, 48, -2.5, -8, 0.5, 5, 6, 2, neck(-9, 1, -3, 3)),
     "jowls": (84, 40, -3, -0.5, -4.5, 6, 3, 4, skull(-2.5, 2.5, -5, -99, -99)),
 }
 
