@@ -152,32 +152,39 @@ final class OpenDecor extends StoneAgeFeature {
     }
 
     /**
-     * An anthill (myrstack): a smooth, steep dome of spruce needles over soil, 3-5 across and 1.5-2.5 high, built in half
-     * blocks (Podzol and Podzol Slab, Coarse Dirt Slab low on its flanks) so it rounds off, its surface strewn with Leaf
-     * Litter, more litter round its foot.
+     * An anthill (myrstack): a low, rounded, slightly lopsided dome of needles over soil, 3-5 across and 1.5-2 high.
+     * Coarse Dirt and Rooted Dirt inside, Podzol on top, its profile rounded in half blocks (Podzol Slab, Coarse Dirt
+     * Slab), its surface strewn with Leaf Litter and Twigs, more of both round its foot.
      */
     private static BlockPos anthill(WorldGenLevel level, RandomSource random, BlockPos c) {
         if (!level.getBlockState(c.below()).is(BlockTags.SUBSTRATE_OVERWORLD) || !flat(level, c, 2, 1)) return null;
         boolean big = random.nextInt(3) == 0;
-        double r = big ? 2.6 : 1.8, height = big ? 2.5 : 1.5; // radius and height in blocks
-        double ox = (random.nextDouble() - 0.5) * 0.6, oz = (random.nextDouble() - 0.5) * 0.6; // the peak a little off centre
+        double r = big ? 2.5 : 1.9, height = big ? 2.0 : 1.5; // radius and height in blocks
+        double ox = (random.nextDouble() - 0.5) * 0.5, oz = (random.nextDouble() - 0.5) * 0.5, p1 = random.nextDouble() * 6.3, p2 = random.nextDouble() * 6.3;
         for (int dx = -3; dx <= 3; dx++) {
             for (int dz = -3; dz <= 3; dz++) {
-                double d = Math.sqrt(sq(dx - ox) + sq(dz - oz));
+                double d = Math.sqrt(sq(dx - ox) + sq(dz - oz)), ang = Math.atan2(dz - oz, dx - ox);
+                double rr = r * (1 + 0.14 * Math.sin(2 * ang + p1) + 0.08 * Math.sin(3 * ang + p2)); // lopsided, not a circle
                 BlockPos t = top(level, c.getX() + dx, c.getZ() + dz);
                 if (Math.abs(t.getY() - c.getY()) > 1 || !dryNatural(level, t.below()) || !level.getBlockState(t).canBeReplaced()) continue;
-                double h = height * (1 - Math.pow(d / r, 1.6)) + (c.getY() - t.getY()); // a steep cone with a round top, in blocks
+                double f = 1 - sq(d / rr);
+                double h = f <= 0 ? 0 : height * Math.pow(f, 0.7) + (c.getY() - t.getY()); // a round-shouldered dome, in blocks
                 int halves = (int) Math.round(h * 2);
                 if (halves <= 0) {
-                    if (d < r + 1.8 && random.nextInt(3) > 0 && level.getBlockState(t).isAir()) litter(level, random, t);
+                    if (d < rr + 1.6 && random.nextInt(3) > 0 && level.getBlockState(t).isAir()) {
+                        if (random.nextInt(3) == 0) onGround(level, t, Mechanical.TWIGS.get().defaultBlockState());
+                        else litter(level, random, t);
+                    }
                     continue;
                 }
                 clear(level, t);
                 int y = 0;
-                for (; halves >= 2; halves -= 2, y++) set(level, t.above(y), halves == 2 && random.nextInt(4) == 0 ? Blocks.COARSE_DIRT.defaultBlockState() : Blocks.PODZOL.defaultBlockState());
+                for (; halves >= 2; halves -= 2, y++)
+                    set(level, t.above(y), (halves == 2 ? Blocks.PODZOL : random.nextBoolean() ? Blocks.COARSE_DIRT : Blocks.ROOTED_DIRT).defaultBlockState());
                 if (halves == 1) set(level, t.above(y), (y == 0 && random.nextInt(3) == 0 ? EarthBlocks.COARSE_DIRT_SLAB : EarthBlocks.PODZOL_SLAB).get()
                         .defaultBlockState().setValue(SlabBlock.TYPE, SlabType.BOTTOM));
-                else if (random.nextInt(3) > 0) litter(level, random, t.above(y)); // needles on the flat of a full step
+                else if (random.nextInt(4) == 0) onGround(level, t.above(y), Mechanical.TWIGS.get().defaultBlockState());
+                else if (random.nextBoolean()) litter(level, random, t.above(y)); // needles on the flat of a full step
             }
         }
         return c;

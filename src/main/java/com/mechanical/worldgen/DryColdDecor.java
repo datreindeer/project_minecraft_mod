@@ -331,7 +331,7 @@ final class DryColdDecor extends StoneAgeFeature {
         // bare loess about it, the turf blown off
         for (int dx = -4; dx <= 4; dx++)
             for (int dz = -4; dz <= 4; dz++) {
-                if (dx * dx + dz * dz > 5 + random.nextInt(9) || random.nextInt(5) < 2) continue;
+                if (dx * dx + dz * dz > 6 + random.nextInt(8) || random.nextInt(5) < 3) continue; // specks, not a patch
                 BlockPos t = top(level, c.getX() + dx, c.getZ() + dz);
                 if (!dryNatural(level, t.below()) || !level.getBlockState(t.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) continue;
                 clear(level, t);

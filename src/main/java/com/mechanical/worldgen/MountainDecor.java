@@ -20,7 +20,9 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SnowyBlock;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.material.Fluids;
@@ -112,32 +114,39 @@ final class MountainDecor extends StoneAgeFeature {
         return top(level, b.relative(out, 2));
     }
 
-    /** A big angular block broken off a wall: 3-5 wide, 2-4 high, corners knocked off, sunk a block, often tipped. */
+    /** A big angular block broken off a wall: 3-5 wide, 2-3.5 high, corners knocked off, sunk a block, its top tipped (slabs). */
     private static BlockPos fallenRock(WorldGenLevel level, RandomSource random, BlockPos c) {
         Cliff k = cliff(level, c, 8, 8, 8);
         if (k == null) return null;
         Direction out = k.up().getOpposite(), side = out.getClockWise();
         BlockPos b = top(level, k.foot().relative(out, 2 + random.nextInt(4)).relative(side, random.nextInt(5) - 2));
         if (!flat(level, b, 1, 1)) return null;
-        int wx = 3 + random.nextInt(3), wy = 2 + random.nextInt(3), wz = 3 + random.nextInt(2);
+        int wx = 3 + random.nextInt(3), wz = 3 + random.nextInt(2);
         if (random.nextBoolean()) { int t = wx; wx = wz; wz = t; }
-        Direction lean = randomSide(random);
+        // a tipped block: its top a tilted plane (rounded with the rock's slab), 2-3.5 above the ground, sunk a block
+        double base = 2.3 + random.nextDouble() * 1.2, sx = (random.nextDouble() - 0.5) * 0.7, sz = (random.nextDouble() - 0.5) * 0.7;
+        BlockState half = slabOf(k.rock());
         boolean cold = cold(level, b);
         for (int x = -1; x <= wx; x++) for (int z = -1; z <= wz; z++) clear(level, top(level, b.getX() + x - wx / 2, b.getZ() + z - wz / 2));
         List<BlockPos> placed = new ArrayList<>();
         for (int x = 0; x < wx; x++) {
-            for (int y = -1; y < wy - 1; y++) {
-                for (int z = 0; z < wz; z++) {
-                    int edges = (x == 0 || x == wx - 1 ? 1 : 0) + (y == wy - 2 ? 1 : 0) + (z == 0 || z == wz - 1 ? 1 : 0);
-                    if (edges == 3 && random.nextInt(6) > 0 || edges == 2 && random.nextInt(3) == 0) continue;
-                    BlockPos p = b.offset(x - wx / 2, y, z - wz / 2);
-                    if (wy >= 3 && y == wy - 2) p = p.relative(lean); // the top course slid a block: the block lies tipped
+            for (int z = 0; z < wz; z++) {
+                boolean corner = (x == 0 || x == wx - 1) && (z == 0 || z == wz - 1);
+                if (corner && random.nextInt(5) < 3) continue; // corners knocked off, whole
+                double h = base + sx * (x - wx / 2.0) + sz * (z - wz / 2.0) - (corner ? 0.5 : 0);
+                int full = (int) Math.floor(h);
+                double f = h - full;
+                if (f >= 0.75) full++;
+                BlockPos colBase = b.offset(x - wx / 2, 0, z - wz / 2);
+                for (int y = -1; y < full; y++) {
+                    BlockPos p = colBase.above(y);
                     BlockState s = level.getBlockState(p);
                     if (!s.canBeReplaced() && !natural(s) || !s.getFluidState().isEmpty()) continue;
-                    set(level, p, random.nextInt(9) == 0 ? Blocks.COBBLESTONE.defaultBlockState()
-                            : !cold && random.nextInt(9) == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : k.rock());
+                    set(level, p, y == -1 || random.nextInt(12) > 0 ? k.rock() : !cold ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : Blocks.COBBLESTONE.defaultBlockState());
                     placed.add(p);
                 }
+                if (f >= 0.25 && f < 0.75 && half != null && level.getBlockState(colBase.above(full)).canBeReplaced())
+                    set(level, colBase.above(full), half.setValue(SlabBlock.TYPE, SlabType.BOTTOM));
             }
         }
         if (!cold) for (BlockPos p : Decor.tops(level, placed)) if (random.nextInt(5) == 0) set(level, p.above(), Blocks.MOSS_CARPET.defaultBlockState());
@@ -152,11 +161,13 @@ final class MountainDecor extends StoneAgeFeature {
     }
 
     /**
-     * A natural arch: what is left of a rock fin worn through. A low, wide span (5-7 across and 3-4 high inside) thinning
-     * toward its crown and only 3 deep there, its feet broadening and deepening into knobs of the same rock, the surface
-     * lumpy (smooth noise, not single blocks); scree and fallen stones at the feet. Of the rock under the ground there
-     * (Stone, Slate, Sandstone ...); in the badlands banded Terracotta. The way through runs east-west or north-south.
-     * Rare. Advancement Under the Arch (stand beneath one).
+     * A natural arch: what is left of a rock fin worn through. A low, wide span (5-7 across and 3-4 high inside) with a
+     * thick crown, thinning toward the middle of its depth, its legs widening and deepening as they go down into the
+     * ground. Its top and its underside are rounded in half blocks (the rock's slab), the surface wavy (smooth noise, not
+     * single blocks). Of the rock under the ground (Stone, Slate, Sandstone ...); in the badlands banded Terracotta, the
+     * bands running level all round as in the cliffs, Red Sandstone slabs for the half steps. Weathered rubble at its feet:
+     * fallen pieces, slabs, loose stones and gravel. The way through runs east-west or north-south. Rare. Advancement Under
+     * the Arch (stand beneath one).
      */
     private static BlockPos arch(WorldGenLevel level, RandomSource random, BlockPos c) {
         if (!flat(level, c, 3, 2)) return null;
@@ -164,71 +175,105 @@ final class MountainDecor extends StoneAgeFeature {
         boolean banded = ground.is(net.minecraft.tags.BlockTags.TERRACOTTA) || ground.is(Blocks.RED_SAND);
         BlockState rock = banded ? null : rockUnder(level, c);
         if (rock == null && !banded) return null;
+        BlockState half = banded ? Blocks.RED_SANDSTONE_SLAB.defaultBlockState() : slabOf(rock);
         Direction along = random.nextBoolean() ? Direction.EAST : Direction.SOUTH, across = along.getClockWise();
-        double ai = 2.3 + random.nextDouble() * 1.1, hi = 2.9 + random.nextDouble() * 0.9; // the opening's half width and height
-        double crown = 1.7 + random.nextDouble() * 0.5, ao = ai + 2.6 + random.nextDouble() * 0.8, ho = hi + crown;
-        double[] ph = {random.nextDouble() * 6.3, random.nextDouble() * 6.3, random.nextDouble() * 6.3, random.nextDouble() * 6.3};
-        int ia = (int) Math.ceil(ao) + 1, ih = (int) Math.ceil(ho) + 1;
+        double ai = 2.3 + random.nextDouble() * 1.0, hi = 2.8 + random.nextDouble() * 0.8; // the opening's half width and height
+        double ho = hi + 1.7 + random.nextDouble() * 0.6, ao = ai + 2.3 + random.nextDouble() * 0.8;
+        double[] ph = new double[6];
+        for (int k = 0; k < ph.length; k++) ph[k] = random.nextDouble() * 6.3;
+        int ia = (int) Math.ceil(ao) + 1;
         boolean cold = cold(level, c);
-        List<BlockPos> placed = new ArrayList<>();
+        List<BlockPos> tops = new ArrayList<>();
+        int built = 0;
         for (int a = -ia; a <= ia; a++) {
-            double depth = 1.25 + 1.3 * Math.min(1, Math.abs(a) / ao); // thin over the crown, deep at the feet
+            double dep = 1.25 + 1.4 * Math.min(1, Math.abs(a) / ao); // thin over the crown, deep at the feet
             for (int b = -3; b <= 3; b++) {
+                double q = sq(a / ao) + 0.75 * sq(b / dep);
+                if (q >= 1) continue;
+                double top = ho * Math.sqrt(1 - q) + 0.22 * (Math.sin(a * 0.8 + ph[0]) + Math.sin(b * 1.3 + ph[1]) + Math.sin((a - b) * 0.6 + ph[2]));
+                boolean leg = Math.abs(a) >= ai;
+                double low = leg ? Double.NEGATIVE_INFINITY
+                        : hi * Math.sqrt(1 - sq(a / ai)) + 0.15 * (Math.sin(a * 1.1 + ph[3]) + Math.sin(b * 0.9 + ph[4]));
                 BlockPos col = c.relative(across, a).relative(along, b);
-                int groundY = top(level, col).getY();
-                for (int y = 0; y <= ih; y++) {
+                int groundY = top(level, col).getY() - c.getY();
+                if (!leg && Math.abs(b) <= 1) for (int y = 0; y < low; y++) clear(level, col.above(y)); // the way through
+                if (top - low < 0.9) continue;
+                // the cells: full where wholly inside, a slab where the surface cuts a cell near its middle
+                int from, to;
+                BlockState first = null, last = null;
+                if (leg) from = Math.min(0, groundY);
+                else {
+                    from = (int) Math.floor(low);
+                    double f = low - from;
+                    if (f >= 0.75) from++;
+                    else if (f >= 0.25) first = half != null ? half.setValue(SlabBlock.TYPE, SlabType.TOP) : null;
+                    if (f >= 0.25 && f < 0.75 && half == null) from++;
+                }
+                to = (int) Math.floor(top);
+                double g = top - to;
+                if (g >= 0.25 && g < 0.75 && half != null) last = half.setValue(SlabBlock.TYPE, SlabType.BOTTOM);
+                else if (g < 0.25) to--;
+                for (int y = from; y <= to; y++) {
                     BlockPos p = col.above(y);
-                    double bump = 0.09 * (Math.sin(a * 0.9 + ph[0]) + Math.sin(y * 1.2 + ph[1]) + Math.sin(b * 1.1 + ph[2]) + Math.sin((a + y) * 0.7 + ph[3]));
-                    double eo = sq(a / ao) + sq(y / ho) + sq(b / depth) + bump, ei = sq(a / ai) + sq(y / hi) - bump * 0.5;
-                    if (ei < 1) {
-                        if (Math.abs(b) <= 1) clear(level, p); // the way through
-                        continue;
-                    }
-                    if (eo > 1) continue;
-                    BlockState s = level.getBlockState(p);
-                    if (!s.canBeReplaced() && !natural(s)) continue;
-                    BlockState stone = banded ? band(p.getY()) : rock;
-                    set(level, p, stone);
-                    placed.add(p);
-                    if (y == 0) for (int d = 1; d <= 4 && c.getY() - d >= groundY; d++) set(level, p.below(d), banded ? band(p.getY() - d) : rock);
+                    BlockState here = level.getBlockState(p);
+                    if (!here.canBeReplaced() && !natural(here)) continue;
+                    BlockState st = banded ? band(p.getY()) : rock;
+                    if (y == from && first != null && y != to) st = first;
+                    if (y == to && last != null && y != from) st = last;
+                    set(level, p, st);
+                    built++;
+                    if (y == to && last == null) tops.add(p);
                 }
             }
         }
-        if (placed.size() < 20) return null;
-        // the feet broaden into knobs of rock: the rest of the fin
+        if (built < 30) return null;
+        // weathered rubble at the feet: fallen pieces half sunk, slabs, loose stones and grit
         for (int sgn : new int[] {-1, 1}) {
-            BlockPos foot = top(level, c.relative(across, sgn * (int) Math.round(ao - 0.6)).relative(along, random.nextInt(3) - 1));
-            double r = 1.8 + random.nextDouble() * 0.9;
-            Decor.blob(level, random, foot.below(), r, 1.6 + random.nextDouble() * 1.4, r * (0.8 + random.nextDouble() * 0.4),
-                    rr -> banded ? band(foot.getY()) : rock);
-            Decor.rocks(level, random, foot, 3, r + 0.5, r + 3, banded ? Mechanical.LOOSE_STONE.get() : Decor.looseFor(rock));
-            for (int i = 0; i < 4; i++) {
-                BlockPos g = top(level, foot.getX() + random.nextInt(7) - 3, foot.getZ() + random.nextInt(7) - 3).below();
-                if (dryNatural(level, g) && level.getBlockState(g.above()).canBeReplaced() && !level.getBlockState(g).is(Blocks.GRAVEL)
-                        && !SmoothGround.rock(level.getBlockState(g))) set(level, g, Blocks.GRAVEL.defaultBlockState());
+            BlockPos foot = c.relative(across, sgn * (int) Math.round((ai + ao) / 2));
+            for (int i = 0; i < 9; i++) {
+                double an = random.nextDouble() * Math.PI * 2, dist = 2.5 + random.nextDouble() * 3;
+                BlockPos t = top(level, foot.getX() + (int) Math.round(Math.cos(an) * dist), foot.getZ() + (int) Math.round(Math.sin(an) * dist));
+                if (!dryNatural(level, t.below()) || !level.getBlockState(t).canBeReplaced()) continue;
+                BlockState st = banded ? band(t.getY()) : rock;
+                switch (random.nextInt(5)) {
+                    case 0 -> set(level, t.below(), st); // a piece sunk flush
+                    case 1 -> { clear(level, t); set(level, t, st); } // a fallen block
+                    case 2 -> { if (half != null) { clear(level, t); set(level, t, half.setValue(SlabBlock.TYPE, SlabType.BOTTOM)); } }
+                    case 3 -> rock(level, random, t, banded ? Mechanical.LOOSE_STONE.get() : Decor.looseFor(rock));
+                    default -> { if (!SmoothGround.rock(level.getBlockState(t.below()))) set(level, t.below(), Blocks.GRAVEL.defaultBlockState()); }
+                }
             }
         }
-        // keep the way through clear of the stones strewn at the feet
+        // keep the way through clear of anything strewn there
         for (int a = -(int) ai; a <= (int) ai; a++)
             for (int b = -2; b <= 2; b++)
                 for (int y = 0; y < 3; y++) {
                     BlockPos p = c.relative(across, a).relative(along, b).above(y);
-                    if (level.getBlockState(p).getBlock() instanceof com.mechanical.RockBlock) set(level, p, AIR);
+                    BlockState here = level.getBlockState(p);
+                    if (here.getBlock() instanceof com.mechanical.RockBlock || here.getBlock() instanceof SlabBlock && Math.abs(b) <= 1 && y == 0) set(level, p, AIR);
                 }
         Decor.logPlaced("rock_arch_dir_" + Decor.viewAngle(along), c);
-        if (!cold && !banded) for (BlockPos p : Decor.tops(level, placed)) if (random.nextInt(4) == 0) set(level, p.above(), Blocks.MOSS_CARPET.defaultBlockState());
+        if (!cold && !banded) for (BlockPos p : tops) if (random.nextInt(4) == 0 && level.getBlockState(p.above()).isAir()) set(level, p.above(), Blocks.MOSS_CARPET.defaultBlockState());
         return c;
     }
 
+    /** The slab of a rock (stone_slab for stone, sandstone_slab ...), by name; null if it has none. */
+    static BlockState slabOf(BlockState rock) {
+        var id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(rock.getBlock());
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.getOptional(net.minecraft.resources.Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath() + "_slab"))
+                .filter(b -> b instanceof SlabBlock).map(Block::defaultBlockState).orElse(null);
+    }
+
+    /** The badlands' terracotta bands, bottom to top: runs of colour 1-3 thick, the same all round at one height. */
     private static final java.util.function.Supplier<Block[]> BANDS = () -> {
         var t = Blocks.DYED_TERRACOTTA;
-        return new Block[] {Blocks.TERRACOTTA, t.orange(), Blocks.TERRACOTTA, t.yellow(), t.brown(), Blocks.TERRACOTTA, t.red(), t.white(), t.orange(), t.lightGray()};
+        return new Block[] {Blocks.TERRACOTTA, Blocks.TERRACOTTA, t.orange(), t.orange(), t.orange(), t.yellow(), Blocks.TERRACOTTA, t.red(), t.red(),
+                t.white(), Blocks.TERRACOTTA, Blocks.TERRACOTTA, t.lightGray(), t.orange(), t.orange(), t.brown()};
     };
 
-    /** The badlands' terracotta band at height y: the same colour all round at one height, as in the cliffs. */
     private static BlockState band(int y) {
         Block[] bands = BANDS.get();
-        return bands[Math.floorMod(y * 7 + (y >> 1) * 3, bands.length)].defaultBlockState();
+        return bands[Math.floorMod(y, bands.length)].defaultBlockState();
     }
 
     /**

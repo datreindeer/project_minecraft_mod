@@ -166,14 +166,13 @@ utom bäverdammar och källor läggs även i gamla chunks (`Retrogen`). Advancem
 nu att stå på dammen. Kaveldun saknas (inget block än), vass finns. Detaljer, täthet och hur fas 5 hittar fallna stockar:
 `docs/biomes.md`, "Små saker i skog och vid vatten". Bilder: `docs/shots/terrain/decor_*.png`.
 
-**Byggt (fas 4, berg, öppen mark, torrt och kallt, v0.179.0):** `worldgen/MountainDecor` (Talus, Fallen Rock, Rock
-Arch, Bird Cliff, Valley Waterfall, Snow Patch), `worldgen/OpenDecor` (Rock Outcrop, Bone Remains, Anthill, Lone Tree,
-Farm Walls, Fire Ring) och `worldgen/DryColdDecor` (Dead Tree, Sand Skeleton, Rock Overhang, Dry Creek, Ice Blocks,
-Frost Split, Mammoth Tusks), placerade av `scripts/gen_land_decor.py`, och enar som växer ensamma på slätter. Två nya
-block av tunna ben, Rib Cage och Mammoth Tusk (`worldgen/OldBonesBlock`), i stället för hela Bone Blocks. Allt utom
-vattenfall och vårdträd läggs även i gamla chunks (`Retrogen`). Advancements *Under the Arch* och *Old Bones*.
-Jordkällare är inte byggda. Snöfälten ligger bara högt upp (y 150 där snön aldrig smälter, y 200 annars). Detaljer och
-täthet: `docs/biomes.md`, "Små saker i berg, på öppen mark, i torrt och kallt land". Bilder: `docs/shots/terrain/fas4_*.png`.
+**Byggt (fas 4, berg, öppen mark, torrt och kallt, v0.179.0):** på är Rock Arch, Bird Cliff och Valley Waterfall
+(`worldgen/MountainDecor`), Bone Remains, Lone Tree och Fire Ring (`worldgen/OpenDecor`), Dead Tree, Sand Skeleton, Dry
+Creek och Mammoth Tusks (`worldgen/DryColdDecor`), placerade av `scripts/gen_land_decor.py`. Två nya block av tunna ben,
+Rib Cage och Mammoth Tusk (`worldgen/OldBonesBlock`). Advancements *Under the Arch* och *Old Bones*. Byggda men
+avstängda tills de håller måttet i närbild: Talus, Fallen Rock, Snow Patch, Anthill, Ice Blocks, Rock Overhang, Rock
+Outcrop, Frost Split, Farm Walls och enar på slätten. Jordkällare är inte byggda. Detaljer:
+`docs/biomes.md`, "Små saker i berg, på öppen mark, i torrt och kallt land". Bilder: `docs/shots/terrain/fas4_*.png`.
 
 ## 3b. Kanter som flyter ihop (önskemål från användaren)
 

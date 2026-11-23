@@ -55,7 +55,10 @@ def count(n):
     return [{"type": "minecraft:count", "count": n}]
 
 
-# placed feature: (feature type, biomes, tries per chunk)
+# placed feature: (feature type, biomes, tries per chunk). OFF: switched off until they look right in close-up shots
+# (code kept, feature types registered, no placed feature or biome modifier): see docs/biomes.md for why.
+OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "rock_outcrop", "farm_walls", "frost_split", "anthill",
+       "anthill_open", "juniper_in_plains"]
 PLACED = {
     # mountains
     "talus": ("talus", MOUNTAINS + VALLEYS, count(3)),
@@ -76,15 +79,15 @@ PLACED = {
     # dry and warm
     "dead_tree": ("dead_tree", DRY + SAVANNA, rarity(5)),
     "sand_skeleton": ("sand_skeleton", SAND, rarity(14)),
-    "rock_overhang": ("rock_overhang", ROCKY_DRY, count(2)),
     "dry_creek": ("dry_creek", DRY + SAVANNA, rarity(6)),
     # cold
-    "ice_blocks": ("ice_blocks", SNOWY, rarity(8)),
     "frost_split": ("frost_split", FROST, rarity(20)),
     "mammoth_tusks": ("mammoth_tusks", mod("mammoth_steppe"), rarity(8)),
 }
 
 for name, (feature, biomes, tries) in PLACED.items():
+    if name in OFF:
+        continue
     w(D / f"worldgen/feature/{feature}.json", {"type": f"mechanical:{feature}"})
     w(D / f"worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{feature}", "placement": tries + [
         {"type": "minecraft:in_square"}, {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"}]})
@@ -92,13 +95,17 @@ for name, (feature, biomes, tries) in PLACED.items():
         "features": f"mechanical:{name}", "step": "vegetal_decoration"})
 
 # lone junipers on the open plain (gen_earth.py's juniper feature; it has its own clumps in taiga and hills)
-w(D / "worldgen/placed_feature/juniper_in_plains.json", {"feature": "mechanical:juniper", "placement": rarity(5) + [
-    {"type": "minecraft:in_square"}, {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
-    {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
-        {"type": "minecraft:replaceable"}, {"type": "minecraft:matching_block_tag", "tag": "minecraft:substrate_overworld", "offset": [0, -1, 0]}]}}]})
-w(D / "neoforge/biome_modifier/add_juniper_in_plains.json", {"type": "neoforge:add_features", "biomes": sorted(mc("plains", "meadow") + mod("hazel_meadow", "chalk_downs")),
-    "features": "mechanical:juniper_in_plains", "step": "vegetal_decoration"})
-print(f"{len(PLACED) + 1} land decorations ok")
+if "juniper_in_plains" not in OFF:
+    w(D / "worldgen/placed_feature/juniper_in_plains.json", {"feature": "mechanical:juniper", "placement": rarity(5) + [
+        {"type": "minecraft:in_square"}, {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
+        {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
+            {"type": "minecraft:replaceable"}, {"type": "minecraft:matching_block_tag", "tag": "minecraft:substrate_overworld", "offset": [0, -1, 0]}]}}]})
+    w(D / "neoforge/biome_modifier/add_juniper_in_plains.json", {"type": "neoforge:add_features", "biomes": sorted(mc("plains", "meadow") + mod("hazel_meadow", "chalk_downs")),
+        "features": "mechanical:juniper_in_plains", "step": "vegetal_decoration"})
+for name in OFF:  # anything an earlier run wrote for a feature now off
+    for f in (D / f"worldgen/feature/{name}.json", D / f"worldgen/placed_feature/{name}.json", D / f"neoforge/biome_modifier/add_{name}.json"):
+        f.unlink(missing_ok=True)
+print(f"{len([n for n in PLACED if n not in OFF])} land decorations on, {len(OFF)} off")
 
 # ---------------------------------------------------------------- the thin old bones (worldgen/OldBonesBlock)
 import math
@@ -155,19 +162,23 @@ def rib_model(dy):
     return {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": {"particle": BONE, "bone": BONE}, "elements": els}
 
 
+TUSK_CURVE = [(0, 5, 7.2), (0, 5, 7.0), (0, 4, 6.9), (22.5, 3, 6.7), (22.5, 3, 6.5), (22.5, 3, 6.3), (45, 3, 6.0), (45, 3, 5.6),
+              (67.5, 3, 5.1), (67.5, 3, 4.6), (90, 3, 4.0), (90, 2.5, 3.3), (112.5, 2.5, 2.6), (112.5, 2, 1.9)]
+
+
 def tusk_model(low):
-    # forward is -z (north); u = -z offset from 8, so a positive angle bends the tusk forward
-    if low:
-        steps, start = [(0, 8, 7), (22.5, 7, 6.4), (22.5, 5, 5.8)], (0, -3)
-    else:
-        steps, start = [(45, 4.5, 5.2), (67.5, 4.5, 4.4), (90, 4, 3.4), (112.5, 2.5, 2.4)], (4.4, -0.2)
+    """One curve for both blocks, split where it passes y 16: up out of the ground, bending forward (-z, north) and
+    tapering to a point. Each piece is two crossed bars, so the tusk looks round rather than square."""
     els = []
-    u, v = start
-    for ang, length, t in steps:
+    u, v = 0, -3
+    for ang, length, t in TUSK_CURVE:
         nu, nv = u + math.sin(math.radians(ang)) * length, v + math.cos(math.radians(ang)) * length
-        e = bar((8 - u, v), (8 - nu, nv), t, "x", 8)  # z = 8 - u
-        e["rotation"]["angle"] = -e["rotation"]["angle"]  # u runs toward -z
-        els.append(e)
+        if ((v + nv) / 2 < 16) == low:
+            dv = 0 if low else -16
+            for thick, wide in ((t * 0.72, t), (t, t * 0.72)):
+                e = bar((8 - u, v + dv), (8 - nu, nv + dv), thick, "x", 8, depth=wide)  # z = 8 - u
+                e["rotation"]["angle"] = -e["rotation"]["angle"]  # u runs toward -z
+                els.append(e)
         u, v = nu, nv
     return {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": {"particle": BONE, "bone": BONE}, "elements": els}
 

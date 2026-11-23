@@ -84,10 +84,9 @@ public final class Retrogen {
             // forest floor and waterside (gen_nature_decor.py; beaver dams and springs add water and are left out)
             "fallen_log", "fallen_log_old", "snag", "snag_old", "root_plate", "root_plate_old", "mossy_stones", "mossy_stones_heath",
             "log_bridge", "driftwood", "gravel_bar", "reed_belt",
-            // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left out)
-            "talus", "fallen_rock", "rock_arch", "bird_cliff", "snow_patch", "rock_outcrop", "bone_remains", "anthill", "anthill_open",
-            "farm_walls", "fire_ring", "juniper_in_plains", "dead_tree", "sand_skeleton", "rock_overhang", "dry_creek", "ice_blocks",
-            "frost_split", "mammoth_tusks",
+            // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left
+            // out, and so is everything switched off there)
+            "rock_arch", "bird_cliff", "bone_remains", "fire_ring", "dead_tree", "sand_skeleton", "dry_creek", "mammoth_tusks",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
