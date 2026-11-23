@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 /**
- * Hunting bands (no home) keep together: the leader roams, the others follow. If the leader is gone, the member with
+ * Hunting bands (no home) keep together: the leader roams, the others follow (not caravans: CaravanGoal). If the leader is gone, the member with
  * the lowest id among those around takes over.
  */
 class FollowBandLeaderGoal extends Goal {
@@ -21,7 +21,7 @@ class FollowBandLeaderGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.home() != null || mob.role().oak() || mob.isLeader() || mob.getTarget() != null || mob.getRandom().nextInt(20) != 0) return false;
+        if (mob.home() != null || mob.role().oak() || mob.role().caravan() || mob.isLeader() || mob.getTarget() != null || mob.getRandom().nextInt(20) != 0) return false;
         List<Tribesperson> band = mob.groupNearby(SEARCH);
         leader = band.stream().filter(Tribesperson::isLeader).findFirst().orElse(null);
         if (leader == null) {

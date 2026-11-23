@@ -1,0 +1,131 @@
+{
+  "animal": "horse",
+  "cargo": [
+    "minecraft:barrel",
+    "minecraft:brown_mushroom",
+    "minecraft:red_mushroom",
+    "minecraft:barrel",
+    "minecraft:brown_mushroom",
+    "minecraft:fern",
+    "mechanical:bark_basket",
+    "mechanical:raspberries",
+    "mechanical:hazelnuts",
+    "mechanical:blueberries",
+    "mechanical:bark_basket",
+    "mechanical:beechnuts"
+  ],
+  "purse": [
+    120,
+    220
+  ],
+  "sells": [
+    {
+      "item": "mechanical:bark_basket",
+      "price": 4,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:seed_bag",
+      "price": 6,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:hazelnuts",
+      "price": 3,
+      "count": 8
+    },
+    {
+      "item": "mechanical:beechnuts",
+      "price": 3,
+      "count": 8
+    },
+    {
+      "item": "mechanical:roasted_hazelnuts",
+      "price": 4,
+      "count": 6,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:dried_berries",
+      "price": 6,
+      "count": 6,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:plant_fibre",
+      "price": 2,
+      "count": 16,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:cordage",
+      "price": 4,
+      "count": 4
+    },
+    {
+      "item": "mechanical:twine",
+      "price": 3,
+      "count": 6
+    },
+    {
+      "item": "mechanical:flint_knife",
+      "price": 4,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:leather_pouch",
+      "price": 8,
+      "stock": 2
+    },
+    {
+      "item": "minecraft:potato",
+      "price": 20,
+      "count": 3,
+      "stock": 1,
+      "rare": true
+    },
+    {
+      "item": "mechanical:wild_strawberries",
+      "price": 8,
+      "count": 8,
+      "stock": 2,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "mechanical:raspberries",
+      "price": 3,
+      "count": 16,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:blueberries",
+      "price": 3,
+      "count": 16,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:lingonberries",
+      "price": 3,
+      "count": 16
+    },
+    {
+      "item": "mechanical:cloudberries",
+      "price": 5,
+      "count": 8,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:hazelnuts",
+      "price": 3,
+      "count": 12
+    },
+    {
+      "item": "mechanical:wild_strawberries",
+      "price": 4,
+      "count": 8,
+      "stock": 3
+    }
+  ]
+}

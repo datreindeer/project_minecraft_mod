@@ -1,0 +1,122 @@
+{
+  "animal": "camel",
+  "cargo": [
+    "minecraft:chest",
+    "minecraft:decorated_pot",
+    "minecraft:chest",
+    "minecraft:decorated_pot",
+    "minecraft:amethyst_block",
+    "minecraft:chest",
+    "mechanical:gold_necklace",
+    "mechanical:ruby",
+    "mechanical:gold_ring",
+    "minecraft:amethyst_shard",
+    "mechanical:gold_chain",
+    "mechanical:sapphire"
+  ],
+  "purse": [
+    400,
+    700
+  ],
+  "sells": [
+    {
+      "item": "mechanical:gold_ring",
+      "price": 30,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:gold_chain",
+      "price": 20,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:gold_necklace",
+      "price": 60,
+      "stock": 1
+    },
+    {
+      "item": "mechanical:amber",
+      "price": 20,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:jade",
+      "price": 40,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:turquoise",
+      "price": 40,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:garnet",
+      "price": 30,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:ruby",
+      "price": 50,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:sapphire",
+      "price": 50,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:silver_nugget",
+      "price": 10,
+      "count": 4,
+      "stock": 3,
+      "age": 1
+    },
+    {
+      "item": "mechanical:silver_ingot",
+      "price": 30,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:silk_thread",
+      "price": 30,
+      "count": 4,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:flawless_ruby",
+      "price": 200,
+      "stock": 1,
+      "rare": true
+    },
+    {
+      "item": "mechanical:flawless_sapphire",
+      "price": 200,
+      "stock": 1,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "#mechanical:gemstones",
+      "price": 40,
+      "stock": 3
+    },
+    {
+      "item": "minecraft:diamond",
+      "price": 200,
+      "stock": 3
+    },
+    {
+      "item": "minecraft:emerald",
+      "price": 100,
+      "stock": 3
+    },
+    {
+      "item": "minecraft:amethyst_shard",
+      "price": 20,
+      "stock": 6
+    }
+  ]
+}

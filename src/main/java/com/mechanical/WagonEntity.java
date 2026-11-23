@@ -99,6 +99,8 @@ public class WagonEntity extends TravoisEntity {
     private AbstractHorse slowed;
     /** Server: the team by UUID, saved, so it is found again after a reload (the entity ids above are not). */
     private java.util.UUID leadId, partnerId;
+    /** A Trader Caravan's wagon (people.Caravans): locked to players while its team lives. Saved. */
+    private boolean caravan;
     /** Client: wheel angle (radians) and the front axle's swing (degrees, + to the right), this tick and the last. */
     public float wheelSpin, wheelSpinO, steer, steerO;
 
@@ -288,6 +290,17 @@ public class WagonEntity extends TravoisEntity {
     protected void setHarness(Entity puller) {
         super.setHarness(puller);
         if (puller != null) leadId = puller.getUUID();
+    }
+
+    /** Server: a caravan's wagon behind {@code lead} and {@code partner} (yoked on the side it stands); locked to players while they live. */
+    public void hitchCaravan(AbstractHorse lead, AbstractHorse partner) {
+        setLead(lead);
+        setPartner(partner);
+        caravan = true;
+    }
+
+    public boolean isCaravan() {
+        return caravan;
     }
 
     private void setLead(AbstractHorse horse) {
@@ -542,6 +555,7 @@ public class WagonEntity extends TravoisEntity {
         if (!level().isClientSide()) {
             entityData.set(FULLNESS, (float) loadFraction());
             keepTeam((ServerLevel) level());
+            if (caravan && harness() == null && leadId == null) caravan = false; // the team fell: an ordinary wagon now
             LivingEntity lead = harness();
             keepPair(lead);
             slowTeam(lead);
@@ -557,6 +571,10 @@ public class WagonEntity extends TravoisEntity {
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+        if (caravan) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.cart.caravan"));
+            return InteractionResult.CONSUME;
+        }
         ItemStack held = player.getMainHandItem();
         // a log you lift or pull goes on the bed: before any other use of the click (hitching, modules, seats)
         FelledLogEntity dragged = FelledLogEntity.handled(player);
@@ -628,6 +646,10 @@ public class WagonEntity extends TravoisEntity {
     /** Punching a module takes it out; punching anywhere else picks the wagon up (everything falls out). */
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        if (caravan) {
+            if (source.getEntity() instanceof Player player) com.mechanical.people.Caravans.offended(this, player); // its guards notice
+            return false;
+        }
         if (source.getEntity() instanceof Player player) {
             int slot = slotLookedAt(player);
             if (slot >= 0 && module(slot) != EMPTY) {
@@ -694,8 +716,10 @@ public class WagonEntity extends TravoisEntity {
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         entityData.set(MODULES, input.getIntOr("modules", 0));
         entityData.set(PARTNER_RIGHT, input.getBooleanOr("partner_right", false));
+        caravan = input.getBooleanOr("caravan", false);
         // wagons saved before D2 have no team keys: they load unhitched, as their team was never saved then
         leadId = input.read("lead_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         partnerId = input.read("partner_horse", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
@@ -709,8 +733,10 @@ public class WagonEntity extends TravoisEntity {
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         output.putInt("modules", entityData.get(MODULES));
         output.putBoolean("partner_right", entityData.get(PARTNER_RIGHT));
+        if (caravan) output.putBoolean("caravan", true);
         if (leadId != null) output.store("lead_horse", net.minecraft.core.UUIDUtil.CODEC, leadId);
         if (partnerId != null) output.store("partner_horse", net.minecraft.core.UUIDUtil.CODEC, partnerId);
         output.putIntArray("hay", hay.clone());

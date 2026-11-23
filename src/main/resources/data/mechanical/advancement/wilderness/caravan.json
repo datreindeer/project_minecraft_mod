@@ -12,7 +12,7 @@
   ],
   "display": {
     "icon": {
-      "id": "minecraft:chest"
+      "id": "mechanical:coin_purse"
     },
     "title": {
       "translate": "advancements.mechanical.wilderness.caravan.title"

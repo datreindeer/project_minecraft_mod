@@ -543,12 +543,13 @@
     },
     "items": [
      "entity:tribesperson",
+     "coin_purse",
      "cart",
      "minecraft:diamond"
     ],
     "text": {
-     "sv": "Den vandrande handlaren finns inte. I stället kommer ibland en **handelskaravan** nära dig (lika ofta som han skulle ha kommit): en gammal handlare i fin rock med ädelstenar, 2–3 vakter i rustning och hästar som drar [[cart]] med tygkapell och kistor. Högerklicka handlaren: varor upp till en ålder över din för Copper, Silver och Gold Coin, växling (10 koppar = 1 silver, 10 silver = 1 guld), och de **köper ädelstenar** dyrt: slipade stenar 4 silver, [[minecraft:diamond]] 2 guld, Emerald 1 guld. Karavanen stannar 2 dagar.",
-     "en": "There is no Wandering Trader. Instead a **Trader Caravan** now and then comes near you (as often as he would have): an old trader in a fine gem-set robe, 2-3 armoured guards and horses pulling covered [[cart]]s with chests. Right-click the trader: goods up to one age ahead of yours for Copper, Silver and Gold Coins, coin changing (10 copper = 1 silver, 10 silver = 1 gold), and they **buy gemstones** dearly: cut stones 4 silver, [[minecraft:diamond]] 2 gold, Emerald 1 gold. The caravan stays 2 days."
+     "sv": "Den vandrande handlaren finns inte. I stället kommer ibland en **handelskaravan** till ditt läger (lika ofta som han skulle ha kommit). Varje karavan handlar med **en sorts varor**: Timber & Tools, Mining Equipment, Jewelry & Gemstones (kameler, från öknen), Hunting Gear & Furs, Herbs & Remedies eller Forager's Goods, och lasten på vagnen visar vilken. En gammal **ledare** med stav och [[coin_purse]], en **djurhållare** som står still med djuren medan de betar, och 2–3 **vakter** i metallrustning som går runt dem; slår du någon av dem, djuren eller vagnen anfaller vakterna. Högerklicka ledaren och välj Trade: rutan visar deras **kassa**, vad de säljer och köper, **hur många som finns kvar** och priset i guld, silver och koppar. Du betalar med vilka mynt som helst och får växel. Lagret tar slut och de köper bara så länge kassan räcker. En **stor karavan** med en Wagon har sällsynta varor till högre pris. Juvelerarna **köper ädelstenar** dyrt: slipade stenar 4 silver, [[minecraft:diamond]] 2 guld, Emerald 1 guld. Karavanen stannar 2 dagar.",
+     "en": "There is no Wandering Trader. Instead a **Trader Caravan** now and then comes to your camp (as often as he would have). Each caravan deals in **one kind of goods**: Timber & Tools, Mining Equipment, Jewelry & Gemstones (camels, from the desert), Hunting Gear & Furs, Herbs & Remedies or Forager's Goods, and the load on its cart shows which. An old **leader** with a staff and a [[coin_purse]], a **handler** who stands still with the animals while they graze, and 2-3 **guards** in metal armour walking round them; hit any of them, the animals or the cart and the guards attack. Right-click the leader and choose Trade: the screen shows their **purse**, what they sell and buy, **how many are left** and the price in gold, silver and copper. Pay with any coins and get change. Their stock runs out and they only buy while their purse lasts. A **big caravan** with a Wagon has rare goods at higher prices. The jewellers **buy gemstones** dearly: cut stones 4 silver, [[minecraft:diamond]] 2 gold, Emerald 1 gold. The caravan stays 2 days."
     }
    },
    {
@@ -1010,8 +1011,8 @@
      "silk_thread"
     ],
     "text": {
-     "sv": "Bygg en [[warp_weighted_loom]] av 4 Logs, en [[iron_tool_rod]] och 3 Clay Balls. Högerklicka den med **3 tråd** för ett tyg: Wool Thread blir [[wool_cloth]], [[linen_thread]] blir [[linen_cloth]]. [[silk_thread]] köper du av **Trader Caravans** och väver till [[silk_cloth]].\n\n3 tyg över 3 Straw och 3 Planks blir en [[cloth_bed]]. Den vilar som en Furred Straw Bed (respawn, sanity, värme, natten spolas fram) men **går inte sönder** när du kliver ur den.",
-     "en": "Build a [[warp_weighted_loom]] from 4 Logs, an [[iron_tool_rod]] and 3 Clay Balls. Right-click it with **3 thread** for a cloth: Wool Thread makes [[wool_cloth]], [[linen_thread]] makes [[linen_cloth]]. Buy [[silk_thread]] from **Trader Caravans** and weave it into [[silk_cloth]].\n\n3 cloth over 3 Straw and 3 Planks make a [[cloth_bed]]. It rests like a Furred Straw Bed (respawn, sanity, warmth, a fast night) but **doesn't break** when you get out of it."
+     "sv": "Bygg en [[warp_weighted_loom]] av 4 Logs, en [[iron_tool_rod]] och 3 Clay Balls. Högerklicka den med **3 tråd** för ett tyg: Wool Thread blir [[wool_cloth]], [[linen_thread]] blir [[linen_cloth]]. [[silk_thread]] köper du av **Jewelry & Gemstones-karavaner** och väver till [[silk_cloth]].\n\n3 tyg över 3 Straw och 3 Planks blir en [[cloth_bed]]. Den vilar som en Furred Straw Bed (respawn, sanity, värme, natten spolas fram) men **går inte sönder** när du kliver ur den.",
+     "en": "Build a [[warp_weighted_loom]] from 4 Logs, an [[iron_tool_rod]] and 3 Clay Balls. Right-click it with **3 thread** for a cloth: Wool Thread makes [[wool_cloth]], [[linen_thread]] makes [[linen_cloth]]. Buy [[silk_thread]] from **Jewelry & Gemstones caravans** and weave it into [[silk_cloth]].\n\n3 cloth over 3 Straw and 3 Planks make a [[cloth_bed]]. It rests like a Furred Straw Bed (respawn, sanity, warmth, a fast night) but **doesn't break** when you get out of it."
     }
    },
    {

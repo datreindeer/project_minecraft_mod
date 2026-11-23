@@ -1216,11 +1216,21 @@ TABS["wilderness"][1].extend([
      "Come upon tribespeople at night: they lay out Straw Beds round the fire and sleep while their warriors keep watch. "
      "By day they sit round the fire whittling, eating and talking", by_code()),
     # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
-    ("caravan", "root", "minecraft:chest", T, "The Caravan Has Come",
-     "Talk to the old trader of a Trader Caravan: horses, covered carts and armed guards, now and then near you as the Wandering Trader once was",
+    ("caravan", "root", "coin_purse", T, "The Caravan Has Come",
+     "Talk to the old leader of a Trader Caravan: a handler with the animals, a laden cart and guards in armour, now and then near "
+     "your camp as the Wandering Trader once was. Each caravan deals in one kind of goods, for coin",
      by_code()),
     ("caravan_gem", "caravan", "minecraft:diamond", G, "Treasures for Coin",
-     "Sell a gemstone to a caravan's trader: they love gems and pay in silver and gold", by_code()),
+     "Sell a gemstone to a jewelry caravan: they love gems and pay in silver and gold", by_code()),
+    # granted per kind from Java (people/TribeVisits.java), criteria named after the kinds (scripts/gen_traders.py)
+    ("caravan_kinds", "caravan", "minecraft:map", G, "Every Road Leads Here",
+     "Meet a caravan of every kind: Timber & Tools, Mining Equipment, Jewelry & Gemstones, Hunting Gear & Furs, Herbs & Remedies and Forager's Goods",
+     AllOf({k: {"trigger": "minecraft:impossible"} for k in ("woodsman", "mining", "jewelry", "hunting", "herbs", "foraging")})),
+    ("caravan_wagon", "caravan", "wagon", G, "The Rich Caravan",
+     "Meet a big caravan: a Wagon drawn by a pair, rarer goods at dearer prices and a fuller purse", by_code()),
+    ("caravan_sold_out", "caravan", "minecraft:gold_nugget", T, "Bought Out",
+     "Buy the last of something from a caravan. Their goods run out and are not restocked, and they only buy while their purse lasts",
+     by_code()),
     # the Miner under ground (people/Miners.java)
     ("miner_trade", "deep_cold", "minecraft:torch", T, "Deep Trade",
      "Trade with a Miner, a rare wanderer of the caves below Y 30, hunched under his ore sack. He sells the ores missing nearby",

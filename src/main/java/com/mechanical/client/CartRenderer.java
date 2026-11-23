@@ -38,6 +38,7 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         float yaw, spin, pitch;
         boolean canopy;
         final ItemStackRenderState chest = new ItemStackRenderState();
+        final CargoRender.State cargo = new CargoRender.State();
     }
 
     public CartRenderer(EntityRendererProvider.Context context) {
@@ -64,6 +65,7 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
             if (chest == null) chest = new ItemStack(Items.CHEST);
             items.updateForNonLiving(state.chest, chest, ItemDisplayContext.NONE, cart);
         } else state.chest.clear();
+        CargoRender.extract(cart, state.cargo, items);
     }
 
     @Override
@@ -82,6 +84,8 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
             state.chest.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
             poseStack.popPose();
         }
+        // a caravan's load under the tilt: 2 across, 3 along the bed (20 x 28 pixels inside the boards)
+        CargoRender.submit(state.cargo, 2, 3, 0.56F, FLOOR, 0.5F, poseStack, collector, state.lightCoords, state.outlineColor);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         collector.submitModel(model, state.spin, poseStack, TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         if (state.canopy) collector.submitModel(canopy, state.spin, poseStack, CANOPY_TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);

@@ -37,6 +37,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
         float yaw, spin, steer;
         boolean open; // a log on the bed: no back board
         final ItemStackRenderState[] modules = new ItemStackRenderState[WagonEntity.SLOTS];
+        final CargoRender.State cargo = new CargoRender.State();
 
         State() {
             for (int i = 0; i < modules.length; i++) modules[i] = new ItemStackRenderState();
@@ -69,6 +70,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
             if (module == WagonEntity.EMPTY) state.modules[i].clear();
             else items.updateForNonLiving(state.modules[i], moduleStacks[module], ItemDisplayContext.NONE, wagon);
         }
+        CargoRender.extract(wagon, state.cargo, items);
     }
 
     @Override
@@ -85,6 +87,8 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
             state.modules[i].submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
             poseStack.popPose();
         }
+        // a caravan's load: 2 across, 4 along the bed (24 x 48 pixels inside the boards)
+        CargoRender.submit(state.cargo, 2, 4, 0.68F, (float) WagonEntity.BED, 0.62F, poseStack, collector, state.lightCoords, state.outlineColor);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         // model x and y both flipped (a half turn about z): + yRot still swings the pole to the wagon's right, as + steer means
         collector.submitModel(model, new WagonModel.Pose(state.spin, state.steer * Mth.DEG_TO_RAD, state.open), poseStack, TEXTURE,

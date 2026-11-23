@@ -6,12 +6,14 @@ package com.mechanical.people;
  */
 public enum TribeRole {
     HUNTER(24), GATHERER(18), FISHER(18), WOODCUTTER(16), ELDER(6),
-    /** A Trader Caravan's old trader and its guards (Caravans): one temperate skin set, whatever the climate. */
+    /** A Trader Caravan's old trader (its leader) and its guards (Caravans; HANDLER too): skins by caravan kind, whatever the climate. */
     TRADER(8), GUARD(16),
     /** The lone Miner under ground (Miners, entity mechanical:miner): one temperate skin set, men only (skins 0 and 2). */
     MINER(10),
     /** The Oak Folk at an Ancient Oak (OakFolk, F4): gatherers, worshippers, light-bearers and their keeper (leader). One skin set. */
-    OAK_GATHERER(22), OAK_WORSHIPPER(14), OAK_LIGHTBEARER(20), OAK_KEEPER(10);
+    OAK_GATHERER(22), OAK_WORSHIPPER(14), OAK_LIGHTBEARER(20), OAK_KEEPER(10),
+    /** A Trader Caravan's animal handler (Caravans): holds the draught animals' leads and stands still with them. */
+    HANDLER(0);
 
     public static final int SKINS = 4, GREETINGS = 3;
 
@@ -26,7 +28,7 @@ public enum TribeRole {
     }
 
     public boolean caravan() {
-        return this == TRADER || this == GUARD;
+        return this == TRADER || this == GUARD || this == HANDLER;
     }
 
     /** Dresses the same in every climate (one temperate skin set). */

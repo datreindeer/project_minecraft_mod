@@ -1,0 +1,135 @@
+{
+  "animal": "horse",
+  "cargo": [
+    "minecraft:coal_block",
+    "minecraft:raw_copper_block",
+    "minecraft:barrel",
+    "mechanical:tin_ore",
+    "minecraft:raw_iron_block",
+    "minecraft:coal_block",
+    "mechanical:bronze_pickaxe",
+    "minecraft:torch",
+    "mechanical:malachite",
+    "mechanical:flint_pickaxe",
+    "minecraft:coal",
+    "mechanical:cassiterite"
+  ],
+  "purse": [
+    180,
+    300
+  ],
+  "sells": [
+    {
+      "item": "mechanical:flint_pickaxe",
+      "price": 6
+    },
+    {
+      "item": "mechanical:crude_stone_pickaxe",
+      "price": 9,
+      "stock": 3
+    },
+    {
+      "item": "minecraft:torch",
+      "price": 4,
+      "count": 8,
+      "stock": 6
+    },
+    {
+      "item": "minecraft:coal",
+      "price": 8,
+      "count": 8
+    },
+    {
+      "item": "mechanical:malachite",
+      "price": 6,
+      "count": 3,
+      "age": 1
+    },
+    {
+      "item": "mechanical:cassiterite",
+      "price": 8,
+      "count": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:crushed_tin_ore",
+      "price": 9,
+      "count": 4,
+      "stock": 3,
+      "age": 1
+    },
+    {
+      "item": "mechanical:tin_ingot",
+      "price": 20,
+      "stock": 3,
+      "age": 1
+    },
+    {
+      "item": "mechanical:oil_lamp",
+      "price": 10,
+      "stock": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:bronze_pickaxe",
+      "price": 30,
+      "stock": 2,
+      "age": 1
+    },
+    {
+      "item": "minecraft:raw_iron",
+      "price": 60,
+      "count": 4,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:lead_ingot",
+      "price": 30,
+      "count": 2,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:steel_pickaxe",
+      "price": 300,
+      "stock": 1,
+      "age": 2,
+      "rare": true
+    },
+    {
+      "item": "minecraft:raw_gold",
+      "price": 200,
+      "count": 2,
+      "stock": 1,
+      "age": 1,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "minecraft:raw_copper",
+      "price": 3,
+      "count": 4,
+      "stock": 8
+    },
+    {
+      "item": "mechanical:raw_galena",
+      "price": 4,
+      "count": 3,
+      "age": 1
+    },
+    {
+      "item": "minecraft:raw_iron",
+      "price": 4,
+      "count": 3,
+      "stock": 6,
+      "age": 2
+    },
+    {
+      "item": "minecraft:raw_gold",
+      "price": 10,
+      "age": 1
+    }
+  ]
+}

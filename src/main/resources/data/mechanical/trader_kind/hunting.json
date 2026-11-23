@@ -1,0 +1,146 @@
+{
+  "animal": "horse",
+  "cargo": [
+    "minecraft:barrel",
+    "minecraft:barrel",
+    "mechanical:wolf_pelt",
+    "mechanical:lynx_pelt",
+    "mechanical:antler",
+    "mechanical:sinew_bow",
+    "mechanical:bear_pelt",
+    "mechanical:bone_arrow",
+    "mechanical:marten_fur",
+    "mechanical:horn"
+  ],
+  "purse": [
+    180,
+    320
+  ],
+  "sells": [
+    {
+      "item": "mechanical:crude_bow",
+      "price": 8,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:bone_arrow",
+      "price": 6,
+      "count": 8
+    },
+    {
+      "item": "mechanical:barbed_arrow",
+      "price": 9,
+      "count": 8,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:snare",
+      "price": 4,
+      "count": 2
+    },
+    {
+      "item": "mechanical:flint_spear",
+      "price": 5,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:sinew_bow",
+      "price": 20,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:wolf_pelt",
+      "price": 10,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:lynx_pelt",
+      "price": 20,
+      "stock": 1
+    },
+    {
+      "item": "mechanical:marten_fur",
+      "price": 10,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:bronze_arrow",
+      "price": 20,
+      "count": 8,
+      "stock": 3,
+      "age": 1
+    },
+    {
+      "item": "mechanical:bronze_spear",
+      "price": 40,
+      "stock": 1,
+      "age": 1
+    },
+    {
+      "item": "mechanical:horn_bow",
+      "price": 40,
+      "stock": 1,
+      "rare": true
+    },
+    {
+      "item": "mechanical:yew_longbow",
+      "price": 60,
+      "stock": 1,
+      "rare": true
+    },
+    {
+      "item": "mechanical:bear_pelt",
+      "price": 50,
+      "stock": 1,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "mechanical:raw_wolf_pelt",
+      "price": 4
+    },
+    {
+      "item": "mechanical:raw_lynx_pelt",
+      "price": 6,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:raw_marten_pelt",
+      "price": 4,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:raw_ermine_pelt",
+      "price": 5,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:raw_bear_pelt",
+      "price": 10,
+      "stock": 2
+    },
+    {
+      "item": "mechanical:antler",
+      "price": 3,
+      "count": 2
+    },
+    {
+      "item": "mechanical:horn",
+      "price": 3,
+      "count": 2
+    },
+    {
+      "item": "mechanical:bear_claw",
+      "price": 3,
+      "count": 2,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:sinew",
+      "price": 2,
+      "count": 4,
+      "stock": 6
+    }
+  ]
+}

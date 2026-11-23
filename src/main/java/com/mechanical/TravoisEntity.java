@@ -53,6 +53,8 @@ import net.minecraft.world.phys.Vec3;
 public class TravoisEntity extends Entity {
     /** Entity id of the player in the harness, -1 if none. Synced (sprint check, renderer). */
     private static final EntityDataAccessor<Integer> HARNESS = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.INT);
+    /** A Trader Caravan's load on show (item ids, comma separated; people.Caravans): drawn on the bed of a cart or wagon. Synced. */
+    private static final EntityDataAccessor<String> CARGO = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.STRING);
     public static final double LEAD = 2.4;
     public static final int CAPACITY = 3;
     /** Height of the hide platform above the ground. */
@@ -72,6 +74,26 @@ public class TravoisEntity extends Entity {
 
     public TravoisEntity(EntityType<? extends TravoisEntity> type, Level level) {
         super(type, level);
+    }
+
+    /** Server: the caravan load shown on the bed (item ids). */
+    public void setCargo(java.util.List<String> items) {
+        entityData.set(CARGO, String.join(",", items));
+    }
+
+    private String cargoIds;
+    private java.util.List<ItemStack> cargo = java.util.List.of();
+
+    /** The caravan load shown on the bed (unknown ids left out); empty for any other cart. */
+    public java.util.List<ItemStack> cargo() {
+        String ids = entityData.get(CARGO);
+        if (!ids.equals(cargoIds)) {
+            cargoIds = ids;
+            cargo = ids.isEmpty() ? java.util.List.of() : java.util.Arrays.stream(ids.split(",")).map(net.minecraft.resources.Identifier::tryParse)
+                    .filter(java.util.Objects::nonNull).map(id -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getOptional(id))
+                    .flatMap(java.util.Optional::stream).map(ItemStack::new).toList();
+        }
+        return cargo;
     }
 
     public int harnessId() {
@@ -334,6 +356,7 @@ public class TravoisEntity extends Entity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(HARNESS, -1);
+        builder.define(CARGO, "");
     }
 
     @Override
@@ -764,10 +787,12 @@ public class TravoisEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
+        entityData.set(CARGO, input.getStringOr("cargo", ""));
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
+        if (!entityData.get(CARGO).isEmpty()) output.putString("cargo", entityData.get(CARGO));
     }
 
     /** The Travois (or Cart) item: right-click the ground to set it down, poles towards you. */
