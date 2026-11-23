@@ -219,11 +219,14 @@ public class HangingRackBlock extends Block {
         return InteractionResult.SUCCESS;
     }
 
-    /** The kettle comes off with the rack. */
+    /**
+     * The kettle comes off with the rack. Only called when the block is replaced by another (a state change of the rack
+     * itself never gets here); a piston moves the state, kettle and all, so nothing drops then.
+     */
     @Override
     protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
         super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-        if (state.getValue(KETTLE) != Pot.NONE) popResource(level, pos, potItem(state.getValue(KETTLE)));
+        if (!movedByPiston && state.getValue(KETTLE) != Pot.NONE) popResource(level, pos, potItem(state.getValue(KETTLE)));
     }
 
     public static boolean occupied(ServerLevel level, BlockPos pos) {
