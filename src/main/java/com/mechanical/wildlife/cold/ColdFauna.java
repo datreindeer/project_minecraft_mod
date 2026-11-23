@@ -70,9 +70,9 @@ public final class ColdFauna {
     public static final DeferredHolder<EntityType<?>, EntityType<PolarBear>> POLAR_BEAR = ENTITY_TYPES.registerEntityType(
             "polar_bear", PolarBear::new, MobCategory.CREATURE, b -> b.sized(1.5F, 1.5F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<ArcticFox>> ARCTIC_FOX = ENTITY_TYPES.registerEntityType(
-            "arctic_fox", ArcticFox::new, MobCategory.CREATURE, b -> b.sized(0.55F, 0.6F).clientTrackingRange(8));
+            "arctic_fox", ArcticFox::new, MobCategory.CREATURE, b -> b.sized(0.55F, 0.65F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<SnowLeopard>> SNOW_LEOPARD = ENTITY_TYPES.registerEntityType(
-            "snow_leopard", SnowLeopard::new, MobCategory.CREATURE, b -> b.sized(0.9F, 0.95F).clientTrackingRange(10));
+            "snow_leopard", SnowLeopard::new, MobCategory.CREATURE, b -> b.sized(0.7F, 0.75F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<SiberianTiger>> SIBERIAN_TIGER = ENTITY_TYPES.registerEntityType(
             "siberian_tiger", SiberianTiger::new, MobCategory.CREATURE, b -> b.sized(1.2F, 1.25F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<SnowyOwl>> SNOWY_OWL = ENTITY_TYPES.registerEntityType(

@@ -1,19 +1,88 @@
 {
   "textures": {
     "particle": "mechanical:block/pika_hay_pile",
-    "hay": "mechanical:block/pika_hay_pile"
+    "hay": "mechanical:block/pika_hay_pile",
+    "stalks": "mechanical:block/pika_hay_pile_stalks"
   },
   "elements": [
     {
       "from": [
-        3,
+        2,
         0,
         3
       ],
       "to": [
-        13,
+        14,
+        2,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "south": {
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "east": {
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "west": {
+          "uv": [
+            2,
+            14,
+            14,
+            16
+          ],
+          "texture": "#hay"
+        },
+        "up": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#hay"
+        },
+        "down": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#hay"
+        }
+      }
+    },
+    {
+      "from": [
         4,
-        13
+        2,
+        3
+      ],
+      "to": [
+        14,
+        4,
+        12
       ],
       "faces": {
         "north": {
@@ -21,7 +90,7 @@
             3,
             12,
             13,
-            16
+            14
           ],
           "texture": "#hay"
         },
@@ -30,7 +99,7 @@
             3,
             12,
             13,
-            16
+            14
           ],
           "texture": "#hay"
         },
@@ -39,7 +108,7 @@
             3,
             12,
             13,
-            16
+            14
           ],
           "texture": "#hay"
         },
@@ -48,27 +117,109 @@
             3,
             12,
             13,
-            16
+            14
           ],
           "texture": "#hay"
         },
         "up": {
           "uv": [
-            3,
-            3,
-            13,
-            13
+            2,
+            2,
+            14,
+            14
           ],
           "texture": "#hay"
         },
         "down": {
           "uv": [
-            3,
-            3,
-            13,
-            13
+            2,
+            2,
+            14,
+            14
           ],
           "texture": "#hay"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        3,
+        5
+      ],
+      "to": [
+        6,
+        6,
+        5
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "y",
+        "origin": [
+          4,
+          4,
+          5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        3,
+        10
+      ],
+      "to": [
+        13,
+        6,
+        10
+      ],
+      "rotation": {
+        "angle": -22.5,
+        "axis": "y",
+        "origin": [
+          11,
+          4,
+          10
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
         }
       }
     }

@@ -1,74 +1,116 @@
 {
   "textures": {
     "particle": "mechanical:block/pika_hay_pile",
-    "hay": "mechanical:block/pika_hay_pile"
+    "hay": "mechanical:block/pika_hay_pile",
+    "stalks": "mechanical:block/pika_hay_pile_stalks"
   },
   "elements": [
     {
       "from": [
-        3,
+        2,
         0,
         3
       ],
       "to": [
-        13,
+        14,
         2,
-        13
+        14
       ],
       "faces": {
         "north": {
           "uv": [
-            3,
+            2,
             14,
-            13,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "south": {
           "uv": [
-            3,
+            2,
             14,
-            13,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "east": {
           "uv": [
-            3,
+            2,
             14,
-            13,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "west": {
           "uv": [
-            3,
+            2,
             14,
-            13,
+            14,
             16
           ],
           "texture": "#hay"
         },
         "up": {
           "uv": [
-            3,
-            3,
-            13,
-            13
+            2,
+            2,
+            14,
+            14
           ],
           "texture": "#hay"
         },
         "down": {
           "uv": [
-            3,
-            3,
-            13,
-            13
+            2,
+            2,
+            14,
+            14
           ],
           "texture": "#hay"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        1,
+        5
+      ],
+      "to": [
+        6,
+        4,
+        5
+      ],
+      "rotation": {
+        "angle": 22.5,
+        "axis": "y",
+        "origin": [
+          4,
+          2,
+          5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            3
+          ],
+          "texture": "#stalks"
         }
       }
     }

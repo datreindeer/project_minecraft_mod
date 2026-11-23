@@ -120,11 +120,30 @@ for food in ("cow_food", "sheep_food", "goat_food", "horse_food"):
     item_tag(f"minecraft:{food}", M + "pika_hay")
 shapeless("hay_block_from_pika_hay", [M + "pika_hay"] * 9, MC + "hay_block", category="building")
 lang["block.mechanical.pika_hay_pile"] = "Pika Hay Pile"
-for n in range(1, 5):  # a little mound of cut grass, higher with each layer
-    w(A / f"models/block/pika_hay_pile_{n}.json", {"textures": {"particle": "mechanical:block/pika_hay_pile", "hay": "mechanical:block/pika_hay_pile"},
-        "elements": [{"from": [3 - (n > 2), 0, 3 - (n > 2)], "to": [13 + (n > 2), 2 * n, 13 + (n > 2)], "faces": {
-            f: {"uv": [3, 16 - 2 * n, 13, 16] if f not in ("up", "down") else [3, 3, 13, 13], "texture": "#hay"}
-            for f in ("north", "south", "east", "west", "up", "down")}}]})
+HAY_STALKS = ((4, 5, 3, 22.5), (11, 10, 3, -22.5), (9, 4, 2, 45), (5, 11, 2, -45))
+
+
+def hay_pile_model(n):
+    """A heap of cut grass and flowers, higher with each layer: shrinking layers, each a little off the one under it,
+    with stalks sticking out of the top (crossed planes). Textures: gen_cold_models.py."""
+    faces = lambda uv: {f: {"uv": uv if f not in ("up", "down") else [2, 2, 14, 14], "texture": "#hay"}
+                        for f in ("north", "south", "east", "west", "up", "down")}
+    top, els = 2 * n, []
+    tiers = [(0, 2, 14), (2, 3, 13), (4, 4, 12), (6, 5, 11)][:n]
+    for k, (y0, a, b) in enumerate(tiers):
+        y1 = top if k == len(tiers) - 1 else y0 + 2
+        ox = k % 2
+        els.append({"from": [a + ox, y0, a - ox + 1], "to": [b + ox, y1, b - ox], "faces": faces([a, 16 - y1, b, 16 - y0])})
+    for x, z, hgt, angle in HAY_STALKS[:n]:
+        els.append({"from": [x - 2, top - 1, z], "to": [x + 2, top - 1 + hgt, z],
+                    "rotation": {"angle": angle, "axis": "y", "origin": [x, top, z]},
+                    "faces": {f: {"uv": [0, 0, 4, hgt], "texture": "#stalks"} for f in ("north", "south")}})
+    return {"textures": {"particle": "mechanical:block/pika_hay_pile", "hay": "mechanical:block/pika_hay_pile",
+                         "stalks": "mechanical:block/pika_hay_pile_stalks"}, "elements": els}
+
+
+for n in range(1, 5):
+    w(A / f"models/block/pika_hay_pile_{n}.json", hay_pile_model(n))
 w(A / "blockstates/pika_hay_pile.json", {"variants": {f"layers={n}": [{"model": f"mechanical:block/pika_hay_pile_{n}", **({"y": y} if y else {})}
     for y in (0, 90, 180, 270)] for n in range(1, 5)}})
 w(A / "models/item/pika_hay_pile.json", {"parent": "mechanical:block/pika_hay_pile_2"})
