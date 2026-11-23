@@ -6,24 +6,19 @@ import com.mechanical.client.wildlife.WildAnimalRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Fennec Fox (wild and tamed): a small slim body on thin legs, a small head with a pointed muzzle, enormous upright ears
  * and a bushy, black-tipped tail carried low. Trots on diagonal pairs; the ears swivel on their own; asleep (or a tamed
- * one sitting) it curls up with the tail round its nose; a carcass lies limp. Texture 64x32:
- * textures/entity/wildlife/fennec_fox.png, painted by scripts/gen_fauna_desert_textures.py whose fennec() part tree
- * mirrors the cubes below (keep them in sync).
+ * one sitting) it curls up with the tail round its nose; a carcass lies limp. Geometry and the
+ * 64x64 skin (textures/entity/wildlife/fennec_fox.png) come from scripts/gen_desert_models.py (DesertGeometry).
  */
 public class FennecModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "fennec_fox"), "main");
-    private static final float EAR_Z = 0.35F, TAIL_X = -0.5F;
+    private static final float EAR_Z = 0.3F, TAIL_X = -0.9F;
     private final ModelPart body, head, rightEar, leftEar, tail, tailTip;
     private final ModelPart rightFrontLeg, leftFrontLeg, rightHindLeg, leftHindLeg;
 
@@ -42,19 +37,7 @@ public class FennecModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.0F, -4.5F, 4.0F, 4.0F, 9.0F), PartPose.offset(0.0F, 17.0F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 13).addBox(-2.0F, -2.0F, -3.0F, 4.0F, 3.0F, 3.0F).texOffs(24, 13).addBox(-1.0F, -0.5F, -5.0F, 2.0F, 2.0F, 2.0F), PartPose.offset(0.0F, -1.0F, -4.5F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(14, 13).addBox(-1.0F, -5.0F, -0.5F, 2.0F, 5.0F, 1.0F), PartPose.offsetAndRotation(-1.2F, -2.0F, -1.5F, 0.0F, 0.0F, -EAR_Z));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(14, 13).mirror().addBox(-1.0F, -5.0F, -0.5F, 2.0F, 5.0F, 1.0F).mirror(false), PartPose.offsetAndRotation(1.2F, -2.0F, -1.5F, 0.0F, 0.0F, EAR_Z));
-        PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(26, 0).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 4.0F), PartPose.offsetAndRotation(0.0F, -1.0F, 4.5F, TAIL_X, 0.0F, 0.0F));
-        tail.addOrReplaceChild("tail_tip", CubeListBuilder.create().texOffs(40, 0).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, 0.2F, 0.0F, 0.0F));
-        root.addOrReplaceChild("right_front_leg", CubeListBuilder.create().texOffs(20, 13).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F), PartPose.offset(-1.0F, 19.0F, -3.5F));
-        root.addOrReplaceChild("left_front_leg", CubeListBuilder.create().texOffs(20, 13).mirror().addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F).mirror(false), PartPose.offset(1.0F, 19.0F, -3.5F));
-        root.addOrReplaceChild("right_hind_leg", CubeListBuilder.create().texOffs(54, 0).addBox(-0.5F, 0.0F, -1.0F, 1.0F, 5.0F, 2.0F), PartPose.offset(-1.0F, 19.0F, 3.5F));
-        root.addOrReplaceChild("left_hind_leg", CubeListBuilder.create().texOffs(54, 0).mirror().addBox(-0.5F, 0.0F, -1.0F, 1.0F, 5.0F, 2.0F).mirror(false), PartPose.offset(1.0F, 19.0F, 3.5F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return DesertGeometry.fennec();
     }
 
     @Override
@@ -117,7 +100,7 @@ public class FennecModel extends EntityModel<WildAnimalRenderState> {
         rightEar.yRot = r;
         leftEar.xRot = rightEar.xRot = -0.1F + speed * 0.3F;
         tail.yRot = Mth.sin(t * 0.07F) * 0.2F + Mth.cos(phase) * 0.15F * speed;
-        tail.xRot = TAIL_X + speed * 0.4F; // held out behind at a run
+        tail.xRot = TAIL_X + speed * 0.6F; // hangs low, held out behind at a run
         tailTip.yRot = Mth.sin(t * 0.07F - 0.8F) * 0.15F;
         // nosing about (grazing = sniffing the sand)
         head.xRot += state.grazeAmount * 0.8F;

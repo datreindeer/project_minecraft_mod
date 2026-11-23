@@ -18,26 +18,36 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /**
  * Dev only: with {@code desertshots.flag} in the game directory (first line: output folder) the client opens the world
  * "DesertShots", builds a sandstone platform high in the sky at noon and photographs each desert animal on it (frozen,
- * no AI) as desert_*.png, plus a sand viper buried in sand; writes desert_result.txt and quits. Does nothing without
- * the flag file. (After SavannaShots.)
+ * no AI) at 1280x720 through a 50 degree lens from three sides at its own eye height (spectator, so the camera can sit
+ * low): desert_NAME.png three-quarter, _side and _front; plus the rattlesnake rattling (the player in survival near it),
+ * the condor in flight and a sand viper buried in sand; writes desert_result.txt and quits. Does nothing without the flag.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class DesertShots {
-    /** name, summon command arguments (entity + NBT), camera distance, height of the body's middle above the ground. */
+    /**
+     * name, summon command arguments (entity + NBT), camera distance, camera height (about the animal's eye), height of
+     * the body's middle (aimed at), and a special: "rattle" (the player in survival nearby so it rattles; camera at the
+     * player's own eye height), "fly" (held in the air with its flight flag on, wings spread).
+     */
     private static final String[][] SUBJECTS = {
-            {"desert_scorpion", "mechanical:desert_scorpion {NoAI:1b}", "2.0", "0.25"},
-            {"fennec_fox", "mechanical:fennec_fox {NoAI:1b}", "2.4", "0.35"},
-            {"wild_camel", "mechanical:wild_camel {NoAI:1b}", "6.5", "1.2"},
-            {"wild_camel_calf", "mechanical:wild_camel {NoAI:1b,Age:-24000}", "4.0", "0.7"},
-            {"tame_camel_packed", "mechanical:tame_camel {NoAI:1b,Tame:1b,ChestedHorse:1b}", "6.5", "1.2"},
-            {"sand_viper", "mechanical:sand_viper {NoAI:1b}", "2.0", "0.15"},
-            {"rattlesnake", "mechanical:rattlesnake {NoAI:1b}", "2.2", "0.15"},
-            {"puma", "mechanical:puma {NoAI:1b}", "3.8", "0.6"},
-            {"bighorn_ram", "mechanical:bighorn_sheep {NoAI:1b,male:1b}", "3.8", "0.8"},
-            {"bighorn_ewe", "mechanical:bighorn_sheep {NoAI:1b,male:0b}", "3.8", "0.8"},
-            {"bighorn_lamb", "mechanical:bighorn_sheep {NoAI:1b,Age:-24000}", "2.6", "0.5"},
-            {"condor", "mechanical:condor {NoAI:1b}", "4.2", "0.7"},
+            {"desert_scorpion", "mechanical:desert_scorpion {NoAI:1b}", "1.6", "0.4", "0.15", ""},
+            {"fennec_fox", "mechanical:fennec_fox {NoAI:1b}", "1.5", "0.55", "0.35", ""},
+            {"wild_camel", "mechanical:wild_camel {NoAI:1b}", "5.5", "2.2", "1.4", ""},
+            {"wild_camel_calf", "mechanical:wild_camel {NoAI:1b,Age:-24000}", "3.0", "1.3", "0.8", ""},
+            {"tame_camel_packed", "mechanical:tame_camel {NoAI:1b,Tame:1b,ChestedHorse:1b}", "5.5", "2.2", "1.4", ""},
+            {"sand_viper", "mechanical:sand_viper {NoAI:1b}", "1.6", "0.35", "0.1", ""},
+            {"rattlesnake", "mechanical:rattlesnake {NoAI:1b}", "2.0", "0.4", "0.1", ""},
+            {"rattlesnake_rattling", "mechanical:rattlesnake {NoAI:1b}", "2.4", "1.62", "0.2", "rattle"},
+            {"puma", "mechanical:puma {NoAI:1b}", "3.0", "0.9", "0.6", ""},
+            {"bighorn_ram", "mechanical:bighorn_sheep {NoAI:1b,male:1b}", "2.6", "1.15", "0.8", ""},
+            {"bighorn_ewe", "mechanical:bighorn_sheep {NoAI:1b,male:0b}", "2.6", "1.1", "0.75", ""},
+            {"bighorn_lamb", "mechanical:bighorn_sheep {NoAI:1b,Age:-24000}", "1.8", "0.7", "0.45", ""},
+            {"condor", "mechanical:condor {NoAI:1b}", "3.0", "1.3", "0.8", ""},
+            {"condor_flying", "mechanical:condor {NoAI:1b,NoGravity:1b}", "4.5", "1.4", "2.9", "fly"},
     };
+    /** The three views: yaw of the camera (the animal faces west, yaw 90), its offset from the animal per block of distance. */
+    private static final String[] VIEWS = {"", "_side", "_front"};
+    private static final double[][] VIEW_AT = {{-0.71, 0.71, -135}, {0, 1, 180}, {-1, 0, -90}};
     private static int stage = -1, ticks, x, z, subject;
     private static final int Y = 200;
     private static File out;
@@ -76,12 +86,14 @@ public final class DesertShots {
                     if (mc.gui.screen() != null) mc.gui.setScreen(null);
                     if (ticks < 100) return;
                     if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); // no hotbar in the pictures
+                    mc.getWindow().setWindowed(1280, 720);
+                    mc.options.fov().set(50); // a narrower lens: the animal fills the frame
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     server.execute(() -> {
                         ServerPlayer p = player();
                         x = (int) Math.floor(p.getX());
                         z = (int) Math.floor(p.getZ());
-                        cmd("gamemode creative @a");
+                        cmd("gamemode spectator @a"); // the camera may sit low, the feet in the platform
                         cmd("time set noon");
                         cmd("gamerule advance_time false");
                         cmd("gamerule spawn_mobs false");
@@ -92,26 +104,40 @@ public final class DesertShots {
                     });
                     next();
                 }
-                case 2 -> { // one subject at a time: clear the platform, summon, frame it side-on from the south-west
+                case 2 -> { // one subject at a time, three views each: three-quarter, side-on, head-on
                     // the last subject dies into a carcass (and a puff): clear twice, a few ticks apart, before the next comes
+                    String[] s = SUBJECTS[subject];
                     if (ticks == 1) server.execute(DesertShots::clear);
                     if (ticks == 5) server.execute(DesertShots::clear);
-                    if (ticks == 30) {
-                        String[] s = SUBJECTS[subject];
-                        double d = Double.parseDouble(s[2]), centre = Double.parseDouble(s[3]);
-                        double dist = Math.hypot(d * 0.35, d);
-                        float pitch = (float) Math.toDegrees(Math.atan2(1.62 - centre, dist)); // eyes down to the body's middle
-                        server.execute(() -> {
-                            cmd("summon " + s[1].replace(" {", " " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " {"));
-                            cmd("tp @e[type=!player,x=" + x + ",y=" + Y + ",z=" + z + ",distance=..3] " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " 90 0");
-                            look(0.5 - d * 0.35, Y, 0.5 + d, 199.3F, pitch); // from the south-south-west, facing its flank
-                        });
+                    if (ticks == 30) server.execute(() -> {
+                        boolean fly = s[5].equals("fly");
+                        double y = Y + (fly ? 2.5 : 0);
+                        cmd("gamemode " + (s[5].equals("rattle") ? "survival" : "spectator") + " @a");
+                        cmd("summon " + s[1].replace(" {", " " + (x + 0.5) + " " + y + " " + (z + 0.5) + " {"));
+                        cmd("tp @e[type=!player,x=" + x + ",y=" + Y + ",z=" + z + ",distance=..5] " + (x + 0.5) + " " + y + " " + (z + 0.5) + " 90 0");
+                        if (fly) setFlying();
+                    });
+                    for (int v = 0; v < VIEWS.length; v++) {
+                        int at = 40 + v * 20;
+                        if (ticks == at) {
+                            double d = Double.parseDouble(s[2]), eye = Double.parseDouble(s[3]), centre = Double.parseDouble(s[4]);
+                            double[] view = VIEW_AT[v];
+                            float pitch = (float) Math.toDegrees(Math.atan2(eye - centre, d));
+                            boolean rattle = s[5].equals("rattle");
+                            server.execute(() -> look(0.5 + view[0] * d, rattle ? Y : Y + eye - 1.62, 0.5 + view[1] * d, (float) view[2], pitch));
+                        }
+                        if (ticks == at + 15) {
+                            String name = s[0] + VIEWS[v];
+                            shot(mc, name);
+                            result.add("shot " + name);
+                        }
                     }
-                    if (ticks < 70) return;
-                    shot(mc, SUBJECTS[subject][0]);
-                    result.add("shot " + SUBJECTS[subject][0]);
+                    if (ticks < 40 + VIEWS.length * 20) return;
                     if (++subject < SUBJECTS.length) ticks = 0;
-                    else next();
+                    else {
+                        server.execute(() -> cmd("gamemode spectator @a"));
+                        next();
+                    }
                 }
                 case 3 -> { // a sand viper on real sand, AI on: it buries itself
                     if (ticks == 1) server.execute(() -> {
@@ -119,7 +145,7 @@ public final class DesertShots {
                         cmd(fill(-3, Y - 2, -3, 3, Y - 2, 3, "sandstone")); // under the sand, so it doesn't fall
                         cmd(fill(-3, Y - 1, -3, 3, Y - 1, 3, "sand"));
                         cmd("summon mechanical:sand_viper " + (x + 0.5) + " " + Y + " " + (z + 0.5) + " {Rotation:[90f,0f]}");
-                        look(0.5 - 0.7, Y, 0.5 + 2.2, 199.3F, 30);
+                        look(0.5 - 1.0, Y - 1.2, 0.5 + 1.0, -135, 10);
                     });
                     if (ticks < 600) return;
                     next();
@@ -154,6 +180,19 @@ public final class DesertShots {
     /** Everything but the player off the platform, into the void below the world (carcasses don't die of /kill). */
     private static void clear() {
         cmd("tp @e[type=!player,x=" + x + ",y=" + Y + ",z=" + z + ",distance=..30] " + x + " -200 " + z);
+    }
+
+    /** The condor held in flight for the picture: its synced flight flag set (NoAI, no gravity keep it there). */
+    private static void setFlying() {
+        try {
+            var field = com.mechanical.wildlife.FlockBird.class.getDeclaredField("FLYING");
+            field.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            var key = (net.minecraft.network.syncher.EntityDataAccessor<Boolean>) field.get(null);
+            for (var e : player().level().getEntitiesOfClass(com.mechanical.wildlife.FlockBird.class, player().getBoundingBox().inflate(12))) e.getEntityData().set(key, true);
+        } catch (ReflectiveOperationException e) {
+            result.add("fly: " + e);
+        }
     }
 
     private static void next() {
