@@ -1221,6 +1221,14 @@ td img{width:24px;height:24px}
 .step h3{margin:0 0 10px;font-size:16px;text-transform:none;letter-spacing:0;color:var(--ink)}
 .step h3 span{color:var(--accent);margin-right:8px}
 .step .uses{margin-bottom:10px}
+.qtabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.qmap{position:relative;margin:14px auto;max-width:100%}
+.qmap svg{position:absolute;inset:0}
+.qmap line{stroke:var(--line);stroke-width:5}.qmap line.ld{stroke:var(--accent)}
+.qn{position:absolute;width:64px;height:64px;border-radius:12px;border:3px solid var(--line);background:var(--panel);cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center}
+.qn img{max-width:100%;max-height:100%;image-rendering:pixelated}
+.qn.open{border-color:#d9a21b;box-shadow:0 0 10px #d9a21b88}.qn.done{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--panel))}.qn.lock{opacity:.5;filter:grayscale(.7)}
+.qn.on{outline:3px solid var(--ink);outline-offset:2px}
 body.g .chips,body.g #subs,body.g #q,body.g main,body.g #sum{display:none}
 body:not(.g) #guide{display:none}
 footer{margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
@@ -1240,8 +1248,8 @@ footer{margin:0 auto;padding:0 16px 24px;color:var(--mute);font-size:13px}
 <script>
 const D=/*DATA*/null;
 const L={
-sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",allSteps:"Alla steg",steelPath:"Spåret till Steel Ingot",tabReg:"Register",tabGuide:"Spelguide",guideIntro:"Så tar du dig framåt i spelet, steg för steg. Klicka på ett item för recept och detaljer i registret.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
-en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",allSteps:"All steps",steelPath:"Path to Steel Ingot",tabReg:"Registry",tabGuide:"Guide",guideIntro:"How to progress through the game, step by step. Click an item for its recipes and details in the registry.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
+sv:{reg:"register",search:"Sök item, block eller mob…",all:"Alla",none:"Inget hittades.",desc:"Beskrivning",spawn:"Var den spawnar",where:"Var den finns",removed:"Borttaget från vanilla",removedTxt:"Vanilla-receptet är borttaget",fuel:"Bränsle",burns:"Brinner i {t} i en",fuelKiln:"Bränsle i Clay Kiln",made:"Så tillverkas det",norec:"Inget recept.",used:"Används i",show:"Visa recepten",or:"eller",close:"Stäng",heat:"värme",shapeless:"formlöst",hint:"Dra för att rotera, scrolla för att zooma",offline:"3D-visaren behöver internet (three.js från cdnjs). Bilden är förrenderad.",allSteps:"Alla steg",complete:"Markera som klar",undo:"Klar (ångra)",questIntro:"Klara stegen i ordning, som quests. Klicka på en ruta för detaljer. Dina bockar sparas i webbläsaren.",steelPath:"Spåret till Steel Ingot",tabReg:"Register",tabGuide:"Spelguide",guideIntro:"Så tar du dig framåt i spelet, steg för steg. Klicka på ett item för recept och detaljer i registret.",summary:"{i} items och block · {r} recept · {c} varelser · {m} 3D-modeller",build:"Så byggs den"},
+en:{reg:"registry",search:"Search items, blocks or mobs…",all:"All",none:"Nothing found.",desc:"Description",spawn:"Where it spawns",where:"Where to find it",removed:"Removed from vanilla",removedTxt:"The vanilla recipe is removed",fuel:"Fuel",burns:"Burns for {t} in a",fuelKiln:"Fuel in the Clay Kiln",made:"How it is made",norec:"No recipe.",used:"Used in",show:"Show the recipes",or:"or",close:"Close",heat:"heat",shapeless:"shapeless",hint:"Drag to rotate, scroll to zoom",offline:"The 3D viewer needs internet (three.js from cdnjs). The picture is pre-rendered.",allSteps:"All steps",complete:"Mark complete",undo:"Done (undo)",questIntro:"Complete the steps in order, like quests. Click a node for details. Your ticks are saved in this browser.",steelPath:"Path to Steel Ingot",tabReg:"Registry",tabGuide:"Guide",guideIntro:"How to progress through the game, step by step. Click an item for its recipes and details in the registry.",summary:"{i} items and blocks · {r} recipes · {c} creatures · {m} 3D models",build:"How to build it"}};
 let lang="sv";try{const s=new URLSearchParams(location.search).get("lang")||localStorage.getItem("mreg-lang");if(s==="en"||s==="sv")lang=s}catch(e){}
 const t=k=>L[lang][k]??L.sv[k];
 const T=x=>x&&typeof x==="object"?(x[lang]??x.sv):(x||"");
@@ -1365,9 +1373,30 @@ function makeView(THREE,cv,geoKey){
 }
 // ---- guide tab
 const G=document.getElementById("guide");
-let pathOnly=false;
+let pathOnly=false,qSel=0,qCh=0,qDone={};
+try{qDone=JSON.parse(localStorage.getItem("mreg-quests")||"{}")}catch(e){}
+function drawQuests(){
+  const chs=(D.guide||[]).map(c=>({c,st:(c.steps||[]).filter(s=>s.path)})).filter(x=>x.st.length);
+  const all=chs.flatMap(x=>x.st),key=s=>s.title.en;
+  const stat=s=>{const k=all.indexOf(s);return qDone[key(s)]?"done":(k===0||qDone[key(all[k-1])])?"open":"lock"};
+  if(qCh>=chs.length)qCh=0;
+  const cur=chs[qCh],W=4,GAP=104;
+  const pos=k=>{const r=Math.floor(k/W),c=r%2?W-1-k%W:k%W;return [c*GAP+48,r*GAP+48]};
+  const rows=Math.ceil(cur.st.length/W),lines=cur.st.slice(1).map((_,k)=>{const a=pos(k),b=pos(k+1);return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${qDone[key(cur.st[k])]?"ld":""}"/>`}).join("");
+  const nodes=cur.st.map((s,k)=>{const [x,y]=pos(k);return `<button class="qn ${stat(s)}${k===qSel?" on":""}" data-k="${k}" style="left:${x-32}px;top:${y-32}px" title="${esc(T(s.title))}">${s.items[0]?pic(s.items[0]):""}</button>`}).join("");
+  const s=cur.st[Math.min(qSel,cur.st.length-1)],d=chs.reduce((n,x)=>n+x.st.filter(z=>qDone[key(z)]).length,0);
+  G.querySelector("#qv").innerHTML=`<div class="qtabs">${chs.map((x,i)=>`<button class="chip" data-c="${i}" aria-pressed="${i===qCh}">${esc(T(x.c.title))}<small>${x.st.filter(z=>qDone[key(z)]).length}/${x.st.length}</small></button>`).join("")}</div>
+  <p class="intro">${d}/${all.length} ✓</p>
+  <div class="qmap" style="height:${rows*GAP}px;width:${W*GAP}px"><svg width="${W*GAP}" height="${rows*GAP}">${lines}</svg>${nodes}</div>
+  <div class="step"><h3><span>${all.indexOf(s)+1}</span>${esc(T(s.title))}</h3>${s.items.length?`<div class="uses">${s.items.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`:""}<div class="note">${noteHtml(T(s.text))}</div><button class="chip" id="qdone">${qDone[key(s)]?"✓ "+t("undo"):t("complete")}</button></div>`;
+  const qv=G.querySelector("#qv");
+  qv.querySelector(".qtabs").onclick=e=>{const b=e.target.closest(".chip");if(b){qCh=+b.dataset.c;qSel=0;drawQuests()}};
+  qv.querySelector(".qmap").onclick=e=>{const b=e.target.closest(".qn");if(b){qSel=+b.dataset.k;drawQuests()}};
+  qv.querySelector("#qdone").onclick=()=>{if(qDone[key(s)])delete qDone[key(s)];else{qDone[key(s)]=1;if(qSel<cur.st.length-1)qSel++}try{localStorage.setItem("mreg-quests",JSON.stringify(qDone))}catch(e){}drawQuests()};
+}
 function drawGuide(){
   let n=0;
+  if(pathOnly){G.innerHTML=`<p class="intro">${t("questIntro")}</p><div id="gmode" style="display:flex;gap:6px;margin:10px 0"><button class="chip" data-p="" aria-pressed="false">${t("allSteps")}</button><button class="chip" data-p="1" aria-pressed="true">${t("steelPath")}</button></div><div id="qv"></div>`;document.getElementById("gmode").onclick=e=>{const b=e.target.closest(".chip");if(b){pathOnly=!!b.dataset.p;drawGuide()}};drawQuests();return}
   G.innerHTML=`<p class="intro">${t("guideIntro")}</p><div id="gmode" style="display:flex;gap:6px;margin:10px 0"><button class="chip" data-p="" aria-pressed="${!pathOnly}">${t("allSteps")}</button><button class="chip" data-p="1" aria-pressed="${pathOnly}">${t("steelPath")}</button></div><nav>${(D.guide||[]).map((c,i)=>`<a class="chip" href="#guide-${i}">${esc(T(c.title))}</a>`).join("")}</nav>`+(D.guide||[]).map((c,i)=>!pathOnly||(c.steps||[]).some(s=>s.path)?`<h2 id="guide-${i}">${esc(T(c.title))}</h2>${c.intro?`<div class="note intro">${noteHtml(T(c.intro))}</div>`:""}`+(c.steps||[]).filter(s=>!pathOnly||s.path).map(s=>`<div class="step"><h3><span>${++n}</span>${esc(T(s.title))}</h3>${(s.items||[]).length?`<div class="uses">${s.items.map(r=>`<a class="use" href="#${r}">${pic(r)}${esc(nm(r))}</a>`).join("")}</div>`:""}<div class="note">${noteHtml(T(s.text))}</div></div>`).join(""):"").join("");
   document.getElementById("gmode").onclick=e=>{const b=e.target.closest(".chip");if(b){pathOnly=!!b.dataset.p;drawGuide()}};
 }
