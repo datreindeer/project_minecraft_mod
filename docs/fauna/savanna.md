@@ -7,7 +7,7 @@ Kod: `wildlife/savanna/` (SavannaFauna, SpottedHyena, Cheetah, Gazelle, Ostrich,
 SignalHornItem, SavannaTest), klient `client/wildlife/savanna/` (SavannaFaunaClient, SpottedHyenaModel, CheetahModel,
 GazelleModel, OstrichModel, AardvarkModel, SavannaAnimalRenderer och den genererade SavannaGeometry). Lejonets dag finns i
 `wildlife/CaveLion.java`. Data: `scripts/gen_fauna_savanna.py`, föremål och block: `scripts/gen_fauna_savanna_textures.py`.
-**Modeller och skinn** (även Cave Lion): `scripts/gen_savanna_models.py`, som bygger varje djur ur en tabell (delar,
+**Modeller och skinn**: `scripts/gen_savanna_models.py` (Cave Lion har en egen modell i `scripts/gen_pred_models.py`), som bygger varje djur ur en tabell (delar,
 lådor, hudens färger) och skriver både `SavannaGeometry.java` och texturerna, så att modell och textur alltid stämmer.
 
 ## Gemensamt

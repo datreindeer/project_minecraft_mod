@@ -39,9 +39,9 @@ public final class PredShots {
     /** name, type, baby, camera distance, close-up distance. */
     private record Subject(String name, Supplier<? extends EntityType<?>> type, boolean baby, double distance, double close) {}
 
-    private static final String[] VIEWS = {"front", "side", "q", "attack", "sleep", "carcass"};
+    private static final String[] VIEWS = {"front", "face", "side", "q", "attack", "sleep", "carcass"};
 
-    private static final List<Subject> SUBJECTS = List.of(
+    private static List<Subject> SUBJECTS = List.of(
             new Subject("brown_bear", com.mechanical.wildlife.Wildlife.BROWN_BEAR, false, 5.0, 2.8),
             new Subject("brown_bear_cub", com.mechanical.wildlife.Wildlife.BROWN_BEAR, true, 2.6, 1.8),
             new Subject("grey_wolf", com.mechanical.wildlife.Wildlife.GREY_WOLF, false, 3.0, 2.2),
@@ -75,7 +75,12 @@ public final class PredShots {
                     stage = -2;
                     return;
                 }
-                out = new File(Files.readAllLines(flag.toPath()).get(0).trim());
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                if (lines.size() > 1 && !lines.get(1).isBlank()) {
+                    List<String> only = List.of(lines.get(1).trim().split(","));
+                    SUBJECTS = SUBJECTS.stream().filter(s -> only.contains(s.name())).toList();
+                }
                 out.mkdirs();
                 stage = 0;
             }
@@ -270,6 +275,12 @@ public final class PredShots {
             case "side" -> left;
             default -> fwd.add(left).normalize();
         };
+        if (v.equals("face")) { // straight at the head, from just in front of it, level with the eyes
+            double eyeY = base.y + current.getBbHeight() * 0.95;
+            Vec3 head = new Vec3(base.x, eyeY, base.z).add(fwd.scale(current.getBbWidth() * 0.6));
+            aim(head.add(fwd.scale(s.close() * 0.6)), head);
+            return;
+        }
         double scale = v.equals("carcass") || v.equals("sleep") ? 1.0 : 0.85;
         double eyeY = base.y + Math.max(current.getEyeHeight(), 0.15) * (v.equals("carcass") || v.equals("sleep") ? 0.8 : 1.0);
         Vec3 look = new Vec3(base.x, eyeY - current.getBbHeight() * 0.25, base.z);

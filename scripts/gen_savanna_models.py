@@ -12,8 +12,7 @@ disc, tall ears, thick tapering tail, short dark legs with spade claws).
 
 Same idea as gen_elkwight_model.py: every box is packed into the skin and painted from the 3D point each texel covers.
 Part names are the ones the animation code looks up (PredatorModel, GazelleModel, OstrichModel, AardvarkModel).
-Also the Cave Lion (an older mob, seen resting in the savanna shade): a broad-headed, deep-chested maneless cat with a
-faint throat ruff, ghost stripes and a dark tail tuft (client/wildlife/CaveLionModel).
+The Cave Lion (an older mob, seen resting in the savanna shade) has its own model in gen_pred_models.py.
 Usage: python scripts/gen_savanna_models.py (after gen_fauna_savanna_textures.py and gen_predator_textures.py). Deterministic.
 """
 import math
@@ -170,110 +169,6 @@ def predator_legs(m, front, hind, upper, hind_upper, paw_w=2, lw=2, paw_d=3):
         m.part(f"{s[0]}h_lower", f"{s}_hind_leg", (0, hind_upper[1] + hind_upper[4] - 1, 0.5), name="lower")
         m.box(f"{s[0]}h_lower", "lower", -lw / 2, 0, -lw / 2, lw, hind_lower_len, lw)
         m.box(f"{s[0]}h_lower", "paw", -paw_w / 2, hind_lower_len, -lw / 2 - 1, paw_w, 1, paw_d)
-
-
-# ============================================================================ cave lion
-def lion_model():
-    m = Model("Cave lion")
-    m.part("body", "root", (0, 10, 0))
-    m.box("body", "chest", -4, -5, -10, 8, 9, 10)          # deep chest and powerful shoulders
-    m.box("body", "shoulders", -3.5, -5.8, -9, 7, 1, 7)
-    m.box("body", "ruff", -3.5, -3, -12, 7, 8, 2)          # the faint ruff down the throat and chest
-    m.box("body", "belly", -3.5, -4.5, 0, 7, 8, 6)
-    m.box("body", "pouch", -3, 3.5, -2, 6, 1, 7)           # the loose belly skin that swings as it walks
-    m.box("body", "hips", -4, -5, 6, 8, 9, 5)
-    m.part("neck", "body", (0, -2, -10), (-0.25, 0, 0))
-    m.box("neck", "neck", -3, -3.5, -4, 6, 7, 4)
-    m.part("head", "body", (0, -2.5, -13))
-    m.box("head", "skull", -3.5, -4, -5, 7, 6, 5)
-    m.box("head", "brow", -3, -4.6, -5.4, 6, 2, 1)         # the heavy brow over the eyes
-    m.box("head", "cheeks", -4, -1, -4.5, 8, 3, 4)         # broad jowls
-    m.box("head", "muzzle", -2, -1.5, -8, 4, 3, 3)
-    m.box("head", "nose", -1, -1.8, -8.4, 2, 1, 1)
-    m.part("jaw", "head", (0, 1.5, -5))
-    m.box("jaw", "jaw", -2, 0, -3, 4, 1, 3)
-    for side, s in ((-1, "right"), (1, "left")):
-        m.part(f"{s}_ear", "head", (side * 2.6, -3.8, -2), (0, 0, side * 0.2))
-        m.box(f"{s}_ear", "ear", -1, -2, -0.5, 2, 2, 1)
-    m.part("tail", "body", (0, -3.5, 10.5), (0.45, 0, 0))
-    m.box("tail", "tail", -1, 0, -1, 2, 8, 2)
-    m.part("tail_end", "tail", (0, 8, 0), (0.3, 0, 0))
-    m.box("tail_end", "tail", -1, 0, -1, 2, 6, 2)
-    m.box("tail_end", "tuft", -1.5, 5, -1.5, 3, 3, 3)
-    predator_legs(m, (2.6, 13, -6.5), (2.6, 12, 8), (-2, -2, -2, 4, 7, 4), (-2, -2, -3, 4, 8, 5), paw_w=4, lw=3, paw_d=4)
-    return m
-
-
-LI = dict(back=(140, 110, 74), coat=(184, 152, 106), pale=(214, 190, 146), belly=(228, 214, 184), stripe=(132, 104, 70),
-          white=(238, 232, 218), dark=(54, 42, 34), nose=(160, 102, 92), eye=(204, 150, 52), pupil=(30, 22, 18),
-          ear_back=(44, 36, 30), pad=(70, 56, 48))
-
-
-def lion_colour(v, mat, face, p, P, b):
-    x, y, z = p
-    t = 0.0 if face == "top" else 1.0 if face == "bottom" else rel(P[1], 5, 15)
-    coat = lerp(lerp(LI["back"], LI["coat"], t / 0.4), LI["pale"], (t - 0.55) / 0.3) if t < 0.85 else LI["belly"]
-    # faint ghost stripes down the flanks and thighs, as cave art shows them
-    stripe = side_of(face) and face not in ("front", "back") and t < 0.7 and \
-        math.sin(P[2] * 0.9 + 0.8 * math.sin(P[1] * 0.5)) > 0.82
-    if mat in ("chest", "shoulders", "belly", "hips", "neck", "pouch"):
-        if mat == "neck" and face == "front":
-            return LI["pale"]
-        c = lerp(coat, LI["stripe"], 0.45) if stripe else coat
-        return lerp(c, LI["back"], 0.35 * h(int(P[0] * 2), int(P[2]), 91)) if face == "top" else c
-    if mat == "ruff":
-        return lerp(LI["pale"], LI["coat"], 0.5 + 0.3 * h(int(x * 2), int(y), 92) + (0.2 if y < -1 else 0))  # only a faint paler ruff
-    if mat in ("skull", "brow"):
-        if mat == "brow":
-            return lerp(LI["coat"], LI["back"], 0.4) if face != "bottom" else LI["dark"]
-        if face == "front":
-            if -3 <= y < -2 and (b["x"] + 1 <= x < b["x"] + 3 or b["x"] + 4 <= x < b["x"] + 6):
-                # amber eyes with a dark pupil on the inner texel
-                inner = b["x"] + 2 <= x < b["x"] + 3 or b["x"] + 4 <= x < b["x"] + 5
-                return LI["pupil"] if inner else LI["eye"]
-            if -2 <= y < -1 and (b["x"] + 1 <= x < b["x"] + 3 or b["x"] + 4 <= x < b["x"] + 6):
-                return LI["white"]  # pale under the eyes
-            return lerp(LI["coat"], LI["back"], 0.3)
-        if face in ("left", "right") and z < b["z"] + 1 and -3 <= y < -2:
-            return LI["eye"]
-        return lerp(LI["coat"], LI["back"], 0.45) if face == "top" else LI["coat"]
-    if mat == "cheeks":
-        if face == "front" or (face in ("left", "right") and z < b["z"] + 1.5):
-            return LI["white"] if y > 0 else LI["pale"]
-        return lerp(LI["coat"], LI["pale"], rel(y, -1, 2))
-    if mat == "muzzle":
-        if face == "front":
-            return LI["white"] if y > -0.5 else lerp(LI["pale"], LI["coat"], 0.3)
-        if face in ("left", "right"):
-            if y > 0.5 and z < -7:
-                return lerp(LI["dark"], LI["white"], 0.35)  # the corner of the mouth
-            if -0.5 <= y < 0.5 and z < -6:
-                return lerp(LI["dark"], LI["white"], 0.55)  # the dark whisker pads
-            return LI["white"] if y > -0.5 else LI["pale"]
-        return lerp(LI["coat"], LI["pale"], 0.4)
-    if mat == "nose":
-        return LI["nose"] if face != "bottom" else LI["dark"]
-    if mat == "jaw":
-        return LI["white"]
-    if mat == "ear":
-        if rounded(face, p, b):
-            return CLEAR
-        return LI["ear_back"] if face == "back" else lerp(LI["coat"], LI["pale"], 0.5)
-    if mat == "tail":
-        return coat if face != "bottom" else LI["pale"]
-    if mat == "tuft":
-        return lerp(LI["dark"], LI["ear_back"], h(int(P[0] * 3), int(P[1] * 2), 93))
-    if mat in ("upper", "thigh", "lower"):
-        inner = (face == "left" and P[0] < 0) or (face == "right" and P[0] > 0) or face == "back"
-        c = lerp(LI["coat"], LI["pale"], 0.55 if inner else 0.3 * rel(P[1], 12, 23))
-        if mat == "thigh" and stripe:
-            c = lerp(c, LI["stripe"], 0.4)
-        return c
-    if mat == "paw":
-        if face == "front" and int(x - b["x"]) % 2 == 1:
-            return lerp(LI["pale"], LI["back"], 0.4)
-        return LI["pale"] if face != "bottom" else LI["pad"]
-    return coat
 
 
 # ============================================================================ spotted hyena
@@ -855,8 +750,7 @@ def aardvark_colour(v, mat, face, p, P, b):
 
 # ============================================================================
 def main():
-    models = [(lion_model(), "caveLion", lion_colour, {"cave_lion": None}, ("nose", "paw")),
-              (hyena_model(), "hyena", hyena_colour, {"spotted_hyena": None}, ("nose", "paw")),
+    models = [(hyena_model(), "hyena", hyena_colour, {"spotted_hyena": None}, ("nose", "paw")),
               (cheetah_model(), "cheetah", cheetah_colour, {"cheetah": None}, ("paw",)),
               (gazelle_model(), "gazelle", gazelle_colour, {"gazelle": None}, ("horn", "horn_tip", "hoof")),
               (ostrich_model(), "ostrich", ostrich_colour, {"ostrich_male": "male", "ostrich_female": "female"}, ("beak", "mandible", "toe", "small_toe")),

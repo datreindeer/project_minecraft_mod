@@ -2,9 +2,9 @@
 
 - src/main/java/com/mechanical/client/wildlife/giants/GiantsGeometry.java: Woolly Mammoth, Woolly Rhinoceros, Steppe
   Bison, Musk Ox (generated, do not edit; MammothModel / RhinoModel / BisonModel / MuskOxModel animate them)
-- src/main/java/com/mechanical/client/wildlife/PredGeometry.java: Grey Wolf (PredatorModel animates it) and the bear
-  cub (BearCubModel; the cave bear cub shares it, recoloured by gen_fauna_mountain_textures.py)
-- textures/entity/wildlife/giants/*.png, wildlife/grey_wolf.png, wildlife/brown_bear(_cub).png and the skinned carcass
+- src/main/java/com/mechanical/client/wildlife/PredGeometry.java: Grey Wolf and Cave Lion (PredatorModel animates them)
+  and the bear cub (BearCubModel; the cave bear cub shares it, recoloured by gen_fauna_mountain_textures.py)
+- textures/entity/wildlife/giants/*.png, wildlife/grey_wolf.png, wildlife/cave_lion.png, wildlife/brown_bear(_cub).png and the skinned carcass
   skins in textures/entity/skinned/. The adult brown bear keeps BrownBearModel's hand-written boxes: only its skin is
   painted here, on those UVs.
 
@@ -15,12 +15,15 @@ long flattened front horn curving up and a short second horn, square lips, shagg
 cape over the hump and forelegs, slim hindquarters, a shaggy head with beard and long, wide horns. Musk ox: a curtain of
 dark guard hair almost to the ground, a pale saddle, pale stockings, the broad horn boss with hooked horns. Grey wolf:
 deep chest under a thick ruff, narrow waist, long legs, long narrow muzzle, cheek ruffs, bushy tail. Bear cub: round
-and fluffy, big head with round ears and a short muzzle, chubby legs.
+and fluffy, big head with round ears and a short muzzle, chubby legs. Cave lion: a long low maneless cat with heavy
+shoulders, a broad head with jowls, a real muzzle and jaw, big paws, faint stripes over the hindquarters, a pale belly
+and a long tail ending in a dark tuft.
 
 Usage: python scripts/gen_pred_models.py (after gen_fauna_giants_textures.py, gen_predator_textures.py; before
 gen_fauna_mountain_textures.py, which recolours the bear skins for the cave bear, and gen_aged_textures.py).
 Deterministic (hashes only).
 """
+import math
 import sys
 from pathlib import Path
 
@@ -230,11 +233,16 @@ def mammoth_colour(m, q):
         if m in ("dome", "peak") or (m == "skull" and q.face == "top"):
             c = lerp(P["dark"], P["warm"], 0.3 + 0.5 * h(q.tx // 2, q.ty // 2, 21))  # the hair tuft on the crown
             return lit(locks(c, q, 22, 0.14, 4), q, -10, 24)
-        e = eye_at(q, -1.0, -5.5, size=0.5)
-        if e:
-            return GLINT if e == "glint" else EYE
-        if m == "skull" and q.face in ("left", "right") and abs(q.y + 1.0) <= 1.0 and abs(q.z + 5.5) <= 1.0:
-            return lit(lerp(P["face"], P["root"], 0.5), q, -10, 24)  # the dark skin round the eye
+        if m == "skull" and q.face in ("left", "right"):
+            dy, dz = q.y + 1.25, q.z + 5.75
+            if abs(dy) < 0.1 and abs(dz) < 0.1:
+                return (10, 6, 4)  # a small dark eye
+            if abs(dy) < 0.6 and abs(dz) < 0.6:
+                return lit(lerp(P["face"], P["root"], 0.6), q, -10, 24)  # the bare skin round it
+            if -1.6 < dy < -0.4 and abs(dz) < 1.4:
+                # a fringe of long hair hanging over the eye, lock by lock
+                return lit(lerp(P["dark"], P["warm"], 0.25 + 0.5 * h(q.tx, 0, 30)), q, -10, 24) if h(q.tx, q.ty, 31) > 0.2 else \
+                    lit(lerp(P["face"], P["root"], 0.6), q, -10, 24)
         if m == "lip":
             return lit(lerp(P["skin"], P["root"], 0.3), q, -10, 24)
         c = lerp(P["face"], P["base"], 0.25 * h(q.tx // 2, q.ty // 3, 23))
@@ -301,8 +309,11 @@ def mammoth():
 
     M.part("head", "body", (0, -5, -12.5), (0.2, 0, 0))
     M.box("head", "skull", -4.5, -5, -7, 9, 9, 7)
-    M.box("head", "dome", -4.5, -7.5, -6.5, 9, 2.5, 5.5)
-    M.box("head", "peak", -3, -9, -5.5, 6, 1.5, 3.5)
+    # the domed crown in thin layers, each a little smaller: a smooth rise instead of steps
+    M.box("head", "dome", -4.25, -6.5, -6.75, 8.5, 1.5, 6.5)
+    M.box("head", "dome", -3.75, -7.5, -6.25, 7.5, 1, 5.5)
+    M.box("head", "dome", -3, -8.5, -5.5, 6, 1, 4)
+    M.box("head", "peak", -2, -9, -4.75, 4, 0.5, 2.5)
     M.box("head", "brow", -4, -4, -8, 8, 5, 1)
     M.box("head", "face", -3, 1, -7.5, 6, 5, 5)
     M.box("head", "lip", -1.5, 6, -6, 3, 1, 3)
@@ -463,17 +474,32 @@ BI = {
     "calf": dict(cape=(196, 120, 60), cape_lt=(220, 150, 84), body=(170, 100, 50), dark=(120, 70, 36), beard=(110, 66, 34),
                  face=(150, 90, 46), nose=(60, 44, 36), hoof=(60, 50, 44)),
 }
-BISON_HORN = [(34, 30, 28), (58, 52, 48), (86, 78, 70), (26, 23, 22)]
+BISON_HORN = [(92, 78, 62), (66, 56, 46), (44, 38, 32), (22, 19, 17)]  # pale ridged base to a black tip
+
+
+def tufts(c, q, salt):
+    """Matted wool in tufts: clumps two texels wide and three long, staggered, each with a pale tip and a dark gap."""
+    col = q.tx // 2
+    y = q.ty + int(h(col, 0, salt) * 4)  # every tuft column starts at its own height
+    layer, p = y // 4, y % 4
+    c = shade(c, 0.86 + 0.26 * h(col, layer, salt + 1))
+    if p == 0 and h(col, layer, salt + 2) < 0.7:
+        c = shade(c, 0.8)  # in the shadow of the layer above
+    elif p == 3:
+        c = shade(c, 1.08)  # the tip of the tuft catches the light
+    return shade(c, 1 + (h(q.tx, q.ty, salt + 3) - 0.5) * 0.08)
 
 
 def bison_colour(m, q):
     P = BI[M_BISON.variant]
     Y, Z = q.Y, q.Z
-    if m in ("cape", "hump1", "hump2", "brisket", "barrel", "rump", "back"):
+    if m in ("cape", "hump1", "hump2", "hump_tuft", "cape_edge", "cape_layer", "hump_layer", "brisket", "barrel", "rump", "back"):
         # the golden woolly cape over hump, shoulders and forelegs; the hindquarters short, dark and sleek
         cape = rel(-Z, -3, 3)  # 0 behind the shoulders, 1 in front
-        if m in ("hump1", "hump2"):
+        if m in ("hump1", "hump2", "hump_tuft", "cape_edge", "cape_layer", "hump_layer"):
             cape = 1.0
+        if m in ("cape_edge", "cape_layer", "hump_layer") and ragged(q, 3 if m != "hump_layer" else 2, 50 + len(m)):
+            return None
         if m == "brisket":
             if ragged(q, 2, 51):
                 return None
@@ -484,8 +510,11 @@ def bison_colour(m, q):
         c = lerp(sleek, wool, cape)
         if q.face == "bottom":
             c = P["dark"]
-        amt = 0.16 if cape > 0.5 else 0.06
-        return lit(locks(c, q, 55, amt, 2 if cape > 0.5 else 3), q, -5, 24)
+        if m in ("cape_layer", "hump_layer", "cape_edge") and side(q):
+            c = shade(c, 0.78 + 0.34 * q.j / max(1, q.fh - 1))  # each layer: shadowed roots, pale tips
+        if cape > 0.5:
+            return lit(tufts(c, q, 55), q, -5, 24)
+        return lit(locks(c, q, 55, 0.06, 3), q, -5, 24)
     if m in ("skull", "wool", "cheek", "muzzle", "nose"):
         e = eye_at(q, 0.5, -4.5, size=0.5)
         if m == "skull" and e:
@@ -507,9 +536,11 @@ def bison_colour(m, q):
         return lit(P["face"] if q.face != "top" else P["dark"], q, -5, 24)
     if m.startswith("horn") or m.startswith("cowhorn"):
         seg = int(m[-1])
-        c = BISON_HORN[min(seg, 3)] if seg < 3 else BISON_HORN[3]
-        if (q.tx + q.ty) % 4 == 0:
-            c = shade(c, 0.85)  # ridges
+        along = (1 - q.j / max(1, q.fh - 1)) if side(q) else 0.5  # boxes run along -y: row 0 is the far end
+        t = (seg - 1 + along) / (3 if m.startswith("horn") else 2)
+        c = gradient(BISON_HORN, t)
+        if side(q) and seg == 1 and q.j % 2 == 0:
+            c = shade(c, 0.88)  # growth ridges near the base
         return lit(c, q, -5, 24)
     if m in ("tail", "tuft"):
         c = P["dark"] if m == "tail" else P["beard"]
@@ -517,6 +548,8 @@ def bison_colour(m, q):
     if m in ("upper", "hupper", "chap"):
         if m == "chap" and ragged(q, 2, 62):
             return None
+        if m == "chap":
+            return lit(tufts(lerp(P["cape"], P["beard"], 0.35 + 0.3 * h(q.tx, 0, 63)), q, 64), q, -5, 24)
         c = lerp(P["cape"], P["body"], 0.5) if m != "hupper" else lerp(P["body"], P["dark"], 0.3)
         if m == "chap":
             c = lerp(P["cape"], P["beard"], 0.35 + 0.3 * h(q.tx, 0, 63))
@@ -532,6 +565,8 @@ def bison():
     M = Model("Steppe bison", None, 1, bison_colour)
     M.part("body", None, (0, 8, 0))
     M.box("body", "cape", -7, -7, -13, 14, 15, 12)
+    M.box("body", "cape_edge", -7.5, -6, -2.5, 15, 13, 2)  # the cape's ragged back edge, hanging over the barrel
+    M.box("body", "cape_layer", -8, 1, -14, 16, 8, 12)  # a lower layer of longer wool, ragged, over chest and forelegs
     M.box("body", "brisket", -5, 8, -13, 10, 3, 8)
     M.box("body", "barrel", -6, -4, -2, 12, 11, 9)
     M.box("body", "back", -5, -5, -1, 10, 1, 11)
@@ -539,6 +574,8 @@ def bison():
     M.part("hump", "body", (0, -7, -7))
     M.box("hump", "hump1", -5.5, -4, -5, 11, 4, 10)
     M.box("hump", "hump2", -4, -6, -3.5, 8, 2, 6)
+    M.box("hump", "hump_tuft", -2.5, -7, -2.5, 5, 1, 4)
+    M.box("hump", "hump_layer", -6.5, -3, -6, 13, 4, 12)  # the hump's own fringe overlapping the shoulders
     M.part("tail", "body", (0, -3, 12), (0.1, 0, 0))
     M.box("tail", "tail", -0.5, 0, -0.5, 1, 7, 1)
     M.box("tail", "tuft", -1, 6, -1, 2, 4, 2)
@@ -558,13 +595,13 @@ def bison():
     for s, sign in (("right", -1), ("left", 1)):
         p = s + "_"
         # out sideways from the poll, then up, the tip turning forward and in
-        M.part("b" + p + "horn", "bull_horns", (4 * sign, -4, -3), (0, 0, 1.4 * sign))
+        M.part("b" + p + "horn", "bull_horns", (4 * sign, -4, -3), (0, 0.45 * sign, 1.35 * sign))
         label(M, "b" + p + "horn", p + "horn")
         M.limb("b" + p + "horn", sign, (-1, -5, -1, 2, 5, 2), mat="horn1")
-        M.part("b" + p + "horn_mid", "b" + p + "horn", (0, -4.5, 0), (0.15, 0, -0.95 * sign))
+        M.part("b" + p + "horn_mid", "b" + p + "horn", (0, -4.5, 0), (0, -0.5 * sign, -1.0 * sign))
         label(M, "b" + p + "horn_mid", p + "horn_mid")
         M.limb("b" + p + "horn_mid", sign, (-1, -4, -1, 2, 4, 2), mat="horn2")
-        M.part("b" + p + "horn_tip", "b" + p + "horn_mid", (0, -3.5, 0), (0.45, 0, -0.45 * sign))
+        M.part("b" + p + "horn_tip", "b" + p + "horn_mid", (0, -3.5, 0), (0, 0, -0.6 * sign))
         label(M, "b" + p + "horn_tip", p + "horn_tip")
         M.limb("b" + p + "horn_tip", sign, (-0.5, -4, -0.5, 1, 4, 1), mat="horn3")
         M.part("c" + p + "horn", "cow_horns", (3.8 * sign, -4, -3), (0, 0, 1.2 * sign))
@@ -712,43 +749,57 @@ def wolf_colour(m, q):
     if m in ("chest", "brisket", "mane", "waist", "hips", "neck"):
         c = wolf_coat(q)
         if m in ("chest", "brisket", "neck") and q.face == "front" or (m == "brisket" and q.face != "top"):
-            c = lerp(WO["cream"], WO["buff"], 0.3 * h(q.tx, q.ty, 92))  # pale throat and chest
+            # a pale stripe down the throat and chest, buff to either side
+            c = lerp(WO["cream"], WO["buff"], 0.3 * h(q.tx, q.ty, 92)) if abs(q.X) < 1.2 else lerp(WO["buff"], WO["grizzle"], 0.35)
         if m == "mane" and side(q) and q.face != "back":
             c = lerp(c, WO["saddle"], 0.25)  # the dark cape over the shoulders
         return lit(agouti(locks(c, q, 93, 0.09, 2), q, 94), q, 6, 24)
-    if m in ("skull", "stop"):
-        if m == "skull" and q.face == "front" and abs(abs(q.x) - 1.5) < 0.6 and abs(q.y + 1.5) < 0.6:
-            return EYE if abs(q.x) < 1.5 else WO["amber"]
-        if m == "skull" and q.face in ("left", "right") and abs(q.y + 1.5) < 0.6 and q.z < -2.5:
-            return WO["amber"]
-        if q.face == "top" or m == "stop":
-            return lit(agouti(lerp(WO["grizzle"], WO["saddle"], 0.3), q, 95), q, 6, 24)
-        if q.face == "front" and q.y > -0.5:
-            return lit(WO["cream"], q, 6, 24)
+    if m == "skull":
+        # the mask: grizzled dark over the brow, amber eyes, pale under them running into the cheeks
+        if q.face == "front":
+            ax = abs(q.x)
+            if q.y < -2:
+                return lit(agouti(lerp(WO["saddle"], WO["grizzle"], 0.35), q, 95), q, 6, 24)
+            if q.y < -1:
+                return WO["amber"] if ax > 1.5 else EYE
+            return lit(WO["cream"] if ax > 1.5 and -1 < q.y < 0 else lerp(WO["buff"], WO["grizzle"], 0.35), q, 6, 24)
+        if q.face in ("left", "right") and q.z < -2.5:
+            if -2 < q.y < -1:
+                return WO["amber"]
+            if q.y < -2:
+                return lit(lerp(WO["saddle"], WO["grizzle"], 0.4), q, 6, 24)
+        if q.face == "top":
+            return lit(agouti(lerp(WO["grizzle"], WO["saddle"], 0.35), q, 95), q, 6, 24)
         return lit(agouti(lerp(WO["tawny"], WO["grizzle"], 0.4), q, 96), q, 6, 24)
     if m == "cheeks":
-        c = lerp(WO["grizzle"], WO["buff"], 0.5) if q.face != "front" and q.y < 0.5 else lerp(WO["cream"], WO["buff"], 0.4 * h(q.tx, q.ty, 97))
-        return lit(agouti(locks(c, q, 98, 0.1, 2), q, 97), q, 6, 24)
-    if m == "muzzle":
+        c = lerp(WO["buff"], WO["grizzle"], 0.35)  # the ruff, grizzled
+        if q.y > 1:
+            c = WO["cream"]  # pale under the jaw
+        elif q.face == "front" and abs(q.x) > 2:
+            c = lerp(WO["cream"], WO["buff"], 0.4)
+        return lit(agouti(locks(c, q, 98, 0.08, 2), q, 97), q, 6, 24)
+    if m in ("snout", "muzzle"):
         if q.face == "top":
-            return lit(lerp(WO["tawny"], WO["saddle"], 0.45), q, 6, 24)  # the dark bridge
-        if q.face == "front":
-            return WO["cream"] if q.y > 0 else lerp(WO["tawny"], WO["saddle"], 0.3)
-        if q.face in ("left", "right") and q.y > 0.5:
-            return lit(WO["cream"], q, 6, 24)  # pale lips
-        return lit(lerp(WO["buff"], WO["tawny"], 0.4), q, 6, 24)
+            return lit(lerp(WO["tawny"], WO["saddle"], 0.5 if m == "snout" else 0.35), q, 6, 24)  # the dark bridge
+        if q.face == "bottom" or (q.y > 0 and q.face != "front") or (m == "muzzle" and q.y > 0):
+            return lit(WO["cream"], q, 6, 24)  # pale lips and chin
+        return lit(lerp(WO["buff"], WO["tawny"], 0.45), q, 6, 24)
     if m == "nose":
-        return WO["nose"]
+        return WO["nose"] if not (q.face == "front" and q.j == 0) else lerp(WO["nose"], (80, 76, 74), 0.35)
     if m == "jaw":
         if q.face == "top":
             return WO["mouth"] if abs(q.x) < 1 else WO["tooth"]
         return lit(WO["cream"], q, 6, 24)
     if m == "ear":
-        if side(q) and q.fw >= 2 and q.j == 0 and (q.i == 0) == (q.face in ("front", "left")):
-            return None  # pointed tip: one top corner cut
+        # pointed: the top corners and the top face cut away; grey-brown with dark rims, pale fur inside
+        if q.face == "top" or (q.j == 0 and (q.fw < 3 or q.i in (0, q.fw - 1))):
+            return None
+        rim = q.fw >= 3 and q.i in (0, q.fw - 1) and q.j < q.fh - 1
+        rim_c = lerp(WO["saddle"], WO["grizzle"], 0.3)
         if q.face == "front":
-            return lerp(WO["cream"], WO["buff"], 0.4) if q.i in range(1, q.fw - 1) else WO["saddle"]
-        return lit(lerp(WO["saddle"], WO["tawny"], 0.3 * q.j / max(1, q.fh - 1)), q, 6, 24)
+            return rim_c if rim else lerp(WO["buff"], WO["tawny"], 0.2 + 0.3 * q.j / max(1, q.fh - 1))
+        c = lerp(WO["grizzle"], WO["tawny"], 0.2 + 0.4 * q.j / max(1, q.fh - 1))
+        return lit(rim_c if rim else c, q, 6, 24)
     if m.startswith("tail"):
         tip = m == "tail3"
         c = WO["dark"] if tip and q.j >= 1 else (lerp(WO["saddle"], WO["grizzle"], 0.4) if q.n[1] < 0.3 and q.face != "bottom"
@@ -785,14 +836,14 @@ def grey_wolf():
     M.part("head", "body", (0, -3, -9.5))
     M.box("head", "skull", -2.5, -3, -3.5, 5, 4, 4)
     M.box("head", "cheeks", -3, -1, -2, 6, 3, 2)
-    M.box("head", "stop", -2, -2, -4.5, 4, 2, 1)
-    M.box("head", "muzzle", -1.5, -1, -8, 3, 2, 4)
-    M.box("head", "nose", -1, -1.5, -8.5, 2, 1, 1)
-    M.part("jaw", "head", (0, 1, -4))
-    M.box("jaw", "jaw", -1.5, 0, -4, 3, 1, 4)
+    M.box("head", "snout", -1.5, -2, -5.5, 3, 3, 2)  # the muzzle tapers: skull 5, snout 3, muzzle 2 wide
+    M.box("head", "muzzle", -1, -1, -8.5, 2, 2, 3)
+    M.box("head", "nose", -1, -1.5, -9, 2, 1, 1)
+    M.part("jaw", "head", (0, 1, -5.5))
+    M.box("jaw", "jaw", -1, 0, -3, 2, 1, 3)
     for s, sign in (("right", -1), ("left", 1)):
-        M.part(f"{s}_ear", "head", (sign * 1.6, -2.8, -1), (0, 0, 0.15 * sign))
-        M.limb(f"{s}_ear", sign, (-1, -3, -0.5, 2, 3, 1), mat="ear")
+        M.part(f"{s}_ear", "head", (sign * 1.8, -2.8, -1), (0, 0, 0.15 * sign))
+        M.limb(f"{s}_ear", sign, (-1.5, -3, -0.5, 3, 3, 1), mat="ear")
     M.part("tail", "body", (0, -2.5, 8.5), (0.75, 0, 0))
     M.box("tail", "tail1", -1, 0, -1, 2, 3, 2)
     M.part("tail_mid", "tail", (0, 2.5, 0), (0.12, 0, 0))
@@ -944,6 +995,133 @@ def brown_bear_skin():
     return M, uv
 
 
+# ======================================================================= cave lion (PredatorModel)
+
+LI = dict(back=(132, 100, 62), coat=(184, 150, 102), pale=(214, 190, 146), belly=(232, 218, 188), stripe=(108, 78, 48),
+          white=(236, 228, 210), dark=(50, 38, 30), nose=(150, 96, 86), eye=(210, 152, 48), ear_back=(44, 34, 28),
+          pad=(64, 50, 42), lip=(72, 54, 44), tuft=(46, 34, 26))
+
+
+def lion_coat(q):
+    """Tawny, darker along the spine, a pale belly; faint ghost stripes over the hindquarters and thighs (as cave art)."""
+    if q.face == "bottom" or q.n[1] > 0.7:
+        return LI["belly"]
+    t = rel(q.Y, 4, 15)
+    c = gradient([LI["back"], LI["coat"], LI["coat"], LI["pale"]], t)
+    if -q.n[1] > 0.7:
+        c = lerp(LI["back"], LI["coat"], 0.3 * h(q.tx, q.ty // 2, 131))
+    if q.Z > 1 and abs(q.n[0]) > 0.5 and t < 0.85:
+        if math.sin(q.Z * 1.15 + 0.7 * math.sin(q.Y * 0.6)) > 0.55:
+            c = lerp(c, LI["stripe"], 0.7)
+    return c
+
+
+def lion_colour(m, q):
+    if m in ("shoulders", "withers", "brisket", "waist", "pouch", "hips", "rump", "neck"):
+        c = lion_coat(q)
+        if m in ("brisket", "pouch"):
+            c = lerp(LI["pale"], LI["belly"], 0.5)
+        if m == "neck" and (q.face == "bottom" or (q.face == "front" and q.y > 0)):
+            c = LI["pale"]  # pale throat
+        return lit(short_fur(c, q, 132, 0.07), q, 3, 24)
+    if m == "skull":
+        if q.face == "front":
+            ax = abs(q.x)
+            if -2 < q.y < -1 and 2 < ax < 3:
+                return LI["eye"]
+            if -2 < q.y < -1 and 3 < ax:
+                return LI["dark"]  # the dark line running back from the eye
+            if -3 < q.y < -2 and 1.5 < ax:
+                return lit(lerp(LI["back"], LI["dark"], 0.3), q, 3, 24)  # heavy brow
+            if -1 < q.y < 0 and 2 < ax < 4:
+                return LI["white"]  # pale patch under the eye
+            return lit(lerp(LI["coat"], LI["back"], 0.25), q, 3, 24)
+        if q.face == "top":
+            return lit(short_fur(lerp(LI["back"], LI["coat"], 0.4), q, 133), q, 3, 24)
+        return lit(short_fur(LI["coat"], q, 134), q, 3, 24)
+    if m == "bridge":
+        return lit(lerp(LI["coat"], LI["back"], 0.3) if q.face == "top" else LI["pale"], q, 3, 24)
+    if m == "jowls":
+        c = lerp(LI["coat"], LI["pale"], rel(q.y, -1, 3))  # cheeks pale only towards the throat
+        if q.y > 2:
+            c = LI["white"]
+        return lit(short_fur(c, q, 135), q, 3, 24)
+    if m == "muzzle":
+        if q.face == "top":
+            return lit(lerp(LI["coat"], LI["back"], 0.2), q, 3, 24)
+        if q.face == "front" and abs(q.x) < 0.6 and 0 < q.y < 1:
+            return LI["lip"]  # the short dark line below the nose
+        if q.y < 0:
+            return lit(lerp(LI["coat"], LI["pale"], 0.5), q, 3, 24)  # tawny above
+        if q.face in ("left", "right") and q.y < 0.5:
+            dot = q.z < -5.5 and round(q.z * 2) % 3 == 0
+            return lit(lerp(LI["white"], LI["dark"], 0.35) if dot else LI["white"], q, 3, 24)  # whisker rows
+        if q.y > 0.5 and q.face in ("left", "right"):
+            return LI["lip"] if q.z < -6.5 else lit(LI["white"], q, 3, 24)  # the dark lip line at the corner
+        return lit(LI["white"], q, 3, 24)
+    if m == "nose":
+        return LI["nose"] if q.face != "bottom" else LI["dark"]
+    if m == "jaw":
+        if q.face == "top":
+            return (120, 52, 52) if abs(q.x) < 1.5 else LI["white"]
+        return lit(short_fur(LI["white"], q, 137), q, 3, 24)
+    if m == "ear":
+        if q.face == "back":
+            return LI["ear_back"] if q.j < q.fh - 1 else LI["coat"]
+        return lit(lerp(LI["pale"], LI["coat"], 0.4) if q.face == "front" else LI["coat"], q, 3, 24)
+    if m == "tail":
+        return lit(short_fur(lion_coat(q) if q.n[1] < 0.5 else LI["pale"], q, 138), q, 3, 24)
+    if m == "tuft":
+        return lit(locks(LI["tuft"], q, 139, 0.15, 2), q, 3, 24)
+    if m in ("upper", "thigh", "lower"):
+        inner = (q.face == "left" and q.X < 0) or (q.face == "right" and q.X > 0) or q.face == "back"
+        c = lion_coat(q) if m == "thigh" and not inner else LI["coat"]
+        c = lerp(c, LI["pale"], 0.55 if inner else 0.35 * rel(q.Y, 14, 23))
+        return lit(short_fur(c, q, 140), q, 3, 24)
+    if m == "paw":
+        if q.face == "bottom":
+            return LI["pad"]
+        if q.face == "front" and q.i % 2 == 1:
+            return lit(lerp(LI["pale"], LI["back"], 0.45), q, 3, 24)  # the toes
+        return lit(LI["pale"], q, 3, 24)
+    return LI["coat"]
+
+
+def cave_lion():
+    M = Model("Cave lion", None, 1, lion_colour)
+    M.part("body", None, (0, 10, 0))
+    M.box("body", "shoulders", -5, -6, -11, 10, 10, 10)    # heavy forequarters
+    M.box("body", "withers", -3.5, -7, -10, 7, 1, 7)
+    M.box("body", "brisket", -4, 4, -10.5, 8, 1, 6)
+    M.box("body", "waist", -4, -5, -1, 8, 8, 8)
+    M.box("body", "pouch", -3.5, 3, 0, 7, 1, 7)            # the loose belly skin
+    M.box("body", "hips", -4.5, -5.5, 7, 9, 9, 6)
+    M.box("body", "rump", -3.5, -6.5, 7.5, 7, 1, 5)
+    M.part("neck", "body", (0, -3, -10.5), (-0.2, 0, 0))
+    M.box("neck", "neck", -3.5, -3.5, -4, 7, 7, 4)
+    M.part("head", "body", (0, -3.5, -13.5))
+    M.box("head", "skull", -4, -4, -5, 8, 6, 5)
+    M.box("head", "jowls", -4.5, -1, -4, 9, 4, 4)          # broad cheeks
+    M.box("head", "bridge", -1.5, -2, -7, 3, 1, 2)
+    M.box("head", "muzzle", -2.5, -1, -8, 5, 3, 3)
+    M.box("head", "nose", -1, -1, -8.5, 2, 1, 1)
+    M.part("jaw", "head", (0, 2, -5))
+    M.box("jaw", "jaw", -2, 0, -3, 4, 1, 3)
+    for s, sign in (("right", -1), ("left", 1)):
+        M.part(f"{s}_ear", "head", (sign * 3, -4, -2), (0, 0, 0.25 * sign))
+        M.limb(f"{s}_ear", sign, (-1.5, -2, -0.5, 3, 2, 1), mat="ear")
+    M.part("tail", "body", (0, -4.5, 12.5), (0.45, 0, 0))
+    M.box("tail", "tail", -1, 0, -1, 2, 8, 2)
+    M.part("tail_end", "tail", (0, 7.5, 0), (0.3, 0, 0))
+    M.box("tail_end", "tail", -1, 0, -1, 2, 7, 2)
+    M.box("tail_end", "tuft", -1.5, 6, -1.5, 3, 3, 3)
+    legs4(M, (2.75, 13, -6.5), (2.75, 12, 9.5),
+          [(-2, -2, -2.5, 4, 9, 5)], [(-2, -2, -3, 4, 9, 6)], ["upper"], ["thigh"],
+          ((7, 0), [(-1.5, 0, -1.5, 3, 3, 3), (-2, 3, -3, 4, 1, 5)], ["lower", "paw"]),
+          ((7, 0.5), [(-1.5, 0, -1.5, 3, 4, 3), (-2, 4, -3, 4, 1, 5)], ["lower", "paw"]))
+    return M
+
+
 # ======================================================================= main
 
 def main():
@@ -963,7 +1141,8 @@ def main():
     write_java(JAVA / "giants/GiantsGeometry.java", "com.mechanical.client.wildlife.giants", "GiantsGeometry", giants)
 
     preds = [build(grey_wolf(), ("paw",), {"grey_wolf": "adult"}, "greyWolf"),
-             build(bear_cub(), (), {"brown_bear_cub": "adult"}, "bearCub")]
+             build(bear_cub(), (), {"brown_bear_cub": "adult"}, "bearCub"),
+             build(cave_lion(), ("paw", "nose"), {"cave_lion": "adult"}, "caveLion")]
     write_java(JAVA / "PredGeometry.java", "com.mechanical.client.wildlife", "PredGeometry", preds)
 
     bear, uv = brown_bear_skin()
