@@ -82,11 +82,46 @@ igloo, snöby och snörävar/vita kaniner). Gametest `steppe_biome`, bild `docs/
 
 ### Scorched Barrens
 Nedbrunnen skog, **bara längre än 2500 block från 0,0** och sällsynt (ungefär 0,2 % av marken där, i samma storleksordning
-som Mushroom Fields). Svartbrända stammar av **Charred Log** (stående, fallna och stubbar), mark av **Wood Ash**, Coarse
-Dirt och Gravel, hällar av Blackstone och Basalt i sluttningarna, inget gräs. Grå, kall himmel och dimma, aska i luften.
-Inga djur utom korpar (Raven); monster på natten som vanligt. Snö och frost på vintern som i andra svala biomer. Här står
-de sällsynta **Elkwight-ruinerna** (`docs/elkwight-plan.md`), alltid mitt i biomet. Biomen tar en del av sval Forest
-(`ModBiomes.SURFACE`); närmare 0,0 än 2500 block blir den platsen Forest igen (`mixin/MultiNoiseBiomeSourceMixin`).
+som Mushroom Fields). Grå, kall himmel och dimma, aska i luften. Inga djur utom korpar (Raven); monster på natten som
+vanligt. Snö och frost på vintern som i andra svala biomer. Här står de sällsynta **Elkwight-ruinerna**
+(`docs/elkwight-plan.md`), alltid mitt i biomet. Biomen tar en del av sval Forest (`ModBiomes.SURFACE`); närmare 0,0 än
+2500 block blir den platsen Forest igen (`mixin/MultiNoiseBiomeSourceMixin`).
+
+Omgjord 2026-11-23 (v0.183.0) efter att den första versionen såg ut som snö med pinnar i:
+- **Marken:** mörkgrå **Wood Ash** (tre texturvarianter som väljs och vrids per block, så att rutan aldrig syns som ett
+  rutnät) med fläckar av nästan svart **Burnt Soil** (10–20 block stora, och enstaka klumpar i askan). Askan ligger kvar i
+  svackorna, på krönen syns den brända jorden. Under ytan Burnt Soil, i branta sluttningar Blackstone och Basalt. Inget
+  grus och ingen orange Coarse Dirt längre. Kanterna mellan aska och jord fransar sig (kantblandningen), och halvstegen
+  blir Wood Ash Slab och Burnt Soil Slab.
+- **Träden** (`ScorchedBarrens.CharredTree`): stubbar (en del med splitter på toppen eller rotben längs marken), döda
+  stammar i alla höjder med avbrutna eller avsmalnande toppar och grenstumpar, lutande stammar, ibland ett stort gammalt
+  träd med tjock fot, förkolnade grenar som når ut och en kluven topp, och stammar som ligger platt på marken för sig
+  själva (aldrig ihopsvetsade med en stubbe; var tredje halvt begravd i aska), ibland med stubben de bröts av en bit bort.
+  De smala delarna är **Charred Branch** (8 px) och **Charred Twig** (4 px), som fogar ihop sig som korusplantor.
+  Tätheten går i vågor: täta bestånd, glesa partier och gläntor.
+- **Kanten mot skogen** (`worldgen/BurntForest`, ungefär 16 block in): ytterst sveden mark, gräs i biomets torra
+  olivbruna ton med Short och Tall Dry Grass, Leaf Litter och någon ormbunke; träd av skogens eget slag som har klarat sig
+  med förkolnad fot och glesa, döda bruna kronor (biomets lövfärg gör eklöv bruna); längre in Burnt Soil och halvbrända
+  träd (mest förkolnade, bark kvar högst upp, inga löv); sedan den helt brända skogen. På skogssidan (de levande
+  skogarna runt om, upp till cirka 9 block ut) har trädens fötter förkolnat, kronorna glesnat, gräset torkat och här och
+  där syns en fläck bränd jord eller Podzol.
+- **Återväxt:** sparsamt inne i biomet: små bestånd av **Fireweed** (rosa, två block hög), ormbunkar i lä av en stam, någon
+  enstaka björkplanta och tuvor av torrt gräs. Växter slår rot i Burnt Soil (taggarna `supports_vegetation` och
+  `supports_dry_vegetation`), inte i ren aska.
+
+**Mätt** (seed 4242, Scorched Barrens vid 3600, 4920; översta blocket i 40 × 40 kolumner, före = v0.181.0):
+
+| | före | efter |
+|---|---|---|
+| Inne i biomet: Wood Ash (block + slab) | 50 % | 39 % |
+| Inne i biomet: Burnt Soil (block + slab) | – | 29 % |
+| Inne i biomet: Coarse Dirt + grus | 17 % | 0 % |
+| Inne i biomet: stamblock (Charred Log) i ytan / totalt | 55 / 237 | 29 / 109 (+ 34 grenar och kvistar) |
+| Kanten (västra gränsen): gräs, torrt gräs, ormbunkar | 5 % | 12 % |
+| Kanten: Burnt Soil | – | 24 % |
+
+Bilder: `docs/shots/terrain/barrens_*.png` (efter) och `barrens_before_*.png`.
+
 **Alltid omgiven av levande skog:** en plats blir bara Scorched Barrens om allt inom 24 block är skog (Forest, Birch,
 Dark Forest, Taiga, Deciduous Forest med flera) eller barrens, annars blir den Forest (`ScorchedBarrens.stays`). Den rör
 alltså aldrig slätter, vatten, berg eller öken.

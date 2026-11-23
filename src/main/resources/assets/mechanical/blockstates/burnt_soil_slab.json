@@ -1,0 +1,145 @@
+{
+  "variants": {
+    "type=bottom": [
+      {
+        "model": "mechanical:block/burnt_soil_slab"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3",
+        "y": 270
+      }
+    ],
+    "type=top": [
+      {
+        "model": "mechanical:block/burnt_soil_slab_top"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_top",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_top",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_top",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2_top"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2_top",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2_top",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_2_top",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3_top"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3_top",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3_top",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_slab_3_top",
+        "y": 270
+      }
+    ],
+    "type=double": [
+      {
+        "model": "mechanical:block/burnt_soil"
+      },
+      {
+        "model": "mechanical:block/burnt_soil",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/burnt_soil_2"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_2",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/burnt_soil_3"
+      },
+      {
+        "model": "mechanical:block/burnt_soil_3",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/burnt_soil_3",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/burnt_soil_3",
+        "y": 270
+      }
+    ]
+  }
+}

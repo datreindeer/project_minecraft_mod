@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:burnt_soil"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/burnt_soil"
+}

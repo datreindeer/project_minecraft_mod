@@ -99,9 +99,9 @@
   ],
   "downfall": 0.4,
   "effects": {
-    "grass_color": "#5e584c",
-    "foliage_color": "#4c463c",
-    "dry_foliage_color": "#4c463c",
+    "grass_color": "#857a52",
+    "foliage_color": "#7a5d3a",
+    "dry_foliage_color": "#5c4a36",
     "water_color": "#3a4048"
   },
   "features": [
@@ -159,7 +159,7 @@
       "minecraft:spring_lava"
     ],
     [
-      "mechanical:scorched_barrens_charred_trees",
+      "mechanical:scorched_barrens_burnt_forest",
       "mechanical:scorched_barrens_blackstone",
       "mechanical:scorched_barrens_basalt",
       "minecraft:glow_lichen"

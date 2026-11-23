@@ -211,9 +211,16 @@ BIOMES["scorched_barrens"] = ("windswept_gravelly_hills", "Scorched Barrens",
                               [M + f for f in ("trees_windswept_hills", "patch_bush", "flower_default", "patch_grass_badlands", "brown_mushroom_normal",
                                                "red_mushroom_normal", "patch_pumpkin", "patch_sugar_cane", "patch_firefly_bush_near_water")],
                               {"temperature": 0.3, "downfall": 0.4,
-                               "effects": {"grass_color": "#5e584c", "foliage_color": "#4c463c", "dry_foliage_color": "#4c463c", "water_color": "#3a4048"}})
-MATERIALS["scorched_barrens"] = {"top": pick((0.45, M + "gravel"), (0.3, M + "coarse_dirt"), default=S("wood_ash")), "wet": M + "gravel",
-                                 "under": M + "coarse_dirt", "slope": pick((0.0, M + "basalt"), default=M + "blackstone")}
+                               "effects": {"grass_color": "#857a52", "foliage_color": "#7a5d3a", "dry_foliage_color": "#5c4a36", "water_color": "#3a4048"}})
+# Ground: grey Wood Ash with patches of dark Burnt Soil (the ice noise, about 10-20 blocks across) and single clods of it
+# in the ash (the fine swamp noise); Burnt Soil under it all, the whole soil layer (no orange dirt in the cuts). No gravel: its pale grey glared like snow. BurntForest then moves ash into the hollows
+# and bares soil on the rises, and turns the rim into singed grass.
+patches = lambda *rules, default: {"type": "minecraft:sequence", "sequence": [  # (noise condition, block)..., then default
+    {"type": "minecraft:condition", "if_true": c, "then_run": plain(b)} for c, b in rules] + [plain(default)]}
+MATERIALS["scorched_barrens"] = {"top": patches((noise(0.18, n=M + "ice"), S("burnt_soil")),
+                                                (noise(0.55, n=M + "surface_swamp"), S("burnt_soil")), default=S("wood_ash")),
+                                 "wet": M + "gravel", "under": S("burnt_soil"), "stone": S("burnt_soil"),
+                                 "slope": pick((0.0, M + "basalt"), default=M + "blackstone")}
 
 # ---- features (each placed feature belongs to one biome, so FeatureSorter never sees two orders)
 LAKES, SURFACE_STRUCTURES, ORES, VEG = 1, 4, 6, 9
@@ -371,9 +378,9 @@ EXTRA = {
         skip_tags=["has_structure/igloo", "has_structure/village_snowy", "spawns_snow_foxes", "spawns_white_rabbits"]),  # no snow cover
     # inherit=False: none of the template's tags (but is_overworld), mod biome modifiers or creatures; only ravens join
     "scorched_barrens": dict(
-        features={VEG: [feature("scorched_barrens_charred_trees", {"type": "mechanical:charred_tree"}, [
-                            {"type": "minecraft:count", "count": {"type": "minecraft:uniform", "min_inclusive": 5, "max_inclusive": 9}},
-                            {"type": "minecraft:in_square"}, {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"}]),
+        # BurntForest (Java): the ground, the trees, the rim and the regrowth, once per chunk. No biome filter: it runs in
+        # every chunk a barrens reaches and works column by column (the forest side has its own pass, scorched_barrens_edge)
+        features={VEG: [feature("scorched_barrens_burnt_forest", {"type": "mechanical:burnt_forest"}, []),
                         outcrops("scorched_barrens_blackstone", M + "blackstone", 1, 2),
                         outcrops("scorched_barrens_basalt", M + "basalt", 1, 3)]},
         attributes={"minecraft:visual/sky_color": "#5f6670", "minecraft:visual/fog_color": "#55585a", "minecraft:visual/water_fog_color": "#1e2226",

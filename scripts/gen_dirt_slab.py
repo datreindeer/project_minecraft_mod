@@ -8,7 +8,7 @@ Bottom slabs show the top half of the side texture (ground_slab / grassy_ground_
 their fringe along the slab's top edge.
 
 Phase 2: Dirt/Grass Stairs (grass creeps on and off), Coarse Dirt Slab/Stairs, Podzol Slab, Sand and Red Sand Slab/Stairs
-(not falling), Gravel, Moss, Mud, Peat, Loess and Wood Ash Slabs: models, loot (itself; Grass Stairs -> Dirt Stairs,
+(not falling), Gravel, Moss, Mud, Peat, Loess, Wood Ash and Burnt Soil Slabs: models, loot (itself; Grass Stairs -> Dirt Stairs,
 Podzol Slab -> Dirt Slab unless silk touch), recipes (3 in a row -> 6, stairs -> 4), shovel tag, slabs/stairs tags, lang.
 
 Generator order: after gen_earth.py (grassy_slab models), before gen_block_items.py, gen_unlocks.py, gen_advancements.py
@@ -160,7 +160,9 @@ GROUND = {
     "peat": (M + "peat", cube(M + "block/peat"), M + "block/peat"),
     "loess": (M + "loess", cube(M + "block/loess"), M + "block/loess"),
     "wood_ash": (M + "wood_ash", cube(M + "block/wood_ash"), M + "block/wood_ash"),
+    "burnt_soil": (M + "burnt_soil", cube(M + "block/burnt_soil"), M + "block/burnt_soil"),
 }
+VARIANTS = ("wood_ash", "burnt_soil")  # three textures each (gen_elkwight_textures.py): slabs picked and turned at random like the blocks
 STAIRS = ("coarse_dirt", "sand", "red_sand")
 new_slabs, new_stairs = [], ["dirt_stairs", "grass_stairs"]
 lang_new = {}
@@ -168,7 +170,16 @@ for stem, (base, tex, double) in GROUND.items():
     b = stem + "_slab"
     new_slabs.append(b)
     slab_models(b, tex)
-    w(A / f"blockstates/{b}.json", {"variants": slab_variants(b, double)})
+    if stem in VARIANTS:
+        kinds = [(b, double)] + [(f"{b}_{i}", M + f"block/{stem}_{i}") for i in (2, 3)]
+        for n, _ in kinds[1:]:
+            slab_models(n, cube(M + "block/" + n.replace("_slab", "")))
+        turned = lambda key: [{"model": m, **({"y": r} if r else {})} for m in key for r in (0, 90, 180, 270)]
+        w(A / f"blockstates/{b}.json", {"variants": {"type=bottom": turned([M + f"block/{n}" for n, _ in kinds]),
+                                                    "type=top": turned([M + f"block/{n}_top" for n, _ in kinds]),
+                                                    "type=double": turned([d for _, d in kinds])}})
+    else:
+        w(A / f"blockstates/{b}.json", {"variants": slab_variants(b, double)})
     recipe(b, ["###"], base, 6)
     if stem == "podzol":  # like vanilla podzol: dirt unless silk touch
         loot = slab_loot(b, "dirt_slab")

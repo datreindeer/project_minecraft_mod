@@ -119,7 +119,7 @@ w(D / "mechanical/loot_table/blocks/elkwight_antler_crown.json", {"type": "minec
 # ---- tags
 tag("block", "elkwight_breakable", "#minecraft:base_stone_overworld", "#minecraft:dirt", "#minecraft:sand", "minecraft:gravel",
     "#minecraft:leaves", "minecraft:snow", "minecraft:snow_block", "minecraft:powder_snow", "minecraft:clay", "minecraft:mud",
-    M + "charred_log", M + "wood_ash", replace=True)  # not basalt/blackstone/magma: his ruin is built of them
+    M + "charred_log", M + "charred_branch", M + "charred_twig", M + "wood_ash", M + "burnt_soil", replace=True)  # not basalt/blackstone/magma: his ruin is built of them
 tag("block", "minecraft:mineable/pickaxe", M + "elkwight_axe_trophy")
 tag("item", "fur_insulation", M + "elkwight_cloak")
 tag("item", "minecraft:chest_armor", M + "elkwight_cloak")

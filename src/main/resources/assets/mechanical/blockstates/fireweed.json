@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "mechanical:block/fireweed_bottom"
+    },
+    "half=upper": {
+      "model": "mechanical:block/fireweed_top"
+    }
+  }
+}

@@ -11,6 +11,9 @@
     "minecraft:clay",
     "minecraft:mud",
     "mechanical:charred_log",
-    "mechanical:wood_ash"
+    "mechanical:charred_branch",
+    "mechanical:charred_twig",
+    "mechanical:wood_ash",
+    "mechanical:burnt_soil"
   ]
 }

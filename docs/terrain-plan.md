@@ -173,6 +173,12 @@ avstängda tills de håller måttet i närbild: Rock Arch, Dead Tree, Dry Creek,
 Outcrop, Frost Split, Farm Walls och enar på slätten. Jordkällare är inte byggda. Detaljer:
 `docs/biomes.md`, "Små saker i berg, på öppen mark, i torrt och kallt land". Bilder: `docs/shots/terrain/fas4_*.png`.
 
+**Byggt (Scorched Barrens omgjord, v0.183.0):** marken mörkgrå Wood Ash och Burnt Soil (nytt, med slab) i stället för
+nästan vit aska, grus och orange Coarse Dirt; brända träd i många former med Charred Branch och Charred Twig (nya), fallna
+stammar för sig själva, gläntor; en kant mot skogen (sveden mark, träd som klarat sig, halvbrända träd) och lite återväxt
+med Fireweed (ny). `worldgen/BurntForest`, `ScorchedBarrens.CharredTree`. Detaljer: `docs/biomes.md`, "Scorched Barrens".
+Bilder: `docs/shots/terrain/barrens_*.png`.
+
 ## 3b. Kanter som flyter ihop (önskemål från användaren)
 
 Vägar och mark ska se mjukare ut: där två besläktade block möts på ovansidan lägger sig det starkare några pixlar in

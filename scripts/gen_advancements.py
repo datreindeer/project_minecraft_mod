@@ -1623,6 +1623,9 @@ TABS["wilderness"][1].extend([
     ("into_the_ashes", "chalk_downs", "charred_log", G, "Into the Ashes",
      "Travel more than 2500 blocks from the world's centre and find the rare Scorched Barrens: a burnt forest of Charred Logs and Wood Ash, ravens overhead",
      in_biome("scorched_barrens")),
+    ("after_the_fire", "into_the_ashes", "fireweed", T, "After the Fire",
+     "Pick Fireweed, the first flower to come up through the ash of the Scorched Barrens. Plants take root in Burnt Soil again",
+     has("fireweed")),
     # terrain (docs/terrain-plan.md phase 1, gen_terrain.py): the high ranges
     ("roof_of_the_world", "chalk_downs", "minecraft:snow_block", G, "Roof of the World",
      "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290", above_y(250)),

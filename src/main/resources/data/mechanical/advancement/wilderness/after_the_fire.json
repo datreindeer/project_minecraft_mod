@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/into_the_ashes",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fireweed"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fireweed"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.after_the_fire.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.after_the_fire.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}
