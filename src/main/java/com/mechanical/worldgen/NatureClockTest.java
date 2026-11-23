@@ -32,18 +32,24 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * The nature clock (terrain-plan phases 5-7) on hand-built ground, its days run by hand ({@link NatureClock#simulate}, only
  * inside the test's box): a fallen log left 10 days has rotted away into Moss Block and Podzol with a sapling beside it,
- * and a storm-felled tree comes to rest as a fallen log of log blocks.
+ * and a storm-felled tree comes to rest as a fallen log of log blocks. Phase 6: a burnt field grows back into a young
+ * forest in 300 days, a forest edge creeps out into the meadow (not where cows graze), an old tree dies into a snag that
+ * later falls as a Deadwood log.
  */
 @EventBusSubscriber(modid = MODID)
 public final class NatureClockTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final List<String> TESTS = List.of("nature_rot", "storm_felling");
+    private static final List<String> TESTS = List.of("nature_rot", "storm_felling", "nature_regrowth", "forest_creep", "forest_creep_grazed", "old_tree_snag");
     /** A day in early summer of year 2 (calendar day numbers count from the start of year 1). */
     static final long SUMMER = 360 + 95;
 
     static {
         TEST_FUNCTIONS.register("nature_rot", () -> NatureClockTest::rot);
         TEST_FUNCTIONS.register("storm_felling", () -> NatureClockTest::storm);
+        TEST_FUNCTIONS.register("nature_regrowth", () -> NatureClockTest::regrowth);
+        TEST_FUNCTIONS.register("forest_creep", () -> h -> creep(h, false));
+        TEST_FUNCTIONS.register("forest_creep_grazed", () -> h -> creep(h, true));
+        TEST_FUNCTIONS.register("old_tree_snag", () -> NatureClockTest::snag);
     }
 
     static void init(IEventBus modEventBus) {
@@ -64,7 +70,7 @@ public final class NatureClockTest {
             for (int z = 0; z <= 16; z++) {
                 h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
                 for (int y = 1; y <= top; y++) h.setBlock(new BlockPos(x, y, z), y == top ? Blocks.GRASS_BLOCK : Blocks.DIRT);
-                for (int y = top + 1; y <= top + 14; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+                for (int y = top + 1; y <= top + 60; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR); // open sky: the clock reads the heightmaps
             }
     }
 
@@ -121,5 +127,83 @@ public final class NatureClockTest {
                     "no felled log entity: the storm leaves log blocks");
             h.succeed();
         });
+    }
+
+    /** An oak at x, z: a trunk of h on the ground at y top+1 and a crown with the right leaf distances (TreeFelling finds it). */
+    static void oak(GameTestHelper h, int x, int z, int top, int height) {
+        int t = top + height;
+        for (int y = top + 1; y <= t; y++) h.setBlock(new BlockPos(x, y, z), Blocks.OAK_LOG);
+        for (int y = t - 1; y <= t + 1; y++)
+            for (int dx = -1; dx <= 1; dx++)
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (y <= t && dx == 0 && dz == 0) continue;
+                    int dist = y == t + 1 ? (dx == 0 && dz == 0 ? 1 : 2) : Math.abs(dx) + Math.abs(dz);
+                    h.setBlock(new BlockPos(x + dx, y, z + dz), Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.DISTANCE, dist));
+                }
+    }
+
+    private static void regrowth(GameTestHelper h) {
+        ground(h, 3);
+        oak(h, 5, 5, 3, 5);
+        oak(h, 11, 9, 3, 6);
+        Wildfire.burnField(h.getLevel(), h.absolutePos(new BlockPos(8, 3, 8)), 6, net.minecraft.util.RandomSource.create(5), null);
+        h.assertTrue(h.getBlockState(new BlockPos(5, 5, 5)).is(ScorchedBarrens.CHARRED_LOG.get()), "the burnt oak stands as Charred Log");
+        int ash = count(h, 3, s -> s.is(ScorchedBarrens.WOOD_ASH.get()) || s.is(ScorchedBarrens.BURNT_SOIL.get()));
+        h.assertTrue(ash > 40, "the burnt field is Burnt Soil and Wood Ash (" + ash + ")");
+        int changed = NatureClock.simulate(h.getLevel(), box(h), SUMMER, 300, Set.of("regrowth", "grow"));
+        long burnDay = NatureClock.data(h.getLevel().getChunkAt(h.absolutePos(new BlockPos(8, 3, 8)))).burnDay;
+        int left = count(h, 3, s -> s.is(ScorchedBarrens.WOOD_ASH.get()) || s.is(ScorchedBarrens.BURNT_SOIL.get()) || s.is(Blocks.COARSE_DIRT));
+        h.assertTrue(left <= 3, "the ash has turned back to grass (" + left + " burnt blocks left: " + count(h, 3, s -> s.is(ScorchedBarrens.WOOD_ASH.get())) + " ash, "
+                + count(h, 3, s -> s.is(ScorchedBarrens.BURNT_SOIL.get())) + " burnt soil, " + count(h, 4, s -> s.is(ScorchedBarrens.WOOD_ASH.get())) + " ash a block up, " + changed + " changes)");
+        int trees = 0;
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++)
+                if (h.getBlockState(new BlockPos(x, 4, z)).is(BlockTags.LOGS) && h.getBlockState(new BlockPos(x, 6, z)).is(BlockTags.LOGS)) trees++;
+        h.assertTrue(trees >= 3, "young trees have grown on the burnt field (" + trees + ")");
+        h.succeed();
+    }
+
+    private static int count(GameTestHelper h, int y, java.util.function.Predicate<BlockState> what) {
+        int n = 0;
+        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) if (what.test(h.getBlockState(new BlockPos(x, y, z)))) n++;
+        return n;
+    }
+
+    private static void creep(GameTestHelper h, boolean grazed) {
+        ground(h, 3);
+        oak(h, 2, 8, 3, 5);
+        if (grazed)
+            for (int i = 0; i < 2; i++) {
+                var cow = h.spawn(net.minecraft.world.entity.EntityTypes.COW, new BlockPos(9 + i * 3, 4, 8));
+                cow.setNoAi(true);
+            }
+        int changed = NatureClock.simulate(h.getLevel(), box(h), SUMMER, 200, Set.of("creep"));
+        // saplings that came up, or have grown into trees already (the clock grows saplings too)
+        int saplings = count(h, 4, s -> s.is(Blocks.OAK_SAPLING) || s.is(Blocks.OAK_LOG)) - 1;
+        if (grazed) h.assertTrue(saplings == 0, "grazed meadow stays open (" + saplings + " saplings)");
+        else h.assertTrue(saplings >= 2, "oak saplings crept out from the edge (" + saplings + ", " + changed + " changes)");
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++)
+                if (h.getBlockState(new BlockPos(x, 4, z)).is(Blocks.OAK_SAPLING) && (x != 2 || z != 8) && Math.max(Math.abs(x - 2), Math.abs(z - 8)) < ForestCreep.CREEP_NEAR)
+                    h.fail("a sapling right under the tree at " + x + " " + z);
+        h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(h.absolutePos(BlockPos.ZERO)).inflate(24)).forEach(e -> e.discard());
+        h.succeed();
+    }
+
+    private static void snag(GameTestHelper h) {
+        ground(h, 3);
+        oak(h, 8, 8, 3, 6);
+        BlockPos base = h.absolutePos(new BlockPos(8, 4, 8));
+        var day = new NatureClock.Day(h.getLevel(), h.getLevel().getChunkAt(base), SUMMER, box(h), true, null);
+        h.assertTrue(ForestCreep.kill(day, base, net.minecraft.util.RandomSource.create(3)), "the old oak dies");
+        h.assertTrue(h.getBlockState(new BlockPos(8, 4, 8)).is(Blocks.OAK_LOG), "bark at the foot");
+        int top = -1;
+        for (int y = 5; y <= 14; y++) if (h.getBlockState(new BlockPos(8, y, 8)).is(com.mechanical.Deadwood.BROKEN_DEADWOOD.get())) top = y;
+        h.assertTrue(top >= 7, "a Deadwood trunk with a broken top (" + top + ")");
+        h.assertTrue(count(h, 9, s -> s.is(Blocks.OAK_LEAVES)) == 0, "the crown is gone");
+        h.assertTrue(ForestCreep.topple(day, h.absolutePos(new BlockPos(8, top, 8)), net.minecraft.util.RandomSource.create(4)), "the snag falls");
+        h.assertTrue(!h.getBlockState(new BlockPos(8, 6, 8)).is(com.mechanical.Deadwood.DEADWOOD.get()), "the snag is down");
+        h.assertTrue(count(h, 4, s -> s.is(com.mechanical.Deadwood.DEADWOOD.get())) >= 2, "it lies as a Deadwood log");
+        h.succeed();
     }
 }

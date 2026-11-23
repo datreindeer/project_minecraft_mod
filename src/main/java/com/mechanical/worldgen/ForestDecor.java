@@ -100,8 +100,12 @@ final class ForestDecor extends StoneAgeFeature {
      */
     private static boolean snag(WorldGenLevel level, RandomSource random, BlockPos c) {
         Wood w = woodNear(level, c, 10);
-        if (w == null) return false;
-        if (random.nextInt(4) == 0) {
+        return w != null && snag(level, random, c, w, true);
+    }
+
+    /** A snag of wood w at c (NatureClock's old trees dying use it too, without the stump). */
+    static boolean snag(WorldGenLevel level, RandomSource random, BlockPos c, Wood w, boolean stumpOk) {
+        if (stumpOk && random.nextInt(4) == 0) {
             if (!stump(level, random, c, c.getY(), w.log())) return false;
             foot(level, random, c, w, List.of(c));
             return true;

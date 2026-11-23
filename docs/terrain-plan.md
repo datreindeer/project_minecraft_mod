@@ -231,6 +231,11 @@ stockar som ruttnar på ungefär en vecka (`NatureRot`) och nya lågor där inge
 advancement *Windthrow*). Regler, siffror och kommandon: `docs/biomes.md`, "En natur som förändras med tiden". Bilder:
 `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`.
 
+**Byggt (fas 6, v0.188.0):** brand och återväxt (`Wildfire`: torr blixt på sommaren, vanillas eld, bevakad och efteråt Charred
+Log och Burnt Soil, sällsynta bränder där ingen är, återväxt via Coarse Dirt, Fireweed och björkplantor till ung skog på en
+till två årstider, advancement *From the Ashes*), skogen som vandrar ut på ängen men inte där djur betar, gamla träd som
+dör till snags och snags som faller (`ForestCreep`). Bilder: `docs/shots/terrain/nature_fire*.png`.
+
 **Prestanda:** samma budget som living-world A9. Det mäts med `/tick query` och MSPT innan något släpps, och det finns ett
 tak för antalet ändringar per chunk och sekund.
 

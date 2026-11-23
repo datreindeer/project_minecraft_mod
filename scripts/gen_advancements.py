@@ -1646,6 +1646,9 @@ TABS["wilderness"][1].extend([
     ("windthrow", "log_bridge", "minecraft:oak_log", T, "Windthrow",
      "See a thunderstorm bring down a tall tree. Its trunk is left lying as a fallen log, and within a week or so it has rotted "
      "into moss and podzol with a sapling beside it", by_code()),
+    ("from_the_ashes", "after_the_fire", "minecraft:birch_sapling", G, "From the Ashes",
+     "Stand in a young forest that grew back where a wildfire burned. Dry summer lightning lights the woods; the ash turns to "
+     "soil, Fireweed comes first, then grass, flowers and birch saplings, and after a few seasons young trees stand", by_code()),
 ])
 # the Elkwight boss (wildlife/elkwight, gen_elkwight_boss.py), under the Scorched Barrens' "Into the Ashes"
 TABS["wilderness"][1].extend([

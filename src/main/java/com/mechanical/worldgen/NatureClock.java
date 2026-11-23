@@ -203,6 +203,8 @@ public final class NatureClock {
     /** Everything nature does in a chunk in one day. Each process draws its own dice. */
     static void dayStep(Day d) {
         NatureRot.day(d);
+        Wildfire.day(d);
+        ForestCreep.day(d);
     }
 
     // ---------------------------------------------------------------- events
@@ -259,6 +261,7 @@ public final class NatureClock {
             lastDay = today;
             QUEUE.addAll(LOADED);
         }
+        if (level.getGameTime() % 100 == 0) Wildfire.checkRegrown(level);
         if (paused || QUEUE.isEmpty()) return;
         long now = level.getGameTime(), start = System.nanoTime();
         int done = 0, looked = 0;
@@ -393,6 +396,13 @@ public final class NatureClock {
     static void registerCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("nature").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource())))
+                .then(Commands.literal("height").executes(ctx -> {
+                    BlockPos c = BlockPos.containing(ctx.getSource().getPosition());
+                    ServerLevel l = ctx.getSource().getLevel();
+                    say(ctx.getSource(), "no_leaves " + l.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, c.getX(), c.getZ()) + " mb "
+                            + l.getHeight(Heightmap.Types.MOTION_BLOCKING, c.getX(), c.getZ()) + " at " + c.getY() + ": " + l.getBlockState(c));
+                    return 1;
+                }))
                 .then(Commands.literal("pause").executes(ctx -> {
                     paused = !paused;
                     ctx.getSource().sendSuccess(() -> Component.literal("Nature clock " + (paused ? "paused" : "running")), false);
@@ -402,7 +412,7 @@ public final class NatureClock {
                         .executes(ctx -> run(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "days"), 12, null))
                         .then(Commands.argument("radius", IntegerArgumentType.integer(1, 64))
                                 .executes(ctx -> run(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "days"), IntegerArgumentType.getInteger(ctx, "radius"), null))
-                                .then(Commands.argument("process", StringArgumentType.word())
+                                .then(Commands.argument("process", StringArgumentType.greedyString())
                                         .executes(ctx -> run(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "days"), IntegerArgumentType.getInteger(ctx, "radius"),
                                                 StringArgumentType.getString(ctx, "process")))))))
                 .then(Commands.literal("demo").then(Commands.literal("log").executes(ctx -> {
@@ -410,6 +420,17 @@ public final class NatureClock {
                     say(ctx.getSource(), ok ? "A fresh log lies in front of you" : "No room for a log");
                     return ok ? 1 : 0;
                 })))
+                .then(Commands.literal("burn").then(Commands.argument("radius", IntegerArgumentType.integer(2, 24)).executes(ctx -> {
+                    BlockPos c = BlockPos.containing(ctx.getSource().getPosition());
+                    int n = Wildfire.burnField(ctx.getSource().getLevel(), c, IntegerArgumentType.getInteger(ctx, "radius"), ctx.getSource().getLevel().getRandom(), null);
+                    say(ctx.getSource(), "Burnt " + n + " blocks");
+                    return 1;
+                })))
+                .then(Commands.literal("strike").executes(ctx -> {
+                    boolean ok = Wildfire.strikeNear(ctx.getSource().getLevel(), ctx.getSource().getPlayerOrException(), true);
+                    say(ctx.getSource(), ok ? "Dry lightning strikes" : "Nothing to strike");
+                    return ok ? 1 : 0;
+                }))
                 .then(Commands.literal("fell").executes(ctx -> {
                     boolean ok = StormFelling.fellInFront(ctx.getSource().getLevel(), ctx.getSource().getPosition(), ctx.getSource().getRotation().y);
                     say(ctx.getSource(), ok ? "A tree falls" : "No tall tree nearby");

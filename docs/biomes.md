@@ -310,10 +310,36 @@ de flesta faller utom synhåll. Trädet knakar och faller med vinden (`FallingTr
 blir kvar och stammen läggs som en fallen stock av stockblock (högst 12 långa) som sedan ruttnar. Advancement
 *Windthrow* (Wilderness) för den som ser ett falla.
 
-**Gametests** (`worldgen/NatureClockTest`): `nature_rot` (en stock som lämnas 10 dagar har ruttnat bort i Moss Block och
-Podzol, med en ekplanta bredvid), `storm_felling`.
+**Brand och återväxt** (`worldgen/Wildfire`, fas 6): en torr sommardag (sommar, inget regn) slår torr blixt ned ungefär
+en gång på 40 minuter per spelare, 48–110 block bort, utom synhåll, i träd eller gräs (inte i öken, hav, flod, kallt land
+eller Scorched Barrens) där alla chunks två chunks runt är fria. Vanillas eld tar (den sprids bara inom 128 block från en
+spelare och slocknar i regn). Elden bevakas: när den har slocknat står stammarna som brann upp igen som Charred Log och
+marken där elden gick blir Burnt Soil och Wood Ash (mjuka marksteg blir Burnt Soil Slab och Wood Ash Slab). Där ingen är kan
+en skogschunk brinna en torr sommardag (1 på 20 000 per chunk och dag, en fläck med radien 7). Sedan växer det tillbaka
+(per dag): Wood Ash och Burnt Soil blir Coarse Dirt (1/30), Fireweed kommer upp ur Burnt Soil (1/60), Coarse Dirt blir gräs
+(1/40), på bart gräs kommer gräs, Fireweed, blommor eller en planta (1/50; plantor med 3 blocks avstånd, mest björk,
+pionjären, annars närmaste levande träds trä), de brända stammarna vittrar ett block i taget (1/40) ned till stubbar. Efter
+ungefär en till två årstider står ung skog. När ingen bränd mark är kvar och unga träd står har chunken vuxit igen:
+advancement *From the Ashes* för att stå i den. Aldrig i Scorched Barrens. `/nature burn <radie>` bränner en fläck runt
+en, `/nature strike` slår ned en torr blixt framför en.
 
-Bilder: `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`.
+**Skogen vandrar** (`worldgen/ForestCreep`, fas 6): plantor växer upp till träd även på klockan (1/40 per dag), så en chunk
+ingen besöker får också sina träd. I skogsbrynet kommer då och då en planta av brynets trä upp ute på ängen, 3–7 block
+från en stam och inte under en krona (en ruta per chunk och dag med chansen 1/6). Står betande djur inom 16 block
+(boskap, eller vilda gräsätare som hjortar och visenter) håller ängen sig öppen, och hjortar äter plantor ändå
+(`WildNature`). I skogar med snags dör ett gammalt träd ibland (1/300 per chunk och dag): kronan försvinner och stammen står
+som ForestDecors snag av sitt eget trä. En snag faller med tiden (1/90 per dag): barkfoten blir stubbe och resten ligger som
+en fallen stock av Deadwood, som ruttnar som andra stockar.
+
+**Höjdkartor:** i 26.x räknar höjdkartorna bara block i taggen `#minecraft:blocks_motion_in_heightmap`. Burnt Soil, Wood
+Ash, Charred Log, Deadwood, Broken Deadwood och Grub Log läggs till (`scripts/gen_nature_clock.py`), annars läser klockan
+(och regn, snö och spawning) marken under dem.
+
+**Gametests** (`worldgen/NatureClockTest`): `nature_rot` (en stock som lämnas 10 dagar har ruttnat bort i Moss Block och
+Podzol, med en ekplanta bredvid), `storm_felling`, `nature_regrowth` (ett brandfält är ung skog efter 300 dagar),
+`forest_creep`, `forest_creep_grazed` (inga plantor där kor betar), `old_tree_snag`.
+
+Bilder: `docs/shots/terrain/nature_rot*.png`, `nature_storm*.png`, `nature_fire*.png` (brandfältet dag 0, 30, 70, 120, 200, 320).
 
 ## Övergångar mellan kallt och varmt
 

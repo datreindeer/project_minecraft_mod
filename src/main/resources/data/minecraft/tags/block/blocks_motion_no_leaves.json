@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "mechanical:burnt_soil",
+    "mechanical:wood_ash",
+    "mechanical:charred_log",
+    "mechanical:deadwood",
+    "mechanical:broken_deadwood",
+    "mechanical:grub_log"
+  ]
+}
