@@ -132,10 +132,14 @@ public final class TraderShots {
         add(30, null, "lineup_close_a");
         add(1, () -> look(base.add(14.1, 1.7, -4.6), 0, 6), null);
         add(30, null, "lineup_close_b");
+        add(1, () -> look(base.add(8.6, 2.6, 6.5), 180, 14), null);
+        add(30, null, "lineup_back");
         for (String kind : new String[] {"woodsman", "mining", "jewelry", "hunting", "herbs", "foraging"})
             caravan(kind, false, kind.equals("jewelry") ? "sand" : "grass_block");
         caravan("mining", true, "grass_block");
         caravan("hunting", true, "grass_block");
+        column("mining", true);
+        column("herbs", false);
         // the trade screen
         add(1, () -> {
             clear("grass_block");
@@ -186,8 +190,10 @@ public final class TraderShots {
         }, null);
         add(50, () -> lookAtCaravan(10, 4), null);
         add(30, null, name);
-        add(1, () -> lookAtCaravan(6, 1.8), null);
+        add(1, () -> lookAtCaravan(5, 1.6), null);
         add(30, null, name + "_near");
+        add(1, () -> lookAtBack(4.5), null);
+        add(30, null, name + "_back");
         add(1, () -> {
             leader.setNoAi(true);
             Vec3 face = Vec3.directionFromRotation(0, leader.getYRot());
@@ -199,6 +205,43 @@ public final class TraderShots {
             look(leader.position().add(side.scale(2.6)).add(0, 1.0, 0), leader.yBodyRot - 90, 4);
         }, null);
         add(30, null, name + "_leader_side");
+    }
+
+    /** On the road: a caravan set out 20 blocks off walks in; shot from beside the column twice on the way. */
+    private static void column(String kind, boolean big) {
+        String name = "column_" + kind + (big ? "_big" : "");
+        add(1, () -> {
+            clear("grass_block");
+            var stop = net.minecraft.core.BlockPos.containing(base);
+            leader = Caravans.arrive(player().level(), stop, stop.offset(20, 0, 4), Identifier.fromNamespaceAndPath(Mechanical.MODID, kind), big, 20);
+            look(base.add(14, 6, -14), 45, 20);
+        }, null);
+        for (int k = 0; k < 2; k++) {
+            int n = k;
+            add(n == 0 ? 120 : 140, () -> {
+                Tribesperson handler = null;
+                for (Tribesperson t : leader.groupNearby(48)) if (t.role() == TribeRole.HANDLER) handler = t;
+                if (handler == null) return;
+                Vec3 mid = handler.position().add(leader.position()).scale(0.5);
+                Vec3 heading = handler.position().subtract(leader.position()).multiply(1, 0, 1).normalize();
+                Vec3 eye = mid.add(new Vec3(-heading.z, 0, heading.x).scale(8)).add(heading.scale(3)).add(0, 2.5, 0);
+                Vec3 d = mid.add(0, 0.8, 0).subtract(eye);
+                look(eye, (float) Math.toDegrees(Math.atan2(-d.x, d.z)), (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z))));
+                result.add(name + " " + n + ": phase " + handler.caravanPhase + " handler at " + handler.blockPosition() + " leader at " + leader.blockPosition());
+            }, null);
+            add(20, null, name + "_" + n);
+        }
+    }
+
+    /** Behind the cart or wagon, {@code dist} back, looking in at the open end of its tilt. */
+    private static void lookAtBack(double dist) {
+        List<TravoisEntity> beds = player().level().getEntitiesOfClass(TravoisEntity.class, new AABB(BlockPosOf(base)).inflate(16));
+        if (beds.isEmpty()) return;
+        TravoisEntity bed = beds.get(0);
+        Vec3 back = Vec3.directionFromRotation(0, bed.getYRot()).scale(-1);
+        if (bed instanceof com.mechanical.WagonEntity) dist += 1.5;
+        Vec3 eye = bed.position().add(back.scale(dist)).add(0, 1.9, 0);
+        look(eye, bed.getYRot(), 22);
     }
 
     /** Beside the caravan (square to its cart or wagon), {@code dist} out and {@code up} high, looking at its middle. */

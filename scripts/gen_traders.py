@@ -181,7 +181,10 @@ def main():
         lang[f"dialog.mechanical.tribe.caravan.{kind}"] = k["dialog"]
     lang.update(LANG)
     w(lang_path, lang)
-    w(A / "models/item/coin_purse.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/coin_purse"}})
+    # held big and hanging from the hand, so the caravan leader's purse reads from afar
+    held = {"rotation": [-80, 0, 0], "translation": [0, -1.5, 2.5], "scale": [0.9, 0.9, 0.9]}
+    w(A / "models/item/coin_purse.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/coin_purse"},
+                                          "display": {"thirdperson_righthand": held, "thirdperson_lefthand": held}})
     w(A / "items/coin_purse.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/coin_purse"}})
     print(f"trader kinds: {', '.join(KINDS)}")
 

@@ -136,24 +136,35 @@ public final class TribeIdlePoses {
     }
 
     /**
-     * An old man's walk: shoulders bent forward over the staff, head pushed forward and up to see the way, short shuffling
-     * steps (the legs swing half as far) and arms that hardly swing; the staff hand held out in front.
+     * An old man's walk: shoulders bent forward over the staff, head pushed forward and up to see the way; short, slow
+     * steps (a quick cadence for the ground covered, but small: the feet hardly leave the ground), a slight dip of the whole
+     * body on each step, the staff hand reaching ahead and planting the staff in step with the opposite foot, the purse
+     * held out in the other hand with hardly any swing.
      */
     private static void stoop(HumanoidModel<?> model, HumanoidRenderState state) {
         float bend = 0.22F;
+        float s = Math.min(1.0F, state.walkAnimationSpeed * 2.2F); // 0 standing .. 1 at his (slow) walking pace
+        float p = state.walkAnimationPos * 0.9F; // the step cycle: more steps for the way, each short
         model.body.xRot = bend;
         model.head.z = -2.0F;
         model.head.y = 0.6F;
-        model.head.xRot -= bend * 0.5F;
+        model.head.xRot = model.head.xRot * 0.5F - bend * 0.5F + 0.04F * Mth.sin(p * 2) * s; // a little nod with each step
+        model.rightLeg.xRot = Mth.cos(p) * 0.42F * s;
+        model.leftLeg.xRot = -Mth.cos(p) * 0.42F * s;
+        model.rightLeg.z = model.leftLeg.z = 0.6F;
         for (var arm : new net.minecraft.client.model.geom.ModelPart[] {model.rightArm, model.leftArm}) {
             arm.z = -1.8F;
             arm.y = 2.4F;
-            arm.xRot = arm.xRot * 0.35F - 0.3F;
+            arm.yRot = 0;
+            arm.zRot = 0;
         }
-        model.rightArm.xRot -= 0.15F; // the staff hand out in front
-        model.rightLeg.xRot *= 0.5F;
-        model.leftLeg.xRot *= 0.5F;
-        model.rightLeg.z = model.leftLeg.z = 0.6F;
+        model.rightArm.xRot = -0.55F - Mth.cos(p) * 0.18F * s; // the staff reaches with the left foot
+        model.rightArm.zRot = 0.08F;
+        model.leftArm.xRot = -0.85F + Mth.cos(p) * 0.06F * s; // the purse held out before him
+        model.leftArm.yRot = 0.25F;
+        model.leftArm.zRot = -0.05F;
+        float dip = (1 - Math.abs(Mth.cos(p))) * 0.7F * s; // down a little on each step
+        model.root().y += dip;
     }
 
     private static void head(HumanoidModel<?> model, float xRot) {

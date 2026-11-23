@@ -43,18 +43,21 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>caravan_guards: hitting a caravan's animal or its cart angers the caravan, and the guards go for the player.</li>
  * <li>caravan_purse: selling to the leader stops when his purse is empty and goes on once buying from him has filled it;
  * buying stops when the stock runs out; coins are paid with change.</li>
+ * <li>caravan_arrive: a caravan set out down the road walks in as a column, the animals and the cart following the
+ * handler, and stops at its stop: then it is stopped, the cart still hitched behind the horse.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
 public final class CaravanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"caravan_kinds", "caravan_still", "caravan_guards", "caravan_purse"};
+    private static final String[] TESTS = {"caravan_kinds", "caravan_still", "caravan_guards", "caravan_purse", "caravan_arrive"};
 
     static {
         TEST_FUNCTIONS.register("caravan_kinds", () -> CaravanTest::kinds);
         TEST_FUNCTIONS.register("caravan_still", () -> CaravanTest::still);
         TEST_FUNCTIONS.register("caravan_guards", () -> CaravanTest::guards);
         TEST_FUNCTIONS.register("caravan_purse", () -> CaravanTest::purse);
+        TEST_FUNCTIONS.register("caravan_arrive", () -> CaravanTest::arrive);
     }
 
     static void init(IEventBus modEventBus) {
@@ -66,7 +69,7 @@ public final class CaravanTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "caravan"), new TestEnvironmentDefinition.AllOf(List.of()));
         for (String name : TESTS) {
             ResourceKey<Consumer<GameTestHelper>> key = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, name));
-            event.registerTest(Identifier.fromNamespaceAndPath(MODID, name), new FunctionGameTestInstance(key, TestArea.of(env, 400, true)));
+            event.registerTest(Identifier.fromNamespaceAndPath(MODID, name), new FunctionGameTestInstance(key, TestArea.of(env, name.equals("caravan_arrive") ? 1200 : 400, true)));
         }
     }
 
@@ -225,6 +228,29 @@ public final class CaravanTest {
             h.assertFalse(CaravanTrade.trade(p, leader, 1), "nothing to sell");
             people.forEach(Caravans::leave);
             h.succeed();
+        });
+    }
+
+    private static void arrive(GameTestHelper h) {
+        guarded(h, () -> {
+            ServerLevel level = h.getLevel();
+            BlockPos stop = h.absolutePos(new BlockPos(4, 1, 8));
+            Tribesperson leader = Caravans.arrive(level, stop, stop.offset(10, 0, 0), Identifier.fromNamespaceAndPath(MODID, "foraging"), false, 12);
+            h.assertTrue(leader != null && leader.caravanPhase == Caravans.ARRIVING, "the caravan sets out");
+            List<Tribesperson> people = members(level, leader);
+            Tribesperson handler = role(people, TribeRole.HANDLER);
+            AbstractHorse horse = animals(level, handler).get(0);
+            h.assertTrue(handler.distanceToSqr(Vec3.atBottomCenterOf(stop)) > 8 * 8, "it starts down the road, at " + h.relativePos(handler.blockPosition()));
+            h.succeedWhen(() -> guarded(h, () -> {
+                h.assertTrue(handler.caravanPhase == Caravans.STOPPED, "still on the road, handler at " + handler.blockPosition());
+                h.assertTrue(handler.position().multiply(1, 0, 1).distanceToSqr(Vec3.atBottomCenterOf(stop).multiply(1, 0, 1)) < 4 * 4, "stopped at its stop " + h.relativePos(stop) + ", handler at "
+                        + h.relativePos(handler.blockPosition()) + ", camp " + h.relativePos(handler.caravanCamp));
+                h.assertTrue(people.stream().allMatch(t -> t.caravanPhase == Caravans.STOPPED), "all of them stopped");
+                h.assertTrue(horse.getLeashHolder() == handler && horse.distanceTo(handler) < 5, "the horse came with the handler");
+                CartEntity cart = level.getEntitiesOfClass(CartEntity.class, horse.getBoundingBox().inflate(8), CartEntity::isCaravan).get(0);
+                h.assertTrue(cart.harness() == horse, "the cart came behind the horse");
+                people.forEach(Caravans::leave);
+            }));
         });
     }
 

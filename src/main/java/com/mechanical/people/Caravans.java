@@ -71,6 +71,10 @@ public final class Caravans {
     static final int SALES = 6, BIG_SALES = 9;
     /** A player camp this near the spot pulls the caravan to its edge, this far from the fire. */
     static final int CAMP_SEARCH = 80, CAMP_EDGE = 16;
+    /** Travelling (CaravanGoal): stopped, walking in to the stop, walking away. Saved per member (Tribesperson#caravanPhase). */
+    static final int STOPPED = 0, ARRIVING = 1, LEAVING = 2;
+    /** It sets out this far from its stop; leaving, it walks this far off, and goes once nobody is within {@link #OUT_OF_SIGHT}. */
+    static final int ARRIVE_DIST = 32, LEAVE_DIST = 48, OUT_OF_SIGHT = 40;
 
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
@@ -85,7 +89,71 @@ public final class Caravans {
         List<Identifier> kinds = List.copyOf(TraderKinds.all().keySet());
         if (kinds.isEmpty()) return null;
         RandomSource r = level.getRandom();
-        return spawn(level, atCampEdge(level, at), kinds.get(r.nextInt(kinds.size())), r.nextInt(BIG_ODDS) == 0);
+        return arrive(level, atCampEdge(level, at), at, kinds.get(r.nextInt(kinds.size())), r.nextInt(BIG_ODDS) == 0);
+    }
+
+    /**
+     * A caravan of {@code kind} walking in to {@code stop}: it sets out {@link #ARRIVE_DIST} away, from the side of
+     * {@code from} (a road or trail there if one is near), facing the stop. Returns the leader.
+     */
+    static Tribesperson arrive(ServerLevel level, BlockPos stop, BlockPos from, Identifier kind, boolean big) {
+        return arrive(level, stop, from, kind, big, ARRIVE_DIST);
+    }
+
+    /** As {@link #arrive(ServerLevel, BlockPos, BlockPos, Identifier, boolean)}, setting out {@code dist} away. */
+    static Tribesperson arrive(ServerLevel level, BlockPos stop, BlockPos from, Identifier kind, boolean big, int dist) {
+        RandomSource r = level.getRandom();
+        Vec3 dir = Vec3.atLowerCornerOf(from.subtract(stop)).multiply(1, 0, 1);
+        double base = dir.lengthSqr() < 16 ? r.nextDouble() * Math.PI * 2 : Math.atan2(dir.z, dir.x);
+        BlockPos start = null;
+        for (int k = 0; k <= 12 && start == null; k++) { // fan out from straight ahead, both sides, looking for path ground
+            double a = base + (k % 2 == 0 ? 1 : -1) * ((k + 1) / 2) * Math.toRadians(10);
+            BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    stop.offset((int) Math.round(Math.cos(a) * dist), 0, (int) Math.round(Math.sin(a) * dist)));
+            if (onPath(level, p)) start = p;
+        }
+        if (start == null) start = stop.offset((int) Math.round(Math.cos(base) * dist), 0, (int) Math.round(Math.sin(base) * dist));
+        Vec3 toStop = Vec3.atLowerCornerOf(stop.subtract(start));
+        float yaw = (float) Math.toDegrees(Math.atan2(-toStop.x, toStop.z));
+        Tribesperson leader = spawn(level, start, kind, big, yaw);
+        if (leader == null) return null;
+        BlockPos target = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, stop);
+        phase(leader, ARRIVING, target);
+        return leader;
+    }
+
+    /** Path ground under {@code surface}: a trodden trail, a dirt path, gravel, packed mud or coarse dirt. */
+    static boolean onPath(ServerLevel level, BlockPos surface) {
+        var s = level.getBlockState(surface.below());
+        return s.is(com.mechanical.TrampledPaths.TRODDEN_PATH.get()) || s.is(com.mechanical.TrampledPaths.WORN_GRASS.get())
+                || s.is(net.minecraft.world.level.block.Blocks.DIRT_PATH) || s.is(net.minecraft.world.level.block.Blocks.GRAVEL)
+                || s.is(net.minecraft.world.level.block.Blocks.PACKED_MUD) || s.is(net.minecraft.world.level.block.Blocks.COARSE_DIRT);
+    }
+
+    /** All of the caravan with {@code member} take up {@code phase}, heading for {@code to}. */
+    static void phase(Tribesperson member, int phase, BlockPos to) {
+        for (Tribesperson t : member.groupNearby(48)) {
+            t.caravanPhase = phase;
+            t.caravanCamp = to;
+        }
+        member.caravanPhase = phase;
+        member.caravanCamp = to;
+    }
+
+    /** Time is up (the handler decides): the caravan walks off {@link #LEAVE_DIST}, away from the nearest player. */
+    static void depart(Tribesperson handler) {
+        var player = handler.level().getNearestPlayer(handler, 64);
+        Vec3 away = player == null ? Vec3.directionFromRotation(0, handler.getYRot()) : handler.position().subtract(player.position()).multiply(1, 0, 1);
+        away = away.lengthSqr() < 0.01 ? new Vec3(1, 0, 0) : away.normalize();
+        BlockPos to = handler.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                BlockPos.containing(handler.position().add(away.scale(LEAVE_DIST))));
+        phase(handler, LEAVING, to);
+    }
+
+    /** The whole caravan goes: everyone with the handler, and the animals, carts and loads. */
+    static void leaveAll(Tribesperson handler) {
+        for (Tribesperson t : handler.groupNearby(64)) if (t != handler) leave(t);
+        leave(handler);
     }
 
     /** {@code at}, or the edge of the nearest player camp within {@link #CAMP_SEARCH}, on the side towards {@code at}. */
@@ -107,6 +175,11 @@ public final class Caravans {
 
     /** A caravan of {@code kind} at {@code at} (big: a Wagon and a pair): returns the leader (null if it couldn't be made). */
     static Tribesperson spawn(ServerLevel level, BlockPos at, Identifier kindId, boolean big) {
+        return spawn(level, at, kindId, big, level.getRandom().nextFloat() * 360);
+    }
+
+    /** As {@link #spawn(ServerLevel, BlockPos, Identifier, boolean)}, the team facing {@code yaw}. */
+    static Tribesperson spawn(ServerLevel level, BlockPos at, Identifier kindId, boolean big, float yaw) {
         TraderKinds.Kind kind = TraderKinds.get(kindId);
         if (kind == null) return null;
         RandomSource r = level.getRandom();
@@ -137,7 +210,6 @@ public final class Caravans {
             return null;
         }
         // the team stands beside the handler, his hand at the lead animal's head; the bed behind them
-        float yaw = r.nextFloat() * 360;
         Vec3 ahead = Vec3.directionFromRotation(0, yaw);
         Vec3 front = Vec3.atBottomCenterOf(camp).add(Vec3.directionFromRotation(0, yaw + 90).scale(1.6)).add(ahead.scale(-0.6));
         if (big) {
@@ -149,6 +221,7 @@ public final class Caravans {
                 wagon.setYRot(yaw);
                 wagon.hitchCaravan(lead, partner);
                 wagon.setCargo(kind.cargo());
+                wagon.setCanopy(kindId.getPath());
                 level.addFreshEntity(wagon);
             }
         } else {
@@ -159,6 +232,7 @@ public final class Caravans {
                 cart.setPos(horse.position().add(ahead.scale(-CartEntity.LEAD_HORSE)));
                 cart.setYRot(yaw);
                 cart.hitchCaravan(horse, false);
+                cart.setCanopy(kindId.getPath());
                 if (!carcass) cart.setCargo(kind.cargo());
                 level.addFreshEntity(cart);
                 if (carcass) trophy(level, cart, leader, r);
@@ -312,11 +386,22 @@ public final class Caravans {
         event.setCancellationResult(net.minecraft.world.InteractionResult.CONSUME);
     }
 
-    /** Server: a caravan's draught animals stand where the handler holds them, and now and then put their heads down to graze. */
+    /**
+     * Server: a caravan's draught animals walk after the handler on the road (the wagon's second horse is kept beside the
+     * first by the wagon); once there they stand where he holds them, and now and then put their heads down to graze.
+     */
     @SubscribeEvent
     static void graze(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof AbstractHorse horse) || horse.level().isClientSide()
                 || !(horse.getLeashHolder() instanceof Tribesperson h) || h.role() != TribeRole.HANDLER) return;
+        if (h.caravanPhase != STOPPED) {
+            if (TravoisEntity.pulling(horse) instanceof WagonEntity w && w.partner() == horse) return;
+            if (horse.isEating()) horse.setEating(false);
+            if (horse.distanceTo(h) > 3.0) {
+                if (horse.tickCount % 10 == 0 || horse.getNavigation().isDone()) horse.getNavigation().moveTo(h, 1.1);
+            } else horse.getNavigation().stop();
+            return;
+        }
         horse.getNavigation().stop();
         horse.getMoveControl().setWait();
         horse.setZza(0);

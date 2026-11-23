@@ -2192,8 +2192,9 @@ från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan**
 `client/CargoRender.java`, kapell `scripts/gen_cart_canopy_textures.py`.)
 - **När:** lika ofta som vandrande handlaren skulle ha kommit. Vanillas egen räknare används: ett försök var 20:e minut
   (24000 ticks), 25 % chans första gången, +25 % per miss upp till 75 %, nära en slumpad spelare (inom 48 block, helst vid
-  byns klocka). Där handlaren skulle ha dykt upp kommer karavanen i stället; finns ett **spelarläger** (`CampAge`) inom
-  80 block ställer den sig vid **lägrets kant**, 16 block från elden. Gamerule `spawn_wandering_traders` stänger av den.
+  byns klocka). Karavanen startar 32 block bort (helst på en stig) och **går in som en kolonn** till där handlaren skulle ha
+  kommit, eller till **lägrets kant** (16 block från elden) om ett **spelarläger** (`CampAge`) finns inom 80 block. När
+  tiden är ute går den därifrån och försvinner utom synhåll. Gamerule `spawn_wandering_traders` stänger av den.
   Den stannar **48000 ticks (2 speldagar)**, sedan försvinner allt (folk, djur, vagnar). Ett Wandering Trader Spawn Egg ger
   också en karavan.
 - **Sorter** (datadrivna, en JSON per sort i `data/mechanical/trader_kind/`): **Timber & Tools** (plantor, yxor, sågar,
@@ -2203,7 +2204,9 @@ från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan**
   kärran), **Herbs & Remedies** (salvor, omslag, enbär, honung, frö; köper svamp, bävergäll, fläder) och
   **Forager's Goods** (barkkorgar, fröpåsar, nötter, torkade bär, rep; köper bär och nötter). Varor visas upp till **en
   ålder över** stammens.
-- **Folket:** **4–5 personer**, klädda för sorten (egna skins per sort och roll):
+- **Folket:** **4–5 personer**, klädda för sorten (egna skins och utrustning per sort och roll, ingen stamfärg: rutigt ylle
+  och yxa på ryggen, sotigt förkläde, vadderad mössa och lykta, färgade rockar med guld och turban, pälshuva och koger,
+  grön eller ockra rock med örtväska och knippen, lapptäcke och korg på ryggen):
   - **Caravan Leader** (rollen Trader): gammal man eller kvinna, går **långsamt och framåtböjd** (`TribeIdlePoses.stoop`,
     halva steglängden) med en **Walking Staff** och en **Coin Purse** i handen. Strövar runt djurhållaren inom 6 block
     och står still när en spelare är nära. Dödas han faller det som är kvar i kassan ut som mynt.
@@ -2212,8 +2215,8 @@ från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan**
     lårskydd), aldrig läder, ingen hjälm; 12 i rustning och 30 hälsa. Vapen efter stammens ålder (eller en över, högst
     brons). Går långsamt i en **ring 8–11 block** runt ledaren, stannar och spanar utåt.
 - **Djur och vagnar:** en **liten** karavan (3 av 4) har **ett** djur (Tame Horse, eller Tame Camel för ökensorter) och en
-  **Wheeled Cart** med tygkapell; en **stor** (1 av 4) har en **Wagon** med **två** djur i spann, de **sällsynta** varorna,
-  **25 % högre** priser och större kassa och lager. Flaket bär sortens **last** (stockar, kol- och malmblock, kistor,
+  **Wheeled Cart**; en **stor** (1 av 4) har en **Wagon** med **två** djur i spann, de **sällsynta** varorna,
+  **25 % högre** priser och större kassa och lager. Båda har ett **välvt kanvaskapell** randigt i sortens färger. Flaket bär sortens **last** (stockar, kol- och malmblock, kistor,
   krukor, skinn, korgar, blommor ...). Vagnar och djur går inte att ta: spelare kan inte rida, mata, koppla loss eller
   öppna dem ("The caravan's animal / cart: its guards would not like that"). **Dör djuren** blir vagnen vanlig.
 - **Storvilt till salu:** hälften av jägarkaravanernas kärror bär ett troféjaktbyte, slumpat bland **Cave Lion**,

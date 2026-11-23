@@ -45,8 +45,9 @@ Sorterna:
 
 ## C. Folket
 En karavan är **4–5 personer** av en handelsstam (temperament *Traders*), alla klädda för sin sort:
-- **Ledaren** (`TRADER`): gammal, går **långsamt och framåtböjd** med Walking Staff i ena handen och en **Coin Purse**
-  (myntpung) i den andra. Strövar runt djurhållaren inom **6 block**, aldrig längre bort. Dödas han tappar han det som är
+- **Ledaren** (`TRADER`): gammal, framåtböjd, med Walking Staff i ena handen och en **Coin Purse** (myntpung, stor och
+  synlig) hållen framför sig i den andra. Egen gång (`TribeIdlePoses.stoop`): korta, långsamma steg, kroppen sjunker lite
+  i varje steg, staven sätts i takt med motsatt fot, pungen svänger nästan inte. Strövar runt djurhållaren inom **6 block**, aldrig längre bort. Dödas han tappar han det som är
   kvar i kassan (som mynt).
 - **Djurhållaren** (`HANDLER`, ny roll): håller alla dragdjurens rep och **står still** när karavanen är framme;
   djuren **står kvar och betar** (huvudet ned då och då), vagnarna står.
@@ -54,21 +55,34 @@ En karavan är **4–5 personer** av en handelsstam (temperament *Traders*), all
   ingen läderrustning, ingen hjälm. Går **långsamt i en större ring (8–11 block)** runt ledaren, stannar och spanar utåt.
 - **Försvar:** slår du någon i gruppen, ett dragdjur eller en vagn blir hela gruppen arg (som när en stamperson slås) och
   vakterna går till anfall. Vagnar och djur kan inte tas eller öppnas.
-- **Skins:** egna per sort och roll (4 per roll: män 0/2, kvinnor 1/3) i `textures/entity/tribesperson/caravan/<sort>/`,
-  stammens färg i masken som förut. Gruvfolk sotiga i läder och järnlameller, skogsfolk i grönt och brunt med sågspån,
-  juvelerare i djupt blått/purpur med guld och stenar, jägare med päls och tänder, örtfolk i ljust linne med
-  örtknippen, samlare i halm och vävt med korgband.
+- **Skins:** egna per sort och roll (4 per roll: män 0/2, kvinnor 1/3) i `textures/entity/tribesperson/caravan/<sort>/`.
+  **Ingen stamfärg** (inget gemensamt pannband): varje sort har egna färger och en egen siluett som syns på 15 block,
+  med veck och skuggor i tyget och olika ansikten (fräknar, ärr, kraftiga eller tunna ögonbryn):
+  - **timmer:** rutigt ylle (rött eller grönt), läderförkläde ned över låren, en yxa över ryggen;
+  - **gruva:** sotigt läderförkläde, vadderad mössa, en lykta vid bältet;
+  - **smycken:** fina färgade rockar (blå, purpur, karmosin) med guldkant och ädelstenar, turban;
+  - **jakt:** pälskantad huva och pälsmantel med cape, koger på ryggen;
+  - **örter:** grön eller ockra rock, en väska med örter som sticker upp, torkade knippen i bältet;
+  - **samlande:** jordfärgat lapptäcke av tyg, en flätad korg full av bär och nötter på ryggen.
 
 ## Storlek
-- **Liten** (vanligast, 3 av 4): en **Wheeled Cart** med kapell och **ett** djur. Vanliga varor.
+- **Liten** (vanligast, 3 av 4): en **Wheeled Cart** och **ett** djur. Vanliga varor.
 - **Stor** (1 av 4): Iron Age **Wagon** med **två** djur i spann. Har även de **sällsynta varorna**, men allt kostar
   **25 % mer**; kassan och lagret är större.
-- Lasten på flaket visar vad de säljer (`cargo`). Jägarkaravanens kärra bär ibland ett storvilt i stället.
+- Både kärra och vagn har ett **välvt kapell** av kanvas på bågar (`client/TiltModel`), randigt i sortens färger
+  (`scripts/gen_cart_canopy_textures.py`), öppet fram och bak.
+- Lasten på flaket visar vad de säljer (`cargo`), packad i rader: block står i rutor och staplas, annat ligger platt
+  ovanpå, så det syns genom kapellets öppna ände. Jägarkaravanens kärra bär ibland ett storvilt i stället.
 
 ## Ankomst och avfärd
-- Vanillas tidtabell för Wandering Trader är kvar. Finns en spelares läger (`CampAge`) inom 80 block ställer sig
-  karavanen **vid lägrets kant** (16 block från elden, på den sida de kom ifrån), annars där handlaren skulle ha kommit.
-- De stannar 2 speldagar och försvinner sedan med djur och vagnar (som förut).
+- Vanillas tidtabell för Wandering Trader är kvar. Målet är **lägrets kant** (16 block från elden) om en spelares läger
+  (`CampAge`) finns inom 80 block, annars där handlaren skulle ha kommit.
+- Karavanen **startar 32 block bort** (helst på en stig eller väg: trampad stig, dirt path, grus, packad lera) och **går in
+  som en kolonn**: djurhållaren först med djuren (han väntar om de hamnar efter), kärran eller vagnen efter dem, ledaren
+  bakom flaket och vakterna på flankerna och sist. Framme stannar de och gör som ovan. Når de inte fram på 2 minuter
+  stannar de där de är.
+- Efter 2 speldagar **går de därifrån** samma väg, 48 block bort från närmaste spelare, och försvinner när ingen spelare
+  är inom 40 block (eller när de är framme).
 
 ## D. Handelsrutan
 Högerklick på ledaren: pratrutan (som förut) med **Trade**, som öppnar karavanens egen ruta (`CaravanTrade`,
@@ -94,7 +108,5 @@ tillbaka när ett djur skadas, kassan stoppar försäljning, lagret tar slut. De
 fortfarande (vanillas handlare ersätts, storvilt på vagnen).
 
 ## Kvar / inte gjort
-- Karavanen **dyker upp** på platsen (vid lägrets kant); den vandrar inte in från fjärran. Avfärden är också att den
-  försvinner.
-- Vagnen (Wagon) har inget kapell.
+- Kolonnen följer inte vägar hela vägen, den går rakt mot målet (vägen används bara för startpunkten).
 - Rabatt efter rykte (som stammarnas byteshandel) gäller inte i den nya rutan; handel höjer ryktet som förut.

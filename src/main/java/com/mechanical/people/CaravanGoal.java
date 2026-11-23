@@ -11,12 +11,18 @@ import net.minecraft.world.phys.Vec3;
  * leads, turning now and then to look at them. The leader potters round the handler within {@link #LEADER_RANGE}, slowly
  * like the old man he is ({@link #LEADER_SPEED}), and stays put while a player stands close (a customer). The guards walk
  * a wide ring round the leader ({@link #GUARD_MIN}-{@link #GUARD_MAX} out) as slowly, stopping at each point to watch
- * outwards. A fight (the target selectors) overrides all of it.
+ * outwards. On the road (Caravans.ARRIVING, LEAVING) they walk as a column: the handler in front leading the animals
+ * (the cart or wagon behind them), the leader behind the bed, the guards on its flanks, one at the rear. A fight (the
+ * target selectors) overrides all of it.
  */
 class CaravanGoal extends Goal {
     static final double LEADER_RANGE = 6, LEADER_SPEED = 0.38, GUARD_MIN = 8, GUARD_MAX = 11, GUARD_SPEED = 0.5;
     /** Ticks a leader rests between walks, and a guard watches at each point (plus a random share as much again). */
     static final int LEADER_REST = 120, GUARD_WATCH = 100;
+    /** On the road: the handler's pace, how far the animals may fall behind before he waits, how long he tries to arrive. */
+    static final double ROAD_SPEED = 0.6;
+    static final int WAIT_FOR_TEAM = 6, ARRIVE_TICKS = 2400;
+    private int travelled;
     private final Tribesperson mob;
     private int wait;
     private Vec3 watch;
@@ -48,6 +54,10 @@ class CaravanGoal extends Goal {
 
     @Override
     public void tick() {
+        if (mob.caravanPhase != Caravans.STOPPED) {
+            road();
+            return;
+        }
         switch (mob.role()) {
             case HANDLER -> handler();
             case TRADER -> leader();
@@ -100,6 +110,46 @@ class CaravanGoal extends Goal {
         Vec3 to = new Vec3(c.x + Math.cos(a) * d, c.y, c.z + Math.sin(a) * d);
         watch = to.add(to.subtract(c).normalize().scale(10)); // out, away from the leader
         mob.getNavigation().moveTo(to.x, to.y, to.z, GUARD_SPEED);
+    }
+
+    /** The column on the road, every member's part in it. */
+    private void road() {
+        if (mob.role() == TribeRole.HANDLER) {
+            travelled++;
+            Vec3 to = Vec3.atBottomCenterOf(mob.caravanCamp);
+            boolean there = mob.position().distanceToSqr(to) < 2.5 * 2.5;
+            if (mob.caravanPhase == Caravans.ARRIVING && (there || travelled > ARRIVE_TICKS)) {
+                Caravans.phase(mob, Caravans.STOPPED, mob.blockPosition()); // here (or as near as the way allowed)
+                travelled = 0;
+                return;
+            }
+            if (mob.caravanPhase == Caravans.LEAVING && (there || mob.level().getNearestPlayer(mob, Caravans.OUT_OF_SIGHT) == null
+                    || travelled > ARRIVE_TICKS)) {
+                Caravans.leaveAll(mob);
+                return;
+            }
+            var animals = mob.level().getEntitiesOfClass(net.minecraft.world.entity.animal.equine.AbstractHorse.class, mob.getBoundingBox().inflate(16),
+                    h -> h.getLeashHolder() == mob);
+            if (animals.stream().anyMatch(h -> h.distanceTo(mob) > WAIT_FOR_TEAM)) {
+                mob.getNavigation().stop(); // let the team catch up
+                return;
+            }
+            if (mob.getNavigation().isDone() || travelled % 40 == 0) mob.getNavigation().moveTo(to.x, to.y, to.z, ROAD_SPEED);
+            return;
+        }
+        Tribesperson handler = null;
+        for (Tribesperson t : mob.groupNearby(48)) if (t.role() == TribeRole.HANDLER) handler = t;
+        if (handler == null) return;
+        Vec3 heading = Vec3.atBottomCenterOf(mob.caravanCamp).subtract(handler.position()).multiply(1, 0, 1);
+        heading = heading.lengthSqr() < 0.01 ? Vec3.directionFromRotation(0, handler.getYRot()) : heading.normalize();
+        Vec3 side = new Vec3(-heading.z, 0, heading.x);
+        Vec3 spot = mob.role() == TribeRole.TRADER ? handler.position().subtract(heading.scale(7)) // behind the bed
+                : mob.getId() % 3 == 0 ? handler.position().subtract(heading.scale(10)) // the rear guard
+                : handler.position().add(side.scale(mob.getId() % 2 == 0 ? 3.5 : -3.5)).subtract(heading.scale(3)); // a flank
+        if (mob.position().distanceToSqr(spot) > 2.0 * 2.0) {
+            if (mob.getNavigation().isDone() || mob.tickCount % 20 == 0)
+                mob.getNavigation().moveTo(spot.x, spot.y, spot.z, mob.role() == TribeRole.TRADER ? LEADER_SPEED + 0.25 : ROAD_SPEED + 0.05);
+        } else mob.getNavigation().stop();
     }
 
     /** Where the group member with {@code role} is (the stop if they are gone). */

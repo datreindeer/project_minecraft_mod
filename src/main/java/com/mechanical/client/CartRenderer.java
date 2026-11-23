@@ -22,21 +22,21 @@ import net.minecraft.world.item.Items;
 /**
  * Draws the {@link CartModel} turned to the cart's yaw (shafts forward), wheels rolling, the whole cart tipped about the axle
  * to its {@link CartEntity#pitch}: shafts up to the puller, or down on the ground when parked. Loaded carcasses draw themselves;
- * a mounted chest is the Chest item model standing on the bed; a caravan's cart has a canvas tilt over it (CartModel.Canopy).
+ * a mounted chest is the Chest item model standing on the bed; a caravan's cart has a canvas tilt over it, dyed for its kind (TiltModel), and its load under it (CargoRender).
  */
 public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/cart.png");
     /** Bed floor top (CartModel floor box), blocks. */
     private static final float FLOOR = 11 / 16.0F;
-    private static final Identifier CANOPY_TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/cart_canopy.png");
     private final CartModel model;
-    private final CartModel.Canopy canopy;
+    private final TiltModel canopy;
     private final ItemModelResolver items;
     private ItemStack chest;
 
     public static class State extends EntityRenderState {
         float yaw, spin, pitch;
         boolean canopy;
+        Identifier tilt;
         final ItemStackRenderState chest = new ItemStackRenderState();
         final CargoRender.State cargo = new CargoRender.State();
     }
@@ -44,7 +44,7 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
     public CartRenderer(EntityRendererProvider.Context context) {
         super(context);
         model = new CartModel(context.bakeLayer(CartModel.LAYER));
-        canopy = new CartModel.Canopy(context.bakeLayer(CartModel.Canopy.LAYER));
+        canopy = new TiltModel(context.bakeLayer(TiltModel.CART));
         shadowRadius = 0.8F;
         items = context.getItemModelResolver();
     }
@@ -60,7 +60,8 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         state.yaw = cart.getViewYRot(partialTicks);
         state.spin = Mth.lerp(partialTicks, cart.wheelSpinO, cart.wheelSpin);
         state.pitch = cart.pitch(partialTicks);
-        state.canopy = cart.isCaravan();
+        state.canopy = cart.isCaravan() || !cart.canopy().isEmpty();
+        state.tilt = CargoRender.tilt(cart.canopy(), false);
         if (cart.hasChest()) {
             if (chest == null) chest = new ItemStack(Items.CHEST);
             items.updateForNonLiving(state.chest, chest, ItemDisplayContext.NONE, cart);
@@ -88,7 +89,7 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         CargoRender.submit(state.cargo, 2, 3, 0.56F, FLOOR, 0.5F, poseStack, collector, state.lightCoords, state.outlineColor);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         collector.submitModel(model, state.spin, poseStack, TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
-        if (state.canopy) collector.submitModel(canopy, state.spin, poseStack, CANOPY_TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        if (state.canopy) collector.submitModel(canopy, 0.0F, poseStack, state.tilt, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
         super.submit(state, poseStack, collector, camera);
     }

@@ -142,6 +142,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     long leaveAt = -1;
     /** A Trader Caravan's stopping place (the handler's spot, CaravanGoal), saved; null for everyone else. */
     BlockPos caravanCamp;
+    /** A Trader Caravan member on the road or stopped (Caravans.STOPPED, ARRIVING, LEAVING; CaravanGoal), saved. */
+    int caravanPhase;
     /** A caravan leader's goods and purse (CaravanTrade), saved; null for everyone else. */
     CaravanTrade.Stock stock;
     /** A walk to another camp and back (ErrandGoal), not saved; walking it wears paths. */
@@ -213,8 +215,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         return k.isEmpty() ? null : Identifier.tryParse(k);
     }
 
+    /** Caravan folk wear their kind's colours, not their tribe's (no tint). */
     void setCaravanKind(Identifier kind) {
         entityData.set(KIND, kind == null ? "" : kind.toString());
+        if (kind != null) entityData.set(COLOUR, -1);
     }
 
     /**
@@ -615,7 +619,11 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (tickCount % 20 == 0 && raid == null && visit == null && errand == null && tribe() != null && tribe().temperament.territorial) guardLand(level, now);
         if (home != null) tendFire(level, now);
         if (tickCount % 100 == 0 && raid == null && leaveAt < 0 && role() != TribeRole.MINER && !role().oak()) SetUpCampGoal.check(this, level, now);
-        if (leaveAt >= 0 && now > leaveAt && tradingPlayer == null && tickCount % 20 == 0) Caravans.leave(this);
+        if (leaveAt >= 0 && now > leaveAt && tradingPlayer == null && tickCount % 20 == 0) {
+            // a caravan walks away (its handler leads it off); one from before roads, or long overdue, just goes
+            if (caravanCamp == null || now > leaveAt + 6000) Caravans.leave(this);
+            else if (role() == TribeRole.HANDLER && caravanPhase == Caravans.STOPPED) Caravans.depart(this);
+        }
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
@@ -1085,6 +1093,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         if (visit != null) output.store("visit", UUIDUtil.CODEC, visit);
         if (leaveAt >= 0) output.putLong("leave_at", leaveAt);
         if (caravanCamp != null) output.store("caravan_camp", BlockPos.CODEC, caravanCamp);
+        if (caravanPhase != 0) output.putInt("caravan_phase", caravanPhase);
         if (stock != null) output.store("caravan_stock", CaravanTrade.Stock.CODEC, stock);
         if (caravanKind() != null) output.putString("caravan_kind", entityData.get(KIND));
         if (oakFoot != null) output.store("oak", BlockPos.CODEC, oakFoot);
@@ -1110,8 +1119,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         visit = input.read("visit", UUIDUtil.CODEC).orElse(null);
         leaveAt = input.getLongOr("leave_at", -1);
         caravanCamp = input.read("caravan_camp", BlockPos.CODEC).orElse(null);
+        caravanPhase = input.getIntOr("caravan_phase", 0);
         stock = input.read("caravan_stock", CaravanTrade.Stock.CODEC).orElse(null);
         entityData.set(KIND, input.getStringOr("caravan_kind", ""));
+        if (caravanKind() != null) entityData.set(COLOUR, -1);
         oakFoot = input.read("oak", BlockPos.CODEC).orElse(null);
         if (role().oak()) entityData.set(COLOUR, -1);
         if (raid != null) raiderNavigation();

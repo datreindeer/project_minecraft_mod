@@ -55,6 +55,8 @@ public class TravoisEntity extends Entity {
     private static final EntityDataAccessor<Integer> HARNESS = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.INT);
     /** A Trader Caravan's load on show (item ids, comma separated; people.Caravans): drawn on the bed of a cart or wagon. Synced. */
     private static final EntityDataAccessor<String> CARGO = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.STRING);
+    /** A Trader Caravan's canvas tilt: the caravan kind it is dyed for ("" none; client.TiltModel). Synced. */
+    private static final EntityDataAccessor<String> CANOPY = SynchedEntityData.defineId(TravoisEntity.class, EntityDataSerializers.STRING);
     public static final double LEAD = 2.4;
     public static final int CAPACITY = 3;
     /** Height of the hide platform above the ground. */
@@ -79,6 +81,16 @@ public class TravoisEntity extends Entity {
     /** Server: the caravan load shown on the bed (item ids). */
     public void setCargo(java.util.List<String> items) {
         entityData.set(CARGO, String.join(",", items));
+    }
+
+    /** Server: a canvas tilt dyed for caravan kind {@code kind} (its id's path). */
+    public void setCanopy(String kind) {
+        entityData.set(CANOPY, kind);
+    }
+
+    /** The caravan kind the tilt is dyed for, "" without a tilt. */
+    public String canopy() {
+        return entityData.get(CANOPY);
     }
 
     private String cargoIds;
@@ -357,6 +369,7 @@ public class TravoisEntity extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(HARNESS, -1);
         builder.define(CARGO, "");
+        builder.define(CANOPY, "");
     }
 
     @Override
@@ -788,11 +801,13 @@ public class TravoisEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         entityData.set(CARGO, input.getStringOr("cargo", ""));
+        entityData.set(CANOPY, input.getStringOr("canopy", ""));
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         if (!entityData.get(CARGO).isEmpty()) output.putString("cargo", entityData.get(CARGO));
+        if (!entityData.get(CANOPY).isEmpty()) output.putString("canopy", entityData.get(CANOPY));
     }
 
     /** The Travois (or Cart) item: right-click the ground to set it down, poles towards you. */

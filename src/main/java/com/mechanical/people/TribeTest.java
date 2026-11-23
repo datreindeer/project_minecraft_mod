@@ -474,10 +474,13 @@ public final class TribeTest {
             var vanilla = net.minecraft.world.entity.EntityTypes.WANDERING_TRADER.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
             vanilla.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
             h.assertFalse(level.addFreshEntity(vanilla), "the Wandering Trader joined the world");
-            net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(at).inflate(16);
-            List<Tribesperson> people = level.getEntitiesOfClass(Tribesperson.class, box);
-            Tribesperson trader = people.stream().filter(t -> t.role() == TribeRole.TRADER).findFirst().orElse(null);
+            // it sets out Caravans.ARRIVE_DIST away and walks in
+            net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(at).inflate(Caravans.ARRIVE_DIST + 8);
+            Tribesperson trader = level.getEntitiesOfClass(Tribesperson.class, box, t -> t.role() == TribeRole.TRADER && t.stock != null).stream().findFirst().orElse(null);
             h.assertTrue(trader != null, "no caravan came in the trader's place");
+            List<Tribesperson> people = level.getEntitiesOfClass(Tribesperson.class, box, trader::inGroup);
+            h.assertTrue(people.stream().allMatch(t -> t.caravanPhase == Caravans.ARRIVING),
+                    "the caravan walks in");
             h.assertTrue(people.size() >= 4 && people.size() <= 5 && people.stream().allMatch(trader::inGroup), "caravan of 4-5 of one tribe, got " + people.size());
             h.assertTrue(trader.tribe().temperament == Tribe.Temperament.TRADERS, "a caravan is of a trading tribe");
             h.assertTrue(trader.stock != null && TraderKinds.get(trader.stock.kind) != null, "the caravan is of a kind, with goods");
@@ -517,14 +520,14 @@ public final class TribeTest {
             cart.discard();
             horse.discard();
             h.runAfterDelay(100, () -> guarded(h, () -> {
-                List<com.mechanical.TravoisEntity> beds = level.getEntitiesOfClass(com.mechanical.TravoisEntity.class, box.inflate(16));
+                List<com.mechanical.TravoisEntity> beds = level.getEntitiesOfClass(com.mechanical.TravoisEntity.class, box.inflate(16), b -> Caravans.owner(b) == handler);
                 h.assertTrue(beds.size() == 1, "one cart or wagon, got " + beds.size());
                 com.mechanical.TravoisEntity bed = beds.get(0);
                 h.assertTrue(bed instanceof com.mechanical.WagonEntity w ? w.isCaravan() && horses.stream().allMatch(w::inTeam)
                         : ((com.mechanical.CartEntity) bed).isCaravan() && horses.contains(bed.harness()), "the caravan's cart or wagon is still hitched");
                 List<Tribesperson> all = level.getEntitiesOfClass(Tribesperson.class, box.inflate(16), t -> t.inGroup(trader));
                 all.forEach(Caravans::leave);
-                h.assertTrue(level.getEntitiesOfClass(com.mechanical.TravoisEntity.class, box.inflate(16)).isEmpty()
+                h.assertTrue(beds.stream().allMatch(com.mechanical.TravoisEntity::isRemoved)
                         && horses.stream().allMatch(x -> x.isRemoved()), "carts and horses leave with the caravan");
                 h.succeed();
             }));
