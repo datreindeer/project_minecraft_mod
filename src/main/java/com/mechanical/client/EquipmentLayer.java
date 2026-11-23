@@ -28,7 +28,8 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
  * then a cape like a skin cape (textures/entity/cloak/&lt;id&gt;.png, pushed out over chest armour) or, for the Glider
  * Cloak, its wings layer (folded, spread while gliding);</li>
  * <li>the Leather Satchel ({@link WornSatchelModel}), the Quiver ({@link WornQuiverModel}) and the Leather Pouch ({@link WornPouchModel});</li>
- * <li>the Miner's ore sack ({@link MinerSackModel}, people.TribespersonRenderer adds this layer too).</li>
+ * <li>the Miner's ore sack ({@link MinerSackModel}, people.TribespersonRenderer adds this layer too);</li>
+ * <li>a tribesperson's gear: hood, mantle, cloak, necklace, braids, beard, feathers ({@link TribeGearModel}).</li>
  * </ul>
  */
 public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
@@ -39,6 +40,7 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
     private final WornQuiverModel quiver;
     private final WornPouchModel pouch;
     private final MinerSackModel minerSack;
+    private final TribeGearModel tribeGear;
     private final EquipmentLayerRenderer equipmentRenderer;
 
     public EquipmentLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer, EntityModelSet models, EquipmentLayerRenderer equipmentRenderer) {
@@ -50,6 +52,7 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
         this.quiver = new WornQuiverModel(models.bakeLayer(WornQuiverModel.LAYER));
         this.pouch = new WornPouchModel(models.bakeLayer(WornPouchModel.LAYER));
         this.minerSack = new MinerSackModel(models.bakeLayer(MinerSackModel.LAYER));
+        this.tribeGear = new TribeGearModel(models.bakeLayer(TribeGearModel.LAYER));
         this.equipmentRenderer = equipmentRenderer;
         // only body and arms, like a chest piece
         cloakBody.head.visible = cloakBody.hat.visible = cloakBody.rightLeg.visible = cloakBody.leftLeg.visible = false;
@@ -78,6 +81,10 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
         }
         if (EquipmentClient.pouch(state)) {
             collector.submitModel(pouch, state, poseStack, RenderTypes.entityCutout(WornPouchModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        }
+        Identifier gear = EquipmentClient.tribeGear(state);
+        if (gear != null) {
+            collector.submitModel(tribeGear, state, poseStack, RenderTypes.entityCutout(gear), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
         }
         if (EquipmentClient.minerSack(state)) {
             collector.submitModel(minerSack, state, poseStack, RenderTypes.entityCutout(MinerSackModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);

@@ -156,8 +156,8 @@ flyr när den skadas (`Underground.Fearless`). De slåss eller backar efter egna
   lockar upp ett troll i solen slipper slåss men får inga produkter.
 - **Stats:** 80 liv, 12 skada, knockback 1,5, rustning 6, fart 0,24, knockback-motstånd 0,7. Blöder bara under 35 %.
 - **Tjock hud:** styckas bara med Tusk Dagger, Troll Tusk Knife eller bättre.
-- **Modell:** hopsjunket och massivt (ungefär 2,7 block), grågrön vårtig hud med lavfläckar som på gammal sten, en
-  mossbevuxen puckel och mossa på axlarna (med någon liten blomma), lurvigt hår, tung panna, stor knölig näsa, underbett
+- **Modell:** hopsjunket och massivt (ungefär 2,7 block), stengrå hud i stora former (ljus ovanpå, mörk undersida), stora
+  mossfläckar över puckeln, axlarna och hjässan (med någon liten blomma), lurvigt hår, tung panna, stor knölig näsa, underbett
   med betar, små gula ögon, väldiga händer med svarta naglar, en trasig skinnkjol och kosvansen från sagorna. Ljud: ravagerns, lite mörkare.
 
 | Omgång (Tusk-kniv eller bättre) | Vad | Chans | Antal |

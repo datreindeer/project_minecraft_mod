@@ -61,6 +61,7 @@ public final class EquipmentClient {
     private static final ContextKey<Boolean> POUCH = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pouch"));
     private static final ContextKey<Integer> QUIVER =new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver"));
     private static final ContextKey<Boolean> MINER_SACK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "miner_sack"));
+    private static final ContextKey<Identifier> TRIBE_GEAR = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_gear"));
     private static final ContextKey<Boolean> ARMORED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "chest_armored"));
 
     // ---------------------------------------------------------------- B
@@ -79,6 +80,7 @@ public final class EquipmentClient {
             event.registerLayerDefinition(WornQuiverModel.LAYER, WornQuiverModel::createLayer);
             event.registerLayerDefinition(WornPouchModel.LAYER, WornPouchModel::createLayer);
             event.registerLayerDefinition(MinerSackModel.LAYER, MinerSackModel::createLayer);
+            event.registerLayerDefinition(TribeGearModel.LAYER, TribeGearModel::createLayer);
         }
 
         @SubscribeEvent
@@ -170,6 +172,15 @@ public final class EquipmentClient {
 
     static boolean minerSack(AvatarRenderState state) {
         return state.getRenderData(MINER_SACK) != null;
+    }
+
+    /** A tribesperson's gear (TribeGearModel) with this texture (people.TribeIdlePoses sets it). */
+    public static void wearTribeGear(AvatarRenderState state, Identifier texture) {
+        state.setRenderData(TRIBE_GEAR, texture);
+    }
+
+    static Identifier tribeGear(AvatarRenderState state) {
+        return state.getRenderData(TRIBE_GEAR);
     }
 
     static boolean chestArmored(AvatarRenderState state) {

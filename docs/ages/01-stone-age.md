@@ -1875,6 +1875,11 @@ medlemmar; belöningen går till den som lämnar in det sista):
 ### Stenåldersmänniskor (Tribesperson)
 Folk som lever i läger eller strövar i jaktlag. De **despawnar aldrig**, men nya kommer heller aldrig: dör de är de borta.
 Spelarmodell med egna skins (pälsar, hudar, flätor, halsband; män och kvinnor, 4 varianter per roll och klimat).
+Ovanpå skinnet bär de flesta **utrustning som sticker ut från kroppen** (`client/TribeGearModel.java`, ritas av
+`EquipmentLayer`; en `_gear`-textur bredvid skinnet från `scripts/gen_tribe_skins.py`): pälshuva med tjock krage runt
+ansiktet och pälsmantel i kylan, hudkappa på ryggen, stora halsband av tänder, ben, snäckor eller bärnsten som hänger
+framför bröstet, hårknut, flätor över axlarna, skägg ner på bröstet, fjäderkrona i djungeln. Två av fyra i varje roll
+(tempererat) bär en tunika i stammens färg mot hudbyxor och mörkt bälte.
 
 - **Klimat (v0.71.0):** varje stam bygger och klär sig efter klimatet där den bor, valt från biomet vid lägrets/byns mitt
   (ett jaktlag: där det föddes). Biomtaggar först, sedan temperatur:
