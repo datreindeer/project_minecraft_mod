@@ -35,6 +35,8 @@ public final class Structures {
         FEATURE_TYPES.register("hermits_hut", () -> HermitsHut.CODEC);
         // small decorations (scripts/gen_decorations.py)
         FEATURE_TYPES.register("glacial_erratic", Boulder.ERRATIC::codec);
+        // berry thickets (scripts/gen_flora.py)
+        for (ThicketFeature f : ThicketFeature.ALL) FEATURE_TYPES.register(f.kind + "_thicket", f::codec);
         FEATURE_TYPES.register("mossy_boulder", Boulder.MOSSY::codec);
         FEATURE_TYPES.register("sandstone_boulder", Boulder.SANDSTONE::codec);
         FEATURE_TYPES.register("glacial_boulder", Boulder.GLACIAL::codec); // scripts/gen_world_biomes.py

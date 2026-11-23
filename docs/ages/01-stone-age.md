@@ -2408,7 +2408,7 @@ Farming): plocka Lingonberries eller Juniper Berries på vintern.
 | Blueberry Bush | Forest, Dark Forest, Taiga, Old Growth Pine Taiga | Blueberries |
 | Lingonberry Bush | Taiga, Snowy Taiga, Old Growth Pine/Spruce Taiga | Lingonberries (fryser inte på vintern) |
 | Wild Strawberry Bush | Plains, Sunflower Plains, Meadow, Flower Forest | Wild Strawberries |
-| Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries |
+| Elderberry Bush | Forest, Birch Forest, Flower Forest, River | Elderberries (**giftiga råa**: Poison 4 s + Nausea 10 s; koka dem till Cooked Elderberries eller torka dem) |
 | Cloudberry Bush | Swamp, Snowy Plains, Snowy Taiga, Grove | Cloudberries |
 | Blackberry Bush | Snowy Taiga, Snowy Plains, Grove, Taiga, Old Growth Spruce Taiga, Windswept Forest | Blackberries |
 
@@ -2425,6 +2425,55 @@ om det finns färre än 4 av samma sort runt omkring.
 | Puffball (röksvamp) | Plains, Meadow, Sunflower Plains | 1 hunger |
 
 **Roasted Mushrooms:** valfri ätlig svamp (även vanilla Brown Mushroom) på Campfire (20 s) → 4 hunger.
+**Cooked Elderberries:** Elderberries på Campfire (15 s) → 2 hunger, ofarliga. Advancement **Cook Them First** (Food & Farming).
+
+### Snårbuskar: Blackthorn, Sea Buckthorn, Jujube (flora fas 1, `docs/flora-and-food-plan.md`)
+Taggiga bärbuskar som **växer ihop till snår**. En **ung** buske är liten och bär inget; fullvuxen följer den säsongen
+(ett steg i taget, ~6 min per steg): blad → blommor → omogna → mogna. Fullvuxna buskar av samma sort bredvid varandra
+**växer ihop** (bladverket fyller glappet), en buske med minst två grannar kan **växa ett block till på höjden**, och
+snåret sätter då och då en ung buske på ledig mark bredvid sig (högst 9 av sorten inom 2 block). Allt detta bara där
+biomens temperatur passar sorten. **Högerklicka en mogen buske → 1–3 bär**; plockad under mognadssäsongen blir den omogen
+och mognar igen, plockad på vintern står den kal till våren. Där snön ligger på vintern fäller buskarna löven.
+**Taggar:** att gå genom snåret bromsar och sticker ibland (smyg så gör det inte ont). Bruten: 1–2 Sticks + 1–2 Plant Fibre.
+Björnar, fåglar och stammar plockar dem som de andra bärbuskarna. Advancement **Thorny Harvest** (Food & Farming).
+
+| Buske | Klimat (biomtemp) | Biomer | Vår / sommar / höst / vinter | Bär |
+|---|---|---|---|---|
+| Blackthorn | 0,5–0,9, fukt 0,3–0,8 | slätter, ängar, Chalk Downs, Hazel Meadow, Limestone Karst, Reed Delta, lövskog och blandskog | vita blommor / omogna / mogna / kala grenar med bär kvar | Sloes (1 hunger) |
+| Sea Buckthorn | 0–0,5, fukt 0–0,6 (även sand, grus, Beach Pebbles) | Mammoth Steppe, Glacial Moraine, Shingle Beach, Basalt Coast, Slate Highlands, Pine Heath, snöslätt, klippstrand, Windswept Hills | blad / omogna / mogna / kala grenar täta av orange bär | Sea Buckthorn Berries (1 hunger) |
+| Jujube | 1,0–2,0, fukt 0–0,5 (även sand) | savann, badlands, Ochre Badlands, Gypsum Flats, Marble Gorge, öken | blad / blommor → omogna / mogna / bären faller | Jujubes (2 hunger) |
+
+Alla tre bärsorterna kan torkas på Drying Rack, får plats i Bark Basket och håller 2 dagar.
+
+### Blommor (flora fas 1)
+Varje blomma **blommar bara i sin säsong**; resten av året är den gröna blad (backsippan silverfjuniga frökolvar,
+strandtriften halmfärgade huvuden), och på vintern grå och frostig. Plockas och planteras som vanillas blommor.
+Advancement **Wildflowers** (Food & Farming): plocka en av dem.
+**Plantera på halva steg:** högerklickar man ovansidan av en jordslab (Grass Slab, Dirt Slab, Coarse Dirt, Podzol, Moss,
+Mud, Peat, Loess, Turf, Sand, Red Sand, Gravel, Beach Pebble eller Burnt Soil Slab) med en växt (blomma, buske, sapling,
+svamp, vanilla eller modd) blir slabben först det hela block den är halva av, och växten står sedan på det. Bara om
+växten kan växa där; annars är slabben kvar. Fungerar också på vanligt gräs som förut.
+
+| Blomma | Biomer | Blommar |
+|---|---|---|
+| Pasque Flower | Chalk Downs, Limestone Karst, Mammoth Steppe, Pine Heath, slätter | vår |
+| Harebell | Chalk Downs, Slate Highlands, Glacial Moraine, Pine Heath, björkskog, Windswept Hills, kust | sommar, höst |
+| Lady's Slipper | Limestone Karst, Chalk Downs (kalk) | vår, sommar |
+| Sea Thrift | Shingle Beach, Basalt Coast, klippstrand, strand (även grus och Beach Pebbles) | vår, sommar |
+| Mountain Avens | Glacial Moraine, Slate Highlands, snöslätt, snötaiga, Windswept Hills, kust | sommar |
+| Edelweiss | Slate Highlands, Mammoth Steppe, Windswept Hills | sommar |
+| Sand Verbena | Desert, Gypsum Flats, Badlands, Ochre Badlands (på sand) | vår, sommar |
+| Desert Marigold | savann, badlands, Ochre Badlands, Gypsum Flats, Marble Gorge, öken | vår–höst |
+| Great Mullein (2 block) | Chalk Downs, Mammoth Steppe, Pine Heath, Limestone Karst, Marble Gorge, slätter | sommar |
+| Desert Candle (2 block) | Mammoth Steppe, Marble Gorge, Gypsum Flats, Ochre Badlands, öken, savann, badlands | vår, sommar |
+
+**Magiska blommor:**
+- **Fern Flower** (ultrasällsynt, ~1 per 400 chunks i gammal skog, lövskog, björkskog, mörk skog): en ormbunke som
+  **bara blommar på sommarnätter**, en glödande gyllene blomma (ljus 9) med gnistor. Plockad i blom: Fern Flower och
+  **Luck i 10 minuter**; annars bara Plant Fibre. Advancement **Midsummer Night** (Folklore).
+- **Frost Lily** (~1 per 250 chunks i Slate Highlands, Glacial Moraine, snöslätt, snötaiga, Grove, Snowy Slopes):
+  blekblå, halvgenomskinlig, **blommar bara på vintern** och lyser svagt (ljus 6). Plockad i blom: Frost Lily, annars
+  ingenting. Advancement **Winter Bloom** (Folklore).
 
 ### Odling
 Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farming.md`.

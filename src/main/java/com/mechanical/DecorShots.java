@@ -81,7 +81,7 @@ public final class DecorShots {
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
                     server.execute(() -> {
                         cmd("gamemode spectator @a");
-                        cmd("gamerule doDaylightCycle false");
+                        cmd("gamerule advance_time false");
                         cmd("time set 2000");
                         cmd("weather clear");
                     });
@@ -109,7 +109,7 @@ public final class DecorShots {
                     if (s.cmd() != null) { // a command line: run it where we are, then on to the next line
                         server.execute(() -> {
                             ServerPlayer pl = player();
-                            pl.level().getServer().getCommands().performPrefixedCommand(pl.createCommandSourceStack(), s.cmd());
+                            pl.level().getServer().getCommands().performPrefixedCommand(pl.level().getServer().createCommandSourceStack().withPosition(pl.position()), s.cmd()); // the server's permission: the copied world may not allow commands
                         });
                         result.add("@ " + s.cmd());
                         index++;

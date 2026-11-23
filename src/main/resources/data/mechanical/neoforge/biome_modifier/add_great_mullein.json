@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:mammoth_steppe",
+    "mechanical:marble_gorge",
+    "mechanical:pine_heath",
+    "minecraft:plains",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:great_mullein",
+  "step": "vegetal_decoration"
+}

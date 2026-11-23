@@ -8,6 +8,9 @@
     "mechanical:cloudberries",
     "mechanical:blackberries",
     "mechanical:juniper_berries",
-    "minecraft:sweet_berries"
+    "minecraft:sweet_berries",
+    "mechanical:sloes",
+    "mechanical:sea_buckthorn_berries",
+    "mechanical:jujubes"
   ]
 }

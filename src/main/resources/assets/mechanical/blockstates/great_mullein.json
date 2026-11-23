@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "blooming=true,half=lower": {
+      "model": "mechanical:block/great_mullein_bottom"
+    },
+    "blooming=true,half=upper": {
+      "model": "mechanical:block/great_mullein_top"
+    },
+    "blooming=false,half=lower": {
+      "model": "mechanical:block/great_mullein_bottom_leaves"
+    },
+    "blooming=false,half=upper": {
+      "model": "mechanical:block/great_mullein_top_leaves"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/pasque_flower"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/pasque_flower_leaves"
+    }
+  }
+}

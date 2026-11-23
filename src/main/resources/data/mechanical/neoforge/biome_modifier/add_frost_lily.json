@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:slate_highlands",
+    "mechanical:glacial_moraine",
+    "minecraft:snowy_plains",
+    "minecraft:snowy_taiga",
+    "minecraft:grove",
+    "minecraft:snowy_slopes"
+  ],
+  "features": "mechanical:frost_lily",
+  "step": "vegetal_decoration"
+}

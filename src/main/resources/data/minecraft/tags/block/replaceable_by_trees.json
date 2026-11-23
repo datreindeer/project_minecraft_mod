@@ -24,6 +24,16 @@
     "mechanical:pine_leaf_litter",
     "mechanical:yew_leaf_litter",
     "mechanical:heather",
-    "mechanical:fireweed"
+    "mechanical:fireweed",
+    "mechanical:pasque_flower",
+    "mechanical:harebell",
+    "mechanical:lady_slipper",
+    "mechanical:sea_thrift",
+    "mechanical:mountain_avens",
+    "mechanical:edelweiss",
+    "mechanical:sand_verbena",
+    "mechanical:desert_marigold",
+    "mechanical:great_mullein",
+    "mechanical:desert_candle"
   ]
 }

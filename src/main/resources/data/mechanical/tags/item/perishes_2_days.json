@@ -23,6 +23,9 @@
     "mechanical:raw_haunch",
     "mechanical:raw_ribs",
     "mechanical:raw_loin",
-    "mechanical:raw_blood_sausage"
+    "mechanical:raw_blood_sausage",
+    "mechanical:sloes",
+    "mechanical:sea_buckthorn_berries",
+    "mechanical:jujubes"
   ]
 }
