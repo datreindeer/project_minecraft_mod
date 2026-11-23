@@ -1,11 +1,10 @@
-"""Paint the underground fauna (scripts/gen_fauna_underground.py, com.mechanical.wildlife.underground): the Giant Centipede's
-entity texture and its skinned (butchered) version, the Chitin Vest equipment layer and the 16x16 item textures; then the
-Vittra, Troll and Lindworm (entity + skinned textures painted on FolkModel / LindwormModel boxes, armour layers, items
-and the Troll Stone block recoloured from vanilla and mod textures; needs the merged Minecraft jar in build/moddev/artifacts).
+"""Paint the underground fauna (scripts/gen_fauna_underground.py, com.mechanical.wildlife.underground): the Chitin Vest
+equipment layer and the 16x16 item textures; the Vittra's, Troll's and Lindworm's armour layers, items and the Troll Stone
+block recoloured from vanilla and mod textures (needs the merged Minecraft jar in build/moddev/artifacts). The four beings'
+entity and skinned textures come with their models from gen_hunt_models.py, which main() runs.
 
 Usage: python scripts/gen_fauna_underground_textures.py
-The UV table below mirrors the texOffs and box sizes in GiantCentipedeModel (client/wildlife/underground). Deterministic:
-hashes only, no randomness.
+Deterministic: hashes only, no randomness.
 """
 import importlib.util
 from pathlib import Path
@@ -36,53 +35,12 @@ def lerp(a, b, t):
 # black-tipped venom claws, a tan underside.
 C = dict(plate=(104, 40, 26), rim=(38, 18, 14), shine=(156, 70, 40), side=(128, 58, 32), belly=(186, 150, 96),
          head=(170, 64, 30), leg=(214, 150, 52), leg_dark=(160, 100, 34), claw=(120, 34, 22), tip=(30, 20, 16))
-# skinned: the plates off, pale cream-grey flesh with the segment lines showing
-S = dict(C, plate=(206, 194, 160), rim=(150, 132, 104), shine=(226, 218, 190), side=(196, 180, 146), belly=(214, 204, 172),
-         head=(196, 150, 120))
-
-# part -> (u, v, w, h, d), as GiantCentipedeModel's texOffs/addBox
-UV = {"head": (0, 0, 4, 2, 3), "seg": (0, 6, 4, 2, 2), "tail": (0, 11, 3, 1, 2), "leg": (16, 0, 3, 1, 1),
-      "claw": (16, 3, 1, 1, 2), "antenna": (28, 0, 1, 1, 5), "cerci": (40, 0, 1, 1, 3)}
 
 
 def faces(u, v, w, hh, d):
     """Vanilla box UV: face -> (x0, y0, width, height)."""
     return {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, hh), "front": (u + d, v + d, w, hh),
             "left": (u + d + w, v + d, d, hh), "back": (u + 2 * d + w, v + d, w, hh)}
-
-
-def colour(P, part, face, i, j, fw, fh):
-    if part in ("seg", "tail", "head"):
-        base = P["head"] if part == "head" else P["plate"]
-        if face == "bottom":
-            return P["belly"]
-        if face == "top":
-            # the plate: a shine down the middle, a dark rim at the back edge (plates overlap front to back)
-            c = lerp(base, P["shine"], 0.5) if part != "head" and i in (1, 2) and j == 0 else base
-            if part != "head" and j == fh - 1:
-                c = P["rim"]
-            return c
-        if face in ("left", "right"):
-            return P["rim"] if part != "head" and i == fh - 1 else lerp(base, P["side"], 0.6)
-        return shade(base, 0.85)
-    if part == "leg":
-        return P["leg_dark"] if face == "bottom" or (face in ("left", "right") and fw == 1) else P["leg"]
-    if part == "claw":
-        return P["tip"] if face in ("front",) or (face in ("top", "bottom", "left", "right") and j == 0 and fh > 1) else P["claw"]
-    return P["leg"] if (i + j) % 3 else P["leg_dark"]  # antennae, cerci: ringed
-
-
-def entity(P, salt):
-    im = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-    px = im.load()
-    for part, box in UV.items():
-        for face, (x0, y0, fw, fh) in faces(*box).items():
-            for j in range(fh):
-                for i in range(fw):
-                    c = colour(P, part, face, i, j, fw, fh)
-                    n = 0.92 + 0.16 * h(x0 + i, y0 + j, salt)
-                    px[x0 + i, y0 + j] = (*shade(c, n), 255)
-    return im
 
 
 def chitin_vest():
@@ -232,10 +190,8 @@ def items():
         im.save(wit.OUT / f"{name}.png")
 
 
-
 # ================================================================ the folk of the dark: Vittra, Troll, Lindworm
-# Entity textures paint the boxes of FolkModel / LindwormModel (UV tables below mirror their texOffs); items, armour layers
-# and the Troll Stone block are recoloured vanilla or mod textures.
+# Items, armour layers and the Troll Stone block are recoloured vanilla or mod textures.
 import zipfile
 from io import BytesIO
 
@@ -279,164 +235,6 @@ def recolour(img, stops, lo=0.05, hi=0.9, salt=0):
                 r = shade(r, 1 + (h(x, y, salt) - 0.5) * 0.1)
             px[x, y] = (*r, c[3])
     return out
-
-
-def paint(im, uv, colour, salt):
-    """Paints each part's box faces: colour(part, face, i, j, fw, fh) -> rgb, with a little per-pixel noise."""
-    px = im.load()
-    for part, box in uv.items():
-        for face, (x0, y0, fw, fh) in faces(*box).items():
-            for j in range(fh):
-                for i in range(fw):
-                    c = colour(part, face, i, j, fw, fh)
-                    if c is None:
-                        continue
-                    n = 0.9 + 0.2 * h(x0 + i, y0 + j, salt)
-                    px[x0 + i, y0 + j] = (*shade(c, n), 255)
-    return im
-
-
-# part -> (u, v, w, h, d) as FolkModel.createVittraLayer / createTrollLayer, LindwormModel.createBodyLayer
-VITTRA_UV = {"head": (0, 0, 8, 8, 8), "ear": (32, 0, 1, 4, 2), "body": (16, 16, 6, 12, 3), "arm": (40, 16, 3, 12, 3),
-             "leg": (0, 16, 3, 12, 3)}
-TROLL_UV = {"head": (0, 0, 8, 8, 8), "nose": (32, 0, 2, 4, 3), "tusk": (44, 0, 1, 2, 1), "body": (0, 16, 10, 14, 6),
-            "arm": (32, 16, 4, 16, 4), "tail": (48, 16, 1, 10, 1), "tuft": (52, 16, 2, 3, 2), "leg": (0, 36, 5, 12, 5)}
-LINDWORM_UV = {"head": (0, 0, 6, 4, 8), "jaw": (30, 0, 5, 2, 7), "horn": (56, 0, 1, 1, 5), "leg": (72, 0, 2, 4, 2),
-               "seg": (0, 20, 6, 5, 6), "spine": (28, 20, 1, 2, 4), "tail": (0, 34, 4, 4, 6), "tip": (0, 46, 2, 2, 6)}
-
-# vittra: ash-grey skin, a ragged mane of black hair, huge black eyes with a pale glint, a moss-brown loincloth
-VC = dict(skin=(124, 128, 136), dark=(88, 92, 102), light=(156, 160, 166), hair=(30, 30, 34), eye=(12, 12, 16),
-          glint=(220, 230, 240), ear_in=(150, 120, 126), cloth=(84, 72, 46), cloth_dark=(60, 50, 32))
-VS = dict(VC, skin=(196, 140, 128), dark=(160, 100, 92), light=(214, 168, 156), hair=(170, 110, 100), cloth=(176, 120, 108),
-          cloth_dark=(150, 96, 86), ear_in=(186, 118, 110))
-
-
-def vittra_colour(P):
-    def c(part, face, i, j, fw, fh):
-        if part == "head":
-            if face == "top" or face == "back" or (face in ("left", "right") and j < 3):
-                return P["hair"]
-            if face == "front":
-                if j < 2:
-                    return P["hair"]
-                if j in (3, 4) and i in (1, 2, 5, 6):  # the great eyes, two by two
-                    return P["glint"] if j == 3 and i in (1, 5) else P["eye"]
-                if j == 6 and i in (3, 4):
-                    return P["dark"]  # mouth
-                return P["skin"]
-            return P["dark"] if face == "bottom" else P["skin"]
-        if part == "ear":
-            return P["ear_in"] if face == "front" else P["skin"]
-        if part == "body":
-            if j >= fh - 4 and face not in ("top",):
-                return P["cloth_dark"] if j == fh - 1 else P["cloth"]
-            return P["light"] if face == "front" and j < 6 else P["skin"]
-        if part == "leg":
-            return P["dark"] if j >= fh - 1 else P["skin"]
-        return P["dark"] if j >= fh - 1 else P["skin"]  # arms: dark long fingers at the end
-    return c
-
-
-# troll: mossy grey-green warty skin, dark brown hair and tail tuft, small yellow eyes, ivory tusks, a hide loincloth
-TC = dict(skin=(98, 106, 80), dark=(66, 72, 54), wart=(128, 132, 100), hair=(58, 42, 28), eye=(214, 170, 40),
-          tusk=(222, 212, 172), nose=(116, 108, 84), cloth=(110, 82, 52), cloth_dark=(80, 58, 36), belly=(122, 124, 96))
-TS = dict(TC, skin=(152, 72, 62), dark=(118, 50, 44), wart=(176, 100, 88), hair=(130, 60, 52), nose=(160, 80, 70),
-          cloth=(150, 70, 60), cloth_dark=(120, 52, 46), belly=(176, 108, 96))
-
-
-def troll_colour(P):
-    def warty(face, i, j, salt):
-        return P["wart"] if h(i * 7 + j, j * 3 + i, salt) > 0.86 else (P["belly"] if face == "front" else P["skin"])
-
-    def c(part, face, i, j, fw, fh):
-        if part == "head":
-            if face == "top" or face == "back" or (face in ("left", "right") and j < 2):
-                return P["hair"]
-            if face == "front":
-                if j == 0:
-                    return P["hair"]
-                if j == 3 and i in (1, 2, 5, 6):
-                    return P["eye"] if i in (2, 5) else P["dark"]
-                if j == 2 and 1 <= i <= 6:
-                    return P["dark"]  # heavy brow
-                if j == 7 and 2 <= i <= 5:
-                    return P["dark"]  # wide mouth
-            return warty(face, i, j, 31)
-        if part == "nose":
-            return P["nose"] if face != "bottom" else P["dark"]
-        if part == "tusk":
-            return P["tusk"]
-        if part in ("tail",):
-            return P["skin"]
-        if part == "tuft":
-            return P["hair"]
-        if part == "body":
-            if face == "back" and j < 4 or face == "top":
-                return P["hair"]  # a shaggy back
-            if j >= fh - 4 and face != "top":
-                return P["cloth_dark"] if j == fh - 1 or (i + j) % 5 == 0 else P["cloth"]
-            return warty(face, i, j, 37)
-        if part == "arm":
-            return P["dark"] if j >= fh - 2 else warty(face, i, j, 41)
-        return P["dark"] if j >= fh - 1 else warty(face, i, j, 43)  # legs, broad dark feet
-    return c
-
-
-# lindworm: dark green scales with a paler scale edge, a golden belly, a black spine ridge, yellow eyes, ivory horns and teeth
-LC = dict(scale=(46, 82, 54), edge=(70, 112, 70), dark=(26, 44, 30), belly=(196, 164, 82), belly_dark=(160, 128, 58),
-          eye=(240, 200, 40), pupil=(20, 14, 6), horn=(224, 214, 176), tooth=(240, 236, 220), mouth=(120, 40, 40), claw=(24, 20, 18))
-LS = dict(LC, scale=(176, 88, 78), edge=(196, 112, 100), dark=(130, 56, 50), belly=(212, 160, 140), belly_dark=(188, 132, 116),
-          mouth=(150, 60, 56))
-
-
-def lindworm_colour(P):
-    def scales(i, j):
-        # offset rows of scales: a pale edge on every scale's lower rim
-        return P["edge"] if (j % 2 == 1 and (i + j // 2) % 2 == 0) else P["scale"]
-
-    def c(part, face, i, j, fw, fh):
-        if part in ("seg", "tail", "tip"):
-            if face == "bottom":
-                return P["belly_dark"] if i in (0, fw - 1) or j % 3 == 2 else P["belly"]
-            if face in ("left", "right") and j == fh - 1:
-                return P["belly_dark"]
-            return scales(i, j)
-        if part == "spine":
-            return P["dark"]
-        if part == "head":
-            if face == "front":
-                return P["dark"] if j == 0 else (P["tooth"] if j == fh - 1 and i % 2 == 0 else scales(i, j))
-            if face in ("left", "right"):
-                if j == 1 and i in (fw - 3, fw - 2):  # the eye, back along the head
-                    return P["pupil"] if i == fw - 2 else P["eye"]
-                if j == fh - 1:
-                    return P["tooth"] if i % 2 == 0 and i < fw - 2 else P["mouth"]
-            if face == "bottom":
-                return P["mouth"]
-            return scales(i, j)
-        if part == "jaw":
-            if face == "top":
-                return P["mouth"]
-            if face in ("left", "right") and j == 0:
-                return P["tooth"] if i % 2 == 0 else P["mouth"]
-            return P["belly"] if face == "bottom" else scales(i, j)
-        if part == "horn":
-            return P["horn"]
-        if part == "leg":
-            return P["claw"] if j == fh - 1 else scales(i, j)
-        return P["scale"]
-    return c
-
-
-def folk_entities():
-    for name, size, uv, colour, pal, skinned, salt in (
-            ("vittra", (64, 64), VITTRA_UV, vittra_colour, VC, VS, 21),
-            ("troll", (64, 64), TROLL_UV, troll_colour, TC, TS, 22),
-            ("lindworm", (128, 64), LINDWORM_UV, lindworm_colour, LC, LS, 23)):
-        for rel, P in ((f"entity/wildlife/{name}.png", pal), (f"entity/skinned/wildlife/{name}.png", skinned)):
-            out = RES / rel
-            out.parent.mkdir(parents=True, exist_ok=True)
-            paint(Image.new("RGBA", size, (0, 0, 0, 0)), uv, colour(P), salt).save(out)
 
 
 def scale_pattern(img, salt):
@@ -526,16 +324,15 @@ def folk_items():
 
 
 def folk():
-    folk_entities()
     folk_armour()
     folk_items()
 
 
 def main():
-    for rel, P, salt in (("entity/wildlife/giant_centipede.png", C, 11), ("entity/skinned/wildlife/giant_centipede.png", S, 12)):
-        out = RES / rel
-        out.parent.mkdir(parents=True, exist_ok=True)
-        entity(P, salt).save(out)
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import gen_hunt_models  # the four beings' models and skins (UndergroundGeometry) come from one table each there
+    gen_hunt_models.main()
     chitin_vest()
     items()
     folk()

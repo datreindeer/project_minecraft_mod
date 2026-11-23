@@ -4,7 +4,10 @@ Djuren och väsendena i grottornas mörker: **Cave Hyena**, **Cave Bear**, **Gia
 **Troll** och **Lindworm**. Steg 3 i [underground-plan.md](../underground-plan.md).
 Kod: `wildlife/underground/` (Underground = mörkerregeln och spawnern, UndergroundFauna, GiantCentipede, Vittra, Troll,
 Lindworm), klient
-`client/wildlife/underground/`. Data: `scripts/gen_fauna_underground.py`, texturer: `scripts/gen_fauna_underground_textures.py`.
+`client/wildlife/underground/`. Data: `scripts/gen_fauna_underground.py`, texturer: `scripts/gen_fauna_underground_textures.py`
+(föremål, rustningar, Troll Stone). Modeller och hudar för alla fyra (centipeden, vittran, trollet och lindormen) kommer ur en
+tabell var i `scripts/gen_hunt_models.py` (`UndergroundGeometry`), som texturskriptet kör. Bilder: `docs/shots/fauna/old_hunt_*.png`
+(HuntShots, `huntshots.flag` i run/).
 
 Cave Hyena och Cave Bear är **samma arter** som i bergsfaunan ([mountain.md](mountain.md)): samma kadaver, produkter och
 recept, men de spawnar nu också djupt nere i grottorna. Giant Centipede är ny.
@@ -83,8 +86,9 @@ trofé; Bear Fat garvar och blir Tallow; Bear Claw → Barbed Arrow; Bone → Bo
   backar undan om den redan jagade honom, och släpper inte från taket över honom. Flyr inte annars. Ingen fallskada, sover
   aldrig. Släpper taket när den skadas, eller efter en lång stund.
 - **Stats:** 16 liv, 4 skada, rustning 4 (kitinet), fart 0,3. Blöder bara under 30 %.
-- **Modell:** platt huvud med långa antenner och två krokiga giftklor, 8 plåtade segment med ett benpar vardera (benen
-  böljar framifrån och bakåt), stjärt med två cerci. Mörkt rödbrun med orange ben.
+- **Modell:** platt huvud med långa ledade antenner, enkla ögon och två krokiga giftklor med svarta spetsar, 8 segment
+  med en blank ryggplåt över vart och ett och ett ledat benpar (benen böljar framifrån och bakåt), stjärt med två cerci.
+  Mörkt rödbrun med ljus mittlinje och svarta plåtkanter, rödorange huvud, bruna ben med gula fötter.
 - **Ljud:** silverfiskens prassel, spindelns skrik när den skadas.
 
 | Omgång | Vad | Chans | Antal |
@@ -125,8 +129,9 @@ flyr när den skadas (`Underground.Fearless`). De slåss eller backar efter egna
   Hood** dämpar allt. Beröringen ger **Mining Fatigue I i 10 s** (vittrans förbannelse över gruvarbetaren). Skyr ljus (se
   ovan). Sover aldrig och slåss när den skadas.
 - **Stats:** 14 liv, 3 skada, fart 0,32 (snabb), ingen rustning.
-- **Modell:** smal och grå, stort huvud med långa spetsiga öron och stora svarta ögon, en trasig svart man, ländskynke av
-  mossbrunt. Ungefär 1,5 block hög. Ljud: allayns röst, mycket mörkare.
+- **Modell:** smal och gråblek, stort huvud med långa spetsiga öron och enorma svarta ögon med en blek glimt, långt
+  svart hår ner över ryggen, en trasig tunika av grått vadmal med vävd bård och snörbälte, huvan nerfälld på axlarna,
+  armar ner till knäna med mörka naglar. Ungefär 1,5 block hög. Ljud: allayns röst, mycket mörkare.
 
 | Omgång | Vad | Chans | Antal |
 |---|---|---|---|
@@ -151,8 +156,9 @@ flyr när den skadas (`Underground.Fearless`). De slåss eller backar efter egna
   lockar upp ett troll i solen slipper slåss men får inga produkter.
 - **Stats:** 80 liv, 12 skada, knockback 1,5, rustning 6, fart 0,24, knockback-motstånd 0,7. Blöder bara under 35 %.
 - **Tjock hud:** styckas bara med Tusk Dagger, Troll Tusk Knife eller bättre.
-- **Modell:** hopsjunket och massivt (ungefär 2,7 block), mossig grågrön vårtig hud, lurvig rygg, långa armar ner till
-  knäna, stor näsa, betar, små gula ögon och kosvansen från sagorna. Ljud: ravagerns, lite mörkare.
+- **Modell:** hopsjunket och massivt (ungefär 2,7 block), grågrön vårtig hud med lavfläckar som på gammal sten, en
+  mossbevuxen puckel och mossa på axlarna (med någon liten blomma), lurvigt hår, tung panna, stor knölig näsa, underbett
+  med betar, små gula ögon, väldiga händer med svarta naglar, en trasig skinnkjol och kosvansen från sagorna. Ljud: ravagerns, lite mörkare.
 
 | Omgång (Tusk-kniv eller bättre) | Vad | Chans | Antal |
 |---|---|---|---|
@@ -194,8 +200,9 @@ flyr när den skadas (`Underground.Fearless`). De slåss eller backar efter egna
 | 3–5 ädelstenar | Garnet, Ruby, Sapphire, Topaz, Amber, Emerald, Diamond, Moonstone, ibland Flawless Ruby/Sapphire/Diamond/Emerald |
 | ofta något sällsynt | Golden Apple, Gold Block, Golden Horse Armor, Name Tag, ibland Enchanted Golden Apple eller skivan Otherside |
 
-- **Modell:** en vinglös drake med två framben, omkring 6,5 block lång: hornat huvud med långa käftar, 7 tjocka kroppsled
-  med ryggkam, 4 smalare svansled och en piskspets. Mörkgröna fjäll med ljusare kanter, gyllene buk, gula ögon. Den ringlar
+- **Modell:** en vinglös drake med två klofötter, omkring 6,5 block lång: hornat huvud (ringade horn) med ögonbrynsåsar,
+  långa käftar med tänder och näsborrar, 7 tjocka kroppsled med röd ryggkam och bukplåtar, 4 smalare svansled och en
+  spadformad svansspets. Mörkgröna överlappande fjäll, gyllene buk, gula ögon. Den ringlar
   i en våg när den rör sig, reser huvudet och gapar när den jagar, sträcker ut sig rak i språnget och lindar sig i en ring
   när den klämmer.
 - **Tjock hud:** Tusk-kniv eller bättre.

@@ -139,6 +139,7 @@ class Skin:
 
     def build(self, look):
         look.s = self
+        look.contrast()
         for part in BASE:
             kinds = {}
             for face, x, y, fw, fh, tx, ty in self.each(part):
@@ -166,6 +167,12 @@ class Skin:
                 if face not in ("top", "bottom") and (face, x, y + 1) not in over:
                     self.darken(tx, ty, 0.82)
         return self.base
+
+
+def vary(col, light, warm):
+    """A hide or fur tanned a little differently for each person: lighter or darker, warmer or greyer."""
+    f = 1 + 0.09 * light
+    return (col[0] * f * (1 + 0.05 * warm), col[1] * f, col[2] * f * (1 - 0.06 * warm))
 
 
 def gy(part, face, y, fh):
@@ -232,6 +239,16 @@ class Look:
         self.gems = None               # gemstones set along the band, the headband and the necklace (list of colours)
         self.s = None
 
+    def contrast(self):
+        """Leggings a clear step darker (or lighter) than the tunic over them, boots darker than the leggings."""
+        def lum(c):
+            return 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2]
+        if self.top is not None and self.legs is not None and not isinstance(self.legs, Dye) and not isinstance(self.top, Dye):
+            if abs(lum(self.top) - lum(self.legs)) < 30:
+                self.legs = shade(self.legs, 0.7) if lum(self.top) >= lum(self.legs) or lum(self.legs) > 150 else shade(self.legs, 1.3)
+        if self.legs is not None and self.boots is not None and not isinstance(self.boots, Dye) and abs(lum(self.legs) - lum(self.boots)) < 20:
+            self.boots = shade(self.boots, 0.72)
+
     def tint(self, col, f):
         """col shaded by f; the tribe's colour (DYE) also goes into the tint mask."""
         self.s.dyed = f if isinstance(col, Dye) else None
@@ -264,6 +281,8 @@ class Look:
     def material(self, s, col, kind, key, x, y, face):
         """A pixel of a material, with texture."""
         f = side_shade(face)
+        if not isinstance(col, Dye) and kind in ("hide", "fur") and col not in (GOLD, BONE, TOOTH):
+            col = vary(col, s.n(("tone", col), 1.0), s.n(("warm", col), 1.0))
         if kind == "fur":
             # streaky fur: vertical tufts, light tips
             streak = s.n(("fs",) + key[:3] + (x,), 0.12) + s.n(key + ("f",), 0.08)
@@ -303,7 +322,13 @@ class Look:
                 return self.material(s, self.band, "weave", key, x, y, face)  # dyed cuff
             if self.top is not None and (Y < self.sleeves or (face == "top" and self.sleeves)):
                 c = self.material(s, self.top, tm, key, x, y, face)
-                return self.sh(c, 0.82) if Y == self.sleeves - 1 else c
+                if Y == self.sleeves - 1:
+                    return self.sh(c, 0.82)
+                if Y in (5, 6) and face != "top" and (x + Y) % 2 == 0 and tm != "weave":
+                    return self.sh(c, 0.88)  # creases at the elbow
+                if face in ("right", "left") and x == 1 and Y % 2 == 0 and tm == "hide":
+                    return self.sh(c, 1.12)  # the stitched seam down the sleeve
+                return c
             if self.armband and Y in (2, 3) and face != "top":
                 return self.material(s, self.armband, "cord" if Y == 3 else "hide", key, x, y, face)
             if face == "bottom":  # hands
@@ -334,6 +359,14 @@ class Look:
                     c = shade(c, 0.94)
                 if self.body_paint and face in ("front", "back") and ((Y == 2 and x in (1, 6)) or (Y == 6 and 2 <= x <= 5 and x % 2 == 0)):
                     c = shade(self.body_paint, side_shade(face))
+            if c is not None and s.kind != "skin" and self.top is not None and tm == "hide":
+                if face in ("right", "left") and x == 2 and Y % 2 == 1:
+                    c = self.sh(c, 1.12)  # stitches down the side seam
+                if face in ("front", "back") and Y == 1 and x in (0, 7):
+                    c = self.sh(c, 0.88)  # the shoulder seam
+                if self.top_kind == "tunic" and face == "front" and 1 <= Y <= 4 and x in (3, 4) and not self.necklace_at(x, Y):
+                    # the laced neck opening: a dark slit crossed by a thong
+                    c = self.tint(CORD, 1.0) if (x == 3) == (Y % 2 == 1) else self.sh(c, 0.7)
             if self.band and self.top is not None and Y == 5 and face in ("front", "back", "left", "right"):
                 c = self.material(s, self.band, "weave", key, x, y, face)  # dyed band across the coat
                 if self.gems and x % 3 == 1:
@@ -352,6 +385,10 @@ class Look:
                     c = self.tint(BONE, 1.0)  # bone toggle
             if self.pouch and face == "front" and Y in (9, 10) and x in (5, 6):
                 c = self.tint(self.pouch, 0.9 if Y == 10 else 1.0)
+                if Y == 9 and x == 6:
+                    c = self.tint(BONE, 0.9)  # the toggle closing the pouch
+            if self.role in ("hunter", "woodcutter", "guard", "miner") and face == "front" and x == 1 and 8 <= Y <= 11 and not self.skirt:
+                c = self.tint(BONE if Y == 8 else (LEATHER if Y > 9 else hexc("6a4a30")), 1.0 if Y < 11 else 0.8)  # knife: antler hilt, sheath
             if self.trim and Y == 11 and face in ("front", "back", "left", "right") and x % 2 == 0:
                 c = self.tint(self.trim, side_shade(face))
             return c
@@ -370,11 +407,17 @@ class Look:
                 return self.material(s, shade(self.legs, 0.92), "hide", key, x, y, face)
             if self.boots and Y >= 21:
                 c = self.material(s, self.boots, "fur", key, x, y, face)
+                if Y == 23:
+                    return self.sh(c, 0.68)  # the worn hide sole
+                if face == "front" and Y == 22 and x in (1, 2):
+                    return self.sh(c, 1.1)  # the toe
                 return self.sh(c, 0.85) if Y == 21 else c
             if self.legs and Y < self.legs_to:
                 c = self.material(s, self.legs, "hide", key, x, y, face)
                 if face in ("right", "left") and x == 2:  # side seam
-                    c = self.sh(c, 0.85)
+                    c = self.sh(c, 0.85 if Y % 2 else 1.1)
+                if Y in (17, 18) and face == "front" and (x + Y) % 2 == 0:
+                    c = self.sh(c, 0.88)  # creases at the knee
                 return c
             if self.wraps and Y >= self.legs_to and (Y + x // 2) % 2 == 0:
                 return self.material(s, self.wraps, "cord", key, x, y, face)
@@ -382,6 +425,10 @@ class Look:
                 return shade(self.body_paint, side_shade(face))
             return None
         return None
+
+    def necklace_at(self, x, Y):
+        """Whether the necklace covers this front pixel of the body (it goes on the outer layer)."""
+        return self.necklace is not None and self.neck_px(x, Y) is not None
 
     def strap_hit(self, face, x, Y):
         # from the right shoulder down to the left hip (front), mirrored on the back
@@ -391,7 +438,11 @@ class Look:
 
     # ---------- head ----------
     def hair_px(self, s, key, x, y, f=1.0):
-        streak = s.n(("hs",) + key[:2] + (x,), 0.08) + s.n(key + ("hp",), 0.06)
+        streak = s.n(("hs",) + key[:2] + (x,), 0.1) + s.n(key + ("hp",), 0.05)
+        if (x * 3 + y) % 7 == 0:
+            streak += 0.14  # a lighter strand catching the light
+        elif (x * 5 + y * 2) % 9 == 0:
+            streak -= 0.12
         return shade(self.hair, f * (1 + streak))
 
     def head(self, s, face, x, y, fw, fh):
@@ -474,12 +525,22 @@ class Look:
                 return self.beard_px(s, key, x, y, 1.0)
             if b in ("full", "long") and y == 5 and x in (2, 3, 4, 5):
                 return self.beard_px(s, key, x, y, 1.05)  # moustache
+        if y == 4 and x in (3, 4):
+            return shade(skin, 1.06 if x == 3 else 0.97)  # the bridge of the nose, lit from one side
         if y == 5 and x in (3, 4):
-            return shade(skin, 0.86)  # nose shadow
+            return shade(skin, 0.8 if x == 4 else 0.88)  # nose and its shadow
         if y == 6 and x in (3, 4):
-            return mix(shade(skin, 0.7), OCHRE, 0.25)  # mouth
+            return mix(shade(skin, 0.7), hexc("a04838") if self.woman else OCHRE, 0.35 if self.woman else 0.25)  # mouth
+        if y == 6 and x in (2, 5):
+            return shade(skin, 0.9)  # the corners of the mouth
         if y == 5 and x in (1, 6) and self.woman:
             return mix(skin, hexc("c46a5a"), 0.18)  # cheeks
+        if y == 5 and x in (2, 5):
+            return shade(skin, 0.95)  # under the eyes
+        if x in (0, 7) and 4 <= y <= 6:
+            return self.face_paint("front", x, y, shade(skin, 0.92))  # the cheekbones turning away
+        if y == 7:
+            return self.face_paint("front", x, y, shade(skin, 0.9 if 2 <= x <= 5 else 0.86))  # the jaw in shadow
         return self.face_paint("front", x, y, skin)
 
     def beard_px(self, s, key, x, y, f):
@@ -654,6 +715,9 @@ class Look:
             return self.hair_px(s, key, x, y, 1.0 if (x + y) % 2 else 0.8)
         if style == "shaggy" and face in ("right", "left", "back") and y <= 4 and (x * 7 + y) % 3 != 0:
             return self.hair_px(s, key, x, y, 0.95)
+        if style == "short" and not self.headband and face in ("right", "left", "back") and y <= (3 if face == "back" else 1) \
+                and (face == "back" or fx <= 3) and (y < 3 or x % 2 == 0):
+            return self.hair_px(s, key, x, y, 1.0 if y == 0 else 0.9)
         if self.beard == "long" and face == "front" and y >= 6 and 1 <= x <= 6:
             return self.beard_px(s, key, x, y, 1.02)
         if self.beard == "full" and face == "front" and y == 7 and 1 <= x <= 6 and x % 2:
@@ -704,7 +768,7 @@ def person(role, i):
         L.feather = i == 3
         L.trim = STRAW if woman else None
     elif role == "fisher":
-        L.top, L.top_kind, L.sleeves = [HIDE_GREY, HIDE_LIGHT, HIDE, HIDE_GREY][i], "vest", 0
+        L.top, L.top_kind, L.sleeves = [HIDE_GREY, HIDE_LIGHT, HIDE, HIDE_GREY][i], "tunic" if woman else "vest", 0
         L.necklace = "fishbone"
         L.legs, L.legs_to, L.boots = HIDE_DARK, 18, None  # rolled to the knee: bare shins in the water
         L.wraps = CORD

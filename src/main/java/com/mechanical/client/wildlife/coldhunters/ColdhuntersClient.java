@@ -24,6 +24,20 @@ public final class ColdhuntersClient {
     /** Pine marten clinging to a trunk: 1 climbing up (head up), 2 coming down head first. */
     static final ContextKey<Integer> CLIMB = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "pine_marten_climb"));
 
+    /** Ermine, lemming and pine marten are built at twice their size (HuntGeometry) and drawn at half, for finer detail. */
+    private static final float HALF = 0.5F;
+
+    private static <T extends WildAnimal> WildAnimalRenderer<T> half(net.minecraft.client.renderer.entity.EntityRendererProvider.Context c,
+            net.minecraft.client.model.EntityModel<WildAnimalRenderState> model, float babyScale, float shadow) {
+        return new WildAnimalRenderer<T>(c, model, model, babyScale, shadow) {
+            @Override
+            protected void scale(WildAnimalRenderState state, PoseStack pose) {
+                super.scale(state, pose);
+                pose.scale(HALF, HALF, HALF);
+            }
+        };
+    }
+
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ColdhuntersFauna.WOLVERINE.get(), c -> {
@@ -36,15 +50,21 @@ public final class ColdhuntersClient {
         });
         event.registerEntityRenderer(ColdhuntersFauna.ERMINE.get(), c -> {
             ErmineModel model = new ErmineModel(c.bakeLayer(ErmineModel.LAYER));
-            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.2F);
+            return half(c, model, 0.6F, 0.2F);
         });
         event.registerEntityRenderer(ColdhuntersFauna.LEMMING.get(), c -> {
             LemmingModel model = new LemmingModel(c.bakeLayer(LemmingModel.LAYER));
-            return new WildAnimalRenderer<>(c, model, model, 0.6F, 0.2F);
+            return half(c, model, 0.6F, 0.2F);
         });
         event.registerEntityRenderer(ColdhuntersFauna.PINE_MARTEN.get(), c -> {
             PineMartenModel model = new PineMartenModel(c.bakeLayer(PineMartenModel.LAYER));
             return new WildAnimalRenderer<PineMarten>(c, model, model, 0.6F, 0.25F) {
+                @Override
+                protected void scale(WildAnimalRenderState state, PoseStack pose) {
+                    super.scale(state, pose);
+                    pose.scale(HALF, HALF, HALF); // built at twice its size
+                }
+
                 @Override
                 protected void setupRotations(WildAnimalRenderState state, PoseStack pose, float bodyRot, float scale) {
                     super.setupRotations(state, pose, bodyRot, scale);
