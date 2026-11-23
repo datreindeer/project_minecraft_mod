@@ -27,7 +27,7 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 | A3 | Inga besök/raider utan spelare | `TribeVisits` och `Raids` hoppar över ett läger där ingen stammedlem står inom zonen. |
 | A4 | Relation per stam (byggd) | `REPUTATION` flyttas från spelare till spelarstam: alla i stammen delar relationen. Spelare utan stam har sin egen som idag. Gamla värden slås ihop vid uppgradering (se fråga 3). |
 | A5 | Vägbygge | Vid **Friendly** eller högre kan man be NPC-stammens ledare (dialog) bygga en väg. Man får en **Road Marker** (banner) och sätter den där vägen ska sluta. Stammens folk går ut, hugger/gräver material, och bygger en stig (1–2 block bred, grus/trampad jord). Undviker att förstöra spelarbyggen (inga block som spelare satt rivs; vägen går runt). Broar bara när det inte går runt. |
-| A6 | Handelsväg | Vid högre relation (t.ex. 60+) kan stigen uppgraderas till en bred handelsväg (3 block, sten). Samma process: de hämtar sten och bygger. |
+| A6 | Handelsväg | Vid högre relation (t.ex. 60+) kan stigen uppgraderas till en bred handelsväg (3–4 block, upptrampad mark i biomens stil). Samma process. |
 | A7 | Inga stup | Vägbyggaren lägger trappor/slabs där höjden ändras mer än 1 block. Samma regel läggs in i `Trails` (förgenererade stigar). |
 | A8 | Forceladdad handelsväg | En NPC-stam med handelsväg till en spelarstam forceladdar sin bas (3x3) och chunksen vägen går över, så bygge och handlare rör sig även när ingen är där. |
 | A9 | Prestanda | Max ~10 spelare. Forceladdning bara för: spelarstammars Fire Pits, NPC-stammar med handelsväg, och vägchunks **bara medan någon rör sig/bygger på vägen** (handlare eller byggare). Vägchunks laddas i ett "fönster" runt de NPC:er som är ute, inte hela vägen hela tiden. Tickhastighet för slumpticks/entiteter i tomma forceladdade chunks behålls som vanilla. Mäts med `/tick query`/MSPT innan vi släpper det. |
@@ -60,10 +60,26 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
   inte går runt. Vägjobben sparas (SavedData `mechanical:roads`).
 - **Pris (bestämt av Claude, kan ändras):** gratis upp till 500 block, sedan **1 Silver Coin per påbörjade 50 block**
   (max 10), handelsvägen **dubbelt**. Gold Coin räknas som 10 Silver, växel i silver. Längden är fågelvägen läger → markör.
-- **A6:** vid rykte 60 och en färdig stig (din eller din spelarstams) knappen *Trade road*: samma rutt byggs om 3 block
-  bred i sten. Förenkling: stenen tas inte ur lägrets förråd (byggarna "hämtar" den).
-- **A7:** vägen ändras högst 1 block per ruta (skär in i backar, fyller över gropar) och varje steg får en trappa, en
-  puckel en slab. `Trails`: där marken längs stigen stiger 2+ block läggs en kullerstenstrappa på den lägre rutan.
+- **A6:** vid rykte 60 och en färdig stig (din eller din spelarstams) knappen *Trade road*: samma rutt byggs om till en
+  bredare, upptrampad väg. Byggt 2026-11-23 (v0.179.1), ersätter stenvägen; gamla stenvägar räknas fortfarande som väg.
+  Hur vägarna ser ut (båda sorterna, v0.179.1): ett **upptrampat spår, ingen sten**. Rutten slingrar sig
+  (A* dras mot en mjukt slingrande linje upp till 4 block åt sidan, så även en väg över slätt mark böjer sig), bredden
+  vandrar (stig 2–3, handelsväg 3–4: en extra fil på ena sidan där ett brus säger det, bara där marken redan ligger i
+  vägens höjd) och kanterna fransar ut i gräset runt om med Worn Grass, gräs, tuvor och någon blomma. Själva marken är
+  fläckig av fullhöga jordblock i brusfläckar, aldrig ränder (`RoadBuilding.palette`; marken 4 block ut på var sida röstar,
+  annars biomen): Coarse Dirt, Rooted Dirt och Packed Mud med enstaka gruskorn på gräs; Coarse Dirt, Podzol och Rooted Dirt
+  i taiga; Packed Mud, Coarse Dirt och Sand i öken; Coarse Dirt, Red Sand och Packed Mud i badlands; Packed Mud, Rooted
+  Dirt och Coarse Dirt i träsk; Coarse Dirt och Rooted Dirt i snö, där snön ligger kvar i drivor längs kanterna; Loess,
+  Chalk Block och Peat blandas in där de är traktens mark. Ingen Dirt Path (lägre än grannarna, så den får mörk kantskugga)
+  och ingen Trodden Path (dess gräskant tar årstidens färg och blir mörkgrå). Handelsvägen har sträckor med två hjulspår
+  och en gräspuckel emellan. En skärning i en backe mjukas upp: kolumnen närmast vägen blir en slab av sin egen mark ett
+  halvsteg över vägen och nästa kolumn ett helt block över, så det blir trappsteg i stället för en vägg; där vägen ligger
+  ett block över marken får marken bredvid en slab. Fyllning Dirt (Sand i öken). Över vatten plankor på stigen och en
+  kavelväg av stockar på tvären på handelsvägen (gran i kall trakt, annars ek).
+- **A7:** vägen ändras högst 1 block per ruta (skär in i backar, fyller över gropar) och varje steg får en slab av
+  vägens egen mark (Coarse Dirt Slab, Sand Slab, Grass Slab, Dirt Slab ...), ett halvsteg på var sida. `Trails`: där marken
+  längs stigen stiger 2+ block läggs en jordtrappa (Coarse Dirt/Dirt Stairs) på den lägre rutan, och stigarnas mitt är
+  fullhög jord (Coarse Dirt, Rooted Dirt, Packed Mud, lite grus) i stället för Trodden Path.
 - **A8/A9:** fönster av 3x3 chunks runt varje byggare och fronten (`mechanical:road_window`, följer med varje sekund);
   en stam med färdig handelsväg forceladdar sitt läger 3x3 (`mechanical:road_base`) och dess handlare följs av fönstret
   tills de är hemma. Byggarna arbetar dag och natt. MSPT inte mätt för vägar ännu.

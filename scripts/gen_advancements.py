@@ -1175,8 +1175,8 @@ TABS["wilderness"][1].extend([
     ("tribe_road", "tribe_neighbours", "road_marker", G, "Paths Between Us",
      "At Friendly or better, ask a neighbouring camp's leader or trader for a road and set the Road Marker down where it should end. "
      "Their folk walk out and build it, with steps where the ground climbs", by_code()),
-    ("tribe_trade_road", "tribe_road", "minecraft:stone_bricks", C, "The Trade Road",
-     "At a standing of 60, have a tribe widen a finished road into a 3-wide stone trade road. Their camp then stays loaded, so their traders walk it even when nobody is near",
+    ("tribe_trade_road", "tribe_road", "minecraft:coarse_dirt", C, "The Trade Road",
+     "At a standing of 60, have a tribe widen a finished road into a broad, well-trodden trade road. Their camp then stays loaded, so their traders walk it even when nobody is near",
      by_code()),
     ("tribe_sleeping_camp", "tribe_land", "minecraft:hay_block", T, "Sleeping Camp",
      "Come upon tribespeople at night: they lay out Straw Beds round the fire and sleep while their warriors keep watch. "

@@ -54,8 +54,8 @@ LANG = {
     "gui.mechanical.tribe_dialog.upgrade": "Trade road",
     "chat.mechanical.road.marker": "Set this marker down where you want the road to end, at most %s blocks from our camp. "
                                    "Up to %s blocks we build it for nothing; beyond that, one Silver Coin for every %s blocks.",
-    "chat.mechanical.road.need_silver": "A road of stone that long costs %s Silver Coins (a Gold Coin is worth 10). Come back with the coin.",
-    "chat.mechanical.road.upgrade": "Good. We will widen the road to three and lay it with stone, so traders and carts go easily.",
+    "chat.mechanical.road.need_silver": "A trade road that long costs %s Silver Coins (a Gold Coin is worth 10). Come back with the coin.",
+    "chat.mechanical.road.upgrade": "Good. We will widen the road and tread it hard, wide enough for traders and carts.",
     "message.mechanical.road.no_camp": "The %s have no camp to build a road from any more",
     "message.mechanical.road.bad_spot": "Set the Road Marker on firm ground with room above it",
     "message.mechanical.road.busy": "The %s are already building a road",

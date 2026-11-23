@@ -64,7 +64,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
  * </ul>
  * Each chunk writes only its own columns and reads 2 beyond.
  */
-final class SmoothGround extends StoneAgeFeature {
+public final class SmoothGround extends StoneAgeFeature {
     static final MapCodec<SmoothGround> CODEC = MapCodec.unit(SmoothGround::new);
     private static final int NONE = Integer.MIN_VALUE, R = 2, SCAN = 48;
     /** Snow layers on a straight step, under an outer corner, in an inner corner. 5 layers stand 4/8 high: half a block of footing. */
@@ -258,7 +258,7 @@ final class SmoothGround extends StoneAgeFeature {
     }
 
     /** Natural ground a half step may be made of or laid on. */
-    static boolean ground(BlockState s) {
+    public static boolean ground(BlockState s) {
         return s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(BlockTags.SAND) || s.is(Blocks.GRAVEL) || rock(s) || s.is(Blocks.SNOW_BLOCK)
                 || s.is(BlockTags.TERRACOTTA) || s.is(Blocks.CLAY) || s.is(EarthBlocks.PEAT) || s.is(EarthBlocks.LOESS)
                 || s.is(ScorchedBarrens.WOOD_ASH);
@@ -281,6 +281,11 @@ final class SmoothGround extends StoneAgeFeature {
     private static boolean plant(BlockState s) {
         return !s.hasBlockEntity() && (s.canBeReplaced() || s.is(BlockTags.FLOWERS) || s.is(BlockTags.SAPLINGS)
                 || s.is(Blocks.BROWN_MUSHROOM) || s.is(Blocks.RED_MUSHROOM));
+    }
+
+    /** The ground slab of {@code base} (AIR when there is none), for tribe roads (people.RoadBuilding). */
+    public static Block slab(Block base) {
+        return variant(base, SLABS, "slab");
     }
 
     /**
@@ -309,12 +314,14 @@ final class SmoothGround extends StoneAgeFeature {
         Set<Long> seen = new HashSet<>();
         for (int cx = (x0 - R) >> 4; cx <= (x0 + size + R - 1) >> 4; cx++) {
             for (int cz = (z0 - R) >> 4; cz <= (z0 + size + R - 1) >> 4; cz++) {
-                ChunkAccess chunk = level.getChunk(cx, cz, ChunkStatus.STRUCTURE_REFERENCES, false);
+                // a WorldGenRegion throws (not null) for a chunk outside it: ask first
+                ChunkAccess chunk = level.hasChunk(cx, cz) ? level.getChunk(cx, cz, ChunkStatus.STRUCTURE_REFERENCES, false) : null;
                 if (chunk == null) continue;
                 for (Map.Entry<Structure, it.unimi.dsi.fastutil.longs.LongSet> e : chunk.getAllReferences().entrySet()) {
                     for (long ref : e.getValue()) {
                         if (!seen.add(ref * 31 + e.getKey().hashCode())) continue;
-                        ChunkAccess start = level.getChunk(ChunkPos.getX(ref), ChunkPos.getZ(ref), ChunkStatus.STRUCTURE_STARTS, false);
+                        ChunkAccess start = level.hasChunk(ChunkPos.getX(ref), ChunkPos.getZ(ref))
+                                ? level.getChunk(ChunkPos.getX(ref), ChunkPos.getZ(ref), ChunkStatus.STRUCTURE_STARTS, false) : null;
                         if (start == null) return null;
                         StructureStart s = start.getStartForStructure(e.getKey());
                         if (s != null && s.isValid()) boxes.add(s.getBoundingBox().inflatedBy(2));
