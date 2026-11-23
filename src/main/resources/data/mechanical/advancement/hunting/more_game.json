@@ -6,107 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:aardvark_meat"
-          }
-        ]
-      }
-    },
-    "has_1": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:cheetah_meat"
-          }
-        ]
-      }
-    },
-    "has_2": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:game_meat_scraps"
-          }
-        ]
-      }
-    },
-    "has_3": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:gazelle_meat"
-          }
-        ]
-      }
-    },
-    "has_4": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:hyena_meat"
-          }
-        ]
-      }
-    },
-    "has_5": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:orangutan_meat"
-          }
-        ]
-      }
-    },
-    "has_6": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:ostrich_meat"
-          }
-        ]
-      }
-    },
-    "has_7": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:puma_meat"
-          }
-        ]
-      }
-    },
-    "has_8": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_fennec"
-          }
-        ]
-      }
-    },
-    "has_9": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_scorpion"
-          }
-        ]
-      }
-    },
-    "has_10": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_snake"
           }
         ]
       }
@@ -114,17 +14,7 @@
   },
   "requirements": [
     [
-      "has_0",
-      "has_1",
-      "has_2",
-      "has_3",
-      "has_4",
-      "has_5",
-      "has_6",
-      "has_7",
-      "has_8",
-      "has_9",
-      "has_10"
+      "has_0"
     ]
   ],
   "display": {

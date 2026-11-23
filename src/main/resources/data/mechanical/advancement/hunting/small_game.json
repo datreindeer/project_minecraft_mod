@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:lizard_tail"
+            "items": "mechanical:monitor_meat"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:marmot_meat"
+            "items": "mechanical:monkey_meat"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:monitor_meat"
+            "items": "mechanical:python_meat"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:monkey_meat"
+            "items": "mechanical:rabbit_scraps"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:python_meat"
+            "items": "mechanical:raw_arctic_fox"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:rabbit_scraps"
+            "items": "mechanical:raw_ermine"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_arctic_fox"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_ermine"
+            "items": "mechanical:raw_lemming"
           }
         ]
       }
@@ -96,87 +96,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
-          }
-        ]
-      }
-    },
-    "has_10": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_lemming"
-          }
-        ]
-      }
-    },
-    "has_11": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_marten"
-          }
-        ]
-      }
-    },
-    "has_12": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_mole"
-          }
-        ]
-      }
-    },
-    "has_13": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
             "items": "mechanical:raw_pika"
-          }
-        ]
-      }
-    },
-    "has_14": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_snake"
-          }
-        ]
-      }
-    },
-    "has_15": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_vole"
-          }
-        ]
-      }
-    },
-    "has_16": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:raw_wildcat"
-          }
-        ]
-      }
-    },
-    "has_17": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:tortoise_meat"
           }
         ]
       }
@@ -193,15 +113,7 @@
       "has_6",
       "has_7",
       "has_8",
-      "has_9",
-      "has_10",
-      "has_11",
-      "has_12",
-      "has_13",
-      "has_14",
-      "has_15",
-      "has_16",
-      "has_17"
+      "has_9"
     ]
   ],
   "display": {

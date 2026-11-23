@@ -16,7 +16,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:crocodile_meat"
+            "items": "mechanical:cheetah_meat"
           }
         ]
       }
@@ -26,7 +26,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:game_meat_scraps"
+            "items": "mechanical:crocodile_meat"
           }
         ]
       }
@@ -36,7 +36,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:hyena_meat"
+            "items": "mechanical:game_meat_scraps"
           }
         ]
       }
@@ -46,7 +46,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:leopard_meat"
+            "items": "mechanical:hyena_meat"
           }
         ]
       }
@@ -56,7 +56,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_gloson"
+            "items": "mechanical:leopard_meat"
           }
         ]
       }
@@ -66,7 +66,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_hide"
+            "items": "mechanical:lizard_tail"
           }
         ]
       }
@@ -76,7 +76,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_lynx"
+            "items": "mechanical:marmot_meat"
           }
         ]
       }
@@ -86,7 +86,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_polar_bear"
+            "items": "mechanical:puma_meat"
           }
         ]
       }
@@ -96,7 +96,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_snow_leopard"
+            "items": "mechanical:raw_fennec"
           }
         ]
       }
@@ -106,7 +106,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:raw_wolverine"
+            "items": "mechanical:raw_gloson"
           }
         ]
       }
@@ -116,7 +116,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:sinew"
+            "items": "mechanical:raw_hide"
           }
         ]
       }
@@ -126,12 +126,132 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:tiger_meat"
+            "items": "mechanical:raw_lynx"
           }
         ]
       }
     },
     "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_marten"
+          }
+        ]
+      }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_mole"
+          }
+        ]
+      }
+    },
+    "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_polar_bear"
+          }
+        ]
+      }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_scorpion"
+          }
+        ]
+      }
+    },
+    "has_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_snake"
+          }
+        ]
+      }
+    },
+    "has_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_snow_leopard"
+          }
+        ]
+      }
+    },
+    "has_19": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_vole"
+          }
+        ]
+      }
+    },
+    "has_20": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wildcat"
+          }
+        ]
+      }
+    },
+    "has_21": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:raw_wolverine"
+          }
+        ]
+      }
+    },
+    "has_22": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sinew"
+          }
+        ]
+      }
+    },
+    "has_23": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:tiger_meat"
+          }
+        ]
+      }
+    },
+    "has_24": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:tortoise_meat"
+          }
+        ]
+      }
+    },
+    "has_25": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -157,7 +277,19 @@
       "has_10",
       "has_11",
       "has_12",
-      "has_13"
+      "has_13",
+      "has_14",
+      "has_15",
+      "has_16",
+      "has_17",
+      "has_18",
+      "has_19",
+      "has_20",
+      "has_21",
+      "has_22",
+      "has_23",
+      "has_24",
+      "has_25"
     ]
   ],
   "display": {

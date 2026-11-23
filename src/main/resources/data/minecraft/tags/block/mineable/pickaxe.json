@@ -550,10 +550,10 @@
     "mechanical:loose_gypsum",
     "mechanical:loose_alabaster",
     "mechanical:loose_alum_shale",
-    "mechanical:rune_blackstone",
     "mechanical:iron_bellows",
     "mechanical:smithing_hearth",
-    "mechanical:steel_casting_table",
-    "mechanical:elkwight_axe_trophy"
+    "mechanical:rune_blackstone",
+    "mechanical:elkwight_axe_trophy",
+    "mechanical:steel_casting_table"
   ]
 }

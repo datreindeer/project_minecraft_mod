@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:hunting/small_game",
+  "parent": "mechanical:hunting/predators",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",
