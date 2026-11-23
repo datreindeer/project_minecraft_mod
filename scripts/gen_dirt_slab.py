@@ -55,6 +55,33 @@ ground_slab("ground_slab", False)
 ground_slab("grassy_ground_slab", True)
 
 
+def fringe_stairs(name, grassy):
+    """Vanilla's straight stairs with the lower step split: its front half shows the side texture's top half (the fringe on
+    the front edge), the back half under the upper step keeps the lower half."""
+    m = json.loads(jar.read("assets/minecraft/models/block/stairs.json"))
+    side = lambda uv, cull=None: {"uv": uv, "texture": "#side", **({"cullface": cull} if cull else {})}
+    front = {"from": [0, 0, 0], "to": [8, 8, 16], "faces": {
+        "down": {"uv": [0, 0, 8, 16], "texture": "#bottom", "cullface": "down"}, "up": {"uv": [0, 0, 8, 16], "texture": "#top"},
+        "north": side([8, 0, 16, 8], "north"), "south": side([0, 0, 8, 8], "south"), "west": side([0, 0, 16, 8], "west")}}
+    back = {"from": [8, 0, 0], "to": [16, 8, 16], "faces": {
+        "down": {"uv": [8, 0, 16, 16], "texture": "#bottom", "cullface": "down"},
+        "north": side([0, 8, 8, 16], "north"), "south": side([8, 8, 16, 16], "south"), "east": side([0, 8, 16, 16], "east")}}
+    els = []
+    for e in (front, back, m["elements"][1]):
+        e = json.loads(json.dumps(e))
+        if grassy and "up" in e["faces"]:
+            e["faces"]["up"]["tintindex"] = 0
+        els.append(e)
+        if grassy:
+            els.append({**{k: v for k, v in e.items() if k != "faces"}, "faces": {
+                d: {**f, "texture": "#overlay", "tintindex": 0} for d, f in e["faces"].items() if d in ("north", "south", "west", "east")}})
+    w(A / f"models/block/{name}.json", {**m, "elements": els})
+
+
+fringe_stairs("fringe_stairs", False)
+fringe_stairs("grassy_fringe_stairs", True)
+
+
 def slab_models(name, textures, bottom=M + "block/ground_slab", top="minecraft:block/slab_top"):
     w(A / f"models/block/{name}.json", {"parent": bottom, "textures": textures})
     w(A / f"models/block/{name}_top.json", {"parent": top, "textures": textures})
@@ -165,8 +192,9 @@ w(A / "blockstates/dirt_stairs.json", {"variants": stair_variants("dirt_stairs")
 recipe("dirt_stairs", ["#  ", "## ", "###"], "minecraft:dirt", 4)
 w(D / "mechanical/loot_table/blocks/dirt_stairs.json", self_loot("dirt_stairs", "dirt_stairs"))
 for suffix, parent in (("", "stairs"), ("_inner", "inner_stairs"), ("_outer", "outer_stairs")):
-    w(A / f"models/block/grass_stairs{suffix}.json", {"parent": M + "block/grassy_" + parent, "textures": grass})
-    w(A / f"models/block/grass_stairs_snowy{suffix}.json", {"parent": "minecraft:block/" + parent, "textures": snowy})
+    straight = suffix == ""  # the straight one shows the fringe on the lower step's front too
+    w(A / f"models/block/grass_stairs{suffix}.json", {"parent": M + ("block/grassy_fringe_stairs" if straight else "block/grassy_" + parent), "textures": grass})
+    w(A / f"models/block/grass_stairs_snowy{suffix}.json", {"parent": M + "block/fringe_stairs" if straight else "minecraft:block/" + parent, "textures": snowy})
 w(A / "blockstates/grass_stairs.json", {"variants": {**stair_variants("grass_stairs", ",snowy=false"), **stair_variants("grass_stairs_snowy", ",snowy=true")}})
 w(A / "items/grass_stairs.json", {"model": {"type": "minecraft:model", "model": M + "block/grass_stairs", "tints": GRASS_TINT}})
 w(D / "mechanical/loot_table/blocks/grass_stairs.json", self_loot("grass_stairs", "dirt_stairs"))

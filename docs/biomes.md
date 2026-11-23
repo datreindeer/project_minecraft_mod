@@ -156,9 +156,11 @@ på den lägre rutan (träd, höga växter, blommor som inte fick plats högre u
 Bilder: `docs/shots/terrain/smooth_*_before.png` och `smooth_*_after.png` (gräskulle, Meadow, stenbrant med trappor,
 snöig sluttning, strand).
 
-Små växter på rutan där ett halvsteg läggs flyttas upp till en högre granne om det finns plats; blommor som inte får plats
-står kvar (och rutan behåller sitt steg), grästuvor försvinner. På branta gräsbackar, där varje ruta får en slab, blir det
-alltså färre grästuvor.
+Små växter på rutan där ett halvsteg läggs flyttas till närmaste lediga hela marktopp inom 2 block (de kan inte stå på
+en slab). Blommor som inte får plats står kvar och rutan behåller sitt steg, och likaså varannan grästuva (efter position).
+Grästuvor kvar (samma platser): slätt 821 av 876 (94 %), berg 405 av 477 (85 %), Meadow 361 av 390 (93 %), kullar 129 av
+141 (91 %). Det som saknas är mest tuvor som grannchunkarnas växtlighet senare försöker lägga på slabs. Branta gräsbackar
+där varje ruta får en slab blir ändå något kalare.
 
 ## Grottbiomer
 

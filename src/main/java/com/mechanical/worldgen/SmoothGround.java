@@ -126,21 +126,28 @@ final class SmoothGround extends StoneAgeFeature {
         return laid;
     }
 
+    /** Spots a displaced plant may move to, nearest first: within 2 blocks round it, from 1 below to 2 above. */
+    private static final List<BlockPos> NEARBY = BlockPos.betweenClosedStream(-2, -1, -2, 2, 2, 2).map(BlockPos::immutable)
+            .filter(o -> o.getX() != 0 || o.getZ() != 0)
+            .sorted(java.util.Comparator.comparingInt(o -> o.getX() * o.getX() + o.getZ() * o.getZ() + Math.abs(o.getY() - 1))).toList();
+
     /**
-     * A small plant where the half step goes moves up onto a higher neighbour (it can't sit on a slab). A flower that finds no
-     * room stays and the column keeps its step; grass tufts that find none are dropped. False: leave this column.
+     * A small plant where the half step goes moves to the nearest free full ground top within 2 blocks (it can't sit on a
+     * slab), so slopes keep their tufts. A flower that finds no room stays and the column keeps its step, and so does every
+     * other tuft (by position); the rest are dropped. False: leave this column.
      */
     private static boolean movePlant(WorldGenLevel level, BlockPos at) {
         BlockState plant = level.getBlockState(at);
         if (plant.isAir() || plant.is(Blocks.SNOW)) return true;
-        for (Direction d : SIDES) {
-            BlockPos to = at.relative(d).above();
-            if (level.getBlockState(to).isAir() && plant.canSurvive(level, to)) {
+        for (BlockPos o : NEARBY) {
+            BlockPos to = at.offset(o);
+            if (level.getBlockState(to).isAir() && level.getFluidState(to).isEmpty() && plant.canSurvive(level, to)) {
                 set(level, to, plant);
                 return true;
             }
         }
-        return !plant.is(BlockTags.FLOWERS);
+        // no room: a flower stays (the column keeps its step); half the tufts stay too, so packed slopes keep some green
+        return !plant.is(BlockTags.FLOWERS) && (net.minecraft.util.Mth.getSeed(at) & 0x100) == 0;
     }
 
     /** The half step for column (cx, cz) of the grid, or null. */

@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:block/grassy_stairs",
+  "parent": "mechanical:block/grassy_fringe_stairs",
   "textures": {
     "top": "minecraft:block/grass_block_top",
     "side": "minecraft:block/dirt",
