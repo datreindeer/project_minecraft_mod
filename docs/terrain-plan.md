@@ -107,7 +107,7 @@ mark. Spelservern får alltså mjuk mark även där terrängen är gammal.
 på orörda gamla chunks, inte nära läger, Fire Pits eller vägar). Nya block: Grass Stairs, Dirt Stairs, Coarse Dirt
 Slab/Stairs, Podzol Slab, Sand och Red Sand Slab/Stairs (faller inte), Gravel, Moss, Mud, Peat, Loess och Wood Ash Slab
 (`gen_dirt_slab.py`). Grass Slab hade redan sitt snöiga läge, och Grass Stairs fick samma. Nedre slabs visar nu gräs- och
-snökanten överst, och gräs under en nedre slab eller trappa dör inte längre (`SpreadingSnowyBlockMixin`). Snöskikt bara där snön ligger året runt, annars snöig slab. Mätning och bilder i `docs/biomes.md`.
+snökanten överst, och marken under en gräsig slab blir Dirt (annars syns gräskanten dubbelt). Snöskikt bara där snön ligger året runt, annars snöig slab. Mätning och bilder i `docs/biomes.md`.
 
 ## 3. Små saker i landskapet
 
@@ -174,6 +174,19 @@ block av tunna ben, Rib Cage och Mammoth Tusk (`worldgen/OldBonesBlock`), i stä
 vattenfall och vårdträd läggs även i gamla chunks (`Retrogen`). Advancements *Under the Arch* och *Old Bones*.
 Jordkällare är inte byggda. Snöfälten ligger bara högt upp (y 150 där snön aldrig smälter, y 200 annars). Detaljer och
 täthet: `docs/biomes.md`, "Små saker i berg, på öppen mark, i torrt och kallt land". Bilder: `docs/shots/terrain/fas4_*.png`.
+
+## 3b. Kanter som flyter ihop (önskemål från användaren)
+
+Vägar och mark ska se mjukare ut: där två besläktade block möts på ovansidan lägger sig det starkare några pixlar in
+över det svagare ("connected textures"/"Blend"), i grupper så att bara rätt block möts (mark med mark och gräs med det
+mesta, sten med sten, plankor med plankor; aldrig stone bricks med plankor).
+
+**Byggt (v0.179.0):** `client/EdgeBlend` (lägger kantbitar på ovansidan när chunken byggs; matchar block på toppens
+textur, så slabs och slumpvridna block följer med) och `scripts/gen_blend_edges.py` (styrketabellen, grupperna och ett ark
+kantbitar per block som kan lägga sig över andra). Fyra kantstilar efter material: trasig prickig kant för mark, hela
+stenar för kullersten och rå sten, tandade bricks som följer fogarna och plankor som går in i varandra bräda för bräda.
+Gräsets färg (årstid, frost) följer med. Av/på: `blendEdges` i `mechanical-client.toml`. Styrketabell och detaljer:
+`docs/biomes.md`, "Kanter som flyter ihop". Bilder: `docs/shots/terrain/blend_*.png`.
 
 ## 4. En natur som förändras med tiden
 

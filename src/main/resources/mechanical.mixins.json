@@ -25,7 +25,8 @@
     "InventoryScreenMixin",
     "ServerSelectionListMixin",
     "OnlineServerEntryMixin",
-    "ClientboundStatusResponsePacketMixin"
+    "ClientboundStatusResponsePacketMixin",
+    "SectionCompilerTimingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -44,7 +45,6 @@
     "CampfireBlockMixin",
     "CrossbowItemMixin",
     "FarmlandBlockMixin",
-    "SpreadingSnowyBlockMixin",
     "FireBlockInvoker",
     "MultiNoiseBiomeSourceParameterListsMixin",
     "OverworldBiomeBuilderMixin",

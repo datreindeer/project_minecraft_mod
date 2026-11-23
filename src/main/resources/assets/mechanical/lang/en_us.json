@@ -4678,5 +4678,7 @@
   "advancements.mechanical.folklore.dune_wraith.title": "Shape in the Sand",
   "advancements.mechanical.folklore.dune_wraith.description": "See a Dune Wraith in a desert sandstorm. It is after your water",
   "advancements.mechanical.folklore.dune_glass.title": "Glass from the Storm",
-  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass"
+  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
 }

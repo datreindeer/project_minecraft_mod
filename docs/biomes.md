@@ -296,8 +296,8 @@ Varje naturligt steg på exakt 1 block får ett halvsteg (`worldgen/SmoothGround
 - **Slab:** den lägre rutan får en nedre slab av den högre grannens mark: Grass Slab, Dirt Slab, Coarse Dirt Slab, Podzol
   Slab, Sand Slab, Red Sand Slab, Gravel Slab, Moss Slab, Mud Slab, Peat Slab, Loess Slab, Wood Ash Slab, och för sten
   stenfamiljens slab (Stone Slab, Granite Slab, Chalk Slab, Cobbled Slate Slab och så vidare). Gäller även hörn där bara
-  den diagonala grannen är högre. Gräset under en nedre slab eller trappa förblir gräs (`mixin/SpreadingSnowyBlockMixin`),
-  så sluttningens sidor behåller gräskanten.
+  den diagonala grannen är högre. Gräs och podzol under en slab blir Dirt, så varje
+  halvsteg visar en gräskant (slabens), inte två.
 - **Trappor:** där den högre marken är berg och kanten är rak (rutorna på båda sidor längs kanten ligger på samma höjd)
   blir det en trappa av bergarten mot steget, med inre och yttre hörnformer där två kanter möts. Formen räknas fram ur
   höjderna, så den stämmer över chunkgränser.
@@ -331,10 +331,8 @@ Bilder: `docs/shots/terrain/smooth_*_before.png` och `smooth_*_after.png` (gräs
 snöig sluttning, strand).
 
 Små växter på rutan där ett halvsteg läggs flyttas till närmaste lediga hela marktopp inom 2 block (de kan inte stå på
-en slab). Blommor som inte får plats står kvar och rutan behåller sitt steg, och likaså varannan grästuva (efter position).
-Grästuvor kvar (samma platser): slätt 821 av 876 (94 %), berg 405 av 477 (85 %), Meadow 361 av 390 (93 %), kullar 129 av
-141 (91 %). Det som saknas är mest tuvor som grannchunkarnas växtlighet senare försöker lägga på slabs. Branta gräsbackar
-där varje ruta får en slab blir ändå något kalare.
+en slab). Får de inte plats, eller är de höga (Tall Grass, Sunflower, Rose Bush), tas de bort: en växt som fick stå kvar
+lämnade ett hål i sluttningen. Branta gräsbackar där varje ruta får en slab blir därför något kalare.
 
 ## Terrängens form (gen_terrain.py)
 
@@ -408,6 +406,53 @@ rött och lila i bergen.
   nytt, `world=Namn` för en annan värld), rad 3 filprefix och sedan en kameraplats per rad:
   `namn kameraX kameraZ målX målZ höjd [lutning]` (höjd över marken, eller `=Y`). Den skapar världen, väntar tills
   terrängen har ritats, tar bilderna mitt på dagen utan moln och HUD och avslutar spelet.
+
+## Kanter som flyter ihop (client, EdgeBlend)
+
+Där två besläktade block möts på ovansidan går gränsen inte längre i en rak söm: det starkare blocket lägger sig några
+pixlar in över det svagare, som i "Blend"/"Continuity"-moddarna. Bara utseende (klienten, när chunken byggs); inga block
+ändras. Av/på: `blendEdges` i `config/mechanical-client.toml` (också under Mods > Mechanical > Config).
+
+**Grupper.** Bara block i samma grupp flyter ihop: **mark** (Grass Block, Moss Block, Snow Block, Mycelium, Podzol, Sand,
+Red Sand, Gravel, Beach Pebbles, Chalk Block, Wood Ash, Loess, Coarse Dirt, Rooted Dirt, Peat, Clay, Kaolin, Mud, Packed
+Mud, Dirt, Worn Grass, Trodden Path, Dirt Path), **sten** (alla bricks och tiles, cobblestone, Fieldstone, rå sten och
+stenfamiljernas rå sten, polerad och slipad sten) och **plankor** (alla plankor). Gräs, mossa, grus, Cobblestone och
+Mossy Cobblestone hör till både mark och sten: gräs växer in över kullersten och berg, grus rinner ut över berget, och
+kullerstenens stenar ligger in i jord, grovjord och stigar. Bricks och polerad sten möts aldrig med jord, sten och
+plankor möts aldrig, och plankor aldrig med gräs.
+
+**Styrka.** Varje block har en styrka i en enda tabell (`scripts/gen_blend_edges.py`, starkast först), och det starkare
+lägger sig alltid över det svagare: Grass Block > Moss Block > Snow Block > Mycelium > Podzol > Sand > Red Sand > mossiga
+bricks > bricks > tiles > spruckna bricks > Mossy Cobblestone > Cobblestone > Cobbled Deepslate/Slate > Fieldstone > Gravel
+> Beach Pebbles > rå sten (Stone, Andesite, Granite, Diorite, Tuff, Calcite, Deepslate, stenfamiljerna) > polerad/slipad
+sten > Chalk Block > Wood Ash > Loess > Coarse Dirt > Rooted Dirt > Peat > Clay > Kaolin > Mud > Packed Mud > Dirt > Worn
+Grass > Trodden Path > Dirt Path. Plankor: Dark Oak > Bog Oak > Spruce > Mangrove > Jungle > Acacia > Oak > Birch > Cherry
+> Pale Oak > Poplar > Crimson > Warped > Pine > Yew > Alder > Ash > Aspen > Beech > Hazel > Linden > Willow. Polerad sten,
+Worn Grass, Trodden Path och Dirt Path tar emot kanter men lägger sig aldrig över något. Moddens stenar (alla
+stenfamiljer: rå sten, cobbled, bricks, mossiga och spruckna bricks, tiles, takpannor, mosaik, polerad/slipad/cut),
+plankor och markslabbarnas block läses ur `StoneFamilies.java`, taggen `minecraft:planks` och `EarthBlocks.java`, så nya
+block kommer med av sig själva, och generatorn stoppar med ett fel om ett block av rätt sort saknar rad.
+
+**Kantens form följer materialet:**
+- **Mark:** en trasig, prickig kant 2–5 pixlar djup med lösa korn utanför, också runt hörn (som i referens-gifen).
+- **Rå sten:** hela stenbitar. Cobblestone, Mossy Cobblestone, Cobbled Deepslate, Cobbled Slate och Fieldstone skärs
+  längs sina egna stenar (texturen delas upp i stenar), rå sten i oregelbundna klumpar.
+- **Bricks och tiles:** kanten följer texturens fogar. Vinkelrätt mot skiften når vartannat skift en halv sten in över
+  grannen, längs ett skift sticker var tredje sten ut ett skift, med fogbruket runt sig.
+- **Plankor:** brädorna går in i varandra. Tvärs över brädorna löper varannan bräda vidare till en skarv (en mörk ände
+  målas där den inte är texturens egen), längs brädorna byts en bit av kantbrädan, och den fortsätter in i nästa block.
+
+**Regler:** bara ovansidor i samma höjd (eller 1/16 högre, så gräs växer in över en Dirt Path), slabs med slabs. Kanterna
+varieras per position så att en lång kant inte upprepar sig, och ändarna på en kant stämmer med grannblockets. Gräs
+som lägger sig över något får exakt gräsets färg på sin plats, med årstid och vinterfrost.
+
+**Prestanda:** grannarna läses bara när en chunk byggs (på chunktrådarna, inte i renderingen), och block vars ovansida
+är täckt hoppas över direkt. Mätt på en äng med väg och stig (render distance 12, ~360 sektioner byggda om): alla
+sektioner tar 743–777 ms CPU utan och 867–871 ms med (cirka 2,1 mot 2,4 ms per sektion, +12–15 %), varav själva
+kantkoden 45–51 ms. FPS påverkas inte, bara hur fort chunks byggs om. Mäts med `people/BlendShots` (`bench`).
+
+**Bilder:** `docs/shots/terrain/blend_*_before.png` / `blend_*_after.png` (mark, sten, plankor, moddens block, stig,
+handelsväg), `blend_overview_after.png`, `blend_road_eye_after.png` och `blend_ground_winter.png` (frostat gräs).
 
 ## Grottbiomer
 
