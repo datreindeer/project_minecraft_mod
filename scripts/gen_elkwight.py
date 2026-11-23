@@ -141,7 +141,7 @@ w(D / "mechanical/worldgen/structure/elkwight_ruin.json", {"type": S + "elkwight
 # about one try per 96 blocks; it only stands where the try lands well inside a (rare) Scorched Barrens on level ground
 # (ElkwightRuinStructure.CLEAR). Separation 4 chunks: two arenas (50 blocks across) never overlap
 w(D / "mechanical/worldgen/structure_set/elkwight_ruin.json", {"structures": [{"structure": S + "elkwight_ruin", "weight": 1}],
-                                                               "placement": {"type": "minecraft:random_spread", "salt": 1618033988, "spacing": 6, "separation": 4}})
+                                                               "placement": {"type": "minecraft:random_spread", "salt": 1618033988, "spacing": 6, "separation": 5}})
 # a little gold and bronze: the real prize is the Elkwight himself
 w(D / "mechanical/loot_table/chests/elkwight_ruin.json", {"type": "minecraft:chest", "pools": [
     {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": [

@@ -80,17 +80,28 @@ och ovanifrån), `elk_ruin_fog.png` (inne i ruinen med dimma), `elk_ruin_cleared
 - Gametest: biomet finns inte inom 2500 block.
 
 ## 2. Ruinen (byggt)
-**Byggt (2026-11-23):** `worldgen/ElkwightRuinStructure` (Java-struktur, en bit, ritas chunk för chunk). Rund arena:
-golv radie 17, murar till 20 (polished/cracked/gilded Blackstone, Basalt-sockel, Magma), fyra portar 7 breda och 10
-höga, läktare med trappsteg, åtta pelare, ett trasigt tak 15 block upp över läktarna där muren står hel, en dais med
-runring i mitten, Soul Campfires och eldskålar (Soul Soil + Soul Fire), fyra runmonoliter utanför, tre kistor
-(`chests/elkwight_ruin`: guldklimpar, guld- och bronstackor, Bronze Arrows, ibland en bronskniv/yxa/spjut/hjälm). Nytt
-block **Rune Blackstone** (gröna runor, emissivt lager, ljus 4). Placering: structure set spacing 6 / separation 4 (förut 16 / 6),
+**Byggt (2026-11-23), omgjord v0.185.0 ("den ska vara episk"):** `worldgen/ElkwightRuinStructure` (Java-struktur, en bit,
+ritas chunk för chunk). Det brända hallen: rund arena, golv radie 17, murar till 20 av polished/cracked/gilded Blackstone med
+inslag av Deepslate Tiles, Basalt-sockel och någon enstaka glödande Magma. **Siluetten:** murkrönet stiger och faller runt
+hela varvet (rasat till grusvallar på sina ställen, högt med tinnar på andra), strävpelare med trappade toppar och en
+trappad sockel utanpå, rasmassor där muren störtat ut. **Huvudporten** och två sidoportar, 7 breda med rundade valv 10 höga
+(nyckelsten), mellan portalborgar 18–22 höga med Soul Campfires på toppen; över huvudporten små horn av ben.
+**Antler Throne:** mitt emot huvudporten reser sig muren till en gavel 25 hög med glödande runor på insidan, krönt av två
+skovelhorn av Bone Block som en älgs (kort tjock stång, en bred skålad skovel med sju spretande taggar och en kluven
+ögontagg ut över arenan), cirka 34 block mellan topparna, synliga över den brända skogen på långt håll; under gaveln en
+upphöjd tron i två steg med sits, armstöd och hög rygg. **Inne:** läktare med trappsteg, åtta pelare, två väldiga stenbågar
+tvärs över arenan (en hel med en Soul Lantern i kedja över daisen, en som rasat i mitten med stenarna kvar på golvet), ett
+trasigt tak 15 upp över läktarna där muren står hel, förkolnade takbjälkar och spindelväv, en processionsväg av Polished
+Blackstone med runinlägg från huvudporten till daisen med runring, Soul Campfires och eldskålar (Soul Soil + Soul Fire),
+tre kistor (`chests/elkwight_ruin`: guldklimpar, guld- och bronstackor, Bronze Arrows, ibland en bronskniv/yxa/spjut/hjälm).
+**Utanför:** en allé av tre par runstenar framför huvudporten, några lutar och en kan ligga omkullfallen. Nytt
+block **Rune Blackstone** (gröna runor, emissivt lager, ljus 4). Bilder: `docs/shots/elkwight/ruin2_*.png`.
+Placering: structure set spacing 6 / separation 5 (förut 16 / 6; 5 sedan ruinen och allén når 36 block ut),
 bara i Scorched Barrens på någorlunda plan mark, och aldrig närmare 0,0 än 2525 block (`allowedAt`). **Alltid mitt i
 biomet (2026-11-23):** hela cirkeln med radie 29 block runt mitten (arenan plus 4 block, `CLEAR`) måste vara Scorched
 Barrens efter grannregeln (`ScorchedBarrens.deepInside`), så ruinen har bränd skog runt om och står aldrig i en kant där en
 annan biom syns. Ungefär 5 % av barrensproven klarar det, därför tätare försök (spacing 6 i stället för 16). Separation
-4 chunkar gör att två arenor aldrig överlappar. Ruinerna blir ändå bara ungefär 40 % så vanliga som förut (uppskattning:
+5 chunkar gör att två ruiner aldrig överlappar. Ruinerna blir ändå bara ungefär 40 % så vanliga som förut (uppskattning:
 5 % av barrens × 7 gånger fler försök), men de står alltid fint. Vill man ha fler: sänk spacing till 5.
 Bossen: strukturen anropar `ElkwightRuins.spawner` en gång (mitt på daisen) som skapar en persistent
 `mechanical:elkwight` om entitytypen finns. API för bossfasen: `ElkwightRuins.ruinAt(level, pos)`,
