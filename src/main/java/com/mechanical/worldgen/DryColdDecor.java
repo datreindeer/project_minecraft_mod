@@ -8,6 +8,7 @@ import static com.mechanical.worldgen.MountainDecor.top;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mechanical.Deadwood;
 import com.mechanical.EarthBlocks;
 import com.mechanical.Mechanical;
 import com.mojang.serialization.MapCodec;
@@ -71,159 +72,326 @@ final class DryColdDecor extends StoneAgeFeature {
     // ------------------------------------------------------------------ dry and warm
 
     /**
-     * A dead tree, dry and grey: a barkless trunk 3-6 high, its roots flaring out flush with the ground, two to four bare
-     * crooked branches stepping out and up from its top half, ending in thin twigs (fence posts), the broken leader a
-     * twig too. Coarse Dirt at its foot, Dead Bushes and dry grass round about, sometimes a fallen branch. Stripped Acacia
-     * in the savanna, bleached Pale Oak or grey Oak elsewhere.
+     * A dead tree, bleached silver-grey (Deadwood, no bark left): a trunk 3-6 high, sometimes leaning, its roots running
+     * out over the ground; limbs that leave it thick (Deadwood) and thin out to Deadwood Branch and Deadwood Twig, climbing
+     * as they reach out, forking now and then; a jagged broken top or a last thin leader. In the savanna the acacia's
+     * shape: a short trunk forking into two or three leaders that spread into a flat crown. Coarse Dirt round its foot,
+     * dead bushes and dry grass, fallen twigs and now and then a fallen limb.
      */
     private static BlockPos deadTree(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!flat(level, c, 1, 1)) return null;
+        if (!flat(level, c, 2, 1)) return null;
         boolean savanna = level.getBiome(c).is(net.minecraft.tags.BiomeTags.IS_SAVANNA);
-        boolean pale = !savanna && random.nextInt(3) > 0;
-        Block wood = savanna ? Blocks.STRIPPED_ACACIA_LOG : pale ? Blocks.STRIPPED_PALE_OAK_LOG : Blocks.STRIPPED_OAK_LOG;
-        BlockState twig = (savanna ? Blocks.ACACIA_FENCE : pale ? Blocks.PALE_OAK_FENCE : Blocks.OAK_FENCE).defaultBlockState();
-        int h = 3 + random.nextInt(4);
-        for (int y = 0; y <= h + 3; y++) if (!level.getBlockState(c.above(y)).canBeReplaced()) return null;
-        clear(level, c);
-        set(level, c.below(), Blocks.COARSE_DIRT.defaultBlockState());
-        for (int y = 0; y < h; y++) set(level, c.above(y), ForestDecor.pillar(wood, Direction.Axis.Y));
-        List<BlockPos> twigs = new ArrayList<>();
-        // roots flaring out, sunk flush with the ground
-        for (Direction d : Direction.Plane.HORIZONTAL)
-            if (random.nextInt(3) > 0 && natural(level.getBlockState(c.below().relative(d)))) set(level, c.below().relative(d), ForestDecor.pillar(wood, d.getAxis()));
-        // the branches, from the top half of the trunk, each its own way
-        List<Direction> sides = new ArrayList<>(Direction.Plane.HORIZONTAL.stream().toList());
-        java.util.Collections.shuffle(sides, new java.util.Random(random.nextLong()));
-        int branches = 2 + random.nextInt(3);
-        for (int i = 0; i < branches; i++) {
-            Direction d = sides.get(i % 4);
-            BlockPos p = c.above(h - 1 - (i == 0 ? 0 : random.nextInt(Math.max(1, h / 2))));
-            // a thick stub of the branch now and then, then thin wood (fence posts joined up) stepping out and up
-            if (random.nextInt(3) == 0 && level.getBlockState(p.relative(d)).canBeReplaced()) {
-                p = p.relative(d);
-                set(level, p, ForestDecor.pillar(wood, d.getAxis()));
+        int h = savanna ? 2 + random.nextInt(2) : 3 + random.nextInt(4);
+        for (int y = 0; y <= h + 4; y++) if (!level.getBlockState(c.above(y)).canBeReplaced()) return null;
+        if (ForestDecor.woodNear(level, c, 4) != null) return null;
+        Limbs t = new Limbs(level);
+        // the trunk, leaning a block over on a tall one now and then
+        Direction lean = !savanna && h >= 5 && random.nextInt(3) == 0 ? randomSide(random) : null;
+        BlockPos p = c;
+        for (int y = 0; y < h; y++) {
+            if (lean != null && y == h / 2) {
+                t.log(p, lean.getAxis());
+                p = p.relative(lean);
             }
-            int n = 3 + random.nextInt(3);
-            Direction bend = random.nextBoolean() ? d.getClockWise() : d.getCounterClockWise();
-            for (int step = 0; step < n; step++) {
-                boolean up = step % 2 == 1 || step > 1 && random.nextInt(3) == 0; // out, up, out, up: a crooked rising twig
-                BlockPos q = up ? p.above() : p.relative(step == n - 1 && random.nextInt(3) == 0 ? bend : d);
-                if (!level.getBlockState(q).canBeReplaced()) break;
-                set(level, q, twig);
-                twigs.add(q);
-                p = q;
-            }
+            t.log(p, Direction.Axis.Y);
+            if (y < h - 1) p = p.above();
         }
-        // the broken leader
-        BlockPos lead = c.above(h);
-        for (int i = 0, n = random.nextInt(3); i < n && level.getBlockState(lead.above(i)).canBeReplaced(); i++) {
-            set(level, lead.above(i), twig);
-            twigs.add(lead.above(i));
+        BlockPos top = p;
+        Direction[] sides = shuffled(random);
+        // the crown: two or three leaders forking out of the top (Deadwood, climbing out at a slant; flatter in the
+        // savanna), each spreading into limbs that thin to twigs and fork; a low limb or two off the trunk
+        int leaders = 2 + random.nextInt(2);
+        for (int i = 0; i < leaders; i++) {
+            Direction d = sides[i];
+            List<Direction> lead = savanna ? List.of(d, Direction.UP, d) : random.nextBoolean() ? List.of(Direction.UP, d, Direction.UP) : List.of(d, Direction.UP, Direction.UP);
+            BlockPos end = t.limb(top, lead, 1, 0);
+            if (end == null) continue;
+            for (Direction s2 : new Direction[] {d, d.getClockWise(), d.getCounterClockWise()})
+                if (s2 == d || random.nextInt(3) > 0) t.branchOut(random, end, s2, 3 + random.nextInt(3), 0, savanna ? 5 : 3);
         }
-        for (BlockPos t : twigs) set(level, t, Block.updateFromNeighbourShapes(level.getBlockState(t), level, t));
-        if (random.nextInt(3) == 0) { // a branch that came down
-            Direction d = randomSide(random);
-            List<BlockPos> cells = ForestDecor.logCells(level, top(level, c.relative(d, 2).relative(d.getClockWise(), 1)), d.getClockWise(), 2, false);
-            if (cells.size() == 2) ForestDecor.lay(level, cells, wood, d.getClockWise().getAxis());
+        for (int i = 0, n = random.nextInt(3); i < n && h >= 3; i++)
+            t.branchOut(random, t.trunkAt(1 + random.nextInt(h - 2)), sides[(leaders + i) % 4], 2 + random.nextInt(3), 0, 3);
+        if (random.nextInt(3) == 0 && level.getBlockState(top.above()).isAir()) set(level, top.above(), Deadwood.BROKEN_DEADWOOD.get().defaultBlockState());
+        // roots: thin ones running out over the ground and down into it
+        for (Direction d : sides) {
+            if (random.nextInt(4) == 0 || !level.getBlockState(c.relative(d)).canBeReplaced()) continue;
+            BlockPos end = t.limb(c, random.nextBoolean() ? List.of(d) : List.of(d, d), 0, 0);
+            if (end != null && natural(level.getBlockState(end.below()))) t.sink(end);
         }
-        for (int i = 0; i < 4; i++) {
-            BlockPos g = top(level, c.getX() + random.nextInt(5) - 2, c.getZ() + random.nextInt(5) - 2).below();
-            if (dryNatural(level, g) && level.getBlockState(g).is(BlockTags.SUBSTRATE_OVERWORLD) && level.getBlockState(g.above()).canBeReplaced())
+        t.finish();
+        // the ground: a ragged patch of coarse dirt, dry plants, twigs, now and then a fallen limb
+        var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
+        for (int dx = -3; dx <= 3; dx++)
+            for (int dz = -3; dz <= 3; dz++) {
+                BlockPos g = top(level, c.getX() + dx, c.getZ() + dz).below();
+                if (dx * dx + dz * dz > 10 || noise.get(dx * 0.5, dz * 0.5) < -0.1 || !dryNatural(level, g) || !level.getBlockState(g).is(BlockTags.SUBSTRATE_OVERWORLD)
+                        || !level.getBlockState(g.above()).canBeReplaced()) continue;
                 set(level, g, Blocks.COARSE_DIRT.defaultBlockState());
+            }
+        dryPlants(level, random, c, 3, 7);
+        for (int i = 0; i < 3; i++) {
+            BlockPos q = top(level, c.getX() + random.nextInt(7) - 3, c.getZ() + random.nextInt(7) - 3);
+            if (level.getBlockState(q).isAir()) onGround(level, q, Mechanical.TWIGS.get().defaultBlockState());
         }
-        dryPlants(level, random, c, 3, 8);
+        if (random.nextInt(3) == 0) { // a limb that came down, lying in the dust
+            Direction d = randomSide(random);
+            BlockPos g = top(level, c.relative(d, 3).relative(d.getClockWise(), random.nextInt(3) - 1));
+            if (Math.abs(g.getY() - c.getY()) <= 1 && level.getBlockState(g.below()).isFaceSturdy(level, g.below(), Direction.UP)) {
+                Limbs f = new Limbs(level);
+                f.limb(g.relative(d.getCounterClockWise()), wander(random, d.getClockWise(), 3, 0), 0, 1);
+                f.finish();
+            }
+        }
         return c;
     }
 
+    /** Out toward d for n steps, a step up now and then (never twice running, never first), now and then one step aside. */
+    private static List<Direction> wander(RandomSource random, Direction d, int n, double climb) {
+        List<Direction> steps = new ArrayList<>();
+        boolean aside = false;
+        for (int i = 0; i < n; i++) {
+            Direction last = steps.isEmpty() ? null : steps.get(steps.size() - 1);
+            if (i > 0 && last != Direction.UP && random.nextDouble() < climb) steps.add(Direction.UP);
+            else if (!aside && i > 1 && random.nextInt(5) == 0) {
+                steps.add(random.nextBoolean() ? d.getClockWise() : d.getCounterClockWise());
+                aside = true;
+            } else steps.add(d);
+        }
+        return steps;
+    }
+
+    private static Direction[] shuffled(RandomSource random) {
+        List<Direction> l = new ArrayList<>(Direction.Plane.HORIZONTAL.stream().toList());
+        java.util.Collections.shuffle(l, new java.util.Random(random.nextLong()));
+        return l.toArray(new Direction[0]);
+    }
+
     /**
-     * A small rock overhang: a shelf of the rock 2-3 blocks out from a wall, 3 blocks up, 3-5 wide, a shallow hollow
-     * worn into the wall under it with a dry floor. In the dry lands' cliffs (sandstone, terracotta, stone).
+     * A dead tree's wood as it is laid: Deadwood logs and the joined-up thin pieces (Deadwood Branch, Deadwood Twig), each
+     * thin piece remembering which neighbours it joins, so {@link #finish} can set its arms.
+     */
+    private static final class Limbs {
+        private final WorldGenLevel level;
+        private final List<BlockPos> trunk = new ArrayList<>();
+        private final java.util.Map<BlockPos, Block> thin = new java.util.LinkedHashMap<>();
+        private final java.util.Map<BlockPos, java.util.EnumSet<Direction>> joins = new java.util.HashMap<>();
+
+        Limbs(WorldGenLevel level) {
+            this.level = level;
+        }
+
+        void log(BlockPos p, Direction.Axis axis) {
+            set(level, p, ForestDecor.pillar(Deadwood.DEADWOOD.get(), axis));
+            if (axis == Direction.Axis.Y) trunk.add(p);
+        }
+
+        BlockPos trunkAt(int i) {
+            return trunk.get(Math.min(i, trunk.size() - 1));
+        }
+
+        /** A limb from the block at from: logs Deadwood cells first, the last twigs Twig, Branch between. Its end, or null if none laid. */
+        BlockPos limb(BlockPos from, List<Direction> steps, int logs, int twigs) {
+            List<BlockPos> cells = new ArrayList<>();
+            BlockPos p = from;
+            for (Direction d : steps) {
+                p = p.relative(d);
+                BlockState s = level.getBlockState(p);
+                if (!s.canBeReplaced() || !s.getFluidState().isEmpty() || thin.containsKey(p)) break;
+                cells.add(p);
+            }
+            if (cells.isEmpty()) return null;
+            BlockPos prev = from;
+            for (int i = 0; i < cells.size(); i++) {
+                BlockPos q = cells.get(i);
+                Direction d = steps.get(i);
+                if (i < logs) set(level, q, ForestDecor.pillar(Deadwood.DEADWOOD.get(), d.getAxis()));
+                else {
+                    thin.put(q, i >= cells.size() - twigs ? Deadwood.DEADWOOD_TWIG.get() : Deadwood.DEADWOOD_BRANCH.get());
+                    var j = joins.computeIfAbsent(q, k -> java.util.EnumSet.noneOf(Direction.class));
+                    if (thin.containsKey(prev) || level.getBlockState(prev).is(Deadwood.DEADWOOD.get())) j.add(d.getOpposite()); // a lying limb's butt end is free
+                    if (thin.containsKey(prev)) joins.get(prev).add(d);
+                }
+                prev = q;
+            }
+            return prev;
+        }
+
+        /**
+         * A limb out of the block at from toward d: n steps, low and wide (a step up only after two out, one in flat), the
+         * last step a twig; each piece past the first may fork off a short twig to one side or up. logs: its first cells as Deadwood.
+         */
+        void branchOut(RandomSource random, BlockPos from, Direction d, int n, int logs, int flat) {
+            List<Direction> steps = new ArrayList<>();
+            int outs = 0;
+            for (int i = 0; i < n; i++) {
+                boolean up = outs >= 2 && random.nextInt(flat) == 0;
+                steps.add(up ? Direction.UP : i == n - 1 && random.nextBoolean() ? (random.nextBoolean() ? d.getClockWise() : d.getCounterClockWise()) : d);
+                outs = up ? 0 : outs + 1;
+            }
+            List<BlockPos> cells = new ArrayList<>();
+            BlockPos p = from;
+            for (Direction s : steps) cells.add(p = p.relative(s));
+            if (limb(from, steps, logs, 1) == null) return;
+            for (int i = Math.max(1, logs); i < cells.size() - 1; i++) {
+                if (!thin.containsKey(cells.get(i)) || random.nextInt(5) > 1) continue;
+                Direction f = random.nextInt(3) == 0 ? Direction.UP : random.nextBoolean() ? d.getClockWise() : d.getCounterClockWise();
+                if (steps.get(i) == f || steps.get(i) == Direction.UP && f == Direction.UP) continue;
+                limb(cells.get(i), random.nextBoolean() ? List.of(f) : List.of(f, f == Direction.UP ? d : Direction.UP), 0, 1);
+            }
+        }
+
+        /** The thin piece at p goes on down into the ground (a root). */
+        void sink(BlockPos p) {
+            joins.get(p).add(Direction.DOWN);
+        }
+
+        void finish() {
+            thin.forEach((p, b) -> {
+                BlockState s = b.defaultBlockState();
+                for (Direction d : joins.get(p)) s = s.setValue(net.minecraft.world.level.block.PipeBlock.PROPERTY_BY_DIRECTION.get(d), true);
+                set(level, p, s);
+            });
+        }
+    }
+
+    /**
+     * A rock shelter (overhang): a hollow worn into the foot of a cliff by wind and frost, 5-9 wide, 2-3 deep and 3-4
+     * high in its middle, its roof and back rounded in half blocks (the rock's own slabs and stairs, upside down under
+     * the roof) and its lip left jutting over a dry floor of sand or grit. Inside: dead bushes at the mouth, sometimes old
+     * bones or the ash of a fire someone made out of the wind. In the dry lands' cliffs (sandstone, terracotta, stone).
      */
     private static BlockPos overhang(WorldGenLevel level, RandomSource random, BlockPos c) {
-        MountainDecor.Cliff k = MountainDecor.cliff(level, c, 5, 3, 5);
+        MountainDecor.Cliff k = MountainDecor.cliff(level, c, 5, 3, 6);
         if (k == null) return null;
-        Direction up = k.up(), out = up.getOpposite(), side = up.getClockWise();
+        Direction up = k.up(), side = up.getClockWise();
         BlockPos foot = k.foot();
-        if (MountainDecor.sheer(level, foot, up) < 3) return null;
-        int y = 3, len = 2 + random.nextInt(2), half = 1 + random.nextInt(2);
-        BlockState rock = k.rock();
-        // room under its middle: open, level ground out to its edge
-        for (int a = 0; a < len; a++) {
-            BlockPos t = top(level, foot.relative(out, a));
-            if (Math.abs(t.getY() - foot.getY()) > 1) return null;
-            for (int dy = 0; dy <= y; dy++) if (!level.getBlockState(foot.relative(out, a).above(dy)).canBeReplaced()) return null;
+        if (MountainDecor.sheer(level, foot, up) < 5) return null;
+        var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
+        double hw = 2.6 + random.nextDouble() * 1.8, hd = 2.2 + random.nextDouble() * 1.0, hh = 2.1 + random.nextDouble() * 0.8;
+        // the hollow's centre: at the foot of the face, a little above the floor
+        double cx = foot.getX() + 0.5 + up.getStepX() * 0.6, cz = foot.getZ() + 0.5 + up.getStepZ() * 0.6, cy = foot.getY() + 0.9;
+        int uu = up.getStepX(), uw = up.getStepZ(), su = side.getStepX(), sw = side.getStepZ();
+        Shaper.Density rock = (x, y, z) -> { // above 0 where rock stays
+            double dx = x - cx, dz = z - cz, a = dx * uu + dz * uw, s = dx * su + dz * sw, t = y - cy;
+            if (t < -0.9) return 1; // the floor stays
+            double e = Math.sqrt(sq(s / hw) + sq(a / hd) + sq(Math.max(t, 0) / hh) + sq(Math.min(t, 0) / 1.2)) + 0.12 * noise.get(x * 0.5, y * 0.5, z * 0.5);
+            return (e - 1) * 1.5;
+        };
+        int r = (int) Math.ceil(hw) + 1, carved = 0;
+        BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+        List<BlockPos> floor = new ArrayList<>();
+        for (int s = -r; s <= r; s++)
+            for (int a = 0; a <= (int) Math.ceil(hd) + 1; a++)
+                for (int y = 0; y <= (int) Math.ceil(hh) + 2; y++) {
+                    m.set(foot.getX() + uu * a + su * s, foot.getY() + y, foot.getZ() + uw * a + sw * s);
+                    BlockState here = level.getBlockState(m);
+                    if (!SmoothGround.rock(here) && !here.is(BlockTags.TERRACOTTA)) continue;
+                    int bits = 0;
+                    for (int o = 0; o < 8; o++)
+                        if (rock.at(m.getX() + 0.25 + 0.5 * (o & 1), m.getY() + 0.25 + 0.5 * (o >> 2), m.getZ() + 0.25 + 0.5 * ((o >> 1) & 1)) > 0) bits |= 1 << o;
+                    if (bits == 0xFF) continue;
+                    BlockState st = Integer.bitCount(bits) <= 1 ? AIR : Shaper.shape(bits, here.getBlock(), here.is(BlockTags.TERRACOTTA) ? Blocks.RED_SANDSTONE : Blocks.STONE);
+                    BlockPos p = m.immutable();
+                    set(level, p, st == null ? AIR : st);
+                    carved++;
+                    if (y == 0 && (st == null || st.isAir())) floor.add(p);
+                }
+        if (carved < 12) return null;
+        // the floor: dry grit and sand, a dead bush or two at the mouth, old bones or a fire's ash now and then
+        boolean red = k.rock().is(BlockTags.TERRACOTTA) || k.rock().is(Blocks.RED_SANDSTONE);
+        for (BlockPos p : floor) {
+            BlockPos g = p.below();
+            if (natural(level.getBlockState(g))) set(level, g, (random.nextInt(3) == 0 ? Blocks.COARSE_DIRT : red ? Blocks.RED_SAND : Blocks.SAND).defaultBlockState());
         }
-        int built = 0;
-        for (int a = 0; a < len; a++)
-            for (int s = -half; s <= half; s++) {
-                boolean rim = a == len - 1 && (Math.abs(s) == half || random.nextInt(3) == 0);
-                if (rim && a > 0) continue; // a ragged outer edge
-                BlockPos p = foot.relative(out, a).relative(side, s).above(y);
-                if (!level.getBlockState(p).canBeReplaced()) continue; // the wall juts out here already
-                built++;
-                set(level, p, rock);
-                if (a < len - 1 && level.getBlockState(p.above()).canBeReplaced()) set(level, p.above(), rock); // thicker toward the wall
-            }
-        if (built < 3) return null;
-        // the hollow under the shelf: a block worn into the wall, two high, a dry floor
-        for (int s = -half + 1; s <= half - 1; s++) {
-            BlockPos w = foot.relative(up).relative(side, s);
-            if (!SmoothGround.rock(level.getBlockState(w)) || !SmoothGround.rock(level.getBlockState(w.above(2)))) continue;
-            set(level, w, AIR);
-            set(level, w.above(), AIR);
-            if (natural(level.getBlockState(w.below()))) set(level, w.below(), Blocks.COARSE_DIRT.defaultBlockState());
-        }
-        dryPlants(level, random, foot, 2, 3);
-        Decor.logPlaced("overhang_dir_" + Decor.viewAngle(out), foot.above(2));
+        if (!floor.isEmpty() && random.nextInt(3) == 0) {
+            BlockPos f = floor.get(random.nextInt(floor.size()));
+            set(level, f.below(), ScorchedBarrens.WOOD_ASH.get().defaultBlockState());
+            if (random.nextBoolean()) set(level, f, ForestDecor.pillar(ScorchedBarrens.CHARRED_LOG.get(), side.getAxis()));
+        } else if (!floor.isEmpty() && random.nextBoolean()) onGround(level, floor.get(random.nextInt(floor.size())), Mechanical.BONE_PILE.get().defaultBlockState());
+        dryPlants(level, random, foot.relative(up.getOpposite()), 3, 5);
+        Decor.logPlaced("overhang_dir_" + Decor.viewAngle(up.getOpposite()), foot.above(1));
         return foot;
     }
 
     /**
-     * A dried-out creek bed: a shallow channel winding 14-28 blocks over the land, 2-3 wide, two blocks deep in its middle
-     * and one at its edges (SmoothGround then rounds its banks with half steps), its middle floored with Gravel, cracked
-     * mud (Packed Mud) and a few cobbles, its edges with Coarse Dirt and mud. Pebbles in it, dead bushes along its banks.
-     * Its bed only ever steps a block at a time.
+     * A dried-out creek bed (a wash): a shallow, winding hollow 20-26 blocks long, its channel a block below the land and
+     * 2-4 wide, its shelving sides half a step down (Gravel Slab, now and then the ground's own: Sand Slab, Grass Slab ...)
+     * so it lies soft in the land, narrowing to nothing at both ends. Its bed is gravel and the ground's sand or dirt in drifts, cracked mud
+     * (Packed Mud) in the low places, a cobble here and there and pebbles on top; dead bushes and dry grass along the
+     * banks, now and then a bleached branch stranded in it.
      */
     private static BlockPos dryCreek(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!flat(level, c, 2, 1)) return null;
-        double ang = random.nextDouble() * Math.PI * 2, x = c.getX() + 0.5, z = c.getZ() + 0.5;
-        int len = 14 + random.nextInt(15);
-        java.util.Map<Long, Integer> depth = new java.util.LinkedHashMap<>(); // column -> depth (1 edge, 2 middle)
-        int lastY = c.getY() - 1, steps = 0;
-        for (int i = 0; i < len; i++) {
-            ang += (random.nextDouble() - 0.5) * 0.6;
-            x += Math.cos(ang);
-            z += Math.sin(ang);
-            BlockPos mid = top(level, (int) Math.floor(x), (int) Math.floor(z)).below();
-            if (Math.abs(mid.getY() - lastY) > 1 || !creekGround(level, mid, 2)) break;
-            lastY = mid.getY();
-            steps++;
-            depth.merge(BlockPos.asLong(mid.getX(), 0, mid.getZ()), 2, Math::max);
-            // the edges: one or both sides of the middle, across the way it runs
-            double nx = -Math.sin(ang), nz = Math.cos(ang);
-            for (int sgn : new int[] {-1, 1}) {
-                if (sgn == 1 && random.nextInt(4) == 0) continue;
-                BlockPos e = top(level, (int) Math.floor(x + nx * sgn), (int) Math.floor(z + nz * sgn)).below();
-                if (Math.abs(e.getY() - mid.getY()) <= 1 && creekGround(level, e, 1)) depth.merge(BlockPos.asLong(e.getX(), 0, e.getZ()), 1, Math::max);
+        if (!flat(level, c, 3, 1)) return null;
+        var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
+        // the line: a meandering path in small steps, its width swelling and narrowing, tapering at both ends
+        int n = 28 + random.nextInt(10);
+        double[] px = new double[n], pz = new double[n], pw = new double[n];
+        double a = random.nextDouble() * Math.PI * 2, x = c.getX() + 0.5, z = c.getZ() + 0.5;
+        x -= Math.cos(a) * n * 0.35;
+        z -= Math.sin(a) * n * 0.35;
+        for (int i = 0; i < n; i++) {
+            double ang = a + 1.1 * noise.get(i * 0.06, 3.7);
+            x += Math.cos(ang) * 0.7;
+            z += Math.sin(ang) * 0.7;
+            px[i] = x;
+            pz[i] = z;
+            double taper = Math.min(1, Math.min(i, n - 1 - i) / 7.0);
+            pw[i] = (1.5 + 1.3 * (noise.get(i * 0.09, 11.3) + 1) / 2) * taper;
+        }
+        // the whole line on open, level, dry ground, or none at all (a creek cut off short is a pit)
+        for (int i = 0; i < n; i += 2) {
+            BlockPos t = top(level, (int) Math.floor(px[i]), (int) Math.floor(pz[i]));
+            if (Math.abs(t.getY() - c.getY()) > 1 || !creekGround(level, t.below(), 2)) return null;
+        }
+        BlockState ground = level.getBlockState(c.below());
+        Block slab = SmoothGround.slab(ground.getBlock());
+        if (slab == Blocks.AIR) slab = SmoothGround.slab(Blocks.COARSE_DIRT);
+        int x0 = (int) Math.floor(java.util.Arrays.stream(px).min().orElseThrow()) - 3, x1 = (int) Math.ceil(java.util.Arrays.stream(px).max().orElseThrow()) + 3;
+        int z0 = (int) Math.floor(java.util.Arrays.stream(pz).min().orElseThrow()) - 3, z1 = (int) Math.ceil(java.util.Arrays.stream(pz).max().orElseThrow()) + 3;
+        if (Math.max(Math.abs(x0 - c.getX()), Math.abs(x1 - c.getX())) > 15 || Math.max(Math.abs(z0 - c.getZ()), Math.abs(z1 - c.getZ())) > 15) return null;
+        List<BlockPos> bed = new ArrayList<>(), banks = new ArrayList<>();
+        for (int bx = x0; bx <= x1; bx++)
+            for (int bz = z0; bz <= z1; bz++) {
+                // how far inside the channel: > 0 in the bed, 0..-1.1 on the bank
+                double best = -9;
+                for (int i = 0; i < n; i++) {
+                    double d = Math.sqrt(sq(bx + 0.5 - px[i]) + sq(bz + 0.5 - pz[i]));
+                    best = Math.max(best, pw[i] - d);
+                }
+                best += 0.25 * noise.get(bx * 0.4, bz * 0.4);
+                if (best < -1.0) continue;
+                BlockPos g = top(level, bx, bz).below();
+                if (Math.abs(g.getY() + 1 - c.getY()) > 2 || !creekGround(level, g, 2)) continue;
+                clear(level, g.above());
+                if (best > 0.9) { // the channel a block down
+                    set(level, g, AIR);
+                    set(level, g.below(), creekBed(random, noise, g.below(), ground, best));
+                    bed.add(g);
+                } else if (best > -0.2) { // its shelving sides half a block down: gravel, now and then the ground's own
+                    boolean gravel = best > 0.3 || noise.get(bx * 0.5 + 9, bz * 0.5) > 0;
+                    set(level, g, (gravel ? EarthBlocks.GRAVEL_SLAB.get() : slab).defaultBlockState());
+                    banks.add(g);
+                } else banks.add(g.above()); // the bank: only its dry tufts
             }
+        if (bed.size() < 12) return null;
+        for (BlockPos g : bed) if (random.nextInt(6) == 0) rock(level, random, g, Mechanical.LOOSE_STONE.get());
+        for (BlockPos g : banks) {
+            BlockPos on = g.above();
+            int k = random.nextInt(14);
+            BlockState plant = (k == 0 ? Blocks.DEAD_BUSH : Blocks.SHORT_DRY_GRASS).defaultBlockState();
+            // plants can't stand on a slab: the bank's dry tufts grow just beyond it
+            BlockPos beyond = top(level, on.getX() + random.nextInt(3) - 1, on.getZ() + random.nextInt(3) - 1);
+            if (k < 3 && level.getBlockState(beyond).isAir() && plant.canSurvive(level, beyond)) set(level, beyond, plant);
         }
-        if (steps < 10) return null;
-        BlockPos at = null;
-        for (var en : depth.entrySet()) {
-            BlockPos g = top(level, BlockPos.getX(en.getKey()), BlockPos.getZ(en.getKey())).below();
-            int dep = en.getValue();
-            clear(level, g.above());
-            for (int k = 0; k < dep; k++) set(level, g.below(k), AIR);
-            BlockPos bed = g.below(dep);
-            set(level, bed, creekBed(random, dep == 2, level.getBlockState(bed)));
-            if (dep == 2 && random.nextInt(5) == 0) rock(level, random, bed.above(), Mechanical.LOOSE_STONE.get());
-            if (dep == 2 && at == null && random.nextInt(4) == 0) at = bed.above();
+        if (random.nextInt(3) == 0) { // a bleached branch the last flood left
+            BlockPos g = bed.get(bed.size() / 2);
+            Direction d = randomSide(random);
+            Limbs f = new Limbs(level);
+            f.limb(g.relative(d.getOpposite()), List.of(d, d, d.getClockWise(), d), 0, 1);
+            f.finish();
         }
-        for (int i = 0; i < depth.size() / 4; i++) {
-            long k = depth.keySet().stream().skip(random.nextInt(depth.size())).findFirst().orElseThrow();
-            dryPlants(level, random, top(level, BlockPos.getX(k), BlockPos.getZ(k)), 2, 1);
-        }
-        return at != null ? at : c;
+        BlockPos mid = bed.get(bed.size() / 2);
+        return mid;
     }
 
     /** Dry natural ground at g with natural ground under it, deep enough to dig a channel of the depth into. */
@@ -232,93 +400,134 @@ final class DryColdDecor extends StoneAgeFeature {
         return level.getBlockState(g.above()).canBeReplaced();
     }
 
-    private static BlockState creekBed(RandomSource random, boolean middle, BlockState here) {
-        int k = random.nextInt(20);
-        if (middle) return (k < 8 ? Blocks.GRAVEL : k < 14 ? Blocks.PACKED_MUD : k < 16 ? Blocks.COARSE_DIRT : k < 17 ? Blocks.COBBLESTONE : here.getBlock()).defaultBlockState();
-        return (k < 7 ? Blocks.COARSE_DIRT : k < 13 ? Blocks.PACKED_MUD : k < 16 ? Blocks.GRAVEL : here.getBlock()).defaultBlockState();
+    /** The bed: drifts of gravel and the ground's own sand or dirt, cracked mud where it lies deepest, a cobble now and then. */
+    private static BlockState creekBed(RandomSource random, net.minecraft.world.level.levelgen.synth.SimplexNoise noise, BlockPos p, BlockState ground, double deep) {
+        double v = noise.get(p.getX() * 0.25, p.getZ() * 0.25);
+        if (random.nextInt(40) == 0) return Blocks.COBBLESTONE.defaultBlockState();
+        if (deep > 1.2 && v < -0.35) return Blocks.PACKED_MUD.defaultBlockState();
+        if (deep > 0.9 || v > 0.3) return Blocks.GRAVEL.defaultBlockState(); // the gravel runs down the middle
+        if (ground.is(BlockTags.SAND) || ground.is(BlockTags.TERRACOTTA)) return (ground.is(Blocks.RED_SAND) || ground.is(BlockTags.TERRACOTTA) ? Blocks.RED_SAND : Blocks.SAND).defaultBlockState();
+        return (random.nextBoolean() ? Blocks.COARSE_DIRT : Blocks.GRAVEL).defaultBlockState();
     }
 
     // ------------------------------------------------------------------ cold
 
-    /** Blocks of ice lying on the snowy plain: a big chunk half sunk in the ground, a few smaller ones about it. */
+    /**
+     * Ice blocks on the snowy plain: broken-off chunks of old ice (Packed Ice, Blue Ice at the heart) lying tilted every
+     * which way, a big one and two to four smaller, half drowned in a snow drift that the wind has shaped round them:
+     * deep against their windward side, a long tail tapering away in their lee, the snow's surface smooth in layers. Only
+     * where snow never melts (Thaw.coldAllYear), so the drift stays.
+     */
     private static BlockPos iceBlocks(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!flat(level, c, 2, 1)) return null;
-        // a floe pushed up on edge: a sheet of ice one block thick, 3-5 long and 2-3 high with a ragged top, a second
-        // smaller one leaning beside it now and then, half drowned in drift
-        Direction along = randomSide(random), thick = along.getClockWise();
-        int len = 3 + random.nextInt(3), rise = 1 + random.nextInt(2), width = random.nextInt(3) == 0 ? 2 : 1;
-        List<BlockPos> ice = new ArrayList<>();
-        for (int a = 0; a < len; a++)
-            for (int w = 0; w < width; w++) {
-                int edge = a == 0 || a == len - 1 ? 1 : 0;
-                int h = rise - edge - random.nextInt(2) - (w > 0 ? 1 : 0);
-                for (int y = -1; y <= h; y++) {
-                    BlockPos p = top(level, c.relative(along, a).relative(thick, w)).above(y);
-                    if (y > 0 && random.nextInt(7) == 0) break; // a broken edge
-                    BlockState s = level.getBlockState(p);
-                    if (!s.canBeReplaced() && !natural(s)) continue;
-                    set(level, p, (random.nextInt(5) == 0 ? Blocks.BLUE_ICE : Blocks.PACKED_ICE).defaultBlockState());
-                    ice.add(p);
-                }
-            }
-        // broken pieces about it, and drifted snow against it all
-        for (int i = 0; i < 4; i++) {
-            BlockPos p = top(level, c.getX() + random.nextInt(9) - 4, c.getZ() + random.nextInt(9) - 4);
-            if (dryNatural(level, p.below()) && level.getBlockState(p).canBeReplaced() && !ice.contains(p)) {
-                set(level, p.below(), Blocks.PACKED_ICE.defaultBlockState());
-                ice.add(p.below());
-            }
+        if (!flat(level, c, 3, 1) || !com.mechanical.Thaw.coldAllYear(level.getLevel(), level.getBiome(c).value(), c)) return null;
+        var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
+        int pieces = 3 + random.nextInt(3);
+        double[][] ice = new double[pieces][]; // centre x, y, z, half sizes, turn, tip
+        for (int i = 0; i < pieces; i++) {
+            double big = i == 0 ? 1 : 0.45 + random.nextDouble() * 0.35, a = random.nextDouble() * Math.PI * 2, d = i == 0 ? 0 : 2.2 + random.nextDouble() * 2.8;
+            ice[i] = new double[] {c.getX() + 0.5 + Math.cos(a) * d, c.getY() + 0.3 * big, c.getZ() + 0.5 + Math.sin(a) * d,
+                    (1.4 + random.nextDouble() * 0.8) * big, (1.0 + random.nextDouble() * 0.6) * big, (1.0 + random.nextDouble() * 0.6) * big,
+                    random.nextDouble() * Math.PI, (random.nextDouble() - 0.5) * 1.1};
         }
-        for (BlockPos p : ice)
-            for (Direction d : Direction.Plane.HORIZONTAL) {
-                BlockPos q = top(level, p.relative(d));
-                BlockState snow = Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 2 + random.nextInt(4));
-                if (q.getY() <= p.getY() + 1 && level.getBlockState(q).isAir() && snow.canSurvive(level, q)) set(level, q, snow);
+        Shaper.Density chunks = (x, y, z) -> {
+            double best = -9;
+            for (double[] k : ice) {
+                double dx = x - k[0], dy = y - k[1], dz = z - k[2], cs = Math.cos(k[6]), sn = Math.sin(k[6]), ct = Math.cos(k[7]), st = Math.sin(k[7]);
+                double u = dx * cs + dz * sn, w = -dx * sn + dz * cs, v = dy * ct - u * st;
+                u = u * ct + dy * st;
+                double e = Math.max(Math.abs(u) / k[3], Math.max(Math.abs(v) / k[4], Math.abs(w) / k[5]));
+                best = Math.max(best, (1 - e) * k[4] + 0.15 * noise.get(x * 0.6, y * 0.6, z * 0.6));
             }
+            return best;
+        };
+        int r = 7;
+        Shaper.Stone stone = p -> chunks.at(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5) > 0.9 ? Blocks.BLUE_ICE : Blocks.PACKED_ICE;
+        var cells = Shaper.build(level, c.getX() - r, c.getY() - 1, c.getZ() - r, c.getX() + r, c.getY() + 4, c.getZ() + r, chunks, stone, null);
+        if (cells.size() < 10) return null;
+        java.util.Set<BlockPos> solid = new java.util.HashSet<>();
+        for (Shaper.Cell k : cells) solid.add(k.pos());
+        // the drift: snow layers by how sheltered a spot is, deep on the windward side and in a tail on the lee
+        double wind = random.nextDouble() * Math.PI * 2, wx = Math.cos(wind), wz = Math.sin(wind);
+        for (int dx = -r; dx <= r; dx++)
+            for (int dz = -r; dz <= r; dz++) {
+                BlockPos t = top(level, c.getX() + dx, c.getZ() + dz);
+                if (solid.contains(t.below()) || !level.getBlockState(t).canBeReplaced() || Math.abs(t.getY() - c.getY()) > 1) continue;
+                double drift = 0;
+                for (double[] k : ice) {
+                    double ex = t.getX() + 0.5 - k[0], ez = t.getZ() + 0.5 - k[2], along = ex * wx + ez * wz, across = -ex * wz + ez * wx;
+                    double reach = k[3] + (along > 0 ? 4.5 : 1.2); // a long tail downwind, a short bank upwind
+                    double dd = Math.sqrt(sq(along / reach) + sq(across / (k[3] * 1.3)));
+                    drift = Math.max(drift, (1 - dd) * (k[4] * 2.2));
+                }
+                drift += 0.4 * noise.get(t.getX() * 0.3, t.getZ() * 0.3);
+                int layers = (int) Math.round(drift * 4);
+                if (layers <= 0) continue;
+                BlockState g = level.getBlockState(t.below());
+                if (g.hasProperty(net.minecraft.world.level.block.SnowyBlock.SNOWY)) set(level, t.below(), g.setValue(net.minecraft.world.level.block.SnowyBlock.SNOWY, true));
+                if (layers >= 8) {
+                    set(level, t, Blocks.SNOW_BLOCK.defaultBlockState());
+                    layers = Math.min(7, layers - 8);
+                    if (layers > 0 && level.getBlockState(t.above()).canBeReplaced() && !solid.contains(t.above())) set(level, t.above(), Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers));
+                } else set(level, t, Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers));
+            }
+        // snow on the ice's tops
+        for (BlockPos p : Shaper.tops(level, cells))
+            if (random.nextBoolean()) set(level, p.above(), Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 1 + random.nextInt(2)));
         return c;
     }
 
-    /** A boulder split by frost: two halves with a crack between, gravel in the crack, splinters and grit about it. */
+    /**
+     * A boulder split by frost: a rounded block 5-7 across and 3-4 high (smooth in half blocks, the stone's slabs and stairs) cleft
+     * through by a crack that runs a little askew, one half shoved a block away from the other and tipped, the crack's
+     * floor full of grit and snow; flakes of the stone shed about it. The stone is the rock under the ground, or Granite,
+     * Stone, Andesite or Diorite carried there by the ice.
+     */
     private static BlockPos frostSplit(WorldGenLevel level, RandomSource random, BlockPos c) {
         if (!flat(level, c, 2, 1)) return null;
         BlockState found = MountainDecor.rockUnder(level, c);
-        BlockState stone = found != null && found.is(BlockTags.BASE_STONE_OVERWORLD) ? found : SPLIT_STONES[random.nextInt(SPLIT_STONES.length)].defaultBlockState();
-        double r = 2.0 + random.nextDouble() * 0.9;
-        for (int dx = -4; dx <= 4; dx++) for (int dz = -4; dz <= 4; dz++) clear(level, top(level, c.getX() + dx, c.getZ() + dz));
-        // laid out first, then built: the half beyond the crack is shifted a block away from it
-        boolean alongX = random.nextBoolean();
-        Direction away = alongX ? Direction.EAST : Direction.SOUTH;
-        double ry = r * (0.62 + random.nextDouble() * 0.15), rz = r * (0.75 + random.nextDouble() * 0.3);
-        int ir = (int) Math.ceil(r) + 1;
-        for (int dx = -ir; dx <= ir; dx++)
-            for (int dy = -2; dy <= ir; dy++)
-                for (int dz = -ir; dz <= ir; dz++) {
-                    double e = sq(dx / r) + sq((dy + 0.6) / ry) + sq(dz / rz) + (random.nextDouble() - 0.5) * 0.18;
-                    int across = alongX ? dx : dz;
-                    if (e > 1 || across == 0) continue; // the crack
-                    BlockPos p = c.offset(dx, dy, dz);
-                    if (across > 0) p = p.relative(away);
-                    BlockState s = level.getBlockState(p);
-                    if (!s.canBeReplaced() && !natural(s)) continue;
-                    set(level, p, random.nextInt(9) == 0 ? Blocks.COBBLESTONE.defaultBlockState() : stone);
-                }
-        // grit in the crack
-        for (int k = -ir; k <= ir; k++) {
-            for (int a = 0; a <= 1; a++) {
-                BlockPos g = top(level, c.relative(away, a).relative(away.getClockWise(), k)).below();
-                if (dryNatural(level, g) && !SmoothGround.rock(level.getBlockState(g)) && random.nextInt(3) > 0) set(level, g, Blocks.GRAVEL.defaultBlockState());
+        Block stone = (found != null && found.is(BlockTags.BASE_STONE_OVERWORLD) ? found : SPLIT_STONES[random.nextInt(SPLIT_STONES.length)].defaultBlockState()).getBlock();
+        var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
+        double r = 2.6 + random.nextDouble() * 0.8, ry = r * (0.75 + random.nextDouble() * 0.15), rz = r * (0.8 + random.nextDouble() * 0.25);
+        double crack = random.nextDouble() * Math.PI, nx = Math.cos(crack), nz = Math.sin(crack); // the crack's normal
+        double ox = c.getX() + 0.5, oz = c.getZ() + 0.5, oy = c.getY() + ry * 0.2;
+        double tip = 0.25 + random.nextDouble() * 0.2; // the shoved half leans out
+        Shaper.Density split = (x, y, z) -> {
+            double side = (x - ox) * nx + (z - oz) * nz;
+            double sx = x, sz = z, sy = y;
+            if (side > 0) { // the far half: a block further out, tipped away from the crack
+                sx -= nx * 1.6;
+                sz -= nz * 1.6;
+                sy += (side - 1.6) * tip;
             }
+            double e = Math.sqrt(sq((sx - ox) / r) + sq((sy - oy) / ry) + sq((sz - oz) / rz));
+            double body = (1 - e) * ry + 0.2 * noise.get(sx * 0.5, sy * 0.5, sz * 0.5);
+            return side > 0 ? Math.min(body, side - 1.25) : Math.min(body, -side - 0.15);
+        };
+        int ir = (int) Math.ceil(r) + 3;
+        for (int dx = -ir; dx <= ir; dx++) for (int dz = -ir; dz <= ir; dz++) clear(level, top(level, c.getX() + dx, c.getZ() + dz));
+        var cells = Shaper.build(level, c.getX() - ir, c.getY() - 2, c.getZ() - ir, c.getX() + ir, c.getY() + (int) Math.ceil(ry) + 2, c.getZ() + ir, split,
+                p -> random.nextInt(10) == 0 ? Blocks.COBBLESTONE : stone, null);
+        if (cells.size() < 15) return null;
+        Shaper.seat(level, cells, p -> stone, 3);
+        // grit and snow along the crack's floor
+        for (int t = -ir; t <= ir; t++) {
+            int x = (int) Math.floor(ox + nx * 0.5 - nz * t), z = (int) Math.floor(oz + nz * 0.5 + nx * t);
+            BlockPos g = top(level, x, z);
+            if (Math.abs(g.getY() - c.getY()) > 1 || !level.getBlockState(g).canBeReplaced()) continue;
+            if (dryNatural(level, g.below()) && !SmoothGround.rock(level.getBlockState(g.below()))) set(level, g.below(), Blocks.GRAVEL.defaultBlockState());
+            if (MountainDecor.cold(level, g) && level.getBlockState(g).isAir()) set(level, g, Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, 2 + random.nextInt(3)));
         }
-        // splinters and grit
-        for (int i = 0; i < 7; i++) {
-            BlockPos t = top(level, c.getX() + random.nextInt(9) - 4, c.getZ() + random.nextInt(9) - 4);
+        // flakes and splinters shed about it
+        for (int i = 0; i < 8; i++) {
+            BlockPos t = top(level, c.getX() + random.nextInt(11) - 5, c.getZ() + random.nextInt(11) - 5);
             if (!dryNatural(level, t.below()) || !level.getBlockState(t).canBeReplaced()) continue;
             if (random.nextInt(3) == 0) set(level, t.below(), Blocks.GRAVEL.defaultBlockState());
-            else if (random.nextInt(3) == 0) set(level, t, stone);
-            else rock(level, random, t, Decor.looseFor(stone));
+            else if (random.nextInt(3) == 0) { BlockState f = Shaper.shape(0x0F, stone, Blocks.STONE); clear(level, t); set(level, t, f); }
+            else rock(level, random, t, Decor.looseFor(stone.defaultBlockState()));
         }
         return c;
     }
+
 
     /**
      * Mammoth tusks out of the Loess (Mammoth Steppe): a pair of curved Mammoth Tusks, each two blocks tall, rising out of

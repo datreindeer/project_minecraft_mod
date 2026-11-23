@@ -23,11 +23,28 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  * folder, then one shot per line: {@code name x y z distance angle [height]}. The camera stands distance blocks from
  * x,y,z toward angle (degrees, 0 = south, 90 = west), at eye height over the ground there (or height blocks above y when
  * given), looking at the spot. A line {@code @ x y z command} goes to x,y,z and runs the command there (to place a feature
- * on a chosen spot before shooting it). Does nothing without the flag file.
+ * on a chosen spot before shooting it; several commands joined by " ; "); "@@ x y z command" runs only if nothing was placed since
+ * the last shot (the next spot to try); "last" for x y z means the last decoration a command placed, and an angle "dN" is
+ * the angle it logged to look from plus N (needs decorlog.flag). Does nothing without the flag file.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class DecorShots {
-    private record Shot(String name, double x, double y, double z, double distance, double angle, Double height, String cmd) {}
+    private record Shot(String name, double x, double y, double z, double distance, double angle, Double height, String cmd) {
+        /** "last" coordinates (NaN) mean the last decoration a command placed; an angle over 1000 is 1000 + an offset from the angle it logged. */
+        Shot resolve() {
+            if (!Double.isNaN(x)) return this;
+            var p = com.mechanical.worldgen.Decor.lastPlaced;
+            if (p == null) return new Shot(name, 0, 100, 0, distance, angle, height, cmd);
+            double a = angle >= 1000 ? (com.mechanical.worldgen.Decor.lastAngle >= 0 ? com.mechanical.worldgen.Decor.lastAngle : 0) + angle - 1000 : angle;
+            return new Shot(name, p.getX(), p.getY(), p.getZ(), distance, a, height, cmd);
+        }
+    }
+
+    private static double num(String v) {
+        return v.equals("last") ? Double.NaN : v.startsWith("d") ? 1000 + Double.parseDouble(v.substring(1)) : Double.parseDouble(v);
+    }
+
+    private static int placedBefore = -1;
 
     private static final List<Shot> shots = new ArrayList<>();
     private static final List<String> result = new ArrayList<>();
@@ -49,14 +66,21 @@ public final class DecorShots {
                 out.mkdirs();
                 for (String l : lines.subList(1, lines.size())) {
                     String[] p = l.trim().split("\\s+");
-                    if (p.length >= 5 && p[0].equals("@")) { // "@ x y z command": go there, then run the command (e.g. place feature)
-                        shots.add(new Shot("@", Double.parseDouble(p[1]), Double.parseDouble(p[2]), Double.parseDouble(p[3]), 0, 0, null,
-                                String.join(" ", java.util.Arrays.copyOfRange(p, 4, p.length))));
+                    // "@ x y z command": go there, then run the command (e.g. place feature); "@@ ...": only if nothing was placed since
+                    // the last shot (try the next spot); "@ last command": at the last placed decoration ("x y z" = "last")
+                    if (p.length >= 3 && (p[0].equals("@") || p[0].equals("@@"))) {
+                        boolean last = p[1].equals("last");
+                        int at = last ? 2 : 4;
+                        shots.add(new Shot(p[0], num(p[1]), last ? 0 : num(p[2]), last ? 0 : num(p[3]), 0, 0, null,
+                                String.join(" ", java.util.Arrays.copyOfRange(p, at, p.length))));
+                        continue;
+                    }
+                    if (p.length >= 4 && p[1].equals("last")) { // "name last distance angle [height]"
+                        shots.add(new Shot(p[0], Double.NaN, 0, 0, num(p[2]), num(p[3]), p.length > 4 ? num(p[4]) : null, null));
                         continue;
                     }
                     if (p.length < 6) continue;
-                    shots.add(new Shot(p[0], Double.parseDouble(p[1]), Double.parseDouble(p[2]), Double.parseDouble(p[3]), Double.parseDouble(p[4]),
-                            Double.parseDouble(p[5]), p.length > 6 ? Double.parseDouble(p[6]) : null, null));
+                    shots.add(new Shot(p[0], num(p[1]), num(p[2]), num(p[3]), num(p[4]), num(p[5]), p.length > 6 ? num(p[6]) : null, null));
                 }
                 stage = 0;
             }
@@ -95,7 +119,17 @@ public final class DecorShots {
                         mc.stop();
                         return;
                     }
-                    Shot s = shots.get(index);
+                    Shot s0 = shots.get(index);
+                    if (s0.name().equals("@@") && placedBefore >= 0 && com.mechanical.worldgen.Decor.placedCount != placedBefore) {
+                        index++; // placed already: skip the fallback spot
+                        return;
+                    }
+                    if (!s0.name().startsWith("@")) placedBefore = -1;
+                    else if (placedBefore < 0) {
+                        placedBefore = com.mechanical.worldgen.Decor.placedCount;
+                        com.mechanical.worldgen.Decor.lastAngle = -1;
+                    }
+                    Shot s = s0.resolve();
                     server.execute(() -> {
                         ServerPlayer p = player();
                         p.teleportTo(p.level(), s.x(), s.y() + 30, s.z(), java.util.Set.of(), 0, 90, true);
@@ -105,13 +139,14 @@ public final class DecorShots {
                 }
                 case 3 -> { // stand at the camera spot
                     if (ticks < 60) return;
-                    Shot s = shots.get(index);
+                    Shot s = shots.get(index).resolve();
                     if (s.cmd() != null) { // a command line: run it where we are, then on to the next line
                         server.execute(() -> {
                             ServerPlayer pl = player();
-                            pl.level().getServer().getCommands().performPrefixedCommand(pl.createCommandSourceStack(), s.cmd());
+                            for (String c : s.cmd().split(" ; ")) pl.level().getServer().getCommands().performPrefixedCommand(
+                                    pl.createCommandSourceStack().withPermission(net.minecraft.server.permissions.LevelBasedPermissionSet.OWNER), c);
                         });
-                        result.add("@ " + s.cmd());
+                        server.execute(() -> result.add("@ " + s.cmd() + " -> last placed " + com.mechanical.worldgen.Decor.lastPlaced + " angle " + com.mechanical.worldgen.Decor.lastAngle));
                         index++;
                         stage = 2;
                         ticks = 0;

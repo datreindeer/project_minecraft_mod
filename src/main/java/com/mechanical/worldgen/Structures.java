@@ -22,6 +22,10 @@ public final class Structures {
             p -> new OldBonesBlock(true, p), p -> p.mapColor(net.minecraft.world.level.material.MapColor.TERRACOTTA_WHITE).strength(1.0F)
                     .sound(net.minecraft.world.level.block.SoundType.BONE_BLOCK).noOcclusion()
                     .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+    /** The wood ants' mound for OpenDecor.anthill (AnthillBlock; models and texture: scripts/gen_land_decor.py). */
+    public static final net.neoforged.neoforge.registries.DeferredBlock<AnthillBlock> ANTHILL = Mechanical.BLOCKS.registerBlock("anthill",
+            AnthillBlock::new, p -> p.mapColor(net.minecraft.world.level.material.MapColor.PODZOL).strength(0.5F)
+                    .sound(net.minecraft.world.level.block.SoundType.ROOTED_DIRT).noOcclusion());
 
     static {
         FEATURE_TYPES.register("abandoned_campsite", () -> AbandonedCampsite.CODEC);
@@ -75,6 +79,7 @@ public final class Structures {
         FEATURE_TYPES.register("lone_tree", OpenDecor.LONE_TREE::codec);
         FEATURE_TYPES.register("farm_walls", OpenDecor.FARM_WALLS::codec);
         FEATURE_TYPES.register("fire_ring", OpenDecor.FIRE_RING::codec);
+        FEATURE_TYPES.register("root_cellar", OpenDecor.ROOT_CELLAR::codec);
         FEATURE_TYPES.register("dead_tree", DryColdDecor.DEAD_TREE::codec);
         FEATURE_TYPES.register("sand_skeleton", DryColdDecor.SAND_SKELETON::codec);
         FEATURE_TYPES.register("rock_overhang", DryColdDecor.OVERHANG::codec);

@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
 /** Helpers for the small decorations (boulders, carvings, statues). Everything stays within 8 blocks of the origin. */
-final class Decor {
+public final class Decor {
     private static final Block[] FLOWERS = {Blocks.POPPY, Blocks.DANDELION, Blocks.CORNFLOWER, Blocks.OXEYE_DAISY, Blocks.AZURE_BLUET};
 
     /** A rough ellipsoid of stone; the edge is jittered so no two boulders look alike. Returns the placed positions. */
@@ -110,8 +110,20 @@ final class Decor {
     // dev only: with a file decorlog.flag in the game directory, every placed nature decoration is logged (counting and finding them)
     private static final boolean LOG_PLACED = java.nio.file.Files.exists(java.nio.file.Path.of("decorlog.flag"));
 
+    /** Dev only (DecorShots): the last decoration placed by a command (on the server thread) and the angle it logged to view it from. */
+    public static volatile BlockPos lastPlaced;
+    public static volatile int lastAngle, placedCount;
+
     static void logPlaced(String what, BlockPos p) {
-        if (LOG_PLACED) Mechanical.LOGGER.info("decor {} at {} {} {}", what, p.getX(), p.getY(), p.getZ());
+        if (!LOG_PLACED) return;
+        Mechanical.LOGGER.info("decor {} at {} {} {}", what, p.getX(), p.getY(), p.getZ());
+        if (!Thread.currentThread().getName().equals("Server thread")) return;
+        int dir = what.indexOf("_dir_");
+        if (dir >= 0) lastAngle = Integer.parseInt(what.substring(dir + 5));
+        else {
+            lastPlaced = p.immutable();
+            placedCount++;
+        }
     }
 
     /** For logPlaced names: the DecorShots angle (degrees, 0 = camera to the south) that puts a camera on the side of d. */

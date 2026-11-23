@@ -1,0 +1,55 @@
+{
+  "variants": {
+    "part=small": [
+      {
+        "model": "mechanical:block/anthill_small"
+      },
+      {
+        "model": "mechanical:block/anthill_small",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/anthill_small",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/anthill_small",
+        "y": 270
+      }
+    ],
+    "part=base": [
+      {
+        "model": "mechanical:block/anthill_base"
+      },
+      {
+        "model": "mechanical:block/anthill_base",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/anthill_base",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/anthill_base",
+        "y": 270
+      }
+    ],
+    "part=top": [
+      {
+        "model": "mechanical:block/anthill_top"
+      },
+      {
+        "model": "mechanical:block/anthill_top",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/anthill_top",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/anthill_top",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -31,7 +31,7 @@ VALLEYS = mc("taiga", "snowy_taiga", "old_growth_spruce_taiga", "old_growth_pine
 MOUNTAINS = PEAKS + HIGHLAND
 CLIFFS = MOUNTAINS + mc("stony_shore") + mod("basalt_coast")
 OPEN = mc("plains", "sunflower_plains", "meadow", "snowy_plains", "savanna") + mod("hazel_meadow", "pine_heath", "chalk_downs")
-OUTCROP = mc("plains", "sunflower_plains", "meadow", "taiga", "snowy_taiga", "old_growth_pine_taiga", "windswept_hills", "snowy_plains") + mod(
+OUTCROP = mc("plains", "sunflower_plains", "meadow", "taiga", "old_growth_pine_taiga", "windswept_hills") + mod(
     "hazel_meadow", "pine_heath", "glacial_moraine", "slate_highlands")
 BONES = mc("plains", "sunflower_plains", "meadow", "savanna", "savanna_plateau", "snowy_plains") + mod("mammoth_steppe", "chalk_downs", "hazel_meadow")
 ANTS = mc("taiga", "old_growth_pine_taiga", "old_growth_spruce_taiga", "forest", "birch_forest") + mod("pine_heath")
@@ -56,11 +56,8 @@ def count(n):
 
 
 # placed feature: (feature type, biomes, tries per chunk). OFF: switched off until they look right in close-up shots
-# (code kept, feature types registered, no placed feature or biome modifier): see docs/biomes.md for why.
-OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "rock_outcrop", "farm_walls", "frost_split", "anthill",
-       "anthill_open", "juniper_in_plains",
-       # lead review 2026-11-23: not at the quality bar yet (blocky arch, fence-post dead trees, ditch-like creek, unreadable bird cliff)
-       "rock_arch", "dead_tree", "dry_creek", "bird_cliff"]
+# (code kept, feature type registered, no configured or placed feature or biome modifier): see docs/biomes.md for why.
+OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "farm_walls", "juniper_in_plains", "bird_cliff", "root_cellar"]
 PLACED = {
     # mountains
     "talus": ("talus", MOUNTAINS + VALLEYS, count(3)),
@@ -78,15 +75,25 @@ PLACED = {
     "lone_tree": ("lone_tree", LONE, rarity(8)),
     "farm_walls": ("farm_walls", PLAINS, rarity(70)),
     "fire_ring": ("fire_ring", FIRE, rarity(40)),
+    "root_cellar": ("root_cellar", LONE, rarity(60)),
     # dry and warm
     "dead_tree": ("dead_tree", DRY + SAVANNA, rarity(5)),
     "sand_skeleton": ("sand_skeleton", SAND, rarity(14)),
     "dry_creek": ("dry_creek", DRY + SAVANNA, rarity(6)),
+    "rock_overhang": ("rock_overhang", ROCKY_DRY, count(2)),
     # cold
     "frost_split": ("frost_split", FROST, rarity(20)),
+    "ice_blocks": ("ice_blocks", SNOWY, rarity(16)),
     "mammoth_tusks": ("mammoth_tusks", mod("mammoth_steppe"), rarity(8)),
 }
 
+# dev only: DECOR_TEST=1 switches everything on and places it far more often, for test worlds (never commit its output)
+import os
+if os.environ.get("DECOR_TEST"):
+    OFF = []
+    PLACED = {n: (f, b, rarity(t[0]["chance"] if t[0]["chance"] <= 7 else max(2, t[0]["chance"] // 4)) if t[0]["type"] == "minecraft:rarity_filter" else count(max(2, t[0]["count"])))
+              for n, (f, b, t) in PLACED.items()}
+    PLACED["farm_walls"] = PLACED["farm_walls"][:2] + (rarity(2),)  # plains are few in the test areas
 for name, (feature, biomes, tries) in PLACED.items():
     if name in OFF:
         continue
@@ -98,14 +105,17 @@ for name, (feature, biomes, tries) in PLACED.items():
 
 # lone junipers on the open plain (gen_earth.py's juniper feature; it has its own clumps in taiga and hills)
 if "juniper_in_plains" not in OFF:
-    w(D / "worldgen/placed_feature/juniper_in_plains.json", {"feature": "mechanical:juniper", "placement": rarity(5) + [
+    w(D / "worldgen/placed_feature/juniper_in_plains.json", {"feature": "mechanical:juniper", "placement": (count(2) if os.environ.get("DECOR_TEST") else rarity(5)) + [
         {"type": "minecraft:in_square"}, {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"},
         {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:all_of", "predicates": [
             {"type": "minecraft:replaceable"}, {"type": "minecraft:matching_block_tag", "tag": "minecraft:substrate_overworld", "offset": [0, -1, 0]}]}}]})
     w(D / "neoforge/biome_modifier/add_juniper_in_plains.json", {"type": "neoforge:add_features", "biomes": sorted(mc("plains", "meadow") + mod("hazel_meadow", "chalk_downs")),
         "features": "mechanical:juniper_in_plains", "step": "vegetal_decoration"})
 for name in OFF:  # anything an earlier run wrote for a feature now off
-    for f in (D / f"worldgen/feature/{name}.json", D / f"worldgen/placed_feature/{name}.json", D / f"neoforge/biome_modifier/add_{name}.json"):
+    feature = PLACED[name][0] if name in PLACED else name
+    if any(PLACED[n][0] == feature for n in PLACED if n not in OFF):
+        feature = None  # still used by a placement that is on (anthill_open and anthill share one)
+    for f in ([D / f"worldgen/feature/{feature}.json"] if feature else []) + [D / f"worldgen/placed_feature/{name}.json", D / f"neoforge/biome_modifier/add_{name}.json"]:
         f.unlink(missing_ok=True)
 print(f"{len([n for n in PLACED if n not in OFF])} land decorations on, {len(OFF)} off")
 
@@ -214,3 +224,86 @@ if '"block.mechanical.rib_cage"' not in text:  # appended as text, so the rest o
     json.loads(text)
     LANG.write_text(text, encoding="utf-8")
 print("old bones models ok")
+
+# ---------------------------------------------------------------- the anthill (worldgen/AnthillBlock): a dome of needles in fine steps
+import random as _random
+
+from PIL import Image
+
+
+def needles_tex(seed):
+    """Spruce needles and bits of twig heaped by wood ants: warm browns, short strokes every way, dark holes, a few ants."""
+    rnd = _random.Random(seed)
+    img = Image.new("RGB", (16, 16), (96, 68, 42))
+    px = img.load()
+    for _ in range(170):  # needles: 2-3 px strokes, horizontal, vertical or diagonal
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        dx, dy = rnd.choice([(1, 0), (0, 1), (1, 1), (1, -1)])
+        col = rnd.choice([(128, 92, 54), (146, 106, 60), (112, 78, 46), (164, 124, 72), (84, 58, 36), (138, 100, 52)])
+        for k in range(rnd.choice([2, 2, 3])):
+            px[(x + dx * k) % 16, (y + dy * k) % 16] = col
+    for _ in range(9):  # the ants' holes
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        px[x, y] = (46, 31, 21)
+    for _ in range(3):  # ants
+        px[rnd.randrange(16), rnd.randrange(16)] = (24, 14, 10)
+    return img
+
+
+TEXB = A / "textures/block"
+needles_tex(20261123).save(TEXB / "anthill.png")
+
+
+def dome(layers):
+    """Stacked boxes (y0, y1, half width) round the block's middle, each face cut from the texture by its size."""
+    els = []
+    rnd = _random.Random(len(layers))
+    for i, (y0, y1, h) in enumerate(layers):
+        jx, jz = rnd.uniform(-0.5, 0.5), rnd.uniform(-0.5, 0.5)  # each course a little off centre: lumpy, not turned
+        x0, x1, z0, z1 = 8 - h + jx, 8 + h + jx, 8 - h + jz, 8 + h + jz
+        v = (y0 * 5) % 14  # each course its own row of the texture, or every course shows the same stripe
+        side = [rnd.uniform(0, max(0, 16 - min(16, 2 * h))), v, 0, v + min(2, y1 - y0)]
+        side[2] = side[0] + min(16, 2 * h)
+        faces = {f: {"uv": [round(a, 2) for a in side], "texture": "#n"} for f in ("north", "south", "east", "west")}
+        faces["up"] = {"uv": [max(0, x0), max(0, z0), min(16, x1), min(16, z1)], "texture": "#n"}
+        els.append({"from": [round(x0, 2), y0, round(z0, 2)], "to": [round(x1, 2), y1, round(z1, 2)], "faces": faces})
+    return {"parent": "minecraft:block/block", "ambientocclusion": True, "textures": {"particle": "mechanical:block/anthill", "n": "mechanical:block/anthill"},
+            "elements": els}
+
+
+def profile(r0, height, y_from=0, y_to=None, step=1.0):
+    """A rounded dome r0 wide at its foot and height high, cut in steps of step px: the half width at each step's middle."""
+    out, y = [], 0.0
+    while y < height - 0.01:
+        y1 = min(height, y + step)
+        h = r0 * math.sqrt(max(0.0, 1 - ((y + y1) / 2 / height) ** 2)) ** 0.8
+        if h >= 0.6:
+            out.append((round(y, 2), round(y1, 2), round(h, 2)))
+        y = y1
+    return out
+
+
+BIG = profile(20, 28, step=1.0)  # one dome over two blocks: the lower 16 px are the base, the rest the top
+ANTHILL = {"small": profile(10, 12, step=1.0),
+           "base": [(a, b, h) for a, b, h in BIG if b <= 16],
+           "top": [(a - 16, b - 16, h) for a, b, h in BIG if a >= 16]}
+for part, layers in ANTHILL.items():
+    w(A / f"models/block/anthill_{part}.json", dome(layers))
+w(A / "blockstates/anthill.json", {"variants": {f"part={p}": [{"model": f"mechanical:block/anthill_{p}", **({"y": y} if y else {})} for y in (0, 90, 180, 270)]
+                                                for p in ANTHILL}})
+w(A / "items/anthill.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/anthill_small"}})
+w(D / "loot_table/blocks/anthill.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "mechanical:anthill"}],
+                                                                              "condition": {"type": "minecraft:survives_explosion"}}], "random_sequence": "mechanical:blocks/anthill"})
+text = LANG.read_text(encoding="utf-8")
+if '"block.mechanical.anthill"' not in text:
+    text = text.rstrip().rstrip("}").rstrip() + ',\n  "block.mechanical.anthill": "Anthill"\n}\n'
+    json.loads(text)
+    LANG.write_text(text, encoding="utf-8")
+
+# the root cellar's store (OpenDecor.rootCellar): what was put by for the winter, mostly gone to seed and dust
+w(D / "loot_table/chests/root_cellar.json", {"type": "minecraft:chest", "pools": [{"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": [
+    {"type": "minecraft:item", "name": n, "weight": wt, "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": mx}}]}
+    for n, wt, mx in (("mechanical:peas", 6, 4), ("mechanical:wild_carrot", 6, 3), ("mechanical:barley_grain", 5, 5), ("mechanical:flax_seeds", 4, 3),
+                      ("minecraft:beetroot_seeds", 3, 3), ("mechanical:cordage", 2, 2), ("minecraft:bone_meal", 2, 2))]}],
+    "random_sequence": "mechanical:chests/root_cellar"})
+print("anthill and root cellar ok")

@@ -1,0 +1,1337 @@
+{
+  "parent": "mechanical:wilderness/roof_of_the_world",
+  "criteria": {
+    "under_arch": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:any_of",
+          "terms": [
+            {
+              "type": "minecraft:all_of",
+              "terms": [
+                {
+                  "type": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 3,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 3,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 3,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 4,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 4,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 4,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 5,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 5,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 5,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 6,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 6,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 6,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 7,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 7,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 7,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 2,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 2,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 2,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 3,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 3,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 3,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 4,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 4,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 4,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 5,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 5,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 5,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 6,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 6,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": 6,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -2,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -2,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -2,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -3,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -3,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -3,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -4,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -4,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -4,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -5,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -5,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -5,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -6,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -6,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 1,
+                          "offsetZ": -6,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:location_check",
+                  "offsetX": 3,
+                  "offsetZ": 0,
+                  "predicate": {
+                    "can_see_sky": true
+                  }
+                },
+                {
+                  "type": "minecraft:location_check",
+                  "offsetX": -3,
+                  "offsetZ": 0,
+                  "predicate": {
+                    "can_see_sky": true
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:all_of",
+              "terms": [
+                {
+                  "type": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 3,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 3,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 3,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 4,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 4,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 4,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 5,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 5,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 5,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 6,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 6,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 6,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 7,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 7,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 0,
+                          "offsetY": 7,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 2,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 2,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 2,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 3,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 3,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 3,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 4,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 4,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 4,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 5,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 5,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 5,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 6,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 6,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": 6,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -2,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -2,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -2,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -3,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -3,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -3,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -4,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -4,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -4,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -5,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -5,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -5,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -6,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:base_stone_overworld"
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -6,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": [
+                                "minecraft:sandstone",
+                                "minecraft:red_sandstone"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "minecraft:location_check",
+                          "offsetX": -6,
+                          "offsetY": 1,
+                          "offsetZ": 0,
+                          "predicate": {
+                            "block": {
+                              "blocks": "#minecraft:terracotta"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:location_check",
+                  "offsetX": 0,
+                  "offsetZ": 3,
+                  "predicate": {
+                    "can_see_sky": true
+                  }
+                },
+                {
+                  "type": "minecraft:location_check",
+                  "offsetX": 0,
+                  "offsetZ": -3,
+                  "predicate": {
+                    "can_see_sky": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "under_arch"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:red_sandstone"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.under_the_arch.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.under_the_arch.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

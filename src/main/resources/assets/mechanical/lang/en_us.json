@@ -3149,6 +3149,10 @@
   "block.mechanical.hazel_fallen_bark": "Fallen Hazel Bark",
   "block.mechanical.pine_fallen_bark": "Fallen Pine Bark",
   "block.mechanical.yew_fallen_bark": "Fallen Yew Bark",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
+  "block.mechanical.deadwood_twig": "Deadwood Twig",
+  "block.mechanical.anthill": "Anthill",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -3843,6 +3847,8 @@
   "advancements.mechanical.wilderness.after_the_fire.description": "Pick Fireweed, the first flower to come up through the ash of the Scorched Barrens. Plants take root in Burnt Soil again",
   "advancements.mechanical.wilderness.roof_of_the_world.title": "Roof of the World",
   "advancements.mechanical.wilderness.roof_of_the_world.description": "Climb a mountain peak above Y 250. The highest ranges far inland rise to nearly Y 290",
+  "advancements.mechanical.wilderness.under_the_arch.title": "Under the Arch",
+  "advancements.mechanical.wilderness.under_the_arch.description": "Stand beneath a natural rock arch. Wind and frost wear them out of the rock in the hills, the karst and the badlands; they are rare",
   "advancements.mechanical.wilderness.old_bones.title": "Old Bones",
   "advancements.mechanical.wilderness.old_bones.description": "Find the bones of a long-dead animal and stand among them: on the plains and the steppe, half buried in the desert sand, or mammoth tusks in the Loess",
   "advancements.mechanical.wilderness.burnt_hall.title": "The Burnt Hall",
@@ -4718,7 +4724,5 @@
   "advancements.mechanical.folklore.dune_wraith.title": "Shape in the Sand",
   "advancements.mechanical.folklore.dune_wraith.description": "See a Dune Wraith in a desert sandstorm. It is after your water",
   "advancements.mechanical.folklore.dune_glass.title": "Glass from the Storm",
-  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
+  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass"
 }
