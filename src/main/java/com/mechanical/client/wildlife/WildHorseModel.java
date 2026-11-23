@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 
 /**
  * Wild horse (tarpan / Przewalski type): stocky barrel, thick neck with a short erect mane and no forelock, a big
- * heavy head with a long face and broad jowls, a dark tail with a short-haired dock. Back ~19 px.
+ * crested neck, a belly curving up into the flank, a heavy head with a long face and broad jowls, a dark tail with a short-haired dock. Back ~19 px.
  * Texture textures/entity/wildlife/wild_horse.png (128x64), painted by scripts/gen_wild_horse_texture.py whose BOXES
  * table mirrors the cubes below (keep them in sync).
  */
@@ -88,18 +88,22 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, -5.0F, -10.0F, 9.0F, 10.0F, 20.0F, g),
-                PartPose.offset(0.0F, 10.0F, 0.0F));
-        // Build: withers, croup, chest, buttocks and belly round off the barrel; only on the bare horse (the inflated
-        // blanket / armour copies leave it empty) and hidden under blanket or armour, which it would poke through.
+        // The bare horse's barrel is a pixel shallower (the girth boxes below hang the belly back down); the inflated
+        // blanket / armour / satchel copies keep the full box, so their textures still fit.
         boolean bare = g == CubeDeformation.NONE;
-        body.addOrReplaceChild("build", bare ? CubeListBuilder.create()
+        PartDefinition body = root.addOrReplaceChild("body",
+                CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, -5.0F, -10.0F, 9.0F, bare ? 9.0F : 10.0F, 20.0F, g),
+                PartPose.offset(0.0F, 10.0F, 0.0F));
+        // Build, only on the bare horse: withers and croup on top (hidden under the blanket or armour), chest, buttocks
+        // and a belly that is deepest at the girth and curves up into the flank (hidden under armour only).
+        body.addOrReplaceChild("build_top", bare ? CubeListBuilder.create()
                 .texOffs(0, 40).addBox(-3.0F, -6.0F, -9.0F, 6.0F, 1.0F, 6.0F)
-                .texOffs(24, 40).addBox(-4.0F, -6.0F, 3.0F, 8.0F, 1.0F, 6.0F)
+                .texOffs(24, 40).addBox(-4.0F, -6.0F, 3.0F, 8.0F, 1.0F, 6.0F) : CubeListBuilder.create(), PartPose.ZERO);
+        body.addOrReplaceChild("build", bare ? CubeListBuilder.create()
                 .texOffs(52, 40).addBox(-3.5F, -3.0F, -11.0F, 7.0F, 8.0F, 1.0F)
                 .texOffs(68, 40).addBox(-3.5F, -4.0F, 10.0F, 7.0F, 8.0F, 1.0F)
-                .texOffs(0, 48).addBox(-3.5F, 5.0F, -6.0F, 7.0F, 1.0F, 11.0F) : CubeListBuilder.create(), PartPose.ZERO);
+                .texOffs(0, 48).addBox(-4.0F, 4.0F, -9.0F, 8.0F, 2.0F, 10.0F)
+                .texOffs(40, 50).addBox(-3.5F, 4.0F, 1.0F, 7.0F, 1.0F, 4.0F) : CubeListBuilder.create(), PartPose.ZERO);
         // Tail: short-haired dock, then the long dark hair hanging from it.
         body.addOrReplaceChild("tail",
                 CubeListBuilder.create()
@@ -113,6 +117,9 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
                         .texOffs(58, 0).addBox(-2.0F, -9.0F, -3.0F, 4.0F, 10.0F, 6.0F, g)
                         .texOffs(78, 0).addBox(-1.0F, -10.0F, 2.5F, 2.0F, 10.0F, 2.0F, g),
                 PartPose.offsetAndRotation(0.0F, -2.5F, -8.5F, NECK_X, 0.0F, 0.0F));
+        // the crest: the upper neck thickens under the mane
+        neck.addOrReplaceChild("crest", bare ? CubeListBuilder.create().texOffs(84, 48).addBox(-2.5F, -8.0F, 0.5F, 5.0F, 6.0F, 2.0F)
+                : CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition head = neck.addOrReplaceChild("head",
                 CubeListBuilder.create()
                         .texOffs(86, 0).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 6.0F, g)
@@ -149,9 +156,11 @@ public class WildHorseModel extends EntityModel<WildAnimalRenderState> {
     @Override
     public void setupAnim(WildAnimalRenderState state) {
         super.setupAnim(state);
-        boolean covered = state.saddled || state.armorColor != 0;
-        body.getChild("build").visible = !covered;
-        head.getChild("jowls").visible = !covered;
+        boolean armoured = state.armorColor != 0;
+        body.getChild("build_top").visible = !armoured && !state.saddled;
+        body.getChild("build").visible = !armoured;
+        neck.getChild("crest").visible = !armoured;
+        head.getChild("jowls").visible = !armoured;
 
         if (CarcassRenderer.isHung(state)) {
             CarcassRenderer.hangLegs(new ModelPart[] {leftFrontLeg, rightFrontLeg}, new ModelPart[] {leftHindLeg, rightHindLeg});
