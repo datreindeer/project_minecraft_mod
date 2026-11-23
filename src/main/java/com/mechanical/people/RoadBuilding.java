@@ -387,8 +387,9 @@ public final class RoadBuilding extends SavedData {
     }
 
     /**
-     * Appends planned columns to the road, each surface at most 1 block above or below the one before (A7: the road cuts
-     * into rises and is filled up over dips, so a step is never a cliff).
+     * Appends planned columns to the road, each surface at most 1 block above or below the one before and never two
+     * changes in a row (A7: the road cuts into rises and is filled up over dips, so every rise is a slab and then the full
+     * block, two half steps, never a staircase).
      */
     static void append(Road r, List<BlockPos> path) {
         for (BlockPos p : path) {
@@ -396,7 +397,8 @@ public final class RoadBuilding extends SavedData {
             if (!r.cells.isEmpty()) {
                 BlockPos last = r.cell(r.cells.size() - 1);
                 if (last.getX() == p.getX() && last.getZ() == p.getZ()) continue;
-                y = Math.clamp(y, last.getY() - 1, last.getY() + 1);
+                boolean justChanged = r.cells.size() >= 2 && r.cell(r.cells.size() - 2).getY() != last.getY();
+                y = justChanged ? last.getY() : Math.clamp(y, last.getY() - 1, last.getY() + 1);
             }
             r.cells.add(BlockPos.asLong(p.getX(), y, p.getZ()));
         }
@@ -477,6 +479,7 @@ public final class RoadBuilding extends SavedData {
         return s.is(EarthBlocks.DIRT_PATH_SLAB) || s.is(EarthBlocks.DIRT_SLAB) || s.is(EarthBlocks.GRASS_SLAB) || s.is(EarthBlocks.COARSE_DIRT_SLAB)
                 || s.is(EarthBlocks.PODZOL_SLAB) || s.is(EarthBlocks.SAND_SLAB) || s.is(EarthBlocks.RED_SAND_SLAB) || s.is(EarthBlocks.GRAVEL_SLAB)
                 || s.is(EarthBlocks.MUD_SLAB) || s.is(EarthBlocks.PEAT_SLAB) || s.is(EarthBlocks.LOESS_SLAB) || s.is(EarthBlocks.MOSS_SLAB)
+                || s.is(EarthBlocks.PACKED_SAND_SLAB) || s.is(EarthBlocks.PACKED_RED_SAND_SLAB) || s.is(EarthBlocks.PACKED_SNOW_SLAB)
                 || s.is(EarthBlocks.DIRT_STAIRS) || s.is(EarthBlocks.GRASS_STAIRS) || s.is(EarthBlocks.COARSE_DIRT_STAIRS)
                 || s.is(EarthBlocks.SAND_STAIRS) || s.is(EarthBlocks.RED_SAND_STAIRS) || s.getBlock() == SmoothGround.slab(chalk());
     }
@@ -502,10 +505,10 @@ public final class RoadBuilding extends SavedData {
     private static boolean lay(ServerLevel level, Road r, BlockPos at, boolean step, Palette pal, int wear, boolean ruts, Direction side) {
         int y = at.getY(), x = at.getX(), z = at.getZ();
         BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
-        boolean snowed = false;
+        int snow = 0; // snow layers lying on the column
         while (level.getBlockState(top).is(Blocks.SNOW) && top.getY() > y) {
+            snow += level.getBlockState(top).getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS);
             top = top.below();
-            snowed = true;
         }
         BlockState local = level.getBlockState(top);
         boolean localWet = level.getFluidState(top).is(FluidTags.WATER);
@@ -540,11 +543,10 @@ public final class RoadBuilding extends SavedData {
         if (!step && !surface.is(pal.planks) && !surface.is(pal.log)) {
             double h = hash01(x, z, 9);
             BlockState cover = null;
-            // snowy land: trodden snow, a thin layer over the track, the earth showing through in broken wheel tracks
-            // (a footpath: down its middle) and a few worn patches
-            boolean bare = wear == 1 && ruts && hash01(x, z, 14) < 0.55 || wear == 0 && !ruts && hash01(x, z, 14) < 0.4 || smooth(x, z, 13, 4) > 0.72;
-            if (pal.cold) cover = bare ? null : Blocks.SNOW.defaultBlockState();
-            else if (grassy) cover = h < 0.03 ? Blocks.DANDELION.defaultBlockState() : h < 0.05 ? Blocks.POPPY.defaultBlockState()
+            // snow that lay here goes back: as deep on the grassy edges, 2 layers less where the track is trodden
+            int layers = snow == 0 ? (pal.cold && (grassy || wear == 2) ? 1 : 0) : Math.min(7, grassy || wear == 2 ? snow : snow - 2);
+            if (layers > 0) cover = Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers);
+            else if (grassy && !pal.cold) cover = h < 0.03 ? Blocks.DANDELION.defaultBlockState() : h < 0.05 ? Blocks.POPPY.defaultBlockState()
                     : h < 0.32 ? Blocks.SHORT_GRASS.defaultBlockState() : null;
             if (cover != null && cover.canSurvive(level, surfacePos.above())) set(level, surfacePos.above(), cover);
         }
@@ -585,7 +587,11 @@ public final class RoadBuilding extends SavedData {
         int x = at.getX(), z = at.getZ();
         if (!level.hasChunkAt(at)) return false;
         BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
-        if (level.getBlockState(top).is(Blocks.SNOW) || level.getBlockState(top.above()).is(Blocks.SNOW)) return false; // snow stays as it lies
+        boolean snowy = level.getBlockState(top.above()).is(Blocks.SNOW);
+        while (level.getBlockState(top).is(Blocks.SNOW) && top.getY() > level.getMinY()) {
+            snowy = true;
+            top = top.below();
+        }
         BlockState t = level.getBlockState(top);
         if (!soil(t, level, top) || !clearable(level.getBlockState(top.above())) || !level.getFluidState(top.above()).isEmpty()) return false;
         int h = top.getY() - y;
@@ -593,11 +599,18 @@ public final class RoadBuilding extends SavedData {
         if (slabbed && !slab.is(SmoothGround.slab(t.getBlock()))) return false; // no slab of its own: leave it
         if (h >= (slabbed ? 1 : 2) && h <= 3) {
             for (int yy = top.getY() - 1; yy > y + 1; yy--) if (!natural(level.getBlockState(new BlockPos(x, yy, z)))) return false;
-            for (int yy = top.getY() + 1; yy > y + 1; yy--) set(level, new BlockPos(x, yy, z), Blocks.AIR.defaultBlockState());
-            set(level, new BlockPos(x, y + 1, z), slabbed ? slab : t);
+            for (int yy = top.getY() + 2; yy > y + 1; yy--) set(level, new BlockPos(x, yy, z), Blocks.AIR.defaultBlockState());
+            if (snowy) {
+                // under snow: the bank's ground drops to the road's level (or a block above) and the snow lies on it again,
+                // half a block deep at the road's edge, so the half step is snow and nothing is left bare
+                int ground = slabbed ? y : y + 1;
+                for (int yy = y + 1; yy > ground; yy--) set(level, new BlockPos(x, yy, z), Blocks.AIR.defaultBlockState());
+                set(level, new BlockPos(x, ground, z), t);
+                set(level, new BlockPos(x, ground + 1, z), Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, slabbed ? 4 : 1));
+            } else set(level, new BlockPos(x, y + 1, z), slabbed ? slab : t);
             return h >= 2;
         }
-        if (slabbed && h == -1) set(level, top.above(), slab);
+        if (slabbed && h == -1 && !snowy) set(level, top.above(), slab);
         return false;
     }
 
@@ -661,19 +674,19 @@ public final class RoadBuilding extends SavedData {
                 rooted = Blocks.ROOTED_DIRT.defaultBlockState();
         BlockState fill = Blocks.DIRT.defaultBlockState();
         BlockState[] earth, specks = {gravel}, dashes = {};
-        double speckRate = 0.025;
+        double speckRate = 0.012;
         boolean conifer = false;
         if (ground == RED) {
-            BlockState rs = Blocks.RED_SAND.defaultBlockState();
-            earth = new BlockState[] {rs};
+            BlockState rs = Blocks.RED_SAND.defaultBlockState(), pr = EarthBlocks.PACKED_RED_SAND.get().defaultBlockState();
+            earth = new BlockState[] {pr, rs, pr};
             specks = new BlockState[] {coarse, coarse, gravel, packed};
             speckRate = 0.14;
             dashes = new BlockState[] {coarse, coarse, packed};
             fill = rs;
         } else if (ground == SAND) {
-            // compacted sand: scattered coarse dirt, gravel and a little packed mud, darker in the two broken wheel tracks
-            BlockState sd = Blocks.SAND.defaultBlockState();
-            earth = new BlockState[] {sd};
+            // packed and loose sand: scattered coarse dirt, gravel and a little packed mud, darker in the two broken wheel tracks
+            BlockState sd = Blocks.SAND.defaultBlockState(), ps = EarthBlocks.PACKED_SAND.get().defaultBlockState();
+            earth = new BlockState[] {ps, sd, ps};
             specks = new BlockState[] {coarse, coarse, gravel, packed};
             speckRate = 0.14;
             dashes = new BlockState[] {coarse, coarse, gravel, packed};
@@ -682,8 +695,11 @@ public final class RoadBuilding extends SavedData {
             earth = new BlockState[] {packed, rooted, coarse, packed, rooted}; // no mud: it is near black
             specks = new BlockState[] {rooted};
         } else if (ground == SNOW) {
-            earth = new BlockState[] {rooted, coarse, coarse, coarse, rooted};
+            // trodden snow, the earth showing through in the broken wheel tracks
+            earth = new BlockState[] {EarthBlocks.PACKED_SNOW.get().defaultBlockState()};
             specks = new BlockState[] {coarse};
+            speckRate = 0.03;
+            dashes = new BlockState[] {coarse, rooted, coarse};
             conifer = true;
         } else if (ground == PODZOL) {
             earth = new BlockState[] {Blocks.PODZOL.defaultBlockState(), coarse, rooted, coarse, packed};
@@ -692,7 +708,7 @@ public final class RoadBuilding extends SavedData {
             earth = new BlockState[] {packed, rooted, coarse, coarse, rooted};
         }
         if (extra == chalk()) {
-            specks = new BlockState[] {gravel, extra.defaultBlockState()};
+            specks = new BlockState[] {gravel, coarse, coarse, extra.defaultBlockState()};
             speckRate = 0.04;
         } else if (extra != null) earth = java.util.stream.Stream.concat(java.util.Arrays.stream(earth), java.util.stream.Stream.of(extra.defaultBlockState()))
                 .toArray(BlockState[]::new);

@@ -1,0 +1,90 @@
+{
+  "parent": "mechanical:wilderness/chalk_downs",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_sand"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_red_sand"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_snow"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_sand_slab"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_red_sand_slab"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_snow_slab"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:packed_sand"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.packed_ground.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.packed_ground.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

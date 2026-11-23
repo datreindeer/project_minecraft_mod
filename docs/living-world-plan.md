@@ -68,15 +68,18 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
   vägens höjd) och kanterna fransar ut i gräset runt om med Worn Grass, gräs, tuvor och någon blomma. Själva marken är
   fläckig av fullhöga jordblock i brusfläckar, aldrig ränder (`RoadBuilding.palette`; marken 4 block ut på var sida röstar,
   annars biomen): Coarse Dirt, Rooted Dirt och Packed Mud med enstaka gruskorn på gräs; Coarse Dirt, Podzol och Rooted Dirt
-  i taiga; Packed Mud, Coarse Dirt och Sand i öken; Coarse Dirt, Red Sand och Packed Mud i badlands; Packed Mud, Rooted
-  Dirt och Coarse Dirt i träsk; Coarse Dirt och Rooted Dirt i snö, där snön ligger kvar i drivor längs kanterna; Loess,
-  Chalk Block och Peat blandas in där de är traktens mark. Ingen Dirt Path (lägre än grannarna, så den får mörk kantskugga)
+  i taiga; Packed Sand och Sand i öken (Packed Red Sand och Red Sand i badlands) med strödda Coarse Dirt, grus och lite
+  Packed Mud, mörkare i två brutna hjulspår; Packed Mud, Rooted Dirt och Coarse Dirt i träsk; Packed Snow i snö, med jord
+  i hjulspåren och snön som låg där tillbaka (lika djup på kanterna, 2 lager mindre på spåret); Loess och Peat blandas in
+  där de är traktens mark, Chalk Block bara som enstaka korn. Gräs bredvid spåret är aldrig högt (Tall Grass blir Short
+  Grass). Ingen Dirt Path (lägre än grannarna, så den får mörk kantskugga)
   och ingen Trodden Path (dess gräskant tar årstidens färg och blir mörkgrå). Handelsvägen har sträckor med två hjulspår
   och en gräspuckel emellan. En skärning i en backe mjukas upp: kolumnen närmast vägen blir en slab av sin egen mark ett
   halvsteg över vägen och nästa kolumn ett helt block över, så det blir trappsteg i stället för en vägg; där vägen ligger
   ett block över marken får marken bredvid en slab. Fyllning Dirt (Sand i öken). Över vatten plankor på stigen och en
   kavelväg av stockar på tvären på handelsvägen (gran i kall trakt, annars ek).
-- **A7:** vägen ändras högst 1 block per ruta (skär in i backar, fyller över gropar) och varje steg får en slab av
+- **A7:** vägen ändras högst 1 block per ruta och aldrig två rutor i rad (skär in i backar, fyller över gropar), så varje
+  stigning blir en slab och sedan hela blocket. Varje steg får en slab av
   vägens egen mark (Coarse Dirt Slab, Sand Slab, Grass Slab, Dirt Slab ...), ett halvsteg på var sida. `Trails`: där marken
   längs stigen stiger 2+ block läggs en jordtrappa (Coarse Dirt/Dirt Stairs) på den lägre rutan, och stigarnas mitt är
   fullhög jord (Coarse Dirt, Rooted Dirt, Packed Mud, lite grus) i stället för Trodden Path.

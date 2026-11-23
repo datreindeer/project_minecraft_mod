@@ -2347,5 +2347,11 @@
   "entity:nacken": {"text": "Spelar fiol i forsen på månljusa nätter; alla hör, syn 30 ser. Lyssnar man över 20 s dras man mot vattnet. Ett mynt eller kött (en gång per år): Fiddler's Blessing, +30 sanity, [[nacken_string]]."},
   "entity:bog_body": {"text": "Myrmannen: mumifierad kropp som reser sig ur torven i Peat Bog på natten. 26 liv, 4 skada. Ger [[peat_tanned_hide]], Rotten Flesh, ibland [[bog_torc]]. Sjunker tillbaka vid gryningen."},
   "entity:frost_giant": {"text": "Frostjätte, miniboss (160 liv, 13 skada) bara i snöstorm i snöiga biom; går tillbaka in i snön när stormen slutar. Frostande andedräkt (Slowness II, frysning). Ger alltid [[frost_heart]]."},
-  "entity:dune_wraith": {"text": "Sandgestalt i ökenns sandstorm (åska); sanden syns för alla, gestalten med syn 20. Stjäl vatten ur Water Bottle eller Water Jug. Slå den: [[dune_glass]]."}
+  "entity:dune_wraith": {"text": "Sandgestalt i ökenns sandstorm (åska); sanden syns för alla, gestalten med syn 20. Stjäl vatten ur Water Bottle eller Water Jug. Slå den: [[dune_glass]]."},
+  "packed_sand": {"text": "Sand som vind, fötter och hjul packat hårt: lite mörkare och tätare än Sand, med enstaka småsten, och den rinner inte. Ligger i små vindpackade fläckar i öknar och på stränder. Stammarnas handelsvägar i sandmark trampas in i den. Släpper sig själv.", "category": "blocks"},
+  "packed_sand_slab": {"text": "3 [[packed_sand]] i rad → 6. Läggs på steg i Packed Sand och i handelsvägar i sandmark. Släpper sig själv.", "category": "blocks"},
+  "packed_red_sand": {"text": "Röd sand packad hård, som [[packed_sand]] men i badlands. Ligger i små fläckar i den röda sanden och i handelsvägar där. Släpper sig själv.", "category": "blocks"},
+  "packed_red_sand_slab": {"text": "3 [[packed_red_sand]] i rad → 6. Steg i Packed Red Sand och i handelsvägar i badlands. Släpper sig själv.", "category": "blocks"},
+  "packed_snow": {"text": "Snö som trampats eller blåst hård: gråare och tätare än snö, med en fläck jord här och var. Ligger i vindskurade fläckar på snöiga sluttningar, i Grove och på topparna, och är ytan på handelsvägar i snömark. Smälter med tövädret tillbaka till Coarse Dirt där det blir varmt nog. Släpper sig själv.", "category": "blocks"},
+  "packed_snow_slab": {"text": "3 [[packed_snow]] i rad → 6. Steg i handelsvägar i snömark. Smälter till en Coarse Dirt Slab när det töar. Släpper sig själv.", "category": "blocks"}
 }

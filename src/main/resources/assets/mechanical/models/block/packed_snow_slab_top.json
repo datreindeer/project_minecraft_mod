@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "top": "mechanical:block/packed_snow",
+    "side": "mechanical:block/packed_snow",
+    "bottom": "mechanical:block/packed_snow",
+    "particle": "mechanical:block/packed_snow"
+  }
+}

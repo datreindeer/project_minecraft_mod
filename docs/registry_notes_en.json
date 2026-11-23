@@ -2347,5 +2347,11 @@
   "entity:nacken": {"text": "Plays the fiddle in the rapids on moonlit nights; everyone hears, sight 30 sees. Listen for over 20 s and you are drawn to the water. A coin or meat (once a year): Fiddler's Blessing, +30 sanity, [[nacken_string]]."},
   "entity:bog_body": {"text": "A mummified body that rises from the peat in a Peat Bog at night. 26 health, 4 damage. Drops [[peat_tanned_hide]], Rotten Flesh, sometimes a [[bog_torc]]. Sinks back at dawn."},
   "entity:frost_giant": {"text": "A mini-boss (160 health, 13 damage) only in snowstorms in snowy biomes; goes back into the snow when the storm ends. Frost breath (Slowness II, freezing). Always drops a [[frost_heart]]."},
-  "entity:dune_wraith": {"text": "A shape of sand in a desert sandstorm (thunder); the sand is seen by all, the shape with sight 20. Steals water from a Water Bottle or Water Jug. Strike it: [[dune_glass]]."}
+  "entity:dune_wraith": {"text": "A shape of sand in a desert sandstorm (thunder); the sand is seen by all, the shape with sight 20. Steals water from a Water Bottle or Water Jug. Strike it: [[dune_glass]]."},
+  "packed_sand": {"text": "Sand packed hard by wind, feet and wheels: a little darker and denser than Sand, with the odd pebble, and it does not fall. Lies in small wind-packed flats in deserts and on beaches. Tribe trade roads on sandy ground are trodden into it. Drops itself.", "category": "blocks"},
+  "packed_sand_slab": {"text": "3 [[packed_sand]] in a row → 6. Laid on steps of Packed Sand and in trade roads on sandy ground. Drops itself.", "category": "blocks"},
+  "packed_red_sand": {"text": "Red sand packed hard, like [[packed_sand]] but in the badlands. Lies in small patches in the red sand and in trade roads there. Drops itself.", "category": "blocks"},
+  "packed_red_sand_slab": {"text": "3 [[packed_red_sand]] in a row → 6. Steps of Packed Red Sand and of trade roads in the badlands. Drops itself.", "category": "blocks"},
+  "packed_snow": {"text": "Snow trodden or blown hard: greyer and denser than snow, with a fleck of earth here and there. Lies in wind-scoured patches on snowy slopes, in groves and on the peaks, and is the surface of trade roads on snowy land. Melts back to Coarse Dirt with the thaw where it gets warm enough. Drops itself.", "category": "blocks"},
+  "packed_snow_slab": {"text": "3 [[packed_snow]] in a row → 6. Steps of trade roads on snowy land. Melts to a Coarse Dirt Slab in a thaw. Drops itself.", "category": "blocks"}
 }

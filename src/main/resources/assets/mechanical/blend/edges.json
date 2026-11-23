@@ -6,7 +6,7 @@
    "keys": [
     "minecraft:block/grass_block_top"
    ],
-   "strength": 197,
+   "strength": 200,
    "groups": 3,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_grass_block_top",
@@ -23,7 +23,7 @@
    "keys": [
     "minecraft:block/moss_block"
    ],
-   "strength": 195,
+   "strength": 198,
    "groups": 3,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_moss_block",
@@ -40,10 +40,27 @@
    "keys": [
     "minecraft:block/snow"
    ],
-   "strength": 194,
+   "strength": 197,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_snow",
+   "cols": 16,
+   "rows": 6,
+   "k": 3,
+   "m": 2,
+   "corners": true,
+   "select": "hash",
+   "join": false
+  },
+  {
+   "block": "mechanical:packed_snow",
+   "keys": [
+    "mechanical:block/packed_snow"
+   ],
+   "strength": 196,
+   "groups": 1,
+   "style": "noise",
+   "sheet": "mechanical:block/blend/mechanical_packed_snow",
    "cols": 16,
    "rows": 6,
    "k": 3,
@@ -57,7 +74,7 @@
    "keys": [
     "minecraft:block/mycelium_top"
    ],
-   "strength": 193,
+   "strength": 195,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_mycelium_top",
@@ -74,7 +91,7 @@
    "keys": [
     "minecraft:block/podzol_top"
    ],
-   "strength": 192,
+   "strength": 194,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_podzol_top",
@@ -91,10 +108,27 @@
    "keys": [
     "minecraft:block/sand"
    ],
-   "strength": 191,
+   "strength": 193,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_sand",
+   "cols": 16,
+   "rows": 6,
+   "k": 3,
+   "m": 2,
+   "corners": true,
+   "select": "hash",
+   "join": false
+  },
+  {
+   "block": "mechanical:packed_sand",
+   "keys": [
+    "mechanical:block/packed_sand"
+   ],
+   "strength": 192,
+   "groups": 1,
+   "style": "noise",
+   "sheet": "mechanical:block/blend/mechanical_packed_sand",
    "cols": 16,
    "rows": 6,
    "k": 3,
@@ -108,10 +142,27 @@
    "keys": [
     "minecraft:block/red_sand"
    ],
-   "strength": 190,
+   "strength": 191,
    "groups": 1,
    "style": "noise",
    "sheet": "mechanical:block/blend/minecraft_red_sand",
+   "cols": 16,
+   "rows": 6,
+   "k": 3,
+   "m": 2,
+   "corners": true,
+   "select": "hash",
+   "join": false
+  },
+  {
+   "block": "mechanical:packed_red_sand",
+   "keys": [
+    "mechanical:block/packed_red_sand"
+   ],
+   "strength": 190,
+   "groups": 1,
+   "style": "noise",
+   "sheet": "mechanical:block/blend/mechanical_packed_red_sand",
    "cols": 16,
    "rows": 6,
    "k": 3,

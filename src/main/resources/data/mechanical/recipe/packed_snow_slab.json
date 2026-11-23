@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:packed_snow"
+  },
+  "result": {
+    "id": "mechanical:packed_snow_slab",
+    "count": 6
+  }
+}

@@ -229,6 +229,20 @@ Små växter på rutan där ett halvsteg läggs flyttas till närmaste lediga he
 en slab). Får de inte plats, eller är de höga (Tall Grass, Sunflower, Rose Bush), tas de bort: en växt som fick stå kvar
 lämnade ett hål i sluttningen. Branta gräsbackar där varje ruta får en slab blir därför något kalare.
 
+## Packad mark (gen_road_ground.py)
+Tre nya markblock som både ligger naturligt och är ytan på stammarnas vägar (`people/RoadBuilding`):
+- **Packed Sand**: sand som vind, fötter och hjul packat hårt, lite mörkare och tätare än Sand med enstaka småsten (rinner
+  inte). Små vindpackade fläckar (radie 2–4, ungefär var femte chunk) i ytsanden i öken och på strand.
+- **Packed Red Sand**: samma i badlands (`#minecraft:is_badlands`), i den röda sanden.
+- **Packed Snow**: snö som trampats eller blåst hård, gråare och tätare med en fläck jord här och var. Vindskurade fläckar i
+  Snow Block på Snowy Slopes, Grove, Frozen Peaks och Jagged Peaks. Smälter med tövädret (`Thaw`) tillbaka till Coarse
+  Dirt där det blir varmt nog (slaben till Coarse Dirt Slab).
+
+Alla tre har slabs (3 i rad → 6), rader i kantblandningens tabell (lös sand och snö fransar ut över sin packade sort) och
+läggs av `SmoothGround` på steg. Advancement **Hard Ground** i Wilderness. Vägar i sandmark är Packed Sand och Sand med
+strödda Coarse Dirt, grus och lite Packed Mud och två brutna hjulspår; i snömark Packed Snow med jord i hjulspåren och
+lös snö tillbaka på kanterna.
+
 ## Terrängens form (gen_terrain.py)
 
 Terrängplanens fas 1 (`docs/terrain-plan.md`). Modden skriver över vanillas density functions för Overworld:

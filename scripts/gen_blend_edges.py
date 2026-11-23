@@ -45,7 +45,8 @@ WOOD_ORDER = ["dark_oak", "bog_oak", "spruce", "mangrove", "jungle", "acacia", "
 VANILLA_RAW = ["stone", "andesite", "granite", "diorite", "tuff", "calcite", "deepslate"]
 VANILLA_POLISHED = ["smooth_stone", "polished_andesite", "polished_granite", "polished_diorite", "polished_tuff", "polished_deepslate"]
 # ground that is not a stone family: above the stones (living ground) and below them (bare ground)
-GROUND_TOP = ["grass_block", "mechanical:turf", "moss_block", "snow_block", "mycelium", "podzol", "sand", "red_sand"]
+GROUND_TOP = ["grass_block", "mechanical:turf", "moss_block", "snow_block", "mechanical:packed_snow", "mycelium", "podzol", "sand",
+              "mechanical:packed_sand", "red_sand", "mechanical:packed_red_sand"]  # loose sand and snow fray over their packed kind
 GROUND_LOW = ["mechanical:chalk_block", "mechanical:wood_ash", "mechanical:loess", "coarse_dirt", "rooted_dirt", "mechanical:peat",
               "clay", "mechanical:kaolin", "mud", "packed_mud", "dirt"]
 # functional blocks that only look like masonry

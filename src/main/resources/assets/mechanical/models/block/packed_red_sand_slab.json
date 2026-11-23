@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/ground_slab",
+  "textures": {
+    "top": "mechanical:block/packed_red_sand",
+    "side": "mechanical:block/packed_red_sand",
+    "bottom": "mechanical:block/packed_red_sand",
+    "particle": "mechanical:block/packed_red_sand"
+  }
+}

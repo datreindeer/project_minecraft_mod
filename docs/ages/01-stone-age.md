@@ -2156,7 +2156,7 @@ En stam som slagit sig ner nära dig kan bygga en **väg** åt dig (koden: `peop
   förbjudet**. Byggarna gräver och fyller bara naturlig mark (jord, gräs, sand, grus, sten, snö), växter och vatten, så
   inget du byggt rivs; går en körfil in i något byggt lämnas just den rutan. Vatten korsas på en **plankbana** (Oak eller
   Spruce Planks i vattenytan) bara när det inte går runt. Kommer de inte vidare slutar vägen där de är, och du får ett meddelande.
-- **Inga stup:** vägen ändras högst 1 block mellan två rutor. Den skär in i backar och fylls upp (Dirt) över gropar, och
+- **Inga stup:** vägen ändras högst 1 block mellan två rutor, och aldrig två rutor i rad. Den skär in i backar och fylls upp (Dirt) över gropar, och
   varje steg på 1 block får en slab av vägens egen mark (Coarse Dirt Slab, Sand Slab, Grass Slab ...), så det blir
   ett halvsteg på var sida. En skärning i en backe trappas av med en slab och ett lägre block bredvid vägen, så ingen vägg står kvar.
 - **Handelsväg:** vid rykte **60+** och en färdig stig byggd åt dig (eller någon i din spelarstam) visas knappen
@@ -2164,8 +2164,8 @@ En stam som slagit sig ner nära dig kan bygga en **väg** åt dig (koden: `peop
   bygger om vägen till en **bred, upptrampad väg, ingen sten**: 3–4 block bred, slingrande, med trasiga kanter där
   gräset tränger in (Worn Grass, tuvor, någon blomma) och sträckor med två hjulspår och en gräspuckel emellan. Marken är
   fläckig av fullhöga jordblock i traktens stil: Coarse Dirt, Rooted Dirt och Packed Mud på gräs, Podzol i taiga, Packed
-  Mud och Sand i öken, Red Sand i badlands, Coarse Dirt med snödrivor längs kanterna i snö, och Loess, Chalk Block och
-  Peat där de är traktens mark. Steg får slabs av samma mark, fyllningen är Dirt (Sand i öken) och vatten korsas på
+  Sand och Sand med strödd jord och två brutna hjulspår i öken (Packed Red Sand i badlands), Packed Snow med jord i
+  hjulspåren i snö, och Loess och Peat där de är traktens mark. Steg får slabs av samma mark, fyllningen är Dirt (Sand i öken) och vatten korsas på
   stockar lagda på tvären.
 - **Laddade chunks:** medan någon är ute på vägen hålls bara ett **fönster** laddat: 3x3 chunks runt varje byggare (och
   runt fronten), som följer med när de går. En stam med en **färdig handelsväg** håller dessutom sitt läger (3x3 chunks)

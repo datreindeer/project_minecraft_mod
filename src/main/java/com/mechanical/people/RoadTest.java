@@ -168,7 +168,7 @@ public final class RoadTest {
             }
         for (long c : roads.get(1).cells) {
             BlockState s = level.getBlockState(BlockPos.of(c));
-            h.assertTrue(s.is(Blocks.SAND) || s.is(Blocks.PACKED_MUD) || s.is(Blocks.COARSE_DIRT), "the sand road's middle is " + s);
+            h.assertTrue(s.is(Blocks.SAND) || s.is(com.mechanical.EarthBlocks.PACKED_SAND) || s.is(Blocks.PACKED_MUD) || s.is(Blocks.COARSE_DIRT), "the sand road's middle is " + s);
         }
         h.assertTrue(earth >= 1, "mottled earth on the grass road: " + earth); // grass may cover much of a short stretch
         h.succeed();

@@ -243,6 +243,14 @@ public final class RoadShots {
         BlockPos tradeStart = road(level, s[0], bestX, bestZ + 4, RoadBuilding.TRADE);
         if (tradeStart == null) return;
         int gy = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bestX, bestZ + 4);
+        if (s.length > 2 && s[2].equals("probe")) // the columns across the trade road, for checking what lies beside it
+            for (int dz = -5; dz <= 5; dz++) {
+                StringBuilder col = new StringBuilder(s[0] + " probe z+" + dz + ":");
+                int px = tradeStart.getX() + 6, pz = tradeStart.getZ() + dz;
+                for (int yy = tradeStart.getY() + 3; yy >= tradeStart.getY() - 2; yy--)
+                    col.append(" ").append(yy).append("=").append(net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(level.getBlockState(new BlockPos(px, yy, pz)).getBlock()).getPath());
+                result.add(col.toString());
+            }
         cams.add(new double[] {tradeStart.getX() + 0.5, open(level, tradeStart.getX(), tradeStart.getY() + 1.1, tradeStart.getZ()), tradeStart.getZ() + 0.5, -90, 12}); // eye, looking east along it
         cams.add(new double[] {bestX - 10.5, Math.max(gy + 15, level.getHeight(Heightmap.Types.MOTION_BLOCKING, bestX - 11, bestZ + 16) + 3), bestZ + 16.5, -140, 40}); // 15 up, from the south-west
         if (pathEnd != null) cams.add(new double[] {pathEnd.getX() + 0.5, open(level, pathEnd.getX(), pathEnd.getY() + 1.1, pathEnd.getZ()), pathEnd.getZ() + 0.5, 90, 12}); // on the path, looking west
@@ -262,6 +270,15 @@ public final class RoadShots {
         RoadBuilding.Road r = new RoadBuilding.Road(UUID.randomUUID(), UUID.randomUUID(), path.getFirst(), path.getLast(), kind, List.of(), 0, true, List.of());
         RoadBuilding.append(r, path);
         for (int i = 0; i < r.cells.size(); i++) RoadBuilding.buildCell(level, r, i);
+        if (name.endsWith("probe")) {
+            StringBuilder b = new StringBuilder(name + " kind " + kind + " cells:");
+            for (int i = 0; i < Math.min(16, r.cells.size()); i++) {
+                BlockPos c = r.cell(i);
+                b.append(" ").append(c.getX()).append(",").append(c.getY()).append(",").append(c.getZ()).append("=")
+                        .append(net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(level.getBlockState(c).getBlock()).getPath());
+            }
+            result.add(b.toString());
+        }
         result.add(name + " kind " + kind + ": " + r.cells.size() + " cells, from " + r.cell(0) + " to " + r.cell(r.cells.size() - 1));
         return kind == RoadBuilding.TRADE ? r.cell(0) : r.cell(r.cells.size() - 1);
     }

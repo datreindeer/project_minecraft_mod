@@ -3113,6 +3113,14 @@
   "block.mechanical.coarse_dirt_stairs": "Coarse Dirt Stairs",
   "block.mechanical.sand_stairs": "Sand Stairs",
   "block.mechanical.red_sand_stairs": "Red Sand Stairs",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
+  "block.mechanical.packed_sand": "Packed Sand",
+  "block.mechanical.packed_sand_slab": "Packed Sand Slab",
+  "block.mechanical.packed_red_sand": "Packed Red Sand",
+  "block.mechanical.packed_red_sand_slab": "Packed Red Sand Slab",
+  "block.mechanical.packed_snow": "Packed Snow",
+  "block.mechanical.packed_snow_slab": "Packed Snow Slab",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",
@@ -3795,6 +3803,8 @@
   "advancements.mechanical.wilderness.gypsum_flats.description": "Find the Gypsum Flats in the driest desert: a white crust of Gypsum and Rock Salt, Alabaster below",
   "advancements.mechanical.wilderness.mammoth_steppe.title": "Mammoth Steppe",
   "advancements.mechanical.wilderness.mammoth_steppe.description": "Find the Mammoth Steppe in the cold, dry north: dry grass on Loess, mammoths, rhinos, bison, wild horses and saiga, and the lions that hunt them",
+  "advancements.mechanical.wilderness.packed_ground.title": "Hard Ground",
+  "advancements.mechanical.wilderness.packed_ground.description": "Dig up Packed Sand from a wind-packed flat in the desert or on a beach, Packed Red Sand in the badlands, or Packed Snow from a scoured patch on a snowy slope. Tribe trade roads are trodden into the same ground",
   "advancements.mechanical.wilderness.into_the_ashes.title": "Into the Ashes",
   "advancements.mechanical.wilderness.into_the_ashes.description": "Travel more than 2500 blocks from the world's centre and find the rare Scorched Barrens: a burnt forest of Charred Logs and Wood Ash, ravens overhead",
   "advancements.mechanical.wilderness.roof_of_the_world.title": "Roof of the World",
@@ -4672,7 +4682,5 @@
   "advancements.mechanical.folklore.dune_wraith.title": "Shape in the Sand",
   "advancements.mechanical.folklore.dune_wraith.description": "See a Dune Wraith in a desert sandstorm. It is after your water",
   "advancements.mechanical.folklore.dune_glass.title": "Glass from the Storm",
-  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
+  "advancements.mechanical.folklore.dune_glass.description": "Strike a Dune Wraith before it steals your water: it scatters into Dune Glass"
 }
