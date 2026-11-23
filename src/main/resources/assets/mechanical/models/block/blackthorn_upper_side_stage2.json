@@ -3,6 +3,7 @@
   "textures": {
     "particle": "mechanical:block/blackthorn_stage2",
     "leaves": "mechanical:block/blackthorn_stage2",
+    "inner": "mechanical:block/blackthorn_inner",
     "stems": "mechanical:block/blackthorn_stems"
   },
   "elements": [

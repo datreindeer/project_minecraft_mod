@@ -4,9 +4,74 @@
   "textures": {
     "particle": "mechanical:block/blackthorn_stage3",
     "leaves": "mechanical:block/blackthorn_stage3",
+    "inner": "mechanical:block/blackthorn_inner",
     "stems": "mechanical:block/blackthorn_stems"
   },
   "elements": [
+    {
+      "from": [
+        3.5,
+        0,
+        3.5
+      ],
+      "to": [
+        12.5,
+        8,
+        12.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3.5,
+            8,
+            12.5,
+            16
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            3.5,
+            8,
+            12.5,
+            16
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "east": {
+          "uv": [
+            3.5,
+            8,
+            12.5,
+            16
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            3.5,
+            8,
+            12.5,
+            16
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "up": {
+          "uv": [
+            3.5,
+            3.5,
+            12.5,
+            12.5
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        }
+      }
+    },
     {
       "from": [
         1,
@@ -201,13 +266,83 @@
     },
     {
       "from": [
+        -1.0,
+        0,
+        8
+      ],
+      "to": [
+        17.0,
+        9,
+        8
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        8,
+        0,
+        -1.0
+      ],
+      "to": [
+        8,
+        9,
+        17.0
+      ],
+      "shade": false,
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
         1,
         0,
         8
       ],
       "to": [
         15,
-        14,
+        16,
         8
       ],
       "shade": false,
@@ -225,7 +360,7 @@
         "north": {
           "uv": [
             1,
-            2,
+            0,
             15,
             16
           ],
@@ -235,7 +370,7 @@
         "south": {
           "uv": [
             1,
-            2,
+            0,
             15,
             16
           ],
@@ -252,7 +387,7 @@
       ],
       "to": [
         15,
-        14,
+        16,
         8
       ],
       "shade": false,
@@ -270,7 +405,7 @@
         "north": {
           "uv": [
             1,
-            2,
+            0,
             15,
             16
           ],
@@ -280,7 +415,7 @@
         "south": {
           "uv": [
             1,
-            2,
+            0,
             15,
             16
           ],

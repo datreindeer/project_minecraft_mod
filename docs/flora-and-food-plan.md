@@ -308,7 +308,7 @@ Vattenkraften finns inte än. Sågverket kommer i samma fas som **vattenhjulet**
 Byggt v0.187.0. Spelarens beskrivning står i `docs/ages/01-stone-age.md` ("Snårbuskar" och "Blommor").
 
 - **Kod:** `Flora` (registrering, klimatfönster för snåren, `dryGround`), `WildFlowerBlock` (blommar efter säsong,
-  `Bloom`-regeln, magiska partiklar), `TallWildFlowerBlock`, `ThicketBushBlock` (bygger på `WildBerryBushBlock`; ung,
+  `Bloom`-regeln, magiska partiklar), `TallWildFlowerBlock`, `ThicketBushBlock`, `SlabPlanting` (bygger på `WildBerryBushBlock`; ung,
   sidor som kopplas, övre block, spridning, säsongsmål, taggar), `worldgen/ThicketFeature` (klumpar på 4–11 buskar,
   unga i kanten, höga i mitten), `Retrogen.FEATURES` (gamla världar får blommorna och snåren), `SeasonalFoliage`
   (frostfärg på vintern). `WildBerryBushBlock.ageAfterPicking` är ny (snåren mognar om efter plockning).
@@ -322,7 +322,11 @@ Byggt v0.187.0. Spelarens beskrivning står i `docs/ages/01-stone-age.md` ("Snå
 - **Test:** gametest `flora` (`FloraTest`): sidor kopplas, unga kopplas inte, toppen står bara på en fullvuxen och
   faller med den, plockning, säsongsmål, klimat, blomningsregler (Fern Flower bara sommarnätter, Frost Lily bara
   vinter), giftiga råa fläderbär.
-- **Svagt / kvar:** marken i flera biomer har halva steg (Grass Slab från `SmoothGround`), och där kan varken
-  blommor eller snår stå (gäller alla moddens växter), så klumparna blir mindre i kuperad terräng. De gamla sju
+- **Halva steg:** `SlabPlanting`: en spelare som planterar en växt på en jordslab (Grass Slab m.fl. från `SmoothGround`)
+  gör den först till ett helt block. **Beslut (Claude, kan ändras):** hellre det än att låta växter stå på slabben med
+  modellen sänkt ett halvt block (det skulle kräva dubbla modeller för varje växt). I worldgen läggs växterna före
+  halvstegen, så där behövs det inte.
+- **Svagt / kvar:** snår som sprider sig själva och vilda växter som sås av fåglar sätts inte på slabbar (de kräver
+  hela block). Grass Stairs tas inte med. De gamla sju
   bärbuskarna har kvar sina fasta biomlistor (fas 2). Fern Flowers Luck gäller den som bryter blomman, inte den som
   plockar den på annat sätt (t.ex. med vatten eller kolv).

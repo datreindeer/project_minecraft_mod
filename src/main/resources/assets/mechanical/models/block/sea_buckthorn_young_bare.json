@@ -4,7 +4,8 @@
   "textures": {
     "particle": "mechanical:block/sea_buckthorn_bare",
     "leaves": "mechanical:block/sea_buckthorn_bare",
-    "stems": "mechanical:block/sea_buckthorn_stems"
+    "inner": "mechanical:block/sea_buckthorn_bare",
+    "stems": "mechanical:block/sea_buckthorn_stems_bare"
   },
   "elements": [
     {
@@ -143,7 +144,7 @@
       ],
       "to": [
         13,
-        10,
+        11,
         8
       ],
       "shade": false,
@@ -161,7 +162,7 @@
         "north": {
           "uv": [
             3,
-            6,
+            5,
             13,
             16
           ],
@@ -171,7 +172,7 @@
         "south": {
           "uv": [
             3,
-            6,
+            5,
             13,
             16
           ],
@@ -188,7 +189,7 @@
       ],
       "to": [
         13,
-        10,
+        11,
         8
       ],
       "shade": false,
@@ -206,7 +207,7 @@
         "north": {
           "uv": [
             3,
-            6,
+            5,
             13,
             16
           ],
@@ -216,7 +217,7 @@
         "south": {
           "uv": [
             3,
-            6,
+            5,
             13,
             16
           ],

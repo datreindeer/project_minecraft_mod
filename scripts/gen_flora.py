@@ -169,9 +169,46 @@ def glow_cross(name):
                                         "elements": planes("#cross", False) + planes("#glow", True)})
 
 
+def fern_flower_models():
+    """Fern Flower: a rosette of eight arching fronds (four leaning out, four upright on the diagonals), a slim stalk, and in
+    bloom one five-petalled flower on top (seen from above, its cup from the side), drawn full-bright; out of bloom the
+    stalk ends in a curled bud."""
+    def plane(f, t, axis_faces, uv, tex, rot=None, light=False):
+        e = {"from": f, "to": t, "shade": False, "faces": {d: {"uv": uv, "texture": tex} for d in axis_faces}}
+        if rot:
+            e["rotation"] = rot
+        if light:
+            e["light_emission"] = 15
+        return e
+    NS, EW = ("north", "south"), ("east", "west")
+    fronds = [
+        plane([8, 0, 8], [18, 13, 8], NS, [0, 0, 16, 16], "#frond", {"origin": [8, 0, 8], "axis": "z", "angle": -22.5}),
+        plane([-2, 0, 8], [8, 13, 8], NS, [16, 0, 0, 16], "#frond", {"origin": [8, 0, 8], "axis": "z", "angle": 22.5}),
+        plane([8, 0, 8], [8, 13, 18], EW, [16, 0, 0, 16], "#frond", {"origin": [8, 0, 8], "axis": "x", "angle": 22.5}),
+        plane([8, 0, -2], [8, 13, 8], EW, [0, 0, 16, 16], "#frond", {"origin": [8, 0, 8], "axis": "x", "angle": -22.5}),
+        plane([8, 0, 8], [15, 9, 8], NS, [0, 0, 16, 16], "#frond", {"origin": [8, 0, 8], "axis": "y", "angle": 45}),
+        plane([1, 0, 8], [8, 9, 8], NS, [16, 0, 0, 16], "#frond", {"origin": [8, 0, 8], "axis": "y", "angle": 45}),
+        plane([8, 0, 8], [15, 9, 8], NS, [0, 0, 16, 16], "#frond", {"origin": [8, 0, 8], "axis": "y", "angle": -45}),
+        plane([1, 0, 8], [8, 9, 8], NS, [16, 0, 0, 16], "#frond", {"origin": [8, 0, 8], "axis": "y", "angle": -45}),
+    ]
+    stalk = [plane([4, 0, 8], [12, 10, 8], NS, [4, 6, 12, 16], "#stalk", {"origin": [8, 8, 8], "axis": "y", "angle": a}) for a in (45, -45)]
+    flower = [{"from": [4, 10.5, 4], "to": [12, 10.5, 12], "shade": False, "light_emission": 15,
+               "faces": {"up": {"uv": [4, 4, 12, 12], "texture": "#top"}, "down": {"uv": [4, 4, 12, 12], "texture": "#top"}}}]
+    flower += [plane([4, 6, 8], [12, 12, 8], NS, [4, 10, 12, 16], "#side", {"origin": [8, 8, 8], "axis": "y", "angle": a}, True)
+               for a in (45, -45)]
+    bud = [plane([4, 0, 8], [12, 10, 8], NS, [4, 6, 12, 16], "#bud", {"origin": [8, 8, 8], "axis": "y", "angle": a}) for a in (45, -45)]
+    T = {"particle": S + "block/fern_flower_frond", "frond": S + "block/fern_flower_frond", "stalk": S + "block/fern_flower_stalk",
+         "top": S + "block/fern_flower_top", "side": S + "block/fern_flower_side", "bud": S + "block/fern_flower_bud"}
+    w(A / "models/block/fern_flower.json", {"ambientocclusion": False, "textures": T, "elements": fronds + stalk + flower})
+    w(A / "models/block/fern_flower_leaves.json", {"ambientocclusion": False, "textures": T, "elements": fronds + bud})
+
+
 for name, (en, biomes, (rarity, tries, spread)) in MAGIC.items():
-    glow_cross(name)
-    cross(f"{name}_leaves", f"{name}_leaves")
+    if name == "fern_flower":
+        fern_flower_models()
+    else:
+        glow_cross(name)
+        cross(f"{name}_leaves", f"{name}_leaves")
     w(A / f"blockstates/{name}.json", {"variants": {"blooming=true": {"model": S + f"block/{name}"},
                                                      "blooming=false": {"model": S + f"block/{name}_leaves"}}})
     flat_item(name, name)
@@ -199,17 +236,17 @@ LOOK_WHEN = {"stage0": {"leafless": "false", "age": "0"}, "stage1": {"leafless":
              "bare": {"leafless": "true", "age": "0|1|2"}, "bare_ripe": {"leafless": "true", "age": "3"}}
 
 
-def face(u0, v0, u1, v1):
-    return {"uv": [u0, v0, u1, v1], "texture": "#leaves", "tintindex": 0}
+def face(u0, v0, u1, v1, tex="#leaves"):
+    return {"uv": [u0, v0, u1, v1], "texture": tex, "tintindex": 0}
 
 
-def leaf_box(f, t, faces=("north", "south", "east", "west", "up")):
+def leaf_box(f, t, faces=("north", "south", "east", "west", "up"), tex="#leaves"):
     """A box of leaves; each face shows the part of the texture under it, so neighbouring boxes run on."""
     (x0, y0, z0), (x1, y1, z1) = f, t
     v0, v1 = max(0, 16 - y1), 16 - y0
     uv = {"north": (16 - x1, v0, 16 - x0, v1), "south": (x0, v0, x1, v1), "west": (z0, v0, z1, v1), "east": (16 - z1, v0, 16 - z0, v1),
           "up": (x0, z0, x1, z1), "down": (x0, 16 - z1, x1, 16 - z0)}
-    return {"from": list(f), "to": list(t), "faces": {d: face(*uv[d]) for d in faces}}
+    return {"from": list(f), "to": list(t), "faces": {d: face(*uv[d], tex) for d in faces}}
 
 
 def stems(x0, x1, top):
@@ -220,18 +257,33 @@ def stems(x0, x1, top):
             for a in (45, -45)]
 
 
-SHAPES = {  # part: core elements (a narrow foot, a bulging middle, a rounded top, twigs poking out), north side lobe
-    "lower": ([leaf_box((2.5, 0, 2.5), (13.5, 3, 13.5)), leaf_box((0.5, 3, 0.5), (15.5, 11, 15.5)), leaf_box((2, 11, 2), (14, 14, 14)),
-               leaf_box((4, 14, 4), (12, 16, 12))] + stems(0, 16, 17.5),
+def sprigs(y0, y1, reach=1.5):
+    """Two upright planes of the leaf texture through the middle, wider than the bush: their ends stick out of the sides
+    as leafy sprigs, so the outline is ragged, not a box."""
+    v = [16 - y1, 16 - y0]
+    return [{"from": [-reach, y0, 8], "to": [16 + reach, y1, 8], "shade": False,
+             "faces": {d: {"uv": [0, v[0], 16, v[1]], "texture": "#leaves", "tintindex": 0} for d in ("north", "south")}},
+            {"from": [8, y0, -reach], "to": [8, y1, 16 + reach], "shade": False,
+             "faces": {d: {"uv": [0, v[0], 16, v[1]], "texture": "#leaves", "tintindex": 0} for d in ("east", "west")}}]
+
+
+SHAPES = {  # part: core elements (a darker heart, a narrow foot, a bulging middle, a rounded top, sprigs and twigs poking out), north side lobe
+    "lower": ([leaf_box((3, 0.5, 3), (13, 12, 13), tex="#inner"), leaf_box((2.5, 0, 2.5), (13.5, 3, 13.5)),
+               leaf_box((0.5, 3, 0.5), (15.5, 11, 15.5)), leaf_box((2, 11, 2), (14, 14, 14)), leaf_box((4, 14, 4), (12, 16, 12))]
+              + sprigs(2, 13) + stems(0, 16, 20),
               [leaf_box((1.5, 2, 0), (14.5, 12, 0.5), ("up", "down", "east", "west"))]),
-    "upper": ([leaf_box((1, 0, 1), (15, 6, 15)), leaf_box((2.5, 6, 2.5), (13.5, 10, 13.5)), leaf_box((4.5, 10, 4.5), (11.5, 12.5, 11.5))]
-              + stems(1, 15, 14),
+    "upper": ([leaf_box((3.5, 0, 3.5), (12.5, 8, 12.5), tex="#inner"), leaf_box((1, 0, 1), (15, 6, 15)),
+               leaf_box((2.5, 6, 2.5), (13.5, 10, 13.5)), leaf_box((4.5, 10, 4.5), (11.5, 12.5, 11.5))]
+              + sprigs(0, 9, 1.0) + stems(1, 15, 16),
               [leaf_box((2, 0, 0), (14, 7, 1), ("up", "east", "west"))]),
-    "young": ([leaf_box((4.5, 0, 4.5), (11.5, 6, 11.5)), leaf_box((5.5, 6, 5.5), (10.5, 8.5, 10.5))] + stems(3, 13, 10), None),
+    "young": ([leaf_box((4.5, 0, 4.5), (11.5, 6, 11.5)), leaf_box((5.5, 6, 5.5), (10.5, 8.5, 10.5))] + stems(3, 13, 11), None),
 }
 
 for name, (en, berries, berries_en, (tmin, tmax, dmin, dmax), rarity) in THICKETS.items():
-    tex = lambda look: {"particle": S + f"block/{name}_{look}", "leaves": S + f"block/{name}_{look}", "stems": S + f"block/{name}_stems"}
+    def tex(look):
+        bare = look.startswith("bare")  # winter: the heart and the branch tips are bare twigs too
+        return {"particle": S + f"block/{name}_{look}", "leaves": S + f"block/{name}_{look}",
+                "inner": S + f"block/{name}_{'bare' if bare else 'inner'}", "stems": S + f"block/{name}_stems{'_bare' if bare else ''}"}
     for part, (core, lobe) in SHAPES.items():
         for look in (["stage0", "bare"] if part == "young" else LOOKS):
             suffix = "" if look == "stage0" and part == "young" else f"_{look}"

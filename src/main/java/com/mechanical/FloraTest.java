@@ -99,6 +99,23 @@ public final class FloraTest {
         var cooked = new ItemStack(Flora.COOKED_ELDERBERRIES.get()).get(DataComponents.CONSUMABLE);
         h.assertTrue(raw != null && !raw.onConsumeEffects().isEmpty() && (cooked == null || cooked.onConsumeEffects().isEmpty()),
                 "raw elderberries are poisonous, cooked ones are not");
+        // every flower and bush can be planted on grass, and on a Grass Slab (it becomes a full grass block first)
+        BlockPos onGrass = new BlockPos(6, 1, 1);
+        List<BlockState> plants = new java.util.ArrayList<>();
+        Flora.FLOWER_BLOCKS.values().forEach(k -> plants.add(k.get().defaultBlockState()));
+        Flora.THICKETS.values().forEach(k -> plants.add(k.get().defaultBlockState()));
+        plants.add(Flora.FERN_FLOWER.get().defaultBlockState());
+        plants.add(Flora.FROST_LILY.get().defaultBlockState());
+        for (BlockState plant : plants) h.assertTrue(plant.canSurvive(level, h.absolutePos(onGrass)), plant.getBlock() + " grows on grass");
+        BlockPos slab = new BlockPos(7, 1, 7);
+        h.setBlock(slab, EarthBlocks.GRASS_SLAB.get());
+        h.assertTrue(SlabPlanting.fill(level, h.absolutePos(slab), Flora.FLOWER_BLOCKS.get("pasque_flower").get().defaultBlockState())
+                && h.getBlockState(slab).is(Blocks.GRASS_BLOCK), "planting on a Grass Slab makes it a grass block");
+        h.setBlock(slab, EarthBlocks.SAND_SLAB.get());
+        h.assertTrue(!SlabPlanting.fill(level, h.absolutePos(slab), Flora.FLOWER_BLOCKS.get("pasque_flower").get().defaultBlockState())
+                && h.getBlockState(slab).is(EarthBlocks.SAND_SLAB.get()), "a Sand Slab stays a slab for a plant that can't grow on sand");
+        h.assertTrue(SlabPlanting.fill(level, h.absolutePos(slab), Flora.FLOWER_BLOCKS.get("sand_verbena").get().defaultBlockState())
+                && h.getBlockState(slab).is(Blocks.SAND), "but becomes sand for Sand Verbena");
         h.succeed();
     }
 

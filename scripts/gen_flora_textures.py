@@ -300,25 +300,25 @@ FLOWERS = {
         ],
         remap={"A": "g", "B": "g", "C": "d", "b": "g"},
     ),
-    "fern_flower": dict(  # fronds round a stalk that opens into a glowing golden flower on summer nights
+    "fern_flower": dict(  # the flat picture (item): a rosette of fronds round a stalk with one small glowing flower
         pal={"W": "ffffff", "w": "fff6c8", "Y": "ffe46e", "O": "ffb43c", "R": "f07a2c", "s": "4f7a30", "g": "5f9a3f", "G": "86c456",
              "d": "3f6e2c", "b": "6ea848"},
         bloom=[
-            ".....R...R......",
-            "....ROR.ROR.....",
-            "...ROYOYOYOR....",
-            "....OYwWwYO.....",
-            "..RRYwWWWwYRR...",
-            "....OYwWwYO.....",
-            "...ROYOYOYOR....",
-            "..G.ROR.RORG....",
-            ".Gg..R.s.R.gG...",
-            "..gG.G.s.G.Gg...",
-            "G..gGg.s.gGg..G.",
-            "gG..gd.s.dg..Gg.",
-            ".gGg.dgsgd.gGg..",
-            "..dgG.dsd.Ggd...",
-            "....dg.s.gd.....",
+            "................",
+            "................",
+            ".......R........",
+            "....RO.Y.OR.....",
+            ".....OYWYO......",
+            "....OYWWWYO.....",
+            ".....OYWYO......",
+            "....R.OsO.R.....",
+            "...G...s...G....",
+            "..Gg...s...gG...",
+            ".G.gG..s..Gg.G..",
+            "G..sgG.s.Ggs..G.",
+            ".G..sgGsGgs..G..",
+            "..gG.sdsds.Gg...",
+            "....gG.s.Gg.....",
             "......dsd.......",
         ],
         leaves=[
@@ -388,120 +388,129 @@ for v in FLOWERS.values():
 
 # ---------------------------------------------------------------- thicket bushes
 THICKETS = {
+    # leaf: highlight, light, mid, dark, shadow. Each kind its own look: Blackthorn small dark rounded leaves in tight clumps,
+    # Sea Buckthorn silvery narrow leaves in streaks with orange beads packed along the twigs, Jujube big glossy bright clumps.
     "blackthorn": dict(
-        leaf=["36572b", "47703a", "5a8a44", "74a556", "93c06c"], bark=["2a2220", "3c302b", "54453c"],
-        flower=["fbfaf4", "e6e2d6", "e8d888"], unripe=["6f8c46", "8eaa58", "aec870"], ripe=["1c1828", "37314f", "8486ad"],
-        leaf_shape="small", fruit="sloe", clusters=9, coverage=0.80, seed=11, blossom_heavy=True),
+        leaf=["8fbf63", "62954a", "467536", "305426", "1f3519"], bark=["241c1a", "3a2e2a", "56463e"],
+        flower=["fdfcf6", "e4e0d2", "e9d47a"], unripe=["6d8a45", "8ca95a", "b5cf7a"], ripe=["1a1626", "3a3358", "9496c0"],
+        clump=(1.8, 2.8), stretch=(1.0, 1.0), coverage=0.74, fruit="sloe", bunches=5, seed=11, blossom_heavy=True),
     "sea_buckthorn": dict(
-        leaf=["5d7059", "73886d", "8ea088", "a7b8a2", "c6d2c0"], bark=["4a3a2c", "5e4a38", "7a6450"],
-        flower=["c8c47a", "a8a85c", "e0dc90"], unripe=["93a650", "aebf62", "c8d27a"], ripe=["c85a08", "f08a1c", "ffc060"],
-        leaf_shape="narrow", fruit="dense", clusters=8, coverage=0.66, seed=23, blossom_heavy=False),
+        leaf=["c2cfba", "93a88d", "72886c", "52654c", "364532"], bark=["43342a", "5c4936", "7a6450"],
+        flower=["c6c27a", "a6a65a", "e2de96"], unripe=["98aa52", "b4c466", "d2dc86"], ripe=["c4560a", "f08a1e", "ffc868"],
+        clump=(1.4, 2.2), stretch=(1.9, 0.75), coverage=0.6, fruit="beads", bunches=5, seed=23, blossom_heavy=False),
     "jujube": dict(
-        leaf=["2f6a22", "3f822c", "55a034", "72bc46", "9ad66a"], bark=["4e2c20", "6a4030", "86563e"],
-        flower=["e6e070", "c8c450", "f6f2a0"], unripe=["b8bc58", "d4d070", "ece898"], ripe=["6e1e14", "a23a24", "d6785a"],
-        leaf_shape="oval", fruit="drupe", clusters=7, coverage=0.72, seed=37, blossom_heavy=False),
-}
-
-# leaf shapes: (role, dx, dy); h = lit edge, m = blade, d = shaded edge
-SHAPES = {
-    "small": [[("h", 0, 0), ("m", 1, 0), ("m", 0, 1), ("d", 1, 1)], [("h", 1, 0), ("m", 0, 1), ("m", 1, 1), ("d", 0, 2)],
-              [("h", 0, 0), ("m", 1, 0), ("d", 2, 1)], [("h", 0, 0), ("m", 0, 1), ("d", 1, 2)]],
-    "narrow": [[("h", 0, 0), ("m", 1, 1), ("m", 2, 2), ("d", 3, 3)], [("h", 3, 0), ("m", 2, 1), ("m", 1, 2), ("d", 0, 3)],
-               [("h", 0, 0), ("m", 1, 0), ("m", 2, 1), ("d", 3, 1)], [("h", 0, 1), ("m", 1, 1), ("m", 2, 0), ("d", 3, 0)]],
-    "oval": [[("h", 0, 0), ("h", 1, 0), ("m", 0, 1), ("m", 1, 1), ("m", 2, 1), ("d", 1, 2), ("d", 2, 2)],
-             [("h", 1, 0), ("m", 0, 1), ("m", 1, 1), ("m", 0, 2), ("m", 1, 2), ("d", 1, 3)],
-             [("h", 0, 0), ("m", 1, 0), ("m", 1, 1), ("m", 2, 1), ("d", 2, 2), ("d", 3, 2)]],
+        leaf=["b8ec84", "6cbc44", "4a9a32", "2f7224", "1d4c17"], bark=["4a2a1e", "6a4030", "8a5a40"],
+        flower=["eae672", "c4c24e", "f8f6aa"], unripe=["b6bc58", "d6d474", "f0ecaa"], ripe=["5e1810", "9c3420", "e08a66"],
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, fruit="drupe", bunches=5, seed=37, blossom_heavy=False),
 }
 
 
-def leaf_mass(p):
-    """Whole leaves laid back to front until the coverage is met: the first ones deep in the bush (dark), the last ones on
-    top (light). Each leaf has a lit edge and a shaded edge, and drops a dark pixel of shadow under it, so the mass reads
-    as leaves, not noise. The holes between them stay clear."""
-    rng = random.Random(p["seed"])
-    px, order = {}, []
-    shapes = SHAPES[p["leaf_shape"]]
-    target = 256 * p["coverage"]
-    n = 0
-    while len(px) < target and n < 2000:
-        n += 1
-        x, y = rng.randrange(16), rng.randrange(16)
-        depth = min(1.0, len(px) / target)  # 0 = deep inside, 1 = outermost
-        mid = 1 + round(depth * 2 - (y / 16) * 0.8)
-        shade = {"h": min(4, mid + 1), "m": max(0, min(3, mid)), "d": max(0, mid - 1)}
-        sh = rng.choice(shapes)
-        for role, dx, dy in sh:
-            px[((x + dx) % 16, (y + dy) % 16)] = p["leaf"][shade[role]]
-        under = ((x + sh[-1][1]) % 16, (y + sh[-1][2] + 1) % 16)
-        if under not in px:
-            px[under] = p["leaf"][0]
+def clumps(p, seed, coverage=None, darken=0):
+    """Leaf clumps: soft blobs lit from the top left (highlight and light there, dark and shadow on the bottom right), a
+    ragged leafy rim, the clear holes between clumps kept. Back clumps first, so the front ones overlap them. Only the
+    kind's five colours, shifted down by darken for the inner layer."""
+    rng = random.Random(seed)
+    cov = coverage or p["coverage"]
+    lo, hi = p["clump"]
+    sx, sy = p["stretch"]
+    px = {}
+    for _ in range(400):
+        if len(px) >= 256 * cov:
+            break
+        cx, cy, r = rng.uniform(0, 16), rng.uniform(0, 16), rng.uniform(lo, hi)
+        tilt = rng.choice((-1, 1)) if sx > 1 else 0  # sea buckthorn: streaks slant one way or the other
+        for y in range(int(cy - r * 2) - 1, int(cy + r * 2) + 2):
+            for x in range(int(cx - r * 2) - 1, int(cx + r * 2) + 2):
+                dx, dy = x + 0.5 - cx, y + 0.5 - cy
+                if tilt:
+                    dx, dy = (dx + tilt * dy) * 0.7, (dy - tilt * dx) * 0.7
+                d = ((dx / sx) ** 2 + (dy / sy) ** 2) ** 0.5 / r
+                if d > 1.0 + rng.uniform(-0.12, 0.18):
+                    continue
+                light = -(dx * 0.65 + dy * 0.75) / (r * max(sx, sy)) - d * 0.35  # top left bright, rim dark
+                shade = 0 if light > 0.35 else 1 if light > 0.0 else 2 if light > -0.45 else 3
+                if d > 0.85 and (dx + dy) > 0:
+                    shade = 4  # the shadowed rim
+                px[(x % 16, y % 16)] = p["leaf"][min(4, shade + darken)]
     return px
 
 
-def twigs(p, seed, count=7):
-    """Bare winter twigs: forking branches climbing across the face."""
+def twig_line(px, p, x, y, length, dx, rng):
+    """A thin twig climbing from (x, y), drawn over the leaves; returns where it ends."""
+    for i in range(length):
+        px[(x % 16, y % 16)] = p["bark"][1 if i < length - 1 else 2]
+        y -= 1
+        if rng.random() < 0.6:
+            x += dx
+    return x, y
+
+
+def bunches(p, seed):
+    """Twigs with fruit: each bunch is a short visible twig and 2-4 fruits round its tip (or, Sea Buckthorn, beads packed
+    along the twig). Same places in every stage."""
+    rng = random.Random(seed)
+    out = []
+    cells = [(i % 3, i // 3) for i in range(9)]
+    rng.shuffle(cells)
+    for gx, gy in cells[:p["bunches"]]:  # spread the bunches over a 3x3 grid, not in a pattern
+        x, y = gx * 5 + rng.randint(1, 4), gy * 5 + rng.randint(3, 5)
+        dx = rng.choice((-1, 1))
+        n = 2 + rng.randint(0, 2)
+        out.append((x, y, dx, n, rng.random()))
+    return out
+
+
+def draw_bunches(px, p, spots, col, flowers=False):
+    rng = random.Random(p["seed"] + 77)
+    for x, y, dx, n, k in spots:
+        tx, ty = twig_line(px, p, x, y, 3 + int(k * 2), dx, rng)
+        if p["fruit"] == "beads":  # berries hugging the twig all the way along it
+            for i in range(4 + n):
+                bx, by = x + (i * dx) // 2 + (1 if i % 2 else 0), y - i
+                px[(bx % 16, by % 16)] = col[2] if i % 3 == 0 else col[1] if i % 2 else col[0]
+            continue
+        tips = [(tx, ty), (tx - dx, ty + 1), (tx + dx, ty + 1), (tx, ty + 2)][:n]
+        for i, (bx, by) in enumerate(tips):
+            if flowers:  # five petals round a pale yellow eye
+                for ox, oy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+                    px[((bx + ox) % 16, (by + oy) % 16)] = col[0] if (ox + oy + i) % 2 else col[1]
+                px[(bx % 16, by % 16)] = col[2]
+            elif p["fruit"] == "sloe":  # round 2x2 sloe, dark below, 1 px bloom highlight
+                for ox, oy in ((0, 0), (1, 0), (0, 1), (1, 1)):
+                    px[((bx + ox) % 16, (by + oy) % 16)] = col[1]
+                px[((bx + 1) % 16, (by + 1) % 16)] = col[0]
+                px[(bx % 16, by % 16)] = col[2]
+            else:  # jujube: an oval drupe hanging 2x3, glossy spot
+                for ox, oy in ((0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)):
+                    px[((bx + ox) % 16, (by + 1 + oy) % 16)] = col[1]
+                px[((bx + 1) % 16, (by + 3) % 16)] = col[0]
+                px[((bx + 1) % 16, (by + 2) % 16)] = col[0]
+                px[(bx % 16, (by + 1) % 16)] = col[2]
+                px[(bx % 16, by % 16)] = p["bark"][2]  # its stalk
+
+
+def bare_twigs(p, seed, count=6):
+    """Bare winter twigs: forking branches, thicker at the base, thin tips."""
     rng = random.Random(seed)
     px = {}
     for _ in range(count):
         x, y = rng.randrange(16), 15
         dx = rng.choice((-1, 1))
-        for step in range(rng.randint(9, 16)):
-            px[(x % 16, y)] = p["bark"][0 if step < 4 else 1 if rng.random() < 0.7 else 2]
+        for step in range(rng.randint(10, 16)):
+            px[(x % 16, y)] = p["bark"][0 if step < 5 else 1]
             y -= 1
             if y < 0:
                 break
-            if rng.random() < 0.45:
+            if rng.random() < 0.4:
                 x += dx
-            if rng.random() < 0.18:  # a side shoot
+            if rng.random() < 0.2:
                 sx, sy = x, y
                 for _ in range(rng.randint(2, 4)):
                     sx -= dx
-                    sy -= rng.randint(0, 1)
+                    sy -= 1
                     if 0 <= sy < 16:
                         px[(sx % 16, sy)] = p["bark"][2]
     return px
-
-
-def fruit_spots(p):
-    """Where the fruit hangs (the same in every stage): cluster centres and their berries."""
-    rng = random.Random(p["seed"] + 1)
-    spots = []
-    for _ in range(p["clusters"]):
-        cx, cy = rng.randrange(1, 15), rng.randrange(1, 15)
-        if p["fruit"] == "sloe":  # round 2x2 sloes, a pair or a single
-            spots.append([(cx, cy, "big")] + ([(cx + 2, cy + 1, "big")] if rng.random() < 0.5 else []))
-        elif p["fruit"] == "dense":  # orange beads packed along a short twig
-            d = rng.choice((-1, 1))
-            spots.append([(cx + i * d // 2 + rng.randint(0, 1), cy + i, "bead") for i in range(rng.randint(4, 7))])
-        else:  # jujube: an oval 2x3 drupe
-            spots.append([(cx, cy, "drupe")])
-    return spots
-
-
-def put_fruit(px, spots, col, kind):
-    """col: dark, mid, light. kind: 'fruit' or 'flower'."""
-    for cluster in spots:
-        for x, y, f in cluster:
-            if kind == "flower" and f == "bead":  # sea buckthorn: tiny catkin flowers along the twig
-                px[(x % 16, y % 16)] = col[2] if (x + y) % 2 else col[1]
-            elif kind == "flower":
-                for dx, dy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
-                    px[((x + dx) % 16, (y + dy) % 16)] = col[0] if f == "bead" else col[1] if (dx + dy) % 2 else col[0]
-                px[(x % 16, y % 16)] = col[2]
-            elif f == "big":
-                for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1)):
-                    px[((x + dx) % 16, (y + dy) % 16)] = col[1]
-                px[((x + 1) % 16, (y + 1) % 16)] = col[0]
-                px[(x % 16, y % 16)] = col[2]
-            elif f == "bead":
-                px[(x % 16, y % 16)] = col[1] if (x + y) % 3 else col[2]
-                px[(x % 16, (y + 1) % 16)] = col[0] if (x + y) % 2 else col[1]
-            else:
-                for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)):
-                    px[((x + dx) % 16, (y + dy) % 16)] = col[1]
-                px[((x + 1) % 16, (y + 2) % 16)] = col[0]
-                px[((x + 1) % 16, (y + 1) % 16)] = col[0]
-                px[(x % 16, y % 16)] = col[2]
 
 
 def to_img(px):
@@ -513,43 +522,50 @@ def to_img(px):
 
 def thicket_images(name, p):
     out = {}
-    leaves = leaf_mass(p)
-    spots = fruit_spots(p)
-    bare = twigs(p, p["seed"] + 5)
+    leaves = clumps(p, p["seed"])
+    spots = bunches(p, p["seed"] + 1)
+    bare = bare_twigs(p, p["seed"] + 5)
     out[f"block/{name}_stage0.png"] = to_img(leaves)
-    if p["blossom_heavy"]:  # blackthorn: a cloud of white blossom on dark twigs before the leaves come
+    if p["blossom_heavy"]:  # blackthorn flowers before its leaves: white blossom on dark twigs, a few young leaves
         px = dict(bare)
-        px.update({k: v for k, v in leaves.items() if hash(k) % 4 == 0})
+        px.update({k: v for k, v in clumps(p, p["seed"] + 9, 0.25).items()})
         rng = random.Random(p["seed"] + 9)
-        extra = [[(rng.randrange(16), rng.randrange(16), "big")] for _ in range(6)]
-        put_fruit(px, spots + extra, p["flower"], "flower")
+        extra = [(rng.randrange(1, 15), rng.randrange(4, 15), rng.choice((-1, 1)), 3, 0.2) for _ in range(4)]
+        draw_bunches(px, p, spots + extra, p["flower"], flowers=True)
     else:
         px = dict(leaves)
-        put_fruit(px, spots, p["flower"], "flower")
+        draw_bunches(px, p, spots, p["flower"], flowers=True)
     out[f"block/{name}_stage1.png"] = to_img(px)
     for stage, col in ((2, p["unripe"]), (3, p["ripe"])):
         px = dict(leaves)
-        put_fruit(px, spots, col, "fruit")
+        draw_bunches(px, p, spots, col)
         out[f"block/{name}_stage{stage}.png"] = to_img(px)
     out[f"block/{name}_bare.png"] = to_img(bare)
     px = dict(bare)
-    put_fruit(px, spots, p["ripe"], "fruit")
+    draw_bunches(px, p, spots, p["ripe"])
     out[f"block/{name}_bare_ripe.png"] = to_img(px)
-    # the branch planes inside: a few stems forking up from the root
+    # inner layer: the shaded heart of the bush, seen through the gaps (darker, denser)
+    out[f"block/{name}_inner.png"] = to_img(clumps(p, p["seed"] + 13, 0.85, darken=2))
+    # the branch planes: stems forking up from the root, ending in leafy tips that poke out over the crown
     rng = random.Random(p["seed"] + 3)
     st = {}
-    for x0 in (5, 8, 11):
+    tips = []
+    for x0 in (4, 8, 12):
         x = x0
-        for y in range(15, 1, -1):
-            st[(x, y)] = p["bark"][0 if y > 11 else 1]
+        for y in range(15, 2, -1):
+            st[(x, y)] = p["bark"][0 if y > 10 else 1]
             if rng.random() < 0.3:
-                x += rng.choice((-1, 1))
-                x = max(1, min(14, x))
-            if y < 11 and rng.random() < 0.25:
-                st[(max(0, min(15, x + rng.choice((-2, 2)))), y - 1)] = p["bark"][2]
-    for (x, y), c in list(leaves.items()):  # a few leaves on the inner twigs too
-        if y < 13 and hash((x, y)) % 3 == 0:
-            st[(x, y)] = c
+                x = max(1, min(14, x + rng.choice((-1, 1))))
+            if y in (9, 6) and rng.random() < 0.7:
+                bx = max(0, min(15, x + rng.choice((-2, 2))))
+                st[(bx, y - 1)] = p["bark"][2]
+                tips.append((bx, y - 2))
+        tips.append((x, 2))
+    out[f"block/{name}_stems_bare.png"] = to_img(st)
+    for tx, ty in tips:  # little leaf sprays at the branch ends
+        for ox, oy, c in ((0, 0, 1), (-1, 0, 2), (1, 0, 2), (0, -1, 0), (-1, 1, 3), (1, 1, 3)):
+            if 0 <= tx + ox < 16 and 0 <= ty + oy < 16:
+                st[(tx + ox, ty + oy)] = p["leaf"][c]
     out[f"block/{name}_stems.png"] = to_img(st)
     return out
 
@@ -636,8 +652,77 @@ ITEMS = {
 }
 
 
-def build():
+def fern_parts():
+    """The Fern Flower's model parts: an arching frond (root bottom left, tip top right, leaflets on both sides of the
+    stalk, shorter toward the tip), the flower seen from above (five petals, white heart through gold to amber tips), its
+    cup from the side, the stalk and the curled bud of the fern out of bloom."""
+    import math
     out = {}
+    G, g, d, s = hexc("8ccc5c"), hexc("5f9a3f"), hexc("3a6a2a"), hexc("4a7630")
+    fr = Image.new("RGBA", (16, 16))
+    pts = [(1 + 11 * t + 2 * math.sin(t * 3.0) * (1 - t), 15 - 14 * t ** 0.85) for t in [i / 30 for i in range(31)]]
+    for k, (x, y) in enumerate(pts):
+        fr.putpixel((int(x), int(y)), s)
+    for k in range(3, 29, 4):
+        (x, y), (x2, y2) = pts[k], pts[k + 1]
+        tx, ty = x2 - x, y2 - y
+        ln = math.hypot(tx, ty) or 1
+        tx, ty = tx / ln, ty / ln
+        n = max(1, round(3.4 * (1 - k / 30) + 0.6))
+        for side, col in ((1, G), (-1, g)):  # leaflets slant toward the tip; the upper-left ones lit, the others in shade
+            ux, uy = -ty * side * 0.85 + tx * 0.55, tx * side * 0.85 + ty * 0.55
+            for m in range(1, n + 1):
+                px, py = round(x + ux * m), round(y + uy * m)
+                if 0 <= px < 16 and 0 <= py < 16:
+                    fr.putpixel((px, py), col if m < n else d)
+    out["block/fern_flower_frond.png"] = fr
+    top = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x + 0.5 - 8, y + 0.5 - 8
+            r, th = math.hypot(dx, dy), math.atan2(dy, dx)
+            a = abs(((th + math.pi / 2) % (2 * math.pi / 5)) - math.pi / 5)  # angle off the nearest petal's axis
+            a = math.pi / 5 - a
+            edge = 1.6 + 3.6 * max(0.0, 1 - (a / 0.52) ** 2) ** 0.5  # rounded petals, a notch between each
+            if r > edge:
+                continue
+            c = "ffffff" if r < 1.1 else "fff4c0" if r < 2.0 else "ffe066" if r < edge * 0.72 else "ffb43c" if r < edge * 0.92 else "f07a2c"
+            top.putpixel((x, y), hexc(c))
+    out["block/fern_flower_top.png"] = top
+    out["block/fern_flower_side.png"] = grid(["................"] * 10 + [
+        "....R..O..R.....",
+        "....OY.Y.YO.....",
+        ".....OYWYO......",
+        "......OYO.......",
+        ".......s........",
+        "................"], {"R": "f07a2c", "O": "ffb43c", "Y": "ffe066", "W": "ffffff", "s": "4a7630"})
+    out["block/fern_flower_stalk.png"] = grid(["................"] * 6 + [
+        ".......s........",
+        ".......s........",
+        "......gs........",
+        ".......s........",
+        ".......sg.......",
+        ".......s........",
+        ".......s........",
+        "......gs........",
+        ".......s........",
+        ".......s........"], {"s": "4a7630", "g": "6ea848"})
+    out["block/fern_flower_bud.png"] = grid(["................"] * 6 + [
+        ".......bb.......",
+        "......b..b......",
+        "......b.bb......",
+        ".......bs.......",
+        ".......s........",
+        ".......s........",
+        "......gs........",
+        ".......s........",
+        ".......s........",
+        ".......s........"], {"b": "7cbc50", "s": "4a7630", "g": "6ea848"})
+    return out
+
+
+def build():
+    out = fern_parts()
     for name, f in FLOWERS.items():
         out[f"block/{name}.png"] = grid(f["bloom"], f["pal"])
         out[f"block/{name}_leaves.png"] = grid(f["leaves"], f["pal"]) if "leaves" in f else grid(f["bloom"], f["pal"], f["remap"])

@@ -4,9 +4,74 @@
   "textures": {
     "particle": "mechanical:block/jujube_stage0",
     "leaves": "mechanical:block/jujube_stage0",
+    "inner": "mechanical:block/jujube_inner",
     "stems": "mechanical:block/jujube_stems"
   },
   "elements": [
+    {
+      "from": [
+        3,
+        0.5,
+        3
+      ],
+      "to": [
+        13,
+        12,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            4,
+            13,
+            15.5
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            3,
+            4,
+            13,
+            15.5
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "east": {
+          "uv": [
+            3,
+            4,
+            13,
+            15.5
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            3,
+            4,
+            13,
+            15.5
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        },
+        "up": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#inner",
+          "tintindex": 0
+        }
+      }
+    },
     {
       "from": [
         2.5,
@@ -265,13 +330,83 @@
     },
     {
       "from": [
+        -1.5,
+        2,
+        8
+      ],
+      "to": [
+        17.5,
+        13,
+        8
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            3,
+            16,
+            14
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            0,
+            3,
+            16,
+            14
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        8,
+        2,
+        -1.5
+      ],
+      "to": [
+        8,
+        13,
+        17.5
+      ],
+      "shade": false,
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            3,
+            16,
+            14
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            0,
+            3,
+            16,
+            14
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
         0,
         0,
         8
       ],
       "to": [
         16,
-        17.5,
+        20,
         8
       ],
       "shade": false,
@@ -316,7 +451,7 @@
       ],
       "to": [
         16,
-        17.5,
+        20,
         8
       ],
       "shade": false,

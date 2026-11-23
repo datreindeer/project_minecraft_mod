@@ -70,7 +70,7 @@ public final class Flora {
 
     /** Fern Flower: a fern that blooms only on summer nights, glowing gold; picked in bloom it brings luck (folklore). */
     public static final DeferredBlock<WildFlowerBlock> FERN_FLOWER = BLOCKS.registerBlock("fern_flower",
-            p -> new WildFlowerBlock(new WildFlowerBlock.Bloom(SUMMER, true), false, 12, new DustParticleOptions(0xFFD45A, 0.8F), p) {
+            p -> new WildFlowerBlock(new WildFlowerBlock.Bloom(SUMMER, true), false, 12, new DustParticleOptions(0xFFD45A, 0.5F), p) {
                 @Override
                 public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
                     if (!level.isClientSide() && state.getValue(BLOOMING)) player.addEffect(new MobEffectInstance(MobEffects.LUCK, LUCK_TICKS));

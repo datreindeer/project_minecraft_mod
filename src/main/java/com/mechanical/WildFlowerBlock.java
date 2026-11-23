@@ -88,8 +88,8 @@ public class WildFlowerBlock extends VegetationBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (glow == null || !state.getValue(BLOOMING) || random.nextInt(3) != 0) return;
+        if (glow == null || !state.getValue(BLOOMING) || random.nextInt(7) != 0) return; // a few slow motes, not a fountain
         level.addParticle(glow, pos.getX() + 0.3 + random.nextDouble() * 0.4, pos.getY() + shape.max(net.minecraft.core.Direction.Axis.Y) * 0.7
-                + random.nextDouble() * 0.3, pos.getZ() + 0.3 + random.nextDouble() * 0.4, 0, 0.012 + random.nextDouble() * 0.01, 0);
+                + random.nextDouble() * 0.3, pos.getZ() + 0.3 + random.nextDouble() * 0.4, 0, 0.004 + random.nextDouble() * 0.006, 0);
     }
 }

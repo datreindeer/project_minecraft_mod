@@ -149,7 +149,8 @@ public class ThicketBushBlock extends WildBerryBushBlock {
         } else {
             int age = state.getValue(AGE), want = target[season];
             if (age > want && random.nextInt(STAGE_ONE_IN) == 0) state = state.setValue(AGE, age - 1); // flowers fade, berries fall
-            else if (age < want && growing && random.nextInt(STAGE_ONE_IN) == 0) state = state.setValue(AGE, age + 1);
+            else if (age < want && growing && random.nextInt(STAGE_ONE_IN) == 0)
+                state = state.setValue(AGE, age == 0 && season >= 2 ? 2 : age + 1); // no blossom in autumn: straight to unripe
         }
         if (state != was) level.setBlock(pos, state, Block.UPDATE_CLIENTS);
         if (!growing || state.getValue(YOUNG) || state.getValue(HALF) == DoubleBlockHalf.UPPER) return;

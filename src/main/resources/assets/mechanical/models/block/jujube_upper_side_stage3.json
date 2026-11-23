@@ -3,6 +3,7 @@
   "textures": {
     "particle": "mechanical:block/jujube_stage3",
     "leaves": "mechanical:block/jujube_stage3",
+    "inner": "mechanical:block/jujube_inner",
     "stems": "mechanical:block/jujube_stems"
   },
   "elements": [

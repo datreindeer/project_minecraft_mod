@@ -2443,6 +2443,10 @@ Alla tre bärsorterna kan torkas på Drying Rack, får plats i Bark Basket och h
 Varje blomma **blommar bara i sin säsong**; resten av året är den gröna blad (backsippan silverfjuniga frökolvar,
 strandtriften halmfärgade huvuden), och på vintern grå och frostig. Plockas och planteras som vanillas blommor.
 Advancement **Wildflowers** (Food & Farming): plocka en av dem.
+**Plantera på halva steg:** högerklickar man ovansidan av en jordslab (Grass Slab, Dirt Slab, Coarse Dirt, Podzol, Moss,
+Mud, Peat, Loess, Turf, Sand, Red Sand, Gravel, Beach Pebble eller Burnt Soil Slab) med en växt (blomma, buske, sapling,
+svamp, vanilla eller modd) blir slabben först det hela block den är halva av, och växten står sedan på det. Bara om
+växten kan växa där; annars är slabben kvar. Fungerar också på vanligt gräs som förut.
 
 | Blomma | Biomer | Blommar |
 |---|---|---|

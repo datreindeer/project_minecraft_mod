@@ -3,7 +3,8 @@
   "textures": {
     "particle": "mechanical:block/sea_buckthorn_bare",
     "leaves": "mechanical:block/sea_buckthorn_bare",
-    "stems": "mechanical:block/sea_buckthorn_stems"
+    "inner": "mechanical:block/sea_buckthorn_bare",
+    "stems": "mechanical:block/sea_buckthorn_stems_bare"
   },
   "elements": [
     {
