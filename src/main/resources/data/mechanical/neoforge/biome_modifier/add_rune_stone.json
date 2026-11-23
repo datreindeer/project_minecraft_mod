@@ -15,7 +15,8 @@
     "mechanical:pine_heath",
     "mechanical:chalk_downs",
     "mechanical:limestone_karst",
-    "mechanical:glacial_moraine"
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe"
   ],
   "features": "mechanical:rune_stone",
   "step": "surface_structures"

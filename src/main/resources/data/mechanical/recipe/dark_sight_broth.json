@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:cave_salamander",
+    "minecraft:glow_lichen",
+    "minecraft:bowl"
+  ],
+  "result": {
+    "id": "mechanical:dark_sight_broth",
+    "count": 1
+  }
+}

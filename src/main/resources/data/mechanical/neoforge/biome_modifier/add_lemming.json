@@ -5,7 +5,8 @@
     "minecraft:snowy_taiga",
     "minecraft:grove",
     "minecraft:snowy_slopes",
-    "minecraft:ice_spikes"
+    "minecraft:ice_spikes",
+    "mechanical:mammoth_steppe"
   ],
   "spawners": [
     {

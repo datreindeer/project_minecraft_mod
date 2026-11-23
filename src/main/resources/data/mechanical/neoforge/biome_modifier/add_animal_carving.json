@@ -15,7 +15,8 @@
     "mechanical:hazel_meadow",
     "mechanical:chalk_downs",
     "mechanical:limestone_karst",
-    "mechanical:glacial_moraine"
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe"
   ],
   "features": "mechanical:animal_carving",
   "step": "surface_structures"

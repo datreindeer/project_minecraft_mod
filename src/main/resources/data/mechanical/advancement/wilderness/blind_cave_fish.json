@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/deep_cold",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:blind_cave_fish"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:blind_cave_fish"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.blind_cave_fish.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.blind_cave_fish.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

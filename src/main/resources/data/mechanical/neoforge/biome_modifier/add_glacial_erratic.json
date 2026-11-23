@@ -16,7 +16,8 @@
     "mechanical:slate_highlands",
     "mechanical:limestone_karst",
     "mechanical:marble_gorge",
-    "mechanical:basalt_coast"
+    "mechanical:basalt_coast",
+    "mechanical:mammoth_steppe"
   ],
   "features": "mechanical:glacial_erratic",
   "step": "surface_structures"

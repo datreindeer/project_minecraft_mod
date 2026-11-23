@@ -10,7 +10,8 @@
     "mechanical:hazel_meadow",
     "mechanical:pine_heath",
     "mechanical:limestone_karst",
-    "mechanical:marble_gorge"
+    "mechanical:marble_gorge",
+    "mechanical:mammoth_steppe"
   ],
   "spawners": [
     {

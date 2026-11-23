@@ -17,7 +17,8 @@
     "mechanical:soapstone_valley",
     "mechanical:limestone_karst",
     "mechanical:basalt_coast",
-    "mechanical:glacial_moraine"
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe"
   ],
   "features": "mechanical:cairn",
   "step": "surface_structures"

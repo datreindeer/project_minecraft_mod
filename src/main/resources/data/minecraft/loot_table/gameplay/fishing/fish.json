@@ -51,6 +51,23 @@
               ]
             }
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:blind_cave_fish",
+          "weight": 150,
+          "condition": {
+            "type": "minecraft:location_check",
+            "offsetY": 1,
+            "predicate": {
+              "can_see_sky": false,
+              "position": {
+                "y": {
+                  "max": 50
+                }
+              }
+            }
+          }
         }
       ],
       "rolls": 1

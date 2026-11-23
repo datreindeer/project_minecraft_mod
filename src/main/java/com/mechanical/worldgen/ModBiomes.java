@@ -33,6 +33,7 @@ public final class ModBiomes {
     public static final ResourceKey<Biome> MAGMA_VENTS = key("magma_vents");
     public static final ResourceKey<Biome> CRYSTAL_GEODES = key("crystal_geodes");
     public static final ResourceKey<Biome> FLOODED_CAVES = key("flooded_caves");
+    public static final ResourceKey<Biome> MAMMOTH_STEPPE = key("mammoth_steppe");
 
     /**
      * A surface biome's share of one vanilla biome's climate slots (phases 4 and 7): every slot of {@code source} that
@@ -72,7 +73,9 @@ public final class ModBiomes {
             // temperate swamp (the part Willow Fen left) near the coast: near-inland continentalness
             new SurfaceShare(Biomes.SWAMP, key("reed_delta"), T2, null, span(-0.11F, 0.03F), null, null),
             // the driest desert band on flat land
-            new SurfaceShare(Biomes.DESERT, key("gypsum_flats"), null, span(-1.0F, -0.35F), null, span(0.05F, 1.0F), null));
+            new SurfaceShare(Biomes.DESERT, key("gypsum_flats"), null, span(-1.0F, -0.35F), null, span(0.05F, 1.0F), null),
+            // the frozen band's driest snowy plains (humidity band 0): cold, dry grassland (docs/biomes.md); Ice Spikes keep their slot
+            new SurfaceShare(Biomes.SNOWY_PLAINS, MAMMOTH_STEPPE, T0, span(-1.0F, -0.35F), null, null, null));
 
     /** A cave biome's share of the climate space at cave depth (vanilla's underground biomes use depth 0.2..0.9). */
     public record CaveSlot(ResourceKey<Biome> biome, Climate.Parameter temperature, Climate.Parameter humidity,

@@ -100,6 +100,9 @@
     "mechanical:crocodile_meat",
     "mechanical:monkey_meat",
     "mechanical:mudskipper",
-    "mechanical:raw_crab_meat"
+    "mechanical:raw_crab_meat",
+    "mechanical:blind_cave_fish",
+    "mechanical:spider_leg",
+    "mechanical:cave_salamander"
   ]
 }

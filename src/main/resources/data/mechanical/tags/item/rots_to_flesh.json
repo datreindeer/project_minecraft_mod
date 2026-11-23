@@ -190,6 +190,11 @@
     "mechanical:cooked_crocodile_meat",
     "mechanical:cooked_monkey_meat",
     "mechanical:cooked_mudskipper",
-    "mechanical:cooked_crab_meat"
+    "mechanical:cooked_crab_meat",
+    "mechanical:blind_cave_fish",
+    "mechanical:spider_leg",
+    "mechanical:cave_salamander",
+    "mechanical:cooked_cave_fish",
+    "mechanical:roasted_spider_leg"
   ]
 }

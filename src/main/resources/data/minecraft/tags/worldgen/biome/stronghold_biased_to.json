@@ -22,6 +22,7 @@
     "mechanical:galena_seams",
     "mechanical:magma_vents",
     "mechanical:crystal_geodes",
-    "mechanical:flooded_caves"
+    "mechanical:flooded_caves",
+    "mechanical:mammoth_steppe"
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "parent": "mechanical:wilderness/root",
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:bat_swarm"
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bat_wing"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.bat_swarm.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.bat_swarm.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

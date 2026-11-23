@@ -66,4 +66,8 @@ ambient light) stängs av, så mörka delar blir helt svarta, dag som natt. Nigh
   (DynamicLights), `caves_cave_night_vision`, `caves_cave_glow_lichen`, och ytan vid midnatt med effekten på/av
   (`caves_surface_night`, `caves_surface_night_off`: identiska utom 0,02 % av pixlarna, partiklar).
 
+## 5. Djupets smådjur (klart)
+Cave Salamander och Blind Cave Fish i mörka grottsjöar, Cavern Spider med Cave Web i de grunda gångarna (y 40 till 0) och Bat
+Swarm som visar grottmynningar i skymningen. Ingen av dem lyser. Se [fauna/deep.md](fauna/deep.md).
+
 Öppet: brinner facklor ut? Om inte är mörkret lätt att hålla borta.

@@ -12,7 +12,8 @@
     "mechanical:chalk_downs",
     "mechanical:slate_highlands",
     "mechanical:limestone_karst",
-    "mechanical:basalt_coast"
+    "mechanical:basalt_coast",
+    "mechanical:mammoth_steppe"
   ],
   "features": "mechanical:stone_head",
   "step": "surface_structures"

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 300,
+  "experience": 0.1,
+  "ingredient": "mechanical:blind_cave_fish",
+  "result": {
+    "id": "mechanical:cooked_cave_fish",
+    "count": 1
+  }
+}

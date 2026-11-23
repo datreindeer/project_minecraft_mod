@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:silk_gland",
+    "#mechanical:knives"
+  ],
+  "result": {
+    "id": "minecraft:string",
+    "count": 3
+  }
+}

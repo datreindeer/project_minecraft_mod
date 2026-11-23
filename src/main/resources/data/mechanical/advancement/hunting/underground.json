@@ -26,12 +26,22 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:troll_meat"
+            "items": "mechanical:spider_leg"
           }
         ]
       }
     },
     "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:troll_meat"
+          }
+        ]
+      }
+    },
+    "has_4": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -47,7 +57,8 @@
       "has_0",
       "has_1",
       "has_2",
-      "has_3"
+      "has_3",
+      "has_4"
     ]
   ],
   "display": {

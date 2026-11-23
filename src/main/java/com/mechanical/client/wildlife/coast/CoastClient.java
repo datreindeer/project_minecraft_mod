@@ -86,12 +86,12 @@ public final class CoastClient {
         }
     }
 
-    /** Fish: a fixed texture, the body swaying as it swims, flopping on its side out of the water (like vanilla fish). */
-    static class FishRenderer<T extends Mob> extends MobRenderer<T, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> {
+    /** Fish (also the deep fauna's cave fish and olm): a fixed texture, the body swaying as it swims, flopping on its side out of the water (like vanilla fish). */
+    public static class FishRenderer<T extends Mob> extends MobRenderer<T, LivingEntityRenderState, EntityModel<LivingEntityRenderState>> {
         private final Identifier texture;
         private final float scale, carcassShift;
 
-        FishRenderer(EntityRendererProvider.Context context, EntityModel<LivingEntityRenderState> model, Identifier texture, float shadow,
+        public FishRenderer(EntityRendererProvider.Context context, EntityModel<LivingEntityRenderState> model, Identifier texture, float shadow,
                      float scale, float carcassShift) {
             super(context, model, shadow);
             this.texture = texture;

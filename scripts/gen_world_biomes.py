@@ -2,7 +2,7 @@
 
 Phase 0 (spike): Chalk Downs (surface) and Limestone Caverns (cave). Phases 4 and 7: the 12 surface biomes (Chalk Downs,
 Peat Bog, Slate Highlands, ... Gypsum Flats), each a BIOMES + MATERIALS row, an EXTRA row (own features, spawns, biome
-modifiers joined or skipped, has_<material> tags) and a ModBiomes.SURFACE row in Java (its climate slot; the mixin cuts
+modifiers joined or skipped, has_<material> tags; no_creatures drops template spawns) and a ModBiomes.SURFACE row in Java (its climate slot; the mixin cuts
 it out of the vanilla biome). Cave biomes: a row in ModBiomes.CAVES. Also the Glacial Boulder feature and Beach Pebbles
 on vanilla Stony Shores.
 
@@ -166,6 +166,9 @@ BIOMES.update({
                         {"temperature": 0.2, "downfall": 0.6, "effects": {"grass_color": "#7f9a72", "foliage_color": "#5f8058", "water_color": "#3a5f9a"}}),
     "gypsum_flats": ("desert", "Gypsum Flats", [M + "patch_cactus_desert"],
                      {"effects": {"grass_color": "#bfb791", "foliage_color": "#aea474", "water_color": "#48a8c8"}}),
+    # cold and dry, but just warm enough (0.15) for grass instead of snow cover; no trees
+    "mammoth_steppe": ("snowy_plains", "Mammoth Steppe", [M + "trees_snowy", M + "patch_sugar_cane", M + "patch_firefly_bush_near_water"],
+                       {"temperature": 0.15, "downfall": 0.1, "effects": {"grass_color": "#b4ab6c", "foliage_color": "#9c9a5e", "water_color": "#3a64a8"}}),
 })
 MATERIALS.update({
     # peat under thin grass, open peat and bog moss in patches, peat on the pool floors
@@ -197,6 +200,8 @@ MATERIALS.update({
     # white gypsum crust with salt pans and sand, alabaster in the gypsum
     "gypsum_flats": {"top": pick((0.32, S("rock_salt")), (-0.45, S("gypsum")), default=M + "sand"), "wet": S("gypsum"), "under": S("gypsum"),
                      "stone": pick((0.35, S("alabaster")), default=S("gypsum")), "slope": S("gypsum")},
+    # thin dry turf with bare coarse patches over thick wind-blown loess (the steppe's soil), loess in every bank
+    "mammoth_steppe": {"top": pick((0.3, M + "coarse_dirt"), default=M + "grass_block"), "under": S("loess"), "stone": S("loess"), "slope": S("loess")},
 })
 
 # ---- features (each placed feature belongs to one biome, so FeatureSorter never sees two orders)
@@ -343,6 +348,16 @@ EXTRA = {
     "gypsum_flats": dict(
         attributes={"minecraft:visual/sky_color": "#9cc8ff", "minecraft:visual/fog_color": "#f0ecdc"},
         has=["gypsum", "alabaster", "rock_salt"]),
+    # the ice-age grassland: the snowy plains' giants (mammoth, rhino, bison, musk ox, saiga) plus wild horses, cave lions, wolves
+    "mammoth_steppe": dict(
+        features={SURFACE_STRUCTURES: [once("mammoth_steppe_boulders", S("glacial_boulder"), 8)],
+                  VEG: [scatter("mammoth_steppe_grass", {"state": weighted((M + "short_grass", 6), (M + "tall_grass", 2), (M + "fern", 1))}, 6, 24, 6)]},
+        attributes={"minecraft:visual/sky_color": "#9ab4e0", "minecraft:visual/fog_color": "#d8dccc"},
+        no_creatures=[M + "polar_bear"],  # no sea ice to hunt from
+        join=["wild_horse"],
+        skip=["blackberry_bush", "cloudberry_bush"],  # too dry for the berries of the wet snowy plains
+        has=["loess", "cave_lions", "grey_wolves"],
+        skip_tags=["has_structure/igloo", "has_structure/village_snowy", "spawns_snow_foxes", "spawns_white_rabbits"]),  # no snow cover
 }
 
 # Beach Pebbles on vanilla's stony shores too: patches swapped into the top layer of stone and gravel
@@ -408,14 +423,18 @@ for name, (base, title, drop, fields) in BIOMES.items():
     for step, ids in x.get("features", {}).items():
         b["features"][step] = ids + b["features"][step]
     b["attributes"].update(x.get("attributes", {}))
+    spawns = b["attributes"]["minecraft:gameplay/natural_mob_spawns"]["argument"]["spawns_by_category"]
     if x.get("creatures"):
-        b["attributes"]["minecraft:gameplay/natural_mob_spawns"]["argument"]["spawns_by_category"].setdefault("creature", []).extend(x["creatures"])
+        spawns.setdefault("creature", []).extend(x["creatures"])
+    if x.get("no_creatures"):
+        spawns["creature"] = [c for c in spawns.get("creature", []) if c["type"] not in x["no_creatures"]]
     w(D / f"mechanical/worldgen/biome/{name}.json", b)
     lang[f"biome.mechanical.{name}"] = title
     # tags: vanilla's (written as additions in our data/minecraft) and the mod's own
     tag_files = {D / n.removeprefix("data/") for n, v in vanilla_tags.items() if template in v}
     tag_files |= {p for p in D.glob("*/tags/worldgen/biome/**/*.json") if template in read(p, {}).get("values", [])}
     tag_files |= {D / f"mechanical/tags/worldgen/biome/has_{t}.json" for t in x.get("has", [])}
+    tag_files -= {D / f"minecraft/tags/worldgen/biome/{t}.json" for t in x.get("skip_tags", [])}  # vanilla tags of the template that don't fit
     for p in tag_files:
         t = read(p, {"values": []})
         if key not in t["values"]:

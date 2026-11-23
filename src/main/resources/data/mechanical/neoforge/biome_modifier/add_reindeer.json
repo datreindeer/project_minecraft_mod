@@ -6,7 +6,8 @@
     "minecraft:grove",
     "minecraft:snowy_slopes",
     "minecraft:ice_spikes",
-    "mechanical:glacial_moraine"
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe"
   ],
   "spawners": [
     {

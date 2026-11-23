@@ -9,7 +9,8 @@
     "minecraft:old_growth_spruce_taiga",
     "minecraft:old_growth_pine_taiga",
     "mechanical:pine_heath",
-    "mechanical:glacial_moraine"
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe"
   ],
   "spawners": [
     {

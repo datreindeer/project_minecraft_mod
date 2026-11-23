@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:wilderness/cave_salamander",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dark_sight_broth"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:dark_sight_broth"
+    },
+    "title": {
+      "translate": "advancements.mechanical.wilderness.dark_sight_broth.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.wilderness.dark_sight_broth.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

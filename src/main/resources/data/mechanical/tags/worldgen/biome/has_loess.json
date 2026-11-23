@@ -4,6 +4,7 @@
     "minecraft:sunflower_plains",
     "#minecraft:is_savanna",
     "mechanical:chalk_downs",
-    "mechanical:reed_delta"
+    "mechanical:reed_delta",
+    "mechanical:mammoth_steppe"
   ]
 }

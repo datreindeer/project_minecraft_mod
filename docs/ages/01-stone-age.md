@@ -1382,6 +1382,12 @@ värde **Sanity 0–100** (sparas, synkas till klienten, nollställs till 100 vi
   en skatt av guld och ädelstenar. Vittra och troll släpper den som har en fackla i handen eller står i facklans sken.
   Produkter: Vittra Hood, Potion of Night Vision av Vittra Eye, Trollhide Coat (rustning 6), Troll Tusk Knife (tusk-klass),
   Lindworm Scale-rustning (3/8/6/3, bättre än järn), Lindworm Fang Blade (7 skada), Lindworm Heart (Strength II).
+- **Djupet:** i mörka grottsjöar lever **Cave Salamander** (blind olm; + Glow Lichen + Bowl → **Dark-Sight Broth**, Night
+  Vision 3 min) och **Blind Cave Fish** (nappar på kroken i grottsjöar, steks till Cooked Cave Fish). I de grunda grottorna (y 40
+  till 0) spinner **Cavern Spider** stora **Cave Web** tvärs över trånga gångar: den som går in fastnar och spindeln kommer.
+  Kniv eller sax tar nätet helt (en fälla), annars String; Silk Gland + kniv → 3 String, Cavern Spider Fang + 8 Arrow → 8 Arrow
+  of Slowness, Spider Leg → Roasted Spider Leg. I skymningen väller en **Bat Swarm** ut ur grottmynningar: där finns en grotta
+  (Bat Wing, Guano). Se [fauna/deep.md](../fauna/deep.md).
 - **Leather Armor** isolerar mot kyla: 15 % per del (60 % med full rustning). **Fur-rustning** 25 % per del (100 % = ingen kyla). **Wolf Fur** och Wolf Hood 20 % per del. En vila i en Furred Straw Bed ger +30 % i 5 minuter (högst 100 % totalt).
 - **Under 8:** maten går åt fortare. **Under 3:** man fryser (frost på skärmen, långsam, tar frysskada).
 
@@ -2563,6 +2569,7 @@ De nya djurgrupperna har egna dokument (beteende, spawn, slakt, produkter och re
 - [Skogens fåglar och rovfåglar](../fauna/forestbirds.md): Capercaillie, Great Bustard, Eagle-Owl, Raven, Golden Eagle, Griffon Vulture
 - [Vattenfåglar](../fauna/waterfowl.md): Mallard, Mute Swan, Grey Heron, Common Crane
 - [Under jord](../fauna/underground.md): Cave Hyena och Cave Bear i grottorna (y 40 till 0), Giant Centipede (y 0 till −30, i grottaket; Chitin Vest, giftpilar), Vittra (y 0 till −30, jagar efter ljud; Vittra Hood), Troll (under −30, blir sten i dagsljus; Trollhide Coat, Troll Tusk Knife) och bossen Lindworm (under −45, bär en skatt; Lindworm Scale-rustning, Fang Blade, Lindworm Heart). Spawnar bara i totalt mörker: ljus är försvaret
+- [Djupet](../fauna/deep.md): Cave Salamander (Dark-Sight Broth), Blind Cave Fish (fiske i grottsjöar), Bat Swarm (visar grottmynningar i skymningen), Cavern Spider (Cave Web-fällor, Arrow of Slowness); och ytbiomen [Mammoth Steppe](../biomes.md#mammoth-steppe)
 
 ### Vanilla-djur som vilt
 Vilda vanilla-djur som fortfarande spawnar lämnar kadaver som moddens egna djur (styckas med kniv, hängs på Hanging

@@ -2,7 +2,8 @@
   "type": "neoforge:add_spawns",
   "biomes": [
     "minecraft:snowy_plains",
-    "mechanical:pine_heath"
+    "mechanical:pine_heath",
+    "mechanical:mammoth_steppe"
   ],
   "spawners": [
     {

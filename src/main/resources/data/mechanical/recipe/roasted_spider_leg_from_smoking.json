@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 75,
+  "experience": 0.1,
+  "ingredient": "mechanical:spider_leg",
+  "result": {
+    "id": "mechanical:roasted_spider_leg",
+    "count": 1
+  }
+}

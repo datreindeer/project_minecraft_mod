@@ -979,6 +979,29 @@ TABS["food"][1].extend([
                                     "mudskipper", "crab_meat")])),
 ])
 # end fauna: jungle
+# fauna: deep (wildlife/deep/DeepFauna.java, docs/fauna/deep.md): the rest of the underground, and the bats at the cave mouths
+TABS["wilderness"][1].extend([
+    ("cave_salamander", "deep_cold", "cave_salamander", T, "Pale Dweller",
+     "Catch a Cave Salamander in a dark cave lake: pale, blind and wholly aquatic. Move slowly - it feels the water stir",
+     has("cave_salamander")),
+    ("dark_sight_broth", "cave_salamander", "dark_sight_broth", T, "Eyes for the Dark",
+     "Put a Cave Salamander and Glow Lichen in a Bowl: Dark-Sight Broth, Night Vision for 3 minutes", has("dark_sight_broth")),
+    ("blind_cave_fish", "deep_cold", "blind_cave_fish", T, "Fishing in the Dark",
+     "Catch a Blind Cave Fish: cast a line into a lake deep in a cave, out of the sky", has("blind_cave_fish")),
+    ("bat_swarm", "root", "bat_wing", T, "Out of the Hill",
+     "Strike down a Bat Swarm as it pours out of a cave mouth at dusk. Where the bats come out, there is a cave",
+     killed({"minecraft:entity_type": "mechanical:bat_swarm"})),
+    ("cavern_spider", "deep_cold", "cavern_spider_fang", T, "Caught in the Web",
+     "Kill a Cavern Spider in the shallow caves - mind its great webs across the narrow passages - and butcher it for silk and fangs",
+     has("silk_gland", "cavern_spider_fang")),
+    ("cave_web", "cavern_spider", "cave_web", T, "Spinner's Trap",
+     "Cut a Cave Web whole with a knife or shears and set it as a trap: whatever walks in is held fast", has("cave_web")),
+])
+TABS["food"][1].extend([
+    ("deep_fare", "cooked", "cooked_cave_fish", T, "Food from the Deep",
+     "Cook a Blind Cave Fish or roast a Spider Leg on a Campfire", has("cooked_cave_fish", "roasted_spider_leg")),
+])
+# end fauna: deep
 # tribes that visit and settle (people/TribeVisits.java, Settlements.java; granted from Java)
 TABS["wilderness"][1].extend([
     ("tribe_visit", "root", "minecraft:white_banner", T, "Guests at the Fire",
@@ -1408,6 +1431,9 @@ TABS["wilderness"][1].extend([
      in_biome("glacial_moraine")),
     ("gypsum_flats", "chalk_downs", "gypsum", T, "White Flats",
      "Find the Gypsum Flats in the driest desert: a white crust of Gypsum and Rock Salt, Alabaster below", in_biome("gypsum_flats")),
+    ("mammoth_steppe", "chalk_downs", "mammoth_ivory", G, "Mammoth Steppe",
+     "Find the Mammoth Steppe in the cold, dry north: dry grass on Loess, mammoths, rhinos, bison, wild horses and saiga, and the lions that hunt them",
+     in_biome("mammoth_steppe")),
 ])
 TABS["stone_age"][1].extend([
     ("beach_pebbles", "root", "beach_pebbles", T, "Shingle Floor",
@@ -1672,7 +1698,7 @@ HUNT_GROUPS = {  # entity id -> group; animals not listed land in "more_game" (b
     "predators": ["grey_wolf", "cave_lion", "brown_bear", "minecraft:phantom", "wolverine", "lynx", "gloson", "cave_bear", "cave_hyena", "leopard", "tiger", "saltwater_crocodile",
                    "minecraft:polar_bear", "minecraft:panda", "minecraft:wolf"],
     "waters": ["seal", "walrus", "pike", "sturgeon", "beaver", "otter", "minecraft:turtle"],
-    "underground": ["giant_centipede", "vittra", "troll", "lindworm"],
+    "underground": ["giant_centipede", "vittra", "troll", "lindworm", "cavern_spider"],
 }
 GROUP_INFO = {  # id -> (icon, title, description)
     "small_game": ("rabbit_scraps", "Small Game", "Butcher hares, squirrels and other small animals"),
