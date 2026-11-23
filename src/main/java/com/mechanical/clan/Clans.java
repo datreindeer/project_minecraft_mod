@@ -584,6 +584,14 @@ public final class Clans extends SavedData {
         }
     }
 
+    /** Is any tribe's Fire Pit in this level within r blocks of pos (each way)? Retrogen keeps off their land (worldgen.SmoothGround). */
+    public static boolean pitNear(ServerLevel level, BlockPos pos, int r) {
+        for (Clan c : get(level.getServer()).clans)
+            if (c.pit.isPresent() && c.pit.get().dimension() == level.dimension()
+                    && Math.abs(c.pit.get().pos().getX() - pos.getX()) <= r && Math.abs(c.pit.get().pos().getZ() - pos.getZ()) <= r) return true;
+        return false;
+    }
+
     /** Is there a tribe's big Fire Pit in the camp centred on {@code centre} (CampAge#RADIUS)? */
     public static boolean bigPitAt(ServerLevel level, BlockPos centre) {
         for (Clan c : get(level.getServer()).clans)

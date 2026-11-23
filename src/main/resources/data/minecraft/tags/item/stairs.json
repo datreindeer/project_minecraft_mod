@@ -90,6 +90,11 @@
     "mechanical:mossy_serpentine_brick_stairs",
     "mechanical:mossy_jasper_brick_stairs",
     "mechanical:mossy_alabaster_brick_stairs",
-    "mechanical:mossy_alum_shale_brick_stairs"
+    "mechanical:mossy_alum_shale_brick_stairs",
+    "mechanical:dirt_stairs",
+    "mechanical:grass_stairs",
+    "mechanical:coarse_dirt_stairs",
+    "mechanical:sand_stairs",
+    "mechanical:red_sand_stairs"
   ]
 }

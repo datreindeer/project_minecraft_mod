@@ -2789,6 +2789,12 @@ vatten) dör gräset tillbaka till Dirt Slab. Shovel → **Dirt Path Slab** (beh
 årstidsfärg och blir **snötäckt** med snö ovanpå, och en nedre slab (som snö inte kan ligga på) när det snöar på den; den
 tinar när det är varmt nog att smälta snö. Alla tre släpper Dirt Slab (2 för en dubbel). Advancement: *Half a Field*.
 
+**Markslabs och marktrappor** (terrängplanen fas 2): 3 i rad → 6 slabs, trappform → 4 trappor, av Dirt (**Dirt Stairs**),
+Coarse Dirt (**Coarse Dirt Slab/Stairs**), Podzol (**Podzol Slab**), Sand och Red Sand (**Sand/Red Sand Slab/Stairs**, faller
+inte), Gravel, Moss Block, Mud, Peat, Loess och Wood Ash (**... Slab**). Dirt Stairs växer till **Grass Stairs** som Dirt
+Slab (årstidsfärg, snöig, dör under tätt block, släpper Dirt Stairs); Podzol Slab släpper Dirt Slab utan Silk Touch.
+Worldgen lägger dem på varje 1-blockssteg (`docs/biomes.md`). Advancement: *Soft Slopes*.
+
 **Reed Thatch** → 1, **Reed Thatch Roof** → 4, av **Dried Reed** (Reed torkad på en Drying Rack, 4 min):
 ```
 [Dried Reed][Dried Reed]        [Dried Reed][          ]

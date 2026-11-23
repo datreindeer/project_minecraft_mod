@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/loess_slab"
+    },
+    "type=top": {
+      "model": "mechanical:block/loess_slab_top"
+    },
+    "type=double": {
+      "model": "mechanical:block/loess"
+    }
+  }
+}

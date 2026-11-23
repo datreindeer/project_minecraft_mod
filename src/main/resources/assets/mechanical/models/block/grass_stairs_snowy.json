@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/fringe_stairs",
+  "textures": {
+    "top": "minecraft:block/snow",
+    "side": "minecraft:block/grass_block_snow",
+    "bottom": "minecraft:block/dirt",
+    "particle": "minecraft:block/dirt"
+  }
+}

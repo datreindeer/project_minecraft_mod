@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "minecraft:dirt"
+  },
+  "result": {
+    "id": "mechanical:dirt_stairs",
+    "count": 4
+  }
+}

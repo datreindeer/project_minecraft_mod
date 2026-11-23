@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/peat_slab"
+    },
+    "type=top": {
+      "model": "mechanical:block/peat_slab_top"
+    },
+    "type=double": {
+      "model": "mechanical:block/peat"
+    }
+  }
+}

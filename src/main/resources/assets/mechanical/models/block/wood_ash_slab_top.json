@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "top": "mechanical:block/wood_ash",
+    "side": "mechanical:block/wood_ash",
+    "bottom": "mechanical:block/wood_ash",
+    "particle": "mechanical:block/wood_ash"
+  }
+}

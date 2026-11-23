@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:peat"
+  },
+  "result": {
+    "id": "mechanical:peat_slab",
+    "count": 6
+  }
+}

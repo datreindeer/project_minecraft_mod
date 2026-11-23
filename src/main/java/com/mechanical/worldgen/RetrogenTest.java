@@ -21,6 +21,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -37,7 +38,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class RetrogenTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final ResourceKey<Consumer<GameTestHelper>> RETROGEN = key("retrogen"), RESTOCK = key("restock_missing_species"), TRAIL_STEPS = key("trail_steps");
+    private static final ResourceKey<Consumer<GameTestHelper>> RETROGEN = key("retrogen"), RESTOCK = key("restock_missing_species"), TRAIL_STEPS = key("trail_steps"),
+            SMOOTH = key("smooth_ground"), GRASS_STAIRS = key("grass_stairs_creep"),
+            WALK_UP = key("smooth_ground_walk_up");
     /** Far from the test grid, so features placed here can't land in another test. */
     private static final int FAR = 400;
 
@@ -45,6 +48,9 @@ public final class RetrogenTest {
         TEST_FUNCTIONS.register("retrogen", () -> RetrogenTest::retrogen);
         TEST_FUNCTIONS.register("restock_missing_species", () -> RetrogenTest::restock);
         TEST_FUNCTIONS.register("trail_steps", () -> RetrogenTest::trailSteps);
+        TEST_FUNCTIONS.register("smooth_ground", () -> RetrogenTest::smoothGround);
+        TEST_FUNCTIONS.register("grass_stairs_creep", () -> RetrogenTest::grassStairsCreep);
+        TEST_FUNCTIONS.register("smooth_ground_walk_up", () -> RetrogenTest::walkUp);
     }
 
     private static ResourceKey<Consumer<GameTestHelper>> key(String name) {
@@ -64,6 +70,94 @@ public final class RetrogenTest {
                 new FunctionGameTestInstance(RESTOCK, com.mechanical.TestArea.of(env, 20, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "trail_steps"),
                 new FunctionGameTestInstance(TRAIL_STEPS, com.mechanical.TestArea.of(env, 20, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "smooth_ground"),
+                new FunctionGameTestInstance(SMOOTH, com.mechanical.TestArea.of(env, 20, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "grass_stairs_creep"),
+                new FunctionGameTestInstance(GRASS_STAIRS, com.mechanical.TestArea.of(env, 100, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "smooth_ground_walk_up"),
+                new FunctionGameTestInstance(WALK_UP, com.mechanical.TestArea.of(env, 400, true)));
+    }
+
+    /** Terraces 1 block apart, smoothed: a cow sent up them walks the half steps and never jumps. */
+    private static void walkUp(GameTestHelper h) {
+        for (int x = 0; x <= 15; x++)
+            for (int z = 0; z <= 15; z++) {
+                int top = 1 + x / 4;
+                for (int y = 0; y < top; y++) h.setBlock(new BlockPos(x, y, z), Blocks.DIRT);
+                h.setBlock(new BlockPos(x, top, z), Blocks.GRASS_BLOCK);
+            }
+        BlockPos a = h.absolutePos(new BlockPos(2, 0, 2));
+        SmoothGround.smooth(h.getLevel(), a.getX(), a.getZ(), 12);
+        for (int x : new int[] {3, 7, 11}) h.assertTrue(h.getBlockState(new BlockPos(x, 2 + x / 4, 8)).is(com.mechanical.EarthBlocks.GRASS_SLAB), "slab at x " + x);
+        var cow = h.spawn(net.minecraft.world.entity.EntityTypes.COW, new BlockPos(1, 2, 8));
+        cow.goalSelector.removeAllGoals(g -> true);
+        BlockPos goal = h.absolutePos(new BlockPos(14, 5, 8));
+        boolean[] jumped = {false};
+        h.onEachTick(() -> {
+            if (cow.getDeltaMovement().y > 0.3) jumped[0] = true; // a jump starts at 0.42; stepping up moves without speed
+            if (cow.getNavigation().isDone()) cow.getNavigation().moveTo(goal.getX() + 0.5, goal.getY(), goal.getZ() + 0.5, 1.0);
+        });
+        h.succeedWhen(() -> {
+            h.assertFalse(jumped[0], "the cow jumped");
+            h.assertTrue(cow.getX() > goal.getX() - 2 && cow.getY() >= goal.getY() - 0.01, "cow at " + cow.position() + ", goal " + goal); // up on the top terrace
+        });
+    }
+
+    /**
+     * SmoothGround on a built step: grass 1 higher from x 9 gives a Grass Slab on x 8; stone 1 higher along a straight edge
+     * gives a Stone Stairs facing the rise; a 2-block step stays a cliff. Glass walls (not ground) keep the strips apart.
+     */
+    private static void smoothGround(GameTestHelper h) {
+        BlockState stone = Blocks.STONE.defaultBlockState(), grass = Blocks.GRASS_BLOCK.defaultBlockState(), dirt = Blocks.DIRT.defaultBlockState();
+        for (int x = 0; x <= 15; x++) {
+            for (int z = 0; z <= 15; z++) {
+                h.setBlock(new BlockPos(x, 0, z), stone);
+                if (z == 7) for (int y = 1; y <= 4; y++) h.setBlock(new BlockPos(x, y, z), Blocks.GLASS);
+                else if (z < 7) { // grass, 1 higher from x 9
+                    h.setBlock(new BlockPos(x, 1, z), x >= 9 ? dirt : grass);
+                    if (x >= 9) h.setBlock(new BlockPos(x, 2, z), grass);
+                } else { // stone: 2 high from x 9, 4 high from x 13 (a 2-block cliff)
+                    for (int y = 1; y <= (x >= 13 ? 4 : x >= 9 ? 2 : 1); y++) h.setBlock(new BlockPos(x, y, z), stone);
+                }
+            }
+        }
+        BlockPos a = h.absolutePos(new BlockPos(2, 0, 2));
+        int laid = SmoothGround.smooth(h.getLevel(), a.getX(), a.getZ(), 12);
+        BlockState slab = h.getBlockState(new BlockPos(8, 2, 4)), stair = h.getBlockState(new BlockPos(8, 2, 10));
+        h.assertTrue(slab.is(com.mechanical.EarthBlocks.GRASS_SLAB) && slab.getValue(net.minecraft.world.level.block.SlabBlock.TYPE)
+                == net.minecraft.world.level.block.state.properties.SlabType.BOTTOM, "grass slab below the grass step, got " + slab);
+        BlockPos under = h.absolutePos(new BlockPos(8, 1, 4));
+        for (int i = 0; i < 20; i++) h.getLevel().getBlockState(under).randomTick(h.getLevel(), under, h.getLevel().getRandom());
+        h.assertTrue(h.getBlockState(new BlockPos(8, 1, 4)).is(Blocks.GRASS_BLOCK), "the grass under the slab stays grass");
+        h.assertTrue(stair.is(Blocks.STONE_STAIRS) && stair.getValue(net.minecraft.world.level.block.StairBlock.FACING) == net.minecraft.core.Direction.EAST
+                && stair.getValue(net.minecraft.world.level.block.StairBlock.SHAPE) == net.minecraft.world.level.block.state.properties.StairsShape.STRAIGHT,
+                "stone stairs facing the stone step, got " + stair);
+        h.assertBlockPresent(Blocks.AIR, new BlockPos(12, 3, 10)); // 2 blocks below the cliff top: left alone
+        h.assertBlockPresent(Blocks.AIR, new BlockPos(5, 2, 4)); // flat ground: nothing
+        h.assertTrue(laid > 0, "laid " + laid);
+        h.succeed();
+    }
+
+    /** Dirt Stairs take grass from a Grass Slab beside them (Grass Stairs, facing kept); under stone they die back and drop Dirt Stairs. */
+    private static void grassStairsCreep(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (int x = 0; x <= 8; x++) for (int z = 0; z <= 8; z++) h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+        BlockPos at = new BlockPos(4, 1, 4);
+        h.setBlock(new BlockPos(5, 1, 4), com.mechanical.EarthBlocks.GRASS_SLAB.get());
+        h.setBlock(new BlockPos(6, 2, 6), Blocks.GLOWSTONE);
+        h.setBlock(at, com.mechanical.EarthBlocks.DIRT_STAIRS.get().defaultBlockState().setValue(net.minecraft.world.level.block.StairBlock.FACING, net.minecraft.core.Direction.WEST));
+        h.succeedWhen(() -> { // retried until the glowstone's light is worked out
+            BlockPos abs = h.absolutePos(at);
+            for (int i = 0; i < 400 && level.getBlockState(abs).is(com.mechanical.EarthBlocks.DIRT_STAIRS); i++) level.getBlockState(abs).randomTick(level, abs, level.getRandom());
+            BlockState s = level.getBlockState(abs);
+            h.assertTrue(s.is(com.mechanical.EarthBlocks.GRASS_STAIRS) && s.getValue(net.minecraft.world.level.block.StairBlock.FACING) == net.minecraft.core.Direction.WEST,
+                    "grass creeps onto the dirt stairs: " + s);
+            var drops = net.minecraft.world.level.block.Block.getDrops(s, level, abs, null);
+            h.assertTrue(drops.size() == 1 && drops.get(0).is(com.mechanical.EarthBlocks.DIRT_STAIRS.asItem()), "grass stairs drop dirt stairs: " + drops);
+            h.setBlock(at.above(), Blocks.STONE);
+            level.getBlockState(abs).randomTick(level, abs, level.getRandom());
+            h.assertTrue(level.getBlockState(abs).is(com.mechanical.EarthBlocks.DIRT_STAIRS), "under stone it dies back: " + level.getBlockState(abs));
+        });
     }
 
     /** A7 on worldgen trails (Trails.step): a stair on the column below a 2-block rise along the trail, none on flat ground. */

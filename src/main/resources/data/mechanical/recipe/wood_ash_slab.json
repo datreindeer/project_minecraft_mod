@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:wood_ash"
+  },
+  "result": {
+    "id": "mechanical:wood_ash_slab",
+    "count": 6
+  }
+}

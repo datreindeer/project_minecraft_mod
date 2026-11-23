@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "top": "minecraft:block/coarse_dirt",
+    "side": "minecraft:block/coarse_dirt",
+    "bottom": "minecraft:block/coarse_dirt",
+    "particle": "minecraft:block/coarse_dirt"
+  }
+}

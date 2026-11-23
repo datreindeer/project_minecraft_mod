@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:block/grassy_slab",
+  "parent": "mechanical:block/grassy_ground_slab",
   "textures": {
     "top": "minecraft:block/grass_block_top",
     "side": "minecraft:block/dirt",

@@ -62,6 +62,12 @@ public final class Thaw {
         return ((BiomeTemperatureInvoker) (Object) biome).mechanical$temperature(pos, level.getSeaLevel());
     }
 
+    /** Snow lying here never melts, not even at midsummer (worldgen.SmoothGround lays snow steps only there). */
+    public static boolean coldAllYear(ServerLevel level, Biome biome, BlockPos pos) {
+        float base = biome.getBaseTemperature();
+        return temperature(level, biome, pos) - Seasons.offset(base) + Seasons.offset(base, 1) < MELT_AT;
+    }
+
     /** Vanilla's snow-and-ice tick at a random column: melt one step there if it's warm. */
     public static void tick(ServerLevel level, BlockPos pos) {
         melt(level, level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, pos), false);
