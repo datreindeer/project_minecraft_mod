@@ -108,6 +108,17 @@ Advancement *The Burnt Hall*.
   vägg vacklar han i 1 sekund (ett kort läge att slå, inte ett fast läge).
 
 Byggt så här (`wildlife/elkwight/Elkwight.java`, modell `client/wildlife/ElkwightModel.java`):
+- **Modellen (omgjord 2026-11-23):** 29 delar och 108 boxar med en skin i 256×256. Allt kommer ur en enda tabell i
+  `scripts/gen_elkwight_model.py`, som skriver både `ElkwightGeometry.java` och texturerna. Han ritas i 1,5× skala och blir
+  ungefär 3,9 block hög med hornen.
+  - Benen är bakåtböjda: pälsade lår, seniga smalben, kort mellanfot och klövar med två klövhalvor och sporrar.
+  - Bröstet är djupt och pälsmanteln ljusgrå, med en puckel bakom nacken och hängande pälsfransar.
+  - Bältet har ett skallspänne av ben och hängande ben, och han bär ett ländskynke och en pung.
+  - Armarna är långa och har läderarmskydd med lysande runor. Höger axel har ett benpansar med en runstav, och händerna är stora med mörka klor.
+  - Huvudet är en älgs: lång romersk nos, hängande överläpp, bjällra, breda öron och tunga ögonbryn över de gröna ögonen.
+  - Hornen är skovelhorn. Varje horn har en rosenkrans, en stång och en skålformad skovel i tre plattor med korta taggar längs kanten. Framåt sitter en liten pannskovel.
+  - Yxan har ett lindat skaft med pommel, halvmåneformade blad med skägg och gröna runor, och en spets i toppen.
+  - Han håller yxan med båda händerna.
 - Vaknar när en spelare (inte creative/spectator) kommer inom **20 block i synhåll**, när en sådan spelare kliver in i
   hans ruin (`ElkwightRuins.ruinAt`), när han blir slagen, eller när något anropar `wake()` (`isAwake()` finns också).
   Ruinens spawner gör honom (persistent, med ruin-taggen), och när han dör markerar `ElkwightRuins` ruinen som död så
