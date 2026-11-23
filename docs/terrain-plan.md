@@ -94,7 +94,7 @@ Sten (Stone, Slate, Granite, Limestone, Chalk Block, Sandstone och så vidare) a
 **Den gamla världen:** steget kan köras på redan genererade chunks av `Retrogen`, som lägger slabs bara på orörd naturlig
 mark. Spelservern får alltså mjuk mark även där terrängen är gammal.
 
-**Byggt (v0.177.0):** `worldgen/SmoothGround` (alla överjordsbiomer, sist i `top_layer_modification`, och via `Retrogen`
+**Byggt (v0.176.0):** `worldgen/SmoothGround` (alla överjordsbiomer, sist i `top_layer_modification`, och via `Retrogen`
 på orörda gamla chunks, inte nära läger, Fire Pits eller vägar). Nya block: Grass Stairs, Dirt Stairs, Coarse Dirt
 Slab/Stairs, Podzol Slab, Sand och Red Sand Slab/Stairs (faller inte), Gravel, Moss, Mud, Peat, Loess och Wood Ash Slab
 (`gen_dirt_slab.py`). Grass Slab hade redan sitt snöiga läge, och Grass Stairs fick samma. Nedre slabs visar nu gräs- och
