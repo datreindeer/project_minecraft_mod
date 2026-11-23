@@ -183,11 +183,9 @@ LEAF_ACCENTS = {  # (count, shapes using the species' leaf colour keys, min dist
 }
 
 def leaves(name, p):
-    c = p["leaf"]; r = random.Random(name + "leaves")
+    c = p["leaf"]
     img = remap(van(LEAF_BASE.get(name, "oak_leaves")), [c[k] for k in "DSMLH"], 0.0, 1.0)
-    for y in range(16):
-        for x in range(16):
-            if img.getpixel((x, y))[3] == 0 and r.random() < 0.45: put(img, x, y, c["D"])
+    # keep vanilla's holes: filling them made our trees look solid next to vanilla ones
     if name in LEAF_ACCENTS:
         n, shapes, d = LEAF_ACCENTS[name]
         scatter(img, name + "acc", n, c, shapes, d, opaque_only=True)
