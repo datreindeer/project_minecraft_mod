@@ -1,0 +1,8 @@
+shot ruin2_far_front
+shot ruin2_far_back
+shot ruin2_far_side
+shot ruin2_avenue
+shot ruin2_approach
+shot ruin2_inside_throne
+shot ruin2_inside_gate
+shot ruin2_aerial
