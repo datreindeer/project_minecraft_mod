@@ -17,8 +17,8 @@ import net.minecraft.util.Mth;
  * Pheasant chick, built at baby size (rendered at scale 1, about 6 px tall): a round downy ball with a big head, a tiny
  * beak, stubby wing nubs, thin legs and a little tail tuft. Buff down with dark back stripes and an eye stripe.
  * Scurries with quick steps and a head bob, pecks when grazing, tilts its head while peeping, and flutters its wing
- * nubs frantically when airborne. Texture: textures/entity/wildlife/pheasant_chick.png (32x16), painted by
- * scripts/gen_baby_small_wildlife_textures.py, which mirrors the cubes below.
+ * nubs frantically when airborne. Texture: textures/entity/wildlife/pheasant_chick.png, painted by
+ * scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class PheasantChickModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "pheasant_chick"), "main");
@@ -43,43 +43,7 @@ public class PheasantChickModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // round body plus a smaller cap on the back that rounds off the top edges
-        PartDefinition body = root.addOrReplaceChild("body",
-            CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-2.0F, -1.5F, -2.0F, 4.0F, 3.0F, 4.0F)
-                .texOffs(0, 7).addBox(-1.5F, -2.5F, -1.0F, 3.0F, 1.0F, 3.0F),
-            PartPose.offset(0.0F, 21.0F, 0.0F));
-        // big round head sunk into the front of the body (no neck), tiny beak; pivot at the nape
-        body.addOrReplaceChild("head",
-            CubeListBuilder.create()
-                .texOffs(16, 0).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 3.0F, 3.0F)
-                .texOffs(28, 0).addBox(-0.5F, -1.5F, -2.5F, 1.0F, 1.0F, 1.0F),
-            PartPose.offset(0.0F, -0.5F, -1.5F));
-        // wing nubs hinged at the shoulder
-        body.addOrReplaceChild("left_wing",
-            CubeListBuilder.create().texOffs(12, 7).addBox(0.0F, 0.0F, 0.0F, 1.0F, 2.0F, 3.0F),
-            PartPose.offset(2.0F, -1.0F, -1.0F));
-        body.addOrReplaceChild("right_wing",
-            CubeListBuilder.create().texOffs(20, 7).addBox(-1.0F, 0.0F, 0.0F, 1.0F, 2.0F, 3.0F),
-            PartPose.offset(-2.0F, -1.0F, -1.0F));
-        // tiny tuft of down instead of a tail, perked up
-        body.addOrReplaceChild("tail",
-            CubeListBuilder.create().texOffs(28, 2).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -1.0F, 2.0F, 0.6F, 0.0F, 0.0F));
-        // legs on the root so pecking (body pitch) leaves them standing; flat toes on the ground like the vanilla chick
-        root.addOrReplaceChild("left_leg",
-            CubeListBuilder.create()
-                .texOffs(28, 4).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F)
-                .texOffs(0, 12).addBox(-1.0F, 2.0F, -1.5F, 2.0F, 0.0F, 2.0F),
-            PartPose.offset(1.0F, 22.0F, 0.5F));
-        root.addOrReplaceChild("right_leg",
-            CubeListBuilder.create()
-                .texOffs(28, 7).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F)
-                .texOffs(8, 12).addBox(-1.0F, 2.0F, -1.5F, 2.0F, 0.0F, 2.0F),
-            PartPose.offset(-1.0F, 22.0F, 0.5F));
-        return LayerDefinition.create(mesh, 32, 16);
+        return SmallGeometry.pheasantChick(); // scripts/gen_small_models.py
     }
 
     @Override

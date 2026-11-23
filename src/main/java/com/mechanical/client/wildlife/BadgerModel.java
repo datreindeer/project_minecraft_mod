@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
  * Badger: low, wedge-shaped (narrow shoulders, broad rump) on short black legs with long digging claws in front,
  * shaggy guard hairs hanging below the flanks, a tapering striped head and a short grey tail. Waddling walk with the
  * head swinging low; digs with the forepaws and snout when grazing; head thrust forward when it goes for you.
- * Texture: textures/entity/wildlife/badger.png (64x64), painted by scripts/gen_forest_critter_textures.py.
+ * Texture: textures/entity/wildlife/badger.png, painted by scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class BadgerModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "badger"), "main");
@@ -46,39 +46,7 @@ public class BadgerModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        CubeDeformation plane = new CubeDeformation(0.001F); // zero-thickness guard-hair fringes
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create()
-                        .texOffs(0, 0).addBox(-3.0F, -2.5F, -6.0F, 6.0F, 5.0F, 8.0F)
-                        .texOffs(28, 0).addBox(-3.5F, -3.0F, 1.0F, 7.0F, 6.0F, 6.0F)
-                        .texOffs(0, 13).addBox(-3.05F, 2.0F, -5.5F, 0.0F, 2.0F, 7.0F, plane)
-                        .texOffs(0, 13).mirror().addBox(3.05F, 2.0F, -5.5F, 0.0F, 2.0F, 7.0F, plane).mirror(false)
-                        .texOffs(52, 13).addBox(-3.55F, 2.5F, 1.5F, 0.0F, 2.0F, 5.0F, plane)
-                        .texOffs(52, 13).mirror().addBox(3.55F, 2.5F, 1.5F, 0.0F, 2.0F, 5.0F, plane),
-                PartPose.offset(0.0F, 18.5F, 0.0F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(10, 22).addBox(-1.0F, -0.5F, 0.0F, 2.0F, 2.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, -2.0F, 7.0F, TAIL_X, 0.0F, 0.0F));
-        body.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(38, 13).addBox(-2.0F, -2.0F, -3.0F, 4.0F, 4.0F, 3.0F)
-                        .texOffs(0, 22).addBox(-1.5F, -1.0F, -5.0F, 3.0F, 3.0F, 2.0F)
-                        .texOffs(20, 22).addBox(-1.0F, -0.5F, -6.0F, 2.0F, 2.0F, 1.0F)
-                        .texOffs(34, 22).addBox(-2.6F, -2.6F, -1.0F, 1.0F, 1.0F, 1.0F)
-                        .texOffs(34, 22).mirror().addBox(1.6F, -2.6F, -1.0F, 1.0F, 1.0F, 1.0F),
-                PartPose.offset(0.0F, -0.5F, -6.0F));
-        root.addOrReplaceChild("right_front_leg", CubeListBuilder.create()
-                .texOffs(14, 13).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F)
-                .texOffs(26, 22).addBox(-1.5F, 3.0F, -2.5F, 3.0F, 1.0F, 1.0F), PartPose.offset(-2.0F, 20.0F, -4.0F));
-        root.addOrReplaceChild("left_front_leg", CubeListBuilder.create().mirror()
-                .texOffs(14, 13).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F)
-                .texOffs(26, 22).addBox(-1.5F, 3.0F, -2.5F, 3.0F, 1.0F, 1.0F), PartPose.offset(2.0F, 20.0F, -4.0F));
-        root.addOrReplaceChild("right_hind_leg", CubeListBuilder.create().texOffs(26, 13).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F),
-                PartPose.offset(-2.3F, 20.0F, 4.5F));
-        root.addOrReplaceChild("left_hind_leg", CubeListBuilder.create().mirror().texOffs(26, 13).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F),
-                PartPose.offset(2.3F, 20.0F, 4.5F));
-        return LayerDefinition.create(mesh, 64, 64);
+        return SmallGeometry.badger(); // scripts/gen_small_models.py
     }
 
     @Override

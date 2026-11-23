@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 /**
  * Common pheasant (cock): copper body, green head with red wattle and white collar, long barred tail. Walks with a
  * head bob, pecks when grazing, and in the air spreads and flaps its wings with the tail fanned and legs tucked.
- * Texture: textures/entity/wildlife/pheasant.png (64x32), painted by scripts/gen_small_wildlife_textures.py, which
+ * Texture: textures/entity/wildlife/pheasant.png, painted by scripts/gen_small_models.py (with the geometry, SmallGeometry), which
  * mirrors the cubes below.
  */
 public class PheasantModel extends EntityModel<WildAnimalRenderState> {
@@ -42,43 +42,7 @@ public class PheasantModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // breast slightly raised
-        PartDefinition body = root.addOrReplaceChild("body",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.0F, -4.0F, 4.0F, 4.0F, 8.0F),
-            PartPose.offsetAndRotation(0.0F, 18.0F, 0.0F, -0.15F, 0.0F, 0.0F));
-        // neck with the white collar, head, beak; the pitch cancels the body's so the neck stands upright
-        body.addOrReplaceChild("head",
-            CubeListBuilder.create()
-                .texOffs(24, 0).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F)
-                .texOffs(32, 0).addBox(-1.5F, -6.5F, -2.5F, 3.0F, 3.0F, 3.0F)
-                .texOffs(44, 0).addBox(-0.5F, -5.5F, -3.5F, 1.0F, 1.0F, 1.0F),
-            PartPose.offsetAndRotation(0.0F, -1.5F, -3.5F, 0.15F, 0.0F, 0.0F));
-        body.addOrReplaceChild("left_wing",
-            CubeListBuilder.create().texOffs(0, 12).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 7.0F),
-            PartPose.offset(2.0F, -1.5F, -3.0F));
-        body.addOrReplaceChild("right_wing",
-            CubeListBuilder.create().texOffs(16, 12).addBox(-1.0F, 0.0F, 0.0F, 1.0F, 4.0F, 7.0F),
-            PartPose.offset(-2.0F, -1.5F, -3.0F));
-        // long tail in two tapering pieces, held a little raised
-        body.addOrReplaceChild("tail",
-            CubeListBuilder.create()
-                .texOffs(32, 6).addBox(-1.5F, -0.5F, 0.0F, 3.0F, 1.0F, 6.0F)
-                .texOffs(32, 13).addBox(-1.0F, -0.5F, 6.0F, 2.0F, 1.0F, 7.0F),
-            PartPose.offsetAndRotation(0.0F, -1.0F, 4.0F, 0.45F, 0.0F, 0.0F));
-        // legs on the root so pecking (body pitch) leaves them standing
-        root.addOrReplaceChild("left_leg",
-            CubeListBuilder.create()
-                .texOffs(50, 0).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F)
-                .texOffs(50, 4).addBox(-1.0F, 3.0F, -2.5F, 2.0F, 1.0F, 3.0F),
-            PartPose.offset(1.0F, 20.0F, 0.5F));
-        root.addOrReplaceChild("right_leg",
-            CubeListBuilder.create()
-                .texOffs(54, 0).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F)
-                .texOffs(50, 8).addBox(-1.0F, 3.0F, -2.5F, 2.0F, 1.0F, 3.0F),
-            PartPose.offset(-1.0F, 20.0F, 0.5F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return SmallGeometry.pheasant(); // scripts/gen_small_models.py
     }
 
     @Override

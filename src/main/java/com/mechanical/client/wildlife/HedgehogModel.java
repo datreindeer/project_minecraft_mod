@@ -23,7 +23,7 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
  * Hedgehog: a low spiny mantle with a domed back, ragged spine planes sticking out past it (flanks, crest, rump and a
  * crown over the brow), a furry face with a long pointed snout and shiny nose, and four stubby legs. Shuffles along
  * sniffing; curled, it pulls head and legs in and becomes a round ball of spines that breathes slowly.
- * Texture: textures/entity/wildlife/hedgehog.png (64x32), painted by scripts/gen_forest_critter_textures.py.
+ * Texture: textures/entity/wildlife/hedgehog.png, painted by scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class HedgehogModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "hedgehog"), "main");
@@ -48,35 +48,7 @@ public class HedgehogModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        CubeDeformation plane = new CubeDeformation(0.001F); // zero-thickness spine planes
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create()
-                        .texOffs(20, 0).addBox(-3.0F, -3.0F, -4.0F, 6.0F, 4.0F, 8.0F)
-                        .texOffs(42, 15).addBox(-2.0F, -4.0F, -3.0F, 4.0F, 1.0F, 6.0F)
-                        .texOffs(18, 15).addBox(-2.5F, 1.0F, -3.5F, 5.0F, 1.0F, 7.0F)
-                        .texOffs(0, 0).addBox(-3.1F, -4.5F, -5.0F, 0.0F, 5.0F, 10.0F, plane)
-                        .texOffs(0, 0).mirror().addBox(3.1F, -4.5F, -5.0F, 0.0F, 5.0F, 10.0F, plane).mirror(false)
-                        .texOffs(0, 15).addBox(0.0F, -5.0F, -4.5F, 0.0F, 2.0F, 9.0F, plane)
-                        .texOffs(0, 26).addBox(-3.5F, -4.5F, 4.1F, 7.0F, 5.0F, 0.0F, plane)
-                        .texOffs(36, 26).addBox(-3.0F, -4.5F, -4.1F, 6.0F, 2.0F, 0.0F, plane),
-                PartPose.offset(0.0F, 21.0F, 0.0F));
-        body.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(14, 26).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 2.0F)
-                        .texOffs(24, 26).addBox(-1.0F, -0.5F, -4.0F, 2.0F, 2.0F, 2.0F)
-                        .texOffs(52, 26).addBox(-0.5F, 0.0F, -5.0F, 1.0F, 1.0F, 1.0F)
-                        .texOffs(48, 26).addBox(-2.0F, -2.0F, -1.0F, 1.0F, 1.0F, 1.0F)
-                        .texOffs(48, 26).mirror().addBox(1.0F, -2.0F, -1.0F, 1.0F, 1.0F, 1.0F),
-                PartPose.offset(0.0F, 0.5F, -4.0F));
-        CubeListBuilder right = CubeListBuilder.create().texOffs(32, 26).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F);
-        CubeListBuilder left = CubeListBuilder.create().texOffs(32, 26).mirror().addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F);
-        root.addOrReplaceChild("right_front_leg", right, PartPose.offset(-1.8F, 22.0F, -2.5F));
-        root.addOrReplaceChild("left_front_leg", left, PartPose.offset(1.8F, 22.0F, -2.5F));
-        root.addOrReplaceChild("right_hind_leg", right, PartPose.offset(-1.8F, 22.0F, 2.5F));
-        root.addOrReplaceChild("left_hind_leg", left, PartPose.offset(1.8F, 22.0F, 2.5F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return SmallGeometry.hedgehog(); // scripts/gen_small_models.py
     }
 
     @Override

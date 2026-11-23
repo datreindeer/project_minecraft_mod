@@ -15,8 +15,8 @@ import net.minecraft.util.Mth;
 
 /**
  * European brown hare: lean body, long black-tipped ears, long hind feet. Bounds when moving, sits up a little when
- * still, nibbles with the head down when grazing. Texture: textures/entity/wildlife/hare.png (64x32), painted by
- * scripts/gen_small_wildlife_textures.py, which mirrors the cubes below.
+ * still, nibbles with the head down when grazing. Texture: textures/entity/wildlife/hare.png, painted by
+ * scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class HareModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "hare"), "main");
@@ -53,55 +53,7 @@ public class HareModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        // pivot at the hips, so sitting up raises the front
-        PartDefinition body = root.addOrReplaceChild("body",
-            CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.5F, -8.0F, 4.0F, 5.0F, 8.0F),
-            PartPose.offset(0.0F, 16.5F, 3.5F));
-
-        PartDefinition head = body.addOrReplaceChild("head",
-            CubeListBuilder.create().texOffs(24, 0).addBox(-2.0F, -3.0F, -3.5F, 4.0F, 3.0F, 4.0F),
-            PartPose.offset(0.0F, -1.5F, -7.0F));
-        head.addOrReplaceChild("nose",
-            CubeListBuilder.create().texOffs(40, 0).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 1.0F),
-            PartPose.offset(0.0F, -1.0F, -3.5F));
-        head.addOrReplaceChild("left_ear",
-            CubeListBuilder.create().texOffs(54, 0).addBox(-1.0F, -6.0F, -0.5F, 2.0F, 6.0F, 1.0F),
-            PartPose.offsetAndRotation(1.0F, -3.0F, -0.5F, -0.3F, 0.0F, 0.12F));
-        head.addOrReplaceChild("right_ear",
-            CubeListBuilder.create().texOffs(48, 0).addBox(-1.0F, -6.0F, -0.5F, 2.0F, 6.0F, 1.0F),
-            PartPose.offsetAndRotation(-1.0F, -3.0F, -0.5F, -0.3F, 0.0F, -0.12F));
-
-        body.addOrReplaceChild("tail",
-            CubeListBuilder.create().texOffs(40, 3).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 2.0F),
-            PartPose.offsetAndRotation(0.0F, -1.5F, 0.0F, -0.5F, 0.0F, 0.0F));
-
-        body.addOrReplaceChild("right_front_leg",
-            CubeListBuilder.create().texOffs(52, 7).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F),
-            PartPose.offset(-1.1F, 2.5F, -7.0F));
-        body.addOrReplaceChild("left_front_leg",
-            CubeListBuilder.create().texOffs(52, 14).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F),
-            PartPose.offset(1.1F, 2.5F, -7.0F));
-
-        // hind leg: thigh on the flank, then shin + long foot flat on the ground
-        PartDefinition rightHaunch = body.addOrReplaceChild("right_haunch",
-            CubeListBuilder.create().texOffs(38, 7).addBox(-1.0F, -2.0F, -2.5F, 2.0F, 4.0F, 5.0F),
-            PartPose.offset(-2.0F, 0.5F, -2.0F));
-        rightHaunch.addOrReplaceChild("right_hind_foot",
-            CubeListBuilder.create()
-                .texOffs(0, 13).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F)
-                .texOffs(0, 19).addBox(-1.0F, 4.0F, -5.0F, 2.0F, 1.0F, 6.0F),
-            PartPose.offset(0.0F, 2.0F, 2.0F));
-        PartDefinition leftHaunch = body.addOrReplaceChild("left_haunch",
-            CubeListBuilder.create().texOffs(24, 7).addBox(-1.0F, -2.0F, -2.5F, 2.0F, 4.0F, 5.0F),
-            PartPose.offset(2.0F, 0.5F, -2.0F));
-        leftHaunch.addOrReplaceChild("left_hind_foot",
-            CubeListBuilder.create()
-                .texOffs(8, 13).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F)
-                .texOffs(16, 19).addBox(-1.0F, 4.0F, -5.0F, 2.0F, 1.0F, 6.0F),
-            PartPose.offset(0.0F, 2.0F, 2.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return SmallGeometry.hare(); // scripts/gen_small_models.py
     }
 
     @Override

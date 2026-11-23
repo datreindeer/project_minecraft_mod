@@ -17,7 +17,7 @@ import net.minecraft.util.Mth;
 /**
  * Field vole: a round little body, a blunt face with small ears half hidden in the fur, short legs and a short tail.
  * Scurries in quick bursts, sits nibbling (grazing) with the head bobbing, and sleeps balled up. The young are this
- * model scaled down. Texture: textures/entity/wildlife/field_vole.png (32x32), scripts/gen_fauna_meadow_textures.py.
+ * model scaled down. Texture: textures/entity/wildlife/field_vole.png, scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class FieldVoleModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "field_vole"), "main");
@@ -35,18 +35,7 @@ public class FieldVoleModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -1.5F, -2.5F, 3.0F, 3.0F, 5.0F), PartPose.offset(0.0F, 21.5F, 0.0F));
-        PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(16, 0).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 2.0F).texOffs(26, 0).addBox(-1.0F, -0.5F, -3.0F, 2.0F, 2.0F, 1.0F), PartPose.offset(0.0F, -0.5F, -2.5F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(6, 8).addBox(-0.5F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F), PartPose.offsetAndRotation(-1.0F, -1.5F, -0.5F, 0.0F, 0.0F, -0.3F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(6, 8).mirror().addBox(-0.5F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F).mirror(false), PartPose.offsetAndRotation(1.0F, -1.5F, -0.5F, 0.0F, 0.0F, 0.3F));
-        root.addOrReplaceChild("right_front_leg", CubeListBuilder.create().texOffs(10, 8).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 1.0F, 1.0F), PartPose.offset(-1.0F, 23.0F, -1.5F));
-        root.addOrReplaceChild("left_front_leg", CubeListBuilder.create().texOffs(10, 8).mirror().addBox(-0.5F, 0.0F, -0.5F, 1.0F, 1.0F, 1.0F).mirror(false), PartPose.offset(1.0F, 23.0F, -1.5F));
-        root.addOrReplaceChild("right_hind_leg", CubeListBuilder.create().texOffs(10, 8).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 1.0F, 1.0F), PartPose.offset(-1.0F, 23.0F, 1.5F));
-        root.addOrReplaceChild("left_hind_leg", CubeListBuilder.create().texOffs(10, 8).mirror().addBox(-0.5F, 0.0F, -0.5F, 1.0F, 1.0F, 1.0F).mirror(false), PartPose.offset(1.0F, 23.0F, 1.5F));
-        body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(0, 8).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 2.0F), PartPose.offsetAndRotation(0.0F, -0.5F, 2.5F, -0.3F, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 32, 32);
+        return com.mechanical.client.wildlife.SmallGeometry.fieldVole(); // scripts/gen_small_models.py
     }
 
     @Override

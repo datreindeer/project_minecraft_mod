@@ -21,8 +21,8 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
 /**
  * Red squirrel: slim body, round head with tufted ears, long hind feet, and a bushy tail in three segments curling up
  * over the back. Bounds when it runs, sits up nibbling when it grazes, and clings upright to a trunk when climbing
- * (head first on the way down). Texture: textures/entity/wildlife/squirrel.png (64x32), painted by
- * scripts/gen_forest_critter_textures.py, whose part tree mirrors the cubes below.
+ * (head first on the way down). Texture: textures/entity/wildlife/squirrel.png, painted by
+ * scripts/gen_small_models.py (with the geometry, SmallGeometry).
  */
 public class SquirrelModel extends EntityModel<WildAnimalRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath("mechanical", "squirrel"), "main");
@@ -68,39 +68,7 @@ public class SquirrelModel extends EntityModel<WildAnimalRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -1.5F, -5.0F, 3.0F, 3.0F, 5.0F),
-                PartPose.offset(0.0F, 20.0F, 2.0F));
-        PartDefinition head = body.addOrReplaceChild("head",
-                CubeListBuilder.create()
-                        .texOffs(32, 0).addBox(-1.5F, -2.5F, -2.5F, 3.0F, 3.0F, 3.0F)
-                        .texOffs(32, 8).addBox(-1.0F, -1.5F, -3.5F, 2.0F, 2.0F, 1.0F),
-                PartPose.offset(0.0F, -0.5F, -5.0F));
-        head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(38, 8).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(-1.0F, -2.5F, -1.0F, 0.0F, 0.0F, -0.15F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(38, 8).mirror().addBox(-0.5F, -2.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                PartPose.offsetAndRotation(1.0F, -2.5F, -1.0F, 0.0F, 0.0F, 0.15F));
-        body.addOrReplaceChild("right_front_leg", CubeListBuilder.create().texOffs(28, 8).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                PartPose.offset(-1.0F, 1.0F, -4.0F));
-        body.addOrReplaceChild("left_front_leg", CubeListBuilder.create().texOffs(28, 8).mirror().addBox(-0.5F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F),
-                PartPose.offset(1.0F, 1.0F, -4.0F));
-        PartDefinition rightHaunch = body.addOrReplaceChild("right_haunch",
-                CubeListBuilder.create().texOffs(12, 8).addBox(-0.5F, -1.5F, -2.0F, 1.0F, 3.0F, 3.0F), PartPose.offset(-1.5F, 0.5F, 0.5F));
-        rightHaunch.addOrReplaceChild("right_hind_foot",
-                CubeListBuilder.create().texOffs(20, 8).addBox(-0.5F, 0.0F, -2.5F, 1.0F, 2.0F, 3.0F), PartPose.offset(0.0F, 1.5F, 0.0F));
-        PartDefinition leftHaunch = body.addOrReplaceChild("left_haunch",
-                CubeListBuilder.create().texOffs(12, 8).mirror().addBox(-0.5F, -1.5F, -2.0F, 1.0F, 3.0F, 3.0F), PartPose.offset(1.5F, 0.5F, 0.5F));
-        leftHaunch.addOrReplaceChild("left_hind_foot",
-                CubeListBuilder.create().texOffs(20, 8).mirror().addBox(-0.5F, 0.0F, -2.5F, 1.0F, 2.0F, 3.0F), PartPose.offset(0.0F, 1.5F, 0.0F));
-        PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(44, 0).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -0.5F, -0.5F, TAIL_X, 0.0F, 0.0F));
-        PartDefinition tailMid = tail.addOrReplaceChild("tail_mid", CubeListBuilder.create().texOffs(16, 0).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, 3.5F, TAIL_MID_X, 0.0F, 0.0F));
-        tailMid.addOrReplaceChild("tail_tip", CubeListBuilder.create().texOffs(0, 8).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 0.0F, 4.5F, TAIL_TIP_X, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        return SmallGeometry.squirrel(); // scripts/gen_small_models.py
     }
 
     @Override
