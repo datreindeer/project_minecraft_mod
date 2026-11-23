@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/slab",
+  "parent": "mechanical:block/ground_slab",
   "textures": {
     "bottom": "minecraft:block/dirt",
     "top": "minecraft:block/dirt",

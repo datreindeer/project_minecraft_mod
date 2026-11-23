@@ -19,6 +19,21 @@
     "mechanical:grass_slab",
     "mechanical:dirt_path_slab",
     "mechanical:termite_mound",
-    "mechanical:wood_ash"
+    "mechanical:wood_ash",
+    "mechanical:coarse_dirt_slab",
+    "mechanical:podzol_slab",
+    "mechanical:sand_slab",
+    "mechanical:red_sand_slab",
+    "mechanical:gravel_slab",
+    "mechanical:moss_slab",
+    "mechanical:mud_slab",
+    "mechanical:peat_slab",
+    "mechanical:loess_slab",
+    "mechanical:wood_ash_slab",
+    "mechanical:dirt_stairs",
+    "mechanical:grass_stairs",
+    "mechanical:coarse_dirt_stairs",
+    "mechanical:sand_stairs",
+    "mechanical:red_sand_stairs"
   ]
 }

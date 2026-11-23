@@ -1618,6 +1618,11 @@ TABS["stone_age"][1].extend([
     ("dirt_slab", "turf", "dirt_slab", T, "Half a Field",
      "Craft 3 Dirt into 6 Dirt Slabs. Grass grows onto them, a shovel flattens them into path slabs, and they get snow like a Grass Block",
      has("dirt_slab", "grass_slab", "dirt_path_slab")),
+    ("soft_slopes", "dirt_slab", "grass_stairs", T, "Soft Slopes",
+     "Dig up a half step from a natural slope: hills, beaches and snowfields now have slabs on every 1-block step, so you, "
+     "animals and carts walk up without jumping. Or craft Dirt, Sand and Coarse Dirt Stairs",
+     has("dirt_stairs", "coarse_dirt_slab", "coarse_dirt_stairs", "podzol_slab", "sand_slab", "sand_stairs", "red_sand_slab",
+         "red_sand_stairs", "gravel_slab", "moss_slab", "mud_slab", "peat_slab", "loess_slab", "wood_ash_slab")),
     ("stone_rocks", "root", "slate_chunk", T, "Rock Hound",
      "Pick up a loose rock of one of the new stones (Slate, Marble, Porphyry ...) where it comes up. It knaps like any rock, and 4 make its block",
      has("limestone_chunk", "slate_chunk", "gneiss_chunk", "soapstone_chunk", "shale_chunk", "conglomerate_chunk", "dolomite_chunk", "travertine_chunk", "shell_bank_chunk", "marble_chunk", "quartzite_chunk", "red_porphyry_chunk", "green_porphyry_chunk", "rapakivi_granite_chunk", "coastal_basalt_chunk", "scoria_chunk", "serpentine_chunk", "gypsum_chunk", "alabaster_chunk", "alum_shale_chunk")),

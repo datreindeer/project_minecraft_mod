@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/ground_slab",
+  "textures": {
+    "top": "minecraft:block/gravel",
+    "side": "minecraft:block/gravel",
+    "bottom": "minecraft:block/gravel",
+    "particle": "minecraft:block/gravel"
+  }
+}

@@ -77,6 +77,23 @@ public final class EarthBlocks {
     public static final DeferredBlock<DirtSlabBlock.Grass> GRASS_SLAB = block("grass_slab", DirtSlabBlock.Grass::new,
             () -> Properties.ofLegacyCopy(Blocks.GRASS_BLOCK).randomTicks());
     public static final DeferredBlock<SlabBlock> DIRT_PATH_SLAB = block("dirt_path_slab", SlabBlock::new, () -> Properties.ofLegacyCopy(Blocks.DIRT_PATH));
+    // ground slabs and stairs (terrain plan phase 2): worldgen.SmoothGround lays them on 1-block steps; sand stays put (held by roots)
+    public static final DeferredBlock<DirtSlabBlock.Stairs> DIRT_STAIRS = block("dirt_stairs", DirtSlabBlock.Stairs::new, () -> Properties.ofLegacyCopy(Blocks.DIRT).randomTicks());
+    public static final DeferredBlock<DirtSlabBlock.GrassStairs> GRASS_STAIRS = block("grass_stairs", DirtSlabBlock.GrassStairs::new,
+            () -> Properties.ofLegacyCopy(Blocks.GRASS_BLOCK).randomTicks());
+    public static final DeferredBlock<SlabBlock> COARSE_DIRT_SLAB = slab("coarse_dirt_slab", () -> Blocks.COARSE_DIRT);
+    public static final DeferredBlock<StairBlock> COARSE_DIRT_STAIRS = stairs("coarse_dirt_stairs", () -> Blocks.COARSE_DIRT);
+    public static final DeferredBlock<SlabBlock> PODZOL_SLAB = slab("podzol_slab", () -> Blocks.PODZOL);
+    public static final DeferredBlock<SlabBlock> SAND_SLAB = slab("sand_slab", () -> Blocks.SAND);
+    public static final DeferredBlock<StairBlock> SAND_STAIRS = stairs("sand_stairs", () -> Blocks.SAND);
+    public static final DeferredBlock<SlabBlock> RED_SAND_SLAB = slab("red_sand_slab", () -> Blocks.RED_SAND);
+    public static final DeferredBlock<StairBlock> RED_SAND_STAIRS = stairs("red_sand_stairs", () -> Blocks.RED_SAND);
+    public static final DeferredBlock<SlabBlock> GRAVEL_SLAB = slab("gravel_slab", () -> Blocks.GRAVEL);
+    public static final DeferredBlock<SlabBlock> MOSS_SLAB = slab("moss_slab", () -> Blocks.MOSS_BLOCK);
+    public static final DeferredBlock<SlabBlock> MUD_SLAB = slab("mud_slab", () -> Blocks.MUD);
+    public static final DeferredBlock<SlabBlock> PEAT_SLAB = slab("peat_slab", PEAT);
+    public static final DeferredBlock<SlabBlock> LOESS_SLAB = slab("loess_slab", LOESS);
+    public static final DeferredBlock<SlabBlock> WOOD_ASH_SLAB = block("wood_ash_slab", SlabBlock::new, soil(MapColor.COLOR_LIGHT_GRAY, 0.5F, SoundType.SAND)); // Wood Ash registers after this
 
     public static final DeferredBlock<SugarCaneBlock> REED = block("reed", SugarCaneBlock::new, () -> Properties.of().mapColor(MapColor.PLANT)
             .noCollision().randomTicks().instabreak().sound(SoundType.GRASS).ignitedByLava().pushReaction(PushReaction.POPPED));
@@ -136,6 +153,15 @@ public final class EarthBlocks {
         DeferredBlock<B> block = Mechanical.BLOCKS.registerBlock(name, factory, properties); // item: Mechanical.registerMissingBlockItems
         BUILDING.add(block);
         return block;
+    }
+
+    /** A plain slab of a ground block, with its sound and strength (not falling, even for sand). */
+    private static DeferredBlock<SlabBlock> slab(String name, Supplier<? extends Block> base) {
+        return block(name, SlabBlock::new, () -> Properties.ofLegacyCopy(base.get()));
+    }
+
+    private static DeferredBlock<StairBlock> stairs(String name, Supplier<? extends Block> base) {
+        return block(name, p -> new StairBlock(base.get().defaultBlockState(), p), () -> Properties.ofLegacyCopy(base.get()));
     }
 
     /** Through Trees' helper, so the door gets its two-high item. */

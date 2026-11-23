@@ -100,6 +100,16 @@
     "mechanical:mossy_alum_shale_brick_slab",
     "mechanical:dirt_slab",
     "mechanical:grass_slab",
-    "mechanical:dirt_path_slab"
+    "mechanical:dirt_path_slab",
+    "mechanical:coarse_dirt_slab",
+    "mechanical:podzol_slab",
+    "mechanical:sand_slab",
+    "mechanical:red_sand_slab",
+    "mechanical:gravel_slab",
+    "mechanical:moss_slab",
+    "mechanical:mud_slab",
+    "mechanical:peat_slab",
+    "mechanical:loess_slab",
+    "mechanical:wood_ash_slab"
   ]
 }

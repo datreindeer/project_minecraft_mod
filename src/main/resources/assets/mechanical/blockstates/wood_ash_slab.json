@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/wood_ash_slab"
+    },
+    "type=top": {
+      "model": "mechanical:block/wood_ash_slab_top"
+    },
+    "type=double": {
+      "model": "mechanical:block/wood_ash"
+    }
+  }
+}

@@ -80,7 +80,9 @@ public final class Retrogen {
             "loose_limestone", "loose_slate", "loose_gneiss", "loose_soapstone", "loose_shale", "loose_conglomerate", "loose_dolomite",
             "loose_travertine", "loose_shell_bank", "loose_marble", "loose_quartzite", "loose_red_porphyry", "loose_green_porphyry",
             "loose_rapakivi_granite", "loose_coastal_basalt", "loose_pumice", "loose_scoria", "loose_serpentine", "loose_gypsum",
-            "loose_alabaster", "loose_alum_shale");
+            "loose_alabaster", "loose_alum_shale",
+            // half steps on 1-block steps (SmoothGround), never near camps, Fire Pits or roads
+            "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
     static final long MAX_INHABITED = 1200;
     /** How far below the ground of its column a player-made block still counts. */
@@ -255,6 +257,7 @@ public final class Retrogen {
             if (i < 0) i = FEATURES.size() + (name.hashCode() & 0xffff);
             PlacedFeature feature = registry.getValue(Identifier.fromNamespaceAndPath(Mechanical.MODID, name));
             if (feature == null || biomes.stream().noneMatch(b -> b.value().getGenerationSettings().hasFeature(feature))) continue;
+            if (name.equals("smooth_ground") && SmoothGround.protectedChunk(level, pos)) continue;
             // a live chunk doesn't keep the worldgen heightmaps up to date: rebuild them before the first feature and after each change
             if (prime) for (LevelChunk c : around) Heightmap.primeHeightmaps(c, WG_HEIGHTMAPS);
             random.setFeatureSeed(seed, i, 99);

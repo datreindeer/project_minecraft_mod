@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "top": "mechanical:block/loess",
+    "side": "mechanical:block/loess",
+    "bottom": "mechanical:block/loess",
+    "particle": "mechanical:block/loess"
+  }
+}

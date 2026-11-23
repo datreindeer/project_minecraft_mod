@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "minecraft:sand"
+  },
+  "result": {
+    "id": "mechanical:sand_stairs",
+    "count": 4
+  }
+}

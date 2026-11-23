@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/coarse_dirt_slab"
+    },
+    "type=top": {
+      "model": "mechanical:block/coarse_dirt_slab_top"
+    },
+    "type=double": {
+      "model": "minecraft:block/coarse_dirt"
+    }
+  }
+}

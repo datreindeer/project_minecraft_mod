@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/ground_slab",
+  "textures": {
+    "top": "mechanical:block/wood_ash",
+    "side": "mechanical:block/wood_ash",
+    "bottom": "mechanical:block/wood_ash",
+    "particle": "mechanical:block/wood_ash"
+  }
+}

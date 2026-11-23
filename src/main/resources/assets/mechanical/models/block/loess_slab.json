@@ -1,0 +1,9 @@
+{
+  "parent": "mechanical:block/ground_slab",
+  "textures": {
+    "top": "mechanical:block/loess",
+    "side": "mechanical:block/loess",
+    "bottom": "mechanical:block/loess",
+    "particle": "mechanical:block/loess"
+  }
+}

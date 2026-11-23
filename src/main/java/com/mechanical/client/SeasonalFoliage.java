@@ -162,7 +162,7 @@ public final class SeasonalFoliage {
         event.register(List.of(grass), Blocks.FERN, Blocks.SHORT_GRASS, Blocks.POTTED_FERN, Blocks.BUSH, Blocks.TALL_GRASS, Blocks.LARGE_FERN);
         event.register(List.of(tint(GrassColor.getDefaultColor(), GRASS, true)), Blocks.GRASS_BLOCK,
                 TrampledPaths.WORN_GRASS.get(), TrampledPaths.TRODDEN_PATH.get(),
-                EarthBlocks.TURF.get(), EarthBlocks.TURF_SLAB.get(), EarthBlocks.TURF_STAIRS.get(), EarthBlocks.GRASS_SLAB.get());
+                EarthBlocks.TURF.get(), EarthBlocks.TURF_SLAB.get(), EarthBlocks.TURF_STAIRS.get(), EarthBlocks.GRASS_SLAB.get(), EarthBlocks.GRASS_STAIRS.get());
         event.register(List.of(tint(SeasonLook.REED_SUMMER, REED, false)), EarthBlocks.REED.get());
         event.register(List.of(tint(-1, HEATHER, false)), ForestUndergrowth.HEATHER.get());
         event.register(List.of(tint(-1, FROST, false)), WINTER_PLANTS.stream()

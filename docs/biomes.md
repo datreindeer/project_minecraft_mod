@@ -114,6 +114,52 @@ utmapp, rad 2 seeds, rad 3 kartans sida i block, rad 4 filnamnsprefix, och start
 (efter moddens regler) runt 0,0 för varje seed, med färgförklaring, plus en närbild av den första Scorched Barrens, och
 loggar mätningen ovan och andelen Scorched Barrens bortom 2600 block. Utan filen gör den ingenting.
 
+## Mjuk mark: slabs och trappor på 1-blockssteg (terrängplanen fas 2)
+
+Varje naturligt steg på exakt 1 block får ett halvsteg (`worldgen/SmoothGround`, en feature per chunk i alla
+överjordsbiomer, sist i `top_layer_modification`, efter stigarna och snön):
+
+- **Slab:** den lägre rutan får en nedre slab av den högre grannens mark: Grass Slab, Dirt Slab, Coarse Dirt Slab, Podzol
+  Slab, Sand Slab, Red Sand Slab, Gravel Slab, Moss Slab, Mud Slab, Peat Slab, Loess Slab, Wood Ash Slab, och för sten
+  stenfamiljens slab (Stone Slab, Granite Slab, Chalk Slab, Cobbled Slate Slab och så vidare). Gäller även hörn där bara
+  den diagonala grannen är högre. Gräset under en nedre slab eller trappa förblir gräs (`mixin/SpreadingSnowyBlockMixin`),
+  så sluttningens sidor behåller gräskanten.
+- **Trappor:** där den högre marken är berg och kanten är rak (rutorna på båda sidor längs kanten ligger på samma höjd)
+  blir det en trappa av bergarten mot steget, med inre och yttre hörnformer där två kanter möts. Formen räknas fram ur
+  höjderna, så den stämmer över chunkgränser.
+- **Snö:** där snön ligger kvar året runt (`Thaw.coldAllYear`, den smälter inte ens vid midsommar) eller den högre marken
+  är snö läggs snöskikt i stället: 5 lager på ett rakt steg (ett halvt block att stå på, så djur går upp), 3 under ett
+  hörn och 6 i en vrå. Säsongssnö får en snöig Grass Slab, som finns kvar efter tövädret.
+- **Steg på 2 block eller mer** lämnas som klippor.
+- **Aldrig** under vatten, på eller bredvid en stig (stigarna har egna trappor), inuti en strukturs ruta (plus 2 block),
+  under ett träd, en hög växt eller något block som inte är en liten växt. Små växter (gräs, blommor) ersätts av slaben.
+- **Gamla chunks:** `Retrogen` lägger halvstegen i redan genererade chunks som ingen har rört (som för övriga features),
+  men aldrig nära ett läger (CampAge), en stams Fire Pit eller en stamväg.
+
+Djur och folk går upp för backarna utan att hoppa (gametest `smooth_ground_walk_up`: en ko på terrasser).
+
+**Mätt** (seed 20261123, 80 × 80 block per plats, före = samma seed med steget avstängt via `MECHANICAL_NOSMOOTH`):
+
+| Plats | 1-blockssteg | med halvsteg före | med halvsteg efter | vanligast |
+|---|---|---|---|---|
+| Slätt (Plains, delvis snöslätt) | 2 445 | 0 | 2 124 (87 %) | Grass Slab 1 159, snö ×5 595 |
+| Snöiga sluttningar | 1 936 | 0 | 1 795 (93 %) | snö ×5 1 117, snö ×6 613, Stone Stairs 47 |
+| Kullar (Windswept Hills) | 2 911 | 0 | 2 706 (93 %) | snö ×5 979, Grass Slab 904, Stone Stairs 192 |
+| Berg (Jagged Peaks-kanten) | 3 427 | 0 | 2 817 (82 %) | Grass Slab 1 428, snö ×5 784 |
+| Meadow | 1 472 | 0 | 1 331 (90 %) | Grass Slab 1 306 |
+| Strand | 380 | 0 | 330 (87 %) | Grass Slab 276, Sand Slab 52 |
+
+Klippkolumnerna (steg på 2+ block) är lika många före och efter. Resten av stegen saknar halvsteg för att något står
+på den lägre rutan (träd, höga växter, blommor som inte fick plats högre upp) eller för att marken där inte har någon slab
+(Terracotta, Clay, Mycelium).
+
+Bilder: `docs/shots/terrain/smooth_*_before.png` och `smooth_*_after.png` (gräskulle, Meadow, stenbrant med trappor,
+snöig sluttning, strand).
+
+Små växter på rutan där ett halvsteg läggs flyttas upp till en högre granne om det finns plats; blommor som inte får plats
+står kvar (och rutan behåller sitt steg), grästuvor försvinner. På branta gräsbackar, där varje ruta får en slab, blir det
+alltså färre grästuvor.
+
 ## Grottbiomer
 
 **Limestone Caverns** (tempererat, mitt inne i landet, mellandjup): golv, tak och väggar av Limestone. Fler grottbiomer

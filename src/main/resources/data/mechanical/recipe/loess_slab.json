@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "mechanical:loess"
+  },
+  "result": {
+    "id": "mechanical:loess_slab",
+    "count": 6
+  }
+}

@@ -36,6 +36,7 @@ public final class Structures {
         FEATURE_TYPES.register("animal_carving", () -> AnimalCarving.CODEC);
         FEATURE_TYPES.register("shrine_statue", () -> ShrineStatue.CODEC);
         FEATURE_TYPES.register("trail", () -> Trails.CODEC);
+        FEATURE_TYPES.register("smooth_ground", () -> SmoothGround.CODEC); // scripts/gen_dirt_slab.py
         FEATURE_TYPES.register("bog_oak_logs", () -> BogOakLogs.CODEC); // scripts/gen_earth.py
         FEATURE_TYPES.register("glimmering_stump", () -> GlimmeringStumpFeature.CODEC); // scripts/gen_folklore.py
         FEATURE_TYPES.register("troll_stone_sleeper", () -> TrollStoneSleeperFeature.CODEC); // scripts/gen_folklore.py
