@@ -191,7 +191,7 @@ def leaves():
         for y in range(16):
             n = h(x, y, 11)
             lobe = (h(x // 3, y // 3, 12) * 0.6 + h((x + 1) // 2, (y + 1) // 2, 13) * 0.4)
-            if n < 0.1 or lobe < 0.2:
+            if n < 0.15 or lobe < 0.36:
                 continue  # holes
             v = int(lobe * 3.8 + (n - 0.5) * 1.4)
             if (x + y) % 5 == 0 and n > 0.6:
