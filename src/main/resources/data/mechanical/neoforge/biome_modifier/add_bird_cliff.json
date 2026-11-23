@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:basalt_coast",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "minecraft:frozen_peaks",
+    "minecraft:grove",
+    "minecraft:jagged_peaks",
+    "minecraft:meadow",
+    "minecraft:savanna_plateau",
+    "minecraft:snowy_slopes",
+    "minecraft:stony_peaks",
+    "minecraft:stony_shore",
+    "minecraft:windswept_forest",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_savanna"
+  ],
+  "features": "mechanical:bird_cliff",
+  "step": "vegetal_decoration"
+}

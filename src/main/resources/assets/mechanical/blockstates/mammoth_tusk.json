@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "facing=north,low=false": {
+      "model": "mechanical:block/mammoth_tusk",
+      "y": 0
+    },
+    "facing=north,low=true": {
+      "model": "mechanical:block/mammoth_tusk_low",
+      "y": 0
+    },
+    "facing=east,low=false": {
+      "model": "mechanical:block/mammoth_tusk",
+      "y": 90
+    },
+    "facing=east,low=true": {
+      "model": "mechanical:block/mammoth_tusk_low",
+      "y": 90
+    },
+    "facing=south,low=false": {
+      "model": "mechanical:block/mammoth_tusk",
+      "y": 180
+    },
+    "facing=south,low=true": {
+      "model": "mechanical:block/mammoth_tusk_low",
+      "y": 180
+    },
+    "facing=west,low=false": {
+      "model": "mechanical:block/mammoth_tusk",
+      "y": 270
+    },
+    "facing=west,low=true": {
+      "model": "mechanical:block/mammoth_tusk_low",
+      "y": 270
+    }
+  }
+}

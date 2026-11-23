@@ -303,6 +303,8 @@ final class SmoothGround extends StoneAgeFeature {
                 for (Map.Entry<Structure, it.unimi.dsi.fastutil.longs.LongSet> e : chunk.getAllReferences().entrySet()) {
                     for (long ref : e.getValue()) {
                         if (!seen.add(ref * 31 + e.getKey().hashCode())) continue;
+                        // a start beyond the worldgen region can't be read (getChunk throws there): leave the square alone
+                        if (!level.hasChunk(ChunkPos.getX(ref), ChunkPos.getZ(ref))) return null;
                         ChunkAccess start = level.getChunk(ChunkPos.getX(ref), ChunkPos.getZ(ref), ChunkStatus.STRUCTURE_STARTS, false);
                         if (start == null) return null;
                         StructureStart s = start.getStartForStructure(e.getKey());

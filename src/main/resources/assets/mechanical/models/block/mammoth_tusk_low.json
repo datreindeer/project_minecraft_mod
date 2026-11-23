@@ -1,0 +1,241 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/bone_pile_bone",
+    "bone": "mechanical:block/bone_pile_bone"
+  },
+  "elements": [
+    {
+      "from": [
+        4.5,
+        -5.1,
+        4.5
+      ],
+      "to": [
+        11.5,
+        7.1,
+        11.5
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          1.0,
+          8.0
+        ],
+        "axis": "x",
+        "angle": -0.0
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            7,
+            12.2
+          ],
+          "texture": "#bone"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            7,
+            12.2
+          ],
+          "texture": "#bone"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            7,
+            12.2
+          ],
+          "texture": "#bone"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            7,
+            12.2
+          ],
+          "texture": "#bone"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            7,
+            7
+          ],
+          "texture": "#bone"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            7,
+            7
+          ],
+          "texture": "#bone"
+        }
+      }
+    },
+    {
+      "from": [
+        4.8,
+        2.814,
+        3.461
+      ],
+      "to": [
+        11.2,
+        13.654,
+        9.861
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8.233578363789503,
+          6.6606079867221855
+        ],
+        "axis": "x",
+        "angle": 22.5
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6.4,
+            10.84
+          ],
+          "texture": "#bone"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            6.4,
+            10.84
+          ],
+          "texture": "#bone"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            6.4,
+            10.84
+          ],
+          "texture": "#bone"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            6.4,
+            10.84
+          ],
+          "texture": "#bone"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            6.4,
+            6.4
+          ],
+          "texture": "#bone"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            6.4,
+            6.4
+          ],
+          "texture": "#bone"
+        }
+      }
+    },
+    {
+      "from": [
+        5.1,
+        9.537,
+        1.465
+      ],
+      "to": [
+        10.9,
+        18.017,
+        7.265
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          13.776855558857223,
+          4.364507392531647
+        ],
+        "axis": "x",
+        "angle": 22.5
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            5.8,
+            8.48
+          ],
+          "texture": "#bone"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            5.8,
+            8.48
+          ],
+          "texture": "#bone"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            5.8,
+            8.48
+          ],
+          "texture": "#bone"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            5.8,
+            8.48
+          ],
+          "texture": "#bone"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            5.8,
+            5.8
+          ],
+          "texture": "#bone"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            5.8,
+            5.8
+          ],
+          "texture": "#bone"
+        }
+      }
+    }
+  ]
+}

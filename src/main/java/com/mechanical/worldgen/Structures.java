@@ -13,6 +13,15 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  */
 public final class Structures {
     public static final DeferredRegister<MapCodec<? extends Feature>> FEATURE_TYPES = DeferredRegister.create(Registries.FEATURE_TYPE, Mechanical.MODID);
+    /** Thin old bones for the bone remains, sand skeletons and mammoth tusks (OldBonesBlock; models: scripts/gen_land_decor.py). */
+    public static final net.neoforged.neoforge.registries.DeferredBlock<OldBonesBlock> RIB_CAGE = Mechanical.BLOCKS.registerBlock("rib_cage",
+            p -> new OldBonesBlock(false, p), p -> p.mapColor(net.minecraft.world.level.material.MapColor.SAND).strength(0.6F)
+                    .sound(net.minecraft.world.level.block.SoundType.BONE_BLOCK).noOcclusion()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
+    public static final net.neoforged.neoforge.registries.DeferredBlock<OldBonesBlock> MAMMOTH_TUSK = Mechanical.BLOCKS.registerBlock("mammoth_tusk",
+            p -> new OldBonesBlock(true, p), p -> p.mapColor(net.minecraft.world.level.material.MapColor.TERRACOTTA_WHITE).strength(1.0F)
+                    .sound(net.minecraft.world.level.block.SoundType.BONE_BLOCK).noOcclusion()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.POPPED));
 
     static {
         FEATURE_TYPES.register("abandoned_campsite", () -> AbandonedCampsite.CODEC);
@@ -53,6 +62,26 @@ public final class Structures {
         FEATURE_TYPES.register("gravel_bar", WaterDecor.GRAVEL_BAR::codec);
         FEATURE_TYPES.register("reed_belt", WaterDecor.REED_BELT::codec);
         FEATURE_TYPES.register("hillside_spring", WaterDecor.SPRING::codec);
+        // mountains, open ground, dry and cold land (scripts/gen_land_decor.py)
+        FEATURE_TYPES.register("talus", MountainDecor.TALUS::codec);
+        FEATURE_TYPES.register("fallen_rock", MountainDecor.FALLEN_ROCK::codec);
+        FEATURE_TYPES.register("rock_arch", MountainDecor.ROCK_ARCH::codec);
+        FEATURE_TYPES.register("bird_cliff", MountainDecor.BIRD_CLIFF::codec);
+        FEATURE_TYPES.register("valley_waterfall", MountainDecor.WATERFALL::codec);
+        FEATURE_TYPES.register("snow_patch", MountainDecor.SNOW_PATCH::codec);
+        FEATURE_TYPES.register("rock_outcrop", OpenDecor.OUTCROP::codec);
+        FEATURE_TYPES.register("bone_remains", OpenDecor.BONES::codec);
+        FEATURE_TYPES.register("anthill", OpenDecor.ANTHILL::codec);
+        FEATURE_TYPES.register("lone_tree", OpenDecor.LONE_TREE::codec);
+        FEATURE_TYPES.register("farm_walls", OpenDecor.FARM_WALLS::codec);
+        FEATURE_TYPES.register("fire_ring", OpenDecor.FIRE_RING::codec);
+        FEATURE_TYPES.register("dead_tree", DryColdDecor.DEAD_TREE::codec);
+        FEATURE_TYPES.register("sand_skeleton", DryColdDecor.SAND_SKELETON::codec);
+        FEATURE_TYPES.register("rock_overhang", DryColdDecor.OVERHANG::codec);
+        FEATURE_TYPES.register("dry_creek", DryColdDecor.DRY_CREEK::codec);
+        FEATURE_TYPES.register("ice_blocks", DryColdDecor.ICE_BLOCKS::codec);
+        FEATURE_TYPES.register("frost_split", DryColdDecor.FROST_SPLIT::codec);
+        FEATURE_TYPES.register("mammoth_tusks", DryColdDecor.MAMMOTH_TUSKS::codec);
         FEATURE_TYPES.register("charred_tree", () -> ScorchedBarrens.CharredTree.CODEC); // scripts/gen_world_biomes.py
     }
 
