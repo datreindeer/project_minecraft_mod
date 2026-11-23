@@ -26,9 +26,9 @@ public final class DeepClient {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(DeepFauna.CAVE_SALAMANDER.get(), c -> new CoastClient.FishRenderer<>(c,
-                new DeepModels.SalamanderModel(c.bakeLayer(DeepModels.SalamanderModel.LAYER)), tex("cave_salamander"), 0.15F, 1.0F, 0.0F));
+                new DeepModels.SalamanderModel(c.bakeLayer(DeepModels.SalamanderModel.LAYER)), tex("cave_salamander"), 0.15F, 0.4F, 0.0F));
         event.registerEntityRenderer(DeepFauna.BLIND_CAVE_FISH.get(), c -> new CoastClient.FishRenderer<>(c,
-                new DeepModels.CaveFishModel(c.bakeLayer(DeepModels.CaveFishModel.LAYER)), tex("blind_cave_fish"), 0.15F, 1.0F, 0.0F));
+                new DeepModels.CaveFishModel(c.bakeLayer(DeepModels.CaveFishModel.LAYER)), tex("blind_cave_fish"), 0.12F, 0.4F, 0.0F));
         event.registerEntityRenderer(DeepFauna.BAT_SWARM.get(), SwarmRenderer::new);
         event.registerEntityRenderer(DeepFauna.CAVERN_SPIDER.get(), c -> {
             DeepModels.CavernSpiderModel model = new DeepModels.CavernSpiderModel(c.bakeLayer(DeepModels.CavernSpiderModel.LAYER));

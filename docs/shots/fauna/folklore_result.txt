@@ -1,11 +1,43 @@
-setup at (90.5, 200.0, 89.5)
-huldra at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder false
-huldra_back at (90.5, 200.0, 89.5) camera (93.06, 201.4, 87.58) thunder false
-will_o_wisp at (90.5, 201.0, 89.5) camera (88.74, 201.2, 90.82) thunder false
-jungle_spirit_mask at (90.5, 201.0, 89.5) camera (89.06, 200.7, 90.58) thunder false
-tomte at (90.5, 200.0, 89.5) camera (89.06, 200.8, 90.58) thunder false
-nacken at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder false
-bog_body at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder false
-mossy_troll_stone at (90.5, 200.0, 89.5) camera (88.1, 201.6, 91.3) thunder false
-dune_wraith at (90.5, 200.0, 89.5) camera (87.94, 201.4, 91.42) thunder true
-frost_giant at (90.5, 200.0, 89.5) camera (84.5, 203.5, 94.0) thunder true
+setup at (84.5, 200.0, 75.5)
+huldra 35.0 at (84.5, 200.0, 75.5) camera (85.6471528727021, 201.6, 77.13830408857798) thunder false
+huldra 35.0 at (84.5, 200.0, 75.5) camera (85.6471528727021, 201.6, 77.13830408857798) thunder false
+huldra 0.0 at (84.5, 200.0, 75.5) camera (84.5, 201.6, 77.5) thunder false
+huldra 90.0 at (84.5, 200.0, 75.5) camera (86.5, 201.6, 75.5) thunder false
+huldra 180.0 at (84.5, 200.0, 75.5) camera (84.5, 201.6, 73.5) thunder false
+will_o_wisp 35.0 at (84.5, 201.0, 75.5) camera (85.41772229816168, 201.3, 76.81064327086239) thunder false
+will_o_wisp 35.0 at (84.5, 201.33380795743318, 75.5) camera (85.41772229816168, 201.3, 76.81064327086239) thunder false
+will_o_wisp 0.0 at (84.5, 200.97170912308923, 75.5) camera (84.5, 201.3, 77.1) thunder false
+will_o_wisp 90.0 at (84.5, 201.38702701389758, 75.5) camera (86.1, 201.3, 75.5) thunder false
+will_o_wisp 180.0 at (84.5, 201.12845005460574, 75.5) camera (84.5, 201.3, 73.9) thunder false
+jungle_spirit_mask 35.0 at (84.5, 201.0, 75.5) camera (85.589795229067, 201.65, 77.05638888414909) thunder false
+jungle_spirit_mask 35.0 at (84.5, 201.31804574627105, 75.5) camera (85.589795229067, 201.65, 77.05638888414909) thunder false
+jungle_spirit_mask 0.0 at (84.5, 200.97355839724008, 75.5) camera (84.5, 201.65, 77.4) thunder false
+jungle_spirit_mask 90.0 at (84.5, 201.3991518417936, 75.5) camera (86.4, 201.65, 75.5) thunder false
+jungle_spirit_mask 180.0 at (84.5, 201.10717077604815, 75.5) camera (84.5, 201.65, 73.6) thunder false
+tomte 35.0 at (84.5, 200.0, 75.5) camera (85.24564936725636, 200.8, 76.56489765757568) thunder false
+tomte 35.0 at (84.5, 200.0, 75.5) camera (85.24564936725636, 200.8, 76.56489765757568) thunder false
+tomte 0.0 at (84.5, 200.0, 75.5) camera (84.5, 200.8, 76.8) thunder false
+tomte 90.0 at (84.5, 200.0, 75.5) camera (85.8, 200.8, 75.5) thunder false
+tomte 180.0 at (84.5, 200.0, 75.5) camera (84.5, 200.8, 74.2) thunder false
+nacken 35.0 at (84.5, 200.0, 75.5) camera (85.6471528727021, 201.6, 77.13830408857798) thunder false
+nacken 35.0 at (84.5, 200.0, 75.5) camera (85.6471528727021, 201.6, 77.13830408857798) thunder false
+nacken 0.0 at (84.5, 200.0, 75.5) camera (84.5, 201.6, 77.5) thunder false
+nacken 90.0 at (84.5, 200.0, 75.5) camera (86.5, 201.6, 75.5) thunder false
+nacken 180.0 at (84.5, 200.0, 75.5) camera (84.5, 201.6, 73.5) thunder false
+bog_body 35.0 at (84.5, 200.0, 75.5) camera (85.6471528727021, 201.5, 77.13830408857798) thunder false
+bog_body 35.0 at (84.5, 200.0, 75.5) camera (85.6471528727021, 201.5, 77.13830408857798) thunder false
+bog_body 0.0 at (84.5, 200.0, 75.5) camera (84.5, 201.5, 77.5) thunder false
+bog_body 90.0 at (84.5, 200.0, 75.5) camera (86.5, 201.5, 75.5) thunder false
+bog_body 180.0 at (84.5, 200.0, 75.5) camera (84.5, 201.5, 73.5) thunder false
+mossy_troll_stone 35.0 at (84.5, 200.0, 75.5) camera (86.22072930905314, 201.6, 77.95745613286698) thunder false
+mossy_troll_stone 35.0 at (84.5, 200.0, 75.5) camera (86.22072930905314, 201.6, 77.95745613286698) thunder false
+dune_wraith 35.0 at (84.5, 200.0, 75.5) camera (85.7045105163372, 201.6, 77.22021929300688) thunder true
+dune_wraith 35.0 at (84.5, 200.0, 75.5) camera (85.7045105163372, 201.6, 77.22021929300688) thunder true
+dune_wraith 0.0 at (84.5, 200.0, 75.5) camera (84.5, 201.6, 77.6) thunder true
+dune_wraith 90.0 at (84.5, 200.0, 75.5) camera (86.6, 201.6, 75.5) thunder true
+dune_wraith 180.0 at (84.5, 200.0, 75.5) camera (84.5, 201.6, 73.4) thunder true
+frost_giant 35.0 at (84.5, 200.0, 75.5) camera (88.2282468362818, 203.4, 80.82448828787845) thunder true
+frost_giant 35.0 at (84.5, 200.0, 75.5) camera (88.2282468362818, 203.4, 80.82448828787845) thunder true
+frost_giant 0.0 at (84.5, 200.0, 75.5) camera (84.5, 203.4, 82.0) thunder true
+frost_giant 90.0 at (84.5, 200.0, 75.5) camera (91.0, 203.4, 75.5) thunder true
+frost_giant 180.0 at (84.5, 200.0, 75.5) camera (84.5, 203.4, 69.0) thunder true

@@ -20,7 +20,8 @@ from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from critter_paint import cube, fur, h, pack, paint, part, save, shade, skinned  # noqa: E402
+from box_paint import Model, h, java_method, lerp, lit, pack, paint, shade, write_java  # noqa: E402
+from critter_paint import fur, save, skinned  # noqa: E402
 from gen_wildlife_item_textures import egg, hexc, recolour  # noqa: E402
 
 TEX = HERE.parent / "src/main/resources/assets/mechanical/textures"
@@ -28,172 +29,294 @@ ITEM, BLOCK = TEX / "item", TEX / "block"
 JAR = HERE.parent / "build/moddev/artifacts/minecraft-patched-26.3.0.95-merged.jar"
 
 
-def f(v):
-    return f"{float(v)}F"
+# ======================================================================= the models (box_paint: geometry + skin from one table)
+
+def lit_low(c, q):
+    return lit(c, q, top=14, bottom=24, amt=0.1)
 
 
-def java_parts(parts, uv):
-    """createBodyLayer() lines: every part, its cubes (texOffs from pack()) and pose."""
-    out = []
-    for p in parts:
-        bits = []
-        for c in p["cubes"]:
-            u, v = uv[c["key"]]
-            x0, y0, z0, w, hh, d = c["box"]
-            plane = ", new CubeDeformation(0.001F)" if 0 in (w, hh, d) else ""
-            bits.append(f".texOffs({u}, {v})" + (".mirror()" if c["mirror"] else "")
-                        + f".addBox({f(x0)}, {f(y0)}, {f(z0)}, {f(w)}, {f(hh)}, {f(d)}{plane})" + (".mirror(false)" if c["mirror"] else ""))
-        px, py, pz = p["pivot"]
-        rx, ry, rz = p["rot"]
-        pose = (f"PartPose.offset({f(px)}, {f(py)}, {f(pz)})" if (rx, ry, rz) == (0, 0, 0)
-                else f"PartPose.offsetAndRotation({f(px)}, {f(py)}, {f(pz)}, {f(rx)}, {f(ry)}, {f(rz)})")
-        parent = "root" if p["parent"] is None else p["parent"]
-        out.append(f'PartDefinition {p["name"]} = {parent}.addOrReplaceChild("{p["name"]}", CubeListBuilder.create(){"".join(bits)}, {pose});')
-    return out
+# ---- cave salamander (olm): a long eel-like body in three pieces, a flat shovel snout, no eyes (only the faint dark spots
+# under the skin where they would be), three red feathery gill fronds each side, four tiny legs, a tail with a leaf fin.
+SA = dict(skin=(238, 212, 200), back=(222, 190, 178), belly=(250, 236, 228), shade=(196, 156, 146), gill=(224, 74, 92),
+          gill_dk=(156, 38, 58), gill_lt=(250, 150, 156), spot=(184, 142, 138), mouth=(170, 112, 108))
 
 
-# ======================================================================= cave salamander (olm)
+def olm_colour(m, q):
+    P = SA
+    n = h(q.tx, q.ty, 2001)
+    f = q.face
+    if m in ("skin", "head", "snout", "leg"):
+        c = P["belly"] if f == "bottom" else lerp(P["skin"], P["back"], 0.6 if f == "top" else 0.15 + 0.2 * n)
+        if f == "top" and h(q.tx, q.ty, 2002) > 0.86:
+            c = lerp(c, P["shade"], 0.5)  # faint mottling: the blood showing through the skin
+        if m == "head" and f in ("left", "right") and -6.5 < q.Z < -5.5 and q.j == 0:
+            c = lerp(c, P["spot"], 0.6)  # the eyes, sunk under the skin
+        if m == "snout" and f in ("front", "left", "right") and q.j == q.fh - 1:
+            c = P["mouth"]
+        if m == "leg" and f == "front" and q.i == 0:
+            c = P["shade"]  # toes
+    elif m == "gill":
+        t = q.i / max(1, q.fw - 1)
+        if q.j % 2 == 1 and t > 0.6:
+            return None  # feathery
+        c = lerp(P["gill_dk"], P["gill"], 0.4 + 0.6 * t)
+        if t > 0.85:
+            c = lerp(c, P["gill_lt"], 0.5)
+    elif m == "fin":
+        # a leaf-shaped fin, widest in the middle, fading at the edge
+        lz = (q.z - q.box[2]) / q.box[5]
+        half = math.sin(lz * math.pi) * q.box[4] / 2
+        mid = q.box[1] + q.box[4] / 2
+        if abs(q.y - mid) > half:
+            return None
+        return (*lerp(P["skin"], P["shade"], 0.25 * n), 140)
+    else:
+        c = (255, 0, 255)
+    return lit_low(c, q)
 
-SA = dict(skin=(230, 192, 186), pale=(244, 216, 210), belly=(248, 230, 224), shade=(206, 166, 162), gill=(206, 72, 80),
-          gill_dark=(158, 42, 54))
+
+def olm():
+    M = Model("cave_salamander", (64, 32), 1, olm_colour)
+    M.part("body", None, (0, 23, 0))
+    M.box("body", "skin", -1.5, -1.5, -4, 3, 2, 4)
+    M.part("head", "body", (0, 0, -4))
+    M.box("head", "head", -1.5, -1.5, -3, 3, 2, 3)
+    M.box("head", "snout", -1, -1, -5, 2, 1, 2)
+    for side in (-1, 1):
+        for k in range(3):
+            name = f"{'right' if side < 0 else 'left'}_gill{k}"
+            M.part(name, "head", (side * 1.5, -1, -0.5 - k * 0.7), (0, side * (k - 1) * -0.45, -side * (0.5 + 0.15 * k)))
+            M.limb(name, side, (-4, 0, -0.5, 4, 0, 1), mat="gill")
+    for side, name, z in ((-1, "right_front_leg", -3), (1, "left_front_leg", -3)):
+        M.part(name, "body", (side * 1.5, 0, z), (0, 0, side * 0.6))
+        M.limb(name, side, (-2, -0.5, -0.5, 2, 1, 1), mat="leg")
+    M.part("rear", "body", (0, 0, 0))
+    M.box("rear", "skin", -1.5, -1.5, 0, 3, 2, 4)
+    for side, name in ((-1, "right_hind_leg"), (1, "left_hind_leg")):
+        M.part(name, "rear", (side * 1.5, 0, 3), (0, 0, side * 0.6))
+        M.limb(name, side, (-2, -0.5, -0.5, 2, 1, 1), mat="leg")
+    M.part("tail", "rear", (0, 0, 4))
+    M.box("tail", "skin", -1, -1.5, 0, 2, 2, 4)
+    M.box("tail", "fin", 0, -2.5, 1, 0, 1, 3)
+    M.part("tail_tip", "tail", (0, 0, 4))
+    M.box("tail_tip", "skin", -0.5, -1.5, 0, 1, 2, 3)
+    M.box("tail_tip", "fin", 0, -2, 0, 0, 3, 4)
+    return M
 
 
-def salamander():
-    def skin(face, X, Y, Z, n, tx, ty):
-        if face == "bottom":
-            return SA["belly"]
-        if face == "top" and h(tx, ty, 2001) < 0.12:
-            return SA["shade"]                                       # faint mottling: the skin shows the blood beneath
-        return fur(SA["pale"] if face == "top" else SA["skin"], tx, ty, 2002, 0.05, streak=False)
-
-    def gill(face, X, Y, Z, n, tx, ty):
-        return SA["gill_dark"] if (tx + ty) % 2 else SA["gill"]      # feathery fronds
-
-    def fin(face, X, Y, Z, n, tx, ty):
-        return (*SA["pale"], 170)
-
-    return [
-        part("body", None, (0, 24, 0), (0, 0, 0), [cube("sa_body", -1, -1, -3, 2, 1, 6, skin)]),
-        part("head", "body", (0, 0, -3), (0, 0, 0), [cube("sa_head", -1, -1, -3, 2, 1, 3, skin)]),
-        part("right_gill", "head", (-1, -0.5, -0.5), (0, 0, 0), [cube("sa_gill", -1, -1.5, 0, 1, 2, 0, gill)]),
-        part("left_gill", "head", (1, -0.5, -0.5), (0, 0, 0), [cube("sa_gill", 0, -1.5, 0, 1, 2, 0, gill, True)]),
-        part("tail", "body", (0, 0, 3), (0, 0, 0), [cube("sa_tail", -0.5, -1, 0, 1, 1, 5, skin), cube("sa_fin", 0, -2, 1, 0, 1, 4, fin)]),
-        part("right_front_leg", "body", (-1, -1, -2), (0, 0, 0), [cube("sa_leg", -1, 0, -0.5, 1, 1, 1, skin)]),
-        part("left_front_leg", "body", (1, -1, -2), (0, 0, 0), [cube("sa_leg", 0, 0, -0.5, 1, 1, 1, skin, True)]),
-        part("right_hind_leg", "body", (-1, -1, 2), (0, 0, 0), [cube("sa_leg", -1, 0, -0.5, 1, 1, 1, skin)]),
-        part("left_hind_leg", "body", (1, -1, 2), (0, 0, 0), [cube("sa_leg", 0, 0, -0.5, 1, 1, 1, skin, True)]),
-    ]
+# ---- blind cave fish: a deep-bellied little tetra, pale pink, the head without eyes (skin over the sockets), the gills
+# blushing through, a forked tail, dorsal, anal and paired pectoral fins.
+CF = dict(back=(222, 192, 186), side=(242, 216, 208), belly=(252, 240, 234), fin=(246, 226, 220), gill=(230, 140, 148),
+          socket=(214, 178, 174), mouth=(190, 130, 128))
 
 
-# ======================================================================= blind cave fish
-
-CF = dict(back=(214, 182, 178), side=(236, 208, 202), belly=(248, 234, 228), fin=(238, 214, 208, 180), gill=(222, 150, 150))
+def fish_colour(m, q):
+    P = CF
+    n = h(q.tx, q.ty, 2010)
+    f = q.face
+    if m in ("body", "head"):
+        up = q.Y < 20.5
+        c = P["belly"] if f == "bottom" or q.Y > 22 else P["back"] if f == "top" or up else P["side"]
+        c = lerp(c, P["back"], 0.12 * n)
+        if f in ("left", "right") and abs(q.Y - 21) < 1.6 and h(q.tx // 2, q.ty, 2012) > 0.8:
+            c = lerp(c, (255, 250, 248), 0.5)  # a faint sheen of scales
+        if m == "head" and f in ("left", "right"):
+            if q.Z > -2.6 and q.Y > 20:
+                c = lerp(c, P["gill"], 0.6)  # the gill cover, pink with blood
+            if abs(q.Z + 3.5) < 0.6 and abs(q.Y - 20.5) < 0.6:
+                c = P["socket"]  # where an eye would be: skin
+            if q.Z < -4.4 and q.Y > 21:
+                c = P["mouth"]
+    elif m.startswith("fin"):
+        if m == "fin_tail":
+            t = q.i / max(1, q.fw - 1)  # 0 at the base
+            mid = abs(q.j - (q.fh - 1) / 2) / ((q.fh - 1) / 2)
+            if t > 0.55 and mid < (t - 0.55) * 1.6:
+                return None  # the fork
+        if (q.i + q.j) % 3 == 0 and q.fh > 1:
+            return (*lerp(P["fin"], P["back"], 0.4), 200)  # fin rays
+        return (*P["fin"], 160)
+    else:
+        c = (255, 0, 255)
+    return lit_low(c, q)
 
 
 def cave_fish():
-    def body(face, X, Y, Z, n, tx, ty):
-        if face == "bottom":
-            return CF["belly"]
-        if face in ("left", "right") and abs(Z - (-1.5)) < 0.5 and Y > 20.5:
-            return CF["gill"]                                        # the pink gill slit; no eye where an eye would be
-        return fur(CF["back"] if face == "top" or Y < 21 else CF["side"], tx, ty, 2010, 0.05, streak=False)
+    M = Model("blind_cave_fish", (32, 32), 1, fish_colour)
+    M.part("body", None, (0, 21, 0))
+    M.box("body", "body", -1.5, -2, -2, 3, 4, 4)
+    M.box("body", "fin", 0, -4, -1, 0, 2, 3)
+    M.part("head", "body", (0, 0, -2))
+    M.box("head", "head", -1, -1.5, -3, 2, 3, 3)
+    M.box("head", "head", -0.5, -0.5, -4, 1, 2, 1)
+    for side, name in ((-1, "right_fin"), (1, "left_fin")):
+        M.part(name, "body", (side * 1.5, 1, -1.5), (0.3, side * -0.6, side * -0.4))
+        M.limb(name, side, (-2, 0, 0, 2, 0, 2), mat="fin_pec")
+    M.part("rear", "body", (0, 0, 2))
+    M.box("rear", "body", -1, -1.5, 0, 2, 3, 3)
+    M.box("rear", "body", -0.5, -1, 3, 1, 2, 2)
+    M.box("rear", "fin", 0, 1.5, 0.5, 0, 2, 2)
+    M.part("tail", "rear", (0, 0, 5))
+    M.box("tail", "fin_tail", 0, -3, 0, 0, 6, 4)
+    return M
 
-    def fin(face, X, Y, Z, n, tx, ty):
-        return CF["fin"] if h(tx, ty, 2011) < 0.75 else (*shade(CF["fin"], 0.85), 180)
 
-    return [
-        part("body", None, (0, 22, 0), (0, 0, 0), [cube("cf_body", -1, -1.5, -2.5, 2, 3, 5, body), cube("cf_dorsal", 0, -2.5, -1, 0, 1, 3, fin)]),
-        part("tail", "body", (0, 0, 2.5), (0, 0, 0), [cube("cf_tail", 0, -1.5, 0, 0, 3, 3, fin)]),
-    ]
+# ---- one bat of the swarm (BatSwarmModel repeats it 18 times, drawn at 0.6): furry body and head, a snout, two pointed
+# ears, two-piece wings of dark membrane with finger bones and a scalloped trailing edge.
+BAT = dict(fur=(80, 60, 46), fur_dk=(40, 30, 24), wing=(40, 30, 28), bone=(86, 68, 56), ear=(120, 86, 76), nose=(40, 28, 24),
+           eye=(14, 10, 10))
 
 
-# ======================================================================= one bat (BatSwarmModel repeats it)
-
-BAT = dict(body=(74, 56, 44), dark=(46, 34, 28), wing=(58, 44, 38), bone=(98, 78, 64))
+def bat_colour(m, q):
+    P = BAT
+    n = h(q.tx, q.ty, 2020)
+    f = q.face
+    if m in ("body", "head"):
+        c = lerp(P["fur_dk"], P["fur"], 0.4 + 0.5 * n)
+        if m == "head" and f == "front":
+            c = P["eye"] if q.j == 0 and q.i in (0, q.fw - 1) else c
+    elif m == "snout":
+        c = P["nose"]
+    elif m == "ears":
+        if q.j == 0 and q.i in (0, q.fw - 1):
+            return (*P["ear"], 255)  # two pointed tips
+        if q.j == 1:
+            return (*P["ear"], 255)
+        return None
+    elif m in ("wing", "wing_tip"):
+        r = q.z + 1  # 0 at the leading edge, 3 at the trailing edge
+        if m == "wing_tip" and r > 0.5 + (q.x + 4) / 4 * 2.5:
+            return None  # the pointed tip
+        if r > 2 and int(q.x * 2) % 3 == 0:
+            return None  # the scalloped trailing edge
+        c = P["bone"] if r < 1 or (m == "wing_tip" and abs((q.x + 4) % 1.5 - 0.75) < 0.3) else P["wing"]
+        return (*shade(c, 0.95 + 0.1 * n), 255)
+    else:
+        c = (255, 0, 255)
+    return lit_low(c, q)
 
 
 def bat():
-    def body(face, X, Y, Z, n, tx, ty):
-        return BAT["dark"] if face == "front" else fur(BAT["body"], tx, ty, 2020, 0.08)
+    M = Model("bat_swarm", (32, 16), 1, bat_colour)
+    M.part("bat", None, (0, 16, 0))
+    M.box("bat", "body", -1, -1, -1.5, 2, 2, 3)
+    M.box("bat", "head", -1, -1.5, -3.5, 2, 2, 2)
+    M.box("bat", "snout", -0.5, -0.5, -4.5, 1, 1, 1)
+    M.box("bat", "ears", -1, -3.5, -2.5, 2, 2, 0)
+    for side, name in ((-1, "right_wing"), (1, "left_wing")):
+        M.part(name, "bat", (side * 1, -0.5, -0.5))
+        M.limb(name, side, (-3, 0, -1, 3, 0, 3), mat="wing")
+        tip = name.replace("wing", "wing_tip")
+        M.part(tip, name, (side * 3, 0, 0))
+        M.limb(tip, side, (-4, 0, -1, 4, 0, 3), mat="wing_tip")
+    return M
 
-    def wing(face, X, Y, Z, n, tx, ty):
-        return BAT["bone"] if (tx % 3 == 0) else BAT["wing"]       # finger bones through the membrane
 
-    return [
-        part("bat", None, (0, 18, 0), (0, 0, 0), [cube("bat_body", -0.5, -0.5, -1, 1, 1, 2, body)]),
-        part("right_wing", "bat", (-0.5, 0, 0), (0, 0, 0), [cube("bat_wing", -3, 0, -1, 3, 0, 2, wing)]),
-        part("left_wing", "bat", (0.5, 0, 0), (0, 0, 0), [cube("bat_wing", 0, 0, -1, 3, 0, 2, wing, True)]),
-    ]
+# ---- cavern spider: a hairy brown-grey cephalothorax with a hump, a head with eight small dull eyes, two chelicerae with
+# black fangs and two pedipalps, a big oval abdomen tilted up (pale chevrons, spinnerets), eight legs whose knees stand
+# high over the body: a femur rising from the body and a long shin down to the ground, banded at the joints.
+SP = dict(body=(104, 94, 82), dark=(46, 40, 36), pale=(190, 178, 152), hair=(134, 124, 108), eye=(18, 16, 14),
+          shine=(110, 106, 100), fang=(30, 20, 18), chel=(70, 50, 40), band=(150, 138, 116))
+SPIDER_LEGS = [(-2, 7, 10, -0.75), (-1, 6, 9, -0.25), (0, 6, 9, 0.25), (1, 7, 10, 0.7)]  # (z, femur, shin, yRot) right legs, front to back
+LEG_UP, KNEE = 0.7, -1.95
 
 
-# ======================================================================= cavern spider
-
-SP = dict(grey=(96, 92, 86), dark=(50, 46, 44), pale=(178, 170, 154), leg=(78, 74, 70), joint=(124, 118, 108), eye=(30, 28, 26),
-          fang=(36, 28, 26))
-LEG_Z = (-2, -1, 0, 1)
-LEG_REST = [(-0.5, -0.6), (-0.45, -0.25), (-0.45, 0.25), (-0.5, 0.6)]  # right legs, front to back (zRot, yRot); the left ones mirrored
+def spider_colour(m, q):
+    P = SP
+    n = h(q.tx, q.ty, 2030)
+    f = q.face
+    hairy = lerp(P["dark"], P["body"], 0.45 + 0.45 * n)
+    if h(q.tx, q.ty, 2031) > 0.86:
+        hairy = lerp(hairy, P["hair"], 0.6)
+    if m in ("ceph", "hump"):
+        c = P["dark"] if f == "bottom" else hairy
+        if f == "top" and abs(q.X) < 0.6:
+            c = lerp(c, P["pale"], 0.4)  # the fovea line
+    elif m == "head":
+        c = hairy
+        if f in ("front", "top"):
+            ex = abs(q.X)
+            # two big eyes in front, two small ones beside them, two pairs further back on top
+            eye = (f == "front" and ((q.j == 1 and ex < 1) or (q.j == 0 and 1 < ex < 2))) or (f == "top" and 0.5 < ex < 1.5 and q.Z < -4.5)
+            if eye:
+                c = P["shine"] if h(q.tx, q.ty, 2032) > 0.75 else P["eye"]  # small, dull and dark: they don't glow
+    elif m == "chel":
+        c = P["fang"] if q.Y > 21 or (f in ("front", "back", "left", "right") and q.j == q.fh - 1) else P["chel"]
+    elif m == "palp":
+        c = lerp(hairy, P["band"], 0.4) if q.i == 0 or (f in ("left", "right") and q.i == q.fw - 1) else hairy
+    elif m in ("abdomen", "abd_top", "abd_back", "abd_bottom"):
+        c = P["dark"] if f == "bottom" or m == "abd_bottom" else hairy
+        if f == "top" and m in ("abdomen", "abd_top"):
+            lz = q.z
+            if abs(abs(q.x) - (lz - 1) * 0.3) < 0.6 and int(lz) % 2 == 0 and lz > 1:
+                c = P["pale"]  # pale chevrons down the back
+            elif abs(q.x) < 0.5 and lz < 3:
+                c = lerp(c, P["pale"], 0.5)  # the heart mark
+    elif m == "spin":
+        c = P["dark"]
+    elif m in ("femur", "shin"):
+        c = lerp(P["dark"], P["body"], 0.35 + 0.4 * n)
+        if q.face in ("front", "back", "top", "bottom") and (q.i in (0,) or q.i == q.fw - 1):
+            c = P["band"]  # pale joint rings
+        if m == "shin" and q.face in ("front", "back", "top", "bottom") and q.i < 2:
+            c = P["dark"]  # the dark foot
+        if h(q.tx, q.ty, 2033) > 0.8:
+            c = lerp(c, P["hair"], 0.6)  # bristles
+    else:
+        c = (255, 0, 255)
+    return lit(c, q, top=12, bottom=24, amt=0.15)
 
 
 def spider():
-    def thorax(face, X, Y, Z, n, tx, ty):
-        if face == "bottom":
-            return SP["dark"]
-        return fur(SP["grey"], tx, ty, 2030, 0.1)
-
-    def head(face, X, Y, Z, n, tx, ty):
-        if face == "front" and Y < 18.5 and abs(abs(X) - 1.0) < 0.6:
-            return SP["eye"]                                         # small, dull, dark eyes: they don't glow
-        return fur(shade(SP["grey"], 0.9), tx, ty, 2031, 0.1)
-
-    def abdomen(face, X, Y, Z, n, tx, ty):
-        if face == "bottom":
-            return SP["dark"]
-        # pale chevrons down the back
-        if face == "top" and abs(abs(X) - (Z - 2) * 0.35) < 0.6 and int(Z) % 2 == 0:
-            return SP["pale"]
-        if face == "top" and abs(X) < 0.5 and Z > 2.5:
-            return shade(SP["pale"], 0.85)
-        return fur(SP["grey"] if face == "top" else shade(SP["grey"], 0.8), tx, ty, 2032, 0.12)
-
-    def leg(face, X, Y, Z, n, tx, ty):
-        return SP["joint"] if tx % 3 == 0 else fur(SP["leg"], tx, ty, 2033, 0.08)
-
-    def fang(face, X, Y, Z, n, tx, ty):
-        return SP["fang"]
-
-    parts = [
-        part("body", None, (0, 20, 0), (0, 0, 0), [cube("sp_body", -2.5, -2, -3, 5, 4, 5, thorax)]),
-        part("head", "body", (0, 0, -3), (0, 0, 0), [cube("sp_head", -2, -1.5, -3, 4, 3, 3, head),
-                                                     cube("sp_fang", -1.5, 1.5, -3, 1, 1, 1, fang),
-                                                     cube("sp_fang", 0.5, 1.5, -3, 1, 1, 1, fang, True)]),
-        part("abdomen", "body", (0, -0.5, 2), (0.25, 0, 0), [cube("sp_abdomen", -3.5, -3.5, 0, 7, 6, 8, abdomen)]),
-    ]
-    for i, z in enumerate(LEG_Z):
-        zr, yr = LEG_REST[i]
-        parts.append(part(f"right_leg{i}", None, (-2.5, 19.5, z), (0, yr, zr), [cube("sp_leg", -9, -0.5, -0.5, 9, 1, 1, leg)]))
-        parts.append(part(f"left_leg{i}", None, (2.5, 19.5, z), (0, -yr, -zr), [cube("sp_leg", 0, -0.5, -0.5, 9, 1, 1, leg, True)]))
-    return parts
+    M = Model("cavern_spider", (64, 64), 1, spider_colour)
+    M.part("body", None, (0, 19, 0))
+    M.box("body", "ceph", -2.5, -1.5, -3, 5, 3, 5)
+    M.box("body", "hump", -2, -2.5, -2.5, 4, 1, 4)
+    M.part("head", "body", (0, -0.5, -3))
+    M.box("head", "head", -2, -1.5, -2, 4, 3, 2)
+    M.box("head", "chel", -1.5, 1, -2.5, 1, 2, 1)
+    M.box("head", "chel", 0.5, 1, -2.5, 1, 2, 1, True, key="head.1")
+    for side, name in ((-1, "right_palp"), (1, "left_palp")):
+        M.part(name, "head", (side * 1.5, 1, -2), (0.35, side * 0.35, 0))
+        M.limb(name, side, (-0.5, -0.5, -3, 1, 1, 3), mat="palp")
+    M.part("abdomen", "body", (0, -0.5, 2), (0.22, 0, 0))
+    M.box("abdomen", "abdomen", -3.5, -3, 0, 7, 6, 8)
+    M.box("abdomen", "abd_top", -3, -4, 1, 6, 1, 6)
+    M.box("abdomen", "abd_back", -2.5, -2.5, 8, 5, 5, 1)
+    M.box("abdomen", "abd_bottom", -3, 3, 1, 6, 1, 6)
+    M.box("abdomen", "spin", -0.5, 0.5, 9, 1, 1, 1)
+    for i, (z, fl, sl, yr) in enumerate(SPIDER_LEGS):
+        for side in (-1, 1):
+            s = "right" if side < 0 else "left"
+            leg, shin = f"{s}_leg{i}", f"{s}_shin{i}"
+            M.part(leg, None, (side * 2.5, 18.5, z), (0, side * -yr if side > 0 else yr, side * -LEG_UP if side > 0 else LEG_UP))
+            M.limb(leg, side, (-fl, -0.5, -0.5, fl, 1, 1), mat="femur")
+            M.part(shin, leg, (side * fl, 0, 0), (0, 0, KNEE if side < 0 else -KNEE))
+            M.limb(shin, side, (-sl, -0.5, -0.5, sl, 1, 1), mat="shin")
+    return M
 
 
-MODELS = {  # name -> (parts, texture size, skinned version for a carcass)
-    "cave_salamander": (salamander, (32, 32), False),
-    "blind_cave_fish": (cave_fish, (32, 32), False),
-    "bat_swarm": (bat, (16, 16), False),
-    "cavern_spider": (spider, (64, 32), True),
+MODELS = {  # make, renderer scale (for the doc), skinned version for a carcass
+    "caveSalamander": (olm, False),
+    "blindCaveFish": (cave_fish, False),
+    "bat": (bat, False),
+    "cavernSpider": (spider, True),
 }
+JAVA = HERE.parent / "src/main/java/com/mechanical/client/wildlife/deep/DeepGeometry.java"
 
 
 def entities():
-    for name, (make, size, skin) in MODELS.items():
-        parts = make()
-        uv = pack(parts, *size)
-        if "--java" in sys.argv:
-            print(f"// ---- {name} {size}")
-            print("\n".join(java_parts(parts, uv)))
-        img = paint(parts, uv, size)
-        save(img, f"wildlife/{name}.png")
+    methods = []
+    for method, (make, skin) in MODELS.items():
+        M = make()
+        uv = pack(M.parts, *M.size)
+        img = paint(M.parts, uv, M.size, M.k)
+        save(img, f"wildlife/{M.name}.png")
         if skin:
-            save(skinned(img, {}, ()), f"skinned/wildlife/{name}.png")
+            save(skinned(img, {}, ()), f"skinned/wildlife/{M.name}.png")
+        methods.append(java_method(method, M.parts, uv, M.size, repeat=(18, "bat") if method == "bat" else None))
+        print(f"{M.name}: {len(M.parts)} parts, {sum(len(p['cubes']) for p in M.parts)} boxes")
+    write_java(JAVA, "com.mechanical.client.wildlife.deep", "DeepGeometry", "scripts/gen_fauna_deep_textures.py", methods)
 
 
 # ======================================================================= Cave Web block

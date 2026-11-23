@@ -8,7 +8,35 @@ magin syns lite, händer sällan och förklaras aldrig.
 Kod: `folklore/` (`Beings` = registreringar, `Spirit` = gemensam grund, `Huldra`, `Wisp` (lyktgubbe och mask), `Tomte`,
 `Nacken`, `BogBody`, `FrostGiant`, `DuneWraith`, `TrollStone`, `Bergtagen`, test `BeingsTest`), `worldgen/TrollStoneSleeperFeature`,
 ändringar i `wildlife/underground/Troll` (skogstroll) och `Vittra` (gäster), `Thaw.melt` (Frost Heart).
-Klient: `client/folklore/BeingsClient`. Data: `scripts/gen_folklore.py`, texturer: `scripts/gen_folklore_textures.py`.
+Klient: `client/folklore/BeingsClient` (renderare) och `BeingModel` (poser och rörelser). Modeller och skins:
+`scripts/gen_folklore_models.py` (skriver `FolkloreGeometry.java` och `textures/entity/folklore/*.png` ur samma tabell),
+övriga texturer (ägg, föremål, block, effekter): `scripts/gen_folklore_textures.py`. Data: `scripts/gen_folklore.py`.
+Bilder: `docs/shots/fauna/folklore_<väsen>.png` (snett framifrån) med `_front`, `_side` och `_back`, tagna av `FolkShots`
+(filen `run/folkshots.flag`, första raden = mappen bilderna sparas i).
+
+## Utseende
+
+Varje väsen har en egen modell (ingen lånad zombiekropp):
+- **Huldra:** en smal kvinna i mossgrön linneklänning med broderad fåll och snörliv, långt ljust hår med små blommor och två
+  flätor fram över axlarna, barfota. Ryggen är **ihålig**: en mörk håla av multnat trä (mossa, en ljus svamp) inom en
+  ram av bark. En **kosvans** med tofs sticker fram under kjolen och svänger. Hon håller kammen i höger hand.
+- **Lyktgubbe:** ett litet mjukt klot av blekblått ljus i en svag gloria som pulserar (lyser själv, syns genom mörkret),
+  några bleka gnistor driver av det.
+- **Jungle Spirit Mask:** en snidad trämask med lång näsa, blottade tänder, målade kinder och pannband i rött, gult och
+  vitt, öronpluggar med pärlhängen och en solfjäder av röda, gula, gröna och blå fjädrar. Den gungar sakta i luften.
+- **Tomte:** knappt ett block hög, satt, i grå vadmal med bälte och mässingsspänne, stora läderkängor, röda vantar, ett
+  långt vitt skägg över magen, röd potatisnäsa och en hög röd stickad luva som böjer sig bakåt och vippar när han går.
+- **Näcken:** blek och grönaktig, mager (revbenen syns), långt vått svart hår som hänger över ansiktet, sjögräs om höfterna.
+  Han står med fiolen under hakan och drar stråken fram och tillbaka.
+- **Bog Body:** krum och skrumpen, läderbrun hud som spricker, revben och ryggkotor genom skinnet, rött torvfärgat hår under
+  en spetsig fårskinnsmössa med hakrem (som Tollundmannen), repet kvar om halsen, långa tunna armar med klor, gapande käke.
+- **Frostjätte:** ritas dubbelt så stor som sin modell, 5 block hög: böjd rygg, väldig bröstkorg, långa armar med stora
+  nävar och isskenor, korta tjocka ben i vita pälslindor. Iskristaller växer ur axlarna och ryggraden, två ishorn ur
+  pannan, ett skägg av istappar, frostvitt hår och djupt liggande ögon som lyser blekblått. Huden skifferblå med rimfrost.
+- **Dune Wraith:** en halvgenomskinlig huvklädd gestalt av sand med ett svart tomrum och två bleka punkter där ansiktet
+  borde vara, trasiga ärmar och slamsor. Underkroppen är en sandvirvel: tre ringar som snurrar åt olika håll med två
+  lutande dammvirvlar runt sig.
+
 
 ## Gemensamt för andeväsendena
 
@@ -44,7 +72,7 @@ En vacker kvinna i skogsbrynet på natten, med långt ljust hår, mossgrön klä
 
 ## Lyktgubbe (Will-o'-the-wisp) och Jungle Spirit Mask
 
-Lyktgubben är ett blekt blått ljus (partiklar, ingen modell) över myr och mörk skog. Masken är en snidad, målad trämask
+Lyktgubben är ett blekt blått ljus (ett självlysande klot och några gnistor) över myr och mörk skog. Masken är en snidad, målad trämask
 som svävar mellan djungelträden. De beter sig likadant (`Wisp`):
 - När de kommer väljer de en plats 24–48 block bort. När någon som ser dem följer efter (närmare än 9 block) glider de
   vidare mot platsen, alltid lite före.

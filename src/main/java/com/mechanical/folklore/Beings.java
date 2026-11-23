@@ -66,7 +66,7 @@ public final class Beings {
     public static final DeferredHolder<EntityType<?>, EntityType<Wisp>> JUNGLE_SPIRIT_MASK = ENTITY_TYPES.registerEntityType(
             "jungle_spirit_mask", Wisp::new, MobCategory.MONSTER, b -> b.sized(0.5F, 0.6F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<Tomte>> TOMTE = ENTITY_TYPES.registerEntityType(
-            "tomte", Tomte::new, MobCategory.CREATURE, b -> b.sized(0.4F, 0.9F).clientTrackingRange(8));
+            "tomte", Tomte::new, MobCategory.CREATURE, b -> b.sized(0.5F, 1.0F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Nacken>> NACKEN = ENTITY_TYPES.registerEntityType(
             "nacken", Nacken::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.9F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<BogBody>> BOG_BODY = ENTITY_TYPES.registerEntityType(

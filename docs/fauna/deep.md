@@ -5,8 +5,9 @@ Resten av livet under jord ur [fauna-expansion-plan.md](../fauna-expansion-plan.
 Web**. De kompletterar [underground.md](underground.md) (Cave Hyena, Cave Bear, Giant Centipede, Vittra, Troll, Lindworm).
 
 Kod: `wildlife/deep/` (DeepFauna = registreringar och de två spawnarna, CaveSalamander, BlindCaveFish, BatSwarm,
-CavernSpider, CaveWebBlock), klient `client/wildlife/deep/` (DeepModels, DeepClient; olmen och fisken ritas med kustfaunans
-`CoastClient.FishRenderer`). Data: `scripts/gen_fauna_deep.py`, texturer: `scripts/gen_fauna_deep_textures.py`.
+CavernSpider, CaveWebBlock), klient `client/wildlife/deep/` (DeepModels = rörelserna, DeepClient; olmen och fisken ritas
+med kustfaunans `CoastClient.FishRenderer` i 0,4 skala). Data: `scripts/gen_fauna_deep.py`. Modeller och texturer:
+`scripts/gen_fauna_deep_textures.py`, som skriver både lådorna (`DeepGeometry.java`) och skinnen ur samma tabell.
 Gametester: `DeepTest` (`deep_*`, `steppe_biome`). Bilder: `docs/shots/fauna/deep_*.png`.
 
 **Inget av dem lyser.** Grottorna är kolsvarta ([underground-plan.md](../underground-plan.md) steg 4): olmen, fisken,
@@ -26,8 +27,9 @@ Ingen spawnar inom 8 block från en spelare. Alla kan försvinna när ingen är 
 
 ## Cave Salamander (grottolm)
 
-- **Utseende:** blekrosa, fingerlång och slank, platt nos, **inga ögon**, röda fjäderlika gälar på huvudets sidor, fyra små
-  ben och en stjärt med fena. 32×32-textur.
+- **Utseende:** blekrosa och ålsmal, kroppen i tre delar som slingrar sig när den simmar, platt spadformad nos, **inga
+  ögon** (bara två svaga mörka fläckar under huden), tre röda fjäderlika gälar på var sida som rör sig, fyra små ben och en
+  stjärt med bladformad fena. 64×32-textur, ungefär 0,6 block lång.
 - **Beteende:** helt vattenlevande (en fisk i koden): kryper och driver långsamt, torkar ut på land. **Blind**: ljus och en
   smygande spelare bryr den sig inte om. Den **känner när vattnet rör sig**: simmar något förbi inom 3 block slinker den
   iväg åt andra hållet. Flyr när den blir slagen. Tyst; axolotlns ljud när den skadas.
@@ -42,7 +44,8 @@ Ingen spawnar inom 8 block från en spelare. Alla kan försvinna när ingen är 
 
 ## Blind Cave Fish (blind grottfisk)
 
-- **Utseende:** liten, blekrosa och ögonlös, rosa gälspringa, ryggfena och stjärtfena.
+- **Utseende:** liten och högryggad, blekrosa och ögonlös (hud över ögonhålorna), gällocket rosa av blodet under,
+  gaffelstjärt, rygg-, anal- och bröstfenor med strålar. Kroppen böjer sig när stjärten slår.
 - **Beteende:** stim på 3–5 som följer en ledare. **Blind**: flyr inte från spelare (vanillafiskarnas flykt är borttagen),
   bara när den blir slagen. Torskens ljud.
 - **Fiske:** i fiskeloot (`gameplay/fishing/fish`, som gen_data.py skriver) finns Blind Cave Fish med vikt 150 när
@@ -56,7 +59,8 @@ rökas. Rå förskäms på 1 dag, stekt på 3.
 
 ## Bat Swarm (fladdermussvärm)
 
-- **Utseende:** 18 små fladdermöss som virvlar i ett moln (1,2 block brett), vingarna slår i otakt.
+- **Utseende:** 18 små fladdermöss som virvlar i ett moln (1,2 block brett), vingarna slår i otakt. Var och en har
+  pälsig kropp, huvud med två spetsiga öron och nos, och vingar i två leder med fingerben och flikig bakkant.
 - **Beteende:** i skymningen väller svärmen ut ur en grottmynning och **virvlar runt mynningen i 15 s**, stiger sakta ut
   ur den med ett väldigt pipande, och **drar sedan iväg** över landet och uppåt. Efter 45 s är den borta. **Där
   fladdermössen kommer ut finns en grotta**: det är så man hittar grottorna. Ofarlig, går rakt igenom berget (ett moln).
@@ -67,8 +71,10 @@ rökas. Rå förskäms på 1 dag, stekt på 3.
 
 ## Cavern Spider (grottspindel) och Cave Web
 
-- **Utseende:** grå, handflatsbred, liten framkropp, huvud med två svarta huggtänder och små matta ögon, stor bakkropp som
-  pekar snett uppåt med bleka vinklar längs ryggen, åtta långa ben som går i två omväxlande uppsättningar. 64×32-textur.
+- **Utseende:** gråbrun och hårig, en framkropp med puckel, huvud med åtta små matta ögon, två käkar med svarta
+  huggtänder och två pedipalper, stor oval bakkropp som pekar snett uppåt med bleka vinklar och spinnvårtor. Åtta ben vars
+  **knän står högt över kroppen** (lårbenet uppåt, ett långt skenben ned till marken), ljusa ringar vid lederna; de går i
+  två omväxlande uppsättningar. 64×64-textur.
 - **Beteende:** vandrar inte. Var 30:e s, om den inte jagar och det inte finns något nät inom 8 block, **spinner den ett nät
   tvärs över närmaste trånga gång** inom 4 block: en luftruta där väggarna på ena ledden står högst 3 block isär, taket är
   högst 3 block upp och gången är öppen åt andra hållet (en gång, inte en nisch). Hela tvärsnittet, vägg till vägg och golv
@@ -112,5 +118,6 @@ stäppbison, myskoxe, saiga, vildhästar, grottlejon och vargar på torrt gräs 
 
 ## Bilder
 
-`docs/shots/fauna/`: `deep_cave_salamander.png`, `deep_blind_cave_fish.png`, `deep_bat_swarm.png`, `deep_cavern_spider.png`,
-`deep_cave_web.png`, `steppe_mammoth_steppe.png`.
+`docs/shots/fauna/`: `deep_cave_salamander.png`, `deep_blind_cave_fish.png`, `deep_bat_swarm.png`, `deep_cavern_spider.png`
+(snett framifrån och ovanifrån), var och en också med `_front` och `_side` i ögonhöjd (olmen och fisken under vattnet),
+`deep_cave_web.png`, `steppe_mammoth_steppe.png`. Tas av `DeepShots` (filen `run/deepshots.flag`, första raden = mappen).
