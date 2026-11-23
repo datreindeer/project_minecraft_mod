@@ -139,6 +139,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Hornbill Casque | 1 | alltid (plockning) |
 | Raw Hornbill | 1 | – |
 
+- Utseende: svart kropp med vit buk och vita lår, raggig gräddvit hals och krage, svart ansikte med rött öga, den långa nedåtböjda gula näbben i tre steg under den stora uppåtböjda hjälmen (casque) med svarta fram- och bakkanter, svarta vingar med gräddvitt band och vita spetsar, och en lång vit stjärt med svart band. Modell och skinn: `scripts/gen_owarm_birds_models.py` (WarmBirdGeometry).
 - **Hornbill Casque** ("rött elfenben"): + kniv → 2 Bone Needle; ensam → 2 Orange Dye.
 
 ## Jungle Fowl (röd djungelhöna)
@@ -155,6 +156,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Feather | 1–3 | alltid |
 | Raw Jungle Fowl | 1 | – |
 
+- Utseende: tuppen har sågtandad röd kam och slör, rött bart ansikte med vit örontofs, gyllene nackfjädrar (hackles) som faller över axlarna, rödbrun sadel, grönsvart bröst, en hög hopfälld stjärt med de glänsande bågformade skärorna (sickle) och grå ben med sporrar. Hönan är spräcklig brun med ljusare bröst och liten kam. Modell och skinn: `scripts/gen_owarm_birds_models.py`; kycklingen behåller PheasantChickModel.
 - **Jungle Fowl Egg**: kokas på Campfire till Boiled Egg. **Kastat** kan det kläcka en kyckling som ett vanligt ägg – hönans vilda förfader.
 
 ## Peafowl (påfågel)
@@ -172,6 +174,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 | Peacock Feather | 1–3 | 60 % |
 | Raw Peafowl | 1 | – |
 
+- Utseende: påfågeltuppen har blå hals och blått bröst, en krona av nakna fjäderskaft med blå tofsar, vita streck över och under ögat, fjällig grön rygg, bandade vingar med kastanjebruna handpennor och ett släp av sju långa paneler med ögonfläckar som reser sig till ett stort solfjäder. Hönan är brun med grön hals, vit buk och krona. Modell och skinn: `scripts/gen_owarm_birds_models.py`.
 - **Peacock Feather**: + kniv → 3 Feather (fjädring); 2 → Cyan Dye.
 
 ## Avancemang

@@ -62,6 +62,7 @@ public final class OwarmShots {
             f.setAccessible(true);
             @SuppressWarnings("unchecked")
             var key = (net.minecraft.network.syncher.EntityDataAccessor<Integer>) f.get(null);
+            e.setOnGround(true); // Peafowl.aiStep folds the fan when not on the ground
             e.getEntityData().set(key, com.mechanical.wildlife.warm.Peafowl.DISPLAY_TICKS / 2);
         } catch (ReflectiveOperationException ex) {
             throw new IllegalStateException(ex);
