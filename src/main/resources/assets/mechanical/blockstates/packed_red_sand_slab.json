@@ -1,0 +1,55 @@
+{
+  "variants": {
+    "type=bottom": [
+      {
+        "model": "mechanical:block/packed_red_sand_slab"
+      },
+      {
+        "model": "mechanical:block/packed_red_sand_slab",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/packed_red_sand_slab",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/packed_red_sand_slab",
+        "y": 270
+      }
+    ],
+    "type=top": [
+      {
+        "model": "mechanical:block/packed_red_sand_slab_top"
+      },
+      {
+        "model": "mechanical:block/packed_red_sand_slab_top",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/packed_red_sand_slab_top",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/packed_red_sand_slab_top",
+        "y": 270
+      }
+    ],
+    "type=double": [
+      {
+        "model": "mechanical:block/packed_red_sand"
+      },
+      {
+        "model": "mechanical:block/packed_red_sand",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/packed_red_sand",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/packed_red_sand",
+        "y": 270
+      }
+    ]
+  }
+}

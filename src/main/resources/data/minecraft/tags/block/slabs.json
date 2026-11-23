@@ -110,6 +110,9 @@
     "mechanical:mud_slab",
     "mechanical:peat_slab",
     "mechanical:loess_slab",
-    "mechanical:wood_ash_slab"
+    "mechanical:wood_ash_slab",
+    "mechanical:packed_sand_slab",
+    "mechanical:packed_red_sand_slab",
+    "mechanical:packed_snow_slab"
   ]
 }

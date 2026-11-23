@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:snowy_slopes",
+    "minecraft:grove",
+    "minecraft:frozen_peaks",
+    "minecraft:jagged_peaks"
+  ],
+  "features": [
+    "mechanical:packed_snow_scours"
+  ],
+  "step": "local_modifications"
+}

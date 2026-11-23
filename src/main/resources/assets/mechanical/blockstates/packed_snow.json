@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "mechanical:block/packed_snow"
+      },
+      {
+        "model": "mechanical:block/packed_snow",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/packed_snow",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/packed_snow",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -2150,19 +2150,23 @@ En stam som slagit sig ner nära dig kan bygga en **väg** åt dig (koden: `peop
   kostar **1 Silver Coin per påbörjade 50 block** över 500 (alltså 1–10 Silver Coins). En Gold Coin räknas som 10 Silver
   och växel ges tillbaka i silver. Priset tas när markören sätts ner. (Bestämt av Claude 2026-11-22, kan ändras.)
 - **Bygget:** två av lägrets folk (inte äldste eller handlare) går ut och bygger stigen ruta för ruta, ungefär en ruta i
-  sekunden var, dag och natt tills den är klar, och går sedan hem längs den. Stigen är **2 block bred**: Trodden Path
-  (växer aldrig igen) med fläckar av Gravel och Coarse Dirt. Vägen planeras en bit i taget (32x32 block runt fronten) med
+  sekunden var, dag och natt tills den är klar, och går sedan hem längs den. Stigen är **2–3 block bred**: ett upptrampat
+  spår i traktens jord som slingrar sig och fransar ut i gräset (se handelsvägen nedan). Vägen planeras en bit i taget (32x32 block runt fronten) med
   A* över marken: branta sluttningar och vatten kostar mer, och **spelarbyggen, träd och allt som inte är naturlig mark är
   förbjudet**. Byggarna gräver och fyller bara naturlig mark (jord, gräs, sand, grus, sten, snö), växter och vatten, så
-  inget du byggt rivs; går en körfil in i något byggt lämnas just den rutan. Vatten korsas på en **plankbana** (Spruce
-  Planks i vattenytan) bara när det inte går runt. Kommer de inte vidare slutar vägen där de är, och du får ett meddelande.
-- **Inga stup:** vägen ändras högst 1 block mellan två rutor. Den skär in i backar och fylls upp (Dirt) över gropar, och
-  varje steg på 1 block får en trappa (Mossy Cobblestone Stairs på stigen) som stiger åt rätt håll; en puckel på en ruta
-  får en slab.
+  inget du byggt rivs; går en körfil in i något byggt lämnas just den rutan. Vatten korsas på en **plankbana** (Oak eller
+  Spruce Planks i vattenytan) bara när det inte går runt. Kommer de inte vidare slutar vägen där de är, och du får ett meddelande.
+- **Inga stup:** vägen ändras högst 1 block mellan två rutor, och aldrig två rutor i rad. Den skär in i backar och fylls upp (Dirt) över gropar, och
+  varje steg på 1 block får en slab av vägens egen mark (Coarse Dirt Slab, Sand Slab, Grass Slab ...), så det blir
+  ett halvsteg på var sida. En skärning i en backe trappas av med en slab och ett lägre block bredvid vägen, så ingen vägg står kvar.
 - **Handelsväg:** vid rykte **60+** och en färdig stig byggd åt dig (eller någon i din spelarstam) visas knappen
   **Trade road**. Den kostar samma pris som stigen gånger två (gratis upp till 500 block) och betalas direkt. Samma folk
-  bygger om vägen **3 block bred i sten**: Stone Bricks i mitten, Cobblestone och Mossy Cobblestone i kanterna, Stone
-  Brick Stairs/Slab i stegen, Cobblestone som fyllning och Stone Bricks över vatten.
+  bygger om vägen till en **bred, upptrampad väg, ingen sten**: 3–4 block bred, slingrande, med trasiga kanter där
+  gräset tränger in (Worn Grass, tuvor, någon blomma) och sträckor med två hjulspår och en gräspuckel emellan. Marken är
+  fläckig av fullhöga jordblock i traktens stil: Coarse Dirt, Rooted Dirt och Packed Mud på gräs, Podzol i taiga, Packed
+  Sand och Sand med strödd jord och två brutna hjulspår i öken (Packed Red Sand i badlands), Packed Snow med jord i
+  hjulspåren i snö, och Loess och Peat där de är traktens mark. Steg får slabs av samma mark, fyllningen är Dirt (Sand i öken) och vatten korsas på
+  stockar lagda på tvären.
 - **Laddade chunks:** medan någon är ute på vägen hålls bara ett **fönster** laddat: 3x3 chunks runt varje byggare (och
   runt fronten), som följer med när de går. En stam med en **färdig handelsväg** håller dessutom sitt läger (3x3 chunks)
   laddat, och dess handlare följs av ett eget fönster när de går mellan lägren, så handel och liv rullar på även när ingen

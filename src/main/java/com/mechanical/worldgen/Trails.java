@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mechanical.EarthBlocks;
 import com.mechanical.Mechanical;
 import com.mechanical.TrampledPathBlock;
 import com.mechanical.TrampledPaths;
@@ -249,9 +250,9 @@ final class Trails extends StoneAgeFeature {
             if (!above.isAir() && above.canBeReplaced() && above.getFluidState().isEmpty()) set(level, g.above(y), AIR);
         }
         double m = hash(x, z, 2);
-        // Worn Grass along the edges, Trodden Path down the middle with patches of coarse dirt, gravel and packed mud
-        BlockState soil = edge ? path(TrampledPaths.WORN_GRASS) : m < 0.6 ? path(TrampledPaths.TRODDEN_PATH)
-                : m < 0.8 ? Blocks.COARSE_DIRT.defaultBlockState() : m < 0.9 ? Blocks.GRAVEL.defaultBlockState() : Blocks.PACKED_MUD.defaultBlockState();
+        // Worn Grass along the edges, full-height earth down the middle (coarse dirt, rooted dirt, packed mud, a little gravel): no Trodden Path (its fringe takes the season tint and goes dark) and no Dirt Path (lower than its neighbours, it gets dark edge shading)
+        BlockState soil = edge ? path(TrampledPaths.WORN_GRASS) : m < 0.45 ? Blocks.COARSE_DIRT.defaultBlockState()
+                : m < 0.7 ? Blocks.ROOTED_DIRT.defaultBlockState() : m < 0.93 ? Blocks.PACKED_MUD.defaultBlockState() : Blocks.GRAVEL.defaultBlockState();
         set(level, g, soil);
         soilPlaced.add(g);
         step(level, g, r);
@@ -259,7 +260,7 @@ final class Trails extends StoneAgeFeature {
 
     /**
      * No cliffs on a trail (docs/living-world-plan.md A7, as RoadBuilding does for tribe roads): where the ground ahead or
-     * behind along the trail rises 2 blocks or more, a stone stair on this column makes it a walk up and one step. Decided from the
+     * behind along the trail rises 2 blocks or more, an earth stair (Coarse Dirt or Dirt Stairs) on this column makes it a walk up and one step. Decided from the
      * neighbours' ground alone, like every trail column.
      */
     static void step(WorldGenLevel level, BlockPos g, Route r) {
@@ -267,7 +268,7 @@ final class Trails extends StoneAgeFeature {
             BlockPos n = top(level, g.getX() + d.getStepX(), g.getZ() + d.getStepZ());
             if (n.getY() - g.getY() < 2 || !natural(level.getBlockState(n)) || !level.getFluidState(n).isEmpty()) continue;
             if (!level.getBlockState(g.above()).isAir()) return;
-            BlockState stair = (hash(g.getX(), g.getZ(), 7) < 0.5 ? Blocks.MOSSY_COBBLESTONE_STAIRS : Blocks.COBBLESTONE_STAIRS).defaultBlockState();
+            BlockState stair = (hash(g.getX(), g.getZ(), 7) < 0.5 ? EarthBlocks.COARSE_DIRT_STAIRS : EarthBlocks.DIRT_STAIRS).get().defaultBlockState();
             set(level, g.above(), stair.setValue(StairBlock.FACING, d));
             return;
         }

@@ -22,7 +22,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,7 +33,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * Game tests for tribe roads (RoadBuilding, docs/living-world-plan.md A5-A9):
  * <ul>
  * <li>road_route: the planned route goes round a wall someone built, and laying the road leaves the wall alone;</li>
- * <li>road_steps: a 3-block rise is cut into, so the road climbs 1 block a cell, each step a stair facing uphill;</li>
+ * <li>road_steps: a 3-block rise is cut into, so the road climbs 1 block a cell, each step a ground slab (no stone);</li>
+ * <li>road_trade: a trade road is earth in the local ground (mottled earth on grass, sand, packed mud and coarse dirt on sand), never stone bricks or cobblestone;</li>
  * <li>road_builders: a tribesperson walks the road and lays it cell by cell over time;</li>
  * <li>road_price: free to 500 blocks, 1 Silver per started 50 beyond, double for a trade road, none past 1000; paying
  * takes silver first and changes a Gold Coin;</li>
@@ -44,8 +44,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class RoadTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] NAMES = {"road_route", "road_steps", "road_builders", "road_price", "road_window"};
-    private static final int[] TICKS = {20, 20, 600, 20, 40};
+    private static final String[] NAMES = {"road_route", "road_steps", "road_builders", "road_price", "road_window", "road_trade"};
+    private static final int[] TICKS = {20, 20, 600, 20, 40, 20};
 
     static {
         TEST_FUNCTIONS.register("road_route", () -> RoadTest::route);
@@ -53,6 +53,7 @@ public final class RoadTest {
         TEST_FUNCTIONS.register("road_builders", () -> RoadTest::builders);
         TEST_FUNCTIONS.register("road_price", () -> RoadTest::price);
         TEST_FUNCTIONS.register("road_window", () -> RoadTest::window);
+        TEST_FUNCTIONS.register("road_trade", () -> RoadTest::trade);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -100,7 +101,7 @@ public final class RoadTest {
         for (int i = 0; i < r.cells.size(); i++) RoadBuilding.buildCell(h.getLevel(), r, i);
         for (int z = 0; z <= 12; z++)
             for (int y = 1; y <= 2; y++) h.assertBlockPresent(Blocks.OAK_PLANKS, new BlockPos(8, y, z));
-        h.assertTrue(!h.getLevel().getBlockState(h.absolutePos(new BlockPos(2, 0, 4))).is(Blocks.GRASS_BLOCK), "the road was laid");
+        h.assertTrue(r.cells.stream().anyMatch(c -> !h.getLevel().getBlockState(BlockPos.of(c)).is(Blocks.GRASS_BLOCK)), "the road was laid"); // grass may show through in places
         h.succeed();
     }
 
@@ -118,7 +119,7 @@ public final class RoadTest {
         RoadBuilding.Road r = road(h, path, RoadBuilding.PATH);
         ServerLevel level = h.getLevel();
         for (int i = 0; i < r.cells.size(); i++) RoadBuilding.buildCell(level, r, i);
-        int stairs = 0;
+        int steps = 0;
         for (int i = 1; i < r.cells.size(); i++) {
             BlockPos a = r.cell(i - 1), b = r.cell(i);
             int dy = b.getY() - a.getY();
@@ -126,11 +127,50 @@ public final class RoadTest {
             if (dy == 0) continue;
             BlockPos upper = dy > 0 ? b : a;
             BlockState s = level.getBlockState(upper);
-            h.assertTrue(s.getBlock() instanceof StairBlock || s.getBlock() instanceof SlabBlock, "no stair on the step at " + upper + ": " + s);
-            if (s.getBlock() instanceof StairBlock) stairs++;
+            h.assertTrue(s.getBlock() instanceof SlabBlock && RoadBuilding.groundStep(s), "no ground slab on the step at " + upper + ": " + s);
+            steps++;
         }
-        h.assertTrue(stairs >= 3, "a 3-block rise gets 3 stairs, got " + stairs);
+        h.assertTrue(steps >= 3, "a 3-block rise gets 3 slab steps, got " + steps);
         h.assertTrue(r.cell(r.cells.size() - 1).getY() == h.absolutePos(new BlockPos(0, 3, 0)).getY(), "road ends up on the rise");
+        h.succeed();
+    }
+
+    /** Two trade roads, one over grass and one over sand: earth only, each in its own ground. */
+    private static void trade(GameTestHelper h) {
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++) h.setBlock(new BlockPos(x, 0, z), (z >= 9 ? Blocks.SAND : Blocks.GRASS_BLOCK).defaultBlockState());
+        ServerLevel level = h.getLevel();
+        List<RoadBuilding.Road> roads = new java.util.ArrayList<>();
+        for (int row : new int[] {4, 13}) {
+            RoadBuilding.Road r = road(h, plan(h, new BlockPos(4, 0, row), new BlockPos(12, 0, row)), RoadBuilding.TRADE); // its ground sampled 4 out stays on the floor
+            for (int i = 0; i < r.cells.size(); i++) RoadBuilding.buildCell(level, r, i);
+            roads.add(r);
+        }
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++)
+                for (int y = 0; y <= 2; y++) {
+                    BlockState s = level.getBlockState(h.absolutePos(new BlockPos(x, y, z)));
+                    h.assertTrue(!s.is(Blocks.STONE_BRICKS) && !s.is(Blocks.COBBLESTONE) && !s.is(Blocks.MOSSY_COBBLESTONE) && !s.is(Blocks.STONE_BRICK_SLAB)
+                            && !s.is(Blocks.STONE_BRICK_STAIRS) && !s.is(Blocks.MOSSY_COBBLESTONE_STAIRS), "stone in the trade road at " + x + " " + y + " " + z + ": " + s);
+                }
+        // each road in its own ground: no sand on the grass road, which is mottled earth; on the sand road sand, packed mud
+        // and coarse dirt, none of the grassland's rooted dirt or worn grass
+        int earth = 0;
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++) {
+                BlockState s = level.getBlockState(h.absolutePos(new BlockPos(x, 0, z)));
+                if (z <= 7) {
+                    h.assertTrue(!s.is(Blocks.SAND), "sand on the grass road at " + x + " " + z);
+                    if (s.is(Blocks.COARSE_DIRT) || s.is(Blocks.ROOTED_DIRT) || s.is(Blocks.PACKED_MUD)) earth++;
+                } else if (z >= 10) {
+                    h.assertTrue(!s.is(Blocks.ROOTED_DIRT) && !s.is(com.mechanical.TrampledPaths.WORN_GRASS), "grassland ground on the sand road at " + x + " " + z + ": " + s);
+                }
+            }
+        for (long c : roads.get(1).cells) {
+            BlockState s = level.getBlockState(BlockPos.of(c));
+            h.assertTrue(s.is(Blocks.SAND) || s.is(com.mechanical.EarthBlocks.PACKED_SAND) || s.is(Blocks.PACKED_MUD) || s.is(Blocks.COARSE_DIRT), "the sand road's middle is " + s);
+        }
+        h.assertTrue(earth >= 1, "mottled earth on the grass road: " + earth); // grass may cover much of a short stretch
         h.succeed();
     }
 

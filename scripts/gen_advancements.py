@@ -1205,8 +1205,8 @@ TABS["wilderness"][1].extend([
     ("tribe_road", "tribe_neighbours", "road_marker", G, "Paths Between Us",
      "At Friendly or better, ask a neighbouring camp's leader or trader for a road and set the Road Marker down where it should end. "
      "Their folk walk out and build it, with steps where the ground climbs", by_code()),
-    ("tribe_trade_road", "tribe_road", "minecraft:stone_bricks", C, "The Trade Road",
-     "At a standing of 60, have a tribe widen a finished road into a 3-wide stone trade road. Their camp then stays loaded, so their traders walk it even when nobody is near",
+    ("tribe_trade_road", "tribe_road", "minecraft:coarse_dirt", C, "The Trade Road",
+     "At a standing of 60, have a tribe widen a finished road into a broad, well-trodden trade road. Their camp then stays loaded, so their traders walk it even when nobody is near",
      by_code()),
     ("tribe_sleeping_camp", "tribe_land", "minecraft:hay_block", T, "Sleeping Camp",
      "Come upon tribespeople at night: they lay out Straw Beds round the fire and sleep while their warriors keep watch. "
@@ -1614,6 +1614,11 @@ TABS["wilderness"][1].extend([
     ("mammoth_steppe", "chalk_downs", "mammoth_ivory", G, "Mammoth Steppe",
      "Find the Mammoth Steppe in the cold, dry north: dry grass on Loess, mammoths, rhinos, bison, wild horses and saiga, and the lions that hunt them",
      in_biome("mammoth_steppe")),
+    # trodden ground (gen_road_ground.py): wind-packed flats and scoured snow; tribe trade roads are laid with it too
+    ("packed_ground", "chalk_downs", "packed_sand", T, "Hard Ground",
+     "Dig up Packed Sand from a wind-packed flat in the desert or on a beach, Packed Red Sand in the badlands, or Packed Snow "
+     "from a scoured patch on a snowy slope. Tribe trade roads are trodden into the same ground",
+     has("packed_sand", "packed_red_sand", "packed_snow", "packed_sand_slab", "packed_red_sand_slab", "packed_snow_slab")),
     # Elkwight phases 1-2 (docs/elkwight-plan.md; gen_world_biomes.py, gen_elkwight.py)
     ("into_the_ashes", "chalk_downs", "charred_log", G, "Into the Ashes",
      "Travel more than 2500 blocks from the world's centre and find the rare Scorched Barrens: a burnt forest of Charred Logs and Wood Ash, ravens overhead",

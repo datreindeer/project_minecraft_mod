@@ -94,6 +94,15 @@ public final class EarthBlocks {
     public static final DeferredBlock<SlabBlock> PEAT_SLAB = slab("peat_slab", PEAT);
     public static final DeferredBlock<SlabBlock> LOESS_SLAB = slab("loess_slab", LOESS);
     public static final DeferredBlock<SlabBlock> WOOD_ASH_SLAB = block("wood_ash_slab", SlabBlock::new, soil(MapColor.COLOR_LIGHT_GRAY, 0.5F, SoundType.SAND)); // Wood Ash registers after this
+    // trodden road ground (people.RoadBuilding): sand and red sand packed hard by feet and wheels (not falling), snow trodden
+    // hard (melts back to coarse dirt with the thaw)
+    public static final DeferredBlock<Block> PACKED_SAND = block("packed_sand", Block::new, soil(MapColor.SAND, 0.6F, SoundType.SAND));
+    public static final DeferredBlock<SlabBlock> PACKED_SAND_SLAB = slab("packed_sand_slab", PACKED_SAND);
+    public static final DeferredBlock<Block> PACKED_RED_SAND = block("packed_red_sand", Block::new, soil(MapColor.COLOR_ORANGE, 0.6F, SoundType.SAND));
+    public static final DeferredBlock<SlabBlock> PACKED_RED_SAND_SLAB = slab("packed_red_sand_slab", PACKED_RED_SAND);
+    private static final Supplier<Properties> PACKED_SNOW_LIKE = () -> Properties.of().mapColor(MapColor.SNOW).strength(0.4F).sound(SoundType.SNOW).randomTicks();
+    public static final DeferredBlock<PackedSnowBlock> PACKED_SNOW = block("packed_snow", PackedSnowBlock::new, PACKED_SNOW_LIKE);
+    public static final DeferredBlock<PackedSnowBlock.Slab> PACKED_SNOW_SLAB = block("packed_snow_slab", PackedSnowBlock.Slab::new, PACKED_SNOW_LIKE);
 
     public static final DeferredBlock<SugarCaneBlock> REED = block("reed", SugarCaneBlock::new, () -> Properties.of().mapColor(MapColor.PLANT)
             .noCollision().randomTicks().instabreak().sound(SoundType.GRASS).ignitedByLava().pushReaction(PushReaction.POPPED));

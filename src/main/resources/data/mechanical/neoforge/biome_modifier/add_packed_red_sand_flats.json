@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_badlands",
+  "features": [
+    "mechanical:packed_red_sand_flats"
+  ],
+  "step": "local_modifications"
+}

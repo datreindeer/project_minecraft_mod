@@ -64,7 +64,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
  * </ul>
  * Each chunk writes only its own columns and reads 2 beyond.
  */
-final class SmoothGround extends StoneAgeFeature {
+public final class SmoothGround extends StoneAgeFeature {
     static final MapCodec<SmoothGround> CODEC = MapCodec.unit(SmoothGround::new);
     private static final int NONE = Integer.MIN_VALUE, R = 2, SCAN = 48;
     /** Snow layers on a straight step, under an outer corner, in an inner corner. 5 layers stand 4/8 high: half a block of footing. */
@@ -258,10 +258,11 @@ final class SmoothGround extends StoneAgeFeature {
     }
 
     /** Natural ground a half step may be made of or laid on. */
-    static boolean ground(BlockState s) {
+    public static boolean ground(BlockState s) {
         return s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(BlockTags.SAND) || s.is(Blocks.GRAVEL) || rock(s) || s.is(Blocks.SNOW_BLOCK)
                 || s.is(BlockTags.TERRACOTTA) || s.is(Blocks.CLAY) || s.is(EarthBlocks.PEAT) || s.is(EarthBlocks.LOESS)
-                || s.is(ScorchedBarrens.WOOD_ASH);
+                || s.is(ScorchedBarrens.WOOD_ASH)
+                || s.is(EarthBlocks.PACKED_SAND) || s.is(EarthBlocks.PACKED_RED_SAND) || s.is(EarthBlocks.PACKED_SNOW);
     }
 
     static boolean rock(BlockState s) {
@@ -281,6 +282,11 @@ final class SmoothGround extends StoneAgeFeature {
     private static boolean plant(BlockState s) {
         return !s.hasBlockEntity() && (s.canBeReplaced() || s.is(BlockTags.FLOWERS) || s.is(BlockTags.SAPLINGS)
                 || s.is(Blocks.BROWN_MUSHROOM) || s.is(Blocks.RED_MUSHROOM));
+    }
+
+    /** The ground slab of {@code base} (AIR when there is none), for tribe roads (people.RoadBuilding). */
+    public static Block slab(Block base) {
+        return variant(base, SLABS, "slab");
     }
 
     /**
