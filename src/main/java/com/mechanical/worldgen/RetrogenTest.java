@@ -122,11 +122,20 @@ public final class RetrogenTest {
                 }
             }
         }
+        // a flower and a tall plant at the foot of the grass step: replaced by slabs, never a hole
+        h.setBlock(new BlockPos(8, 2, 3), Blocks.OXEYE_DAISY);
+        h.setBlock(new BlockPos(8, 2, 5), Blocks.TALL_GRASS.defaultBlockState().setValue(
+                net.minecraft.world.level.block.state.properties.BlockStateProperties.DOUBLE_BLOCK_HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER));
+        h.setBlock(new BlockPos(8, 3, 5), Blocks.TALL_GRASS.defaultBlockState().setValue(
+                net.minecraft.world.level.block.state.properties.BlockStateProperties.DOUBLE_BLOCK_HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER));
         BlockPos a = h.absolutePos(new BlockPos(2, 0, 2));
         int laid = SmoothGround.smooth(h.getLevel(), a.getX(), a.getZ(), 12);
         BlockState slab = h.getBlockState(new BlockPos(8, 2, 4)), stair = h.getBlockState(new BlockPos(8, 2, 10));
         h.assertTrue(slab.is(com.mechanical.EarthBlocks.GRASS_SLAB) && slab.getValue(net.minecraft.world.level.block.SlabBlock.TYPE)
                 == net.minecraft.world.level.block.state.properties.SlabType.BOTTOM, "grass slab below the grass step, got " + slab);
+        h.assertTrue(h.getBlockState(new BlockPos(8, 2, 3)).is(com.mechanical.EarthBlocks.GRASS_SLAB), "the flower's spot gets a slab, got " + h.getBlockState(new BlockPos(8, 2, 3)));
+        h.assertTrue(h.getBlockState(new BlockPos(8, 2, 5)).is(com.mechanical.EarthBlocks.GRASS_SLAB) && h.getBlockState(new BlockPos(8, 3, 5)).isAir(),
+                "the tall grass gives way to a slab, both halves");
         h.assertTrue(h.getBlockState(new BlockPos(8, 1, 4)).is(Blocks.DIRT), "the grass under the slab turns to dirt (one fringe per step)");
         h.assertTrue(stair.is(Blocks.STONE_STAIRS) && stair.getValue(net.minecraft.world.level.block.StairBlock.FACING) == net.minecraft.core.Direction.EAST
                 && stair.getValue(net.minecraft.world.level.block.StairBlock.SHAPE) == net.minecraft.world.level.block.state.properties.StairsShape.STRAIGHT,

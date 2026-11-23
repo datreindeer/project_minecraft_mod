@@ -226,10 +226,8 @@ Bilder: `docs/shots/terrain/smooth_*_before.png` och `smooth_*_after.png` (gräs
 snöig sluttning, strand).
 
 Små växter på rutan där ett halvsteg läggs flyttas till närmaste lediga hela marktopp inom 2 block (de kan inte stå på
-en slab). Blommor som inte får plats står kvar och rutan behåller sitt steg, och likaså varannan grästuva (efter position).
-Grästuvor kvar (samma platser): slätt 821 av 876 (94 %), berg 405 av 477 (85 %), Meadow 361 av 390 (93 %), kullar 129 av
-141 (91 %). Det som saknas är mest tuvor som grannchunkarnas växtlighet senare försöker lägga på slabs. Branta gräsbackar
-där varje ruta får en slab blir ändå något kalare.
+en slab). Får de inte plats, eller är de höga (Tall Grass, Sunflower, Rose Bush), tas de bort: en växt som fick stå kvar
+lämnade ett hål i sluttningen. Branta gräsbackar där varje ruta får en slab blir därför något kalare.
 
 ## Terrängens form (gen_terrain.py)
 

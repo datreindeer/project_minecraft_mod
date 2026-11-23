@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.SpreadingSnowyBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.StairsShape;
@@ -58,8 +59,8 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
  * <li>Where snow lies all year (Thaw.coldAllYear: it would not melt even at midsummer) or the higher ground is snow, snow
  * layers instead: 5 on a straight step (half a block of footing, so mobs walk up), 3 under a corner, 6 in a nook. Seasonal
  * snow gets the slab (a Grass Slab snowy), which outlasts the thaw.</li>
- * <li>Never under water, on or beside a footpath, inside a structure's box, under a tree, a tall plant or any block that
- * isn't a small plant (those are replaced); the ground scan looks through plants, logs, leaves and earlier half steps.</li>
+ * <li>Never under water, on or beside a footpath, inside a structure's box, under a tree or any block that isn't a plant
+ * (plants, tall ones too, move aside or go); the ground scan looks through plants, logs, leaves and earlier half steps.</li>
  * </ul>
  * Each chunk writes only its own columns and reads 2 beyond.
  */
@@ -115,7 +116,7 @@ final class SmoothGround extends StoneAgeFeature {
                 BlockPos at = new BlockPos(x, y, z);
                 if (!free(level, at)) continue;
                 if (state.is(Blocks.SNOW) && !state.canSurvive(level, at)) continue;
-                if (!movePlant(level, at)) continue;
+                movePlant(level, at);
                 BlockState ground = col.ground;
                 // under snow layers the grass stays (snowy); under a slab it turns to dirt, else its fringe shows twice above the step below
                 if (ground.hasProperty(SnowyBlock.SNOWY) && state.is(Blocks.SNOW)) set(level, at.below(), ground.setValue(SnowyBlock.SNOWY, true));
@@ -135,21 +136,22 @@ final class SmoothGround extends StoneAgeFeature {
 
     /**
      * A small plant where the half step goes moves to the nearest free full ground top within 2 blocks (it can't sit on a
-     * slab), so slopes keep their tufts. A flower that finds no room stays and the column keeps its step, and so does every
-     * other tuft (by position); the rest are dropped. False: leave this column.
+     * slab), so slopes keep their tufts; with no room, or when tall, it goes (a plant left standing would leave a hole in the slope).
      */
-    private static boolean movePlant(WorldGenLevel level, BlockPos at) {
+    private static void movePlant(WorldGenLevel level, BlockPos at) {
         BlockState plant = level.getBlockState(at);
-        if (plant.isAir() || plant.is(Blocks.SNOW)) return true;
+        if (plant.isAir() || plant.is(Blocks.SNOW)) return;
+        if (plant.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) { // a tall plant goes, both halves
+            set(level, at.above(), Blocks.AIR.defaultBlockState());
+            return;
+        }
         for (BlockPos o : NEARBY) {
             BlockPos to = at.offset(o);
             if (level.getBlockState(to).isAir() && level.getFluidState(to).isEmpty() && plant.canSurvive(level, to)) {
                 set(level, to, plant);
-                return true;
+                return;
             }
         }
-        // no room: a flower stays (the column keeps its step); half the tufts stay too, so packed slopes keep some green
-        return !plant.is(BlockTags.FLOWERS) && (net.minecraft.util.Mth.getSeed(at) & 0x100) == 0;
     }
 
     /** The half step for column (cx, cz) of the grid, or null. */
@@ -270,8 +272,15 @@ final class SmoothGround extends StoneAgeFeature {
     private static boolean free(WorldGenLevel level, BlockPos at) {
         BlockState s = level.getBlockState(at);
         if (!level.getFluidState(at).isEmpty()) return false;
-        boolean ok = s.isAir() || s.is(Blocks.SNOW) || s.canBeReplaced() && !s.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) && !s.hasBlockEntity();
-        return ok && !level.getBlockState(at.above()).hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF);
+        if (s.isAir() || s.is(Blocks.SNOW)) return true;
+        if (s.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) && s.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != DoubleBlockHalf.LOWER) return false;
+        return plant(s);
+    }
+
+    /** A small plant the slab may replace: grass, ferns, flowers (tall ones too), saplings, mushrooms. Not cane, cactus or bamboo. */
+    private static boolean plant(BlockState s) {
+        return !s.hasBlockEntity() && (s.canBeReplaced() || s.is(BlockTags.FLOWERS) || s.is(BlockTags.SAPLINGS)
+                || s.is(Blocks.BROWN_MUSHROOM) || s.is(Blocks.RED_MUSHROOM));
     }
 
     /**
