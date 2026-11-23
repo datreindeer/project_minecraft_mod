@@ -124,6 +124,14 @@ def stood_on(block, state=None):
         "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:stepping_on": {"block": pred}}}}}}
 
 
+def log_bridge():
+    """The player standing on a log with water two or three blocks below its feet (a log lying over a creek)."""
+    water = lambda dy: {"type": "minecraft:location_check", "offsetY": dy, "predicate": {"fluid": {"fluids": "#minecraft:water"}}}
+    return {"log_bridge": {"trigger": "minecraft:location", "conditions": {"player": {"type": "minecraft:all_of", "terms": [
+        {"type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:stepping_on": {"block": {"blocks": "#minecraft:logs"}}}},
+        {"type": "minecraft:any_of", "terms": [water(-2), water(-3)]}]}}}}
+
+
 def below_y(y):
     """The player at or below height y (checked about once a second)."""
     return {"below": {"trigger": "minecraft:location", "conditions": {"player": {
@@ -420,7 +428,10 @@ TABS = {
          "Hunt a Beaver by a forest stream or lake and butcher it for its pelt, tail, castoreum and teeth",
          has("raw_beaver_pelt", "castoreum", "beaver_tooth")),
         ("beaver_dam", "beaver", "beaver_dam", T, "Dam Builders",
-         "Find a Beaver Dam: beavers fell small trees, gnaw the logs and dam narrow streams", has("beaver_dam")),
+         "Find a Beaver Dam across a forest creek and stand on it: beavers fell small trees, gnaw the logs and dam narrow streams",
+         {**has("beaver_dam"), **stood_on("beaver_dam")}),
+        ("log_bridge", "root", "minecraft:oak_log", T, "Over the Creek",
+         "Walk across a log bridge: a tree fallen over a creek in the woods, resting on both banks", log_bridge()),
         ("pelt_hoop", "beaver", "pelt_hoop", T, "Stretched Thin",
          "Lace a Raw Beaver or Otter Pelt into a Stretching Hoop (4 Sticks, Twine) and let it cure outdoors by day",
          has("beaver_pelt", "otter_pelt")),

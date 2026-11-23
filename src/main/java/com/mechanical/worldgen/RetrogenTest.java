@@ -59,6 +59,7 @@ public final class RetrogenTest {
 
     public static void init(IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
+        NatureDecorTest.init(modEventBus);
     }
 
     @SubscribeEvent

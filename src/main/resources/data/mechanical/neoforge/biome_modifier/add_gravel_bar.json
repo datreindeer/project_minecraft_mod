@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:river"
+  ],
+  "features": "mechanical:gravel_bar",
+  "step": "vegetal_decoration"
+}

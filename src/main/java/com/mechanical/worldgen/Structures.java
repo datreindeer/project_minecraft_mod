@@ -42,6 +42,17 @@ public final class Structures {
         FEATURE_TYPES.register("troll_stone_sleeper", () -> TrollStoneSleeperFeature.CODEC); // scripts/gen_folklore.py
         FEATURE_TYPES.register("cave_paintings", CaveFinds.PAINTINGS::codec); // scripts/gen_caves.py
         FEATURE_TYPES.register("tool_cache", CaveFinds.TOOL_CACHE::codec);
+        // forest floor and waterside (scripts/gen_nature_decor.py)
+        FEATURE_TYPES.register("fallen_log", ForestDecor.FALLEN_LOG::codec);
+        FEATURE_TYPES.register("snag", ForestDecor.SNAG::codec);
+        FEATURE_TYPES.register("root_plate", ForestDecor.ROOT_PLATE::codec);
+        FEATURE_TYPES.register("mossy_stones", ForestDecor.MOSSY_STONES::codec);
+        FEATURE_TYPES.register("log_bridge", WaterDecor.LOG_BRIDGE::codec);
+        FEATURE_TYPES.register("beaver_dam", WaterDecor.BEAVER_DAM::codec);
+        FEATURE_TYPES.register("driftwood", WaterDecor.DRIFTWOOD::codec);
+        FEATURE_TYPES.register("gravel_bar", WaterDecor.GRAVEL_BAR::codec);
+        FEATURE_TYPES.register("reed_belt", WaterDecor.REED_BELT::codec);
+        FEATURE_TYPES.register("hillside_spring", WaterDecor.SPRING::codec);
         FEATURE_TYPES.register("charred_tree", () -> ScorchedBarrens.CharredTree.CODEC); // scripts/gen_world_biomes.py
     }
 

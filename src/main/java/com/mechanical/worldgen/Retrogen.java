@@ -81,7 +81,10 @@ public final class Retrogen {
             "loose_travertine", "loose_shell_bank", "loose_marble", "loose_quartzite", "loose_red_porphyry", "loose_green_porphyry",
             "loose_rapakivi_granite", "loose_coastal_basalt", "loose_pumice", "loose_scoria", "loose_serpentine", "loose_gypsum",
             "loose_alabaster", "loose_alum_shale",
-            // half steps on 1-block steps (SmoothGround), never near camps, Fire Pits or roads
+            // forest floor and waterside (gen_nature_decor.py; beaver dams and springs add water and are left out)
+            "fallen_log", "fallen_log_old", "snag", "snag_old", "root_plate", "root_plate_old", "mossy_stones", "mossy_stones_heath",
+            "log_bridge", "driftwood", "gravel_bar", "reed_belt",
+            // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
     static final long MAX_INHABITED = 1200;
