@@ -25,7 +25,8 @@
     "InventoryScreenMixin",
     "ServerSelectionListMixin",
     "OnlineServerEntryMixin",
-    "ClientboundStatusResponsePacketMixin"
+    "ClientboundStatusResponsePacketMixin",
+    "SectionCompilerTimingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
