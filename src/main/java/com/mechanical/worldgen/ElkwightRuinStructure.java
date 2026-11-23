@@ -16,6 +16,7 @@ import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -50,6 +51,8 @@ public final class ElkwightRuinStructure extends Structure {
     public static final StructurePieceType.ContextlessType PIECE = Piece::new;
     public static final ResourceKey<Structure> KEY = ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "elkwight_ruin"));
     static final int FLOOR = 17, WALL = 20, OUTER = 25, UP = 18, DOWN = 14, GATE_HEIGHT = 10, ROOF = 15;
+    /** Blocks of Scorched Barrens round the centre: the arena and its monoliths, and burnt forest past them. */
+    static final int CLEAR = OUTER + 4;
 
     public ElkwightRuinStructure(StructureSettings settings) {
         super(settings);
@@ -81,6 +84,9 @@ public final class ElkwightRuinStructure extends Structure {
         ChunkPos chunk = context.chunkPos();
         int x = chunk.getMiddleBlockX(), z = chunk.getMiddleBlockZ();
         if (!allowedAt(x, z) || !context.couldValidBiomeExistOnTopOfChunkCenter()) return Optional.empty();
+        // well inside the barrens: burnt forest all round the arena, never at an edge
+        if (context.biomeSource() instanceof MultiNoiseBiomeSource source && !ScorchedBarrens.deepInside(source, context.climateSampler(), x, z, CLEAR))
+            return Optional.empty();
         ChunkGenerator gen = context.chunkGenerator();
         int g = gen.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
         // dry and fairly level under the walls and stands
