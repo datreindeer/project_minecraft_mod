@@ -3234,8 +3234,6 @@
   "block.mechanical.jujube": "Jujube",
   "item.mechanical.jujubes": "Jujubes",
   "item.mechanical.cooked_elderberries": "Cooked Elderberries",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
   "block.mechanical.deadwood_twig": "Deadwood Twig",
   "block.mechanical.anthill": "Anthill",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
@@ -4835,5 +4833,7 @@
   "advancements.mechanical.folklore.fern_flower.title": "Midsummer Night",
   "advancements.mechanical.folklore.fern_flower.description": "Pick a Fern Flower in bloom. The fern opens its golden flower only on summer nights, deep in old forests, and brings luck",
   "advancements.mechanical.folklore.frost_lily.title": "Winter Bloom",
-  "advancements.mechanical.folklore.frost_lily.description": "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly"
+  "advancements.mechanical.folklore.frost_lily.description": "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
 }

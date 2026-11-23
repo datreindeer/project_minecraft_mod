@@ -233,12 +233,12 @@
     "mechanical:deadwood",
     "mechanical:broken_deadwood",
     "mechanical:deadwood_branch",
+    "mechanical:deadwood_twig",
     "mechanical:shelf_fungus",
     "mechanical:warp_weighted_loom",
     "mechanical:charred_log",
     "mechanical:charred_branch",
     "mechanical:charred_twig",
-    "mechanical:jewelers_bench",
-    "mechanical:deadwood_twig"
+    "mechanical:jewelers_bench"
   ]
 }
