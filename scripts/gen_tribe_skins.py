@@ -1170,7 +1170,7 @@ def kind_person(kind, role, i):
     elif kind == "hunting":  # hunters: fur-trimmed hoods and capes, a quiver, ochre stripes
         L.top, L.top_mat = HIDE_DARK, "hide"
         L.paint = (OCHRE, "stripes")
-        L.hood, L.hood_trim = pick(r, [HIDE_DARK, FUR_BROWN]), pick(r, [FUR_WHITE, FUR_GREY])
+        L.hood, L.hood_trim = pick(r, [HIDE_DARK, HIDE_RED, HIDE]), pick(r, [FUR_WHITE, FUR_GREY])
         L.mantle = pick(r, [FUR_GREY, FUR_BROWN, FUR_RED])
         L.cloak = pick(r, [HIDE_DARK, LEATHER, HIDE_RED])
         L.back_item = "quiver"
@@ -1317,24 +1317,57 @@ def gear(L, zone, seed):
     cold, warm, jungle = zone == "cold", zone == "warm", zone == "jungle"
     # ---- a fur hood: over the head with an open face, and a thick ruff of fur round the face
     if L.hood:
+        trim = L.hood_trim or FUR_WHITE
+        leather = L.hood in (HIDE, HIDE_LIGHT, HIDE_DARK, HIDE_RED, HIDE_GREY, LEATHER)
+
+        def towards_face(face, x, y, fw, fh):
+            """How many pixels this one is from the hood's front edge (None on the back)."""
+            if face == "top":
+                return fh - 1 - y
+            if face in ("right", "left"):
+                return fw - 1 - x if face == "right" else x
+            return None
+
         def hood(face, x, y, fw, fh):
             if face == "bottom":
                 return None
             if face == "front":
                 return g.fur(L.hood, face, x, y) if y == 0 or x in (0, fw - 1) else None
-            return g.fur(L.hood, face, x, y, 3)
+            if not leather:
+                return g.fur(L.hood, face, x, y, 3)
+            # a hood sewn of hide: two halves with a stitched seam over the crown and down the back, the back running
+            # down to a point between the shoulders, darker towards the back and below, the trim's fur wrapping round
+            # onto the sides and the crown from the ruff (its hairs reaching back over the hide)
+            d = towards_face(face, x, y, fw, fh)
+            if d is not None and (d <= 1 or d == 2 and h_(x * 11 + y * 5, 23) > 0.45):
+                return g.fur(trim, face, x, y, 7)
+            if face == "back" and (y == fh - 1 and x not in (fw // 2 - 1, fw // 2) or y == fh - 2 and x in (0, fw - 1)):
+                return None
+            if face in ("right", "left") and y == fh - 1 and x % 2:
+                return None  # the edge lying in folds on the shoulder
+            f = side_shade(face) * (1 + 0.07 * (h_(x * 17 + y * 3, 29) - 0.5))
+            f *= 1.0 - 0.03 * (y if face != "top" else 0)  # the crown catches the light, the lower hood less
+            if d is not None:
+                f *= 1.0 - 0.025 * max(0, d - 3)
+            if face == "top" and x in (fw // 2 - 1, fw // 2) or face == "back" and x == fw // 2:
+                f *= 0.72 if y % 2 else 0.88  # the seam, stitched
+            return shade(L.hood, f)
         g.fill("hood", hood)
-        trim = L.hood_trim or FUR_WHITE
 
         def ruff(face, x, y, fw, fh):
+            # a thick ruff round the face: ragged where it frames the face (hairs reaching in), darker deep in the
+            # fur and lighter at the tips, shaggy below; open under the chin
+            if face == "bottom":
+                return None
             if face == "front" or face == "back":
+                edge = min(x, fw - 1 - x, y)
                 inside = 2 <= x <= fw - 3 and 2 <= y <= fh - 2
-                if inside:
+                if inside and not (edge == 2 and y < fh - 3 and h_(x * 7 + y * 13, 31) > 0.6):
                     return None
                 if y == fh - 1 and (x + g.r.randrange(2)) % 2:
                     return None  # a shaggy lower edge
-                return g.fur(trim, face, x, y, 7)
-            return g.fur(trim, face, x, y, 7) if face != "bottom" else None
+                return shade(g.fur(trim, face, x, y, 7), 0.86 if edge >= 1 and not (edge == 1 and y == 1) else 1.06)
+            return g.fur(trim, face, x, y, 7)
         g.fill("ruff", ruff)
     # ---- hair with volume: a top-knot, braids hanging over the shoulders, a beard down the chest
     if L.hair_style == "bun" and not L.hood and not L.headwrap:
@@ -1472,20 +1505,35 @@ def caravan_gear(g, L):
                 return None
             fx = x if face == "back" else fw - 1 - x
             if fx == fw - 2 - (y * (fw - 3)) // (fh - 1) and y >= 2:
-                return shade(WOOD_HAFT, 1.0 if y % 2 else 0.85)  # the haft, slung across the back
+                if y >= fh - 3:
+                    return shade(LEATHER, 0.9 if y % 2 else 1.1)  # the grip, bound in leather
+                return shade(hexc("b8925a"), 1.0 if y % 2 else 0.88)  # the pale ash haft, slung across the back
             if y <= 3 and fw - 4 <= fx <= fw - 1:
-                return hexc("a8acb0") if y in (0, 3) or fx == fw - 1 else hexc("7a7e82")  # the bit, up by the shoulder
+                if y == 0 or y == 3 or fx == fw - 4:
+                    return hexc("4a4c50")  # the bit's dark outline (it reads against any cloth)
+                return hexc("dfe3e6") if fx == fw - 1 else hexc("a8acb0")  # the honed edge bright, the cheek grey
             return None
         g.fill("cloak", axe)
     if L.back_item == "quiver":
         def quiver(face, x, y, fw, fh):
-            if face not in ("back", "front", "right", "left") or face in ("right", "left") and y > 9:
+            # a birch-bark quiver up by the left shoulder (pale: it reads against the hide), three fletched arrows
+            # standing out of it, leather bands, and its strap running across the back to the right hip
+            if face == "top":
+                fx = x
+                return [hexc("f2ece0"), OCHRE, hexc("2e2824")][fx - 1] if fx in (1, 2, 3) else None
+            if face not in ("back", "front"):
                 return None
             fx = x if face != "front" else fw - 1 - x
-            if face in ("back", "front") and fx in (1, 2, 3) and y <= 10:
+            if fx in (1, 2, 3) and y <= 10:
                 if y <= 1:
-                    return [hexc("e8e2d0"), OCHRE, hexc("3a3430")][fx - 1]  # fletching
-                return shade(LEATHER, 0.85 if fx == 3 else 1.0) if y % 4 else shade(BONE, 0.9)  # the case, bone bands
+                    feather = [hexc("f2ece0"), OCHRE, hexc("2e2824")][(fx - 1 + y) % 3]
+                    return shade(feather, 1.0 if y == 0 else 0.86)  # fletching, the vanes crossed
+                if y in (2, 6, 10):
+                    return shade(LEATHER, 0.9 if fx == 3 else 1.05)  # the rim and the bands
+                birch = shade(hexc("e6dcc4"), 0.9 if y % 4 == 1 else 1.0)  # bark rings between the bands
+                return shade(birch, 0.82 if fx == 3 else 0.94 if fx == 1 else 1.0)
+            if 4 <= fx <= fw - 2 and y >= 3 and fx == 4 + (y - 3) * (fw - 6) // (fh - 4):
+                return shade(LEATHER, 0.85 if y % 2 else 1.0)  # the strap
             return None
         g.fill("cloak", quiver)
     if L.pack == "basket":
