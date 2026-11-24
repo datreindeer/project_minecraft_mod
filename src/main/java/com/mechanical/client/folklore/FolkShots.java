@@ -41,10 +41,12 @@ public final class FolkShots {
     private static Vec3 base;
     private static Mob current;
     private static boolean watcher;
-    /** The Watcher's views: angle round from its front, camera height over the platform, distance, bird height, flying (1). */
-    private static final double[][] WATCHER_VIEWS = {{35, 1.6, 4.5, 0, 0}, {0, 1.3, 4.5, 0, 0}, {90, 1.3, 4.5, 0, 0}, {180, 1.6, 4.5, 0, 0},
-            {35, 1.8, 2.8, 0, 0}, {35, 5.5, 7.5, 3, 1}, {90, 1.8, 8.0, 3.5, 1}, {0, 3.2, 7.0, 3, 1}, {160, 8.5, 6.0, 3, 1},
-            {210, 0.2, 6.5, 4, 1}, {60, 3.6, 2.8, 3, 1}, {20, 6.2, 4.2, 3, 1}, {0, 9.5, 1.0, 3, 1}, {75, 5.6, 3.0, 3, 1}};
+    /** The Watcher's views: angle round from its front, camera height over the platform, distance, bird height, flying (1),
+     *  and (optional) the height looked at over the bird's feet (default: the middle of its box). Perched close-ups first,
+     *  the head from three sides, then a few flight views. */
+    private static final double[][] WATCHER_VIEWS = {{35, 1.5, 3.4, 0, 0}, {35, 1.5, 3.4, 0, 0}, {0, 1.4, 3.4, 0, 0}, {90, 1.4, 3.4, 0, 0}, {180, 1.5, 3.4, 0, 0},
+            {35, 1.9, 1.7, 0, 0, 1.55}, {90, 1.8, 1.6, 0, 0, 1.55}, {0, 1.8, 1.6, 0, 0, 1.55}, {145, 2.0, 1.8, 0, 0, 1.4},
+            {35, 5.5, 7.5, 3, 1}, {90, 1.8, 8.0, 3.5, 1}, {0, 3.2, 7.0, 3, 1}, {60, 3.6, 2.8, 3, 1}};
     private static final int SKY_SHOTS = 2;
     private static final List<String> result = new ArrayList<>();
 
@@ -96,6 +98,7 @@ public final class FolkShots {
             var server = mc.getSingleplayerServer();
             if (stage == 1) {
                 mc.options.pauseOnLostFocus = false;
+                if (ticks == 1) mc.getWindow().setWindowed(1600, 900);
                 if (mc.gui.screen() != null) mc.gui.setScreen(null);
                 if (ticks < 100) return;
                 server.execute(FolkShots::setup);
@@ -222,7 +225,7 @@ public final class FolkShots {
         current.setYRot(0);
         current.setYHeadRot(0);
         current.setYBodyRot(0);
-        Vec3 at = current.position().add(0, current.getBbHeight() * 0.5, 0);
+        Vec3 at = current.position().add(0, v.length > 5 ? v[5] : current.getBbHeight() * 0.5, 0);
         double a = Math.toRadians(v[0]);
         Vec3 cam = new Vec3(base.x + Math.sin(a) * v[2], base.y + v[1], base.z + Math.cos(a) * v[2]);
         look(cam, at);

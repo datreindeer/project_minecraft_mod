@@ -17,7 +17,8 @@ import net.minecraft.resources.Identifier;
 /**
  * What a tribesperson wears that stands out from the body (people.Tribesperson): a fur hood with a thick ruff round the
  * face, a top-knot, two braids over the shoulders, a beard down the chest, a feather crest or one feather on the head; a fur
- * mantle round the shoulders, a hide cloak down the back and a big necklace standing off the chest on the body. Every box
+ * mantle round the shoulders, a hide cloak down the back, a big necklace standing off the chest, a basket on the back and
+ * a lantern, satchel or bundle at each hip on the body. Every box
  * is always there: each person's gear texture (tribesperson/.../&lt;role&gt;_&lt;skin&gt;_gear.png, scripts/gen_tribe_skins.py,
  * whose GEAR_BOXES table mirrors the boxes here) paints only what they wear and leaves the rest see-through. Follows the
  * head and body of the player model, so it walks, turns and crouches with them. Drawn by EquipmentLayer.
@@ -48,7 +49,10 @@ public class TribeGearModel extends HumanoidModel<AvatarRenderState> {
         root.addOrReplaceChild("body", CubeListBuilder.create()
                 .texOffs(0, 32).addBox(-6.0F, -0.5F, -3.0F, 12, 4, 6, new CubeDeformation(0.25F)) // fur mantle
                 .texOffs(36, 32).addBox(-4.5F, 0.5F, 2.3F, 9, 13, 1)                              // hide cloak
-                .texOffs(0, 48).addBox(-4.0F, 0.0F, -2.6F, 8, 5, 1),                              // necklace
+                .texOffs(0, 48).addBox(-4.0F, 0.0F, -2.6F, 8, 5, 1)                               // necklace
+                .texOffs(22, 48).addBox(-3.0F, 1.0F, 2.2F, 6, 7, 4)                               // basket on the back
+                .texOffs(44, 48).addBox(-4.0F, 9.0F, -3.2F, 2, 3, 2)                              // things at the hips
+                .texOffs(52, 48).addBox(2.0F, 9.0F, -3.2F, 2, 3, 2),
                 PartPose.ZERO);
         for (String limb : new String[] {"right_arm", "left_arm", "right_leg", "left_leg"}) {
             root.addOrReplaceChild(limb, CubeListBuilder.create(), PartPose.ZERO);

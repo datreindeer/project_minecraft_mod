@@ -283,6 +283,12 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         raiderNavigation();
     }
 
+    /** Plans paths that keep to roads and trails while its caravan is on the road (CaravanNavigation). */
+    @Override
+    protected net.minecraft.world.entity.ai.navigation.PathNavigation createNavigation(net.minecraft.world.level.Level level) {
+        return new CaravanNavigation(this, level);
+    }
+
     /** Raiders plan paths through wooden doors (and break them down) and look further for a way round. */
     private void raiderNavigation() {
         if (getNavigation() instanceof net.minecraft.world.entity.ai.navigation.GroundPathNavigation nav) {

@@ -124,7 +124,11 @@ public final class Caravans {
 
     /** Path ground under {@code surface}: a trodden trail, a dirt path, gravel, packed mud or coarse dirt. */
     static boolean onPath(ServerLevel level, BlockPos surface) {
-        var s = level.getBlockState(surface.below());
+        return pathGround(level.getBlockState(surface.below()));
+    }
+
+    /** Is {@code s} path ground (see {@link #onPath})? */
+    static boolean pathGround(net.minecraft.world.level.block.state.BlockState s) {
         return s.is(com.mechanical.TrampledPaths.TRODDEN_PATH.get()) || s.is(com.mechanical.TrampledPaths.WORN_GRASS.get())
                 || s.is(net.minecraft.world.level.block.Blocks.DIRT_PATH) || s.is(net.minecraft.world.level.block.Blocks.GRAVEL)
                 || s.is(net.minecraft.world.level.block.Blocks.PACKED_MUD) || s.is(net.minecraft.world.level.block.Blocks.COARSE_DIRT);

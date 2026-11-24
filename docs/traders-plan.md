@@ -81,6 +81,10 @@ En karavan är **4–5 personer** av en handelsstam (temperament *Traders*), all
   som en kolonn**: djurhållaren först med djuren (han väntar om de hamnar efter), kärran eller vagnen efter dem, ledaren
   bakom flaket och vakterna på flankerna och sist. Framme stannar de och gör som ovan. Når de inte fram på 2 minuter
   stannar de där de är.
+- På vägen **håller kolonnen sig till stigar och vägar** (`people/CaravanNavigation`): varje steg utanför stiggrund
+  (trampad stig, sliten gräsmatta, dirt path, grus, packad lera, grovjord, och filerna på vägar som en stam byggt) kostar
+  mer i vägsökningen, så djurhållaren följer en stig som går åt rätt håll, också runt en krök. Över öppen mark varierar
+  kostnaden i mjuka fläckar, så de vandrar lite längs den lättare marken i stället för att gå i en linjalrak linje.
 - Efter 2 speldagar **går de därifrån** samma väg, 48 block bort från närmaste spelare, och försvinner när ingen spelare
   är inom 40 block (eller när de är framme).
 
@@ -108,5 +112,5 @@ tillbaka när ett djur skadas, kassan stoppar försäljning, lagret tar slut. De
 fortfarande (vanillas handlare ersätts, storvilt på vagnen).
 
 ## Kvar / inte gjort
-- Kolonnen följer inte vägar hela vägen, den går rakt mot målet (vägen används bara för startpunkten).
+- Flankvakterna och ledaren går på sina platser bredvid och bakom djurhållaren, inte på stigen själv.
 - Rabatt efter rykte (som stammarnas byteshandel) gäller inte i den nya rutan; handel höjer ryktet som förut.

@@ -44,6 +44,7 @@ public final class TraderShots {
     private static File out;
     private static Vec3 base;
     private static Tribesperson leader;
+    private static boolean polish;
 
     @SubscribeEvent
     static void onTick(ClientTickEvent.Post event) {
@@ -55,7 +56,9 @@ public final class TraderShots {
                     stage = -2;
                     return;
                 }
-                out = new File(Files.readAllLines(flag.toPath()).get(0).trim());
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                polish = lines.size() > 1 && lines.get(1).trim().equals("polish");
                 out.mkdirs();
                 stage = 0;
             }
@@ -87,7 +90,8 @@ public final class TraderShots {
                     cmd("gamerule advance_weather false");
                     look(player().position().add(4000, 0, 0).with(net.minecraft.core.Direction.Axis.Y, 206), 0, 30);
                 });
-                plan();
+                if (polish) planPolish();
+                else plan();
                 stage = 2;
                 ticks = 0;
                 return;
@@ -173,6 +177,73 @@ public final class TraderShots {
             Minecraft.getInstance().execute(() -> { if (!Minecraft.getInstance().gui.hud.isHidden()) Minecraft.getInstance().gui.hud.toggle(); });
             cmd("gamemode creative @a");
         }, null);
+    }
+
+    /**
+     * "polish" on the flag's second line: close-ups of the hunting, woodsman and foraging kinds' folk from the front, three
+     * quarters and behind (hoods, back gear), then a caravan arriving along a bending trail, seen from above as it walks.
+     */
+    private static void planPolish() {
+        String[] kinds = {"hunting", "woodsman", "foraging"};
+        add(160, () -> base = new Vec3(Math.floor(player().getX()) + 0.5, 200, Math.floor(player().getZ()) + 0.5), null);
+        for (String kind : kinds) {
+            add(1, () -> lineUpKind(kind), null);
+            double[][] views = {{0, 3.0}, {35, 2.4}, {180, 3.0}, {145, 2.2}};
+            for (int v = 0; v < views.length; v++) {
+                double[] view = views[v];
+                add(v == 0 ? 40 : 1, () -> {
+                    double a = Math.toRadians(view[0]);
+                    Vec3 mid = base.add(0.95, 1.25, 0);
+                    // the folk face north (-z): the camera round them from there, at head height (look() takes the feet)
+                    Vec3 eye = mid.add(Math.sin(a) * view[1], 0.45, -Math.cos(a) * view[1]);
+                    Vec3 d = mid.subtract(eye);
+                    look(eye.subtract(0, 1.62, 0), (float) Math.toDegrees(Math.atan2(-d.x, d.z)), (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z))));
+                }, null);
+                add(30, null, "polish_" + kind + "_" + (int) view[0]);
+            }
+        }
+        // a trail bending out north of the straight line; the caravan sets out where it starts
+        add(1, () -> {
+            clear("grass_block");
+            int x = (int) Math.floor(base.x), z = (int) Math.floor(base.z);
+            for (int i = 0; i <= 60; i++) {
+                double t = i / 60.0;
+                int px = x + (int) Math.round(18 * (1 - t)), pz = z - (int) Math.round(8 * Math.sin(Math.PI * t));
+                cmd("fill " + px + " 199 " + pz + " " + (px + 1) + " 199 " + (pz + 1) + " mechanical:trodden_path");
+            }
+            var stop = net.minecraft.core.BlockPos.containing(base);
+            leader = Caravans.arrive(player().level(), stop, stop.offset(18, 0, 0), Identifier.fromNamespaceAndPath(Mechanical.MODID, "hunting"), false, 18); // the cart behind stays on the platform
+            look(base.add(11, 30, -4.5), 0, 89);
+        }, null);
+        for (int k = 0; k < 4; k++) {
+            int n = k;
+            add(n == 0 ? 60 : 160, () -> {
+                Tribesperson handler = null;
+                for (Tribesperson t : leader.groupNearby(48)) if (t.role() == TribeRole.HANDLER) handler = t;
+                result.add("trail " + n + ": handler at " + (handler == null ? "none" : handler.blockPosition() + " phase " + handler.caravanPhase));
+            }, "polish_trail_" + n);
+        }
+    }
+
+    /** The kind's leader, handler and guard side by side at the platform's centre, facing north. */
+    private static void lineUpKind(String kind) {
+        clear("grass_block");
+        ServerLevel level = player().level();
+        TribeRole[] roles = {TribeRole.TRADER, TribeRole.HANDLER, TribeRole.GUARD};
+        UUID tribe;
+        var r = level.getRandom();
+        do tribe = new UUID(r.nextLong(), r.nextLong()); while (Tribe.of(tribe).temperament != Tribe.Temperament.TRADERS);
+        for (int j = 0; j < roles.length; j++) {
+            Tribesperson t = People.TRIBESPERSON.get().create(level, EntitySpawnReason.EVENT);
+            t.setPos(base.add(j * 0.95, 0, 0));
+            level.addFreshEntity(t);
+            t.setup(roles[j], null, tribe, j == 0);
+            t.setCaravanKind(Identifier.fromNamespaceAndPath(Mechanical.MODID, kind));
+            if (roles[j] == TribeRole.GUARD) Caravans.arm(t, 1, r);
+            t.setNoAi(true);
+            t.setYRot(180);
+            t.yBodyRot = t.yHeadRot = 180;
+        }
     }
 
     private static int firstSale() {
