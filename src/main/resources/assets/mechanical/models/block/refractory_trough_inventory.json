@@ -5,7 +5,8 @@
     "out": "mechanical:block/refractory_trough_outside",
     "lin": "mechanical:block/refractory_trough_lining",
     "gate": "mechanical:block/trough_gate",
-    "lever": "mechanical:block/pouring_spout_lever"
+    "lever": "mechanical:block/pouring_spout_lever",
+    "plate": "mechanical:block/furnace_strap"
   },
   "elements": [
     {
@@ -104,7 +105,7 @@
             5,
             5
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "north": {
           "uv": [
@@ -172,7 +173,7 @@
             13,
             5
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "north": {
           "uv": [
@@ -240,7 +241,7 @@
             5,
             13
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "north": {
           "uv": [
@@ -308,7 +309,7 @@
             13,
             13
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "north": {
           "uv": [
@@ -444,7 +445,7 @@
             5,
             3
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "north": {
           "uv": [
@@ -512,7 +513,7 @@
             13,
             3
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "north": {
           "uv": [
@@ -716,7 +717,7 @@
             13,
             16
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "south": {
           "uv": [
@@ -784,7 +785,7 @@
             5,
             16
           ],
-          "texture": "#out"
+          "texture": "#lin"
         },
         "south": {
           "uv": [

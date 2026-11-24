@@ -5,7 +5,8 @@
     "out": "mechanical:block/refractory_trough_outside",
     "lin": "mechanical:block/refractory_trough_lining",
     "gate": "mechanical:block/trough_gate",
-    "lever": "mechanical:block/pouring_spout_lever"
+    "lever": "mechanical:block/pouring_spout_lever",
+    "plate": "mechanical:block/furnace_strap"
   },
   "elements": [
     {

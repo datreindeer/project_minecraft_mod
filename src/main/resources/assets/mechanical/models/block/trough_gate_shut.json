@@ -5,7 +5,8 @@
     "out": "mechanical:block/refractory_trough_outside",
     "lin": "mechanical:block/refractory_trough_lining",
     "gate": "mechanical:block/trough_gate",
-    "lever": "mechanical:block/pouring_spout_lever"
+    "lever": "mechanical:block/pouring_spout_lever",
+    "plate": "mechanical:block/furnace_strap"
   },
   "elements": [
     {
@@ -27,7 +28,7 @@
             11,
             8.6
           ],
-          "texture": "#gate"
+          "texture": "#plate"
         },
         "up": {
           "uv": [
@@ -36,7 +37,7 @@
             11,
             8.6
           ],
-          "texture": "#gate"
+          "texture": "#plate"
         },
         "north": {
           "uv": [
@@ -45,7 +46,7 @@
             11,
             14
           ],
-          "texture": "#gate"
+          "texture": "#plate"
         },
         "south": {
           "uv": [
@@ -54,7 +55,7 @@
             11,
             14
           ],
-          "texture": "#gate"
+          "texture": "#plate"
         },
         "east": {
           "uv": [
@@ -63,7 +64,7 @@
             8.6,
             14
           ],
-          "texture": "#gate"
+          "texture": "#plate"
         },
         "west": {
           "uv": [
@@ -72,7 +73,75 @@
             8.6,
             14
           ],
-          "texture": "#gate"
+          "texture": "#plate"
+        }
+      }
+    },
+    {
+      "from": [
+        7.4,
+        6.5,
+        7.6
+      ],
+      "to": [
+        8.6,
+        11.5,
+        8.4
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            7.4,
+            7.6,
+            8.6,
+            8.4
+          ],
+          "texture": "#lever"
+        },
+        "up": {
+          "uv": [
+            7.4,
+            7.6,
+            8.6,
+            8.4
+          ],
+          "texture": "#lever"
+        },
+        "north": {
+          "uv": [
+            7.4,
+            4.5,
+            8.6,
+            9.5
+          ],
+          "texture": "#lever"
+        },
+        "south": {
+          "uv": [
+            7.4,
+            4.5,
+            8.6,
+            9.5
+          ],
+          "texture": "#lever"
+        },
+        "east": {
+          "uv": [
+            7.6,
+            4.5,
+            8.4,
+            9.5
+          ],
+          "texture": "#lever"
+        },
+        "west": {
+          "uv": [
+            7.6,
+            4.5,
+            8.4,
+            9.5
+          ],
+          "texture": "#lever"
         }
       }
     }

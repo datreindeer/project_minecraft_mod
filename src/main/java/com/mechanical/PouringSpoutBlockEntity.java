@@ -107,6 +107,8 @@ public class PouringSpoutBlockEntity extends BlockEntity {
     private float tx = 0.5F, ty = -0.8F, tz = 0.5F;
     private @Nullable Sink lastSink;
     private int warnIn;
+    private long lastRun;
+    private static final int HOLD_TICKS = 8;
 
     public PouringSpoutBlockEntity(BlockPos pos, BlockState state) {
         super(HighFurnace.POURING_SPOUT_ENTITY.get(), pos, state);
@@ -240,6 +242,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                 running = take > 0 ? m : null;
                 sink.progress(level, at, m, buffer, need);
                 net.minecraft.world.phys.Vec3 t = sink.target(level, at, buffer, need);
+                if (sink instanceof TroughFlow.Sink) t = new net.minecraft.world.phys.Vec3(lip().x, t.y, lip().z); // a trough: it falls straight down off the lip
                 float nx = (float) t.x, ny = (float) t.y - 1, nz = (float) t.z;
                 if (nx != tx || ny != ty || nz != tz) {
                     tx = nx;
@@ -256,6 +259,9 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                 }
             }
         } else giveBack();
+        // the stream stays drawn through the ticks a trough below has no room for a moment (it drains every few ticks)
+        if (running != null) lastRun = level.getGameTime();
+        else if (stream != null && level.getGameTime() - lastRun < HOLD_TICKS && src != null && src.molten() == stream) running = stream;
         if (running != stream) {
             stream = running;
             if (getBlockState().getValue(PouringSpoutBlock.POURING) != (running != null))

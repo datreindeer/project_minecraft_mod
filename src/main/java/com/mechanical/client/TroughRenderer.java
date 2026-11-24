@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, TroughRenderer.State> {
     public static class State extends BlockEntityRenderState {
         @Nullable Molten molten;
-        float fill, time, cooled;
+        float fill, time, cooled, hot;
         int sides;
         @Nullable Direction up;
     }
@@ -49,6 +49,8 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
         state.molten = t.molten();
         state.fill = t.amount() / (float) TroughBlockEntity.CAPACITY;
         state.cooled = t.cooled(now);
+        // how hot it still is: white-hot near the tap, dimming down the line to the end of its reach
+        state.hot = state.molten == null ? 0 : Math.clamp(1 - t.dist() / (float) Math.max(1, com.mechanical.TroughFlow.reach(t.heat(), state.molten) + 1), 0, 1);
         state.time = ((now % 1000) + partialTicks) * (t.running(now) ? 0.04F : 0.004F);
         BlockState block = t.getBlockState();
         state.up = null;
@@ -67,10 +69,18 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
         return ARGB.srgbLerp((cooled - 0.8F) / 0.2F, 0xFF8A1E08, skin) | 0xFF000000;
     }
 
+    /** A melt's glow by how hot it still is: toward white-hot near the source, toward a deep orange-red at the end of its reach. */
+    static int glow(Molten m, float hot) {
+        int base = 0xFF000000 | m.color;
+        return hot > 0.5F ? ARGB.srgbLerp((hot - 0.5F) * 0.7F, base, 0xFFFFF4D2) | 0xFF000000
+                : ARGB.srgbLerp((0.5F - hot) * 1.4F, base, 0xFFB8380C) | 0xFF000000;
+    }
+
     @Override
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.molten == null) return;
-        MoltenRenderer.Channel.channel(collector, pose, cooling(state.molten, state.cooled), state.cooled >= 1 ? 0 : state.time, state.up, state.sides, Math.min(1, state.fill));
+        int c = state.cooled < 0.05F ? glow(state.molten, state.hot) : cooling(state.molten, state.cooled);
+        MoltenRenderer.Channel.channel(collector, pose, MoltenRenderer.CRUST, c, state.cooled >= 1 ? 0 : state.time, state.up, state.sides, Math.min(1, state.fill));
     }
 
     @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)

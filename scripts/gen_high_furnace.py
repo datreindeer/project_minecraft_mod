@@ -440,16 +440,17 @@ merge(A / "lang/en_us.json", {"block.mechanical.iron_ingot_mold": "Iron Ingot Mo
 # and slopes the same way. The gate: a straight trough with an iron frame over its middle and a sluice plate that is
 # down (shut) or lifted (open).
 TT = {"particle": B + "refractory_trough_outside", "out": B + "refractory_trough_outside", "lin": B + "refractory_trough_lining",
-      "gate": B + "trough_gate", "lever": B + "pouring_spout_lever"}
+      "gate": B + "trough_gate", "lever": B + "pouring_spout_lever", "plate": B + "furnace_strap"}
 OUTF = {f: "#out" for f in FACES}
+RIM = {**OUTF, "up": "#lin"}
 T_MIDDLE = [box([3, 0, 3], [13, 2, 13], {**OUTF, "up": "#lin"}),
-            box([3, 2, 3], [5, 5, 5], OUTF), box([11, 2, 3], [13, 5, 5], OUTF),
-            box([3, 2, 11], [5, 5, 13], OUTF), box([11, 2, 11], [13, 5, 13], OUTF)]
+            box([3, 2, 3], [5, 5, 5], RIM), box([11, 2, 3], [13, 5, 5], RIM),
+            box([3, 2, 11], [5, 5, 13], RIM), box([11, 2, 11], [13, 5, 13], RIM)]
 T_ARM = [box([3, 0, 0], [13, 2, 3], {**OUTF, "up": "#lin"}),
-         box([3, 2, 0], [5, 5, 3], {**OUTF, "east": "#lin"}),
-         box([11, 2, 0], [13, 5, 3], {**OUTF, "west": "#lin"}),
+         box([3, 2, 0], [5, 5, 3], {**RIM, "east": "#lin"}),
+         box([11, 2, 0], [13, 5, 3], {**RIM, "west": "#lin"}),
          box([2.6, 0.5, 0.6], [13.4, 1.5, 1.4], "#out")]                          # a rivet band at the joint
-T_END = [box([5, 2, 3], [11, 5, 5], {**OUTF, "south": "#lin"})]
+T_END = [box([5, 2, 3], [11, 5, 5], {**RIM, "south": "#lin"})]
 T_TILT = {"origin": [8, 8, 8], "axis": "x", "angle": 45, "rescale": True}
 T_SLOPE = [box([3, 6, 0], [13, 8, 16], {**OUTF, "up": "#lin"}, rotation=T_TILT),
            box([3, 8, 0], [5, 11, 16], {**OUTF, "east": "#lin"}, rotation=T_TILT),
@@ -470,8 +471,8 @@ loot("refractory_trough")
 # the gate (axis z in the models; x turns them): frame posts at the middle's sides, a cross beam, the plate in its slots
 GATE_FRAME = [box([3, 2, 7], [5, 10, 9], "#out"), box([11, 2, 7], [13, 10, 9], "#out"), box([3, 10, 6.5], [13, 11.5, 9.5], "#out"),
               box([7.5, 11.5, 7.6], [8.5, 13, 8.4], "#lever")]
-GATE_SHUT = [box([5, 2, 7.4], [11, 6.5, 8.6], {**{f: "#gate" for f in FACES}})]
-GATE_OPEN = [box([5, 6, 7.4], [11, 10.4, 8.6], {**{f: "#gate" for f in FACES}})]
+GATE_SHUT = [box([5, 2, 7.4], [11, 6.5, 8.6], {**{f: "#plate" for f in FACES}}), box([7.4, 6.5, 7.6], [8.6, 11.5, 8.4], "#lever")]
+GATE_OPEN = [box([5, 6, 7.4], [11, 10.4, 8.6], {**{f: "#plate" for f in FACES}}), box([7.4, 10.4, 7.6], [8.6, 13, 8.4], "#lever")]
 model("trough_gate_frame", GATE_FRAME, TT)
 model("trough_gate_shut", GATE_SHUT, TT)
 model("trough_gate_open", GATE_OPEN, TT)

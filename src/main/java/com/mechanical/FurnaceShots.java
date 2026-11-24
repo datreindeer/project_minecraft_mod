@@ -217,16 +217,18 @@ public final class FurnaceShots {
         set(8, 0, 1, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.EAST));
         set(12, 0, 3, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
         set(12, 0, 4, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.NORTH));
-        // the big furnace's casting floor: a taphole and spout pouring into a trough line in a pit, a T to two molds, a gate, a third mold
-        set(11, 0, 3, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
-        set(11, 0, 4, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));
-        for (int x = 8; x <= 14; x++) for (int z = 4; z <= 11; z++) set(x, -1, z, Blocks.AIR.defaultBlockState());
-        for (int[] q : new int[][] {{11, 4}, {11, 5}, {11, 6}, {10, 7}, {11, 7}, {12, 7}, {11, 9}})
+        // the big furnace's casting floor, north of it clear of everything: a taphole and spout pouring into a trough line in a
+        // pit, a T to two molds, a shut gate holding the metal back from the third mold
+        set(12, 0, -1, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.NORTH));
+        set(12, 0, -2, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.NORTH).setValue(PouringSpoutBlock.OPEN, true));
+        for (int x = 9; x <= 15; x++) for (int z = -10; z <= -2; z++) set(x, -1, z, Blocks.AIR.defaultBlockState());
+        set(12, -1, -2, Blocks.AIR.defaultBlockState());
+        for (int[] q : new int[][] {{12, -2}, {12, -3}, {12, -4}, {11, -5}, {12, -5}, {13, -5}, {12, -7}})
             set(q[0], -1, q[1], HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
-        set(11, -1, 8, HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.Z).setValue(RefractoryTroughBlock.Gate.OPEN, true));
-        for (int[] q : new int[][] {{9, 7}, {13, 7}, {11, 10}}) set(q[0], -1, q[1], HighFurnace.IRON_INGOT_MOLD.get().defaultBlockState());
+        set(12, -1, -6, HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.Z));
+        for (int[] q : new int[][] {{10, -5}, {14, -5}, {12, -8}}) set(q[0], -1, q[1], HighFurnace.IRON_INGOT_MOLD.get().defaultBlockState());
         // the troughs take their shape from their neighbours: shape them all again now everything stands
-        for (int x = 8; x <= 14; x++) for (int z = 4; z <= 11; z++) {
+        for (int x = 9; x <= 15; x++) for (int z = -10; z <= -2; z++) {
             BlockPos q = rel(x, -1, z);
             if (level().getBlockState(q).getBlock() instanceof ClayChannelBlock c) level().setBlockAndUpdate(q, c.stateAt(level(), q));
         }

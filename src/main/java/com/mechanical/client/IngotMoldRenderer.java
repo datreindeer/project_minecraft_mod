@@ -62,7 +62,7 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
         int hot = 0xFF000000 | state.molten.color, skin = ARGB.srgbLerp(0.35F, 0xFF4A4642, hot) | 0xFF000000;
         int c = state.cooled < 0.6F ? ARGB.srgbLerp(state.cooled / 0.6F, hot, 0xFFB02A08) | 0xFF000000 : ARGB.srgbLerp((state.cooled - 0.6F) / 0.4F, 0xFFB02A08, skin) | 0xFF000000;
         boolean glow = state.cooled < 1;
-        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
+        collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> {
             for (int i = 0; i < IngotMoldBlock.POCKETS.length; i++) {
                 if (state.level[i] <= 0) continue;
                 float[] q = IngotMoldBlock.POCKETS[i];

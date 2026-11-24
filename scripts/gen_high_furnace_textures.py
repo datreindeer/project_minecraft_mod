@@ -2385,3 +2385,22 @@ def casing_glow_sparse():
 
 
 casing_glow_sparse()
+
+
+# ---- molten_crust.png (not in the atlas: the troughs' and molds' renderers scroll it): one frame of molten_flowing with its
+# crust streaks pulled darker, so a tinted melt shows drifting crust over a white-hot ground instead of flat paint
+def molten_crust():
+    from PIL import Image as _I
+    src = _I.open(BLOCK / "molten_flowing.png").convert("RGBA")
+    tile = src.crop((0, 0, 16, 16))
+    px = tile.load()
+    for y in range(16):
+        for x in range(16):
+            r, g, b, a = px[x, y]
+            v = (r + g + b) / 3
+            v = 255 if v > 200 else max(168, int(150 + (v - 60) * 0.6))  # ground white-hot, crust a gentle darker film
+            px[x, y] = (v, v, v, 255)
+    tile.save(BLOCK / "molten_crust.png")
+
+
+molten_crust()
