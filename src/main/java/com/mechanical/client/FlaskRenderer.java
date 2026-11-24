@@ -49,8 +49,8 @@ public class FlaskRenderer implements BlockEntityRenderer<MoldingFlaskBlock.Enti
     @Override
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.molten == null) return;
-        int c = state.cooled < 0.05F ? ARGB.srgbLerp(0.35F, 0xFF000000 | state.molten.color, 0xFFFFFBEA) | 0xFF000000 : TroughRenderer.cooling(state.molten, state.cooled);
-        float y = (12.4F + 1.0F * state.fill) / 16, lo = 6.6F / 16, hi = 9.4F / 16, t = state.time; // brims at the cup's 13.2 px rim
+        int c = state.cooled < 0.05F ? 0xFF000000 | state.molten.color : TroughRenderer.cooling(state.molten, state.cooled);
+        float y = (12.3F + 0.7F * state.fill) / 16, lo = 5.6F / 16, hi = 10.4F / 16, t = state.time; // rises to just under the cup's 13.2 px rim
         int light = state.cooled >= 1 ? state.lightCoords : LightCoordsUtil.FULL_BRIGHT;
         collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> {
             float[][] v = {{lo, lo}, {lo, hi}, {hi, hi}, {hi, lo}};

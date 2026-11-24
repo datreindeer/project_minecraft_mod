@@ -36,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  * sides it comes from; where nothing goes out it lies still, and a full, still trough does not drift at all;</li>
  * <li>metal arriving in an empty trough creeps in from the side it came from (or spreads from under a spout) with a
  * darker front;</li>
- * <li>it stops at closed ends with a bright meniscus line, never past the trough's inner rim; at a shut gate it pools
+ * <li>it stops at a closed end with a bright meniscus line, never past the trough's inner rim; at a shut gate it pools
  * against the plate on the side it came from;</li>
  * <li>white-hot near the tap, dimming down the line; setting crusts from the edges inward, then goes dark and solid
  * (frozen metal at the reach limit is dark at once).</li>
@@ -189,7 +189,8 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
             for (Direction d : Direction.Plane.HORIZONTAL) {
                 int bit = 1 << d.get2DDataValue();
                 if ((sides & bit) == 0) {
-                    meniscus(p, buf, c, light, d, y, k);
+                    // only where the run ends against this wall: along a run's side walls it read as loose dashes
+                    if ((sides & 1 << d.getOpposite().get2DDataValue()) != 0) meniscus(p, buf, c, light, d, y, k);
                     continue;
                 }
                 float dir = (out & bit) != 0 ? 1 : (in & bit) != 0 ? -1 : 0; // toward the next trough, in from it, or still

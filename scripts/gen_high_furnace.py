@@ -372,19 +372,20 @@ w(D / f"mechanical/loot_table/blocks/clay_{s}_mold.json", {"type": "minecraft:bl
     "random_sequence": f"mechanical:blocks/clay_{s}_mold"})
 
 # ---------------- Pouring Spout (pours north; its back flange against the Taphole at z 16): a short riveted steel trough
-# with raised sides, its lip at z 6.5 over the middle of the block below; a lever on the right, up when shut, thrown
-# forward when open; pouring, the metal in the trough glows (the falling stream is client/PouringSpoutRenderer).
+# with raised sides, its floor ending at z 9 and its lip turned down just past the middle of the block below (the
+# stream curls over it and lands 1 px past the middle); a lever on the right, up when shut, thrown forward when open;
+# pouring, the metal in the trough glows (the falling stream is client/PouringSpoutRenderer).
 ST = {"particle": B + "pouring_spout_steel", "steel": B + "pouring_spout_steel", "lever": B + "pouring_spout_lever", "glow": B + "taphole_glow"}
 SPOUT = [box([3, 3, 19], [13, 11, 20], "#steel"),                                    # flange bolted to the taphole frame in its recess
-         box([5, 4.5, 6.5], [11, 6, 19], "#steel"),                                  # trough floor
-         box([4, 4.5, 6.5], [5, 8.5, 19], "#steel"), box([11, 4.5, 6.5], [12, 8.5, 19], "#steel"),   # sides
-         box([5, 4, 6], [11, 5, 7], "#steel"),                                        # the lip, turned down
-         box([4.5, 3.5, 9], [11.5, 4.5, 10.5], "#steel"), box([4.5, 3.5, 12.5], [11.5, 4.5, 14], "#steel"),  # straps under it
+         box([5, 4.5, 9], [11, 6, 19], "#steel"),                                    # trough floor
+         box([4, 4.5, 9], [5, 8.5, 19], "#steel"), box([11, 4.5, 9], [12, 8.5, 19], "#steel"),   # sides
+         box([5, 4.2, 8.6], [11, 5.4, 9.4], "#steel"),                                # the lip, turned down
+         box([4.5, 3.5, 10.5], [11.5, 4.5, 12], "#steel"), box([4.5, 3.5, 13.5], [11.5, 4.5, 15], "#steel"),  # straps under it
          box([12, 6, 11.5], [13, 7, 12.5], "#lever")]                                 # lever pivot
 LEVER_SHUT = [box([12.2, 6.5, 11.6], [12.9, 13, 12.4], "#lever")]
 LEVER_OPEN = [{"from": [12.2, 6.5, 11.6], "to": [12.9, 13, 12.4], "rotation": {"angle": -45, "axis": "x", "origin": [12.5, 6.5, 12]},
                "faces": {f: {"uv": [7, 2, 8, 9], "texture": "#lever"} for f in FACES}}]
-GLOW = [{"from": [5, 6.05, 6.5], "to": [11, 6.05, 19], "light_emission": 15, "shade": False,
+GLOW = [{"from": [5, 6.05, 9], "to": [11, 6.05, 19], "light_emission": 15, "shade": False,
          "faces": {"up": {"uv": [5, 4, 11, 12], "texture": "#glow"}}}]
 def shorten(els):
     """The spout for a trough's end: nothing reaches past the block's back face."""
@@ -583,8 +584,9 @@ def flask(top, glow=False):
     els += [box([x0, 4, z0], [x0 + 1.5, 8, z0 + 1.5], "#side") for x0 in (0, 14.5) for z0 in (0, 14.5)]  # the pins at the corners
     if top != "#empty" and top != "#inside":  # the pouring cup over the sprue: a raised sand ring round a hole
         ring = {"north": "#inside", "south": "#inside", "east": "#inside", "west": "#inside", "up": "#inside"}
-        els += [box([5.5, 12, 5.5], [10.5, 13.2, 6.6], ring), box([5.5, 12, 9.4], [10.5, 13.2, 10.5], ring),
-                box([5.5, 12, 6.6], [6.6, 13.2, 9.4], ring), box([9.4, 12, 6.6], [10.5, 13.2, 9.4], ring)]
+        # wide enough (4.8 px) that the melt shows round the 1.8 px stream while it fills (client/FlaskRenderer)
+        els += [box([4.5, 12, 4.5], [11.5, 13.2, 5.6], ring), box([4.5, 12, 10.4], [11.5, 13.2, 11.5], ring),
+                box([4.5, 12, 5.6], [5.6, 13.2, 10.4], ring), box([10.4, 12, 5.6], [11.5, 13.2, 10.4], ring)]
     if glow:  # the cup's melt is drawn by client/FlaskRenderer; the block just gives off light
         pass
     return els
