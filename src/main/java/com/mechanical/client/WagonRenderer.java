@@ -28,6 +28,8 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/wagon.png");
     /** Modules fill a place (0.75 deep) without touching the next. */
     private static final float MODULE_SCALE = 0.72F;
+    /** The pole's reach ahead of the front axle to the yoke, blocks (WagonModel). */
+    private static final float POLE_RUN = 2.4F;
     private final WagonModel model;
     private final TiltModel canopy;
     private final ItemModelResolver items;
@@ -35,7 +37,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
     private ItemStack[] moduleStacks;
 
     public static class State extends EntityRenderState {
-        float yaw, spin, steer;
+        float yaw, spin, steer, pitch, roll, lift, pole;
         boolean open; // a log on the bed: no back board
         final ItemStackRenderState[] modules = new ItemStackRenderState[WagonEntity.SLOTS];
         final CargoRender.State cargo = new CargoRender.State();
@@ -65,6 +67,16 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
         state.yaw = wagon.getViewYRot(partialTicks);
         state.spin = Mth.lerp(partialTicks, wagon.wheelSpinO, wagon.wheelSpin);
         state.steer = Mth.lerp(partialTicks, wagon.steerO, wagon.steer);
+        state.pitch = wagon.pitch(partialTicks);
+        state.roll = wagon.roll(partialTicks);
+        double ground = wagon.groundY(partialTicks);
+        state.lift = (float) (ground - state.y);
+        // the pole keeps to the horses' collars: its tilt in the world follows how far above the front axle they stand
+        float pitch = state.pitch * Mth.DEG_TO_RAD;
+        double horses = wagon.harness() == null ? Double.NaN : wagon.partner() == null ? wagon.harness().getPosition(partialTicks).y
+                : (wagon.harness().getPosition(partialTicks).y + wagon.partner().getPosition(partialTicks).y) / 2;
+        double rise = Double.isNaN(horses) ? 0 : horses - ground - Math.sin(pitch) * WagonEntity.FRONT_AXLE;
+        state.pole = Mth.clamp((float) Math.atan2(rise, POLE_RUN), -0.6F, 0.6F) - pitch;
         state.open = wagon.carriedLog() != null;
         if (moduleStacks == null)
             moduleStacks = new ItemStack[] {ItemStack.EMPTY, new ItemStack(Items.CHEST), new ItemStack(Items.HAY_BLOCK), new ItemStack(Items.OAK_SLAB)};
@@ -82,6 +94,10 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
         poseStack.pushPose();
         // model -z (the pole) to the facing direction; here the front is -z and y is up
         poseStack.rotate(Axis.YP.rotationDegrees(180.0F - state.yaw));
+        // resting on its four wheels: rolled about the ground line under the middle, pitched about the middle (WagonEntity#onBed)
+        poseStack.translate(0.0F, state.lift, 0.0F);
+        poseStack.rotate(Axis.ZP.rotationDegrees(state.roll));
+        poseStack.rotate(Axis.XP.rotationDegrees(state.pitch));
         for (int i = 0; i < WagonEntity.SLOTS; i++) {
             if (state.modules[i].isEmpty()) continue;
             // the item model is a block centred on the origin: stand it on the floor in its place
@@ -95,7 +111,7 @@ public class WagonRenderer extends EntityRenderer<WagonEntity, WagonRenderer.Sta
         CargoRender.submit(state.cargo, 2, 4, 0.68F, (float) WagonEntity.BED, 0.62F, poseStack, collector, state.lightCoords, state.outlineColor);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         // model x and y both flipped (a half turn about z): + yRot still swings the pole to the wagon's right, as + steer means
-        collector.submitModel(model, new WagonModel.Pose(state.spin, state.steer * Mth.DEG_TO_RAD, state.open), poseStack, TEXTURE,
+        collector.submitModel(model, new WagonModel.Pose(state.spin, state.steer * Mth.DEG_TO_RAD, state.pole, state.open), poseStack, TEXTURE,
                 state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         if (state.tilt != null) collector.submitModel(canopy, 0.0F, poseStack, state.tilt, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();

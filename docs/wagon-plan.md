@@ -88,6 +88,36 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
   inte att sitta upp på medan någon kör, sittande kliver av vid sidan av flaket, smyg + högerklick på hästen spänner från
   kärra och plog också, kärrans häst (och vagnen den dras efter) sparas med UUID, kärrans skaklar skjuts bakåt.
 
+## Lutning i backar (v0.195.0)
+- Flaket vilar på hjulen: klienten letar marken under varje hjul (mitten och två punkter fram och bak på fälgen, så
+  hjulet rullar upp på kanten av en slab eller ett trappsteg, gräs-slabs och vägarnas path-slabs med sin riktiga höjd).
+  Vagnen lutar fram/bak efter främre mot bakre hjulparet och åt sidan efter höger mot vänster, på medelhöjden av de fyra;
+  kärran lutar åt sidan efter sina två hjul och vilar axeln på deras medelhöjd (fram/bak som förut efter skaklarna).
+  Allt mjukas ut (0,4 per tick) och marken söks 2,5 ticks av rörelsen framåt så att flaket inte släpar efter i en backe.
+  Mätt i galopp uppför en väg med en halv slab per block: hjulen högst ~0,3 block från marken, still 0,05.
+- Lasten följer med: moduler, karavanens last och tält ritas i flakets lutning, stockar och kroppar placeras på det lutande
+  flaket (stockarna lutar med), sittande likaså. Dragstången håller sig vid hästarnas bogar: den vrids efter hur högt
+  paret står över framaxeln, oavsett flakets lutning. Bara klienten lutar (servern räknar som förut), så den stela
+  dragningen och hästarna i takt från buggrundan är orörda.
+- **Utelämnat:** framhjulens utslag räknas inte in (marken söks där hjulen står rakt fram), kroppar på flaket lutar inte själva.
+- Dev: `TiltShots` (tiltshots.flag i run/) bygger en backe och tar bilder.
+
+## Flerspelarkontroll (v0.196.0)
+- Provat med en dedikerad server (runServer i worktreens run/, offline-läge) och en separat dev-klient som ansluter och
+  spelar igenom allt med riktiga klick och tangenter (`MpShots`, mpshots.flag; servern bygger scenerna med `/mptest`,
+  bara registrerat med mptest.flag i serverns mapp, och svarar med serverns positioner så att klienten kan jämföra).
+- **Vagnen:** leda andra hästen med lead, sitta upp, klicka vagnen (spänner för båda), galopp och sväng: andra hästen och
+  vagnen 0,000 block från det stela spannets platser på klienten, vagn och hästar på exakt samma position som servern
+  både med ryttare och 5 s efter avstigning.
+- **Stock:** lyfta, dra, lägga ner: klient och server inom 1,5 cm. **Vattenhjul:** båda kroppsentiteterna finns på klienten
+  med rätt form, hjulet ritas och snurrar. **Kittel och lerkruka:** tripod och kruka ställs på elden, vatten och mat i,
+  innehållet syns direkt på klienten, efter 6000 ticks klart på båda sidor och en skål ger Stew. **Blodkittel:** kitteln på
+  slaktställningen fylls (blockstate) och en hink ger Blood Bucket. **Oak-uppdragen:** skärmen öppnas.
+- **Fel hittat och rättat (även enspelare):** en karavans ledare räknas som ledare och fick en bosatt ledares dialog
+  ("välkommen till vårt läger", ingen Trade-knapp), så karavanens handelsskärm gick inte att nå genom att klicka på honom.
+  Nu får han karavandialogen med Trade, och handelsskärmen öppnas och visar varorna över nätet.
+- Inga undantag i server- eller klientloggen. Bara en klient provades (ingen andra spelare som tittar på).
+
 ## Senare
 - Uroxar som dragdjur (kräver tämjning).
 - Karavaner med vagn.

@@ -73,6 +73,11 @@ public class TravoisEntity extends Entity {
     private int stuckTicks, strainTicks;
     /** Client: tilt (degrees, front up) of the poles or the cart bed, this tick and the last. */
     public float pitch, pitchO;
+    /** Client, wheeled beds ({@link #settleOnWheels}): side tilt (degrees, right side up) and the height its wheels rest at, smoothed. */
+    public float roll, rollO;
+    public double groundY, groundYO;
+    private boolean settled;
+    private Vec3 settledAt, settleMotion = Vec3.ZERO;
 
     public TravoisEntity(EntityType<? extends TravoisEntity> type, Level level) {
         super(type, level);
@@ -439,6 +444,10 @@ public class TravoisEntity extends Entity {
             }
         } else stuckTicks = strainTicks = 0;
         if (level().isClientSide()) {
+            // its motion over the last tick (most of it is the tow step after the tick: xo would miss it)
+            settleMotion = settledAt == null || position().distanceToSqr(settledAt) > 4 ? Vec3.ZERO : position().subtract(settledAt).multiply(1, 0, 1);
+            settledAt = position();
+            settleOnWheels();
             float target = targetPitch(puller());
             if (tickCount <= 1) pitch = target;
             pitchO = pitch;
@@ -607,6 +616,71 @@ public class TravoisEntity extends Entity {
         Vec3 at = position().add(Vec3.directionFromRotation(0, getYRot()).scale(reach));
         HitResult hit = level().clip(new ClipContext(at.add(0, 1, 0), at.add(0, -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
         return hit.getType() == HitResult.Type.MISS ? getY() - 2 : hit.getLocation().y;
+    }
+
+    /** Client, each tick before {@link #targetPitch}: a wheeled bed finds the ground under its wheels ({@link #settle}). */
+    protected void settleOnWheels() {
+    }
+
+    /**
+     * Client: where the bottom of a wheel of {@code radius} rests, its hub {@code along} ahead of the middle and {@code side}
+     * to the right: the ground under its middle and under two points of its rim fore and aft (lowered by how the rim curves
+     * up there), whichever is highest, so it rides up onto a step's edge. Looked for from a block above down to a block
+     * below (slabs, stairs and paths by their real top; nothing there: a block below).
+     */
+    protected double groundUnder(double along, double side, double radius) {
+        // looked for a little ahead along its motion: the easing (and the tow step after the tick) trail it by that much
+        Vec3 dir = Vec3.directionFromRotation(0, getYRot());
+        Vec3 hub = position().add(settleMotion.scale(SETTLE_LEAD)).add(dir.scale(along)).add(Vec3.directionFromRotation(0, getYRot() + 90).scale(side));
+        double reach = radius * 0.6, curve = radius - Math.sqrt(radius * radius - reach * reach), best = getY() - 1;
+        for (int k = -1; k <= 1; k++) {
+            Vec3 at = hub.add(dir.scale(k * reach));
+            HitResult hit = level().clip(new ClipContext(at.add(0, 1, 0), at.add(0, -1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            if (hit.getType() != HitResult.Type.MISS) best = Math.max(best, hit.getLocation().y - (k == 0 ? 0 : curve));
+        }
+        return best;
+    }
+
+    /** Ticks of motion {@link #groundUnder} looks ahead: 1.5 the easing by 0.4 lags behind a steady slope, 1 the tow step. */
+    private static final double SETTLE_LEAD = 2.5;
+
+    /** Client: eases {@link #groundY} and {@link #roll} towards where the wheels rest now (a jump of over 2 blocks snaps). */
+    protected void settle(double ground, float rollTarget) {
+        groundYO = groundY;
+        rollO = roll;
+        rollTarget = Mth.clamp(rollTarget, -35.0F, 35.0F);
+        if (!settled || Math.abs(ground - groundY) > 2) {
+            groundY = groundYO = ground;
+            roll = rollO = rollTarget;
+            settled = true;
+        } else {
+            groundY += (ground - groundY) * 0.4;
+            roll += (rollTarget - roll) * 0.4F;
+        }
+    }
+
+    /** Client: height the bed rests at, at the frame ({@link #getY} before it has settled, and on the server). */
+    public double groundY(float partialTicks) {
+        return settled ? Mth.lerp(partialTicks, groundYO, groundY) : Mth.lerp(partialTicks, yo, getY());
+    }
+
+    /**
+     * A point of the bed, tipped with it: {@code along} ahead of the middle, {@code side} to the right, {@code up} above the
+     * ground; pitched about the point {@code pivotAlong}, {@code pivotUp}, then rolled about the ground line under the middle,
+     * resting at {@link #groundY} (the renderers turn the model the same way). On the server: level at {@link #getY}.
+     */
+    protected Vec3 onBed(double along, double side, double up, double pivotAlong, double pivotUp) {
+        double p = Math.toRadians(pitch), r = Math.toRadians(roll);
+        double a = along - pivotAlong, h = up - pivotUp;
+        double a1 = a * Math.cos(p) - h * Math.sin(p) + pivotAlong, h1 = a * Math.sin(p) + h * Math.cos(p) + pivotUp;
+        double s2 = side * Math.cos(r) - h1 * Math.sin(r), h2 = side * Math.sin(r) + h1 * Math.cos(r);
+        Vec3 dir = Vec3.directionFromRotation(0, getYRot()), right = Vec3.directionFromRotation(0, getYRot() + 90);
+        return new Vec3(getX() + dir.x * a1 + right.x * s2, groundY(1.0F) + h2, getZ() + dir.z * a1 + right.z * s2);
+    }
+
+    /** Client: {@link #roll} at the frame. */
+    public float roll(float partialTicks) {
+        return Mth.lerp(partialTicks, rollO, roll);
     }
 
     /** Client: {@link #pitch} at the frame. */

@@ -34,7 +34,7 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
     private ItemStack chest;
 
     public static class State extends EntityRenderState {
-        float yaw, spin, pitch;
+        float yaw, spin, pitch, roll, lift;
         boolean canopy;
         Identifier tilt;
         final ItemStackRenderState chest = new ItemStackRenderState();
@@ -60,6 +60,8 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         state.yaw = cart.getViewYRot(partialTicks);
         state.spin = Mth.lerp(partialTicks, cart.wheelSpinO, cart.wheelSpin);
         state.pitch = cart.pitch(partialTicks);
+        state.roll = cart.roll(partialTicks);
+        state.lift = (float) (cart.groundY(partialTicks) - state.y);
         state.canopy = cart.isCaravan() || !cart.canopy().isEmpty();
         state.tilt = CargoRender.tilt(cart.canopy(), false);
         if (cart.hasChest()) {
@@ -74,7 +76,10 @@ public class CartRenderer extends EntityRenderer<CartEntity, CartRenderer.State>
         poseStack.pushPose();
         // model -z (the shafts) to the facing direction; model y points down
         poseStack.rotate(Axis.YP.rotationDegrees(180.0F - state.yaw));
-        // here the front is -z and y is up; tip about the axle, the wheels stay on the ground
+        // here the front is -z and y is up; resting on its two wheels (rolled about the ground line under them), then
+        // tipped about the axle, the wheels stay on the ground (CartEntity#onBed)
+        poseStack.translate(0.0F, state.lift, 0.0F);
+        poseStack.rotate(Axis.ZP.rotationDegrees(state.roll));
         poseStack.translate(0.0F, CartModel.AXLE_HEIGHT, CartModel.AXLE_BACK);
         poseStack.rotate(Axis.XP.rotationDegrees(state.pitch));
         poseStack.translate(0.0F, -CartModel.AXLE_HEIGHT, -CartModel.AXLE_BACK);

@@ -272,9 +272,19 @@ public class CartEntity extends TravoisEntity {
         super.tick();
     }
 
+    /** Wheels: 13 px either side of the middle (CartModel), on the axle. */
+    public static final double WHEEL_SIDE = 13 / 16.0;
+
+    /** Its two wheels: the axle rests at their mean height, tipped sideways by their difference. */
+    @Override
+    protected void settleOnWheels() {
+        double left = groundUnder(-AXLE_BACK, -WHEEL_SIDE, WHEEL_RADIUS), right = groundUnder(-AXLE_BACK, WHEEL_SIDE, WHEEL_RADIUS);
+        settle((left + right) / 2, (float) Math.toDegrees(Math.atan2(right - left, 2 * WHEEL_SIDE)));
+    }
+
     @Override
     protected float targetPitch(Entity puller) {
-        double axleY = getY() + AXLE_HEIGHT, tipAngle;
+        double axleY = groundY + AXLE_HEIGHT, tipAngle;
         if (puller != null) {
             double hitch = puller.getY() + (puller instanceof WagonEntity ? TOW_HEIGHT : puller.getBbHeight() * (puller instanceof Player ? 0.5 : 0.6));
             tipAngle = Math.atan2(hitch - axleY, position().subtract(pullPoint(puller)).horizontalDistance() + AXLE_BACK);
@@ -358,17 +368,15 @@ public class CartEntity extends TravoisEntity {
     /** Bodies lie side by side across the bed, lengthwise, each as wide as its room ({@link #rowOffset}). */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
-        Vec3 dir = Vec3.directionFromRotation(0, getYRot());
         if (passenger instanceof FelledLogEntity log) { // drawn at LOG_SCALE, lengthwise, its root end at the front board
-            double along = 0.75 - log.size() * LOG_SCALE / 2.0, rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch));
-            moveFunction.accept(passenger, getX() + dir.x * along, getY() + BED + rise, getZ() + dir.z * along);
+            double along = 0.75 - log.size() * LOG_SCALE / 2.0;
+            Vec3 at = onBed(along, 0, BED, -AXLE_BACK, AXLE_HEIGHT);
+            moveFunction.accept(passenger, at.x, at.y, at.z);
             log.setYRot(getYRot() + 180);
             return;
         }
-        double along = 0, side = rowOffset(passenger, 0.22);
-        Vec3 right = Vec3.directionFromRotation(0, getYRot() + 90);
-        double rise = (along + AXLE_BACK) * Math.sin(Math.toRadians(pitch)); // the bed tips about the axle (client only)
-        moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED + rise, getZ() + dir.z * along + right.z * side);
+        Vec3 at = onBed(0, rowOffset(passenger, 0.22), BED, -AXLE_BACK, AXLE_HEIGHT); // the bed tips about the axle (client only)
+        moveFunction.accept(passenger, at.x, at.y, at.z);
         passenger.setYRot(getYRot());
         if (passenger instanceof LivingEntity animal) { // livestock stand facing ahead
             animal.setYBodyRot(getYRot());

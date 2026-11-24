@@ -27,14 +27,18 @@ public class WagonModel extends Model<WagonModel.Pose> {
     private static final int RIM_SEGMENTS = 12, SPOKES = 3;
     /** Pole: 40 px from the front axle, tilted up 14 degrees to the horses' collar height at the yoke. */
     private static final float POLE_TILT = -0.245F;
-    private final ModelPart front, frontLeft, frontRight, rearLeft, rearRight, backBoard;
+    private final ModelPart front, pole, frontLeft, frontRight, rearLeft, rearRight, backBoard;
 
-    /** Wheel spin (radians, about x), the front axle's swing (radians, about y), and the back board off (a log on the bed). */
-    public record Pose(float spin, float steer, boolean open) {}
+    /**
+     * Wheel spin (radians, about x), the front axle's swing (radians, about y), the pole raised (radians, + up) from its
+     * rest tilt to reach the horses, and the back board off (a log on the bed).
+     */
+    public record Pose(float spin, float steer, float pole, boolean open) {}
 
     public WagonModel(ModelPart root) {
         super(root, RenderTypes::entityCutout);
         front = root.getChild("front");
+        pole = front.getChild("pole");
         frontLeft = front.getChild("left_wheel");
         frontRight = front.getChild("right_wheel");
         rearLeft = root.getChild("left_wheel");
@@ -46,6 +50,7 @@ public class WagonModel extends Model<WagonModel.Pose> {
     public void setupAnim(Pose pose) {
         super.setupAnim(pose);
         front.yRot = pose.steer();
+        pole.xRot = POLE_TILT - pose.pole();
         backBoard.visible = !pose.open();
         frontLeft.xRot = frontRight.xRot = rearLeft.xRot = rearRight.xRot = pose.spin();
     }
