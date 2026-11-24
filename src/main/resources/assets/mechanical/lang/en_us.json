@@ -3607,6 +3607,8 @@
   "block.mechanical.mortar_and_pestle": "Mortar and Pestle",
   "block.mechanical.sieve": "Sieve",
   "message.mechanical.crop.paddy": "needs water beside it (a flooded paddy)",
+  "block.mechanical.packed_ice_slab": "Packed Ice Slab",
+  "block.mechanical.packed_ice_stairs": "Packed Ice Stairs",
   "advancements.mechanical.stone_age.root.title": "Stone Age",
   "advancements.mechanical.stone_age.root.description": "Bare hands. Pick up Loose Rocks and Loose Flint lying on the ground",
   "advancements.mechanical.stone_age.plant_fibre.title": "Grass Roots",

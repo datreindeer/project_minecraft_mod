@@ -12,7 +12,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Anthill (myrstack): a wood ants' mound of spruce needles and twigs, a dome modelled in fine steps so it reads round
- * (OpenDecor.anthill, docs/biomes.md). SMALL is a low dome a block and a quarter across; a big mound is two blocks, its
+ * (OpenDecor.anthill, docs/biomes.md). SMALL is the low cap on the crown of a mound of Podzol and Coarse Dirt half blocks; a big mound is two blocks, its
  * BASE spreading two and a half blocks wide and its TOP rounding it off. Models and texture: scripts/gen_land_decor.py.
  */
 public class AnthillBlock extends Block {
@@ -26,7 +26,7 @@ public class AnthillBlock extends Block {
     }
 
     public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
-    private static final VoxelShape SMALL = box(2, 0, 2, 14, 10, 14), BASE = box(0, 0, 0, 16, 16, 16), TOP = box(3, 0, 3, 13, 9, 13);
+    private static final VoxelShape SMALL = box(1, 0, 1, 15, 11, 15), BASE = box(0, 0, 0, 16, 16, 16), TOP = box(3, 0, 3, 13, 9, 13);
 
     public AnthillBlock(Properties properties) {
         super(properties);

@@ -67,7 +67,7 @@ final class OpenDecor extends StoneAgeFeature {
             case LONE_TREE -> loneTree(level, generator, random, c);
             case FARM_WALLS -> farmWalls(level, random, c);
             case FIRE_RING -> fireRing(level, random, c);
-            case ROOT_CELLAR -> rootCellar(level, random, c, randomSide(random));
+            case ROOT_CELLAR -> rootCellar(level, random, c);
         };
         if (at != null) Decor.logPlaced(kind.name().toLowerCase(), at);
         return at != null;
@@ -159,36 +159,51 @@ final class OpenDecor extends StoneAgeFeature {
     }
 
     /**
-     * An anthill (myrstack): a wood ants' mound of needles and twigs, a smooth dome (Anthill: a small one a block and a
-     * quarter across, or a big one two blocks high and two and a half across), in a ragged skirt of the needles the ants
-     * drag in (Leaf Litter on Podzol) with twigs about it. In the coniferous forest, a few on open ground near it.
+     * An anthill (myrstack): a wood ants' mound, low and a little lopsided, 3-5 blocks across and up to a block and a half
+     * high, heaped of needles and crumbs: its flanks in half blocks of Podzol and Coarse Dirt (their slabs and stairs,
+     * Shaper) so it swells softly out of the forest floor, and only on its crown the Anthill itself, a small rounded cap of
+     * needles. Round it a ragged skirt of the needles the ants drag in (Leaf Litter on Podzol) and twigs. In the
+     * coniferous forest, a few on open ground near it.
      */
     private static BlockPos anthill(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!level.getBlockState(c.below()).is(BlockTags.SUBSTRATE_OVERWORLD) || !flat(level, c, 1, 0)) return null;
-        boolean big = random.nextInt(3) == 0;
-        if (big && !level.getBlockState(c.above()).canBeReplaced()) return null;
-        BlockState hill = Structures.ANTHILL.get().defaultBlockState();
-        // the mound's skirt: the ground under and around it worn to podzol, its plants gone (the big dome overhangs a block round)
-        int r = big ? 2 : 1;
+        if (!level.getBlockState(c.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) return Decor.reject("anthill:ground");
+        if (!flat(level, c, 2, 1)) return Decor.reject("anthill:not_flat");
+        for (int y = 0; y < 3; y++) if (!level.getBlockState(c.above(y)).canBeReplaced()) return Decor.reject("anthill:no_room");
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
+        boolean big = random.nextInt(3) > 0;
+        double rad = big ? 2.1 + random.nextDouble() * 0.6 : 1.5 + random.nextDouble() * 0.4, hmax = big ? 1.5 + random.nextDouble() * 0.3 : 1.25;
+        // a little lopsided: the crown off the middle toward the sun, the flank there steeper
+        double ox = c.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4, oz = c.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4;
+        double sx = 1 + (random.nextDouble() - 0.5) * 0.35, sz = 1 + (random.nextDouble() - 0.5) * 0.35;
+        int g = c.getY();
+        Shaper.Density mound = (x, y, z) -> {
+            double e = Math.sqrt(sq((x - ox) / (rad * sx)) + sq((z - oz) / (rad * sz))) + 0.2 * noise.get(x * 0.6, z * 0.6);
+            // a blunt cone, not a dome: the flanks climb steadily to a rounded crown
+            return e >= 1 ? -1 : g - 0.1 + hmax * Math.pow(1 - e, 1.15) * (1 + 0.25 * e) - y;
+        };
+        // podzol (the needle heap) over most of it, coarse dirt where the ants' digging shows through low down
+        Shaper.Stone stuff = p -> p.getY() < g + 1 && noise.get(p.getX() * 0.6 + 5, p.getZ() * 0.6) > 0.35 ? Blocks.COARSE_DIRT : Blocks.PODZOL;
+        int r = (int) Math.ceil(rad) + 1;
+        for (int dx = -r - 2; dx <= r + 2; dx++) for (int dz = -r - 2; dz <= r + 2; dz++) clear(level, top(level, c.getX() + dx, c.getZ() + dz));
+        var cells = Shaper.build(level, c.getX() - r, g, c.getZ() - r, c.getX() + r, g + 2, c.getZ() + r, mound, stuff, Blocks.COARSE_DIRT);
+        if (cells.size() < 4) return Decor.reject("anthill:small");
+        // the crown: the cap on the highest full block of the middle (in place of a half block lying on it)
+        BlockPos crown = c;
+        while (crown.getY() < g + 3 && !level.getBlockState(crown).canBeReplaced() && level.getBlockState(crown).isCollisionShapeFullBlock(level, crown)) crown = crown.above();
+        set(level, crown, Structures.ANTHILL.get().defaultBlockState());
+        // the skirt: the ground round it worn to podzol, loose needles and twigs the ants drag in
         for (int dx = -r - 2; dx <= r + 2; dx++)
             for (int dz = -r - 2; dz <= r + 2; dz++) {
                 BlockPos t = top(level, c.getX() + dx, c.getZ() + dz);
-                if (Math.abs(t.getY() - c.getY()) > 1 || !dryNatural(level, t.below())) continue;
-                double d = Math.sqrt(dx * dx + dz * dz) + 0.6 * noise.get(dx * 0.6, dz * 0.6);
-                if (d <= r + 0.5) {
-                    for (int y = 0; y < 2; y++) if (!level.getBlockState(t.above(y)).isAir() && level.getBlockState(t.above(y)).canBeReplaced()) set(level, t.above(y), AIR);
-                    if (level.getBlockState(t.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) set(level, t.below(), Blocks.PODZOL.defaultBlockState());
-                } else if (d <= r + 2.2 && random.nextInt(5) > 0) { // the ring of loose needles the ants drag in
-                    clear(level, t);
-                    if (random.nextInt(4) == 0) onGround(level, t, Mechanical.TWIGS.get().defaultBlockState());
-                    else litter(level, random, t);
-                }
+                if (Math.abs(t.getY() - g) > 1 || !dryNatural(level, t.below())) continue;
+                double d = Math.sqrt(sq(c.getX() + dx + 0.5 - ox) + sq(c.getZ() + dz + 0.5 - oz)) - rad + 0.6 * noise.get(dx * 0.6, dz * 0.6);
+                if (d > 2.2 || d < -0.2) continue;
+                if (level.getBlockState(t.below()).is(BlockTags.SUBSTRATE_OVERWORLD) && random.nextInt(3) > 0) set(level, t.below(), Blocks.PODZOL.defaultBlockState());
+                if (random.nextInt(5) == 0) continue;
+                if (random.nextInt(4) == 0) onGround(level, t, Mechanical.TWIGS.get().defaultBlockState());
+                else litter(level, random, t);
             }
-        if (big) {
-            set(level, c, hill.setValue(AnthillBlock.PART, AnthillBlock.Part.BASE));
-            set(level, c.above(), hill.setValue(AnthillBlock.PART, AnthillBlock.Part.TOP));
-        } else set(level, c, hill);
+        for (BlockPos p : Shaper.tops(level, cells)) if (!p.equals(crown.below()) && random.nextInt(3) == 0) litter(level, random, p.above());
         return c;
     }
 
@@ -220,20 +235,21 @@ final class OpenDecor extends StoneAgeFeature {
      * course of big stones (Fieldstone, Mossy Cobblestone) with Dry Stone Wall on top in the stretches still standing,
      * Fieldstone Slabs where the top course has slid off, long runs fallen to stones in the grass with some tumbled out
      * beside them; moss on the stones, grass and ferns crowding their feet. A gateway between two taller stones, the
-     * corner of a house inside (its foundation course and a heap of hearth stones) with nettles, which follow people,
-     * and now and then the farm's root cellar dug in nearby. Plains only, rare.
+     * corner of a house inside (its foundation course and a heap of hearth stones) with nettles, which follow people.
+     * Only on a level, dry stretch of the plains with no water near; rare.
      */
     private static BlockPos farmWalls(WorldGenLevel level, RandomSource random, BlockPos c) {
         int w = 11 + random.nextInt(7), d = 9 + random.nextInt(6);
         int blocked = 0; // a bush or a lone tree in the field is fine, a slope or a pond is not
-        for (int x = -w / 2; x <= w / 2; x += 2)
-            for (int z = -d / 2; z <= d / 2; z += 2) {
+        for (int x = -w / 2 - 3; x <= w / 2 + 3; x += 2)
+            for (int z = -d / 2 - 3; z <= d / 2 + 3; z += 2) {
                 BlockPos t = top(level, c.getX() + x, c.getZ() + z);
-                if (!level.getFluidState(t).isEmpty()) return null;
+                if (!level.getFluidState(t).isEmpty() || !level.getFluidState(t.below()).isEmpty()) return Decor.reject("farm_walls:water");
+                if (Math.abs(x) > w / 2 || Math.abs(z) > d / 2) continue; // round the field: only no water
                 if (!dryNatural(level, t.below()) || !level.getBlockState(t).canBeReplaced()) blocked++; // a tree's crown or a bush
-                else if (Math.abs(t.getY() - c.getY()) > 2) return null;
+                else if (Math.abs(t.getY() - c.getY()) > 1) return Decor.reject("farm_walls:not_level");
             }
-        if (blocked > 4) return null;
+        if (blocked > 4) return Decor.reject("farm_walls:wooded");
         // the corners, each pushed a little off square, and the sides between them bowing
         double[][] k = new double[4][];
         int[][] sq = {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
@@ -329,101 +345,112 @@ final class OpenDecor extends StoneAgeFeature {
             BlockPos p = top(level, hx + sx * random.nextInt(5), hz + sz * random.nextInt(5));
             if (level.getBlockState(p).isAir() && nettle.canSurvive(level, p)) set(level, p, nettle);
         }
-        // the root cellar the farm kept its turnips in, in the yard, its door toward the house
-        if (random.nextInt(3) == 0 && Math.min(w, d) >= 12) {
-            int dx = hx - c.getX(), dz = hz - c.getZ();
-            Direction toHouse = Math.abs(dx) > Math.abs(dz) ? (dx > 0 ? Direction.EAST : Direction.WEST) : (dz > 0 ? Direction.SOUTH : Direction.NORTH);
-            rootCellar(level, random, top(level, c.relative(toHouse.getOpposite(), 1)), toHouse);
-        }
         return c;
     }
 
     /**
-     * A root cellar (jordkällare): an old store room dug two blocks into the ground and heaped over with earth, a grassy
-     * mound 9-12 across standing 3-4 above the land, its turf smooth in half blocks (Grass Slab, Grass Stairs), so the
-     * room is covered all over. In front a face of dry-laid Fieldstone with a low doorway, a big stone across its top and
-     * an old Spruce Door; two steps down to it between little wing walls. Inside, a room three wide and four deep, walled
-     * and vaulted in Fieldstone (its ceiling's edges in upside-down stairs), a floor of trodden earth, a shelf of planks at
-     * the back, pots (one holding what was stored there), cobwebs in the corners. Nettles at the door. Rare, on plains and
-     * meadows, and now and then by an abandoned farm's walls.
+     * A root cellar (jordkällare): an old store room dug into the foot of a hillside, only its stone face showing. The
+     * face of dry-laid Fieldstone with a low doorway, a big stone across its top and an old Spruce Door, set into the
+     * slope with turf running on over it; the hill over the room rounded out with earth where it is too thin (a mound
+     * smooth in half blocks, Grass Slab and Grass Stairs, that runs into the hillside), and in front a little yard cut
+     * into the slope, held on both sides by wing walls that step down with the banks of earth behind them. Inside, a room
+     * three wide and four deep, walled and vaulted in Fieldstone (its ceiling's edges in upside-down stairs), a floor of
+     * trodden earth, a shelf of planks at the back, pots (one holding what was stored there), cobwebs in the corners.
+     * Nettles at the door. Only where a hillside rises behind level ground; rare, on plains, meadows and downs.
      */
-    static BlockPos rootCellar(WorldGenLevel level, RandomSource random, BlockPos c, Direction face) {
-        if (!level.getBlockState(c.below()).is(BlockTags.SUBSTRATE_OVERWORLD) || !flat(level, c, 4, 1) || ForestDecor.woodNear(level, c, 3) != null) return null;
+    static BlockPos rootCellar(WorldGenLevel level, RandomSource random, BlockPos c) {
+        if (!level.getBlockState(c.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) return Decor.reject("root_cellar:ground");
+        if (ForestDecor.woodNear(level, c, 4) != null) return Decor.reject("root_cellar:wood");
+        int g = c.getY();
+        // the hillside: which way the land rises behind c, steadily but not as a cliff, with level ground in front
+        Direction face = null;
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            if (hillside(level, c, d)) {
+                face = d;
+                break;
+            }
+        }
+        if (face == null) return Decor.reject("root_cellar:no_slope");
         Direction back = face.getOpposite(), right = face.getClockWise();
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
-        int g = c.getY(), y0 = g - 2; // the land's first free block, the cellar's floor two below it (its vault flush with the land)
-        // the room: s -1..1 across, a 1..4 back from the face (a 0), floor y0, two high
         BlockPos o = c; // the face's middle at the doorway
         java.util.function.BiFunction<Integer, Integer, BlockPos> at = (a, s) -> o.relative(back, a).relative(right, s);
-        // 1. the mound: a lopsided dome over the room, highest a little behind its middle, cut off at the face
-        double mx = o.getX() + 0.5 + back.getStepX() * 2.6, mz = o.getZ() + 0.5 + back.getStepZ() * 2.6;
-        double ra = 5.2 + random.nextDouble(), rs = 4.4 + random.nextDouble() * 0.8, hm = 3.4 + random.nextDouble() * 0.6;
         int bx = back.getStepX(), bz = back.getStepZ(), rx = right.getStepX(), rz = right.getStepZ();
-        Shaper.Density mound = (x, y, z) -> {
-            double dx = x - mx, dz = z - mz, a = dx * bx + dz * bz, s = dx * rx + dz * rz;
-            if (a < -2.6) return -1; // the face
-            double e = Math.sqrt(sq(a / ra) + sq(s / rs)) + 0.1 * noise.get(x * 0.4, z * 0.4);
-            return e >= 1 ? -1 : g - 0.4 + hm * Math.pow(1 - e * e, 0.8) - y;
+        // 1. the earth: a broad round mound over the room (its peak over the room's middle) and banks flanking the yard,
+        // stepping down toward the front; laid only above the land, so where the hill is higher it stays as it is
+        double ra = 4.4 + random.nextDouble() * 0.6, rs = 3.9 + random.nextDouble() * 0.5, hm = 3.7 + random.nextDouble() * 0.5;
+        int r = 8;
+        java.util.Map<Long, Integer> groundY = new java.util.HashMap<>();
+        for (int dx = -r; dx <= r; dx++)
+            for (int dz = -r; dz <= r; dz++) groundY.put(BlockPos.asLong(o.getX() + dx, 0, o.getZ() + dz), top(level, o.getX() + dx, o.getZ() + dz).getY());
+        Shaper.Density earthTop = (x, y, z) -> {
+            Integer gy = groundY.get(BlockPos.asLong((int) Math.floor(x), 0, (int) Math.floor(z)));
+            if (gy == null || y < gy) return -1;
+            double ax = (x - o.getX() - 0.5) * bx + (z - o.getZ() - 0.5) * bz, sx = (x - o.getX() - 0.5) * rx + (z - o.getZ() - 0.5) * rz;
+            double n = 0.12 * noise.get(x * 0.35, z * 0.35), top = -9;
+            if (ax >= -0.5) { // the mound
+                double e = Math.sqrt(sq((ax - 2.5) / ra) + sq(sx / rs)) + n;
+                if (e < 1) top = g + hm * Math.sqrt(1 - e * e);
+            }
+            double side = Math.abs(sx);
+            if (ax > -3 && ax < 0.5 && side > 1.5 && side < 5) // the banks beside the yard, low toward the front and outward
+                top = Math.max(top, g + (2.9 + ax * 0.95) * Math.min(1, (5 - side) / 2.5) + n);
+            return top - y;
         };
-        Shaper.Stone earth = p -> mound.at(p.getX() + 0.5, p.getY() + 1.5, p.getZ() + 0.5) > 0 ? Blocks.DIRT : Blocks.GRASS_BLOCK;
-        int r = 9;
+        Shaper.Stone earth = p -> earthTop.at(p.getX() + 0.5, p.getY() + 1.25, p.getZ() + 0.5) > 0 ? Blocks.DIRT : Blocks.GRASS_BLOCK;
         for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++) clear(level, top(level, o.getX() + dx, o.getZ() + dz));
-        var turf = Shaper.build(level, o.getX() - r, g - 1, o.getZ() - r, o.getX() + r, g + 4, o.getZ() + r, mound, earth, null);
-        if (turf.size() < 20) return null;
-        // 2. the room and its walls: Fieldstone round a hollow two high, vaulted
+        var turf = Shaper.build(level, o.getX() - r, g - 1, o.getZ() - r, o.getX() + r, g + 6, o.getZ() + r, earthTop, earth, null);
+        // 2. the yard in front, cut level into the slope
+        for (int a = -3; a <= -1; a++)
+            for (int s = -1; s <= 1; s++) {
+                BlockPos p = at.apply(a, s).atY(g);
+                for (int y = 0; y <= 4; y++) if (!level.getBlockState(p.above(y)).isAir()) set(level, p.above(y), AIR);
+                BlockState under = level.getBlockState(p.below());
+                if (!under.is(BlockTags.SUBSTRATE_OVERWORLD) || under.is(Blocks.DIRT)) set(level, p.below(), Blocks.GRASS_BLOCK.defaultBlockState());
+            }
+        // 3. the room and its walls: Fieldstone round a hollow two high, vaulted
         BlockState stone = EarthBlocks.FIELDSTONE.get().defaultBlockState();
         for (int a = 0; a <= 5; a++)
             for (int s = -2; s <= 2; s++)
-                for (int y = y0 - 1; y <= y0 + 2; y++) {
+                for (int y = g - 1; y <= g + 2; y++) {
                     BlockPos p = at.apply(a, s).atY(y);
-                    boolean inside = a >= 1 && a <= 4 && Math.abs(s) <= 1 && y >= y0 && y <= y0 + 1;
-                    boolean shell = !inside && (a <= 5 && Math.abs(s) <= 2);
+                    boolean inside = a >= 1 && a <= 4 && Math.abs(s) <= 1 && y >= g && y <= g + 1;
                     if (inside) set(level, p, AIR);
-                    else if (shell && (y > y0 - 1 || a > 0)) set(level, p, random.nextInt(6) == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : stone);
+                    else if (a > 0 || Math.abs(s) <= 1) set(level, p, random.nextInt(6) == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : stone);
                 }
-        // the vault: upside-down stairs along the ceiling's two long edges
         for (int a = 1; a <= 4; a++)
             for (int s : new int[] {-1, 1}) {
                 Direction toWall = s < 0 ? right.getOpposite() : right;
-                set(level, at.apply(a, s).atY(y0 + 1), EarthBlocks.FIELDSTONE_STAIRS.get().defaultBlockState()
+                set(level, at.apply(a, s).atY(g + 1), EarthBlocks.FIELDSTONE_STAIRS.get().defaultBlockState()
                         .setValue(net.minecraft.world.level.block.StairBlock.FACING, toWall).setValue(net.minecraft.world.level.block.StairBlock.HALF, net.minecraft.world.level.block.state.properties.Half.TOP));
             }
-        // the floor of trodden earth; the face: a big stone over the doorway, the door
-        for (int a = 1; a <= 4; a++) for (int s = -1; s <= 1; s++) set(level, at.apply(a, s).atY(y0 - 1), (random.nextInt(3) == 0 ? Blocks.COARSE_DIRT : Blocks.PACKED_MUD).defaultBlockState());
-        set(level, at.apply(0, 0).atY(y0 + 2), Blocks.STONE.defaultBlockState()); // the lintel
-        set(level, at.apply(0, -1).atY(y0 + 2), stone);
-        set(level, at.apply(0, 1).atY(y0 + 2), stone);
+        for (int a = 1; a <= 4; a++) for (int s = -1; s <= 1; s++) set(level, at.apply(a, s).atY(g - 1), (random.nextInt(3) == 0 ? Blocks.COARSE_DIRT : Blocks.PACKED_MUD).defaultBlockState());
+        // the face: a big stone over the doorway, the door
+        set(level, at.apply(0, 0).atY(g + 2), Blocks.STONE.defaultBlockState()); // the lintel
         BlockState door = Blocks.SPRUCE_DOOR.defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.FACING, back)
                 .setValue(net.minecraft.world.level.block.DoorBlock.HINGE, random.nextBoolean() ? net.minecraft.world.level.block.state.properties.DoorHingeSide.LEFT : net.minecraft.world.level.block.state.properties.DoorHingeSide.RIGHT);
-        set(level, at.apply(0, 0).atY(y0), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER));
-        set(level, at.apply(0, 0).atY(y0 + 1), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER));
-        // the face goes on up where the mound is cut off behind it, a slab on top; the entry: two steps down between wing walls
-        for (int s = -2; s <= 2; s++) {
-            int y = y0 + 3;
-            for (; y <= g + 3 && !level.getBlockState(at.apply(1, s).atY(y)).canBeReplaced(); y++) set(level, at.apply(0, s).atY(y), stone);
-            if (level.getBlockState(at.apply(0, s).atY(y)).canBeReplaced()) set(level, at.apply(0, s).atY(y), EarthBlocks.FIELDSTONE_SLAB.get().defaultBlockState());
+        set(level, at.apply(0, 0).atY(g), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER));
+        set(level, at.apply(0, 0).atY(g + 1), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER));
+        // over the lintel the turf runs on: a grass slab lip where the mound left the top of the face bare
+        for (int s = -1; s <= 1; s++) {
+            BlockPos p = at.apply(0, s).atY(g + 3);
+            if (level.getBlockState(p).canBeReplaced()) set(level, p, EarthBlocks.GRASS_SLAB.get().defaultBlockState());
         }
-        for (int a = -1; a >= -2; a--)
-            for (int s : new int[] {-1, 1}) {
-                set(level, at.apply(a, s).atY(y0), stone);
-                set(level, at.apply(a, s).atY(y0 + 1), stone);
-                if (a == -1 && random.nextBoolean()) set(level, at.apply(a, s).atY(g), EarthBlocks.FIELDSTONE_SLAB.get().defaultBlockState());
+        // the wing walls: along both sides of the yard, stepping down with the banks behind them
+        for (int a = 0; a >= -2; a--)
+            for (int s : new int[] {-2, 2}) {
+                int hw = a == 0 ? 3 : a == -1 ? 2 : 1;
+                for (int y = g - 1; y < g + hw; y++) set(level, at.apply(a, s).atY(y), random.nextInt(5) == 0 ? Blocks.MOSSY_COBBLESTONE.defaultBlockState() : stone);
+                BlockPos cap = at.apply(a, s).atY(g + hw);
+                if (level.getBlockState(cap).canBeReplaced() || level.getBlockState(cap).is(EarthBlocks.GRASS_SLAB.get()))
+                    set(level, cap, (random.nextInt(3) == 0 ? EarthBlocks.GRASS_SLAB.get() : EarthBlocks.FIELDSTONE_SLAB.get()).defaultBlockState());
             }
-        BlockPos pit = at.apply(-1, 0).atY(y0);
-        for (int y = 0; y <= 2; y++) set(level, pit.above(y), AIR);
-        set(level, pit.below(), Blocks.PACKED_MUD.defaultBlockState());
-        BlockState stair = EarthBlocks.FIELDSTONE_STAIRS.get().defaultBlockState().setValue(net.minecraft.world.level.block.StairBlock.FACING, face);
-        set(level, at.apply(-2, 0).atY(y0), stair);
-        set(level, at.apply(-2, 0).atY(y0 + 1), AIR);
-        clear(level, at.apply(-2, 0).atY(g));
-        set(level, at.apply(-3, 0).atY(y0 + 1), stair);
-        clear(level, at.apply(-3, 0).atY(g));
-        // 3. inside: a shelf at the back, pots, cobwebs
+        // 4. inside: a shelf at the back, pots, cobwebs
         for (int s = -1; s <= 1; s++)
-            set(level, at.apply(4, s).atY(y0), Blocks.SPRUCE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.TOP));
-        pot(level, random, at.apply(3, random.nextBoolean() ? -1 : 1).atY(y0), "root_cellar");
-        if (random.nextBoolean()) set(level, at.apply(4, random.nextInt(3) - 1).atY(y0 + 1), Blocks.DECORATED_POT.defaultBlockState());
-        for (int s : new int[] {-1, 1}) if (random.nextBoolean()) set(level, at.apply(random.nextBoolean() ? 1 : 4, s).atY(y0 + 1), Blocks.COBWEB.defaultBlockState());
+            set(level, at.apply(4, s).atY(g), Blocks.SPRUCE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.TOP));
+        pot(level, random, at.apply(3, random.nextBoolean() ? -1 : 1).atY(g), "root_cellar");
+        if (random.nextBoolean()) set(level, at.apply(4, random.nextInt(3) - 1).atY(g + 1), Blocks.DECORATED_POT.defaultBlockState());
+        for (int s : new int[] {-1, 1}) if (random.nextBoolean()) set(level, at.apply(random.nextBoolean() ? 1 : 4, s).atY(g + 1), Blocks.COBWEB.defaultBlockState());
         // the turf: grass and ferns on the mound, nettles by the door
         for (Shaper.Cell k : turf) {
             BlockPos p = k.pos().above();
@@ -433,11 +460,27 @@ final class OpenDecor extends StoneAgeFeature {
         }
         BlockState nettle = Spinning.STINGING_NETTLE.get().defaultBlockState();
         for (int i = 0; i < 6; i++) {
-            BlockPos p = top(level, at.apply(-1 - random.nextInt(3), random.nextInt(7) - 3));
+            BlockPos p = top(level, at.apply(-1 - random.nextInt(3), random.nextInt(5) - 2));
             if (level.getBlockState(p).isAir() && nettle.canSurvive(level, p)) set(level, p, nettle);
         }
         Decor.logPlaced("root_cellar_dir_" + Decor.viewAngle(face), at.apply(-1, 0).atY(g));
         return at.apply(-1, 0).atY(g);
+    }
+
+    /** Behind c (away from face) the land rises steadily, 1-3 by 2 out, 2 by 4, 3-6 by 6, all across 3; in front it lies level; all dry ground. */
+    private static boolean hillside(WorldGenLevel level, BlockPos c, Direction face) {
+        Direction back = face.getOpposite(), right = face.getClockWise();
+        for (int s = -1; s <= 1; s++) {
+            int[] h = new int[10];
+            for (int a = -3; a <= 6; a++) {
+                BlockPos t = top(level, c.relative(back, a).relative(right, s));
+                if (!dryNatural(level, t.below())) return false;
+                h[a + 3] = t.getY() - c.getY();
+            }
+            if (h[5] < 1 || h[7] < 2 || h[9] < 3 || h[9] > 6 || h[4] > 2 || h[5] > 3) return false; // a slope, not a wall
+            for (int a = 0; a < 3; a++) if (Math.abs(h[a]) > 1) return false;
+        }
+        return true;
     }
 
     /** One stone of a dry-stone wall: mostly Fieldstone, some mossy, a few plain cobbles. */

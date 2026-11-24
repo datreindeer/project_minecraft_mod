@@ -183,6 +183,14 @@ Outcrop**. Byggda men av efter granskningen 2026-11-24: Dry Creek, Frost Split, 
 jordkällare (feature `root_cellar`). Fortfarande av, med skäl i `docs/biomes.md`: Talus, Fallen Rock, Bird Cliff, Rock
 Overhang, Snow Patch, Ice Blocks, Farm Walls och enar på slätten. Bilder:
 `docs/shots/terrain/fas4b_*.png`.
+**Byggt (fas 4, tredje omgången, v0.195.0):** placeringen rättad först (räknat med `Decor.reject` hur många försök som
+ger upp och varför), sedan utseendet, i naturligt genererade provvärldar. Nu på: **Dry Creek** (långa slingrande fåror ur
+ett världsomspännande brusmönster, varje chunk lägger sin bit, aldrig vatten), **Snow Patch** (under den eviga snön, från
+y 115), **Anthill** (låg kon av Podzol- och Coarse Dirt-halvblock med blocket Anthill som topp), **Ice Blocks** (nya
+block Packed Ice Slab och Packed Ice Stairs ger lutande isflak) och **Root Cellar** (bara i riktiga sluttningar, fronten
+insatt i backen, gård mellan vingmurar). Alla fem läggs även av `Retrogen`. Fortfarande av, med skäl i `docs/biomes.md`:
+Talus, Fallen Rock, Bird Cliff, Rock Overhang, Frost Split, Farm Walls och enar på slätten. Bilder:
+`docs/shots/terrain/fas4c_*.png`.
 
 **Byggt (Scorched Barrens omgjord, v0.183.0):** marken mörkgrå Wood Ash och Burnt Soil (nytt, med slab) i stället för
 nästan vit aska, grus och orange Coarse Dirt; brända träd i många former med Charred Branch och Charred Twig (nya), fallna

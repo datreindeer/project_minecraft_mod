@@ -87,6 +87,7 @@ public final class Retrogen {
             // mountains, open ground, dry and cold land (gen_land_decor.py; waterfalls add water and lone trees are trees, both left
             // out, and so is everything switched off there)
             "bone_remains", "fire_ring", "sand_skeleton", "mammoth_tusks", "rock_arch", "dead_tree", "rock_outcrop",
+            "dry_creek", "snow_patch", "anthill", "anthill_open", "ice_blocks", "root_cellar",
             // flowers and berry thickets (gen_flora.py)
             "pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
             "great_mullein", "desert_candle", "fern_flower", "frost_lily", "blackthorn_thicket", "sea_buckthorn_thicket", "jujube_thicket",

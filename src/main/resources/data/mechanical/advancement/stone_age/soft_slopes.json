@@ -140,6 +140,26 @@
           }
         ]
       }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_ice_slab"
+          }
+        ]
+      }
+    },
+    "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:packed_ice_stairs"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -157,7 +177,9 @@
       "has_10",
       "has_11",
       "has_12",
-      "has_13"
+      "has_13",
+      "has_14",
+      "has_15"
     ]
   ],
   "display": {

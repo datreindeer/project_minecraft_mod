@@ -2933,6 +2933,10 @@ inte), Gravel, Moss Block, Mud, Peat, Loess, Wood Ash och Burnt Soil (**... Slab
 Slab (årstidsfärg, snöig, dör under tätt block, släpper Dirt Stairs); Podzol Slab släpper Dirt Slab utan Silk Touch.
 Worldgen lägger dem på varje 1-blockssteg (`docs/biomes.md`). Advancement: *Soft Slopes*.
 
+**Packed Ice Slab** → 6: `[Packed Ice][Packed Ice][Packed Ice]`, **Packed Ice Stairs** → 4 (trappform). Halkiga som Packed
+Ice, hackas med pickaxe och släpper sig själva bara med Silk Touch. Naturliga i kall mark: isblocken på de snöiga
+slätterna (Ice Blocks) får sina lutande kanter av dem. Räknas till *Soft Slopes*.
+
 **Reed Thatch** → 1, **Reed Thatch Roof** → 4, av **Dried Reed** (Reed torkad på en Drying Rack, 4 min):
 ```
 [Dried Reed][Dried Reed]        [Dried Reed][          ]

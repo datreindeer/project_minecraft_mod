@@ -39,7 +39,7 @@ public class TallWildFlowerBlock extends DoublePlantBlock {
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState s = super.getStateForPlacement(context);
-        return s == null ? null : s.setValue(WildFlowerBlock.BLOOMING, bloom.now(context.getLevel()));
+        return s == null ? null : s.setValue(WildFlowerBlock.BLOOMING, bloom.now(context.getLevel(), context.getClickedPos()));
     }
 
     /** The top half blooms like the bottom one (vanilla puts a default top). */
@@ -56,7 +56,7 @@ public class TallWildFlowerBlock extends DoublePlantBlock {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        boolean now = bloom.now(level);
+        boolean now = bloom.now(level, pos);
         if (state.getValue(WildFlowerBlock.BLOOMING) == now) return;
         level.setBlock(pos, state.setValue(WildFlowerBlock.BLOOMING, now), Block.UPDATE_CLIENTS);
         BlockState top = level.getBlockState(pos.above());

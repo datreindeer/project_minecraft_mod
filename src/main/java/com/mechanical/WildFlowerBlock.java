@@ -43,9 +43,9 @@ public class WildFlowerBlock extends VegetationBlock {
             return (seasons >> season & 1) != 0 && (!night || dark) && (!fullMoon || full);
         }
 
-        public boolean now(Level level) {
+        public boolean now(Level level, net.minecraft.core.BlockPos pos) {
             return at(Calendar.season(level.getOverworldClockTime()), level.isDarkOutside(),
-                    level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE) == MoonPhase.FULL_MOON);
+                    level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos) == MoonPhase.FULL_MOON);
         }
     }
 
@@ -84,7 +84,7 @@ public class WildFlowerBlock extends VegetationBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(BLOOMING, bloom.now(context.getLevel()));
+        return defaultBlockState().setValue(BLOOMING, bloom.now(context.getLevel(), context.getClickedPos()));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class WildFlowerBlock extends VegetationBlock {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        boolean now = bloom.now(level);
+        boolean now = bloom.now(level, pos);
         if (state.getValue(BLOOMING) != now) level.setBlock(pos, state.setValue(BLOOMING, now), Block.UPDATE_CLIENTS);
     }
 

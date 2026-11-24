@@ -550,6 +550,8 @@
     "mechanical:loose_gypsum",
     "mechanical:loose_alabaster",
     "mechanical:loose_alum_shale",
+    "mechanical:packed_ice_slab",
+    "mechanical:packed_ice_stairs",
     "mechanical:iron_bellows",
     "mechanical:smithing_hearth",
     "mechanical:rune_blackstone",

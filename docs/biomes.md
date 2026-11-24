@@ -189,6 +189,12 @@ och *Dam Builders* (står man på en Beaver Dam räknas den nu också, inte bara
 
 **Täthet** (seed 20261123, antal per 256 × 256 block kring där biomen hittades, området blandar in grannbiomer):
 
+**Täthet, tredje omgången** (v0.195.0, seed 20261123, 31 områden om 12 × 12 chunks som `locate biome` hittade, 4 464
+chunks, `DECOR_TEST` = tätare försök; omräknat till de riktiga försöken per 1 000 chunks över alla områden): Anthill ~54,
+Dry Creek 13 chunks med fåra (ungefär var fjortonde chunk i torrt land; samma i riktigt spel), Snow Patch ~2,5, Ice Blocks
+~3,5, Root Cellar ~0,5. Avstängda (provvärden): Talus 14, Fallen Rock 4, Bird Cliff 0,4, Rock Overhang 11, Frost Split
+27, Farm Walls 8.
+
 | Område | Fallen Log | Snag | Root Plate | Mossy Stones | Log Bridge | Beaver Dam | Reed Belt | Driftwood | Gravel Bar | Spring |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Forest | 28 | 10 | 0 | 7 | 2 | 0 | 11 | 0 | 0 | 0 |
@@ -251,40 +257,54 @@ oregelbunden i stället för kantig.
 - **Valley waterfall**, **Bone remains**, **Sand skeleton**, **Mammoth tusks**, **Lone tree** och **Fire ring**: som
   förut (bilder `fas4_*.png`).
 
+På sedan v0.195.0 (tredje omgången, granskad i naturligt genererade provvärldar med `DECOR_TEST=1`, se täthet nedan):
+
+- **Dry creek:** helt omgjord. Inte längre en kort fåra per försök utan ett världsomspännande mönster: bäcken går längs
+  nollinjen av ett jämnt brus (vickat av ett finare), ett långsamt brus säger var bäckar finns alls, så varje fåra blir en
+  lång slingrande sträcka (hundra block och mer) som smalnar av till inget i båda ändar. Varje chunk lägger sin egen bit
+  (placeringen körs en gång per chunk), så fårorna går över chunkgränser. Kanalen ett block ner och 1–3 bred, sidorna ett
+  halvt steg ner (Gravel Slab nära kanalen, annars markens egen slab), botten som förut (grus, sand/jord i drivor, Packed
+  Mud där den är djupast, småsten), döda buskar och torrt gräs bortom kanten, ibland en blekt gren. Aldrig vatten: bara i
+  biomer utan regn, där marken lutar högst 2 över 4 block, och aldrig inom 9 block från vatten. Bilder
+  `fas4c_dry_creek*.png`.
+- **Snow patch:** flyttad ner under den eviga snön, där den syns: från y 115 i svala berg (y 150 i varma som Stony Peaks),
+  aldrig där snön ligger året runt (`Thaw.coldAllYear`) eller marken redan är snö. Fläcken av Snow Block nedsänkt i en
+  svacka med Coarse Dirt och grus i kanten (inte längre Mud, som blev svarta hål). Bäst på de grå bergssidorna i Stony
+  Peaks. Bilder `fas4c_snow_patch*.png`.
+- **Anthill:** inte längre en stor kupolmodell. Stacken byggs av `Shaper` som en låg, lite sned, trubbig kon 3–5 bred och
+  upp till ett och ett halvt block hög av Podzol och Coarse Dirt i halvblock (slabs, trappor), och bara på krönet sitter
+  blocket Anthill, nu en liten rundad topp av barr (modellen `anthill_small`, samma textur genom alla skikt så att inga
+  ränder syns). Kjol av Leaf Litter och kvistar runt. Bilder `fas4c_anthill*.png`.
+- **Ice blocks:** nya block **Packed Ice Slab** och **Packed Ice Stairs** (`EarthBlocks`, `gen_dirt_slab.py`, halkiga,
+  Silk Touch), så `Shaper` kan luta isbitarna. Bitarna är nu tjocka men flata skivor tippade åt alla håll. Läses som
+  lösbrutna isflak i snön; ibland syns en liten grop med jord bredvid en bit. Bilder `fas4c_ice_blocks*.png`.
+- **Root cellar:** omgjord för sluttningar. Läggs bara där marken stiger stadigt bakom en plan plats (1–3 upp två block in,
+  2 fyra in, 3–6 sex in, över tre blocks bredd), så att fronten sitter i en riktig sluttning. Rummet ligger i markplan
+  in i backen, jord läggs på i halvblock bara där kullen över rummet är för tunn (den smälter ihop med backen), en
+  grästorvskant över överliggaren, och framför en gård skuren i sluttningen mellan vingmurar som trappar ner (3, 2, 1
+  högt). Inga trappsteg ner längre. Gårdsmurarna (Farm Walls) lägger inte längre någon jordkällare (de står på plan mark).
+  Slätter, ängar, Hazel Meadow, Chalk Downs och Windswept Hills, 1 på 12 chunks försök. Bilder `fas4c_root_cellar*.png`.
+
 ### Avstängt (byggt men håller inte måttet)
 
-Prövat igen i v0.187.0 med naturligt genererade provvärldar (allt på och tätare, `DECOR_TEST=1 python
-scripts/gen_land_decor.py`), men fortfarande inte bra nog:
+Prövat en tredje gång i v0.195.0 (placeringen först, med räkning av varför försöken ger upp: `Decor.reject`, loggas
+med `decorlog.flag`):
 
-- **Dry creek:** gjord om till en lång (38–48 steg), slingrande, grund fåra med grus längs mitten, Packed Mud där den är
-  djupast, sidor av Gravel Slab, småsten och torrt högt gräs vid kanterna, aldrig inom 8 block från vatten och bara där
-  hela sträckan ligger plant. Men i världen blir den för kort och ser ut som en grop med grått grus; av (granskning
-  2026-11-24).
-- **Frost split:** nu ett rundat block kluvet av en enda rak spricka ett halvt block bred med snö i, halvorna matchar.
-  Men blocket blir för kantigt (raka sidor) och läses fortfarande som två klumpar; av.
-- **Anthill:** nytt block Anthill (kupol i fina, ojämna skikt, knölar, ospräcklig textur av barr och smulor, oskuggade
-  ytor) med en ring av lösa barr runt. Men de stora läses fortfarande som en randig limpa eller bikupa; av. Blocket finns kvar.
-- **Talus** och **Fallen rock:** nu formade i halvblock (grusslabs, en lutande rundad sten), och de kräver öppen, flack,
-  snöfri mark framför väggen. Men bergen i världen har sällan en fri vägg med plan fot: de hamnade i trånga raviner, under
-  snö eller i skog, och syns inte på någon bild.
-- **Bird cliff:** längre vita strimmor av Calcite under varje avsats, slab-avsatser med bon, duvor runt klippan. Syns nu
-  på håll som vita streck, men är för liten och sällsynt mot de stora bergväggarna för att vara värd att slå på.
-- **Rock overhang:** nu en urgröpt hålighet med rundat tak (uppochnedvända trappor) i stället för en lös hylla, men de
-  torra landens klippor är mest Terracotta (inte berg för klippsökningen); bara en enda hittades och den gick inte att
-  fotografera.
-- **Root cellar (jordkällare, ny):** byggd: en gräskulle 9–12 bred och 3–4 hög över ett rum två block ner, framsida
-  av Fieldstone med låg dörr (Spruce Door) och överliggare, två trappsteg ner mellan vingmurar, inne valv av Fieldstone,
-  plankhylla, krukor (en med `chests/root_cellar`), spindelväv, nässlor vid dörren; även vid var tredje gård med stor
-  åker. Men framsidan reser sig som en fristående stenmur och kullen bakom läses som trappade jordterrasser, inte som en
-  kulle. Feature-typen `root_cellar` är registrerad, men av.
-- **Farm walls:** murarna buktar nu, hörnen är inte räta, träd och buskar på åkern stoppar den inte längre (förut föll
-  nästan varje försök på en ene), grindstolpar, rasade sträckor av slabs. Men den enda gården i provvärlden blev några
-  murstumpar i en sluttning vid en å; inte bra nog.
-- **Juniper in plains:** ingen bild hann tas (enen loggas inte); av tills den är sedd.
-- **Snow patch:** nu ett flackt snöfält i ytan i svackor i stället för kuber, men bergen över y 200 har redan snö
-  (Thaw och SmoothGround), så fältet syns inte.
-- **Ice blocks:** lutande isbitar i en snödriva som vinden format, men Packed Ice har inga slabs eller trappor och bitarna
-  ser fortfarande ut som staplade kuber.
+- **Talus** och **Fallen rock:** ny regel att foten ska synas (inga väggar inom 10 block utåt som reser sig mer än 3,
+  inget träd inom 5, inte i kallt land där snön begraver dem). Ändå: av 10 000 försök i provvärlden hittade bara ett par
+  procent en bergvägg alls, och väggarna som finns är terrasserade sluttningar, vita kalkväggar eller snötäckta. Fläktarna
+  blev spridda småbitar, inte en kon; inget gick att få en bra bild av.
+- **Bird cliff:** större (upp till 14 avsatser 9 block åt varje håll, längre och bredare vita strimmor, fler duvor) och
+  kräver 8 block lodrät vägg. Bara 2 i hela provvärlden (4 464 chunks), och strimmorna drunknar i snön på väggarna.
+- **Rock overhang:** klippsökningen tar nu Terracotta som berg (`MountainDecor.cliff(..., clay)`), så den läggs (51 i
+  provvärlden), men badlands väggar är låga terrasser av röd sand och terracotta: hålorna blir hack i en trappa, inte ett
+  överhäng.
+- **Frost split:** sjunken till sin bredaste punkt (inga raka sidor av `seat`), spricka som vidgar sig uppåt, halvorna
+  lutar isär. Men blocket läses fortfarande som raka, kantiga klumpar på avstånd; av.
+- **Farm walls:** kräver nu plan mark (±1) över hela åkern och inget vatten inom 3 runt den. Gårdarna hamnar nu på slätt
+  mark men murarna läses som spridda stenhögar och murstumpar, inte som en inhägnad; av.
+- **Juniper in plains:** ingen bild igen (provvärldens slättområden blev snöiga eller vid sjöar, och att sätta en en med
+  kommando i DecorShots gav ingen synlig buske); av tills den är sedd.
 
 **Advancement** (Wilderness): *Under the Arch* (stå under ett valv: berg 3–7 över fötterna och 2–6 åt båda sidorna,
 fri himmel framför och bakom; under *Roof of the World*, tillbaka med valvet) och *Old Bones* (stå på, i eller bredvid

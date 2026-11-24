@@ -55,7 +55,9 @@ final class DryColdDecor extends StoneAgeFeature {
     @Override
     public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
         BlockPos c = surface(level, origin.getX(), origin.getZ());
-        if (!dryNatural(level, c.below()) || !level.getBlockState(c).canBeReplaced() || !Decor.noStructure(level, c)) return false;
+        if (!Decor.noStructure(level, c)) return false;
+        // the creeks are laid over the whole chunk, wherever the origin fell
+        if (kind != Kind.DRY_CREEK && (!dryNatural(level, c.below()) || !level.getBlockState(c).canBeReplaced())) return false;
         BlockPos at = switch (kind) {
             case DEAD_TREE -> deadTree(level, random, c);
             case SAND_SKELETON -> level.getBlockState(c.below()).is(BlockTags.SAND) ? OpenDecor.bones(level, random, c, true) : null;
@@ -261,11 +263,11 @@ final class DryColdDecor extends StoneAgeFeature {
      * bones or the ash of a fire someone made out of the wind. In the dry lands' cliffs (sandstone, terracotta, stone).
      */
     private static BlockPos overhang(WorldGenLevel level, RandomSource random, BlockPos c) {
-        MountainDecor.Cliff k = MountainDecor.cliff(level, c, 5, 3, 6);
-        if (k == null) return null;
+        MountainDecor.Cliff k = MountainDecor.cliff(level, c, 5, 3, 6, true);
+        if (k == null) return Decor.reject("overhang:no_cliff");
         Direction up = k.up(), side = up.getClockWise();
         BlockPos foot = k.foot();
-        if (MountainDecor.sheer(level, foot, up) < 5) return null;
+        if (MountainDecor.sheer(level, foot, up) < 5) return Decor.reject("overhang:low");
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
         double hw = 2.6 + random.nextDouble() * 1.8, hd = 2.2 + random.nextDouble() * 1.0, hh = 2.1 + random.nextDouble() * 0.8;
         // the hollow's centre: at the foot of the face, a little above the floor
@@ -296,7 +298,7 @@ final class DryColdDecor extends StoneAgeFeature {
                     carved++;
                     if (y == 0 && (st == null || st.isAir())) floor.add(p);
                 }
-        if (carved < 12) return null;
+        if (carved < 12) return Decor.reject("overhang:small");
         // the floor: dry grit and sand, a dead bush or two at the mouth, old bones or a fire's ash now and then
         boolean red = k.rock().is(BlockTags.TERRACOTTA) || k.rock().is(Blocks.RED_SANDSTONE);
         for (BlockPos p : floor) {
@@ -314,95 +316,120 @@ final class DryColdDecor extends StoneAgeFeature {
     }
 
     /**
-     * A dried-out creek bed (a wash): a shallow, winding hollow 20-26 blocks long, its channel a block below the land and
-     * 2-4 wide, its shelving sides half a step down (Gravel Slab, now and then the ground's own: Sand Slab, Grass Slab ...)
-     * so it lies soft in the land, narrowing to nothing at both ends. Its bed is gravel and the ground's sand or dirt in drifts, cracked mud
-     * (Packed Mud) in the low places, a cobble here and there and pebbles on top; dead bushes and dry grass along the
-     * banks, now and then a bleached branch stranded in it.
+     * A dried-out creek bed (a wash): long, shallow beds winding for a hundred blocks and more across the dry land, laid
+     * by every chunk for its own columns from one world-wide pattern (the creek runs along the zero line of a smooth
+     * noise; a second, slower noise says where creeks are at all, so each is a long stretch that narrows to nothing at
+     * both ends). The channel a block below the land and 1-3 wide, its banks sloping half a step down (Gravel Slab, now
+     * and then the ground's own: Sand Slab, Grass Slab ...) so it lies soft in the land. Its bed gravel down the middle and
+     * the ground's sand or dirt in drifts, cracked mud (Packed Mud) in the low places, a cobble here and there and pebbles
+     * on top; dead bushes and dry grass along the banks, now and then a bleached branch stranded in it. Never water: only
+     * in biomes without rain, on level ground, never within 9 blocks of water.
      */
     private static BlockPos dryCreek(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!flat(level, c, 3, 1)) return null;
-        var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
-        // the line: a meandering path in small steps, its width swelling and narrowing, tapering at both ends
-        int n = 38 + random.nextInt(10);
-        double[] px = new double[n], pz = new double[n], pw = new double[n];
-        double a = random.nextDouble() * Math.PI * 2, x = c.getX() + 0.5, z = c.getZ() + 0.5;
-        x -= Math.cos(a) * n * 0.3;
-        z -= Math.sin(a) * n * 0.3;
-        for (int i = 0; i < n; i++) {
-            double ang = a + 1.3 * noise.get(i * 0.07, 3.7);
-            x += Math.cos(ang) * 0.6;
-            z += Math.sin(ang) * 0.6;
-            px[i] = x;
-            pz[i] = z;
-            double taper = Math.min(1, Math.min(i, n - 1 - i) / 7.0);
-            pw[i] = (1.5 + 1.3 * (noise.get(i * 0.09, 11.3) + 1) / 2) * taper;
-        }
-        // the whole line on open, level, dry ground, or none at all (a creek cut off short is a pit), and no water within 8
-        // of it: a dry bed by a pond reads as a puddle
-        for (int i = 0; i < n; i += 2) {
-            BlockPos t = top(level, (int) Math.floor(px[i]), (int) Math.floor(pz[i]));
-            if (Math.abs(t.getY() - c.getY()) > 1 || !creekGround(level, t.below(), 2)) return null;
-            for (int dx = -8; dx <= 8; dx += 4)
-                for (int dz = -8; dz <= 8; dz += 4) {
-                    BlockPos q = top(level, t.getX() + dx, t.getZ() + dz);
-                    if (!level.getFluidState(q).isEmpty() || !level.getFluidState(q.below()).isEmpty()) return null;
+        Creeks k = Creeks.of(level.getSeed());
+        int x0 = c.getX() & ~15, z0 = c.getZ() & ~15;
+        // the land before anything is dug (2 round the chunk, for the slope)
+        int[][] h = new int[20][20];
+        for (int i = 0; i < 20; i++) for (int j = 0; j < 20; j++) h[i][j] = top(level, x0 + i - 2, z0 + j - 2).getY();
+        List<BlockPos> bed = new ArrayList<>();
+        BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+        for (int i = 0; i < 16; i++)
+            for (int j = 0; j < 16; j++) {
+                int x = x0 + i, z = z0 + j;
+                double in = k.inside(x + 0.5, z + 0.5); // > 0 in the channel, 0..-1 on its sloping bank, below -1 outside
+                if (in < -2.2) continue;
+                int y = h[i + 2][j + 2];
+                BlockPos g = new BlockPos(x, y - 1, z);
+                if (level.getBiome(g).value().hasPrecipitation() || !creekGround(level, g, 2)) continue;
+                int slope = Math.max(Math.max(Math.abs(h[i][j + 2] - y), Math.abs(h[i + 4][j + 2] - y)), Math.max(Math.abs(h[i + 2][j] - y), Math.abs(h[i + 2][j + 4] - y)));
+                if (slope > 2 || waterNear(level, m, x, y, z)) continue;
+                BlockState ground = level.getBlockState(g);
+                if (in < -1) { // beyond the bank: its dry tufts
+                    if (random.nextInt(9) == 0) dryTuft(level, random, g.above());
+                    continue;
                 }
-        }
-        BlockState ground = level.getBlockState(c.below());
-        Block slab = SmoothGround.slab(ground.getBlock());
-        if (slab == Blocks.AIR) slab = SmoothGround.slab(Blocks.COARSE_DIRT);
-        int x0 = (int) Math.floor(java.util.Arrays.stream(px).min().orElseThrow()) - 3, x1 = (int) Math.ceil(java.util.Arrays.stream(px).max().orElseThrow()) + 3;
-        int z0 = (int) Math.floor(java.util.Arrays.stream(pz).min().orElseThrow()) - 3, z1 = (int) Math.ceil(java.util.Arrays.stream(pz).max().orElseThrow()) + 3;
-        if (Math.max(Math.abs(x0 - c.getX()), Math.abs(x1 - c.getX())) > 15 || Math.max(Math.abs(z0 - c.getZ()), Math.abs(z1 - c.getZ())) > 15) return null;
-        List<BlockPos> bed = new ArrayList<>(), banks = new ArrayList<>();
-        for (int bx = x0; bx <= x1; bx++)
-            for (int bz = z0; bz <= z1; bz++) {
-                // how far inside the channel: > 0 in the bed, 0..-1.1 on the bank
-                double best = -9;
-                for (int i = 0; i < n; i++) {
-                    double d = Math.sqrt(sq(bx + 0.5 - px[i]) + sq(bz + 0.5 - pz[i]));
-                    best = Math.max(best, pw[i] - d);
-                }
-                best += 0.25 * noise.get(bx * 0.4, bz * 0.4);
-                if (best < -1.0) continue;
-                BlockPos g = top(level, bx, bz).below();
-                if (Math.abs(g.getY() + 1 - c.getY()) > 2 || !creekGround(level, g, 2)) continue;
                 clear(level, g.above());
-                if (best > 0.9) { // the channel a block down
+                if (in > 0.55) { // the channel, a block down
                     set(level, g, AIR);
-                    set(level, g.below(), creekBed(random, noise, g.below(), ground, best));
+                    set(level, g.below(), creekBed(random, k.noise, g.below(), ground, in));
+                    if (random.nextInt(5) == 0) rock(level, random, g, Mechanical.LOOSE_STONE.get()); // the pebbles the water rolled
                     bed.add(g);
-                } else if (best > -0.2) { // its shelving sides half a block down: gravel, now and then the ground's own
-                    boolean gravel = best > 0.3 || noise.get(bx * 0.5 + 9, bz * 0.5) > 0;
+                } else { // its sloping bank half a block down: gravel near the channel, now and then the ground's own
+                    Block slab = SmoothGround.slab(ground.getBlock());
+                    boolean gravel = in > 0.1 || slab == Blocks.AIR || k.noise.get(x * 0.5 + 9, z * 0.5) > 0;
                     set(level, g, (gravel ? EarthBlocks.GRAVEL_SLAB.get() : slab).defaultBlockState());
-                    banks.add(g);
-                } else banks.add(g.above()); // the bank: only its dry tufts
+                }
             }
-        if (bed.size() < 30) return null; // short, it reads as a pit
-        for (BlockPos g : bed) if (random.nextInt(4) == 0) rock(level, random, g, Mechanical.LOOSE_STONE.get()); // the pebbles the water rolled
-        for (BlockPos g : banks) {
-            BlockPos on = g.above();
-            int k = random.nextInt(12);
-            // plants can't stand on a slab: the bank's dry tufts, dead bushes and tall dry grass (old reeds) grow just beyond it
-            BlockPos beyond = top(level, on.getX() + random.nextInt(3) - 1, on.getZ() + random.nextInt(3) - 1);
-            if (k >= 4 || !level.getBlockState(beyond).isAir()) continue;
-            if (k < 2 && level.getBlockState(beyond.above()).isAir() && Blocks.TALL_DRY_GRASS.defaultBlockState().canSurvive(level, beyond))
-                set(level, beyond, Blocks.TALL_DRY_GRASS.defaultBlockState());
-            else {
-                BlockState plant = (k == 2 ? Blocks.DEAD_BUSH : Blocks.SHORT_DRY_GRASS).defaultBlockState();
-                if (plant.canSurvive(level, beyond)) set(level, beyond, plant);
-            }
-        }
-        if (random.nextInt(3) == 0) { // a bleached branch the last flood left
-            BlockPos g = bed.get(bed.size() / 2);
+        if (bed.isEmpty()) return Decor.reject("dry_creek:none_here");
+        if (random.nextInt(6) == 0) { // a bleached branch the last flood left
+            BlockPos g = bed.get(random.nextInt(bed.size()));
             Direction d = randomSide(random);
             Limbs f = new Limbs(level);
-            f.limb(g.relative(d.getOpposite()), List.of(d, d, d.getClockWise(), d), 0, 1);
+            f.limb(g.relative(d.getOpposite()), List.of(d, d, d.getClockWise()), 0, 1);
             f.finish();
         }
-        BlockPos mid = bed.get(bed.size() / 2);
-        return mid;
+        return bed.get(bed.size() / 2);
+    }
+
+    /** Water on or in the ground within 9 of a column (sampled round it). */
+    private static boolean waterNear(WorldGenLevel level, BlockPos.MutableBlockPos m, int x, int y, int z) {
+        for (int dx = -9; dx <= 9; dx += 3)
+            for (int dz = -9; dz <= 9; dz += 3) {
+                BlockPos t = top(level, x + dx, z + dz);
+                if (Math.abs(t.getY() - y) <= 3 && (!level.getFluidState(t).isEmpty() || !level.getFluidState(t.below()).isEmpty())) return true;
+            }
+        return false;
+    }
+
+    /** A dead bush, dry grass or tall dry grass at p if it can stand there. */
+    private static void dryTuft(WorldGenLevel level, RandomSource random, BlockPos p) {
+        if (!level.getBlockState(p).isAir()) return;
+        int k = random.nextInt(4);
+        if (k == 0 && level.getBlockState(p.above()).isAir() && Blocks.TALL_DRY_GRASS.defaultBlockState().canSurvive(level, p))
+            set(level, p, Blocks.TALL_DRY_GRASS.defaultBlockState());
+        else {
+            BlockState plant = (k == 1 ? Blocks.DEAD_BUSH : Blocks.SHORT_DRY_GRASS).defaultBlockState();
+            if (plant.canSurvive(level, p)) set(level, p, plant);
+        }
+    }
+
+    /**
+     * The world's dry creeks: a creek runs along the zero line of a smooth noise (wiggled by a finer one), as wide as a
+     * third noise says, and only where a slow fourth one is high enough, tapering to nothing at the edges of that.
+     */
+    static final class Creeks {
+        private static volatile Creeks last;
+        final long seed;
+        final net.minecraft.world.level.levelgen.synth.SimplexNoise line, wiggle, mask, noise;
+
+        private Creeks(long seed) {
+            this.seed = seed;
+            var r = new net.minecraft.world.level.levelgen.LegacyRandomSource(seed ^ 0x6372_6565_6b73L);
+            line = new net.minecraft.world.level.levelgen.synth.SimplexNoise(r);
+            wiggle = new net.minecraft.world.level.levelgen.synth.SimplexNoise(r);
+            mask = new net.minecraft.world.level.levelgen.synth.SimplexNoise(r);
+            noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(r);
+        }
+
+        static Creeks of(long seed) {
+            Creeks k = last;
+            if (k == null || k.seed != seed) last = k = new Creeks(seed);
+            return k;
+        }
+
+        private double field(double x, double z) {
+            return line.get(x / 90, z / 90) + 0.3 * wiggle.get(x / 26, z / 26);
+        }
+
+        /** How far inside the channel x,z lies, in blocks: > 0 in it, 0 to -1 on its bank, below that outside. */
+        double inside(double x, double z) {
+            double taper = Math.min(1, (mask.get(x / 170, z / 170) - 0.42) / 0.14);
+            if (taper <= 0) return -9;
+            double f = field(x, z), gx = field(x + 0.5, z) - field(x - 0.5, z), gz = field(x, z + 0.5) - field(x, z - 0.5);
+            double dist = Math.abs(f) / Math.max(1e-4, Math.sqrt(gx * gx + gz * gz)); // blocks to the zero line
+            double half = (0.9 + 0.6 * (noise.get(x / 40, z / 40) + 1)) * taper;
+            return half - dist;
+        }
     }
 
     /** Dry natural ground at g with natural ground under it, deep enough to dig a channel of the depth into. */
@@ -431,15 +458,16 @@ final class DryColdDecor extends StoneAgeFeature {
      * where snow never melts (Thaw.coldAllYear), so the drift stays.
      */
     private static BlockPos iceBlocks(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!flat(level, c, 3, 1) || !com.mechanical.Thaw.coldAllYear(level.getLevel(), level.getBiome(c).value(), c)) return null;
+        if (!flat(level, c, 3, 1)) return Decor.reject("ice_blocks:not_flat");
+        if (!com.mechanical.Thaw.coldAllYear(level.getLevel(), level.getBiome(c).value(), c)) return Decor.reject("ice_blocks:thaws");
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
         int pieces = 3 + random.nextInt(3);
         double[][] ice = new double[pieces][]; // centre x, y, z, half sizes, turn, tip
         for (int i = 0; i < pieces; i++) {
             double big = i == 0 ? 1 : 0.45 + random.nextDouble() * 0.35, a = random.nextDouble() * Math.PI * 2, d = i == 0 ? 0 : 2.2 + random.nextDouble() * 2.8;
             ice[i] = new double[] {c.getX() + 0.5 + Math.cos(a) * d, c.getY() + 0.3 * big, c.getZ() + 0.5 + Math.sin(a) * d,
-                    (1.4 + random.nextDouble() * 0.8) * big, (1.0 + random.nextDouble() * 0.6) * big, (1.0 + random.nextDouble() * 0.6) * big,
-                    random.nextDouble() * Math.PI, (random.nextDouble() - 0.5) * 1.1};
+                    (1.6 + random.nextDouble() * 0.9) * big, 0.75 + random.nextDouble() * 0.35 * big, (1.2 + random.nextDouble() * 0.6) * big,
+                    random.nextDouble() * Math.PI, (random.nextDouble() - 0.5) * 1.5}; // slabs of ice, thick but flat, tipped every way
         }
         Shaper.Density chunks = (x, y, z) -> {
             double best = -9;
@@ -454,8 +482,8 @@ final class DryColdDecor extends StoneAgeFeature {
         };
         int r = 7;
         Shaper.Stone stone = p -> chunks.at(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5) > 0.9 ? Blocks.BLUE_ICE : Blocks.PACKED_ICE;
-        var cells = Shaper.build(level, c.getX() - r, c.getY() - 1, c.getZ() - r, c.getX() + r, c.getY() + 4, c.getZ() + r, chunks, stone, null);
-        if (cells.size() < 10) return null;
+        var cells = Shaper.build(level, c.getX() - r, c.getY() - 1, c.getZ() - r, c.getX() + r, c.getY() + 4, c.getZ() + r, chunks, stone, Blocks.PACKED_ICE);
+        if (cells.size() < 10) return Decor.reject("ice_blocks:small");
         java.util.Set<BlockPos> solid = new java.util.HashSet<>();
         for (Shaper.Cell k : cells) solid.add(k.pos());
         // the drift: snow layers by how sheltered a spot is, deep on the windward side and in a tail on the lee
@@ -489,35 +517,39 @@ final class DryColdDecor extends StoneAgeFeature {
     }
 
     /**
-     * A boulder split by frost: one rounded block 5-7 across and 3-4 high (half blocks of the stone's slabs and stairs)
-     * cleft right through by a single straight crack half a block wide, a little off its middle, the two halves still
-     * matching; grit and drifted snow in the crack, flakes of the stone shed about it. The stone is the rock under the
-     * ground, or Granite, Stone, Andesite or Diorite carried there by the ice.
+     * A boulder split by frost: one rounded block 6-8 across and 2.5-3 high, sunk in the ground to its widest so only its
+     * dome shows and its sides round down into the turf (half blocks of the stone's slabs and stairs), cleft right through
+     * by a single straight crack that opens upward like a V, the two halves leaning a little apart but still matching;
+     * grit and drifted snow in the crack, patches of a second stone, flakes of the stone shed about it. The stone is the
+     * rock under the ground, or Granite, Stone, Andesite or Diorite carried there by the ice.
      */
     private static BlockPos frostSplit(WorldGenLevel level, RandomSource random, BlockPos c) {
-        if (!flat(level, c, 2, 1)) return null;
+        if (!flat(level, c, 2, 1)) return Decor.reject("frost_split:not_flat");
         BlockState found = MountainDecor.rockUnder(level, c);
         Block stone = (found != null && found.is(BlockTags.BASE_STONE_OVERWORLD) ? found : SPLIT_STONES[random.nextInt(SPLIT_STONES.length)].defaultBlockState()).getBlock();
+        Block second = MountainDecor.secondStone(stone);
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
-        double r = 2.8 + random.nextDouble() * 0.8, ry = r * (0.78 + random.nextDouble() * 0.12), rz = r * (0.8 + random.nextDouble() * 0.25);
-        double ox = c.getX() + 0.5, oz = c.getZ() + 0.5, oy = c.getY() + ry * 0.25;
-        // the crack: one clean, straight cleft a block wide right through it, a little off its middle; the halves match
+        double r = 3.1 + random.nextDouble() * 0.9, ry = 2.8 + random.nextDouble() * 0.6, rz = r * (0.85 + random.nextDouble() * 0.2);
+        double ox = c.getX() + 0.5, oz = c.getZ() + 0.5, oy = c.getY() - 0.2; // sunk to its widest: no straight sides
         boolean alongX = random.nextBoolean();
-        int crack = (alongX ? c.getZ() : c.getX()) + random.nextInt(3) - 1;
+        double crack = (alongX ? oz : ox) + (random.nextDouble() - 0.5) * 1.2, lean = 0.12 + random.nextDouble() * 0.08;
         Shaper.Density split = (x, y, z) -> {
-            double e = Math.sqrt(sq((x - ox) / r) + sq((y - oy) / ry) + sq((z - oz) / rz));
-            double body = (1 - e) * ry + 0.1 * noise.get(x * 0.4, y * 0.4, z * 0.4);
-            return Math.min(body, Math.abs((alongX ? z : x) - crack - 0.5) - 0.25); // a half-block cleft
+            double t = Math.max(0, y - c.getY()), u = (alongX ? z : x) - crack, sgn = Math.signum(u);
+            // each half leans away from the crack: sample the whole stone sheared back toward it
+            double su = u - sgn * t * lean, sx = alongX ? x : crack + su, sz = alongX ? crack + su : z;
+            double e = Math.pow(Math.pow(Math.abs(sx - ox) / r, 2.4) + Math.pow(Math.abs(y - oy) / ry, 2.4) + Math.pow(Math.abs(sz - oz) / rz, 2.4), 1 / 2.4);
+            double body = (1 - e) * ry + 0.1 * noise.get(x * 0.3, y * 0.3, z * 0.3);
+            return Math.min(body, Math.abs(u) - 0.3 - 0.2 * t); // the cleft, opening upward
         };
         int ir = (int) Math.ceil(r) + 3;
         for (int dx = -ir; dx <= ir; dx++) for (int dz = -ir; dz <= ir; dz++) clear(level, top(level, c.getX() + dx, c.getZ() + dz));
         var cells = Shaper.build(level, c.getX() - ir, c.getY() - 2, c.getZ() - ir, c.getX() + ir, c.getY() + (int) Math.ceil(ry) + 2, c.getZ() + ir, split,
-                p -> random.nextInt(10) == 0 ? Blocks.COBBLESTONE : stone, null);
-        if (cells.size() < 15) return null;
-        Shaper.seat(level, cells, p -> stone, 3);
+                p -> noise.get(p.getX() * 0.3, p.getY() * 0.3 + 17, p.getZ() * 0.3) > 0.45 ? second : stone, null);
+        if (cells.stream().filter(k -> k.pos().getY() >= c.getY()).count() < 15) return Decor.reject("frost_split:small");
         // grit along the crack's floor, frost and snow drifted into it
         for (int t = -ir; t <= ir; t++) {
-            BlockPos g = top(level, alongX ? c.getX() + t : crack, alongX ? crack : c.getZ() + t);
+            int ck = (int) Math.floor(crack);
+            BlockPos g = top(level, alongX ? c.getX() + t : ck, alongX ? ck : c.getZ() + t);
             if (Math.abs(g.getY() - c.getY()) > 1 || !level.getBlockState(g).canBeReplaced()) continue;
             if (dryNatural(level, g.below()) && !SmoothGround.rock(level.getBlockState(g.below()))) set(level, g.below(), Blocks.GRAVEL.defaultBlockState());
             if (MountainDecor.cold(level, g) && level.getBlockState(g).isAir())
