@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:loam",
+    "mechanical:loam",
+    "mechanical:loam",
+    "mechanical:loam",
+    "mechanical:strickle_board_cauldron"
+  ],
+  "result": {
+    "id": "mechanical:unfired_loam_mold_cauldron",
+    "count": 1
+  }
+}

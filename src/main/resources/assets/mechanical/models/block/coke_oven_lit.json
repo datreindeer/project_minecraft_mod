@@ -1,0 +1,49 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/coke_oven_dome",
+    "dome": "mechanical:block/coke_oven_dome",
+    "front": "mechanical:block/coke_oven_front",
+    "front_lit": "mechanical:block/coke_oven_front_lit"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#dome",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#dome",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#front_lit",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#dome",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#dome",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#dome",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
+}

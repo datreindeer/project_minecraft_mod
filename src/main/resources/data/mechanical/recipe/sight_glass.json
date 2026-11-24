@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:banded_furnace_casing",
+    "minecraft:glass_pane",
+    "minecraft:glass_pane"
+  ],
+  "result": {
+    "id": "mechanical:sight_glass",
+    "count": 1
+  }
+}

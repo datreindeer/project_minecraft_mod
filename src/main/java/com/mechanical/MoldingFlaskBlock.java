@@ -312,7 +312,7 @@ public class MoldingFlaskBlock extends Block implements EntityBlock {
         @Override
         public net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
             float f = need <= 0 ? 0 : Math.min(1, poured / (float) need);
-            return new net.minecraft.world.phys.Vec3(0.5, (12.3 + 1.5 * f) / 16, 0.5); // the metal rising in the pouring cup
+            return new net.minecraft.world.phys.Vec3(0.5, (12.4 + 1.0 * f) / 16, 0.5); // the metal rising in the pouring cup
         }
     }
 }

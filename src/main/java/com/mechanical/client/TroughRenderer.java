@@ -230,10 +230,22 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
             if (state.cooled > 0.2F && state.cooled < 1) {
                 int crust = cooling(state.molten, Math.min(1, state.cooled + 0.35F));
                 float w = Math.min(0.12F, (state.cooled - 0.2F) * 0.25F);
-                quad(p, buf, crust, light, LO, LO, LO + w, HI, y + 0.002F, k, 0, 0);
-                quad(p, buf, crust, light, HI - w, LO, HI, HI, y + 0.002F, k, 0, 0);
-                quad(p, buf, crust, light, LO, LO, HI, LO + w, y + 0.002F, k, 0, 0);
-                quad(p, buf, crust, light, LO, HI - w, HI, HI, y + 0.002F, k, 0, 0);
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    boolean open = (sides & 1 << d.get2DDataValue()) != 0;
+                    float yc = y + 0.002F;
+                    if (!open) switch (d) { // along the walls only, never across a join
+                        case NORTH -> quad(p, buf, crust, light, LO, LO, HI, LO + w, yc, k, 0, 0);
+                        case SOUTH -> quad(p, buf, crust, light, LO, HI - w, HI, HI, yc, k, 0, 0);
+                        case WEST -> quad(p, buf, crust, light, LO, LO, LO + w, HI, yc, k, 0, 0);
+                        default -> quad(p, buf, crust, light, HI - w, LO, HI, HI, yc, k, 0, 0);
+                    }
+                    else switch (d) {
+                        case NORTH -> { quad(p, buf, crust, light, LO, 0, LO + w, LO, yc, k, 0, 0); quad(p, buf, crust, light, HI - w, 0, HI, LO, yc, k, 0, 0); }
+                        case SOUTH -> { quad(p, buf, crust, light, LO, HI, LO + w, 1, yc, k, 0, 0); quad(p, buf, crust, light, HI - w, HI, HI, 1, yc, k, 0, 0); }
+                        case WEST -> { quad(p, buf, crust, light, 0, LO, LO, LO + w, yc, k, 0, 0); quad(p, buf, crust, light, 0, HI - w, LO, HI, yc, k, 0, 0); }
+                        default -> { quad(p, buf, crust, light, HI, LO, 1, LO + w, yc, k, 0, 0); quad(p, buf, crust, light, HI, HI - w, 1, HI, yc, k, 0, 0); }
+                    }
+                }
             }
         });
     }

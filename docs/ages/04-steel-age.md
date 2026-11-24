@@ -290,3 +290,25 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
 - **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Bronze/Steel Block) eller 250 mB slagg/basalt/glas/obsidian;
   fyllnaden stiger, stelnar på 10 s per 1000 mB.
 - Test `foundry_casting`. Inte gjort: Anvil i flaska (väntar på användaren), Steel Block kräver inte 1650°.
+
+### 6f. Byggt: färskning, glas, stora gjutningar och koks (resten av fas 5, fas 6 och 7)
+
+- **Finery Hearth** (`F F` / `FPF`, Fire Brick + Iron Plate): Charcoal och Pig Iron Ingots in, tänd, en Great Bellows mot
+  härden; från 1300° blir varje tackjärn ett Wrought Iron Ingot på 20 s (bränner en Charcoal).
+- **Slag Stone** (basängen, 250 mB slagg) och **Slag Stone Bricks** (4 → 4). Slab/Stairs/Wall saknas än.
+- **Glas:** Glass Batch (4 Sand + Wood Ash → 4) smälter vid 1400° till 250 mB glas, Foundry Basin gjuter Glass.
+  **Sight Glass** (Casing + 2 Glass Pane) får sitta i väggarna ovanför nedersta lagret.
+- **Basalt** (Basalt, Polished/Smooth Basalt) → 250 mB vid 1250° → Cast Basalt. **Obsidian** → 250 mB vid 1700° (kräver Coke).
+- **Loam Mold:** Loam (2 Clay Ball + Sand + Wheat → 4), Strickle Board (Bell/Cauldron), 4 Loam + board → obränd form,
+  bränd 600° i kilnen. I en Foundry Basin: Bell = 1600 mB brons, Cauldron = 1400 mB tackjärn; formen slås sönder.
+  Great Kettle är inte byggd.
+- **Furnace Salamander:** bryts Fronten med smälta i lämnas hälften av varje lager i en salamander som smälter tillbaka
+  vid ≥ 1200°.
+- **Brännskador:** den som går i en ränna med rinnande metall tar eld (4 skada, som lava).
+- **Coke Oven** (Silica Bricks + Iron Plate): 16 Coal → 12 Coke på 10 min utan bränsle. **Coke** i eldstäderna: 950°,
+  tak 1750°, brinner dubbelt så länge. **Hot Blast Stove** intill en Great Bellows som blåser i en eldstad: +100° på mål
+  och tak, högst 1800°. **Steel Ladle** (1000 mB): öser ur rännor och häller hela gjutningar.
+- Advancements: Walloon Forge, Glassmaker, Window on the Melt, Bell Founder (challenge), Salamander, Coke, Hot Blast
+  (challenge). Test `finery_hearth`, `high_furnace_glass_bell`, `high_furnace_salamander`, `high_furnace_coke`.
+- Inte gjort: Glass Pane i form, Anvil och Steel Block-kravet 1650°, Great Kettle, Hot Blast-bonus på brinntid,
+  slaggsten-slab/stairs/wall, brännskador i formar och bassänger.

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    " B ",
+    "  R"
+  ],
+  "key": {
+    "P": "mechanical:steel_plate",
+    "B": "mechanical:silica_brick",
+    "R": "mechanical:iron_tool_rod"
+  },
+  "result": {
+    "id": "mechanical:steel_ladle"
+  }
+}

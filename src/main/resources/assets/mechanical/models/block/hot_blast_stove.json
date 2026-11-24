@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "mechanical:block/hot_blast_stove_side",
+    "end": "mechanical:block/hot_blast_stove_top"
+  }
+}

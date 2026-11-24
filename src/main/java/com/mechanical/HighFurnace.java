@@ -127,6 +127,37 @@ public final class HighFurnace {
     public static final DeferredItem<BlockItem> BRONZE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("bronze_block", BRONZE_BLOCK),
             STEEL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("steel_block", STEEL_BLOCK), LEAD_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("lead_block", LEAD_BLOCK);
 
+    // Phases 5-7: the Finery Hearth, Slag Stone Bricks, glass, the Sight Glass, Loam Molds, the Furnace Salamander, coke
+    public static final DeferredBlock<FineryHearthBlock> FINERY_HEARTH = BLOCKS.registerBlock("finery_hearth", FineryHearthBlock::new,
+            p -> p.mapColor(MapColor.COLOR_RED).strength(2.5F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion()
+                    .lightLevel(s -> s.getValue(FineryHearthBlock.LIT) ? 13 : 0));
+    public static final DeferredItem<BlockItem> FINERY_HEARTH_ITEM = ITEMS.registerSimpleBlockItem("finery_hearth", FINERY_HEARTH);
+    public static final Supplier<BlockEntityType<FineryHearthBlock.Entity>> FINERY_HEARTH_ENTITY = Mechanical.BLOCK_ENTITIES.register("finery_hearth",
+            () -> new BlockEntityType<>(FineryHearthBlock.Entity::new, HighFurnace.FINERY_HEARTH.get()));
+    public static final DeferredBlock<Block> SLAG_STONE_BRICKS = BLOCKS.registerSimpleBlock("slag_stone_bricks",
+            p -> p.mapColor(MapColor.COLOR_BLACK).strength(2.0F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> SLAG_STONE_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("slag_stone_bricks", SLAG_STONE_BRICKS);
+    public static final DeferredItem<Item> GLASS_BATCH = ITEMS.registerSimpleItem("glass_batch");
+    public static final DeferredBlock<HighFurnaceWallBlock> SIGHT_GLASS = BLOCKS.registerBlock("sight_glass", HighFurnaceWallBlock::new,
+            p -> p.mapColor(MapColor.QUARTZ).strength(3.5F, 9.0F).sound(SoundType.GLASS).requiresCorrectToolForDrops().noOcclusion());
+    public static final DeferredItem<BlockItem> SIGHT_GLASS_ITEM = ITEMS.registerSimpleBlockItem("sight_glass", SIGHT_GLASS);
+    public static final DeferredItem<Item> LOAM = ITEMS.registerSimpleItem("loam"),
+            STRICKLE_BOARD_BELL = ITEMS.registerSimpleItem("strickle_board_bell"), STRICKLE_BOARD_CAULDRON = ITEMS.registerSimpleItem("strickle_board_cauldron"),
+            UNFIRED_LOAM_MOLD_BELL = ITEMS.registerSimpleItem("unfired_loam_mold_bell"), UNFIRED_LOAM_MOLD_CAULDRON = ITEMS.registerSimpleItem("unfired_loam_mold_cauldron"),
+            LOAM_MOLD_BELL = ITEMS.registerSimpleItem("loam_mold_bell"), LOAM_MOLD_CAULDRON = ITEMS.registerSimpleItem("loam_mold_cauldron");
+    public static final DeferredItem<Item> FURNACE_SALAMANDER = ITEMS.registerSimpleItem("furnace_salamander", p -> p.stacksTo(1));
+    public static final DeferredItem<Item> COKE = ITEMS.registerSimpleItem("coke");
+    public static final DeferredBlock<CokeOvenBlock> COKE_OVEN = BLOCKS.registerBlock("coke_oven", CokeOvenBlock::new,
+            p -> p.mapColor(MapColor.QUARTZ).strength(3.0F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()
+                    .lightLevel(s -> s.getValue(CokeOvenBlock.LIT) ? 10 : 0));
+    public static final DeferredItem<BlockItem> COKE_OVEN_ITEM = ITEMS.registerSimpleBlockItem("coke_oven", COKE_OVEN);
+    public static final Supplier<BlockEntityType<CokeOvenBlock.Entity>> COKE_OVEN_ENTITY = Mechanical.BLOCK_ENTITIES.register("coke_oven",
+            () -> new BlockEntityType<>(CokeOvenBlock.Entity::new, HighFurnace.COKE_OVEN.get()));
+    public static final DeferredBlock<Block> HOT_BLAST_STOVE = BLOCKS.registerSimpleBlock("hot_blast_stove",
+            p -> p.mapColor(MapColor.METAL).strength(3.5F, 9.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> HOT_BLAST_STOVE_ITEM = ITEMS.registerSimpleBlockItem("hot_blast_stove", HOT_BLAST_STOVE);
+    public static final DeferredItem<SteelLadleItem> STEEL_LADLE = ITEMS.registerItem("steel_ladle", SteelLadleItem::new, p -> p.stacksTo(1));
+
     private static DeferredBlock<IngotMoldBlock> ironMold(String name, IngotMoldBlock.Kind kind) {
         return BLOCKS.registerBlock(name, p -> new IngotMoldBlock(p, kind),
                 p -> p.mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
@@ -167,7 +198,12 @@ public final class HighFurnace {
             LAYER_CAKE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/layer_cake"),
             POUR_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/pour"),
             PIG_IRON_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/pig_iron"),
-            CAST_STEEL_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/cast_steel");
+            CAST_STEEL_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/cast_steel"),
+            WALLOON_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/walloon_forge"),
+            BELL_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/bell_founder"),
+            SALAMANDER_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/salamander"),
+            COKE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/coke"),
+            HOT_BLAST_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/hot_blast");
 
     private static Block.Properties wall(Block.Properties p) {
         return p.mapColor(MapColor.QUARTZ).strength(3.5F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops();

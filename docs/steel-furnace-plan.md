@@ -1,6 +1,6 @@
 # Plan: High Furnace, stålålderns stora smältugn (2026-11-24)
 
-> Status: **fas 0–3 byggda, kärnan av fas 4/4b/5 byggd (v0.200.0)**, se *Byggt* längst ned och `docs/ages/04-steel-age.md` 6a. Beslut märkta "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de.
+> Status: **fas 0–7 byggda (v0.200.0)**, med förenklingarna i *Byggt*, se *Byggt* längst ned och `docs/ages/04-steel-age.md` 6a. Beslut märkta "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de.
 > Item- och blocknamn står på engelska. Byggs fas för fas (se *Faser*), och varje fas förs in i åldersdokumentet.
 
 Det här vill du ha (översatt): **ett nytt, stort multiblock av stålålderns block som når mycket höga temperaturer, där man
@@ -678,3 +678,8 @@ vanillas Anvil (järnålderns dokument säger ångåldern; gjuts inte från stå
 - **Fas 4b (v0.200.0):** `CastingSandBlock`, `RefractoryTroughBlock.SandRunner`, `PigMoldBlock`, `MoldingFlaskBlock` (`FlaskShape`),
   `PatternBenchBlock`, `FoundryTableBlock` (står under formen), `FoundryBasinBlock`, `IngotMoldBlock.Kind` (ingot, plate, nugget, pig).
   Test `foundry_casting`.
+- **Fas 5 rest, 6, 7 (v0.200.0):** `FineryHearthBlock`, Slag Stone Bricks, Glass Batch/glas, Sight Glass (`HighFurnaceShape.wall`),
+  basalt/obsidian, `FoundryBasinBlock.Loam` (Bell, Cauldron), `FurnaceSalamander`, brännskador i rännor (`stepOn`),
+  `CokeOvenBlock`, Coke i eldstäderna, Hot Blast Stove (`HighFurnaceBlockEntity.hotBlast`), `SteelLadleItem`.
+  Test `finery_hearth`, `high_furnace_glass_bell`, `high_furnace_salamander`, `high_furnace_coke`. Kvar/förenklat: se
+  `docs/ages/04-steel-age.md` 6f.

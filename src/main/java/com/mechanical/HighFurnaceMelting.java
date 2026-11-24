@@ -51,6 +51,10 @@ public final class HighFurnaceMelting {
         if (s.is(IronOres.LEAD_INGOT.get())) return new Melt(Molten.LEAD, Molten.INGOT);
         if (s.is(IronOres.SILVER_INGOT.get())) return new Melt(Molten.SILVER, Molten.INGOT);
         if (s.is(IronOres.SILVER_NUGGET.get())) return new Melt(Molten.SILVER, Molten.NUGGET);
+        // glass, basalt and obsidian (phase 6)
+        if (s.is(HighFurnace.GLASS_BATCH.get())) return new Melt(Molten.GLASS, FoundryBasinBlock.STONE);
+        if (s.is(Items.BASALT) || s.is(Items.POLISHED_BASALT) || s.is(Items.SMOOTH_BASALT)) return new Melt(Molten.BASALT, FoundryBasinBlock.STONE);
+        if (s.is(Items.OBSIDIAN)) return new Melt(Molten.OBSIDIAN, FoundryBasinBlock.STONE);
         // iron and steel (phase 5)
         if (s.is(Items.RAW_IRON)) return new Melt(Molten.PIG_IRON, 100, IRON_ORE_HEAT, 200);
         if (s.is(Ironworking.ROASTED_IRON_ORE.get())) return new Melt(Molten.PIG_IRON, 200, IRON_ORE_HEAT, 300);

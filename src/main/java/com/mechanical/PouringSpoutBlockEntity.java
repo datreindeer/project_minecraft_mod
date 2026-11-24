@@ -314,7 +314,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         }
         if (r.nextInt(3) == 0) // tiny sparks off the surface
             level.addParticle(ParticleTypes.ELECTRIC_SPARK, x, y + 0.02, z, (r.nextDouble() - 0.5) * 0.12, 0.05 + r.nextDouble() * 0.08, (r.nextDouble() - 0.5) * 0.12);
-        if (r.nextInt(6) == 0) level.addParticle(ParticleTypes.SMOKE, x, y + 0.05, z, 0, 0.015, 0);
+
 
     }
 

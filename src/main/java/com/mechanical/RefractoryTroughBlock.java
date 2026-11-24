@@ -49,6 +49,16 @@ public class RefractoryTroughBlock extends ClayChannelBlock {
         return (BlockEntityTicker<T>) (BlockEntityTicker<TroughBlockEntity>) (l, p, s, t) -> TroughFlow.tick((ServerLevel) l, p, t);
     }
 
+    /** Molten metal burns what walks into it, like lava (no armour or tongs help). */
+    @Override
+    public void stepOn(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.Entity entity) {
+        if (level instanceof ServerLevel server && level.getBlockEntity(pos) instanceof TroughBlockEntity t && t.molten() != null && !t.solid(server.getGameTime())) {
+            entity.igniteForSeconds(4);
+            entity.hurtServer(server, server.damageSources().lava(), 4.0F);
+        }
+        super.stepOn(level, pos, state, entity);
+    }
+
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!stack.is(ItemTags.PICKAXES)) return InteractionResult.TRY_WITH_EMPTY_HAND;

@@ -583,8 +583,8 @@ def flask(top, glow=False):
     els += [box([x0, 4, z0], [x0 + 1.5, 8, z0 + 1.5], "#side") for x0 in (0, 14.5) for z0 in (0, 14.5)]  # the pins at the corners
     if top != "#empty" and top != "#inside":  # the pouring cup over the sprue: a raised sand ring round a hole
         ring = {"north": "#inside", "south": "#inside", "east": "#inside", "west": "#inside", "up": "#inside"}
-        els += [box([5.5, 12, 5.5], [10.5, 14, 6.6], ring), box([5.5, 12, 9.4], [10.5, 14, 10.5], ring),
-                box([5.5, 12, 6.6], [6.6, 14, 9.4], ring), box([9.4, 12, 6.6], [10.5, 14, 9.4], ring)]
+        els += [box([5.5, 12, 5.5], [10.5, 13.2, 6.6], ring), box([5.5, 12, 9.4], [10.5, 13.2, 10.5], ring),
+                box([5.5, 12, 6.6], [6.6, 13.2, 9.4], ring), box([9.4, 12, 6.6], [10.5, 13.2, 9.4], ring)]
     if glow:  # the cup's melt is drawn by client/FlaskRenderer; the block just gives off light
         pass
     return els
@@ -652,6 +652,79 @@ for shape in FLASK_SHAPES:
     LANG4B[f"item.mechanical.wooden_pattern_{shape}"] = f"Wooden Pattern ({nice})"
     LANG4B[f"pattern.mechanical.flask.{shape}"] = nice
 merge(A / "lang/en_us.json", LANG4B)
+
+# ---------------- phases 5-7: Finery Hearth, Slag Stone Bricks, Sight Glass, loam, the Furnace Salamander, coke, Hot Blast
+FH = {"particle": B + "finery_hearth_side", "side": B + "finery_hearth_side", "top": B + "finery_hearth_top", "lit": B + "finery_hearth_top_lit"}
+def hearth(top):
+    side4 = {"north": "#side", "south": "#side", "east": "#side", "west": "#side"}
+    return [box([0, 0, 0], [16, 6, 16], {"up": top, "down": "#side", **side4}),             # the charcoal bed
+            box([0, 6, 0], [16, 10, 2], {**side4, "up": "#side"}), box([0, 6, 14], [16, 10, 16], {**side4, "up": "#side"}),
+            box([0, 6, 2], [2, 10, 14], {**side4, "up": "#side"}), box([14, 6, 2], [16, 10, 14], {**side4, "up": "#side"})]
+model("finery_hearth", hearth("#top"), FH)
+model("finery_hearth_lit", hearth("#lit") + [{"from": [2, 6.01, 2], "to": [14, 6.01, 14], "light_emission": 15, "shade": False,
+      "faces": {"up": {"uv": [2, 2, 14, 14], "texture": "#lit"}}}], FH)
+w(A / "blockstates/finery_hearth.json", {"variants": {"lit=false": {"model": B + "finery_hearth"}, "lit=true": {"model": B + "finery_hearth_lit"}}})
+item_def("finery_hearth", B + "finery_hearth")
+loot("finery_hearth")
+for name in ("slag_stone_bricks", "hot_blast_stove"):
+    if name == "hot_blast_stove":
+        w(A / f"models/block/{name}.json", {"parent": "minecraft:block/cube_column", "textures": {"side": B + "hot_blast_stove_side", "end": B + "hot_blast_stove_top"}})
+    else:
+        w(A / f"models/block/{name}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": B + name}})
+    w(A / f"blockstates/{name}.json", {"variants": {"": {"model": B + name}}})
+    item_def(name, B + name)
+    loot(name)
+# Sight Glass: a steel-framed window in the wall (translucent), its heat state ignored
+w(A / "models/block/sight_glass.json", {"parent": "minecraft:block/cube_all", "render_type": "minecraft:translucent", "textures": {"all": B + "sight_glass"}})
+w(A / "blockstates/sight_glass.json", {"variants": {f"heat={h}": {"model": B + "sight_glass"} for h in range(4)}})
+item_def("sight_glass", B + "sight_glass")
+loot("sight_glass")
+# Coke Oven: a beehive of silica brick, its iron door to the north
+CO = {"particle": B + "coke_oven_dome", "dome": B + "coke_oven_dome", "front": B + "coke_oven_front", "front_lit": B + "coke_oven_front_lit"}
+for lit in (False, True):
+    faces = {"north": "#front_lit" if lit else "#front", "south": "#dome", "east": "#dome", "west": "#dome", "up": "#dome", "down": "#dome"}
+    model("coke_oven" + ("_lit" if lit else ""), [cube(faces)], CO)
+w(A / "blockstates/coke_oven.json", {"variants": {f"facing={f},lit={str(l).lower()}": {"model": B + "coke_oven" + ("_lit" if l else ""), **({"y": y} if y else {})}
+                                                  for f, y in ROT.items() for l in (False, True)}})
+item_def("coke_oven", B + "coke_oven")
+loot("coke_oven")
+for name in ("glass_batch", "loam", "strickle_board_bell", "strickle_board_cauldron", "unfired_loam_mold_bell", "unfired_loam_mold_cauldron",
+             "loam_mold_bell", "loam_mold_cauldron", "furnace_salamander", "coke", "steel_ladle"):
+    w(A / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{name}"}})
+    item_def(name, M + f"item/{name}")
+recipe("finery_hearth", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["F F", "FPF"],
+       "key": {"F": M + "fire_brick", "P": M + "iron_plate"}, "result": {"id": M + "finery_hearth"}})
+recipe("slag_stone_bricks", {"type": "minecraft:crafting_shaped", "category": "building", "pattern": ["SS", "SS"],
+       "key": {"S": M + "slag_stone"}, "result": {"id": M + "slag_stone_bricks", "count": 4}})
+shapeless("glass_batch", ["minecraft:sand"] * 4 + [M + "wood_ash"], 4)
+shapeless("sight_glass", [M + "banded_furnace_casing", "minecraft:glass_pane", "minecraft:glass_pane"])
+shapeless("loam", ["minecraft:clay_ball", "minecraft:clay_ball", "minecraft:sand", "minecraft:wheat"], 4)
+shapeless("unfired_loam_mold_bell", [M + "loam"] * 4 + [M + "strickle_board_bell"])
+shapeless("unfired_loam_mold_cauldron", [M + "loam"] * 4 + [M + "strickle_board_cauldron"])
+recipe("strickle_board_bell", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P ", "PS"],
+       "key": {"P": "#minecraft:planks", "S": "minecraft:stick"}, "result": {"id": M + "strickle_board_bell"}})
+recipe("strickle_board_cauldron", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["PP", " S"],
+       "key": {"P": "#minecraft:planks", "S": "minecraft:stick"}, "result": {"id": M + "strickle_board_cauldron"}})
+recipe("coke_oven", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["BBB", "B B", "BPB"],
+       "key": {"B": M + "silica_bricks", "P": M + "iron_plate"}, "result": {"id": M + "coke_oven"}})
+recipe("hot_blast_stove", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["PBP", "B B", "PBP"],
+       "key": {"P": M + "steel_plate", "B": M + "silica_bricks"}, "result": {"id": M + "hot_blast_stove"}})
+recipe("steel_ladle", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", " B ", "  R"],
+       "key": {"P": M + "steel_plate", "B": M + "silica_brick", "R": M + "iron_tool_rod"}, "result": {"id": M + "steel_ladle"}})
+tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", *[M + b for b in ("finery_hearth", "slag_stone_bricks", "sight_glass", "coke_oven", "hot_blast_stove")])
+merge(A / "lang/en_us.json", {
+    "block.mechanical.finery_hearth": "Finery Hearth", "block.mechanical.slag_stone_bricks": "Slag Stone Bricks", "block.mechanical.sight_glass": "Sight Glass",
+    "block.mechanical.coke_oven": "Coke Oven", "block.mechanical.hot_blast_stove": "Hot Blast Stove",
+    "item.mechanical.glass_batch": "Glass Batch", "item.mechanical.loam": "Loam", "item.mechanical.strickle_board_bell": "Strickle Board (Bell)",
+    "item.mechanical.strickle_board_cauldron": "Strickle Board (Cauldron)", "item.mechanical.unfired_loam_mold_bell": "Unfired Loam Mold (Bell)",
+    "item.mechanical.unfired_loam_mold_cauldron": "Unfired Loam Mold (Cauldron)", "item.mechanical.loam_mold_bell": "Loam Mold (Bell)",
+    "item.mechanical.loam_mold_cauldron": "Loam Mold (Cauldron)", "item.mechanical.furnace_salamander": "Furnace Salamander",
+    "item.mechanical.coke": "Coke", "item.mechanical.steel_ladle": "Steel Ladle",
+    "item.mechanical.steel_ladle.empty": "Empty: scoop a trough's metal", "item.mechanical.steel_ladle.holds": "%s / %s mB %s",
+    "message.mechanical.finery_hearth": "%s°, %s pig iron, %s charcoal, blast %s (fines at 1300°)",
+    "message.mechanical.coke_oven.coal": "%s / %s Coal: it closes and bakes when full",
+    "message.mechanical.coke_oven.baking": "Baking: %s s left",
+})
 
 # ---------------- flat items
 for name in ("crushed_quartzite", "unfired_silica_brick", "silica_brick", "steel_hoop", "bronze_tuyere_nozzle", "unfired_clay_tuyere_mold", "pig_iron_ingot"):

@@ -63,6 +63,43 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
         return m.nonMetal ? STONE : Molten.BLOCK;
     }
 
+    /** The great one-off casts a Loam Mold in the basin takes: the melt, how much, what it gives. */
+    public enum Loam {
+        BELL(Molten.BRONZE, 1600), CAULDRON(Molten.PIG_IRON, 1400);
+
+        public final Molten molten;
+        public final int mb;
+
+        Loam(Molten molten, int mb) {
+            this.molten = molten;
+            this.mb = mb;
+        }
+
+        Item result() {
+            return this == BELL ? Items.BELL : Items.CAULDRON;
+        }
+
+        Item mold() {
+            return this == BELL ? HighFurnace.LOAM_MOLD_BELL.get() : HighFurnace.LOAM_MOLD_CAULDRON.get();
+        }
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hit) {
+        if (!(level.getBlockEntity(pos) instanceof Entity b) || b.molten != null || b.loam != null) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        for (Loam l : Loam.values())
+            if (stack.is(l.mold())) {
+                if (level instanceof ServerLevel server) {
+                    b.loam = l;
+                    b.sync();
+                    if (!player.getAbilities().instabuild) stack.shrink(1);
+                    server.playSound(null, pos, SoundEvents.DECORATED_POT_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
+                }
+                return InteractionResult.SUCCESS;
+            }
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
@@ -75,7 +112,12 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
             player.sendOverlayMessage(Component.translatable("message.mechanical.ingot_mold.molten"));
             return InteractionResult.SUCCESS;
         }
-        Item out = block(b.molten);
+        Item out = b.loam != null ? b.loam.result() : block(b.molten);
+        if (b.loam != null) { // the loam is broken off the casting
+            if (b.loam == Loam.BELL) Smelting.award(server, pos, HighFurnace.BELL_ADVANCEMENT, 8);
+            b.loam = null;
+            server.playSound(null, pos, SoundEvents.DECORATED_POT_SHATTER, SoundSource.BLOCKS, 0.8F, 0.8F);
+        }
         if (out != null) {
             ItemStack stack = new ItemStack(out);
             if (!player.getInventory().add(stack)) Block.popResource(level, pos.above(), stack);
@@ -98,6 +140,11 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
         int filled;
         long setAt, pouredAt;
         boolean whole;
+        @Nullable Loam loam;
+
+        public @Nullable Loam loam() {
+            return loam;
+        }
 
         public Entity(BlockPos pos, BlockState state) {
             super(HighFurnace.FOUNDRY_BASIN_ENTITY.get(), pos, state);
@@ -109,7 +156,7 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
 
         /** 0..1 how full. */
         public float fill() {
-            return molten == null ? 0 : Math.min(1, filled / (float) cast(molten));
+            return molten == null ? 0 : Math.min(1, filled / (float) (loam != null ? loam.mb : cast(molten)));
         }
 
         public float cooled(long now) {
@@ -129,6 +176,8 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
             setAt = input.getLongOr("set_at", 0);
             pouredAt = input.getLongOr("poured_at", 0);
             whole = input.getBooleanOr("whole", false);
+            String l = input.getStringOr("loam", "");
+            loam = l.isEmpty() ? null : Loam.valueOf(l);
         }
 
         @Override
@@ -139,6 +188,7 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
             output.putLong("set_at", setAt);
             output.putLong("poured_at", pouredAt);
             output.putBoolean("whole", whole);
+            if (loam != null) output.putString("loam", loam.name());
         }
 
         @Override
@@ -155,8 +205,9 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
     static final class Sink implements PouringSpoutBlockEntity.Sink {
         @Override
         public int need(ServerLevel level, BlockPos at, Molten m) {
-            if (!(level.getBlockEntity(at) instanceof Entity b) || block(m) == null) return 0;
-            return b.whole || b.molten != null && b.molten != m ? 0 : cast(m);
+            if (!(level.getBlockEntity(at) instanceof Entity b) || b.whole || b.molten != null && b.molten != m) return 0;
+            if (b.loam != null) return b.loam.molten == m ? b.loam.mb : 0;
+            return block(m) == null ? 0 : cast(m);
         }
 
         @Override

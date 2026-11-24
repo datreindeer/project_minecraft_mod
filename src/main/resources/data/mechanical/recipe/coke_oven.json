@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "B B",
+    "BPB"
+  ],
+  "key": {
+    "B": "mechanical:silica_bricks",
+    "P": "mechanical:iron_plate"
+  },
+  "result": {
+    "id": "mechanical:coke_oven"
+  }
+}

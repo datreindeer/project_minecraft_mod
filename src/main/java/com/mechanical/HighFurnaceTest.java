@@ -41,7 +41,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HighFurnaceTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron", "trough_flow", "trough_pour", "foundry_casting"};
+    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron", "trough_flow", "trough_pour", "foundry_casting", "finery_hearth", "high_furnace_glass_bell", "high_furnace_salamander", "high_furnace_coke"};
 
     static {
         TEST_FUNCTIONS.register("high_furnace_shape", () -> HighFurnaceTest::shape);
@@ -52,6 +52,10 @@ public final class HighFurnaceTest {
         TEST_FUNCTIONS.register("trough_flow", () -> HighFurnaceTest::troughFlow);
         TEST_FUNCTIONS.register("trough_pour", () -> HighFurnaceTest::troughPour);
         TEST_FUNCTIONS.register("foundry_casting", () -> HighFurnaceTest::foundryCasting);
+        TEST_FUNCTIONS.register("finery_hearth", () -> HighFurnaceTest::finery);
+        TEST_FUNCTIONS.register("high_furnace_glass_bell", () -> HighFurnaceTest::glassBell);
+        TEST_FUNCTIONS.register("high_furnace_salamander", () -> HighFurnaceTest::salamander);
+        TEST_FUNCTIONS.register("high_furnace_coke", () -> HighFurnaceTest::coke);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -63,7 +67,7 @@ public final class HighFurnaceTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "high_furnace"), new TestEnvironmentDefinition.AllOf(List.of()));
         for (String t : TESTS)
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, t), new FunctionGameTestInstance(
-                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("iron") || t.endsWith("casting") ? 1000 : 400, true)));
+                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("iron") || t.endsWith("casting") || t.endsWith("hearth") || t.endsWith("bell") ? 1000 : 400, true)));
     }
 
     /** Where a test furnace stands: its Front's position (relative), facing north; the inside starts right south of it. */
@@ -515,6 +519,117 @@ public final class HighFurnaceTest {
                         h.succeed();
                     });
                 });
+            });
+        });
+    }
+
+    /** Phase 5: a Finery Hearth blown by a Great Bellows at full power fines 2 Pig Iron Ingots into 2 Wrought Iron Ingots. */
+    private static void finery(GameTestHelper h) {
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos hearth = new BlockPos(4, 1, 4);
+        h.setBlock(hearth, HighFurnace.FINERY_HEARTH.get());
+        GreatBellowsBlockEntity b = bellows(h, hearth, Direction.EAST);
+        for (int t = 1; t < 980; t++) h.runAtTickTime(t, () -> b.feed(4, 0, 0, 16));
+        FineryHearthBlock.Entity e = (FineryHearthBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(hearth));
+        for (net.minecraft.world.item.Item it : new net.minecraft.world.item.Item[] {Items.CHARCOAL, HighFurnace.PIG_IRON_INGOT.get(), HighFurnace.PIG_IRON_INGOT.get(), Items.FLINT_AND_STEEL}) {
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(it, it == Items.CHARCOAL ? 8 : 1));
+            h.useBlock(hearth, player);
+        }
+        h.assertTrue(h.getBlockState(hearth).getValue(FineryHearthBlock.LIT), "the hearth is lit");
+        e.setForTest(1400);
+        h.runAfterDelay(2 * FineryHearthBlock.FINE_TICKS / 2 + 40, () -> {
+            h.assertTrue(e.wrought() == 2, "2 pig iron fined into 2 wrought iron: " + e.wrought() + " at " + e.temperature());
+            h.succeed();
+        });
+    }
+
+    /**
+     * Phase 6: Glass Batch melts at 1400° into 250 mB of glass that a Foundry Basin casts into a Glass block; a Loam Mold
+     * (Bell) set in a basin takes 1600 mB of bronze and gives a Bell, the loam broken off.
+     */
+    private static void glassBell(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        for (int t = 1; t < 980; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(1410));
+        f.take(new ItemStack(HighFurnace.GLASS_BATCH.get()));
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos glassBasin = new BlockPos(10, 1, 2), bellBasin = new BlockPos(10, 1, 6);
+        h.setBlock(glassBasin, HighFurnace.FOUNDRY_BASIN.get());
+        h.setBlock(bellBasin, HighFurnace.FOUNDRY_BASIN.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(HighFurnace.LOAM_MOLD_BELL.get()));
+        h.useBlock(bellBasin, player);
+        FoundryBasinBlock.Sink basins = new FoundryBasinBlock.Sink();
+        h.assertTrue(basins.need(h.getLevel(), h.absolutePos(bellBasin), Molten.BRONZE) == 1600, "a bell takes 1600 mB of bronze");
+        h.assertTrue(basins.need(h.getLevel(), h.absolutePos(bellBasin), Molten.GOLD) == 0, "a bell mold takes no gold");
+        h.runAfterDelay(200, () -> {
+            h.assertTrue(f.pool().get(Molten.GLASS) == 250, "glass batch melted into 250 mB glass: " + f.pool().layers());
+            basins.fill(h.getLevel(), h.absolutePos(glassBasin), Molten.GLASS, f.pool().drain(Molten.GLASS, 250));
+            basins.fill(h.getLevel(), h.absolutePos(bellBasin), Molten.BRONZE, 1600);
+            h.runAfterDelay(400, () -> {
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                h.useBlock(glassBasin, player);
+                h.useBlock(bellBasin, player);
+                h.assertTrue(count(player, Items.GLASS) == 1, "a glass block out of the basin");
+                h.assertTrue(count(player, Items.BELL) == 1, "a bell out of the loam mold");
+                FoundryBasinBlock.Entity bb = (FoundryBasinBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(bellBasin));
+                h.assertTrue(bb.loam() == null, "the loam mold is broken off");
+                h.succeed();
+            });
+        });
+    }
+
+    /** Phase 6: breaking the Front leaves a Furnace Salamander with half of each layer; thrown into a hot furnace it melts back. */
+    private static void salamander(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        f.pool().add(Molten.BRONZE, 1000);
+        f.pool().add(Molten.GOLD, 401);
+        h.getLevel().destroyBlock(h.absolutePos(b.front()), false);
+        var drops = h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(h.absolutePos(b.front())).inflate(2),
+                e -> e.getItem().is(HighFurnace.FURNACE_SALAMANDER.get()));
+        h.assertTrue(drops.size() == 1, "a salamander was left: " + drops.size());
+        MeltPool held = new MeltPool(Integer.MAX_VALUE);
+        held.load(FurnaceSalamander.pool(drops.get(0).getItem()));
+        h.assertTrue(held.get(Molten.BRONZE) == 500 && held.get(Molten.GOLD) == 200, "half of each layer: " + held.layers());
+        // a new furnace melts it back
+        h.setBlock(b.front(), HighFurnace.HIGH_FURNACE_FRONT.get().defaultBlockState().setValue(HighFurnaceFrontBlock.FACING, Direction.NORTH));
+        HighFurnaceBlockEntity g = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        g.check(h.getLevel());
+        for (int t = 1; t < 380; t++) h.runAtTickTime(t, () -> g.setTemperatureForTest(1300));
+        net.minecraft.world.phys.Vec3 top = g.topForTest();
+        drops.get(0).setPos(top.x, top.y + 0.5, top.z);
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(g.pool().get(Molten.BRONZE) == 500 && g.pool().get(Molten.GOLD) == 200, "the salamander melted back: " + g.pool().layers());
+            h.succeed();
+        });
+    }
+
+    /** Phase 7: the smallest furnace on Coke with full blast heads for 1750°, with a Hot Blast Stove by its bellows for 1800°; a Coke Oven bakes 16 Coal into 12 Coke. */
+    private static void coke(GameTestHelper h) {
+        Built b = build(h, 2, 3, 2, 2, 5, 1);
+        GreatBellowsBlockEntity bl = bellows(h, b.fireboxes().get(0), Direction.EAST);
+        for (int t = 1; t < 380; t++) h.runAtTickTime(t, () -> bl.feed(4, 0, 0, 16));
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        f.addFuel(h.absolutePos(b.fireboxes().get(0)), new ItemStack(HighFurnace.COKE.get(), 16));
+        f.light();
+        f.setDriedForTest();
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos oven = new BlockPos(12, 1, 12);
+        h.setBlock(oven, HighFurnace.COKE_OVEN.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.COAL, 16));
+        h.useBlock(oven, player);
+        h.assertTrue(h.getBlockState(oven).getValue(CokeOvenBlock.LIT), "16 coal: the oven closes and bakes");
+        ((CokeOvenBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(oven))).finishForTest();
+        h.runAfterDelay(4, () -> {
+            h.assertTrue(Math.round(f.target()) == 1750, "coke at full blast: 1750°, got " + f.target());
+            h.setBlock(b.fireboxes().get(0).east().north(), HighFurnace.HOT_BLAST_STOVE.get());
+            h.assertTrue(((CokeOvenBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(oven))).coke() == 12, "12 coke out of 16 coal");
+            h.runAfterDelay(2, () -> {
+                h.assertTrue(Math.round(f.target()) == 1800, "with a hot blast stove: 1800°, got " + f.target());
+                h.succeed();
             });
         });
     }

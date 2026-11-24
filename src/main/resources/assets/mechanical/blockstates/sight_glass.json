@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "heat=0": {
+      "model": "mechanical:block/sight_glass"
+    },
+    "heat=1": {
+      "model": "mechanical:block/sight_glass"
+    },
+    "heat=2": {
+      "model": "mechanical:block/sight_glass"
+    },
+    "heat=3": {
+      "model": "mechanical:block/sight_glass"
+    }
+  }
+}
