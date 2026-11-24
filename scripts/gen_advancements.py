@@ -91,6 +91,11 @@ def used_on(tool, block=None, state=None):
                      "conditions": {"location": {"type": "minecraft:all_of", "terms": terms}}}}
 
 
+def effect(eid, amplifier=0):
+    """The player under the effect at this amplifier (0 = level I) or more."""
+    return {"effect": {"trigger": "minecraft:effects_changed", "conditions": {"effects": {eid: {"amplifier": {"min": amplifier}}}}}}
+
+
 def by_code():
     """Granted from Java (PlayerAdvancements.award with criterion "done"), e.g. when a Smelting Furnace is complete."""
     return {"done": {"trigger": "minecraft:impossible"}}
@@ -196,7 +201,7 @@ BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "
            "black_currants", "rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates", "yew_arils"]
 T, G, C = "task", "goal", "challenge"
 BARK_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]  # Mechanical.WOODS
+              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]  # Mechanical.WOODS
 
 # (id, parent, icon, frame, title, description, criteria). The first row of a tab is its root.
 TABS = {
@@ -1372,6 +1377,13 @@ TABS["food"][1].extend([
     ("fruit_orchard", "tree_fruit", "date_palm_sapling", G, "A Taste of Every Tree",
      "Gather fruit from all six fruit trees, from the rowans of the north to the date palms of the desert oases",
      has_all("rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates")),
+    # flora3: the rare citrus of the warm lands, and the grafted apple
+    ("bitter_orange", "tree_fruit", "bitter_oranges", G, "Oranges in the South",
+     "Pick Bitter Oranges. The evergreen citrus grows wild only in the warm Marble Gorge and by savanna water, and a sapling "
+     "(the Eastern Caravan sells them) takes only in a warm land", has("bitter_oranges")),
+    ("grafted_apple", "tree_fruit", "apple_sapling", G, "Grafted",
+     "Graft an Apple Scion onto a Wild Apple sapling, a knife in your other hand: it grows into an Apple tree with real apples",
+     has("apple_sapling")),
     ("cooked_rowan_berries", "cooked_elderberries", "cooked_rowan_berries", T, "Bitter Made Sweet",
      "Raw Rowan Berries upset your stomach and Yew Arils are deadly whole. Cook rowan berries on a Campfire", has("cooked_rowan_berries")),
     ("fallow_season", "root", "minecraft:wheat_seeds", T, "Out of Season",
@@ -1383,6 +1395,9 @@ TABS["food"][1].extend([
     ("wild_greens", "root", "wild_onion", T, "Wild Greens",
      "Dig up a wild vegetable: Wild Garlic, Onion, Cabbage, Leek, Parsnip, Celery, Turnip or Lettuce, each in its own climate",
      has("wild_garlic", "wild_onion", "wild_cabbage", "wild_leek", "wild_parsnip", "wild_celery", "wild_turnip", "wild_lettuce")),
+    ("rapeseed", "wild_greens", "rapeseed", T, "Yellow Fields",
+     "Tame the Wild Turnip: besides the Turnip it sometimes gives Rapeseed, the oil seed, which grows tall and yellow in spring",
+     has("rapeseed")),
     ("tamed_vegetable", "wild_greens", "onion", G, "Tamed",
      "Sow a wild vegetable on farmland: now and then a ripe one gives the seed of the tame kind, which grows bigger and better",
      has("garlic", "onion", "cabbage", "leek", "parsnip", "celery", "turnip", "lettuce")),
@@ -1407,6 +1422,8 @@ TABS["bronze_age"][1].extend([
     ("kettle_dish", "kettle", "pea_soup", G, "Proper Dishes",
      "Cook a dish in the Bronze Kettle: Pea Soup, Onion and Garlic Stew, Spiced Porridge, Tea, Elderberry Syrup or Sloe Jam",
      has("pea_soup", "onion_garlic_stew", "spiced_porridge", "tea", "elderberry_syrup", "sloe_jam")),
+    ("marmalade", "kettle", "bitter_orange_marmalade", T, "Marmalade",
+     "Boil three Bitter Oranges with honey in the Bronze Kettle into Bitter Orange Marmalade", has("bitter_orange_marmalade")),
     ("bronze_ladle", "kettle", "bronze_ladle", T, "Every Last Drop",
      "Serve from a pot with a Bronze Ladle: it scrapes the pot clean for one more bowl", has("bronze_ladle")),
 ])
@@ -1673,7 +1690,7 @@ TABS["iron_age"][1].extend([
     ("brewer", "sauerkraut", "ale", T, "Brewer",
      "Ferment Crab Apples into Cider, or Barley with Hop Cones or Bog Myrtle into Ale, in a Fermenting Barrel", has("cider", "ale")),
     ("pie", "forged", "apple_pie", T, "Fruit Pie",
-     "Fill a pie with the fruit of the Wild Apple, Plum, Rowan or Bird Cherry and bake it in the Clay Kiln",
+     "Fill a pie with the fruit of the Wild Apple (or a grafted Apple), Plum, Rowan or Bird Cherry and bake it in the Clay Kiln",
      has("apple_pie", "plum_pie", "rowan_pie", "bird_cherry_pie")),
     ("roast_with_herbs", "iron_skillet", "roast_with_herbs", T, "Sunday Roast",
      "Roast two pieces of meat with two herbs in an Iron Skillet", has("roast_with_herbs")),
@@ -1690,6 +1707,15 @@ TABS["iron_age"][1].extend([
      "Bake Gingerbread in the Clay Kiln from Fine Flour, honey, Sweet Spice and an egg", has("gingerbread")),
     ("pickles", "mortar", "pickled_vegetables", T, "In Brine",
      "Pickle vegetables with Pickling Spice and Salt in a Fermenting Barrel", has("pickled_vegetables")),
+    # flora3: oil, frying, pickled olives, and the ale's warmth
+    ("pressed_oil", "cheese", "olive_oil", T, "First Pressing",
+     "Press four Olives or four Rapeseed in the Cheese Press into Olive Oil or Rapeseed Oil", has("olive_oil", "rapeseed_oil")),
+    ("fried_in_oil", "pressed_oil", "fried_fish", T, "Fried in Oil",
+     "Fry Fish or Roots and Onion in an Iron Skillet with oil (or lard)", has("fried_fish", "fried_roots")),
+    ("pickled_olives", "sauerkraut", "pickled_olives", T, "Olives in Brine",
+     "Pickle Olives with Salt in a Fermenting Barrel: raw they are bitter, in brine they keep a month", has("pickled_olives")),
+    ("tipsy", "brewer", "cider", T, "One More Round",
+     "Drink three cups of Ale or Cider in a row: a warm belly, and the world leans a little", effect("mechanical:tipsy", 2)),
     ("knife_set", "steel", "steel_knife_set", T, "A Cut Above",
      "Roll a Steel Knife and two more blades into a Steel Knife Set: it gets more meat and hide from every carcass", has("steel_knife_set")),
 ])
@@ -2319,6 +2345,15 @@ TABS["folklore"][1].extend([
      has("will_o_wisp_lily")),
     ("moonwort", "root", "moonwort", C, "Key Under the Full Moon",
      "Pick Moonwort in bloom. The little fern of the Limestone Karst shines silver only on full-moon nights", has("moonwort")),
+    # flora3: what the magic flowers are good for (Flora.java, Kitchen.FROST_LILY_TEA, folklore.Wisp)
+    ("fern_flower_charm", "fern_flower", "fern_flower_charm", G, "Luck on a String",
+     "Bind a Fern Flower with Twine into a Fern Flower Charm and wear it in the Charm slot: a little luck goes with you", has("fern_flower_charm")),
+    ("frost_lily_tea", "frost_lily", "frost_lily_tea", G, "Warm from Within",
+     "Brew a Frost Lily in the Clay Cooking Pot into Frost Lily Tea: for ten minutes the cold bites far less", has("frost_lily_tea")),
+    ("wisp_lily_true", "will_o_wisp_lily", "will_o_wisp_lily", C, "Light Calls to Light",
+     "Follow a Will-o'-Wisp with a Will-o'-Wisp Lily in your hand: the lily answers its light, and it leads you true", by_code()),
+    ("moonwort_lock", "moonwort", "minecraft:iron_door", G, "The Key-Herb",
+     "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent", by_code()),
 ])
 
 

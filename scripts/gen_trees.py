@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = ROOT / "assets/mechanical", ROOT / "data"
 ALL_TREES = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive",
-             "date_palm"]
+             "date_palm", "bitter_orange"]
 
 
 def w(path, obj):
@@ -33,12 +33,12 @@ def tag_add(path, *values):
 
 
 # ---- tree features (same layout as gen_data.py's tree_feature) ----
-def tree_feature(x, trunk, foliage, size=None):
+def tree_feature(x, trunk, foliage, size=None, log=None):
     w(D / f"mechanical/worldgen/feature/{x}.json", {"type": "minecraft:tree", "below_trunk_provider": "minecraft:soil_beneath_tree",
         "decorators": [], "foliage_placer": foliage, "ignore_vines": True,
         "foliage_provider": {"id": f"mechanical:{x}_leaves", "properties": {"distance": "7", "persistent": "false", "waterlogged": "false"}},
         "minimum_size": size or {"type": "minecraft:two_layers_feature_size"}, "trunk_placer": trunk,
-        "trunk_provider": {"id": f"mechanical:{x}_log", "properties": {"axis": "y"}}})
+        "trunk_provider": {"id": f"mechanical:{log or x}_log", "properties": {"axis": "y"}}})
 
 
 trunk = lambda kind, base, a, b=0: {"type": kind, "base_height": base, "height_rand_a": a, "height_rand_b": b}
@@ -96,6 +96,12 @@ tree_feature("olive", trunk("mechanical:multi_stem_trunk_placer", 3, 1, 1),
              {"type": "minecraft:random_spread_foliage_placer", "radius": 2, "offset": 0, "foliage_height": 2, "leaf_placement_attempts": 22})
 # date palm: a tall, slightly curving trunk (TreeShapes.CurvedTrunkPlacer) and a star of long drooping fronds (PalmFoliagePlacer)
 tree_feature("date_palm", trunk("mechanical:curved_trunk_placer", 7, 3, 1), {"type": "mechanical:palm_foliage_placer", "radius": 4, "offset": 0})
+# bitter orange: a small evergreen with a short smooth bole and one dense, rounded, glossy crown down to head height
+tree_feature("bitter_orange", trunk("minecraft:straight_trunk_placer", 2, 1),
+             {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 4})
+# apple (grafted; leaves Trees.APPLE_LEAVES on wild apple wood): the wild apple's crooked limbs, a fuller, tidier crown
+tree_feature("apple", cherry_trunk(3, 1, (2, 3), (2, 3), (-2, -1)), cherry_crown(3, 4, 0.25, 0.08),
+             {"type": "minecraft:two_layers_feature_size", "upper_size": 2}, log="wild_apple")
 
 # ---- placed features ----
 survives = lambda x: {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:would_survive", "state": f"mechanical:{x}_sapling"}}
@@ -133,10 +139,14 @@ TREE_PLACEMENTS = {
     "wild_apple_forest": ("wild_apple", rarity(12), ["mechanical:deciduous_forest", "minecraft:forest", "minecraft:flower_forest"]),
     "plum_meadow": ("plum", rarity(4), ["mechanical:hazel_meadow", "mechanical:chalk_downs"]),
     "plum_plains": ("plum", rarity(14), ["minecraft:plains", "mechanical:limestone_karst"]),
-    "olive_gorge": ("olive", weighted((0, 1), (1, 1)), ["mechanical:marble_gorge"]),
+    # the gorge is mostly bare marble cliff: most tries land on stone and fail, so many tries for the soil ledges (flora3 survey)
+    "olive_gorge": ("olive", weighted((1, 1), (2, 1), (3, 1)), ["mechanical:marble_gorge"]),
     "olive_plateau": ("olive", rarity(8), ["minecraft:savanna_plateau"]),
     "date_palm_oasis": ("date_palm", weighted((0, 1), (1, 1)), ["minecraft:desert", "mechanical:gypsum_flats"], [NEAR_WATER]),
     "date_palm_desert": ("date_palm", rarity(40), ["minecraft:desert", "mechanical:gypsum_flats"]),
+    # rare and warm: the Eastern Caravan sells the saplings (they grow only in a warm biome, Trees.warmEnoughForCitrus)
+    "bitter_orange_gorge": ("bitter_orange", rarity(6), ["mechanical:marble_gorge"]),
+    "bitter_orange_savanna": ("bitter_orange", rarity(24), ["minecraft:savanna", "minecraft:savanna_plateau"], [NEAR_WATER]),
 }
 for name, (x, freq, biomes, *extra) in TREE_PLACEMENTS.items():
     extra = extra[0] if extra else []
@@ -158,7 +168,8 @@ for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "me
 
 # ---- fruit leaves: a model per stage (leaves, blossom, unripe, ripe), fruit when broken ripe ----
 FRUIT = {"rowan": "rowan_berries", "bird_cherry": "bird_cherries", "wild_apple": "crab_apple", "plum": "wild_plums", "olive": "olives",
-         "date_palm": "dates"}  # Trees.FRUIT_KINDS
+         "date_palm": "dates", "bitter_orange": "bitter_oranges", "apple": "minecraft:apple"}  # Trees.FRUIT_KINDS, Trees.APPLE_LEAVES
+fruit_id = lambda f: f if ":" in f else f"mechanical:{f}"
 LOOKS = ["", "_blossom", "_unripe", "_ripe"]
 TEX = ROOT / "assets/mechanical/textures/block"
 
@@ -173,6 +184,33 @@ def frond(name, tex):
     w(A / f"models/block/{name}.json", {"ambientocclusion": False, "textures": {"particle": "mechanical:block/date_palm_leaves_top",
         "top": "mechanical:block/date_palm_leaves_top", "hang": f"mechanical:block/{tex}"}, "elements": top + cross})
 
+
+# the grafted apple: its own leaves and sapling, the rest wild apple's (seedlings from its leaves come up wild again)
+for src, dst in (("blockstates/wild_apple_sapling.json", "blockstates/apple_sapling.json"),
+                 ("blockstates/potted_wild_apple_sapling.json", "blockstates/potted_apple_sapling.json"),
+                 ("models/block/wild_apple_sapling.json", "models/block/apple_sapling.json"),
+                 ("models/block/potted_wild_apple_sapling.json", "models/block/potted_apple_sapling.json"),
+                 ("models/item/wild_apple_sapling.json", "models/item/apple_sapling.json"), ("items/wild_apple_sapling.json", "items/apple_sapling.json")):
+    (A / dst).write_text((A / src).read_text(encoding="utf-8").replace("wild_apple_sapling", "apple_sapling"), encoding="utf-8")
+for kind in ("", "potted_"):
+    path = D / f"mechanical/loot_table/blocks/{kind}wild_apple_sapling.json"
+    (D / f"mechanical/loot_table/blocks/{kind}apple_sapling.json").write_text(path.read_text(encoding="utf-8").replace("wild_apple_sapling", "apple_sapling"),
+                                                                            encoding="utf-8")
+loot = json.loads((D / "mechanical/loot_table/blocks/wild_apple_leaves.json").read_text(encoding="utf-8").replace("wild_apple_leaves", "apple_leaves"))
+loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != "mechanical:crab_apple"]
+w(D / "mechanical/loot_table/blocks/apple_leaves.json", loot)
+w(A / "models/block/apple_leaves.json", {"parent": "minecraft:block/leaves", "textures": {"all": "mechanical:block/apple_leaves"}})
+w(A / "items/apple_leaves.json", {"model": {"type": "minecraft:model", "model": "mechanical:block/apple_leaves"}})
+for kind in ("block", "item"):
+    tag_add(D / f"minecraft/tags/{kind}/leaves.json", "mechanical:apple_leaves")
+    tag_add(D / f"minecraft/tags/{kind}/saplings.json", "mechanical:apple_sapling")
+tag_add(D / "minecraft/tags/block/mineable/hoe.json", "mechanical:apple_leaves")
+tag_add(D / "minecraft/tags/block/flower_pots.json", "mechanical:potted_apple_sapling")
+merge(A / "lang/en_us.json", {"block.mechanical.apple_leaves": "Apple Leaves", "block.mechanical.apple_sapling": "Apple Sapling",
+                              "block.mechanical.potted_apple_sapling": "Potted Apple Sapling", "item.mechanical.apple_scion": "Apple Scion",
+                              "message.mechanical.graft.no_knife": "Hold a knife in your other hand to graft the scion on"})
+w(A / "models/item/apple_scion.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "mechanical:item/apple_scion"}})
+w(A / "items/apple_scion.json", {"model": {"type": "minecraft:model", "model": "mechanical:item/apple_scion"}})
 
 for tree, fruit in FRUIT.items():
     variants = {}
@@ -193,17 +231,17 @@ for tree, fruit in FRUIT.items():
     w(A / f"blockstates/{tree}_leaves.json", {"variants": variants})
     path = D / f"mechanical/loot_table/blocks/{tree}_leaves.json"
     loot = json.loads(path.read_text(encoding="utf-8"))
-    loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != f"mechanical:{fruit}"]  # rerunnable
+    loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != fruit_id(fruit)]  # rerunnable
     loot["pools"].append({"rolls": 1, "condition": {"type": "minecraft:all_of", "terms": [NOT_SHEARED, {"type": "minecraft:survives_explosion"},
         {"type": "minecraft:match_block", "blocks": f"mechanical:{tree}_leaves", "state": {"age": "3"}}]},
-        "entries": [{"type": "minecraft:item", "name": f"mechanical:{fruit}",
+        "entries": [{"type": "minecraft:item", "name": fruit_id(fruit),
                      "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]})
     w(path, loot)
 
 # ---- items ----
 ITEMS = {"beechnuts": "Beechnuts", "roasted_beechnuts": "Roasted Beechnuts", "pine_resin": "Pine Resin", "yew_arils": "Yew Arils",
          "rowan_berries": "Rowan Berries", "bird_cherries": "Bird Cherries", "crab_apple": "Crab Apple", "wild_plums": "Wild Plums",
-         "olives": "Olives", "dates": "Dates"}
+         "olives": "Olives", "dates": "Dates", "bitter_oranges": "Bitter Oranges"}
 for item in ITEMS:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
@@ -217,8 +255,9 @@ w(D / "mechanical/advancement/recipes/pine_resin.json", {"parent": "minecraft:re
     "criteria": {"has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": "mechanical:pine_resin"}]}}},
     "requirements": [["has_item"]], "rewards": {"recipes": ["mechanical:torch_from_pine_resin"]}})
 tag_add(D / "mechanical/tags/item/basket_storable.json", "mechanical:beechnuts", "mechanical:roasted_beechnuts", "mechanical:pine_resin",
-        *[f"mechanical:{f}" for f in FRUIT.values()], "mechanical:yew_arils")
+        *[fruit_id(f) for f in FRUIT.values() if ":" not in f], "mechanical:yew_arils")
 tag_add(D / "mechanical/tags/item/perishes_2_days.json", "mechanical:bird_cherries", "mechanical:wild_plums", "mechanical:yew_arils")
 tag_add(D / "mechanical/tags/item/perishes_3_days.json", "mechanical:rowan_berries", "mechanical:crab_apple", "mechanical:olives")
+tag_add(D / "mechanical/tags/item/perishes_10_days.json", "mechanical:bitter_oranges")  # thick-skinned, they keep
 tag_add(D / "mechanical/tags/item/dryable_berries.json", "mechanical:rowan_berries", "mechanical:bird_cherries", "mechanical:wild_plums", "mechanical:dates")
 print("trees ok")

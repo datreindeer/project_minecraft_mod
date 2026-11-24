@@ -112,7 +112,7 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
             return;
         }
         String name = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(leaves.getBlock()).getPath().replace("_leaves", "");
-        var fresh = Mechanical.LEAF_LITTERS.get(name);
+        var fresh = Mechanical.LEAF_LITTERS.get(name.equals("apple") ? "wild_apple" : name); // the grafted apple sheds wild apple leaves
         BlockState litter = (fresh != null ? fresh.get() : net.minecraft.world.level.block.Blocks.LEAF_LITTER).defaultBlockState()
                 .setValue(net.minecraft.world.level.block.LeafLitterBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(level.getRandom()));
         if (litter.canSurvive(level, ground) && crush(level, ground, there)) level.setBlock(ground, litter, Block.UPDATE_ALL);

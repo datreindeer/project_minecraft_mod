@@ -1790,12 +1790,14 @@ och räknas som sten för husets värme (inte som torv- och halmtaken). Advancem
 | **Tea** | Tea Leaves (östra karavanen) | 3 skålar |
 | **Elderberry Syrup** | 3 Elderberries + honung | 2 (håller 30 dagar) |
 | **Sloe Jam** | 3 Sloes + honung | 2 (håller 30 dagar) |
+| **Bitter Orange Marmalade** (flora3) | 3 Bitter Oranges + honung | 2 à 4 (håller 30 dagar) |
 
 - **Bybornas varor:** byns Farmer säljer för kopparmynt det som kom med jordbruket och inte växer vilt: nivå 2 **Barley Grain**,
-  **Onion**, **Garlic**, **Dill Seeds**, **Mustard Seeds**; nivå 3 **Cabbage**, **Broad Beans**; nivå 4 **Wild Apple Sapling** (6 Copper Coin). Dill och Mustard sås på farmland
+  **Onion**, **Garlic**, **Dill Seeds**, **Mustard Seeds**; nivå 3 **Cabbage**, **Broad Beans**; nivå 4 **Wild Apple Sapling** (6 Copper Coin) och **Apple Scion** (2 för 8 Copper Coin, att ympa på den). Dill och Mustard sås på farmland
   (dill ger Dill och frön, senap ger frön), Broad Beans likaså.
 - **Den östra karavanen** (*Eastern Caravan*, sällsynt: vikt 1 mot de andras 4; kameler, sidenrockar i ikatränder, höga
   broderade mössor, indigo- och saffransrandigt kapell): säljer Black Pepper, Cinnamon Bark, Ginger Root, Rice, Sesame Seeds,
-  Dried Dates, Dried Figs, Indigo, Lapis (brons), Saffron Crocus Corms, Tea Leaves, Silk Thread (järn) och sällsynt Saffron;
+  Dried Dates, Dried Figs, Indigo, Lapis (brons), Saffron Crocus Corms, Tea Leaves, Silk Thread, **Bitter Orange Sapling** (3 Silver
+  Coin, växer bara i varmt land) (järn) och sällsynt Saffron;
   köper ädelstenar, Jujubes, Sea Buckthorn Berries och ametist. Ginger, Saffron och Rice kan sås i varmt klimat.
 - Advancements (Bronze Age): *Griddle*, *Proper Dishes* och *Every Last Drop* (efter *Kettle*). Wilderness: *The Spice Road*.

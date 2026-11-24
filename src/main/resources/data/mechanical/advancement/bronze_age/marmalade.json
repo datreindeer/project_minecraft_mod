@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/kettle",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bitter_orange_marmalade"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bitter_orange_marmalade"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.marmalade.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.marmalade.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -25,6 +25,15 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -34,6 +43,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * {@link ThicketBushBlock}; data and worldgen (climate windows) in scripts/gen_flora.py, textures in
  * scripts/gen_flora_textures.py.
  */
+@EventBusSubscriber(modid = Mechanical.MODID)
 public final class Flora {
     static final int SPRING = 1, SUMMER = 2, AUTUMN = 4, WINTER = 8;
 
@@ -102,6 +112,56 @@ public final class Flora {
             p -> flower(p).lightLevel(s -> s.getValue(WildFlowerBlock.BLOOMING) ? 5 : 0));
     /** 10 minutes of Luck for picking a blooming Fern Flower. */
     static final int LUCK_TICKS = 12000;
+
+    // ---- uses of the magic flowers (flora3; folklore tone: small gifts, never a big advantage). Frost Lily Tea: Kitchen ----
+    /** Fern Flower Charm (Charm slot): a Fern Flower bound with twine; +1 Luck while worn (vanilla Luck: a little better loot and catches). */
+    public static final DeferredItem<Item> FERN_FLOWER_CHARM = ITEMS.registerSimpleItem("fern_flower_charm", p -> p.stacksTo(1)
+            .rarity(net.minecraft.world.item.Rarity.UNCOMMON).attributes(net.minecraft.world.item.component.ItemAttributeModifiers.builder()
+                    .add(net.minecraft.world.entity.ai.attributes.Attributes.LUCK, new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                            net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "fern_flower_charm"), 1.0,
+                            net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE), net.minecraft.world.entity.EquipmentSlotGroup.ARMOR)
+                    .build()));
+
+    /**
+     * Moonwort, the folk "key-herb" that springs locks: held against an Iron Door or Iron Trapdoor it opens (or shuts)
+     * without redstone, and the herb is spent.
+     */
+    @SubscribeEvent
+    static void moonwortOpens(PlayerInteractEvent.RightClickBlock event) {
+        ItemStack held = event.getItemStack();
+        if (!held.is(MOONWORT.get().asItem())) return;
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        BlockState state = level.getBlockState(pos);
+        if (!springLock(level, pos, state, event.getEntity())) return;
+        if (!level.isClientSide()) {
+            held.consume(1, event.getEntity());
+            if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp)
+                Kettle.award(sp, net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "folklore/moonwort_lock"));
+        }
+        event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+        event.setCanceled(true);
+    }
+
+    /** Opens or shuts the iron door or trapdoor at pos as a key would; false if it is neither. */
+    static boolean springLock(Level level, BlockPos pos, BlockState state, @org.jspecify.annotations.Nullable Player player) {
+        if (state.is(Blocks.IRON_DOOR)) {
+            if (!level.isClientSide()) ((DoorBlock) state.getBlock()).setOpen(player, level, state, pos, !state.getValue(DoorBlock.OPEN));
+        } else if (state.is(Blocks.IRON_TRAPDOOR)) {
+            if (!level.isClientSide()) {
+                boolean open = !state.getValue(TrapDoorBlock.OPEN);
+                level.setBlock(pos, state.setValue(TrapDoorBlock.OPEN, open), Block.UPDATE_ALL);
+                level.playSound(null, pos, open ? SoundEvents.IRON_TRAPDOOR_OPEN : SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+        } else {
+            return false;
+        }
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            server.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.8F, 1.6F);
+            server.sendParticles(new DustParticleOptions(0xE8EEFF, 0.6F), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 12, 0.3, 0.4, 0.3, 0);
+        }
+        return true;
+    }
 
     /** A thicket kind: berries, stage wanted per season (spring..winter), biome base temperature window, grows on sand too,
      *  thorny, a low mat/mound, keeps its leaves in winter (see {@link ThicketBushBlock}). */

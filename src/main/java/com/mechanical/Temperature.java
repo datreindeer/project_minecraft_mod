@@ -227,6 +227,8 @@ public final class Temperature {
             float insulation = shelter * SHELTER_MAX;
             for (ItemStack worn : wornForWarmth(player)) insulation += insulation(worn);
             if (warmBedrollUntil(player) > level.getGameTime()) insulation += FURRED_BED_WARMTH;
+            if (player.hasEffect(Kitchen.TIPSY)) insulation += Kitchen.TIPSY_WARMTH; // a warm belly
+            if (player.hasEffect(Kitchen.FROST_WARD)) insulation += Kitchen.FROST_WARD_WARMTH;
             insulation = Math.min(insulation, 1);
             t = COMFORT - (COMFORT - t) * (1 - insulation);
         }

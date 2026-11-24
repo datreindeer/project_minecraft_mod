@@ -365,6 +365,13 @@ public final class BeingsTest {
         astray.choose(false, astray.position());
         astray.arrive(level, List.of(p));
         h.assertTrue(p.hasEffect(Beings.LOST) && astray.isRemoved(), "led astray: lost");
+        // a Will-o'-Wisp Lily carried by a follower makes it lead true (no Lost), and the lily is spent
+        FakePlayer lily = believer(h, new Vec3(12.5, 1, 4.5));
+        lily.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new net.minecraft.world.item.ItemStack(com.mechanical.Flora.WILL_O_WISP_LILY.get().asItem()));
+        Wisp led = spawn(h, Beings.WILL_O_WISP.get(), new Vec3(13.5, 2, 6.5));
+        led.choose(false, led.position());
+        led.arrive(level, List.of(lily));
+        h.assertTrue(!lily.hasEffect(Beings.LOST) && lily.getOffhandItem().isEmpty() && led.isRemoved(), "the lily's light leads true, and the lily is spent");
         BlockPos chest = Wisp.bogGrave(level, h.absolutePos(new BlockPos(10, 1, 10)));
         h.assertTrue(level.getBlockEntity(chest) instanceof ChestBlockEntity c && Wisp.BOG_GRAVE.equals(c.getLootTable()), "a bog grave with its chest");
         Wisp mask = spawn(h, Beings.JUNGLE_SPIRIT_MASK.get(), new Vec3(6.5, 2, 12.5));

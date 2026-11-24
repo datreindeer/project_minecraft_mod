@@ -263,7 +263,7 @@ for p in ("saw_sash", "saw_flywheel", "saw_pitman"):
 # a sawn board for each wood the saw takes (Mechanical.WOODS), the renderer stands four on edge as they leave the blade:
 # 16 long, 1.75 thick, 7 high, its faces cut from one plank of the wood's planks texture so no seams show
 WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder",
-         "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]
+         "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
 for wood in WOODS:
     own = A / f"models/block/{wood}_planks.json"
     tex = json.loads(own.read_text(encoding="utf-8"))["textures"]["all"] if own.exists() else f"minecraft:block/{wood}_planks"

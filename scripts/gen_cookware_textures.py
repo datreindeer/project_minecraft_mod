@@ -1446,6 +1446,190 @@ def steel_kitchen_items():
         pie(f"{f}_pie", pal, False, 1410 + k)
 
 
+# ---------------------------------------------------------------- flora3: oils, frying, marmalade, pickled olives, Frost Lily Tea
+
+def oil_flask(name, pal, oil, seed, sprig):
+    """A slim stoppered oil flask (a lekythos: narrow neck, sloping shoulder, a strap handle), a bead of oil running from
+    the lip, a sprig of what it was pressed from leaning against it."""
+    img = new()
+    lathe(img, {3: 1.4, 4: 1.4, 5: 1.6, 6: 2.8, 7: 3.8, 8: 4.4, 9: 4.6, 10: 4.6, 11: 4.4, 12: 4.0, 13: 3.2, 14: 2.0}, pal, seed)
+    for x, y in ((7, 1), (8, 1), (7, 2), (8, 2)):  # the wooden stopper
+        put(img, x, y, (190, 150, 96) if x == 7 else (140, 104, 60))
+    for x, y in ((9, 4), (10, 4), (11, 5), (11, 6)):  # the strap handle from the neck down onto the shoulder
+        put(img, x, y, ramp(pal, 0.45 if y == 4 else 0.25))
+    for x in range(5, 11):  # a painted band round the belly
+        if solid(img, x, 9):
+            put(img, x, 9, mix(get(img, x, 9), (40, 26, 18), 0.5))
+    for x, y, k in ((6, 3, 3), (5, 4, 2), (5, 5, 1), (4, 6, 2)):  # the oil running from the lip, a glossy bead
+        put(img, x, y, oil[k])
+    put(img, 4, 7, oil[3])
+    for x, y, c in sprig:
+        put(img, x, y, c)
+    outline_dark(img, (30, 22, 16), only_bottom_right=True)
+    save(img, name, "item")
+
+
+def flora3_items():
+    TERRA = [(70, 36, 18), (118, 62, 32), (164, 96, 54), (198, 132, 82), (226, 170, 118)]
+    OLIVE_OIL = [(70, 74, 14), (120, 124, 22), (170, 168, 40), (222, 214, 110)]
+    oil_flask("olive_oil", TERRA, OLIVE_OIL, 1501,
+              [(12, 9, (90, 110, 80)), (13, 8, (140, 160, 128)), (12, 10, (60, 80, 56)), (13, 11, (110, 130, 98)), (14, 10, (170, 186, 156)),
+               (12, 12, (52, 30, 58)), (13, 12, (86, 60, 92)), (11, 13, (40, 22, 46)), (12, 13, (60, 36, 66))])  # silvery leaves, two olives
+    RAPE_OIL = [(130, 90, 4), (196, 150, 10), (240, 200, 40), (255, 236, 130)]
+    oil_flask("rapeseed_oil", STONEWARE, RAPE_OIL, 1502,
+              [(12, 8, (250, 220, 40)), (13, 8, (255, 240, 120)), (12, 9, (220, 180, 20)), (13, 9, (250, 220, 40)), (12, 10, (90, 120, 60)),
+               (13, 11, (90, 120, 60)), (12, 12, (110, 140, 70)), (13, 13, (90, 120, 60)), (14, 12, (150, 140, 70))])  # flowers, stem, a pod
+
+    # fried fish: one golden-crusted fish, head and eye to the left, a forked tail to the right
+    img = new()
+    CRUST = [(96, 48, 12), (156, 90, 24), (204, 138, 42), (232, 182, 80), (250, 224, 150)]
+    for x, y in ellipse_px(6.8, 8.5, 5.6, 3.1):
+        u, v = (x + 0.5 - 6.8) / 5.6, (y + 0.5 - 8.5) / 3.1
+        t = 0.68 - 0.32 * v - 0.06 * u + r_unif(1511, x, y, 0.05)
+        if (x * 3 + y * 5) % 7 == 0 and abs(v) < 0.75:
+            t += 0.18  # crumbs of crisp batter
+        put(img, x, y, ramp(CRUST, t))
+    for x, ys, t in ((12, range(7, 11), 0.45), (13, range(6, 12), 0.45), (14, range(4, 8), 0.6), (14, range(10, 14), 0.3),
+                     (15, range(3, 6), 0.65), (15, range(12, 15), 0.3)):  # the forked tail
+        for y in ys:
+            put(img, x, y, ramp(CRUST, t - 0.03 * (y - 8)))
+    for y in (7, 8, 9, 10):
+        put(img, 4, y, ramp(CRUST, 0.32))  # the gill line behind the head
+    put(img, 2, 7, (30, 18, 8)); put(img, 2, 6, CRUST[4])  # the eye, a glint above it
+    put(img, 1, 9, ramp(CRUST, 0.35))  # the mouth
+    for x in range(5, 11):
+        if x % 2:
+            put(img, x, 6, CRUST[4])  # oil glistening along the back
+    for x, y in ((7, 5), (8, 4), (9, 5)):
+        put(img, x, y, ramp(CRUST, 0.5))  # the dorsal fin
+    outline_dark(img, (60, 30, 8))
+    save(img, "fried_fish", "item")
+
+    # fried roots: golden wedges of potato and turnip heaped on a trencher with soft fried onion rings
+    img = new()
+    plate(img, OAK, 11)
+    GOLD = [(120, 70, 16), (180, 116, 30), (220, 160, 56), (240, 200, 104), (252, 230, 170)]
+    r = random.Random(1521)
+    wedges = [(4, 9), (7, 8), (10, 9), (5, 11), (8, 10), (11, 11), (6, 7), (9, 7), (7, 11)]
+    for wx, wy in wedges:
+        for dx, dy in ((0, 0), (1, 0), (0, -1), (1, -1)):
+            put(img, wx + dx, wy + dy, ramp(GOLD, 0.7 - 0.25 * dx - 0.2 * (dy == 0) + r.uniform(-0.05, 0.05)))
+        put(img, wx + 1, wy, ramp(GOLD, 0.2))  # the browned edge
+    for cx, cy in ((10, 7), (5, 9)):  # onion rings, translucent
+        for x, y in ((cx - 1, cy), (cx + 1, cy), (cx, cy - 1), (cx, cy + 1)):
+            put(img, x, y, (232, 214, 160))
+        put(img, cx, cy, ramp(GOLD, 0.55))
+    put(img, 8, 6, (70, 120, 50)); put(img, 6, 10, (70, 120, 50))  # a little parsley
+    save(img, "fried_roots", "item")
+
+    # pickled olives: an open stoneware crock of dark brine, black and green olives and a bay leaf at the surface
+    img = new()
+    lathe(img, {7: 5.4, 8: 5.8, 9: 6.0, 10: 6.0, 11: 5.8, 12: 5.4, 13: 4.6, 14: 3.4}, STONEWARE, 1531)
+    for y, (a, b) in {4: (4, 11), 5: (3, 12), 6: (3, 12)}.items():
+        for x in range(a, b + 1):
+            put(img, x, y, mix((60, 64, 34), (110, 112, 64), 0.5 + 0.3 * (x < 7) - 0.2 * (y == 6)))
+    for x in range(2, 14):
+        put(img, x, 7, ramp(STONEWARE, 0.9 - 0.05 * abs(x - 5)))
+    for ox, oy, dark in ((4, 5, True), (7, 4, False), (10, 5, True), (6, 6, True), (9, 6, False)):  # plump olives, 2x2, lit top left
+        cols = [(110, 80, 120), (58, 34, 64), (36, 18, 40)] if dark else [(190, 200, 110), (122, 138, 48), (86, 98, 30)]
+        put(img, ox, oy, cols[0]); put(img, ox + 1, oy, cols[1]); put(img, ox, oy + 1, cols[1]); put(img, ox + 1, oy + 1, cols[2])
+    for x, y in ((8, 3), (9, 2), (10, 2)):
+        put(img, x, y, (70, 110, 50))  # a bay leaf
+    for x in range(4, 12):
+        put(img, x, 10, mix(get(img, x, 10), (60, 80, 40), 0.3))  # a green glaze band
+    save(img, "pickled_olives", "item")
+
+    # bitter orange marmalade: a small glazed pot tied over with cloth, amber marmalade with peel showing, a slice beside it
+    img = new()
+    POT = [(70, 40, 24), (112, 68, 40), (152, 98, 62), (186, 130, 88), (212, 164, 120)]
+    lathe(img, {8: 4.6, 9: 5.0, 10: 5.2, 11: 5.2, 12: 4.8, 13: 4.0, 14: 3.0}, POT, 1541)
+    CLOTH = [(130, 112, 86), (176, 156, 122), (210, 194, 160), (234, 224, 196)]
+    for y, (a, b) in {3: (6, 9), 4: (4, 11), 5: (3, 12), 6: (3, 12), 7: (3, 12)}.items():
+        for x in range(a, b + 1):
+            t = 0.75 - 0.4 * (x - a) / max(1, b - a) + (0.12 if (x + y) % 3 == 0 else 0) - 0.1 * (y == 7)
+            put(img, x, y, ramp(CLOTH, t))
+    for x in range(3, 13):
+        put(img, x, 8, (150, 110, 60) if x % 2 else (196, 156, 96))  # the string
+    AMBER = [(150, 60, 6), (204, 100, 12), (240, 150, 30), (255, 206, 100)]
+    for x, y, k in ((5, 4, 2), (6, 4, 1), (7, 4, 2), (4, 5, 1), (5, 5, 0), (6, 5, 1)):
+        put(img, x, y, AMBER[k])  # the cloth turned back: marmalade
+    put(img, 5, 4, AMBER[3]); put(img, 6, 5, (255, 236, 160))  # a strip of peel catching the light
+    for x, y in ((8, 4), (7, 5)):
+        put(img, x, y, CLOTH[3])
+    for x, y in ellipse_px(13.0, 12.5, 2.6, 2.6):  # half an orange slice leaning on the pot
+        d = math.hypot(x + 0.5 - 13.0, y + 0.5 - 12.5)
+        put(img, x, y, (220, 110, 10) if d > 1.9 else (250, 230, 190) if d > 1.4 else (246, 170, 50) if (x + y) % 2 else (250, 196, 90))
+    put(img, 13, 12, (252, 240, 210))
+    save(img, "bitter_orange_marmalade", "item")
+
+    # frost lily tea: the bowl of pale ice-blue tea, a floating petal, cold glints
+    bowl_dish("frost_lily_tea", [(120, 156, 170), (156, 194, 206), (190, 222, 230), (218, 240, 244), (244, 252, 255)], 1551, base=0.55,
+              bits=[(6, 7, (250, 252, 255)), (7, 7, (214, 234, 250)), (7, 6, (236, 246, 255)), (10, 8, (170, 210, 226)),
+                    (5, 6, (255, 255, 255)), (9, 6, (255, 255, 255)), (11, 7, (120, 170, 150))])
+
+
+def effect_icon(rows, pal):
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    assert len(rows) == 18 and all(len(r) == 18 for r in rows), [len(r) for r in rows]
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch != ".":
+                img.putpixel((x, y), pal[ch] + (255,))
+    return img
+
+
+def flora3_effects():
+    """Tipsy: a tilted wooden tankard slopping foam; Frost Ward: a pale snowflake in a ring of warm amber."""
+    tipsy = effect_icon([
+        "..................",
+        "......ww..........",
+        "....wwWWw.........",
+        "...wWWWWWw........",
+        "...wwWWWww..w.....",
+        "..oOwwwwwOo.......",
+        "..oOoOoOoOohh.....",
+        "..kKkKkKkKk..h....",
+        "..oOoOoOoOo..h....",
+        "..oOoOoOoOo..h....",
+        "..oOoOoOoOo..h....",
+        "..oOoOoOoOohh.....",
+        "..kKkKkKkKk.......",
+        "..oOoOoOoOo.......",
+        "..ddddddddd.......",
+        "..................",
+        "..................",
+        ".................."], {"w": (236, 228, 200), "W": (255, 252, 240), "o": (130, 86, 46), "O": (168, 116, 64),
+                                "k": (40, 40, 44), "K": (90, 90, 96), "h": (110, 72, 38), "d": (70, 44, 24)})
+    # leaned over a little: the tipsy look
+    save_effect(tipsy.rotate(-14, resample=Image.NEAREST, center=(8, 9)), "tipsy")
+    ward = effect_icon([
+        "......aaaaaa......",
+        "....aaAAAAAAaa....",
+        "...aAA......AAa...",
+        "..aA....b.....Aa..",
+        "..aA.b..b..b..Aa..",
+        ".aA...b.B.b....Aa.",
+        ".aA.....B......Aa.",
+        ".aAbbBBBWBBBbb.Aa.",
+        ".aA.....B......Aa.",
+        ".aA...b.B.b....Aa.",
+        "..aA.b..b..b..Aa..",
+        "..aA....b.....Aa..",
+        "...aAA......AAa...",
+        "....aaAAAAAAaa....",
+        "......aaaaaa......",
+        "..................",
+        "..................",
+        ".................."], {"a": (176, 92, 20), "A": (240, 160, 50), "b": (150, 200, 230), "B": (206, 236, 252), "W": (255, 255, 255)})
+    save_effect(ward, "frost_ward")
+
+
+def save_effect(img, name):
+    path = TEX / "mob_effect" / f"{name}.png"
+    img.save(path)
+    WRITTEN.append(path)
+
+
 def r_unif(seed, x, y, a=0.03):
     return random.Random(seed * 1000 + x * 17 + y).uniform(-a, a)
 
@@ -1462,6 +1646,8 @@ def main():
     dishes()
     steel_kitchen_blocks()
     steel_kitchen_items()
+    flora3_items()
+    flora3_effects()
     print(f"cookware textures ok ({len(WRITTEN)} files)")
 
 

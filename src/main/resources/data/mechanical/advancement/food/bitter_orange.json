@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/tree_fruit",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bitter_oranges"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bitter_oranges"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.bitter_orange.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.bitter_orange.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

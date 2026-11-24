@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:fern_flower",
+    "mechanical:twine"
+  ],
+  "result": {
+    "id": "mechanical:fern_flower_charm"
+  }
+}

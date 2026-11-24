@@ -26,6 +26,26 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:olive_oil"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rapeseed_oil"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "mechanical:bird_cherries"
           }
         ]
@@ -43,6 +63,8 @@
       "has_0",
       "has_1",
       "has_2",
+      "has_3",
+      "has_4",
       "has_the_recipe"
     ]
   ],

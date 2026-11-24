@@ -60,7 +60,7 @@ public final class SeasonalFoliage {
     static final List<String> DECIDUOUS = List.of("minecraft:oak", "minecraft:dark_oak", "minecraft:birch", "minecraft:cherry",
             "minecraft:red_poplar", "minecraft:orange_poplar", "minecraft:yellow_poplar", "mechanical:aspen", "mechanical:alder",
             "mechanical:beech", "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel",
-            "mechanical:rowan", "mechanical:bird_cherry", "mechanical:wild_apple", "mechanical:plum"); // fruit trees: no autumn model (it would hide the fruit)
+            "mechanical:rowan", "mechanical:bird_cherry", "mechanical:wild_apple", "mechanical:plum", "mechanical:apple"); // fruit trees: no autumn model (it would hide the fruit)
     /** Shrubs, bushes and flowers that go grey in winter (models tinted by scripts/gen_winter_plants.py, same list). */
     static final List<String> WINTER_PLANTS = List.of("mechanical:hazel_shrub", "mechanical:juniper", "mechanical:bramble",
             "mechanical:undergrowth", "mechanical:sapling_thicket", "mechanical:wild_carrot_plant", "mechanical:sea_beet",

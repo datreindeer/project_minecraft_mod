@@ -310,7 +310,11 @@ Skördar med Crop Stakes (högerklick) ger ingen tämjning (de går förbi drop-
 | Ginger (östra karavanen) | 14–27 | 18–23 | 10 | 0.6 | 1.3 | 0.8 |
 | Saffron (östra karavanen) | 10–24 | 13–19 | 4 | 0.5 | 0.8 | 1.3 |
 | Rice (östra karavanen) | 13–27 | 17–23 | 8 | 0.6 | 1.3 | 0.7 |
+| Rapeseed (tämjd ur Wild Turnip) | 4–16 | 7–12 | −1 | 1.2 | 1.0 | 0.6 |
 
+**Rapeseed (flora3):** Wild Turnip har två tämjda former, som *Brassica rapa* har i verkligheten: när en mogen vild rova ger ett
+tämjt frö blir det hälften av gångerna **Turnip** och hälften **Rapeseed** (`Herbs.tamedFrom`). Raps växer högt med citrongula
+blomkronor och blir halmgul med skidor när den är mogen; 2–4 frön. Fröna pressas till olja i Cheese Press (järnåldern).
 Vinter 0 för alla. Skörd (mogen): odlade 1–3 (Cabbage 1, Leek/Parsnip/Celery/Turnip/Lettuce 1–2), Broad Beans 1–3, Dill 1–2
 + 1–2 frön, Mustard 2–3 frön, Ginger 1–3, Saffron 1 tråd + 1–2 knölar, Rice 2–3 (räknas som säd, `mechanical:grains`).
 **Ris i risodling (v0.193.0):** ris växer bara med vatten bredvid, antingen intill åkerjorden (en vattenkanal mellan raderna)

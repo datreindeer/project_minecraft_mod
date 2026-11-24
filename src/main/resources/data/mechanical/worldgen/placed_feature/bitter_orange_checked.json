@@ -1,0 +1,12 @@
+{
+  "feature": "mechanical:bitter_orange",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": "mechanical:bitter_orange_sapling"
+      }
+    }
+  ]
+}

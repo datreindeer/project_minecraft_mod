@@ -300,6 +300,7 @@ järnåldern (Iron Cauldron).
 | **5 (byggd, köket)** | Järnålderns kök (Skillet, Cauldron, Barrel, ost, korv, surkål); havssalt | järn | — |
 | **5a (byggd)** | Water Wheel + axlar | järn | — |
 | **5b (byggd)** | Sawmill, Sawdust | stål | 5a |
+| **flora3 (byggd)** | Bitter Orange, ympat äpple, raps och oljor, Tipsy, de magiska blommornas användning, kontroll i en naturlig värld | sten–järn | — |
 | **6 (byggd)** | Stålets kök (Knife Set, Steel Pan, Mortar, Sieve, kryddblandningar, risrätter); rester från fas 4–5 (risodling, cider, öl, pajer, örtstek) | stål | — |
 
 ---
@@ -400,8 +401,7 @@ Byggt v0.191.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` ("Vilda grön
   grönsaken (som vanillas potatis), inga egna frön. Iron Cauldron hänger i tripoden (bara över Fire Pit) i stället för en egen
   station: samma vätska, värme och öslogik. Wooden Barrel heter **Fermenting Barrel** (vanillas Barrel finns).
 - **Kvar / inte gjort:** byns Apple Saplings blev **Wild Apple Sapling** (fas 3:s vildapel; bonden nivå 4, 1 för 6 Copper
-  Coin, v0.192.0; ympade äpplen finns inte än). Bitter Orange Saplings (karavanen) saknas fortfarande: inget citrusträd. Rapeseed
-  är inte gjord. Crop Stakes-skörd tämjer inte. (Cider, Ale, pajer, Roast with Herbs, Hops/Bog Myrtle i ölet och risodlingen
+  Coin, v0.192.0; ympade äpplen finns inte än). Bitter Orange och Rapeseed byggdes i flora3 (se nedan). Crop Stakes-skörd tämjer inte. (Cider, Ale, pajer, Roast with Herbs, Hops/Bog Myrtle i ölet och risodlingen
   byggdes i fas 6, se nedan.)
 - **Test:** `HerbsTest`: tämjning (~25 % av 400 skördar), rätter per redskap och nivå, kitteln ger Pea Soup, krukan lämnar
   tillbaka det som inte är en rätt, hällen bakar bara över tänd eld, tunnan jäser surkål, örten växer igen.
@@ -459,5 +459,46 @@ Byggt v0.193.0. Spelarens beskrivning: `docs/ages/03-iron-age.md` ("Stålets kö
 - **Test:** gametest `kitchen` (i `HerbsTest`): risodlingen, morteln maler Kitchen Pepper på 8 klick och vrider stöten, Steel Pan steker
   Peppered Steak, skillet kan inte stålpannans saffransris, cider, öl med båda bittringarna, örtstek, pajer i ugnen, knivrullen.
 - **Bilder:** `KitchenShots` (flagga `kitchenshots.flag` i run/), ett kök med alla redskap i bruk och en vägg med rätterna i ramar.
-- **Svagt / kvar:** Mortelstöten är en del av blockmodellen (vrids i kvarts varv, ingen mjuk animation). Ale och cider ger ingen
-  berusning. Olive Oil, Sea Salt i morteln, Rapeseed och ympade äpplen är fortfarande inte gjorda. Pajen kan inte bakas på Steel Pan.
+- **Svagt / kvar:** Mortelstöten är en del av blockmodellen (vrids i kvarts varv, ingen mjuk animation). Berusning, Olive Oil, Rapeseed och ympade
+  äpplen byggdes i flora3 (se nedan); Sea Salt i morteln är inte gjort. Pajen kan inte bakas på Steel Pan.
+
+---
+
+## Flora3: resultat
+
+Byggt v0.195.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` (Bitter Orange i fruktträdstabellen, "Ympat äpple", "Vad de
+magiska blommorna är till för"), `02-bronze-age.md` (marmelad, karavanens plantor, bondens ympkvistar), `03-iron-age.md` ("Olja,
+stekning och berusning"), `docs/farming.md` (Rapeseed).
+
+- **Bitter Orange:** helt träslag (`Trees.WOODS`, `Mechanical.WOODS`, alla trä-generatorer och texturskript, `StumpBlock.LOG` till 26),
+  `FruitLeavesBlock` med mål blom/omogen/mogen/mogen, vintergrön. Kronan en tät rund kupol (vanillas blob-placerare, radie 2, 4 lager) på en kort stam, ner till huvudhöjd; första försöket (`random_spread`) blev en fyrkantig pelare och det andra (körsbärskrona) ett tunt paraply på hög stam. Vild:
+  Marble Gorge (sällsynt 1 på 6 chunks) och vid vatten på savannen (1 på 24). **Plantan växer bara där biomens temperatur är minst
+  0,95** (`Trees.warmEnoughForCitrus`); den östra karavanen säljer plantor (3 Silver Coin, järn). Frukt: Bitter Oranges →
+  **Bitter Orange Marmalade** i kitteln.
+- **Ympning:** ett eget **Apple**-träd på vildapelns ved (`Trees.APPLE_LEAVES`, `APPLE_SAPLING`, feature `mechanical:apple`), inte ett
+  helt träslag till. **Apple Scion** på en planterad Wild Apple Sapling med en kniv i andra handen (`Trees.graft`); kniv på äppellöv
+  skär av en kvist (lövet går åt). Bönder nivå 4 säljer kvistar. **Beslut (Claude, kan ändras):** plantor från äppelträdets löv är
+  vilda (som i verkligheten), så varje äppelträd måste ympas.
+- **Raps och olja:** planens "Wild Turnip / Rapeseed" blev **en vild planta med två tämjda former**: hälften av de tämjda fröna från en
+  vild rova är Rapeseed (`Herbs.tamedFrom`). Oljan pressas i **Cheese Press** (Kitchen.Tool.PRESS, 4 oliver eller 4 rapsfrön → 1),
+  ingen egen oljepress. Stekfett `FAT` = olivolja, rapsolja eller ister: **Fried Fish**, **Fried Roots**; pajerna tar olja i stället för
+  ister. **Pickled Olives** i tunnan (planens "oliver i saltlake").
+- **Tipsy** (`Kitchen.TIPSY`, `Kitchen.drinkAlcohol`, klient `TipsyClient`): steg per drick inom 2 min (högst IV), +0,1 isolering;
+  från tredje i rad en långsam lutning på 1–2 grader. Inget illamående, ingen skada.
+- **De magiska blommorna:** Fern Flower Charm (Charm-platsen, +1 Luck), Frost Lily Tea (Frost Ward, +0,5 isolering i 10 min),
+  Will-o'-Wisp Lily (irrblosset leder rätt, `Wisp.arrive`), Moonwort (springer upp järndörrar och järnluckor, `Flora.springLock`).
+  **Beslut (Claude, kan ändras):** inget Oak Folk-uppdrag: uppdragslinjen sparas som ett stegnummer, och ett nytt steg mitt i skulle
+  flytta allas framsteg.
+- **Krasch hittad och lagad:** `WildFlowerBlock.Bloom.now` frågade efter månfasen utan position; i 26.3 är den positionell och servern
+  kraschade första gången en vildblomma fick en slumptick (`Position must always be provided for positional attribute
+  minecraft:visual/moon_phase`). Nu frågas den med blockets position, och bara för fullmånesorterna.
+- **Kontroll i en naturligt genererad värld** (seed 4242, dedikerad server, 8×8 chunks runt varje biom, räknat med `fill ... replace`;
+  "rutor" = 4×4-kolumner med stam, ungefär ett träd var): Hazel Meadow (32 chunks) 12 vildapel, 2 plommon, 42 Rosehip, 4 Hops;
+  Deciduous Forest (10) 2 rönn, 3 vildapel, 1 hägg, 46 Bluebells, 44 Wood Anemone; Willow Fen (22) 10 hägg, 21 Red Currant, 18 Meadowsweet;
+  Chalk Downs (35 + 129 i en större ruta) 3 + 22 plommon, 22 + 76 Blackthorn, 101 + 222 Pasque Flower, 152 + 352 Harebell; Desert (31)
+  1 dadelpalm (bara vid oaser, som planerat); savannplatån (12) 3 oliver; savann (25) 23 Jujube; Marble Gorge (8 + 18) 1 Bitter
+  Orange, **0 oliver**. Marble Gorge är nästan bara kala marmorklippor (marmor överst på branterna och på en fjärdedel av ytan), så
+  de flesta försöken hamnar på sten; olivernas försök höjdes från 0–1 till 1–3 per chunk. Will-o'-Wisp Lily och Moonwort syntes inte
+  i rutorna (planerat ~1 på 60 och 90 chunks, och de blommar bara på natten). Bilder i rapporten.
+- **Svagt / kvar:** Ostpressen visar sin ostskiva även när den pressar olja. Apple har ingen egen lövströ (vildapelns används).
+  Sea Salt i morteln är inte gjort. Inget Oak Folk-uppdrag med blommorna.

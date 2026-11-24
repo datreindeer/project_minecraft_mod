@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:folklore/fern_flower",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fern_flower_charm"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fern_flower_charm"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.fern_flower_charm.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.fern_flower_charm.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

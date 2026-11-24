@@ -126,6 +126,13 @@ public class Wisp extends Spirit {
 
     /** At the end of the trail: treasure for the followers, or nothing and they are Lost. */
     void arrive(ServerLevel level, java.util.List<ServerPlayer> followers) {
+        // a Will-o'-Wisp Lily carried by a follower answers the light: it leads true, and the lily is spent
+        ServerPlayer lily = mask() ? null : followers.stream().filter(Wisp::carriesLily).findFirst().orElse(null);
+        if (!treasure && lily != null) {
+            spendLily(lily);
+            treasure = true;
+            Faith.award(lily, "folklore/wisp_lily_true");
+        }
         if (treasure) {
             BlockPos at = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition());
             if (mask()) {
@@ -152,6 +159,15 @@ public class Wisp extends Spirit {
         if (level.getBlockEntity(chest) instanceof ChestBlockEntity c) c.setLootTable(BOG_GRAVE, level.getRandom().nextLong());
         level.setBlockAndUpdate(surface, Blocks.MOSS_CARPET.defaultBlockState());
         return chest;
+    }
+
+    /** A Will-o'-Wisp Lily in either hand. */
+    static boolean carriesLily(net.minecraft.world.entity.player.Player p) {
+        return p.getMainHandItem().is(com.mechanical.Flora.WILL_O_WISP_LILY.get().asItem()) || p.getOffhandItem().is(com.mechanical.Flora.WILL_O_WISP_LILY.get().asItem());
+    }
+
+    static void spendLily(net.minecraft.world.entity.player.Player p) {
+        (p.getMainHandItem().is(com.mechanical.Flora.WILL_O_WISP_LILY.get().asItem()) ? p.getMainHandItem() : p.getOffhandItem()).consume(1, p);
     }
 
     boolean treasure() {

@@ -11,6 +11,7 @@ import com.mechanical.mixin.FireBlockInvoker;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -84,6 +85,8 @@ public final class Trees {
         FRUIT_KINDS.put("plum", new Fruit("wild_plums", new int[] {1, 3, 3, 0}, food(2, 0.3F)));
         FRUIT_KINDS.put("olive", new Fruit("olives", new int[] {0, 1, 2, 3}, food(1, 0.2F)));
         FRUIT_KINDS.put("date_palm", new Fruit("dates", new int[] {1, 2, 3, 3}, food(3, 0.5F)));
+        // evergreen: white blossom in spring, green all summer, orange from autumn and hanging on through winter
+        FRUIT_KINDS.put("bitter_orange", new Fruit("bitter_oranges", new int[] {1, 2, 3, 3}, food(1, 0.1F)));
     }
     public static final Map<String, DeferredItem<Item>> FRUITS = new LinkedHashMap<>();
     static {
@@ -111,7 +114,24 @@ public final class Trees {
             Map.entry("wild_apple", wood("wild_apple", MapColor.TERRACOTTA_PINK, MapColor.TERRACOTTA_GRAY)),
             Map.entry("plum", wood("plum", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_PURPLE)),
             Map.entry("olive", wood("olive", MapColor.SAND, MapColor.STONE)),
-            Map.entry("date_palm", wood("date_palm", MapColor.SAND, MapColor.COLOR_BROWN)));
+            Map.entry("date_palm", wood("date_palm", MapColor.SAND, MapColor.COLOR_BROWN)),
+            Map.entry("bitter_orange", wood("bitter_orange", MapColor.TERRACOTTA_YELLOW, MapColor.TERRACOTTA_GRAY)));
+
+    /** A Bitter Orange sapling grows only where the biome is warm (base temperature at least this: savanna, desert, Marble Gorge, jungle). */
+    public static final float CITRUS_MIN_TEMPERATURE = 0.95F;
+
+    public static boolean warmEnoughForCitrus(Level level, BlockPos pos) {
+        return level.getBiome(pos).value().getBaseTemperature() >= CITRUS_MIN_TEMPERATURE;
+    }
+
+    // ---- the cultivated Apple: a Wild Apple sapling grafted with an Apple Scion (knife in the other hand); same wood, own leaves ----
+    public static final DeferredItem<Item> APPLE_SCION = Mechanical.ITEMS.registerSimpleItem("apple_scion");
+    public static final DeferredBlock<LeavesBlock> APPLE_LEAVES = block("apple_leaves",
+            p -> new FruitLeavesBlock(() -> net.minecraft.world.item.Items.APPLE, new int[] {1, 2, 3, 0}, p), Trees::leafProperties);
+    public static final DeferredBlock<SaplingBlock> APPLE_SAPLING = block("apple_sapling", p -> new SaplingBlock(grower("apple"), p), Trees::saplingProperties);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_APPLE_SAPLING = Mechanical.BLOCKS.registerBlock("potted_apple_sapling",
+            p -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, APPLE_SAPLING, p),
+            () -> Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.POPPED));
 
     /** Yew Arils (from yew leaves, gen_trees.py): the red flesh is sweet, the seed inside deadly; eaten whole they poison. */
     public static final DeferredItem<Item> YEW_ARILS = Mechanical.ITEMS.registerSimpleItem("yew_arils",
@@ -128,8 +148,7 @@ public final class Trees {
 
     private static Wood wood(String w, MapColor planksColor, MapColor barkColor) {
         var B = Mechanical.BLOCKS;
-        ResourceKey<Feature> feature = ResourceKey.create(Registries.FEATURE, Identifier.fromNamespaceAndPath(Mechanical.MODID, w));
-        TreeGrower grower = new TreeGrower(Mechanical.MODID + "_" + w, WeightedList.of(feature), WeightedList.of(), WeightedList.of(), feature);
+        TreeGrower grower = grower(w);
 
         var planks = block(w + "_planks", Block::new, () -> Properties.of().mapColor(planksColor).instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava());
@@ -138,9 +157,13 @@ public final class Trees {
             protected boolean mayPlaceOn(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
                 return super.mayPlaceOn(state, level, pos) || state.is(net.minecraft.tags.BlockTags.SAND);
             }
+        } : w.equals("bitter_orange") ? p -> new SaplingBlock(grower, p) { // citrus: grows only in a warm biome
+            @Override
+            public void advanceTree(ServerLevel level, BlockPos pos, BlockState state, net.minecraft.util.RandomSource random) {
+                if (warmEnoughForCitrus(level, pos)) super.advanceTree(level, pos, state, random);
+            }
         } : p -> new SaplingBlock(grower, p);
-        var sapling = block(w + "_sapling", saplingBlock, () -> Properties.of().mapColor(MapColor.PLANT).noCollision()
-                .randomTicks().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.POPPED));
+        var sapling = block(w + "_sapling", saplingBlock, Trees::saplingProperties);
         Supplier<Properties> wood = () -> Properties.of().mapColor(barkColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava();
         Supplier<Properties> strippedWood = () -> Properties.of().mapColor(planksColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava();
         Supplier<Properties> plankLike = () -> Properties.of().mapColor(planksColor).instrument(NoteBlockInstrument.BASS).ignitedByLava();
@@ -161,13 +184,25 @@ public final class Trees {
                 block(w + "_pressure_plate", p -> new PressurePlateBlock(BlockSetType.OAK, p), () -> plankLike.get().forceSolidOn().noCollision()
                         .strength(0.5F).pushReaction(PushReaction.POPPED)),
                 // plain vanilla leaves (distance/persistent, decay) with untinted, pre-coloured textures; fruit trees' follow the season
-                block(w + "_leaves", leaves(w), () -> Properties.of()
-                        .mapColor(MapColor.PLANT).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion()
-                        .isValidSpawn((s, l, pos, e) -> false).isSuffocating((s, l, pos) -> false)
-                        .ignitedByLava().pushReaction(PushReaction.POPPED).isRedstoneConductor((s, l, pos) -> false)),
+                block(w + "_leaves", leaves(w), Trees::leafProperties),
                 sapling,
                 B.registerBlock("potted_" + w + "_sapling", p -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, sapling, p),
                         () -> Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.POPPED)));
+    }
+
+    private static TreeGrower grower(String w) {
+        ResourceKey<Feature> feature = ResourceKey.create(Registries.FEATURE, Identifier.fromNamespaceAndPath(Mechanical.MODID, w));
+        return new TreeGrower(Mechanical.MODID + "_" + w, WeightedList.of(feature), WeightedList.of(), WeightedList.of(), feature);
+    }
+
+    private static Properties leafProperties() {
+        return Properties.of().mapColor(MapColor.PLANT).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion()
+                .isValidSpawn((s, l, pos, e) -> false).isSuffocating((s, l, pos) -> false)
+                .ignitedByLava().pushReaction(PushReaction.POPPED).isRedstoneConductor((s, l, pos) -> false);
+    }
+
+    private static Properties saplingProperties() {
+        return Properties.of().mapColor(MapColor.PLANT).noCollision().randomTicks().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.POPPED);
     }
 
     private static Function<Properties, LeavesBlock> leaves(String w) {
@@ -201,6 +236,7 @@ public final class Trees {
                 for (var b : List.of(w.log(), w.wood(), w.strippedLog(), w.strippedWood())) fire.mechanical$setFlammable(b.get(), 5, 5);
                 fire.mechanical$setFlammable(w.leaves().get(), 30, 60);
             }
+            fire.mechanical$setFlammable(APPLE_LEAVES.get(), 30, 60);
         });
     }
 
@@ -221,6 +257,52 @@ public final class Trees {
         }
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
+    }
+
+    /**
+     * Grafting (docs/flora-and-food-plan.md, section 5): an Apple Scion used on a Wild Apple sapling, with a knife in the
+     * other hand, turns it into an Apple sapling (same growth stage). A knife on the leaves of a grown Apple tree cuts a
+     * scion off (the twig and its leaves come away), so one tree gives the scions for the next.
+     */
+    @SubscribeEvent
+    static void graft(PlayerInteractEvent.RightClickBlock event) {
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        BlockState state = level.getBlockState(pos);
+        var player = event.getEntity();
+        ItemStack held = event.getItemStack();
+        if (held.is(APPLE_SCION.get()) && state.is(WOODS.get("wild_apple").sapling().get())) {
+            var otherHand = event.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND ? net.minecraft.world.InteractionHand.OFF_HAND
+                    : net.minecraft.world.InteractionHand.MAIN_HAND;
+            ItemStack knife = player.getItemInHand(otherHand);
+            if (!level.isClientSide()) {
+                if (!(knife.getItem() instanceof KnifeItem)) {
+                    player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.graft.no_knife"));
+                } else {
+                    graftApple(level, pos, state);
+                    knife.hurtAndBreak(1, player, otherHand);
+                    held.consume(1, player);
+                }
+            }
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        } else if (held.getItem() instanceof KnifeItem && state.is(APPLE_LEAVES.get())) {
+            if (!level.isClientSide()) {
+                level.destroyBlock(pos, false, player);
+                Block.popResourceFromFace(level, pos, event.getFace() == null ? Direction.UP : event.getFace(), new ItemStack(APPLE_SCION.get()));
+                held.hurtAndBreak(1, player, event.getHand());
+            }
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        }
+    }
+
+    /** The Wild Apple sapling at pos becomes an Apple sapling at the same stage. */
+    static void graftApple(Level level, BlockPos pos, BlockState wild) {
+        level.setBlock(pos, APPLE_SAPLING.get().defaultBlockState().setValue(SaplingBlock.STAGE, wild.getValue(SaplingBlock.STAGE)), Block.UPDATE_ALL);
+        level.playSound(null, pos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.2F);
+        if (level instanceof ServerLevel server)
+            server.sendParticles(net.minecraft.core.particles.ParticleTypes.HAPPY_VILLAGER, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 6, 0.25, 0.3, 0.25, 0);
     }
 
     private Trees() {}

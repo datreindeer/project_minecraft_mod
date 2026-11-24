@@ -16,7 +16,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -29,7 +32,12 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 /**
@@ -44,6 +52,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * cauldron also cook the clay pot's dishes. Data: scripts/gen_herbs.py, models scripts/herbs_cookware.py, textures
  * scripts/gen_cookware_textures.py.
  */
+@EventBusSubscriber(modid = MODID)
 public final class Kitchen {
     /** Which cookware a dish is made in. */
     public enum Tool { POT, PAN, BARREL, PRESS, MORTAR, SIEVE }
@@ -154,6 +163,37 @@ public final class Kitchen {
     public static final DeferredItem<Item> PICKLED_VEGETABLES = dish("pickled_vegetables", 4);
     public static final DeferredItem<Item> RAW_GINGERBREAD = ITEMS.registerSimpleItem("raw_gingerbread");
     public static final DeferredItem<Item> GINGERBREAD = dish("gingerbread", 6);
+    // flora leftovers (flora3): oils from the Cheese Press, frying with them (or lard), bitter orange marmalade, pickled olives
+    public static final DeferredItem<Item> OLIVE_OIL = ITEMS.registerSimpleItem("olive_oil");
+    public static final DeferredItem<Item> RAPESEED_OIL = ITEMS.registerSimpleItem("rapeseed_oil");
+    public static final DeferredItem<Item> FRIED_FISH = dish("fried_fish", 7);
+    public static final DeferredItem<Item> FRIED_ROOTS = dish("fried_roots", 7);
+    public static final DeferredItem<Item> PICKLED_OLIVES = dish("pickled_olives", 3);
+    public static final DeferredItem<Item> BITTER_ORANGE_MARMALADE = dish("bitter_orange_marmalade", 4);
+
+    // ---- effects: Tipsy (ale and cider) and Frost Ward (Frost Lily Tea) ----
+    static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
+    /** A drink or two: a warm belly (Temperature, {@link #TIPSY_WARMTH}); from the third in a row the view sways a little (client TipsyClient). */
+    public static final DeferredHolder<MobEffect, MobEffect> TIPSY = MOB_EFFECTS.register("tipsy", () -> new MobEffect(MobEffectCategory.NEUTRAL, 0xE0A040) {});
+    /** Frost Lily Tea: the cold bites far less ({@link #FROST_WARD_WARMTH} of insulation) while it lasts. */
+    public static final DeferredHolder<MobEffect, MobEffect> FROST_WARD = MOB_EFFECTS.register("frost_ward",
+            () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0xB8E8FF) {});
+    public static final int TIPSY_TICKS = 2400, TIPSY_MAX = 3, TIPSY_SWAY_FROM = 2, FROST_WARD_TICKS = 12000;
+    public static final float TIPSY_WARMTH = 0.1F, FROST_WARD_WARMTH = 0.5F;
+    public static final DeferredItem<Item> FROST_LILY_TEA = ITEMS.registerSimpleItem("frost_lily_tea", p -> p.stacksTo(1).usingConvertsTo(Items.BOWL)
+            .food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.6F).alwaysEdible().build(), Consumables.defaultDrink()
+                    .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(FROST_WARD, FROST_WARD_TICKS, 0))).build()));
+
+    /** A drink of ale or cider: Tipsy, one step stronger for every drink while it lasts (at most IV), the time starting over. */
+    public static void drinkAlcohol(LivingEntity drinker) {
+        MobEffectInstance now = drinker.getEffect(TIPSY);
+        drinker.addEffect(new MobEffectInstance(TIPSY, TIPSY_TICKS, now == null ? 0 : Math.min(TIPSY_MAX, now.getAmplifier() + 1)));
+    }
+
+    @SubscribeEvent
+    static void onDrink(LivingEntityUseItemEvent.Finish event) {
+        if (!event.getEntity().level().isClientSide() && (event.getItem().is(CIDER.get()) || event.getItem().is(ALE.get()))) drinkAlcohol(event.getEntity());
+    }
 
     // ---- recipes ----
 
@@ -184,10 +224,13 @@ public final class Kitchen {
     private static final Ing ROOT = of("mechanical:wild_carrot", "minecraft:carrot", "mechanical:wild_parsnip", "mechanical:parsnip",
             "mechanical:wild_turnip", "mechanical:turnip", "minecraft:beetroot");
     private static final Ing MEAT = of("#mechanical:smokable_meat");
+    private static final Ing APPLE = of("mechanical:crab_apple", "minecraft:apple");
     private static final Ing HONEY = of("mechanical:wild_honey", "minecraft:honey_bottle");
     private static final Ing EGG = of("#mechanical:eggs");
     private static final Ing MILK = of("minecraft:milk_bucket", "mechanical:bronze_milk_bucket");
     private static final Ing HERB = of("#mechanical:culinary_herbs");
+    /** Frying fat: the pressed oils, or lard as before. */
+    private static final Ing FAT = of("mechanical:olive_oil", "mechanical:rapeseed_oil", "mechanical:lard");
     private static final Ing PICKLING_VEG = of("mechanical:onion", "mechanical:wild_onion", "mechanical:turnip", "mechanical:parsnip", "minecraft:carrot",
             "minecraft:beetroot", "mechanical:cabbage", "mechanical:celery");
 
@@ -199,6 +242,7 @@ public final class Kitchen {
                     of("mechanical:hazelnuts", "mechanical:beechnuts")), BERRY_MASH, 2),
             new Dish("herbal_tea", Tool.POT, 0, List.of(of("mechanical:chamomile_flowers", "mechanical:mint_leaves", "mechanical:yarrow_leaves",
                     "mechanical:meadowsweet_flowers")), HERBAL_TEA, 2),
+            new Dish("frost_lily_tea", Tool.POT, 0, List.of(of("mechanical:frost_lily")), FROST_LILY_TEA, 2),
             // Bronze Age: the kettle and the griddle
             new Dish("pea_soup", Tool.POT, 1, List.of(of("mechanical:peas"), of("mechanical:peas"), of("mechanical:peas"), ALLIUM), PEA_SOUP, 4),
             new Dish("onion_garlic_stew", Tool.POT, 1, List.of(of("mechanical:onion"), of("mechanical:onion"), of("mechanical:garlic"), MEAT), ONION_GARLIC_STEW, 4),
@@ -207,6 +251,8 @@ public final class Kitchen {
             new Dish("tea", Tool.POT, 1, List.of(of("mechanical:tea_leaves")), TEA, 3),
             new Dish("elderberry_syrup", Tool.POT, 1, List.of(of("mechanical:elderberries"), of("mechanical:elderberries"), of("mechanical:elderberries"), HONEY),
                     ELDERBERRY_SYRUP, 2),
+            new Dish("bitter_orange_marmalade", Tool.POT, 1, List.of(of("mechanical:bitter_oranges"), of("mechanical:bitter_oranges"),
+                    of("mechanical:bitter_oranges"), HONEY), BITTER_ORANGE_MARMALADE, 2),
             new Dish("sloe_jam", Tool.POT, 1, List.of(of("mechanical:sloes"), of("mechanical:sloes"), of("mechanical:sloes"), HONEY), SLOE_JAM, 2),
             new Dish("flatbread", Tool.PAN, 1, List.of(of("mechanical:dough")), FLATBREAD, 2),
             new Dish("honey_cake", Tool.PAN, 1, List.of(of("mechanical:raw_honey_cake")), HONEY_CAKE, 1),
@@ -218,9 +264,18 @@ public final class Kitchen {
             new Dish("sausage", Tool.PAN, 2, List.of(of("mechanical:raw_sausage")), SAUSAGE, 1),
             new Dish("sauerkraut", Tool.BARREL, 2, List.of(of("mechanical:cabbage"), of("mechanical:cabbage"), of("mechanical:salt")), SAUERKRAUT, 3),
             new Dish("cheese", Tool.PRESS, 2, List.of(MILK, MILK, of("mechanical:salt")), CHEESE, 4),
+            // oil: the press squeezes olives or rapeseed; fried in the skillet with oil or lard
+            new Dish("olive_oil", Tool.PRESS, 2, List.of(of("mechanical:olives"), of("mechanical:olives"), of("mechanical:olives"), of("mechanical:olives")),
+                    OLIVE_OIL, 1),
+            new Dish("rapeseed_oil", Tool.PRESS, 2, List.of(of("mechanical:rapeseed"), of("mechanical:rapeseed"), of("mechanical:rapeseed"),
+                    of("mechanical:rapeseed")), RAPESEED_OIL, 1),
+            new Dish("fried_fish", Tool.PAN, 2, List.of(of("#mechanical:smokable_fish"), of("#mechanical:smokable_fish"), FAT), FRIED_FISH, 2),
+            new Dish("fried_roots", Tool.PAN, 2, List.of(of("minecraft:potato", "mechanical:turnip", "mechanical:parsnip"),
+                    of("minecraft:potato", "mechanical:turnip", "mechanical:parsnip"), FAT, ALLIUM), FRIED_ROOTS, 2),
+            new Dish("pickled_olives", Tool.BARREL, 2, List.of(of("mechanical:olives"), of("mechanical:olives"), of("mechanical:olives"), of("mechanical:salt")),
+                    PICKLED_OLIVES, 3),
             new Dish("roast_with_herbs", Tool.PAN, 2, List.of(MEAT, MEAT, HERB, HERB), ROAST_WITH_HERBS, 2),
-            new Dish("cider", Tool.BARREL, 2, List.of(of("mechanical:crab_apple"), of("mechanical:crab_apple"), of("mechanical:crab_apple"),
-                    of("mechanical:crab_apple")), CIDER, 3),
+            new Dish("cider", Tool.BARREL, 2, List.of(APPLE, APPLE, APPLE, APPLE), CIDER, 3),
             // ale: barley bittered with hops, or with bog myrtle as the old gale ale was
             new Dish("ale", Tool.BARREL, 2, List.of(of("mechanical:barley_grain"), of("mechanical:barley_grain"), of("mechanical:barley_grain"),
                     of("mechanical:hop_cones", "mechanical:bog_myrtle_leaves")), ALE, 3),
@@ -304,7 +359,9 @@ public final class Kitchen {
         return out;
     }
 
-    public static void init() {}
+    public static void init(net.neoforged.bus.api.IEventBus modEventBus) {
+        MOB_EFFECTS.register(modEventBus);
+    }
 
     private Kitchen() {}
 }

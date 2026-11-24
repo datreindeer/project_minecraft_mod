@@ -793,6 +793,16 @@ porsöl), **pajer** av fruktträdens frukt: 2 Flour + Lard + 3 Crab Apple / Wild
 bakas i Clay Kiln (200°) till **Apple Pie**, **Plum Pie**, **Rowan Pie**, **Bird Cherry Pie** (8 hunger). Cider och öl dricks (3 och 4
 hunger, håller 30 dagar). Advancements: *Brewer*, *Fruit Pie*, *Sunday Roast*.
 
+**Olja, stekning och berusning (flora3):**
+- **Olja i Cheese Press:** 4 Olives → **Olive Oil**, 4 Rapeseed → **Rapeseed Oil** (8 min, ingen eld; håller 30 dagar). Rapeseed är
+  rovans oljefrösyster: en mogen Wild Turnip ger ibland ett tämjt frö, hälften av gångerna Rapeseed (`docs/farming.md`).
+- **Stekt i olja** (Iron Skillet, olja **eller Lard**): **Fried Fish** (2 råa fiskar + fett → 2 à 7), **Fried Roots** (2 potatis,
+  rovor eller palsternackor + fett + lök → 2 à 7). Fruktpajerna kan göras med olja i stället för ister. *First Pressing*, *Fried in Oil*.
+- **Pickled Olives** (Fermenting Barrel: 3 Olives + Salt → 3, håller 30 dagar): råa är de beska. *Olives in Brine*.
+- **Tipsy** (Ale och Cider): varje drick inom 2 minuter höjer effekten ett steg (högst IV) och tiden börjar om. Varm i magen (+0,1
+  isolering mot kyla). Från tredje i rad lutar världen sakta lite åt sidorna (en grad eller två), mycket mjukare än Nausea; inget
+  annat. Cider går också av ympade äpplen. *One More Round*.
+
 ## Stålets kök (flora och mat, fas 6, byggt v0.193.0)
 
 Stålet ger köket finare redskap, och den **östra karavanens kryddor** (Black Pepper, Cinnamon Bark, Ginger Root, Saffron) mals till

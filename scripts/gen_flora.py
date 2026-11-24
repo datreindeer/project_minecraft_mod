@@ -391,5 +391,14 @@ w(D / "mechanical/recipe/cooked_elderberries.json", {"type": "minecraft:campfire
 for t in ("basket_storable", "perishes_3_days"):
     tag(D / f"mechanical/tags/item/{t}.json", S + "cooked_elderberries")
 
+# ---------------------------------------------------------------- uses of the magic flowers (flora3; Flora.java, Kitchen, folklore.Wisp)
+# Fern Flower Charm (Charm slot, +1 Luck); Frost Lily Tea is a clay pot dish (gen_herbs lang); Moonwort springs iron doors and
+# a carried Will-o'-Wisp Lily makes a wisp lead true (code only)
+w(A / "models/item/fern_flower_charm.json", {"parent": M + "item/generated", "textures": {"layer0": S + "item/fern_flower_charm"}})
+w(A / "items/fern_flower_charm.json", {"model": {"type": "minecraft:model", "model": S + "item/fern_flower_charm"}})
+lang["item.mechanical.fern_flower_charm"] = "Fern Flower Charm"
+w(D / "mechanical/recipe/fern_flower_charm.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [S + "fern_flower", S + "twine"], "result": {"id": S + "fern_flower_charm"}})
+
 w(A / "lang/en_us.json", lang, ascii=True)
 print("flora ok")

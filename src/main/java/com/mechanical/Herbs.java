@@ -87,6 +87,8 @@ public final class Herbs {
         crop("ginger", "ginger_root", null, CROPS, ITEMS_BY_NAME, "ginger");
         crop("saffron", "saffron_corm", null, CROPS, ITEMS_BY_NAME, "saffron");
         crop("rice", "rice", null, CROPS, ITEMS_BY_NAME, "rice");
+        // the turnip's oil-seed sister: tamed from the Wild Turnip too (domesticate), pressed for oil in the Cheese Press
+        crop("rapeseed", "rapeseed", null, CROPS, ITEMS_BY_NAME, "rapeseed");
     }
 
     public static final DeferredItem<Item> DILL = ITEMS.registerSimpleItem("dill");
@@ -99,7 +101,8 @@ public final class Herbs {
             "mustard", new Farming.Climate(5, 8, 13, 17, 0, false, new float[] {1.2F, 1.0F, 0.6F, 0}),
             "ginger", new Farming.Climate(14, 18, 23, 27, 10, true, new float[] {0.6F, 1.3F, 0.8F, 0}), // savanna heat
             "saffron", new Farming.Climate(10, 13, 19, 24, 4, true, new float[] {0.5F, 0.8F, 1.3F, 0}), // flowers in autumn
-            "rice", new Farming.Climate(13, 17, 23, 27, 8, false, new float[] {0.6F, 1.3F, 0.7F, 0}));
+            "rice", new Farming.Climate(13, 17, 23, 27, 8, false, new float[] {0.6F, 1.3F, 0.7F, 0}),
+            "rapeseed", new Farming.Climate(4, 7, 12, 16, -1, false, new float[] {1.2F, 1.0F, 0.6F, 0}));
 
     // ---- herbs: cut with a knife, they grow back; the plant itself can be dug up and planted in a herb garden ----
     /** Herb plant id -> what cutting it gives. */
@@ -155,8 +158,14 @@ public final class Herbs {
         OTHER_CLIMATES.forEach((name, c) -> m.put(CROPS.get(name).get(), c));
     }
 
-    /** The tamed vegetable a ripe wild crop may give, or null if this isn't a wild crop. */
+    /** The tamed vegetable a ripe wild crop may give, or null if this isn't a wild crop. The Wild Turnip gives Turnip or
+     *  Rapeseed (one wild plant, two tamed forms, as Brassica rapa really is): {@link #tamedFrom(Block, boolean)}. */
     public static Item tamedFrom(Block wildCrop) {
+        return tamedFrom(wildCrop, false);
+    }
+
+    public static Item tamedFrom(Block wildCrop, boolean oilSeed) {
+        if (oilSeed && wildCrop == WILD_CROPS.get("turnip").get()) return ITEMS_BY_NAME.get("rapeseed").get();
         for (var e : WILD_CROPS.entrySet()) if (e.getValue().get() == wildCrop) return ITEMS_BY_NAME.get(e.getKey()).get();
         return null;
     }
@@ -183,7 +192,7 @@ public final class Herbs {
 
     /** A ripe wild crop harvested: now and then its tamed seed joins the drops (Farming.onDrops, before the soil wears). */
     static void domesticate(ServerLevel level, BlockPos pos, BlockState state, List<ItemEntity> drops) {
-        Item tamed = tamedFrom(state.getBlock());
+        Item tamed = tamedFrom(state.getBlock(), level.getRandom().nextBoolean());
         if (tamed == null || level.getRandom().nextFloat() >= tameChance(level, pos, state)) return;
         drops.add(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.3, pos.getZ() + 0.5, new ItemStack(tamed)));
     }
