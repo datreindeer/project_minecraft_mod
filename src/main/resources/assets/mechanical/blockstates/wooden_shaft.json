@@ -3,6 +3,9 @@
     "axis=x": {
       "model": "mechanical:block/wooden_shaft"
     },
+    "axis=y": {
+      "model": "mechanical:block/wooden_shaft"
+    },
     "axis=z": {
       "model": "mechanical:block/wooden_shaft"
     }

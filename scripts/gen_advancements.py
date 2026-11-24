@@ -1964,6 +1964,10 @@ TABS["iron_age"][1].extend([
     ("full_power", "water_wheel", "gearbox", C, "Mill Race",
      "Get a Water Wheel to its full 16 power: water falling down a whole side of the wheel, or running under it and falling on it at once",
      by_code()),
+    ("twin_wheels", "water_wheel", "water_wheel", T, "Two Wheels, One Axle",
+     "Set two Water Wheels on one axle, both with water to turn them: their power adds up (to at most 16)", by_code()),
+    ("power_climbs", "water_wheel", "wooden_shaft", T, "Up the Shaft",
+     "Stand Wooden Shafts up from a Gearbox and send a Water Wheel's turn up them, to a mill or loft above", by_code()),
     ("sawmill", "water_wheel", "saw_bench", G, "Up and Down",
      "Build a Sawmill: a Saw Bench with a Steel Saw Blade between 3 Log Flumes on each side, water running toward the saw, "
      "8 power from a Water Wheel's shaft. Lay a log in the flume and let the saw take it", by_code()),

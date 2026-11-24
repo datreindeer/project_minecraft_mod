@@ -14,9 +14,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * A Gearbox (see {@link WaterPower}): a timber frame with two bevel gears, one on the X line and one on the Z line, that
- * passes a turn straight on and round the corner to every horizontal side. Its {@link RotorBlockEntity} keeps the turn
- * about X; the Z gear turns the other way (the gears sit on the +X and +Z sides, client/WaterPowerRenderers).
+ * A Gearbox (see {@link WaterPower}): a timber frame with bevel gears on the X and Z lines (and on the upright line
+ * when a shaft stands on it or hangs under it) that passes a turn straight on and round the corner to every side, up
+ * and down too. Its {@link RotorBlockEntity} keeps the turn about X; the Z and Y gears turn the other way
+ * ({@link WaterPower#gear}; drawn by client/WaterPowerRenderers).
  */
 public class GearboxBlock extends Block implements EntityBlock {
     public GearboxBlock(Properties properties) {

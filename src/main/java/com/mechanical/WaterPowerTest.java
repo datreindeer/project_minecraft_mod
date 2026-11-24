@@ -29,7 +29,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * Game tests for water power and the Sawmill (docs/flora-and-food-plan.md phases 5a/5b): waterpower_wheel (still water
  * gives nothing; water falling past one side turns the wheel, the turn goes down a shaft, through a gearbox and round
- * the corner the other way; a block in the wheel's way stops it), sawmill_barked (a barked log floats to the saw and
+ * the corner the other way; a block in the wheel's way stops it), waterpower_two_wheels (two wheels on one axle add
+ * their power, and it climbs an upright shaft through two gearboxes to a loft), waterpower_body (the wheel's solid body
+ * stands in its cells, keeps blocks out and goes with the hub), sawmill_barked (a barked log floats to the saw and
  * comes out as 2 Rough Logs, 2 Firewood, 2 Bark, 2 Sawdust, the blade worn by one), sawmill_stripped (6 Planks, 2 Sticks,
  * 1 Sawdust), sawmill_no_power (4 power: the log waits at the blade), sawmill_wrong_flow (water let in at the out end:
  * the log doesn't move).
@@ -37,10 +39,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class WaterPowerTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"waterpower_wheel", "sawmill_barked", "sawmill_stripped", "sawmill_no_power", "sawmill_wrong_flow"};
+    private static final String[] TESTS = {"waterpower_wheel", "waterpower_two_wheels", "waterpower_body", "sawmill_barked", "sawmill_stripped", "sawmill_no_power", "sawmill_wrong_flow"};
 
     static {
         TEST_FUNCTIONS.register("waterpower_wheel", () -> WaterPowerTest::wheel);
+        TEST_FUNCTIONS.register("waterpower_two_wheels", () -> WaterPowerTest::twoWheels);
+        TEST_FUNCTIONS.register("waterpower_body", () -> WaterPowerTest::body);
         TEST_FUNCTIONS.register("sawmill_barked", () -> h -> mill(h, new ItemStack(Items.OAK_LOG), 12, true, List.of(
                 new ItemStack(Mechanical.ROUGH_LOGS.get("oak").get(), 2), new ItemStack(Mechanical.FIREWOOD.get("oak").get(), 2),
                 new ItemStack(Mechanical.BARKS.get("oak").get(), 2), new ItemStack(Sawmill.SAWDUST.get(), 2))));
@@ -97,6 +101,74 @@ public final class WaterPowerTest {
             h.setBlock(new BlockPos(4, 5, 6), Blocks.COBBLESTONE);
             h.assertTrue(wheel.measure(h.getLevel()) == 0 && wheel.blocked != null, "a stone in the wheel stops it");
             h.succeed();
+        });
+    }
+
+    private static BlockState shaft(Direction.Axis axis) {
+        return WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, axis);
+    }
+
+    private static RotorBlockEntity rotor(GameTestHelper h, int x, int y, int z) {
+        return (RotorBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(x, y, z)));
+    }
+
+    /**
+     * Two wheels (planes z 4 and z 8, hubs at y 5) on one Z axle with shafts between, a little water falling past the same
+     * side of each; the axle runs on through a gearbox at z 10, up two upright shafts to a gearbox at y 8 and out along X.
+     */
+    private static void twoWheels(GameTestHelper h) {
+        floor(h);
+        for (int z : new int[] {4, 8}) {
+            h.setBlock(new BlockPos(6, 5, z), WaterPower.WATER_WHEEL.get().defaultBlockState().setValue(WaterWheelBlock.AXIS, Direction.Axis.Z));
+            h.setBlock(new BlockPos(8, 6, z), Blocks.WATER); // a short fall down the lower side: well under full power each
+        }
+        for (int z : new int[] {5, 6, 7, 9}) h.setBlock(new BlockPos(6, 5, z), shaft(Direction.Axis.Z));
+        h.setBlock(new BlockPos(6, 5, 10), WaterPower.GEARBOX.get());
+        h.setBlock(new BlockPos(6, 6, 10), shaft(Direction.Axis.Y));
+        h.setBlock(new BlockPos(6, 7, 10), shaft(Direction.Axis.Y));
+        h.setBlock(new BlockPos(6, 8, 10), WaterPower.GEARBOX.get());
+        h.setBlock(new BlockPos(7, 8, 10), shaft(Direction.Axis.X));
+        h.runAfterDelay(80, () -> {
+            WaterWheelBlockEntity a = (WaterWheelBlockEntity) rotor(h, 6, 5, 4), b = (WaterWheelBlockEntity) rotor(h, 6, 5, 8);
+            float sa = a.measure(h.getLevel()), sb = b.measure(h.getLevel());
+            int own = Math.max(Math.round(Math.abs(sa)), Math.round(Math.abs(sb))), both = Math.min(WaterPower.MAX_POWER, Math.round(Math.abs(sa + sb)));
+            h.assertTrue(Math.abs(sa) >= 3 && Math.abs(sb) >= 3 && Math.signum(sa) == Math.signum(sb), "both wheels turn the same way, " + sa + " and " + sb);
+            h.assertTrue(own < WaterPower.MAX_POWER && both > own, "two wheels give more than one: " + sa + " + " + sb + " gives " + both);
+            for (RotorBlockEntity r : new RotorBlockEntity[] {a, b, rotor(h, 6, 5, 6), rotor(h, 6, 5, 9)})
+                h.assertTrue(r.power() == both && r.speed() == a.speed() && r.speed() != 0, "the axle turns as one at " + both + ": " + r.getBlockPos() + " has " + r.power());
+            RotorBlockEntity up = rotor(h, 6, 7, 10), loft = rotor(h, 6, 8, 10), out = rotor(h, 7, 8, 10);
+            h.assertTrue(up.power() == both && up.speed() == a.speed(), "the upright shaft turns, " + up.power() + " speed " + up.speed());
+            h.assertTrue(loft.power() == both && out.power() == both && out.speed() == -a.speed(), "power reaches the loft, " + out.power() + " speed " + out.speed());
+            // one wheel jammed stops the whole axle
+            h.setBlock(new BlockPos(4, 5, 8), Blocks.COBBLESTONE);
+            h.runAfterDelay(25, () -> {
+                h.assertTrue(a.power() == 0 && rotor(h, 7, 8, 10).power() == 0, "a jammed wheel stops the axle, " + a.power());
+                h.succeed();
+            });
+        });
+    }
+
+    /** The wheel's body: two boxes in its cells, solid, keeping blocks out of the wheel, gone with the hub. */
+    private static void body(GameTestHelper h) {
+        floor(h);
+        BlockPos hub = new BlockPos(6, 5, 6);
+        h.setBlock(hub, WaterPower.WATER_WHEEL.get().defaultBlockState().setValue(WaterWheelBlock.AXIS, Direction.Axis.X));
+        net.minecraft.world.phys.AABB around = new net.minecraft.world.phys.AABB(h.absolutePos(hub)).inflate(3);
+        h.runAfterDelay(25, () -> {
+            h.assertTrue(h.getLevel().getEntities(WaterPower.WHEEL_HITBOX.get(), around, e -> true).size() == 2, "the wheel has its body");
+            for (BlockPos cell : new BlockPos[] {new BlockPos(6, 5, 8), new BlockPos(6, 7, 6), new BlockPos(6, 6, 7)}) {
+                BlockPos at = h.absolutePos(cell);
+                h.assertFalse(h.getLevel().getEntityCollisions(null, new net.minecraft.world.phys.AABB(at)).isEmpty(), "the wheel is solid at " + cell);
+                h.assertFalse(h.getLevel().isUnobstructed(Blocks.STONE.defaultBlockState(), at, net.minecraft.world.phys.shapes.CollisionContext.empty()),
+                        "no block can be put in the wheel at " + cell);
+            }
+            h.assertTrue(h.getLevel().getEntityCollisions(null, new net.minecraft.world.phys.AABB(h.absolutePos(new BlockPos(5, 5, 6)))).isEmpty(),
+                    "beside the wheel (along its axle) is free");
+            h.setBlock(hub, Blocks.AIR);
+            h.runAfterDelay(25, () -> {
+                h.assertTrue(h.getLevel().getEntities(WaterPower.WHEEL_HITBOX.get(), around, e -> true).isEmpty(), "the body goes with the hub");
+                h.succeed();
+            });
         });
     }
 

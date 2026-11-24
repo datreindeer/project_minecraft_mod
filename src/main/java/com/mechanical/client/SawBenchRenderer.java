@@ -41,17 +41,20 @@ import org.jspecify.annotations.Nullable;
  * The Saw Bench's moving parts ({@link SawBenchBlockEntity}): the flywheel on the side the shaft comes in, turning
  * {@link SawBenchBlockEntity#CRANK_RATIO} times the wheel's speed; the pitman rod from its crank pin up to the sash; the
  * sash with the blade riding up and down with the crank; and the logs floating in the in-side flume. The log at the blade
- * is drawn in two pieces: what is still whole upstream of the blade, and what has come through downstream (boards from a
- * barked-off log, a hewn log from one with bark). Part models: scripts/gen_waterpower.py.
+ * is drawn in two pieces: what is still whole upstream of the blade, and what has come through downstream (four thin
+ * boards standing on edge from a barked-off log, a hewn log from one with bark). Part models: scripts/gen_waterpower.py.
  */
 public class SawBenchRenderer implements BlockEntityRenderer<SawBenchBlockEntity, SawBenchRenderer.State> {
     /** Crank radius and the flywheel's distance from the bench's centre line, in pixels. */
     private static final float CRANK = 3, WHEEL_X = 9.25F, PITMAN_X = 10.85F, PITMAN = 17.75F;
     /** A log's thickness, and its centre above the block centre (floating in the 10 px deep water). */
     private static final float LOG = 0.5F, LOG_Y = 1 / 16F;
+    /** How many boards a stripped log comes apart into on the way out, and how far apart they stand (one plus a kerf). */
+    private static final int BOARDS = 4;
+    private static final float BOARD_PITCH = 2.15F / 16;
 
     public static class Piece {
-        final ItemStackRenderState model = new ItemStackRenderState();
+        ItemStackRenderState model = new ItemStackRenderState();
         float from, to; // along the line, blocks from the blade
         boolean boards;
     }
@@ -107,8 +110,14 @@ public class SawBenchRenderer implements BlockEntityRenderer<SawBenchBlockEntity
             float back = s - SawBenchBlockEntity.HALF, ahead = s + SawBenchBlockEntity.HALF;
             ItemStack whole = log.item.getItem() instanceof com.mechanical.RoughLogItem ? new ItemStack(Sawmill.strippedLog(wood.wood())) : log.item;
             piece(state, whole, back, Math.min(ahead, 0), false, level, seed);
-            if (ahead > 0) piece(state, wood.bark() ? new ItemStack(Sawmill.strippedLog(wood.wood())) : new ItemStack(Sawmill.planks(wood.wood())),
-                    0, ahead, !wood.bark(), level, seed);
+            if (ahead > 0 && wood.bark()) piece(state, new ItemStack(Sawmill.strippedLog(wood.wood())), 0, ahead, false, level, seed);
+            else if (ahead >= 0.01F) {
+                Piece boards = new Piece();
+                boards.model = WaterPowerRenderers.part(items, "saw_board_" + wood.wood(), level, seed);
+                boards.to = ahead;
+                boards.boards = true;
+                state.pieces.add(boards);
+            }
         }
     }
 
@@ -151,11 +160,14 @@ public class SawBenchRenderer implements BlockEntityRenderer<SawBenchBlockEntity
         // logs
         for (Piece p : state.pieces) {
             float len = p.to - p.from, mid = (p.from + p.to) / 2;
-            if (p.boards) { // three boards stacked as they come off the blade
-                for (int b = 0; b < 3; b++) {
+            if (p.boards) { // four boards on edge, the outer ones lower (the log was round), leaning apart as they leave the blade
+                for (int b = 0; b < BOARDS; b++) {
+                    float off = b - (BOARDS - 1) / 2F, outer = Math.abs(off) > 1 ? 0.78F : 1;
+                    float spread = Math.min(1, p.to / 0.8F); // the boards part further the further they have come
                     pose.pushPose();
-                    pose.translate(0, LOG_Y + state.bob - 0.16F + b * 0.16F, mid - b * 0.04F);
-                    pose.scale(LOG * (0.95F - b * 0.08F), 0.1F, Math.max(0.01F, len - b * 0.08F));
+                    pose.translate(off * (BOARD_PITCH + spread * 0.012F), LOG_Y + state.bob - (1 - outer) * 0.2F, mid + (b % 2) * 0.015F);
+                    pose.rotateDegrees(Axis.ZP, -off * spread * 5);
+                    pose.scale(1, outer, len);
                     p.model.submit(pose, collector, light, overlay, 0);
                     pose.popPose();
                 }

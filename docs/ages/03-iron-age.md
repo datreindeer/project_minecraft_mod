@@ -700,20 +700,21 @@ karavaner. Alla tre tygerna duger i sängen; tyg har inga andra användningar ä
 ## Vattenkraft och sågverk (byggd, v0.191.0, flora-and-food-plan fas 5a/5b)
 
 Kod: `WaterPower`, `WaterWheelBlock(Entity)`, `RotorBlockEntity`, `ShaftBlock`, `GearboxBlock`, `Sawmill`, `LogFlumeBlock`,
-`SawBenchBlock(Entity)`, klient `WaterPowerRenderers`, `SawBenchRenderer`. Data: `scripts/gen_waterpower.py`, texturer
-`scripts/gen_waterpower_textures.py`. Test: `WaterPowerTest` (waterpower_wheel, sawmill_barked, sawmill_stripped,
+`SawBenchBlock(Entity)`, `WaterWheelHitbox` (hjulets kropp), klient `WaterPowerRenderers`, `SawBenchRenderer`. Data: `scripts/gen_waterpower.py`, texturer
+`scripts/gen_waterpower_textures.py`. Test: `WaterPowerTest` (waterpower_wheel, waterpower_two_wheels, waterpower_body, sawmill_barked, sawmill_stripped,
 sawmill_no_power, sawmill_wrong_flow). Bildharness: `WaterShots` (`watershots.flag`).
 
 **Vattenhjulet (järn)**
 
 | Vad | Hur |
 |---|---|
-| **Water Wheel** | 6 plankor, 2 Iron Plate, en Wooden Shaft (`PPP`/`IRI`/`PPP`). 5 block i diameter: nav med järnband, 8 dubbla ekrar, inre ring, fälgar och 16 skovlar med järnbeslag; bara navet är ett block. Sätts med axeln mot spelaren och bara där de 24 rutorna runt navet är fria (luft, vatten, gräs) |
+| **Water Wheel** | 6 plankor, 2 Iron Plate, en Wooden Shaft (`PPP`/`IRI`/`PPP`). 5 block i diameter: nav med järnband, 8 dubbla ekrar, inre ring, fälgar och 16 skovlar med järnbeslag; bara navet är ett block. Sätts med axeln mot spelaren och bara där de 24 rutorna runt navet är fria (luft, vatten, gräs). Hjulet är fast att gå emot och stå på: två osynliga lådor i kors (5×3 och 3×5, hjulets tjocklek) som vattnet rinner igenom och som inga block kan sättas i |
 | **Kraft** | Varje sekund räknas de 20 skovelrutorna (inte de fyra närmast navet). Vatten som rinner runt hjulet ger 1, fallande vatten 2; vatten rakt mot eller från axeln, och stillastående vatten, ger inget. Vatten som rinner åt samma håll överst och nederst tar ut varandra (riktningen räknas). Högst **16**. Undershot ger högst 7, overshot längs en sida 10, båda tillsammans 16. Står något fast i hjulet står det still |
+| **Flera hjul** | Hjul på samma axel (axlar, nav och växellådor emellan) lägger ihop sin kraft, med tecken: hjul som går emot varandra tar ut varandra. Högst 16. Står ett hjul fast står hela axeln. Alla hjul och delar på axeln går i samma takt |
 | **Fart** | 0,25° per tick och kraftpoäng (16 kraft: ett varv på 4,5 s), åt det håll vattnet driver. Stänk där skovlarna går i vattnet, knarr och porl |
-| **Wooden Shaft** | 2 Rough Logs + Iron Tool Rod → 4. Ligger längs X eller Z, för rörelsen upp till 24 block |
-| **Gearbox** | 4 plankor, 4 Wooden Shaft, 1 Iron Plate. För rörelsen rakt fram och runt hörnet åt alla vågräta håll; hjulet på andra ledden går åt andra hållet |
-| **Högerklick** | Navet: kraften ("12 / 16"), eller vad som står i vägen och var. Axel/Gearbox: kraften den bär |
+| **Wooden Shaft** | 2 Rough Logs + Iron Tool Rod → 4. Ligger längs X eller Z, för rörelsen upp till 24 block. **Står upp** när den sätts på eller under en Gearbox eller en stående axel: så når kraften en kvarn eller ett loft ovanför |
+| **Gearbox** | 4 plankor, 4 Wooden Shaft, 1 Iron Plate. För rörelsen rakt fram och runt hörnet åt alla håll, även upp och ner; hjulet på andra ledden går åt andra hållet. Ett tredje kugghjul syns när en axel står på eller hänger under lådan |
+| **Högerklick** | Navet: kraften ("12 / 16"), med axelns kraft när fler hjul delar den, eller vad som står i vägen och var. Axel/Gearbox: kraften den bär. Att titta på nav, axel eller Gearbox visar kraften ovanför snabbknapparna |
 
 **Sågverket (stål)**
 
@@ -721,9 +722,9 @@ sawmill_no_power, sawmill_wrong_flow). Bildharness: `WaterShots` (`watershots.fl
 |---|---|
 | **Bygge** | En **Saw Bench** (2 Steel Plate, 2 plankor, Wooden Shaft, 3 stockar) mellan **3 Log Flumes** (5 plankor → 4) i linje på varje sida. Bänkens insida är den som vette mot spelaren när den sattes |
 | **Vatten** | Rännorna har inget riktigt vatten. Vatten rinner från den ände som har ett vattenblock intill (eller en ränna i linje som rinner in) mot den andra, och står stilla om båda ändar har vatten. Det måste rinna **mot sågen** (in vid insidans ände) |
-| **Kraft** | En axel från ett vattenhjul till bänkens vänstra eller högra sida, minst **8 kraft**. Svänghjulet sitter på den sidan och snurrar 9× hjulets fart, vevstaken driver sågramen upp och ner |
+| **Kraft** | En axel från ett vattenhjul till bänkens vänstra eller högra sida, minst **8 kraft**. Svänghjulet (ett ljust ekerhjul med järnring) sitter på den sidan och snurrar 9× hjulets fart, vevstaken driver sågramen upp och ner |
 | **Blad** | Ett **Steel Saw Blade** (smids på städet som förut) räcker 512 stockar. Ett nytt blad byter ut det gamla, som kommer tillbaka med sina återstående stockar på sig |
-| **Stockar** | Högerklicka rännan på insidan (eller bänken) med en stock: högst 3, ett block isär. Den flyter fram (1 block/s) och matas genom bladet på 4 s; man ser stocken gå in och brädorna komma ut. Stockar och Rough Logs av moddens 19 träslag |
+| **Stockar** | Högerklicka rännan på insidan (eller bänken) med en stock: högst 3, ett block isär. Den flyter fram (1 block/s) och matas genom bladet på 4 s; man ser stocken gå in och brädorna komma ut (fyra tunna brädor på högkant som glider isär). Stockar och Rough Logs av moddens 19 träslag |
 | **Utbyte** | Med bark: **2 Rough Logs + 2 Firewood + 2 Bark + 2 Sawdust**. Barkad stock eller Rough Log: **6 plankor + 2 Sticks + 1 Sawdust**. Det sågade flyter bort i rännan på utsidan och faller av vid änden |
 | **Fel** | Vatten åt fel håll: stocken står still. Ingen kraft eller inget blad: stocken väntar vid bladet. Tom hand på bänken säger vad som saknas (rännor, vatten, riktning, blad, kraft) |
 | **Sawdust** | Kort ugnsbränsle (50 ticks), komposterbart. 4 Sawdust + Clay Ball → 2 **Sawdust Briquette**, som en Clay Kiln bränner till Charcoal |

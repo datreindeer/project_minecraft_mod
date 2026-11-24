@@ -417,9 +417,13 @@ Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vatte
   ändras):** planens "fallhöjd" blev "fallande vatten räknas dubbelt"; undershot når högst 7, så sågverket (8) behöver
   vatten som faller på hjulet. Rörelsen syns som fart (0,25°/tick per kraft) och i högerklick ("12 / 16"), inte i en
   svävande tooltip.
-- **Axlar:** Wooden Shaft (rak) och Gearbox (rakt fram och runt hörnet, åt alla vågräta håll). Inga lodräta axlar.
-  Alla delar på en linje visar hjulets egen fas (ingen synk per tick), och stannar 2,5 s efter att hjulet slutat mata dem.
-  Två hjul på samma linje adderas inte (det senaste vinner).
+- **Axlar:** Wooden Shaft (liggande eller stående) och Gearbox (rakt fram och runt hörnet åt alla håll, även upp och
+  ner). Alla delar på en linje visar hjulets egen fas (ingen synk per tick), och stannar 2,5 s efter att hjulet slutat
+  mata dem. **Uppföljning (mech2):** flera hjul på samma axel lägger ihop sin kraft (med tecken, högst 16; ett fastkört
+  hjul stoppar axeln). Det hjul som ligger först (lägst position) räknar hela linjen varje sekund och matar de andra.
+- **Hjulets kropp (mech2):** hjulet fyller inte sina 24 rutor med block (vattnet måste rinna där), utan har två osynliga
+  entiteter i kors (`WaterWheelHitbox`, 5×3 och 3×5) som är fasta att gå emot och stå på och hindrar blockplacering.
+  De sparas inte; navet sätter ut dem igen. Varje hjuldel ljussätts av rutan den står i, inte bara av navet.
 - **Sågverket:** som planen: 7 block, sågen i mitten, 3 Log Flumes på var sida, vatten mot sågen, minst 8 kraft, Steel
   Saw Blade 512 stockar, utbytet enligt tabellen. Rännorna har inget riktigt vatten (vattenloggade block kan inte rinna),
   de räknar själva varifrån vattnet kommer och visar rinnande eller stilla vatten. Det sågade flyter ut som föremål.

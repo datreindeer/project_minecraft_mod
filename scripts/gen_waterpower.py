@@ -126,7 +126,7 @@ model("wooden_shaft_rotor", SHAFT_TEX, octagon([5, 5, 0], [11, 11, 16], SHAFT)
       {"display": {"gui": {"rotation": [30, 45, 0], "scale": [0.625] * 3}, "fixed": {"scale": [0.5] * 3}}})
 part("wooden_shaft_rotor")
 model("wooden_shaft", {"particle": B + "wooden_shaft_v"}, [])
-w(A / "blockstates/wooden_shaft.json", {"variants": {"axis=x": {"model": B + "wooden_shaft"}, "axis=z": {"model": B + "wooden_shaft"}}})
+w(A / "blockstates/wooden_shaft.json", {"variants": {f"axis={a}": {"model": B + "wooden_shaft"} for a in ("x", "y", "z")}})
 w(A / "items/wooden_shaft.json", {"model": {"type": "minecraft:model", "model": B + "wooden_shaft_rotor"}})
 
 GEAR_TEX = {"gear": B + "gear_wood", "frame_v": B + "gearbox_frame_v", "frame_h": B + "gearbox_frame_h", "iron": B + "water_wheel_iron",
@@ -148,6 +148,9 @@ for f in ("north", "south", "east", "west"):  # bearing blocks where the axles l
     lip = {"north": ([5, 4, -0.5], [11, 12, 1]), "south": ([5, 4, 15], [11, 12, 16.5]),
            "west": ([-0.5, 4, 5], [1, 12, 11]), "east": ([15, 4, 5], [16.5, 12, 11])}[f]
     frame += [box(lip[0], [lip[1][0], 5.2, lip[1][2]], "#iron"), box([lip[0][0], 10.8, lip[0][2]], lip[1], "#iron")]
+for y0, y1 in ((15, 16.5), (-0.5, 1)):  # bearing rings on top and underneath, for an upright shaft
+    frame += [box([4.5, y0, 4.5], [11.5, y1, 5.6], "#iron"), box([4.5, y0, 10.4], [11.5, y1, 11.5], "#iron"),
+              box([4.5, y0, 5.6], [5.6, y1, 10.4], "#iron"), box([10.4, y0, 5.6], [11.5, y1, 10.4], "#iron")]
 model("gearbox", GEAR_TEX, frame)
 w(A / "blockstates/gearbox.json", {"variants": {"": {"model": B + "gearbox"}}})
 w(A / "items/gearbox.json", {"model": {"type": "minecraft:model", "model": B + "gearbox"}})
@@ -237,20 +240,40 @@ model("saw_sash", SAW_TEX, [
     box([7.75, 5, 5.5], [8.25, 25, 10.5], "#blade", uv={"west": [0, 0, 8, 16], "east": [8, 0, 0, 16], "north": [0, 0, 0.5, 16], "south": [15.5, 0, 16, 16]}),
     box([7, 23.5, 6.3], [9, 25, 9.7], "#iron"), box([7, 5, 6.3], [9, 6.5, 9.7], "#iron"),     # blade buckles
     box([-3.7, 24.6, 6.7], [-2.1, 26.9, 9.3], "#iron"), box([18.1, 24.6, 6.7], [19.7, 26.9, 9.3], "#iron")])  # pitman eyes
-spokes = []
-for frm, to in (([7.5, 3, 7.5], [8.5, 13, 8.5]), ([3, 7.5, 7.5], [13, 8.5, 8.5])):
-    spokes += [box(frm, to, FRAME, "y" if frm[1] == 3 else "x"), box(frm, to, FRAME, "y" if frm[1] == 3 else "x", rot=("z", 45))]
-rim = []
-for frm, to in (([5.7, 12.3, 7.2], [10.3, 13.6, 8.8]), ([5.7, 2.4, 7.2], [10.3, 3.7, 8.8]),
-                ([2.4, 5.7, 7.2], [3.7, 10.3, 8.8]), ([12.3, 5.7, 7.2], [13.6, 10.3, 8.8])):
-    rim += [box(frm, to, "#iron"), box(frm, to, "#iron", rot=("z", 45))]
-model("saw_flywheel", SAW_TEX, spokes + rim + [
-    box([6.5, 6.5, 7], [9.5, 9.5, 9.5], "#iron"), box([7, 7, 5], [9, 9, 7], FRAME, "z"),
-    box([7.4, 10.4, 8.6], [8.6, 11.6, 10.4], "#iron")])                                           # crank pin (radius 3)
+# flywheel (axle along z, the wheel in z 7..9): a big iron-tyred wheel (radius 7.5) of pale wood, 16 felloe segments
+# on 6 broad spokes, so the spokes read against the dark frame and the drive shaft (radius 3) that ends in its hub;
+# the crank pin (radius 3) stands out of the hub's face (+z, outwards)
+FLY_TEX = SAW_TEX | {"pale_v": B + "water_wheel_wood_v", "pale_h": B + "water_wheel_wood_h", "pale_end": B + "water_wheel_hub_end"}
+PALE = {"v": "#pale_v", "h": "#pale_h", "end": "#pale_end"}
+fly = []
+for k in range(6):  # spokes, 1.8 px broad, from the hub out into the felloe
+    fly.append(box([7.1, 11, 7.2], [8.9, 14.2, 8.8], PALE, "y", rot=("z", k * 60)))
+for k in range(16):  # felloe segments (radius 6..7) and the iron tyre over them (7..7.5)
+    fly.append(box([6.55, 14, 7], [9.45, 15, 9], PALE, "x", rot=("z", k * 22.5)))
+    fly.append(box([6.5, 15, 7.2], [9.5, 15.5, 8.8], "#iron", rot=("z", k * 22.5)))
+fly += octagon([4.6, 4.6, 6.6], [11.4, 11.4, 9], PALE)                                            # hub over the shaft's end
+fly += octagon([5.4, 5.4, 9], [10.6, 10.6, 9.3], "#iron")                                          # hub cap
+fly += [box([7.3, 10.3, 9.3], [8.7, 11.7, 11], "#iron")]                                           # crank pin (radius 3)
+model("saw_flywheel", FLY_TEX, fly)
 model("saw_pitman", SAW_TEX, [box([7.25, 8, 7.25], [8.75, 25.75, 8.75], FRAME, "y"),
                               box([7, 7.2, 7], [9, 9.2, 9], "#iron"), box([7, 24.6, 7], [9, 26.6, 9], "#iron")])
 for p in ("saw_sash", "saw_flywheel", "saw_pitman"):
     part(p)
+
+# a sawn board for each wood the saw takes (Mechanical.WOODS), the renderer stands four on edge as they leave the blade:
+# 16 long, 1.75 thick, 7 high, its faces cut from one plank of the wood's planks texture so no seams show
+WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder",
+         "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]
+for wood in WOODS:
+    own = A / f"models/block/{wood}_planks.json"
+    tex = json.loads(own.read_text(encoding="utf-8"))["textures"]["all"] if own.exists() else f"minecraft:block/{wood}_planks"
+    board = box([7.125, 4.5, 0], [8.875, 11.5, 16], "#plank", uv={
+        "east": [0, 4.2, 16, 6.8], "west": [16, 4.2, 0, 6.8],      # the face: one plank's grain along the board
+        "up": [0, 4.6, 16, 6.4], "down": [0, 4.6, 16, 6.4],        # the edges, turned so the grain runs along too
+        "north": [3, 4, 5, 11], "south": [3, 4, 5, 11]})
+    board["faces"]["up"]["rotation"] = board["faces"]["down"]["rotation"] = 90
+    model(f"saw_board_{wood}", {"plank": tex, "particle": tex}, [board])
+    part(f"saw_board_{wood}")
 
 # ---------------------------------------------------------------- items, recipes, loot, tags
 for item in ("sawdust", "sawdust_briquette"):
@@ -302,6 +325,9 @@ merge(A / "lang/en_us.json", {
     "item.mechanical.sawdust_briquette": "Sawdust Briquette",
     "message.mechanical.water_power.turning": "Turning: %s / %s power",
     "message.mechanical.water_power.still": "Not turning: no Water Wheel turns this line",
+    "message.mechanical.water_power.idle": "Not turning",
+    "message.mechanical.water_wheel.power_line": "Water Wheel: %s power of its own, %s / %s on the axle",
+    "entity.mechanical.water_wheel_body": "Water Wheel",
     "message.mechanical.water_wheel.power": "Water Wheel: %s / %s power",
     "message.mechanical.water_wheel.no_flow": "The wheel stands still: let water run under it, or fall onto one side of it",
     "message.mechanical.water_wheel.blocked": "%s at %s is in the wheel's way",

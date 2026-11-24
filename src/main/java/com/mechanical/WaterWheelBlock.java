@@ -31,7 +31,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * The hub of a Water Wheel (see {@link WaterPower}): the only real block of the wheel; the 5-block wheel round it is drawn
  * by client/WaterPowerRenderers and turns in the plane across {@link #AXIS}. Placed facing the player, and only where the
- * 24 cells round the hub are free (air, water, grass). Right-click with an empty hand: its power, or what stops it.
+ * 24 cells round the hub are free (air, water, grass); its solid body is {@link WaterWheelHitbox}. Right-click with an
+ * empty hand: its power (and the axle's, when other wheels share it), or what stops it.
  */
 public class WaterWheelBlock extends Block implements EntityBlock {
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
@@ -83,6 +84,8 @@ public class WaterWheelBlock extends Block implements EntityBlock {
         if (b != null) player.sendOverlayMessage(Component.translatable("message.mechanical.water_wheel.blocked",
                 level.getBlockState(b).getBlock().getName(), b.getX() + " " + b.getY() + " " + b.getZ()));
         else if (power == 0) player.sendOverlayMessage(Component.translatable("message.mechanical.water_wheel.no_flow"));
+        else if (wheel.power() != power) // other wheels on the axle add to (or take from) its own
+            player.sendOverlayMessage(Component.translatable("message.mechanical.water_wheel.power_line", power, wheel.power(), WaterPower.MAX_POWER));
         else player.sendOverlayMessage(Component.translatable("message.mechanical.water_wheel.power", power, WaterPower.MAX_POWER));
         return InteractionResult.SUCCESS;
     }

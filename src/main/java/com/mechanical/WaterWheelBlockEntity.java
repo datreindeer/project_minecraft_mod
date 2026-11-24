@@ -7,10 +7,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -40,7 +42,7 @@ public class WaterWheelBlockEntity extends RotorBlockEntity {
     }
 
     /** The world position of a cell in the wheel's plane. */
-    static BlockPos cell(BlockPos hub, Direction.Axis axis, int across, int up) {
+    public static BlockPos cell(BlockPos hub, Direction.Axis axis, int across, int up) {
         return axis == Direction.Axis.X ? hub.offset(0, up, across) : hub.offset(across, up, 0);
     }
 
@@ -76,11 +78,29 @@ public class WaterWheelBlockEntity extends RotorBlockEntity {
         return sum;
     }
 
+    /**
+     * Every second: the wheel that comes first (by position) on its axle line drives the line. It adds up every wheel's
+     * water (signed by which way each turns on the line), caps it, turns at that speed and hands the turn to every part.
+     */
     static void serverTick(ServerLevel level, BlockPos pos, WaterWheelBlockEntity wheel) {
         long now = level.getGameTime();
         if (now % 20 != 3) return;
-        float sum = wheel.measure(level);
-        int power = Math.min(WaterPower.MAX_POWER, Math.round(Math.abs(sum)));
+        wheel.body(level);
+        List<WaterPower.Part> line = WaterPower.line(level, wheel);
+        for (WaterPower.Part p : line)
+            if (p.rotor() instanceof WaterWheelBlockEntity other && other.getBlockPos().asLong() < pos.asLong()) return; // that wheel drives the line
+        float sum = 0;
+        boolean jammed = false, upright = false;
+        int turning = 0;
+        for (WaterPower.Part p : line) {
+            if (p.rotor() instanceof WaterWheelBlockEntity w) {
+                float own = w.measure(level);
+                sum += p.sign() * own;
+                jammed |= w.blocked != null;
+                if (Math.abs(own) >= 1) turning++;
+            } else upright |= p.rotor().getBlockState().is(WaterPower.WOODEN_SHAFT.get()) && p.rotor().getBlockState().getValue(ShaftBlock.AXIS) == Direction.Axis.Y;
+        }
+        int power = jammed ? 0 : Math.min(WaterPower.MAX_POWER, Math.round(Math.abs(sum)));
         float speed = Math.signum(sum) * power * WaterPower.DEG_PER_POWER;
         if (speed != wheel.speed || power != wheel.power) {
             wheel.base = wheel.angle(now);
@@ -89,8 +109,18 @@ public class WaterWheelBlockEntity extends RotorBlockEntity {
             wheel.power = power;
             wheel.sync();
         }
-        WaterPower.spread(level, pos, wheel.axis(), wheel.speed, wheel.base, wheel.t0, wheel.power);
+        for (WaterPower.Part p : line) if (p.rotor() != wheel) p.rotor().feed(wheel.speed * p.sign(), wheel.base * p.sign(), wheel.t0, wheel.power);
         if (power > 0) Smelting.award(level, pos, WaterPower.WHEEL_ADVANCEMENT, 12);
         if (power >= WaterPower.MAX_POWER) Smelting.award(level, pos, WaterPower.FULL_POWER_ADVANCEMENT, 12);
+        if (power > 0 && turning >= 2) Smelting.award(level, pos, WaterPower.TWIN_WHEELS_ADVANCEMENT, 12);
+        if (power > 0 && upright) Smelting.award(level, pos, WaterPower.POWER_CLIMBS_ADVANCEMENT, 12);
+    }
+
+    /** Puts back the wheel's solid body ({@link WaterWheelHitbox}) when it is missing, e.g. after the chunk loaded. */
+    void body(ServerLevel level) {
+        List<WaterWheelHitbox> boxes = level.getEntities(WaterPower.WHEEL_HITBOX.get(), new AABB(getBlockPos()), e -> e.blockPosition().equals(getBlockPos()));
+        if (boxes.size() == 2) return;
+        boxes.forEach(Entity::discard);
+        for (boolean tall : new boolean[] {false, true}) level.addFreshEntity(WaterWheelHitbox.at(level, getBlockPos(), axis(), tall));
     }
 }

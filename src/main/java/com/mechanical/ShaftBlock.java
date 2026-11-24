@@ -24,12 +24,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * A Wooden Shaft (see {@link WaterPower}): lies along X or Z and carries a wheel's turn along its line. The block model is
+ * A Wooden Shaft (see {@link WaterPower}): lies along X or Z, or stands up (from a Gearbox), and carries a wheel's turn along its line. The block model is
  * empty; client/WaterPowerRenderers draws the turning shaft. Right-click with an empty hand: how much power it carries.
  */
 public class ShaftBlock extends Block implements EntityBlock {
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
-    private static final VoxelShape X = box(0, 4.5, 4.5, 16, 11.5, 11.5), Z = box(4.5, 4.5, 0, 11.5, 11.5, 16);
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    private static final VoxelShape X = box(0, 4.5, 4.5, 16, 11.5, 11.5), Y = box(4.5, 0, 4.5, 11.5, 16, 11.5), Z = box(4.5, 4.5, 0, 11.5, 11.5, 16);
 
     public ShaftBlock(Properties properties) {
         super(properties);
@@ -44,20 +44,29 @@ public class ShaftBlock extends Block implements EntityBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction face = context.getClickedFace();
-        // clicked on the end of a shaft or a wheel's side: continue the line; else along where the player looks
+        // clicked on the end of a shaft or a wheel's side: continue the line; on top of or under a gearbox or a standing
+        // shaft: stand up; else lie along where the player looks
         Direction.Axis axis = face.getAxis().isHorizontal() ? face.getAxis() : context.getHorizontalDirection().getAxis();
+        BlockState against = context.getLevel().getBlockState(context.getClickedPos().relative(face.getOpposite()));
+        if (face.getAxis() == Direction.Axis.Y && (against.getBlock() instanceof GearboxBlock || against.getBlock() instanceof ShaftBlock && against.getValue(AXIS) == Direction.Axis.Y))
+            axis = Direction.Axis.Y;
         return defaultBlockState().setValue(AXIS, axis);
     }
 
     @Override
     protected BlockState rotate(BlockState state, Rotation rotation) {
-        return rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90
-                ? state.setValue(AXIS, state.getValue(AXIS) == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X) : state;
+        Direction.Axis axis = state.getValue(AXIS);
+        return axis != Direction.Axis.Y && (rotation == Rotation.CLOCKWISE_90 || rotation == Rotation.COUNTERCLOCKWISE_90)
+                ? state.setValue(AXIS, axis == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X) : state;
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(AXIS) == Direction.Axis.X ? X : Z;
+        return switch (state.getValue(AXIS)) {
+            case X -> X;
+            case Y -> Y;
+            case Z -> Z;
+        };
     }
 
     @Override

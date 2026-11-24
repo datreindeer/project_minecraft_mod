@@ -212,6 +212,13 @@ public final class WaterShots {
             for (int y = -1; y <= 1; y++) set(p[0], y, p[1], Blocks.SPRUCE_LOG.defaultBlockState());
         set(1, 3, 0, WaterPower.GEARBOX.get().defaultBlockState());
         set(2, 3, 0, WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, Direction.Axis.X));
+        // power climbing to a loft: upright shafts off the gearbox, a gearbox up there and a shaft along the loft
+        for (int y = 4; y <= 6; y++) set(1, y, 0, WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, Direction.Axis.Y));
+        set(1, 7, 0, WaterPower.GEARBOX.get().defaultBlockState());
+        for (int z = 1; z <= 2; z++) set(1, 7, z, WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, Direction.Axis.Z));
+        // a second wheel on the same axle, upstream (it turns with the line)
+        for (int x = -2; x <= -1; x++) set(x, 3, 0, WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, Direction.Axis.X));
+        set(-3, 3, 0, WaterPower.WATER_WHEEL.get().defaultBlockState().setValue(WaterWheelBlock.AXIS, Direction.Axis.X));
         BlockState flume = Sawmill.LOG_FLUME.get().defaultBlockState().setValue(LogFlumeBlock.AXIS, Direction.Axis.Z);
         for (int z = -3; z <= 3; z++)
             set(3, 3, z, z == 0 ? Sawmill.SAW_BENCH.get().defaultBlockState().setValue(SawBenchBlock.FACING, Direction.NORTH) : flume);
@@ -250,7 +257,10 @@ public final class WaterShots {
         then(1, () -> server(WaterShots::build));
         then(100, () -> server(() -> {
             if (level().getBlockEntity(new BlockPos(0, ground + 3, 0)) instanceof WaterWheelBlockEntity w)
-                result.add("wheel power " + w.power() + " sum " + w.measure(level()) + " blocked " + w.blocked);
+                result.add("wheel power " + w.power() + " sum " + w.measure(level()) + " blocked " + w.blocked + " bodies "
+                        + level().getEntities(WaterPower.WHEEL_HITBOX.get(), new net.minecraft.world.phys.AABB(w.getBlockPos()).inflate(3), e -> true).size());
+            for (BlockPos q : new BlockPos[] {new BlockPos(-3, ground + 3, 0), new BlockPos(1, ground + 5, 0), new BlockPos(1, ground + 7, 2)})
+                if (level().getBlockEntity(q) instanceof RotorBlockEntity r) result.add(q + " power " + r.power() + " speed " + r.speed());
         }));
         List<String> list = views.isEmpty() ? List.of(DEFAULT) : views;
         for (String v : list) {
@@ -258,6 +268,13 @@ public final class WaterShots {
             if (p[0].startsWith("saw") || p[0].startsWith("flume")) then(1, () -> server(() -> {
                 if (level().getBlockEntity(new BlockPos(3, ground + 3, 0)) instanceof SawBenchBlockEntity saw && saw.logs().isEmpty()) stock();
             }));
+            if (p[0].startsWith("stand")) then(1, () -> server(() -> { // the player dropped onto the wheel: it holds them
+                ServerPlayer pl = player();
+                pl.getAbilities().flying = false;
+                pl.onUpdateAbilities();
+                pl.teleportTo(level(), 0.5, ground + 7.5, 0.3, java.util.Set.of(), 90, 10, true);
+            }));
+            if (p[0].startsWith("stand")) then(40, () -> server(() -> result.add("player stands at y " + (player().getY() - ground) + " on ground " + player().onGround())));
             then(10, () -> view(at(Double.parseDouble(p[1]), Double.parseDouble(p[2]), Double.parseDouble(p[3])),
                     at(Double.parseDouble(p[4]), Double.parseDouble(p[5]), Double.parseDouble(p[6]))));
             then(25, () -> shot(p[0]));
