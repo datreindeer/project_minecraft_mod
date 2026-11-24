@@ -97,7 +97,7 @@ public final class FurnaceShots {
                     t.add(Molten.STEEL, Math.min(40, t.room()), 0, 1560, level().getGameTime(), null);
             });
             if (feeding) server(() -> {
-                for (BlockPos q : new BlockPos[] {new BlockPos(14, 0, 1), new BlockPos(8, 0, 1), new BlockPos(12, 0, 4)})
+                for (BlockPos q : new BlockPos[] {new BlockPos(14, 0, 1), new BlockPos(8, 0, 1), new BlockPos(12, 0, 4), new BlockPos(9, 0, -12)})
                     if (level().getBlockEntity(rel(q.getX(), q.getY(), q.getZ())) instanceof GreatBellowsBlockEntity b) b.feed(16 * WaterPower.DEG_PER_POWER, 0, 0, 16);
             });
             if (stage == 1) {
@@ -261,6 +261,24 @@ public final class FurnaceShots {
             BlockPos q = rel(x, y, z);
             if (level().getBlockState(q).getBlock() instanceof ClayChannelBlock c) level().setBlockAndUpdate(q, c.stateAt(level(), q));
         }
+        // the step join in the open: a raised run on stone pillars (y 1), a slope down (x 33), a lower run on the ground (y 0)
+        for (int x = 30; x <= 32; x++) {
+            set(x, 0, -11, Blocks.STONE_BRICKS.defaultBlockState());
+            set(x, 1, -11, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        }
+        for (int x = 33; x <= 37; x++) set(x, 0, -11, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        for (int x = 30; x <= 37; x++) for (int y = 0; y <= 1; y++) {
+            BlockPos q = rel(x, y, -11);
+            if (level().getBlockState(q).getBlock() instanceof ClayChannelBlock c) level().setBlockAndUpdate(q, c.stateAt(level(), q));
+        }
+        // the finery hearth with its own bellows, a coke oven, a hot blast stove by the small furnace's bellows, a sight glass
+        set(8, 0, -12, HighFurnace.FINERY_HEARTH.get().defaultBlockState());
+        set(9, 0, -12, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.WEST));
+        set(5, 0, -12, HighFurnace.COKE_OVEN.get().defaultBlockState().setValue(CokeOvenBlock.FACING, Direction.SOUTH));
+        set(3, 0, -1, HighFurnace.HOT_BLAST_STOVE.get().defaultBlockState());
+        set(3, 1, -1, HighFurnace.HOT_BLAST_STOVE.get().defaultBlockState());
+        set(13, 3, 1, HighFurnace.SIGHT_GLASS.get().defaultBlockState());
+        set(13, 4, 1, HighFurnace.SIGHT_GLASS.get().defaultBlockState());
         // the patternmaker's corner: a Pattern Bench, Casting Sand, a rammed flask, the three iron molds
         set(5, 0, -7, HighFurnace.PATTERN_BENCH.get().defaultBlockState().setValue(PatternBenchBlock.FACING, Direction.SOUTH));
         set(4, 0, -7, HighFurnace.CASTING_SAND.get().defaultBlockState());
@@ -374,6 +392,22 @@ public final class FurnaceShots {
                         if (level().getBlockEntity(rel(x, y, z)) instanceof TroughBlockEntity t) t.take(t.amount(), level().getGameTime());
                 }));
                 case "!demostop" -> then(1, () -> demoFeed = false);
+                case "!extras" -> then(2, () -> server(() -> {
+                    if (level().getBlockEntity(rel(8, 0, -12)) instanceof FineryHearthBlock.Entity e) {
+                        e.fuel = 16;
+                        e.pig = 3;
+                        e.setForTest(1400);
+                        level().setBlockAndUpdate(rel(8, 0, -12), level().getBlockState(rel(8, 0, -12)).setValue(FineryHearthBlock.LIT, true));
+                    }
+                    if (level().getBlockEntity(rel(5, 0, -12)) instanceof CokeOvenBlock.Entity o) {
+                        o.coal = CokeOvenBlock.BATCH;
+                        o.start(level());
+                    }
+                    if (level().getBlockEntity(rel(10, -1, -5)) instanceof FoundryBasinBlock.Entity b) {
+                        b.loam = FoundryBasinBlock.Loam.BELL;
+                        b.sync();
+                    }
+                }));
                 case "!gate" -> then(2, () -> server(() -> {
                     BlockPos g = rel(12, -1, -6);
                     level().setBlockAndUpdate(g, level().getBlockState(g).setValue(RefractoryTroughBlock.Gate.OPEN, true));

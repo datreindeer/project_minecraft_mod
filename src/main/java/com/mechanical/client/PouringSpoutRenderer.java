@@ -66,12 +66,12 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
         int c = 0xFF000000 | state.stream.color;
         float scroll = state.time * 0.08F;
         Vec3 a = state.lip, b = state.target;
+        pose.pushPose();
+        pose.translate(0.5F, 0, 0.5F);
+        pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // the metal along the trough to the lip
+        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> quad(p, buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F));
+        pose.popPose();
         collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
-            pose.pushPose();
-            pose.translate(0.5F, 0, 0.5F);
-            pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // the metal along the trough to the lip
-            quad(pose.last(), buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F);
-            pose.popPose();
             // the stream: a round column (8 faces, the ones turned to the light brighter, a white-hot core line), 2.6 px at the
             // lip thinning to 1.8 px, leaving the lip in a short arc and then falling to the metal it lands in
             Vec3 out = new Vec3(state.facing.getStepX(), 0, state.facing.getStepZ());
