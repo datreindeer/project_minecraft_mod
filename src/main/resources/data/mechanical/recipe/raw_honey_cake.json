@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flour",
+    [
+      "mechanical:wild_honey",
+      "minecraft:honey_bottle"
+    ],
+    "#mechanical:eggs"
+  ],
+  "result": {
+    "id": "mechanical:raw_honey_cake",
+    "count": 2
+  }
+}

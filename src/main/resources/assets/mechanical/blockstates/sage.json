@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/sage"
+    },
+    "cut=true": {
+      "model": "mechanical:block/sage_cut"
+    }
+  }
+}

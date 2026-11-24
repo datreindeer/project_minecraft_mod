@@ -1771,3 +1771,31 @@ Ingen mejsel i receptet: de polerade stenarna kräver redan Bronze Chisel eller 
 **Fired Roof Tile**. 2×2 → **Roof Tiles** (block + slab, stairs, wall); 3 i trappform → **4 Tiled Roof**, ett tak som sluttar
 som barktaket. **8 Roof Tiles eller Tiled Roof runt ett pigment → 8** i färg: Red, Black, Yellow, White. Tegeltak brinner inte
 och räknas som sten för husets värme (inte som torv- och halmtaken). Advancement *Tiled Roof* (efter *White Tiles*).
+
+## Köket i bronsåldern (flora och mat, fas 4, byggt)
+
+- **Bronze Griddle:** Bronze Plate + 3 Sticks (`[S][P][S]` / `[ ][S][ ]`). En stekhäll på tre ben som ställs **över en
+  Campfire**. Lägg på upp till 4: **Dough → 2 Flatbread**, **Raw Honey Cake → Honey Cake** (Flour + honung + ägg → 2 Raw Honey
+  Cake). 30 s över tänd eld (glöd räcker inte); tom hand tar av, och lämnas det kvar 60 s till bränns det till Burnt Food.
+- **Bronze Ladle:** Bronze Ingot + Stick. Ös ur en gryta med sleven (en Bowl i förrådet): första gången skrapar den grytan ren
+  och ger **en skål till**. Slits 1 per skål. Fungerar på Clay Cooking Pot, Bronze Kettle och Iron Cauldron.
+- **Rätter i Bronze Kettle:** en känd rätt går före vanlig stuvning när ingredienserna stämmer exakt (dubbla ger dubbelt, högst
+  6 skålar). Kitteln kokar också alla krukans rätter.
+
+| Rätt | Ingredienser | Ger |
+|---|---|---|
+| **Pea Soup** | 3 Peas + en lök | 4 skålar à 6 |
+| **Onion and Garlic Stew** | 2 Onion + Garlic + rått kött | 4 skålar à 8 |
+| **Spiced Porridge** | 2 säd + Cinnamon Bark (östra karavanen) + honung | 3 skålar à 7 |
+| **Tea** | Tea Leaves (östra karavanen) | 3 skålar |
+| **Elderberry Syrup** | 3 Elderberries + honung | 2 (håller 30 dagar) |
+| **Sloe Jam** | 3 Sloes + honung | 2 (håller 30 dagar) |
+
+- **Bybornas varor:** byns Farmer säljer för kopparmynt det som kom med jordbruket och inte växer vilt: nivå 2 **Barley Grain**,
+  **Onion**, **Garlic**, **Dill Seeds**, **Mustard Seeds**; nivå 3 **Cabbage**, **Broad Beans**. Dill och Mustard sås på farmland
+  (dill ger Dill och frön, senap ger frön), Broad Beans likaså.
+- **Den östra karavanen** (*Eastern Caravan*, sällsynt: vikt 1 mot de andras 4; kameler, sidenrockar i ikatränder, höga
+  broderade mössor, indigo- och saffransrandigt kapell): säljer Black Pepper, Cinnamon Bark, Ginger Root, Rice, Sesame Seeds,
+  Dried Dates, Dried Figs, Indigo, Lapis (brons), Saffron Crocus Corms, Tea Leaves, Silk Thread (järn) och sällsynt Saffron;
+  köper ädelstenar, Jujubes, Sea Buckthorn Berries och ametist. Ginger, Saffron och Rice kan sås i varmt klimat.
+- Advancements (Bronze Age): *Griddle*, *Proper Dishes* och *Every Last Drop* (efter *Kettle*). Wilderness: *The Spice Road*.

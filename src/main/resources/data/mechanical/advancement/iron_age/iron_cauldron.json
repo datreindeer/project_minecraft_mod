@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/forged",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cabbage_soup"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:vegetable_pottage"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:iron_cauldron"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.iron_cauldron.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.iron_cauldron.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

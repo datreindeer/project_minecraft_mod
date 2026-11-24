@@ -31,6 +31,9 @@ public final class FoodValues {
                 + "|pufferfish|.*_bucket|dried_kelp|cookie)", null); // special or snack foods: vanilla values
         rule("mechanical:(cooked_bison_tongue|roasted_beaver_tail|cooked_loin|sturgeon_roe)", DELICACY);
         rule("(minecraft|mechanical):(.*_stew|.*_soup|stew|broth|porridge|bread|pumpkin_pie)", MEAL); // Kettle stews: Kettle.finish
+        // Kitchen dishes (flora and food plan, section 6): meals, and keeping sweets and preserves
+        rule("mechanical:(.*_pottage|berry_mash|spiced_porridge|flatbread|sausage|fried_eggs_and_onion|herb_roasted_fish)", MEAL);
+        rule("mechanical:(honey_cake|elderberry_syrup|sloe_jam|cheese|sauerkraut|herbal_tea|tea)", COOKED);
         rule("(minecraft|mechanical):(cooked_.*|roasted_.*|baked_.*|smoked_.*|dried_.*|.*jerky|stockfish|peeled_egg)", COOKED);
         rule("(minecraft|mechanical):.*", RAW); // raw meat and fish, berries, nuts, mushrooms, roots, fruit
     }

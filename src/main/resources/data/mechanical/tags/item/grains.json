@@ -3,6 +3,7 @@
     "minecraft:wheat_seeds",
     "mechanical:barley_grain",
     "mechanical:einkorn_grain",
-    "mechanical:emmer_grain"
+    "mechanical:emmer_grain",
+    "mechanical:rice"
   ]
 }

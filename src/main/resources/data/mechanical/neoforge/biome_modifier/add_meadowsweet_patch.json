@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:willow_fen",
+    "mechanical:reed_delta",
+    "minecraft:meadow",
+    "minecraft:swamp"
+  ],
+  "features": "mechanical:meadowsweet_patch",
+  "step": "vegetal_decoration"
+}

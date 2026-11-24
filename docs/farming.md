@@ -73,7 +73,7 @@ Einkorn + 13 Wild Pea, flower forest 14 Wild Emmer, forest 4 Wild Pea, öken 0.
 Uppmätt (seed 4242, 9×9 chunks runt biomen): beach 19 Sea Beet, stony shore 40; meadow 9 Wild Carrot Plant, slätt 15,
 flower forest 25.
 
-Barley har ingen vild källa än (bara creative); kommer med handel/byar senare.
+Barley har ingen vild källa; byns Farmer säljer Barley Grain (se "Vilda grönsaker och tämjning").
 
 ## Växtvillkor (byggt)
 
@@ -286,6 +286,37 @@ Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de i
 - **Mogen:** 2 Flax Stalks (skära: +50 % en till) och 1–2 Flax Seeds. **Omogen:** ingenting.
 - Stjälkarna röts och skäktas till Flax Fiber och spinns till Linen Thread (`docs/ages/02-bronze-age.md`, "Lin").
 
+## Vilda grönsaker och tämjning (byggt, flora och mat fas 4)
+
+Samma mönster som Wild Carrot → Carrot: en vild planta i naturen (klimatfönster, `scripts/gen_herbs.py`) ger sin vilda
+grönsak, som sås på farmland som en vild gröda. Mogen ger den 1–2 vilda och **25 % chans på den odlade sortens utsäde**
+(`Herbs.TAME_CHANCE`), **35 %** på bördighet ≥ 2 i grödans bästa temperatur (`TAME_CHANCE_GOOD`, läses innan skörden sänker
+bördigheten). Läggs till i `Farming.onDrops` (`Herbs.domesticate`), inte i loot-tabellen, eftersom chansen beror på jorden.
+Skördar med Crop Stakes (högerklick) ger ingen tämjning (de går förbi drop-eventet).
+
+| Gröda (vild och odlad) | Växer | Bäst | Frost dödar under | Vår | Sommar | Höst |
+|---|---|---|---|---|---|---|
+| Garlic | 5–17 | 8–13 | 0 | 1.1 | 1.0 | 0.6 |
+| Onion | 5–17 | 8–13 | 0 | 1.1 | 1.0 | 0.7 |
+| Cabbage | 3–16 | 6–12 | −2 | 1.0 | 0.9 | 1.1 |
+| Leek | 3–16 | 6–12 | −3 | 0.9 | 1.0 | 1.1 |
+| Parsnip | 3–16 | 6–12 | −2 | 1.0 | 1.0 | 0.9 |
+| Celery | 7–18 | 10–14 | 2 | 0.8 | 1.2 | 0.8 |
+| Turnip | 4–16 | 7–12 | −1 | 1.1 | 0.9 | 1.0 |
+| Lettuce | 6–17 | 9–13 | 2 | 1.2 | 0.9 | 0.9 |
+| Broad Beans (byn) | 4–16 | 7–12 | −1 | 1.2 | 1.0 | 0.4 |
+| Dill (byn) | 7–19 | 10–15 | 2 | standard | | |
+| Mustard (byn, Wild Mustard) | 5–17 | 8–13 | 0 | 1.2 | 1.0 | 0.6 |
+| Ginger (östra karavanen) | 14–27 | 18–23 | 10 | 0.6 | 1.3 | 0.8 |
+| Saffron (östra karavanen) | 10–24 | 13–19 | 4 | 0.5 | 0.8 | 1.3 |
+| Rice (östra karavanen) | 13–27 | 17–23 | 8 | 0.6 | 1.3 | 0.7 |
+
+Vinter 0 för alla. Skörd (mogen): odlade 1–3 (Cabbage 1, Leek/Parsnip/Celery/Turnip/Lettuce 1–2), Broad Beans 1–3, Dill 1–2
++ 1–2 frön, Mustard 2–3 frön, Ginger 1–3, Saffron 1 tråd + 1–2 knölar, Rice 2–3 (räknas som säd, `mechanical:grains`).
+Hållbarhet: blad (Lettuce, Sorrel, Mint, Wild Cabbage) 2 dagar, kål/purjo/selleri 10 dagar, lök/rötter 20 dagar; lök och
+rötter är källarvara (`cellar_produce`). **Barley** har nu en källa: byns Farmer säljer Barley Grain (nivå 2, koppar).
+Test: `HerbsTest` (400 skördar av mogen Wild Onion: ~25 % ger en Onion).
+
 ## Teknik
 
 - `Farming.java` (registrering, växtregler i `CropGrowEvent`, skörd i `BlockDropsEvent`, kråkor, fältinfo),
@@ -303,7 +334,6 @@ Morötter, rödbetor och potatis fick egna källor (beslut 2026-11-19), så de i
 
 - Marktyper som ändrar säsongsprofilen (växthus, kompost).
 - Järnålderns dragna plog (bronsskäran, Bronze Ard och såpåsarna är byggda).
-- Källa för Barley (handel, byar).
 - Manure bara från djur i fållor eller tamdjur (nu släpper alla vuxna i taggen, även vilda).
 - Halmtak och halmbädd av Straw. Scarecrow som bär en Leather Helmet (bara utseende).
 - Spelarbyggda Hay Bales ger ruttet hö när de bryts (byarnas regel gäller alla hay bales).

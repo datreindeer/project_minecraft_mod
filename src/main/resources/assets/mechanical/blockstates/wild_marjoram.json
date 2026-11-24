@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/wild_marjoram"
+    },
+    "cut=true": {
+      "model": "mechanical:block/wild_marjoram_cut"
+    }
+  }
+}

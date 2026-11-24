@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#mechanical:smokable_meat",
+    "#mechanical:smokable_meat",
+    "mechanical:lard",
+    "mechanical:salt",
+    [
+      "mechanical:garlic",
+      "mechanical:wild_garlic"
+    ]
+  ],
+  "result": {
+    "id": "mechanical:raw_sausage",
+    "count": 3
+  }
+}

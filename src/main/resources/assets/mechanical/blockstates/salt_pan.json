@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "stage=0": {
+      "model": "mechanical:block/salt_pan_0"
+    },
+    "stage=1": {
+      "model": "mechanical:block/salt_pan_1"
+    },
+    "stage=2": {
+      "model": "mechanical:block/salt_pan_2"
+    },
+    "stage=3": {
+      "model": "mechanical:block/salt_pan_3"
+    },
+    "stage=4": {
+      "model": "mechanical:block/salt_pan_4"
+    }
+  }
+}

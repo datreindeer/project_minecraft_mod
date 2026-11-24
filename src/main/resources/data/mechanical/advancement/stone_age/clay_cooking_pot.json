@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:stone_age/kiln",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clay_cooking_pot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:clay_cooking_pot"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.clay_cooking_pot.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.clay_cooking_pot.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

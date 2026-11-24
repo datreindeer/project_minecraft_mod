@@ -1,0 +1,34 @@
+{
+  "parent": "mechanical:iron_age/forged",
+  "criteria": {
+    "placed_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mechanical:salt_pan"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placed_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:salt_pan"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.sea_salt.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.sea_salt.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

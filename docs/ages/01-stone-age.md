@@ -3179,3 +3179,33 @@ Teknik: `worldgen/ScorchedBarrens.java` (block, brända träd), `mixin/MultiNois
 `worldgen/ElkwightRuinStructure.java` (arenan), `worldgen/ElkwightRuins.java` (ruinens API, död boss i SavedData, dimman
 till klienten), `client/RuinFogClient.java`; data `scripts/gen_world_biomes.py`, `scripts/gen_elkwight.py`, texturer
 `scripts/gen_elkwight_textures.py`. Test: `elkwight_world`.
+
+### Vilda grönsaker, örter och Clay Cooking Pot (flora och mat, fas 4)
+
+**Vilda grönsaker** växer efter klimat (som blommorna): **Wild Garlic** (ramslök, lövskog och fuktiga skogar), **Wild Onion**
+(slätter, Hazel Meadow, kalkland), **Wild Cabbage** (kalkklippor vid havet, även på sand och grus), **Wild Leek** (ängar),
+**Wild Parsnip**, **Wild Turnip**, **Wild Lettuce** (slätter, Chalk Downs), **Wild Celery** (Reed Delta, Willow Fen, träsk).
+Kniv eller skära: 1–2 av den vilda grönsaken, för hand 1 i hälften av fallen. Den vilda grönsaken sås på farmland och
+följer odlingens regler. **Tämjning:** en mogen vild gröda ger 1–2 tillbaka och **25 % chans** på den odlade sortens utsäde
+(**35 %** på bördighet ≥ 2 när temperaturen ligger i grödans bästa spann). Den odlade (Garlic, Onion, Cabbage, Leek, Parsnip,
+Celery, Turnip, Lettuce) ger mer och mättar mer, men har ingen vild källa. Advancements *Wild Greens* → *Tamed* (Food & Farming).
+
+**Örter** (12 sorter: Wild Thyme, Wild Marjoram, Yarrow, Chamomile, Water Mint, Sorrel, Sage, Rosemary, Bog Myrtle,
+Meadowsweet, Hops, Wild Mustard) växer i sina biomer. **Högerklicka med kniv**: 1–3 blad/blommor/frön (för hand 1); plantan
+står kvar avklippt och växer upp igen efter några minuter (inte på vintern). Bryts den släpper den sig själv, så den kan
+planteras i en örtagård. Köksörterna (taggen `mechanical:culinary_herbs`) och kryddorna (`mechanical:spices`) höjer en vanlig
+stuvning i kitteln (+0,1 i bonus per krydda). Advancement *Cut, Don't Pull*.
+
+**Clay Cooking Pot:** 7 Clay Balls (`[C][ ][C]` ×2 / `[C][C][C]`) → Unfired Clay Cooking Pot, bränns i Clay Kiln. Ställs **i
+glöden på en Campfire** (ingen tripod). Fyll med vatten, lägg i ingredienserna (högst 4); den kokar medan elden brinner (som
+kitteln, men bara krukans rätter går i) och man öser upp med Bowl. Smyg-högerklicka en tom kruka för att lyfta av den.
+
+| Rätt | Kokas av | Ger |
+|---|---|---|
+| **Nettle Soup** | 2 Nettle Stalks + en lök (Wild Onion/Onion/Wild Garlic/Garlic/Wild Leek/Leek) | 3 skålar à 4 |
+| **Root Pottage** | 2 rötter (morot, palsternacka, rova, rödbeta; vilda eller odlade) + en lök | 3 skålar à 5 |
+| **Berry Mash** | 2 bär + Hazelnuts eller Beechnuts | 2 skålar à 4 |
+| **Herbal Tea** | Chamomile, Mint, Yarrow eller Meadowsweet | 2 skålar |
+| **Herb-Roasted Fish** | hel fisk + en köksört (crafting: Herb-Stuffed Fish) på Campfire 30 s | 7 hunger |
+
+Dubbla ingredienser ger dubbla rätten. Advancements (Stone Age): *Pot in the Embers* (efter *Clay Kiln*) → *Pottage*, *Fish with Herbs*.

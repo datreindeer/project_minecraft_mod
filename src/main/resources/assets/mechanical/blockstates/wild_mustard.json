@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/wild_mustard"
+    },
+    "cut=true": {
+      "model": "mechanical:block/wild_mustard_cut"
+    }
+  }
+}

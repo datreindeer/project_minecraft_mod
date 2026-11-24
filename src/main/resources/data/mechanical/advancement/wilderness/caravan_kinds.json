@@ -18,6 +18,9 @@
     },
     "foraging": {
       "trigger": "minecraft:impossible"
+    },
+    "eastern": {
+      "trigger": "minecraft:impossible"
     }
   },
   "requirements": [
@@ -38,6 +41,9 @@
     ],
     [
       "foraging"
+    ],
+    [
+      "eastern"
     ]
   ],
   "display": {

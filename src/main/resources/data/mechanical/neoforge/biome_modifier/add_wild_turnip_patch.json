@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:chalk_downs",
+    "mechanical:hazel_meadow",
+    "mechanical:limestone_karst",
+    "minecraft:birch_forest",
+    "minecraft:dappled_forest",
+    "minecraft:old_growth_birch_forest",
+    "minecraft:plains",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:wild_turnip_patch",
+  "step": "vegetal_decoration"
+}

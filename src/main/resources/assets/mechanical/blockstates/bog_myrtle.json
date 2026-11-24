@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/bog_myrtle"
+    },
+    "cut=true": {
+      "model": "mechanical:block/bog_myrtle_cut"
+    }
+  }
+}

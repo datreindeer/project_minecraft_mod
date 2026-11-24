@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:hazel_meadow",
+    "minecraft:meadow",
+    "minecraft:plains",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:wild_leek_patch",
+  "step": "vegetal_decoration"
+}

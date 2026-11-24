@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:marble_gorge",
+    "mechanical:ochre_badlands",
+    "minecraft:savanna_plateau"
+  ],
+  "features": "mechanical:rosemary_patch",
+  "step": "vegetal_decoration"
+}

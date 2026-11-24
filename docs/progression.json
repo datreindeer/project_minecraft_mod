@@ -470,6 +470,22 @@
      "sv": "Under marken finns 26 ädelstenar, var och en på sitt eget djup och ofta i sin egen biome: **malm** (t.ex. [[garnet_ore]], [[deepslate_ruby_ore]]), **kristaller** som växer på grottgolv och grottak i tre storlekar (t.ex. [[large_citrine_crystal]] i Dripstone Caves) och **lösa stenar** på grottgolven ([[loose_agate]]). Allt du hittar är **oslipat** ([[rough_garnet]]); även Diamond Ore, Emerald Ore och Amethyst Clusters ger nu [[rough_diamond]], [[rough_emerald]] och [[rough_amethyst]].\n\nBygg en [[lapidary_wheel]] (Sandstone, Twine, [[tool_rod]], planks). **Högerklicka med ett slipmedel** för att ladda hjulet, sedan **4 gånger med en Rough-sten**. Slipmedlet måste vara minst lika hårt som stenen (Mohs-skalan):\n\n1. **Sand**: Amber, Celestine, Fluorite, Turquoise, Opal, Moonstone\n2. **[[flint_grit]]** (Flint krossad på [[stone_anvil]]): kvartserna, Jade, Peridot, Amethyst och de lösa stenarna\n3. **[[garnet_grit]]** (krossad Rough Garnet): Garnet, Topaz, Tourmaline, Aquamarine, Emerald\n4. **[[corundum_grit]]** (krossad Rough Ruby/Sapphire): Ruby, Sapphire\n5. **[[diamond_dust]]** (krossad Rough Diamond): Diamond\n\nÄr slipmedlet **exakt** lika hårt som stenen kan den spricka till en **Flawed**-sten ([[flawed_garnet]], 35 %); ett hårdare slipmedel spricker aldrig och kan i stället ge en skinande **Flawless**-sten ([[flawless_garnet]]): 3 % en nivå hårdare, 6 % två eller fler, dubbelt för fina råstenar från Large Crystals. Fliken **Gemstones** bland advancements visar var varje sten finns.",
      "en": "Underground there are 26 gemstones, each at its own depth and often in its own biome: **ores** (e.g. [[garnet_ore]], [[deepslate_ruby_ore]]), **crystals** growing on cave floors and ceilings in three sizes (e.g. [[large_citrine_crystal]] in Dripstone Caves) and **loose pebbles** on cave floors ([[loose_agate]]). Everything you find is **rough** ([[rough_garnet]]); Diamond Ore, Emerald Ore and Amethyst Clusters now give [[rough_diamond]], [[rough_emerald]] and [[rough_amethyst]] too.\n\nBuild a [[lapidary_wheel]] (Sandstone, Twine, [[tool_rod]], planks). **Right-click it with an abrasive** to load it, then **4 times with a Rough gem**. The abrasive must be at least as hard as the stone (Mohs scale):\n\n1. **Sand**: Amber, Celestine, Fluorite, Turquoise, Opal, Moonstone\n2. **[[flint_grit]]** (Flint crushed on the [[stone_anvil]]): the quartzes, Jade, Peridot, Amethyst and the pebble gems\n3. **[[garnet_grit]]** (crushed Rough Garnet): Garnet, Topaz, Tourmaline, Aquamarine, Emerald\n4. **[[corundum_grit]]** (crushed Rough Ruby/Sapphire): Ruby, Sapphire\n5. **[[diamond_dust]]** (crushed Rough Diamond): Diamond\n\nIf the abrasive is **exactly** as hard as the stone it may crack into a **Flawed** gem ([[flawed_garnet]], 35 %); a harder abrasive never cracks it and may instead give a shining **Flawless** gem ([[flawless_garnet]]): 3 % one tier harder, 6 % two or more, doubled for fine rough stones from Large Crystals. The **Gemstones** advancement tab shows where each stone is found."
     }
+   },
+   {
+    "title": {
+     "sv": "Vilda grönsaker, örter och lerkrukan",
+     "en": "Wild vegetables, herbs and the clay pot"
+    },
+    "items": [
+     "wild_onion",
+     "onion",
+     "wild_thyme",
+     "clay_cooking_pot"
+    ],
+    "text": {
+     "sv": "Vilda grönsaker (t.ex. [[wild_onion_plant]], [[wild_garlic_plant]]) växer i sina klimat. Gräv upp dem med kniv och så den vilda grönsaken på farmland: en mogen vild gröda ger ibland (25 %) den odlade sortens utsäde, som [[onion]]. Örter som [[wild_thyme]] klipps med kniv och växer igen.\n\nBränn en [[unfired_clay_cooking_pot]] i [[kiln]] och ställ [[clay_cooking_pot]] i glöden på en Campfire: vatten och ingredienser blir [[nettle_soup]], [[root_pottage]], [[berry_mash]] eller [[herbal_tea]].",
+     "en": "Wild vegetables (e.g. [[wild_onion_plant]], [[wild_garlic_plant]]) grow in their climates. Dig them up with a knife and sow the wild vegetable on farmland: a ripe wild crop sometimes (25 %) gives the seed of the tame kind, like [[onion]]. Herbs like [[wild_thyme]] are cut with a knife and grow back.\n\nFire an [[unfired_clay_cooking_pot]] in the [[kiln]] and set the [[clay_cooking_pot]] in the embers of a Campfire: water and ingredients make [[nettle_soup]], [[root_pottage]], [[berry_mash]] or [[herbal_tea]]."
+    }
    }
   ]
  },
@@ -790,6 +806,22 @@
      "sv": "Grödor växer dubbelt så fort som i vanilla på ny åker, och **1,5× till på bördighet 3**: lägg [[manure]] (+2) eller [[compost]] (+1) på åkern så mognar vetet på två tredjedelar av tiden.\n\nSy en [[seed_bag]] (Cordage, 3 Leather och en Copper eller Bronze Ingot som ring), fyll den med utsäde och högerklicka farmland: den sår **3×3** med ett frö per block. Sätt ihop en [[bronze_ard]] vid Tool Station (Bronze Hoe Head + Bronze Plate + Tool Rod): den plöjer **3×3** per klick (smyg för ett). I järnåldern sår en [[linen_seed_bag]] 5×5.",
      "en": "Crops grow twice vanilla's speed on a new field, and **1.5x more on fertility 3**: put [[manure]] (+2) or [[compost]] (+1) on the field and wheat ripens in two thirds of the time.\n\nSew a [[seed_bag]] (Cordage, 3 Leather and a Copper or Bronze Ingot as its ring), fill it with seed and right-click farmland: it sows a **3×3** with one seed per block. Assemble a [[bronze_ard]] at the Tool Station (Bronze Hoe Head + Bronze Plate + Tool Rod): it tills a **3×3** per click (sneak for one). In the Iron Age a [[linen_seed_bag]] sows 5×5."
     }
+   },
+   {
+    "title": {
+     "sv": "Köket: häll, slev och kittelns rätter",
+     "en": "The kitchen: griddle, ladle and kettle dishes"
+    },
+    "items": [
+     "bronze_griddle",
+     "bronze_ladle",
+     "pea_soup",
+     "black_pepper"
+    ],
+    "text": {
+     "sv": "[[bronze_griddle]] över en Campfire bakar [[flatbread]] av [[dough]]. [[bronze_kettle]] kokar kända rätter som [[pea_soup]] och [[sloe_jam]], och [[bronze_ladle]] ger en skål till. Byns Farmer säljer [[onion]], [[garlic]], [[cabbage]] och [[barley_grain]] för koppar, och den sällsynta östra karavanen kryddor som [[black_pepper]] och [[cinnamon_bark]].",
+     "en": "The [[bronze_griddle]] over a Campfire bakes [[flatbread]] from [[dough]]. The [[bronze_kettle]] cooks known dishes like [[pea_soup]] and [[sloe_jam]], and the [[bronze_ladle]] gives one more bowl. The village Farmer sells [[onion]], [[garlic]], [[cabbage]] and [[barley_grain]] for copper, and the rare Eastern Caravan spices like [[black_pepper]] and [[cinnamon_bark]]."
+    }
    }
   ]
  },
@@ -1109,6 +1141,23 @@
     "text": {
      "sv": "Med stål kommer tre saker. En [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, en Firewood) på en Fire Pit gör den **3×3**: den växer åt det håll som är ledigt och säger vad som står i vägen. Den brinner längre, ryker en hög pelare, rymmer 32 Firewood och kan steka ett helt **flått djur** (bär dit kroppen och högerklicka): dubbelt så mycket kött som det mest djuret ger, stekt. En stams stora Fire Pit håller 5×5 chunks laddade och tar emot två band åt gången.\n\nPå Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) som släpps på en Leather Satchel ger **3 platser för verktyg**, och [[steel_frame_pack]] (10 Leather, 3 Steel Plate) är en **5×5**-väska med verktygsöglor.\n\nGuld smälts i Clay Kiln som förut. Ställ en [[steel_casting_table]] intill en Clay Kiln på **1100°** och lägg Gold Ingots på bordet: varje tacka blir 2 [[gold_ring_blank]] eller en [[gold_chain]] (tom hand byter form). På en [[jewelers_bench]] fattas en slipad gemsten i ämnet med en mejsel: [[gold_ring]] (ringplatserna) eller [[gold_necklace]] (halsplatsen). Varje gemsort ger en liten bonus, en **Flawless** ungefär fyra gånger så mycket.",
      "en": "Steel brings three things. A [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, a Firewood) on a Fire Pit makes it **3×3**: it grows toward the free side and names what is in the way. It burns longer, smokes a tall column, holds 32 Firewood and can roast a whole **skinned animal** (haul the body there and right-click): twice the most meat the animal gives, cooked. A tribe's big Fire Pit keeps 5×5 chunks loaded and takes two visiting bands at a time.\n\nAt the Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) dropped on a Leather Satchel give it **3 slots for tools**, and the [[steel_frame_pack]] (10 Leather, 3 Steel Plate) is a **5×5** bag with tool loops.\n\nGold still melts in the Clay Kiln. Set a [[steel_casting_table]] beside a Clay Kiln at **1100°** and lay Gold Ingots on it: each becomes 2 [[gold_ring_blank]]s or a [[gold_chain]] (empty hand switches the mould). On a [[jewelers_bench]] a cut gem is set in the blank with a chisel: [[gold_ring]] (ring slots) or [[gold_necklace]] (neck slot). Each kind of gem gives a small bonus, a **Flawless** one about four times as much."
+    }
+   },
+   {
+    "title": {
+     "sv": "Järnålderns kök",
+     "en": "The Iron Age kitchen"
+    },
+    "items": [
+     "iron_cauldron",
+     "iron_skillet",
+     "fermenting_barrel",
+     "cheese_press",
+     "salt_pan"
+    ],
+    "text": {
+     "sv": "[[iron_cauldron]] hänger i en [[tripod]] över en Fire Pit och kokar för hela stammen ([[cabbage_soup]]). [[iron_skillet]] steker [[sausage]], [[fermenting_barrel]] gör [[sauerkraut]], [[cheese_press]] gör [[cheese]], och en [[salt_pan]] vid havet ger salt.",
+     "en": "The [[iron_cauldron]] hangs in a [[tripod]] over a Fire Pit and cooks for the whole tribe ([[cabbage_soup]]). The [[iron_skillet]] fries [[sausage]], the [[fermenting_barrel]] makes [[sauerkraut]], the [[cheese_press]] makes [[cheese]], and a [[salt_pan]] by the sea gives salt."
     }
    }
   ]

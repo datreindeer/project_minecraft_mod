@@ -15,6 +15,10 @@
     "mechanical:dried_fowl",
     "mechanical:smoked_haunch",
     "mechanical:smoked_ribs",
-    "mechanical:smoked_loin"
+    "mechanical:smoked_loin",
+    "mechanical:sauerkraut",
+    "mechanical:cheese",
+    "mechanical:elderberry_syrup",
+    "mechanical:sloe_jam"
   ]
 }

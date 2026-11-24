@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=false": {
+      "model": "mechanical:block/fermenting_barrel"
+    },
+    "open=true": {
+      "model": "mechanical:block/fermenting_barrel_open"
+    }
+  }
+}

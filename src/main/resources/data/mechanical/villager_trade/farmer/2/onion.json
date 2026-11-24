@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "mechanical:copper_coin",
+    "count": 4
+  },
+  "gives": {
+    "id": "mechanical:onion",
+    "count": 3
+  },
+  "max_uses": 12,
+  "xp": 5,
+  "reputation_discount": 0.05
+}

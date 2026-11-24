@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:cabbage_crop",
+        "state": {
+          "age": "7"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:cabbage"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/cabbage_crop"
+}

@@ -1,6 +1,7 @@
 # Plan: undervegetation, kryddor, mat och sågverk
 
-> Status: **plan skriven 2026-11-23, fas 1 byggd samma dag** (se "Fas 1: resultat" sist). Beslut märkta
+> Status: **plan skriven 2026-11-23, fas 1 byggd samma dag** (se "Fas 1: resultat" sist); **fas 4, 4b och 5 (köket) byggda
+> 2026-11-24** (se "Fas 4, 4b och 5: resultat"). Beslut märkta
 > "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de. Item- och blocknamn står på engelska.
 
 Användarens önskelista (översatt och sorterad):
@@ -294,9 +295,9 @@ Vattenkraften finns inte än. Sågverket kommer i samma fas som **vattenhjulet**
 | **1 (byggd)** | 12 blommor (8 små, 2 stora, 2 magiska) i de glesa biomerna; 3 snårbuskar (Blackthorn, Sea Buckthorn, Jujube) i två storlekar som växer ihop och på höjden; klimatfönster i generatorn; Elderberries giftiga råa + Cooked Elderberries | sten | — |
 | 2 | De gamla bärbuskarna till klimatfönster; fas 2-blommorna; fler buskar (Rosehip, Crowberry, Barberry, Caper, vinbär); Rowan Berries/Yew Arils | sten | — |
 | 3 | Fruktträd (Rowan, Bird Cherry, Wild Apple, Plum, Olive, Date); magiska fas 3-blommor | sten–järn | `Trees` |
-| 4 | Vilda grönsaker och örter + förädling; bybornas varor; Clay Cooking Pot; Bronze Griddle/Ladle; rätter brons | sten–brons | Farming |
-| 4b | Den östra karavanen (varorna ovan) | brons–järn | handelsagentens karavaner |
-| 5 | Järnålderns kök (Skillet, Cauldron, Barrel, ost, korv, surkål); havssalt | järn | — |
+| **4 (byggd)** | Vilda grönsaker och örter + förädling; bybornas varor; Clay Cooking Pot; Bronze Griddle/Ladle; rätter brons | sten–brons | Farming |
+| **4b (byggd)** | Den östra karavanen (varorna ovan) | brons–järn | handelsagentens karavaner |
+| **5 (byggd, köket)** | Järnålderns kök (Skillet, Cauldron, Barrel, ost, korv, surkål); havssalt | järn | — |
 | 5a | Water Wheel + axlar | järn/stål | — |
 | 5b | Sawmill, Sawdust | järn/stål | 5a |
 | 6 | Stålets kök (Knife Set, Mortar, Sieve, kryddblandningar) | stål | — |
@@ -330,3 +331,32 @@ Byggt v0.187.0. Spelarens beskrivning står i `docs/ages/01-stone-age.md` ("Snå
   hela block). Grass Stairs tas inte med. De gamla sju
   bärbuskarna har kvar sina fasta biomlistor (fas 2). Fern Flowers Luck gäller den som bryter blomman, inte den som
   plockar den på annat sätt (t.ex. med vatten eller kolv).
+
+---
+
+## Fas 4, 4b och 5: resultat
+
+Byggt v0.191.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` ("Vilda grönsaker, örter och Clay Cooking Pot"),
+`02-bronze-age.md` ("Köket i bronsåldern", östra karavanen), `03-iron-age.md` ("Järnålderns kök"), odlingen i `docs/farming.md`
+("Vilda grönsaker och tämjning").
+
+- **Kod:** `Herbs` (grönsaker vilda och odlade, köpta grödor, örter, karavanens varor, klimat, `domesticate`), `HerbBlock`
+  (klipps med kniv, växer igen), `Kitchen` (rätter som tabell `DISHES`: redskap, lägsta nivå, ingredienser; redskapen),
+  `ClayPotBlock` (krukan i glöden: samma block entity och renderare som kitteln, `TripodBlockEntity` med krukan som kärl),
+  `CookwareBlock`/`CookwareBlockEntity`/`client/CookwareRenderer` (häll, stekpanna, tunna, ostpress), `SaltPanBlock`. Kitteln:
+  `Kettle.finish` tar kärlet (lera 0, brons 1, järn 2), en känd rätt går före vanlig stuvning, kryddor höjer stuvningen;
+  `TripodBlock.IRON` för Iron Cauldron; sleven i `TripodBlockEntity.ladleWith`. Karavaner: `TraderKinds.Kind.weight` +
+  `TraderKinds.pick` (den östra har vikt 1).
+- **Data:** `scripts/gen_herbs.py` (efter `gen_flora`, före `gen_winter_plants` i kedjan; den kör `scripts/herbs_cookware.py`
+  som skriver redskapens modeller och lappar kittelns tripod-blockstate), en rad i `gen_traders.py`, texturer:
+  `scripts/gen_herbs_textures.py` (växter, grödor, råvaror) och `scripts/gen_cookware_textures.py` (redskap, rätter),
+  karavanens folk och kapell: `gen_tribe_skins.py` (`eastern`) och `gen_cart_canopy_textures.py`.
+- **Beslut (Claude, kan ändras):** rätterna är fasta ingredienslistor per redskap (dubbla ingredienser ger dubbelt), så att
+  maten följer åldrarna: krukan kan bara sina rätter, kitteln och grytan kan också de lägre. Bladgrönsaker sås med själva
+  grönsaken (som vanillas potatis), inga egna frön. Iron Cauldron hänger i tripoden (bara över Fire Pit) i stället för en egen
+  station: samma vätska, värme och öslogik. Wooden Barrel heter **Fermenting Barrel** (vanillas Barrel finns).
+- **Kvar / inte gjort:** Apple Saplings (byn) och Bitter Orange Saplings (karavanen) väntar på fruktträden i fas 3. Rapeseed,
+  Cider, Ale, Pies och Roast with Herbs är inte gjorda (pressen, ölet och ugnspajer kommer senare); örterna Hops och Bog Myrtle
+  har ännu bara kompost och framtida öl. Rice växer på vanlig farmland (inte vattendränkt). Crop Stakes-skörd tämjer inte.
+- **Test:** `HerbsTest`: tämjning (~25 % av 400 skördar), rätter per redskap och nivå, kitteln ger Pea Soup, krukan lämnar
+  tillbaka det som inte är en rätt, hällen bakar bara över tänd eld, tunnan jäser surkål, örten växer igen.

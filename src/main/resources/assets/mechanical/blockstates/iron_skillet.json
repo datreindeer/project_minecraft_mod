@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mechanical:block/iron_skillet"
+    },
+    "facing=east": {
+      "model": "mechanical:block/iron_skillet",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mechanical:block/iron_skillet",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mechanical:block/iron_skillet",
+      "y": 270
+    }
+  }
+}

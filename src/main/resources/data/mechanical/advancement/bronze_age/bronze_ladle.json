@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/kettle",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_ladle"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_ladle"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.bronze_ladle.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.bronze_ladle.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

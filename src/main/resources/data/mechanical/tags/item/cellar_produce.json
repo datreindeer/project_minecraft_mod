@@ -4,6 +4,23 @@
     "minecraft:potato",
     "minecraft:beetroot",
     "mechanical:wild_carrot",
-    "mechanical:sea_beet_leaves"
+    "mechanical:sea_beet_leaves",
+    "mechanical:onion",
+    "mechanical:garlic",
+    "mechanical:cabbage",
+    "mechanical:leek",
+    "mechanical:parsnip",
+    "mechanical:celery",
+    "mechanical:turnip",
+    "mechanical:lettuce",
+    "mechanical:wild_onion",
+    "mechanical:wild_garlic",
+    "mechanical:wild_cabbage",
+    "mechanical:wild_leek",
+    "mechanical:wild_parsnip",
+    "mechanical:wild_celery",
+    "mechanical:wild_turnip",
+    "mechanical:wild_lettuce",
+    "mechanical:ginger_root"
   ]
 }

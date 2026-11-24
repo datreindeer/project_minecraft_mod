@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/meadowsweet"
+    },
+    "cut=true": {
+      "model": "mechanical:block/meadowsweet_cut"
+    }
+  }
+}
