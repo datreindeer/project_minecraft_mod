@@ -2390,17 +2390,43 @@ casing_glow_sparse()
 # ---- molten_crust.png (not in the atlas: the troughs' and molds' renderers scroll it): one frame of molten_flowing with its
 # crust streaks pulled darker, so a tinted melt shows drifting crust over a white-hot ground instead of flat paint
 def molten_crust():
+    """The steel age's melt (troughs, molds, flask cup), tinted by the melt: a white-hot ground with a few chunky crust
+    clusters (2x2 to 3x2, never long, so a run of troughs shows no stripes across it) and single darker pixels."""
     from PIL import Image as _I
-    src = _I.open(BLOCK / "molten_flowing.png").convert("RGBA")
-    tile = src.crop((0, 0, 16, 16))
-    px = tile.load()
-    for y in range(16):
-        for x in range(16):
-            r, g, b, a = px[x, y]
-            v = (r + g + b) / 3
-            v = 255 if v > 200 else max(168, int(150 + (v - 60) * 0.6))  # ground white-hot, crust a gentle darker film
-            px[x, y] = (v, v, v, 255)
-    tile.save(BLOCK / "molten_crust.png")
+    rng = random.Random(2391)
+    img = _I.new("RGBA", (16, 16), (255, 255, 255, 255))
+    for cx, cy, w, h in ((2, 1, 3, 2), (9, 3, 2, 2), (5, 7, 2, 2), (12, 9, 3, 2), (1, 11, 2, 2), (8, 13, 3, 2)):
+        for x in range(cx, cx + w):
+            for y in range(cy, cy + h):
+                v = 200 if (x + y) % 3 else 182
+                img.putpixel((x % 16, y % 16), (v, v, v, 255))
+    for _ in range(10):
+        v = 222
+        img.putpixel((rng.randrange(16), rng.randrange(16)), (v, v, v, 255))
+    img.save(BLOCK / "molten_crust.png")
 
 
 molten_crust()
+
+
+def molten_stream():
+    """The falling stream (client/PouringSpoutRenderer), drawn like vanilla lava: three flat tones in chunky clusters,
+    tinted by the melt; bright runs down it (it scrolls), a few darker spots. Tiles both ways."""
+    from PIL import Image as _I
+    rng = random.Random(2471)
+    img = _I.new("RGBA", (16, 16), (214, 214, 214, 255))
+    def run(x, y, n, v):
+        for k in range(n):
+            img.putpixel((x % 16, (y + k) % 16), (v, v, v, 255))
+    for _ in range(9):  # bright runs, 1-2 px wide, 3-6 long
+        x, y = rng.randrange(16), rng.randrange(16)
+        run(x, y, rng.randrange(3, 7), 255)
+        if rng.random() < 0.5:
+            run(x + 1, y + 1, rng.randrange(2, 4), 255)
+    for _ in range(5):  # darker spots, 1x2
+        x, y = rng.randrange(16), rng.randrange(16)
+        run(x, y, 2, 170)
+    img.save(BLOCK / "molten_stream.png")
+
+
+molten_stream()

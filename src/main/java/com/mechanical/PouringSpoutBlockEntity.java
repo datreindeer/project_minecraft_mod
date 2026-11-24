@@ -3,7 +3,6 @@ package com.mechanical;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -13,8 +12,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -108,7 +105,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
     private @Nullable Sink lastSink;
     private int warnIn;
     private long lastRun;
-    private static final int HOLD_TICKS = 8;
+    private static final int HOLD_TICKS = 8, CAST_HOLD_TICKS = 30;
 
     public PouringSpoutBlockEntity(BlockPos pos, BlockState state) {
         super(HighFurnace.POURING_SPOUT_ENTITY.get(), pos, state);
@@ -127,10 +124,10 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         return new net.minecraft.world.phys.Vec3(tx, ty, tz);
     }
 
-    /** The lip the stream leaves from, relative to this block's corner. */
+    /** Where the stream falls once it is over the lip (its 2 px column just in front of the lip), relative to this block's corner. */
     public net.minecraft.world.phys.Vec3 lip() {
         Direction d = facing();
-        return new net.minecraft.world.phys.Vec3(0.5 + d.getStepX() * 0.09, 0.36, 0.5 + d.getStepZ() * 0.09);
+        return new net.minecraft.world.phys.Vec3(0.5 + d.getStepX() * 0.4 / 16, 0.3, 0.5 + d.getStepZ() * 0.4 / 16);
     }
 
     /** The furnace whose Taphole this spout sits on, formed, or null. */
@@ -270,9 +267,12 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                 }
             }
         } else if (src == null || src.whole()) giveBack();
-        // the stream stays drawn through the ticks a trough below has no room for a moment (it drains every few ticks)
+        // the stream stays drawn through the ticks a trough below has no room for a moment (it drains every few ticks), and
+        // through a cast's short waits for the trough behind to refill (no flicker; a longer wait and it stops)
         if (running != null) lastRun = level.getGameTime();
-        else if (stream != null && level.getGameTime() - lastRun < HOLD_TICKS && src != null && src.molten() == stream) running = stream;
+        else if (stream != null && src != null && (src.molten() == stream && level.getGameTime() - lastRun < HOLD_TICKS
+                || buffer > 0 && bufferMolten == stream && (src.molten() == null || src.molten() == stream) && level.getGameTime() - lastRun < CAST_HOLD_TICKS))
+            running = stream;
         if (running != stream) {
             stream = running;
             if (getBlockState().getValue(PouringSpoutBlock.POURING) != (running != null))
@@ -299,23 +299,6 @@ public class PouringSpoutBlockEntity extends BlockEntity {
     /** Test: what is in the stream right now (mB not yet in a whole cast). */
     int bufferForTest() {
         return buffer;
-    }
-
-    void clientTick(Level level) {
-        if (stream == null) return;
-        RandomSource r = level.getRandom();
-        Direction d = facing();
-        double x = worldPosition.getX() + tx, z = worldPosition.getZ() + tz, y = worldPosition.getY() + ty + 0.02; // where it lands
-        if (r.nextInt(4) == 0) { // a drop falling beside the stream
-            double f = r.nextDouble();
-            net.minecraft.world.phys.Vec3 lip = lip();
-            level.addParticle(ParticleTypes.FALLING_LAVA, worldPosition.getX() + lip.x + (x - worldPosition.getX() - lip.x) * f + (r.nextDouble() - 0.5) * 0.08,
-                    worldPosition.getY() + lip.y + (y - worldPosition.getY() - lip.y) * f, worldPosition.getZ() + lip.z + (z - worldPosition.getZ() - lip.z) * f + (r.nextDouble() - 0.5) * 0.08, 0, 0, 0);
-        }
-        if (r.nextInt(3) == 0) // tiny sparks off the surface
-            level.addParticle(ParticleTypes.ELECTRIC_SPARK, x, y + 0.02, z, (r.nextDouble() - 0.5) * 0.12, 0.05 + r.nextDouble() * 0.08, (r.nextDouble() - 0.5) * 0.12);
-
-
     }
 
     @Override

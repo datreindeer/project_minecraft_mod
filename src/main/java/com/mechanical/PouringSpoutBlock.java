@@ -114,7 +114,7 @@ public class PouringSpoutBlock extends Block implements EntityBlock {
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (type != HighFurnace.POURING_SPOUT_ENTITY.get()) return null;
-        if (level.isClientSide()) return (BlockEntityTicker<T>) (BlockEntityTicker<PouringSpoutBlockEntity>) (l, p, s, e) -> e.clientTick(l);
+        if (level.isClientSide()) return null;
         return (BlockEntityTicker<T>) (BlockEntityTicker<PouringSpoutBlockEntity>) (l, p, s, e) -> e.serverTick((ServerLevel) l);
     }
 }

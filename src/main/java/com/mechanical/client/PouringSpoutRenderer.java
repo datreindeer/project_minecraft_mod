@@ -27,13 +27,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The stream out of an open Pouring Spout ({@link PouringSpoutBlockEntity}): a thick glowing column in the melt's colour
- * from the lip down to the cast, its surface rolling downward, a little wider where it leaves the lip and where it
- * splashes; the metal running along the trough to the lip. Fullbright with the beacon beam's render type.
+ * The stream out of an open Pouring Spout ({@link PouringSpoutBlockEntity}), drawn the way vanilla draws lava: the metal
+ * running along the trough to the lip, over the lip and down in a plain 2 px glowing column to the cast, its pixels
+ * rolling downward, a bright splash where it lands. Fullbright with the beacon beam's render type.
  */
 public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlockEntity, PouringSpoutRenderer.State> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_flow.png");
-    private static final RenderType TYPE = RenderTypes.beaconBeam(TEXTURE, false);
+    /** The stream: lava-like pixels in three tones, tinted by the melt (scripts/gen_high_furnace_textures.py). */
+    private static final RenderType STREAM = RenderTypes.beaconBeam(Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_stream.png"), false);
 
     public static class State extends BlockEntityRenderState {
         @Nullable Molten stream;
@@ -65,45 +65,36 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
         if (state.stream == null) return;
         int c = 0xFF000000 | state.stream.color;
         float scroll = state.time * 0.08F;
-        Vec3 a = state.lip, b = state.target;
+        // in the spout's own frame (-z is where it pours): the metal along the trough to the lip, then the stream, a plain
+        // 2 px column like a lava fall: over the lip's top and straight down its front face to what it fills, with a
+        // brighter 4 px splash where it lands (the sinks' targets only give the height it falls to)
+        int bright = net.minecraft.util.ARGB.srgbLerp(0.3F, c, 0xFFFFF2B0) | 0xFF000000;
+        float y0 = (float) state.target.y, top = 6.1F / 16;
         pose.pushPose();
         pose.translate(0.5F, 0, 0.5F);
-        pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // the metal along the trough to the lip
-        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> quad(p, buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F));
-        pose.popPose();
-        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
-            // the stream: a round column (8 faces, the ones turned to the light brighter, a white-hot core line), 2.6 px at the
-            // lip thinning to 1.8 px, leaving the lip in a short arc and then falling to the metal it lands in
-            Vec3 out = new Vec3(state.facing.getStepX(), 0, state.facing.getStepZ());
-            Vec3 arc = a.add(out.scale(0.07)).add(0, -0.12, 0), bend = new Vec3(b.x, a.y - 0.3, b.z).lerp(arc, 0.35);
-            int hot = net.minecraft.util.ARGB.srgbLerp(0.6F, c, 0xFFFFFBEA) | 0xFF000000;
-            round(p, buf, c, hot, a, arc, 1.3F / 16, 1.2F / 16, scroll);
-            round(p, buf, c, hot, arc, bend, 1.2F / 16, 1.0F / 16, scroll);
-            round(p, buf, c, hot, bend, b, 1.0F / 16, 0.9F / 16, scroll);
-            // where it lands: a small bright ring on the surface
-            round(p, buf, c, hot, b.add(0, 0.03, 0), b, 1.6F / 16, 1.6F / 16, scroll * 1.5F);
+        pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180);
+        collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> quad(p, buf, c, -2.5F / 16, top, 8F / 16, 2.5F / 16, top, 1F / 16, -scroll * 0.6F));
+        collector.submitCustomGeometry(pose, STREAM, (p, buf) -> {
+            box(p, buf, bright, -2F / 16, 5.4F / 16, 0.6F / 16, 2F / 16, top, 1.05F / 16, scroll); // over the lip, narrowing to the fall
+            box(p, buf, bright, -1F / 16, y0, -1.4F / 16, 1F / 16, top, 0.6F / 16, scroll); // the fall
+            quad(p, buf, bright, -2F / 16, y0 + 0.004F, 1.6F / 16, 2F / 16, y0 + 0.004F, -2.4F / 16, -scroll * 0.3F); // the splash
         });
+        pose.popPose();
     }
 
-    /** A round (8-sided) segment from {@code a} (half-width ra) to {@code b} (half-width rb), its faces shaded round. */
-    private static void round(PoseStack.Pose p, VertexConsumer buf, int c, int hot, Vec3 a, Vec3 b, float ra, float rb, float scroll) {
-        int n = 8;
-        for (int i = 0; i < n; i++) {
-            double t0 = i * Math.PI * 2 / n, t1 = (i + 1) * Math.PI * 2 / n;
-            // faces turned toward the light (north-west, up) brighter, the back darker: it reads as a round, glowing core
-            float lightness = (float) (0.5 + 0.5 * Math.cos((t0 + t1) / 2 - Math.PI * 0.75));
-            int edge = net.minecraft.util.ARGB.srgbLerp(0.25F, c, 0xFFE0400A) | 0xFF000000; // the edges a deeper orange, the core white-hot
-            int col = net.minecraft.util.ARGB.srgbLerp(lightness, edge, hot) | 0xFF000000;
-            float[][] q = {{(float) (b.x + Math.cos(t0) * rb), (float) b.y, (float) (b.z + Math.sin(t0) * rb), 0},
-                    {(float) (a.x + Math.cos(t0) * ra), (float) a.y, (float) (a.z + Math.sin(t0) * ra), 0},
-                    {(float) (a.x + Math.cos(t1) * ra), (float) a.y, (float) (a.z + Math.sin(t1) * ra), 0.125F},
-                    {(float) (b.x + Math.cos(t1) * rb), (float) b.y, (float) (b.z + Math.sin(t1) * rb), 0.125F}};
+    /** A box of melt from (x0, y0, z0) to (x1, y1, z1), every face seen from both sides, one texel per pixel, rolling down. */
+    private static void box(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float y0, float z0, float x1, float y1, float z1, float scroll) {
+        float[][][] faces = {
+                {{x0, y0, z0}, {x0, y1, z0}, {x1, y1, z0}, {x1, y0, z0}}, {{x0, y0, z1}, {x0, y1, z1}, {x1, y1, z1}, {x1, y0, z1}},
+                {{x0, y0, z0}, {x0, y1, z0}, {x0, y1, z1}, {x0, y0, z1}}, {{x1, y0, z0}, {x1, y1, z0}, {x1, y1, z1}, {x1, y0, z1}},
+                {{x0, y1, z0}, {x0, y1, z1}, {x1, y1, z1}, {x1, y1, z0}}};
+        for (int f = 0; f < faces.length; f++)
             for (int s = 0; s < 2; s++)
                 for (int k = 0; k < 4; k++) {
-                    float[] v = q[s == 0 ? k : 3 - k];
-                    vertex(p, buf, col, v[0], v[1], v[2], v[3] + i * 0.125F, v[1] * 2 - scroll);
+                    float[] v = faces[f][s == 0 ? k : 3 - k];
+                    float u = f < 2 ? v[0] : f < 4 ? v[2] : v[0];
+                    vertex(p, buf, c, v[0], v[1], v[2], u + 0.5F, (f < 4 ? -v[1] : v[2]) - scroll);
                 }
-        }
     }
 
     private static void quad(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float y, float z0, float x1, float y1, float z1, float scroll) {
