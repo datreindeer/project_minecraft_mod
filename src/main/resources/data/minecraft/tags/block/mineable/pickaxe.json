@@ -554,6 +554,10 @@
     "mechanical:smithing_hearth",
     "mechanical:rune_blackstone",
     "mechanical:elkwight_axe_trophy",
-    "mechanical:steel_casting_table"
+    "mechanical:steel_casting_table",
+    "mechanical:bronze_griddle",
+    "mechanical:iron_skillet",
+    "mechanical:salt_pan",
+    "mechanical:clay_cooking_pot"
   ]
 }

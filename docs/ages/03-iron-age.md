@@ -771,3 +771,17 @@ kniv över stål.
 **Advancements (Wilderness-fliken, efter *Into the Ashes*):** **The Smoke Clears** (döda honom, utmaning) → **Heavy Burden**
 (ställ upp yxan), **All Hands** (dra kroppen med tre andra), **Mantle of the Wight**, **Bone Charm** och **Crowned** (häng
 upp hornkronan). I Hunting-fliken: Elkwight under Predators.
+
+## Järnålderns kök (flora och mat, fas 5, byggt)
+
+| Redskap | Recept | Används |
+|---|---|---|
+| **Iron Cauldron** | `[P][ ][P]` / `[P][ ][P]` / `[P][R][P]` (P Iron Plate, R Wrought Iron Ingot) | Hängs i en Tripod **över en Fire Pit** (för tung för en Campfire). Rymmer 12, upp till 10 skålar; kokar allt kitteln kan plus **Cabbage Soup** (Cabbage + Leek + Celery + rått kött → 6 à 9) och **Vegetable Pottage** (Turnip + Parsnip + Onion + Celery → 6 à 8) |
+| **Iron Skillet** | `[P][ ][ ]` / `[ ][R][R]` | Stekpanna på ben över en Campfire: **Raw Sausage → Sausage**, **2 ägg + lök → Fried Eggs and Onion**, och allt hällen kan |
+| **Fermenting Barrel** | `[W][P][W]` / `[W][ ][W]` / `[W][W][W]` (W plankor) | 2 Cabbage + Salt → efter 10 min (ingen eld) **3 Sauerkraut** (håller 30 dagar). Locket på medan det jäser |
+| **Cheese Press** | `[L][R][L]` / `[S][ ][S]` / `[W][W][W]` (L stockar, S pinnar) | 2 mjölkhinkar (hinkarna tillbaka) + Salt → efter 8 min **4 Cheese** (håller 30 dagar) |
+| **Salt Pan** | `[B][ ][B]` / `[B][B][B]` (Brick) | Vid havet: fyll med en vattenhink, solen torkar den i fyra steg (dag, öppen himmel, inte regn) till en saltskorpa; tom hand skrapar upp 2–3 **Salt**. Sötvatten inåt landet ger inget |
+
+**Raw Sausage:** 2 rått kött + Lard + Salt + Garlic eller Wild Garlic → 3. Tom hand på redskapet: tid kvar medan det arbetar,
+rätten när den är klar; smyg tar tillbaka det råa. Advancements (Iron Age, efter *Forged*): *Cauldron*, *Sizzle*, *Sour and
+Keeping*, *Cheesemaker*, *Salt of the Sea*.

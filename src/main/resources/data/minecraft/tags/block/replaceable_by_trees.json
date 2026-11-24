@@ -34,6 +34,18 @@
     "mechanical:sand_verbena",
     "mechanical:desert_marigold",
     "mechanical:great_mullein",
-    "mechanical:desert_candle"
+    "mechanical:desert_candle",
+    "mechanical:wild_thyme",
+    "mechanical:wild_marjoram",
+    "mechanical:yarrow",
+    "mechanical:chamomile",
+    "mechanical:water_mint",
+    "mechanical:sorrel",
+    "mechanical:sage",
+    "mechanical:rosemary",
+    "mechanical:bog_myrtle",
+    "mechanical:meadowsweet",
+    "mechanical:hops",
+    "mechanical:wild_mustard"
   ]
 }

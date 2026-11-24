@@ -244,6 +244,8 @@
     "mechanical:wooden_shaft",
     "mechanical:gearbox",
     "mechanical:log_flume",
-    "mechanical:saw_bench"
+    "mechanical:saw_bench",
+    "mechanical:fermenting_barrel",
+    "mechanical:cheese_press"
   ]
 }

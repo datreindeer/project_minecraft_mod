@@ -1,0 +1,145 @@
+{
+  "parent": "mechanical:food/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:thyme"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:marjoram"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:yarrow_leaves"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:chamomile_flowers"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mint_leaves"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sorrel_leaves"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sage_leaves"
+          }
+        ]
+      }
+    },
+    "has_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rosemary_sprigs"
+          }
+        ]
+      }
+    },
+    "has_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bog_myrtle_leaves"
+          }
+        ]
+      }
+    },
+    "has_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:meadowsweet_flowers"
+          }
+        ]
+      }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:hop_cones"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1",
+      "has_2",
+      "has_3",
+      "has_4",
+      "has_5",
+      "has_6",
+      "has_7",
+      "has_8",
+      "has_9",
+      "has_10"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:thyme"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.herb_cutter.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.herb_cutter.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -58,6 +58,8 @@ public final class Kettle {
     public static final int MAX_PORTIONS = 6, PORTION_NUTRITION = 7, MAX_BROTH = 8, BROTH_PER_BIRD = 2;
     /** Stewing beats roasting: the cooked value times this, plus a bit for every different ingredient, up to the cap. */
     public static final float BONUS = 1.25F, VARIETY_BONUS = 0.05F, MAX_BONUS = 1.5F;
+    /** Each herb or spice (Herbs.SPICES) adds this to a plain stew's bonus, past the cap. */
+    public static final float SPICE_BONUS = 0.1F;
     /** Simmering time in campfire ticks (a Fire Pit cooks {@link #PIT_RATE} times as fast). */
     public static final int FOOD_TIME = 1800, RENDER_TIME = 2400, TAN_TIME = 3600;
     public static final float PIT_RATE = 1.5F, EMBER_RATE = 0.35F;
@@ -70,7 +72,7 @@ public final class Kettle {
             .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).noCollision().noOcclusion().pushReaction(PushReaction.POPPED).ignitedByLava());
     public static final DeferredItem<BlockItem> TRIPOD_ITEM = ITEMS.registerSimpleBlockItem("tripod", TRIPOD);
     public static final Supplier<BlockEntityType<TripodBlockEntity>> TRIPOD_ENTITY = Mechanical.BLOCK_ENTITIES.register("tripod",
-            () -> new BlockEntityType<>(TripodBlockEntity::new, TRIPOD.get()));
+            () -> new BlockEntityType<>(TripodBlockEntity::new, TRIPOD.get(), Kitchen.CLAY_COOKING_POT.get()));
 
     /** A bowl of stew: its FOOD is set when ladled, from what went into the pot ({@link #INGREDIENTS}). */
     public static final DeferredItem<Item> STEW = ITEMS.registerSimpleItem("stew", p -> p.stacksTo(1)
@@ -99,8 +101,24 @@ public final class Kettle {
 
     public static void init() {}
 
+    /** The Clay Cooking Pot holds less, the Iron Cauldron more (Kitchen). */
+    public static final int CLAY_CAPACITY = 4, IRON_CAPACITY = 12, CLAY_PORTIONS = 4, IRON_PORTIONS = 10;
+
     public static int capacity(ItemStack kettle) {
-        return Bronze.isPoor(kettle) ? POOR_CAPACITY : CAPACITY;
+        return switch (Kitchen.potTier(kettle)) {
+            case 0 -> CLAY_CAPACITY;
+            case 2 -> IRON_CAPACITY;
+            default -> Bronze.isPoor(kettle) ? POOR_CAPACITY : CAPACITY;
+        };
+    }
+
+    /** Most bowls one pot gives. */
+    public static int maxPortions(ItemStack kettle) {
+        return switch (Kitchen.potTier(kettle)) {
+            case 0 -> CLAY_PORTIONS;
+            case 2 -> IRON_PORTIONS;
+            default -> MAX_PORTIONS;
+        };
     }
 
     public static int cookTime(Mode mode) {
@@ -126,6 +144,7 @@ public final class Kettle {
     public static Mode modeOf(ServerLevel level, ItemStack s) {
         if (s.is(Mechanical.BARK_TAG) || s.is(Mechanical.SCRAPED_HIDE.get())) return Mode.TAN;
         if (renders(s)) return Mode.RENDER;
+        if (s.is(Herbs.SPICES) || Kitchen.isIngredient(Kitchen.Tool.POT, 2, s)) return Mode.FOOD; // herbs, spices and dish ingredients
         return cookedValue(level, s) != null ? Mode.FOOD : null;
     }
 
@@ -171,9 +190,26 @@ public final class Kettle {
     /** Solid things to take out with an empty hand, and bowls to ladle ({@code portion} times {@code portions}). */
     public record Result(List<ItemStack> outputs, ItemStack portion, int portions) {}
 
-    /** What a finished pot of these ingredients (all one mode) gives. Called once; the ingredients are used up. */
+    /** As {@link #finish(ServerLevel, List, ItemStack)} in a Bronze Kettle. */
     public static Result finish(ServerLevel level, List<ItemStack> contents) {
+        return finish(level, contents, new ItemStack(Bronze.BRONZE_KETTLE.get()));
+    }
+
+    /**
+     * What a finished pot of these ingredients (all one mode) gives in this vessel. Called once; the ingredients are used
+     * up. A known dish (Kitchen.DISHES, up to the pot's tier) beats a plain stew; the clay pot cooks nothing else and gives
+     * back what doesn't make a dish.
+     */
+    public static Result finish(ServerLevel level, List<ItemStack> contents, ItemStack vessel) {
         Mode mode = contents.isEmpty() ? null : modeOf(level, contents.getFirst());
+        if (mode == Mode.FOOD) {
+            Kitchen.Match dish = Kitchen.match(Kitchen.Tool.POT, Kitchen.potTier(vessel), contents);
+            if (dish != null) {
+                if (dish.dish().bowl()) return new Result(List.of(), new ItemStack(dish.dish().result().get()), Math.min(maxPortions(vessel), dish.count()));
+                return new Result(Kitchen.results(dish), ItemStack.EMPTY, 0);
+            }
+            if (Kitchen.potTier(vessel) == 0) return new Result(contents.stream().map(ItemStack::copy).toList(), ItemStack.EMPTY, 0);
+        }
         List<ItemStack> out = new ArrayList<>();
         if (mode == Mode.TAN) {
             int hides = count(contents, Mechanical.SCRAPED_HIDE.get()), bark = (int) contents.stream().filter(s -> s.is(Mechanical.BARK_TAG)).count();
@@ -196,18 +232,23 @@ public final class Kettle {
             out.removeIf(ItemStack::isEmpty);
             return new Result(out, new ItemStack(BROTH.get()), Math.min(MAX_BROTH, BROTH_PER_BIRD * contents.size()));
         }
-        int nutrition = 0;
+        int nutrition = 0, spices = 0;
         List<Item> items = new ArrayList<>();
         for (ItemStack s : contents) {
             FoodProperties f = cookedValue(level, s);
+            if (f == null && s.is(Herbs.SPICES)) { // no food in itself, but it makes the stew go further
+                spices++;
+                items.add(s.getItem());
+                continue;
+            }
             if (f == null) continue;
             nutrition += f.nutrition();
             items.add(s.getItem());
         }
-        if (items.isEmpty()) return new Result(out, ItemStack.EMPTY, 0);
-        float bonus = Math.min(MAX_BONUS, BONUS + VARIETY_BONUS * (items.stream().distinct().count() - 1));
+        if (nutrition == 0) return new Result(out, ItemStack.EMPTY, 0);
+        float bonus = Math.min(MAX_BONUS + SPICE_BONUS * spices, BONUS + VARIETY_BONUS * (items.stream().distinct().count() - 1) + SPICE_BONUS * spices);
         float total = nutrition * bonus;
-        int portions = Math.clamp(Math.round(total / PORTION_NUTRITION), 1, MAX_PORTIONS);
+        int portions = Math.clamp(Math.round(total / PORTION_NUTRITION), 1, maxPortions(vessel));
         ItemStack bowl = new ItemStack(STEW.get());
         // rounded down: dividing the pot never makes more food than went in (times the bonus); a meal fills you longest
         int n = Math.max(1, (int) (total / portions));

@@ -43,6 +43,8 @@ public class TripodBlock extends Block implements EntityBlock {
     private static final VoxelShape BIG_SHAPE = box(0.5, -9, 0.5, 15.5, 16, 15.5);
     public static final BooleanProperty KETTLE = BooleanProperty.create("kettle");
     public static final BooleanProperty HOT = BooleanProperty.create("hot");
+    /** The pot hung here is an Iron Cauldron (Kitchen), not the Bronze Kettle: drawn bigger, over a Fire Pit only. */
+    public static final BooleanProperty IRON = BooleanProperty.create("iron");
     // around the kettle as drawn: over a campfire it hangs down into the fire's block, over a pit it hangs at the 2x2's centre
     private static final VoxelShape CAMPFIRE_SHAPE = box(1.5, -6, 1.5, 14.5, 16, 14.5);
     /** Over a pit: the quarter of the block next to the pit's middle (part 0's middle is at its south-east corner). */
@@ -50,12 +52,12 @@ public class TripodBlock extends Block implements EntityBlock {
 
     public TripodBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(PIT, 0).setValue(KETTLE, false).setValue(HOT, false));
+        registerDefaultState(stateDefinition.any().setValue(PIT, 0).setValue(KETTLE, false).setValue(HOT, false).setValue(IRON, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(PIT, KETTLE, HOT);
+        builder.add(PIT, KETTLE, HOT, IRON);
     }
 
     /** The PIT value for a tripod standing on this block, or -1 if it is no fire to stand over. */
@@ -128,7 +130,7 @@ public class TripodBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof TripodBlockEntity tripod)) return InteractionResult.PASS;
-        if (!state.getValue(KETTLE) && !stack.is(Bronze.BRONZE_KETTLE.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (!state.getValue(KETTLE) && !TripodBlockEntity.isHangingPot(stack)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (!tripod.accepts(stack)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level instanceof ServerLevel server) tripod.use(server, player, hand, stack);
         return InteractionResult.SUCCESS;

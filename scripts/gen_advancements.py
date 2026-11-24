@@ -1229,8 +1229,8 @@ TABS["wilderness"][1].extend([
      "Sell a gemstone to a jewelry caravan: they love gems and pay in silver and gold", by_code()),
     # granted per kind from Java (people/TribeVisits.java), criteria named after the kinds (scripts/gen_traders.py)
     ("caravan_kinds", "caravan", "minecraft:map", G, "Every Road Leads Here",
-     "Meet a caravan of every kind: Timber & Tools, Mining Equipment, Jewelry & Gemstones, Hunting Gear & Furs, Herbs & Remedies and Forager's Goods",
-     AllOf({k: {"trigger": "minecraft:impossible"} for k in ("woodsman", "mining", "jewelry", "hunting", "herbs", "foraging")})),
+     "Meet a caravan of every kind: Timber & Tools, Mining Equipment, Jewelry & Gemstones, Hunting Gear & Furs, Herbs & Remedies, Forager's Goods and the rare Eastern Caravan",
+     AllOf({k: {"trigger": "minecraft:impossible"} for k in ("woodsman", "mining", "jewelry", "hunting", "herbs", "foraging", "eastern")})),
     ("caravan_wagon", "caravan", "wagon", G, "The Rich Caravan",
      "Meet a big caravan: a Wagon drawn by a pair, rarer goods at dearer prices and a fuller purse", by_code()),
     ("caravan_sold_out", "caravan", "minecraft:gold_nugget", T, "Bought Out",
@@ -1363,6 +1363,43 @@ TABS["food"][1].extend([
     ("fallow_season", "root", "minecraft:wheat_seeds", T, "Out of Season",
      "Sneak-click a crop with an empty hand in winter: nothing grows in the fields until spring, so harvest and store before",
      by_code()),
+])
+# flora and food phases 4, 4b, 5 (Herbs.java, Kitchen.java, gen_herbs.py): wild vegetables tamed, herbs, dishes per age
+TABS["food"][1].extend([
+    ("wild_greens", "root", "wild_onion", T, "Wild Greens",
+     "Dig up a wild vegetable: Wild Garlic, Onion, Cabbage, Leek, Parsnip, Celery, Turnip or Lettuce, each in its own climate",
+     has("wild_garlic", "wild_onion", "wild_cabbage", "wild_leek", "wild_parsnip", "wild_celery", "wild_turnip", "wild_lettuce")),
+    ("tamed_vegetable", "wild_greens", "onion", G, "Tamed",
+     "Sow a wild vegetable on farmland: now and then a ripe one gives the seed of the tame kind, which grows bigger and better",
+     has("garlic", "onion", "cabbage", "leek", "parsnip", "celery", "turnip", "lettuce")),
+    ("herb_cutter", "root", "thyme", T, "Cut, Don't Pull",
+     "Cut a wild herb with a knife: it grows back. Dig the plant up and set it in a herb garden by the house",
+     has("thyme", "marjoram", "yarrow_leaves", "chamomile_flowers", "mint_leaves", "sorrel_leaves", "sage_leaves", "rosemary_sprigs",
+         "bog_myrtle_leaves", "meadowsweet_flowers", "hop_cones")),
+])
+TABS["stone_age"][1].extend([
+    ("clay_cooking_pot", "kiln", "clay_cooking_pot", T, "Pot in the Embers",
+     "Fire an Unfired Clay Cooking Pot in the Clay Kiln and set it on a Campfire. Water first, then the ingredients of a dish",
+     has("clay_cooking_pot")),
+    ("pot_dish", "clay_cooking_pot", "nettle_soup", T, "Pottage",
+     "Cook a dish in the Clay Cooking Pot: Nettle Soup, Root Pottage, Berry Mash or Herbal Tea",
+     has("nettle_soup", "root_pottage", "berry_mash", "herbal_tea")),
+    ("herb_roasted_fish", "clay_cooking_pot", "herb_roasted_fish", T, "Fish with Herbs",
+     "Stuff a whole fish with herbs and roast it on a Campfire", has("herb_roasted_fish")),
+])
+TABS["bronze_age"][1].extend([
+    ("bronze_griddle", "bronze", "bronze_griddle", T, "Griddle",
+     "Stand a Bronze Griddle over a Campfire and bake Flatbread from Dough, or Honey Cakes", has("flatbread", "honey_cake")),
+    ("kettle_dish", "kettle", "pea_soup", G, "Proper Dishes",
+     "Cook a dish in the Bronze Kettle: Pea Soup, Onion and Garlic Stew, Spiced Porridge, Tea, Elderberry Syrup or Sloe Jam",
+     has("pea_soup", "onion_garlic_stew", "spiced_porridge", "tea", "elderberry_syrup", "sloe_jam")),
+    ("bronze_ladle", "kettle", "bronze_ladle", T, "Every Last Drop",
+     "Serve from a pot with a Bronze Ladle: it scrapes the pot clean for one more bowl", has("bronze_ladle")),
+])
+TABS["wilderness"][1].extend([
+    ("spice_road", "caravan", "black_pepper", G, "The Spice Road",
+     "Buy spices from the rare Eastern Caravan: Black Pepper, Cinnamon, Ginger, Saffron or Tea, from lands far to the east",
+     has("black_pepper", "cinnamon_bark", "ginger_root", "saffron_corm", "tea_leaves")),
 ])
 # player tribes (clan/Clans.java): granted from Java
 TABS["stone_age"][1].extend([
@@ -1603,6 +1640,20 @@ TABS["bronze_age"][1].extend([
      "stone, light 15", placed("alabaster_lamp")),
 ])
 # the Iron Age seed bag (FarmTools.java; gen_farm_tools.py)
+# flora and food phase 5: the Iron Age kitchen (Kitchen.java)
+TABS["iron_age"][1].extend([
+    ("iron_cauldron", "forged", "iron_cauldron", T, "Cauldron",
+     "Hang an Iron Cauldron in a Tripod over a Fire Pit and cook Cabbage Soup or Vegetable Pottage for the whole tribe",
+     has("cabbage_soup", "vegetable_pottage")),
+    ("iron_skillet", "forged", "iron_skillet", T, "Sizzle",
+     "Fry Eggs and Onion or Sausages in an Iron Skillet over a Campfire", has("fried_eggs_and_onion", "sausage")),
+    ("sauerkraut", "forged", "sauerkraut", T, "Sour and Keeping",
+     "Ferment Cabbage and Salt in a Fermenting Barrel into Sauerkraut, which keeps for a month", has("sauerkraut")),
+    ("cheese", "forged", "cheese", G, "Cheesemaker",
+     "Press Milk and Salt in a Cheese Press into Cheese", has("cheese")),
+    ("sea_salt", "forged", "salt_pan", T, "Salt of the Sea",
+     "Pour seawater into a Salt Pan by the coast and let the sun dry it to Salt", placed("salt_pan")),
+])
 TABS["iron_age"][1].extend([
     ("linen_seed_bag", "forged", "linen_seed_bag", T, "Wide Sower",
      "Sew a Linen Seed Bag (Linen Thread, an Iron Plate rim, Leather): it sows 5x5 in one throw", has("linen_seed_bag")),

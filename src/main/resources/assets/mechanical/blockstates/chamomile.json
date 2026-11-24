@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/chamomile"
+    },
+    "cut=true": {
+      "model": "mechanical:block/chamomile_cut"
+    }
+  }
+}

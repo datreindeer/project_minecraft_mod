@@ -1,0 +1,144 @@
+{
+  "animal": "camel",
+  "cargo": [
+    "minecraft:decorated_pot",
+    "minecraft:barrel",
+    "minecraft:decorated_pot",
+    "minecraft:barrel",
+    "mechanical:black_pepper",
+    "mechanical:cinnamon_bark",
+    "mechanical:rice",
+    "mechanical:tea_leaves",
+    "mechanical:silk_thread",
+    "mechanical:dried_dates",
+    "mechanical:indigo",
+    "mechanical:saffron"
+  ],
+  "purse": [
+    300,
+    520
+  ],
+  "sells": [
+    {
+      "item": "mechanical:black_pepper",
+      "price": 3,
+      "count": 2,
+      "stock": 6,
+      "age": 1
+    },
+    {
+      "item": "mechanical:cinnamon_bark",
+      "price": 4,
+      "count": 2,
+      "stock": 5,
+      "age": 1
+    },
+    {
+      "item": "mechanical:ginger_root",
+      "price": 3,
+      "count": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:rice",
+      "price": 4,
+      "count": 4,
+      "stock": 5,
+      "age": 1
+    },
+    {
+      "item": "mechanical:sesame_seeds",
+      "price": 2,
+      "count": 4,
+      "stock": 5,
+      "age": 1
+    },
+    {
+      "item": "mechanical:dried_dates",
+      "price": 2,
+      "count": 4,
+      "stock": 5,
+      "age": 1
+    },
+    {
+      "item": "mechanical:dried_figs",
+      "price": 2,
+      "count": 4,
+      "stock": 5,
+      "age": 1
+    },
+    {
+      "item": "mechanical:saffron_corm",
+      "price": 20,
+      "count": 2,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:tea_leaves",
+      "price": 10,
+      "count": 4,
+      "stock": 3,
+      "age": 2
+    },
+    {
+      "item": "mechanical:silk_thread",
+      "price": 30,
+      "count": 4,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:indigo",
+      "price": 10,
+      "count": 2,
+      "stock": 3,
+      "age": 1
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
+      "price": 20,
+      "count": 2,
+      "stock": 2,
+      "age": 1
+    },
+    {
+      "item": "mechanical:saffron",
+      "price": 40,
+      "count": 2,
+      "stock": 1,
+      "age": 2,
+      "rare": true
+    },
+    {
+      "item": "mechanical:flawless_sapphire",
+      "price": 200,
+      "stock": 1,
+      "rare": true
+    }
+  ],
+  "buys": [
+    {
+      "item": "#mechanical:gemstones",
+      "price": 40,
+      "stock": 3
+    },
+    {
+      "item": "mechanical:jujubes",
+      "price": 4,
+      "count": 6,
+      "stock": 6
+    },
+    {
+      "item": "mechanical:sea_buckthorn_berries",
+      "price": 3,
+      "count": 8,
+      "stock": 6
+    },
+    {
+      "item": "minecraft:amethyst_shard",
+      "price": 20
+    }
+  ],
+  "weight": 1
+}

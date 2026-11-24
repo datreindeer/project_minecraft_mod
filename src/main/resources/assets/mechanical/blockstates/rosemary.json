@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/rosemary"
+    },
+    "cut=true": {
+      "model": "mechanical:block/rosemary_cut"
+    }
+  }
+}

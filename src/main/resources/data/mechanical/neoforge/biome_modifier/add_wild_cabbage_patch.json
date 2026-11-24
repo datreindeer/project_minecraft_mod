@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:chalk_downs",
+    "mechanical:basalt_coast",
+    "minecraft:stony_shore",
+    "mechanical:shingle_beach"
+  ],
+  "features": "mechanical:wild_cabbage_patch",
+  "step": "vegetal_decoration"
+}

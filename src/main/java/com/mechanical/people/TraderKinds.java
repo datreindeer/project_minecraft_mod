@@ -35,18 +35,33 @@ public final class TraderKinds {
                 Codec.BOOL.optionalFieldOf("rare", false).forGetter(Good::rare)).apply(i, Good::new));
     }
 
-    /** {@code animal}: "horse" or "camel". {@code purse}: [min, max] copper of a small caravan. */
-    public record Kind(String animal, List<String> cargo, List<Integer> purse, List<Good> sells, List<Good> buys) {
+    /**
+     * {@code animal}: "horse" or "camel". {@code purse}: [min, max] copper of a small caravan. {@code weight}: how often
+     * this kind comes compared with the others (default {@link #WEIGHT}; the Eastern Caravan is rare).
+     */
+    public record Kind(String animal, List<String> cargo, List<Integer> purse, List<Good> sells, List<Good> buys, int weight) {
         static final Codec<Kind> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.optionalFieldOf("animal", "horse").forGetter(Kind::animal),
                 Codec.STRING.listOf().optionalFieldOf("cargo", List.of()).forGetter(Kind::cargo),
                 Codec.INT.listOf(2, 2).fieldOf("purse").forGetter(Kind::purse),
                 Good.CODEC.listOf().fieldOf("sells").forGetter(Kind::sells),
-                Good.CODEC.listOf().optionalFieldOf("buys", List.of()).forGetter(Kind::buys)).apply(i, Kind::new));
+                Good.CODEC.listOf().optionalFieldOf("buys", List.of()).forGetter(Kind::buys),
+                Codec.INT.optionalFieldOf("weight", WEIGHT).forGetter(Kind::weight)).apply(i, Kind::new));
 
         public boolean camels() {
             return animal.equals("camel");
         }
+    }
+
+    public static final int WEIGHT = 4;
+
+    /** A kind picked at random, each by its weight; null if none are loaded. */
+    public static Identifier pick(net.minecraft.util.RandomSource r) {
+        int total = kinds.values().stream().mapToInt(k -> Math.max(0, k.weight())).sum();
+        if (total <= 0) return null;
+        int n = r.nextInt(total);
+        for (var e : kinds.entrySet()) if ((n -= Math.max(0, e.getValue().weight())) < 0) return e.getKey();
+        return null;
     }
 
     private static Map<Identifier, Kind> kinds = Map.of();

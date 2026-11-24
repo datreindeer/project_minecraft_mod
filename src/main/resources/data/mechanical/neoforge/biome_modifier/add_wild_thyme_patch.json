@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "mechanical:pine_heath",
+    "minecraft:meadow",
+    "minecraft:windswept_hills"
+  ],
+  "features": "mechanical:wild_thyme_patch",
+  "step": "vegetal_decoration"
+}

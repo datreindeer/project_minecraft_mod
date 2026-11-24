@@ -105,6 +105,10 @@
     "mechanical:cooked_swan",
     "mechanical:cooked_heron",
     "mechanical:cooked_crane",
-    "mechanical:cooked_elderberries"
+    "mechanical:cooked_elderberries",
+    "mechanical:herb_roasted_fish",
+    "mechanical:flatbread",
+    "mechanical:honey_cake",
+    "mechanical:sausage"
   ]
 }

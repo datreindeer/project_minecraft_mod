@@ -86,10 +86,10 @@ public final class Caravans {
 
     /** A caravan of a random kind and size near {@code at}: returns the leader (null if none could be made). */
     static Tribesperson spawn(ServerLevel level, BlockPos at) {
-        List<Identifier> kinds = List.copyOf(TraderKinds.all().keySet());
-        if (kinds.isEmpty()) return null;
         RandomSource r = level.getRandom();
-        return arrive(level, atCampEdge(level, at), at, kinds.get(r.nextInt(kinds.size())), r.nextInt(BIG_ODDS) == 0);
+        Identifier kind = TraderKinds.pick(r); // by weight: the Eastern Caravan comes seldom
+        if (kind == null) return null;
+        return arrive(level, atCampEdge(level, at), at, kind, r.nextInt(BIG_ODDS) == 0);
     }
 
     /**

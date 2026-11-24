@@ -45,6 +45,8 @@ public final class TraderShots {
     private static Vec3 base;
     private static Tribesperson leader;
     private static boolean polish;
+    /** Second flag line: only these kinds' caravans (small and big), nothing else. */
+    private static List<String> only;
 
     @SubscribeEvent
     static void onTick(ClientTickEvent.Post event) {
@@ -59,13 +61,21 @@ public final class TraderShots {
                 List<String> lines = Files.readAllLines(flag.toPath());
                 out = new File(lines.get(0).trim());
                 polish = lines.size() > 1 && lines.get(1).trim().equals("polish");
+                only = !polish && lines.size() > 1 && !lines.get(1).isBlank() ? List.of(lines.get(1).trim().split("[ ,]+")) : null;
                 out.mkdirs();
                 stage = 0;
             }
             if (stage < 0) return;
             if (stage == 0) {
                 if (mc.gui.screen() instanceof TitleScreen) {
-                    mc.createWorldOpenFlows().openWorld("TraderShots", () -> {});
+                    if (new File(mc.gameDirectory, "saves/TraderShots").exists()) mc.createWorldOpenFlows().openWorld("TraderShots", () -> {});
+                    else mc.createWorldOpenFlows().createFreshLevel("TraderShots",
+                            new net.minecraft.world.level.LevelSettings("TraderShots", net.minecraft.world.level.GameType.CREATIVE,
+                                    net.minecraft.world.level.LevelSettings.DifficultySettings.DEFAULT, true, net.minecraft.world.level.WorldDataConfiguration.DEFAULT),
+                            new net.minecraft.world.level.levelgen.WorldOptions(1234L, false, false),
+                            reg -> reg.lookupOrThrow(net.minecraft.core.registries.Registries.WORLD_PRESET)
+                                    .getOrThrow(net.minecraft.world.level.levelgen.presets.WorldPresets.FLAT).value().createWorldDimensions(),
+                            new TitleScreen());
                     stage = 1;
                     ticks = 0;
                 }
@@ -126,6 +136,14 @@ public final class TraderShots {
 
     /** The shoot: each step waits, then shoots what is on screen, then runs its server part (setting up the next shot). */
     private static void plan() {
+        if (only != null) {
+            add(160, () -> base = new Vec3(Math.floor(player().getX()) + 0.5, 200, Math.floor(player().getZ()) + 0.5), null);
+            for (String kind : only) {
+                caravan(kind, false, "sand");
+                caravan(kind, true, "sand");
+            }
+            return;
+        }
         add(160, () -> {
             base = new Vec3(Math.floor(player().getX()) + 0.5, 200, Math.floor(player().getZ()) + 0.5);
             lineUp();

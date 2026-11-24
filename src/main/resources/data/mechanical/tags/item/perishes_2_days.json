@@ -26,6 +26,11 @@
     "mechanical:raw_blood_sausage",
     "mechanical:sloes",
     "mechanical:sea_buckthorn_berries",
-    "mechanical:jujubes"
+    "mechanical:jujubes",
+    "mechanical:lettuce",
+    "mechanical:wild_lettuce",
+    "mechanical:sorrel_leaves",
+    "mechanical:mint_leaves",
+    "mechanical:wild_cabbage"
   ]
 }

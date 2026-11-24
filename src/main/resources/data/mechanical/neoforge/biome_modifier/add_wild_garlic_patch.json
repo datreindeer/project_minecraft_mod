@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:deciduous_forest",
+    "mechanical:willow_fen",
+    "minecraft:forest",
+    "minecraft:dark_forest",
+    "minecraft:birch_forest",
+    "minecraft:flower_forest"
+  ],
+  "features": "mechanical:wild_garlic_patch",
+  "step": "vegetal_decoration"
+}

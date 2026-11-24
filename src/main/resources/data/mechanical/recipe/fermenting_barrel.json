@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WIW",
+    "W W",
+    "WWW"
+  ],
+  "key": {
+    "W": "#minecraft:planks",
+    "I": "mechanical:iron_plate"
+  },
+  "result": {
+    "id": "mechanical:fermenting_barrel"
+  }
+}

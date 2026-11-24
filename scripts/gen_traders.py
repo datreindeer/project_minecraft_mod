@@ -122,6 +122,23 @@ KINDS = {
         "buys": [g(M + "raspberries", 16, 3, 6), g(M + "blueberries", 16, 3, 6), g(M + "lingonberries", 16, 3, 4), g(M + "cloudberries", 8, 5, 3),
                  g(M + "hazelnuts", 12, 3, 4), g(M + "wild_strawberries", 8, 4, 3)],
     },
+    "eastern": {
+        # flora and food plan 4b: the spice traders from the far east, on camels; rare (weight 1 against the others' 4)
+        "name": "Eastern Caravan", "animal": "camel", "weight": 1,
+        "dialog": "Peace and plenty to you! The %s have walked a year of roads from the far east, past the great mountains and the "
+                  "deserts, with what never grows in these lands: pepper and cinnamon, ginger, rice, saffron and tea, and silk and "
+                  "indigo for your looms. We pay in silver for gemstones, and gladly for jujubes and sea buckthorn: a taste of home.",
+        "cargo": [V + "decorated_pot", V + "barrel", V + "decorated_pot", V + "barrel", M + "black_pepper", M + "cinnamon_bark",
+                  M + "rice", M + "tea_leaves", M + "silk_thread", M + "dried_dates", M + "indigo", M + "saffron"],
+        "purse": [300, 520],
+        "sells": [g(M + "black_pepper", 2, 3, 6, 1), g(M + "cinnamon_bark", 2, 4, 5, 1), g(M + "ginger_root", 2, 3, 4, 1),
+                  g(M + "rice", 4, 4, 5, 1), g(M + "sesame_seeds", 4, 2, 5, 1), g(M + "dried_dates", 4, 2, 5, 1), g(M + "dried_figs", 4, 2, 5, 1),
+                  g(M + "saffron_corm", 2, 2 * S, 2, 2), g(M + "tea_leaves", 4, 1 * S, 3, 2), g(M + "silk_thread", 4, 3 * S, 2, 2),
+                  g(M + "indigo", 2, 1 * S, 3, 1), g(V + "lapis_lazuli", 2, 2 * S, 2, 1),
+                  g(M + "saffron", 2, 4 * S, 1, 2, True), g(M + "flawless_sapphire", 1, 2 * G, 1, 0, True)],
+        "buys": [g("#mechanical:gemstones", 1, 4 * S, 3), g(M + "jujubes", 6, 4, 6), g(M + "sea_buckthorn_berries", 8, 3, 6),
+                 g(V + "amethyst_shard", 1, 2 * S, 4)],
+    },
 }
 
 LANG = {
@@ -176,7 +193,10 @@ def main():
             assert good["price"] > 0 and good.get("stock", 4) > 0, (kind, good)
         assert len(k["cargo"]) <= 12, kind  # CargoRender.MAX
         assert sum(1 for s in k["sells"] if not s.get("rare")) >= 6, f"{kind}: too few goods for a small caravan"
-        w(out / f"{kind}.json", {"animal": k["animal"], "cargo": k["cargo"], "purse": k["purse"], "sells": k["sells"], "buys": k["buys"]})
+        data = {"animal": k["animal"], "cargo": k["cargo"], "purse": k["purse"], "sells": k["sells"], "buys": k["buys"]}
+        if "weight" in k:  # how often the kind comes against the others (TraderKinds.WEIGHT = 4)
+            data["weight"] = k["weight"]
+        w(out / f"{kind}.json", data)
         lang[f"trader_kind.mechanical.{kind}"] = k["name"]
         lang[f"dialog.mechanical.tribe.caravan.{kind}"] = k["dialog"]
     lang.update(LANG)

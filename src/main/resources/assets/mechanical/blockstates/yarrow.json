@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cut=false": {
+      "model": "mechanical:block/yarrow"
+    },
+    "cut=true": {
+      "model": "mechanical:block/yarrow_cut"
+    }
+  }
+}

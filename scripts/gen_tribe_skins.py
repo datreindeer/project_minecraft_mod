@@ -256,6 +256,14 @@ class Look:
         self.pack = None               # gear: "basket" carried on the back
         self.hips = ()                 # gear: things hanging at the hips: "lantern", "satchel", "bundle"
         self.cap = None                # gear: a padded cap (colour) over the hair
+        self.cap_style = None          # gear: None a padded cap; "tall" a tall embroidered felt cap with a raised crown
+        self.cap_work = None           # the tall cap's embroidery (list of colours)
+        self.cap_trim = None           # a fur band round the tall cap's brim (colour)
+        self.ikat = None               # top_mat "ikat": (stripe colours, stripe width), the stripe edges blurred
+        self.sash = None               # a wide silk sash wound round the waist (colour), knotted at the side
+        self.collar = None             # an embroidered collar and edging down the front of the coat: (colour, colour)
+        self.satchel = None            # outer layer: a satchel at the left hip (colour), on the strap
+        self.cloak_border = None       # gear: a silk cloak (no fur at the shoulders) edged in this colour
         self.s = None
 
     def contrast(self):
@@ -329,6 +337,14 @@ class Look:
             c = pal[idx]
             g = 0.82 if x % 3 == 0 or y % 3 == 0 else 1.0
             return self.tint(c, f * g * (1.05 if (x + y) % 2 == 0 else 0.95) * (1 + s.n(key + ("pa",), 0.04)))
+        if kind == "ikat":
+            # silk-road ikat: bold vertical stripes, the threads dyed before weaving so each edge frays in a zigzag
+            cols, w = self.ikat
+            sx = x + (1 if (y // 2 + x // w) % 2 else 0)
+            c = cols[(sx // w + len(key[1])) % len(cols)]
+            if sx % w == 0:
+                c = mix(c, cols[(sx // w - 1 + len(key[1])) % len(cols)], 0.3)  # the blurred edge
+            return self.tint(c, f * (1.05 if (x + y) % 2 == 0 else 0.97) * (1 + s.n(key + ("ik",), 0.03)))
         # hide/leather: soft mottling and the odd darker patch
         m = s.n(key + ("h",), 0.06) + (s.n(("patch",) + key[:2] + (x // 2, y // 3), 0.05))
         return self.tint(col, f * (1 + m))
@@ -390,8 +406,10 @@ class Look:
                 c = self.material(s, self.top, tm, key, x, y, face)
                 if face == "front" and Y == 0 and 2 <= x <= 5 and self.top_kind != "robe":
                     c = None  # neckline
-                if c is not None and face == "front" and self.top_kind == "robe" and x == 3 and 3 <= Y:
+                if c is not None and face == "front" and self.top_kind == "robe" and x == 3 and 3 <= Y and not self.collar:
                     c = self.sh(c, 0.78)  # robe overlap seam
+                if c is not None and self.collar and face != "bottom" and (Y == 0 or face == "front" and x in (3, 4)):
+                    c = self.collar_px(face, x, Y)  # the embroidered collar and front edging
             if c is None:
                 s.kind = "skin"
                 s.dyed = None
@@ -428,6 +446,14 @@ class Look:
                 c = self.material(s, self.strap, "hide", key, x, y, face)
                 if (Y + x) % 3 == 0:
                     c = self.sh(c, 0.8)  # stitches
+            if self.sash and 7 <= Y <= 9 and face != "top":
+                # a wide silk sash wound three times round: each turn lit at the top, the folds running aslant
+                c = self.material(s, self.sash, "hide", key, x, y, face)
+                c = self.sh(c, (1.1, 1.0, 0.82)[Y - 7] * (0.84 if (x + Y) % 4 == 0 else 1.0))
+                if face == "front" and x in (1, 2):
+                    c = self.sh(c, 1.14 if Y == 8 else 0.9)  # the knot
+            if self.sash and face == "front" and 10 <= Y <= 11 and x in (1, 2) and (x == 1 or Y == 10):
+                c = self.tint(self.sash, 0.92 if x == 1 else 0.78)  # the ends hanging from the knot
             if self.belt and Y == 8:
                 c = self.material(s, self.belt, "cord" if self.belt == CORD else "hide", key, x, y, face)
                 if face == "front" and x == 3:
@@ -463,6 +489,8 @@ class Look:
                 return c
             if Y < self.skirt_to and self.top is not None and self.top_kind != "vest":
                 c = self.fold(self.material(s, self.top, tm, key, x, y, face), face, x, Y)
+                if self.collar and face == "front" and x == (3 if part == "rleg" else 0):
+                    c = self.collar_px(face, 3 if part == "rleg" else 4, Y)  # the edging down the skirt
                 if Y == self.skirt_to - 1:
                     c = self.sh(c, 0.85) if self.fine else self.sh(c, 0.78) if (x + y) % 2 == 0 else self.sh(c, 0.9)  # ragged hem
                 return c
@@ -519,6 +547,12 @@ class Look:
         if Y == last:
             c = shade(c, 0.78)  # the lower edge, in shadow
         return self.tint(c, f * (1 + s.n(key + ("ar",), 0.06)))
+
+    def collar_px(self, face, x, Y):
+        """The embroidered edging: the two colours in a running chain, lit along the collar."""
+        a, b = self.collar
+        c = a if (x + Y) % 2 == 0 else b
+        return self.tint(c, side_shade(face) * (1.08 if Y == 0 else 1.0))
 
     def strap_hit(self, face, x, Y):
         # from the right shoulder down to the left hip (front), mirrored on the back
@@ -698,6 +732,14 @@ class Look:
                 return self.hair_px(s, key, x, y, 0.85 if Y == 3 or x in (1, 6) else 0.95)
             if self.trim and Y == 11 and face in ("front", "back"):
                 return self.material(s, self.trim, "cord", key, x, y, face) if x % 2 == 1 else None
+            if self.satchel and 8 <= Y <= 11 and (face == "front" and x >= 5 or face == "left" and x <= 2):
+                # a satchel at the left hip on its strap: flap with a stitched edge and a toggle, bulging at the bottom
+                c = self.material(s, self.satchel, "hide", key, x, y, face)
+                if Y == 9:
+                    return self.sh(c, 0.72)  # under the flap
+                if Y == 8 and face == "front" and x == 6:
+                    return self.tint(BONE, 0.9)
+                return self.sh(c, 0.85) if Y == 11 or face == "left" and x == 2 else c
             return None
         if arm:
             if self.armour and Y <= 3 and face != "bottom":
@@ -1082,7 +1124,9 @@ ARMOUR = {
 }
 MOSS, BARK_BROWN, SOOT_GREY, ROYAL, PLUM, SAND, SAGE, HERB_GREEN, WHEAT = (hexc("4e6a32"), hexc("6a4e30"), hexc("5c5a56"),
     hexc("2c3c8a"), hexc("5a2a5e"), hexc("c8b088"), hexc("8a9a6a"), hexc("5a7a3a"), hexc("c8a860"))
-CARAVAN_KINDS = ["woodsman", "mining", "jewelry", "hunting", "herbs", "foraging"]
+CARAVAN_KINDS = ["woodsman", "mining", "jewelry", "hunting", "herbs", "foraging", "eastern"]
+INDIGO, CRIMSON, SAFFRON, EMERALD, SILK_CREAM = (hexc("2a3478"), hexc("a41e2e"), hexc("e2a224"), hexc("1e7a4c"),
+    hexc("ece0c4"))
 CARAVAN_KIND_ROLES = ["trader", "handler", "guard"]
 
 
@@ -1195,6 +1239,33 @@ def kind_person(kind, role, i):
             L.armour, L.cloak = ARMOUR["bronze_scale"], HERB_GREEN
             L.top_kind, L.skirt_to = "tunic", 14
             L.belt_bundles = None
+    elif kind == "eastern":  # spice traders from the far east, along the silk road: ikat-striped quilted coats, a wide
+        # silk sash, tall embroidered felt caps (some fur-trimmed), indigo trousers and soft red boots
+        L.skin = SKIN[pick(r, ["light", "tan", "olive", "pale", "tan"])]
+        if not leader:
+            L.hair = HAIR[pick(r, ["black", "darkbrown", "black"])]
+        # a ground colour with two others between its stripes, so the coat reads as one colour from afar
+        palettes = [[CRIMSON, SAFFRON, CRIMSON, INDIGO], [INDIGO, SILK_CREAM, INDIGO, CRIMSON],
+                    [EMERALD, SAFFRON, EMERALD, CRIMSON], [SAFFRON, CRIMSON, SAFFRON, EMERALD]]
+        L.top_mat, L.ikat = "ikat", (palettes[(i + {"trader": 0, "handler": 1, "guard": 2}[role]) % 4], 3)
+        L.top = L.ikat[0][0]
+        L.sash = pick(r, [c for c in (SAFFRON, EMERALD, CRIMSON, SILK_CREAM) if c not in L.ikat[0][:2]])
+        L.belt = None
+        L.legs = hexc("262a48") if L.legs else None
+        L.boots = pick(r, [hexc("7a2822"), hexc("5a3020")])
+        L.cap, L.cap_style = pick(r, [hexc("1e2a5a"), hexc("6a1a24"), hexc("1a4a32"), hexc("e8dcc0")]), "tall"
+        L.cap_work = [GOLD, pick(r, [SILK_CREAM, CRIMSON, EMERALD])]
+        L.cap_trim = pick(r, [None, FUR_BROWN, None, hexc("3a2a1e")])
+        if leader:
+            L.collar = (GOLD, CRIMSON if L.ikat[0][0] != CRIMSON else INDIGO)
+            L.cap_trim = pick(r, [FUR_WHITE, FUR_GREY, None])
+        elif handler:
+            L.skirt_to = 17
+            L.strap, L.satchel = LEATHER, hexc("6e4a2a")
+        else:
+            L.armour, L.sleeves, L.skirt_to = ARMOUR["iron_lamellar"], 12, 17
+            L.cloak = pick(r, [CRIMSON, INDIGO, EMERALD])
+            L.cloak_border = SAFFRON if L.cloak != SAFFRON else CRIMSON
     else:  # foraging (and any kind without a look of its own): earthy patchwork, a woven basket on the back
         L.top, L.top_mat = hexc("8a6a46"), "patch"
         L.patches = [hexc("8a6a46"), hexc("6a5a3a"), hexc("a08a5a"), hexc("5e4a32"), hexc("7a7046")]
@@ -1447,6 +1518,14 @@ def gear(L, zone, seed):
                 return shade(cloak, 0.7)
             if y == fh - 1 and (x + g.r.randrange(2)) % 2:
                 return None
+            if L.cloak_border is not None:
+                # silk, gathered at the shoulders into soft folds that open out toward the hem, an embroidered border
+                if y >= fh - 3:
+                    if y == fh - 3 and x % 2:
+                        return shade(cloak, side_shade(face) * 0.9)  # the border's stitched upper edge
+                    return shade(L.cloak_border, side_shade(face) * (0.8 if y == fh - 2 else 1.0 if (x + y) % 2 else 0.9))
+                k = 1.0 if y == 0 else 0.82 if (x + (y > 5)) % 3 == 0 else 1.1 if (x + (y > 5)) % 3 == 1 else 1.0
+                return shade(cloak, side_shade(face) * k * (1.08 if y == 0 else 1.0))
             if y == 0:
                 return g.fur(edge, face, x, y, 13)  # fur along the shoulders
             c = shade(cloak, side_shade(face) * (1 + 0.06 * (h_(x * 31 + y * 7, 17) - 0.5)) * (0.9 if x % 3 == 0 else 1.0))
@@ -1487,7 +1566,37 @@ def gear(L, zone, seed):
 def caravan_gear(g, L):
     """What caravan folk carry that shows from afar: an axe or a quiver on the back, a basket on the back, a padded cap,
     things at the hips (a lantern, a satchel with herbs sticking out, a dried bundle)."""
-    if L.cap is not None:
+    if L.cap is not None and L.cap_style == "tall":
+        cap, work, trim = L.cap, L.cap_work, L.cap_trim
+
+        def tall(face, x, y, fw, fh):
+            if face == "bottom":
+                return None
+            if face == "top":
+                ring = max(abs(x * 2 - 7), abs(y * 2 - 7))  # rings of embroidery round the crown
+                return shade(work[ring // 2 % len(work)] if ring in (3, 7) else cap, 1.06 if ring > 3 else 0.94)
+            low = 3 if face != "front" else 2
+            if y > low:
+                return None
+            if y == low:
+                return g.fur(trim, face, x, y, 21) if trim else shade(work[0], side_shade(face) * 0.8)  # the brim
+            if y == 1 and (x + (face in ("left", "right"))) % 3 == 1:
+                return shade(work[1 % len(work)], side_shade(face))  # a running band of almond motifs
+            if y == 0 and x % 3 == 1 or y == 2 and x % 3 == 1:
+                return shade(work[0], side_shade(face) * 0.95)
+            return shade(cap, side_shade(face) * (1.04 if (x + y) % 2 else 0.96))
+        g.fill("hood", tall)
+
+        def crown(face, x, y, fw, fh):
+            if face == "bottom":
+                return None
+            if face == "top":
+                return shade(work[0], 1.1 if x == 1 and y == 1 else 0.9)  # the knot of the tassel
+            if y == fh - 1:
+                return shade(work[0], side_shade(face) * 0.8)
+            return shade(cap, side_shade(face) * (1.08 if y == 0 else 1.0) * (0.9 if x == fw - 1 else 1.0))
+        g.fill("topknot", crown)
+    elif L.cap is not None:
         cap = L.cap
 
         def capf(face, x, y, fw, fh):

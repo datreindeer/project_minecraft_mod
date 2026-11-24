@@ -132,6 +132,20 @@
     "mechanical:plucked_swan",
     "mechanical:plucked_heron",
     "mechanical:plucked_crane",
-    "mechanical:raw_meat_strips"
+    "mechanical:raw_meat_strips",
+    "mechanical:nettle_soup",
+    "mechanical:root_pottage",
+    "mechanical:berry_mash",
+    "mechanical:herbal_tea",
+    "mechanical:pea_soup",
+    "mechanical:onion_garlic_stew",
+    "mechanical:spiced_porridge",
+    "mechanical:tea",
+    "mechanical:cabbage_soup",
+    "mechanical:vegetable_pottage",
+    "mechanical:fried_eggs_and_onion",
+    "mechanical:herb_stuffed_fish",
+    "mechanical:raw_sausage",
+    "mechanical:raw_honey_cake"
   ]
 }

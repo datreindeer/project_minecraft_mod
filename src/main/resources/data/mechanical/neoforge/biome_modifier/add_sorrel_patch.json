@@ -1,0 +1,28 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:basalt_coast",
+    "mechanical:chalk_downs",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow",
+    "mechanical:limestone_karst",
+    "mechanical:reed_delta",
+    "mechanical:soapstone_valley",
+    "mechanical:willow_fen",
+    "minecraft:birch_forest",
+    "minecraft:cherry_grove",
+    "minecraft:dappled_forest",
+    "minecraft:dark_forest",
+    "minecraft:flower_forest",
+    "minecraft:forest",
+    "minecraft:mangrove_swamp",
+    "minecraft:meadow",
+    "minecraft:old_growth_birch_forest",
+    "minecraft:pale_garden",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:swamp"
+  ],
+  "features": "mechanical:sorrel_patch",
+  "step": "vegetal_decoration"
+}

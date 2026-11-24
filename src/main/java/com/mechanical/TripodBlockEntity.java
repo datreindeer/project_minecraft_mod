@@ -51,9 +51,13 @@ public class TripodBlockEntity extends BlockEntity {
         return pit == TripodBlock.BIG_PIT ? y * TripodBlock.BIG_SCALE : y;
     }
 
+    /** The Iron Cauldron's opening is this much wider than the kettle's (scripts/herbs_cookware.py). */
+    public static final float IRON_INNER = 5;
+
     /** Half the inner width of the pot, in pixels. */
     public static float inner(BlockState state) {
-        return state.getValue(TripodBlock.PIT) == TripodBlock.BIG_PIT ? INNER * TripodBlock.BIG_SCALE : INNER;
+        float inner = state.hasProperty(TripodBlock.IRON) && state.getValue(TripodBlock.IRON) ? IRON_INNER : INNER;
+        return state.getValue(TripodBlock.PIT) == TripodBlock.BIG_PIT ? inner * TripodBlock.BIG_SCALE : inner;
     }
 
     private ItemStack kettle = ItemStack.EMPTY;
@@ -66,6 +70,8 @@ public class TripodBlockEntity extends BlockEntity {
     private int portions, maxPortions;
     private int colour = Kettle.colour(null, List.of());
     private Kettle.Mode mode;
+    /** A Bronze Ladle has scraped this pot: its one extra bowl is given (Kitchen). */
+    private boolean ladled;
 
     public TripodBlockEntity(BlockPos pos, BlockState state) {
         super(Kettle.TRIPOD_ENTITY.get(), pos, state);
@@ -77,6 +83,28 @@ public class TripodBlockEntity extends BlockEntity {
 
     public List<ItemStack> contents() {
         return contents;
+    }
+
+    /** Nothing in the pot: no water, nothing cooking or left to take out. */
+    public boolean isEmpty() {
+        return !water && contents.isEmpty() && !done && outputs.isEmpty() && portions <= 0;
+    }
+
+    /** The pot itself, for a Clay Cooking Pot block (placed with the block, ClayPotBlock). */
+    void setVessel(ItemStack vessel) {
+        kettle = vessel;
+        sync();
+    }
+
+    ItemStack takeVessel() {
+        ItemStack v = kettle;
+        kettle = ItemStack.EMPTY;
+        return v;
+    }
+
+    /** A pot that hangs in a tripod: the Bronze Kettle or the Iron Cauldron. */
+    public static boolean isHangingPot(ItemStack s) {
+        return s.is(Bronze.BRONZE_KETTLE.get()) || s.is(Kitchen.IRON_CAULDRON.get());
     }
 
     public int colour() {
@@ -114,7 +142,7 @@ public class TripodBlockEntity extends BlockEntity {
     }
 
     private void finish(ServerLevel level) {
-        Kettle.Result result = Kettle.finish(level, contents);
+        Kettle.Result result = Kettle.finish(level, contents, kettle);
         outputs.clear();
         outputs.addAll(result.outputs());
         portion = result.portion();
@@ -145,20 +173,34 @@ public class TripodBlockEntity extends BlockEntity {
         return s.is(Items.WATER_BUCKET) || s.is(Mechanical.CLAY_WATER_BUCKET.get()) || s.is(BronzeTools.BRONZE_WATER_BUCKET.get());
     }
 
+    /** A water bucket poured out: the empty bucket back in the hand (a clay bucket wears, and may break). */
+    static void pourOut(Player player, InteractionHand hand, ItemStack stack) {
+        if (player.hasInfiniteMaterials()) return;
+        ItemStack empty = stack.is(Items.WATER_BUCKET) ? new ItemStack(Items.BUCKET)
+                : stack.is(BronzeTools.BRONZE_WATER_BUCKET.get()) ? stack.transmuteCopy(BronzeTools.BRONZE_BUCKET.get(), 1) : ClayBucketItem.emptied(stack);
+        if (empty.isEmpty()) player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
+        player.setItemInHand(hand, empty);
+    }
+
     /** Does this held item do something with this tripod (else the click goes on to the item, e.g. placing a block)? */
     boolean accepts(ItemStack stack) {
         if (stack.isEmpty()) return false;
-        if (stack.is(Bronze.BRONZE_KETTLE.get())) return kettle.isEmpty();
+        if (isHangingPot(stack)) return kettle.isEmpty();
         if (kettle.isEmpty()) return false;
-        if (isWater(stack) || stack.is(Items.BOWL)) return true;
+        if (isWater(stack) || stack.is(Items.BOWL) || stack.is(Kitchen.BRONZE_LADLE.get())) return true;
         if (stack.is(Mechanical.FIREWOOD_TAG) || stack.getItem() instanceof FireDrillItem) return false;
         return water && !done; // offered as an ingredient (use() says if it can't go in)
     }
 
     void use(ServerLevel level, Player player, InteractionHand hand, ItemStack stack) {
-        if (stack.is(Bronze.BRONZE_KETTLE.get())) {
+        if (isHangingPot(stack)) {
+            boolean iron = stack.is(Kitchen.IRON_CAULDRON.get());
+            if (iron && getBlockState().getValue(TripodBlock.PIT) == 0) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.cauldron.campfire"));
+                return;
+            }
             kettle = stack.consumeAndReturn(1, player);
-            level.setBlock(worldPosition, getBlockState().setValue(TripodBlock.KETTLE, true), Block.UPDATE_ALL);
+            level.setBlock(worldPosition, getBlockState().setValue(TripodBlock.KETTLE, true).setValue(TripodBlock.IRON, iron), Block.UPDATE_ALL);
             level.playSound(null, worldPosition, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1.0F, 0.9F);
             sync();
         } else if (isWater(stack)) {
@@ -167,16 +209,13 @@ public class TripodBlockEntity extends BlockEntity {
                 return;
             }
             water = true;
-            if (!player.hasInfiniteMaterials()) {
-                ItemStack empty = stack.is(Items.WATER_BUCKET) ? new ItemStack(Items.BUCKET)
-                        : stack.is(BronzeTools.BRONZE_WATER_BUCKET.get()) ? stack.transmuteCopy(BronzeTools.BRONZE_BUCKET.get(), 1) : ClayBucketItem.emptied(stack);
-                if (empty.isEmpty()) player.playSound(SoundEvents.DECORATED_POT_SHATTER, 0.8F, 1.1F);
-                player.setItemInHand(hand, empty);
-            }
+            pourOut(player, hand, stack);
             level.playSound(null, worldPosition, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
             sync();
         } else if (stack.is(Items.BOWL)) {
             ladle(level, player, stack);
+        } else if (stack.is(Kitchen.BRONZE_LADLE.get())) {
+            ladleWith(level, player, stack);
         } else {
             addIngredient(level, player, stack);
         }
@@ -199,10 +238,34 @@ public class TripodBlockEntity extends BlockEntity {
         sync();
     }
 
+    /**
+     * Serving with a Bronze Ladle (a bowl from the inventory): nothing spills, and the first time it scrapes the pot
+     * clean for one extra bowl. The ladle wears 1 per bowl.
+     */
+    private void ladleWith(ServerLevel level, Player player, ItemStack ladle) {
+        int slot = player.getInventory().findSlotMatchingItem(new ItemStack(Items.BOWL));
+        if (slot < 0 && !player.hasInfiniteMaterials()) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.ladle.no_bowl"));
+            return;
+        }
+        if (portions > 0 && !ladled) {
+            ladled = true;
+            portions++;
+            maxPortions++;
+        }
+        ItemStack bowl = slot < 0 ? new ItemStack(Items.BOWL) : player.getInventory().getItem(slot);
+        if (portions > 0) ladle.hurtAndBreak(1, player, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+        ladle(level, player, bowl);
+    }
+
     private void addIngredient(ServerLevel level, Player player, ItemStack stack) {
         Kettle.Mode m = Kettle.modeOf(level, stack);
         if (m == null) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.kettle.cant_go_in", stack.getHoverName()));
+            return;
+        }
+        if (Kitchen.potTier(kettle) == 0 && (m != Kettle.Mode.FOOD || !Kitchen.isIngredient(Kitchen.Tool.POT, 0, stack))) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.clay_pot.not_a_dish", stack.getHoverName()));
             return;
         }
         if (mode != null && m != mode) {
@@ -238,7 +301,7 @@ public class TripodBlockEntity extends BlockEntity {
                 player.getInventory().placeItemBackInInventory(kettle, Prediction.SERVER_ONLY);
                 kettle = ItemStack.EMPTY;
                 heat = 0;
-                level.setBlock(worldPosition, getBlockState().setValue(TripodBlock.KETTLE, false).setValue(TripodBlock.HOT, false), Block.UPDATE_ALL);
+                level.setBlock(worldPosition, getBlockState().setValue(TripodBlock.KETTLE, false).setValue(TripodBlock.HOT, false).setValue(TripodBlock.IRON, false), Block.UPDATE_ALL);
                 level.playSound(null, worldPosition, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS, 1.0F, 0.9F);
             }
             sync();
@@ -295,6 +358,7 @@ public class TripodBlockEntity extends BlockEntity {
         done = false;
         progress = 0;
         mode = null;
+        ladled = false;
         colour = Kettle.colour(null, contents);
     }
 
@@ -326,6 +390,7 @@ public class TripodBlockEntity extends BlockEntity {
         output.putInt("max_portions", maxPortions);
         output.putInt("colour", colour);
         if (mode != null) output.putString("mode", mode.name());
+        output.putBoolean("ladled", ladled);
     }
 
     @Override
@@ -346,6 +411,7 @@ public class TripodBlockEntity extends BlockEntity {
         colour = input.getIntOr("colour", Kettle.colour(null, List.of()));
         String m = input.getStringOr("mode", "");
         mode = m.isEmpty() ? null : Kettle.Mode.valueOf(m);
+        ladled = input.getBooleanOr("ladled", false);
     }
 
     @Override

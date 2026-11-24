@@ -5,6 +5,13 @@
     "mechanical:wild_carrot",
     "minecraft:melon",
     "minecraft:pumpkin",
-    "mechanical:blood_sausage"
+    "mechanical:blood_sausage",
+    "mechanical:cabbage",
+    "mechanical:leek",
+    "mechanical:celery",
+    "mechanical:wild_leek",
+    "mechanical:wild_celery",
+    "mechanical:wild_garlic",
+    "mechanical:broad_beans"
   ]
 }

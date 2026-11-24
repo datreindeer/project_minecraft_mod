@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:marble_gorge",
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst"
+  ],
+  "features": "mechanical:wild_marjoram_patch",
+  "step": "vegetal_decoration"
+}

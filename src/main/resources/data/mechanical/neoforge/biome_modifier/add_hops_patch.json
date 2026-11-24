@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:hazel_meadow",
+    "mechanical:deciduous_forest",
+    "minecraft:forest"
+  ],
+  "features": "mechanical:hops_patch",
+  "step": "vegetal_decoration"
+}

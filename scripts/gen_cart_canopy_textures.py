@@ -23,6 +23,7 @@ KINDS = {
     "hunting": ((124, 86, 54), (84, 60, 40), (40, 30, 22), False),        # hide brown and dark brown
     "herbs": ((126, 146, 96), (196, 152, 70), (88, 104, 60), False),      # sage and ochre
     "foraging": ((198, 182, 142), (156, 124, 84), (110, 84, 52), True),   # oatmeal and brown, patched
+    "eastern": ((42, 54, 124), (226, 164, 40), (164, 30, 46), False),     # indigo and saffron silk, a crimson band
 }
 SEGMENTS = 6
 

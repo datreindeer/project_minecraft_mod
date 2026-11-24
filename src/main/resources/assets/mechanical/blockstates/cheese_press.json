@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "pressing=false": {
+      "model": "mechanical:block/cheese_press"
+    },
+    "pressing=true": {
+      "model": "mechanical:block/cheese_press_pressing"
+    }
+  }
+}

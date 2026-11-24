@@ -2,6 +2,14 @@
   "values": [
     "minecraft:potato",
     "mechanical:dried_pork",
-    "mechanical:dried_seal_meat"
+    "mechanical:dried_seal_meat",
+    "mechanical:onion",
+    "mechanical:garlic",
+    "mechanical:parsnip",
+    "mechanical:turnip",
+    "mechanical:wild_onion",
+    "mechanical:wild_parsnip",
+    "mechanical:wild_turnip",
+    "mechanical:ginger_root"
   ]
 }

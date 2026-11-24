@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LRL",
+    "S S",
+    "WWW"
+  ],
+  "key": {
+    "L": "#minecraft:logs",
+    "R": "mechanical:wrought_iron_ingot",
+    "S": "minecraft:stick",
+    "W": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:cheese_press"
+  }
+}

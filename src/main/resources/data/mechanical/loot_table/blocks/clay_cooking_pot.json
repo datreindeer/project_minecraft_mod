@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:block",
+  "pools": [],
+  "random_sequence": "mechanical:blocks/clay_cooking_pot"
+}

@@ -3,6 +3,8 @@
   "values": [
     "mechanical:farmer/3/bronze_0",
     "mechanical:farmer/3/bronze_1",
-    "mechanical:farmer/3/flax_seeds"
+    "mechanical:farmer/3/flax_seeds",
+    "mechanical:farmer/3/cabbage",
+    "mechanical:farmer/3/broad_beans"
   ]
 }

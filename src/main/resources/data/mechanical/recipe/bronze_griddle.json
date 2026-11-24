@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    " S "
+  ],
+  "key": {
+    "P": "mechanical:bronze_plate",
+    "S": "minecraft:stick"
+  },
+  "result": {
+    "id": "mechanical:bronze_griddle"
+  }
+}

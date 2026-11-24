@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#mechanical:whole_fish",
+    "#mechanical:culinary_herbs"
+  ],
+  "result": {
+    "id": "mechanical:herb_stuffed_fish"
+  }
+}

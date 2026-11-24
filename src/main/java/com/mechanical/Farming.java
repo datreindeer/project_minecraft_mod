@@ -189,6 +189,7 @@ public final class Farming {
             Climate warm = new Climate(12, 15, 20, 25, 6, false, new float[] {0.5F, 1.3F, 0.6F, 0});
             m.put(Blocks.MELON_STEM, warm);
             m.put(Blocks.PUMPKIN_STEM, warm);
+            Herbs.climates(m); // wild and tamed vegetables, bought crops (flora and food plan phase 4)
             climates = m;
         }
         return climates.get(block);
@@ -315,6 +316,7 @@ public final class Farming {
     static void onDrops(BlockDropsEvent event) {
         BlockState state = event.getState();
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null) return;
+        if (event.getLevel() instanceof ServerLevel server) Herbs.domesticate(server, event.getPos(), state, event.getDrops());
         addSickleBonus(event.getDrops().stream().map(ItemEntity::getItem).toList(), event.getTool(), event.getLevel().getRandom());
         if (!harvestSoil(event.getLevel(), event.getPos().below(), crop, event.getDrops().stream().map(ItemEntity::getItem).toList())) return;
         event.getDrops().removeIf(e -> e.getItem().isEmpty());

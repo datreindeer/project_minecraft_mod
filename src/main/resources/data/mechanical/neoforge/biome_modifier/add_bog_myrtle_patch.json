@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:peat_bog",
+    "mechanical:willow_fen",
+    "mechanical:pine_heath"
+  ],
+  "features": "mechanical:bog_myrtle_patch",
+  "step": "vegetal_decoration"
+}

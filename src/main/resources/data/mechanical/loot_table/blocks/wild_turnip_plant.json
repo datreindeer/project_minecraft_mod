@@ -1,0 +1,64 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:wild_turnip",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "min": 1,
+                    "max": 2
+                  }
+                }
+              ],
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "items": "#mechanical:knives"
+                }
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:wild_turnip",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "min": 1,
+                    "max": 2
+                  }
+                }
+              ],
+              "condition": {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "items": "#mechanical:sickles"
+                }
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:wild_turnip",
+              "condition": {
+                "type": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/wild_turnip_plant"
+}
