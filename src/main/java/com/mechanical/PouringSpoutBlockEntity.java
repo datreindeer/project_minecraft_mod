@@ -122,6 +122,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                     break;
                 }
             }
+            if (sink != null && bufferMolten == null && f.pool().get(m) < need) sink = null; // a cast starts only when the pool holds all of it
             if (sink == null) {
                 giveBack(f);
                 if (--warnIn <= 0) {

@@ -216,6 +216,11 @@ public final class FurnaceShots {
         set(13, 0, 1, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
         set(13, 0, 1, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
         set(11, 0, 3, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        // a taphole in the small furnace's back wall with a spout pouring into an iron ingot mold in a pit
+        set(1, 0, 2, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        set(1, 0, 3, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));
+        set(1, -1, 3, HighFurnace.IRON_INGOT_MOLD.get().defaultBlockState());
+        for (int[] q : new int[][] {{0, 3}, {2, 3}, {0, 4}, {1, 4}, {2, 4}}) set(q[0], -1, q[1], Blocks.AIR.defaultBlockState());
         // the small furnace's bellows on a real wheel: an overshot wheel (axis z, hub 3,3,6), its axle north through a gearbox,
         // down an upright shaft to a gearbox at the bellows' height and on into the bellows' side
         set(3, 0, 0, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.WEST));
@@ -268,7 +273,7 @@ public final class FurnaceShots {
     private static void fill() {
         for (BlockPos front : new BlockPos[] {SMALL_FRONT, BIG_FRONT})
             if (level().getBlockEntity(rel(front.getX(), front.getY(), front.getZ())) instanceof HighFurnaceBlockEntity f) {
-                f.pool().add(Molten.GOLD, 600);
+                f.pool().add(Molten.GOLD, 1600);
                 f.pool().add(Molten.COPPER, 1400);
                 f.pool().add(Molten.BRONZE, front == BIG_FRONT ? 9000 : 2600);
                 f.pool().add(Molten.LEAD, 400);
@@ -298,6 +303,7 @@ public final class FurnaceShots {
                 case "!light" -> then(2, () -> server(FurnaceShots::light));
                 case "!heat" -> then(2, () -> server(() -> heat(Float.parseFloat(p[1]))));
                 case "!fill" -> then(2, () -> server(FurnaceShots::fill));
+                case "!shot" -> then(1, () -> shot(p[1]));
                 case "!time" -> then(2, () -> cmd("time set " + p[1]));
                 case "!wait" -> then(Integer.parseInt(p[1]), () -> {});
                 case "!gui" -> {

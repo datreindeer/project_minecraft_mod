@@ -274,14 +274,17 @@ public final class HighFurnaceTest {
             h.assertTrue(h.getBlockState(under).getValue(ClayMoldBlock.FILL) == ClayMoldBlock.Fill.MOLTEN
                     && h.getBlockState(under).getValue(ClayMoldBlock.METAL) == Metal.BRONZE, "the mold under the lip is full of bronze");
             h.assertTrue(f.pool().get(Molten.BRONZE) == 400 && s.bufferForTest() == 0, "exactly 600 mB went in: " + f.pool().get(Molten.BRONZE));
-            // a fresh mold, taken away mid-pour: what was in the stream goes back
+            // a cast starts only when the pool holds all of it: 400 is not enough for a 600 head
             h.setBlock(under, Casting.CLAY_PICKAXE_HEAD_MOLD.get());
-            h.runAfterDelay(5, () -> {
+            h.runAfterDelay(3, () -> h.assertTrue(s.bufferForTest() == 0 && f.pool().get(Molten.BRONZE) == 400, "no half cast is started"));
+            // more bronze, and the mold taken away mid-pour: what was in the stream goes back
+            h.runAtTickTime(h.getTick() + 4, () -> f.pool().add(Molten.BRONZE, 600));
+            h.runAfterDelay(9, () -> {
                 int inStream = s.bufferForTest();
-                h.assertTrue(inStream > 0 && f.pool().get(Molten.BRONZE) + inStream == 400, "pouring: " + inStream + " in the stream");
+                h.assertTrue(inStream > 0 && f.pool().get(Molten.BRONZE) + inStream == 1000, "pouring: " + inStream + " in the stream");
                 h.setBlock(under, Blocks.AIR);
                 h.runAfterDelay(2, () -> {
-                    h.assertTrue(f.pool().get(Molten.BRONZE) == 400 && s.bufferForTest() == 0, "the stream went back: " + f.pool().get(Molten.BRONZE));
+                    h.assertTrue(f.pool().get(Molten.BRONZE) == 1000 && s.bufferForTest() == 0, "the stream went back: " + f.pool().get(Molten.BRONZE));
                     // gold into an Iron Ingot Mold: 4 ingots
                     f.pool().add(Molten.GOLD, 800);
                     f.select(Molten.GOLD);

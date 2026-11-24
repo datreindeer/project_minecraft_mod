@@ -3708,8 +3708,6 @@
   "gui.mechanical.high_furnace.mark.1450": "%s\u00b0: iron ore",
   "gui.mechanical.high_furnace.mark.1500": "%s\u00b0: steel",
   "gui.mechanical.high_furnace.mark.1600": "%s\u00b0: charcoal's ceiling",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
   "gui.mechanical.high_furnace.pours": "Pours: %s",
   "gui.mechanical.high_furnace.pours_nothing": "Pours: nothing yet",
   "gui.mechanical.high_furnace.layer": "%s mB (%s ingots), melts at %s\u00b0",
@@ -5456,5 +5454,7 @@
   "advancements.mechanical.folklore.wisp_lily_true.title": "Light Calls to Light",
   "advancements.mechanical.folklore.wisp_lily_true.description": "Follow a Will-o'-Wisp with a Will-o'-Wisp Lily in your hand: the lily answers its light, and it leads you true",
   "advancements.mechanical.folklore.moonwort_lock.title": "The Key-Herb",
-  "advancements.mechanical.folklore.moonwort_lock.description": "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent"
+  "advancements.mechanical.folklore.moonwort_lock.description": "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
 }

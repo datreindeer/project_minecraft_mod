@@ -563,12 +563,12 @@
     "mechanical:clay_cooking_pot",
     "mechanical:steel_pan",
     "mechanical:mortar_and_pestle",
+    "mechanical:pouring_spout",
+    "mechanical:iron_ingot_mold",
     "mechanical:silica_bricks",
     "mechanical:banded_furnace_casing",
     "mechanical:firebox",
     "mechanical:taphole",
-    "mechanical:high_furnace_front",
-    "mechanical:pouring_spout",
-    "mechanical:iron_ingot_mold"
+    "mechanical:high_furnace_front"
   ]
 }
