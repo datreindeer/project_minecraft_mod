@@ -3,8 +3,7 @@
   "biomes": [
     "minecraft:plains",
     "minecraft:sunflower_plains",
-    "mechanical:hazel_meadow",
-    "mechanical:chalk_downs"
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:wild_emmer",
   "step": "vegetal_decoration"

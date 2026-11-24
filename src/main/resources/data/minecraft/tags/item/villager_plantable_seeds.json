@@ -3,6 +3,7 @@
   "values": [
     "mechanical:barley_grain",
     "mechanical:einkorn_grain",
-    "mechanical:emmer_grain"
+    "mechanical:emmer_grain",
+    "mechanical:oat_grain"
   ]
 }

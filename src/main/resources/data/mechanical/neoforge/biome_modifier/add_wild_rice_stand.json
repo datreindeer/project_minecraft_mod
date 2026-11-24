@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "mechanical:reed_delta",
+    "mechanical:willow_fen"
+  ],
+  "features": "mechanical:wild_rice_stand",
+  "step": "vegetal_decoration"
+}

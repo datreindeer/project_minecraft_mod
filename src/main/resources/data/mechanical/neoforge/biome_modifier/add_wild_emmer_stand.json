@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:savanna",
+    "mechanical:hazel_meadow"
+  ],
+  "features": "mechanical:wild_emmer_stand",
+  "step": "vegetal_decoration"
+}

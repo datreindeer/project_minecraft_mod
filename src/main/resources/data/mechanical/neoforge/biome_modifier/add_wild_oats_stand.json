@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:meadow",
+    "minecraft:plains",
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs"
+  ],
+  "features": "mechanical:wild_oats_stand",
+  "step": "vegetal_decoration"
+}

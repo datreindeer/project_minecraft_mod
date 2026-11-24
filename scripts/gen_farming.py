@@ -40,8 +40,6 @@ def ripe(block, age=7):
 
 
 SICKLE = {"type": "minecraft:match_tool", "predicate": {"items": "#mechanical:sickles"}}
-KNIFE_OR_SICKLE = {"type": "minecraft:match_tool", "predicate": {"items": ["mechanical:flint_knife", "mechanical:tusk_dagger",
-                                                                          "mechanical:iron_knife", "mechanical:flint_sickle"]}}
 
 
 def loot(path, seq, pools):
@@ -53,7 +51,7 @@ lang = {}
 # ---------------------------------------------------------------- crops
 # 5 drawn stages over ages 0..7 (vanilla crops reuse textures over ages the same way)
 STAGE = [0, 0, 1, 1, 2, 2, 3, 4]
-GRAINS = {"barley": "Barley", "einkorn": "Einkorn", "emmer": "Emmer"}
+GRAINS = {"barley": "Barley", "einkorn": "Einkorn", "emmer": "Emmer", "oat": "Oats"}
 for crop, name in list(GRAINS.items()) + [("pea", "Peas")]:
     block = f"{crop}_crop"
     for s in range(5):
@@ -73,7 +71,7 @@ def grain_loot(block, sheaf, grain=None, seq=None):
 
 for g in GRAINS:
     loot(f"mechanical/loot_table/blocks/{g}_crop", f"mechanical:blocks/{g}_crop",
-         grain_loot(f"mechanical:{g}_crop", f"mechanical:{g}_sheaf", f"mechanical:{g}_grain" if g != "barley" else None))
+         grain_loot(f"mechanical:{g}_crop", f"mechanical:{g}_sheaf", f"mechanical:{g}_grain" if g in ("einkorn", "emmer") else None))
 loot("minecraft/loot_table/blocks/wheat", "minecraft:blocks/wheat", grain_loot("minecraft:wheat", "minecraft:wheat"))
 # peas: ripe 1-3 (one goes back in the ground); roots: ripe 1-2 (vanilla 2-5); beetroot 1 + 0-1 seeds; unripe nothing
 loot("mechanical/loot_table/blocks/pea_crop", "mechanical:blocks/pea_crop",
@@ -95,17 +93,13 @@ loot("minecraft/loot_table/blocks/melon", "minecraft:blocks/melon", [
      "entries": [item("minecraft:melon_seeds", 0, 1)]}])
 
 # ---------------------------------------------------------------- wild plants and the withered crop
-WILD = {"wild_einkorn": ("Wild Einkorn", M + "einkorn_grain", 1, 1), "wild_emmer": ("Wild Emmer", M + "emmer_grain", 1, 1),
-        "wild_pea": ("Wild Pea", M + "peas", 1, 2)}
+# the wild grains (stands that ripen and shatter) are in gen_wildgrain.py
+WILD = {"wild_pea": ("Wild Pea", M + "peas", 1, 2)}
 for block, (name, drop, lo, hi) in WILD.items():
     w(A / f"models/block/{block}.json", {"parent": "minecraft:block/cross", "textures": {"cross": f"mechanical:block/{block}"}})
     w(A / f"blockstates/{block}.json", {"variants": {"": {"model": f"mechanical:block/{block}"}}})
     lang[f"block.mechanical.{block}"] = name
-    if block == "wild_pea":
-        pool = [item(drop, lo, hi)]
-    else:  # cut with a knife or sickle: always; plucked by hand: half the time
-        pool = [{"type": "minecraft:alternatives", "children": [item(drop, condition=KNIFE_OR_SICKLE),
-                                                                 item(drop, condition={"type": "minecraft:random_chance", "chance": 0.5})]}]
+    pool = [item(drop, lo, hi)]
     loot(f"mechanical/loot_table/blocks/{block}", f"mechanical:blocks/{block}", [{"rolls": 1, "entries": pool}])
 w(A / "models/block/withered_crop.json", {"parent": "minecraft:block/crop", "textures": {"crop": "mechanical:block/withered_crop"}})
 w(A / "blockstates/withered_crop.json", {"variants": {"": {"model": "mechanical:block/withered_crop"}}})
@@ -127,14 +121,12 @@ def forage(name, block, biomes, rarity, n, spread):
             {"type": "minecraft:matching_block_tag", "tag": "minecraft:substrate_overworld", "offset": [0, -1, 0]}]}}]})
     w(D / f"mechanical/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes,
         "features": f"mechanical:{name}", "step": "vegetal_decoration"})
-forage("wild_einkorn", "wild_einkorn", ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:savanna"], 10, 6, 3)
-forage("wild_emmer", "wild_emmer", ["minecraft:plains", "minecraft:sunflower_plains"], 12, 6, 3)
-forage("wild_emmer_forest", "wild_emmer", ["minecraft:forest", "minecraft:flower_forest"], 24, 4, 3)
 forage("wild_pea", "wild_pea", ["minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:meadow"], 12, 5, 3)
 
 # ---------------------------------------------------------------- items
 FLAT = {"barley_grain": "Barley Grain", "einkorn_grain": "Einkorn Grain", "emmer_grain": "Emmer Grain", "peas": "Peas",
         "barley_sheaf": "Barley Sheaf", "einkorn_sheaf": "Einkorn Sheaf", "emmer_sheaf": "Emmer Sheaf", "straw": "Straw",
+        "oat_grain": "Oat Grain", "oat_sheaf": "Oat Sheaf",
         "raw_porridge": "Raw Porridge", "porridge": "Porridge", "flour": "Flour", "dough": "Dough", "compost": "Compost", "manure": "Manure"}
 for i, n in FLAT.items():
     item_model(i)
@@ -294,7 +286,7 @@ w(D / "mechanical/tags/block/threshing_floors.json", {"values": ["minecraft:ston
     "minecraft:diorite", "minecraft:andesite", "minecraft:polished_granite", "minecraft:polished_diorite", "minecraft:polished_andesite",
     "minecraft:packed_mud", "minecraft:mud_bricks", "mechanical:stone_anvil"]})
 w(D / "mechanical/tags/block/mineable/sickle.json", {"values": ["#minecraft:crops", "minecraft:short_grass", "minecraft:tall_grass",
-    "minecraft:fern", "minecraft:large_fern", "mechanical:wild_einkorn", "mechanical:wild_emmer", "mechanical:wild_pea",
+    "minecraft:fern", "minecraft:large_fern", "mechanical:wild_pea",
     "mechanical:withered_crop", "minecraft:hay_block"]})
 w(D / "minecraft/tags/block/crops.json", {"replace": False, "values": CROP_BLOCKS})
 w(D / "minecraft/tags/block/maintains_farmland.json", {"replace": False, "values": CROP_BLOCKS + ["mechanical:withered_crop"]})

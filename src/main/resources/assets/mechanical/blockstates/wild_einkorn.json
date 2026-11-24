@@ -1,7 +1,68 @@
 {
   "variants": {
-    "": {
-      "model": "mechanical:block/wild_einkorn"
-    }
+    "stage=0": [
+      {
+        "model": "mechanical:block/wild_einkorn_young_a"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_young_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_young_b"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_young_b",
+        "y": 90
+      }
+    ],
+    "stage=1": [
+      {
+        "model": "mechanical:block/wild_einkorn_heading_a"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_heading_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_heading_b"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_heading_b",
+        "y": 90
+      }
+    ],
+    "stage=2": [
+      {
+        "model": "mechanical:block/wild_einkorn_ripe_a"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_ripe_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_ripe_b"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_ripe_b",
+        "y": 90
+      }
+    ],
+    "stage=3": [
+      {
+        "model": "mechanical:block/wild_einkorn_shattered_a"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_shattered_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_shattered_b"
+      },
+      {
+        "model": "mechanical:block/wild_einkorn_shattered_b",
+        "y": 90
+      }
+    ]
   }
 }

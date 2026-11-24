@@ -5,9 +5,7 @@
     "minecraft:sunflower_plains",
     "minecraft:meadow",
     "minecraft:savanna",
-    "mechanical:hazel_meadow",
-    "mechanical:chalk_downs",
-    "mechanical:limestone_karst"
+    "mechanical:hazel_meadow"
   ],
   "features": "mechanical:wild_einkorn",
   "step": "vegetal_decoration"

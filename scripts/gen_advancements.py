@@ -679,9 +679,20 @@ TABS = {
         ("spoiled", "root", "spoiled_food", T, "Gone Off",
          "Let food spoil. A Bark Basket or a sealed Storage Jar slows it down", has("spoiled_food")),
         ("wild_grain", "root", "einkorn_grain", T, "Wild Grains",
-         "Cut Wild Einkorn or Wild Emmer with a knife, or pick Wild Peas", has("#grains", "peas")),
+         "Cut wild grain with a knife (Einkorn, Emmer, Barley, Oats, Rice; best from a ripe stand in late summer), or pick Wild Peas",
+         has("#grains", "peas")),
         ("flint_sickle", "wild_grain", "flint_sickle", T, "Sickle", "Tool Station: Flint + Twine + Stick",
          has("flint_sickle")),
+        # wild grain stands (WildGrainBlock, Farming.onWildGrainDrops)
+        ("wild_harvest", "flint_sickle", "wild_einkorn", T, "First Harvest",
+         "Cut a ripe wild grain stand with a sickle in late summer, before the ears shatter: a grain each and Straw, a bonus grain now and then",
+         by_code()),
+        ("too_late", "wild_grain", "straw", T, "Too Late",
+         "Cut wild grain whose ears have shattered: the seed lies on the ground, only Straw is left. Sneak-click a plant to see when it ripens",
+         by_code()),
+        ("all_wild_grains", "wild_harvest", "oat_grain", G, "Five Wild Grasses",
+         "Gather the grain of all five wild grasses: Einkorn and Emmer of the plains, Barley of the dry savanna, Oats of the meadows "
+         "and Rice from the shallow water of the marshes", has_all("einkorn_grain", "emmer_grain", "barley_grain", "oat_grain", "rice")),
         ("sow", "wild_grain", "minecraft:wooden_hoe", T, "Sower",
          "Till soil with a hoe and sow grain or peas on the farmland",
          placed("barley_crop", "einkorn_crop", "emmer_crop", "pea_crop", "minecraft:wheat")),
@@ -1418,7 +1429,8 @@ TABS["stone_age"][1].extend([
 ])
 TABS["bronze_age"][1].extend([
     ("bronze_griddle", "bronze", "bronze_griddle", T, "Griddle",
-     "Stand a Bronze Griddle over a Campfire and bake Flatbread from Dough, or Honey Cakes", has("flatbread", "honey_cake")),
+     "Stand a Bronze Griddle over a Campfire and bake Flatbread from Dough, Honey Cakes, or Oatcakes (2 Oat Grain, honey)",
+     has("flatbread", "honey_cake", "oatcakes")),
     ("kettle_dish", "kettle", "pea_soup", G, "Proper Dishes",
      "Cook a dish in the Bronze Kettle: Pea Soup, Onion and Garlic Stew, Spiced Porridge, Tea, Elderberry Syrup or Sloe Jam",
      has("pea_soup", "onion_garlic_stew", "spiced_porridge", "tea", "elderberry_syrup", "sloe_jam")),

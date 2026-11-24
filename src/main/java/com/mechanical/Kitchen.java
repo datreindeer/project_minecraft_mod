@@ -127,6 +127,8 @@ public final class Kitchen {
     public static final DeferredItem<Item> ELDERBERRY_SYRUP = dish("elderberry_syrup", 3);
     public static final DeferredItem<Item> SLOE_JAM = dish("sloe_jam", 3);
     public static final DeferredItem<Item> FLATBREAD = dish("flatbread", 4);
+    /** Oats baked flat on the griddle with a little honey: the old oatcake of the cool wet lands. */
+    public static final DeferredItem<Item> OATCAKES = dish("oatcakes", 4);
     public static final DeferredItem<Item> RAW_HONEY_CAKE = ITEMS.registerSimpleItem("raw_honey_cake");
     public static final DeferredItem<Item> HONEY_CAKE = dish("honey_cake", 5);
     // Iron Age (Iron Cauldron, Iron Skillet, Fermenting Barrel, Cheese Press)
@@ -255,6 +257,7 @@ public final class Kitchen {
                     of("mechanical:bitter_oranges"), HONEY), BITTER_ORANGE_MARMALADE, 2),
             new Dish("sloe_jam", Tool.POT, 1, List.of(of("mechanical:sloes"), of("mechanical:sloes"), of("mechanical:sloes"), HONEY), SLOE_JAM, 2),
             new Dish("flatbread", Tool.PAN, 1, List.of(of("mechanical:dough")), FLATBREAD, 2),
+            new Dish("oatcakes", Tool.PAN, 1, List.of(of("mechanical:oat_grain"), of("mechanical:oat_grain"), HONEY), OATCAKES, 3),
             new Dish("honey_cake", Tool.PAN, 1, List.of(of("mechanical:raw_honey_cake")), HONEY_CAKE, 1),
             // Iron Age: the cauldron, the skillet, the barrel and the press
             new Dish("cabbage_soup", Tool.POT, 2, List.of(of("mechanical:cabbage"), of("mechanical:leek"), of("mechanical:celery"), MEAT), CABBAGE_SOUP, 6),

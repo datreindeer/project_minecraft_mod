@@ -1,0 +1,132 @@
+{
+  "variants": {
+    "stage=0,waterlogged=false": [
+      {
+        "model": "mechanical:block/wild_rice_young_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_young_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_young_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_young_b",
+        "y": 90
+      }
+    ],
+    "stage=0,waterlogged=true": [
+      {
+        "model": "mechanical:block/wild_rice_young_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_young_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_young_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_young_b",
+        "y": 90
+      }
+    ],
+    "stage=1,waterlogged=false": [
+      {
+        "model": "mechanical:block/wild_rice_heading_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_heading_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_heading_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_heading_b",
+        "y": 90
+      }
+    ],
+    "stage=1,waterlogged=true": [
+      {
+        "model": "mechanical:block/wild_rice_heading_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_heading_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_heading_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_heading_b",
+        "y": 90
+      }
+    ],
+    "stage=2,waterlogged=false": [
+      {
+        "model": "mechanical:block/wild_rice_ripe_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_ripe_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_ripe_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_ripe_b",
+        "y": 90
+      }
+    ],
+    "stage=2,waterlogged=true": [
+      {
+        "model": "mechanical:block/wild_rice_ripe_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_ripe_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_ripe_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_ripe_b",
+        "y": 90
+      }
+    ],
+    "stage=3,waterlogged=false": [
+      {
+        "model": "mechanical:block/wild_rice_shattered_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_shattered_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_shattered_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_shattered_b",
+        "y": 90
+      }
+    ],
+    "stage=3,waterlogged=true": [
+      {
+        "model": "mechanical:block/wild_rice_shattered_a"
+      },
+      {
+        "model": "mechanical:block/wild_rice_shattered_a",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/wild_rice_shattered_b"
+      },
+      {
+        "model": "mechanical:block/wild_rice_shattered_b",
+        "y": 90
+      }
+    ]
+  }
+}

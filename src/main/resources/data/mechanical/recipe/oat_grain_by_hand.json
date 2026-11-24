@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:oat_sheaf"
+  ],
+  "result": {
+    "id": "mechanical:oat_grain",
+    "count": 1
+  }
+}

@@ -63,8 +63,8 @@ unlock("cart", M + "wooden_wheel", ["cart"])
 unlock("rope_halter", M + "bronze_ingot", ["rope_halter"])
 unlock("hide_saddle_blanket", M + "rope_halter", ["hide_saddle_blanket"])
 
-GRAINS = [f"{M}{g}_grain" for g in ("barley", "einkorn", "emmer")]
-SHEAVES = [f"{M}{g}_sheaf" for g in ("barley", "einkorn", "emmer")]
+GRAINS = [f"{M}{g}_grain" for g in ("barley", "einkorn", "emmer", "oat")]
+SHEAVES = [f"{M}{g}_sheaf" for g in ("barley", "einkorn", "emmer", "oat")]
 T = D / "mechanical/tags"
 w(T / "item/horse_feed.json", {"values": GRAINS + SHEAVES + ["minecraft:wheat", "minecraft:hay_block", "minecraft:apple", "minecraft:carrot"]})
 w(T / "item/horse_breeding_feed.json", {"values": SHEAVES + ["minecraft:hay_block"]})

@@ -1,0 +1,433 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:wild_rice",
+        "state": {
+          "stage": "0"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:any_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:knives"
+                        }
+                      },
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:sickles"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.15
+                  }
+                ]
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:inverted",
+                    "term": {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:knives"
+                          }
+                        },
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:sickles"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.08
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:wild_rice",
+        "state": {
+          "stage": "1"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:any_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:knives"
+                        }
+                      },
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:sickles"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.25
+                  }
+                ]
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:inverted",
+                    "term": {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:knives"
+                          }
+                        },
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:sickles"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.12
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:wild_rice",
+        "state": {
+          "stage": "2"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:any_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:knives"
+                        }
+                      },
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:sickles"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 1.0
+                  }
+                ]
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:inverted",
+                    "term": {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:knives"
+                          }
+                        },
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:sickles"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.5
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:wild_rice",
+            "state": {
+              "stage": "2"
+            }
+          },
+          {
+            "type": "minecraft:match_tool",
+            "predicate": {
+              "items": "#mechanical:sickles"
+            }
+          }
+        ]
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:straw"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:wild_rice",
+        "state": {
+          "stage": "3"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:straw",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:any_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:knives"
+                        }
+                      },
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:sickles"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 1.0
+                  }
+                ]
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:straw",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:inverted",
+                    "term": {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:knives"
+                          }
+                        },
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:sickles"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.5
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:match_block",
+        "blocks": "mechanical:wild_rice",
+        "state": {
+          "stage": "3"
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:any_of",
+                    "terms": [
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:knives"
+                        }
+                      },
+                      {
+                        "type": "minecraft:match_tool",
+                        "predicate": {
+                          "items": "#mechanical:sickles"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.2
+                  }
+                ]
+              }
+            },
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:rice",
+              "condition": {
+                "type": "minecraft:all_of",
+                "terms": [
+                  {
+                    "type": "minecraft:inverted",
+                    "term": {
+                      "type": "minecraft:any_of",
+                      "terms": [
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:knives"
+                          }
+                        },
+                        {
+                          "type": "minecraft:match_tool",
+                          "predicate": {
+                            "items": "#mechanical:sickles"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "minecraft:random_chance",
+                    "chance": 0.1
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/wild_rice"
+}

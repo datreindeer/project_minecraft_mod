@@ -1,16 +1,16 @@
 {
-  "feature": "mechanical:wild_emmer_forest",
+  "feature": "mechanical:wild_emmer",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 24
+      "chance": 32
     },
     {
       "type": "minecraft:in_square"
     },
     {
       "type": "minecraft:count",
-      "count": 4
+      "count": 3
     },
     {
       "type": "minecraft:offset",

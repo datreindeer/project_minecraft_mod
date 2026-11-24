@@ -1,4 +1,4 @@
-# Farming textures: grain/pea crops (cross model, stage0..4), wild plants, withered crop, farm blocks
+# Farming textures: grain/pea crops (cross model, stage0..4), Wild Pea (wild grains and oats: gen_wildgrain_textures.py), withered crop, farm blocks
 # (quern, baking stone, compost heap, scarecrow) and farming items. Crops and block surfaces are painted
 # procedurally from fixed seeds; items are hand-drawn pixel grids. Colours baked in, like vanilla crops.
 # usage: python scripts/gen_farming_textures.py [preview.png]
@@ -194,24 +194,6 @@ def pea_vine(stage, wild=False):
                 put(img, px + (1 if k == 3 else 0), py + k, PEA["p"])
                 put(img, px + 1 + (1 if k == 3 else 0), py + k, PEA["P"])
                 put(img, px - 1 + (1 if k == 3 else 0), py + k, PEA["q"])
-    return img
-
-
-def wild_grain(g):
-    rng = random.Random("wild_" + g)
-    img = new()
-    blade = ("7cb04a", "5c9038", "3e6c2a")
-    for x, hgt in ((2, 6), (6, 4), (11, 5), (14, 3)):     # grassy blades
-        for i in range(hgt):
-            put(img, x + (i // 3) * (1 if x < 8 else -1), 15 - i, blade[2] if i < 2 else blade[1] if i < 4 else blade[0])
-    for x, hgt, lean in ((4, 10, -1), (8, 13, 1), (12, 9, 1)):   # thin ripe stalks
-        cols = GRAIN[g]["s"]
-        top = stalk(img, x, hgt, lean, (cols[1], cols[1], cols[2]), [(3, -1 if x > 6 else 1)], rng,
-                    (blade[0], blade[1], blade[2]))
-        head(img, g, top[0], top[1] - 2, True, rng)
-    for x, hgt in ((9, 5),):
-        for i in range(hgt):
-            put(img, x, 15 - i, GRAIN[g]["s"][2])
     return img
 
 
@@ -786,8 +768,6 @@ def build():
         out[f"item/{g}_sheaf"] = grid(rows, pal)
     for s in range(5):
         out[f"block/pea_stage{s}"] = pea_vine(s)
-    out["block/wild_einkorn"] = wild_grain("einkorn")
-    out["block/wild_emmer"] = wild_grain("emmer")
     out["block/wild_pea"] = pea_vine(4, wild=True)
     out["block/withered_crop"] = withered()
     out["block/quern_stone_side"] = quern_side()

@@ -100,6 +100,8 @@ public final class Retrogen {
             "foxglove", "yellow_adonis", "bog_asphodel", "marsh_marigold", "wood_anemone", "bluebells", "purple_saxifrage", "purple_loosestrife",
             "spiny_thrift", "cats_foot", "will_o_wisp_lily", "moonwort", "rosehip_thicket", "crowberry_thicket", "bearberry_thicket",
             "barberry_thicket", "caper_thicket", "red_currant_thicket", "black_currant_thicket",
+            // wild grain stands and the new scattered wild grains (gen_wildgrain.py)
+            "wild_einkorn_stand", "wild_emmer_stand", "wild_barley_stand", "wild_oats_stand", "wild_rice_stand", "wild_barley", "wild_oats",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */

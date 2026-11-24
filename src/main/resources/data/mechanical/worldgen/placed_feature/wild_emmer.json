@@ -3,14 +3,14 @@
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 12
+      "chance": 18
     },
     {
       "type": "minecraft:in_square"
     },
     {
       "type": "minecraft:count",
-      "count": 6
+      "count": 4
     },
     {
       "type": "minecraft:offset",

@@ -1,6 +1,3 @@
 {
-  "type": "minecraft:simple_block",
-  "to_place": {
-    "id": "mechanical:wild_emmer"
-  }
+  "type": "mechanical:wild_emmer_scatter"
 }

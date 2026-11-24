@@ -20,12 +20,23 @@
           }
         ]
       }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:oatcakes"
+          }
+        ]
+      }
     }
   },
   "requirements": [
     [
       "has_0",
-      "has_1"
+      "has_1",
+      "has_2"
     ]
   ],
   "display": {

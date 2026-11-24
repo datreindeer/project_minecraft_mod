@@ -158,7 +158,7 @@ public final class Herbs {
         OTHER_CLIMATES.forEach((name, c) -> m.put(CROPS.get(name).get(), c));
     }
 
-    /** The tamed vegetable a ripe wild crop may give, or null if this isn't a wild crop. The Wild Turnip gives Turnip or
+    /** The tamed vegetable a ripe wild crop may give (Emmer: Wheat Grain), or null if this isn't a wild crop. The Wild Turnip gives Turnip or
      *  Rapeseed (one wild plant, two tamed forms, as Brassica rapa really is): {@link #tamedFrom(Block, boolean)}. */
     public static Item tamedFrom(Block wildCrop) {
         return tamedFrom(wildCrop, false);
@@ -166,6 +166,8 @@ public final class Herbs {
 
     public static Item tamedFrom(Block wildCrop, boolean oilSeed) {
         if (oilSeed && wildCrop == WILD_CROPS.get("turnip").get()) return ITEMS_BY_NAME.get("rapeseed").get();
+        // emmer is still the wild type on the field; bread wheat came from it (emmer x goat grass), now and then a Wheat Grain
+        if (wildCrop == Farming.CROPS.get("emmer").get()) return net.minecraft.world.item.Items.WHEAT_SEEDS;
         for (var e : WILD_CROPS.entrySet()) if (e.getValue().get() == wildCrop) return ITEMS_BY_NAME.get(e.getKey()).get();
         return null;
     }

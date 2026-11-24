@@ -25,7 +25,7 @@ Användarens önskelista (översatt och sorterad):
 | Bärbuskar (1 block, korsmodell, 4 stadier, fryser på vintern) | Raspberry, Blueberry, Lingonberry (vintertålig), Wild Strawberry, Elderberry, Cloudberry, Blackberry | `Foraging`, `WildBerryBushBlock`, `gen_data.py`, `gen_berry_textures.py` |
 | Buskar i skogen | Hazel Shrub (hasselnötter), Juniper (enbär), Bramble, Undergrowth, Sapling Thicket, Heather | `ForestUndergrowth` |
 | Svamp | Chanterelle, Porcini, Morel, Oyster Mushroom, Fly Agaric (giftig), Puffball | `Foraging` |
-| Vilda grödor | Wild Einkorn, Wild Emmer, Wild Pea, Wild Carrot Plant, Sea Beet, Stinging Nettle | `docs/farming.md` |
+| Vilda grödor | Wild Einkorn, Wild Emmer, Wild Barley, Wild Oats, Wild Rice (bestånd som fäller fröet), Wild Pea, Wild Carrot Plant, Sea Beet, Stinging Nettle | `docs/farming.md` |
 | Blommor | Vanillas blommor, Fireweed (Scorched Barrens), Spirit Bloom (Ancient Oak, magisk) | |
 | Matlagning | Campfire, Baking Stone, Clay Kiln, Quern (brons), Bronze Kettle + Tripod (stuvning, buljong), Fire Pit, stor Fire Pit (stål) | åldersdokumenten |
 

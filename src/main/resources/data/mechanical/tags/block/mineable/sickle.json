@@ -5,8 +5,6 @@
     "minecraft:tall_grass",
     "minecraft:fern",
     "minecraft:large_fern",
-    "mechanical:wild_einkorn",
-    "mechanical:wild_emmer",
     "mechanical:wild_pea",
     "mechanical:withered_crop",
     "minecraft:hay_block",
@@ -55,6 +53,11 @@
     "mechanical:bog_myrtle",
     "mechanical:meadowsweet",
     "mechanical:hops",
-    "mechanical:wild_mustard"
+    "mechanical:wild_mustard",
+    "mechanical:wild_einkorn",
+    "mechanical:wild_emmer",
+    "mechanical:wild_barley",
+    "mechanical:wild_oats",
+    "mechanical:wild_rice"
   ]
 }

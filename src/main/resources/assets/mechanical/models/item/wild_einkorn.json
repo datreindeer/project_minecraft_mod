@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mechanical:block/wild_einkorn"
+    "layer0": "mechanical:block/wild_einkorn_ripe_a"
   }
 }

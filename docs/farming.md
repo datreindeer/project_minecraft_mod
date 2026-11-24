@@ -56,24 +56,87 @@
 
 ## Var utsädet kommer ifrån (byggt)
 
-Små sällsynta bestånd (placerade som bärbuskarna: chans per chunk, antal försök, spridning ±3).
+Vild säd växer i **naturliga bestånd** som mognar och fäller fröet (se "Vilda sädesbestånd" nedan) och som enstaka
+plantor. Övriga vilda växter: små sällsynta bestånd (placerade som bärbuskarna: chans per chunk, antal försök, spridning ±3).
 
 | Växt | Biomer | Chans per chunk | Ger |
 |---|---|---|---|
-| Wild Einkorn | Plains, Sunflower Plains, Meadow, Savanna | 1/10, 6 försök | 1 Einkorn Grain med kniv/skära, 50 % för hand |
-| Wild Emmer | Plains, Sunflower Plains | 1/12, 6 försök | 1 Emmer Grain med kniv/skära, 50 % för hand |
-| Wild Emmer | Forest, Flower Forest | 1/24, 4 försök | som ovan |
+| Wild Einkorn / Emmer / Barley / Oats / Rice | se "Vilda sädesbestånd" | | efter säsong |
 | Wild Pea | Forest, Flower Forest, Birch Forest, Meadow | 1/12, 5 försök | 1–2 Peas |
 | Wild Carrot Plant | Plains, Sunflower Plains, Meadow, Flower Forest, Hazel Meadow | 1/12, 5 försök | 1–2 Wild Carrot med kniv/skära, 1 i 50 % för hand |
 | Sea Beet | Beach, Stony Shore (på sand, grus, sten eller jord) | 1/2, 10 försök, spridning ±4 | 1–3 Sea Beet Leaves; Beetroot Seeds ~45 % med kniv/skära, 15 % för hand |
 
-Uppmätt i en ny värld (193×193 block): slätt 42 Wild Einkorn + 21 Wild Emmer, savann 45 Wild Einkorn, meadow 16 Wild
-Einkorn + 13 Wild Pea, flower forest 14 Wild Emmer, forest 4 Wild Pea, öken 0.
+Uppmätt i en ny värld före bestånden (193×193 block): slätt 42 Wild Einkorn + 21 Wild Emmer, savann 45 Wild Einkorn,
+meadow 16 Wild Einkorn + 13 Wild Pea. Sedan v0.199.0 är de enstaka plantorna färre (se "Vilda sädesbestånd").
 
 Uppmätt (seed 4242, 9×9 chunks runt biomen): beach 19 Sea Beet, stony shore 40; meadow 9 Wild Carrot Plant, slätt 15,
 flower forest 25.
 
-Barley har ingen vild källa; byns Farmer säljer Barley Grain (se "Vilda grönsaker och tämjning").
+Barley kommer sedan v0.199.0 också vilt (Wild Barley på savannen); byns Farmer säljer fortfarande Barley Grain.
+
+## Vilda sädesbestånd (byggt v0.199.0)
+
+Vild säd växte i täta naturliga bestånd i Främre Orienten: Harlan skar ungefär 1 kg rent korn i timmen med en
+flintskära i vildvete. Bestånden är fläckiga, blandade med gräs och örter, lägre och glesare än odlad säd, och de vilda
+axen **faller sönder** (shattering) när de mognar, så det finns ett skördefönster. Det är just det som odlingen tog bort.
+
+**Arter** (`Farming.WILD_GRAINS`, block `WildGrainBlock`; varje art ger sin grödas utsäde):
+
+| Art | Utseende | Biomer (bestånd, chans per chunk) | Ger | Ax / mogen / fäller (dag på året) |
+|---|---|---|---|---|
+| Wild Einkorn | smalt sicksack-ax, rödbrunt, glesa borst | Plains, Sunflower Plains, Meadow, Chalk Downs, Hazel Meadow, Limestone Karst (1/22) | Einkorn Grain | 92 / 132 / 144 |
+| Wild Emmer | brett tätt ax med långa nästan svarta borst | Plains, Sunflower Plains, Savanna, Hazel Meadow (1/30) | Emmer Grain | 95 / 136 / 148 |
+| Wild Barley | smalt ax, lång borstvippa, blekt; hänger när det är moget | Savanna, Savanna Plateau, Windswept Savanna, Sunflower Plains (1/24) | Barley Grain | 80 / 122 / 133 |
+| Wild Oats | öppen vippa med hängande småax och mörka borst | Meadow, Plains, Hazel Meadow, Chalk Downs (1/24) | Oat Grain (ny gröda Oats) | 102 / 144 / 155 |
+| Wild Rice | hög (1,5 block), står i grunt vatten; böjd vippa med långa röda borst | Swamp, Mangrove Swamp, Reed Delta, Willow Fen (1/3; de flesta försök hittar ingen grund strand) | Rice | 112 / 156 / 168 |
+
+Dag 120–149 är Haymonth och 150–179 Reaping (sensommar). Varje planta förskjuts 0–4 dagar efter läget
+(`WildGrainBlock.JITTER`), så ett bestånd går att skära i ungefär två veckor (11–12 dagar per planta).
+
+**Stadier** (`STAGE`, efter kalendern, kollas vid random tick): **0 young** (vår: gröna skott bland fjolårets gråa
+strå), **1 heading** (gröna ax), **2 ripe** (gyllene ax), **3 shattered** (tomma bleka ax, knäckta strån; står kvar som
+halm genom hösten och vintern). Två ritade varianter per stadium, även spegelvända: fyra utseenden per art.
+
+**Skörd** (loot per stadium; kniv eller skära = "skuren"):
+
+| Stadium | Skuren | För hand |
+|---|---|---|
+| young (fjolårets kvarsittande ax) | 15 % Grain | 8 % |
+| heading (gröna ax) | 25 % Grain | 12 % |
+| ripe | 1 Grain; skära: + Straw och skärans bonus (Flint 50 %, Bronze 80 %, Iron 90 %, Steel 100 %) på ett Grain till | 50 % Grain |
+| shattered | Straw + 20 % Grain | 50 % Straw + 10 % Grain |
+
+Skäran slits 1 per planta. Så finns lite utsäde året om (världen börjar på våren), men den mogna veckan ger mångdubbelt.
+
+**Bestånden lever vidare:** när en planta kommer upp igen efter att ha fällt fröet (övergången från shattered) sår
+den med 35 % chans en ny planta på fri mark bredvid, utom där 11 eller fler av arten redan står inom 2 block
+(`RESEED`, `CROWDED`). Ett bestånd som skärs helt innan axen fällt kommer alltså inte tillbaka; lämna några plantor.
+Odlad säd fäller inte (grödorna på farmland är vanliga crops).
+
+**Fältinfo:** smyg + högerklicka en vild säd med tom hand: stadium och dagar till nästa ("ripe, cut it now! | the
+ears shatter in about 6 days"). **Tooltip** på kornen: när den vilda arten mognar och hur länge fönstret är.
+
+**Världsgen** (`worldgen.WildGrainFeature`, `scripts/gen_wildgrain.py`): ett oregelbundet bestånd 6–15 block brett,
+lobad och utdragen kontur som brusas upp, tätt i mitten och glest och trasigt i kanten, med luckor där gräs, Poppy,
+Cornflower, Oxeye Daisy och örter (Chamomile, Yarrow; vid vildris Water Mint) växer. Bara på öppen, svagt böljande
+mark under bar himmel (inte under träd) (10 av 12 punkter på en ring inom ett block i höjd), högst 2 block höjdskillnad, minst 14 plantor (vildris:
+minst 8 längs stranden). Vildris står i 1 block djupt stillastående vatten (waterlogged) på dy, lera eller jord, och på
+stranden inom 2 block från vatten. Plantorna får dagens stadium när de placeras. Halva steg (SmoothGround) flyttar
+plantor som står i vägen som andra växter. De enstaka plantorna finns kvar men glesare: Wild Einkorn 1/16 (4 försök),
+Wild Emmer 1/18 (och 1/32 i skog), Wild Barley 1/16 på savann, Wild Oats 1/18 på meadow/slätt. Gamla chunkar får
+bestånden genom Retrogen.
+
+**Tämjning:** samma mönster som grönsakerna: odlat **Emmer** (fortfarande vild typ) ger ibland **Wheat Grain**
+(`Herbs.tamedFrom`, 25 %, 35 % på god jord i rätt värme; brödvetet uppstod ur emmer). Einkorn blir inte vete (det
+gjorde det inte heller i verkligheten). Barley, Oats och Rice från vilda bestånd sås som sina grödor (Rice kräver
+risfält som förut).
+
+**Oats** (ny gröda `oat_crop`, Oat Grain, Oat Sheaf): klimat 4–16 (bäst 7–12, frost −1), tröskas som annan säd,
+Porridge med valfri säd, hästfoder (`horse_food`, `horse_feed`), **Oatcakes** på Bronze Griddle (2 Oat Grain +
+honung → 3, 4 hunger).
+
+**Advancements** (Food & Farming): **First Harvest** (skär ett moget bestånd med skära), **Too Late** (skär fällda
+ax), **Five Wild Grasses** (korn från alla fem vilda arterna).
 
 ## Växtvillkor (byggt)
 
@@ -94,6 +157,7 @@ Fortfarande bara på dagen, och frost, säsonger och torka gäller som förut.
 |---|---|---|---|---|
 | Wheat / Einkorn / Emmer | 7–17 | 10–14 | 2 | |
 | Barley | 5–16 | 8–12 | 0 | tålig, växer (långsamt) i snöbiomer |
+| Oats | 4–16 | 7–12 | −1 | sval och fuktig; hästfoder |
 | Carrot / Wild Carrots | 4–15 | 7–12 | −1 | tål kyla, rotfrukt |
 | Potato | 6–16 | 9–13 | 2 | rotfrukt |
 | Beetroot | 5–16 | 8–13 | 1 | rotfrukt |
@@ -111,6 +175,7 @@ Fortfarande bara på dagen, och frost, säsonger och torka gäller som förut.
 |---|---|---|---|---|
 | Wheat / Einkorn / Emmer (standard) | 1.0 | 1.2 | 0.6 | 0 |
 | Barley | 1.2 | 1.0 | 0.7 | 0 |
+| Oats | 1.1 | 1.1 | 0.6 | 0 |
 | Carrot / Wild Carrots | 1.0 | 1.0 | 0.8 | 0 |
 | Potato | 0.9 | 1.2 | 0.5 | 0 |
 | Beetroot | 1.0 | 1.1 | 0.8 | 0 |

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "mechanical:block/wild_emmer"
+    "layer0": "mechanical:block/wild_emmer_ripe_a"
   }
 }

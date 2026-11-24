@@ -80,8 +80,8 @@ public final class Farming {
         return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, name));
     }
 
-    // ---- crops: barley, einkorn, emmer (grain -> crop -> sheaf), peas ----
-    public static final List<String> GRAIN_CROPS = List.of("barley", "einkorn", "emmer");
+    // ---- crops: barley, einkorn, emmer, oats (grain -> crop -> sheaf), peas ----
+    public static final List<String> GRAIN_CROPS = List.of("barley", "einkorn", "emmer", "oat");
     public static final Map<String, DeferredBlock<FarmCropBlock>> CROPS = new LinkedHashMap<>();
     public static final Map<String, DeferredItem<BlockItem>> GRAIN_ITEMS = new LinkedHashMap<>();
     public static final Map<String, DeferredItem<Item>> SHEAF_ITEMS = new LinkedHashMap<>();
@@ -102,8 +102,25 @@ public final class Farming {
     }
 
     // ---- wild plants (the first seed), and what frost, drought and rot leave ----
-    public static final DeferredBlock<WildPlantBlock> WILD_EINKORN = wild("wild_einkorn");
-    public static final DeferredBlock<WildPlantBlock> WILD_EMMER = wild("wild_emmer");
+    /**
+     * Wild grains in their natural stands (WildGrainBlock; worldgen: worldgen.WildGrainFeature): ears, ripening and shattering
+     * days of the year (late summer, barley first, rice last) and height in px. Each gives the grain of its crop.
+     */
+    public static final Map<String, DeferredBlock<WildGrainBlock>> WILD_GRAINS = new LinkedHashMap<>();
+    static {
+        wildGrain("einkorn", new WildGrainBlock.Timing(92, 132, 144), 13);
+        wildGrain("emmer", new WildGrainBlock.Timing(95, 136, 148), 15);
+        wildGrain("barley", new WildGrainBlock.Timing(80, 122, 133), 12);
+        wildGrain("oats", new WildGrainBlock.Timing(102, 144, 155), 14);
+        wildGrain("rice", new WildGrainBlock.Timing(112, 156, 168), 16);
+    }
+    public static final DeferredBlock<WildGrainBlock> WILD_EINKORN = WILD_GRAINS.get("einkorn"), WILD_EMMER = WILD_GRAINS.get("emmer");
+
+    private static void wildGrain(String kind, WildGrainBlock.Timing timing, int height) {
+        WILD_GRAINS.put(kind, BLOCKS.registerBlock("wild_" + kind, kind.equals("rice") ? p -> new WildGrainBlock.Rice(timing, height, p)
+                : p -> new WildGrainBlock(timing, height, p), p -> p.mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS)
+                .offsetType(Block.OffsetType.XZ).randomTicks().pushReaction(PushReaction.POPPED)));
+    }
     public static final DeferredBlock<WildPlantBlock> WILD_PEA = wild("wild_pea");
     public static final DeferredBlock<WildPlantBlock> WITHERED_CROP = BLOCKS.registerBlock("withered_crop", WildPlantBlock::new, p -> p
             .mapColor(MapColor.COLOR_BROWN).noCollision().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.POPPED));
@@ -178,6 +195,7 @@ public final class Farming {
             m.put(CROPS.get("einkorn").get(), WHEAT);
             m.put(CROPS.get("emmer").get(), WHEAT);
             m.put(CROPS.get("barley").get(), new Climate(5, 8, 12, 16, 0, false, new float[] {1.2F, 1.0F, 0.7F, 0})); // quick, early
+            m.put(CROPS.get("oat").get(), new Climate(4, 7, 12, 16, -1, false, new float[] {1.1F, 1.1F, 0.6F, 0})); // cool and damp, like the meadows it comes from
             Climate carrot = new Climate(4, 7, 12, 15, -1, true, new float[] {1.0F, 1.0F, 0.8F, 0}); // roots fill out in autumn
             m.put(Blocks.CARROTS, carrot);
             m.put(Roots.WILD_CARROT_CROP.get(), carrot); // the wild form, same needs
@@ -326,6 +344,46 @@ public final class Farming {
         }
     }
 
+    static final Identifier WILD_HARVEST = Identifier.fromNamespaceAndPath(MODID, "food/wild_harvest"),
+            TOO_LATE = Identifier.fromNamespaceAndPath(MODID, "food/too_late");
+
+    /**
+     * A wild grain plant cut (stage drops: its loot table): ripe, a sickle's chance of one more grain, as a crop's extra sheaf;
+     * a sickle wears 1 (the plant breaks at once). First Harvest for a ripe one cut with a sickle, Too Late for shattered ears.
+     */
+    @SubscribeEvent
+    static void onWildGrainDrops(BlockDropsEvent event) {
+        BlockState state = event.getState();
+        if (!(state.getBlock() instanceof WildGrainBlock)) return;
+        ItemStack tool = event.getTool();
+        int stage = state.getValue(WildGrainBlock.STAGE);
+        if (stage == WildGrainBlock.RIPE && event.getLevel().getRandom().nextFloat() < sickleBonus(tool)) {
+            event.getDrops().stream().map(ItemEntity::getItem).filter(s -> s.is(GRAINS)).findFirst().ifPresent(s -> s.grow(1));
+        }
+        if (event.getBreaker() instanceof LivingEntity breaker && tool.is(SICKLES)) tool.hurtAndBreak(1, breaker, EquipmentSlot.MAINHAND);
+        if (event.getBreaker() instanceof net.minecraft.server.level.ServerPlayer sp) {
+            if (stage == WildGrainBlock.RIPE && tool.is(SICKLES)) Kettle.award(sp, WILD_HARVEST);
+            if (stage == WildGrainBlock.SHATTERED) Kettle.award(sp, TOO_LATE);
+        }
+    }
+
+    /** Days from today until this plant reaches {@code day} of the year (its own ripening offset added), 0..359. */
+    static int daysUntil(Level level, BlockPos pos, int day) {
+        return Math.floorMod(day + WildGrainBlock.jitter(pos) - Calendar.dayOfYear(level.getOverworldClockTime()), Calendar.YEAR_DAYS);
+    }
+
+    /** Field info for a wild grain plant: its stage and how long till the next one (the harvest window). */
+    static Component wildGrainInfo(Level level, BlockPos pos, BlockState state) {
+        WildGrainBlock.Timing t = ((WildGrainBlock) state.getBlock()).timing();
+        int stage = state.getValue(WildGrainBlock.STAGE);
+        int next = switch (stage) {
+            case WildGrainBlock.YOUNG -> t.head();
+            case WildGrainBlock.HEADING, WildGrainBlock.SHATTERED -> t.ripe();
+            default -> t.shatter();
+        };
+        return Component.translatable("message.mechanical.wild_grain." + stage, state.getBlock().getName(), daysUntil(level, pos, next));
+    }
+
     /** Chance of one extra sheaf from a ripe grain crop cut with this sickle (Straw comes from the loot tables): better metal, better yield. */
     public static float sickleBonus(ItemStack tool) {
         if (tool.is(Smithing.STEEL_SICKLE.get())) return 1.0F;
@@ -346,9 +404,17 @@ public final class Farming {
         @SubscribeEvent
         static void onTooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
-            float bonus = sickleBonus(stack);
-            if (bonus == 0 || event.getToolTip().isEmpty()) return;
+            if (event.getToolTip().isEmpty()) return;
             List<Component> tip = event.getToolTip();
+            WILD_GRAINS.forEach((kind, wild) -> {
+                if (!stack.is(wildGrainItem(kind))) return;
+                WildGrainBlock.Timing t = wild.get().timing();
+                tip.add(1, Component.translatable("tooltip.mechanical.wild_grain_window", wild.get().getName(), t.ripe() % Calendar.MONTH_DAYS + 1,
+                        Component.translatable("calendar.mechanical.month." + Calendar.MONTHS[t.ripe() / Calendar.MONTH_DAYS]), t.shatter() - t.ripe())
+                        .withStyle(net.minecraft.ChatFormatting.GRAY));
+            });
+            float bonus = sickleBonus(stack);
+            if (bonus == 0) return;
             tip.add(1, Component.translatable("tooltip.mechanical.sickle_yield", Math.round(bonus * 100)).withStyle(net.minecraft.ChatFormatting.GRAY));
             int side = 2 * BronzeTools.sweepRadius(stack) + 1;
             if (side > 1) tip.add(2, Component.translatable("tooltip.mechanical.sickle_swath", side).withStyle(net.minecraft.ChatFormatting.GRAY));
@@ -412,6 +478,11 @@ public final class Farming {
         event.setCanceled(true);
     }
 
+    /** The grain a wild stand of this kind gives: its crop's grain (oats: Oat Grain, rice: Rice). */
+    public static Item wildGrainItem(String kind) {
+        return kind.equals("rice") ? Herbs.ITEMS_BY_NAME.get("rice").get() : GRAIN_ITEMS.get(kind.equals("oats") ? "oat" : kind).get();
+    }
+
     /** Sheaf -> its grain (threshing); empty if the stack isn't a sheaf. */
     public static ItemStack grainOf(ItemStack sheaf) {
         if (sheaf.is(Items.WHEAT)) return new ItemStack(Items.WHEAT_SEEDS);
@@ -469,13 +540,19 @@ public final class Farming {
 
     // ---------------------------------------------------------------- field info
 
-    /** Sneak + right-click farmland or a crop with an empty hand: fertility, moisture and, for a crop, its climate. */
+    /** Sneak + right-click farmland or a crop with an empty hand: fertility, moisture and, for a crop, its climate; a wild grain: its harvest window. */
     @SubscribeEvent
     static void onInspect(PlayerInteractEvent.RightClickBlock event) {
         if (!event.getEntity().isShiftKeyDown() || !event.getItemStack().isEmpty()) return;
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState clicked = level.getBlockState(pos);
+        if (clicked.getBlock() instanceof WildGrainBlock) {
+            if (!level.isClientSide()) event.getEntity().sendOverlayMessage(wildGrainInfo(level, pos, clicked));
+            event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+            event.setCanceled(true);
+            return;
+        }
         BlockPos soilPos = clicked.hasProperty(Fertility.FERTILITY) ? pos : pos.below();
         BlockState soil = level.getBlockState(soilPos);
         if (!soil.hasProperty(Fertility.FERTILITY)) return;

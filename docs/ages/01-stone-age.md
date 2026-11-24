@@ -2563,9 +2563,13 @@ växten kan växa där; annars är slabben kvar. Fungerar också på vanligt gr�
 ### Odling
 Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farming.md`.
 
-- **Säd = utsäde.** Gräs och ormbunkar släpper inga frön. Första utsädet hittar man vilt: **Wild Einkorn** (slätt,
-  sunflower plains, meadow, savann) och **Wild Emmer** (slätt, sparsamt i skog) i små sällsynta bestånd: med kniv eller
-  Flint Sickle 1 Grain, för hand 50 %. **Wild Pea** (skog, blomsterskog, björkskog, meadow) ger 1–2 **Peas** (mat och
+- **Säd = utsäde.** Gräs och ormbunkar släpper inga frön. Första utsädet hittar man vilt, i sällsynta naturliga
+  **bestånd** 6–15 block breda (och glest som enstaka plantor): **Wild Einkorn** (slätt, meadow, Chalk Downs),
+  **Wild Emmer** (slätt, savann), **Wild Barley** (savann), **Wild Oats** (meadow, slätt) och **Wild Rice** (i grunt
+  vatten i träsk och delta). De mognar på sensommaren och axen **faller sönder** efter ungefär två veckor: skuren mogen
+  ger 1 Grain (Flint Sickle + Straw och 50 % ett till), för sent mest Straw. Resten av året ger en planta bara ibland ett
+  korn. Smyg-högerklicka en planta för att se hur länge det är kvar. Fällda bestånd sår sig själva och kommer igen
+  nästa år. Odlat Emmer ger ibland **Wheat Grain**. Allt i `docs/farming.md`, "Vilda sädesbestånd". **Wild Pea** (skog, blomsterskog, björkskog, meadow) ger 1–2 **Peas** (mat och
   utsäde). Byarnas kistor och bonden har **Wheat Grain** (vanillas Wheat Seeds heter så nu).
 - **Rotfrukter:** **Wild Carrot Plant** (vita flockblommor på slätt, meadow, blomsterskog) ger **Wild Carrot** (tunn
   blek rot, dålig mat) med kniv/skära 1–2, för hand 50 %. Sås på farmland som **Wild Carrots**; mogen ger den 1–2 Wild
@@ -2575,7 +2579,7 @@ Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farmi
 - **Root Cellar** (`[Planks][Straw][Planks]` / `[Planks][ ][Planks]` / `[Planks]×3`): binge med lock, 9 platser. Grävd
   ner i marken (lite dagsljus på alla sidor) håller rotfrukter och blad 4× längre, annan mat 2×.
 - **Så:** Flint Hoe gör farmland (Podzol blir extra bördig), Grain/Peas sås på den. Grödor: Wheat, **Einkorn**, **Emmer**,
-  **Barley** (bara creative än), **Peas**, Carrot, Potato, Beetroot, Melon, Pumpkin.
+  **Barley**, **Oats**, **Peas**, Carrot, Potato, Beetroot, Melon, Pumpkin.
 - **Skörd:** omogna grödor ger **ingenting** (odlat Einkorn/Emmer 0–1 Grain). Mogen säd ger **1 Sheaf** (vanillas Wheat
   heter nu **Wheat Sheaf**); med **Flint Sickle** +50 % chans på en till och 1 **Straw**. Carrot/Potato 1–2, Beetroot
   1 + 0–1 frö, Peas 1–3. Melonen ger 0–1 frö, en pumpa → 1 frö.
