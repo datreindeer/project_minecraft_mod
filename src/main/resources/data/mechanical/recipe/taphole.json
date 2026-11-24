@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:banded_furnace_casing",
+    "mechanical:iron_tool_rod",
+    "mechanical:fire_clay"
+  ],
+  "result": {
+    "id": "mechanical:taphole",
+    "count": 1
+  }
+}

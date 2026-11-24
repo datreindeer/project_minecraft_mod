@@ -1,0 +1,308 @@
+package com.mechanical;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.LevelSettings;
+import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+
+/**
+ * Dev only (like WaterShots): with {@code furnaceshots.flag} in the game directory the client makes a flat world and
+ * builds two High Furnaces: the smallest (inside 2x2x5 at x 0..1, z 0..1) with its Great Bellows on a real overshot
+ * Water Wheel (via gearboxes and an upright shaft), and the biggest (3x3x8 at x 10..12, z 0..2) with three bellows
+ * driven from code. The flag's first line is the output folder; then one step per line: a view "name x y z tx ty tz"
+ * (relative to the ground at 0,0) shoots fs_name.png; "!light" stocks and lights every Firebox; "!heat T" sets both
+ * furnaces to T° (dried out); "!time N"; "!gui" opens the small furnace's screen and shoots it; "!wait N" waits N ticks.
+ */
+@EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
+public final class FurnaceShots {
+    private static final String WORLD = "FurnaceShots";
+    private static int stage = -1, ticks, step, ground;
+    private static File out;
+    private static final List<String> result = new ArrayList<>();
+    private static final List<Object[]> STEPS = new ArrayList<>();
+    private static ArmorStand camera;
+    private static boolean feeding;
+    private static final BlockPos SMALL_FRONT = new BlockPos(0, 0, -1), BIG_FRONT = new BlockPos(10, 0, -1);
+
+    @SubscribeEvent
+    static void onTick(ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        try {
+            if (stage == -1) {
+                File flag = new File(mc.gameDirectory, "furnaceshots.flag");
+                if (!flag.exists()) {
+                    stage = -2;
+                    return;
+                }
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                out.mkdirs();
+                File dir = new File(mc.gameDirectory, "saves/" + WORLD);
+                if (dir.exists()) try (var walk = Files.walk(dir.toPath())) {
+                    walk.sorted(java.util.Comparator.reverseOrder()).map(java.nio.file.Path::toFile).forEach(File::delete);
+                }
+                script(lines.subList(1, lines.size()));
+                stage = 0;
+            }
+            if (stage < 0) return;
+            if (stage == 0) {
+                if (mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen) mc.gui.setScreen(new TitleScreen());
+                if (mc.gui.screen() instanceof TitleScreen) {
+                    mc.getWindow().setWindowed(1600, 900);
+                    mc.options.renderDistance().set(8);
+                    mc.options.cloudStatus().set(net.minecraft.client.CloudStatus.OFF);
+                    mc.createWorldOpenFlows().createFreshLevel(WORLD,
+                            new LevelSettings(WORLD, GameType.CREATIVE, LevelSettings.DifficultySettings.DEFAULT, true, WorldDataConfiguration.DEFAULT),
+                            new WorldOptions(4321L, false, false),
+                            reg -> reg.lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),
+                            new TitleScreen());
+                    stage = 1;
+                    ticks = 0;
+                }
+                return;
+            }
+            if (mc.player == null || mc.getSingleplayerServer() == null) return;
+            ticks++;
+            if (feeding) server(() -> {
+                for (int z = 0; z < 3; z++)
+                    if (level().getBlockEntity(rel(14, 0, z)) instanceof GreatBellowsBlockEntity b) b.feed(16 * WaterPower.DEG_PER_POWER, 0, 0, 16);
+            });
+            if (stage == 1) {
+                mc.options.pauseOnLostFocus = false;
+                if (mc.gui.screen() != null) mc.gui.setScreen(null);
+                if (ticks < 80) return;
+                if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+                stage = 2;
+                ticks = 0;
+                return;
+            }
+            if (camera != null) camera.setOldPosAndRot();
+            if (step >= STEPS.size()) {
+                if (ticks < 20) return;
+                finish(mc);
+                return;
+            }
+            Object[] s = STEPS.get(step);
+            if (ticks < (int) s[0]) return;
+            ((Runnable) s[1]).run();
+            step++;
+            ticks = 0;
+        } catch (Throwable e) {
+            result.add("error: " + e);
+            for (StackTraceElement el : e.getStackTrace()) if (el.getClassName().startsWith("com.mechanical")) result.add("  at " + el);
+            finish(mc);
+        }
+    }
+
+    private static void finish(Minecraft mc) {
+        try {
+            Files.write(new File(out, "fs_result.txt").toPath(), result);
+        } catch (Exception ignored) {}
+        stage = -2;
+        mc.stop();
+    }
+
+    private static void then(int wait, Runnable r) {
+        STEPS.add(new Object[] {wait, r});
+    }
+
+    private static ServerLevel level() {
+        return Minecraft.getInstance().getSingleplayerServer().overworld();
+    }
+
+    private static void server(Runnable r) {
+        Minecraft.getInstance().getSingleplayerServer().execute(r);
+    }
+
+    private static void cmd(String c) {
+        var server = Minecraft.getInstance().getSingleplayerServer();
+        server.getCommands().performPrefixedCommand(server.createCommandSourceStack().withSuppressedOutput(), c);
+    }
+
+    private static void view(Vec3 at, Vec3 target) {
+        Minecraft mc = Minecraft.getInstance();
+        if (camera == null) {
+            camera = new ArmorStand(EntityTypes.ARMOR_STAND, mc.level);
+            camera.setInvisible(true);
+        }
+        Vec3 d = target.subtract(at);
+        float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z)), pitch = (float) -Math.toDegrees(Math.atan2(d.y, d.horizontalDistance()));
+        camera.setPos(at.x, at.y - camera.getEyeHeight(), at.z);
+        camera.setYRot(yaw);
+        camera.setXRot(pitch);
+        camera.setYHeadRot(yaw);
+        camera.setOldPosAndRot();
+        mc.setCameraEntity(camera);
+        mc.options.setCameraType(CameraType.FIRST_PERSON);
+    }
+
+    private static void shot(String name) {
+        Screenshot.takeScreenshot(Minecraft.getInstance().gameRenderer.mainRenderTarget(), image -> {
+            try (image) {
+                image.writeToFile(new File(out, "fs_" + name + ".png"));
+            } catch (Exception e) {
+                result.add("screenshot " + name + " failed: " + e);
+            }
+        });
+    }
+
+    private static BlockPos rel(int x, int y, int z) {
+        return new BlockPos(x, ground + y, z);
+    }
+
+    private static void set(int x, int y, int z, BlockState s) {
+        level().setBlockAndUpdate(rel(x, y, z), s);
+    }
+
+    /** A furnace: inside x0.., z0.. (wide x deep), floor at y -1, walls 0..layers-1, the Front at x0 in the north wall. */
+    private static void furnace(int x0, int z0, int wide, int deep, int layers) {
+        for (int x = x0; x < x0 + wide; x++) for (int z = z0; z < z0 + deep; z++) set(x, -1, z, HighFurnace.SILICA_BRICKS.get().defaultBlockState());
+        BlockState c = HighFurnace.BANDED_FURNACE_CASING.get().defaultBlockState();
+        for (int y = 0; y < layers; y++) {
+            for (int x = x0; x < x0 + wide; x++) {
+                set(x, y, z0 - 1, c);
+                set(x, y, z0 + deep, c);
+            }
+            for (int z = z0; z < z0 + deep; z++) {
+                set(x0 - 1, y, z, c);
+                set(x0 + wide, y, z, c);
+            }
+        }
+        // corner pillars of Silica Bricks, as a builder would set them
+        for (int y = -1; y < layers; y++)
+            for (int[] p : new int[][] {{x0 - 1, z0 - 1}, {x0 + wide, z0 - 1}, {x0 - 1, z0 + deep}, {x0 + wide, z0 + deep}})
+                set(p[0], y, p[1], HighFurnace.SILICA_BRICKS.get().defaultBlockState());
+        set(x0, 0, z0 - 1, HighFurnace.HIGH_FURNACE_FRONT.get().defaultBlockState().setValue(HighFurnaceFrontBlock.FACING, Direction.NORTH));
+    }
+
+    private static void build() {
+        for (String c : List.of("time set 5000", "gamerule advance_time false", "gamerule advance_weather false", "weather clear",
+                "gamerule spawn_mobs false", "difficulty peaceful"))
+            cmd(c);
+        ground = level().getHeight(Heightmap.Types.MOTION_BLOCKING, 0, 0);
+        BlockState stone = Blocks.STONE_BRICKS.defaultBlockState(), cobble = Blocks.COBBLESTONE.defaultBlockState(), air = Blocks.AIR.defaultBlockState();
+        // a cobbled yard under both furnaces
+        for (int x = -4; x <= 17; x++) for (int z = -6; z <= 7; z++) set(x, -1, z, (x * 7 + z * 3) % 5 == 0 ? Blocks.GRAVEL.defaultBlockState() : cobble);
+        furnace(0, 0, 2, 2, 5);
+        set(2, 0, 0, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
+        furnace(10, 0, 3, 3, 8);
+        for (int z = 0; z < 3; z++) {
+            set(13, 0, z, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
+            set(14, 0, z, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.WEST));
+        }
+        set(13, 0, 1, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
+        set(13, 0, 1, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
+        set(11, 0, 3, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        // the small furnace's bellows on a real wheel: an overshot wheel (axis z, hub 3,3,6), its axle north through a gearbox,
+        // down an upright shaft to a gearbox at the bellows' height and on into the bellows' side
+        set(3, 0, 0, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.WEST));
+        BlockState sz = WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, Direction.Axis.Z),
+                sy = WaterPower.WOODEN_SHAFT.get().defaultBlockState().setValue(ShaftBlock.AXIS, Direction.Axis.Y);
+        set(3, 0, 1, sz);
+        set(3, 0, 2, WaterPower.GEARBOX.get().defaultBlockState());
+        set(3, 1, 2, sy);
+        set(3, 2, 2, sy);
+        set(3, 3, 2, WaterPower.GEARBOX.get().defaultBlockState());
+        for (int z = 3; z <= 5; z++) set(3, 3, z, sz);
+        set(3, 3, 6, WaterPower.WATER_WHEEL.get().defaultBlockState().setValue(WaterWheelBlock.AXIS, Direction.Axis.Z));
+        // the race: a stone trough along x at y 6 (floor y 5), its water falling past the wheel's +x side (x 5)
+        for (int x = 6; x <= 14; x++) {
+            set(x, 5, 6, x % 4 == 0 ? Blocks.MOSSY_STONE_BRICKS.defaultBlockState() : stone);
+            set(x, 6, 5, stone);
+            set(x, 6, 7, stone);
+            set(x, 6, 6, Blocks.WATER.defaultBlockState());
+            if (x % 4 == 2) for (int y = 0; y <= 4; y++) set(x, y, 6, stone);
+        }
+        set(15, 6, 6, stone);
+        set(5, 6, 6, Blocks.WATER.defaultBlockState());
+        // the tailrace: a pit under the wheel's falling side, running off south
+        for (int x = 4; x <= 6; x++) for (int z = 4; z <= 13; z++) {
+            set(x, -1, z, x == 5 || z > 5 && z < 9 ? air : stone);
+            set(x, -2, z, stone);
+        }
+    }
+
+    private static void light() {
+        for (BlockPos front : new BlockPos[] {SMALL_FRONT, BIG_FRONT})
+            if (level().getBlockEntity(rel(front.getX(), front.getY(), front.getZ())) instanceof HighFurnaceBlockEntity f) {
+                f.check(level());
+                result.add(front + " formed " + f.formed() + " problem " + (f.problem() == null ? "-" : f.problem().getString()));
+                if (f.shape() != null) for (HighFurnaceShape.Wall w : f.shape().fireboxes()) f.addFuel(w.pos(), new ItemStack(Items.CHARCOAL, 32));
+                f.light();
+                f.setDriedForTest();
+            }
+    }
+
+    private static void heat(float t) {
+        for (BlockPos front : new BlockPos[] {SMALL_FRONT, BIG_FRONT})
+            if (level().getBlockEntity(rel(front.getX(), front.getY(), front.getZ())) instanceof HighFurnaceBlockEntity f) {
+                f.setTemperatureForTest(t);
+                result.add(front + " heat " + t + " target " + f.target() + " blast " + f.effectiveBlast());
+            }
+    }
+
+    private static Vec3 at(double x, double y, double z) {
+        return new Vec3(x, ground + y, z);
+    }
+
+    private static void script(List<String> lines) {
+        then(1, () -> server(FurnaceShots::build));
+        then(60, () -> server(() -> {
+            if (level().getBlockEntity(rel(3, 3, 6)) instanceof WaterWheelBlockEntity w) result.add("wheel power " + w.power());
+            if (level().getBlockEntity(rel(3, 0, 0)) instanceof GreatBellowsBlockEntity b) result.add("small bellows power " + b.power());
+        }));
+        then(1, () -> feeding = true);
+        for (String l : lines) {
+            String[] p = l.trim().split("\\s+");
+            if (p.length == 0 || p[0].isEmpty()) continue;
+            switch (p[0]) {
+                case "!light" -> then(2, () -> server(FurnaceShots::light));
+                case "!heat" -> then(2, () -> server(() -> heat(Float.parseFloat(p[1]))));
+                case "!time" -> then(2, () -> cmd("time set " + p[1]));
+                case "!wait" -> then(Integer.parseInt(p[1]), () -> {});
+                case "!gui" -> {
+                    then(2, () -> server(() -> {
+                        var pl = Minecraft.getInstance().getSingleplayerServer().getPlayerList().getPlayers().get(0);
+                        pl.teleportTo(level(), 10.5, ground, -3.5, java.util.Set.of(), 0, 20, true);
+                        if (level().getBlockEntity(rel(10, 0, -1)) instanceof HighFurnaceBlockEntity f) pl.openMenu(f);
+                    }));
+                    then(20, () -> shot("gui"));
+                    then(2, () -> Minecraft.getInstance().player.closeContainer());
+                }
+                default -> {
+                    then(8, () -> view(at(Double.parseDouble(p[1]), Double.parseDouble(p[2]), Double.parseDouble(p[3])),
+                            at(Double.parseDouble(p[4]), Double.parseDouble(p[5]), Double.parseDouble(p[6]))));
+                    then(20, () -> shot(p[0]));
+                }
+            }
+        }
+    }
+
+    private FurnaceShots() {}
+}

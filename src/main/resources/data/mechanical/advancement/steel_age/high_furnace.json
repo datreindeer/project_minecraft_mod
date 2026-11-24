@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:steel_age/silica_brick",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:high_furnace_front"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.high_furnace.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.high_furnace.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

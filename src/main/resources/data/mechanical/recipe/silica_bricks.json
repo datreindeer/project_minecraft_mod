@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "BB",
+    "BB"
+  ],
+  "key": {
+    "B": "mechanical:silica_brick"
+  },
+  "result": {
+    "id": "mechanical:silica_bricks"
+  }
+}

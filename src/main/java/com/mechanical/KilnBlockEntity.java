@@ -137,6 +137,9 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Items.GOLD_NUGGET), 9, () -> Items.GOLD_INGOT, 400, IronOres.GOLD_TEMP),
             new Recipe(s -> s.is(Ironworking.UNFIRED_CLAY_HAMMER_HEAD_MOLD.get()), 1, () -> Ironworking.CLAY_HAMMER_HEAD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Ironworking.UNFIRED_CLAY_ANVIL_MOLD.get()), 1, () -> Ironworking.CLAY_ANVIL_MOLD_ITEM.get(), 600, 600),
+            // the High Furnace (HighFurnace): its tuyere mold, and silica bricks fired at 1250° (bellows)
+            new Recipe(s -> s.is(HighFurnace.UNFIRED_CLAY_TUYERE_MOLD.get()), 1, () -> HighFurnace.CLAY_TUYERE_MOLD_ITEM.get(), 400, 600),
+            new Recipe(s -> s.is(HighFurnace.UNFIRED_SILICA_BRICK.get()), 1, () -> HighFurnace.SILICA_BRICK.get(), HighFurnace.SILICA_TICKS, HighFurnace.SILICA_TEMP),
             // a cooled Iron Bloom back to forging heat (BloomeryBlockEntity.FORGE_TEMP); it keeps its blows
             new Recipe(s -> s.is(Ironworking.IRON_BLOOM.get()), 1, () -> Ironworking.HOT_IRON_BLOOM.get(), 200, 1100),
             // iron and steel to forging heat for the anvil (Smithing)

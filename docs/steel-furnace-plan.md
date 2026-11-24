@@ -1,6 +1,6 @@
 # Plan: High Furnace, stålålderns stora smältugn (2026-11-24)
 
-> Status: **plan, inget byggt.** Beslut märkta "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de.
+> Status: **fas 0–2 byggda (v0.200.0)**, se *Byggt* längst ned och `docs/ages/04-steel-age.md` 6a. Beslut märkta "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de.
 > Item- och blocknamn står på engelska. Byggs fas för fas (se *Faser*), och varje fas förs in i åldersdokumentet.
 
 Det här vill du ha (översatt): **ett nytt, stort multiblock av stålålderns block som når mycket höga temperaturer, där man
@@ -652,3 +652,14 @@ sista dataändringen; bilder skickas.
 
 Kvar att kontrollera vid bygget: om vanillas Bell och Cauldron är låsta i dag, om Bronze Bucket kan bära lava, och
 vanillas Anvil (järnålderns dokument säger ångåldern; gjuts inte från stål utan att användaren tillfrågas).
+
+## Byggt
+
+- **Fas 0 (v0.200.0):** `Molten` (egen enum för ugnens smältor, i densitetsordning; `Metal` och lerformarnas tillstånd är
+  orörda, avvikelse från planen som sa "Metal får de nya smältorna"), `MeltPool` (lager i mB, legering 9:1 och 1:2 med 20 mB
+  per tick, rester ligger kvar, `selfCheck` vid start). `ChannelFlow` och `MoltenRenderer` ändras först i fas 4 där de behövs.
+- **Fas 1 (v0.200.0):** alla byggblock i tabellen utom Sight Glass och Pouring Spout; `HighFurnaceShape.find` med
+  felmeddelandena; `HEAT`-glöd på nedersta ringen. Test `high_furnace_shape`.
+- **Fas 2 (v0.200.0):** Great Bellows (`WaterPower.Driven`), delad kraft (`WaterPower.share`), eldstadsbränsle, målformeln,
+  storleksfaktor, uttorkning, regn, skärmen (utan lagerkolumn). Lågor/gnistor/rök från toppen och glöden i schaktet
+  (`client/HighFurnaceRenderer`). Test `high_furnace_heat`, `waterpower_shared`, `waterpower_shared_bellows`.

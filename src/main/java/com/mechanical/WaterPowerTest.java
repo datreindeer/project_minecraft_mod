@@ -39,13 +39,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class WaterPowerTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"waterpower_wheel", "waterpower_two_wheels", "waterpower_body", "waterpower_shared", "sawmill_barked", "sawmill_stripped", "sawmill_no_power", "sawmill_wrong_flow"};
+    private static final String[] TESTS = {"waterpower_wheel", "waterpower_two_wheels", "waterpower_body", "waterpower_shared", "waterpower_shared_bellows", "sawmill_barked", "sawmill_stripped", "sawmill_no_power", "sawmill_wrong_flow"};
 
     static {
         TEST_FUNCTIONS.register("waterpower_wheel", () -> WaterPowerTest::wheel);
         TEST_FUNCTIONS.register("waterpower_two_wheels", () -> WaterPowerTest::twoWheels);
         TEST_FUNCTIONS.register("waterpower_body", () -> WaterPowerTest::body);
-        TEST_FUNCTIONS.register("waterpower_shared", () -> WaterPowerTest::shared);
+        TEST_FUNCTIONS.register("waterpower_shared", () -> h -> shared(h, Sawmill.SAW_BENCH.get().defaultBlockState().setValue(SawBenchBlock.FACING, Direction.NORTH)));
+        TEST_FUNCTIONS.register("waterpower_shared_bellows", () -> h -> shared(h, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.NORTH)));
         TEST_FUNCTIONS.register("sawmill_barked", () -> h -> mill(h, new ItemStack(Items.OAK_LOG), 12, true, List.of(
                 new ItemStack(Mechanical.ROUGH_LOGS.get("oak").get(), 2), new ItemStack(Mechanical.FIREWOOD.get("oak").get(), 2),
                 new ItemStack(Mechanical.BARKS.get("oak").get(), 2), new ItemStack(Sawmill.SAWDUST.get(), 2))));
@@ -151,17 +152,16 @@ public final class WaterPowerTest {
 
     /** The wheel's body: two boxes in its cells, solid, keeping blocks out of the wheel, gone with the hub. */
     /**
-     * Machines on one axle share its power (user decision 2026-11-24): a wheel's shaft into a gearbox drives two Saw
-     * Benches, one each way; each gets half (rounded down). With one bench gone the other gets it all, and the shafts
+     * Machines on one axle share its power (user decision 2026-11-24): a wheel's shaft into a gearbox drives two machines
+     * (Saw Benches, or Great Bellows), one each way; each gets half (rounded down). With one bench gone the other gets it all, and the shafts
      * always carry the whole line.
      */
-    private static void shared(GameTestHelper h) {
+    private static void shared(GameTestHelper h, BlockState saw) {
         floor(h);
         h.setBlock(new BlockPos(6, 5, 6), WaterPower.WATER_WHEEL.get().defaultBlockState().setValue(WaterWheelBlock.AXIS, Direction.Axis.Z));
         h.setBlock(new BlockPos(8, 8, 6), Blocks.WATER);
         h.setBlock(new BlockPos(6, 5, 7), shaft(Direction.Axis.Z));
         h.setBlock(new BlockPos(6, 5, 8), WaterPower.GEARBOX.get());
-        BlockState saw = Sawmill.SAW_BENCH.get().defaultBlockState().setValue(SawBenchBlock.FACING, Direction.NORTH);
         for (int x : new int[] {5, 7}) h.setBlock(new BlockPos(x, 5, 8), shaft(Direction.Axis.X));
         for (int x : new int[] {4, 8}) h.setBlock(new BlockPos(x, 5, 8), saw);
         h.runAfterDelay(70, () -> {

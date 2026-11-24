@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:banded_furnace_casing",
+    "mechanical:bronze_tuyere_nozzle",
+    "mechanical:iron_plate"
+  ],
+  "result": {
+    "id": "mechanical:firebox",
+    "count": 1
+  }
+}

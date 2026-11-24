@@ -189,7 +189,9 @@ public final class Smithing {
         CHISEL_BLADE("chisel_blade", 1, 4, () -> IRON_CHISEL_BLADE.get(), () -> STEEL_CHISEL_BLADE.get()),
         TONG_ARMS("tong_arms", 1, 5, () -> IRON_TONG_ARMS.get(), null),
         NEEDLES("needles", 1, 3, NEEDLES_PER_INGOT, () -> IRON_NEEDLE.get(), null),
-        FISH_HOOKS("fish_hooks", 1, 3, FISH_HOOKS_PER_INGOT, () -> IRON_FISH_HOOK.get(), null);
+        FISH_HOOKS("fish_hooks", 1, 3, FISH_HOOKS_PER_INGOT, () -> IRON_FISH_HOOK.get(), null),
+        /** Steel only: 8 bands for the High Furnace's Banded Furnace Casing. */
+        HOOP("hoop", 1, 3, 8, null, () -> HighFurnace.STEEL_HOOP.get());
 
         public final String id;
         /** Hot ingots stacked on the anvil and welded into the part (like vanilla's ingot counts: a pickaxe 3). */
@@ -220,7 +222,8 @@ public final class Smithing {
 
         /** May an anvil holding {@code metal} be set to this pattern? Steel (hot or cold ingot) has no part where there is no steel one. */
         public boolean allowedFor(ItemStack metal) {
-            return steel != null || !(metal.is(HOT_STEEL_INGOT.get()) || metal.is(STEEL_INGOT.get()));
+            boolean isSteel = metal.is(HOT_STEEL_INGOT.get()) || metal.is(STEEL_INGOT.get());
+            return isSteel ? steel != null : iron != null;
         }
     }
 

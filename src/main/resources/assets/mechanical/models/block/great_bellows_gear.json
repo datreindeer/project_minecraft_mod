@@ -1,0 +1,218 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/great_bellows_board",
+    "board": "mechanical:block/great_bellows_board",
+    "leather": "mechanical:block/great_bellows_leather",
+    "frame": "mechanical:block/great_bellows_frame",
+    "end": "mechanical:block/great_bellows_frame_end",
+    "bronze": "mechanical:block/great_bellows_nozzle",
+    "cam": "mechanical:block/great_bellows_cam"
+  },
+  "elements": [
+    {
+      "from": [
+        4.6,
+        4.6,
+        7.5
+      ],
+      "to": [
+        11.4,
+        11.4,
+        8.5
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            4.6,
+            7.5,
+            11.4,
+            8.5
+          ],
+          "texture": "#bronze"
+        },
+        "up": {
+          "uv": [
+            4.6,
+            7.5,
+            11.4,
+            8.5
+          ],
+          "texture": "#bronze"
+        },
+        "north": {
+          "uv": [
+            4.6,
+            4.6,
+            11.4,
+            11.4
+          ],
+          "texture": "#bronze"
+        },
+        "south": {
+          "uv": [
+            4.6,
+            4.6,
+            11.4,
+            11.4
+          ],
+          "texture": "#bronze"
+        },
+        "east": {
+          "uv": [
+            7.5,
+            4.6,
+            8.5,
+            11.4
+          ],
+          "texture": "#bronze"
+        },
+        "west": {
+          "uv": [
+            7.5,
+            4.6,
+            8.5,
+            11.4
+          ],
+          "texture": "#bronze"
+        }
+      }
+    },
+    {
+      "from": [
+        7.4,
+        3.8,
+        7.4
+      ],
+      "to": [
+        8.6,
+        12.2,
+        8.6
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            7.4,
+            7.4,
+            8.6,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "up": {
+          "uv": [
+            7.4,
+            7.4,
+            8.6,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "north": {
+          "uv": [
+            7.4,
+            3.8000000000000007,
+            8.6,
+            12.2
+          ],
+          "texture": "#bronze"
+        },
+        "south": {
+          "uv": [
+            7.4,
+            3.8000000000000007,
+            8.6,
+            12.2
+          ],
+          "texture": "#bronze"
+        },
+        "east": {
+          "uv": [
+            7.4,
+            3.8000000000000007,
+            8.6,
+            12.2
+          ],
+          "texture": "#bronze"
+        },
+        "west": {
+          "uv": [
+            7.4,
+            3.8000000000000007,
+            8.6,
+            12.2
+          ],
+          "texture": "#bronze"
+        }
+      }
+    },
+    {
+      "from": [
+        3.8,
+        7.4,
+        7.4
+      ],
+      "to": [
+        12.2,
+        8.6,
+        8.6
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            3.8,
+            7.4,
+            12.2,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "up": {
+          "uv": [
+            3.8,
+            7.4,
+            12.2,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "north": {
+          "uv": [
+            3.8000000000000007,
+            7.4,
+            12.2,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "south": {
+          "uv": [
+            3.8,
+            7.4,
+            12.2,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "east": {
+          "uv": [
+            7.4,
+            7.4,
+            8.6,
+            8.6
+          ],
+          "texture": "#bronze"
+        },
+        "west": {
+          "uv": [
+            7.4,
+            7.4,
+            8.6,
+            8.6
+          ],
+          "texture": "#bronze"
+        }
+      }
+    }
+  ]
+}

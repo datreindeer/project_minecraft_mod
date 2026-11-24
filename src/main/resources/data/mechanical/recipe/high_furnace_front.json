@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:banded_furnace_casing",
+    "mechanical:steel_plate",
+    "mechanical:steel_plate",
+    "mechanical:iron_plate"
+  ],
+  "result": {
+    "id": "mechanical:high_furnace_front",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mechanical:block/great_bellows"
+    },
+    "facing=east": {
+      "model": "mechanical:block/great_bellows",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mechanical:block/great_bellows",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mechanical:block/great_bellows",
+      "y": 270
+    }
+  }
+}

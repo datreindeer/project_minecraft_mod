@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:steel_age/high_furnace",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:great_bellows"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.wind_of_the_river.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.wind_of_the_river.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

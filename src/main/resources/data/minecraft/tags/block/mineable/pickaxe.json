@@ -562,6 +562,11 @@
     "mechanical:salt_pan",
     "mechanical:clay_cooking_pot",
     "mechanical:steel_pan",
-    "mechanical:mortar_and_pestle"
+    "mechanical:mortar_and_pestle",
+    "mechanical:silica_bricks",
+    "mechanical:banded_furnace_casing",
+    "mechanical:firebox",
+    "mechanical:taphole",
+    "mechanical:high_furnace_front"
   ]
 }

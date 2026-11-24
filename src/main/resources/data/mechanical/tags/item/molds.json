@@ -21,6 +21,7 @@
     "mechanical:clay_spear_head_mold",
     "mechanical:clay_sword_blade_mold",
     "mechanical:clay_tongs_mold",
+    "mechanical:clay_tuyere_mold",
     "mechanical:soapstone_anvil_mold",
     "mechanical:soapstone_arrowheads_mold",
     "mechanical:soapstone_axe_head_mold",
@@ -62,6 +63,7 @@
     "mechanical:unfired_clay_sickle_blade_mold",
     "mechanical:unfired_clay_spear_head_mold",
     "mechanical:unfired_clay_sword_blade_mold",
-    "mechanical:unfired_clay_tongs_mold"
+    "mechanical:unfired_clay_tongs_mold",
+    "mechanical:unfired_clay_tuyere_mold"
   ]
 }

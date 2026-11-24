@@ -178,3 +178,43 @@ Plan och beslut: [steel-furnace-plan.md](../steel-furnace-plan.md). Byggs fas f�
   Wooden Patterns, **Foundry Table** och **Foundry Basin**, järnformar för tackor och plåt. Verktyg av järn och stål smids
   fortfarande på städet.
 - Senare faser: glas (Glass Batch vid 1400°), Bell och Cauldron i Loam Mold, Steel Block och Anvil, och valfritt **Coke Oven**.
+
+### 6a. Byggt: grund, ugnen och värmen (fas 0–2, v0.200.0)
+
+**Byggblock och recept**
+
+| Item / block | Hur | Anteckning |
+|---|---|---|
+| **Crushed Quartzite** ×2 | Quartzite på Stone Anvil | – |
+| **Unfired Silica Brick** ×4 | 2 Crushed Quartzite + Fire Clay + Quicklime (formlöst) | – |
+| **Silica Brick** | Unfired Silica Brick i Clay Kiln, 30 s vid **1250°** (Charcoal + bälg) | – |
+| **Silica Bricks** | 4 Silica Brick (2×2) | ugnens golv |
+| **Steel Hoop** ×8 | het Steel Ingot på städet, mönstret **Hoops**, 3 slag | bara stål |
+| **Banded Furnace Casing** | 4 Silica Brick + Steel Hoop (formlöst) | väggarna; fogarna i nedersta ringen glöder i 3 steg |
+| **Clay Tuyere Mold** | 5 Clay Ball på Mold Bench, bränd 600° | gjuter **Bronze Tuyere Nozzle** av 4 enheter brons |
+| **Firebox** | Casing + Bronze Tuyere Nozzle + Iron Plate (formlöst) | eldstad, gallret glöder |
+| **High Furnace Front** | Casing + 2 Steel Plate + Iron Plate (formlöst) | styrblocket: ståldörr med titthucka |
+| **Taphole** | Casing + Iron Tool Rod + Fire Clay (formlöst) | hällning kommer i fas 4 |
+| **Great Bellows** | `PLP` / `LGL` / `PTP` (Planks, Leather, Gearbox, Bronze Tuyere Nozzle) | vattenhjulsdriven bälg |
+
+**Formen:** ett tomt inre 2–3 block brett och djupt, Silica Bricks under hela det inre, och en ring av Banded Furnace Casing
+runt det inre i varje lager, **5–8 lager**. Hörnen ingår inte och toppen är öppen. I nedersta ringen: exakt en High Furnace
+Front, **en Firebox per påbörjat 24-tal inre block** (högst 4) och högst 2 Tapholes. Fronten letar upp formen bakom sig var
+2:a sekund och när ett väggblock ändras, och säger vad som är fel vid högerklick (för smal, för bred, för låg, för hög,
+saknade väggblock med plats, block i det inre, fel golv, för få eldstäder). En del i en olastad chunk pausar ugnen.
+
+**Värmen:** högerklicka eldstäderna med Charcoal eller Coal (högst 32 var) och tänd med Fire Drill eller Flint and Steel (alla
+eldstäder med bränsle tänds). En Great Bellows med munstycket mot en eldstads lucka och en axel från ett vattenhjul in i sidan
+ger **blåst = kraften den får** (maskiner på samma axel delar). Mål = **800° + 50° per blåstpoäng**, där blåsten räknas per
+volym (`B × 20 / inre block`, högst 16), högst **1600°** med Charcoal. Stiger 6°/s till 800° och 4°/s över, sjunker 2°/s mot
+målet (1°/s släckt), gånger `√(20 / inre block)`. En kolbit brinner 60 s utan blåst, `60 / (1 + b/8)` s med blåst b. En ny
+ugn torkar ut sina första 3 minuter tänd (högst 600°, ånga ur fogarna). Regn i toppen: −100°. Minsta ugnen med en full
+bälg når 1600°, den största behöver fyra.
+
+**Utseende:** fogarna i nedersta ringen, eldstädernas galler och titthuckan glöder i fyra steg; ur toppen stiger rök, över
+1000° slår lågor upp, över 1300° flyger gnistor och över 1400° spottar det lava; ner i schaktet glöder bädden och väggarna.
+Bälgarnas lock lyfts och fälls i hjulets takt. Skärmen: termometer till 1800° med märken vid 950°, 1450°, 1500° och 1600°,
+blåst, varje eldstads bränsle och blåst, uttorkningen och pölens storlek.
+
+Advancements (Steel Age-fliken): **Silica Brick**, **Hooped**, **High Furnace** (goal), **Wind of the River** (challenge, 16
+blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat`, `waterpower_shared(_bellows)`.

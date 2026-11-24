@@ -1604,6 +1604,22 @@ TABS["steel_age"] = ("minecraft:block/blast_furnace_top", [
      has("steel_ingot")),
 ])
 # High Furnace rows (HighFurnace.java, gen_high_furnace.py) go here: TABS["steel_age"][1].extend([...])
+TABS["steel_age"][1].extend([
+    ("silica_brick", "root", "silica_brick", T, "Silica Brick",
+     "Crush Quartzite on the Stone Anvil, mix 2 Crushed Quartzite with Fire Clay and Quicklime into 4 Unfired Silica Bricks "
+     "and fire them in the Clay Kiln at 1250° (bellows): bricks that stand any heat", has("silica_brick")),
+    ("steel_hoop", "root", "steel_hoop", T, "Hooped",
+     "Choose the Hoops pattern for a hot Steel Ingot on the anvil and hammer it 3 times: 8 Steel Hoops. "
+     "4 Silica Bricks and a hoop make a Banded Furnace Casing", has("steel_hoop")),
+    ("high_furnace", "silica_brick", "high_furnace_front", G, "High Furnace",
+     "Build a High Furnace: Silica Bricks under an empty inside 2 to 3 blocks wide and deep, a ring of Banded Furnace Casing "
+     "round it 5 to 8 layers high, and in the bottom ring a High Furnace Front, a Firebox per 24 inside blocks and Tapholes. Right-click the Front", by_code()),
+    ("wind_of_the_river", "high_furnace", "great_bellows", C, "Wind of the River",
+     "Set a Great Bellows with its nozzle at a Firebox and drive it from a Water Wheel's axle until the Firebox gets the full 16 blast "
+     "(machines on one axle share its power)", by_code()),
+    ("white_heat", "high_furnace", "minecraft:charcoal", G, "White Heat",
+     "Bring a High Furnace to 1450°: enough blast for its size, every Firebox burning Charcoal", by_code()),
+])
 
 # stone families (StoneFamilies.java; gen_stone_families.py): one per Stone Age stone
 TABS["stone_age"][1].extend([

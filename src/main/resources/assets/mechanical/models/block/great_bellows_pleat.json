@@ -1,0 +1,82 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/great_bellows_board",
+    "board": "mechanical:block/great_bellows_board",
+    "leather": "mechanical:block/great_bellows_leather",
+    "frame": "mechanical:block/great_bellows_frame",
+    "end": "mechanical:block/great_bellows_frame_end",
+    "bronze": "mechanical:block/great_bellows_nozzle",
+    "cam": "mechanical:block/great_bellows_cam"
+  },
+  "elements": [
+    {
+      "from": [
+        8.3,
+        8,
+        8.4
+      ],
+      "to": [
+        13.7,
+        8.9,
+        21.1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            8.3,
+            0.0,
+            13.7,
+            12.700000000000001
+          ],
+          "texture": "#leather"
+        },
+        "up": {
+          "uv": [
+            8.3,
+            3.299999999999999,
+            13.7,
+            16.0
+          ],
+          "texture": "#leather"
+        },
+        "north": {
+          "uv": [
+            2.3000000000000007,
+            7.1,
+            7.699999999999999,
+            8
+          ],
+          "texture": "#leather"
+        },
+        "south": {
+          "uv": [
+            8.3,
+            7.1,
+            13.7,
+            8
+          ],
+          "texture": "#leather"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            7.1,
+            12.700000000000001,
+            8
+          ],
+          "texture": "#leather"
+        },
+        "west": {
+          "uv": [
+            3.299999999999999,
+            7.1,
+            16.0,
+            8
+          ],
+          "texture": "#leather"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:steel_age/root",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:silica_brick"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:silica_brick"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.silica_brick.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.silica_brick.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

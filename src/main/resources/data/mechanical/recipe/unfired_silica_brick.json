@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:crushed_quartzite",
+    "mechanical:crushed_quartzite",
+    "mechanical:fire_clay",
+    "mechanical:quicklime"
+  ],
+  "result": {
+    "id": "mechanical:unfired_silica_brick",
+    "count": 4
+  }
+}

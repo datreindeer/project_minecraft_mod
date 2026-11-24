@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "mechanical:silica_brick",
+    "mechanical:silica_brick",
+    "mechanical:silica_brick",
+    "mechanical:silica_brick",
+    "mechanical:steel_hoop"
+  ],
+  "result": {
+    "id": "mechanical:banded_furnace_casing",
+    "count": 1
+  }
+}
