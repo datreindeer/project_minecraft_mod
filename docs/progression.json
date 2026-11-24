@@ -1284,7 +1284,7 @@
      "steel_chestplate",
      "steel_quarry_hammer",
      "steel_sickle",
-     "minecraft:flint_and_steel"
+     "flint_and_steel"
     ],
     "text": {
      "sv": "Heta Steel Ingots smids på städet efter samma mönster som järnet: Steel Plate, huvuden och blad. Huvud + [[iron_tool_rod]] (kil och beslag) + Tool Rod blir stålverktyg som [[steel_pickaxe]]: 2200 i hållbarhet, snabbare och hårdare, och de bryter obsidian. Flint (eller Jasper) + Steel Plate blir [[minecraft:flint_and_steel]].\n\nI Armor Station: Steel Plates på läder blir **stålrustning** ([[steel_chestplate]]), mellan järn och diamant. En [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) smular varje malm en stålhacka bryter i sin 3×3-yta, en [[steel_sickle]] skär 5×5, och Steel Saw, Steel Chisel och Steel Smithing Hammer håller längre och arbetar fortare än järnets.",

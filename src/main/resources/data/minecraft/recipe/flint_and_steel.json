@@ -6,7 +6,7 @@
     "mechanical:steel_plate"
   ],
   "result": {
-    "id": "minecraft:flint_and_steel",
+    "id": "mechanical:flint_and_steel",
     "count": 1
   }
 }

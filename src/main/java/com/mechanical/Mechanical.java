@@ -55,6 +55,8 @@ public class Mechanical {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(Registries.PARTICLE_TYPE, MODID);
     public static final Supplier<SimpleParticleType> BLOOD_DROP = PARTICLE_TYPES.register("blood_drop", () -> new SimpleParticleType(false));
+    /** A glowing steel spark off a Flint and Steel (client.FlintSparkParticle). */
+    public static final Supplier<SimpleParticleType> FLINT_SPARK = PARTICLE_TYPES.register("flint_spark", () -> new SimpleParticleType(false));
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, MODID);
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, MODID);
 
@@ -149,6 +151,8 @@ public class Mechanical {
 
     // --- Fire and clay: fire drill lights campfires, the kiln on top of a campfire bakes clay and makes charcoal ---
     public static final DeferredItem<FireDrillItem> FIRE_DRILL = ITEMS.registerItem("fire_drill", FireDrillItem::new, p -> p.durability(16));
+    public static final DeferredItem<FlintAndSteelItem> FLINT_AND_STEEL = ITEMS.registerItem("flint_and_steel", FlintAndSteelItem::new, p -> p.durability(FlintAndSteelItem.DURABILITY)
+            .component(net.minecraft.core.component.DataComponents.INTERACT_ANIMATION, new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.WHACK, FlintAndSteelItem.STRIKE_TICKS)));
     public static final DeferredItem<Item> UNFIRED_CRUCIBLE = ITEMS.registerSimpleItem("unfired_crucible");
     /** Holds ore for melting (CrucibleItem); one per stack since it carries its contents. */
     public static final DeferredItem<CrucibleItem> CRUCIBLE = ITEMS.registerItem("crucible", p -> new CrucibleItem(p, CrucibleItem.Kind.ORE), p -> p.stacksTo(1));

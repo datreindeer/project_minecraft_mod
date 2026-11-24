@@ -1481,7 +1481,7 @@
   "cementation_pot": {"category": "materials", "text": "Kruka av eldfast lera. + 3 [[wrought_iron_ingot]] + 2 Charcoal + 1 [[soot]] → [[packed_cementation_pot]]."},
   "packed_cementation_pot": {"category": "materials", "text": "Håll den vid 1000° i en Bloomery i 6 min → [[cemented_pot]]."},
   "cemented_pot": {"category": "materials", "text": "Knacka upp den (formlöst): 3 [[blister_steel]]."},
-  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanillas recept ville ha Iron Ingot). Tänder varje gång, till skillnad från Fire Drill."},
+  "flint_and_steel": {"category": "tools", "text": "Flint + [[steel_plate]] (formlöst), eller Rough/Polished Jasper + Steel Plate. Ersätter vanillas. Fire Drillens efterträdare: tänder samma saker (campfire, [[fire_pit]], kiln, furnace, bloomery, smedjan, kolmilor, Candle) **varje gång** och tål **500** försök mot drillens 16. Gör annars allt vanillas gör (eld på marken, portaler, TNT, creepers, dispensers). Eget slag: stålet hålls upp och flintan, i andra handen, slås ner över kanten; gnistor sprutar vid träffen."},
   "steel_helmet": {"category": "tools", "text": "Armor Station: 3 [[steel_plate]] + 2 Leather + hammare. Skydd 3, seghet 1, mellan järn och diamant."},
   "steel_chestplate": {"category": "tools", "text": "Armor Station: 6 [[steel_plate]] + 4 Leather + hammare. Skydd 7, seghet 1, mellan järn och diamant."},
   "steel_leggings": {"category": "tools", "text": "Armor Station: 5 [[steel_plate]] + 3 Leather + hammare. Skydd 6, seghet 1, mellan järn och diamant."},

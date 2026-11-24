@@ -70,7 +70,7 @@ public class OilLampBlock extends Block {
     }
 
     private static boolean lighter(ItemStack stack) {
-        return stack.is(Mechanical.FIRE_DRILL.get()) || stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.TORCH);
+        return stack.getItem() instanceof com.mechanical.FireDrillItem || stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.TORCH);
     }
 
     @Override

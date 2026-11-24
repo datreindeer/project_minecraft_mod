@@ -57,6 +57,7 @@ public class MechanicalClient {
     @SubscribeEvent
     static void registerParticles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(Mechanical.BLOOD_DROP.get(), BloodDropParticle.Provider::new);
+        event.registerSpriteSet(Mechanical.FLINT_SPARK.get(), FlintSparkParticle.Provider::new);
     }
 
     @SubscribeEvent

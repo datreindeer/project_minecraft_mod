@@ -16,6 +16,16 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Lights an unlit campfire, Fire Pit, clay kiln or Smelting Furnace tap (if it has fuel), but only sometimes (more often with tinder, see Tinder). Every attempt wears it down. */
 public class FireDrillItem extends Item {
+    /** Chance an attempt catches (hearth, clamp, kilns, fires: {@code tinder} on the fire); the Flint and Steel overrides it. */
+    public float chance(boolean tinder) {
+        return tinder ? Tinder.CHANCE_WITH : Tinder.CHANCE_WITHOUT;
+    }
+
+    /** Chance of lighting a candle. */
+    protected float candleChance() {
+        return 0.6F;
+    }
+
     public FireDrillItem(Properties properties) {
         super(properties);
     }
@@ -28,7 +38,7 @@ public class FireDrillItem extends Item {
         // the Smithing Hearth: catches as often as a campfire without tinder
         if (state.getBlock() instanceof SmithingHearthBlock && level.getBlockEntity(pos) instanceof SmithingHearthBlockEntity hearth) {
             if (level instanceof ServerLevel server && context.getPlayer() != null && !hearth.lit()) {
-                if (server.getRandom().nextFloat() < Tinder.CHANCE_WITHOUT) SmithingHearthBlock.lightUp(server, pos, hearth, context.getPlayer());
+                if (server.getRandom().nextFloat() < chance(false)) SmithingHearthBlock.lightUp(server, pos, hearth, context.getPlayer());
                 else server.playSound(null, pos, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.6F, 1.6F);
                 context.getItemInHand().hurtAndBreak(1, context.getPlayer(), EquipmentSlot.MAINHAND);
             }
@@ -37,7 +47,7 @@ public class FireDrillItem extends Item {
         // a covered wood pile: the vent of a charcoal clamp
         if (CharcoalClamp.isPile(state)) {
             if (level instanceof ServerLevel server && context.getPlayer() != null) {
-                boolean catches = server.getRandom().nextFloat() < Tinder.CHANCE_WITHOUT;
+                boolean catches = server.getRandom().nextFloat() < chance(false);
                 if (!CharcoalClamp.tryLight(server, pos, context.getClickedFace(), context.getPlayer(), catches))
                     server.playSound(null, pos, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.6F, 1.6F);
                 context.getItemInHand().hurtAndBreak(1, context.getPlayer(), EquipmentSlot.MAINHAND);
@@ -47,7 +57,7 @@ public class FireDrillItem extends Item {
         // candles catch easily from a fire drill
         if (state.getBlock() instanceof net.minecraft.world.level.block.AbstractCandleBlock && net.minecraft.world.level.block.CandleBlock.canLight(state)) {
             if (level instanceof ServerLevel server) {
-                if (server.getRandom().nextFloat() < 0.6F) {
+                if (server.getRandom().nextFloat() < candleChance()) {
                     server.setBlock(pos, state.setValue(net.minecraft.world.level.block.AbstractCandleBlock.LIT, true), 11);
                     server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.6F, 1.6F);
                 } else {
@@ -81,7 +91,7 @@ public class FireDrillItem extends Item {
                 return InteractionResult.FAIL;
             }
             var tinder = Tinder.holder(server, pos, state);
-            if (server.getRandom().nextFloat() < (Tinder.has(tinder) ? Tinder.CHANCE_WITH : Tinder.CHANCE_WITHOUT)) {
+            if (server.getRandom().nextFloat() < chance(Tinder.has(tinder))) {
                 if (tinder != null) Tinder.set(tinder, false);
                 if (kilnEntity != null) kilnEntity.tryLight();
                 else if (tap != null) tap.tryLight();

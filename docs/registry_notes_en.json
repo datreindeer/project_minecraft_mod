@@ -1481,7 +1481,7 @@
   "cementation_pot": {"category": "materials", "text": "A fire-clay pot. + 3 [[wrought_iron_ingot]] + 2 Charcoal + 1 [[soot]] → [[packed_cementation_pot]]."},
   "packed_cementation_pot": {"category": "materials", "text": "Hold it at 1000° in a Bloomery for 6 min → [[cemented_pot]]."},
   "cemented_pot": {"category": "materials", "text": "Break it open (shapeless): 3 [[blister_steel]]."},
-  "minecraft:flint_and_steel": {"vanilla": true, "category": "tools", "text": "Flint + [[steel_plate]] (vanilla's recipe wanted an Iron Ingot). Lights every time, unlike the Fire Drill."},
+  "flint_and_steel": {"category": "tools", "text": "Flint + [[steel_plate]] (shapeless), or Rough/Polished Jasper + Steel Plate. Replaces vanilla's. The Fire Drill's successor: lights the same things (campfire, [[fire_pit]], kiln, furnace, bloomery, smithing hearth, charcoal clamp, candle) **every time** and lasts **500** tries against the drill's 16. Otherwise does all vanilla's does (fire on the ground, portals, TNT, creepers, dispensers). Its own strike: the steel held up and the flint, in the other hand, brought down across its edge; sparks fly at the blow."},
   "steel_helmet": {"category": "tools", "text": "Armor Station: 3 [[steel_plate]] + 2 Leather + a hammer. Armour 3, toughness 1, between iron and diamond."},
   "steel_chestplate": {"category": "tools", "text": "Armor Station: 6 [[steel_plate]] + 4 Leather + a hammer. Armour 7, toughness 1, between iron and diamond."},
   "steel_leggings": {"category": "tools", "text": "Armor Station: 5 [[steel_plate]] + 3 Leather + a hammer. Armour 6, toughness 1, between iron and diamond."},

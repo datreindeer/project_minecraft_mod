@@ -93,6 +93,7 @@ public final class HoldPoses {
     public static final EnumProxy<HumanoidModel.ArmPose> PAN_POSE = pose(true, true, HoldPoses::posePan);
     // strokes: one per swing of the arm (the click that uses the item swings it, and swings are sent to everyone)
     public static final EnumProxy<HumanoidModel.ArmPose> FIRE_DRILL_POSE = pose(true, true, HoldPoses::poseFireDrill);
+    public static final EnumProxy<HumanoidModel.ArmPose> STRIKE_POSE = pose(true, true, HoldPoses::poseStrike);
     public static final EnumProxy<HumanoidModel.ArmPose> BROOM_POSE = pose(true, true, HoldPoses::poseBroom);
     public static final EnumProxy<HumanoidModel.ArmPose> FLAIL_POSE = pose(true, true, HoldPoses::poseFlail);
     public static final EnumProxy<HumanoidModel.ArmPose> PAINT_POSE = pose(false, false, HoldPoses::posePaint);
@@ -113,6 +114,10 @@ public final class HoldPoses {
     enum LoadKind { LOGS, HEAVY, UNDER, SHOULDER }
     private record Load(ItemStackRenderState item, LoadKind kind, HumanoidArm arm) {}
     private static final ContextKey<Load> LOAD = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "load"));
+    /** The flint in the free hand of someone holding a Flint and Steel: drawn by {@link GripLayer} like a held item. */
+    private record Flint(ItemStackRenderState item, HumanoidArm arm) {}
+    private static final ContextKey<Flint> FLINT = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "flint_in_hand"));
+    private static @Nullable ItemStack flintStack; // made on first use: item components are not bound when this class loads
     /** Game time of each holder's last fire-drill swing: the drilling goes on while they keep coming. */
     private static final java.util.Map<LivingEntity, Long> DRILLING = new java.util.WeakHashMap<>();
     /** How far past the shoulder pivot (model px along the arm) the tongs' jaws are, by bronze_tongs.json's display. */
@@ -169,6 +174,7 @@ public final class HoldPoses {
             return extensions(SPEAR_LOW_POSE, e -> e.isCrouching() && !e.isUsingItem(), Fp.SPEAR_LOW); // otherwise vanilla's spear poses
         if (item == Mechanical.CRUDE_FISHING_ROD.get() || item instanceof com.mechanical.BoneHookRodItem) return extensions(ROD_POSE, null);
         if (item instanceof com.mechanical.PanItem) return extensions(PAN_POSE, LivingEntity::isUsingItem, Fp.PAN);
+        if (item instanceof com.mechanical.FlintAndSteelItem) return extensions(STRIKE_POSE, Fp.STRIKE);
         if (item instanceof com.mechanical.FireDrillItem) return extensions(FIRE_DRILL_POSE, Fp.FIRE_DRILL);
         if (item instanceof com.mechanical.BroomItem) return extensions(BROOM_POSE, Fp.BROOM);
         if (item instanceof com.mechanical.FlailItem) return extensions(FLAIL_POSE, Fp.FLAIL);
@@ -179,7 +185,7 @@ public final class HoldPoses {
     }
 
     private static boolean strokes(HumanoidModel.ArmPose pose) {
-        return pose == FIRE_DRILL_POSE.getValue() || pose == BROOM_POSE.getValue() || pose == FLAIL_POSE.getValue()
+        return pose == FIRE_DRILL_POSE.getValue() || pose == STRIKE_POSE.getValue() || pose == BROOM_POSE.getValue() || pose == FLAIL_POSE.getValue()
                 || pose == PAINT_POSE.getValue() || pose == CHISEL_POSE.getValue() || pose == FLUTE_POSE.getValue();
     }
 
@@ -219,6 +225,7 @@ public final class HoldPoses {
     public static void extract(LivingEntity entity, HumanoidRenderState state) {
         grip(entity, state);
         load(entity, state);
+        flint(entity, state);
         boolean swinging = state.swingAnimation > 0.0F && state.currentSwing != null;
         HumanoidModel.ArmPose drill = FIRE_DRILL_POSE.getValue();
         if (state.rightArmPose == drill || state.leftArmPose == drill) {
@@ -240,6 +247,20 @@ public final class HoldPoses {
         if (swingingNow) DRILLING.put(entity, now);
         Long last = DRILLING.get(entity);
         return last != null && now - last <= 6;
+    }
+
+    /** Holding a Flint and Steel with the other hand empty: the flint is in that hand. */
+    private static void flint(LivingEntity entity, HumanoidRenderState state) {
+        for (HumanoidArm arm : HumanoidArm.values()) {
+            if ((arm == HumanoidArm.RIGHT ? state.rightArmPose : state.leftArmPose) != STRIKE_POSE.getValue()) continue;
+            HumanoidArm free = arm.getOpposite();
+            if (!held(state, free).isEmpty()) return;
+            ItemStackRenderState item = new ItemStackRenderState();
+            Minecraft.getInstance().getItemModelResolver().updateForLiving(item, flintStack == null ? flintStack = new ItemStack(net.minecraft.world.item.Items.FLINT) : flintStack,
+                    free == HumanoidArm.LEFT ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+            state.setRenderData(FLINT, new Flint(item, free));
+            return;
+        }
     }
 
     /** A load carried in both arms, or a hammer shouldered while walking: taken out of the hand for GripLayer to draw. */
@@ -511,6 +532,50 @@ public final class HoldPoses {
         model.head.xRot += 0.3F; // bent down to the tinder
     }
 
+    /**
+     * Flint and Steel: the steel held up in front of the chest, edge out; the other hand draws the flint back and up, then
+     * brings it down hard across the steel's edge ({@link com.mechanical.FlintAndSteelItem#IMPACT}), follows through below it and
+     * comes back. The steel gives a little at the blow; the head bows to watch the sparks.
+     */
+    static void poseStrike(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+        float p = stroke(state);
+        if (p < 0.0F) {
+            rest(arm(model, arm));
+            return;
+        }
+        float in = Mth.clamp(Math.min(p, 1.0F - p) * 6.0F, 0.0F, 1.0F); // into the hold and back out of it
+        float hit = Math.max(0.0F, 1.0F - Mth.abs(p - com.mechanical.FlintAndSteelItem.IMPACT) * 8.0F);
+        ModelPart steel = arm(model, arm), flint = arm(model, arm.getOpposite());
+        int s = side(arm), f = side(arm.getOpposite());
+        steel.xRot = Mth.lerp(in, steel.xRot, -1.2F + 0.12F * hit);
+        steel.yRot = Mth.lerp(in, 0.0F, s * -0.42F);
+        steel.zRot = 0.0F;
+        // the flint arm: x (up/down) and y (out/across) through four keys: ready, drawn up, struck through, back to ready
+        float[] keys = {0.0F, 0.3F, IMPACT_KEY, 0.62F, 1.0F};
+        float[] xs = {-1.25F, -1.35F, -1.15F, -0.85F, -1.25F};
+        float[] ys = {-0.35F, 0.5F, -0.62F, -0.78F, -0.35F}; // drawn up out to the side, clear of the face
+        float fx = keyed(keys, xs, p), fy = keyed(keys, ys, p);
+        flint.xRot = Mth.lerp(in, flint.xRot, fx);
+        flint.yRot = Mth.lerp(in, 0.0F, f * fy);
+        flint.zRot = 0.0F;
+        model.head.xRot += 0.35F * in; // eyes on the sparks
+        model.head.yRot = Mth.lerp(in, model.head.yRot, model.head.yRot * 0.5F);
+    }
+
+    private static final float IMPACT_KEY = com.mechanical.FlintAndSteelItem.IMPACT;
+
+    /** Smooth (eased) interpolation through key values at key times. */
+    private static float keyed(float[] at, float[] value, float p) {
+        for (int i = 1; i < at.length; i++) {
+            if (p <= at[i]) {
+                float t = (p - at[i - 1]) / (at[i] - at[i - 1]);
+                t = t * t * (3.0F - 2.0F * t);
+                return Mth.lerp(t, value[i - 1], value[i]);
+            }
+        }
+        return value[value.length - 1];
+    }
+
     /** Both hands low on the handle; a stroke sweeps it across and back. */
     static void poseBroom(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
         float p = stroke(state), sweep = p < 0.0F ? 0.0F : 0.45F * Mth.sin(p * 2.0F * Mth.PI);
@@ -596,6 +661,17 @@ public final class HoldPoses {
                 getParentModel().body.translateAndRotate(poseStack);
                 placeLoad(poseStack, state, load);
                 load.item().submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+                poseStack.popPose();
+            }
+            Flint flint = state.getRenderData(FLINT);
+            if (flint != null && !state.isInvisible) { // as vanilla's ItemInHandLayer holds an item
+                poseStack.pushPose();
+                getParentModel().translateToHand(state, flint.arm(), poseStack);
+                poseStack.rotateDegrees(Axis.XP, -90.0F);
+                poseStack.rotateDegrees(Axis.YP, 180.0F);
+                poseStack.translate((flint.arm() == HumanoidArm.LEFT ? -1 : 1) / 16.0F, 2.0F / 16.0F, -10.0F / 16.0F);
+                poseStack.scale(0.6F, 0.6F, 0.6F); // a knapped nodule, smaller than a held item
+                flint.item().submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
                 poseStack.popPose();
             }
             Grip grip = state.getRenderData(GRIP);

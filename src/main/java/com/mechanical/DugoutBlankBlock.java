@@ -111,7 +111,7 @@ public class DugoutBlankBlock extends Block {
             if (level instanceof ServerLevel server) {
                 // a fire drill can fail, but the fresh chips in the hollow are good tinder
                 boolean drill = stack.getItem() instanceof FireDrillItem;
-                if (!drill || server.getRandom().nextFloat() < Tinder.CHANCE_WITH) {
+                if (!drill || server.getRandom().nextFloat() < ((FireDrillItem) stack.getItem()).chance(true)) {
                     server.setBlock(pos, state.setValue(BURNING, true), Block.UPDATE_ALL);
                     server.scheduleTick(pos, this, BURN_TICKS);
                     server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);

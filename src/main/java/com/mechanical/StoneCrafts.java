@@ -238,9 +238,9 @@ public final class StoneCrafts {
         h.assertTrue(BronzeOres.crushed(new ItemStack(StoneFamilies.block("shale"))).is(Items.CLAY_BALL), "Shale -> Clay Balls");
 
         // 6. jasper strikes a light
-        h.assertTrue(craft(h, 2, 1, new ItemStack(item("rough_jasper")), new ItemStack(Smithing.STEEL_PLATE.get())).is(Items.FLINT_AND_STEEL),
+        h.assertTrue(craft(h, 2, 1, new ItemStack(item("rough_jasper")), new ItemStack(Smithing.STEEL_PLATE.get())).is(Mechanical.FLINT_AND_STEEL.get()),
                 "Rough Jasper + Steel Plate: Flint and Steel");
-        h.assertTrue(craft(h, 2, 1, new ItemStack(item("jasper")), new ItemStack(Smithing.STEEL_PLATE.get())).is(Items.FLINT_AND_STEEL),
+        h.assertTrue(craft(h, 2, 1, new ItemStack(item("jasper")), new ItemStack(Smithing.STEEL_PLATE.get())).is(Mechanical.FLINT_AND_STEEL.get()),
                 "Polished Jasper + Steel Plate: Flint and Steel");
 
         // 7. basalt anvil: crushes in 2 blows

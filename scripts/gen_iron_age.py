@@ -253,7 +253,7 @@ w(D / "mechanical/recipe/blister_steel_from_cemented_pot.json", {"type": "minecr
     "ingredients": [M + "cemented_pot"], "result": {"id": M + "blister_steel", "count": 3}})
 # vanilla's Flint and Steel wants an Iron Ingot (none in the mod): a struck Steel Plate instead
 w(D / "minecraft/recipe/flint_and_steel.json", {"type": "minecraft:crafting_shapeless", "category": "equipment",
-    "ingredients": ["minecraft:flint", M + "steel_plate"], "result": {"id": "minecraft:flint_and_steel", "count": 1}})
+    "ingredients": ["minecraft:flint", M + "steel_plate"], "result": {"id": "mechanical:flint_and_steel", "count": 1}})
 
 # ---------------------------------------------------------------- steel armour (Smithing.STEEL_ARMOR): vanilla's iron armour recoloured
 STEEL_ARMOUR = (0.6, 0.2, 0.72)  # iron armour is pale already: darker and bluer than the steel parts

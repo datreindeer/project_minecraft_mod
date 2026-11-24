@@ -511,6 +511,7 @@ w(D / "minecraft/recipe/campfire.json", {"type": "minecraft:crafting_shaped", "c
 
 lang.update({
     "item.mechanical.fire_drill": "Fire Drill",
+    "item.mechanical.flint_and_steel": "Flint and Steel",
     "item.mechanical.unfired_crucible": "Unfired Crucible",
     "item.mechanical.unfired_clay_bucket": "Unfired Clay Bucket",
     "item.mechanical.clay_bucket": "Clay Bucket",

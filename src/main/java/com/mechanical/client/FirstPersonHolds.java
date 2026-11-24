@@ -41,7 +41,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class FirstPersonHolds {
-    public enum Fp { STAFF, BASKET, BUCKET, CARRY, HEAVY, UNDER, SHOULDER, SPEAR_LOW, PADDLE, PAN, FIRE_DRILL, BROOM, FLAIL, PAINT, CHISEL, FLUTE }
+    public enum Fp { STAFF, BASKET, BUCKET, CARRY, HEAVY, UNDER, SHOULDER, SPEAR_LOW, PADDLE, PAN, FIRE_DRILL, BROOM, FLAIL, PAINT, CHISEL, FLUTE, STRIKE }
 
     /** bronze_tongs' first-person display (vanilla handheld's; ItemTransform mirrors the left hand's back to these angles) and its jaws (sprite px, y up). */
     private static final float[] TONGS_ROT = {0.0F, -90.0F, 25.0F}, TONGS_AT = {1.13F, 3.2F, 1.13F}, JAWS = {12.8F, 13.8F, 8.0F};
@@ -75,6 +75,15 @@ public final class FirstPersonHolds {
      * The held item's transform for a one-handed hold; false leaves it to vanilla (attacking with a staff or hammer, a
      * stroke item between strokes, the two-armed holds that {@link #onRenderHand} draws).
      */
+    /**
+     * The player's own swing of that hand (0 when not swinging it): HoldPoses.extract takes the stroke items' swing off the
+     * avatar's render state (so third person shows only the stroke), and first person reads that same state.
+     */
+    static float liveSwing(Player player, InteractionHand hand, float pt) {
+        var swing = player.getCurrentSwing();
+        return swing != null && swing.hand() == hand ? player.getSwingAnimation(pt) : 0.0F;
+    }
+
     static boolean transform(Fp fp, PoseStack ps, Player player, HumanoidArm arm, ItemStack stack, float pt, float equip, float swing) {
         if (fp != Fp.PAN && player.isUsingItem() && player.getUsedItemHand().asArm(player.getMainArm()) == arm) return false; // drinking from the jug...
         int s = side(arm);
@@ -122,7 +131,8 @@ public final class FirstPersonHolds {
                 ps.translate(s * -0.2F + 0.04F * Mth.cos(t), 0.05F, 0.04F * Mth.sin(t));
                 ps.rotateDegrees(Axis.YP, 8.0F * Mth.sin(t));
             }
-            case BROOM, FLAIL, PAINT, CHISEL, FLUTE -> {
+            case BROOM, FLAIL, PAINT, CHISEL, FLUTE, STRIKE -> {
+                swing = liveSwing(player, arm == player.getMainArm() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, pt);
                 if (swing <= 0.0F) return false;
                 itemPos(ps, s, equip);
                 stroke(fp, ps, s, swing);
@@ -132,6 +142,36 @@ public final class FirstPersonHolds {
             }
         }
         return true;
+    }
+
+    private static @Nullable ItemStack flint; // made on first use: item components are not bound when this class loads
+    private static ItemStack flintStack() {
+        if (flint == null) flint = new ItemStack(net.minecraft.world.item.Items.FLINT);
+        return flint;
+    }
+
+    /** The flint's keys over a strike (p): ready, drawn up and back, across the steel's edge, followed through, ready. */
+    private static final float[] FLINT_AT = {0.0F, 0.3F, com.mechanical.FlintAndSteelItem.IMPACT, 0.62F, 1.0F};
+    // the y-rotation turns its face to us as it crosses to the middle: vanilla's first-person display holds items side-on
+    private static final float[][] FLINT_KEYS = { // x (towards the steel), y, z, x-rotation, z-rotation, y-rotation
+            {0.0F, -0.02F, 0.0F, -4.0F, 0.0F, 0.0F},
+            {0.05F, 0.15F, 0.05F, 12.0F, -6.0F, 10.0F},
+            {-0.8F, 0.05F, -0.05F, -10.0F, 8.0F, 60.0F},
+            {-0.92F, -0.1F, -0.02F, -16.0F, 10.0F, 65.0F},
+            {0.0F, -0.02F, 0.0F, -4.0F, 0.0F, 0.0F}};
+
+    /** The flint in the free hand: at rest low in front, in a strike through {@link #FLINT_KEYS} (eased between keys). */
+    private static void flintStroke(PoseStack ps, int s, float p) {
+        int i = 1;
+        while (i < FLINT_AT.length - 1 && p > FLINT_AT[i]) i++;
+        float t = Mth.clamp((p - FLINT_AT[i - 1]) / (FLINT_AT[i] - FLINT_AT[i - 1]), 0.0F, 1.0F);
+        t = t * t * (3.0F - 2.0F * t);
+        float[] a = FLINT_KEYS[i - 1], b = FLINT_KEYS[i];
+        ps.translate(s * Mth.lerp(t, a[0], b[0]), Mth.lerp(t, a[1], b[1]), Mth.lerp(t, a[2], b[2]));
+        ps.rotateDegrees(Axis.YP, s * Mth.lerp(t, a[5], b[5]));
+        ps.rotateDegrees(Axis.XP, Mth.lerp(t, a[3], b[3]));
+        ps.rotateDegrees(Axis.ZP, s * Mth.lerp(t, a[4], b[4]));
+        ps.scale(0.8F, 0.8F, 0.8F); // a knapped nodule, a little smaller than a held item
     }
 
     /** One stroke of a click-used item, p 0..1 over the swing. */
@@ -158,6 +198,13 @@ public final class FirstPersonHolds {
                 ps.translate(s * -0.15F, 0.02F, -0.08F - 0.05F * hit);
                 ps.rotateDegrees(Axis.XP, -40.0F);
             }
+            case STRIKE -> { // the steel brought in and up to meet the flint, edge out; it gives a little at the blow
+                float k = Mth.clamp(Math.min(p, 1.0F - p) * 6.0F, 0.0F, 1.0F);
+                float hit = Math.max(0.0F, 1.0F - Mth.abs(p - com.mechanical.FlintAndSteelItem.IMPACT) * 8.0F);
+                ps.translate(s * -0.14F * k, 0.06F * k - 0.03F * hit, 0.0F);
+                ps.rotateDegrees(Axis.XP, -6.0F * k);
+                ps.rotateDegrees(Axis.ZP, s * (4.0F * k + 4.0F * hit));
+            }
             case FLUTE -> { // up to the mouth in the middle, turned to face us
                 float k = Math.min(1.0F, Mth.sin(p * Mth.PI) * 1.8F);
                 ps.translate(s * -0.56F * k, 0.2F * k, 0.15F * k);
@@ -179,7 +226,7 @@ public final class FirstPersonHolds {
         FirstPersonHandsAndItemsRenderState hands = event.getPlayerState().firstPersonHandsAndItems;
         boolean main = event.getHand() == InteractionHand.MAIN_HAND;
         HumanoidArm arm = main ? avatar.mainArm : avatar.mainArm.getOpposite();
-        float mainSwing = hands.attackHand == InteractionHand.MAIN_HAND ? avatar.swingAnimation : 0.0F;
+        float mainSwing = liveSwing(player, InteractionHand.MAIN_HAND, event.getPartialTick());
         // lifting an end of a felled log: both hands on it, no items
         com.mechanical.FelledLogEntity log = com.mechanical.FelledLogEntity.liftedBy(player);
         if (log != null) {
@@ -222,6 +269,23 @@ public final class FirstPersonHolds {
         if (kind(main ? mainItem : offItem) == Fp.BASKET) {
             event.setCanceled(true);
             basket(event, player, avatar, arm, main ? mainItem : offItem);
+            return;
+        }
+
+        // Flint and Steel with the other hand empty: the flint is in it, and a strike brings it down across the steel
+        if (!main && mainKind == Fp.STRIKE && offItem.isEmpty()) {
+            event.setCanceled(true);
+            if (avatar.isInvisible) return;
+            int s = side(arm);
+            PoseStack ps = event.getPoseStack();
+            ps.pushPose();
+            itemPos(ps, s, event.getEquipProgress());
+            flintStroke(ps, s, mainSwing);
+            ItemStackRenderState flint = new ItemStackRenderState();
+            Minecraft.getInstance().getItemModelResolver().updateForLiving(flint, flintStack(),
+                    arm == HumanoidArm.LEFT ? ItemDisplayContext.FIRST_PERSON_LEFT_HAND : ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, player);
+            flint.submit(ps, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+            ps.popPose();
             return;
         }
 

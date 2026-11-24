@@ -57,7 +57,7 @@ w(D / "mechanical/tags/item/satchel_tools.json", {"values": [
     M + "flint_sickle", M + "bronze_sickle", M + "iron_sickle", M + "steel_sickle",
     M + "bronze_smithing_hammer", M + "iron_smithing_hammer", M + "steel_smithing_hammer",
     M + "bronze_quarry_hammer", M + "iron_quarry_hammer", M + "steel_quarry_hammer",
-    M + "bronze_shears", "minecraft:shears", M + "fire_drill", "minecraft:flint_and_steel"]})
+    M + "bronze_shears", "minecraft:shears", M + "fire_drill", "minecraft:flint_and_steel", M + "flint_and_steel"]})
 
 
 # ---------------------------------------------------------------- the two work tables

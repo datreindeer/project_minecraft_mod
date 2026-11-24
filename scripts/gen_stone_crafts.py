@@ -134,7 +134,7 @@ recipe("alabaster_lamp", {"type": "minecraft:crafting_shaped", "category": "buil
        "key": {"A": M + "alabaster", "W": M + "plant_fibre"}, "result": {"id": M + "alabaster_lamp"}})
 # jasper strikes sparks off steel like flint (Tinder.java's fires take the Flint and Steel)
 recipe("flint_and_steel_from_jasper", {"type": "minecraft:crafting_shapeless", "category": "equipment",
-       "ingredients": [[M + "rough_jasper", M + "jasper"], M + "steel_plate"], "result": {"id": "minecraft:flint_and_steel", "count": 1}})
+       "ingredients": [[M + "rough_jasper", M + "jasper"], M + "steel_plate"], "result": {"id": "mechanical:flint_and_steel", "count": 1}})
 
 # ---- pumice chunk ----
 chunk = recolour(Image.open(io.BytesIO(jar.read("assets/minecraft/textures/item/flint.png"))), PUMICE)

@@ -118,6 +118,20 @@ kylskydd som en rustningsdel (Temperature#insulation, läder 15 %).
 Jaspis slår gnistor mot stål som flinta: **Rough Jasper eller Polished Jasper + Steel Plate** (formlöst) ger en
 Flint and Steel, precis som Flint + Steel Plate. Advancement *Red Spark* under *Strike a Light*.
 
+**Flint and Steel** (`mechanical:flint_and_steel`, `FlintAndSteelItem`) ersätter vanillas: båda recepten ovan gör den, och
+vanillas går inte längre att göra. Den är Fire Drillens stålefterträdare: tänder allt drillen tänder (campfire, Fire Pit, kiln,
+furnace tap, bloomery, Smithing Hearth, High Furnace, charcoal clamp, Candle, unlit torch, oil lamp, dugout) **varje gång** och
+tål **500** försök mot drillens 16. Allt annat gör den som vanillas: eld på en blockyta, nether-portaler, TNT, creepers
+(`minecraft:creeper_igniters`) och dispensers. En redan tänd eld lämnas ifred (ingen eld sätts ovanpå den).
+
+**Slaget** är 10 ticks långt (`INTERACT_ANIMATION`). Tredjeperson (`HoldPoses.poseStrike`): stålet hålls upp framför bröstet
+och flintan, som syns i den tomma andra handen, dras upp och ut åt sidan och slås sedan ner över stålets kant. Den följer igenom
+och kommer tillbaka, stålet ger efter lite och huvudet böjs mot gnistorna. Förstaperson (`Fp.STRIKE`, `FirstPersonHolds.flintStroke`):
+stålet förs in mot mitten och flintan sveper över till det, vriden mot kameran. Vid träffen (45 % av slaget) kastar varje
+klient gnistor (`mechanical:flint_spark`, `FlintSparkParticle`: vitglödande, sedan gul, orange och mörkröd, faller och dör)
+från där händerna möts, och spelar skrapljudet (`FlintSparks`). När elden tar lyfter några gnistor från den. Sprite, gnista och
+creeper-tagg: `scripts/gen_flint_and_steel.py`.
+
 ## 4. Sågverket (byggt, v0.191.0, flora-and-food-plan fas 5b)
 
 Kod: `Sawmill`, `LogFlumeBlock`, `SawBenchBlock(Entity)`, klient `SawBenchRenderer`. Data: `scripts/gen_waterpower.py`.

@@ -52,7 +52,7 @@ assert rough_logs, "run gen_data.py first"
 w(D / "mechanical/tags/item/rough_logs.json", {"values": rough_logs})
 w(D / "mechanical/tags/item/raft_logs.json", {"values": ["#mechanical:rough_logs", "#minecraft:logs_that_burn"]})
 w(D / "mechanical/tags/block/dugout_logs.json", {"values": ["#minecraft:logs_that_burn"]})
-w(D / "mechanical/tags/item/dugout_fire_starters.json", {"values": ["minecraft:torch", "minecraft:soul_torch", "minecraft:flint_and_steel",
+w(D / "mechanical/tags/item/dugout_fire_starters.json", {"values": ["minecraft:torch", "minecraft:soul_torch", "minecraft:flint_and_steel", "mechanical:flint_and_steel",
                                                                     "mechanical:fire_drill"]})
 
 w(D / "mechanical/recipe/log_raft.json", {"type": "minecraft:crafting_shaped", "category": "misc",

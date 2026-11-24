@@ -20,6 +20,7 @@
     "mechanical:bronze_shears",
     "minecraft:shears",
     "mechanical:fire_drill",
-    "minecraft:flint_and_steel"
+    "minecraft:flint_and_steel",
+    "mechanical:flint_and_steel"
   ]
 }

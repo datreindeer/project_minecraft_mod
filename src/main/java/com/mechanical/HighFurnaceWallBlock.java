@@ -145,7 +145,7 @@ public class HighFurnaceWallBlock extends Block {
         @Override
         protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
             if (!state.is(HighFurnace.FIREBOX.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
-            boolean fuel = HighFurnaceBlockEntity.fuelOf(stack) != null, drill = stack.getItem() instanceof FireDrillItem, flint = stack.is(Items.FLINT_AND_STEEL);
+            boolean fuel = HighFurnaceBlockEntity.fuelOf(stack) != null, drill = stack.getItem() instanceof FireDrillItem, flint = stack.is(Items.FLINT_AND_STEEL) || stack.getItem() instanceof FlintAndSteelItem;
             if (!fuel && !drill && !flint) return InteractionResult.TRY_WITH_EMPTY_HAND;
             if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
             HighFurnaceBlockEntity furnace = HighFurnaceBlockEntity.find(server, pos);

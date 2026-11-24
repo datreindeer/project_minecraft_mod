@@ -171,7 +171,11 @@ public final class StatTooltips {
             if (com.mechanical.Smithing.worksSteel(stack)) use(lines, "Hard enough to work steel");
             use(lines, "Strike a hot Iron Bloom or a Copper Ingot on a Bronze Anvil");
         }
-        if (stack.is(Mechanical.FIRE_DRILL.get())) {
+        if (stack.is(Mechanical.FLINT_AND_STEEL.get())) {
+            lines.add(stat("Catch chance", percent(1.0F)));
+            use(lines, "Lights campfires, Fire Pits, kilns, furnaces, bloomeries and candles");
+            use(lines, "Lasts " + com.mechanical.FlintAndSteelItem.DURABILITY / 16 + " times as long as a Fire Drill");
+        } else if (stack.is(Mechanical.FIRE_DRILL.get())) {
             lines.add(stat("Catch chance", percent(Tinder.CHANCE_WITHOUT)));
             lines.add(stat("With tinder", percent(Tinder.CHANCE_WITH)));
             use(lines, "Lights campfires, Fire Pits, kilns, furnaces and bloomeries");
