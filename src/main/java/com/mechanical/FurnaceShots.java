@@ -37,7 +37,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  * Water Wheel (via gearboxes and an upright shaft), and the biggest (3x3x8 at x 10..12, z 0..2) with three bellows
  * driven from code. The flag's first line is the output folder; then one step per line: a view "name x y z tx ty tz"
  * (relative to the ground at 0,0) shoots fs_name.png; "!light" stocks and lights every Firebox; "!heat T" sets both
- * furnaces to T° (dried out); "!time N"; "!gui" opens the small furnace's screen and shoots it; "!wait N" waits N ticks.
+ * furnaces to T° (dried out); "!time N"; "!gamma G" (0..1, for night views); "!gui" opens the small furnace's screen and shoots it; "!wait N" waits N ticks.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class FurnaceShots {
@@ -48,9 +48,8 @@ public final class FurnaceShots {
     private static final List<Object[]> STEPS = new ArrayList<>();
     private static ArmorStand camera;
     private static boolean feeding;
-    /** The flow demonstration: a run of troughs fed steel from above at (20, 0, -4) while this is on. */
-    private static boolean demoFeed;
-    private static BlockPos demoAt = new BlockPos(20, 0, -4);
+    /** The flow demonstrations: troughs fed steel from above (each "!demo x y z" adds one) until "!demostop". */
+    private static final List<BlockPos> demoAt = new ArrayList<>();
     private static final BlockPos SMALL_FRONT = new BlockPos(0, 0, -1), BIG_FRONT = new BlockPos(10, 0, -1);
 
     @SubscribeEvent
@@ -92,9 +91,10 @@ public final class FurnaceShots {
             }
             if (mc.player == null || mc.getSingleplayerServer() == null) return;
             ticks++;
-            if (demoFeed) server(() -> {
-                if (level().getBlockEntity(rel(demoAt.getX(), demoAt.getY(), demoAt.getZ())) instanceof TroughBlockEntity t && t.room() > 0)
-                    t.add(Molten.STEEL, Math.min(40, t.room()), 0, 1560, level().getGameTime(), null);
+            if (!demoAt.isEmpty()) server(() -> {
+                for (BlockPos q : demoAt)
+                    if (level().getBlockEntity(rel(q.getX(), q.getY(), q.getZ())) instanceof TroughBlockEntity t && t.room() > 0)
+                        t.add(Molten.STEEL, Math.min(40, t.room()), 0, 1560, level().getGameTime(), null);
             });
             if (feeding) server(() -> {
                 for (BlockPos q : new BlockPos[] {new BlockPos(14, 0, 1), new BlockPos(8, 0, 1), new BlockPos(12, 0, 4), new BlockPos(9, 0, -12)})
@@ -383,15 +383,19 @@ public final class FurnaceShots {
                 case "!light" -> then(2, () -> server(FurnaceShots::light));
                 case "!heat" -> then(2, () -> server(() -> heat(Float.parseFloat(p[1]))));
                 case "!fill" -> then(2, () -> server(FurnaceShots::fill));
-                case "!demo" -> then(1, () -> {
-                    demoAt = p.length > 3 ? new BlockPos(Integer.parseInt(p[1]), Integer.parseInt(p[2]), Integer.parseInt(p[3])) : new BlockPos(20, 0, -4);
-                    demoFeed = true;
-                });
+                case "!demo" -> then(1, () -> demoAt.add(p.length > 3 ? new BlockPos(Integer.parseInt(p[1]), Integer.parseInt(p[2]), Integer.parseInt(p[3])) : new BlockPos(20, 0, -4)));
                 case "!clear" -> then(1, () -> server(() -> {
                     for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -8; z <= -3; z++)
                         if (level().getBlockEntity(rel(x, y, z)) instanceof TroughBlockEntity t) t.take(t.amount(), level().getGameTime());
                 }));
-                case "!demostop" -> then(1, () -> demoFeed = false);
+                case "!demostop" -> then(1, demoAt::clear);
+                case "!clay" -> then(1, () -> server(() -> { // a Clay Channel joined to a trough (it cracks by hot iron)
+                    BlockPos q = rel(Integer.parseInt(p[1]), Integer.parseInt(p[2]), Integer.parseInt(p[3]));
+                    level().setBlockAndUpdate(q, Smelting.CLAY_CHANNEL.get().defaultBlockState());
+                    level().setBlockAndUpdate(q, Smelting.CLAY_CHANNEL.get().stateAt(level(), q));
+                }));
+                // night views: brighter gamma so the dark yard still reads around the glowing metal
+                case "!gamma" -> then(1, () -> Minecraft.getInstance().options.gamma().set(Double.parseDouble(p[1])));
                 case "!extras" -> then(2, () -> server(() -> {
                     if (level().getBlockEntity(rel(8, 0, -12)) instanceof FineryHearthBlock.Entity e) {
                         e.fuel = 16;
@@ -410,7 +414,7 @@ public final class FurnaceShots {
                 }));
                 case "!gate" -> then(2, () -> server(() -> {
                     BlockPos g = rel(12, -1, -6);
-                    level().setBlockAndUpdate(g, level().getBlockState(g).setValue(RefractoryTroughBlock.Gate.OPEN, true));
+                    level().setBlockAndUpdate(g, level().getBlockState(g).setValue(RefractoryTroughBlock.Gate.OPEN, p.length < 2)); // "!gate shut" shuts it
                 }));
                 case "!pig" -> then(2, () -> server(() -> {
                     if (level().getBlockEntity(rel(SMALL_FRONT.getX(), SMALL_FRONT.getY(), SMALL_FRONT.getZ())) instanceof HighFurnaceBlockEntity f) {
@@ -426,6 +430,21 @@ public final class FurnaceShots {
                     }
                 }));
                 case "!shot" -> then(1, () -> shot(p[1]));
+                // the player out of frame but within 32 blocks, so block cracks, particles and sounds reach the client
+                case "!player" -> then(2, () -> server(() -> {
+                    var pl = Minecraft.getInstance().getSingleplayerServer().getPlayerList().getPlayers().get(0);
+                    pl.getAbilities().flying = true;
+                    pl.onUpdateAbilities();
+                    pl.teleportTo(level(), Double.parseDouble(p[1]), ground + Double.parseDouble(p[2]), Double.parseDouble(p[3]), java.util.Set.of(), 0, 0, true);
+                }));
+                case "!probe" -> then(1, () -> server(() -> { // the casting pit's end: the trough, the short spout and the flask
+                    StringBuilder b = new StringBuilder("probe " + p[1] + ":");
+                    if (level().getBlockEntity(rel(12, -1, -7)) instanceof TroughBlockEntity t) b.append(" trough ").append(t.amount());
+                    if (level().getBlockEntity(rel(12, -1, -8)) instanceof PouringSpoutBlockEntity sp) b.append(" spout ").append(sp.stream()).append(" buffer ").append(sp.bufferForTest());
+                    if (level().getBlockEntity(rel(12, -2, -8)) instanceof MoldingFlaskBlock.Entity f)
+                        b.append(" flask ").append(level().getBlockState(f.getBlockPos()).getValue(MoldingFlaskBlock.STAGE)).append(" filled ").append(f.filled());
+                    result.add(b.toString());
+                }));
                 case "!time" -> then(2, () -> cmd("time set " + p[1]));
                 case "!wait" -> then(Integer.parseInt(p[1]), () -> {});
                 case "!gui" -> {
