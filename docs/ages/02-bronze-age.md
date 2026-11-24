@@ -1792,7 +1792,7 @@ och räknas som sten för husets värme (inte som torv- och halmtaken). Advancem
 | **Sloe Jam** | 3 Sloes + honung | 2 (håller 30 dagar) |
 
 - **Bybornas varor:** byns Farmer säljer för kopparmynt det som kom med jordbruket och inte växer vilt: nivå 2 **Barley Grain**,
-  **Onion**, **Garlic**, **Dill Seeds**, **Mustard Seeds**; nivå 3 **Cabbage**, **Broad Beans**. Dill och Mustard sås på farmland
+  **Onion**, **Garlic**, **Dill Seeds**, **Mustard Seeds**; nivå 3 **Cabbage**, **Broad Beans**; nivå 4 **Wild Apple Sapling** (6 Copper Coin). Dill och Mustard sås på farmland
   (dill ger Dill och frön, senap ger frön), Broad Beans likaså.
 - **Den östra karavanen** (*Eastern Caravan*, sällsynt: vikt 1 mot de andras 4; kameler, sidenrockar i ikatränder, höga
   broderade mössor, indigo- och saffransrandigt kapell): säljer Black Pepper, Cinnamon Bark, Ginger Root, Rice, Sesame Seeds,

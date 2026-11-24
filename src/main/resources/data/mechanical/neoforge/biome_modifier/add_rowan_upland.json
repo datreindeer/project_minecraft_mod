@@ -4,7 +4,10 @@
     "mechanical:slate_highlands",
     "minecraft:taiga",
     "minecraft:windswept_forest",
-    "minecraft:meadow"
+    "minecraft:meadow",
+    "mechanical:soapstone_valley",
+    "mechanical:limestone_karst",
+    "mechanical:glacial_moraine"
   ],
   "features": "mechanical:rowan_upland",
   "step": "vegetal_decoration"

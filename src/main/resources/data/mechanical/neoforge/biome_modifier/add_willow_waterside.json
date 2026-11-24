@@ -2,7 +2,9 @@
   "type": "neoforge:add_features",
   "biomes": [
     "minecraft:river",
-    "minecraft:swamp"
+    "minecraft:swamp",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta"
   ],
   "features": "mechanical:willow_waterside",
   "step": "vegetal_decoration"

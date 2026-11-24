@@ -7,7 +7,7 @@ ClayPotBlock, CookwareBlock(Entity), SaltPanBlock, client/CookwareRenderer).
 - Bought crops: Broad Beans, Dill, Mustard (villagers), Ginger, Saffron, Rice (Eastern Caravan).
 - Herbs (HerbBlock: full / cut models, loot = the plant itself, worldgen), their cut items.
 - The Eastern Caravan's goods; villager farmer coin trades for the goods only villagers sell (Barley, Onion, Garlic,
-  Cabbage, Dill, Mustard, Broad Beans).
+  Cabbage, Dill, Mustard, Broad Beans; Wild Apple Sapling at level 4).
 - Kitchen: dish items' lang, recipes (cookware crafting, raw dishes, campfire), loot for the cookware, tags (perishing,
   compostable, grains, culinary herbs, spices, cellar produce, mineable), messages. Cookware models/blockstates/items:
   scripts/herbs_cookware.py (imported and run from here, it patches gen_kettle's tripod blockstate).
@@ -236,7 +236,8 @@ for item, en in EAST.items():
 
 # ---------------------------------------------------------------- villagers: the goods that came with farming (coins only)
 TRADES = {2: [("barley_grain", 4, 3), ("onion", 3, 4), ("garlic", 3, 4), ("dill_seeds", 4, 3), ("mustard_seeds", 4, 3)],
-          3: [("cabbage", 2, 5), ("broad_beans", 4, 5)]}
+          3: [("cabbage", 2, 5), ("broad_beans", 4, 5)],
+          4: [("wild_apple_sapling", 1, 6)]}  # the plan's Apple Saplings: the Wild Apple tree (gen_trees); no grafted apple yet
 for level, goods in TRADES.items():
     for item, count, copper in goods:
         w(D / f"mechanical/villager_trade/farmer/{level}/{item}.json", {"wants": {"id": S + "copper_coin", "count": copper},

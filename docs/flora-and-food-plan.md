@@ -399,7 +399,8 @@ Byggt v0.191.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` ("Vilda grön
   maten följer åldrarna: krukan kan bara sina rätter, kitteln och grytan kan också de lägre. Bladgrönsaker sås med själva
   grönsaken (som vanillas potatis), inga egna frön. Iron Cauldron hänger i tripoden (bara över Fire Pit) i stället för en egen
   station: samma vätska, värme och öslogik. Wooden Barrel heter **Fermenting Barrel** (vanillas Barrel finns).
-- **Kvar / inte gjort:** Apple Saplings (byn) och Bitter Orange Saplings (karavanen) väntar på fruktträden i fas 3. Rapeseed,
+- **Kvar / inte gjort:** byns Apple Saplings blev **Wild Apple Sapling** (fas 3:s vildapel; bonden nivå 4, 1 för 6 Copper
+  Coin, v0.192.0; ympade äpplen finns inte än). Bitter Orange Saplings (karavanen) saknas fortfarande: inget citrusträd. Rapeseed,
   Cider, Ale, Pies och Roast with Herbs är inte gjorda (pressen, ölet och ugnspajer kommer senare); örterna Hops och Bog Myrtle
   har ännu bara kompost och framtida öl. Rice växer på vanlig farmland (inte vattendränkt). Crop Stakes-skörd tämjer inte.
 - **Test:** `HerbsTest`: tämjning (~25 % av 400 skördar), rätter per redskap och nivå, kitteln ger Pea Soup, krukan lämnar

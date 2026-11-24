@@ -1,4 +1,5 @@
 {
+  "parent": "minecraft:block/block",
   "ambientocclusion": false,
   "textures": {
     "particle": "mechanical:block/date_palm_leaves_top",

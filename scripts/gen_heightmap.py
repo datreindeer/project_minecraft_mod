@@ -34,7 +34,9 @@ SOFT_PARENTS = ("block/cross", "block/tinted_cross", "block/crop", "block/stem_g
 # game test heightmap_tags names any new one
 NO_COLLISION = {"mechanical:" + b for b in (
     "soot fern_flower blackthorn sea_buckthorn jujube hazel_shrub juniper bramble sapling_thicket rib_cage mammoth_tusk "
-    "cave_painting tripod elkwight_antler_crown").split()}
+    "cave_painting tripod elkwight_antler_crown rosehip crowberry bearberry barberry caper red_currant black_currant").split()}
+# blocks drawn only by a block entity renderer (empty model) that still have a collision shape: solid
+SOLID = {"mechanical:" + b for b in "water_wheel wooden_shaft".split()}
 # names (suffixes) of blocks drawn as crosses that still have a collision shape, like vanilla's amethyst clusters: solid
 SOLID_SUFFIXES = ("_crystal",)
 
@@ -99,7 +101,7 @@ def leaves():
 
 def solid(name, warn):
     bid = "mechanical:" + name
-    if name.endswith(SOLID_SUFFIXES):
+    if name.endswith(SOLID_SUFFIXES) or bid in SOLID:
         return True
     if bid in NO_COLLISION:
         return False

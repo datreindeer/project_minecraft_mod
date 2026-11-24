@@ -5,7 +5,9 @@
     "mechanical:hazel_meadow",
     "minecraft:forest",
     "minecraft:meadow",
-    "minecraft:plains"
+    "minecraft:plains",
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst"
   ],
   "features": "mechanical:bird_cherry_lakeside",
   "step": "vegetal_decoration"

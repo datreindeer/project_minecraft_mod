@@ -2,6 +2,7 @@
   "replace": true,
   "values": [
     "mechanical:farmer/4/bronze_0",
-    "mechanical:farmer/4/bronze_1"
+    "mechanical:farmer/4/bronze_1",
+    "mechanical:farmer/4/wild_apple_sapling"
   ]
 }

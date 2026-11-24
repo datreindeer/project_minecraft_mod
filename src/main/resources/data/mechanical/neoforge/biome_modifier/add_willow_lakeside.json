@@ -5,7 +5,10 @@
     "minecraft:flower_forest",
     "minecraft:plains",
     "minecraft:meadow",
-    "minecraft:birch_forest"
+    "minecraft:birch_forest",
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow",
+    "mechanical:limestone_karst"
   ],
   "features": "mechanical:willow_lakeside",
   "step": "vegetal_decoration"
