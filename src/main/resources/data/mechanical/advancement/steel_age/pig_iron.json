@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:steel_age/white_heat",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pig_iron_ingot"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.pig_iron.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.pig_iron.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -128,7 +128,7 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
                 int cx = x + GRID_X + (n % GRID_COLS) * CELL + 3, cy = y + GRID_Y + (n / GRID_COLS) * CELL + 2;
                 g.item(it, cx, cy);
                 HighFurnaceMelting.Melt m = HighFurnaceMelting.of(it);
-                boolean waits = m == null || t < m.molten().melt;
+                boolean waits = m == null || t < m.heat();
                 g.fill(cx, cy + 17, cx + 16, cy + 19, 0xFF3A3A3A);
                 g.fill(cx, cy + 17, cx + Math.max(1, Math.round(16 * f.progress(i))), cy + 19, waits ? 0xFFC03020 : 0xFF40C040);
                 n++;
@@ -155,7 +155,7 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
         HighFurnaceBlockEntity f = menu.furnace();
         Molten pouring = f == null ? null : f.pouring();
         g.text(font, pouring == null ? Component.translatable("gui.mechanical.high_furnace.pours_nothing")
-                : Component.translatable("gui.mechanical.high_furnace.pours", Component.translatable("molten.mechanical." + pouring.id)), GRID_X, GRID_Y + GRID_ROWS * CELL + 4, DARK, false);
+                : Component.translatable("gui.mechanical.high_furnace.pours", Component.translatable("molten.mechanical." + pouring.id)), GRID_X, 8, DARK, false);
     }
 
     private @Nullable Band bandAt(double mx, double my) {
@@ -206,8 +206,8 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
                 lines.add(it.getHoverName());
                 if (m != null) {
                     lines.add(Component.translatable("gui.mechanical.high_furnace.slot", m.mb(), Component.translatable("molten.mechanical." + m.molten().id)));
-                    if (menu.temperature() < m.molten().melt)
-                        lines.add(Component.translatable("gui.mechanical.high_furnace.needs", m.molten().melt).withStyle(ChatFormatting.RED));
+                    if (menu.temperature() < m.heat())
+                        lines.add(Component.translatable("gui.mechanical.high_furnace.needs", m.heat()).withStyle(ChatFormatting.RED));
                 }
                 break;
             }

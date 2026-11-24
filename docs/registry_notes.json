@@ -9945,5 +9945,14 @@
   },
   "clay_tuyere_mold": {
     "text": "Lerform som gjuter ett [[bronze_tuyere_nozzle]] av 4 enheter brons, som de andra lerformarna."
+  },
+  "pouring_spout": {
+    "text": "Hällpip av stål (`P P` / ` P ` av [[steel_plate]]). Sätts på utsidan av ett [[taphole]] i en **High Furnace**; högerklick öppnar och stänger (spaken fälls). Öppen häller den ugnens valda lager (eller bottenlagret) **rakt ner** i det som står under pipens läpp, **40 mB per tick**, med en glödande stråle: en [[clay_mold]] (bara koppar och brons, högst 1100°: \"Too hot for clay\") eller en [[iron_ingot_mold]] (allt som har en tacka). Står inget där flödar inget, och metall som redan rann tillbaka in i pölen om formen tas bort."
+  },
+  "iron_ingot_mold": {
+    "text": "Kokill av gjutjärn med fyra tackfack som **aldrig spricker**. Under en [[pouring_spout]] tar den **800 mB** av vilken metall som helst och ger **4 tackor** när den stelnat (5 s); tom hand tar ut dem. Guld, silver, bly, koppar, brons, tenn, [[pig_iron_ingot]], [[steel_ingot]] och [[wrought_iron_ingot]]. Tills vidare: 5 [[iron_plate]] (`P P` / `PPP`); planen gjuter den i en formflaska."
+  },
+  "pig_iron_ingot": {
+    "text": "Tackjärn ur en **High Furnace**: järnmalm reduceras vid **1450°** till smält tackjärn, dubbelt så mycket som i Bloomery (Raw Iron 100 mB, 200 med flux; Roasted Iron Ore 200/300; myrmalm två tredjedelar), med slagg som flyter överst. Gjuts i en [[iron_ingot_mold]]. 1 tackjärn + 2 [[wrought_iron_ingot]] smälta ihop i ugnen blir **3 stål** (vid 1550°, när smidesjärnet smälter)."
   }
 }

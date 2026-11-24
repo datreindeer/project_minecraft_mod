@@ -1364,6 +1364,21 @@
      "sv": "Stålålderns stora mål. Krossa Quartzite på [[stone_anvil]], blanda 2 [[crushed_quartzite]] med [[fire_clay]] och [[quicklime]] och bränn [[unfired_silica_brick]] vid **1250°** till [[silica_brick]]. Smid [[steel_hoop]] av en het Steel Ingot (mönstret Hoops) och bygg [[banded_furnace_casing]]. Ugnen: [[silica_bricks]] under ett tomt inre på **2×2 till 3×3**, en ring casing runt det i **5–8 lager**, och i nedersta ringen en [[high_furnace_front]], en [[firebox]] per 24 inre block och gärna ett [[taphole]]. Ge eldstäderna Charcoal, tänd dem och driv en [[great_bellows]] per eldstad från ett vattenhjul: blåsten räknas per volym, så en stor ugn behöver fler hjul. Full blåst ger **1600°**.",
      "en": "The Steel Age's great goal. Crush Quartzite on the [[stone_anvil]], mix 2 [[crushed_quartzite]] with [[fire_clay]] and [[quicklime]] and fire [[unfired_silica_brick]] at **1250°** into [[silica_brick]]. Forge [[steel_hoop]] from a hot Steel Ingot (the Hoops pattern) and build [[banded_furnace_casing]]. The furnace: [[silica_bricks]] under an empty inside **2×2 to 3×3**, a ring of casing round it **5–8 layers** high, and in the bottom ring a [[high_furnace_front]], a [[firebox]] per 24 inside blocks and a [[taphole]]. Give the fireboxes Charcoal, light them and drive a [[great_bellows]] per firebox from a water wheel: the blast counts per volume, so a big furnace needs more wheels. Full blast gives **1600°**."
     }
+   },
+   {
+    "title": {
+     "sv": "High Furnace: smälta, hälla och tackjärn",
+     "en": "High Furnace: melting, pouring and pig iron"
+    },
+    "items": [
+     "pouring_spout",
+     "iron_ingot_mold",
+     "pig_iron_ingot"
+    ],
+    "text": {
+     "sv": "Kasta malm och tackor i den heta ugnens öppna topp: varje sak tar en plats och smälter till ett lager i pölen (malm ger dubbelt mot degeln, koppar och tenn blir brons 9:1 av sig själva). Vid **1450°** blir järnmalm smält **tackjärn** med slagg överst; kasta i flux för mer järn. Sätt en [[pouring_spout]] på ett [[taphole]], ställ en [[iron_ingot_mold]] under läppen och öppna pipen: ugnen häller det lager du klickat på i skärmen. Tackjärn och smidesjärn blandas till **stål** i pölen.",
+     "en": "Throw ore and ingots in at the hot furnace's open top: each takes a place and melts into a layer of the pool (ore gives twice the crucible's, copper and tin mix into bronze 9:1 by themselves). At **1450°** iron ore becomes molten **pig iron** with slag on top; throw in flux for more iron. Set a [[pouring_spout]] on a [[taphole]], stand an [[iron_ingot_mold]] under its lip and open the spout: the furnace pours the layer you clicked in its screen. Pig iron and wrought iron mix into **steel** in the pool."
+    }
    }
   ]
  }

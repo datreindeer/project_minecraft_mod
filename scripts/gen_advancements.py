@@ -1622,6 +1622,15 @@ TABS["steel_age"][1].extend([
     ("layer_cake", "high_furnace", "bronze_ingot", T, "Layer Cake",
      "Throw ore and ingots in at a hot High Furnace's open top until three different melts lie in its pool at once. "
      "Copper and tin mix themselves into bronze, 9 to 1, and ore gives twice what a crucible does", by_code()),
+    ("pour", "layer_cake", "pouring_spout", G, "Pour",
+     "Set a Pouring Spout on a Taphole, open it and let the furnace fill a mold standing under its lip: a Clay Mold for "
+     "copper and bronze, an Iron Ingot Mold (4 ingots of any metal) for the rest. Click a layer in the furnace's screen to choose what pours", by_code()),
+    ("pig_iron", "white_heat", "pig_iron_ingot", G, "Pig Iron",
+     "Throw iron ore into a High Furnace at 1450°: it comes out as molten Pig Iron, twice what a Bloomery gives, with Slag "
+     "floating on top. Flux thrown in with it gives more iron and less slag", by_code()),
+    ("cast_steel", "pig_iron", "steel_ingot", C, "Cast Steel",
+     "Melt 1 Pig Iron with 2 Wrought Iron (or Blister Steel) at 1500°: the furnace mixes Steel by itself. Pour it into an "
+     "Iron Ingot Mold and take out the steel ingots", by_code()),
 ])
 
 # stone families (StoneFamilies.java; gen_stone_families.py): one per Stone Age stone

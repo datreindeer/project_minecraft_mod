@@ -95,6 +95,10 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
     private float[] progress = new float[0];
     /** The layer chosen in the screen for the tapholes to pour (a {@link Molten}), or null for the bottom layer. */
     private @Nullable Molten selected;
+    /** Iron ores the flux thrown in still serves ({@link HighFurnaceMelting#ORES_PER_FLUX} per Flux), and the half
+     * Charcoal each reduced ore still owes the Fireboxes. */
+    private int flux;
+    private float reduction;
     private float temp = Float.NaN, ambient = 20;
     private int dried, totalBlast;
     // worked out again after loading
@@ -423,6 +427,13 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         for (net.minecraft.world.entity.item.ItemEntity e : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box)) {
             if (!e.isAlive()) continue;
             ItemStack stack = e.getItem();
+            if (HighFurnaceMelting.isFlux(stack)) { // flux goes on the count, it takes no place
+                flux += stack.getCount() * HighFurnaceMelting.ORES_PER_FLUX;
+                e.discard();
+                level.playSound(null, e.blockPosition(), SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 0.7F, 0.8F);
+                dirty = true;
+                continue;
+            }
             if (HighFurnaceMelting.of(stack) == null) {
                 ItemStack out = stack.copy();
                 e.discard();
@@ -457,15 +468,38 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         float t = temperature();
         for (int i = 0; i < slots.size(); i++) {
             HighFurnaceMelting.Melt m = HighFurnaceMelting.of(slots.get(i));
-            if (m == null || t < m.molten().melt || pool.room() < m.mb()) continue;
-            progress[i] += KilnBlockEntity.speed(t, m.molten().melt);
+            if (m == null || t < m.heat() || pool.room() < Math.max(m.mb(), m.withFlux()) + (m.ironOre() ? HighFurnaceMelting.SLAG : 0)) continue;
+            progress[i] += KilnBlockEntity.speed(t, m.heat());
             if (progress[i] < m.ticks()) continue;
-            pool.add(m.molten(), m.mb());
+            if (m.ironOre()) { // reduced: pig iron and slag (less slag and more iron with flux), and half a Charcoal burnt
+                boolean fluxed = flux > 0;
+                if (fluxed) flux--;
+                pool.add(Molten.PIG_IRON, fluxed ? m.withFlux() : m.mb());
+                pool.add(Molten.SLAG, fluxed ? HighFurnaceMelting.SLAG_FLUX : HighFurnaceMelting.SLAG);
+                reduction += 0.5F;
+                burnReductionCoal();
+                Smelting.award(level, worldPosition, HighFurnace.PIG_IRON_ADVANCEMENT, 16);
+            } else pool.add(m.molten(), m.mb());
             slots.set(i, ItemStack.EMPTY);
             progress[i] = 0;
             dirty = true;
         }
         if (dirty && pool.layers().size() >= 3) Smelting.award(level, worldPosition, HighFurnace.LAYER_CAKE_ADVANCEMENT, 16);
+    }
+
+    /** The charcoal reduced ore owes comes out of the Fireboxes' stock, a whole piece at a time. */
+    private void burnReductionCoal() {
+        for (Fire f : fireList()) {
+            if (reduction < 1) return;
+            if (f.fuel > 0) {
+                f.fuel--;
+                reduction -= 1;
+            }
+        }
+    }
+
+    public int flux() {
+        return flux;
     }
 
     public static int step(float temp) {
@@ -634,6 +668,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         progress = new float[n];
         for (int i = 0; i < n && i < pr.length; i++) progress[i] = pr[i] / 100F;
         selected = Molten.byId(input.getStringOr("selected", ""));
+        flux = input.getIntOr("flux", 0);
+        reduction = input.getFloatOr("reduction", 0);
         pool.setCapacity(input.getIntOr("capacity", 0));
         fires.clear();
         int[] at = input.getIntArray("fire_pos").orElse(new int[0]);
@@ -664,6 +700,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         for (int i = 0; i < pr.length; i++) pr[i] = Math.round(progress[i] * 100);
         output.putIntArray("progress", pr);
         if (selected != null) output.putString("selected", selected.id);
+        output.putInt("flux", flux);
+        output.putFloat("reduction", reduction);
         output.putInt("capacity", pool.capacity());
         int[] at = new int[fires.size() * 3];
         int[] fuel = new int[fires.size()], burn = new int[fires.size()];

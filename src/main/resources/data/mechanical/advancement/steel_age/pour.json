@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:steel_age/layer_cake",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pouring_spout"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.pour.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.pour.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

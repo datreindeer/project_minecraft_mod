@@ -264,6 +264,22 @@ public final class FurnaceShots {
             }
     }
 
+    /** Layers in both pools and a few things still melting (for the screen and the view down the top). */
+    private static void fill() {
+        for (BlockPos front : new BlockPos[] {SMALL_FRONT, BIG_FRONT})
+            if (level().getBlockEntity(rel(front.getX(), front.getY(), front.getZ())) instanceof HighFurnaceBlockEntity f) {
+                f.pool().add(Molten.GOLD, 600);
+                f.pool().add(Molten.COPPER, 1400);
+                f.pool().add(Molten.BRONZE, front == BIG_FRONT ? 9000 : 2600);
+                f.pool().add(Molten.LEAD, 400);
+                for (int i = 0; i < 6; i++) f.take(new ItemStack(BronzeOres.CRUSHED_COPPER_ORE.get()));
+                f.take(new ItemStack(Items.RAW_GOLD));
+                f.take(new ItemStack(IronOres.RAW_GALENA.get()));
+                f.take(new ItemStack(Items.COPPER_INGOT));
+                f.setChanged();
+            }
+    }
+
     private static Vec3 at(double x, double y, double z) {
         return new Vec3(x, ground + y, z);
     }
@@ -281,6 +297,7 @@ public final class FurnaceShots {
             switch (p[0]) {
                 case "!light" -> then(2, () -> server(FurnaceShots::light));
                 case "!heat" -> then(2, () -> server(() -> heat(Float.parseFloat(p[1]))));
+                case "!fill" -> then(2, () -> server(FurnaceShots::fill));
                 case "!time" -> then(2, () -> cmd("time set " + p[1]));
                 case "!wait" -> then(Integer.parseInt(p[1]), () -> {});
                 case "!gui" -> {

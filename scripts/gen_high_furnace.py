@@ -70,6 +70,10 @@ def model(name, elements, textures, parent="minecraft:block/block"):
     w(A / f"models/block/{name}.json", {"parent": parent, "textures": textures, "elements": elements})
 
 
+def recipe(name, obj):
+    w(D / f"mechanical/recipe/{name}.json", obj)
+
+
 def item_def(name, mdl):
     w(A / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": mdl}})
 
@@ -316,14 +320,58 @@ w(D / f"mechanical/loot_table/blocks/clay_{s}_mold.json", {"type": "minecraft:bl
                  "modifier": [{"type": "minecraft:copy_state", "block": M + f"clay_{s}_mold", "properties": ["uses"]}]}]}],
     "random_sequence": f"mechanical:blocks/clay_{s}_mold"})
 
+# ---------------- Pouring Spout (pours north; its back flange against the Taphole at z 16): a short riveted steel trough
+# with raised sides, its lip at z 6.5 over the middle of the block below; a lever on the right, up when shut, thrown
+# forward when open; pouring, the metal in the trough glows (the falling stream is client/PouringSpoutRenderer).
+ST = {"particle": B + "pouring_spout_steel", "steel": B + "pouring_spout_steel", "lever": B + "pouring_spout_lever", "glow": B + "taphole_glow"}
+SPOUT = [box([3, 3, 15], [13, 11, 16], "#steel"),                                    # flange bolted to the taphole frame
+         box([5, 4.5, 6.5], [11, 6, 15], "#steel"),                                  # trough floor
+         box([4, 4.5, 6.5], [5, 8.5, 15], "#steel"), box([11, 4.5, 6.5], [12, 8.5, 15], "#steel"),   # sides
+         box([5, 4, 6], [11, 5, 7], "#steel"),                                        # the lip, turned down
+         box([4.5, 3.5, 9], [11.5, 4.5, 10.5], "#steel"), box([4.5, 3.5, 12.5], [11.5, 4.5, 14], "#steel"),  # straps under it
+         box([12, 6, 11.5], [13, 7, 12.5], "#lever")]                                 # lever pivot
+LEVER_SHUT = [box([12.2, 6.5, 11.6], [12.9, 13, 12.4], "#lever")]
+LEVER_OPEN = [{"from": [12.2, 6.5, 11.6], "to": [12.9, 13, 12.4], "rotation": {"angle": -45, "axis": "x", "origin": [12.5, 6.5, 12]},
+               "faces": {f: {"uv": [7, 2, 8, 9], "texture": "#lever"} for f in FACES}}]
+GLOW = [{"from": [5, 6.05, 6.5], "to": [11, 6.05, 15], "light_emission": 15, "shade": False,
+         "faces": {"up": {"uv": [5, 4, 11, 12], "texture": "#glow"}}}]
+model("pouring_spout", SPOUT + LEVER_SHUT, ST)
+model("pouring_spout_open", SPOUT + LEVER_OPEN, ST)
+model("pouring_spout_pouring", SPOUT + LEVER_OPEN + GLOW, ST)
+w(A / "blockstates/pouring_spout.json", {"variants": {
+    f"facing={f},open={o},pouring={po}": {"model": B + "pouring_spout" + ("_pouring" if po == "true" and o == "true" else "_open" if o == "true" else ""),
+                                         **({"y": y} if y else {})}
+    for f, y in ROT.items() for o in ("false", "true") for po in ("false", "true")}})
+item_def("pouring_spout", B + "pouring_spout")
+loot("pouring_spout")
+recipe("pouring_spout", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", " P "],
+                         "key": {"P": M + "steel_plate"}, "result": {"id": M + "pouring_spout"}})
+tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "pouring_spout")
+merge(A / "lang/en_us.json", {"block.mechanical.pouring_spout": "Pouring Spout",
+    "message.mechanical.pouring_spout.open": "Spout open: it pours the chosen layer into what stands under its lip",
+    "message.mechanical.pouring_spout.closed": "Spout shut",
+    "message.mechanical.pouring_spout.too_hot": "Too hot for clay: a Clay Mold takes nothing hotter than 1100°"})
+
+# ---------------- Iron Ingot Mold (phase 4b/5): a cast-iron plate with four ingot pockets that never cracks; its melt
+# is drawn by client/IngotMoldRenderer. For now crafted from 5 Iron Plates (the plan casts it in a Molding Flask, which
+# comes with the rest of the casting tier).
+IM = {"particle": B + "iron_mold_side", "top": B + "iron_ingot_mold_top", "side": B + "iron_mold_side"}
+model("iron_ingot_mold", [box([1, 0, 1], [15, 4, 15], {"up": "#top", "down": "#side", "north": "#side", "south": "#side", "east": "#side", "west": "#side"})], IM)
+w(A / "blockstates/iron_ingot_mold.json", {"variants": {"": {"model": B + "iron_ingot_mold"}}})
+item_def("iron_ingot_mold", B + "iron_ingot_mold")
+loot("iron_ingot_mold")
+recipe("iron_ingot_mold", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", "PPP"],
+                           "key": {"P": M + "iron_plate"}, "result": {"id": M + "iron_ingot_mold"}})
+tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "iron_ingot_mold")
+merge(A / "lang/en_us.json", {"block.mechanical.iron_ingot_mold": "Iron Ingot Mold", "item.mechanical.pig_iron_ingot": "Pig Iron Ingot",
+    "message.mechanical.ingot_mold.molten": "Still molten: wait until it has set"})
+
 # ---------------- flat items
-for name in ("crushed_quartzite", "unfired_silica_brick", "silica_brick", "steel_hoop", "bronze_tuyere_nozzle", "unfired_clay_tuyere_mold"):
+for name in ("crushed_quartzite", "unfired_silica_brick", "silica_brick", "steel_hoop", "bronze_tuyere_nozzle", "unfired_clay_tuyere_mold", "pig_iron_ingot"):
     w(A / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{name}"}})
     item_def(name, M + f"item/{name}")
 
 # ---------------- recipes
-def recipe(name, obj):
-    w(D / f"mechanical/recipe/{name}.json", obj)
 
 
 def shapeless(name, ingredients, count=1):

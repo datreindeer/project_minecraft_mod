@@ -39,12 +39,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HighFurnaceTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt"};
+    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron"};
 
     static {
         TEST_FUNCTIONS.register("high_furnace_shape", () -> HighFurnaceTest::shape);
         TEST_FUNCTIONS.register("high_furnace_heat", () -> HighFurnaceTest::heat);
         TEST_FUNCTIONS.register("high_furnace_melt", () -> HighFurnaceTest::melt);
+        TEST_FUNCTIONS.register("high_furnace_pour", () -> HighFurnaceTest::pour);
+        TEST_FUNCTIONS.register("high_furnace_iron", () -> HighFurnaceTest::iron);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -56,7 +58,7 @@ public final class HighFurnaceTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "high_furnace"), new TestEnvironmentDefinition.AllOf(List.of()));
         for (String t : TESTS)
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, t), new FunctionGameTestInstance(
-                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") ? 1000 : 400, true)));
+                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("iron") ? 1000 : 400, true)));
     }
 
     /** Where a test furnace stands: its Front's position (relative), facing north; the inside starts right south of it. */
@@ -246,6 +248,98 @@ public final class HighFurnaceTest {
                     f.select(Molten.COPPER);
                     h.assertTrue(f.pouring() == Molten.COPPER, "a chosen layer pours instead");
                     h.succeed();
+                });
+            });
+        });
+    }
+
+    /**
+     * Phase 4: a Pouring Spout on the Taphole pours the chosen layer into what stands under its lip, and no mB is made or
+     * lost on the way: 1000 mB Bronze fill a Clay Pickaxe Head Mold (600) and leave 400; a mold taken away mid-pour gives
+     * the stream back to the pool; an Iron Ingot Mold takes 800 mB Gold and gives 4 Gold Ingots; a Clay Mold takes no Steel.
+     */
+    private static void pour(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        BlockPos tap = new BlockPos(4, 2, 6), spout = tap.south(), under = spout.below();
+        h.setBlock(tap, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        h.setBlock(spout, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));
+        h.setBlock(under, Casting.CLAY_PICKAXE_HEAD_MOLD.get());
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        h.assertTrue(f.formed() && f.shape().tapholes().size() == 1, "formed with a taphole: " + f.problem());
+        for (int t = 1; t < 380; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(1200));
+        f.pool().add(Molten.BRONZE, 1000);
+        PouringSpoutBlockEntity s = (PouringSpoutBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(spout));
+        h.runAfterDelay(30, () -> {
+            h.assertTrue(h.getBlockState(under).getValue(ClayMoldBlock.FILL) == ClayMoldBlock.Fill.MOLTEN
+                    && h.getBlockState(under).getValue(ClayMoldBlock.METAL) == Metal.BRONZE, "the mold under the lip is full of bronze");
+            h.assertTrue(f.pool().get(Molten.BRONZE) == 400 && s.bufferForTest() == 0, "exactly 600 mB went in: " + f.pool().get(Molten.BRONZE));
+            // a fresh mold, taken away mid-pour: what was in the stream goes back
+            h.setBlock(under, Casting.CLAY_PICKAXE_HEAD_MOLD.get());
+            h.runAfterDelay(5, () -> {
+                int inStream = s.bufferForTest();
+                h.assertTrue(inStream > 0 && f.pool().get(Molten.BRONZE) + inStream == 400, "pouring: " + inStream + " in the stream");
+                h.setBlock(under, Blocks.AIR);
+                h.runAfterDelay(2, () -> {
+                    h.assertTrue(f.pool().get(Molten.BRONZE) == 400 && s.bufferForTest() == 0, "the stream went back: " + f.pool().get(Molten.BRONZE));
+                    // gold into an Iron Ingot Mold: 4 ingots
+                    f.pool().add(Molten.GOLD, 800);
+                    f.select(Molten.GOLD);
+                    h.setBlock(under, HighFurnace.IRON_INGOT_MOLD.get());
+                    h.runAfterDelay(30, () -> {
+                        IngotMoldBlock.Entity mold = (IngotMoldBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(under));
+                        h.assertTrue(mold.molten() == Molten.GOLD && f.pool().get(Molten.GOLD) == 0, "800 mB of gold in the iron mold: " + f.pool().layers());
+                        // steel is too hot for clay: a Clay Mold takes none
+                        f.pool().add(Molten.STEEL, 400);
+                        f.select(Molten.STEEL);
+                        h.setBlock(under, Casting.CLAY_PICKAXE_HEAD_MOLD.get());
+                        for (int t = 0; t < 40; t++) h.runAtTickTime(h.getTick() + t + 1, () -> f.setTemperatureForTest(1600));
+                        h.runAfterDelay(20, () -> {
+                            h.assertTrue(h.getBlockState(under).getValue(ClayMoldBlock.FILL) == ClayMoldBlock.Fill.EMPTY && f.pool().get(Molten.STEEL) == 400,
+                                    "a clay mold takes no steel");
+                            h.succeed();
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    /**
+     * Phase 5: 4 Roasted Iron Ore + 1 Flux at 1450° give 1200 mB Pig Iron + 100 mB Slag; without flux 800 + 300; each ore
+     * burns half a Charcoal from the Firebox; 1 Pig Iron + 2 Wrought Iron Ingots (wrought melts at 1550°) mix into 600 mB Steel (3 ingots).
+     */
+    private static void iron(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        f.addFuel(h.absolutePos(b.fireboxes().get(0)), new ItemStack(net.minecraft.world.item.Items.CHARCOAL, 10));
+        float[] heat = {1460};
+        for (int t = 1; t < 980; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(heat[0]));
+        net.minecraft.world.phys.Vec3 top = f.topForTest();
+        h.getLevel().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(h.getLevel(), top.x, top.y + 1, top.z, new ItemStack(IronOres.FLUX.get())));
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(f.flux() == HighFurnaceMelting.ORES_PER_FLUX, "one flux serves 4 ores: " + f.flux());
+            for (int i = 0; i < 4; i++) f.take(new ItemStack(Ironworking.ROASTED_IRON_ORE.get()));
+            h.runAfterDelay(200, () -> {
+                h.assertTrue(f.pool().get(Molten.PIG_IRON) == 1200 && f.pool().get(Molten.SLAG) == 100, "with flux: 1200 + 100, got " + f.pool().layers());
+                h.assertTrue(f.pool().layers().getLast().getKey() == Molten.SLAG, "slag floats on top");
+                h.assertTrue(f.fireList().get(0).fuel == 8, "4 ores burnt 2 Charcoal: " + f.fireList().get(0).fuel);
+                f.pool().drain(Molten.PIG_IRON, 1200);
+                f.pool().drain(Molten.SLAG, 100);
+                for (int i = 0; i < 4; i++) f.take(new ItemStack(Ironworking.ROASTED_IRON_ORE.get()));
+                h.runAfterDelay(200, () -> {
+                    h.assertTrue(f.pool().get(Molten.PIG_IRON) == 800 && f.pool().get(Molten.SLAG) == 300, "without flux: 800 + 300, got " + f.pool().layers());
+                    f.pool().drain(Molten.PIG_IRON, 800);
+                    f.pool().drain(Molten.SLAG, 300);
+                    heat[0] = 1560; // wrought iron melts at 1550
+                    f.take(new ItemStack(HighFurnace.PIG_IRON_INGOT.get()));
+                    f.take(new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()));
+                    f.take(new ItemStack(Ironworking.WROUGHT_IRON_INGOT.get()));
+                    h.runAfterDelay(200, () -> {
+                        h.assertTrue(f.pool().get(Molten.STEEL) == 600 && f.pool().total() == 600, "1 Pig + 2 Wrought: 600 mB Steel, got " + f.pool().layers());
+                        h.succeed();
+                    });
                 });
             });
         });

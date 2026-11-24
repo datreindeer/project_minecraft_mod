@@ -69,11 +69,30 @@ public final class HighFurnace {
     public static final Supplier<BlockEntityType<GreatBellowsBlockEntity>> GREAT_BELLOWS_ENTITY = Mechanical.BLOCK_ENTITIES.register("great_bellows",
             () -> new BlockEntityType<>(GreatBellowsBlockEntity::new, GREAT_BELLOWS.get()));
 
+    /** Phase 5: the iron the High Furnace reduces from ore, cast in an Iron Ingot Mold; Finery-free for now: it melts back,
+     * mixes 1:2 with Wrought Iron into Steel in the pool. */
+    public static final DeferredItem<Item> PIG_IRON_INGOT = ITEMS.registerSimpleItem("pig_iron_ingot");
+    public static final DeferredBlock<IngotMoldBlock> IRON_INGOT_MOLD = BLOCKS.registerBlock("iron_ingot_mold", IngotMoldBlock::new,
+            p -> p.mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
+    public static final DeferredItem<BlockItem> IRON_INGOT_MOLD_ITEM = ITEMS.registerSimpleBlockItem("iron_ingot_mold", IRON_INGOT_MOLD);
+    public static final Supplier<BlockEntityType<IngotMoldBlock.Entity>> INGOT_MOLD_ENTITY = Mechanical.BLOCK_ENTITIES.register("iron_ingot_mold",
+            () -> new BlockEntityType<>(IngotMoldBlock.Entity::new, IRON_INGOT_MOLD.get()));
+
+    public static final DeferredBlock<PouringSpoutBlock> POURING_SPOUT = BLOCKS.registerBlock("pouring_spout", PouringSpoutBlock::new,
+            p -> p.mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()
+                    .lightLevel(s -> s.getValue(PouringSpoutBlock.POURING) ? 15 : 0));
+    public static final DeferredItem<BlockItem> POURING_SPOUT_ITEM = ITEMS.registerSimpleBlockItem("pouring_spout", POURING_SPOUT);
+    public static final Supplier<BlockEntityType<PouringSpoutBlockEntity>> POURING_SPOUT_ENTITY = Mechanical.BLOCK_ENTITIES.register("pouring_spout",
+            () -> new BlockEntityType<>(PouringSpoutBlockEntity::new, POURING_SPOUT.get()));
+
     /** Advancements granted from code (see scripts/gen_advancements.py, the Steel Age tab). */
     public static final Identifier FORMED_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/high_furnace"),
             FULL_BLAST_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/wind_of_the_river"),
             WHITE_HEAT_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/white_heat"),
-            LAYER_CAKE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/layer_cake");
+            LAYER_CAKE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/layer_cake"),
+            POUR_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/pour"),
+            PIG_IRON_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/pig_iron"),
+            CAST_STEEL_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/cast_steel");
 
     private static Block.Properties wall(Block.Properties p) {
         return p.mapColor(MapColor.QUARTZ).strength(3.5F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops();
@@ -81,6 +100,7 @@ public final class HighFurnace {
 
     public static void init() {
         MeltPool.selfCheck();
+        PouringSpoutBlockEntity.SINKS.add(new IngotMoldBlock.Sink());
     }
 
     private HighFurnace() {}

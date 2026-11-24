@@ -567,6 +567,8 @@
     "mechanical:banded_furnace_casing",
     "mechanical:firebox",
     "mechanical:taphole",
-    "mechanical:high_furnace_front"
+    "mechanical:high_furnace_front",
+    "mechanical:pouring_spout",
+    "mechanical:iron_ingot_mold"
   ]
 }

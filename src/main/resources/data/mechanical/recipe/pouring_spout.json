@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    " P "
+  ],
+  "key": {
+    "P": "mechanical:steel_plate"
+  },
+  "result": {
+    "id": "mechanical:pouring_spout"
+  }
+}

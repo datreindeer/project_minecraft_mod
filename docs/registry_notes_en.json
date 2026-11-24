@@ -9951,5 +9951,14 @@
   },
   "clay_tuyere_mold": {
     "text": "A clay mold that casts a [[bronze_tuyere_nozzle]] from 4 units of bronze, like the other clay molds."
+  },
+  "pouring_spout": {
+    "text": "A steel pouring spout (`P P` / ` P ` of [[steel_plate]]). Set it on the outside of a [[taphole]] of a **High Furnace**; right-click opens and closes it (the lever drops). Open, it pours the furnace's chosen layer (or the bottom one) **straight down** into what stands under its lip, **40 mB a tick**, in a glowing stream: a [[clay_mold]] (copper and bronze only, at most 1100°: \"Too hot for clay\") or an [[iron_ingot_mold]] (anything with an ingot). With nothing there nothing flows, and metal already in the stream runs back into the pool if the mold is taken away."
+  },
+  "iron_ingot_mold": {
+    "text": "A cast-iron ingot mold with four pockets that **never cracks**. Under a [[pouring_spout]] it takes **800 mB** of any metal and gives **4 ingots** once set (5 s); an empty hand takes them out. Gold, silver, lead, copper, bronze, tin, [[pig_iron_ingot]], [[steel_ingot]] and [[wrought_iron_ingot]]. For now: 5 [[iron_plate]] (`P P` / `PPP`); the plan casts it in a molding flask."
+  },
+  "pig_iron_ingot": {
+    "text": "Pig iron from a **High Furnace**: iron ore is reduced at **1450°** into molten pig iron, twice what a Bloomery gives (Raw Iron 100 mB, 200 with flux; Roasted Iron Ore 200/300; bog iron two thirds), with slag floating on top. Cast it in an [[iron_ingot_mold]]. 1 pig iron + 2 [[wrought_iron_ingot]] melted together in the furnace make **3 steel** (at 1550°, when the wrought iron melts)."
   }
 }

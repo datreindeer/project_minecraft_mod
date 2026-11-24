@@ -236,3 +236,23 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   flyter på ytan (högst 16).
 - Advancement **Layer Cake** (tre smältor i pölen samtidigt). Test `high_furnace_melt`.
 - Inte gjort: lägga föremål i platserna från skärmen (bara genom toppen); en kall pöl ritas inte.
+
+### 6c. Byggt: hällning, kokill och järn (kärnan av fas 4, 4b och 5, v0.200.0)
+
+- **Pouring Spout** (`P P` / ` P `, Steel Plate) på utsidan av ett Taphole. Högerklick öppnar/stänger. Öppen häller den
+  det valda lagret rakt ner i det som står under läppen, **40 mB per tick**, med en glödande stråle i smältans färg,
+  gnistor och fräs där den slår ner. Metallen samlas i pipen tills gjutningen är hel; tas formen bort rinner den tillbaka
+  i pölen (inget skapas eller försvinner).
+- Tar emot: **Clay Mold** (bara koppar och brons, en hel gjutning; över 1100°: "Too hot for clay") och **Iron Ingot Mold**
+  (gjutjärnskokill, spricker aldrig: 800 mB av vilken metall som helst → 4 tackor efter 5 s). Kokillen görs tills vidare
+  av 5 Iron Plate (`P P` / `PPP`), inte i formflaska.
+- **Järn:** Raw Iron, Roasted Iron Ore, Raw/Roasted Bog Iron reduceras vid **1450°** till **Pig Iron** (2× Bloomery) plus
+  **Slag** som flyter överst (75 mB, 25 med flux). **Flux** som kastas in läggs på en räknare (1 flux räcker till 4 malmer)
+  och ger mer järn och mindre slagg. Varje malm bränner en halv Charcoal ur eldstäderna.
+- **Stål:** Pig Iron Ingot, Wrought Iron Ingot (1550°), Steel Ingot och Blister Steel smälter (200 mB). 1 Pig Iron + 2 Wrought
+  Iron blandar sig själva till 3 Steel i pölen. Hälls i en Iron Ingot Mold → vanliga Steel Ingots som smids på städet.
+- Advancements: **Pour**, **Pig Iron**, **Cast Steel** (challenge). Test `high_furnace_pour`, `high_furnace_iron`.
+- **Inte byggt än:** Refractory Trough, Trough Gate, rättvis delning och värmeförlust i rännor, lerrännor som spricker,
+  pip i rännände; Pig Bed, Molding Flask, Wooden Patterns, Pattern Bench, Foundry Table/Basin, Iron Plate/Nugget Mold;
+  Finery Hearth, Slag Stone; hela fas 6 (glas, Sight Glass, basalt, block, Loam Mold, Salamander, brännskador) och fas 7
+  (Coke Oven, Hot Blast Stove, Obsidian, Steel Ladle).
