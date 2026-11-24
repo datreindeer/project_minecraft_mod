@@ -76,7 +76,7 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
             // lip thinning to 1.8 px, leaving the lip in a short arc and then falling to the metal it lands in
             Vec3 out = new Vec3(state.facing.getStepX(), 0, state.facing.getStepZ());
             Vec3 arc = a.add(out.scale(0.07)).add(0, -0.12, 0), bend = new Vec3(b.x, a.y - 0.3, b.z).lerp(arc, 0.35);
-            int hot = net.minecraft.util.ARGB.srgbLerp(0.45F, c, 0xFFFFF6D8) | 0xFF000000;
+            int hot = net.minecraft.util.ARGB.srgbLerp(0.6F, c, 0xFFFFFBEA) | 0xFF000000;
             round(p, buf, c, hot, a, arc, 1.3F / 16, 1.2F / 16, scroll);
             round(p, buf, c, hot, arc, bend, 1.2F / 16, 1.0F / 16, scroll);
             round(p, buf, c, hot, bend, b, 1.0F / 16, 0.9F / 16, scroll);
@@ -92,7 +92,8 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
             double t0 = i * Math.PI * 2 / n, t1 = (i + 1) * Math.PI * 2 / n;
             // faces turned toward the light (north-west, up) brighter, the back darker: it reads as a round, glowing core
             float lightness = (float) (0.5 + 0.5 * Math.cos((t0 + t1) / 2 - Math.PI * 0.75));
-            int col = net.minecraft.util.ARGB.srgbLerp(lightness, net.minecraft.util.ARGB.srgbLerp(0.35F, 0xFF000000, c) | 0xFF000000, hot) | 0xFF000000;
+            int edge = net.minecraft.util.ARGB.srgbLerp(0.25F, c, 0xFFE0400A) | 0xFF000000; // the edges a deeper orange, the core white-hot
+            int col = net.minecraft.util.ARGB.srgbLerp(lightness, edge, hot) | 0xFF000000;
             float[][] q = {{(float) (b.x + Math.cos(t0) * rb), (float) b.y, (float) (b.z + Math.sin(t0) * rb), 0},
                     {(float) (a.x + Math.cos(t0) * ra), (float) a.y, (float) (a.z + Math.sin(t0) * ra), 0},
                     {(float) (a.x + Math.cos(t1) * ra), (float) a.y, (float) (a.z + Math.sin(t1) * ra), 0.125F},

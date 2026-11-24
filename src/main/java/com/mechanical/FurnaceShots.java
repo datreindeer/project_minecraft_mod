@@ -252,7 +252,12 @@ public final class FurnaceShots {
         for (int x = 20; x <= 27; x++) set(x, 0, -4, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
         for (int z = -6; z <= -5; z++) set(24, 0, z, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
         for (int x = 28; x <= 39; x++) set(x, -1, -4, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
-        for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -7; z <= -3; z++) {
+        for (int x = 27; x <= 31; x++) set(x, -1, -3, Blocks.AIR.defaultBlockState()); // open the step's trench on its south side
+        // a straight gate run: fed at x 20, 3 troughs, a shut gate, 2 troughs, an Iron Ingot Mold
+        for (int x = 20; x <= 25; x++) set(x, 0, -8, x == 23 ? HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X)
+                : HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        set(26, 0, -8, HighFurnace.IRON_INGOT_MOLD.get().defaultBlockState());
+        for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -8; z <= -3; z++) {
             BlockPos q = rel(x, y, z);
             if (level().getBlockState(q).getBlock() instanceof ClayChannelBlock c) level().setBlockAndUpdate(q, c.stateAt(level(), q));
         }
@@ -365,7 +370,7 @@ public final class FurnaceShots {
                     demoFeed = true;
                 });
                 case "!clear" -> then(1, () -> server(() -> {
-                    for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -7; z <= -3; z++)
+                    for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -8; z <= -3; z++)
                         if (level().getBlockEntity(rel(x, y, z)) instanceof TroughBlockEntity t) t.take(t.amount(), level().getGameTime());
                 }));
                 case "!demostop" -> then(1, () -> demoFeed = false);

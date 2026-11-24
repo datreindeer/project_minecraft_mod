@@ -222,7 +222,8 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         Source src = source(level);
         Molten m = src == null ? null : src.molten();
         BlockPos at = worldPosition.below();
-        if (bufferMolten != null && (m != bufferMolten || src == null)) giveBack();
+        // a furnace that stops pouring takes the stream back; a trough that runs dry for a moment keeps the cast going
+        if (bufferMolten != null && (src == null || m != null && m != bufferMolten || m == null && src.whole())) giveBack();
         source = src;
         if (m != null && src.available() > 0) {
             Sink sink = null;
@@ -268,7 +269,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                     Smelting.award(level, worldPosition, HighFurnace.POUR_ADVANCEMENT, 16);
                 }
             }
-        } else giveBack();
+        } else if (src == null || src.whole()) giveBack();
         // the stream stays drawn through the ticks a trough below has no room for a moment (it drains every few ticks)
         if (running != null) lastRun = level.getGameTime();
         else if (stream != null && level.getGameTime() - lastRun < HOLD_TICKS && src != null && src.molten() == stream) running = stream;

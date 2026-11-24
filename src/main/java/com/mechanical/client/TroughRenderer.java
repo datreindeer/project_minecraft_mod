@@ -137,8 +137,7 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
     /** A melt's glow by how hot it still is: toward white-hot near the source, toward a deep orange-red at the end of its reach. */
     static int glow(Molten m, float hot) {
         int base = 0xFF000000 | m.color;
-        return hot > 0.5F ? ARGB.srgbLerp((hot - 0.5F) * 0.4F, base, 0xFFFFF4D2) | 0xFF000000
-                : ARGB.srgbLerp((0.5F - hot) * 1.4F, base, 0xFFB8380C) | 0xFF000000;
+        return hot > 0.5F ? base : ARGB.srgbLerp((0.5F - hot) * 1.4F, base, 0xFFB8380C) | 0xFF000000;
     }
 
     @Override
@@ -198,6 +197,35 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
                 arm(p, buf, c, light, d, y, edge[d.get2DDataValue()], k, du, dv);
             }
             if (state.front < 0.85F) front(p, buf, c, light, state.arrivedFrom, state.front, y); // gone before it reaches the joint
+            if (state.cooled < 0.05F) { // white-hot down the middle, hottest near the source; a deeper orange where it meets the walls
+                int core = ARGB.srgbLerp(0.25F + 0.45F * state.hot, c, 0xFFFFFBEA) | 0xFF000000, rim = ARGB.srgbLerp(0.35F, c, 0xFFC8360A) | 0xFF000000;
+                float cw = 0.9F / 16, rw = 0.5F / 16;
+                quad(p, buf, core, light, 0.5F - cw, 0.5F - cw, 0.5F + cw, 0.5F + cw, y + 0.001F, k, -mx * t, -mz * t);
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    boolean open = (sides & 1 << d.get2DDataValue()) != 0;
+                    float yo = edge[d.get2DDataValue()];
+                    if (d.getAxis() == Direction.Axis.X) {
+                        if (open) quad(p, buf, core, light, d == Direction.WEST ? 0 : 0.5F + cw, 0.5F - cw, d == Direction.WEST ? 0.5F - cw : 1, 0.5F + cw, (y + yo) / 2 + 0.001F, k, -mx * t, -mz * t);
+                    } else if (open) quad(p, buf, core, light, 0.5F - cw, d == Direction.NORTH ? 0 : 0.5F + cw, 0.5F + cw, d == Direction.NORTH ? 0.5F - cw : 1, (y + yo) / 2 + 0.001F, k, -mx * t, -mz * t);
+                }
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    boolean open = (sides & 1 << d.get2DDataValue()) != 0;
+                    float yo = (y + edge[d.get2DDataValue()]) / 2 + 0.001F;
+                    if (!open) switch (d) { // the wall closing the middle on this side
+                        case NORTH -> quad(p, buf, rim, light, LO, LO, HI, LO + rw, y + 0.001F, k, 0, 0);
+                        case SOUTH -> quad(p, buf, rim, light, LO, HI - rw, HI, HI, y + 0.001F, k, 0, 0);
+                        case WEST -> quad(p, buf, rim, light, LO, LO, LO + rw, HI, y + 0.001F, k, 0, 0);
+                        default -> quad(p, buf, rim, light, HI - rw, LO, HI, HI, y + 0.001F, k, 0, 0);
+                    }
+                    else switch (d) { // the arm's two walls
+                        case NORTH -> { quad(p, buf, rim, light, LO, 0, LO + rw, LO, yo, k, 0, 0); quad(p, buf, rim, light, HI - rw, 0, HI, LO, yo, k, 0, 0); }
+                        case SOUTH -> { quad(p, buf, rim, light, LO, HI, LO + rw, 1, yo, k, 0, 0); quad(p, buf, rim, light, HI - rw, HI, HI, 1, yo, k, 0, 0); }
+                        case WEST -> { quad(p, buf, rim, light, 0, LO, LO, LO + rw, yo, k, 0, 0); quad(p, buf, rim, light, 0, HI - rw, LO, HI, yo, k, 0, 0); }
+                        default -> { quad(p, buf, rim, light, HI, LO, 1, LO + rw, yo, k, 0, 0); quad(p, buf, rim, light, HI, HI - rw, 1, HI, yo, k, 0, 0); }
+                    }
+                    // the middle's corners between two arms
+                }
+            }
             // setting starts at the edges: a crust rim grows inward as it cools
             if (state.cooled > 0.2F && state.cooled < 1) {
                 int crust = cooling(state.molten, Math.min(1, state.cooled + 0.35F));

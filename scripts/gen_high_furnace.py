@@ -581,9 +581,12 @@ def flask(top, glow=False):
     els = [box([1, 0, 1], [15, 12, 15], {"up": top, "down": "#side", **side4}),
            box([0.5, 5.5, 0.5], [15.5, 6.5, 15.5], side4 | {"up": "#side", "down": "#side"})]   # where the halves meet
     els += [box([x0, 4, z0], [x0 + 1.5, 8, z0 + 1.5], "#side") for x0 in (0, 14.5) for z0 in (0, 14.5)]  # the pins at the corners
-    if glow:
-        els.append({"from": [6.5, 12.02, 6.5], "to": [9.5, 12.02, 9.5], "light_emission": 12, "shade": False,
-                    "faces": {"up": {"uv": [6, 6, 10, 10], "texture": "#glow"}}})
+    if top != "#empty" and top != "#inside":  # the pouring cup over the sprue: a raised sand ring round a hole
+        ring = {"north": "#inside", "south": "#inside", "east": "#inside", "west": "#inside", "up": "#inside"}
+        els += [box([5.5, 12, 5.5], [10.5, 14, 6.6], ring), box([5.5, 12, 9.4], [10.5, 14, 10.5], ring),
+                box([5.5, 12, 6.6], [6.6, 14, 9.4], ring), box([9.4, 12, 6.6], [10.5, 14, 9.4], ring)]
+    if glow:  # the cup's melt is drawn by client/FlaskRenderer; the block just gives off light
+        pass
     return els
 model("molding_flask_empty", flask("#empty"), MF)
 model("molding_flask_sand", flask("#inside"), MF)

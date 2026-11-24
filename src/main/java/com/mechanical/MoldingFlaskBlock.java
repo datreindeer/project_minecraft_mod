@@ -229,6 +229,12 @@ public class MoldingFlaskBlock extends Block implements EntityBlock {
             return shape;
         }
 
+        /** How far it has set, 0..1 (the cup's colour). */
+        public float cooled(long now) {
+            int total = setTicks(level, worldPosition, shape == null ? 400 : shape.mb);
+            return molten == null ? 0 : Math.clamp(1 - (setAt - now) / (float) Math.max(1, total), 0, 1);
+        }
+
         void sync() {
             setChanged();
             if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -305,7 +311,8 @@ public class MoldingFlaskBlock extends Block implements EntityBlock {
         /** The pouring hole in the middle of the top. */
         @Override
         public net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
-            return new net.minecraft.world.phys.Vec3(0.5, 12.05 / 16, 0.5);
+            float f = need <= 0 ? 0 : Math.min(1, poured / (float) need);
+            return new net.minecraft.world.phys.Vec3(0.5, (12.3 + 1.5 * f) / 16, 0.5); // the metal rising in the pouring cup
         }
     }
 }
