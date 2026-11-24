@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/upright_log",
+  "textures": {
+    "side": "mechanical:block/bird_cherry_log",
+    "top": "mechanical:block/bird_cherry_log_top"
+  }
+}

@@ -306,6 +306,186 @@
         {
           "if_true": {
             "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:rowan_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_rowan_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:rowan_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_rowan_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:bird_cherry_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_bird_cherry_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:bird_cherry_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_bird_cherry_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:wild_apple_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_wild_apple_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:wild_apple_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_wild_apple_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:plum_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_plum_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:plum_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_plum_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:olive_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_olive_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:olive_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_olive_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:date_palm_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_date_palm_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:date_palm_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_date_palm_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
             "blocks": "minecraft:oak_wood"
           },
           "then": {

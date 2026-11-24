@@ -11,7 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = ROOT / "assets/mechanical", ROOT / "data"
-ALL_TREES = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew"]
+ALL_TREES = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive",
+             "date_palm"]
 
 
 def w(path, obj):
@@ -59,6 +60,23 @@ tree_feature("yew", trunk("minecraft:dark_oak_trunk_placer", 4, 2, 1),
              {"type": "minecraft:dark_oak_foliage_placer", "radius": 0, "offset": 0},
              {"type": "minecraft:three_layers_feature_size", "upper_size": 2})
 
+# ---- fruit trees (Trees.FRUIT_KINDS, leaves FruitLeavesBlock; docs/flora-and-food-plan.md section 4) ----
+uniform = lambda lo, hi: {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}
+# rowan: slim straight trunk 5-8, small round airy crown
+tree_feature("rowan", trunk("minecraft:straight_trunk_placer", 5, 2, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 3})
+# bird cherry: a few stems from one stool (like hazel), crowns hanging over water
+tree_feature("bird_cherry", trunk("mechanical:multi_stem_trunk_placer", 4, 2, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 2})
+# wild apple: short trunk 3-5, broad low rounded crown
+tree_feature("wild_apple", trunk("minecraft:straight_trunk_placer", 3, 2), {"type": "minecraft:blob_foliage_placer", "radius": uniform(2, 3), "offset": 0, "height": 3})
+# plum: small tree 3-5, compact crown
+tree_feature("plum", trunk("minecraft:straight_trunk_placer", 3, 2), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 2})
+# olive: short twisting trunk, open irregular silvery crown
+tree_feature("olive", {"type": "minecraft:bending_trunk_placer", "base_height": 3, "height_rand_a": 2, "height_rand_b": 0, "min_height_for_leaves": 2,
+                       "bend_length": uniform(1, 2)},
+             {"type": "minecraft:random_spread_foliage_placer", "radius": 2, "offset": 0, "foliage_height": 2, "leaf_placement_attempts": 28})
+# date palm: tall bare trunk 7-11 and a star of drooping fronds (TreeShapes.PalmFoliagePlacer)
+tree_feature("date_palm", trunk("minecraft:straight_trunk_placer", 7, 3, 1), {"type": "mechanical:palm_foliage_placer", "radius": 4, "offset": 0})
+
 # ---- placed features ----
 survives = lambda x: {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:would_survive", "state": f"mechanical:{x}_sapling"}}
 for x in ALL_TREES:  # for biomes' own tree lists (random_selector etc.), like vanilla's oak_checked
@@ -85,6 +103,20 @@ TREE_PLACEMENTS = {
     "pine_windswept": ("pine", weighted((0, 1), (1, 1)), ["minecraft:windswept_forest", "minecraft:windswept_hills"]),
     "yew_old_growth": ("yew", rarity(4), ["minecraft:old_growth_spruce_taiga", "minecraft:old_growth_pine_taiga", "minecraft:windswept_forest"]),
     "yew_forest": ("yew", rarity(16), ["minecraft:taiga", "minecraft:dark_forest"]),
+    # fruit trees: scattered, never forests of them
+    "rowan_forest": ("rowan", rarity(3), ["mechanical:deciduous_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:forest"]),
+    "rowan_upland": ("rowan", rarity(5), ["mechanical:slate_highlands", "minecraft:taiga", "minecraft:windswept_forest", "minecraft:meadow"]),
+    "bird_cherry_waterside": ("bird_cherry", weighted((0, 2), (1, 1)), ["mechanical:willow_fen", "mechanical:reed_delta", "minecraft:river"]),
+    "bird_cherry_lakeside": ("bird_cherry", weighted((0, 3), (1, 1)), ["mechanical:deciduous_forest", "mechanical:hazel_meadow", "minecraft:forest",
+                                                                     "minecraft:meadow", "minecraft:plains"], [NEAR_WATER]),
+    "wild_apple_meadow": ("wild_apple", rarity(4), ["mechanical:hazel_meadow"]),
+    "wild_apple_forest": ("wild_apple", rarity(12), ["mechanical:deciduous_forest", "minecraft:forest", "minecraft:flower_forest"]),
+    "plum_meadow": ("plum", rarity(4), ["mechanical:hazel_meadow", "mechanical:chalk_downs"]),
+    "plum_plains": ("plum", rarity(14), ["minecraft:plains", "mechanical:limestone_karst"]),
+    "olive_gorge": ("olive", weighted((0, 1), (1, 1)), ["mechanical:marble_gorge"]),
+    "olive_plateau": ("olive", rarity(8), ["minecraft:savanna_plateau"]),
+    "date_palm_oasis": ("date_palm", weighted((0, 1), (1, 1)), ["minecraft:desert", "mechanical:gypsum_flats"], [NEAR_WATER]),
+    "date_palm_desert": ("date_palm", rarity(40), ["minecraft:desert", "mechanical:gypsum_flats"]),
 }
 for name, (x, freq, biomes, *extra) in TREE_PLACEMENTS.items():
     extra = extra[0] if extra else []
@@ -96,7 +128,7 @@ for name, (x, freq, biomes, *extra) in TREE_PLACEMENTS.items():
 
 # ---- nuts from leaves: a pool on top of the leaves' sapling/stick loot (not when sheared or silk-touched) ----
 NOT_SHEARED = {"type": "minecraft:inverted", "term": {"type": "minecraft:any_of", "terms": ["minecraft:tool/can_shear", "minecraft:tool/can_silk_touch"]}}
-for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "mechanical:hazelnuts", 0.06)):
+for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "mechanical:hazelnuts", 0.06), ("yew", "mechanical:yew_arils", 0.08)):
     path = D / f"mechanical/loot_table/blocks/{tree}_leaves.json"
     loot = json.loads(path.read_text(encoding="utf-8"))
     loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != nut]  # rerunnable
@@ -104,8 +136,27 @@ for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "me
         {"type": "minecraft:random_chance", "chance": chance}]}, "entries": [{"type": "minecraft:item", "name": nut}]})
     w(path, loot)
 
+# ---- fruit leaves: a model per stage (leaves, blossom, unripe, ripe), fruit when broken ripe ----
+FRUIT = {"rowan": "rowan_berries", "bird_cherry": "bird_cherries", "wild_apple": "crab_apple", "plum": "wild_plums", "olive": "olives",
+         "date_palm": "dates"}  # Trees.FRUIT_KINDS
+LOOKS = ["", "_blossom", "_unripe", "_ripe"]
+for tree, fruit in FRUIT.items():
+    for look in LOOKS[1:]:
+        w(A / f"models/block/{tree}_leaves{look}.json", {"parent": "minecraft:block/leaves", "textures": {"all": f"mechanical:block/{tree}_leaves{look}"}})
+    w(A / f"blockstates/{tree}_leaves.json", {"variants": {f"age={i}": {"model": f"mechanical:block/{tree}_leaves{LOOKS[i]}"} for i in range(4)}})
+    path = D / f"mechanical/loot_table/blocks/{tree}_leaves.json"
+    loot = json.loads(path.read_text(encoding="utf-8"))
+    loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != f"mechanical:{fruit}"]  # rerunnable
+    loot["pools"].append({"rolls": 1, "condition": {"type": "minecraft:all_of", "terms": [NOT_SHEARED, {"type": "minecraft:survives_explosion"},
+        {"type": "minecraft:match_block", "blocks": f"mechanical:{tree}_leaves", "state": {"age": "3"}}]},
+        "entries": [{"type": "minecraft:item", "name": f"mechanical:{fruit}",
+                     "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]})
+    w(path, loot)
+
 # ---- items ----
-ITEMS = {"beechnuts": "Beechnuts", "roasted_beechnuts": "Roasted Beechnuts", "pine_resin": "Pine Resin"}
+ITEMS = {"beechnuts": "Beechnuts", "roasted_beechnuts": "Roasted Beechnuts", "pine_resin": "Pine Resin", "yew_arils": "Yew Arils",
+         "rowan_berries": "Rowan Berries", "bird_cherries": "Bird Cherries", "crab_apple": "Crab Apple", "wild_plums": "Wild Plums",
+         "olives": "Olives", "dates": "Dates"}
 for item in ITEMS:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
@@ -118,5 +169,9 @@ w(D / "mechanical/recipe/torch_from_pine_resin.json", {"type": "minecraft:crafti
 w(D / "mechanical/advancement/recipes/pine_resin.json", {"parent": "minecraft:recipes/root",
     "criteria": {"has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": "mechanical:pine_resin"}]}}},
     "requirements": [["has_item"]], "rewards": {"recipes": ["mechanical:torch_from_pine_resin"]}})
-tag_add(D / "mechanical/tags/item/basket_storable.json", "mechanical:beechnuts", "mechanical:roasted_beechnuts", "mechanical:pine_resin")
+tag_add(D / "mechanical/tags/item/basket_storable.json", "mechanical:beechnuts", "mechanical:roasted_beechnuts", "mechanical:pine_resin",
+        *[f"mechanical:{f}" for f in FRUIT.values()], "mechanical:yew_arils")
+tag_add(D / "mechanical/tags/item/perishes_2_days.json", "mechanical:bird_cherries", "mechanical:wild_plums", "mechanical:yew_arils")
+tag_add(D / "mechanical/tags/item/perishes_3_days.json", "mechanical:rowan_berries", "mechanical:crab_apple", "mechanical:olives")
+tag_add(D / "mechanical/tags/item/dryable_berries.json", "mechanical:rowan_berries", "mechanical:bird_cherries", "mechanical:wild_plums", "mechanical:dates")
 print("trees ok")

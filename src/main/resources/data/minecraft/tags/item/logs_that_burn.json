@@ -9,6 +9,12 @@
     "#mechanical:hazel_logs",
     "#mechanical:pine_logs",
     "#mechanical:yew_logs",
+    "#mechanical:rowan_logs",
+    "#mechanical:bird_cherry_logs",
+    "#mechanical:wild_apple_logs",
+    "#mechanical:plum_logs",
+    "#mechanical:olive_logs",
+    "#mechanical:date_palm_logs",
     "#mechanical:bog_oak_logs"
   ]
 }

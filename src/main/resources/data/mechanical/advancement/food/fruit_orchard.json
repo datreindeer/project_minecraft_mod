@@ -1,0 +1,100 @@
+{
+  "parent": "mechanical:food/tree_fruit",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rowan_berries"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bird_cherries"
+          }
+        ]
+      }
+    },
+    "has_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crab_apple"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wild_plums"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:olives"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dates"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ],
+    [
+      "has_1"
+    ],
+    [
+      "has_2"
+    ],
+    [
+      "has_3"
+    ],
+    [
+      "has_4"
+    ],
+    [
+      "has_5"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:date_palm_sapling"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.fruit_orchard.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.fruit_orchard.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -36,6 +36,8 @@ public final class TreeShapes {
             "multi_stem_trunk_placer", () -> new TrunkPlacerType<>(MultiStemTrunkPlacer.CODEC));
     public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<WeepingFoliagePlacer>> WEEPING = FOLIAGE_PLACERS.register(
             "weeping_foliage_placer", () -> new FoliagePlacerType<>(WeepingFoliagePlacer.CODEC));
+    public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<PalmFoliagePlacer>> PALM = FOLIAGE_PLACERS.register(
+            "palm_foliage_placer", () -> new FoliagePlacerType<>(PalmFoliagePlacer.CODEC));
 
     public static void init(IEventBus modEventBus) {
         TRUNK_PLACERS.register(modEventBus);
@@ -138,6 +140,57 @@ public final class TreeShapes {
         @Override
         protected boolean shouldSkipLocation(RandomSource random, int dx, int y, int dz, int currentRadius, boolean doubleTrunk) {
             return !inside(dx, dz, currentRadius);
+        }
+    }
+
+    /**
+     * Date palm crown: a tuft on the trunk top and eight fronds (radius long, the diagonals one shorter) running out level
+     * and drooping at their ends, so the crown is a star of arching leaves rather than a ball.
+     */
+    public static class PalmFoliagePlacer extends FoliagePlacer {
+        public static final MapCodec<PalmFoliagePlacer> CODEC = RecordCodecBuilder.mapCodec(i -> foliagePlacerParts(i).apply(i, PalmFoliagePlacer::new));
+
+        public PalmFoliagePlacer(IntProvider radius, IntProvider offset) {
+            super(radius, offset);
+        }
+
+        @Override
+        protected FoliagePlacerType<?> type() {
+            return PALM.get();
+        }
+
+        @Override
+        protected void createFoliage(WorldGenLevel level, FoliageSetter foliageSetter, RandomSource random, TreeFeature tree, int treeHeight,
+                                     FoliageAttachment attachment, int foliageHeight, int leafRadius, int offset) {
+            BlockPos top = attachment.pos().above(offset);
+            int radius = leafRadius + attachment.radiusOffsetXZ();
+            tryPlaceLeaf(level, foliageSetter, random, tree, top);
+            tryPlaceLeaf(level, foliageSetter, random, tree, top.above());
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+                    boolean diagonal = dx != 0 && dz != 0;
+                    int length = diagonal ? radius - 1 : radius - random.nextInt(2) + 1, y = 0;
+                    for (int k = 1; k <= length; k++) {
+                        // leaves only keep alive through faces: diagonals step like stairs, a drooping tip hangs from the block above it
+                        if (diagonal) tryPlaceLeaf(level, foliageSetter, random, tree, top.offset(dx * k, y, dz * (k - 1)));
+                        boolean droop = k > 1 && k >= length - 1;
+                        if (droop) tryPlaceLeaf(level, foliageSetter, random, tree, top.offset(dx * k, y, dz * k));
+                        if (droop) y--;
+                        tryPlaceLeaf(level, foliageSetter, random, tree, top.offset(dx * k, y, dz * k));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public int foliageHeight(RandomSource random, int treeHeight, TreeFeature tree) {
+            return 2;
+        }
+
+        @Override
+        protected boolean shouldSkipLocation(RandomSource random, int dx, int y, int dz, int currentRadius, boolean doubleTrunk) {
+            return false;
         }
     }
 

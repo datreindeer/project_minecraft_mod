@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "mechanical:limestone_karst"
+  ],
+  "features": "mechanical:plum_plains",
+  "step": "vegetal_decoration"
+}

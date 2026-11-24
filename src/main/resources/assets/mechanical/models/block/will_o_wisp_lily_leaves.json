@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "mechanical:block/will_o_wisp_lily_leaves"
+  }
+}

@@ -38,6 +38,12 @@
     "mechanical:ash_leaf_litter",
     "mechanical:hazel_leaf_litter",
     "mechanical:pine_leaf_litter",
-    "mechanical:yew_leaf_litter"
+    "mechanical:yew_leaf_litter",
+    "mechanical:rowan_leaf_litter",
+    "mechanical:bird_cherry_leaf_litter",
+    "mechanical:wild_apple_leaf_litter",
+    "mechanical:plum_leaf_litter",
+    "mechanical:olive_leaf_litter",
+    "mechanical:date_palm_leaf_litter"
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "planks",
+  "ingredients": [
+    "#mechanical:bird_cherry_logs"
+  ],
+  "result": {
+    "id": "mechanical:bird_cherry_planks",
+    "count": 2
+  }
+}

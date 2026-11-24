@@ -171,6 +171,54 @@
       "apply": {
         "model": "mechanical:block/yew_upright_log"
       }
+    },
+    {
+      "when": {
+        "log": "20"
+      },
+      "apply": {
+        "model": "mechanical:block/rowan_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "21"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_cherry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/wild_apple_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/plum_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "24"
+      },
+      "apply": {
+        "model": "mechanical:block/olive_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "25"
+      },
+      "apply": {
+        "model": "mechanical:block/date_palm_upright_log"
+      }
     }
   ]
 }

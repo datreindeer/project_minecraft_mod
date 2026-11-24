@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/will_o_wisp_lily"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/will_o_wisp_lily_leaves"
+    }
+  }
+}

@@ -9,6 +9,12 @@
     "mechanical:hazel_slab",
     "mechanical:pine_slab",
     "mechanical:yew_slab",
+    "mechanical:rowan_slab",
+    "mechanical:bird_cherry_slab",
+    "mechanical:wild_apple_slab",
+    "mechanical:plum_slab",
+    "mechanical:olive_slab",
+    "mechanical:date_palm_slab",
     "mechanical:bog_oak_slab"
   ]
 }

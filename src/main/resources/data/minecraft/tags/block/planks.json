@@ -9,6 +9,12 @@
     "mechanical:hazel_planks",
     "mechanical:pine_planks",
     "mechanical:yew_planks",
+    "mechanical:rowan_planks",
+    "mechanical:bird_cherry_planks",
+    "mechanical:wild_apple_planks",
+    "mechanical:plum_planks",
+    "mechanical:olive_planks",
+    "mechanical:date_palm_planks",
     "mechanical:bog_oak_planks"
   ]
 }

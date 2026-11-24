@@ -59,7 +59,8 @@ public final class SeasonalFoliage {
     /** Deciduous leaves (namespace:name, block name minus "_leaves"). Spruce, pine, yew, jungle, acacia, mangrove, azalea, pale oak and the Ancient Oak keep theirs. */
     static final List<String> DECIDUOUS = List.of("minecraft:oak", "minecraft:dark_oak", "minecraft:birch", "minecraft:cherry",
             "minecraft:red_poplar", "minecraft:orange_poplar", "minecraft:yellow_poplar", "mechanical:aspen", "mechanical:alder",
-            "mechanical:beech", "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel");
+            "mechanical:beech", "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel",
+            "mechanical:rowan", "mechanical:bird_cherry", "mechanical:wild_apple", "mechanical:plum"); // fruit trees: no autumn model (it would hide the fruit)
     /** Shrubs, bushes and flowers that go grey in winter (models tinted by scripts/gen_winter_plants.py, same list). */
     static final List<String> WINTER_PLANTS = List.of("mechanical:hazel_shrub", "mechanical:juniper", "mechanical:bramble",
             "mechanical:undergrowth", "mechanical:sapling_thicket", "mechanical:wild_carrot_plant", "mechanical:sea_beet",
@@ -71,7 +72,12 @@ public final class SeasonalFoliage {
             // Flora (gen_flora.py): the flowers' leaves and the thicket bushes; not the magic flowers (the Frost Lily blooms in winter)
             "mechanical:pasque_flower", "mechanical:harebell", "mechanical:lady_slipper", "mechanical:sea_thrift", "mechanical:mountain_avens",
             "mechanical:edelweiss", "mechanical:sand_verbena", "mechanical:desert_marigold", "mechanical:great_mullein", "mechanical:desert_candle",
-            "mechanical:blackthorn", "mechanical:sea_buckthorn", "mechanical:jujube");
+            "mechanical:blackthorn", "mechanical:sea_buckthorn", "mechanical:jujube",
+            // flora phases 2-3
+            "mechanical:foxglove", "mechanical:yellow_adonis", "mechanical:bog_asphodel", "mechanical:marsh_marigold", "mechanical:wood_anemone",
+            "mechanical:bluebells", "mechanical:purple_saxifrage", "mechanical:purple_loosestrife", "mechanical:spiny_thrift", "mechanical:cats_foot",
+            "mechanical:rosehip", "mechanical:crowberry", "mechanical:bearberry", "mechanical:barberry", "mechanical:caper",
+            "mechanical:red_currant", "mechanical:black_currant");
     /** Untinted leaves that get a grey, tinted autumn model (poplars are autumn-coloured already). */
     static final Set<String> AUTUMN_MODEL = Set.of("minecraft:cherry", "mechanical:aspen", "mechanical:alder", "mechanical:beech",
             "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel");

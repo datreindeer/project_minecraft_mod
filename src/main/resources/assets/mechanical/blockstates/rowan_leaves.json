@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "mechanical:block/rowan_leaves"
+    },
+    "age=1": {
+      "model": "mechanical:block/rowan_leaves_blossom"
+    },
+    "age=2": {
+      "model": "mechanical:block/rowan_leaves_unripe"
+    },
+    "age=3": {
+      "model": "mechanical:block/rowan_leaves_ripe"
+    }
+  }
+}

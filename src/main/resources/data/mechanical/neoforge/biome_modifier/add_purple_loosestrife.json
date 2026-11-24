@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:reed_delta",
+    "mechanical:willow_fen",
+    "minecraft:swamp",
+    "minecraft:river"
+  ],
+  "features": "mechanical:purple_loosestrife",
+  "step": "vegetal_decoration"
+}

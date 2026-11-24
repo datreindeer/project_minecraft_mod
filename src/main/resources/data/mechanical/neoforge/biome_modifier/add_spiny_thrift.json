@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:gypsum_flats",
+    "mechanical:ochre_badlands",
+    "mechanical:marble_gorge"
+  ],
+  "features": "mechanical:spiny_thrift",
+  "step": "vegetal_decoration"
+}

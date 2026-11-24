@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:peat_bog"
+  ],
+  "features": "mechanical:will_o_wisp_lily",
+  "step": "vegetal_decoration"
+}

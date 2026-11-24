@@ -9,6 +9,12 @@
     "mechanical:hazel_button",
     "mechanical:pine_button",
     "mechanical:yew_button",
+    "mechanical:rowan_button",
+    "mechanical:bird_cherry_button",
+    "mechanical:wild_apple_button",
+    "mechanical:plum_button",
+    "mechanical:olive_button",
+    "mechanical:date_palm_button",
     "mechanical:bog_oak_button"
   ]
 }

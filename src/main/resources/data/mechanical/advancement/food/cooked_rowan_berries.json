@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/cooked_elderberries",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cooked_rowan_berries"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cooked_rowan_berries"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.cooked_rowan_berries.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.cooked_rowan_berries.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -47,11 +47,18 @@ public class WildBerryBushBlock extends VegetationBlock {
 
     private final Supplier<Item> berries;
     private final boolean hardy;
+    /** Seasons it ripens in (mask: 1 spring, 2 summer, 4 autumn, 8 winter); out of them ripe berries fall. */
+    private final int ripeSeasons;
 
     public WildBerryBushBlock(Supplier<Item> berries, boolean hardy, Properties properties) {
+        this(berries, hardy, 15, properties);
+    }
+
+    public WildBerryBushBlock(Supplier<Item> berries, boolean hardy, int ripeSeasons, Properties properties) {
         super(properties);
         this.berries = berries;
         this.hardy = hardy;
+        this.ripeSeasons = ripeSeasons;
         registerDefaultState(defaultBlockState().setValue(AGE, RIPE).setValue(FROZEN, false));
     }
 
@@ -67,7 +74,7 @@ public class WildBerryBushBlock extends VegetationBlock {
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        return !hardy || state.getValue(AGE) < RIPE; // ripe bushes tick too, to freeze and thaw
+        return true; // ripe bushes tick too: to freeze and thaw, and to drop their berries after their season
     }
 
     /** Winter, and cold enough here that snow stays (season included): warm biomes never freeze. */
@@ -92,11 +99,21 @@ public class WildBerryBushBlock extends VegetationBlock {
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         state = updateFrost(level, pos, state);
-        if (!state.getValue(FROZEN) && state.getValue(AGE) < RIPE && random.nextInt(GROW_ONE_IN) == 0 && level.getRawBrightness(pos.above(), 0) >= 9) {
+        boolean season = ripensIn(Calendar.season(level.getOverworldClockTime()));
+        if (!state.getValue(FROZEN) && state.getValue(AGE) == RIPE && !season && random.nextInt(GROW_ONE_IN) == 0) {
+            level.setBlock(pos, state.setValue(AGE, 1), Block.UPDATE_CLIENTS); // its season is over: the berries fall
+            return;
+        }
+        if (!state.getValue(FROZEN) && state.getValue(AGE) < RIPE && (season || state.getValue(AGE) < 2) && random.nextInt(GROW_ONE_IN) == 0 && level.getRawBrightness(pos.above(), 0) >= 9) {
             level.setBlock(pos, state.setValue(AGE, state.getValue(AGE) + 1), Block.UPDATE_CLIENTS);
         }
         // birds eat the berries and drop the seeds some way off (A10)
         else if (!state.getValue(FROZEN) && state.getValue(AGE) >= 2 && random.nextInt(SOW_ONE_IN) == 0) com.mechanical.wildlife.WildNature.sowBerries(level, pos, state, random);
+    }
+
+    /** Does it ripen in this season (0 spring .. 3 winter)? */
+    public boolean ripensIn(int season) {
+        return (ripeSeasons >> season & 1) != 0;
     }
 
     public static boolean isRipe(BlockState state) {

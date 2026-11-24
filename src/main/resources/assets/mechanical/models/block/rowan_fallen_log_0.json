@@ -1,0 +1,83 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/rowan_log",
+    "side": "mechanical:block/rowan_log",
+    "end": "mechanical:block/rowan_log_top"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#end",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#end",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "south"
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "down"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

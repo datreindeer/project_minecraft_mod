@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/yellow_adonis"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/yellow_adonis_leaves"
+    }
+  }
+}

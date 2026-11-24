@@ -18,6 +18,12 @@
     "mechanical:ash_bark_roof",
     "mechanical:hazel_bark_roof",
     "mechanical:pine_bark_roof",
-    "mechanical:yew_bark_roof"
+    "mechanical:yew_bark_roof",
+    "mechanical:rowan_bark_roof",
+    "mechanical:bird_cherry_bark_roof",
+    "mechanical:wild_apple_bark_roof",
+    "mechanical:plum_bark_roof",
+    "mechanical:olive_bark_roof",
+    "mechanical:date_palm_bark_roof"
   ]
 }

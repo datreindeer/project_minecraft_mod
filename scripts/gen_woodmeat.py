@@ -25,7 +25,7 @@ A, D = ROOT / "assets/mechanical", ROOT / "data"
 M = "mechanical:"
 TAGS = D / "mechanical/tags/item"
 WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew"]
+         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]
 
 
 def w(path, obj):

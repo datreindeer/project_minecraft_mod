@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "mechanical:wood_anemone",
+    "properties": {
+      "blooming": "true"
+    }
+  }
+}

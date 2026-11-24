@@ -19,11 +19,12 @@ OUT_TEX = TEX / "seasonal"
 OUT_MODEL = ASSETS / "models/block/seasonal"
 # must match SeasonalFoliage.DECIDUOUS / AUTUMN_MODEL
 VANILLA = ["oak", "dark_oak", "birch", "cherry", "red_poplar", "orange_poplar", "yellow_poplar"]
-MOD = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel"]
-AUTUMN_MODEL = ["cherry"] + MOD
+MOD = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "rowan", "bird_cherry", "wild_apple", "plum"]
+AUTUMN_MODEL = ["cherry", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel"]  # fruit trees: bare + buds only
 LOG = {"red_poplar": "poplar", "orange_poplar": "poplar", "yellow_poplar": "poplar"}
 TWIG_BROWN = (74, 54, 38)
-BUDS = {"cherry": [(236, 160, 192, 255), (250, 204, 220, 255)]}
+BUDS = {"cherry": [(236, 160, 192, 255), (250, 204, 220, 255)], "wild_apple": [(214, 110, 146, 255), (246, 206, 218, 255)],
+        "plum": [(232, 232, 220, 255), (250, 250, 244, 255)]}
 GREEN_BUDS = [(124, 170, 58, 255), (162, 204, 84, 255)]
 
 

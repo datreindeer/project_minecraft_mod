@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:date_palm_door",
+            "state": {
+              "half": "lower"
+            }
+          },
+          "name": "mechanical:date_palm_door"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "mechanical:blocks/date_palm_door"
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/firewood_pile_piece_2",
+  "textures": {
+    "end": "mechanical:block/date_palm_firewood_pile_end",
+    "side": "mechanical:block/date_palm_firewood_pile_side"
+  }
+}

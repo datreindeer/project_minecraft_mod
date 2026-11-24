@@ -1,12 +1,19 @@
 {
   "type": "neoforge:add_features",
   "biomes": [
-    "minecraft:taiga",
-    "minecraft:snowy_taiga",
+    "mechanical:basalt_coast",
+    "mechanical:glacial_moraine",
+    "mechanical:peat_bog",
+    "mechanical:pine_heath",
+    "mechanical:shingle_beach",
+    "mechanical:slate_highlands",
+    "minecraft:grove",
     "minecraft:old_growth_pine_taiga",
     "minecraft:old_growth_spruce_taiga",
-    "mechanical:pine_heath",
-    "mechanical:glacial_moraine"
+    "minecraft:snowy_plains",
+    "minecraft:snowy_slopes",
+    "minecraft:snowy_taiga",
+    "minecraft:taiga"
   ],
   "features": "mechanical:lingonberry_bush",
   "step": "vegetal_decoration"

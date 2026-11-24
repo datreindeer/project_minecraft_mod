@@ -5,7 +5,7 @@
 import math, os, random, sys
 from PIL import Image
 src, out, prev = sys.argv[1:4]
-WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew"]
+WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]
 # mod woods have no vanilla texture: read the log textures painted by gen_wood_textures.py
 def tex(name): p = f"{src}/{name}.png"; return p if os.path.exists(p) else os.path.join(os.path.dirname(os.path.abspath(out)), "block", f"{name}.png")
 

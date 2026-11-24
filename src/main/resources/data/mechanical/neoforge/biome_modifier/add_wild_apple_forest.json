@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:deciduous_forest",
+    "minecraft:forest",
+    "minecraft:flower_forest"
+  ],
+  "features": "mechanical:wild_apple_forest",
+  "step": "vegetal_decoration"
+}

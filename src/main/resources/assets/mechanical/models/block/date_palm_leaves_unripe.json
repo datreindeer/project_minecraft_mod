@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "mechanical:block/date_palm_leaves_unripe"
+  }
+}

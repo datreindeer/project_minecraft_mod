@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:willow_fen",
+    "mechanical:reed_delta",
+    "minecraft:river"
+  ],
+  "features": "mechanical:bird_cherry_waterside",
+  "step": "vegetal_decoration"
+}

@@ -9,6 +9,12 @@
     "mechanical:hazel_trapdoor",
     "mechanical:pine_trapdoor",
     "mechanical:yew_trapdoor",
+    "mechanical:rowan_trapdoor",
+    "mechanical:bird_cherry_trapdoor",
+    "mechanical:wild_apple_trapdoor",
+    "mechanical:plum_trapdoor",
+    "mechanical:olive_trapdoor",
+    "mechanical:date_palm_trapdoor",
     "mechanical:bog_oak_trapdoor"
   ]
 }

@@ -1,6 +1,7 @@
 # Plan: undervegetation, kryddor, mat och sågverk
 
-> Status: **plan skriven 2026-11-23, fas 1 byggd samma dag** (se "Fas 1: resultat" sist). Beslut märkta
+> Status: **plan skriven 2026-11-23, fas 1 byggd samma dag, fas 2 och 3 byggda 2026-11-24** (se "Fas 1: resultat" och
+> "Fas 2 och 3: resultat" sist). Beslut märkta
 > "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de. Item- och blocknamn står på engelska.
 
 Användarens önskelista (översatt och sorterad):
@@ -292,8 +293,8 @@ Vattenkraften finns inte än. Sågverket kommer i samma fas som **vattenhjulet**
 | Fas | Innehåll | Ålder | Beroende |
 |---|---|---|---|
 | **1 (byggd)** | 12 blommor (8 små, 2 stora, 2 magiska) i de glesa biomerna; 3 snårbuskar (Blackthorn, Sea Buckthorn, Jujube) i två storlekar som växer ihop och på höjden; klimatfönster i generatorn; Elderberries giftiga råa + Cooked Elderberries | sten | — |
-| 2 | De gamla bärbuskarna till klimatfönster; fas 2-blommorna; fler buskar (Rosehip, Crowberry, Barberry, Caper, vinbär); Rowan Berries/Yew Arils | sten | — |
-| 3 | Fruktträd (Rowan, Bird Cherry, Wild Apple, Plum, Olive, Date); magiska fas 3-blommor | sten–järn | `Trees` |
+| **2 (byggd)** | De gamla bärbuskarna till klimatfönster; fas 2-blommorna; fler buskar (Rosehip, Crowberry, Barberry, Caper, vinbär); Rowan Berries/Yew Arils | sten | — |
+| **3 (byggd)** | Fruktträd (Rowan, Bird Cherry, Wild Apple, Plum, Olive, Date); magiska fas 3-blommor | sten–järn | `Trees` |
 | 4 | Vilda grönsaker och örter + förädling; bybornas varor; Clay Cooking Pot; Bronze Griddle/Ladle; rätter brons | sten–brons | Farming |
 | 4b | Den östra karavanen (varorna ovan) | brons–järn | handelsagentens karavaner |
 | 5 | Järnålderns kök (Skillet, Cauldron, Barrel, ost, korv, surkål); havssalt | järn | — |
@@ -330,3 +331,37 @@ Byggt v0.187.0. Spelarens beskrivning står i `docs/ages/01-stone-age.md` ("Snå
   hela block). Grass Stairs tas inte med. De gamla sju
   bärbuskarna har kvar sina fasta biomlistor (fas 2). Fern Flowers Luck gäller den som bryter blomman, inte den som
   plockar den på annat sätt (t.ex. med vatten eller kolv).
+
+## Fas 2 och 3: resultat
+
+Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/01-stone-age.md` ("Fler snårbuskar", "De gamla bärbuskarna följer
+klimatet", "Fruktträd", "Fler blommor", magiska blommor).
+
+- **Gamla bärbuskar:** `gen_flora.py` skriver om deras biome modifiers från klimatfönstren i avsnitt 2 (tabellen ovan) och
+  skriver ut listorna. `Foraging.RIPE_SEASONS` + `WildBerryBushBlock.ripensIn`: en buske mognar bara i sin säsong och
+  tappar mogna bär efteråt (går tillbaka till blommor). **Beslut (Claude, kan ändras):** de sprider sig fortfarande bara
+  via fåglar, inte efter klimat.
+- **Blommor fas 2:** alla tio (Foxglove och Purple Loosestrife två block). Bluebells och Wood Anemone läggs i stora mattor.
+  Desert Rose blev **Spiny Thrift** (en taggig tuva passar Gypsum Flats bättre än en suckulent).
+- **Buskar fas 2:** Dog Rose (Rosehips), Crowberry, Bearberry, Barberry, Caper Bush, Red/Black Currant, alla som
+  `ThicketBushBlock` med nya flaggor: `thorns` (bara Dog Rose och Barberry, plus fas 1), `low` (Crowberry, Bearberry, Caper:
+  ~6 px matta/kulle, växer ihop men aldrig på höjden), `evergreen` (Crowberry, Bearberry: fäller inga löv). Bearberry
+  blev buske i stället för blomma. **Inte byggt:** Saskatoon och Prickly Pear (inte med i fas 2-listan), Rosehip Tea
+  (kommer med Kettle-rätterna i fas 4), Bittersweet Nightshade.
+- **Giftiga råa:** Rowan Berries (`Flora.rawRowanBerries`: Poison 3 s, Nausea; Cooked Rowan Berries på Campfire, torkade
+  ofarliga), Yew Arils (från Yew-löv 8 %, Poison II 7 s).
+- **Fruktträd fas 3:** Rowan, Bird Cherry, Wild Apple, Plum, Olive, Date Palm som hela träslag (`Trees.WOODS`,
+  `Mechanical.WOODS`, alla trä-generatorer). Löven är `FruitLeavesBlock`: `age` 0–3 (blad, blom, omogen, mogen) mot ett
+  mål per säsong (`Trees.FRUIT_KINDS`), högerklick plockar 1–2 frukter, mogna löv som bryts ger frukt (loot,
+  `gen_trees.py`). De fyra lövfällande sorterna har kala grenar och knoppar på vintern/våren (`SeasonalFoliage`) men
+  **ingen höstfärg**: höstmodellen skulle dölja frukten. Dadelpalmen har en egen kronform (`TreeShapes.PalmFoliagePlacer`:
+  åtta blad som hänger ut från toppen) och en planta som tar rot i sand. `StumpBlock.LOG` går nu till 25 (en per trä).
+  **Inte byggt:** Mulberry, ympning till Apple, oliver i saltlake och olja (pressen), frukt som faller till marken.
+- **Magiska fas 3:** Will-o'-Wisp Lily (Peat Bog, blommar och lyser bara på natten) och Moonwort (Limestone Karst, bara
+  fullmånenätter: `WildFlowerBlock.Bloom.fullMoon`). **Beslut (Claude, kan ändras):** "lyser bara i dimma" blev "bara på
+  natten", eftersom det inte finns någon dimma i Peat Bog. Användningarna (Fern Flower i Charm, Frost Lily-te, Moonwort
+  öppnar lås) är inte byggda.
+- **Fas 1-putsning:** Jujube-löven målade som mjuka klumpar med ljus och skuggsida; Blackthorns vårblom är nu små
+  femkronbladiga blommor i klasar på mörka kvistar.
+- **Test:** `FloraTest` utökad (låga och vintergröna buskar, mognadssäsong, fullmåne, fruktplockning, stubbens trästorlek,
+  råa rönnbär).

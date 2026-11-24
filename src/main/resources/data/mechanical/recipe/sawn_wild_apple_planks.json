@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "sawn_planks",
+  "ingredients": [
+    "#mechanical:wild_apple_logs",
+    "#mechanical:saws"
+  ],
+  "result": {
+    "id": "mechanical:wild_apple_planks",
+    "count": 4
+  }
+}

@@ -9,6 +9,12 @@
     "mechanical:hazel_stairs",
     "mechanical:pine_stairs",
     "mechanical:yew_stairs",
+    "mechanical:rowan_stairs",
+    "mechanical:bird_cherry_stairs",
+    "mechanical:wild_apple_stairs",
+    "mechanical:plum_stairs",
+    "mechanical:olive_stairs",
+    "mechanical:date_palm_stairs",
     "mechanical:bog_oak_stairs"
   ]
 }

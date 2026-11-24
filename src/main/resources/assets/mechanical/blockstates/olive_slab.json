@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/olive_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/olive_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/olive_slab_top"
+    }
+  }
+}

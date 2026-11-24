@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/wood_anemone"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/wood_anemone_leaves"
+    }
+  }
+}

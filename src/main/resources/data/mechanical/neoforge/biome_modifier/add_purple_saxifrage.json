@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:slate_highlands",
+    "mechanical:glacial_moraine",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:stony_shore"
+  ],
+  "features": "mechanical:purple_saxifrage",
+  "step": "vegetal_decoration"
+}

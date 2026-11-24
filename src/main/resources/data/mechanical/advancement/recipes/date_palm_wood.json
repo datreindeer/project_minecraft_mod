@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:date_palm_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:date_palm_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:date_palm_planks",
+      "mechanical:date_palm_wood",
+      "mechanical:stripped_date_palm_wood",
+      "mechanical:date_palm_slab",
+      "mechanical:date_palm_stairs",
+      "mechanical:date_palm_fence",
+      "mechanical:date_palm_fence_gate",
+      "mechanical:date_palm_door",
+      "mechanical:date_palm_trapdoor",
+      "mechanical:date_palm_button",
+      "mechanical:date_palm_pressure_plate"
+    ]
+  }
+}

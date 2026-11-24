@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:olive_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:olive_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:olive_planks",
+      "mechanical:olive_wood",
+      "mechanical:stripped_olive_wood",
+      "mechanical:olive_slab",
+      "mechanical:olive_stairs",
+      "mechanical:olive_fence",
+      "mechanical:olive_fence_gate",
+      "mechanical:olive_door",
+      "mechanical:olive_trapdoor",
+      "mechanical:olive_button",
+      "mechanical:olive_pressure_plate"
+    ]
+  }
+}

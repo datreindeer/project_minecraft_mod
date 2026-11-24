@@ -9,8 +9,19 @@
     "mechanical:blackberries",
     "mechanical:juniper_berries",
     "minecraft:sweet_berries",
+    "mechanical:rowan_berries",
+    "mechanical:bird_cherries",
+    "mechanical:wild_plums",
+    "mechanical:dates",
     "mechanical:sloes",
     "mechanical:sea_buckthorn_berries",
-    "mechanical:jujubes"
+    "mechanical:jujubes",
+    "mechanical:rosehips",
+    "mechanical:crowberries",
+    "mechanical:bearberries",
+    "mechanical:barberries",
+    "mechanical:capers",
+    "mechanical:red_currants",
+    "mechanical:black_currants"
   ]
 }

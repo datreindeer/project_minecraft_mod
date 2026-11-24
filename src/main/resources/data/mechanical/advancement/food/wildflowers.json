@@ -100,6 +100,106 @@
           }
         ]
       }
+    },
+    "has_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:foxglove"
+          }
+        ]
+      }
+    },
+    "has_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:yellow_adonis"
+          }
+        ]
+      }
+    },
+    "has_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bog_asphodel"
+          }
+        ]
+      }
+    },
+    "has_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:marsh_marigold"
+          }
+        ]
+      }
+    },
+    "has_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wood_anemone"
+          }
+        ]
+      }
+    },
+    "has_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bluebells"
+          }
+        ]
+      }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:purple_saxifrage"
+          }
+        ]
+      }
+    },
+    "has_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:purple_loosestrife"
+          }
+        ]
+      }
+    },
+    "has_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:spiny_thrift"
+          }
+        ]
+      }
+    },
+    "has_19": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cats_foot"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -113,7 +213,17 @@
       "has_6",
       "has_7",
       "has_8",
-      "has_9"
+      "has_9",
+      "has_10",
+      "has_11",
+      "has_12",
+      "has_13",
+      "has_14",
+      "has_15",
+      "has_16",
+      "has_17",
+      "has_18",
+      "has_19"
     ]
   ],
   "display": {

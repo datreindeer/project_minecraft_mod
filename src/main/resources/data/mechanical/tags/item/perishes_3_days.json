@@ -17,6 +17,9 @@
     "mechanical:roasted_mushrooms",
     "mechanical:boiled_egg",
     "minecraft:pumpkin_pie",
+    "mechanical:rowan_berries",
+    "mechanical:crab_apple",
+    "mechanical:olives",
     "mechanical:cooked_haunch",
     "mechanical:cooked_ribs",
     "mechanical:cooked_loin",
@@ -105,6 +108,7 @@
     "mechanical:cooked_swan",
     "mechanical:cooked_heron",
     "mechanical:cooked_crane",
+    "mechanical:cooked_rowan_berries",
     "mechanical:cooked_elderberries"
   ]
 }

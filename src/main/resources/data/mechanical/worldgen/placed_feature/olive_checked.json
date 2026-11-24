@@ -1,0 +1,12 @@
+{
+  "feature": "mechanical:olive",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": "mechanical:olive_sapling"
+      }
+    }
+  ]
+}

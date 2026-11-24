@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/upright_log",
+  "textures": {
+    "side": "mechanical:block/rowan_log",
+    "top": "mechanical:block/rowan_log_top"
+  }
+}

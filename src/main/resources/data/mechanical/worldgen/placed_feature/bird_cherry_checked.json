@@ -1,0 +1,12 @@
+{
+  "feature": "mechanical:bird_cherry",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": "mechanical:bird_cherry_sapling"
+      }
+    }
+  ]
+}

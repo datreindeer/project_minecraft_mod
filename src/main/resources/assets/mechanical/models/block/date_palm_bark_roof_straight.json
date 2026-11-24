@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_straight",
+  "textures": {
+    "top": "mechanical:block/date_palm_bark_roof",
+    "under": "mechanical:block/stripped_date_palm_log"
+  }
+}

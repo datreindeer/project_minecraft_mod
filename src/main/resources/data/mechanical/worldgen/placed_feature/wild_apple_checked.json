@@ -1,0 +1,12 @@
+{
+  "feature": "mechanical:wild_apple",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": "mechanical:wild_apple_sapling"
+      }
+    }
+  ]
+}

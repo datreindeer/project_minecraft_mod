@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "mechanical:yellow_adonis",
+    "properties": {
+      "blooming": "true"
+    }
+  }
+}

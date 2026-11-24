@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/stump",
+  "textures": {
+    "side": "mechanical:block/date_palm_log",
+    "top": "mechanical:block/date_palm_log_top"
+  }
+}

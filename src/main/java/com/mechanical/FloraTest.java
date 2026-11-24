@@ -116,6 +116,25 @@ public final class FloraTest {
                 && h.getBlockState(slab).is(EarthBlocks.SAND_SLAB.get()), "a Sand Slab stays a slab for a plant that can't grow on sand");
         h.assertTrue(SlabPlanting.fill(level, h.absolutePos(slab), Flora.FLOWER_BLOCKS.get("sand_verbena").get().defaultBlockState())
                 && h.getBlockState(slab).is(Blocks.SAND), "but becomes sand for Sand Verbena");
+        // phase 2: low mats grow no top and have no thorns; evergreen kinds keep their leaves; old bushes ripen only in season
+        ThicketBushBlock crowberry = Flora.THICKETS.get("crowberry").get();
+        h.assertTrue(crowberry.low() && crowberry.evergreen() && !Flora.THICKETS.get("rosehip").get().low(), "crowberry is a low evergreen mat");
+        WildBerryBushBlock raspberry = Foraging.BUSH_BLOCKS.get("raspberry").get();
+        h.assertTrue(raspberry.ripensIn(1) && !raspberry.ripensIn(0) && Foraging.BUSH_BLOCKS.get("lingonberry").get().ripensIn(3),
+                "raspberries ripen in summer, lingonberries into winter");
+        var moonwort = Flora.MOONWORT.get().bloom();
+        h.assertTrue(moonwort.at(1, true, true) && !moonwort.at(1, true, false) && !moonwort.at(1, false, true), "moonwort blooms on full-moon nights");
+        // phase 3: fruit leaves give fruit when ripe and go back to unripe; stumps hold a rough log of every wood
+        FruitLeavesBlock rowan = (FruitLeavesBlock) Trees.WOODS.get("rowan").leaves().get();
+        BlockPos leaf = new BlockPos(1, 3, 1);
+        h.setBlock(leaf, rowan.defaultBlockState().setValue(FruitLeavesBlock.STAGE, FruitLeavesBlock.RIPE).setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true));
+        ItemStack fruit = rowan.pick(level, h.absolutePos(leaf), h.getBlockState(leaf));
+        h.assertTrue(fruit.is(Trees.FRUITS.get("rowan").get()) && h.getBlockState(leaf).getValue(FruitLeavesBlock.STAGE) < FruitLeavesBlock.RIPE,
+                "picked rowan berries: " + fruit + " " + h.getBlockState(leaf));
+        h.assertTrue(rowan.target(2) == 3 && rowan.target(3) == 0, "rowan berries ripen in autumn and are gone in winter");
+        h.assertTrue(StumpBlock.LOG.getPossibleValues().size() == Mechanical.WOODS.size() + 1, "a stump has a log state for every wood");
+        var rawRowan = new ItemStack(Trees.FRUITS.get("rowan").get()).get(DataComponents.CONSUMABLE);
+        h.assertTrue(rawRowan != null && !rawRowan.onConsumeEffects().isEmpty(), "raw rowan berries upset the stomach");
         h.succeed();
     }
 

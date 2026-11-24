@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:basalt_coast",
+    "mechanical:glacial_moraine",
+    "mechanical:mammoth_steppe",
+    "mechanical:pine_heath",
+    "mechanical:shingle_beach",
+    "mechanical:slate_highlands",
+    "mechanical:soapstone_valley",
+    "minecraft:stony_shore",
+    "minecraft:windswept_forest",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_hills"
+  ],
+  "features": "mechanical:bearberry_thicket",
+  "step": "vegetal_decoration"
+}

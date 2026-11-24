@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/moonwort"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/moonwort_leaves"
+    }
+  }
+}

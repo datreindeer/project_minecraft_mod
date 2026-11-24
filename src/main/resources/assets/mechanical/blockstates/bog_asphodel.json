@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/bog_asphodel"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/bog_asphodel_leaves"
+    }
+  }
+}

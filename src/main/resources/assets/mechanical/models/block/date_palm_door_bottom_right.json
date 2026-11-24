@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_right",
+  "textures": {
+    "bottom": "mechanical:block/date_palm_door_bottom",
+    "top": "mechanical:block/date_palm_door_top"
+  }
+}

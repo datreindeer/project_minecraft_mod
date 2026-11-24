@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:purple_loosestrife",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:purple_loosestrife",
+            "state": {
+              "half": "lower"
+            }
+          }
+        }
+      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
+    }
+  ],
+  "random_sequence": "mechanical:blocks/purple_loosestrife"
+}

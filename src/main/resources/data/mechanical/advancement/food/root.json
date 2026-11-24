@@ -159,6 +159,146 @@
           }
         ]
       }
+    },
+    "has_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rosehips"
+          }
+        ]
+      }
+    },
+    "has_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crowberries"
+          }
+        ]
+      }
+    },
+    "has_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bearberries"
+          }
+        ]
+      }
+    },
+    "has_19": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:barberries"
+          }
+        ]
+      }
+    },
+    "has_20": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:capers"
+          }
+        ]
+      }
+    },
+    "has_21": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:red_currants"
+          }
+        ]
+      }
+    },
+    "has_22": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:black_currants"
+          }
+        ]
+      }
+    },
+    "has_23": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rowan_berries"
+          }
+        ]
+      }
+    },
+    "has_24": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bird_cherries"
+          }
+        ]
+      }
+    },
+    "has_25": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crab_apple"
+          }
+        ]
+      }
+    },
+    "has_26": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wild_plums"
+          }
+        ]
+      }
+    },
+    "has_27": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:olives"
+          }
+        ]
+      }
+    },
+    "has_28": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:dates"
+          }
+        ]
+      }
+    },
+    "has_29": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:yew_arils"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -178,7 +318,21 @@
       "has_12",
       "has_13",
       "has_14",
-      "has_15"
+      "has_15",
+      "has_16",
+      "has_17",
+      "has_18",
+      "has_19",
+      "has_20",
+      "has_21",
+      "has_22",
+      "has_23",
+      "has_24",
+      "has_25",
+      "has_26",
+      "has_27",
+      "has_28",
+      "has_29"
     ]
   ],
   "display": {

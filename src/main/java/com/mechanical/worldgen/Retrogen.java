@@ -90,6 +90,10 @@ public final class Retrogen {
             // flowers and berry thickets (gen_flora.py)
             "pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
             "great_mullein", "desert_candle", "fern_flower", "frost_lily", "blackthorn_thicket", "sea_buckthorn_thicket", "jujube_thicket",
+            // flora phases 2-3 (gen_flora.py; fruit trees in gen_trees.py are trees, left out)
+            "foxglove", "yellow_adonis", "bog_asphodel", "marsh_marigold", "wood_anemone", "bluebells", "purple_saxifrage", "purple_loosestrife",
+            "spiny_thrift", "cats_foot", "will_o_wisp_lily", "moonwort", "rosehip_thicket", "crowberry_thicket", "bearberry_thicket",
+            "barberry_thicket", "caper_thicket", "red_currant_thicket", "black_currant_thicket",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */
