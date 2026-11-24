@@ -1,0 +1,56 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/barberry_stage3",
+    "leaves": "mechanical:block/barberry_stage3",
+    "inner": "mechanical:block/barberry_inner",
+    "stems": "mechanical:block/barberry_stems",
+    "sprig": "mechanical:block/barberry_sprig"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        0
+      ],
+      "to": [
+        14,
+        7,
+        1
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            2,
+            0,
+            14,
+            1
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "east": {
+          "uv": [
+            15,
+            9,
+            16,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            0,
+            9,
+            1,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

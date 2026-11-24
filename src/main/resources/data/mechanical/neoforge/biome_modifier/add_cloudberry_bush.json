@@ -1,13 +1,13 @@
 {
   "type": "neoforge:add_features",
   "biomes": [
-    "minecraft:swamp",
-    "minecraft:snowy_plains",
-    "minecraft:snowy_taiga",
-    "minecraft:grove",
-    "mechanical:willow_fen",
+    "mechanical:glacial_moraine",
     "mechanical:peat_bog",
-    "mechanical:reed_delta"
+    "minecraft:grove",
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:snowy_slopes",
+    "minecraft:taiga"
   ],
   "features": "mechanical:cloudberry_bush",
   "step": "vegetal_decoration"

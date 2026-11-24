@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:pine_heath",
+    "mechanical:slate_highlands",
+    "minecraft:meadow"
+  ],
+  "features": "mechanical:cats_foot",
+  "step": "vegetal_decoration"
+}

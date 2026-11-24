@@ -2,8 +2,7 @@
   "type": "neoforge:add_features",
   "biomes": [
     "minecraft:taiga",
-    "minecraft:dark_forest",
-    "mechanical:glacial_moraine"
+    "minecraft:dark_forest"
   ],
   "features": "mechanical:yew_forest",
   "step": "vegetal_decoration"

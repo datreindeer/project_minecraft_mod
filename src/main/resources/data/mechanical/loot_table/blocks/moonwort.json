@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:moonwort",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:moonwort",
+                "state": {
+                  "blooming": "true"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/moonwort"
+}

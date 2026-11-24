@@ -8,6 +8,12 @@
     "mechanical:ash_leaves",
     "mechanical:hazel_leaves",
     "mechanical:pine_leaves",
-    "mechanical:yew_leaves"
+    "mechanical:yew_leaves",
+    "mechanical:rowan_leaves",
+    "mechanical:bird_cherry_leaves",
+    "mechanical:wild_apple_leaves",
+    "mechanical:plum_leaves",
+    "mechanical:olive_leaves",
+    "mechanical:date_palm_leaves"
   ]
 }

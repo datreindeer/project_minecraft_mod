@@ -40,6 +40,9 @@ public final class Foraging {
     }
     /** Bushes that stand through winter and can be picked then; the others freeze (WildBerryBushBlock.FROZEN). */
     public static final Set<String> WINTER_HARDY = Set.of("lingonberry");
+    /** Seasons each bush ripens in (mask 1 spring, 2 summer, 4 autumn, 8 winter; docs/flora-and-food-plan.md, section 2). */
+    public static final Map<String, Integer> RIPE_SEASONS = Map.of("raspberry", 2, "blueberry", 2 | 4, "lingonberry", 4 | 8,
+            "wild_strawberry", 1 | 2, "elderberry", 2 | 4, "cloudberry", 2, "blackberry", 2 | 4);
     public static final List<String> MUSHROOMS = List.of("chanterelle", "porcini", "morel", "oyster_mushroom", "fly_agaric", "puffball");
 
     public static final Map<String, DeferredItem<Item>> BERRIES = new LinkedHashMap<>();
@@ -56,7 +59,7 @@ public final class Foraging {
                     ? ITEMS.registerSimpleItem(berries, p -> p.food(BERRY, Flora.rawElderberries()))
                     : ITEMS.registerSimpleItem(berries, p -> p.food(BERRY));
             BERRIES.put(bush, item);
-            BUSH_BLOCKS.put(bush, BLOCKS.registerBlock(bush + "_bush", p -> new WildBerryBushBlock(item, WINTER_HARDY.contains(bush), p), p -> p
+            BUSH_BLOCKS.put(bush, BLOCKS.registerBlock(bush + "_bush", p -> new WildBerryBushBlock(item, WINTER_HARDY.contains(bush), RIPE_SEASONS.get(bush), p), p -> p
                     .mapColor(MapColor.PLANT).noCollision().randomTicks().strength(0.3F).sound(SoundType.SWEET_BERRY_BUSH)
                     .pushReaction(PushReaction.POPPED)));
         });

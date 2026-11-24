@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:deciduous_forest",
+    "mechanical:hazel_meadow",
+    "minecraft:forest",
+    "minecraft:meadow",
+    "minecraft:plains"
+  ],
+  "features": "mechanical:bird_cherry_lakeside",
+  "step": "vegetal_decoration"
+}

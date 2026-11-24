@@ -18,6 +18,12 @@
     "mechanical:ash_bark",
     "mechanical:hazel_bark",
     "mechanical:pine_bark",
-    "mechanical:yew_bark"
+    "mechanical:yew_bark",
+    "mechanical:rowan_bark",
+    "mechanical:bird_cherry_bark",
+    "mechanical:wild_apple_bark",
+    "mechanical:plum_bark",
+    "mechanical:olive_bark",
+    "mechanical:date_palm_bark"
   ]
 }

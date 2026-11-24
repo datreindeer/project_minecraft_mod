@@ -1,0 +1,56 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/caper_stage1",
+    "leaves": "mechanical:block/caper_stage1",
+    "inner": "mechanical:block/caper_inner",
+    "stems": "mechanical:block/caper_stems",
+    "sprig": "mechanical:block/caper_sprig"
+  },
+  "elements": [
+    {
+      "from": [
+        1.5,
+        0,
+        0
+      ],
+      "to": [
+        14.5,
+        3.5,
+        0.5
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            1.5,
+            0,
+            14.5,
+            0.5
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "east": {
+          "uv": [
+            15.5,
+            12.5,
+            16,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            0,
+            12.5,
+            0.5,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

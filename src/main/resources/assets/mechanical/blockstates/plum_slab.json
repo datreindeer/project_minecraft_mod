@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/plum_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/plum_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/plum_slab_top"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:marble_gorge"
+  ],
+  "features": "mechanical:caper_thicket",
+  "step": "vegetal_decoration"
+}

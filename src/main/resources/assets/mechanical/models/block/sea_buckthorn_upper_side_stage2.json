@@ -4,7 +4,8 @@
     "particle": "mechanical:block/sea_buckthorn_stage2",
     "leaves": "mechanical:block/sea_buckthorn_stage2",
     "inner": "mechanical:block/sea_buckthorn_inner",
-    "stems": "mechanical:block/sea_buckthorn_stems"
+    "stems": "mechanical:block/sea_buckthorn_stems",
+    "sprig": "mechanical:block/sea_buckthorn_sprig"
   },
   "elements": [
     {

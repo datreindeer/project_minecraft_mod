@@ -8,6 +8,12 @@
     "mechanical:ash_log",
     "mechanical:hazel_log",
     "mechanical:pine_log",
-    "mechanical:yew_log"
+    "mechanical:yew_log",
+    "mechanical:rowan_log",
+    "mechanical:bird_cherry_log",
+    "mechanical:wild_apple_log",
+    "mechanical:plum_log",
+    "mechanical:olive_log",
+    "mechanical:date_palm_log"
   ]
 }

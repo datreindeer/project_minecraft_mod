@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "mechanical:block/bird_cherry_leaves_blossom"
+  }
+}

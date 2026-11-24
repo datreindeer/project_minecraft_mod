@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:tree",
+  "below_trunk_provider": "minecraft:soil_beneath_tree",
+  "decorators": [],
+  "foliage_placer": {
+    "type": "mechanical:weeping_foliage_placer",
+    "radius": 2,
+    "offset": 1,
+    "height": 1,
+    "hang_length": 2
+  },
+  "ignore_vines": true,
+  "foliage_provider": {
+    "id": "mechanical:bird_cherry_leaves",
+    "properties": {
+      "distance": "7",
+      "persistent": "false",
+      "waterlogged": "false"
+    }
+  },
+  "minimum_size": {
+    "type": "minecraft:two_layers_feature_size"
+  },
+  "trunk_placer": {
+    "type": "mechanical:multi_stem_trunk_placer",
+    "base_height": 4,
+    "height_rand_a": 2,
+    "height_rand_b": 1
+  },
+  "trunk_provider": {
+    "id": "mechanical:bird_cherry_log",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

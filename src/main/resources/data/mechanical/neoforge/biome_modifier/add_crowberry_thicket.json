@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:basalt_coast",
+    "mechanical:glacial_moraine",
+    "mechanical:peat_bog",
+    "mechanical:pine_heath",
+    "mechanical:shingle_beach",
+    "mechanical:slate_highlands",
+    "minecraft:grove",
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:snowy_plains",
+    "minecraft:snowy_slopes",
+    "minecraft:snowy_taiga",
+    "minecraft:stony_shore",
+    "minecraft:taiga",
+    "minecraft:windswept_forest",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_hills"
+  ],
+  "features": "mechanical:crowberry_thicket",
+  "step": "vegetal_decoration"
+}

@@ -383,6 +383,354 @@ FLOWERS = {
         glow="IJKTP",
     ),
 }
+
+# phase 2 flowers (tall ones as _bottom/_top pairs) and the phase 3 magic flowers
+FLOWERS.update({
+    "foxglove_top": dict(  # a spire of nodding pink bells, spotted mouths, mostly on one side; green buds at the tip
+        pal={"A": "eeaadc", "B": "c86cb6", "C": "8e3f8a", "D": "4e1a56", "W": "f8eaf4", "s": "5d7f3e", "b": "a8c070",
+             "g": "6f9a4a", "G": "8fbc62", "d": "476b32"},
+        bloom=[
+            "................",
+            ".......b........",
+            "......bsb.......",
+            ".......sb.......",
+            "......bsA.......",
+            ".......sAB......",
+            "......bsBB......",
+            ".......sABC.....",
+            "......AsBWD.....",
+            ".....ABs.D......",
+            ".....BCsAAB.....",
+            "......DsABBC....",
+            ".......sBWDC....",
+            ".....AAs..D.....",
+            "....ABBsAAB.....",
+            "....BWDsABBC....",
+        ],
+        remap={"A": "b", "B": "g", "C": ".", "D": ".", "W": "."},
+    ),
+    "foxglove_bottom": dict(  # the lowest bells, the bare stalk, big soft basal leaves
+        pal={"A": "eeaadc", "B": "c86cb6", "C": "8e3f8a", "D": "4e1a56", "W": "f8eaf4", "s": "5d7f3e", "b": "a8c070",
+             "g": "6f9a4a", "G": "8fbc62", "d": "476b32", "L": "a6cf7a"},
+        bloom=[
+            ".....D.sBWDC....",
+            ".......s..D.....",
+            ".....AAsAAB.....",
+            "....ABBsABBC....",
+            "....BWDsBWDC....",
+            ".....D.s..D.....",
+            ".......s........",
+            ".......s........",
+            "...LG..s........",
+            "..LGgG.s..LGG...",
+            ".LGgggGsLGgggG..",
+            "LGggddgsggggddG.",
+            "ggdd..dsgdd..dgg",
+            ".d..LGgsgLG...d.",
+            "...LGgdsdggGG...",
+            "..LGgd.s.ddggG..",
+        ],
+        remap={"A": "b", "B": "g", "C": ".", "D": ".", "W": "."},
+    ),
+    "purple_loosestrife_top": dict(  # a long spike of magenta whorls, tapering to a bud tip
+        pal={"A": "f094d8", "B": "c84eae", "C": "86287e", "s": "7a6a44", "g": "6e9a48", "G": "8cbc60", "d": "4a7032"},
+        bloom=[
+            "................",
+            "................",
+            ".......C........",
+            "......BAB.......",
+            ".......sB.......",
+            "......ABAC......",
+            ".....BAsBC......",
+            "......CsC.......",
+            ".....ABAAB......",
+            "....BAAsBAC.....",
+            ".....CBsBCC.....",
+            "......CsC.......",
+            ".....AABAB......",
+            "....BAAsBBC.....",
+            ".....CBsBCC.....",
+            "....gC.s.Cg.....",
+        ],
+        remap={"A": "G", "B": "g", "C": "d"},
+    ),
+    "purple_loosestrife_bottom": dict(  # the lowest whorl, then pairs of narrow willow leaves up the stem
+        pal={"A": "f094d8", "B": "c84eae", "C": "86287e", "s": "7a6a44", "g": "6e9a48", "G": "8cbc60", "d": "4a7032"},
+        bloom=[
+            "...gd..s..dg....",
+            ".......s........",
+            ".....ABAAB......",
+            "....BAAsBAC.....",
+            ".....CBsBCC.....",
+            "...Gg..s..gG....",
+            ".GGgd..s..dgGG..",
+            "G.gd...s...dg.G.",
+            ".......s........",
+            "..G....s....G...",
+            "...GGg.s.gGG....",
+            ".Ggggd.s.dgggG..",
+            "G..dd..s..dd..G.",
+            "...G...s...G....",
+            "..Ggd..s..dgG...",
+            ".Ggd..dsd..dgG..",
+        ],
+        remap={"A": "G", "B": "g", "C": "d"},
+    ),
+    "yellow_adonis": dict(  # big glossy yellow suns of narrow petals over feathery dill-fine leaves
+        pal={"Y": "fbe046", "H": "fff4a8", "y": "e0b020", "O": "a87410", "c": "c0a82a", "s": "6e9446", "g": "6e9e44",
+             "G": "92c060", "d": "4a7430"},
+        bloom=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "...Y.Y.Y........",
+            "..YHYHYYy.......",
+            ".YHYcccyyY.Y.Y..",
+            "..YYcOcyy.YHYyY.",
+            ".YyycccyO.YcOy..",
+            "..yyyyyOO.yyyO..",
+            "...O.s.O...OsO..",
+            ".g.g.s.g....s.g.",
+            "..GgGs.gG.gGsg..",
+            ".gdgGsgdgGgds.g.",
+            "g.Gdgs.GdgGsgGdg",
+            ".gd.gsdg.gdsdg..",
+        ],
+        remap={"Y": ".", "H": ".", "y": ".", "O": ".", "c": "."},
+    ),
+    "bog_asphodel": dict(  # little spikes of yellow stars with orange anthers over stiff sword leaves; orange pods after
+        pal={"Y": "f8d23a", "y": "d29a1c", "o": "e8661a", "s": "8a9a48", "G": "8cb058", "g": "6a9440", "d": "466a2c",
+             "r": "c8642a"},
+        bloom=[
+            "................",
+            "................",
+            "............Y...",
+            "...Y.......YoY..",
+            "..YoY.......Yy..",
+            "...YY.Y....yoY..",
+            "..yoY.YY....Ys..",
+            "...Ys.YoY..yoY..",
+            "..yoY.yYY...ys..",
+            "...ys.yoY.G..s..",
+            ".G..s..ys.G..s.G",
+            ".G..s..ys.g..sG.",
+            "..g.sG..sGg..sg.",
+            "G.g.sG.gs.g.Gs.g",
+            ".GgdsgGgsdgGgsd.",
+            "..gdsdgdsdgdgsd.",
+        ],
+        remap={"Y": ".", "y": "r", "o": "r"},
+    ),
+    "marsh_marigold": dict(  # glossy golden cups over round kidney-shaped dark glossy leaves
+        pal={"H": "fff2a0", "Y": "f8cc28", "y": "d89c10", "O": "a06808", "L": "8ec66a", "g": "4f8a3a", "d": "336628",
+             "D": "22481c", "s": "5a8a3a"},
+        bloom=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "..HY.YY.........",
+            ".HYYOYYy....HY.Y",
+            "..YyOOyy...HYYOY",
+            "...yyyy.....YOyy",
+            "....s....LL..yy.",
+            ".LL.s..LLggs.s..",
+            "LLggsgLggggdgs..",
+            "LgggdgLgdggdLLg.",
+            "gggddggdddgLggdg",
+            ".gddDdgddDdggddd",
+            "..dDD.dDD.Ddddd.",
+        ],
+        remap={"H": ".", "Y": ".", "y": ".", "O": "."},
+    ),
+    "wood_anemone": dict(  # a carpet of white six-petalled stars, pink-backed, over deeply cut three-lobed leaves
+        pal={"W": "fcfcf6", "w": "dcdcd4", "p": "e6bccc", "y": "eccc3c", "S": "8a6a5a", "s": "6a8a4a", "G": "8cc464",
+             "g": "62a040", "d": "3f7a2c"},
+        bloom=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "..W.W...........",
+            ".WWyWw.....W.W..",
+            "..wWWp....WWyWw.",
+            "...pS......wpWp.",
+            "....S..W.W..S...",
+            "..G.S.WWyWw.S.G.",
+            ".GgGS..pWp..SGgG",
+            "GgdgGgG.S.GgGgdg",
+            ".dGgdgGgsGgdgGd.",
+            "Ggdg.dgdsdg.dgdG",
+            ".dgdgdgdsdgdgdg.",
+        ],
+        remap={"W": ".", "w": ".", "p": ".", "y": ".", "S": "."},
+    ),
+    "bluebells": dict(  # arching one-sided spikes of narrow violet bells curling at the mouth, strap leaves
+        pal={"A": "b0b0f4", "B": "7470dc", "C": "4c42ae", "D": "2e2878", "s": "5c8a48", "g": "5f9a42", "G": "80b85a",
+             "d": "3c6e2c"},
+        bloom=[
+            "................",
+            "................",
+            "......sss.......",
+            ".....s...s......",
+            "....s.....s.....",
+            "....s.A..A.s....",
+            "...s.AB.AB.B....",
+            "...sAB.ABC.C....",
+            "...sBC.BCD.ss...",
+            "...sC.D.D.s..s..",
+            "...s......s.A.A.",
+            ".g.s.G...sABAB..",
+            ".gGsGg..GsBCBC..",
+            "..gsgd.GgsC.C.g.",
+            ".GgsgGgdgsgGgdgG",
+            "GgdsdgdgdsdgdgdG",
+        ],
+        leaves=["................"] * 11 + [
+            ".g.g.G......gG..",
+            ".gGgGg..G..ggG..",
+            "..gggd.Gg.GgGgd.",
+            ".GgggGgdggGgGdgG",
+            "GgdgddgdgddgdgdG"],
+    ),
+    "purple_saxifrage": dict(  # a low dark cushion starred all over with pink-purple flowers
+        pal={"P": "f4a8dc", "p": "d466bc", "c": "fbe6a0", "G": "6e9656", "g": "4f7a3e", "d": "355a2c", "D": "22401e"},
+        bloom=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "....P......P....",
+            "...PcP.P..PcP...",
+            "..gGpgPcP.GpgP..",
+            ".gGdgGgpGgdgPcP.",
+            "gGdPgdGdgPgGdpg.",
+            "GdPcPdgdPcPdgdgd",
+            "dgdpdgdDdpdgdgDd",
+            ".DdDdDdDdDdDdDd.",
+        ],
+        remap={"P": "G", "p": "g", "c": "G"},
+    ),
+    "spiny_thrift": dict(  # a spiny grey-green needle cushion dotted with small papery pink flowers; straw after
+        pal={"G": "b4c49c", "g": "8e9e7a", "d": "6c7a5e", "D": "4e5a44", "P": "f8cad8", "p": "e08cb0", "q": "aa5a7e",
+             "e": "d8c8a0", "f": "a89868"},
+        bloom=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "......G.G.......",
+            "...G...G.G..G...",
+            "..G.G.gG.gG.g.g.",
+            "...gGg.g.g.gGg..",
+            ".G..gggPpggg..g.",
+            "..GggdgpqgdggG..",
+            "G..gdPpdddgdgg.g",
+            ".GggdpqDDdPpgGg.",
+            "GggdDdDdDdpqdggg",
+            ".gddDdDDdDDdddg.",
+            "gdDdDDdDDdDDdDdg",
+            ".dDDDDDDDDDDDDd.",
+        ],
+        remap={"P": "e", "p": "f", "q": "f"},
+    ),
+    "cats_foot": dict(  # silvery woolly rosettes, short stalks with fluffy pink-white clusters (the cat's paws)
+        pal={"W": "dfe6d6", "w": "b4c2aa", "v": "8a9a80", "u": "62705a", "S": "a8b0a0", "F": "fcf2f6", "f": "f2c0d4",
+             "k": "d08aa8"},
+        bloom=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "...fFf..........",
+            "..FfkFf....fFf..",
+            "..kfFkf...FfkFf.",
+            "...kSk....kfFfk.",
+            "....S......kSk..",
+            "....S.......S...",
+            "..wWwS.Ww..wSWw.",
+            ".wWvWwWwvWwWvwWv",
+            "WvwuvwvuwvWuwvuw",
+            ".uvuvuvuvuuvuvu.",
+        ],
+        remap={"F": ".", "f": ".", "k": ".", "S": "."},
+    ),
+    "will_o_wisp_lily": dict(  # night bloom: a nodding ghost-pale lily, petals curled back, glowing blue-green; two wisps
+        pal={"T": "f2fffc", "I": ("d4fff2", 205), "J": ("9cf0dc", 215), "K": ("5ed4c4", 230), "P": "2fa8a0",
+             "o": ("eafff8", 210), "w": ("c8fff0", 150), "s": "4e6e52", "g": "5a7e56", "d": "3a5a3c", "b": "d0e8dc",
+             "B": "a8c8b8"},
+        bloom=[
+            "................",
+            "............w...",
+            "......sss.......",
+            ".....s...s......",
+            ".....s....s.....",
+            ".....s..T.JK.T..",
+            ".....s..IJKPKJI.",
+            ".....s...IJPJI..",
+            ".....s....KPK...",
+            ".g...s.....o....",
+            "..g..s.....o....",
+            "..g..s...g......",
+            "...g.s..g.......",
+            ".g.gds.gd..w....",
+            "..gdgsgd........",
+            "...dgsdg........",
+        ],
+        leaves=[
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "........bb......",
+            "........Bs......",
+            ".g......s...g...",
+            "..g.g..s..g.g...",
+            "..gdg.dsd.gdg...",
+            "...dgdgsgdgd....",
+        ],
+        glow="TIJKPow",
+    ),
+    "moonwort": dict(  # a tiny fern: one frond of half-moon leaflets, a stalk with a grape-like spike of silver beads
+        pal={"G": "a0d07c", "g": "6ea24e", "d": "4a7a36", "s": "5e8a42", "B": "ffffff", "b": ("e4ecf8", 240),
+             "c": ("b4c4d8", 240), "e": "8a8c52", "f": "6a6a3a"},
+        bloom=[
+            "................",
+            ".......Bb.......",
+            "......B.sB......",
+            ".......Bsc......",
+            "......Bcs.B.....",
+            ".....c..sBc.....",
+            "......Bbs.b.....",
+            ".......cs.......",
+            "....GG..s..GG...",
+            "...Ggd..s.dgG...",
+            "....dGGsGGd.....",
+            "...GG.ds.gGG....",
+            "..Ggd..s..dgG...",
+            "...d.GgsgG.d....",
+            "......dsd.......",
+            ".......s........",
+        ],
+        remap={"B": "e", "b": "e", "c": "f"},
+        glow="Bbc",
+    ),
+})
 for v in FLOWERS.values():
     v["pal"] = {k: (hexc(*c) if isinstance(c, tuple) else c) for k, c in v["pal"].items()}
 
@@ -401,7 +749,7 @@ THICKETS = {
     "jujube": dict(
         leaf=["b8ec84", "6cbc44", "4a9a32", "2f7224", "1d4c17"], bark=["4a2a1e", "6a4030", "8a5a40"],
         flower=["eae672", "c4c24e", "f8f6aa"], unripe=["b6bc58", "d6d474", "f0ecaa"], ripe=["5e1810", "9c3420", "e08a66"],
-        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, fruit="drupe", bunches=5, seed=37, blossom_heavy=False),
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, fruit="drupe", bunches=5, seed=37, blossom_heavy=False, soft=True),
 }
 
 
@@ -520,32 +868,346 @@ def to_img(px):
     return img
 
 
+# phase 2 bushes. style: the leaf surface painted over the lit clumps (see leaf_mass); low: a mat about 6 px tall whose
+# sides show only the bottom rows, so the fruit is spread over the whole tile; evergreen: winter keeps the leaves (a duller
+# winter palette) instead of bare twigs. Fruit colours: [shadow, body, highlight]; flower colours: [petal, petal shade, centre].
+THICKETS.update({
+    "rosehip": dict(  # dog rose: small mid-green leaves, thorny arching canes, pink roses, scarlet hips that stay into winter
+        leaf=["a2cc72", "72a64e", "548a3c", "3a6a2c", "26481e"], bark=["3e2a1e", "5a4426", "8a3a2a"],
+        flower=["fcd2e0", "ec8cb0", "f4d23c"], unripe=["7a7a1e", "c08a2a", "e8c060"], ripe=["8a1008", "d8301c", "ffb090"],
+        clump=(1.3, 2.0), stretch=(1.0, 1.0), coverage=0.72, fruit="hip", bunches=5, seed=51, thorny=True, canes=2),
+    "crowberry": dict(  # heath mat: tiny dark needle leaves crowded along reddish stems, shiny black berries
+        leaf=["7c9c50", "56783a", "3e5e2c", "2c4622", "1e3018"], bark=["4a2018", "7e3826", "a04a32"],
+        flower=["a82848", "6e1a30", "e070a0"], unripe=["4a6a2a", "7a9a40", "b8d080"], ripe=["140a1c", "3a2248", "6a7290"],
+        winter=["6e7a4a", "52603a", "3e4a2c", "2c3420", "1c2216"],
+        clump=(1.6, 2.6), stretch=(1.0, 1.0), coverage=0.86, style="needle", stamps=22, soft=True,
+        low=True, evergreen=True, fruit="heath", bunches=6, nmax=2, seed=63),
+    "bearberry": dict(  # trailing mat: small glossy leathery leaves on red-brown runners, bright red berries
+        leaf=["a8da84", "62a246", "448034", "2e6026", "1c3e18"], bark=["4e2418", "7e3a24", "a65a38"],
+        flower=["fbf4f2", "f0b0c0", "c86a84"], unripe=["6a9a3a", "9cc65a", "d8eca0"], ripe=["900e10", "e0261e", "ffc0b0"],
+        winter=["a8945a", "84683a", "68502e", "4a3622", "2e2216"],
+        clump=(1.1, 1.7), stretch=(1.0, 1.0), coverage=0.8, style="oval", trail=2, soft=True,
+        low=True, evergreen=True, fruit="bear", bunches=6, nmax=2, seed=71),
+    "barberry": dict(  # thorny: tufts of small blue-green oval leaves, hanging yellow flowers, then strings of red berries
+        leaf=["b0d0ac", "80a886", "5e8870", "426652", "2a4438"], bark=["4a3424", "6e5034", "9a7a50"],
+        flower=["f8e050", "d8b020", "fff4a0"], unripe=["5a8a3a", "8ab64e", "c4e08a"], ripe=["900c14", "dc1e24", "ff9a90"],
+        clump=(1.0, 1.7), stretch=(1.0, 1.0), coverage=0.7, style="tuft", fruit="barb", bunches=6, seed=83, thorny=True, soft=True),
+    "caper": dict(  # low sprawling mound: round fleshy blue-green leaves, white flowers with long violet stamens, olive buds
+        leaf=["b8ccb0", "90ac8e", "6e8e76", "52705e", "3a5246"], bark=["4e4a30", "6a6640", "8a8656"],
+        flower=["fcf6f4", "e8c8d4", "8a3aa0"], unripe=["5e7a24", "9ab83e", "d0e07a"], ripe=["34400e", "5e7420", "9cac50"],
+        clump=(2.0, 3.0), stretch=(1.0, 1.0), coverage=0.8, style="round", soft=True,
+        low=True, fruit="caper", bunches=5, nmax=2, seed=91),
+    "red_currant": dict(  # lobed bright green leaves, hanging strings of glossy see-through red currants
+        leaf=["aee27e", "78bc4c", "56983a", "3c742c", "264e1e"], bark=["4a3828", "6a523a", "8c7250"],
+        flower=["d8dc7a", "a8b050", "f0f0b0"], unripe=["5a8a2e", "8ac04a", "d4f0a0"], ripe=["8a0a12", "dc2a2a", "ff9088"],
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, style="maple", soft=True, fruit="currant", bunches=5, seed=101),
+    "black_currant": dict(  # the same lobed leaves, darker; dull pink flower strings, glossy black currants
+        leaf=["8ec468", "5c9a40", "427c32", "2e5c26", "1e3c18"], bark=["40302a", "5e4636", "7e624a"],
+        flower=["d8a8b0", "a87884", "e8e0a0"], unripe=["4a7a2a", "78aa44", "c0e090"], ripe=["08080c", "1e1c28", "4c5470"],
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, style="maple", soft=True, fruit="currant", bunches=5, seed=113,
+        dim_glint=True),
+})
+
+def despeckle(px):
+    """Soft clumps: a pixel no neighbour shares, sitting among 3+ neighbours of one colour, takes that colour; leaf pixels
+    with at most one leaf neighbour (stray single pixels at the rim) go."""
+    out = dict(px)
+    for (x, y), c in px.items():
+        nb = [px.get(((x + ox) % 16, (y + oy) % 16)) for ox, oy in ((1, 0), (-1, 0), (0, 1), (0, -1))]
+        filled = [n for n in nb if n]
+        if len(filled) <= 1:
+            del out[(x, y)]
+        elif c not in filled:
+            best = max(set(filled), key=filled.count)
+            if filled.count(best) >= 3:
+                out[(x, y)] = best
+    return out
+
+
+def leaf_mass(p, seed, coverage=None, darken=0, leaf=None):
+    """The leaves of a kind: lit clumps (the phase 1 look), then the kind's own surface: needle sprigs (heath), a glossy
+    rim of light on the top left of every leaf (leathery and fleshy leaves), notched lobes (currants). Trailing kinds get
+    their runners showing in the gaps between the leaves."""
+    p = dict(p, leaf=leaf or p["leaf"])
+    px = clumps(p, seed, coverage, darken)
+    style = p.get("style")
+    rng = random.Random(seed + 2)
+    L = p["leaf"]
+    if style == "needle":  # short upright needle tufts, lit at the tips
+        for _ in range(p["stamps"]):
+            x, y = rng.randrange(16), rng.randrange(16)
+            put(px, x, y, L[min(4, 2 + darken)])
+            put(px, x, y - 1, L[min(4, 1 + darken)])
+            put(px, x + rng.choice((-1, 1)), y - 2, L[min(4, darken)])
+    if style in ("oval", "round"):  # glossy: light catches every leaf edge facing the top left
+        for (x, y), c in list(px.items()):
+            if ((x - 1) % 16, y) not in px and (x, (y - 1) % 16) not in px:
+                px[(x, y)] = L[min(4, darken)]
+    if style == "maple":  # a few small notches in the upper rims of the broad clumps, so they read as lobed leaves
+        for (x, y) in list(px):
+            if ((x, (y - 1) % 16) not in px and ((x - 1) % 16, y) in px and ((x + 1) % 16, y) in px
+                    and rng.random() < 0.18):
+                px.pop((x, y), None)
+    for _ in range(p.get("trail", 0)):  # runners, seen only in the gaps
+        x, y, dx = rng.randrange(16), rng.randrange(16), rng.choice((-1, 1))
+        for i in range(16):
+            if (x % 16, y % 16) not in px:
+                px[(x % 16, y % 16)] = p["bark"][1 if i % 4 else 2]
+            x += dx
+            if rng.random() < 0.35:
+                y += rng.choice((-1, 1))
+    return despeckle(px) if p.get("soft") else px
+
+
+def put(px, x, y, c):
+    px[(x % 16, y % 16)] = c if isinstance(c, str) else c
+
+
+def berry2(px, x, y, col):
+    """a round 2x2 berry: highlight top left, shadow bottom right"""
+    put(px, x, y, col[2])
+    put(px, x + 1, y, col[1])
+    put(px, x, y + 1, col[1])
+    put(px, x + 1, y + 1, col[0])
+
+
+def draw_fruit(px, p, spots, stage):
+    """stage 1 flowers, 2 unripe, 3 ripe, on the same twig tips. Low kinds sit on the mat, no twig."""
+    col = {1: p["flower"], 2: p["unripe"], 3: p["ripe"]}[stage]
+    rng = random.Random(p["seed"] + 77)
+    f = p["fruit"]
+    for si, (x, y, dx, n, k) in enumerate(spots):
+        n = min(n, p.get("nmax", n))
+        if p.get("low"):
+            tx, ty = x, y - 2
+        elif f in ("barb", "currant"):  # a short twig reaching out sideways, the string hangs from its end
+            tx, ty = max(4, min(11, x)), y - 4  # off the tile edge, where the box corners would cut the string
+            for i in range(3):
+                put(px, tx, ty, p["bark"][1])
+                tx, ty = tx + dx, ty - (i % 2)
+        else:
+            tx, ty = twig_line(px, p, x, y, 3 + int(k * 2), dx, rng)
+        if f == "hip":
+            if stage == 1:  # a pink five-petalled rose round a yellow heart
+                for ox, oy, c in ((0, -1, 0), (-1, 0, 0), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (0, 1, 1), (-1, -1, 0)):
+                    put(px, tx + ox, ty + oy, col[c])
+                put(px, tx, ty, col[2])
+            else:  # an oval hip 2x3 hanging from the tip, glossy spot, dark withered sepals at its end
+                for hx, hy in ((tx, ty), (tx + 2 * dx, ty + 1))[: 1 + (n > 2)]:
+                    for ox, oy, c in ((0, 0, 2), (1, 0, 1), (0, 1, 1), (1, 1, 1), (0, 2, 1), (1, 2, 0)):
+                        put(px, hx + ox, hy + oy, col[c])
+                    put(px, hx + 1, hy + 3, p["bark"][0])
+        elif f in ("heath", "bear"):
+            pts = [(tx, ty), (tx + 2, ty + 1), (tx - 1, ty + 2), (tx + 1, ty + 3)][:n + (f == "heath")]
+            for bx, by in pts:
+                if stage == 1 and f == "heath":  # tiny purple-red flowers, one pixel each
+                    put(px, bx, by, col[0])
+                elif stage == 1:  # little white urns, pink at the mouth, hanging
+                    put(px, bx, by, col[0])
+                    put(px, bx, by + 1, col[1])
+                elif f == "heath":  # small beads, 1-2 px, a dim highlight only on a few of the ripe ones
+                    rb = random.Random(bx * 31 + by)
+                    put(px, bx, by, col[1])
+                    if rb.random() < 0.5:
+                        put(px, bx, by + 1, col[0])
+                    if stage == 3 and rb.random() < 0.3:
+                        put(px, bx, by, col[2])
+                else:
+                    berry2(px, bx, by, col)
+        elif f == "barb":  # a stalk hanging from the tip with berries (or flowers) left and right down it
+            for i in range(1, 4):
+                put(px, tx, ty + i, p["bark"][2])
+            for i, (ox, oy) in enumerate(((-1, 1), (1, 2), (-1, 3), (1, 4), (0, 5))[: n + 1]):
+                if stage == 1:
+                    put(px, tx + ox, ty + oy, col[0 if i % 2 else 2])
+                    put(px, tx + ox, ty + oy + 1, col[1])
+                else:  # elongated berries 1x2
+                    put(px, tx + ox, ty + oy, col[2] if ox <= 0 else col[1])
+                    put(px, tx + ox, ty + oy + 1, col[1] if ox <= 0 else col[0])
+        elif f == "caper":
+            flower = (stage == 2 and si < 2) or (stage == 3 and si == 0)  # only a few flowers open at once
+            if flower:  # a round white flower, the long violet stamens bursting out past the petals
+                for j, row in enumerate((".WW..", "WWWw.", "WWVww", ".www.", "...V.")):
+                    for i, ch in enumerate(row):
+                        if ch != ".":
+                            put(px, tx + i - 2, ty + j - 2, p["flower"][{"W": 0, "w": 1}.get(ch, 2)])
+            elif stage in (1, 2):  # small green buds
+                for ox, oy in ((0, 0), (2, 1), (-1, 2))[:n]:
+                    put(px, tx + ox, ty + oy, p["unripe"][2])
+                    put(px, tx + ox, ty + oy + 1, p["unripe"][0])
+            else:  # plump olive buds, the capers
+                for ox, oy in ((0, 0), (3, 1), (-3, 1), (0, 3))[:n]:
+                    for kx, ky, c in ((1, 0, 2), (0, 1, 2), (1, 1, 1), (2, 1, 0), (1, 2, 0)):
+                        put(px, tx + ox + kx - 1, ty + oy + ky - 1, col[c])
+        elif f == "currant":  # a string hanging from the tip: 3 beads down a thin stalk
+            for i in range(1, 4):
+                put(px, tx, ty + i, p["bark"][2])
+            for i, (ox, oy) in enumerate(((0, 1), (-1, 3), (0, 5))[: n + 1]):
+                if stage == 1:
+                    put(px, tx + ox, ty + oy, col[2])
+                    put(px, tx + ox + 1, ty + oy + 1, col[1])
+                else:
+                    berry2(px, tx + ox, ty + oy, col)
+                    if p.get("dim_glint") and stage == 3 and (si + i) % 3:  # most black currants without a glint
+                        put(px, tx + ox, ty + oy, col[1])
+
+
+def thorny_twigs(p, seed, count=6):
+    px = bare_twigs(p, seed, count)
+    if p.get("thorny"):
+        rng = random.Random(seed + 1)
+        for (x, y), c in list(px.items()):
+            if rng.random() < 0.1:
+                put(px, x + rng.choice((-1, 1)), y - 1, p["bark"][2])
+    return px
+
+
+def blossom_twigs(p, bare, seed):
+    """Blackthorn in spring: dark bare twigs carrying clusters of small five-petalled blossoms (a yellow-green eye, white
+    petals, the lower ones half hidden behind the upper), a few closed buds at the tips, a couple of young leaves."""
+    rng = random.Random(seed)
+    px = dict(bare)
+    px.update(clumps(p, seed, 0.12))  # the first young leaves
+    for pos, c in bare.items():  # the twigs stay on top of the young leaves
+        px[pos] = c
+    twig = sorted(bare)
+    rng.shuffle(twig)
+    centres = []
+    for x, y in twig:
+        if all(abs(x - a) + abs(y - b) >= 4 for a, b in centres):
+            centres.append((x, y))
+        if len(centres) >= 11:
+            break
+    white, shade, eye = p["flower"]
+    eye = "b4bc4c"  # a yellow-green eye
+    for cx, cy in centres:
+        blossoms = [(cx, cy)] + [(cx + rng.choice((-3, 3)), cy + rng.choice((-1, 1, 2)))
+                                 for _ in range(rng.randint(0, 1))]
+        for bx, by in sorted(blossoms, key=lambda b: b[1]):  # top ones first, lower ones overlap
+            for ox, oy, c in ((0, -1, white), (-1, 0, white), (1, 0, shade), (0, 1, shade)):
+                put(px, bx + ox, by + oy, c)
+            if rng.random() < 0.5:  # the fifth petal peeking out at a corner
+                put(px, bx + rng.choice((-1, 1)), by + 1, shade)
+            put(px, bx, by, eye)
+    for x, y in twig[:6]:  # closed buds sitting on the twigs
+        if all(abs(x - a) + abs(y - b) >= 3 for a, b in centres):
+            put(px, x, y, shade)
+    return px
+
+
+SPRIG_LEAF = {"blackthorn": "small", "sea_buckthorn": "narrow", "jujube": "large", "rosehip": "medium", "crowberry": "needle",
+              "bearberry": "small", "barberry": "small", "caper": "medium", "red_currant": "large", "black_currant": "large"}
+
+
+def sprig_images(name, p):
+    """The two upright planes sticking out of the bush: 3-5 tidy leafy shoots, a thin stem growing up and out to the left
+    and right edges with paired leaves along it and a leafy tip, clear between them. _sprig_bare: the same shoots as bare
+    twigs (evergreen mats: the shoots in their winter leaves). Visible rows: bush lower part 3-14, upper 7-16, mats 11-16."""
+    rng = random.Random(p["seed"] + 21)
+    kind = SPRIG_LEAF[name]
+    low = p.get("low")
+    shoots = []  # (start x, start y, end x, end y)
+    if low:
+        for ex, ey in ((0, 11), (15, 11), (2, 12), (13, 12)):
+            shoots.append((rng.randint(6, 9), 15, ex, ey, 1.0))
+    else:
+        # separate shoots fanning out: the tall ones rise straight and bend late, the low ones lean out early
+        for ex, ey, sx, bend in ((0, 3, 6, 2.2), (15, 4, 9, 2.2), (0, 9, 5, 1.0), (15, 8, 10, 1.0)):
+            shoots.append((sx + rng.choice((0, 1)) * (1 if sx > 8 else -1), 15, ex, ey, bend))
+
+    def paint(leafy, leaf):
+        px = {}
+        for sx, sy, ex, ey, bend in shoots:
+            pts = []
+            for i in range(41):  # rises first, then bends out toward the edge
+                t = i / 40
+                q = (round(sx + (ex - sx) * t ** bend), round(sy + (ey - sy) * (t ** 0.6 if low else t)))
+                if not pts or pts[-1] != q:
+                    pts.append(q)
+            for j, (x, y) in enumerate(pts):
+                px[(x % 16, y)] = p["bark"][0 if j < len(pts) * 0.3 else 1]
+            for j in range(int(len(pts) * 0.4), len(pts) - 1, 3 if kind != "needle" else 1):  # bare stem low down
+                (x, y), (x2, y2) = pts[j], pts[min(len(pts) - 1, j + 1)]
+                dx, dy = x2 - x, y2 - y
+                nx, ny = -dy, dx  # the two sides of the stem
+                if not leafy:
+                    if p.get("thorny") and j % 2:
+                        put(px, x + nx, y + ny, p["bark"][2])
+                    elif j % 3 == 2:
+                        put(px, x + nx, y + ny, p["bark"][2])  # a bud
+                    continue
+                for side in (1, -1):
+                    sxn, syn = nx * side, ny * side
+                    lit = sxn + syn <= 0  # the side facing the top left
+                    c0, c1 = (leaf[0], leaf[1]) if lit else (leaf[2], leaf[3])
+                    if kind == "needle":
+                        if (j + side) % 2:
+                            put(px, x + sxn, y + syn, c1)
+                        continue
+                    put(px, x + sxn, y + syn, c1)
+                    if kind in ("medium", "large", "narrow"):
+                        put(px, x + 2 * sxn + dx, y + 2 * syn + dy, c0)
+                    if kind == "large":
+                        put(px, x + sxn + dx, y + syn + dy, c0)
+                        put(px, x + 2 * sxn, y + 2 * syn, c1)
+                    if kind == "small":
+                        put(px, x + sxn + dx, y + syn + dy, c0)
+                    if kind == "medium":
+                        put(px, x + sxn + dx, y + syn + dy, c1)
+                if p.get("thorny") and j % 2:
+                    put(px, x - nx, y - ny, p["bark"][2])
+            if leafy:  # the leafy tip
+                x, y = pts[-1]
+                put(px, x, y, leaf[1])
+                put(px, x, y - 1, leaf[0])
+        return {k: v for k, v in px.items() if 0 <= k[1] < 16}
+
+    leaf = p["leaf"]
+    return {f"block/{name}_sprig.png": to_img(paint(True, leaf)),
+            f"block/{name}_sprig_bare.png": to_img(paint(True, p["winter"]) if p.get("evergreen") else paint(False, leaf))}
+
+
 def thicket_images(name, p):
     out = {}
-    leaves = clumps(p, p["seed"])
+    leaves = leaf_mass(p, p["seed"])
     spots = bunches(p, p["seed"] + 1)
-    bare = bare_twigs(p, p["seed"] + 5)
+    bare = thorny_twigs(p, p["seed"] + 5)
+    new = "style" in p or p["fruit"] == "hip"
+
+    def fruit(px, stage):
+        if new:
+            draw_fruit(px, p, spots, stage)
+        else:
+            draw_bunches(px, p, spots, {1: p["flower"], 2: p["unripe"], 3: p["ripe"]}[stage], flowers=stage == 1)
+        return px
+
+    def canes(px):  # thorny arching canes showing through the leaves (dog rose)
+        rng = random.Random(p["seed"] + 4)
+        for _ in range(p.get("canes", 0)):
+            x, y, dx = rng.randrange(16), 15, rng.choice((-1, 1))
+            for i in range(12):
+                put(px, x, y, p["bark"][1])
+                if i % 3 == 1:
+                    put(px, x - dx, y, p["bark"][2])  # a thorn
+                y -= 1
+                x += dx if i % 2 else 0
+        return px
+
+    leaves = canes(leaves)
     out[f"block/{name}_stage0.png"] = to_img(leaves)
-    if p["blossom_heavy"]:  # blackthorn flowers before its leaves: white blossom on dark twigs, a few young leaves
-        px = dict(bare)
-        px.update({k: v for k, v in clumps(p, p["seed"] + 9, 0.25).items()})
-        rng = random.Random(p["seed"] + 9)
-        extra = [(rng.randrange(1, 15), rng.randrange(4, 15), rng.choice((-1, 1)), 3, 0.2) for _ in range(4)]
-        draw_bunches(px, p, spots + extra, p["flower"], flowers=True)
+    if p.get("blossom_heavy"):  # blackthorn flowers before its leaves
+        out[f"block/{name}_stage1.png"] = to_img(blossom_twigs(p, bare, p["seed"] + 9))
     else:
-        px = dict(leaves)
-        draw_bunches(px, p, spots, p["flower"], flowers=True)
-    out[f"block/{name}_stage1.png"] = to_img(px)
-    for stage, col in ((2, p["unripe"]), (3, p["ripe"])):
-        px = dict(leaves)
-        draw_bunches(px, p, spots, col)
-        out[f"block/{name}_stage{stage}.png"] = to_img(px)
+        out[f"block/{name}_stage1.png"] = to_img(fruit(dict(leaves), 1))
+    for stage in (2, 3):
+        out[f"block/{name}_stage{stage}.png"] = to_img(fruit(dict(leaves), stage))
+    if p.get("evergreen"):  # the mat keeps its leaves through winter, duller
+        bare = leaf_mass(p, p["seed"], leaf=p["winter"])
     out[f"block/{name}_bare.png"] = to_img(bare)
-    px = dict(bare)
-    draw_bunches(px, p, spots, p["ripe"])
-    out[f"block/{name}_bare_ripe.png"] = to_img(px)
+    out[f"block/{name}_bare_ripe.png"] = to_img(fruit(dict(bare), 3))
     # inner layer: the shaded heart of the bush, seen through the gaps (darker, denser)
-    out[f"block/{name}_inner.png"] = to_img(clumps(p, p["seed"] + 13, 0.85, darken=2))
+    out[f"block/{name}_inner.png"] = to_img(clumps(dict(p, clump=p.get("clump", (1.4, 2.2)), stretch=p.get("stretch", (1, 1)),
+                                                         coverage=0.85), p["seed"] + 13, 0.85, darken=2))
     # the branch planes: stems forking up from the root, ending in leafy tips that poke out over the crown
     rng = random.Random(p["seed"] + 3)
     st = {}
@@ -567,6 +1229,7 @@ def thicket_images(name, p):
             if 0 <= tx + ox < 16 and 0 <= ty + oy < 16:
                 st[(tx + ox, ty + oy)] = p["leaf"][c]
     out[f"block/{name}_stems.png"] = to_img(st)
+    out.update(sprig_images(name, p))
     return out
 
 
@@ -650,6 +1313,286 @@ ITEMS = {
                                     "................",
                                 ]),
 }
+
+
+_COOKED = [  # a soft mash in a leaf, the cooked_elderberries layout
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "......SA.A......",
+    "....ABSBABBA....",
+    "...ABCBBSBCBA...",
+    "..ABCBCBBCBCBA..",
+    "..BCBDBCBDBCBC..",
+    ".GgCDCCDCCDCDgG.",
+    "GgggCCDCCDCCgggG",
+    ".dggggggggggggd.",
+    "..ddgggggggggd..",
+    "....dddddddd....",
+    "................",
+]
+_CURRANTS = [  # two strings of currants hanging from a leafy twig
+    "................",
+    "..g.............",
+    ".gGs............",
+    "...s............",
+    "....s...........",
+    "....sABC........",
+    "....ABBCD.......",
+    "...ABBCCD.......",
+    "....CBCDsABC....",
+    ".....DD.ABBCD...",
+    "....ABC.BBCCD...",
+    "...ABBCD.CDDABC.",
+    "...BBCCD...ABBCD",
+    "....CDD....BBCCD",
+    "............CDD.",
+    "................",
+]
+ITEMS.update({
+    "rosehips": dict(pal={"A": "ffa088", "B": "e03a20", "C": "a81a10", "D": "6a0c08", "k": "3a2418", "s": "5a7a34", "g": "4f7a38"},
+                     rows=[
+                         "................",
+                         "........g.......",
+                         ".......gsg......",
+                         "......s...s.....",
+                         ".....s.....s....",
+                         "....ABB....s....",
+                         "...ABBBC..ABB...",
+                         "...ABBBC.ABBBC..",
+                         "...BBBBC.ABBBC..",
+                         "...BBBCC.BBBBC..",
+                         "...CBBCD.BBBCC..",
+                         "....CCD..CBBCD..",
+                         "....kDk..CBCCD..",
+                         ".....k....CCD...",
+                         "..........kDk...",
+                         "...........k....",
+                     ]),
+    "crowberries": dict(pal={"A": "dce6f6", "B": "3a3a50", "C": "1e1e2c", "D": "0c0c14", "g": "5a7c3e", "G": "86a65a",
+                             "d": "3a5a2a", "s": "6a3424"},
+                        rows=[
+                            "................",
+                            "..........G.g...",
+                            ".........gGgd...",
+                            "........sGgd....",
+                            ".......sgGd.....",
+                            "......s.gd......",
+                            "...BBC.sBBC.....",
+                            "..BABCCBABCC....",
+                            "..BBBCCBBBCC....",
+                            "..CBCCDCBCCD....",
+                            "...CCD.BBC......",
+                            ".....BBABCC.....",
+                            ".....BBBBCC.....",
+                            ".....CBCCCD.....",
+                            "......CCDD......",
+                            "................",
+                        ]),
+    "bearberries": dict(pal={"A": "ffc0b0", "B": "e0261e", "C": "a01410", "D": "600a0a", "g": "5e9e44", "G": "a8da84",
+                             "d": "2e6026", "s": "7e3a24"},
+                        rows=[
+                            "................",
+                            "................",
+                            "..........GGg...",
+                            ".........GGggd..",
+                            "........Gggdd...",
+                            ".....GGg.gdd....",
+                            "....GGggd.s.....",
+                            "....Ggdd.s......",
+                            ".....dd.s.......",
+                            "...ABB.sABB.....",
+                            "..ABBBCABBBC....",
+                            "..BBBBCBBBBC....",
+                            "..CBBCDCBBCD....",
+                            "...CDABBCDD.....",
+                            ".....BBBBC......",
+                            ".....CCCDD......",
+                        ]),
+    "barberries": dict(pal={"A": "ff9a90", "B": "dc1e24", "C": "9a0c14", "s": "7a5a34", "g": "80a886", "G": "b0d0ac"},
+                       rows=[
+                           "................",
+                           "...gG...........",
+                           "..gGg..s........",
+                           "...g..s.........",
+                           ".....s.s........",
+                           "....AB.s........",
+                           "....BCsAB.......",
+                           "....BC.BC.s.....",
+                           ".....AB.BCs.....",
+                           "....sBC..AB.....",
+                           "...AB.C..BC.....",
+                           "...BC.AB..C.AB..",
+                           "...BC.BC...sBC..",
+                           "....C.BC..AB.C..",
+                           "......C...BC....",
+                           "...........C....",
+                       ]),
+    "capers": dict(pal={"A": "c8d488", "B": "7e8e34", "C": "56641e", "D": "3a4412"},
+                   rows=[
+                       "................",
+                       "................",
+                       "................",
+                       "................",
+                       "................",
+                       "......ABC.......",
+                       ".....ABBCD......",
+                       "..ABCBBCCDABC...",
+                       ".ABBCDCDDABBCD..",
+                       ".BBCCDABCBBCCD..",
+                       "..CDDABBCDCDD...",
+                       "....ABBCCDABC...",
+                       "....BBCCDABBCD..",
+                       ".....CDD.BBCCD..",
+                       "..........CDD...",
+                       "................",
+                   ]),
+    "red_currants": dict(pal={"A": "ffb0a8", "B": "f04040", "C": "c0181c", "D": "7a0a10", "s": "6a523a", "g": "78bc4c",
+                              "G": "aee27e"}, rows=_CURRANTS),
+    "black_currants": dict(pal={"A": "b4bcd8", "B": "3a3850", "C": "1e1c2a", "D": "08080e", "s": "5e4636", "g": "5c9a40",
+                                "G": "8ec468"}, rows=_CURRANTS),
+    "rowan_berries": dict(pal={"A": "ffb070", "B": "f05a18", "C": "c03a10", "D": "5a1808", "s": "6a5a3a", "g": "6a9448", "G": "9cc46a"},
+                          rows=[
+                              "................",
+                              "...........gG...",
+                              "..........gGg...",
+                              ".........s......",
+                              "........s.......",
+                              ".....s.s.s......",
+                              "....s.s...s.s...",
+                              "...s.AB.sAB..s..",
+                              ".AB..BBCsBBC.AB.",
+                              ".BBC.sCD..CD.BBC",
+                              "..CD...AB.....CD",
+                              "...AB..BBC.AB...",
+                              "...BBC..CD.BBC..",
+                              "....CDAB..ABCD..",
+                              "......BBC.BBC...",
+                              ".......CD..CD...",
+                          ]),
+    "cooked_rowan_berries": dict(pal={"A": "f08060", "B": "a82814", "C": "701810", "D": "4a0c08", "S": "ffb090",
+                                      "g": "4f7a38", "G": "6e9a48", "d": "355a26"}, rows=_COOKED),
+    "yew_arils": dict(pal={"A": "ff8a8a", "B": "e02838", "C": "a8142a", "D": "6a0a1a", "k": "26261a", "K": "4e4e34",
+                           "s": "5a4a2a", "g": "3e6a30", "G": "5a8a44"},
+                      rows=[
+                          "................",
+                          "..........G.G...",
+                          ".........GgGg...",
+                          "........sGg.G...",
+                          ".......s.g......",
+                          "......s.........",
+                          "...ABBs.........",
+                          "..ABKkC..ABB....",
+                          "..BkkkC.ABKkC...",
+                          "..CBBCD.BkkkC...",
+                          "...CDD..CBBCD...",
+                          ".....ABB.CDD....",
+                          "....ABKkC.......",
+                          "....BkkkC.......",
+                          "....CBBCD.......",
+                          ".....CDD........",
+                      ]),
+    "bird_cherries": dict(pal={"A": "8a90b8", "B": "2a2838", "C": "16141e", "D": "08080c", "s": "5a7a34"},
+                          rows=[
+                              "................",
+                              "........s.......",
+                              ".......s.s......",
+                              "......s...s.....",
+                              ".....s.s...s....",
+                              "....s..s....s...",
+                              "....s...s...s...",
+                              "...s....s....s..",
+                              "..ABB...s...ABB.",
+                              ".ABBBC..s..ABBBC",
+                              ".BBBBC.ABB.BBBBC",
+                              ".CBBCDABBBCCBBCD",
+                              "..CDD.BBBBC.CDD.",
+                              "......CBBCD.....",
+                              ".......CDD......",
+                              "................",
+                          ]),
+    "crab_apple": dict(pal={"A": "f0f0a0", "B": "c8d050", "C": "98a838", "D": "6a7a28", "R": "d85030", "r": "a83828",
+                            "s": "6a4a2a", "g": "5a9a3a", "G": "8cc860"},
+                       rows=[
+                           "................",
+                           "................",
+                           "................",
+                           ".......s.Gg.....",
+                           ".......sgg......",
+                           ".....BBsBB......",
+                           "....BABBBBC.....",
+                           "...BAABBRRC.....",
+                           "...BABBRRrC.....",
+                           "...BBBRRrrD.....",
+                           "...CBBRrrrD.....",
+                           "....CCrrrD......",
+                           ".....DDDD.......",
+                           "................",
+                           "................",
+                           "................",
+                       ]),
+    "wild_plums": dict(pal={"A": "c4c0e0", "a": "8a86b8", "B": "4e3e7a", "C": "34285a", "D": "1e1838", "s": "5a4a2a",
+                            "g": "5a8a3a"},
+                       rows=[
+                           "................",
+                           "................",
+                           "......gg........",
+                           ".....gs.........",
+                           "....aBsB........",
+                           "...aABBBC.......",
+                           "..aABBBBCC......",
+                           "..aBBBaBCC.s....",
+                           "..BBBBBCCD.s....",
+                           "..CBBBCCDaaBB...",
+                           "...CCCCDaABBBC..",
+                           "....DDDaABBBBCC.",
+                           "........aBBBaCC.",
+                           "........BBBBCCD.",
+                           ".........CCCDD..",
+                           "................",
+                       ]),
+    "olives": dict(pal={"A": "c8d078", "B": "8a9a3a", "C": "5e6e22", "K": "6a5a7a", "L": "3a2a40", "M": "1e1622",
+                        "l": "cfd8c8", "u": "aebca0", "v": "62745a", "s": "6a5a3a"},
+                   rows=[
+                       "................",
+                       "..........vu....",
+                       ".........vuu....",
+                       "........vul.....",
+                       ".......vul......",
+                       "......sul.......",
+                       ".....s.l........",
+                       "...ABB.s..KLL...",
+                       "..ABBBC.sKLLLM..",
+                       "..BBBBC..LLLLM..",
+                       "..CBBCC..MLLMM..",
+                       "...CCC.ABB.MM...",
+                       "......ABBBC.....",
+                       "......BBBBC.....",
+                       "......CBBCC.....",
+                       ".......CCC......",
+                   ]),
+    "dates": dict(pal={"A": "eaa458", "B": "a85a1c", "C": "6e3410", "D": "4a200a", "s": "c8a060"},
+                  rows=[
+                      "................",
+                      "......s.........",
+                      ".....s.s........",
+                      "....s..s.s......",
+                      "...AB..s..s.....",
+                      "..ABC.AB...s....",
+                      "..BBC.BBC.AB....",
+                      "..BCC.BBC.BBC...",
+                      "..CCD.BCC.BBC...",
+                      "...D..CCD.BCC...",
+                      "....AB.D..CCD...",
+                      "...ABBC....D....",
+                      "...BBBC.AB......",
+                      "...BCCD.BBC.....",
+                      "....CD..BCC.....",
+                      "........CD......",
+                  ]),
+})
 
 
 def fern_parts():

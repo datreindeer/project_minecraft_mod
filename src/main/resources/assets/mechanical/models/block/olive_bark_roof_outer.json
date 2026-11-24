@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_outer",
+  "textures": {
+    "top": "mechanical:block/olive_bark_roof",
+    "under": "mechanical:block/stripped_olive_log"
+  }
+}

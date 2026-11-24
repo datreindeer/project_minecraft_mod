@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "mechanical:block/rowan_leaves_ripe_3"
+  }
+}

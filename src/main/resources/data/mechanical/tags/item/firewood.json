@@ -18,6 +18,12 @@
     "mechanical:ash_firewood",
     "mechanical:hazel_firewood",
     "mechanical:pine_firewood",
-    "mechanical:yew_firewood"
+    "mechanical:yew_firewood",
+    "mechanical:rowan_firewood",
+    "mechanical:bird_cherry_firewood",
+    "mechanical:wild_apple_firewood",
+    "mechanical:plum_firewood",
+    "mechanical:olive_firewood",
+    "mechanical:date_palm_firewood"
   ]
 }

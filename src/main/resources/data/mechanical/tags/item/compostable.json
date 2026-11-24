@@ -70,6 +70,16 @@
     "mechanical:sorrel_leaves",
     "mechanical:chamomile_flowers",
     "mechanical:mint_leaves",
-    "mechanical:hop_cones"
+    "mechanical:hop_cones",
+    "mechanical:foxglove",
+    "mechanical:yellow_adonis",
+    "mechanical:bog_asphodel",
+    "mechanical:marsh_marigold",
+    "mechanical:wood_anemone",
+    "mechanical:bluebells",
+    "mechanical:purple_saxifrage",
+    "mechanical:purple_loosestrife",
+    "mechanical:spiny_thrift",
+    "mechanical:cats_foot"
   ]
 }

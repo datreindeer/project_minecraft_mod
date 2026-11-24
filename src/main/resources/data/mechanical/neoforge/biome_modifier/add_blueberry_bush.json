@@ -1,12 +1,24 @@
 {
   "type": "neoforge:add_features",
   "biomes": [
-    "minecraft:forest",
+    "mechanical:basalt_coast",
+    "mechanical:deciduous_forest",
+    "mechanical:glacial_moraine",
+    "mechanical:peat_bog",
+    "mechanical:reed_delta",
+    "mechanical:soapstone_valley",
+    "mechanical:willow_fen",
+    "minecraft:birch_forest",
+    "minecraft:cherry_grove",
+    "minecraft:dappled_forest",
     "minecraft:dark_forest",
-    "minecraft:taiga",
+    "minecraft:flower_forest",
+    "minecraft:forest",
+    "minecraft:meadow",
+    "minecraft:old_growth_birch_forest",
     "minecraft:old_growth_pine_taiga",
-    "mechanical:pine_heath",
-    "mechanical:glacial_moraine"
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:taiga"
   ],
   "features": "mechanical:blueberry_bush",
   "step": "vegetal_decoration"

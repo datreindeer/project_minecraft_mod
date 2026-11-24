@@ -1,0 +1,8 @@
+{
+  "parent": "mechanical:block/rough_log_piece_0",
+  "textures": {
+    "particle": "mechanical:block/wild_apple_log",
+    "side": "mechanical:block/wild_apple_log",
+    "end": "mechanical:block/wild_apple_log_top"
+  }
+}

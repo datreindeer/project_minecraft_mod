@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/bark_roof_outer",
+  "textures": {
+    "top": "mechanical:block/bird_cherry_bark_roof",
+    "under": "mechanical:block/stripped_bird_cherry_log"
+  }
+}

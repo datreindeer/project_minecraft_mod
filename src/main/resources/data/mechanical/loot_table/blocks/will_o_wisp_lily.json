@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "mechanical:will_o_wisp_lily",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "mechanical:will_o_wisp_lily",
+                "state": {
+                  "blooming": "true"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/will_o_wisp_lily"
+}

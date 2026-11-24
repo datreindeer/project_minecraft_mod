@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "mechanical:bog_asphodel",
+    "properties": {
+      "blooming": "false"
+    }
+  }
+}

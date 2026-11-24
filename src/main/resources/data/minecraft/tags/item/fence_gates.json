@@ -9,6 +9,12 @@
     "mechanical:hazel_fence_gate",
     "mechanical:pine_fence_gate",
     "mechanical:yew_fence_gate",
+    "mechanical:rowan_fence_gate",
+    "mechanical:bird_cherry_fence_gate",
+    "mechanical:wild_apple_fence_gate",
+    "mechanical:plum_fence_gate",
+    "mechanical:olive_fence_gate",
+    "mechanical:date_palm_fence_gate",
     "mechanical:bog_oak_fence_gate"
   ]
 }

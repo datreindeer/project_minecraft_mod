@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "mechanical:will_o_wisp_lily",
+    "properties": {
+      "blooming": "false"
+    }
+  }
+}

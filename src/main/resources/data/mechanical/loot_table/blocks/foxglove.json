@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:foxglove",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:foxglove",
+            "state": {
+              "half": "lower"
+            }
+          }
+        }
+      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
+    }
+  ],
+  "random_sequence": "mechanical:blocks/foxglove"
+}

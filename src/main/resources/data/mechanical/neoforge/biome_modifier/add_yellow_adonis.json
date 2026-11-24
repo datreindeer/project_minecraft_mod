@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:limestone_karst",
+    "mechanical:mammoth_steppe",
+    "mechanical:pine_heath",
+    "minecraft:plains",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:yellow_adonis",
+  "step": "vegetal_decoration"
+}

@@ -4,7 +4,8 @@
     "particle": "mechanical:block/jujube_stage2",
     "leaves": "mechanical:block/jujube_stage2",
     "inner": "mechanical:block/jujube_inner",
-    "stems": "mechanical:block/jujube_stems"
+    "stems": "mechanical:block/jujube_stems",
+    "sprig": "mechanical:block/jujube_sprig"
   },
   "elements": [
     {

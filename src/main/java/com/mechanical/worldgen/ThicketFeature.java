@@ -20,10 +20,11 @@ import net.minecraft.world.level.levelgen.Heightmap;
 /**
  * A berry thicket (scripts/gen_flora.py): 4-11 bushes of one kind grown out from the spot in a ragged clump, mostly grown
  * (joined up) with young ones round the edge, and the bushes in the middle (two or more neighbours) often two blocks
- * tall. Berries at the stage the season wants.
+ * tall (not the low mats). Berries at the stage the season wants.
  */
 final class ThicketFeature extends StoneAgeFeature {
-    static final List<ThicketFeature> ALL = List.of(new ThicketFeature("blackthorn"), new ThicketFeature("sea_buckthorn"), new ThicketFeature("jujube"));
+    static final List<ThicketFeature> ALL = List.of("blackthorn", "sea_buckthorn", "jujube", "rosehip", "crowberry", "bearberry", "barberry", "caper",
+            "red_currant", "black_currant").stream().map(ThicketFeature::new).toList();
 
     final String kind;
     private final MapCodec<ThicketFeature> codec;
@@ -43,7 +44,7 @@ final class ThicketFeature extends StoneAgeFeature {
         ThicketBushBlock bush = Flora.THICKETS.get(kind).get();
         int season = Calendar.season(level.getLevel().getOverworldClockTime());
         origin = ground(level, origin.getX(), origin.getZ());
-        boolean bare = season == 3 && ThicketBushBlock.wintry(level.getLevel(), origin);
+        boolean bare = !bush.evergreen() && season == 3 && ThicketBushBlock.wintry(level.getLevel(), origin);
         BlockState grown = bush.defaultBlockState().setValue(ThicketBushBlock.AGE, bush.target(season)).setValue(ThicketBushBlock.LEAFLESS, bare);
         List<BlockPos> placed = new ArrayList<>();
         if (!fits(level, bush, origin)) return false;
@@ -64,7 +65,7 @@ final class ThicketFeature extends StoneAgeFeature {
         List<BlockPos> tops = new ArrayList<>();
         for (BlockPos p : placed) {
             BlockState s = level.getBlockState(p);
-            if (!s.getValue(ThicketBushBlock.YOUNG) && ThicketBushBlock.sides(s) >= 2 && random.nextInt(3) > 0 && level.getBlockState(p.above()).isAir()) {
+            if (!bush.low() && !s.getValue(ThicketBushBlock.YOUNG) && ThicketBushBlock.sides(s) >= 2 && random.nextInt(3) > 0 && level.getBlockState(p.above()).isAir()) {
                 set(level, p.above(), grown.setValue(ThicketBushBlock.HALF, DoubleBlockHalf.UPPER));
                 tops.add(p.above());
             }

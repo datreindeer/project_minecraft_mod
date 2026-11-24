@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/cats_foot"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/cats_foot_leaves"
+    }
+  }
+}

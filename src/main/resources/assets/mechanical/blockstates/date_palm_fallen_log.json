@@ -1,0 +1,228 @@
+{
+  "variants": {
+    "axis=z,sawn=0,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0"
+    },
+    "axis=x,sawn=0,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0",
+      "y": 90
+    },
+    "axis=z,sawn=1,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn1"
+    },
+    "axis=x,sawn=1,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn1",
+      "y": 90
+    },
+    "axis=z,sawn=2,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn2"
+    },
+    "axis=x,sawn=2,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn2",
+      "y": 90
+    },
+    "axis=z,sawn=3,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn3"
+    },
+    "axis=x,sawn=3,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn3",
+      "y": 90
+    },
+    "axis=z,sawn=4,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn4"
+    },
+    "axis=x,sawn=4,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn4",
+      "y": 90
+    },
+    "axis=z,sawn=5,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn5"
+    },
+    "axis=x,sawn=5,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn5",
+      "y": 90
+    },
+    "axis=z,sawn=6,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn6"
+    },
+    "axis=x,sawn=6,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn6",
+      "y": 90
+    },
+    "axis=z,sawn=7,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn7"
+    },
+    "axis=x,sawn=7,stage=0": {
+      "model": "mechanical:block/date_palm_fallen_log_0_sawn7",
+      "y": 90
+    },
+    "axis=z,sawn=0,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1"
+    },
+    "axis=x,sawn=0,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1",
+      "y": 90
+    },
+    "axis=z,sawn=1,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn1"
+    },
+    "axis=x,sawn=1,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn1",
+      "y": 90
+    },
+    "axis=z,sawn=2,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn2"
+    },
+    "axis=x,sawn=2,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn2",
+      "y": 90
+    },
+    "axis=z,sawn=3,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn3"
+    },
+    "axis=x,sawn=3,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn3",
+      "y": 90
+    },
+    "axis=z,sawn=4,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn4"
+    },
+    "axis=x,sawn=4,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn4",
+      "y": 90
+    },
+    "axis=z,sawn=5,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn5"
+    },
+    "axis=x,sawn=5,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn5",
+      "y": 90
+    },
+    "axis=z,sawn=6,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn6"
+    },
+    "axis=x,sawn=6,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn6",
+      "y": 90
+    },
+    "axis=z,sawn=7,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn7"
+    },
+    "axis=x,sawn=7,stage=1": {
+      "model": "mechanical:block/date_palm_fallen_log_1_sawn7",
+      "y": 90
+    },
+    "axis=z,sawn=0,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2"
+    },
+    "axis=x,sawn=0,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2",
+      "y": 90
+    },
+    "axis=z,sawn=1,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn1"
+    },
+    "axis=x,sawn=1,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn1",
+      "y": 90
+    },
+    "axis=z,sawn=2,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn2"
+    },
+    "axis=x,sawn=2,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn2",
+      "y": 90
+    },
+    "axis=z,sawn=3,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn3"
+    },
+    "axis=x,sawn=3,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn3",
+      "y": 90
+    },
+    "axis=z,sawn=4,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn4"
+    },
+    "axis=x,sawn=4,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn4",
+      "y": 90
+    },
+    "axis=z,sawn=5,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn5"
+    },
+    "axis=x,sawn=5,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn5",
+      "y": 90
+    },
+    "axis=z,sawn=6,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn6"
+    },
+    "axis=x,sawn=6,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn6",
+      "y": 90
+    },
+    "axis=z,sawn=7,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn7"
+    },
+    "axis=x,sawn=7,stage=2": {
+      "model": "mechanical:block/date_palm_fallen_log_2_sawn7",
+      "y": 90
+    },
+    "axis=z,sawn=0,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3"
+    },
+    "axis=x,sawn=0,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3",
+      "y": 90
+    },
+    "axis=z,sawn=1,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn1"
+    },
+    "axis=x,sawn=1,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn1",
+      "y": 90
+    },
+    "axis=z,sawn=2,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn2"
+    },
+    "axis=x,sawn=2,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn2",
+      "y": 90
+    },
+    "axis=z,sawn=3,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn3"
+    },
+    "axis=x,sawn=3,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn3",
+      "y": 90
+    },
+    "axis=z,sawn=4,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn4"
+    },
+    "axis=x,sawn=4,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn4",
+      "y": 90
+    },
+    "axis=z,sawn=5,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn5"
+    },
+    "axis=x,sawn=5,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn5",
+      "y": 90
+    },
+    "axis=z,sawn=6,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn6"
+    },
+    "axis=x,sawn=6,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn6",
+      "y": 90
+    },
+    "axis=z,sawn=7,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn7"
+    },
+    "axis=x,sawn=7,stage=3": {
+      "model": "mechanical:block/date_palm_fallen_log_3_sawn7",
+      "y": 90
+    }
+  }
+}

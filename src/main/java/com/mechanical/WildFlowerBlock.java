@@ -8,7 +8,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.MoonPhase;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,14 +28,24 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class WildFlowerBlock extends VegetationBlock {
     public static final BooleanProperty BLOOMING = BooleanProperty.create("blooming");
 
-    /** When a kind blooms: seasons is a bit mask (1 spring, 2 summer, 4 autumn, 8 winter); night = only after dark. */
-    public record Bloom(int seasons, boolean night) {
+    /** When a kind blooms: seasons is a bit mask (1 spring, 2 summer, 4 autumn, 8 winter); night = only after dark;
+     *  fullMoon = only on full-moon nights (Moonwort). */
+    public record Bloom(int seasons, boolean night, boolean fullMoon) {
+        public Bloom(int seasons, boolean night) {
+            this(seasons, night, false);
+        }
+
         public boolean at(int season, boolean dark) {
-            return (seasons >> season & 1) != 0 && (!night || dark);
+            return at(season, dark, true);
+        }
+
+        public boolean at(int season, boolean dark, boolean full) {
+            return (seasons >> season & 1) != 0 && (!night || dark) && (!fullMoon || full);
         }
 
         public boolean now(Level level) {
-            return at(Calendar.season(level.getOverworldClockTime()), level.isDarkOutside());
+            return at(Calendar.season(level.getOverworldClockTime()), level.isDarkOutside(),
+                    level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE) == MoonPhase.FULL_MOON);
         }
     }
 

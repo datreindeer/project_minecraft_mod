@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/purple_saxifrage"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/purple_saxifrage_leaves"
+    }
+  }
+}

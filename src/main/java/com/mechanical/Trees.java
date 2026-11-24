@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -55,7 +56,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 /**
- * Aspen, alder, beech, linden, willow, ash, hazel, pine and yew: vanilla-like wood sets (no signs or boats yet). Sounds and door/button behaviour are oak's.
+ * Aspen, alder, beech, linden, willow, ash, hazel, pine, yew and the fruit trees (rowan, bird cherry, wild apple, plum,
+ * olive, date palm; leaves in {@link FruitLeavesBlock}): vanilla-like wood sets (no signs or boats yet). Sounds and door/button behaviour are oak's.
  * Models, loot, tags, recipes, stripping (block_transformer/axe) and the tree features are data (scripts/gen_data.py).
  * They are also in {@link Mechanical#WOODS}, so felling, stumps, fallen logs, rough logs and firewood work for them.
  * Willow and hazel use their own tree shapes ({@link TreeShapes}); beech leaves drop Beechnuts (loot, scripts/gen_trees.py)
@@ -70,16 +72,53 @@ public final class Trees {
                        DeferredBlock<PressurePlateBlock> pressurePlate, DeferredBlock<LeavesBlock> leaves, DeferredBlock<SaplingBlock> sapling,
                        DeferredBlock<FlowerPotBlock> pottedSapling) {}
 
-    public static final Map<String, Wood> WOODS = Map.of(
-            "aspen", wood("aspen", MapColor.SAND, MapColor.COLOR_LIGHT_GRAY),
-            "alder", wood("alder", MapColor.TERRACOTTA_ORANGE, MapColor.COLOR_BROWN),
-            "beech", wood("beech", MapColor.WOOD, MapColor.STONE),
-            "linden", wood("linden", MapColor.TERRACOTTA_WHITE, MapColor.PODZOL),
-            "willow", wood("willow", MapColor.SAND, MapColor.COLOR_GRAY),
-            "ash", wood("ash", MapColor.TERRACOTTA_WHITE, MapColor.COLOR_LIGHT_GRAY),
-            "hazel", wood("hazel", MapColor.TERRACOTTA_PINK, MapColor.COLOR_BROWN),
-            "pine", wood("pine", MapColor.WOOD, MapColor.TERRACOTTA_ORANGE),
-            "yew", wood("yew", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_BROWN));
+    /** A fruit tree's fruit: item name, the leaves' stage wanted per season (spring..winter, {@link FruitLeavesBlock}) and its food. */
+    record Fruit(String item, int[] target, FoodProperties food) {}
+
+    /** Fruit trees (docs/flora-and-food-plan.md, section 4); Rowan Berries are bitter and a little poisonous raw. */
+    static final Map<String, Fruit> FRUIT_KINDS = new LinkedHashMap<>();
+    static {
+        FRUIT_KINDS.put("rowan", new Fruit("rowan_berries", new int[] {1, 2, 3, 0}, food(1, 0.1F)));
+        FRUIT_KINDS.put("bird_cherry", new Fruit("bird_cherries", new int[] {1, 2, 3, 0}, food(1, 0.2F)));
+        FRUIT_KINDS.put("wild_apple", new Fruit("crab_apple", new int[] {1, 2, 3, 0}, food(2, 0.2F)));
+        FRUIT_KINDS.put("plum", new Fruit("wild_plums", new int[] {1, 3, 3, 0}, food(2, 0.3F)));
+        FRUIT_KINDS.put("olive", new Fruit("olives", new int[] {0, 1, 2, 3}, food(1, 0.2F)));
+        FRUIT_KINDS.put("date_palm", new Fruit("dates", new int[] {1, 2, 3, 3}, food(3, 0.5F)));
+    }
+    public static final Map<String, DeferredItem<Item>> FRUITS = new LinkedHashMap<>();
+    static {
+        FRUIT_KINDS.forEach((tree, f) -> FRUITS.put(tree, f.item().equals("rowan_berries")
+                ? Mechanical.ITEMS.registerSimpleItem(f.item(), p -> p.food(f.food(), Flora.rawRowanBerries()))
+                : Mechanical.ITEMS.registerSimpleItem(f.item(), p -> p.food(f.food()))));
+    }
+
+    private static FoodProperties food(int nutrition, float saturation) {
+        return new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build();
+    }
+
+    public static final Map<String, Wood> WOODS = Map.ofEntries(
+            Map.entry("aspen", wood("aspen", MapColor.SAND, MapColor.COLOR_LIGHT_GRAY)),
+            Map.entry("alder", wood("alder", MapColor.TERRACOTTA_ORANGE, MapColor.COLOR_BROWN)),
+            Map.entry("beech", wood("beech", MapColor.WOOD, MapColor.STONE)),
+            Map.entry("linden", wood("linden", MapColor.TERRACOTTA_WHITE, MapColor.PODZOL)),
+            Map.entry("willow", wood("willow", MapColor.SAND, MapColor.COLOR_GRAY)),
+            Map.entry("ash", wood("ash", MapColor.TERRACOTTA_WHITE, MapColor.COLOR_LIGHT_GRAY)),
+            Map.entry("hazel", wood("hazel", MapColor.TERRACOTTA_PINK, MapColor.COLOR_BROWN)),
+            Map.entry("pine", wood("pine", MapColor.WOOD, MapColor.TERRACOTTA_ORANGE)),
+            Map.entry("yew", wood("yew", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_BROWN)),
+            Map.entry("rowan", wood("rowan", MapColor.TERRACOTTA_WHITE, MapColor.COLOR_LIGHT_GRAY)),
+            Map.entry("bird_cherry", wood("bird_cherry", MapColor.SAND, MapColor.COLOR_GRAY)),
+            Map.entry("wild_apple", wood("wild_apple", MapColor.TERRACOTTA_PINK, MapColor.TERRACOTTA_GRAY)),
+            Map.entry("plum", wood("plum", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_PURPLE)),
+            Map.entry("olive", wood("olive", MapColor.SAND, MapColor.STONE)),
+            Map.entry("date_palm", wood("date_palm", MapColor.SAND, MapColor.COLOR_BROWN)));
+
+    /** Yew Arils (from yew leaves, gen_trees.py): the red flesh is sweet, the seed inside deadly; eaten whole they poison. */
+    public static final DeferredItem<Item> YEW_ARILS = Mechanical.ITEMS.registerSimpleItem("yew_arils",
+            p -> p.food(food(1, 0.1F), net.minecraft.world.item.component.Consumables.defaultFood().onConsume(
+                    new net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect(List.of(
+                            new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 140, 1),
+                            new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NAUSEA, 200, 0)))).build()));
 
     public static final DeferredItem<Item> BEECHNUTS = Mechanical.ITEMS.registerSimpleItem("beechnuts",
             p -> p.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build()));
@@ -94,7 +133,13 @@ public final class Trees {
 
         var planks = block(w + "_planks", Block::new, () -> Properties.of().mapColor(planksColor).instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava());
-        var sapling = block(w + "_sapling", p -> new SaplingBlock(grower, p), () -> Properties.of().mapColor(MapColor.PLANT).noCollision()
+        Function<Properties, SaplingBlock> saplingBlock = w.equals("date_palm") ? p -> new SaplingBlock(grower, p) { // a desert tree: takes root in sand
+            @Override
+            protected boolean mayPlaceOn(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
+                return super.mayPlaceOn(state, level, pos) || state.is(net.minecraft.tags.BlockTags.SAND);
+            }
+        } : p -> new SaplingBlock(grower, p);
+        var sapling = block(w + "_sapling", saplingBlock, () -> Properties.of().mapColor(MapColor.PLANT).noCollision()
                 .randomTicks().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.POPPED));
         Supplier<Properties> wood = () -> Properties.of().mapColor(barkColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava();
         Supplier<Properties> strippedWood = () -> Properties.of().mapColor(planksColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava();
@@ -115,14 +160,19 @@ public final class Trees {
                 block(w + "_button", p -> new ButtonBlock(BlockSetType.OAK, 30, p), () -> Properties.of().noCollision().strength(0.5F).pushReaction(PushReaction.POPPED)),
                 block(w + "_pressure_plate", p -> new PressurePlateBlock(BlockSetType.OAK, p), () -> plankLike.get().forceSolidOn().noCollision()
                         .strength(0.5F).pushReaction(PushReaction.POPPED)),
-                // plain vanilla leaves (distance/persistent, decay) with untinted, pre-coloured textures
-                block(w + "_leaves", p -> new LeavesBlock(AmbientLeavesBlockSoundPlayer.noAmbientSound(), p), () -> Properties.of()
+                // plain vanilla leaves (distance/persistent, decay) with untinted, pre-coloured textures; fruit trees' follow the season
+                block(w + "_leaves", leaves(w), () -> Properties.of()
                         .mapColor(MapColor.PLANT).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion()
                         .isValidSpawn((s, l, pos, e) -> false).isSuffocating((s, l, pos) -> false)
                         .ignitedByLava().pushReaction(PushReaction.POPPED).isRedstoneConductor((s, l, pos) -> false)),
                 sapling,
                 B.registerBlock("potted_" + w + "_sapling", p -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, sapling, p),
                         () -> Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.POPPED)));
+    }
+
+    private static Function<Properties, LeavesBlock> leaves(String w) {
+        Fruit f = FRUIT_KINDS.get(w);
+        return f == null ? p -> new LeavesBlock(AmbientLeavesBlockSoundPlayer.noAmbientSound(), p) : p -> new FruitLeavesBlock(FRUITS.get(w), f.target(), p);
     }
 
     static Properties logProperties(MapColor top, MapColor side) {

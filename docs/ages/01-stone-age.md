@@ -32,7 +32,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Flint | Loose Flint på marken, Gravel (vanilla-chans) | Flintverktyg, Tool Station, Mold Bench |
 | Stone / Granite / Diorite / Andesite Rock | Loose rocks på marken (se Block) | Knacka stenhuvuden, Clay Kiln. Alla fyra räknas som `#mechanical:rock_chunks` och kan blandas |
 | Limestone / Slate / Gneiss / Marble ... Rock (20 sorter) | Loose rocks av modens bergarter där berget går i dagen (se Block) | Som Stone Rock: räknas som `#mechanical:rock_chunks`; 4 → stenens block (Slate Rock → Cobbled Slate) |
-| Firewood (19 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log, **Firewood Pile** (vedhög, se Block) |
+| Firewood (25 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew, Rowan, Bird Cherry, Wild Apple, Plum, Olive, Date Palm) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log, **Firewood Pile** (vedhög, se Block) |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Mold Bench (Unfired Crucible, lerformar) |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
@@ -2445,6 +2445,55 @@ Björnar, fåglar och stammar plockar dem som de andra bärbuskarna. Advancement
 
 Alla tre bärsorterna kan torkas på Drying Rack, får plats i Bark Basket och håller 2 dagar.
 
+**Fler snårbuskar (flora fas 2).** Samma regler som ovan. Låga sorter (Crowberry, Bearberry, Caper) är **mattor/kullar**
+(~6 px höga) som växer ihop men aldrig på höjden; vintergröna (Crowberry, Bearberry) fäller inga löv. Bara Dog Rose och
+Barberry har taggar. Advancement **Hedgerow and Heath** (Food & Farming).
+
+| Buske | Klimat (biomtemp, fukt) | Biomer (bl.a.) | Vår / sommar / höst / vinter | Bär |
+|---|---|---|---|---|
+| Dog Rose (nyponros), taggar | 0,4–0,8, 0,3–0,6 | Chalk Downs, Hazel Meadow, Limestone Karst, Basalt Coast, slätter | blad / rosa blommor / mogna nypon / nypon kvar på kala grenar | Rosehips |
+| Crowberry (kråkris), låg, vintergrön | −0,5–0,4, 0,3–0,9 | Pine Heath, Glacial Moraine, Slate Highlands, taiga, snöslätt | blommor / omogna / mogna / mogna kvar | Crowberries |
+| Bearberry (mjölon), låg, vintergrön (även sand) | 0,15–0,45, 0,1–0,6 | Pine Heath, Mammoth Steppe, Shingle Beach, Slate Highlands | blommor / omogna / mogna / mogna kvar | Bearberries |
+| Barberry (berberis), taggar | 0,6–1,3, 0–0,5 | Limestone Karst, Marble Gorge, Chalk Downs, slätter | gula blomklasar / omogna / mogna / mogna kvar | Barberries |
+| Caper Bush (kapris), låg (även sand) | 1,0–1,6, 0–0,3 | Marble Gorge | blad / **knoppar att plocka** / vita blommor / blad | Capers |
+| Red Currant (rött vinbär) | 0,6–0,8, 0,8–1,0 | Willow Fen, Reed Delta, fuktig lövskog, träsk | blommor / omogna / mogna klasar / kal | Red Currants |
+| Black Currant (svart vinbär) | 0,25–0,6, 0,8–1,0 | Peat Bog, Willow Fen, taiga, ängar | blommor / omogna / mogna klasar / kal | Black Currants |
+
+Alla bär: 1 hunger, torkas på Drying Rack, Bark Basket, håller 2 dagar.
+
+**De gamla bärbuskarna följer klimatet (fas 2).** Raspberry, Blueberry, Lingonberry, Wild Strawberry, Elderberry,
+Cloudberry och Blackberry växer nu där biomens temperatur och fukt passar (listorna räknas ut av `gen_flora.py`) i stället
+för fasta biomer, och **mognar bara i sin säsong**; efter den faller de mogna bären (busken går tillbaka till blommor):
+
+| Buske | Klimat (biomtemp, fukt) | Mognar |
+|---|---|---|
+| Raspberry | 0,5–0,8, 0,5–0,9 | sommar |
+| Blueberry | 0,2–0,7, 0,6–1,0 | sommar, höst |
+| Lingonberry | −0,5–0,4, 0,4–0,9 | höst, vinter (vintertålig) |
+| Wild Strawberry | 0,5–0,9, 0,3–0,8 | vår, sommar |
+| Elderberry | 0,5–0,9, 0,5–1,0 | sommar, höst |
+| Cloudberry | −0,5–0,3, 0,6–1,0 | sommar |
+| Blackberry | 0,2–0,9, 0,4–0,9 | sommar, höst |
+
+### Fruktträd (flora fas 3)
+Sex nya trädslag med **hela träslag** (plankor, dörr, luckor, staket, stubbe, Fallen Log, Rough Log, Firewood, Bark, Bark
+Roof, lövströ). Löven **följer säsongen** som snårbuskarna: blad → blom → omogen → mogen frukt. **Högerklicka mogna löv →
+1–2 frukter**; de blir omogna och mognar igen medan säsongen varar. Bryts mogna löv (inte med sax) faller frukten också.
+Lövfällande sorter står kala på vintern och knoppas på våren; olivträd och dadelpalm är vintergröna.
+Advancements **Fruit of the Trees** och **A Taste of Every Tree** (Food & Farming).
+
+| Träd | Var | Vår / sommar / höst / vinter | Frukt |
+|---|---|---|---|
+| Rowan (rönn) | Deciduous Forest, Birch Forest, Forest, Slate Highlands, taiga, ängar | vit blom / omogna / röda klasar / kal | Rowan Berries: 1 hunger, **beska och lite giftiga råa** (Poison 3 s, Nausea); **Cooked Rowan Berries** (Campfire 15 s, 2 hunger) eller torkade är ofarliga (advancement **Bitter Made Sweet**) |
+| Bird Cherry (hägg) | vid vatten: Willow Fen, Reed Delta, floder, sjöstränder | hängande vita klasar / omogna / svarta bär / kal | Bird Cherries (1 hunger, torkas) |
+| Wild Apple (vildapel) | Hazel Meadow, sällsynt i lövskog | rosavit blom / omogna / mogna / kal | Crab Apple (2 hunger) |
+| Wild Plum (plommon) | Hazel Meadow, Chalk Downs, ibland slätter och Limestone Karst | vit blom / mogna / mogna / kal | Wild Plums (2 hunger, torkas) |
+| Olive | Marble Gorge, sällsynt på savannplatån | blad / blommor / gröna oliver / svarta, mogna | Olives (1 hunger, bittra) |
+| Date Palm (dadelpalm, plantan tar rot i sand) | ökenoaser och Gypsum Flats vid vatten, mycket sällsynt annars | blom / omogna / mogna / mogna | Dates (3 hunger, torkas) |
+
+**Yew Arils:** Yew-löv ger ibland (8 %) Yew Arils. Fruktköttet är sött men fröet dödligt: äter man dem hela blir man
+förgiftad (Poison II 7 s, Nausea).
+
 ### Blommor (flora fas 1)
 Varje blomma **blommar bara i sin säsong**; resten av året är den gröna blad (backsippan silverfjuniga frökolvar,
 strandtriften halmfärgade huvuden), och på vintern grå och frostig. Plockas och planteras som vanillas blommor.
@@ -2474,6 +2523,26 @@ växten kan växa där; annars är slabben kvar. Fungerar också på vanligt gr�
 - **Frost Lily** (~1 per 250 chunks i Slate Highlands, Glacial Moraine, snöslätt, snötaiga, Grove, Snowy Slopes):
   blekblå, halvgenomskinlig, **blommar bara på vintern** och lyser svagt (ljus 6). Plockad i blom: Frost Lily, annars
   ingenting. Advancement **Winter Bloom** (Folklore).
+- **Will-o'-Wisp Lily** (fas 3, sällsynt, Peat Bog): spöklik blekt blågrön lilja som **bara slår ut på natten** (vår–höst),
+  lyser (ljus 7) och släpper irrbloss. Plockad i blom: sig själv, annars ingenting. Advancement **Lights on the Bog** (Folklore).
+- **Moonwort** (fas 3, sällsynt, Limestone Karst): låsgräset, folktrons nyckelört, en liten ormbunke vars sporax **lyser
+  silver bara på fullmånenätter** (ljus 5). Plockad i blom: sig själv, annars ingenting. Advancement **Key Under the Full
+  Moon** (Folklore).
+
+**Fler blommor (fas 2):**
+
+| Blomma | Biomer | Blommar |
+|---|---|---|
+| Foxglove (2 block) | lövskog, skogsbryn, Hazel Meadow, Chalk Downs, ängar | sommar |
+| Yellow Adonis | Mammoth Steppe, Limestone Karst, Pine Heath, slätter | vår |
+| Bog Asphodel | Peat Bog | sommar |
+| Marsh Marigold | Willow Fen, Reed Delta, träsk | vår |
+| Wood Anemone (mattor) | Deciduous Forest, Forest, björkskog | vår |
+| Bluebells (mattor) | Deciduous Forest, Forest, Dark Forest | vår |
+| Purple Saxifrage | Slate Highlands, Glacial Moraine, Windswept Hills, klippstrand | vår, sommar |
+| Purple Loosestrife (2 block) | Reed Delta, Willow Fen, träsk, floder | sommar, höst |
+| Spiny Thrift (på sand) | Gypsum Flats, Ochre Badlands, Marble Gorge | vår, sommar |
+| Cat's Foot | Pine Heath, Slate Highlands, ängar | sommar |
 
 ### Odling
 Hela systemet (siffror, vanilla-mappning, bronsålderns del) står i `docs/farming.md`.

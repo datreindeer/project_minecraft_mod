@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "blooming=true": {
+      "model": "mechanical:block/marsh_marigold"
+    },
+    "blooming=false": {
+      "model": "mechanical:block/marsh_marigold_leaves"
+    }
+  }
+}

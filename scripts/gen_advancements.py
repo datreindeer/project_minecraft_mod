@@ -192,10 +192,11 @@ SCRAPS = [f"{a}_scraps" for a in ("beef", "porkchop", "mutton", "chicken", "rabb
 COOKED = [f"cooked_{s}" for s in SCRAPS] + ["cooked_haunch", "cooked_ribs", "cooked_loin"]
 BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "elderberries", "cloudberries",
            "blackberries", "chanterelle", "porcini", "morel", "oyster_mushroom", "puffball", "hazelnuts", "beechnuts",
-           "juniper_berries", "minecraft:sweet_berries"]
+           "juniper_berries", "minecraft:sweet_berries", "rosehips", "crowberries", "bearberries", "barberries", "capers", "red_currants",
+           "black_currants", "rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates", "yew_arils"]
 T, G, C = "task", "goal", "challenge"
 BARK_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew"]  # Mechanical.WOODS
+              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]  # Mechanical.WOODS
 
 # (id, parent, icon, frame, title, description, criteria). The first row of a tab is its root.
 TABS = {
@@ -1359,7 +1360,20 @@ TABS["food"][1].extend([
     ("wildflowers", "root", "pasque_flower", T, "Wildflowers",
      "Pick a wild flower of the open lands: they bloom only in their season, and are plain leaves the rest of the year",
      has("pasque_flower", "harebell", "lady_slipper", "sea_thrift", "mountain_avens", "edelweiss", "sand_verbena", "desert_marigold",
-         "great_mullein", "desert_candle")),
+         "great_mullein", "desert_candle", "foxglove", "yellow_adonis", "bog_asphodel", "marsh_marigold", "wood_anemone", "bluebells",
+         "purple_saxifrage", "purple_loosestrife", "spiny_thrift", "cats_foot")),
+    # flora phases 2-3: more bushes and the fruit trees
+    ("hedgerow", "thicket_berries", "rosehips", T, "Hedgerow and Heath",
+     "Pick Rosehips, Barberries, Currants, Capers, or Crowberries and Bearberries from the low mats of the heath and the tundra",
+     has("rosehips", "crowberries", "bearberries", "barberries", "capers", "red_currants", "black_currants")),
+    ("tree_fruit", "root", "crab_apple", T, "Fruit of the Trees",
+     "Pick ripe fruit from a fruit tree: Rowan, Bird Cherry, Wild Apple, Plum, Olive or Date Palm. They blossom in spring and "
+     "ripen in their season; right-click the ripe leaves", has("rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates")),
+    ("fruit_orchard", "tree_fruit", "date_palm_sapling", G, "A Taste of Every Tree",
+     "Gather fruit from all six fruit trees, from the rowans of the north to the date palms of the desert oases",
+     has_all("rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates")),
+    ("cooked_rowan_berries", "cooked_elderberries", "cooked_rowan_berries", T, "Bitter Made Sweet",
+     "Raw Rowan Berries upset your stomach and Yew Arils are deadly whole. Cook rowan berries on a Campfire", has("cooked_rowan_berries")),
     ("fallow_season", "root", "minecraft:wheat_seeds", T, "Out of Season",
      "Sneak-click a crop with an empty hand in winter: nothing grows in the fields until spring, so harvest and store before",
      by_code()),
@@ -2271,6 +2285,11 @@ TABS["folklore"][1].extend([
      has("fern_flower")),
     ("frost_lily", "root", "frost_lily", C, "Winter Bloom",
      "Pick a Frost Lily in bloom. It flowers only in winter, in the snow of cold highlands, and shines faintly", has("frost_lily")),
+    ("will_o_wisp_lily", "root", "will_o_wisp_lily", C, "Lights on the Bog",
+     "Pick a Will-o'-Wisp Lily in bloom. It opens only at night, out on the Peat Bog, and glows like the lights that lead travellers astray",
+     has("will_o_wisp_lily")),
+    ("moonwort", "root", "moonwort", C, "Key Under the Full Moon",
+     "Pick Moonwort in bloom. The little fern of the Limestone Karst shines silver only on full-moon nights", has("moonwort")),
 ])
 
 

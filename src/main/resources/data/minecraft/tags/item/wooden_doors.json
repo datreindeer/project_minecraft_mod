@@ -9,6 +9,12 @@
     "mechanical:hazel_door",
     "mechanical:pine_door",
     "mechanical:yew_door",
+    "mechanical:rowan_door",
+    "mechanical:bird_cherry_door",
+    "mechanical:wild_apple_door",
+    "mechanical:plum_door",
+    "mechanical:olive_door",
+    "mechanical:date_palm_door",
     "mechanical:bog_oak_door"
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/rowan_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/rowan_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/rowan_slab_top"
+    }
+  }
+}

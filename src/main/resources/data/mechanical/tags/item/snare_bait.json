@@ -25,6 +25,13 @@
     "mechanical:grub",
     "mechanical:sloes",
     "mechanical:sea_buckthorn_berries",
-    "mechanical:jujubes"
+    "mechanical:jujubes",
+    "mechanical:rosehips",
+    "mechanical:crowberries",
+    "mechanical:bearberries",
+    "mechanical:barberries",
+    "mechanical:capers",
+    "mechanical:red_currants",
+    "mechanical:black_currants"
   ]
 }

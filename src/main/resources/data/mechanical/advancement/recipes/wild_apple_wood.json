@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:wild_apple_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wild_apple_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:wild_apple_planks",
+      "mechanical:wild_apple_wood",
+      "mechanical:stripped_wild_apple_wood",
+      "mechanical:wild_apple_slab",
+      "mechanical:wild_apple_stairs",
+      "mechanical:wild_apple_fence",
+      "mechanical:wild_apple_fence_gate",
+      "mechanical:wild_apple_door",
+      "mechanical:wild_apple_trapdoor",
+      "mechanical:wild_apple_button",
+      "mechanical:wild_apple_pressure_plate"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "B ",
+    "BB"
+  ],
+  "key": {
+    "B": "mechanical:date_palm_bark"
+  },
+  "result": {
+    "id": "mechanical:date_palm_bark_roof",
+    "count": 4
+  }
+}

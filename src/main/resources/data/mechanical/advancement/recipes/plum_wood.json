@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:plum_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:plum_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:plum_planks",
+      "mechanical:plum_wood",
+      "mechanical:stripped_plum_wood",
+      "mechanical:plum_slab",
+      "mechanical:plum_stairs",
+      "mechanical:plum_fence",
+      "mechanical:plum_fence_gate",
+      "mechanical:plum_door",
+      "mechanical:plum_trapdoor",
+      "mechanical:plum_button",
+      "mechanical:plum_pressure_plate"
+    ]
+  }
+}

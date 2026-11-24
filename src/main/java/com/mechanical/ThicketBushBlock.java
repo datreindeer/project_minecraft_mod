@@ -50,19 +50,24 @@ public class ThicketBushBlock extends WildBerryBushBlock {
     static final int MAX_CLUSTER = 9;
     /** How far outside its temperature window (biome base temperature) a bush still grows. */
     static final float TEMP_SLACK = 0.15F;
-    private static final VoxelShape YOUNG_SHAPE = column(8, 0, 9), LOWER = column(14, 0, 15), UPPER = column(12, 0, 12);
+    private static final VoxelShape YOUNG_SHAPE = column(8, 0, 9), LOWER = column(14, 0, 15), UPPER = column(12, 0, 12), LOW = column(15, 0, 7);
 
     private final int[] target;
     private final float minTemp, maxTemp;
-    private final boolean sand;
+    private final boolean sand, thorns, low, evergreen;
 
-    /** target: the stage wanted in spring, summer, autumn, winter; minTemp..maxTemp: biome base temperatures it grows in. */
-    public ThicketBushBlock(Supplier<Item> berries, int[] target, float minTemp, float maxTemp, boolean sand, Properties properties) {
+    /** target: the stage wanted in spring, summer, autumn, winter; minTemp..maxTemp: biome base temperatures it grows in;
+     *  thorns: prickly to walk through; low: a mat or mound that never grows a top block; evergreen: keeps its leaves in winter. */
+    public ThicketBushBlock(Supplier<Item> berries, int[] target, float minTemp, float maxTemp, boolean sand, boolean thorns, boolean low,
+            boolean evergreen, Properties properties) {
         super(berries, true, properties);
         this.target = target;
         this.minTemp = minTemp;
         this.maxTemp = maxTemp;
         this.sand = sand;
+        this.thorns = thorns;
+        this.low = low;
+        this.evergreen = evergreen;
         BlockState s = defaultBlockState().setValue(AGE, 0).setValue(YOUNG, false).setValue(LEAFLESS, false).setValue(HALF, DoubleBlockHalf.LOWER);
         for (BooleanProperty side : SIDES.values()) s = s.setValue(side, false);
         registerDefaultState(s);
@@ -79,13 +84,21 @@ public class ThicketBushBlock extends WildBerryBushBlock {
         return target[season];
     }
 
+    public boolean low() {
+        return low;
+    }
+
+    public boolean evergreen() {
+        return evergreen;
+    }
+
     public boolean suits(float baseTemperature) {
         return baseTemperature >= minTemp - TEMP_SLACK && baseTemperature <= maxTemp + TEMP_SLACK;
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(YOUNG) ? YOUNG_SHAPE : state.getValue(HALF) == DoubleBlockHalf.UPPER ? UPPER : LOWER;
+        return state.getValue(YOUNG) ? YOUNG_SHAPE : low ? LOW : state.getValue(HALF) == DoubleBlockHalf.UPPER ? UPPER : LOWER;
     }
 
     @Override
@@ -137,7 +150,7 @@ public class ThicketBushBlock extends WildBerryBushBlock {
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         int season = Calendar.season(level.getOverworldClockTime());
-        boolean bare = season == 3 && wintry(level, pos);
+        boolean bare = !evergreen && season == 3 && wintry(level, pos);
         boolean growing = season != 3 && suits(level.getBiome(pos).value().getBaseTemperature()) && level.getRawBrightness(pos.above(), 0) >= 9;
         BlockState was = state;
         state = state.setValue(LEAFLESS, bare);
@@ -155,7 +168,7 @@ public class ThicketBushBlock extends WildBerryBushBlock {
         if (state != was) level.setBlock(pos, state, Block.UPDATE_CLIENTS);
         if (!growing || state.getValue(YOUNG) || state.getValue(HALF) == DoubleBlockHalf.UPPER) return;
         if (random.nextInt(SPREAD_ONE_IN) == 0) spread(level, pos, random);
-        else if (sides(state) >= 2 && random.nextInt(TALL_ONE_IN) == 0 && level.getBlockState(pos.above()).isAir()) {
+        else if (!low && sides(state) >= 2 && random.nextInt(TALL_ONE_IN) == 0 && level.getBlockState(pos.above()).isAir()) {
             BlockPos up = pos.above();
             level.setBlock(up, withSides(level, up, state.setValue(HALF, DoubleBlockHalf.UPPER)), Block.UPDATE_ALL);
         }
@@ -188,7 +201,7 @@ public class ThicketBushBlock extends WildBerryBushBlock {
     /** Thorns: slows you down, and pricks now and then unless you step carefully (as Bramble). */
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effects, boolean isPrecise) {
-        if (!(entity instanceof LivingEntity) || state.getValue(YOUNG)) return;
+        if (!thorns || !(entity instanceof LivingEntity) || state.getValue(YOUNG)) return;
         entity.makeStuckInBlock(state, new Vec3(0.8F, 0.75, 0.8F));
         if (level instanceof ServerLevel server && !entity.isSteppingCarefully() && level.getRandom().nextInt(8) == 0) {
             Vec3 move = entity.isClientAuthoritative() ? entity.getKnownMovement() : entity.oldPosition().subtract(entity.position());

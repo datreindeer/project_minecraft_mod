@@ -41,7 +41,7 @@ tag_add(D / "minecraft/tags/item/arrows.json", [M + "bronze_arrow"])
 RUGS = ["bear_rug", "wolf_rug", "lynx_rug", "leopard_rug", "mammoth_rug", "bison_rug", "musk_ox_rug", "ibex_rug", "saiga_rug",
         "hyena_rug", "cave_bear_rug"]
 LITTER = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "yellow_poplar", "orange_poplar",
-          "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew"]  # Mechanical.LITTER_LEAVES
+          "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]  # Mechanical.LITTER_LEAVES
 for r in RUGS + [f"{l}_leaf_litter" for l in LITTER]:
     assert (A / f"blockstates/{r}.json").exists(), r
 w(D / "mechanical/tags/block/path_covers.json", {"values": [

@@ -5,7 +5,8 @@
     "particle": "mechanical:block/jujube_bare",
     "leaves": "mechanical:block/jujube_bare",
     "inner": "mechanical:block/jujube_bare",
-    "stems": "mechanical:block/jujube_stems_bare"
+    "stems": "mechanical:block/jujube_stems_bare",
+    "sprig": "mechanical:block/jujube_sprig_bare"
   },
   "elements": [
     {

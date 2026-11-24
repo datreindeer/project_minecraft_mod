@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "blooming=true,half=lower": {
+      "model": "mechanical:block/foxglove_bottom"
+    },
+    "blooming=true,half=upper": {
+      "model": "mechanical:block/foxglove_top"
+    },
+    "blooming=false,half=lower": {
+      "model": "mechanical:block/foxglove_bottom_leaves"
+    },
+    "blooming=false,half=upper": {
+      "model": "mechanical:block/foxglove_top_leaves"
+    }
+  }
+}

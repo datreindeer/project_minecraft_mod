@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst",
+    "mechanical:marble_gorge",
+    "minecraft:plains",
+    "minecraft:sunflower_plains"
+  ],
+  "features": "mechanical:barberry_thicket",
+  "step": "vegetal_decoration"
+}

@@ -428,6 +428,414 @@ ITEM_DOORS.update({
     "yew": _item_door(["pp44pp", "p.44.p", "444444", "p.44.p", "pp44pp", "pppppp"], ["5d25d2"] * 4 + ["322322"]),
 })
 
+# ------------------------------------------------------------------ fruit trees: rowan, bird cherry, wild apple, plum, olive, date palm
+# Same set as above plus three fruit-stage leaves (<w>_leaves_blossom/_unripe/_ripe): one sprite per tree, stamped on the
+# same spots in every stage with its letters recoloured (flower -> green fruit -> ripe fruit), so the fruit grows where
+# the flowers were.
+SPECIES.update({
+    "rowan": dict(        # pale pinkish-brown wood, smooth silver-grey bark with lenticel dashes, airy pinnate leaves
+        wood=[(160, 118, 100), (174, 131, 111), (187, 143, 122), (198, 154, 132), (208, 165, 143), (217, 176, 154), (226, 188, 166)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.6, 6.3),
+        leaf=dict(D=(30, 66, 24), S=(46, 92, 32), M=(68, 122, 42), L=(98, 152, 58), H=(142, 186, 86)),
+        bark=[(66, 66, 64), (96, 96, 92), (122, 121, 116), (144, 143, 137), (165, 164, 157), (186, 185, 178)],
+        metal=((46, 46, 48), (132, 132, 136))),
+    "bird_cherry": dict(  # light yellowish-brown wood, dark rough bark with pale lenticels, dark elliptic leaves
+        wood=[(170, 136, 86), (183, 149, 97), (195, 161, 108), (205, 172, 118), (214, 183, 129), (222, 193, 140), (230, 203, 152)],
+        stripped_base="stripped_oak_log", stripped_range=(1.4, 6.3),
+        leaf=dict(D=(20, 50, 22), S=(30, 70, 30), M=(44, 92, 40), L=(62, 118, 52), H=(92, 146, 70)),
+        bark=[(34, 30, 28), (50, 45, 41), (66, 59, 54), (82, 74, 67), (98, 89, 80), (116, 106, 96)],
+        metal=((44, 44, 46), (128, 128, 132))),
+    "wild_apple": dict(   # pinkish-tan wood with a darker heart, grey-brown scaly bark, dull oval leaves
+        wood=[(146, 100, 80), (162, 114, 92), (177, 128, 103), (190, 141, 114), (201, 153, 125), (211, 165, 137), (220, 177, 149)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.2, 6.2),
+        leaf=dict(D=(38, 64, 30), S=(54, 84, 38), M=(74, 108, 50), L=(98, 132, 64), H=(132, 160, 88)),
+        bark=[(44, 38, 34), (64, 56, 49), (86, 76, 66), (106, 95, 83), (126, 114, 100), (148, 136, 120)],
+        metal=((48, 48, 50), (136, 136, 140))),
+    "plum": dict(         # warm reddish-brown wood, glossy dark purplish bark with lenticels, small fresh green leaves
+        wood=[(128, 62, 44), (144, 74, 52), (158, 86, 60), (171, 97, 68), (183, 108, 77), (194, 120, 87), (205, 132, 98)],
+        stripped_base="stripped_acacia_log", stripped_range=(1.3, 6.2),
+        leaf=dict(D=(34, 80, 24), S=(50, 106, 32), M=(72, 136, 42), L=(100, 164, 56), H=(144, 198, 86)),
+        bark=[(34, 22, 26), (52, 34, 38), (70, 46, 50), (88, 60, 62), (108, 76, 76), (134, 98, 96)],
+        metal=((150, 110, 40), (214, 174, 76))),
+    "olive": dict(        # cream wood with a dark wavy figure, pale grey gnarled bark, silvery grey-green lance leaves
+        wood=[(176, 150, 100), (189, 163, 111), (201, 175, 122), (211, 186, 133), (220, 196, 144), (228, 206, 156), (236, 216, 168)],
+        stripped_base="stripped_birch_log", stripped_range=(1.4, 6.4),
+        leaf=dict(D=(62, 76, 62), S=(94, 110, 90), M=(136, 150, 128), L=(172, 184, 164), H=(212, 218, 204)),
+        bark=[(60, 58, 52), (84, 82, 74), (108, 106, 96), (132, 129, 118), (154, 151, 139), (176, 173, 160)],
+        metal=((44, 44, 46), (120, 120, 124))),
+    "date_palm": dict(    # light tan fibrous wood, brown trunk of old leaf bases, grey-green fronds
+        wood=[(168, 138, 94), (180, 150, 104), (192, 162, 114), (202, 173, 124), (211, 183, 134), (219, 193, 145), (227, 203, 156)],
+        stripped_base="stripped_birch_log", stripped_range=(1.4, 6.4),
+        leaf=dict(D=(38, 60, 42), S=(58, 84, 56), M=(82, 110, 72), L=(110, 138, 92), H=(150, 170, 120), r=(128, 126, 74)),
+        bark=[(52, 36, 24), (76, 54, 34), (100, 72, 46), (124, 92, 60), (148, 114, 76), (172, 138, 96)],
+        metal=((44, 44, 46), (128, 128, 132))),
+})
+
+def dashes(img, seed, n, cols, min_d=5):
+    """horizontal lenticel dashes (light top, dark under) scattered at random"""
+    return scatter(img, seed, n, cols, [[(0, 0, 1), (1, 0, 1), (2, 0, 1), (0, 1, 2), (1, 1, 2), (2, 1, 2)],
+                                         [(0, 0, 1), (1, 0, 1), (0, 1, 2), (1, 1, 2)],
+                                         [(0, 0, 1), (1, 0, 1), (2, 0, 1), (3, 0, 1), (1, 1, 2), (2, 1, 2)]], min_d)
+
+def bark_rowan(p):
+    b = p["bark"]; img = smooth_bark("rowan", b, 0.35, 0.9)
+    return dashes(img, "rowan_l", 7, {1: (64, 62, 58), 2: b[1]})
+
+def bark_bird_cherry(p):
+    img = remap(van("dark_oak_log"), p["bark"], 0.05, 0.9, 0.85)
+    return dashes(img, "bcherry_l", 6, {1: (156, 146, 128), 2: p["bark"][1]}, 6)
+
+def bark_plum(p):
+    b = p["bark"]; img = smooth_bark("plum", b, 0.2, 0.75)
+    for y in range(16):  # glossy sheen running down the stem
+        for x in (3, 4, 11):
+            put(img, x, y, mix(img.getpixel((x, y)), b[5], 0.55 if x == 4 else 0.35))
+    return dashes(img, "plum_l", 7, {1: (168, 136, 120), 2: b[0]})
+
+def bark_wild_apple(p):
+    """scaly bark: tall plates (wrapped Voronoi cells), each lit at the top, shaded at the bottom, dark cracks between"""
+    b = p["bark"]; r = random.Random("apple_plates")
+    pts = [(r.uniform(0, 16), r.uniform(0, 16), r.uniform(0.3, 0.9)) for _ in range(15)]
+    img = new()
+    for y in range(16):
+        for x in range(16):
+            ds = []
+            for px, py, t in pts:
+                dx = min(abs(x - px), 16 - abs(x - px)); dy = min(abs(y - py), 16 - abs(y - py)) * 0.45
+                ds.append((dx * dx + dy * dy, py, t))
+            ds.sort(); (d0, py, t), d1 = ds[0], ds[1][0]
+            gap = math.sqrt(d1) - math.sqrt(d0)
+            if gap < 0.42: put(img, x, y, b[0] if gap < 0.2 else b[1]); continue
+            up = (py - y + 8) % 16 - 8  # >0 above the plate centre
+            put(img, x, y, ramp_at(b, 1.6 + 2.6 * t + 0.3 * up))
+    # a few plates flaking off: a light freshly exposed patch
+    return scatter(img, "apple_flake", 3, {1: (150, 120, 94), 2: (126, 98, 76)},
+                   [[(0, 0, 1), (1, 0, 1), (0, 1, 2)], [(0, 0, 1), (0, 1, 2), (1, 1, 2)]], 7, opaque_only=True)
+
+def bark_olive(p):
+    """gnarled: pale smooth bark split by deep fissures that wind round the trunk, a lit ridge left of each"""
+    b = p["bark"]; img = smooth_bark("olive", b, 0.45, 0.95)
+    for x0, amp, ph, step in ((2, 1.6, 0.0, 1), (7, 2.2, 2.0, 1), (12, 1.4, 4.0, 1)):
+        for y in range(16):
+            x = x0 + round(amp * math.sin(2 * math.pi * y / 16 + ph))
+            put(img, x, y, b[0]); put(img, x + 1, y, b[1]); put(img, x - 1, y, b[5])
+    # a knot where a branch once grew
+    return scatter(img, "olive_knot", 1, {1: b[0], 2: b[2], 3: b[4]},
+                   [[(0, 0, 1), (1, 0, 1), (-1, 0, 2), (2, 0, 2), (0, -1, 3), (1, -1, 3), (0, 1, 2), (1, 1, 2)]], 8)
+
+def bark_date_palm(p):
+    """old leaf bases: stacked crescents, each lit along its top edge and shading down to a dark curved lower rim;
+    every row shifted half a base so the rims interlock into a diamond net"""
+    b = p["bark"]; img = new()
+    for y in range(16):
+        for x in range(16):
+            row = y // 4; u = (x + (4 if row % 2 else 0)) % 8; v = y % 4
+            rim = (1, 2, 3, 3, 3, 3, 2, 1)[u]                      # the lower rim curves up at the sides
+            if v > rim: c = b[1] if (x + y) % 2 else b[0]          # fibre showing between neighbouring bases
+            elif v == rim: c = b[0]
+            elif v == 0: c = b[5] if 1 <= u <= 6 else b[3]
+            else: c = b[4 - v] if 1 <= u <= 6 else b[2 - min(v, 1)]
+            put(img, x, y, c)
+    return img
+
+BARK.update({"rowan": bark_rowan, "bird_cherry": bark_bird_cherry, "wild_apple": bark_wild_apple,
+             "plum": bark_plum, "olive": bark_olive, "date_palm": bark_date_palm})
+
+def palm_top(p):
+    """palm trunks have no growth rings: scattered fibre bundles in a soft pith, a ring of leaf-base bark round it"""
+    w, b = p["wood"], p["bark"]; img = new(); r = random.Random("palmtop")
+    for y in range(16):
+        for x in range(16):
+            d = max(abs(x - 7.5), abs(y - 7.5))
+            if d > 7: c = b[2] if (x + y) % 2 else b[1]
+            elif d > 6: c = w[0]
+            else: c = w[4] if r.random() < 0.7 else w[5]
+            put(img, x, y, c)
+    for _ in range(26):
+        x, y = r.randrange(2, 14), r.randrange(2, 14)
+        put(img, x, y, w[1]); put(img, x + 1, y, w[2])
+    return img
+
+def figure(img, p, seed, rows):
+    """olive's dark wavy figure: a few meandering streaks along the grain"""
+    r = random.Random(seed)
+    for y0 in rows:
+        ph = r.uniform(0, 6.28)
+        for x in range(16):
+            y = y0 + round(1.2 * math.sin(ph + x * 0.7))
+            put(img, x, y, mix(img.getpixel((x % 16, y % 16)), (96, 72, 44), 0.6))
+
+def fibres(img, seed, vertical):
+    """long fibre streaks along the grain"""
+    n = noise(seed, 2, 8) if vertical else noise(seed, 8, 2)
+    for y in range(16):
+        for x in range(16):
+            put(img, x, y, shade(img.getpixel((x, y)), 0.9 + 0.16 * n[y][x]))
+
+# fruit-tree leaves: a vanilla leaf structure remapped like the others
+LEAF_BASE.update({"rowan": "acacia_leaves", "bird_cherry": "oak_leaves", "wild_apple": "azalea_leaves",
+                  "plum": "oak_leaves", "olive": "pale_oak_leaves"})
+
+# per tree: one small fruit sprite (same letters in every stage) and the stage palettes (1 blossom, 2 unripe, 3 ripe).
+# Each stage comes in three variants (<w>_leaves_ripe, _ripe_2, _ripe_3; the blockstate picks one per block and turns
+# it) with only one or two small clusters, so a crown shows scattered fruit among plenty of leaf instead of a grid.
+# A variant keeps its spots in every stage, so the fruit grows where the flowers were. Apple and plum bloom with their
+# own blossom sprite (bloom). s = stalk, always twig brown. Every stamped sprite gets a dark leaf shadow under its
+# right/bottom edge so it stands off the foliage.
+FRUIT = {
+    # a small flat-topped corymb: single-pixel berries (H lit, A plain) in a dome, darker gaps d, thin stalks
+    "rowan": dict(sprite=[
+        "..s..",
+        ".s.s.",
+        "HdAdH",
+        ".AdH."],
+        stages={1: dict(H=(248, 242, 216), A=(232, 226, 194), d=(196, 190, 150)),
+                2: dict(H=(214, 204, 92), A=(206, 150, 56), d=(124, 120, 40)),
+                3: dict(H=(255, 150, 70), A=(230, 72, 28), d=(140, 34, 20))}),
+    # one drooping raceme of small flowers / cherries, a glossy highlight h near the top
+    "bird_cherry": dict(sprite=[
+        "s.",
+        "hB",
+        "aA",
+        "Ba",
+        ".A"],
+        stages={1: dict(h=(255, 255, 248), A=(240, 242, 230), B=(222, 226, 208), a=(180, 188, 168)),
+                2: dict(h=(208, 98, 64), A=(172, 198, 80), B=(146, 176, 62), a=(100, 128, 42)),
+                3: dict(h=(180, 160, 190), A=(70, 46, 68), B=(48, 30, 46), a=(22, 12, 20))}),
+    # one small apple on its stalk: highlight h, blush A, yellow-green Y, shade a
+    "wild_apple": dict(sprite=[
+        "s.",
+        "hA",
+        "Ya"],
+        bloom=[".W.", "WyP", ".P."],
+        stages={1: dict(W=(252, 244, 246), P=(238, 186, 204), y=(216, 196, 88)),
+                2: dict(h=(210, 234, 132), A=(160, 202, 74), Y=(142, 188, 64), a=(96, 136, 44)),
+                3: dict(h=(252, 242, 150), A=(208, 66, 44), Y=(206, 200, 76), a=(150, 74, 36))}),
+    # one plum: waxy bloom b, body P/p, shade d
+    "plum": dict(sprite=[
+        "s.",
+        "bP",
+        "pd"],
+        bloom=[".W.", "WyP", ".P."],
+        stages={1: dict(W=(252, 252, 246), P=(220, 226, 212), y=(206, 204, 100)),
+                2: dict(b=(234, 242, 172), P=(204, 224, 98), p=(166, 198, 72), d=(78, 110, 36)),
+                3: dict(b=(170, 162, 210), P=(100, 74, 150), p=(68, 46, 110), d=(40, 26, 66))}),
+    # two small oval olives on stalks
+    "olive": dict(sprite=[
+        "s.s",
+        "h.s",
+        "O.h",
+        "..O"],
+        stages={1: dict(h=(250, 244, 206), O=(226, 216, 164)),
+                2: dict(h=(196, 210, 116), O=(126, 146, 52)),
+                3: dict(h=(150, 118, 162), O=(52, 30, 58))}),
+}
+TWIG = (86, 62, 44)
+# per variant: clusters (x, y, sprites in the cluster); a cluster's second sprite sits beside and a bit below the first
+FRUIT_VARIANTS = [[(2, 2, 2), (10, 9, 1)], [(9, 3, 1), (3, 11, 2)], [(6, 7, 1)]]
+
+def stamp_shadowed(img, sprite, x0, y0, cols, shadow):
+    stamp(img, sprite, x0, y0, cols)
+    mask = {((x0 + i) % 16, (y0 + j) % 16) for j, row in enumerate(sprite) for i, ch in enumerate(row) if ch not in ". "}
+    for x, y in mask:
+        for q in (((x + 1) % 16, y), (x, (y + 1) % 16)):
+            if q not in mask and img.getpixel(q)[3]: put(img, q[0], q[1], shadow)
+
+def rowan_leaves(p):
+    """pinnate leaves: a rachis with paired leaflets (lit above, shaded below) laid over a dark under-crown"""
+    c = p["leaf"]; img = remap(van("oak_leaves"), [c["D"], c["D"], c["S"], c["S"], c["M"]], 0.0, 1.0)
+    r = random.Random("rowan_pinnate"); pts = []
+    for _ in range(4000):
+        q = (r.randrange(16), r.randrange(16))
+        if all(min((q[0] - o[0]) % 16, (o[0] - q[0]) % 16) ** 2 + min((q[1] - o[1]) % 16, (o[1] - q[1]) % 16) ** 2 >= 26 for o in pts):
+            pts.append(q)
+        if len(pts) == 9: break
+    for x0, y0 in pts:
+        dx, dy = r.choice(((1, 1), (-1, 1), (1, 0), (-1, 0), (1, 1), (-1, 1)))
+        px, py = (-dy, dx) if dx > 0 else (dy, -dx)        # perpendicular pointing up/left (the lit side)
+        if py > 0 or (py == 0 and px > 0): px, py = -px, -py
+        n = r.randint(4, 6)
+        for i in range(n):
+            x, y = x0 + dx * i, y0 + dy * i
+            put(img, x, y, c["M"])
+            put(img, x + px, y + py, c["H"] if i % 2 else c["L"])
+            put(img, x - px, y - py, c["S"] if i % 2 else c["M"])
+        put(img, x0 + dx * n, y0 + dy * n, c["L"])          # terminal leaflet
+    return img
+
+def olive_leaves(p):
+    """open silvery crown: the pale oak structure in sage/silver with its darkest fifth cut away as holes"""
+    img = leaves("olive", p)
+    px = sorted((lum(img.getpixel((x, y))), x, y) for y in range(16) for x in range(16) if img.getpixel((x, y))[3])
+    for _, x, y in px[:len(px) // 5]: img.putpixel((x, y), (0, 0, 0, 0))
+    return img
+
+def fruit_leaves(name, p):
+    """plain leaves plus three variants of each fruit stage"""
+    base = {"rowan": rowan_leaves, "olive": olive_leaves}.get(name, lambda p: leaves(name, p))(p)
+    f = FRUIT[name]; out = {"": base}; dark = p["leaf"]["S" if name == "olive" else "D"]  # olive: soft shadow on the silver
+    for st, key in ((1, "_blossom"), (2, "_unripe"), (3, "_ripe")):
+        cols = dict(f["stages"][st], s=(112, 116, 96) if name == "olive" else TWIG)
+        sprite = f["bloom"] if st == 1 and "bloom" in f else f["sprite"]
+        w = len(sprite[0])
+        for v, clusters in enumerate(FRUIT_VARIANTS):
+            img = base.copy()
+            for x, y, n in clusters:
+                for k in range(n): stamp_shadowed(img, sprite, x + k * w, y + k * 2, cols, dark)
+            out[key + ("" if v == 0 else f"_{v + 1}")] = img
+    return out
+
+# ------------------------------------------------------------------ date palm crown (frond model, not leaf cubes)
+# _top: a frond seen from above on the flat plane at the top of the block; _hang: drooping leaflet tips on the crossed
+# planes under it (only rows 4-15 show); _blossom/_unripe/_ripe: the same with flower strands / a date bunch.
+def palm_frond_top(p):
+    """one frond corner to corner: a pale midrib, long thin leaflets every other pixel on both sides, swept toward the
+    base (top left), lit on the upper side"""
+    c = p["leaf"]; img = new()
+    for i in range(1, 16, 2):
+        for sx, sy, f in ((1, -1, 1.0), (-1, 1, 0.82)):
+            ex, ey = i + sx * 5 - 2, i + sy * 5 - 2           # leaflet tip
+            for k in range(1, 8):
+                x, y = round(i + (ex - i) * k / 7), round(i + (ey - i) * k / 7)
+                if 0 <= x < 16 and 0 <= y < 16: put(img, x, y, shade([c["H"], c["L"], c["L"], c["M"], c["M"], c["S"], c["S"]][k - 1], f))
+    for i in range(16): put(img, i, i, c["r"])
+    return img
+
+def palm_hang(p, seed="hang"):
+    c = p["leaf"]; img = new(); r = random.Random(seed)
+    tones = [c["L"], c["M"], c["M"], c["S"], c["S"], c["D"], c["D"], c["D"]]
+    for x in range(0, 16, 2):
+        x0 = x + r.choice((0, 1)); n = r.randint(3, 8); lean = r.choice((-1, 1))
+        for i in range(n): put(img, x0 + (lean if i > n * 0.6 else 0), 4 + i, tones[i])
+    return img
+
+BUNCH = [3, 5, 7, 8, 8, 7, 6, 4, 2]   # widths of the date bunch, row by row from y=6
+def palm_bunch(img, st):
+    stalk = {1: (206, 190, 120), 2: (200, 150, 54), 3: (170, 110, 46)}[st]
+    for y in range(4, 7): put(img, 8, y, stalk)
+    if st == 1:  # cream flower strands hanging from a short cross stalk
+        for x in range(5, 12): put(img, x, 5, stalk)
+        for x0, n in ((5, 6), (7, 9), (9, 8), (11, 5)):
+            for i in range(n): put(img, x0, 6 + i, (244, 234, 178) if (i + x0) % 2 else (214, 200, 132))
+        return img
+    lit, mid, dark, hi = {2: ((246, 196, 70), (226, 158, 40), (160, 98, 24), (255, 236, 150)),
+                          3: ((164, 70, 40), (126, 46, 28), (64, 20, 14), (224, 150, 116))}[st]
+    for j, w in enumerate(BUNCH):
+        y = 6 + j; x0 = 8 - w // 2
+        for x in range(x0, x0 + w):
+            edge = x in (x0, x0 + w - 1)
+            put(img, x, y, dark if (x + y) % 2 else (mid if edge or j > 5 else lit))
+    for x, y in ((6, 8), (9, 7), (7, 10), (10, 10), (8, 12)): put(img, x, y, hi)   # glossy highlights on single dates
+    return img
+
+def palm_crown(p):
+    hang = palm_hang(p)
+    out = {"_top": palm_frond_top(p), "_hang": hang}
+    for st, key in ((1, "_blossom"), (2, "_unripe"), (3, "_ripe")): out[key] = palm_bunch(hang.copy(), st)
+    return out
+
+def palm_frond(p):
+    """three arching fronds across the tile: a midrib with long drooping leaflets, alternately left and right"""
+    c = p["leaf"]; img = new()
+    for k, (y0, ph) in enumerate(((1, 0.0), (6, 2.1), (11, 4.2))):
+        for x in range(16):
+            y = y0 + round(1.5 * math.sin(2 * math.pi * x / 16 + ph))
+            lit = (x // 2 + k) % 2
+            if x % 2 == 0:
+                for i in range(1, 5): put(img, x - i // 2, y + i, [c["H"] if lit else c["L"], c["L"], c["M"], c["S"]][i - 1])
+            else:
+                for i in range(1, 4): put(img, x + i // 2, y + i, [c["L"] if lit else c["M"], c["M"], c["S"]][i - 1])
+        for x in range(16): put(img, x, y0 + round(1.5 * math.sin(2 * math.pi * x / 16 + ph)), c["r"])
+    return img
+
+LEAF_SPRITES.update({
+    "rowan": [["L.L.L", "MHMHM", ".S.S."], ["L.L", "HMH", "S.S"]],                     # rows of paired leaflets
+    "bird_cherry": [[".L.", "LHM", "LMS", ".S."], ["LL.", "MMS", ".S."]],
+    "wild_apple": [[".LL.", "LHMS", "LMMS", ".SS."], ["LL.", "LMS", ".S."]],
+    "plum": [[".L.", "LHS", ".S."], ["LM", "MS"]],
+    "olive": [["HL.", ".MS"], [".L", "HM", "S."], ["LL", ".S"]],                   # narrow silvery lances
+})
+SAPLINGS.update({
+    "rowan": ([(7, 10, 4, 7, 2), (8, 8, 11, 5, 2)], [(0, 1, 5), (0, 9, 3), (1, 5, 0), (1, 2, 1), (1, 10, 0), (0, 5, 3)], 2, 12),
+    "bird_cherry": ([(7, 10, 3, 7, 1), (8, 8, 12, 5, 1), (7, 6, 5, 3, 1)],
+                    [(0, 1, 4), (0, 10, 2), (1, 4, 0), (0, 6, 4), (1, 10, 6)], 3, 12),
+    "wild_apple": ([(7, 9, 3, 7, 1), (8, 8, 12, 6, 1), (7, 6, 6, 3, 1)],
+                   [(0, 0, 4), (0, 10, 3), (1, 5, 0), (1, 2, 8), (1, 11, 7)], 3, 12),
+    "plum": ([(7, 10, 4, 7, 1), (8, 8, 11, 5, 1), (7, 6, 6, 3, 1)],
+             [(0, 2, 5), (0, 10, 3), (1, 5, 1), (0, 7, 2), (1, 11, 6), (1, 3, 8)], 3, 12),
+    "olive": ([(7, 11, 4, 8, 3), (4, 8, 3, 5, 3), (8, 9, 11, 6, 3), (11, 6, 12, 3, 3)],
+              [(0, 1, 4), (1, 2, 6), (2, 3, 2), (0, 11, 2), (1, 12, 4), (2, 10, 1), (0, 6, 4), (1, 8, 4), (2, 5, 1)], 6, 13),
+})
+
+def palm_sapling(p):
+    """a little fan of fronds out of a fibrous stump: each frond a pale midrib with leaflets hanging off it"""
+    c, b = p["leaf"], p["bark"]; img = new()
+    fronds = ((7, 10, 1, 8), (8, 10, 14, 8), (7, 9, 2, 3), (8, 9, 13, 3), (7, 9, 6, 1), (8, 9, 10, 1))
+    for x0, y0, x1, y1 in fronds:
+        n = max(abs(x1 - x0), abs(y1 - y0)); sx = 1 if x1 > x0 else -1
+        for i in range(1, n + 1):
+            x = round(x0 + (x1 - x0) * i / n); y = round(y0 + (y1 - y0) * i / n + 0.06 * i * i)  # tips droop
+            if 0 <= y < 16:
+                if i > 1 and 0 <= y + 1 < 16: put(img, x, y + 1, c["S"] if i % 2 else c["M"])
+                if i > 2 and 0 <= y - 1 < 16 and i % 2 == 0: put(img, x - sx, y - 1, c["L"])
+                put(img, x, y, c["r"] if i < n else c["L"])
+    for y in range(10, 16):
+        put(img, 7, y, b[4] if y % 2 else b[2]); put(img, 8, y, b[2] if y % 2 else b[1])
+    return img
+
+SAPLING_FN = {"date_palm": lambda name, p: palm_sapling(p)}
+
+WEAVE = ["llcc", "llcc", "ccll", "ccll"]
+def weave(w, h): return ["".join(WEAVE[y % 4][x % 4] for x in range(w)) for y in range(h)]
+DOORS.update({
+    # rowan: two arched windows, boards with a Z brace below
+    "rowan": _door([P12, "ppp.pppp.ppp", "pp..pppp..pp", "pp..pppp..pp", "pp..pppp..pp", "pp..pppp..pp", "pp..pppp..pp",
+                    "pp44pppp44pp", P12, P12, P12, P12],
+                   ("ppppppppppp", "44444444444"),
+                   ["pppdppppdppp"] * 4 + ["444444444444", "333333333333"] + ["pppdppppdppp"] * 4
+                   + ["444444444444", "333333333333"]),
+    # bird cherry: a round window with a cross, two raised panels below
+    "bird_cherry": _door([P12, "pppp....pppp", "ppp..44..ppp", "pp...44...pp", "pp44444444pp", "pp...44...pp", "ppp..44..ppp",
+                          "pppp....pppp", P12, P12, P12, P12],
+                         ("ppppppppppp", "p5553pp5553"), ["p5ll2pp5ll2p"] * 4 + ["p3222pp3222p", P12, "p5553pp5553p"]
+                         + ["p5ll2pp5ll2p"] * 4 + ["p3222pp3222p"]),
+    # wild apple: cottage door, four-pane window, horizontal boards below
+    "wild_apple": _door([P12, "pp...44...pp", "pp...44...pp", "pp...44...pp", "pp44444444pp", "pp...44...pp", "pp...44...pp",
+                         "pp...44...pp", P12, P12, "qqqqqqqqqqqq", "cccccccccccc"],
+                        ("qqqqqqqqqqq", "ccccccccccc"), ["qqqqqqqqqqqq", "qqqqqqqqqqqq", "cccccccccccc"] * 4),
+    # plum: three slit windows, one big raised panel
+    "plum": _door([P12, "pp.pp..pp.pp", "pp.pp..pp.pp", "pp.pp..pp.pp", "pp.pp..pp.pp", "pp.pp..pp.pp", P12,
+                   "444444444444", P12, P12, P12, P12],
+                  ("ppppppppppp", "p5555555553"), ["p5llllllll2p"] * 11 + ["p3222222222p"]),
+    # olive: rustic uneven boards with dark gaps, iron straps, a small peep window
+    "olive": _door([P12, "ppdpp..ppdpp", "ppdpp..ppdpp", "ppdppppppdpp", "kkkkkkkkkkkk", "ppdpppdppdpp", "ppdpppdppdpp",
+                    "ppdpppdppdpp", "ppdpppdppdpp", "ppdpppdppdpp", "ppdpppdppdpp", "ppdpppdppdpp"],
+                   ("ppdpppdppdp", "ppdpppdppdp"),
+                   ["ppdpppdppdpp"] * 3 + ["kkkkkkkkkkkk"] + ["ppdpppdppdpp"] * 6 + ["kkkkkkkkkkkk", "ppdpppdppdpp"]),
+    # date palm: frame of palm wood with woven fibre panels
+    "date_palm": _door([P12, "pp........pp", "pp........pp", "pp........pp", "pp44444444pp"] + ["pp" + r + "pp" for r in weave(8, 6)]
+                       + [P12],
+                       ("ppppppppppp", "p5555555553"), ["p5" + r + "2p" for r in weave(8, 10)] + ["p3222222222p"]),
+})
+TRAPDOORS.update({
+    "rowan": ["pppdppppdppp"] * 3 + ["444444444444", "333333333333"] + ["pppdppppdppp"] * 2
+             + ["444444444444", "333333333333"] + ["pppdppppdppp"] * 3,
+    "bird_cherry": [P12, "pppp....pppp", "ppp..44..ppp", "pp...44...pp", "pp...44...pp", "pp44444444pp", "pp44444444pp",
+                    "pp...44...pp", "pp...44...pp", "ppp..44..ppp", "pppp....pppp", P12],
+    "wild_apple": ["qqqqqqqqqqqq", "qqqqqqqqqqqq", "cccccccccccc"] * 4,
+    "plum": [P12] + ["pp.pp..pp.pp"] * 10 + [P12],
+    "olive": ["ppdpppdppdpp"] * 2 + ["kkkkkkkkkkkk"] + ["ppdpppdppdpp"] * 6 + ["kkkkkkkkkkkk"] + ["ppdpppdppdpp"] * 2,
+    "date_palm": ["p" + r + "p" for r in weave(10, 12)],
+})
+ITEM_DOORS.update({
+    "rowan": _item_door(["pppppp", "p.pp.p", "p.pp.p", "p.pp.p", "p4pp4p", "pppppp"], ["pdppdp", "444444", "pdppdp", "pdppdp", "444444"]),
+    "bird_cherry": _item_door(["pp..pp", "p.44.p", "p4444p", "p.44.p", "pp..pp", "pppppp"], ["5l25l2"] * 4 + ["322322"]),
+    "wild_apple": _item_door(["pppppp", "p.4..p", "p4444p", "p.4..p", "pppppp", "cccccc"], ["qqqqqq", "cccccc", "qqqqqq", "cccccc", "qqqqqq"]),
+    "plum": _item_door(["pppppp", "p.p.p.", "p.p.p.", "p.p.p.", "pppppp", "444444"], ["5llll2"] * 4 + ["322222"]),
+    "olive": _item_door(["pdp..p", "pdpppp", "kkkkkk", "pdpdpd", "pdpdpd", "pdpdpd"], ["pdpdpd", "kkkkkk", "pdpdpd", "pdpdpd", "pdpdpd"]),
+    "date_palm": _item_door(["p....p", "p....p", "p4444p", "pllccp", "pccllp", "pllccp"], ["5" + r + "2" for r in weave(4, 4)] + ["322222"]),
+})
+
 # ------------------------------------------------------------------ tree extras: beechnuts, roasted beechnuts, pine resin
 def item_sprite(rows, cols):
     assert len(rows) == 16 and all(len(r) == 16 for r in rows), [len(r) for r in rows]
@@ -460,17 +868,26 @@ def save(img, rel):
 for name, p in SPECIES.items():
     bark = BARK[name](p); _rims[name] = bark
     save(bark, f"block/{name}_log.png")
-    save(recolour_planks(name, "oak_log_top", p), f"block/{name}_log_top.png")
+    save(palm_top(p) if name == "date_palm" else recolour_planks(name, "oak_log_top", p), f"block/{name}_log_top.png")
     strip = stripped_side(p)
     if name == "beech": flecks(strip, p, "beechs", 14)
+    if name == "olive": figure(strip, p, "olives", (3, 10))
+    if name == "date_palm": fibres(strip, "palms", True)
     save(strip, f"block/stripped_{name}_log.png")
     _rims[name] = strip
     save(recolour_planks(name, "stripped_oak_log_top", p), f"block/stripped_{name}_log_top.png")
     planks = recolour_planks(name, "oak_planks", p)
     if name == "beech": flecks(planks, p, "beechp", 10)
+    if name == "olive": figure(planks, p, "olivep", (2, 6, 13))
+    if name == "date_palm": fibres(planks, "palmp", False)
     save(planks, f"block/{name}_planks.png")
-    save(leaves(name, p), f"block/{name}_leaves.png")
-    save(sapling(name, p), f"block/{name}_sapling.png")
+    if name in FRUIT:
+        for key, img in fruit_leaves(name, p).items(): save(img, f"block/{name}_leaves{key}.png")
+    elif name == "date_palm":
+        save(palm_frond(p), f"block/{name}_leaves.png")
+        for key, img in palm_crown(p).items(): save(img, f"block/{name}_leaves{key}.png")
+    else: save(leaves(name, p), f"block/{name}_leaves.png")
+    save(SAPLING_FN.get(name, sapling)(name, p), f"block/{name}_sapling.png")
     top_rows, bottom_rows = DOORS[name]
     save(paint(top_rows, p, planks), f"block/{name}_door_top.png")
     save(paint(bottom_rows, p, planks), f"block/{name}_door_bottom.png")

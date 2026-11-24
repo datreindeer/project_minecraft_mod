@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * ({@code LOG} = 1 + index in {@link Mechanical#WOODS}, 0 = none) is split into firewood with an axe (see {@link TreeChopping}).
  */
 public class StumpBlock extends Block {
-    public static final IntegerProperty LOG = IntegerProperty.create("log", 0, 19);
+    public static final IntegerProperty LOG = IntegerProperty.create("log", 0, 25); // = Mechanical.WOODS.size()
     private static final VoxelShape SHAPE = column(12, 0, 7);
     private static final VoxelShape WITH_LOG = Shapes.or(SHAPE, column(10, 7, 16));
 

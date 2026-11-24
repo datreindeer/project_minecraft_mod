@@ -5,7 +5,8 @@
     "particle": "mechanical:block/sea_buckthorn_bare",
     "leaves": "mechanical:block/sea_buckthorn_bare",
     "inner": "mechanical:block/sea_buckthorn_bare",
-    "stems": "mechanical:block/sea_buckthorn_stems_bare"
+    "stems": "mechanical:block/sea_buckthorn_stems_bare",
+    "sprig": "mechanical:block/sea_buckthorn_sprig_bare"
   },
   "elements": [
     {
@@ -348,7 +349,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -358,7 +359,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -383,7 +384,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -393,7 +394,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

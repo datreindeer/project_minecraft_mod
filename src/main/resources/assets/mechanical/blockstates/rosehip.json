@@ -1,0 +1,778 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "young": "true",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_young"
+      }
+    },
+    {
+      "when": {
+        "young": "true",
+        "leafless": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_young_bare"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_stage0"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "0",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage0",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "0",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "0",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "0",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_stage1"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "1",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage1",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "1",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "1",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "1",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_stage2"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "2",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage2",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "2",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "2",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "2",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_stage3"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "3",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage3",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "3",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "3",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "false",
+        "age": "3",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_stage3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "0|1|2"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_bare"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "0|1|2",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "0|1|2",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "0|1|2",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "0|1|2",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_bare_ripe"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "3",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare_ripe",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "3",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare_ripe",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "3",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare_ripe",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "lower",
+        "leafless": "true",
+        "age": "3",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_lower_side_bare_ripe",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_stage0"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "0",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage0",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "0",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "0",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "0",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_stage1"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "1",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage1",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "1",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "1",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "1",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_stage2"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "2",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage2",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "2",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "2",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "2",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_stage3"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "3",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage3",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "3",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "3",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "false",
+        "age": "3",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_stage3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "0|1|2"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_bare"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "0|1|2",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "0|1|2",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "0|1|2",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "0|1|2",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_bare_ripe"
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "3",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare_ripe",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "3",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare_ripe",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "3",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare_ripe",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "young": "false",
+        "half": "upper",
+        "leafless": "true",
+        "age": "3",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/rosehip_upper_side_bare_ripe",
+        "y": 270
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:bird_cherry_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bird_cherry_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:bird_cherry_planks",
+      "mechanical:bird_cherry_wood",
+      "mechanical:stripped_bird_cherry_wood",
+      "mechanical:bird_cherry_slab",
+      "mechanical:bird_cherry_stairs",
+      "mechanical:bird_cherry_fence",
+      "mechanical:bird_cherry_fence_gate",
+      "mechanical:bird_cherry_door",
+      "mechanical:bird_cherry_trapdoor",
+      "mechanical:bird_cherry_button",
+      "mechanical:bird_cherry_pressure_plate"
+    ]
+  }
+}

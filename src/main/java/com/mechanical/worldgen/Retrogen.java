@@ -95,6 +95,10 @@ public final class Retrogen {
             "wild_turnip_patch", "wild_lettuce_patch", "wild_thyme_patch", "wild_marjoram_patch", "yarrow_patch", "chamomile_patch",
             "water_mint_patch", "sorrel_patch", "sage_patch", "rosemary_patch", "bog_myrtle_patch", "meadowsweet_patch", "hops_patch",
             "wild_mustard_patch",
+            // flora phases 2-3 (gen_flora.py; fruit trees in gen_trees.py are trees, left out)
+            "foxglove", "yellow_adonis", "bog_asphodel", "marsh_marigold", "wood_anemone", "bluebells", "purple_saxifrage", "purple_loosestrife",
+            "spiny_thrift", "cats_foot", "will_o_wisp_lily", "moonwort", "rosehip_thicket", "crowberry_thicket", "bearberry_thicket",
+            "barberry_thicket", "caper_thicket", "red_currant_thicket", "black_currant_thicket",
             // half steps on 1-block steps (SmoothGround), last so it sees the decor; never near camps, Fire Pits or roads
             "smooth_ground");
     /** Ticks players may have spent near a chunk (its InhabitedTime) for it to count as untouched: 1 minute. */

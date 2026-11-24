@@ -8,6 +8,12 @@
     "mechanical:potted_ash_sapling",
     "mechanical:potted_hazel_sapling",
     "mechanical:potted_pine_sapling",
-    "mechanical:potted_yew_sapling"
+    "mechanical:potted_yew_sapling",
+    "mechanical:potted_rowan_sapling",
+    "mechanical:potted_bird_cherry_sapling",
+    "mechanical:potted_wild_apple_sapling",
+    "mechanical:potted_plum_sapling",
+    "mechanical:potted_olive_sapling",
+    "mechanical:potted_date_palm_sapling"
   ]
 }

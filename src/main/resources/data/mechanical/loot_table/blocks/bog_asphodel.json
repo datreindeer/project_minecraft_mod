@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:bog_asphodel"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/bog_asphodel"
+}

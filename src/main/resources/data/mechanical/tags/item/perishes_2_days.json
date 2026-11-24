@@ -20,6 +20,9 @@
     "mechanical:porridge",
     "mechanical:raw_porridge",
     "mechanical:peeled_egg",
+    "mechanical:bird_cherries",
+    "mechanical:wild_plums",
+    "mechanical:yew_arils",
     "mechanical:raw_haunch",
     "mechanical:raw_ribs",
     "mechanical:raw_loin",
@@ -31,6 +34,13 @@
     "mechanical:wild_lettuce",
     "mechanical:sorrel_leaves",
     "mechanical:mint_leaves",
-    "mechanical:wild_cabbage"
+    "mechanical:wild_cabbage",
+    "mechanical:rosehips",
+    "mechanical:crowberries",
+    "mechanical:bearberries",
+    "mechanical:barberries",
+    "mechanical:capers",
+    "mechanical:red_currants",
+    "mechanical:black_currants"
   ]
 }

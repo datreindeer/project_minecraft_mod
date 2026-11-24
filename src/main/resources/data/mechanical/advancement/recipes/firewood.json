@@ -39,7 +39,13 @@
       "mechanical:ash_log_from_firewood",
       "mechanical:hazel_log_from_firewood",
       "mechanical:pine_log_from_firewood",
-      "mechanical:yew_log_from_firewood"
+      "mechanical:yew_log_from_firewood",
+      "mechanical:rowan_log_from_firewood",
+      "mechanical:bird_cherry_log_from_firewood",
+      "mechanical:wild_apple_log_from_firewood",
+      "mechanical:plum_log_from_firewood",
+      "mechanical:olive_log_from_firewood",
+      "mechanical:date_palm_log_from_firewood"
     ]
   }
 }

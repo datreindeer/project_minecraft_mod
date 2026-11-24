@@ -9,6 +9,12 @@
     "mechanical:hazel_pressure_plate",
     "mechanical:pine_pressure_plate",
     "mechanical:yew_pressure_plate",
+    "mechanical:rowan_pressure_plate",
+    "mechanical:bird_cherry_pressure_plate",
+    "mechanical:wild_apple_pressure_plate",
+    "mechanical:plum_pressure_plate",
+    "mechanical:olive_pressure_plate",
+    "mechanical:date_palm_pressure_plate",
     "mechanical:bog_oak_pressure_plate"
   ]
 }

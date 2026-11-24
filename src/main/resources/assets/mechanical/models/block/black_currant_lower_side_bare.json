@@ -1,0 +1,66 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/black_currant_bare",
+    "leaves": "mechanical:block/black_currant_bare",
+    "inner": "mechanical:block/black_currant_bare",
+    "stems": "mechanical:block/black_currant_stems_bare",
+    "sprig": "mechanical:block/black_currant_sprig_bare"
+  },
+  "elements": [
+    {
+      "from": [
+        1.5,
+        2,
+        0
+      ],
+      "to": [
+        14.5,
+        12,
+        0.5
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            1.5,
+            0,
+            14.5,
+            0.5
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "down": {
+          "uv": [
+            1.5,
+            15.5,
+            14.5,
+            16
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "east": {
+          "uv": [
+            15.5,
+            4,
+            16,
+            14
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        },
+        "west": {
+          "uv": [
+            0,
+            4,
+            0.5,
+            14
+          ],
+          "texture": "#leaves",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}
