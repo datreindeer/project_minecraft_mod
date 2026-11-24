@@ -102,6 +102,22 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
 - **Utelämnat:** framhjulens utslag räknas inte in (marken söks där hjulen står rakt fram), kroppar på flaket lutar inte själva.
 - Dev: `TiltShots` (tiltshots.flag i run/) bygger en backe och tar bilder.
 
+## Flerspelarkontroll (v0.196.0)
+- Provat med en dedikerad server (runServer i worktreens run/, offline-läge) och en separat dev-klient som ansluter och
+  spelar igenom allt med riktiga klick och tangenter (`MpShots`, mpshots.flag; servern bygger scenerna med `/mptest`,
+  bara registrerat med mptest.flag i serverns mapp, och svarar med serverns positioner så att klienten kan jämföra).
+- **Vagnen:** leda andra hästen med lead, sitta upp, klicka vagnen (spänner för båda), galopp och sväng: andra hästen och
+  vagnen 0,000 block från det stela spannets platser på klienten, vagn och hästar på exakt samma position som servern
+  både med ryttare och 5 s efter avstigning.
+- **Stock:** lyfta, dra, lägga ner: klient och server inom 1,5 cm. **Vattenhjul:** båda kroppsentiteterna finns på klienten
+  med rätt form, hjulet ritas och snurrar. **Kittel och lerkruka:** tripod och kruka ställs på elden, vatten och mat i,
+  innehållet syns direkt på klienten, efter 6000 ticks klart på båda sidor och en skål ger Stew. **Blodkittel:** kitteln på
+  slaktställningen fylls (blockstate) och en hink ger Blood Bucket. **Oak-uppdragen:** skärmen öppnas.
+- **Fel hittat och rättat (även enspelare):** en karavans ledare räknas som ledare och fick en bosatt ledares dialog
+  ("välkommen till vårt läger", ingen Trade-knapp), så karavanens handelsskärm gick inte att nå genom att klicka på honom.
+  Nu får han karavandialogen med Trade, och handelsskärmen öppnas och visar varorna över nätet.
+- Inga undantag i server- eller klientloggen. Bara en klient provades (ingen andra spelare som tittar på).
+
 ## Senare
 - Uroxar som dragdjur (kräver tämjning).
 - Karavaner med vagn.

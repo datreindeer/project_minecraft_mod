@@ -143,7 +143,7 @@ public class HangingRackBlock extends Block {
     }
 
     /** A drop of blood from the carcass hanging on the rack at {@code base}: into the kettle under it, else the pool under it grows, a full one runs over beside the rack. */
-    static void bleedOnto(ServerLevel level, BlockPos base) {
+    public static void bleedOnto(ServerLevel level, BlockPos base) {
         BlockState state = level.getBlockState(base);
         if (!state.is(CarcassHauling.HANGING_RACK.get()) || catchBlood(level, base, 1) == 0) return;
         if (state.getValue(BLOOD) < MAX_BLOOD) level.setBlock(base, state.setValue(BLOOD, state.getValue(BLOOD) + 1), UPDATE_ALL);

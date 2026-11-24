@@ -416,7 +416,7 @@ public final class TribeVisits {
             buttons = 0;
         } else if (v != null) {
             key = "greet." + tribe.temperament.id();
-        } else if (t.errand == null && t.isLeader()) { // a settled camp's leader at home: roads (RoadBuilding), no barter
+        } else if (t.errand == null && t.isLeader() && t.role() != TribeRole.TRADER) { // a settled camp's leader at home: roads (RoadBuilding), no barter (a caravan's leader is one too: he trades)
             key = "leader";
             buttons = 0;
         } else if (t.role() == TribeRole.TRADER) {

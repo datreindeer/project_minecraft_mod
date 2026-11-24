@@ -441,7 +441,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     /** Server: a straight log of {@code n} blocks of {@code state}, its root block standing on {@code root} (bottom centre), lying along {@code yaw} (tests). */
-    static FelledLogEntity spawnStraight(ServerLevel level, Vec3 root, float yaw, int n, BlockState state) {
+    public static FelledLogEntity spawnStraight(ServerLevel level, Vec3 root, float yaw, int n, BlockState state) {
         FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
         List<BlockPos> line = new ArrayList<>();
         for (int i = 0; i < n; i++) line.add(new BlockPos(0, 0, i));
