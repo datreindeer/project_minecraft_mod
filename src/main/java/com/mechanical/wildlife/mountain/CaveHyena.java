@@ -47,6 +47,8 @@ import net.minecraft.world.phys.Vec3;
 public class CaveHyena extends Predator {
     private static final Identifier TEXTURE = Ibex.tex("cave_hyena");
     private static final double SIGHT = 20, SIGHT_SNEAKING = 8, PACK_RANGE = 16, STEAL_RANGE = 24, GUARD_RANGE = 7;
+    /** A stolen carcass is dragged at least this far. */
+    private static final double DRAG_MIN = 6;
     /** A pack this big harasses players and mobs lions. */
     private static final int BOLD_PACK = 3;
 
@@ -384,7 +386,8 @@ public class CaveHyena extends Predator {
                 }
                 Player near = level().getNearestPlayer(CaveHyena.this, 32);
                 Vec3 to = near != null ? DefaultRandomPos.getPosAway(CaveHyena.this, 20, 6, near.position()) : LandRandomPos.getPos(CaveHyena.this, 20, 6);
-                if (to == null || !getNavigation().moveTo(to.x, to.y, to.z, 1.1)) return;
+                // somewhere well away: a spot a few steps off isn't dragging it off (it tries another next tick)
+                if (to == null || to.distanceToSqr(carcass.position()) < DRAG_MIN * DRAG_MIN || !getNavigation().moveTo(to.x, to.y, to.z, 1.1)) return;
                 dragging = true;
                 return;
             }

@@ -157,7 +157,14 @@ public final class NatureClockTest {
         h.assertTrue(ash > 40, "the burnt field is Burnt Soil and Wood Ash (" + ash + ")");
         int changed = NatureClock.simulate(h.getLevel(), box(h), SUMMER, 300, Set.of("regrowth", "grow"));
         long burnDay = NatureClock.data(h.getLevel().getChunkAt(h.absolutePos(new BlockPos(8, 3, 8)))).burnDay;
-        int left = count(h, 3, s -> s.is(ScorchedBarrens.WOOD_ASH.get()) || s.is(ScorchedBarrens.BURNT_SOIL.get()) || s.is(Blocks.COARSE_DIRT));
+        // not under a charred stump: its lowest block never crumbles, so the ground under it never sees the sky (was 2 of the 3 allowed)
+        int left = 0;
+        for (int x = 0; x <= 16; x++)
+            for (int z = 0; z <= 16; z++) {
+                BlockState s = h.getBlockState(new BlockPos(x, 3, z));
+                if ((s.is(ScorchedBarrens.WOOD_ASH.get()) || s.is(ScorchedBarrens.BURNT_SOIL.get()) || s.is(Blocks.COARSE_DIRT))
+                        && !h.getBlockState(new BlockPos(x, 4, z)).is(ScorchedBarrens.CHARRED_LOG.get())) left++;
+            }
         h.assertTrue(left <= 3, "the ash has turned back to grass (" + left + " burnt blocks left: " + count(h, 3, s -> s.is(ScorchedBarrens.WOOD_ASH.get())) + " ash, "
                 + count(h, 3, s -> s.is(ScorchedBarrens.BURNT_SOIL.get())) + " burnt soil, " + count(h, 4, s -> s.is(ScorchedBarrens.WOOD_ASH.get())) + " ash a block up, " + changed + " changes)");
         int trees = 0;

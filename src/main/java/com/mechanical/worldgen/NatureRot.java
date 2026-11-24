@@ -110,6 +110,11 @@ final class NatureRot {
     /** The log's next step, whichever it hasn't had yet. */
     static void step(NatureClock.Day d, RandomSource r, List<BlockPos> run, Direction.Axis axis) {
         ServerLevel level = d.level;
+        // bark already gone: it is sinking (what is left of it after the first day sinks; no new moss, ferns or sapling round the stub)
+        if (run.stream().allMatch(p -> BuiltInRegistries.BLOCK.getKey(level.getBlockState(p).getBlock()).getPath().startsWith("stripped_"))) {
+            sinkHalf(d, run);
+            return;
+        }
         // 1. moss on top
         int open = 0, moss = 0;
         for (BlockPos p : run) {
@@ -163,6 +168,10 @@ final class NatureRot {
         }
         if (stripped) return;
         // 5. it sinks into the ground from both ends, half on a day
+        sinkHalf(d, run);
+    }
+
+    private static void sinkHalf(NatureClock.Day d, List<BlockPos> run) {
         int n = run.size() <= 3 ? run.size() : (run.size() + 1) / 2;
         for (int i = 0; i < n && !run.isEmpty(); i++) sink(d, i % 2 == 0 ? run.removeFirst() : run.removeLast());
     }

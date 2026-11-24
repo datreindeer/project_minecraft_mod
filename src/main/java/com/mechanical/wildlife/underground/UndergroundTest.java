@@ -56,11 +56,11 @@ public final class UndergroundTest {
             var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, name), new TestEnvironmentDefinition.AllOf(List.of()));
             // the creature tests build rooms and spawn big mobs: keep them apart (padding 12); the daylight one needs the sky.
             // The AI ones (light, daylight) wait on fresh forced chunks, which can take a few hundred ticks to tick entities
-            // (as WildlifeSwimTest): long timeout, and not required - sometimes they never start ticking (flaky, not a logic failure)
-            boolean ai = name.equals(TESTS[2]) || name.equals(TESTS[3]);
+            // (as WildlifeSwimTest): long timeout. The daylight one is not required (sometimes its chunks never start ticking);
+            // the light one failed only when a troll put in by day saw the sky before the roof's shade came in, and now waits for it
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, name), new FunctionGameTestInstance(
                     ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, name)),
-                    new TestData<>(env, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 1600, 0, !ai,
+                    new TestData<>(env, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 1600, 0, !name.equals(TESTS[3]),
                             net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, name.equals(TESTS[3]), 12)));
         }
     }
@@ -149,28 +149,38 @@ public final class UndergroundTest {
         forceChunks(h, 8);
         room(h);
         var level = h.getLevel();
-        Troll troll = h.spawn(UndergroundFauna.TROLL.get(), 2, 2, 2);
-        Vittra vittra = h.spawn(UndergroundFauna.VITTRA.get(), 6, 2, 6);
+        Troll[] trolls = new Troll[1];
+        Vittra[] vittras = new Vittra[1];
         BlockPos at = h.absolutePos(new BlockPos(4, 2, 4));
         var lit = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         var dark = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         for (var p : List.of(lit, dark)) p.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
         lit.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(Items.TORCH));
         h.startSequence()
-                .thenWaitUntil(() -> h.assertTrue(level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, at) == 0, "the room is dark"))
+                // the light engine runs behind the blocks: until the roof's shade reaches in, a troll put in by day sees the sky and turns to stone
+                .thenWaitUntil(() -> h.assertTrue(level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, at) == 0
+                        && level.getBrightness(net.minecraft.world.level.LightLayer.SKY, at) == 0 && level.getBrightness(net.minecraft.world.level.LightLayer.SKY, h.absolutePos(new BlockPos(2, 3, 2))) == 0, "the room is dark"))
                 .thenExecute(() -> {
+                    trolls[0] = h.spawn(UndergroundFauna.TROLL.get(), 2, 2, 2);
+                    vittras[0] = h.spawn(UndergroundFauna.VITTRA.get(), 6, 2, 6);
+                })
+                .thenIdle(1)
+                .thenExecute(() -> {
+                    Troll troll = trolls[0];
+                    Vittra vittra = vittras[0];
                     h.assertTrue(!Underground.inLight(dark) && Underground.inLight(lit), "a torch in hand is light");
                     targetBoth(troll, vittra, lit);
                 })
-                .thenWaitUntil(() -> h.assertTrue(troll.getTarget() != lit && vittra.getTarget() != lit, "both let go of the torch bearer")) // they may pick the dark one beside him
-                .thenExecute(() -> targetBoth(troll, vittra, dark))
+                .thenWaitUntil(() -> h.assertTrue(trolls[0].getTarget() != lit && vittras[0].getTarget() != lit, "both let go of the torch bearer (troll removed " + trolls[0].isRemoved()
+                        + ", vittra removed " + vittras[0].isRemoved() + ")")) // they may pick the dark one beside him
+                .thenExecute(() -> targetBoth(trolls[0], vittras[0], dark))
                 .thenIdle(30)
                 .thenExecute(() -> {
-                    h.assertTrue(troll.getTarget() == dark && vittra.getTarget() == dark, "in the dark they keep after him");
+                    h.assertTrue(trolls[0].getTarget() == dark && vittras[0].getTarget() == dark, "in the dark they keep after him");
                     h.setBlock(4, 2, 3, Blocks.TORCH);
                 })
                 .thenWaitUntil(() -> h.assertTrue(Underground.inLight(dark), "a torch beside him lights him up"))
-                .thenWaitUntil(() -> h.assertTrue(troll.getTarget() == null && vittra.getTarget() == null, "both let go of him in torchlight"))
+                .thenWaitUntil(() -> h.assertTrue(trolls[0].getTarget() == null && vittras[0].getTarget() == null, "both let go of him in torchlight"))
                 .thenSucceed();
     }
 

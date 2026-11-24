@@ -58,6 +58,7 @@
     "ServerGamePacketListenerImplMixin",
     "TestInstanceBlockEntityMixin",
     "GameTestInfoMixin",
+    "GameTestRunnerMixin",
     "MinecraftServerStatusMixin",
     "ClientboundStatusResponsePacketMixin"
   ]

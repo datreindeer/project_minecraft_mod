@@ -68,7 +68,7 @@ class CaravanGoal extends Goal {
     /** Stands at the stop; looks at one of the animals now and then. */
     private void handler() {
         Vec3 stop = Vec3.atBottomCenterOf(mob.caravanCamp);
-        if (mob.position().distanceToSqr(stop) > 1.5 * 1.5) {
+        if (mob.position().distanceToSqr(stop) > 1.0) { // jostled off it (by a guard or the animal): straight back
             if (mob.getNavigation().isDone()) mob.getNavigation().moveTo(stop.x, stop.y, stop.z, LEADER_SPEED + 0.2);
             return;
         }

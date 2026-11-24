@@ -69,7 +69,7 @@ public final class ColdTest {
         for (int i = 0; i < TESTS.length; i++) {
             var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, TESTS[i]), new TestEnvironmentDefinition.AllOf(List.of()));
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, TESTS[i]), new FunctionGameTestInstance(
-                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, TESTS[i])), TestArea.of(env, TICKS[i], !TESTS[i].startsWith("cold_fox_")) /* shortcut: optional, AI timing flakes in the full 150-test run; make required again once the AI is made deterministic */));
+                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, TESTS[i])), TestArea.of(env, TICKS[i], true)));
         }
     }
 

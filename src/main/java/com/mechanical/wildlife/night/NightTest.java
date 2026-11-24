@@ -58,11 +58,11 @@ public final class NightTest {
     static void registerTests(RegisterGameTestsEvent event) {
         for (String name : TESTS) {
             var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, name), new TestEnvironmentDefinition.AllOf(List.of()));
-            // the fire test waits on mob AI in fresh forced chunks (as WildlifeSwimTest): long timeout and not required
+            // the fire test waits on mob AI in fresh forced chunks (as WildlifeSwimTest): long timeout
             boolean ai = name.equals(TESTS[3]);
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, name), new FunctionGameTestInstance(
                     ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, name)),
-                    new TestData<>(env, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), ai ? 1600 : 200, 0, !ai,
+                    new TestData<>(env, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), ai ? 1600 : 200, 0, true,
                             net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, ai ? 24 : 12)));
         }
     }
@@ -153,9 +153,10 @@ public final class NightTest {
     private static void fearsFire(GameTestHelper h) {
         forceChunks(h, 16);
         clear(h, 16, 4); // floor all round: it can only walk off as far as there is ground (padding 24 keeps this off other tests)
-        h.setBlock(8, 1, 8, Blocks.CAMPFIRE);
-        Gloson g = h.spawn(NightFauna.GLOSON.get(), 10, 1, 8);
-        BlockPos fire = h.absolutePos(new BlockPos(8, 1, 8));
+        h.setBlock(4, 1, 8, Blocks.CAMPFIRE); // off to one side: 12 blocks of floor beyond the Gloson (from the middle the edge was only 8 out)
+        h.setTime(Math.floorDiv(h.getLevel().getOverworldClockTime(), 24000L) * 24000L + 18000L); // midnight: by day it dozes where it is put
+        Gloson g = h.spawn(NightFauna.GLOSON.get(), 6, 1, 8);
+        BlockPos fire = h.absolutePos(new BlockPos(4, 1, 8));
         h.startSequence()
                 .thenWaitUntil(() -> h.assertTrue(com.mechanical.NightDangers.nearFire(h.getLevel(), net.minecraft.world.phys.Vec3.atCenterOf(fire), 1), "the campfire burns"))
                 .thenWaitUntil(() -> h.assertTrue(g.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(fire)) > 8 * 8, "the Gloson keeps away from the fire (at "

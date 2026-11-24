@@ -113,9 +113,8 @@ public final class TribeTest {
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_miner"), new FunctionGameTestInstance(MINER,
                 new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 40, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
-        // not required: movement timing in the shared test world is flaky (chunks that don't tick yet); it still runs and reports
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "tribe_swim"), new FunctionGameTestInstance(SWIM,
-                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 600, 0, false, Rotation.NONE, false, 1, 1, false, 24)));
+                new TestData<>(env, Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 600, 0, true, Rotation.NONE, false, 1, 1, false, 24)));
     }
 
     private static void guarded(GameTestHelper h, Runnable test) {
@@ -668,7 +667,8 @@ public final class TribeTest {
             boolean[] done = {false};
             h.onEachTick(() -> {
                 if (done[0] || t.tickCount == 0) return; // its chunk may start ticking late
-                if (t.getNavigation().isDone()) t.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.8);
+                // its own goals (a stroll, a look round) may take over the navigation now and then: keep it on the swim
+                if (t.getNavigation().isDone() || !target.equals(t.getNavigation().getTargetPos())) t.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.8);
                 if (t.getPose() == net.minecraft.world.entity.Pose.SWIMMING) swamPose[0] = true;
                 if (t.tickCount < 140) return;
                 done[0] = true;
