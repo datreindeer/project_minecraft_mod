@@ -90,10 +90,27 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         return new Entity(pos, state);
     }
 
-    /** What lies in the pockets: the melt and the game time it has set by. */
+    /** The four pockets (pixels, x0 x1 z0 z1), filled in this order; and the metal's floor and top in a pocket. */
+    public static final float[][] POCKETS = {{2.5F, 7.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 8.5F, 13.5F}, {2.5F, 7.5F, 8.5F, 13.5F}};
+    public static final float FLOOR = 1.6F, TOP = 3.6F;
+
+    /** What lies in the pockets: the melt, how much is in while it is being poured, and the game time it has set by. */
     public static class Entity extends BlockEntity {
         @Nullable Molten molten;
         long setAt;
+        /** While the stream runs: the melt coming in and how much is in (the pockets fill one after another). */
+        @Nullable Molten filling;
+        int filled;
+
+        public @Nullable Molten filling() {
+            return filling;
+        }
+
+        /** mB in pocket {@code i}: all of it once poured, else what the stream has put in so far. */
+        public float pocket(int i) {
+            int per = CAST / INGOTS, in = molten != null ? CAST : filling != null ? filled : 0;
+            return Math.clamp((in - i * per) / (float) per, 0, 1);
+        }
 
         public Entity(BlockPos pos, BlockState state) {
             super(HighFurnace.INGOT_MOLD_ENTITY.get(), pos, state);
@@ -114,6 +131,8 @@ public class IngotMoldBlock extends Block implements EntityBlock {
 
         void pour(Molten m, long now) {
             molten = m;
+            filling = null;
+            filled = 0;
             setAt = now + SET_TICKS;
             sync();
         }
@@ -132,6 +151,8 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         protected void loadAdditional(ValueInput input) {
             super.loadAdditional(input);
             molten = Molten.byId(input.getStringOr("molten", ""));
+            filling = Molten.byId(input.getStringOr("filling", ""));
+            filled = input.getIntOr("filled", 0);
             setAt = input.getLongOr("set_at", 0);
         }
 
@@ -139,6 +160,8 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         protected void saveAdditional(ValueOutput output) {
             super.saveAdditional(output);
             if (molten != null) output.putString("molten", molten.id);
+            if (filling != null) output.putString("filling", filling.id);
+            output.putInt("filled", filled);
             output.putLong("set_at", setAt);
         }
 
@@ -163,6 +186,33 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         @Override
         public void fill(ServerLevel level, BlockPos at, Molten m, int mb) {
             if (level.getBlockEntity(at) instanceof Entity e) e.pour(m, level.getGameTime());
+        }
+
+        /** The stream lands on the metal rising in the pocket now being filled. */
+        @Override
+        public net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
+            int per = CAST / INGOTS, i = Math.min(INGOTS - 1, poured / per);
+            float f = Math.clamp((poured - i * per) / (float) per, 0, 1);
+            float[] p = POCKETS[i];
+            return new net.minecraft.world.phys.Vec3((p[0] + p[1]) / 32, (FLOOR + (TOP - FLOOR) * f) / 16, (p[2] + p[3]) / 32);
+        }
+
+        @Override
+        public void progress(ServerLevel level, BlockPos at, Molten m, int poured, int need) {
+            if (level.getBlockEntity(at) instanceof Entity e) {
+                e.filling = m;
+                e.filled = poured;
+                e.sync();
+            }
+        }
+
+        @Override
+        public void abort(ServerLevel level, BlockPos at) {
+            if (level.getBlockEntity(at) instanceof Entity e && e.molten == null) {
+                e.filling = null;
+                e.filled = 0;
+                e.sync();
+            }
         }
     }
 }

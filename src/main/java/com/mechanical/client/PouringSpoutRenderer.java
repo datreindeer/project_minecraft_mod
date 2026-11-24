@@ -37,8 +37,9 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
 
     public static class State extends BlockEntityRenderState {
         @Nullable Molten stream;
-        float fall, time;
+        float time;
         Direction facing = Direction.NORTH;
+        Vec3 lip = Vec3.ZERO, target = Vec3.ZERO;
     }
 
     public PouringSpoutRenderer(BlockEntityRendererProvider.Context context) {}
@@ -53,8 +54,9 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
             ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(spout, state, partialTicks, camera, breakProgress);
         state.stream = spout.stream();
-        state.fall = spout.fall();
         state.facing = spout.facing();
+        state.lip = spout.lip();
+        state.target = spout.target();
         state.time = WaterPowerRenderers.time(spout.getLevel(), partialTicks);
     }
 
@@ -63,26 +65,27 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
         if (state.stream == null) return;
         int c = 0xFF000000 | state.stream.color;
         float scroll = state.time * 0.08F;
-        pose.pushPose();
-        pose.translate(0.5F, 0, 0.5F);
-        pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // local -z: the way it pours
+        Vec3 a = state.lip, b = state.target;
         collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
-            // along the trough to the lip
-            quad(p, buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F);
-            // the falling column: 3 px thick, from the lip (y 6/16) down to the cast's surface
-            float x0 = -1.6F / 16, x1 = 1.6F / 16, z0 = -3.1F / 16, z1 = 0.1F / 16, top = 6.2F / 16, bottom = -state.fall + 0.32F;
-            column(p, buf, c, x0, z0, x1, z1, bottom, top, scroll);
-            // the splash: a short wider skirt where it lands
-            column(p, buf, c, x0 - 0.04F, z0 - 0.04F, x1 + 0.04F, z1 + 0.04F, bottom, bottom + 0.08F, scroll * 1.5F);
+            pose.pushPose();
+            pose.translate(0.5F, 0, 0.5F);
+            pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // the metal along the trough to the lip
+            quad(pose.last(), buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F);
+            pose.popPose();
+            // the stream: thicker at the lip, thinning as it falls, down to the metal it lands in, and a splash ring there
+            float h0 = 1.8F / 16, h1 = 1.2F / 16;
+            column(p, buf, c, (float) a.x, (float) a.z, (float) b.x, (float) b.z, h0, h1, (float) b.y, (float) a.y, scroll);
+            column(p, buf, c, (float) b.x, (float) b.z, (float) b.x, (float) b.z, h1 + 0.04F, h1 + 0.04F, (float) b.y, (float) b.y + 0.05F, scroll * 1.5F);
         });
-        pose.popPose();
     }
 
-    private static void column(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float z0, float x1, float z1, float y0, float y1, float scroll) {
-        float[][] corners = {{x0, z0}, {x1, z0}, {x1, z1}, {x0, z1}};
+    /** A column from (ax, az) at height ya (top, half-width ha) down to (bx, bz) at yb (bottom, half-width hb), seen from both sides. */
+    private static void column(PoseStack.Pose p, VertexConsumer buf, int c, float ax, float az, float bx, float bz, float ha, float hb, float yb, float ya, float scroll) {
+        float[][] dirs = {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
         for (int i = 0; i < 4; i++) {
-            float[] a = corners[i], b = corners[(i + 1) % 4];
-            float[][] q = {{a[0], y0, a[1], 0}, {a[0], y1, a[1], 0}, {b[0], y1, b[1], 0.25F}, {b[0], y0, b[1], 0.25F}};
+            float[] d0 = dirs[i], d1 = dirs[(i + 1) % 4];
+            float[][] q = {{bx + d0[0] * hb, yb, bz + d0[1] * hb, 0}, {ax + d0[0] * ha, ya, az + d0[1] * ha, 0},
+                    {ax + d1[0] * ha, ya, az + d1[1] * ha, 0.25F}, {bx + d1[0] * hb, yb, bz + d1[1] * hb, 0.25F}};
             for (int s = 0; s < 2; s++)
                 for (int k = 0; k < 4; k++) {
                     float[] v = q[s == 0 ? k : 3 - k];
@@ -106,7 +109,7 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
 
     @Override
     public AABB getRenderBoundingBox(PouringSpoutBlockEntity spout) {
-        return new AABB(spout.getBlockPos()).expandTowards(0, -1.5, 0);
+        return new AABB(spout.getBlockPos()).inflate(0.5).expandTowards(0, -1.5, 0);
     }
 
     @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)

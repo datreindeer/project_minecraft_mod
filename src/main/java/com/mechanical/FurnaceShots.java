@@ -90,8 +90,8 @@ public final class FurnaceShots {
             if (mc.player == null || mc.getSingleplayerServer() == null) return;
             ticks++;
             if (feeding) server(() -> {
-                for (int z = 0; z < 3; z++)
-                    if (level().getBlockEntity(rel(14, 0, z)) instanceof GreatBellowsBlockEntity b) b.feed(16 * WaterPower.DEG_PER_POWER, 0, 0, 16);
+                for (BlockPos q : new BlockPos[] {new BlockPos(14, 0, 1), new BlockPos(8, 0, 1), new BlockPos(12, 0, 4)})
+                    if (level().getBlockEntity(rel(q.getX(), q.getY(), q.getZ())) instanceof GreatBellowsBlockEntity b) b.feed(16 * WaterPower.DEG_PER_POWER, 0, 0, 16);
             });
             if (stage == 1) {
                 mc.options.pauseOnLostFocus = false;
@@ -210,13 +210,14 @@ public final class FurnaceShots {
         furnace(0, 0, 2, 2, 5);
         set(2, 0, 0, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
         furnace(10, 0, 3, 3, 8);
-        for (int z = 0; z < 3; z++) {
-            set(13, 0, z, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
-            set(14, 0, z, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.WEST));
-        }
-        set(13, 0, 1, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
+        // one firebox and bellows per side, not a row of furniture: east, west and the back wall
         set(13, 0, 1, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.EAST));
-        set(11, 0, 3, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        set(14, 0, 1, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.WEST));
+        set(9, 0, 1, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.WEST));
+        set(8, 0, 1, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.EAST));
+        set(12, 0, 3, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        set(12, 0, 4, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.NORTH));
+        set(10, 0, 3, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
         // a taphole in the small furnace's back wall with a spout pouring into an iron ingot mold in a pit
         set(1, 0, 2, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
         set(1, 0, 3, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));

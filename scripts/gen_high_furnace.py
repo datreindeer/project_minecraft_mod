@@ -285,39 +285,53 @@ arched_block("high_furnace_front", "high_furnace_front", None, FRONT_EXTRA, has_
     {"from": [5, 7, 3.98], "to": [11, 13, 3.98], "light_emission": LIGHT[h], "shade": False,
      "faces": {"north": {"uv": [5, 3, 11, 9], "texture": "#hglow"}}}])
 
-# ---------------- Great Bellows (nozzle to the north): a big wedge bellows riding on a timber trestle at the height of the
-# Firebox's tuyere, its bronze nozzle going straight into it. The axle from the wheel runs through the trestle's side rails
-# at the block's middle (y 8); a crank on it works a connecting rod up through a slot in the bottom board to the top
-# board, which is hinged at the nozzle end: each turn the bellows opens and is pressed shut. Static: trestle, rails,
-# bottom board, nozzle. Moving (client/GreatBellowsRenderer): the shaft with its crank, the rod, the top board and the
-# leather folds between the boards.
+# ---------------- Great Bellows (nozzle to the north): a GREAT wedge bellows two blocks long, lying on a timber trestle
+# that reaches back into the block behind (keep it clear), its iron-shod bronze nozzle going straight into the Firebox's
+# tuyere. The wheel's axle runs across the block's middle (y 8) under the bellows; a crank on its free end works a long
+# pitman rod up to a rocker beam on a tall post at the side, whose back arm lifts the top board by a hanger: each turn of
+# the wheel the bellows opens to about a block high and is pressed shut. Static (this model): trestle, axle bearings,
+# bottom board, nozzle. Moving (client/GreatBellowsRenderer): axle, crank, pitman, rocker post and beam, hanger, the top
+# board on its hinge at the nozzle end and the pleated leather between the boards.
 BT = {"particle": B + "great_bellows_board", "board": B + "great_bellows_board", "leather": B + "great_bellows_leather",
       "frame": B + "great_bellows_frame", "end": B + "great_bellows_frame_end", "bronze": B + "great_bellows_nozzle", "cam": B + "great_bellows_cam"}
 POST = {"north": "#frame", "south": "#frame", "east": "#frame", "west": "#frame", "up": "#end", "down": "#end"}
 RAIL = {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}
-static = [box([1, 0, 1], [3, 9, 3], POST), box([13, 0, 1], [15, 9, 3], POST),            # trestle legs
-          box([1, 0, 13], [3, 9, 15], POST), box([13, 0, 13], [15, 9, 15], POST),
-          box([0.5, 6.5, 0.5], [3, 9, 15.5], RAIL), box([13, 6.5, 0.5], [15.5, 9, 15.5], RAIL),  # side rails carrying the axle
-          box([3, 1, 1.5], [13, 2.5, 2.5], "#frame"), box([3, 1, 13.5], [13, 2.5, 14.5], "#frame"),  # stretchers
-          box([0.2, 6, 6.2], [3.2, 10, 6.8], "#cam"), box([12.8, 6, 6.2], [15.8, 10, 6.8], "#cam"),  # bearing straps
-          box([2, 9, 1.5], [14, 10, 15.5], "#board"),                                     # the bottom board
-          box([5.5, 9.2, 0.2], [10.5, 12.8, 1.6], "#bronze"),                             # the bellows' mouth
-          box([6.5, 10, -4.5], [9.5, 13, 0.2], "#bronze"),                                # the nozzle into the tuyere
-          box([6, 9.6, -4.9], [10, 13.4, -4.5], "#cam")]                                   # its flange
+static = []
+for z0 in (1, 14.5, 28.5):                                                               # three pairs of legs along it
+    static += [box([1, 0, z0], [3, 10, z0 + 2.5], POST), box([13, 0, z0], [15, 10, z0 + 2.5], POST)]
+static += [box([0.5, 8, 0.5], [3, 10, 31.5], RAIL), box([13, 8, 0.5], [15.5, 10, 31.5], RAIL),   # the side rails
+           box([3, 1.5, 15], [13, 3, 16.5], "#frame"),                                     # a stretcher
+           box([0, 0, 6.5], [1.2, 10, 9.5], POST), box([14.8, 0, 6.5], [16, 10, 9.5], POST),   # axle bearing posts
+           box([-0.2, 6, 6.1], [1.4, 10, 6.6], "#cam"), box([14.6, 6, 6.1], [16.2, 10, 6.6], "#cam"),
+           box([1.5, 10, 2], [14.5, 11.5, 30], "#board"),                                  # the bottom board, thick
+           box([2, 11.5, 0.4], [14, 12, 2.2], "#cam"),                                     # iron shoe at the mouth
+           box([5, 10.2, 0.2], [11, 14.8, 2.2], "#bronze"),                                # the mouth
+           box([6, 10.8, -4.5], [10, 14.2, 0.2], "#bronze"),                               # the nozzle into the tuyere
+           box([5.6, 10.4, -1.8], [10.4, 14.6, -1.2], "#cam"), box([5.6, 10.4, -4.9], [10.4, 14.6, -4.5], "#cam")]  # iron bands
 model("great_bellows", static, BT)
 w(A / "blockstates/great_bellows.json", {"variants": {
     f"facing={f}": {"model": B + "great_bellows", **({"y": y} if y else {})} for f, y in ROT.items()}})
 loot("great_bellows")
-# part models, their hinge / axle / pin at the model's centre (8, 8, 8)
-model("great_bellows_lid", [box([8, 8, 8], [20, 9, 22], "#board"), box([8.4, 9, 17.5], [19.6, 9.6, 18.7], "#cam"),
-                            box([8.4, 9, 10.5], [19.6, 9.6, 11.7], "#cam"), box([12.5, 9.6, 19.5], [15.5, 10.4, 21.5], "#frame")], BT)
-model("great_bellows_pleat", [box([7.2, 8, 8.2], [20.8, 9, 21.8], "#leather")], BT)         # a fold standing out past the boards
-model("great_bellows_pleat_in", [box([8.3, 8, 8.4], [19.7, 9, 21.3], "#leather")], BT)      # a fold tucked in
-model("great_bellows_shaft", [box([6.7, 6.7, 0], [9.3, 9.3, 16], {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}),
-                              box([5.8, 5.8, 7], [10.2, 10.2, 9], "#cam"),                    # the crank disc
-                              box([7.2, 8, 7.5], [8.8, 10.6, 8.5], "#cam")], BT)              # its arm out to the pin
-model("great_bellows_rod", [box([7.4, 8, 7.4], [8.6, 12.4, 8.6], "#cam"), box([7, 7.4, 7], [9, 8.6, 9], "#cam")], BT)
-for p in ("great_bellows_lid", "great_bellows_pleat", "great_bellows_pleat_in", "great_bellows_shaft", "great_bellows_rod"):
+# moving parts. Lid and pleats: hinge at model (2, 8, -4), 28 long (the renderer shifts them so the hinge is at the pose).
+model("great_bellows_lid", [box([1.5, 8, -4], [14.5, 9.5, 24], "#board"),
+                            box([1.3, 9.5, 1], [14.7, 10, 2.3], "#cam"), box([1.3, 9.5, 11], [14.7, 10, 12.3], "#cam"),
+                            box([1.3, 9.5, 21], [14.7, 10, 22.3], "#cam"),                    # iron bands across
+                            box([14.5, 8.5, 21], [17.5, 9.5, 23], "#cam"), box([-1.5, 8.5, 21], [1.5, 9.5, 23], "#cam")], BT)  # hanger brackets
+model("great_bellows_pleat", [box([1.0, 8, -3.6], [15.0, 9.2, 23.4], "#leather")], BT)     # a fold standing out past the boards
+model("great_bellows_pleat_in", [box([2.0, 8, -3.8], [14.0, 9.2, 23.0], "#leather")], BT)   # a fold tucked in
+ROD = {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}
+model("great_bellows_shaft", [box([6.7, 6.7, 0], [9.3, 9.3, 16], ROD)], BT)                 # the axle (along z here)
+model("great_bellows_crank", [box([4.5, 4.5, 7.4], [11.5, 11.5, 8.6], "#cam"),             # crank disc, its pin 3 px out (+y)
+                              box([7.2, 10.2, 6.4], [8.8, 11.8, 9.6], "#cam")], BT)
+model("great_bellows_pitman", [box([7.4, 8, 7.4], [8.6, 24, 8.6], ROD),                     # a rod 16 long up from its foot (scaled)
+                               box([7, 7.3, 7], [9, 8.7, 9], "#cam"), box([7, 23.3, 7], [9, 24.7, 9], "#cam")], BT)
+model("great_bellows_beam", [box([7.2, 7, -4], [8.8, 9, 22], ROD),                         # the rocker beam, pivot at its centre
+                             box([6.8, 6.6, 7], [9.2, 9.4, 9], "#cam")], BT)
+for side, x0, x1 in (("r", 15, 17.4), ("l", -1.4, 1)):                                     # the tall rocker post at the side
+    model(f"great_bellows_post_{side}", [box([x0, 0, 14.6], [x1, 24, 17.4], POST),
+                                         box([x0 - 0.3, 22, 14.2], [x1 + 0.3, 24.5, 17.8], "#cam")], BT)
+for p in ("great_bellows_lid", "great_bellows_pleat", "great_bellows_pleat_in", "great_bellows_shaft", "great_bellows_crank",
+          "great_bellows_pitman", "great_bellows_beam", "great_bellows_post_r", "great_bellows_post_l"):
     item_def(p, B + p)
 item_def("great_bellows", B + "great_bellows")
 
@@ -379,7 +393,15 @@ merge(A / "lang/en_us.json", {"block.mechanical.pouring_spout": "Pouring Spout",
 # is drawn by client/IngotMoldRenderer. For now crafted from 5 Iron Plates (the plan casts it in a Molding Flask, which
 # comes with the rest of the casting tier).
 IM = {"particle": B + "iron_mold_side", "top": B + "iron_ingot_mold_top", "side": B + "iron_mold_side"}
-model("iron_ingot_mold", [box([1, 0, 1], [15, 4, 15], {"up": "#top", "down": "#side", "north": "#side", "south": "#side", "east": "#side", "west": "#side"})], IM)
+# real pockets (x/z 2.5..7.5 and 8.5..13.5, floor 1.6, rim 4) so the metal can be seen rising in them (IngotMoldBlock.POCKETS)
+SIDES4 = {"north": "#side", "south": "#side", "east": "#side", "west": "#side"}
+MOLD = [box([1, 0, 1], [15, 1.6, 15], {"up": "#top", "down": "#side", **SIDES4})]
+for x0, x1 in ((1, 2.5), (7.5, 8.5), (13.5, 15)):                                     # rims and the middle bar along z
+    MOLD.append(box([x0, 1.6, 1], [x1, 4, 15], {"up": "#top", **SIDES4}))
+for z0, z1 in ((1, 2.5), (7.5, 8.5), (13.5, 15)):                                     # and across x, between them
+    for xa, xb in ((2.5, 7.5), (8.5, 13.5)):
+        MOLD.append(box([xa, 1.6, z0], [xb, 4, z1], {"up": "#top", **SIDES4}))
+model("iron_ingot_mold", MOLD, IM)
 w(A / "blockstates/iron_ingot_mold.json", {"variants": {"": {"model": B + "iron_ingot_mold"}}})
 item_def("iron_ingot_mold", B + "iron_ingot_mold")
 loot("iron_ingot_mold")

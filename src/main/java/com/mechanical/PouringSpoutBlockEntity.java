@@ -41,6 +41,20 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         /** The cast is whole: {@code mb} of {@code m} went in. */
         void fill(ServerLevel level, BlockPos at, Molten m, int mb);
 
+        /**
+         * Where the stream lands now, in the sink block's own coordinates (0..1): the surface of the metal in the cavity
+         * being filled, {@code poured} of {@code need} mB in. The stream is drawn down to it.
+         */
+        default net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
+            return new net.minecraft.world.phys.Vec3(0.5, 0.2, 0.5);
+        }
+
+        /** Shows the cast filling while the stream runs ({@code poured} of {@code need} mB in so far). */
+        default void progress(ServerLevel level, BlockPos at, Molten m, int poured, int need) {}
+
+        /** The stream stopped before the cast was whole (its metal went back to the pool). */
+        default void abort(ServerLevel level, BlockPos at) {}
+
         /** Why it refuses a melt (null: it says nothing). */
         default @Nullable Component refuses(ServerLevel level, BlockPos at, Molten m) {
             return null;
@@ -69,6 +83,11 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         }
 
         @Override
+        public net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
+            return new net.minecraft.world.phys.Vec3(0.5, 3.05 / 16, 0.5); // the cavity's floor, the middle of the mold
+        }
+
+        @Override
         public @Nullable Component refuses(ServerLevel level, BlockPos at, Molten m) {
             return level.getBlockState(at).getBlock() instanceof ClayMoldBlock && m.melt > CLAY_MAX
                     ? Component.translatable("message.mechanical.pouring_spout.too_hot") : null;
@@ -79,7 +98,9 @@ public class PouringSpoutBlockEntity extends BlockEntity {
     private @Nullable Molten bufferMolten;
     /** Synced: the melt running now (null: none) and how far it falls, in blocks. */
     private @Nullable Molten stream;
-    private float fall = 0.65F;
+    /** Synced: where the stream lands, relative to this block's corner (the sink is the block below). */
+    private float tx = 0.5F, ty = -0.8F, tz = 0.5F;
+    private @Nullable Sink lastSink;
     private int warnIn;
 
     public PouringSpoutBlockEntity(BlockPos pos, BlockState state) {
@@ -94,8 +115,15 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         return stream;
     }
 
-    public float fall() {
-        return fall;
+    /** Where the stream lands, relative to this block's corner. */
+    public net.minecraft.world.phys.Vec3 target() {
+        return new net.minecraft.world.phys.Vec3(tx, ty, tz);
+    }
+
+    /** The lip the stream leaves from, relative to this block's corner. */
+    public net.minecraft.world.phys.Vec3 lip() {
+        Direction d = facing();
+        return new net.minecraft.world.phys.Vec3(0.5 + d.getStepX() * 0.09, 0.36, 0.5 + d.getStepZ() * 0.09);
     }
 
     /** The furnace whose Taphole this spout sits on, formed, or null. */
@@ -136,7 +164,17 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                 int take = f.pool().drain(m, Math.min(RATE, need - buffer));
                 buffer += take;
                 bufferMolten = m;
+                lastSink = sink;
                 running = take > 0 ? m : null;
+                sink.progress(level, at, m, buffer, need);
+                net.minecraft.world.phys.Vec3 t = sink.target(level, at, buffer, need);
+                float nx = (float) t.x, ny = (float) t.y - 1, nz = (float) t.z;
+                if (nx != tx || ny != ty || nz != tz) {
+                    tx = nx;
+                    ty = ny;
+                    tz = nz;
+                    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+                }
                 if (buffer >= need) {
                     sink.fill(level, at, m, buffer);
                     buffer = 0;
@@ -164,6 +202,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
 
     /** What the stream poured into a cast that is not whole runs back into the pool (or is lost with the furnace). */
     private void giveBack(@Nullable HighFurnaceBlockEntity f) {
+        if (buffer > 0 && lastSink != null && level instanceof ServerLevel server) lastSink.abort(server, worldPosition.below());
         if (buffer > 0 && bufferMolten != null && f != null) f.pool().add(bufferMolten, buffer);
         buffer = 0;
         bufferMolten = null;
@@ -178,7 +217,8 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         if (stream == null) return;
         RandomSource r = level.getRandom();
         Direction d = facing();
-        double x = worldPosition.getX() + 0.5 + d.getStepX() * 0.3, z = worldPosition.getZ() + 0.5 + d.getStepZ() * 0.3, y = worldPosition.getY() - fall + 0.35;
+        double x = worldPosition.getX() + tx, z = worldPosition.getZ() + tz, y = worldPosition.getY() + ty + 0.02; // where it lands: spatter and glow
+        if (r.nextInt(2) == 0) level.addParticle(ParticleTypes.FLAME, x + (r.nextDouble() - 0.5) * 0.12, y, z + (r.nextDouble() - 0.5) * 0.12, 0, 0.02, 0);
         if (r.nextInt(3) == 0) level.addParticle(ParticleTypes.LAVA, x, y, z, 0, 0, 0);
         if (r.nextInt(2) == 0) level.addParticle(ParticleTypes.ELECTRIC_SPARK, x, y, z, (r.nextDouble() - 0.5) * 0.3, 0.15 + r.nextDouble() * 0.2, (r.nextDouble() - 0.5) * 0.3);
         if (r.nextInt(4) == 0) level.addParticle(ParticleTypes.SMOKE, x, y + 0.1, z, 0, 0.04, 0);
@@ -190,7 +230,9 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         buffer = input.getIntOr("buffer", 0);
         bufferMolten = Molten.byId(input.getStringOr("buffer_molten", ""));
         stream = Molten.byId(input.getStringOr("stream", ""));
-        fall = input.getFloatOr("fall", 0.65F);
+        tx = input.getFloatOr("tx", 0.5F);
+        ty = input.getFloatOr("ty", -0.8F);
+        tz = input.getFloatOr("tz", 0.5F);
     }
 
     @Override
@@ -199,7 +241,9 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         output.putInt("buffer", buffer);
         if (bufferMolten != null) output.putString("buffer_molten", bufferMolten.id);
         if (stream != null) output.putString("stream", stream.id);
-        output.putFloat("fall", fall);
+        output.putFloat("tx", tx);
+        output.putFloat("ty", ty);
+        output.putFloat("tz", tz);
     }
 
     @Override
