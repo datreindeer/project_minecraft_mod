@@ -80,7 +80,7 @@ public class WagonEntity extends TravoisEntity {
      * the pair's middle {@link #POLE} further on (the yoke a little ahead of that, at their chests). The front axle turns
      * up to {@link #MAX_STEER} degrees from the bed; past that the horses drag the bed round.
      */
-    static final double FRONT_AXLE = 1.0, POLE = LEAD - FRONT_AXLE;
+    public static final double FRONT_AXLE = 1.0, POLE = LEAD - FRONT_AXLE;
     static final float MAX_STEER = 55.0F;
     /** The bed's rear end behind the centre: a towed cart's shafts rest there ({@link #towPoint}). */
     public static final double REAR = SLOTS * 0.75 / 2;
@@ -382,10 +382,25 @@ public class WagonEntity extends TravoisEntity {
         return position().subtract(Vec3.directionFromRotation(0, getYRot()).scale(REAR));
     }
 
-    /** Wheels on both axles: the bed stays level. */
+    /** Wheels: on the axles {@link #FRONT_AXLE} ahead of and behind the middle, a block either side (WagonModel). */
+    public static final double WHEEL_SIDE = 1.0;
+    private float pitchTarget;
+
+    /**
+     * Its four wheels: the bed rests on the plane through them, at their mean height, pitched by the front pair against the
+     * rear pair and rolled by the right pair against the left.
+     */
+    @Override
+    protected void settleOnWheels() {
+        double fl = groundUnder(FRONT_AXLE, -WHEEL_SIDE, WHEEL_RADIUS), fr = groundUnder(FRONT_AXLE, WHEEL_SIDE, WHEEL_RADIUS);
+        double rl = groundUnder(-FRONT_AXLE, -WHEEL_SIDE, WHEEL_RADIUS), rr = groundUnder(-FRONT_AXLE, WHEEL_SIDE, WHEEL_RADIUS);
+        pitchTarget = Mth.clamp((float) Math.toDegrees(Math.atan2((fl + fr - rl - rr) / 2, 2 * FRONT_AXLE)), -35.0F, 35.0F);
+        settle((fl + fr + rl + rr) / 4, (float) Math.toDegrees(Math.atan2((fr + rr - fl - rl) / 2, 2 * WHEEL_SIDE)));
+    }
+
     @Override
     protected float targetPitch(Entity puller) {
-        return 0;
+        return pitchTarget;
     }
 
     @Override
@@ -671,14 +686,13 @@ public class WagonEntity extends TravoisEntity {
      */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
-        Vec3 dir = Vec3.directionFromRotation(0, getYRot());
         if (passenger instanceof FelledLogEntity log) {
             // drawn at LOG_SCALE: two side by side on the floor, the third on top between them; root ends at the front board
             int n = carriedLogs().indexOf(log);
             double s = LOG_SCALE, along = SLOTS * SLOT_DEPTH / 2 - 0.125 - log.size() * s / 2.0;
             double side = n == 0 ? -s / 2 : n == 1 ? s / 2 : 0, up = n >= 2 ? s : 0;
-            Vec3 right = Vec3.directionFromRotation(0, getYRot() + 90);
-            moveFunction.accept(passenger, getX() + dir.x * along + right.x * side, getY() + BED + up, getZ() + dir.z * along + right.z * side);
+            Vec3 at = onBed(along, side, BED + up, 0, 0);
+            moveFunction.accept(passenger, at.x, at.y, at.z);
             log.setYRot(getYRot() + 180);
             return;
         }
@@ -688,7 +702,8 @@ public class WagonEntity extends TravoisEntity {
             double room = rowOffset(passenger, 1.0) + load() / 2.0; // the body's middle, in rooms from the front
             int i = Mth.clamp((int) Math.floor(room / ROOM_PER_SLOT), 0, empty.size() - 1);
             double along = slotAlong(empty.get(i)) - (room - i * ROOM_PER_SLOT - ROOM_PER_SLOT / 2.0) * SLOT_DEPTH / ROOM_PER_SLOT;
-            moveFunction.accept(passenger, getX() + dir.x * along, getY() + BED, getZ() + dir.z * along);
+            Vec3 at = onBed(along, 0, BED, 0, 0);
+            moveFunction.accept(passenger, at.x, at.y, at.z);
             passenger.setYRot(getYRot() + 90.0F);
             if (passenger instanceof LivingEntity animal) {
                 animal.setYBodyRot(getYRot() + 90.0F);
@@ -705,7 +720,8 @@ public class WagonEntity extends TravoisEntity {
         if (n >= seats.size()) return;
         double along = slotAlong(seats.get(n));
         Vec3 offset = passenger.getVehicleAttachmentPoint(this);
-        moveFunction.accept(passenger, getX() + dir.x * along - offset.x, getY() + BED + SEAT_TOP - offset.y, getZ() + dir.z * along - offset.z);
+        Vec3 at = onBed(along, 0, BED + SEAT_TOP, 0, 0);
+        moveFunction.accept(passenger, at.x - offset.x, at.y - offset.y, at.z - offset.z);
     }
 
     private List<Integer> slotsWith(int module) {

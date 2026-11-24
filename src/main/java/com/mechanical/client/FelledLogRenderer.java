@@ -37,7 +37,7 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         /** Smaller on a cart or wagon bed (TravoisEntity#LOG_SCALE). */
         float scale = 1;
         /** Lying on a slope: rise per block along it. */
-        float tilt;
+        float tilt, bedPitch, bedRoll;
         int length;
         /** Dev (LogShots): the collision boxes, relative to the entity. */
         net.minecraft.world.phys.shapes.VoxelShape debugShape;
@@ -84,6 +84,9 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
         state.rootUp = log.rootLifted();
         state.tilt = log.lifterCount() == 0 ? log.tilt() : 0;
         state.scale = log.getVehicle() instanceof com.mechanical.TravoisEntity ? com.mechanical.TravoisEntity.LOG_SCALE : 1;
+        // on a bed: tipped with it (it faces back along the bed, which turns it the bed's way round in the renderer's frame)
+        state.bedPitch = log.getVehicle() instanceof com.mechanical.TravoisEntity bed ? bed.pitch(partialTicks) : 0;
+        state.bedRoll = log.getVehicle() instanceof com.mechanical.TravoisEntity bed ? bed.roll(partialTicks) : 0;
         state.length = n;
         state.cracked = log.crackedBlock() < n ? log.crackedBlock() : -1;
         state.crackStage = log.crackStage();
@@ -130,6 +133,8 @@ public class FelledLogRenderer extends EntityRenderer<FelledLogEntity, FelledLog
             collector.submitShapeOutline(poseStack, state.debugShape, net.minecraft.client.renderer.rendertype.RenderTypes.lines(), 0xFFFF0000, 3.0F, false);
         poseStack.pushPose();
         poseStack.rotate(Axis.YP.rotationDegrees(-state.yaw));
+        poseStack.rotate(Axis.ZP.rotationDegrees(state.bedRoll));
+        poseStack.rotate(Axis.XP.rotationDegrees(state.bedPitch));
         poseStack.scale(state.scale, state.scale, state.scale);
         // on a slope: turned about its middle, the crown end (+z) up by tilt per block (the collision boxes step along it)
         if (state.tilt != 0) poseStack.rotate(Axis.XP.rotation((float) -Math.atan(state.tilt)));

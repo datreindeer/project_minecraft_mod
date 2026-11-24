@@ -88,6 +88,20 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
   inte att sitta upp på medan någon kör, sittande kliver av vid sidan av flaket, smyg + högerklick på hästen spänner från
   kärra och plog också, kärrans häst (och vagnen den dras efter) sparas med UUID, kärrans skaklar skjuts bakåt.
 
+## Lutning i backar (v0.195.0)
+- Flaket vilar på hjulen: klienten letar marken under varje hjul (mitten och två punkter fram och bak på fälgen, så
+  hjulet rullar upp på kanten av en slab eller ett trappsteg, gräs-slabs och vägarnas path-slabs med sin riktiga höjd).
+  Vagnen lutar fram/bak efter främre mot bakre hjulparet och åt sidan efter höger mot vänster, på medelhöjden av de fyra;
+  kärran lutar åt sidan efter sina två hjul och vilar axeln på deras medelhöjd (fram/bak som förut efter skaklarna).
+  Allt mjukas ut (0,4 per tick) och marken söks 2,5 ticks av rörelsen framåt så att flaket inte släpar efter i en backe.
+  Mätt i galopp uppför en väg med en halv slab per block: hjulen högst ~0,3 block från marken, still 0,05.
+- Lasten följer med: moduler, karavanens last och tält ritas i flakets lutning, stockar och kroppar placeras på det lutande
+  flaket (stockarna lutar med), sittande likaså. Dragstången håller sig vid hästarnas bogar: den vrids efter hur högt
+  paret står över framaxeln, oavsett flakets lutning. Bara klienten lutar (servern räknar som förut), så den stela
+  dragningen och hästarna i takt från buggrundan är orörda.
+- **Utelämnat:** framhjulens utslag räknas inte in (marken söks där hjulen står rakt fram), kroppar på flaket lutar inte själva.
+- Dev: `TiltShots` (tiltshots.flag i run/) bygger en backe och tar bilder.
+
 ## Senare
 - Uroxar som dragdjur (kräver tämjning).
 - Karavaner med vagn.
