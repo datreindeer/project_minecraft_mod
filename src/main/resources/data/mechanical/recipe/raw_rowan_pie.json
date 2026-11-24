@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flour",
+    "mechanical:flour",
+    "mechanical:lard",
+    "mechanical:rowan_berries",
+    "mechanical:rowan_berries",
+    "mechanical:rowan_berries"
+  ],
+  "result": {
+    "id": "mechanical:raw_rowan_pie"
+  }
+}

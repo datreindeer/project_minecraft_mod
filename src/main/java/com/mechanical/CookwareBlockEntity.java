@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -29,7 +31,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 /**
  * What lies on a griddle or skillet, or is shut in a barrel or press ({@link CookwareBlock}): single items, one per
  * slot. When they make a dish (Kitchen.match) it cooks: pans while the campfire under them burns (embers don't do), the
- * barrel and press with time alone. Done, the items are replaced by the dish; on a pan it burns after
+ * barrel and press with time alone, the mortar and sieve by hand (each empty-hand click one of {@code Kind.clicks}). Done, the items are replaced by the dish; on a pan it burns after
  * {@link Kitchen#PAN_BURN} more ticks over the fire.
  */
 public class CookwareBlockEntity extends BlockEntity {
@@ -74,17 +76,14 @@ public class CookwareBlockEntity extends BlockEntity {
     void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (items.isEmpty()) return;
         CookwareBlock.Kind kind = kind();
+        if (kind.clicks > 0) return; // worked by hand (work)
         boolean heat = !kind.fire || fireLit(level);
         if (!done) {
             Kitchen.Match m = match();
             if (m == null || !heat) return;
             if (++progress >= cookTime()) {
-                items.clear();
-                items.addAll(Kitchen.results(m));
-                done = true;
-                progress = 0;
+                finish(level, m);
                 level.playSound(null, pos, kind.fire ? SoundEvents.FIRE_EXTINGUISH : SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.4F, kind.fire ? 1.6F : 0.8F);
-                sync();
             } else if (kind.fire && level.getRandom().nextInt(20) == 0) {
                 level.sendParticles(ParticleTypes.WHITE_SMOKE, pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, 1, 0.2, 0.02, 0.2, 0.01);
                 level.playSound(null, pos, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.3F, 1.8F);
@@ -97,6 +96,35 @@ public class CookwareBlockEntity extends BlockEntity {
             level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, 12, 0.2, 0.05, 0.2, 0.02);
             sync();
         }
+    }
+
+    private void finish(ServerLevel level, Kitchen.Match m) {
+        items.clear();
+        items.addAll(Kitchen.results(m));
+        done = true;
+        progress = 0;
+        sync();
+    }
+
+    /** One turn of the pestle or shake of the sieve: the pestle moves a quarter round the mortar; the last one finishes. */
+    void work(ServerLevel level, Kitchen.Match m) {
+        CookwareBlock.Kind kind = kind();
+        BlockState state = getBlockState();
+        if (state.hasProperty(HorizontalDirectionalBlock.FACING))
+            level.setBlock(worldPosition, state.setValue(HorizontalDirectionalBlock.FACING, state.getValue(HorizontalDirectionalBlock.FACING).getClockWise()), Block.UPDATE_ALL);
+        double x = worldPosition.getX() + 0.5, z = worldPosition.getZ() + 0.5;
+        ItemStack dust = items.get(level.getRandom().nextInt(items.size()));
+        if (kind == CookwareBlock.Kind.MORTAR) {
+            level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, dust.getItem()), x, worldPosition.getY() + 0.4, z, 4, 0.08, 0.02, 0.08, 0.03);
+            level.playSound(null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 0.35F, 1.5F + level.getRandom().nextFloat() * 0.2F);
+        } else {
+            level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, dust.getItem()), x, worldPosition.getY() + 0.15, z, 6, 0.25, 0.02, 0.25, 0.0);
+            level.playSound(null, worldPosition, SoundEvents.SAND_STEP, SoundSource.BLOCKS, 0.6F, 1.3F);
+        }
+        if (++progress >= kind.clicks) {
+            finish(level, m);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.4F, 0.7F);
+        } else setChanged();
     }
 
     /** Puts one of the held item in (its bucket back for milk), if it can be part of a dish here and there is room. */
@@ -134,6 +162,10 @@ public class CookwareBlockEntity extends BlockEntity {
             return;
         }
         Kitchen.Match m = match();
+        if (!done && m != null && !player.isSecondaryUseActive() && kind().clicks > 0) {
+            work(level, m);
+            return;
+        }
         if (!done && m != null && !player.isSecondaryUseActive()) {
             boolean heat = !kind().fire || fireLit(level);
             int seconds = (cookTime() - progress) / 20;

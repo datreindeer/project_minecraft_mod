@@ -5,6 +5,11 @@
     "mechanical:cinnamon_bark",
     "mechanical:ginger_root",
     "mechanical:saffron",
-    "mechanical:mustard_seeds"
+    "mechanical:mustard_seeds",
+    "mechanical:kitchen_pepper",
+    "mechanical:sweet_spice",
+    "mechanical:golden_spice",
+    "mechanical:pickling_spice",
+    "mechanical:herb_salt"
   ]
 }

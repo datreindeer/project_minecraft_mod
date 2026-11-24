@@ -31,7 +31,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Cookware that holds a few things and turns them into a dish (Kitchen.DISHES): the Bronze Griddle and Iron Skillet
  * stand on their legs over a campfire and cook while it burns (food left on too long burns); the Fermenting Barrel and
- * the Cheese Press need no fire, only time. Right-click with an ingredient to put it in, an empty hand to take out
+ * the Cheese Press need no fire, only time; the Steel Pan is a pan of the Steel Age. The Mortar and Pestle and the Sieve
+ * are worked by hand: each empty-hand click grinds (the pestle turns a quarter round the mortar: {@code facing}) or
+ * shakes, and after {@link Kind#clicks} clicks the blend or the sifted flour is done. Right-click with an ingredient to put it in, an empty hand to take out
  * what is done (or, while it works, to see how long it has left), sneaking to take the raw things back out.
  * The contents: {@link CookwareBlockEntity}; pans draw what lies on them (client.CookwareRenderer).
  */
@@ -39,23 +41,28 @@ public class CookwareBlock extends Block implements EntityBlock {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty PRESSING = BooleanProperty.create("pressing");
 
-    /** Kind: which dishes (tool, tier), how many things it holds, whether it stands over a campfire. */
+    /** Kind: which dishes (tool, tier), how many things it holds, whether it stands over a campfire, and how many
+     * empty-hand clicks work it (0: it works by itself, with time). */
     public enum Kind {
-        GRIDDLE(Kitchen.Tool.PAN, 1, 4, true), SKILLET(Kitchen.Tool.PAN, 2, 4, true), BARREL(Kitchen.Tool.BARREL, 2, 8, false), PRESS(Kitchen.Tool.PRESS, 2, 4, false);
+        GRIDDLE(Kitchen.Tool.PAN, 1, 4, true, 0), SKILLET(Kitchen.Tool.PAN, 2, 4, true, 0), BARREL(Kitchen.Tool.BARREL, 2, 8, false, 0),
+        PRESS(Kitchen.Tool.PRESS, 2, 4, false, 0), STEEL_PAN(Kitchen.Tool.PAN, 3, 4, true, 0), MORTAR(Kitchen.Tool.MORTAR, 3, 4, false, 8),
+        SIEVE(Kitchen.Tool.SIEVE, 3, 4, false, 6);
 
         public final Kitchen.Tool tool;
-        public final int tier, capacity;
+        public final int tier, capacity, clicks;
         public final boolean fire;
 
-        Kind(Kitchen.Tool tool, int tier, int capacity, boolean fire) {
+        Kind(Kitchen.Tool tool, int tier, int capacity, boolean fire, int clicks) {
             this.tool = tool;
             this.tier = tier;
             this.capacity = capacity;
             this.fire = fire;
+            this.clicks = clicks;
         }
     }
 
-    private static final VoxelShape PAN_SHAPE = box(1, -9, 1, 15, 3.5, 15), BARREL_SHAPE = box(1, 0, 1, 15, 15, 15), PRESS_SHAPE = box(1, 0, 1, 15, 16, 15);
+    private static final VoxelShape PAN_SHAPE = box(1, -9, 1, 15, 3.5, 15), BARREL_SHAPE = box(1, 0, 1, 15, 15, 15), PRESS_SHAPE = box(1, 0, 1, 15, 16, 15),
+            MORTAR_SHAPE = box(3, 0, 3, 13, 7, 13), SIEVE_SHAPE = box(1, 0, 1, 15, 6, 15);
     public final Kind kind;
 
     protected CookwareBlock(Kind kind, Properties properties) {
@@ -71,7 +78,7 @@ public class CookwareBlock extends Block implements EntityBlock {
     /** The block for this kind, with its own state property (createBlockStateDefinition runs before the kind is known). */
     public static CookwareBlock create(Kind kind, Properties p) {
         return switch (kind) {
-            case GRIDDLE, SKILLET -> new CookwareBlock(kind, p) {
+            case GRIDDLE, SKILLET, STEEL_PAN, MORTAR -> new CookwareBlock(kind, p) {
                 @Override
                 protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
                     builder.add(HorizontalDirectionalBlock.FACING);
@@ -89,6 +96,7 @@ public class CookwareBlock extends Block implements EntityBlock {
                     builder.add(PRESSING);
                 }
             };
+            case SIEVE -> new CookwareBlock(kind, p);
         };
     }
 
@@ -122,7 +130,13 @@ public class CookwareBlock extends Block implements EntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return kind.fire ? PAN_SHAPE : kind == Kind.BARREL ? BARREL_SHAPE : PRESS_SHAPE;
+        return switch (kind) {
+            case BARREL -> BARREL_SHAPE;
+            case PRESS -> PRESS_SHAPE;
+            case MORTAR -> MORTAR_SHAPE;
+            case SIEVE -> SIEVE_SHAPE;
+            default -> PAN_SHAPE;
+        };
     }
 
     @Override

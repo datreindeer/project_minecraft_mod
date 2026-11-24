@@ -1177,6 +1177,24 @@
      "sv": "[[iron_cauldron]] hänger i en [[tripod]] över en Fire Pit och kokar för hela stammen ([[cabbage_soup]]). [[iron_skillet]] steker [[sausage]], [[fermenting_barrel]] gör [[sauerkraut]], [[cheese_press]] gör [[cheese]], och en [[salt_pan]] vid havet ger salt.",
      "en": "The [[iron_cauldron]] hangs in a [[tripod]] over a Fire Pit and cooks for the whole tribe ([[cabbage_soup]]). The [[iron_skillet]] fries [[sausage]], the [[fermenting_barrel]] makes [[sauerkraut]], the [[cheese_press]] makes [[cheese]], and a [[salt_pan]] by the sea gives salt."
     }
+   },
+   {
+    "title": {
+     "sv": "Stålets kök",
+     "en": "The Steel Age kitchen"
+    },
+    "items": [
+     "steel_pan",
+     "mortar_and_pestle",
+     "sieve",
+     "steel_knife_set",
+     "kitchen_pepper",
+     "saffron_rice"
+    ],
+    "text": {
+     "sv": "Den östra karavanens kryddor mals i en [[mortar_and_pestle]] (klicka med tom hand) till blandningar: [[kitchen_pepper]], [[sweet_spice]], [[golden_spice]], [[pickling_spice]], eller [[herb_salt]] av salt och örter. En [[steel_pan]] över elden gör [[saffron_rice]] och [[peppered_steak]], grytan [[spiced_pilaf]], och ett [[sieve]] siktar mjöl till [[fine_flour]] för [[gingerbread]]. [[steel_knife_set]] ger mer av varje kadaver. Ris växer bara med vatten bredvid (en risodling). I tunnan jäser också [[cider]] och [[ale]], och fruktträdens frukt blir pajer i ugnen ([[apple_pie]]).",
+     "en": "The Eastern Caravan's spices are ground in a [[mortar_and_pestle]] (click with an empty hand) into blends: [[kitchen_pepper]], [[sweet_spice]], [[golden_spice]], [[pickling_spice]], or [[herb_salt]] from salt and herbs. A [[steel_pan]] over the fire makes [[saffron_rice]] and [[peppered_steak]], the cauldron [[spiced_pilaf]], and a [[sieve]] sifts flour into [[fine_flour]] for [[gingerbread]]. The [[steel_knife_set]] gets more from every carcass. Rice grows only with water beside it (a paddy). The barrel also ferments [[cider]] and [[ale]], and the fruit trees' fruit becomes pies in the kiln ([[apple_pie]])."
+    }
    }
   ]
  },

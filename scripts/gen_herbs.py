@@ -8,6 +8,8 @@ ClayPotBlock, CookwareBlock(Entity), SaltPanBlock, client/CookwareRenderer).
 - Herbs (HerbBlock: full / cut models, loot = the plant itself, worldgen), their cut items.
 - The Eastern Caravan's goods; villager farmer coin trades for the goods only villagers sell (Barley, Onion, Garlic,
   Cabbage, Dill, Mustard, Broad Beans; Wild Apple Sapling at level 4).
+- Phase 6 (the Steel Age kitchen: Steel Pan, Mortar and Pestle, Sieve, Steel Knife Set, spice blends, rice dishes) and the
+  phase 4-5 leftovers (Cider, Ale, pies, Roast with Herbs): lang, recipes, loot, tags.
 - Kitchen: dish items' lang, recipes (cookware crafting, raw dishes, campfire), loot for the cookware, tags (perishing,
   compostable, grains, culinary herbs, spices, cellar produce, mineable), messages. Cookware models/blockstates/items:
   scripts/herbs_cookware.py (imported and run from here, it patches gen_kettle's tripod blockstate).
@@ -320,6 +322,42 @@ tag(MIT / "perishes_1_day.json", *(S + i for i in ("nettle_soup", "root_pottage"
 tag(MIT / "perishes_3_days.json", *(S + i for i in ("herb_roasted_fish", "flatbread", "honey_cake", "sausage")))
 tag(MIT / "perishes_30_days.json", *(S + i for i in ("sauerkraut", "cheese", "elderberry_syrup", "sloe_jam")))
 
+# ---------------------------------------------------------------- phase 6: the Steel Age kitchen, and the phase 4-5 leftovers
+# (Kitchen.DISHES rows; models herbs_cookware.py; textures gen_cookware_textures.py)
+STEEL_DISHES = {
+    "roast_with_herbs": "Roast with Herbs", "cider": "Cider", "ale": "Ale",
+    "kitchen_pepper": "Kitchen Pepper", "sweet_spice": "Sweet Spice", "golden_spice": "Golden Spice", "pickling_spice": "Pickling Spice",
+    "herb_salt": "Herb Salt", "fine_flour": "Fine Flour", "sea_buckthorn_juice": "Sea Buckthorn Juice", "saffron_rice": "Saffron Rice",
+    "peppered_steak": "Peppered Steak", "spiced_pilaf": "Spiced Pilaf", "pickled_vegetables": "Pickled Vegetables",
+    "raw_gingerbread": "Raw Gingerbread", "gingerbread": "Gingerbread", "steel_knife_set": "Steel Knife Set",
+}
+PIES = {"apple": ("Apple Pie", S + "crab_apple"), "plum": ("Plum Pie", S + "wild_plums"), "rowan": ("Rowan Pie", S + "rowan_berries"),
+        "bird_cherry": ("Bird Cherry Pie", S + "bird_cherries")}
+for f, (en, fruit) in PIES.items():
+    STEEL_DISHES[f"{f}_pie"] = en
+    STEEL_DISHES[f"raw_{f}_pie"] = "Raw " + en
+    # the fruit of the fruit trees, flour and lard; baked in the Clay Kiln (KilnBlockEntity.RECIPES)
+    shapeless(f"raw_{f}_pie", [S + "flour", S + "flour", S + "lard", fruit, fruit, fruit], S + f"raw_{f}_pie")
+for item, en in STEEL_DISHES.items():
+    lang[f"item.mechanical.{item}"] = en
+for block, en in {"steel_pan": "Steel Pan", "mortar_and_pestle": "Mortar and Pestle", "sieve": "Sieve"}.items():
+    lang[f"block.mechanical.{block}"] = en
+    loot(block, [{"rolls": 1, "condition": {"type": "minecraft:survives_explosion"}, "entries": [entry(S + block)]}])
+tag(BT / "mineable/pickaxe.json", S + "steel_pan", S + "mortar_and_pestle")
+tag(BT / "mineable/axe.json", S + "sieve")
+shaped("steel_pan", ["IPI", "I I"], {"P": S + "steel_plate", "I": S + "steel_ingot"}, S + "steel_pan")
+shaped("mortar_and_pestle", ["  S", "M M", " M "], {"M": S + "marble", "S": S + "steel_ingot"}, S + "mortar_and_pestle")
+shaped("sieve", ["SMS", "W W", "WWW"], {"S": M + "stick", "M": S + "steel_plate", "W": "#minecraft:planks"}, S + "sieve")
+shapeless("steel_knife_set", [S + "steel_knife", S + "steel_knife_blade", S + "steel_knife_blade", M + "leather", M + "stick"], S + "steel_knife_set")
+shapeless("raw_gingerbread", [S + "fine_flour", S + "fine_flour", [S + "wild_honey", M + "honey_bottle"], S + "sweet_spice", "#mechanical:eggs"],
+          S + "raw_gingerbread", 4)
+tag(MIT / "knives.json", S + "steel_knife_set")
+tag(MIT / "spices.json", *(S + i for i in ("kitchen_pepper", "sweet_spice", "golden_spice", "pickling_spice", "herb_salt")))
+tag(MIT / "perishes_1_day.json", *(S + i for i in ["saffron_rice", "spiced_pilaf", "peppered_steak", "raw_gingerbread"] + [f"raw_{f}_pie" for f in PIES]))
+tag(MIT / "perishes_3_days.json", *(S + i for i in ["roast_with_herbs", "sea_buckthorn_juice"] + [f"{f}_pie" for f in PIES]))
+tag(MIT / "perishes_10_days.json", S + "gingerbread")
+tag(MIT / "perishes_30_days.json", *(S + i for i in ("cider", "ale", "pickled_vegetables", "fine_flour")))
+
 # ---------------------------------------------------------------- lang: messages, trades
 lang.update({
     "message.mechanical.clay_pot.no_fire": "A Clay Cooking Pot sits in the embers of a Campfire",
@@ -334,6 +372,7 @@ lang.update({
     "message.mechanical.cookware.empty": "It is empty: put ingredients in",
     "message.mechanical.cookware.working": "%s: %s:%s left",
     "message.mechanical.cookware.no_fire": "The fire under it is out",
+    "message.mechanical.crop.paddy": "needs water beside it (a flooded paddy)",
 })
 w(A / "lang/en_us.json", lang, ascii=True)  # the chain keeps the lang file ascii-escaped
 

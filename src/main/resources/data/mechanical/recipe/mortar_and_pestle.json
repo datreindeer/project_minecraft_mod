@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  S",
+    "M M",
+    " M "
+  ],
+  "key": {
+    "M": "mechanical:marble",
+    "S": "mechanical:steel_ingot"
+  },
+  "result": {
+    "id": "mechanical:mortar_and_pestle"
+  }
+}

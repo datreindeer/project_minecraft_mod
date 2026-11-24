@@ -5,7 +5,9 @@ import static com.mechanical.Mechanical.ITEMS;
 import static com.mechanical.Mechanical.MODID;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
@@ -14,11 +16,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
@@ -31,14 +37,16 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * Stone Age the Clay Cooking Pot ({@link ClayPotBlock}, in the embers of a campfire) and the campfire; Bronze Age the
  * Bronze Kettle (Kettle), the Bronze Griddle and the Bronze Ladle; Iron Age the Iron Cauldron (hung in the tripod over a
  * Fire Pit), the Iron Skillet, the Fermenting Barrel and the Cheese Press ({@link CookwareBlock}), and sea salt from a
- * {@link SaltPanBlock}. A dish is a fixed set of ingredients in one kind of cookware ({@link #DISHES}); twice the set
+ * {@link SaltPanBlock}; Steel Age (phase 6) the Steel Pan, the Mortar and Pestle and the Sieve (worked by hand: each
+ * empty-hand click grinds or shakes, {@link CookwareBlock.Kind#clicks}) and the Steel Knife Set. The Eastern Caravan's
+ * spices (pepper, cinnamon, ginger, saffron) are ground into blends that the steel dishes want. A dish is a fixed set of ingredients in one kind of cookware ({@link #DISHES}); twice the set
  * makes twice the dish. A pot dish needs at least its tier of pot (clay 0, bronze 1, iron 2), so the kettle and the
  * cauldron also cook the clay pot's dishes. Data: scripts/gen_herbs.py, models scripts/herbs_cookware.py, textures
  * scripts/gen_cookware_textures.py.
  */
 public final class Kitchen {
     /** Which cookware a dish is made in. */
-    public enum Tool { POT, PAN, BARREL, PRESS }
+    public enum Tool { POT, PAN, BARREL, PRESS, MORTAR, SIEVE }
 
     /** Cook times in ticks: pans on a lit campfire, the barrel and press with no fire at all. */
     public static final int PAN_TIME = 600, PAN_BURN = 1200, BARREL_TIME = 12000, PRESS_TIME = 9600;
@@ -55,8 +63,15 @@ public final class Kitchen {
     public static final DeferredBlock<CookwareBlock> IRON_SKILLET = cookware("iron_skillet", CookwareBlock.Kind.SKILLET, MapColor.COLOR_BLACK, SoundType.IRON);
     public static final DeferredBlock<CookwareBlock> FERMENTING_BARREL = cookware("fermenting_barrel", CookwareBlock.Kind.BARREL, MapColor.WOOD, SoundType.WOOD);
     public static final DeferredBlock<CookwareBlock> CHEESE_PRESS = cookware("cheese_press", CookwareBlock.Kind.PRESS, MapColor.WOOD, SoundType.WOOD);
+    public static final DeferredBlock<CookwareBlock> STEEL_PAN = cookware("steel_pan", CookwareBlock.Kind.STEEL_PAN, MapColor.METAL, SoundType.IRON);
+    public static final DeferredBlock<CookwareBlock> MORTAR_AND_PESTLE = cookware("mortar_and_pestle", CookwareBlock.Kind.MORTAR, MapColor.QUARTZ, SoundType.STONE);
+    public static final DeferredBlock<CookwareBlock> SIEVE = cookware("sieve", CookwareBlock.Kind.SIEVE, MapColor.WOOD, SoundType.WOOD);
     public static final Supplier<BlockEntityType<CookwareBlockEntity>> COOKWARE_ENTITY = Mechanical.BLOCK_ENTITIES.register("cookware",
-            () -> new BlockEntityType<>(CookwareBlockEntity::new, BRONZE_GRIDDLE.get(), IRON_SKILLET.get(), FERMENTING_BARREL.get(), CHEESE_PRESS.get()));
+            () -> new BlockEntityType<>(CookwareBlockEntity::new, BRONZE_GRIDDLE.get(), IRON_SKILLET.get(), FERMENTING_BARREL.get(), CHEESE_PRESS.get(),
+                    STEEL_PAN.get(), MORTAR_AND_PESTLE.get(), SIEVE.get()));
+    /** Steel Age butchering: a roll of fine knives that gets more out of every carcass than a single steel knife. */
+    public static final DeferredItem<KnifeItem> STEEL_KNIFE_SET = ITEMS.registerItem("steel_knife_set", p -> new KnifeItem(p, 2.8F, 2.0F, KnifeItem.IRON),
+            p -> p.sword(Smithing.STEEL, 1.5F, -2.0F));
 
     public static final DeferredBlock<SaltPanBlock> SALT_PAN = BLOCKS.registerBlock("salt_pan", SaltPanBlock::new, p -> p
             .mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.0F).sound(SoundType.DECORATED_POT).noOcclusion().randomTicks());
@@ -77,6 +92,15 @@ public final class Kitchen {
 
     private static DeferredItem<Item> dish(String name, int nutrition) {
         return ITEMS.registerSimpleItem(name, p -> p.food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(0.6F).build()));
+    }
+
+    /** Drunk, not eaten (cider, ale, juice); the effects, if any, when it is finished. */
+    private static DeferredItem<Item> drink(String name, int nutrition, MobEffectInstance... effects) {
+        return ITEMS.registerSimpleItem(name, p -> {
+            var use = Consumables.defaultDrink();
+            if (effects.length > 0) use.onConsume(new ApplyStatusEffectsConsumeEffect(List.of(effects)));
+            return p.stacksTo(16).food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(0.3F).build(), use.build());
+        });
     }
 
     // Stone Age (Clay Cooking Pot, campfire)
@@ -104,6 +128,32 @@ public final class Kitchen {
     public static final DeferredItem<Item> SAUSAGE = dish("sausage", 6);
     public static final DeferredItem<Item> SAUERKRAUT = dish("sauerkraut", 3);
     public static final DeferredItem<Item> CHEESE = dish("cheese", 4);
+    public static final DeferredItem<Item> ROAST_WITH_HERBS = dish("roast_with_herbs", 10);
+    public static final DeferredItem<Item> CIDER = drink("cider", 3);
+    public static final DeferredItem<Item> ALE = drink("ale", 4);
+    /** Pies: raw (crafted) and baked in the Clay Kiln (KilnBlockEntity.RECIPES), one per fruit of the fruit trees. */
+    public static final List<String> PIE_FRUITS = List.of("apple", "plum", "rowan", "bird_cherry");
+    public static final Map<String, DeferredItem<Item>> RAW_PIES = new LinkedHashMap<>(), PIES = new LinkedHashMap<>();
+    static {
+        for (String f : PIE_FRUITS) {
+            RAW_PIES.put(f, ITEMS.registerSimpleItem("raw_" + f + "_pie"));
+            PIES.put(f, dish(f + "_pie", 8));
+        }
+    }
+    // Steel Age (Mortar and Pestle, Sieve, Steel Pan): the caravan's spices ground into blends
+    public static final DeferredItem<Item> KITCHEN_PEPPER = ITEMS.registerSimpleItem("kitchen_pepper");
+    public static final DeferredItem<Item> SWEET_SPICE = ITEMS.registerSimpleItem("sweet_spice");
+    public static final DeferredItem<Item> GOLDEN_SPICE = ITEMS.registerSimpleItem("golden_spice");
+    public static final DeferredItem<Item> PICKLING_SPICE = ITEMS.registerSimpleItem("pickling_spice");
+    public static final DeferredItem<Item> HERB_SALT = ITEMS.registerSimpleItem("herb_salt");
+    public static final DeferredItem<Item> FINE_FLOUR = ITEMS.registerSimpleItem("fine_flour");
+    public static final DeferredItem<Item> SEA_BUCKTHORN_JUICE = drink("sea_buckthorn_juice", 2, new MobEffectInstance(MobEffects.REGENERATION, 100, 0));
+    public static final DeferredItem<Item> SAFFRON_RICE = dish("saffron_rice", 10);
+    public static final DeferredItem<Item> PEPPERED_STEAK = dish("peppered_steak", 10);
+    public static final DeferredItem<Item> SPICED_PILAF = bowl("spiced_pilaf", 11);
+    public static final DeferredItem<Item> PICKLED_VEGETABLES = dish("pickled_vegetables", 4);
+    public static final DeferredItem<Item> RAW_GINGERBREAD = ITEMS.registerSimpleItem("raw_gingerbread");
+    public static final DeferredItem<Item> GINGERBREAD = dish("gingerbread", 6);
 
     // ---- recipes ----
 
@@ -137,6 +187,9 @@ public final class Kitchen {
     private static final Ing HONEY = of("mechanical:wild_honey", "minecraft:honey_bottle");
     private static final Ing EGG = of("#mechanical:eggs");
     private static final Ing MILK = of("minecraft:milk_bucket", "mechanical:bronze_milk_bucket");
+    private static final Ing HERB = of("#mechanical:culinary_herbs");
+    private static final Ing PICKLING_VEG = of("mechanical:onion", "mechanical:wild_onion", "mechanical:turnip", "mechanical:parsnip", "minecraft:carrot",
+            "minecraft:beetroot", "mechanical:cabbage", "mechanical:celery");
 
     public static final List<Dish> DISHES = List.of(
             // Stone Age: the clay pot
@@ -164,7 +217,34 @@ public final class Kitchen {
             new Dish("fried_eggs_and_onion", Tool.PAN, 2, List.of(EGG, EGG, of("mechanical:onion", "mechanical:wild_onion")), FRIED_EGGS_AND_ONION, 1),
             new Dish("sausage", Tool.PAN, 2, List.of(of("mechanical:raw_sausage")), SAUSAGE, 1),
             new Dish("sauerkraut", Tool.BARREL, 2, List.of(of("mechanical:cabbage"), of("mechanical:cabbage"), of("mechanical:salt")), SAUERKRAUT, 3),
-            new Dish("cheese", Tool.PRESS, 2, List.of(MILK, MILK, of("mechanical:salt")), CHEESE, 4));
+            new Dish("cheese", Tool.PRESS, 2, List.of(MILK, MILK, of("mechanical:salt")), CHEESE, 4),
+            new Dish("roast_with_herbs", Tool.PAN, 2, List.of(MEAT, MEAT, HERB, HERB), ROAST_WITH_HERBS, 2),
+            new Dish("cider", Tool.BARREL, 2, List.of(of("mechanical:crab_apple"), of("mechanical:crab_apple"), of("mechanical:crab_apple"),
+                    of("mechanical:crab_apple")), CIDER, 3),
+            // ale: barley bittered with hops, or with bog myrtle as the old gale ale was
+            new Dish("ale", Tool.BARREL, 2, List.of(of("mechanical:barley_grain"), of("mechanical:barley_grain"), of("mechanical:barley_grain"),
+                    of("mechanical:hop_cones", "mechanical:bog_myrtle_leaves")), ALE, 3),
+            // Steel Age: blends in the mortar (the caravan's spices; Herb Salt from what grows here)
+            new Dish("kitchen_pepper", Tool.MORTAR, 3, List.of(of("mechanical:black_pepper"), of("mechanical:ginger_root"), of("mechanical:cinnamon_bark")),
+                    KITCHEN_PEPPER, 3),
+            new Dish("sweet_spice", Tool.MORTAR, 3, List.of(of("mechanical:cinnamon_bark"), of("mechanical:cinnamon_bark"), of("mechanical:ginger_root")),
+                    SWEET_SPICE, 3),
+            new Dish("golden_spice", Tool.MORTAR, 3, List.of(of("mechanical:saffron"), of("mechanical:black_pepper"), of("mechanical:mustard_seeds")),
+                    GOLDEN_SPICE, 3),
+            new Dish("pickling_spice", Tool.MORTAR, 3, List.of(of("mechanical:mustard_seeds"), of("mechanical:dill_seeds", "mechanical:dill"),
+                    of("mechanical:black_pepper")), PICKLING_SPICE, 3),
+            new Dish("herb_salt", Tool.MORTAR, 3, List.of(of("mechanical:salt"), HERB, HERB), HERB_SALT, 2),
+            // the sieve
+            new Dish("fine_flour", Tool.SIEVE, 3, List.of(of("mechanical:flour")), FINE_FLOUR, 1),
+            new Dish("sea_buckthorn_juice", Tool.SIEVE, 3, List.of(of("mechanical:sea_buckthorn_berries"), of("mechanical:sea_buckthorn_berries"),
+                    of("mechanical:sea_buckthorn_berries"), HONEY), SEA_BUCKTHORN_JUICE, 2),
+            // the steel pan, and the iron cauldron cooking with the blends
+            new Dish("saffron_rice", Tool.PAN, 3, List.of(of("mechanical:rice"), of("mechanical:rice"), of("mechanical:golden_spice"), ALLIUM), SAFFRON_RICE, 2),
+            new Dish("peppered_steak", Tool.PAN, 3, List.of(MEAT, MEAT, of("mechanical:kitchen_pepper")), PEPPERED_STEAK, 2),
+            new Dish("spiced_pilaf", Tool.POT, 2, List.of(of("mechanical:rice"), of("mechanical:rice"), of("mechanical:kitchen_pepper"), MEAT, ALLIUM),
+                    SPICED_PILAF, 5),
+            new Dish("pickled_vegetables", Tool.BARREL, 2, List.of(PICKLING_VEG, PICKLING_VEG, PICKLING_VEG, of("mechanical:pickling_spice"),
+                    of("mechanical:salt")), PICKLED_VEGETABLES, 5));
 
     /** A dish found in a pot or pan: {@code times} sets of its ingredients. */
     public record Match(Dish dish, int times) {

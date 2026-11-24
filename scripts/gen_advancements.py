@@ -1668,6 +1668,31 @@ TABS["iron_age"][1].extend([
     ("sea_salt", "forged", "salt_pan", T, "Salt of the Sea",
      "Pour seawater into a Salt Pan by the coast and let the sun dry it to Salt", placed("salt_pan")),
 ])
+# the phase 4-5 leftovers (brewing, pies, the roast) and phase 6: the Steel Age kitchen (Kitchen.java)
+TABS["iron_age"][1].extend([
+    ("brewer", "sauerkraut", "ale", T, "Brewer",
+     "Ferment Crab Apples into Cider, or Barley with Hop Cones or Bog Myrtle into Ale, in a Fermenting Barrel", has("cider", "ale")),
+    ("pie", "forged", "apple_pie", T, "Fruit Pie",
+     "Fill a pie with the fruit of the Wild Apple, Plum, Rowan or Bird Cherry and bake it in the Clay Kiln",
+     has("apple_pie", "plum_pie", "rowan_pie", "bird_cherry_pie")),
+    ("roast_with_herbs", "iron_skillet", "roast_with_herbs", T, "Sunday Roast",
+     "Roast two pieces of meat with two herbs in an Iron Skillet", has("roast_with_herbs")),
+    ("mortar", "steel", "mortar_and_pestle", T, "Ground Fine",
+     "Grind the Eastern Caravan's spices (or salt and herbs) into a blend in a Mortar and Pestle",
+     has("kitchen_pepper", "sweet_spice", "golden_spice", "pickling_spice", "herb_salt")),
+    ("sieve", "steel", "sieve", T, "Sifted",
+     "Shake Flour through a Sieve into Fine Flour, or strain Sea Buckthorn Juice", has("fine_flour", "sea_buckthorn_juice")),
+    ("steel_pan", "mortar", "saffron_rice", T, "Spice Road",
+     "Cook Saffron Rice or Peppered Steak in a Steel Pan with a blend of the far east's spices", has("saffron_rice", "peppered_steak")),
+    ("pilaf", "mortar", "spiced_pilaf", T, "Pilaf",
+     "Cook a Spiced Pilaf in the Iron Cauldron: rice, Kitchen Pepper, meat and an onion", has("spiced_pilaf")),
+    ("gingerbread", "sieve", "gingerbread", T, "Gingerbread",
+     "Bake Gingerbread in the Clay Kiln from Fine Flour, honey, Sweet Spice and an egg", has("gingerbread")),
+    ("pickles", "mortar", "pickled_vegetables", T, "In Brine",
+     "Pickle vegetables with Pickling Spice and Salt in a Fermenting Barrel", has("pickled_vegetables")),
+    ("knife_set", "steel", "steel_knife_set", T, "A Cut Above",
+     "Roll a Steel Knife and two more blades into a Steel Knife Set: it gets more meat and hide from every carcass", has("steel_knife_set")),
+])
 TABS["iron_age"][1].extend([
     ("linen_seed_bag", "forged", "linen_seed_bag", T, "Wide Sower",
      "Sew a Linen Seed Bag (Linen Thread, an Iron Plate rim, Leather): it sows 5x5 in one throw", has("linen_seed_bag")),

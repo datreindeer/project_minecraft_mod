@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:fine_flour",
+    "mechanical:fine_flour",
+    [
+      "mechanical:wild_honey",
+      "minecraft:honey_bottle"
+    ],
+    "mechanical:sweet_spice",
+    "#mechanical:eggs"
+  ],
+  "result": {
+    "id": "mechanical:raw_gingerbread",
+    "count": 4
+  }
+}

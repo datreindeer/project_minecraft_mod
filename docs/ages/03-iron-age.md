@@ -786,3 +786,30 @@ upp hornkronan). I Hunting-fliken: Elkwight under Predators.
 **Raw Sausage:** 2 rått kött + Lard + Salt + Garlic eller Wild Garlic → 3. Tom hand på redskapet: tid kvar medan det arbetar,
 rätten när den är klar; smyg tar tillbaka det råa. Advancements (Iron Age, efter *Forged*): *Cauldron*, *Sizzle*, *Sour and
 Keeping*, *Cheesemaker*, *Salt of the Sea*.
+
+**Mer i järnålderns kök (v0.193.0):** **Roast with Herbs** (Iron Skillet: 2 rått kött + 2 köksörter → 2 à 10), **Cider** (Fermenting
+Barrel: 4 Crab Apple → 3), **Ale** (Fermenting Barrel: 3 Barley Grain + Hop Cones eller Bog Myrtle Leaves → 3; porsen som i gammalt
+porsöl), **pajer** av fruktträdens frukt: 2 Flour + Lard + 3 Crab Apple / Wild Plums / Rowan Berries / Bird Cherries → en rå paj som
+bakas i Clay Kiln (200°) till **Apple Pie**, **Plum Pie**, **Rowan Pie**, **Bird Cherry Pie** (8 hunger). Cider och öl dricks (3 och 4
+hunger, håller 30 dagar). Advancements: *Brewer*, *Fruit Pie*, *Sunday Roast*.
+
+## Stålets kök (flora och mat, fas 6, byggt v0.193.0)
+
+Stålet ger köket finare redskap, och den **östra karavanens kryddor** (Black Pepper, Cinnamon Bark, Ginger Root, Saffron) mals till
+blandningar som stålrätterna vill ha.
+
+| Redskap | Recept | Används |
+|---|---|---|
+| **Steel Pan** | `[I][P][I]` / `[I][ ][I]` (P Steel Plate, I Steel Ingot) | Bred grund stålpanna med ringhandtag på en trefot, över en Campfire: **Saffron Rice** (2 Rice + Golden Spice + lök → 2 à 10), **Peppered Steak** (2 rått kött + Kitchen Pepper → 2 à 10), och allt stekpannan och hällen kan |
+| **Mortar and Pestle** | `[ ][ ][S]` / `[M][ ][M]` / `[ ][M][ ]` (M Marble, S Steel Ingot) | Marmormortel med stålstöt. Lägg i, klicka med tom hand: varje klick vrider stöten ett kvarts varv, 8 klick → blandningen |
+| **Sieve** | `[S][P][S]` / `[W][ ][W]` / `[W][W][W]` (S pinne, P Steel Plate, W plankor) | Böjd askring med vävt ståltrådsnät på ett ämbar. Tom hand skakar, 6 skak: Flour → **Fine Flour**; 3 Sea Buckthorn Berries + honung → 2 **Sea Buckthorn Juice** (Regeneration I 5 s) |
+| **Steel Knife Set** | Steel Knife + 2 Steel Knife Blade + Leather + Stick | Knivrulle: styckar 2× (stålkniven 1,6×) och snabbare, klipper örter som en kniv |
+
+**Kryddblandningar (morteln):** **Kitchen Pepper** (pepper + ingefära + kanel → 3), **Sweet Spice** (2 kanel + ingefära → 3),
+**Golden Spice** (saffran + peppar + senapsfrön → 3), **Pickling Spice** (senapsfrön + dill + peppar → 3), **Herb Salt** (salt + 2
+köksörter → 2, den enda utan karavanen). Alla räknas som kryddor i stuvning.
+
+**Rätter:** **Spiced Pilaf** i Iron Cauldron (2 Rice + Kitchen Pepper + rått kött + lök → 5 skålar à 11), **Pickled Vegetables** i
+Fermenting Barrel (3 grönsaker + Pickling Spice + Salt → 5, håller 30 dagar), **Gingerbread** (2 Fine Flour + honung + Sweet Spice +
+ägg → 4 Raw Gingerbread, bakas i Clay Kiln). Advancements (Iron Age, efter *Steel*): *Ground Fine*, *Sifted*, *Spice Road*, *Pilaf*,
+*Gingerbread*, *In Brine*, *A Cut Above*.

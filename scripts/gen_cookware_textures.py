@@ -19,8 +19,13 @@ Block (textures/block):
   spout), press_cheese (pale curd with the cheesecloth's weave).
 - salt_pan_clay, salt_pan_rim, salt_pan_floor (wet clay), salt_pan_wall_1..4 (salt tide lines on the inner wall),
   salt_pan_brine_1..3 (blue-grey brine, a white crust growing in from the edges), salt_pan_salt (crystalline crust).
+- Steel Age (phase 6): steel_pan_steel (spun steel with heat colours and soot), steel_pan_floor (polished, seasoned
+  toward the walls), steel_pan_trivet; mortar_marble, mortar_rim, mortar_inside (stained with spice), pestle_steel,
+  pestle_wood; sieve_hoop (bent ash, a nailed scarf joint), sieve_mesh (woven steel wire, cutout), sieve_floor (flour).
 Item (textures/item): unfired_clay_cooking_pot, iron_cauldron, bronze_ladle and the dishes (the vanilla bowl filled for
-the soups and pottages; the rest painted).
+the soups and pottages; the rest painted). Phase 6 and leftovers: steel_knife_set, the five spice blends in a little
+olivewood bowl, fine_flour, sea_buckthorn_juice, cider, ale, roast_with_herbs, saffron_rice, peppered_steak, spiced_pilaf,
+pickled_vegetables, (raw_)gingerbread, raw_/baked pies of apple, plum, rowan and bird cherry.
 """
 import math
 import random
@@ -978,6 +983,473 @@ def painted_dishes():
     save(img, "indigo", "item")
 
 
+# ---------------------------------------------------------------- Steel Age kitchen (phase 6): blocks
+
+STEEL = [(30, 34, 40), (56, 62, 70), (88, 96, 106), (124, 132, 142), (164, 172, 180), (204, 210, 216), (236, 240, 244)]
+MARBLE = [(132, 128, 122), (170, 166, 160), (200, 196, 190), (222, 218, 212), (238, 235, 230), (250, 248, 244)]
+ASH = [(84, 62, 38), (118, 90, 58), (152, 120, 82), (184, 152, 108), (210, 182, 136), (230, 208, 166)]
+
+
+def marble(seed, base=0.62, veins=1.0):
+    """Polished white marble: soft clouding and a few thin grey veins wandering across."""
+    r = random.Random(seed)
+    n = smooth_noise(seed + 1, 4)
+    n2 = smooth_noise(seed + 2, 8)
+    nv = smooth_noise(seed + 3, 4)
+    img = new()
+    for y in range(16):
+        for x in range(16):
+            t = base + (n[y][x] - 0.5) * 0.18 + (n2[y][x] - 0.5) * 0.06 + r.uniform(-0.015, 0.015)
+            c = ramp(MARBLE, t)
+            band = lambda xx, yy: int(nv[yy % 16][xx % 16] * 5 * veins)
+            if band(x, y) != band(x + 1, y) or band(x, y) != band(x, y + 1):  # a vein where the clouding crosses a step
+                c = mix(c, (104, 108, 116), 0.62 if band(x, y) % 2 else 0.38)
+            put(img, x, y, c)
+    return img
+
+
+def steel_kitchen_blocks():
+    r = random.Random(1201)
+    n = smooth_noise(1202, 4)
+    # ---- Steel Pan: spun bright steel, the lines of the lathe running round, heat colours toward the flames, soot below
+    out = new()
+    for y in range(16):
+        for x in range(16):
+            t = 0.66 + 0.06 * ((y * 5 + x // 4) % 3 == 0) - 0.05 * (y % 3 == 2) + (n[y][x] - 0.5) * 0.1 + r.uniform(-0.02, 0.02)
+            c = ramp(STEEL, t)
+            # heat colours climbing from the bottom edge: straw, bronze, purple, blue
+            h = clamp((y - 7 + 1.2 * (n[(y + 4) % 16][x] - 0.5)) / 7)
+            if h > 0:
+                tint = ramp([(196, 170, 110), (170, 110, 70), (120, 70, 120), (60, 80, 150), (40, 44, 60)], h)
+                c = mix(c, tint, 0.25 + 0.4 * h)
+            if y >= 14:
+                c = mix(c, SOOT[1], 0.6 + 0.2 * (y - 14))
+            put(out, x, y, c)
+    for x in range(16):  # the rolled lip catches the light
+        put(out, x, 0, ramp(STEEL, 0.9))
+        put(out, x, 1, ramp(STEEL, 0.75))
+    save(out, "steel_pan_steel")
+    fl = new()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            t = 0.6 + 0.05 * math.sin(d * 4.2) + r.uniform(-0.02, 0.02)
+            ang = math.atan2(y + 0.5 - 8, x + 0.5 - 8)
+            t += 0.18 * clamp(1 - abs(d - 4.5) / 1.6) * clamp(math.cos(ang + 2.36))  # polished sheen upper left
+            c = ramp(STEEL, t)
+            c = mix(c, (96, 70, 40), clamp((d - 2.5) / 4) * 0.45)  # seasoning: a golden-brown patina toward the walls
+            c = mix(c, (120, 90, 140), clamp(1 - abs(d - 1.5) / 1.5) * 0.15)  # a faint heat rainbow over the flame
+            put(fl, x, y, c)
+    save(fl, "steel_pan_floor")
+    tr = cast_iron(1205, 0.34)
+    for y in range(16):
+        for x in range(16):
+            put(tr, x, y, mix(get(tr, x, y), SOOT[1], clamp((y - 4) / 10) * 0.6))
+    save(tr, "steel_pan_trivet")
+
+    # ---- Mortar and Pestle: polished marble, the inside stained by years of spice
+    save(marble(1211, 0.5), "mortar_marble")
+    rim = marble(1212, 0.62, 0.6)
+    save(rim, "mortar_rim")
+    ins = marble(1213, 0.5, 0.5)
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            c = get(ins, x, y)
+            c = mix(c, (170, 120, 40), clamp(1 - d / 6) * 0.45)          # saffron yellow ground into the floor
+            c = mix(c, (96, 70, 48), clamp(1 - abs(d - 3.5) / 1.4) * 0.3)  # a ring of pepper and cinnamon dust
+            put(ins, x, y, c)
+    for x, y in ((6, 7), (9, 6), (8, 10), (10, 9), (5, 9)):
+        put(ins, x, y, (60, 44, 32))  # crushed peppercorn
+    save(ins, "mortar_inside")
+    pe = new()
+    for y in range(16):
+        for x in range(16):
+            t = 0.72 - 0.42 * abs((x % 4) - 1.2) / 2.8 + r.uniform(-0.02, 0.02)  # a round rod lit from the left
+            put(pe, x, y, ramp(STEEL, t))
+    for x in range(16):
+        put(pe, x, 15, ramp(STEEL, 0.35))
+    save(pe, "pestle_steel")
+    pw = wood_grain(1215, 0.58, OAK, along_x=False)
+    save(pw, "pestle_wood")
+
+    # ---- Sieve: a bent ash hoop with a nailed scarf joint, woven steel wire mesh, a tub dusted with flour below
+    hp = new()
+    for y in range(16):
+        for x in range(16):
+            t = 0.62 + 0.06 * math.sin(y * 2.3 + math.sin(x * 0.4) * 1.5) + r.uniform(-0.025, 0.025) - 0.12 * (y in (0, 15))
+            c = ramp(ASH, t)
+            put(hp, x, y, c)
+    for y in range(16):  # the scarf joint: a slanted seam with two copper nails
+        put(hp, 10 + y // 6, y, ramp(ASH, 0.18))
+    put(hp, 9, 5, (196, 120, 64)); put(hp, 12, 10, (196, 120, 64))
+    for y in range(16):  # flour caught in the grain near the bottom
+        if r.random() < 0.3:
+            put(hp, r.randrange(16), 12 + r.randrange(4), (226, 220, 206))
+    save(hp, "sieve_hoop")
+    mesh = new()
+    for y in range(16):
+        for x in range(16):
+            wx, wy = x % 2 == 0, y % 2 == 0
+            if wx or wy:
+                over = (x // 2 + y // 2) % 2 == 0  # the weave: a wire over, then under
+                t = 0.5 if (wx and over) or (wy and not over) else 0.3
+                c = ramp(STEEL, t + r.uniform(-0.04, 0.04))
+                if r.random() < 0.12:
+                    c = mix(c, (236, 232, 222), 0.6)  # flour in the wires
+                put(mesh, x, y, c)
+    save(mesh, "sieve_mesh")
+    fd = new()
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x + 0.5 - 8, y + 0.5 - 8)
+            t = clamp(1 - d / 7.5)
+            c = mix(ramp(OAK, 0.4 + r.uniform(-0.04, 0.04)), (240, 236, 226), clamp(t * 1.4 + r.uniform(-0.1, 0.1)))  # a soft heap of sifted flour
+            put(fd, x, y, c)
+    save(fd, "sieve_floor")
+
+
+# ---------------------------------------------------------------- Steel Age kitchen (phase 6) and the phase 4-5 leftovers: items
+
+LEATHER = [(46, 26, 14), (76, 44, 22), (108, 66, 34), (140, 92, 52), (170, 122, 76)]
+STONEWARE = [(70, 60, 50), (108, 96, 80), (146, 132, 110), (180, 168, 144), (206, 196, 174), (226, 218, 200)]
+
+
+def blade(img, pts, pal=STEEL, edge=6):
+    """A blade along pts (lit spine first, edge pixel bright)."""
+    for i, (x, y) in enumerate(pts):
+        put(img, x, y, ramp(pal, 0.55 - 0.02 * i))
+        put(img, x + 1, y + 1, pal[edge])
+
+
+def knife_set():
+    """A leather knife roll, unrolled, its pockets holding three steel blades upright: a broad cleaver, a long carving
+    knife and a small paring knife; the rolled end on the right, a tie strap hanging."""
+    img = new()
+    r = random.Random(1301)
+    # blades first (the pockets cover their handles)
+    for y in range(2, 10):  # the cleaver: a broad blade, the edge bright on the left, a hanging hole
+        for x in range(1, 6):
+            t = 0.72 - 0.08 * (x - 1) + r.uniform(-0.03, 0.03)
+            put(img, x, y, STEEL[6] if x == 1 else ramp(STEEL, t))
+        put(img, 5, y, STEEL[2])
+    for x in range(1, 6):
+        put(img, x, 2, STEEL[5] if x < 5 else STEEL[3])
+    put(img, 4, 3, STEEL[1])
+    for y in range(1, 10):  # the carving knife: long, a point at the top, spine dark right, edge bright left
+        if y >= 2:
+            put(img, 7, y, STEEL[6] if y > 2 else STEEL[5])
+        put(img, 8, y, ramp(STEEL, 0.6 - 0.02 * y))
+        if y >= 3:
+            put(img, 9, y, STEEL[2])
+    for y in range(5, 10):  # the paring knife
+        put(img, 11, y, STEEL[6] if y > 5 else STEEL[4])
+        if y >= 6:
+            put(img, 12, y, STEEL[2])
+    # the leather roll across the bottom, pockets with stitched seams
+    for y in range(9, 15):
+        for x in range(0, 13):
+            t = 0.55 + 0.15 * (y == 9) - 0.12 * (y >= 13) + r.uniform(-0.04, 0.04)
+            put(img, x, y, ramp(LEATHER, t))
+    for x in range(0, 13):
+        put(img, x, 9, ramp(LEATHER, 0.82 if x % 4 else 0.7))  # the pockets' turned edge
+    for x in (6, 10):
+        for y in range(10, 14):
+            if y % 2 == 0:
+                put(img, x, y, (206, 178, 126))  # stitching between pockets
+    for x, y in ((2, 10), (8, 10), (11, 10)):
+        put(img, x, y, ramp(OAK, 0.3))  # handle ends peeking out of the pockets
+    # the rolled-up end
+    for y in range(8, 16):
+        for x in range(13, 16):
+            put(img, x, y, ramp(LEATHER, 0.75 - 0.22 * (x - 13) + r.uniform(-0.03, 0.03)))
+    put(img, 13, 8, LEATHER[2]); put(img, 15, 8, LEATHER[1])
+    for y in range(12, 16):
+        put(img, 12 if y < 14 else 11, y, ramp(LEATHER, 0.4))  # the tie strap
+    outline_dark(img, (20, 16, 14), only_bottom_right=True)
+    save(img, "steel_knife_set", "item")
+
+
+def spice_bowl(name, pal, seed, specks=(), seeds=()):
+    """A small turned olivewood spice bowl heaped with a ground blend: the heap lit from the upper left, specks of the
+    coarser parts, whole seeds on top."""
+    r = random.Random(seed)
+    img = new()
+    BOWL = [(56, 38, 22), (92, 64, 36), (130, 94, 56), (164, 126, 82), (194, 160, 112)]
+    lathe(img, {10: 6.0, 11: 6.2, 12: 5.8, 13: 5.0, 14: 3.4}, BOWL, seed)
+    for x in range(2, 14):
+        put(img, x, 10, ramp(BOWL, 0.85 - 0.05 * abs(x - 5)))  # the rim's lit front
+    put(img, 6, 15, BOWL[1]); put(img, 7, 15, BOWL[1]); put(img, 8, 15, BOWL[0]); put(img, 9, 15, BOWL[0])  # foot
+    heap = {4: (7, 8), 5: (5, 10), 6: (4, 11), 7: (3, 12), 8: (3, 12), 9: (2, 13)}
+    for y, (a, b) in heap.items():
+        for x in range(a, b + 1):
+            u = (x - (a + b) / 2) / max(1, (b - a) / 2)
+            t = 0.62 - 0.3 * u - 0.05 * (y - 4) + r.uniform(-0.06, 0.06)
+            if y == min(yy for yy, (aa, bb) in heap.items() if aa <= x <= bb):
+                t += 0.12  # the crest of the heap
+            put(img, x, y, ramp(pal, t))
+    cells = [(x, y) for y, (a, b) in heap.items() for x in range(a, b + 1)]
+    for c in specks:
+        for _ in range(6):
+            x, y = r.choice(cells)
+            put(img, x, y, c)
+    for x, y, c in seeds:
+        put(img, x, y, c)
+    save(img, name, "item")
+
+
+def plate(img, wood=OAK, cy=10.5):
+    """A round wooden trencher seen from the front and a little above."""
+    for x, y in ellipse_px(8, cy + 1, 7.4, 3.6):
+        put(img, x, y, ramp(wood, 0.3))
+    for x, y in ellipse_px(8, cy, 7.4, 3.6):
+        u, v = (x + 0.5 - 8) / 7.4, (y + 0.5 - cy) / 3.6
+        put(img, x, y, ramp(wood, 0.62 - 0.1 * u - 0.08 * v + 0.04 * math.sin(x * 1.3)))
+    for x, y in ellipse_px(8, cy, 5.6, 2.6):
+        put(img, x, y, ramp(wood, 0.5 + 0.03 * math.sin(x * 1.3 + y)))
+
+
+def heap_on(img, cx, cy, rx, ry, h, pal, seed):
+    """A mound rising h px over (cx, cy), lit from the upper left."""
+    r = random.Random(seed)
+    for x, y in ellipse_px(cx, cy - h / 2, rx, ry + h / 2):
+        if y > cy + ry:
+            continue
+        u, v = (x + 0.5 - cx) / rx, (y + 0.5 - (cy - h / 2)) / (ry + h / 2)
+        put(img, x, y, ramp(pal, 0.66 - 0.25 * u - 0.15 * v + r.uniform(-0.07, 0.07)))
+
+
+def jug(img, body, pal, seed, handle=True):
+    lathe(img, body, pal, seed)
+    if handle:
+        ys = sorted(body)
+        top, bot = ys[2], ys[-4]
+        for y in range(top, bot + 1):
+            put(img, 13 + (0 if y in (top, bot) else 1), y, ramp(pal, 0.3))
+        put(img, 12, top, ramp(pal, 0.4)); put(img, 12, bot, ramp(pal, 0.3))
+
+
+def pie(name, filling, raw, seed):
+    """A round pie seen from the front and above: a crimped crust rim, a lattice top with the filling showing through
+    (bubbling over at one edge once baked); raw: pale dough and brighter filling."""
+    r = random.Random(seed)
+    img = new()
+    CRUST = ([(150, 128, 92), (192, 170, 128), (220, 202, 162), (238, 226, 194), (250, 244, 224)] if raw
+             else [(110, 60, 20), (160, 96, 38), (200, 138, 64), (226, 176, 96), (244, 212, 140)])
+    TIN = [(40, 40, 44), (70, 70, 76), (104, 104, 110), (140, 140, 146)]
+    cx, cy, rx, ry = 8, 8.5, 7.2, 4.8
+    # the tin under it
+    for dy in range(1, 3):
+        for x, y in ellipse_px(cx, cy + dy, rx - 0.4, ry - 0.2):
+            put(img, x, y, ramp(TIN, 0.6 - 0.35 * (x + 0.5 - cx) / rx))
+    top = ellipse_px(cx, cy, rx, ry)
+    for x, y in top:
+        u, v = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
+        inner = u * u + v * v < 0.62
+        if inner and x % 3 != 1 and y % 3 != 1:
+            put(img, x, y, ramp(filling, 0.55 - 0.2 * u - 0.15 * v + r.uniform(-0.06, 0.06)))  # between the lattice strips
+        else:
+            t = 0.62 - 0.18 * u - 0.12 * v + r.uniform(-0.04, 0.04)
+            if not inner:  # the crimped rim: alternate bright ridges and shadowed dents
+                t += 0.14 if (x + int(v * 8)) % 2 else -0.08
+            put(img, x, y, ramp(CRUST, t))
+    if not raw:
+        for x, y in ((11, 9), (12, 9), (12, 10)):  # juice bubbled over the edge and caramelised
+            put(img, x, y, filling[1])
+        for x, y in ((5, 5), (8, 5), (6, 8)):
+            put(img, x, y, CRUST[4])  # sugary shine on the lattice
+    else:
+        for x, y in ((4, 8), (12, 6), (7, 10)):
+            put(img, x, y, (236, 230, 214))  # flour dusted on the dough
+    outline_dark(img, (30, 22, 16), only_bottom_right=True)
+    save(img, name, "item")
+
+
+def steel_kitchen_items():
+    knife_set()
+    # spice blends: each its own colour in the same little bowl
+    spice_bowl("kitchen_pepper", [(46, 34, 28), (76, 58, 44), (110, 84, 60), (140, 110, 80), (170, 140, 104)], 1311,
+               specks=[(20, 16, 14), (190, 120, 60)])
+    spice_bowl("sweet_spice", [(96, 46, 18), (140, 74, 30), (178, 106, 50), (206, 140, 76), (228, 176, 112)], 1312,
+               specks=[(230, 196, 120), (90, 40, 16)])
+    spice_bowl("golden_spice", [(150, 70, 6), (200, 110, 10), (232, 152, 24), (246, 192, 60), (252, 226, 120)], 1313,
+               specks=[(176, 30, 20), (40, 30, 24)])
+    spice_bowl("pickling_spice", [(110, 92, 50), (146, 126, 72), (178, 158, 98), (204, 186, 128), (226, 212, 160)], 1314,
+               specks=[(30, 26, 22), (98, 130, 52)],
+               seeds=[(5, 6, (222, 184, 70)), (8, 5, (226, 190, 76)), (10, 7, (210, 170, 60)), (7, 8, (26, 22, 18)), (4, 8, (104, 140, 56)),
+                      (11, 9, (26, 22, 18)), (9, 9, (222, 184, 70))])
+    spice_bowl("herb_salt", [(176, 182, 172), (206, 212, 204), (230, 234, 228), (244, 246, 242), (252, 252, 250)], 1315,
+               specks=[(70, 120, 46), (110, 150, 60), (60, 90, 40)])
+
+    # fine flour: a heap of very white flour on a folded linen cloth
+    img = new()
+    LINEN = [(150, 140, 118), (190, 180, 156), (218, 210, 188), (236, 230, 212)]
+    for y in range(9, 15):
+        for x in range(1, 15):
+            if abs(x - 7.5) + (14 - y) * 0.9 < 9:
+                put(img, x, y, ramp(LINEN, 0.7 - 0.08 * (y - 9) + (0.12 if (x + y) % 3 == 0 else 0)))
+    heap_on(img, 8, 11, 6.0, 2.4, 3, [(196, 198, 196), (222, 224, 222), (240, 240, 238), (250, 250, 248), (255, 255, 255)], 1316)
+    outline_dark(img, (120, 112, 96), only_bottom_right=True)
+    save(img, "fine_flour", "item")
+
+    # sea buckthorn juice: a stoppered stoneware flask, orange juice running from the lip, a berry sprig tied on
+    img = new()
+    lathe(img, {4: 1.6, 5: 1.6, 6: 2.6, 7: 3.8, 8: 4.6, 9: 5.0, 10: 5.0, 11: 4.8, 12: 4.2, 13: 3.0}, STONEWARE, 1321)
+    for x, y in ((7, 1), (8, 1), (7, 2), (8, 2), (7, 3), (8, 3)):
+        put(img, x, y, (196, 156, 100) if x == 7 else (150, 112, 66))
+    for x, y in ((9, 4), (10, 5), (10, 6), (11, 7)):
+        put(img, x, y, (238, 140, 20) if y < 6 else (210, 110, 10))
+    put(img, 11, 8, (250, 176, 40))
+    for x in range(4, 12):
+        if solid(img, x, 7):
+            put(img, x, 7, mix(get(img, x, 7), (160, 120, 70), 0.5))  # the string
+    for x, y in ((4, 8), (3, 9), (4, 9), (3, 10), (5, 9)):  # the sprig: orange berries, a silver leaf
+        put(img, x, y, (246, 150, 24) if (x + y) % 2 else (214, 112, 10))
+    put(img, 2, 8, (150, 170, 150)); put(img, 2, 9, (120, 140, 120))
+    save(img, "sea_buckthorn_juice", "item")
+
+    # cider: a pale stoneware jug with a handle, a cork, a cider drip, a crab apple leaning on it
+    img = new()
+    jug(img, {2: 1.6, 3: 1.8, 4: 2.4, 5: 3.6, 6: 4.6, 7: 5.2, 8: 5.4, 9: 5.4, 10: 5.2, 11: 4.8, 12: 4.0, 13: 2.8}, STONEWARE, 1331)
+    for x in range(4, 12):
+        if solid(img, x, 6):
+            put(img, x, 6, mix(get(img, x, 6), (110, 80, 50), 0.45))  # a brown salt-glaze band
+    put(img, 7, 1, (196, 156, 100)); put(img, 8, 1, (150, 112, 66))
+    for x, y in ((6, 3), (5, 4)):
+        put(img, x, y, (236, 196, 90))  # the cider's drip
+    for x, y in ellipse_px(4.0, 12.5, 2.6, 2.4):
+        put(img, x, y, (214, 186, 70) if x < 4 else (186, 60, 40))  # a crab apple: yellow with a red cheek
+    put(img, 3, 11, (240, 220, 120)); put(img, 4, 10, (90, 60, 30)); put(img, 5, 9, (90, 140, 50))
+    save(img, "cider", "item")
+
+    # ale: a wooden tankard of staves and two iron hoops, a lid hinge, foam spilling over the rim
+    img = new()
+    for y in range(5, 15):
+        for x in range(3, 12):
+            s_ = (x - 3) // 2
+            t = 0.55 + 0.08 * (x % 2 == 1) - 0.22 * (x == 11) + 0.1 * (x == 4) + r_unif(1341, x, y)
+            c = ramp(OAK, t)
+            if x in (3, 11):
+                c = ramp(OAK, 0.22)
+            if y in (6, 12):
+                c = ramp(IRON, 0.5 - 0.3 * (x > 8))  # the hoops
+            put(img, x, y, c)
+    for y in range(7, 12):  # the handle
+        put(img, 12 if y in (7, 11) else 13, y, ramp(OAK, 0.35))
+    put(img, 12, 7, ramp(OAK, 0.45))
+    FOAM = [(200, 186, 150), (230, 220, 192), (246, 240, 222), (255, 252, 240)]
+    for y, (a, b) in {2: (5, 9), 3: (3, 11), 4: (2, 12), 5: (3, 11)}.items():
+        for x in range(a, b + 1):
+            put(img, x, y, ramp(FOAM, 0.75 - 0.4 * (x - a) / max(1, b - a) + (0.15 if (x + y) % 3 == 0 else 0)))
+    for x, y in ((3, 6), (3, 7), (10, 6)):
+        put(img, x, y, FOAM[2])  # foam running down the side
+    for x in range(4, 11):
+        put(img, x, 14, ramp(OAK, 0.18))
+    save(img, "ale", "item")
+
+    # roast with herbs: a browned joint on a board, rosemary sprigs and thyme, a bone end showing
+    img = new()
+    plate(img, OAK, 11)
+    ROAST = [(54, 24, 10), (92, 44, 16), (136, 72, 30), (176, 106, 50), (212, 150, 84)]
+    heap_on(img, 7.5, 10, 5.2, 2.6, 6, ROAST, 1351)
+    for x, y in ((11, 6), (12, 6), (13, 5), (13, 6)):
+        put(img, x, y, (236, 226, 200))  # the bone
+    put(img, 13, 5, (250, 244, 228))
+    for x, y in ((5, 6), (6, 5), (7, 7), (8, 6), (9, 8), (4, 8)):
+        put(img, x, y, (64, 112, 40) if (x + y) % 2 else (100, 150, 58))  # herbs pressed into the crust
+    for x, y in ((2, 12), (3, 12), (4, 13), (5, 13), (12, 12), (13, 12), (11, 13)):
+        put(img, x, y, (50, 96, 40) if x % 2 else (90, 140, 60))  # sprigs on the board
+    for x, y in ((6, 9), (9, 10)):
+        put(img, x, y, (230, 170, 100))  # glistening fat
+    save(img, "roast_with_herbs", "item")
+
+    # saffron rice: golden rice heaped on a wooden plate, green herbs and onion
+    img = new()
+    plate(img, OAK, 11)
+    RICE = [(170, 100, 10), (214, 148, 24), (238, 192, 56), (250, 222, 110), (255, 242, 180)]
+    heap_on(img, 8, 10.5, 4.4, 1.8, 4, RICE, 1361)
+    r = random.Random(1362)
+    for _ in range(14):  # single grains catching the light
+        x, y = r.randrange(4, 13), r.randrange(6, 12)
+        if solid(img, x, y) and get(img, x, y)[0] > 150:
+            put(img, x, y, RICE[4] if r.random() < 0.6 else RICE[1])
+    for x, y in ((6, 7), (10, 8), (8, 10)):
+        put(img, x, y, (80, 140, 50))
+    for x, y in ((5, 9), (11, 10)):
+        put(img, x, y, (236, 232, 210))
+    put(img, 9, 6, (176, 30, 20))  # a saffron thread
+    save(img, "saffron_rice", "item")
+
+    # peppered steak: two seared steaks on a plate, a black pepper crust, grill bars
+    img = new()
+    plate(img, OAK, 11)
+    STEAK = [(64, 28, 14), (110, 52, 28), (150, 80, 44), (186, 112, 66), (216, 150, 100)]
+    for cx, cy in ((6, 9.5), (10, 10.5)):
+        for dy in (1, 0):
+            for x, y in ellipse_px(cx, cy + dy, 3.3, 2.0):
+                u = (x + 0.5 - cx) / 3.3
+                put(img, x, y, ramp(STEAK, (0.25 if dy else 0.62 - 0.2 * u) + random.Random(x * 31 + y).uniform(-0.05, 0.05)))
+        for x, y in ellipse_px(cx, cy, 3.3, 2.0):
+            if (x - y) % 4 == 0:
+                put(img, x, y, (60, 28, 14))  # grill bars
+            elif (x * 7 + y * 3) % 6 == 0:
+                put(img, x, y, (24, 22, 20))  # cracked pepper
+    for x, y in ((7, 8), (11, 9)):
+        put(img, x, y, (220, 160, 120))  # fat edge
+    save(img, "peppered_steak", "item")
+
+    # spiced pilaf: the bowl of rice with meat, onion, pepper flecks
+    bowl_dish("spiced_pilaf", [(150, 110, 60), (190, 150, 92), (222, 190, 132), (240, 220, 172), (250, 240, 210)], 1371, heap=True,
+              bits=[(5, 7, (120, 60, 30)), (9, 8, (110, 54, 26)), (11, 7, (130, 66, 34)), (7, 4, (40, 30, 24)), (8, 6, (40, 30, 24)),
+                    (6, 6, (236, 230, 200)), (10, 6, (90, 140, 50)), (4, 8, (40, 30, 24))])
+
+    # pickled vegetables: an open stoneware crock, brine with onions, carrot and dill showing at the surface
+    img = new()
+    lathe(img, {7: 5.6, 8: 6.0, 9: 6.2, 10: 6.2, 11: 6.0, 12: 5.6, 13: 4.8, 14: 3.6}, STONEWARE, 1381)
+    for y, (a, b) in {4: (4, 11), 5: (3, 12), 6: (3, 12)}.items():
+        for x in range(a, b + 1):
+            put(img, x, y, mix((120, 120, 70), (170, 168, 110), 0.5 + 0.3 * (x < 7) - 0.2 * (y == 6)))
+    for x in range(2, 14):
+        put(img, x, 7, ramp(STONEWARE, 0.9 - 0.05 * abs(x - 5)))  # the rim
+    for x, y in ((5, 5), (6, 5), (9, 4), (10, 5)):
+        put(img, x, y, (236, 232, 214))  # pickled onions
+    put(img, 6, 4, (250, 248, 236))
+    for x, y in ((8, 5), (11, 6), (4, 6)):
+        put(img, x, y, (222, 120, 40))  # carrot coins
+    for x, y in ((7, 3), (8, 2), (7, 4), (9, 3), (12, 4)):
+        put(img, x, y, (80, 130, 50) if (x + y) % 2 else (120, 160, 70))  # dill fronds
+    for x in range(4, 12):
+        put(img, x, 10, mix(get(img, x, 10), (90, 60, 40), 0.35))  # a brown glaze band
+    save(img, "pickled_vegetables", "item")
+
+    # gingerbread: two stamped spice biscuits, raw pale and baked dark
+    def biscuits(top, side, seed, icing):
+        im = new()
+        for cx, cy in ((6, 7), (10, 10)):
+            puck(im, cx, cy, 4.6, 2.9, 2, top, side, seed + cx)
+            for x, y in ((cx - 2, cy), (cx + 2, cy), (cx, cy - 1), (cx, cy + 1), (cx, cy)):  # the stamped star
+                put(im, x, y, icing if icing else top[1])
+        outline_dark(im, side[0])
+        return im
+    save(biscuits([(150, 110, 70), (184, 144, 98), (210, 176, 128), (228, 202, 158), (242, 226, 192)],
+                  [(120, 84, 50), (150, 110, 70), (180, 140, 96), (200, 162, 116)], 1391, None), "raw_gingerbread", "item")
+    save(biscuits([(70, 34, 14), (106, 56, 24), (142, 82, 38), (172, 108, 56), (200, 140, 80)],
+                  [(50, 24, 10), (80, 40, 18), (110, 60, 28), (130, 76, 36)], 1392, (246, 236, 214)), "gingerbread", "item")
+
+    # pies: one per fruit tree, raw and baked
+    FILL = {"apple": [(120, 110, 40), (160, 150, 70), (196, 188, 110), (222, 216, 150), (240, 236, 196)],
+            "plum": [(40, 10, 40), (74, 22, 70), (110, 40, 104), (146, 66, 136), (180, 110, 170)],
+            "rowan": [(120, 30, 10), (176, 56, 16), (214, 90, 26), (236, 130, 50), (248, 176, 96)],
+            "bird_cherry": [(14, 8, 16), (34, 16, 34), (58, 28, 56), (86, 46, 82), (120, 76, 112)]}
+    for k, (f, pal) in enumerate(FILL.items()):
+        pie(f"raw_{f}_pie", pal, True, 1400 + k)
+        pie(f"{f}_pie", pal, False, 1410 + k)
+
+
+def r_unif(seed, x, y, a=0.03):
+    return random.Random(seed * 1000 + x * 17 + y).uniform(-a, a)
+
+
 def main():
     cooking_pot()
     griddle()
@@ -988,6 +1460,8 @@ def main():
     salt_pan()
     cookware_items()
     dishes()
+    steel_kitchen_blocks()
+    steel_kitchen_items()
     print(f"cookware textures ok ({len(WRITTEN)} files)")
 
 

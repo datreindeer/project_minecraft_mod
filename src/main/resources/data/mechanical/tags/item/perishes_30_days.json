@@ -19,6 +19,10 @@
     "mechanical:sauerkraut",
     "mechanical:cheese",
     "mechanical:elderberry_syrup",
-    "mechanical:sloe_jam"
+    "mechanical:sloe_jam",
+    "mechanical:cider",
+    "mechanical:ale",
+    "mechanical:pickled_vegetables",
+    "mechanical:fine_flour"
   ]
 }
