@@ -348,6 +348,7 @@
     "mechanical:log_flume",
     "mechanical:saw_bench",
     "mechanical:fermenting_barrel",
-    "mechanical:cheese_press"
+    "mechanical:cheese_press",
+    "mechanical:sieve"
   ]
 }

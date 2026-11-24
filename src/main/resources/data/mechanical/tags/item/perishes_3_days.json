@@ -113,6 +113,12 @@
     "mechanical:herb_roasted_fish",
     "mechanical:flatbread",
     "mechanical:honey_cake",
-    "mechanical:sausage"
+    "mechanical:sausage",
+    "mechanical:roast_with_herbs",
+    "mechanical:sea_buckthorn_juice",
+    "mechanical:apple_pie",
+    "mechanical:plum_pie",
+    "mechanical:rowan_pie",
+    "mechanical:bird_cherry_pie"
   ]
 }

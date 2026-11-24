@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/mortar",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:saffron_rice"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:peppered_steak"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:saffron_rice"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.steel_pan.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.steel_pan.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

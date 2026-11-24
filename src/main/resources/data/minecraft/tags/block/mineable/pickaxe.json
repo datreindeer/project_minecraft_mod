@@ -558,6 +558,8 @@
     "mechanical:bronze_griddle",
     "mechanical:iron_skillet",
     "mechanical:salt_pan",
-    "mechanical:clay_cooking_pot"
+    "mechanical:clay_cooking_pot",
+    "mechanical:steel_pan",
+    "mechanical:mortar_and_pestle"
   ]
 }

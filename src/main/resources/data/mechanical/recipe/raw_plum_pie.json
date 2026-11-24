@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flour",
+    "mechanical:flour",
+    "mechanical:lard",
+    "mechanical:wild_plums",
+    "mechanical:wild_plums",
+    "mechanical:wild_plums"
+  ],
+  "result": {
+    "id": "mechanical:raw_plum_pie"
+  }
+}

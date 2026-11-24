@@ -313,6 +313,9 @@ Skördar med Crop Stakes (högerklick) ger ingen tämjning (de går förbi drop-
 
 Vinter 0 för alla. Skörd (mogen): odlade 1–3 (Cabbage 1, Leek/Parsnip/Celery/Turnip/Lettuce 1–2), Broad Beans 1–3, Dill 1–2
 + 1–2 frön, Mustard 2–3 frön, Ginger 1–3, Saffron 1 tråd + 1–2 knölar, Rice 2–3 (räknas som säd, `mechanical:grains`).
+**Ris i risodling (v0.193.0):** ris växer bara med vatten bredvid, antingen intill åkerjorden (en vattenkanal mellan raderna)
+eller intill plantan (åkerjord sänkt under en vattenfylld terrass). Annars står det still; fältinfo säger "needs water beside it
+(a flooded paddy)" (`Herbs.paddyOk`, i `Farming.blocker`). Andra grödor bryr sig inte.
 Hållbarhet: blad (Lettuce, Sorrel, Mint, Wild Cabbage) 2 dagar, kål/purjo/selleri 10 dagar, lök/rötter 20 dagar; lök och
 rötter är källarvara (`cellar_produce`). **Barley** har nu en källa: byns Farmer säljer Barley Grain (nivå 2, koppar).
 Test: `HerbsTest` (400 skördar av mogen Wild Onion: ~25 % ger en Onion).

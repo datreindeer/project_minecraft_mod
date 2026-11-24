@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:steel_knife",
+    "mechanical:steel_knife_blade",
+    "mechanical:steel_knife_blade",
+    "minecraft:leather",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mechanical:steel_knife_set"
+  }
+}

@@ -10,15 +10,18 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -164,6 +167,18 @@ public final class Herbs {
         BlockState soil = level.getBlockState(pos.below());
         boolean good = c != null && soil.hasProperty(Fertility.FERTILITY) && Fertility.get(soil) >= 2 && c.factor(Temperature.ambient(level, pos)) >= 1;
         return good ? TAME_CHANCE_GOOD : TAME_CHANCE;
+    }
+
+    /**
+     * Rice grows only in a flooded paddy: water right beside its farmland (a channel between the rows) or beside the plant
+     * itself (farmland sunk below a flooded terrace). Every other crop is fine anywhere.
+     */
+    public static boolean paddyOk(Level level, BlockPos crop) {
+        if (!level.getBlockState(crop).is(CROPS.get("rice").get())) return true;
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            if (level.getFluidState(crop.below().relative(d)).is(FluidTags.WATER) || level.getFluidState(crop.relative(d)).is(FluidTags.WATER)) return true;
+        }
+        return false;
     }
 
     /** A ripe wild crop harvested: now and then its tamed seed joins the drops (Farming.onDrops, before the soil wears). */

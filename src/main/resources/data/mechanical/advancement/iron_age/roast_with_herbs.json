@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/iron_skillet",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:roast_with_herbs"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:roast_with_herbs"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.roast_with_herbs.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.roast_with_herbs.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

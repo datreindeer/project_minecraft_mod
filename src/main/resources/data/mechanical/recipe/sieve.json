@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SMS",
+    "W W",
+    "WWW"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "M": "mechanical:steel_plate",
+    "W": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mechanical:sieve"
+  }
+}

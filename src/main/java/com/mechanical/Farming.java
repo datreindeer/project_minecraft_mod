@@ -244,6 +244,7 @@ public final class Farming {
     /** Why a crop isn't growing right now, or null when it can. Shared by the growth check and the field info. */
     private static @Nullable String blocker(Level level, BlockPos pos, Climate c, float temp, BlockState soil) {
         if (soil.hasProperty(FarmlandBlock.MOISTURE) && soil.getValue(FarmlandBlock.MOISTURE) == 0) return "dry";
+        if (!Herbs.paddyOk(level, pos)) return "paddy";
         if (level.isDarkOutside() || level.getBrightness(LightLayer.SKY, pos) < DAYLIGHT) return "dark";
         if (c.season(Calendar.season(level.getOverworldClockTime())) == 0) return "season";
         if (temp <= c.min()) return "cold";

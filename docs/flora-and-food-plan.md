@@ -1,7 +1,7 @@
 # Plan: undervegetation, kryddor, mat och sågverk
 
-> Status: **plan skriven 2026-11-23, fas 1 byggd samma dag; fas 2 och 3 samt fas 4, 4b och 5 (köket) byggda 2026-11-24**
-> (se "Fas 1: resultat", "Fas 2 och 3: resultat" och "Fas 4, 4b och 5: resultat" sist). Beslut märkta
+> Status: **plan skriven 2026-11-23, fas 1 byggd samma dag; fas 2 och 3, fas 4, 4b och 5 (köket) samt fas 6 (stålets kök)
+> byggda 2026-11-24** (se "Fas 1: resultat", "Fas 2 och 3: resultat", "Fas 4, 4b och 5: resultat" och "Fas 6: resultat" sist). Beslut märkta
 > "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de. Item- och blocknamn står på engelska.
 
 Användarens önskelista (översatt och sorterad):
@@ -300,7 +300,7 @@ järnåldern (Iron Cauldron).
 | **5 (byggd, köket)** | Järnålderns kök (Skillet, Cauldron, Barrel, ost, korv, surkål); havssalt | järn | — |
 | **5a (byggd)** | Water Wheel + axlar | järn | — |
 | **5b (byggd)** | Sawmill, Sawdust | stål | 5a |
-| 6 | Stålets kök (Knife Set, Mortar, Sieve, kryddblandningar) | stål | — |
+| **6 (byggd)** | Stålets kök (Knife Set, Steel Pan, Mortar, Sieve, kryddblandningar, risrätter); rester från fas 4–5 (risodling, cider, öl, pajer, örtstek) | stål | — |
 
 ---
 
@@ -400,9 +400,9 @@ Byggt v0.191.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` ("Vilda grön
   grönsaken (som vanillas potatis), inga egna frön. Iron Cauldron hänger i tripoden (bara över Fire Pit) i stället för en egen
   station: samma vätska, värme och öslogik. Wooden Barrel heter **Fermenting Barrel** (vanillas Barrel finns).
 - **Kvar / inte gjort:** byns Apple Saplings blev **Wild Apple Sapling** (fas 3:s vildapel; bonden nivå 4, 1 för 6 Copper
-  Coin, v0.192.0; ympade äpplen finns inte än). Bitter Orange Saplings (karavanen) saknas fortfarande: inget citrusträd. Rapeseed,
-  Cider, Ale, Pies och Roast with Herbs är inte gjorda (pressen, ölet och ugnspajer kommer senare); örterna Hops och Bog Myrtle
-  har ännu bara kompost och framtida öl. Rice växer på vanlig farmland (inte vattendränkt). Crop Stakes-skörd tämjer inte.
+  Coin, v0.192.0; ympade äpplen finns inte än). Bitter Orange Saplings (karavanen) saknas fortfarande: inget citrusträd. Rapeseed
+  är inte gjord. Crop Stakes-skörd tämjer inte. (Cider, Ale, pajer, Roast with Herbs, Hops/Bog Myrtle i ölet och risodlingen
+  byggdes i fas 6, se nedan.)
 - **Test:** `HerbsTest`: tämjning (~25 % av 400 skördar), rätter per redskap och nivå, kitteln ger Pea Soup, krukan lämnar
   tillbaka det som inte är en rätt, hällen bakar bara över tänd eld, tunnan jäser surkål, örten växer igen.
 
@@ -427,3 +427,33 @@ Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vatte
   spånplattor är inte gjorda.
 - **Generator:** `gen_waterpower.py` efter `gen_flora.py`, före `gen_winter_plants.py`; texturer `gen_waterpower_textures.py`
   (fristående).
+
+---
+
+## Fas 6: resultat
+
+Byggt v0.193.0. Spelarens beskrivning: `docs/ages/03-iron-age.md` ("Stålets kök" och "Mer i järnålderns kök"), risodlingen i
+`docs/farming.md`.
+
+- **Redskap:** **Steel Pan** (`CookwareBlock.Kind.STEEL_PAN`: pannan nivå 3 över en Campfire), **Mortar and Pestle** och **Sieve**
+  (`Kind.MORTAR`, `Kind.SIEVE`: arbetas för hand, `Kind.clicks` 8 och 6; varje klick med tom hand är ett steg i
+  `CookwareBlockEntity.work`, morteln vrider sin `facing` ett kvarts varv så stöten flyttar sig runt skålen, partiklar av det som
+  ligger i), **Steel Knife Set** (`KnifeItem` 2,8 fart, 2,0× utbyte, i `#knives`). Renderaren visar det som ligger i morteln och på
+  sållet. **Beslut (Claude, kan ändras):** morteln och sållet drivs av klick i stället för tid, så det känns som att mala; planens
+  Steel Pan byggdes för att risrätterna skulle få ett eget stålredskap.
+- **Kryddblandningar:** Kitchen Pepper, Sweet Spice, Golden Spice, Pickling Spice (karavanens kryddor) och Herb Salt (salt och
+  örter). De är i `#spices`. Stålrätterna kräver en blandning, så karavanen behövs för allt utom Herb Salt.
+- **Rätter:** Saffron Rice och Peppered Steak (Steel Pan), Spiced Pilaf (Iron Cauldron, nivå 2 men kräver Kitchen Pepper), Pickled
+  Vegetables (tunnan), Fine Flour och Sea Buckthorn Juice (sållet; juicen ger Regeneration I 5 s), Gingerbread (Clay Kiln).
+- **Rester från fas 4–5:** risodling (`Herbs.paddyOk`: vatten intill åkerjorden eller plantan, annars står riset still, blocker
+  "paddy"), Cider och Ale i Fermenting Barrel (Hops eller Bog Myrtle bittrar ölet), pajer av de fyra lövfällande fruktträdens frukt
+  (rå paj i bänken, bakas i Clay Kiln: `KilnBlockEntity.RECIPES`), Roast with Herbs i Iron Skillet. Dryckerna har drickanimation
+  (`Kitchen.drink`, `Consumables.defaultDrink`), stack 16, ingen flaska tillbaka.
+- **Data:** allt i `scripts/gen_herbs.py` (lang, recept, loot, taggar), modeller i `scripts/herbs_cookware.py` (`steel_pan`, `mortar`,
+  `sieve`; sållets nät är cutout), texturer i `scripts/gen_cookware_textures.py` (`steel_kitchen_blocks`, `steel_kitchen_items`).
+  Ingen ny generator.
+- **Test:** gametest `kitchen` (i `HerbsTest`): risodlingen, morteln maler Kitchen Pepper på 8 klick och vrider stöten, Steel Pan steker
+  Peppered Steak, skillet kan inte stålpannans saffransris, cider, öl med båda bittringarna, örtstek, pajer i ugnen, knivrullen.
+- **Bilder:** `KitchenShots` (flagga `kitchenshots.flag` i run/), ett kök med alla redskap i bruk och en vägg med rätterna i ramar.
+- **Svagt / kvar:** Mortelstöten är en del av blockmodellen (vrids i kvarts varv, ingen mjuk animation). Ale och cider ger ingen
+  berusning. Olive Oil, Sea Salt i morteln, Rapeseed och ympade äpplen är fortfarande inte gjorda. Pajen kan inte bakas på Steel Pan.

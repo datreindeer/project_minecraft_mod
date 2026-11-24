@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/steel",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fine_flour"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sea_buckthorn_juice"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sieve"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.sieve.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.sieve.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

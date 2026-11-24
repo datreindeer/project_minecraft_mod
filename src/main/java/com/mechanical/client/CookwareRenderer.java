@@ -25,8 +25,9 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jspecify.annotations.Nullable;
 
 /**
- * What lies on a Bronze Griddle or Iron Skillet (Kitchen): up to four items flat on the cooking surface (y 1 px,
- * scripts/herbs_cookware.py), each in its own quarter, turned a little. The barrel and press hide what is inside.
+ * What lies on a Bronze Griddle, Iron Skillet or Steel Pan (Kitchen): up to four items flat on the cooking surface (y 1 px,
+ * scripts/herbs_cookware.py), each in its own quarter, turned a little; in the Mortar and Pestle, small and close
+ * together in the bowl (floor y 3.5), and on the Sieve's mesh (y 3). The barrel and press hide what is inside.
  */
 public class CookwareRenderer implements BlockEntityRenderer<CookwareBlockEntity, CookwareRenderer.State> {
     private static final int SLOTS = 4;
@@ -36,6 +37,7 @@ public class CookwareRenderer implements BlockEntityRenderer<CookwareBlockEntity
 
     public static class State extends BlockEntityRenderState {
         boolean show;
+        float surface = SURFACE, scale = 0.36F, spread = 1;
         final ItemStackRenderState[] items = new ItemStackRenderState[SLOTS];
 
         State() {
@@ -57,7 +59,11 @@ public class CookwareRenderer implements BlockEntityRenderer<CookwareBlockEntity
     @Override
     public void extractRenderState(CookwareBlockEntity pan, State state, float partialTicks, Vec3 camera, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(pan, state, partialTicks, camera, breakProgress);
-        state.show = pan.kind().fire;
+        var kind = pan.kind();
+        state.show = kind.fire || kind == com.mechanical.CookwareBlock.Kind.MORTAR || kind == com.mechanical.CookwareBlock.Kind.SIEVE;
+        state.surface = kind == com.mechanical.CookwareBlock.Kind.MORTAR ? 3.6F : kind == com.mechanical.CookwareBlock.Kind.SIEVE ? 3.1F : SURFACE;
+        state.scale = kind == com.mechanical.CookwareBlock.Kind.MORTAR ? 0.2F : 0.36F;
+        state.spread = kind == com.mechanical.CookwareBlock.Kind.MORTAR ? 0.4F : 1;
         int seed = (int) pan.getBlockPos().asLong();
         var items = pan.items();
         for (int i = 0; i < SLOTS; i++) {
@@ -78,10 +84,10 @@ public class CookwareRenderer implements BlockEntityRenderer<CookwareBlockEntity
             ItemStackRenderState item = state.items[i];
             if (item.isEmpty()) continue;
             pose.pushPose();
-            pose.translate(SPOTS[i][0] / 16, (SURFACE + 0.1F * i) / 16, SPOTS[i][1] / 16);
+            pose.translate((8 + (SPOTS[i][0] - 8) * state.spread) / 16, (state.surface + 0.1F * i) / 16, (8 + (SPOTS[i][1] - 8) * state.spread) / 16);
             pose.rotateDegrees(Axis.YP, SPOTS[i][2]);
             pose.rotateDegrees(Axis.XP, 90); // lying flat
-            pose.scale(0.36F, 0.36F, 0.36F);
+            pose.scale(state.scale, state.scale, state.scale);
             item.submit(pose, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             pose.popPose();
         }

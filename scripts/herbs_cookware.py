@@ -1,7 +1,7 @@
 """Kitchen cookware models (textures: scripts/gen_cookware_textures.py).
 
 Block models, blockstates, item models and item definitions for the Clay Cooking Pot, Bronze Griddle, Iron Skillet,
-Fermenting Barrel, Cheese Press and Salt Pan; the Iron Cauldron's models for the Tripod (patch_tripod adds them to
+Fermenting Barrel, Cheese Press and Salt Pan, and the Steel Age's Steel Pan, Mortar and Pestle and Sieve; the Iron Cauldron's models for the Tripod (patch_tripod adds them to
 gen_kettle.py's tripod blockstate, so run this after gen_kettle.py); flat items for the Unfired Clay Cooking Pot, Iron
 Cauldron, Bronze Ladle and the dishes.
 
@@ -34,7 +34,11 @@ FACINGS = {"north": 0, "east": 90, "south": 180, "west": 270}
 
 DISHES = ["nettle_soup", "root_pottage", "berry_mash", "pea_soup", "onion_garlic_stew", "spiced_porridge", "herbal_tea", "tea",
           "cabbage_soup", "vegetable_pottage", "herb_roasted_fish", "flatbread", "raw_honey_cake", "honey_cake",
-          "elderberry_syrup", "sloe_jam", "fried_eggs_and_onion", "raw_sausage", "sausage", "sauerkraut", "cheese", "indigo"]
+          "elderberry_syrup", "sloe_jam", "fried_eggs_and_onion", "raw_sausage", "sausage", "sauerkraut", "cheese", "indigo",
+          # phase 6 and the phase 4-5 leftovers
+          "roast_with_herbs", "cider", "ale", "kitchen_pepper", "sweet_spice", "golden_spice", "pickling_spice", "herb_salt", "fine_flour",
+          "sea_buckthorn_juice", "saffron_rice", "peppered_steak", "spiced_pilaf", "pickled_vegetables", "raw_gingerbread", "gingerbread"]
+DISHES += [f"{raw}{f}_pie" for f in ("apple", "plum", "rowan", "bird_cherry") for raw in ("raw_", "")]
 FLAT = ["unfired_clay_cooking_pot", "iron_cauldron"] + DISHES
 
 
@@ -442,6 +446,96 @@ def salt_tex(stage):
     return t
 
 
+# ---------------------------------------------------------------- Steel Age (phase 6): Steel Pan, Mortar and Pestle, Sieve
+
+STEEL_PAN_TEX = {"particle": B + "steel_pan_steel", "steel": B + "steel_pan_steel", "floor": B + "steel_pan_floor", "trivet": B + "steel_pan_trivet"}
+
+
+def steel_pan():
+    """A wide, shallow spun-steel pan with two loop handles (east and west), on a forged trivet ring with three legs down
+    beside the campfire's logs. Floor top y 1 (CookwareRenderer.SURFACE), walls to y 2.6, lip to 3.1."""
+    st, fl, tv = "#steel", "#floor", "#trivet"
+    els = []
+    # the trivet: a ring under the pan and three splayed legs to the ground
+    els += ring(8, 8, -1.0, -0.4, 6.2, 6.6, 5.4, 5.8, tv, tv)
+    for k in range(3):
+        a = math.radians(90 + 120 * k)
+        x, z = 8 + 5.8 * math.cos(a), 8 + 5.8 * math.sin(a)
+        axis, ang = ("x", 8 if math.sin(a) < 0 else -8) if abs(math.sin(a)) > 0.5 else ("z", -8 if math.cos(a) < 0 else 8)
+        els.append(box([x - 0.5, -16, z - 0.5], [x + 0.5, -0.4, z + 0.5], tv, vtop=(0, 0), rot={"origin": [x, -0.4, z], "axis": axis, "angle": ang}))
+    # the pan: a flat floor, low flaring walls, a rolled lip
+    els += disc(8, 8, -0.4, 0.3, 5.9, st, Ad=6.4, vtop=(3.1, 0))
+    els += disc(8, 8, 0.3, 1.0, 6.6, st, top=fl, Ad=7.1, vtop=(3.1, 0))
+    for e in els[-4:]:
+        e["faces"]["up"]["uv"] = [r2(e["from"][0]), r2(e["from"][2]), r2(e["to"][0]), r2(e["to"][2])]
+    els += ring(8, 8, 1.0, 2.0, 6.85, 7.35, 6.15, 6.65, st, st, vtop=(3.1, 0))
+    els += ring(8, 8, 2.0, 2.6, 7.05, 7.55, 6.35, 6.85, st, st, vtop=(3.1, 0))
+    els += ring(8, 8, 2.6, 3.1, 7.3, 7.8, 6.45, 6.95, st, st, vtop=(3.1, 0))
+    # loop handles riveted on the east and west walls
+    for sx in (-1, 1):
+        x0, x1 = sorted((8 + sx * 7.2, 8 + sx * 9.0))
+        els.append(box([x0, 1.6, 6.2], [x1, 2.2, 6.9], st))
+        els.append(box([x0, 1.6, 9.1], [x1, 2.2, 9.8], st))
+        xo = (x1 - 0.7, x1) if sx > 0 else (x0, x0 + 0.7)
+        els.append(box([xo[0], 1.6, 6.9], [xo[1], 2.2, 9.1], st))
+        xr = 8 + sx * 7.15
+        for z in (6.55, 9.45):
+            els.append(box([xr - 0.3, 1.5, z - 0.3], [xr + 0.3, 2.3, z + 0.3], tv))  # rivet heads
+    return els
+
+
+MORTAR_TEX = {"particle": B + "mortar_marble", "marble": B + "mortar_marble", "rim": B + "mortar_rim", "inside": B + "mortar_inside",
+              "pestle": B + "pestle_steel", "wood": B + "pestle_wood"}
+
+
+def mortar():
+    """A turned marble mortar (inner floor y 3.5, CookwareRenderer) with a steel pestle leaning in it toward the north
+    (the blockstate turns it a quarter round per click)."""
+    m, ins, V = "#marble", "#inside", (6.8, 2)
+    els = []
+    els += disc(8, 8, 0, 0.8, 3.7, m, vtop=V)                     # the foot
+    els += disc(8, 8, 0.8, 1.6, 4.2, m, vtop=V)
+    els += disc(8, 8, 1.6, 3.5, 4.6, m, top=ins, vtop=V)           # solid under the floor
+    for e in els[-4:]:
+        e["faces"]["up"]["uv"] = [r2(e["from"][0]), r2(e["from"][2]), r2(e["to"][0]), r2(e["to"][2])]
+    els += ring(8, 8, 3.5, 4.8, 4.85, 5.0, 3.0, 3.6, m, ins, vtop=V)
+    els += ring(8, 8, 4.8, 6.0, 4.95, 5.1, 3.3, 3.9, m, ins, vtop=V)
+    els += ring(8, 8, 6.0, 6.8, 5.15, 5.35, 3.5, 4.2, m, ins, top="#rim", vtop=V)  # the thick lip
+    for sx in (-1, 1):  # two lugs to grip it by
+        x0, x1 = sorted((8 + sx * 4.8, 8 + sx * 5.8))
+        els.append(box([x0, 4.2, 7.1], [x1, 5.6, 8.9], m))
+    # the pestle: a bulb in the bowl, a steel shaft leaning out over the north lip, a turned wooden knob
+    rot = {"origin": [8, 3.6, 9.2], "axis": "x", "angle": 28}
+    els.append(box([7.0, 3.6, 8.2], [9.0, 5.4, 10.2], "#pestle", rot=dict(rot)))
+    els.append(box([7.35, 5.4, 8.55], [8.65, 12.5, 9.85], "#pestle", rot=dict(rot), vtop=(12.5, 0)))
+    els.append(box([7.1, 12.5, 8.3], [8.9, 14.3, 10.1], faces_tex("#wood"), rot=dict(rot)))
+    return els
+
+
+SIEVE_TEX = {"particle": B + "sieve_hoop", "hoop": B + "sieve_hoop", "mesh": B + "sieve_mesh", "floor": B + "sieve_floor",
+             "tub": B + "barrel_staves", "band": B + "barrel_hoop", "cord": B + "tripod_lashing"}
+
+
+def sieve():
+    """A round riddle of bent ash with a woven steel mesh (y 3.05..3.25, items lie on it), resting on a low oak tub that
+    catches what falls through."""
+    els = []
+    # the tub: a bottom, stave walls, an iron band, flour on its floor
+    els += disc(8, 8, 0, 0.8, 6.0, "#tub", top="#floor", Ad=6.4, vtop=(3, 13))
+    for e in els[-4:]:
+        e["faces"]["up"]["uv"] = [r2(e["from"][0]), r2(e["from"][2]), r2(e["to"][0]), r2(e["to"][2])]
+    els += ring(8, 8, 0.8, 3.0, 6.2, 6.6, 5.4, 5.8, "#tub", "#tub", vtop=(3, 13))
+    els += ring(8, 8, 1.4, 2.2, 6.35, 6.75, 6.0, 6.4, "#band", "#band")
+    # the sieve: mesh, the bent hoop round it, a withy lashing at the scarf
+    # the mesh as axis-aligned steps filling the octagon, uvs by position so the overlaps match and the weave runs straight
+    for hx, hz in ((3.26, 6.5), (4.1, 5.66), (4.88, 4.88), (5.66, 4.1), (6.5, 3.26)):
+        els.append(box([8 - hx, 3.05, 8 - hz], [8 + hx, 3.25, 8 + hz], "#mesh", skip=SIDES,
+                       uv={f: [r2(8 - hx), r2(8 - hz), r2(8 + hx), r2(8 + hz)] for f in ("up", "down")}))
+    els += ring(8, 8, 2.6, 5.8, 7.0, 7.5, 6.4, 6.85, "#hoop", "#hoop", vtop=(5.8, 4))
+    els += ring(8, 8, 3.8, 4.6, 7.15, 7.65, 6.9, 7.4, "#cord", "#cord")
+    return els
+
+
 # ---------------------------------------------------------------- items
 
 BLOCK_DISPLAY = {  # minecraft:block/block's
@@ -454,7 +548,7 @@ BLOCK_DISPLAY = {  # minecraft:block/block's
 }
 
 
-def item_3d(name, textures, els):
+def item_3d(name, textures, els, **extra):
     """An item model of the block's geometry moved so its bounding box sits in the middle of the 16 px cube, and scaled
     down in every display when it is bigger than the cube."""
     lo = [min(min(e["from"][i], e["to"][i]) for e in els) for i in range(3)]
@@ -462,7 +556,7 @@ def item_3d(name, textures, els):
     moved = shift(els, *(8 - (lo[i] + hi[i]) / 2 for i in range(3)))
     k = min(1.0, 15.0 / max(hi[i] - lo[i] for i in range(3)))
     display = {d: {**v, "scale": [r2(s * k) for s in v["scale"]]} for d, v in BLOCK_DISPLAY.items()}
-    w(A / f"models/item/{name}.json", {"parent": "minecraft:block/block", "display": display, "textures": textures, "elements": moved})
+    w(A / f"models/item/{name}.json", {"parent": "minecraft:block/block", **extra, "display": display, "textures": textures, "elements": moved})
     w(A / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": M + f"item/{name}"}})
 
 
@@ -533,6 +627,21 @@ def main():
     for name in FLAT:
         flat_item(name)
     flat_item("bronze_ladle", "minecraft:item/handheld")
+    flat_item("steel_knife_set", "minecraft:item/handheld")
+
+    sp = steel_pan()
+    w(A / "models/block/steel_pan.json", {"textures": STEEL_PAN_TEX, "elements": sp})
+    w(A / "blockstates/steel_pan.json", {"variants": {f"facing={f}": {"model": B + "steel_pan", **({"y": y} if y else {})} for f, y in FACINGS.items()}})
+    item_3d("steel_pan", STEEL_PAN_TEX, sp)
+    mo = mortar()
+    w(A / "models/block/mortar_and_pestle.json", {"textures": MORTAR_TEX, "elements": mo})
+    w(A / "blockstates/mortar_and_pestle.json", {"variants": {f"facing={f}": {"model": B + "mortar_and_pestle", **({"y": y} if y else {})}
+                                                              for f, y in FACINGS.items()}})
+    item_3d("mortar_and_pestle", MORTAR_TEX, mo)
+    sv = sieve()
+    w(A / "models/block/sieve.json", {"render_type": "minecraft:cutout", "textures": SIEVE_TEX, "elements": sv})
+    w(A / "blockstates/sieve.json", {"variants": {"": {"model": B + "sieve"}}})
+    item_3d("sieve", SIEVE_TEX, sv, render_type="minecraft:cutout")
     print("cookware models ok")
 
 

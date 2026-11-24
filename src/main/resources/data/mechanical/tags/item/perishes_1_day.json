@@ -146,6 +146,14 @@
     "mechanical:fried_eggs_and_onion",
     "mechanical:herb_stuffed_fish",
     "mechanical:raw_sausage",
-    "mechanical:raw_honey_cake"
+    "mechanical:raw_honey_cake",
+    "mechanical:saffron_rice",
+    "mechanical:spiced_pilaf",
+    "mechanical:peppered_steak",
+    "mechanical:raw_gingerbread",
+    "mechanical:raw_apple_pie",
+    "mechanical:raw_plum_pie",
+    "mechanical:raw_rowan_pie",
+    "mechanical:raw_bird_cherry_pie"
   ]
 }

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flour",
+    "mechanical:flour",
+    "mechanical:lard",
+    "mechanical:crab_apple",
+    "mechanical:crab_apple",
+    "mechanical:crab_apple"
+  ],
+  "result": {
+    "id": "mechanical:raw_apple_pie"
+  }
+}

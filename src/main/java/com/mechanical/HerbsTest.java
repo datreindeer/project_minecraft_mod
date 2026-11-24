@@ -14,6 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -32,14 +33,20 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * harvests); dishes are found by their cookware and tier (the clay pot can't make bronze dishes, twice the ingredients
  * make twice the dish); the kettle cooks a named dish; a griddle cooks flatbread over a lit campfire and not over a cold
  * one; the barrel ferments sauerkraut with time alone; a herb cut with a knife grows back.
+ * Test "kitchen" (phase 6 and the phase 4-5 leftovers): rice grows only with water beside it (a paddy); the mortar grinds
+ * Kitchen Pepper from the caravan's spices in eight clicks, turning the pestle; the Steel Pan fries Peppered Steak over a
+ * lit fire; cider, ale (hops or bog myrtle) and roast with herbs are found; pies bake in the kiln; the knife set beats a
+ * steel knife.
  */
 @EventBusSubscriber(modid = MODID)
 public final class HerbsTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
     private static final ResourceKey<Consumer<GameTestHelper>> TEST = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "herbs"));
+    private static final ResourceKey<Consumer<GameTestHelper>> KITCHEN = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "kitchen"));
 
     static {
         TEST_FUNCTIONS.register("herbs", () -> HerbsTest::test);
+        TEST_FUNCTIONS.register("kitchen", () -> HerbsTest::kitchen);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -50,6 +57,89 @@ public final class HerbsTest {
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "herbs"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "herbs"), new FunctionGameTestInstance(TEST, TestArea.of(env, 200, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "kitchen"), new FunctionGameTestInstance(KITCHEN, TestArea.of(env, 200, true)));
+    }
+
+    private static void kitchen(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        var hand = net.minecraft.world.InteractionHand.MAIN_HAND;
+        var player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+
+        // ---- rice needs a flooded paddy: water beside its farmland ----
+        for (int x = 1; x <= 4; x++) h.setBlock(new BlockPos(x, 0, 2), Blocks.STONE);
+        BlockPos soil = new BlockPos(2, 1, 2), rice = soil.above();
+        h.setBlock(soil, Blocks.FARMLAND.defaultBlockState().setValue(net.minecraft.world.level.block.FarmlandBlock.MOISTURE, 7));
+        h.setBlock(rice, Herbs.CROPS.get("rice").get().defaultBlockState());
+        h.assertFalse(Herbs.paddyOk(level, h.absolutePos(rice)), "rice on plain farmland is not in a paddy");
+        h.assertTrue(Farming.growthRate(level, h.absolutePos(rice), Farming.climate(Herbs.CROPS.get("rice").get())) == 0, "rice on dry-footed farmland doesn't grow");
+        h.setBlock(new BlockPos(1, 1, 2), Blocks.STONE);
+        h.setBlock(new BlockPos(3, 1, 2), Blocks.WATER);
+        h.assertTrue(Herbs.paddyOk(level, h.absolutePos(rice)), "water beside the farmland makes a paddy");
+        h.setBlock(new BlockPos(3, 1, 2), Blocks.STONE);
+        BlockPos onion = new BlockPos(1, 2, 2);
+        h.setBlock(new BlockPos(1, 1, 2), Blocks.FARMLAND);
+        h.setBlock(onion, Herbs.CROPS.get("onion").get().defaultBlockState());
+        h.assertTrue(Herbs.paddyOk(level, h.absolutePos(onion)), "other crops need no paddy");
+
+        // ---- the mortar grinds the caravan's spices into Kitchen Pepper by hand ----
+        BlockPos mortarPos = new BlockPos(6, 1, 6);
+        h.setBlock(mortarPos.below(), Blocks.STONE);
+        h.setBlock(mortarPos, Kitchen.MORTAR_AND_PESTLE.get().defaultBlockState());
+        CookwareBlockEntity mortar = (CookwareBlockEntity) level.getBlockEntity(h.absolutePos(mortarPos));
+        for (var item : List.of(Herbs.BLACK_PEPPER.get(), Herbs.ITEMS_BY_NAME.get("ginger").get(), Herbs.CINNAMON_BARK.get())) {
+            ItemStack s = of(item);
+            mortar.add(level, player, hand, s);
+        }
+        h.assertTrue(mortar.items().size() == 3, "pepper, ginger and cinnamon go in the mortar: " + mortar.items());
+        for (int i = 0; i < 200; i++) mortar.serverTick(level, h.absolutePos(mortarPos), h.getBlockState(mortarPos));
+        h.assertFalse(mortar.done(), "the mortar does nothing by itself");
+        var facing = h.getBlockState(mortarPos).getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING);
+        mortar.takeOut(level, player);
+        h.assertTrue(h.getBlockState(mortarPos).getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING) == facing.getClockWise(),
+                "a click turns the pestle a quarter round");
+        for (int i = 1; i < CookwareBlock.Kind.MORTAR.clicks; i++) mortar.takeOut(level, player);
+        h.assertTrue(mortar.done() && mortar.items().getFirst().is(Kitchen.KITCHEN_PEPPER.get()) && mortar.items().getFirst().getCount() == 3,
+                "eight clicks grind three Kitchen Pepper: " + mortar.items());
+        h.assertTrue(Kitchen.match(Kitchen.Tool.MORTAR, 3, List.of(of(Herbs.BLACK_PEPPER.get()), of(Items.DIRT))) == null, "a stray item spoils the blend");
+
+        // ---- the Steel Pan fries Peppered Steak over a lit campfire ----
+        BlockPos fire = new BlockPos(9, 1, 6), pan = fire.above();
+        h.setBlock(fire.below(), Blocks.STONE);
+        h.setBlock(fire, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+        h.setBlock(pan, Kitchen.STEEL_PAN.get().defaultBlockState());
+        CookwareBlockEntity steel = (CookwareBlockEntity) level.getBlockEntity(h.absolutePos(pan));
+        for (var item : List.of(Items.BEEF, Items.BEEF, Kitchen.KITCHEN_PEPPER.get())) {
+            ItemStack s = of(item);
+            steel.add(level, player, hand, s);
+        }
+        for (int i = 0; i < Kitchen.PAN_TIME + 5; i++) steel.serverTick(level, h.absolutePos(pan), h.getBlockState(pan));
+        h.assertTrue(steel.done() && steel.items().getFirst().is(Kitchen.PEPPERED_STEAK.get()) && steel.items().getFirst().getCount() == 2,
+                "two beef and Kitchen Pepper fry into two Peppered Steaks: " + steel.items());
+        List<ItemStack> saffron = List.of(of(Herbs.ITEMS_BY_NAME.get("rice").get()), of(Herbs.ITEMS_BY_NAME.get("rice").get()), of(Kitchen.GOLDEN_SPICE.get()),
+                of(Herbs.ITEMS_BY_NAME.get("onion").get()));
+        h.assertTrue(Kitchen.match(Kitchen.Tool.PAN, 2, saffron) == null, "the iron skillet can't make the steel pan's saffron rice");
+        Kitchen.Match sr = Kitchen.match(Kitchen.Tool.PAN, 3, saffron);
+        h.assertTrue(sr != null && sr.dish().name().equals("saffron_rice"), "the steel pan makes saffron rice: " + sr);
+
+        // ---- the leftovers: cider, ale with either bittering, roast with herbs, pies in the kiln ----
+        Item apple = Trees.FRUITS.get("wild_apple").get();
+        Kitchen.Match cider = Kitchen.match(Kitchen.Tool.BARREL, 2, List.of(of(apple), of(apple), of(apple), of(apple)));
+        h.assertTrue(cider != null && cider.dish().name().equals("cider") && cider.count() == 3, "four crab apples ferment into cider: " + cider);
+        for (Item bitter : List.of(Herbs.HERB_ITEMS.get("hop_cones").get(), Herbs.HERB_ITEMS.get("bog_myrtle_leaves").get())) {
+            Item barley = Farming.GRAIN_ITEMS.get("barley").get();
+            Kitchen.Match ale = Kitchen.match(Kitchen.Tool.BARREL, 2, List.of(of(barley), of(bitter), of(barley), of(barley)));
+            h.assertTrue(ale != null && ale.dish().name().equals("ale"), "barley and " + bitter + " brew ale: " + ale);
+        }
+        Kitchen.Match roast = Kitchen.match(Kitchen.Tool.PAN, 2, List.of(of(Items.MUTTON), of(Herbs.HERB_ITEMS.get("thyme").get()), of(Items.MUTTON),
+                of(Herbs.HERB_ITEMS.get("rosemary_sprigs").get())));
+        h.assertTrue(roast != null && roast.dish().name().equals("roast_with_herbs"), "meat and herbs roast in the skillet: " + roast);
+        for (String f : Kitchen.PIE_FRUITS) {
+            Item raw = Kitchen.RAW_PIES.get(f).get(), baked = Kitchen.PIES.get(f).get();
+            h.assertTrue(KilnBlockEntity.RECIPES.stream().anyMatch(r -> r.input().test(of(raw)) && r.result().get() == baked), "the kiln bakes the " + f + " pie");
+        }
+        h.assertTrue(Kitchen.STEEL_KNIFE_SET.get().yieldMultiplier() > Smithing.STEEL_KNIFE.get().yieldMultiplier()
+                && of(Kitchen.STEEL_KNIFE_SET.get()).is(Watercraft.KNIVES), "the knife set gets more from a carcass than a steel knife, and is a knife");
+        h.succeed();
     }
 
     private static ItemStack of(net.minecraft.world.level.ItemLike item) {
