@@ -39,12 +39,13 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class WaterPowerTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"waterpower_wheel", "waterpower_two_wheels", "waterpower_body", "sawmill_barked", "sawmill_stripped", "sawmill_no_power", "sawmill_wrong_flow"};
+    private static final String[] TESTS = {"waterpower_wheel", "waterpower_two_wheels", "waterpower_body", "waterpower_shared", "sawmill_barked", "sawmill_stripped", "sawmill_no_power", "sawmill_wrong_flow"};
 
     static {
         TEST_FUNCTIONS.register("waterpower_wheel", () -> WaterPowerTest::wheel);
         TEST_FUNCTIONS.register("waterpower_two_wheels", () -> WaterPowerTest::twoWheels);
         TEST_FUNCTIONS.register("waterpower_body", () -> WaterPowerTest::body);
+        TEST_FUNCTIONS.register("waterpower_shared", () -> WaterPowerTest::shared);
         TEST_FUNCTIONS.register("sawmill_barked", () -> h -> mill(h, new ItemStack(Items.OAK_LOG), 12, true, List.of(
                 new ItemStack(Mechanical.ROUGH_LOGS.get("oak").get(), 2), new ItemStack(Mechanical.FIREWOOD.get("oak").get(), 2),
                 new ItemStack(Mechanical.BARKS.get("oak").get(), 2), new ItemStack(Sawmill.SAWDUST.get(), 2))));
@@ -149,6 +150,34 @@ public final class WaterPowerTest {
     }
 
     /** The wheel's body: two boxes in its cells, solid, keeping blocks out of the wheel, gone with the hub. */
+    /**
+     * Machines on one axle share its power (user decision 2026-11-24): a wheel's shaft into a gearbox drives two Saw
+     * Benches, one each way; each gets half (rounded down). With one bench gone the other gets it all, and the shafts
+     * always carry the whole line.
+     */
+    private static void shared(GameTestHelper h) {
+        floor(h);
+        h.setBlock(new BlockPos(6, 5, 6), WaterPower.WATER_WHEEL.get().defaultBlockState().setValue(WaterWheelBlock.AXIS, Direction.Axis.Z));
+        h.setBlock(new BlockPos(8, 8, 6), Blocks.WATER);
+        h.setBlock(new BlockPos(6, 5, 7), shaft(Direction.Axis.Z));
+        h.setBlock(new BlockPos(6, 5, 8), WaterPower.GEARBOX.get());
+        BlockState saw = Sawmill.SAW_BENCH.get().defaultBlockState().setValue(SawBenchBlock.FACING, Direction.NORTH);
+        for (int x : new int[] {5, 7}) h.setBlock(new BlockPos(x, 5, 8), shaft(Direction.Axis.X));
+        for (int x : new int[] {4, 8}) h.setBlock(new BlockPos(x, 5, 8), saw);
+        h.runAfterDelay(70, () -> {
+            RotorBlockEntity wheel = rotor(h, 6, 5, 6), a = rotor(h, 4, 5, 8), b = rotor(h, 8, 5, 8), s = rotor(h, 7, 5, 8);
+            h.assertTrue(wheel.power() >= 6, "the wheel turns, power " + wheel.power());
+            h.assertTrue(a.power() == wheel.power() / 2 && b.power() == wheel.power() / 2,
+                    "two saws share " + wheel.power() + ": " + a.power() + " and " + b.power());
+            h.assertTrue(s.power() == wheel.power(), "the shaft carries the whole line, " + s.power());
+            h.setBlock(new BlockPos(4, 5, 8), Blocks.AIR);
+            h.runAfterDelay(30, () -> {
+                h.assertTrue(b.power() == wheel.power(), "a saw alone on the line gets it all, " + b.power() + " of " + wheel.power());
+                h.succeed();
+            });
+        });
+    }
+
     private static void body(GameTestHelper h) {
         floor(h);
         BlockPos hub = new BlockPos(6, 5, 6);

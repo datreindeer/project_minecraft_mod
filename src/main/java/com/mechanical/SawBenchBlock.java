@@ -35,7 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * along that line. A shaft from a Water Wheel meets it from the left or right. Right-click: a Steel Saw Blade fits a new
  * blade, a log is laid in the first flume, an empty hand says what the mill needs ({@link SawBenchBlockEntity#problem}).
  */
-public class SawBenchBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class SawBenchBlock extends HorizontalDirectionalBlock implements EntityBlock, WaterPower.Driven {
     private static final VoxelShape Z = Shapes.or(box(1, 0, 0, 15, 3, 16), box(1, 3, 0, 3, 12, 16), box(13, 3, 0, 15, 12, 16),
             box(0, 0, 6, 3, 16, 10), box(13, 0, 6, 16, 16, 10));
     private static final VoxelShape X = Shapes.or(box(0, 0, 1, 16, 3, 15), box(0, 3, 1, 16, 12, 3), box(0, 3, 13, 16, 12, 15),
@@ -105,5 +105,10 @@ public class SawBenchBlock extends HorizontalDirectionalBlock implements EntityB
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (type != Sawmill.SAW_BENCH_ENTITY.get()) return null;
         return (BlockEntityTicker<T>) (BlockEntityTicker<SawBenchBlockEntity>) (l, p, s, saw) -> saw.tick(l);
+    }
+
+    @Override
+    public boolean takesAxle(BlockState state, Direction dir) {
+        return state.getValue(FACING).getAxis() != dir.getAxis() && dir.getAxis().isHorizontal();
     }
 }

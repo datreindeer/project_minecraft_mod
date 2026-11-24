@@ -35,8 +35,8 @@ Namn: **High Furnace** (masugn, *Hochofen*). Vanillas "Blast Furnace" är bortta
   Blocktillståndet `METAL` har bara koppar, brons och poor bronze.
 - **Värmen** (`KilnBlockEntity.heatStep`, `speed`): stiger 5°/s mot bränslets naturliga max, sjunker 2°/s över det, +1
   takt per 200° över det som krävs (högst 4×). Bälgar pumpas för hand.
-- **Vattenkraft** (`WaterPower`): kraft 0–16 per axellinje, sågen behöver 8. **Kraften delas inte:** varje maskin på en
-  linje får hela linjens kraft.
+- **Vattenkraft** (`WaterPower`): kraft 0–16 per axellinje, sågen behöver 8. **Kraften delas (byggt v0.200.0):** maskinerna på en
+  linje delar linjens kraft lika (`WaterPower.share`, test `waterpower_shared`).
 
 ### Gränser i dag (det som den nya ugnen löser)
 

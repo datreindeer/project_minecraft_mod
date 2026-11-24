@@ -34,7 +34,8 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * along the line (lying or standing), through other wheels on the same axle, and through a <b>Gearbox</b> on into shafts
  * at a right angle, up and down too (the bevel gears turn the other way round). All the wheels on a line add their power
  * (opposed wheels take from each other; one jammed wheel stops the axle), up to {@link #MAX_POWER}. A machine at the end
- * of a line (the Saw Bench, {@link Sawmill}) takes the power. Parts lose their turn {@link #LAPSE_TICKS} after no wheel
+ * of a line (a {@link Driven} machine: the Saw Bench, {@link Sawmill}; the Great Bellows, {@link HighFurnace}) takes the power, and the
+ * machines on one line share it ({@link #share}: two machines on a 16-power line get 8 each). Parts lose their turn {@link #LAPSE_TICKS} after no wheel
  * feeds them. The wheel's solid body: {@link WaterWheelHitbox}. Data: scripts/gen_waterpower.py.
  */
 public final class WaterPower {
@@ -70,6 +71,17 @@ public final class WaterPower {
     public static final Identifier POWER_CLIMBS_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "iron_age/power_climbs");
 
     public static void init() {}
+
+    /** A block a line can end in that takes the turn (the Saw Bench, the Great Bellows). */
+    public interface Driven {
+        /** Does an axle coming in going {@code dir} drive it? */
+        boolean takesAxle(BlockState state, Direction dir);
+    }
+
+    /** The power each of {@code machines} machines on a line of {@code power} gets: they share it (user decision 2026-11-24). */
+    public static int share(int power, int machines) {
+        return power / Math.max(1, machines);
+    }
 
     static void tellPower(net.minecraft.world.entity.player.Player player, int power) {
         player.sendOverlayMessage(power > 0 ? net.minecraft.network.chat.Component.translatable("message.mechanical.water_power.turning", power, MAX_POWER)
@@ -119,8 +131,7 @@ public final class WaterPower {
                     if (out != dir.getOpposite()) walk(level, p, out, g * gear(out.getAxis()), parts, seen);
                 return;
             }
-            if (s.getBlock() instanceof SawBenchBlock && s.getValue(SawBenchBlock.FACING).getAxis() != dir.getAxis() && dir.getAxis().isHorizontal()
-                    && be instanceof RotorBlockEntity r) parts.add(new Part(r, sign));
+            if (s.getBlock() instanceof Driven d && d.takesAxle(s, dir) && be instanceof RotorBlockEntity r) parts.add(new Part(r, sign));
             return;
         }
     }

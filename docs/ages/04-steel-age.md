@@ -138,8 +138,8 @@ Test: `WaterPowerTest` (sawmill_barked, sawmill_stripped, sawmill_no_power, sawm
   Gearbox hör till järnåldern. Planen: [flora-and-food-plan.md](../flora-and-food-plan.md) avsnitt 7.
 - Advancement (Steel Age-fliken): **Up and Down** (första stocken sågad).
 - Inte gjort än: sågspån i Root Cellar, strö i stallar, papper och spånplattor; stycken av en Felled Log i rännan.
-- Planerat (High Furnace-beslutet 2026-11-24): maskiner på samma axel **delar kraften**, så sågen och ugnens bälgar på
-  ett hjul får hälften var.
+- Maskiner på samma axel **delar kraften** (v0.200.0, beslut 2026-11-24): sågen och en Great Bellows på samma hjul får
+  hälften var, och sågen behöver 8. Ge sågen en egen axel eller fler hjul.
 
 ## 5. Stålets kök (flora och mat, fas 6, byggt v0.193.0)
 

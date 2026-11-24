@@ -80,7 +80,8 @@ public class WaterWheelBlockEntity extends RotorBlockEntity {
 
     /**
      * Every second: the wheel that comes first (by position) on its axle line drives the line. It adds up every wheel's
-     * water (signed by which way each turns on the line), caps it, turns at that speed and hands the turn to every part.
+     * water (signed by which way each turns on the line), caps it, turns at that speed and hands the turn to every part;
+     * the machines on the line share the power ({@link WaterPower#share}).
      */
     static void serverTick(ServerLevel level, BlockPos pos, WaterWheelBlockEntity wheel) {
         long now = level.getGameTime();
@@ -109,7 +110,10 @@ public class WaterWheelBlockEntity extends RotorBlockEntity {
             wheel.power = power;
             wheel.sync();
         }
-        for (WaterPower.Part p : line) if (p.rotor() != wheel) p.rotor().feed(wheel.speed * p.sign(), wheel.base * p.sign(), wheel.t0, wheel.power);
+        int machines = (int) line.stream().filter(p -> p.rotor().getBlockState().getBlock() instanceof WaterPower.Driven).count();
+        for (WaterPower.Part p : line)
+            if (p.rotor() != wheel) p.rotor().feed(wheel.speed * p.sign(), wheel.base * p.sign(), wheel.t0,
+                    p.rotor().getBlockState().getBlock() instanceof WaterPower.Driven ? WaterPower.share(wheel.power, machines) : wheel.power);
         if (power > 0) Smelting.award(level, pos, WaterPower.WHEEL_ADVANCEMENT, 12);
         if (power >= WaterPower.MAX_POWER) Smelting.award(level, pos, WaterPower.FULL_POWER_ADVANCEMENT, 12);
         if (power > 0 && turning >= 2) Smelting.award(level, pos, WaterPower.TWIN_WHEELS_ADVANCEMENT, 12);

@@ -419,7 +419,7 @@ Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vatte
   svävande tooltip.
 - **Axlar:** Wooden Shaft (liggande eller stående) och Gearbox (rakt fram och runt hörnet åt alla håll, även upp och
   ner). Alla delar på en linje visar hjulets egen fas (ingen synk per tick), och stannar 2,5 s efter att hjulet slutat
-  mata dem. **Uppföljning (mech2):** flera hjul på samma axel lägger ihop sin kraft (med tecken, högst 16; ett fastkört
+  mata dem. **Uppföljning (mech2):** flera hjul på samma axel lägger ihop sin kraft (med tecken, högst 16; ett fastkört **Delad kraft (v0.200.0):** maskinerna på en linje delar kraften lika (`WaterPower.share`), test `waterpower_shared`.
   hjul stoppar axeln). Det hjul som ligger först (lägst position) räknar hela linjen varje sekund och matar de andra.
 - **Hjulets kropp (mech2):** hjulet fyller inte sina 24 rutor med block (vattnet måste rinna där), utan har två osynliga
   entiteter i kors (`WaterWheelHitbox`, 5×3 och 3×5) som är fasta att gå emot och stå på och hindrar blockplacering.
